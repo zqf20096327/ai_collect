@@ -18,7 +18,7 @@
     <a href="https://modelscope.cn/collections/X-AnyLabeling-7b0e1798bcda43"><img src="https://img.shields.io/badge/modelscope-X--AnyLabeling-6750FF?link=https%3A%2F%2Fmodelscope.cn%2Fcollections%2FX-AnyLabeling-7b0e1798bcda43"></a>
 </p>
 
-<img src="https://github.com/user-attachments/assets/aa819dae-e38c-4b1c-a4a7-53a873d870e3" alt="X-AnyLabeling interface" width="100%" />
+<img src="assets/resources/interface.webp" alt="X-AnyLabeling interface" width="100%" />
 
 <p align="center">
   <a href="https://xanylabeling.com/docs/x-anylabeling/point_cloud" target="_blank"><img src="assets/resources/pointcloud/pointcloud-3d-det.png" alt="3D Point Cloud Detection" width="50%" /></a><a href="https://xanylabeling.com/docs/x-anylabeling/point_cloud" target="_blank"><img src="assets/resources/pointcloud/pointcloud-3d-seg.png" alt="3D Point Cloud Segmentation" width="50%" /></a>
@@ -28,8 +28,8 @@
 
 ## 🥳 What's New
 
+- `2026-10-31`: Add object-level multi-task attribute annotation with AI-assisted labeling and concurrent inference.
 - `2026-10-30`: Add support for the [Unlimited-OCR-2](./examples/optical_character_recognition/unlimited_ocr_2/README.md) model with image and PDF document parsing with multi-page context.
-
 - `2026-10-28`: Add support for the [WeVisOne-VL](./examples/vision_foundation/wevisone_vl/README.md) model with detection, referring localization, pointing, counting, OCR, text grounding, segmentation, text and box matting, visual prompting, and freeform instructions.
 - `2026-10-28`: Add support for the [Xiaomi-Lens-0](./examples/vision_foundation/xiaomi_lens/README.md) model with referring comprehension and segmentation, multi-instance grounding, reasoning segmentation, embodied referring, and fine-grained perception.
 - `2026-10-27`: Add [annotation display modes](https://xanylabeling.com/docs/x-anylabeling/user_guide#33-shape-display): color by label, instance, or group, and a binary mask view with white foreground on a black background.
@@ -99,7 +99,7 @@
 6. [VQA](./docs/en/vqa.md)
 7. [Image Classifier](./docs/en/image_classifier.md)
 8. [Video Classifier](./docs/en/video_classifier.md)
-9. [Document Parsing and Intelligent Text Recognition](./docs/en/paddle_ocr.md)
+9. [Document Parser](./docs/en/document_parser.md)
 10. [3D Point Cloud Annotation](./docs/en/point_cloud.md)
 
 ## Examples
@@ -135,7 +135,7 @@
   - [SAM3-Video](./examples/interactive_video_object_segmentation/sam3/README.md)
 - [Matting](./examples/matting/)
   - [Image Matting](./examples/matting/image_matting/README.md)
-- [Vision Foundation Models](./examples/vision_foundation/)
+- [VFM](./examples/vision_foundation/)
   - [Rex-Omni](./examples/vision_foundation/rexomni/README.md)
   - [Florence 2](./examples/vision_foundation/florence2/README.md)
   - [LocateAnything](./examples/vision_foundation/locateanything/README.md)

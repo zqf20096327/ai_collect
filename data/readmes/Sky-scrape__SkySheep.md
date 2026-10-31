@@ -36,6 +36,16 @@ SkySheep 是跑在你自己电脑上的开源 AI Agent 工作台：Python asynci
 
 </div>
 
+## 🎥 介绍片
+
+<div align="center">
+
+[![SkySheep 介绍片：多模型协作的本地 AI 工作台](docs/demo/skysheep-intro-cover.webp)](https://github.com/Sky-scrape/SkySheep/releases/download/intro-2026-10/skysheep-intro-1080p.mp4)
+
+*1 分钟 · 圆桌 / 团队 / 对抗 / 接力 / 自动化工厂，带配乐与中文字幕 · [▶ 直接观看 1080p](https://github.com/Sky-scrape/SkySheep/releases/download/intro-2026-10/skysheep-intro-1080p.mp4)*
+
+</div>
+
 ## 🎬 实机演示
 
 <div align="center">
@@ -339,7 +349,7 @@ cd engine
 
 ## 🗺 路线图与非目标
 
-- ✅ 当前版本 **v2.6.2**：多模型协作工作台持续完善，已覆盖圆桌 / 团队 / 对抗 / 接力、任务编排、可视化工厂、全局出网设置与扩展生态（MCP / Skills / Mods）；逐版明细见 [CHANGELOG.md](CHANGELOG.md)
+- ✅ 当前版本 **v2.6.3**：多模型协作工作台持续完善，已覆盖圆桌 / 团队 / 对抗 / 接力、任务编排、可视化工厂、全局出网设置与扩展生态（MCP / Skills / Mods）；逐版明细见 [CHANGELOG.md](CHANGELOG.md)
 - 🚧 **后续方向**：代码签名分发 · Windows 桌面体验与稳定性收口（安装包已签名前的 SmartScreen 拦截指引见 [docs/smartscreen-说明.md](docs/smartscreen-说明.md)）
 
 **非目标**：

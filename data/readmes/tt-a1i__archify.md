@@ -60,8 +60,8 @@ https://github.com/user-attachments/assets/78570807-ba1d-4737-953f-55504a378a87
 
 Works with Cursor, Claude Code, Codex CLI, and OpenCode. See installation options below for additional integrations.
 
-```bash
-npx skills add tt-a1i/archify -g
+```text
+Install Archify for me by reading https://raw.githubusercontent.com/tt-a1i/archify/main/llms.txt
 ```
 
 Send this to your agent:
@@ -214,8 +214,8 @@ Open [`examples/web-app.html`](examples/web-app.html) locally to try the complet
 
 ### 1. Install
 
-```bash
-npx skills add tt-a1i/archify -g
+```text
+Install Archify for me by reading https://raw.githubusercontent.com/tt-a1i/archify/main/llms.txt
 ```
 
 <details>
@@ -224,7 +224,7 @@ npx skills add tt-a1i/archify -g
 For an explicit, non-interactive Cursor install:
 
 ```bash
-npx -y skills add tt-a1i/archify --skill archify --agent cursor --global --copy --yes
+npx -y skills@latest add https://archify.si --skill archify --agent cursor --global --copy --yes
 ```
 
 To try without installing:

@@ -17,6 +17,7 @@
   <a href="https://github.com/artk0de/TeaRAGs-MCP/actions/workflows/ci.yml"><img src="https://github.com/artk0de/TeaRAGs-MCP/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://codecov.io/gh/artk0de/TeaRAGs-MCP"><img src="https://codecov.io/gh/artk0de/TeaRAGs-MCP/graph/badge.svg?token=BU255N03YF" alt="codecov"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-d4af37" alt="MIT license"></a>
+  <a href="https://mcprush.com/to/tea-rags-mcp?ref=badge"><img src="https://mcprush.com/badge/tea-rags-mcp/score.svg" alt="Tea Rags MCP on mcprush"></a>
 </p>
 
 ---
@@ -342,17 +343,63 @@ Pull the code-embedding model:
 ollama pull unclemusclez/jina-embeddings-v2-base-code:latest
 ```
 
-**Claude Code** — plugins plus a setup wizard that detects your hardware and
-tunes the pipeline:
+The repository is a plugin marketplace for Claude Code, Codex and Cursor. Each
+harness gets `tea-rags` (MCP server, skills, session hooks) and `dinopowers`
+(wrappers over [superpowers](https://github.com/obra/superpowers) — install
+superpowers first).
+
+<details>
+<summary><b>Claude Code</b> — plugins plus a setup wizard</summary>
+
+The wizard detects your hardware and tunes the pipeline:
 
 ```text
 /plugin marketplace add artk0de/TeaRAGs-MCP
 /plugin install tea-rags-setup@tea-rags
 /tea-rags-setup:install
 /plugin install tea-rags@tea-rags
+/plugin install dinopowers@tea-rags
 ```
 
-**Any MCP client** (Cursor, Roo Code, Continue, …):
+</details>
+
+<details>
+<summary><b>Codex CLI</b></summary>
+
+```bash
+npm install -g tea-rags
+codex plugin marketplace add artk0de/TeaRAGs-MCP --sparse .agents --sparse harness/codex
+# or from a local clone: codex plugin marketplace add <path to the clone>
+codex plugin add tea-rags@tea-rags
+codex plugin add dinopowers@tea-rags      # needs superpowers installed
+```
+
+Plugin hooks stay untrusted until reviewed: open `/hooks` once and trust the
+tea-rags and dinopowers hooks (SessionStart digest, SubagentStart block). For a
+plugin-less setup, append `harness/codex/AGENTS.tea-rags.md` to your
+`AGENTS.md`. Details: [`harness/codex/README.md`](harness/codex/README.md).
+
+</details>
+
+<details>
+<summary><b>Cursor</b></summary>
+
+```bash
+npm install -g tea-rags
+mkdir -p ~/.cursor/plugins/local
+cp -R <path to the clone>/harness/cursor/tea-rags ~/.cursor/plugins/local/tea-rags
+cp -R <path to the clone>/harness/cursor/dinopowers ~/.cursor/plugins/local/dinopowers
+```
+
+Copy, do not symlink. Then **Reload Window**; enterprise workspaces need "Allow
+Local Plugin Imports". The root `.cursor-plugin/marketplace.json` serves the
+same packages to Cursor builds that add a git repository as a marketplace (not
+yet verified). Details: [`harness/cursor/README.md`](harness/cursor/README.md).
+
+</details>
+
+<details>
+<summary><b>Any other MCP client</b> (Roo Code, Continue, …)</summary>
 
 ```bash
 npm install -g tea-rags
@@ -368,6 +415,11 @@ npm install -g tea-rags
   }
 }
 ```
+
+The server's `instructions` carry the routing core; guides are MCP resources
+under `tea-rags://guide/*`.
+
+</details>
 
 Qdrant downloads and starts on first use. Cloud embeddings (OpenAI, Cohere,
 Voyage), an external Qdrant, and the built-in ONNX provider (beta) are covered
@@ -561,11 +613,12 @@ Rows are ordered by overall capability, richest support first.
 | **_Ruby_**       | 🌔 **full** · tree-sitter (RSpec block grouping, comment attachment, spec scope splitting, method-body splitting) | 🌖 **high** · RSpec scope chunker (one chunk per example, ancestor setup injected)                                                                                                         | untyped 🌖 **high** · YARD 🌕 **maximum** · RBS/Sorbet 🌑 **TBD** — 15-strategy chain + 4 dispatch components + 20-grammar DSL catalogue + YARD type-source + db/schema.rb column accessors |
 | **_Swift_**      | 🌔 **full** · tree-sitter                                                                                         | 🌖 **high** · XCTest + swift-testing recognition (test cases, setUp/tearDown, @Test/@Suite) plus Quick/Nimble DSL scope chunking (per-scenario chunks with ancestor beforeEach spliced in) | 🌖 **high** — 10-strategy chain + superclass dispatch + field and return-type receiver typing + nested-type and module-value receivers; no import narrowing                                 |
 | **_Python_**     | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌖 **high** — 10-strategy chain + C3 MRO + cone/union/callable-param/dict-table dispatch + re-export-aware imports + inferred return types + gated framework vocabularies                   |
-| **_Rust_**       | 🌔 **full** · tree-sitter (named-item extraction, #[cfg(test)] / #[test] scopes)                                  | 🌖 **high** · attribute-based test scope chunking (#[cfg(test)] / #[test])                                                                                                                 | 🌗 **moderate** — 7-strategy; trait dispatch; declared return/struct-field chains (Self, owner generics); same-file declared bare-call result locals                                        |
+| **_Rust_**       | 🌔 **full** · tree-sitter (named-item extraction, #[cfg(test)] / #[test] scopes)                                  | 🌖 **high** · attribute-based test scope chunking (#[cfg(test)] / #[test])                                                                                                                 | 🌗 **moderate** — 10-strategy (rustc call-site driver first); trait dispatch; return/field chains (Self, generics, assoc-fn heads, aliases); call-result locals; crate impls                |
 | **_Go_**         | 🌔 **full** · tree-sitter (func/type split)                                                                       | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 7-pass chain + scope-aware typed locals + struct-field chains + embedding promotion + go.mod module-path imports; no interface dispatch                                   |
 | **_Java_**       | 🌔 **full** · tree-sitter                                                                                         | 🌓 **medium** · generic AST                                                                                                                                                                | 🌗 **moderate** — 6-strategy + java.lang stdlib whitelist + overload disambiguation                                                                                                         |
 | **_Bash_**       | 🌔 **full** · tree-sitter                                                                                         | 🌒 **low** · generic AST (bats/shunit not recognized)                                                                                                                                      | 🌘 **minimal** — function-call extraction only, no dispatch                                                                                                                                 |
 | **_Markdown_**   | 🌔 **full** · MarkdownChunker (ToC + smart chunking)                                                              | 🌑 **N/A** · doc-only                                                                                                                                                                      | 🌑 **none** — no call graph                                                                                                                                                                 |
+| **_YAML_**       | 🌔 **full** · YAML key-path sections                                                                              | 🌑 **N/A** · doc-only                                                                                                                                                                      | 🌑 **none** — no call graph                                                                                                                                                                 |
 | **_sql_**        | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
 | **_jsonc_**      | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
 | **_json_**       | 🌑 **none** · CharacterChunker                                                                                    | 🌑 **N/A**                                                                                                                                                                                 | 🌑 **none**                                                                                                                                                                                 |
@@ -579,16 +632,17 @@ or syntax-blind fallback. Internal revisions only route index rebuilds.
 
 | Language   | Language / toolchain policy | Grammar package version            | Internal revisions (chunking / walker / codegraphSchema) | Evidence and limits                                                                                                                                                                                               |
 | ---------- | --------------------------- | ---------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ruby       | grammar-bounded             | tree-sitter-ruby@0.23.1            | 2 / 10 / 2                                               | Installed grammar and project fixtures bound Ruby syntax; no Ruby/MRI release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                              |
-| typescript | grammar-bounded             | tree-sitter-typescript@0.23.2      | 2 / 15 / 2                                               | Installed TypeScript/TSX grammar and project fixtures bound syntax; TypeScript compiler package version does not certify a language release range · tests/core/domains/language/capability/version-policy.test.ts |
+| ruby       | grammar-bounded             | tree-sitter-ruby@0.23.1            | 3 / 11 / 2                                               | Installed grammar and project fixtures bound Ruby syntax; no Ruby/MRI release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                              |
+| typescript | grammar-bounded             | tree-sitter-typescript@0.23.2      | 3 / 16 / 2                                               | Installed TypeScript/TSX grammar and project fixtures bound syntax; TypeScript compiler package version does not certify a language release range · tests/core/domains/language/capability/version-policy.test.ts |
 | javascript | grammar-bounded             | tree-sitter-javascript@0.25.0      | 3 / 5 / 2                                                | Installed JavaScript/JSX grammar and project fixtures bound syntax; no ECMAScript edition or Node/browser runtime range certified · tests/core/domains/language/capability/version-policy.test.ts                 |
 | python     | grammar-bounded             | tree-sitter-python@0.25.0          | 1 / 12 / 2                                               | Installed grammar and project fixtures bound Python syntax; no Python/CPython release range or runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                      |
 | go         | grammar-bounded             | tree-sitter-go@0.25.0              | 1 / 6 / 2                                                | Installed grammar and project fixtures bound Go syntax; no Go toolchain release range or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts                           |
 | java       | grammar-bounded             | tree-sitter-java@0.23.5            | 1 / 4 / 2                                                | Installed grammar and project fixtures bound Java syntax; no JDK release range, preview-feature support or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts         |
-| rust       | Rust 1.88.0 / edition 2024  | tree-sitter-rust@0.24.0            | 4 / 10 / 2                                               | Syntax fixtures only, not compiler conformance; latest upstream release unverified; macro expansion and nightly syntax not certified · tests/core/domains/language/capability/version-policy.test.ts              |
+| rust       | Rust 1.88.0 / edition 2024  | tree-sitter-rust@0.24.0            | 4 / 11 / 2                                               | Syntax fixtures only, not compiler conformance; latest upstream release unverified; macro expansion and nightly syntax not certified · tests/core/domains/language/capability/version-policy.test.ts              |
 | bash       | grammar-bounded             | tree-sitter-bash@0.25.1            | 2 / 2 / 2                                                | Installed Bash grammar and project fixtures bound shell syntax; no Bash release range or POSIX-shell runtime conformance certified · tests/core/domains/language/capability/version-policy.test.ts                |
 | swift      | grammar-bounded             | tree-sitter-swift@0.7.3-prebuild.1 | 4 / 9 / 2                                                | Installed grammar and project fixtures bound Swift syntax; no Swift toolchain release range or compiler conformance certified · tests/core/domains/language/capability/version-policy.test.ts                     |
 | markdown   | unversioned                 | N/A (no tree-sitter grammar)       | 1 / 1 / 1                                                | remark with GFM/frontmatter dialect plugins, not a compiler release; no complete CommonMark/GFM conformance certification · tests/core/domains/language/capability/version-policy.test.ts                         |
+| yaml       | unversioned                 | N/A (no tree-sitter grammar)       | 1 / 1 / 1                                                | the `yaml` package's YAML 1.2 parser; files that are not one mapping document are cut into line windows · tests/core/domains/language/capability/version-policy.test.ts                                           |
 
 </details>
 <!-- markdownlint-enable MD033 -->
@@ -599,11 +653,13 @@ or syntax-blind fallback. Internal revisions only route index rebuilds.
 Every language above works the same way in every client — the client only
 decides how much of the tooling on top of the MCP server you get.
 
-| Client                                                  | MCP tools                                                | Routing guide (`tea-rags://schema/search-guide`) | Skills (`/tea-rags:*`) and `dinopowers` | Setup wizard                 |
-| ------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------ | --------------------------------------- | ---------------------------- |
-| **Claude Code**                                         | ✅ stdio                                                 | ✅ plus the plugin's routing rules               | ✅ plugins                              | ✅ `/tea-rags-setup:install` |
-| **Other stdio clients** (Cursor, Roo Code, Continue, …) | ✅ `tea-rags server`                                     | ✅ where the client reads MCP resources          | — plugins are Claude Code only          | — manual install             |
-| **HTTP clients**                                        | ✅ `tea-rags server --http` (Streamable HTTP, port 3000) | ✅ where the client reads MCP resources          | —                                       | — manual install             |
+| Client                                          | MCP tools                                                | Routing guide (`tea-rags://guide/*`)      | Skills (`/tea-rags:*`) and `dinopowers` | Setup wizard                 |
+| ----------------------------------------------- | -------------------------------------------------------- | ----------------------------------------- | --------------------------------------- | ---------------------------- |
+| **Claude Code**                                 | ✅ stdio                                                 | ✅ plus the plugin's routing rules        | ✅ plugins                              | ✅ `/tea-rags-setup:install` |
+| **Codex CLI**                                   | ✅ stdio                                                 | ✅ plus the plugin's core skill and hooks | ✅ plugins (`$name` skills)             | — manual install             |
+| **Cursor**                                      | ✅ stdio                                                 | ✅ plus the plugin's sessionStart digest  | ✅ plugins (`/name` skills)             | — manual install             |
+| **Other stdio clients** (Roo Code, Continue, …) | ✅ `tea-rags server`                                     | ✅ where the client reads MCP resources   | —                                       | — manual install             |
+| **HTTP clients**                                | ✅ `tea-rags server --http` (Streamable HTTP, port 3000) | ✅ where the client reads MCP resources   | —                                       | — manual install             |
 
 ### Embedding providers
 
@@ -733,6 +789,10 @@ Engineering notes behind the releases, each with the corpus it was measured on �
 - [Why this blog exists — 2026-08-19](https://artk0de.github.io/TeaRAGs-MCP/blog/why-this-blog-exists)
 
 <!-- BLOG:END -->
+
+## 📇 Listed On
+
+[![Tea Rags MCP server](https://mcprush.com/badge/tea-rags-mcp/card.svg)](https://mcprush.com/to/tea-rags-mcp?ref=badge)
 
 ## ⭐ Star History
 

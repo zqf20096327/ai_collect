@@ -450,6 +450,29 @@ If CircuitPilot helps your project, please credit it, for example:
 
 > Designed with [CircuitPilot](https://pcbgo.site) by Abdelhay Ali
 
+## Paper and how to cite
+
+The technical paper describes the architecture, the router, CNC milling, the schematic organizer and a benchmark on 15 real boards:
+**[CircuitPilot: An Agent-Operable Toolchain from Natural Language to Manufacturable PCBs](docs/paper/CircuitPilot-Paper-v2.pdf)**
+
+If you use CircuitPilot or the paper in your work, please cite:
+
+> A. Ali, "CircuitPilot: An agent-operable toolchain from natural language to manufacturable PCBs," Technical report, Oct. 2026. [Online]. Available: https://github.com/Abdelhayali/CircuitPilot
+
+```bibtex
+@techreport{ali2026circuitpilot,
+  author      = {Abdelhay Ali},
+  title       = {{CircuitPilot}: An Agent-Operable Toolchain from Natural Language to Manufacturable {PCBs}},
+  institution = {Independent},
+  year        = {2026},
+  month       = oct,
+  url         = {https://github.com/Abdelhayali/CircuitPilot},
+  note        = {Software: https://pcbgo.site}
+}
+```
+
+GitHub's **Cite this repository** button (right side of the repository page) gives the same entry from [`CITATION.cff`](CITATION.cff).
+
 ## Data sources & licenses
 
 CircuitPilot's design, code and UI are original work. It uses third-party **data and libraries**, credited here as their terms require:

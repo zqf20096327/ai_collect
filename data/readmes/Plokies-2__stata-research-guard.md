@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/badge/version-0.4.0-245B78?style=flat-square" alt="Version 0.4.0">
   <img src="https://img.shields.io/badge/Codex-plugin-222222?style=flat-square" alt="Codex plugin">
   <img src="https://img.shields.io/badge/developed_with-Stata_18-1A6B70?style=flat-square" alt="Developed with Stata 18">
+  <a href="https://hub.xerj.org/contributors/Plokies-2"><img src="https://hub.xerj.org/contributors/Plokies-2/badge.svg" alt="XERJ Corpus Hub contributor"></a>
 </p>
 
 <p align="center">
@@ -16,6 +17,8 @@
 </p>
 
 **Stata code researchers can read, revise, and carry forward.**
+
+Current build: `0.4.0+codex.2026110102`. See the [changelog](plugins/stata-research-guard/CHANGELOG.md).
 
 Stata Research Guard is a Codex plugin that helps write analysis code researchers can follow from data and sample construction through regression specifications, saved estimates, tables, and figures. It supplies a command index, official and maintainer help, real paper code, and independent peer review. Research choices remain with the user and the model.
 
@@ -130,7 +133,7 @@ Keep the current sample, estimator, fixed effects, and standard-error settings.
 Run it and inspect the sample size and regression table.
 ```
 
-**Tools needed:** Codex and Node.js. Running the analysis and looking up installed help use your own Stata installation. The plugin was developed with Stata 18. The model selects an available execution route, such as an existing runner, Stata batch mode, or Python integration. mcpStata is an optional local execution extension, not a dependency of the plugin or skills.
+**Tools needed:** Codex and Node.js. Running the analysis and looking up installed help use your own Stata installation. The plugin was developed with Stata 18. The model selects an available execution route, such as an existing runner, Stata batch mode, or Python integration.
 
 The installation and MCP launcher have been checked on Windows. macOS compatibility still needs implementation and testing.
 
@@ -188,7 +191,7 @@ then inspect what was actually saved.
 
 Two independent **Codex chats using GPT-6.1 Sol / medium** received the same natural-language task, with no inherited conversation, existing example, or access to each other's code. The baseline was explicitly told to ignore personal/project `AGENTS.md` coding guidance, skills, and memories, and not to use Guard. The other chat used the current Guard guidance, help, and paper examples. The shared task did not prescribe an exporter or loop structure.
 
-The task covered loading `nlsw88`, common-sample construction, log wage, **three outcomes × two samples × three robust OLS specifications**, and data, codebook, table, figure, and estimate export. Both complete scripts ran in **native Stata batch mode without mcpStata**.
+The task covered loading `nlsw88`, common-sample construction, log wage, **three outcomes × two samples × three robust OLS specifications**, and data, codebook, table, figure, and estimate export. Both complete scripts ran in **native Stata batch mode**.
 
 | Measure | Without Guard | With Guard |
 | --- | ---: | ---: |
@@ -222,15 +225,6 @@ cd "`repo'"
 ```
 
 Outputs go into separate folders. Execution was checked with Stata 18 on 2026-10-22.
-
-</details>
-
-<details>
-<summary>What was checked without mcpStata</summary>
-
-In a separate Node process without an mcpStata client or configuration, we checked plugin initialization, tool listing, and bundled-help lookup. Live-help lookup also worked when `STATA_PATH` pointed directly to Stata. The plugin's MCP configuration, launcher, and server code do not reference `MCP_STATA_*` environment variables. The model selects an execution route for the task.
-
-Live help handles Windows TEMP paths containing braces or spaces by passing the do-file relative to its working directory; users do not need to change TEMP. Lookup and rendering were checked with actual Stata in both cases. macOS compatibility has not yet been checked.
 
 </details>
 
@@ -273,7 +267,7 @@ For research tables, choose a documented table/export interface that fits the re
 
 Read figures in their research context. Keep concise labels that distinguish variables, specifications, axes, statistics, and groups; put definitions and detailed methods in the paper or README. Use short notes where they prevent a specific misreading, and avoid duplicate titles and oversized text.
 
-Developed with Stata 18. `CODEX_MCP_NODE_PATH` can specify the Node executable and `STATA_PATH` the Stata executable for live help. Analysis can use an existing authorized runner, Stata batch mode, or official Python integration. The plugin does not bundle an execution engine; users without mcpStata can follow the same workflow. An existing mcpStata connection can be used optionally. If no execution route is available, the model can still write and review code and should state what it could not run.
+Developed with Stata 18. `CODEX_MCP_NODE_PATH` can specify the Node executable and `STATA_PATH` the Stata executable for live help. Analysis can use an existing authorized runner, Stata batch mode, or official Python integration. If no execution route is available, the model can still write and review code and should state what it could not run.
 
 After updating the plugin, refresh Codex and call the tool in a new task. A successful CLI install or file readback alone does not show that the running app loaded the new MCP. If connection still fails in a new task, inspect app startup logs and retry after a restart. This connection check is distinct from writing and running research code.
 

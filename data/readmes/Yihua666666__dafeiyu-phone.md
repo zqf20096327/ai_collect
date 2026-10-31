@@ -201,6 +201,27 @@ ntfy.sh 在部分网络下不通，所以代码换成了 `ntfy.envs.net`。
 
 消息不是端到端加密，不要发密码、验证码、支付信息。
 
+### 省 token / 微信 QQ
+
+聊天和任务走两条路：
+
+- **闲聊**：一次 `deepseek-flash`，关闭 thinking，只带最近 4 条，`max_tokens=100`
+- **常见消息**：在/你好/早安/晚安/哈哈/谢谢/收到，直接罐头回复，0 token
+- **任务**：`/do 打开设置` 或“帮我打开…”才走完整 Agent
+
+微信/QQ 不需要塞进手机 agent。做一个 channel bridge，把消息发到同一个 ntfy topic，并打标签：
+
+```text
+Tags: wechat,group     或     Tags: qq,private
+```
+
+- 群消息没 @ 大肥鱼，agent 直接跳过
+- 私聊/@ 才进入快速回复
+- bridge 轮询 `Tags: whale` 的回复，发回微信/QQ
+- 个人微信/QQ 的 UI 自动化有封号风险；能用官方机器人/企业微信就走官方通道
+
+详见 [省 token 与 IM bridge](docs/FAST_CHAT.md)。
+
 ## 长期记忆
 
 > 这不是 Mem0 / Letta / Zep 之类的外部记忆库，也没有额外依赖。它是项目内置的**本地文件记忆系统**，实现就在 [`autox/agent.js`](autox/agent.js)：`appendMemory`、`recallMemory`、`appendFact`、`dailyReview`。

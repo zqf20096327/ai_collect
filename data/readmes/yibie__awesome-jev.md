@@ -61,20 +61,20 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 ## Current coverage
 
-- [Classification & Routing](categories/classification-routing.md) — 77 entries
+- [Classification & Routing](categories/classification-routing.md) — 76 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 62 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
 - [Agent Decisions](categories/agent-decisions.md) — 66 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 11 entries
-- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 49 entries
-- [Calibration & Research](categories/calibration-research.md) — 55 entries
+- [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 50 entries
+- [Calibration & Research](categories/calibration-research.md) — 56 entries
 - [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 124 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 10 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 6 entries
-- [Content Moderation](categories/content-moderation.md) — 14 entries
+- [Content Moderation](categories/content-moderation.md) — 13 entries
 - [Related Practices / Discussions](categories/related-practices-discussions.md) — 108 entries
 
 ### Open categories still being seeded
@@ -195,7 +195,6 @@ Source file: [`categories/classification-routing.md`](categories/classification-
 - [TypeSafe Jev x Salesforce](https://github.com/divingsbysangam/typesafe-jev-salesforce) ![stars](https://img.shields.io/github/stars/divingsbysangam/typesafe-jev-salesforce?style=flat-square&label=%E2%98%85) - Case triage: a working Salesforce DX project that puts a typed decision model inside Apex instead of a generative LLM, so every new Service Cloud case is classified, scored and routed by answers that are numbers rather than prose.
 - [vd-jev](https://github.com/ondata/vd-jev) ![stars](https://img.shields.io/github/stars/ondata/vd-jev?style=flat-square&label=%E2%98%85) - Data inspection: a VisiData plugin that asks one closed question about every row of a chosen text column, turning free text in a spreadsheet into a column of typed answers without leaving the viewer.
 - [X Reply Judge](https://github.com/liaocaoxuezhe/x-reply-judge-jev) ![stars](https://img.shields.io/github/stars/liaocaoxuezhe/x-reply-judge-jev?style=flat-square&label=%E2%98%85) - AI-text labelling: a Chrome extension that puts one badge on every X post showing the probability Jev assigns to the text being AI-written, with stated colour cutoffs at 70 and 31 and no explanation list at all.
-- [Trio-Spark Ticket Rush](https://github.com/machinefi/trio-spark/tree/main/demos/ticket-rush) ![stars](https://img.shields.io/github/stars/machinefi/trio-spark?style=flat-square&label=%E2%98%85) - Support triage: sends each of 1,000 support tickets to the System One-compatible Trio-Spark API as one `choice` over eight team queues and routes any ticket whose top probability is below 0.6 to human review instead.
 - [SpotAsk](https://github.com/shiquda/SpotAsk) ![stars](https://img.shields.io/github/stars/shiquda/SpotAsk?style=flat-square&label=%E2%98%85) - Query routing: a native macOS menu bar assistant that asks Jev a typed `Choice` over your configured channels to decide whether a question is answered in the app or sent to a web AI, desktop app, or CLI agent, with confirmation by default and optional auto-routing above a confidence threshold.
 
 ### Adaptive & Realtime UI
@@ -344,4 +343,5 @@ Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 - [jev-agent-browser](https://github.com/forvela/jev-agent-browser) ![stars](https://img.shields.io/github/stars/forvela/jev-agent-browser?style=flat-square&label=%E2%98%85) - Browser agents: a parent agent delegates bounded tasks to a Jev loop that selects typed browser actions, validates them through agent-browser, and escalates ambiguity or stuck states back to the parent.
 - [pi-typesafe-jev](https://github.com/legacybridge-tech/pi-typesafe-jev) ![agent: Pi](https://img.shields.io/badge/agent-Pi-8250DF?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/legacybridge-tech/pi-typesafe-jev?style=flat-square&label=%E2%98%85) - Coding agents: exposes System One judgments as five Pi tools so a model makes narrow semantic judgments while code and users keep control of thresholds, weights, and actions.
 - [jev-judgment](https://github.com/HyunjunJeon/jev-judgment) ![stars](https://img.shields.io/github/stars/HyunjunJeon/jev-judgment?style=flat-square&label=%E2%98%85) - Coding agents: agent skill that sends closed coding-agent judgments to Jev so verdicts stay typed, cheap, and comparable across runs.
-- [limpet](https://github.com/noplan-inc/limpet) ![stars](https://img.shields.io/github/stars/noplan-inc/limpet?style=flat-square&label=%E2%98%85) - Coding agents: Stop hook that keeps an agent from 
+- [limpet](https://github.com/noplan-inc/limpet) ![stars](https://img.shields.io/github/stars/noplan-inc/limpet?style=flat-square&label=%E2%98%85) - Coding agents: Stop hook that keeps an agent from finishing too early by judging plain-language completion rules with Jev.
+- [dsh-auto-mode](https://git.allen-software.com/allenh1/dsh-auto-mode) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) - Coding agents: DeepSeek Harness permission preset whose end-prompt step has Jev answer the open questions an agent leaves in its final message, steering them back

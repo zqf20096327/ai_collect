@@ -1069,6 +1069,24 @@ Offline HITL `partition_ratio` bands vs LangGraph/CrewAI/AutoGen message-bus par
 Offline HITL `thrash_ratio` bands vs LangGraph/CrewAI/AutoGen shared-memory quota thrash monitors. Distinct from `SharedKvWriteAmplificationAdvisor` / `BlackboardReadStalenessAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2.
 
 
+### CriticLatencySkewBandAdvisor
+
+![CriticLatencySkewBandAdvisor](assets/demo/critic-latency-skew.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen critic latency-skew monitors. Distinct from `CriticLatencySloBandGuard` / `CriticTimeoutBandGuard`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CRITIC_LATENCY_SKEW_BAND_ADVISOR_GUIDE.md`.
+
+### SubgraphDeadlockResidualBandAdvisor
+
+![SubgraphDeadlockResidualBandAdvisor](assets/demo/subgraph-deadlock-residual.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen subgraph deadlock-residual monitors. Distinct from `SubgraphCancelLeakAdvisor` / `AgentHandoffLoopBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SUBGRAPH_DEADLOCK_RESIDUAL_BAND_ADVISOR_GUIDE.md`.
+
+### PlannerContextOverflowBandAdvisor
+
+![PlannerContextOverflowBandAdvisor](assets/demo/planner-context-overflow.gif)
+
+Gap vs LangGraph/CrewAI/AutoGen planner context-overflow monitors. Distinct from `PlannerStepBudgetBandAdvisor` / `PlannerHorizonBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PLANNER_CONTEXT_OVERFLOW_BAND_ADVISOR_GUIDE.md`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

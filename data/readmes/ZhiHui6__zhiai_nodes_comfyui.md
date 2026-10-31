@@ -441,19 +441,15 @@
 </td>
 </tr>
 <tr>
-<td><b>图像预览/对比</b><br><code>PreviewOrCompareImages</code></td>
-<td>多功能图像预览和对比节点，支持单张图像预览或两张图像的并排对比显示。image_1为必需输入，image_2为可选输入，当提供两张图像时自动启用对比模式。
+<td><b>图像预览/比对</b><br><code>ImagePreviewCompare</code></td>
+<td>
 
-<b>特点</b>：
-- <b>双模式智能切换</b>：根据输入单图或双图自动切换预览或对比模式
-- <b>交互式对比</b>：鼠标悬停时显示滑动分割线进行直观对比
+在节点内并排对比 A/B 两路图像，拖动中线即可显隐两侧、对比细节。
 
-<br>
-<div align="left">
-<a href="images/图像对比.jpg" target="_blank">
-<img src="images/图像对比.jpg" alt="图像预览对比" width="45%"/>
-</a>
-</div>
+- <b>两种分割</b>：默认左右（A 左、B 右），设置中可切换为上下（A 上、B 下）；A/B 把手随方向变化，可隐藏
+- <b>信息与翻页</b>：两侧显示原始分辨率；多图时底部翻页；只有一张图时，上一张结果自动放到另一侧对比
+- <b>输出与执行</b>：`auto_output` 只控制 A 分支，B 始终直通；被下游引用时按需执行，懒执行分支未命中时不会刷新预览
+
 </td>
 </tr>
 <tr>
@@ -926,6 +922,52 @@
 </table>
 ---
 
+## 🖥️ 顶栏硬件监测
+
+除节点之外，节点包还内置一个顶栏硬件监测扩展：安装后自动挂载在 ComfyUI 顶栏（设置菜单位置的左侧），无需拖入任何节点，也不占用工作流。
+
+<table>
+<tr>
+<th width="22%">监测项</th>
+<th width="28%">显示内容</th>
+<th width="50%">说明</th>
+</tr>
+<tr>
+<td><b>CPU</b></td>
+<td>占用率 + 进度条</td>
+<td>悬停显示处理器型号</td>
+</tr>
+<tr>
+<td><b>RAM</b></td>
+<td>已用/总容量（默认）或百分比</td>
+<td>悬停显示内存规格（品牌、代际频率、通道）</td>
+</tr>
+<tr>
+<td><b>GPU</b></td>
+<td>占用率 + 进度条</td>
+<td>悬停显示显卡型号</td>
+</tr>
+<tr>
+<td><b>VRAM</b></td>
+<td>已用/总容量（默认）或百分比</td>
+<td>悬停显示显卡型号</td>
+</tr>
+<tr>
+<td><b>GPU Temp</b></td>
+<td>温度（°C）+ 进度条</td>
+<td>无 NVIDIA 设备时 GPU 三项自动隐藏</td>
+</tr>
+</table>
+
+<b>使用说明</b>：
+- <b>开关设置</b>：ComfyUI 设置 → <b>ZhiAI</b> → <b>Topbar Hardware Monitor</b>，可分别控制顶栏显示开关与「RAM/VRAM 以百分比显示」，修改后立即生效。
+- <b>刷新频率</b>：每秒刷新一次；窗口最小化或页面隐藏时暂停轮询。
+- <b>空闲零开销</b>：后端仅在存在请求时采样，连续 60 秒无请求即停止采样线程。
+- <b>GPU 数据来源</b>：通过 NVML（`nvidia-ml-py` + NVIDIA 驱动）读取；未检测到 NVML 时，GPU 三项自动隐藏，只保留 CPU 与 RAM。
+- <b>依赖</b>：CPU 与内存数据由 `psutil` 采集，已包含在 `requirements.txt` 中。
+
+---
+
 ## 🚀 安装方式
 
 ### 📦 方式一：通过 ComfyUI Manager 安装（推荐）
@@ -977,7 +1019,8 @@ pip install -r requirements.txt
 - **opencv-python**：颜色移除、图像旋转工具、视频帧提取器、LM Studio 节点
 - **scikit-image**：色彩匹配
 - **openai**：图像理解在线版
-- **nvidia-ml-py**：预留显存设置器（需要 NVIDIA 驱动）
+- **nvidia-ml-py**：预留显存设置器、顶栏硬件监测的 GPU 数据（需要 NVIDIA 驱动）
+- **psutil**：顶栏硬件监测的 CPU 与内存数据
 - **cryptography**：标签选择器角色提取器内置数据的解密读取
 
 ## 📄 许可证

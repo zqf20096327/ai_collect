@@ -23,6 +23,15 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-31] [paper608]
+- Toxicity Assessment in Preclinical Histopathology via Class-Aware Mahalanobis Distance for Known and Novel Anomalies
+ [[pdf]](https://www.nature.com/articles/s41598-026-56510-9) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Toxicity%20Assessment%20in%20Preclinical%20Histopathology%20via%20Class-Aware%20Mahalanobis%20Distance%20for%20Known%20and%20Novel%20Anomalies.pdf)
+- `Scientific Reports, 2026`
+- [Computational Pathology]
+```
+Fairly interesting paper. The method makes sense overall I think, and pretty interesting to see it being applied to actual preclinical data. I didn't realize they we're doing ~pixel-wise~ anomaly detection, which is kind of neat of course, but perhaps also a bit unnecessary? Could it not be sufficient with patch-level anomaly scores, while also being easier to train such a model?
+```
+
 ##### [26-10-30] [paper607]
 - Robust and Interpretable Prediction of Gene Markers and Cell Types From Spatial Transcriptomics Data
  [[pdf]](https://www.nature.com/articles/s41467-026-68487-0) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Robust%20and%20Interpretable%20Prediction%20of%20Gene%20Markers%20and%20Cell%20Types%20From%20Spatial%20Transcriptomics%20Data.pdf)
@@ -1075,17 +1084,4 @@ Well written and quite interesting paper. Nothing super special, but solid, I qu
 - `ICML Workshops 2025`
 - [ML for Medicine/Healthcare], [EHRs]
 ```
-Fairly interesting paper, just 4 pages long. Impressive dataset with 1.29 million unique patients. The overall pretraining approach makes sense, and neat that they can make predictions entirely zero-shot.
-```
-
-##### [25-07-29] [paper490]
-- Towards Physician-Centered Oversight of Conversational Diagnostic AI
- [[pdf]](https://arxiv.org/abs/2507.15743) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Towards%20Physician-Centered%20Oversight%20of%20Conversational%20Diagnostic%20AI.pdf)
-- `arxiv, 2025-07`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Well written and interesting paper. Quite long, I read Section 5 - 7 in less detail. Everything in Section 1 - 4 is clearly explained, very easy to follow and understand everything. Just reading Section 1 and looking at Figure 1 gives a good understanding of the core method, evaluation and results. I quite enjoyed reading this.
-```
-
-##### [25-07-27] [paper489]
-- MedAgentBench: A Rea
+Fairly interesting paper, just 4 pages long. Impressive dataset with 1.29 million unique pat

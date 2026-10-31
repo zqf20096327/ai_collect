@@ -13,17 +13,19 @@
     + [2.4. Tested platforms](#24-tested-platforms)
   * [3. What's in this repository](#3-what-s-in-this-repository)
     + [3.1. Camera Test](#31-camera-test)
-    + [3.2. Motion Detection](#32-motion-detection)
-    + [3.3. Color-based Object Detection and Tracking](#33-color-based-object-detection-and-tracking)
-    + [3.4. Shape-based Object Detection and Tracking](#34-shape-based-object-detection-and-tracking)
-    + [3.5. Feature-based Object Detection and Tracking (with ORB)](#35-feature-based-object-detection-and-tracking--with-orb-)
-    + [3.6. Face Detection and Tracking](#36-face-detection-and-tracking)
-    + [3.7. Object Detection using YOLO](#37-object-detection-using-yolo)
-    + [3.8. Object Detection using TensorFlow Lite](#38-object-detection-using-neural-network-tensorflow-lite)
+    + [3.2. Camera Streaming over HTTP](#32-camera-streaming-over-http)
+    + [3.3. Motion Detection](#33-motion-detection)
+    + [3.4. Color-based Object Detection and Tracking](#34-color-based-object-detection-and-tracking)
+    + [3.5. Shape-based Object Detection and Tracking](#35-shape-based-object-detection-and-tracking)
+    + [3.6. Feature-based Object Detection and Tracking (with ORB)](#36-feature-based-object-detection-and-tracking--with-orb-)
+    + [3.7. Face Detection and Tracking](#37-face-detection-and-tracking)
+    + [3.8. Object Detection using YOLO](#38-object-detection-using-yolo)
+    + [3.9. Object Detection using TensorFlow Lite](#39-object-detection-using-neural-network-tensorflow-lite)
   * [4. How to Run](#4-how-to-run)
     + [4.1. Install the environment](#41-install-the-environment)
     + [4.2. Run the scripts](#42-run-the-scripts)
     + [4.3. Change camera resolution](#43-change-camera-resolution)
+    + [4.4. Benchmark the frame rate](#44-benchmark-the-frame-rate)
   * [5. Q&A](#5-q-a)
   * [License](#license)
 
@@ -76,33 +78,53 @@ This project is dependent on the following packages:
   - If the camera fails to open (e.g. `Failed to create CaptureSession`), restart the camera daemon: `sudo systemctl restart nvargus-daemon`.
 
 ### 2.4. Tested platforms
-All eight examples have been tested on the following setups:
+All the examples have been tested on the following setups:
 
 | Board | OS | Python | Camera |
 |---|---|---|---|
 | Raspberry Pi Compute Module 5 (RPi 5) | Ubuntu 24.04 LTS | 3.12 | Sony PlayStation Eye (USB) |
 | Raspberry Pi Compute Module 4 (RPi 4) | Raspberry Pi OS (Debian 13 trixie) | 3.13 | Camera Module v2.1 (IMX219) on `CAM1` |
 
-Measured frame rates (OpenCV 5.0):
+Measured with the benchmark script (`python3 benchmark/benchmark_fps.py --headless`, 20 s per example after a 5 s warm-up, OpenCV 5.0). See [4.4. Benchmark the frame rate](#44-benchmark-the-frame-rate) to measure your own board.
+
+**Processing FPS** shows how fast each board runs the example's processing, without the camera's frame rate limit (time per frame in brackets):
 
 | Example | RPi 5 (CM5) | RPi 4 (CM4) |
 |---|---|---|
-| Camera Test | 30 FPS | 29 FPS |
-| Motion Detection | 30 FPS | 20 FPS |
-| Color-based Tracking | 29 FPS | 27 FPS |
-| Shape-based Tracking | 28 FPS | 23 FPS |
-| Feature-based Tracking (ORB) | 30 FPS | 20 FPS |
-| Face Detection | 25 FPS | 20 FPS |
-| TensorFlow Lite (EfficientDet-Lite0) | 30 FPS | 11 FPS |
-| YOLO11n (Ultralytics, 640x480) | 2.2 FPS | 0.9 FPS |
+| Motion Detection | 2312 FPS (0.4 ms) | 682 FPS (1.5 ms) |
+| Color-based Tracking | 1569 FPS (0.6 ms) | 443 FPS (2.3 ms) |
+| Shape-based Tracking | 514 FPS (1.9 ms) | 251 FPS (4.0 ms) |
+| Feature-based Tracking (ORB) | 55.3 FPS (18.1 ms) | 24.7 FPS (40.5 ms) |
+| Face Detection | 159 FPS (6.3 ms) | 79.0 FPS (12.7 ms) |
+| TensorFlow Lite (EfficientDet-Lite0) | 35.5 FPS (28.2 ms) | 12.2 FPS (82.0 ms) |
+| YOLO11n (Ultralytics, 640x480) | 2.1 FPS (466 ms) | 1.3 FPS (760 ms) |
 
-The PlayStation Eye on the RPi 5 is limited to 30 FPS, so results at 30 FPS are capped by the camera rather than by the CPU.
+**Camera FPS** is the frame rate you see when running the examples on the live camera:
+
+| Example | RPi 5 (CM5) | RPi 4 (CM4) |
+|---|---|---|
+| Motion Detection | 30.0 FPS | 33.2 FPS |
+| Color-based Tracking | 29.1 FPS | 27.5 FPS |
+| Shape-based Tracking | 28.0 FPS | 26.4 FPS |
+| Feature-based Tracking (ORB) | 30.0 FPS | 22.6 FPS |
+| Face Detection | 26.6 FPS | 22.8 FPS |
+| TensorFlow Lite (EfficientDet-Lite0) | 30.0 FPS | 11.2 FPS |
+| YOLO11n (Ultralytics, 640x480) | 2.1 FPS | 0.8 FPS |
+
+Camera FPS is limited by different things:
+
+- **The camera**: the PlayStation Eye runs at up to 30 FPS, and the Camera Module v2 at about 33 FPS at 320 x 240. Motion detection reaches the camera's frame rate on both boards.
+- **The `cv2.waitKey()` delay**: color and shape tracking wait 33 ms per frame, which keeps them below 30 FPS. Face detection waits 30 ms per frame, which, with 12.7 ms of detection on the RPi 4, gives about 23 FPS.
+- **The CPU**: ORB and TensorFlow Lite on the RPi 4, and YOLO on both boards. For these, camera FPS is close to processing FPS.
+
+Camera FPS also depends on the lighting. In a dim room (about 16 lux), the Camera Module v2 lengthened its exposure to 66 ms per frame and ran at only 15 FPS, which capped all the fast examples at 15 FPS. The RPi 4 results above were measured with the room light on (about 240 lux).
 
 
 ## 3. What's in this repository
 Currently, the following applications are implemented:
 
 - `src/camera-test`: Test if the camera is working
+- `src/camera-stream`: Stream the camera to a web browser
 - `src/motion-detection`: Detect any motion in the frame
 - `src/object-tracking-color`: Object detection & tracking based on color
 - `src/object-tracking-shape`: Object detection & tracking based on shape
@@ -117,19 +139,36 @@ Test the RPi and OpenCV environment. You are expected to see a pop-up window tha
 
 ![alt text](./images/cv_camera_test.png)
 
-### 3.2. Motion Detection
+### 3.2. Camera Streaming over HTTP
+Stream the camera as MJPEG over HTTP, so you can watch it from any browser on the same network, without a display attached to the Pi. With the Raspberry Pi camera, frames are JPEG-encoded by the Pi's hardware encoder through `Picamera2`, so CPU usage stays low. With a USB camera, frames are read and JPEG-encoded with OpenCV.
+
+```
+python3 src/camera-stream/cv_camera_stream.py
+```
+
+Then open `http://<raspberry-pi-ip>:8000/` in a browser (the raw stream is at `/stream.mjpg`, which can also be opened in VLC). The script runs in the foreground by default. To keep it running in the background after you log out (like `nohup`), add `--nohup`:
+
+```
+python3 src/camera-stream/cv_camera_stream.py --nohup
+```
+
+It prints the process ID to stop it with (`kill <PID>`), and writes its output to `camera_stream.log` in the current directory. The resolution and port are set by `IMAGE_WIDTH`, `IMAGE_HEIGHT` and `PORT` at the top of the script. If a USB camera does not support the requested resolution, it uses the closest one it has, and the script prints the resolution it actually streams at. Tested at about 30 FPS with a Camera Module v2 (IMX219) on a Compute Module 4 at 1280 x 720, and with a PlayStation Eye USB camera on a Compute Module 5 at 640 x 480.
+
+Like the other examples, the script uses the Raspberry Pi camera when `Picamera2` is installed and a camera is connected, and the USB camera otherwise. The Raspberry Pi camera does not need OpenCV. In the foreground, press `Ctrl+C` to stop it. The stream has no authentication, so anyone on your network can view it. Only one program can use the camera at a time, so stop the stream before running the other examples.
+
+### 3.3. Motion Detection
 Detect object movements in the camera frame and print a warning message when motion is sustained.
 
 Pipeline: the current and previous frames are converted to grayscale, Gaussian-blurred to suppress sensor noise, then compared with a per-pixel `cv2.absdiff`. The resulting diff is thresholded, dilated, and passed through `cv2.findContours`; only connected regions with area ≥ `MIN_MOTION_AREA` count as motion, and a debounce (`MOTION_CONSECUTIVE_FRAMES`) rejects one-frame transients. All thresholds are constants at the top of the script, so you can trade sensitivity for false-positive rate without touching the loop.
 
 ![alt text](./images/cv_motion_detection.png)
 
-### 3.3. Color-based Object Detection and Tracking
+### 3.4. Color-based Object Detection and Tracking
 Track an object based on its color in HSV and print its center position. You can choose your own color by clicking on the object of interest. Click multiple times on different points so a full color space is covered. You can hard code the parameters so you don't need to pick them again for the next run. The following demo shows how I track a Nintendo game controller in real-time:
 
 ![alt text](./images/cv_object_tracking_color.png)
 
-### 3.4. Shape-based Object Detection and Tracking
+### 3.5. Shape-based Object Detection and Tracking
 Detect and track geometric shapes in the frame:
 
 - **Circles** via `cv2.HoughCircles()`
@@ -139,21 +178,21 @@ Contours below `MIN_CONTOUR_AREA` pixels are filtered out to reduce noise; the e
 
 ![alt text](./images/cv_object_tracking_shape.png)
 
-### 3.5. Feature-based Object Detection and Tracking (with ORB)
+### 3.6. Feature-based Object Detection and Tracking (with ORB)
 Detect and track an object using its feature. The algorithm I selected here is ORB (Oriented FAST and Rotated BRIEF) for its fast calculation speed to enable real-time detection. To use the example, please prepare an Arduino UNO board in hand (or replace the `simple.png`).
 
 ![alt text](./images/cv_orb.png)
 
-### 3.6. Face Detection and Tracking
+### 3.7. Face Detection and Tracking
 Detecting face using Harr Cascade detector.
 
 ![cv_face-detection](images/cv_face-detection.png)
 
-### 3.7. Object Detection using YOLO
+### 3.8. Object Detection using YOLO
 Use YOLO (You Only Look Once) for object detection.  
 Note this code is based on Ultralytics YOLO. The instruction can be found at their website: [Quick Start Guide: Raspberry Pi with Ultralytics YOLO11](https://docs.ultralytics.com/guides/raspberry-pi/). Double check if you need to use it in a commercialised project! 
 
-### 3.8. Object Detection using Neural Network (TensorFlow Lite)
+### 3.9. Object Detection using Neural Network (TensorFlow Lite)
 Use TensorFlow Lite to recognise objects.
 
 To use it, download the model and labels into the module directory:
@@ -194,7 +233,7 @@ Activate the environment in your shell before running any of the scripts:
 source venv/bin/activate
 ```
 
-The TensorFlow Lite example (§3.8) has an extra optional dependency — install it into the same venv only if you plan to use it:
+The TensorFlow Lite example (§3.9) has an extra optional dependency — install it into the same venv only if you plan to use it:
 
 ```
 pip install ai-edge-litert
@@ -218,6 +257,30 @@ Changing the resolution will significantly impact the FPS. By default it is set 
 - 1280 x 720 (720p)
 - 1920 x 1080 (1080p: make sure your camera supports this high resolution.)
 
+### 4.4. Benchmark the frame rate
+`benchmark/benchmark_fps.py` runs each example for a fixed time and reports its average frame rate as a Markdown table. It counts the frames each example prints, skips a warm-up period (model loading, camera start-up), and stops each example before starting the next one.
+
+```
+python3 benchmark/benchmark_fps.py
+```
+
+Each example is measured in two ways:
+
+- **Camera FPS**: the example runs as normal on the live camera. This is the frame rate you see in practice, but it can never exceed the camera's frame rate (often 30 FPS), and several examples also wait 30 ms per frame in `cv2.waitKey()`.
+- **Processing FPS**: a short clip is recorded from the camera first, then fed to each example as fast as it can take frames, with no windows and no `waitKey()` delay. This shows how much processing headroom the board has, and the time per frame shows the cost of each algorithm. The examples' own code is not changed: the benchmark replaces the camera with the clip when it starts them.
+
+See [2.4. Tested platforms](#24-tested-platforms) for results on the RPi 5 and RPi 4. Processing FPS does not include drawing the windows, which also takes time when a display is attached. Camera FPS also depends on the lighting, as many cameras lower their frame rate in low light.
+
+Options:
+
+- `--mode camera` / `--mode processing`: measure only one of the two (default: both).
+- `--video clip.mp4`: use the first frames of a video file for processing FPS instead of recording from the camera, so no camera is needed with `--mode processing`.
+- `--headless`: do not open any windows for camera FPS, so it can be run over SSH without a display. Frame timing is kept the same as with a display. (Processing FPS never opens windows.)
+- `--only face yolo`: run only some of the examples (`motion-detection`, `color`, `shape`, `orb`, `face`, `tflite`, `yolo`).
+- `--duration 20` / `--warmup 5`: seconds measured per example, and seconds skipped after its first frame.
+- `--verbose`: show the output of each example.
+
+The TensorFlow Lite example is skipped if its model and labels have not been downloaded (see [3.9](#39-object-detection-using-neural-network-tensorflow-lite)). The camera test (§3.1) and camera streaming (§3.2) examples are not included, as they do no processing.
 
 ## 5. Q&A
 **Q: Does this support Nvidia Jetson?**  

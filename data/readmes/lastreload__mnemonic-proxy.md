@@ -12,35 +12,57 @@
   <a href="https://lastreload.github.io/mnemonic-proxy/"><img alt="Project page" src="https://img.shields.io/badge/page-lastreload.github.io-ff2bd6.svg"></a>
 </p>
 
+**Keep a coding agent's history without keeping it all in the model's context.** Mnemonic Proxy sits between
+an agent and an OpenAI-compatible backend: the agent sends its history as usual; the proxy manages what the model reads.
+
+- **Archive verbatim.** Older tool outputs leave the prompt, not the archive: their original text stays available through recall.
+- **Recall on demand.** A tool-calling model can search and retrieve archived text through `recall`. Exact storage does not
+  guarantee that the model finds the right evidence or answers correctly.
+- **Resume without a full re-read.** Save and restore engine state on supported backends; other backends use
+  masking and recall without saved state.
+
+**Try it in one minute — no model or GPU needed** (Python ≥ 3.10, [uv](https://docs.astral.sh/uv/)):
+
+<!-- readme-test: ci -->
+```sh
+uvx mnemonic-proxy demo
+```
+
+Expected result: **`PASS`**.
+
+The demo uses the real proxy with a **scripted fake model** to check archive, masking and byte-for-byte recall.
+It does not test a real model's tool use or saved engine state. [Without uv / demo details](#t0--see-it-work-1-minute-no-model)
+· [Connect your agent and engine](#install).
+
+**Measured, not guaranteed** — single runs on our hardware; setup and limitations at each link:
+
+| Experiment | Result |
+|---|---|
+| [Long coding session, one 12 GB GPU](#one-session-measured) | 3 h 15 min; 448K tokens of history, at most 105K in the prompt. Archived history is not all in context. |
+| [AgentLongBench subset, clarified questions](#benchmark-agentlongbench-with-a-32k-window) | 86/100 right with the proxy at 32K, vs 47 with an LLM summary and 69 with full history in a larger window. |
+| [Saved engine state](#saved-state-measured) | A 110K-token conversation resumed in 1.4 s instead of ≈50 s; requires a backend with save/restore support. |
+
+[What we have not proven](#what-we-have-not-proven) · [Project page](https://lastreload.github.io/mnemonic-proxy/)
+
+OpenAI Chat Completions, Anthropic Messages and OpenAI Responses; Python ≥ 3.10, standard library only.
+Developed and benchmarked primarily with [Strata](https://github.com/Niko1221/Strata), by Niko1221 and contributors.
+This independently maintained project also supports llama-server, ds4-server, Ollama, LM Studio and other
+OpenAI-compatible backends; capabilities and test coverage vary ([Engines](#engines)).
+
+<details>
+<summary>Johnny's payload</summary>
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/lastreload/mnemonic-proxy/main/docs/assets/hero.jpg" alt="Mnemonic Proxy" width="100%">
 </p>
 
-A transparent HTTP proxy that sits between a coding agent and a local model (llama.cpp's `llama-server`,
-[Strata](https://github.com/Niko1221/Strata), [ds4-server](https://github.com/antirez/ds4), or any
-OpenAI-compatible server). The agent keeps sending its whole,
-unmodified history; the proxy decides what the model actually reads. Old material leaves the prompt but is never
-summarized away: every message, tool call and output stays on disk, verbatim, and the model can pull any of it back.
-
-It speaks OpenAI Chat Completions, Anthropic Messages and OpenAI Responses. Python ≥ 3.10, standard library only.
-
-Developed and benchmarked primarily with [Strata](https://github.com/Niko1221/Strata), by Niko1221 and contributors.
-mnemonic-proxy is an independently maintained project that also supports llama-server, ds4-server and other
-OpenAI-compatible backends; saved engine state depends on what the backend supports (see [Engines](#engines)).
-
-Project page: <https://lastreload.github.io/mnemonic-proxy/>
-
-Measured on our hardware (single runs, see [What we have not proven](#what-we-have-not-proven)): a 3 h 15 min coding
-session on one 12 GB GPU with 448K tokens of history and at most 105K in the prompt
-([One session, measured](#one-session-measured)); AgentLongBench in a 32K window, 86/100 right with the proxy vs 47
-with an LLM summary and 69 with the full history in a larger window
-([benchmark](#benchmark-agentlongbench-with-a-32k-window)); a 110K-token conversation resumed from disk in 1.4 s
-instead of ≈50 s ([Saved state, measured](#saved-state-measured)).
+</details>
 
 ## Install
 
 The first time: install, watch it work with no model, check your engine, start.
 
+<!-- readme-test: ci -->
 ```sh
 python3 -m venv mnemonic-venv && . mnemonic-venv/bin/activate
 pip install mnemonic-proxy
@@ -126,7 +148,7 @@ switches, tool calls, streaming, `/v1/messages` and `/v1/responses` worked, no s
 
 ## How it works
 
-No summaries written by a model, no vector database required.
+Archived content stays verbatim; the model writes handoff notes at segment switches. No vector database is required.
 
 1. **Hide — mask, don't summarize.** Old tool outputs and reasoning leave the prompt in stable blocks and become
    one-line receipts with an id. The prefix stays byte-identical between blocks, so the engine's KV cache keeps
@@ -167,20 +189,23 @@ Three levels. Each one stands on its own.
 | | what you see | needs | time |
 |---|---|---|---|
 | **T0 — see it work** | archive, masking, exact recall, with a scripted fake model | Python ≥ 3.10 | 1 minute |
-| **T1 — real model on CPU** | a real agent (pi) writing code through the proxy, masking, recall, resume after an engine restart | + cmake, a C++ compiler, Node.js ≥ 22.19, ~9 GB RAM (the engine at `-c 32768`), 3.5 GB disk | ~45 minutes |
+| **T1 — real model on CPU** | a real agent (pi) writing code through the proxy, masking, a recall probe (the tested 4B model did not call `recall`), resume after an engine restart | + cmake, a C++ compiler, Node.js ≥ 22.19, ~9 GB RAM (the engine at `-c 32768`), 3.5 GB disk | ~45 minutes |
 | **T2 — real use (GPU)** | your own model and agent, long sessions | a GPU engine | — |
 
 Commands are for Linux; see [Platforms](#platforms) for macOS and Windows (native or WSL).
 
 ### T0 — see it work (1 minute, no model)
 
+<!-- readme-test: ci -->
 ```sh
 python3 -m venv mnemonic-venv && . mnemonic-venv/bin/activate
 pip install mnemonic-proxy
 mnemonic-proxy demo
 ```
 
-With [uv](https://docs.astral.sh/uv/), no venv to create: `uvx mnemonic-proxy demo`. The development version (the
+With [uv](https://docs.astral.sh/uv/), no venv to create: `uvx mnemonic-proxy demo`. `uvx` runs the command from a
+temporary environment and installs nothing, so keep the prefix for the next commands (`uvx mnemonic-proxy check ...`)
+or install the command once with `uv tool install mnemonic-proxy`. The development version (the
 `main` branch, newer than the last PyPI release): `pip install git+https://github.com/lastreload/mnemonic-proxy`.
 
 The demo starts the real proxy in a temporary folder, in front of a scripted fake model. An agent reads a long
@@ -190,15 +215,17 @@ the proxy answers it internally and the archived text is compared byte for byte 
 `PASS` (exit 0) or `FAIL` (exit 1).
 
 It proves the proxy's own logic: archive, masking, recall. It does not prove anything about a real model, its tool
-calling, or saved engine state — that is T1.
+calling, or saved engine state — T1 exercises those with a real model and reports its limitations.
 
 ### T1 — a real model on CPU
 
 Tested end to end in a clean Ubuntu 24.04 container (see [Tested combinations](#tested-combinations)). A 4B model on
-CPU is slow (seconds per answer) and limited: the point is to see every mechanism work, not to do real work.
+CPU is slow (seconds per answer) and limited: the point is to exercise the proxy with a real model, not to do real
+work. A successful recall is not guaranteed; see the measured [Tested combinations](#tested-combinations).
 
 **0. Prerequisites** (Ubuntu/Debian; other systems: [Platforms](#platforms)):
 
+<!-- readme-test: real-engine -->
 ```sh
 sudo apt install git cmake build-essential python3-venv curl
 ```
@@ -207,6 +234,7 @@ and Node.js ≥ 22.19 for pi (<https://nodejs.org/en/download>, or your package 
 
 **1. Folder, proxy, example config.**
 
+<!-- readme-test: real-engine -->
 ```sh
 mkdir mnemonic-trial && cd mnemonic-trial
 git clone --depth 1 https://github.com/lastreload/mnemonic-proxy
@@ -218,6 +246,7 @@ mkdir -p slots data
 
 **2. llama.cpp, the tested release (CPU build, ~2 minutes on 12 cores).**
 
+<!-- readme-test: real-engine -->
 ```sh
 git clone --depth 1 --branch b11430 https://github.com/ggml-org/llama.cpp
 cmake -S llama.cpp -B llama.cpp/build -DCMAKE_BUILD_TYPE=Release
@@ -228,6 +257,7 @@ cmake --build llama.cpp/build --config Release -j 8 --target llama-server
 ([model card](https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507)); this is the
 [Unsloth conversion](https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF), pinned to the tested revision:
 
+<!-- readme-test: real-engine -->
 ```sh
 mkdir -p models
 curl -L -o models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf \
@@ -238,6 +268,7 @@ sha256sum models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf
 
 **4. The engine** (terminal 1, inside `mnemonic-trial`):
 
+<!-- readme-test: real-engine -->
 ```sh
 llama.cpp/build/bin/llama-server -m models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf \
   -c 32768 --parallel 1 --jinja --slot-save-path ./slots --port 8095
@@ -252,6 +283,7 @@ work after a few long tool outputs.
 
 **5. Check, then start the proxy** (terminal 2, inside `mnemonic-trial`, venv active: `. .venv/bin/activate`):
 
+<!-- readme-test: real-engine -->
 ```sh
 mnemonic-proxy check --live --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.llama-server-32k.json
 mnemonic-proxy --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.llama-server-32k.json
@@ -265,12 +297,14 @@ it; see also [Troubleshooting](#troubleshooting). The proxy then prints
 
 **6. pi, the coding agent** (terminal 3). Install the tested version:
 
+<!-- readme-test: real-engine -->
 ```sh
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.0.3
 ```
 
 Create `~/.pi/agent/models.json` (if it exists, add the `mnemonic` entry to its `providers`):
 
+<!-- readme-test: illustrative; config: client -->
 ```json
 {
   "providers": {
@@ -290,6 +324,7 @@ Create `~/.pi/agent/models.json` (if it exists, add the `mnemonic` entry to its 
 
 and `~/.pi/agent/settings.json` (if it exists, add these three keys):
 
+<!-- readme-test: illustrative; config: client -->
 ```json
 {
   "defaultProvider": "mnemonic",
@@ -307,6 +342,7 @@ id is any name, llama-server serves its loaded model.
 
 **7. The exercise.** In terminal 3, a folder with a log whose one interesting line is buried in the middle:
 
+<!-- readme-test: real-engine -->
 ```sh
 mkdir -p ~/mnemonic-exercise && cd ~/mnemonic-exercise
 python3 -c "for i in range(650): print('[%04d] compiling module_%03d.c ... ok (%d ms)' % (i, i, 80 + i * 7 % 61) if i != 397 else '[0397] build id: BUILD-7f3a9c-ORCHID-42')" > build.log
@@ -343,6 +379,7 @@ What this proves and what it does not, for this model: see [Tested combinations]
 Use the engine and model you already have; the only requirements are an OpenAI-compatible endpoint and, for saved
 state, an engine that can save its KV state to disk:
 
+<!-- readme-test: real-engine -->
 ```sh
 llama-server -m your-model.gguf -c 131072 --parallel 1 --jinja --slot-save-path /path/to/slots --port 8095
 mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.json
@@ -465,6 +502,7 @@ Checked against Claude Code 2.1.287; a 1 h 41 min session with 2.1.284 on Strata
 [below](#claude-code-and-codex-live-on-strata). Claude Code may print `unrecognized_model local-model`: it works
 anyway.
 
+<!-- readme-test: real-engine -->
 ```sh
 export ANTHROPIC_BASE_URL=http://127.0.0.1:8096      # no /v1
 export ANTHROPIC_AUTH_TOKEN=local                    # any value; the proxy does not check it
@@ -510,11 +548,13 @@ Codex's `prompt_cache_key` is used as the conversation key. Stateless only (`sto
 The archive can also be searched from any MCP client, read-only (sqlite `mode=ro`; the proxy can keep writing). Three
 tools: `recall` (same search as the proxy's tool), `conversations`, `journal`.
 
+<!-- readme-test: ci -->
 ```sh
 mnemonic-mcp --db ./data/archive.sqlite                 # stdio
 mnemonic-mcp --db ./data/archive.sqlite --http 8133     # streamable HTTP on 127.0.0.1:8133/mcp
 ```
 
+<!-- readme-test: real-engine -->
 ```sh
 claude mcp add mnemonic -- mnemonic-mcp --db /path/to/data/archive.sqlite
 codex mcp add mnemonic -- mnemonic-mcp --db /path/to/data/archive.sqlite
@@ -536,6 +576,7 @@ mcp_servers:
 The dashboard is not part of the pip package: it runs from a clone of this repository, and its interface is in
 Italian.
 
+<!-- readme-test: real-engine -->
 ```sh
 python3 mnemonic-proxy/dashboard/ctxdash.py --data ./data --strata http://127.0.0.1:8095 --proxy http://127.0.0.1:8096 --port 8097
 ```
@@ -655,6 +696,7 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
   from python.org, the official llama.cpp Windows build (`llama-b11430-bin-win-cpu-x64.zip` or a GPU one). In
   PowerShell:
 
+  <!-- readme-test: windows -->
   ```powershell
   py -m venv mnemonic-venv; .\mnemonic-venv\Scripts\Activate.ps1
   pip install mnemonic-proxy
@@ -680,6 +722,7 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
 - **Android (Termux)** (0.3.8; tested in Waydroid 1.6.2 on Linux — Android 13, x86_64 — with Termux 0.118.3 and its
   Python 3.14.8; not yet on an ARM phone). The proxy is plain Python, nothing is compiled:
 
+  <!-- readme-test: real-engine -->
   ```sh
   pkg update -y && pkg upgrade -y
   pkg install -y python git
@@ -689,6 +732,7 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
 
   Use case: an agent on the phone in front of an online API (no model on the phone), base mode:
 
+  <!-- readme-test: real-engine -->
   ```sh
   curl -LO https://raw.githubusercontent.com/lastreload/mnemonic-proxy/main/examples/config.openai-32k.json
   mnemonic-proxy --upstream https://openrouter.ai/api --api-key "$OPENROUTER_API_KEY" \
@@ -708,6 +752,7 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
 
 ## Uninstall
 
+<!-- readme-test: illustrative -->
 ```sh
 pip uninstall mnemonic-proxy        # inside the venv you installed it in, or delete the venv
 rm -rf ./data                       # the archive, the journal: your conversations in plaintext
@@ -730,7 +775,7 @@ RTX 4070 Ti — with the proxy in between.
 
 <p align="center"><sub>Replay of a real exchange (animated GIF; <a href="https://raw.githubusercontent.com/lastreload/mnemonic-proxy/main/docs/assets/replay.mp4">MP4</a>).
 Three hours and two segment switches into the session, one <code>recall</code> call — resolved inside the proxy in
-61 ms — brings back the verbatim first version of the boss block, message 20. No model summarized anything.</sub></p>
+61 ms — brings back the verbatim first version of the boss block, message 20. The recalled block is returned verbatim.</sub></p>
 
 | | |
 |---|---|
@@ -951,6 +996,31 @@ against a mock engine and with short real client runs, not yet on long real sess
   must be trusted: the hashes detect corruption, not tampering. Our measurements are from the session-files build
   (0.1.38 + PR #668, `8d8f664`); on 0.1.40 the proxy ran the AgentLongBench benchmark and the recall tests, but
   restore times were not re-measured there (see [Saved state, measured](#saved-state-measured)).
+**Saved state that the engine does not support.** After a reply that means "not supported", the proxy stops
+saved-state work for that model only (anchors and their one-token calls, segment seal/save, SAVE/RESTORE,
+autosave/autorestore, kv_archive). Masking, the text archive, `recall` and notes keep working.
+
+| Reply to a slot call | What the proxy does |
+|---|---|
+| HTTP 500 "the engine answered a session … the server ended the engine" (PolyStrata `strata-poly`) | suspended until restart or reset |
+| HTTP 501 with a documented permanent text (no `--slot-save-path`, parallel requests, strata-poly with VecSzn/PolyStrata#114) | suspended until restart or reset |
+| any other HTTP 501 | paused for 15 minutes, then one call retries |
+| 404, 400, 409, 503, 507, generic 500, timeouts | not a refusal |
+
+`GET /v1/strata/saved-state` lists the suspended models. `POST /v1/strata/saved-state/reset` with `{}` (all models)
+or `{"model": "<exact id>"}` clears them; it answers `{"cleared": [...]}`, 400 for a bad body, and **403 unless the
+request comes from this machine** (the proxy has no client authentication). The check looks at the direct TCP
+peer: a local reverse proxy can make remote requests look local, so block this endpoint at that proxy if remote
+access must be denied. After a reset the next save is sent again, so on a strata-poly model without the PolyStrata
+fix it ends the engine once more.
+
+The proxy warns once per suspension: after a reset or a successful retry, a new refusal is reported again. The
+retry after the 15-minute pause happens only when the proxy next needs saved state, so `GET` may show
+`retry_after_s: 0` until then. The suspension adds no new requests to the engine's status endpoint.
+
+On current PolyStrata releases the **first** SAVE to a `strata-poly` model still ends the engine: the proxy learns
+from that reply. To avoid it, set `mask_anchor`, `slot_save`, `autosave`, `autorestore`, `seal_experimental` and
+`kv_archive` to `false` (in the configuration, or in that model's profile).
   `setup.sh` and `run-strata-proxy.sh` in the repository root (a venv, then the proxy in front of a running
   Strata, `slot_dir` read from the Strata config) were contributed and are covered by unit tests; they are not yet
   tested by the maintainer on a real Strata install.
@@ -968,6 +1038,7 @@ ds4-server keeps its own state: with `--kv-disk-dir DIR` it checkpoints the KV c
 resumes a conversation after a tool call by recognising the tool-call id (exact replay of the sampled call). So the
 proxy does less than with other engines:
 
+<!-- readme-test: real-engine -->
 ```sh
 ./ds4-server -m MODEL.gguf --ctx 65536 --port 8110 --kv-disk-dir ./kv
 mnemonic-proxy --upstream http://127.0.0.1:8110 --port 8096 --data ./data --config examples/config.ds4.json
@@ -1135,6 +1206,7 @@ with an engine that has saved state (`examples/config.example.json` plus the opt
 
 A config for llama-server with saved state, as recommended above:
 
+<!-- readme-test: illustrative; config: proxy -->
 ```json
 {
   "mask_reasoning": true, "mask_tool_args": true,
@@ -1158,6 +1230,95 @@ this documentation correction does not enable automatic retrieval or change thei
 
 On a generic OpenAI engine drop the saved-state fields (`mask_anchor`, `slot_dir`, `slot_save`,
 `seal_experimental`, `autosave`, `kv_archive`); the proxy turns them off anyway, with a warning.
+
+### Every command-line option
+
+Three commands are installed: `mnemonic-proxy` (the proxy, with its `demo`, `check` and `forget`
+subcommands; `ctxproxy` is a 0.1 alias of the same program) and `mnemonic-mcp` (the read-only MCP
+recall server). `tests/test_readme_coverage.py` fails if an option exists in the code and is not
+listed here.
+
+| command | option | what |
+|---|---|---|
+| `mnemonic-proxy` | `--upstream URL` | the engine's address (default `http://127.0.0.1:8095`) |
+| | `--host ADDR` | bind address (default `127.0.0.1`, local only) |
+| | `--port N` | listen port (default `8096`) |
+| | `--data DIR` | archive, journal and lock (default `./data`) |
+| | `--config FILE` | JSON file with the `Config` fields below |
+| | `--mode tools\|off` | `tools` = managed context (default); `off` = plain pass-through, nothing archived or masked, useful to compare a session with and without the proxy |
+| | `--tokenizer PATH` | Hugging Face `tokenizer.json` (or a Strata pack `tokenizer/` folder) for exact token counts; needs `pip install 'mnemonic-proxy[exact]'` |
+| | `--api-key KEY` | key sent to the upstream engine |
+| | `--engine auto\|strata\|llama.cpp\|ds4\|openai` | force the engine type instead of detecting it |
+| | `--version` | print the version and exit |
+| `mnemonic-proxy demo` | `--keep DIR` | keep the demo's archive in `DIR` (`archive.sqlite`, `journal.jsonl`) instead of a temporary folder, to look at it afterwards or to point `mnemonic-mcp --db` at it |
+| `mnemonic-proxy check` | all the server options | `check` reads the configuration the server would run with |
+| | `--live` | also run a real generation, a tool call and a save/restore on the engine |
+| | `--json` | machine-readable report: `{"ready", "exit_code", "checks": [...]}`, for a script or a health probe |
+| `mnemonic-proxy forget` | `--data DIR` | the data folder to delete from (required) |
+| | `--list` | list conversation ids, logical sizes and UTC timestamps |
+| | `--conv ID` | the conversation to remove |
+| | `--dry-run` | report what would be removed, change nothing (requires `--conv`) |
+| | `--slot-dir DIR`, `--kv-archive DIR` | saved-state and cold-archive folders, when they are not in the config |
+| | `--config FILE` | the proxy's config; defaults to `$MNEMONIC_CONFIG` |
+| `mnemonic-mcp` | `--db FILE` | the proxy's `archive.sqlite`, opened read-only (required) |
+| | `--journal FILE` | `journal.jsonl`; by default the one next to the database |
+| | `--max-tokens N` | token cap of one recall result (default `6000`) |
+| | `--tokenizer PATH` | tokenizer for those token counts |
+| | `--http PORT` | streamable HTTP on `/mcp` instead of stdio |
+| | `--host ADDR` | bind address for `--http` (default `127.0.0.1`) |
+
+### Every configuration field
+
+The table above covers what most setups need. These are the remaining fields of
+`ctxproxy.core.Config`, with their real defaults; they exist for tuning and for reproducing our
+measurements, and changing them is rarely necessary.
+
+<details>
+<summary>The remaining configuration fields</summary>
+
+| field | default | meaning |
+|---|---|---|
+| `mask_enabled` | true | level 1 on/off: with false nothing is ever masked (the archive still records everything) |
+| `min_mask_tokens` | 200 | outputs shorter than this always stay in clear text |
+| `data_dir` | "" | where the physical prompt of the outgoing segment is written when `slot_save` is on; empty = the `--data` folder |
+| `index_max_tokens` | 2000 | cap of the segment index block |
+| `keep_first_user` | true | carry the first user message over to a new segment |
+| `recall_max_chars` | 24000 | character cap of one recall result (the token cap applies as well) |
+| `recall_struct_max_tokens` | 3500 | token cap of a structured recall result (`recall_struct`) |
+| `truncation_guard_max_tokens` | 16 | only answers up to this many tokens are replayed by `truncation_guard` |
+| `truncation_guard_budget` | 512 | reasoning cap of that replay (0 = no cap) |
+| `answer_thinking_strip` | true | the reasoning of those replays is not returned to the client |
+| `tooldefs_desc_max` | 0 | shorten each tool's description to this many characters (0 = off) |
+| `tooldefs_param_max` | 0 | the same for every parameter description, nested ones included |
+| `tooldefs_keep` | `recall`, `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls` | tools whose definitions are never shortened |
+| `tools_load_max` | 5 | how many tool definitions one `tools` call may load (`tools_paging`) |
+| `auto_recall_on_error` | false | automatic retrieval also after a failed tool result |
+| `auto_recall_k` | 4 | pieces at most per injection |
+| `auto_recall_max_tokens` | 4000 | cap of the injected message |
+| `auto_recall_piece_tokens` | 1200 | cap of each piece |
+| `auto_recall_min_score` | 8.0 | threshold on the FTS5 bm25 score |
+| `auto_recall_min_terms` | 2 | distinct query terms a piece must contain (common ones excluded) |
+| `auto_recall_common_frac` | 0.4 | a term appearing in more than this share of the hits counts as common |
+| `auto_recall_max_args` | 1 | tool-call arguments at most per injection |
+| `auto_recall_hint_k` | 5 | candidates named in a hint (`auto_recall_hint`) |
+| `chars_per_token` | 3.5 | characters per token when there is no tokenizer |
+| `msg_overhead` | 6 | tokens the chat template adds per message |
+| `image_tokens` | 1024 | tokens assumed for one image |
+| `reasoning_last_turn_only` | false | Strata template: keep only the last turn's reasoning |
+| `autosave_min_tokens` | 16384 | below this a re-read is cheaper than a state file: no save |
+| `autosave_min_free_gb` | 8.0 | no save when the slot disk has less free space than this |
+| `autosave_poll_s` | 10.0 | how often the autosaver looks at the engine |
+| `kv_archive_min_bytes` | 67108864 | smaller state files are left where they are |
+| `kv_archive_poll_s` | 60.0 | how often the cold archiver looks |
+| `kv_archive_level` | 3 | zstd compression level |
+| `kv_archive_threads` | 4 | zstd threads |
+| `checkpoint_align_slack` | 0.25 | accepted waste after a checkpoint multiple (`checkpoint_align_tokens`) |
+| `answer_min_tokens` | 512 | a thinking budget always leaves at least this much room for the answer |
+| `recall_removal` | "value" | what the recall loop gives up first when space runs out: `value` \| `reasoning` \| `age` |
+| `final_drop_internal_tools` | true | a final call made for lack of space goes without the proxy's own tools |
+| `notes_thinking` | "auto" | thinking while writing handoff notes: `auto` (on when the engine leaves room) \| `off` \| `on` |
+
+</details>
 
 ### Tool names and older conversations
 
@@ -1214,6 +1375,7 @@ alone and the proxy uses `history_recall` (or `load_tools`) instead.
 - Protect the folders: `chmod 700 ./data /path/to/slots`.
 - **Forget one conversation:** stop the proxy, then run:
 
+  <!-- readme-test: ci -->
   ```sh
   mnemonic-proxy forget --data ./data --list
   mnemonic-proxy forget --data ./data --config config.json --conv <id> --dry-run
@@ -1257,6 +1419,7 @@ never restart the engine; run them with the Python that has the archive support
 
 **`tools/check_kv_archive.py`** — is the cold archive healthy, and what is it saving?
 
+<!-- readme-test: real-engine -->
 ```sh
 .venv314/bin/python tools/check_kv_archive.py                 # snapshot now
 .venv314/bin/python tools/check_kv_archive.py --restore-check  # rebuild each archive, compare sha256
@@ -1265,79 +1428,4 @@ never restart the engine; run them with the Python that has the archive support
 
 It reports the `sessions/` files, the `kv-archive/` usage with dedup, and how far the
 archiver is from firing (engine idle, file age, file size). It never creates the archive
-directories and never writes to disk: `--restore-check` restores into a private temp dir.
-Exit code 0 when everything is fine, 1 on a problem (a corrupt block, a failed restore,
-a `--watch` that never archived), 2 on a usage error.
-
-**`tools/measure_restore.py`** — how much does the automatic restore save?
-
-```sh
-.venv314/bin/python tools/measure_restore.py --allow-shared-engine
-```
-
-It sends **the same request twice**, each time after B has evicted A from the engine:
-**control** (`autorestore` off) gives the real re-read, **restore** (`autorestore` on)
-gives `restore_ms` plus the few new tokens — both read from the journal, so the speed-up
-is `control_ms / (restore_ms + new_ms)`, not an extrapolation. `--two-phases` is the
-earlier method: it runs a whole A/B cycle per phase and re-sends A with one extra
-message, so its restore path also carries those new tokens — a slightly different
-question, measured with the same journal timings.
-
-Measured with **Strata 0.1.41** and **swift-1.5-iq3_xxs** (window 131072, prompt
-~31.4K tokens) on an **RTX 5060 Ti 16 GB** (PCIe 3.0 x8), an **Intel Xeon E5-2699 v3**
-and **64 GB DDR4-2667 running at 2133 MT/s** (the CPU's memory limit), with three runs
-of each method (six runs in total): the same request gave **~10–12×** (median 11.6×) —
-re-read ~30 s vs restore + new tokens ~2.7 s — and the two-phase method gave ~6.7×
-under the same conditions.
-
-It needs `--allow-shared-engine` because filling the engine with conversation B evicts
-other sessions; it removes only the files it created itself. Exit code 0 when a restore
-was measured, 1 when nothing was restored, 2 on a usage error.
-
-## Tests
-
-```sh
-python3 -m unittest discover -s tests -t .
-```
-
-Uses a fake OpenAI-compatible engine (`tests/fake_engine.py`, also runnable stand-alone with
-`python3 -m tests.fake_engine --port 18095`). Optional groups are skipped unless their inputs are present: exact
-counting (a tokenizer in `./tok` or `CTX_TOKDIR`, plus `tokenizers`), Strata mock integration (`STRATA_DIR`, plus
-`jinja2`), and `kv_archive` (Python ≥ 3.14). `tools/replay_dry.py` and `tools/replay_exact.py` replay a pi session
-through the context manager offline. `tools/state_e2e.py --server PATH/llama-server --model M.gguf --work DIR`
-checks saved state end to end with a real llama-server on any OS (restart, restore from disk vs re-read, and
-`kv_archive` with `--kv-archive`). CI runs the unit tests on Linux and on native Windows.
-
-The two Strata tools have their own tests: `tests/test_kv_archive.py` and
-`tests/test_check_kv_archive.py` build a real archive with the same in-memory helper (no engine
-needed) and check that the audit detects a corrupt block, exits non-zero, and touches nothing;
-`tests/test_measure_restore.py` covers the pure logic (journal filtering, the speed-up from
-`prompt_ms` / `restore_ms`, the CLI guards). The `kv_archive` group needs Python ≥ 3.14.
-
-Partly in Italian: code comments, the dashboard UI and the developer notes in `docs/dev-notes/`. Since 0.3.1 every
-text the proxy writes into the model's prompt — receipts and placeholders of hidden content, the handoff-note
-request, the segment and pinned-points blocks, automatic recall, recall results, guard and limit messages — is in
-English for new conversations (`prompt_language`, default `"en"`). Conversations that already existed before 0.3.1
-keep the Italian texts they were born with: those strings are part of their stable prompt prefix (archive, session
-files, KV cache), so changing them would invalidate saved sessions. The language is stored per conversation at its
-first request; the proxy recognizes its own markers in both languages in every conversation.
-
-## Credits & license
-
-MIT — see [LICENSE](https://github.com/lastreload/mnemonic-proxy/blob/main/LICENSE). Built by Maurizio Verde — LastReload.
-
-Thanks to Niko1221 and the [Strata](https://github.com/Niko1221/Strata) contributors for the inference engine that
-made our large-model measurements possible on a single 12 GB GPU; to the [llama.cpp](https://github.com/ggml-org/llama.cpp)
-contributors for llama-server and its slot save/restore API; and to the authors of pi for the coding agent used in our
-experiments.
-
-The name is a nod to William Gibson's courier, not affiliated with the story or the film.
-
-```bibtex
-@software{verde2026mnemonicproxy,
-  author = {Verde, Maurizio},
-  title  = {Mnemonic Proxy: long-running local coding agents with a verbatim archive},
-  year   = {2026},
-  url    = {https://github.com/lastreload/mnemonic-proxy}
-}
-```
+directories and never writes to disk: `--restore-check` res

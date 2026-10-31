@@ -478,7 +478,7 @@ to the sum of the two leg weights.
 
 ```yaml
 ---
-title: ubuntubox — NFS mount gate     # else first H1, else file name
+title: host-a — NFS mount gate     # else first H1, else file name
 type: area                            # filterable: semantic-search { type }
 status: active                        # filterable: semantic-search { status }
 tags: [infra, nas]                    # filterable: semantic-search { tags }
@@ -506,7 +506,7 @@ services:
       DATABASE_URL: postgres://brain:${DB_PASSWORD}@brain-db:5432/brain
       OLLAMA_URL: http://ollama:11434
       EMBED_MODEL: nomic-embed-text
-      INDEX_COLLECTION: secondbrain
+      INDEX_COLLECTION: notes
     volumes:
       - /path/to/vault:/vault:rw
     ports: ["127.0.0.1:3001:3000"]
@@ -519,7 +519,7 @@ services:
       DATABASE_URL: postgres://brain:${DB_PASSWORD}@brain-db:5432/brain
       OLLAMA_URL: http://ollama:11434
       EMBED_MODEL: nomic-embed-text
-      INDEX_COLLECTION: secondbrain
+      INDEX_COLLECTION: notes
       INDEX_INTERVAL_SECONDS: "60"
     volumes:
       - /path/to/vault:/vault:ro
@@ -884,6 +884,14 @@ The server package and plugin manifest versions must match; add a new `versions.
 key for every release, keeping older keys. Tags also trigger the existing image and
 npm publishing workflows.
 
+
+## Brain view
+
+The MCP Related Notes plugin also includes a **Brain** main-area tab. Use the brain ribbon icon or the **Open brain view** command; reopening reveals the existing tab.
+
+The rotatable 3D view shows indexed notes grouped around project and area hubs, with hub colours and labels, curved resolved links, read-together trails and moving impulses. Brightness reflects heat. Drag to rotate, scroll to zoom, hover to trace neighbours, and click to open a note (modifier-click opens a new tab).
+
+It reads the authenticated `GET /api/graph` endpoint using the plugin's existing server URL and local token. The endpoint returns `nodes`, indexed `links`, and weighted `trails` for the configured collection; notes excluded from indexing do not appear. Viewing the graph logs nothing to the learn log and does not feed trails. Responses are cached in memory for ten minutes per server URL; **Refresh** fetches again. Rendering pauses while hidden, and closing the tab releases its graphics resources. No additional settings are required.
 
 ## Trails shadow ranking
 

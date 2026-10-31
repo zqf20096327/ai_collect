@@ -373,6 +373,10 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 
 - [CSA Field Boundary Segmentation](https://github.com/thuanhavan/CSA_Field_Boundary_Segmentation) -> scalable field-boundary extraction workflow combining seasonal Sentinel-2 imagery, Segment Anything, GIS post-processing and accuracy assessment across the Canadian Prairies
 
+- [desert-boundary](https://github.com/FaranIdo/desert-boundary) -> extracts desert-vegetation boundaries by projecting AlphaEarth embeddings onto an NDVI-supervised vegetation axis. Code for paper: Desert-Vegetation Boundary Detection via Projection of Self-Supervised Satellite Embeddings
+
+- [RFLUC-aef](https://github.com/TmtStss/rfluc-aef) -> country-level forest land-use mapping with Random Forest models, AlphaEarth embeddings and expert reference annotations. Code for paper: Leveraging satellite embeddings and national expert annotations for country-level forest land use mapping
+
 ### Segmentation - Water, coastlines, rivers & floods
 
 - [sat-water](https://github.com/busayojee/sat-water) -> Semantic segmentation of water bodies in satellite imagery, producing pixel-wise water masks from remote sensing images using a U-Net–style deep learning pipeline (data preparation, training, inference, and evaluation).
@@ -1174,12 +1178,4 @@ Orinted bounding boxes (OBB) are polygons representing rotated rectangles. For d
 
 - [CSL_RetinaNet_Tensorflow](https://github.com/Thinklab-SJTU/CSL_RetinaNet_Tensorflow) -> Arbitrary-Oriented Object Detection with Circular Smooth Label
 
-- [r3det-on-mmdetection](https://github.com/SJTU-Thinklab-Det/r3det-on-mmdetection) -> R3Det: Refined Single-Stage Detector with Feature Refinement for Rotating Object
-
-- [R-DFPN_FPN_Tensorflow](https://github.com/yangxue0827/R-DFPN_FPN_Tensorflow) -> Rotation Dense Feature Pyramid Networks (Tensorflow)
-
-- [R2CNN_Faster-RCNN_Tensorflow](https://github.com/DetectionTeamUCAS/R2CNN_Faster-RCNN_Tensorflow) -> Rotational region detection based on Faster-RCNN
-
-- [Rotated-RetinaNet](https://github.com/ming71/Rotated-RetinaNet) -> implemented in pytorch, it supports the following datasets: DOTA, HRSC2016, ICDAR2013, ICDAR2015, UCAS-AOD, NWPU VHR-10, VOC2007
-
-- [OBBDet_Swin](https://github.com/ming71/OBBDet_Swin) -> The sixth pl
+- [r3det-on-mmdetection](https://github.com/SJTU-Thinklab-Det/r3det-on-mmdetection) -> R3Det: Refined Single-Stage Detector with Feature R

@@ -37,12 +37,12 @@ GitHub 上叫 workbuddy2api-panel 的仓库有好几个。本仓库是在原版 
 
 | | 本仓库 | 原版 |
 |---|---|---|
-| **Claude Code / Codex** | 原生提供 Anthropic Messages（`/v1/messages`）和 Responses（`/v1/responses`），填地址和密钥就能用；模型路由把它们的默认模型名改到上游模型，客户端不用配模型 | 对话只有 `/v1/chat/completions` |
-| **出站请求** | 照官方桌面端安装包（国内版 5.9.3、国际版 5.8.4）逐项对齐 UA、请求头、会话 id、链路头和 TLS 握手指纹，每一项的依据和还没对齐的地方都写在[官方客户端对照](docs/official-client.md) | UA 停在 WorkBuddy 5.5.4，还带着官方已经不发的 Origin、Referer 等旧请求头 |
+| **Claude Code / Codex** | 原生提供 Anthropic Messages（`/v1/messages`）和 Responses（`/v1/responses`），填地址和密钥就能用；模型路由把它们的默认模型名改到上游模型，客户端不用配模型；Claude Code 自带的 WebSearch 直接能用，Codex 接网关的 MCP 服务器也能联网搜索 | 对话只有 `/v1/chat/completions`；联网搜索只有给 DSH 这类客户端调的 `/v1/search/messages` |
+| **出站请求** | 照官方桌面端安装包（国内版 5.9.3、国际版 5.9.4）逐项对齐 UA、请求头、会话 id、链路头和 TLS 握手指纹，每一项的依据和还没对齐的地方都写在[官方客户端对照](docs/official-client.md) | UA 停在 WorkBuddy 5.5.4，还带着官方已经不发的 Origin、Referer 等旧请求头 |
 | **网络容错** | 主入口出错切备用入口，DNS 失败或网关错误换 HTTPDNS 候选 IP，按入口熔断，规则照官方 | 单一入口，没有失败切换 |
 | **对话隐私** | 默认告诉上游不许拿你的对话做模型优化（`X-Private-Data`），面板里可改 | 不发 |
 | **企业号** | 用官方企业目录接口按账号拉模型，企业开通的 Claude 等模型只派给有它的号 | 所有企业号探测同一个旧端点 |
-| **国内 + 国际** | 可以合成一个池负载均衡（`pool.cross_realm`），也能用前缀钉死一域 | 用前缀分开用；另有默认关闭的跨域回退，国内选不到号才改用国际 |
+| **国内 + 国际** | 可以合成一个池负载均衡，或者国内版优先、国内版没号可用才用国际版（`pool.cross_realm`），也能用前缀钉死一域 | 用前缀分开用；另有默认关闭的跨域回退，国内选不到号才改用国际 |
 | **会话缓存** | 客户端不带会话 id 时，从第一轮起给同一段对话定一个会话 id（UUID v7，官方形状），存盘、重启不变，两个域都发；换号时先回到这段对话用过的号 | 不带就拿网关自算的会话键充当，不是官方形状；连会话键也没有时每次随机补一个 |
 | **成长中心** | 照官方桌面端用登录码换官网 Cookie 走网页接口，任务事件字段照 5.8.3 逐个核对 | 没有网页登录态 |
 | **客户端密钥** | 给别人用另建密钥：到期时间、每天和总量上限、模型白名单，用量和请求记录按密钥分开 | 只有一把共用的 `api_key` |
@@ -60,18 +60,21 @@ GitHub 上叫 workbuddy2api-panel 的仓库有好几个。本仓库是在原版 
 - 🔌 **OpenAI、Claude Code、Codex 都能直接接**
   - 提供 `/v1/chat/completions` 与 `/v1/models`，流式、非流式、工具调用、图片输入、推理档位都支持。
   - Claude Code 走 `/v1/messages`，Codex 走 `/v1/responses`，和普通对话共用同一套选号、换号与日志。
+  - 联网搜索走官方的搜索接口：Claude Code 自带的 WebSearch 不用配就能用，Codex 把网关的 `/mcp` 加成 MCP 服务器。
   - 模型路由：客户端发来上游没有的模型名（比如 Claude Code 的默认模型）时按规则改用上游模型，在面板里配。
 - 🔄 **多账号池，坏了自动换**
   - 按实测成本、剩余积分、闲置时长加权选号。
   - 限流、余额不足、登录失效分别处置，出错自动换号重试。
+  - 每个号都能一键测活；限流冷却、熔断中的号每 30 分钟自动测一次，测通就提前恢复。
   - 同一会话尽量不跳号。
 - 🌏 **国内版 + 国际版同池管理**
   - 模型名加 `cn:` / `global:` 前缀指定走哪一版。
-  - 也可打开跨域负载均衡，让两边的账号一起分担。
+  - 也可打开跨域负载均衡，让两边的账号一起分担，或者国内版优先、国际版只做后备。
   - 企业号按自己的模型目录接请求，企业开通的模型（比如 Claude）也能用。
 - 🎯 **积分任务全自动**
   - 每天自动签到、活跃上报、token 保活、连登兑换与抽奖。
   - 官方 18 个成长任务里 **17 个一键完成**，新账号约 **+1950 积分**。
+  - 签到、领奖、补偿、旅行领到的积分逐笔记账，面板「积分获取」页按时间、账号、来源查。
 - 🖥️ **好用的管理面板**
   - 账号状态与冷却倒计时、模型限额、用量与积分分析、任务中心、请求日志。
   - 给别人用另建客户端密钥，能限到期、用量和模型，用量按密钥统计。
@@ -153,6 +156,8 @@ claude
 - **在面板配模型路由（推荐）**：「模型与档位 → 模型路由」点「添加 Claude Code 三档」，给 opus、sonnet、haiku 各选一个上游模型。客户端什么都不用改，`/model` 切档位就是切规则；
 - **在客户端指定**：`export ANTHROPIC_MODEL=glm-5.2`，或分别设 `ANTHROPIC_DEFAULT_OPUS_MODEL`、`ANTHROPIC_DEFAULT_SONNET_MODEL`、`ANTHROPIC_DEFAULT_HAIKU_MODEL`。
 
+Claude Code 自带的 WebSearch 工具不用配：网关认出它发来的搜索请求，不交给模型，直接用官方的联网搜索接口搜，见 [API 参考](docs/api.md#联网搜索)。
+
 上游模型的上下文比 Claude 小时，把 `CLAUDE_CODE_AUTO_COMPACT_WINDOW` 设成该模型的上下文长度（Claude Code 最低只认 100000），让它提前压缩对话。Anthropic 不为「Claude Code 接非 Claude 模型」提供支持，遇到问题请在本仓库反馈。
 
 ### Codex
@@ -172,11 +177,21 @@ wire_api = "responses"
 
 然后 `export WB2API_KEY=sk-...` 再运行 `codex`。`model_provider` 只能写在用户目录的配置里，项目里的 `.codex/config.toml` 会忽略它。
 
+Codex 自带的网页搜索接不了上游（翻译时丢掉）。要联网搜索，在同一个文件里把网关的 `/mcp` 加成 MCP 服务器，模型就多一个 `mcp__wb2api__web_search` 工具：
+
+```toml
+[mcp_servers.wb2api]
+url = "http://localhost:7863/mcp"
+bearer_token_env_var = "WB2API_KEY"   # 和上面的 env_key 用同一个变量
+```
+
+`codex mcp list` 能看到它就是配好了。
+
 两个入口的翻译细节、模型路由的匹配规则见 [API 参考](docs/api.md#claude-code-与-codex-入口)。
 
 ### 给别人用
 
-在面板「密钥」页建客户端密钥发给对方，不要把 `api_key` 发出去。客户端密钥只能调 `/v1/*`、登不了面板，可以单独设到期时间、每天和总量的请求次数 / token / 积分上限、能用哪些模型，用量和请求记录按密钥分开统计；「接入方法」里有密钥原文和各客户端的填法。建过客户端密钥以后 `/v1/*` 必须带有效密钥，规则见 [API 参考](docs/api.md#客户端密钥)。
+在面板「密钥」页建客户端密钥发给对方，不要把 `api_key` 发出去。客户端密钥只能调 `/v1/*` 和 `/mcp`、登不了面板，可以单独设到期时间、每天和总量的请求次数 / token / 积分上限、能用哪些模型，用量和请求记录按密钥分开统计；「接入方法」里有密钥原文和各客户端的填法。建过客户端密钥以后 `/v1/*` 和 `/mcp` 必须带有效密钥，规则见 [API 参考](docs/api.md#客户端密钥)。
 
 ## 常用配置
 
@@ -186,7 +201,7 @@ wire_api = "responses"
 |---|---|---|
 | `api_key` | 随机生成 | 管理员密钥（网关与面板），**为空则不鉴权**；给别人用另建[客户端密钥](#给别人用) |
 | `pool.max_in_flight` | `3` | 单个账号同时处理的请求数 |
-| `pool.cross_realm` | `false` | 不带前缀的模型名在国内版、国际版之间合池负载均衡 |
+| `pool.cross_realm` | `off` | 不带前缀的模型名怎么在两个域之间分：`off` 只走国内版，`merge` 合池负载均衡，`cn_first` 国内版优先、没号可用才用国际版 |
 | `pool.credit_floor` | `0` | 余额低于该值的账号不再接收费模型，防止把余额打穿 |
 | `prompt.mode` | `passthrough` | 客户端系统提示词常被上游审核误拦时，改成 `custom` |
 | `schedule.*_enabled` | `true` | 签到、保活、成长任务等定时任务的开关 |
@@ -239,12 +254,12 @@ flowchart LR
   - [ardeyouxipianyi/workbuddy2api-hub](https://github.com/ardeyouxipianyi/workbuddy2api-hub)：自我介绍句、DeepSeek Harness、OhMyOpenCode 这几类渠道指纹的清洗规则，国际版号成批被 11140 风控时整域暂停的做法（issue #629），以及每段对话记下用过的号、换号时先回到这些号的做法。
   - [ithtelab/workbuddy-manager](https://github.com/ithtelab/workbuddy-manager)、[mmqz/cpa-multi-plugins](https://github.com/mmqz/cpa-multi-plugins)：渠道指纹在助手历史和用户消息里同样会被拦的实测。
   - [sofs2005/w2a](https://github.com/sofs2005/w2a)：用原始字节确认上游回的是数字码 `11128`。
-  - [misakano7545/workbuddy2api-panel](https://github.com/misakano7545/workbuddy2api-panel)：AutoBot.yml 整理好的同类项目清单；对齐登录的提交提醒了授权被拒的登录业务码和毫秒的到期时间，网关对照官方安装包核实后补上。
+  - [misakano7545/workbuddy2api-panel](https://github.com/misakano7545/workbuddy2api-panel)：AutoBot.yml 整理好的同类项目清单；对齐登录的提交提醒了授权被拒的登录业务码和毫秒的到期时间，网关对照官方安装包核实后补上；它的真机抓包里积分、签到用的是 `axios/1.16.1`，国际版后台请求的 UA 两段都是 `workbuddy-ai`，网关据此回安装包查实，改掉了这两处旧缺口。
   - [magpie-community/plugins](https://github.com/magpie-community/plugins) 的 WorkBuddy 插件：对齐桌面端 5.9.3 时对照了它的请求头，它的说明提醒了官方对话经 OpenAI SDK 发出、带 `X-Stainless-*` 头，网关对照官方安装包核实后记进了[官方客户端对照](docs/official-client.md#与桌面端-593-的对照)。
 - **其他 API 网关**：
-  - [QuantumNous/new-api](https://github.com/QuantumNous/new-api)：调用日志单独成页、失败请求直接显示原因的做法。
+  - [QuantumNous/new-api](https://github.com/QuantumNous/new-api)：调用日志单独成页、失败请求直接显示原因的做法，以及渠道测试（单测、测试全部、定时只测被自动禁用的渠道、测通自动启用）的做法，网关的账号测活照此实现。
   - [router-for-me/Cli-Proxy-API-Management-Center](https://github.com/router-for-me/Cli-Proxy-API-Management-Center)：账号卡片网格的排法，以及日志页把服务日志和出错请求分开的做法。
-  - [Wei-Shaw/sub2api](https://github.com/Wei-Shaw/sub2api)：号都在途占满时请求排队等空位、最多等 30 秒的做法（`fallback_wait_timeout`），以及各类日志各设保留天数、改了立即生效的做法（`ops.cleanup` 的 `*_retention_days`）。
+  - [Wei-Shaw/sub2api](https://github.com/Wei-Shaw/sub2api)：号都在途占满时请求排队等空位、最多等 30 秒的做法（`fallback_wait_timeout`），以及各类日志各设保留天数、改了立即生效的做法（`ops.cleanup` 的 `*_retention_days`），账号「测试连接」弹窗和定时测试测通后自动恢复账号（`auto_recover`）的做法。
 - **上游的每一位贡献者**：
 
   <a href="https://github.com/linguo2625469/workbuddy2api-panel/graphs/contributors"><img src="https://contrib.rocks/image?repo=linguo2625469/workbuddy2api-panel" alt="linguo2625469/workbuddy2api-panel 的贡献者"></a>

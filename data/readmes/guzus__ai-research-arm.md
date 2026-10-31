@@ -29,7 +29,7 @@ wiki. Public outputs deploy continuously to
 ## Today's Front Page
 
 <!-- FRONT_PAGE_START -->
-![Today's Front Page](research/front-page/2026-10-30-front-page.png)
+![Today's Front Page](research/front-page/2026-10-31-front-page.png)
 <!-- FRONT_PAGE_END -->
 
 > 🗞️ Rendered after each successful daily digest — deterministic SVG→PNG, no
@@ -157,7 +157,7 @@ flowchart LR
     subgraph runtime["⚙️ Runtime-routed lanes — lane: → data/agent-backends.json"]
         lanes0["ai-news-research · digest-audio-script · digest-synthesis<br/>digest-synthesis-fallback · model-timeline · twitter-autoresearch<br/>twitter-judge · twitter-primary · twitter-primary-repair<br/><i>9 lanes</i>"]
         strict0["🔒 claude-canary · twitter-ab-claude · twitter-ab-judge<br/>twitter-ab-judge-swapped<br/><i>strict — never falls back</i>"]
-        strict1["🔒 arxiv · bluesky · community<br/>generative-research-ko · rss · wiki-ingest<br/><i>strict — never falls back</i>"]
+        strict1["🔒 aradio · arxiv · bluesky<br/>community · generative-research-ko · rss<br/>wiki-ingest<br/><i>strict — never falls back</i>"]
         strict2["🔒 twitter-deepseek<br/><i>strict — never falls back</i>"]
         strict3["🔒 twitter-ab-zai · twitter-zai · zai-canary<br/><i>strict — never falls back</i>"]
         gendef["generative-research-default<br/><i>dispatch default</i>"]
@@ -176,7 +176,7 @@ flowchart LR
     end
     lanes0 -->|"claude-opus-5-5"| ANT
     strict0 -->|"claude-opus-5-5"| ANT
-    strict1 -->|"cursor-grok-4.6-high-fast"| CUR
+    strict1 -->|"claude-sonnet-5-5"| ANT
     strict2 -->|"deepseek-v4-flash"| FW
     strict3 -->|"glm-5.3"| ZAI
     gendef -->|"claude-opus-5-5"| ANT
@@ -227,7 +227,7 @@ interesting ones:
 | `2h-bluesky.yml` | daily | `research/bluesky/` |
 | `daily-arxiv.yml` | daily | `research/arxiv/` |
 | `daily-youtube.yml` | daily | `research/youtube/` |
-| `daily-earnings.yml` | weekdays, before the digest | `research/earnings/` (SEC EDGAR earnings filings for AI-exposed issuers; one file per event, nothing on a quiet day) |
+| `daily-earnings.yml` | weekdays, every 2 h (last run before the digest) | `research/earnings/` (SEC EDGAR earnings filings for AI-exposed issuers; one file per event, nothing on a quiet day) |
 | `twitter-account-explorer.yml` | weekly | reviewed PRs against the account manifest |
 
 **Synthesize** — read everything, write the record
@@ -282,7 +282,8 @@ native Claude Opus 5.5; explicit selectors also expose Codex, OpenCode DeepSeek
 and Meta Muse Spark 1.3 Contributor, Cursor, and Fireworks routes. Muse is
 region-limited and requires explicit consent to Contributor model-improvement
 data collection, so it is not a production editorial default. Separately, the five scheduled editorial lanes
-currently use isolated Cursor routes while the OpenCode Go monthly plan is exhausted
+and the Korean translation currently run on the isolated Claude Code adapter while the
+OpenCode Go monthly plan and Cursor's weekly usage limit are exhausted
 ([details](docs/generative-research-backends.md)).
 
 **3. Tweet → verified article.** Give it just a tweet URL — it reads the
@@ -379,12 +380,12 @@ settings and service overrides. None are needed for the
 
 | Secret | Required for | Description |
 |--------|--------------|-------------|
-| `CLAUDE_CODE_OAUTH_TOKEN` | native-Claude lanes, fallback path, reserved dispatcher plumbing | Claude Code auth; current host-checkout agent-run is incompatible with the editorial dispatcher |
+| `CLAUDE_CODE_OAUTH_TOKEN` | native-Claude lanes, fallback path, the isolated Claude Code routes | Claude Code auth. Since 2026-10-31 it backs every strict isolated route (editorial lanes, translation, Aradio) through the isolated container adapter; host-checkout agent-run stays incompatible with the editorial dispatcher |
 | `FIREWORKS_API_KEY` | Fireworks generative and comparison routes | Anthropic-compatible Fireworks endpoint for explicit model routes and comparison lanes |
 | `ZAI_API_KEY` | Z.ai GLM 5.3 lanes and fallback chain | Z.ai Coding Plan key; current second provider in the global fallback chain and used by Z.ai canaries/comparison lanes |
 | `CODEX_AUTH_JSON` | `generative-research backend=codex` | file-backed ChatGPT Codex auth from `codex login`; treat like a password |
-| `OPENCODE_API_KEY` | OpenCode profiles, direct comparison/canary paths, dispatcher route plumbing | OpenCode Go key. RSS, community, and Bluesky use its strict `glm-5.3-flash` route; arXiv/wiki use an independent Cursor route. The OpenCode canary validates both direct DeepSeek and the dynamically resolved primary editorial route. |
-| `CURSOR_API_KEY` | Cursor CLI profiles, direct comparison/canary paths, dispatcher route plumbing | Cursor dashboard API key. Prewired so an SSOT-only switch to `cursor-grok-4p6-fast` needs no workflow edit. Production defaults stay on OpenCode. |
+| `OPENCODE_API_KEY` | OpenCode profiles, direct comparison/canary paths, dispatcher route plumbing | OpenCode Go key. Its monthly plan is exhausted, so no production route uses it; RSS, community, and Bluesky return to its strict `glm-5.3-flash` route once the OpenCode canary passes. The OpenCode canary validates both direct DeepSeek and the dynamically resolved primary editorial route. |
+| `CURSOR_API_KEY` | Cursor CLI profiles, direct comparison/canary paths, dispatcher route plumbing | Cursor dashboard API key. Prewired so an SSOT-only switch to `cursor-grok-4p6-fast` needs no workflow edit. Its weekly usage limit ran out on 2026-10-31; a route can point back to it once `cursor-cli-canary.yml` passes. |
 | `BIRD_AUTH_TOKEN` / `BIRD_CT0` | Twitter/X lanes | X cookies (read-only use; expire often) |
 | `BIRDY_ACCOUNTS` | alternative to cookie pair | multi-account rotation JSON; every account forced read-only |
 | `GEMINI_API_KEY` | digest/article audio | price-performant TTS |

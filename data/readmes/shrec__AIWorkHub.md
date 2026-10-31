@@ -374,10 +374,11 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.80
+## What's new in 0.12.82
 
-- Cheaper worker context: AI Memory and KB rows reach the worker whole and decoded instead of as escaped JSON cut mid-row, and duplicate KB rows are dropped (a measured bundle shrank 14%).
-- Worker usage records show where input tokens go: result bytes per tool, one sample per distinct usage snapshot, and a session init summary.
+- A shorter manager tool list: 129 tools instead of 181. The 50 tools no session used stay callable by exact name, so existing callers keep working.
+- Accepting a card reuses a recipe run already made for that exact candidate instead of running it again.
+- Manager Chat polls no longer time out on a slow health scan, and the accept neighbour lane runs only real test files.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)
@@ -391,10 +392,10 @@ lifecycle transition, so a repository cannot drift out of compliance silently;
 `aiworkhub.audit_system` runs read-only, narrow-scope review passes that emit
 structured findings into NeedFix with provenance.
 
-> **Naming correction.** The expansion "Continuous Automated Assurance System"
-> is wrong; the owner-canonical expansion is **Continuous Audit as a Service**.
-> That incorrect wording lives in the separate **UltrafastSecp256k1** README and
-> cannot be fixed from this repository — it must be corrected in that repository.
+> **Naming correction.** The owner-canonical expansion of CAAS is **Continuous Audit as a Service**.
+> The separate **UltrafastSecp256k1** README uses a different, incorrect expansion, recorded in
+> [docs/CAAS_PROTOCOL.md](docs/CAAS_PROTOCOL.md); that wording cannot be fixed from this repository
+> and must be corrected in the UltrafastSecp256k1 repository.
 
 ## Security
 

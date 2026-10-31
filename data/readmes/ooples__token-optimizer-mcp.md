@@ -15,7 +15,7 @@
   <a href="https://www.npmjs.com/package/@ooples/token-optimizer-mcp"><img src="https://img.shields.io/npm/v/%40ooples%2Ftoken-optimizer-mcp?logo=npm" alt="npm version"></a>
   <a href="https://github.com/ooples/token-optimizer-mcp/actions/workflows/ci.yml"><img src="https://github.com/ooples/token-optimizer-mcp/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22-339933?logo=node.js&logoColor=white" alt="Node.js 22+"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D22.14-339933?logo=node.js&logoColor=white" alt="Node.js 22.14+"></a>
 </p>
 
 <p align="center">
@@ -1691,4 +1691,4 @@ retrieval, capture and harvest all on, no refusals. Set
 Roo Code, Zed, Amp, Continue, Crush, and Droid do not expose a packaged
 pre-execution bridge that can safely veto built-in calls. Their generated,
 always-on rules make optimized routing mandatory whenever the exact MCP schema
-is visible, and fail open to a bounded native o
+is visible, and fail open to a bounded na

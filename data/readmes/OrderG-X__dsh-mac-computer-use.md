@@ -17,9 +17,9 @@
 >
 > **什么时候用**：「看看我屏幕上有什么」「帮我在这个 App 里点一下」，以及没有命令行、只能用鼠标操作的 Mac 软件。
 >
-> **安装**：`dsh plugin add https://github.com/OrderG-X/dsh-mac-computer-use/releases/latest/download/dsh-mac-computer-use.tgz`（或在 DSH 插件页添加这个地址），重启 DSH。安装包自带编好的程序（Apple 芯片和 Intel 都能用，macOS 11 起），不用编译。仅 macOS。
+> **安装**：DSH「插件」页 →「添加插件」，填 `dsh-mac-computer-use`（npm 包，连不上 npm 会自动换国内镜像），重启 DSH。安装包自带编好的程序（Apple 芯片和 Intel 都能用，macOS 11 起），不用编译。仅 macOS。
 >
-> **English:** a DeepSeek Harness (DSH) plugin for computer use on macOS. The model sees the screen and controls the Mac through 11 `desktop_*` tools: window list, screenshots, OCR text search, click, type, keys, scroll, drag and app launch. Install: `dsh plugin add` the release tarball above (or add it on DSH's plugin page) and restart DSH. The package ships prebuilt universal binaries (Apple silicon and Intel, macOS 11+), so there is nothing to compile.
+> **English:** a DeepSeek Harness (DSH) plugin for computer use on macOS. The model sees the screen and controls the Mac through 11 `desktop_*` tools: window list, screenshots, OCR text search, click, type, keys, scroll, drag and app launch. Install: on the DSH Plugins page, click Add plugin and enter `dsh-mac-computer-use` (an npm package), then restart DSH. The package ships prebuilt universal binaries (Apple silicon and Intel, macOS 11+), so there is nothing to compile.
 
 > 以前叫 `dsh-cu`，2026-10-18 改名。旧地址会自动跳到这里；底层的命令行引擎仍叫 `dsh-cu`。
 > 和别人家的 [dsh-computer-use](https://github.com/988hj7tczd-oss/dsh-computer-use) 不是一个东西：那个靠无障碍树（cua-driver），这个靠截图。
@@ -60,7 +60,9 @@ DSH 上已有的 computer use 插件（`dsh-computer-use`、`dsh-mac-cua` 等）
 
 ## 安装
 
-在 DSH 的**插件页**添加插件，地址填 `https://github.com/OrderG-X/dsh-mac-computer-use/releases/latest/download/dsh-mac-computer-use.tgz`（或者命令行 `dsh plugin add` 这个地址），然后**重启 DSH**。
+在 DSH 的**插件页**点「添加插件」，填包名 `dsh-mac-computer-use`，然后**重启 DSH**。这是 npm 包：按包名装时，DSH 连不上 npm 官方源会自动改用国内镜像（npmmirror），不经过 GitHub。也可以填发布包地址 `https://github.com/OrderG-X/dsh-mac-computer-use/releases/latest/download/dsh-mac-computer-use.tgz`，那样要能连上 GitHub。
+
+**更新**：在「插件」页把它卸载，再按上面添加一次。新版发布后大约一天按包名才装得到（DSH 装插件用的 pnpm 默认不装刚发布的版本），急的话填发布包地址。
 
 安装包里自带编好的命令行引擎和光标浮层（Apple 芯片和 Intel 都能用，macOS 11 起），**不用 clone 仓库、不用装 Xcode**。第一次用要在系统设置里给 DeepSeek Harness 开**屏幕录制**和**辅助功能**权限，设置页里有按钮直达。
 

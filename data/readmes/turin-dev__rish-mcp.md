@@ -68,15 +68,13 @@ The previous Node/TypeScript + Shizuku implementation is kept under [`before/`](
 
 ### 1. Set up the relay
 
-The easiest path is the npm setup utility. Docker is required for the server action.
+Run the installer on a machine with Docker. It asks for the port, public URL and tokens, starts the relay, and can configure your MCP client (including `claude mcp add`) in the same run. Re-running it updates the relay.
 
 ```bash
-# interactive setup
-npx rish-mcp-setup
-
-# or install/update the relay non-interactively
-npx rish-mcp-setup --yes --action server
+curl -fsSL https://rish-mcp.turin.my | sh
 ```
+
+To read the script before running it, open [`rish-mcp.turin.my/relay`](https://rish-mcp.turin.my/relay). For scripts, `sh -s -- --yes` asks nothing; see [`docs/USAGE.md`](docs/USAGE.md) for options. The npm utility also works: `npx rish-mcp-setup --yes --action server`.
 
 The installer creates or reuses `AI_TOKEN` and `DEVICE_TOKEN`, stores them under `~/.config/rish-mcp/relay.env`, and runs the `rish-mcp-relay` container.
 

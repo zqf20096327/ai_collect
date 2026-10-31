@@ -1,6 +1,6 @@
 # Agentic DevSecOps
 
-Choose **learn by doing** through four outcomes and three modules,
+**Learn by doing** through four outcomes and three modules,
 or **set up GitHub** with the GitHub Enterprise setup skill.
 
 The [setup overview](docs/github-setup.html) explains the skill's scope; the

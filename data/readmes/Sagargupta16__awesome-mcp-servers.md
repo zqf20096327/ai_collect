@@ -90,6 +90,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Neo4j MCP](https://github.com/neo4j-contrib/mcp-neo4j)                                    | Neo4j Labs Cypher, memory and Aura API graph database servers                 | Python     |
 | [Neon MCP](https://github.com/neondatabase/mcp-server-neon)                                | Neon serverless PostgreSQL branching and management                           | TypeScript |
 | [Pinecone MCP](https://github.com/pinecone-io/pinecone-mcp)                                | Official Pinecone vector database                                             | TypeScript |
+| [Polish MCP Servers](https://github.com/kamilkaczmareksolutions/polish-mcp-servers) | Polish public registers and law: NIP/REGON/KRS company lookup, tenders, permits | TypeScript |
 | [PostgreSQL MCP (Pro)](https://github.com/crystaldba/postgres-mcp)                         | Query, analyze and optimize PostgreSQL databases                              | Python     |
 | [Qdrant MCP](https://github.com/qdrant/mcp-server-qdrant)                                  | Official Qdrant vector database server                                        | Python     |
 | [Redis MCP](https://github.com/redis/mcp-redis)                                            | Official Redis cache and data structures                                      | Python     |
@@ -319,6 +320,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Xero MCP](https://github.com/XeroAPI/xero-mcp-server)                                         | Official Xero server for invoices, contacts, accounts and payroll             | TypeScript |
 | [Yahoo Finance MCP](https://github.com/Alex2Yang97/yahoo-finance-mcp)                          | Stock data and financial info                                                 | Python     |
 | [Zerodha Kite MCP](https://github.com/zerodha/kite-mcp-server)                                 | Official Zerodha Kite server for Indian holdings, orders and quotes           | Go         |
+| [Zovo Grant Finder](https://grant-finder.zovo.one/) | Search Grants.gov federal grants and export XLSX trackers and ICS deadlines | Remote |
 
 ### Monitoring & Observability
 
@@ -430,6 +432,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Cesium MCP](https://github.com/CesiumGS/cesium-ai-integrations/tree/main/mcp) | Official Cesium 3D geospatial and geolocation MCP servers                       | TypeScript |
 | [GIS MCP](https://github.com/mahdin75/gis-mcp)                                 | Geospatial analysis via GDAL, Shapely, GeoPandas, and PyProj                    | Python     |
 | [Google Maps MCP](https://github.com/cablate/mcp-google-map)                   | Google Maps API with LLM processing                                             | TypeScript |
+| [Lake Level MCP](https://github.com/theluckystrike/lake-level-mcp) | Live US lake and reservoir levels from USGS, USACE, CDEC, USBR and TWDB gauges | TypeScript |
 | [Mapbox MCP](https://github.com/mapbox/mcp-server)                             | Official Mapbox geocoding, POI search, directions, and isochrones               | TypeScript |
 | [MAQAMI Travel](https://github.com/negm17111995/mcp-server)                    | Search 3M+ hotels and flights with live rates, then check out on book.maqami.co | JavaScript |
 | [Orizn Visa](https://github.com/MattJeff/orizn-mcp-server)                     | Visa and entry rules for 49,750 passport-destination pairs, official sources    | TypeScript |

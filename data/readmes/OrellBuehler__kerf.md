@@ -141,7 +141,7 @@ Every tool is listed by default. A client that loads every tool's schema up fron
 adding tool sets to the URL — `http://127.0.0.1:7777/mcp?tools=core,titles` (sets: `core`, `analysis`,
 `clips`, `keyframes`, `titles`, `audio`, `music`, `delivery`, `tasks`, `project`; Settings › Agent builds
 the command for you). The server also offers workflow **prompts** — `rough_cut_from_transcript`,
-`podcast_cleanup`, `social_reel`, `music_bed`, `deliver` — which Claude Code shows as `/mcp__kerf__<name>`.
+`podcast_cleanup`, `social_reel`, `music_bed`, `sound_design`, `deliver` — which Claude Code shows as `/mcp__kerf__<name>`.
 
 An agent's edits wait in a proposal for you to accept (all of it, or only some changes)
 unless you switch review off in the same place: then its edits, the work on the tasks
@@ -162,7 +162,7 @@ Now ask the agent to work on the project you have open — _"skim the interview 
 the dead air, and drop in captions."_ It will claim a task, use the tools below, and hand
 back a reviewable result.
 
-### The tools (196)
+### The tools (204)
 
 <details>
 <summary><b>See / analyze</b></summary>
@@ -179,6 +179,8 @@ as a contact sheet of moments) · `preview_svg_preset` · `validate_svg` — the
 can see, and `get_frame` / `preview_timeline` take a `region` to **zoom** into a quarter of
 the frame at full source detail. Also `get_waveform_range` · `analysis_status` · `missing_assets` ·
 `get_music_structure` · `get_band_balance` (where music keeps its energy, in six bands per section) ·
+`list_sound_effects` (the 21 sounds, what each is for and where its hit lands) · `suggest_sound_effects` (where the cut would take
+one: cuts, titles, drops, markers) ·
 `get_ripple_mode` · `voiceover_status` · `stems_status` · `music_status`.
 </details>
 
@@ -192,7 +194,8 @@ the frame at full source detail. Also `get_waveform_range` · `analysis_status` 
 `set_track_locked` · `add_marker` · `update_marker` · `remove_marker` · `remove_silence` ·
 `snap_to_beats` · `sync_clips_by_audio` · `smart_crop` · `extract_audio` · `concatenate` · `edit_asset_tags` (label assets, e.g. `location: Cumbuco`) · `assemble_by_tag` (a cut grouped by a label, one titled section per value) · `move_clips` · `remove_clips` ·
 `add_asset_audio` · `set_ripple_mode` · `plan_music_fit` · `fit_music` · `compose_music` (original music from a
-score, fitted to the cuts) ·
+score, fitted to the cuts) · `add_sound_effects` (whooshes, impacts, risers and pops, synthesized and placed with their hit on
+the picture) · `update_sound_effect` ·
 `detach_audio` · `detach_audio_clips` · `reattach_audio` · `reattach_audio_clips` ·
 `link_clips` · `unlink_clips` · `apply_edits` (several edits as one revision, all or nothing, with a dry run)
 </details>
@@ -202,7 +205,7 @@ score, fitted to the cuts) ·
 
 `set_volume` · `set_fade` · `set_speed` · `set_speed_ramp` (slow motion / speed-up that eases) · `stabilize_clip` (take a hand-held camera's shake out) · `stabilization_status` · `set_transform` · `set_transform_at` · `set_color` ·
 `set_grade` (curves, colour wheels, a .cube LUT) · `set_transition` · `set_mask` · `set_blend_mode` (multiply, screen, overlay, …) · `set_video_effects` · `set_audio_effects` ·
-`set_keyframes` · `add_keyframe` · `set_keyframe_easing` · `set_property_keyframes` · `set_property_tracks` · `copy_keyframes` · `clear_keyframes` · `set_reframe` · `clear_reframe` ·
+`set_keyframes` · `add_keyframe` · `set_keyframe_easing` · `set_property_keyframes` · `set_property_tracks` · `copy_keyframes` · `apply_motion_preset` (an entrance, exit or emphasis such as `pop_in`, `slide_out_to_left`, `pulse`) · `list_motion_presets` · `set_behaviors` (live sway, breathe, spin, drift and shake riding on a clip's pose) · `bake_behaviors` (turn them into keys) · `clear_keyframes` · `set_reframe` · `clear_reframe` ·
 `set_reframe_keyframes` · `add_reframe_keyframe` · `set_track_volume` · `set_track_pan` ·
 `set_master_volume` · `set_master_limiter` · `set_master_true_peak` · `set_master_duck` ·
 `add_overlay` · `update_overlay` · `remove_overlay` · `set_overlay_keyframes` ·

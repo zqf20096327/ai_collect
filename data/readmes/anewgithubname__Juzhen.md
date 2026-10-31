@@ -11,7 +11,7 @@ Requires a C++20-capable compiler. Supports NVIDIA CUDA 12.x (with cuDNN), Apple
 
 - CPU matrix operations with BLAS, plus CUDA, ROCm/HIP and Metal backends.
 - Neural-network layers including convolution, transposed convolution and pre-LayerNorm Transformers.
-- Forward-mode Jacobian-vector products (JVP) on CPU, CUDA and ROCm. The JVP correctness suite does not yet cover Metal.
+- Forward-mode Jacobian-vector products (JVP) on CPU, CUDA, ROCm and Metal.
 - AMD Transformer forward, backward and JVP paths with batched attention GEMM and fused HIP operations. See the [implementation and validation notes](docs/amd-transformer-optimization.md).
 - [Training checkpoints](docs/checkpoint-resume.md) restore model parameters, Adam state, training progress and the host RNG. CPU and AMD tests include restarting in a new process.
 - A [CPU linear assignment solver](docs/cpu-assignment.md) using the Hungarian shortest-augmenting-path algorithm, with rectangular and min/max matching support.
@@ -167,6 +167,7 @@ here, not a claim of validation on every Windows AMD device or SDK version.
 | `NVIDIA_CUDA` | ON | NVIDIA CUDA backend |
 | `ROCM_HIP` | OFF | AMD ROCm/HIP backend |
 | `APPLE_SILICON` | OFF | Apple Metal backend |
+| `JUZHEN_MPS_GEMM_WORKAROUND` | ON | Metal only: work around the MPS GEMM bug near 2 GiB GPU addresses (see Known Issues) |
 | `BLAS_FREE` | OFF | Use handwritten CPU GEMM/GEMV without an external BLAS |
 | `ROCM_OFFLOAD_ARCH` | empty | Target AMD architecture, e.g. `gfx1151` |
 
@@ -389,6 +390,7 @@ Elapsed time is 0.759065 seconds.
 ## Known Issues
 1. GPU computation only supports single precision calculation. 
 2. Currently, Hadamard multiplication does not support in place transpose on GPU. 
+3. On Apple Silicon, `MPSMatrixMultiplication` silently writes NaNs into results that span a 2 GiB-aligned GPU address or end less than about 8 MiB below one (seen on an M2 with macOS 27.0.1). The Metal backend temporarily works around this by computing such results into scratch buffers, which costs extra time only for the affected results. To check whether a newer macOS has fixed the bug, configure with `-DJUZHEN_MPS_GEMM_WORKAROUND=OFF` and run `ctest -R mps_gemm_address_boundary`. If the test passes, the workaround can be removed.
 ## Benchmark on some CPUs/GPUs
 Benchmark using MNIST example, time collected by the built-in profiling tool. 
 

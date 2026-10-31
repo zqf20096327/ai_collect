@@ -323,7 +323,7 @@ Goals:        /goal (plan + checklist) · /goal reopen · /tasks (checklist only
 Sessions:     /status · /sessions · /sessions <id> · /rewind [n|undo|fork [n]|branches]
 Agents:       /agents · /agents <id> · /agents set model|depth|filter
 Models:       /model · /model <route> · /model <route> all · /model auto · /endpoint · /prices
-Tuning:       /effort · /permissions · /preset · /plan · /jobs · /remind
+Tuning:       /effort · /permissions · /preset · /plan · /jobs · /remind · /every
 Profiles:     /profile · /profile <name> · /profile new <name> from <template>
 Sets:         /crew · /crew use|off|new|copy|rm · /crew model <v>
 Extensions:   /skills · /plugins · /plugins search <word> · /plugins disable|enable <id> · /soul
@@ -647,6 +647,7 @@ no lock race and no lost update.
 
 ## Documentation
 
+- [docs/LAYOUT.md](https://github.com/aleksvega/dsh-tg-bridge/blob/master/docs/LAYOUT.md): which folder answers which question, and why the entry points stay at the root
 - [docs/TELEGRAM-SETUP.md](https://github.com/aleksvega/dsh-tg-bridge/blob/master/docs/TELEGRAM-SETUP.md): BotFather settings, group and bot permissions
 - [docs/SUPPORT.md](https://github.com/aleksvega/dsh-tg-bridge/blob/master/docs/SUPPORT.md): what to send with a bug report, what never to send, and the one-line answer for "the bot went silent"
 - [docs/ROADMAP.md](https://github.com/aleksvega/dsh-tg-bridge/blob/master/docs/ROADMAP.md): what comes next

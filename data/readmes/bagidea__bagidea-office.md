@@ -89,6 +89,7 @@ interesting part of building it.
 ### 🆕 Recently shipped
 BagIdea Office is updated **constantly** — every office gets a 🔄 banner and one-click `bagidea update`. The latest:
 
+- **v1.10.0 — 🧭 walk the team, a Director copilot on any brain, a 🐞 report button:** ‹ › arrows (and Alt+←/→) step through the agents *inside* Edit Agent without closing it, unsaved edits are saved first, and every form panel now asks *Save · Discard · Keep editing* instead of closing on a stray click. The Director's copilot — ✨ persona, 🪄 workflow draft, 🔍 analysis — runs on the brain you pick (Claude, LM Studio, Ollama with live running-status, or any connected provider), one-shot and never queued behind the Director's chats. A failure popup can prepare a **redacted** problem report (keys, tokens, user and machine names stripped, conversation lines left out of the log tail) and open it as a prefilled GitHub issue — nothing leaves the machine until you press Submit. HIRE A TEAM works again, the fallback-brain picker lists local and cloud brains with live status, model ids up to 160 characters pass validation. By [@f2dac](https://github.com/f2dac) in [#68](https://github.com/bagidea/bagidea-office/pull/68), with maintainer follow-ups (tests isolated from the live office, a Windows launcher that keeps the whole URL, copilot calls behind the local-model slot gate). 🏛️ **Mnemosyne OS** joins the Tools Hub catalog (54 entries) by [@yaka0007](https://github.com/yaka0007) in [#69](https://github.com/bagidea/bagidea-office/pull/69).
 - **v1.9.2 — 🌐 the daemon speaks English:** an English office was still being nudged toward Thai by the daemon's *own* voice — the memory block in every prompt, the workflow-analysis and auto-compact summary prompts, the wrapper around a Telegram/Discord/… message, the meeting nudge, the image-transcription wrapper, every system notice in the chat (limits, brain fail-over, AUTO rounds, hook approvals), every log label, the `/help` `/status` `/agents` replies on channels, and the provider / plugin error strings. All English now, the office language decides only how the *agents* reply, the break-room banter is a th/en table like the mood lines, and the overlay's own feed/log lines (👻 ghost spawned, 📋 delegated, 🔄 new version, 🤝 meeting) are translated in all 14 languages. Six new tests keep it that way ([#67](https://github.com/bagidea/bagidea-office/issues/67)).
 - **v1.9.1 — 🖼️ under the icons again:** on Windows 11 build 26200 (the 14 Oct 2026 update) the office could come up **over** the desktop instead of behind it — Progman now creates the wallpaper layer as its own child beside the icon view, and an office auto-started at login embedded before Explorer had built the desktop. The shell now waits for the desktop, validates the layer it picks, keeps the world at the bottom of the stack under the icons, and moves it out of Progman the moment a real layer exists. Verified on the live desktop.
 - **v1.9.0 — 🐦 a seventh channel, Feishu / Lark (飞书):** message a Feishu or Lark bot and the Director takes the order and answers in the same chat — approvals by typed reply, workflow keywords and work updates included. Encrypted events are decrypted and their signature checked; a webhook with neither a Verification Token nor an Encrypt Key is refused; an optional allowlist pins the office to one sender or chat. Card in ⚙ → 📡 CHANNELS, in 14 languages; [setup guide](docs/guide/channels.md). Requested in [#65](https://github.com/bagidea/bagidea-office/issues/65). 🧪 Built from the platform's documentation and not yet confirmed against a real published app — reports welcome.
@@ -669,23 +670,4 @@ The installer puts `bagidea` on your PATH (manual installs: the repo root has
 ```
 bagidea start | stop | restart    launch / stop / restart the whole suite
 bagidea status                    health + agents + projects + who's working
-bagidea doctor                    why won't it load? port · proxy · firewall · policy
-bagidea inbox                     what's waiting for you + what's unread
-bagidea approve | deny | answer   decide an inbox item (also from your phone)
-bagidea budget [set …]            today's spend vs caps · set office/agent/project caps · digest
-bagidea stats                     dashboard: runs / cost / busiest / uptime
-bagidea ask "<message>"           ask the Director and WAIT for the final answer
-bagidea chat <agent> "<msg>"      fire-and-forget to a specific agent
-bagidea agents | projects         list staff / projects with live status
-bagidea brains                    per-agent model/provider + context status
-bagidea jobs                      list scheduled / recurring jobs
-bagidea editor                    open the 3D Office Editor
-bagidea open "<project>"          open a project window (same as ▶)
-bagidea proposals                 team project pitches awaiting a verdict
-bagidea proposal show <id>        read a pitch in full
-bagidea proposal approve|reject <id> [note]   decide (+ optional note to the team)
-bagidea plugins                   list installed plugins
-bagidea plugin install <git-url>  add a plugin · plugin remove <id>
-bagidea lang [code]               show / set the office language (14 languages)
-bagidea say "<text>" | voices     speak via TTS / list voice presets
-bagidea image "<prompt>"   
+bagidea doctor                    why won't it load? port · proxy · f

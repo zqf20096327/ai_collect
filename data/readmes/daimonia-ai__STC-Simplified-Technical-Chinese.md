@@ -4,35 +4,26 @@
 
 ![STC 价值总览：简短表达、删除废话、自然语句、统一术语、清楚指代、保留原意、界面文案和任务回执](https://raw.githubusercontent.com/daimonia-ai/STC-Simplified-Technical-Chinese/main/assets/stc-overview-v2.png)
 
-**STC 是给 AI 用的开源中文写作规范。** STC 提供表达规则、词表和检查工具，供 AI 生成、审阅和改写中文。
+**STC 是给 AI 用的开源中文写作规范。** STC 提供表达规则、词表和检查工具，供 AI 生成、审阅和改写中文。可以通过命令行工具（CLI）、独立 skill（Agent 技能）或网页链接接入。
 
-### 主要亮点
+### STC 的做法
 
-| 价值 | 具体做法 |
+| 方面 | 做法 |
 |---|---|
-| ✂️ **输出更简短** | 先给答案或结果，按任务需要展开。 |
-| 🧹 **废话更少** | 删除客套、重复结论和无关解释，包括读者不需要的排除说明。 |
-| 💬 **少些 AI 腔** | 用熟悉的词和自然完整的句子，删掉套话、口号和空泛修饰。 |
-| 📚 **术语一致** | 同一个意思固定一种叫法，产品名和功能名遵循项目术语表。 |
-| 🎯 **指代清楚** | 说清对象、条件和动作，避免读者猜“他们”“它”指什么。 |
-| 🛡️ **保留原意** | 保留事实、数字、否定词、权限和真实不确定性。 |
-| 🖥️ **界面更易懂** | 按钮写明动作，提示和报错说清发生了什么、下一步能做什么。 |
-| 📋 **回执更清楚** | 按“做完了／需要你／知会”区分结果、用户动作和必要信息。 |
-
-### 规则和工具
-
-- **四类场景**：对话、文档、产品界面、Agent 指令，按任务选择对应规则。
-- **词表和项目术语**：提供推荐词、不推荐写法与术语表模板，统一团队用词。
-- **生成与审阅**：可设为默认输出规则，也可按需审阅并优化已有内容。
-- **三种接入方式**：命令行工具（CLI）、独立 skill（Agent 技能）、网页聊天。
-- **文件检查**：命令列出可自动识别的问题、具体改法和规则编号。上下文含义由 Agent 或人工复核。
+| 📏 **用户要求** | 用户指定的数量、长度、格式和必含内容，优先于默认写法。 |
+| ✂️ **篇幅** | 先给答案或结果，按任务需要展开。 |
+| 🧹 **多余内容** | 删除客套、重复结论和无关解释，包括读者不需要的排除说明。 |
+| 💬 **用词和句子** | 用熟悉的词和自然完整的句子，删掉套话、口号和空泛修饰。 |
+| 📚 **术语** | 同一个对象和动作固定一种叫法，产品名和功能名遵循项目术语表。 |
+| 🎯 **指代** | 说清对象、条件和动作，避免读者猜“他们”“它”指什么。 |
+| 🛡️ **原意** | 保留事实、数字、否定词、权限和真实不确定性。 |
+| 🖥️ **界面文案** | 按钮写明动作，提示和报错说清发生了什么、下一步能做什么；称读者为“你”。 |
+| 📋 **任务回执** | 按“做完了／需要你／知会”区分结果、用户动作和必要信息。 |
 
 ## 介绍视频
 
-| V0.2 介绍 | V0.1.0 介绍 |
-|---|---|
-| <video controls width="360" height="320" src="https://github.com/user-attachments/assets/72d55cce-e840-4121-bf64-1954cb1ad08a"></video> | <video controls width="360" height="320" src="https://github.com/user-attachments/assets/924fcc11-db33-4900-ae43-0f904a8393e7"></video> |
-| [YouTube](https://www.youtube.com/shorts/Wmr1ZwhSiPI) | [YouTube](https://youtu.be/XWga_oiD_vs) |
+- [V0.2 介绍（YouTube）](https://www.youtube.com/shorts/Wmr1ZwhSiPI)
+- [V0.1.0 介绍（YouTube）](https://youtu.be/XWga_oiD_vs)
 
 [快速开始](#快速开始) · [两种用法](#两种用法) · [任务回执](#任务回执) · [手动安装与检查](#手动安装与检查) · [更新版本](#更新版本) · [环境要求](#环境要求)
 
@@ -96,12 +87,12 @@ https://raw.githubusercontent.com/daimonia-ai/STC-Simplified-Technical-Chinese/m
 请根据以下要点写一份项目进展说明：【粘贴要点】
 ```
 
-### 用法二：让 Agent 审阅并优化已有内容
+### 用法二：让 Agent 审阅和改写已有内容
 
 Agent 和网页聊天使用同一段提示词：
 
 ```text
-请按 STC 审阅并优化以下中文，保留事实、数字、名称和原意。
+请按 STC 审阅并改写以下中文，保留事实、数字、名称和原意。
 给出改写稿并简要说明主要改动：【粘贴文字】
 ```
 
@@ -112,15 +103,6 @@ Agent 和网页聊天使用同一段提示词：
 ```
 
 审阅可按需调用，无须设为默认。也可以授权 Agent 从当前项目挑选一份文档，体验一次只读审阅。
-
-## 默认表达
-
-- 用自然语序和完整句子，直接给出答案或结果。
-- 删除客套、重复、空话和读者不需要的解释。
-- 保留事实、数字、名称、否定词、权限和真实不确定性。
-- 按任务需要展开，完整文稿和详细解释必须满足请求。
-
-规则见 G14、G15、G20、G21、G22 和[场景规则](rules/README.md)。
 
 ## 任务回执
 
@@ -178,7 +160,7 @@ npx skills add \
 
 可用 `--agent codex`、`--agent claude-code` 或 `--agent hermes-agent` 指定 Agent，`--global` 安装到个人技能目录。其他选项见[安装器文档](https://github.com/vercel-labs/skills#available-options)。
 
-手动安装时，从 [GitHub Releases](https://github.com/daimonia-ai/STC-Simplified-Technical-Chinese/releases/latest) 下载 `stc-skill-0.2.3.zip`，将包里的 `stc/` 放到 Agent 的技能目录。默认规则的配置方法见 [Onboarding for Agents](ONBOARDING.md)。
+手动安装时，从 [GitHub Releases](https://github.com/daimonia-ai/STC-Simplified-Technical-Chinese/releases/latest) 下载 `stc-skill-0.4.1.zip`，将包里的 `stc/` 放到 Agent 的技能目录。默认规则的配置方法见 [Onboarding for Agents](ONBOARDING.md)。
 
 ### 检查文件
 
@@ -196,34 +178,33 @@ stc check 文档.md --profile for-document --anti-echo
 
 Anti-Echo 要求每句话帮助当前读者理解、判断或操作。疑点由 Agent 结合上下文改写，或记录具体保留理由；必要的价格、权限和安全边界必须保留。[复核文件与 CI 用法](tools/README.md#anti-echo-复核)。
 
-普通聊天在回复前自查。0.2.2 起停用聊天 Stop 补审；旧安装的迁移方法见 [hook 升级说明](tools/hooks/README.md)。
-
 ## 更新版本
+
+在装过 STC 的项目根目录运行：
+
+```bash
+stc update
+```
+
+`stc update` 依次完成三件事：
+
+- 全局安装的 `stc` 命令有新版本时，用 npm 更新。
+- 更新个人目录里的全局 skill：`~/.agents`、`~/.claude`、`~/.codex`、`~/.hermes` 下的 `skills/stc`。旧目录移到 `~/.stc-backups/`；目录里不属于 STC 的文件会复制到新目录。
+- 刷新当前项目里的 skill，沿用安装时的目录，保留已启用的默认规则。
+
+每个装过 STC 的项目都要运行一次。只核对版本、不修改时，加 `--check`；其他位置的 skill 用 `--skills <目录>` 指定。
+
+0.3.1 及更早的版本没有 `update` 命令，第一次更新时运行：
+
+```bash
+npx --yes @daimonia/stc@latest update
+```
 
 让 Agent 更新时，可以发送：
 
 ```text
-请按原来的安装方式更新 STC，刷新当前项目实际引用的 skill 和规则。
-保留已启用的默认规则、其他项目配置和项目术语，最后核对实际使用的版本。
+请运行 stc update 更新 STC，最后核对实际使用的版本。
 ```
-
-### CLI 安装
-
-在已安装 STC 的项目根目录运行：
-
-```bash
-npm install -g @daimonia/stc@latest
-stc --version
-stc init
-node .claude/skills/stc/tools/cli.mjs --version
-```
-
-`npm install` 更新本机 CLI，`stc init` 刷新项目中的 skill 和规则。两条版本命令的结果须一致。
-
-- 每个已安装 STC 的项目都需要运行一次 `stc init`。
-- 安装时用了 `--dir`，更新时须使用相同目录，并修改版本检查命令中的路径。
-- `--dir` 只改变 skill 的位置；项目配置仍写在当前目录。
-- 全局 skill 按原安装方式更新。
 
 ### 单独 skill 安装
 
@@ -233,7 +214,7 @@ node .claude/skills/stc/tools/cli.mjs --version
 npx skills update stc
 ```
 
-全局 skill 使用 `npx skills update stc --global`。手动安装的 skill，下载新包后替换原技能目录。更新时保留项目术语和现有默认配置。
+全局 skill 使用 `npx skills update stc --global`。手动安装的 skill，用 `stc update --skills <skill目录>` 更新。
 
 用 `node <skill目录>/tools/cli.mjs --version` 核对 skill 版本。skill 和 npm 包从同一份源文件发布。
 
@@ -278,24 +259,24 @@ STC 给中文补上这一套，从一开始就按 AI agent 能直接使用来设
 
 | 组成 | 内容 | 位置 |
 |---|---|---|
-| 规则 | 通用规则，加四个场景各自的规则 | [`rules/`](rules/) |
+| 规则 | 通用规则、四个场景的规则、改写规则，以及合并后的界面参考 | [`rules/`](rules/) |
 | 词表 | 推荐词（一个词一个意思）、不推荐写法（附推荐写法）、项目术语表模板 | [`dictionary/`](dictionary/) |
 | 核心规则片段 | 可粘贴到 AGENTS.md 或 CLAUDE.md 的核心规则 | [`snippets/agents-md.md`](snippets/agents-md.md) |
 | skill | agent 写、改、审中文时加载的技能包 | [`SKILL.md`](SKILL.md) |
-| 命令行工具 | `stc init` 把 STC 装进项目，`stc check` 找出机器能判断的问题 | [`tools/`](tools/) |
+| 命令行工具 | `stc init` 把 STC 装进项目，`stc check` 找出机器能判断的问题，`stc update` 更新到最新版本 | [`tools/`](tools/) |
 | 安装引导 | 默认使用的设置方法和首次文档审阅体验 | [`ONBOARDING.md`](ONBOARDING.md) |
 | 网页入口 | 可通过链接读取的引导、完整规则和词表 | [`WEB.md`](WEB.md) |
 | 测试任务 | 用于评估 skill 的任务和预期结果 | [`evals/`](evals/) |
 
 ### 四个场景
 
-写之前先判断在写哪类文字，再用“通用规则 + 对应场景的规则”。
+规则按读者和用途分成四个场景，另有一组通用规则。skill 按任务类型读取所需的规则；界面文案读取合并后的界面参考，其中包含界面规则和词表。
 
 | 场景 | 写的是什么 | 和其他场景的主要区别 |
 |---|---|---|
 | for chat | agent 在对话里回复人 | 可以用“我”“你”；第一句回答问题 |
-| for document | 给人读的文字：报告、方案、手册、代码注释、提交说明 | 主语写名称，不写“我们”“你们” |
-| for web dev | 网页和应用界面上给用户看的文字 | 不用复数人称和第三人称代词；按钮以动词开头 |
+| for document | 给人读的文字：报告、方案、手册、代码注释、提交说明 | 主语写名称；面向客户的方案文案按 W2 写人称 |
+| for web dev | 网页和应用界面上给用户看的文字 | “你”指读者，“我”“我们”指产品方（W2）；同一处界面统一称呼读者（W10）；按钮以动词开头 |
 | for instruction writing | 写给 agent 执行的规则：系统提示词、AGENTS.md、skill | 要求的强度只用“必须、不得、宜、不宜、可、不必、能、不能” |
 
 ## 词表怎么定
@@ -320,7 +301,7 @@ ASD-STE100 的版权归 ASD（Aerospace, Security and Defence Industries Associa
 - GB/T 15834—2011《标点符号用法》
 - GB/T 15835—2011《出版物上数字用法》
 
-## 相关开源项目
+## 同类开源项目
 
 - [blader/humanizer](https://github.com/blader/humanizer)：识别并改写常见的模型写作套话
 - [lemonhall/asd-ste100-skill-zh](https://github.com/lemonhall/asd-ste100-skill-zh)：中文改写 skill 与检查脚本

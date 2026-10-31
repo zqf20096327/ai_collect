@@ -39,11 +39,19 @@ Cloud and Civitai generation happen in your account on their websites. Frameforg
 | **Video** | Animate a still, create/edit a shot, then use Story, Director and Timeline to assemble a film |
 | **Audio** | Narration, dialogue, transcripts and subtitles; additional speech tools have separate requirements |
 | **Library** | Distinct workflow tasks, creative recipes and your saved results |
-| **Advanced** | A textured 3D prop, precision tools or upcoming training features |
+| **Advanced** | A textured 3D prop, precision tools and character training preparation |
 
 - **See the graph:** inspect, edit and export real ComfyUI graphs, with source and model links.
 - **Find the right workflow:** Search / Ctrl+K opens Guide. Catalog matching works without an LLM. Optionally connect your own supported chat endpoint; Ollama is not mandatory. Guide proposes steps and links, and does not start paid or local renders itself.
 - **Keep creating:** My work reuses saved media. Proof view compares actual pixels. Rough cut turns selected clips into a draft film without generating new shots.
+- **Build on a creative canvas:** arrange images, clips and GLBs, save a 3D camera, capture a still or record an orbit. Carry a reference into editing, animation and reusable cast records.
+- **Produce: one idea → a finished video.** Video → Produce plans the shots for a format, renders every keyframe and clip on your ComfyUI one at a time, records Kokoro narration, adds captions and exports a rough cut. It stops for your review after keyframes and after clips (or runs straight through), lets you remake any single shot, and can be driven by your assistant through the `studio_produce` MCP tool.
+- **Move a character with your own motion:** Wan Animate 2 (full and fast) turns a clip of you moving plus a picture of an original character into the character performing it. Experimental SCAIL-2 replaces a person in a video. Stable Audio 3 adds sound effects, ambience and music from words.
+- **Start from a template:** Library → Templates lists basic workflows (each opens locally in ComfyUI or as the same official template on Comfy Cloud) and popular video formats.
+- **Start with a format:** explainer with sources, Life as a…, short drama episode, fruit drama, What if…, transformation, satisfying loop, an experimental single-mic duet, plus narrative and product stories, create timed 15/30/60-second plans. Reuse a saved cast, then make the selected clips into a film.
+- **Finish a version:** CPU grades, audio-preserving transitions and silent MP4/GIF loops reuse existing clips. Export a film as an editable OTIO/media package. [Exact scope and steps](CREATIVE-WORKSPACE.md).
+- **Loop, restyle and finish:** make seamless H3 loops with matching sound, restyle an existing loop through H3 ControlNet, match a reference image's style with Qwen 2511, upscale video with SeedVR2 or Real-ESRGAN, and turn a 3D layout into a shot with LTX Layout to Render. These are pinned graphs prepared in Studio and run in ComfyUI; check each workflow's listed nodes and files first.
+- **Prepare a character LoRA:** export captioned training images, a separate held-out set and either a FLUX.1/AI Toolkit starter config or an experimental FLUX 3 Klein command for the official diffusers trainer. A trainer and the matching base model are separate; Frameforge does not run training yet.
 - **Use your assistant:** the STDIO MCP server supports discovery, requirements, graphs, local generation and production tools. Its native MCP Apps panel has visual workflows and saved results; it is not a nested website. Some advanced controls use JSON rather than the website's specialized editors.
 - **Stay with open weights:** the header's Open weights pill restricts execution to reviewed local graphs/processors and hides partner routes. Model licenses still apply. Change the top/side layout in Settings.
 
@@ -80,4 +88,4 @@ The raw MCP server is read-only unless started with `--allow-writes`. The bundle
 
 [Quick start and recovery](QUICKSTART.md) · [Detailed setup](GITHUB-SETUP.md) · [Workspace guide](WORKSPACE-GUIDE.md) · [MCP setup](MCP-GUIDE.md) · [Integration scope](INTEGRATION-UPGRADE.md) · [Open weights and terms](OPEN-WEIGHTS.md) · [Remaining checklist](REMAINING-CHECKLIST.md)
 
-Release **0.8.13**. Original code is MIT licensed. Models, upstream graphs and third-party components retain their own terms; see [notices](THIRD-PARTY-NOTICES.md). The source release excludes model weights, personal media, machine settings, credentials and private judge deployments. Frameforge is independent of Higgsfield and includes none of its proprietary source or hosted service.
+Release **0.9.0**. Original code is MIT licensed. Models, upstream graphs and third-party components retain their own terms; see [notices](THIRD-PARTY-NOTICES.md). The source release excludes model weights, personal media, machine settings, credentials and private judge deployments. Frameforge is independent of Higgsfield and includes none of its proprietary source or hosted service.

@@ -218,6 +218,11 @@ files, Docker, access codes, BYOK, tracing and recovery.
 
 ## Security and deployment
 
+Three ways in, chosen per deployment: no gate (local use), operator access
+codes billed to the deployment, or email-and-password accounts that pay with
+the keys they add after signing in ([how](docs/operating-guide.md#accounts)).
+An account's keys stay in its browser and are never stored by the server.
+
 Run URLs carry **128 bits of randomness** and act as read capabilities:
 anyone with the full URL can read that run until retention removes it.
 Changing a code-owned run additionally requires its owner/admin code; ownerless
@@ -282,11 +287,12 @@ the repository root are something else: frozen experiment runners.
 | `scripts/` | Operational report, offline audits and scripted demos |
 | `docs/` | Current guides plus dated protocols, results and errata; [start at the map](docs/README.md) |
 | Root `benchmark*.py` | The benchmark commands above |
-| Other root `*.py` (`openalex_*`, `evidence_gap_*`, `report_evidence_*`, `ablation*`, …) | Experiment runners. Not needed to run or understand the application |
+| `experiments/` | Runners, preflights and review tools of closed experiments, one directory per study; [each one is named](docs/experiments-map.md) with its record. Not needed to run or understand the application |
 
-The experiment runners stay at the root deliberately: their protocols lock
-source file paths and hashes, so moving them would invalidate those records
-(see the [experiment index](docs/experiment-index.md)). New tools go under `scripts/`.
+The experiment files are frozen where they are: their protocols lock paths and
+hashes, and the layout they recorded before 2026-10-31 is kept at the tag
+`archive/root-experiments-2026-10` (see the [experiment index](docs/experiment-index.md)).
+New tools go under `scripts/`.
 
 ## Limitations and open questions
 

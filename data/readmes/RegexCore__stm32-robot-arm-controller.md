@@ -1,0 +1,1465 @@
+# Robot Arm Controller Firmware
+
+Embedded firmware for a **6-DOF robotic arm with gripper** based on an STM32 microcontroller.
+The project combines low-level hardware access in C with higher-level control logic in C++ and provides both **manual joystick control** and **automatic positioning using forward and inverse kinematics**, with support for **AI-assisted robot control via an external MCP host bridge**.
+
+<p align="center">
+  <img src="docs/images/robot-arm-demo.gif" width="800"><br>
+  <em>Demo: Robotic arm movement and control.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/robot-arm.png" width="800"><br>
+  <em>Figure: Robotic arm hardware prototype.</em>
+</p>
+
+## Engineering Highlights
+
+- **Manual and automatic control:** Analog joystick input for direct joint control and inverse kinematics for Cartesian point-to-point positioning.
+- **Kinematics and calibration:** Forward kinematics for position calculation, with configurable servo offsets and direction inversion.
+- **Motion control:** Gradual interpolation toward target joint angles and emergency stop functionality.
+- **STM32 peripheral integration:** Nominal 100 Hz control loop scheduled by timer interrupts and continuous ADC acquisition via DMA; blocking UART output can delay control cycles.
+- **Bluetooth and AI integration:** Bidirectional HC-05 communication for remote motion commands and status queries, with AI-assisted control via an external [MCP host bridge](#ai--mcp-host-bridge-hc-05).
+- **Modular C/C++ architecture:** C-based peripheral drivers separated from C++ application logic.
+
+This project was developed as part of personal advanced training in embedded C / C++ and robotics (see [Disclaimer](#disclaimer)).
+
+---
+
+## Table of Contents
+
+- [Robot Arm Controller Firmware](#robot-arm-controller-firmware)
+  - [Engineering Highlights](#engineering-highlights)
+  - [Table of Contents](#table-of-contents)
+  - [Project Overview](#project-overview)
+  - [How the System Works](#how-the-system-works)
+  - [Hardware Platform](#hardware-platform)
+    - [STM32F446 Pin Configuration](#stm32f446-pin-configuration)
+    - [External Servo Controller (PCA9685 Servo Shield)](#external-servo-controller-pca9685-servo-shield)
+    - [Servo Channel Assignment](#servo-channel-assignment)
+    - [Analog Input Channels](#analog-input-channels)
+    - [Digital Input Pins](#digital-input-pins)
+    - [USART Interface](#usart-interface)
+    - [Control Panel](#control-panel)
+      - [Main Features](#main-features)
+      - [Electrical Interface](#electrical-interface)
+  - [Software Architecture](#software-architecture)
+    - [Design Principles](#design-principles)
+      - [Low Coupling](#low-coupling)
+      - [Dependency Injection](#dependency-injection)
+      - [High Cohesion](#high-cohesion)
+  - [Project Structure](#project-structure)
+  - [Module Description](#module-description)
+  - [Configuration (`config/`)](#configuration-config)
+  - [Control Logic (`controller/`)](#control-logic-controller)
+    - [Responsibilities of `RobotController`](#responsibilities-of-robotcontroller)
+    - [Control Cycle](#control-cycle)
+  - [Hardware Abstraction (`hardware/`)](#hardware-abstraction-hardware)
+    - [ADC](#adc)
+      - [Main Characteristics](#main-characteristics)
+      - [Used Channels](#used-channels)
+    - [GPIO](#gpio)
+      - [Defined Inputs](#defined-inputs)
+    - [Timer](#timer)
+      - [1. Periodic Control Interrupt (TIM7)](#1-periodic-control-interrupt-tim7)
+      - [2. SysTick Timer](#2-systick-timer)
+    - [USART](#usart)
+      - [Main Characteristics](#main-characteristics-1)
+    - [I2C](#i2c)
+  - [Functional Libraries (`libraries/`)](#functional-libraries-libraries)
+    - [Diagnostic Logger](#diagnostic-logger)
+      - [Features](#features)
+    - [Joystick](#joystick)
+    - [Responsibilities](#responsibilities)
+    - [Kinematics](#kinematics)
+      - [Core Functionality](#core-functionality)
+      - [Forward Kinematics](#forward-kinematics)
+      - [Inverse Kinematics](#inverse-kinematics)
+      - [Offset and Inversion Handling](#offset-and-inversion-handling)
+    - [PCA9685 Servo Driver](#pca9685-servo-driver)
+      - [Main Characteristics](#main-characteristics-2)
+      - [Driver Tasks](#driver-tasks)
+    - [Servo Controller](#servo-controller)
+      - [Responsibilities](#responsibilities-1)
+      - [Initialization](#initialization)
+      - [Smooth Motion](#smooth-motion)
+      - [Safety Behaviour](#safety-behaviour)
+  - [Data Model (`model/`)](#data-model-model)
+  - [Application Entry Point (`main.cpp`)](#application-entry-point-maincpp)
+    - [Startup Sequence](#startup-sequence)
+    - [Main Loop](#main-loop)
+  - [Control Concept](#control-concept)
+  - [Manual Mode](#manual-mode)
+  - [Automatic Mode](#automatic-mode)
+  - [AI + MCP Host Bridge (HC-05)](#ai--mcp-host-bridge-hc-05)
+    - [How It Works (Short)](#how-it-works-short)
+    - [What Is in This Repository?](#what-is-in-this-repository)
+    - [Control Flow (AI → Robot)](#control-flow-ai--robot)
+    - [Host Application](#host-application)
+    - [From AI Request to Robot Movement](#from-ai-request-to-robot-movement)
+    - [Getting Connected](#getting-connected)
+    - [Protocol Reference](#protocol-reference)
+  - [User Manual](#user-manual)
+  - [Kinematics Concept](#kinematics-concept)
+    - [Current Kinematic Model Limitations](#current-kinematic-model-limitations)
+    - [Kinematic Reference Alignment (Servo Offset Calibration)](#kinematic-reference-alignment-servo-offset-calibration)
+    - [Why Offsets Are Necessary](#why-offsets-are-necessary)
+    - [Why Inversion Is Necessary](#why-inversion-is-necessary)
+    - [Result](#result)
+  - [Timing and Real-Time Behaviour](#timing-and-real-time-behaviour)
+    - [Control Cycle](#control-cycle-1)
+    - [Time Base](#time-base)
+    - [ADC Behaviour](#adc-behaviour)
+  - [Safety Mechanisms](#safety-mechanisms)
+    - [Emergency Stop](#emergency-stop)
+    - [Angle Limits](#angle-limits)
+    - [Controlled Motion](#controlled-motion)
+    - [Structured Control Scheduling](#structured-control-scheduling)
+  - [Software Quality](#software-quality)
+    - [I²C Communication Signal Analysis](#ic-communication-signal-analysis)
+    - [UART / Bluetooth Debug Output](#uart--bluetooth-debug-output)
+  - [Development Environment](#development-environment)
+  - [Build Notes](#build-notes)
+  - [Possible Future Improvements](#possible-future-improvements)
+  - [Disclaimer](#disclaimer)
+  - [Project Information](#project-information)
+  - [License](#license)
+  - [Third-Party Components](#third-party-components)
+
+---
+
+## Project Overview
+
+The purpose of this project is to control a robotic arm with multiple axes using an STM32 microcontroller.  
+The system allows the arm to be operated in two different ways:
+
+1. **Manual mode**, in which the user directly controls the robot by means of analog joysticks and buttons.
+2. **Automatic mode**, in which the robot moves to predefined Cartesian target positions by calculating the required joint angles through inverse kinematics.
+
+The firmware integrates several functional areas:
+
+- hardware-oriented peripheral control,
+- input acquisition,
+- motion control,
+- mathematical kinematics,
+- diagnostic output,
+- and structured software coordination.
+
+The overall goal is to provide a clean and technically robust embedded software architecture for robotics applications.
+
+---
+
+## How the System Works
+
+1. The joystick panel generates analog and digital control signals.
+2. ADC and GPIO drivers continuously acquire the input state.
+3. The RobotController evaluates the selected operating mode.
+4. In manual mode, target joint angles are updated directly from joystick input.
+5. In automatic mode, inverse kinematics calculates joint targets from Cartesian coordinates.
+6. The ServoController interpolates motion toward the target angles.
+7. The PCA9685 generates PWM signals to drive the servos.
+
+---
+
+## Hardware Platform
+
+<p align="center">
+  <img src="docs/images/hardware-architecture.png" width="650"><br>
+  <em>Figure: Hardware architecture of the robotic arm control platform.</em>
+</p>
+
+The firmware is designed for the following hardware components:
+
+- **Microcontroller Platform:** ST Nucleo-F446RE development board (STM32F446RE, ARM Cortex-M4)
+- **Robot Manipulator Platform:** Joy-IT multi-axis robotic arm kit with integrated hobby servo drives
+- **External PWM Servo Controller:** Adafruit PCA9685 16-Channel PWM Servo Shield (I²C interface)
+- **Wireless Communication Module:** HC-05 Bluetooth serial transceiver connected to USART2 (TX diagnostics and RX motion commands and status queries)
+- **Manual Control Interface:** Custom dual-axis analog joystick robot control panel PCB
+- **Digital Input Devices:** Emergency stop push button, automatic mode selection switch and joystick push buttons located on the control panel
+- **Control Panel Interconnection Cable:** 
+  40-pin IDC ribbon cable extension (approx. 10 cm) used to connect the 
+  custom joystick control panel PCB with the STM32 control electronics.
+
+### STM32F446 Pin Configuration
+
+<p align="center">
+  <img src="docs/images/stm32-cubemx-pinout.png" width="700"><br>
+  <em>Figure: STM32CubeMX pin configuration used for the robotic arm controller firmware.</em>
+</p>
+
+The figure above illustrates the STM32 pin assignment and peripheral configuration
+used in the project. It shows the mapping of ADC channels, GPIO inputs,
+USART debug output and the I²C connection to the PCA9685 servo controller.
+
+The configuration was created with STM32CubeMX and reflects the hardware setup
+used by the firmware on the Nucleo-F446RE platform.
+
+The corresponding STM32CubeMX project file (`.ioc`) is included in the repository.
+
+### External Servo Controller (PCA9685 Servo Shield)
+
+The robotic arm servos are driven by an external PWM controller.
+
+The system uses an  
+**Adafruit 16-Channel PWM / Servo Shield (PCA9685, I²C interface)**  
+which provides 12-bit PWM signal generation for up to 16 servo channels.
+
+Key characteristics:
+
+- I²C controlled PWM generation
+- 12-bit resolution
+- Configurable output frequency (typically 50 Hz for hobby servos)
+- Stackable shield design
+- Logic voltage compatible with 3.3 V and 5 V systems
+- Maximum PWM frequency up to approx. 1.6 kHz
+
+The shield is connected to the STM32 microcontroller via the I²C bus and is responsible for generating all servo control signals.
+
+The servo supply voltage is provided by an external power supply
+connected directly to the servo shield power terminals.
+The microcontroller board is not used to power the servos.
+
+A common ground connection between the servo power supply,
+servo shield and microcontroller is required for reliable operation.
+
+### Servo Channel Assignment
+
+Each robot axis servo is connected to a dedicated PWM output channel of the servo shield.
+
+| Motor ID | Robot Axis | PCA9685 PWM Channel |
+|---------|-----------|---------------------|
+| Motor 0 | A1 – Base rotation | PWM channel 0 |
+| Motor 1 | A2 – Shoulder axis | PWM channel 1 |
+| Motor 2 | A3 – Elbow axis | PWM channel 2 |
+| Motor 3 | A4 – Tool tilt | PWM channel 3 |
+| Motor 4 | A5 – Wrist rotation | PWM channel 4 |
+| Motor 5 | G6 – Gripper | PWM channel 5 |
+
+The remaining PWM channels are currently unused and may be used for future extensions such as additional degrees of freedom or auxiliary actuators.
+
+### Analog Input Channels
+
+The joystick positions are acquired through ADC channels:
+
+- `PA0` → Left joystick X-axis
+- `PA1` → Left joystick Y-axis
+- `PA4` → Right joystick X-axis
+- `PB0` → Right joystick Y-axis
+
+### Digital Input Pins
+
+The push buttons are connected to:
+
+- `PC10` → Left joystick button
+- `PC11` → Right joystick button
+- `PC12` → Emergency stop button
+- `PA15` → Automatic mode on/off button
+
+### USART Interface
+
+- `PA2` → USART2 TX
+- `PA3` → USART2 RX
+
+Connect PA2 to HC-05 RX, HC-05 TX to PA3, and share GND. Use 3.3 V-compatible
+UART logic. If the Nucleo virtual COM port also drives PA3, disconnect that
+TX connection before connecting the HC-05 TX; do not connect two outputs together.
+
+### Control Panel
+
+<p align="center">
+  <img src="docs/images/robot-control-panel.png" width="600"><br>
+  <em>
+    Figure: Custom dual-joystick robot control panel PCB (EasyEDA Pro).<br>
+    The joystick 3D model shown is “Joystick KY-023” by Thingiverse user UniversalXx,<br>
+    licensed under Creative Commons Attribution-ShareAlike (CC-BY-SA):<br>
+    https://www.thingiverse.com/thing:7005492
+  </em>
+</p>
+
+<br>
+
+<p align="center">
+  <img src="docs/images/robot-control-circuit.png" width="600"><br>
+  <em>Figure: Custom dual-joystick robot control panel circuit (EasyEDA Pro).</em>
+</p>
+
+<br>
+
+For this project, a dedicated control panel PCB was specifically designed and developed using EasyEDA Pro.
+
+The panel provides all necessary manual control inputs in a compact and robust hardware interface.  
+It integrates two analog joystick modules and multiple push buttons for mode selection and safety control.
+
+#### Main Features
+
+- Dual analog joystick modules for intuitive multi-axis manual control  
+- Integrated joystick push buttons for additional control functions  
+- Dedicated emergency stop button for safe operation  
+- Automatic mode selection button  
+- External pin headers for connection to the STM32 control electronics  
+- Clearly structured PCB layout with mounting holes for mechanical fixation  
+
+#### Electrical Interface
+
+The control panel connects directly to the microcontroller board and provides:
+
+- **Analog outputs** from joystick potentiometers routed to ADC input channels  
+- **Digital switch signals** for joystick buttons, emergency stop and mode selection  
+- **Common ground and supply routing** through board connectors  
+
+The PCB was designed to ensure reliable signal routing, low electrical noise on analog inputs and easy mechanical integration into the robot control housing.
+
+This dedicated hardware interface enables precise and ergonomic real-time control of the robotic arm during manual operation.
+
+---
+
+## Software Architecture
+
+The following class diagram shows the core software components and their most relevant relationships:
+
+```mermaid
+classDiagram
+direction TB
+
+class MainApp {
+  +main()
+}
+class RobotController {
+  +init()
+  +periodicUpdate()
+}
+class Joystick {
+  +update()
+  +isEmergencyStop() bool
+  +isAutoModeOn() bool
+}
+class ServoController {
+  +init()
+  +moveAllToTargets()
+}
+class Kinematics {
+  +forward() Vec3
+  +inverse() IKResult
+}
+class JointAngles {
+  +targetAngles
+  +currentAngles
+}
+class ServoLimits {
+  +minAngle / maxAngle
+  +minPulse / maxPulse
+}
+class PCA9685Driver {
+  +setPWM()
+}
+class STM32Peripherals {
+  +ADC / GPIO / I2C / USART
+}
+class MCPHostBridge {
+  <<external>>
+}
+
+MainApp --> RobotController : creates & injects
+
+RobotController --> Joystick : reads input
+RobotController --> ServoController : motion commands
+RobotController --> Kinematics : FK / IK
+RobotController *-- JointAngles : arm state
+
+ServoController ..> Joystick : E-stop check
+ServoController *-- ServoLimits : limits
+ServoController --> PCA9685Driver : PWM
+
+Joystick --> STM32Peripherals : ADC / GPIO
+PCA9685Driver --> STM32Peripherals : I2C
+MCPHostBridge <--> STM32Peripherals : HC-05 / Bluetooth serial
+STM32Peripherals <--> RobotController : USART2 motion commands / status queries & responses
+```
+
+The firmware follows a layered and modular software structure.  
+The main idea behind the architecture is to separate concerns so that hardware access, application control logic, data handling and mathematical processing remain clearly distinguishable.
+
+At a high level, the project can be divided into the following areas:
+
+- **Configuration layer**  
+  Static robot and system parameters
+- **Hardware abstraction layer**  
+  Peripheral-specific drivers
+- **Functional libraries**  
+  Reusable robot-specific logic
+- **Data model layer**  
+  Shared simple data structures
+- **Application layer**  
+  Startup and system orchestration
+
+This modular approach makes it easier to extend the robot, replace hardware-specific implementations or adapt the system to other robot configurations.
+
+### Design Principles
+
+Three fundamental software engineering principles guided the design of this firmware:
+**low coupling**, **dependency injection** and **high cohesion**.
+Applying them consistently results in a codebase that is easier to understand, maintain and extend.
+
+#### Low Coupling
+
+Low coupling means that modules interact with each other only through well-defined, minimal interfaces
+and do not depend on each other's internal implementation details.
+
+In this project, low coupling is achieved through several concrete design decisions:
+
+- **Hardware abstraction isolates peripheral code.**  
+  The higher-level C++ application logic never accesses STM32 registers directly.
+  All register-level operations are encapsulated inside the dedicated hardware drivers.
+  Replacing or modifying a peripheral driver does not require changes to the application.
+
+- **I²C transport is separated from the PCA9685 device driver.**  
+  The I²C hardware module handles only generic bus communication.
+  The PCA9685 driver builds on top of it and remains focused on PWM and servo-related register logic.
+  Neither module needs to know the internals of the other.
+
+- **`RobotController` receives its dependencies by reference.**  
+  The objects `Joystick`, `Kinematics` and `ServoController` are created in `main()` and passed into
+  `RobotController` by reference. The controller coordinates their interaction but does not own them
+  and is not responsible for their lifecycle. This makes each component independently testable
+  and replaceable without modifying the controller itself.
+
+- **C hardware drivers and C++ application modules are kept separate.**  
+  The C-based drivers in `hardware/` expose a plain C interface and have no knowledge of any C++ class.
+  The C++ modules in `libraries/` and `controller/` call the C drivers through their public API only.
+
+#### Dependency Injection
+
+This firmware uses constructor-based dependency injection for central control components.
+`RobotController` does not create `Joystick`, `Kinematics` or `ServoController` internally.
+Instead, all required collaborators are created in `main()` and injected via references.
+
+This has practical advantages for embedded systems:
+
+- **Predictable ownership and lifetime**  
+  Object lifetime is explicit and controlled at application startup.
+- **Better testability**  
+  `RobotController` can be tested with alternative implementations or controlled test doubles.
+- **Lower module coupling**  
+  The controller depends only on behaviour exposed by its collaborators, not on their construction.
+- **Simpler replacement of subsystems**  
+  Components can be exchanged (for example a different servo controller strategy) with minimal impact.
+
+Current wiring follows this pattern:
+
+```cpp
+Joystick joystick;
+Kinematics kinematics(config::activeConfig.upperArmLength,
+                      config::activeConfig.lowerArmLength);
+ServoController servocontroller(joystick);
+RobotController robotcontroller(joystick, kinematics, servocontroller);
+```
+
+This explicit assembly in one place keeps startup behaviour transparent and avoids hidden dependencies.
+
+#### High Cohesion
+
+High cohesion means that each module has a single, clearly defined responsibility
+and contains only the functionality that directly belongs to that purpose.
+
+In this project, every module is focused on exactly one concern:
+
+| Module | Single responsibility |
+|---|---|
+| `hw_adc` | ADC peripheral initialisation and DMA-based value acquisition |
+| `hw_gpio` | GPIO pin configuration and digital input reading |
+| `hw_i2c` | Low-level I²C bus communication |
+| `hw_usart` | USART TX output and interrupt-driven RX line queue |
+| `timer_interrupt` | Periodic control tick generation via TIM7 |
+| `pca9685` | PCA9685 PWM controller configuration and channel output |
+| `Joystick` | Acquisition and storage of the complete user input panel state |
+| `Kinematics` | Forward and inverse kinematic calculations |
+| `ServoController` | Servo angle management, limit enforcement and smooth motion |
+| `Logger` | Formatted diagnostic output forwarded to USART |
+| `robot_config.hpp` | Central storage of all robot-specific configuration constants |
+| `model/types.hpp` | Shared lightweight data structures without business logic |
+| `RobotController` | System coordination and operating mode management |
+
+Because each module handles only its own concern, a change in one area
+(for example replacing the servo driver or extending the kinematics model)
+does not require unrelated modules to be modified.
+
+#### Combined Effect
+
+Low coupling and high cohesion complement each other directly:
+high cohesion ensures each module has a focused purpose,
+while low coupling ensures the connections between modules remain minimal and clean.
+
+Together, these principles improve:
+
+- **Maintainability** — changes are localised and do not propagate through the codebase,
+- **Readability** — each file has a clear and understandable scope,
+- **Extensibility** — new features can be added without restructuring existing modules,
+- **Reliability** — isolated modules are easier to verify and less likely to cause side effects.
+
+---
+
+## Project Structure
+
+The tree below highlights the firmware modules and the repository files used to
+configure the development environment. The MCP configuration and J-Link helper
+files support host-side development; they are not part of the STM32 firmware.
+
+```text
+.
+├── .mcp.json
+├── .vscode/
+│   └── tasks.json
+├── config/
+├── controller/
+├── docs/
+│   ├── user-manual.md
+│   └── vscode-setup.md
+├── hardware/
+│   ├── adc/
+│   ├── gpio/
+│   ├── i2c/
+│   ├── timer/
+│   └── usart/
+├── libraries/
+│   ├── diagnostic/
+│   ├── joystick/
+│   ├── kinematics/
+│   ├── pca9685/
+│   ├── protocol/
+│   └── servo/
+├── scripts/
+│   └── flash-debug.jlink
+├── model/
+└── main.cpp
+```
+
+`libraries/protocol/` parses remote motion commands received over USART2.
+The `.mcp.json` file configures the VS Code MCP client connection; it does not
+contain the MCP server implementation. `scripts/flash-debug.jlink` provides
+J-Link Commander instructions used by the VS Code flash task.
+
+---
+
+## Module Description
+
+## Configuration (`config/`)
+
+The `config` directory contains the robot-specific configuration data.
+
+A central file in this directory is:
+
+* `robot_config.hpp`
+
+This file defines configuration parameters such as:
+
+* servo offset values,
+* servo inversion settings,
+* arm segment lengths,
+* movement limits,
+* startup angles,
+* and other robot-specific constants.
+
+These parameters are grouped into structures and declared as constants.
+This ensures that configuration data remains fixed during runtime and cannot be modified unintentionally by application logic.
+
+This design also simplifies adaptation of the firmware to a modified robotic arm, because geometry and servo settings can be changed in one central place without affecting the rest of the implementation.
+
+---
+
+## Control Logic (`controller/`)
+
+The control layer contains the central control logic of the robotic arm.
+
+The key class is:
+
+* `RobotController`
+
+This class acts as the central coordinator of the system and connects the main functional components:
+
+* `Joystick`
+* `Kinematics`
+* `ServoController`
+
+These components are passed to the controller by reference, which keeps ownership outside the controller and avoids unnecessary coupling.
+
+### Responsibilities of `RobotController`
+
+* moving the robot into a defined startup or reference position,
+* storing and managing current joint angle values,
+* configuring servo offsets and inversion for kinematics,
+* evaluating user inputs,
+* switching between manual and automatic mode,
+* initiating automatic object transport routines,
+* calling the motion controller with updated target values.
+
+### Control Cycle
+
+The controller is executed periodically through a dedicated update routine.
+A timer interrupt triggers the control cycle every 10 ms.
+When the corresponding control flag is set, the main loop calls the periodic update method of the controller.
+
+This method is responsible for evaluating the current system state and choosing the correct control strategy depending on the selected operating mode.
+
+---
+
+## Hardware Abstraction (`hardware/`)
+
+The `hardware` directory contains low-level, hardware-oriented C libraries for the STM32 peripherals.
+These modules encapsulate direct register configuration and peripheral-specific implementation details.
+
+This separation keeps the higher-level C++ logic independent of hardware register handling.
+
+### ADC
+
+The ADC driver is responsible for reading the analog joystick positions.
+
+#### Main Characteristics
+
+* Four analog channels are sampled
+* ADC is configured in scan mode
+* ADC runs continuously
+* DMA transfers results automatically into RAM
+* The CPU can access the current input values at any time
+
+#### Used Channels
+
+* `PA0` → Left joystick X
+* `PA1` → Left joystick Y
+* `PA4` → Right joystick X
+* `PB0` → Right joystick Y
+
+The measured values are written into an array such as `adc_values[4]`.
+
+Since DMA handles the transfer automatically, the CPU does not need to poll conversion results manually.
+This reduces processing overhead and allows responsive input handling.
+
+The conversion sequence for all four channels takes approximately 495 µs, meaning that fresh values are available continuously.
+
+Because the values are stored as 16-bit quantities on a 32-bit system, reads are effectively safe for the intended use case in this design.
+
+---
+
+### GPIO
+
+The GPIO driver handles the digital inputs of the control panel.
+
+#### Defined Inputs
+
+* `PC10` → Left joystick button
+* `PC11` → Right joystick button
+* `PC12` → Emergency stop
+* `PA15` → Auto mode on/off
+
+The pins are configured as digital inputs.
+
+An external pull-up network is already available on the hardware, therefore no internal pull-up configuration is required and the corresponding configuration uses no internal pull resistor.
+
+Because the buttons pull the line to low level when pressed, the electrical logic is active-low.
+For easier use in the software, the read functions return an inverted logical value so that a pressed button corresponds to a logical high or `true`.
+
+This simplifies application-level processing and makes the input semantics more intuitive.
+
+---
+
+### Timer
+
+The timer subsystem is divided into two different purposes.
+
+#### 1. Periodic Control Interrupt (TIM7)
+
+A timer-based interrupt using TIM7 is configured to trigger every 10 ms.
+
+Its job is not to execute the entire robot logic directly inside the interrupt, but rather to set a control flag.
+The actual control logic is then executed in the main program context when this flag is detected.
+
+This is a common and robust embedded design pattern because it keeps the interrupt routine short and predictable while still enabling periodic control execution.
+
+#### 2. SysTick Timer
+
+The system also uses the ARM CMSIS-based SysTick timer.
+
+It is configured to generate an interrupt every 1 ms.
+Inside the `SysTick_Handler`, a millisecond counter is incremented.
+
+This counter can be used for:
+
+* delays,
+* timeout handling,
+* simple time measurements,
+* scheduling helper functions.
+
+The counter is typically defined as `volatile` to ensure correct access from both interrupt context and main program flow.
+
+---
+
+### USART
+
+The USART driver provides debug output and receives remote motion commands and status
+queries over STM32 USART2.
+
+#### Main Characteristics
+
+* Uses `USART2`
+* TX and interrupt-driven RX
+* Baud rate: `9600`
+* Format: `8N1`
+* TX pin: `PA2`
+* RX pin: `PA3` (AF7, pull-up)
+
+The RX interrupt assembles LF-terminated ASCII lines in a bounded FIFO.
+Parsing, inverse kinematics and motion execution run in the controller, never in the ISR.
+One received line is processed per controller cycle. Motion commands are retained
+in a separate bounded FIFO, while `@STATUS(#ID)` queries report position, angles,
+targets, mode, physical inputs and queue occupancy without waiting for motion completion.
+Manual mode accepts remote targets as well as joystick input: a remote movement has
+priority until it completes, then the next queued command runs; with no pending command,
+joystick control resumes. Automatic transport rejects remote motion commands but
+allows status queries; its existing sequence is advanced cyclically rather than blocking.
+
+The HC-05 carries logs and protocol responses on the same serial connection.
+See the [remote command protocol](docs/user-manual.md#remote-target-commands-hc-05)
+for framing, responses, limits and host/MCP integration. MCP is a host-side
+integration layer: an MCP-compatible client can use a separate server to bridge
+higher-level requests to this serial protocol. The repository's `.mcp.json`
+configures a connection to a local MCP endpoint; it does not implement that
+server or add MCP or network support to the STM32 firmware.
+
+---
+
+### I2C
+
+The I²C interface is used for communication with the PCA9685 servo driver.
+
+The low-level I²C implementation is located in the hardware abstraction layer and provides the communication foundation for register-based access to the PWM controller.
+
+This layer is intentionally separated from the higher-level PCA9685 logic so that the actual device driver remains focused on PWM-related functionality rather than generic bus handling.
+
+---
+
+## Functional Libraries (`libraries/`)
+
+The `libraries` area contains reusable functional modules implemented mostly in C++.
+
+These modules build upon the hardware abstraction layer and provide robot-specific application behaviour.
+
+---
+
+### Diagnostic Logger
+
+The diagnostic module provides a logging facility for development and debugging.
+
+The implementation consists of:
+
+* a C-based logger,
+* and a C++ wrapper class.
+
+This design allows the logger to be used from both C and C++ code.
+
+#### Features
+
+* formatted output similar to `printf`
+* central initialization
+* forwarding to USART output
+* convenient static C++ interface
+
+The wrapper class provides static methods so that no logger object instance has to be created.
+
+This makes logging easy to use from any software module while preserving a simple C-based backend implementation.
+
+---
+
+### Joystick
+
+The joystick module provides a C++ abstraction of the user input panel.
+
+Its main task is to read and store the current state of all relevant input elements:
+
+* analog joystick axes,
+* joystick push buttons,
+* emergency stop button,
+* automatic mode button.
+
+### Responsibilities
+
+* acquire current ADC values,
+* map them to joystick axes,
+* read button states from GPIO,
+* store the complete current input state,
+* provide accessor functions for higher-level logic.
+
+Dedicated methods such as `isEmergencyStop()` and `isAutoModeOn()` allow convenient access to important control signals.
+
+The joystick class therefore acts as a bridge between low-level hardware input acquisition and high-level application decisions.
+
+---
+
+### Kinematics
+
+The kinematics module implements the mathematical model of the robotic arm.
+
+It is responsible for converting between:
+
+* **joint space** (servo / joint angles),
+* and **Cartesian space** (x, y, z position).
+
+#### Core Functionality
+
+* forward kinematics,
+* inverse kinematics,
+* servo offset correction,
+* servo inversion handling,
+* configurable arm geometry.
+
+When a `Kinematics` object is created, the arm segment lengths are provided, typically:
+
+* `L1` → upper arm length
+* `L2` → forearm length
+
+These geometric values are used for all kinematic calculations.
+
+#### Forward Kinematics
+
+The forward kinematics function calculates the current Cartesian end-effector position from the current joint angles.
+
+Input:
+
+* motor angles
+
+Output:
+
+* position vector `Vec3`
+
+  * `x`
+  * `y`
+  * `z`
+
+This is useful for determining the actual gripper position corresponding to a given set of motor angles.
+
+#### Inverse Kinematics
+
+The inverse kinematics function performs the inverse calculation.
+
+Input:
+
+* desired target position `(x, y, z)`
+
+Output:
+
+* result structure containing
+
+  * validity flag,
+  * calculated motor angles.
+
+This allows the robot to move to predefined positions in space.
+
+#### Offset and Inversion Handling
+
+Because the physical installation of servos may differ from the ideal mathematical reference system, the module supports:
+
+* per-servo angular offsets,
+* per-servo inversion settings.
+
+These corrections are handled through internal helper functions that convert between motor angles and kinematic angles.
+
+This is essential because the kinematic model must use a consistent reference frame even if the actual servo installation differs mechanically.
+
+---
+
+### PCA9685 Servo Driver
+
+The PCA9685 driver controls the external PWM controller used for the servos.
+
+The PCA9685 is connected via I²C and provides 12-bit PWM generation for multiple channels.
+
+#### Main Characteristics
+
+* internal oscillator: 25 MHz
+* standard I²C address: `0x40`
+* PWM resolution: 12 bit
+* servo frequency: typically 50 Hz
+
+A frequency of 50 Hz is commonly used because standard hobby servos expect a control period of approximately 20 ms.
+
+#### Driver Tasks
+
+* configure the controller,
+* set prescaler for desired PWM frequency,
+* configure operating mode,
+* enable auto-increment for sequential register writes,
+* convert pulse widths into PWM tick values,
+* write PWM settings to the selected output channel.
+
+The function for setting a servo pulse width accepts a value in microseconds and converts it into the tick-based representation required by the PCA9685.
+
+This makes the interface intuitive for servo control because pulse widths such as 500 µs to 2000 µs directly correspond to mechanical servo positions.
+
+---
+
+### Servo Controller
+
+The servo controller implements the high-level regulation and movement of the robotic arm servos.
+
+The central class is:
+
+* `ServoController`
+
+#### Responsibilities
+
+* store current and target angles,
+* enforce servo and mechanical limits,
+* calculate pulse widths from angles,
+* move servos step by step toward target positions,
+* control motion speed,
+* prevent motion in emergency stop conditions.
+
+#### Initialization
+
+During startup, the servo controller sets:
+
+* minimum and maximum pulse widths,
+* minimum and maximum servo angles,
+* additional mechanical limit ranges,
+* initial startup angles.
+
+The servos are then moved into a defined initial position, providing a known reference state for the robot after power-up.
+
+#### Smooth Motion
+
+Instead of jumping directly to the target angle, the controller gradually approaches the target.
+
+This is typically done by:
+
+* calculating the difference between current angle and target angle,
+* moving in small steps,
+* waiting for a configurable delay between steps.
+
+This leads to smoother and safer motion.
+
+#### Safety Behaviour
+
+Before commanding servo movement, the controller checks the emergency stop condition.
+If the emergency stop is active, no movement commands are sent to the servos.
+
+This helps avoid undesired behaviour in critical situations.
+
+---
+
+## Data Model (`model/`)
+
+The `model` directory contains shared data structures used as lightweight data transfer objects.
+
+These structures do not contain complex behaviour.
+Their purpose is to hold and transfer data between modules in a clean and structured manner.
+
+Examples include:
+
+* `JointAngles`
+* `JoystickState`
+* `ServoLimits`
+
+An enumeration such as `ServoID` is also used to provide readable identifiers for the robot servos.
+
+This improves code clarity and reduces the risk of errors that may occur when using raw numeric indices.
+
+---
+
+## Application Entry Point (`main.cpp`)
+
+The firmware starts in `main.cpp`.
+
+This file contains the application entry point and performs the overall startup sequence of the system.
+
+### Startup Sequence
+
+Typical initialization tasks include:
+
+* system clock initialization,
+* logger initialization,
+* timer initialization,
+* SysTick initialization,
+* I²C initialization,
+* ADC initialization,
+* GPIO initialization,
+* PCA9685 initialization,
+* creation of the main software components.
+
+After hardware and basic services are initialized, the main objects are created, for example:
+
+* `Joystick`
+* `Kinematics`
+* `ServoController`
+* `RobotController`
+
+The `RobotController` receives references to the other objects, but ownership remains in `main()`.
+This keeps dependencies explicit and avoids unnecessary dynamic allocation or hidden ownership transfer.
+
+### Main Loop
+
+After initialization, the application enters an infinite loop.
+
+The actual robot control is not executed continuously without structure, but rather synchronized by the periodic control tick set by the timer interrupt.
+
+When the control flag is detected in the loop, the periodic update function of the controller is called.
+
+This architecture is well suited for embedded systems because it offers deterministic scheduling while keeping the implementation understandable and maintainable.
+
+---
+
+## Control Concept
+
+The robot supports two main operating modes.
+
+---
+
+## Manual Mode
+
+In manual mode, the robot is controlled directly by the user through the joystick panel.
+
+The controller continuously evaluates:
+
+* analog joystick positions,
+* joystick button states,
+* additional control buttons.
+
+Depending on the input, the target angle of a corresponding axis is increased or decreased.
+
+The updated target values are then passed to the servo controller, which moves the servos toward these values while enforcing all configured limits.
+
+This operating mode allows intuitive direct control of the robot arm.
+
+---
+
+## Automatic Mode
+
+In automatic mode, predefined target coordinates can be used.
+
+The sequence is conceptually as follows:
+
+1. A desired Cartesian target position `(x, y, z)` is defined.
+2. The inverse kinematics module calculates the required joint angles.
+3. The resulting joint angles are passed to the servo controller.
+4. The servo controller moves the arm smoothly to the target position.
+
+This allows the robotic arm to move between known spatial points in a controlled and repeatable manner.
+
+Automatic mode is especially useful for tasks such as point-to-point transport or pick-and-place style motion.
+
+---
+
+## AI + MCP Host Bridge (HC-05)
+
+This project can be used as a strong **AI-assisted robot control setup**:
+MCP-compatible AI clients can request robot status and movements through a
+host-side bridge, while the STM32 firmware executes the validated motion commands
+over the existing Bluetooth module HC-05 / USART2 serial interface.
+
+In practice, this creates a clean separation of roles:
+- **AI agent / MCP client:** plans and issues high-level tool calls (for example status checks and motion requests).
+- **Host MCP server (PC):** translates MCP tool calls into serial protocol commands, sends them through the HC-05 Bluetooth serial bridge, and maps firmware responses back.
+- **STM32 firmware:** validates targets, enforces limits and operating rules, and drives the robot motion.
+
+This makes AI integration practical without changing the embedded control core:
+the proven serial command endpoint remains the runtime interface, and MCP adds an
+interoperable layer on top for AI tools and agent workflows.
+
+The **STM32 firmware does not include an MCP server**; MCP is a host-side
+extension running on the PC that communicates with the firmware through HC-05 and
+exposes robot tools to MCP-compatible AI agents, allowing them to connect and
+control the robot through the serial bridge.
+
+For the concrete serial protocol used by that bridge, see
+[Remote Target Commands (HC-05)](docs/user-manual.md#remote-target-commands-hc-05)
+and [API / MCP Host Integration](docs/user-manual.md#api--mcp-host-integration).
+
+### How It Works
+
+1. An MCP-compatible AI client calls a robot tool on the host MCP server.
+2. The host server converts this call into a serial command line and sends it via
+   the paired HC-05 COM port.
+3. The STM32 firmware parses and validates the command, then executes or rejects it.
+4. Firmware responses (`QUEUED`, `ACK`, `DONE`, `ERR`, `STATUS`) return over the
+   same serial path to the host, which maps them back to the AI client.
+
+### What Is in This Repository?
+
+Included in this repository:
+- STM32 firmware with the HC-05 / USART2 command endpoint.
+- Command protocol implementation and validation logic.
+- MCP client connection configuration (for local development setup).
+
+Not included in this repository:
+- The external host application shown in the screenshot and its MCP server
+  implementation, which bridges MCP to serial commands.
+
+### Control Flow (AI → Robot)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant AI as AI client (MCP)
+    participant HOST as Host app (local MCP server)
+    participant HC05 as HC-05 (Bluetooth serial)
+    participant MCU as STM32 firmware
+    participant ARM as PCA9685 + servos
+
+    AI->>HOST: Tool call (move/status)
+    HOST->>HC05: Serial command via COM port
+    HC05->>MCU: USART2 command (9600 8N1)
+    MCU->>ARM: Validate + execute motion
+    ARM-->>MCU: Servo command progression
+    MCU-->>HC05: QUEUED / ACK / DONE / ERR / STATUS
+    HC05-->>HOST: Serial responses
+    HOST-->>AI: Structured MCP result
+```
+
+Forward path: AI client → MCP host server → HC-05 serial link → STM32 firmware.  
+Return path: firmware responses → HC-05 → host server → AI client.
+
+The HC-05 transports serial protocol data; MCP remains on the host side.
+
+### Host Application
+
+The screenshot shows the separate WinUI 3 host tool's **AI & MCP** page:
+serial connection, local MCP endpoint and session movement permission.
+This host tool was self-developed in WinUI 3 for internal test and validation
+purposes (MCP client/server communication and agent coupling) and is not part of
+this firmware repository.
+
+<p align="center">
+  <img src="docs/images/mcp-ai-control-ui.png" alt="WinUI 3 host application showing the HC-05 COM connection, local MCP endpoint and AI movement permission" width="900"><br>
+  <em>Figure: Host-side AI &amp; MCP control panel (test tool). Any MCP-compatible AI client connected to this host endpoint can control the robot through the serial bridge.</em>
+</p>
+
+> **Note:** This screenshot shows a self-developed WinUI 3 internal test tool. The tool is not publicly released and is used only for internal testing purposes.
+
+The following VS Code screenshot shows an example MCP test in which a Copilot
+agent uses the robot tools to read the robot status and issue a movement
+request. The movement result reports that the firmware issued the commanded PWM
+positions; physical position and collision-free motion are not verified.
+
+<p align="center">
+  <img src="docs/images/vscode-copilot-mcp-test.png" alt="VS Code Copilot agent reading the robot status and issuing an MCP movement request" width="500"><br>
+  <em>Figure: Robot status query and movement request through the MCP tools in VS Code Copilot.</em>
+</p>
+
+### From AI Request to Robot Movement
+
+| Operation | What the host exposes to the assistant | What the firmware does |
+|---|---|---|
+| Read status | Robot mode, calculated position, servo angles and queue state | Returns a structured status snapshot |
+| Request movement | Cartesian X/Y/Z target with optional tilt, rotation and gripper angles | Validates the target and executes interpolated motion in manual mode |
+
+1. **Request:** The assistant invokes a robot tool through its MCP client.
+2. **Translate:** The host server converts the tool arguments into a serial command.
+3. **Execute:** The STM32 checks the command, operating mode and configured limits,
+   then queues an accepted movement for execution.
+4. **Report:** The server matches responses by command ID and returns the result.
+   For movement sequences, it should wait for `DONE` or `ERR` before sending the next movement.
+
+> **Physical safety:** AI-triggered motion still requires a clear workspace and
+> access to the robot's physical emergency stop. Disconnecting the host application
+> is not an emergency stop. Reported positions are software-calculated, not encoder
+> measurements; `DONE` confirms issued servo commands, not verified physical arrival.
+> The firmware does not perform collision or path validation.
+
+### Getting Connected
+
+1. **Pair the HC-05** with the PC and identify its serial COM port.
+2. **Connect the host application** to that port using `9600` baud, `8N1`.
+3. **Connect the MCP client** to the host application's local endpoint using its
+   authentication token. Keep the token private and grant access only to trusted clients.
+4. **Read status first.** Before requesting motion, check the robot's mode and stop
+   state, confirm the workspace is clear and review the host's movement permission.
+   Remote movements require manual mode.
+
+### Protocol Reference
+
+This section explains the integration; the **User Manual remains the complete
+command reference**, avoiding duplicate protocol documentation:
+
+- **[Remote Target Commands (HC-05)](docs/user-manual.md#remote-target-commands-hc-05):**
+  command syntax, parameters, limits, status queries, queue behaviour and responses.
+- **[API / MCP Host Integration](docs/user-manual.md#api--mcp-host-integration):**
+  serial parsing, response correlation and host integration requirements.
+
+---
+
+## User Manual
+
+Detailed instructions for operating the robotic arm,
+including axis control, joystick functions and automatic motion sequences,
+are provided in the user manual:
+
+**[Robotic Arm User Manual](docs/user-manual.md)**
+
+---
+
+## Kinematics Concept
+
+The kinematics model is a central element of the project because it allows the software to translate between mathematical robot motion and actual servo commands.
+
+### Current Kinematic Model Limitations
+
+The current kinematic implementation models only two arm segments:
+
+<p align="center">
+  <img src="docs/images/robot-arm-kinematics-overview.png" width="700">
+  <br>
+  <em>
+  Figure: Current simplified kinematic model.
+  Inverse kinematics is solved for the wrist joint position.
+  Tool center point offsets caused by the physical gripper length are not yet considered.
+  </em>
+</p>
+
+- L1 → upper arm  
+- L2 → forearm  
+
+The effective tool center point is currently assumed to coincide with the wrist joint axis.
+
+A possible additional offset caused by the physical gripper length is currently not included  
+in the inverse kinematics model.
+
+This modelling simplification is an intentional design decision and was chosen deliberately to:
+
+- reduce mathematical complexity  
+- simplify initial testing and validation  
+- focus on reliable base functionality on the embedded target system  
+
+The current software architecture already allows future extension of the kinematic model  
+without major structural changes.
+
+Future versions of the firmware may extend the inverse kinematics model  
+by introducing a tool center point offset parameter.
+
+### Kinematic Reference Alignment (Servo Offset Calibration)
+
+For correct operation of the kinematic model, each robot joint must be aligned  
+to a defined mechanical reference position.
+
+In the current implementation, the kinematic zero position is defined such that:
+
+- the arm segments are oriented forward as shown in the figure  
+- this physical pose corresponds to **0° joint angle** in the mathematical model  
+
+Because hobby servos cannot be mounted with perfect angular precision,  
+a per-joint **servo offset calibration** is required.
+
+The calibration procedure is conceptually as follows:
+
+1. Move the robot manually or via software into the defined reference pose  
+   (all arm segments aligned in the forward direction).
+2. Measure or estimate the deviation between the physical servo position  
+   and the desired mathematical zero angle.
+3. Store this deviation as a fixed offset parameter for the corresponding joint.
+4. During runtime, the kinematics module compensates this offset  
+   when converting between kinematic joint angles and servo command angles.
+
+This ensures that:
+
+- a kinematic angle of **0°** results in the correct physical arm orientation  
+- forward and inverse kinematics operate on a consistent geometric model  
+- installation tolerances and mechanical mounting errors are compensated  
+
+### Why Offsets Are Necessary
+
+The mathematical kinematic model assumes a clearly defined zero reference position.  
+In the real mechanical system, however, the servos may not be mounted exactly in that reference orientation.
+
+Therefore, offset values are used to align the servo reference positions with the kinematic model.
+
+### Why Inversion Is Necessary
+
+Depending on servo installation and linkage direction, a positive motor command  
+may correspond either to a positive or a negative mathematical rotation.
+
+The inversion settings allow the software to handle this cleanly  
+without changing the kinematic formulas themselves.
+
+### Result
+
+By separating the pure kinematic model from installation-dependent corrections,  
+the code remains mathematically clean while still being adaptable to the physical robot.
+
+---
+
+## Timing and Real-Time Behaviour
+
+Timing is an important aspect of embedded robotics software.
+
+This project uses two relevant periodic mechanisms:
+
+### Control Cycle
+
+* Triggered every 10 ms by TIM7
+* Used to schedule the robot controller update
+
+This ensures that control logic is executed periodically and predictably.
+
+### Time Base
+
+* 1 ms resolution using SysTick
+* Used for delays, timing and helper functions
+
+### ADC Behaviour
+
+* Continuous conversion with DMA
+* New joystick values are always available
+* CPU is relieved from repeated manual polling
+
+This architecture supports responsive user input handling while keeping the main control structure deterministic.
+
+---
+
+## Safety Mechanisms
+
+The project contains several safety-related mechanisms.
+
+### Emergency Stop
+
+A dedicated emergency stop input can disable movement commands.
+
+### Angle Limits
+
+Servo motions are constrained by configured electrical and mechanical angle limits.
+
+### Controlled Motion
+
+Target positions are approached gradually instead of through abrupt jumps.
+
+### Structured Control Scheduling
+
+The control logic is executed through a periodic scheduling concept rather than uncontrolled direct processing.
+
+Together, these measures reduce the risk of invalid or dangerous movements and improve system robustness.
+
+---
+
+## Software Quality
+
+To verify correct behaviour and ensure reliable operation, the following quality measures were applied during development:
+
+- Debug output used for plausibility checking of sensor and control values
+- I²C signals and timing analyzed using an oscilloscope
+- Limit values verified and boundary conditions checked
+- Tests conducted under real operating conditions
+- Software tested for stable and smooth arm movements
+
+### I²C Communication Signal Analysis
+
+<p align="center">
+  <img src="docs/images/i2c-communication.png" width="700"><br>
+  <em>Figure: I²C bus signal captured with an oscilloscope during PCA9685 communication.</em>
+</p>
+
+### UART / Bluetooth Debug Output
+
+<p align="center">
+  <img src="docs/images/uart-bt-communication.png" width="700"><br>
+  <em>Figure: UART debug output transmitted wirelessly via Bluetooth HC-05 module.</em>
+</p>
+
+---
+
+## Development Environment
+
+The project was developed using:
+
+* **IDE:** SEGGER Embedded Studio
+* **Languages:** C and C++
+* **Microcontroller Support:** CMSIS
+* **Target Platform:** STM32F446RET6
+
+The combination of C and C++ was chosen deliberately:
+
+* C is used for low-level hardware-near code,
+* C++ is used for modular application logic and abstraction.
+
+This combines efficiency and direct hardware control with structured object-oriented design.
+
+---
+
+## Build Notes
+
+This repository contains embedded firmware code intended for an STM32-based target system.
+
+For the incremental Windows setup guide using VS Code with the existing SEGGER
+toolchain and J-Link, see [VS Code setup](docs/vscode-setup.md).
+
+To build and run the project successfully, the following are typically required:
+
+* a compatible ARM embedded toolchain,
+* SEGGER Embedded Studio project configuration,
+* the target hardware setup,
+* and the required connected peripherals such as joystick, servos and PCA9685 module.
+
+Because this is embedded target firmware, the project is not intended to be compiled as a generic desktop application.
+
+---
+
+## Possible Future Improvements
+
+Potential future extensions of the project include:
+
+* extension of the inverse kinematics model by introducing
+  a tool center point offset (distance from wrist joint to gripper tip),
+  enabling accurate Cartesian positioning of the end effector
+* trajectory planning instead of simple point-to-point movement,
+* acceleration and deceleration profiles for smoother motion,
+* closed-loop feedback using sensors,
+* teach-in positions and programmable motion sequences,
+* calibration mode for servo offsets,
+* non-volatile storage of robot parameters,
+* extended diagnostics and telemetry output.
+
+These additions could further increase usability, safety and technical sophistication.
+
+---
+
+## Disclaimer
+
+This project is intended for educational and experimental use only.
+
+It is not intended for use in safety-critical, medical, industrial,
+or commercial applications.
+
+The firmware is provided "as is", without any warranty of any kind.
+Use of this software and any associated or connected hardware is entirely at your own risk.
+
+The author shall not be liable for any damage, malfunction, data loss,
+personal injury, or other consequences resulting from the use,
+modification, integration, or reproduction of this project,
+including firmware, hardware designs, schematics, or PCB layouts.
+
+---
+
+## Project Information
+
+- Author: Manuel Wiesinger
+- Initial development: March 2026
+- Status: Functional prototype
+
+---
+
+## License
+
+MIT License
+
+Copyright (c) 2026 Manuel Wiesinger
+
+See the LICENSE file for details.
+
+---
+
+## Third-Party Components
+
+This repository includes third-party embedded support software such as:
+
+- ARM CMSIS Core
+- STMicroelectronics CMSIS Device (STM32F4)
+- SEGGER startup, linker and support files
+
+These components remain under their respective licenses.
+See the `third_party/` directory and individual file headers for details.
+
+---

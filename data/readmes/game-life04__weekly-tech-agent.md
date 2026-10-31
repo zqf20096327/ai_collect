@@ -12,59 +12,48 @@
 
 <!-- wta:latest:start -->
 
-## 每日快讯 · 10.30（周五）
+## 每日快讯 · 10.31（周六）
 
-> 今日 AI 与开源要闻 **15** 条，3 分钟速读。<br>
-> [单独打开](daily/2026/2026-10-30-kuaixun.md) · [公众号排版版](daily/2026/2026-10-30-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-10-30.md) · [往期日报](daily/README.md)
+> 今日 AI 与开源要闻 **11** 条，3 分钟速读。<br>
+> [单独打开](daily/2026/2026-10-31-kuaixun.md) · [公众号排版版](daily/2026/2026-10-31-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-10-31.md) · [往期日报](daily/README.md)
 
 <details>
 <summary>群消息文字版（点开后，点代码框右上角的按钮整段复制）</summary>
 
 ```text
-【每日科技快讯】10月30日 周五
-今日 AI 与开源要闻 15 条，3 分钟速读
+【每日科技快讯】10月31日 周六
+今日 AI 与开源要闻 11 条，3 分钟速读
 
 【俱乐部动态】
-1. 开放原子开源俱乐部合并 3 个 PR、提交 32 次
-2. AtomGit-mobile4Harmony 合并 2 个 PR
-3. AtomGit-Mobile4Android 合并 1 个 PR
-
-【海外动态】
-4. Mistral Large 4 开源 1T 参数多模态模型
-→ Mistral 开源了 Le Chonk 模型，这是一个 1T 参数的原生多模态混合专家模型，在欧洲数据中心训练。
-5. Gemini 4 Carbon 登顶 Artificial Analysis 指数 v5
-→ Google 的 Gemini 4 Carbon 在 Artificial Analysis 指数 v5 中排名第一，仅次于 Claude Opus 5.5。
+1. 开放原子开源俱乐部合并 0 个 PR、提交 0 次
+2. AtomGit-mobile4Harmony 新增 1 个 PR
 
 【开源项目】
-6. huggingface/transformers 发布 v5.22.0
-→ huggingface/transformers 发布了 v5.22.0 版本，包含 Mistral Large 4 模型。
-7. vLLM 支持 Mistral Large 4
-→ vLLM 提供对 Mistral Large 4 的 Day-0 支持，包含稀疏 MLA、跨层 KV 共享等功能。
-8. hindsight：智能体记忆学习工具
-→ Hindsight 是一个智能体记忆工具，能够学习并改进代理的决策过程。
-9. Claude-Code-Game-Studios：模拟游戏开发工作室
-→ 该项目包含 49 个 AI 代理和 72 个工作流技能，模拟真实工作室层级。
-10. claude-mem：跨会话持久上下文工具
-→ 该工具捕获代理在会话中的操作，使用 AI 压缩并注入相关上下文到未来会话。
+3. OpenBot：拥有独立环境的AI同事
+→ OpenBot是开源的AI同事，每个AI都拥有自己的浏览器、文件和工具，所有操作在发生前决定，发生后被记录。
+4. harvey：自主AI销售代理
+→ harvey是自主AI销售代理，支持Claude Code或Codex，能寻找潜在客户、撰写冷邮件并安排会议。
+5. Mika：手机上的私人AI助理
+→ Mika是运行在Android上的本地AI代理，能操作App和上网，帮助用户完成各种任务。
+6. dsh-Go：DeepSeek Harness 装进口袋
+→ dsh-go是DeepSeek Harness的移动端版本，可在手机本机运行，也能遥控电脑。
+7. Unlimited-OCR-2：图文理解模型
+→ Unlimited-OCR-2是图文理解模型，许可证为MIT。
 
 【学术前沿】
-11. Trial by Trace：评估智能体框架的可靠性与失败归因
-→ 本文提出 TraceTrial-Bench，将框架可靠性分为七个组件，在 3,420 次运行中测得框架得分 59.8% 至 72.0%。
-12. PDRVLA：带物理动力学表示的视觉-语言-动作模型
-→ 本文提出 PDRVLA，通过轻量级物理动力学模块从视觉-语言特征中提取物理标记，在 LIBERO 上成功率达 99.3%。
-13. 函数空间时间自蒸馏用于策略优化
-→ 本文提出函数空间策略优化（FSPO），在 5 小时训练预算下平均准确率提升约 4%，内存从 70 GB 降至 56 GB。
-14. RouteDRAG框架优化多模态文档RAG
-→ RouteDRAG框架通过统一文档索引和动态智能体执行，实现了对多模态文档问答的智能路由与控制，提升了准确率。
-
-【产业纵横】
-15. DAYJOB: Tax 评测 AI 代理在 50 个税务任务中的表现
-→ DAYJOB: Tax 评测 AI 代理在 50 个专业税务环境中的表现，测试其处理复杂记录和专业判断的能力。
+8. 内在分布匹配：一步生成图像
+→ Intrinsic Distribution Matching针对一步和少步文本生成图像细节不足的问题，通过匹配特征均值和标准差来提升生成质量。
+9. 微控制器上的流式语音识别
+→ Kroko在ESP32-P4上运行，将65.7M参数的Zipformer2流式语音识别模型压缩为26.65MB的int8权重文件。
+10. Claude 模型自主完成小鼠脑部手术
+→ Claude 模型自主选择基因疗法并给小鼠做手术，是首个自主选择治疗并施用于哺乳动物的 AI 代理。
+11. A-RSI：零数据多模态自改进
+→ A-RSI通过监控训练日志中的奖励变化和准确率来动态刷新任务池，在11个基准测试中将平均性能从57.77提升至61.05。
 
 【活动预告】
 · 11月5日 RECOMB 2027 论文截稿
 
-完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-10-30-kuaixun.md
+完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-10-31-kuaixun.md
 标题和要点由 AI 整理，可能有误，请以原文为准。
 ```
 
@@ -74,49 +63,37 @@
 
 #### 俱乐部动态
 
-**开放原子开源俱乐部合并 3 个 PR、提交 32 次**<br>10月29日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 2 个有人参与开发，共新增 PR 1 个、合并 3 个，提交 32 次，新增代码 8188 行、删除 139 行，3 位贡献者参与。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
+**开放原子开源俱乐部合并 0 个 PR、提交 0 次**<br>10月30日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 1 个有人参与开发，共新增 PR 1 个、合并 0 个，提交 0 次，新增代码 0 行、删除 0 行，1 位贡献者参与。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
 
-**AtomGit-mobile4Harmony 合并 2 个 PR**<br>10月29日，Agent SIG的 AtomGit-mobile4Harmony 仓库合并 2 个、提交 31 次、新增代码 7609 行，2 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-mobile4Harmony)）</sub>
-
-**AtomGit-Mobile4Android 合并 1 个 PR**<br>10月29日，Agent SIG的 AtomGit-Mobile4Android 仓库新增 PR 1 个、合并 1 个、提交 1 次、新增代码 579 行，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)）</sub>
-
-#### 海外动态
-
-**Mistral Large 4 开源 1T 参数多模态模型**<br>10月29日，Mistral 开源了 Le Chonk 模型，这是一个 1T 参数的原生多模态混合专家模型，在欧洲数据中心训练。<br><sub>（来源：[Mistral AI](https://mistral.ai/news/mistral-large-4-oss/)）</sub>
-
-**Gemini 4 Carbon 登顶 Artificial Analysis 指数 v5**<br>10月29日，Google 的 Gemini 4 Carbon 在 Artificial Analysis 指数 v5 中排名第一，仅次于 Claude Opus 5.5。<br><sub>（来源：[Hacker News](https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1)）</sub>
+**AtomGit-mobile4Harmony 新增 1 个 PR**<br>10月30日，Agent SIG的 AtomGit-mobile4Harmony 仓库新增 PR 1 个，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-mobile4Harmony)）</sub>
 
 #### 开源项目
 
-**huggingface/transformers 发布 v5.22.0**<br>10月29日，huggingface/transformers 发布了 v5.22.0 版本，包含 Mistral Large 4 模型。<br><sub>（来源：[GitHub 版本发布](https://github.com/huggingface/transformers/releases/tag/v5.22.0)）</sub>
+**OpenBot：拥有独立环境的AI同事**<br>10月31日消息，OpenBot是开源的AI同事，每个AI都拥有自己的浏览器、文件和工具，所有操作在发生前决定，发生后被记录。<br><sub>（来源：[GitHub Trending](https://github.com/CopilotKit/OpenBot)）</sub>
 
-**vLLM 支持 Mistral Large 4**<br>10月29日，vLLM 提供对 Mistral Large 4 的 Day-0 支持，包含稀疏 MLA、跨层 KV 共享等功能。<br><sub>（来源：[vLLM 博客](https://vllm.ai/blog/2026-10-29-mistral-large-4)）</sub>
+**harvey：自主AI销售代理**<br>10月31日消息，harvey是自主AI销售代理，支持Claude Code或Codex，能寻找潜在客户、撰写冷邮件并安排会议。<br><sub>（来源：[GitHub Trending](https://github.com/ethanplusai/harvey)）</sub>
 
-**hindsight：智能体记忆学习工具**<br>10月30日消息，Hindsight 是一个智能体记忆工具，能够学习并改进代理的决策过程。<br><sub>（来源：[GitHub Trending](https://github.com/vectorize-io/hindsight)）</sub>
+**Mika：手机上的私人AI助理**<br>10月31日消息，Mika是运行在Android上的本地AI代理，能操作App和上网，帮助用户完成各种任务。<br><sub>（来源：[GitHub 新项目](https://github.com/wangzan101/Mika)）</sub>
 
-**Claude-Code-Game-Studios：模拟游戏开发工作室**<br>10月30日消息，该项目包含 49 个 AI 代理和 72 个工作流技能，模拟真实工作室层级。<br><sub>（来源：[GitHub Trending](https://github.com/Donchitos/Claude-Code-Game-Studios)）</sub>
+**dsh-Go：DeepSeek Harness 装进口袋**<br>10月31日消息，dsh-go是DeepSeek Harness的移动端版本，可在手机本机运行，也能遥控电脑。<br><sub>（来源：[GitHub 新项目](https://github.com/ccch1mneyyy/dsh-Go)）</sub>
 
-**claude-mem：跨会话持久上下文工具**<br>10月30日消息，该工具捕获代理在会话中的操作，使用 AI 压缩并注入相关上下文到未来会话。<br><sub>（来源：[GitHub Trending](https://github.com/thedotmack/claude-mem)）</sub>
+**Unlimited-OCR-2：图文理解模型**<br>10月31日消息，Unlimited-OCR-2是图文理解模型，许可证为MIT。<br><sub>（来源：[Hugging Face 热门模型](https://huggingface.co/baidu/Unlimited-OCR-2)）</sub>
 
 #### 学术前沿
 
-**Trial by Trace：评估智能体框架的可靠性与失败归因**<br>10月30日消息，本文提出 TraceTrial-Bench，将框架可靠性分为七个组件，在 3,420 次运行中测得框架得分 59.8% 至 72.0%。<br><sub>（来源：[arXiv · 智能体](https://arxiv.org/abs/2610.32285)）</sub>
+**内在分布匹配：一步生成图像**<br>10月29日，Intrinsic Distribution Matching针对一步和少步文本生成图像细节不足的问题，通过匹配特征均值和标准差来提升生成质量。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.39633)）</sub>
 
-**PDRVLA：带物理动力学表示的视觉-语言-动作模型**<br>10月30日消息，本文提出 PDRVLA，通过轻量级物理动力学模块从视觉-语言特征中提取物理标记，在 LIBERO 上成功率达 99.3%。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.37381)）</sub>
+**微控制器上的流式语音识别**<br>10月29日，Kroko在ESP32-P4上运行，将65.7M参数的Zipformer2流式语音识别模型压缩为26.65MB的int8权重文件。<br><sub>（来源：[arXiv · 语音](https://arxiv.org/abs/2610.38739)）</sub>
 
-**函数空间时间自蒸馏用于策略优化**<br>10月30日消息，本文提出函数空间策略优化（FSPO），在 5 小时训练预算下平均准确率提升约 4%，内存从 70 GB 降至 56 GB。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.19687)）</sub>
+**Claude 模型自主完成小鼠脑部手术**<br>10月31日，Claude 模型自主选择基因疗法并给小鼠做手术，是首个自主选择治疗并施用于哺乳动物的 AI 代理。<br><sub>（来源：[The Decoder](https://the-decoder.com/a-claude-model-autonomously-chose-a-gene-therapy-and-operated-on-a-mouse-brain-with-no-human-decision-making/)）</sub>
 
-**RouteDRAG框架优化多模态文档RAG**<br>10月30日消息，RouteDRAG框架通过统一文档索引和动态智能体执行，实现了对多模态文档问答的智能路由与控制，提升了准确率。<br><sub>（来源：[arXiv · 长上下文与检索](https://arxiv.org/abs/2610.36444)）</sub>
-
-#### 产业纵横
-
-**DAYJOB: Tax 评测 AI 代理在 50 个税务任务中的表现**<br>10月28日，DAYJOB: Tax 评测 AI 代理在 50 个专业税务环境中的表现，测试其处理复杂记录和专业判断的能力。<br><sub>（来源：[Hacker News](https://surgehq.ai/blog/dayjob-tax)）</sub>
+**A-RSI：零数据多模态自改进**<br>10月31日消息，A-RSI通过监控训练日志中的奖励变化和准确率来动态刷新任务池，在11个基准测试中将平均性能从57.77提升至61.05。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.38568)）</sub>
 
 ### 活动预告
 
 **RECOMB 2027 论文截稿**<br>11月5日，International Conference on Research inComputational Molecular Biology（RECOMB 2027，CCF-B 类，交叉/综合/新兴）论文提交截止时间为北京时间11月5日 19:59，摘要截止时间为10月29日 19:59。会议将于 May 17-20, 2027 在 Toronto, Canada 举行。<br><sub>（来源：[会议官网](https://recomb.org/recomb2027/)）</sub>
 
-<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为10月29日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-10-30 09:22（北京时间）自动生成。</sub>
+<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为10月30日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-10-31 09:09（北京时间）自动生成。</sub>
 
 ## 每周快讯 第 2 期 · 10.19–10.25
 

@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/download/1.5.0/AnimaRandomStudio.exe"><strong>下载单文件版</strong></a> ·
-  <a href="https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/download/1.5.0/AnimaRandomStudio-Setup-win-x64.exe">下载安装版</a> ·
+  <a href="https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/AnimaRandomStudio.exe"><strong>下载单文件版</strong></a> ·
+  <a href="https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/AnimaRandomStudio-Setup-win-x64.exe">下载安装版</a> ·
   <a href="#开始使用">开始使用</a> ·
   <a href="docs/guide.md">使用指南</a> ·
   <a href="https://qm.qq.com/q/M9MbjzaAUA">QQ 交流群</a>
@@ -26,7 +26,9 @@
 Comfy Image Atelier 基于 [ComfyUI](https://github.com/Comfy-Org/ComfyUI) 与 Anima Tools 生态构建，把提示词池、单图编辑、图生图、AI 提示词工具、LoRA、放大修复和作品历史放进同一个工作台。配套原生 Windows 启动器，负责环境准备、模型下载、服务管理与更新，让日常精力更多留在选词、看图和调整画面上。
 
 > [!NOTE]
-> **Comfy Image Atelier 1.5.0 正式版**现已发布。本项目由 Anima Random Studio 更名并迁移至本仓库；旧版用户请手动下载本版一次，之后从新仓库获取更新。版本变化与验证范围见 [发行说明](RELEASE_NOTES.md)；[最新正式 Release](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest)。
+> 首次使用请从[最新发布页](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest)下载 Windows 版，跟随新手向导完成环境与模型安装，即可打开工作台开始生图。
+>
+> 项目原名 **Anima Random Studio**。仍在使用旧仓库版本的用户，请手动下载新版。版本变化见[发行说明](RELEASE_NOTES.md)。
 
 ## 你可以用它做什么
 
@@ -220,13 +222,14 @@ Anima 与 Krea 2 的提示词收藏关联源词条：编辑或覆盖词条时同
 
 六步向导完成安装方式、目录、检查确认、环境准备、可跳过的提示词助手与开始创作。开始前列出下载内容、可复用文件与磁盘空间，并保存安装计划供后续继续。
 
-- **新建独立环境。** 准备 Python、ComfyUI、清单节点与 Anima 基础模型，工具和环境可放在自己选择的磁盘。
+- **新建独立环境。** 准备 Python、ComfyUI、清单节点、Anima 三件套与 SeedVR2 两个模型，工具和环境可放在自己选择的磁盘。
 - **导入现有 ComfyUI 或便携版。** 识别已有 Python，也能手动指定；复用现有模型路径、Python 与 GPU 运行时，补齐缺失依赖。
-- **模型按功能准备。** Krea 2、SeedVR2、八种本地反推方案按需勾选，共享资源复用；自己的兼容模型和 LoRA 也能加入后重新扫描。
+- **模型按功能准备。** Anima 三件套和 SeedVR2 两项固定必装；Krea 2、脸部细化三模型、八种本地反推方案按需勾选，默认不勾选，共享资源复用。自己的兼容模型和 LoRA 也能加入后重新扫描。
 
 ### 面向国内网络准备来源，大文件下载可接续
 
 - **国内来源与官方回源。** 已配置映射的模型优先尝试 ModelScope，并提供 Hugging Face 镜像及官方来源；Python 包、PyTorch 也有相应镜像与回退策略。
+- **依赖安装提速。** ComfyUI 依赖自动探测可用来源，固定解析结果后并发下载并从本地安装；向导显示当前包、阶段与耗时，暂停后复用已校验文件，保留现有 GPU 版本。
 - **暂停、续传、重试与换源。** aria2 和 uv 随启动器提供，模型、安装资源与软件更新保存任务和断点，避免中断后丢失整段下载进度。
 - **在原页面看进度。** 模型条目、安装向导和软件更新各显示对应任务、速度与错误，查看详情再返回时保留原位置。
 - **下完还要验完整。** 核对文件大小与 SHA-256，多文件模型包全部校验后才就绪，下载前检查目标目录与剩余空间。
@@ -248,27 +251,27 @@ Anima 与 Krea 2 的提示词收藏关联源词条：编辑或覆盖词条时同
 
 | 下载 | 适合怎样使用 |
 | --- | --- |
-| [**AnimaRandomStudio.exe**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/download/1.5.0/AnimaRandomStudio.exe) | 单文件直接运行，适合想先打开体验的用户 |
-| [**Windows 安装版**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/download/1.5.0/AnimaRandomStudio-Setup-win-x64.exe) | 按当前用户安装，创建开始菜单及可选桌面入口，无需管理员权限 |
-| [**便携 ZIP**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/download/1.5.0/AnimaRandomStudio-portable-win-x64.zip) | 解压后是同一份 EXE，适合通过压缩包下载、保存或传输 |
+| [**AnimaRandomStudio.exe**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/AnimaRandomStudio.exe) | 单文件直接运行，适合想先打开体验的用户 |
+| [**Windows 安装版**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/AnimaRandomStudio-Setup-win-x64.exe) | 按当前用户安装，创建开始菜单及可选桌面入口，无需管理员权限 |
+| [**便携 ZIP**](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/AnimaRandomStudio-portable-win-x64.zip) | 解压后是同一份 EXE，适合通过压缩包下载、保存或传输 |
 
-发布页的 Source code 是开发源码，不包含启动器。ComfyUI、节点与模型在配置环境时另行准备；文件校验值见 [1.5.0 发布页](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/tag/1.5.0) 的 `SHA256SUMS.txt`。
+发布页的 Source code 是开发源码，不包含启动器。ComfyUI、节点与模型在配置环境时另行准备；文件校验值见 [`SHA256SUMS.txt`](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/latest/download/SHA256SUMS.txt)。
 
 ### 三步生成第一张图
 
 1. **打开启动器，选择环境。** 已有 ComfyUI 就导入；需要新环境时按向导选择安装位置。
 2. **检查并准备资源。** 确认安装计划、模型选择、下载量与空间，完成后点击「开始创作」。
-3. **先跑基础图，再增加玩法。** 选择已就绪的模型，关闭可选放大修复，写一段提示词或选择词池。完成一次基础生成后，再加入 LoRA、双采样和后处理。
+3. **打开工作台开始生图。** 写一段提示词或选择词池，即可使用默认双采样；SeedVR2 修复放大所需模型也已准备。LoRA、选装脸部细化及其他功能可按需使用。
 
 | 运行要求 | 说明 |
 | --- | --- |
 | 启动器 | Windows 10 1809+ / Windows 11，x64 |
 | 新建完整环境 | NVIDIA 显卡，驱动支持 CUDA 12.8，版本 570.65 或更新；需要联网下载 |
 | 导入环境 | 已可运行的 ComfyUI；硬件与节点兼容性沿用该环境 |
-| 磁盘空间 | Anima 三项基础模型约 5.24 GiB，另需环境、依赖与缓存空间，以安装预检为准 |
+| 磁盘空间 | 默认 Anima 三件套与 SeedVR2 两项合计约 8.93 GiB，另需环境、依赖与缓存空间，以安装预检为准 |
 | 默认地址 | Studio `http://127.0.0.1:8190`；ComfyUI `http://127.0.0.1:8188` |
 
-**当前版本说明：** 1.5.0 为正式版，本次验证以自动化检查和迁移、启动、安装包完整性为重点，未覆盖完整的从零安装、GPU 生图与升级回退实机验收。当前发布包未签署代码签名；具体范围见 [发行说明](RELEASE_NOTES.md)。
+**当前版本说明：** 1.5.1 已由用户在全新 Windows 系统电脑上通过安装测试。本机独立环境另外完成默认双采样、普通单图、单图双采样、SeedVR2、原参数脸部细化及 NVIDIA VFX → DLSS 六项真实输出验证；GPU 实测为 RTX 4060 Laptop，其他硬件和可选分支的覆盖范围见 [发行说明](RELEASE_NOTES.md)。
 
 ## 数据保存与源码运行
 

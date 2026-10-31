@@ -1,0 +1,32 @@
+## Best AI Papers [![pages-build-deployment](https://github.com/clemense/ai-bestpapers/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/clemense/ai-bestpapers/actions/workflows/pages/pages-build-deployment)
+
+List of awarded papers from Robotics/AI/ML/CV/NLP/CG venues.
+
+## Contributing
+
+Contributions are very welcome!
+
+To add or update an awarded paper:
+- Fork the repository
+- Update `_data/papers.yml`
+- If the added award(s) appear(s) at a venue that it is not yet listed, update `_data/venues.yml`
+- Send a pull request
+
+## Related
+
+This is based on [aideadlin.es](https://github.com/abhshkdz/ai-deadlines).
+
+## License
+
+[MIT](LICENSE)
+
+<!---
+bundle update <gem_name>
+
+cd utils
+python process.py
+mv sorted_data.yml ../_data/papers.yml
+
+Check for conferences:
+https://aideadlin.es/calendar/?sub=ML,CV,CG,NLP,RO,SP,DM,AP,KR
+-->

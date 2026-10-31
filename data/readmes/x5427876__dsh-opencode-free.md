@@ -10,12 +10,18 @@ Use free [OpenCode Zen](https://opencode.ai/docs/providers) models in DeepSeek
 Harness (DSH), without installing OpenCode or running a separate server.
 Anonymous access is the default; a Zen API key is optional.
 
-- **Native integration:** models appear under **OpenCode Zen Free** in the DSH
-  model picker, with streaming, reasoning, tool calls, usage, and cancellation.
-- **Automatic catalogue:** the model list and metadata follow Zen's official
-  model list, free models only. Hide individual models from the plugin detail page.
-- **Availability checks:** inspect results and latency on the detail page.
-  Quota limits and gate refusals do not remove models.
+- **Works on the anonymous tier.** Zen's free tier decides by request content
+  (tool declarations, an `<env>` block, the TLS cipher list), not only by headers.
+  The plugin shapes anonymous requests to match; see
+  [what the free tier checks](docs/free-tier-gate.md), with dated measurements.
+- **No built-in model list.** The picker follows Zen's official model list: chat
+  models whose declared prices are all zero. Refreshes are lazy, and a failed
+  refresh keeps the last good list. Hide individual models from the detail page.
+- **Native in DSH.** Models appear under **OpenCode Zen Free** with streaming,
+  reasoning, tool calls, usage, and cancellation.
+- **Availability checks.** The detail page shows probe results and latency. Quota
+  limits and gate refusals do not remove models.
+- **One release, one DSH.** Each release supports exactly one DSH version.
 
 > [!WARNING]
 > This is an unofficial plugin, not affiliated with OpenCode or DeepSeek.
@@ -39,7 +45,9 @@ Anonymous access is the default; a Zen API key is optional.
 | Node.js | `^22.19.0` or `>=24.0.0` |
 
 Each release supports exactly one DSH version. Do not ignore peer dependency
-warnings; all four runtime peers are required.
+warnings; all four runtime peers are required. For an older release, read its
+[GitHub Release](https://github.com/x5427876/dsh-opencode-free/releases) or run
+`npm view dsh-opencode-free@<version> peerDependencies`.
 
 ### Install
 
@@ -69,26 +77,6 @@ Restart DSH (or wait for HMR), then choose a model under **OpenCode Zen Free**.
 dsh plugin --profile web update dsh-opencode-free
 dsh plugin --profile web remove dsh-opencode-free
 ```
-
-<details>
-<summary>Earlier version compatibility</summary>
-
-| Plugin | DSH |
-|---|---|
-| `0.4.0` | `0.2.1-rc.5` |
-| `0.3.7` | `0.2.1-rc.2` |
-| `0.3.6` | `0.2.1-rc.2` |
-| `0.3.5` | `0.2.1-alpha.5` |
-| `0.3.4` | `0.2.1-alpha.3` |
-| `0.3.3` | `0.2.1-alpha.2` |
-| `0.3.2` | `0.2.1-alpha.2` |
-| `0.3.1` | `0.2.1-alpha.1` |
-| `0.3.0` | `0.2.0-rc.2` |
-| `0.2.1` | `0.2.0-rc.2` |
-| `0.2.0` | `0.2.0-rc.1` |
-| `0.1.3` – `0.1.4` | `0.1.7-rc.2` |
-
-</details>
 
 ## Usage
 
@@ -166,9 +154,10 @@ Compaction is a separate request.
   in the same process also receive the identity headers.
 - **Profile dependency:** a `webServer` service is required for detail-page
   routes. The built-in `headless` profile does not provide it.
-- **Debug privacy:** `DSH_OPENCODE_FREE_DEBUG=1` enables diagnostics. Current
-  logs include an Authorization prefix and truncated upstream errors; treat
-  them as sensitive and do not publish raw logs. See [known gaps](docs/standards-gap.md#g1-debug-logs-include-authorization-fragments).
+- **Debug privacy:** `DSH_OPENCODE_FREE_DEBUG=1` enables diagnostics. Logs name
+  the credential kind (`anonymous` or `key`) and never any part of it. Upstream
+  refusals contribute only the status, gate marker and error code, not their
+  text. Request and session identifiers still appear, so do not publish raw logs.
 - **Verification scope:** compat run results are not stored in the repository:
   they depend on environment, versions, time and the shared anonymous quota. Run
   the [compat guide](docs/compat-run.md) yourself for current evidence. The

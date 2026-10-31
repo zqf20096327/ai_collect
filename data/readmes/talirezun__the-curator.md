@@ -435,7 +435,7 @@ the first real update is the first real test.
 
 Your knowledge is plain markdown in a folder you chose, so nothing above affects it. Coming
 from the shell installer below? Your wiki comes across untouched; you re-paste your API key and
-re-run the MCP wizard — and point the app at your existing folder, which is
+press **Install for me** in Settings → MCP bridge → Tools on this Mac — and point the app at your existing folder, which is
 [one button and one trap](docs/user-guide.md#pick-the-folder-that-contains-your-domains). The
 decisions behind the packaging — and, for each, whether code exists yet — are in
 [docs/desktop-app-decisions.md](docs/desktop-app-decisions.md).
@@ -463,6 +463,9 @@ first-class one: ingest, chat, wiki, MCP, sync and Health are all here. The Node
 anywhere Node 18+ runs; only the `.dmg`, the one-line installer and the auto-built `.app` Dock
 launcher are macOS-specific.
 
+On Windows, the **Install for me** button in Settings → MCP bridge does exist for **Claude
+Desktop** (new, and not yet confirmed on every install); every other tool, and Linux, is copy-only.
+
 **Prerequisites:** [Node.js 18+](https://nodejs.org) · an API key from
 [Google Gemini](https://aistudio.google.com/app/apikey) (free tier available),
 [Anthropic](https://console.anthropic.com/) (paid only) or
@@ -482,6 +485,12 @@ Then open **http://localhost:3333**.
 > **Windows / Linux notes:** the auto-update, Dock-app and folder-picker buttons are macOS-only;
 > ingest, chat, wiki, MCP, sync and Health work identically. Set `DOMAINS_PATH=…` to point at your
 > knowledge folder, and `CURATOR_NO_OPEN=1` to skip the macOS browser launch on startup.
+>
+> **Connecting your AI tools:** in Settings → MCP bridge, the **Install for me** button writes The
+> Curator's entry into your tools' config files on a Mac (Claude Desktop, Cursor, Antigravity) and,
+> new on Windows, into **Claude Desktop only** (labelled "New on Windows — tell us if it works").
+> It refuses with a reason rather than guess which settings file Claude Desktop reads. On Linux, and
+> for every other tool on Windows, copy the entry from the same screen and paste it in yourself.
 
 > **Install with a coding agent** — Claude Code, Cursor, Cline and friends can do the whole thing
 > from one pasted prompt: [User Guide § 20](docs/user-guide.md#20-install-with-a-coding-agent).

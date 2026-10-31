@@ -64,6 +64,7 @@ Up: [github.com/travisjneuman](https://github.com/travisjneuman) · Not here: pe
 | marketplace, community skills | `index/marketplace-catalog.json`, [`docs/MARKETPLACE-GUIDE.md`](./docs/MARKETPLACE-GUIDE.md) | Catalog exists once marketplaces are pulled |
 | setup, new machine, configuration, troubleshooting | [`docs/README.md`](./docs/README.md) | Docs front door |
 | private rules, host settings, `local/` | [`local.example/README.md`](./local.example/README.md) | `local/` is gitignored |
+| image, logo, icon, illustration, visual asset create/edit/find | [`image-studio`](./skills/image-studio/SKILL.md) | Automatic reuse-first workflow; private runtime descriptor required |
 | scripts, counts, regenerate index | [`scripts/README.md`](./scripts/README.md), [`docs/COUNT-PIPELINE.md`](./docs/COUNT-PIPELINE.md) | Counts and index refresh are explicit, never automatic |
 | project or task templates | [`templates/README.md`](./templates/README.md) | |
 | version history, release notes | [`CHANGELOG.md`](./CHANGELOG.md) | |
@@ -177,7 +178,7 @@ That's it. Claude Code loads the toolkit from `~/.claude/` in every session.
 | **Quality** | `generic-code-reviewer`, `generic-feature-developer`, `generic-design-system`, `generic-ux-designer`, `test-specialist`, `tdd-workflow`, `debug-systematic`, `tech-debt-analyzer` |
 | **Business** | `business-strategy`, `finance`, `marketing`, `sales`, `product-management`, `hr-talent`, `legal-compliance`, `risk-management`, `operations`, `innovation` |
 | **Creative** | `brand-identity`, `graphic-design`, `video-production`, `audio-production`, `ui-animation`, `ui-research` |
-| **Productivity** | `codebase-documenter`, `reports-pdfs-and-slide-automation`, `content-repurposer`, `status-report-generator`, `core-workflow` |
+| **Productivity** | `codebase-documenter`, `reports-pdfs-and-slide-automation`, `content-repurposer`, `status-report-generator`, `core-workflow`, [`agent-desktop`](./skills/agent-desktop/SKILL.md) (native desktop app control) |
 | **Specialized** | `game-development`, `i18n-localization`, `seo-analytics-auditor`, `email-systems`, `payment-integration`, `product-analytics`, `growth-engineering`, `monetization-strategy` |
 | **Blockchain & Web3** | `blockchain-web3` (Solidity, DeFi, NFTs, Hardhat/Foundry) |
 | **Data Engineering** | `data-engineering` (ETL, Airflow, dbt, Kafka, BigQuery/Snowflake) |

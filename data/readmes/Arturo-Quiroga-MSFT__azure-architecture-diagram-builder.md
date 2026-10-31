@@ -447,7 +447,7 @@ graph TB
 
 ## 🔌 MCP Server & Microsoft Scout Integration
 
-The Diagram Builder ships a **Model Context Protocol (MCP) server** (`mcp-server/`) that exposes its core capabilities as **13 tools, 3 resources, and 3 prompts**, so any MCP-compatible client — including **[Microsoft Scout](https://learn.microsoft.com/en-us/microsoft-scout/get-started)** — can design, validate, compare regional costs, and render Azure architectures conversationally.
+The Diagram Builder ships a **Model Context Protocol (MCP) server** (`mcp-server/`) that exposes its core capabilities as **14 tools (15 with share links enabled), 3 resources, and 3 prompts**, so any MCP-compatible client — including **[Microsoft Scout](https://learn.microsoft.com/en-us/microsoft-scout/get-started)** — can design, validate, compare regional costs, and render Azure architectures conversationally.
 
 ### Tools
 
@@ -467,7 +467,7 @@ The Diagram Builder ships a **Model Context Protocol (MCP) server** (`mcp-server
 | `export_reactflow_scene` | Produce a React Flow scene for the web app |
 | `import_architecture` | **NEW** — inverse of the export tools: parse a manifest / React Flow scene / **ARM template** back to the canonical `{services, connections, groups}` shape, with real resource names, regions, `dependsOn` edges, and a coverage report |
 
-> **Structured outputs:** all 13 tools return typed `structuredContent` on successful calls (validated against declared `outputSchema` contracts) while retaining backward-compatible text payloads and read-only/idempotent annotations.
+> **Structured outputs:** all tools return typed `structuredContent` on successful calls (validated against declared `outputSchema` contracts) while retaining backward-compatible text payloads and read-only/idempotent annotations.
 
 > **Resources & prompts:** beyond tools, the server publishes read-only **resources** (`azure://catalog/services`, `azure://waf/rules`, `azure://pricing/meta`) and starter **prompts** (`design-secure-web-app`, `design-event-driven-platform`, `harden-and-cost`) so any MCP client gets browsable reference data and guided entry points. Full reference: [`mcp-server/TOOLS.md`](mcp-server/TOOLS.md).
 
@@ -481,7 +481,7 @@ The Diagram Builder ships a **Model Context Protocol (MCP) server** (`mcp-server
 
 ### Use it from VS Code (GitHub Copilot)
 
-The hosted server uses **API keys**: ask the maintainer for a personal key. Add this to `.vscode/mcp.json`; VS Code prompts for the key once and stores it securely, and the tools appear in Copilot agent mode. `render_diagram` returns an **MCP App**, so the diagram renders interactively inside the chat.
+The hosted server uses **API keys**: ask the maintainer for a personal key. Add this to `.vscode/mcp.json`; VS Code prompts for the key once and stores it securely, and the tools appear in Copilot agent mode. With the VS Code setting `chat.mcp.apps.enabled`, `open_architecture_canvas` and `render_diagram` open an **interactive canvas inside the chat**: inspect services and run Validate, Cost, Harden, Bicep, Terraform and Open in AADB, with each result shared back to Copilot. The same canvas is built for Microsoft 365 Copilot agents; see [`mcp-server/MCP-APPS-CANVAS.md`](mcp-server/MCP-APPS-CANVAS.md).
 
 ```jsonc
 {
@@ -936,7 +936,7 @@ azure-diagrams/
 │   ├── deploy-mcp-instance.sh  # Deploy the isolated MCP server ACA instance
 │   └── fetch-multi-region-pricing.sh  # Refresh per-region pricing (npm run pricing:refresh)
 ├── Azure_Public_Service_Icons/  # 714 official Azure icons (29 categories)
-├── mcp-server/               # MCP server (13 tools + 3 resources + 3 prompts, stdio + HTTP, Bearer auth)
+├── mcp-server/               # MCP server (14 tools + 3 resources + 3 prompts, stdio + HTTP, Bearer auth)
 │   └── src/                  # serviceCatalog, wafDetector, layoutEngine, svgRenderer, htmlRenderer
 ├── SCOUT/                    # Microsoft Scout integration notes & sample session
 ├── DOCS/                     # Documentation

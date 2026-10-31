@@ -97,8 +97,10 @@ always protect CI workflows and hook configuration; an empty block keeps those
 defaults. Flagged edits require `tamperingReviewed: true` and a substantive
 `tamperingReason` in the independent verdict.
 
-Gates run in a clean replay worktree when the attempt has a baseline. Protected
-paths are restored to their baseline content there. Ignored files are absent;
+Gates run in a clean replay worktree when the attempt has a baseline.
+Replay worktrees are locked with the owning pid, removed on SIGINT/SIGTERM, and any
+left by a killed process are removed at the start of the next verify in that repo.
+Protected paths are restored to their baseline content there. Ignored files are absent;
 use an optional top-level `<prepare>` shell command (or `--prepare` on `mint spec
 new` and `mint spec set`) for dependencies and local environment files. The command
 runs before gates with `MINT_SOURCE_ROOT` pointing to the live worktree, for example
@@ -108,6 +110,8 @@ Gate and prepare output is saved in
 `<state>/attempts/<slug>/<spec>/<attempt>.logs/`. Each full verify run replaces
 these logs, and `mint verify` prints the last 20 lines for each gate that did not
 pass. If prepare fails, it prints the prepare log tail and marks gates as not run.
+Only one verify runs per attempt at a time; a second is refused with the holder's
+pid. The lock is held by the OS for the run, released on exit or kill.
 A gate is inconclusive if prepare failed, its command could not start, it exited
 126 or 127, or it was killed directly by a signal. Inconclusive never counts as pass.
 

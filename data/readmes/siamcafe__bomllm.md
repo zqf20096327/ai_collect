@@ -1,10 +1,19 @@
-# BOMLLM
+# BOM LLM — Self-Hosted Thai AI Infrastructure
 
-![BOM LLM v0.8](images/hero_banner_v8.png)
+![BOM LLM v9.0.0 Self-Hosted Thai AI — Fleet 9/9 Verified, Pipeline PASS, 40 IRON Rules](images/hero_banner_v9.png)
 
 ![BOM LLM](images/bomllm_promo_00001_.png)
 
-**BOM LLM v0.8 — Mega Tuning & Fleet Optimization**
+**BOM LLM v9.0.0 — Project Closure: Fleet Verified 9/9, Pipeline PASS, 40 IRON Rules**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Fleet Status](https://img.shields.io/badge/Fleet-9%2F9%20Verified-brightgreen)]()
+[![Pipeline](https://img.shields.io/badge/Pipeline-E2E%20PASS-brightgreen)]()
+[![GOD CONFIG](https://img.shields.io/badge/GOD%20CONFIG-v7.0-blue)]()
+[![IRON Rules](https://img.shields.io/badge/IRON%20Rules-40-red)]()
+[![Thai NLP](https://img.shields.io/badge/Thai%20NLP-Gate%2020%2F20-green)]()
+[![Self Hosted](https://img.shields.io/badge/Self--Hosted-%240.54%2Fday-orange)]()
+[![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97-Model%20Card-yellow)](https://huggingface.co/bomllm/turbo-thai-config)
 
 I replaced $50/day of cloud LLM bills with a Mac Mini on my desk running at $0.54/day measured electricity.
 It now does **inference, coding, image generation, voice synthesis, music, and live streaming** — all self-hosted.
@@ -16,6 +25,25 @@ An i9 with 2× RTX 5060 Ti renders images (ComfyUI + FLUX), Thai voice (SiangTTS
 Everything meshes over **Tailscale**; public HTTPS via **Cloudflare Tunnel**; every API key-gated.
 
 This is not a demo. This is the exact stack that answers my customers every day.
+
+## What's New in v9.0.0 — 🏁 Project Closure Release (Nov 1, 2026)
+
+- **PROJECT CLOSURE 10/10** — all 14 findings resolved, fleet 9/9 verified, pipeline E2E PASS
+- **IRON 40 Rules** — 3 new safety rules (IRON 38/39/40) after SSH incident #24
+- **SSH Incident #24 Fixed** — PasswordAuthentication restored on all 9 fleet machines
+- **Grok Deep Root Cause Scan** — 9 machines × 9 areas, 3 root causes traced (hardware/config, not software)
+- **FINAL BLUEPRINT** — 51KB, 15 sections, comprehensive fleet architecture reference (art#54961)
+- **FINAL HOW-TO** — 32KB, 14 sections, complete operational manual (art#54962)
+- **Mega Closure Report** — 14/14 findings verified and closed (art#55017)
+- **Pinned versions verified** — LiteLLM v1.106.4, OWUI v0.12.4, Ollama 0.40.10-0.40.13, ComfyUI v0.43.0
+
+## What's New in v0.8.1 — 🛡️ GOD CONFIG Docs + QC System (Oct 31, 2026)
+
+- **GOD_CONFIG.md** — full GOD CONFIG v7.0 reference (locked params, per-model compliance, protected deviations)
+- **QC System on AM4** — OCR / Whisper / ASR / Gateway, deployed Oct 31, 10/10 PASS
+- **Grok deep survey** — 30 findings across 7/7 machines; fleet fixes F001–F010 applied
+- **K3 LFM3 lightweight model blueprint** — Typhoon2-3B rank 1, lfm3:1.7b rank 2 (deployed)
+- **Pinned versions** — LiteLLM v1.106.4 (⛔ v1.107.0 COMPROMISED), ComfyUI v0.43.0 fleet-wide
 
 ## What's New in v0.8 — 🔧 Mega Tuning & Fleet Optimization (Oct 30, 2026)
 
@@ -123,6 +151,24 @@ Promo art (ComfyUI · flux1-dev-fp8 · 1024×1024): [1](images/bomllm_promo_0000
 - **Image:** ComfyUI + FLUX Dev fp8 (3 GPU workers via comfy-router)
 - **Voice:** SiangTTS (VoxCPM2 LoRA, reference-only mode)
 - **Music:** YuE2-3B instrumental + ACE-Step 1.5 Thai vocal
+
+## GOD CONFIG v7.0
+
+Locked generation parameters for all production models:
+
+| Parameter | Value | Reason |
+|-----------|-------|--------|
+| temperature | 0.6 | Thai quality gate — ≥0.7 fails |
+| top_p | 0.95 | Balanced sampling |
+| top_k | 20 | Focused vocabulary |
+| repeat_penalty | 1.0 | No repetition bias |
+| presence_penalty | 0.0 | ⛔ CRITICAL — 1.5 causes Han leak |
+| num_predict | 4096 | Max generation length |
+| num_ctx | 8192 | Context window |
+
+⛔ **DO NOT change presence_penalty from 0.0** — values >0 cause Chinese character leakage in Thai responses.
+
+Full per-model compliance table and protected deviations: [GOD_CONFIG.md](GOD_CONFIG.md)
 
 ## Architecture
 
@@ -241,6 +287,38 @@ cd bomllm
 | AM5 Windows | Coding + Render | zcode GLM-5.3, ComfyUI 3rd worker |
 | NAS DS725+ | Infra | comfy-router, monitoring, n8n, backups |
 | CAT Server | Web Hosting | DirectAdmin, 5 WordPress sites, MySQL |
+
+## Fleet Status (Oct 31, 2026)
+
+| Machine | Role | Ollama | Status |
+|---------|------|--------|--------|
+| Mac Mini M4 Pro | Production qwen38-uni | 0.40.10 | ✅ LIVE |
+| Ubuntu AI (UA) | gpt-oss-120b + ComfyUI | 0.40.13 | ✅ |
+| AM4 | QC Stack + Hub | 0.40.13 | ✅ |
+| C2 (Contabo) | OWUI + LiteLLM | — | ✅ |
+| i9 | ComfyUI + MT5 + llama.cpp | — | ✅ |
+| AM5 | Command station | 0.40.13 | ✅ |
+| NAS | Hub relay + n8n | — | ✅ |
+
+Production pipeline: OWUI v0.12.4 → LiteLLM v1.106.4 → llm-smart → gpt-oss-120b
+
+## QC System (AM4)
+
+Deployed Oct 31 — 10/10 PASS:
+- QC Ollama :11440 (GPU0 isolated) — 4 models
+- QC Whisper :18091 (typhoon-whisper-turbo)
+- QC ASR :18092 (typhoon-asr-realtime, CPU)
+- QC Gateway :18090 (LAN accessible)
+
+## Pinned Versions
+
+- OWUI: v0.12.4
+- LiteLLM: v1.106.4 (⛔ v1.107.0 COMPROMISED)
+- Ollama: 0.40.13 (UA/AM4), 0.40.10 (Mac)
+- ComfyUI: v0.43.0 (fleet-wide)
+- BOM AI: v0.3.2
+- IRON Rules: 40
+
 ## License
 
 MIT — clone, run, deploy. See [LICENSE](LICENSE).
@@ -251,15 +329,21 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
+---
+
+## Keywords
+
+`Thai LLM` `self-hosted AI` `Mac Mini M4 Pro` `local inference` `TURBO-Fable` `BOM LLM` `Thai NLP` `fleet management` `ComfyUI` `FLUX` `open-source AI` `MLX` `Ollama` `LiteLLM` `Open WebUI` `GOD CONFIG` `production AI` `self-hosted ChatGPT alternative` `Thai language model` `low-cost AI inference` `IRON rules` `AI operations` `fleet automation`
+
 ## 🇹🇭 ภาษาไทย
 
-**BOM LLM v0.8 — Mega Tuning & Fleet Optimization**
+**BOM LLM v9.0.0 — Project Closure Release**
 
 แทนที่ค่า API คลาวด์ \$50/วัน ด้วย Mac Mini บนโต๊ะ \$0.54/วัน (ค่าไฟจริง)
 
 ตอนนี้ทำได้ครบ: ตอบแชท, เขียนโค้ด, สร้างรูป, สร้างเสียง, สร้างเพลง, ถ่ายทอดสด — ทั้งหมดรันเครื่องตัวเอง
 
-**v0.8 ใหม่:**
+**v9.0.0 ใหม่:**
 - GOD CONFIG v7.0 — ปรับแต่ง 9 จุด ข้าม 5 model configs, presence_penalty=0 ทั้ง fleet
 - Fleet cleanup — คืนพื้นที่ 210.43 GB ทั่ว fleet
 - Ollama 0.40.13 — UA + AM4 (Mac ยังอยู่ 0.40.10 เพื่อเสถียรภาพ production)

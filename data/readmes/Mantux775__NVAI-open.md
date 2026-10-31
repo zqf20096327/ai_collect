@@ -9,21 +9,20 @@ Images, videos with sound, music and 3D models, made on your own computer. Free,
 
 | | |
 |---|---|
-| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.16.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.16/NVAI-open-Setup-0.5.16.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.4.8.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.16/NVAI-open-0.4.8.dmg) |
+| Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.18.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.18/NVAI-open-Setup-0.5.18.exe) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.0.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.18/NVAI-open-0.5.0.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-October 2026: NVAI-open 0.5.16 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.16)), the Mac stays at 0.4.8
+October 2026: NVAI-open 0.5.18 for Windows and 0.5.0 for the Mac ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.18))
 
-- **Zoom in the Studio:** the new Scale tool (Z) scales a clip around a focus point you click, keyframes animate the zoom (drag in the monitor), and below 100 % a clip becomes picture in picture
-- **The Studio opens first**, and long renders no longer get lost for Claude: `generate_video(wait=False)` and `job_status`
-- **Fix:** reference images older than a day dropped out of jobs with several images ("Invalid image file")
-- 0.5.15 brought a folder for every Studio project ([notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.15))
+- **The best result without settings:** every image, music and video model now starts with its measured best settings, set when you pick the model: Qwen-Image-2512 at its native 1328², FLUX 3, Krea 2 and MOSS-Image at 2 MP, LTX-2.5 at 1080p with DFR, 60 s of music. A short tip under every model choice says what works best, for old photos too. Claude gets the same over MCP.
+- **MiniMax H3, with a license warning:** video with stereo sound from text, a start image or up to 9 reference images, with the turbo LoRA, sparse attention and INT8 attention preselected (9.4 s in 6.6–6.9 instead of 37 min on an RTX 5060 Ti). **Its license prohibits any use in the EU, the UK, South Korea and the USA without a separate license from MiniMax, and nothing made with it may be published.** The app marks it in red until you confirm a permission. [Details](docs/MODELS.md#minimax-h3-since-0518)
+- 0.5.17 brought two clips without a seam (latent chain), the Mac got the Studio ([notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.17))
 
-Neu: **Zoomen im Studio**: Das Werkzeug Skalieren (Z) skaliert einen Clip um einen Fokuspunkt, Keyframes animieren den Zoom (im Monitor ziehen), unter 100 % wird ein Clip zum Bild im Bild. Das Studio öffnet als Erstes, lange Aufträge gehen für Claude nicht mehr verloren, und Referenzbilder vom Vortag fallen nicht mehr aus dem Auftrag.
+Neu: **Das beste Ergebnis ohne Einstellen**: Jedes Bild-, Musik- und Videomodell startet mit seinen gemessenen Bestwerten, gesetzt bei der Modellwahl: Qwen-Image-2512 im nativen 1328², FLUX 3, Krea 2 und MOSS-Image mit 2 MP, LTX-2.5 in 1080p mit DFR, Musik 60 s. Ein kurzer Tipp unter jeder Modellwahl sagt, was am besten funktioniert, auch bei alten Fotos; Claude bekommt dasselbe über MCP. **MiniMax H3, mit Lizenzwarnung**: Video mit Stereoton aus Text, Startbild oder bis zu 9 Referenzbildern, mit Turbo-LoRA, Sparse Attention und INT8-Attention vorgewählt (9,4 s in 6,6–6,9 statt 37 min auf einer RTX 5060 Ti). **Die Lizenz verbietet jede Nutzung in der EU, in Großbritannien, Südkorea und den USA ohne eigene Lizenz von MiniMax, und nichts damit Erzeugtes darf veröffentlicht werden.** Die App markiert es rot, bis du eine Genehmigung bestätigst. [Einzelheiten](docs/de/MODELLE.md#minimax-h3-seit-0518)
 
 [English](#english) · [Video](#video) · [Deutsch](#deutsch)
 
@@ -58,7 +57,7 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 2. **Generate → Video:** pick the portrait as the start image.
 3. **Person from a photo:** describe the role. FLUX 3 keeps the face and makes four start images; pick the one that looks most alike.
 4. **Prompt:** describe what moves, what the camera does and what the person says. LTX-2.5 makes the video with speech and sound.
-5. **Keep the face:** tick "Loop" (with a still camera) or give an end image. Without one, the camera pushed in after a second in our test and the face changed.
+5. **Keep the face:** tick "Loop" (with a still camera) or give an end image. Without one, the camera pushed in after a second in our test and the face changed. The price: water, smoke and everything else that is the same in both images stands still; for a moving background, use neither.
 
 Step by step with screenshots: [docs/PHOTO_TO_VIDEO.md](docs/PHOTO_TO_VIDEO.md)
 
@@ -69,11 +68,12 @@ A full-screen editor for whole videos, the first tab when NVAI-open starts. At t
 ![The Studio: media on the left, the monitor in the middle, the project settings on the right, the composition and the edit below](docs/images/studio.jpg)
 
 - **Editing:** selection, razor and magnet with their keys, right-click menus everywhere, several clips at once, video and audio tracks with eye and mute, speed in percent, cross dissolve, dips to black or white and wipes, and a check before "Conform" overwrites anything.
-- **Markers:** a chain marker makes a clip start with the last frame of the one before it, so two shots join seamlessly; transition markers add transitions; an AI task marker leaves Claude a note in the timeline.
+- **Markers:** a chain marker makes a clip continue the one before it: it takes over its last second and the edit dissolves over it, so two shots join seamlessly; transition markers add transitions; an AI task marker leaves Claude a note in the timeline.
 - **Media:** every project has its own folder for what it generates, exports and uploads, next to the general History; a compact list with search across all folders. Click a file to play it in the monitor, drag it onto a track, delete it right there.
 - **High-quality 1080p:** video scenes run in the best LTX-2.5 quality, every AI video is also kept losslessly, and only the export compresses: measured 42.3 instead of 37.7 dB PSNR for a YouTube export.
 - **Export:** YouTube 1080p and 4K, Shorts, AV1, a lossless master (MKV) or ProRes 4444 for other editing software.
 - **Claude Code** builds the whole video for you over MCP while you watch it in the Studio.
+- **Mac:** since 0.4.9 NVAI-open for Mac has the Studio too, with the same tools and project format ([On the Mac](docs/STUDIO.md#on-the-mac-nvai-open-for-mac-049)).
 
 Step by step: [docs/STUDIO.md](docs/STUDIO.md)
 
@@ -154,10 +154,11 @@ Type a few words, click "Expand prompt", and NVAI-open writes the full descripti
 
 Every tab in NVAI-open has a **Recommended settings** box with what was measured. The most important ones:
 
-- **Images:** choose the size by the silhouette (standing figure 832 × 1216, vehicle 1216 × 832), write full English sentences with the style first, and make 4 images at once to pick from. With FLUX 3, switch off "Expand the prompt" when construction or counts must be exact: the upsampler added a second fishing line in 4 of 6 images, without it 0 of 2.
+- **Images:** the size for the best result is preselected (native or 2 MP); for a standing figure pick portrait, for a vehicle landscape. Write full English sentences with the style first, and make 4 images at once to pick from. With FLUX 3, switch off "Expand the prompt" when construction or counts must be exact: the upsampler added a second fishing line in 4 of 6 images, without it 0 of 2.
 - **Krea 2:** name the framing ("medium shot from the waist up, his whole head inside the frame"); without it the head was cut off in 3 of 3 test images.
 - **MOSS-Image:** describe the finished picture and put the text in quotation marks with position and typeface; leave it on 50 steps.
-- **Video:** name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot"; if the framing has to hold, also give an end image edited from the start image (the prompt alone still pushed in, 3 of 3). For a recognizable person keep the face large (medium shot or closer), make the start image with FLUX 3 from a frontal reference (or extend the real photo to the video format), give the start image as the end image too ("Loop", still camera; in a close-up the face held for 5 s, without it the face changed after a second), and don't extend such clips. For an action with objects, fill only its result into the start image with a mask and give that as the end image (a fish in a bucket: one fish with one tail, the face unchanged), and say what the hands must not do. Let people speak only with their face in the shot and the same voice description, and make a few variants to pick by ear: LTX makes up the voice anew in every clip. A spoken line takes about 2 words per second: 15 words ran past the end of a 6 s shot, 11 fit; leave gestures out (even "a single quick wave" lasted 2.5 s). Write timing out ("For the first two seconds nothing happens: …"). Leave "Lossless copy for editing" on if you cut the clips later; it costs about 32 MB per second at 1080p.
+- **Video:** keep the prompt short (4–8 sentences) and say a person's stillness in one sentence ("sits perfectly still like a statue …"): with 8 instead of 14 sentences the person moved about 40–50 % less in our test. Name loud sounds explicitly, sounds described as soft come out almost inaudible. For a fixed shot write "Static camera, a locked-off medium shot"; if the framing has to hold, also give an end image edited from the start image (the prompt alone still pushed in, 3 of 3). For a recognizable person keep the face large (medium shot or closer), make the start image with FLUX 3 from a frontal reference (or extend the real photo to the video format), give the start image as the end image too ("Loop", still camera; in a close-up the face held for 5 s, without it the face changed after a second; the price: water and smoke then stand as still as the shore, even if the prompt asks them to move, so for a moving background give only a start image), and don't extend such clips. For an action with objects, fill only its result into the start image with a mask and give that as the end image (a fish in a bucket: one fish with one tail, the face unchanged), and say what the hands must not do. Let people speak only with their face in the shot and the same voice description, and make a few variants to pick by ear: LTX makes up the voice anew in every clip. A spoken line takes about 2 words per second: 15 words ran past the end of a 6 s shot, 11 fit; leave gestures out (even "a single quick wave" lasted 2.5 s). Write timing out ("For the first two seconds nothing happens: …"). Join two clips by chaining them (chain marker in the Studio, or "Extend"): the second one takes over the last second of the first. Leave "Lossless copy for editing" on if you cut the clips later; it costs about 32 MB per second at 1080p.
+- **MiniMax H3:** only with a separate license from MiniMax in the EU, the UK, South Korea and the USA, and never publish what it makes. It tends to slow motion: describe the pace of every movement.
 - **3D:** one object on a plain background, without floor or shadow; both would end up in the mesh.
 - **FLUX 3 and LTX-2.5:** accept the license on Hugging Face and store a read token under "Models"; the model card shows whether access works. Step by step: [docs/HUGGINGFACE.md](docs/HUGGINGFACE.md)
 - **Old photos:** leave it on "Automatic"; it chooses "Thorough" for overall aging (water stains, crack networks) and "Gentle" for separate damage on an otherwise good photo (dust, scratches, tears). Put known colors into the hints ("his suit is dark brown") and compare the two variants at full size.
@@ -182,7 +183,7 @@ NVAI-open has no content filter of its own. The model list marks every model as 
 
 ### Mac app, PhotoCraft add-on, iOS
 
-- **Mac:** a native app for Apple Silicon with FLUX.2 Klein and Z-Image Turbo: generate, refine, fill, reference images, expand prompts, LoRAs, restore old photos, music and sounds with Stable Audio 3 (30 seconds in about 13 seconds on an M1), and short videos with LTX-Video 2B from text or a start image (2 seconds at 768 × 512 in about 95 seconds on an M1 with 8 GB).
+- **Mac:** a native app for Apple Silicon with FLUX.2 Klein and Z-Image Turbo: generate, refine, fill, reference images, expand prompts, LoRAs, restore old photos, music and sounds with Stable Audio 3 (30 seconds in about 13 seconds on an M1), short videos with LTX-Video 2B from text or a start image (2 seconds at 768 × 512 in about 95 seconds on an M1 with 8 GB; since 0.5.0 bigger video models for Macs with 16 GB and more, LTX-2.3 and LTX-2.5 with sound), and since 0.4.9 the Studio for whole videos from scenes.
 - **[PhotoCraft](https://github.com/storytold/photocraft) add-on:** select an area in this great open-source photo editor, fill it, rework it or restore it, and the result comes back as a layer. Needs PhotoCraft 0.10.0 or newer. Thanks to the PhotoCraft developers for such a well-scriptable editor.
 - **iOS (closed beta):** a 3D scanner that turns photos of real objects into models. Tell me in an issue if you would use it.
 
@@ -253,6 +254,7 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 2. **Generieren → Video:** das Porträt als Startbild wählen.
 3. **Person aus einem Foto:** die Rolle beschreiben. FLUX 3 übernimmt das Gesicht und macht vier Startbilder; das ähnlichste auswählen.
 4. **Prompt:** beschreiben, was sich bewegt, was die Kamera macht und was die Person sagt. LTX-2.5 macht daraus das Video mit Sprache und Ton.
+5. **Gesicht halten:** „Schleife“ anhaken (mit ruhiger Kamera) oder ein Endbild mitgeben. Ohne fuhr die Kamera im Test nach einer Sekunde heran, und das Gesicht veränderte sich. Der Preis: Wasser, Rauch und alles andere, was in beiden Bildern gleich ist, steht dann still; für bewegten Hintergrund beides weglassen.
 
 Schritt für Schritt mit Screenshots: [docs/de/FOTO_ZU_VIDEO.md](docs/de/FOTO_ZU_VIDEO.md)
 
@@ -263,11 +265,12 @@ Ein Schnittplatz über den ganzen Bildschirm für ganze Videos. Oben komponierst
 ![Das Studio: links das Material, in der Mitte der Monitor, rechts die Projekteinstellungen, unten Komposition und Schnitt](docs/images/studio-de.jpg)
 
 - **Schneiden:** Auswahl, Schneiden und Magnet mit ihren Tasten, Rechtsklick-Menüs überall, mehrere Clips auf einmal, Video- und Tonspuren mit Auge und Stummschalter, Geschwindigkeit in Prozent, Überblendung, Abblende über Schwarz oder Weiß und Wischblende, und eine Rückfrage, bevor „Übernehmen“ etwas überschreibt.
-- **Marker:** Ein Anschluss-Marker lässt einen Clip mit dem letzten Bild des vorigen beginnen, so gehen zwei Einstellungen nahtlos ineinander über; Übergang-Marker setzen Übergänge; ein KI-Auftrag hinterlässt Claude eine Notiz in der Zeitleiste.
+- **Marker:** Ein Anschluss-Marker lässt einen Clip den vorigen fortsetzen: Er übernimmt dessen letzte Sekunde, der Schnitt blendet darüber, so gehen zwei Einstellungen nahtlos ineinander über; Übergang-Marker setzen Übergänge; ein KI-Auftrag hinterlässt Claude eine Notiz in der Zeitleiste.
 - **Material:** Jedes Projekt hat einen eigenen Ordner für das, was es erzeugt, exportiert und hochlädt, neben dem allgemeinen Verlauf; eine kompakte Liste mit Suche über alle Ordner. Ein Klick spielt die Datei im Monitor ab, auf eine Spur gezogen wird sie zum Clip, gelöscht wird sie direkt dort.
 - **Hochwertiges 1080p:** Videoszenen laufen in der höchsten Qualität von LTX-2.5, jedes KI-Video wird zusätzlich verlustfrei aufbewahrt, und komprimiert wird erst beim Export: gemessen 42,3 statt 37,7 dB PSNR bei einem YouTube-Export.
 - **Export:** YouTube 1080p und 4K, Shorts, AV1, ein verlustfreier Master (MKV) oder ProRes 4444 für andere Schnittprogramme.
 - **Claude Code** baut dir das ganze Video per MCP, während du im Studio zusiehst.
+- **Mac:** Seit 0.4.9 hat NVAI-open für Mac das Studio auch, mit denselben Werkzeugen und demselben Projektformat ([Auf dem Mac](docs/de/STUDIO.md#auf-dem-mac-nvai-open-für-mac-049)).
 
 Schritt für Schritt: [docs/de/STUDIO.md](docs/de/STUDIO.md)
 
@@ -348,10 +351,11 @@ Ein paar Worte eintippen, auf „Prompt ausbauen“ klicken, und NVAI-open schre
 
 In jedem Reiter von NVAI-open stehen unter **Empfohlene Einstellungen** die gemessenen Erfahrungen. Die wichtigsten:
 
-- **Bilder:** das Format nach der Silhouette wählen (stehende Figur 832 × 1216, Fahrzeug 1216 × 832), ganze englische Sätze mit dem Stil vorn schreiben und 4 Bilder auf einmal zum Auswählen machen. Bei FLUX 3 „Prompt ausbauen lassen“ abschalten, wenn Bauweise oder Anzahl genau stimmen müssen: Der Ausbauer setzte in 4 von 6 Bildern eine zweite Angelschnur dazu, ohne ihn 0 von 2.
+- **Bilder:** das Format fürs beste Ergebnis ist vorgewählt (nativ bzw. 2 MP); für eine stehende Figur Hochformat wählen, für ein Fahrzeug Querformat. Ganze englische Sätze mit dem Stil vorn schreiben und 4 Bilder auf einmal zum Auswählen machen. Bei FLUX 3 „Prompt ausbauen lassen“ abschalten, wenn Bauweise oder Anzahl genau stimmen müssen: Der Ausbauer setzte in 4 von 6 Bildern eine zweite Angelschnur dazu, ohne ihn 0 von 2.
 - **Krea 2:** den Bildausschnitt nennen („medium shot from the waist up, his whole head inside the frame“); ohne fehlte im Test in 3 von 3 Bildern der Kopf.
 - **MOSS-Image:** das fertige Bild beschreiben und die Schrift in Anführungszeichen mit Ort und Schriftart angeben; bei 50 Schritten lassen.
-- **Video:** laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben; muss der Ausschnitt halten, zusätzlich ein aus dem Startbild bearbeitetes Endbild mitgeben (der Prompt allein fuhr trotzdem heran, 3 von 3). Für eine erkennbare Person das Gesicht groß halten (halbnah oder näher), das Startbild mit FLUX 3 aus einer frontalen Vorlage machen (oder das echte Foto aufs Videoformat erweitern), das Startbild auch als Endbild mitgeben („Schleife“, ruhige Kamera; in einer Nahaufnahme hielt das Gesicht so 5 s, ohne veränderte es sich nach einer Sekunde) und solche Clips nicht verlängern. Für eine Handlung mit Gegenständen nur ihr Ergebnis per Maske ins Startbild füllen und das als Endbild mitgeben (ein Fisch im Eimer: ein Fisch mit einer Schwanzflosse, das Gesicht unverändert), und sagen, was die Hände nicht tun sollen. Personen nur mit Gesicht im Bild und gleich beschriebener Stimme sprechen lassen und ein paar Varianten nach Gehör wählen: LTX erfindet die Stimme in jedem Clip neu. Ein gesprochener Satz braucht rund 2 Wörter je Sekunde: 15 Wörter liefen über das Ende einer 6-s-Szene hinaus, 11 passten; Gesten weglassen (selbst „a single quick wave“ dauerte 2,5 s). Zeiten ausschreiben („For the first two seconds nothing happens: …“). „Verlustfreie Kopie für den Schnitt“ anlassen, wenn du die Clips später schneidest; kostet rund 32 MB je Sekunde bei 1080p.
+- **Video:** den Prompt kurz halten (4–8 Sätze) und die Ruhe einer Person in einem Satz sagen („sits perfectly still like a statue …“): Mit 8 statt 14 Sätzen bewegte sich die Person im Test rund 40–50 % weniger. Laute Geräusche ausdrücklich nennen, leise beschriebene kommen fast unhörbar. Für eine feste Einstellung „Static camera, a locked-off medium shot“ schreiben; muss der Ausschnitt halten, zusätzlich ein aus dem Startbild bearbeitetes Endbild mitgeben (der Prompt allein fuhr trotzdem heran, 3 von 3). Für eine erkennbare Person das Gesicht groß halten (halbnah oder näher), das Startbild mit FLUX 3 aus einer frontalen Vorlage machen (oder das echte Foto aufs Videoformat erweitern), das Startbild auch als Endbild mitgeben („Schleife“, ruhige Kamera; in einer Nahaufnahme hielt das Gesicht so 5 s, ohne veränderte es sich nach einer Sekunde; der Preis: Wasser und Rauch stehen dann so still wie das Ufer, auch wenn der Prompt sie bewegen will, für bewegten Hintergrund also nur ein Startbild) und solche Clips nicht verlängern. Für eine Handlung mit Gegenständen nur ihr Ergebnis per Maske ins Startbild füllen und das als Endbild mitgeben (ein Fisch im Eimer: ein Fisch mit einer Schwanzflosse, das Gesicht unverändert), und sagen, was die Hände nicht tun sollen. Personen nur mit Gesicht im Bild und gleich beschriebener Stimme sprechen lassen und ein paar Varianten nach Gehör wählen: LTX erfindet die Stimme in jedem Clip neu. Ein gesprochener Satz braucht rund 2 Wörter je Sekunde: 15 Wörter liefen über das Ende einer 6-s-Szene hinaus, 11 passten; Gesten weglassen (selbst „a single quick wave“ dauerte 2,5 s). Zeiten ausschreiben („For the first two seconds nothing happens: …“). Zwei Clips verketten statt hart schneiden (Anschluss-Marker im Studio oder „Verlängern“): Der zweite übernimmt die letzte Sekunde des ersten. „Verlustfreie Kopie für den Schnitt“ anlassen, wenn du die Clips später schneidest; kostet rund 32 MB je Sekunde bei 1080p.
+- **MiniMax H3:** in der EU, in Großbritannien, Südkorea und den USA nur mit eigener Lizenz von MiniMax, und nichts damit Erzeugtes veröffentlichen. Es neigt zu Zeitlupe: jede Bewegung mit Tempo beschreiben.
 - **3D:** ein Objekt vor schlichtem Hintergrund, ohne Boden und Schatten; beides landet sonst im Mesh.
 - **FLUX 3 und LTX-2.5:** die Lizenz auf Hugging Face annehmen und unter „Modelle“ einen Token mit Leserecht eintragen; die Modellkarte zeigt, ob der Zugriff klappt. Schritt für Schritt: [docs/de/HUGGINGFACE.md](docs/de/HUGGINGFACE.md)
 - **Alte Fotos:** auf „Automatisch“ lassen; es wählt „Gründlich“ bei flächiger Alterung (Wasserflecken, Rissnetze) und „Schonend“ bei einzelnen Schäden auf einem sonst guten Foto (Staub, Kratzer, Risse). Bekannte Farben in die Hinweise („his suit is dark brown“) und die zwei Varianten in voller Größe vergleichen.
@@ -376,7 +380,7 @@ NVAI-open hat keinen eigenen Inhaltsfilter. Die Modellliste kennzeichnet jedes M
 
 ### Mac-App, PhotoCraft-Add-on, iOS
 
-- **Mac:** eine native App für Apple Silicon mit FLUX.2 Klein und Z-Image Turbo: generieren, überarbeiten, füllen, Referenzbilder, Prompt ausbauen, LoRAs, alte Fotos restaurieren, Musik und Klänge mit Stable Audio 3 (30 Sekunden in rund 13 Sekunden auf einem M1) sowie kurze Videos mit LTX-Video 2B aus Text oder einem Startbild (2 Sekunden in 768 × 512 in rund 95 Sekunden auf einem M1 mit 8 GB).
+- **Mac:** eine native App für Apple Silicon mit FLUX.2 Klein und Z-Image Turbo: generieren, überarbeiten, füllen, Referenzbilder, Prompt ausbauen, LoRAs, alte Fotos restaurieren, Musik und Klänge mit Stable Audio 3 (30 Sekunden in rund 13 Sekunden auf einem M1), kurze Videos mit LTX-Video 2B aus Text oder einem Startbild (2 Sekunden in 768 × 512 in rund 95 Sekunden auf einem M1 mit 8 GB; seit 0.5.0 größere Videomodelle für Macs ab 16 GB, LTX-2.3 und LTX-2.5 mit Ton) und seit 0.4.9 das Studio für ganze Videos aus Szenen.
 - **Add-on für [PhotoCraft](https://github.com/storytold/photocraft):** in diesem tollen Open-Source-Bildeditor einen Bereich auswählen, füllen, überarbeiten oder restaurieren, das Ergebnis kommt als Ebene zurück. Braucht PhotoCraft ab 0.10.0. Danke an die PhotoCraft-Entwickler für einen so gut steuerbaren Editor.
 - **iOS (geschlossene Beta):** ein 3D-Scanner, der aus Fotos echter Gegenstände Modelle macht. Schreibt mir gern in einem Issue, wenn ihr ihn nutzen würdet.
 

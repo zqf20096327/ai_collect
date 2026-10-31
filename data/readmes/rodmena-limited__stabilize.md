@@ -10,8 +10,10 @@ server or scheduler to operate.
 The engine was built for reliable orchestration in general, and it turns out to
 be a particularly good foundation for **agentic systems**: LLM agents are
 long-running, make expensive external calls, loop, wait on humans, and must not
-lose progress or repeat side effects when something fails. Those are exactly the
-guarantees Stabilize provides. This document is organised around building
+lose progress when something fails. Stabilize persists every step, recovers lost
+work from committed state, and records each handled message so a redelivery is
+not handled twice; the cases in which a task's side effect can still repeat are
+listed in docs/guide/stability.rst. This document is organised around building
 agentic workflows, from a single model call to a multi-agent system, but the
 same primitives apply to any pipeline.
 
@@ -52,6 +54,13 @@ transaction. A process that is killed mid-run leaves no half-written state and
 no lost work: on restart, recovery re-queues precisely the work that was in
 flight. For an agent that has already spent real time and money on model calls,
 this is the difference between resuming and starting over.
+
+Recovery is something you turn on, not something that happens by itself. The
+state is durable either way, but the sweep that re-queues in-flight work runs
+only when you ask for it — `recover_on_startup(store, queue)` at boot, or
+`recover_on_start=True` / `recovery_interval_seconds=...` on the processor. It
+also considers only workflows started within `recovery_max_age_hours` (24 by
+default), which is worth raising if your workflows outlive that.
 
 **Control flow is expressive.** Beyond fan-out and fan-in, Stabilize implements
 a large subset of the van der Aalst workflow patterns: proceed when *k of n*
@@ -159,6 +168,11 @@ print(result.stages[0].outputs["completion"])
 for scripts and tests. In a service you would call `processor.start()` and let
 it run in the background.
 
+If a handler raises during `process_all` (for example the database is briefly
+unavailable), the message is rescheduled by `config.retry_delay` (15 s by
+default) and the exception is raised to your code. A later `process_all` call
+delivers it again; `processor.start()` does this for you.
+
 ### Mid-level: a tool-using agent with human approval
 
 Real agents use tools and often need a human to sign off before an action takes
@@ -231,9 +245,15 @@ gate = next(s for s in store.retrieve(workflow.id).stages if s.ref_id == "approv
 assert gate.status == WorkflowStatus.SUSPENDED
 
 # ... later, when a human decides ...
-approve(queue, workflow.id, gate.id, {"user": "alice"})
+approve(queue, workflow.id, gate.id, {"note": "looks right"}, user="alice")
 processor.process_all(timeout=30)   # resumes and finishes
 ```
+
+`user=` is recorded as the actor on the resulting `stage.resumed` event, so the
+run has a durable answer to "who approved this". The payload dict is the
+approver's data and reaches the task as `outputs["approval"]`; pass `store=` as
+well and a stage id belonging to a different workflow is rejected at the call
+site instead of asynchronously.
 
 To watch the agent work as it runs, subscribe to the workflow's event stream.
 Tasks emit progress with `emit_progress`, and lifecycle events are published
@@ -427,6 +447,63 @@ export STABILIZE_SQLITE_JOURNAL_MODE=WAL
 ```bash
 stabilize mg-up --db-url postgres://user:pass@host:5432/dbname
 stabilize mg-status --db-url postgres://user:pass@host:5432/dbname
+```
+
+`mg-up` runs [migretti](https://pypi.org/project/migretti/) (`mg verify`, then `mg apply`)
+on the migration files shipped in the package, and migretti records them in `_migrations`
+in the target schema. On a database set up by stabilize 0.33.1 or earlier, the first
+`mg-up` records the existing history in migretti without running the SQL again and leaves
+the old `stabilize_migrations` table in place. A schema that has stabilize's tables and no
+migration history is adopted: `mg-up` matches the catalog against the migrations' SQL,
+records the migrations already in place without running them, and applies the rest.
+Concurrent runs against one database wait for each other, up to `--lock-timeout` seconds
+(default 900).
+
+A project whose own migretti history is in the same schema as stabilize's tables keeps
+stabilize's history apart with `--history-schema` (the tables stay where they are):
+
+```bash
+stabilize mg-up --db-url postgres://user:pass@host:5432/dbname --history-schema stabilize_history
+```
+
+Later runs find that schema without the flag. The CLI reads a URL as libpq does, so a
+query parameter such as `?dbname=` wins over the same part of the URL.
+
+By default tables land in the connection's default schema (usually `public`).
+To keep stabilize's tables in a dedicated schema, add `?schema=` to the URL
+(or set `MG_SCHEMA`, or a `schema:` key under `database:` in the file named by `--config`) —
+`mg-up` creates the schema if missing and applies everything into it:
+
+```bash
+stabilize mg-up --db-url "postgres://user:pass@host:5432/dbname?schema=stabilize"
+
+# Point the runtime at the same schema via a search_path option in the DSN:
+# postgres://user:pass@host:5432/dbname?options=-csearch_path%3Dstabilize
+```
+
+Don't name the schema after the connecting role: with role `stabilize` and schema `stabilize`,
+PostgreSQL's default `search_path` (`"$user", public`) searches that schema before `public` for
+every unqualified name, and another project's migretti reads stabilize's history as its own.
+`mg-up` refuses the combination.
+
+To move an existing install out of `public`, run the script below once, then run
+`mg-up` with `?schema=stabilize` and use the schema-qualified URLs above from then on.
+If your own project has a table with one of these names in `public` (`events` and
+`snapshots` are common), take it out of the list first.
+
+```sql
+CREATE SCHEMA IF NOT EXISTS stabilize;
+DO $$ DECLARE t text;
+BEGIN
+  FOR t IN SELECT table_name FROM information_schema.tables
+           WHERE table_schema = 'public' AND (table_name LIKE 'stabilize%'
+              OR table_name IN ('pipeline_executions','stage_executions','task_executions',
+                                'queue_messages','queue_messages_dlq','processed_messages',
+                                'stage_claims','workflow_signals','events','snapshots',
+                                'event_subscriptions','task_leases'))
+  LOOP EXECUTE format('ALTER TABLE public.%I SET SCHEMA stabilize', t);
+  END LOOP;
+END $$;
 ```
 
 **Event sourcing** is one call, after which every transition is recorded:

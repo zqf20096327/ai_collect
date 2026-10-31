@@ -411,7 +411,7 @@ recorded failure.
   a [Python client](python/README.md) and a
   [TypeScript client](clients/typescript/README.md).
   [Container](MANUAL.md#container-image)
-- **What loads.** 27 admitted architecture labels and 24 weight formats, verified on
+- **What loads.** 28 admitted architecture labels and 24 weight formats, verified on
   download with `-hf`. Experimental layouts and backend limits are listed
   in the [support matrix](MANUAL.md#support-matrix).
 - **How Runner compares.** Closer to the publisher's reference than
@@ -419,7 +419,8 @@ recorded failure.
   identical to the published 1.5.0 binary at every scored position; a local
   Clang build of the same source reads 19 of 23, the compiler's doing. Level or
   ahead on the reference's chosen token on 22 of 23. [Build conditions](docs/golden-pass-2026-10-25.md). [Evidence](MANUAL.md#evidence-and-tradeoffs) ·
-  [Speed tables](docs/benchmarks.md)
+  [Speed tables](docs/benchmarks.md) ·
+  [Measure your own quantized file](docs/measure-a-quantized-file.md)
 
 <a id="all-commands"></a>
 ## All commands
@@ -447,7 +448,8 @@ replays it.
 ./runner -m model.gguf --verify run.json     # VERIFIED, DIVERGED or UNVERIFIABLE
 ```
 
-Around that core: signed and chained receipts (`runner attest keygen`, `--sign-key`),
+Around that core: signed and chained receipts (`runner attest keygen`, `--sign-key`)
+that carry an agent turn's tool calls and the tool results it was sent as data a policy can read,
 evidence packs a reviewer checks offline (`runner attest pack`, `runner attest check-pack`),
 signature checks on the model file itself (`--model-sig`), and a text
 watermark with its detector (`--watermark`, `runner attest detect`).
@@ -497,9 +499,13 @@ log. [SECURITY.md](SECURITY.md) has the threat model and
 
 ## License
 
-[Apache 2.0](LICENSE)
+[Apache 2.0](LICENSE).
 
-Third-party code: `src/ed25519.c` is the signing subset of TweetNaCl
+Third-party code: the GGUF block layouts, the i-quant grids and dequantizers,
+the reference and importance-weighted quantizers and the xIELU activation are
+ported from ggml and llama.cpp under the MIT License; [NOTICE](NOTICE) lists
+them file by file, and the MIT notice is
+[LICENSES/ggml-MIT.txt](LICENSES/ggml-MIT.txt). `src/ed25519.c` is the signing subset of TweetNaCl
 (Bernstein, van Gastel, Janssen, Lange, Schwabe, Smetsers), placed in the
 public domain by its authors; the file header records what was kept and what
 was changed. `src/mldsa/` is the ML-DSA-44 (FIPS 204) reference implementation

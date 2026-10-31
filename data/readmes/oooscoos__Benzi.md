@@ -12,8 +12,8 @@
 <p align="center">Language Agnostic · Model Agnostic · Compiles Locally · BYOK · MCP Compatible</p>
 
 <p align="center">
-  <a href="https://pypi.org/project/benzi/"><img src="https://img.shields.io/pypi/v/benzi?color=97ca00&labelColor=000000&cacheSeconds=43201" alt="PyPI version" height="17"></a>
-  <a href="https://pypi.org/project/benzi/"><img src="https://img.shields.io/pypi/pyversions/benzi?color=97ca00&labelColor=000000&cacheSeconds=86401" alt="Python versions" height="17"></a>
+  <a href="https://pypi.org/project/benzi/"><img src="https://img.shields.io/pypi/v/benzi?color=97ca00&labelColor=000000&cacheSeconds=43202" alt="PyPI version" height="17"></a>
+  <a href="https://pypi.org/project/benzi/"><img src="https://img.shields.io/pypi/pyversions/benzi?color=97ca00&labelColor=000000&cacheSeconds=86402" alt="Python versions" height="17"></a>
   <img src="https://img.shields.io/badge/MCP-compatible-97ca00?labelColor=000000" alt="MCP compatible" height="17">
   <a href="https://pepy.tech/projects/benzi"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvarianttech.net%2Fbadge%2Fdownloads.json&cacheSeconds=301" alt="Downloads (PyPI + VS Code)" height="17"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-proprietary-97ca00?labelColor=000000" alt="License" height="17"></a>
@@ -94,8 +94,6 @@ You can try pasting this repo's link to Benzi in the [live demo](https://variant
 One compiler, ten languages — each is a tree-sitter grammar plugin, so the core of the map (symbols, call edges, references, inheritance, data flow) is built the same way everywhere.
 
 **Depth is uneven.** Python is deepest, and the only one with the runtime tracer. Every language reaches the core of the map, but each has its own constructs, not all modelled yet. For most code, every other language's map comes close to Python's.
-
-> **Runtime tracer: temporarily broken (October 14, 2026).** Traced runs still execute, but they miss calls made inside comprehensions, lambdas and generator expressions, and most method calls on Python 3.9–3.10 projects. A fix is coming in the next release.
 
 Incremental reindexing is also less optimized for C, C++, Rust, and Ruby — it works, just not as fast on a large edit loop.
 
@@ -178,24 +176,24 @@ VS Code's settings panel and `benzi-login` share one config: log in once, and VS
 
 ### <u>SWE-bench Verified</u>
 
-The full SWE-bench Verified set — 500 real GitHub issues from twelve Python repositories — run end to end on **DeepSeek V4.1-Flash**, one attempt per instance, graded by the official `swebench.harness.run_evaluation` inside its own per-instance Docker images, with network access to GitHub and PyPI blocked inside every container. **412 of 500 resolved (82.4%) for $12.96 in total**, about 3¢ per fix, with 97.6% of input tokens served from cache.
+The full SWE-bench Verified set — 500 real GitHub issues from twelve Python repositories — run end to end on **DeepSeek V4.1-Flash**, one attempt per instance, graded by the official `swebench.harness.run_evaluation` inside its own per-instance Docker images, with network access to GitHub and PyPI blocked inside every container. **413 of 500 resolved (82.6%) for $9.26 in total**, about 2¢ per fix, with 97.6% of input tokens served from cache.
 
 <div align="center">
 
 | | |
 |---|---|
-| **Resolved** | **412 / 500 (82.4%)** |
+| **Resolved** | **413 / 500 (82.6%)** |
 | Attempts per instance | 1 (pass@1) |
 | Model | DeepSeek V4.1-Flash, thinking mode at its default effort |
-| Total generation cost, all 500 | $12.96 |
-| Cost per resolved instance | $0.031 |
-| Model turns: total / median per instance | 14,167 / 21.5 |
+| Total generation cost, all 500 | $9.26 |
+| Cost per resolved instance | $0.022 |
+| Model turns: total / median per instance | 13,281 / 20.5 |
 | Input tokens served from prompt cache | 97.6% |
-| Output tokens, total (of which reasoning) | 13.5M (10.7M) |
+| Output tokens, total (of which reasoning) | 8.7M (6.2M) |
 
 </div>
 
-Full technical report: [swebench-october/SWE_BENCH_REPORT.md](swebench-october/SWE_BENCH_REPORT.md) ([web version](https://varianttech.net/report)). Every instance's cost, tokens and turns: [varianttech.net/benchmark_swebench](https://varianttech.net/benchmark_swebench). The cross-harness efficiency comparison below (and the full 24-bug chart): [varianttech.net/benchmark](https://varianttech.net/benchmark).
+Full technical report: [swebench-october-run2/SWE_BENCH_REPORT.md](swebench-october-run2/SWE_BENCH_REPORT.md) ([web version](https://varianttech.net/report)). Every instance's cost, tokens and turns: [varianttech.net/benchmark_swebench](https://varianttech.net/benchmark_swebench). The cross-harness efficiency comparison below (and the full 24-bug chart): [varianttech.net/benchmark](https://varianttech.net/benchmark).
 
 <img src="https://raw.githubusercontent.com/oooscoos/Benzi/main/assets/divider_gold.png" width="100%" alt="">
 

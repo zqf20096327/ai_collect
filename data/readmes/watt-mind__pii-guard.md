@@ -6,6 +6,7 @@
 </picture>
 
 [![Try it live](https://img.shields.io/badge/try%20it%20live-guard.watt--mind.com-b6f36b)](https://guard.watt-mind.com)
+[![Demo Video](https://img.shields.io/badge/demo%20video-3--min%20walkthrough-blue)](https://youtu.be/Lsr74ddhxRo)
 [![CI](https://github.com/watt-mind/pii-guard/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/watt-mind/pii-guard/actions/workflows/ci.yml)
 [![Model on Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20model-pii--guard--ner--xlmr--base-yellow)](https://huggingface.co/watt-mind/pii-guard-ner-xlmr-base)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
@@ -26,9 +27,11 @@
 <p align="center"><sub>990 fictional documents (de, en, hu), drawn by <code>pii-guard eval report</code> from the <a href="eval/results/runs/">run records</a>. <a href="#results">All sets</a> · <a href="docs/benchmarks/README.md">Shareable PNGs</a></sub></p>
 <!-- intro:end -->
 
-<p align="center"><sub>Built for the Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026). Version 0.1.0, installed from git; no tagged release yet. <a href="docs/why-pii-guard.md#what-is-not-here-yet">Known gaps</a>.</sub></p>
+<p align="center"><sub>Built for the Meta Global AI Developer Hackathon (Oct 26 – Nov 4, 2026) · <a href="https://youtu.be/Lsr74ddhxRo">3-minute video walkthrough</a>. Version 0.1.0, installed from git; no tagged release yet. <a href="docs/why-pii-guard.md#what-is-not-here-yet">Known gaps</a>.</sub></p>
 
 ## Quickstart
+
+**Walkthrough:** [watch the 3-minute demo video on YouTube](https://youtu.be/Lsr74ddhxRo).
 
 **No install:** the [live demo](https://guard.watt-mind.com) runs as a guest with no sign-up
 (fictional data only; capped sponsored allowance).
@@ -38,14 +41,23 @@ http://127.0.0.1:8787, with a mock model that echoes what it receives:
 
 ```bash
 uvx --python 3.12 \
-  --from 'wattmind-pii-guard[ner] @ git+https://github.com/watt-mind/pii-guard' \
+  --from 'wattmind-pii-guard @ git+https://github.com/watt-mind/pii-guard' \
   pii-guard up
+```
+
+**Launch a coding agent directly** ([OpenCode](docs/integrations/opencode.md), [Codex](docs/integrations/codex.md), [Claude Code](docs/integrations/claude-code.md), [pi](docs/integrations/pi.md), [Muse Code](docs/integrations/muse-code.md)) behind an in-process local gateway with Meta's `muse-spark-1.3`:
+
+```bash
+export META_API_KEY=<your-key>
+uvx --python 3.12 \
+  --from 'wattmind-pii-guard @ git+https://github.com/watt-mind/pii-guard' \
+  pii-guard run opencode --upstream meta --model muse-spark-1.3
 ```
 
 - **First run:** downloads PyTorch and the NER once (the NER is 1.1 GB); `/healthz` reports
   `"ner": "ready"` when detection is live.
 - **A real model:** `--upstream meta` with `META_API_KEY`; `openai`, `fireworks`, `openrouter`
-  or any `--upstream-url` work the same way ([`pii-guard up` options](docs/operations.md#one-command-pii-guard-up)).
+  or any `--upstream-url` work the same way ([`pii-guard up` options](docs/operations.md#one-command-pii-guard-up), [coding agent integrations](docs/integrations/README.md)).
 - **No auth by default**, bound to 127.0.0.1: set `PII_GUARD_API_TOKEN` before exposing it
   ([how to expose it safely](docs/operations.md#exposure-and-authentication)).
 
@@ -131,7 +143,7 @@ original exactly.
 | Mode | Detection | Leaves your machine |
 |---|---|---|
 | `fast` (default): everyday traffic | Rules + on-device NER; no LLM call | Only the masked request, to your LLM provider |
-| `fast` without the `ner` extra: offline runs, CI, structured data | Rules only; free-text names only as [known values](docs/api.md#sessions-and-restore) your app registers | Only the masked request |
+| `fast` with `PII_GUARD_DETECTORS=rules`: offline runs, CI, structured data | Rules only; free-text names only as [known values](docs/api.md#sessions-and-restore) your app registers | Only the masked request |
 | `audit` (opt-in, `X-PII-Guard-Mode: audit`): measuring the upper bound, training labels | Rules + NER + an LLM detector; fails closed if that call fails | The original text, to the audit endpoint you configure |
 
 **Grammar-aware.** In Hungarian a name changes with every case; the ending stays outside the
@@ -222,7 +234,7 @@ the last gateway request as sent upstream, with placeholders (`pii-guard up` kee
 </p>
 
 <p align="center"><sub>Console tour, recorded in fast mode (rules + NER) with fictional data.
-<a href="ui/README.md#screens">More screens</a>.</sub></p>
+<a href="ui/README.md#screens">More screens</a> · <a href="https://youtu.be/Lsr74ddhxRo">Video walkthrough</a>.</sub></p>
 
 Run the console locally: [`make demo` from a checkout](docs/operations.md#the-demo-stack).
 

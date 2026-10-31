@@ -26,8 +26,8 @@
 | Operational Role| Canonical Command| Verification Gate|
 |---|---|---|
 | **Manage Projects**| `python aikit.py <cmd>`| `new`, `attach`, `list`, `status`, `check`, `fix` (ADR-119..124)|
-| **Audit & Repair History**| `python aikit.py reforge <cmd>`| `start`, `audit`, `fix`, `run`, `stop`, `resume`, `settings`, `runs`, `status`, `report`; windows, Python AST (ADR-230, ADR-232, ADR-249)|
-| **Route Ideas & Reviews**| `python aikit.py idea-catcher <cmd>`| `validate`, `render`, `status`, `ideas`, `tag`, `history`, `reviews`, `review-start/finish`, `revalidate`, `audit-claims`, `concepts`; shipped register tooling with a private register (ADR-246, ADR-252)|
+| **Audit & Repair History**| `python aikit.py reforge <cmd>`| `start`, `audit`, `review`, `analyze`, `fix`, `run`, `stop`, `resume`, `settings`, `runs`, `status`, `report`; windows, Python AST (ADR-230, ADR-232, ADR-249, ADR-290)|
+| **Route Ideas & Reviews**| `python aikit.py idea-catcher <cmd>`| `validate`, `render`, `status`, `ideas`, `tag`, `history`, `review-idea`, `reviews`, `review-start/finish`, `revalidate`, `audit-claims`, `concepts`; a second deferral blocks an idea permanently (ADR-246, ADR-252, ADR-286)|
 | **Project Tags & Media**| `python aikit.py <cmd>`| `ui-id`, `topics --brief/--from-file`, `media init/capture/review/apply/audit`; AI-chosen tags, reviewed logos and commit-stamped screenshots (ADR-233..236)|
 | **Run Regression Suite**| `python scripts/check_test_budgets.py`| Both tiers pass; per-test average <=20ms unit, <=500ms integration|
 | **Run One Tier**| `python -m unittest tests.test_kit` / `python -m unittest tests.test_integration`| Isolates a failing tier|
@@ -121,6 +121,7 @@ portable_agent_kit/
 │   ├── sync_principles.py        <- Generates 8 Tier 1 files from GUIDELINES.md
 │   ├── sync_licenses.py          <- Pinned license/catalog sync and drift check
 │   ├── disruption_recovery.py    <- Power-loss audit, atomic checkpointing & ledger CLI
+│   ├── disruption_help.py        <- Generated top-level help for the recovery fast path
 │   ├── update_knowledge_base.py  <- Codebase AST symbol extractor & validator
 │   ├── dogfood.py                <- Dogfood runner (sandbox jail + chaos tracks)
 │   ├── check_reachability.py     <- Invariant reachability shield (anti-dead-capability)
@@ -134,6 +135,7 @@ portable_agent_kit/
 │   ├── ui_proof.py               <- UI proofs: inventory diff + style drift lint (pure)
 │   ├── aikit_cli.py              <- `aikit.py` commands
 │   ├── aikit_parser.py           <- `aikit.py` grammar, alone for --help
+│   ├── aikit_help.py             <- Generated top-level help for the --help fast path
 │   ├── subagent_delegate.py      <- Bounded OpenCode sub-agent runs
 │   ├── project_publish.py        <- Uploads a project to its own GitHub repo
 │   ├── project_ui.py             <- Durable has_ui/ui_kind identifier (ADR-233)
@@ -143,6 +145,7 @@ portable_agent_kit/
 │   ├── project_artwork.py        <- Image-model hero art plus exact text overlay (ADR-239)
 │   ├── brand_catalog.json        <- Authored unique project identities
 │   ├── check_secrets.py          <- Secret/sensitive data scanner
+│   ├── proof_gate.py             <- Fail-to-pass proof gate (IDEA-956)
 │   └── verify_commit.py          <- Verifies a commit alone in a throwaway worktree
 ├── tests/
 │   ├── test_kit.py               <- Unit tier (<=20ms per test)
@@ -191,49 +194,50 @@ A project's memory is `.aikit/`; ledger commands take `--workspace projects/<nam
 ## 🔁 Aegean Reforge: Host Review & Safe Repair
 
 Reforge audits history in widening windows and repairs only what it can prove. It lives in
-`reforge/` and `reforge.py`: `aikit.py reforge` uses the project registry, `python -m reforge`
-the bare engine. The standalone repository is archived (ADR-248).
+`reforge/` and `reforge.py`: `aikit.py reforge` uses the project registry; the standalone repository
+is archived (ADR-248).
 
 ```bash
-python aikit.py reforge start my-app --start 3 --step 3 --stop 15  # new independent run
-python aikit.py reforge audit my-app       # write the review packet for the next window
+python aikit.py reforge start my-app --start 3 --step 3  # full history by default
+python aikit.py reforge audit my-app       # write the next review packet
+python aikit.py reforge analyze my-app --analyzer CMD  # analyze a stage packet
+python aikit.py reforge review my-app --stage 3 --findings answer.json  # record a stage review
 python aikit.py reforge fix my-app --findings answer.json  # validate, repair, verify
 python aikit.py reforge run my-app --findings answer.json --push  # audit, repair, verify, push
-python aikit.py reforge run my-app --rules # deterministic rule pass, no host review
 ```
 
-Window N is `start + step*(N-1)`, capped by `stop`: stage 1 reads the first `start` commits and each
+Window N is `start + step*(N-1)`, capped by `stop` (or repository history when `--stop` is omitted):
+stage 1 reads the first `start` commits and each
 later stage adds `step`. A stage inspects only the lines its own commits add, attributes a finding to
 the commit that introduced it, and cites `commit:path:line`. Its Python rules cover exceptions,
 shell/exec, deserialisation, mutable defaults, timeouts, secrets and control flow; five are repaired
 mechanically (`bare-except`, `mutable-default`, `shell-true`, `verify-false`, `unsafe-yaml-load`),
 each earning a regression test. Every changed text file is reviewed, not only Python: JSON and TOML
 must parse, a Markdown code fence must close, and a committed conflict marker is a defect; only a
-binary file is reported as not analysed, and the stage prints how many files it reviewed. A
+binary file is reported as not analysed. A
 deliberate finding marked `hygiene: allow <reason>` on its line or the line above is honoured
-rather than reported, the same convention AIKit's own hygiene scan uses. The rule pass is opt-in
-(`--rules`) because the host review covers the same ground without inventing a second linter.
+rather than reported, the same convention AIKit's own hygiene scan uses. Rules run by default;
+`--no-rules` skips them.
 
 `audit` and `run` write a review packet under `.aikit/reforge.reviews/` (ADR-263, ADR-272). The
 packet lists every new commit oldest to newest with that commit's own hunks, so a later commit
 cannot hide an earlier minute change; a file can appear once per commit. Only files a new commit
-touched appear, and files that only an earlier stage changed are not repeated. Binary files are
-named at the end and the JSON answer schema follows. Credential-shaped spans are redacted with the
-project's secret scanner before the packet is written. Reforge makes no
-model call and starts no subagent: the agent or person driving the session reads the packet and
-returns a findings file. Each finding names a path the stage changed, a line that exists, a severity,
-`kind` `defect` or `improvement`, and optional `fix.old`/`fix.new`. It may name the `commit` and
-`hunk` it reviewed (each packet hunk has a stable id); an optional `reviewed_hunks` list records
-which hunks were read, so a partial pass is visible. Reforge accepts a fix only when
+touched appear; earlier-stage files are not repeated. Binary files are named at the end. Secrets
+redacted; the diff sits inside a random-id `<untrusted_repo_data_...>` fence marked data, never
+instructions. The main host model reviews each packet by default; subagents and `analyze` are opt-in
+for explicitly delegated or specialized work. `analyze` runs an operator-supplied analyzer and
+validates its answer through the review gate (ADR-290). Each finding names a changed path, line,
+severity and `kind`; `reviewed_hunks` must quote each hunk and add a distinct note (ADR-292).
+Reforge accepts a fix only when
 the quoted text occurs exactly once, overlaps a line the stage added, and leaves a Python file
-parsable; everything else is reported as rejected. Run `fix --findings answer.json` to apply the
-accepted fixes; `run --rules` is the deterministic-only pass. A red test, gate or diff review
+parsable; everything else is reported as rejected. Use `fix --findings` for the latest stage and
+`review --stage N --findings` for an older retained one. A red test, gate or diff review
 restores the exact bytes. A repair may run beside unrelated uncommitted work: its paths are
 snapshotted and never staged, and a commit is refused only when a finding's own target file already
 held work Reforge did not make (pass `--allow-dirty` to accept that risk deliberately).
 
 Runs are independent (`settings`, `stop`, `resume`, `runs`, `report`) and state is crash-safe. Each
-project has its own lock, state and history, so several projects audit at the same time while a
+project has its own lock and history, so several projects audit at the same time while a
 second operation on one is refused; a target is resolved first, so two spellings of one checkout
 share one lock. In a project, `--commit`/`--push` stage only reviewed paths plus `.aikit/reforge.json`
 and never force. AIKit's own `.aikit/` folder is a git-ignored tool-state directory, so auditing
@@ -268,11 +272,10 @@ belong to the project's target; already closed ideas are untouched.
 
 A review leases its repository and reserves idea ids, so parallel analyses cannot collide.
 Dossiers name a `Source` from `IDEA-632` onward; tags, target and status changes append to each
-idea's history. `ideas --target <id>` hides `Rejected` rows and rows tagged `duplicate`; pass
-`--include-rejected` or `--include-duplicates` for the full audit view. The flags are alternatives:
-either one also shows a row that belongs to both categories. `status` always reports the full
-register, while `ideas` is the filtered working list. `MATRIX.md` keeps both, and a reviewer may
-reject a harmful idea directly with a recorded reason and author (ADR-264, ADR-267).
+idea's history. `review-idea` records a second-pass verdict; a second `defer` moves the idea to
+terminal `Blocked`, which refuses later review or status changes. `ideas` hides `Rejected`,
+`duplicate` and `Blocked` rows; pass the matching `--include-*` flag for the full audit view.
+`status` reports the full register; `MATRIX.md` keeps both (ADR-264, ADR-267, ADR-286).
 
 `ui-id` stores `has_ui`, `ui_kind` and `ui_evidence`. `topics --brief` gives an AI the evidence;
 `--from-file` records its tags and `--apply` publishes them, capped at 20. `media init --art` uses

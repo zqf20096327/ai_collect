@@ -655,4 +655,169 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**csthink/dashmotion**](https://github.com/csthink/dashmotion) | ![GitHub Repo stars](https://badgen.net/github/stars/csthink/dashmotion) | 由纯英文或 Mermaid 生成动画技术图的 Claude skill，输出自包含 HTML/SVG。 |
 | [**scottstts/Threejs-Awesome-Graphics-Agent-Skills**](https://github.com/scottstts/Threejs-Awesome-Graphics-Agent-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/scottstts/Threejs-Awesome-Graphics-Agent-Skills) | 为场景与游戏生成出色图形的 three.js agent skill，专注画面表现力。 |
 | [**alpacahq/alpaca-skills**](https://github.com/alpacahq/alpaca-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/alpacahq/alpaca-skills) | Alpaca 官方出品的交易 API 与券商 API agent skill，提供即插即用的 `SKILL.md`，供 AI 编程助手直接调用。 |
-| [**gaasher/Agent-Loop-Skills**](https://github.com/gaasher/Agent-Loop-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/gaasher/Agent-Loop-Skills) | 即插即用的 agentic loop 合集（自主研究、科学写作、数据分析、代码/SQL/prompt 优化、红队），验证门控，原生支持 Claude Code 并可移植到 Codex、Cu
+| [**gaasher/Agent-Loop-Skills**](https://github.com/gaasher/Agent-Loop-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/gaasher/Agent-Loop-Skills) | 即插即用的 agentic loop 合集（自主研究、科学写作、数据分析、代码/SQL/prompt 优化、红队），验证门控，原生支持 Claude Code 并可移植到 Codex、Cursor 等。 |
+| [**Polaris-Aeterna/loom-notes**](https://github.com/Polaris-Aeterna/loom-notes) | ![GitHub Repo stars](https://badgen.net/github/stars/Polaris-Aeterna/loom-notes) | 精美的 XeLaTeX 文档类 + Claude Skill，把内容生成「填空式」主动回忆学习笔记——边读边填，靠主动回忆把知识记牢。 |
+| [**threerocks/hand-drawn-styles**](https://github.com/threerocks/hand-drawn-styles) | ![GitHub Repo stars](https://badgen.net/github/stars/threerocks/hand-drawn-styles) | Claude Code 手绘画风 Skill：把内容套进内置手绘配方，产出可直接复制的生图提示词，内置儿童涂色 / 极简线条 / 蜡笔童涂 / 吉卜力 / 小豆人涂鸦等 5 种已验证画风（附示例图）。 |
+| [**diskd-ai/codespaces**](https://github.com/diskd-ai/codespaces) | ![GitHub Repo stars](https://badgen.net/github/stars/diskd-ai/codespaces) | 用 tree-sitter 为代码库构建可查询「信念图」（模块、边界、依赖、实体）的 agent skill，支持架构发现、影响半径分析、分层违规检查与跨 Python/TypeScript 的调用/数据流追踪。 |
+| [**sidan93/claude-eng-loop**](https://github.com/sidan93/claude-eng-loop) | ![GitHub Repo stars](https://badgen.net/github/stars/sidan93/claude-eng-loop) | 「工程循环」CLAUDE.md 工作流模板，把 AI 编码智能体变成结构化工程师：从任务接入到目标验证的 9 阶段流程，含执行模式、逃生舱与项目上下文脚手架，适配任意工具链（Claude Code、MCP、Superpowers）。 |
+
+---
+
+## 🔒 安全与逆向 (Security & Reverse Engineering)
+
+面向安全研究、渗透测试、漏洞挖掘与逆向工程的 Skills。请仅在获得授权的合法测试与研究场景下使用。
+
+| 项目 | ⭐ Stars | 简介 |
+| :--- | ---: | :--- |
+| [**mukul975/Anthropic-Cybersecurity-Skills**](https://github.com/mukul975/Anthropic-Cybersecurity-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/mukul975/Anthropic-Cybersecurity-Skills) | 号称最大的开源网络安全 Skills 库，**817** 个生产级技能覆盖 29 个安全领域（云安全、威胁狩猎、Web 安全、数字取证、红队等），全部映射 MITRE ATT&CK、NIST CSF 等六大框架（社区项目，非官方）。 |
+| [**SimoneAvogadro/android-reverse-engineering-skill**](https://github.com/SimoneAvogadro/android-reverse-engineering-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/SimoneAvogadro/android-reverse-engineering-skill) | 辅助 Android App 逆向工程的 Claude Code skill。 |
+| [**trailofbits/skills**](https://github.com/trailofbits/skills) | ![GitHub Repo stars](https://badgen.net/github/stars/trailofbits/skills) | 知名安全公司 **Trail of Bits** 出品，面向安全研究、漏洞检测的 Skills 合集。 |
+| [**NVIDIA/SkillSpector**](https://github.com/NVIDIA/SkillSpector) | ![GitHub Repo stars](https://badgen.net/github/stars/NVIDIA/SkillSpector) | NVIDIA 出品的 Agent Skills 安全扫描器，检测 Skills 中的漏洞、恶意模式与安全风险。 |
+| [**SnailSploit/Claude-Red**](https://github.com/SnailSploit/Claude-Red) | ![GitHub Repo stars](https://badgen.net/github/stars/SnailSploit/Claude-Red) | 面向红队 / 攻击性安全的精选 Skill 库。 |
+| [**elementalsouls/Claude-BugHunter**](https://github.com/elementalsouls/Claude-BugHunter) | ![GitHub Repo stars](https://badgen.net/github/stars/elementalsouls/Claude-BugHunter) | 用于漏洞挖掘与外部红队作业的 Skill bundle，含 71+ 模块。 |
+| [**elementalsouls/Claude-OSINT**](https://github.com/elementalsouls/Claude-OSINT) | ![GitHub Repo stars](https://badgen.net/github/stars/elementalsouls/Claude-OSINT) | 两个配套的 OSINT 情报搜集 Skill，含 90+ 侦察模块、48 个密钥正则与 80+ 数据源。 |
+| [**BrownFineSecurity/iothackbot**](https://github.com/BrownFineSecurity/iothackbot) | ![GitHub Repo stars](https://badgen.net/github/stars/BrownFineSecurity/iothackbot) | 面向 IoT 渗透测试的 Claude Skills 与定制工具集合。 |
+| [**cloudflare/security-audit-skill**](https://github.com/cloudflare/security-audit-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/cloudflare/security-audit-skill) | Cloudflare 官方出品：用于多阶段安全审计的编码 agent skill，产出可独立验证的机读发现。 |
+| [**Eyadkelleh/awesome-claude-skills-security**](https://github.com/Eyadkelleh/awesome-claude-skills-security) | ![GitHub Repo stars](https://badgen.net/github/stars/Eyadkelleh/awesome-claude-skills-security) | 面向授权渗透测试、CTF 与漏洞赏金的安全工具包：精选 SecLists 字典、注入 payload 与专家级 agent。 |
+| [**DeerYang/server-security-init-skill**](https://github.com/DeerYang/server-security-init-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/DeerYang/server-security-init-skill) | 安全初始化与加固全新 Ubuntu/Debian SSH 服务器的 Agent Skill，面向防御性运维（仅用于你有权管理的服务器）。 |
+| [**morluto/rea**](https://github.com/morluto/rea) | ![GitHub Repo stars](https://badgen.net/github/stars/morluto/rea) | 内含 `reverse-engineer-anything` Skill，指导 Claude Code / Codex 通过本地 CLI 与 MCP 分析原生程序、JavaScript/Electron 和 .NET，保留证据来源与未知项；原生深度分析需自备 Hopper、Ghidra 或 IDA。 |
+
+---
+
+## 🧬 女娲 · 人物思维 Skill 生态 (Nuwa / Persona Skills)
+
+由华人开发者 **花叔 ([@alchaincyf](https://github.com/alchaincyf))** 发起的「人物认知操作系统」Skill 生态，是 2026 年中文社区最具影响力的现象级 Skill 玩法——**蒸馏任何人的思维方式**（心智模型、决策启发式、表达 DNA），让 Claude 以特定人物的思维框架运行。
+
+| 项目 | ⭐ Stars | 简介 |
+| :--- | ---: | :--- |
+| [**alchaincyf/nuwa-skill**](https://github.com/alchaincyf/nuwa-skill) (女娲.skill) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/nuwa-skill) | 🔧 生态本体。输入任意人物，自动生成一个可运行的人物思维 Skill，下方多数人物 Skill 均由它生成。 |
+| [**alchaincyf/zhangxuefeng-skill**](https://github.com/alchaincyf/zhangxuefeng-skill) (张雪峰.skill) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/zhangxuefeng-skill) | 高考志愿 / 考研 / 职业规划的实战思维框架。 |
+| [**alchaincyf/darwin-skill**](https://github.com/alchaincyf/darwin-skill) (达尔文.skill) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/darwin-skill) | 🔧 让 Skill 无限进化：评估 → 改进 → 测试 → 保留或回滚的自我迭代机制。 |
+| [**tmstack/awesome-persona-skills**](https://github.com/tmstack/awesome-persona-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/tmstack/awesome-persona-skills) | 📚 同事.skill、老板.skill、前任.skill、永生.skill…… 人物 Skill 大合集。 |
+| [**Panmax/awesome-nuwa**](https://github.com/Panmax/awesome-nuwa) | ![GitHub Repo stars](https://badgen.net/github/stars/Panmax/awesome-nuwa) | 📚 用女娲蒸馏的人物思维框架合集。 |
+
+> 此外，作者还用女娲生成了乔布斯、马斯克、芒格、特朗普、Karpathy、纳瓦尔、费曼等多位人物的 `.skill`（均在 1k star 以下），完整清单见上方 awesome 列表与 [作者主页](https://github.com/alchaincyf?tab=repositories)。
+
+---
+
+## 🇨🇳 中文社区 Skills (Chinese Community)
+
+由中文社区作者开发、文档以中文为主或专为中文场景优化的 Skills，对国内用户尤为友好。
+
+| 项目 | ⭐ Stars | 简介 |
+| :--- | ---: | :--- |
+| [**yzfly/skills · mp-layout**](https://github.com/yzfly/skills/tree/main/skills/mp-layout) | ![GitHub Repo stars](https://badgen.net/github/stars/yzfly/skills) | 公众号排版：越简单越高级——正文 16px / 行距 1.75 / 字距 1 / 两端 16px / 全文一种品牌色 / 3–5 张同风格配图，把 Markdown 转成可直接粘贴进公众号编辑器的内联样式 HTML（零依赖脚本，外链自动转脚注），附 8 项排版体检与按主题的品牌色候选。 |
+| [**yzfly/skills · brand-narrative**](https://github.com/yzfly/skills/tree/main/skills/brand-narrative) | ![GitHub Repo stars](https://badgen.net/github/stars/yzfly/skills) | 品牌叙事：基于品牌星球「六种叙事类型（产品 / 能力 / 身份 / 生活方式 / 社群 / 文化）× 三个构件（中心 / 命题 / 逻辑）」，帮品牌找到围绕什么运行，定主辅叙事与阶段策略，对任何新品 / 联名 / 内容只问一句「放进叙事逻辑里成不成立」。 |
+| [**whobot-ai/skills · whobot-phonecall-skill**](https://github.com/whobot-ai/skills/tree/main/skills/whobot-phonecall-skill) (呼波特) | ![GitHub Repo stars](https://badgen.net/github/stars/whobot-ai/skills) | 呼波特 AI 电话数字员工官方 Skill：用一句话挑选、体验（网页语音 / 真实电话）、创建和调优会接打真实电话的 AI 员工，上传线索外呼并查进度；涉及费用与真实拨打先确认。一句话安装：「请帮我安装呼波特的电话 Skill https://github.com/whobot-com/openclaw-whobot-skill」，[文档](https://whobot-com.github.io/openclaw-whobot-skill/)。 |
+| [**alchaincyf/huashu-design**](https://github.com/alchaincyf/huashu-design) (花叔设计) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/huashu-design) | 花叔出品的 HTML-native 设计 Skill，让 Claude 直接产出高质量网页设计。 |
+| [**op7418/Humanizer-zh**](https://github.com/op7418/Humanizer-zh) | ![GitHub Repo stars](https://badgen.net/github/stars/op7418/Humanizer-zh) | [blader/humanizer](https://github.com/blader/humanizer) 的汉化版，专门消除中文文本中的 AI 生成痕迹。 |
+| [**joeseesun/qiaomu-anything-to-notebooklm**](https://github.com/joeseesun/qiaomu-anything-to-notebooklm) | ![GitHub Repo stars](https://badgen.net/github/stars/joeseesun/qiaomu-anything-to-notebooklm) | 面向 NotebookLM 的多源内容处理 Skill，支持微信公众号文章等来源的采集与整理。 |
+| [**JimLiu/baoyu-design**](https://github.com/JimLiu/baoyu-design) | ![GitHub Repo stars](https://badgen.net/github/stars/JimLiu/baoyu-design) | 本地运行的 Claude Design Agent Skill，无需 claude.ai/design 即产出精致 UI 原型 / 线框 / 演示稿（自包含 HTML），Opus 4.8 体验最佳。 |
+| [**Ceeon/videocut-skills**](https://github.com/Ceeon/videocut-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/Ceeon/videocut-skills) | 用 Claude Code Skills 打造的视频剪辑 Agent。 |
+| [**huangserva/skill-prompt-generator**](https://github.com/huangserva/skill-prompt-generator) | ![GitHub Repo stars](https://badgen.net/github/stars/huangserva/skill-prompt-generator) | 基于 Claude Skill 的 AI 人像 Prompt 生成系统，可从特征库智能组合并自动学习扩展。 |
+| [**P4nda0s/reverse-skills**](https://github.com/P4nda0s/reverse-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/P4nda0s/reverse-skills) | 逆向工程 Claude Code Skills 插件，中文文档友好。 |
+| [**yzfly/douyin-mcp-server**](https://github.com/yzfly/douyin-mcp-server) | ![GitHub Repo stars](https://badgen.net/github/stars/yzfly/douyin-mcp-server) | 提取抖音无水印视频链接与文案，同时支持 MCP 与 Claude Skill（本仓库维护者 [@yzfly](https://github.com/yzfly) 出品）。 |
+| [**lyra81604/zhengxi-views**](https://github.com/lyra81604/zhengxi-views) | ![GitHub Repo stars](https://badgen.net/github/stars/lyra81604/zhengxi-views) | 可溯源的基金经理（易方达郑希）投研 Agent Skill：基于其公开观点原文 + 全市场基金真实数据溯源问答与打分，绝不杜撰（⚠️ 仅供研究学习，不构成投资建议）。 |
+| [**ASI2030/Fact-Check-X**](https://github.com/ASI2030/Fact-Check-X/tree/main/skills/fact-check-x-complete) | ![GitHub Repo stars](https://badgen.net/github/stars/ASI2030/Fact-Check-X) | 中文开源完整事实核验 Skill：按用户输入动态支持 `N≥1`，从深知晓（普通回答与独立深度研究）、豆包、元宝、DeepSeek、千问采集完整原始回答和引用，拆解原子知识点、核对引用忠实性、逐点权威核验并交付四份可打开报告；语义判断复用当前智能载体，不捆绑外部模型 API。 |
+| [**orange2ai/renwei-writing**](https://github.com/orange2ai/renwei-writing) | ![GitHub Repo stars](https://badgen.net/github/stars/orange2ai/renwei-writing) | 「人味儿写作」Agent Skill：编辑文字而不抹去文字背后的人。 |
+| [**alchaincyf/huashu-skills**](https://github.com/alchaincyf/huashu-skills) (花叔内容创作) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/huashu-skills) | 花叔的内容创作 Skills 合集，含 AI 审校、选题生成、视频大纲、素材搜索等 11 个技能。 |
+| [**LearnPrompt/luban-skill**](https://github.com/LearnPrompt/luban-skill) (鲁班) | ![GitHub Repo stars](https://badgen.net/github/stars/LearnPrompt/luban-skill) | 「鲁班」Agent skill 打磨工坊：把「能用的 Skill」打磨成「能装、能传播、能验证、能进化」的公共资产（验料·访行·过尺·慢刨·回炉）。 |
+| [**Fokkyp/SoftwareCopyright-Skill**](https://github.com/Fokkyp/SoftwareCopyright-Skill) | ![GitHub Repo stars](https://badgen.net/github/stars/Fokkyp/SoftwareCopyright-Skill) | 中国软件著作权申请材料生成器：阅读本地项目自动生成全套 .docx 软著申请材料，全开源，无须再付费购买软著申请服务。 |
+| [**handsomestWei/patent-disclosure-skill**](https://github.com/handsomestWei/patent-disclosure-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/handsomestWei/patent-disclosure-skill) | 「中国专利.skill」：从项目文档到可交付的技术交底书，覆盖专利点挖掘、联网国知局查新、脱敏成文与自检闭环。 |
+| [**jwangkun/claude-for-financial-services-cn**](https://github.com/jwangkun/claude-for-financial-services-cn) | ![GitHub Repo stars](https://badgen.net/github/stars/jwangkun/claude-for-financial-services-cn) | 面向 A 股金融从业者的 63 个 Claude Skills，基于 Anthropic 官方 claude-for-financial-services 深度适配国内市场。 |
+| [**LeastBit/Claude_skills_zh-CN**](https://github.com/LeastBit/Claude_skills_zh-CN) | ![GitHub Repo stars](https://badgen.net/github/stars/LeastBit/Claude_skills_zh-CN) | Anthropic 官方 `anthropics/skills` 仓库的中文学习版，逐个 Skill 翻译讲解，适合中文用户上手官方范例。 |
+| [**chubbyguan/chubbyskills**](https://github.com/chubbyguan/chubbyskills) | ![GitHub Repo stars](https://badgen.net/github/stars/chubbyguan/chubbyskills) | 把抖音 / B 站 / 小红书 / 公众号 / X / 播客等中文全渠道内容采集进个人知识库的 13 个 AI Skill，字幕优先免 GPU，附知识库 MCP server。 |
+| [**op7418/Video-Wrapper-Skills**](https://github.com/op7418/Video-Wrapper-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/op7418/Video-Wrapper-Skills) | 归藏（op7418）出品，为访谈视频自动添加综艺风格视觉特效：AI 分析字幕生成建议，用户审批后自动渲染。 |
+| [**liangdabiao/amazon-sorftime-research-MCP-skill**](https://github.com/liangdabiao/amazon-sorftime-research-MCP-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/liangdabiao/amazon-sorftime-research-MCP-skill) | 基于 Sorftime MCP 的亚马逊选品分析 Skill，覆盖 Listing 全维度穿透、全品类分析、关键词与差评分析等竞品调研。 |
+| [**chenxiachan/xhs-claude-skills**](https://github.com/chenxiachan/xhs-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/chenxiachan/xhs-claude-skills) | 把小红书笔记一键提取整理进 Obsidian 的 Claude Code 斜杠命令集。 |
+| [**kangarooking/x-skills**](https://github.com/kangarooking/x-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/kangarooking/x-skills) | 自动收集素材、确认选题、创作并发布 X（推特）推文到草稿箱的 Skills 工作流。 |
+| [**cclank/lanshu-awesome-ai-video-kit**](https://github.com/cclank/lanshu-awesome-ai-video-kit) | ![GitHub Repo stars](https://badgen.net/github/stars/cclank/lanshu-awesome-ai-video-kit) | 「蓝鼠」企业 AI 视频实战工具包：411 个 prompt、15 个模型、7 个 Claude Skill 与 14 篇方法论。 |
+| [**leemysw/feishu-docx**](https://github.com/leemysw/feishu-docx) | ![GitHub Repo stars](https://badgen.net/github/stars/leemysw/feishu-docx) | 飞书 / Lark 文档、表格、多维表与 Markdown 互转，AI Agent 友好，支持 Claude Skills 调用。 |
+| [**sanshao85/claude-skills-guide**](https://github.com/sanshao85/claude-skills-guide) | ![GitHub Repo stars](https://badgen.net/github/stars/sanshao85/claude-skills-guide) | 《Claude Skills 开发完全指南》，从基础到精通的中文系统教程。 |
+| [**YANZHANLIN/ielts-claude-skills**](https://github.com/YANZHANLIN/ielts-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/YANZHANLIN/ielts-claude-skills) | 雅思备考 AI 教练，4 个无状态 Skill 覆盖写作 / 阅读 / 口语训练。 |
+| [**zhaihao118/Micro-Drama-Skills**](https://github.com/zhaihao118/Micro-Drama-Skills) | ![GitHub Repo stars](https://badgen.net/github/stars/zhaihao118/Micro-Drama-Skills) | AI 驱动的短剧全流程自动化：从剧本、角色设计、分镜到视频提交的完整工作流。 |
+| [**Fokkyp/claude-skills**](https://github.com/Fokkyp/claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/Fokkyp/claude-skills) | 产品经理实战 Skills 仓库，竞品分析、需求文档等均已在商业环境验证。 |
+| [**zouchenzhen/thesis-defense-pptx-skill**](https://github.com/zouchenzhen/thesis-defense-pptx-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/zouchenzhen/thesis-defense-pptx-skill) | 从论文 PDF / LaTeX 生成可编辑的答辩 PPTX，并保留指定 PPT 模板风格。 |
+| [**xiaohuailabs/xiaohu-ip-studio**](https://github.com/xiaohuailabs/xiaohu-ip-studio) | ![GitHub Repo stars](https://badgen.net/github/stars/xiaohuailabs/xiaohu-ip-studio) | 开源中文配图技能 + IP 角色库，用「挑认知锚点 → 现编隐喻 → 反 PPT 自检」为中文深度文生成固定角色出演的正文配图。 |
+| [**ZeKaiNie/universal-examprep-skill**](https://github.com/ZeKaiNie/universal-examprep-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/ZeKaiNie/universal-examprep-skill) | 通用期末考试极速备考 AI 教练 Skill：基于 LLM Wiki 物理切片惰性加载，从大纲自动初始化备考空间并真题抽测，强调防幻觉。 |
+| [**lishuangqiang/backend-agent-resume-scout**](https://github.com/lishuangqiang/backend-agent-resume-scout) | ![GitHub Repo stars](https://badgen.net/github/stars/lishuangqiang/backend-agent-resume-scout) | 面向后端与 AI Agent 求职者的 Skill：从 GitHub 源码证据中筛出真正能写进简历、经得起面试追问的项目，并生成简历项目包。 |
+| [**iamzifei/wechat-article-publisher-skill**](https://github.com/iamzifei/wechat-article-publisher-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/iamzifei/wechat-article-publisher-skill) | 一键发布文章到微信公众号的 Claude Skill。 |
+| [**GanymedeNil/poxiaoxing-skills**](https://github.com/GanymedeNil/poxiaoxing-skills) (破晓星) | ![GitHub Repo stars](https://badgen.net/github/stars/GanymedeNil/poxiaoxing-skills) | 知名开发者 [@GanymedeNil](https://github.com/GanymedeNil) 出品的破晓星 Skills 仓库，内含「抖音博主分析」技能：采集博主作品、下载视频、抽取截图，并可选用 DashScope FunASR 转写字幕，输出结构化素材供后续分析。 |
+| [**dososo/blcaptain-ppt-skill**](https://github.com/dososo/blcaptain-ppt-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/dososo/blcaptain-ppt-skill) | AI 原生·单文件 HTML 演示 Skill：7 套锚定公认设计体系的视觉人格，好看（WCAG/间距/32 维审计）与诚实（反伪造）均由机器强制，零依赖。 |
+| [**nathanskill/niubiskill**](https://github.com/nathanskill/niubiskill) | ![GitHub Repo stars](https://badgen.net/github/stars/nathanskill/niubiskill) | 商业化决策 Skill：打断无收入验证的瞎忙——找到离真实收钱最近的一步，二选一（引流 / 成交），停掉一件分散精力的事，并给出 7 天证据测试。 |
+| [**zhuyep/shiji-tongjian-decisions**](https://github.com/zhuyep/shiji-tongjian-decisions) | ![GitHub Repo stars](https://badgen.net/github/stars/zhuyep/shiji-tongjian-decisions) | 史鉴人生抉择：对照《史记》《资治通鉴》原文，比较现实选择、隐性代价与类比边界；附虚构示例和引文核验工具，不作命运预测或专业决策建议。 |
+
+---
+
+## 🛠️ 工具与基础设施 (Tools & Infrastructure)
+
+用于运行、测试、部署或增强 Claude Skills 的周边工具。
+
+| 项目 | 类型 | ⭐ Stars | 简介 |
+| :--- | :--- | ---: | :--- |
+| [**vercel-labs/skills**](https://github.com/vercel-labs/skills) | Skill 工具 | ![GitHub Repo stars](https://badgen.net/github/stars/vercel-labs/skills) | Vercel 官方出品的开放式 agent skills 工具，一行 `npx skills` 即可发现、安装与管理 Skills。 |
+| [**diet103/claude-code-infrastructure-showcase**](https://github.com/diet103/claude-code-infrastructure-showcase) | 基建参考 | ![GitHub Repo stars](https://badgen.net/github/stars/diet103/claude-code-infrastructure-showcase) | 经生产环境验证的 Claude Code 基础设施参考库，为企业级部署提供参考架构。 |
+| [**glitternetwork/pinme**](https://github.com/glitternetwork/pinme) | 一键部署 | ![GitHub Repo stars](https://badgen.net/github/stars/glitternetwork/pinme) | 单条命令部署前端应用，原生支持 Claude Code Skills 集成。 |
+| [**browserwing/browserwing**](https://github.com/browserwing/browserwing) | 浏览器自动化 | ![GitHub Repo stars](https://badgen.net/github/stars/browserwing/browserwing) | 把浏览器操作封装成 MCP 命令或 Claude Skill，让智能体直接调用命令控制浏览器，省去高 token 的 LLM 交互。 |
+| [**skills-directory/skill-codex**](https://github.com/skills-directory/skill-codex) | 跨智能体 | ![GitHub Repo stars](https://badgen.net/github/stars/skills-directory/skill-codex) | 将 prompt 委派给 Codex 执行的 Claude Code skill，实现 Claude 与 Codex 协同。 |
+| [**alirezarezvani/claude-code-skill-factory**](https://github.com/alirezarezvani/claude-code-skill-factory) | Skill 工厂 | ![GitHub Repo stars](https://badgen.net/github/stars/alirezarezvani/claude-code-skill-factory) | 构建与发布 Claude Code Skills 的开源工具包，快速搭建标准化开发流水线。 |
+| [**sandiiarov/skill-creator**](https://github.com/sandiiarov/skill-creator) | Skill 生成 | ![GitHub Repo stars](https://badgen.net/github/stars/sandiiarov/skill-creator) | 把任意 MCP server、OpenAPI 规范或 GraphQL 端点在运行时转成 CLI 的 Skill 生成器。 |
+| [**K-Dense-AI/claude-skills-mcp**](https://github.com/K-Dense-AI/claude-skills-mcp) | Skill 检索 | ![GitHub Repo stars](https://badgen.net/github/stars/K-Dense-AI/claude-skills-mcp) | 用向量检索搜索与调取 Claude Agent Skills 的 MCP server。 |
+| [**majiayu000/claude-skill-registry**](https://github.com/majiayu000/claude-skill-registry) | Skill 目录 | ![GitHub Repo stars](https://badgen.net/github/stars/majiayu000/claude-skill-registry) | 号称最全的 Claude Code Skills 注册表，配套网页检索站点。 |
+| [**instavm/open-skills**](https://github.com/instavm/open-skills) | 跨平台运行器 | ![GitHub Repo stars](https://badgen.net/github/stars/instavm/open-skills) | 让 Claude Skills 在本地运行于**任何 LLM** 之上，打破模型限制。 |
+| [**smallnest/goskills**](https://github.com/smallnest/goskills) | 跨 LLM 运行器 | ![GitHub Repo stars](https://badgen.net/github/stars/smallnest/goskills) | 知名 Go 开发者 smallnest 出品，让 OpenAI 等任意 LLM 也能使用 Claude Skills，并可作为子智能体。 |
+| [**wanghuan9/skill-manager**](https://github.com/wanghuan9/skill-manager) (SkillDock) | Skill 管理 | ![GitHub Repo stars](https://badgen.net/github/stars/wanghuan9/skill-manager) | 安装、查看、更新与同步 AI skills 与 MCP servers 的管理器，支持 Git-aware 更新以跟踪上游变更与本地修改。 |
+| [**alvinunreal/lazyskills**](https://github.com/alvinunreal/lazyskills) | Skill 管理 | ![GitHub Repo stars](https://badgen.net/github/stars/alvinunreal/lazyskills) | 面向 agent skills 的极速「任务控制台」，在终端中快速浏览、查看与管理本地 Skills。 |
+| [**alexknowshtml/claude-memory-health**](https://github.com/alexknowshtml/claude-memory-health) | 记忆审计 | ![GitHub Repo stars](https://badgen.net/github/stars/alexknowshtml/claude-memory-health) | 审计 MEMORY.md 索引的 Claude Code skill：检查体积、孤儿项、断链与陈旧度，帮你保持记忆索引健康。 |
+| [**moatazhamada/ai-omni-skills**](https://github.com/moatazhamada/ai-omni-skills) | 跨工具同步 | ![GitHub Repo stars](https://badgen.net/github/stars/moatazhamada/ai-omni-skills) | 以单一 `SKILL.md` 为事实源 + 跨工具同步工具包（MCP server、共享指令、一键打通 Claude Code/Codex/Gemini/Kimi/Cursor/Kilocode/OpenCode），解决在多工具间技能碎片化的问题。 |
+| [**GBSOSS/mcp-to-skill-converter**](https://github.com/GBSOSS/-mcp-to-skill-converter) | MCP 转换 | ![GitHub Repo stars](https://badgen.net/github/stars/GBSOSS/-mcp-to-skill-converter) | 把任意 MCP server 转换成 Claude Skill，节省约 90% 上下文。 |
+| [**huifer/skill-security-scan**](https://github.com/huifer/skill-security-scan) | 安全扫描 | ![GitHub Repo stars](https://badgen.net/github/stars/huifer/skill-security-scan) | 安装第三方 Skill 前先做安全审查的命令行工具，检测窃取数据或破坏系统的恶意代码。 |
+| [**Xquik-dev/x-twitter-scraper**](https://github.com/Xquik-dev/x-twitter-scraper) | 数据抓取 | ![GitHub Repo stars](https://badgen.net/github/stars/Xquik-dev/x-twitter-scraper) | X/Twitter 数据抓取技能，提供 MCP 服务器与 REST API，含 20 个提取工具。 |
+| [**Continuum-AI-Corp/OrcaReplay**](https://github.com/Continuum-AI-Corp/OrcaReplay) | 运行录制回放 | ![GitHub Repo stars](https://badgen.net/github/stars/Continuum-AI-Corp/OrcaReplay) | 把 Skill / coding agent 与模型 provider 之间的真实请求原样录成本地 trace：`orca replay last` 断网重放，稳定复现一次失败的 Skill 调用；`orca compare` 从同一 checkpoint 换模型对照。自带 `orca mcp`（list/show/checkpoints/graph/replay/compare 六个工具）可作为 MCP server 接入，也能直接当 coding-agent skill 用。 |
+| [**lognorm/lognorm-mcp**](https://github.com/lognorm/lognorm-mcp) | SEO/GEO 增长 | ![GitHub Repo stars](https://badgen.net/github/stars/lognorm/lognorm-mcp) | 托管式 MCP 服务（[lognorm.com](https://lognorm.com)），把网站的 SEO/GEO 增长待办（站点审计、修复、内容草稿、AI 可见度追踪）交给 Claude Code、Codex 和 Cursor 处理；OAuth 登录，无需 API Key，免费方案支持 1 个网站。 |
+| [**cloudishai/skills**](https://github.com/cloudishai/skills) | 部署托管 | ![GitHub Repo stars](https://badgen.net/github/stars/cloudishai/skills) | Cloudish 部署 Skill：把 Dockerfile、源码目录或容器镜像交给 Cloudish 在服务端构建（无需本地 Docker），运行为常驻容器并返回上线网址；支持持久化存储卷与加密密钥，Agent 可免注册自行创建 API 密钥，消费不超过预付额度。附 Claude Code 插件清单。 |
+| [**Kruhlikau/subagent-tuner**](https://github.com/Kruhlikau/subagent-tuner) | 子智能体调度 | ![GitHub Repo stars](https://badgen.net/github/stars/Kruhlikau/subagent-tuner) | Claude Code 的 mod：为每个子智能体选择模型和推理强度，可在启动前询问、按任务类型推荐，或用保存的默认值覆盖智能体自己指定的模型；`claude -p` 与 SDK 运行不受影响。 |
+
+---
+
+## 📚 精选资源集合 (Awesome Collections)
+
+社区其他维护者整理的相关 Awesome 列表，便于交叉参考。
+
+| 项目 | ⭐ Stars | 简介 |
+| :--- | ---: | :--- |
+| [**ComposioHQ/awesome-claude-skills**](https://github.com/ComposioHQ/awesome-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills) | 目前 Star 最高的 Claude Skills Awesome 列表，由 Composio 团队维护，收录海量 Skills、资源与工具。 |
+| [**sickn33/antigravity-awesome-skills**](https://github.com/sickn33/antigravity-awesome-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills) | 面向 Antigravity 场景的 Skills 精选列表，补充了大量社区贡献的资源与用法。 |
+| [**VoltAgent/awesome-agent-skills**](https://github.com/VoltAgent/awesome-agent-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/VoltAgent/awesome-agent-skills) | 另一视角下的 Agent / Claude Skills 资源精选合集，含不同的工具与案例。 |
+| [**travisvn/awesome-claude-skills**](https://github.com/travisvn/awesome-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/travisvn/awesome-claude-skills) | 精选的 Claude Skills、资源和工具列表，特别关注 **Claude Code** 的工作流集成。 |
+| [**BehiSecc/awesome-claude-skills**](https://github.com/BehiSecc/awesome-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/BehiSecc/awesome-claude-skills) | 另一份高 Star 的 Claude Skills 精选列表。 |
+| [**davepoon/buildwithclaude**](https://github.com/davepoon/buildwithclaude) | ![GitHub Repo stars](https://badgen.net/github/stars/davepoon/buildwithclaude) | 一站式中心，集中发现 Skills、Agents、Commands、Hooks、Plugins 与 Marketplace 资源。 |
+| [**abubakarsiddik31/claude-skills-collection**](https://github.com/abubakarsiddik31/claude-skills-collection) | ![GitHub Repo stars](https://badgen.net/github/stars/abubakarsiddik31/claude-skills-collection) | 汇集官方与社区构建的 Claude Skills，便于一站式浏览扩展 Anthropic 能力。 |
+| [**karanb192/awesome-claude-skills**](https://github.com/karanb192/awesome-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/karanb192/awesome-claude-skills) | 50+ 经验证的 Claude Skills 精选，覆盖 TDD、调试、Git 工作流、文档处理等，社区驱动持续维护。 |
+| [**hesreallyhim/awesome-claude-code**](https://github.com/hesreallyhim/awesome-claude-code) | ![GitHub Repo stars](https://badgen.net/github/stars/hesreallyhim/awesome-claude-code) | 覆盖 Claude Code 全生态的头部 Awesome 列表：Skills、Hooks、Slash Commands、Agent 编排、插件与应用，附详尽资源索引，社区认可度极高。 |
+| [**heilcheng/awesome-agent-skills**](https://github.com/heilcheng/awesome-agent-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/heilcheng/awesome-agent-skills) | 聚合 Agent Skills 教程、指南与目录（Directories）的精选集，适合系统性了解各家 skills 资源入口。 |
+| [**github/awesome-copilot**](https://github.com/github/awesome-copilot) | ![GitHub Repo stars](https://badgen.net/github/stars/github/awesome-copilot) | GitHub 官方维护，汇集社区贡献的 instructions、agents、skills 与配置，帮助用好 GitHub Copilot（含大量遵循开放标准的 Agent Skills）。 |
+
+---
+
+## 📝 深度文章 (Articles)
+
+帮助你深入理解技术原理和未来趋势的高质量文章。
+
+- [**Bringing Anthropic Skills to GitHub Copilot**](https://tiberriver256.github.io/ai%20and%20technology/skills-catalog-part-1-indexing-ai-context/)  
+  探讨如何将 Anthropic Skills 的概念引入到 GitHub Copilot 及上下文索引中。这篇文章对于理解 Skills 如何跨平台迁移和集成具有很高的参考价值。
+
+---
+
+## 👤 关于作者 (About)
+
+本项目由 **云中江树** 整理维护，致力于推动 AI 智能体技术在中文社区的普及与发展。
+
+- **GitHub**: [@yzfly](https://github.com/yzfly)
+- **公众号**: 云中江树
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yzfly/awesome-skills-zh&type=Date)](https://star-history.com/#yzfly/awesome-skills-zh&Date)

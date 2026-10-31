@@ -1,0 +1,431 @@
+# brisvox
+
+[![ci](https://github.com/bilal07karadeniz/brisvox/actions/workflows/ci.yml/badge.svg)](https://github.com/bilal07karadeniz/brisvox/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/brisvox-server.svg?label=crates.io)](https://crates.io/crates/brisvox-server)
+[![PyPI](https://img.shields.io/pypi/v/brisvox-agent.svg?label=PyPI)](https://pypi.org/project/brisvox-agent/)
+[![npm](https://img.shields.io/npm/v/@brisvox/agent.svg?label=npm%20%40brisvox%2Fagent)](https://www.npmjs.com/package/@brisvox/agent)
+[![npm](https://img.shields.io/npm/v/@brisvox/web.svg?label=npm%20%40brisvox%2Fweb)](https://www.npmjs.com/package/@brisvox/web)
+[![license](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#license)
+[![docs](https://img.shields.io/badge/docs-the%20book-informational.svg)](https://bilal07karadeniz.github.io/brisvox/)
+
+**A Rust engine for real-time voice agents: phone calls and browser sessions where a caller talks,
+the agent listens, thinks (an LLM, with tools) and answers, and the caller can interrupt at any
+moment. Open source, one process, hundreds of isolated calls per container.**
+
+<p align="center"><img src="assets/architecture.svg" alt="brisvox architecture: callers reach one brisvox-server process through Twilio, Telnyx, SIP, WebRTC or WebSocket transports; each call is an isolated session running VAD and turn detection, STT, the LLM with tools and TTS, with an inference pool for the models; providers are cloud or local; your agent in Python or TypeScript holds the tools" width="960"></p>
+
+[Install](#install) · [Try it without keys](#try-it-without-keys) · [Quickstart](#quickstart) · [Comparison](#brisvox-vs-livekit-agents-vs-pipecat) ·
+[Features](#features) · [For AI coding agents](#for-ai-coding-agents) ·
+[Docs: the book](book/src/introduction.md) · [License](#license)
+
+## Why brisvox
+
+Built to beat Pipecat on three axes with the same speech and language providers: latency, density
+and correctness.
+
+- **Density.** Every call through each system's own provider client code (Deepgram live STT, an
+  OpenAI-compatible LLM and Deepgram Aura over TLS, against protocol-faithful fake servers) with the
+  real Silero VAD and Smart Turn models on every call: one 4 vCPU / 4 GB cloud container carried
+  **250 concurrent calls** within the latency SLO and **430** without a failed call or a lost turn,
+  against **1** and **10** for Pipecat 1.12.0. At 8 vCPU / 8 GB brisvox nearly doubled to **470**
+  and **780**; Pipecat stayed at **10**. At its maximum brisvox used about 1.8 MB of memory and
+  0.007 cores per call, Pipecat about 240 MB and 0.14 cores. Each call is an isolated session; a
+  panic or a provider failure in one cannot touch another.
+- **Latency.** The engine's own added time is tens of microseconds per stage (0.089 ms at p95 from
+  end of turn to the LLM request, budget 3 ms). On real providers (Deepgram, OpenRouter pinned to
+  one upstream, Deepgram Aura voice), 5 concurrent calls, 100 turns per system, the median
+  voice-to-voice was **1.85 s against 1.97 s** for Pipecat and the p95 **2.88 s against 4.35 s**.
+  The STT final arrived earlier through brisvox (its `Finalize` runs at the VAD stop instead of
+  waiting for the provider's own endpointing; the two systems' timers are not measured from the
+  same point, so this is not a share of the gap); the LLM's first token took about the same time on
+  both. Pipecat sent more than one LLM request in 56 of 100 turns (mostly the first turn of a call),
+  which is where its tail comes from; the cause was not investigated (it is consistent with a turn
+  ended at a pause inside the utterance). An earlier run with Cartesia,
+  one call at a time and 30 turns, gave 1.69 s against 2.03 s. Connections
+  are prewarmed, the LLM can start speculatively, and the first clause of the answer goes to the
+  voice after one word.
+- **Correctness.** Every user turn is a numbered epoch and stale frames are dropped everywhere;
+  after a barge-in the LLM context holds only the text that was actually played; side-effect tools
+  never run speculatively and never run twice for one call id (and an identical repeat in the
+  same turn is refused). The exact scope, and the idempotency key to add for "once per order,
+  ever", is in [`docs/TOOLS.md`](docs/TOOLS.md#what-never-twice-covers). All of it is proven by
+  deterministic, paused-clock simulation.
+
+### Capacity
+
+<p align="center"><img src="assets/charts/capacity-cloud.svg" alt="Bar chart: concurrent calls within the latency SLO on AMD EPYC 9655P cloud containers, 4 vCPU / 4 GB: brisvox 250, Pipecat 1; 8 vCPU / 8 GB: brisvox 470, Pipecat 10" width="720"></p>
+
+The same SLO for both (p95 voice-to-voice at most 1110 ms: the fake providers' own 860 ms plus
+250 ms), three runs each on a fresh container, one system at a time, on one CPU model (AMD EPYC
+9655P; deployments the cloud placed on other CPUs were redeployed) with the container limits
+checked in its own samples. On these cores a single Pipecat call already sits near the limit (p95
+about 1.05 to 1.1 s at one call, about 200 ms above the providers' floor, against 10 to 30 ms for
+brisvox), so its SLO number is decided by per-turn latency more than by load. The next chart drops
+the latency limit and shows how many calls each system holds without failing:
+
+<p align="center"><img src="assets/charts/capacity-cloud-max.svg" alt="Bar chart: most concurrent calls without a failed call or a lost turn, 4 vCPU / 4 GB: brisvox 430, Pipecat 10; 8 vCPU / 8 GB: brisvox 780, Pipecat 10" width="720"></p>
+
+Pipecat (one worker process per vCPU, Silero and Smart Turn loaded in each) runs out of memory at
+20 calls in 4 GB: workers are killed and their calls drop. With 8 GB it lost turns at 20 calls in
+two of three runs (no response); the third held 20 and reached the 8 GB limit at 30, where calls
+dropped. So the extra cores and memory did not raise its median. brisvox is bound by CPU: twice
+the container gave about 1.9 times the calls.
+
+<p align="center"><img src="assets/charts/memory-cloud.svg" alt="Bar chart: server memory at the maximum load, 4 vCPU / 4 GB: brisvox 753 MB at 430 calls, Pipecat 2.4 GB at 10 calls; 8 vCPU / 8 GB: brisvox 1.3 GB at 780 calls, Pipecat 3.3 GB at 10 calls" width="720"></p>
+
+<p align="center"><img src="assets/charts/latency-vs-calls-cloud.svg" alt="Line chart: p50 and p95 voice-to-voice latency against concurrent calls at 8 vCPU / 8 GB; brisvox stays at the providers' floor up to about 480 calls, Pipecat crosses the SLO within 20 calls" width="720"></p>
+
+Latency stays at the providers' floor until a system runs out of CPU or memory, then crosses the
+SLO within a step or two: the number that matters is where that happens.
+
+### Latency
+
+<p align="center"><img src="assets/charts/v2v-live.svg" alt="Grouped bar chart: voice-to-voice latency on real providers in English, median and p95, brisvox against Pipecat" width="720"></p>
+
+Both systems ran the same agent file against the same real providers and models (Deepgram nova-3,
+OpenRouter `openai/gpt-6-luna` with reasoning effort `none`, pinned to OpenRouter's `openai`
+upstream without fallbacks and checked on every response that streamed (Pipecat's cancelled
+requests never reported one), Deepgram Aura `aura-2-thalia-en`), with 5
+concurrent calls, 10 blocks of 10 turns per system, strictly alternating (b1 p1 b2 p2 ...), so both
+saw the same provider conditions. The LLM provider's own variance is still as large as the median
+difference (126 ms): the LLM first token is 931 ms for brisvox and 889 ms for Pipecat at p50. The
+tail differs more than the median because Pipecat sent a second or third LLM request in about half
+of the turns here (one call at a time it was 5 of 30). One setting is not equal: the same nominal
+100 ms silence before the VAD stop is 3 Silero windows (96 ms) in Pipecat and 4 (128 ms) in
+brisvox, so Pipecat decides about 32 ms earlier at every turn end (faster when the turn really
+ended, and a candidate for its extra mid-utterance turn ends); the breakdown by stage, the routing
+check, this mismatch and the
+earlier Cartesia runs are in the "Live comparison with real providers" section of
+[`docs/LATENCY.md`](docs/LATENCY.md).
+
+<p align="center"><img src="assets/charts/engine-overhead.svg" alt="Dot plot on a log axis: the engine's own time per stage is 14 to 89 microseconds at p95, far below the budgets" width="720"></p>
+
+### How to read the numbers
+
+- **Capacity and memory** are cloud runs of 2026-10-16/17: Linux containers on AMD EPYC 9655P
+  (Zen 5) limited to 4 vCPU / 4 GB and 8 vCPU / 8 GB, release builds, one system at a time. Every
+  call goes through each system's own provider clients (brisvox's Rust adapters; Pipecat's
+  `DeepgramSTTService`, `OpenAILLMService` and `DeepgramTTSService`) to fake providers that speak
+  the real Deepgram and OpenAI-compatible protocols over TLS with fixed latencies (STT final 150 ms
+  after 300 ms of endpointing, LLM first token 350 ms, TTS first audio 150 ms;
+  [`bench/fake_providers`](bench/fake_providers/README.md)), in a container of their own, like the
+  load generator. So the numbers include the provider client code, TLS and both models, not the
+  providers' own variance. The Pipecat side is `bench/pipecat_baseline`: a Pipecat 1.12.0 bot
+  speaking the same websocket protocol with the same agent file, measured by the same client with
+  the same definition of voice-to-voice. brisvox's admission control was off for the ramp; in
+  production it refuses calls past its capacity instead of degrading the running ones. LiveKit
+  Agents was not part of this run.
+- **Memory is PSS** (proportional set size: a page shared by several processes is split between
+  them) summed over the server container's processes, from its cgroup samples every 2 s.
+- The same comparison runs locally with `PROVIDERS=fakes MODELS=1 bench/capacity_linux.sh` (Docker
+  containers with the same limits). The Smart Turn model is memory-bandwidth heavy (about 200 MB of
+  memory traffic per analysis), so on a desktop with little memory bandwidth it can stop brisvox
+  from scaling with cores before the CPU does; the cloud host above does not.
+- **Live voice-to-voice** is **Windows** on a shared development machine over the public internet,
+  one evening (100 turns per system, 5 concurrent calls, alternating blocks; Cartesia's plan allows
+  only 2 concurrent generations, hence the Aura voice); absolute numbers carry noise. **Engine overhead** is the Windows run over mocks.
+- Every number is in a committed file under [`bench/results/`](bench/results/README.md) (the file
+  starts with the command that produced it); the charts are generated from those files by
+  `python3 scripts/gen_charts.py` and checked for staleness by the quality gate. Definitions and
+  more results (load simulation, speculation, Windows capacity): the book's
+  [Benchmark results](book/src/benchmarks.md) and [`docs/LATENCY.md`](docs/LATENCY.md).
+
+## brisvox vs LiveKit Agents vs Pipecat
+
+Two kinds of rows. **Measured** rows come from this repository's own benchmark harness (files named
+in the last column; the table is generated from them); "not measured" means this repository has
+no such run for that system yet. **Documented** rows are what each project's own documentation and
+repository say, fetched 2026-10-14, not benchmarks; the bracketed tags are source ids listed in
+[`docs/research/frameworks-2026-10-14.md`](docs/research/frameworks-2026-10-14.md), where every
+fact carries its URL and what is inferred or not stated is marked as such.
+
+<!-- measured:begin (generated by scripts/gen_charts.py from bench/results; do not edit) -->
+
+| Measured here | brisvox | LiveKit Agents | Pipecat 1.12 | Source |
+|---|---|---|---|---|
+| Concurrent calls within the latency SLO (p95 voice-to-voice at most 1110 ms), **4 vCPU / 4 GB** (median, runs in brackets) | **250** (260, 250, 220) | not measured | **1** (1, 1, 0) | `bench/results/capacity-*-cloud-4c-linux-*` |
+| Most concurrent calls with no failed call and no lost turn (any latency), **4 vCPU / 4 GB** | **430** (430, 480, 400) | not measured | **10** (10, 10, 10) | `bench/results/capacity-*-cloud-4c-max-linux-*` |
+| Server memory at that maximum, 4 vCPU / 4 GB (PSS summed over the container's processes) | 753 MB at 430 calls | not measured | 2.4 GB at 10 calls | same files |
+| Concurrent calls within the latency SLO (p95 voice-to-voice at most 1110 ms), **8 vCPU / 8 GB** (median, runs in brackets) | **470** (480, 460, 470) | not measured | **10** (10, 5, 10) | `bench/results/capacity-*-cloud-8c-linux-*` |
+| Most concurrent calls with no failed call and no lost turn (any latency), **8 vCPU / 8 GB** | **780** (740, 780, 800) | not measured | **10** (10, 20, 10) | `bench/results/capacity-*-cloud-8c-max-linux-*` |
+| Server memory at that maximum, 8 vCPU / 8 GB (PSS summed over the container's processes) | 1.3 GB at 780 calls | not measured | 3.3 GB at 10 calls | same files |
+| Per call at that maximum, 4 vCPU / 4 GB: memory and CPU (idle baseline included) | 1.8 MB, 0.007 cores | not measured | 239.9 MB, 0.137 cores | same files |
+| Voice-to-voice on real providers, English, p50 / p95 (5 concurrent calls, 100 turns, Deepgram Aura voice; Windows, public internet) | 1.85 s / 2.88 s (100 turns) | not measured | 1.97 s / 4.35 s (100 turns) | `bench/results/v2v-live-*-windows-*` |
+
+<!-- measured:end -->
+
+| Documented (2026-10-14) | brisvox | LiveKit Agents | Pipecat |
+|---|---|---|---|
+| Language | Rust engine; your agent in Python or TypeScript (SDKs on PyPI and npm) or in Rust | Python (`livekit-agents` 1.8.7); Node.js in a separate repo [L2][L5] | Python (`pipecat-ai` 1.12.0) [P2][P4] |
+| License | Apache-2.0 or MIT | Apache-2.0; the turn-detector text model and `v1-mini` use the LiveKit Model License [L6][L8] | BSD-2-Clause [P3] |
+| Runtime model | one process, one isolated async session per call, models on a dedicated thread pool | one OS process per job, "each in its own process for isolation" [L7] | documented as one session per process or container [P5] |
+| Needs a media server | no: WebSocket, Twilio and Telnyx built in; WebRTC and SIP are cargo features | yes: a LiveKit server (Cloud or self-hosted), the agent joins a room [L6] | no for WebSocket and SmallWebRTC; the Daily and LiveKit transports use those vendors' infrastructure [P7] |
+| Telephony | Twilio and Telnyx media streams, SIP trunk listener, DTMF, transfer | LiveKit SIP service: Twilio, Telnyx, Plivo and others, DTMF, cold and warm transfer [L12] | Twilio, Telnyx, Plivo, Exotel serializers [P7]; no SIP stack of its own found in the pages read (inferred) |
+| Turn detection | Smart Turn v3.2 (ONNX, on device) with an adaptive policy | own turn-detector models: a text model (396 MB on disk, about 50-160 ms per turn on CPU) and the audio model `v1-mini` (its size and cost are not stated) [L8] | Smart Turn v3 (8 MB int8) [P8][P10] |
+| Turkish | first class ([`docs/TURKISH.md`](docs/TURKISH.md)) | listed by both turn detectors [L8] | listed by Smart Turn [P10] |
+| Interruptions | turn epochs; context keeps only the text actually played | adaptive mode separates interruptions from backchannel, resumes after a false one [L13] | cancels LLM and TTS, flushes audio, commits only the played text; a minimum-words turn-start strategy and a Krisp backchannel filter [P12] |
+| Tools | `read_only` / `side_effect` kinds, idempotency keys, never speculative; written in Rust, Python or TypeScript | function tools, async tools, handoff, MCP (Python), provider-side tools; parallel calls not stated on the page read [L15] | parallel calls by default, async tools, per-tool timeouts, cancel on interruption; MCP not checked [P13] |
+| Speech-to-speech | OpenAI Realtime, Gemini Live | many realtime models [L16] | several [P4] |
+| Overload handling | admission control and graceful drain built in | default load function (5 s average CPU, threshold 0.7) [L11][L17] | none found in the docs; autoscaling guidance [P5] |
+| Hosted cloud | none, self-host only | optional LiveKit Cloud [L6] | optional Pipecat Cloud [P5][P14] |
+| Vendor sizing guidance | none, see the measured rows | 4 cores / 8 GB for 10-25 jobs; a vendor test of 30 agents peaked at about 3.8 cores and 2.8 GB [L11] | Pipecat Cloud profile of 0.5 vCPU / 1 GB per session [P6] |
+
+None of this is an independent benchmark: no third-party density comparison of the three was found
+([research notes](docs/research/frameworks-2026-10-14.md#3-independent-benchmarks-2025-2026)).
+
+## Install
+
+**Prebuilt binary.** Every release has `brisvox-server` archives for Linux (x86_64, aarch64), macOS
+(aarch64) and Windows (x86_64) with a `SHA256SUMS` file, on the
+[Releases page](https://github.com/bilal07karadeniz/brisvox/releases). Linux binaries need glibc
+2.39 or newer.
+
+```sh
+v=v0.1.3; t=x86_64-unknown-linux-gnu        # pick the release and your platform
+curl -fLO https://github.com/bilal07karadeniz/brisvox/releases/download/$v/brisvox-server-$v-$t.tar.gz
+curl -fLO https://github.com/bilal07karadeniz/brisvox/releases/download/$v/SHA256SUMS
+sha256sum --ignore-missing -c SHA256SUMS && tar xzf brisvox-server-$v-$t.tar.gz
+cd brisvox-server-$v-$t
+python3 scripts/models/fetch_models.py     # the Smart Turn model (pinned SHA-256)
+./brisvox-server --version
+```
+
+**Docker.** A multi-architecture image (`linux/amd64`, `linux/arm64`) with the Smart Turn model
+inside:
+
+```sh
+docker run --rm ghcr.io/bilal07karadeniz/brisvox-server:latest --version
+```
+
+Tags are `vX.Y.Z` and `latest`. Running it with an agent file and your keys:
+[Docker and compose](book/src/quickstart/docker.md).
+
+**From crates.io.** Needs Rust 1.99 or newer, a C compiler and cmake (libopus, ONNX Runtime):
+
+```sh
+cargo install brisvox-server --locked --features all-providers,call-control,smart-turn-ort,mcp,webrtc
+```
+
+**What to build with.** The prebuilt binaries and the image are built with
+`all-providers,call-control,smart-turn-ort,mcp,webrtc`: every STT/LLM/TTS adapter, the carriers' call
+control (`transfer_call`, `send_dtmf`, `end_call`), Smart Turn on ONNX Runtime, MCP tools and the
+WebRTC listener. The crate's own default features are deliberately small (no provider adapter): an
+application that only needs some of them names just those, for example
+`--features provider-deepgram,provider-openai,provider-cartesia`. Not in the prebuilt set: `sip`
+(the SIP trunk listener), `otlp` (OpenTelemetry export) and `recording-encryption`; build from
+source with them added when you need them.
+
+**SDKs.**
+
+```sh
+pip install brisvox                   # Python 3.11+; installs brisvox-agent, the SDK itself
+npm i brisvox                         # TypeScript / Node 20+; brisvox/web is the browser client
+```
+
+The short names are umbrella packages: `brisvox` on PyPI depends on `brisvox-agent` and re-exports
+it, `brisvox` on npm depends on `@brisvox/agent` and `@brisvox/web` and re-exports them (the agent
+SDK as `brisvox`, the browser module as `brisvox/web`). Install the specific packages instead if
+you want only one:
+
+```sh
+pip install brisvox-agent             # Python 3.11+
+npm install @brisvox/agent            # TypeScript / Node 20+
+npm install @brisvox/web              # the browser module for a "Talk to us" button
+```
+
+**As a Rust library.** `cargo add brisvox --features all-providers` is one dependency for a server
+with your own Rust tools: it re-exports `brisvox-server`, the tools API (`brisvox-agent`), the
+provider adapters and the core types, and forwards the server's features. The other crates
+(`brisvox-server`, `brisvox-core`, `brisvox-agent`, `brisvox-providers`, `brisvox-transport`,
+`brisvox-engine`, `brisvox-agent-link`, `brisvox-inference`, `brisvox-audio`, `brisvox-sim`) are on
+crates.io too, for those who need one alone. Release notes are in the
+[changelog](CHANGELOG.md); security reports go to the [security policy](SECURITY.md).
+
+## Try it without keys
+
+A voice agent that runs entirely on your computer (speech recognition, language model and voice, CPU
+only), talked to in the browser. Needs Docker, 4+ cores, 8 GB of memory; the first start downloads
+about 6.5 GB.
+
+```sh
+docker compose -f deploy/local/compose.yaml up      # then open http://localhost:8088/demo?force=ws
+```
+
+Details, a larger model for faster machines and the licences: [`deploy/local/`](deploy/local/README.md).
+
+## Quickstart
+
+Needs Rust (the toolchain is pinned in `rust-toolchain.toml`) and API keys for the example agent's
+providers: Deepgram (STT), OpenAI (LLM) and Cartesia (TTS).
+
+```sh
+cargo build --release -p brisvox-server --features all-providers,smart-turn-ort,demo-tools
+python3 scripts/models/fetch_models.py          # the Smart Turn model (pinned SHA-256)
+export DEEPGRAM_API_KEY=...  OPENAI_API_KEY=...  CARTESIA_API_KEY=...
+BRISVOX_AGENT_FILE=examples/agents/support-en.toml target/release/brisvox-server   # ws on :8080
+# in another shell: play a recorded utterance at it and measure the answer time
+cargo run --release -p brisvox-bench -- v2v --url ws://127.0.0.1:8080/ --fixtures en_two_utterances --runs 1
+```
+
+Your own tools and logic, in Python or TypeScript:
+
+```python
+from brisvox_agent import Agent
+
+agent = Agent("luigi", system_prompt="You are Luigi's host.", greeting="Hi, Luigi's here!")
+
+@agent.tool
+async def opening_hours(day: str) -> str:
+    """Opening hours of the restaurant on a weekday."""
+    return "12:00 to 22:00"
+
+agent.run(port=8765)    # server side: BRISVOX_AGENT_URL=ws://127.0.0.1:8765
+```
+
+Or with Docker: `cp deploy/ws.env.example deploy/ws.env`, fill in the keys, then
+`docker compose -f deploy/compose.yaml up --build agent-ws`. More in the book:
+[Quickstart](book/src/quickstart.md); fully local with no API key: [A fully local
+assistant](book/src/quickstart/local.md).
+
+## What you can build
+
+The default build has no providers and no listeners beyond the websocket; you choose cargo
+features for what you want to run. The same names go into the Docker image through the
+`BRISVOX_FEATURES` build argument (default `all-providers,call-control,smart-turn-ort`, which has
+**no `webrtc`**). `all-providers` can be replaced by the individual `provider-*` features to keep
+the binary smaller.
+
+| Goal | Cargo features (`--features`) | Docker `--build-arg BRISVOX_FEATURES=` | Read |
+|---|---|---|---|
+| A voice button on a website (browser, WebRTC with a WebSocket fallback) | `all-providers,smart-turn-ort,webrtc` | `all-providers,smart-turn-ort,webrtc` | [web assistant](examples/web-assistant), [hosting, incl. one-port platforms](docs/DEPLOY.md) (add `call-control` if the same server also takes phone calls) |
+| A phone number through Twilio or Telnyx (transfer, DTMF, hang-up) | `all-providers,call-control,smart-turn-ort` | the default | [phone receptionist](examples/phone-receptionist), [Telephony](docs/TELEPHONY.md) |
+| A SIP trunk | `all-providers,call-control,smart-turn-ort,sip` | `all-providers,call-control,smart-turn-ort,sip` | [Telephony](docs/TELEPHONY.md), [Deploying](docs/DEPLOY.md) |
+| Fully local speech (sherpa-onnx, Ollama, Kokoro), no API key | `provider-sherpa-onnx,provider-openai-compatible,provider-openai-speech,smart-turn-ort,webrtc` | the same list | [A fully local assistant](book/src/quickstart/local.md) |
+| Your own tools in Python or TypeScript | the features of the goal above; tools come from an SDK process | the same | [SDKs](sdk/python/README.md), [booking agent](examples/booking-agent) |
+| Your own tools in Rust, in one binary | your crate depends on `brisvox-server` with the provider features your agent file names (and `smart-turn-ort`, `webrtc`, `call-control` as above) | build your own image from your crate | [Rust tools](examples/rust-tools), [Tools](docs/TOOLS.md) |
+
+`smart-turn-ort` is the end-of-turn model: without it, and the model file from
+`python3 scripts/models/fetch_models.py`, adaptive turns end at a 3 second fallback deadline.
+Before you run anything, `target/release/brisvox-server check <agent-file> --require-secrets`
+validates an agent file against the binary you built (providers compiled in, keys set, tools
+known), offline, with line and column for every problem. Which provider and which model to pick
+for your language and budget is a live test, not a table: the agent files in
+[`examples/agents`](examples/agents) are the starting points.
+
+## Features
+
+- **Transports.** Generic websocket ([protocol](docs/WEBSOCKET_PROTOCOL.md)), Twilio Media
+  Streams, Telnyx media streaming, RTVI (Pipecat's client SDKs), WebRTC (feature `webrtc`) and a
+  SIP trunk listener (feature `sip`). G.711 mu-law and A-law, any call rate with any provider
+  rate.
+- **Providers.** STT: Deepgram, AssemblyAI, Gladia; on your own machine sherpa-onnx (CPU) or a
+  server that speaks the OpenAI Realtime transcription protocol. LLM: OpenAI, Anthropic, Gemini,
+  and any OpenAI-compatible endpoint (Groq, Together, Fireworks, vLLM, Ollama, OpenRouter:
+  [recipe](docs/PROVIDERS.md)). TTS: Cartesia, ElevenLabs, Deepgram Aura; on your own machine any
+  server of the OpenAI `/v1/audio/speech` shape (Kokoro-FastAPI, Chatterbox). Speech-to-speech:
+  OpenAI Realtime and Gemini Live. On-device: Silero VAD and Smart Turn v3.2 end-of-turn detection. Per-stage
+  failover, circuit breakers and retry budgets.
+- **Conversation.** Adaptive turn taking, interruption policy with backchannel lists, speculative
+  LLM start, played-text truncation, tool calls with `read_only` / `side_effect` kinds and
+  idempotency keys, filler phrases for slow tools, DTMF in and out, call transfer, answering
+  machine handling. English and Turkish supported.
+- **SDKs and clients.** [Python](sdk/python/README.md) and [TypeScript](sdk/typescript/README.md)
+  SDKs for an out-of-process agent: your tools and application logic in your own process, the
+  server runs the call ([agent protocol](docs/AGENT_PROTOCOL.md)). [`@brisvox/web`](sdk/web/README.md)
+  is one dependency-free ES module for a "Talk to us" button on a website: WebRTC first, an
+  automatic WebSocket fallback on the same port, microphone, playback, barge-in and clean hang-up.
+- **Config.** One TOML or YAML file per agent ([reference](docs/CONFIG.md));
+  `brisvox-server check <file>` validates a file offline, with line and column for every problem,
+  before you deploy it. `brisvox_server::app::run_with_tools(Arc::new(MyTools))` is a whole `main`
+  for a server with your own Rust tools ([guide](docs/TOOLS.md), [example](examples/rust-tools)).
+- **Operations.** Health and readiness endpoints, Prometheus metrics, OpenTelemetry traces
+  (feature `otlp`), admission control that learns the machine's capacity (refuses new calls
+  instead of degrading running ones), graceful drain, a container image and compose file.
+- **Usage and cost.** Every call reports what providers bill by: LLM tokens (input, cached,
+  output), STT audio seconds and TTS characters, with duration, turns and latencies, as a
+  `session.usage` event, in the transcript, in the log and as Prometheus totals per provider and
+  model ([docs](docs/OPERATIONS.md#usage-and-cost)).
+- **Examples.** [Phone receptionist](examples/phone-receptionist), [web
+  assistant](examples/web-assistant), [booking agent](examples/booking-agent) (Python SDK tools),
+  [Rust tools](examples/rust-tools), plus single-file agent definitions in
+  [`examples/agents`](examples/agents).
+
+## For AI coding agents
+
+brisvox is written to be picked up by an AI coding agent (Claude Code, Codex, Cursor and the like)
+with no prior knowledge:
+
+- [`llms.txt`](llms.txt) is the map ([llmstxt.org](https://llmstxt.org) format): the facts to know
+  before writing anything and one line per document saying when to read it.
+  [`llms-full.txt`](llms-full.txt) is the user guide in one file. Both are generated from the docs
+  (`scripts/gen_llms.py`) and checked for staleness by the quality gate.
+- [`skills/brisvox`](skills/brisvox/SKILL.md) is an Agent Skill with the workflow and the common
+  traps. For Claude Code, copy the folder into your project's `.claude/skills/` (or
+  `~/.claude/skills/`); other agents can be pointed at the file.
+- `brisvox-server check <agent-file>` validates an agent file offline with the real loader, so an
+  agent finds its own mistakes (key path and line for each) before anything runs.
+- [`docs/agent.schema.json`](docs/agent.schema.json) is the JSON Schema of the agent file for
+  editors and tools (`brisvox-server --print-schema`; setup in `docs/CONFIG.md`).
+
+## Documentation
+
+The book in [`book/`](book) organises the design and reference documents in [`docs/`](docs)
+(included, not copied: one source of truth) into chapters: introduction, quickstart, concepts
+(pipeline, turns and interruptions, played-text truncation, tools), configuration, telephony,
+operations, benchmarks and reference (protocols, providers).
+
+```sh
+cargo install mdbook        # once
+mdbook serve book --open    # or: mdbook build book  (output in target/book)
+python3 scripts/check_book.py   # structure check without mdbook: links, includes, every doc included
+```
+
+Entry points: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (design),
+[`docs/PIPELINE.md`](docs/PIPELINE.md) (the production pipeline),
+[`docs/LATENCY.md`](docs/LATENCY.md) (latency budget and measurements),
+[`docs/OPERATIONS.md`](docs/OPERATIONS.md) (running the server),
+[`docs/TESTING.md`](docs/TESTING.md) (how it is proven),
+[`bench/results/README.md`](bench/results/README.md) (the benchmark harness and every result file).
+
+## Layout
+
+| Crate | Purpose |
+|---|---|
+| `brisvox-core` | frames, processors, pipeline, clock, turn epochs |
+| `brisvox-audio` | codecs, resampling, buffers, output pacing |
+| `brisvox-inference` | dedicated CPU pool, on-device models (VAD, turn detection) |
+| `brisvox-agent` | turn taking, interruptions, context, tools, TTS segmentation |
+| `brisvox-engine` | the production voice pipeline (one session per call) |
+| `brisvox-providers` | STT / LLM / TTS traits and adapters |
+| `brisvox-transport` | websocket, telephony, WebRTC transports |
+| `brisvox-agent-link` | the out-of-process agent protocol |
+| `brisvox-server` | multi-tenant session server (binary + library) |
+| `brisvox-sim` | mock providers and deterministic simulator |
+| `brisvox-bench` | benchmark harness (binary) |
+
+## Building and testing
+
+```bash
+cargo build --workspace
+scripts/verify.sh        # fmt + clippy (-D warnings) + docs + tests + SDKs + examples + book check
+```
+
+Library code may not `unwrap`, `expect`, `panic!`, `todo!` or index in a way that can panic;
+these lints are denied workspace-wide and relaxed only inside tests (`clippy.toml`).
+
+## License
+
+Licensed under either of
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
+- MIT license ([LICENSE-MIT](LICENSE-MIT))
+
+at your option.
+
+Exception: the speech test fixtures in `fixtures/` (audio and transcripts from Google FLEURS /
+FLORES) are not covered by the code license; they are shared under CC BY-SA 4.0, see
+[`fixtures/NOTICE`](fixtures/NOTICE).
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion
+in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above,
+without any additional terms or conditions.

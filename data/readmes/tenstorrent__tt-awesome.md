@@ -23,6 +23,18 @@ A curated directory of projects, tools, models, and research for Tenstorrent har
 - [📚 Guides, Tutorials & Education](#guides-tutorials-education)
 - [✍️ Blogs](#blogs)
 
+## 🚀 Getting Started
+
+- **[tt-qb2-model-manager](https://github.com/palisurf/tt-qb2-model-manager)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
+  by [@palisurf](https://github.com/palisurf) — tt-qb2-model-manager is a fast, zero-GUI-dependency CLI and interactive terminal appliance manager purpose-built for the Tenstorrent QuietBox 2 (P300X2 — 4× p300c PCIe boards / 8× Blackhole ASICs / 128 GB GDDR6).
+
+It unifies deep hardware/container forensics, an automated Hugging Face Frontier Proximity % benchmark ranker, local .safetensors and config.json architecture inspection, tt-metal warm/cold cache analysis, safe multi-chip resets (tt-smi -r), and a deterministic 5-phase bring-up progress tracker into a single command (./qb2_model_manager). 
+
+Direct YAML Catalog Parsing: Reads /home/ttuser/.local/lib/tt-inference-server/workflows/model_specs/prod/llm.yaml (and dev/llm.yaml + dev/vlm.yaml with --dev), preserving multiple engine implementations per model (tt-transformers vs. tt-forge-vllm).
+
+Experimental & Dev-Catalog Model Loading (--dev) unlocks 16 additional experimental P300X2 LLM and VLM configurations from dev/llm.yaml and dev/vlm.yaml that are omitted from prod and model_spec.json
+  [📦 repo](https://github.com/palisurf/tt-qb2-model-manager)
+
 ## 🤖 AI & Models
 
 - **[Qwen3.8-27B on two Blackhole P150A](https://github.com/Thatch-cloud/Tenstorrent.Blackhole-Qwen3.8-27B)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
@@ -726,12 +738,4 @@ The architecture can be mapping to any number of Tensix cores. The build is conf
   [📄 arXiv:2604.03279](https://arxiv.org/abs/2604.03279)
 
 - **[Block-Sparse Linear Algebra on Tenstorrent Wormhole](https://github.com/salmanra/Tenstorrent-WH-BlockSpMM)** ![community](https://img.shields.io/badge/community-27AE60?style=flat-square)
-  by Rahmy Salman — Artifact for the paper "Leveraging Network-on-Chip Architecture for Block-Sparse Linear Algebra on Tenstorrent": block-sparse SpMM and SDDMM kernels for the Wormhole n150 in several data-movement variants, plus scripts that reproduce every n150 figure and table. Builds as a submodule inside a tt-metal checkout.
-  [📦 repo](https://github.com/salmanra/Tenstorrent-WH-BlockSpMM)
-
-- **[tt-fluid](https://github.com/moritztng/tt-fluid)** ![affiliated](https://img.shields.io/badge/affiliated-EC96B8?style=flat-square)
-  by Moritz Thüning — OpenFOAM's steady incompressible solver (simpleFoam with k-omega SST) running entirely on Blackhole and Wormhole chips. Reads an ordinary OpenFOAM case, keeps every SIMPLE iteration resident on the Tensix grid with halo exchange between cores, and writes OpenFOAM time directories back. On the HPC motorbike benchmark a QuietBox 2 comes in at 2.34x lower cost per case than an 8x H100 server, with drag within the reference uncertainty.
-  [📦 repo](https://github.com/moritztng/tt-fluid) · [🌐 Docs](https://github.com/moritztng/tt-fluid/tree/main/docs)
-
-- **[polaris](https://github.com/tenstorrent/tt-polaris)** ![official](https://img.shields.io/badge/official-607D8B?style=flat-square)
-  A high-level AI simulator from Tenstorrent for modeling and exploring AI accelerator
+  by Rahmy Salman — Artifact for 

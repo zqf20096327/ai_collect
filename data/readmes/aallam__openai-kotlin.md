@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.aallam.openai:openai-client:4.1.0"
+    implementation "com.aallam.openai:openai-client:4.2.0"
 }
 ```
 
@@ -30,7 +30,7 @@ Alternatively, you can use [openai-client-bom](/openai-client-bom)  by adding th
 ```groovy
 dependencies {
     // import Kotlin API client BOM
-    implementation platform('com.aallam.openai:openai-client-bom:4.1.0')
+    implementation platform('com.aallam.openai:openai-client-bom:4.2.0')
 
     // define dependencies without versions
     implementation 'com.aallam.openai:openai-client'
@@ -57,7 +57,7 @@ of [Ktor's engines](https://ktor.io/docs/http-client-engines.html).
     <dependency>
         <groupId>com.aallam.openai</groupId>
         <artifactId>openai-client-jvm</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0</version>
     </dependency>
             
     <dependency>
@@ -106,28 +106,49 @@ Use your `OpenAI` instance to make API requests. [Learn more](guides/GettingStar
 ### Supported features
 
 - [Responses](guides/GettingStarted.md#responses)
+- [Decisions](guides/Decisions.md)
+- [Conversations](guides/Conversations.md)
 - [Models](guides/GettingStarted.md#models)
 - [Chat](guides/GettingStarted.md#chat)
-- [Images](guides/GettingStarted.md#images)
+- [Images](guides/Images.md)
 - [Embeddings](guides/GettingStarted.md#embeddings)
 - [Files](guides/GettingStarted.md#files)
+- [Multipart uploads](guides/Uploads.md)
 - [Fine-tuning](guides/GettingStarted.md#fine-tuning)
 - [Moderations](guides/GettingStarted.md#moderations)
 - [Audio](guides/GettingStarted.md#audio)
+- [Realtime](guides/Realtime.md)
 - [Batch](guides/GettingStarted.md#batch)
+- [Vector Stores](guides/GettingStarted.md#vector-stores)
+- [Webhooks](guides/Webhooks.md)
+- [Organization usage and costs](guides/Administration.md)
+- [OrganizationAdministration](guides/OrganizationAdministration.md)
+- [Organization governance](guides/OrganizationGovernance.md)
+- [Containers](guides/Containers.md)
+- [Skills](guides/Skills.md)
+- [Voice management](guides/VoiceManagement.md)
+- [Live](guides/Live.md)
+- [Spend controls](guides/SpendControls.md)
+- [Safety and content provenance](guides/SafetyAndProvenance.md)
+- [Fine-tuning operations](guides/FineTuningOperations.md)
 
-#### Beta
+#### Retired upstream APIs
+
+The following interfaces remain available for existing consumers, but their OpenAI endpoints have shut down. See the [migration guide](guides/Migration.md).
 
 - [Assistants](guides/GettingStarted.md#assistants)
 - [Threads](guides/GettingStarted.md#threads)
 - [Messages](guides/GettingStarted.md#messages)
 - [Runs](guides/GettingStarted.md#runs)
-- [Vector Stores](guides/GettingStarted.md#vector-stores)
-
-#### Deprecated
-- [Completions](guides/GettingStarted.md#completions)
 - [Fine-tunes](guides/GettingStarted.md#fine-tunes)
 - [Edits](guides/GettingStarted.md#edits)
+
+Vector Stores remain independent of the retired Assistants endpoints.
+
+#### Legacy
+
+- [Completions](guides/GettingStarted.md#completions) is a legacy API; model availability is separate from endpoint support.
+
 
 *Looking for a tokenizer? Try [ktoken](https://github.com/aallam/ktoken), a Kotlin library for tokenizing text.*
 
@@ -138,7 +159,8 @@ Get started and understand more about how to use OpenAI API client for Kotlin wi
 - [Getting Started](guides/GettingStarted.md)
 - [Chat & Tool Calls](guides/ChatToolCalls.md)
 - [FileSource Guide](guides/FileSource.md)
-- [Assistants](guides/Assistants.md)
+- [API migration](guides/Migration.md)
+- [Archived Assistants guide](guides/Assistants.md)
 
 ## ℹ️ Sample apps
 
@@ -177,11 +199,16 @@ For common issues and their solutions, check the [Troubleshooting Guide](TROUBLE
 - Default (non-billable): live tests are disabled.
 - Opt-in live tests: set `OPENAI_LIVE_TESTS=1` and `OPENAI_API_KEY`.
 
+The JVM live suite excludes mocked offline fixtures. CI runs those once in Offline Checks, then runs the live suite plus the separate Live and Content Provenance tasks. Containers live tests remain opt-in for eligible projects.
+
 Examples:
 
 ```bash
 # Free/offline checks
 ./gradlew :openai-core:jvmTest :openai-core:jsTest :openai-core:wasmJsTest :openai-core:apiCheck :openai-client:apiCheck
+
+# Mocked HTTP client tests (no credentials or API traffic)
+./gradlew :openai-client:offlineJvmTest
 
 # Live smoke (billable)
 OPENAI_LIVE_TESTS=1 OPENAI_API_KEY=... ./gradlew :openai-client:jvmTest --tests "*.TestModels"

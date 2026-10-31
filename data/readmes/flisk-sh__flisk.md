@@ -5,7 +5,7 @@
 # Flisk: your whole app, running on your computer with one command
 
 [![Flisk Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/Sjhb3tnq3)
-[![npm version](https://img.shields.io/npm/v/@flisk-sh/flisk.svg?style=flat&color=blue)](https://www.npmjs.com/package/@flisk-sh/flisk) [![npm weekly downloads](https://img.shields.io/npm/dw/@flisk-sh/flisk?style=flat&color=blue)](https://www.npmjs.com/package/@flisk-sh/flisk) [![GitHub stars](https://img.shields.io/github/stars/flisk-sh/flisk?style=flat&logo=github)](https://github.com/flisk-sh/flisk/stargazers) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/@flisk-sh/flisk.svg?style=flat&color=blue)](https://www.npmjs.com/package/@flisk-sh/flisk) [![npm weekly downloads](https://img.shields.io/npm/dw/@flisk-sh/flisk?style=flat&color=blue)](https://www.npmjs.com/package/@flisk-sh/flisk) [![GitHub stars](https://img.shields.io/github/stars/flisk-sh/flisk?style=flat&logo=github)](https://github.com/flisk-sh/flisk/stargazers) [![README score](https://readme.flisk.si/badge/flisk-sh/flisk.svg)](https://readme.flisk.si/flisk-sh/flisk) [![AI search score](https://citable.flisk.si/badge/flisk.sh.svg)](https://citable.flisk.si/flisk.sh)
 
 **[What is Flisk?](#what-is-flisk) · [Key features](#key-features) · [Quick start](#quick-start) · [Commands](#commands) · [Configuration](#configuration) · [With your AI agent](#use-flisk-with-your-ai-agent) · [FAQ](#faq) · [Docs](#docs)**
 
@@ -15,12 +15,25 @@
 
 </div>
 
+<p align="center">
+<img src="docs/assets/building-apps-loader.svg" alt="Flisk is building your app: an API, a website, a worker, an AI agent, MCP tools and Postgres" width="722" />
+</p>
+
 ## What is Flisk?
 
-Flisk is a command-line tool for local development. It runs every part of your app (API, website, workers, AI agents, database) on your computer behind one local address, and reloads a part when you save it. You describe each part in a small `service.json`; Flisk writes the Dockerfiles, the Compose file and the Tiltfile from it, and keeps them in sync. It does not deploy: production stays with your own tools.
+Flisk is a command-line tool for local development. It runs every part of your app (API, website, workers, AI agents, database) on your computer with one command. Docker is optional: a small app runs as plain local processes, and a bigger one gets containers, one address in front of every part and live reload on Docker and Tilt. Have a `docker-compose.yml`? `flisk import` reads it. Otherwise describe each part in a small `service.json`; for the Docker path Flisk writes the Dockerfiles, the Compose file and the Tiltfile from it, and keeps them in sync. An MCP server lets your AI agent run it too. It does not deploy: production stays with your own tools.
+
+Try it first. One command, nothing to install except Node.js 22.12+, and no Docker needed:
 
 ```bash
-npm install -g @flisk-sh/flisk
+npx @flisk-sh/flisk demo
+```
+
+With Docker running and Tilt installed, that starts the full restaurant demo: six services, Postgres, one gateway and live reload. Without them (or on native Windows), it starts a small menu app as two local processes in about a second and opens it in your browser. `flisk down` in the demo folder stops either one.
+
+Install Flisk with `npm install -g @flisk-sh/flisk`, then, in a new folder:
+
+```bash
 mkdir my-shop && cd my-shop
 flisk project --yes
 flisk resource orders-api --type backend --stack shop --yes
@@ -29,6 +42,8 @@ flisk up shop
 ```
 
 That starts an orders API and a storefront behind one gateway, with Postgres and live reload, and prints their URLs. It needs [Docker](docs/start/words.md#docker), [Tilt](https://docs.tilt.dev/install.html), Node.js 22.12+ and [Bun](https://bun.sh/) 1.2+; `flisk doctor` says what is missing. A small app can skip Docker and [run as local processes](docs/run-without-docker.md).
+
+Two ways in: `flisk project` starts a new app from scratch (above); `flisk import` starts from an app you already have. Already have a Compose file? `npx @flisk-sh/flisk import . && npx @flisk-sh/flisk up` (add `--dry-run` to `import` to preview).
 
 <p align="center">
 <img src="docs/assets/demo-cli.svg" alt="Four flisk commands create a project, an API, and a website, then start them" width="900" />
@@ -72,7 +87,7 @@ flisk up
 - **Hot reload while you code.** Tilt live-updates a container when you save its files; there is no rebuild step.
 - **Wired for you.** `DATABASE_URL`, the API URL your frontend calls, and missing secrets such as `JWT_SECRET` are generated and injected, never copied by hand.
 - **Generated files you can check.** Flisk records what it wrote, refuses to start when a generated file was edited by hand, and `flisk config verify` reports drift ([generated files and drift checks](docs/generated-files.md)).
-- **Built for AI helpers.** `flisk mcp` gives Claude Code, Codex, Cursor and other agents 21 tools, and `flisk project` adds the Flisk skills and an `AGENTS.md`.
+- **Built for AI helpers.** `flisk mcp` gives Claude Code, Codex, Cursor and other agents 22 tools, and `flisk project` adds the Flisk skills and an `AGENTS.md`.
 - **Runs AI agents too.** Agent services get durable checkpoints, sticky `x-session-id` routing, and `/health` and `/ready` checks ([below](#run-your-ai-agents-next-to-your-services)).
 - **No Kubernetes; no Docker for small apps.** Docker and Tilt run the stack without a local cluster such as kind or minikube, and services that each declare a `command` run as plain local processes.
 - **Quick to start.** With warm image layers, a one-backend stack is healthy in 12.8 to 13.8 seconds ([timing notes](docs/benchmarks/quickstart-timing.md)). An 8-service stack settles in 32 to 42 seconds warm and about 4.5 minutes on its first cold build ([benchmark](docs/benchmarks/results/tdk-up-warm-start-2026-10-11/summary.md)).
@@ -163,7 +178,7 @@ Stop my Flisk stack with flisk down and confirm nothing is left running.
 
 ### Pick your agent
 
-Each helper installs a little differently; pick yours for the exact steps. Already have a project? `flisk connect claude` (or `cursor`, `codex`) adds the `flisk mcp` server (21 tools) and the Flisk skills where that agent reads them; add `--dry-run` to see the files first. What the agent can then do: [Flisk for AI agents](docs/agents/flisk-for-agents.md).
+Each helper installs a little differently; pick yours for the exact steps. Already have a project? `flisk connect claude` (or `cursor`, `codex`) adds the `flisk mcp` server (22 tools) and the Flisk skills where that agent reads them; add `--dry-run` to see the files first. What the agent can then do: [Flisk for AI agents](docs/agents/flisk-for-agents.md).
 
 <!-- tabs:agents claude-code · generated by scripts/docs/tabs.mjs from docs/tabs.json; edit the panel below, not the bar -->
 <table>
@@ -365,7 +380,7 @@ Then Tilt builds and starts the containers, and `flisk up` ends with `Flisk is u
 | `flisk doctor` fails | Run the fix commands it prints, then retry |
 | Port 80/5432 in use | `flisk doctor` shows the owner; stop it or set `FLISK_HTTP_PORT` |
 | Docker not running | Start Docker Desktop / `systemctl start docker` |
-| Windows native | Use WSL2 Ubuntu; see [Windows guide](docs/wsl2.md) |
+| Windows native | Local processes and `flisk demo` work; for the Docker stack use WSL2 Ubuntu, see [Windows guide](docs/wsl2.md) |
 | `flisk up` refuses | Run `flisk doctor` first; it explains what's missing |
 
 Full troubleshooting: [docs/troubleshooting.md](docs/troubleshooting.md)
@@ -598,7 +613,7 @@ Runnable examples show Flisk on real stacks. Start with the smallest one:
 
 For the Docker + Tilt path, install Docker (Desktop, OrbStack, or Colima; Engine 25+, Compose 2.20.2+) and [Tilt](https://docs.tilt.dev/install.html). Bun 1.2+ is used by the default generated services. Ports and other settings: [Configuration](#configuration).
 
-Flisk supports macOS, Linux, and **Windows through WSL2 Ubuntu**. Native Windows is inspect-only: `flisk --version`, `flisk doctor`, and `flisk up --dry-run` work, and `flisk up` exits 1 with “Landscape startup needs Ubuntu on WSL2. Native Windows is inspect-only.” See the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
+Flisk supports macOS, Linux, and Windows. On native Windows, `flisk demo` and projects whose services each declare a `command` run as local processes; the Docker stack runs through **WSL2 Ubuntu**, and `flisk up` on a Docker project exits 1 with “Landscape startup needs Ubuntu on WSL2.” See the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
 
 ## Roadmap
 
@@ -649,7 +664,7 @@ No. Core CLI is MIT and needs no key to run `flisk up`. Premium extras are optio
 <details>
 <summary><strong>Which platforms are supported?</strong></summary>
 
-macOS and Linux are supported directly. Windows is supported through WSL2 Ubuntu; native Windows supports CLI inspection only (`flisk --version`, `flisk doctor`, `flisk up --dry-run`). See [Requirements and support](#requirements-and-support) and the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
+macOS and Linux are supported directly. On Windows, `flisk demo` and local-process projects run natively; the Docker stack runs through WSL2 Ubuntu, and native Windows can still inspect it (`flisk doctor`, `flisk up --dry-run`). See [Requirements and support](#requirements-and-support) and the **[Windows & WSL2 guide](docs/wsl2.md)** for the recommended setup, prerequisites, verification steps, and troubleshooting.
 
 </details>
 
@@ -738,7 +753,10 @@ Contributions are welcome. **First step: [say hello on Discord](https://discord.
 
 [![Journeys E2E](https://github.com/flisk-sh/flisk/actions/workflows/e2e-journeys.yml/badge.svg)](https://github.com/flisk-sh/flisk/actions/workflows/e2e-journeys.yml) [![ERP fixture scale E2E](https://github.com/flisk-sh/flisk/actions/workflows/e2e-scale-full.yml/badge.svg)](https://github.com/flisk-sh/flisk/actions/workflows/e2e-scale-full.yml) [![Example apps E2E](https://github.com/flisk-sh/flisk/actions/workflows/e2e-real-apps.yml/badge.svg?branch=main)](https://github.com/flisk-sh/flisk/actions/workflows/e2e-real-apps.yml) [![CodeQL](https://github.com/flisk-sh/flisk/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/flisk-sh/flisk/security/code-scanning) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/flisk-sh/flisk/badge)](https://scorecard.dev/viewer/?uri=github.com/flisk-sh/flisk) [![Known Vulnerabilities](https://snyk.io/test/github/flisk-sh/flisk/badge.svg)](https://snyk.io/test/github/flisk-sh/flisk) [![Socket Badge](https://badge.socket.dev/npm/package/@flisk-sh/flisk/latest)](https://socket.dev/npm/package/@flisk-sh/flisk/overview)
 
-[![ERP backends healthy](https://img.shields.io/badge/ERP%20backends%20healthy-100%2F100-brightgreen)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP time to all healthy](https://img.shields.io/badge/ERP%20time%20to%20all%20healthy-524s-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP frontends answering](https://img.shields.io/badge/ERP%20frontends%20answering-7%2F7-brightgreen)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP running containers](https://img.shields.io/badge/ERP%20running%20containers-109-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP memory used](https://img.shields.io/badge/ERP%20memory%20used-1736%20MiB-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471)
+[![ERP backends healthy](https://img.shields.io/badge/ERP%20backends%20healthy-100%2F100-brightgreen)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP time to all healthy](https://img.shields.io/badge/ERP%20time%20to%20all%20healthy-524s-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP frontends answering](https://img.shields.io/badge/ERP%20frontends%20answering-7%2F7-brightgreen)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP running containers](https://img.shields.io/badge/ERP%20running%20containers-109-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![ERP memory used](https://img.shields.io/badge/ERP%20memory%20used-1736%20MiB-blue)](https://github.com/flisk-sh/flisk/actions/runs/39160719471) [![Flisk App Builder on Glama](https://glama.ai/mcp/servers/flisk-sh/flisk/badges/score.svg)](https://glama.ai/mcp/servers/flisk-sh/flisk)
+
+<a href="https://glama.ai/mcp/servers/flisk-sh/flisk"><img width="380" height="200" src="https://glama.ai/mcp/servers/flisk-sh/flisk/badges/card.svg" alt="Flisk App Builder MCP server" /></a>
+
 [![Test coverage](https://raw.githubusercontent.com/flisk-sh/flisk/main/docs/assets/coverage.svg)](https://github.com/flisk-sh/flisk/blob/main/docs/assets/coverage.svg)
 
 <sub>ERP fixture scale run on a clean GitHub-hosted runner (4 vCPU, 15 GB RAM), snapshot from [run 39160719471](https://github.com/flisk-sh/flisk/actions/runs/39160719471). The live status is in the ERP fixture scale E2E badge above.</sub>

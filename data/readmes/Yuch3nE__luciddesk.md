@@ -12,7 +12,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2EA44F?style=flat-square&labelColor=374151)](LICENSE)
 [![CI status](https://img.shields.io/github/actions/workflow/status/Yuch3nE/luciddesk/build.yml?style=flat-square&label=CI&labelColor=374151)](https://github.com/Yuch3nE/luciddesk/actions/workflows/build.yml)
-[![Version: 0.25.0](https://img.shields.io/badge/Version-0.25.0-8250DF?style=flat-square&labelColor=374151)](CHANGELOG.md)
+[![Version: 0.25.3](https://img.shields.io/badge/Version-0.25.3-8250DF?style=flat-square&labelColor=374151)](CHANGELOG.md)
 [![Windows: 10 / 11](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D4?style=flat-square&labelColor=374151)](#系统与兼容性)
 [![Arch: x64](https://img.shields.io/badge/Arch-x64-64748B?style=flat-square&labelColor=374151)](docs/portable.md)
 
@@ -27,6 +27,8 @@ LucidDesk 是一款免费、开源的 Windows 桌面整理工具。用面板收�
 <sub>功能示意，实际界面见下方截图。</sub>
 
 [开始使用](#开始使用) · [功能](#功能) · [界面截图](#界面截图) · [升级与备份](#升级与备份) · [常见问题](#常见问题)
+
+**0.25.3 更新**：修复桌面与面板图标状态同步及启动时过早的连接告警，减少 Everything 搜索的临时内存与结果积压；CLI 新增预览变更摘要和定向错误帮助，并更新 Agent Skill。详见[更新记录](CHANGELOG.md#0253--2026-10-31)。
 
 <a id="开始使用"></a>
 
@@ -76,7 +78,7 @@ LucidDesk 是一款免费、开源的 Windows 桌面整理工具。用面板收�
 | 文件搜索 | 安装并运行 Everything，在“设置 → Everything 搜索”中启用 |
 | 空格预览 | 安装 PowerToys Peek 或 QuickLook，在“设置 → 文件预览”中选择并启用 |
 
-这些软件不包含在 LucidDesk 发布包内。
+这些软件不包含在 LucidDesk 发布包内，系统要求也可能高于主程序。当前 [PowerToys](https://learn.microsoft.com/windows/powertoys/install) 要求 Windows 10 2004（Build 19041）及以上；LucidDesk 的 1809 最低要求不代表 Peek 在 1809 可用。
 
 ### Agent 与命令行
 
@@ -133,7 +135,7 @@ CLI 支持 JSON 结果与可选诊断日志，适合 Agent 或脚本使用。Luc
 | 环境 | 支持情况 |
 | --- | --- |
 | Windows 11 x64 | 主要维护平台，支持纯色、亚克力、Mica 和 Mica Alt |
-| Windows 10 x64 | 已由用户实机验证，支持纯色和亚克力 |
+| Windows 10 1809+ x64 | 已由用户实机验证，支持纯色和亚克力 |
 | ARM64、远程桌面 | 尚未完整验证 |
 
 支持简体中文、繁體中文、English、日本語、한국어、Deutsch 和 Русский。默认跟随 Windows 显示语言，不支持的语言回退到英语；可在“设置 → 通用”中切换，立即生效。
@@ -141,6 +143,20 @@ CLI 支持 JSON 结果与可选诊断日志，适合 Agent 或脚本使用。Luc
 <a id="常见问题"></a>
 
 ## 💬 常见问题
+
+<details>
+<summary>登录后面板迟迟没有出现</summary>
+
+LucidDesk 会在后台检测桌面接口，确认就绪后再连接；Explorer 重启后也会自动重试。启动或断线后的前 30 秒暂缓连接告警，避免短暂失败打断操作；持续失败才显示提示。若程序已经运行但面板未恢复，可在“设置 → 关于”查看连接状态并复制诊断信息。若托盘图标也迟迟未出现，请先在任务管理器中确认程序是否已启动：Windows 可能延后执行开机启动项，后台接口检测不会消除这段系统调度等待。
+
+</details>
+
+<details>
+<summary>拖入面板或拖回桌面后，图标迟迟没有刷新？</summary>
+
+先在“设置 → 关于”确认版本；0.25.2 修复了通知丢失导致的延迟刷新。普通桌面面板只改变图标归属，文件夹面板的拖入操作则可能涉及真实文件传输，两者的等待原因不同。升级后若仍出现延迟，请记录拖动方向、面板类型和等待时长，并复制诊断信息用于反馈。
+
+</details>
 
 <details>
 <summary>图标和面板不见了？</summary>

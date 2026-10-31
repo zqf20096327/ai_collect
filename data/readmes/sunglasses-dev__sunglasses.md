@@ -9,7 +9,7 @@
 [![installs (incl. mirrors)](https://img.shields.io/pypi/dm/sunglasses?label=installs%20%28incl.%20mirrors%29)](https://pypistats.org/packages/sunglasses)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/sunglasses-dev/sunglasses)
 
-**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,583 patterns across 117 categories and reports findings and incomplete scans. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
+**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,512 patterns that carry a matcher (1,583 are listed) across 117 listed categories and reports findings and incomplete scans. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
 
 **What works today**
 - Scan text, files, PDFs, images and QR codes from the CLI or from Python
@@ -77,7 +77,7 @@ And the same archive as JSON. Selected fields from the scan document, not the wh
 
 ```json
 {
-  "decision": "allow",
+  "decision": "not_inspected",
   "threat_found": false,
   "inspection_complete": false,
   "is_clean": false,
@@ -87,10 +87,11 @@ And the same archive as JSON. Selected fields from the scan document, not the wh
 }
 ```
 
-`decision: allow` with **`is_clean: false`**. Nothing matched because nothing was read, and
-the result says so. **Do not treat `decision: allow` alone as permission to proceed, this
-result is incomplete.** The document exposes the distinction; acting on it is the caller's
-job.
+`decision: not_inspected` with **`is_clean: false`**. Nothing matched because nothing was read, and
+the decision now says so itself (before 0.6.17 it said `allow` beside `is_clean: false`).
+**A caller that tests `decision == "allow"` stops here; one that tests `decision != "allow"`
+should read `threat_found` before treating this as a threat.** The document exposes the
+distinction; acting on it is the caller's job.
 
 *Timings and presentation vary. The demo checks the exit statuses and the ZIP coverage
 fields; report a mismatch against your installed version.*
@@ -364,6 +365,7 @@ The proxy is a separate process with its own state. It keeps the approvals you g
 pip install sunglasses              # text scanning — zero dependencies
 pip install 'sunglasses[media]'     # + images (OCR/EXIF), PDFs, QR codes
 pip install 'sunglasses[all]'       # + audio & video scanning (installs Whisper)
+pip install 'sunglasses[fast]'      # + faster keyword search (Python 3.10+; a prebuilt wheel where one exists, otherwise a C compiler)
 # Keep the quotes. zsh reads [ ] as a file pattern and stops with "no matches found".
 # OCR needs tesseract, QR codes need zbar, audio and video need ffmpeg.
 
@@ -742,7 +744,7 @@ result = scanner.scan_auto("any_file.ext")
 
 | Mode | What it scans | Speed | Runs in your call? |
 |------|--------------|-------|---------------|
-| **FAST** (always on) | Text, emails, images, PDFs, QR codes | <3 seconds for typical text, images and PDFs; large files scale with size | Yes, it returns when done |
+| **FAST** (always on) | Text and emails on the base install; images, PDFs and QR codes after `pip install "sunglasses[media]"` | <3 seconds for typical text, images and PDFs; large files scale with size | Yes, it returns when done |
 | **DEEP** (on request) | Audio, video | Depends on the media length and the Whisper model | Yes, it returns when done |
 
 ## Performance
@@ -753,17 +755,19 @@ result = scanner.scan_auto("any_file.ext")
 | Scan latency, typical attack string (median of 38) | ~4.2 ms |
 | Scan latency, real README (median of 76, ~8.1 KB) | ~311 ms |
 | Sustained throughput | ~26 KB/sec, single-threaded |
-| Patterns | 1,583 |
+| Patterns | 1,512 carry a matcher (1,583 listed) |
 | Keywords | 6,964 unique declared (7,864 entries across all patterns); the pre-screen index holds 6,675 (289 generic keywords are deliberately excluded from it). `engine.info()` reports all three (`keywords_declared`, `keyword_entries`, `keywords`) |
 | Languages | English-first: full ruleset in English · 2 dedicated patterns each in 13 languages · keyword-level only in 7 · none in Persian/Bengali. [Measured breakdown](#language-coverage-measured) |
-| Attack categories | 117 |
-| Normalization techniques | 17 |
+| Attack categories | 117 listed |
+| Normalization techniques | 16 |
 | Media types | 6 (text, image, audio, video, PDF, QR) |
 | Recall and precision on the shipped benchmark | recall 97.4% (37/38), precision 86.1%, reproduce with `python3 tests/benchmark/precision_recall.py` (details in the Benchmark section below) |
 | pytest (unit tests shipped in repo) | run `python3 -m pytest -q`, the count is not published here, because a hand-maintained one drifts (it read 444 while the suite was 802) |
 | False-positive rate | **0 on the clean-code regression corpus**, which is not the same corpus as the benchmark below: on 77 real-world READMEs the scanner flags **6**, including our own. Both numbers are published on purpose. (Was 8.3% through v0.2.63 on 12 benign controls; root-caused and fixed in v0.2.64, zero-FP gate enforced in CI every release.) |
 | Core dependencies | Zero for text scan; optional deps for media |
 | Platforms | macOS and Linux supported (CI runs on Linux; macOS is tested by hand). Windows is not supported yet: signed receipts and the config transactions use `fcntl` and the proxy supervisor uses process groups, and neither exists there. The text scanner and the CLI import without `fcntl` (checked by hiding it, not on a Windows machine) but are untested there. Each of `proxy`, `doctor`, `receipts`, `install`, `uninstall` and `init` needs at least one of them. When the interpreter reports Windows or `fcntl` cannot be imported (a Python built without `fcntl` counts; process groups are not probed separately), those six stop with one plain line and exit 2 instead of a traceback, before they open, list, create, remove or rename anything under the config, home or temp directories (checked with an audit hook in a modeled interpreter, not on Windows: it sees those calls, `os.stat`, `os.lstat` and `os.access`, and descriptor-relative open, remove, mkdir, rmdir, rename, link, symlink and chmod; it does not see imports or a read through a descriptor opened before the check). For `proxy` the line also replaces `--help` and argument errors; for the other five, help and argument errors answer as usual. The bundled `python -m sunglasses.proxy.echo_server --proc FILE` refuses before it opens FILE when `os.getpgid` is missing. Windows reports are welcome. |
+
+The Patterns count is the rules that carry a regex or a keyword matcher. The ruleset lists 1,583; the other 71 carry neither. Carrying a matcher is not proof that a rule fires. `engine.info()` reports both numbers (`patterns_with_matcher` and `listed_patterns`), and `sunglasses info` prints the difference.
 
 _Performance numbers are regenerated by `tools/gen_perf_stats.py` against a public in-repo corpus (no network, no randomness) and written to `stats/current.json` with the machine and timestamp they were measured on. Reproduce with `python3 tools/gen_perf_stats.py`. Last measured 2026-08-30. Your hardware will differ._
 
@@ -787,7 +791,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.15) | Value |
+| Metric (v0.6.17) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -805,7 +809,7 @@ shipped patterns, counted from `sunglasses/patterns.py`:
 
 | tier | languages | what exists |
 |---|---|---|
-| **English** | English | the full 1,583-pattern ruleset |
+| **English** | English | the full ruleset |
 | **Dedicated patterns** | Spanish, Portuguese, French, German, Russian, Turkish, Arabic, Chinese, Japanese, Korean, Hindi, Indonesian, Vietnamese (13) | **exactly two patterns each** ("ignore previous instructions" and one credential-exfiltration shape) |
 | **Keyword-level only** | Italian, Dutch, Ukrainian, Polish, Czech, Azerbaijani, Hebrew (7) | keyword hits inside English-scoped patterns; **no dedicated pattern** |
 | **Name only** | Persian, Bengali (2) | **no dedicated pattern and no keyword** (previously listed as covered) |
@@ -820,12 +824,12 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 
 ## What Works Today
 
-- ✅ Text scanning: 1,583 patterns, 6,675 indexed keywords (6,964 declared), 117 attack categories (English-first, see [Language coverage](#language-coverage-measured))
+- ✅ Text scanning: 1,512 patterns that carry a matcher (1,583 listed), 6,675 indexed keywords (6,964 declared), 117 listed categories (English-first, see [Language coverage](#language-coverage-measured))
 - ✅ Mechanism layer: 11 shape-based rules that match an attack's *structure* rather than its wording (e.g. *something sensitive + somewhere to send it*), how well that generalises to unseen paraphrases is measured, not asserted: see [Benchmark](#benchmark-the-receipts)
-- ✅ Structural validators: a rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter-native fetches, array-form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read
-- ✅ Browser demo: [sunglasses.dev/scan](https://sunglasses.dev/scan), text, GitHub repos, and images (client-side OCR)
+- ✅ Structural validators: a rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter-native fetches, array-form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read. `GLS-STRUCT-005` reads Python (a whole Python text, or each fenced python block of a document) and reports, for review, code that prints, logs, writes or sends every environment variable with its value; one named variable, names only, a filtered loop, and shell or Node text are not reported
+- ✅ Browser demo at <https://sunglasses.dev/scan>: text, GitHub repos, and images (client-side OCR)
 - ✅ Negation handling. "Do NOT run rm -rf / --no-preserve-root" is flagged as review. "now run rm -rf / --no-preserve-root" is blocked as critical.
-- ✅ Multi-stage pipeline: normalization (17 techniques) → pattern match → decision
+- ✅ Multi-stage pipeline: normalization (16 techniques) → pattern match → decision
 - ✅ Image scanning: OCR + EXIF metadata + hidden text detection (requires Tesseract)
 - ✅ PDF scanning: page text, metadata and annotations. PDF results are partial for embedded or visual content; do not treat a clean PDF result as full assurance.
 - ✅ QR code scanning: decode and scan content (requires pyzbar)
@@ -843,7 +847,7 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 
 ## The Firewall, from detector to control (v0.4)
 
-Everything above this line *detects*. The firewall *stops*. It installs as a
+Everything above this line *reports*. The firewall *stops*. It installs as a
 Claude Code `PreToolUse` hook and answers one question before every tool call (**best-effort**: the hook runs under a 10-second timeout, and Claude Code lets a timed-out hook's tool call proceed, so on the pathological input shapes described in [KNOWN_VERSION_GAPS.md](KNOWN_VERSION_GAPS.md) a call can go through unscanned):
 **does this action violate a fact we can prove?**
 
@@ -1286,7 +1290,7 @@ See [sunglasses.dev/thesis](https://sunglasses.dev/thesis.html) for our security
 
 ## License
 
-[MIT](LICENSE). Use it anywhere (personal, commercial, enterprise). Paid review, by scope call: [sunglasses.dev/pricing](https://sunglasses.dev/pricing).
+[MIT](LICENSE). Use it anywhere (personal, commercial, enterprise). Paid review, by scope call: <https://sunglasses.dev/pricing>
 
 ## Links
 

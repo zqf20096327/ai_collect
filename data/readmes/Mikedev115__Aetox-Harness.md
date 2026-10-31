@@ -279,7 +279,7 @@ update does not take: [the update guide](docs/UPDATING.md).
 - **What enforces it** — these rules are checks inside Aetox's own code, not an operating-system sandbox. For a
   machine with data you cannot lose, give Aetox an API key of its own and run it in a VM or Windows Sandbox.
 
-[Safety in detail](https://mikedev115.github.io/Aetox-landing/safety/)
+[Safety in detail](https://mikedev115.github.io/Aetox-landing/safety/) · Found a security problem? [SECURITY.md](SECURITY.md) says how to report it privately.
 
 ## Source, licence and who makes it
 
@@ -292,7 +292,7 @@ the app's update key, and releases built after 21 Oct 2026 also carry `sbom.txt`
 built into it. The Go part can be checked against the binary itself with `go version -m aetox.exe`. The Microsoft
 Store build is signed by Microsoft.
 
-Aetox is written by one person. Questions and ideas: the [Facebook group](https://www.facebook.com/share/g/1BnXC5EiWg/).
+Aetox is written by one person. The community lives in the [Facebook group](https://www.facebook.com/share/g/1BnXC5EiWg/) — questions and ideas go there. News and release announcements go to [Discussions](https://github.com/Mikedev115/Aetox/discussions) and [Releases](https://github.com/Mikedev115/Aetox/releases).
 Bugs: [issues](https://github.com/Mikedev115/Aetox/issues) — **Settings** in the app prefills one with your
 version and a log with secrets already stripped. ❤️ [Support the project](SPONSOR.md)
 

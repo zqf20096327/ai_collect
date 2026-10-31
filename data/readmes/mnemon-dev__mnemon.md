@@ -68,6 +68,8 @@ Browse the knowledge accumulated by your agents in a standalone local website:
 ```sh
 mnemon web
 # Open http://127.0.0.1:8484
+
+Optional: [shared Memory service and paper strategy](docs/memory-service.md), with [composable records indexes](docs/records-indexes.md).
 ```
 
 Explore a searchable memory library, readable memory pages, a relationship graph,
@@ -301,6 +303,26 @@ One command deploys the mnemon skill, prompt files, and Hermes shell hooks to
 `on_session_finalize`. Hermes may prompt once to approve the installed shell
 hooks.
 
+### [Alma](https://alma.now)
+
+```bash
+mnemon setup --target alma --yes
+```
+
+One command deploys the mnemon skill, a `mem` shim, and a single `app.ready`
+hook to `~/.config/alma/`. Alma's hook stdout is not injected into the model
+context — only `decision`, `reason`, and `updatedInput` from the last JSON line
+are consumed — so the integration is deliberately shaped differently from the
+lifecycle-hook targets: the hook does one job (refresh a generated block inside
+`MEMORY.md`, which Alma already injects into its system prompt every request),
+and recall is left to the model through the skill. The block is delimited by
+`<!-- mnemon:begin -->` / `<!-- mnemon:end -->` and everything outside those
+markers is preserved byte for byte, because Alma's own prompt tells the model to
+write to the same file.
+
+Alma has no project-local hook configuration, so this target is user-global
+only.
+
 ### [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 DeepSeek Harness (DSH) integrates through the [dsh-mnemon](https://github.com/omdsh-dev/dsh-mnemon) plugin, which layers DSH's runtime memory, managed project documents, and Mnemon's long-term memory spaces into one supervised three-tier memory system.
@@ -399,7 +421,7 @@ memory is useful.
 
 - **Zero user-side operation** — install once; supported runtimes can use hooks, minimal runtimes can use persistent rules
 - **LLM-supervised** — the host LLM decides what to remember, update, and forget; no embedded LLM, no API keys
-- **Multi-framework support** — Claude Code, Codex, Cursor, ZCode, TRAE/TRAE Work, Qoder/QoderWork, CodeBuddy, WorkBuddy, Kimi Code, OpenCode, and Hermes Agent (hooks/plugins), OpenClaw (plugins), Pi (extensions), MiniMax Code and Nanobot (skills), DeepSeek Harness (via the dsh-mnemon plugin), and more
+- **Multi-framework support** — Claude Code, Codex, Cursor, ZCode, TRAE/TRAE Work, Qoder/QoderWork, CodeBuddy, WorkBuddy, Kimi Code, OpenCode, and Hermes Agent (hooks/plugins), OpenClaw (plugins), Pi (extensions), Alma (skill + `app.ready` hook), MiniMax Code and Nanobot (skills), DeepSeek Harness (via the dsh-mnemon plugin), and more
 - **Runtime-native integration** — runtime-specific `SKILL.md`, shared `guide.md`, and supported hooks or extensions
 - **Four-graph architecture** — temporal, entity, causal, and semantic edges, not just vector similarity
 - **Intent-native protocol** — three primitives (`remember`, `link`, `recall`) map to the LLM's cognitive vocabulary, not database syntax; structured JSON output with signal transparency
@@ -562,15 +584,38 @@ make help           # show all targets
 
 See [Development and Deployment](docs/DEPLOYMENT.md) for Docker, Compose, Ollama embedding, and release setup.
 
+## Optional Memory Agent and AML backend
+
+The [Memory Agent](docs/memory-service.md) exposes the v0.3.4 AML evaluation
+engine through explicit `mnemon memory-agent ...` commands. It stores original
+records, builds a source-linked memory index, and returns evidence for an agent
+to answer from. Reads and consolidation require separately configured models.
+
+Existing `remember`, `recall`, `search`, `setup`, hooks, and the Web library keep
+using native Memory and `mnemon.db`. No automatic migration, model activation,
+or switch of the default engine is performed. Build this branch to use the new
+commands; opening a PR does not update the published CLI or npm release.
+
+`mnemon memory-agent aml-serve` adds the AML Add/Search API with per-user stores,
+bounded background consolidation, authentication and budgets. Its operational
+surface includes readiness, metrics, redacted logs, traces and read-only
+inspection. See the [AML adapter runbook](docs/aml-adapter.md),
+[Admin API](docs/admin-api.md), and [Inspect API](docs/inspect-api.md).
+The separate hosted console, frontend UI/UX, design prototypes and private
+evaluation data are outside this source snapshot.
+
 ## Documentation
 
 - [Agency Preview](docs/AGENCY.md) — maturity boundary, Pi setup, operating model, completion semantics, and optional peers
 - [Go Engineering Standard](docs/development/go-engineering-standard.md) — maintainability, concurrency, persistence, testing, and review thresholds
 - [Design & Architecture](docs/DESIGN.md) — current engine architecture, algorithms, integration design
 - [Memory Usage & Reference](docs/USAGE.md) — root Memory commands, import, receipts, and embedding support
+- [Optional Memory Agent](docs/memory-service.md) — v0.3.4 baseline, explicit configuration, records and evidence Views
 - [Memory Import Guide](docs/IMPORT.md) — schema and LLM prompt for importing historical chats
 - [Architecture Diagrams](docs/diagrams/) — system architecture, pipelines, lifecycle management
 - [Memory Agent (experimental)](experimental/memory-agent/) — research preview of Mnemon as a memory agent on DSH, with Jev as its System 1 decision model; paper, code and run records
+- [AML adapter runbook](docs/aml-adapter.md) — the Agent Memory Leaderboard service as memory cloud instances: install, open, operate, alerts, data deletion
+- [Admin API](docs/admin-api.md) — an instance's admin listener: token, private bind, metrics, readiness, status and store overview
 
 ## Star History
 

@@ -1,7 +1,4 @@
 # rclip – grep for images
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [[Blog]](https://mikhalevi.ch/rclip-an-ai-powered-command-line-photo-search-tool/) [[Demo on YouTube]](https://www.youtube.com/watch?v=tAJHXOkHidw) [[Paper]](https://www.thinkmind.org/index.php?view=article&articleid=content_2023_1_20_60011)
 
@@ -204,10 +201,10 @@ rclip -p kitty
   If you use another terminal or want to open the results in a viewer of your choice, you can pipe **rclip**'s output into it. For example, on Linux, the command below will open the top 5 results for "kitty" in your default image viewer:
 
   ```bash
-  rclip -f -t 5 kitty | xargs -d '\n' -n 1 xdg-open
+  rclip -0 -t 5 kitty | xargs -0 -n 1 xdg-open
   ```
 
-  The `-f` or `--filepath-only` flag makes **rclip** print only file paths, without scores or the header, which makes it ideal for use with a custom viewer as in the example.
+  The `-0` or `--null` flag makes **rclip** print only file paths, each terminated by a NUL character, which `xargs -0` splits correctly even when paths contain spaces, quotes, or newlines. The `-f` or `--filepath-only` flag prints one path per line instead, which suits tools that read paths line by line, such as **feh**.
   
   I prefer to use **feh**'s thumbnail mode to preview multiple results:
 
@@ -221,7 +218,16 @@ rclip -p kitty
 Yes. You can pipe **rclip**'s output to another tool to copy matching images. For example, to copy the top 3 images matching "search query" to `/path/to/destination` on macOS, Linux, or WSL:
 
 ```sh
-rclip -f -t 3 "search query" | xargs -I {} cp {} /path/to/destination
+rclip -0 -t 3 "search query" | xargs -0 -I {} cp {} /path/to/destination
+```
+
+### Can I use **rclip** from scripts and AI agents?
+
+Yes. Pass `--json` to get results as a JSON array, ordered from the best match. Progress and warnings go to stderr, so stdout contains only the JSON:
+
+```bash
+rclip --json -t 2 "search query"
+# [{"score": 0.297, "filepath": "/photos/sunrise-beach.jpg"}, {"score": 0.286, "filepath": "/photos/dawn-walk.png"}]
 ```
 
 ### How does **rclip** update the index?
@@ -252,11 +258,13 @@ Run `rclip --help` (or `rclip -h`) to see this list in your terminal. The positi
 | `--add`, `-a`, `+` `QUERY` | A text query or a path/URL to an image file to add to the "original" query. Can be used multiple times. |
 | `--subtract`, `--sub`, `-s`, `-` `QUERY` | A text query or a path/URL to an image file to subtract from the "original" query. Can be used multiple times. |
 | `--top`, `-t` `N` | Number of top results to display, or search results to load per batch with `--interactive`. Default: `10`, or `100` with `--interactive`; interactive maximum: `100`. |
-| `--interactive`, `-i` | Open the interactive terminal UI and enter text queries there. Does not accept a positional query or `--add`/`--subtract`. Mutually exclusive with `--preview` and `--filepath-only`. |
+| `--interactive`, `-i` | Open the interactive terminal UI and enter text queries there. Does not accept a positional query or `--add`/`--subtract`. Mutually exclusive with `--preview`, `--filepath-only`, `--null`, and `--json`. |
 | `--force-interactive` | Force interactive mode even if the terminal is not recognized as supporting Kitty graphics with Unicode placeholders. |
-| `--preview`, `-p` | Preview results in the terminal using Kitty graphics (e.g. Kitty, Ghostty, latest iTerm2, Konsole). Mutually exclusive with `--filepath-only`. |
+| `--preview`, `-p` | Preview results in the terminal using Kitty graphics (e.g. Kitty, Ghostty, latest iTerm2, Konsole). Mutually exclusive with `--filepath-only`, `--null`, and `--json`. |
 | `--force-preview` | Force image previews even if the terminal is not recognized as supporting Kitty graphics. |
 | `--filepath-only`, `-f` | Output only filepaths, without scores or the header. Mutually exclusive with `--preview`. |
+| `--null`, `-0` | Output only filepaths, each terminated by a NUL character instead of a newline, for `xargs -0`. Mutually exclusive with `--preview`, `--filepath-only`, and `--json`. |
+| `--json` | Output results as a JSON array of `{"score": ..., "filepath": ...}` objects, ordered from the best match. Mutually exclusive with `--preview`, `--filepath-only`, and `--null`. |
 | `--preview-height`, `-H` `PX` | Preview height in pixels. Default: `400`. |
 | `--no-indexing`, `--skip-index`, `--skip-indexing`, `-n` | Skip updating the index. Use only when no images were added, changed, or removed since the last run. |
 | `--indexing-batch-size`, `-b` `N` | The size of the image batch used when updating the search index. Larger values may slightly improve indexing speed on some hardware but increase RAM usage. Default: `8`. |
@@ -272,6 +280,8 @@ Run `rclip --help` (or `rclip -h`) to see this list in your terminal. The positi
 https://github.com/yurijmikhalevich/rclip/discussions/new/choose
 
 ## Contributing
+
+Thank you to everyone who has [contributed to rclip](https://github.com/yurijmikhalevich/rclip/graphs/contributors)!
 
 This repository follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
 
@@ -290,36 +300,6 @@ uv sync
 ```
 
 Then use `uv run rclip`, as described in the [Usage](#usage) section above.
-
-## Contributors ✨
-
-Thanks go to these wonderful people and organizations ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ramayer"><img src="https://avatars.githubusercontent.com/u/72320?v=4?s=100" width="100px;" alt="ramayer"/><br /><sub><b>ramayer</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=ramayer" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://www.caphyon.com"><img src="https://avatars.githubusercontent.com/u/15829334?v=4?s=100" width="100px;" alt="Caphyon"/><br /><sub><b>Caphyon</b></sub></a><br /><a href="#infra-Caphyon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://abidkhan484.github.io"><img src="https://avatars.githubusercontent.com/u/15053047?v=4?s=100" width="100px;" alt="AbId KhAn"/><br /><sub><b>AbId KhAn</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=abidkhan484" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://cl4r1ty.dev"><img src="https://avatars.githubusercontent.com/u/136800640?v=4?s=100" width="100px;" alt="Ben"/><br /><sub><b>Ben</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=Cl4r1ty-1" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://techtracer.pages.dev"><img src="https://avatars.githubusercontent.com/u/48885301?v=4?s=100" width="100px;" alt="Tanmay Chaudhari"/><br /><sub><b>Tanmay Chaudhari</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=tanmayc07" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://leoauri.com"><img src="https://avatars.githubusercontent.com/u/10868855?v=4?s=100" width="100px;" alt="Leo Auri"/><br /><sub><b>Leo Auri</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=leoauri" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SergeyKarleev"><img src="https://avatars.githubusercontent.com/u/8651755?v=4?s=100" width="100px;" alt="SergeyKarleev"/><br /><sub><b>SergeyKarleev</b></sub></a><br /><a href="https://github.com/yurijmikhalevich/rclip/commits?author=SergeyKarleev" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-Thanks to [Caphyon](https://github.com/Caphyon) and the Advanced Installer team for generously supplying the **rclip** project with the Professional Advanced Installer license for creating the Windows installer.
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
 
 ## Distribution compliance
 

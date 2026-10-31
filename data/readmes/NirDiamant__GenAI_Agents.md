@@ -41,7 +41,7 @@ Welcome to one of the most extensive and dynamic collections of Generative AI (G
 
 </div>
 
-> **Recently added:** Read vs Write: What One AI Answer Costs, Trace-Based Agent Evaluation, Human-in-the-Loop Approval Agent, Document Intake Agent, HR AI Assistant | **57 tutorials** and growing
+> **Recently added:** Thinking Budgets From Scratch, Reflection From Scratch, Plan Then Execute From Scratch, Skills From Scratch, Designing Tools for Agents | **64 tutorials** and growing
 
 ## 📫 Stay Updated!
 
@@ -169,7 +169,28 @@ Contributions make this better - propose ideas, share techniques, or give feedba
 
 Below is a comprehensive overview of our GenAI agent implementations, organized by category and functionality. Each implementation is designed to showcase different aspects of AI agent development, from basic conversational agents to complex multi-agent systems.
 
-> **Updated 2026-10-30:** most of the use-case notebooks below were contributed in late 2024. They now import cleanly on LangChain 1.x and LangGraph 1.x, and model IDs that providers have retired (gpt-3.5-turbo, gpt-4, DALL-E 3, Gemini 1.5, Claude 3, older Groq Llama models) were replaced with current ones. Each notebook still needs its own API keys, and not every notebook was run end to end against live services.
+> **Updated 2026-10-31:** most of the use-case notebooks below were contributed in late 2024. They now import cleanly on LangChain 1.x and LangGraph 1.x, and model IDs that providers have retired or scheduled for retirement (gpt-3.5-turbo, gpt-4, gpt-4o, gpt-4o-mini, DALL-E 3, Gemini 1.5, Claude 3, older Groq Llama models) were replaced with current ones. Each notebook still needs its own API keys, and not every notebook was run end to end against live services.
+
+### 🧭 Start here: the 2026 core patterns
+
+New to agents, or coming back after the 2024 notebooks? These teach one pattern each, in the order a build needs them, and most are plain Python plus one SDK, so they keep running when frameworks change. The newest ones score every run against planted answers and report what the pattern did not fix as well as what it did. The chapter numbers are from [*AI Agents Made Simple*](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=start-here-book&target=https%3A%2F%2Fwww.amazon.com%2Fdp%2FB0HNXRSRH2%3Fmaas%3Dmaas_adg_api_580351185840460851_static_9_573%26ref_%3Daa_maas%26tag%3Dmaas%26aa_campaignid%3Dagents-en%26aa_adgroupid%3Dgithub-readme%26aa_creativeid%3Dgenai-start-here&retarget=0&text=start-here-book), which explains the decisions behind each pattern without code.
+
+| Ch. | Pattern | Notebook |
+|-----|---------|----------|
+| 1 | Do you need an agent? Route first | [One-Step Decision Router](all_agents_tutorials/one_step_decision_router.ipynb) |
+| 2 | The agent loop | [Agent From Scratch: The While Loop](all_agents_tutorials/agent_while_loop_from_scratch.ipynb) |
+| 3 | Workflows before agents | [Workflows First: Gated Contract Review](all_agents_tutorials/workflows_first_from_scratch.ipynb) |
+| 5 | Tools designed for a model | [Designing Tools for Agents](all_agents_tutorials/designing_tools_for_agents.ipynb) |
+| 10 | Skills loaded on demand | [Skills From Scratch](all_agents_tutorials/skills_from_scratch.ipynb) |
+| 11 | Context engineering | [Context Engineering From Scratch](all_agents_tutorials/context_engineering_from_scratch.ipynb) |
+| 12 | Evals from traces | [Trace-Based Agent Evaluation](all_agents_tutorials/trace_based_agent_evaluation.ipynb) |
+| 15 | Humans in the loop | [Human-in-the-Loop Approval Agent](all_agents_tutorials/human_in_the_loop_approval_agent.ipynb) |
+| 16 | What an answer costs | [Read vs Write: What One AI Answer Costs](all_agents_tutorials/read_vs_write_cost.ipynb) |
+| 18 | Plan, then execute | [Plan Then Execute From Scratch](all_agents_tutorials/plan_then_execute_from_scratch.ipynb) |
+| 19 | Reflection with a real check | [Reflection From Scratch](all_agents_tutorials/reflection_from_scratch.ipynb) |
+| 20 | Thinking budgets and search | [Thinking Budgets From Scratch](all_agents_tutorials/thinking_budgets_from_scratch.ipynb) |
+
+Chapter 27, from a while loop to a harness, is planned as a community notebook ([#160](https://github.com/NirDiamant/GenAI_Agents/issues/160)).
 
 <table width="100%">
   <tr style="background-color:#FBF3DB">
@@ -241,6 +262,12 @@ Below is a comprehensive overview of our GenAI agent implementations, organized 
 | 56 | 🔍 **QA**         | [One-Step Decision Router](all_agents_tutorials/one_step_decision_router.ipynb) | Transformers | Decision from one forward pass, calibration check, temperature scaling, confidence gate |
 | 57 | 🎓 **Educational** | [Read vs Write: What One AI Answer Costs](all_agents_tutorials/read_vs_write_cost.ipynb) | Transformers | Prefill vs decode timing, memory-bandwidth check, KV-cache growth, batching, optional power metering |
 | 58 | 🎓 **Educational** | [Context Engineering From Scratch](all_agents_tutorials/context_engineering_from_scratch.ipynb) | Pure Python + OpenAI | Tokens per layer, clearing used tool results, the prompt-cache trade-off, a scored before/after |
+| 59 | 🎓 **Educational** | [Workflows First: Gated Contract Review](all_agents_tutorials/workflows_first_from_scratch.ipynb) | Pure Python + OpenAI | Gated workflow vs agent, planted broken files, cost and run-to-run spread, scored exactly |
+| 60 | 🎓 **Educational** | [Designing Tools for Agents](all_agents_tutorials/designing_tools_for_agents.ipynb) | Pure Python + OpenAI | Thin API wrapper vs model-designed tools: planted refund tickets, idempotent writes, instructive errors |
+| 61 | 🎓 **Educational** | [Skills From Scratch](all_agents_tutorials/skills_from_scratch.ipynb) | Pure Python + OpenAI | Skill folders, progressive disclosure vs stuffed prompt at 3/10/30 procedures, trigger tests, poisoned skill |
+| 62 | 🎓 **Educational** | [Plan Then Execute From Scratch](all_agents_tutorials/plan_then_execute_from_scratch.ipynb) | Pure Python + OpenAI | Planner, plan checks, assumption-triggered replans; injection test; step-by-step comparison with measured costs |
+| 63 | 🎓 **Educational** | [Reflection From Scratch](all_agents_tutorials/reflection_from_scratch.ipynb) | Pure Python + OpenAI | Self-review vs skeptical reviewer vs failing tests, evidence gate, fixes vs regressions, hidden tests |
+| 64 | 🎓 **Educational** | [Thinking Budgets From Scratch](all_agents_tutorials/thinking_budgets_from_scratch.ipynb) | Pure Python + OpenAI | Reasoning effort none-to-high vs checked retries, vote, picker and cascade on scored SQL |
 
 Explore our extensive list of GenAI agent implementations, sorted by categories:
 
@@ -423,7 +450,7 @@ Explore our extensive list of GenAI agent implementations, sorted by categories:
     An advanced text-to-speech (TTS) agent using LangGraph and OpenAI's APIs classifies input text, processes it based on content type, and generates corresponding speech output.
 
     #### Implementation 🛠️
-    Utilizes LangGraph to orchestrate a workflow that classifies input text using GPT models, applies content-specific processing, and converts the processed text to speech using OpenAI's TTS API. The system adapts its output based on the identified content type (general, poem, news, or joke).
+    Utilizes LangGraph to orchestrate a workflow that classifies input text using GPT models, applies content-specific processing, and converts the processed text to speech using OpenAI's Realtime API (gpt-realtime-2.1-mini). The system adapts its output based on the identified content type (general, poem, news, or joke).
 
 18. **[Music Compositor Agent (LangGraph)](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/music_compositor_agent_langgraph.ipynb)**
    
@@ -523,10 +550,10 @@ Explore our extensive list of GenAI agent implementations, sorted by categories:
 28. **[Sales Call Analyzer](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/sales_call_analyzer_agent.ipynb)**
     
     #### Overview 🔎
-    An intelligent system that automates the analysis of sales call recordings by combining audio transcription with advanced natural language processing. The analyzer transcribes audio using OpenAI's Whisper, processes the text using NLP techniques, and generates comprehensive reports including sentiment analysis, key phrases, pain points, and actionable recommendations to improve sales performance.
+    An intelligent system that automates the analysis of sales call recordings by combining audio transcription with advanced natural language processing. The analyzer transcribes audio using OpenAI's gpt-transcribe, processes the text using NLP techniques, and generates comprehensive reports including sentiment analysis, key phrases, pain points, and actionable recommendations to improve sales performance.
 
     #### Implementation 🛠️
-    Utilizes multiple components in a structured workflow: OpenAI Whisper for audio transcription, CrewAI for task automation and agent management, and LangChain for orchestrating the analysis pipeline. The system processes audio through a series of steps from transcription to detailed analysis, leveraging custom agents and tasks to generate structured JSON reports containing insights about customer sentiment, sales opportunities, and recommended improvements.
+    Utilizes multiple components in a structured workflow: OpenAI's gpt-transcribe for audio transcription, CrewAI for task automation and agent management, and LangChain for orchestrating the analysis pipeline. The system processes audio through a series of steps from transcription to detailed analysis, leveraging custom agents and tasks to generate structured JSON reports containing insights about customer sentiment, sales opportunities, and recommended improvements.
 
     #### Additional Resources 📚
     - **[YouTube Explanation](https://www.youtube.com/watch?v=SKAt_PvznDw)**
@@ -754,7 +781,7 @@ Explore our extensive list of GenAI agent implementations, sorted by categories:
     A LangGraph agent that accepts arbitrary incoming files (docx, pptx, xlsx, pdf and more), routes them against a live formats list, converts them to faithful LLM-ready markdown through a hosted conversion API, and answers questions grounded in the converted document instead of a lossy text scrape.
 
     #### Implementation 🛠️
-    Uses a deterministic conditional edge for format routing (a lookup, not an LLM call), a submit-upload-poll-download client as the conversion tool, and gpt-4o-mini as a grounded analyst. Includes a naive-extraction comparison showing why tables and reading order survive conversion but not scraping, plus a one-block MCP config that gives Claude Code and Cursor the same capability.
+    Uses a deterministic conditional edge for format routing (a lookup, not an LLM call), a submit-upload-poll-download client as the conversion tool, and gpt-6-luna as a grounded analyst. Includes a naive-extraction comparison showing why tables and reading order survive conversion but not scraping, plus a one-block MCP config that gives Claude Code and Cursor the same capability.
 
 52. **[Social Media Publishing Agent (Publora + LangGraph)](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/social_media_publishing_agent_publora_langgraph.ipynb)**
 
@@ -770,7 +797,7 @@ Explore our extensive list of GenAI agent implementations, sorted by categories:
     A safe tool-using agent that executes low-risk reads automatically but pauses consequential writes before any side effect. Reviewers can approve, reject, or replace arguments, with every transition recorded for audit.
 
     #### Implementation 🛠️
-    Combines deterministic risk and argument policies with LangGraph interrupts and a notebook-local LangGraph 0.2.76 dependency. Its `InMemorySaver` supports resume only during the Python process lifetime; production restart recovery requires a persistent checkpointer. The tutorial verifies that paused and rejected actions never execute and that reviewer-edited arguments are revalidated.
+    Combines deterministic risk and argument policies with LangGraph 1.x interrupts. Its `InMemorySaver` supports resume only during the Python process lifetime; production restart recovery requires a persistent checkpointer. The tutorial verifies that paused and rejected actions never execute and that reviewer-edited arguments are revalidated.
 
 54. **[Trace-Based Agent Evaluation without an LLM Judge](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/trace_based_agent_evaluation.ipynb)**
 
@@ -821,6 +848,54 @@ Explore our extensive list of GenAI agent implementations, sorted by categories:
     #### Implementation 🛠️
     Plain Python and the OpenAI API, no framework. 30 synthetic reports with 11 planted violations and a near-miss in each, a structured answer per report, a ten-line clearing step that swaps a used report for a one-line finding, a batched variant that protects the prompt cache, and an aside showing why the false alarms are fixed in code rather than in the context.
 
+59. **[Workflows First: A Gated Contract Review, Measured Against an Agent](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/workflows_first_from_scratch.ipynb)**
+
+    #### Overview 🔎
+    One supplier-contract review, built three ways: a three-step chain, an agent that picks its own steps, and the same chain with code gates between the steps. All three are scored over repeated runs against 18 synthetic files with planted terms, near misses and five files a person must see. Without gates, the chain wrote clean "no flags" memos for all five. The gated workflow caught 4 of the 5 in every run, at about 40% of the agent's cost and half its time per file, while the agent caught 3 or 4 but read an unusual liability clause better. Neither caught a contract from the wrong supplier until a new gate was added, which then caught it in every saved run with zero model calls.
+
+    #### Implementation 🛠️
+    Plain Python and the OpenAI Responses API, no framework. The workflow has a text-layer gate before any model call, a structured extraction with quoted evidence, a sanity and grounding gate with one retry, the policy rules in code, and a memo call. The agent gets the same policy plus read, check-quote and submit tools.
+
+60. **[Designing Tools for Agents: Fix a Refund Agent Without Touching Its Prompt](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/designing_tools_for_agents.ipynb)**
+
+    #### Overview 🔎
+    A support agent resolves 10 refund tickets against a fake store with planted answers, and only its tools change between runs. A thin wrapper generated from the internal API resolved 18 of 30 runs and refunded twice after timeouts. The same wrapper with better descriptions resolved 24 and stopped the double refunds, but the model still could not convert dates to unix timestamps (0 of 48 in the right year). Four tools designed for the model resolved all 30.
+
+    #### Implementation 🛠️
+    Plain Python and the OpenAI SDK with gpt-5.4-mini in a bare tool loop, scored against the store's final state. Four tool sets share one internal API with planted faults: a refund that answers after the tool's timeout, and a search that fails with 200 OK.
+
+61. **[Skills From Scratch: Load a Support Agent's Procedures Only When a Ticket Needs Them](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/skills_from_scratch.ipynb)**
+
+    #### Overview 🔎
+    A support agent with 30 procedures runs 36 tickets with planted answers two ways: every procedure in the system prompt, or one description line per skill with the body loaded through a tool. At 30 procedures, skills cut each call from 10,032 to 2,120 input tokens but cost about 70% more ($3.38 vs $1.98 per 1,000 tickets), because the long prompt was 87% cached and the short one was not, and accuracy did not clearly differ. What broke skill selection was the description: one insistent description pulled its skill into both duplicate-charge tickets in all three runs, and a planted line in a downloaded skill passed a code scanner and reached all six replies.
+
+    #### Implementation 🛠️
+    Plain Python and the OpenAI SDK: skills are SKILL.md folders read at session start, a load_skill tool appends a body on demand, and a strict submit tool makes every answer exactly gradable. It adds a trigger test with near misses, a pattern scanner, and a reply hook that blocks unknown links.
+
+62. **[Plan Then Execute From Scratch: Lock In a Workspace Migration Before the Agent Reads Anything](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/plan_then_execute_from_scratch.ipynb)**
+
+    #### Overview 🔎
+    An account agent migrates a design team between workspaces on a fake admin API with planted ground truth, once choosing each step after the last result and once writing the whole plan first for code to check and run. With one instruction planted in a project description, the step-by-step agent emailed the member list to an outside address in 3 of 8 runs (17 of 32 over four runs), and the planned agent in none. Accuracy tied at 6 of 8, the plan cost about 3x per run ($0.0120 vs $0.0038), and it lost on support tickets whose fix depends on what a lookup finds (4 of 6 fixed vs 6 of 6).
+
+    #### Implementation 🛠️
+    Plain Python and the OpenAI SDK with gpt-5.4-mini. The planner writes items with done-conditions and assumptions, then code checks the plan, runs it, compares every result with what later items assume, and replans only the remaining items while showing the replanner trusted counts and ids only. An ablation reruns the same plans with every check switched off.
+
+63. **[Reflection From Scratch: Who Should Critique the Code an Agent Writes](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/reflection_from_scratch.ipynb)**
+
+    #### Overview 🔎
+    A coding agent implements 12 billing and ops tickets three times each, and hidden tests grade all 36 functions. Each function then gets a second pass from four critics: its own self-review, a fresh skeptical reviewer, the same reviewer behind an evidence gate, and the failing check tests. Self-review moved the score by one function and approved 5 of the 7 it left wrong. The ungated reviewer reported about four problems per function on mostly correct code. The failing tests cost about a tenth as much as that reviewer and never broke a correct function in three runs.
+
+    #### Implementation 🛠️
+    Plain Python and the OpenAI API, no framework. Model code runs in a subprocess, each failure becomes a one-line critique, every critic shares one reviser and a three-round budget, and an evidence gate runs each reviewer finding before it reaches the reviser.
+
+64. **[Thinking Budgets From Scratch: When a Finance Data Agent Should Think Longer, Retry, or Check](https://github.com/NirDiamant/GenAI_Agents/blob/main/all_agents_tutorials/thinking_budgets_from_scratch.ipynb)**
+
+    #### Overview 🔎
+    A finance data agent writes one SQL query per question over a synthetic subscription warehouse with planted traps, and every answer is scored exactly against an answer key. Raising reasoning effort from none to low lifted the medium questions from 1 to 5 of 6. Higher levels bought nothing more on easy and medium questions, and could not fix a definition the hard questions misread. A low-effort attempt plus a ledger check, escalating to high only when the check failed, got 17 of 18 right with no wrong answers, at about 60% of the cost of using high everywhere.
+
+    #### Implementation 🛠️
+    Plain Python, sqlite3 and the OpenAI SDK with gpt-5.4-mini. It sweeps the effort levels and logs the reasoning tokens, cost and latency the API reports, runs best-of-5 search with three ways of picking a winner (vote, model picker, check), and replays a cascade from the logged calls. Deliberately misread versions of the answer key diagnose each wrong answer and expose what the check cannot see.
+
 ### 🌟 Special Advanced Technique 🌟
 
 45. **[Sophisticated Controllable Agent for Complex RAG Tasks 🤖](https://github.com/NirDiamant/Controllable-RAG-Agent)**
@@ -862,7 +937,7 @@ def run_agent(user_input: str) -> str:
 
 ---
 ## Prerequisites
-- Python 3.9+
+- Python 3.11+ (the shared `requirements.txt` is tested on 3.11)
 - Docker installed and running (required for some agents and setup)
 
 ## Getting Started
@@ -873,11 +948,15 @@ To begin exploring and building GenAI agents:
    ```
    git clone https://github.com/NirDiamant/GenAI_Agents.git
    ```
-2. Navigate to the technique you're interested in:
+2. Install the shared dependencies (individual notebooks install anything extra in their first cell):
+   ```
+   pip install -r requirements.txt
+   ```
+3. Navigate to the technique you're interested in:
    ```
    cd all_agents_tutorials/technique-name
    ```
-3. Follow the detailed implementation guide in each technique's notebook.
+4. Follow the detailed implementation guide in each technique's notebook.
 
 ## 📚 Recommended reading
 
@@ -891,7 +970,9 @@ To begin exploring and building GenAI agents:
 
 ---
 
-## 📚 More from the same author
+## 📚 More from DiamantAI
+
+**[AI Agents Made Simple](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=book-footer-agents&target=https%3A%2F%2Fwww.amazon.com%2Fdp%2FB0HNXRSRH2%3Fmaas%3Dmaas_adg_api_580351185840460851_static_9_573%26ref_%3Daa_maas%26tag%3Dmaas%26aa_campaignid%3Dagents-en%26aa_adgroupid%3Dgithub-readme%26aa_creativeid%3Dgenai-book-footer-agents&retarget=0&text=book-footer-agents)** - the companion book to this repo: when each agent pattern is worth it, what breaks, and what it costs.
 
 **[Agent Memory Made Simple](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=book-footer-am&target=https%3A%2F%2Fwww.amazon.com%2Fdp%2FB0HCRMGHCM%3Fmaas%3Dmaas_adg_api_580351185840460851_static_9_573%26ref_%3Daa_maas%26tag%3Dmaas%26aa_campaignid%3Dam-en%26aa_adgroupid%3Dgithub-readme%26aa_creativeid%3Dgenai-book-footer-am&retarget=0&text=book-footer-am)** - the visual guide to memory for AI agents: 30 techniques, zero code required.
 
@@ -902,6 +983,10 @@ To begin exploring and building GenAI agents:
 *To hear when the next book comes out, [follow the author on Amazon](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=author-follow-amazon&target=https%3A%2F%2Fwww.amazon.com%2Fstores%2FNir-Diamant%2Fauthor%2FB0DZMTVQHJ&retarget=0&text=author-follow-amazon).*
 
 *Run a course, newsletter, or dev community? You can [earn 25% recommending RAG Made Simple](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=affiliate-signup&target=https%3A%2F%2Fnirdiamant.gumroad.com%2Faffiliates&retarget=0&text=affiliate-signup) to your audience.*
+
+**More repos:** [RAG Techniques](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-rag-techniques&target=https%3A%2F%2Fgithub.com%2FNirDiamant%2FRAG_Techniques&retarget=0&text=footer-rag-techniques) · [Agents Towards Production](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-agents-towards-production&target=https%3A%2F%2Fgithub.com%2FNirDiamant%2Fagents-towards-production&retarget=0&text=footer-agents-towards-production) · [Prompt Engineering](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-prompt-engineering&target=https%3A%2F%2Fgithub.com%2FNirDiamant%2FPrompt_Engineering&retarget=0&text=footer-prompt-engineering) · [Agent Memory Techniques](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-agent-memory-techniques&target=https%3A%2F%2Fgithub.com%2FNirDiamant%2FAgent_Memory_Techniques&retarget=0&text=footer-agent-memory-techniques)
+
+**Follow along:** [Newsletter](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-newsletter&target=https%3A%2F%2Fnewsletter.diamant-ai.com&retarget=0&text=footer-newsletter) · [YouTube](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-youtube&target=https%3A%2F%2Fwww.youtube.com%2F%40DiamantAI&retarget=0&text=footer-youtube) · [Discord](https://discord.gg/cA6Aa4uyDX) · [Website](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-website&target=https%3A%2F%2Fdiamant-ai.com&retarget=0&text=footer-website) · [Course](https://europe-west1-rag-techniques-views-tracker.cloudfunctions.net/rag-techniques-tracker?notebook=genai-agents--readme&click=footer-course&target=https%3A%2F%2Fdiamant-ai.com%2Fcourses&retarget=0&text=footer-course)
 
 ## Contributing
 

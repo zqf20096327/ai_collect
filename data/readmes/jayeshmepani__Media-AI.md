@@ -1,49 +1,82 @@
 # 🎨 Ultimate AI Media Generation Tools Master List (2025-2026)
 
-**Last Updated:** June 24, 2026 (primary-source verification refresh)
+**Last Updated:** October 31, 2026 (targeted primary-source lifecycle & release refresh)
 
 **Coverage:** 198+ catalogue entries/references across image, video, audio, voice, 3D, enhancement, and multimodal platforms
 
-> **Verification standard:** Every line in the April 22 repository README was processed during this audit. Fast-changing product/version/status claims were checked against first-party release notes, model pages, changelogs, documentation, and official company blogs through June 24, 2026. Editorial rankings and prices are explicitly treated as snapshots, not permanent facts.
+> **October 2026 scope:** Preserves the comprehensive June inventory, while re-verifying critical shutdowns, next-generation releases and migration targets against primary sources. **Long-tail tool pricing, leaderboards, feature inventories and individual availability have not all been independently rechecked in October**. Explicit October lifecycle notices take precedence over historic snapshot content. Historical lists are not a current ranking.
 
-> **Status labels:** **GA** = generally available; **Preview/Beta** = subject to change; **Announced** = not necessarily released; **Legacy** = still historically relevant but no longer the preferred current model; **Unverified** = no adequate first-party confirmation found and therefore not presented as fact.
+> **Status labels:** **GA** = generally available in a specified surface; **Preview/Beta** = unstable/limited; **Early access / Announced** = not broadly launched; **Legacy** = retained for history; **Deprecated** = migration advised; **Shut down / EOL** = endpoint or product no longer available; **Sunsetting** = scheduled shutdown. An API endpoint's sunset does not automatically close a vendor's consumer app.
 
 ---
 
 ### ⚠️ **CRITICAL STATUS UPDATE: Sora (OpenAI)**
 
-**OpenAI discontinued Sora consumer web/app access on April 26, 2026.**
+**OpenAI discontinued Sora consumer web/app access on April 26, 2026, and Sora API access on September 24, 2026.**
 
 - **Web/App access:** Discontinued April 26, 2026
-- **API access:** Scheduled to shut down September 24, 2026
-- **Current status (June 24, 2026):** Do not list Sora as an available consumer recommendation
-- **Migration:** Exported projects must be moved to another workflow; API users should plan migration before the September shutdown
+- **API access:** **Discontinued September 24, 2026**
+- **Current status (October 31, 2026):** Neither consumer Sora nor its API is an available recommendation
+- **Migration:** Repoint Sora-based pipelines to an active supported video API; export any accessible historical content under the provider’s sunset process
 - **Official source:** https://help.openai.com/en/articles/20001152-what-to-know-about-the-sora-discontinuation
 
 ---
 
-## ✅ **June 2026 Verified Refresh — Major Missing/Changed Items**
+## 🚦 October 31, 2026 — Major releases, retirements & access status
+
+| Category | Current verified status | Action / caution | Primary source |
+|---|---|---|---|
+| **OpenAI image** | **GPT Image 2.5 Sunburst / Flare**, released Sep 8 | Current API choice for precision / speed; older `gpt-image-1` shut down Oct 23 | [OpenAI announcement](https://openai.com/index/introducing-chatgpt-images-2-5/) · [Image API](https://developers.openai.com/api/docs/guides/tools-image-generation) |
+| **OpenAI legacy images** | DALL·E 2/3 API retired May 12; `gpt-image-1.5`, `gpt-image-1-mini`, `chatgpt-image-latest` scheduled Dec 1 EOL | Migrate to 2.5; don't describe DALL·E 3 as current API | [OpenAI deprecations](https://developers.openai.com/api/docs/deprecations) |
+| **OpenAI Sora** | ❌ **Permanently shut down** (Consumer Apr 26; API Sep 24, 2026) | Historical only; completely discontinued across all surfaces | [Sora discontinuation](https://help.openai.com/en/articles/20001152-what-to-know-about-the-sora-discontinuation) |
+| **Midjourney** | **Midjourney V8.2 GA** (Default since July 24, 2026) | Native 2K; Edit Model for V8 launched Aug 27; Thinking Mode alpha Oct 8 | [Midjourney updates](https://updates.midjourney.com/) |
+| **Microsoft MAI-Image** | **MAI-Image-2.6 & 2.6-Flash GA** (Oct 27, 2026) | GA in Azure Microsoft Foundry (#2 Arena rank); MAI-Image-2.7 preview | [Microsoft AI](https://microsoft.ai/) |
+| **Play.ht** | ❌ **Permanently shut down** (Dec 31, 2025) | EOL following Meta acquisition; migrate to ElevenLabs, Fish Audio, Cartesia | Meta / Play.ht |
+| **Haiper AI** | ❌ **Permanently shut down** (Feb 2025) | EOL; founders joined Microsoft AI, model assets sold to NetMind.AI | Industry notice |
+| **Visual Electric** | ❌ **Permanently shut down** (Early 2026) | EOL after 90-day sunset post-Perplexity acquisition | Perplexity / Visual Electric |
+| **Udio** | **Downloads disabled across all tiers** | Audio, video, stem downloads paused during UMG/WMG licensing overhaul | [Udio announcements](https://www.udio.com) |
+| **Stability AI / SD** | **SD4 does NOT exist**; **SD 3.5 is active flagship** | Internet SD4 rumors debunked; Stable Audio 3.0 DAW plugin GA (Aug 18) | [Stability AI](https://stability.ai/news-updates) |
+| **Google image** | Nano Banana **2.1 GA**, Oct 6; Nano Banana 2 API deprecated | Prefer `gemini-nano-banana-2.1` | [Gemini releases](https://ai.google.dev/gemini-api/docs/changelog) |
+| **Google Imagen 4 API** | Shut down Aug 17 | Migrate to supported native Gemini image ID | [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations) |
+| **Google video** | **Gemini Omni 1.1 Flash GA**, Aug 27 | Older Veo 2/3 API and Veo 3.1 preview IDs retired (Jun 30 / Oct 22) | [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations) |
+| **Black Forest Labs** | FLUX **3** image and video family; **FLUX 3 Image Klein** released Oct 15 | FLUX.2 is a prior generation; verify which FLUX 3 parts are early access vs available | [BFL releases](https://bfl.ai/blog) |
+| **Ideogram** | **4.5 released** with precise editing/API | 4.0 remains relevant for open-weight image generation; do not conflate licenses | [4.5 model](https://ideogram.ai/models/4.5) |
+| **Recraft** | V4.1 Flash, Sep 23; V4 Styles, Aug | Keep V4.1 as design family; add fast and style-controlled workflows | [Recraft changelog](https://feedback.recraft.ai/changelog) |
+| **Kling** | **4.0 GA launch Oct 15**, after early access | Supersedes 3.0 as headline; plan/mode varies | [Kuaishou press release](https://ir.kuaishou.com/news-releases/news-release-details/kling-ai-officially-launches-next-generation-kling-40-raising) |
+| **ByteDance** | **Seedance 2.5** (Jul 31), **Seedream 5.0 Pro** (Jul 8) | Update earlier 2.0 / 5.0 Lite recommendations | [Official models](https://seed.bytedance.com/en/models) |
+| **Alibaba** | **Wan 3.0** video; **HappyHorse 1.1** via Model Studio | Real hosted APIs now documented; **do not assume open weights** | [Model Studio video models](https://www.alibabacloud.com/help/en/model-studio/wan3-0-video) |
+| **MiniMax** | **H3** video / **Music 3.0** (open weights) | Earlier Hailuo 2.x / Music 2.6 are historical | [MiniMax updates](https://ir.minimax.io/) |
+| **Suno** | **v6** model family Sep 9 | v5.5 becomes previous-generation reference | [Suno release notes](https://suno.com/release-notes) |
+| **ElevenLabs** | **Music 2.5 API** and **Eleven v4/v4 Turbo TTS** | Update earlier Music v2 / old voice feature counts | [ElevenLabs changelog](https://elevenlabs.io/docs/changelog) |
+| **Google Lyria** | **Lyria 3.5 GA** Sep 3 | Current music API reference; Lyria 3 Pro preview remains separately listed | [Gemini releases](https://ai.google.dev/gemini-api/docs/changelog) |
+| **Genie 4** | **Research preview / trusted testers**, Oct 27 | Not a public GA 3D tool; future Project Genie access announced | [DeepMind](https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/) |
+
+> **Scope note:** This matrix supersedes conflicting references in the historical tables below. Product UI, open weights, API model names and commercial licenses must be checked separately.
+
+---
+
+## 📜 **June 2026 baseline (historical snapshot, not current status)**
 
 | Area              | Verified current item                          | Change from April snapshot                                     |
 | ----------------- | ---------------------------------------------- | -------------------------------------------------------------- |
-| OpenAI images     | GPT Image 2 / ChatGPT Images 2.0               | DALL·E 3 moved to legacy context                               |
+| OpenAI images     | GPT Image 2 / ChatGPT Images 2.0 (superseded in September)               | DALL·E 3 moved to legacy context                               |
 | Google images     | Gemini 3.1 Flash Image + Gemini 3 Pro Image GA | Imagen 4 API deprecated; shutdown scheduled Aug. 17, 2026      |
-| Microsoft images  | MAI-Image-2.5                                  | Released June 2, replacing MAI-Image-2 as current flagship     |
-| Ideogram          | Ideogram 4.0                                   | Open-weight 9.3B model released June 3                         |
-| Black Forest Labs | FLUX.2 family / FLUX.2 [klein]                 | Replaces FLUX.2-era flagship description                       |
-| Midjourney        | V8.1                                           | Current/default June 2026 generation                           |
+| Microsoft images  | MAI-Image-2.6 & 2.6-Flash (GA Oct 27)          | Supersedes MAI-Image-2.5; ranked #2 Arena at launch; 2.7 preview |
+| Ideogram          | Ideogram 4.5 & Ideogram Vector                 | Precise editing and graphic design; 4.0 remains open-weight    |
+| Black Forest Labs | FLUX 3 family & FLUX 3 Image Klein             | FLUX 3 launched July 23; 5.6B Image Klein released Oct 15     |
+| Midjourney        | V8.2 (GA July 24, 2026)                        | Default model; Edit Model for V8 launched Aug 27; V9 training  |
 | Luma              | Uni-1.1, Ray3.2, Luma Skills                   | Replaces Uni-1-only/Ray2-era descriptions                      |
 | Runway            | Gen-4.5 + Aleph 2.0                            | Current generation/editing stack                               |
-| Kling             | VIDEO 3.0 / Omni + native 4K                   | Current 2026 video family                                      |
+| Kling             | VIDEO 3.0 / Omni + native 4K (superseded by Kling 4.0)                   | Current 2026 video family                                      |
 | ByteDance         | Seedance 2.0 + Seedream 5.0 Lite               | Official primary-source model pages replace third-party claims |
 | Stability audio   | Stable Audio 3.0                               | Open-weight, licensed-data model family released May 20        |
 | ElevenLabs music  | Eleven Music v2                                | Released May 26                                                |
-| Suno              | v5.5                                           | Current major personalization/customization update             |
+| Suno              | v5.5 (superseded by v6)                                           | Current major personalization/customization update             |
 | OpenAI video      | Sora consumer discontinued                     | Web/app ended Apr. 26; API ends Sep. 24                        |
 
 ### Newly catalogued or materially updated
 
-- **Recraft V4.1** — current vector/raster/brand-design generation family
+- **Recraft V4.1 & V4.1 Flash** — current vector/raster/brand-design generation family; V4.1 Flash (~1.3s generation) launched Sep 23, 2026
 - **Google Gemini Omni Flash** — mixed-input video generation/editing rolling out through Gemini, Flow, and eligible YouTube experiences
 - **Google Flow Agent, Flow Tools, and Flow Music** — I/O 2026 creative workflow additions
 - **Runway Aleph 2.0 / Edit Studio** — frame-directed video editing propagation
@@ -65,46 +98,60 @@
 
 ---
 
+## 🔁 October 2026 migration checklist (for developers and creators)
+
+1. Replace **Sora** (consumer closed Apr 26; API closed Sep 24) and **Gemini API Veo 3.1 preview IDs** (closed Oct 22) in new workflows. Use a supported video API such as Gemini Omni 1.1 Flash, Wan 3.0 or vendor-supported Runway/Kling endpoints.
+2. Replace `gpt-image-1` (closed Oct 23) and plan migration of `gpt-image-1-mini`, `gpt-image-1.5` and `chatgpt-image-latest` before **December 1, 2026**. Choose `gpt-image-2.5-sunburst` for precision or `gpt-image-2.5-flare` for speed.
+3. Replace Google Imagen 4 Gemini Developer API IDs (closed Aug 17) and deprecated `gemini-3.1-flash-image` with Nano Banana 2.1 for supported editing/generation uses.
+4. Differentiate a **model**, a **web application**, an **API model ID**, a **preview**, and a **model-weight license**. Never infer one lifecycle from another.
+5. Audit each workflow's exported assets, permissions for voice/likeness use, image/video commercial rights, reference-input retention and per-region availability; only deploy after a test generation on the exact current endpoint.
+
+**Vendor lifecycle links**: [OpenAI deprecations](https://developers.openai.com/api/docs/deprecations) · [OpenAI Sora sunset](https://help.openai.com/en/articles/20001152-what-to-know-about-the-sora-discontinuation) · [Gemini deprecations](https://ai.google.dev/gemini-api/docs/deprecations) · [Runway deprecated tools](https://help.runwayml.com/hc/en-us/articles/40213860628371-Deprecated-Standalone-Tools).
+
+---
+
 ## 🖼️ IMAGE GENERATION & EDITING
 
 ### Flagship Commercial Platforms
 
 **[Midjourney](https://www.midjourney.com)** (Midjourney, Inc.)
 
-- **Current model (verified June 2026): Midjourney V8.1**
-- V8.1 became the default model in June 2026 after its April release
-- Faster generation and improved prompt/detail handling compared with older V6-era descriptions
-- Strong style-reference and character-reference workflows through web and Discord interfaces
-- **Best For:** Art direction, concept art, cinematic/editorial aesthetics, rapid visual exploration
-- **Pricing:** Changes by plan/region; use the live official plans page rather than fixed prices in this catalogue
+- **Current model (verified October 31, 2026): Midjourney V8.2 [GA — Default since July 24, 2026]**
+- **Default Transition**: V8.2 became the default model on July 24, 2026, succeeding V8.1 (which was default June 10–July 23, 2026). Delivers native 2K high-definition generations with improved prompt coherence and reduced artifacting.
+- **Unified Edit Model for V8**: Released August 27, 2026; unifies and supersedes the older Omni Reference, Character Reference, and Retexture tools into a single integrated canvas for inpainting, outpainting, and consistent re-lighting.
+- **Thinking Mode (Alpha)**: Rolled out October 8, 2026; an extended reasoning pass for complex, multi-element visual prompts.
+- **Next Generation**: Midjourney V9 is actively in model training.
+- **Best For:** High-end art direction, cinematic concept art, commercial illustration, and stylistic coherence.
+- **Pricing:** Changes by plan/region; refer to official subscription tiers ($10 Basic, $30 Standard, $60 Pro, $120 Mega).
 - **Official updates:** https://updates.midjourney.com/
 
-**[OpenAI GPT Image 2 / ChatGPT Images 2.0](https://openai.com/index/introducing-4o-image-generation/)** (OpenAI)
+**[OpenAI GPT Image 2.5 — Sunburst / Flare](https://openai.com/index/introducing-chatgpt-images-2-5/)** (OpenAI)
 
-- **Current generation stack (verified June 2026): GPT Image 2**, with ChatGPT Images 2.0 as the consumer experience
-- DALL·E 3 is retained as a legacy reference, not the current flagship recommendation
-- Conversational creation/editing, strong instruction following, text rendering, and multi-reference workflows
-- **API model:** `gpt-image-2`; confirm current limits and pricing in official API documentation
-- **Best For:** Conversational iteration, marketing graphics, image edits, and developer integrations
-- **Sora note:** OpenAI's separate Sora consumer product was discontinued April 26, 2026
+- **Current**: ChatGPT Images 2.5 and two API models released **September 8, 2026**.
+- **API IDs**: `gpt-image-2.5-sunburst` for precise editing, `gpt-image-2.5-flare` for efficient fast image generation; GPT Image 2 is an older supported generation.
+- **Deprecated/shut down**: `gpt-image-1` shut down **October 23, 2026**; DALL·E 2/3 API retired May 12; `gpt-image-1.5`, `gpt-image-1-mini` and `chatgpt-image-latest` scheduled to retire **December 1, 2026**.
+- **Best for**: Detailed reference-constrained edits, creative production, and API integrations.
+- **Official**: https://developers.openai.com/api/docs/guides/tools-image-generation · https://developers.openai.com/api/docs/deprecations
 
-**[Adobe Firefly](https://www.adobe.com/products/firefly.html)** (Adobe)
+**[Adobe Firefly](https://www.adobe.com/products/firefly.html)** (Adobe) ⭐ UPDATED OCTOBER 2026
 
-- Creative Cloud-integrated generation/editing platform with enterprise governance and licensed/permissioned training positioning
-- **Verified 2026 updates:** Firefly AI Assistant, Adobe creativity connector, and Firefly Custom Models public beta
-- Integrates with Photoshop, Premiere Pro, Express, and other Creative Cloud workflows
-- **Correction:** No adequate first-party confirmation was found for the earlier README's “Firefly Image Model 5,” “Precision Flow,” “AI Markup,” or “Project Graph” claims; those claims were removed
-- **Best For:** Professional editing, brand workflows, enterprise governance, and Adobe-native production
-- **Pricing:** Verify current Creative Cloud/Firefly plan and generative-credit terms on Adobe's official pricing page
+- **Current Models**: **Firefly Image Model 5 (GA)** and **Firefly Boards**; preview for **Adobe MAX 2026** (November 10–12, 2026).
+- Creative Cloud-integrated generation/editing platform with enterprise governance, commercial indemnification, and fully licensed training data.
+- **Core Integrations**: Photoshop (Generative Fill/Expand), Illustrator (Text to Vector Graphic), Premiere Pro (Generative Extend), and Adobe Express.
+- **Firefly AI Assistant & Custom Models**: Brand-tuned custom style/subject models for enterprise consistency.
+- **Best For:** Commercially indemnified corporate design, brand governance, print/vector production, and Creative Cloud pipelines.
+- **Pricing:** Included with Creative Cloud subscriptions; standalone Firefly plans available.
 
-**[Microsoft MAI-Image-2.5](https://microsoft.ai/news/introducing-mai-image-2-5/)** ⭐ NEW JUNE 2026
+**[Microsoft MAI-Image-2.6 & MAI-Image-2.6-Flash](https://microsoft.ai/)** ⭐ GA OCTOBER 27, 2026
 
-- Microsoft's strongest public image model as of June 24, 2026
-- Supports text-to-image and controllable image editing
-- Microsoft reported a No. 2 position on Arena's Image Edit leaderboard at launch; treat leaderboard positions as dated snapshots
-- Includes an efficiency-focused Flash variant in Microsoft's broader MAI model family
-- **Best For:** Microsoft ecosystem, enterprise workflows, text-heavy designs, and image editing
-- **Released:** June 2, 2026
+- **Release Date**: Generally Available October 27, 2026 in Azure Microsoft Foundry (superseding MAI-Image-2.5 from June 2, 2026).
+- **Benchmark Standing**: Debuted at #2 globally on LMSYS / Chatbot Arena text-to-image leaderboards at launch.
+- **Model Variants**:
+  - **MAI-Image-2.6**: Full flagship foundation model with deep semantic comprehension, complex multilingual text rendering, and photorealistic skin/lighting physics.
+  - **MAI-Image-2.6-Flash**: Ultra-low-latency model optimized for sub-second consumer applications and high-throughput enterprise pipelines.
+  - **MAI-Image-2.7 Preview**: Experimental preview endpoint dedicated to ultra-fine local editing and high-precision subject preservation.
+- **Platform Integrations**: Powers Microsoft Copilot, Bing Image Creator, Microsoft Designer, and Microsoft 365 Copilot.
+- **Enterprise Access**: Azure AI Foundry / Microsoft Model Catalog.
 
 **[Luma Uni-1.1](https://lumalabs.ai/news)** ⭐ UPDATED MAY 2026
 
@@ -115,8 +162,8 @@
 
 **[Google Native Gemini Image Models + Imagen 4 lifecycle](https://ai.google.dev/gemini-api/docs/models)**
 
-- **Current GA native image models:** Gemini 3.1 Flash Image (Nano Banana 2) and Gemini 3 Pro Image (Nano Banana Pro)
-- **Imagen 4 status:** Marked deprecated in the Gemini API, with shutdown scheduled for August 17, 2026
+- **Current image choices**: Nano Banana 2.1 (GA October 6) and Gemini 3 Pro Image; Gemini 3.1 Flash Image is **deprecated** with no shutdown date published.
+- **Imagen 4 API status:** Developer API IDs **shut down August 17, 2026**; this is distinct from product UI branding.
 - Preview endpoints for Gemini 3.1 Flash Image and Gemini 3 Pro Image were scheduled to shut down June 25, 2026; use GA model IDs
 - **Best For:** Google ecosystem, multimodal generation/editing, grounded image workflows, and API integration
 - **Source of truth:** Official Gemini API model and deprecation pages
@@ -130,22 +177,22 @@
 - **Pricing:** $10–$50/image | API $0.05/generation
 - **Comparison:** Safer than Firefly for litigation-averse enterprises; complements [Shutterstock AI](https://www.shutterstock.com/generate)
 
-**[FLUX.2 model family](https://bfl.ai/models/flux-2)** (Black Forest Labs) ⭐ UPDATED
+**[FLUX 3 / FLUX 3 Image Klein](https://bfl.ai/blog/flux-3-image-klein)** (Black Forest Labs) — **UPDATED OCTOBER 2026**
 
-- Current Black Forest Labs image generation and editing family
-- Variants include **FLUX.2 [max]** for highest-quality professional output, **[pro]**, **[flex]**, **[dev]**, and compact **FLUX.2 [klein]** models for fast/local workflows
-- Supports generation and editing, multi-reference consistency, complex text/layout handling, and production controls depending on variant
-- **Open/local options:** FLUX.2 [dev] and selected [klein] releases have open-weight/licensing paths; verify the exact model license
-- **Best For:** Professional product visuals, controlled editing, API workflows, rapid prototyping, and self-hosted experimentation
-- **Pricing/licensing:** Check BFL's live API, weights, and commercial-license terms
+- **Current family**: FLUX 3 multimodal image/video/audio research and products; **FLUX 3 Image Klein released October 15, 2026** (5.6B open weights).
+- **Capabilities**: Text-to-image, image editing, multi-reference generation (up to 10 reference images), 4K generation and spatial editing controls. FLUX 3's other image/video/action capabilities vary by specific release and some were initially early-access.
+- **FLUX.2**: Prior generation, still relevant for existing deployments and some local/API endpoints; **not** the latest overall BFL family.
+- **Licensing**: FLUX 3 Image Klein weights use the **FLUX Kommunity License**, not automatically Apache 2.0 or unrestricted commercial open source.
+- **Official**: https://bfl.ai/blog · https://bfl.ai/blog/flux-3
 
 **[Stable Diffusion](https://stability.ai/stable-diffusion)** (Stability AI + Community)
 
-- Open-source foundation model (SD 1.x/2.x/SDXL/SD3)
-- Run locally on consumer GPUs (full privacy)
-- Ecosystem: [ControlNet](https://github.com/lllyasviel/ControlNet), LoRA fine-tuning, [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [ComfyUI](https://github.com/comfyanonymous/ComfyUI), [Invoke AI](https://github.com/invoke-ai/InvokeAI)
-- **Best For:** Technical users, max control, custom training, offline use
-- **Pricing:** Free (open-source) | Costs = hardware/cloud
+- **Official Flagship Status (October 2026)**: **Stable Diffusion 3.5 (SD 3.5 Large 8B, Medium 2.5B, Turbo)** remains the latest open-weight flagship foundation model family.
+- ⚠️ **"Stable Diffusion 4" (SD4) Myth Debunked**: Persistent online rumors of an unannounced "Stable Diffusion 4" or "SD4" release are completely unfounded—**SD4 does not exist**. Stability AI continues advancing SD 3.5 and the Stable Audio ecosystem following their $76M Series B on August 25, 2026.
+- **Ecosystem**: ComfyUI, AUTOMATIC1111, ControlNet, LoRAs, Diffusers.
+- **Audio Expansion**: **Stable Audio 3.0 DAW Plugin** (VST plugin launched August 18, 2026 for native integration into Ableton, Logic Pro, and FL Studio).
+- **Licensing**: Stability Community License for non-commercial and eligible commercial use.
+- **Hardware Requirement**: 8GB–24GB VRAM depending on model scale and quantization.
 
 ### Specialized & High-Fidelity Generators
 
@@ -154,13 +201,14 @@
 - Brand-aware AI image generation for marketing assets and decks (March 17, 2026).
 - Integrates with ChatGPT, Claude, and Atlassian.
 
-**[Ideogram 4.0](https://ideogram.ai/models/4.0/)** ⭐ NEW JUNE 2026
+**[Ideogram 4.5, Ideogram Vector & Ideogram 4.0](https://ideogram.ai/models/4.5)** — **UPDATED SEPTEMBER–OCTOBER 2026**
 
-- Open-weight 9.3B image foundation model released June 3, 2026
-- Strong multilingual text rendering, bounding-box/object placement, 2K output, and production-design controls
-- Weights are downloadable; commercial licensing depends on deployment scale
-- **Best For:** Posters, typography, ads, layouts, design systems, and self-hosted/open-weight workflows
-- **Pricing:** API and hosting costs vary; use Ideogram's current pricing/documentation
+- **Ideogram 4.5 (Released September 30, 2026)**: Flagship generation and precision editing model featuring **Pixel Lock** (locks 94–99% of unpainted pixels identically across 10+ consecutive multi-turn edits with zero color or texture drift). Accepts up to 5 multimodal reference images (`$0.008–$0.22/image` via API).
+- **Ideogram Vector**: Generates clean, production-ready native SVGs with sharp vector typography, editable paths, and smooth gradients from text or raster inputs.
+- **Ideogram 4.0 (June 3, 2026)**: 9.3B open-weight Diffusion Transformer trained on structured JSON captions for deterministic layout and typography.
+- **API**: `/v2/image/generate/ideogram-4-5` and `/v2/image/precise-edit/ideogram-4-5`.
+- **Best For:** Graphic design, drift-free localized image editing, native SVG logos/branding, and self-hosted open-weight design.
+- **Official**: https://developer.ideogram.ai/ideogram-api/api-overview · https://ideogram.ai/models/4.5
 
 **[Leonardo.Ai](https://leonardo.ai)**
 
@@ -189,9 +237,9 @@
 - Enterprise image gen/editing via Alibaba Cloud Model Studio
 - **Pricing:** Free API (limits) | Alibaba Cloud pricing
 
-**[Gemini 2.5 Flash Image ("Nano Banana")](https://developers.googleblog.com/en/introducing-gemini-2-5-flash-image/)**
+**[Gemini 2.5 Flash Image ("Nano Banana") — legacy model](https://developers.googleblog.com/en/introducing-gemini-2-5-flash-image/)**
 
-- Google's small, fast **on-device image editing** family
+- Earlier **cloud-hosted Gemini image generation/editing model**, not a general on-device-only model
 - Powers edits in Search/Lens (object removal, cleanups)
 - Not standalone—integrated into Google apps
 - **Statistics:** 5+ billion images generated as of late 2025
@@ -225,15 +273,13 @@
 - **Pricing:** Free tier | $9/month Pro
 - **Comparison:** Artistic rival to [ImagineArt AI](https://www.imagine.art); enhances [Krea.ai](https://www.krea.ai)'s canvas workflow
 
-**[Visual Electric](https://visualelectric.com)** ⭐ NEW
+**[Visual Electric](https://visualelectric.com)** ❌ EOL / PERMANENTLY SHUT DOWN
 
-- AI image-generation workspace aimed at designers and creative teams
-- Emphasizes art direction, collaborative ideation, and campaign-style visual iteration
-- **Status note:** Reported post-acquisition sunset risk means live availability should be confirmed before recommending it to users
-- **Best For:** Designers, art directors, and brand-creative workflows
-- **Pricing:** Verify current access and plan status on the official site
+- **Status**: Standalone platform permanently shut down in **early 2026** following its 90-day transition window after acquisition by Perplexity.
+- **Historical Note**: Pioneered infinite-canvas generative workflows; features and concept-branching design graduated into Perplexity's visual synthesis tooling.
+- **Alternative**: Krea.ai, Leonardo.ai, or Figma AI for canvas-based moodboarding.
 
-**[Google Nano Banana 2](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/)** ⭐ NEW Q1 2026
+**[Google Nano Banana 2 — superseded by 2.1](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/)** ⭐ NEW Q1 2026
 
 - Google's fastest image model (Feb 26, 2026), technically Gemini 3.1 Flash Image
 - Combines Pro capabilities with Flash speed; advanced world knowledge
@@ -241,7 +287,7 @@
 - Available across Gemini app, Search, Lens, and Flow
 - **Best For:** Fast iteration, real-time editing, production workflows
 - **Pricing:** Free via Gemini (limited) | Gemini Advanced $20/month
-- **Comparison:** 2-3x faster than Nano Banana Pro; now default model across Google products
+- **October update:** Nano Banana 2.1 (`gemini-nano-banana-2.1`) is the current efficient API recommendation (October 6, 2026).
 
 **[Gemini 3 Pro Image API lifecycle note](https://ai.google.dev/gemini-api/docs/changelog)**
 
@@ -282,7 +328,7 @@
 - Enables precise visual blending by uploading reference images, making it ideal for mood boards, concept iteration, and style transfer without prompt engineering.
 - Browser-based only; no standalone app.
 - **Best For:** Visual thinkers, designers who prefer image inputs over text, rapid style fusion.
-- **Pricing:** Free unlimited via [Google Labs](https://labs.google/fx)
+- **Pricing:** Availability and daily limits vary by account/region; verify in Google Labs
 - **Comparison:** Complements [Google ImageFX](https://labs.google/fx/imagefx) (text-to-image); acts as a visual counterpart to Ideogram’s text-in-image strength. More intuitive than SD + [ControlNet](https://github.com/lllyasviel/ControlNet) for non-technical users.
 
 ### Additional Image Tools
@@ -293,15 +339,15 @@
 - Text-to-image with prompt seeds for variations; up to 1024x1024
 - Zero cost, fast (5-10s generation); great for surreal/abstract prompts
 - **Best For:** Free ideation and prompt experimentation
-- **Pricing:** Free unlimited via [Google Labs](https://labs.google/fx)
+- **Pricing:** Availability and daily limits vary by account/region; verify in Google Labs
 - **Comparison:** Like Imagen 4 but lighter—15% faster than free DALL-E for quick sketches
 
-**[ByteDance Seedream 5.0 Lite](https://seed.bytedance.com/en/seedream5_0_lite)** ⭐ UPDATED 2026
+**[ByteDance Seedream 5.0 Pro](https://seed.bytedance.com/en/models)** — **UPDATED JULY 2026**
 
-- Unified multimodal image generation model with reasoning and online-search capabilities
-- Strong prompt understanding, generation, and editing in ByteDance's Seed model family
-- Replaces the stale/non-primary-source SeedDream 4.0 description in the prior README
-- **Best For:** Multimodal image creation, reference-driven editing, and ByteDance ecosystem workflows
+- **Current promoted model**: Seedream 5.0 **Pro** (introduced July 8, 2026); 5.0 Lite remains an older reference where accessible.
+- **Capabilities**: Multimodal image generation/editing with stronger reasoning and design-oriented prompt control.
+- **Availability**: Through specified ByteDance products and official API channels; confirm region and endpoint.
+- **Source**: https://seed.bytedance.com/en/research
 
 **[Playground AI](https://playground.com)** – Multi-model access, fast UI
 **[Freepik Pikaso](https://pikaso.freepik.com)** – Real-time sketch-to-image
@@ -353,14 +399,14 @@
 
 ### Foundation Text-to-Video Models
 
-**[OpenAI Sora / Sora 2](https://openai.com/sora)** — **DISCONTINUED FOR CONSUMERS**
+**[OpenAI Sora / Sora 2](https://openai.com/sora)** — **DISCONTINUED (CONSUMER AND API)**
 
 - Historical world-simulation/video-generation product
 - Consumer web/app access ended April 26, 2026
-- API shutdown scheduled September 24, 2026
+- API discontinued September 24, 2026
 - Retained only for historical/comparison context; do not recommend for new consumer projects
 
-**[Google Veo 3](https://deepmind.google/technologies/veo/)**
+**[Google Veo 3](https://deepmind.google/technologies/veo/) — historical API generation**
 
 - Studio-grade cinematic quality, physics-aware
 - Native audio generation with dialogue lip-sync
@@ -369,40 +415,32 @@
 - **Best For:** Social reels, promotional videos, integrated audio
 - **Pricing:** Gemini Pro ~$20/month
 
-**[Google Veo 3.1](https://ai.google.dev/gemini-api/docs/video)** ⭐ NEW Q1 2026
+**[Google Veo 3.1](https://ai.google.dev/gemini-api/docs/deprecations)** — **HISTORICAL / RETIRED GEMINI API PREVIEW ENDPOINT**
 
-- Enhanced version of Veo 3 (October 2025, updated January 2026)
-- Richer audio, more narrative control, enhanced realism with true-to-life textures
-- Stronger prompt adherence and improved audiovisual quality for image-to-video
-- Reference image support for character consistency and scene extension
-- 4K output support with configurable 16:9 (landscape) and 9:16 (portrait) aspect ratios
-- **Best For:** Professional video production, vertical content (Shorts/Reels), character-consistent narratives
-- **Pricing:** Via Gemini API/Vertex AI (usage-based)
-- **Comparison:** 20% better audio quality vs. Veo 3; superior prompt adherence
+- **Historical role**: Veo 3.1 video creation in Flow, Gemini and experimental developer APIs.
+- **Gemini Developer API lifecycle**: `veo-3.1-generate-preview` **shut down October 22, 2026**; older `veo-3.0-generate-001` shut down June 30.
+- **Replacement**: `gemini-omni-1.1-flash` (GA) for supported Gemini Developer API video tasks, or a supported Google enterprise video endpoint.
+- **Important**: This is an **endpoint-specific** retirement and does not establish that all Veo-branded features in Flow/Gemini stopped working.
 
-**[Google Veo 3.1 Fast](https://ai.google.dev/gemini-api/docs/video)** ⭐ NEW Q1 2026
+**[Google Veo 3.1 Fast / 3.1 Lite](https://ai.google.dev/gemini-api/docs/deprecations)** — **PREVIEW ENDPOINTS SHUT DOWN**
 
-- Optimized for speed (January 2026)
-- Generates 4-8 second videos at 720p/1080p in ~45-60 seconds
-- Native audio synchronization with faster generation times
-- Ideal for quick previews, rapid iteration, and high-volume workflows
-- **Best For:** Rapid prototyping, social media content, quick turnaround projects
-- **Pricing:** Lower cost than standard Veo 3.1 via Gemini API
-- **Comparison:** 2x faster than Veo 3.1 Standard; trades some quality for speed
+- **Gemini API IDs retired October 22, 2026**: `veo-3.1-fast-generate-preview` and `veo-3.1-lite-generate-preview`.
+- **Migration**: Use supported `gemini-omni-1.1-flash` for Gemini Developer API video generation/editing or review current enterprise video model availability.
+- **Historical context**: Fast/Lite variants targeted throughput/cost during the preview generation.
 
-**[Kling VIDEO 3.0 / 3.0 Omni](https://app.klingai.com/global/blog/kling-video-3-0-ai-director-features-guide)** ⭐ 2026
+**[Kling VIDEO 4.0 / Omni / Flash](https://kling.ai/blog/kling40-kling-visual-realism-creative-control-introducing-storytelling)** — **CURRENT OCTOBER 2026**
 
-- Unified audiovisual generation with text/image/reference workflows
-- Multi-shot “AI Director” features, synchronized multilingual audio, subject consistency, and up to 15-second continuous output in documented 3.0 workflows
-- Kling announced native 4K generation support in May 2026
-- **Best For:** Multi-shot cinematic clips, ads, character/subject continuity, and native audiovisual generation
-- **Caution:** Feature access, resolution, duration, and credits vary by plan/model mode
+- **Launch**: **October 15, 2026**, after restricted September preview; vendor announced native output of up to **30 seconds** with 10-bit HDR, richer motion, omni-reference, video extension and up to 10 keyframe inputs.
+- **Reference limits**: Vendor described combinations of up to 15 reference assets; actual features/quality vary by tier, region and mode.
+- **Kling 3.0**: Historical generation, not the current flagship headline.
+- **Best for**: Multi-shot audiovisual stories, longer coherent clips and controlled reference-based filmmaking.
+- **Official**: https://ir.kuaishou.com/news-releases/news-release-details/kling-ai-officially-launches-next-generation-kling-40-raising
 
-**Happy Horse 1.0** — **SOURCE STATUS CORRECTED**
+**[HappyHorse 1.1 (Alibaba Cloud hosted models)](https://www.alibabacloud.com/help/en/model-studio/wan3-0-video)** — **VERIFIED HOSTED API**
 
-- Available through selected model-hosting/partner platforms, but no official open-weight GitHub repository or first-party release matching the prior README claim was verified as of June 24, 2026
-- Do **not** describe it as fully open source or cite an unverified GitHub repository
-- Keep only as an emerging model to evaluate through a reputable hosting partner, with license and provenance checked before production use
+- **Model Studio IDs**: `happyhorse-1.1-t2v`, `happyhorse-1.1-i2v`, `happyhorse-1.1-r2v`; support 3–15 second generation with audio and up to 1080p according to official API reference.
+- **Status correction**: This verifies a **hosted commercial API**. It does **not** establish a general public open-weight license, source-code repository or original model training claims.
+- **Best for**: Testing an alternative high-quality short-video engine through Alibaba Cloud where offered.
 
 **[PAI / PAI Pro (Utopai Studios)](https://utopai.ai)** ⭐ 2026
 
@@ -411,13 +449,12 @@
 - **Correction:** The earlier “3-minute 4K” claim was not adequately confirmed by first-party documentation and has been removed
 - **Best For:** Narrative development, multi-scene filmmaking, and director-style iteration
 
-**[Seedance 2.0](https://seed.bytedance.com/en/blog/official-launch-of-seedance-2-0)** (ByteDance) ⭐ 2026
+**[Seedance 2.5](https://seed.bytedance.com/en/models)** (ByteDance) — **UPDATED JULY 2026**
 
-- Officially launched February 12, 2026
-- Unified audio-video generation supporting four input modalities: text, image, audio, and video
-- Reference-driven creation/editing, native audiovisual synchronization, and multi-shot workflows
-- Available through ByteDance products and selected partner/API integrations; exact access varies
-- **Best For:** Reference-heavy audiovisual creation and multi-modal editing
+- **Release**: July 31, 2026. New-generation 30-second video storytelling with extensive multimodal referencing and editing controls.
+- **Predecessor**: Seedance 2.0 was officially launched February 12, 2026 and remains historical or a separate endpoint where supported.
+- **Best for**: Longer reference-heavy audiovisual production, flexible edits and story continuity.
+- **Official**: https://seed.bytedance.com/en/research
 
 **[PixVerse V6 & C1](https://pixverse.ai)** ⭐ NEW Q2 2026
 
@@ -433,19 +470,19 @@
 - **Correction:** The prior `topview.ai` product attribution was incorrect; this entry now points to the research paper
 - **Best For:** Research on interactive characters, embodied agents, and real-time performance
 
-**[Wan 2.7 / Wan 2.6](https://www.alibabacloud.com/help/en/model-studio/wan-video-generation-api-reference)** (Alibaba) ⭐ UPDATED 2026
+**[Wan 3.0 / Wan 3.0 Prime](https://www.alibabacloud.com/help/en/model-studio/wan3-0-video)** (Alibaba) — **UPDATED OCTOBER 2026**
 
-- Alibaba Cloud documentation now recommends the newer **Wan 2.7** family where available; Wan 2.6 remains an older supported/reference generation
-- Multi-shot and native-audio capabilities vary by model/version and endpoint
-- **Best For:** Alibaba Cloud workflows, developer integration, and multimodal video generation
-- **Source of truth:** Current Model Studio documentation and live model IDs
+- **Current hosted models**: `wan3.0-video` and the faster `wan3.0-video-prime`; multi-modal text/image/video/audio reference-based generation.
+- **Specs**: Official Model Studio docs list 2–30-second MP4, 480p/720p/1080p, 30 fps and native audio modes (depending on model/region).
+- **Legacy**: Wan 2.7 / Wan 2.6 remain prior generations and specific edit endpoints; verify API availability and licensing independently.
+- **Source**: https://www.alibabacloud.com/help/en/model-studio/wan3-0-video
 
-**[Hailuo 2.3 / 2.3 Fast](https://hailuoai.video)** (MiniMax)
+**[MiniMax H3 / Hailuo 3](https://ir.minimax.io/)** — **UPDATED AUGUST 2026**
 
-- Motion-focused text-to-video and image-to-video models with standard and faster variants
-- **Date correction:** Hailuo 2.3 was announced in October 2025, not February 2026
-- **Best For:** Dynamic motion, expressive character clips, and rapid iteration
-- Availability, resolution, duration, and pricing should be checked on MiniMax/Hailuo's current official pages
+- **H3**: MiniMax's newer multimodal/open-model video generation family was introduced in late July/early August 2026; variants and partner names vary.
+- **Hailuo 2.3 / 2.3 Fast**: Previous generation retained in existing integrations; do not present 2.3 as the newest MiniMax video model.
+- **Best for**: Multimodal reference-driven video, creative editing, animation and action sequences.
+- **Official**: https://ir.minimax.io/ · https://www.minimax.io/
 
 **[Runway Gen-4.5 + Aleph 2.0](https://runwayml.com)** ⭐ UPDATED 2026
 
@@ -457,11 +494,10 @@
 
 **[Google Flow](https://labs.google/flow/about)**
 
-- Google's AI filmmaking and creative studio integrating Veo, native Gemini image models, and asset/story workflows
-- I/O 2026 additions include **Flow Agent**, **Flow Tools**, and **Google Flow Music**
-- Supports prompt/reference-based creation, scene building, extension, editing, audio-capable Veo workflows, and asset reuse
-- **Best For:** Google-ecosystem filmmaking, scene iteration, and multimodal creative production
-- Availability and quotas depend on Google AI plan, region, age, and account
+- **Status**: Google creative workspace continues; includes image/video assets, generation and editing workflows, plus 2026 Flow Agent/Tools and music-related experiments where supported.
+- **Developer API distinction**: Gemini Developer API Veo 3.1 preview IDs **retired October 22, 2026**. Check current Flow UI/account models separately from those retired endpoints.
+- **Related current APIs**: `gemini-omni-1.1-flash` for video (GA August 27) and `lyria-3.5` for music (GA September 3).
+- **Best for**: Storyboarding, creative direction, scene iteration and integrated multimodal production.
 
 **Runway Gen-4 + Aleph — legacy reference**
 
@@ -476,12 +512,12 @@
 - **Best For:** Cinematic realism, product animations, longer narratives
 - **Pricing:** Free tier | Paid $7/month+
 
-**Luma Ray3.2 / Dream Machine**
+**Luma Ray3.2, Luma Scenes & Dream Machine** ⭐ UPDATED AUGUST 2026
 
-- Current Luma video-generation/editing family as of June 2026
-- Ray3.2 adds frame-level direction, keyframe controls, HDR/EXR-oriented professional workflows, and API access
-- Ray2 is retained only as a legacy generation name
-- **Official source:** https://lumalabs.ai/news/introducing-ray-3-2
+- **Ray3.2 & Uni-1.1**: Luma's foundation video and multimodal intelligence models featuring frame-level direction, keyframe controls, and HDR/EXR production pipeline support.
+- **Luma Scenes (Launched August 11, 2026)**: Breakthrough storyboard workflow enabling creators to establish, review, and approve storyboard keyframes before rendering full-resolution video.
+- **Luma Skills**: Reusable agentic creative workflow recipes for consistent cinematography.
+- **Official source:** https://lumalabs.ai/news/introducing-ray-3-2 · https://lumalabs.ai/news
 
 **[Digen RM3.0](https://digen.ai)** (Real Motion 3.0) ⭐ NEW Q1 2026
 
@@ -501,11 +537,12 @@
 - **Best For:** Developer workflows, automated video pipelines
 - **Pricing:** Available via API
 
-**[Pika 2.0](https://pika.art)**
+**[Pika 2.5 (with Pikaframes)](https://pika.art)** ⭐ UPDATED OCTOBER 2026
 
-- User-friendly short clips with effects
-- Swaps, lip-sync, stylized outputs
-- **Pricing:** Free tier | Subscription plans
+- **Current Flagship: Pika 2.5**: Upgraded 1080p generation engine with **Pikaframes** (ordered keyframe transitions allowing 2 to 5 reference frames to guide multi-shot motion).
+- **Creative Effects**: Pika Effects (inflate, melt, crush, explode), character clothes swaps, lip-syncing, and audio integration.
+- **Best For:** Social clips, creative memes, rapid ideation, and stylized visual effects.
+- **Pricing:** Free tier available | Standard, Pro, and Unlimited subscription tiers.
 
 ### Enterprise & Developer Video APIs
 
@@ -546,13 +583,12 @@
 - Complements [Tongyi Wanxiang](https://tongyi.aliyun.com/wx) (images)
 - **Pricing:** API access via Alibaba Cloud
 
-**[LTX Studio](https://ltxstudio.com)** (Lightricks) ⭐ NEW
+**[LTX Studio & LTX-2.3 / LTX-2.5](https://ltxstudio.com)** (Lightricks) ⭐ UPDATED Q3/Q4 2026
 
-- Narrative AI for filmmakers (2025 launch)
-- Scene-by-scene prompts; character customization; storyboard exports; 4K previews
-- **Best For:** Film pre-production, pitch decks, screenplay visualization
-- **Pricing:** Free tier (5 clips/month) | Pro $29/month
-- **Comparison:** Pre-production boost over [Morph Studio](https://www.morphstudio.com); pairs with [Runway](https://runwayml.com) [Aleph 2.0](https://runwayml.com/product/aleph-2) for full workflow
+- **Foundation Models**: **LTX-2.3 (22B Open-Weight)** and **LTX-2.5 World Model** (August 2026); real-time 4K/50fps audio-video Diffusion Transformer with **Clean Plate VFX** and camera trajectory control.
+- **Studio Interface**: Narrative filmmaking platform featuring scene-by-scene script breakdown, character consistency across scenes, dynamic multi-camera shooting, storyboard exports, and 4K previews.
+- **Best For:** Film pre-production, visual pitch decks, screenplay visualization, and open-weight video deployment.
+- **Pricing:** Free tier (5 clips/month) | Pro $29/month | Open weights on HuggingFace.
 
 **[cv.cm/v](https://cv.cm/v)** (Cloud Clipboard AI Studio)
 
@@ -562,11 +598,12 @@
 - **Best For:** Fast Seedance 2.0 access without a queue, multimodal experiments, API-driven video workflows
 - **Pricing:** Free credits on signup | pay-as-you-go credits
 
-**[xAI Grok Imagine](https://grok.com)**
+**[xAI Grok Imagine Video 1.5 & Image 2.0](https://grok.com)** ⭐ UPDATED AUGUST–OCTOBER 2026
 
-- Image/video generation in [Grok](https://grok.com)/X platform
-- Uses FLUX models (Black Forest Labs partnership)
-- **Pricing:** Included with [Grok](https://grok.com) access
+- **Grok Imagine Video 1.5 (Launched July 31, 2026)**: Generates 15-second 1080p video clips with native audio synchronization and multi-image reference conditioning.
+- **Grok Image 2.0 (August 7, 2026)**: High-coherence image generation with uncensored creative freedom and realistic lighting physics (FLUX partnership + proprietary tuning).
+- **Lifecycle notice**: Legacy `grok-imagine-image-quality` and `pro` endpoints retire November 2, 2026 (auto-redirect to `grok-imagine-image-2.0`).
+- **Pricing**: Included with X Premium / SuperGrok subscriptions.
 
 **[VO3 AI](https://vo3ai.com)** ⭐ NEW
 
@@ -665,7 +702,7 @@
 - **Best For:** Professional videos without filming or editing software
 - **Pricing:** Free trial | Subscription plans available
 - **Comparison:** All-in-one solution for businesses; combines AI generation with editing tools
-  **[Haiper](https://haiper.ai)** – Emerging video startup
+  **[Haiper](https://haiper.ai)** ❌ EOL — Consumer web app permanently shut down February 2025 (co-founders joined Microsoft AI; model assets sold to NetMind.AI)
   **[Genmo](https://www.genmo.ai)** – Video + image generation
   **[Viggle AI](https://viggle.ai)** – Character animation, motion transfer
   **[Morph Studio](https://www.morphstudio.com)** – Comprehensive video platform
@@ -719,13 +756,13 @@
 
 ### Music & Soundscape Generation
 
-**[Suno](https://suno.com)**
+**[Suno v6](https://suno.com/release-notes)** — **CURRENT SEPTEMBER 2026**
 
-- Text-to-song platform for lyrics, vocals, instruments, remixing, and community creation
-- **Current major version:** Suno v5.5 (March 2026), adding Voices, Custom Models, and My Taste personalization
-- Continued 2026 updates include improved stem separation and production controls
-- **Best For:** Full-song ideation, personalized music generation, and remix workflows
-- **Licensing/pricing:** Confirm commercial rights and plan terms for each project
+- **Released**: September 9, 2026. Model family includes flagship `v6`, creative-diversity `v6-wild`, and faster `v6-mini`.
+- **Capabilities**: Music ideation and song editing, natural-language targeted edits, and mashups; feature access varies by subscription.
+- **Prior generation**: Suno v5.5 is a historical March 2026 release, not the newest model.
+- **October update**: Suno also announced **Speech (beta)** in October; do not describe beta as a generally available production speech API.
+- **Source**: https://suno.com/release-notes · https://suno.com/blog
 
 ### Ethical AI Music
 
@@ -740,22 +777,22 @@
 
 - High-fidelity, genre-blending music
 - **Udio 2** (March 2026): High-fidelity tracks with structural awareness and stem downloads for producers.
-- **Best For:** Genre-blending, high-quality music, collaboration.
+- ⚠️ **Licensing Transition Notice (October 2026)**: Audio, video, and stem downloads are currently **disabled across all tiers** (including paid plans) while Udio transitions its platform under licensing agreements with Universal Music Group (UMG) and Warner Music Group (WMG).
+- **Best For:** Genre-blending, in-browser musical ideation, and licensed catalog experimentation.
 
-**[Eleven Music v2](https://elevenlabs.io/music)** ⭐ UPDATED MAY 2026
+**[Eleven Music v2.5](https://elevenlabs.io/docs/changelog)** — **UPDATED SEPTEMBER 2026**
 
-- ElevenLabs' current generative music system, released May 26, 2026
-- Creates music from prompts with production/iteration workflows integrated into the ElevenLabs ecosystem
-- ElevenMusic mobile creation launched in 2026; availability varies by platform/region
-- **Best For:** Creator audio, mobile music ideation, and integration with ElevenLabs voice/audio tooling
+- **API**: Music v2.5 (`music_v2_5`) support documented September 14, 2026; Eleven Music v2 was released May 26 and is an earlier generation.
+- **Additional**: Video-to-Music API documented October 19 for soundtracks based on source videos.
+- **Best for**: Prompt-directed song creation, scoring and audio pipelines inside ElevenLabs.
+- **Source**: https://elevenlabs.io/docs/changelog
 
-**[MiniMax Music 2.6](https://www.minimax.io/news/music-26)** ⭐ UPDATED APRIL 2026
+**[MiniMax Music 3.0](https://ir.minimax.io/)** — **UPDATED AUGUST 2026**
 
-- Current MiniMax music-generation model listed in the vendor's official release notes/API documentation as of June 24, 2026
-- Supports prompt-directed control over BPM, key, song structure, style, and emotional arc
-- Earlier releases include Music 1.5 (September 2025, up to four-minute songs) and Music 2.5 / 2.5+ (January–March 2026)
-- **Best For:** Full-song generation, structured composition, instrumental creation, and MiniMax API workflows
-- **Pricing/limits:** Check the live MiniMax API console; fixed per-song pricing was removed from this catalogue
+- **Released**: August 13, 2026; MiniMax advertises Music 3.0 as an **open-weights**, production-oriented music model.
+- **Music 2.6 / 2.5 / 1.5**: Prior generations and historical API references, not the current headline version.
+- **Best for**: Music generation, structured composition and developer/self-hosted evaluation; validate weight-specific licenses and available endpoints.
+- **Official**: https://www.minimax.io/audio/music · https://ir.minimax.io/
 
 **[Loudly VEGA-2](https://www.loudly.com)** ⭐ NEW Q1 2026
 
@@ -818,17 +855,12 @@
 - **Best For:** Sample-based producers, songwriting inspiration, and professional production workflows
 - **Pricing:** Check the current Splice subscription matrix for feature access
 
-**[Google Lyria 3](https://blog.google/innovation-and-ai/products/gemini-app/lyria-3/)** ⭐ NEW Q1 2026
+**[Google Lyria 3.5](https://ai.google.dev/gemini-api/docs/changelog)** — **UPDATED SEPTEMBER 2026**
 
-- Most advanced Google music model (Feb 18, 2026)
-- 30-second tracks from text prompts or images
-- Generates vocals, lyrics, instruments automatically
-- Integrated into Gemini app (750M+ users)
-- SynthID watermarking for all tracks
-- Available in 8 languages (English, German, Spanish, French, Hindi, Japanese, Korean, Portuguese)
-- **Best For:** Casual creators, social content, quick ideation
-- **Pricing:** Free via Gemini (limited) | Higher limits on Gemini Advanced
-- **Comparison:** Consumer-facing competitor to Suno/Udio; integrated with image generation (Nano Banana covers)
+- **GA model**: `lyria-3.5`, released September 3, 2026, for full-length music generation with text/image inputs and structural controls.
+- **Historical**: Lyria 3 consumer clips and Lyria 3 Pro preview are separate products/IDs; do not conflate release or quotas.
+- **Best for**: Gemini ecosystem music, creator audio, API integrations where supported.
+- **Source**: https://ai.google.dev/gemini-api/docs/deprecations
 
 **[Google ProducerAI](https://blog.google/innovation-and-ai/models-and-research/google-labs/producerai/)** ⭐ NEW Q1 2026
 
@@ -913,13 +945,13 @@
 
 ### Voice & Speech Synthesis (TTS)
 
-**[ElevenLabs](https://elevenlabs.io)**
+**[ElevenLabs — Eleven v4 / Eleven v4 Turbo](https://elevenlabs.io/docs/changelog)** — **UPDATED SEPTEMBER 2026**
 
-- Industry-standard ultra-realistic voice cloning
-- 29 languages, emotional tags, **Dubbing Studio**
-- Often indistinguishable from human speech
-- **Best For:** Voiceovers, podcasts, audiobooks, dubbing
-- **Pricing:** Free tier (10k chars/month) | $5/month+
+- **TTS models**: `eleven_v4` and `eleven_v4_turbo` available September 28, 2026; vendor advertises improved expressive speech and 90+ languages, with low-latency Turbo.
+- **Music**: Music v2.5 API plus Video-to-Music endpoints (October).
+- **Agent speech**: Eleven Realtime v1 Mini/Max announced October 19 for managed realtime agent configurations.
+- **Best for**: Voiceover, dubbing, interactive speech, agents and multilingual media workflows; check consent rules for cloned voices.
+- **Source**: https://elevenlabs.io/docs/changelog
 
 **[Murf.ai](https://murf.ai)**
 
@@ -964,7 +996,7 @@
 - **Pricing:** Free | Premium voices $10/month
 - **Comparison:** Niche vs. [Voxdazz](https://voxdazz.com); extends [Hume](https://www.hume.ai) for emotional range
 
-**[Play.ht](https://play.ht)** – Enterprise voice cloning, real-time TTS, SEO integration
+**[Play.ht](https://play.ht)** ❌ EOL / PERMANENTLY SHUT DOWN — Permanently shut down December 31, 2025 following acquisition by Meta. Replaced in pipelines by ElevenLabs, Fish Audio, Cartesia, or Gemini 3.8 Flash TTS.
 **[Resemble AI](https://www.resemble.ai)** – Custom voice cloning (IVR systems, interactive AI)
 **[Fish Audio](https://fish.audio)** ⭐ NEW Q1 2026
 
@@ -1189,7 +1221,7 @@
 
 **[Microsoft Copilot / Designer](https://copilot.microsoft.com)**
 
-- [DALL·E 3](https://openai.com/index/dall-e-3)-backed image generation
+- ChatGPT Images 2.5 / GPT Image 2.5-backed image generation (DALL·E 3 API was shut down May 12, 2026)
 - Microsoft ecosystem integration
 
 **[Magic Hour](https://magichour.ai)** ⭐ NEW Q1 2026
@@ -1215,27 +1247,29 @@
 
 ## 📊 QUICK REFERENCE TABLES
 
+> **October 2026 caveat:** Tables below contain editorial selections and older pricing snapshots. The status matrix at the top is the authoritative list for confirmed current releases and shutdowns. All prices, quotas and tier entitlements must be checked at source.
+
 ### By Primary Use Case
 
 | **Use Case**                         | **Top Recommendations**                                                                                                                                                                                                                                                                                                                            |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Artistic/Cinematic Images**        | [Midjourney](https://www.midjourney.com), [Stable Diffusion](https://stability.ai/stable-diffusion), [Monica AI](https://monica.im)                                                                                                                                                                                                                |
-| **Photorealistic Images**            | Imagen 4, FLUX.2 [pro], [Leonardo.Ai](https://leonardo.ai), [Nano Banana 2](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/), [Gemini 3 Pro Image](https://ai.google.dev/gemini-api/docs/image-generation)                                                                                                                      |
-| **Text-in-Images (Logos)**           | [Ideogram 4.0](https://ideogram.ai/models/4.0/), [GLM-Image](https://z.ai/blog/glm-image)                                                                                                                                                                                                                                                          |
+| **Photorealistic Images** | [GPT Image 2.5 Sunburst](https://openai.com/index/introducing-chatgpt-images-2-5/), [Nano Banana 2.1](https://ai.google.dev/gemini-api/docs/changelog), [FLUX 3](https://bfl.ai/blog), [Midjourney V8.2](https://updates.midjourney.com/) |
+| **Text-in-Images (Logos)**           | [Ideogram 4.0 / 4.5](https://ideogram.ai/models/4.5), [Nano Banana 2.1](https://ai.google.dev/gemini-api/docs/changelog), [GLM-Image](https://z.ai/blog/glm-image)                                                                                                                                                                                                                                                          |
 | **Image-Based Prompting**            | [Whisk](https://labs.google/fx/whisk), [Freepik Pikaso](https://pika.freepik.com)                                                                                                                                                                                                                                                                  |
 | **Commercial Safety (IP-Protected)** | Getty Generative AI, [Adobe Firefly](https://www.adobe.com/products/firefly.html), [Shutterstock AI](https://www.shutterstock.com/generate)                                                                                                                                                                                                        |
-| **Free Experimentation**             | [Google ImageFX](https://labs.google/fx/imagefx), [Meta Imagine](https://imagine.meta.com), [Stable Diffusion](https://stability.ai/stable-diffusion), [Nano Banana 2](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/)                                                                                                         |
-| **Cinematic Video (Gated)**          | Sora, [Veo 3](https://deepmind.google/technologies/veo/), [Veo 3.1](https://ai.google.dev/gemini-api/docs/video)                                                                                                                                                                                                                                   |
-| **Cinematic AI Filmmaking**          | [Flow](https://labs.google/flow/about), [Runway Gen-4.5](https://runwayml.com) + [Aleph 2.0](https://runwayml.com/product/aleph-2), [Kling 3.0](https://www.klingai.com), [Seedance 2.0](https://seed.bytedance.com/en/blog/official-launch-of-seedance-2-0)                                                                                       |
-| **Production Video**                 | [Runway Gen-4.5](https://runwayml.com) + [Aleph 2.0](https://runwayml.com/product/aleph-2), [Kling 3.0](https://www.klingai.com), [LTX Studio](https://ltxstudio.com), [Seedance 2.0](https://seed.bytedance.com/en/blog/official-launch-of-seedance-2-0), [Digen RM3.0](https://digen.ai), [Veo 3.1](https://ai.google.dev/gemini-api/docs/video) |
+| **Free Experimentation** | [Suno v6-mini](https://help.suno.com/en/articles/13924737) (audio), [Google ImageFX](https://labs.google/fx/imagefx) (where available), [ComfyUI](https://github.com/comfyanonymous/ComfyUI) with locally licensed weights, [Gemini](https://gemini.google/) (capped) |
+| **Cinematic Video (Gated)**          | [Kling 4.0](https://kling.ai/blog/kling40-kling-visual-realism-creative-control-introducing-storytelling), [Runway Gen-4.5](https://runwayml.com), [Gemini Omni 1.1 Flash](https://ai.google.dev/gemini-api/docs/changelog)                                                                                                                                                                                                                                   |
+| **Cinematic AI Filmmaking** | [Google Flow](https://labs.google/flow/about), [Runway Gen-4.5](https://runwayml.com), [Kling 4.0](https://ir.kuaishou.com/news-releases/news-release-details/kling-ai-officially-launches-next-generation-kling-40-raising), [Seedance 2.5](https://seed.bytedance.com/en/models/) |
+| **Production Video** | [Runway Gen-4.5](https://runwayml.com), [Kling 4.0](https://ir.kuaishou.com/news-releases/news-release-details/kling-ai-officially-launches-next-generation-kling-40-raising), [Seedance 2.5](https://seed.bytedance.com/en/models/), [Wan 3.0](https://www.alibabacloud.com/help/en/model-studio/wan3-0-video), [Gemini Omni 1.1 Flash](https://ai.google.dev/gemini-api/docs/changelog) |
 | **Business/Workspace Video**         | [Google Vids](https://workspace.google.com/products/vids/), [Synthesia](https://www.synthesia.io), [Capsule](https://capsule.video)                                                                                                                                                                                                                |
 | **Animated Video**                   | [Vyond](https://www.vyond.com), [Steve.AI](https://www.steve.ai), [Viggle AI](https://viggle.ai)                                                                                                                                                                                                                                                   |
 | **Business Avatars**                 | [Synthesia](https://www.synthesia.io), [HeyGen](https://www.heygen.com), [Capsule](https://capsule.video)                                                                                                                                                                                                                                          |
 | **Social Media Repurposing**         | [revid.ai](https://www.revid.ai), [OpusClip](https://www.opus.pro), [Peech](https://www.peech.co)                                                                                                                                                                                                                                                  |
-| **Music Creation**                   | Suno, [Udio](https://www.udio.com), [AIVA](https://www.aiva.ai), [Stable Audio](https://www.stableaudio.com), [Lyria 3](https://blog.google/innovation-and-ai/products/gemini-app/lyria-3/), [MiniMax Music 2.5](https://www.minimax.io/news/minimax-music-25)                                                                                     |
+| **Music Creation**                   | [Suno v6](https://suno.com/release-notes), [MiniMax Music 3.0](https://ir.minimax.io/), [Eleven Music 2.5](https://elevenlabs.io/docs/changelog), [Lyria 3.5](https://ai.google.dev/gemini-api/docs/changelog), [Stable Audio 3.0](https://stability.ai/stable-audio)                                                                                     |
 | **Real-Time Music Jamming**          | [MusicFX DJ](https://labs.google/fx/musicfx), [Mubert](https://mubert.com), [Maestro](https://soundcraft.ai/blog/maestro-public-beta), [ProducerAI](https://blog.google/innovation-and-ai/models-and-research/google-labs/producerai/)                                                                                                             |
 | **YouTube Shorts Music**             | [Dream Track](https://support.google.com/youtube/answer/14151606) (Lyria-powered)                                                                                                                                                                                                                                                                  |
-| **Voice Cloning (Speech)**           | [ElevenLabs](https://elevenlabs.io), [Play.ht](https://play.ht), [Murf.ai](https://murf.ai)                                                                                                                                                                                                                                                        |
+| **Voice Cloning (Speech)**           | [Eleven v4](https://elevenlabs.io/docs/changelog), [Murf.ai](https://murf.ai), [Resemble AI](https://www.resemble.ai) (verify consent/licensing)                                                                                                                                                                                                                                                        |
 | **Voice Cloning (Singing)**          | [KITS AI](https://www.kits.ai), [ACE Studio](https://acestudio.ai), [Synthesizer V Studio 2 Pro](https://dreamtonics.com/synthesizerv)                                                                                                                                                                                                             |
 | **3D Generation**                    | [Luma AI](https://lumalabs.ai), [Spline AI](https://spline.design/ai), [CSM.ai](https://csm.ai), [Trellis 2](https://www.3daistudio.com/blog/3daistudio/trellis-2-create-stunning-3d-assets-in-just-seconds), [Meshy-6](https://www.meshy.ai/blog/meshy-6-launch), [Marble](https://www.worldlabs.ai/blog/marble-world-model)                      |
 | **Multi-Modal Platforms**            | [Magic Hour](https://magichour.ai), [Google Gemini](https://gemini.google.com), [Runway](https://runwayml.com)                                                                                                                                                                                                                                     |
@@ -1265,7 +1299,7 @@
 | **Enhancement**   | [GFPGAN](https://github.com/TencentARC/GFPGAN), [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN), [Lama Cleaner](https://github.com/Sanster/lama-cleaner)                     |
 | **3D**            | [TripoSR](https://github.com/VAST-AI/TripoSR), [OpenLRM](https://github.com/3DTopia/OpenLRM)                                                                                       |
 
-### 2025 Q4 Trending Additions
+### 2025 Q4 Trending Additions (historical)
 
 | **Tool**                                             | **Category**    | **Key Innovation**                         | **Why It Matters**                                     |
 | ---------------------------------------------------- | --------------- | ------------------------------------------ | ------------------------------------------------------ |
@@ -1280,7 +1314,7 @@
 | **[KITS AI](https://www.kits.ai)**                   | Voice (Singing) | Royalty-free vocal conversion              | Enables legal commercial singing clones                |
 | **[ACE Studio](https://acestudio.ai)**               | Voice (Singing) | DAW-native integration (VST3)              | Bridges gap between AI and professional music tools    |
 
-### 2026 Q1 Trending Additions (Nov 2025 - Mar 2026)
+### 2026 Q1 Trending Additions (historical snapshot, Nov 2025–Mar 2026)
 
 | **Tool**                                                                                                          | **Category** | **Key Innovation**                                | **Why It Matters**                                                           |
 | ----------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------- | ---------------------------------------------------------------------------- |
@@ -1302,151 +1336,4 @@
 | **[Magic Hour](https://magichour.ai)**                                                                            | Multi-Modal  | All-in-one AI creation platform                   | Combines image editing, animation, and video generation in a single workflow |
 | **[Microsoft MAI-Image-1](https://microsoft.ai/news/introducing-mai-image-1-debuting-in-the-top-10-on-lmarena/)** | Image        | First in-house model, top 10 LMArena              | Microsoft's answer to DALL·E 3/Midjourney; integrated into Copilot           |
 | **[Wan 2.6](https://wan.video)**                                                                                  | Video        | 15s multi-shot with "Video Roleplay"              | Open-source; superior character consistency                                  |
-| **[Hailuo 2.3](https://hailuoai.video)**                                                                          | Video        | Breathtaking motion + emotion                     | Fast variant for rapid iteration; rivals Kling motion                        |
-| **[Runway Gen-4.5](https://runwayml.com)**                                                                        | Video        | Image-to-video for longer stories                 | Adobe Firefly integration; Updated image-to-video generation and editing     |
-| **[Fish Audio](https://fish.audio)**                                                                              | Voice        | Asian language accent retention                   | Focus on multilingual and Asian-language voice workflows                     |
-| **[MorVoice](https://morvoice.ai)**                                                                               | Voice        | Enterprise brand voice consistency                | API-first; multi-speaker projects                                            |
-| **[ImageCritic](https://www.kombitz.com/2026/03/05/imagecritic-improves-ai-image-editing-accuracy/)**             | Enhancement  | AI quality control for generated images           | Research-oriented image consistency checking                                 |
-
----
-
-## 🔗 2025-2026 KEY UPDATES & SOURCES
-
-### Major Platform Updates (Q1 2026)
-
-- **Kling 3.0** (Feb 2026) = 15s video, 4K output, native audio-video co-generation
-- **Seedance 2.0** (Feb 2026) = ByteDance quad-modal breakthrough; first true audio-video sync
-- **Nano Banana 2** (Feb 2026) = Google's default image model; 2-3x faster than Pro
-- **GLM-Image** (Jan 2026) = Open hybrid autoregressive/diffusion image model
-- **Lyria 3** (Feb 2026) = Music generation in Gemini app (750M+ users)
-- **MiniMax Music 2.6** (Apr 2026) = current structured music model
-- **[Flow](https://blog.google/innovation-and-ai/models-and-research/google-labs/flow-updates-february-2026/)** adds new editing features (Feb 2026)
-- **Trellis 2** (Jan 2026) = Next-gen 3D model with production-ready meshes and PBR textures
-- **Meshy-6** (Jan 2026) = Refined 3D generation with cleaner geometry and hard-surface details
-- **Marble** (Nov 2025) = Multimodal world model for interactive 3D environments
-- **Genie 3 AI** (Jan 2026) = Google DeepMind tool for real-time 3D world generation
-- **Hunyuan 3D 3.0** (Sep 2025) = Tencent's ultra-high resolution 3D system
-- **Magic Hour** (Q1 2026) = All-in-one AI creation platform combining image editing, animation, and video generation
-- **Microsoft MAI-Image-1** (Oct 2025) = Microsoft's first in-house image generator; top 10 LMArena debut
-- **Wan 2.6** (Dec 2025) = Alibaba's 15s multi-shot video with "Video Roleplay"; open-source weights
-- **Hailuo 2.3** (Feb 2026) = MiniMax breakthrough motion quality; Fast variant for rapid iteration
-- **Runway Gen-4.5** (Jan 2026) = Image-to-video for longer stories; Adobe Firefly integration
-- **Fish Audio** (Jan 2026) = Superior Asian language accent retention for voice cloning
-- **MorVoice** (Feb 2026) = Enterprise brand voice consistency with API-first approach
-- **ImageCritic** (Mar 2026) = First AI quality control for generated images; reference mismatch detection
-
-### Major Platform Updates (Q4 2025)
-
-- **[Google native Gemini image models](https://ai.google.dev/gemini-api/docs/models)** + **[Veo 3](https://deepmind.google/technologies/veo/)** now GA in [Gemini API](https://ai.google.dev/gemini-api)
-- **[Google Veo 3.1](https://ai.google.dev/gemini-api/docs/video)** (Oct 2025) = Enhanced audio, character consistency, 4K support, vertical video (9:16)
-- **[Google Veo 3.1 Fast](https://ai.google.dev/gemini-api/docs/video)** (Jan 2026) = 2x faster generation for rapid iteration
-- **[Gemini 3 Pro Image](https://ai.google.dev/gemini-api/docs/image-generation)** (Nov 2025) = Premium model with reasoning capabilities
-- **"Nano Banana"** (Gemini 2.5 Flash Image) powers Search/Lens edits
-- **[Google Vids](https://workspace.google.com/products/vids/)** (Nov 2025) = AI video creation for Workspace, free for Gmail users
-- **[ProducerAI](https://blog.google/innovation-and-ai/models-and-research/google-labs/producerai/)** (Feb 2026) = Professional music creation with Lyria 3 in Google Labs
-- **[Dream Track](https://support.google.com/youtube/answer/14151606)** = YouTube Shorts AI music powered by Lyria, integrated with Lyria 3
-- **[Google SynthID](https://deepmind.google/technologies/synthid/)** = Watermarking for 20B+ pieces of AI content (image/video/audio/text)
-- **[Gemini Canvas](https://gemini.google/overview/canvas/)** (Mar 2026) = AI workspace for image/code creation, rolled out to all US users
-- **[Runway Aleph 2.0](https://runwayml.com/product/aleph-2)** = breakthrough in-context video editor
-- **FLUX.2 [max] / [pro]** = latest Black Forest Labs flagship
-- **[Kling](https://apps.apple.com/us/app/kling-ai/id6580029292)** extends to 2-minute clips at 1080p
-- **Suno v5.5** adds personas + stem separation
-- **[Udio](https://www.udio.com)** offers stem downloads for producers
-- **[Stable Audio 3.0](https://stability.ai/stable-audio)** (August 2025) = open music/SFX model
-
-### Industry Trends (Q1 2026)
-
-- **Multimodal Video Revolution:** Seedance 2.0 and Kling 3.0 lead shift from clip generation to unified audio-video production
-- **Speed + Quality Balance:** Nano Banana 2 and GLM-Image address enterprise need for fast, accurate output
-- **Consumer Music Democratization:** Lyria 3 in Gemini brings music creation to mainstream users
-- **Open-Source Surge:** GLM-Image challenges proprietary image generation dominance; Wan 2.6 open-weights
-- **Professional Workflows:** Digen RM3.0 targets studio-grade production; Runway Gen-4.5 + Firefly integration
-- **3D Generation Maturity:** Trellis 2, Meshy-6, and Marble push 3D AI from experimental to production-ready
-- **Microsoft AI Entry:** MAI-Image-1 marks Microsoft's first in-house image generation capability
-- **Asian Market Focus:** Fish Audio, Hailuo 2.3, Wan 2.6 target Chinese/Asian language markets
-- **Quality Control Emergence:** ImageCritic introduces first AI-powered quality assurance for generated content
-- **Enterprise Voice:** MorVoice brings brand-focused voice cloning with API-first developer approach
-
-### Industry Trends (Q4 2025)
-
-- **IP Safety Focus:** Getty and Firefly lead commercially indemnified training
-- **Singing Voice Boom:** KITS, [ACE Studio](https://acestudio.ai), Synthesizer V target music producers
-- **Animation Democratization:** [Vyond](https://www.vyond.com) and [Steve.AI](https://www.steve.ai) make character animation accessible
-- **Pre-Production Tools:** [LTX Studio](https://ltxstudio.com) fills narrative planning gap
-- **Open-Source Resurgence:** [Stable Audio](https://www.stableaudio.com) challenges proprietary music models
-
-### Verification Sources
-
-- Zapier: Best AI Image Generators 2026
-- CNET: Best AI Image Generators 2025-2026
-- Massive.io: Best AI Video Generators Comparison
-- AudioCipher: Best AI Singing Voice Generators 2025
-- AIMusicPreneur: Best AI Music Generators 2025-2026
-- TechCrunch: Google Nano Banana 2 Launch (Feb 2026), ProducerAI Google Labs (Feb 2026), Veo 3.1 Updates
-- VentureBeat: GLM-Image Analysis (Jan 2026)
-- Google Blog: Lyria 3 Launch (Feb 2026), Veo 3.1 Updates (Oct 2025/Jan 2026), Nano Banana 2 (Feb 2026), ProducerAI (Feb 2026), Gemini Canvas (Mar 2026), Flow Updates (Feb 2026), Gemini 3.1 Pro/Flash-Lite (Feb-Mar 2026)
-- Google DeepMind: SynthID Documentation, Gemini 3 Pro Image Model Cards, Lyria Model Information
-- Microsoft AI Blog: MAI-Image-1 Announcement (Oct 2025)
-- Various: Kling 3.0, Seedance 2.0, Digen RM3.0 coverage (Feb 2026)
-- MiniMax official releases: Image-01 (Feb 2025), Music 2.6 (Apr 2026)
-- Alibaba Cloud: Wan 2.6 Release Notes (Dec 2025)
-- RunwayML: Gen-4.5 Update Announcement (Jan 2026)
-- Industry Reports: Fish Audio, MorVoice, ImageCritic (Q1 2026)
-- 9to5Google: Nano Banana 2 Rollout (Feb 2026), Gemini Updates, Flow for Workspace
-- Ars Technica: Lyria 3 Gemini Integration (Feb 2026)
-- The Verge: Google Flow AI Video (May 2025), Veo 3 Coverage, Gemini Features
-- WebProNews: Flow for Google Workspace Launch (Jan 2026)
-- Google Labs: Official tool documentation and availability information
-- Gemini API Documentation: Model specifications and pricing information
-
----
-
-## 💡 SELECTION GUIDANCE
-
-### For Commercial/Brand Work
-
-- **Images:** Getty Generative AI (indemnification), [Adobe Firefly](https://www.adobe.com/products/firefly.html), [Shutterstock AI](https://www.shutterstock.com/generate)
-- **Video:** [Synthesia](https://www.synthesia.io), [HeyGen](https://www.heygen.com) (enterprise-safe), [Capsule](https://capsule.video) (branded workflows)
-- **Audio:** [AIVA](https://www.aiva.ai) (copyright-free), licensed TTS APIs, [Stable Audio](https://www.stableaudio.com) (open licensing)
-
-### For Maximum Control
-
-- **Images:** [Stable Diffusion](https://stability.ai/stable-diffusion) + [ComfyUI](https://github.com/comfyanonymous/ComfyUI)/[ControlNet](https://github.com/lllyasviel/ControlNet)
-- **Video:** Stable Video Diffusion, [Runway Editor](https://runwayml.com) + [Aleph 2.0](https://runwayml.com/product/aleph-2)
-- **Audio:** [Coqui TTS](https://github.com/coqui-ai/TTS), [Stable Audio](https://www.stableaudio.com), [Demucs](https://github.com/facebookresearch/demucs) (open-source)
-
-### For Speed & Ease
-
-- **Images:** [DALL·E 3](https://openai.com/index/dall-e-3) (ChatGPT), [Google ImageFX](https://labs.google/fx/imagefx) (free), [Meta Imagine](https://imagine.meta.com)
-- **Video:** [Pika 2.0](https://pika.art), [PixVerse](https://pixverse.ai), [revid.ai](https://www.revid.ai) (templates)
-- **Audio:** [ElevenLabs](https://elevenlabs.io), Suno
-
-### For Multilingual/Asian Markets
-
-- **Images:** [Qwen-VL](https://qwenlm.ai)/[Tongyi Wanxiang](https://tongyi.aliyun.com/wx), ByteDance SeedDream
-- **Video:** [Kling](https://apps.apple.com/us/app/kling-ai/id6580029292), Qwen Wan, Alibaba Cloud ecosystem
-- **Audio:** [Murf.ai](https://murf.ai) (142 languages), [Google Cloud TTS](https://cloud.google.com/text-to-speech)
-
-### For Animation & Creative Storytelling
-
-- **Video:** [Vyond](https://www.vyond.com) (character animation), [LTX Studio](https://ltxstudio.com) (scene control), [AnimateDiff](https://github.com/guoyww/AnimateDiff)
-- **Images:** [Monica AI](https://monica.im) (fantasy/anime), [Leonardo.Ai](https://leonardo.ai) (game assets)
-
-### For Music Production
-
-- **Full Songs:** Suno (fast), [Udio](https://www.udio.com) (high-fidelity stems)
-- **Sound Effects:** [Stable Audio](https://www.stableaudio.com) (open), [Beatoven.ai](https://www.beatoven.ai) (mood-based)
-- **Singing:** [KITS AI](https://www.kits.ai) (commercial-safe), [ACE Studio](https://acestudio.ai) (DAW integration)
-
-### For Experimental & Multimodal Creators
-
-- Use [Whisk](https://labs.google/fx/whisk) to prototype visuals from reference images → refine in [ImageFX](https://labs.google/fx/imagefx).
-- Score ambient tracks in [MusicFX DJ](https://labs.google/fx/musicfx) → layer with voiceovers from [ElevenLabs](https://elevenlabs.io).
-- Assemble final narrative in [Flow](https://labs.google/flow/about) with consistent characters and native audio.
-- **Q1 2026 Pipeline:** Generate images with [Nano Banana 2](https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/) → create music via [Lyria 3](https://blog.google/innovation-and-ai/products/gemini-app/lyria-3/) in Gemini → combine in [Kling 3.0](https://www.klingai.com) for final video
-
-### For Budget-Conscious Users
-
-- **Free Forever:** [Google ImageFX](https://labs.google/fx/imagefx), [Meta Imagine](https://imagine.meta.com), [Stable Diffusion](https://stability.ai/stable-diffusion), [Whisk](https://labs.google/fx/whisk), [MusicFX DJ](https://labs.google/fx/musicfx), [Maestro](https://soundcraft.ai/blog/maestro-public-beta)
-- **Best Free Tiers:** Ideogram (40/day), [Leonardo.Ai](https://leonardo.ai) (150 tokens), Suno (basic), [revid.ai](https://www.revid.ai)
-- **Best Value:** [MiniMax Image-01](https://www.minimax.io/news/image-01) 
+| **[Hailuo 2.3](https://hailuoai.video)**                                                                          | Video        | Breathtaking motion + emotion                     | Fast

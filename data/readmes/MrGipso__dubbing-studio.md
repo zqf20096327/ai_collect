@@ -33,6 +33,9 @@
   после работы, поэтому правка одной фразы переозвучивается за секунды.
 - **Интерфейс на русском и английском.** Язык переключается внизу боковой панели.
 
+Программа бесплатная. Если она вам пригодилась, можно
+[поддержать автора](#поддержать-проект).
+
 ## Что нужно
 
 - Windows 10/11, macOS или Linux. Проверено на Windows. В macOS и Linux
@@ -289,6 +292,46 @@ uv run python -m unittest discover tests
   тогда укажите их число вручную или поправьте говорящих у фраз.
 - В macOS и Linux программа не проверялась.
 - Python 3.10–3.12 для основного окружения (`uv` выберет сам).
+
+## Поддержать проект
+
+Dubbing Studio бесплатна. Если она вам пригодилась, разработку можно
+поддержать переводом в криптовалюте. Каждую монету отправляйте только в её
+сети: перевод из другой сети пропадёт.
+
+<table>
+  <tr>
+    <th>USDT, сеть TRON (TRC-20)</th>
+    <th>Toncoin, сеть TON</th>
+    <th>Bitcoin, сеть Bitcoin</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/support/usdt-trc20.svg" width="200" alt="QR-код кошелька USDT в сети TRON"></td>
+    <td align="center"><img src="docs/support/ton.svg" width="200" alt="QR-код кошелька TON"></td>
+    <td align="center"><img src="docs/support/btc.svg" width="200" alt="QR-код кошелька Bitcoin"></td>
+  </tr>
+</table>
+
+**USDT, сеть TRON (TRC-20)**
+
+```
+TVtCgZpDdUdLZP43czQAuf9aHZjKE8ePXm
+```
+
+**Toncoin, сеть TON**
+
+```
+UQDJCZht533XQxKmdHSpJ6uUMbWmRknznshBXqQ6Wyr8fV97
+```
+
+**Bitcoin, сеть Bitcoin**
+
+```
+bc1qw82wsq536ausj3vztgp3pesc5lrhw72znflmj0
+```
+
+Перед отправкой сверьте адрес: те же адреса опубликованы на
+[mrgips.online/support](https://mrgips.online/support).
 
 ## Лицензия
 

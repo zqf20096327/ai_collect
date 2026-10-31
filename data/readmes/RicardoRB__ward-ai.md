@@ -4,9 +4,9 @@
 
 # Ward
 
-**Quality guardrails for AI coding agents.**
-Define your rules once, share them with your team, and every agent follows them, from the first
-edit to production.
+**The quality gate for AI coding agents.**
+Your agent says it's done. Ward makes sure it is. Define your rules once, share them with your
+team, and Ward checks every change against them, from the first edit to production.
 
 [![Release](https://img.shields.io/github/v/release/RicardoRB/ward-ai?sort=semver&label=release)](https://github.com/RicardoRB/ward-ai/releases)
 [![Build](https://github.com/RicardoRB/ward-ai/actions/workflows/release.yml/badge.svg)](https://github.com/RicardoRB/ward-ai/actions/workflows/release.yml)
@@ -20,13 +20,16 @@ edit to production.
 [How it works](#how-it-works) ·
 [Report a bug](https://github.com/RicardoRB/ward-ai/issues)
 
-<img src="website/public/ward-layers.svg" alt="Four nested shields around your code: Edit, Commit, Push, and CI. Faster checks sit close to the code, stricter ones further out." width="880">
+<img src=".github/assets/ward-demo.webp" alt="An agent's change fails a quality check, the agent fixes it, and the quick check and the stricter pre-push check pass" width="900">
+<br>
+<sub>An agent's change fails a quality check, the agent fixes it, and the fast and pre-push checks pass. (<a href=".github/assets/ward-demo.webm">WebM version</a>)</sub>
 
 </div>
 
 > [!NOTE]
 > **Ward is in alpha.** Today it supports **Java projects built with Maven or Gradle** and
-> **TypeScript and JavaScript projects** built with npm, pnpm, Yarn, or Bun. Support for more
+> **TypeScript and JavaScript projects** built with npm, pnpm, Yarn, or Bun (including Turborepo
+> workspaces), and **Python projects** managed with uv, Poetry, or pip. Support for more
 > languages is planned. The CLI and configuration may change before `1.0`.
 
 | Language | Build tools | Frameworks | Quality tools |
@@ -34,6 +37,15 @@ edit to production.
 | Java / Kotlin | Maven, Gradle | Any. Spring Boot, Quarkus, Micronaut, Helidon, Dropwizard, Javalin, and Ktor are labeled when detected | Compiler, JUnit, JaCoCo, Checkstyle, PMD, SpotBugs, PIT, ArchUnit |
 | TypeScript | npm, pnpm, Yarn, Bun | Vue, Svelte, Astro, Angular (others are checked with the same gates) | `tsc`, Vitest / Jest / `bun test`, ESLint or Biome, Prettier, Stryker, dependency-cruiser |
 | JavaScript | npm, pnpm, Yarn, Bun | Same as TypeScript | Same as TypeScript, without `tsc` |
+| Python 3.11–3.14 | uv, Poetry, pip | Django, FastAPI, Flask | Ruff, mypy, pytest, coverage.py, Import Linter, pip-audit, mutmut |
+
+<div align="center">
+  <a href="https://youtu.be/ETuomU8HxXw">
+    <img src="https://img.youtube.com/vi/ETuomU8HxXw/maxresdefault.jpg" alt="Watch the 90-second explanation of Ward on YouTube" width="720">
+  </a>
+  <br>
+  <sub>Ward in 90 seconds (<a href="https://youtu.be/ETuomU8HxXw">watch on YouTube</a>)</sub>
+</div>
 
 ## Why Ward?
 
@@ -45,7 +57,8 @@ forgets.
 Ward moves those rules out of your prompts and into your project:
 
 - **The rules live in the repository.** `ward.toml` lists the checks (tests, coverage,
-  Checkstyle, PMD, SpotBugs, ArchUnit, security scanners, or any command).
+  linters such as ESLint, Ruff, or Checkstyle, architecture rules, security scanners, or any
+  command).
 - **Every agent gets the same feedback.** After each edit, Ward runs the fast checks and hands the
   exact failure back to the agent, which fixes it on its own.
 - **Stricter checks run later, automatically.** Commit, push, and CI each add more checks, so
@@ -55,6 +68,10 @@ You spend less time guiding the agent and fewer tokens on corrections, because t
 tells the agent what "good" means.
 
 ## How it works
+
+<p align="center">
+  <img src="website/public/ward-layers.svg" alt="Four nested shields around your code: Edit, Commit, Push, and CI. Faster checks sit close to the code, stricter ones further out." width="880">
+</p>
 
 Ward checks your code in four layers. Each layer is a **profile** in `ward.toml`. Inner
 layers are fast so they can run constantly; outer layers are stricter.
@@ -71,6 +88,22 @@ move a check between layers by editing its `profiles` list. Read the
 [four quality layers guide](https://ricardorb.github.io/ward-ai/getting-started/how-it-works/).
 
 ## Quick start
+
+**Using a coding agent?** Paste this prompt into Claude Code, Codex, Cursor, OpenCode, or any other
+agent, and it installs Ward and sets it up with you:
+
+```text
+Set up Ward (https://github.com/RicardoRB/ward-ai) quality gates in this project.
+
+1. Run `ward --version`. If Ward is missing, ask me first, then install it:
+   - Linux, macOS, or Git Bash: curl -fsSL https://raw.githubusercontent.com/RicardoRB/ward-ai/main/install.sh | sh
+   - Windows PowerShell: irm https://raw.githubusercontent.com/RicardoRB/ward-ai/main/install.ps1 | iex
+2. Read https://raw.githubusercontent.com/RicardoRB/ward-ai/main/skills/ward-init/SKILL.md and follow it
+   step by step. Fetch the reference files it links from the same folder.
+3. Ask me before changing any file. When setup is done, run `ward check` and show me the result.
+```
+
+Or set it up yourself:
 
 **1. Install** on Linux, macOS, or Git Bash (see [installation](https://ricardorb.github.io/ward-ai/getting-started/installation/) for options):
 
@@ -104,12 +137,6 @@ ward init --preset standard --integration claude-code --quality-hooks
 ward check                     # layer 1: fast checks
 ward check --profile pre-push  # layer 3: stricter checks
 ```
-
-<p align="center">
-  <img src=".github/assets/ward-demo.webp" alt="An agent's change fails the PMD check, the agent uses the constant instead, and the quick check and the stricter pre-push check pass" width="900">
-  <br>
-  <sub>An agent's change fails PMD, the agent fixes it, and the fast and pre-push checks pass. (<a href=".github/assets/ward-demo.webm">WebM version</a>)</sub>
-</p>
 
 Something not working? Run `ward doctor`.
 
@@ -164,6 +191,7 @@ ward check --profile ci --format json > ward-report.json
 | Security | Gitleaks, Semgrep, OWASP Dependency-Check, Trivy, OWASP ZAP |
 | Compliance | License plugins, japicmp API compatibility |
 | TypeScript and JavaScript | `tsc`, Vitest / Jest / `bun test`, ESLint, Biome, Prettier, Stryker mutation testing, dependency-cruiser, Semgrep, framework checkers (`vue-tsc`, `svelte-check`, `astro check`, `ngc`) |
+| Python | Ruff (format and lint), mypy, pytest, coverage.py, Import Linter, pip-audit, mutmut mutation testing, `manage.py check` for Django |
 | Anything else | Any command you add to `ward.toml` |
 
 Ward runs the tools; the rules live in each tool's own configuration. For TypeScript and JavaScript
@@ -187,12 +215,12 @@ Cline, Factory Droid, and Amp. See [integrations](https://ricardorb.github.io/wa
 
 ## Project status
 
-**Alpha** (`0.3.0`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon and Intel), and
+**Alpha** (`0.4.1`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon and Intel), and
 Windows x86_64, or as a JAR on JDK 25. Only the latest release receives fixes.
 
 **Roadmap:**
 
-- Support for more languages beyond Java, TypeScript, and JavaScript
+- Support for more languages beyond Java, TypeScript, JavaScript, and Python
 - Shared Git hooks (for example through `core.hooksPath`), so teammates get the commit and push
   layers without a setup step
 - Homebrew tap, Scoop and winget packages, and container image
@@ -210,7 +238,7 @@ ward check --profile pre-push             # required before every pull request
 ```
 
 Contributions are welcome: fork, branch, make sure `ward check --profile pre-push` passes, and
-open a pull request. Conventions are in [AGENTS.md](AGENTS.md). Report bugs and request features in
+open a pull request. Start with [CONTRIBUTING.md](CONTRIBUTING.md); conventions are in [AGENTS.md](AGENTS.md). Report bugs and request features in
 [GitHub Issues](https://github.com/RicardoRB/ward-ai/issues) with your `ward --version` and
 `ward doctor` output.
 

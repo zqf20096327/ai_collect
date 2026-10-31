@@ -42,6 +42,22 @@ git clone https://www.modelscope.cn/unsloth/Qwen3-0.6B-GGUF.git
 pnpm start
 ```
 
+默认端口是 5000，可以显式指定：
+
+```shell
+pnpm start --port 5001
+# 或
+PORT=5001 pnpm start
+```
+
+默认读取项目根目录的 `user_config.ts`。需要同时跑多个配置时，可以用 `LIME_CONFIG` 指定另一个配置文件：
+
+```shell
+LIME_CONFIG=user_config.quality.ts PORT=5001 pnpm start
+```
+
+`LIME_CONFIG` 相对于当前工作目录解析；配置文件里相对 `./src` 的 import 需要按它所在的位置调整。
+
 开发时可以使用 `pnpm dev`，修改服务端代码后会自动重启。
 
 创建密钥，一定程度上防止被滥用或隐私泄露
@@ -96,7 +112,9 @@ patch:
 
 ## 项目结构
 
-- `src/engine`：输入法核心，拼音索引、候选生成、模型加载
+- `src/engine/core`：共享引擎，模型会话、上下文、token 索引、用户词
+- `src/engine/algorithms`：候选算法，内置 `lime-v1` 和 `dict-llm-v1`
+- `src/engine/key_map`：按键到拼音/双拼索引
 - `src/server`：Hono 服务、鉴权、启动入口
 - `src/crypto`：HiAE 加解密
 - `src/cli`：密钥生成、用户词预加载等命令行工具
@@ -171,15 +189,46 @@ curl --request POST \
 
 添加类似`key_to_pinyin`的函数，用于把输入按键转换为文字索引，放在`src/engine/key_map`文件夹下。添加类似`load_pinyin`的函数，提供把文字转为索引的方法。
 
+### 添加候选算法
+
+共享引擎在 `src/engine/core`，候选算法在 `src/engine/algorithms`。新算法实现 `CandidateAlgorithm`，可以复用模型会话、上下文和 token 索引，但自己实现筛选、生成和排序。
+
+```ts
+import type { CandidateAlgorithm } from "./src/engine/algorithms/index.ts";
+
+const myAlgorithm: CandidateAlgorithm = {
+	id: "my-algorithm",
+	label: "我的算法",
+	async candidates(input, { session, index }) {
+		// 使用 session.lastResult / session.evaluateNext / index.pinyinOf 等
+		return { candidates: [] };
+	},
+};
+```
+
+在 `src/engine/algorithms/index.ts` 注册，或者在 `initLIME` 的 `algorithm` 参数里直接传实例/工厂。
+
+内置算法：
+
+- `lime-v1`：从模型下一步概率中按拼音筛选，并做长句补全。
+- `dict-llm-v1`：用词库生成单词和长句草稿，再由 LLM 排序。支持单词前缀、多词长句切分、词库多音/模糊音、`*` 通配；词库唯一路径直接固定，候选 token 用前缀树共享评估，可以按 beam 剪枝，并额外保留一批单字/单词安全候选。默认是快速模式：单次最多处理 7 个音节、每键固定评估预算，并降低词格搜索宽度，长句按键不会越来越慢；每个剩余音节默认扣 `selectionPenalty`（0.8），偏向一次提交更多内容。质量模式默认最多保留 1 个多词长句候选，其余长句移到词语候选之后，避免错误长句占满 Top5；完整覆盖候选与第一名差距在 `coverageFirstWithin`（默认 0.5）内时会优先排第一；完整长句评估可以用 `createQualityDictLlm()`，或选择已注册的 `dict-llm-v1-quality`。它需要 `assets/pinyin/words.dict.yaml`，先运行 `pnpm words` 从 rime-ice 下载生成；没有词表会直接报错，不会静默退回只有字表。
+
+```ts
+await initLIME({ ziInd: load_pinyin(), algorithm: "dict-llm-v1" });
+```
+
 ## 测试
 
 ```shell
 pnpm test               # 单元测试，不需要模型
 pnpm bench              # 模型相关的防退化评测
+pnpm bench:golden       # lime-v1 行为快照
 pnpm bench:compare      # LIME 与 baseline 对比
 pnpm bench:ablation     # LIME + 字频/调频/上下文/雾凇词库/Qwen token 一起跑
 pnpm bench:speed        # 长句输入速度评测
+pnpm bench:latency      # 按键延迟，标记超过 109ms 的场景
 pnpm bench:word         # 用字准确率评测
+pnpm words              # 下载生成 dict-llm-v1 需要的词表
 pnpm typecheck
 ```
 
@@ -188,6 +237,8 @@ pnpm typecheck
 ```shell
 pnpm bench:compare --article bench/articles/孔乙己.txt
 pnpm bench:compare --limit 300 --json bench/results/冰灯-300.json
+pnpm bench:compare --algorithms lime-v1,dict-llm-v1
+LIME_ALGORITHM=dict-llm-v1 pnpm bench:speed
 pnpm bench:words        # 重新生成雾凇词表
 pnpm bench:tokens       # 重新导出 Qwen token 表
 ```
@@ -228,5 +279,13 @@ LIME 在冰灯和论语上领先约 10 到 11 个百分点，孔乙己基本持�
 重启服务器
 
 访问 http://127.0.0.1:5000/demo.html?passwd=你的密码 将有个模拟平时输入法界面的页面
+
+需要连接其他服务器时，加 `server` 参数：
+
+```text
+http://127.0.0.1:5000/demo.html?server=http://127.0.0.1:5001&passwd=目标服务器的密码
+```
+
+页面会直接请求该服务器，不影响当前 5000 服务器。
 
 其他界面在 http://127.0.0.1:5000 可以导航，如上下文获取、输入统计计算等

@@ -15,7 +15,7 @@
 >
 > 给 Java 生态造的"AI 积木"，从此告别在 Java 里调 Python 微服务
 
-[快速开始](#-快速开始) · [Spring Boot Starter](#-spring-boot-starter) · [应用场景](#-应用场景) · [更新日志](CHANGELOG.md)
+[快速开始](#-快速开始) · [整体架构](#-整体架构) · [Spring Boot Starter](#-spring-boot-starter) · [应用场景](#-应用场景) · [更新日志](CHANGELOG.md)
 
 </div>
 
@@ -31,7 +31,7 @@
 | PyTorch / PaddlePaddle 几百 MB 起步，包体爆炸 | **ONNX Runtime** 一个 runtime 全部搞定，CPU/GPU/CUDA 自由切换 |
 | 模型预处理、后处理各家一套，文档稀烂 | **端到端复刻 OpenCV / Magika / HyperLPR3 实现**，预处理 / 后处理 / 解码全部内置，开箱即用 |
 | 集成 Spring Boot 要写一堆 Bean 配置 | **官方 Starter**，一行 YAML 注入引擎 Bean |
-| 模型下载慢、上手要跑 Python 脚本 | **模型直接入库**，克隆即用，零下载 / 零转换步骤 |
+| 模型下载慢、上手要跑 Python 脚本 | **模型直接入库**，克隆即用，零下载 / 零转换步骤，配置一次路径即可 |
 
 > 💡 **Mica AI 不是又一个 SDK，而是 Java 工程师的 AI 全家桶。**
 
@@ -45,6 +45,8 @@
 | 🧬 人脸特征 | `mica-ai-face` | SFace | **128d** L2 归一化向量 | Apache 2.0 | ✅ |
 | 🛡️ 活体检测 | `mica-ai-face` | MiniFASNetV2 | real / replay / print | MIT | ✅ |
 | 🖼️ 头像 / 证件卡片提取 | `mica-ai-face` | 几何变换 + USM/CLAHE | 正方形头像 / 矫正卡面 | Apache 2.0 | ✅ |
+| 📊 人脸质量评估 | `mica-ai-face` | eDifFIQA-Tiny | 质量分（0~1，越高越好） | **CC-BY-4.0**（分发需署名） | ✅ |
+| 😊 表情识别 | `mica-ai-face` | MobileFaceNet（Progressive Teacher） | **7 类**表情 + softmax 置信度 | Apache 2.0 | ✅ |
 | 📄 文件类型识别 | `mica-ai-filetype` | Google Magika `standard_v3_3` | **214 类** + mime / group / description | Apache 2.0 | ✅ |
 | 🚗 中国车牌识别 | `mica-ai-plate` | HyperLPR3 v20230229 | 车牌号 + 10 类判型 + 颜色 | Apache 2.0 | ✅ |
 | 📐 文档版面分析 | `mica-ai-layout` | PP-DocLayoutV3 | **25 类版面区域** + V3 阅读顺序 | Apache 2.0 | ✅ |
@@ -58,57 +60,37 @@
 | 🔎 通用图像分类 | `mica-ai-classify` | PaddleClas PULC（4 个入库：整图方向 / 清晰度 / 人物存在 / 表格 6 属性） | **Top-K** + 全量概率（单标签 / 多标签） | Apache 2.0 | ✅ |
 | 🔐 通用验证码识别 | `mica-ai-captcha` | ddddocr CRNN + CTC（**8210 类**字符集，模型外置配置） | 验证码文本 + 逐字符置信度 | MIT | ✅ |
 
-### 整体架构
+## 🏛️ 整体架构
 
-```
-                    ┌─────────────────────────────────────┐
-                    │           Spring Boot App           │
-                    └──────────────┬──────────────────────┘
-                                   │ @Autowired / 一行 YAML
-                                   ▼
-        ┌──────────────────────────────────────────────────────┐
-        │                    mica-ai-starters                  │
-        │  face 🎭 filetype 📄 plate 🚗 layout 📐 matting ✂️    │
-        │  humanseg 👤 detect 🎯 track 🧭 docalign 📸         │
-        │  enhance ✨ textline 🔤 classify 🔎 captcha 🔐        │
-        └──────────────────────────┬───────────────────────────┘
-                                   │
-                                   ▼
-        ┌──────────────────────────────────────────────────────┐
-        │                    mica-ai-core                     │
-        │   mica-ai-face        mica-ai-filetype  mica-ai-plate│
-        │   YuNet + SFace 🎭    Magika 214 类 📄  HyperLPR3 🚗  │
-        │   + 活体 MiniFASNet   + mime / group   + 车牌号 / 颜色│
-        │   + 头像 / 证件卡片                                  │
-        │         mica-ai-layout   mica-ai-matting            │
-        │         PP-DocLayoutV3 📐 U²-Net 族 ✂️              │
-        │         25 类 + 阅读顺序   原尺寸 alpha 掩码           │
-        │      mica-ai-humanseg   mica-ai-detect  mica-ai-track│
-        │      PP-HumanSeg 👤     NanoDet/YOLOX 🎯 ByteTrack 🧭│
-        │              mica-ai-docalign                       │
-        │              DocAligner 📸 4 角点 + 透视矫正         │
-        │              mica-ai-enhance                        │
-        │              Real-ESRGAN ✨ 4 倍超分（tile）         │
-        │                mica-ai-textline                     │
-        │                PP-LCNet 🔤 0° / 180° + 转正         │
-        │                mica-ai-classify                     │
-        │                PaddleClas PULC 🔎 Top-K / 多标签     │
-        │                mica-ai-captcha                      │
-        │                ddddocr CRNN 🔐 验证码 + 置信度       │
-        └──────────────────────────┬───────────────────────────┘
-                                   │
-                                   ▼
-                          ┌──────────────────────┐
-                          │    mica-ai-common    │
-                          │  ONNX 通用基础设施    │
-                          │  + 统一异常          │
-                          └──────────────────────┘
+mica-ai 的运行时是四层单向依赖：**接入层 → 能力层 → 底座层 → 模型层**，你的应用站在接入层之上。
+
+<!-- htmlLabels:false 规避 mermaid 在中文标签下的宽度测量误差（foreignObject 测宽按拉丁字体、渲染回退 CJK 字体，导致文字被裁）；wrappingWidth 放大后 <br/> 手写分行才不会被自动折行打散 -->
+```mermaid
+%%{init: {'htmlLabels': false, 'flowchart': {'wrappingWidth': 600}}}%%
+graph TD
+    APP["你的应用<br/>Spring Boot / 纯 Java"]
+    ST["接入层 · mica-ai-starters × 13<br/>一行 YAML 注入引擎 Bean（可选）"]
+    CORE["能力层 · mica-ai-core × 13 能力模块<br/>face · filetype · plate · layout · matting · humanseg<br/>detect · track · docalign · enhance · textline · classify · captcha"]
+    COMMON["底座层 · mica-ai-common<br/>OnnxModelSession · OrtSessionFactory · MicaAiException"]
+    MODELS["模型层 · model-tools/*.onnx（23 个）<br/>随仓库分发，不打包进 jar，路径必须显式配置"]
+
+    APP -->|"@Autowired / 一行 YAML"| ST
+    APP -.->|"零 Spring 可直连"| CORE
+    ST --> CORE
+    CORE --> COMMON
+    COMMON -->|"加载 .onnx"| MODELS
 ```
 
-> 🔌 零 Spring 场景可直接依赖 `mica-ai-core` 各模块，Starter 仅是 Bean 注入的便捷封装；`mica-ai-example` 提供完整集成示例。
+| 层 | 模块 | 职责 | 关键约束 |
+|----|------|------|----------|
+| 接入层 | `mica-ai-starters` × 13 | 把 `mica.ai.*` YAML 配置翻译成引擎 Bean | **可选**；不用 Spring Boot 可直接依赖能力层 |
+| 能力层 | `mica-ai-core` × 13 | 13 个互不依赖的能力模块，可按需引入 | 零 Spring、纯 Java 8+；`face` 一个模块含 6 项能力 |
+| 底座层 | `mica-ai-common` | ONNX 会话工厂、ORT 选项、统一异常 | 被全部能力模块共享 |
+| 模型层 | `model-tools/<cap>/models/` | 23 个模型文件（12 个能力目录） | 随仓库分发，**不打包进 jar**，路径必须显式配置 |
 
-> - OCR：[**mica-ppocr**](https://gitee.com/dreamlu/mica-ppocr) — PaddleOCR / PP-OCRv4 的 Java 推理
-> - 语音（ASR / TTS / 热词雷达 / 中文 ITN）：[**mica-voice**](https://gitee.com/dreamlu/mica-voice) — SenseVoice 等语音模型的 Java 推理
+> 三条硬约束贯穿全栈：**零 Spring**（core 不引任何 `spring-*`）、**零 Python**（全部 ONNX Runtime 内推理，不 spawn 子进程）、**零模型入 jar**（模型走外置路径配置）。
+>
+> `mica-ai-example` 提供完整集成示例；相邻项目：[**mica-ppocr**](https://gitee.com/dreamlu/mica-ppocr)（PaddleOCR / PP-OCRv4 的 Java 推理）、[**mica-voice**](https://gitee.com/dreamlu/mica-voice)（ASR / TTS / 热词雷达 / 中文 ITN）。
 
 ---
 
@@ -201,8 +183,8 @@
 
 ```java
 ModelConfig config = ModelConfig.builder()
-    .detectionModelPath(Path.of("models/face_detection_yunet_2023mar.onnx"))
-    .recognitionModelPath(Path.of("models/face_recognition_sface_2021dec.onnx"))
+    .detectionModelPath(Paths.get("model-tools/face/models/face_detection_yunet_2023mar.onnx"))
+    .recognitionModelPath(Paths.get("model-tools/face/models/face_recognition_sface_2021dec.onnx"))
     .build();
 
 try (ModelManager manager = ModelManager.create(config)) {
@@ -221,6 +203,8 @@ try (ModelManager manager = ModelManager.create(config)) {
 }
 ```
 
+> 模型随仓库分发但**不打包进 jar**，路径必须显式配置（可写绝对路径或 `classpath:` 前缀）；未配置时启动即 fail-fast 并提示指向 `model-tools/face/models/`。
+
 ### 3️⃣ 一行配置开启 Spring Boot Starter
 
 ```yaml
@@ -230,11 +214,11 @@ mica:
       enabled: true                       # 总开关，默认 true
       model:                              # ⚠️ 模型路径统一挂在 model 下
         detection:
-          path: classpath:models/face_detection_yunet_2023mar.onnx       # 必填
+          path: model-tools/face/models/face_detection_yunet_2023mar.onnx   # 必填
         recognition:
-          path: classpath:models/face_recognition_sface_2021dec.onnx     # 必填
+          path: model-tools/face/models/face_recognition_sface_2021dec.onnx  # 必填
         liveness:
-          path: classpath:models/2.7_80x80_MiniFASNetV2.onnx             # liveness.enabled=true 时必填
+          path: model-tools/face/models/2.7_80x80_MiniFASNetV2.onnx        # liveness.enabled=true 时必填
       detection:
         threshold: 0.9                    # 检测置信度阈值
         nms-threshold: 0.3                # NMS IoU 阈值
@@ -315,34 +299,21 @@ mica-ai/
 │   ├── mica-ai-textline/           #   🔤 PP-LCNet 文本行方向分类（0° / 180°）
 │   ├── mica-ai-classify/           #   🔎 PaddleClas PULC 通用图像分类
 │   └── mica-ai-captcha/            #   🔐 ddddocr 通用验证码识别（CRNN + CTC）
-├── mica-ai-starters/               # Spring Boot 2 Starter
-│   ├── mica-ai-face-spring-boot-starter/
-│   ├── mica-ai-filetype-spring-boot-starter/
-│   ├── mica-ai-plate-spring-boot-starter/
-│   ├── mica-ai-layout-spring-boot-starter/
-│   ├── mica-ai-matting-spring-boot-starter/
-│   ├── mica-ai-humanseg-spring-boot-starter/
-│   ├── mica-ai-detect-spring-boot-starter/
-│   ├── mica-ai-track-spring-boot-starter/
-│   ├── mica-ai-docalign-spring-boot-starter/
-│   ├── mica-ai-enhance-spring-boot-starter/
-│   ├── mica-ai-textline-spring-boot-starter/
-│   ├── mica-ai-classify-spring-boot-starter/
-│   └── mica-ai-captcha-spring-boot-starter/
+├── mica-ai-starters/               # Spring Boot 2 Starter：每个能力一个（mica-ai-<cap>-spring-boot-starter），见上方 Starter 表
 ├── mica-ai-example/                # Spring Boot 集成示例
-└── model-tools/                    # 模型资产（直接入库，均 <50MB）
-    ├── face/models/                #   YuNet + SFace + MiniFASNetV2 + EDFFIQA + 表情识别
-    ├── filetype/models/            #   Magika standard_v3_3
-    ├── plate/models/               #   HyperLPR3 v20230229
-    ├── layout/models/              #   PP-DocLayoutV3（125MB，⚠️ 不随仓库分发）
-    ├── matting/models/             #   U²-Net u2netp（4.36MB，入库；u2net/u2net_human_seg 168MB 不入库）
-    ├── humanseg/models/            #   PP-HumanSeg V2-Lite（5.88MB，入库）
-    ├── detect/models/              #   NanoDet-Plus 3.62MB + YOLOX-s 34.2MB（入库）
-    ├── docalign/models/            #   DocAligner lcnet100 4.55MB（入库；fastvit 同族不入库）
-    ├── enhance/models/             #   Real-ESRGAN realesr-general-x4v3 2.33MB（入库，含 BSD-3 许可证原文）
-    ├── textline/models/            #   PP-LCNet_x1_0_textline_ori（6.46MB，入库；x0_25 轻量版不入库）
-    ├── classify/models/            #   PULC 4 个模型（4.14–6.79MB，入库；各带 label_list）
-    └── captcha/models/             #   ddddocr ddddocr.onnx + charset.txt（12.98MB，入库；不打包进 jar）
+└── model-tools/                    # 模型资产：12 个能力目录 / 23 个 .onnx，随仓库分发、不打包进 jar（体积为目录合计，单文件 <50MB）
+    ├── face/models/                #   5 个模型 · 50.3MB · ✅ 入库
+    ├── filetype/models/            #   1 个模型 + 配置 · 3.1MB · ✅ 入库
+    ├── plate/models/               #   4 个模型 · 17.3MB · ✅ 入库
+    ├── layout/models/              #   1 个模型 · 124.5MB · ⚠️ 不随仓库分发
+    ├── matting/models/             #   1 个模型 · 4.4MB · ✅ 入库
+    ├── humanseg/models/            #   1 个模型 · 5.9MB · ✅ 入库
+    ├── detect/models/              #   2 个模型 · 37.8MB · ✅ 入库
+    ├── docalign/models/            #   1 个模型 · 4.5MB · ✅ 入库
+    ├── enhance/models/             #   1 个模型 · 2.3MB · ✅ 入库（含 BSD-3 许可证原文）
+    ├── textline/models/            #   1 个模型 · 6.5MB · ✅ 入库
+    ├── classify/models/            #   4 个模型 + label_list · 23.3MB · ✅ 入库
+    └── captcha/models/             #   1 个模型 + 字符集 · 13.0MB · ✅ 入库
 ```
 
 ---
@@ -376,6 +347,7 @@ mica-ai/
 | 📸 **手机拍文档 / 扫描件摆正** | `mica-ai-docalign` 的 `DocAlignEngine` — 4 角点检测 + 透视拉平，接 `mica-ai-layout` / `mica-ppocr` 前先摆正 |
 | ✨ **低清图 / 缩略图放大** | `mica-ai-enhance` 的 `EnhanceEngine` — 4 倍超分，大图走 tile 推理；适合头像、商品图、证件照清晰化 |
 | 🔤 **OCR 前置转正 / 扫描件倒置行纠正** | `mica-ai-textline` 的 `TextLineEngine` — 单行 0° / 180° 判定 + `uprightBytes` 一键转正（配合 `mica-ppocr` 做文本行定位） |
+| 🔎 **图像质量门控 / 整图方向 / 表格结构判定** | `mica-ai-classify` 的 `ClassifyEngine` — 通用 N 类 / 多标签分类底座，PULC 首批 4 模型（整图方向 / 清晰度 / 人物存在 / 表格 6 属性）已入库 |
 | 🔐 **验证码自动识别 / 自动化测试填码** | `mica-ai-captcha` 的 `CaptchaEngine` — 文本 + 逐字符置信度，低置信度可转人工 |
 
 > 以上是**单能力**场景。多个能力编排成完整业务链路的组合示例见
@@ -392,13 +364,15 @@ mica-ai/
 
 本项目基于 [Apache License 2.0](LICENSE) 协议开源，可放心用于商业项目；当前所有依赖模型均确认可商用（详见 `AGENTS.md` §6.1）。
 
+> ⚠️ 唯一非 Apache 的依赖模型是 **eDifFIQA-Tiny（CC-BY-4.0）**：允许商用，但**再分发时必须保留署名与许可声明**（详见 [`model-tools/face/README.md`](model-tools/face/README.md) 与 [NOTICE](NOTICE)）。
+
 ---
 
 ## 💖 致谢
 
 感谢所有为 Mica 系列项目做出贡献的开发者，以及以下开源项目：
 
-- [OpenCV Zoo](https://github.com/opencv/opencv_zoo) · [minivision Silent-Face-Anti-Spoofing](https://github.com/minivision-ai/Silent-Face-Anti-Spoofing) · [ONNX Runtime](https://onnxruntime.ai/) · [openpnp/openpnp-vision](https://github.com/openpnp/openpnp-vision) · [Google Magika](https://github.com/google/magika) · [HyperLPR3](https://github.com/szad670401/HyperLPR) · [PaddleX](https://github.com/PaddlePaddle/PaddleX) · [U²-Net](https://github.com/xuebinqin/U-2-Net) · [DocAligner](https://github.com/DocsaidLab/DocAligner) · [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) · [ddddocr](https://github.com/sml2h3/ddddocr)
+- [OpenCV Zoo](https://github.com/opencv/opencv_zoo) · [minivision Silent-Face-Anti-Spoofing](https://github.com/minivision-ai/Silent-Face-Anti-Spoofing) · [ONNX Runtime](https://onnxruntime.ai/) · [openpnp/openpnp-vision](https://github.com/openpnp/openpnp-vision) · [Google Magika](https://github.com/google/magika) · [HyperLPR3](https://github.com/szad670401/HyperLPR) · [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) · [PaddleClas](https://github.com/PaddlePaddle/PaddleClas) · [PaddleX](https://github.com/PaddlePaddle/PaddleX) · [U²-Net](https://github.com/xuebinqin/U-2-Net) · [DocAligner](https://github.com/DocsaidLab/DocAligner) · [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) · [ByteTrack](https://github.com/FoundationVision/ByteTrack) · [ddddocr](https://github.com/sml2h3/ddddocr)
 - 已抽离的 Mica 系列仓库：[mica-ppocr](https://gitee.com/dreamlu/mica-ppocr) · [mica-voice](https://gitee.com/dreamlu/mica-voice)
 
 <div align="center">

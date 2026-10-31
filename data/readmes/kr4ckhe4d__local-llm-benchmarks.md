@@ -21,6 +21,7 @@ R9700 (48.9 GB VRAM, both PCIe 5.0 x8), CachyOS, ROCm 7.2, llama.cpp b11434.
 | Qwen3.8 27B (dense) | IQ4_XS + MTP | 71 tok/s, 85% draft acceptance (file since replaced by UD-Q6_K) |
 | Qwen3.8 27B | **UD-Q6_K** + MTP | 57 tok/s; KLD vs BF16 0.0020 (IQ4_XS: 0.0179); as good as Q8_0 in Claude Code, 12% faster |
 | GLM-4.7-Flash 30B-A3B | Q4/Q8, 128K | 75 tok/s in an empty context, but **154 tok/s prefill** at 128K depth (attention-bound; removed) |
+| Nemotron 3.5 Lightning 30B-A3B | Q8_0 + MTP, 128K | **167 tok/s**, 83% draft acceptance (1.70x); 128K costs only 2.7 GB more than 32K — but 28K thinking tokens per coding task |
 | MoE models generally | second card | CPU expert offload gone: **+38% to +183%** generation |
 
 Generation is the 700-token probe in an empty context unless it says "depth";
@@ -44,6 +45,7 @@ in the linked files.
 | [dflash2-qat-q2.md](dflash2-qat-q2.md) | DFlash2 speculative drafter and QAT Q2_0 for Qwen3.8-27B on 16 GB |
 | [turboquant.md](turboquant.md) | TurboQuant 2-4 bit KV-cache quantization |
 | [instella-moe.md](instella-moe.md) | AMD Instella-MoE-16B-A3B |
+| [nemotron-3.5-lightning-30B.md](nemotron-3.5-lightning-30B.md) | Nemotron 3.5 Lightning 30B-A3B `Q8_0`: the repo's fastest generation and cheapest 128K, spent on 28K reasoning tokens a task |
 | [handover.md](handover.md) | Working notes, including the KLD-vs-BF16 quant study |
 | [`models-preset.ini`](models-preset.ini) | The llama-server router presets, each with the measurements that set it |
 | [`benchmarks/`](benchmarks/) | The scripts (`fit.sh`, `kld-test.sh`, `throughput-test.py`, ...) and raw logs |
@@ -2003,12 +2005,7 @@ model's, not the harness's.
 | Laguna XS 2.1 `Q8_0` | ~8.5 | 27/50 (54%) | 2/7 |
 | Nemotron 3.5 Bolt 74B-A9B 24GB ‡ | ~2.4 | 35/50 (70%) | 2/7 |
 | Nemotron 3.5 Bolt 74B-A9B 24GB, **thinking on** ‡ | ~2.4 | **39/50 (78%)** | 4/7 |
+| Nemotron 3.5 Lightning 30B-A3B `Q8_0` ‖ | ~9.0 | 27/50 (54%) | 1/7 |
+| Nemotron 3.5 Lightning 30B-A3B `Q8_0`, **thinking on** ‖ | ~9.0 | 35/50 (70%) | 1/7 |
 | Qwen3-Next-80B-A3B-Thinking `Q4_K_M` § | ~4.8 | 27/50 (54%) | 2/7 |
-| Qwen3.8-Flash-Next `IQ3_XXS`, Strata ¶ | ~3.1 | **43/50 (86%)** | 4/7 |
-| Qwen3.8-Flash-Next `IQ3_XXS`, Strata, **thinking medium**, 3 runs ¶ | ~3.1 | **47 / 47 / 47 (94%)** | 5/7 |
-| Qwen3.8-Flash-Next **Coder** `IQ1_M`, Strata ¶ | ~3.5 kept | 42/50 (84%) | 3/7 |
-| Qwen3.8-Flash-Next **Coder** `IQ1_M`, Strata, thinking medium, 3 runs ¶ | ~3.5 kept | 31 / 43 / 39 (mean 75%) | 3-4/7 |
-
-† The two Gemma 4 rows were measured 2026-08-29 at `--max-tokens 12288`; every
-other row used 2400. They are directly comparable to each other but not exactly
-to the rest 
+| Qwen3.8-Flash-Next `IQ3_XX

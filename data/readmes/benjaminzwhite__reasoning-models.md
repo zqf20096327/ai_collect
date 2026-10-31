@@ -646,12 +646,9 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [RSIHub: A Composable Framework for Agent-Evolution Methods](https://arxiv.org/abs/2610.32253) - NeurIPS 2026 Meta-Agents Workshop
 - [InteractiveWorld: A Verifiable Human-Centric Environment for Building Better Interactive MLLM Assistants](https://arxiv.org/abs/2610.33966)
 - [Truncate or Not? A Scaling Study of Looped Transformers with Truncated Backpropagation](https://arxiv.org/abs/2610.26030)
+- [Training Foundation Models with a Single Algorithm](https://arxiv.org/abs/2610.40564)
+- [Your Policy Is Secretly a Harness: The Decision Geometry of Agent Interfaces](https://arxiv.org/abs/2610.37255)
 
 #### Topic - Audio Reasoning
 
-- [Reinforcement Learning with Evolving Rubrics as Rewards for Audio Reasoning](https://arxiv.org/abs/2608.02831)
-
-#### Topic - Routing
-
-- [When to Reason: Semantic Router for vLLM](https://arxiv.org/abs/2510.08731)
-- [TCAndon-Router: Adaptive Reasoning Router for Multi-Agent Collaboration](https://
+- [Reinforcement Learning with Evolving Rubrics as Rewards for Audio Reasoning](https://arxiv.or

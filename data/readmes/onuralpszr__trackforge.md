@@ -43,11 +43,12 @@
 - 🐍 **Python Bindings** First-class `pip install trackforge` support via PyO3
 - 🎯 **Multi-Algorithm** ByteTrack, OC-SORT, DeepSORT, Deep OC-SORT, BoT-SORT, TrackTrack, and SORT with a unified API
 - 🔌 **Pluggable Re-ID** The appearance matching is always available; you pass in embeddings. The image based extractor that runs a model over a frame is an opt-in `reid-model` feature, so the base build stays light
+- 🧩 **Ultralytics Ready** One call turns YOLO results into tracks in Python, and a helper plus a standalone example cover `ultralytics-inference` in Rust
 - 📐 **Generic Kalman Filter** Configurable position/velocity weighting, gating distance computation
 
 <!-- prettier-ignore -->
 > [!IMPORTANT]
-> **Under active development.** APIs and features are subject to change. MSRV: Rust 1.89.
+> **Under active development.** APIs and features are subject to change. MSRV: Rust 1.92.
 
 ## Installation
 
@@ -63,14 +64,14 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-trackforge = "0.4.0"
+trackforge = "0.5.0"
 ```
 
 To build the Python bindings from source (e.g., via `maturin develop`), enable the `python` feature:
 
 ```toml
 [dependencies]
-trackforge = { version = "0.4.0", features = ["python"] }
+trackforge = { version = "0.5.0", features = ["python"] }
 ```
 
 #### Cargo features
@@ -87,7 +88,7 @@ Enable the image based extractor when you want the library to produce embeddings
 
 ```toml
 [dependencies]
-trackforge = { version = "0.4.0", features = ["reid-model"] }
+trackforge = { version = "0.5.0", features = ["reid-model"] }
 ```
 
 Without it, produce embeddings yourself (any model, any runtime) and drive `DeepSortTracker` or `DeepOcSortTracker` directly.
@@ -133,7 +134,7 @@ tracker = DEEPSORT(
 )
 
 detections = [([100.0, 100.0, 50.0, 100.0], 0.9, 0)]
-embeddings = [[0.1, 0.2, 0.3, ...]]  # appearance feature vectors
+embeddings = [[0.1, 0.2, 0.3]]  # appearance feature vectors
 
 tracks = tracker.update(detections, embeddings)
 
@@ -259,6 +260,7 @@ for t in tracks {
 
 ```rust
 use trackforge::trackers::deepsort::DeepSort;
+use trackforge::types::BoundingBox;
 
 // `extractor` implements the AppearanceExtractor trait (plug in any Re-ID model).
 let mut tracker = DeepSort::new(extractor, 30, 3, 0.7, 0.2, 100);
@@ -352,6 +354,67 @@ for t in &tracks {
 }
 ```
 
+## Ultralytics
+
+trackforge plugs straight into [Ultralytics](https://github.com/ultralytics/ultralytics) YOLO and RT-DETR models.
+
+### Python
+
+`track_ultralytics` runs the model over any source Ultralytics reads (video, webcam, stream, image folder) and yields the tracks for every frame:
+
+```python
+import trackforge
+from ultralytics import YOLO
+
+model = YOLO("yolo11n.pt")
+tracker = trackforge.BYTETRACK()
+
+for result, tracks in trackforge.track_ultralytics(model, "people.mp4", tracker, classes=[0]):
+    for track_id, tlwh, score, class_id, det_ind in tracks:
+        print(track_id, result.names[class_id], tlwh)
+```
+
+To keep your own loop, `from_ultralytics` converts one result into detections:
+
+```python
+detections = trackforge.from_ultralytics(model(frame, verbose=False))
+tracks = tracker.update(detections)
+```
+
+Appearance trackers take an `embedder(frame, tlwh_boxes)` callable: `track_ultralytics(model, source, trackforge.DEEPSORT(), embedder=my_reid)`. Neither helper imports `ultralytics`, so it stays an optional dependency.
+
+### Rust
+
+[`ultralytics-inference`](https://crates.io/crates/ultralytics-inference) runs YOLO in Rust, and `detections_from_xyxy` turns its boxes into tracker input:
+
+```rust,ignore
+use trackforge::trackers::byte_track::{ByteTrack, ByteTrackParams};
+use trackforge::utils::detections_from_xyxy;
+use ultralytics_inference::YOLOModel;
+
+let mut model = YOLOModel::load("yolo26n.onnx")?;
+let mut tracker = ByteTrack::from_params(ByteTrackParams::default());
+
+for result in model.predict("frame.jpg")? {
+    if let Some(boxes) = &result.boxes {
+        let data = boxes.data.as_standard_layout();
+        let tracks = tracker.update(detections_from_xyxy(data.as_slice().unwrap()));
+    }
+}
+```
+
+A full video example with a tracker switch lives in [`examples/ultralytics`](examples/ultralytics). It is a separate crate because `ultralytics-inference` is AGPL-3.0, so trackforge itself stays MIT with no extra dependencies:
+
+```bash
+cd examples/ultralytics
+cargo run --release -- "frames/*.jpg" --tracker bytetrack --classes 0
+cargo run --release --features video -- people.mp4 --tracker botsort   # needs FFmpeg dev libraries
+# annotated video with track ids and motion trails
+cargo run --release --features video -- people.mp4 --classes 0 --save tracked.mp4
+# the whole loop in one short file
+cargo run --release --features video --example minimal -- people.mp4
+```
+
 ## Examples
 
 Runnable demos live under [`examples/`](examples/), with both a Python and a Rust entry per tracker.
@@ -360,11 +423,11 @@ Runnable demos live under [`examples/`](examples/), with both a Python and a Rus
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | ByteTrack    | [`byte_track_demo.py`](examples/python/byte_track_demo.py) (YOLO11)                                                                     | [`byte_track_demo.rs`](examples/rust/byte_track_demo.rs)                                                  |
 | DeepSORT     | [`deepsort_demo.py`](examples/python/deepsort_demo.py) (YOLO + ResNet18)                                                                | [`deepsort_simple.rs`](examples/deepsort_simple.rs), [`deepsort_ort.rs`](examples/deepsort_ort.rs) (ONNX) |
-| OC-SORT      | [`ocsort_demo.py`](examples/python/ocsort_demo.py)                                                                                      | —                                                                                                         |
-| Deep OC-SORT | [`deep_ocsort_demo.py`](examples/python/deep_ocsort_demo.py) (YOLO + ResNet18)                                                          | —                                                                                                         |
+| OC-SORT      | [`ocsort_demo.py`](examples/python/ocsort_demo.py)                                                                                      | -                                                                                                         |
+| Deep OC-SORT | [`deep_ocsort_demo.py`](examples/python/deep_ocsort_demo.py) (YOLO + ResNet18)                                                          | -                                                                                                         |
 | BoT-SORT     | [`botsort_demo.py`](examples/python/botsort_demo.py) (YOLO + ResNet18)                                                                  | [`det_ind_demo.rs`](examples/rust/det_ind_demo.rs) (det_ind mapping)                                      |
-| SORT         | [`sort_yolo_demo.py`](examples/python/sort_yolo_demo.py) (YOLO), [`sort_rtdetr_demo.py`](examples/python/sort_rtdetr_demo.py) (RT-DETR) | —                                                                                                         |
-| TrackTrack   | —                                                                                                                                       | —                                                                                                         |
+| SORT         | [`sort_yolo_demo.py`](examples/python/sort_yolo_demo.py) (YOLO), [`sort_rtdetr_demo.py`](examples/python/sort_rtdetr_demo.py) (RT-DETR) | -                                                                                                         |
+| TrackTrack   | [`tracktrack_demo.py`](examples/python/tracktrack_demo.py) (YOLO + ResNet18)                                                            | [`tracktrack_demo.rs`](examples/rust/tracktrack_demo.rs)                                                  |
 
 ```bash
 # Python
@@ -375,6 +438,7 @@ cargo run --example byte_track_demo
 cargo run --example deepsort_simple --features reid-model
 cargo run --example deepsort_ort --features advanced_examples
 cargo run --example det_ind_demo
+cargo run --example tracktrack_demo
 ```
 
 The Python demos use the usual detector stacks: `ultralytics` (YOLO), `transformers` + `torch`
@@ -397,8 +461,8 @@ Each tracker's parameters and defaults (identical across Python and Rust) are do
 
 ### Prerequisites
 
-- Rust 1.89+ (MSRV)
-- Python 3.8+ and [`maturin`](https://github.com/pyo3/maturin) for the bindings
+- Rust 1.92+ (MSRV)
+- Python 3.9+ and [`maturin`](https://github.com/pyo3/maturin) for the bindings
 - [`prek`](https://github.com/j178/prek) for git hooks (optional but recommended)
 
 ### Setup
@@ -421,7 +485,7 @@ These mirror CI, run them before opening a PR:
 
 ```bash
 cargo fmt --all -- --check          # formatting
-cargo clippy --all-targets -- -D warnings   # lint, warnings are errors
+cargo clippy --all-targets --features python -- -D warnings   # lint, warnings are errors
 cargo test                          # unit, integration, and doc tests
 cargo llvm-cov --summary-only       # coverage (cargo install cargo-llvm-cov)
 prek run --all-files                # all pre-commit hooks at once
@@ -430,6 +494,7 @@ prek run --all-files                # all pre-commit hooks at once
 ### Feature flags
 
 - `python` builds the PyO3 bindings.
+- `reid-model` adds the `AppearanceExtractor` trait and the `DeepSort`/`DeepOcSort` wrappers (pulls `image`); required by `deepsort_simple`.
 - `advanced_examples` enables the ONNX/OpenCV-backed examples (`deepsort_ort`), which need
   ONNX Runtime and OpenCV on the system.
 
@@ -450,7 +515,7 @@ python examples/python/deepsort_demo.py --video your_video.mp4
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - For major changes, open an issue first to discuss what you would like to change.
-- PRs should pass CI: `cargo fmt`, `cargo clippy -- -D warnings`, `cargo test`.
+- PRs should pass CI: `cargo fmt`, `cargo clippy --all-targets --features python -- -D warnings`, `cargo test`.
 - Use [Commitizen](https://commitizen-tools.github.io/commitizen/) for commit messages: `cz commit`.
 
 ## Roadmap
@@ -518,6 +583,14 @@ also cite the paper for the tracker you use:
   author={Aharon, Nir and Orfaig, Roy and Bobrovsky, Ben-Zion},
   journal={arXiv preprint arXiv:2206.14651},
   year={2022}
+}
+
+@inproceedings{shim2025tracktrack,
+  title={Focusing on Tracks for Online Multi-Object Tracking},
+  author={Shim, Kyujin and Ko, Kangwook and Yang, Yujin and Kim, Changick},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={11687--11696},
+  year={2025}
 }
 ```
 

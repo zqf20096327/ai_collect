@@ -154,7 +154,7 @@ Claude Code agents attach via a separate plugin distributed through this repo's 
 
 The plugin defaults to `http://localhost:4000` + `tok_dev` for the local-dev path; export `FLIGHTDECK_SERVER` + `FLIGHTDECK_TOKEN` before launching `claude` to point at a different stack. See [Quickstart > Coding agents](#coding-agents-claude-code) for the full flow. Tool inputs and LLM call content are captured by default, so the Prompts tab is populated without extra setup.
 
-Sessions carry `flavor=claude-code`, `agent_type=coding`, and `client_type=claude_code`. The plugin is hook-based and cannot act on directives mid-call; the Stop Agent button is hidden for these sessions. Raw file bodies written by `Write` / `Edit` are never forwarded; tool inputs go through a sanitised whitelist.
+Sessions carry `flavor=claude-code`, `agent_type=coding`, and `client_type=claude_code`. By default the plugin only observes and the Stop Agent button is hidden for these sessions; with its `enforcement` option on, a stop or a token budget denies the session's next tool call and blocks its prompts (see [plugin/README.md](plugin/README.md#enforcement-opt-in)). Raw file bodies written by `Write` / `Edit` are never forwarded; tool inputs go through a sanitised whitelist.
 
 `client_type` names the client that produced a session. Flightdeck accepts nine values (`claude_code`, `flightdeck_sensor`, `claude_agent_sdk`, `codex`, `copilot`, `opencode`, `gemini_cli`, `cursor`, `otlp`), each with a display label, an expected agent type, a billing-mode default and whether the client can act on directives; see "Client type registry" in [ARCHITECTURE.md](ARCHITECTURE.md). The plugin sends `claude_code` and the sensor sends `flightdeck_sensor`; the other values are reserved for the integrations on the [Roadmap](#roadmap).
 
@@ -420,11 +420,11 @@ A production render (`api.env=production`, the default) refuses to proceed witho
 
 **Upgrading a v0.5.3 install with `nats.replicas` above 1** (the default is 3): the NATS StatefulSet's pod start policy changes, which Kubernetes does not allow in place. Scale ingestion to zero, give the workers a minute to drain, then run `kubectl delete statefulset <release>-flightdeck-nats` (the data volumes stay) before `helm upgrade`. On first start the clustered servers discard the old per-server streams and ingestion recreates the stream, so any event still on the bus at that point is dropped. A one-replica install upgrades in place and keeps its stream.
 
-The chart is at `version` 0.7.1 with `appVersion` 0.7.1; the default `image.tag` is `v0.7.1`. See [`helm/values.yaml`](helm/values.yaml) for the full schema, including replicas, HPA bounds, ingress, resources, and security contexts.
+The chart is at `version` 0.8.0 with `appVersion` 0.8.0; the default `image.tag` is `v0.8.0`. See [`helm/values.yaml`](helm/values.yaml) for the full schema, including replicas, HPA bounds, ingress, resources, and security contexts.
 
 | Key | Default | Description |
 |---|---|---|
-| `image.tag` | `v0.7.1` | Image tag applied to ingestion/workers/api/dashboard. |
+| `image.tag` | `v0.8.0` | Image tag applied to ingestion/workers/api/dashboard. |
 | `ingestion.replicas` | `2` | Initial replica count. HPA overrides at runtime when enabled. |
 | `ingestion.hpa.enabled` | `true` | Enable the HorizontalPodAutoscaler for ingestion. |
 | `workers.replicas` | `2` | NATS consumer pod count. |

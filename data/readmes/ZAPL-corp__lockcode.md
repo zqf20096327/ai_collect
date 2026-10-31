@@ -1,8 +1,3 @@
-            █     ▄▀▀▀▄ ▄▀▀▀▄ █  ▄▀  ▄▀▀▀▄ ▄▀▀▀▄ █▀▀▀▄ █▀▀▀▀
-            █     █   █ █     █▄▀    █     █   █ █   █ █▄▄▄
-            █     █   █ █   ▄ █ ▀▄   █   ▄ █   █ █   █ █
-            ▀▀▀▀▀  ▀▀▀   ▀▀▀  ▀   ▀   ▀▀▀   ▀▀▀  ▀▀▀▀  ▀▀▀▀▀
-
 # LOCKCODE
 
 ### [CloudFlare Pages](https://lockcode.pages.dev) * [GitHub Pages](https://zapl-corp.github.io/lockcode/) * [npm](https://www.npmjs.com/package/@zapl/lockcode)
@@ -15,6 +10,9 @@ API — без прокси и посредников.
 
 ```bash
 npm install -g @zapl/lockcode
+```
+Запуск из любой директории:
+```bash
 lockcode
 ```
 

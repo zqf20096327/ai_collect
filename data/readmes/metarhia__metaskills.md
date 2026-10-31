@@ -1,7 +1,7 @@
 # Metarhia Skills
 
 [![ci status](https://github.com/metarhia/metaskills/workflows/Testing%20CI/badge.svg)](https://github.com/metarhia/metaskills/actions?query=workflow%3A%22Testing+CI%22+branch%3Amain)
-[![snyk](https://snyk.io/test/github/metarhia/Skills/badge.svg)](https://snyk.io/test/github/metarhia/Skills)
+[![snyk](https://snyk.io/test/github/metarhia/metaskills/badge.svg)](https://snyk.io/test/github/metarhia/metaskills)
 [![npm version](https://badge.fury.io/js/metaskills.svg)](https://badge.fury.io/js/metaskills)
 [![npm downloads/month](https://img.shields.io/npm/dm/metaskills.svg)](https://www.npmjs.com/package/metaskills)
 [![npm downloads](https://img.shields.io/npm/dt/metaskills.svg)](https://www.npmjs.com/package/metaskills)
@@ -16,12 +16,12 @@ From your project root, link skills into your IDE so it can use them:
 npx metaskills
 ```
 
-This autodetects installed IDEs and links every skill into their skills
-directory, one level deep (`.claude/skills/js-conventions` ->
-`node_modules/metaskills/skills/js-conventions`), which is the layout all
-supported agents discover. Skills are not copied, and each link is added to
-`.gitignore` and `.npmignore`. A skill folder of your own with the same name
-is kept and reported as skipped.
+This autodetects installed IDEs and symlinks each target directory in the
+table to `node_modules/metaskills/skills`. Agents then read
+`.cursor/skills/js-conventions/SKILL.md`, and the same `<target>/<skill-name>`
+shape for the other rows. Skills are not copied, and each linked directory is
+added to `.gitignore` and `.npmignore`. A target you already use for your own
+skills is left unchanged and reported as skipped.
 
 **Supported IDEs:**
 
@@ -36,9 +36,9 @@ is kept and reported as skipped.
 | Antigravity | `npx metaskills antigravity` | `.agents/skills`   |
 | All         | `npx metaskills all`         | All of the above   |
 
-Run once after install or after updating the package. Links to removed
-skills and the grouped `skills/metaskills` link from versions up to 1.0.4
-(which agents did not discover) are removed, and missing links are added.
+Run once after install or after updating the package. A previous
+`<target>/metaskills` link, or skill links inside an otherwise empty target
+directory, are replaced by that directory symlink. Missing links are added.
 
 ## Skills
 
@@ -48,7 +48,7 @@ Skills live under `skills/<name>/SKILL.md`:
 - `js-data-structures` — JavaScript collections and structural patterns
 - `data-structures` — general data-structure guidance for agents
 - `metautil-data-structures` — metautil structures (list, queue, deque, trie, …)
-- `js-gof` — GoF creational and related patterns in JavaScript
+- `js-gof` — GoF creational, structural, and related patterns in JavaScript
 - `error-handling` — error handling conventions
 - `npm-publish` — prepare an npm package for release
 

@@ -17,11 +17,13 @@ ADMIN_EMAIL=<EMAIL_ADDRESS_1>
 
 That is real engine output with the shipped config, not a mock-up. In the reply, `<EMAIL_ADDRESS_1>` becomes the real address again, streaming included. `[SECRET]` does not come back: the shipped configs redact secrets and mask card numbers for good, a [per-type setting](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md#entity-overrides-per-type-methods). Detection runs locally and is best-effort, not a guarantee: the [threat model](https://github.com/crp4222/PrivAiTe#threat-model) says what it does not cover.
 
+Since 0.8.0, PrivAiTe also ships its own detection model, [`crp4222/privaite-pii-minilm`](https://huggingface.co/crp4222/privaite-pii-minilm), behind two opt-in presets: `ultrafast` runs it on the Apple Neural Engine at a median 17 ms per document, for coding agents on a Mac, and `minilm` runs it on CPU anywhere. On the public corpora the model never trained on, both mask more direct identifiers than the default ([benchmark](https://github.com/crp4222/PrivAiTe#benchmark): 82.9% and 82.7% against 72.7%). The default does not change unless you pick one.
+
 ## See it work in one command, no API key
 
 ```bash
 docker run --rm \
-  ghcr.io/crp4222/privaite:0.7.3 \
+  ghcr.io/crp4222/privaite:0.8.0 \
   python -m privaite verify
 ```
 
@@ -43,18 +45,18 @@ It starts a throwaway provider on 127.0.0.1, sends the same agent-shaped request
 docker run -d -p 8400:8400 \
   -e PRIVAITE_API_KEYS=change-me \
   -e OPENAI_API_KEY=sk-... \
-  ghcr.io/crp4222/privaite:0.7.3
+  ghcr.io/crp4222/privaite:0.8.0
 ```
 
 **pip:** the same proxy with the same shipped config, which exposes `gpt-4o-mini` and `gpt-4o`.
 ```bash
-python -m pip install --upgrade "privaite>=0.7.3"
+python -m pip install --upgrade "privaite>=0.8.0"
 python -m spacy download en_core_web_lg && python -m spacy download fr_core_news_md
-curl -fsSLO https://raw.githubusercontent.com/crp4222/PrivAiTe/v0.7.3/config/privaite.openai.yaml
+curl -fsSLO https://raw.githubusercontent.com/crp4222/PrivAiTe/v0.8.0/config/privaite.openai.yaml
 OPENAI_API_KEY=sk-... PRIVAITE_API_KEYS=change-me python -m privaite --config privaite.openai.yaml
 ```
 
-**Connect:** point any OpenAI-compatible client at `http://localhost:8400/v1` with the key `change-me` (from Open WebUI running in Docker: `http://host.docker.internal:8400/v1`). For Ollama, Azure or any other provider, [write your own config](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md) and [mount it in Docker](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md#docker-with-a-custom-config). The image is also on Docker Hub as `crp4222/privaite:0.7.3`, and client snippets are in [`examples/`](https://github.com/crp4222/PrivAiTe/tree/main/examples/).
+**Connect:** point any OpenAI-compatible client at `http://localhost:8400/v1` with the key `change-me` (from Open WebUI running in Docker: `http://host.docker.internal:8400/v1`). For Ollama, Azure or any other provider, [write your own config](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md) and [mount it in Docker](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md#docker-with-a-custom-config). The image is also on Docker Hub as `crp4222/privaite:0.8.0`, and client snippets are in [`examples/`](https://github.com/crp4222/PrivAiTe/tree/main/examples/).
 
 ## Claude Code and Codex
 
@@ -81,14 +83,18 @@ Then run `ANTHROPIC_BASE_URL=http://localhost:8400 claude`. Also set `pii.detect
 
 ## Benchmark
 
-| Solution | Recall (span) | Recall (strict) | False positives | Tool-call protection |
+| Solution | Direct identifiers fully masked | Precision | Latency (median) | Left in tool-call arguments |
 |---|---|---|---|---|
-| `onnx` (default) | **85.2%** | **81.7%** | 2 / 14 | **100%** |
-| `light` (full Presidio) | 62.7% | 58.1% | 3 / 14 | **100%** |
-| LiteLLM Presidio guardrail | 70.3% | 65.3% | 3 / 14 | 0.0% |
-| LLM Guard (Anonymize) | 76.9% | 74.9% | 5 / 14 | 0.0% |
+| `minilm` (opt-in) | **82.9%** | 83.5% | 88 ms | **8.1%** |
+| `ultrafast` (opt-in, Neural Engine) | 82.7% | **85.4%** | **17 ms** | 10.8% |
+| `onnx` (default) | 72.7% | 66.5% | 196 ms | 13.5% |
+| `light` | 44.8% | 64.1% | 60 ms | 56.8% |
+| LiteLLM Presidio guardrail\* | 65.5% | 73.6% | 60 ms | 100% |
+| LLM Guard (Anonymize) | 46.4% | 51.9% | 256 ms | n/a, library |
 
-Measured on 120 real documents from the open [AI4Privacy `pii-masking-200k`](https://huggingface.co/datasets/ai4privacy/pii-masking-200k) dataset (458 PII items in DE, EN, FR, IT), plus 14 clean documents for false positives. Read the 100% precisely, it is structural: of the PII PrivAiTe detects in plain text, all of it is also removed from tool-call JSON, so its tool-call leak equals its detection misses (14.8% on this corpus). The two guardrails measured here do not look inside tool-call arguments; other gateways do, and the [comparison](https://github.com/crp4222/PrivAiTe/blob/main/docs/comparison.md) lists what each project states and when to pick it instead. LLM Guard's model is fine-tuned on this exact dataset, so its recall here is optimistic. Methodology, per-language tables, out-of-distribution checks and reproduction: [privaite-bench](https://github.com/crp4222/privaite-bench).
+Macro average over the 3 corpora of [privaite-bench](https://github.com/crp4222/privaite-bench) that PrivAiTe's model never trained on, 627 English documents labeled by their authors: TAB (127 court judgments labeled by law students), PIILO (200 student essays labeled by humans) and Privy (300 synthetic API payloads). The benchmark's 5 other corpora are left out of this table because the model trained on their train splits; none of the other systems lists these 3 in its training data. **Direct identifiers** are names, emails, phone numbers, ID, card and account numbers, secrets and addresses; one counts only when every character of it is masked. **Precision** is the share of masked characters that belong to a labeled entity, on TAB and Privy (PIILO labels only part of its personal data). **Latency** is per document on an Apple M1 Pro, on CPU except `ultrafast`. **Left in tool-call arguments** is the share of the 37 direct identifiers in Privy's 40 JSON records that still reach the provider when the record is sent inside a tool-call argument, a small sample: LiteLLM's guardrail does not parse tool-call JSON, and LLM Guard is a library with no notion of a request. \*Its detection is Presidio's: the first three columns are Presidio 2.2.364 alone, in-process, without the guardrail's HTTP hop.
+
+`onnx` and `light` were measured on 0.7.2, and 0.8.0 leaves their detection unchanged. All 8 corpora, 25 systems, per-type tables and how to rerun them: [RESULTS.md](https://github.com/crp4222/privaite-bench/blob/main/RESULTS.md). Details on the model, false positives on code included: [detection](https://github.com/crp4222/PrivAiTe/blob/main/docs/detection.md#privaite-minilm-opt-in).
 
 ## Integrations
 
@@ -110,7 +116,7 @@ For GDPR or HIPAA, treat this as pseudonymization plus transfer minimization; yo
 
 ## Docs
 
-- **Presets:** `onnx` is the default. `light` is faster and needs no model download, but it misses names the default finds: the demo above fails with `--preset light`. [Presets](https://github.com/crp4222/PrivAiTe/blob/main/docs/detection.md#presets)
+- **Presets:** `onnx` is the default. `light` is faster and needs no model download, but it misses names the default finds: the demo above fails with `--preset light`. `minilm` and `ultrafast` are opt-in: they run PrivAiTe's own model in place of the Privacy Filter, `ultrafast` on the Apple Neural Engine for agent CLIs on a Mac. Nothing changes unless you set one. [Presets](https://github.com/crp4222/PrivAiTe/blob/main/docs/detection.md#presets)
 - **Your own types and hard blocks:** regex `custom_patterns`, a per-type fate, and `block_entities` for what must never leave. [Your policy, your types](https://github.com/crp4222/PrivAiTe/blob/main/docs/policy.md)
 - **What is scanned and what is not:** the exact request fields. [API reference](https://github.com/crp4222/PrivAiTe/blob/main/docs/api.md#what-gets-anonymized)
 - **Everything else:** [detection](https://github.com/crp4222/PrivAiTe/blob/main/docs/detection.md), [configuration](https://github.com/crp4222/PrivAiTe/blob/main/docs/configuration.md), [redacting PII before an LLM call](https://github.com/crp4222/PrivAiTe/blob/main/docs/redact-pii-before-llm.md), [changelog](https://github.com/crp4222/PrivAiTe/blob/main/CHANGELOG.md), and the same pages as a site: [crp4222.github.io/PrivAiTe](https://crp4222.github.io/PrivAiTe/). To develop: clone, `pip install -e ".[dev]"`, download the two spaCy models above, then `python -m pytest tests/`.

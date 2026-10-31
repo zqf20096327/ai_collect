@@ -2,7 +2,7 @@
 
 # Agents on Duty
 
-_可运行的 LangGraph 客服系统：从意图路由、RAG / MCP 工具到合规出站_
+_一个能转人工、继续处理售后申请的 LangGraph 客服 Agent_
 
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org)
 [![LangGraph](https://img.shields.io/badge/LangGraph-orchestration-77C5A3)](https://langchain-ai.github.io/langgraph/)
@@ -19,45 +19,34 @@ _可运行的 LangGraph 客服系统：从意图路由、RAG / MCP 工具到合�
 
 ## 📖 项目介绍
 
-这是一个可运行的多 Agent 客服学习项目。用户发消息后，LangGraph 的 Supervisor 将请求分给知识库问答、订单/工单工具或兜底节点；回答经过规则和 LLM 合规检查，违规时最多重写两次，再转固定话术。React 界面通过 SSE 展示节点进度。
+Agents on Duty 是一个可运行的客服 Agent 学习项目。它可以回答知识库问题、查询演示订单并受理退款申请；遇到需要人工判断的售后请求时，流程会暂停，交给客服审核，再根据审核结果继续处理。
 
-**适合谁：**想读懂 LangGraph 状态图、RAG 与 MCP 工具调用，以及失败后如何降级的开发者。订单和物流使用仓库内 mock 数据；合规规则与样本评测用于学习和演示，不能直接作为生产风控方案。
+用户可以查看订单和申请状态；客服可以在工作台查看交接信息、要求补充资料、批准或拒绝申请。项目适合想了解 Agent 编排、人工接管和故障恢复的开发者。
+
+> **演示边界：**订单和退款使用模拟数据，审核通过不代表已执行退款；知识库、合规规则和权限机制仍需要完善，不可直接用于生产。
 
 > [!TIP]
 > **想深挖这个项目？** 完整版介绍在 [docs/project-intro.zh.md](docs/project-intro.zh.md)：
 > 一条消息的 8 步完整旅程（带代码位置）· 技术选型对照表 · **面试官视角的 22 个问题与答题要点** · 三分钟开场话术。
 > 可以从问题跳到相应代码，核查设计取舍。
 
-## 🛠️ 下一步
+## 🎯 已实现的能力
 
-项目正在从可运行的客服 Agent Demo，逐步建设为面向售后场景的企业化业务系统，后续将重点完善：
+- **售后申请** —— 用户查看自己的演示订单、提交或撤回退款申请；重复请求通过幂等键处理。
+- **人工客服工作台** —— 客服查看申请、会话和工具结果，批准、拒绝或要求用户补充信息。
+- **暂停与恢复** —— 聊天中的退款申请进入人工审核；决定落库后恢复对应流程，恢复失败可在工作台重试。
+- **知识库问答** —— 基于本地文档生成回答并要求标注来源；Embedding 服务不可用时给出降级提示。
 
-- 退款与售后业务流程
-- Agent 人工接管与流程恢复
-- 客服工作台
-- 管理员平台与审计
-- 带版本和来源引用的企业知识库
-- Pi 知识库 Agent 实验
-
-完整计划见 [`docs/optimization-roadmap.md`](docs/optimization-roadmap.md)。
-
-## 🎯 为什么值得看
-
-沿一条消息就能看到编排、工具、合规和状态存储如何配合。建议先跑起来，再从 [`agents/supervisor.py`](agents/supervisor.py) 读状态图。
-
-- 🧭 **Supervisor 编排** —— 意图路由带确定性快路径：高频简单请求本地正则直接分流，一个 LLM 调用都省
-- 🛡️ **合规修复回路** —— 不合规回答不是简单拦截，而是带着违规原因**重写**（≤2 次），耗尽自动降级兜底话术
-- 🪆 **记忆降级** —— 对话和工作上下文优先 Redis，失败时尝试 MySQL，再退到进程内；MySQL 启动自检失败会阻止服务启动
-- 🎫 **语义化幂等** —— 工单幂等键用「用户 + 内容指纹」而非请求 ID，防得住网络重试，也防得住"用户再说一遍"
-- 🔌 **MCP 工具调用** —— stdio MCP Server 提供模拟订单数据；调用失败有限重试，再走本地工具，工单共用 SQLite 幂等记录
-- 📡 **SSE 实时流式** —— `graph.astream(stream_mode="updates")` 直接映射为事件流，前端能看到 Agent 一步一步干活
-- 🔐 **基础安全控制** —— JWT 鉴权（httpOnly Cookie 下发 + CSRF Origin 校验）、PBKDF2 密码哈希、登录限流、会话归属校验、基于正则的 PII 检测与脱敏
-- 📊 **可观测性** —— OpenTelemetry 追踪 + 每个 Agent 的调用指标，前端自带运维面板
+- **业务编排与合规** —— Supervisor 分流请求，生成的业务回答经过规则和模型检查，未通过时重写或使用兜底话术。
+- **工具与故障处理** —— MCP 调用失败时可使用本地备用工具；对话与工作上下文支持存储降级。
+- **身份与可观测性** —— 账号、角色和会话归属校验；SSE 展示处理进度，运维面板展示 Agent 指标。
 
 ## 🚀 快速开始
 
 > [!TIP]
 > 需要 Docker、一个 OpenAI 兼容的聊天模型，以及一个 embedding 服务——配置 `DASHSCOPE_API_KEY` 走阿里云原生接口，或留空复用 `OPENAI_BASE_URL` 走任何 OpenAI 兼容接口。首次启动会为 `knowledge_base/` 中的文本生成向量索引。
+
+Embedding 服务故障时，知识库问答会提示暂不可用。启动时索引更新失败会保留原索引但暂停知识检索；服务恢复后需重启以重试建库。`/health` 展示最近一次观察到的知识库状态，并非对所有依赖的实时探测。
 
 ```bash
 # 1. 配置环境变量
@@ -74,8 +63,20 @@ cp .env.example .env
 docker compose up --build -d
 
 # 3. 浏览器打开 http://localhost:8080（或设置的 FRONTEND_PORT）
-#    注册账号后开始对话
+#    注册账号后开始对话或查看演示订单
 ```
+
+### 体验人工接管
+
+1. 注册并登录账号，打开「订单售后」查看演示订单。
+2. 在终端执行 `docker compose exec app python -m auth.bootstrap_admin <用户名>`，再刷新页面，即可使用客服工作台。
+3. 在聊天中申请退款，或从「订单售后」提交申请；到「客服工作台」审核、要求补充信息或拒绝。
+
+聊天中创建的申请会暂停 Agent 流程；售后页面直接创建的申请没有关联聊天线程。两者均为演示，不会产生真实退款。角色设置与故障恢复说明见 [售后业务说明](docs/after-sales.md)。
+
+## 🛠️ 后续方向
+
+继续完善管理员运营与审计、知识库的版本和权限、真实业务系统接入，并评估 Pi 知识助手实验。具体计划见 [优化路线图](docs/optimization-roadmap.md)。
 
 ## 🔎 一条消息如何流转
 
@@ -84,10 +85,12 @@ docker compose up --build -d
 | 你问 | 谁来接 | 你会看到 |
 |---|---|---|
 | 「商品签收后几天内可以退货？」 | 📚 知识库 RAG | FAISS 检索 → 合规通过 |
-| 「查询订单 1001 的状态」 | 🎫 业务办理 | MCP 工具调用 → 合规检查 |
+| 「查询我的订单」 | 🎫 业务办理 | MCP 工具调用 → 合规检查 |
 | 「写一段小说」 | 💬 兜底应答 | 进入兜底节点 |
 
-订单查询用于演示工具链：MCP Server 目前对传入的订单号返回固定模拟状态；MCP 失败后的本地工具才使用 [`tools/mock_data.py`](tools/mock_data.py) 中的 `1001/1002` 数据。不要用它验证真实物流准确性。
+订单和退款申请使用按账户隔离的演示数据。询问「查询我的订单」可获取演示订单号；符合演示规则的订单可提交退款申请，申请仅进入待审核状态，不会执行真实退款。
+
+演示规则：已签收且签收不超过 7 天的订单可申请退款，商品未使用及包装完整等条件需要人工审核。同一订单的待审核申请会防止重复创建；撤回后可以重新申请。接口与恢复细节见 [售后业务说明](docs/after-sales.md)。
 
 <details>
 <summary><b>不用 Docker，手动部署</b></summary>
@@ -113,7 +116,9 @@ flowchart TD
     S -->|"订单 / 工单"| T["ticket_handler<br/>MCP 工具调用"]
     S -->|"无关 / 危险"| F["fallback<br/>兜底应答"]
     K --> C{"compliance_checker<br/>规则 + LLM 合规检查"}
-    T --> C
+    T -->|"一般业务"| C
+    T -->|"退款申请"| H["human_review<br/>等待人工审核"]
+    H --> SYN
     F --> C
     C -->|"✓ 通过"| SYN["synthesize<br/>合成最终回答"]
     C -->|"✗ 不合规，重试 < 2 次"| R["rewrite<br/>带违规原因重写"]
@@ -135,9 +140,9 @@ flowchart TD
 | 对话历史 | Redis（30 min TTL） | MySQL → 进程内 | 短期 |
 | 路由 / 合规上下文 | Redis（24 h TTL） | MySQL → 进程内 | 会话级 |
 | 用户账户、会话归属 | SQLite | — | 永久 |
-| LangGraph 断点 | AsyncSqliteSaver | 进程内 | SQLite 可跨重启恢复；内存兜底不可 |
+| LangGraph 断点 | AsyncSqliteSaver | 启动失败 | 持久化不可用时拒绝启动 |
 | 工单幂等记录 | SQLite | — | 永久 |
-| 订单 / 物流 | MCP 固定模拟结果 | 本地 mock 表 | 演示数据不写入本服务数据库 |
+| 演示订单 / 退款申请 | SQLite | — | 按账户隔离；持久化演示数据 |
 
 - MySQL 是兜底数据源 → **硬依赖**，启动自检失败直接拒绝启动
 - Redis 是热缓存 → 运行中不可达时尝试 MySQL，再退进程内；内存兜底不跨进程或重启
@@ -158,7 +163,7 @@ api/             FastAPI：同步 chat、SSE 流式、JWT 鉴权、工具与指�
 memory/          short_term（对话）/ working_memory（路由状态）/ long_term（FAISS）
 storage/         MySQL 兜底存储层
 mcp_client/      MCP 客户端：重试 + 本地降级
-mcp_tools/       MCP Server：order_query / ticket_create / risk_check
+mcp_tools/       MCP Server：订单、退款申请和工单等演示工具
 tools/           本地备用工具 + 工单幂等存储
 auth/            JWT + SQLite 用户库
 tracing/         OpenTelemetry + Agent 指标
@@ -189,9 +194,9 @@ evaluation/      8 个端到端评测脚本 + locust 压测
 </details>
 
 <details>
-<summary><b>订单数据为什么不在系统里落库？</b></summary>
+<summary><b>演示订单数据存在哪里？</b></summary>
 <br>
-客服系统只做透传：MCP 查询 → 写进回答 → 用完即弃。订单的唯一事实源在订单系统，缓存它只会制造一致性问题。
+当前使用按账户隔离的 SQLite 演示订单和退款申请，不连接真实订单或支付系统。接入真实系统时需要以外部业务系统为事实源。
 </details>
 
 <details>
@@ -214,20 +219,17 @@ pip install -r requirements-dev.txt
 DASHSCOPE_API_KEY=dummy-key-for-ci python -m pytest -q
 ```
 
-本地复核（2026-10-26，含存储兜底修复回归）：33 passed / 1 skipped——skip 即 roundtrip 在无真实 MySQL 时的显式跳过；CI（Python 3.12 + 真实 MySQL service）中该用例真实执行。测试不发起真实 embedding 请求；运行聊天和首次建索引需要有效的 embedding 服务凭据（DashScope 或 OpenAI 兼容）。
+自动化测试覆盖退款规则与幂等、人工接管与恢复、权限隔离、合规回路和知识库降级。图级测试使用假模型，不调用真实 LLM 或执行真实退款。
 
-| 模块 | 用例 | 验证什么 | 结果 |
-|---|---|---|---|
-| 合规修复回路 | 3 | 图级测试（FakeLLM 驱动完整 LangGraph）：一次通过、重写 2 次耗尽后降级、重写后通过 | ✅ |
-| 工单幂等与限流 | 7 | 语义幂等键命中/隔离、LLM 多传参数白名单、working memory 降级、登录限流 429、AsyncSqliteSaver 创建关闭 | ✅ |
-| MCP 弹性 | 3 | 本地工具与 MCP 共享幂等存储、MCP 建单幂等 | ✅ |
-| MySQL 兜底与降级链 | 4 | 自检快速失败、双挂时进程内降级；MySQL 可达时做读写往返 | ✅ / 条件执行 |
-| 工作记忆 | 4 | 上下文读写、历史截断、会话清理、会话隔离 | ✅ |
-| 兜底链路回归 | 8 | 写入扇出（Redis+MySQL 双写）、Redis 故障后数据仍可读、SQL 执行期异常入兜底、恢复后数据可见、Redis 回切、JWT 密钥必填、降级检索同阈值 | ✅ |
-| Embedding 提供商 | 5 | DashScope/OpenAI 兼容双路径选择、索引身份不一致自动重建、旧格式元数据兼容 | ✅ |
+| 关注点 | 主要测试文件 |
+|---|---|
+| 退款规则、账户隔离、幂等 | `test_after_sales.py` |
+| 人工接管、恢复、权限、并发 | `test_human_in_the_loop.py` |
+| 知识库 Embedding 降级 | `test_embedding_degradation.py` |
+| 合规检查与重写 | `test_compliance_loop.py` |
 
 > [!NOTE]
-> `test_mysql_store_roundtrip` 在 MySQL 不可达时**显式 pytest.skip**（此前是静默 return 被计为 passed，已修复）；CI 起真实 MySQL service 作门禁，skip 不允许在该环境出现。
+> MySQL 不可达时，依赖真实 MySQL 的用例会显式跳过；CI 使用独立 MySQL 服务运行这些用例。运行聊天和首次建索引需要有效的模型服务配置。
 
 <details>
 <summary><b>端到端评测</b></summary>

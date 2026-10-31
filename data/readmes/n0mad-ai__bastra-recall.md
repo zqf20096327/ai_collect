@@ -40,7 +40,7 @@ Bastra Recall picks up there:
 
 Keep your CLAUDE.md. Recall adds the knowledge that doesn't belong in every session.
 
-**Version 1.1.1 is available.** Find published downloads in the [latest release](https://github.com/n0mad-ai/bastra-recall/releases/latest), changes in the [changelog](./CHANGELOG.md), and tested integrations in the [support matrix](#supported-surfaces).
+**Release target: 1.1.8.** Find published downloads in the [latest release](https://github.com/n0mad-ai/bastra-recall/releases/latest), changes in the [changelog](./CHANGELOG.md), and tested integrations in the [support matrix](#supported-surfaces).
 
 <p align="center">
   <img src="./assets/recall-demo-cmux.gif" alt="Real work in cmux: Claude Code and Codex retrieve memories with Bastra Recall, exchange findings and use expanded live Ember panels." width="100%" />
@@ -96,18 +96,19 @@ You can repeat the lookup in another connected client using the same vault. This
 | **Codex CLI** | Verified for the v1.0 integration | MCP, Skill and native hooks. [Setup](./docs/CODEX.md) |
 | **Codex IDE + ChatGPT Desktop** | Implemented; not yet field-tested | Share the local Codex configuration. [Setup and limitations](./docs/CODEX.md) |
 | **Cursor** | Implemented; not yet field-tested | MCP registration; add project rules with `bastra rules cursor` |
-| **ChatGPT web + iPhone app** | Tested on `main` (not yet released) | Remote MCP with OAuth through your own HTTPS address and tunnel; the computer running Recall must be online. [Remote access](./docs/REMOTE-ACCESS.md) |
+| **ChatGPT web + iPhone app** | Tested; remote MCP included in 1.1.8 | Remote MCP with OAuth through your own HTTPS address and tunnel; the computer running Recall must be online. [Remote access](./docs/REMOTE-ACCESS.md) |
 | **claude.ai custom connectors** | Untested | Same remote MCP address and OAuth login; expected to work. [Remote access](./docs/REMOTE-ACCESS.md#claudeai-custom-connectors-untested) |
 | **ChatGPT Custom GPT Actions** | Legacy | OpenAI retires Custom GPTs on 2026-12-11; use the remote MCP connection instead. [Legacy setup](./docs/openapi-generation.md#legacy-custom-gpt-action) |
 
 Other MCP clients can connect through the forwarder, or remotely over [`/api/v1/mcp`](./docs/REMOTE-ACCESS.md), but are untested. Scripts and other integrations can use the [REST API](./docs/USAGE.md#rest-api-for-non-mcp-clients). MCP is the protocol that lets an AI assistant use external tools such as this memory service.
 
-The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) separates host capabilities from the shipped Bastra path and records sources, runtime evidence, all eight capabilities and tool coverage. The summary below concerns Bastra's hook paths; Cursor/Desktop/remote MCP have no Bastra hook gate. Only Codex CLI 0.162.1 has verified deny coverage for `exec_command`/Bash and `view_image`; `apply_patch` and MCP coverage is documentation-only. Hosted WebSearch is unsupported; `write_stdin` has no fresh deny boundary. Other Codex versions remain preparation-only. Stop continuation never guarantees that text is hidden before display. `validate_artifact` requires connected Recall MCP with the write/full tool surface.
+The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) separates host capabilities from the shipped Bastra path and records sources, runtime evidence, all eight capabilities and tool coverage. The summary below concerns Bastra's hook paths; Cursor/Desktop/remote MCP have no Bastra hook gate. Codex CLI 0.162.1 and 0.166.0 have verified deny coverage for `exec_command`/Bash and `view_image`; `apply_patch` deny and MCP remain unverified on both versions; Fork is verified only on 0.162.1. Hosted WebSearch is unsupported; `write_stdin` has no fresh deny boundary. Other Codex versions remain preparation-only. Stop continuation never guarantees that text is hidden before display. `validate_artifact` requires connected Recall MCP with the write/full tool surface.
 
 | Surface | Runtime | Bastra pre_tool_deny | Bastra must_load_gate |
 |---|---|---|---|
 | claude-code | unverified / not version-pinned | supported | supported |
 | codex | 0.162.1 | supported | supported |
+| codex | 0.166.0 | supported | supported |
 | codex | unverified / not version-pinned | preparation-only | preparation-only |
 | cursor | unverified / not version-pinned | unsupported | unsupported |
 | claude-desktop | unverified / not version-pinned | unsupported | unsupported |
@@ -209,7 +210,7 @@ Bastra Recall setzt dort an:
 
 Deine CLAUDE.md kann bleiben. Recall ergänzt sie um das Wissen, das nicht in jede Sitzung gehört.
 
-**Version 1.1.1 ist verfügbar.** Veröffentlichte Downloads findest du im [aktuellen Release](https://github.com/n0mad-ai/bastra-recall/releases/latest), Änderungen im [Changelog](./CHANGELOG.md) und getestete Integrationen in der [Support-Matrix](#unterstützte-oberflächen).
+**Release-Ziel: 1.1.8.** Veröffentlichte Downloads findest du im [aktuellen Release](https://github.com/n0mad-ai/bastra-recall/releases/latest), Änderungen im [Changelog](./CHANGELOG.md) und getestete Integrationen in der [Support-Matrix](#unterstützte-oberflächen).
 
 <p align="center">
   <img src="./assets/recall-demo-cmux.gif" alt="Echte Arbeit in cmux: Claude Code und Codex laden Erinnerungen mit Bastra Recall, tauschen Befunde aus und nutzen vollständig geöffnete Ember-Panels mit Live-Daten." width="100%" />
@@ -265,18 +266,19 @@ Wiederhole die Abfrage bei Bedarf in einem anderen verbundenen Client mit demsel
 | **Codex CLI** | Für die v1.0-Integration verifiziert | MCP, Skill und native Hooks. [Einrichtung](./docs/CODEX.md) |
 | **Codex IDE + ChatGPT Desktop** | Implementiert; noch nicht im Feld getestet | Nutzen die lokale Codex-Konfiguration gemeinsam. [Einrichtung und Grenzen](./docs/CODEX.md) |
 | **Cursor** | Implementiert; noch nicht im Feld getestet | MCP-Registrierung; Projektregeln mit `bastra rules cursor` ergänzen |
-| **ChatGPT Web + iPhone-App** | Auf `main` getestet (noch nicht veröffentlicht) | Remote-MCP mit OAuth über deine eigene HTTPS-Adresse und einen Tunnel; der Rechner mit Recall muss online sein. [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch) |
+| **ChatGPT Web + iPhone-App** | Getestet; Remote-MCP in 1.1.8 enthalten | Remote-MCP mit OAuth über deine eigene HTTPS-Adresse und einen Tunnel; der Rechner mit Recall muss online sein. [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch) |
 | **claude.ai Custom Connectors** | Ungetestet | Dieselbe Remote-MCP-Adresse und derselbe OAuth-Login; sollte funktionieren. [Fernzugriff](./docs/REMOTE-ACCESS.md#claudeai-custom-connectors-untested) (Englisch) |
 | **ChatGPT Custom GPT Actions** | Veraltet | OpenAI stellt Custom GPTs am 11.12.2026 ein; nutze stattdessen die Remote-MCP-Verbindung. [Bisherige Einrichtung](./docs/openapi-generation.md#legacy-custom-gpt-action) |
 
 Weitere MCP-Clients können den Forwarder oder aus der Ferne [`/api/v1/mcp`](./docs/REMOTE-ACCESS.md) verwenden, sind aber ungetestet. Skripte und andere Integrationen nutzen die [REST-API](./docs/USAGE.md#rest-api-für-nicht-mcp-clients). MCP ist das Protokoll, mit dem ein KI-Assistent externe Werkzeuge wie diesen Gedächtnisdienst verwendet.
 
-Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) trennt Host-Fähigkeiten vom ausgelieferten Bastra-Pfad und nennt Quellen, Laufzeitbelege, alle acht Fähigkeiten und Tool-Grenzen. Die Übersicht beschreibt Bastras Hook-Pfade; Cursor/Desktop/Remote-MCP haben kein Bastra-Hook-Gate. Nur für Codex CLI 0.162.1 ist Deny bei `exec_command`/Bash und `view_image` belegt; `apply_patch` und MCP sind nur durch Dokumentation belegt. Hosted WebSearch ist nicht unterstützt; `write_stdin` hat keine neue Deny-Grenze. Andere Codex-Versionen bleiben Vorbereitung. Eine Stop-Fortsetzung garantiert nie, dass Text vor der Anzeige zurückgehalten wird. `validate_artifact` braucht verbundenes Recall-MCP mit der Tool-Oberfläche write/full.
+Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) trennt Host-Fähigkeiten vom ausgelieferten Bastra-Pfad und nennt Quellen, Laufzeitbelege, alle acht Fähigkeiten und Tool-Grenzen. Die Übersicht beschreibt Bastras Hook-Pfade; Cursor/Desktop/Remote-MCP haben kein Bastra-Hook-Gate. Für Codex CLI 0.162.1 und 0.166.0 ist Deny bei `exec_command`/Bash und `view_image` belegt; `apply_patch`-Deny und MCP bleiben auf beiden Versionen ungeprüft; Fork ist nur auf 0.162.1 belegt. Hosted WebSearch ist nicht unterstützt; `write_stdin` hat keine neue Deny-Grenze. Andere Codex-Versionen bleiben Vorbereitung. Eine Stop-Fortsetzung garantiert nie, dass Text vor der Anzeige zurückgehalten wird. `validate_artifact` braucht verbundenes Recall-MCP mit der Tool-Oberfläche write/full.
 
 | Surface | Runtime | Bastra pre_tool_deny | Bastra must_load_gate |
 |---|---|---|---|
 | claude-code | unverified / not version-pinned | supported | supported |
 | codex | 0.162.1 | supported | supported |
+| codex | 0.166.0 | supported | supported |
 | codex | unverified / not version-pinned | preparation-only | preparation-only |
 | cursor | unverified / not version-pinned | unsupported | unsupported |
 | claude-desktop | unverified / not version-pinned | unsupported | unsupported |

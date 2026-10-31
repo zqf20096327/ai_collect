@@ -4,7 +4,7 @@
 
 <p align="center">
   <strong>An agent-system kernel you self-host.</strong><br/>
-  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, bundled dev toolchain and headless Chromium. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.128.0.</em>
+  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, bundled dev toolchain and headless Chromium. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.131.1.</em>
 </p>
 
 <p align="center">
@@ -201,22 +201,18 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.128.0) makes a relation a statement with evidence and
-governs it with a sectioned ontology. A link records how it was made, its status
-and its verbatim evidence, waits for review when an agent proposes it, and is
-followed by kind in retrieval; a new edition of a law or contract is reconciled
-onto the work it amends part by part. The tenant ontology gains typed document
-classes with identity keys, relation kinds, concept schemes and instances, and
-`classify` says what a document is from it — by pattern, by its neighbours, and
-by a classifier model where those leave it open. A `knowledge-base` bundle
-ships a code-js links agent that builds and maintains statements by rule. See
+The most recent line (v1.131.0) completes subject change events. Re-typing,
+deleting, merging and erasing a subject each announce it on `memory/subjects`,
+an operator can merge two subjects and bind a subject to the user it stands
+for on every transport, and erasing that user reports and unbinds the subject.
+User ids accept sign-in gate subjects such as `cloud:<id>`. Its patch release
+fixed the links agent's subject drain and the Users console's tenant. See
 [`REVISIONS.md`](REVISIONS.md).
 
-Before it, v1.127.0 finished the sign-in gates: passkeys as a second factor and
-as a password-less gate, SCIM 2.0 provisioning from an identity provider, and a
-strict-mode switch that accepts a person's API token only from a gate, plus a
-`loomboard` preset for app sign-in and model speed and budgets on the Usage
-pages. See [`REVISIONS.md`](REVISIONS.md).
+Before it, v1.130.0 announced an adopted subject on the tenant's
+`memory/subjects` channel and let the `knowledge-base` links agent drain it,
+and a password gate could hold website sign-ups for approval. See
+[`REVISIONS.md`](REVISIONS.md).
 
 Before it, v1.125.0 added speech-to-text: `File op=transcribe` turned
 recordings into timed transcripts through a whisper server, and Teams captions

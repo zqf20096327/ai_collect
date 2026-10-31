@@ -247,7 +247,9 @@ Artifacts + Evidence
 | Design Audit | 中性文档设计规则、基线对比、丝杠/皮带电机扭矩初筛 | `pilot` |
 | Drilling Panel | 面板孔位识别、基准及图纸规格候选 | `pilot` |
 | Tolerances | 已显示尺寸公差只读提取，CSV 输出 | `pilot` |
-| Rename Preview | 按文件属性生成改名预览，不修改模型或引用 | `pilot` |
+| Rename Preview / Copy | 属性改名预览；受限独立零件和单配置嵌套装配复制到新名称 | `pilot` |
+| Sprocket | 近似链轮几何演示实体，非生产齿形 | `pilot` |
+| Spring | 开放端等螺距圆线弹簧实体 | `pilot` |
 | FEA | CalculiX 线性/非线性求解编排与审计 | `pilot` |
 | DFM / Routing | 制造复核、路由复核 | `pilot` |
 | Surface / Mold | 受限 Loft/Sweep/Thicken、模具计划 | `pilot` |
@@ -303,6 +305,8 @@ Artifacts + Evidence
 | Drilling panel analysis | [`subskills/solidworks-engineering-drawing/references/drilling-panel-gdt.md`](subskills/solidworks-engineering-drawing/references/drilling-panel-gdt.md) |
 | Tolerance extraction | [`references/tolerance-extraction.md`](references/tolerance-extraction.md) |
 | Rename preview | [`references/rename-preview.md`](references/rename-preview.md) |
+| Approximate sprocket | [`references/sprocket.md`](references/sprocket.md) |
+| Open helical spring | [`references/spring.md`](references/spring.md) |
 | Troubleshooting | [`references/troubleshooting.md`](references/troubleshooting.md) |
 
 ---

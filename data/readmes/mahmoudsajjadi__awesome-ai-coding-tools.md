@@ -131,6 +131,7 @@ flowchart LR
 - [Kiro](https://kiro.dev/) — Next-generation agentic IDE featuring real-time collaborative agents and multi-file intent parsing.
 - [PearAI](https://trypear.ai/) — Open-source alternative to Cursor built on VS Code with transparent model routing and customizable backends.
 - [Trae](https://www.trae.ai/) — Adaptive AI-powered IDE by ByteDance featuring Claude 3.5 Sonnet / GPT-4o integration, workspace-wide context indexing, and agentic code transformation.
+- [Volt](https://github.com/LeulAria/volt) — Open-source (MIT) agentic IDE built on the VS Code core that drives Claude Code and Codex agent CLIs over ACP and supports local LLMs via Ollama, with hunk-level review of agent edits and Git checkpoints.
 - [Windsurf](https://codeium.com/windsurf) — Next-generation agentic IDE by Codeium featuring "Flows" that track real-time developer context and synchronized multi-step edits.
 - [Zed](https://zed.dev/) — Lightning-fast, GPU-accelerated code editor written in Rust with deep model integration and multi-model assistant panels.
 
@@ -239,6 +240,7 @@ sequenceDiagram
 ### Running Agents in Parallel
 Control planes, terminal managers, and orchestrators that run multiple coding agents concurrently across worktrees:
 - [AgentsMesh](https://github.com/AgentsMesh/AgentsMesh) — Platform for scheduling and isolating multiple coding agents across distributed workstations.
+- [Carbon Forge](https://carbonforge.dev/) — Hosted source control (a web service reached over MCP, no local model involved) where each coding agent works in a lane, a set of patches over the trunk, instead of a git worktree. A patch that no longer applies is reported as a named conflict rather than merged automatically, and git history is rendered from the record and pushed to GitHub.
 - [ccmanager](https://github.com/kbwo/ccmanager) — Session manager for coordinating parallel CLI agent workflows across multiple repositories.
 - [Claude Squad](https://github.com/smtg-ai/claude-squad) — Terminal manager for running multiple concurrent coding agent sessions across terminal tabs.
 - [cmux](https://github.com/manaflow-ai/cmux) — Ghostty-based macOS terminal designed with vertical workspaces and desktop notifications for agent fleets.
@@ -381,6 +383,10 @@ flowchart LR
 ---
 
 ---
+
+### 3. Track Usage Before It Burns
+
+- [TokenTracker](https://www.tokentracker.cc/) — Local-first AI token usage & cost tracker (CLI, dashboard, native apps) for Claude Code, Codex, Cursor, Gemini, Copilot, and more. Privacy-first: counts tokens only, never prompts or completions. `npx tokentracker-cli` · [GitHub](https://github.com/xiufengsun/TokenTracker)
 
 ## 🔬 Level 3: Expert (Autonomous Systems & Research)
 

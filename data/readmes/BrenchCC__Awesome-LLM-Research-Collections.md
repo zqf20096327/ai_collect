@@ -231,6 +231,10 @@
   <a href="https://github.com/thinking-inertia/code"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
   <a href="https://huggingface.co/datasets/thinking-inertia/llm-nothinking-trajectories"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
+- **TAO: Tool-Aware Joint Scheduling for LLM-Based Agentic Serving** (2026.10) \
+  **Description**: TAO jointly schedules agent sessions across GPU nodes by combining predicted tool-return readiness, time-decayed node-specific cache credit, and token footprint in a dynamic program. Across 12 reported settings, it reduces latency and time to first token while improving decode throughput against the evaluated baselines. \
+  <a href="https://arxiv.org/abs/2610.37230"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+
 - **LLMRouter: Unified Infrastructure for Developing, Evaluating, and Deploying LLM Routers** (2026.08) \
   **Description**: LLMRouter formulates LLM routing as a sequential decision process spanning single-turn, multi-turn, and personalized settings, and provides modular infrastructure with an automated pipeline for joint quality-cost evaluation. Its xRouteBench benchmark covers five routing scenarios, while experiments across more than 16 representative routers show that learned routers achieve a 14.6% relative improvement over the strongest fixed-model baseline. \
   <a href="https://arxiv.org/abs/2608.06867"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -836,7 +840,4 @@
   **Description**: MiMo-V2.6 scales agentic reinforcement learning through asynchronous large-batch training, diverse environments and harnesses, and groupwise agentic grading for more informative rewards on long-horizon tasks. Router freezing, layered defenses against reward hacking, and unified mixed-task rollout infrastructure support stable scaling across coding, general, visual, and cybersecurity tasks. \
   <a href="https://arxiv.org/abs/2610.11959"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
   <a href="https://mimo.xiaomi.com/rl/mimo-v26/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **Agent-Reflex: Teaching Language Agents to Act Reflectively** (2026.10) \
-  **Description**: Agent-Reflex trains tool-using agents to reflect proactively and recover from noisy tool feedback and user corrections by mining reusable reflection skills and converting them into reflective supervised fine-tuning data. Its On-Policy Reflective Policy Optimization combines agentic RL under noisy interactions with reflection-guided on-policy distillation, improving long-horizon tool use and robustness to n
+  <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugg

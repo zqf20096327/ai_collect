@@ -24,12 +24,11 @@ OpenSider drives the local Agent CLIs you already use — Claude Code, Codex, Op
 - **Your browser, exactly as it is.** Your logged-in sessions and anything you have already filled in are reused, so the scene is never reconstructed.
 - **The page is the context.** The Agent automatically gets the tab you are on; there is nothing to point it at.
 - **Automation you can watch.** Navigation, reading, clicking, form filling and screenshots are injected into the Agent as tools, and they run live on the page.
+- **Works alongside you.** The Agent automates the page in the background without stealing focus or switching your active tab. Keep doing your own thing, and take over whenever you like.
 - **Quote, translate, search.** Select text and use the toolbar; the result comes back in the side panel.
 - **Pick an element.** Point at one element on the page and ask about it.
 
-[![OpenSider promo video](./docs/promo/en/preview.gif)](./docs/promo/en/opensider-promo.mp4)
-
-[Watch the full video (with sound)](./docs/promo/en/opensider-promo.mp4)
+https://github.com/user-attachments/assets/b7c70b0e-2456-495a-bce8-72b0977e0e6b
 
 ## Demo
 

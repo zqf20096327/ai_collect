@@ -668,6 +668,9 @@ If the port is busy, it picks the next free one and tells you. Logs go to
 
 ### `gtd upgrade`
 
+The dashboard and the desktop app do the same each time a workspace opens, so this is only
+needed to upgrade a workspace without opening it.
+
 | Flag | Description |
 |---|---|
 | `-d, --dir <path>` | Workspace to upgrade (default: the configured one) |
@@ -783,7 +786,14 @@ settings.
   AAC, FLAC or AIFF. Uploads stream to disk. A meeting with a recording waits in the
   queue for its transcript, made on this computer with the model chosen in **Settings >
   Transcription** (see below); the transcript then goes into the digest with the meeting.
-- **Record** in the top bar (or **Record a meeting** on the Routines page, in ⌘K search,
+- **Meetings**, in the left menu, is where recording, the live transcript, the queue and
+  its transcripts are. The Meeting digest card in Routines keeps the schedule and settings.
+- **Make digest now** on the Meetings page sends the queue to a digest without waiting for
+  the schedule, which it shows beside the button.
+- Starting a recording opens the Meetings page with its live text. After Stop the page
+  shows the transcript, the live text first and the final one once it is ready, and
+  **Read it** on any meeting opens its transcript there.
+- **Record** in the top bar (or **Record a meeting** on the Meetings page, in ⌘K search,
   or in the desktop app's menu-bar menu) records the microphone, in the desktop app
   and in the browser (Chrome or Edge, with the dashboard opened at localhost). While it
   runs, the top bar shows the time and **Stop** on every page. Tell
@@ -811,17 +821,41 @@ anywhere. **Settings > Transcription** lists the speech-to-text models with thei
 pluses and minuses; download one once (it is shared by every workspace and kept in
 `~/.gtd/models/`, outside the workspace).
 
-- **Whisper large-v3-turbo** (the default): the most accurate, in English and
-  Japanese alike, with full punctuation and 99 languages. It takes longer (about 4
-  times faster than real time, so an 8-hour meeting takes about 2 hours) and needs
-  about 4 GB of memory while it transcribes.
+- **Whisper large-v3-turbo** (the default): accurate, in English and Japanese alike,
+  with full punctuation and 100 languages. It takes longer (about 4 times faster than
+  real time, so an 8-hour meeting takes about 2 hours) and needs about 4 GB of memory
+  while it transcribes.
+- **Whisper large-v3**: the most accurate, also of short remarks, with the same
+  languages. It is slow (about real time on continuous speech, so an 8-hour meeting
+  can take up to 8 hours), needs about 5 GB of memory and is a 1.8 GB download.
 - **SenseVoice**: very fast (about 80 times faster than real time, so an 8-hour meeting
   takes about 6 minutes) and light (under 1 GB), a little less accurate, in English, Japanese,
   Chinese, Korean and Cantonese.
-- **Language**: Auto detects the language of each part of a meeting, so a meeting
-  that switches between English and Japanese comes out right; for the most accurate
-  transcript of a meeting in one language, choose that language.
-- Downloads show their progress, can be cancelled and continue where they stopped;
+- **Language**: Auto detects the language of each part of a meeting, so it suits a
+  meeting that switches between English and Japanese, though it can pick the wrong
+  language for a very short remark. For the most accurate transcript of a meeting in
+  one language, choose that language.
+- **Spoken language during a recording**: the recording banner, and in the desktop app
+  the menu-bar menu, change the language from that moment on: the live transcript and
+  the transcript made after the meeting both follow it. It applies from the audio saved
+  so far, up to a few seconds before the click. Whisper then writes that language;
+  SenseVoice takes it as a hint and still follows clear speech in another language.
+- **Parts of a meeting**: a transcript made after a meeting cuts it at 2 seconds of
+  silence, and a live transcript at half a second, so text keeps coming. Each part is
+  given a moment of the audio around it, speech too long for the model is split at a
+  quiet moment, and text a model repeated in a loop is marked `[repeated N times]`. A live
+  transcript that is final at Stop keeps its shorter parts. These choices follow
+  [Meetily](https://github.com/Zackriya-Solutions/meeting-minutes) (MIT).
+- **Tell speakers apart** (optional, a 41 MB download): a transcript made after a meeting
+  marks who spoke when, as Speaker 1 and Speaker 2. These are labels for that recording,
+  not names. It runs on this computer, in a job of its own: if it fails, the transcript is
+  still made, without them. A part that is not clearly one voice stays unmarked. With it
+  on, a live transcript stays a draft until the transcript after the meeting is ready.
+  Name the speakers right there on the Meetings page, with **Name** beside each one: a
+  stakeholder or any name. The digest passes them on as named by you, and the analysis
+  proposes names only for the speakers you left unnamed.
+- Downloads show their progress, can be cancelled and continue where they stopped. Press
+  Download on a second model while one runs and it waits its turn;
   every file is checked against its pinned checksum before it is used. On a computer
   with little memory, Settings suggests the lighter model.
 - Behind a company proxy: downloads use Node's built-in `fetch`, which ignores the usual
@@ -841,7 +875,7 @@ in the transcription engine, so you know it works on this computer. The engine
 process for each job, so the model's memory and any crash stay out of the dashboard.
 
 Recordings in the meeting queue are transcribed one at a time, oldest first, once a
-model is downloaded; the Routines page shows each one's progress.
+model is downloaded; the Meetings page shows each one's progress.
 
 - The transcript becomes a file of the meeting, `<recording>.transcript.md`: each part
   with speech, with its start and end time. Speakers are not told apart yet.
@@ -852,6 +886,18 @@ model is downloaded; the Routines page shows each one's progress.
   this transcript** to let the digest take it as it is, or **Try again** to replace it.
 - One transcription runs at a time across every dashboard on the workspace. If a
   dashboard stops in the middle, the recording goes back in line and starts again.
+- **Live transcript:** choose a model under **Live transcript while recording** in
+  Settings > Transcription (one much faster than real time, see **Test speed**), and the
+  text appears on the Meetings page as people speak. If it covered the whole recording
+  and is the chosen model, the transcript is ready at Stop. If it is another model, the
+  chosen model transcribes the recording again after the meeting: the live text stays
+  readable, the meeting waits, and **Use the live transcript** skips the wait. If a live
+  transcript stops or falls behind, the recording is simply transcribed after the meeting.
+- **Participants:** when recording or adding a meeting, list who you expect: stakeholders,
+  or any other name. They stay with the meeting, the reminder to tell everyone names them,
+  and the digest lists them as expected, not as proof of who came: the analysis names
+  anyone who never appears. **Record this meeting** on a prepare-a-meeting task starts
+  with its title and stakeholders.
 - A recording stays in the queue until its meeting goes into a digest. Once the digest
   is checked to hold the complete transcript, the recording goes with the queue folder.
   **Keep recordings after transcription** in Settings keeps it with the digest's

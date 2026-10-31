@@ -110,6 +110,94 @@ otherwise they print the compact `pretty` layout the demo above shows.
 A failing check or test file prints its full detail at every level. `scripts/train_log.py` reads a
 training log back from any of the four formats.
 
+Optimizer: AdamW is the default and its path is unchanged. `-opt muon` (env `LLMM_OPTIMIZER`) is
+opt-in and switches the attention and MLP weight matrices to Muon (Newton-Schulz-orthogonalized
+momentum, Moonlight scaling, so `-l` and `-c` are shared with AdamW; `-mu` sets the momentum,
+default 0.95) and keeps embeddings, biases and LayerNorm on AdamW. The GPU path needs cuBLASLt
+(NVIDIA); the CPU path is a naive reference (~124 s/step at 30M params), not for training. Muon
+works with ZeRO-1, 2 and 3 (matrix-granular ownership, so each rank orthogonalizes whole matrices).
+That is verified on the CPU multi-rank harness on one box, which exercises it without a second GPU:
+`make train-cpu WORLD_SIZE=2 ARGS="... -pn 2 -z N -opt muon"`. GPU at WORLD_SIZE > 1 is
+compile-checked only and a 2-GPU smoke is pending (a runbook is in the design doc). Tuned recipe
+(124M, 300 steps, ranking study at one seed): `-opt muon -l 4.8e-3 -mu 0.9 -c 0 -gc 0` reached val
+5.01 against 6.12 for an untuned AdamW control; the lr (8x AdamW's) is the robust part. For a long
+run keep `-c 0.1 -gc 1.0` unless you re-test. `-qk_clip <tau>` (env `LLMM_QK_CLIP`, 0 = off)
+rescales any attention head whose max logit exceeds `tau`; it is GPU-only, works with Muon at every
+ZeRO stage and with either optimizer at ZeRO-0, and still raises for AdamW with ZeRO >= 1. `qk_max=`
+is printed only at verbose level. The pretrained GPT-2 124M already exceeds `tau=100` (max logit
+~110), so it clips on step 1 of a fine-tune. Checkpoints: a state file cannot be resumed with the
+other optimizer, at another world size or rank, or across ZeRO-0 and ZeRO >= 1 for sharded Muon
+(each is refused before any state is read); AdamW and single-GPU Muon files are byte-identical to
+before. The overhead is a fixed cost per step: ~1% at 131k tokens/step (29% only at the 4k-token
+smoke config). `-D LLMM_INIT_SEED=N` (via `MOJO_DEFINES="-D LLMM_INIT_SEED=N"`) overrides the
+from-scratch init seed for multi-seed runs. Implementation, verification and the perf pass:
+[`docs/ai/muon_muonclip_implementation_2026-10-29.md`](docs/ai/muon_muonclip_implementation_2026-10-29.md);
+sharded design and per-slice verification:
+[`docs/ai/zero_sharded_muon_design_2026-10-30.md`](docs/ai/zero_sharded_muon_design_2026-10-30.md);
+hyperparameter sweep:
+[`docs/ai/muon_hparam_sweep_124m_2026-10-30.md`](docs/ai/muon_hparam_sweep_124m_2026-10-30.md);
+convergence vs AdamW:
+[`docs/ai/muon_vs_adamw_124m_2026-10-29.md`](docs/ai/muon_vs_adamw_124m_2026-10-29.md).
+
+Untied LM head (opt-in build flag, default unchanged): GPT-2 shares one matrix between the token
+embedding and the output projection. `-D LLMM_UNTIED_HEAD=1` (`MOJO_DEFINES="-D LLMM_UNTIED_HEAD=1"`)
+adds a separate 17th tensor `lm_head` ([V_p, C], after `ln_f`), so the embedding becomes lookup-only and
+the head trains on its own; `-l_head <mult>` scales the head's AdamW learning rate. It costs one extra
+V_p x C matrix of params, grads, m, v and master: +589.5 MiB per rank at 124M, bf16 or fp32, W=1 (the
+per-ZeRO table is in the design doc; ZeRO-1, 2 and 3 all support the trained head, the ZeRO-3 head is
+gathered one vocab tile at a time). `-untie_at <fraction>` trains tied (head := wte) for that fraction
+of `-x` steps, then untied (head copied from wte, m and v zero, a fresh Adam bias correction for the
+head); a resumed run must pass the same `-untie_at` and `-x`. Untied checkpoints are version 13 (fp32) and 15 (bf16) and load only into an untied build;
+the HF export and the MAX graphs refuse them with a clear message. The step time and MFU count the
+same head GEMM as the tied model (the setup line's `gpt2-124M` label and the MFU use the 16-tensor
+parameter count; `params=` shows the stored 163M). Verify with `make verify-untied-cpu` (and
+`verify-untied-gpu`, `verify-untied-dump`, `make test-mojo TEST_DEFINES="-D LLMM_UNTIED_HEAD=1"`);
+generate from an untied file with `make infer-untied CHECKPOINT=<untied .bin> ARGS=<tokens>`. Design,
+memory model and per-slice verification:
+[`docs/ai/untied_lm_head_design_2026-10-30.md`](docs/ai/untied_lm_head_design_2026-10-30.md).
+
+**Rotary position embeddings (opt-in, `MOJO_DEFINES="-D LLMM_ROTARY=1"`).** The modded-nanogpt
+half-truncated rotary on the q and k thirds of qkv replaces the learned `wpe` add: `wpe` stays in
+the parameter layout (checkpoint tensor list, ZeRO shards and Muon owner-space unchanged) but is
+not added, gets no gradient, is zero from a from-scratch init and is left out of the Muon-mode
+AdamW ranges. A rotary checkpoint is only meaningful in a rotary build: the flag is stored in the
+checkpoint headers, a rotary model `.bin` is refused by a non-rotary build, and resuming refuses a
+mismatch in either direction (a non-rotary `.bin`, e.g. pretrained GPT-2, still initialises a
+rotary run, with the obvious loss jump). Default-build checkpoints are byte-identical to before.
+Reference (`GPT2_ROTARY=1` in `train_gpt2.py`), gates and results:
+[`docs/ai/rotary_embeddings_w8_2026-10-30.md`](docs/ai/rotary_embeddings_w8_2026-10-30.md).
+
+Muon vs AdamW on this box (GPT-2 124M from scratch, FineWeb, bf16, B=32 T=1024 at 131k tokens/step,
+600 steps = 79M tokens, cosine to zero, same init per seed; val loss at step 600, three init seeds):
+
+| optimizer | recipe | seed 42 | seed 1 | seed 2 | mean | first eval at or below AdamW's step-600 val |
+|---|---|---:|---:|---:|---:|---|
+| AdamW | `-l 6e-4 -c 0.1 -gc 1.0` | 5.469 | 5.499 | 5.484 | 5.484 | (600) |
+| Muon, AdamW's recipe | `-opt muon -l 6e-4 -c 0.1 -gc 1.0` | 5.112 | 5.107 | 5.120 | 5.113 | step 300-400 |
+| Muon, tuned | `-opt muon -l 4.8e-3 -mu 0.9 -c 0 -gc 0` | 4.364 | 4.358 | 4.361 | 4.361 | step 200 |
+
+![Muon vs AdamW: val loss over 600 and 2000 steps, and the Muon lr sweep](figures/muon_vs_adamw_124m_2026-10-30.png)
+
+Val loss vs step for the three arms (left: 600 steps x 3 seeds; middle: 2000 steps, tuned Muon passes AdamW's final loss by step 800) and the 300-step Muon lr sweep (right). Reproduce with `make figure-muon`.
+
+The follow-up campaign ranked nine modded-nanogpt ideas on the tuned-Muon recipe at 300 steps (single seed, so differences under about 0.02 are noise): a zero-warmup linear-cooldown (WSD) schedule is the largest gain, rotary embeddings are second, QK-norm helps and bounds the attention logit, the AdamW-range learning rate has to stay at the shared rate, and the rest sit inside the noise band. Nothing becomes a default without three seeds. Details in [`docs/ai/modded_nanogpt_adoption_results_2026-10-30.md`](docs/ai/modded_nanogpt_adoption_results_2026-10-30.md); reproduce with `make figure-adoption`.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/modded_nanogpt_adoption_2026-10-30_dark.png">
+  <img alt="modded-nanogpt adoption campaign: val loss per arm, delta vs base, W1 ladder, QK-norm logit, loss vs step time" src="figures/modded_nanogpt_adoption_2026-10-30.png">
+</picture>
+
+Step time is within a few percent across arms (median 3.88-4.01 s/step over all twelve runs; at
+600 steps the per-seed Muon-minus-AdamW gap ranges from -1.3% to +2.7% with no consistent sign, at
+2000 steps Muon was 1.4% and 2.9% slower by median, partly contention): the Muon optimizer step is a
+fixed ~20-40 ms amortized over ~3.9 s of forward/backward. Seed spread is 0.03 for AdamW and under 0.015 for the Muon arms,
+far below the gaps between arms. On a 2000-step schedule (262M tokens, seed 42, same recipe with
+`-u 150`), val at step 2000 is AdamW 4.226, Muon at AdamW's recipe 4.005, tuned Muon 3.804; the
+tuned arm passes AdamW's final value between steps 600 and 800. Caveats: early-training horizons,
+one seed for the 2000-step runs, init seed varied but data order fixed, the tuned recipe came from a
+300-step single-seed sweep (seed 42, so partly in-sample) and the AdamW control was not re-tuned. Logs and per-step tables: the
+convergence doc above.
+
 Multi-GPU training: build with `WORLD_SIZE=N` (one rank per GPU, compile-time)
 and choose a ZeRO sharding stage at runtime:
 

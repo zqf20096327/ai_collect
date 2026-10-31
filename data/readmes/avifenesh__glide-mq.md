@@ -5,6 +5,11 @@
 [![CI](https://github.com/avifenesh/glide-mq/actions/workflows/ci.yml/badge.svg)](https://github.com/avifenesh/glide-mq/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/avifenesh/glide-mq/graph/badge.svg)](https://codecov.io/gh/avifenesh/glide-mq)
 
+<p align="center">
+  <a href="https://github.com/sponsors/avifenesh"><img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor"></a>
+</p>
+<p align="center"><b>Built and maintained with a lot of agent tokens and hours. If it saves you time, <a href="https://github.com/sponsors/avifenesh">sponsoring</a> helps keep it going.</b></p>
+
 High-performance message queue for Node.js with first-class AI orchestration. Built on Valkey/Redis Streams with a Rust NAPI core.
 
 Completes and fetches the next job in a single server-side function call (1 RTT per job), hash-tags every key for zero-config clustering, and ships AI-native primitives for cost tracking, token streaming, human-in-the-loop suspend/resume, model failover, TPM rate limiting, budget caps, rolling usage summaries, and vector search.

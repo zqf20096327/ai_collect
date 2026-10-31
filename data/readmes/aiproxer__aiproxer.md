@@ -1,249 +1,139 @@
-# LLM Interactive Proxy
+# AIProxer
 
-[![CI (dev)](https://img.shields.io/github/actions/workflow/status/matdev83/llm-interactive-proxy/ci.yml?branch=dev&event=push&label=CI%20(dev)&cacheSeconds=300)](https://github.com/matdev83/llm-interactive-proxy/actions/workflows/ci.yml?query=branch%3Adev)
-[![Coverage](https://img.shields.io/codecov/c/github/matdev83/llm-interactive-proxy?branch=main)](https://codecov.io/gh/matdev83/llm-interactive-proxy)
-![Tests passing](https://img.shields.io/badge/Tests%20passing-100%25%20out%20of%2013195-brightgreen)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-[![License](https://img.shields.io/github/license/matdev83/llm-interactive-proxy?color=blue)](LICENSE)
+**Any agent. Any model. Your subscriptions. One proxy.**
 
-Turn any compatible AI client into a safer, smarter, multi-provider agent platform.
+AIProxer sits between your AI agents and the models they use. Your favourite coding agent can talk to any provider, your existing subscriptions work wherever you work, and long agent sessions keep running when something upstream goes wrong.
 
-`LLM Interactive Proxy` is a universal translation, routing, and control layer for modern AI clients. Point OpenAI-compatible apps, Anthropic tools, Gemini integrations, and agentic coding workflows at one local or shared endpoint, then gain routing, failover, built-in security, automated steering, session intelligence, observability, and cross-provider flexibility without rewriting your client. If that matches your needs, it is also a compatibility layer, a security layer, a traffic control plane, a debugging surface, and a workflow improver for serious agentic use.
+> **Alpha / pre-release.** AIProxer is in active development and has not reached a stable release. Expect rough edges, breaking configuration changes between versions, and features that are still maturing. Try it, push it, and tell us what breaks, but don't build anything critical on it yet.
 
-> **Active Development**: This project is continuously evolving with new backends, routing features, and reliability improvements. See the [CHANGELOG](CHANGELOG.md) for the latest additions.
+---
 
-- **Keep your existing clients** - Change the endpoint, not the app.
-- **Mix providers freely** - Route across APIs, plans, OAuth accounts, model families, and protocol styles.
-- **Control agents in production** - Add guardrails, rewrites, diagnostics, and policy at the proxy layer.
-- **Debug with evidence** - Inspect exact wire traffic instead of guessing from symptoms.
+## The problems we solve
 
-| Without the proxy | With LLM Interactive Proxy |
-| --- | --- |
-| Each client is tied to one provider stack | One endpoint can serve many clients and many backend families |
-| Provider switching often means code or config churn | Change routing instead of rewriting integrations |
-| Agent safety is scattered across tools | Centralize redaction, tool controls, sandboxing, and command protection |
-| Debugging depends on incomplete logs | Inspect exact wire traffic with captures and diagnostics |
-| Token costs grow with long sessions | Use intelligent context compression and smarter routing to reduce spend |
-| Protocol mismatch blocks experimentation | Use cross-protocol conversion to bridge Anthropic, OpenAI, Gemini, and more |
+**Your agent decides your model.** Most AI agents are built around one vendor's API. Want to use Claude Code with a different model, or Codex with a model it doesn't ship with? Normally you can't.
+→ AIProxer translates between AI APIs on the fly, so any supported agent can use any supported model.
 
-## At a glance
+**You pay for subscriptions you can't use where you work.** You already pay for ChatGPT, Claude, Grok, or other plans, but each one is locked to its vendor's own tools.
+→ AIProxer lets you bring the subscriptions and API keys you already have to the agent of your choice. Your subscriptions stay yours: AIProxer never shares or resells a personal plan's allowance to anyone else.
 
-Beyond basic forwarding, the proxy adds cross-protocol translation, tool safety, routing and failover, session-oriented features (including B2BUA-style handling), boundary-level CBOR captures, usage tracking, and built-in token-saving controls. Longer narratives, use-case lists, and feature tours live in the [User Guide](docs/user_guide/index.md).
+**Long agent sessions die for avoidable reasons.** A rate limit, an exhausted key, a malformed tool call, or a model that quits halfway through the task, and an hour of agent work is gone.
+→ AIProxer fails over between providers, repairs broken tool calls, and keeps agents on task, without interrupting your session.
 
-- **One endpoint, many clients** - Keep existing OpenAI-, Anthropic-, and Gemini-style clients while changing routing behind the proxy. `/v1/responses` streaming emits official OpenAI Responses events (no legacy `response.chunk` fallback shape).
-- **Token-saving that actually matters** - Shrink bloated sessions with stale-history compaction and content-aware tool-output compression.
-- **Production-minded resilience** - Use retries, failover, health tracking, and safeguards that respect streaming semantics.
-- **Operational visibility** - Inspect wire captures, diagnostics, and usage data instead of debugging blind.
+**You can't see or control what your agents do.** Usage is spread across vendors, secrets slip into prompts, and nobody can say what was spent where.
+→ AIProxer gives you one place to observe, protect, and control all AI traffic.
 
-## Token Savings
+---
 
-Long coding sessions tend to waste tokens in two different ways: old tool results remain in history, and fresh tool outputs are often much more verbose than the model needs. The proxy addresses both problems separately.
+## What you get in the Alpha
 
-- **Context Compaction** - Replaces stale historical tool results with explicit stubs once newer results for the same resource exist later in the conversation.
-- **Dynamic Tool Output Compression** - Reduces the size of the remaining tool outputs during request preparation using content-aware strategies.
-- **Designed to work together** - Compaction removes outdated history first; dynamic compression then reduces the cost of the tool outputs that still matter.
-- **Useful for real agent workloads** - Especially helpful for repeated file reads, large grep/search results, verbose test output, logs, diffs, and long debugging sessions.
+### Connect anything to anything
+- **Works with the agents you already use.** AIProxer speaks the OpenAI (Responses and Chat Completions), Anthropic Messages, and Google Gemini APIs. Agents such as Claude Code, OpenAI Codex, Gemini CLI, OpenCode, and any tool that lets you set a custom API endpoint just point at AIProxer.
+- **140+ providers out of the box.** OpenAI, Anthropic, Google Gemini, xAI, Meta, DeepSeek, Mistral, Groq, Together, Moonshot/Kimi, MiniMax, Qwen, and many more, ready to use with only an API key.
+- **Enterprise clouds.** Azure OpenAI, Google Vertex AI, Amazon Bedrock and SageMaker, Oracle OCI, IBM watsonx, SAP AI Core, Snowflake Cortex, Databricks, and Cloudflare.
+- **Model hubs and local models.** OpenRouter, Hugging Face, NVIDIA, Cohere, and Replicate, plus Ollama, llama.cpp, LM Studio, and vLLM for models on your own hardware.
+- **Mix models freely.** Use models with completely different APIs in the same session; AIProxer handles the translation.
 
-Start with the [Token Saving Guide](docs/user_guide/features/token-saving.md) for the overall picture, then go deeper into [Context Compaction](docs/user_guide/features/context-compaction.md) and [Dynamic Tool Output Compression](docs/user_guide/features/dynamic-tool-output-compression.md).
+### Bring your own subscriptions and keys
+- **Subscription bridges.** Use your ChatGPT plan (through OpenAI Codex), xAI/Grok, Qwen, MiniMax, Nous Portal, and GitLab Duo accounts with other agents.
+- **Your Claude subscription, your way.** Use your own Claude plan through the official Claude Code runtime, for your personal use.
 
-## Resilience & Reliability
+For the experimental, CLI-only native-login/external-subagent split, see
+[Claude Code hybrid routing](docs/claude-code-hybrid.md) (live acceptance unverified).
+- **Cursor** through its official SDK is experimental and delivered as the standalone [`aiproxer-cursor-sdk`](https://github.com/aiproxer/aiproxer-cursor-sdk) backend plugin. The published plugin release works with host `v0.1.0`; current builds need plugin 0.2.0, which ships with the next host release ([#1404](https://github.com/aiproxer/aiproxer-enterprise/issues/1404)).
+- **Multiple keys per provider.** Register several API keys for one provider. Automatic quota-aware rotation, which moves to the next key before your agent sees an error, is landing during the Alpha.
 
-The proxy includes built-in resilience features for production use:
+### Keep long sessions alive
+- **Automatic failover.** If a provider fails before it starts answering, AIProxer retries on the next provider in your route.
+- **Tool-call repair.** Malformed or truncated tool calls are repaired in flight, and misnamed tools are corrected, so your agent doesn't crash on a model's mistake.
+- **Agent loop guard.** Stops models from ending an agent's task before the work is actually done.
+- **Stream recovery.** Interrupted responses can resume instead of starting over.
 
-- **Smart retry and failover** - Automatic recovery from transient backend failures
-- **Circuit breaker** - Temporarily excludes unhealthy backends to prevent repeated failures
-- **Streaming protection** - Avoids retry after output has started, preventing corruption
-- **Health monitoring** - Tracks backend availability and performance
+### Route smarter
+- **Your routing, your rules.** Ordered failover, weighted load-sharing, and parallel "fastest wins" races, with time-to-first-token budgets.
+- **Override hard-coded model names.** Map the model names your tools insist on to whatever model you actually want to use.
+- **Sticky sessions** keep a conversation on the same backend when that matters.
+- **Planner/executor pairing.** Let one model think and plan while another executes.
 
-Configure via the `resilience` section in `config.yaml` or see the [Failure Handling Guide](docs/user_guide/features/failure-handling.md). Request processing now runs through a single canonical manager path with no legacy split-handler fallback. `canonical_request_processing` provides the remaining runtime controls such as empty-stream recovery tuning.
+### Steer models
+- **Model-specific instructions.** Fix known quirks of particular models or model families with targeted steering, without touching your agent's prompts.
+- **Pre-request policies.** Check requests with a helper model before they reach the main one.
 
-## Quick Start
+### Save tokens and money
+- **Prompt-cache keep-warm** and cache-friendly routing, to cut the cost of cache misses on long sessions.
+- **Cache-health warnings** when something in a session starts defeating the provider's cache.
 
-### 1. Clone and install
+### Stay safe
+- **Secret-leak prevention.** AIProxer can detect your API keys and other configured secrets in outgoing prompts and redact or block them before they reach a model provider.
+- **Secure by default.** Local-only by default, explicit authentication for shared deployments, and network access controls including GeoIP filtering.
 
-```bash
-git clone https://github.com/matdev83/llm-interactive-proxy.git
-cd llm-interactive-proxy
-python -m venv .venv
+### See everything
+- **Usage metering** across every provider in one place.
+- **Prometheus metrics and OpenTelemetry tracing** for your existing monitoring.
+- **Live configuration reload** without restarting or dropping connections.
 
-# Windows
-.venv\Scripts\activate
+---
 
-# Linux/macOS
-source .venv/bin/activate
+## On the roadmap
 
-python -m pip install -e .[dev]
-```
+Coming to AIProxer, the free and open-source core:
 
-If you want OAuth-oriented optional connectors, install the `oauth` extra:
+- **Cross-agent memory.** Agent memory that follows you across sessions, agents, and devices, instead of being locked inside one tool.
+- **Intelligent steering.** Bring distracted models back on task and catch obvious mistakes before they waste time and tokens.
+- **Dangerous tool-call blocking.** Automatic detection and blocking of destructive agent actions.
+- **Token compression.** Fit more work into every context window and every plan.
+- **Usage-window warm-up.** Choose when vendor usage windows (such as 5-hour session limits) start, so they match how you actually work.
+- **Transcript and usage reporting.** Cross-vendor transcripts and usage reports, including subscription plans and multi-account setups.
+- **In-session control.** Change how the proxy behaves from inside your agent session, as you work.
 
-```bash
-python -m pip install -e .[dev,oauth]
-```
+---
 
-### 2. Export at least one provider credential
+## AIProxer Enterprise
 
-```bash
-# Example: OpenAI
-export OPENAI_API_KEY="your-key-here"
-```
+**Vendor-independent control of AI usage across your whole organisation.** AIProxer Enterprise is a commercial add-on, coming soon, that builds on the open-source core.
 
-### 3. Start the proxy
+**Govern access**
+- A web dashboard for managers.
+- Automated provisioning of AI access through SSO, SAML, RADIUS, and other identity systems, so nobody emails API keys around.
+- Control which teams and people can use which models.
+- Budgets and usage limits per organisational unit, department, team, and user.
+- Live and historical usage reporting, with charts, breakdowns, filters, and aggregations.
+- Central, searchable storage of session transcripts.
 
-```bash
-python -m src.core.cli --default-backend openai:gpt-4o
-```
+**Cut costs**
+- **Pareto routing.** Pick the best trade-off of speed, cost, and quality for each request, according to your preferences.
+- **In-session slicing.** Route different parts of one session to different models for the best cost/quality balance.
+- **Least-cost routing.** When several providers can serve a request, use the cheapest first, with no change to any client.
 
-The proxy listens on `http://localhost:8000` by default.
+**Agent Shield: security for AI agents**
+- GDPR / PII redaction.
+- An independent "judge" that checks sessions against your organisation's AI-usage policy.
+- Protection for public-facing agents against prompt injection, context poisoning, and users trying to push agents into misconduct.
+- A tool-call firewall with allow lists and deny lists.
+- Modality enforcement, which blocks injection attempts hidden in images, voice, or other non-text input.
 
-### 4. Point your client at the proxy instead of the vendor
+Interested in early access? [Open an issue](https://github.com/aiproxer/aiproxer/issues) and tell us about your use case.
 
-```python
-from openai import OpenAI
-
-client = OpenAI(
-    base_url="http://localhost:8000/v1",
-    api_key="dummy-key",
-)
-
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[{"role": "user", "content": "Hello!"}],
-)
-
-print(response.choices[0].message.content)
-```
-
-See the full [Quick Start Guide](docs/user_guide/quick-start.md) for additional setup, auth, and backend examples.
-
-### Auto-Append First Prompt
-
-Automatically append text from a file to the first user message in each session. Useful for injecting context, instructions, or system prompts without modifying client code.
-
-**Usage:**
-```yaml
-# config.yaml
-auto_append_first_prompt_filename: "./prompts/context.txt"
-```
-
-Or via CLI: `--auto-append-first-prompt-file ./prompts/context.txt`
-
-The file is loaded once at startup and appended to the first user message of every new session. See [Configuration Guide](docs/user_guide/configuration.md) for details.
+---
 
-## Supported Frontend Interfaces
-
-The proxy exposes standard API surfaces so existing clients can often work with little or no code changes.
-
-- **OpenAI Chat Completions** - `/v1/chat/completions`
-- **OpenAI Responses** - `/v1/responses` (supported routed backends for this surface: **OpenAI** / `openai-responses`, **OpenAI Codex** backends whose `backend_type` starts with `openai-codex`, **Anthropic**, **Google Gemini** / `google`, the in-process **mock** backend used in tests, and the dedicated **Cursor CLI ACP** compatibility path). Cursor ACP rejects client-supplied Responses tools, spawns a separate ACP child per request/session workspace (optional `workspace_path` / `CURSOR_CLI_WORKSPACE` is only a default), and is not a Codex-governed Executor provider: the Cursor runtime can still invoke its own tools inside that workspace. Restrict it to Planner/Advisor roles in a dedicated disposable or otherwise constrained workspace. Cursor catalog routes include the full backend instance name so project-bound workspaces cannot be selected by generic round-robin routing. Other backends receive an explicit `provider_limitation` error until a dedicated path exists. Multi-turn `previous_response_id` linkage uses complete visible transcript replay in an in-memory store per process; it does not retain or persist Cursor ACP process identities and does not cross worker/process boundaries—see the operator playbook under `.kiro/specs/responses-api-frontend-compliance/OPERATOR_LIVE_VERIFICATION_10.4.md` for multi-worker limitations.
-- **OpenAI Models** - `/v1/models`
-- **Anthropic Messages** - `/anthropic/v1/messages`
-- **Dedicated Anthropic server** - `http://host:<anthropic_port>/v1/messages` (only when `anthropic_port` / `--anthropic-port` / `ANTHROPIC_PORT` is set; often `8001`)
-- **Google Gemini v1beta** - `/v1beta/models` and `:generateContent`
-- **Diagnostics endpoint** - `/v1/diagnostics`
-- **Backend reactivation endpoint** - `/v1/diagnostics/backends/{backend_instance}/reactivate`
-
-See [Frontend API documentation](docs/user_guide/frontends/overview.md) for protocol details and compatibility notes.
-
-## Supported Backends
-
-The backend catalog keeps growing. Current documented backends include:
-
-- [OpenAI](docs/user_guide/backends/openai.md)
-- [OpenAI Codex](docs/user_guide/backends/openai-codex.md) — the `openai-codex`, `openai-codex-v2` and `openai-codex-app-server` variants share an **auto-discovered model catalog**: at startup the proxy resolves the latest Codex CLI version from GitHub Releases (the same source the CLI uses for its update notice), then issues an authenticated `GET https://chatgpt.com/backend-api/codex/models` request using the current Codex OAuth account and falls back to a shipped snapshot (`src/resources/codex/codex_model_catalog.json`) on failure. No model slugs or CLI versions are hardcoded in the connectors and the Codex CLI executable is no longer required. **Note (backward-incompatible):** legacy Codex slugs the backend no longer advertises (e.g. `gpt-5.1-codex`, `gpt-5-codex`, `gpt-oss-120b`) are no longer routable — see the backend doc for the `model_catalog` override. For `openai-codex` / `openai-codex-v2`, the first N session turns (default 5) force `temperature=1` and `verbosity=high` on the resolved request by default (ChatGPT Codex rejects `temperature` on the wire, so outbound effect is `text.verbosity=high`); opt out via `extra.codex.early_session_verbosity_bump.enabled: false`.
-- [OpenAI Codex App Server](docs/user_guide/backends/overview.md#openai-codex-app-server-codex-native-app-server-not-acp) — local Codex CLI `app-server --stdio` (native JSON-RPC, not ACP; local/single-user only)
-- [Anthropic](docs/user_guide/backends/anthropic.md)
-- [Alibaba Token Plan (International)](docs/user_guide/backends/alibaba-token-plan-intl.md) — `alibaba-token-plan-intl` uses the Anthropic-compatible Messages API, reads `ALIBABA_TOKEN_PLAN_API_KEY` only from the environment, and dynamically publishes the plan's available model catalog
-- [Google Gemini](docs/user_guide/backends/gemini.md)
-- [OpenRouter](docs/user_guide/backends/openrouter.md)
-- [Nvidia](docs/user_guide/backends/nvidia.md)
-- [ZAI (Zhipu AI)](docs/user_guide/backends/zai.md)
-- [Alibaba Qwen](docs/user_guide/backends/qwen.md)
-- [MiniMax](docs/user_guide/backends/minimax.md)
-- [InternLM](docs/user_guide/backends/internlm.md)
-- [ZenMux](docs/user_guide/backends/zenmux.md)
-- [Moonshot AI / Kimi Code](docs/user_guide/backends/kimi-code.md)
-- [Hybrid backend](docs/user_guide/features/hybrid-backend.md)
-- [Cline](docs/user_guide/backends/cline.md)
-- [Antigravity OAuth](docs/user_guide/backends/antigravity-oauth.md)
-See the full [Backends Overview](docs/user_guide/backends/overview.md) for configuration and provider-specific notes.
-
-## Routing & Model Selection
-
-The proxy uses a flexible selector syntax for routing requests to backends:
-
-**Basic format:** `backend:model`
-```bash
---default-backend openai:gpt-4o
---default-backend anthropic:claude-3-5-sonnet
-```
-
-**Failover chains:** Use `|` to specify fallback backends
-```bash
---default-backend "openai:gpt-4o|anthropic:claude-3-5-sonnet|openrouter:openai/gpt-4o"
-```
-
-**Weighted routing:** Use `^` to distribute traffic
-```bash
---default-backend "[weight=3]openai:gpt-4^[weight=1]anthropic:claude-3-5-sonnet"
-```
-
-**Weighted routing with context limits:** Use `[max_context=N]` to skip branches that cannot handle larger requests
-```bash
---default-backend "[weight=3,max_context=128000]openai:gpt-4o^[weight=1]anthropic:claude-3-5-sonnet"
-```
-If your client already knows the exact request token count, send `extra_body.request_context_tokens`
-to override heuristic token estimation for `max_context` checks on that request.
-
-When a weighted branch fails before meaningful output starts, runtime recovery can
-re-roll within the same request by excluding the failed branch and choosing from the remaining weighted leaves.
-
-**Parallel routing:** Use `!` to race several streaming backends and bridge the first one that emits meaningful output. `|` remains ordered failover, so `!` is the parallel separator.
-```bash
---default-backend "[handicap=10,ttft_timeout=10]nvidia:moonshotai/kimi-k2.6![handicap=5]nvidia:minimaxai/minimax-m3!nvidia:mistralai/mistral-large-3-675b-instruct-2512"
-```
-Parallel routing is streaming-only. The proxy emits standard SSE keep-alive comments while racing B-legs, cancels losers through their protocol cancellation callback, and stops every active or scheduled B-leg on A-leg disconnect or cancellation.
-
-**With parameters:** Pass model parameters in the selector
-```bash
---default-backend "openai:gpt-4o?temperature=0.5&max_tokens=2000"
-```
-
-See the [Technical Reference: Routing Selectors](docs/development_guide/routing-selectors.md) for full syntax rules, including parallel routing.
-## Access Modes
-
-The proxy supports two operational modes with different security assumptions:
-
-- **Single User Mode** - Default local-development mode with localhost-first behavior and support for OAuth connectors.
-- **Multi User Mode** - Shared or production mode with stronger authentication expectations and tighter connector rules.
-
-Quick examples:
-
-```bash
-# Single User Mode
-python -m src.core.cli
-
-# Multi User Mode
-python -m src.core.cli --multi-user-mode --host=0.0.0.0 --api-keys key1,key2
-```
-
-See [Access Modes](docs/user_guide/access-modes.md) for the security model and deployment guidance.
-
-## Documentation Map
-- End-user: **[User Guide](docs/user_guide/index.md)** (index), **[Quick Start](docs/user_guide/quick-start.md)**, **[Configuration](docs/user_guide/configuration.md)**, **[Token saving](docs/user_guide/features/token-saving.md)**
-- API surfaces: **[Frontends](docs/user_guide/frontends/overview.md)**, **[Backends](docs/user_guide/backends/overview.md)**, **[Security](docs/user_guide/security/authentication.md)**
-- Project: **[Development](docs/development_guide/index.md)**, **[CHANGELOG](CHANGELOG.md)**, **[CONTRIBUTING](CONTRIBUTING.md)**
-
-## Development
-```bash
-# Run the test suite
-python -m pytest
-# Lint and auto-fix
-python -m ruff check --fix .
-
-# Format
-python -m black .
-```
-See the [Development Guide](docs/development_guide/index.md) for architecture, contribution workflow, and extra dev scripts.
-## Support & License
-[GitHub Issues](https://github.com/matdev83/llm-interactive-proxy/issues) and [Discussions](https://github.com/matdev83/llm-interactive-proxy/discussions). Licensed under [GNU AGPL v3.0 or later](LICENSE).
+## Get started
+
+1. **Download** the archive for your platform (Linux, macOS, or Windows; x64 or ARM64) from [GitHub Releases](https://github.com/aiproxer/aiproxer/releases), and verify it against the published `checksums.txt`.
+2. **Configure** your providers in a YAML file, starting from the sample [`config/config.yaml`](config/config.yaml). API keys are read from environment variables, never from the config file.
+3. **Check and start** the proxy:
+
+   ```bash
+   aipstd check-config --config config.yaml
+   aipstd serve --config config.yaml
+   ```
+
+4. **Point your agent** at `http://127.0.0.1:8080`, for example with `OPENAI_BASE_URL=http://127.0.0.1:8080/v1` or `ANTHROPIC_BASE_URL=http://127.0.0.1:8080`.
+
+Optional connectors (enterprise clouds, subscription bridges, local runtimes) are installed separately; see the [connector guide](docs/backend-plugins/operator.md). More configuration examples are in [`config/examples/`](config/examples/), and the full documentation is in [`docs/`](docs/).
+
+---
+
+## Open core, MIT licensed
+
+AIProxer is free and open-source software under the MIT licence. It is complete and useful on its own for individuals and single operators, and it will never be deliberately limited to sell an upgrade. AIProxer Enterprise adds what organisations need on top: governance, cost control, and compliance.
+
+Found a bug or missing a provider or agent? [Open an issue](https://github.com/aiproxer/aiproxer/issues). Alpha feedback directly shapes what we build next.

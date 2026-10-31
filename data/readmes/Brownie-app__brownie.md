@@ -12,7 +12,7 @@
 
 ## What it actually does
 
-**It reads at night, on this Mac.** Files, WhatsApp, iMessage, Telegram, Apple Notes, Gmail, Calendar, Slack, Teams, and meeting recordings transcribed by Apple's own speech engine. A small model on your GPU decides what is worth keeping. Almost everything is thrown away.
+**It reads at night, on this Mac.** Files (skipping code projects and bulk folders), Apple Notes, iMessage, WhatsApp Desktop, Telegram, Calendar (EventKit), Mail over IMAP (Gmail, iCloud, Outlook, Fastmail or any server), Slack, Teams, meeting recordings transcribed by Apple's own speech engine, and work apps over MCP — Linear, GitHub, Notion, Granola presets, or any server you point it at. A small model on your GPU decides what is worth keeping. Almost everything is thrown away.
 
 **It keeps one note per person, forever.** What they asked you, what you promised them, what is still open between you. Written by code, not by the model, so it cannot drift.
 
@@ -28,6 +28,25 @@
 
 ![Promises in both directions, with what was said and when](docs/images/loops.png)
 
+## Beyond the morning cards
+
+**Ask** — questions answered from your own notes, with citations that open the original message.
+
+**The vault** — your notes are an Obsidian vault: `[[wikilinks]]`, Open in Obsidian, an iCloud Drive mirror for your phone. Yours to edit, and still yours if you delete Brownie.
+
+**Brownie as an MCP server** — run `Brownie mcp` and Claude Desktop, Cursor or any MCP app can read your notes. This Mac only, with a log of what they asked.
+
+**Recipes** — teach Hands something by doing it once. It replays by app link, accessibility tree, or the screen where you allow it, and stops before Send. Runnable from ⌘⇧Space, Shortcuts and Siri (`brownie://run?recipe=…`).
+
+- **Pre-meeting briefs** — ten minutes before a meeting, from your People notes.
+- **A Sunday letter** — what the week actually held.
+- **What left your Mac** — every request to the brain, byte for byte.
+- **This Mac only** — the reader doubles as the brain. Nothing is sent anywhere.
+- **Panic wipe** — hold to erase everything.
+- **Daytime reads** — every hour or three, while idle and on power.
+
+The behaviour is specified in `docs/spec/12-loops-briefs-recipes-trust.md`.
+
 ## What leaves your Mac
 
 | | |
@@ -37,7 +56,11 @@
 | Every byte that goes out | Listed in **What left your Mac**, byte for byte, in the app. |
 | Accounts, telemetry, crash reports | None. There is nothing to sign up for and no Brownie server. |
 
-A sensitive item — an account number, a medical detail — leaves no trace at all: not a title, not a log line. There are tests for that.
+An item the reader marks sensitive is dropped whole: no title, no summary, no card, and no line about it in Brownie's own logs — only a count, the time and which source it came from. Behind the model a deterministic backstop catches six high-risk identifier classes (US Social Security number, Luhn-valid card number, Aadhaar, PAN, passport, bank account with IFSC). There are tests for both.
+
+## Not in this build yet
+
+The sealed cloud mirror (v1.1) and self-updating builds — 0.1 has to be replaced by hand when a new version ships (`Scripts/sparkle-keys.sh` is ready; the feed is not).
 
 ## Run it
 
@@ -51,10 +74,10 @@ brew install cmake gperf openssl@3
 
 The first launch walks you through: downloading the reader (Gemma 4 E4B, 3.7 GB, public), choosing a brain (your own OpenAI / Anthropic / OpenRouter key, or a local server), picking sources, permissions, the overnight time, and the first read.
 
-For development, put your keys in `.secrets/brownie.env` (git-ignored; Debug builds read it). Gmail and Telegram need your own Google OAuth client and Telegram api_id/api_hash there — Brownie ships none. See `docs/launch-setup.md`.
+For development, put your keys in `.secrets/brownie.env` (git-ignored; Debug builds read it). Telegram needs your own api_id/api_hash there — Brownie ships none. Mail needs nothing: it is IMAP, and the user's own app password lives in their Keychain. See `docs/launch-setup.md`.
 
 ```bash
-swift build && swift test          # 709 tests: cursors, atomic commit, fail-closed parsing, PII backstop, windowing
+swift build && swift test          # 832 tests: cursors, atomic commit, fail-closed parsing, PII backstop, windowing
 swift run browniectl list files ~/Documents
 swift run browniectl read files ~/Downloads   # judge a folder with the reader from Terminal
 ```
@@ -77,33 +100,21 @@ swift run browniectl read files ~/Downloads   # judge a folder with the reader f
 | `Sources/Scheduling` | 3 AM wake, root helper with deadman, power rules |
 | `Sources/Agent` | Hands: accessibility-tree computer use with the never-press-Send policy |
 | `Sources/BrownieApp` | SwiftUI app: every screen from the design, walkthroughs, menu bar |
-| `Sources/CloudSources` | Gmail (own OAuth), generic MCP client + presets |
+| `Sources/CloudSources` | Mail over IMAP, Slack, Teams, generic MCP client + presets |
 | `Sources/TelegramSource` | Telegram over TDLib |
 | `Vendor/LiteRTLM` | Google's LiteRT-LM Swift package (Apache-2.0), manifest patched for Swift 6.0 |
 | `Vendor/tdlib` | TDLib headers; the dylibs are built locally by `Scripts/build-tdlib.sh` |
 
 ## Invariants (tests exist for each)
 
-1. Raw data never leaves the Mac; the brain only ever sees summaries.
-2. Sensitive items leave zero trace — not a title, not a log line.
+1. Raw files, messages and mail bodies never leave the Mac. What a cloud brain receives is listed in [the privacy spec](docs/spec/09-privacy.md): reader summaries, your Markdown notes when it judges or grounds Hands, and — only while Hands is running — the frontmost app's accessibility tree, plus a screenshot if you granted Screen Recording.
+2. An item marked sensitive leaves no title, no summary, no card and no log line — a count and a source, nothing else.
 3. The reader's judgement fails closed: unparseable ⇒ dropped.
 4. Nothing is sent, paid, submitted or deleted without your tap on that step.
 5. Every card carries its evidence.
 6. Run numbers are honest: read · kept · not worth keeping · sensitive erased.
 7. No account; the Mac's copy is the truth; deletion is total.
 8. Walkthroughs play once.
-
-## Beyond the morning cards
-
-**Loops** — promises in both directions, found in your chats; a card you fired comes back if the next read sees no reply. **Pre-meeting briefs** ten minutes before a meeting, from your People notes. **A Sunday letter** about the week. **Recipes** — teach Hands something by doing it once; it replays it by app link, accessibility tree, or (only where you allow) the screen, and stops before Send; runnable from ⌘⇧Space, Shortcuts and Siri (`brownie://run?recipe=…`). **What left your Mac** — every request to the brain, byte for byte. **This Mac only** — the reader doubles as the brain, nothing sent. **Panic wipe** — hold to erase everything. **Ask** — questions answered from your notes with citations that open the original. **The vault** — the knowledge base is an Obsidian vault with `[[wikilinks]]`, Open in Obsidian, and an iCloud Drive mirror for the phone. **Brownie as an MCP server** — `Brownie mcp` lets Claude Desktop, Cursor and any MCP app read your notes, on this Mac only, with a log of what they asked. **Daytime reads** — every hour or three while idle and on power. See `docs/spec/12-loops-briefs-recipes-trust.md`.
-
-## Sources
-
-Files (skips code projects and bulk folders) · Apple Notes · iMessage · WhatsApp Desktop · Calendar (EventKit) · Gmail (own Google sign-in) · Telegram (own api_id/api_hash) · work apps through MCP (Linear, GitHub, Notion, Slack, Granola presets, or any server).
-
-## Not in this build yet
-
-The sealed cloud mirror (v1.1) and self-updating builds — 0.1 has to be replaced by hand when a new version ships (`Scripts/sparkle-keys.sh` is ready; the feed is not).
 
 ## Eval
 

@@ -1,4 +1,4 @@
-## Updated on 2026.10.26
+## Updated on 2026.10.31
 > Usage instructions: [here](./docs/README.md#usage)
 
 <details>
@@ -24,7 +24,7 @@
 
 |Year|SLAM|SFM|Visual Localization|Keypoint Detection|Image Matching|NeRF|Gaussian Splatting|3D Reconstruction|World Model|VLA and VLN|
 |---|---|---|---|---|---|---|---|---|---|---|
-|[2026](./docs/archive/2026/README.md)|[181](./docs/archive/2026/SLAM.md)|[104](./docs/archive/2026/SFM.md)|[175](./docs/archive/2026/Visual-Localization.md)|[39](./docs/archive/2026/Keypoint-Detection.md)|[59](./docs/archive/2026/Image-Matching.md)|[114](./docs/archive/2026/NeRF.md)|[10](./docs/archive/2026/Gaussian-Splatting.md)|[10](./docs/archive/2026/3D-Reconstruction.md)|[19](./docs/archive/2026/World-Model.md)|[10](./docs/archive/2026/VLA-and-VLN.md)|
+|[2026](./docs/archive/2026/README.md)|[181](./docs/archive/2026/SLAM.md)|[104](./docs/archive/2026/SFM.md)|[175](./docs/archive/2026/Visual-Localization.md)|[39](./docs/archive/2026/Keypoint-Detection.md)|[59](./docs/archive/2026/Image-Matching.md)|[114](./docs/archive/2026/NeRF.md)|[10](./docs/archive/2026/Gaussian-Splatting.md)|[10](./docs/archive/2026/3D-Reconstruction.md)|[29](./docs/archive/2026/World-Model.md)|[10](./docs/archive/2026/VLA-and-VLN.md)|
 |[2025](./docs/archive/2025/README.md)|[507](./docs/archive/2025/SLAM.md)|[647](./docs/archive/2025/SFM.md)|[1845](./docs/archive/2025/Visual-Localization.md)|[262](./docs/archive/2025/Keypoint-Detection.md)|[1066](./docs/archive/2025/Image-Matching.md)|[366](./docs/archive/2025/NeRF.md)|||||
 |[2024](./docs/archive/2024/README.md)|[317](./docs/archive/2024/SLAM.md)|[163](./docs/archive/2024/SFM.md)|[378](./docs/archive/2024/Visual-Localization.md)|[67](./docs/archive/2024/Keypoint-Detection.md)|[95](./docs/archive/2024/Image-Matching.md)|[693](./docs/archive/2024/NeRF.md)|||||
 |[2023](./docs/archive/2023/README.md)|[79](./docs/archive/2023/SLAM.md)|[75](./docs/archive/2023/SFM.md)|[351](./docs/archive/2023/Visual-Localization.md)|[93](./docs/archive/2023/Keypoint-Detection.md)|[91](./docs/archive/2023/Image-Matching.md)|[583](./docs/archive/2023/NeRF.md)|||||
@@ -238,7 +238,7 @@
 
 > Showing the latest 200 of 1439 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261026>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261031>back to top</a>)</p>
 
 ## SFM
 
@@ -447,7 +447,7 @@
 
 > Showing the latest 200 of 1062 papers, see the [archive](#archive) for all.
 
-<p align=right>(<a href=#updated-on-20261026>back to top</a>)</p>
+<p align=right>(<a href=#updated-on-20261031>back to top</a>)</p>
 
 ## Visual Localization
 

@@ -4,26 +4,33 @@
 
 **简体中文** · [English](README.en.md) · [人类读本](README_human.md) · [Human Guide](README_human.en.md)
 
-### 一个跑在本地的 MCP知识库：让 AI 知道你这一版 Minecraft 该用哪套 API、哪套构建、哪套映射。
+### 一个跑在本地的 MCP知识/工具库：让 AI 知道你这一版 Minecraft 该用哪套 API、哪套构建、哪套映射。并提供一个完整的工具包去反复验证实现效果
+### 显著降低AI幻觉·AI不再瞎编
+####  检查不好找?AI也是一个好老师!
+#### 显著降低模组开发,整合包开发的工作量! 
+#### 帮助你实现想过但是受限于学习成本的没有完成的梦想! 
 
-**规则、官方文档、映射表、库模组、真机自测都在本地，agent 不用凭记忆猜。**
+**规则、官方文档、映射表、库模组、真机自测**
 
 **[人类读本](README_human.md) · [安装说明](AUTO_SETUP.md) · [贡献指南](CONTRIBUTING.md)** · [平台说明](#平台说明) · [工具清单](#mcpcli-tools89)
 
 </div>
 
-- **8 个加载器 + 2 个服务端面，逐版规则**：Forge · Fabric · NeoForge · Quilt · LiteLoader · Rift · ModLoader · 基岩 ｜ Paper · Spigot
-- **官方文档原文检索**：查的是你这个版本那一页,向量搜索,准确命中!
-- **六层映射互转 + 崩溃日志分析**：mojang · mcp · yarn · parchment · obfuscated · intermediary
-- **库模组与社区知识**：48 个常用库模组的 API 摘要、成套 Skill、精选各个MC社区的帖子
-- **工程与移植**：脚手架、Gradle 诊断、项目校验、Datagen、崩溃分诊、跨版本移植分析、反编译...等等!
-- **游戏内自测**：客户端 driver / 桥 / 服务端 driver，出截图、`qa.log`、`state.json` 才算过
+
 
 > [!IMPORTANT]
 > 只从本仓库获取工具与数据。同名仓库或复制本文档不代表官方下载源。
 > **你是人类读者 → [人类读本](README_human.md)**（人话版：能干什么、怎么开始 · [English](README_human.en.md)）
 > 本文件是给 AI 执行用的技术契约，长且密；细节让 agent 讲，比你自己翻快。
-
+- **8 个加载器 + 2 个服务端面，逐版规则**：Forge · Fabric · NeoForge · Quilt · LiteLoader · Rift · ModLoader · 基岩 ｜ Paper · Spigot
+- **官方文档原文检索**：查的是你这个版本那一页,向量搜索,准确命中!
+- **六层映射互转 + 崩溃日志分析**：mojang · mcp · yarn · parchment · obfuscated · intermediary,把 crash-report 直接扔给 AI，它会帮你解析出可能的原因
+- **库模组与社区知识**：48 个常用库模组的 API 摘要、成套 Skill、精选各个MC社区的帖子
+- **复合工程工具**：脚手架、Gradle 诊断、项目校验、Datagen、崩溃分诊、跨版本移植分析、AT/AW、mixin 分析、资源审计、发布前检查、翻译工具...等等!
+- **移植工具**：找到个好模组但只有 Forge 版，你想在 Fabric 玩？AI 会先分析移植路径、列出风险，确认之后再使用移植工作流，不会乱改你的文件。最后完成移植!
+- **解放人力**:不用再把时间耗在重复劳动上：注册方块、注册物品、数据生成、网络同步……AI 可以照着内置的规则和脚手架直接生成,新方块、新实体、GUI、崩溃分诊、移植、构建、真机测试，都有现成的工作流模板，AI 全部搞定。
+- **反编译工具**:支持反编译MC 源码,解析本地 mod jar,下载模组解析,帮助你解决编程时的问题d(´ω｀*)
+- **游戏内自测**：客户端 driver / 桥 / 服务端 driver，标准软件测试流程,测试全面,能够防止类似于MCR的兼容困难问题,拒绝屎山!出截图、`qa.log`、`state.json` 才算过
 ---
 
 ## 写在前面的
@@ -34,7 +41,23 @@
 见文首那条提示：人类读本 = `README_human.md`；需要细节直接让 agent 讲解。
 
 让 AI 编程助手（Cursor / Claude Code 等）能更好地编写 Minecraft 模组的完整工具包：消除知识陈旧、API 版本混淆、构建系统复杂、映射不一致等结构性障碍，覆盖从编写到测试模组的全流程。
+### 安装（第一次用先看这里）
 
+**最省事的装法：让你的 AI 帮你装**
+## 给小白的安装教程
+1. **让你的 AI 装它**：在harness中新建对话,输入:
+
+   > 帮我把这个 MCP <https://github.com/guguzea/MC-AI-Coding-Assistant-Tool.git>安装到 `<你想装的位置>`
+
+   Agent 会自己认宿主 → 检查 Node → `cd mcp-server && npm ci && npm run build` → 按该宿主格式生成配置草稿；**它先把目标文件与 diff 给你看，你确认后它才写**（不会静默覆盖已有 MCP 配置）。宿主不在已列清单里也能装（见 [AUTO_SETUP.md](./AUTO_SETUP.md) Step 4.11）。
+3. **重载宿主**：按AI指导重载 MCP（有的是重启、有的是重连，对照表在 [AUTO_SETUP.md](./AUTO_SETUP.md) Step 5）。重载后让它调一次 `get_server_status`；通了就是装好了。
+
+**前置要求**：**Node.js >= 22.5**（`node -v` 自查）。**22.5–22.12 与 23.0–23.3 必须加 `--experimental-sqlite` 启动**——内置 `node:sqlite` 在 22.13 / 23.4 起才默认开启；MCP/CLI 入口会在**任何 sqlite 使用之前**检测该窗口，命中即打印醒目指引并以非零码退出。**建议直接装 Node 22.13+ / 24 LTS 省心。**
+## 可以让AI帮你安装node
+**没看到工具 / 不想重载宿主** —— 不配 MCP 也能用，直接让AI使用 CLI工具
+**想手动装 / 装坏了要修**：唯一说明书是 [AUTO_SETUP.md](./AUTO_SETUP.md)（Step 0-pre 校验旧路径 → Step 0 识别宿主 → Step 2 编译 → Step 4 按宿主生成配置 → Step 5 重载并验收）；服务名 `MC-AI-Coding-Assistant-Tool`（stdio，**89** 个工具）。另一种装法（把 npm 包装进任意工程、平台数据另取）：见 [`mcp-server/README.md`](./mcp-server/README.md)「npm 安装」。
+
+> **给 Agent**：用户说「帮我装 / 怎么装 / 装不上」时按上面三步走；**配置格式以 `AUTO_SETUP.md` 为准；写盘前必须先给清单 + diff 等用户确认。**Skill 安装（Step 6）与 MCP 无关**，重载 MCP 不会让 Skill 面板出现条目，skill是动态上下文插入机制。
 
 ## 项目结构
 
@@ -119,8 +142,8 @@ MC_skill/
 | 平台       | 状态   | 规则 / 数据（摘要）                                              |
 | -------- | ---- | -------------------------------------------------------- |
 | Forge    | ✅ 完成 | 多版本规则（主推 **1.20.1**）；数据目录 `data/forge_`*                 |
-| Fabric   | ✅ 完成 | 多版本规则（主推 **1.20.1 / 1.21.x / 26.1.2**）；数据目录 `data/fabric_*`；**26.1.2 仅 mojmap** |
-| NeoForge | ✅ 完成 | 规则集在 `neoforge/`（主推 **1.20.4+ / 26.1**）；文档数据见 `data/neoforge_*`（主文档默认 **26.1**；**26.2 / 26.3 走迁移指南**，见「支持版本」表注） |
+| Fabric   | ✅ 完成 | 多版本规则（主推 **1.20.1 / 1.21.x / 26.1.2 / 26.2**）；数据目录 `data/fabric_*`；**26.1.2 / 26.2 仅 mojmap**；26.3 只有博客级迁移摘要，无规则树 |
+| NeoForge | ✅ 完成 | 规则集在 `neoforge/`（主推 **1.20.4+ / 26.1 / 26.2 / 26.3**）；文档数据见 `data/neoforge_*`（主文档默认 **26.1**；**26.2 / 26.3 有规则树、无本版文档**，游戏侧变更走迁移指南，见「支持版本」表注） |
 | Quilt    | ✅ 混合 | `quilt/<ver>/` 只写 QSL 差异（00/01/05/06）+ **本档 QSL Skill 3**（registry/events/networking），02–04/07–08/10 读 `fabric/<ver>`；`search_docs(platform=quilt)` 问 QSL 不回退 Fabric Registry |
 | 基岩版   | ✅ 完成 | 扁平 `bedrock/`；`search_bedrock_docs` + 滞后 `docsStatus`；实验开关按 `min_engine_version` 分层 |
 | LiteLoader | ✅ 完成 | `liteloader/1.12.2/` 纯客户端 + `HYBRID.md`；`diagnose_gradle` 对 liteloader 插件走轻量模式 |
@@ -137,8 +160,8 @@ MC_skill/
 | 平台 | 规则树（`平台/<ver>/`） | 文档数据（`list_*_versions`） | 主推 | 备注 |
 |------|-------------------------|-------------------------------|------|------|
 | **Forge** | `1.7.10` · `1.8.9` · `1.9.4` · `1.10.2` · `1.11.2` · `1.12.2` · `1.13.2` · `1.14.4` · `1.15.2` · `1.16.5` · `1.17.1` · `1.18.2` · `1.19.4` · `1.20.1` · `1.20.4` | `1.7.10`–`1.20.4`（含 `1.8.9` / `1.9.4` / `1.10.2` / `1.11.2` 等 javadoc 档） | **1.20.1** | `1.12.2` 有 forge-docs 教程；`1.7.10` 为 javadoc 核实表 + 短规则（**ready**）；`1.8.9`–`1.11.2` 是 **3 条规则 / 0 技能**的薄档（`pack.meta.json` 为 `ready`，session 可加载，但只有 00/01/09）。`forge/1.21.1` 为 **draft**（连 `.cursor/` 都没有 ⇒ `PACK_NOT_FOUND`；仅改口文档搜索） |
-| **Fabric** | `1.14.4` · `1.16.5` · `1.17.1` · `1.18.2` · `1.19.4` · `1.20.1` · `1.20.4` · `1.21.1` · `1.21.3` · `1.21.4` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1.2` | `list_fabric_versions` 含上述档（**无 1.21.5**） | **1.20.1** / **1.21.x** / **26.1.2** | `26.1.2` 仅 `fabric-docs`、无 wiki；**26.1.2 仅 mojmap**。`1.21.4`/`1.21.8`/`1.21.10` 有 versioned fabric-docs **和** 现行 `fabric-wiki`（wiki 不是该档历史快照）。**`1.21.5` 无 versions/ 源** → `PACK_NOT_FOUND`。禁止拷 `1.21.11`。附加数据（Data Attachments）逐档覆盖：`1.21.10` / `1.21.11` / `26.1.2` 已按**本档语料页**登记（只写该页出现的简名，FQCN / 模块 id 未核实者已注明）；`1.21.4` / `1.21.8` / `1.14.4` 本档无该主题来源 → 见各档 `pack.meta.json` 的 `gaps.attachments`（`1.14.4` 规则里是**负例**，不是空洞），禁止抄邻版 |
-| **NeoForge** | `1.20.1` · `1.20.4` · `1.20.6` · `1.21.1` · `1.21.3` · `1.21.5` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1` | `1.20.1`（回退 Forge）· `1.20.4` · `1.20.6` · `1.21.1` · `1.21.3` · `1.21.5` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1`（NeoForge **没有** `1.21.4` / `1.21.6` / `1.21.7` / `1.21.9` 档） | **1.20.4+** / **26.1** | 主文档默认 **26.1**；**26.2 / 26.3 走迁移指南**（见表注）。`1.20.1` 本档核实表 + 短规则（Forge 兼容数据）。附加数据（Data Attachments）：`1.20.4` / `1.20.6` 已按本档 `datastorage/attachments` 页 + 本档 loader-api 摘要核实（`1.20.4` docs 页把静态方法写成 `AttachmentSerializer.serializable()`，摘要内无该类，真实为 `AttachmentType.serializable()`，已在核实表钉为禁止输出）；`26.1` 本档无独立 attachments 页，规则自带 fallback 标注 |
+| **Fabric** | `1.14.4` · `1.16.5` · `1.17.1` · `1.18.2` · `1.19.4` · `1.20.1` · `1.20.4` · `1.21.1` · `1.21.3` · `1.21.4` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1.2` · `26.2` | `list_fabric_versions` 含上述档（**无 1.21.5**） | **1.20.1** / **1.21.x** / **26.1.2** / **26.2** | `26.1.2` / `26.2` 仅 `fabric-docs`、无 wiki；**两档均仅 mojmap**。`26.2` 的语料来自上游 latest 面（`versions/26.2` 上游仍 404），有 versioned fabric-docs 正文。`1.21.4`/`1.21.8`/`1.21.10` 有 versioned fabric-docs **和** 现行 `fabric-wiki`（wiki 不是该档历史快照）。**`1.21.5` 无 versions/ 源** → `PACK_NOT_FOUND`。禁止拷 `1.21.11`。附加数据（Data Attachments）逐档覆盖：`1.21.10` / `1.21.11` / `26.1.2` 已按**本档语料页**登记（只写该页出现的简名，FQCN / 模块 id 未核实者已注明）；`1.21.4` / `1.21.8` / `1.14.4` 本档无该主题来源 → 见各档 `pack.meta.json` 的 `gaps.attachments`（`1.14.4` 规则里是**负例**，不是空洞），禁止抄邻版 |
+| **NeoForge** | `1.20.1` · `1.20.4` · `1.20.6` · `1.21.1` · `1.21.3` · `1.21.5` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1` · `26.2` · `26.3` | `1.20.1`（回退 Forge）· `1.20.4` · `1.20.6` · `1.21.1` · `1.21.3` · `1.21.5` · `1.21.8` · `1.21.10` · `1.21.11` · `26.1`（NeoForge **没有** `1.21.4` / `1.21.6` / `1.21.7` / `1.21.9` 档；`26.2` / `26.3` 有规则树、无本版文档） | **1.20.4+** / **26.1** / **26.2** / **26.3** | 主文档默认 **26.1**；**`26.2` / `26.3` 的规则树已建、本版主文档语料缺失**（00 条的工程口径来自官方 MDK 与 sources jar，01–10 的变更走迁移指南，见表注）。`1.20.1` 本档核实表 + 短规则（Forge 兼容数据）。附加数据（Data Attachments）：`1.20.4` / `1.20.6` 已按本档 `datastorage/attachments` 页 + 本档 loader-api 摘要核实（`1.20.4` docs 页把静态方法写成 `AttachmentSerializer.serializable()`，摘要内无该类，真实为 `AttachmentType.serializable()`，已在核实表钉为禁止输出）；`26.1` 本档无独立 attachments 页，规则自带 fallback 标注 |
 | **Quilt** | `1.18.2` · `1.19.4` · `1.20.1` · `1.20.4` · `1.21.1` · `1.21.3` · `1.21.4` · `1.21.8` · `1.21.10` · `1.21.11`（**10** 档） | `search_docs({platform:"quilt"})`；`data/quilt_*` 只有 **6** 档（`1.18.2` / `1.19.4` / `1.20.1` / `1.20.4` / `1.21.1` / `1.21.11`），其余 4 档有规则无语料 ⇒ 命中会带 `fallback:"fabric"` + `sourcePlatform`，那不是 QSL 证据 | 随 Fabric 同版 | **本档 QSL Skill 3** + Fabric overlay；00/01/05/06 为 QSL 差异（有 `06-networking.mdc` 的档不要 overlay Fabric 网络），02–04/07–08/10 读 `fabric/<ver>`。`1.21.11` 是 MC **1.21.11**，不是 `1.21.1` 笔误（两档并存、不得互顶）；该档 QSL / QFAPI 已停更且本版本无可用构件，口径见 `quilt/1.21.11/AGENTS.md` 顶部横幅与 `00-project-setup.mdc` |
 | **LiteLoader** | `1.8.9` · `1.10.2` · `1.12.2` | `search_docs({platform:"liteloader"})`（官方 wiki + hybrid 语义库；API 以核实表为准） | **1.12.2** | 三档都有**构件级签名面**（各档 `knowledge/common/api-surface.md`，由构件 `javap` 直读：1.12.2 73 类 / 249 签名、1.10.2 72 / 230、1.8.9 70 / 209）；`1.8.9` / `1.10.2` 的 `pack.meta.json` 是 `draft` ⇒ `session` 直接拒（`PACK_NOT_FOUND`，盘上那 11 条规则不得当已加载），只能走 `search_docs`；纯客户端；与 Forge 混合见 `HYBRID.md` |
 | **Rift** | `1.13`（原生档）· `1.13.2`（社区分支实验档） | `search_docs({platform:"rift"})`（官方 wiki + hybrid；方法名以核实表为准） | **1.13** | 件内 `profile.json` 的 `inheritsFrom` = **1.13** ⇒ 原生线只到 1.13；1.13.2 无原生件、跨版本不保证；两档 Rift API 同构件（39 个 listener 接口），Gradle `runClient` 里 listener **不派发**（dev 环境 deobf vs target notch 名），验它要用真实 client jar |
@@ -148,12 +171,16 @@ MC_skill/
 | **Paper API（签名面）** | 无规则树（签名面不是规则载体） | `search_docs({platform:"paper-api"})`：当前档 `stable` **2116 类** + 历史档 ×5（`1.21.4` 1871 · `1.21.1` 1702 · `1.20.1` 1496 · `1.16.5` 1254 · `1.12.2` 877） | **stable** | 与 `paper` 同平台**不同树**（`FabricDocStore` 单源故各占一个平台 id）；历史档走 javadoc 页（`jd.papermc.io/paper/<ver>/`）；**全部已建语义库** |
 | **Spigot（签名面）** | 无规则树 | `search_docs({platform:"spigot"})`：当前档 `stable` **1396 类** + 历史档 ×8（`1.21.8` 1352 · `1.21.4` 1335 · `1.21.1` 1282 · `1.20.6` 1251 · `1.20.1` 1186 · `1.19.4` 1173 · `1.16.5` 1027 · `1.12.2` 779） | **stable** | 历史档从 **maven 构件 `javap`** 抽（javadoc 站无版本轴），每页 `sourceType: javap`；无教程正文（SpigotMC Wiki 无开放许可）⇒ 要教程用 `platform=paper`；GPL-3.0 构件派生面的边界见 `THIRD_PARTY_NOTICES.md` |
 
-> **MC 26.2 / 26.3 怎么支持（模组面）**：**模组面**没有这两档的规则树与文档（`list_*_versions` 也不含）；支持方式 = 官方 **26.1 → 26.2 → 26.3 迁移指南**（`get_migration_guide` 的 `route="26.1->26.2"` / `"26.2->26.3"`，源 = NeoForge Primer），配合 `analyze_porting_path`。官方文档发布后同步补档。
+> **MC 26.2 / 26.3 怎么支持（模组面）**：按加载器分开看。**Fabric 26.2** 是完整档：`fabric/26.2` 11 条规则 + 脚手架 + `data/fabric_26.2` 的 fabric-docs 正文（`list_fabric_versions` 含 26.2）。**NeoForge 26.2 / 26.3** 规则树已建（`neoforge/26.2` / `neoforge/26.3` 各 11 条），但官方主文档没按版本分线、本仓没有这两版语料（`list_neoforge_versions` 不含）：00 条的工程口径（plugin、`neo_version`、Java 25、runs、modMetadata）来自官方 MDK 与 sources jar，01–10 的变更走 **26.1 → 26.2 → 26.3 迁移指南**（`get_migration_guide` 的 `route="26.1->26.2"` / `"26.2->26.3"`，源 = NeoForge Primer），配合 `analyze_porting_path`。**Fabric 26.3** 上游 docs 移植 PR 尚未合并，既没有规则树也没有正文，只有博客级迁移摘要（`data/fabric_porting/26.3.md`，`source=porting-extra`），不能当类签名出处。官方文档发布后同步补档。
 > **服务端面的 `26.3` 是另一条线**：`paper/26.3/rules/` 是 Paper 服务端规则树（载体 `runServer`），与上面这条模组面迁移路线无关，两者不要互相套。
 
 查询本机已建档列表：`node mcp-server/dist/cli.js activate_platform_pack --action=list`；文档档：`list_forge_versions` / `list_fabric_versions` / `list_neoforge_versions` / `list_doc_versions`。
 
 ## 快速开始
+
+### 安装
+
+见开头
 
 **对 AI（打开一个 MC Mod 项目时）：**
 
@@ -206,11 +233,7 @@ MC_skill/
 
 > 修改 `.cursor/` 后，在该版本目录运行 `sync-skills.ps1`。
 
-**配置本地 MCP Server：**
-
-> 将 [AUTO_SETUP.md](./AUTO_SETUP.md) 拖入当前 AI IDE / CLI。Agent 应识别宿主（Cursor / Claude Code / VS Code / Continue / Trae / OpenCode / Codex / DSH 等），编译 `mcp-server`，按该宿主格式生成配置草稿，**经你确认后合并**（不会静默覆盖）。  
-> 要求 **Node.js >= 22.5**（**22.5–22.12 与 23.0–23.3 必须加 `--experimental-sqlite` 启动**——内置 `node:sqlite` 在 22.13 / 23.4 起才默认开启；MCP/CLI 入口会在**任何 sqlite 使用之前**检测该窗口，命中即打印醒目指引并以非零码退出）；服务名 `MC-AI-Coding-Assistant-Tool`（stdio，89 个工具）。无 MCP 客户端时用 `node mcp-server/dist/cli.js`。
->
+**配置本地 MCP Server：** 见上面「安装（第一次用先看这里）」；各宿主的配置格式与验收步骤以 [AUTO_SETUP.md](./AUTO_SETUP.md) 为准（**不要默认 Cursor 的 `mcp.json`**）。
 
 ## 模组测试流程 loop：两段
 
@@ -561,7 +584,7 @@ node mcp-server/dist/cli.js search_forge_docs --version=1.14.4 --query="entity g
 | Forge **1.13.2** | `search_forge_docs` / javadoc | SRG 类名与成员名可列（无 Parchment javadoc） | `1.13.2-forge` 已索引 |
 | Forge **1.14.4 / 1.15.2** | `search_forge_docs`（**语义库完整**，查询返回 `semantic: true`） | `query_api` 有真索引（MCPConfig `joined.tsrg` 派生：4,976 / 5,137 类；类名写该版 SRG 路径，成员名为 `func_/field_`，无参数名/javadoc） | `*-forge` 已索引 |
 | Forge **1.16.5–1.20.4** | `search_forge_docs` | Vanilla 可用 `query_api`（真方法签名） | `query_loader_api` 或文档 |
-| Fabric | 先 `list_fabric_versions`；**禁止**把邻版 wiki 当本版。26.1.2 仅 `fabric-docs`、无 wiki | 26.1+ 无 `query_api` 索引 | `search_loader_api mode=list`：`1.14.4` / `1.16.5` / `1.17.1` / `1.18.2` / `1.19.4` / `1.20.1` / `1.20.4` / `1.21.1` / `1.21.3` / `1.21.11` / `26.1.2` 的 fabric-api **已索引**（不要再当成 maven 404；**11 档 = 14 个 `fabric/*` 规则树 − 薄档 `1.21.4` / `1.21.8` / `1.21.10`**） |
+| Fabric | 先 `list_fabric_versions`；**禁止**把邻版 wiki 当本版。26.1.2 / 26.2 仅 `fabric-docs`、无 wiki | 26.1+ 无 `query_api` 索引 | `search_loader_api mode=list`：`1.14.4` / `1.16.5` / `1.17.1` / `1.18.2` / `1.19.4` / `1.20.1` / `1.20.4` / `1.21.1` / `1.21.3` / `1.21.11` / `26.1.2` / `26.2` 的 fabric-api **已索引**（不要再当成 maven 404；**12 档 = 15 个 `fabric/*` 规则树 − 薄档 `1.21.4` / `1.21.8` / `1.21.10`**） |
 | Quilt | `search_docs({platform:"quilt"})`；问 QSL 禁止把 Fabric Registry 当命中 | 同左版本的 Vanilla 边界 | QSL 摘要见 `mode=list`（如 `1.19.4-qsl` / `1.21.1-qsl`） |
 | NeoForge | 先 `list_neoforge_versions`。`1.20.1` 回退 Forge 文档（兼容层） | 26.1+ 无 `query_api` | `*-neoforge` 多档已索引 |
 | LiteLoader / Rift / ModLoader | `search_docs`。LiteLoader/Rift 有官方 wiki **hybrid** 语义库；ModLoader 仍为 **L0-only** | `convert_mapping` / 反编译 | 仓库内核实表仍是 API 准绳；未 ingest → `PLATFORM_SKIPPED`。用户自备 jar 走 `ingest_loader_api`（默认 dryRun） |
@@ -772,7 +795,7 @@ Cursor 主路径是 **tools**；协议层仍注册 Prompt/Resource，工具兜�
 | `forge/1.7.10` | **3 规则 + 3 技能** | 目录 | 仅 00/01/09 + `mc-item` / `mc-registry` / `mc-events`（stub：无 05 规则，事件 API 未核实禁止生成） |
 | `forge/1.8.9` · `1.9.4` · `1.10.2` · `1.11.2` | **3 规则 + 0 技能** | 只有 `rules/` | 四档各 00/01/09，`.cursor/skills` **目录不存在** ⇒ 0 技能是**按设计**（短规则树只做「不得把现代 API 抄进早期档」的门），不是漏建。实测（`readdir <pack>/.cursor/rules` 计 `*.mdc`、`.cursor/skills` 计条目）；禁止拿 1.12.2 的 00–10 或 35 技能顶替 |
 | `forge/1.21.1` | **0 规则 + 0 技能**（draft） | 只有 `AGENTS.md` + `pack.meta.json` | 实测该目录**连 `.cursor/` 都没有** ⇒ session 必回 `PACK_NOT_FOUND`，也不在 `list_forge_versions`。登记为按设计，禁止为凑一个版本号克隆一棵新树，也禁止用 NeoForge 1.21.1 或 Forge 1.20.4 顶上 |
-| `fabric/*`（**14 档**，骨架全档同数；26.1.2 为 Mojmap） | **38** | `.md` 文件（薄档/26.1.2 为目录 layout） | 各档 18 基础（含 `mc-fabric-api` / `mc-kotlin` / `mc-cloth-config`）+ 19 Wave D + `mc-events`（含 **1.21.3** 与 **26.1.2**；26.1.2 为 Mojmap，禁止 Yarn）。薄档 `1.21.4`/`1.21.8`/`1.21.10` 的**规则 11 条 + Skill 38 项与其余 11 档完全同数**（实测（`readdir <pack>/.cursor/rules` 计 `*.mdc`、`.cursor/skills` 计条目）：fabric 全部 14 档均为 11/38，没有例外），「薄」指的是语料不是骨架：该三档 `knowledge/` 实扫 **2 篇**（本档 `common/verified-api-<ver>.md` + 三档共用的 `version-changes/1.21.x.md`；`pack.meta.json` 里写的「1 篇」只数档专属的 `common/` 页），而有 `code-patterns/` 的 7 档为 **12–13 篇**（同为实测），且薄档**不落 `code-patterns/`**。`pack.meta.json` 的 `status:"ready"` 与这一自述不矛盾——判据取盘上实测、不取本句自称（裁定「薄档即声明」） |
+| `fabric/*`（**15 档**，骨架全档同数；26.1.2 / 26.2 为 Mojmap） | **38** | `.md` 文件（薄档/26.1.2/26.2 为目录 layout） | 各档 18 基础（含 `mc-fabric-api` / `mc-kotlin` / `mc-cloth-config`）+ 19 Wave D + `mc-events`（含 **1.21.3** 与 **26.1.2**；26.1.2 / 26.2 为 Mojmap，禁止 Yarn）。薄档 `1.21.4`/`1.21.8`/`1.21.10` 的**规则 11 条 + Skill 38 项与其余 12 档完全同数**（实测（`readdir <pack>/.cursor/rules` 计 `*.mdc`、`.cursor/skills` 计条目）：fabric 全部 15 档均为 11/38，没有例外），「薄」指的是语料不是骨架：该三档 `knowledge/` 实扫 **2 篇**（本档 `common/verified-api-<ver>.md` + 三档共用的 `version-changes/1.21.x.md`；`pack.meta.json` 里写的「1 篇」只数档专属的 `common/` 页），而有 `code-patterns/` 的 7 档为 **12–13 篇**（同为实测），且薄档**不落 `code-patterns/`**。`pack.meta.json` 的 `status:"ready"` 与这一自述不矛盾——判据取盘上实测、不取本句自称（裁定「薄档即声明」） |
 | `neoforge/<ver>` session 索引 | **以版本目录为准** | 目录 | 根 `neoforge/.agents/skills` **不是** session 源；主档与薄档（1.20.6 / 1.21.5 / 1.21.10）本档 Skill 同名集合（entity/datagen 等），不再是 6 个。**`neoforge/1.20.1` 本档仅 `mc-registry`**，其余走 Forge 1.20.1 overlay |
 | `quilt/<ver>` 本档磁盘（规则 **4** + Skill **3**） | **3** | 目录 | 仅 QSL 差异 `mc-registry` / `mc-events` / `mc-networking`；entity/gui 等继续 Fabric overlay，不计入本档磁盘数。规则实测（`readdir <pack>/.cursor/rules` 计 `*.mdc`、`.cursor/skills` 计条目）全部 10 档均为 4 条（`00-project-setup` / `01-registry` / `05-events` / `06-networking`），**不是** 00–10 全集，其余主题走同版 Fabric overlay |
 | `liteloader/<ver>`（1.8.9 / 1.10.2 / 1.12.2） | **3** | 目录 | `mc-events` / `mc-gui` / `mc-networking`（LiteLoader 专用口径，非 Forge API） |
@@ -885,7 +908,7 @@ Fabric 另含 `mc-fabric-api`、`mc-kotlin`、`mc-cloth-config`；Forge 1.12.2�
 
 | 工具                         | 作用                                                                    |
 | -------------------------- | --------------------------------------------------------------------- |
-| `list_neoforge_versions`   | 列出本地 NeoForge 文档版本；主文档默认 **26.1**（26.2 构建已发布，但官方主文档不按版本分线且本仓无 26.2 语料 ⇒ 不克隆冒充）；**1.20.1** 可回退 Forge 数据。 |
+| `list_neoforge_versions`   | 列出本地 NeoForge **文档**版本；主文档默认 **26.1**（官方主文档不按版本分线，本仓无 26.2 / 26.3 语料 ⇒ 不克隆冒充）；`26.2` / `26.3` 有规则树但**不进本列表**（文档检索请求这两档会回落并有 warning）；**1.20.1** 可回退 Forge 数据。 |
 | `search_neoforge_docs`     | **hybrid** 搜索（DeferredRegister、Data Components、Payload 等）；无语义库则纯 L0。**须传 version**（先 `list_neoforge_versions`）。 |
 | `get_neoforge_doc_summary` | NeoForge 页 L1 摘要。                                                     |
 | `get_neoforge_doc_full`    | NeoForge 页全文 + 关键段高亮。                                                 |
@@ -1053,22 +1076,4 @@ jar 未缓存时返回 `CACHE_MISS` 引导（先调 `get_minecraft_source`），
 | `check_dependencies`  | 根据 `build.gradle` / `mods.toml` / `fabric.mod.json` / `quilt.mod.json` / `litemod.json` / `riftmod.json` / 基岩 manifest 提示依赖问题：loader 判定（quilt/fabric/forge/neoforge/liteloader/rift/modloader/bedrock）、库模组识别（catalog 接线）、冲突/陷阱检测。返回 `detectedLibraries`（含 `supportedVersions` 反编译验证版本窗口与 `manifestSummary` 版本/加载器摘要，数据来自 `library-catalog.ts` + `mcp-server/data/lib-manifests/all.json`）。 | 命中类：`ok` + `detectedLibraries`；**启发式 + catalog ⇒ 未收录的库会漏**（不是完整 Gradle 解析） | —                                                        |
 | `inspect_playtest_evidence` | 读游玩自测证据（exit-code / state.json / `[QA]` 段 / calls.jsonl / 截图），每件三态 `present\|absent\|unreadable`；须 `MC_SKILL_PLAYTEST_ALLOW=1` + `MC_SKILL_PLAYTEST_ROOT`（realpath 硬边界）。可选委派 `inspect_runtime` 读日志。 | **三态**：每件 `present` / `absent` / `unreadable`；**缺件不得读成"没有失败"** | —                                                        |
 | `inspect_playtest_multi` | 多客户端**联合判读**（多会话）：`clients[]`（{id,evidenceDir}）或 `evidenceRoot`（扫直接子目录当客户端；保留名 `sync/` 跳过并在 `autoSkipped` 里留痕）。逐客户端三态 + 联合判绿 + 锚点（state.json 的 `at` / plan.txt mtime / rounds 末轮）+ 会合 marker。 | **联合 fail-closed**：客户端数 ≥1 ∧ 每个 exit-code=0 ∧ state 与 qa 都 present ∧ rounds 末轮 ok≠false ∧（给了 `expectMarkers` 时）每个 marker 都 present；任一客户端目录 realpath 越出授权根 ⇒ **整体拒** | `NO_CLIENTS` · `CLIENT_NOT_GREEN` · `MARKERS_MISSING` · `OUTSIDE_AUTHORIZED_ROOT` · `DUPLICATE_CLIENT_ID` |
-| `playtest_intent` | 游玩自测**意图邮箱**（`in_jvm_player_agent` 真执行器的 LLM 侧接线）：`action=read\|write`；write 写 `<evidenceDir>/intent.json`（driver 的 `waitintent` 步消费并改名 `intent.done.json`）。校验顺序：confirmed → 禁列（kill/tnt/fill）→ 菜单（`intent-menu.json`）→ 参数白名单 → 必填 → 邮箱占用（overwrite 覆盖）。须 `MC_SKILL_PLAYTEST_ALLOW=1` + `MC_SKILL_PLAYTEST_ROOT`。失败码：`CONFIRMATION_REQUIRED` / `INTENT_FORBIDDEN` / `INTENT_NOT_IN_MENU` / `PARAM_NOT_DECLARED` / `MISSING_REQUIRED_PARAM` / `MAILBOX_BUSY` / `MENU_NOT_FOUND`。 | 写侧六段校验；**非法在写侧就拒**，不进执行器。失败形态三档：邮箱形态失败 = 数据（继续守候）／协议违规 = 写侧拒／脚本形态 = 判红停轮 | `CONFIRMATION_REQUIRED` · `INTENT_FORBIDDEN` · `INTENT_NOT_IN_MENU` · `PARAM_NOT_DECLARED` · `MISSING_REQUIRED_PARAM` · `MAILBOX_BUSY` · `MENU_NOT_FOUND` |
-| `playtest_bridge` | 调 BlackBoxPro 桥（host 恒 `127.0.0.1`，端口默认 38081）：`status` 看 `/status.ready`（已进世界）；`execute` 发 `/execute`（原生超时 ⇒ `PLAYTEST_TIMEOUT`）；`await` 轮询 `query_*` 等条件（桥无 `wait_until`）。`execute`/`await` 须 `confirmed=true` + 授权。桥无鉴权且通配绑定 —— 只在本机用。 | **超时 ≠ 没失败**：原生超时映射 `PLAYTEST_TIMEOUT`，**不得塌成"没失败"**。`/status.ready` 不可信，判"在不在世界"看 `query_player_state` | `PLAYTEST_TIMEOUT`                                       |
-
-> 判读列口径：`ok:true` = 有结果；`ok:false` = 工具失败（原因在 `errors[]` / `error`）。**命中类工具的空结果不等于目标不存在**。本节三个真三态面：`inspect_playtest_evidence` 的 `present|absent|unreadable`、`playtest_intent` 的三档失败形态、`playtest_bridge` 的超时语义。
-> 错误码列的 `—` = 本仓库文档未记载该工具的专属错误码；实际错误以响应里的 `errors[]` / `error.code` 为准，**禁止凭记忆补码**。本节填写的 13 个码均为文档具名值。
-
-### 12. 自我更新（1）
-
-| 工具 | 作用 |
-|------|------|
-| `mc_skill_update` | 检查 / 应用本仓库 **tooling + data** 更新（GitHub Release）。`action=check\|apply`；`scope=tooling\|data\|all`；默认 `channel=stable`（忽略预发布）。`apply` 默认 dryRun；真写需 `confirmed=true` + `MC_SKILL_ALLOW_WRITE=1` + `MC_SKILL_PROJECT_ROOT`=**本仓库根**。返回 `filesToOverwrite` / `diskSpace` / `restartRequired`。CLI：`node mcp-server/dist/cli.js update --action check\|apply`（旧位置参数 `check\|apply` 仍兼容，stderr 有迁移提示）。 |
-
-`get_server_status` 附带 `buildStatus`（src 比 dist 新时 `buildRequired=true`，提示重新 `npm run build`）、`updateHint`（上次 check 缓存，默认 TTL 1h）与 `pendingRestart`。
-
-### 13. 反编译与模组源码（5）
-
-**默认零下载**：不预热、不预取；只有显式调用才下载到 `$MC_SKILL_CACHE`（MCP 默认 `%APPDATA%/mc-skill-cache` 或 `~/.config/mc-skill-cache`；仓库脚本默认 `os.tmpdir()/mc-skill-cache` —— 两者不是同一个目录，长跑批处理请显式设成同一路径），**绝不写项目目录**。
-
-**缓存与并发**：布局是 `<cache>/{jars,mappings,remapped,decomp
+| `playtest_intent` | 游玩自测**意图邮箱**（`in_jvm_player_agent` 真执行器的 LLM 侧接线）：`action=read\|write`；write 写 `<evidenceDir>/intent.json`（driver 的 `waitintent` 步消费并改名 `intent.done.json`）。校验顺序：confirmed 

@@ -205,7 +205,7 @@ pip install ragleap-ansible
 uv add ragleap-ansible
 ```
 
-Looking at open, local speech models? `ragleap-voice` is a pre-alpha model manager: a licence-checked manifest of candidate speech-to-text and text-to-speech models, with hash-verified downloads from Hugging Face. It has no speech engines yet, so it cannot transcribe or synthesize audio, and every manifest entry is still unverified:
+Looking at open, local speech models? `ragleap-voice` is a pre-alpha library (MIT) with `transcribe()` and `synthesize()`, an optional Whisper large-v3 engine and an Indic Parler-TTS engine, on top of a licence-checked manifest of candidate models with hash-verified downloads from Hugging Face. Every model is still unverified and none is a default, each engine has been tested on only a few clips, and no claim is made that it is better than any other product:
 
 ```bash
 pip install ragleap-voice
@@ -434,7 +434,7 @@ pip install ragleap-rag
 - **`ragleap-observability`** — Prometheus, Grafana, Loki + Promtail for `ragleap-ops`, live-verified end-to-end against a real cluster (real connection confirmed, real non-zero metrics returned; 21+ real log streams with correct namespace/pod/container labels). AlertManager is wired to Prometheus with a first real alert rule, plus optional Slack/email receivers (off by default; delivery verified against a stand-in, real send not yet confirmed). Install with `pip install ragleap-observability` or `uv add ragleap-observability`.
 - **`ragleap-terraform`** — Terraform module that creates a local kind cluster and installs the RagLeap Helm charts, applied and destroyed on a real cluster (no cloud modules yet). Install with `pip install ragleap-terraform` or `uv add ragleap-terraform`.
 - **`ragleap-ansible`** — Ansible roles that prepare and harden a fresh Ubuntu server: deploy user, sudo, unattended upgrades, opt-in SSH hardening and an opt-in firewall (tested in a container; does not install k3s, Helm or the charts yet). Install with `pip install ragleap-ansible` or `uv add ragleap-ansible`.
-- **`ragleap-voice`** — pre-alpha model manager for open, local speech-to-text and text-to-speech models: licence-checked manifest, lock files with SHA-256 and hash-verified downloads from Hugging Face. No speech engines yet, so it cannot transcribe or synthesize audio. Install with `pip install ragleap-voice` or `uv add ragleap-voice`.
+- **`ragleap-voice`** — pre-alpha, open and local (MIT). `transcribe()` and `synthesize()` with an optional Whisper large-v3 engine and an Indic Parler-TTS engine, on top of a licence-checked manifest and hash-verified model downloads. Every model is still unverified and none is a default; each engine has been tested on only a few clips. Install with `pip install ragleap-voice` or `uv add ragleap-voice` (engines are optional extras, e.g. `ragleap-voice[whisper]`).
 
 All fourteen are MIT licensed. Browse the full package index at [packages.ragleap.com](https://packages.ragleap.com).
 
@@ -474,7 +474,7 @@ RagLeap Core is bring-your-own-key only there is no system-provided key for any 
 | `openrouter` | `OPENROUTER_API_KEY`, `OPENROUTER_MODEL` | |
 | `ollama` | `OLLAMA_MODEL` (no API key needed) | Self-hosted; requires Ollama running locally |
 | `deepseek` | `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` | |
-| `demonroute` | `DEMONROUTE_API_KEY`, `DEMONROUTE_MODEL` | Hosted open-weight models; DemonRoute states that prompts are not retained — [privacy](https://demonroute.com/privacy) |
+| `demonroute` | `DEMONROUTE_API_KEY`, `DEMONROUTE_MODEL` | Hosted open-weight models through a third-party gateway. DemonRoute states that it does not retain prompts, but it forwards them to the upstream host that serves the model, and its [privacy page](https://demonroute.com/privacy) does not describe that host's retention: avoid sensitive business data |
 | `xai` | `XAI_API_KEY`, `XAI_MODEL` | |
 | `cohere` | `COHERE_API_KEY`, `COHERE_MODEL` | |
 | `perplexity` | `PERPLEXITY_API_KEY`, `PERPLEXITY_MODEL` | |
@@ -495,6 +495,8 @@ GROQ_MODEL=llama-3.3-70b-versatile
 ```
 
 ### Ollama in Docker: known gotchas
+
+No internet, or a GPU? See [the offline and GPU guide](docs/offline-and-gpu.md).
 
 Running Ollama as a fallback/local provider from inside this app's Docker
 container (rather than bare metal) has real, verified setup steps beyond

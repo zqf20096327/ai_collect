@@ -57,7 +57,7 @@ The app works with any Hermes dashboard on its own. The free [Hermes Conduit Not
 - Calls stay with their chat, keep going with the screen locked, shrink to a bar while you read, and are saved as chats you can resume
 - Hermes calls you: a CallKit call when a job is done, Hermes needs you, or a check you scheduled is due, on the phone or the Watch
 - Classic voice and dictation with on-device, Apple, Hermes or your own speech-to-text, spoken Stop and End, wake phrases, and Read Aloud for any reply
-- Apple Watch app that calls on its own, CarPlay, Siri and the Action Button
+- Apple Watch app that calls on its own, CarPlay, Siri and the Action Button; Watch and Siri calls can start on a profile you pick, whichever one the iPhone has open
 
 **Tasks, bots and groups**
 
@@ -82,8 +82,8 @@ Each is off until you turn it on, and goes only to your own Hermes host, encrypt
 - Live Activities on the Lock Screen and in the Dynamic Island while a reply runs
 - Home Screen widgets to start a chat or talk in one tap
 - Provider, model and reasoning effort switching mid-conversation
-- Multiple dashboards and profiles, each with its own credentials and settings; rename a profile or change its photo and glow in Settings > Profiles
-- Capabilities: skills, tools, connectors and plugins, plus Hermes settings and gateway logs
+- Multiple dashboards and profiles, each with its own credentials and settings; rename a profile or change its photo and glow in Settings > Profiles; All in the profile row lists every profile's chats together, newest first with each row's profile picture, or grouped by profile with each profile's pinned chats and five newest until Show more
+- Capabilities: skills, tools, connectors (MCP servers you can test and edit, by form or as JSON) and plugins, plus Hermes settings and gateway logs
 - Native OAuth sign-in through your dashboard, QR code and setup links, Cloudflare Access service tokens
 - Face ID or Touch ID lock, credentials in the Keychain
 - Available in English, French, German, Indonesian, Italian, Japanese, Korean, Polish, Portuguese (Brazil), Russian, Simplified Chinese, Spanish, Traditional Chinese and Turkish
@@ -230,7 +230,7 @@ Key places:
 
 ## Privacy
 
-Conduit has no analytics, telemetry, crash-reporting or ad SDKs, and its developer never receives your conversations, voice or phone data. After a crash or freeze, Conduit asks once whether to send that report (call stacks and codes, the version, iOS version and device model) to its developer, through the developer's push relay; it goes only if you tap Send. Chats, attachments and opt-in phone data go to your own Hermes host. Live voice calls go to the voice provider you choose (Google, Alibaba Cloud, OpenAI or xAI) or your own speech server. The optional push relay delivers notifications and calls through Apple; with end-to-end encryption on, it sees only their routing data, not their content. A crash report you send isn't end-to-end encrypted: the developer's relay keeps what it says.
+Conduit has no analytics, telemetry, crash-reporting or ad SDKs, and its developer never receives your conversations, voice or phone data. After a crash or freeze, Conduit asks once whether to send that report (call stacks and codes, the version, iOS version and device model, and what the chat screen did just before: scrolling, sizes and timings, never message text) to its developer, through the developer's push relay; it goes only if you tap Send. A chat trace you send from Settings > Connection > Diagnostics & logs, after a chat jumps or gets stuck, goes the same way. Chats, attachments and opt-in phone data go to your own Hermes host. Live voice calls go to the voice provider you choose (Google, Alibaba Cloud, OpenAI or xAI) or your own speech server. The optional push relay delivers notifications and calls through Apple; with end-to-end encryption on, it sees only their routing data, not their content. A crash report or chat trace you send isn't end-to-end encrypted: the developer's relay keeps what it says.
 
 The full [privacy policy](https://kaishi00.github.io/hermes-conduit-notifier/privacy/) says what each party receives.
 

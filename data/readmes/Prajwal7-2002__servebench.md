@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/banner.svg" alt="servebench banner" width="100%">
+</p>
+
 # servebench
 
 [![PyPI](https://img.shields.io/pypi/v/servebench.svg?color=blue)](https://pypi.org/project/servebench/)
@@ -27,10 +31,13 @@ No GPU or engine install is needed on the client: it is one async Python process
 
 Install from PyPI:
 ```bash
+# Via pip
 pip install servebench
-```
-Or with [uv](https://docs.astral.sh/uv/):
-```bash
+
+# Or via uv
+uv add servebench
+
+# Or install as an isolated CLI tool with uv
 uv tool install servebench
 ```
 
@@ -117,7 +124,7 @@ assert report.passed, "Serving latency regressed!"
 
 Analyze whether your LLM serving bottleneck is **Memory-Bandwidth Bound** (typical during token generation / decode) or **Compute Bound** (large-batch prefill), and calculate your exact hardware utilization:
 
-- **MBU (Memory Bandwidth Utilization %)**: Percentage of theoretical memory bus throughput achieved reading model weights ($\text{tok/s} \times \text{model\_bytes} / \text{bus\_bw}$).
+- **MBU (Memory Bandwidth Utilization %)**: Percentage of theoretical memory bus throughput achieved reading model weights ($\text{tok/s} \times \text{model bytes} / \text{bus bandwidth}$).
 - **MFU (Model FLOPs Utilization %)**: Percentage of theoretical peak FP16/BF16 TFLOPs achieved by GEMM matrix operations.
 - Built-in hardware specs database: NVIDIA RTX 3050–4090, A100, H100, T4, and Apple Silicon M-series.
 

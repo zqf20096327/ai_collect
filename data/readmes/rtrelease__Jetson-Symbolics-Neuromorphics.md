@@ -60,13 +60,13 @@
  54. [Neuromorphic and Hybrid Agent Development](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/NengoAgent.md)
  55. **Computational Intelligence -** ***When Attention is not Enough!***
  56. [**Tokens for Tech Bros:**](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/TechBroTokens.md) **Sociopathic CEOs and LLMs Don’t Really Apologize When Their Commercial Product Sales Are The Ultimate Objectives.**
- 57. [**Talkie Toaster vs Bonsai-2:27b vLLM**](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/TalkieToaster.md) - a future rip from Red Dwarf
+ 57. [**Talkie Toaster vs Bonsai-2:27b vLLM**](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/TalkieToaster.md) - a retro future rip from Red Dwarf
  58. [**Edge Computer Visions 1:**](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/ComputerVisions1.md) Emergent infinity tunnels and other physical computing phenomena
  59. [**AGX Orin Dev Kit A/V Exoskeleton:**](https://github.com/rtrelease/Jetson-Symbolics/blob/main/OrinExoSkel.md) Supporting sound and vision
  60. **Toward a silicon [amanuensis](https://en.wikipedia.org/wiki/Amanuensis)**? [Reflections](https://github.com/rtrelease/Jetson-Symbolics/blob/main/AI-HypeCycle2022.md) on personal edge research lab HPC+AI in the Age of Big Data Sciences and Teams in *The Cloud*
  61. **The *Neuroscientist's Edge* HPC/AI**: Workstation with RTX GPUs, AGX Orin, AGX Thor, DGX Spark + Neurosymbolic and Neurobiological Modeling and Imaging Tools
  62. **LXXVI and counting**: Neuromorphic development as a [Diamond](https://en.wikipedia.org/wiki/Marian_Diamond)-[Scheibel](https://en.wikipedia.org/wiki/Arnold_Scheibel) gero-protective agent/process
- 63. **Ontogenesis:** Legacy computing technology and artificial intelligence [publications](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/LegacyPublications.md) and [cumulative body of work](https://pubmed.ncbi.nlm.nih.gov/?term=Trelease+RB)
+ 63. **Ontogenesis:** Legacy computing technology and artificial intelligence [publications](https://github.com/rtrelease/Jetson-Symbolics-Neuromorphics/blob/main/LegacyPublications.md) and [cumulative body of academic work](https://pubmed.ncbi.nlm.nih.gov/?term=Trelease+RB)
  
 *=---> [Anatomical reasoning](https://anatomypubs.onlinelibrary.wiley.com/doi/10.1002/ar.b.20095) and pose analysis, on the way to neurosymbolic applications*
 ![Screenshot from 2022-08-20 14-26-11](https://user-images.githubusercontent.com/71346897/185767485-fe8d63db-265b-4e14-b944-41e4bf9cac07.png)

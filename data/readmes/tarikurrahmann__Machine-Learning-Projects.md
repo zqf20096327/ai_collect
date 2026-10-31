@@ -322,14 +322,14 @@ Distributed under the MIT License. See [LICENSE](https://github.com/shsarv/Machi
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/tarikurrahmanbd">
-        <img src="https://avatars.githubusercontent.com/tarikurrahmanbd" width="100px;" alt="Tarikur Rahman"/><br />
+      <a href="https://github.com/tarikurrahmann">
+        <img src="https://avatars.githubusercontent.com/tarikurrahmann" width="100px;" alt="Tarikur Rahman"/><br />
         <sub><b>Tarikur Rahman</b></sub>
       </a><br />
-      <a href="https://github.com/tarikurrahmanbd" title="GitHub">
+      <a href="https://github.com/tarikurrahmann" title="GitHub">
         <img src="https://img.shields.io/github/followers/tarikurrahmanbd?style=social">
       </a>
-      <a href="https://www.facebook.com/tarikurrahman08" title="Facebook">
+      <a href="https://www.facebook.com/tarikurrahmann" title="Facebook">
         <img src="https://img.shields.io/badge/Facebook-%231877F2.svg?style=social&logo=facebook">
       </a>
     </td>

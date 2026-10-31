@@ -233,6 +233,16 @@ Type `/help` inside Nogic for the full command list.
 
 ---
 
+## A Note on Windows SmartScreen
+
+Because Nogic is an independent, open-source project, the Windows installer is not code-signed (EV certificates cost hundreds of dollars per year). Windows SmartScreen will flag it. This is normal for indie software; you can safely click 'More info' → 'Run anyway'.
+
+## Why the Law Library is Empty
+
+Nogic ships with an empty law library. This is a deliberate ethical choice. During early development, our AI agents bundled Moroccan law PDFs into the installer. We manually stripped them out before release to ensure we do not distribute copyrighted material without permission. You must add your own local laws using /add-law.
+
+---
+
 ## Requirements
 
 | | |

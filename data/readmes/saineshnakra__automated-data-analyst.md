@@ -1,149 +1,187 @@
-# ADA: Automated Data Analyst
+# ADA: the math arm for LLMs
 
 [![CI](https://github.com/saineshnakra/automated-data-analyst/actions/workflows/ci.yml/badge.svg)](https://github.com/saineshnakra/automated-data-analyst/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.11%2B-3776ab?logo=python&logoColor=white)](https://www.python.org/)
+[![PyPI](https://img.shields.io/pypi/v/automated-data-analyst?color=635bff)](https://pypi.org/project/automated-data-analyst/)
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776ab?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-20a779.svg)](https://github.com/saineshnakra/automated-data-analyst/blob/main/LICENSE)
-[![Stars](https://img.shields.io/github/stars/saineshnakra/automated-data-analyst?style=flat&logo=github&color=f5b731&label=Star%20this%20repo)](https://github.com/saineshnakra/automated-data-analyst/stargazers)
-
-**Upload a CSV or Excel file. Get a dashboard, an executive brief, anomaly
-flags, a forecast, and answers to plain-English questions — with the calculation
-shown under every number.**
-
-[Live demo](https://automated-data-analyst.streamlit.app/) ·
-[Documentation](https://github.com/saineshnakra/automated-data-analyst/tree/main/docs) ·
-[Roadmap](https://github.com/saineshnakra/automated-data-analyst/blob/main/ROADMAP.md) ·
-[Contributing](https://github.com/saineshnakra/automated-data-analyst/blob/main/CONTRIBUTING.md)
-
-**Source:** [github.com/saineshnakra/automated-data-analyst](https://github.com/saineshnakra/automated-data-analyst)
-
-> **⭐ If ADA saved you an afternoon, [star the repo](https://github.com/saineshnakra/automated-data-analyst).**
-> It is the whole marketing budget: stars are what put this in front of the next
-> person looking for a tool that shows its arithmetic. One click, and it costs
-> you nothing.
-
-![ADA turns CSV and Excel files into decision-ready business dashboards](https://raw.githubusercontent.com/saineshnakra/automated-data-analyst/main/assets/ada-social-preview.png)
-
-## What it does
-
-ADA reads your file, works out which column is the metric, which is the date,
-and which is the segment, then builds the analysis around that.
-
-- **Dashboard** — trend, segment breakdown, movement waterfall, segment × period heatmap
-- **Ask ADA** — plain-English questions answered locally with pandas, calculation shown
-- **Anomaly flags** — periods outside a calibrated band, sized so a stable series false-alarms about once in twenty analyses
-- **Forecast** — a guarded baseline that refuses to run on thin history and reports when it was no better than assuming no change
-- **Evidence and next steps** — every finding carries its calculation; recommendations are labelled as interpretation, never as cause
-- **Downloads** — Markdown executive brief and cleaned CSV
-
-Limits: 25 MB per file, 250,000 rows analyzed. Formats: `.csv`, `.xlsx`, `.xlsm`.
-
-### Nothing to upload? Try a sample
-
-Pick **Try a sample dataset** in the app, or download one from [`samples/`](https://github.com/saineshnakra/automated-data-analyst/tree/main/samples):
-
-| Sample | What it shows |
-|---|---|
-| [SaaS subscriptions](https://github.com/saineshnakra/automated-data-analyst/blob/main/samples/saas-subscriptions.csv) | A real revenue drop the anomaly radar finds, and a forecast that beats no-change |
-| [Support tickets](https://github.com/saineshnakra/automated-data-analyst/blob/main/samples/support-tickets.csv) | No revenue column, and a forecast honest enough to say it is useless |
-| [Ecommerce orders](https://github.com/saineshnakra/automated-data-analyst/blob/main/samples/ecommerce-orders.csv) | Returns as negative rows, so totals cope with mixed signs |
-
-All three are synthetic, so they carry no privacy or licensing baggage.
-
-### Ask a business question. Get the number and its calculation.
-
-![Ask ADA a plain-English question and receive a pandas-backed answer with its calculation](https://raw.githubusercontent.com/saineshnakra/automated-data-analyst/main/assets/readme/ask-ada.gif)
-
-### Focus on one segment. The whole analysis regroups.
-
-![Drill into one business segment and automatically regroup the dashboard by the next useful dimension](https://raw.githubusercontent.com/saineshnakra/automated-data-analyst/main/assets/readme/drilldown.gif)
+[![Stars](https://img.shields.io/github/stars/saineshnakra/automated-data-analyst?style=flat&logo=github&color=f5b731)](https://github.com/saineshnakra/automated-data-analyst/stargazers)
+[![Agent skill: Claude Code and Codex](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-0e0f13)](#use-it-from-claude-code-or-codex)
+[![Tool calling: Ollama, vLLM, llama.cpp, LM Studio](https://img.shields.io/badge/tool%20calling-Ollama%20%C2%B7%20vLLM%20%C2%B7%20llama.cpp%20%C2%B7%20LM%20Studio-0e0f13)](docs/llm-tools.md)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/saineshnakra/automated-data-analyst/main/assets/readme/anomaly-forecast.png" width="49%" alt="ADA dashboard showing anomaly markers, a guarded forecast, movement waterfall, and segment heatmap">
-  <img src="https://raw.githubusercontent.com/saineshnakra/automated-data-analyst/main/assets/readme/evidence-ledger.png" width="49%" alt="ADA evidence ledger showing calculations, anomalies, concentration, correlation, and detected schema">
+  <a href="https://github.com/saineshnakra/automated-data-analyst"><b>⭐ Star ADA</b></a> if it saves you an afternoon ·
+  <a href="https://automated-data-analyst.streamlit.app/example-study">Try it in the browser</a> ·
+  <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/README.md">Docs</a> ·
+  <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/CHANGELOG.md">What's new in 0.7.0</a>
+  <br>
+  <sub>Read this in <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=zh">中文</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ja">日本語</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ko">한국어</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=es">Español</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=pt">Português</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=de">Deutsch</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=fr">Français</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ru">Русский</a></sub>
 </p>
 
-## Run it
+ADA (Automated Data Analyst) is the part of a language model that does the
+math. Point it at CSV or Excel data and ask in plain words: it computes the
+answer with pandas, SciPy and statsmodels and returns the number with its
+calculation and the rows behind it, or refuses with the reason. It checks
+numbers stated about the data too: verified, or unverified with the reason
+and the one question that would settle it.
+
+A model never has to do arithmetic in its head again. That helps Claude and
+Codex, and it helps open-source models most: a small local model run with
+Ollama, llama.cpp, vLLM or LM Studio only has to pick the tool and read the
+answer. ADA is a Python package, a command line and a set of tool
+definitions any model with function calling can use.
 
 ```bash
-git clone https://github.com/saineshnakra/automated-data-analyst.git
-cd automated-data-analyst
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt
-streamlit run app.py
+pip install automated-data-analyst     # Python 3.11 or newer
 ```
 
-No API key required. The app opens with a built-in demo dataset.
+## Give a language model a math arm
 
-## Does my data leave my machine?
+```python
+from ada import tools
 
-**Running ADA yourself: no.** Cleaning, schema detection, every chart, and every
-Ask ADA answer are computed locally with pandas, with no network call at all.
+tools.definitions()                    # four tools for function calling: ask, check a claim, scan, model
+tools.run("ada_check_claim", {"path": "flights.csv", "claim": "The average departure delay was about 13 minutes."})
+```
 
-**Using the hosted demo: your file is uploaded to a Streamlit server**, because
-that is what uploading a file to a website means. It is held in memory for the
-session and never written to a database. If that matters for your data, run ADA
-locally — it is four commands above and needs no key.
+`tools.definitions()` is in the format OpenAI-compatible servers take, local
+ones included (`tools.definitions("anthropic")` for the Anthropic API), and
+`tools.run` runs the tool the model picks and returns JSON to send back.
+`ada tools` prints the same definitions for any other client.
+[ADA as the math tool of a language model](docs/llm-tools.md) has a complete
+loop with a local model, the Anthropic API and shell commands.
 
-An optional AI layer adds two things when you supply a key: a query planner for
-questions the rules cannot parse, and a strategic narrative. The planner shows
-its proposed calculation and waits for your confirmation before ADA executes it
-locally. **Neither ever receives your rows.** They receive column names, types,
-and already-computed evidence — and because an evidence sentence names the
-segment it is about, a segment label such as a customer or product name can
-appear in it. Nothing else from a cell does. Model-generated code is never
-executed.
+## Check a number
 
-Full details: [Privacy](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/privacy.md) · [SECURITY.md](https://github.com/saineshnakra/automated-data-analyst/blob/main/SECURITY.md)
+```console
+$ ada claim flights.csv "The average departure delay was about 13 minutes."
+verified: The average departure delay was about 13 minutes.
+  12.63907026 (328,521 rows) from mean(dep_delay) lies in 12 to 14, which about 13 minutes stands for.
+  calc: mean(dep_delay)
+  assumes: Read "departure delay" as dep_delay.
+  assumes: Left out 8,255 rows with dep_delay missing.
+  assumes: Read "about" as 12 to 14.
+  assumes: The unit "minutes" comes from the claim; the check compares numbers only.
 
-## Documentation
+$ ada claim flights.csv "The average delay was 13 minutes."
+unverified: The average delay was 13 minutes.
+  The claim's words fit more than one column, and they give different answers: dep_delay gives 12.63907026; arr_delay gives 6.895376757.
+  to check it: Which column is meant: dep_delay or arr_delay?
+```
 
-| Page | What you get |
-|---|---|
-| [Concepts](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/concepts.md) | The words ADA uses: measure, segment, period, evidence, plan |
-| [How it works](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/how-it-works.md) | Upload to dashboard, step by step |
-| [Architecture](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/architecture.md) | Which file does what, and why |
-| [Reference](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/README.md#reference) | One page per pipeline step |
-| [Development](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/development.md) | Setup, tests, CI, conventions |
-| [FAQ](https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/faq.md) | Short answers to common questions |
+`verified` means this number, from these rows, by this calculation, with the
+assumptions listed. `unverified` is not false: only the reason `failed_check`
+says the data give a different number. `--json` gives the whole record, and
+`ada.check_claim(...)` does the same in Python. See
+[Checking claims](docs/reference/claims.md) for the reasons, intervals and units.
 
-For the design story behind the project, read
-[I Built an AI Data Analyst That Tells You When It Hallucinates](https://medium.com/@saineshnakra/i-built-an-ai-data-analyst-that-tells-you-when-it-hallucinates-6051609c3f4a).
+## Compute an answer, or map a folder
 
-## Contributing
+```bash
+ada scan lahman/ --template answers.yml      # the files, how they join, the questions to ask first
+ada ask flights.csv "average dep_delay by origin" --json   # the numbers, the calculation, the rows used
+ada claim lahman/ "Barry Bonds hit 73 home runs in 2001." --answers answers.yml
+```
 
-Good places to start: a new question shape for Ask ADA, a new deterministic
-metric, schema-detection fixtures, chart accessibility, adversarial test data.
+`ada scan` asks what the analysis should find out, what a row is, and each
+choice ADA would otherwise make by default, with its proposed answer; `ada
+ask` and `ada claim` take the edited file. When an answer rests on a choice,
+such as leaving World and region rows out of an average, it says which, and
+`--decide` picks the other ([Decisions](docs/reference/decisions.md)). A
+question or claim about a folder is answered from the file it fits, or from
+two files joined along a link ADA is sure of. A question ADA can't answer
+comes back refused, with the reason. See [Ask ADA](docs/reference/ask-ada.md)
+and [Reading a folder of tables](docs/reference/folder.md).
 
-Read [CONTRIBUTING.md](https://github.com/saineshnakra/automated-data-analyst/blob/main/CONTRIBUTING.md), browse the
-[good first issues](https://github.com/saineshnakra/automated-data-analyst/labels/good%20first%20issue),
-or pick something from the [roadmap](https://github.com/saineshnakra/automated-data-analyst/blob/main/ROADMAP.md).
+Before it answers, ADA reports the rows it left out and why, counts each
+subject once when several rows come from one, says when groups reverse a
+pooled figure, adds up the count column of a table of counts, and gives a
+reason instead of a number when the data are too thin.
 
-Every new recommendation needs a test and the calculation that supports it.
+## Use it from Claude Code or Codex
 
-## Building on ADA?
+```bash
+ada skill               # .claude/skills/ada (Claude Code) and .agents/skills/ada (Codex)
+ada skill --user        # the same in your home folder, for every project
+```
 
-A link back to this repo is appreciated. If you've shipped something with it,
-[open an issue](https://github.com/saineshnakra/automated-data-analyst/issues/new) and I'll list it here.
+It also installs as a plugin ([how](plugins/automated-data-analyst/README.md)).
+The [skill](ada/skills/ada/SKILL.md) has the assistant let ADA do the
+arithmetic, check every number it states with `ada claim`, and ask you ADA's
+question instead of choosing a reading.
 
-ADA is MIT licensed, so you are free to use, change and ship it — commercially
-too. The only thing the licence asks is that the copyright notice travels with
-the code.
+## Paper assets for a study
 
-**Built with ADA**
+```bash
+ada demo mice && cd mice           # an example study to try first
+ada init data/measurements.csv     # asks about the study; writes study.yml
+ada build                          # writes paper-assets/
+ada verify                         # rebuilds and compares every number
+```
 
-- *Yours could be here.*
+`ada build` makes a data audit, a data dictionary, a record of every
+exclusion, results tables in Word, LaTeX and CSV, figures with captions and a
+methods draft. See [Paper assets for a study](docs/research.md). `ada analyze`
+gives a first look at any table, and `ada app` opens the same in a browser
+(`pip install "automated-data-analyst[app]"`).
 
-## Star it
+## Predict a column
 
-You read the whole thing — [that is worth a star](https://github.com/saineshnakra/automated-data-analyst/stargazers).
-ADA has no ads, no launch budget and no growth team; it gets found because
-people who liked it clicked the button. If you are shipping something with it,
-[say so in an issue](https://github.com/saineshnakra/automated-data-analyst/issues/new)
-and it goes in the list above.
+```bash
+pip install "automated-data-analyst[model]"
+ada model titanic/ --metric accuracy --out submission.csv
+```
 
-## License
+`ada model` predicts one column of a table from the others, as a tabular
+Kaggle competition asks. The features come from rules on the columns' shapes,
+LightGBM, XGBoost and a linear model are blended on out-of-fold predictions,
+every score is cross-validated, and the submission is checked before it is
+written. See [Predicting a column](docs/reference/modelling.md).
 
-[MIT](https://github.com/saineshnakra/automated-data-analyst/blob/main/LICENSE) · Copyright (c) 2024 Sainesh Nakra
+`ada auto` does the same with a wider search and takes longer: CatBoost,
+LightGBM with random split points, extremely randomized trees and a neural
+network join the blend, a second layer is fitted on their out-of-fold predictions, and the
+weights come from greedy selection. Each step stays only when the folds say it
+helps. `--jobs N` fits N learners at once and gives the same model.
 
-Originally built at [github.com/saineshnakra/automated-data-analyst](https://github.com/saineshnakra/automated-data-analyst).
+`--explain` predicts with a model a person can read instead, a linear or an
+additive one, with its coefficients and 95% intervals, each column's effect
+curve, and what explaining costs against the full search, fold by fold.
+
+It is scored on Kaggle competitions with no code for any one of them: the
+runner passes ADA the competition's folder and the name of its metric, and
+ADA does the rest. Each competition is also split inside itself, the way its
+test is made, so a change is measured on all 22 without a submission. On the 22 scored so far, with `ada auto` where it was
+run, it places in the top 10% on 2 (Titanic, and Housing Prices on Kaggle
+Learn, at 2%), in the top 15% on 6 and in the top 30% on 13. Store Sales, a
+forecast of 1,782 series, is its weakest, at 58%.
+[Every score](results/kaggle/README.md).
+
+## What it doesn't do yet
+
+Numbers that need three files joined, many phrasings ("horsepower" for `hp`,
+slopes, several numbers in one claim), and some year columns read as numbers
+rather than dates. These come back unverified or refused with a
+reason. See [Not covered yet](docs/reference/claims.md#not-covered-yet).
+
+## Progress
+
+73 cases on 20 public datasets, each expected value computed separately with
+pandas, SciPy and statsmodels; a fifth of each dataset's cases are holdout
+cases, only scored ([details](results/verification/README.md)).
+
+| | ADA 0.5.0 | Now |
+|---|---|---|
+| Dev cases | 9/58 | 50/58 |
+| Holdout cases | 0/15 | 14/15 |
+| Wrong verdicts on claims | | 0/35 |
+| True claims verified | 0/25 | 23/25 |
+| False claims caught | 0/7 | 6/7 |
+
+Each change is also scored on rounds of new public data, six datasets at a
+time from statistics offices, city portals and research projects, with claims
+written as reports write them; the pull request gives the scores.
+
+## More
+
+[All documentation](docs/README.md) · [Contributing](CONTRIBUTING.md) ·
+[Credits](docs/credits.md) · [Citing](CITATION.cff) · MIT [License](LICENSE)

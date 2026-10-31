@@ -23,12 +23,15 @@ With `CLAUDE_CONFIG_DIR`, put the file in that directory instead.
 | Anthropic, the default | `router.json` | Haiku 5.5, Sonnet 5.5, Opus 5.5 |
 | `deepseek` | `deepseek-router.json` | DeepSeek Flash, routed by effort |
 | `zai` | `zai-router.json` | GLM-5.3-Flash and GLM-5.3 |
+| `minimax` | `minimax-router.json` | MiniMax-M3.1-Flash, routed by effort |
+| `mimo` | `mimo-router.json` | MiMo-V2.6-Flash and MiMo-V2.6-Pro, no routed effort |
+| `kimi` | `kimi-router.json` | Kimi-K3.1-Pro, routed by effort |
 
 OpenRouter, Ollama, other local servers and other compatible hosted providers use custom `<provider>-router.json` files.
 They have no built-in model defaults. A selected file must exist and validate, or the router leaves Claude Code's model unchanged.
 
 See [Providers](docs/providers.md) for **default routes and activities**, **custom profiles**, and the **`--settings` flag alternative**.
-Execution provider selection is separate from classifier selection.
+Execution provider selection is separate from classifier selection. Observed usage stays visible even when a provider's cache behavior makes savings comparisons unavailable.
 
 ## Supported classifiers
 

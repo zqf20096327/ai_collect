@@ -442,6 +442,49 @@ Once startup completes, it prints:
 
 ---
 
+## Command-Line Interface
+
+The `mentisdb` binary is a complete command-line client for everything the MCP
+tools, the REST API and the web dashboard can do. Commands are
+`mentisdb <group> <command> [options]`; run `mentisdb --help` for the
+overview, `mentisdb <group> --help` for a group, and
+`mentisdb <group> <command> --help` for flags and copy-paste examples.
+[`docs/CLI_PARITY.md`](docs/CLI_PARITY.md) maps every MCP tool, REST route and
+dashboard action to its command.
+
+| Group | What it covers |
+|---|---|
+| `thought` | `append`, `retro`, `get`, `genesis`, `traverse`, `recent`, `candidates` |
+| `search` | ranked (default), `lexical`, `filter`, `federated`, `bundles` |
+| `chain` | `list`, `head`, `bootstrap`, `branch`, `merge`, `info`, `delete`, `access show\|set\|allow\|deny\|verify` |
+| `agent` | `list`, `get`, `registry`, `upsert`, `describe`, `alias`, `key add`, `key revoke`, `disable`, `activate`, `copy` |
+| `entity-type` | `list`, `upsert` |
+| `memory` | `export`, `import`, `extract` (MEMORY.md style Markdown) |
+| `skill` | `guide`, `manifest`, `list`, `search`, `read`, `versions`, `upload`, `deprecate`, `revoke`, `delete`, `diff` |
+| `webhook` | `list`, `register`, `delete` |
+| `vectors` | `enable`, `disable`, `sync`, `rebuild` |
+| `daemon` | `health`, `version`, `flush`, `restart`, `settings list`, `settings set` |
+| local | `setup`, `wizard`, `add`, `backup`, `restore`, `bearertoken`, `cert`, `key generate\|show` |
+
+```bash
+mentisdb chain bootstrap "Project Atlas memory" --chain atlas
+mentisdb thought append "Use UTC everywhere" --chain atlas --type Decision --tag time
+echo "deploy finished" | mentisdb thought append - --chain atlas --type Summary --role Checkpoint
+mentisdb search "why UTC" --chain atlas --type Decision --limit 5
+mentisdb memory export --chain atlas > MEMORY.md
+mentisdb chain delete scratch --yes --pin 123456
+```
+
+Daemon commands talk to the running daemon so they share its chain cache and
+locks: memory and registry commands use the REST API at `--url` (default
+`http://127.0.0.1:9472`, bearer token from `--token` or `MENTISDB_BEARER_TOKEN`),
+while the PIN-gated dashboard actions (`chain info/delete`, `vectors
+enable/disable/sync`, `skill diff`, `agent copy`, `daemon version/restart/settings`)
+use the dashboard API at `--dashboard-url` (default `https://127.0.0.1:9475`,
+PIN from `--pin` or `MENTISDB_DASHBOARD_PIN`). `--json` prints compact JSON for
+pipes; destructive commands require `--yes`. `backup`, `restore`, `bearertoken`
+and `cert` work on the data directory directly and do not need the daemon.
+
 ## Daemon Configuration
 
 `mentisdb` is configured with environment variables:
@@ -1565,6 +1608,8 @@ The daemon currently exposes 42 MCP tools:
   Revoke one previously registered public key.
 - `mentisdb_disable_agent`
   Disable one agent by marking its registry status as revoked.
+- `mentisdb_standing_context`
+  Render durable, age-independent memory (preferences, constraints, decisions, goals, lessons, user traits, newest handoff and checkpoint) into a prompt block; load it at session start before recent context.
 - `mentisdb_recent_context`
   Render recent thoughts into a prompt snippet for session resumption.
 - `mentisdb_memory_markdown`
@@ -2251,113 +2296,4 @@ Important:
 
 ### GitHub Copilot CLI
 
-GitHub Copilot CLI can also connect to `mentisdb` as a remote HTTP MCP
-server.
-
-From interactive mode:
-
-1. Run `/mcp add`
-2. Set `Server Name` to `mentisdb`
-3. Set `Server Type` to `HTTP`
-4. Set `URL` to `http://127.0.0.1:9471`
-5. Leave headers empty unless you add auth later
-6. Save the config
-
-You can also configure it manually in `~/.copilot/mcp-config.json` (or
-`$XDG_CONFIG_HOME/copilot/mcp-config.json` when `XDG_CONFIG_HOME` is set):
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "type": "http",
-      "url": "http://127.0.0.1:9471",
-      "headers": {},
-      "tools": ["*"]
-    }
-  }
-}
-```
-
----
-
-## Python Client
-
-`pymentisdb` is the official Python client for MentisDB.
-
-### Install
-
-```bash
-pip install pymentisdb
-pip install pymentisdb[langchain]  # with LangChain integration
-```
-
-### Basic Example
-
-```python
-from pymentisdb import MentisDbClient, ThoughtType
-
-client = MentisDbClient()  # defaults to http://127.0.0.1:9472
-
-# Append a thought
-thought = client.append_thought(
-    thought_type=ThoughtType.INSIGHT,
-    content="Rate limiting is the real bottleneck."
-)
-
-# Ranked search
-results = client.ranked_search(text="performance optimization")
-for hit in results.results:
-    print(f"[{hit.score.total:.3f}] {hit.thought.content}")
-
-# Context bundles
-bundles = client.context_bundles(text="cache invalidation", limit=5)
-```
-
-### LangChain Integration
-
-```python
-from pymentisdb import MentisDbMemory
-
-memory = MentisDbMemory(chain_key="my-project", agent_id="assistant")
-
-llm = ChatOpenAI(model="gpt-4")
-chain = llm.with_memory(memory)  # LangChain 0.3+
-```
-
-See the [full pymentisdb guide](docs/pymentisdb-python-client.html) for complete API reference.
-
----
-
-## LLM-Extracted Memories
-
-MentisDB can convert raw agent text, conversation logs, or transcripts into structured
-`ThoughtInput` records using GPT-4o (or any OpenAI-compatible endpoint). Review the
-extracted records and append them to your chain.
-
-This feature is enabled by default. Configure with environment variables:
-
-```bash
-export OPENAI_API_KEY="sk-..."           # required
-export LLM_BASE_URL="https://api.openai.com/v1"  # defaults to OpenAI
-export LLM_MODEL="gpt-4o"                # defaults to gpt-4o
-```
-
-```rust,ignore
-use mentisdb::{LlmExtractionConfig, extract_memories_from_text};
-
-let config = LlmExtractionConfig::from_env()?;
-let result = extract_memories_from_text(raw_text, &config, None).await?;
-
-// Review before appending
-for thought in &result.thoughts {
-    println!("{:?}", thought);
-}
-```
-
-The extraction uses `openai-rust2` with connection pooling, 3× retry on 429/5xx,
-60s timeout, and strict JSON schema validation on the returned payload. LLM output
-is **untrusted** — always review and optionally sign extracted thoughts before
-appending.
-
-See [docs/llm-extracted-memories-design.md](docs/llm-extracted
+GitHub Copilot CLI

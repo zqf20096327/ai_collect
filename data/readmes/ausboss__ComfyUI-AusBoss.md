@@ -8,6 +8,7 @@
          checks it stays the dynamic kind. -->
     <img src="https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fausboss%2FComfyUI-AusBoss%2Fmain%2Fpyproject.toml&query=%24.project.version&label=release&color=00b4aa&style=flat-square" alt="Release">
     <a href="https://www.youtube.com/@ausbossdev"><img src="https://img.shields.io/badge/YouTube-%40ausbossdev-00b4aa?style=flat-square&logo=youtube&logoColor=white" alt="YouTube @ausbossdev"></a>
+    <a href="https://discord.gg/RwVxY9Fuaj"><img src="https://img.shields.io/badge/Discord-AusBoss-00b4aa?style=flat-square&logo=discord&logoColor=white" alt="Discord: AusBoss"></a>
   </p>
 </div>
 
@@ -27,7 +28,7 @@ Most of them are for image and video work. ComfyUI's core nodes already cover th
 - **[LoRA Loader](#lora-loader):** a whole LoRA stack in one node, each row with its own switch and strength.
 - **[Workflow Switches](#workflow-switches):** turn parts of a workflow off and on from one small card.
 
-The **?** in a node's title bar opens a short card with its inputs and outputs, and every node has a longer help page in ComfyUI's node help panel. I post the workflows I make with them on [Civitai](https://civitai.com/user/AusBoss) and [X @Zanzibased](https://x.com/Zanzibased), and videos of them on [YouTube @ausbossdev](https://www.youtube.com/@ausbossdev). If a node saves you time, a star on the repo helps other people find it.
+The **?** in a node's title bar opens a short card with its inputs and outputs, and every node has a longer help page in ComfyUI's node help panel. I post the workflows I make with them on [Civitai](https://civitai.com/user/AusBoss) and [X @Zanzibased](https://x.com/Zanzibased), and videos of them on [YouTube @ausbossdev](https://www.youtube.com/@ausbossdev). Can't open Civitai? All my workflows are on [my Discord](https://discord.gg/RwVxY9Fuaj) too. If a node saves you time, a star on the repo helps other people find it.
 
 ## Install
 
@@ -85,7 +86,7 @@ The Klein 9B Outpaint example pads its picture with Load Image + Pad. [Open the 
 
 ### Image Folder
 
-Pick a folder, tick the pictures you want in a thumbnail gallery, and run the workflow on each one. **All in one run** does every picked picture with one press of Run. **One per run** loads one picture each run and steps to the next by itself, so a picture that fails only skips itself. It gives each picture's mask, its file name for saving the result under the same name, its number and how many there are.
+Pick a folder, tick the pictures you want in a thumbnail gallery, and run the workflow on each one. **All in one run** does every picked picture with one press of Run. **One per run** loads one picture each run and steps to the next by itself, so a picture that fails only skips itself. After the last picture it stops with a message, or starts over at the first and keeps going. It gives each picture's mask, its file name for saving the result under the same name, its number and how many there are.
 
 **Browse** lists the folders inside ComfyUI's input or output folder. A folder from anywhere else on your computer is brought in: drop it on the node, or choose it in your file explorer, and its pictures are copied into the input folder. A really big folder asks first. The node reads nothing outside those two folders.
 

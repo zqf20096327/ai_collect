@@ -218,7 +218,6 @@ Good entries should have a clear reason to exist. They should help people build,
 - [torchao](https://github.com/pytorch/ao) - PyTorch native quantization and sparsity for training and inference. Drop-in optimizations for production deployment. ![GitHub stars](https://img.shields.io/github/stars/pytorch/ao?style=social)
 - [SHAP](https://github.com/shap/shap) - Game theoretic approach to explain the output of any machine learning model. Industry standard for model interpretability. ![GitHub stars](https://img.shields.io/github/stars/shap/shap?style=social)
 - [skorch](https://github.com/skorch-dev/skorch) - scikit-learn compatible neural network library that wraps PyTorch. Seamlessly integrate PyTorch models with scikit-learn pipelines, grid search, and cross-validation. ![GitHub stars](https://img.shields.io/github/stars/skorch-dev/skorch?style=social)
-- [Composer](https://github.com/mosaicml/composer) - Supercharge your model training. MosaicML's PyTorch training library with built-in algorithms for efficient training (FSDP, gradient compression, progressive resizing) and seamless distributed training on large-scale clusters. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/mosaicml/composer?style=social)
 - [NVIDIA Apex](https://github.com/NVIDIA/apex) - PyTorch extension for mixed precision training and distributed training optimizations. Powers many production deep learning workloads with tools for automatic mixed precision (AMP), distributed data parallel, and fused optimizers. BSD-3-Clause licensed. ![GitHub stars](https://img.shields.io/github/stars/NVIDIA/apex?style=social)
 
 ---
@@ -471,4 +470,8 @@ Good entries should have a clear reason to exist. They should help people build,
 - [Agent Substrate](https://github.com/agent-substrate/substrate) - Kubernetes-native execution runtime for high-density, stateful AI-agent sandboxes with actor lifecycle management, suspend/resume, and workload routing. Apache-2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agent-substrate/substrate?style=social)
 - [DESIGN.md (Google)](https://github.com/google-labs-code/design.md) - A format specification for describing visual identity to coding agents, combining YAML tokens and markdown prose to give agents a structured understanding of design systems. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/google-labs-code/design.md?style=social)
 - [Agent Skills](https://github.com/agentskills/agentskills) - Standardized specification and document format for bundling and progressively loading AI agent capabilities, instructions, scripts, and resources. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/agentskills/agentskills?style=social)
-- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and valida
+- [FastMCP](https://github.com/PrefectHQ/fastmcp) - A Python framework for building Model Context Protocol (MCP) servers and clients with automatic schema generation and validation. Apache 2.0 licensed. ![GitHub stars](https://img.shields.io/github/stars/PrefectHQ/fastmcp?style=social)
+
+#### Agent Context, Memory & Knowledge
+
+- [OpenViking](https://github.com/volcengine/OpenViking) - Open-source context database for AI agents that unifies agent memory, knowledge RAG, and skills as a virtual filesystem. AGPL 3.0 licensed. ![GitHub stars](https://img.shield

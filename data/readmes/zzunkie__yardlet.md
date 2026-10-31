@@ -124,6 +124,48 @@ busy for more than 250 ms, it writes the time and the stack (function names only
 launch. See the
 [privacy policy](https://yardlet.app/privacy.html).
 
+## Permissions
+
+Yardlet is not sandboxed. The agents it starts run as you, as they would in a terminal, under their
+own approval and sandbox settings. Yardlet uses the access below only for the feature named, and
+macOS asks you the first time:
+
+- **Camera and microphone:** a site you allow in the built-in browser, or a command running in a
+  task, such as an agent's voice dictation or a program in the terminal.
+- **Bluetooth and USB:** passkeys from your phone or tablet, and security keys, in the built-in
+  browser.
+- **Automation (Apple Events):** a command running in a task that asks to control another app.
+- **Calendars, Reminders and Contacts:** the Apple Calendar, Reminders and Contacts connectors, once
+  you turn them on.
+- **Local network:** your phone finding this Mac on the same Wi-Fi, when the phone remote is on.
+
+Three helpers in the app bundle do work outside the main process:
+
+- **The browser host** runs the built-in Chromium (CEF) browser in its own processes, with its
+  profiles under `~/Library/Application Support/Yardlet`.
+- **`yardlet-mcp`** is a small stdio MCP server that Yardlet adds to each agent session it starts,
+  through that agent's per-session option, never its settings files. It forwards the agent's calls
+  to browser tools, connectors and session tools to the running Yardlet over a local socket.
+- **The lid helper** runs only while **Settings > General > Keep tasks working with the lid closed**
+  is on, which it is not by default. It is a launch daemon that runs as root, because the system
+  setting that keeps a Mac awake with its lid closed needs it. It turns that setting on only while
+  tasks are working, and puts it back when they finish, when Yardlet quits or crashes, and whenever
+  the Mac starts. Turning the option off unregisters the helper.
+
+## Known limitations
+
+- Yardlet runs on macOS 15 or later on Apple silicon only.
+- Connectors, browser tools and session tools reach Codex, Claude Code and the agents that use ACP
+  (OpenCode, Kimi Code, Grok Build, Hermes). Cursor Agent, Antigravity CLI, Pi and Muse Code have
+  no way to add an MCP server to one session, so their tasks run without them.
+- Scheduled tasks run only while Yardlet is open. A run missed while it was closed runs once when it
+  opens again, within 7 days.
+- The built-in browser cannot use passkeys saved in iCloud Keychain
+  ([docs/BROWSER_HOST.md](docs/BROWSER_HOST.md)).
+- Personal agents have limits of their own ([docs/PERSONAL_AGENTS.md](docs/PERSONAL_AGENTS.md)).
+- Yardlet is maintained by one person, and only the latest release receives fixes
+  ([SECURITY.md](SECURITY.md)).
+
 ## Roadmap and feedback
 
 What's being worked on and what comes next is on the [roadmap](https://github.com/users/zzunkie/projects/1),
@@ -151,6 +193,7 @@ swift run --build-system native NativeHarnessClient
 The default build system also compiles SwiftTerm's Metal shaders and stops when the Metal toolchain
 is not installed; `--build-system native` builds without it. `scripts/test-fast.sh` runs every test
 except renders, QA fixtures and performance runs, as CI does for each pull request;
+`scripts/test-fast.sh --excluded` runs only those, as CI does every night on `main`, and
 `swift test --build-system native` runs them all.
 
 For a normal registered macOS application bundle during development:
@@ -174,9 +217,9 @@ it never touches the installed app. Install Update… asks for confirmation, qui
 normal quit path (which warns about running tasks), and a detached installer swaps the bundle once the
 app has exited, keeps the previous one in `Updates/Previous`, and reopens Yardlet. Tasks, drafts and
 history live outside the bundle. The installer log is `Updates/install.log`. While tasks run, Install Update…
-also offers **Restart When Tasks Finish**: Yardlet waits until no task has run for a few seconds, checks that the
-staged build is still the one chosen, and installs through the same quit; the Yardlet menu shows the wait and
-**Cancel Update** ends it.
+also offers **Restart When Tasks Finish**: Yardlet waits until no task or subagent has run for a few seconds, checks
+that the staged build is still the one chosen, and installs through the same quit; the Yardlet menu shows the wait
+and **Cancel Update** ends it.
 
 Yardlet shows a staged build without being asked, as the Claude app shows a downloaded update: **Restart to
 update** above the account button at the bottom of the sidebar, and the same line above Quit in the menu bar
@@ -202,6 +245,18 @@ process). The script uses the pinned CEF distribution in `~/Library/Caches/Yardl
 its hash, and stops with the download command when it is missing. A debug bundle can be built without
 it with `YARDLET_WITHOUT_CEF=1`; `swift build`, `swift run`, and `swift test` never need CEF and fall
 back to the WebKit preview. See [docs/BROWSER_HOST.md](docs/BROWSER_HOST.md).
+
+The bundle is built for the Mac that builds it. `YARDLET_ARCHS` names other architectures:
+`YARDLET_ARCHS=x86_64` for Intel Macs, or `YARDLET_ARCHS="arm64 x86_64"` for a universal bundle, each
+executable joined with `lipo`. The pinned CEF build is arm64 only, so such a bundle is a debug bundle
+built with `YARDLET_WITHOUT_CEF=1`. CI builds the universal one and starts it on macOS 15 on Apple
+silicon and on Intel (`.github/workflows/launch.yml`): on `main`, by hand, and on pull requests that
+change how the bundle is built.
+
+An API that a newer SDK adds without marking it newer than macOS 15 links strongly, and the app stops
+before `main` on a macOS 15 release that lacks it. `./scripts/check-macos-symbols.sh <app> <SDK>`
+checks a bundle's imports from macOS against an older SDK; CI checks them against the macOS 15.0 SDK
+of Xcode 16.0, since its macOS 15 images run the latest 15.x.
 
 ### Screenshots and demo videos
 

@@ -1,24 +1,29 @@
 <p align="center">
-  <img src="docs/hero.svg" width="100%" alt="You ask your assistant to clone VM 9000 to web-02 and start it; clone_vm and start_vm flow through proxmox-mcp-server to the Proxmox cluster, and the new VM lights up on pve2.">
+  <img src="docs/hero.svg" width="100%" alt="You ask your assistant to clone VM 9000 to web-02 and start it; clone_vm and start_vm flow over MCP, by stdio or HTTP, through proxmox-mcp-server to the Proxmox cluster, and the new VM lights up on pve2.">
 </p>
 
 <p align="center">
   <a href="https://github.com/ry-ops/proxmox-mcp-server/releases"><img src="https://img.shields.io/github/v/release/ry-ops/proxmox-mcp-server?color=ff8a1f&label=release" alt="Release"></a>
-  <img src="https://img.shields.io/badge/tools-340-ff8a1f" alt="340 tools">
+  <img src="https://img.shields.io/badge/tools-341-ff8a1f" alt="341 tools">
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10+-3ec7ff" alt="Python 3.10+"></a>
-  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-1.x-b58cff" alt="MCP"></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-2.x-b58cff" alt="MCP SDK 2.x"></a>
   <a href="https://github.com/ry-ops/proxmox-mcp-server/pkgs/container/proxmox-mcp-server"><img src="https://img.shields.io/badge/docker-ghcr.io-3ddc84" alt="Docker image on ghcr.io"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffb02e" alt="MIT"></a>
 </p>
 
-<p align="center"><b>Talk to your Proxmox cluster.</b> A Model Context Protocol server that gives Claude, or any MCP client, the <b>whole Proxmox VE API</b>: 340 tools across VMs, containers, storage, clustering, Ceph, SDN and more.</p>
+<p align="center"><b>Talk to your Proxmox cluster.</b> A Model Context Protocol server that gives Claude, or any MCP client, the <b>whole Proxmox VE API</b>: 341 tools across VMs, containers, storage, clustering, Ceph, SDN and more.</p>
 
 <p align="center">
   <a href="#talk">Talk to it</a> ·
   <a href="#how">How it works</a> ·
-  <a href="#tools">340 tools</a> ·
+  <a href="#tools">341 tools</a> ·
+  <a href="#prompts">Prompts</a> ·
   <a href="#quick-start">Quick start</a> ·
-  <a href="#read-only">Read-only mode</a> ·
+  <a href="#clusters">Clusters</a> ·
+  <a href="#toolsets">Toolsets</a> ·
+  <a href="#http">HTTP</a> ·
+  <a href="#read-only">Safety</a> ·
+  <a href="#wait">Waiting</a> ·
   <a href="#a2a">A2A</a> ·
   <a href="#troubleshooting">Troubleshooting</a>
 </p>
@@ -27,13 +32,20 @@
 
 ## ✨ Highlights
 
-- 🧰 **The whole API, not a demo.** 340 tools across 14 areas: nodes, QEMU VMs, LXC containers, storage and backup, cluster and HA, access control, firewall, disks, Ceph, ACME, SDN, notifications, pools and appliances.
+- 🧰 **The whole API, not a demo.** 341 tools across 14 areas: nodes, QEMU VMs, LXC containers, storage and backup, cluster and HA, access control, firewall, disks, Ceph, ACME, SDN, notifications, pools and appliances.
+- 🧭 **Workflows built in.** Five MCP prompts, such as a cluster health check and a snapshot-change-verify routine, plus live cluster state as MCP resources.
 - 🖥️ **Inside your guests too.** Run commands through the QEMU guest agent (`vm_agent_exec` → `vm_agent_exec_status`) and read back the exit code and output.
-- 🔒 **Look-but-don't-touch with one switch.** `PROXMOX_READ_ONLY=true` refuses every write inside the server, and the client sees only the 149 read-only tools.
-- 🎯 **Load only what you use.** `PROXMOX_TOOLSETS=nodes,qemu,lxc,storage` cuts the tool list from 340 to 126, and the context it costs by more than half.
+- 🔒 **Look-but-don't-touch with one switch.** `PROXMOX_READ_ONLY=true` refuses every write inside the server, and the client sees only the 150 read-only tools.
+- 🧯 **Safe writes, protected guests.** `PROXMOX_NO_DESTRUCTIVE=true` hides the 73 tools that delete, stop, wipe or roll back. `PROXMOX_PROTECTED_VMIDS` names guests no tool may change.
+- ⏳ **Waits for the slow stuff.** Clone, migrate, backup and restore take `wait: true`, and `wait_for_task` follows any task to the end, with the log when it fails.
+- 🎯 **Load only what you use.** `PROXMOX_TOOLSETS=nodes,qemu,lxc,storage` cuts the tool list from 341 to 127, and the context it costs by more than half. Results come back as compact JSON.
 - 🚦 **Labelled for safe approval.** Every tool carries MCP `readOnlyHint` and `destructiveHint` annotations, so clients can auto-approve reads and ask before a delete, stop or rollback.
+- 🆕 **Current protocol, old clients welcome.** Built on MCP SDK 2: clients on the stateless 2026-07-28 protocol and on every handshake version back to 2024-11-05 connect. Failed calls are flagged as errors, so clients show them as failures.
 - 🔑 **API tokens or passwords.** Tokens are recommended; pair them with a `PVEAuditor` role for monitoring.
+- 🌐 **Local or on the network.** Clients spawn it over stdio, or `proxmox-mcp-server-http` serves it over streamable HTTP. Give each client its own token and a role: `read`, `operator` or `admin`.
+- 📜 **Every change on the record.** `PROXMOX_AUDIT_LOG` writes one JSON line per write call: who, what, the outcome and the task, with secrets redacted.
 - 🐳 **Runs anywhere.** Use `uv` from a clone, or the multi-arch image on `ghcr.io`.
+- ♻️ **Long sessions just work.** Password logins renew their Proxmox ticket before it expires.
 - 🤝 **A2A-ready.** `agent-card.json` lists every tool in 14 skill categories, for agent-to-agent discovery.
 - 🛡️ **Appliances.** `deploy_fortigate_vm` builds a FortiGate-VM from Fortinet's KVM image, with WAN/LAN NICs on the bridges and VLANs you choose. `deploy_cloud_vms` builds cluster-ready VMs from a cloud image, with your SSH key and a static IP each, ready for k3s-mcp-server's `create_cluster`.
 
@@ -42,7 +54,7 @@
 ## 💬 Talk to your cluster
 
 <p align="center">
-  <img src="docs/chat.svg" width="100%" alt="A chat runs df -h inside VM 120 via the QEMU guest agent and shows the disk usage; a side panel cycles through more questions and the tools that answer them.">
+  <img src="docs/chat.svg" width="100%" alt="A chat runs df -h inside VM 120 via the QEMU guest agent, with vm_agent_exec labelled destructive and vm_agent_exec_status labelled read-only, and shows the disk usage; a side panel cycles through more questions and the tools that answer them.">
 </p>
 
 Once it's connected, just ask:
@@ -58,24 +70,59 @@ Once it's connected, just ask:
 
 There are more worked examples in [USAGE.md](USAGE.md).
 
+<a id="prompts"></a>
+
+### 🧭 Built-in prompts and resources
+
+<p align="center">
+  <img src="docs/prompts.svg" width="100%" alt="Typing /mcp__proxmox__ in the client lists five prompts. Choosing cluster_health_check runs five read-only tools and the assistant reports one critical item, one warning and what is OK. Resources such as proxmox://cluster/resources attach live state without a tool call.">
+</p>
+
+The server ships **MCP prompts**, ready-made workflows your client lists by name. In Claude Code, type `/` to see them, for example `/mcp__proxmox__cluster_health_check`.
+
+| Prompt | What it does |
+|---|---|
+| `cluster_health_check` | Read-only check of quorum, nodes, guests, failed tasks, HA and Ceph, reported by severity |
+| `capacity_report` | Read-only storage, CPU and memory report with the biggest consumers; takes `threshold_percent` |
+| `safe_change` | Snapshot a guest, make your change after your go-ahead, verify it, and offer a rollback; takes `vmid` and `change` |
+| `investigate_failed_tasks` | Read-only: failed tasks, their logs, grouped by cause with fixes; takes `hours` |
+| `decommission_guest` | Back up, stop and delete a guest, asking before every change; takes `vmid` |
+
+Prompts only guide the model. Every step is still an ordinary tool call, so roles, read-only mode and protected guests apply as usual.
+
+**MCP resources** let a client attach live cluster state as context without spending tool calls:
+
+| Resource | Contents |
+|---|---|
+| `proxmox://cluster/status` | Quorum and node membership |
+| `proxmox://cluster/resources` | Every node, VM, container and storage with live usage |
+| `proxmox://cluster/tasks` | Recent tasks, with status |
+| `proxmox://nodes` | Nodes with CPU, memory and uptime |
+| `proxmox://storage` | Storage definitions |
+| `proxmox://nodes/{node}/status` | One node in detail |
+| `proxmox://vms/{node}/{vmid}/config`, `proxmox://cts/{node}/{vmid}/config` | One guest's configuration |
+
+Each resource is a single read, so resources work in read-only mode and for every role.
+
 <a id="how"></a>
 
 ## ⚙️ How it works
 
 <p align="center">
-  <img src="docs/how-it-works.svg" width="100%" alt="MCP clients talk to proxmox-mcp-server over stdio; the server calls the Proxmox VE API over HTTPS on port 8006. With read-only mode on, GET requests pass and POST, PUT and DELETE are refused inside the server.">
+  <img src="docs/how-it-works.svg" width="100%" alt="MCP clients talk to proxmox-mcp-server over stdio or HTTP; the server calls the Proxmox VE API over HTTPS on port 8006. With read-only mode on, only the 150 read tools are listed, GET requests pass, and POST, PUT and DELETE are refused inside the server.">
 </p>
 
-- **Your MCP client** (Claude Desktop, Claude Code, or anything that speaks MCP) starts the server and talks to it over **stdio**.
+- **Your MCP client** (Claude Desktop, Claude Code, or anything that speaks MCP) starts the server and talks to it over **stdio**. Or you run it as a service and clients connect over **[streamable HTTP](#http)**.
+- **`PROXMOX_TOOLSETS`** decides which API areas the server loads, and so which tools the client sees. Each tool is labelled read-only or destructive.
 - **The server** (Python, `httpx`, the MCP SDK) turns each tool call into a request to the **Proxmox VE REST API** over HTTPS on port **8006**, authenticated with an **API token** or a **password**.
-- **Read-only mode** is checked in the server's HTTP client, so a refused write never leaves your machine.
+- **Read-only mode** hides the write tools and is also checked in the server's HTTP client, so a refused write never leaves your machine.
 
 <a id="tools"></a>
 
-## 🧰 340 tools, 14 areas
+## 🧰 341 tools, 14 areas
 
 <p align="center">
-  <img src="docs/tools.svg" width="100%" alt="A tile map of the 340 tools by API area: QEMU VMs 46, nodes 38, cluster and HA 37, access control 33, Ceph 33, firewall 31, LXC 28, notifications 23, disks 17, ACME 17, SDN 16, storage and backup 14, pools 5, appliances 2.">
+  <img src="docs/tools.svg" width="100%" alt="A tile map of the 341 tools by toolset: QEMU VMs 46, nodes 38, cluster and HA 37, access control 33, Ceph 33, firewall 31, LXC 28, notifications 23, disks 17, ACME 17, SDN 16, storage and backup 14, pools 5, appliances 2, plus wait_for_task, which every toolset loads. Then all but nodes, qemu, lxc and storage dim, and the count drops to 127.">
 </p>
 
 | Area | Tools | Highlights |
@@ -94,6 +141,8 @@ There are more worked examples in [USAGE.md](USAGE.md).
 | Notifications | 23 | Gotify, sendmail, SMTP and webhook endpoints, matchers |
 | Pools | 5 | Resource pool CRUD |
 | Appliances | 2 | `deploy_fortigate_vm`: FortiGate-VM from Fortinet's KVM image, WAN/LAN NICs on chosen bridges and VLANs, sized for the free evaluation license. `deploy_cloud_vms`: VMs from a cloud image (e.g. Ubuntu's) with cloud-init user, SSH key and a static IP or DHCP each, disk grown and started |
+
+One more tool, `wait_for_task`, is loaded with every toolset. It waits for any Proxmox task to finish; see [Waiting for long tasks](#wait).
 
 Tool names follow the Proxmox API: `list_*`, `get_*`, `create_*`, `update_*`/`set_*`, `delete_*`, plus actions such as `start_vm`, `migrate_container` or `apply_sdn`. Each area is one module in [`proxmox_mcp/tools/`](proxmox_mcp/tools/). Your MCP client shows every tool with its full input schema, or you can list them all locally:
 
@@ -148,11 +197,11 @@ A `.env` file in the project directory is loaded automatically; see [`.env.examp
 A multi-arch image is published to GitHub Container Registry on every push to `main` and for each release tag:
 
 ```bash
-docker pull ghcr.io/ry-ops/proxmox-mcp-server:latest   # or a version tag, e.g. :2.4.0
+docker pull ghcr.io/ry-ops/proxmox-mcp-server:latest   # or a version tag, e.g. :2.9.0
 docker run -i --rm --env-file .env ghcr.io/ry-ops/proxmox-mcp-server:latest
 ```
 
-MCP clients talk over stdio, so run the container interactively (`-i`). `docker-compose.yaml` does the same using your `.env`.
+MCP clients talk over stdio, so run the container interactively (`-i`). `docker-compose.yaml` does the same using your `.env`. To serve it over HTTP instead, see [Run it over HTTP](#http).
 </details>
 
 **3. Connect your MCP client.** For Claude Desktop, edit `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS, or `%APPDATA%/Claude/claude_desktop_config.json` on Windows:
@@ -222,7 +271,48 @@ Use the **absolute** path to your clone.
 ```
 </details>
 
+<details>
+<summary><b>Claude Code</b></summary>
+
+```bash
+claude mcp add proxmox \
+  -e PROXMOX_HOST=192.168.1.100 -e PROXMOX_USER=root@pam \
+  -e PROXMOX_TOKEN_NAME=automation -e PROXMOX_TOKEN_VALUE=your-token-value-here \
+  -- uv --directory /absolute/path/to/proxmox-mcp-server run proxmox-mcp-server
+```
+Add `-e PROXMOX_TOOLSETS=nodes,qemu,lxc,storage` to keep the tool list small. For a server you run over HTTP, see [Run it over HTTP](#http).
+</details>
+
 **4. Restart your client completely** (quit it, don't just close the window), and ask it to list your VMs. More detail in [QUICKSTART.md](QUICKSTART.md) and [SETUP.md](SETUP.md).
+
+<a id="clusters"></a>
+
+### 🏢 Several clusters
+
+Run one server per cluster, each under its own name. Every cluster then gets its own credentials, toolsets, safety settings and audit log, and the assistant always knows which cluster a tool acts on, because the tool names carry the server name (`mcp__proxmox-lab__start_vm` and `mcp__proxmox-prod__start_vm`).
+
+```json
+{
+  "mcpServers": {
+    "proxmox-lab": {
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/proxmox-mcp-server", "run", "proxmox-mcp-server"],
+      "env": { "PROXMOX_HOST": "10.0.10.5", "PROXMOX_USER": "root@pam",
+               "PROXMOX_TOKEN_NAME": "automation", "PROXMOX_TOKEN_VALUE": "lab-token" }
+    },
+    "proxmox-prod": {
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/proxmox-mcp-server", "run", "proxmox-mcp-server"],
+      "env": { "PROXMOX_HOST": "10.0.20.5", "PROXMOX_USER": "mcp@pve",
+               "PROXMOX_TOKEN_NAME": "readonly", "PROXMOX_TOKEN_VALUE": "prod-token",
+               "PROXMOX_NO_DESTRUCTIVE": "true", "PROXMOX_PROTECTED_VMIDS": "100-110",
+               "PROXMOX_TOOLSETS": "nodes,qemu,lxc,storage" }
+    }
+  }
+}
+```
+
+Give each extra cluster only the toolsets it needs, because every server's tools count against the client's context. Over HTTP, run one `proxmox-mcp-server-http` per cluster on its own port.
 
 ## 🔧 Configuration
 
@@ -236,12 +326,23 @@ Use the **absolute** path to your clone.
 | `PROXMOX_VERIFY_SSL` | | `false` | Verify the server's TLS certificate |
 | `PROXMOX_READ_ONLY` | | `false` | Refuse every write and advertise only read tools; see below |
 | `PROXMOX_TOOLSETS` | | all | Comma-separated API areas to load; see below |
+| `PROXMOX_NO_DESTRUCTIVE` | | `false` | Hide the 73 tools that delete, stop, wipe or roll back; see [Safety](#read-only) |
+| `PROXMOX_PROTECTED_VMIDS` | | | Guest IDs and ranges no tool may change, e.g. `100,101,9000-9010` |
+| `PROXMOX_WAIT_TIMEOUT` | | `900` | Seconds a `wait` lasts before it returns with the task still running |
+| `MCP_HTTP_HOST` | | `127.0.0.1` | HTTP entrypoint only: bind address |
+| `MCP_HTTP_PORT` | | `8811` | HTTP entrypoint only: port |
+| `MCP_AUTH_TOKEN` | | | HTTP entrypoint only: one admin bearer token; a token is required off loopback |
+| `MCP_AUTH_TOKENS` | | | HTTP entrypoint only: several tokens with roles, `name:role:token,…`; see [Roles](#roles) |
+| `MCP_AUTH_TOKENS_FILE` | | | HTTP entrypoint only: the same, one `name role token` per line |
+| `PROXMOX_AUDIT_LOG` | | | File, or `stderr`, for a JSON-lines log of every write call; see [Audit log](#audit) |
+| `PROXMOX_AUDIT_READS` | | `false` | Log read calls too |
+| `MCP_HTTP_ALLOW_NO_AUTH` | | `false` | HTTP entrypoint only: allow a non-loopback address with no token |
 
 <a id="toolsets"></a>
 
 ### 🎯 Toolsets: load only what you use
 
-Every tool the server advertises sits in the client's context on every turn, and all 340 schemas come to roughly 40k tokens. Set `PROXMOX_TOOLSETS` to the areas you need:
+Every tool the server advertises sits in the client's context on every turn, and all 341 schemas come to roughly 44k tokens. Set `PROXMOX_TOOLSETS` to the areas you need:
 
 ```bash
 PROXMOX_TOOLSETS=nodes,qemu,lxc,storage
@@ -249,11 +350,14 @@ PROXMOX_TOOLSETS=nodes,qemu,lxc,storage
 
 | Setting | Tools | Approx. tokens |
 |---|--:|--:|
-| all (default) | 340 | 42k |
-| `nodes,qemu,lxc,storage,cluster` | 163 | 22k |
-| `nodes,qemu,lxc,storage` | 126 | 18k |
-| `PROXMOX_READ_ONLY=true` | 149 | 12k |
-| `qemu` | 46 | 7k |
+| all (default) | 341 | 44k |
+| `PROXMOX_NO_DESTRUCTIVE=true` | 268 | 35k |
+| `nodes,qemu,lxc,storage,cluster` | 164 | 23k |
+| `nodes,qemu,lxc,storage` | 127 | 19k |
+| `PROXMOX_READ_ONLY=true` | 150 | 13k |
+| `qemu` | 47 | 8k |
+
+Every count includes `wait_for_task`, which loads with any selection.
 
 The names are `nodes`, `qemu`, `lxc`, `storage`, `cluster`, `access`, `firewall`, `disks`, `ceph`, `acme`, `sdn`, `notifications`, `pools` and `appliances`. `vms` and `containers` work as aliases for `qemu` and `lxc`. A misspelt name stops the server at startup with the list of valid ones. Toolsets combine with read-only mode.
 
@@ -261,19 +365,108 @@ The names are `nodes`, `qemu`, `lxc`, `storage`, `cluster`, `access`, `firewall`
 
 Each tool tells the client what it does, through standard MCP annotations:
 
-- **`readOnlyHint: true`** on the 149 tools that only read.
+- **`readOnlyHint: true`** on the 150 tools that only read.
 - **`destructiveHint: true`** on the 73 that delete, stop, wipe, roll back, restore over, or run commands in a guest.
 - **`destructiveHint: false`** on the other writes, such as create, start or update.
 
 A test sends every tool through a recording client and checks its read-only label against the HTTP methods it sends, so the labels can't drift from the code.
 
+<a id="http"></a>
+
+### 🌐 Run it over HTTP
+
+`proxmox-mcp-server-http` serves the same tools over MCP streamable HTTP at `/mcp`, so the server can run as a network service instead of a process each client spawns. `PROXMOX_TOOLSETS` and `PROXMOX_READ_ONLY` apply as usual, and `/healthz` answers without auth for container health checks.
+
+```bash
+# Local only, no token needed:
+uv run proxmox-mcp-server-http                       # http://127.0.0.1:8811/mcp
+
+# On the network, a token is required:
+MCP_HTTP_HOST=0.0.0.0 MCP_AUTH_TOKEN="$(openssl rand -hex 32)" uv run proxmox-mcp-server-http
+```
+
+The same image runs it in Docker:
+
+```bash
+docker run -p 8811:8811 --env-file .env -e MCP_HTTP_HOST=0.0.0.0 -e MCP_AUTH_TOKEN \
+  ghcr.io/ry-ops/proxmox-mcp-server:latest proxmox-mcp-server-http
+```
+
+Clients send `Authorization: Bearer <token>`. For Claude Code:
+
+```bash
+claude mcp add --transport http proxmox http://pve-mcp.lan:8811/mcp \
+  --header "Authorization: Bearer $MCP_AUTH_TOKEN"
+```
+
+**Anyone who can reach this endpoint can use every loaded tool with your Proxmox credentials.** So the server binds to `127.0.0.1` by default. It refuses any other address unless a token is set, or you opt out with `MCP_HTTP_ALLOW_NO_AUTH=true` because a proxy in front of it authenticates clients. The token check runs in constant time. On loopback, DNS-rebinding protection rejects requests whose Host header isn't a local address. Put TLS in front of it, for example with a reverse proxy, when the token crosses a network.
+
+<a id="roles"></a>
+
+#### 🎭 One token per client, each with a role
+
+<p align="center">
+  <img src="docs/http-roles.svg" width="100%" alt="Four clients call the HTTP server: ops with the admin role sees 341 tools, ci with the operator role sees 268, grafana with the read role sees 150, and a client with no token gets 401. The audit log records ci's clone as ok and grafana's stop_vm as refused.">
+</p>
+
+Give every client its own token, so you can tell them apart in the [audit log](#audit) and revoke one without the others. Each token carries a role:
+
+| Role | Can use |
+|---|---|
+| `read` | only tools that read, like a dashboard or a monitoring agent |
+| `operator` | everything except destructive tools: start, create, clone, snapshot, migrate |
+| `admin` | everything the server loads |
+
+```bash
+MCP_AUTH_TOKENS="ops:admin:$(openssl rand -hex 32),grafana:read:$(openssl rand -hex 32)"
+# or a file with one "name role token" per line, comments with #:
+MCP_AUTH_TOKENS_FILE=/run/secrets/proxmox-mcp-tokens
+```
+
+Each client sees only the tools its role allows, and a call outside its role is refused before anything reaches Proxmox. Roles only narrow what the server already allows: `PROXMOX_READ_ONLY`, `PROXMOX_NO_DESTRUCTIVE`, toolsets and protected guests still apply to everyone. Tokens must be at least 16 characters, and names and tokens must be unique. `MCP_AUTH_TOKEN` still works, as an admin token named `default`.
+
+<a id="wait"></a>
+
+### ⏳ Waiting for long tasks
+
+<p align="center">
+  <img src="docs/wait.svg" width="100%" alt="clone_vm with wait: true returns the finished task's outcome in one call. A backup outlasts the timeout and returns status running; wait_for_task then follows it to OK.">
+</p>
+
+Clone, migrate, backup, restore, disk moves, snapshots and power actions start a Proxmox task and return its ID, a UPID. Pass `wait: true` to any of these 30 tools and the result also carries the task's outcome:
+
+```json
+{"data":"UPID:pve2:0003A1B2:…:qmclone:9000:root@pam:","task":{"status":"stopped","exitstatus":"OK","ok":true}}
+```
+
+`wait_for_task` does the same for any UPID, including ones from the cluster task list. A failed task includes the last 20 lines of its log. A wait never fails just because a task is slow. After `PROXMOX_WAIT_TIMEOUT` seconds, 900 by default, it returns `status: "running"`, and calling `wait_for_task` again keeps waiting.
+
 <a id="read-only"></a>
 
-## 🔒 Read-only mode and security
+## 🔒 Safety: read-only mode, destructive tools and protected guests
 
-**`PROXMOX_READ_ONLY=true`** makes the server look-but-don't-touch. Only GET requests are sent, and every create, update, delete or action tool is refused inside the server before it reaches the network. **The client sees only the 149 read-only tools**, so it never plans around a tool that would be refused. Three read-style tools send POST requests, so they're hidden too:
+<p align="center">
+  <img src="docs/safety.svg" width="100%" alt="Bars show 341 tools by default, 268 with PROXMOX_NO_DESTRUCTIVE and 150 with PROXMOX_READ_ONLY. Guests 100 and 101 are protected: stop_vm on 120 succeeds, delete_vm on 100 and node_stopall without a list are refused, and each call lands in the audit log.">
+</p>
+
+**`PROXMOX_READ_ONLY=true`** makes the server look-but-don't-touch. Only GET requests are sent, and every create, update, delete or action tool is refused inside the server before it reaches the network. **The client sees only the 150 read-only tools**, so it never plans around a tool that would be refused. Three read-style tools send POST requests, so they're hidden too:
 - `vm_agent_ping`;
 - `get_vm_vnc_proxy` and `get_vm_spice_proxy`, which create console access tickets.
+
+**`PROXMOX_NO_DESTRUCTIVE=true`** is the middle ground. It hides the 73 tools labelled destructive: deleting, stopping, wiping, rolling back, restoring over a guest, and running commands inside one. Safe writes such as start, create, clone, snapshot and config changes stay available, so 268 tools remain.
+
+**`PROXMOX_PROTECTED_VMIDS=100,101,9000-9010`** names guests no tool may change, such as your router, DNS or backup server. The server checks every write before sending it: power actions, config changes, snapshots, migration, disk moves, deletion, guest-agent commands, HA changes, and deleting the guest's volumes or backups. Reads always work. Cloning from a protected template, backing it up and opening its console stay allowed, because they leave it as it is. Node-wide and bulk start, stop and migrate actions need an explicit `vms` list while any guest is protected, since they would otherwise include it. Whole-node shutdown and reboot are not covered.
+
+<a id="audit"></a>
+
+**`PROXMOX_AUDIT_LOG=/var/log/proxmox-mcp/audit.jsonl`** records every write call as one JSON line, whether it succeeded, failed or was refused. Set it to `stderr` to send the lines to your container logs instead. `PROXMOX_AUDIT_READS=true` logs reads too.
+
+```json
+{"ts":"2026-10-30T21:04:12.418+00:00","who":"ci","via":"http","tool":"clone_vm","args":{"node":"pve2","vmid":9000,"newid":123},"outcome":"ok","upid":"UPID:pve2:…","task_ok":true,"ms":41873}
+{"ts":"2026-10-30T21:05:02.007+00:00","who":"grafana","via":"http","tool":"stop_vm","args":{"node":"pve1","vmid":120},"outcome":"refused","error":"stop_vm is not allowed for grafana (role: read)","ms":0}
+```
+
+Arguments whose names look secret, such as passwords, tokens, private keys and cloud-init passwords, are written as `***`. A failure to write the log is reported on stderr and never fails the tool call.
 
 The rest of the security picture:
 
@@ -287,7 +480,7 @@ The rest of the security picture:
 
 ## 🤝 Agent-to-agent (A2A)
 
-[`agent-card.json`](agent-card.json) is this server's identity and capability manifest for other agents. It's generated from the tool registry, and lists **all 340 tools in 14 skill categories**, each with its name, description and inputs. It also covers authentication requirements and MCP protocol details.
+[`agent-card.json`](agent-card.json) is this server's identity and capability manifest for other agents. It lists **all 341 tools in 14 skill categories**, each with its name, description, inputs, and `read_only` and `destructive` flags. A test fails if it drifts from the tool registry. It also covers authentication requirements and MCP protocol details.
 
 | Category | Tools | Category | Tools |
 |---|--:|---|--:|
@@ -295,7 +488,7 @@ The rest of the security picture:
 | `virtual_machine_management` | 46 | `ceph_management` | 33 |
 | `container_management` | 28 | `certificate_management` | 17 |
 | `storage_management` | 14 | `sdn_management` | 16 |
-| `cluster_management` | 37 | `notification_management` | 23 |
+| `cluster_management` | 38 | `notification_management` | 23 |
 | `access_control` | 33 | `pool_management` | 5 |
 | `firewall_management` | 31 | `appliances` | 2 |
 
@@ -397,6 +590,25 @@ The user or token needs privileges for each operation. Common ones: `VM.Monitor`
 </details>
 
 <details>
+<summary><b>A tool is missing, or "Unknown or disabled tool"</b></summary>
+
+- `PROXMOX_TOOLSETS` loads only the areas it names. Add the area, or remove the variable to load all of them.
+- `PROXMOX_READ_ONLY=true` hides every write tool. Set it to `false` to create, change or delete.
+- `PROXMOX_NO_DESTRUCTIVE=true` hides the delete, stop, wipe and rollback tools.
+- "guest … is protected" means `PROXMOX_PROTECTED_VMIDS` covers that guest.
+- The server logs how many tools it loaded, and from which toolsets, to stderr at startup.
+</details>
+
+<details>
+<summary><b>HTTP: 401, 421, or the server won't start</b></summary>
+
+- **401 Unauthorized**: the client must send `Authorization: Bearer <token>` with one of the configured tokens.
+- **"… is not allowed for NAME (role: read)"**: that client's token has a role that excludes the tool. Use a token with a wider role.
+- **421 Misdirected Request**: on `127.0.0.1` the server only accepts local Host headers. Connect to `127.0.0.1` or `localhost`, or bind to another address with a token.
+- **"Refusing to serve on 0.0.0.0 without authentication"**: set `MCP_AUTH_TOKEN` or `MCP_AUTH_TOKENS`, or `MCP_HTTP_ALLOW_NO_AUTH=true` if a proxy in front authenticates clients.
+</details>
+
+<details>
 <summary><b>Check the connection before involving Claude</b></summary>
 
 ```bash
@@ -410,35 +622,44 @@ It checks the connection, the API, authentication, permission to list nodes, and
 
 ```bash
 uv sync                          # dependencies, including dev tools
-uv run proxmox-mcp-server        # run the server directly
+uv run proxmox-mcp-server        # run the server directly (stdio)
+uv run proxmox-mcp-server-http   # or over streamable HTTP
 uv run pytest                    # tests
 uv run ruff check . && uv run black .
 ```
 
 ```
 proxmox_mcp/
-├── server.py        MCP server entrypoint and tool registry
-├── client.py        Proxmox API client: token/password auth, read-only guard
+├── server.py        stdio entrypoint: tool calls, roles, guards, waits, audit
+├── server_http.py   streamable-HTTP entrypoint: bearer tokens, loopback default
+├── registry.py      toolsets, read-only and no-destructive filtering, annotations
+├── auth.py          HTTP tokens and roles
+├── audit.py         JSON-lines audit log
+├── guards.py        protected guests
+├── tasks.py         waiting for Proxmox tasks
+├── prompts.py       MCP prompts: built-in workflows
+├── resources.py     MCP resources: read-only cluster views
+├── client.py        Proxmox API client: token/password auth, ticket renewal, read-only guard
 └── tools/           one module per API area:
                      nodes, qemu, lxc, storage, cluster, access, firewall,
                      disks, ceph, acme, sdn, notifications, pools, appliances
-docs/                the animations on this page
+tests/               pytest suite, run in CI on Python 3.10–3.13
+docs/                the animations on this page; docs/gen/build.py regenerates four of them
 agent-card.json      A2A agent card
 Dockerfile, docker-compose.yaml, setup.sh, test-connection.sh
 QUICKSTART.md · SETUP.md · USAGE.md · CHANGELOG.md
 ```
 
 **Dependencies:**
-- **`mcp`** (>=1.0.0, <2): 2.x changed the server API and isn't supported yet.
+- **`mcp`** (>=2.3, <3): the MCP SDK. It serves both the handshake protocol (2024-11-05 to 2025-11-25) and the stateless 2026-07-28 protocol, so older and newer clients both connect.
 - **`httpx`**: the async HTTP client.
 - **`python-dotenv`**: loads `.env`.
+- **`starlette`** and **`uvicorn`**: serve the HTTP entrypoint. `mcp` already depends on both.
 
 ## 🗺️ Roadmap
 
-- Streamable-HTTP transport, to run the server as a network service ([#24](https://github.com/ry-ops/proxmox-mcp-server/pull/24), [#29](https://github.com/ry-ops/proxmox-mcp-server/pull/29))
-- Support for `mcp` 2.x
-- Automatic ticket refresh for long-running password-authenticated sessions
-- A broader automated test suite
+- One server for several clusters, chosen per call (today: [one server per cluster](#clusters))
+- Progress notifications while waiting for long tasks
 
 What has shipped is in [CHANGELOG.md](CHANGELOG.md).
 

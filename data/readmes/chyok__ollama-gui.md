@@ -112,3 +112,6 @@ Refer to: https://stackoverflow.com/questions/25905540/importerror-no-module-nam
 
 This project is licensed under the [MIT License](LICENSE).
 
+## A Final Note
+
+This may be my last project written entirely by hand. Today, AI can build things far more complex in moments. So much has changed so quickly that writing code line by line already feels like a memory from another time. I’ll leave this project as it is, with no further updates, as a small keepsake. Thank you for the stars and for giving this little project your attention. It’s astonishing to witness a change like this, and I feel fortunate to have been here for it.

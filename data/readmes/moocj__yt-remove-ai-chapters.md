@@ -6,7 +6,7 @@ Removes YouTube's AI-generated video chapters. Chapters added by the creator are
 
 ## Why
 
-YouTube now add AI-generated chapters to videos that did not have any. These chapters are not only not very informative, sometimes misleading, but also make scrubbing the video more difficult.
+YouTube now add AI-generated chapters to videos that did not have any. These chapters are not only not very informative, spoil important moments in vidoes, but also make scrubbing the video more difficult.
 
 This script removes these chapters, so only videos where the chapters are created by the original video creator are kept.
 

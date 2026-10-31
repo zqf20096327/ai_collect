@@ -32,9 +32,11 @@
 
 ## Install
 
-Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later running locally, `herdr` on `PATH`, and the same OS account as Herdr. Herdr 0.9.0–0.9.5 are validated; newer or unknown versions run best effort with a warning.
+Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later, or the Herdr desktop app, running locally under the same OS account. To open Herdr TUI terminals, `herdr` must be on `PATH`. Herdr 0.9.0–0.9.5 are validated; newer or unknown versions run best effort with a warning.
 
 Use matching Herdr CLI and server versions for terminal reads and control.
+
+Using the Herdr desktop app? Shepherdr shows its spaces too. See [With the Herdr app](#with-the-herdr-app).
 
 Download the archive for this machine from the [latest release](https://github.com/luiscleto/shepherdr/releases/latest), plus its matching checksum file. The examples below use v0.4.3.
 
@@ -110,6 +112,14 @@ shepherdr -no-sign-in
 ```
 
 Anyone who can reach Shepherdr has operator authority. The flag is not saved. Do not combine it with `-public-origin` or `-session-lifetime`.
+
+### With the Herdr app
+
+Shepherdr also follows herdr-core, the runtime behind the Herdr desktop app, whenever it is running. There is nothing to add to the start. When the Herdr TUI and Herdr Core are both running, Home shows a switch between **Herdr TUI** and **Herdr Core**, and each browser remembers its choice. Notifications come from both.
+
+For Herdr Core, Home lists the app's spaces and tabs, in the app's order and with its names. Terminals that no space holds, such as ones started with `hc run` outside the app, appear once under **Other terminals**. Home keeps working while the app window is closed. An agent can also report **error**; it is counted like **blocked**, and notifications for it start on.
+
+Herdr Core terminals open from Home like Herdr TUI terminals, with Reader, the full terminal, **Message**, **Send keys** and files. A terminal opens in control, as Herdr TUI terminals do, so you can type at once, and the terminal takes the size of the screen you opened it on until someone types in the app window. **Release** goes back to observing, and **Control** takes control again. There is no **Take over**: the phone and the app window can both type. **Send keys** offers only keys Herdr Core can send, so shifted symbols such as + or % are not offered, and a key can wait a few seconds while someone is typing in the app. **Add files** shows while an agent reports a status. You can close a space or a terminal from Home at any time, whether or not the app window is open. With the Herdr app window open, you can also make a space, split a terminal and rename a space; these change what the app window shows. They need `herdr-app` on `PATH`, and are off when `-herdr-core-socket` names another Herdr Core. There are no worktree actions and no terminal rename. herdr-core 0.1.15 and the Herdr app 0.1.10 are validated; newer versions run best effort with a warning.
 
 ## Keep it private
 
@@ -192,6 +202,7 @@ Files stay with the workspace across agent changes and restarts. After the works
 | `-listen` | `127.0.0.1:8787` | Loopback only. Match this port with `tailscale serve --bg`. |
 | `-session-lifetime` | `30d` | `1d`–`365d`, or `none`. Saved. Using Shepherdr does not extend it. |
 | `-herdr-socket` | `~/.config/herdr/herdr.sock` | Uses `$XDG_CONFIG_HOME/herdr/herdr.sock` when nonempty, including on macOS. Pass an absolute path to override. |
+| `-herdr-core-socket` | `$XDG_RUNTIME_DIR/herdr-core/default.sock` | herdr-core, behind the Herdr desktop app. Absolute path. Without it, when `XDG_RUNTIME_DIR` is unset, Shepherdr follows only the Herdr TUI. |
 | `-log-level` | `info` | Runtime logging: `debug`, `info`, `warn`, or `error`. |
 | `-upload-parent` | system temp | Staging directory for selected files. |
 | `-upload-limit` | `50MiB` | Per send. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |

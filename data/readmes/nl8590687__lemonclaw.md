@@ -174,6 +174,26 @@ All configuration lives in `.lemonclaw/.env` (see `.env.example` for the full li
 | `ENABLE_MCP` / `MCP_CONNECT_TIMEOUT` / `MCP_CALL_TIMEOUT` / `MCP_MAX_TOOLS` / `MCP_RESULT_MAX_CHARS` | MCP integration: master switch, connect/call timeouts, per-server tool cap, result truncation |
 | `ENABLE_WORKFLOW` / `WORKFLOW_*` | Multi-Agent Workflow: master switch, recursion limit, nesting max, node/branch limits, result truncation, worker pool size, HITL handler |
 
+Model requests use `LLM_API_TIMEOUT` per request and `LLM_TOTAL_TIMEOUT` for the whole call, including retries and fallback. `LLM_MAX_RETRIES` (default 10 retries shared by primary and fallback), `LLM_RETRY_BASE_DELAY`, and `LLM_RETRY_MAX_DELAY` control exponential backoff with jitter; rate limits respect `Retry-After`. Set `LLM_FALLBACK_MODEL` and optionally `LLM_FALLBACK_BASE_URL`/`LLM_FALLBACK_API_KEY` for a backup. Provider circuit breakers use `LLM_CIRCUIT_FAILURE_THRESHOLD` and `LLM_CIRCUIT_COOLDOWN`. Automatic retries/fallback apply to transient failures before streaming begins. A failed request retains the existing conversation checkpoint. The total deadline releases the caller; an SDK call already in progress may finish in its bounded daemon thread.
+
+
+### Image input
+
+Set `ENABLE_VISION=True` (default) when the main model supports image input. Images are saved under `FEISHU_RECEIVED_DIR` and referenced from conversation checkpoints; their original bytes are encoded as Base64 Data URLs when making model requests. JPEG, PNG, GIF and WebP are validated by actual content. The application accepts up to 8 images and 20 MiB of image data per request, with a 10 MiB per-image limit. Plain text requests keep the existing behavior.
+
+```text
+/image "/path/first image.png" /path/second.jpg -- Compare these images
+/image img-<id> img-<id> -- Explain the difference
+/image all -- Describe the pending images
+/upload "/path/image.png"
+```
+
+`/image` selects images for the current turn; use `--` before the question. `/upload` stores files and returns their paths/IDs. On Feishu, sending an image saves it and returns an ID. Quote the image message and reply with a question, use `/image` with IDs, or send text and images together in a rich-text message. An ordinary follow-up text keeps the existing attachment-path behavior; pending images are selected explicitly for vision. `/upload` marks all pending images as storage-only; `/upload <id...>` marks just those images. Pending selections expire according to `FEISHU_PENDING_FILE_TTL_SECONDS`; saved history references remain usable. Image commands accept local paths only from the terminal.
+
+Set `LLM_FALLBACK_ENABLE_VISION=True` only if the backup model also supports images. Image requests require a vision-capable fallback. Turning vision off sends textual image references in place of image data. Keep referenced files available; changed, missing or over-budget images produce an explicit error. Context summarization uses the same image adapter. For Workflow `llm`/`subagent` nodes, set `config.image_ids` or `config.image_ids_field` (a list state field) to explicitly pass image IDs from the originating conversation. Image generation is a separate future capability; existing file-sending tools remain available.
+
+The existing shared main conversation is retained. If its history contains images from another origin, use a distinct `session_key` or `/clear` before switching origins; the agent blocks that request to avoid cross-origin image access.
+
 ---
 
 ## 📡 Channels
@@ -333,6 +353,14 @@ A template is provided at `.lemonclaw/mcp.json.example` (placeholder values, saf
 
 ## 🔀 Multi-Agent Workflow
 
+Node configs support `timeout_seconds` (default 300), `max_retries` (default 0), exponential `retry_backoff` (default 1 second), and `on_error` (`fail`, `continue`, or `compensate`). Compensation declares a `compensation` object with `tool_name` and `args`. Configure retries only for operations safe to repeat. Cancellation stops execution at node/model/tool boundaries and retains checkpoints. A timed-out blocking call may continue in its daemon thread; its result is discarded, further calls are blocked, and the timeout is reported without retry or compensation. Outstanding node calls are capped at 32; new nodes fail explicitly when that capacity is occupied.
+
+
+The main agent handles short queries directly and prefers background Workflows for multi-stage research, verification, and long tasks. Use `workflow_list_defs` to find reusable definitions; `workflow_execute` returns a run ID and follow-up events continue the interaction. Sub-agents declare `tools` and `skills`; skill bodies are included in their system prompts.
+
+Schedule a reusable definition with `create_cron_task(prompt="Daily weather report", cron_expression="0 9 * * *", workflow_id="daily_weather", workflow_input='{"city":"Shanghai"}')`. Each trigger creates an independent run using the service's local timezone. `update_cron_task` updates the binding or inputs; `workflow_id=""` restores prompt execution.
+
+
 When `ENABLE_WORKFLOW=true` (default), LemonClaw can build and run **LangGraph-based multi-agent workflows**. The architecture features **two "in-the-loop" participants**: the **main agent** and the **human**. The main agent is not just the orchestrator who defines workflows — it is an **active participant in the loop itself**: it can be called back as a node during execution (`main_agent` nodes), inspect and control in-flight runs at any time (supervisor commands), and serve as the sole interface through which humans interact with the workflow (HITL). This is fundamentally different from a simple "workflow result callback" — **the main agent is a first-class citizen of the workflow loop, not a passive endpoint**. **`loop_forever` is never modified** — workflows and the LangGraphLoop events integrate via the existing message bus and agent tools.
 
 ### Key capabilities
@@ -340,8 +368,8 @@ When `ENABLE_WORKFLOW=true` (default), LemonClaw can build and run **LangGraph-b
 - **Main agent in the loop** vs. **Human in the loop** — two independent "loop participants":
   - **Main agent in the loop**: the main agent is an active participant. It can be called back as a `main_agent` node during execution (with full session memory and workflow tools, enabling dynamic recursion). It can also **inspect, control, and adjust** in-flight runs **at any time** — not just at predefined callback points — via supervisor commands (`/wf inspect`, `/wf inject`) and tools (`workflow_inspect_run`, `workflow_inject`). This is the "main-agent-in-the-loop", distinct from passive result delivery.
   - **Human in the loop**: `human` nodes pause execution and notify the user **through the main agent** (the main agent is the human's sole interface — humans never interact with sub-agents directly). The `run_id` is carried in the message text bidirectionally; the main agent extracts it and calls `workflow_resume(run_id, answer)`.
-- **Declarative specs** — define workflows via a single `workflow_define(name, spec)` call (JSON: `state_schema` / `nodes` / `edges` / `conditionals`). No code generation required.
-- **Sub-agents** (`subagent` nodes) — curated tools + custom system prompt, inherits nothing from the main agent. A `BaseSubAgent` + `GeneralSubAgent` hierarchy with a pluggable registry for future specialized types (browser, SSH, etc.).
+- **Declarative specs** — define workflows via a single `workflow_define(name, description, spec)` call (JSON: `state_schema` / `nodes` / `edges` / `conditionals`). No code generation required.
+- **Sub-agents** (`subagent` nodes) — curated tools, a custom system prompt, declared skills, and a fresh conversation for each run. A `BaseSubAgent` + `GeneralSubAgent` hierarchy with a pluggable registry for future specialized types (browser, SSH, etc.).
 - **Beyond DAG** — conditional edges support LLM-based and state-field routing, plus cyclic loops (with `recursion_limit` protection).
 - **Persistent execution** — runs are checkpointed via `SqliteSaver` in the single `.lemonclaw/lemonclaw.db`. Paused runs survive process restarts and can be resumed hours/days later.
 - **Background worker pool** — workflow segments execute in a bounded thread pool (`WORKFLOW_WORKER_POOL_SIZE`, default 4) so the main agent loop never blocks.
@@ -353,7 +381,7 @@ When `ENABLE_WORKFLOW=true` (default), LemonClaw can build and run **LangGraph-b
 
 ```json
 {
-  "state_schema": [{"name": "answer", "type": "str"}],
+  "state_schema": [{"name": "answer", "type": "str"}, {"name": "summary", "type": "str"}],
   "nodes": [
     {"name": "ask", "kind": "human", "config": {"question": "Please confirm the scope.", "output_field": "answer"}},
     {"name": "summarize", "kind": "subagent", "config": {"type": "general", "system_prompt": "You are a summarizer.", "tools": ["web_search"], "task": "Summarize: {answer}", "output_field": "summary"}}

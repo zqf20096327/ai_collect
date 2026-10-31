@@ -2,16 +2,19 @@
   <img src="apps/web/public/brand/openair-logo.png" alt="OpenAIR" width="200"/>
 </p>
 
-<h3 align="center">面向材料干湿实验的科研智能体平台</h3>
+<h3 align="center">面向科学发现的可信闭环智能体平台</h3>
 <p align="center">
-  把「问题建模 — 方案设计 — 执行验证 — 洞察生成」的科研过程，建模为<b>可编排、可验证、可追溯</b>的流水线
+  把「问题建模 — 方案设计 — 执行验证 — 洞察生成」的科研过程，建模为<b>可编排、可验证、可追溯</b>的可信闭环；材料发现为首个验证场景
+</p>
+<p align="center">
+  A trustworthy closed-loop agent platform for scientific discovery — materials discovery as the first validated scenario.
 </p>
 
 <p align="center">
   <a href="https://github.com/pdl-openair/OpenAIR/releases"><img alt="Release" src="https://img.shields.io/github/v/release/pdl-openair/OpenAIR?color=blue"></a>
   <a href="https://github.com/pdl-openair/OpenAIR/actions/workflows/oss-ci.yml"><img alt="CI" src="https://github.com/pdl-openair/OpenAIR/actions/workflows/oss-ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-blue"></a>
-  <a href="https://github.com/pdl-openair/OpenAIR/releases/download/v0.1.0/openair-demo-v0.1.0.mp4">演示视频</a> ·
+  <a href="https://github.com/pdl-openair/OpenAIR/releases/download/v1.0.0/openair-demo.mp4">演示视频</a> ·
   <a href="CONTRIBUTING.md">参与贡献</a>
 </p>
 
@@ -31,11 +34,27 @@
 
 ## 🗞️ News
 
+- **2026-10-31**　🏁 **v1.0.0 首个稳定版发布**：四阶段科研编排运行时、200+ 契约化科研 skill、双执行模式（live / replay 零密钥回放）、证据链全程可追溯、多用户与配额、Docker 一键部署与 [openair-cli](https://pypi.org/project/openair-cli/)。[Release Notes](https://github.com/pdl-openair/OpenAIR/releases/tag/v1.0.0)
+- **2026-10-31**　🧰 [openair-cli 0.2.0](https://pypi.org/project/openair-cli/)：Docker 构建进度实时透传、环境配置引导向导（`openair config`）、环境体检（`openair doctor`）、日志跟踪（`openair logs`）
 - **2026-10-29**　🚀 v0.1.0 首个公开版本发布：四阶段编排运行时、200+ 科研 skill、评测与回放资产、双执行模式（live / replay）。[Release Notes](https://github.com/pdl-openair/OpenAIR/releases/tag/v0.1.0)
+
+<details>
+<summary><b>开源前研发历程</b>（2026-05 起，私有仓 2600+ 提交，精编）</summary>
+
+| 时间 | 里程碑 |
+|---|---|
+| 2026-05 | 项目启动：monorepo 工程骨架、skill 注册与契约化机制 |
+| 2026-06 | 确定性回放（replay）与评测、证据链基础设施 |
+| 2026-07 | 四阶段材料场景端到端跑通，首个可演示全流程 |
+| 2026-08 至 10 | 真实科研战役验证与生产化：晶体发现全链路（终评 mSUN 58.0%）、AlN PVD 干湿闭环四轮反馈（d33 15.9→18.6）、CI 必过门禁与契约测试、openair-cli 上架 PyPI |
+
+</details>
+
+> 完整版本历史见 [Releases](https://github.com/pdl-openair/OpenAIR/releases)。
 
 ## 📖 概述
 
-科研任务的痛点是**周期长、工具分散、证据难追溯、实验反馈利用不足**。OpenAIR 将科研过程建模为四阶段生命周期，由平台统一编排，AI 在每个阶段以「skill」形式提供能力，人始终可以在工作台上确认方案、跟踪进度、核验证据。
+科研任务的痛点是**周期长、工具分散、证据难追溯、实验反馈利用不足**。OpenAIR 将科研过程建模为四阶段生命周期，由平台统一编排，AI 在每个阶段以「skill」形式提供能力，人始终可以在工作台上确认方案、跟踪进度、核验证据。平台能力领域无关——材料发现与制备是首个完成全链路验证的场景，更多领域通过新增 skill 接入。
 
 **Highlights**
 
@@ -82,14 +101,38 @@
 | **晶体材料发现** | 候选生成 → 进化搜索 → 计算验证（VASP 能带/稳定性） | 搜索终评 **mSUN 58.0%** |
 | **AlN 薄膜 PVD 参数寻优** | 文献证据 → 参数推荐 → 湿实验制备 → 反馈迭代 | 四轮反馈，d33 从 15.9 提升至 **18.6** |
 
-🎬 完整链路演示：[openair-demo-v0.1.0.mp4](https://github.com/pdl-openair/OpenAIR/releases/download/v0.1.0/openair-demo-v0.1.0.mp4)
+**👀 在线演示（免部署、免登录）**：[Mg-O 宽带隙半导体筛选 · 完整四阶段工作台快照](https://pdl-openair.github.io/workbench/task_25047b1d994e4b6aa91578d595d75425)——真实前端 + 请求级回放，可查看阶段进度、全部产物与证据链（只读）。
+
+![OpenAIR 演示](assets/demo-overview.gif)
+
+🎬 完整 45 秒演示视频（含讲解）：[GitHub 页内直接观看](https://github.com/pdl-openair/OpenAIR/blob/main/assets/openair-demo.mp4) · [下载 mp4](https://github.com/pdl-openair/OpenAIR/releases/download/v1.0.0/openair-demo.mp4) · [项目主页在线播放](https://pdl-openair.github.io/OpenAIR/#demo)
+
+<details>
+<summary><b>复现上述场景所需的外部账号</b></summary>
+
+| 能力 | 环境变量 | 说明 |
+|---|---|---|
+| 模型网关（Skill 执行 + 开题规划） | `ANTHROPIC_*` / `LLM_PROVIDER_*` | 任意 Anthropic / OpenAI 兼容网关 |
+| Materials Project | `MP_API_KEY` | **免费申请**：https://next-gen.materialsproject.org/api |
+| 材料 MCP 服务 | `MATERIALS_MCP_BASE_URL` | 自建或对接现有 MCP 端点 |
+| 超算 DFT（VASP） | `JCC_*` | 有超算账号时配置 |
+| 云实验平台 | `FLUX_BASE_URL` / `FLUX_API_KEY` | 需机构 VPN 与平台账号 |
+
+不配置以上账号时：平台本身（登录、建任务、看板、产物库）与 replay 回放完全可用，涉及外部数据/算力的节点会如实报告 `partial_failure`。
+
+</details>
 
 ---
 
 ## 🚀 快速开始
 
-> [!TIP]
-> 只想先看看？跳过所有密钥配置，直接看下面的[零密钥回放演示](#零密钥回放演示推荐新用户第一步)。
+三种体验路径，按投入递增：
+
+| 路径 | 需要什么 | 得到什么 |
+|---|---|---|
+| **A. 在线演示** | 只需浏览器 | [完整四阶段工作台快照](https://pdl-openair.github.io/workbench/task_25047b1d994e4b6aa91578d595d75425)（免登录、只读） |
+| **B. 本地零密钥** | Docker + 约 10 分钟 | 自部署平台 + replay 回放演示（见下方[零密钥回放演示](#零密钥回放演示推荐新用户第一步)） |
+| **C. 完整能力** | B + 模型网关 / 外部账号 | live 模式真实科研流水线（所需账号见[已验证场景](#-已验证场景)的外部账号表） |
 
 ### 前置
 
@@ -100,11 +143,11 @@
 
 ```bash
 pipx install openair-cli        # 或 pip install --user openair-cli
-openair up                      # 克隆 → 生成 .env（安全项随机化）→ 启动全栈 → 打开浏览器
+openair up                      # 体检 → 克隆 → 生成 .env → 环境配置引导 → 启动全栈 → 打开浏览器
 openair up --mode replay        # 零密钥回放演示，推荐第一次这样跑
 ```
 
-首次运行自动生成并**仅打印一次**登录账号（同时写入 `.env`）；PyPI 包发布前的本地安装：克隆本仓库后执行 `uv tool install --force ./cli`。其他命令：`openair status / seed / down`（详见 [cli/README.md](cli/README.md)）。
+首次运行进入环境配置引导（执行模式 replay/live；live 时引导填 `ANTHROPIC_*` 网关与 `LLM_PROVIDER_*` 规划器，密钥不回显），并**仅打印一次**登录账号（同时写入 `.env`）；Docker 构建进度实时输出。本地开发安装：`uv tool install --force ./cli`。其他命令：`openair config`（重配环境）/ `status` / `logs` / `doctor` / `seed` / `down`（详见 [cli/README.md](cli/README.md)）。
 
 </details>
 
@@ -119,6 +162,9 @@ cp .env.example .env
 ```
 
 `.env` 中 compose 硬性要求的 **4 个变量**（模板已带本地默认值，开箱能跑）：
+
+> [!NOTE]
+> `.env.example` 的所有注释均为独立行，可放心整份复制——行内注释（`KEY= # 说明`）在部分 Compose 版本会被并入变量值，本仓库已从模板侧规避该坑。
 
 | 变量 | 用途 |
 |---|---|
@@ -158,12 +204,18 @@ docker compose up -d --build     # 首次构建约几分钟；改 .env 后重跑
 
 #### 零密钥回放演示（推荐新用户第一步）
 
-`.env` 中设置后重启（`docker compose up -d`）：
+`.env` 中设置 `SKILL_EXEC_MODE=replay` 后重启（`docker compose up -d`）：启动不再校验模型网关，skill 执行走仓库内 fixtures 回放，**不需要任何模型密钥**。
 
 ```bash
-SKILL_EXEC_MODE=replay          # 执行走 fixtures 回放，不发起任何真实 LLM 调用
-OPENAIR_DEV_SEED_FIXTURES=1     # 启动时灌入演示任务
+# .env 中设置：
+SKILL_EXEC_MODE=replay
 ```
+
+当前边界（如实说明）：
+
+- **材料全流程**为确定性编排（不依赖 LLM 规划器），可直接发起；其中「MP 候选检索」等外部数据节点未配 `MP_API_KEY` 时会如实报告 `partial_failure`（免费申请见上方外部账号表）
+- **通用研究任务**的开题/出方案由规划器（`LLM_PROVIDER_*`）驱动，replay 模式暂不覆盖该环节——需要真实网关密钥
+- `OPENAIR_DEV_SEED_FIXTURES=1` 演示种子当前仅在 `json` 存储后端生效（compose 默认 postgres 下不生效）；想直接看完整效果，用上面的**在线演示快照**
 
 ## 📦 部署指南
 
@@ -255,9 +307,9 @@ Windows：`uv sync` 报 SSL 错误时用已签名 Python 重建 venv（`uv venv 
 
 | 版本 | 内容 |
 |---|---|
-| **v0.2** | materials 域 skill 全量打磨；benchmark 公开对比表与一键复现脚本；公开仓 python lint 棘轮与后端测试 |
-| **v0.3** | `openair` CLI 增强（初版 `up/status/seed/down` 已随 v0.1.x 交付，见 [cli/](cli/)）；国产算力适配验证（MXMACA / 昇腾） |
-| **v1.0** | 多用户与生产部署指南 |
+| **v1.1** | materials 域 skill 全量打磨；benchmark 公开对比表与一键复现脚本；公开仓 python lint 棘轮与后端测试 |
+| **v1.2** | 国产算力适配验证（MXMACA / 昇腾）；`openair` CLI 持续迭代（配置引导 / doctor / logs / 进度显示已随 [openair-cli 0.2.0](https://pypi.org/project/openair-cli/) 交付，见 [cli/](cli/)） |
+| **v1.x+** | 更多领域以 skill 域包接入（平台能力领域无关）；生产部署进阶指南与运维资产 |
 
 ## 🤝 贡献
 

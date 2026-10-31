@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.3`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.5`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,25 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.24.3 and earlier)</summary>
+<summary>Recent release notes (v11.24.5 and earlier)</summary>
+
+## What's New in v11.24.5
+
+**Task identity is now domain-aware.** App-v23 tasks use their permanent idempotency identity—caller, exact signed domain, canonical `[TASK]` content, or an explicit occurrence key—instead of the global memory-content tombstone. The same task body can exist as a distinct task in another governed domain without being deprecated after consensus.
+
+**Deprecated tasks can no longer mutate.** REST and the SQLite and PostgreSQL stores reject claim, completion, and status changes on deprecated task rows, so a full-ID update cannot report success against a task that has disappeared from the backlog.
+
+**No app-version or data migration.** App-v29 remains active. Container: `ghcr.io/l33tdawg/sage:11.24.5`. SDK 11.24.5.
+
+## What's New in v11.24.4
+
+**macOS restarts now recover without Activity Monitor cleanup.** The tray keeps `sage-gui serve` supervised, restarts unexpected exits with bounded backoff, detects a live child that stops answering health checks, and retains the unlocked passphrase for the replacement process. Daemon logs are appended so a failed restart keeps its evidence.
+
+**Shutdown no longer lets transport teardown strand an update.** MCP HTTP and federation P2P close stages are bounded. A timeout is logged without rolling back an otherwise valid update or preventing the replacement process from starting.
+
+**CEREBRUM makes the restart wait visible.** The updater now shows a live five-minute countdown and phase-specific status while SAGE finishes in-flight work, closes its listener, starts the replacement, and reconnects. The countdown keeps moving even while a request or health probe is waiting on the network.
+
+**No consensus change or chain migration.** App-v29 remains active. Container: `ghcr.io/l33tdawg/sage:11.24.4`. SDK 11.24.4.
 
 ## What's New in v11.24.3
 
@@ -971,39 +989,3 @@ comma-joined token is a valid, case-insensitive `http` or `https` value and all
 hops agree. Empty, malformed, or mixed scheme chains are rejected.
 
 This patch changes no consensus rule, AppHash input, key encoding, fork target,
-or application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.11`. SDK 11.19.11.
-
-## What's New in v11.19.10
-
-**Returning agents can be reviewed normally again.** When app-v26 retirement
-has handed an agent's former home domain to the stable Root principal,
-CEREBRUM reapproval now binds the existing owner and uses the established
-Root-to-agent recovery transfer for that exact recorded home. Fresh or
-operator-entered domains never receive an implicit transfer.
-
-Rejecting a pending registration now counts active memories—the same lifecycle
-view shown by the recovery panel—instead of treating deprecated audit history
-as work the operator can still remediate. Active records continue to block
-ordinary rejection unless they are deprecated, transferred, or the explicit
-attribution-preserving force path is chosen.
-
-This patch changes no consensus rule, AppHash input, key encoding, fork target,
-or application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.10`. SDK 11.19.10.
-
-## What's New in v11.19.9
-
-**Codex workspace identity resolution now fails closed at the filesystem
-root.** A user-level Codex MCP process launched from `/` can no longer reuse the
-retired `global-codex` signer or auto-register the synthetic name `codex//`.
-SAGE rejects that broad, untrustworthy boundary before Git discovery,
-project-config lookup, key loading, or key generation. Real project and linked
-worktree roots continue to resolve to their stable workspace identities;
-operators who intentionally need a non-workspace shared identity must pin it
-explicitly with `SAGE_IDENTITY_PATH`.
-
-This patch changes no transaction, AppHash input, key encoding, fork target, or
-application version. Existing app-

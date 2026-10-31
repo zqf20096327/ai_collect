@@ -5,7 +5,7 @@
 # OpenCode Mobile
 
 **Coding agents on your Android phone.**
-Claude Code, Codex, Gemini, Kilo, Cline and OpenCode, in a Linux the app installs itself.
+Ten agents, including Claude Code, Codex, Gemini CLI, Qwen Code, Kilo, Cline, Goose and OpenCode, in a Linux the app installs itself.
 No computer, no Termux. Or connect to the agent on your computer.
 
 [![Latest release](https://img.shields.io/github/v/release/Eslamasabry/opencode-mobile-next?label=release&color=55D187)](https://github.com/Eslamasabry/opencode-mobile-next/releases/latest)
@@ -18,19 +18,41 @@ No computer, no Termux. Or connect to the agent on your computer.
 &nbsp;·&nbsp; [Get it on Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/Eslamasabry/opencode-mobile-next)
 &nbsp;·&nbsp; [What's new in 2.0](docs/releases/v2.0.0+56.md)
 
-<a href="https://eslamasabry.github.io/opencode-mobile-next/">
-  <img src="docs/site/assets/video/poster.jpg" alt="Watch the one-minute demo: a neon brick-breaker game built from one prompt, played in the app" width="300">
+<a href="https://eslamasabry.github.io/opencode-mobile-next/assets/video/launch-720.mp4">
+  <img src="docs/demo.gif" alt="Demo, first seconds: a neon brick-breaker game is built from one prompt and played in the app's preview. Select it to watch the full video." width="240">
 </a>
 
-<sub>One-minute demo on the website: one prompt builds a game, it runs in the app's preview, a screenshot goes back into the chat, and the agent adds power-ups.</sub>
+<sub>**[Watch the one-minute demo (mp4)](https://eslamasabry.github.io/opencode-mobile-next/assets/video/launch-720.mp4)**, also on the [website](https://eslamasabry.github.io/opencode-mobile-next/): one prompt builds a game, it runs in the app's preview, a screenshot goes back into the chat, and the agent adds power-ups.</sub>
 
 </div>
 
 ---
 
+## Why
+
+- Coding agents keep working while you are away from your desk, and they stop to ask. A phone is where that question reaches you.
+- Setting up a Linux and an agent by hand on a phone takes a lot of steps. The app does them for you and keeps the agent inside the app.
+- Everything stays open: MIT license, your own servers and keys, no hosted service in between.
+
+## How it compares
+
+AndCode facts come from its public README, checked 2026-10-31; the Termux column is general. They change; check the source before relying on them.
+
+| | OpenCode Mobile | Termux + an agent CLI | [AndCode](https://github.com/yuga-hashimoto/and-code) |
+| --- | --- | --- | --- |
+| What it is | Android app with chat, diff, terminal and widgets | Terminal emulator and Linux environment; the agent is a command-line tool you install | Android GUI app for coding agents |
+| Agents on the phone | Ten: Claude Code, Codex, Gemini CLI, Qwen Code, Kilo, Cline, Goose, Oh My Pi, fx, OpenCode | Whichever agent CLI you install and can run | OpenCode, Claude Code, Google Antigravity, Codex |
+| Linux setup | Guided in-app install of Ubuntu, Git and Node | By hand, in a terminal | Guided in-app install through PRoot (Alpine; Debian for Antigravity) |
+| Connect to a computer | OpenCode 2, Codex, or Claude Code through Paseo | Over SSH, by hand | Remote OpenCode |
+| Approve a command from a notification or widget | Yes | Depends on the agent CLI | Tool approvals in the app |
+| Scheduled prompts | Yes | With your own tools (such as cron) | Yes |
+| License | MIT | See the Termux repository; agent licenses vary | MIT |
+
+OpenCode Mobile is a younger project and several of its agents are less tested on real phones; see [Compatibility](#compatibility).
+
 ## Highlights
 
-- **Six agents, one app.** Pick Claude Code, Codex, Gemini, Kilo, Cline or OpenCode for each conversation. OpenCode's free models work without an API key.
+- **Ten agents, one app.** Pick Claude Code, Codex, Gemini CLI, Qwen Code, Kilo, Cline, Goose, Oh My Pi, fx or OpenCode for each conversation. Claude Code and OpenCode are the best proven on a phone; the others are newer. OpenCode's free models work without an API key.
 - **Real Linux on the phone.** The app installs its own Ubuntu with Git and Node, runs the agent there, and keeps your projects inside the app. A full terminal is built in.
 - **Approve from anywhere.** Allow or reject a command from the notification, the home-screen widget or the chat, or turn on auto-approve and let it run.
 - **Steer mid-task.** Send a new instruction while the agent works, instead of waiting for it to finish.
@@ -71,7 +93,7 @@ Coming from Termux? **Move from Termux** copies your projects into the app. More
 | --- | --- |
 | Android | 8 or newer; on-phone agents need a 64-bit phone |
 | OpenCode | OpenCode 2 only; OpenCode 1 is no longer supported |
-| Claude Code, Codex, Gemini, Kilo, Cline | On the phone, in the built-in Linux |
+| Claude Code, Codex, Gemini CLI, Qwen Code, Kilo, Cline, Goose, Oh My Pi, fx | On the phone, in the built-in Linux (newer ones are less tested on real phones) |
 | Agents on your computer | OpenCode 2, Codex directly, or Claude Code through [Paseo](https://github.com/getpaseo/paseo) |
 | Languages | English and Arabic, with partial Spanish, Japanese, Portuguese, Russian and Chinese |
 | Linux and Windows desktop | Experimental builds |

@@ -8,7 +8,7 @@
 
 [这是什么](#这是什么) · [快速开始](#快速开始) · [使用流程](#使用流程) · [核心能力](#核心能力) · [能力规模](#当前能力规模) · [适合谁](#适合谁与不适合谁) · [架构](#架构与布局) · [安全边界](#安全与使用边界) · [桌面版说明](desktop-app/README.md) · [Wiki](https://github.com/YanQuan-dozzy/Boss-Claw/wiki) · [Agent 接入](#外部-agent-接入可选控制桥--mcp--代答)
 
-![Version](https://img.shields.io/badge/version-v2.6.0-078A83)
+![Version](https://img.shields.io/badge/version-v2.6.1-078A83)
 ![Electron](https://img.shields.io/badge/Electron-%5E42-47848F)
 ![React](https://img.shields.io/badge/React-18-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
@@ -20,7 +20,7 @@
 
 </div>
 
-> 本文以 `main` 分支当前实现为准，**当前版本 v2.6.0**（2026-10-22 发布，产物覆盖 Windows / Linux / macOS 三系统），上一正式版 v2.5.7（2026-10-13）。本次改动要点见 [版本与更新](#版本与更新)；**新增的「模拟面试」尚未经过完整测试，属可自行试用状态**，详见该功能小节。
+> 本文以 `main` 分支当前实现为准，**当前版本 v2.6.1**（2026-10-31 发布，Windows 产物已更新，Linux / macOS 产物沿用 v2.6.0），上一正式版 v2.6.0（2026-10-22）。本次改动要点见 [版本与更新](#版本与更新)；**「模拟面试」仍未经过完整测试，属可自行试用状态**，详见该功能小节。
 
 ## 这是什么
 
@@ -50,15 +50,17 @@ BossClaw 的答案是把这四件事变成一条可审计的本地流程：**先
 
 ### 1. 下载安装
 
-打包产物发布在 [GitHub Releases](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest)，v2.6.0 同时提供 **Windows / Linux / macOS** 三个系统：
+打包产物发布在 [GitHub Releases](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest)，v2.6.1 提供 **Windows** 产物（安装版 / 便携版），Linux / macOS 沿用 v2.6.0：
 
 | 系统 | 形式 | 文件 | 说明 |
 | --- | --- | --- | --- |
-| 🪟 **Windows 10/11（x64）** | 安装版（推荐） | [BossClaw-2.6.0-x64.exe](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.0-x64.exe) | 标准 NSIS 安装包，可自定义安装目录、创建桌面 / 开始菜单快捷方式 |
-| 🪟 **Windows 10/11（x64）** | 便携版 | [BossClaw-2.6.0-portable.exe](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.0-portable.exe) | 绿色单文件，无需安装、解压即用 |
-| 🐧 **Linux（x86_64）** | AppImage | [BossClaw-2.6.0-x86_64.AppImage](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.0-x86_64.AppImage) | 免安装，`chmod +x` 后直接运行，跨发行版通用 |
-| 🐧 **Linux（amd64，deb 系）** | deb 包 | [BossClaw-2.6.0-amd64.deb](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.0-amd64.deb) | Debian / Ubuntu / Linux Mint：`sudo dpkg -i` 安装 |
-| 🍎 **macOS（Intel / Apple Silicon）** | 源码自构建档案 | [BossClaw-2.6.0-mac.tar.gz](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.0-mac.tar.gz) | 解压后执行 `./build-mac.sh` 生成 dmg + zip（双架构） |
+| 🪟 **Windows 10/11（x64）** | 安装版（推荐） | [BossClaw-2.6.1-x64.exe](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.1-x64.exe) | 标准 NSIS 安装包，可自定义安装目录、创建桌面 / 开始菜单快捷方式 |
+| 🪟 **Windows 10/11（x64）** | 便携版 | [BossClaw-2.6.1-portable.exe](https://github.com/YanQuan-dozzy/Boss-Claw/releases/latest/download/BossClaw-2.6.1-portable.exe) | 绿色单文件，无需安装、解压即用 |
+| 🐧 **Linux（x86_64）** | AppImage（v2.6.0 产物） | [BossClaw-2.6.0-x86_64.AppImage](https://github.com/YanQuan-dozzy/Boss-Claw/releases/download/v2.6.0/BossClaw-2.6.0-x86_64.AppImage) | 免安装，`chmod +x` 后直接运行，跨发行版通用 |
+| 🐧 **Linux（amd64，deb 系）** | deb 包（v2.6.0 产物） | [BossClaw-2.6.0-amd64.deb](https://github.com/YanQuan-dozzy/Boss-Claw/releases/download/v2.6.0/BossClaw-2.6.0-amd64.deb) | Debian / Ubuntu / Linux Mint：`sudo dpkg -i` 安装 |
+| 🍎 **macOS（Intel / Apple Silicon）** | 源码自构建档案（v2.6.0 产物） | [BossClaw-2.6.0-mac.tar.gz](https://github.com/YanQuan-dozzy/Boss-Claw/releases/download/v2.6.0/BossClaw-2.6.0-mac.tar.gz) | 解压后执行 `./build-mac.sh` 生成 dmg + zip（双架构） |
+
+> **Linux / macOS 用户**：v2.6.1 只重新构建了 Windows 产物，两个系统仍指向 v2.6.0 的既有资产（如上表的固定版本链接）；需要 v2.6.1 源码时直接在对应平台执行 `npm run package:linux` / `package:mac`。
 
 **各系统获取方式**
 
@@ -162,7 +164,7 @@ AI 生成个性化招呼语（求职者口吻、**≤250 字**）。工作台「
 
 用正在投的岗位 JD + 自己的简历练一场会当场被追问的面试。
 
-> **状态**：v2.6.0 安装包**已包含**（Phase 1–4B），但**尚未经过完整测试** —— 属「可自行试用」状态，不保证稳定，也可能存在未预料的问题；遇到问题请提 [Issue](https://github.com/YanQuan-dozzy/Boss-Claw/issues)，并附上版本号与出错步骤。
+> **状态**：v2.6.1 安装包**已包含**（Phase 1–4B），但**尚未经过完整测试** —— 属「可自行试用」状态，不保证稳定，也可能存在未预料的问题；遇到问题请提 [Issue](https://github.com/YanQuan-dozzy/Boss-Claw/issues)，并附上版本号与出错步骤。
 >
 > 该功能的部分优化与更新代码**暂不开源**，因此公开仓库中的实现与安装包内的实现可能不完全一致；能力口径仍以本文与包内实际表现为准。
 
@@ -174,12 +176,13 @@ AI 生成个性化招呼语（求职者口吻、**≤250 字**）。工作台「
 - **长期弱项**：同岗位近 4 场的漏答要点自动聚类（只收「至少两场都漏」的点），报告末尾列出「你总在漏什么」+ 长期维度均分，可一键按长期弱项追练。只读聚合，不是可编辑的错题本。
 - **作答节奏**：报告给出总用时 / 平均每题 / 最长一题（本地记录，不进内容分）。
 - **会话管理**：会话存主进程文件，支持断点续练、单题重答、导出。
-- **语音朗读**：题干与追问本地朗读（Kokoro + sherpa-onnx，8 个精选音色，题干预渲染并缓存 WAV）；追问走**流式合成边出边播**，首块 1.7s 出声，而不是等整句 14s。设置 → 语音可一键安装语音包。
+- **语音朗读**：题干与追问本地朗读（sherpa-onnx，题干预渲染并缓存 WAV）；追问走**流式合成边出边播**，首块 1.7s 出声，而不是等整句 14s。设置 → 语音可一键安装语音包。
+- **两套朗读模型，可随时切换**：默认 Kokoro（24kHz、8 个精选音色）；也可加装 MeloTTS（44.1kHz 单女声，更接近真人录音，约 167MB）。两套包**可并存**，设置里点一下即切换（下一句生效，切换只改偏好、不动文件），删掉当前这套会自动回落到另一套。
 - **在线高音质档**（可选，**默认关闭**）：走 Edge 神经语音，开启前显式提示「题干文本会发到微软」，接口失败静默回落本地，只影响这一句。
-- **导入音色包**：支持 Piper **转换版** / VITS、Kokoro 布局，先试听再复制入库，缺音素数据时自动借用内置包；原生 Piper 包与 Matcha / Kitten / Pocket 明确提示不支持。导入的 vits 音色合成比内置快约 7 倍（RTF 0.11，追问首包 204ms）。
+- **导入音色包**：支持 Piper **转换版** / VITS / MeloTTS、Kokoro 布局，先试听再复制入库，缺音素数据时自动借用内置包；原生 Piper 包与 Matcha / Kitten / Pocket 明确提示不支持。导入的 vits 音色合成比内置快约 7 倍（RTF 0.11，追问首包 204ms）。
 - **本地面试题库 + BM25 召回**：内置 13.6K 题（可停用），支持 JSON / CSV / Markdown / docx 导入、去重、增删改；出题时召回 20 条候选，并在同一次 AI 调用里完成重排。
 - **语音作答**：本地 SenseVoice，16k 录音 → 本机转写 → 可修改后提交。语速 / 长停顿 / 口头禅三项体征单独展示，**不计入内容分**。
-- **克隆我的声音**：ZipVoice 零样本，3–10 秒参考音频即可，本地保存、不上传；克隆声只用于题干预生成，追问自动回落内置音色。
+- **克隆音色**：ZipVoice 零样本，3–10 秒参考音频即可，本地保存、不上传；克隆声只用于题干预生成，追问自动回落内置音色。
 - **输入来源**：岗位 JD 可从工作台采集队列一键导入（按已投递 / 待投递排序，标注 JD 完整 / 仅摘要 / 无 JD），导入即把 JD 原文快照进本场会话 —— 工作台清缓存不影响已导入的会话。
 - **限制**：未配置 API Key 时不可用（不接 agent 代答）。
 
@@ -219,6 +222,7 @@ AI 生成个性化招呼语（求职者口吻、**≤250 字**）。工作台「
 | 简历解析格式 | 5 种（PDF / DOCX / DOC / MD / TXT），全部本地执行 |
 | 内置 AI 技能 | 9 项（`SKILL.md`） |
 | 内置模拟面试题库 | 13.6K 题（可停用） |
+| 本地朗读模型 | 2 套（Kokoro 24kHz 多音色 / MeloTTS 44.1kHz 单女声），可并存、可切换 |
 | 每日投递配额 | BOSS / 猎聘 / 前程无忧 120，智联 100；上限受 `MAX_SAFE_DAILY=150` 收窄 |
 | 定时任务动作 | 3 类（投递 / 采集 / 备份） |
 | MCP 工具 | 9 个 / 3 组 |
@@ -329,7 +333,7 @@ BossClaw 官方版本不应实现、宣传或用于：
 
 ```
 Boss-claw/
-├── desktop-app/               当前主应用（Electron + React，v2.6.0）
+├── desktop-app/               当前主应用（Electron + React，v2.6.1）
 │   ├── electron/              主进程 main.cjs + control-bridge.cjs + preload/（app / webview / platform-adapters）
 │   ├── bridge/  camoufox/     OpenClaw Node 桥接后端 · Python 隐身引擎桥（camoufox_server.py + platforms/ 多平台采集层）
 │   ├── skills/  src/          AI 技能库（SKILL.md 内置 9 项）· React 渲染进程（store / components / pages / lib）
@@ -381,19 +385,23 @@ npm run package:mac     # 打包 macOS（dmg + zip，需在 macOS 上执行）
 
 ## 版本与更新
 
-**当前版本 v2.6.0**（2026-10-22 发布）；上一正式版 v2.5.7（2026-10-13）。产物覆盖三个系统：**Windows 10/11 x64**（安装版 / 便携版）、**Linux x86_64**（AppImage / deb）、**macOS**（Intel / Apple Silicon 源码自构建档案），见 [下载安装](#1-下载安装)。
+**当前版本 v2.6.1**（2026-10-31 发布）；上一正式版 v2.6.0（2026-10-22）。本次为 **Windows 产物重建的稳定性版本**：**Windows 10/11 x64**（安装版 / 便携版）已更新到 v2.6.1，**Linux x86_64**（AppImage / deb）与 **macOS**（源码自构建档案）沿用 v2.6.0 资产，见 [下载安装](#1-下载安装)。
 
-本条目的改动主轴是**新增「模拟面试」**——用正在投的岗位 JD + 自己的简历练题：两段式出题与动态追问、4+1 维四档评分、雷达图与同岗位场次对比、按缺口与长期弱项追练、本地语音朗读与语音作答、内置 13.6K 本地面试题库。
+本条目的改动主轴是**把「掉数据 / 掉登录」两类问题按根因修掉**，并补齐采集与投递的可用性缺口：
 
-> ⚠️ **模拟面试尚未经过完整测试**：本版按「可自行试用」发布，不保证稳定，遇到问题请提 [Issue](https://github.com/YanQuan-dozzy/Boss-Claw/issues)。此外，该功能的部分优化与更新代码**暂不开源**，公开仓库与安装包内的实现可能不完全一致。
+- **本地数据不再丢**（issue #10 根治）：岗位队列从 `localStorage` 整体迁到主进程文件（`userData/queue/queue-store.json`，原子写 + `.bak` 回退 + 单飞串行），首启自动迁移并验真；写失败不再静默（状态栏红标 + 失败即落备份 + 单实例守卫），存储用量按实测口径改为 50MB 展示。
+- **隐身通道登录态不再失效**：Camoufox 固定浏览器身份与 profile（指纹落盘复用、profile 按平台持久化），修掉「刚扫码成功、一投递就要求重新验证」；设置页为各平台补「隐身扫码登录 / 退出隐身」按钮；过期 Cookie 不再被当成已登录。
+- **采集翻页可用**（issue #7）：设置页翻页面板常驻、页数上限 5 → 10（硬上限 20，可配），断点续采改按页数比对（调大页数不再被整词跳过，PROGRESS_VERSION 1 → 2）；BOSS 隐身通道补回「基础求职条件」筛选（码表与 `searchUrl.ts` 双源守卫）。
+- **投递 / 沟通不再误判**：暂停可中断在途投递（1s 内响应，不再等兜底超时误判失败）；自定义技能指令改 `await`，不再静默漏注入；HR 活跃度按「N 周 / N 月」分档，修掉「2 周内活跃」漏判与「2 月内活跃」误判；简历中心预览不再被本地硬条件早退。
+- **工作台接入 CloakBrowser 采集通道**：新增 `cloakCollector.cjs` 承载采集主循环，按页面事实探测就绪，采集器缺失立即报错，不再白等到 15 分钟兜底超时。
 
-其余改动为文档层更新：README 信息架构重排（新增「适合谁 / 与其他方案的区别 / 当前能力规模」）、架构图（浅色 / 深色 SVG）、IPC 白名单口径同步（66 → 112）与技能数 / 侧栏入口数修正（9 项 / 12 个）；功能表按当前实现标注。
+> ⚠️ **模拟面试仍未经过完整测试**：v2.6.0 首次随包发布时的状态不变，本版按「可自行试用」发布，不保证稳定，遇到问题请提 [Issue](https://github.com/YanQuan-dozzy/Boss-Claw/issues)。此外，该功能的部分优化与更新代码**暂不开源**，公开仓库与安装包内的实现可能不完全一致。
 
 历史版本与产物见 [Releases](https://github.com/YanQuan-dozzy/Boss-Claw/releases)。
 
 ## 反馈与联系
 
-遇到问题时，建议先查阅 [Wiki](https://github.com/YanQuan-dozzy/Boss-Claw/wiki) 与 [`desktop-app/README.md`](desktop-app/README.md) 的「常见问题」。提交 Issue 时请包含：BossClaw 版本（桌面版 v2.6.0）、操作系统与 Electron 版本、出错步骤、**已隐藏隐私信息**的截图、完整错误信息。
+遇到问题时，建议先查阅 [Wiki](https://github.com/YanQuan-dozzy/Boss-Claw/wiki) 与 [`desktop-app/README.md`](desktop-app/README.md) 的「常见问题」。提交 Issue 时请包含：BossClaw 版本（桌面版 v2.6.1）、操作系统与 Electron 版本、出错步骤、**已隐藏隐私信息**的截图、完整错误信息。
 
 ## 开源许可与署名
 

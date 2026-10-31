@@ -88,6 +88,8 @@ The first of those has passed 10 of 10 on the physics simulator too, with the du
 - [Flock mode](#flock-mode)
 - [Robot Passport](#robot-passport)
   * [Why it exists](#why-it-exists)
+  * [Which robots carry one](#which-robots-carry-one)
+  * [Putting a passport on a robot](#putting-a-passport-on-a-robot)
   * [How a meeting works](#how-a-meeting-works)
   * [What a passport says](#what-a-passport-says)
   * [How robots find each other](#how-robots-find-each-other)
@@ -95,7 +97,6 @@ The first of those has passed 10 of 10 on the physics simulator too, with the du
   * [Talking, once they have met](#talking-once-they-have-met)
   * [What a stranger can make your robot do](#what-a-stranger-can-make-your-robot-do)
   * [Privacy](#privacy)
-  * [Any robot can carry one](#any-robot-can-carry-one)
   * [Robot Passport in quackd](#robot-passport-in-quackd)
   * [The specification and its tests](#the-specification-and-its-tests)
   * [Why a new protocol, and why this name](#why-a-new-protocol-and-why-this-name)
@@ -487,6 +488,7 @@ Version 0.28, one real arm, three simulators and mocks for the rest. What has be
 | Coordinator flock, one referee instead (`--flock N`) | ✅ deterministic auction and bus, one planner LLM call at most, ground truth checked in tests, 🧪 experimental and sim2d Microducks only. Its capability aware role auction (spotter/kicker) is unit tested but has no bundled two-robot demo today |
 | LAN discovery (`quackd discover`, `quackd announce`, `quackd[lan]`) | ✅ record format and both commands on fakes in the suite, 🧪 real zeroconf exercised once on one machine, never between two ([docs/guides/lan.md](docs/guides/lan.md)) |
 | MQTT flock bus (`MqttBus`, library only) | ✅ every message kind and a full flock run on a fake broker, 🧪 exercised once between two nodes through a local broker on one machine, never a flock across machines (no distributed clock yet) ([docs/guides/lan.md](docs/guides/lan.md)) |
+| Robot Passport on a robot's own computer (`quackd onboard`, `quackd[onboard]`, `quackd passport check`) | ✅ built for an NVIDIA Jetson and tested on the `sim` board, where two simulated robots on one laptop, portraying a Unitree G1 EDU and an Agile ONE SN from their makers' published figures, meet over a simulated air in `quackd onboard demo`. 🧪 nothing of it has run on a Jetson, over a real Bluetooth radio or between two machines: the radio's code has met fakes and a simulated air, its BlueZ half has never met bluetoothd, the distance two robots meet at is unmeasured, and the beacon id's rotation and BlueZ's address privacy are designed and untested on a radio ([docs/passport/roadmap.md](docs/passport/roadmap.md)) |
 | Discrete stepper (`--decision-llm`, `quackd[decision]`, `quackd[laya]`) | ✅ implemented and tested offline against a stub SDK, with the classification of every verb of every shipped body frozen in a test, and eight decision LLMs quackd can name, each with a page of its own linked from [its table](docs/guides/decision-llms/README.md#the-ones-quackd-names), and `--decision-frames`, which shows one of them, `openai`, the robot's primary camera on a run that asks, at OpenAI's own hosts alone, tested against a stand-in for OpenAI's API, 🧪 the client has never been run against any decision LLM's real API, hosted or self-hosted, and never on hardware, so the speed and cost figures in its page are an estimate rather than a measurement, and of the four confidence floors two are numbers TypeSafe publish and two are quackd's own, all four shaped around Jev and inherited unmeasured by every other one. Off unless you name one. `--decision-mode shadow` exists to measure one before anybody switches it on ([docs/guides/decision-llms/README.md](docs/guides/decision-llms/README.md)) |
 | A learned policy as the arm's executor (`manipulate`, `quackd policy serve`, `quackd[lerobot-vla]`) | ✅ the policy loop, the server and its protocol, the checks the arm makes before any torque and `--controller vla`, tested against a fake arm and on the arm's simulator with scripted policies, and with a tiny random ACT and a tiny random X-VLA served through the real server to the real client by a CI job on Python 3.12. A trained ACT from the Hub, served on a laptop's CPU, drove a twin of the lab's arm through two `manipulate` segments on the simulator over `serve-mcp`, and on 2026-09-29 through two more when OpenAI's `gpt-6-sol` flew the twin with `quackd run --goal` and declared failure on seeing no blue cap, which proves the plumbing and nothing about the task. 🧪 `--controller vla` and its judge prompt have never run with a trained checkpoint, `--decision-mode shadow` has run beside that ACT only with a stub decision LLM, by hand on 2026-09-28 and on the released code on 2026-09-29, so no real decision LLM has run beside a policy, SmolVLA loaded on that laptop and took minutes a chunk on its CPU, so it wants a GPU, pi05, pi0, GR00T N1.7 and a trained X-VLA have not run in the server, FLUX 3 Action is not served at all, and no policy has driven the arm, so how fast the loop runs on the real bus while the laptop infers is unmeasured ([docs/guides/policies.md](docs/guides/policies.md)) |
 | Playing a part (`--play`, `play: true` at `duck: 4`) | ✅ one section in the system prompt, built from the body, the run's verbs and its memory and never from the task's words, held to the plain prompt plus that section on every shipped body, with the record, the header and the refusals tested offline, 🧪 118 of the arm's example files play it, and no played run has run on the arm or asked a paid model yet ([docs/guides/play.md](docs/guides/play.md)) |
@@ -661,16 +663,6 @@ The full map, with a "why it exists" line per module: [docs/concepts/architectur
 
 ## Installation
 
-Requirements: Python 3.11 or newer and [`uv`](https://docs.astral.sh/uv/). Windows, macOS and Linux. No GPU needed: quackd's core touches none, and quackd never runs on an NVIDIA Jetson. It stays on your laptop and reaches the board's model server, camera and detector over the network with `--host` ([docs/guides/jetson.md](docs/guides/jetson.md)). The core is about 250 MB (OpenCV is most of it) and it is the loop, the executor, the contract and the cartoon arena, with no robot in it.
+Requirements: Python 3.11 or newer and [`uv`](https://docs.astral.sh/uv/). Windows, macOS and Linux. No GPU needed: quackd's core touches none. Every quackd command but one runs on your laptop and reaches an NVIDIA Jetson's model server, camera and detector over the network with `--host` ([docs/guides/jetson.md](docs/guides/jetson.md)). The one that runs on a robot's own computer is `quackd onboard`, [Robot Passport](#robot-passport)'s service, which can drive the robot from there as well, and a Jetson is its first board, though nothing of it has run on one yet. The core is about 250 MB (OpenCV is most of it) and it is the loop, the executor, the contract and the cartoon arena, with no robot in it.
 
-**`uv pip install quackd` installs no robot.** You choose the body next, and each of the nine is its own package on PyPI (`quackd-microduck`, `quackd-lerobot` and seven more) that the extra of the same name pulls in. Until one of them is installed, every command that needs a body refuses and says what to install.
-
-```bash
-uvx quackd --version                                   # the core on its own: the loop, the executor, the contract
-uv pip install "quackd[microduck]"                     # then a body: or lerobot, rosbridge, open_duck, xlerobot, alohamini, toddlerbot, huebot, moss
-uv pip install "quackd[robots]"                        # or all nine at once, each with the SDK its real backend needs
-uv pip install "quackd[mujoco]"                        # the duck plus its physics simulator, and quackd[microduck-camera] is the duck plus its WebRTC camera
-uv pip install "quackd[lerobot-sim]"                   # the arm's simulator: MuJoCo and no LeRobot, so Python 3.11 is enough
-uv pip install "quackd[lerobot-vla]"                   # the arm's policy server: LeRobot, torch and transformers, Python 3.12
-uv pip install "quackd[ui]"                            # the page in a browser or on a phone, quackd ui: Streamlit
-uv pip install "quackd[anthropic]"                     # the bra
+**`uv pip install quackd` installs no robot.** You choose the body next, and each of the nine is its own package on PyPI (`quackd-microduck`, `quackd-lerobot` and seven more) that the extra of the same name pulls in. Until one of them is installed, every command that needs a body ref

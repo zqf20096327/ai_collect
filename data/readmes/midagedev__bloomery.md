@@ -41,8 +41,9 @@ bloomery-serve --model qwen3.8-flash-next --dry-run --json  # the start it would
 bloomery-serve --model qwen3.8-flash-next --port 0          # start it: one JSON event a line, then "ready" with the url
 ```
 
-On a Mac the server is `bloomery-serve-metal`, and the agent follows the "On a Mac" steps in the same page. To run
-Claude Code itself on the model you just started, see [`docs/claude-code.md`](docs/claude-code.md).
+On a Mac the server is `bloomery-serve-metal`, and the agent follows the "On a Mac" steps in the same page. To run a
+coding agent on the model you just started — pi on a Mac, dsh on DeepSeek-V4.1-Flash, Claude Code or OpenCode on a
+fast card set — see [Which coding agent](docs/agents.md#which-coding-agent).
 
 ## What it does
 
@@ -98,7 +99,9 @@ curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/relea
 A 128 GB GB10 holds every routed expert of Qwen3.8-Flash-Next on the GPU. NVIDIA's FP4-Local and NVFP4 checkpoint
 folders serve as downloaded, with no conversion: `bloomery-serve -m <folder>`, or `--hf nvidia/Qwen3.8-Flash-Next-NVFP4`.
 In Docker, mount the folder and name it inside the container, for example
-`-v /path/to/models:/models ... ghcr.io/midagedev/bloomery -m /models/Qwen3.8-Flash-Next-FP4-Local`.
+`-v /path/to/models:/models ... ghcr.io/midagedev/bloomery -m /models/Qwen3.8-Flash-Next-FP4-Local`. The slots, the
+context each gets, the MTP draft and the memory each folder takes on a GB10 are in
+[`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#23-qwen38-on-one-spark-slots-mtp-and-memory), section 2.3.
 
 ### Linux x86-64
 
@@ -196,7 +199,7 @@ These seats serve a file or a checkpoint folder on disk (`-m PATH`):
 |---|---|---|
 | `minimaxm3` | MiniMax-M3.1-Flash | the vendor's NVFP4 safetensors folder as downloaded (MiniMax-M3: unverified) |
 | `musespark` | Muse Spark Open 816B-A42B | `Muse-Spark-Open-816B-A42B-UD-IQ2_XXS-00001-of-00006.gguf` |
-| `qwen38` | Qwen3.8-Flash-Next, checkpoint folders | NVIDIA's NVFP4 folder or the FP4-Local folder, no conversion, on a card that holds every routed expert (a DGX Spark's GB10); also `--hf nvidia/Qwen3.8-Flash-Next-NVFP4` |
+| `qwen38` | Qwen3.8-Flash-Next, checkpoint folders | NVIDIA's NVFP4 folder, its routed experts split between the card and the host, or the FP4-Local folder on a card that holds every routed expert (a DGX Spark's GB10), no conversion; also `--hf nvidia/Qwen3.8-Flash-Next-NVFP4` |
 | `nemotron` | Nemotron 3 Nano 4B, Nemotron 3.5 Bolt 74B-A9B, Nemotron-3.5-Lightning 30B-A3B | the GGUF |
 | `solar2` | Solar-Open2-250B, two cards | the GGUF, with `--place bp` |
 | `raon1` | Raon-1-mini-preview | `raon-1-mini-preview-Q4_K_M.gguf`, its DFlash2 draft file beside it |
@@ -344,6 +347,8 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 | [`docs/serving.md`](docs/serving.md) | llama-server compatibility, flags, seats, concurrent requests, limits |
 | [`docs/agents.md`](docs/agents.md) | Starting the server from an agent or a script: the picks, the events, the exit codes |
 | [`docs/claude-code.md`](docs/claude-code.md) | Claude Code on a local model, on an NVIDIA card or a Mac, with measured first-turn times |
+| [`docs/pi.md`](docs/pi.md) | pi on a local model: the smallest first request of the surveyed agents, on an NVIDIA card or a Mac |
+| [`docs/dsh.md`](docs/dsh.md) | DeepSeek Harness (dsh) on DeepSeek-V4.1-Flash: the server, the profile patch, what to expect |
 | [`docs/models.md`](docs/models.md) | Recommended files and what each model needs |
 | [`docs/numbers.md`](docs/numbers.md) | Every measured table beyond the Status tables: two cards, older releases, other cards and Macs |
 | [`docs/performance.md`](docs/performance.md) | Number conditions, why it is fast, verification, recorded sessions |

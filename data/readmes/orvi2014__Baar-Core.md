@@ -265,15 +265,18 @@ except LoopDetected as e:
     result = f"Stopped: '{e.tool_name}' {e.pattern} loop ({e.count}x). Try a different approach."
 ```
 
-It refuses the call that would continue a loop **before it runs**, and warns `on_loop` one step earlier. Three patterns, with defaults from OpenHands' StuckDetector:
+It refuses the call that would continue a loop **before it runs**. One step earlier it **tells the model**: on the first repeat, `baar_guard` adds a note to the tool's string result (`[baar] The tool 'web_search' has returned the same result 2 times… Change the arguments, use a different tool, or answer with what you already have.`), and `on_loop` gets a warning. In a live benchmark, the note was what mattered: the model changed course in 19 of 20 runs, while stopping without telling it did worse than no detection at all. Pass `loop_nudge=False` to `baar_guard` to leave results untouched; non-string results are never changed.
+
+Three patterns:
 
 | Pattern | Refused when | Default |
 |---|---|---|
-| `repeat` | the same call already returned the same result N times (anywhere in the run) | `max_repeats=4` |
+| `repeat` | the same call already returned the same result N times (anywhere in the run) | `max_repeats=2` (the 3rd identical call is refused) |
 | `error` | the same call failed the same way N times in a row (a success resets it) | `max_error_repeats=3` |
 | `ping_pong` | two steps alternated with the same results for N full cycles | `max_ping_pong=3` |
 
-- `exempt_tools=["job_status"]` — never count a tool that legitimately returns the same thing many times (status polls).
+- **Waiting is not looping:** a short result (≤ 200 characters) saying `running`, `pending`, `queued`, `in progress`, `processing`, `booting`, `starting`, `initializing`, `waiting` or `not ready` never counts, so polling a job isn't stopped. `in_progress=re.compile(...)` changes the words; `in_progress=False` counts them.
+- `exempt_tools=["job_status"]` — never count a tool that legitimately returns the same thing many times.
 - `ignore_args=["request_id", "timestamp"]` — drop volatile arguments, at any depth, before comparing.
 - `normalize_result=fn` — map a result before hashing, e.g. to drop a timestamp it carries.
 - `loops.tighten()` — lower every threshold by one after summarizing the agent's history (summarization roughly doubles looping, per DeLoop).
@@ -287,14 +290,14 @@ It refuses the call that would continue a loop **before it runs**, and warns `on
 
 | Method | Caught | False stops | Median wasted calls | $ wasted |
 |---|---|---|---|---|
-| detector | 80.0% | 14.3% | 3 | $16.06 |
-| detector+exempt | 80.0% | 0.0% | 3 | $16.06 |
-| detector+budget | 100.0% | 0.0% | 3 | $7.06 |
+| detector | 80.0% | 0.0% | 2 | $15.16 |
+| detector+exempt | 80.0% | 0.0% | 2 | $15.16 |
+| detector+budget | 100.0% | 0.0% | 2 | $6.16 |
 | call_hash_only | 80.0% | 39.0% | 3 | $16.51 |
 | max_calls | 100.0% | 41.0% | 7 | $5.12 |
 | budget_only | 100.0% | 0.0% | 35 | $26.14 |
 
-`max_calls` wastes less money only by also stopping 41% of healthy runs (pagination, long research, the flaky API). Counting calls without their results stops every flaky-API run; the detector stops none, because errors only count in a row. `detector+budget` is how you'd ship it: `exempt_tools=["job_status"]` plus a $0.40 run budget. Without the exemption, the 6-identical-result polls are stopped (the 14.3% false stops above). Overhead is about 10 µs per tool call. The headline holds for every generator seed from 1 to 50 (100% caught, 0% false stops, median 3 wasted calls). Per-category results: `python benchmarks/loop_eval.py`.
+`max_calls` wastes less money only by also stopping 41% of healthy runs (pagination, long research, the flaky API). Counting calls without their results stops every flaky-API run; the detector stops none, because errors only count in a row. `detector+budget` is how you'd ship it: the detector plus a $0.40 run budget. The 6-identical-`running` polls are no longer stopped even without `exempt_tools` (they were 14.3% false stops before 0.9). Overhead is about 10 µs per tool call. The headline holds for every generator seed from 1 to 50 (100% caught, 0% false stops, median 2 wasted calls). Per-category results: `python benchmarks/loop_eval.py`.
 
 
 ## MCP server (Claude Code / Cursor)
@@ -521,6 +524,104 @@ Run it yourself: `pip install baar-core datasets` then `baar-bench --limit 10 --
 | Open source (MIT) | ✅ | ✅ | ✅ | ❌ |
 
 The key difference: every alternative routes and tracks. Baar-Core **prevents** — the exception is raised before a single byte leaves your machine.
+
+
+## Output limits
+
+The pre-flight check covers the prompt, but the response is where cost can run away: one long answer, or a reasoning model's hidden thinking tokens, can cost more than the estimate. `on_output_overrun` decides how Baar handles that:
+
+```python
+router = BAARRouter(budget=0.10, on_output_overrun="preflight", max_output_tokens=2000)
+
+# or per call
+router.chat("Write the full report", on_output_overrun="truncate")
+```
+
+| Mode | Response cut off? | Budget overshoot? | Behaviour |
+|---|---|---|---|
+| `"estimate"` (default) | Never | Possible | Reserves the expected output. Same as before. |
+| `"preflight"` | Never | Never* | Reserves the worst-case output before the call. If it doesn't fit, downgrades to the small model or raises `BudgetExhausted` locally. |
+| `"truncate"` | Only if you opt in | Never* | Sets `max_tokens` from the remaining budget. Downgrades first; only the small model's response can be cut off, and it is flagged `truncated_by_budget=True`. |
+| `"continue"` | Only when the money runs out | Never* | Generates the answer in segments of `segment_tokens` (2000), reserving one segment at a time; a segment that stops at its limit is continued ("continue exactly where you stopped"). Ends when the model finishes, `max_output_tokens` (the total) is reached, `max_segments` (8) is hit, or another segment can't be paid for — then the text so far is returned, flagged `truncated_by_budget=True`. |
+
+\* Prompt tokens are an estimate (exact for OpenAI text; approximate for Claude, Gemini, images and tool schemas), so these modes price the prompt with a 20% margin (`prompt_margin=0.2`). An undercount larger than that can still overshoot slightly.
+
+`preflight` is most useful with your own `max_output_tokens`: without one, the worst case is the model's full max output (16k+ tokens), which blocks more calls near the end of a budget. Or let Baar learn it: `overrun_risk=0.05` reserves the length that 95% of this model's responses have stayed under (a split-conformal quantile of the last 500 completed calls), instead of the worst case. `max_tokens` stays the full limit, so nothing is cut off; at most about 5% of calls can run past the reservation. Until a model has 20 completed calls, the worst case is reserved. Share what's learned between routers with `output_lengths=OutputLengths()`. The limit is always capped by the room left in the model's context window. Your own `max_output_tokens` is never sent above the model's real max output. In `truncate` mode, `max_call_share=0.5` stops one call from reserving more than half of what's left, so concurrent calls near the cap still get through.
+
+In `truncate` mode the big model is used only if its *full* response fits, so models with a very large max output (GPT-5, o-series) will usually downgrade unless you set `max_output_tokens`.
+
+**Capping hidden reasoning.** `thinking_budget=4000` limits a reasoning model's thinking without touching the visible answer:
+
+```python
+router = BAARRouter.anthropic(budget=0.50, on_output_overrun="preflight",
+                              thinking_budget=4000, max_output_tokens=2000)
+```
+
+| Provider (via LiteLLM) | What Baar sends | Hard limit? |
+|---|---|---|
+| Claude, Gemini, DeepSeek | `thinking={"type": "enabled", "budget_tokens": 4000}`, `max_tokens` = answer limit + 4000 | Yes — and `max_output_tokens` means the **answer**, so thinking can't eat into it |
+| OpenAI o-series, GPT-5 | `reasoning_effort` (`low` < 4096 ≤ `medium` < 16384 ≤ `high`) | No — a hint; the worst-case reservation is unchanged |
+| Other models | nothing | — |
+
+On Claude this also makes `preflight` practical: the worst case drops from the model's full 64k–128k output tokens to answer + thinking. Minimum `thinking_budget` is 1024 (Anthropic's floor); set it per call with `router.chat(..., thinking_budget=2048)`. This is the split from *Elastic Reasoning* (arXiv 2505.05315): thinking gets its own budget and the answer keeps a reserved one.
+
+Streaming calls record the provider's reported usage, including hidden reasoning tokens. If you stop reading a stream early, Baar closes it and, in `preflight` / `truncate`, records the reserved output rather than just the text you read. The value gate (`value_fn`) compares a task's value with its *expected* cost, not the worst case these modes reserve.
+
+
+### OverThink eval
+
+`python benchmarks/overthink_eval.py` replays an agent run under the *OverThink* attack (arXiv 2502.02542): decoys hidden in what the model reads multiply its hidden reasoning (×10–46 here, up to ×46 in the paper) while the answer looks normal. 150 tasks, 30% poisoned, a $5.00 budget, a simulated Claude-class reasoning model ($3 / $15 per million tokens, 64k max output). Baar's real pricing and limits run unmodified; only the provider is simulated, and it honours `max_tokens` and the thinking budget like real APIs do. Seed 7:
+
+| Setup | Done | Cut off by a limit | Overshoot | Budget used |
+|---|---|---|---|---|
+| alert only (post-hoc) | 51 | 0 | $0.2132 | 100.0% |
+| `estimate` (default) | 51 | 0 | $0.2132 | 100.0% |
+| `preflight` | 35 | 0 | $0.0000 | 81.0% |
+| `preflight` + `thinking_budget=2048`, `max_output_tokens=2000` | 150 | 0 | $0.0000 | 72.3% |
+| `preflight` + `overrun_risk=0.05` | 40 | 0 | $0.0000 | 92.1% |
+| `truncate` | 51 | 1 | $0.0000 | 100.0% |
+
+Over seeds 1–30: post-hoc alerts overshoot in 30/30 runs and the default `estimate` in 27/30 (up to $0.66). `preflight`, `preflight` + thinking and `truncate` never overshoot, and `preflight` never cuts an answer off. `overrun_risk=0.05` overshoots in 2/30 runs (up to $0.16) — the risk it accepts in exchange for using more of the budget. Capping thinking finishes every task because poisoned tasks stop being expensive; the simulation assumes the answer is unaffected by the cap, which real models don't guarantee. If you expect adversarial content, use `preflight` (or `truncate`) and set a `thinking_budget` on reasoning models.
+
+
+## Budget awareness and wind-down
+
+A kill-switch alone stops an agent mid-task with nothing to show for the money spent. Baar can also let the agent *see* its budget, and end with an answer instead of an exception. (BATS, arXiv 2511.17006: a short budget status block each step makes agents spend better, with no training.)
+
+```python
+from baar import BAARRouter, WindDown, BudgetExhausted
+
+router = BAARRouter(
+    budget=1.00,
+    budget_awareness=True,                        # or a formatter: lambda status: "..."
+    wind_down=WindDown(at=0.9, reserve=0.05),     # final call past 90% used / 5% left
+)
+
+try:
+    while True:
+        reply = router.chat(next_step())
+except BudgetExhausted as e:
+    answer = e.partial_result                     # the final, wrapped-up answer
+```
+
+- `router.budget_status()` → `BudgetStatus(total, spent, remaining, utilization, calls, avg_call_cost, calls_left, winding_down)`. LangChain's `BaarChatModel`, CrewAI's `BaarCrewLLM` and LangGraph's `BaarMiddleware` expose it as `.budget_status`.
+- `budget_awareness=True` adds `[budget] $0.3200 of $1.00 used (32%) · ~17 calls left at the current rate` to the end of each call's **last user message** — not the system prompt, so a cached prompt prefix stays intact.
+- `WindDown`: once utilization reaches `at`, or only `reserve` of the budget is left, the next call is the **final** one — it carries a wrap-up instruction (`instruction=` to change it). Every later call raises `BudgetExhausted` locally with that answer in `.partial_result`, until the budget is reset or a new window starts. `reserve` decides *when* to wind down; it doesn't fence money off from earlier calls, so pair it with `on_output_overrun="preflight"` if the final call must not overshoot.
+- Policy: `Rule(when={"utilization": ">= 0.8", "plan": "free"}, then="wrap_up")` makes a call the final one.
+
+
+## Prompt caching
+
+Providers bill a prompt prefix they've seen recently at a discount (OpenAI and DeepSeek automatically, Anthropic with `cache_control`, Gemini implicitly) — in an agent loop that's most of every prompt. Baar reads the cached tokens each call reports (`StepResult.cached_prompt_tokens`), records streams at the cache rate, and reports the hit rate (`log.summary()["cache_hit_rate_pct"]`, and in `print_report()`). Reservations still use the uncached price, so caching never weakens the budget guarantee.
+
+**Does routing still pay when switching models throws the cache away?** `python benchmarks/cache_eval.py` replays 24 conversations × 12 turns with 2k–80k-token contexts, real gpt-5 / gpt-5-mini pricing, and a provider that caches like OpenAI (per model, prefix ≥ 1024 tokens). 30% of turns are hard. Seed 7:
+
+| Setup | Cost | Prompt tokens from cache | Model switches |
+|---|---|---|---|
+| always gpt-5 | $3.1976 | 91.1% | 0 |
+| Baar routing | $2.2029 | 82.5% | 110 |
+
+Routing saves 31% even after the cache losses: each model keeps its own cache, and gpt-5-mini is about 5× cheaper on every line (input, cached input and output). We also tried "sticky" routing — keeping an easy turn on gpt-5 whenever its cached prefix made *that turn* cheaper — and it cost more overall ($2.34): rebuilding the small model's cache once pays for itself within a turn or two, which a per-turn rule can't see. So Baar doesn't offer it.
 
 
 ## Security

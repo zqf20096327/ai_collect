@@ -8,10 +8,11 @@
 
 **Reusable GitHub Actions blocks and workflows for fast shipping teams**
 
-BuildSpace gives you two layers of CI/CD automation:
+BuildSpace gives you three layers of CI/CD automation:
 
 - **Workflows**: plug-and-play release pipelines. Point a workflow at your repo, provide a few secrets, and you're done. Most teams only need this.
-- **Blocks**: the composable actions that workflows are built from. Use them to assemble custom pipelines when the prebuilt workflows don't fit.
+- **Blocks**: compatibility recipes that combine setup, builds, packaging, and publication. Their existing inputs and output names remain available.
+- **Primitives**: single-operation actions with no release policy or toolchain setup. Use them to compose a pipeline without adopting a block's other behavior.
 
 ---
 
@@ -19,6 +20,7 @@ BuildSpace gives you two layers of CI/CD automation:
 
 - [Quick Start](#quick-start)
 - [Prerequisites](#prerequisites)
+- [Primitives](#primitives)
 - [Workflows](#workflows)
   - [Immutable Image Publisher](#immutable-image-publisher)
   - [Package Stage and Promote](#package-stage-and-promote)
@@ -2172,7 +2174,4 @@ Uses [Claude Code](https://github.com/anthropics/claude-code) to analyze release
 | `release-tag` | string | Yes | — | The raw release tag (e.g., `v1.2.3`). Used for linking back to the release. |
 | `release-notes` | string | Yes | — | Release notes markdown from the release |
 | `changes-diff` | string | Yes | — | Git diff of changes in this release |
-| `skills-path` | string | Yes | — | Path within the skills repo this service maps to (e.g., `skills/buildspace-ci-cd` or `skills/imessage`) |
-| `skills-repo` | string | No | `photon-hq/skills` | Target skills repository (`owner/repo`) |
-| `skills-branch` | string | No | `main` | Base branch of the skills repo |
-| `anthropic-api-k
+| `skills-path` | string | Yes | — | Path within the skills repo this service maps to (e.g., `skills/buildspace-ci-cd` or `skills/imessage

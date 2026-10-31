@@ -1,30 +1,81 @@
+[![skills.sh](https://skills.sh/b/yanstd888/humanizer-lint)](https://www.skills.sh/yanstd888/humanizer-lint/humanizer-lint)
+
 <div align="center">
 
 # humanizer-lint
 
-### Deterministic prose and Markdown style linting for Indonesian and English
+### Humanize AI-generated text with a deterministic local AI humanizer and anti-slop prose linter
 
-Detect repetitive LLM phrasing, uniform sentence rhythm, structural clichés, and voice-profile drift without sending text to an external service.
+Detect repetitive LLM phrasing, uniform sentence rhythm, structural clichés, and voice-profile drift across **8 built-in language packs plus 100+ Universal Stylometry languages** without sending text to an external service.
 
 [![GitHub Release](https://img.shields.io/github/v/release/yanstd888/humanizer-lint?style=flat-square&logo=github)](https://github.com/yanstd888/humanizer-lint/releases)
 [![npm](https://img.shields.io/npm/v/humanizer-lint)](https://www.npmjs.com/package/humanizer-lint)
 [![CI](https://img.shields.io/github/actions/workflow/status/yanstd888/humanizer-lint/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/yanstd888/humanizer-lint/actions/workflows/ci.yml)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-126a4a?style=flat-square)](package.json)
+[![Snyk: Pass](https://img.shields.io/badge/Snyk-Pass-126a4a?style=flat-square)](https://www.skills.sh/yanstd888/humanizer-lint/humanizer-lint/security/snyk)
+[![Socket: Pass](https://img.shields.io/badge/Socket-Pass-126a4a?style=flat-square)](https://www.skills.sh/yanstd888/humanizer-lint/humanizer-lint/security/socket)
+[![Agent Trust Hub: Pass](https://img.shields.io/badge/Agent%20Trust%20Hub-Pass-126a4a?style=flat-square)](https://www.skills.sh/yanstd888/humanizer-lint/humanizer-lint/security/agent-trust-hub)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-humanizer.aiclub.ai.id-126a4a?style=flat-square)](https://humanizer.aiclub.ai.id/)
 [![License](https://img.shields.io/github/license/yanstd888/humanizer-lint?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.3-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![skills.sh](https://skills.sh/b/yanstd888/humanizer-lint)](https://skills.sh/yanstd888/humanizer-lint)
 [![GitHub Stars](https://img.shields.io/github/stars/yanstd888/humanizer-lint?style=flat-square)](https://github.com/yanstd888/humanizer-lint/stargazers)
 
-[What it does](#what-it-does) | [Install](#install) | [Quick start](#quick-start) | [CLI reference](#cli-reference) | [Detectors](#detectors-and-violation-types) | [Agent skill](#use-as-an-agent-skill) | [FAQ](#frequently-asked-questions)
+[What it does](#what-it-does) | [Try in your browser](#try-in-your-browser) | [Install](#install) | [Quick start](#quick-start) | [CLI reference](#cli-reference) | [Detectors](#detectors-and-violation-types) | [Agent skill](#use-as-an-agent-skill) | [FAQ](#frequently-asked-questions)
 
 </div>
 
-**humanizer-lint is an open-source natural-text and Markdown prose linter that deterministically identifies style patterns often associated with AI-generated writing in Indonesian and English; it is a style validator, not an authorship detector.**
+**Summary**
 
-Try the static browser demo: [humanizer-lint.pages.dev](https://humanizer-lint.pages.dev).
+- Eliminates robotic LLM writing patterns when users ask to "humanize text", "remove AI slop", "fix uniform sentence rhythm", or "write natural blog, SEO, and documentation prose"
+- Provides mandatory `node <skill_dir>/scripts/analyze.mjs --stdin --json` verification and `npx humanizer-lint` CLI to enforce Burstiness (`CV >= 0.45`), Adjacent Rhythm Delta, and Adaptive `MATTR` vocabulary diversity
+- Ships with **8 deep anti-slop lexical & morphological rule packs** (`en`, `id`, `es`, `ms`, `fr`, `de`, `pt`, `zh`) plus **Universal Stylometric Mode** (`Intl.Segmenter`) for 100+ languages with zero external dependencies
+- Supports personal author voice cloning via `node <skill_dir>/scripts/fingerprint.mjs` and passes all 3 `skills.sh` security audits (Gen Agent Trust Hub, Socket, Snyk) with zero network calls
+
+```sh
+npx skills add yanstd888/humanizer-lint
+```
+
+Use the command above to install the agent skill. For one-off local linting, run the published `humanizer-lint` CLI below.
+
+**8-language summary:** EN — local AI text humanizer and prose linter. ID — humanizer bahasa Indonesia dan cek tulisan AI. ES — humanizador de texto IA y corrector de ritmo. MS — humanizer teks AI dan semak ayat. FR — humaniseur de texte IA et analyseur stylométrique. DE — KI-Text humanisieren und KI-Floskeln entfernen. PT — humanizador de texto IA e corretor de burstiness. ZH — AI文章人性化与句式节奏分析.
+
+## Try in your browser
+
+Use the official demo: [humanizer.aiclub.ai.id](https://humanizer.aiclub.ai.id).
+
+[humanizer-lint.pages.dev](https://humanizer-lint.pages.dev) remains available as a mirror.
+
+Open a deterministic sample view directly:
+
+| Language | AI Sample (FAIL) | Human Sample (PASS) |
+|---|---|---|
+| EN | [open](https://humanizer.aiclub.ai.id/?lang=en&sample=ai-en) | [open](https://humanizer.aiclub.ai.id/?lang=en&sample=human-en) |
+| ID | [open](https://humanizer.aiclub.ai.id/?lang=id&sample=ai-id) | [open](https://humanizer.aiclub.ai.id/?lang=id&sample=human-id) |
+| ES | [open](https://humanizer.aiclub.ai.id/?lang=es&sample=ai-es) | [open](https://humanizer.aiclub.ai.id/?lang=es&sample=human-es) |
+| MS | [open](https://humanizer.aiclub.ai.id/?lang=ms&sample=ai-ms) | [open](https://humanizer.aiclub.ai.id/?lang=ms&sample=human-ms) |
+| FR | [open](https://humanizer.aiclub.ai.id/?lang=fr&sample=ai-fr) | [open](https://humanizer.aiclub.ai.id/?lang=fr&sample=human-fr) |
+| DE | [open](https://humanizer.aiclub.ai.id/?lang=de&sample=ai-de) | [open](https://humanizer.aiclub.ai.id/?lang=de&sample=human-de) |
+| PT | [open](https://humanizer.aiclub.ai.id/?lang=pt&sample=ai-pt) | [open](https://humanizer.aiclub.ai.id/?lang=pt&sample=human-pt) |
+| ZH | [open](https://humanizer.aiclub.ai.id/?lang=zh&sample=ai-zh) | [open](https://humanizer.aiclub.ai.id/?lang=zh&sample=human-zh) |
+
+Use `?lang=en`, `?lang=id`, `?lang=es`, `?lang=ms`, `?lang=fr`, `?lang=de`, `?lang=pt`, or `?lang=zh` to set the playground chrome only for that visit; it does not overwrite a saved browser preference.
 
 It works locally with zero runtime dependencies. Instead of rewriting text through another language model, it reports paragraph- and sentence-level violations with specific correction instructions. Use it to lint LLM-generated documentation, remove robotic AI phrasing from Markdown, check burstiness and lexical diversity, or add a deterministic prose gate to an agent workflow.
 
 It can serve as a CLI text humanizer guardrail, automated writing style linter, or CI/CD documentation linter. The bundled rules flag overused AI clichés such as `delve` and `tapestry` without rewriting the source.
+
+## Language support
+
+| Tier | Languages | Checks |
+|---|---|---|
+| Tier 1 — rule packs | `en`, `id`, `es`, `ms`, `fr`, `de`, `pt`, `zh` | Universal stylometric metrics plus lexical, definitional-opening, and structural-cliché packs; Indonesian keeps its morphology rules. |
+| Tier 2 — universal | `universal` or another ISO 639-1 code such as `tr`, `ja`, or `ar` | Universal stylometry through native `Intl.Segmenter`: burstiness, adjacent rhythm delta, adaptive MATTR, paragraph symmetry, repeated starters, and compression ratio. |
+
+## Use cases & agent integration
+
+Use this local AI text humanizer and prose linter for copywriting, blog posts, SEO articles, technical documentation, Markdown proofreading, academic prose, and natural translation polishing. Tier 1 packs flag native anti-slop phrases in English, Indonesian, Spanish, Malay, French, German, Portuguese, and Mandarin; Tier 2 applies deterministic stylometry to 100+ languages.
+
+For a closed-loop agent workflow, install `npx skills add yanstd888/humanizer-lint`, draft without changing facts, run `humanizer-lint --lang auto`, revise only flagged prose, and re-run before returning the text. It works with Claude Code, Cursor, Windsurf, Cline, Codex, and Gemini CLI without a runtime dependency or network text upload.
 
 ## What it does
 
@@ -32,7 +83,7 @@ It can serve as a CLI text humanizer guardrail, automated writing style linter, 
 
 The project includes:
 
-- 86 reviewable lexical and structural regex rules: 42 Indonesian and 44 English.
+- Eight reviewable lexical and structural rule packs for EN, ID, ES, MS, FR, DE, PT, and ZH.
 - Sentence-length burstiness, adjacent rhythm delta, short/long sentence ratios, and adaptive MATTR.
 - Repetition checks based on paragraph symmetry, repeated sentence starters, and compression ratio.
 - Indonesian nominalization, passive-voice, loanword, and translation-style opening checks.
@@ -105,20 +156,21 @@ Language: en
 
 and exits with code `0`.
 
-## Why humanizer-lint
+## Static `SKILL.md` Humanizers vs. `humanizer-lint` (Closed-Loop CLI)
 
-Many AI humanizer services send text to another model and return a rewritten version. That can alter facts, quotations, formatting, or technical meaning. `humanizer-lint` takes the smaller and more predictable approach: it identifies the prose that needs attention and leaves the edit under your control.
+A static writing prompt can ask a model to vary prose, but it cannot verify the finished draft. `humanizer-lint` takes the smaller, deterministic approach: inspect the exact text after drafting, make only flagged revisions, then check again locally.
 
-| Capability | humanizer-lint | Web rewriting service | General grammar checker |
-|---|---|---|---|
-| Detects configured LLM clichés | Yes, with rule IDs and locations | Usually rewrites them | Usually not |
-| Measures sentence rhythm | Yes | Usually not exposed | Limited |
-| Preserves source text | Yes, analysis only | No, returns a rewrite | Depends on product |
-| Handles common Markdown structures | Yes, through deterministic sanitization | Product-dependent | Product-dependent |
-| Runs offline after installation | Yes | Usually no | Product-dependent |
-| Supports Indonesian and English lexical rules | Yes | Product-dependent | Product-dependent |
-| Produces JSON | Yes | Product-dependent | Product-dependent |
-| Proves human authorship | No | No | No |
+| Capability | Static `SKILL.md` humanizer prompt | `humanizer-lint` closed-loop CLI |
+|---|---|---|
+| Checks the completed draft | No | Yes, exact input is measured |
+| Measures sentence rhythm | Prompt guidance only | CV, adjacent delta, short/long distribution |
+| Measures vocabulary repetition | Prompt guidance only | Adaptive MATTR and repetition checks |
+| Flags configured AI clichés | Model-dependent | Rule IDs and locations |
+| Preserves source text | Depends on rewrite | Yes, analysis only |
+| Runs offline after installation | Depends on agent/model | Yes |
+| Supports EN and ID lexical rules | Prompt-dependent | Yes |
+| Produces JSON and exit codes | Usually no | Yes |
+| Proves human authorship | No | No |
 
 If you are looking for an AI writing detector linter, a ChatGPT tone remover CLI, or an open-source alternative to AI humanizers, note the boundary: this tool detects configured style signals and rhythm problems. It does not claim to determine whether a human or model wrote the text.
 
@@ -143,7 +195,7 @@ npm install -g humanizer-lint
 The recommended installation for coding agents is through the skills CLI:
 
 ```sh
-npx skills add yanstd888/humanizer-lint --skill humanizer-lint
+npx skills add yanstd888/humanizer-lint
 ```
 
 The public listing, installation command, and install count are available on [skills.sh](https://skills.sh/yanstd888/humanizer-lint).
@@ -165,10 +217,22 @@ No dependency installation or build step is required.
 
 ## Quick start
 
-Analyze one file:
+Analyze one file with auto-detection:
 
 ```sh
 humanizer-lint --file draft.md --lang auto
+```
+
+Force universal stylometry for a language without a bundled pack:
+
+```sh
+humanizer-lint --file draft.md --lang universal
+```
+
+Request an ISO 639-1 language directly:
+
+```sh
+humanizer-lint --file draft.md --lang es
 ```
 
 Return machine-readable JSON:
@@ -238,14 +302,14 @@ Untuk contoh ini, skor naik dari **38** menjadi **100** setelah frasa template d
 ### Analyzer
 
 ```text
-humanizer-lint (--file <path> | --stdin) [--lang id|en|auto] [--profile <path>] [--json]
+humanizer-lint (--file <path> | --stdin) [--lang auto|universal|<ISO-639-1>] [--profile <path>] [--json]
 ```
 
 | Option | Required | Description |
 |---|---:|---|
 | `--file <path>` | One input required | Read one UTF-8 text or Markdown file. |
 | `--stdin` | One input required | Read the complete document from standard input. |
-| `--lang id|en|auto` | No | Select Indonesian, English, or function-word auto-detection. Default: `auto`. |
+| `--lang auto|universal|<ISO-639-1>` | No | Select auto-detection, a bundled Tier 1 pack, or universal stylometry. Default: `auto`. |
 | `--profile <path>` | No | Load a JSON voice profile. |
 | `--json` | No | Print JSON only. Without it, print the terminal report. |
 | `--help` | No | Print command usage. |
@@ -382,7 +446,7 @@ The real result may contain additional metric properties and violations.
 
 After installation, an agent can use the skill as a closed verification loop:
 
-1. Draft or edit Indonesian or English prose without changing supported facts.
+1. Draft or edit prose in a supported Tier 1 language or any Universal Stylometry language without changing supported facts.
 2. Run the analyzer against the exact complete draft.
 3. Read every violation and edit only the affected prose or named whole-document gate.
 4. Re-run the analyzer, stopping after three iterations.
@@ -394,7 +458,7 @@ The skill is indexed on skills.sh and its current listing passes the platform's 
 
 The skills.sh badge at the top of this README is the public source for anonymous installation activity. GitHub's native `Used by` sidebar is generated automatically from its dependency graph; repository owners cannot set that count manually.
 
-Because the CLI is not published to npm, skill installations are represented by skills.sh rather than GitHub package dependents. The GitHub panel will appear when downstream repositories declare a dependency that GitHub can detect.
+Because the CLI is published on npm, npm downloads and downstream package manifests are the relevant distribution signals. The skills.sh listing separately represents agent-skill installation activity.
 
 ## CI and repository automation
 
@@ -460,14 +524,14 @@ It can identify the exact paragraph or sentence that matches a configured phrase
 <details>
 <summary><strong>Can I install it from npm?</strong></summary>
 
-Not currently. Install the agent skill with `npx skills add yanstd888/humanizer-lint --skill humanizer-lint`, or clone the repository and use `npm link` for the local CLI binaries.
+Yes. Run `npx humanizer-lint --file draft.md --lang auto` for a one-off command, or install it globally with `npm install -g humanizer-lint`. Install the agent skill separately with `npx skills add yanstd888/humanizer-lint`.
 
 </details>
 
 <details>
 <summary><strong>Which languages are supported?</strong></summary>
 
-The configured lexical and language-detection paths support Indonesian and English. Do not treat the current statistical thresholds as validated defaults for other languages.
+The configured lexical packs support English, Indonesian, Spanish, Malay, French, German, Portuguese, and Mandarin. Other ISO 639-1 languages use universal stylometry through native `Intl.Segmenter`; these checks measure rhythm and repetition without inventing a lexical pack.
 
 </details>
 

@@ -109,7 +109,7 @@ The Live Call Graph shows cross-file symbol relationships in a Cytoscape.js pane
   <img src="media/call-graph-view-example.png" alt="Graph-It-Live live call graph" width="800"/>
 </div>
 
-The Live Call Graph supports TypeScript, JavaScript, Vue, Svelte, Python, Rust, C#, Go, and Java. C#, Go, and Java are supported in the file graph and Live Call Graph; Symbol View support is currently limited to TypeScript, JavaScript, Python, and Rust.
+The Live Call Graph supports TypeScript, JavaScript, Vue, Svelte, Python, Rust, C#, Go, Java, and GraphQL. C#, Go, Java, and GraphQL are supported in the file graph and Live Call Graph; Symbol View support is currently limited to TypeScript, JavaScript, Python, and Rust. In GraphQL, operations and fragments call the fragments they spread; an operation's default root type (`Query`, `Mutation`, `Subscription`), type conditions, field, argument and variable types, and union members are type-only references (`USES`, shown with `includeTypeOnly`); `implements` is an `IMPLEMENTS` edge.
 
 ### Architecture view
 
@@ -300,8 +300,8 @@ codex mcp add graph-it-live --env WORKSPACE_ROOT=/path/to/project -- graph-it se
 ### Portable agent plugin
 
 The [`plugins/graph-it-live/`](plugins/graph-it-live/) directory is the portable Agent Plugin package.
-It bundles the MCP server and four skills: `graph-it-live`, `onboarding-express`, `dead-code-hunter`,
-and `pr-review`. Install it with the client you use:
+It bundles the MCP server and five skills: `graph-it-live`, `graph-it-refactor`, `onboarding-express`,
+`dead-code-hunter` and `pr-review`. Install it with the client you use:
 
 #### Claude Code
 
@@ -377,7 +377,7 @@ The skill documents graph queries, codemaps, impact analysis, dead-code detectio
 
 ### Branch Watch
 
-Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head uses the current branch plus the final on-disk state; an explicit head compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, TS/JS signature evidence, cycle history when the graphs are complete, and explicit limitations. Impact traversal is intentionally bounded (depth 3 and at most 200 affected files), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
+Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head uses the current branch plus the final on-disk state; an explicit head compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, the same signature review as `graph-it review-pr` (TypeScript, JavaScript, Vue and Python, deleted files included, an unreadable file reported as a limitation), cycle history when the graphs are complete, and explicit limitations. Impact traversal is intentionally bounded (depth 3 and at most 200 affected files), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
 
 Branch Watch requires the Graph-It-Live workspace root to be a supported Git repository. A folder without Git, an unborn or detached repository, conflicts, an inaccessible index, or an unsupported VCS is shown as `Branch watch unavailable`; the normal graph and CLI/MCP tools remain available.
 
@@ -402,7 +402,7 @@ Workspace indexing (extension, CLI, and MCP) skips paths listed in the root `.gi
 
 ## CI review gate
 
-The `graph-it review-pr` command performs a deterministic local Git diff review before CI. It compares exported TypeScript and JavaScript signatures, follows bounded dependent-symbol impact, and reports cycle evidence, unused exports, test candidates, and consumer standing. Consumers are classified as updated in the diff, covered by a test path, or unverified. The score reflects the highest-risk changed symbol; a high risk is report data, not a failing exit status.
+The `graph-it review-pr` command performs a deterministic local Git diff review before CI. It compares exported TypeScript, JavaScript, Vue and Python signatures, lists every file still importing a removed export, follows bounded dependent-symbol impact, and reports cycle evidence, unused exports, test candidates, and consumer standing. Consumers are classified as updated in the diff, covered by a test path, or unverified. The score reflects the highest-risk changed symbol; a high risk is report data, not a failing exit status.
 
 By default, `--base <ref>` is compared with the current working tree, including staged and unstaged file contents. Pass `--head <ref>` to compare two Git refs. Use `--depth` and `--max-files` to bound impact traversal and changed-file analysis. See the [`review-pr` CLI reference](docs/CLI.md#review-pr) for scoring thresholds, output formats, limitations, and examples.
 
@@ -419,7 +419,7 @@ Use `pull_request`, not `pull_request_target`, for untrusted pull requests. The 
 | Python | Yes | Yes | Yes |
 | Rust | Yes | Yes | Yes |
 | C# / Go / Java | Yes | No | Yes |
-| GraphQL | Yes | No | No |
+| GraphQL | Yes | No | Yes |
 
 ## Documentation
 

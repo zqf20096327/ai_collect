@@ -54,6 +54,8 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 - [ReasonGraph](https://github.com/bgokden/reasongraph) - MIT graph-memory library that extracts entities and cause-effect relations with small fine-tuned models, answers why-questions by walking causal chains with citations, supports time-travel queries and contradiction handling, with a hosted service (ReasonGraph Cloud).
 - [self-learning-agent-setup](https://github.com/ssap-pa/self-learning-agent-setup) - MIT Postgres schema and TypeScript loop that store each human approve, edit, and reject of an agent draft with pgvector embeddings and retrieve feedback from similar past tasks before the next draft.
 - [Sno Station](https://github.com/sno-ai/sno-station) - Apache-2.0 shared memory engine for coding agents, with encrypted local SQLite storage, project/global recall and corrections that retain superseded records; memory processing can run locally or use configured model and optional Sno cloud services.
+- [SoloPup Memory](https://github.com/OakcoderX/solopup-memory) - MIT text-memory plugin for DeepSeek Harness with source-linked review, global/project scopes, lexical retrieval and revision history; public beta.
+- [ZenBrain](https://github.com/zensation-ai/zenbrain) - Apache-2.0 TypeScript agent-memory library with FSRS-style spaced repetition, Hebbian edge-strengthening functions and an episode-to-semantic consolidation pass; algorithms and core have no third-party runtime dependencies, with SQLite and PostgreSQL adapters, a stdio MCP server and Vercel AI SDK middleware.
 
 ## Agent memory workflows and templates
 

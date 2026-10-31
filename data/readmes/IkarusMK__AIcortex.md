@@ -8,6 +8,7 @@
   <a href="https://github.com/IkarusMK/AIcortex/actions/workflows/build.yml"><img alt="Build" src="https://github.com/IkarusMK/AIcortex/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Protocol: MCP" src="https://img.shields.io/badge/protocol-MCP-7c3aed">
   <img alt="Self-hosted" src="https://img.shields.io/badge/self--hosted-yes-2ea043">
+  <a href="https://buymeacoffee.com/ikarusmk"><img alt="Buy me a coffee" src="https://img.shields.io/badge/Buy_me_a_coffee-ikarusmk-fbbf24?logo=buymeacoffee&logoColor=black"></a>
 </p>
 
 <p align="center"><b>A private, self-hosted brain for your LLM — on your own NAS.</b></p>
@@ -19,9 +20,10 @@ The model stays in its provider's cloud (or runs locally). **Your memory, skills
 ## Highlights
 
 **🧠 A brain that travels with you**
-- One-call `bootstrap` — loads the guide *and* a live catalog of the whole brain in a single round-trip
+- One short `cortex_start` call — who you are, how you work, and the current project's notes, open tasks and last session (a few hundred characters; `cortex_catalog` has the full list)
 - Self-learning, **typed** memory with a review queue, so it grows without polluting itself
 - A **skill router** — search your skills, load only what's needed, author new ones at runtime
+- **Playbooks** — multi-stage work where a person approves each stage's artifact (e.g. Anthropic's AI-native SDLC: `intent.md` → `spec.md` → `plan.md` …), bundled as a template — see [docs/playbooks.md](docs/playbooks.md)
 - The *same* brain across models, desktop **and** mobile — one account, one state
 
 **🔌 Real reach — every integration is just data**
@@ -35,9 +37,10 @@ The model stays in its provider's cloud (or runs locally). **Your memory, skills
 - **Per-user API keys**: scoped (default-deny), hashed at rest, rate-limited, optional expiry — and a key runs the *same* per-user areas as an OIDC session, never admin by default
 
 **🖥 Built-in admin WebUI — no terminal needed**
-- Manage the brain from any browser at **`/ui`**: **vault** (secret *names* only — values are write-only), **skills**, **users & roles**, a read-only **services & devices** inventory and the **audit log** — language-switchable **DE/EN**
-- Same SSO as the connector (**OIDC + PKCE** against *your* IdP, e.g. Pocket ID), admin-only, CSRF-guarded, fully self-contained (strict CSP, no CDNs, no build step) — served by the **same container**, no extra service
-- The UI calls the *same functions* as the MCP tools, so browser and assistant can never drift
+- Every signed-in person manages **their own notes, scheduled jobs and playbook runs** (and approves playbook stages) at **`/ui`**; admins also get the **vault** (secret *names* only — values are write-only), **skills**, **users & roles**, **services & devices** editing and the **audit log** — language-switchable **DE/EN**
+- Same SSO as the connector (**OIDC + PKCE** against *your* IdP, e.g. Pocket ID), CSRF-guarded, fully self-contained (strict CSP, no CDNs, no build step) — served by the **same container**, no extra service
+- Every page takes the *same policy path* as the MCP tools, so the browser never gets more than the person's AI
+- See it in [screenshots](#admin-webui)
 
 **👥 Team, autonomy & continuity**
 - A **presence-aware multi-agent board**: live presence, capability-routed task *pull*, context-preserving handoff
@@ -103,11 +106,16 @@ The MCP endpoint is served at `http://<host>:8787/mcp`.
 > In `docker-compose.yml`, comment out `build: .`, uncomment
 > `image: ghcr.io/ikarusmk/aicortex:latest`, then `docker compose pull && docker compose up -d`.
 
+> **Updating from 1.x:** pull the new image and restart with the same `data/` folder and
+> `.env` — there is no migration step. Connected apps stay signed in; memory, skills,
+> vault, services, tasks, sessions and API keys carry over. What changes is listed in
+> [CHANGELOG.md](CHANGELOG.md#upgrading-from-1x).
+
 **Expose it & add the connector:**
 
 1. Point a subdomain (e.g. `agent.example.com`) at your reverse proxy.
 2. Proxy that host to `http://<nas-ip>:8787` over HTTPS — the upstream is **plain HTTP**, so do *not* enable "TLS to upstream". If your proxy geo-blocks, allow your LLM provider's egress region. The published port binds to **`127.0.0.1`** by default (only this host's proxy reaches it, not the LAN); a host-network proxy uses `http://127.0.0.1:8787`, a **bridge-network** proxy needs `BIND_ADDR=0.0.0.0` (or a shared Docker network).
-3. In your MCP client: **add a custom connector / MCP server** → URL `https://agent.example.com/mcp`.
+3. In your MCP client: **add a custom connector / MCP server** → URL `https://agent.example.com/mcp`. Agents and CLIs that can only send a header (Claude Code, Codex, Hermes, OpenClaw, LM Studio, …) use a per-agent key instead — setup for every client: **[docs/clients.md](docs/clients.md)**.
 4. Test: ask the assistant to call the `ping` tool.
 
 ## Authentication & authorization
@@ -129,7 +137,7 @@ Register the OAuth client in your provider with redirect URI **`<BASE_URL>/auth/
 
 > 🟣 **Using Pocket ID?** Follow the click-by-click **[Pocket ID setup guide](docs/pocketid-setup.md)** — creating the OIDC client, the exact `.env`, and optional groups → roles.
 
-> ℹ️ **Don't** put reverse-proxy SSO / forward-auth in front of `/mcp` — an MCP connector is a *machine* client and can't follow an interactive login redirect. Authentication belongs at the MCP layer, which is exactly what this does. When the OIDC variables are unset, the server binds to `127.0.0.1` only (local testing).
+> ℹ️ **Don't** put reverse-proxy SSO / forward-auth in front of `/mcp` — an MCP connector is a *machine* client and can't follow an interactive login redirect. Authentication belongs at the MCP layer, which is exactly what this does. When the OIDC variables are unset, `/mcp` accepts bearer tokens only (per-agent keys and `RUNNER_TOKEN`); `ALLOW_INSECURE=1` turns all auth off for local testing.
 
 ### 2. Pick your mode — one line in `.env`
 
@@ -160,7 +168,8 @@ Both modes run the same image. **Private data** (memory, vault) fails **open** s
 
 | Group | Tools | What it does |
 |-------|-------|--------------|
-| Onboarding | `bootstrap` | **Start here** — one call returns the guide + a live catalog of the whole brain |
+| Onboarding | `cortex_start` · `cortex_catalog` · `bootstrap` | **Start here** — a short briefing for the project at hand; the full catalog on request; `bootstrap` = alias of `cortex_start` |
+| Router | `integration_search` · `integration_call` | Find and run any tool beyond the eleven listed by default (profile `core`); same permissions as a direct call. Profile `full` lists every tool. |
 | Health | `ping` | Connectivity check |
 | Memory | `memory_write` (typed) · `memory_read`/`list`/`search`/`delete` · `memory_note` · `memory_candidates` · `memory_promote`/`memory_reject` | Self-learning, **typed** facts with dedup + a candidate review queue |
 | Skills | `skill_search` · `skill_list` · `skill_load` · `skill_resource` · `skill_write` | Searchable know-how; learn new skills at runtime |
@@ -192,14 +201,14 @@ This is the heart of the project — making the assistant *itself* portable, not
 
 - **Memory** lives as plain files under `data/memory`; the `memory_*` tools let the LLM recall and update what it knows about you, the same on every device. The catalog groups it by **tier** — 🧭 Core (identity & preferences) → 📂 Projects → 🛠 Working style → 🔗 References, derived from each memory's `type`, with short-term/current state in the sessions layer — so a fresh LLM sees who you are before the ephemera.
 - **Skills** live as folders under `data/skills` (`<skill>/SKILL.md` + resources). The router (`skill_search` / `skill_load` / `skill_resource`) finds the right skill and pulls in **only what it needs** (progressive disclosure).
-- **Categories keep it cheap — and are mandatory.** `skill_write` refuses an uncategorized skill and snaps near-duplicate spellings onto the existing category, so a 300-skill library stays a dozen lines in `bootstrap`, not a token dump. Starter skills live in [`examples/skills/`](examples/skills/README.md).
-- **Call `bootstrap` first.** Its description tells any LLM to call it at the start of every session. For clients that don't call tools on their own, add a one-line instruction to your client's project/system prompt — see [`docs/client-project-instructions.md`](docs/client-project-instructions.md).
+- **Categories keep it cheap — and are mandatory.** `skill_write` refuses an uncategorized skill and snaps near-duplicate spellings onto the existing category, so a 300-skill library stays a dozen lines in `cortex_catalog`, not a token dump. Starter skills live in [`examples/skills/`](examples/skills/README.md).
+- **`cortex_start` first.** The server instructions ask every model to call it at the start of a conversation (with the project name). For clients that don't pass the instructions on, add a short block to your client's project/system prompt — see [`docs/client-project-instructions.md`](docs/client-project-instructions.md).
 
 ## Auto-memory — a brain that learns by itself
 
 Most assistants forget the moment a chat ends. AICortex closes that loop — and stays tidy while doing it.
 
-- **Typed & tiered.** Every memory is `user`, `feedback`, `project` or `reference`; `memory_write` refuses an untyped memory, and `bootstrap` groups them into tiers (Core → Projects → Working style → References) so the catalog reads long-term → ephemeral — the brain stays sorted by intent.
+- **Typed & tiered.** Every memory is `user`, `feedback`, `project` or `reference`; `memory_write` refuses an untyped memory, and `cortex_catalog` groups them into tiers (Core → Projects → Working style → References) so the catalog reads long-term → ephemeral — the brain stays sorted by intent.
 - **Learns in-session, at zero extra cost.** The model already talking to you distills the durable facts and writes them back — no second model, no background loop.
 - **Dedup-first.** A write flags overlapping entries so related facts merge into one file instead of multiplying.
 - **A review queue.** Anything captured automatically (or staged with `memory_note`) lands as a **candidate**, not live memory — you `memory_promote` the keepers and `memory_reject` the rest. Set `LEARN_AUTOCAPTURE=0` to turn auto-capture off.
@@ -212,7 +221,7 @@ New integrations don't need new code. A **service** is a small config you regist
 
 Run your assistants as a **team**: Claude on the desktop, a local model on the NAS, your phone — sharing one brain and one task board.
 
-- **Live presence.** `agent_register` doubles as a heartbeat; `agent_list` shows who's online / idle / away, and `bootstrap` surfaces the team at the top.
+- **Live presence.** `agent_register` doubles as a heartbeat; `agent_list` shows who's online / idle / away, and `cortex_catalog` surfaces the team.
 - **Pull work, don't hunt for it.** `task_next(owner)` recommends the best open task (assigned-to-you → capability match → unassigned); `task_claim` takes it.
 - **Hand off with full context.** `task_handoff(id, to)` reassigns a task, notifies the recipient, and attaches the work session — they `session_load` and pick up exactly where the other stopped.
 - **Namespaced memory.** Shared knowledge in `shared`, private notes in `agents/<name>`.
@@ -264,7 +273,8 @@ For a public/cloud LLM client, yes — the endpoint must be reachable over HTTPS
 
 ## Security
 
-- **Auth fails closed.** Without OIDC the server binds to `127.0.0.1` only (override with `ALLOW_INSECURE=1`). Enable OIDC **before** exposing the proxy — anyone who reaches `/mcp` can otherwise call every tool.
+- **Auth fails closed.** Without OIDC, `/mcp` accepts only bearer tokens (`RUNNER_TOKEN` or a per-agent key); `ALLOW_INSECURE=1` runs it open for local development only. Enable OIDC **before** exposing the proxy for Claude or ChatGPT.
+- **DNS rebinding blocked.** Browser requests (and the WebUI) must come from an IP address, localhost, a name without a dot, a private-use name or the `BASE_URL` host; native clients are unaffected. `MCP_ALLOWED_HOSTS` makes the host check strict.
 - **SSRF guard.** `service_add` / `mqtt_add` / `ftp_add` are model-callable, so the registered-target list isn't a trust boundary by itself. Every outbound host is resolved and **private / loopback / link-local / cloud-metadata addresses are blocked** unless they fall inside `INTERNAL_ALLOW_CIDRS` (operator-only). Set it to the LAN/VPN ranges you actually use.
 - **Encrypted vault, enforced.** Secrets go in the vault via `secret_set` (encrypted at rest, referenced by name, never returned). `secret_set` **refuses plaintext** unless `STORAGE_ENCRYPTION_KEY` is set. `.env` is only for bootstrap config.
 - **Inbound webhooks authenticate themselves.** `POST /hooks/<name>` is served alongside `/mcp/` but *not* behind the MCP OAuth (external senders can't do OAuth) — instead each hook validates a **shared secret token** (the `X-Webhook-Token` header only — never a URL query, so it can't leak into logs) **and/or an HMAC signature** (constant-time). Unknown hooks and bad/unsigned requests both return a uniform `401` (no hook-name enumeration), the body size is capped, and it only ever deposits into the inbox — it never reaches the tool surface. **Expose only `/hooks/*` past your reverse proxy's auth, never `/mcp`.** Don't want any public receiver? Leave webhooks unregistered (opt-in) or keep the `/hooks` path LAN-only.
@@ -315,20 +325,49 @@ Not everyone wants to manage secrets from a terminal or chat. **`/ui`** is a bui
 self-contained admin panel (no extra container, no build step, no CDNs — strict CSP),
 language-switchable **DE/EN**:
 
+<p align="center">
+  <img src="assets/screenshots/webui-playbook-run.webp" alt="Playbooks: a run of the AI-native SDLC template — the plan stage approved, the design stage's spec.md waiting for approval" width="100%">
+</p>
+
+<table>
+  <tr>
+    <td width="50%"><img src="assets/screenshots/webui-memory.webp" alt="Notes: a person's typed memories with filters and the note editor"></td>
+    <td width="50%"><img src="assets/screenshots/webui-cron.webp" alt="Scheduled jobs: plain-language schedules with the next run"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Notes</b> — your memories, typed and searchable</sub></td>
+    <td align="center"><sub><b>Scheduled jobs</b> — plain-language schedules and the next run</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="assets/screenshots/webui-services.webp" alt="Services and devices: every registry in one list, secrets referenced by name"></td>
+    <td width="50%"><img src="assets/screenshots/webui-vault.webp" alt="Vault: secret names, scope and where each one is used; values are write-only"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Services &amp; devices</b> — every registry, secrets by name</sub></td>
+    <td align="center"><sub><b>Vault</b> — names only, values never leave it</sub></td>
+  </tr>
+</table>
+
+<p align="center"><sub>Screenshots use made-up demo data.</sub></p>
+
 | Page | What you can do |
 |------|-----------------|
 | **Overview** | Version, enforce status, live counts (skills, secrets, services, devices, users) |
+| **Notes** *(everyone)* | Your memories: search, filter by type/project, edit with conflict detection; admins also review auto-captured candidates |
+| **Scheduled jobs** *(everyone)* | Your cron jobs: plain-language schedule, next/last run, on/off, presets with a preview of the next runs |
+| **Playbooks** *(everyone)* | Library (adopt the AI-native SDLC template, edit stages) and your runs: progress, artifact versions, approve or reject each stage |
 | **Vault** | See secret **names**, add tokens/API keys/passwords (shared or per-user), delete. Values are **write-only** — they never leave the vault |
 | **Skills** | Browse by category, view, create/edit/delete skills (same house rules as `skill_write`) |
 | **Users** | Roles (`admin`/`user`/`viewer`) + per-user areas (memory, vault, services, skills, device grants) in `policy.json` |
-| **Services & devices** | Read-only inventory of every registry (services, MQTT, FTP, printers, scanners, WebDAV, CalDAV, SSH, mail, IMAP, MCP, webhooks) — target + referenced secret **name** |
+| **Services & devices** | Every registry (services, MQTT, FTP, printers, scanners, WebDAV, CalDAV, SSH, mail, IMAP, MCP, webhooks): create, edit, delete — forms built from each `*_add` tool, secrets picked by **name** |
 | **Logs** | The authz audit log — who called which tool, allowed/denied and why; filterable, newest first |
 
 Login rides on your existing IdP (authorization code + **PKCE**): register **one extra
 redirect URI** in the OIDC client — `<BASE_URL>/ui/callback` — and open `<BASE_URL>/ui`.
-Only the **admin** role may manage; sessions are signed HttpOnly cookies, mutations are
-CSRF-guarded, every action lands in the audit log (names only, never values). The UI calls
-the **same module functions** as the MCP tools, so browser and assistant can't drift.
+Everyone works in their own area; the management pages are for the **admin** role. Sessions
+are signed HttpOnly cookies, mutations are CSRF-guarded, every action lands in the audit log
+(names only, never values). Each page runs the **same policy path** as the MCP tools, so the
+browser gets exactly the rights of the person's AI.
 Without OIDC (local testing) the UI is open on the localhost-only bind — the same trust
 model as the MCP endpoint itself. Opt-out: `UI_ENABLED=0`.
 
@@ -425,7 +464,26 @@ docker exec aicortex python -c "import httpx; print(httpx.get('https://<device-i
 | **Scan / WebDAV fails or falls back to plain HTTP** (e.g. *"did not start a job … 404"*) | The LAN device serves HTTPS with a **self-signed certificate**, which is verified by default. Confirm with `curl -k https://<device-ip>/...` → if that returns `200`, register it self-signed: `scan_add`/`webdav_add` with **`tls_insecure=true`** (or point `ca_bundle` at its cert). |
 | **A new tool or parameter from an update doesn't appear** | Your LLM client cached the old tool schema. **Fully restart the client session** (re-adding the connector is often not enough). |
 | **Pulled a new image but old behaviour persists** | The container didn't recreate (or `latest` wasn't rebuilt yet). Run `docker compose pull && docker compose up -d --force-recreate`, then verify with diagnostic #3 above. |
-| **The assistant says the AICortex tools "aren't loaded" / it can't call `bootstrap`** | A client-side setting — the connector's tools aren't enabled for that conversation. In the chat's tools/connectors menu, toggle **AICortex on as a tool source** (web/mobile); if it won't stick, remove the connector, fully reopen the app, re-add it, start a fresh chat. See [docs/client-project-instructions.md](docs/client-project-instructions.md). |
+| **The assistant says the AICortex tools "aren't loaded" / it can't call `cortex_start`** | A client-side setting — the connector's tools aren't enabled for that conversation. In the chat's tools/connectors menu, toggle **AICortex on as a tool source** (web/mobile); if it won't stick, remove the connector, fully reopen the app, re-add it, start a fresh chat. See [docs/client-project-instructions.md](docs/client-project-instructions.md). |
+
+## Support ☕
+
+AICortex is free and open source, and it will stay that way — no paid tier, no
+features held back.
+
+If it keeps your assistant's memory going and you feel like saying thanks, a coffee is
+always gladly received:
+
+<p align="center">
+  <a href="https://buymeacoffee.com/ikarusmk"><img alt="Buy me a coffee"
+     src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="48"></a>
+</p>
+
+Not in the mood for coffee? These help just as much:
+
+- ⭐ **A star** — so others looking for a self-hosted brain find the project.
+- 🐛 **An issue** — when something is wrong, unclear or could be better.
+- 💬 **A word to a friend** — who wishes their assistant would finally remember them.
 
 ## License
 

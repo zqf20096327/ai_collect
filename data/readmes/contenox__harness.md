@@ -55,11 +55,11 @@ binaries, `SHA256SUMS` and a signed manifest; the desktop app pins one of these 
 
 Contenox installs two commands:
 
-- `contenox` — the desktop app. `contenox .` opens the folder you are standing in; `Ctrl/Cmd+O` switches workspace at any time.
+- `contenox` — the desktop app. `contenox .` opens the folder you are standing in as a project; add or switch projects from the sidebar at any time.
 - `contenox-runtime` — the runtime CLI: chat, sessions, backends, `serve`, and ACP.
 
 ```bash
-contenox .                        # Open this folder in the desktop app
+contenox .                        # Open this folder as a project in the desktop app
 contenox-runtime setup                    # Choose a provider/model for this machine
 contenox-runtime "say hello world in python"    # Query directly from the CLI
 contenox-runtime chat -e                         # Open $EDITOR to compose a rich prompt
@@ -219,22 +219,19 @@ This repository is the desktop app and its cockpit (Electron, React). The runtim
 ```bash
 git clone https://github.com/contenox/contenox-v0
 cd contenox-v0
-make ci                   # install, build, typecheck, lint, test
-make runtime-fetch        # download and verify the pinned runtime
-make desktop-package-dir  # unpacked desktop app for this host
-make desktop-package      # host installers
+npm run ci                # install, build, typecheck, lint, test
+npm run runtime-fetch     # download and verify the pinned runtime
+npm run package-dir       # unpacked desktop app for this host
+npm run package           # host installers
 ```
+
+The npm scripts at the repository root only run `scripts/tasks.mjs` (no dependencies, no
+`npm install` at the root). `npm run help` lists every task. Options go after `--`, for example
+`npm run qa -- --runtime-bin=<path>`. `make <task>` is an optional alias for the same tasks.
 
 ### Runtime
 
-* **Go 1.26+**
-
-```bash
-git clone https://github.com/contenox/runtime
-cd runtime
-make build                # bin/contenox-runtime
-make test-unit
-```
+The `contenox-runtime` CLI (Go) is a separate project: [contenox/runtime](https://github.com/contenox/runtime). Build it from its own README; this repository only consumes the binary.
 
 ---
 

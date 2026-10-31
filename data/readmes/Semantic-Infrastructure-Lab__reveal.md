@@ -7,7 +7,7 @@ A local-first, adapter-driven semantic inspection layer — progressive disclosu
 ```bash
 reveal src/auth.py validate_token           # What does this function do?
 reveal 'calls://src/?callers=validate_token' # Who calls it? (cross-file)
-reveal overview .                           # one-glance dashboard: quality, activity, deps
+reveal overview .                           # compact project map: scope, components, imports
 reveal 'ast://src/?complexity>10'           # What's too complex?
 reveal check src/                           # What needs fixing? (rules, complexity, links)
 reveal pack src/ --since main --budget 8000 # PR context snapshot for AI agents
@@ -19,7 +19,7 @@ reveal pack src/ --since main --budget 8000 # PR context snapshot for AI agents
 pip install reveal-cli
 ```
 
-Git history (`git://`, churn ranking in `hotspots`, recent commits in `overview`) needs the `git` extra: `pip install "reveal-cli[git]"`. Without it those parts are left out and a warning says so.
+Git history and comparisons (`git://`, `overview --against`, and churn ranking in `hotspots`) needs the `git` extra: `pip install "reveal-cli[git]"`. Without it those parts are left out and a warning says so.
 
 **Windows on a managed/locked-down machine?** If Application Control Policy blocks the pip-generated `reveal.exe` launcher, run `python -m reveal` instead — it uses the same install, just skips the blocked wrapper.
 
@@ -47,10 +47,11 @@ reveal 'calls://src/?rank=callers&top=20'  # most architecturally coupled functi
 ```bash
 reveal app.py process_batch --boundary       # inputs read, outputs/effects produced
 reveal app.py process_batch --sideeffects    # DB / HTTP / FS / logging calls, classified
-reveal app.py process_batch --deps           # what this range depends on (params, externals)
-reveal app.py process_batch --mutations      # values written here, where they're next read
+reveal app.py process_batch --inputs         # candidate inputs; builtins marked separately
+reveal app.py process_batch --outputs        # read-after-write hazards; use --range for a block
+reveal app.py process_batch --callsites      # calls within the selected function
 reveal app.py :123 --around                  # nearby context from a line number / stack trace
-reveal app.py process_batch --ifmap          # control-flow skeleton (branches + early exits)
+reveal app.py process_batch --flow=if          # recognized branch skeleton
 reveal legacy.php :120-340 --boundary        # same flags work on flat PHP, not just OO
 ```
 Pinpoint inspection inside a single function or line range — built for triaging giant handlers, legacy files, and stack traces without reading top-to-bottom. See [`AGENT_HELP.md`](reveal/docs/AGENT_HELP.md) for the full nav-flag family.
@@ -155,7 +156,8 @@ reveal health ssl://site.com   # health check: exit 0 pass, 1 findings, 3 incomp
 reveal pack src/ --budget 8000 # token-budgeted snapshot for LLM context
 reveal pack src/ --architecture # pack + entry points + core abstractions brief
 reveal metrics src/ --hotspots # worst files by complexity and size
-reveal overview .              # one-glance dashboard: stats, quality, git activity
+reveal overview .              # compact project map: scope, components, imports
+reveal overview . --against HEAD  # compare the live working tree with a ref
 reveal imports . --external    # third-party and stdlib packages (--circular, --unused)
 reveal calls src/ --callees main --depth 2 --detail  # what main calls, level by level, with side effects
 reveal contracts src/          # ABC/Protocol/TypedDict/Pydantic inventory
@@ -163,7 +165,7 @@ reveal surface src/            # external boundary map: CLI args, routes, env va
 reveal dev new-adapter <name>  # scaffold new adapters/rules
 ```
 
-`overview` and `pack --architecture` rank by the import graph and print the counting rule they used (a `Rule:` line, `edge_rule` in JSON), as `imports://` does.
+`overview` presents a bounded import map with counting rules, coverage and drill-down commands; `overview --against REF` compares a tracked ref with the live working tree. The retired `architecture` spelling returns canonical overview answers. `pack --architecture` uses import fan-in to select context; its ranking remains a separate capability.
 
 ## Adapters
 

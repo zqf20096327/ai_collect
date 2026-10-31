@@ -134,7 +134,7 @@ New-Item -ItemType Junction -Path '.\models\checkpoints\Ming-3.0-tts-tiny-9b-int
 | Ming TTS Load Model | Original or locally converted checkpoint; auto/BF16/FP32 compute; ComfyUI device or CPU. |
 | Ming TTS Generate | Select cloning, voice design, built-in voice, freeform direction, basic attributes, emotion or dialect. Inputs change with the task. |
 | Ming TTS Podcast Speaker | Name, reference AUDIO and its spoken transcript. |
-| Ming TTS Podcast (Tiny 9B) | Native dialogue generation with growing speaker inputs and `Name: speech` lines. |
+| Ming TTS Podcast (Tiny 9B) | Per-turn or native dialogue generation with growing speaker inputs and `Name: speech` lines. |
 | Ming TTS Whisper Transcribe | Local Whisper AUDIO-to-transcript conversion for cloning and podcast references. |
 
 Connect existing **Load Audio** nodes for references and existing **Preview Audio** or **Save Audio** nodes to outputs. Outputs use standard `AUDIO`, mono at 44.1 kHz. Cloning accepts Chinese, English, German, Spanish, French, Korean and Japanese. Inline Ming tags such as `[Laughter]` and `[Sigh]` stay in the text. Each generation selects one task; delivery controls are not mixed arbitrarily.
@@ -199,7 +199,9 @@ Bob: Thanks, Alice. What are we discussing today?
 Alice: How to make a clear reference recording.
 ```
 
-Use a Tiny model and increase `max_steps` when a longer conversation reaches the output limit.
+Use a Tiny model. `generation_mode=per_turn` is the default: each turn uses only its named speaker's reference, and repeated speakers reuse the same encoded reference. Long turns split into fragments with their own `max_steps` limit. Context resets between turns, which can change conversational pacing.
+
+`generation_mode=native` keeps the original one-pass multi-speaker generation, with one `max_steps` limit for the whole script. The model can ignore a speaker change in this mode. If a voice is assigned to the wrong turn, use `per_turn`. Reference quality still affects cloning fidelity in either mode.
 
 ### Sampling settings and duration
 
@@ -210,12 +212,12 @@ Use a Tiny model and increase `max_steps` when a longer conversation reaches the
 | `flow_steps` | 10 | Flow-matching solver steps for each generated audio chunk |
 | `temperature` | 0.0 | Stochastic flow sampling control |
 | `sigma` | 0.25 | Flow noise scale; advanced input |
-| `max_steps` | 250 | Maximum audio chunks per fragment, about 20 seconds; podcast uses one limit for the whole script |
+| `max_steps` | 250 | Maximum audio chunks per fragment, about 20 seconds; native podcast uses one limit for the whole script |
 | `trim` | true | Trim trailing silence after generation |
 
 One decoding iteration generates approximately 80 ms of audio. The model can stop before `max_steps`; this is a ceiling, not a requested duration or speaking-speed setting. A cap of 125 is approximately 10 seconds and can cut off a sentence. Increasing the cap allows more speech but does not stretch or slow an already completed sentence.
 
-Long single-speaker text is split at sentence or clause boundaries where possible, into at most 50 Chinese/Japanese/Korean characters or words. Voice design and freeform use up to 24 characters or words per fragment and reuse the first fragment's speech as the voice reference for later fragments, excluding its trailing silence. Vocal tags stay intact. Each fragment gets its own `max_steps` limit and optional silence trim before the audio is joined. Podcast stays in one piece.
+Long single-speaker text is split at sentence or clause boundaries where possible, into at most 50 Chinese/Japanese/Korean characters or words. Voice design and freeform use up to 24 characters or words per fragment and reuse the first fragment's speech as the voice reference for later fragments, excluding its trailing silence. Vocal tags stay intact. Each fragment gets its own `max_steps` limit and optional silence trim before the audio is joined. Native podcast stays in one piece.
 
 The terminal shows a persistent progress bar with elapsed time and audio chunks per second, plus the fragment number for split text.
 

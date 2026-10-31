@@ -133,6 +133,8 @@ That prompt is intended for coding agents. It tells the agent to clone the repo 
 
 ### Configuration
 
+Application SQL JSON writes normalize non-finite floats (`NaN`, `Infinity`, `-Infinity`) to `null` on SQLite and PostgreSQL, including DB-backed agent definitions and skill-mutation records. Existing rows are not rewritten.
+
 With `run_events.backend: db`, caller-supplied ISO 8601 event timestamps are normalized to UTC before storage, preserving their instant when SQLite drops timezone information. Timestamps without an offset are treated as UTC. Previously stored timestamps are not rewritten.
 
 Run event streams include `run.terminal` for the owning worker's confirmed final
@@ -722,6 +724,10 @@ DeerFlow still uses `Forwarded` / `X-Forwarded-*` headers to recover the browser
 > normal `end` signal. A new reader whose initial attachment loses the race with
 > cleanup receives a gap so it can recover the saved result.
 >
+> In-memory stream events retain the payload as it was published. Reusing a
+> producer's data object or editing a received event does not change another
+> subscriber's output or reconnect replay.
+>
 > During SSE replay-gap recovery, the Web UI preserves a reconnect pointer claimed by another run while durable state is loading. An older recovery cannot overwrite that pointer when it rejoins its own stream. Even a stale foreign pointer is preserved, so the next reload may first check that run before active-run recovery rejoins, adding a reconnect cycle.
 >
 > Store-only SSE and `/wait` consumers can finish after a heartbeat when run-manager
@@ -1102,6 +1108,14 @@ Signed-in users' notification toggle, default model, conversation mode, and reas
 In a new chat, the submitted question stays above its streamed reasoning and
 tool steps while the server creates the conversation and confirms the message.
 
+While a Web task is running, choose **Queue** to send text for the next turn or
+**Steer** to update the current work. Native subagents pause at a safe boundary
+while the main Agent handles the update; active tool calls finish first. Stop
+keeps the Goal, while explicitly replacing the work can clear it. Unapplied
+messages survive database-backed Gateway restarts and require **Send again**;
+interrupted child side effects are not replayed automatically. Existing execution
+limits still apply. Busy input currently accepts text only.
+
 Markdown and JSON conversation exports from the chat header or sidebar read all
 persisted history pages, including earlier turns outside the loaded view or
 compacted model context. A failed history read stops the export instead of
@@ -1148,7 +1162,4 @@ with an owner-bound USER API key. The native `forget` tool is exposed for
 capability parity; deletion is irreversible, so it should be called only after
 explicit user confirmation. DeerFlow does not enforce that confirmation. This
 explicit, model-selected MCP tool path can run alongside the separate automatic
-OpenViking memory backend; it does not replace automatic turn capture or recall. See the
-[OpenViking MCP tools configuration](backend/docs/MCP_SERVER.md#openviking-mcp-tools).
-
-The Gateway can adapt an MCP server's ordinary `submit` / `status` / `cancel` tools into durable background tasks. The Agent sees only the configured submit tool and a DeerFlow-local task ID; remote IDs are persisted before the submit call returns, while status and cancel stay internal to the runtime. Polling uses cross-worker leases, exponential retry backoff, scoped MCP sessions, bounded result storage, and restart recovery. A status-tool `isError` is retained as a bounded diagnostic and retried; servers report a permanent remote-task outcome through a normal structured result with `status: "failed"`. Remote poll hints are finite positive numbers capped at 24 hours, artifact-reference JSON is limited to 64 KiB, and task/server identifiers are validated against their durable SQL column limits before persistence. I
+OpenViking memory backend; it does not replac

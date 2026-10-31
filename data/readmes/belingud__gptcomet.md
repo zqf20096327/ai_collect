@@ -26,6 +26,7 @@
   - [📕 Usage](#-usage)
   - [🔧 Setup](#-setup)
     - [Configuration Methods](#configuration-methods)
+    - [Managing Providers](#managing-providers)
     - [Provider Setup Guide](#provider-setup-guide)
       - [OpenAI](#openai)
       - [Gemini](#gemini)
@@ -44,6 +45,7 @@
     - [Markdown theme](#markdown-theme)
     - [Supported languages](#supported-languages)
     - [console](#console)
+    - [Sensitive data scanning](#sensitive-data-scanning)
   - [🔦 Supported Keys](#-supported-keys)
   - [📃 Example](#-example)
     - [Basic Usage](#basic-usage)
@@ -160,7 +162,8 @@ If you are using `openai` provider, and finished set `api_key`, you can run `gms
     - Configure directly in `~/.config/gptcomet/gptcomet.yaml`.
 
 2. **Interactive Setup**
-    - Use the `gmsg newprovider` command for guided setup.
+    - Use the `gmsg provider new` command for guided setup (`gmsg newprovider` is deprecated and
+      will be removed in v2.14.0; see [Deprecations](docs/deprecations.md)).
 
 3. **Environment Variables**
     - If `api_key` is not set in the configuration file, GPTComet falls back to
@@ -169,12 +172,43 @@ If you are using `openai` provider, and finished set `api_key`, you can run `gms
       or `<PROVIDER>_API_KEY` for other providers.
     - The configuration file takes precedence when both are set.
 
+### Managing Providers
+
+Inspect the active provider and every known provider, switch the default, and verify a provider
+with one minimal request:
+
+```shell
+gmsg provider list     # active provider, model, API base, and API key source
+gmsg provider use claude
+gmsg provider test      # probe the active provider; or: gmsg provider test deepseek
+```
+
+`gmsg provider list` shows where each provider's API key comes from:
+
+-   `config (sk-ab***)` — set in `gptcomet.yaml` (masked in the output);
+-   `env OPENAI_API_KEY` — the config value is empty and the built-in environment variable is set;
+-   `not required` — local providers such as `ollama` and `lmstudio`;
+-   `missing` — no key found; commands that call the provider fail until one is set.
+
+`gmsg provider use <name>` switches the default provider and creates a default configuration block
+for a built-in provider that does not have one yet. It never overwrites an existing block, and it
+warns when the API key or a provider-specific field (for example `azure.deployment_name`) is still
+missing. Configured custom providers keep working through the OpenAI-compatible fallback.
+
+`gmsg provider test [provider]` sends exactly one small request without retries, using the
+provider's saved configuration, and reports the model, API base, key source, latency, and a short
+response. It exits non-zero when the request fails and prints an actionable error (invalid key,
+rate limit, provider outage, or network/proxy problem). It does not need a Git repository.
+
+To add or reconfigure a provider interactively, use `gmsg provider new` (`gmsg newprovider` is
+deprecated and will be removed in v2.14.0; see [Deprecations](docs/deprecations.md)).
+
 ### Provider Setup Guide
 
 ![Made with VHS](https://vhs.charm.sh/vhs-6019QMIveifvh9vGKc2ZZ8.gif)
 
 ```bash
-gmsg newprovider
+gmsg provider new
 
     Select Provider
 
@@ -205,7 +239,7 @@ gmsg newprovider
 OpenAI api key page: https://platform.openai.com/api-keys
 
 ```shell
-gmsg newprovider
+gmsg provider new
 
 Selected provider: openai
 Configure provider:
@@ -227,7 +261,7 @@ Provider openai configured successfully!
 Gemini api key page: https://aistudio.google.com/u/1/apikey
 
 ```shell
-gmsg newprovider
+gmsg provider new
 Selected provider: gemini
 Configure provider:
 
@@ -253,7 +287,7 @@ I don't have an anthropic account yet, please see [Anthropic console](https://co
 Vertex console page: https://console.cloud.google.com
 
 ```shell
-gmsg newprovider
+gmsg provider new
 Selected provider: vertex
 Configure provider:
 
@@ -274,7 +308,7 @@ Provider vertex configured successfully!
 #### Azure
 
 ```shell
-gmsg newprovider
+gmsg provider new
 
 Selected provider: azure
 Configure provider:
@@ -296,7 +330,7 @@ Provider azure configured successfully!
 #### Ollama
 
 ```shell
-gmsg newprovider
+gmsg provider new
 Selected provider: ollama
 Configure provider:
 
@@ -348,7 +382,7 @@ the last verification date.
 Or you can enter the provider name manually, and setup config manually.
 
 ```shell
-gmsg newprovider
+gmsg provider new
 You can either select one from the list or enter a custom provider name.
   ...
   vertex
@@ -369,13 +403,13 @@ does not ship a preset for: enter a custom provider name, then set its
 `extra_body` for non-standard APIs.
 
 Cloudflare Workers AI is a built-in provider now. Select `cloudflare` in
-`gmsg newprovider` and enter your account ID, API token, and Workers AI model
+`gmsg provider new` and enter your account ID, API token, and Workers AI model
 (for example `@cf/openai/gpt-oss-120b`); GPTComet builds the OpenAI-compatible
 endpoint for you. The old `/ai/run` + `result.response` manual workaround is no
 longer needed.
 
 ```shell
-$ gmsg newprovider
+$ gmsg provider new
 
 Selected provider: cloudflare
 Configure provider:
@@ -407,6 +441,7 @@ The following are the available commands for GPTComet:
     -   `--dry-run`: Dry run the command without actually generating the commit message.
     -   `-y/--yes`: Skip the confirmation prompt.
     -   `--no-verify`: Skip git hooks verification, akin to using `git commit --no-verify`
+    -   `--secrets`: Sensitive data scan mode for this run: `off`, `warn`, `redact`, or `block` (default from config).
     -   `--repo`: Path to the repository (default ".").
     -   `--answer-path`: Override answer path
     -   `--api-base`: Override API base URL
@@ -424,15 +459,23 @@ The following are the available commands for GPTComet:
 -   `gmsg generate`: Generate a commit message from the staged diff and print only the message to stdout.
     -   `--repo`: Path to the repository (default ".").
     -   `--rich`: Generate a rich commit message with details.
+    -   `--secrets`: Sensitive data scan mode for this run: `off`, `warn`, `redact`, or `block`.
     -   API override flags: `--model`, `--api-base`, `--api-key`, `--timeout`, and the other advanced flags.
 -   `gmsg hook`: Manage the Git `prepare-commit-msg` hook.
     -   `install [--repo] [--force]`: Install the hook; `--force` backs up an existing hook first.
     -   `uninstall [--repo]`: Remove a gptcomet-managed hook and restore a backup.
     -   `status [--repo]`: Show the hooks directory, state, and backup.
--   `gmsg newprovider`: Add a new provider.
+-   `gmsg provider`: Inspect, switch, test, and add LLM providers.
+    -   `list`: Show the active provider plus every provider's model and API key source.
+    -   `new`: Configure a new provider interactively (replaces `gmsg newprovider`).
+    -   `use <name>`: Switch the default provider; seeds defaults for a built-in provider without a config block.
+    -   `test [provider]`: Send one minimal request and report connectivity, auth, latency, and a short response.
+-   `gmsg newprovider`: Deprecated; use `gmsg provider new`. Kept for now; scheduled for removal in v2.14.0
+    ([deprecation schedule](docs/deprecations.md)).
 -   `gmsg review`: Review staged diff or pipe to `gmsg review`.
     -   `--svn`: Get diff from svn.
     -   `--stream`: Stream output as it arrives from the LLM.
+    -   `--secrets`: Sensitive data scan mode for this run: `off`, `warn`, `redact`, or `block`.
     -   `--repo`: Path to the repository (default ".").
     -   `--answer-path`: Override answer path
     -   `--api-base`: Override API base URL
@@ -509,6 +552,8 @@ Here's a summary of the main configuration keys:
 | :----------------------------- | :--------------------------------------------------------- | :-------------------------------- |
 | `provider`                     | The name of the LLM provider to use.                       | `openai`                          |
 | `file_ignore`                  | A list of file patterns to ignore in the diff.             | (See [file_ignore](#file_ignore)) |
+| `sensitive.mode`               | Pre-send secret scanning mode: `off`, `warn`, `redact`, or `block`. | `warn`                            |
+| `sensitive.allow`              | Regex allowlist matched against a finding's secret or line; matches are ignored. | `[]`                              |
 | `output.lang`                  | The language for commit message generation.                | `en`                              |
 | `output.rich_template`         | The template to use for rich commit messages.              | `<title>:<summary>\n\n<detail>`   |
 | `output.translate_title`       | Translate the title of the commit message.                 | `false`                           |
@@ -585,11 +630,48 @@ gmsg config append file_ignore "vendor/**"
 gmsg config append file_ignore "!vendor/keep.go"
 ```
 
+### sensitive data scanning
+
+Before any diff is sent to a provider, GPTComet scans the **added lines** for credentials with a
+lightweight engine loaded from the MIT-licensed [gitleaks](https://github.com/gitleaks/gitleaks)
+rule data (222 rules, vendored under `internal/secretscan/rules/`). It never changes your staged
+diff; only the text sent to the model can be rewritten.
+
+```yaml
+sensitive:
+  mode: warn      # off | warn | redact | block
+  allow: []       # regexes matched against the secret or the full line
+```
+
+| Mode | Behavior |
+| --- | --- |
+| `off` | No scanning. |
+| `warn` (default) | Send the diff unchanged and print masked findings to stderr. |
+| `redact` | Replace secret spans with `[REDACTED:<rule>]` before sending. |
+| `block` | Send nothing and exit with a structured error. |
+
+Sensitive file names (`.env*`, private key material, `credentials.json`, `.npmrc`, `.pypirc`,
+`.netrc`) are flagged even when no per-line regex matches. Silence known false positives with
+`sensitive.allow`, or a single line with a `gitleaks:allow` comment. The Git hook stays fail-open:
+in `block` mode it prints the warning but does not block `git commit`.
+
+Override the mode for one command (all commands that send a diff):
+
+```shell
+gmsg commit --secrets redact
+gmsg generate --secrets off
+gmsg review --secrets block
+```
+
+Not detected: secrets hidden inside base64/hex blobs, git history, or archive contents — this is a
+pre-send guard, not a replacement for `gitleaks`/GitHub secret scanning in CI.
+
 ### provider
 
 The provider configuration of the language model.
 
-The default provider is `openai`.
+The default provider is `openai`. You can inspect and switch it with `gmsg provider list` and
+`gmsg provider use <name>`, and verify the configuration with `gmsg provider test`.
 
 Provider config just like:
 

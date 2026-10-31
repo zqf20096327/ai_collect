@@ -265,7 +265,10 @@ These settings live under the `chatMessage` key in `~/.config/opencode/opencode-
 | Option                                                 | Default          | What it does                                                                                                                                                                                                                                                                                           |
 | ------------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `enabled`                                              | `true`           | Capture authored user prompts and inject memory context.                                                                                                                                                                                                                                               |
-| `injectOn`                                             | `"first"`        | Inject memory context on the first user message of a session, or on `"always"` every authored turn.                                                                                                                                                                                                    |
+| `injectOn`                                             | `"first"`        | For `recall: "recent"`, inject on the first user message or on `"always"` every authored turn. With `recall: "relevant"` / `"both"`, context always refreshes each authored turn (issue #460).                                                                                                         |
+| `recall`                                               | `"relevant"`     | How injected memories are chosen: `"relevant"` embeds the user message and runs vector search each turn; `"recent"` keeps the legacy newest-N listing; `"both"` prefers relevant then fills remaining slots with recent.                                                                               |
+| `recallScope`                                          | `"default"`      | Scope for auto-recall: `"default"` follows `memory.defaultScope`, or force `"project"` / `"all-projects"`. When searching all projects, hits from the current project get a small similarity boost.                                                                                                    |
+| `similarityThreshold`                                  | (top-level)      | Optional per-inject floor; otherwise uses the top-level `similarityThreshold`.                                                                                                                                                                                                                         |
 | `maxMemories` / `excludeCurrentSession` / `maxAgeDays` | `3` / `true` / — | How many memories the injected context holds, whether memories captured in the current session are excluded, and an optional age cutoff in days.                                                                                                                                                       |
 | `filterInjectedPrompts`                                | `true`           | Skip prompt text injected by the host or by other OpenCode plugins (system reminders, orchestration directives, background-task notifications) so it is never stored as if the user had typed it.                                                                                                      |
 | `injectionMarkers`                                     | built-ins        | Extra markers identifying injected blocks; added to the built-in list, never replacing it.                                                                                                                                                                                                             |
@@ -276,25 +279,60 @@ memories do not consume slots that could hold eligible memories. Setting
 `chatMessage.maxMemories` to `0` disables project-memory injection while still allowing
 the user profile to be injected when enabled.
 
+### Update-on-capture (optional)
+
+Opt-in path that keeps memories current as facts change. When `updateOnCaptureEnabled` is
+`true`, auto-capture embeds the new summary, searches for similar memories above
+`updateOnCaptureSimilarityThreshold` (default `0.75`), and asks the capture model to
+choose `add`, `update` (rewrite in place), or `supersede` (save new + soft-delete old into
+trash). Pinned memories are skipped. Default is off so existing installs keep add-only
+behavior.
+
+```jsonc
+"updateOnCaptureEnabled": true,
+"updateOnCaptureSimilarityThreshold": 0.75,
+"updateOnCaptureMaxCandidates": 5,
+```
+
+Tip: with `Xenova/nomic-embed-text-v1`, enabling `embeddingUseTaskPrefixes: true` (and
+optionally lowering recall `similarityThreshold`) often improves match quality for longer
+memories. Prefixes stay opt-in by default.
+
+### Dreaming (optional memory consolidation)
+
+Opt-in background pass that finds **related** memories (via `dreaming.relatedThreshold`,
+default `0.75`, independent of `deduplicationSimilarityThreshold`), asks the configured
+`opencodeProvider` / `opencodeModel` to `merge`, `update`, `supersede`, `keep`, or `flag`
+contradictions, and soft-deletes superseded rows into recoverable trash. Pinned memories
+are never touched. Set `dreaming.crossProject: true` (or `memory.defaultScope:
+"all-projects"`) to group across project tags; user-scope stays separate. Configure under
+`dreaming` in `opencode-mem.jsonc` (`enabled` default `false`). The web UI exposes
+**Trash** (restore) and **Dream** (manual run). Soft-deleted rows are hard-purged after
+`dreaming.trashRetentionDays` during normal cleanup.
+
+Deeper related-threshold dreaming (update/supersede/flag, cross-project) lands in the
+follow-up PR for #464.
+
 ### Choosing / configuring embeddings
 
 Embeddings power similarity search for memories and the user profile. Configure them in the same file (`~/.config/opencode/opencode-mem.jsonc`). There is **no MLX backend** — local embeddings use `@huggingface/transformers` with ONNX, not Apple MLX.
 
-**Local (default):** set only `embeddingModel`. On first use the model is downloaded from Hugging Face and cached under `{storagePath}/.cache` (default `~/.opencode-mem/data/.cache`).
+**Local (default):** set only `embeddingModel`. On first use the model is downloaded from Hugging Face and cached under `{storagePath}/.cache` (default `~/.opencode-mem/data/.cache`). The weights stay resident for the life of the host process; set `embeddingIdleTimeoutMs` to release them after that many idle milliseconds, and the next memory operation re-warms them from the local cache (about a second, not a re-download).
 
 **Remote (OpenAI-compatible):** set both `embeddingApiUrl` and `embeddingApiKey`. The plugin then calls `{embeddingApiUrl}/embeddings` with a Bearer token. `embeddingApiKey` accepts the same secret formats as `memoryApiKey` (`literal`, `env://…`, `file://…`).
 
-| Key                        | Role                                                                                                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `embeddingModel`           | Hugging Face id (local) or API model name (remote). Default: `Xenova/nomic-embed-text-v1`                                       |
-| `embeddingDimensions`      | Optional override; usually omit — dimensions are looked up from a built-in map                                                  |
-| `embeddingPooling`         | Local pooling: `"mean"` (default), `"cls"`, or `"last_token"`. Unset → small known-model preset or `"mean"`                     |
-| `embeddingQueryPrefix`     | Prefix for query-task embeddings. Unset → model preset or Nomic when `embeddingUseTaskPrefixes` is true. Explicit `""` disables |
-| `embeddingDocumentPrefix`  | Prefix for document-task embeddings (same resolution rules as `embeddingQueryPrefix`)                                           |
-| `embeddingUseTaskPrefixes` | Opt-in Nomic `search_query:` / `search_document:` prefixes when custom/preset prefixes are unset. Default `false`               |
-| `embeddingDtype`           | Optional local ONNX dtype override (e.g. `"q8"`, `"fp32"`). When set, passed to transformers.js `pipeline({ dtype })`           |
-| `embeddingApiUrl`          | Base URL for an OpenAI-compatible embeddings API (no trailing path beyond `/v1`)                                                |
-| `embeddingApiKey`          | API key for that endpoint (required together with `embeddingApiUrl`)                                                            |
+| Key                        | Role                                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `embeddingModel`           | Hugging Face id (local) or API model name (remote). Default: `Xenova/nomic-embed-text-v1`                                                        |
+| `embeddingDimensions`      | Optional override; usually omit — dimensions are looked up from a built-in map                                                                   |
+| `embeddingPooling`         | Local pooling: `"mean"` (default), `"cls"`, or `"last_token"`. Unset → small known-model preset or `"mean"`                                      |
+| `embeddingQueryPrefix`     | Prefix for query-task embeddings. Unset → model preset or Nomic when `embeddingUseTaskPrefixes` is true. Explicit `""` disables                  |
+| `embeddingDocumentPrefix`  | Prefix for document-task embeddings (same resolution rules as `embeddingQueryPrefix`)                                                            |
+| `embeddingUseTaskPrefixes` | Opt-in Nomic `search_query:` / `search_document:` prefixes when custom/preset prefixes are unset. Default `false`                                |
+| `embeddingDtype`           | Optional local ONNX dtype override (e.g. `"q8"`, `"fp32"`). When set, passed to transformers.js `pipeline({ dtype })`                            |
+| `embeddingIdleTimeoutMs`   | Release the local model after this many idle milliseconds (e.g. `600000` for 10 minutes). `0` (default) keeps it loaded for the process lifetime |
+| `embeddingApiUrl`          | Base URL for an OpenAI-compatible embeddings API (no trailing path beyond `/v1`)                                                                 |
+| `embeddingApiKey`          | API key for that endpoint (required together with `embeddingApiUrl`)                                                                             |
 
 Recommended local models:
 

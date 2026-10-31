@@ -8,7 +8,7 @@
 像人一样遗忘，也像人一样回忆。</p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-0.2.3-6d5efc?style=flat-square" alt="version" />
+  <img src="https://img.shields.io/badge/version-0.3.5-6d5efc?style=flat-square" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-1fc8b3?style=flat-square" alt="license" />
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2024-339933?style=flat-square&logo=node.js&logoColor=white" alt="node" />
   <img src="https://img.shields.io/badge/dependencies-0-52525b?style=flat-square" alt="zero dependencies" />
@@ -108,6 +108,8 @@ plugin_manager { action: "install_bundle", target: "<本目录的绝对路径>" 
         forgetThresholdTokens: 8000                  # 超过多少 token 开始遗忘
         forgetTurns: 2                               # 每次切掉几轮已完成对话
         keepCompletedTurns: 4                        # 最近这么多轮永远保留
+
+        sceneOverrides: {}                           # 按场景覆盖，见下一节
 ```
 
 | 字段 | 默认 | 说明 |
@@ -119,8 +121,92 @@ plugin_manager { action: "install_bundle", target: "<本目录的绝对路径>" 
 | `forgetThresholdTokens` | `8000` | 用 `ctx.tokenMeter` 的口径；没有该服务时按字符粗估 |
 | `forgetTurns` | `2` | 一次折叠几轮 |
 | `keepCompletedTurns` | `4` | 保护最近对话：已完成轮数 ≥ `forgetTurns + keepCompletedTurns` 才动手 |
+| `sceneOverrides` | `{}` | 按场景覆盖，键是会话 `header.agentPreset` |
 
-阈值比系统提示本身还低也没关系：保护规则会把会话稳稳停在「最近 5～6 轮」的滑动窗口，不会把上下文掏空。
+## 🌐 多场景覆盖
+
+桌面端、QQ 群、QQ 私聊、微信……同一个模型在不同入口的"记忆压力"完全不同，所以除了全局默认，还可以按场景覆盖：
+
+```yaml
+autoForget: true
+forgetThresholdTokens: 8000   # 全局默认（桌面端）
+sceneOverrides:
+  qqbot:
+    enabled: true
+    forgetThresholdTokens: 4000   # 群聊碎片多，早点折叠
+    keepCompletedTurns: 1         # 只保最近 1 轮
+  wechat:
+    enabled: false                # 微信交给别的插件，本插件直接让路
+```
+
+**场景标识 = 会话的 `header.agentPreset`**（小写）。DSH 的 `SessionHeader` 没有单独的"渠道"字段，QQ/微信这类接入插件通常用自己的 agent 预设建会话，所以拿它当场景键最稳；没有预设时退回 `header.origin`，再退回 `default`。桌面端的默认预设通常是 `standard`，想给桌面单独一套规则就写 `standard:`。
+
+生效规则：
+
+- 场景里没写的字段**继承全局**
+- `enabled: false` 直接跳过折叠（连日志都不写）
+- 场景可以反向打开全局关闭的折叠——全局 `autoForget: false` 只影响没有场景覆盖的会话
+
+设置页的「场景」标签页可以增删改这些覆盖，不用手写 YAML。
+
+## 🛠 设置界面
+
+两个入口，同一张表单：
+
+- **Settings → 终身记忆**（独立设置页）
+- **Plugins → 已安装插件 → Full-Life Memory**（插件详情页的配置区，DSH 的插件配置约定位置）
+
+选项用大白话，不再出现「阈值 / 折叠轮数」这类实现词：
+
+| 控件 | 含义 |
+|---|---|
+| **遗忘触发条件** | 对话超过多少 token 时开始遗忘（调大记得更久） |
+| **遗忘会话轮数** | 一次遗忘几轮已经聊完的对话 |
+| **最近记忆保留轮数** | 最近这么多轮永远保留，方便接着聊 |
+| **自动遗忘** | 总开关 |
+
+分为两个标签页：
+
+- **全局默认**：上面那四项
+- **场景**：每个场景一张卡片（启用开关 + 三个数值 + 删除），底部输入场景标识即可新增
+
+下方实时算出「什么时候会触发」：例如 `至少要有 6 轮聊完的对话（遗忘 2 轮 + 保留 4 轮）才会开始`，改数字时同步刷新。
+
+### 🌍 多语言
+
+表单右上角有语言下拉框，选项来自 DSH 的语言服务（不是插件自己写死的列表），切换时调用 `ctx.locale.setLocale(id)`——也就是跟随全局偏好，插件不维护自己的语言状态。
+
+只带 `zh` / `en` 两套文案，加语言只要两步：
+
+```js
+// client.js
+const DICTS = { zh, en, ja }          // ① 补一份字典
+```
+
+```json
+// locale/ja.json（插件管理器里显示的名字）
+{ "meta": { "title": "フルライフ記憶", "description": "…" } }
+```
+
+不需要改 UI：下拉框会自己出现 `ja`（前提是宿主语言列表里有它，可用 `ctx.locale.addLanguage({ id, label, fallback })` 注册）。缺键会走宿主的 fallback 链，不会显示 undefined——`client-smoke` 里有一条断言专门检查所有字典键集合一致。
+
+## 🔄 检查更新 / 一键更新
+
+表单上方有一行版本信息：`v0.3.5  [检查更新]`，最右侧是语言下拉框。
+
+| 状态 | 表现 |
+|---|---|
+| 点「检查更新」 | 请求 `registry.npmjs.org/<包名>/latest`，与运行中的版本比对 |
+| 有新版本 | 显示 `→ v0.3.2` 和「立即更新」 |
+| 已是最新 | 顶部轻提示「当前已是最新版本」，2.6 秒后自动消失 |
+| 点「立即更新」 | 调用 DSH 的 `pluginManager.installBundle`，由 Host 执行 pnpm 下载并校验 |
+| 更新完成 | 弹出模态框：「更新已下载，请重启 DSH 以应用新版本」 |
+
+为什么不自己 `child_process` 跑 pnpm：`pluginManager` 已经处理了 profile 写入锁、依赖脚本审批、peer 兼容性检查、失败回滚、registry 回退和「是否需要重启」的判定。自己 spawn 会绕过这些，还可能把 profile 的 `package.json` 写坏。
+
+> 版本探测优先走浏览器直连 registry；如果部署的 CSP/CORS 拦住了跨域请求，会退回 Host 的 `pluginManager.inspect` 再查一次。
+
+这些字段标了 `.volatile()`：保存后**下一轮就生效**，不用重启 Host；已经折叠掉的历史不会被恢复。
 
 ## 👀 你会看到什么
 
@@ -178,15 +264,17 @@ full-life-memory: folded 2 turn(s) (~9123 tokens) from surface seq 2..9
 
 ```text
 dsh-full-life-memory/
-├── package.json          # bundle 清单 + dsh.bundle.patch
+├── package.json          # bundle 清单 + dsh.bundle.patch + dsh.client
 ├── cordis.patch.yml      # 插入 Host 插件行 + 默认 config
-├── index.ts              # 源码（类型完整，改这里）
-├── index.js              # 运行时孪生版 = index.ts 去掉类型注解，Loader 加载它
+├── index.ts              # Host 源码（类型完整，改这里）
+├── index.js              # Host 运行时 = index.ts 编译产物
+├── client.js             # 浏览器半边：Plugins 页里的设置界面
 ├── locale/{en,zh}.json   # 插件管理器里的标题与描述
 ├── icon.svg
 └── test/
     ├── smoke.mjs         # Phase 1：命中 / 未命中 / 截断 / 转义 / 连接回收
-    └── auto-forget.mjs   # Phase 2：阈值 / 切除区间 / 配对校验 / 落库 / 每轮一次
+    ├── auto-forget.mjs   # Phase 2：阈值 / 切除区间 / 配对校验 / 落库 / 每轮一次
+    └── client-smoke.mjs  # 设置页：用假 slots/configForms 跑一遍渲染
 ```
 
 ## 🧪 测试
@@ -194,6 +282,7 @@ dsh-full-life-memory/
 ```bash
 node test/smoke.mjs
 node test/auto-forget.mjs
+node test/client-smoke.mjs
 ```
 
 `auto-forget.mjs` 用一个仿 `Session` 契约的假会话跑完整链路，并额外做一次 **`index.ts` 与 `index.js` 的行为对拍**：同一个场景分别执行，逐字段比较追加事件、被切的 surface 区间、落库的线索行，确保"编译产物"和源码不漂移。

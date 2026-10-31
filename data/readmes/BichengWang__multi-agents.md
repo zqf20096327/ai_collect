@@ -184,7 +184,12 @@ python -m agent.bench tasks --since 2026-07-01 --limit 5 --seed 7    # no creden
 
 Setup, methodology, cost estimates and limitations:
 [benchmark guide](https://github.com/BichengWang/multi-agents/blob/main/agent/bench/README.md).
-First results will be published here.
+
+**First results (October 2026):** on 48 fresh tasks, Claude Haiku 5.5 resolved 20 solo, 19 with a
+reviewer and 17 as best of 3, at $0.061, $0.098 and $0.18 per task. Neither team beat the single
+agent (paired p = 1.0 and 0.45): the reviewer approved 29 patches that fail the hidden tests, and
+the judge's top scores were tied on 32 of 48 tasks. Table, analysis, data and raw trajectories:
+[pilot results](https://github.com/BichengWang/multi-agents/blob/main/docs/pilot-2026-10.md).
 
 ## Status
 
@@ -194,8 +199,8 @@ First results will be published here.
 | `--check`, `--issue`, `--pr`, plugins for both CLIs | ✅ Working; smoke-tested end to end |
 | `--max-cost` run budget; `plan` re-planning (`replans`) and per-subtask review (`reviewer`) | ✅ Working; smoke-tested with real CLIs |
 | SDK harness (any model) | 🧪 Implemented and tested offline; not yet run against a live model |
-| Benchmark | 🧪 Built and tested offline; local Docker grading and agent workspaces run live, a team solve and the Modal path not yet |
-| Results | ⏳ Pending the first pilot run |
+| Benchmark | ✅ Runs live on Modal (also detached, `remote`) and on local Docker |
+| Results | ✅ [Pilot](https://github.com/BichengWang/multi-agents/blob/main/docs/pilot-2026-10.md): Haiku 5.5, 48 tasks × solo, review, best of 3 |
 
 Plans are in [docs/ROADMAP.md](https://github.com/BichengWang/multi-agents/blob/main/docs/ROADMAP.md).
 

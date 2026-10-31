@@ -93,7 +93,7 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 | **Large products**         | ⚠️ Designed for it (layered spec, agents read only what a change touches), but proven on only a handful of projects |
 | **Agents**                 | ⚠️ Installs for Claude Code, OpenCode, Codex and other `AGENTS.md` readers; [real-agent testing](docs/harnesses.md) is still limited |
 | **Many repos**             | ⚠️ One spec per repo; a shared interface belongs to the repo that provides it                         |
-| **Maturity**               | ⚠️ Experimental: 1.3.0, one maintainer                                                                |
+| **Maturity**               | ⚠️ Experimental: 1.3.3, one maintainer                                                                |
 | **Roadmap**                | ⚠️ Lifecycle stages (Idea → MVP → GA) and which journeys belong to each; no dates or timelines        |
 | **Ticketing**              | ❌ Not a ticket tracker; the work itself lives in git, pull requests and CI                           |
 | **One-off scripts**        | ❌ A spec costs more than it saves                                                                    |
@@ -118,13 +118,13 @@ Agent:  Change 012 adds requirement R-04 with the code. Acceptance A1 passes on 
 
 ```text
 Add Product-Kit (https://github.com/pevyhlas/product-kit) to this repository as a git
-submodule at .product-kit, pinned to tag v1.3.0, and run .product-kit/scripts/init.sh.
+submodule at .product-kit, pinned to tag v1.3.3, and run .product-kit/scripts/init.sh.
 Then adopt it by following .prdkit/workflows/init.md.
 ```
 
 The agent installs the kit, reads your repository, fills in the project constitution and writes a first spec of what is true now. Anything it inferred is marked `hypothesis`.
 
-**2. Answer the inbox.** Open questions land in `specs/inbox.md`, each with options and a recommendation; answer with a number or in your own words. Then read `specs/product.md` and `specs/architecture.md`, correct what's wrong, and commit. Changes start from the current commit, so commit before the first one.
+**2. Answer the inbox.** Run `/prdkit-inbox` to review questions one at a time, optionally by topic tag. Select an option or answer in your own words; you can also fill the answer field in `specs/inbox.md`. The agent incorporates the decision into the governing spec and gives you its destination before removing the question. Then read `specs/product.md` and `specs/architecture.md`, correct what's wrong, and commit. Changes start from the current commit, so commit before the first one.
 
 **3. Work.**
 
@@ -136,6 +136,7 @@ The agent installs the kit, reads your repository, fills in the project constitu
 | `/prdkit --execute <outcome>` | Runs the bounded change                                                |
 | `/prdkit continue`            | Resumes from the change's State and the actual repository              |
 | `/prdkit-status`              | Shows what's true now, in flight, live, held and waiting on the owner  |
+| `/prdkit-inbox`               | Reviews questions by ID/tag and incorporates answers into the spec    |
 
 ```text
 /prdkit Help define the first useful release of this product.
@@ -150,7 +151,7 @@ The agent installs the kit, reads your repository, fills in the project constitu
 
 ```bash
 git submodule add https://github.com/pevyhlas/product-kit .product-kit
-git -C .product-kit checkout v1.3.0
+git -C .product-kit checkout v1.3.3
 bash .product-kit/scripts/init.sh
 ```
 

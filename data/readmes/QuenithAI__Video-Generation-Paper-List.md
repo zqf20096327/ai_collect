@@ -36,6 +36,7 @@
 <details>
 <summary><strong>⚡ Latest Updates</strong></summary>
 
+- **(Oct 31st, 2026)**: We have updated all accepted papers in **ACL 2026**.
 - **(Oct 27th, 2026)**: We have updated all accepted papers in **ICLR 2026**.
 - **(Mar 9th, 2026)**: We have updated all accepted papers in **CVPR 2026**.
 - **(Nov 19th, 2025)**: We have updated all accepted papers in **AAAI 2026**.
@@ -101,6 +102,15 @@
 
 * **[AAAI 2026]** ***EmoVid:*** *A Multimodal Emotion Video Dataset for Emotion-Centric Video Understanding and Generation*<br>
 [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/pdf/2511.11002) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://zane-zyqiu.github.io/EmoVid)
+
+* **[ACL 2026]** *Bringing Real-World Relations into Video Generation with Graph-Structured Knowledge*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://aclanthology.org/2026.acl-long.172.pdf)
+
+* **[ACL 2026]** *Beyond the Last Frame: Process-aware Evaluation for Generative Video Reasoning*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/abs/2512.24952) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/RUCAIBox/VIPER)
+
+* **[ACL 2026]** ***OSCBench:*** *Benchmarking Object State Change in Text-to-Video Generation*<br>
+[![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://arxiv.org/abs/2603.11698) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://hanxjing.github.io/OSCBench/) [![GitHub](https://img.shields.io/badge/GitHub-Repo-blue?style=for-the-badge&logo=github)](https://github.com/iLearn-Lab/ACL26-OSCBench)
 
 
 * **[CVPR 2026]** ***ID-Composer: VLM-Grounded Online RL for Compositional Multi-Subject Video Generation***<br>
@@ -794,29 +804,4 @@
 
 * **[ICLR 2026]** *Motion Prior Distillation in Time Reversal Sampling for Generative Inbetweening*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=GRElsj9W2t) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://vvsjeon.github.io/MPD/)
 
-* **[ICLR 2026]** *Composition of Memory Experts for Diffusion World Models*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=sUEdpZCHdp) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://wiqzard.github.io/composition-of-memory-experts/)
-
-* **[ICLR 2026]** ***Latent Particle World Models:*** *Self-supervised Object-centric Stochastic Dynamics Modeling*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=lTaPtGiUUc) [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge&logo=googlechrome&logoColor=white)](https://taldatech.github.io/lpwm-web)
-
-
-
-</details>
-
-<details>
-<summary><h4>💡 Pre-Print Papers</h4></summary>
-</details>
-
-</details>
-
-
-<details>
-<summary><h4>✨ 2025</h4></summary>
-
-<details>
-<summary><h4>✅ Published Papers</h4></summary>
-
-
-*   **[CVPR 2025]** ***MotionStone:*** *Decoupled Motion Intensity Modulation with Diffusion Transformer for Image-to-Video Generation*<br>
-    [![ArXiv](https://img.shields.io/badge/arXiv-PDF-b31b1b?style=for-the-badge&logo=arxiv)](https://arxiv.org/pdf/2412.05848)
-
-*   **[CVPR 2025]** ***MotionPro:*** *A Precise Motion Controller for Image-to-Video Generati
+* **[ICLR 2026]** *Composition of Memory Experts for Diffusion World Models*<br> [![Paper](https://img.shields.io/badge/Paper-OpenReview-D15E5E?style=for-the-badge&logo=open-collective)](https://openreview.net/forum?id=sUEdpZCHdp) [![Project Page](ht

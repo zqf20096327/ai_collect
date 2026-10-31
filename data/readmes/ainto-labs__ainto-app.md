@@ -26,13 +26,17 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="https://ainto.app/launcher.jpg" width="800" alt="Ainto's search panel listing apps and built-in commands">
+</p>
+
 ---
 
 ## Features
 
 | Feature | Description |
 |---------|-------------|
-| **AI** | Press Tab to chat, or select text → run & replace (Fix Grammar, Translate, Summarize, or your own) |
+| **AI** | Press <kbd>Tab</kbd> to chat, or select text → run & replace (Fix Grammar, Translate, Summarize, or your own) |
 | **App Search** | Fuzzy search and launch macOS apps instantly |
 | **Clipboard History** | Persistent history with text, image, and file support |
 | **Snippets** | Text expansion in any app with dynamic placeholders (`{date}`, `{clipboard}`, `{time}`, `{uuid}`) |

@@ -332,6 +332,7 @@ explore transformer architecture in the context of computer vision and learn how
 |---|---|---|---|---|
 | [**1- Introduction to Image Classification**](https://coursesteach.com/mod/page/view.php?id=10657)| [1](https://drive.google.com/file/d/1KFnLbH22xmUURQ3xOVidlA1DqJTtthr8/view?usp=sharing)[-2](https://youtu.be/o9XrwPZI_F0?si=OkH2bh09wip2VLlo) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 | [**2- Image Classification with KNN**](https://coursesteach.com/mod/page/view.php?id=10661&forceview=1)| [1](https://drive.google.com/file/d/1PsHeoxMSC88JvgHKsXI3rH5kA9-G_3qH/view?usp=sharing)[-2](https://youtu.be/phzKCvyxcuE) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
+| [**3-Linear Classifiers**](https://coursesteach.com/mod/page/view.php?id=10665&forceview=1)| [1](https://drive.google.com/file/d/17d0wLGMGpFQOfm3Tzr1fq5Y26QqndUww/view?usp=sharing)[-2](https://youtu.be/1TOGEhQ-DxA?si=mpm89o03vE9rEbL7) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 
 
 </details>
@@ -511,7 +512,3 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 | Title/link| Description | Status |
 |---|---|---|
 |[**✅1- Computer Science courses with video lectures**](https://github.com/Developer-Y/cs-video-courses?fbclid=IwZXh0bgNhZW0CMTAAAR2J9tEPD3kPegVzCWQ0WkBYSS6go_0G0PjRSaNojiOjDG85ccS45lZGyBE_aem_Ack4D65TusReJ6ybfh6ZIy9MXZ6ezPKugIzvqWZO2HtMW1C4Y38SpzlpjSzB4pr4-X4tFDusPKaI4SeieXZKMIcn)|It is Videos and github| Pending|
-|[**✅2-courses & resources**](https://github.com/SkalskiP/courses)|It is course of all AI domain| Pending|
-|[**✅3-AIBauchi-Computer-Vision-Bootcamp**](https://github.com/AIBauchi/AIBauchi-Computer-Vision-Bootcamp/tree/main)|It is course of all AI domain| Inprogress|
-|[**✅4-Awesome Computer Vision**](https://github.com/jbhuang0604/awesome-computer-vision?tab=readme-ov-file#courses)|It is course of all AI domain| Inprogress|
-|[**✅5-Community-led Computer Vision Community Course**](h

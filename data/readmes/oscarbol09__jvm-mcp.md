@@ -262,8 +262,8 @@ jvm-mcp list
 # Inspect memory pools, GC pauses, and heap histogram
 jvm-mcp memory <pid>
 
-# Diagnose thread states and detect deadlock cycles (add --top-cpu for top CPU threads or --virtual for Loom)
-jvm-mcp threads <pid> [--top-cpu] [--virtual]
+# Diagnose thread states and detect deadlocks (add --top-cpu, --dump, --deadlocks, --blocked, --json, or --virtual for Loom)
+jvm-mcp threads <pid> [--top-cpu] [--dump] [--deadlocks] [--blocked] [--virtual] [--json]
 
 # Inspect Spring Boot ApplicationContext beans
 jvm-mcp beans <pid> --filter "*Service*"
@@ -277,6 +277,13 @@ jvm-mcp actuator --url "http://localhost:8080" metrics
 # Run MCP stdio server with optional defaults (making pid or url optional in tool schemas)
 jvm-mcp serve [--attach <pid>] [--actuator <url>]
 ```
+
+When using `--json` with `jvm-mcp threads`, the output serializes the specific
+diagnostic model selected by `--dump`, `--deadlocks`, `--top-cpu`, or `--blocked`.
+
+When Spring bean discovery is unavailable, `jvm-mcp beans` exits with code 1 and
+writes the failure reason and remediation advice to stderr, including with `--json`.
+Successful discovery with no matching beans still exits with code 0.
 
 ---
 
@@ -294,12 +301,19 @@ The server exposes 14 diagnostic tools to AI assistants:
 | `list_spring_beans` | Paginated Spring beans by context via JMX/Actuator, with `totalBeans` and `truncated`; `summary` returns per-context counts and top 10 packages instead. | `pid` (number), `filter` (string, optional), `limit` (integer, optional, default 200, max 2000), `offset` (integer, optional, default 0), `summary` (boolean, optional) |
 | `get_bean_detail` | Detailed metadata, autowired dependencies, and scope of a bean. | `pid` (number), `beanName` (string) |
 | `list_hikari_pools` | HikariCP pool metrics, active/idle connections, and leak warnings. Returns a note when no HikariCP MBeans are registered. | `pid` (number) |
-| `inspect_pg_schema` | PostgreSQL table schema, columns, row estimates, and foreign keys. | `url` (string), `schema` (string, optional) |
-| `find_missing_indexes` | High sequential scan tables with low index usage via `pg_stat_user_tables`. | `url` (string), `schema` (string, optional), `minTableSizeMb` (integer, optional) |
-| `find_slow_queries` | Slow query execution profiles from `pg_stat_statements`. | `url` (string), `limit` (integer, optional) |
+| `inspect_pg_schema` | PostgreSQL table schema, columns, row estimates, and foreign keys. | `url` (string), `user` / `password` (string, optional), `schema` (string, optional) |
+| `find_missing_indexes` | High sequential scan tables with low index usage via `pg_stat_user_tables`. | `url` (string), `user` / `password` (string, optional), `schema` (string, optional), `minTableSizeMb` (integer, optional) |
+| `find_slow_queries` | Slow query execution profiles from `pg_stat_statements`. | `url` (string), `user` / `password` (string, optional), `limit` (integer, optional) |
 | `get_actuator_health` | Recursively parsed Spring Boot `/actuator/health` component status. | `url` (string) |
 | `get_actuator_metrics` | Batch or individual diagnostic metric values from `/actuator/metrics`. | `url` (string), `metrics` (string, optional) |
 | `get_actuator_startup` | Startup timeline and slowest beans from `/actuator/startup`. | `url` (string) |
+
+PostgreSQL tools resolve credentials from explicit `user` / `password` arguments first,
+then `PGUSER` / `PGPASSWORD`, then the legacy `PG_USER` / `PG_PASSWORD` aliases.
+An explicitly set empty credential is preserved. The required JDBC `url` determines
+the target database; if it omits the database path, `PGDATABASE` is used, falling back
+to `PG_DATABASE` only when the canonical variable is unset. With neither variable set,
+the URL is passed through unchanged.
 
 `list_spring_beans` sorts contexts by id and beans by name, then applies `offset` and
 `limit` across all contexts. Out-of-range values are clamped to the allowed range.

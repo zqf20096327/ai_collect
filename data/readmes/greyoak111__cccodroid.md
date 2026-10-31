@@ -128,7 +128,7 @@ Versions with a suffix (such as `v0.2.0-rc1`) are pre-releases. In-app updates o
 (measured on RedMagic: frozen about 90 s after leaving the foreground), stopping any running task. When cccodroid detects a freeze during a running task, Settings tells you exactly where to fix it.
 RedMagic / ZTE: App info → App battery usage → Battery optimization → **Background running: Allow**, **Auto-start: Allow**.
 
-**Offline install**: put `devkit-cc.codroid.tar.gz` in `/sdcard/cccodroid/`; the first launch uses it instead of downloading.
+**Offline install**: download `devkit-cc.codroid.tar.gz` to the phone first, then on first launch choose "Choose a local file…" and pick it. Nothing else is downloaded, and the file is checked against the published releases before installing.
 
 **Versions**: v0.3.0 was the first stable release. Each minor series runs 21 releases (0.3.0–0.3.20, now 0.4.x); every release installs over the old one and keeps your data and installed tools.
 
@@ -256,8 +256,9 @@ Layout:
 - **[wangxp12](https://github.com/wangxp12)**: feedback and bug reports in the community group throughout 0.3.x.
 - **[unoyg](https://github.com/unoyg)**: feedback and bug reports in the community group throughout 0.3.x.
 - **[fisHarly0](https://github.com/fisHarly0)**: suggestions for improvements in the community group during 0.3.x.
-- **[chenshi723](https://github.com/chenshi723)**: front-end suggestions in the community group during 0.4.x. The whole interface motion system in 0.4.11 started from their remark that the app's motion felt bare; they then pointed out the sidebar's leftover animation when closing, the new-chat greeting rendering twice, choppy streaming, the DeepSeek balance showing 0 and fonts not fully following the system — fixed across 0.4.11–0.4.12.
+- **[chenshi723](https://github.com/chenshi723)**: front-end suggestions in the community group during 0.4.x. The whole interface motion system in 0.4.11 started from their remark that the app's motion felt bare; they then pointed out the sidebar's leftover animation when closing, the new-chat greeting rendering twice, choppy streaming, the DeepSeek balance showing 0 and fonts not fully following the system — fixed across 0.4.11–0.4.12. The OpenAI bridge configuration panel and safe uninstall in 0.5.15 came from their PR ([#58](https://github.com/greyoak111/cccodroid/pull/58)).
 - **[leemwood](https://github.com/leemwood)**: pointed out in the community group that the web preview lacked element picking, which led to the DevTools and "pick an element for Claude" in 0.4.14.
+- **[hwsyyds666](https://github.com/hwsyyds666)**: device report for the OnePlus Ace 5 on ColorOS 16 ([#61](https://github.com/greyoak111/cccodroid/issues/61)).
 
 Reports, device testing and code review are contributions too, and they're recorded here.
 

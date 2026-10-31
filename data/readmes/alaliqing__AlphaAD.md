@@ -3,7 +3,7 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--30-blue)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--31-blue)
 ![Total Papers](https://img.shields.io/badge/Papers-1423-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
@@ -28,10 +28,10 @@ All 1423 papers remain in this README. For full-text search, filters, and sortin
 | Prediction & World Models | 108 | 2026-10-26 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 99 | 2026-10-28 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 58 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 53 | 2026-10-28 | [View papers](#category-mapping-localization) |
+| Mapping & Localization | 54 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 159 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
 | Safety, Security & Verification | 223 | 2026-10-29 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 160 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
+| Systems, Deployment & Connectivity | 159 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 29 | 2026-10-17 | [View papers](#category-human-factors-policy) |
 | Cross-cutting / Other | 312 | 2026-10-29 | [View papers](#category-cross-cutting-other) |
 
@@ -45,8 +45,8 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
@@ -138,7 +138,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32612"></a>
 
-### DriveOSS: Dataset and Benchmark for 3D Anomaly Segmentation and Open-set Semantic Segmentation in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### DriveOSS: Dataset and Benchmark for 3D Anomaly Segmentation and Open-set Semantic Segmentation in Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Zhiran Yan, Savankumar Bhanderi, Sourabh Lolge, Rui Song, Girdharbhai Paneliya, et al.<br>
 **Published:** 2026-10-23<br>
@@ -149,7 +149,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32230"></a>
 
-### Towards Effective and Transferable Physical Camouflage against Multi-View BEV-based 3D Perception in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Towards Effective and Transferable Physical Camouflage against Multi-View BEV-based 3D Perception in Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Linye Lyu, Jiawei Zhou, Daojing He, Yu Li<br>
 **Published:** 2026-10-23<br>
@@ -159,7 +159,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-32626"></a>
 
-### Privacy-Preserving Federated Loss Exploration for Vision-Based Perception under Non-IID Data ![New](https://img.shields.io/badge/New-red)
+### Privacy-Preserving Federated Loss Exploration for Vision-Based Perception under Non-IID Data ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Nergiz Yuca, Christian Internò, Nikolay Matyunin, Markus Olhofer, Barbara Hammer, et al.<br>
 **Published:** 2026-10-23<br>
@@ -465,7 +465,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-39841"></a>
 
-### DyRAD: Radar Novel View Synthesis for Dynamic Driving Scenes ![Recent](https://img.shields.io/badge/Recent-orange)
+### DyRAD: Radar Novel View Synthesis for Dynamic Driving Scenes ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Merav Keidar, Tomer Borreda, Rajalakshmi Nandakumar, Or Litany<br>
 **Published:** 2026-09-30<br>
@@ -1667,4 +1667,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### HilDA: Hierarchical Distillation with Diffusion for Advancing Self-Supervised LiDAR Pre-training
 
-**Authors:** Maciej Wozniak, Jesper Ericsson, Haripr
+**Authors:** Maciej Wozniak

@@ -270,8 +270,8 @@ The overlay is a window of marks over the game: where the people are, what the c
 | Aim point | A small diamond on the point the controller steers toward |
 | Blue square | The area the detector reads, drawn just outside it so the outline is never part of what the detector sees |
 | Red circle | How far steering reaches. It is dimmer while steering is off |
-| Touch area | The circle where the extra finger rests, so the player can keep a thumb away from it |
-| Line to the nearest target | A line from the crosshair to the target nearest it |
+| Touch area | The circle where the extra finger rests, so the player can keep a thumb and the game's buttons away from it: over the fire button, the finger fires |
+| Line to the nearest target | A line to the target nearest the crosshair, from the crosshair or from the middle of the top or bottom edge of the screen |
 | Target count | How many targets are in view |
 | Performance readout | Detections a second, the age of a result, and whether the CPU, the GPU or the colour finder produced it |
 
@@ -359,10 +359,14 @@ stateDiagram-v2
     Tentative --> [*]: one miss
     Tracked --> Coasting: missed
     Coasting --> Tracked: matched again
-    Coasting --> [*]: unseen for 350 ms
+    Coasting --> Lost: unseen for 350 ms
+    Lost --> Tracked: a confident box on its path within 1 s
+    Lost --> [*]: after 1 s
 ```
 
 A tentative target is drawn and aimed at only if the detector is at least 90% sure of it, so a box reported for a single frame is never shown. A missed target is held at full strength for 120 ms and then fades. Both times stretch when results come slower than about 30 a second, so on a slow phone a target is not dropped between two results.
+
+Targets go behind cover and come out again. A target missed in a frame or two keeps its pace, in the box drawn and in the aim; only past the hold time does its predicted speed fade, since it has probably stopped or gone behind something. When it is seen again, its speed is taken from how far it went while unseen, with the camera's turn taken out, so a runner that comes out from behind a wall is followed at its pace at once. A target forgotten after 350 ms is kept in mind for a second: a box of 50% or more on its path, anywhere from where it was last seen to where its speed would have taken it and within one box height of that line, is the same target, drawn at once under its old identity. In the simulated game, a runner at 300 px/s hidden for 0.3 s out of every 1.2 s had its head under the crosshair 70% of the time instead of 54% at 60 detections a second and 60% instead of 37% at 30, and the aim was back on its head 0.28 s after it came out instead of 0.41 s at 60 a second. Hidden for 0.6 s out of every 1.6 s, the aim lost it after 15% of the returns instead of 60% at 15 detections a second. A runner that stops behind the cover costs a little more than before: the aim is back on it 0.21 s after it shows instead of 0.11 s at 60 a second (`sh app/src/test/native/bench/run.sh cover`).
 
 </details>
 

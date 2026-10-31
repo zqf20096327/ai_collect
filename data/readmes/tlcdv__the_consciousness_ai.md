@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
 [![Version](https://img.shields.io/badge/Version-v1.6.0-blue)]()
 [![Python](https://img.shields.io/badge/Python-3.8%20%7C%203.12-blue)](docs/decisions/2026_10_13_python_environment.md)
-[![Tests](https://img.shields.io/badge/Tests-2105%20passing-brightgreen)]()
+[![Tests](https://img.shields.io/badge/Tests-2138%20passing-brightgreen)]()
 
 [![Project Website](https://img.shields.io/badge/Project-Website-181717?logo=googlechrome&logoColor=white)](https://theconsciousness.ai/)
 [![Architecture](https://img.shields.io/badge/Architecture-Technical-0052CC?logo=read-the-docs&logoColor=white)](https://theconsciousness.ai/architecture/)
@@ -162,35 +162,37 @@ pip install -r requirements.txt
 
 ### 2. Running Training
 
+Every run that changes weights must declare the existence drive with `--existence-drive off` or `--existence-drive on`. A run without this flag stops with an error ([ethics framework](docs/ethics_framework.md), rule E1). The commands below use `off`, so no noxious channel reaches the agent. Commands from before 2026-09-15 need `on` to repeat the same run. The DQN baseline has no such drive and needs no flag.
+
 ```bash
 # Run the Dark Room training loop (default: 20 episodes, 200 steps each)
-python -m scripts.training.train_rlhf
+python -m scripts.training.train_rlhf --existence-drive off
 
 # With custom parameters
-python -m scripts.training.train_rlhf --episodes 50 --max-steps 300 --lr 1e-3
+python -m scripts.training.train_rlhf --existence-drive off --episodes 50 --max-steps 300 --lr 1e-3
 
 # Long runs: sample pyphi every 5th step to stay under the ~91k-call segfault threshold
-python -m scripts.training.train_rlhf --episodes 200 --max-steps 200 \
+python -m scripts.training.train_rlhf --existence-drive off --episodes 200 --max-steps 200 \
   --ablate-gate-diversity --phi-sample-every 5
 
 # DMTS environment (consciousness-demanding)
-python -m scripts.training.train_rlhf --env dmts --episodes 500 --max-steps 500
+python -m scripts.training.train_rlhf --existence-drive off --env dmts --episodes 500 --max-steps 500
 
 # Wisconsin Card Sort (meta-cognition test)
-python -m scripts.training.train_rlhf --env wcst --episodes 200 --max-steps 300
+python -m scripts.training.train_rlhf --existence-drive off --env wcst --episodes 200 --max-steps 300
 
 # Navigation environment (multi-room exploration)
-python -m scripts.training.train_rlhf --env navigation --episodes 100
+python -m scripts.training.train_rlhf --existence-drive off --env navigation --episodes 100
 
 # DQN baseline for comparison
 python -m scripts.training.train_baseline_dqn --env dark_room --episodes 100
 python -m scripts.training.train_baseline_dqn --env dmts --episodes 500
 
 # With cochlear auditory pipeline enabled
-python -m scripts.training.train_rlhf --env dark_room --enable-audio --episodes 100
+python -m scripts.training.train_rlhf --existence-drive off --env dark_room --enable-audio --episodes 100
 
 # With visual rendering
-python -m scripts.training.train_rlhf --render
+python -m scripts.training.train_rlhf --existence-drive off --render
 ```
 
 This runs the full cognitive loop: retinotopic encoding with the convolutional stack (DINOv2 is off by default) -> cochlear auditory encoding (optional, via `--enable-audio`) -> trimodal tectum fusion -> RSSM surprise bidding -> GNW competition with oscillatory binding (AKOrN by default, or KomplexNet via `--binding-mechanism komplex`) -> reentrant convergence -> basal ganglia action selection -> reflex emotion (Stage 1 of the two-stage appraisal) -> PAD reward shaping. No large model weights are required.
@@ -203,7 +205,7 @@ Stage 2 of the emotion appraisal does not run. `map_state` needs a goal vector a
 pytest tests/ -v
 ```
 
-2105 tests pass on Python 3.12.10 (2100 on Python 3.8.3), covering oscillatory binding, capsule routing, reentrant processing, inverse effectiveness fusion, topographic loss, affective modulation, ethics compliance, effective information, causal emergence (CE 2.0 SVD heuristic), perturbational complexity (PCI), phase coupling measures, near-threshold stimulus rendering, IIT Phi with causal gate states, Brian2 biological validation, the experimental substrate package (p-bit emulation against exact Boltzmann statistics, free energy relaxation against closed-form posteriors, rate, latency and phase spike coding, a stand-in driver, NIR export of spiking layers, an optional THRML sampler checked against exact statistics, and an import guard that keeps it out of production), cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect extraction), environment audio synthesis, DMTS/WCST consciousness demanding environments, DQN baseline, memory consolidation, semantic pathway, the RSSM reconstruction and value-equivalent world-model objectives, and full pipeline integration.
+2138 tests pass on Python 3.12.10 (2133 on Python 3.8.3), covering oscillatory binding, capsule routing, reentrant processing, inverse effectiveness fusion, topographic loss, affective modulation, ethics compliance, effective information, causal emergence (CE 2.0 SVD heuristic), perturbational complexity (PCI), phase coupling measures, near-threshold stimulus rendering, IIT Phi with causal gate states, Brian2 biological validation, the experimental substrate package (p-bit emulation against exact Boltzmann statistics, free energy relaxation against closed-form posteriors, rate, latency and phase spike coding, a stand-in driver, NIR export of spiking layers, an optional THRML sampler checked against exact statistics, and an import guard that keeps it out of production), cochlear auditory pipeline (gammatone, hair cell, tonotopic, spatial, affect extraction), environment audio synthesis, DMTS/WCST consciousness demanding environments, DQN baseline, memory consolidation, semantic pathway, the RSSM reconstruction and value-equivalent world-model objectives, and full pipeline integration.
 
 ### 4. AKOrN Binding Demo
 
@@ -249,7 +251,7 @@ the_consciousness_ai/
 │   ├── analysis/           # Analysis and comparison scripts
 │   └── demos/              # AKOrN binding visualization
 ├── configs/                # YAML and Python configuration files
-├── tests/                  # 2105 passing tests
+├── tests/                  # 2138 passing tests
 ├── unity_scripts/          # C# scripts for Unity ML-Agents integration
 ├── docs/                   # Research docs, theory review, architecture deep dives
 └── requirements.txt

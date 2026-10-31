@@ -611,6 +611,8 @@ grpcurl -plaintext -H "authorization: Bearer $ADMIN_KEY" \
 
 - `allowed_mcp`: the MCP servers and tools a key with the `mcp` scope may use; see
   [MCP gateway](#mcp-gateway).
+- `data_classification`: `restricted` keeps every call of the key on self-hosted nodes; see
+  [Restricted data](#restricted-data).
 - `allowed_models`: the models the key may call; empty allows any. A chain keeps only the models
   both the key's and its team's lists allow; an override outside them, or a chain with none left,
   is `PERMISSION_DENIED` (the message names `key` or `team`).
@@ -696,6 +698,8 @@ Capabilities a model may declare:
 | `batch` | Can serve asynchronous batch text generation requests (`SubmitBatch`). |
 | `google_search` | Can serve requests with `enable_google_search`. |
 | `no_thinking` | The model reasons by default and bills the reasoning as output (DeepSeek V4, Gemma 4 on Ollama). The proxy turns it off: `thinking: {"type": "disabled"}` for DeepSeek, `reasoning_effort: "none"` for Ollama, and for `local` models when the serving node runs Ollama (other engines get no switch). OpenAI-compatible vendors only. |
+| `no_sampling` | The model's API rejects sampling fields Keystone would otherwise send it (see [Sampling](#sampling)): it gets none of `temperature`, `top_p`, `stop` and `seed`, and responses report them as ignored. |
+| `sampling` | The model takes its vendor's sampling fields although its id says otherwise (see [Sampling](#sampling)): an Azure deployment name, a Claude alias, a reasoning model run without reasoning. |
 | `prompt_cache` | Anthropic only: puts `cache_control` breakpoints after the tools, the system prompt and, in a multi-turn conversation, the latest turn, so repeated prefixes are read at 0.1x input. A new prefix is written at 1.25x, so set it on models whose instructions or conversations repeat. |
 | `vision` | Can process image parts in multimodal messages (`ImagePart`). |
 | `audio_input` | Can process audio parts in multimodal messages (`AudioPart`). |
@@ -795,6 +799,8 @@ grpcurl -plaintext -H "authorization: Bearer $ADMIN_KEY" -d '{"name":"search-ser
   with `RESOURCE_EXHAUSTED throttled:spend_team_monthly`. It is set only through
   `CreateTeam`/`UpdateTeam` (`0` lifts it); `SetSpendLimit` refuses `subject_type: "team"`.
   `GetTeamSpend` reads the enforced counter, which runs only while a budget is set.
+- `data_classification: restricted` keeps every call of the team's keys on self-hosted nodes; see
+  [Restricted data](#restricted-data).
 - Rules can match `org_id` and `team_id`. The proxy sets them from the key; callers cannot.
 - Deleting a team or organization detaches revoked keys and is `FAILED_PRECONDITION` while
   active keys remain: revoke or move them first.
@@ -1122,23 +1128,54 @@ make proto-ts  # TypeScript stubs in gen/ts/
 | `tools`, `tool_choice` | Function/tool declarations with JSON Schema parameters. `tool_choice` specifies auto, required, none, or a specific named function. In non-streaming calls, arguments of `strict` tools are checked against their parameters, since not every vendor enforces strict; a call outside them is retried once and then falls back. Streamed tool calls reach the caller as they arrive and are not checked. |
 | `messages` | Chat history. Supports `MESSAGE_ROLE_USER`, `MESSAGE_ROLE_ASSISTANT`, and `MESSAGE_ROLE_TOOL` (with `tool_call_id`). User messages support multimodal `parts` (`ContentPart`: `text`, `image`, `audio`, `document`). Assistant messages can carry `tool_calls`. |
 | `max_output_tokens` | Ceiling, `0` = none. Output tokens are the expensive ones; set it. |
+| `temperature`, `top_p`, `stop`, `seed` | Sampling, passed to the model that serves the call; unset leaves its default. `temperature` 0..2, `top_p` 0..1, up to 16 non-empty `stop` sequences; other values get `INVALID_ARGUMENT`. See [Sampling](#sampling). |
 | `enable_google_search` | Only Google models declaring `google_search` can serve it. |
 | `action_id` | Free-form label for usage attribution. |
 | `model_override` | Exact model id; bypasses rules but **not** throttles. |
 | `placement` | Compute locality preference: `nodes_first`, `nodes_only`, `cloud_first`, `cloud_only`. |
+| `data_classification` | `restricted` keeps the call and the judge calls it makes on self-hosted nodes, with no cloud fallback; see [Restricted data](#restricted-data). |
 | `auto_route` | Enables smart model auto-selection; when effort is unpinned, evaluates task complexity via Judge. |
 | `effort_specified` | Signals caller explicitly pinned effort (skips dynamic Judge evaluation). |
 
 The response carries `choices`, token `usage`, `resolved_model`, `resolved_vendor`,
 `matched_rule` (empty on override), structured `details` (`Choice` objects with text, tool calls, and finish reasons),
-`cached` status, and routing metadata: `route_mode`, `placement`, `judge_score`, and `judge_model`.
+`cached` status, routing metadata: `route_mode`, `placement`, `judge_score`, and `judge_model`, and
+`ignored_parameters`: the sampling fields the resolved model did not get.
+
+### Sampling
+
+`temperature`, `top_p`, `stop` and `seed` reach the model that serves the call, as far as its API
+takes them. A field the model does not take is left out of its request rather than failing the call,
+and the response names it, as it names a value the model got changed: `ignored_parameters` in gRPC (on the first chunk of a stream), the
+`X-KTMS-Ignored-Params` header over HTTP. Fallback models are judged one by one, so the list
+describes the model that answered.
+
+| Vendor | Takes |
+| --- | --- |
+| `openai`, `azure` | All four, up to 4 `stop` sequences. Reasoning models (an id starting with `o<digit>`, `gpt-5`, `codex-mini` or `computer-use`, as a whole or after a `/`, `-` or `_`, except `gpt-5-chat`) take none: they reject `temperature`, `top_p` and `stop`, and `seed` is not confirmed for them. |
+| `groq` | All four, up to 4 `stop` sequences. |
+| `google` | All four, up to 5 `stop` sequences. |
+| `ollama`, `local` | All four. |
+| `deepseek` | `temperature`, `top_p`, `stop` (up to 16). |
+| `mistral` | `temperature` (capped at 1.5), `top_p`, `stop`. |
+| `anthropic`, Claude on `bedrock` | `stop`, without sequences of whitespace alone. Claude 4.6 and earlier also take `temperature` (capped at 1) and `top_p`; from Claude 4 on, not both: with both set, only `temperature`. Claude 4.7 and later accept only the default sampling, so they get neither. |
+| Other `bedrock` models | `temperature` (capped at 1), `top_p`, up to 4 `stop` sequences. |
+| `bedrock` application inference profiles (ARNs) | Up to 4 `stop` sequences: the ARN does not say which model is behind it. With `sampling` declared, also `temperature` (capped at 1) or `top_p`, not both, which every family takes. |
+
+A temperature above a vendor's cap is lowered to it and reported as `temperature`. When a vendor
+takes fewer stop sequences than the call has, it gets the first ones and `stop` is reported. The model is told apart
+by its id. When the id misleads, declare a capability: `no_sampling` for a model whose API rejects a
+field this table sends, `sampling` for one that takes what its vendor's table row allows, such as
+an Azure deployment of a chat model named like a reasoning one. Sampling is part of the response
+cache key. Batch results do not carry `ignored_parameters`. Over HTTP, empty stop sequences are
+dropped before the call.
 
 ### GenerateTextStream
 
 Server-streaming RPC `rpc GenerateTextStream(GenerateTextStreamRequest) returns (stream GenerateTextChunk)`.
 
 - Takes a `GenerateTextStreamRequest` containing the standard `GenerateTextRequest`.
-- Streams incremental `GenerateTextChunk` items containing `delta` (token text), `tool_call_chunks`, `resolved_model`, `resolved_vendor`, `matched_rule`, `cached`, `route_mode`, `placement`, `judge_score`, `judge_model`, and final `finish_reason` with token `usage`.
+- Streams incremental `GenerateTextChunk` items containing `delta` (token text), `tool_call_chunks`, `resolved_model`, `resolved_vendor`, `matched_rule`, `cached`, `route_mode`, `placement`, `judge_score`, `judge_model`, `ignored_parameters`, and final `finish_reason` with token `usage`.
 - **Fallback guarantee:** If upstream models fail before the first chunk is sent, the router falls back to the next model in the rule's chain. Once the first chunk is transmitted to the caller, the stream is locked to that model to guarantee integrity.
 - Usage events and daily token budgets are settled on stream completion.
 
@@ -1308,6 +1345,7 @@ Authentication is `Authorization: Bearer ktms_…` (legacy `llm_…` keys are al
 - `X-KTMS-Placement`: infrastructure placement (`nodes_first`, `nodes_only`, `cloud_first`, `cloud_only`).
 - `X-KTMS-Route-Mode`: routing mechanism (`direct`, `override`, `auto-judge`, `auto-default`, `auto-effort`).
 - `X-KTMS-Judge-Score` and `X-KTMS-Judge-Model`: evaluation confidence and judge model ID when judge evaluates task complexity.
+- `X-KTMS-Ignored-Params`: the sampling fields the serving model did not get, comma-separated (see [Sampling](#sampling)). It has no `X-LLM-Proxy-*` twin.
 
 > [!NOTE]
 > **Backwards Compatibility**: All legacy `X-LLM-Proxy-*` response headers are dual-emitted alongside `X-KTMS-*` with standard RFC 8594 `Deprecation: true`, `Sunset`, and `Warning` headers to provide seamless zero-downtime migration for existing clients.
@@ -1326,7 +1364,7 @@ The `model` parameter supports smart auto-routing and infrastructure placement:
 
 #### Infrastructure Placement Policies
 - `nodes_first` (default): Prefers registered self-hosted compute nodes (`VendorLocal`, `VendorOllama`), falling back to cloud providers if unavailable or busy.
-- `nodes_only` (aliases: `nodes`, `private`, `self_hosted`): Restricts routing strictly to self-hosted nodes. Fails if no capable node is available.
+- `nodes_only` (aliases: `nodes`, `private`, `self_hosted`): Restricts routing strictly to self-hosted nodes. Fails if no capable node is available. A preference of the request; for a guarantee that also covers the judge and holds per key or team, see [Restricted data](#restricted-data).
 - `cloud_first`: Prefers managed cloud providers, falling back to registered nodes.
 - `cloud_only`: Excludes self-hosted nodes completely.
 
@@ -1367,7 +1405,8 @@ fields: `metadata` is passed through as attributes, `user` becomes `attributes["
 | `tools`, `tool_choice` | Supported. Function declarations with JSON Schema parameters. `tool_choice` supports `"auto"`, `"none"`, `"required"`, or specific function names. |
 | `role: "tool"` | Supported. Tool responses with `tool_call_id`. |
 | Image/audio content parts | Rejected with `400`. |
-| `temperature`, `top_p`, `stop`, `seed`, `logprobs`, penalties… | Accepted and ignored. |
+| `temperature`, `top_p`, `stop`, `seed` | Passed to the model as far as it takes them; the rest is named in `X-KTMS-Ignored-Params` (see [Sampling](#sampling)). `stop` is a string or an array. |
+| `logprobs`, penalties… | Accepted and ignored. |
 
 The response is a standard `chat.completion` with `finish_reason` (`"stop"`, `"tool_calls"`, `"length"`, or `"content_filter"`) and token `usage`.
 
@@ -1443,7 +1482,9 @@ print(reply.content[0].text, reply.model)   # `model` is the one that answered
 | `stream` | SSE events `message_start`, `ping`, `content_block_start`, `content_block_delta` (`text_delta`, `input_json_delta`), `content_block_stop`, `message_delta` and `message_stop`. `message_start` carries an input token estimate; `message_delta` carries the vendor's counts. |
 | `metadata.user_id` | `attributes["user_id"]`, as `user` on chat completions; other `metadata` keys are attributes, and `action_id` is the usage action label. Claude Code's `user_id` names a session: Keystone keeps its account (or, without one, its device) as the user and puts the session in `attributes["session_id"]`, so per-user limits and reports span sessions. |
 | `enable_cache`, `placement` | Extensions, as on chat completions; so are the `X-KTMS-Cache` and `X-KTMS-Placement` request headers (set them in Claude Code with `ANTHROPIC_CUSTOM_HEADERS`). |
-| `temperature`, `top_p`, `top_k`, `stop_sequences`, `thinking`, `service_tier` | Accepted and ignored. |
+| `temperature`, `top_p`, `stop_sequences` | Passed to the model as on chat completions (see [Sampling](#sampling)). A stop sequence ends the answer with `stop_reason` `end_turn`. |
+| `top_k` | Accepted, sent to no model, and named in `X-KTMS-Ignored-Params`. |
+| `thinking`, `service_tier` | Accepted and ignored. |
 
 The key goes in `x-api-key` or `Authorization: Bearer`. The response's `stop_reason` is `end_turn`,
 `tool_use`, `max_tokens` or `refusal`, and `usage` splits `cache_read_input_tokens` and
@@ -1528,36 +1569,4 @@ purpose travels in free-form attributes, so the proxy knows nothing about your p
 - **User & Model Overrides:** Configure fine-grained limits per user and model with `SetUserRateLimit` (supports `*` wildcards for user-wide or model-wide defaults).
 - **Spend Limits:** Hard USD caps per API key and per end user (UTC day or month), reserved atomically before each call and settled to the actual cost; see [Spend limits](#5-spend-limits-optional).
 - **Daily Token Budgets:** Limits tokens per API key (`daily_tokens_per_key`) and per end-user (`daily_tokens_per_user`, UTC day). A configurable grace margin (`budget_grace_margin`, default 5%, `< 0` to strictly disable) absorbs requests that exceed the budget on their last call without refusing them mid-stream.
-- **Inference Pool Wait Buffer:** For local node pools, requests waiting for free slots use jittered backoff polling up to `queue_timeout_ms`. Interactive requests (non-service callers) are automatically capped to 250ms to safeguard Time-To-First-Token (TTFT). Little's Law predictive admission evaluates the queue depth (KTMS's own leases plus other clients' requests waiting in the engine: what the heartbeat saw waiting beyond KTMS's leases on that node; node selection weighs the same load) and estimated duration, immediately falling back to the next model in the chain if expected wait time exceeds the timeout. A slot lease is renewed for as long as its call runs, unary or streaming, so a long generation never frees a slot the node is still using.
-- A throttled model is skipped in the fallback chain; if none of the chain is available the caller gets `RESOURCE_EXHAUSTED`.
-
-**Upstream Circuit Breaker:**
-- Monitors consecutive upstream failures (5xx server errors, network connection drops, connect/TLS handshake timeouts, and upstream timeouts via `UPSTREAM_REQUEST_TIMEOUT`) per `(vendor, model)`. Caller client aborts and overall client deadline cancellations do not trip the circuit breaker, but vendor stalls beyond `UPSTREAM_REQUEST_TIMEOUT` (total duration for unary/media, per-chunk idle watchdog for streaming) reliably trip it and trigger immediate fallback to the next candidate model.
-- When consecutive failures reach `CIRCUIT_BREAKER_FAIL_THRESHOLD` (default 5), the circuit trips to `OPEN`.
-- Requests skip degraded upstream models immediately, without a network round trip.
-- After `CIRCUIT_BREAKER_COOLDOWN` (default 30s), transitions to `HALF_OPEN` and admits a single probe request. Success restores `CLOSED`; failure re-opens the circuit.
-- If all models in the chain have open circuits, the caller receives `UNAVAILABLE vendors_unavailable`.
-
-**Vendor back-off (`Retry-After`):**
-- Vendor SDKs run with their built-in retries off, so one router attempt is exactly one vendor call. The router retries a `429`, `5xx` or transport failure (connection reset, EOF on a reused connection) once on the same model before falling back, for text, media and streaming calls (a stream only until its first chunk).
-- The vendor's wait is read from `Retry-After` or `retry-after-ms` (OpenAI-compatible APIs, Azure, Anthropic) and from `google.rpc.RetryInfo` (Gemini). Bedrock throttling carries no wait, so it is retried and falls back as before.
-- A wait of up to 1s is honoured in place before the same-model retry. A longer one on a `429` or `503` pauses the model for that client's vendor credential, up to `VENDOR_COOLDOWN_MAX`, and the chain moves on. Clients sharing one vendor key share the pause; other credentials are unaffected. With pauses off, the ordinary same-model retry applies. Shadow traffic respects pauses but never starts one.
-- Paused models are skipped without a network round trip (`ktms_fallbacks_total{reason="cooldown"}`; pauses started are counted in `ktms_vendor_cooldowns_total`). Pauses live in each replica's memory, like circuit breakers, so each replica learns of a pause from its own first rejected call.
-- If every model in the chain is paused, the caller receives `UNAVAILABLE vendors_unavailable` with a gRPC `RetryInfo` for the soonest pause to end; the OpenAI-compatible HTTP API returns it as a `Retry-After` header. When any model failed for another reason, no wait is promised: it may serve the next request.
-- Local node models are never paused: the node pool has its own admission control.
-
-**Usage reporting.** When `USAGE_COLLECTOR_HOST` is set, every call emits an event (vendor,
-model, tokens, duration, status, `action_id`, rule name and your attributes as metadata) to a
-gRPC service implementing [`usage-proto/usage/v1/usage.proto`](usage-proto/usage/v1/usage.proto).
-Events are attributed to the project named by the `usage_project` attribute, falling back to the
-API key's name. Any service implementing `RecordUsageEvent(s)` works as a sink. When
-light-tokenmeter has authentication on, give KTMS a token with the `write` scope in
-`USAGE_COLLECTOR_TOKEN`; a refused token is logged as an error and events are held and retried.
-
-### Semantic cache and latent guardrails
-
-Both project text into a representation space with the encoder at `LATENT_ENCODER_URL` (a JEPA
-or any embedding model behind an OpenAI-compatible `/v1/embeddings`), falling back to a local,
-lexical hash encoder that folds case, homoglyphs, zero-width and spaced-out letters.
-
-- **Semantic cache.** After an exact-cache miss, a request with 
+- **Inference Pool Wait Buffer:** For local node pools, requests waiting for free slots use jittered backoff polling up to `queue_timeout_ms`. Interactive requests (non-service callers) are automatically capped to 250ms to safeguard Time-To-First-Token (TTFT). Little's Law predictive admission evaluates the queue depth (KTMS's own leases plus other clients' request

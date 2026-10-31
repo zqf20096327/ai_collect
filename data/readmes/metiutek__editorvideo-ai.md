@@ -262,6 +262,11 @@ Formats: any aspect ratio — `16:9`, `9:16` (reels, shorts, TikTok), `1:1`, `4:
 from the format button in the top bar, or with `project_settings(format=...)` over MCP:
 the timeline stays, the frame changes, and `--fill` crops the clips instead of leaving bars.
 
+**Cover.** The thumbnail you make elsewhere (an image editor, an image generator, the
+assistant) goes in the *cover* tab: full size in the video's format and small next to the
+title, as it looks in a feed, with a warning when its ratio differs from the video's or it is
+too small or too heavy for YouTube. Over MCP: `set_cover(path)`. The render does not use it.
+
 ---
 
 ## Driving it from an agent (MCP)
@@ -641,6 +646,34 @@ MCP servers configured in Claude Code, Claude Desktop or `~/.vedit/mcp.json` and
 model your skills); or **full access** (Claude Code with no permission prompts: commands,
 files, computer and browser control). Each MCP server can be switched off on its own.
 
+**Learn a style from a video** — show it an edited video you like and vedit learns how it is
+cut. In the style menu, *learn a style from a video*: paste a link (YouTube, TikTok,
+Instagram, Vimeo — through yt-dlp, the `web` extra — or a direct `.mp4`), a file path, or
+upload the video. vedit measures the pace (cuts per minute, shot lengths, how they vary and
+whether the edit speeds up), cuts on the beat against the music's BPM, dissolves and dips to
+black, white flashes, slow zooms and punch-ins, shake on the cuts, colour and the closest
+look, format and letterbox bars, title cards on black, fade in and out. It turns them into a
+personal style: a guide with the real numbers plus a recipe that `apply_style` applies —
+including the reference's actual colour, carried onto every shot with `colormatch` — then
+opens it so you can read and adjust it. Text, graphics and subtitles aren't measured: the
+assistant (chat or MCP) gets a contact sheet with one frame per shot and adds them to the
+guide. Also from the chat ("edit it like this video"), MCP (`learn_style`) and the terminal
+(`vedit style learn <link|file> --name … --max-seconds 600`). The first ten minutes are
+analysed by default, and from a video page only that stretch is downloaded; downloads go to
+`~/.vedit/riferimenti`. YouTube needs a recent yt-dlp with its JavaScript solver: the `web`
+extra installs `yt-dlp[default]`, and Node.js is used when there is no Deno.
+
+**Editing skills** — your own ways of editing (a podcast format, your travel reels, a channel's
+look) saved as skills: a folder with a `SKILL.md`, the same format as Claude Code skills. Add
+them in the model settings under *editing skills*: paste a GitHub link (repo, folder or
+`SKILL.md`), a `.zip`, `.md` or folder path, upload a file, or *write one* there. From the
+terminal: `vedit skill add <link|path>`, `vedit skill new <name> -d "when to use it" -f
+steps.md`, `vedit skill list`, `vedit skill rm <name>`. They live in `~/.vedit/skills` (and
+`.claude/skills` next to the project) and work everywhere: the in-app assistant at every
+access level (typing `/name` invokes one), Claude Code inside the editor, and any MCP agent
+(`list_skills`, `use_skill`, `create_skill`; `install_skill` asks you first). Ask the
+assistant to *save this as a skill* and it writes one for you.
+
 **Memory across projects** — `~/.vedit/MEMORIA.md`: the assistant and the MCP agent note your
 lasting preferences there (usual format, style, voice, channel, things you don't want) with
 `remember` / `forget`, and read them back at every project. Edit it by hand, or from the
@@ -684,6 +717,7 @@ backend/vedit/
   conversazioni.py  the chat of each project, saved next to it
   web.py         web search, page reading, media download from any site
   estensioni.py  the user's skills and MCP servers for the in-app assistant
+  apprendi.py    learn an editing style from an edited video
   mcp_server.py  MCP tools
   api.py         REST/WebSocket API for the UI
   cli.py         command line

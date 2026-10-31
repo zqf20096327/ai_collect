@@ -6,11 +6,13 @@
 [![landmine-bench](https://img.shields.io/badge/landmine--bench-86%25%E2%86%9299%25-3987e5)](docs/BENCHMARK.md)
 [![website](https://img.shields.io/badge/web-landmine.tech-111110)](https://landmine.tech)
 
+<a href="https://www.producthunt.com/products/landmine?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-landmine" target="_blank" rel="noopener noreferrer"><img alt="landmine - Lockfile in. Known bugs out. Before your agent edits. | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1299173&theme=light&t=1793422734508"></a>
+
 Website and docs: [landmine.tech](https://landmine.tech) · For AI agents: [llms.txt](https://landmine.tech/llms.txt) · Cite: [`CITATION.cff`](CITATION.cff)
 
 [![A real Claude Code session: landmine pauses an edit that uses drizzle-orm's $client.end(), cites issue #3402 and the workaround from the thread, and the agent switches to its own pg.Pool](docs/media/landmine-hook.gif)](https://landmine.tech/media/landmine-demo.mp4)
 
-<sub>A real Claude Code session, replayed from its transcript (`docs/e2e`). Full 50-second video: [landmine.tech/media/landmine-demo.mp4](https://landmine.tech/media/landmine-demo.mp4).</sub>
+<sub>A real Claude Code session, replayed from its transcript (`docs/e2e`). Full 50-second video: [landmine.tech/media/landmine-demo.mp4](https://landmine.tech/media/landmine-demo.mp4) · 68-second launch video: [YouTube](https://youtu.be/CncibEdYCDc).</sub>
 
 Your coding agent is about to write `await db.$client.end()`. Your lockfile pins
 drizzle-orm **0.36.0**, an open GitHub issue filed against exactly that version

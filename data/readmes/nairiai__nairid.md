@@ -94,6 +94,8 @@ You can generate an API key from the Nairi dashboard.
 |---|---|---|
 | `NAIRI_MAX_SESSION_MS` | `3600000` (1 hour) | Maximum duration (in milliseconds) of a single agent CLI invocation before nairid kills the process. Bump this when running long single-turn tasks; the underlying CLI keeps streaming output across the whole window. `EKSEC_MAX_SESSION_MS` is accepted as a legacy fallback. Invalid or non-positive values are ignored and the default is used. |
 
+An agent's own **Session timeout** (Advanced settings in the Nairi dashboard) overrides `NAIRI_MAX_SESSION_MS` for that agent's jobs. nairid applies it per turn, clamped to 10 minutes - 24 hours, and a new value takes effect from the next message in a thread. Agents left on the default, and backends that don't send the setting, use `NAIRI_MAX_SESSION_MS` or 1 hour. When a run hits the timeout, nairid posts "nairid stopped this run after it hit the <timeout> session timeout" to the thread. It commits the run's unfinished work to the job's branch as `WIP: turn stopped`, so a reply after raising the timeout resumes the same session.
+
 #### Running nairid
 
 Once setup is complete, run nairid in your repository directory.
@@ -141,13 +143,13 @@ nairid --agent codex
 # Bypass permissions (Recommended in a secure sandbox environment only)
 nairid --agent codex --claude-bypass-permissions
 
-# Use specific model (default: gpt-5.5, accepts any model string)
-nairid --agent codex --model gpt-5.5
+# Use specific model (default: gpt-6.1-sol, accepts any model string)
+nairid --agent codex --model gpt-6.1-sol
 ```
 
 #### OpenCode Agent
 ```bash
-# OpenCode requires bypass permissions mode (default model: opencode/claude-sonnet-4-6)
+# OpenCode requires bypass permissions mode (default model: opencode/claude-sonnet-5-5)
 nairid --agent opencode --claude-bypass-permissions
 
 # Use specific provider/model (format: provider/model)

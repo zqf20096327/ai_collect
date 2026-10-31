@@ -153,18 +153,16 @@ The plugin provides 8 powerful tools that give AI comprehensive vault access —
 | **💡 workflow** | Contextual hints | suggest next actions based on state |
 | **📊 dataview** | Query notes | Execute DQL queries (if installed) |
 | **🗃️ bases** | Database views | Query and export Bases (if available) |
-| **ℹ️ system** | Vault info | Server status, commands, web fetch |
+| **ℹ️ system** | Vault info | Server status, commands, web fetch (off by default), running allowlisted commands (off by default) |
 
 ## Documentation
 
 Detailed documentation for each tool and feature:
 
 - [📁 Vault Operations](docs/tools/vault.md) - File management and search
-- [✏️ Edit Operations](docs/tools/edit.md) - Content modification strategies  
 - [🕸️ Graph Navigation](docs/tools/graph.md) - Link traversal and analysis
-- [📊 Dataview Integration](docs/tools/dataview.md) - Query language support
-- [🔐 Security & Authentication](docs/security.md) - API keys and permissions
-- [🔧 Configuration](docs/configuration.md) - Server settings and options
+- [ℹ️ System Operations](docs/tools/system.md) - Server info, web fetch, and gated command execution
+- [🔧 Configuration](#plugin-settings) - Server settings and options
 - [❓ Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
 
 ## In Practice

@@ -19,7 +19,7 @@
 
 <p align="center"><sub>Free and open source, built by <a href="https://addsum.top/"><strong>Addsum</strong></a></sub></p>
 
-slide-maker is an open-source skill for Codex and Claude Code. Give it a paper, repository, document or topic. It plans the content, designs the slides and generates a `.pptx` you can edit in PowerPoint, along with the build script.
+slide-maker is an open-source AI skill for creating editable presentations. It runs in AI assistants that support skills. Give it a paper, repository, document or topic. It plans the content, designs the slides and generates a `.pptx` you can edit in PowerPoint, along with the script used to generate and revise it.
 
 Choose a built-in template or bring a reference deck. Confirm the outline and design before the build, then view the rendered slides and choose the level of independent review.
 
@@ -32,80 +32,98 @@ Choose a built-in template or bring a reference deck. Confirm the outline and de
   <a href="#troubleshooting"><strong>Troubleshooting</strong></a>
 </p>
 
+## Quick start
+
+Install slide-maker in your AI assistant. Open a terminal, run this command, then choose your assistant and installation scope:
+
+```bash
+npx skills add addsumtech/slides_maker
+```
+
+After installation, ask your AI assistant to create a presentation. The first run checks the environment and guides you through any missing dependencies. Replace `paper.pdf` in this example with your own filename:
+
+```text
+Use slide-maker to turn paper.pdf into an English lab-meeting presentation.
+Audience: my advisor and labmates. A 12-minute live talk, about 15 slides.
+Keep it visual and concise. Show me the outline and design directions first.
+```
+
+To choose a style, browse the templates below and copy its prompt.
+
 ## Template library
 
 The skill includes <!-- vl:count-all -->thirty<!-- /vl --> templates. Each has two palettes and seven page types: cover, section, image with text, points, quote, data and closing. Typography, charts and layouts share the same design, with pages adapted to your content.
 
 <!-- vl:count-image-cap -->Four<!-- /vl --> templates use images: **Editorial magazine (editorial), Soft organic (soft) and Collage scrapbook (collage)** arrange your photos; **Watercolour storybook (storybook)** works with a series of illustrations. The other <!-- vl:count-drawn -->twenty-six<!-- /vl --> templates use editable native shapes and need no pictures.
 
-Twelve selected styles are shown below. Click a sample to preview all page types and both palettes.
+Twelve selected styles are shown below. Select “Preview all pages” beneath a sample to see every page type and both palettes.
 
 <!-- vl:vl-gallery -->
 <table>
   <tr>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-editorial"><img src="skills/slide-maker/assets/vl/samples/editorial.jpg" alt="editorial template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/editorial.jpg" alt="editorial template sample pages"></picture><br/>
       <sub><strong>Editorial magazine</strong><br/>Photo layouts<br/>
       <a href="https://slides.addsum.top/#vl-editorial">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-poster"><img src="skills/slide-maker/assets/vl/samples/poster.jpg" alt="poster template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/poster.jpg" alt="poster template sample pages"></picture><br/>
       <sub><strong>Type poster</strong><br/>launch, manifesto, opinion<br/>
       <a href="https://slides.addsum.top/#vl-poster">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-ink"><img src="skills/slide-maker/assets/vl/samples/ink.jpg" alt="ink template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/ink.jpg" alt="ink template sample pages"></picture><br/>
       <sub><strong>Ink wash</strong><br/>culture, history, craft<br/>
       <a href="https://slides.addsum.top/#vl-ink">Preview all pages</a></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-comic"><img src="skills/slide-maker/assets/vl/samples/comic.jpg" alt="comic template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/comic.jpg" alt="comic template sample pages"></picture><br/>
       <sub><strong>Comic panels</strong><br/>storytelling, user journey, explainer<br/>
       <a href="https://slides.addsum.top/#vl-comic">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-vinyl"><img src="skills/slide-maker/assets/vl/samples/vinyl.jpg" alt="vinyl template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/vinyl.jpg" alt="vinyl template sample pages"></picture><br/>
       <sub><strong>Vinyl record</strong><br/>music, podcast, culture<br/>
       <a href="https://slides.addsum.top/#vl-vinyl">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-stainedglass"><img src="skills/slide-maker/assets/vl/samples/stainedglass.jpg" alt="stainedglass template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/stainedglass.jpg" alt="stainedglass template sample pages"></picture><br/>
       <sub><strong>Stained glass</strong><br/>heritage, culture, celebrations<br/>
       <a href="https://slides.addsum.top/#vl-stainedglass">Preview all pages</a></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-wayfinding"><img src="skills/slide-maker/assets/vl/samples/wayfinding.jpg" alt="wayfinding template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/wayfinding.jpg" alt="wayfinding template sample pages"></picture><br/>
       <sub><strong>Wayfinding</strong><br/>roadmap, process, onboarding<br/>
       <a href="https://slides.addsum.top/#vl-wayfinding">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-chalkboard"><img src="skills/slide-maker/assets/vl/samples/chalkboard.jpg" alt="chalkboard template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/chalkboard.jpg" alt="chalkboard template sample pages"></picture><br/>
       <sub><strong>Chalkboard</strong><br/>lesson, class, training<br/>
       <a href="https://slides.addsum.top/#vl-chalkboard">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-recipe"><img src="skills/slide-maker/assets/vl/samples/recipe.jpg" alt="recipe template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/recipe.jpg" alt="recipe template sample pages"></picture><br/>
       <sub><strong>Recipe card</strong><br/>food, cooking, recipes<br/>
       <a href="https://slides.addsum.top/#vl-recipe">Preview all pages</a></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-circuit"><img src="skills/slide-maker/assets/vl/samples/circuit.jpg" alt="circuit template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/circuit.jpg" alt="circuit template sample pages"></picture><br/>
       <sub><strong>Circuit board</strong><br/>hardware, IoT, embedded systems<br/>
       <a href="https://slides.addsum.top/#vl-circuit">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-storybook"><img src="skills/slide-maker/assets/vl/samples/storybook.jpg" alt="storybook template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/storybook.jpg" alt="storybook template sample pages"></picture><br/>
       <sub><strong>Watercolour storybook</strong><br/>Illustrated storytelling<br/>
       <a href="https://slides.addsum.top/#vl-storybook">Preview all pages</a></sub>
     </td>
     <td align="center" width="33%">
-      <a href="https://slides.addsum.top/#vl-scoreboard"><img src="skills/slide-maker/assets/vl/samples/scoreboard.jpg" alt="scoreboard template sample pages"></a><br/>
+      <picture><img src="skills/slide-maker/assets/vl/samples/scoreboard.jpg" alt="scoreboard template sample pages"></picture><br/>
       <sub><strong>Scoreboard</strong><br/>sports, competition, team results<br/>
       <a href="https://slides.addsum.top/#vl-scoreboard">Preview all pages</a></sub>
     </td>
@@ -117,10 +135,11 @@ Twelve selected styles are shown below. Click a sample to preview all page types
 
 ### Using a template
 
-Choose a style in the [online library](https://slides.addsum.top/#languages), copy its prompt, and add your material, audience and slide count. For example:
+Choose a style in the [online library](https://slides.addsum.top/#languages), copy its prompt and paste it into the AI assistant where you installed slide-maker. Add your material, audience and slide count. For example:
 
 ```text
-Use slide-maker with the Herbarium (herbarium) template and its light palette. Turn notes.md into an 8-slide biology lesson for middle-school students.
+Use slide-maker with the Herbarium (herbarium) template and its light palette.
+Turn notes.md into an 8-slide biology lesson for middle-school students.
 ```
 
 If you are unsure which style to use, ask for recommendations based on your topic. You can also supply a school or company PPTX as a reference for typography, colours and layout.
@@ -132,8 +151,8 @@ If you are unsure which style to use, ask for recommendations based on your topi
 | Editable PPTX | Text boxes, native shapes and native charts you can change in PowerPoint. Photos, illustrations and cropped paper figures remain images. |
 | Equations and data | Editable math text where possible; two-dimensional layouts such as fractions and matrices may be rendered as images. Data charts use native chart objects where suitable, so you can change their values. |
 | Notes and animation | Presentation decks include per-slide speaker notes. Click builds are optional; static slides are supported. |
-| Previews and build script | PPTX, PDF, browser preview and build script, delivered to `~/Downloads/<deck-name>/` by default. The same script supports later revisions. |
-| Brand and preferences | Extract a brand kit from guidelines, a logo, an existing deck or specified colours, then confirm and save it for reuse. Recurring design preferences can be stored in a text file you can inspect, edit or delete. Your current request takes priority. |
+| Previews and build script | PPTX, PDF, browser preview and the generation script. Files go into a subfolder named after the presentation in your Downloads folder by default. The script supports later revisions. |
+| Brand and preferences | Extract fonts and colours from brand guidelines, a logo or an existing deck, then confirm and save them for reuse. Recurring design preferences can also be saved. Your current request takes priority. |
 | Version history | Keep build versions, compare changes and restore a whole deck or selected slides. |
 | Canvas sizes | 16:9, 4:3, 1:1, rednote 3:4 cards, 9:16 portrait and A4, with layouts recomposed for each format. |
 
@@ -161,75 +180,106 @@ The skill is free. Running it uses your AI subscription or API credits. Slide co
 
 Long decks are reviewed by section as well as for overall coherence. Delegating the choice runs at least `fast`; it never skips review automatically.
 
-## Quick start
+## Installation and setup
 
-### 1. Install runtime dependencies
+Choose either automatic or manual installation. Automatic installation is recommended for most users.
 
-You need **Python 3.9+**, **LibreOffice** to render previews, and librsvg, cairosvg or a Chrome-family browser to rasterize SVG icons.
+### Automatic installation (recommended)
 
-| OS | LibreOffice | SVG icons |
-| --- | --- | --- |
-| macOS | `brew install --cask libreoffice` | `brew install librsvg` |
-| Linux | `sudo apt install libreoffice` | `sudo apt install librsvg2-bin` |
-| Windows | `winget install TheDocumentFoundation.LibreOffice` | Install Chrome or Edge |
-
-Windows has less test coverage. Use the [environment check](#troubleshooting) if dependencies fail.
-
-### 2. Install the skill
-
-Clone the repository, install its Python packages and register the skill for Codex and Claude Code:
-
-```bash
-git clone --depth 1 https://github.com/addsumtech/slides_maker.git
-cd slides_maker
-python3 -m pip install -r skills/slide-maker/requirements.txt
-python3 skills/slide-maker/scripts/install_skill.py --target both
-```
-
-Replace `both` with `codex` or `claude` if you use only one tool.
-
-You can also install the skill with [`npx skills`](https://github.com/vercel-labs/skills):
+Run this command in a terminal:
 
 ```bash
 npx skills add addsumtech/slides_maker
 ```
 
-It prompts for the tool and installation scope. Add `-g` for a global install, `-a claude-code` or `-a codex` to select a tool, and `-y` to skip confirmation. This does not install runtime dependencies. After installation, ask your assistant to run the skill's `scripts/check_env.py` and follow its instructions to install missing Python packages and system tools.
+Choose your AI assistant and installation scope when prompted. Select a global installation if you want to use the skill across projects. Once installed, ask your assistant to create a presentation.
 
-Claude Code also supports plugin installation:
+If `npx` is not found or your Node.js version is too old, install [Node.js](https://nodejs.org/en/download) 22.20 or later, reopen the terminal and try again.
+
+<details>
+<summary>More automatic-installation options</summary>
+
+- `-g`: install globally for use across projects.
+- `-a claude-code` or `-a codex`: select an assistant without the tool-selection prompt.
+- `-y`: skip installation confirmation.
+
+See the [npx skills documentation](https://github.com/vercel-labs/skills) for all options.
+
+</details>
+
+### Manual installation
+
+Use this method if you want a source checkout or prefer to maintain the installation yourself. With Git and Python installed, run these commands in order:
+
+```bash
+git clone --depth 1 https://github.com/addsumtech/slides_maker.git
+cd slides_maker
+python3 -m pip install -r skills/slide-maker/requirements.txt
+python3 skills/slide-maker/scripts/install_skill.py --target all
+```
+
+The final command copies the skill into the AI-assistant skill directories detected on your machine.
+
+<details>
+<summary>Select a manual-installation directory</summary>
+
+`all` detects existing host directories. If none are found, it uses the host-neutral `~/.agents/skills/` directory. To select a directory explicitly, replace `all` with `agents`, `codex` or `claude`.
+
+</details>
+
+<details>
+<summary>Claude Code plugin and skill marketplaces</summary>
+
+For plugin installation, enter these commands in Claude Code:
 
 ```text
 /plugin marketplace add addsumtech/slides_maker
 /plugin install slide-maker@slides-maker
 ```
 
-The same runtime dependencies apply. Other distribution options: [Tencent SkillHub](https://skillhub.cloud.tencent.com/skills/slides-maker) and [ClawHub](https://clawhub.ai/dong845/skills/slide-maker). OpenClaw users can follow the ClawHub installation instructions.
+Other distribution options: [Tencent SkillHub](https://skillhub.cloud.tencent.com/skills/slides-maker) and [ClawHub](https://clawhub.ai/dong845/skills/slide-maker). OpenClaw users can follow the ClawHub installation instructions.
 
-### 3. Create a presentation
+</details>
 
-In Claude Code, enter `/slide-maker`. In Codex, ask for the skill in your request. Put your sources in the current project or supply a full path:
+### Runtime environment
+
+Whichever installation method you choose, the first presentation request checks the environment and attempts to install missing Python packages. If system tools such as Python or LibreOffice are missing, follow the installation instructions shown. Existing tools do not need to be installed again.
+
+You need **Python 3.9+**, **LibreOffice** to render page previews, and librsvg, cairosvg or a Chrome-family browser to rasterize SVG icons. For system tools, use the commands below:
+
+| OS | LibreOffice | SVG icons |
+| --- | --- | --- |
+| macOS | `brew install --cask libreoffice` | `brew install librsvg` |
+| Linux (Ubuntu / Debian) | `sudo apt install libreoffice` | `sudo apt install librsvg2-bin` |
+| Windows | `winget install TheDocumentFoundation.LibreOffice` | Install Chrome or Edge |
+
+Windows has less test coverage. If your terminal only provides the `python` command, replace `python3` in the examples with `python`. See [Troubleshooting](#troubleshooting) for other issues.
+
+### Create a presentation
+
+Give your material to the assistant where you installed the skill, or provide a file path it can read, and describe what you need. Claude Code also accepts `/slide-maker`.
+
+In addition to the paper-talk example above, you can start from a repository:
 
 ```text
-Use slide-maker to turn paper.pdf into an English lab-meeting presentation for my advisor and labmates. A 12-minute live talk, about 15 slides, visual and concise. Show me the outline and design directions first.
+Use slide-maker to introduce this codebase to new teammates.
+Focus on the architecture and main workflows.
 ```
 
-It asks for details that affect the plan, such as a reference template, language, content density and animation. Short answers are enough; say “you decide” to delegate a choice. You can also start from a repository:
+With a reference deck, specify which parts to use:
 
 ```text
-Use slide-maker to introduce this codebase to new teammates, focusing on the architecture and main workflows.
+Use the typography, colours and layouts in /path/ref.pptx as a reference.
+Build a new English presentation using the content of paper.pdf.
 ```
 
-With a reference deck, say whether to reuse only its design or also its content:
-
-```text
-Use the typography, colours and layouts in /path/ref.pptx as a reference. Build a new English presentation using the content of paper.pdf.
-```
+The assistant asks about details that affect the plan, such as audience, slide count and style. Short answers are enough; say “you decide” to delegate a choice.
 
 ### Updates and optional images
 
 When a newer version is available, slide-maker asks before updating. It stays quiet when current or offline. Remote version information is cached for 24 hours; local changes are checked each time. To disable version notifications, set `export SLIDE_MAKER_NO_VERSION_CHECK=1`.
 
-Ask for image generation when you need a cover or illustrations. Use the image-generation tool available in your Codex environment, or configure an OpenAI API key. Image generation is optional; native text, shapes and charts do not depend on it.
+Ask for image generation when you need a cover or illustrations. Use the image-generation tool available in your AI assistant, or configure an OpenAI API key. Image generation is optional; native text, shapes and charts do not depend on it.
 
 ## Use cases
 
@@ -244,9 +294,12 @@ Ask for image generation when you need a cover or illustrations. Use the image-g
 
 ## Troubleshooting
 
-If generation or rendering fails, run the check for your installation:
+If generation or rendering fails, ask your assistant to locate and run the skill's `scripts/check_env.py`. For a global installation, you can also use the matching directory:
 
 ```bash
+# Host-neutral skill directory
+python3 ~/.agents/skills/slide-maker/scripts/check_env.py
+
 # Codex
 python3 ~/.codex/skills/slide-maker/scripts/check_env.py
 
@@ -254,7 +307,7 @@ python3 ~/.codex/skills/slide-maker/scripts/check_env.py
 python3 ~/.claude/skills/slide-maker/scripts/check_env.py
 ```
 
-It lists missing dependencies and repair commands. For a plugin or project-local installation, ask your assistant to locate and run the skill's `scripts/check_env.py`.
+It lists missing dependencies and repair commands.
 
 For build errors, fonts, rendering and image sourcing, see [Troubleshooting & FAQ](skills/slide-maker/references/troubleshooting-faq.md). If the problem persists, open an [issue](https://github.com/addsumtech/slides_maker/issues) with the error output.
 

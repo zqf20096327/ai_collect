@@ -16,14 +16,18 @@
 
 ---
 
-Aseprite MCP 将支持 MCP 的客户端如`Codex`，`CluadeCode`，`DeepseekHarness`等Agent与 Aseprite 连接起来，支持读取和编辑未保存画布、图片预览、撤销重做及可选基础动画，让你在同一文档中继续创作。同时保留 CLI 磁盘文件处理能力。
+Aseprite MCP 将支持 MCP 的客户端如`Codex`，`CluadeCode`，`DeepseekHarness`等Agent与 Aseprite 连接起来，支持`实时`读取和编辑未保存画布、图片预览、撤销重做及可选基础动画，让你在同一文档中继续创作。同时保留 CLI 磁盘文件处理能力。
 
-<div align="center">
-  <img src="./assets/preview1.gif" style="width: 50%; max-width: 100%; border-radius: 4px;" />
-</div>
-<div align="center">
-  <img src="./assets/preview2.png" style="width: 50%; max-width: 100%; border-radius: 4px;" />
-</div>
+<table>
+  <tr>
+    <td align="center"><img src="./assets/preview1.gif" width="30%" style="border-radius:4px;"/><br/>实时动画绘制</td>
+    <td align="center"><img src="./assets/display3.png" width="50%" style="border-radius:4px;"/><br/>实时场景绘制预览</td>
+    <td align="center"><img src="./assets/display2.png" width="50%" style="border-radius:4px;"/><br/>物品绘制</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="./assets/display1.png" width="50%" style="border-radius:4px;"/><br/>实时框选，区域修改</td>
+  </tr>
+</table>
 
 [PyPI 安装包](https://pypi.org/project/aseprite-mcp/) · [Release 扩展下载](https://github.com/greenlogs/aseprite-mcp-live/releases) · [问题反馈](https://github.com/greenlogs/aseprite-mcp-live/issues)
 
@@ -73,10 +77,9 @@ uv python install 3.13
 
 两种服务启动方式都需要配套扩展：
 
-1. 前往 [GitHub Releases](https://github.com/greenlogs/aseprite-mcp-live/releases)，下载与服务版本一致的 `.aseprite-extension` 文件。当前服务版本为 **0.5.0**。
+1. 前往 [GitHub Releases](https://github.com/greenlogs/aseprite-mcp-live/releases)，下载与服务版本一致的 `.aseprite-extension` 文件。当前服务版本为 **0.5.1**。
 2. 在 Aseprite 中打开 **Edit → Preferences → Extensions → Add Extension**，选择下载的扩展包，安装并启用。
 
-    <img src="./assets/step1.png" style="width: 50%; max-width: 100%; border-radius: 4px;" />
     <img src="./assets/step2.png" style="width: 50%; max-width: 100%; border-radius: 4px;" />
 
    查看脚本状态：
@@ -94,6 +97,7 @@ uv python install 3.13
 `注意事项`：
 
 - 1.Agent工作时，尽量不要在画布上绘制，以免干扰实时协作。
+- 2.确保扩展与服务版本匹配，否则可能导致连接失败或功能异常。
 
 扩展默认自动连接 `127.0.0.1:8765`。在 **File → Scripts → MCP: Connect / Settings** 中可查看状态、调整端口或断开连接，无需选择连接文件。
 
@@ -116,7 +120,7 @@ uvx --python 3.13 aseprite-mcp
   "mcpServers": {
     "aseprite": {
       "command": "uvx",
-      // 因Codex多会话进程原因，需要共享模式的客户端，添加 --shared 参数
+      // 0.5.1默认共享；--shared作为兼容参数可省略
       "args": ["--python", "3.13", "aseprite-mcp", "--shared"],
       "env": {
         // 默认启用核心工具模式core，其他可选值为all，cli模式
@@ -204,11 +208,11 @@ Python MCP 服务通过 stdio 与客户端通信；Lua 扩展通过本机 WebSoc
 
 通过 `ASEPRITE_MCP_TOOL_PROFILE` 选择工具范围：
 
-| 值             | 工具范围                                    |
-| -------------- | ------------------------------------------- |
-| `all`          | 实时与 CLI 合计 125 个；启用动画后为 126 个 |
-| `core`（默认） | 9 个实时核心入口；启用动画后为 10 个        |
-| `cli`          | 116 个磁盘文件工具，不建立实时连接          |
+| 值             | 工具范围                           |
+| -------------- | ---------------------------------- |
+| `all`          | core，cli同时启用                  |
+| `core`（默认） | 目前9 个实时工具核心入口           |
+| `cli`          | 116 个磁盘文件工具，不建立实时连接 |
 
 ```json
 {
@@ -222,16 +226,16 @@ Python MCP 服务通过 stdio 与客户端通信；Lua 扩展通过本机 WebSoc
 通过启动参数修改服务端口，例如：
 
 ```powershell
-uvx --python 3.13 aseprite-mcp==0.5.0 --port 8766
+uvx --python 3.13 aseprite-mcp==0.5.1 --port 8766
 ```
 
 客户端配置中将 `--port`、`8766` 追加到 `args`，并在扩展设置中把 Port 改为 `8766`。本地源码运行同样支持 `uv run --locked aseprite-mcp --port 8766`。
 
 ### 参数
 
-| 值         | 用途                                               |
-| ---------- | -------------------------------------------------- |
-| `--shared` | 启用共享模式，允许多个客户端共享同一个后台服务连接 |
+| 值         | 用途                                                |
+| ---------- | --------------------------------------------------- |
+| `--shared` | 共享模式的兼容参数；0.5.1的实时连接默认共享，可省略 |
 
 ## 使用范围
 
@@ -249,7 +253,7 @@ uvx --python 3.13 aseprite-mcp==0.5.0 --port 8766
 | 扩展未连接           | 确认服务已由 MCP 客户端启动、扩展已启用、WebSocket 权限已允许，双方端口一致 |
 | 端口被占用           | 当前源码默认共享连接；普通旧服务或其他程序占用时先停止或改端口              |
 | `Transport closed`   | 旧 MCP 通道已结束；使用共享模式后重新建立客户端连接，必要时重启客户端       |
-| 版本不匹配           | 安装同版本的服务和扩展；可使用 `aseprite-mcp==0.5.0` 固定版本               |
+| 版本不匹配           | 安装同版本的服务和扩展；可使用 `aseprite-mcp==0.5.1` 固定版本               |
 | 找不到文档或修订冲突 | 重新读取文档列表与信息，使用当前会话和修订                                  |
 | 预览图片未显示       | 确认客户端支持 MCP 图片内容，并缩小预览区域或缩放倍数                       |
 
