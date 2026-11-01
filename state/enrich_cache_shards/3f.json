@@ -3300,13 +3300,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261101"
+  },
+  "commit_90d": 236,
+  "commit_7d": 1
  },
  "zaharenok/omp-skill": {
   "rel_ver": "v1.0.0",
@@ -3919,6 +3922,25 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "PalakVerma-github/compphish-phishing-detection": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

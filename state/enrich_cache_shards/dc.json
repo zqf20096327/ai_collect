@@ -4545,5 +4545,59 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "KenKaiii/pew2": {
+  "rel_ver": "v0.9.29",
+  "rel_pub": "2026-10-22",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "Swift": 1,
+   "Python": 1,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Markgatcha/memos": {
+  "rel_ver": "v1.6.27",
+  "rel_pub": "2026-10-13",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "Python": 9,
+   "JavaScript": 4,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

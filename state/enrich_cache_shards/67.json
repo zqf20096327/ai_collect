@@ -4124,5 +4124,31 @@
    "contrib": "20261028",
    "lang": "20261028"
   }
+ },
+ "jidekaixin2dian/dsh-file-actions": {
+  "rel_ver": "v0.1.19",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 76,
+   "TypeScript": 21,
+   "Python": 2,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

@@ -222,11 +222,11 @@
   }
  },
  "tensorflow/tfx": {
-  "commit_90d": 11,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": "v1.21.0",
   "rel_pub": "2026-06-18",
-  "rel_days": 128,
+  "rel_days": 136,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -242,10 +242,10 @@
    "Starlark": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

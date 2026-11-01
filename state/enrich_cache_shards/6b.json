@@ -3951,12 +3951,38 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
+   "lang": "20261030",
+   "commit": "20261101"
+  },
+  "commit_90d": 34,
+  "commit_7d": 34
+ },
+ "clemense/ai-bestpapers": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "HTML": 44,
+   "Python": 35,
+   "Ruby": 14,
+   "CSS": 7,
+   "Shell": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

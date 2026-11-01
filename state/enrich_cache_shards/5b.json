@@ -4129,5 +4129,57 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Do-fei/my-raze": {
+  "rel_ver": "raze-asset-pack-20260905",
+  "rel_pub": "2026-09-05",
+  "rel_days": 57,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "mistqkw/opencode-mobile": {
+  "rel_ver": "v0.0.1-beta-3",
+  "rel_pub": "2026-10-30",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 96,
+   "Python": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

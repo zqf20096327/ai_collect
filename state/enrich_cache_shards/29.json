@@ -252,11 +252,11 @@
   }
  },
  "youssofal/MTPLX": {
-  "commit_90d": 1733,
+  "commit_90d": 1608,
   "commit_7d": 0,
   "rel_ver": "v2.12.2",
   "rel_pub": "2026-10-03",
-  "rel_days": 21,
+  "rel_days": 29,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -272,10 +272,10 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

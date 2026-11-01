@@ -4085,5 +4085,31 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Corebrum/corebrum-synapse": {
+  "commit_90d": 126,
+  "commit_7d": 8,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 30,
+   "C++": 21,
+   "Makefile": 16,
+   "TypeScript": 15,
+   "Python": 6
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "commit": "20261101",
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

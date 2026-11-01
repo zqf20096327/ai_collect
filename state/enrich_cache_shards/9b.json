@@ -4274,5 +4274,59 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "josemiguellopez/tracereports": {
+  "rel_ver": "v0.6.2",
+  "rel_pub": "2026-10-30",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 57,
+   "JavaScript": 22,
+   "Python": 8,
+   "Java": 6,
+   "CSS": 6
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "ASakurafoxA/AI-Anime-Image-Manager-NEXT": {
+  "rel_ver": "v2.2.3-20261024",
+  "rel_pub": "2026-10-23",
+  "rel_days": 9,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 86,
+   "JavaScript": 12,
+   "CSS": 1,
+   "HTML": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

@@ -4076,5 +4076,32 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "writerslogic/warm": {
+  "rel_ver": "mcp-v0.1.5",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 52,
+   "Python": 39,
+   "JavaScript": 3,
+   "Kotlin": 2,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

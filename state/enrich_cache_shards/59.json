@@ -4374,13 +4374,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261031",
    "security": "20261031",
    "contrib": "20261031",
-   "lang": "20261031"
-  }
+   "lang": "20261031",
+   "commit": "20261101"
+  },
+  "commit_90d": 8,
+  "commit_7d": 7
  },
  "jutsuhq/open-source-higgsfield": {
   "rel_ver": null,

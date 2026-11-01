@@ -2879,13 +2879,16 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261101"
+  },
+  "commit_90d": 380,
+  "commit_7d": 232
  },
  "URML-MARS/URML": {
   "rel_ver": null,

@@ -3815,5 +3815,32 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "putrkobey/Olla": {
+  "rel_ver": "v3.0.2",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 85,
+   "TypeScript": 4,
+   "Python": 4,
+   "Shell": 3,
+   "Svelte": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

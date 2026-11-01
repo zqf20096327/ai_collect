@@ -4056,5 +4056,32 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Mubder/kazma": {
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-09-12",
+  "rel_days": 50,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 89,
+   "JavaScript": 7,
+   "HTML": 3,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

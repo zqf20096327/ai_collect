@@ -4083,5 +4083,28 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "AgiMateIo/agimate-backend": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 98,
+   "HTML": 1,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

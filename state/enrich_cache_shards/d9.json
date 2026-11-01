@@ -3801,5 +3801,28 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "piyushdotcomm/Editron": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "TypeScript": 87,
+   "CSS": 7,
+   "HTML": 3,
+   "JavaScript": 2,
+   "Vue": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

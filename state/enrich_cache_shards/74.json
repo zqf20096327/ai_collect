@@ -4413,5 +4413,55 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "tgxy2026/youth-fantasy-engine": {
+  "rel_ver": "v3.3.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 15,
+   "CSS": 0,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "loopmath/loopmath": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 4,
+   "CSS": 1,
+   "TypeScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

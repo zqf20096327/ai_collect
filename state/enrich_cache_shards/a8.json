@@ -88,12 +88,12 @@
   }
  },
  "uditgoenka/autoresearch": {
-  "commit_90d": 9,
-  "commit_7d": 0,
-  "rel_ver": "v2.2.2",
-  "rel_pub": "2026-08-12",
-  "rel_days": 65,
-  "rel_n90": 1,
+  "commit_90d": 20,
+  "commit_7d": 10,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -105,10 +105,10 @@
    "Shell": 77,
    "JavaScript": 23
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

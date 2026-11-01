@@ -320,8 +320,8 @@
   }
  },
  "tinyfish-io/tinyfish-cookbook": {
-  "commit_90d": 19,
-  "commit_7d": 3,
+  "commit_90d": 18,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -336,10 +336,10 @@
    "Python": 4,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4553,6 +4553,25 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "coner13/dsh-hippocampus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

@@ -305,8 +305,8 @@
   }
  },
  "izhaorui/Zr.Admin.NET": {
-  "commit_90d": 258,
-  "commit_7d": 16,
+  "commit_90d": 250,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -321,10 +321,10 @@
    "SCSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4709,6 +4709,27 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "Brilliant666/ai-pose-depth-gallery-cn": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 89,
+   "Python": 10,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

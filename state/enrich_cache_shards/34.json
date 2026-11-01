@@ -4381,5 +4381,57 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Batev/XAI-Analytics": {
+  "rel_ver": "v2.1",
+  "rel_pub": "2023-06-19",
+  "rel_days": 1231,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 60,
+   "Jupyter Notebook": 40,
+   "Python": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Twweetyy/ApplicationMAJ": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 81,
+   "JavaScript": 9,
+   "HTML": 5,
+   "CSS": 5,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

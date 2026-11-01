@@ -417,8 +417,8 @@
   }
  },
  "w8123/EnterpriseAgentFramework": {
-  "commit_90d": 17,
-  "commit_7d": 4,
+  "commit_90d": 21,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -433,10 +433,10 @@
    "JavaScript": 6,
    "SCSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4292,6 +4292,51 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "KenKaiii/social-bro": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "doubletwisted/ComfyUI-Spool": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 53,
+   "Python": 40,
+   "CSS": 6,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

@@ -159,7 +159,7 @@
  },
  "e2b-dev/fragments": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -173,10 +173,10 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -275,11 +275,11 @@
   }
  },
  "ucbepic/docetl": {
-  "commit_7d": 2,
+  "commit_7d": 1,
   "commit_90d": 6,
   "rel_ver": "0.3.0",
   "rel_pub": "2026-06-17",
-  "rel_days": 121,
+  "rel_days": 137,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -409,8 +409,8 @@
   }
  },
  "langchain-ai/langchain-nextjs-template": {
-  "commit_7d": 1,
-  "commit_90d": 84,
+  "commit_7d": 0,
+  "commit_90d": 78,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -423,10 +423,10 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3763,6 +3763,56 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "issue-orchestrator/issue-orchestrator": {
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-06-09",
+  "rel_days": 145,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 6,
+   "CSS": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "enmerasoftware/ai-design-check": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

@@ -106,11 +106,11 @@
   }
  },
  "ramitsurana/awesome-kubernetes": {
-  "commit_7d": 1,
-  "commit_90d": 3,
+  "commit_7d": 3,
+  "commit_90d": 6,
   "rel_ver": "v5.0",
   "rel_pub": "2020-01-02",
-  "rel_days": 2486,
+  "rel_days": 2495,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -124,10 +124,10 @@
    "Makefile": 26,
    "Dockerfile": 22
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5647,6 +5647,33 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "shivasaini04/nanocrew": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-10-26",
+  "rel_days": 6,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 48,
+   "Python": 48,
+   "JavaScript": 1,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

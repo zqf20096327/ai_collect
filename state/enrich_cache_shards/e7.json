@@ -3835,5 +3835,54 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "jackwener/DSH-Android": {
+  "commit_90d": 108,
+  "commit_7d": 108,
+  "rel_ver": "v0.3.4",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 67,
+   "JavaScript": 29,
+   "Python": 3,
+   "Shell": 1,
+   "C++": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "commit": "20261101",
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-information-diet-entropy-pruner-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

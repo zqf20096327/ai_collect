@@ -4273,5 +4273,81 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "f3nng/WhenTrade": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 66,
+   "Vue": 17,
+   "TypeScript": 12,
+   "CSS": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "T8mars/Comfyui-HY-Nomas-T8": {
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2026-10-29",
+  "rel_days": 3,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 73,
+   "PowerShell": 15,
+   "JavaScript": 10,
+   "HTML": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "BingKuai332/floatask": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-10-29",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 71,
+   "CSS": 18,
+   "HTML": 8,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

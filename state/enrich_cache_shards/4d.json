@@ -340,11 +340,11 @@
   }
  },
  "DEEIX-AI/DEEIX-Chat": {
-  "commit_7d": 20,
-  "commit_90d": 616,
+  "commit_7d": 7,
+  "commit_90d": 575,
   "rel_ver": "v0.4.6",
   "rel_pub": "2026-10-22",
-  "rel_days": 2,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -360,10 +360,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

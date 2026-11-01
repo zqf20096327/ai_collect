@@ -842,12 +842,12 @@
   }
  },
  "kuafuai/andee": {
-  "commit_7d": 70,
-  "commit_90d": 227,
-  "rel_ver": "v0.5.3",
-  "rel_pub": "2026-10-22",
-  "rel_days": 3,
-  "rel_n90": 7,
+  "commit_7d": 69,
+  "commit_90d": 296,
+  "rel_ver": "v0.8.1",
+  "rel_pub": "2026-10-30",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -862,10 +862,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261025",
-   "release": "20261025",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4314,6 +4314,29 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "slit-company/viral-hit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 7,
+   "CSS": 0,
+   "MDX": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

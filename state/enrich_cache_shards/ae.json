@@ -4197,5 +4197,115 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "JMAN730/opendroid": {
+  "commit_90d": 139,
+  "commit_7d": 4,
+  "rel_ver": "v1.0.7",
+  "rel_pub": "2026-09-04",
+  "rel_days": 58,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Kotlin": 92,
+   "HTML": 6,
+   "CSS": 1,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "commit": "20261101",
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "matthewprice/JobFinderOS": {
+  "commit_90d": 18,
+  "commit_7d": 5,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 95,
+   "Shell": 5,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "commit": "20261101",
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "NEETnina/dsh-model-master": {
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-10-29",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 97,
+   "HTML": 2,
+   "CSS": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "IngDey/SKILL-DEY-Enterprise-Agentic-Framework-AI-Development-Suite": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 24,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 57,
+   "JavaScript": 41,
+   "PowerShell": 1,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

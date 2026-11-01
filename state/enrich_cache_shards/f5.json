@@ -294,8 +294,8 @@
   }
  },
  "emarco177/langchain-course": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -304,10 +304,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

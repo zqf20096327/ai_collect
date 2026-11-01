@@ -4842,5 +4842,28 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "mkr-infinity/MIRA": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "CSS": 5,
+   "Rust": 3,
+   "JavaScript": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

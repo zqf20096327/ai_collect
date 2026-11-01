@@ -4590,13 +4590,16 @@
    "Python": 15,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261031",
    "security": "20261031",
    "contrib": "20261031",
-   "lang": "20261031"
-  }
+   "lang": "20261031",
+   "commit": "20261101"
+  },
+  "commit_90d": 10,
+  "commit_7d": 10
  },
  "demo112/yunqu-ai-skills": {
   "rel_ver": "v1.0.0",
@@ -4619,6 +4622,23 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "khalidhasan7343/ml-research-handbook": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

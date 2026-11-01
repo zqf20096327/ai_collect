@@ -438,11 +438,11 @@
   }
  },
  "OpenOSINT/OpenOSINT": {
-  "commit_90d": 205,
-  "commit_7d": 25,
+  "commit_90d": 198,
+  "commit_7d": 1,
   "rel_ver": "v2.36.1",
   "rel_pub": "2026-10-19",
-  "rel_days": 5,
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -462,10 +462,10 @@
    "Shell": 2,
    "Tape": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4275,6 +4275,33 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "350624/TwinFile": {
+  "rel_ver": "v3.1.32",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 93,
+   "PowerShell": 3,
+   "Java": 2,
+   "Inno Setup": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

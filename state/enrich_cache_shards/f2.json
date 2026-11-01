@@ -355,12 +355,12 @@
   }
  },
  "aallam/openai-kotlin": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "4.1.0",
-  "rel_pub": "2026-02-07",
-  "rel_days": 252,
-  "rel_n90": 0,
+  "commit_90d": 98,
+  "commit_7d": 98,
+  "rel_ver": "4.2.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -371,10 +371,10 @@
   "lang": {
    "Kotlin": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4741,6 +4741,92 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "nitroz3us/GPThreatIntel-Summarizer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 53,
+   "JavaScript": 32,
+   "Python": 11,
+   "CSS": 4
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-cognitive-load-pomodoro-balancer-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "ariannamethod/amos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 48,
+   "JavaScript": 41,
+   "C": 6,
+   "Python": 4,
+   "Makefile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Asdivyansh/silo-cli": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 3,
+   "Shell": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

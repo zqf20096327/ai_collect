@@ -136,7 +136,7 @@
   "commit_90d": 17,
   "rel_ver": "v0.25.0",
   "rel_pub": "2026-06-06",
-  "rel_days": 140,
+  "rel_days": 148,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -149,10 +149,10 @@
    "Python": 100,
    "TeX": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -349,11 +349,11 @@
   }
  },
  "robocorp/rpaframework": {
-  "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_7d": 1,
+  "commit_90d": 11,
   "rel_ver": "rpaframework-recognition-8.0.3",
   "rel_pub": "2026-10-04",
-  "rel_days": 13,
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -369,10 +369,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3960,6 +3960,33 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "bobbyjohnstx/tinycode": {
+  "rel_ver": "v2.6.1",
+  "rel_pub": "2026-10-22",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 454,
+  "lang": {
+   "Go": 99,
+   "Shell": 0,
+   "Makefile": 0,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

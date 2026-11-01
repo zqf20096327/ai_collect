@@ -4151,5 +4151,28 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Carthavate/ai-engineering-arena": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 58,
+   "PLpgSQL": 24,
+   "Python": 10,
+   "CSS": 8,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
  }
 }

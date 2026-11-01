@@ -30,8 +30,8 @@
   }
  },
  "adongwanai/AgentGuide": {
-  "commit_7d": 0,
-  "commit_90d": 33,
+  "commit_7d": 1,
+  "commit_90d": 26,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "CSS": 11,
    "TypeScript": 8
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261101",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261101",
+   "release": "20261101",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4396,6 +4396,25 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "miguelrobles2002/JARVIS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }

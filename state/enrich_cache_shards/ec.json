@@ -1440,13 +1440,16 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261101",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261101"
+  },
+  "commit_90d": 11,
+  "commit_7d": 0
  },
  "rustyneuron01/AI-Generated-Content-Detection": {
   "rel_ver": null,
@@ -4007,6 +4010,51 @@
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
+  }
+ },
+ "glincker/awesome-selfhosted-ai": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
+  }
+ },
+ "Jav1es/enterprise-agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261101",
+  "dim_ts": {
+   "release": "20261101",
+   "security": "20261101",
+   "contrib": "20261101",
+   "lang": "20261101"
   }
  }
 }
