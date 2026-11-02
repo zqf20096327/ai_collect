@@ -4,7 +4,7 @@
 
 *AI systems are making decisions about your freedom, your job, and your healthcare. This project shows the bias is real - and how to fix it.*
 
-**by [Yash Kewlani](https://github.com/yakew7) · [@thefaircodeproject](https://instagram.com/thefaircodeproject)**
+**by [Yash Kewlani](https://github.com/yakew7) · [@thefaircodeproject](https://www.instagram.com/thefaircodeproject)**
 
 [🌐 Live website](https://www.thefaircode.xyz) · [📓 Notebooks](#projects) · [🧠 Explainers](#explainers) · [🤝 Contribute](CONTRIBUTING.md)
 
@@ -1171,7 +1171,7 @@ so an exported report can be tied back to what produced it - see
 [faircode/SPEC.md](faircode/SPEC.md#10-export-provenance). It is derived purely
 from the inputs, so `--json` stays reproducible; `--no-provenance` omits it.
 
-**MCP server - for coding agents.** `faircode-mcp` exposes six [MCP](https://modelcontextprotocol.io)
+**MCP server - for coding agents.** `faircode-mcp` exposes six [MCP](https://modelcontextprotocol.io/docs/2026-07-28/getting-started/intro)
 tools over stdio: `profile_dataset`, `compare_datasets`, and `proxy_hints` wrap the same analysis
 engine the CLI uses, so an MCP-aware agent can profile a file mid-conversation instead of shelling
 out and parsing text; `list_explainers`, `get_explainer`, and `get_benchmark_results` are read-only
@@ -1509,9 +1509,9 @@ The full public roadmap - with phases, completion status, and content schedule -
 
 | Metric | Count |
 |--------|------:|
-| GitHub Stars | 54 |
+| GitHub Stars | 55 |
 | External Contributors | 57 |
-| Forks | 67 |
+| Forks | 68 |
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
-| Countries Reached (Website Visitors) | 20 
+| 

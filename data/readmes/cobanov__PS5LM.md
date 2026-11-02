@@ -169,6 +169,19 @@ ggml-vulkan on [PS5_Vulkan](https://github.com/mihawk-99/PS5_Vulkan)'s RADV, bui
   a Home Assistant integration that wakes the console from rest mode, starts PS5LM, waits for the
   model and puts the console back to sleep when done, with the model and console readings as sensors.
 
+## Experimental multi-console fleet
+
+[Fleet](docs/FLEET.md) splits one dense `llama`/`qwen2` GGUF across several
+consoles over llama.cpp's RPC, controlled by one PC: one model across their
+memory, not a copy on each, so a model too large for one PS5 can run on two or
+more. The PC can add its CPU or GPU as another worker. The worker is part of the
+app and starts only when `/data/PS5LM/fleet-worker.txt` asks for it (v0.10.0 had
+it in a separate `ps5lm-app-fleet` zip). Two-worker CPU inference is tested in
+CI, and a PS5 worker has served a model together with a PC, but it is
+**experimental**: Qwen 3.8's `qwen35` layout is not admitted by
+this first planner yet, and RPC has no authentication, so it belongs on an
+isolated network you trust. See [validation and limits](docs/FLEET-VALIDATION.md).
+
 ## Thanks
 
 - [abhi245y](https://github.com/abhi245y), who built the native GPU app this one grew from (PS5LM Plus).

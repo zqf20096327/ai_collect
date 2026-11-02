@@ -193,6 +193,10 @@ Use `--extension` to connect through the current [Playwright Extension](https://
 npx --allow-scripts=re2 mcp-accessibility-scanner --extension
 ```
 
+Controlled tabs are grouped by default. Pass `--no-tab-group` with `--extension`, set `PLAYWRIGHT_MCP_NO_TAB_GROUP=1`, or use `"tabGroup": false` in the config file to leave controlled tabs in their existing groups. This also applies when selecting the extension browser provider through `--connect-tool`; it has no effect on other browser providers. Connection approval and single-client tab ownership are unchanged. The environment accepts `1`/`true` to disable grouping and `0`/`false` to enable it, overriding the config file; `--no-tab-group` takes precedence over both.
+
+This requires an extension build containing [upstream change #43814](https://github.com/microsoft/playwright/pull/43814) (commit `deb7e86`, October 31, 2026). As of November 1, the [Chrome Web Store](https://chromewebstore.google.com/detail/playwright-extension/mmlmfjhmonkocbjadbfplnigmagldckm) still lists version **0.4.0**, updated September 1, which predates this change and ignores the setting. No supporting released version is confirmed yet; use a build containing that commit until one is available. The upstream manifest is also still 0.4.0, so the version number alone does not establish support.
+
 Set `PLAYWRIGHT_MCP_EXTENSION_TOKEN` to the token shown by the extension to bypass the connection approval dialog. The relay's CDP WebSocket endpoint always requires a separate random token, generated per relay and appended automatically for the server's own connection. This CDP token is never passed in Chrome's launch arguments or extension URL; the extension approval token cannot authenticate a CDP client.
 Token-bypass connections are not background-safe: Chrome focuses the connection tab and window, and client-created tabs remain open after disconnect ([upstream limitation](https://github.com/microsoft/playwright/issues/42343)).
 With a token, the extension must connect and finish setup within 30 seconds after the connection page opens. Failed attempts release the relay so the next tool call can retry. Without a token, manual approval waits until you approve or cancel the call.
@@ -485,7 +489,7 @@ PLAYWRIGHT_MCP_ISOLATED=true PLAYWRIGHT_MCP_STORAGE_STATE=./auth.json npx --allo
 
 Note that `excludePathPatterns` replaces the default rather than extending it, so repeat `logout|signout` in your list.
 
-If a session cookie disappears anyway, `audit_site` says so instead of reporting a confident, wrong audit: the result starts with a `WARNING: cookie(s) … disappeared while loading <url>` line, and both the JSON report and the structured content carry a `sessionLosses` list naming, for each lost cookie, the page that dropped it — the page reached after any redirect, and reported even when that page failed to finish loading. If one of the lost cookies was the session, every page scanned after that point was audited as a signed-out user — exclude the offending URL, sign in again, and re-run.
+If a session cookie disappears anyway, `audit_site` says so instead of reporting a confident, wrong audit: the result starts with a `WARNING: cookie(s) … disappeared while loading <url>` line, and both the JSON report and the structured content carry a `sessionLosses` list naming, for each lost cookie, the page that dropped it — the page reached after any redirect, and reported even when that page failed to finish loading. When pages are audited concurrently, any page loading at the same time may have been the one, so those pages are listed in the entry's `concurrentUrls` and in the warning; re-run with `concurrency: 1` to pin the loss on one page. If one of the lost cookies was the session, every page scanned after that point was audited as a signed-out user — exclude the offending URL, sign in again, and re-run.
 
 The check compares which cookies the crawled URLs carry, not their values, so a rotating CSRF token never reads as a lost session. A cookie the browser deleted at its own stated expiry is ignored for the same reason — Cloudflare's `__cf_bm` lives 30 minutes and would otherwise warn on any longer crawl. Beyond that no attempt is made to tell an authentication cookie from any other: nothing in a cookie marks it as one, so any cookie the crawl started with and later lost is reported. Monitoring does not stop at the first loss — each cookie is reported once, at the URL where it vanished, so an analytics cookie expiring early cannot mask the session cookie being dropped later. URLs discovered mid-crawl join the cookie tracking before they are visited, so a session cookie scoped to a path below the start URL (say `/app`) is watched too.
 
@@ -573,6 +577,7 @@ A frame you scoped out yourself is not reported: with `excludeSelectors: ["ifram
 #### `audit_site`
 Crawls and scans multiple internal pages, then aggregates violations across the site.
 - Default strategy: link-based BFS from the current URL
+- Audits up to `concurrency` pages at once (default `4`, max `8`), each in its own temporary tab, so page loads, settle waits and Axe runs overlap. This makes a crawl about 2-2.4x faster on a 4-core machine (6 and 12 benchmark pages). Links each page discovers are queued in the order pages were visited, not the order they finished, so the pages scanned, their order, depth and `discoveredFrom`, and the aggregated findings are the same as with `concurrency: 1`. Use `concurrency: 1` when pages depend on `sessionStorage` written by earlier crawled pages, since each tab has its own, or when you want a lost session cookie pinned on exactly one page.
 - Supports `links`, `nav`, `sitemap`, and `provided` URL strategies. Trailing slashes are preserved; sitemap locations decode XML entities while preserving literal CDATA content.
 - Sitemap URLs and every redirect must pass the server network policy and crawl scope. Fetches run on the MCP host, use HTTP(S) without browser cookies or auth headers, and have a 15-second total timeout, 20-redirect cap, and 10 MiB response limit. Browser proxy settings, `browser.remoteEndpoint`, `browser.cdpEndpoint` (including loopback endpoints, which may tunnel to remote browsers), and switched `browser_connect` providers are rejected for this strategy; use `provided` URLs in these modes. Sitemap TLS certificates must be valid even when browser HTTPS errors are ignored.
 - Always writes a JSON report (default filename: `audit-site-{timestamp}-{token}.json`). Per-page `summary.totalNodes`, `byImpact`, and `byRuleId` count all deduplicated violation nodes; `maxNodesPerViolation` only limits the saved node details.
@@ -581,7 +586,7 @@ Crawls and scans multiple internal pages, then aggregates violations across the 
   - **k-median for the rest:** remaining pages minimize the summed tree distance from every listed URL to its nearest scanned one, and the selection is solved exactly under both rules. Below the coverage threshold, k-median weighs groups by how many URLs they hold, so a populous section can take pages that a small one does not get. This optimizes URL coverage, not accessibility coverage: pages with the same template can still differ in content.
   - The selected URLs are scanned in their listed order, and the rest count as `skippedUrls`. The result says how many listed URLs the selection chose from, and the JSON report and structured content carry `representativeSelection: { candidates, selected }` (`null` in discovery order). It is rejected for the `links` and `nav` strategies, which only learn their URLs while crawling.
 - Each aggregated violation also reports `similarPatterns`: its unique occurrences grouped by near-identical markup. This is a markup heuristic, not a count of root causes: similar markup often means a shared template, but it does not prove one fix covers every node.
-  - **What counts as one pattern:** two nodes can share a pattern only when their root element, its `type` (inputs default to `text`), and its `role` match. Within that, they share one when their HTML differs in under about 30% of its tokens (tag names, attribute names and values, text words). Only the first 48 tokens of each node are compared, so differences past them are not seen.
+  - **What counts as one pattern:** two nodes can share a pattern only when their root element, its `type` (inputs default to `text`), and its `role` match. Embedded separators in attribute values or text cannot bypass the semantic or token comparisons. Within that, they share one when their HTML differs in under about 30% of its tokens (tag names, attribute names and values, text words). Only the first 48 tokens of each node are compared, so differences past them are not seen.
   - **Order independence:** similarity is not transitive, so each rule's unique occurrences are grouped in a canonical sort order. The count depends only on which occurrences were found, not on crawl order.
   - **Limits:** at most 500 unique occurrences (the first in that order) and 50 patterns are grouped per rule. When either limit cuts in, `similarPatternsCapped` is `true`, the count covers only part of the occurrences, and the top-violations line reads `N patterns (partial)` instead of `N patterns`.
   - Up to three `sampleNodes` per rule show different patterns where there are several.
@@ -701,11 +706,11 @@ Go back to the previous page.
 
 #### `browser_navigation_timeout`
 Set default navigation timeout for existing tabs.
-- Parameters: `timeout` (in ms; 30000-300000)
+- Parameters: `timeout` (in ms; 30000-1200000)
 
 #### `browser_default_timeout`
 Set default operation timeout for existing tabs.
-- Parameters: `timeout` (in ms; 30000-300000)
+- Parameters: `timeout` (in ms; 30000-1200000)
 
 ### Page Interaction Tools
 
@@ -873,24 +878,4 @@ Returns credential-redacted request/response headers and body metadata for one r
 
 ### URL redaction coverage
 
-`--redact-url-params code,access_token` is an opt-in output convenience, not a security boundary. It follows the [upstream Playwright text-matching policy](UPSTREAM.md): a literal configured name after `?`, `&` or `#`, followed by `=`, starts a match anywhere in text, including prose. Keys are not decoded, so `code` does not match `c%6Fde`. Values stop at `&`, `#`, whitespace, quotes, angle brackets, parentheses, square brackets, backticks or backslashes. Suffixes after these delimiters remain visible; for example, `?code=first'tail` becomes `?code=REDACTED'tail`. Percent-encoded value characters are masked as ordinary text. This does not find arbitrary secrets or decode whole percent-encoded URL blobs.
-
-The `REDACTED` marker is URL-safe, including in Markdown links and generated code. A displayed code snippet with masked parameters no longer reproduces the original credentials, even though the code actually executed and the browser URL are unchanged.
-
-| Surface | Policy when enabled |
-| --- | --- |
-| MCP tool-result text, including page/tab URLs, snapshots, network history/details, errors and displayed code | Selected URL values masked |
-| Structured result content | String values masked recursively; property keys, numbers and booleans unchanged |
-| MCP progress messages and tool-list titles/descriptions | Display text masked; request tokens, tool names and input schemas unchanged |
-| `--save-session` Markdown and associated snapshot YAML, including recorder updates | Selected URL values masked |
-| Raw accessibility JSON/HTML reports, `browser_find` file exports and separately saved code | Unchanged |
-| Screenshots, PDFs, video, traces, downloads, storage state and embedded resources | Unchanged |
-| Resource-link objects/URIs and file locations | Unchanged so links remain usable |
-| Navigation arguments, live browser URLs/requests, extension connection handoff/Chrome arguments, startup/debug logs, initialization and JSON-RPC protocol errors | Unchanged |
-
-The output policy applies to standalone, CDP, extension, provider-switching and VS Code MCP serving. Existing credential-header and request/response-body redaction is independent and remains enabled without this option. Do not share excluded artifacts as though they were sanitized. The separately installed browser extension owns its connection page; this server does not remove its token from that external UI or change its authenticated handoff.
-
-### Utility Tools
-
-#### `browser_wait_for`
-Cancelling an MCP request stops its pending timer or text waits and releases the browser session after those waits settle. This does not make other browser 
+`--redact-url-params code,access_token` is an opt-in output convenience, not a security boundary. It follows the [upstream Playwright text-matching policy](UPSTREAM.md): a literal configured name after `?`, `&` or `#`, followed by `=`, starts a match anywhere in text, including prose. Keys are not decoded, so `code` does not match `c%6Fde`. Values stop at `&`, `#`, whitespace, quotes, angle brackets, parentheses, square brackets, backticks or backslashes. Suffixes after

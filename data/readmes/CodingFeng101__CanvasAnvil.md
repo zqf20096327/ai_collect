@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/logo.png" alt="CanvasAnvil hero" width="92%" />
-</p>
-
 <h1 align="center">CanvasAnvil</h1>
 
 <p align="center">
@@ -26,6 +22,8 @@
   <a href="#quick-start">Quick Start</a> |
   <a href="README.zh-CN.md">Chinese</a>
 </p>
+
+https://github.com/user-attachments/assets/582c70ae-38df-4949-913c-c3f4369a7c8c
 
 <p align="center">
   <strong>⭐ If CanvasAnvil helps your workflow, please star the repo and fork it for your own canvas experiments.</strong>
@@ -129,35 +127,6 @@ A whiteboard for images: describe a picture in one sentence and it lands on the 
 | `PPT` | structured presentation generation and export | presentations, pitch decks, report slides |
 | `Free Canvas` | text-to-image and edit-by-annotation on a whiteboard | posters, illustrations, revised versions of an image |
 
-## 🌈 Release
-
-Current release: `v2.2.0` (2026-10-26). See [CHANGELOG.md](CHANGELOG.md) for the full list.
-
-**Four canvases**
-
-- Diagram, Interior Design and PPT, plus the new **Free Canvas**: text-to-image on a whiteboard, editing by drawing on the picture, and a version strip for every image.
-- The Flow canvas is now called **Diagram** everywhere, from the UI to the code, prompts and the `diagram-skill` bundle. Saved selections and chat histories carry over.
-- The poster, product and infographic canvases and the embedded `pptist-lab` editor are gone. The editable-PPTX export is hidden from the menu for now; its code is kept.
-
-**A friendlier interface**
-
-- Every chat panel opens with a short guide and example requests instead of a blank column.
-- The homepage has a clear way in, one button style throughout, and lays out cleanly from 1024px laptop windows to large monitors, in both languages.
-- Switch between Chinese and English from the top bar of any workspace; every string, error message and screen-reader label follows.
-- Quieter details: neutral disabled buttons that say why they are disabled, loading skeletons, and gentle motion that respects the system's reduced-motion setting.
-
-**Better results**
-
-- Free Canvas reads the annotation at the picture's full resolution, takes written notes verbatim, and quotes the exact text to change — edits land where they were marked.
-- PPT slides take only the style and colours from the template, not its layout, so a deck no longer repeats one arrangement.
-- Image size options that the server used to drop silently now reach the model.
-
-**Lighter and cleaner**
-
-- PPT templates went from 285 MB to 34 MB, with small thumbnails for the picker; the bundled SVG editor from 18 MB to 4 MB; example images from 42 MB to 12 MB.
-- The repository separates `client/`, `server/`, `contracts/` and `resources/`, every workspace has the same three layers ([docs/architecture.md](docs/architecture.md)), TypeScript strict mode is on, and the initial load dropped from 2.89 MB to roughly 700 KB.
-- Over 450 tests (`npm test`) cover the pure logic; `npm run lint` reports no errors.
-
 ## 🌐 Online Access
 
 Current online access URL:
@@ -166,7 +135,18 @@ Current online access URL:
 
 ## Video Tutorial
 
-- Bilibili tutorial: [https://b23.tv/pFWv7iI](https://b23.tv/pFWv7iI)
+One walkthrough per canvas on Bilibili (narrated in Chinese). In the app, the **Tutorials** button at the top of the home page plays them in place.
+
+<table>
+  <tr>
+    <td width="50%" align="center"><a href="https://www.bilibili.com/video/BV1wyxs66EEd"><img src="public/tutorials/diagram.jpg" alt="A whole architecture diagram from one sentence, and edits that touch only what you name" width="100%" /></a><br/><strong>🔷 Diagram</strong> · <a href="https://www.bilibili.com/video/BV1wyxs66EEd">A whole architecture diagram from one sentence, and edits that touch only what you name</a></td>
+    <td width="50%" align="center"><a href="https://www.bilibili.com/video/BV1ryxs6zEtN"><img src="public/tutorials/cad.jpg" alt="A full set of renovation drawings from one request, plus a 3D walkthrough" width="100%" /></a><br/><strong>🏠 Interior Design</strong> · <a href="https://www.bilibili.com/video/BV1ryxs6zEtN">A full set of renovation drawings from one request, plus a 3D walkthrough</a></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><a href="https://www.bilibili.com/video/BV1oGxs6hEf6"><img src="public/tutorials/ppt.jpg" alt="An 8-slide deck from one sentence, with 200+ templates to choose from" width="100%" /></a><br/><strong>📑 PPT</strong> · <a href="https://www.bilibili.com/video/BV1oGxs6hEf6">An 8-slide deck from one sentence, with 200+ templates to choose from</a></td>
+    <td width="50%" align="center"><a href="https://www.bilibili.com/video/BV17Gxs6aETm"><img src="public/tutorials/canvas.jpg" alt="Circle a spot and only that changes; the rest of the image stays put" width="100%" /></a><br/><strong>🖌️ Free Canvas</strong> · <a href="https://www.bilibili.com/video/BV17Gxs6aETm">Circle a spot and only that changes; the rest of the image stays put</a></td>
+  </tr>
+</table>
 
 ## 🧰 Skills
 
@@ -242,9 +222,3 @@ See [LICENSE](LICENSE) for the full license text.
 ## 💌 Contact
 
 - `3524962421@qq.com`
-
-## 💬 Community
-
-欢迎加入「智构开源社」群聊，一起交流 CanvasAnvil 及开源项目相关内容。
-
-![智构开源社微信群二维码](docs/assets/wechat-group.png)

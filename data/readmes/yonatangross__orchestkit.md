@@ -642,6 +642,28 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.5.1](https://github.com/yonatangross/orchestkit/compare/v10.5.0...v10.5.1)** · 2026-11-01
+
+- **hooks:** close three fail-open edges in the tool dispatcher follow-up (#4971)
+- prune 541 archived playground dirs from main (#4965)
+
+**[v10.5.0](https://github.com/yonatangross/orchestkit/compare/v10.4.4...v10.5.0)** · 2026-11-01
+
+- **hooks:** one-process tool dispatchers behind a flagged hooks.json variant (#4962)
+- **ci:** playground gate reads the PR files API, not the diff (#4967)
+
+**[v10.4.4](https://github.com/yonatangross/orchestkit/compare/v10.4.3...v10.4.4)** · 2026-11-01
+
+- **hooks:** disabled hook on a file stdin no longer hits a TDZ (#4885) (#4949)
+- **skills:** add Bifrost as a gateway option (re-land of [#4940](https://github.com/yonatangross/orchestkit/issues/4940)) (#4966)
+
+**[v10.4.3](https://github.com/yonatangross/orchestkit/compare/v10.4.2...v10.4.3)** · 2026-11-01
+
+- **ci:** docs install-deps waits for the dpkg lock before its retry (#4948)
+- **ci:** docs parity test reports a diff error, never false drift (#4902)
+- **hooks:** auto-lint runs only formatters the repo configures (#4945) (#4950)
+- **demo-production:** Quick Start uses the demo config in place (#4959)
+
 **[v10.4.2](https://github.com/yonatangross/orchestkit/compare/v10.4.1...v10.4.2)** · 2026-10-30
 
 - **ci:** playground gate treats a nested README as docs (#4951)
@@ -669,29 +691,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 - **deps:** bump the remotion group across 1 directory with 21 updates (#4919)
 - **traffic:** snapshot week of 2026-10-19 (#4927)
 - …and 1 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.3.0](https://github.com/yonatangross/orchestkit/compare/v10.2.2...v10.3.0)** · 2026-10-26
-
-- **skills:** plan and research artifact pairs with in-file review (#4897)
-- **ci:** open workflow PRs unarmed (#4930)
-- **plugin:** plain description that states hook scope (#4759)
-- **tests:** docs.yml parity test compares temp files, not /dev/fd (#4933)
-- **skills:** move the json-render skills to 0.21.3 (#4929)
-
-**[v10.2.2](https://github.com/yonatangross/orchestkit/compare/v10.2.1...v10.2.2)** · 2026-10-26
-
-- **hooks:** consolidate prompt hook processes (#4909)
-- **hooks:** never spawn an unrestricted claude under --restricted (#4906)
-- **site:** close the orank sandbox, card and discoverability gaps (#4908)
-
-**[v10.2.1](https://github.com/yonatangross/orchestkit/compare/v10.2.0...v10.2.1)** · 2026-10-25
-
-- **coderabbit:** spend free OSS reviews sparingly, match org settings (#4886)
-
-**[v10.2.0](https://github.com/yonatangross/orchestkit/compare/v10.1.1...v10.2.0)** · 2026-10-25
-
-- **prompt-enhancer:** short stack-aware rewrites with a prompt-cached catalog (#4857)
-- **secrets-veil:** widen the scan-time scaling bound to 31.6x (#4898)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->

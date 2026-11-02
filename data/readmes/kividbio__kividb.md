@@ -11,6 +11,7 @@
   <a href="https://artifacthub.io/packages/helm/kividb-operator/kividb-operator-chart"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kividb-operator" alt="Artifact Hub"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kividbio/kividb" alt="License: AGPL-3.0"></a>
   <a href="https://github.com/kividbio/kividb/discussions"><img src="https://img.shields.io/github/discussions/kividbio/kividb" alt="Discussions"></a>
+  <a href="https://discord.com/invite/ZcMxFeSAPA"><img src="https://img.shields.io/badge/chat-Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://github.com/kividbio/kividb/stargazers"><img src="https://img.shields.io/github/stars/kividbio/kividb?style=flat" alt="GitHub stars"></a>
 </p>
 
@@ -402,6 +403,13 @@ list.
 | `--tls-auth-clients-allowed-names <names>` | none | Names a client certificate's CN or DNS name must match; `*.` is one label |
 | `--update-check <yes\|no>` | `yes` | The [startup update check](#startup-update-check) |
 
+`maxclients` (default `10000`, in the file or with `CONFIG SET`) counts plaintext and TLS
+clients, TLS ones from the start of their handshake. At startup KiviDB raises the soft
+open-file limit to `maxclients` plus what it keeps for itself (32 files, or on io_uring 40 and
+8 a worker thread) if the hard limit allows; if not, it lowers `maxclients` to fit and logs a
+warning. Cluster bus links, a replica's link to its master and files written while saving
+are not counted in that; leave room for them in a large cluster.
+
 ### TLS
 
 TLS clients connect on a separate port, `--tls-port`; plain traffic stays on `--port`. With
@@ -477,6 +485,8 @@ closed network. [docs/UPDATE_CHECK.md](docs/UPDATE_CHECK.md) has the details.
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to build, test
 and submit changes. Contributions are accepted under the
 [Contributor License Agreement](CLA.md), which you sign on your first pull request.
+
+Questions, ideas, or want to talk to the maintainers? Join us on [Discord](https://discord.com/invite/ZcMxFeSAPA), or open a [discussion](https://github.com/kividbio/kividb/discussions).
 
 Please follow the [Code of Conduct](CODE_OF_CONDUCT.md). The [Changelog](CHANGELOG.md)
 lists what changed in each release.

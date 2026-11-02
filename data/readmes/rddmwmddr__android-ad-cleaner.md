@@ -8,16 +8,16 @@
 
 插上手机，点几下按钮。不需要 Python，也不需要 AI 工具。
 
-> **v0.2.9 · 2026-10-30**：新增 10 个社区机型脚本（OPPO Find X10 Pro Max、Find X9 Ultra、Find N5，小米 15 的 HyperOS 3 / 4 各一份，REDMI K80 Pro、K70 Pro，iQOO Z9 Turbo+、vivo V1986A，魅族 21 Pro，一加 Ace 2 安卓 15）；同一型号可按系统版本自动选脚本；华为同名渠道行再修一次；手机连接部分重构。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
+> **v0.3.0 · 2026-11-01**：修 0.2.9 之后社区报告的十几个问题（华为同名渠道行、vivo 旧系统和「运营消息」渠道、安卓 17 页面没画完就找入口、小米商店误点、OPPO 关快应用后快递卡片打不开、POCO 广告组件、连接提示品牌认错等）；新增 vivo X Fold6、Redmi Note 14 5G、一加 Ace 6T、小米 14 Pro 机型脚本和新机型适配辅助 `run.py adapt`；引擎重构，用法不变。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新说明](https://github.com/rddmwmddr/android-ad-cleaner/releases)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
 
 此前版本已处理 Windows 本地页面超时、荣耀截图越界、通知渠道误操作风险、vivo 快应用与备份问题。各 Issue 的处理范围和待验证项见 [社区问题处理记录](docs/09-社区问题处理.md)。仅支持通过 adb 连接的安卓设备，暂不支持使用 HDC 的原生鸿蒙。
 
 | 电脑 | 下载 | 说明 |
 |---|---|---|
-| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.2.9-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.2.9/AndroidAdCleaner-0.2.9-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
-| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.2.9-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.2.9/AndroidAdCleaner-0.2.9-mac-intel.dmg) | 同上 |
-| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.2.9-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.2.9/AndroidAdCleaner-0.2.9-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」 |
-| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.2.9-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.2.9/AndroidAdCleaner-0.2.9-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe` |
+| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.3.0-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
+| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.3.0-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-mac-intel.dmg) | 同上 |
+| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.3.0-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」 |
+| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.3.0-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe` |
 
 不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
 
@@ -99,6 +99,7 @@
 | OPPO | Find X10 Pro Max（PMX110） | ColorOS 17 | — | ✅ | ✅ |
 | OPPO | Find X8s（PKT110） | ColorOS 17.0.0.102(CN01) / Android 17 | ✅ 10-28 真机整段重跑通过：广告跟踪 96 项 + 搜索与建议等 12 项逐项回读确认 | ✅ | ✅ 26 个渠道 |
 | OPPO | Find X9 Ultra（PMA110） | ColorOS 17.0.0.106(CN01) / Android 17 | ✅ 2026-10-29 八段整轮通过，重跑 211 秒，回读确认 173 项；见[说明](recipes/oppo-PMA110/README.md) | ✅ | ✅ 独立关闭并回读 6 个营销渠道，其他原有渠道及总开关未变 |
+| OPPO | Find X9 Pro（PLG110） | ColorOS 16.0.10.501(CN01) / Android 16 | ✅ 2026-11-01 九段逐项实测通过，回读确认 165 项；见[说明](recipes/oppo-PLG110/README.md) | ✅ | ✅ 60 个营销渠道全部关闭并回读确认（0 遗留） |
 | OPPO | Find X10 Pro Max（PMX110） | ColorOS 17.0.0.116 / Android 17 | ✅ 源码新增：9 段，全跑约 4 分钟；下拉搜索需手动，浏览器「摇一摇广告」点不动 | ✅ | ✅ 45 个渠道 |
 | OPPO | Find X9 Ultra（PMA120） | ColorOS 16.0.10 | ❌ 页面和 N6 不同，待补 | 部分 | ✅ 27 个渠道 |
 | OPPO | Find N3 典藏版（PHN110） | ColorOS 16.0.5 | ❌ 待补 | 部分 | ✅ 27 个渠道 |
@@ -108,6 +109,7 @@
 | 小米 | 17（25113PN0EC） | HyperOS 4 / Android 17 | — 无专用脚本 | ✅ 见[清单](docs/清单/小米-HyperOS.md) | ✅ 无营销渠道；1 个候选属服务类，已跳过 |
 | 小米 | 15（24129PN74C） | HyperOS OS4.0.0.22.XOCCNXM / Android 17 | ✅ 10-29 九段实测通过，重跑 164 秒 | ✅ | —（未跑） |
 | 小米 | 13 Ultra（2304FPN6DC） | HyperOS OS3.0.308 / Android 16 | ✅ 10-28 九段通过，复跑 3 分 16 秒 | ✅ | —（未跑） |
+| 小米 | 14 Pro（23116PN5BC） | HyperOS OS3.0.308.0.WNBCNXM / Android 16 | ⚠️ 10-29 社区实测：与 13 Ultra 共用脚本，安全模式下九段跑通、275 秒、19 项关闭并回读；浏览器「搜索设置」未命中，正常模式整轮待复测 | ✅ | ✅ 60 个渠道（64 候选，人工剔除 4 条服务类） |
 | 小米 | Pad 7（2410CRP4CC） | HyperOS OS2.0.208 / Android 15 | ✅ 10-28 四段通过，复跑 61 秒 | ✅ | —（未跑） |
 | 小米 | REDMI K80 至尊版（25060RK16C） | HyperOS 2（BP2A.250605.031.A3）/ Android 16 | ✅ 10-27 真机九段通过，重跑 3 分钟 | ✅ | ✅ 3 个渠道 |
 | 小米 | 15（24129PN74C） | HyperOS OS3.0.307.0.WOCCNXM / Android 16 | ⚠️ 10-29 路径逐项实测、开关已实际关闭；新脚本整轮待复测、用时未测，底包同 K80 但浏览器/商店入口不同 | ✅ | ✅ 17 个渠道，全部关闭 |
@@ -128,7 +130,7 @@
 | 一加 | Ace 2（PHK110） | ColorOS 16.0.5 / Android 16 | ✅ 2026-10-25 路径实测、整段重跑约 85 秒 | ✅ | 11 个关闭，1 个受限 |
 | 一加 | Ace 2（PHK110） | ColorOS 15.0.0.601 / Android 15 | 2026-10-29 手动路径实测；自动脚本尚未整段真机验证 | 部分路径 | 渠道按独立流程处理 |
 
-表格反映当前脚本和验证范围。小米 10、荣耀 Magic7 Pro 等反馈已修复可定位的通用缺陷，但仍需对应真机复测；同品牌参考脚本不等于专用适配，详细记录见 [更新记录](CHANGELOG.md)。
+表格反映当前脚本和验证范围。小米 10、荣耀 Magic7 Pro 等反馈已修复可定位的通用缺陷，但仍需对应真机复测；同品牌参考脚本不等于专用适配，详细记录见 [归档记录](docs/归档/CHANGELOG-0.3.0及更早.md)。
 
 - 可先运行通用检测；通知渠道能否安全关闭取决于系统页面和权限，部分 vivo 页面会被跳过。广告跟踪入口也随品牌变化。
 - 同一个品牌，系统小版本不同，设置页的名字和层级也会变。机型脚本按型号和系统版本存放，版本对不上时引擎会提示，找不到入口的步骤会跳过，不会乱点。
@@ -164,7 +166,7 @@ python3 tool/run.py -s <序列号> dev-off --yes  # 从电脑关闭开发者模�
 
 ```text
 AGENTS.md            给 AI 智能体读的操作规范
-CHANGELOG.md         源码更新、验证结果与安装包发布状态
+CHANGELOG.md         本版起的变更记录（一条一行）；详细历史见 docs/归档/
 docs/
   00-打开开发者模式.md 带截图的分步教程
   01-准备工作.md      装 adb、连电脑、无线调试

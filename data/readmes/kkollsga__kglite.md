@@ -337,6 +337,8 @@ versioned on its own cadence. Three build graphs it serves; one looks at them:
 | **Install**                                | `pip install kglite`              | `pip install ladybug`                               | `pip install networkx` | `pip install rustworkx` | JVM + Java deps  |
 | **Query language**                         | Cypher ([supported dialect](CYPHER.md#feature-coverage)) | Cypher                              | Python API         | Python API         | Cypher                 |
 | **Storage**                                | in-mem · mmap · disk (tested to 861M edges) | in-mem · disk (columnar)                            | in-mem             | in-mem             | disk-backed + page cache (JVM) |
+| **Memory use** (medium / large graph)      | 16 / 17 MB mapped · 252 / 511 MB in-memory | 83 / 93 MB                                 | 3.9 / 7.7 GB       | 611 MB / 1.1 GB    | 506 / 571 MB (default config) |
+| **Performance** (medium / large graph)     | 0.7 / 0.9 ms mapped · 0.6 / 0.9 ms in-memory | 4.5 / 5.4 ms                               | 22 / 44 ms         | 21 / 43 ms         | 83 / 148 ms            |
 | **Bulk-load from pandas**                  | one-liner                         | via Arrow                                           | manual             | manual             | via driver             |
 | **MCP server for LLM agents**              | bundled in the `kglite` wheel     | [separate `mcp-server-ladybug` install](https://github.com/LadybugDB/mcp-server-ladybug) | no | no | [separate official server](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/) |
 | **`describe()` schema for LLM prompts**    | ✅                                 | no                                                  | no                 | no                 | no                     |
@@ -349,6 +351,9 @@ versioned on its own cadence. Three build graphs it serves; one looks at them:
 primitive. The KGLite row refers specifically to its class-forest ontology,
 audit scorecard, and build gate. The other engines have their own schema and
 constraint capabilities.)
+
+How the memory use and performance rows are measured (graphs, query mix, versions
+and caveats): [comparison benchmark](docs/concepts/comparison-benchmark.md).
 
 **Pick KGLite** when you want:
 

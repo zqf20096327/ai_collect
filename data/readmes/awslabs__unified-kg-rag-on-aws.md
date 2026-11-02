@@ -50,7 +50,7 @@ See the [User Guide §4](./docs/user-guide.md#4-querying-run-rag) for per-strate
 | Path | Graph and vector stores | Models | Start here |
 |---|---|---|---|
 | **Local mode** (development, no AWS) | Embedded SQLite graph and vector stores and registry, no server; or Gremlin Server and OpenSearch in containers ([`docker/compose.local.yaml`](./docker/compose.local.yaml)) | Ollama (or any OpenAI-compatible server), or Amazon Bedrock | Follow [Local mode](./docs/user-guide.md#local-mode-no-aws): pull the two Ollama models, then pass `--backend local` |
-| **Existing AWS resources** | Your Neptune cluster and OpenSearch domain (plus DynamoDB for incremental indexing, and an S3 bucket only to sync the stage cache or persist the embedding cache) | Amazon Bedrock | Copy `config-template.yaml` to `config.yaml` and set the endpoints |
+| **Existing AWS resources** | Your Neptune cluster and OpenSearch domain (plus DynamoDB for incremental indexing, and an S3 bucket only to sync the stage cache) | Amazon Bedrock | Copy `config-template.yaml` to `config.yaml` and set the endpoints |
 | **Bundled CDK stack** | Created by [`iac/`](./iac/README.md), with a Fargate data plane and a Step Functions ingestion pipeline | Amazon Bedrock | [Deploy on AWS](#deploy-on-aws-optional), then [`iac/README.md` After deploy](./iac/README.md#after-deploy) |
 
 The AWS paths call Amazon Bedrock, so enable the
@@ -68,11 +68,11 @@ Python 3.11–3.12 and [uv](https://docs.astral.sh/uv/) (`pip` also works). Loca
 ```bash
 git clone https://github.com/awslabs/unified-kg-rag-on-aws.git
 cd unified-kg-rag-on-aws
-uv sync                                 # or: pip install -e .
+uv sync --extra eval --extra viz        # or: pip install -e '.[eval,viz]'
 cp config-template.yaml config.yaml     # then set your Bedrock region and service endpoints
 ```
 
-If OpenSearch uses username/password instead of IAM (`aws.opensearch.use_iam: false`), copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`); PDF, TXT, CSV, and JSON work out of the box.
+If OpenSearch uses username/password instead of IAM (`aws.opensearch.use_iam: false`), copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. `uv sync` alone installs ingestion and queries; `run-eval`'s LangChain and RAGAS judges need the `eval` extra and `run-visualization` the `viz` extra. Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`); PDF, TXT, CSV, and JSON work out of the box.
 
 ### Ingest, query, evaluate
 
@@ -112,9 +112,9 @@ The [`iac/`](./iac/README.md) AWS CDK app provisions the whole stack: a VPC with
 | [User Guide](./docs/user-guide.md) ([한국어](./docs/user-guide.ko.md)) | Configuration, CLI flags, incremental indexing, evaluation, library usage, [limitations](./docs/user-guide.md#12-limitations) |
 | [CLI Reference](./docs/cli.md) | Every flag of every CLI: default and description (generated from the parsers) |
 | [Configuration Reference](./docs/configuration.md) | Every configuration key: type, default, description (generated from the code) |
-| [Model Catalog](./docs/models.md) ([한국어](./docs/models.ko.md)) | Supported Bedrock models and per-provider request differences |
-| [Operator Runbook](./docs/operations.md) ([한국어](./docs/operations.ko.md)) | Re-ingestion, incremental runs, failed documents, caches, common errors |
-| [Design Doc](./docs/design.md) ([한국어](./docs/design.ko.md)) | Hexagonal architecture, algorithms, data model, extension guide, further reading |
+| [Model Catalog](./docs/models.md) | Supported Bedrock models and per-provider request differences |
+| [Operator Runbook](./docs/operations.md) | Re-ingestion, incremental runs, failed documents, caches, common errors |
+| [Design Doc](./docs/design.md) | Hexagonal architecture, algorithms, data model, extension guide, further reading |
 | [`iac/README.md`](./iac/README.md) | CDK stacks, topology, cost drivers, `-c key=value` options, Guardrail deployment, after-deploy commands |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Development setup, tests, quality gate, branch and commit rules |
 | [CHANGELOG.md](./CHANGELOG.md) | Release notes |

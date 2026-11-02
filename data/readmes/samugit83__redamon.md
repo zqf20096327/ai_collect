@@ -26,7 +26,7 @@
 
 <p align="center">
   <a href="https://github.com/samugit83/redamon/stargazers"><img height="24" src="https://img.shields.io/github/stars/samugit83/redamon?style=flat&color=2E8B57&label=Stars" alt="GitHub Stars"/></a>
-  <img height="24" src="https://img.shields.io/badge/v7.5.0-release-2E8B57?style=flat" alt="Version 7.5.0"/>
+  <img height="24" src="https://img.shields.io/badge/v7.5.1-release-2E8B57?style=flat" alt="Version 7.5.1"/>
   <img height="24" src="https://img.shields.io/badge/WARNING-SECURITY%20TOOL-B22222?style=flat" alt="Security Tool Warning"/>
   <img height="24" src="https://img.shields.io/badge/LICENSE-MIT-4169A1?style=flat" alt="MIT License"/>
   <img height="24" src="https://img.shields.io/badge/AI-AUTONOMOUS%20AGENT-6A5ACD?style=flat&logo=openai&logoColor=white" alt="AI Powered"/>
@@ -540,6 +540,7 @@ Everything runs on a **fan-out / fan-in** architecture: each phase fires as many
 | | **Endpoint AI Classifier** | Path + parameter classifier — tags `Endpoint.ai_interface_type` (`llm-chat`, `llm-completion`, `llm-embedding`, `llm-tool-call`, `sse-stream`, `mcp`, `llm-graphql`), `is_ai_rag_ingest`, `Parameter.is_ai_prompt_injectable` against catalogued AI signatures | Passive | Sequential (post-crawl) |
 | **JS Recon** | **JS Secret Detection** | 100 regex patterns + custom uploads | Passive | Parallel per file |
 | | **Key Validation** | 21 service validators (AWS, GitHub, Stripe, etc.) | Active | Rate-limited (1/sec/svc) |
+| | **TruffleHog Engine** | TruffleHog in a hardened sidecar over local copies of the JS, keys merged one per key (on by default for new projects; no network unless keys are validated) | Passive (Active with key validation) | Own worker, own budget |
 | | **Source Map Discovery** | Comment, header, path probing | Active | Per JS file |
 | | **Dependency Confusion** | npm registry check | Passive | Per scoped package |
 | | **Endpoint Extraction** | REST, GraphQL, WebSocket, router patterns | Passive | Per JS file |
@@ -991,5 +992,4 @@ flowchart TB
 | Resource | Link |
 |----------|------|
 | **Full Wiki** (user guide) | **[github.com/samugit83/redamon/wiki](https://github.com/samugit83/redamon/wiki)** |
-| **Interactive walkthroughs** (redamon.org) | **[Inside RedAmon Agent](https://www.redamon.org/how-the-agent-works)** · **[Inside the Recon Pipeline](https://www.redamon.org/how-the-recon-pipeline-works)** |
-| **Bug Bounty Coverage Audit** (397 classes, PDF) | **[Wiki: The Full Taxonomy Audit](https://raw.githubusercontent.com/wiki/samugit83/red
+| **Interactive walkthroughs** (redamon.org) | **[Inside RedAmon Agent](https://www.redamon.org/h

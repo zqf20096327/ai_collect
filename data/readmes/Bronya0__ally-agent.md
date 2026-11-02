@@ -1,142 +1,161 @@
 # Ally
 
-[English](README.md) | [简体中文](README_zh-CN.md)
+Ally Native 是一款使用 Go 与 MyGo 绘制界面的桌面 AI 编程助手，**主打极低资源占用，为多任务并行与远程开发而生。** 你可以通过对话理解代码、编辑文件、搜索项目、管理任务并完成开发工作。
 
-A desktop AI coding assistant that works with your local projects. Ally helps you understand code, edit files, search a workspace, manage tasks, and complete development work through conversation.
-
-⭐ If Ally helps you, please give it a Star on GitHub — it keeps the project going. Thanks!
+⭐ 如果 Ally 帮到了你，欢迎在 GitHub 点个 Star，这是对项目最大的支持，谢谢！
 
 <p>
   <a href="https://github.com/Bronya0/ally-agent/releases">
-    <img alt="Download Ally" src="https://img.shields.io/badge/Download-GitHub_Releases-2ea44f?style=for-the-badge&logo=github">
+    <img alt="下载 Ally" src="https://img.shields.io/badge/下载_Ally-GitHub_Releases-2ea44f?style=for-the-badge&logo=github">
   </a>
 </p>
 
-Download packages for Windows, macOS, and Linux from the [Releases page](https://github.com/Bronya0/ally-agent/releases).
+前往 [Releases 页面](https://github.com/Bronya0/ally-agent/releases)下载 Windows、macOS 或 Linux 安装包。
 
-![Ally screenshot](docs/img.gif)
+![Ally Native 界面截图](docs/imgs/1.jpg)
 
-![Ally screenshot](docs/img2.jpg)
+![Ally 界面截图](docs/img2.jpg)
 
-![Ally screenshot](docs/img3.jpg)
+![Ally 界面截图](docs/img3.jpg)
 
-## Features
+## 主要功能
 
-- Work with local projects through natural-language conversations, attachments, and persistent sessions
-- Read, search, create, edit, and safely delete files with workspace boundaries and optimistic concurrency checks
-- Read, edit, create, delete, run commands, and transfer files or directories on remote SSH workspaces, reusing your existing `ssh` login
-- Review bounded visual diffs, multi-file edits, command output, and detailed tool failure reasons directly in chat
-- Use OpenAI Chat Completions, OpenAI Responses, Anthropic Messages, and compatible model services
-- Capture provider reasoning fields or configurable reasoning tags such as `reasoning_content`, `think`, and `sink`
-- Configure per-workspace model selection so each project keeps its own model preference
-- Tune reasoning depth with configurable thinking strength (reasoningEffort) per model
-- Configure multiple API keys with automatic priority failover and cooldown recovery for high availability
-- Speed up model setup with a bundled provider/model preset catalog that pre-fills API format, base URL, and context window
-- Render sandboxed interactive HTML results in chat for small tools, previews, and widgets
-- Render Mermaid diagrams inline with wheel zoom, drag panning, and double-click reset, plus KaTeX math and highlighted code blocks
-- Attach images for vision-capable models and preview model-generated images in chat
-- Delegate substantial work to parallel sub-agents with live steps, tool activity, token usage, and inline final summaries
-- Extend Ally with plugins: one zip package adds a full sidebar page, written in plain JS/TS with HTTP, storage, and workspace access declared in the manifest
-- Connect MCP servers through stdio, SSE, or Streamable HTTP using either a form editor or raw JSON
-- Extend workflows with discoverable Skills and durable cross-project memory; built-in skills include `ally-agent` (Ally usage manual), `codegraph`, `playwright-cli`, and `anydoc` (Office/PDF to Markdown)
-- Manage multiple workspaces, chat sessions, todos, and scheduled tasks that persist across restarts, with a built-in workspace explorer and file editor
-- Run short shell commands and tracked background processes with a task-center log viewer; Windows automatically discovers Git Bash and falls back to PowerShell when necessary
-- Fetch web pages and call HTTP APIs with bounded response sizes, timeouts, redirect limits, and per-host rate limits
-- Visualize token usage trends with an asynchronous token statistics dashboard
-- Personalize the chat with a custom background image and adjustable opacity
-- Auto-update on Windows and macOS (DMG replace flow), with staged directory rollback on failure
-- Follow the Windows or macOS system proxy, or set a manual HTTP/HTTPS/SOCKS5 proxy applied consistently across models, HTTP tools, MCP, commands, and background services
-- Use localized Chinese or English UI, startup warnings, settings, and tool status messages
-- Search code with bundled ripgrep—no separate installation required in release packages
+- 使用 Go 与 MyGo 绘制原生桌面界面，统一 Windows、macOS 和 Linux 上的主要交互与视觉样式
+- 通过自然语言对话、附件和持久化会话处理本地项目
+- 在工作区安全边界和版本校验保护下读取、搜索、创建、编辑及删除文件
+- 通过 SSH 操作远程主机工作区：读取、编辑、创建、删除文件，执行命令，并在本地与远端之间传输文件或目录，复用本机已有的 `ssh` 登录配置
+- 在聊天中直接查看可视化 Diff、多文件修改、命令输出和完整的工具失败原因
+- 支持 OpenAI Chat Completions、OpenAI Responses、Anthropic Messages 及兼容模型服务
+- 支持读取服务商推理字段，也可配置 `reasoning_content`、`think`、`sink` 等推理标签
+- 工作区级模型选择，每个项目可独立配置使用的模型
+- 可配置思考强度（reasoningEffort），按模型精细控制推理开销
+- 支持配置多个 API Key，自动优先级故障转移与冷却恢复，保障可用性
+- 内置服务商/模型预设目录，添加模型时自动填充 API 格式、地址与上下文窗口
+- 支持在聊天中安全渲染沙箱 HTML，用于小工具、交互预览和组件展示
+- 聊天中内联渲染 Mermaid 图表（滚轮缩放、拖拽平移、双击复位）、KaTeX 数学公式与高亮代码块
+- 可为支持视觉能力的模型附带图片输入，模型生成的图片直接在聊天中预览
+- 可将复杂任务委派给并行子代理，实时查看步骤、工具活动、Token 用量和最终摘要
+- 插件系统：一个 zip 包即可在侧栏新增一个整页，页面用纯 JS/TS 编写，HTTP、存储与工作区访问由清单声明
+- MCP 支持 stdio、SSE 和 Streamable HTTP，可使用表单或原始 JSON 配置
+- 使用可发现的 Skills 扩展工作流程，并通过全局记忆保存跨项目知识；内置技能含 `ally-agent`（Ally 使用手册）、`codegraph`、`playwright-cli`、`anydoc`（Office/PDF 转 Markdown）
+- 管理多个工作区、聊天会话、Todo 和重启后继续运行的定时任务，内置原生文件浏览器与文件编辑器
+- 支持短时命令和带任务中心日志查看的后台进程；Windows 会自动发现 Git Bash，必要时回退到 PowerShell
+- 支持抓取网页与调用 HTTP API，带响应大小上限、超时、重定向限制与每主机限速
+- 异步 Token 统计仪表盘，可视化用量趋势
+- 自定义聊天背景图，可调节透明度
+- 支持深色、浅色和自动主题，以及多种强调色；欢迎页提供多种内置形象与自定义图片
+- Windows 与 macOS 自动升级（macOS 走 DMG 替换流程），失败时暂存目录自动回滚
+- 可跟随 Windows 或 macOS 系统代理，或手动配置 HTTP/HTTPS/SOCKS5 代理，并统一应用到模型、HTTP 工具、MCP、命令和后台服务
+- 提供中文和英文界面，包括启动警告、设置与工具状态信息
+- 发行包已内置 ripgrep，无需单独安装即可搜索代码
 
-## Getting started
+## 开始使用
 
-1. Download the package for your platform from [GitHub Releases](https://github.com/Bronya0/ally-agent/releases).
-2. Start Ally and select a project directory.
-3. Open Settings and configure your model provider, model, API URL, and API key.
-4. Start chatting about your project.
+1. 从 [GitHub Releases](https://github.com/Bronya0/ally-agent/releases) 下载对应平台的软件包。
+2. 启动 Ally 并选择一个项目目录。
+3. 打开设置，配置模型服务、模型名称、API 地址和 API Key。
+4. 开始与 Ally 对话。
 
-macOS: the package is not signed, so drag `Ally.app` into Applications first, then double-click `免签名启动Ally.command` from the DMG once — it clears the quarantine flag and launches Ally.
+Windows 发行包为 ZIP，解压后运行 `Ally.exe`。macOS 发行包为 DMG，应用使用免费的 ad-hoc 签名且未做公证；如果首次打开时被系统拦截，请在 Finder 中按住 Control 点击 `Ally.app`，再选择“打开”。Linux 提供 x64 和 ARM64 压缩包，当前需要手动下载和替换版本。
 
-## Staged tool calls
+Ally Native 沿用原版的 `~/.ally_agent` 配置和会话数据。常用快捷键：Enter 发送，Ctrl+Enter 换行，Esc 中断当前会话或工具调用。
 
-A model can emit several tool calls in one response, and each call may carry an optional `stage` number. Calls in the same stage run concurrently. Stages are separated by a hard barrier: the next one starts only after every call in the previous stage has settled, including calls still queued behind the concurrency limit. A real failure stops the remaining stages and sends the skip reason back to the model, while writes, installs, and services that already happened are never rolled back. Ordered work like edit, then test, then verify therefore needs stage numbers rather than extra turns.
+## 分阶段工具调用
 
-Stages only order calls; they never carry values. A parameter that depends on an earlier result, such as a file version, still has to come in a later response.
+模型可以在一次回复里发多个工具调用，每个调用可以带一个可选的段号（`stage`）。同一段内的调用并发执行。上一段的调用全部结束后才会进入下一段，包括仍在并发上限后排队的调用。任何一处真实失败都会让后续段停止执行，并把跳过原因返回给模型；已经完成的写入、安装和服务不会回滚。所以“先改代码，再跑测试，最后校验”这类有先后的任务，用段号表达就够了，不必拆成多轮对话。
+
+段号只排先后，不传值。依赖上一步返回结果的参数（比如文件版本号）仍然需要分轮发起。
 
 ```mermaid
 flowchart LR
-  subgraph S0["stage 0 runs concurrently"]
-    A["read src/app.go"]
+  subgraph S0["stage 0 并发执行"]
+    A["读 src/app.go"]
     B["grep TODO"]
-    C["command: git status"]
+    C["命令 git status"]
   end
   subgraph S1["stage 1"]
-    D["edit src/app.go"]
+    D["编辑 src/app.go"]
   end
   subgraph S2["stage 2"]
-    E["command: go test"]
+    E["命令 go test"]
   end
-  S0 -->|"all calls settled"| S1
-  S1 -->|"all calls settled"| S2
+  S0 -->|"全部结束才放行"| S1
+  S1 -->|"全部结束才放行"| S2
 ```
 
-## Plugin system
+## 插件系统
 
-A plugin is a single zip package that adds a full page to Ally's sidebar. Pages are plain JavaScript/TypeScript: no Go code, no bundler, and no restart. Pages get backend features through the injected `host` object (HTTP, per-plugin storage, read-only workspace access, events, and theme).
+插件就是一个 zip 包，装进来后侧栏会多出一个整页。页面用纯 JavaScript/TypeScript 编写，不用写 Go、不用打包、不用重启应用。页面通过 Ally 注入的 `host` 对象使用后端能力，包括 HTTP、插件私有存储、工作区只读访问、事件和主题。
 
-Manage plugins on the **Plugins** page: import a zip (or drag it in), install from an unpacked directory, export (optionally with plugin data), enable or disable, and delete.
+在**插件**页管理插件：导入 zip（也可以直接拖进来）、从已展开的目录安装、导出（可选是否包含插件数据）、启用或禁用、删除。
 
-A minimal `plugin.json`:
+一个最小的 `plugin.json`：
 
 ```json
 {
   "id": "my-helper",
-  "name": "Ticket Helper",
+  "name": "工单助手",
   "version": "1.0.0",
   "entry": "index.js",
-  "menu": [{ "key": "helper", "title": "Tickets", "icon": "ApiOutlined" }],
+  "menu": [{ "key": "helper", "title": "工单", "icon": "ApiOutlined" }],
   "permissions": { "http": ["api.example.com"], "workspace": "read" }
 }
 ```
 
-The entry module exports `mount(element, host)`, which returns a cleanup function.
+入口模块导出 `mount(element, host)`，返回值是卸载函数。
 
-- The manifest accepts only the documented keys; unknown keys are rejected at import.
-- HTTP requests are denied unless the host is listed in `permissions.http`.
-- Re-importing a plugin with the same `id` upgrades it and keeps its `host.store` data.
-- Plugin code runs in the main page context and is not a sandbox: it can call backend bindings directly, and installing shows no permission prompt. Only install plugins you trust.
+- 清单只认文档列出的键，写了未知键会在导入时报错。
+- 未在 `permissions.http` 中声明的主机，HTTP 请求一律拒绝。
+- 用相同 `id` 重新导入即为覆盖升级，`host.store` 中的数据会保留。
+- 插件代码运行在主页面上下文中，不是沙箱：它可以直接调用后端绑定，安装时也不会弹出权限确认。请只安装你信任的插件。
+- 插件页以及 HTML、Mermaid 内容预览按需使用受控 WebView；主界面与常规页面仍由 Go 和 MyGo 原生绘制。
 
-For the full guide (the `host` API, styling rules, and common pitfalls), see [docs/plugin-system.md](docs/plugin-system.md). You can also give that link to an AI assistant and ask it to write a plugin.
+完整说明（`host` API、样式规范与常见坑）见 [docs/plugin-system.md](docs/plugin-system.md)。也可以把这个链接发给 AI 助手，让它帮你写插件。
 
-## Local build
+## 本地构建
+
+需要 Go 1.27.3 和 Python 3.9+。Windows 与 macOS 开发构建可以直接使用以下入口：
+
+| 系统 | 入口 | 产物 |
+| --- | --- | --- |
+| Windows | `scripts/build.bat` | `dist/ally-native.exe` 与 `dist/tools/rg.exe` |
+| macOS | `scripts/build.command` | 当前机器架构的 `dist/Ally.app` |
+
+也可以从命令行运行：
 
 ```bash
-wails3 build
+go run .
+python scripts/build.py dev
 ```
 
-The binary is written to `bin/`. Development mode with hot reload: `wails3 dev`.
+全平台发行构建仅在 macOS 上执行，需显式指定稳定版标签：
 
-## License
+```bash
+BUILD_TAG=v2.1.0 bash scripts/build-all.sh
+```
 
-Copyright (C) 2026 Bronya0.
+构建会生成 Windows x64/ARM64、macOS Universal/Intel/Apple Silicon 和 Linux x64/ARM64 共七个发行包。更多构建与架构说明见 [升级兼容文档](docs/update-compatibility.md)。
 
-Ally is free software licensed under the [GNU General Public License v3.0 only](LICENSE) (`GPL-3.0-only`). You may use, study, modify, and redistribute it under those terms. Distributions of Ally or modified versions must provide the corresponding source code and retain the GPLv3 license notices.
+## 许可证
 
-Release packages include [ripgrep](https://github.com/BurntSushi/ripgrep) under its own MIT/Unlicense terms. Other third-party resources retain their respective licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Copyright (C) 2026 Bronya0。
 
-## Contact
+Ally 是采用 [GNU General Public License v3.0 only](LICENSE)（`GPL-3.0-only`）发布的自由软件。你可以依照该许可证使用、研究、修改和重新分发本项目。分发 Ally 或其修改版本时，必须提供对应源代码并保留 GPLv3 许可证声明。
 
-Questions, bug reports, or feedback: [tangssst@qq.com](mailto:tangssst@qq.com)
+发行包包含采用自身 MIT/Unlicense 条款的 [ripgrep](https://github.com/BurntSushi/ripgrep)。其他第三方资源保留各自的许可证，详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
-## Reference projects
+## 联系方式
 
-Ally picked up a few implementation details from these projects and engineering articles — credits to their authors. Each follows its own license, and Ally is not affiliated with any of them.
+问题反馈、建议或合作请联系：[tangssst@qq.com](mailto:tangssst@qq.com)
+
+## 参考项目
+
+Ally 在部分实现细节上参考了下列项目与工程文章的做法，在此致谢。各项目遵循其自身许可证，Ally 与它们没有隶属关系。
 
 - [Anthropic — Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)
 - [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 - [Anthropic — Managed Agents](https://www.anthropic.com/engineering/managed-agents)
-- [Kimi Code CLI (kimicode)](https://github.com/MoonshotAI/kimi-code) — light-theme palette, image token estimation, interruption reminders
-- [Codex CLI](https://github.com/openai/codex) — Responses session cache key and usage field handling
-- [pi](https://github.com/earendil-works/pi) — fuzzy edit matching, context estimation, reasoning capability checks, overflow-recovery compaction
-- [OpenCode](https://github.com/sst/opencode) — request header and User-Agent compatibility conventions
+- [Kimi Code CLI（kimicode）](https://github.com/MoonshotAI/kimi-code) — 亮色主题色板、图片 token 估算、中断提醒等交互与计量细节
+- [Codex CLI](https://github.com/openai/codex) — Responses 协议的会话缓存键与用量字段处理
+- [pi](https://github.com/earendil-works/pi) — 编辑模糊匹配、上下文估算、思考档位能力判定、溢出恢复压缩
+- [OpenCode](https://github.com/sst/opencode) — 请求头与 User-Agent 等兼容性约定

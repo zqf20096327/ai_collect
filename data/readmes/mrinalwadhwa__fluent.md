@@ -71,10 +71,23 @@ the ID to process all stored Work Items). Fluent records the source and target
 format in an audit file, rewrites the records transactionally, and treats a
 repeat as a no-op. Unknown future formats are rejected rather than guessed.
 
+Existing 0.6.0 projects do not need to be deleted or initialized again. Work
+created with `--instructions` keeps its saved assignment and does not require
+Brief, Behaviors, Approach, or Plan files. Correction Writers receive the saved
+assignment alongside current findings. Fluent preserves existing configuration,
+history, and Tester files. When an initial Writer has no `.fluent/tester.yaml`
+or result extractor, its assignment explicitly asks it to create and commit
+the missing files.
+
 See the [v0.6.0 release notes](documentation/releases/v0.6.0.md) for behavior
 changes, assurance limits, and recovery commands.
-For a transition from v0.5.0 with a shared scheduler, follow the
+For Claude session recovery from v0.6.0, or a transition from v0.5.0 with a
+shared scheduler, follow the
 [next-release transition procedure](documentation/releases/next.md).
+
+For a local conversation in an owner-approved private Discord server, see
+[Run Fluent in Discord](docs/discord-runner.md). The runner supports thread
+replies, planning approvals, and Work controls with Codex or Claude.
 
 ## How Fluent works
 
@@ -154,6 +167,20 @@ Fluent gives each Attempt an isolated Git worktree, keeping its changes separate
 
 Within the Attempt, the Writer receives the approved Brief, Behavior Specifications, Technical Approach, and its assigned part of the Implementation Plan, along with the relevant code, project Expertise, and instructions. It implements the change, writes or updates its tests, runs focused harness-native checks, and commits a candidate for review. Its final message reports the exact checks and what they covered.
 
+Before starting a Writer or Reviewer, Fluent opens its declared inputs under
+the worker's sandbox profile. If an input cannot be read, the Task pauses with
+the exact path. Open supplied files directly: listing their parent `.fluent`
+directory can be denied even when the files are readable. A worker that loses
+access should report that path and the failed operation instead of continuing
+from the Work Item title alone.
+
+An active Writer can run `fluent task check-handoff <work-item-id> <attempt-id>
+<task-id>` from its assigned candidate. Read the JSON report's `overall` status
+and individual diagnostics; successful command exit only means a report was
+produced. An inaccessible host binding yields `not-verifiable`, never a pass.
+This preflight does not change Work state or replace the trusted host handoff,
+ordinary reviews, final Tester, or Learning.
+
 Reviewers treat the Writer’s focused report as advisory evidence, inspect the implementation and tests themselves, and do not rerun the full suite. If one concrete result is missing, the Tests Reviewer may run one named harness-native check. If its read-only environment cannot run that check, it records the exact command and candidate-relative working directory instead of requesting a source change. Fluent pauses for explicit `fluent attempt evidence run` authorization, which schedules a verification Task bound to the candidate. Run the printed Task command, then `fluent attempt run` to validate its receipt and rerun only the Tests Reviewer. The worker uses private writable scratch against read-only candidate source and retains detailed logs in its Task artifacts. A source finding still returns directly to the Writer, avoiding a complete-suite run for a candidate that is already known to need correction.
 
 After every Reviewer passes, the Tester runs once as the authoritative final gate. It is a deterministic runner, not a coding agent. It reads one or more test commands from the project’s `.fluent/tester.yaml`, runs them sequentially in the candidate workspace, and captures each command’s output, exit code, and duration. The project’s `.fluent/extract-tester-results` executable normalizes those outputs into a single `tester-results.json` artifact, which Fluent binds to the exact reviewed commit. An introduced regression or infrastructure error returns to the Writer; a clean result advances the candidate to Learning.
@@ -161,10 +188,33 @@ After every Reviewer passes, the Tester runs once as the authoritative final gat
 Some test tools update tracked lockfiles or generated metadata as a side effect. A Work Task Tester starts only from a clean tracked candidate and restores tracked side effects after each run while retaining the original command evidence. It leaves untracked and ignored build outputs alone; a preexisting tracked edit or changed candidate commit fails closed instead of being overwritten.
 
 Writer and final Tester Tasks in one Attempt share the Fluent-owned
-Attempt-scoped Cargo dependency cache, while another Attempt never receives that
-cache. Each sandbox grants only that private cache's dependency stores; the
-operator's Cargo home, credentials, configuration, and binaries remain outside
-the boundary.
+Attempt-scoped Cargo and npm dependency caches, while another Attempt never
+receives those caches. Cargo admits only dependency stores; npm starts empty
+and uses private user/global configuration. Installed tools receive read/execute
+access separately, and operator credentials and mutable caches stay outside the
+new grants.
+
+Existing Node projects created with Fluent 0.6.0 can use the upgraded binary
+without reinitializing `.fluent`, changing coder settings, or replacing Work
+history. Fluent resolves the selected `node`, `npm`, and `npx` on `PATH`, including
+standard macOS installer links from `/usr/local/bin` into
+`/usr/local/lib/node_modules/npm`. Homebrew and direct version-manager
+installations use the same resolved-package boundary. Clean worktrees install
+their own dependencies: declare the project's install and test commands, such as
+`npm ci && npm test`, in the Tester configuration. Fluent runs saved commands
+unchanged; it does not copy the source checkout's ignored `node_modules`.
+See [Node worker preparation](documentation/architecture.md#prepare-node-workers)
+for supported launchers and prerequisite diagnostics.
+
+Fluent reclaims idle `target` output in its managed worktrees after Tasks settle
+or Attempts stop. It keeps active output and favors output from unfinished Work.
+Set `build-output.max-project-gib` in `.fluent/config.yaml` to change the
+project retention budget (default: 100 GiB). Reviewer build caches use the
+separate `reviewer-cache.max-project-gib` budget (default: 50 GiB); caches still
+referenced by unfinished Work remain protected, and new cache admissions start
+cold if protected usage leaves no room. A Reviewer also uses its Task scratch
+area for a cold build when an existing protected cache has grown over budget;
+Fluent keeps that shared cache on disk until it can safely reclaim it.
 
 Before starting review work, run `fluent tester check` to validate the Tester through the same boundary that a Tester Task uses. If this standalone preflight reports a harness problem, repair the declared configuration, extractor, or sandbox setup and rerun the check.
 
@@ -181,6 +231,14 @@ Work in place and waits for active service-owned Attempts in every project.
 It does not cancel Attempts, start a replacement, or signal the displayed PID.
 If an Attempt does not finish, use its existing explicit cancellation or
 recovery path and retry the stop for the same service instance.
+
+Worker execution defaults to headless. Attempts created with
+`--terminal-mode native` run assigned Codex, Claude, and Pi Tasks through
+their native interfaces. Native Attempts create attachable terminal
+sessions for active worker invocations. See [Native agent Tasks](docs/native-agent-tasks.md)
+for setup and evidence details. Use `fluent terminal explain --source
+<checkout> <work-item> <attempt> <task>` to see why a selected worker has no
+live agent terminal.
 
 An older shared service may answer health without the instance identity and
 drain capability. The new client cannot stop that process safely. Stop it from
@@ -375,3 +433,29 @@ Each completed change improves the project and shapes how Fluent approaches futu
 ---
 
 👉 [Join our conversation on building software factories, on Discord.](https://discord.gg/dygEVzG3gf)
+
+## Watch Work across projects
+
+Run `fluent dashboard` from a checkout to see its Work alongside checkouts already registered with the scheduler. Add an unregistered checkout with `--project /path/to/checkout`; repeat the option for more projects. The dashboard reads the existing registry and Work snapshots without registering or changing any project.
+
+The list groups Work by source. Each group shows project name, host, and path
+context; the detail pane shows the full checkout path. While dashboard navigation
+owns input, press Tab/Shift+Tab to cycle forward/backward through All, Needs you,
+Running, Ready, Waiting, and History. Ready includes Ready and Ready to land;
+Waiting includes Queued and Planned. Rows keep their exact categories. Header
+counts reflect published Work Item lifecycle and queue state; expanding workers
+does not change them.
+
+Use Up/Down to select a row and Enter on a Work Item to expand or collapse its
+Attempt's worker Tasks. Press Right to inspect selected details or open the
+selected available worker's session in Observe mode. In compact mode, Left/Esc
+returns to the list; Tab/Shift+Tab still changes views in either pane while
+navigation owns input. Press `e` for read errors, `r` to refresh, and `?` for help.
+
+A source that fails a later refresh keeps its last snapshot with a `STALE` label while other projects continue updating. Worker details use `unavailable` where Fluent has no recorded model, elapsed time, or provider wait. Agent-terminal availability comes from managed terminal descriptors; a headless worker has no interactive terminal.
+
+Select a native agent worker and press `t` to observe its terminal. Wide dashboards keep the project list beside the terminal. Press `i` for Control, `Ctrl-]` for dashboard navigation, `o` to observe, and `f` for full-screen attachment. Press `Ctrl-]` then `]` to send the reserved chord literally. See [terminal source builds](docs/terminal-build.md) to prepare the pinned native library before compiling Fluent.
+
+Configure existing remote macOS projects in `~/.config/fluent/dashboard-sources.json` to include them through OpenSSH. The same terminal controls reach the remote runtime; disconnect drops queued input, and reconnect revalidates the original invocation in Observe mode. See [SSH agent sources](docs/ssh-agent-sources.md) for configuration, prerequisites, and the separately authorized host acceptance journey.
+
+The dashboard's source snapshot contract is version 1. A local source identity is its canonical checkout path; a configured remote source uses `ssh:<name>`. In both cases, a Work row adds the Work Item ID, and a worker row adds Attempt ID, Task ID, and the execution generation when a managed terminal descriptor exists. Each source snapshot carries its published Work state, displayed Attempt workers, queued Work Item IDs, optional terminal descriptors, diagnostics, and a stale marker. The dashboard reads bounded records and does not scan transcripts or change Work state. Failed source reads preserve only the last successful snapshot for that source; lifecycle labels from such a snapshot remain visibly stale until a successful refresh.

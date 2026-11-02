@@ -11,7 +11,8 @@
   <a href="#licensing"><img src="https://img.shields.io/badge/License-MIT%20%2B%20source--available-yellow.svg" alt="License: MIT + source-available"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18%2B-green" alt="Node.js 18+"></a>
   <a href="https://github.com/talirezun/the-curator/releases"><img src="https://img.shields.io/badge/Mac%20app-.dmg%20(not%20notarised)-blue" alt="Mac app: .dmg (not notarised)"></a>
-  <a href="#option-c--manual-setup-windows--linux--mac"><img src="https://img.shields.io/badge/Manual%20setup-Windows%20%7C%20Linux-lightgrey" alt="Manual setup: Windows / Linux"></a>
+  <a href="#windows--one-line-install"><img src="https://img.shields.io/badge/Windows-one--line%20install-0078D4" alt="Windows: one-line install"></a>
+  <a href="#option-c--manual-setup-windows--linux--mac"><img src="https://img.shields.io/badge/Manual%20setup-Linux-lightgrey" alt="Manual setup: Linux"></a>
   <a href="https://github.com/talirezun/the-curator"><img src="https://img.shields.io/badge/Status-Active-brightgreen" alt="Status: Active"></a>
   <br>
   <a href="https://mycurator.xyz"><img src="https://img.shields.io/badge/Website-mycurator.xyz-7C5AF5" alt="Website: mycurator.xyz"></a>
@@ -19,6 +20,8 @@
   <a href="https://github.com/talirezun/the-curator/actions/workflows/test.yml"><img src="https://github.com/talirezun/the-curator/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
   <a href="https://github.com/talirezun/the-curator"><img src="https://img.shields.io/github/stars/talirezun/the-curator?style=social" alt="GitHub Stars"></a>
 </p>
+
+<p align="center"><b>On Windows?</b> Open PowerShell, paste one line, press Enter → <a href="docs/install-windows.md">Install on Windows</a></p>
 
 <p align="center"><strong>Build a second brain from what you read, share it with a team, and give it to your agents.</strong></p>
 
@@ -98,8 +101,9 @@ These are not two products. A book, a thesis or a research programme outlives an
 which is the day the second becomes the first's future.
 
 **On a Mac, [download the app](#option-a--download-the-mac-app-dmg) and you are running in a
-couple of minutes.** On Windows and Linux it runs as a local server you open in your browser —
-same code, same release, same features.
+couple of minutes. On Windows, [paste one command into PowerShell](#windows--one-line-install).**
+On Linux it runs as a local server you open in your browser — same code, same release, same
+features.
 
 ---
 
@@ -347,10 +351,38 @@ flowchart TD
 
 ## Quick start
 
-On a **Mac** you can download the app. On **Windows and Linux** — and on a Mac too, if you
-prefer it — The Curator runs as a **local server you open in your browser**: one shell around
-`src/`, not a fork, so the browser install is **not** a legacy path and is fully supported
-everywhere.
+On a **Mac** you can download the app. On **Windows** you paste one command. On **Linux** — and
+on a Mac too, if you prefer it — The Curator runs as a **local server you open in your browser**:
+one shell around `src/`, not a fork, so the browser install is **not** a legacy path and is fully
+supported everywhere.
+
+### Windows — one-line install
+
+**On Windows?** Open PowerShell, paste one line, press Enter → [Install on Windows](docs/install-windows.md) (a one-page handout).
+
+1. Press **Start**, type **PowerShell**, and open **Windows PowerShell** (not "Command Prompt").
+2. Paste this, then press **Enter**:
+
+```powershell
+irm https://raw.githubusercontent.com/talirezun/the-curator/main/install.ps1 | iex
+```
+
+That is the whole install. It takes about **2 to 5 minutes**, needs **no administrator rights**
+and installs nothing on your system: it downloads its own private copy of Node.js (version 24 LTS) and git (each
+download is checked against a fixed checksum), puts the app in `%USERPROFILE%\the-curator`, and
+opens The Curator in your browser. It needs Windows 10 (version 1809 or newer) or Windows 11, 64-bit, and about 500 MB of free disk space. The app's own first-run panel takes over from there.
+
+Afterwards you have two icons, each in two places (four shortcuts in all): on your Desktop and in the Start menu folder **The Curator**:
+
+| Icon | What it does |
+|---|---|
+| **The Curator** | Starts the app if it is not running, and opens it in your browser |
+| **Stop The Curator** | Stops the app |
+
+Your knowledge lives in `%USERPROFILE%\the-curator\domains` (open that folder in Obsidian).
+To **update**, press Update in the app's Settings, or run the same command again — it repairs and
+updates (and restarts the app if it was running), and never touches your notes, keys or settings. Step-by-step help, troubleshooting and uninstalling:
+[User Guide § 3 → Windows](docs/user-guide.md#windows-one-line-installer).
 
 ### Option A — Download the Mac app (`.dmg`)
 
@@ -435,7 +467,7 @@ the first real update is the first real test.
 
 Your knowledge is plain markdown in a folder you chose, so nothing above affects it. Coming
 from the shell installer below? Your wiki comes across untouched; you re-paste your API key and
-press **Install for me** in Settings → MCP bridge → Tools on this Mac — and point the app at your existing folder, which is
+press **Install for me** in Settings → MCP bridge → Agent apps — and point the app at your existing folder, which is
 [one button and one trap](docs/user-guide.md#pick-the-folder-that-contains-your-domains). The
 decisions behind the packaging — and, for each, whether code exists yet — are in
 [docs/desktop-app-decisions.md](docs/desktop-app-decisions.md).
@@ -458,15 +490,14 @@ points you to API key setup.
 
 ### Option C — Manual setup (Windows / Linux / Mac)
 
-**There is no Windows or Linux app**, so this is the way in on those platforms — and it is a
-first-class one: ingest, chat, wiki, MCP, sync and Health are all here. The Node server runs
-anywhere Node 18+ runs; only the `.dmg`, the one-line installer and the auto-built `.app` Dock
-launcher are macOS-specific.
+**There is no Linux app**, so this is the way in on Linux — and it is a first-class one: ingest,
+chat, wiki, MCP, sync and Health are all here. (On Windows use the
+[one-line install](#windows--one-line-install) above; the steps below also work there if you
+prefer to manage Node and git yourself.) The Node server runs anywhere Node 18+ runs; only the
+`.dmg`, the Mac one-command installer and the auto-built `.app` Dock launcher are macOS-specific.
 
-On Windows, the **Install for me** button in Settings → MCP bridge does exist for **Claude
-Desktop** (new, and not yet confirmed on every install); every other tool, and Linux, is copy-only.
-
-**Prerequisites:** [Node.js 18+](https://nodejs.org) · an API key from
+**Prerequisites:** [git](https://git-scm.com) · [Node.js](https://nodejs.org) — **the current LTS
+recommended**, 18 is the minimum · an API key from
 [Google Gemini](https://aistudio.google.com/app/apikey) (free tier available),
 [Anthropic](https://console.anthropic.com/) (paid only) or
 [OpenRouter](https://openrouter.ai/) (one key onto many vendors) ·
@@ -476,21 +507,21 @@ Desktop** (new, and not yet confirmed on every install); every other tool, and L
 git clone https://github.com/talirezun/the-curator.git
 cd the-curator
 npm install
-node src/server.js          # macOS / Linux
-# Windows PowerShell:  $env:CURATOR_NO_OPEN=1; node src\server.js
+CURATOR_NO_OPEN=1 npm start
 ```
 
-Then open **http://localhost:3333**.
+Then open **http://localhost:3333**. Stop it with **Ctrl+C**. To update, stop it, run
+`git pull && npm install` in the `the-curator` folder, and start it again.
 
-> **Windows / Linux notes:** the auto-update, Dock-app and folder-picker buttons are macOS-only;
-> ingest, chat, wiki, MCP, sync and Health work identically. Set `DOMAINS_PATH=…` to point at your
-> knowledge folder, and `CURATOR_NO_OPEN=1` to skip the macOS browser launch on startup.
+> **Linux notes:** the Dock-app and folder-picker buttons are macOS-only; ingest, chat, wiki, MCP,
+> sync and Health work identically. Set `DOMAINS_PATH=…` to point at your knowledge folder.
+> `CURATOR_NO_OPEN=1` keeps the server from trying to open a browser for you.
 >
 > **Connecting your AI tools:** in Settings → MCP bridge, the **Install for me** button writes The
-> Curator's entry into your tools' config files on a Mac (Claude Desktop, Cursor, Antigravity) and,
-> new on Windows, into **Claude Desktop only** (labelled "New on Windows — tell us if it works").
+> Curator's entry into your agent apps' config files on a Mac (Claude Desktop, Cursor, Antigravity) and
+> into **Claude Desktop only** on Windows (labelled "New on Windows — tell us if it works").
 > It refuses with a reason rather than guess which settings file Claude Desktop reads. On Linux, and
-> for every other tool on Windows, copy the entry from the same screen and paste it in yourself.
+> for every other agent app on Windows, copy the entry from the same screen and paste it in yourself.
 
 > **Install with a coding agent** — Claude Code, Cursor, Cline and friends can do the whole thing
 > from one pasted prompt: [User Guide § 20](docs/user-guide.md#20-install-with-a-coding-agent).

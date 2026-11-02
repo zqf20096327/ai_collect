@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/tensorflow-riemopt.svg)](https://pypi.org/project/tensorflow-riemopt/)
 [![arXiv](https://img.shields.io/badge/arXiv-2105.13921-b31b1b.svg)](https://arxiv.org/abs/2105.13921)
+[![JOSS](https://joss.theoj.org/papers/639147b8f06a6d210aaa94935827fcb5/status.svg)](https://joss.theoj.org/papers/639147b8f06a6d210aaa94935827fcb5)
 [![Build Status](https://github.com/master/tensorflow-riemopt/actions/workflows/build.yml/badge.svg)](https://github.com/master/tensorflow-riemopt/actions)
 [![Documentation Status](https://readthedocs.org/projects/tensorflow-riemopt/badge/?version=latest)](https://tensorflow-riemopt.readthedocs.io)
 [![Coverage Status](https://coveralls.io/repos/github/master/tensorflow-riemopt/badge.svg)](https://coveralls.io/github/master/tensorflow-riemopt)
@@ -12,16 +13,30 @@ A library for manifold-constrained optimization in TensorFlow.
 
 ## Installation
 
+To install a package from PyPI:
+
+```bash
+pip install tensorflow-riemopt
+```
+
+To add it to a project managed by [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add tensorflow-riemopt
+```
+
 To install the latest development version from GitHub:
 
 ```bash
 pip install git+https://github.com/master/tensorflow-riemopt.git
 ```
 
-To install a package from PyPI:
+To work on the library from a clone of the repository:
 
 ```bash
-pip install tensorflow-riemopt
+git clone https://github.com/master/tensorflow-riemopt.git
+cd tensorflow-riemopt
+uv sync --group dev
 ```
 
 ## Features
@@ -51,7 +66,7 @@ v_ = S.transp(x, y, v)
 ### Manifolds
 
  - `manifolds.Cholesky` - manifold of lower triangular matrices with positive diagonal elements
- - `manifolds.Euclidian` - unconstrained manifold with the Euclidean metric
+ - `manifolds.Euclidean` - unconstrained manifold with the Euclidean metric
  - `manifolds.Grassmannian` - manifold of `p`-dimensional linear subspaces of the `n`-dimensional space
  - `manifolds.Hyperboloid` - manifold of `n`-dimensional hyperbolic space embedded in the `n+1`-dimensional Minkowski space
  - `manifolds.Poincare` - the Poincaré ball model of the hyperbolic space
@@ -73,7 +88,7 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
 
  - `optimizers.RiemannianSGD` - Riemannian Gradient Descent
  - `optimizers.RiemannianAdam` - Riemannian Adam and AMSGrad
- - `optimizers.ConstrainedRMSProp` - Constrained RMSProp
+ - `optimizers.ConstrainedRMSprop` - Constrained RMSProp
 
 ### Layers
 
@@ -85,8 +100,6 @@ optimizers for sparse and dense updates in both Eager and Graph modes.
  - [SPDNet](examples/spdnet/) - Huang, Zhiwu, and Luc Van Gool. "A Riemannian network for SPD matrix learning." Proceedings of the Thirty-First AAAI Conference on Artificial Intelligence. AAAI Press, 2017.
  - [LieNet](examples/lienet/) - Huang, Zhiwu, et al. "Deep learning on Lie groups for skeleton-based action recognition." Proceedings of the IEEE conference on computer vision and pattern recognition. 2017.
  - [GrNet](examples/grnet/) - Huang, Zhiwu, Jiqing Wu, and Luc Van Gool. "Building Deep Networks on Grassmann Manifolds." AAAI. AAAI Press, 2018.
- - [Hyperbolic Neural Network](examples/hyperbolic_nn/) - Ganea, Octavian, Gary Bécigneul, and Thomas Hofmann. "Hyperbolic neural networks." Advances in neural information processing systems. 2018.
- - [Poincaré GloVe](examples/poincare_glove/) - Tifrea, Alexandru, Gary Becigneul, and Octavian-Eugen Ganea. "Poincaré Glove: Hyperbolic Word Embeddings." International Conference on Learning Representations. 2018.
 
 ## References
 

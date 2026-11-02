@@ -57,7 +57,8 @@ tensorfold serve mlx-community/Qwen3.5-2B-MLX-4bit --name local-model --context 
 ### Linux with an NVIDIA GPU
 
 Use the release archive for your CPU: `linux-aarch64` on a GB10, `linux-x86_64` on an x86_64 host.
-It needs glibc 2.28 or newer and an NVIDIA driver providing `libcuda.so.1`. Keep the archive's directories together.
+It needs glibc 2.28 or newer and NVIDIA driver R580 or newer (CUDA 13.0), providing `libcuda.so.1`. Keep the archive's directories together.
+Its kernels are built with CUDA 13, so TensorFold refuses an older driver at startup; `nvidia-smi` shows the installed one.
 See the [CUDA runbook](RUNBOOK.md#linux-and-cuda) for runtime libraries and supported GPUs.
 
 ```sh
@@ -440,6 +441,7 @@ Thank you to everyone who has sent TensorFold a pull request, a measurement or a
 [@EugeneClaw](https://github.com/EugeneClaw),
 [@fche](https://github.com/fche),
 [@feni6](https://github.com/feni6),
+[@florianbrede-ayet](https://github.com/florianbrede-ayet),
 [@gbgbgbg](https://github.com/gbgbgbg),
 [@GDACONSULT](https://github.com/GDACONSULT),
 [@gecobattya](https://github.com/gecobattya),
@@ -461,6 +463,7 @@ Thank you to everyone who has sent TensorFold a pull request, a measurement or a
 [@jayleaton](https://github.com/jayleaton),
 [@jeffpeng3](https://github.com/jeffpeng3),
 [@jeidbugs404](https://github.com/jeidbugs404),
+[@Jenpo](https://github.com/Jenpo),
 [@jerryfane](https://github.com/jerryfane),
 [@jetnet](https://github.com/jetnet),
 [@jishnuvenugopal](https://github.com/jishnuvenugopal),
@@ -519,8 +522,10 @@ Thank you to everyone who has sent TensorFold a pull request, a measurement or a
 [@rafafortes](https://github.com/rafafortes),
 [@raymondkpwong](https://github.com/raymondkpwong),
 [@robertpitt](https://github.com/robertpitt),
+[@rootsbymenda](https://github.com/rootsbymenda),
 [@RoscoeTT](https://github.com/RoscoeTT),
 [@RS91Dev](https://github.com/RS91Dev),
+[@russellmm](https://github.com/russellmm),
 [@salmanarshad321](https://github.com/salmanarshad321),
 [@samwang0041-star](https://github.com/samwang0041-star),
 [@sanjaibalajee](https://github.com/sanjaibalajee),

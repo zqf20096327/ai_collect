@@ -642,6 +642,15 @@ uv run uvicorn autoapply_agent.main:app --reload
 | Carta/Pulley/Shareworks equity-refresh grant planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `EquityRefreshGrantGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
 ![EquityRefreshGrantGapAdvisor](assets/demo/equity-refresh-grant-gap-advisor.gif)
 
+| Carta/Pulley/Shareworks stock-option reload planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `StockOptionReloadGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![StockOptionReloadGapAdvisor](assets/demo/stock-option-reload-gap-advisor.gif)
+
+| Rippling/Deel/Remote.com housing stipend COLA planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `HousingStipendColaGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![HousingStipendColaGapAdvisor](assets/demo/housing-stipend-cola-gap-advisor.gif)
+
+| Rippling/Workday/BambooHR bereavement-travel stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `BereavementTravelGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![BereavementTravelGapAdvisor](assets/demo/bereavement-travel-gap-advisor.gif)
+
 ## License
 
 MIT © [Francis1998](https://github.com/Francis1998)

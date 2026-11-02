@@ -418,6 +418,44 @@ doctor check them (a chore interval it cannot read, an expiry date or review
 date that is not a date, a routine without steps, an unknown gift status,
 shared ids).
 
+## Recently Deleted, Recommendation Ledger & Pinned Backups
+
+Three safety nets, all local, per profile, encrypted with the rest of your data
+when encryption is on, and covered by backup, restore, export and the doctor.
+
+```
+"I deleted the wrong task"               "what did I delete this week?"
+"put the rent task back"                 "empty the trash"
+"which recommendations did I follow?"    "I followed the sleep suggestion"
+"keep today's backup for good"
+```
+
+- **Recently deleted** (`get_trash`, `restore_deleted`, `empty_trash`): what
+  the planner's delete and clear tools remove is kept for 30 days. This covers
+  whole tasks, notes, people, subscriptions, savings goals, debts, countdowns,
+  supplies, time blocks, objectives, recipes, planned meals, trips, chores,
+  expiry dates, routines, gift ideas, decisions and list items (also
+  `clear_done_tasks`, `clear_checked_items`, `remove_list_items`, `delete_list`
+  and `clear_meals`). One delete or clear is one trash entry; restoring it puts
+  all of its entries back. Not covered: logged entries (use `undo_last_log`),
+  parts of an entry (a key result, a packing item) and habits, goals, budgets,
+  reminders and templates. `empty_trash` removes one item, everything older than
+  N days or all of it for good.
+- **Recommendation ledger** (`get_recommendation_history`,
+  `mark_recommendation`): every suggestion `get_recommendations` gives is filed
+  with when it first appeared and how often. Mark one followed or skipped. For
+  suggestions built on a daily average (sleep, hydration, stress) the ledger
+  later compares that metric in the week before with the days after, with
+  "moving the right way" or "about the same". It is arithmetic on your own logs,
+  not proof of cause and not medical advice. An open suggestion that has not
+  appeared for 30 days closes itself.
+- **Pinned backups** (`pin_backup`, `unpin_backup`): a pinned backup is never
+  rotated away and does not count towards the keep limit (at most 10 pins).
+  `get_backup_status` lists them. Pin one before a big clean-up.
+
+The doctor and `get_repair_suggestions` check the trash and the ledger, and
+`search_everything` searches the ledger.
+
 ## Project Structure
 
 ```mermaid
@@ -2055,6 +2093,22 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
+**v1.47.0 - Recently Deleted, Recommendation Ledger, Pinned Backups**
+- New **recently deleted**: `get_trash`, `restore_deleted`, `empty_trash`. Every
+  planner delete or clear tool now keeps what it removed for 30 days, so a wrong
+  delete can be undone. A test fails when a new delete tool is not covered.
+- New **recommendation ledger**: `get_recommendation_history`,
+  `mark_recommendation`. Suggestions from `get_recommendations` are filed; a
+  followed one is compared with the metric before and after.
+- New **pinned backups**: `pin_backup`, `unpin_backup`. Pinned backups survive
+  rotation and do not count towards the keep limit.
+- The doctor, `get_repair_suggestions`, `search_everything`, backup, restore,
+  export and rekey cover the two new stores (trash and recs).
+- Ideas for these three came from a look at Matt Abate's life-distributable
+  (approval gates, a recommendation ledger, backups that cannot be deleted by
+  the agent); the code is our own.
+- 137 new tests - suite grew from 4722 to 4859.
+
 **v1.46.1 - Subscription renewals keep their day of the month**
 - Fix: `pay_subscription` saved the clamped renewal date as the new schedule, so
   a monthly renewal on the 31st drifted to the 28th for good (Jan 31, Feb 28,
@@ -2192,57 +2246,4 @@ phrased as a nudge, nothing more.
 - New **`get_logging_gaps`**: days with nothing logged (one line per used
   tracker, or every empty day for one tracker), to fill in with `date`.
 - `log_dream` accepts `date`. Every new log carries a persistent `id`, and its
-  journal entry a matching `log_id`.
-- `delete_entry` on a linked journal entry now also removes the tracker row
-  (before it left the row behind, still counted in summaries).
-- Doctor: new entry-id check (duplicate ids, orphaned journal links).
-- 192 new tests - suite grew from 2287 to 2479.
-
-**v1.39.0 - Local Days, Backdating, Fixing Expenses**
-- **Fix:** streaks, "last N days" windows and the budget month used UTC
-  while entries were stamped with local dates. Outside UTC a dose logged
-  "today" could miss today's streak for hours, an expense after midnight on
-  the 1st counted in the previous month's budget, and in UTC+14 the
-  medication streak read 0 most of the day. A single `demo/clock.py` now
-  defines the user's day for all dated trackers (the UTC memory journal
-  analytics are unchanged on purpose).
-- New `LIFE_OS_DAY_START_HOUR` (0-12) for night owls; invalid values are
-  flagged by the doctor.
-- **Backdating:** 13 log tools accept an optional `date`, with validation
-  (no future, at most 365 days back).
-- **Expenses can be fixed:** new `list_expenses`, `update_expense` and
-  `delete_expense`; expenses carry ids and stay in sync with the memory
-  journal.
-- Doctor: new clock and future-dated-entries checks.
-- Tests run under a pinned clock, so they cover midnight boundaries in any
-  time zone; the suite was run under UTC, Istanbul, Kiritimati (+14), Pago
-  Pago (-11) and Los Angeles.
-- 270 new tests - suite grew from 2017 to 2287.
-
-**v1.38.0 - Data Safety: Complete Backups, Restore, Doctor**
-- **Fix (data loss):** `hermes-life-os-rekey` only re-encrypted 9 of the 18
-  data files. After a passphrase change the others (spending, reminders,
-  budgets, ...) could not be decrypted and read back as empty, and the old
-  key was unrecoverable once the salt rotated. Re-keying now covers every
-  store. A single registry (`storage.DATA_STORES`) drives backup, restore
-  and re-keying, and a test fails if a new data file is not registered.
-- **Fix:** backups and `export_data` json now include every data store, not
-  just nine, plus a `_meta` block. The nightly backup used to leave out
-  spending, social, substance, reading, medication, achievements,
-  templates, budgets and reminders.
-- New **`hermes-life-os-restore`**: restores a backup with up-front
-  validation, `--dry-run`, `--only`, `--list`/`--latest`, a never-rotated
-  `pre-restore-*` safety copy and a confirmation prompt. Old backups
-  restore without wiping the sections they lack.
-- Backups are **encrypted** when `LIFE_OS_ENCRYPTION_KEY` is set (before,
-  an encrypted profile left plaintext backups behind).
-- New **`hermes-life-os-doctor`** and `run_health_check`: a read-only
-  check of stores, the memory journal, leftover temp files, backups,
-  reminders and budgets.
-- New `get_backup_status` tool, and a proactive nudge when the newest
-  backup is 3 or more days old or unreadable.
-- **Fix:** `backup_now` could delete every backup, including the one it had
-  just written, if `keep` was 0 or invalid. It now always keeps at least one.
-- Reminders: one-off dated reminders, `remind_me_in`, `snooze_reminder`,
-  `clear_past_reminders`.
-- Budgets: per-budget `alert_pct`, input validation for `set_budget`, and
+  journal entry a matc

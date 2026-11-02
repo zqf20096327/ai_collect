@@ -70,6 +70,11 @@ Agents (智能体) 精选资源合集，持续更新中
 |[Agent Skills（开放标准）](https://github.com/agentskills/agentskills)|![GitHub Repo stars](https://badgen.net/github/stars/agentskills/agentskills)|Anthropic 发起的 `SKILL.md` 开放标准，让 Agent 按需加载可复用技能，已被 Claude Code、Codex、Gemini CLI、Cursor、OpenCode、dsh 等 40+ 产品采纳。|
 |[YYLO](https://github.com/yylo-dev/yylo)|![GitHub Repo stars](https://badgen.net/github/stars/yylo-dev/yylo)|面向命令行的编码 Agent 编排器（Node CLI，MIT）：为每个任务创建独立分支/worktree 并冻结目标 SHA，提供类型化的任务、验证、合并与发布就绪边界；finish 独立校验后入队但不自动合并，merge 在私有 detached candidate 中合成且不启动模型，全程留存回执。|
 |[Orbi](https://github.com/orbi-build/orbi)|![GitHub Repo stars](https://badgen.net/github/stars/orbi-build/orbi)|自托管的编码 Agent 交付系统：给 GitHub Issue 打上 ai-ready 标签，它在隔离的 worktree 里写代码、开 PR，由独立的评审会话按验收标准审查，只合并审过的版本；用户请求发布时再创建带 tag 的 Release。AGPL-3.0。|
+|[Volt](https://github.com/LeulAria/VOLT)|![GitHub Repo stars](https://badgen.net/github/stars/LeulAria/VOLT)|基于 VS Code 内核的开源 AI 代码编辑器：可接入 Claude Code、Codex、OpenCode 等 ACP 代理或 Ollama/LM Studio 本地模型，使用你自己的密钥；智能体的每处改动都可逐块保留或撤销，每轮自动 Git 检查点。|
+|[Mercury CLI](https://github.com/Whq02/MercuryCLI)|![GitHub Repo stars](https://badgen.net/github/stars/Whq02/MercuryCLI)|面向 macOS、Linux 和 Windows 的开源终端 AI 编程 Agent（TypeScript，Apache-2.0），支持同屏多会话、隔离 git worktree 与文件租约的跨模型子 Agent、22 家模型提供商及本地/租用 GPU 权重（`/localsetup`、`/llmhost`）、跨会话混合 RAG 项目记忆、LSP、DAP 调试器、MCP 客户端与内置浏览器和桌面控制。|
+|[oh-my-agent](https://github.com/first-fluke/oh-my-agent)|![GitHub Repo stars](https://badgen.net/github/stars/first-fluke/oh-my-agent)|不绑定厂商的编码 Agent harness：给 Claude Code、Codex CLI、Cursor 等现有 Agent 加上规划、开发、审查、调试的角色分工，技能放在一个 `.agents/` 目录里共用；长任务可以设门禁，你自己的测试脚本不通过就不能结束。|
+|[PlaceCall](https://github.com/voygr-tech/placecall)|![GitHub Repo stars](https://badgen.net/github/stars/voygr-tech/placecall)|给 Agent 一部电话：通过远程 MCP 服务器和 Agent Skill（客户端 MIT 开源），让 Claude Code、Codex、Cursor 等 Agent 替用户给美国商家拨打真实电话（订位、预约、询价），可处理语音菜单、等待和转接，通话中能把问题转回给用户，结束后返回结构化结果、文字记录和录音。通话服务为托管付费服务，仅限美国号码。|
+|[Frink](https://github.com/benord-labs/frink)|![GitHub Repo stars](https://badgen.net/github/stars/benord-labs/frink)|桌面优先的开源（MIT）应用，可在你已经在用的各家 AI 编程服务商上运行并行智能体，以及由定时调度、Webhook 或 Linear、Sentry 等工具的事件触发的多步骤自定义工作流。工作流除了智能体、命令和审批步骤之外，还可以包含你自己用代码编写的步骤。官网 [frink.dev](https://frink.dev)。|
 
 
 ## 前沿项目
@@ -109,6 +114,7 @@ Agents (智能体) 精选资源合集，持续更新中
 |[Agno](https://github.com/agno-agi/agno)|![GitHub Repo stars](https://badgen.net/github/stars/agno-agi/agno)|Full-stack framework for building Multi-Agent Systems with memory, knowledge and reasoning.|原 Phidata，高性能全栈多 Agent 框架，内置记忆、知识、推理与工具，主打轻量与运行速度。|
 |[Letta](https://github.com/letta-ai/letta)|![GitHub Repo stars](https://badgen.net/github/stars/letta-ai/letta)|Letta (formerly MemGPT) is a framework for creating stateful LLM agents.|原 MemGPT，专注于具备长期记忆的有状态 Agent，让智能体在跨会话中持续学习与保留上下文。|
 |[Aeon](https://github.com/aeonfun/aeon)|![GitHub Repo stars](https://badgen.net/github/stars/aeonfun/aeon)|The most autonomous agent framework - skills as Markdown files, scheduled on GitHub Actions with no approval loops, self-heals broken skills, and dispatches each skill to one of six model harnesses.|完全自主的 Agent 框架，技能即 Markdown 文件，通过 cron 定时在 GitHub Actions 上无人值守运行，可自我修复损坏的技能，支持 Claude、Grok、Codex、Pi、Vibe、Kimi 六种模型。|
+|[Aident Loadout](https://github.com/Aident-AI/aident-skill)|![GitHub Repo stars](https://badgen.net/github/stars/Aident-AI/aident-skill)|Connect AI agents to work apps through a hosted MCP service, CLI and Skill.|[官网](https://aident.ai) 在不同 Agent 中复用已授权的应用连接，并提供凭据管理和操作审计；仓库为 MIT 接入技能与配置，托管能力单独计费。|
 
 ## Curated List
 |名称|Stars|简介|备注|

@@ -73,7 +73,7 @@ Table of Contents
 - [6.0001 - Introduction to Computer Science and Programming in Python - MIT OCW](https://ocw.mit.edu/courses/6-0001-introduction-to-computer-science-and-programming-in-python-fall-2016/video_galleries/lecture-videos/)
 - [6.001 - Structure and Interpretation of Computer Programs, MIT](https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/video_galleries/video-lectures/)
 - [Introduction to Computational Thinking - MIT](https://computationalthinking.mit.edu/Fall22/)
-- [CS 50 - Introduction to Computer Science, Harvard University](https://online-learning.harvard.edu/course/cs50-introduction-computer-science) ([cs50.tv](http://cs50.tv/2017/fall/))
+- [CS 50 - Introduction to Computer Science, Harvard University](https://cs50.harvard.edu/x/) ([cs50.tv](http://cs50.tv/2017/fall/))
 - [CS50R - Introduction to Programming with R](https://cs50.harvard.edu/r/2024/) ([Lecture Videos](https://www.youtube.com/playlist?list=PLhQjrBD2T382yfNp_-xzX244d-O9W6YmD))
 - [CS50P - CS50's Introduction to Programming with Python - Harvard (David J. Malan)](https://cs50.harvard.edu/python/) ([Lecture Videos](https://www.youtube.com/playlist?list=PLhQjrBD2T3817j24-GogXmWqO5Q5vYy0V))
 - [CS 61A - Structure and Interpretation of Computer Programs [Python], UC Berkeley](https://cs61a.org/)
@@ -153,6 +153,7 @@ Table of Contents
 - [CS 261 - A Second Course in Algorithms, Stanford University](http://theory.stanford.edu/~tim/w16/w16.html) ([Youtube](https://www.youtube.com/playlist?list=PLEGCF-WLh2RJh2yDxlJJjnKswWdoO8gAc))
 - [CS 224 - Advanced Algorithms, Harvard University](https://people.seas.harvard.edu/~cs224/fall14/index.html) ([Lecture Videos](https://people.seas.harvard.edu/~cs224/fall14/lec.html)) ([Youtube](https://www.youtube.com/playlist?list=PL2SOU6wwxB0uP4rJgf5ayhHWgw7akUWSf))
 - [CS 627 - Advanced Algorithms, Marburg University](https://www.wild-inter.net/teaching/advalg/) ([Videos - Su 2025](https://www.youtube.com/playlist?list=PLzL0t_-LZiYkkGbS_IB6Oz3CH2_5-FipK))
+- [CS 650 - Advanced Data Structures, Marburg University](https://www.wild-inter.net/teaching/advds/) ([Videos - Su 2026](https://www.youtube.com/playlist?list=PLzL0t_-LZiYkpmVM9MUPVUkAci2-YLqJP))
 - [CS 6150 - Advanced Algorithms (Fall 2016), University of Utah](https://www.youtube.com/playlist?list=PLbuogVdPnkCp8X9FHOglnLqFjyvqGLftx)
 - [CS 6150 - Advanced Algorithms (Fall 2017), University of Utah](https://www.youtube.com/playlist?list=PLbuogVdPnkCqS9Z419eky9m6gJP7zfhO9)
 - [ECS 222A - Graduate Level Algorithm Design and Analysis, UC Davis](http://web.cs.ucdavis.edu/~gusfield/cs222f07/videolist.html)
@@ -728,4 +729,4 @@ Table of Contents
   - [Build a Large Language Model (From Scratch) by Sebastian Raschka](https://www.youtube.com/playlist?list=PLTKMiZHVd_2IIEsoJrWACkIxLRdfMlw11)
   - [Reinforcement Learning of Large Language Models - UCLA](https://www.youtube.com/playlist?list=PLir0BWtR5vRp5dqaouyMU-oTSzaU5LK9r)
   - [WING NUS CS6101 Large Language Models (T2310)](https://www.youtube.com/playlist?list=PLzIZxnJJT7ORSBnYrXJMYBVnYeLryJtl7)
-  - [CS 839: Foundation Models Fall 2025 - UW Madison](https://pages.cs.wisc.edu/~fredsala/cs839/fall2025/schedule.html) ([YouTube playlists](https://www.youtube.com/playlist?list=PLOq_oVZZBJosRA5_S823Y
+  - [CS 839: Foundation Models Fall 2025 - UW Madison](

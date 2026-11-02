@@ -2,7 +2,7 @@
 
 **ReAlign models instantly, on demand.**
 
-By Aevonix Research · Version 1.0.0
+By Aevonix Research · Version 1.1.1
 
 [![Stock DeepSeek V4.1 Flash refuses to help make a realistic-looking ID for a theatrical role; with FlashAlign on, the same model answers it](assets/demo/flashalign-promo-preview.gif)](https://aevonix.github.io/FlashAlign/)
 
@@ -15,8 +15,8 @@ channels, or keep a profile active across every routed request.
 
 FlashAlign works with supported base and quantized weights without permanently
 changing them. Run it directly, with Hermes or OpenClaw, or through your own
-harness. Managed inference runs on Linux with NVIDIA GPUs, including DGX Spark
-for the qualified TensorFold paths.
+harness. Managed inference runs on Linux with NVIDIA GPUs. See
+[compatibility](docs/compatibility.md) for DGX Spark support and engine requirements.
 
 The V1 starter profiles focus on refusal reduction. Future profiles could also
 increase refusals for public or higher-risk tasks.
@@ -43,10 +43,16 @@ whether tools inherit the profile. Setup checks activation and backs up changed
 configuration. Chat integrations restart their selected gateways; local terminal
 setup prints its launch command.
 
-All five starter profiles are included. No profile download or private
-repository access is needed.
+Five starter profiles are available. Four compact profiles are included in the
+checkout. The DeepSeek profile uses a 1.09 GB native tensor payload; setup fetches
+it from a public release and verifies its checksum. No private repository or
+login is required. [Profile details](profiles/README.md).
 
-Experimental test profiles based on [OrcaRouter](https://huggingface.co/orcarouter),
+Use the [profile inspector](docs/profile-inspection.md) to check a local
+profile's model pin, operators, sites, ranks and hashes before setup.
+
+Experimental test profiles based on [Keys](https://huggingface.co/drowzeys/keys-DeepSeek-V4.1-Flash-1017-Abliterated),
+[OrcaRouter](https://huggingface.co/orcarouter),
 [Dealign](https://huggingface.co/dealignai), and
 [MoonMath](https://huggingface.co/MoonMath-ai) abliterated checkpoints.
 Fitting and runtime packaging by Aevonix. See the
@@ -54,17 +60,15 @@ Fitting and runtime packaging by Aevonix. See the
 
 | Model | Supported engines |
 | --- | --- |
-| DeepSeek V4.1 Flash 1017 | TensorFold, vLLM |
+| DeepSeek V4.1 Flash 1017 | vLLM, TensorFold |
 | GLM 5.3 Full | TensorFold |
 | GLM 5.3 Flash | TensorFold, SGLang |
 | Qwen3.8-27B | TensorFold, vLLM, SGLang, llama.cpp |
 | Gemma 4 26B A4B | TensorFold, vLLM, SGLang, llama.cpp |
 
 See [compatibility](docs/compatibility.md#engines-and-models) for hardware
-requirements, checkpoint formats and feature limits. The [validation results](docs/validation.md)
-record the configurations tested. The included [starter profiles](profiles/README.md)
-remain experimental; setup checks that the selected profile matches the model
-and engine.
+requirements, pinned checkpoints and feature limits, and
+[validation](docs/validation.md) for tested configurations and results.
 
 Switching happens per request among profiles already loaded by the engine.
 Loading a new model or profile happens beforehand and can require an engine

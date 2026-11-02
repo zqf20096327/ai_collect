@@ -12,7 +12,7 @@ It stores semantically typed thoughts in an append-only, hash-chained memory log
 
 **Harness Swapping** — the same durable memory works across every AI coding environment. Connect Claude Code, OpenAI Codex, GitHub Copilot CLI, Qwen Code, Cursor, VS Code, or any MCP-capable host to the same `mentisdb` daemon and your agents share one brain, regardless of which tool you picked up today.
 
-**Zero Knowledge Loss Across Context Boundaries** — when an agent's context window fills, it writes a `Summary` checkpoint to MentisDB, compacts, reloads `mentisdb_recent_context`, and continues without losing a single decision. Chat history is ephemeral. MentisDB is permanent.
+**Zero Knowledge Loss Across Context Boundaries** — when an agent's context window fills, it writes a `Summary` checkpoint to MentisDB, compacts, reloads `mentisdb_standing_context` (what is durably true, at any age) and `mentisdb_recent_context` (where it left off), and continues. Chat history is ephemeral. MentisDB is permanent.
 
 **Fleet Orchestration at Scale** — one project manager agent decomposes work, dispatches a parallel fleet of specialists, each pre-warmed with shared memory, and synthesizes results wave by wave. MentisDB is the coordination substrate: every agent reads from the same chain and writes its lessons back. The fleet's collective intelligence compounds.
 
@@ -20,7 +20,7 @@ It stores semantically typed thoughts in an append-only, hash-chained memory log
 
 **Session Resurrection** — any agent can call `mentisdb_recent_context` and immediately know exactly where the project stands, what decisions were made, what traps were already hit, and what comes next — without re-reading code, re-running exploratory searches, or asking the human to re-explain context that was earned through hours of work.
 
-**Self-Improving Agent Fleets** — agents upload updated skill files after learning something new. A skill checked in at the start of a project is better by the end of it. Combine with Ed25519 signing to create a verifiable, tamper-evident record of which agent authored which version of institutional knowledge.
+**Self-Improving Agent Fleets** — agents upload updated skill files after learning something new. A skill checked in at the start of a project is better by the end of it. Agents with registered Ed25519 keys must sign their uploads, so each skill version records which agent authored it. (The skill registry is integrity-checked as a file; unlike thought chains, it is not hash-chained.)
 
 **Multi-Agent Shared Brain** — multiple agents, multiple roles, multiple owners can write to the same chain key simultaneously. Every thought carries a stable `agent_id`. Queries filter by agent identity, thought type, role, tags, concepts, importance, and time windows. The chain represents the full collective intelligence of an entire orchestration system, not just one session.
 
@@ -429,10 +429,13 @@ When it starts, it serves:
 
 Before serving traffic, it:
 
-- migrates or reconciles discovered chains to the current schema and default storage adapter
-- verifies chain integrity and attempts repair from valid local sources when possible
+- refuses to start on a data directory written by a newer `mentisdb` (a downgrade), without touching it
+- recovers any chain migration the previous process died in (a journal lookup per chain)
 - migrates the skill registry from V1 to V2 format if needed (idempotent; safe to run repeatedly)
-- migrates chain relations from V2 to V3 format to add temporal edge validity (`valid_at`/`invalid_at`) if needed (idempotent; safe to run repeatedly)
+
+Chain format upgrades (legacy schemas, JSONL, the legacy hash algorithm) do **not** run before
+serving: the daemon comes up in about a second and migrates those chains in the background, a few
+at a time, while it serves every other chain. See [Upgrading and chain migrations](#upgrading-and-chain-migrations).
 
 Once startup completes, it prints:
 
@@ -535,9 +538,11 @@ and `cert` work on the data directory directly and do not need the daemon.
   - `true` (default): every `append_thought` returns only after its group commit has been
     written to the chain file. Survives a process crash; add `MENTISDB_FSYNC=1` to also
     survive power loss.
-  - `false`: writes are batched and flushed every 16 appends (`FLUSH_THRESHOLD`). Up to 15
-    thoughts may be lost on a hard crash or power failure, but write throughput increases
-    significantly for multi-agent hubs with many concurrent writers.
+  - `false`: appends are queued to a background writer (queue capacity 128 records, then
+    callers wait) and flushed every 16 appends (`FLUSH_THRESHOLD`). On a hard crash or power
+    failure everything still queued is lost: up to 128 records, not 15, because the flush
+    cadence is not the queue bound. Throughput rises significantly for multi-agent hubs with
+    many concurrent writers.
   Supported values: `1`, `0`, `true`, `false`. Has no effect on the `jsonl` adapter.
 - `MENTISDB_GROUP_COMMIT_MS`
   Group-commit window in milliseconds for the background binary writer.
@@ -551,11 +556,37 @@ and `cert` work on the data directory directly and do not need the daemon.
   (survives a process crash) but not forced to the device, because a per-commit fsync
   roughly quadruples append latency (`F_FULLFSYNC` on macOS). Explicit flushes
   (`POST /v1/admin/flush`), clean shutdown and dropping a chain handle always sync.
+- `MENTISDB_MIGRATION_CONCURRENCY`
+  How many chains the background migration manager rewrites at once. Default: `2`.
+  See [Upgrading and chain migrations](#upgrading-and-chain-migrations).
+- `MENTISDB_MIGRATION_BACKUP_RETENTION_DAYS`
+  How long the preserved original of a migrated chain is kept under
+  `<MENTISDB_DIR>/migrations/backup/`. Default: `14`; `0` keeps backups forever.
 - `MENTISDB_EMBEDDINGS`
   Process-wide embeddings mode for managed vector sidecars: `off` (lexical/graph only),
   `local-text` (built-in hashing embeddings, never loads ONNX) or `fastembed`. Unset
   means FastEmbed when the `local-embeddings` feature is compiled in, `local-text`
   otherwise. Unknown values are logged and treated as unset.
+- `MENTISDB_DF_SCOPE`
+  How the lexical stop-word gate measures a term's document frequency: `global`
+  (default, what every published benchmark used: a thought counts if the term is in
+  *any* field, including agent registry text) or `field` (each field's own count).
+  Experimental; see `WHITEPAPER.md` section 6.3.
+- `MENTISDB_VECTOR_FUSION`
+  How vector similarity is blended with the lexical score: `relative` (default; the
+  decay depends on a hit's lexical score relative to the query's best, so paraphrased
+  questions keep the vector channel) or `absolute` (the older raw-BM25 decay, which
+  silences vectors for queries longer than a few words). On LoCoMo R@10 and
+  LongMemEval R@5 `relative` scored 75.2% and 70.0% against 73.1% and 68.0%.
+- `MENTISDB_COLLAPSE_DUPLICATES`
+  Result-time collapse of exact and near-duplicate hits: a number in `(0, 1]` is the
+  Jaccard threshold (default `0.9`), `off` disables it. Collapsed ids are listed in
+  `collapsed_duplicates` on the surviving hit. Per request: `collapse_duplicates`
+  (`0` disables). Text queries only.
+- Per-request ranking knobs (REST/MCP fields and CLI flags, see `docs/CLI_PARITY.md`):
+  `resolve_successors`, `collapse_duplicates`, `vector_fusion`, `synonym_weight`
+  (automatic thesaurus expansion, default 0.3, `0` disables; the library applies it
+  by default too), `df_scope` and `df_cutoffs`.
 - `FASTEMBED_CACHE_DIR`
   Where the FastEmbed ONNX model is cached. Default: `<MENTISDB_DIR>/.fastembed_cache`.
 - `MENTISDB_UPDATE_CHECK`
@@ -612,8 +643,29 @@ How the set gets filled:
    MentisDB skill’s search-before-write habit.
 2. **Auto-dedup** when `MENTISDB_DEDUP_THRESHOLD` is set (see above).
 
-Search filtering alone does not invent edges; pair default exclusion with dedup and/or
-good agent discipline on long-running brains.
+Search filtering alone does not invent edges, and measured chains show agents rarely
+type them (on one real installation 0 of 14 `Correction`/`AssumptionInvalidated`
+thoughts and 0 of about 90 `Decision` thoughts carried one). So retrieval also reasons
+about **lineage** (`mentisdb::lineage`):
+
+- A superseded thought that would have ranked is **replaced by its live successor**
+  (hit field `successor_of`), so hiding the old version never leaves the agent with
+  nothing. Disable with `RankedSearchQuery::with_resolve_successors(false)`.
+- An untyped link (`refs` / `References`) from a `Correction`, an
+  `AssumptionInvalidated` or a new `Decision` over an older decision-like thought, or
+  any `Contradicts`, does **not** hide the target (a reference is often background).
+  The target is reported `version_status: "contested"` and the contesting thought is
+  promoted above it.
+- Every thought JSON carries `version_status`, `successors` and `current_version`
+  when it is not plainly current, including `include_invalidated=true` results.
+- Appending a replacement without a typed relation returns `warnings` naming the
+  candidate `target_id`s; add `{"kind":"supersedes","target_id":"..."}`.
+- Standing context substitutes a superseded constraint or decision with its successor,
+  and the MEMORY.md export drops superseded thoughts.
+
+Lineage is derived from the stored chain when it is opened, so existing chains benefit
+with no migration. Cross-chain `Supersedes` (a relation with `chain_key`) is not yet
+applied to the target chain.
 
 MentisDB loads environment variables at startup from a `.env` file in the current working
 directory, then from `<MENTISDB_DIR>/.env` (where the dashboard Settings tab saves its
@@ -637,6 +689,19 @@ MENTISDB_AUTO_FLUSH=true \
 MENTISDB_FSYNC=1 \
 cargo run --bin mentisdb
 ```
+
+#### What each durability setting really guarantees
+
+| Setting | Survives process crash (kill -9) | Survives power loss / OS crash |
+|---|---|---|
+| `MENTISDB_AUTO_FLUSH=true` (default), `MENTISDB_FSYNC` unset | Yes: the append returns after the write reaches the OS | No: bytes may sit in the OS cache; a torn tail is truncated on open, but acknowledged records after the last device sync can be lost |
+| `MENTISDB_AUTO_FLUSH=true`, `MENTISDB_FSYNC=1` | Yes | Yes (group commit is fsynced; roughly 4x append latency) |
+| `MENTISDB_AUTO_FLUSH=false` | No: up to 128 queued records are lost | No |
+
+`POST /v1/admin/flush`, clean shutdown and dropping a chain handle always fsync. Chain migrations
+always fsync their journal, staged file and directory renames, regardless of these settings. The
+default favours latency over power-loss durability; set `MENTISDB_FSYNC=1` on machines that can
+lose power or on shared hosts where the memory is the system of record.
 
 #### Durability and crash recovery (0.10.9)
 
@@ -679,6 +744,69 @@ MENTISDB_AUTO_FLUSH=false \
 MENTISDB_BIND_HOST=0.0.0.0 \
 mentisdb
 ```
+
+### Upgrading and chain migrations
+
+A release may need to rewrite chain files (a newer thought layout, a better hash algorithm,
+JSONL to binary). `mentisdb` does that in the background, never blocks startup on it, tells you
+what it is doing, and can always go back.
+
+**What you will see**
+
+- The daemon starts and serves immediately. Chains that need work are queued and migrated by a
+  small worker pool (`MENTISDB_MIGRATION_CONCURRENCY`, default 2).
+- A request for a chain that is still migrating gets **HTTP 503** with a `Retry-After` header and
+  `{"retry_after_secs": 5, "migration": {"state": "migrating", "percent": 42, ...}}`; MCP clients get
+  the same text as a tool error. Every other chain is served normally. A chain that is not
+  migrating is never delayed by one that is.
+- Progress is logged (`[migration] chain 'x': migrating ...`), shown in the TUI, and listed by
+  `GET /v1/migrations`, the `mentisdb_migration_status` MCP tool, `mentisdb migrate status` and a
+  banner on the dashboard.
+
+**Why it is safe**
+
+- *Backup first.* Before anything is replaced the original chain file is hard-linked (or copied)
+  to `<MENTISDB_DIR>/migrations/backup/<chain>/`. It is kept `MENTISDB_MIGRATION_BACKUP_RETENTION_DAYS`
+  days (default 14, `0` keeps it forever).
+- *Journaled and resumable.* Each chain has a journal in `migrations/journal/`
+  (planned, backed up, staged, committed, finalized). The upgraded chain is streamed into
+  `migrations/staging/`, re-read and verified end to end, then swapped in with one atomic rename.
+  Kill the daemon at any instant (the test suite does, at every step) and the next start resumes
+  or discards the work. A chain interrupted three times is quarantined instead of crash-looping.
+- *Never launders corruption.* Records from schemas that stored trustworthy hashes must verify;
+  a chain whose stored hash is wrong (corruption or tampering), or whose migration would
+  invalidate a v2 signature, is **refused and left byte-for-byte untouched**.
+- *Failures are quarantined.* A failing chain is reported (state `failed`, with the error) and
+  answers requests with a 503 naming the fix. The other chains and the daemon are unaffected.
+- *Downgrades are refused.* A chain, or a data directory, written by a newer release is never
+  opened by an older one that has this check; it says so and exits.
+
+**Operator commands**
+
+```bash
+mentisdb migrate status                 # what needs, is in, or finished a migration
+mentisdb migrate run --dry-run          # rehearse: check hashes and signatures, write nothing
+mentisdb migrate run [--chain KEY]      # migrate now (resumes interrupted runs)
+mentisdb migrate verify                 # re-check every hash link of the live chains
+mentisdb migrate retry --chain KEY      # clear a quarantine; it is migrated on the next run
+mentisdb migrate skip --chain KEY       # leave a chain alone and unavailable until retried
+mentisdb migrate rollback --chain KEY   # restore the backup (stop the daemon first)
+mentisdb migrate purge-backups          # delete preserved originals of finished migrations
+```
+
+`status --url http://127.0.0.1:9472` asks a running daemon. `rollback` refuses once new thoughts
+were appended to the migrated chain unless you pass `--force`, which discards them; run it with the
+daemon stopped, because a running daemon holds the chain in memory. Everything under
+`migrations/` is plain files you can inspect.
+
+**Derived data** (vector sidecars, HNSW graphs, the implicit-edge overlay, lexical indexes) is
+never part of a migration's critical path: when a chain's hashes change they are deleted and
+rebuilt lazily in the background; otherwise they are kept.
+
+**Upgrade note (this release).** Chains in the current layout with current hashes are not touched.
+HNSW graph files gain a header (a magic and a SHA-256 digest of the embedding space and its
+documents); existing graphs are rebuilt once in the background. Nothing else changes on disk, so
+a migrated chain is still readable by the previous release.
 
 ### Automatic Update Check
 
@@ -726,9 +854,9 @@ REST endpoints:
 - `POST /v1/agents/upsert`
 - `POST /v1/agents/description`
 - `POST /v1/agents/aliases`
-- `POST /v1/agents/keys`
-- `POST /v1/agents/keys/revoke`
-- `POST /v1/agents/disable`
+- `POST /v1/agents/keys` (403: operator-only)
+- `POST /v1/agents/keys/revoke` (403: operator-only)
+- `POST /v1/agents/disable` (403: operator-only)
 - `POST /v1/thought`
 - `POST /v1/thoughts`
 - `POST /v1/thoughts/genesis`
@@ -1063,7 +1191,7 @@ The ranked-search benchmark `benches/search_ranked.rs` and evaluation tests in `
 Starting in 0.8.1, ranked search uses six key improvements:
 
 - **Porter stemming** — the lexical tokenizer stems all tokens before indexing and querying so word variants share a common root (e.g. `prefers`/`preferred`/`preferences` → `prefer`).
-- **Smooth exponential vector-lexical fusion** — replaces the 0.8.0 step-function boosts with a continuous decay curve: `vector × (1 + 35 × exp(-lexical / 3.0))`. Pure-semantic matches get ~36× amplification; by lexical=3.0 the boost has decayed to ~12×; at lexical=6.0 it's additive. This eliminates discontinuities between tiers.
+- **Smooth exponential vector-lexical fusion** — replaces the 0.8.0 step-function boosts with a continuous decay curve: `vector × (1 + 35 × exp(-lexical / 3.0))`. Pure-semantic matches get ~36× amplification; by lexical=3.0 the boost has decayed to ~12×; at lexical=6.0 it's additive. This eliminates discontinuities between tiers. (Since the valid-version retrieval work the default is `MENTISDB_VECTOR_FUSION=relative`, which decays on the lexical score relative to the query's best so that long queries keep their vector signal; `absolute` restores this formula.)
 - **Session cohesion scoring** — thoughts within ±8 positions of a high-scoring lexical seed (score ≥ 3.0) receive a proximity boost up to 0.8, decaying linearly with distance. This surfaces evidence turns adjacent to the matching turn but sharing no lexical terms.
 - **BM25 document-frequency cutoff** — terms appearing in >30% of documents (corpus ≥ 20 docs) are skipped during scoring. This filters non-discriminative entity names without blanket stopword removal.
 - **Importance-weighted scoring** — replaces flat multipliers with a differential boost proportional to lexical score: `lexical × (importance - 0.5) × 0.3`. User-originated thoughts (importance ≈ 0.8) outrank verbose assistant responses (importance ≈ 0.2) in close BM25 races.
@@ -1090,7 +1218,7 @@ Starting in 0.8.7, ranked search adds:
 
 Starting in 0.8.6, ranked search adds three features:
 
-- **Irregular verb lemma expansion** — the query tokenizer maps irregular past-tense verbs to their base form (e.g. "went" → "go", "gave" → "give", "ran" → "run"). About 170 mappings. Indexed content is not modified — expansion is query-time only.
+- **Irregular verb lemma expansion** — the query tokenizer maps irregular past-tense verbs to their base form (e.g. "went" → "go", "gave" → "give", "ran" → "run"). About 325 mappings onto 219 base forms. Indexed content is not modified — expansion is query-time only.
 - **Reciprocal Rank Fusion (RRF)** — an opt-in reranking pass. When `enable_reranking=true` is set on a ranked search query, the engine produces separate lexical-only, vector-only, and graph-only rankings over the top `rerank_k` candidates (default 50), merges them via `1/(k + rank)` with `k=60`, and adds a scaled consensus bonus to the additive total. Use when lexical and vector signals disagree on top candidates. (Before 0.10.9 the RRF total replaced the additive total, which badly degraded results; see below.)
 - **Per-field BM25 DF cutoffs** — `Bm25DfCutoffs` on `LexicalQuery` allows configuring separate document-frequency cutoff ratios per field (content, tags, concepts, agent_id, agent_registry). Terms whose global DF exceeds the cutoff for a given field are skipped for that field only. Default cutoffs match the original behavior (content=0.30, tags=0.30, concepts=0.30, agent_id=0.70, agent_registry=0.60).
 
@@ -1115,6 +1243,12 @@ The run applied the built-in thesaurus transparently on every `ranked_search` ca
 - **Faster ranked, lexical, vector and graph paths** — score-only top-k selection, dense lexical scans, cached vector norms and exact top-k, and a bounded graph-expansion arena. Filtered lexical and heuristic queries are roughly 10x faster in the criterion benches.
 - **Filtered HNSW recall** — when filters are active, the HNSW backend switches to an exact scan over the filtered set or oversamples, so filtered vector searches no longer lose matches the approximate graph skipped.
 - **Benchmarks (0.10.9.54 vs the 0.10.8 code line, `fastembed-minilm`)** — LoCoMo-10P default R@5/R@10 63.8/72.7% → 63.9/73.5%; LoCoMo rerank R@5/R@10 3.6/5.9% → 66.0/74.1%; LongMemEval default R@5/R@10/R@20 66.8/72.0/78.2% → 68.0/72.8/78.8%; LongMemEval rerank R@5 2.8% → 68.6%; query throughput about 206/159 → 384/385 queries/s (LoCoMo/LongMemEval).
+
+### Search Scoring (current master, unreleased)
+
+- **Valid-version retrieval** — a superseded hit is replaced by its live successor, a thought a newer correction or decision only references is shown as `contested` with the newer one ranked above it, and every hit carries `version_status`.
+- **Relative vector fusion** (`MENTISDB_VECTOR_FUSION=relative`, decay 0.8) and **result-time duplicate collapse** (Jaccard 0.9).
+- **Full-protocol benchmarks (2026-11-01, `fastembed-minilm`, fresh ingest, same scripts as 0.10.9.54)** — LoCoMo-10P default R@5/R@10/R@20 67.9/76.7/83.4%; LongMemEval default R@5/R@10/R@20 69.8/75.6/81.4%; about 428/371 queries/s. Raw outputs: `results/benchmarks/2026-11-01-full-protocol/`.
 
 ### Vector Sidecars
 
@@ -1312,6 +1446,33 @@ Response shape:
 ```
 
 ---
+
+## Public and private chains
+
+A chain is **public** (anyone with access writes unsigned and reads freely) or
+**private** (writes need a signature by an authorized Ed25519 key, and what is
+written while private can be read only by a reader who proves possession of an
+authorized key). Mode changes are signed records in the chain that open
+*segments*; every thought belongs to the segment its position falls in, so an
+unauthorized reader sees only the public segments, on every read surface
+(search, context, traversal, exports, listings, counts).
+
+```bash
+# operator (dashboard PIN, or --offline on the host that holds the data directory)
+mentisdb chain access set private --chain vault --pin 123456
+mentisdb agent key add builder --key-id builder-1 --public-key-hex <64 hex> --chain vault --pin 123456
+mentisdb chain access allow builder builder-1 <64 hex> --chain vault --pin 123456
+
+# an authorized client signs every request locally; the key never leaves it
+mentisdb search "launch plan" --chain vault --read-key-file builder.key --read-agent builder --read-key-id builder-1
+MENTISDB_READ_KEY_FILE=builder.key MENTISDB_READ_AGENT_ID=builder MENTISDB_READ_KEY_ID=builder-1 mentisdb --mode stdio
+```
+
+Only the operator can add or remove keys; REST and MCP cannot. Every
+returned thought carries a `provenance` object (segment, signature, verified
+agent, `trust: untrusted_data`) and the operating skill tells agents to treat
+memories as data, never as instructions. Serve private chains over HTTPS.
+Details, wire formats and the threat model: [docs/CHAIN_ACCESS.md](docs/CHAIN_ACCESS.md).
 
 ## Web Dashboard
 
@@ -1568,7 +1729,7 @@ Returns `{"status": "flushed"}` on success. Iterates all open chains and calls `
 
 ## MCP Tool Catalog
 
-The daemon currently exposes 42 MCP tools:
+The daemon currently exposes 45 MCP tools:
 
 - `mentisdb_bootstrap`
   Create a chain if needed and write one bootstrap checkpoint when it is empty.
@@ -1584,8 +1745,12 @@ The daemon currently exposes 42 MCP tools:
   Return flat ranked lexical, graph-aware, or heuristic results with additive score breakdowns. Supports `as_of` for point-in-time queries and `scope` for memory scope filtering.
 - `mentisdb_context_bundles`
   Return seed-anchored grouped support context beneath the best lexical seeds.
+- `mentisdb_summary_candidates`
+  Return deterministic summary source windows. It only selects candidates; it does not generate or append summaries.
 - `mentisdb_list_chains`
   List known chains with version, storage adapter, counts, and storage location.
+- `mentisdb_migration_status`
+  Report the background storage-format migration state of every chain that is, was, or failed to be migrated (phase, percent, attempts, error).
 - `mentisdb_merge_chains`
   Merge all thoughts from a source chain into a target chain, then permanently delete the source.
 - `mentisdb_branch_from`
@@ -1602,12 +1767,12 @@ The daemon currently exposes 42 MCP tools:
   Set or clear the description stored for one registered agent.
 - `mentisdb_add_agent_alias`
   Add a historical or alternate alias to a registered agent.
-- `mentisdb_add_agent_key`
-  Add or replace one public verification key on a registered agent.
-- `mentisdb_revoke_agent_key`
-  Revoke one previously registered public key.
-- `mentisdb_disable_agent`
-  Disable one agent by marking its registry status as revoked.
+- `mentisdb_get_access_policy`
+  Return a chain's access policy as the caller may see it: mode, sequence, key-set commitment and segment boundaries for everyone; the allowed keys and record hashes for a reader who proved an authorized key.
+- `mentisdb_verify_signatures`
+  Re-verify the signed thoughts and policy records the caller may see and report failures.
+
+Registering or revoking agent keys, disabling agents and changing a chain's access policy are **operator-only** (dashboard behind its PIN, or the local `mentisdb` command line): they are not MCP tools and the matching REST routes answer 403. See [Public and private chains](#public-and-private-chains).
 - `mentisdb_standing_context`
   Render durable, age-independent memory (preferences, constraints, decisions, goals, lessons, user traits, newest handoff and checkpoint) into a prompt block; load it at session start before recent context.
 - `mentisdb_recent_context`
@@ -1787,18 +1952,18 @@ Agents that have registered Ed25519 public keys in the agent registry must sign 
 
 Required fields when the uploading agent has active keys:
 
-- `signing_key_id` — the `key_id` registered via `POST /v1/agents/keys` or `mentisdb_add_agent_key`
+- `signing_key_id` — the `key_id` the operator registered for the agent (`mentisdb agent key add`)
 - `skill_signature` — 64-byte Ed25519 signature over the raw skill content bytes
 
 Agents without registered public keys may upload without signatures.
 
 Upload flow for signing agents:
 
-1. Register a public key:
+1. Ask the operator to register your public key:
    ```bash
-   POST /v1/agents/keys   { agent_id, key_id, algorithm: "ed25519", public_key_bytes }
+   mentisdb agent key add AGENT --key-id KEY_ID --public-key-hex <64 hex> --chain CHAIN --pin <dashboard pin>
    ```
-   or via MCP: `mentisdb_add_agent_key`
+   (REST `POST /v1/agents/keys` and the MCP tool answer 403: key registration is operator-only.)
 2. Sign the raw content bytes with the corresponding private key (Ed25519).
 3. Include `signing_key_id` and `skill_signature` in the upload request:
    ```bash
@@ -1858,7 +2023,9 @@ qwen mcp add --transport http mentisdb http://127.0.0.1:9471
 
 - a standard streamable HTTP MCP endpoint at `POST /`
 - a Server-Sent Events (SSE) endpoint at `GET /` returning `text/event-stream` with
-  live MCP protocol events — every tool call result and error is broadcast in real time
+  one `tool_called` event per tool call (tool name, chain key, outcome, duration). Tool
+  arguments and results are never broadcast: they can be private text. With bearer
+  enforcement on, subscribing needs a valid token
 - the legacy CloudLLM-compatible MCP endpoints at `POST /tools/list` and
   `POST /tools/execute`
 
@@ -1873,427 +2040,4 @@ That means you can:
 
 ### Bearer Token Access For Remote MCP Servers
 
-If a MentisDB daemon is reachable beyond your own machine, enable bearer-token
-access before adding it to remote MCP clients:
-
-```bash
-MENTISDB_BIND_HOST=0.0.0.0 \
-MENTISDB_BEARER_TOKEN_ACCESS=true \
-MENTISDB_DASHBOARD_PIN=change-me \
-mentisdb
-```
-
-Tokens are managed by alias. The raw token is printed once at creation time;
-MentisDB stores only a SHA-256 hash plus metadata such as scope, creation time,
-revocation time, and last successful use.
-
-Create a global admin token:
-
-```bash
-mentisdb bearertoken create --global admin-laptop
-```
-
-Create a token limited to one or more chains:
-
-```bash
-mentisdb bearertoken create --chain alice alice-agent
-mentisdb bearertoken create bob-agent --chain bob
-mentisdb bearertoken create team-agent --chain alice --chain shared
-```
-
-List and revoke tokens:
-
-```bash
-mentisdb bearertoken list
-mentisdb bearertoken list --chain alice
-mentisdb bearertoken list --chain alice --chain shared
-mentisdb bearertoken remove alice-agent
-```
-
-Global tokens can call every MCP tool and access every chain. Chain-scoped tokens
-can call tools for any chain in their configured set, including requests that
-omit `chain_key` when the daemon default chain is in their scope. REST and MCP
-share one authorization table, so the same rules apply on both surfaces.
-
-Operations that expose or change server-wide state require a **global** token:
-
-- listing chains (`GET /v1/chains`, `mentisdb_list_chains`)
-- listing and deleting webhooks (`GET /v1/webhooks`, `DELETE /v1/webhooks/{id}`, `mentisdb_list_webhooks`, `mentisdb_delete_webhook`)
-- skill registry mutations: upload, deprecate, revoke, delete (`/v1/skills/{upload,deprecate,revoke,delete}` and the matching MCP tools)
-- `POST /v1/admin/flush` (set `MENTISDB_BEARER_TOKEN` to a global token so `mentisdb backup` can flush; see Backup and Restore)
-
-Registering a webhook with a chain-scoped token is allowed only when the request sets
-`chain_key_filter` to a chain inside the token's scope. `POST /v1/agents` (and the other
-agent-registry routes) are checked against the requested `chain_key`; a single-chain token
-that omits it gets its own chain. Out-of-scope calls are rejected with `401`.
-
-A token's `last_used_at` is updated in memory on every request but written to disk at most
-once every 60 seconds, so `mentisdb bearertoken list` may lag by up to a minute.
-
-#### Bearer Token MCP Client Config Examples
-
-For every remote MCP harness, the important part is the same:
-
-```http
-Authorization: Bearer mentisdb_replace_me
-```
-
-Use a global token for administrators. Use a chain-scoped or multi-chain token
-for agents that should only see specific memory chains.
-
-**Codex** (`~/.codex/config.toml`):
-
-```toml
-[mcp_servers.mentisdb]
-url = "https://my.mentisdb.com:9473"
-http_headers = { Authorization = "Bearer mentisdb_replace_me" }
-```
-
-**Claude Code**:
-
-```bash
-claude mcp add-json mentisdb \
-  '{"type":"http","url":"https://my.mentisdb.com:9473","headers":{"Authorization":"Bearer mentisdb_replace_me"}}' \
-  --scope user
-```
-
-**Qwen Code**:
-
-```bash
-qwen mcp add --scope user --transport http mentisdb https://my.mentisdb.com:9473 \
-  --header "Authorization: Bearer mentisdb_replace_me"
-```
-
-Or edit `~/.qwen/settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "httpUrl": "https://my.mentisdb.com:9473",
-      "headers": {
-        "Authorization": "Bearer mentisdb_replace_me"
-      }
-    }
-  }
-}
-```
-
-**GitHub Copilot CLI** (`~/.copilot/mcp-config.json`):
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "type": "http",
-      "url": "https://my.mentisdb.com:9473",
-      "headers": {
-        "Authorization": "Bearer mentisdb_replace_me"
-      },
-      "tools": ["*"]
-    }
-  }
-}
-```
-
-**VS Code + Copilot** (`.vscode/mcp.json` or your user `mcp.json`):
-
-```json
-{
-  "servers": {
-    "mentisdb": {
-      "type": "http",
-      "url": "https://my.mentisdb.com:9473",
-      "headers": {
-        "Authorization": "Bearer mentisdb_replace_me"
-      }
-    }
-  }
-}
-```
-
-**OpenCode** (`~/.config/opencode/opencode.json`):
-
-```json
-{
-  "mcp": {
-    "mentisdb": {
-      "type": "remote",
-      "url": "https://my.mentisdb.com:9473",
-      "enabled": true,
-      "oauth": false,
-      "headers": {
-        "Authorization": "Bearer mentisdb_replace_me"
-      }
-    }
-  }
-}
-```
-
-**Hermes Agent** (`~/.hermes/config.yaml`):
-
-```yaml
-mcp_servers:
-  mentisdb:
-    url: "https://my.mentisdb.com:9473"
-    headers:
-      Authorization: "Bearer mentisdb_replace_me"
-```
-
-You can also manage tokens in the dashboard Settings screen: enter an alias,
-choose Global or Chains, select one or more chains for scoped tokens, create the
-token, and revoke active tokens from the table. The bearer-token table is
-intentionally metadata-only; future versions can extend those records with
-per-token usage counters without changing how clients authenticate.
-
-### Codex
-
-Codex CLI expects a streamable HTTP MCP server when you use `--url`:
-
-```bash
-codex mcp add mentisdb --url http://127.0.0.1:9471
-```
-
-Useful follow-up commands:
-
-```bash
-codex mcp list
-codex mcp get mentisdb
-```
-
-This connects Codex to the daemon's standard MCP root endpoint.
-
-### Qwen Code
-
-Qwen Code uses the same HTTP MCP transport model:
-
-```bash
-qwen mcp add --transport http mentisdb http://127.0.0.1:9471
-```
-
-Useful follow-up commands:
-
-```bash
-qwen mcp list
-```
-
-For user-scoped configuration:
-
-```bash
-qwen mcp add --scope user --transport http mentisdb http://127.0.0.1:9471
-```
-
-### Claude for Desktop
-
-Claude for Desktop supports two connection modes: **stdio** (recommended) and
-**HTTP via mcp-remote**.
-
-#### Option 1: Stdio mode (recommended)
-
-Claude Desktop spawns `mentisdb --mode stdio` as a subprocess. The stdio
-process automatically detects if a daemon is already running — if so, it acts
-as a lightweight proxy to the live daemon; if not, it launches one in the
-background. This means all Claude Desktop sessions share the same live chain
-cache with zero configuration.
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "command": "mentisdb",
-      "args": ["--mode", "stdio"]
-    }
-  }
-}
-```
-
-This is the simplest setup — no Node.js, no mcp-remote, no TLS config. Just
-point Claude Desktop at the `mentisdb` binary.
-
-#### Option 2: HTTP via mcp-remote
-
-If you prefer the HTTP transport (e.g. for a remote daemon), use the
-`mcp-remote` bridge. This requires [Node.js >= 20](https://nodejs.org/) and the
-[`mcp-remote`](https://www.npmjs.com/package/mcp-remote) npm package.
-
-The recommended setup path is automatic:
-
-```bash
-mentisdb setup claude-desktop
-```
-
-This command:
-
-- checks for Node.js >= 20 and `mcp-remote` on PATH
-- installs `mcp-remote` via `npm` if missing
-- writes `claude_desktop_config.json` with the correct absolute paths to `node`
-  and `mcp-remote` so the desktop app always uses the right Node version
-- sets `NODE_TLS_REJECT_UNAUTHORIZED=0` for self-signed certificate support
-
-To set it up manually instead:
-
-**Step 1 — Install prerequisites** (Node.js >= 20 required):
-
-```bash
-npm install -g mcp-remote
-```
-
-**Step 2 — Edit the config file** (location by OS):
-
-| OS      | Path |
-|---------|------|
-| macOS   | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
-| Linux   | `~/.config/Claude/claude_desktop_config.json` |
-
-The config should use the `node` binary as the command and pass the
-`mcp-remote` script path as the first argument. This avoids the shebang
-resolution issue where `mcp-remote`'s `#!/usr/bin/env node` may pick an older
-Node.js version on systems with multiple Node installs (e.g. nvm).
-
-**macOS (with nvm):**
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "command": "/Users/you/.nvm/versions/node/v22.18.0/bin/node",
-      "args": ["/Users/you/.nvm/versions/node/v22.18.0/bin/mcp-remote", "https://my.mentisdb.com:9473"],
-      "env": { "NODE_TLS_REJECT_UNAUTHORIZED": "0" }
-    }
-  }
-}
-```
-
-**macOS (with Homebrew Node):**
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "command": "/opt/homebrew/bin/node",
-      "args": ["/opt/homebrew/bin/mcp-remote", "https://my.mentisdb.com:9473"],
-      "env": { "NODE_TLS_REJECT_UNAUTHORIZED": "0" }
-    }
-  }
-}
-```
-
-**Windows:**
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "command": "node",
-      "args": ["mcp-remote", "https://my.mentisdb.com:9473"],
-      "env": { "NODE_TLS_REJECT_UNAUTHORIZED": "0" }
-    }
-  }
-}
-```
-
-Use `which mcp-remote` and `which node` to confirm the binary paths on your
-machine. **Both must point to the same Node.js installation (>= 20).**
-
-**Linux:**
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "command": "/usr/local/bin/node",
-      "args": ["/usr/local/bin/mcp-remote", "https://my.mentisdb.com:9473"],
-      "env": { "NODE_TLS_REJECT_UNAUTHORIZED": "0" }
-    }
-  }
-}
-```
-
-> **Why `NODE_TLS_REJECT_UNAUTHORIZED: "0"`?**  
-> MentisDB ships with a self-signed TLS certificate. Node.js rejects self-signed
-> certs by default, which causes `mcp-remote` to disconnect immediately after the
-> MCP `initialize` handshake. This env var disables that check for the
-> `mcp-remote` process only. As an alternative, trust the certificate at the OS
-> level (`sudo security add-trusted-cert` on macOS) and remove the `env` block.
->
-> **Why use `node` as the command instead of `mcp-remote` directly?**  
-> The `mcp-remote` shell script uses `#!/usr/bin/env node` as its shebang. On
-> systems with multiple Node.js versions (e.g. managed by nvm), the shebang may
-> resolve to an older Node that doesn't support `mcp-remote`'s dependencies
-> (which require Node >= 20). Using the explicit `node` path as the command
-> bypasses the shebang entirely and guarantees the correct Node version is used.
-
-Restart Claude for Desktop after saving the config file.
-
-### Stdio Mode — How It Works
-
-`mentisdb --mode stdio` reads JSON-RPC 2.0 from stdin and writes responses to
-stdout. It is designed for MCP clients that spawn subprocesses (Claude Desktop,
-Cursor, etc.).
-
-**Smart daemon detection**: When the stdio process starts, it checks if a
-daemon is already running on the configured MCP port (`127.0.0.1:9471` by
-default) via the health endpoint.
-
-- **Daemon running** → the stdio process acts as a lightweight proxy, forwarding
-  `tools/list` and `tools/call` requests to the daemon's HTTP MCP endpoints.
-  `initialize`, `ping`, and `resources/read` are handled locally. All clients
-  share the same live in-memory chain cache.
-- **No daemon** → the stdio process launches the daemon in the background
-  (`nohup` on Unix, `start /B` on Windows) with `--mode http --headless`, waits
-  for it to become responsive, then proxies. The daemon outlives the stdio
-  process without starting the TUI on a null stdin.
-- **Daemon launch fails** → falls back to local mode, creating its own
-  `MentisDbService` instance (state shared only via disk files).
-
-This means you never need to manually start the daemon — Claude Desktop, Cursor,
-or any MCP client can just spawn `mentisdb --mode stdio` and everything works.
-
-The daemon address is configurable via `MENTISDB_BIND_HOST` and
-`MENTISDB_MCP_PORT` environment variables, so the stdio process will detect and
-proxy to a daemon on a non-standard port.
-
-### Claude Code
-
-Claude Code supports MCP servers through its `claude mcp` commands and
-project/user MCP config. For a remote HTTP MCP server, the configuration shape
-is transport-based:
-
-```bash
-claude mcp add --transport http mentisdb http://127.0.0.1:9471
-```
-
-Useful follow-up commands:
-
-```bash
-claude mcp list
-claude mcp get mentisdb
-```
-
-`mentisdb setup claude-code` merges the MCP server entry into
-`~/.claude.json` (or `%USERPROFILE%\.claude.json` on Windows), preserving your
-existing Claude Code settings. The older `~/.claude/mcp/mentisdb.json` path is
-treated as a legacy companion file, not the canonical config target. The
-MentisDB HTTP MCP block it writes looks like this:
-
-```json
-{
-  "mcpServers": {
-    "mentisdb": {
-      "type": "http",
-      "url": "http://127.0.0.1:9471"
-    }
-  }
-}
-```
-
-Important:
-
-- `/mcp` inside Claude Code is mainly for managing or authenticating MCP
-  servers that are already configured
-- the server itself must already be running at the configured URL
-
-### GitHub Copilot CLI
-
-GitHub Copilot CLI
+If a MentisDB daemon is reachable beyond yo

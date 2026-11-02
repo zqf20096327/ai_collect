@@ -189,31 +189,34 @@ llm-docs-builder version                  # Show version
 -d, --docs PATH      Documentation path
 -o, --output PATH    Output file
 -u, --url URL        URL for comparison
+-f, --file PATH      Local markdown file for comparison
 -v, --verbose        Detailed output
 ```
 
 ## Serving Optimized Docs to AI Bots
 
-After using `bulk-transform` with `suffix: .llm`, configure your web server to serve optimized versions to AI bots:
+After using `bulk-transform` with `suffix: .llm`, configure your web server to serve optimized versions to AI bots. Pages without an `.llm.md` version are served as is:
 
 **Apache (.htaccess):**
 ```apache
 SetEnvIf User-Agent "(?i)(openai|anthropic|claude|gpt)" IS_LLM_BOT
+RewriteEngine On
 RewriteCond %{ENV:IS_LLM_BOT} !^$
+RewriteCond %{REQUEST_URI} !\.llm\.md$
+RewriteCond %{REQUEST_FILENAME} ^(.+)\.md$
+RewriteCond %1.llm.md -f
 RewriteRule ^(.*)\.md$ $1.llm.md [L]
 ```
 
 **Nginx:**
 ```nginx
-map $http_user_agent $is_llm_bot {
-    default 0;
-    "~*(?i)(openai|anthropic|claude|gpt)" 1;
+map $http_user_agent $llm_suffix {
+    default "";
+    "~*(openai|anthropic|claude|gpt)" ".llm";
 }
 
-location ~ ^/docs/(.*)\.md$ {
-    if ($is_llm_bot) {
-        rewrite ^(.*)\.md$ $1.llm.md last;
-    }
+location ~ ^/docs/(?<doc>.*)\.md$ {
+    try_files /docs/$doc$llm_suffix.md $uri =404;
 }
 ```
 
@@ -264,7 +267,10 @@ api = API.new
 ```markdown
 # API Documentation
 
-[complete API documentation](./api.md)
+
+> Important: This is a note
+
+[Click here to see the complete API documentation](./api.md)
 
 api = API.new
 ```

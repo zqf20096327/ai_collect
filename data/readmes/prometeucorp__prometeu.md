@@ -35,6 +35,7 @@ Run Claude Code, Codex, Cursor CLI and Antigravity agents in parallel — each i
 - **Terminal sessions:** shells of their own in the sidebar, started in your home or any folder without a project or workspace, kept across restarts (macOS and Linux).
 - **Tasks:** Filter Linear and GitHub issues and pull requests, then start a workspace. PR status and notifications keep follow-up visible.
 - **Persistent conversations:** resume stopped agents and inspect local token and cost history.
+- **Usage (macOS and Linux):** filter local consumption by period and workspace, inspect token composition and session details in Settings / Analytics. Provider-reported costs and missing measurements stay explicit.
 - **Optional collaboration:** share encrypted conversations and continue from companion devices while execution stays on the owner's Mac.
 - **English and Portuguese UI**, with dictation on macOS.
 
@@ -80,8 +81,8 @@ updating or uninstalling. See [Windows coverage](docs/contracts/windows-applicat
 Cursor CLI is supported on macOS and Linux since v0.35.0. Install a Cursor CLI
 with ACP support, make `cursor-agent` available in your shell, sign in with `agent login`, attach
 its account in Settings and select it in the launcher. Streaming, tools, resume,
-stop, questions and plan approvals are supported. Account quotas use the existing CLI login; hub tool
-selections and per-turn token/cost meters are unavailable. See the
+stop, questions, plan approvals and hub MCP are supported. Account quotas use the existing CLI login; hub
+plugins, skills and per-turn token/cost meters are unavailable. See the
 [Cursor contract](docs/contracts/cursor.md).
 
 ## Quick start

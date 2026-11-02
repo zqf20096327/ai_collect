@@ -75,7 +75,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 ### Fundamentals of Machine Learning
 
 - Explain Epoch, Batch, Batch Size, and Iteration.
-    - Answer: [Epoch, Batch, Batch Size, Iteration](https://www.youtube.com/watch?v=NFLlXE-6vno)
+    - Answer: [Epoch, Batch, Batch Size, Iteration](https://www.youtube.com/watch?v=NFLlXE-6vno) and [What are Epoch, Batch, Batch Size, and Iteration in Machine Learning?](https://outcomeschool.com/blog/epoch-batch-and-iteration)
 - What are embeddings in Machine Learning?
     - Answer: [Embeddings in Machine Learning](https://www.youtube.com/watch?v=LedXW6xl21s)
 - What is Softmax Activation Function?
@@ -505,6 +505,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - How do you deal with noisy data in machine learning models?
 - What strategies would you use to optimize the training time for a deep learning model?
 - How do you deploy an ML model in production?
+    - Answer: [How does Model Serving work?](https://outcomeschool.com/blog/model-serving)
 - How do you monitor a model's performance in production?
 - How would you deploy a model with low-latency requirements?
 - What are the common challenges when deploying ML models?

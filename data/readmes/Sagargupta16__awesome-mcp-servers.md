@@ -67,39 +67,39 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 
 ### Data & Databases
 
-| Server                                                                                     | Description                                                                   | Language   |
-| ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ---------- |
-| [Apache Doris MCP](https://github.com/apache/doris-mcp-server)                             | Official Apache Doris analytics database queries and management               | Python     |
-| [BatchData](https://github.com/batchdataco/batchdata-mcp-server)                           | U.S. real estate data: property lookup, comps, search, skip tracing           | Remote     |
-| [BigQuery MCP](https://github.com/ergut/mcp-bigquery-server)                               | Query Google BigQuery datasets and tables                                     | TypeScript |
-| [ClickHouse MCP](https://github.com/ClickHouse/mcp-clickhouse)                             | Official ClickHouse columnar analytics                                        | Python     |
-| [Confluent MCP](https://github.com/confluentinc/mcp-confluent)                             | Official Confluent Cloud Kafka topics, connectors and Flink                   | TypeScript |
-| [Couchbase MCP](https://github.com/couchbase/mcp-server-couchbase)                         | Official Couchbase and Capella cluster, scope and query access                | Python     |
-| [DBHub](https://github.com/bytebase/dbhub)                                                 | Universal database server for PostgreSQL, MySQL, SQL Server, MariaDB, SQLite  | TypeScript |
-| [dbt MCP](https://github.com/dbt-labs/dbt-mcp)                                             | Official dbt Labs server for dbt projects                                     | Python     |
-| [DC Hub](https://github.com/azmartone67/dchub-mcp-server)                                  | Daily grid-power scores (DCPI) for data-center site selection in 300+ markets | JavaScript |
-| [Elasticsearch MCP](https://github.com/elastic/mcp-server-elasticsearch)                   | Official Elasticsearch query interface                                        | Rust       |
-| [GCP MCP Toolbox](https://github.com/googleapis/mcp-toolbox)                               | Official Google DB toolbox (PostgreSQL, MySQL, Spanner)                       | Go         |
-| [Invokely MCP Connector](https://github.com/estevecastells/invokely-mcp-connector)         | Local stdio adapter for Invokely's hosted official statistics MCP service     | JavaScript |
-| [MCP Alchemy](https://github.com/runekaagaard/mcp-alchemy)                                 | SQLAlchemy-backed access to SQLite, PostgreSQL, MySQL, Oracle and MS-SQL      | Python     |
-| [Memgraph MCP](https://github.com/memgraph/ai-toolkit/tree/main/integrations/mcp-memgraph) | Official Memgraph graph database Cypher queries and schema                    | Python     |
-| [Milvus MCP](https://github.com/zilliztech/mcp-server-milvus)                              | Official Milvus vector database search and collection management              | Python     |
-| [MongoDB MCP](https://github.com/mongodb-js/mongodb-mcp-server)                            | Official MongoDB and Atlas cluster management                                 | TypeScript |
-| [MotherDuck / DuckDB MCP](https://github.com/motherduckdb/mcp-server-motherduck)           | Local DuckDB and MotherDuck cloud access                                      | Python     |
-| [MySQL MCP](https://github.com/benborla/mcp-server-mysql)                                  | MySQL database queries and management                                         | TypeScript |
-| [Neo4j MCP](https://github.com/neo4j-contrib/mcp-neo4j)                                    | Neo4j Labs Cypher, memory and Aura API graph database servers                 | Python     |
-| [Neon MCP](https://github.com/neondatabase/mcp-server-neon)                                | Neon serverless PostgreSQL branching and management                           | TypeScript |
-| [Pinecone MCP](https://github.com/pinecone-io/pinecone-mcp)                                | Official Pinecone vector database                                             | TypeScript |
-| [Polish MCP Servers](https://github.com/kamilkaczmareksolutions/polish-mcp-servers) | Polish public registers and law: NIP/REGON/KRS company lookup, tenders, permits | TypeScript |
-| [PostgreSQL MCP (Pro)](https://github.com/crystaldba/postgres-mcp)                         | Query, analyze and optimize PostgreSQL databases                              | Python     |
-| [Qdrant MCP](https://github.com/qdrant/mcp-server-qdrant)                                  | Official Qdrant vector database server                                        | Python     |
-| [Redis MCP](https://github.com/redis/mcp-redis)                                            | Official Redis cache and data structures                                      | Python     |
-| [Scout Packs](https://github.com/tigerops-win/scout-packs)                                 | Pay-per-call B2B data: lead lookup, domain intel and email checks             | Python     |
-| [Snowflake MCP](https://github.com/Snowflake-Labs/mcp)                                     | Official Snowflake Cortex AI + SQL orchestration                              | Python     |
-| [StarRocks MCP](https://github.com/StarRocks/mcp-server-starrocks)                         | Official StarRocks OLAP database query and schema access                      | Python     |
-| [Supabase MCP](https://github.com/supabase/mcp)                                            | Supabase database, auth, and storage                                          | TypeScript |
-| [Upstash MCP](https://github.com/upstash/mcp-server)                                       | Upstash Redis and Vector databases                                            | TypeScript |
-| [YunCMS](https://github.com/Yunsoft-Software/yuncms)                                       | Inspect CMS schema and read or write collection data with YunCMS RBAC         | JavaScript |
+| Server                                                                                     | Description                                                                     | Language   |
+| ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | ---------- |
+| [Apache Doris MCP](https://github.com/apache/doris-mcp-server)                             | Official Apache Doris analytics database queries and management                 | Python     |
+| [BatchData](https://github.com/batchdataco/batchdata-mcp-server)                           | U.S. real estate data: property lookup, comps, search, skip tracing             | Remote     |
+| [BigQuery MCP](https://github.com/ergut/mcp-bigquery-server)                               | Query Google BigQuery datasets and tables                                       | TypeScript |
+| [ClickHouse MCP](https://github.com/ClickHouse/mcp-clickhouse)                             | Official ClickHouse columnar analytics                                          | Python     |
+| [Confluent MCP](https://github.com/confluentinc/mcp-confluent)                             | Official Confluent Cloud Kafka topics, connectors and Flink                     | TypeScript |
+| [Couchbase MCP](https://github.com/couchbase/mcp-server-couchbase)                         | Official Couchbase and Capella cluster, scope and query access                  | Python     |
+| [DBHub](https://github.com/bytebase/dbhub)                                                 | Universal database server for PostgreSQL, MySQL, SQL Server, MariaDB, SQLite    | TypeScript |
+| [dbt MCP](https://github.com/dbt-labs/dbt-mcp)                                             | Official dbt Labs server for dbt projects                                       | Python     |
+| [DC Hub](https://github.com/azmartone67/dchub-mcp-server)                                  | Daily grid-power scores (DCPI) for data-center site selection in 300+ markets   | JavaScript |
+| [Elasticsearch MCP](https://github.com/elastic/mcp-server-elasticsearch)                   | Official Elasticsearch query interface                                          | Rust       |
+| [GCP MCP Toolbox](https://github.com/googleapis/mcp-toolbox)                               | Official Google DB toolbox (PostgreSQL, MySQL, Spanner)                         | Go         |
+| [Invokely MCP Connector](https://github.com/estevecastells/invokely-mcp-connector)         | Local stdio adapter for Invokely's hosted official statistics MCP service       | JavaScript |
+| [MCP Alchemy](https://github.com/runekaagaard/mcp-alchemy)                                 | SQLAlchemy-backed access to SQLite, PostgreSQL, MySQL, Oracle and MS-SQL        | Python     |
+| [Memgraph MCP](https://github.com/memgraph/ai-toolkit/tree/main/integrations/mcp-memgraph) | Official Memgraph graph database Cypher queries and schema                      | Python     |
+| [Milvus MCP](https://github.com/zilliztech/mcp-server-milvus)                              | Official Milvus vector database search and collection management                | Python     |
+| [MongoDB MCP](https://github.com/mongodb-js/mongodb-mcp-server)                            | Official MongoDB and Atlas cluster management                                   | TypeScript |
+| [MotherDuck / DuckDB MCP](https://github.com/motherduckdb/mcp-server-motherduck)           | Local DuckDB and MotherDuck cloud access                                        | Python     |
+| [MySQL MCP](https://github.com/benborla/mcp-server-mysql)                                  | MySQL database queries and management                                           | TypeScript |
+| [Neo4j MCP](https://github.com/neo4j-contrib/mcp-neo4j)                                    | Neo4j Labs Cypher, memory and Aura API graph database servers                   | Python     |
+| [Neon MCP](https://github.com/neondatabase/mcp-server-neon)                                | Neon serverless PostgreSQL branching and management                             | TypeScript |
+| [Pinecone MCP](https://github.com/pinecone-io/pinecone-mcp)                                | Official Pinecone vector database                                               | TypeScript |
+| [Polish MCP Servers](https://github.com/kamilkaczmareksolutions/polish-mcp-servers)        | Polish public registers and law: NIP/REGON/KRS company lookup, tenders, permits | TypeScript |
+| [PostgreSQL MCP (Pro)](https://github.com/crystaldba/postgres-mcp)                         | Query, analyze and optimize PostgreSQL databases                                | Python     |
+| [Qdrant MCP](https://github.com/qdrant/mcp-server-qdrant)                                  | Official Qdrant vector database server                                          | Python     |
+| [Redis MCP](https://github.com/redis/mcp-redis)                                            | Official Redis cache and data structures                                        | Python     |
+| [Scout Packs](https://github.com/tigerops-win/scout-packs)                                 | Pay-per-call B2B data: lead lookup, domain intel and email checks               | Python     |
+| [Snowflake MCP](https://github.com/Snowflake-Labs/mcp)                                     | Official Snowflake Cortex AI + SQL orchestration                                | Python     |
+| [StarRocks MCP](https://github.com/StarRocks/mcp-server-starrocks)                         | Official StarRocks OLAP database query and schema access                        | Python     |
+| [Supabase MCP](https://github.com/supabase/mcp)                                            | Supabase database, auth, and storage                                            | TypeScript |
+| [Upstash MCP](https://github.com/upstash/mcp-server)                                       | Upstash Redis and Vector databases                                              | TypeScript |
+| [YunCMS](https://github.com/Yunsoft-Software/yuncms)                                       | Inspect CMS schema and read or write collection data with YunCMS RBAC           | JavaScript |
 
 ### Developer Tools
 
@@ -118,7 +118,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [CircleCI MCP](https://github.com/CircleCI-Public/mcp-server-circleci)                                 | Official CircleCI workflow integration                                       | TypeScript |
 | [Codapult Guard](https://github.com/codapult/codapult-guard)                                           | Architecture guardrails for AI coding agents                                 | TypeScript |
 | [Codebase Memory MCP](https://github.com/DeusData/codebase-memory-mcp)                                 | Code intelligence server that indexes repos into a queryable knowledge graph | C          |
-| [ComputeFirst](https://computefirst.net/docs) | Free deterministic calculations, validation and data transforms; no API key | Remote |
+| [ComputeFirst](https://computefirst.net/docs)                                                          | Free deterministic calculations, validation and data transforms; no API key  | Remote     |
 | [Dedicated Mac Mini AI Bot Setup MCP](https://github.com/eibrahim/dedicated-mac-mini-ai-bot-setup-mcp) | Read-only lookup of a Mac mini AI bot setup service: its offer and queue     | JavaScript |
 | [Desktop Commander MCP](https://github.com/wonderwhy-er/DesktopCommanderMCP)                           | Terminal control, file search and diff-based file editing                    | TypeScript |
 | [Docker MCP](https://github.com/ckreiling/mcp-server-docker)                                           | Docker container management                                                  | Python     |
@@ -144,6 +144,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay)                                          | Read an agent's own recorded runs and replay them offline with no model call | TypeScript |
 | [Postman MCP](https://github.com/postmanlabs/postman-mcp-server)                                       | Official Postman API collections server                                      | TypeScript |
 | [Probe](https://github.com/probelabs/probe)                                                            | Semantic code search over large codebases with ripgrep and tree-sitter       | Rust       |
+| [remotify-mcp](https://github.com/onlsol/relay.remotify.run)                                           | Run remote shell commands without SSH, with optional human approval          | JavaScript |
 | [Repomix](https://github.com/yamadashy/repomix)                                                        | Packs a repository into an AI-friendly file, with built-in MCP server        | TypeScript |
 | [SandBase Harness](https://github.com/sandbaseai/sandbase-harness)                                     | Self-hosted MCP runtime with sandboxing, permissions and audit replay        | TypeScript |
 | [Sentry MCP](https://github.com/getsentry/toolkit)                                                     | Official Sentry error and performance tracking                               | TypeScript |
@@ -213,35 +214,35 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 
 ### Search & Knowledge
 
-| Server                                                                                      | Description                                                                    | Language   |
-| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------- |
-| [AgentSearch MCP](https://github.com/agentsearchhq-coder/agentsearch-mcp) | Web search, URL-to-Markdown extraction and JS page rendering; keyless free tier | TypeScript |
-| [Apify MCP](https://github.com/apify/apify-mcp-server)                                      | Web scraping actors and automation                                             | TypeScript |
-| [arXiv MCP](https://github.com/blazickjp/arxiv-mcp-server)                                  | Search arXiv papers and read full LaTeX sections                               | Python     |
-| [BORME API](https://github.com/bormeapi/borme-mcp)                                          | Spain's company registry gazette (BORME): 9.6M+ events since 2009              | Remote     |
-| [Brave Search MCP](https://github.com/brave/brave-search-mcp-server)                        | Official Brave Search API                                                      | TypeScript |
-| [CareJobs.Now Healthcare Jobs MCP](https://github.com/yumaheymans/carejobs-mcp)             | Search open US healthcare jobs and posted pay from 270 employers' career sites | Remote     |
-| [Cluefinch MCP](https://github.com/cluefinch/mcp-server)                                    | Web research with search, page reading, links, and source collection           | Python     |
-| [Context7 MCP](https://github.com/upstash/context7)                                         | Up-to-date library documentation                                               | TypeScript |
-| [DiPlay Helper](https://github.com/UllrAI/diplay-helper)                                    | Query live DiPlay packages, compatibility reports and setup guides             | TypeScript |
-| [Docling MCP](https://github.com/docling-project/docling-mcp)                               | Official Docling document parsing and conversion to structured text            | Python     |
-| [Docs MCP Server](https://github.com/arabold/docs-mcp-server)                               | Index and semantically search third-party library documentation                | TypeScript |
-| [Docsy](https://docsy.remcp.site/docs)                                                      | Versioned developer docs with source links; OAuth 2.1 MCP                      | Remote     |
-| [DuckDuckGo MCP](https://github.com/nickclyde/duckduckgo-mcp-server)                        | DuckDuckGo search with content fetching                                        | Python     |
-| [Exa MCP](https://github.com/exa-labs/exa-mcp-server)                                       | Exa AI-powered search                                                          | TypeScript |
-| [Kagi MCP](https://github.com/kagisearch/kagimcp)                                           | Official Kagi search API                                                       | Python     |
-| [looot](https://github.com/loootai/looot-mcp)                                               | One key for 2,500+ data endpoints: email, phone, company, SERP, web pages      | TypeScript |
-| [MarkItDown MCP](https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp) | Convert PDF, Office, HTML and audio files to Markdown for LLMs                 | Python     |
-| [Meilisearch MCP](https://github.com/meilisearch/meilisearch-mcp)                           | Official Meilisearch index server                                              | Python     |
-| [Perplexity MCP](https://github.com/perplexityai/modelcontextprotocol)                      | Official Perplexity search API                                                 | TypeScript |
-| [Recall Kitchen](https://github.com/Recall-Kitchen/rk-mcp)                                  | Search U.S. CPSC, FDA, USDA and NHTSA product recalls by keyword or UPC        | Remote     |
-| [Ref MCP](https://github.com/ref-tools/ref-tools-mcp)                                       | Token-efficient search over public and private technical docs                  | TypeScript |
-| [ReMCP](https://github.com/getremcp/remcp)                                                  | OAuth access to paired computers; terminal, files, browser and desktop control | Remote     |
-| [Scento Perfume API](https://github.com/Scento-com/perfume-mcp-server)                      | Perfume notes, families and similar scents for 1,400+ perfumes, no API key     | JavaScript |
-| [SearXNG MCP](https://github.com/ihor-sokoliuk/mcp-searxng)                                 | Metasearch across engines via a self-hosted SearXNG instance                   | TypeScript |
-| [SerpAPI MCP](https://github.com/serpapi/serpapi-mcp)                                       | Official SerpAPI Google search results                                         | Python     |
-| [Statsnet](https://github.com/usenetstate/statsnet-mcp)                                     | Company background checks: registration, executives, courts and finances       | Remote     |
-| [Tavily MCP](https://github.com/tavily-ai/tavily-mcp)                                       | Tavily AI search for agents                                                    | JavaScript |
+| Server                                                                                      | Description                                                                     | Language   |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ---------- |
+| [AgentSearch MCP](https://github.com/agentsearchhq-coder/agentsearch-mcp)                   | Web search, URL-to-Markdown extraction and JS page rendering; keyless free tier | TypeScript |
+| [Apify MCP](https://github.com/apify/apify-mcp-server)                                      | Web scraping actors and automation                                              | TypeScript |
+| [arXiv MCP](https://github.com/blazickjp/arxiv-mcp-server)                                  | Search arXiv papers and read full LaTeX sections                                | Python     |
+| [BORME API](https://github.com/bormeapi/borme-mcp)                                          | Spain's company registry gazette (BORME): 9.6M+ events since 2009               | Remote     |
+| [Brave Search MCP](https://github.com/brave/brave-search-mcp-server)                        | Official Brave Search API                                                       | TypeScript |
+| [CareJobs.Now Healthcare Jobs MCP](https://github.com/yumaheymans/carejobs-mcp)             | Search open US healthcare jobs and posted pay from 270 employers' career sites  | Remote     |
+| [Cluefinch MCP](https://github.com/cluefinch/mcp-server)                                    | Web research with search, page reading, links, and source collection            | Python     |
+| [Context7 MCP](https://github.com/upstash/context7)                                         | Up-to-date library documentation                                                | TypeScript |
+| [DiPlay Helper](https://github.com/UllrAI/diplay-helper)                                    | Query live DiPlay packages, compatibility reports and setup guides              | TypeScript |
+| [Docling MCP](https://github.com/docling-project/docling-mcp)                               | Official Docling document parsing and conversion to structured text             | Python     |
+| [Docs MCP Server](https://github.com/arabold/docs-mcp-server)                               | Index and semantically search third-party library documentation                 | TypeScript |
+| [Docsy](https://docsy.remcp.site/docs)                                                      | Versioned developer docs with source links; OAuth 2.1 MCP                       | Remote     |
+| [DuckDuckGo MCP](https://github.com/nickclyde/duckduckgo-mcp-server)                        | DuckDuckGo search with content fetching                                         | Python     |
+| [Exa MCP](https://github.com/exa-labs/exa-mcp-server)                                       | Exa AI-powered search                                                           | TypeScript |
+| [Kagi MCP](https://github.com/kagisearch/kagimcp)                                           | Official Kagi search API                                                        | Python     |
+| [looot](https://github.com/loootai/looot-mcp)                                               | One key for 2,500+ data endpoints: email, phone, company, SERP, web pages       | TypeScript |
+| [MarkItDown MCP](https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp) | Convert PDF, Office, HTML and audio files to Markdown for LLMs                  | Python     |
+| [Meilisearch MCP](https://github.com/meilisearch/meilisearch-mcp)                           | Official Meilisearch index server                                               | Python     |
+| [Perplexity MCP](https://github.com/perplexityai/modelcontextprotocol)                      | Official Perplexity search API                                                  | TypeScript |
+| [Recall Kitchen](https://github.com/Recall-Kitchen/rk-mcp)                                  | Search U.S. CPSC, FDA, USDA and NHTSA product recalls by keyword or UPC         | Remote     |
+| [Ref MCP](https://github.com/ref-tools/ref-tools-mcp)                                       | Token-efficient search over public and private technical docs                   | TypeScript |
+| [ReMCP](https://github.com/getremcp/remcp)                                                  | OAuth access to paired computers; terminal, files, browser and desktop control  | Remote     |
+| [Scento Perfume API](https://github.com/Scento-com/perfume-mcp-server)                      | Perfume notes, families and similar scents for 1,400+ perfumes, no API key      | JavaScript |
+| [SearXNG MCP](https://github.com/ihor-sokoliuk/mcp-searxng)                                 | Metasearch across engines via a self-hosted SearXNG instance                    | TypeScript |
+| [SerpAPI MCP](https://github.com/serpapi/serpapi-mcp)                                       | Official SerpAPI Google search results                                          | Python     |
+| [Statsnet](https://github.com/usenetstate/statsnet-mcp)                                     | Company background checks: registration, executives, courts and finances        | Remote     |
+| [Tavily MCP](https://github.com/tavily-ai/tavily-mcp)                                       | Tavily AI search for agents                                                     | JavaScript |
 
 ### Communication
 
@@ -257,6 +258,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [MeetStream](https://github.com/meetstream-ai/meetstream-mcp)           | Official meeting bots for Zoom, Meet and Teams: record and transcribe           | TypeScript |
 | [Microsoft Teams MCP](https://github.com/InditexTech/mcp-teams-server)  | Teams channels, messages, meetings                                              | Python     |
 | [needhave](https://github.com/PrivateAISystems/needhave)                | Public need/have list agents read and post to over remote MCP, no key           | JavaScript |
+| [Reddit MCP Publisher](https://github.com/Bl0ck154/reddit-mcp-publisher) | Read Reddit context and publish via owner-approved browser previews | TypeScript |
 | [Resend MCP](https://github.com/resend/resend-mcp)                      | Official Resend transactional email                                             | TypeScript |
 | [SendRaven MCP](https://github.com/CommonNinja/sendraven-mcp-server)    | Official SendRaven email sending, inbound reply threads and per-key send limits | TypeScript |
 | [Telegram Archive MCP](https://github.com/GeiserX/telegram-archive-mcp) | Search and read archived Telegram history from a Telegram-Archive instance      | Go         |
@@ -305,6 +307,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Alpaca MCP](https://github.com/alpacahq/alpaca-mcp-server)                                    | Official Alpaca stocks / ETF / crypto trading                                 | Python     |
 | [Coinbase MCP](https://github.com/coinbase/agentkit)                                           | Coinbase crypto trading and wallet                                            | TypeScript |
 | [Equibles](https://equibles.com/mcp)                                                           | SEC filings, XBRL financials, earnings calls, insider trades and 13F holdings | Remote     |
+| [Fair Value Calculator](https://www.fairvalue-calculator.com/integrations)                     | Stock fair values, quality scores, screening and watchlist alerts             | Remote     |
 | [Financial Modeling Prep MCP](https://github.com/imbenrabi/Financial-Modeling-Prep-MCP-Server) | FMP market data and fundamentals                                              | TypeScript |
 | [Invoice MCP](https://github.com/theluckystrike/mcp-invoice-generator)                         | Create PDF invoices with VAT lines, sequential numbering and overdue tracking | JavaScript |
 | [Invompt](https://github.com/Invompt/invompt-mcp)                                              | Create and review invoices from an AI assistant                               | TypeScript |
@@ -320,7 +323,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Xero MCP](https://github.com/XeroAPI/xero-mcp-server)                                         | Official Xero server for invoices, contacts, accounts and payroll             | TypeScript |
 | [Yahoo Finance MCP](https://github.com/Alex2Yang97/yahoo-finance-mcp)                          | Stock data and financial info                                                 | Python     |
 | [Zerodha Kite MCP](https://github.com/zerodha/kite-mcp-server)                                 | Official Zerodha Kite server for Indian holdings, orders and quotes           | Go         |
-| [Zovo Grant Finder](https://grant-finder.zovo.one/) | Search Grants.gov federal grants and export XLSX trackers and ICS deadlines | Remote |
+| [Zovo Grant Finder](https://grant-finder.zovo.one/)                                            | Search Grants.gov federal grants and export XLSX trackers and ICS deadlines   | Remote     |
 
 ### Monitoring & Observability
 
@@ -375,28 +378,23 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 
 ### Security
 
-| Server                                                              | Description                                                               | Language   |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------- |
-| [Binary Ninja MCP](https://github.com/fosdickio/binary_ninja_mcp)   | Binary Ninja plugin for LLM-driven binary analysis                        | Python     |
-| [Bitwarden MCP](https://github.com/bitwarden/mcp-server)            | Official Bitwarden password manager                                       | TypeScript |
-| [BountyGuard MCP](https://github.com/doomsday-network/bounty-guard) | Pre-flight prompt injection, CI secret exfiltration & escrow verification | Python     |
-- **[DoomPay MCP](https://github.com/doomsday-network/doom-pay)** - 2-line Stripe-like Web3 checkout widget (`pay.js`) and MCP server for accepting zero-fee `DOOM` (L1) and `wDOOM` (Base Mainnet) payments.
-- **[Web3 Agent Skills MCP](https://github.com/doomsday-network/web3-agent-skills)** - Modular `SKILL.md` skills and MCP tools for AI coding agents to verify Proof-of-Escrow bounties, settle non-custodial Web3 payments, and mine PoW rewards.
-- **[Doomsday Network MCP](https://github.com/doomsday-network/doomsday)** - Layer-1 PoW blockchain, Base Mainnet `wDOOM` (`0x623c84A5E04bF715018203334b0eFE41696eBC3E`) bridge, and Proof-of-Escrow MCP server for autonomous AI agents.
-- **[GitHub Bounty Scanner MCP](https://github.com/doomsday-network/github-bounty-scanner)** - Zero-dependency CLI & MCP tool that scans GitHub bounty repositories and verifies on-chain Proof-of-Escrow collateral before agents invest compute.
-- **[DoomHash GPU/CPU Miner](https://github.com/doomsday-network/cuda-gpu-miner)** - Open-source CUDA, OpenCL, and multi-core CPU Proof-of-Work miner for autonomous AI agents and GPU rigs on the Doomsday Network pool.
-| [Burp AI Agent](https://github.com/six2dez/burp-ai-agent)                          | Burp Suite extension with MCP tooling                                     | Kotlin     |
-| [CrowdStrike Falcon MCP](https://github.com/CrowdStrike/falcon-mcp)                | Official CrowdStrike Falcon threat hunting and detections                 | Python     |
-| [Dark-Moon](https://github.com/ASCIT31/Dark-Moon)                                  | Autonomous pentest platform for web, API, Active Directory and Kubernetes | Python     |
-| [DomScan MCP](https://github.com/estevecastells/domscan-mcp)                       | Domain intelligence: DNS, WHOIS, SSL, subdomains and typosquatting checks | TypeScript |
-| [HashiCorp Vault MCP](https://github.com/hashicorp/vault-mcp-server)               | Official HashiCorp Vault secrets and mounts management                    | Go         |
-| [http-detection-agent](https://github.com/ai-blueteam/http-detection-agent)        | Capability-aware HTTP attack detection over a 76-rule catalog             | Rust       |
-| [IDA Pro MCP](https://github.com/mrexodia/ida-pro-mcp)                             | IDA Pro reverse engineering assistant for LLM clients                     | Python     |
-| [mcp-scan](https://github.com/snyk/agent-scan)                                     | Scans MCP servers for tool poisoning and prompt injection                 | Python     |
-| [radare2 MCP](https://github.com/radareorg/radare2-mcp)                            | Official radare2 reverse engineering stdio server                         | C          |
-| [Semgrep MCP](https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp) | Official Semgrep static analysis for vulnerabilities                      | Python     |
-| [Shodan MCP](https://github.com/w0h1v/mcp-shodan)                                  | Shodan device search, IP recon, DNS and CVE intelligence                  | TypeScript |
-| [vet](https://github.com/safedep/vet)                                              | Dependency and malicious package scanning with an MCP server              | Go         |
+| Server                                                                             | Description                                                                                                                                                | Language   |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| [Binary Ninja MCP](https://github.com/fosdickio/binary_ninja_mcp)                  | Binary Ninja plugin for LLM-driven binary analysis                                                                                                         | Python     |
+| [Bitwarden MCP](https://github.com/bitwarden/mcp-server)                           | Official Bitwarden password manager                                                                                                                        | TypeScript |
+| [Burp AI Agent](https://github.com/six2dez/burp-ai-agent)                          | Burp Suite extension with MCP tooling                                                                                                                      | Kotlin     |
+| [CrowdStrike Falcon MCP](https://github.com/CrowdStrike/falcon-mcp)                | Official CrowdStrike Falcon threat hunting and detections                                                                                                  | Python     |
+| [Dark-Moon](https://github.com/ASCIT31/Dark-Moon)                                  | Autonomous pentest platform for web, API, Active Directory and Kubernetes                                                                                  | Python     |
+| [DomScan MCP](https://github.com/estevecastells/domscan-mcp)                       | Domain intelligence: DNS, WHOIS, SSL, subdomains and typosquatting checks                                                                                  | TypeScript |
+| [HashiCorp Vault MCP](https://github.com/hashicorp/vault-mcp-server)               | Official HashiCorp Vault secrets and mounts management                                                                                                     | Go         |
+| [http-detection-agent](https://github.com/ai-blueteam/http-detection-agent)        | Capability-aware HTTP attack detection over a 76-rule catalog                                                                                              | Rust       |
+| [ichi-mcp](https://github.com/bernik-bot/ichi-mcp)                                 | Reads ICHI global threat score, band (NORMAL--CRITICAL), and advisories; no key | Python     |
+| [IDA Pro MCP](https://github.com/mrexodia/ida-pro-mcp)                             | IDA Pro reverse engineering assistant for LLM clients                                                                                                      | Python     |
+| [mcp-scan](https://github.com/snyk/agent-scan)                                     | Scans MCP servers for tool poisoning and prompt injection                                                                                                  | Python     |
+| [radare2 MCP](https://github.com/radareorg/radare2-mcp)                            | Official radare2 reverse engineering stdio server                                                                                                          | C          |
+| [Semgrep MCP](https://github.com/semgrep/semgrep/tree/develop/cli/src/semgrep/mcp) | Official Semgrep static analysis for vulnerabilities                                                                                                       | Python     |
+| [Shodan MCP](https://github.com/w0h1v/mcp-shodan)                                  | Shodan device search, IP recon, DNS and CVE intelligence                                                                                                   | TypeScript |
+| [vet](https://github.com/safedep/vet)                                              | Dependency and malicious package scanning with an MCP server                                                                                               | Go         |
 
 ### Web Browsing & Scraping
 
@@ -432,7 +430,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Cesium MCP](https://github.com/CesiumGS/cesium-ai-integrations/tree/main/mcp) | Official Cesium 3D geospatial and geolocation MCP servers                       | TypeScript |
 | [GIS MCP](https://github.com/mahdin75/gis-mcp)                                 | Geospatial analysis via GDAL, Shapely, GeoPandas, and PyProj                    | Python     |
 | [Google Maps MCP](https://github.com/cablate/mcp-google-map)                   | Google Maps API with LLM processing                                             | TypeScript |
-| [Lake Level MCP](https://github.com/theluckystrike/lake-level-mcp) | Live US lake and reservoir levels from USGS, USACE, CDEC, USBR and TWDB gauges | TypeScript |
+| [Lake Level MCP](https://github.com/theluckystrike/lake-level-mcp)             | Live US lake and reservoir levels from USGS, USACE, CDEC, USBR and TWDB gauges  | TypeScript |
 | [Mapbox MCP](https://github.com/mapbox/mcp-server)                             | Official Mapbox geocoding, POI search, directions, and isochrones               | TypeScript |
 | [MAQAMI Travel](https://github.com/negm17111995/mcp-server)                    | Search 3M+ hotels and flights with live rates, then check out on book.maqami.co | JavaScript |
 | [Orizn Visa](https://github.com/MattJeff/orizn-mcp-server)                     | Visa and entry rules for 49,750 passport-destination pairs, official sources    | TypeScript |
@@ -619,6 +617,7 @@ but not all of resources and prompts.
 - [MCP Contributors Discord](https://discord.gg/6CSzBmMkjX) - Official Discord for MCP spec, SDK and working group discussion.
 - [Glama MCP Registry](https://glama.ai/mcp/servers) - Searchable registry of open-source MCP servers.
 - [Smithery](https://smithery.ai/) - Hosted MCP server registry and marketplace for agent tool connections.
+- [Awesome Agent Skills](https://github.com/Sagargupta16/awesome-skills) - The sister list: Agent Skills, curated and checked by the same CI.
 
 ---
 

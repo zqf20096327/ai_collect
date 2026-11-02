@@ -393,6 +393,7 @@ The Improvement criterion records how reporting tasks relate to those that forme
 - **Scaffold Effect** `arXiv'26` — treats harness choice as a hidden variable in coding-agent comparisons. [[paper]](https://arxiv.org/abs/2607.22585)
 - **Rethinking Harness Evaluation** `arXiv'26` — examines protocol confounds in reported harness-evolution gains. [[paper]](https://arxiv.org/abs/2607.12227)
 - **Model–Harness Fit** `arXiv'26` — compares model–harness combinations across agent tasks to identify interaction effects. [[paper]](https://arxiv.org/abs/2610.00917)
+- **Compositional Safety Failures** `arXiv'26` — compares individual and combined component updates to identify safety failures, with hypergraph-guided runtime monitoring. [[paper]](https://arxiv.org/abs/2609.33123)
 
 #### Generalization & Retention
 

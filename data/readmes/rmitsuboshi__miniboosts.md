@@ -4,7 +4,7 @@ MiniBoosts is a Rust library for implementing and comparing boosting algorithms.
 Its algorithms share the `Booster`, `WeakLearner`, and `Classifier` traits, so you
 can use the same data and weak learner across experiments.
 
-Version 0.5.0 ships as one `miniboosts` crate; algorithms and utilities are
+Since version 0.5.0, MiniBoosts ships as one `miniboosts` crate; algorithms and utilities are
 internal modules, not separate registry packages. Earlier releases have a
 different API; see the [migration notes](MIGRATION.md) when upgrading.
 Rust 1.85 or newer is required (edition 2024).
@@ -15,7 +15,7 @@ Add MiniBoosts to your application's `Cargo.toml`:
 
 ```toml
 [dependencies]
-miniboosts = "0.5.0"
+miniboosts = "0.5.1"
 ```
 
 The optimization routines use Clarabel for linear, quadratic, and conic
@@ -110,6 +110,7 @@ Import these types from `miniboosts` or `miniboosts::prelude`:
 | --- | --- |
 | `AdaBoost` | [Freund and Schapire][adaboost] |
 | `AdaBoostV` | [Rätsch and Warmuth][adaboostv] |
+| `BrownBoost` | [Freund][brownboost] |
 | `MadaBoost` | [Domingo and Watanabe][madaboost] |
 | `LpBoost` | [Demiriz, Bennett, and Shawe-Taylor][lpboost] |
 | `ErlpBoost` | [Warmuth, Glocer, and Vishwanathan][erlpboost] |
@@ -117,12 +118,20 @@ Import these types from `miniboosts` or `miniboosts::prelude`:
 | `MlpBoost` | [Mitsuboshi, Hatano, and Takimoto][mlpboost] |
 | `SmoothBoost` | [Servedio][smoothboost] |
 | `SoftBoost` | [Warmuth, Glocer, and Rätsch][softboost] |
+| `SparsiBoost` | [Grønlund, Larsen, and Mathiasen][sparsiboost] |
 | `TotalBoost` | [Warmuth, Liao, and Rätsch][totalboost] |
 | `GraphSeparationBoosting` | [Alon, Gonen, Hazan, and Moran][graphsepboost] |
 
-The built-in weak learner is a [decision tree][decisiontree]. Implement
-`WeakLearner` to use your own learner. The gradient boosting machine (GBM) and
-regression tree implementations are not compiled into the library.
+The built-in weak learners are a [decision tree][decisiontree], `FiniteClass`
+(an exact edge maximizer over a finite hypothesis class, including one given as
+a table of confidences), `RbfClassBuilder` (Gaussian bumps centered at training
+examples, as a `FiniteClass`), `BoundedLinear` (exact edge maximization over
+bounded linear functions; boosting it yields a linear classifier),
+`LogisticRegression` (weighted logistic regression returning halfspaces or
+`tanh` rules, with no edge guarantee), and `NaiveBayes` (weighted Gaussian naive
+Bayes). Implement `WeakLearner` to use your own
+learner. The gradient boosting machine (GBM) and
+regression tree are not included; see the migration notes.
 See the [migration notes](MIGRATION.md) for removed APIs.
 
 Custom hypotheses must return consistent predictions for a fixed sample.
@@ -160,6 +169,21 @@ than count as convergence. SoftBoost and TotalBoost can instead stop early on
 an entropy-solver accuracy failure; inspect `numerical_stop_reason()` after
 training. Such a stop does not certify convergence, and final LP fitting can
 still fail. See the [migration notes](MIGRATION.md) for numerical changes.
+
+BrownBoost's `tolerance` is the target training error `ε`; it sets the total
+time `c` with `1 - erf(√c) = ε`. Its training-error guarantee applies only when
+`remaining_time()` reaches `0`; otherwise check `numerical_stop_reason()`. It
+has no iteration bound, so set `force_quit_at` in experiments.
+
+SparsiBoost needs `n_hypotheses(T)` (at most `T` hypotheses), `tolerance(v)`
+(target gap `v`), or both; with both, `T` takes precedence and
+`sparsification_within_tolerance()` reports whether the margin-change budget
+`v/2` was kept. It runs AdaBoostV and then sparsifies the ensemble with a
+randomized discrepancy-minimization step, so record its `seed`. That step is a
+heuristic that does not certify the paper's bound; inspect
+`sparsification_error()` for the measured largest change of a training margin.
+A small `v` needs `⌈8 ln m / v²⌉` AdaBoostV rounds, and the sparsification
+time grows cubically in that number.
 
 For fair comparisons, use the same data splits, preprocessing, weak learner,
 and evaluation metrics. State each algorithm's stopping rule and use a common
@@ -207,12 +231,11 @@ retested. See the [release guide](RELEASING.md) for publishing `miniboosts`.
 
 ## License
 
-MiniBoosts is licensed under [MIT](https://github.com/rmitsuboshi/miniboosts/blob/main/LICENSE). Clarabel 0.11.1 is licensed under
-[Apache-2.0](https://github.com/oxfordcontrol/Clarabel.rs/blob/v0.11.1/LICENSE.md);
-its license remains separate from MiniBoosts' license.
+MiniBoosts is licensed under [MIT](https://github.com/rmitsuboshi/miniboosts/blob/main/LICENSE).
 
 [adaboost]: https://www.sciencedirect.com/science/article/pii/S002200009791504X?via%3Dihub
 [adaboostv]: http://jmlr.org/papers/v6/ratsch05a.html
+[brownboost]: https://doi.org/10.1023/A:1010852229904
 [cerlpboost]: https://link.springer.com/article/10.1007/s10994-010-5173-z
 [decisiontree]: https://www.amazon.co.jp/-/en/Leo-Breiman/dp/0412048418
 [erlpboost]: https://www.stat.purdue.edu/~vishy/papers/WarGloVis08.pdf
@@ -222,4 +245,5 @@ its license remains separate from MiniBoosts' license.
 [madaboost]: https://www.learningtheory.org/colt2000/papers/DomingoWatanabe.pdf
 [smoothboost]: https://link.springer.com/chapter/10.1007/3-540-44581-1_31
 [softboost]: https://proceedings.neurips.cc/paper/2007/file/cfbce4c1d7c425baf21d6b6f2babe6be-Paper.pdf
+[sparsiboost]: https://arxiv.org/abs/1901.10789
 [totalboost]: https://dl.acm.org/doi/10.1145/1143844.1143970

@@ -78,6 +78,7 @@ A huge list of great stuff you can get for free!
 | [JSONing](https://jsoning.com/api) | Create a mock API from a JSON file for testing and prototyping. |
 | [Live Tennis API](https://livetennisapi.com) | Live tennis scores, fixtures, and player data (including each player's current ranking) covering ATP, WTA, Challenger, and ITF. Free tier includes 30 requests/minute and 100 requests/day. |
 | [localscreenshot](https://localscreenshot.com) | Screenshot and PDF rendering API for any public page, from 227 countries. Free plan with 50 credits every month, no card required. |
+| [logoapi.sh](https://logoapi.sh) | Company logo API: SVG logo by domain, with white, black, grey and dark variants. Free for 1M requests a month per site, no key or signup. |
 | [Mockae](https://mockae.com) | Fake REST API powered by Lua. |
 | [Noms](https://noms.sh) | Nutrition data API for 3.7M foods and 298K brands across 230 countries, with barcode lookup and up to 177 nutrients per food. Free tier: 250 requests/day, no credit card. |
 | [OntarioNet CN Test](https://cntest.ontarionet.ca) | Check if a website is blocked in China by the Great Firewall. It identifies DNS pollution by comparing DNS results and ASN information detected by servers in China versus servers in the United States. |
@@ -303,6 +304,7 @@ A huge list of great stuff you can get for free!
 | [kdpbook.io KDP Cover Size Calculator](https://kdpbook.io/kdp/cover-size-calculator) | Free full-wrap KDP cover size calculator for any trim, paper and page count, paperback or hardcover, with a downloadable SVG cover template (bleed, spine, safe area and barcode guides) that opens at true size in Illustrator, Affinity, Inkscape or Canva. No account needed. |
 | [Lunacy](https://icons8.com/lunacy) | Free design software that keeps your flow with AI tools and built-in graphics. |
 | [MDBootstrap](https://mdbootstrap.com) | Free for personal & commercial use Bootstrap, Angular, React, and Vue UI Kits with over 700 components, stunning templates, 1-min installation, extensive tutorials & huge community. |
+| [noattributionicons](https://noattributionicons.com) | 3,700+ flat color icons in 216 themed packs. SVG and PNG, free for commercial use, no attribution, no sign-up. |
 | [Photopea](https://photopea.com) | A free and online alternative to Adobe Photoshop and support for the `.psd` file format. |
 | [Tailwind Elements](https://tailwind-elements.com) | Free Bootstrap components recreated with Tailwind CSS, but with better design and more functionalities. |
 | [UI Gradients](https://uigradients.com) | A collection of beautiful gradients that can be used for UI backgrounds, buttons, and other design elements. |

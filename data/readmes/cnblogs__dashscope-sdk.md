@@ -611,11 +611,77 @@ var request = new ModelRequest<TextGenerationInput, ITextGenerationParameters>()
     Parameters = new TextGenerationParameters()
     {
         ResultFormat = "message",
-        ResponseFormat = DashScopeResponseFormat.Json,
+        ResponseFormat = DashScopeResponseFormat.JsonObject,
         IncrementalOutput = true
     }
 }
 ```
+
+To make the model strictly follow a given JSON Schema, use `DashScopeResponseFormat.JsonSchema()` with a `DashScopeJsonSchema` (`Strict` is recommended to be `true`).
+
+```csharp
+var request = new ModelRequest<MultimodalInput, IMultimodalParameters>()
+{
+    Model = "qwen3.8-flash",
+    Input = new MultimodalInput() { Messages = messages },
+    Parameters = new MultimodalParameters()
+    {
+        ResponseFormat = DashScopeResponseFormat.JsonSchema(new DashScopeJsonSchema(
+            "calculation",
+            new JsonObject
+            {
+                ["type"] = "object",
+                ["properties"] = new JsonObject
+                {
+                    ["result"] = new JsonObject { ["type"] = "number" }
+                },
+                ["required"] = new JsonArray("result"),
+                ["additionalProperties"] = false
+            },
+            Strict: true))
+    }
+}
+```
+
+Notes on using `json_schema`:
+
+- Only a few models support `json_schema` (e.g. qwen3.7/qwen3.8 series). Check the [structured output doc](https://docs.bailian.console.aliyun.com/zh/model-studio/qwen-structured-output) before using it, otherwise fall back to `json_object`.
+- qwen3.x series models are called via the multimodal API (`MultimodalParameters`), while qwen-max and other legacy models are called via the text API (`TextGenerationParameters`).
+- Unlike `json_object`, `json_schema` does not require the prompt to contain the word "json".
+- In the `IChatClient` (Microsoft.Extensions.AI) integration, when `ChatResponseFormat.ForJsonSchema(...)` is used: whitelisted models (qwen3.7/qwen3.8 series) are automatically mapped to `json_schema`; other models fall back to `json_object` (the schema is ignored). Set `AdditionalProperties["useJsonSchema"]` to `true`/`false` to force the mapping (similar to `useVl`), e.g. when a new model supports `json_schema` before the whitelist is updated. `ChatResponseFormat.Json` is always mapped to `json_object`.
+
+### Agents (Microsoft Agent Framework)
+
+The `IChatClient` returned by `AsChatClient()` works with [Microsoft Agent Framework](https://learn.microsoft.com/en-us/dotnet/ai/microsoft-agent-framework-overview) (`Microsoft.Agents.AI` NuGet package). The agent keeps the conversation history itself and passes the agent-level persona via `ChatOptions.Instructions`, which this SDK maps to a leading system message; tool calls are executed by the agent loop automatically.
+
+```csharp
+using Microsoft.Agents.AI;
+using Microsoft.Extensions.AI;
+
+var chatClient = dashScopeClient.AsChatClient("qwen-plus");
+var agent = new ChatClientAgent(
+    chatClient,
+    instructions: "你是智能助理，可以查询天气和当前时间，回答要简洁。",
+    name: "assistant",
+    tools: [AIFunctionFactory.Create(GetWeather), AIFunctionFactory.Create(GetNow)]);
+
+// The session carries the conversation history across runs.
+var session = await agent.CreateSessionAsync();
+while (true)
+{
+    Console.Write("User > ");
+    var input = Console.ReadLine();
+    if (string.IsNullOrEmpty(input))
+    {
+        return;
+    }
+
+    var response = await agent.RunAsync(input, session);
+    Console.WriteLine($"Assistant > {response.Text}");
+}
+```
+
+See `sample/Cnblogs.DashScope.Sample/MsExtensionsAI/AgentExample.cs` for a runnable sample. If you prefer no extra dependency, `ChatOptions.Instructions` + tool messages (`FunctionCallContent`/`FunctionResultContent`) are enough to build a minimal agent loop by hand, see [Tool Calling](#tool-calling).
 
 ### Prefix Completion
 
@@ -2179,6 +2245,13 @@ Console.WriteLine(deletion.Deleted ? $"Deleted: {deletion.Id}" : $"Deletion fail
 ```
 
 ## Text Embeddings
+
+Call the text embedding API via `GetTextEmbeddingsAsync`. Supported models are `text-embedding-v1` ~ `v4` plus the qwen3.7 series:
+
+- `qwen3.7-text-embedding` (`TextEmbeddingModel.QwenTextEmbedding`): 2560/2048/1536/1024(default)/768/512/256 dimensions, up to 128,000 tokens per text and 20 texts per request.
+- `qwen3.7-text-embedding-flash` (`TextEmbeddingModel.QwenTextEmbeddingFlash`): 1024(default)/768/512/256 dimensions.
+
+The qwen3.7 series also returns an extra `prompt_tokens` or `input_tokens` in `usage` (same value as `total_tokens`), and flash additionally returns a `prompt_tokens_details` breakdown.
 
 ```csharp
 var text = "Sample text for embedding";

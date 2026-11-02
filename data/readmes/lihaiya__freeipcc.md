@@ -27,6 +27,8 @@ Call Center，Contact Center，呼叫中心，客服系统，工单系统，智�
 
 ## 😄项目持续性：呼叫中心行业经验14年，大模型呼叫中心迭代3年以上，企业级开源！一对一对公签合同，持续性、服务更靠谱！另，电诈勿扰！
 
+## 😄中小客户版本：10个坐席以内，可部署一体化版本
+
 ## 📫 How to reach us 📫:
 - 官方WeChat01: freeipcc
 - 官方WeChat02: freeaicc
@@ -147,3 +149,17 @@ After purchasing the source code, you can use it for personal or commercial purp
 ## 大模型智能运维系统：https://github.com/lihaiya/FreeAiOps
 
 ## Redis集群双活架构工具：https://github.com/GouSanDian/Redis-Syncer-HA-Tool
+
+# 许可证
+
+**汉语**:  
+我们采用的是一个简单的许可证协议条款:
+付费购买源代码相关服务之后，可自用，可商用；我方会安排对你进行一次源代码培训。
+注意：
+项目所使用的、涉及开源项目的模块，需要遵守各个模块自身的协议要求。
+
+**English**:
+We use a simple license agreement:
+After paying for the source code service, you can use it for personal or commercial purposes; we will arrange a source code training for you.
+Note:
+The modules used in the project and involving open source projects need to comply with the protocol requirements of each module.

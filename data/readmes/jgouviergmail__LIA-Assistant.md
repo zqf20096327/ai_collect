@@ -26,6 +26,7 @@ The moment I wanted to improve is simple: **“I'm speaking with Claire. What di
 - **Pick up the relationship.** Open **Relations** for the recent exchanges, debrief and open commitments associated with a person.
 - **Prepare from your own material.** Ask LIA to bring together the project brief, recent emails and previous meeting notes. Inspect the sources and anything that conflicts.
 - **Choose what happens next.** Review the email draft before sending. Edit it, approve it or say no.
+- **Use your services yourself.** Open **Tools** for mail, calendar, tasks, contacts, Drive and Hue controls, with no model call. The connected provider determines the available controls.
 
 Try: *“Prepare my catch-up with Claire using the project brief, our recent emails and the last meeting notes. Highlight anything that conflicts.”*
 
@@ -235,7 +236,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 #### Knowledge spaces
 
-- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 525 questions cover every feature a person can use, in six languages.
+- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 535 questions cover every feature a person can use, in six languages.
 - A document that cannot be indexed says why in your language — a scanned PDF without a text layer names its remedy.
 - Any indexed document, paused space or not, attaches to a chat message as a copy from the composer's « + » ([ADR-295](docs/architecture/ADR-295-Knowledge-Documents-As-Message-Attachments.md), [GUIDE_RAG_SPACES](docs/guides/GUIDE_RAG_SPACES.md), [ADR-055](docs/architecture/ADR-055-RAG-Spaces-Architecture.md), [ADR-058](docs/architecture/ADR-058-System-RAG-Spaces.md)).
 
@@ -276,6 +277,21 @@ Every capability below is documented in an architecture decision record (ADR) or
 <summary><strong>Act, under your control — drafts, calls, documents and project work</strong></summary>
 
 ### Act, under your control
+
+#### Your own workspace
+
+**Tools** opens mail, calendar, tasks, contacts, Drive and Hue through the services
+you connected. Browse and act directly, without a model call or an entry in LIA's
+activity registers. Mail has an isolated original-layout reader; calendars have
+Agenda, Week and Month; contacts retain multiple addresses and numbers. Drive
+supports paged search and document exports, while lights expose each lamp's real
+controls. Screens publish provider limitations, preserve explicit unknown outcomes
+and remember pane widths on this device. See [the workspace reference](docs/technical/WORKBENCH.md)
+and [ADR-369](docs/architecture/ADR-369-Workbench-The-Persons-Own-Door-To-Their-Services.md).
+
+When asking LIA to act instead, designate a shown item by its sender, title or
+position. Several matches produce a numbered choice, then the task continues on
+the item you selected ([ADR-367](docs/architecture/ADR-367-Shown-Item-Designated-By-What-It-Is-Resolved-By-Code-Asked-When-Several-Fit.md)).
 
 #### Manage LIA through conversation
 
@@ -511,6 +527,7 @@ for projection and performance limits.
 - Conformant to the protocol's current revision on both halves and reading tool declarations to the letter of JSON Schema 2020-12 ([ADR-224](docs/architecture/ADR-224-Conformite-MCP-2026-07-28-SDK-v2.md), [ADR-255](docs/architecture/ADR-255-MCP-Tool-Declaration-Conformance.md)).
 - MCP Apps rendered as sandboxed widgets behind a CSP airlock ([ADR-098](docs/architecture/ADR-098-CSP-Widget-Airlock.md)).
 - An iterative mode where a dedicated agent reads a complex server's docs before calling it ([MCP_INTEGRATION](docs/technical/MCP_INTEGRATION.md)).
+- Choose confirmations for your account, each server and each tool, and inspect **What it will do** before changing them. A dedicated agent asks once before a task when one of its tools needs approval, then completes that task. Only the settings page can reduce confirmations; an explicit “never ask” is suspended when the tool's declaration changes ([ADR-368](docs/architecture/ADR-368-The-Person-Decides-When-LIA-Asks-Before-An-MCP-Tool.md)).
 - A provider's cooldown is shared across workers for that person's server, so another concurrent request cannot restart a wait the service already imposed.
 - What a personal server offers is kept as a snapshot every worker shares and served while it is revalidated, so a message waits for none of your servers; one that must be asked again is prepared in parallel under a ceiling and named when it is slow, and a call checks the declaration it relies on before it is sent ([ADR-366](docs/architecture/ADR-366-Personal-MCP-Catalogue-Snapshot-Served-While-Revalidated-Verified-At-Use.md)).
 
@@ -968,7 +985,7 @@ A panel embedded in the chat, organised into six groups; an empty section shows 
 
 ### Observability
 
-- **Prometheus**: 652 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric — and the reverse holds: every panel reads a series something produces.
+- **Prometheus**: 658 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric — and the reverse holds: every panel reads a series something produces.
 - **Grafana**: 33 dashboards, including product-value and radio cockpits · **Loki**: structured JSON logs that keep facts, never people's words, shipped by Grafana Alloy ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)) · **Tempo**: distributed tracing, spans named by the route template · **Langfuse**: LLM tracing with prompt versions. The whole stack runs on supported versions, pinned by digest.
 - **Linked signals, a pipeline that watches itself**: a log line opens its trace, a trace its logs and metrics, a latency point its exemplar; Loki, Alloy, Tempo and Grafana are scraped on closed keep-lists and `LogsNotDelivered` fires when lines go missing; every dashboard opens on seven days (logs and traces on four hours) behind one shared menu — [ADR-333](docs/architecture/ADR-333-Linked-Signals-And-A-Pipeline-That-Watches-Itself.md).
 - **Probes**: liveness (`GET /health`) split from readiness (`GET /ready`, 503 unless PostgreSQL **and** Redis answer) — [ADR-115](docs/architecture/ADR-115-Liveness-Readiness-Probes.md).
@@ -1012,27 +1029,4 @@ Three layers: a **Next.js** front end (chat, settings, six languages, SSE stream
 
 Switchable per user from the chat header:
 
-- **Pipeline** (default) — a **Planner** decomposes the request into an execution plan (a small DSL with dependencies, conditions and `FOR_EACH` iteration), a **Semantic Validator** checks its coherence, tool-level approval flows review the actions that require confirmation, and a **Task Orchestrator** runs the tools in parallel waves; Bayesian pattern learning shortens the next similar request. Planning and validation precede execution; token use depends on the task and selected models.
-- **ReAct** (⚡) — the model reasons iteratively, calling tools one by one and adapting to each result. Suited to exploratory, research or ambiguous queries; cost and latency depend on the work and selected models. Its iteration budget is extended while the loop keeps producing results, a turn that stops mid-flight closes its own books, the tools it binds are chosen by relevance to the question rather than cut by a cap — or all of them, when the person chose frequent exchanges so the provider's cache reads each turn back from the previous one — and a turn is judged on its result: a gap it declares buys a bounded recovery pass.
-
-```mermaid
-graph TD
-    A[User Message] --> CP[Compaction]
-    CP --> B[Router Node]
-    B -->|conversation| C[Response Node]
-    B -->|pipeline mode| D[Planner Node]
-    B -->|react mode| R1[ReAct Setup]
-    D -->|empty plan| C
-    D --> E[Semantic Validator]
-    E -->|ambiguous| CL[Clarification]
-    CL --> E
-    E -->|replan| D
-    E --> F{Approval Gate}
-    F --> G[Task Orchestrator]
-    G --> H[Domain Agents + Tools]
-    G -->|drafts| HD[HITL Dispatch]
-    G -->|bulk action| FE[FOR_EACH Confirm]
-    FE -->|approved| G
-    H --> I[Initiative]
-    HD --> I
-    I --> 
+- **Pipeline** (default) — a **Planner** decomposes the reques

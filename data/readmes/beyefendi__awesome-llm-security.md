@@ -138,6 +138,7 @@
 - [**Speakeasy**](https://www.speakeasy.com/product/ai-control-plane): Enterprise AI control plane governing agent and MCP access with policy enforcement and auditability
 - [**Alovia Watchdog**](https://aloviaai.com): Runtime allow/flag/block check of agent actions against a per-agent mission
 - [**Praesidia**](https://praesidia.ai/): Tool permissions, approvals and signed decision records for agent and MCP calls routed through Praesidia
+- [**Scalekit**](https://www.scalekit.com/): Per-user scoped OAuth and tool-level authorization for agents across 600+ apps, with audit logs of every call
 
 ---
 
@@ -149,6 +150,7 @@
 - ![GitHub stars](https://img.shields.io/github/stars/EasyJailbreak/EasyJailbreak?style=social) [**PALLMs (Payloads for Attacking Large Language Models)**](https://github.com/mik0w/pallms)
 - ![GitHub stars](https://img.shields.io/github/stars/pdparchitect/llm-hacking-database?style=social) [**LLM Hacking Database**](https://github.com/pdparchitect/llm-hacking-database): Attacks against LLMs
 - [**Helium Model Worldview Benchmark**](https://huggingface.co/datasets/HeliumTrades/helium-model-worldview-benchmark): 304 paired cue-swap prompts measuring refusal and bias flip consistency across models
+- [**Agentic AI Test Checklist 110**](https://huggingface.co/datasets/srinivaspadmanabhuni/agentic-ai-test-checklist-110): Manual test checklist for tool-using agents, including prompt-injection and OWASP agent-security cases
 
 ---
 

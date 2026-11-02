@@ -62,6 +62,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 Reusable agent-memory workflows and templates for knowledge practices agents can adopt directly, not general prompt packs.
 
 - [Strata Sample](https://github.com/Zerokool1986/Strata-sample) - Custom license; commercial use and free redistribution with credit allowed, no resale; knowledge system for coding agents that stores typed Markdown entries with status and provenance in a Git repo, keeps superseded entries readable instead of deleting them, and includes templates, a worked example, and a five-question self-test.
+- [vidbyte-memory](https://github.com/cerredz/vidbyte-memory) - MIT; GitHub template and installer for coding agents, with a verbatim feedback log, admitted facts, rules and hints in AGENTS.md-indexed Markdown memory, pytest and agent-verifier workflows, Git footprint commits, and a Stop hook with up to five blocking retries for failed checks or uncommitted changes.
 
 ## MCP memory servers
 
@@ -89,6 +90,7 @@ Memory servers exposed through the Model Context Protocol. Client support depend
 - [sqlite-graph-memory](https://github.com/tonydzi/sqlite-graph-memory) - MIT local stdio MCP memory server that gives an agent associative recall over a folder of markdown notes: vector retrieval for entry points, hand-curated wikilinks as the graph, and cross-encoder rerank, with retrieval A/B telemetry in SQLite, plus a Claude Code Stop hook that writes a per-turn ledger to SQLite without LLM calls.
 - [Synapse](https://github.com/anshulyadav1976/synapse) - MIT local stdio MCP memory server that stores imported history, linked wiki pages, and human-approved agent notes as Markdown with a disposable SQLite FTS5 and graph index.
 - [Throughline](https://getthroughline.ai/) - Hosted MCP service for persistent AI identity and memory across supported clients, with MIT-licensed Claude Code and Codex plugins and verifiable history exports.
+- [VibeDesk](https://github.com/fxd-gif/vibedesk) - MIT-licensed Windows desktop app for Claude Code whose bundled local stdio MCP server keeps Obsidian-compatible Markdown notes with [[links]]: project notes live in `.vibedesk/brain` inside the repository, while personal notes live in the app's user-data directory and apply across projects; with tools to search, read, write, relate and forget notes; the server only runs while the app is running.
 
 ## Benchmarks and evaluation
 

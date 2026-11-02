@@ -2,9 +2,9 @@
 
 > Open-source AI you can run on your own hardware or server.
 
-303 projects across local LLMs, chat interfaces, agents, MCP servers, RAG, speech and image generation. A weekly job checks every project against the GitHub API, and anything archived, deleted or silent for over a year moves to [UNMAINTAINED.md](UNMAINTAINED.md).
+308 projects across local LLMs, chat interfaces, agents, MCP servers, RAG, speech and image generation. A weekly job checks every project against the GitHub API, and anything archived, deleted or silent for over a year moves to [UNMAINTAINED.md](UNMAINTAINED.md).
 
-**303** projects | **302** active in the last 90 days | **10.5M** combined stars | **0** unmaintained | refreshed 2026-10-31
+**308** projects | **307** active in the last 90 days | **10.6M** combined stars | **0** unmaintained | refreshed 2026-10-31
 
 See the [live health table](LIVE.md) for stars, last push and license per project.
 
@@ -12,12 +12,12 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 
 - [Agents and Automation](#agents-and-automation) (27)
 - [Chat Interfaces](#chat-interfaces) (11)
-- [Coding Assistants](#coding-assistants) (22)
+- [Coding Assistants](#coding-assistants) (24)
 - [Document AI and OCR](#document-ai-and-ocr) (10)
 - [Fine-Tuning and Training](#finetuning-and-training) (10)
 - [Home and Personal AI](#home-and-personal-ai) (13)
-- [Image and Video Generation](#image-and-video-generation) (12)
-- [LLM Runtimes and Inference](#llm-runtimes-and-inference) (37)
+- [Image and Video Generation](#image-and-video-generation) (13)
+- [LLM Runtimes and Inference](#llm-runtimes-and-inference) (38)
 - [MCP Servers and Gateways](#mcp-servers-and-gateways) (19)
 - [Model Gateways and Routers](#model-gateways-and-routers) (11)
 - [Observability and Evals](#observability-and-evals) (20)
@@ -27,7 +27,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [Vision and Multimodal](#vision-and-multimodal) (5)
 - [Voice Agents](#voice-agents) (5)
 - [Rising](#rising) (25)
-- [Source-Available](#source-available) (24)
+- [Source-Available](#source-available) (25)
 
 ## Agents and Automation
 
@@ -75,20 +75,22 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 
 ## Coding Assistants
 
+- [AiderDesk](https://github.com/hotovo/aider-desk) - Desktop app that wraps the Aider coding assistant with a UI, agent mode and MCP support.
 - [Archon](https://github.com/coleam00/Archon) - YAML-defined workflow engine that makes coding agent processes repeatable from planning to validation.
 - [Claude Code Local](https://github.com/nicedreamzapp/claude-code-local) - MLX server exposing the Anthropic Messages API so the Claude Code CLI can run against local models on Apple Silicon.
 - [Cline](https://github.com/cline/cline) - VS Code agent that plans and edits code using model API keys you supply.
 - [Codex CLI](https://github.com/openai/codex) - Local terminal coding agent that reads, edits, and runs code inside your repository.
 - [Continue](https://github.com/continuedev/continue) - IDE extension for autocomplete, chat, and agentic edits against local or hosted models.
+- [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) - Plugin-based agent harness for DeepSeek models with a local Web UI.
 - [DeepSeek-Reasonix](https://github.com/esengine/DeepSeek-Reasonix) - Terminal coding agent built around DeepSeek models, tuned for prefix-cache stability.
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Open-source terminal agent for coding and shell tasks, built on Google Gemini models.
 - [goose](https://github.com/block/goose) - On-machine coding agent that runs shell, file, and extension tools with any supported model.
 - [Goose](https://github.com/aaif-goose/goose) - On-machine development agent that edits files and runs tasks, with extensible tool support.
 - [gptme](https://github.com/gptme/gptme) - Terminal agent with local tools that writes code, runs shell commands and browses the web.
+- [jcode](https://github.com/1jehuang/jcode) - Rust coding agent harness built for running many agent sessions at once.
 - [Kilo Code](https://github.com/Kilo-Org/kilocode) - Open-source coding agent for VS Code and the terminal, with bring-your-own model keys.
 - [Mistral Vibe](https://github.com/mistralai/mistral-vibe) - Lightweight command-line coding agent from Mistral for local development workflows.
 - [Open Code Review](https://github.com/alibaba/open-code-review) - Code review CLI that combines deterministic analysis passes with LLM agents.
-- [opencode](https://github.com/sst/opencode) - Terminal coding agent that works with whichever model provider you configure.
 - [OpenCode](https://github.com/anomalyco/opencode) - Terminal-native autonomous coding agent for editing and running code from the command line.
 - [OpenHands](https://github.com/All-Hands-AI/OpenHands) - Platform for AI software agents that edit code, run commands, and browse inside a sandbox.
 - [Pi](https://github.com/earendil-works/pi) - Modular terminal coding agent toolkit with a unified model layer and TUI and web front ends.
@@ -154,6 +156,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [MOSS-Image](https://github.com/OpenMOSS/MOSS-Image) - Official code for MOSS-Image, a 5B-parameter diffusion transformer for high-quality image generation.
 - [sd-scripts](https://github.com/kohya-ss/sd-scripts) - Training and fine-tuning scripts for Stable Diffusion and related image models.
 - [SD.Next](https://github.com/vladmandic/sdnext) - WebUI for image and video generation with many diffusion models and multiple hardware backends.
+- [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) - C/C++ inference for Stable Diffusion, FLUX and other image models, with no Python stack required.
 
 ## LLM Runtimes and Inference
 
@@ -181,6 +184,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [MLC LLM](https://github.com/mlc-ai/mlc-llm) - Compiler-based LLM deployment that runs models natively on phones, browsers, and desktop GPUs.
 - [mlx-lm](https://github.com/ml-explore/mlx-lm) - Run and fine-tune language models on Apple silicon with the MLX framework.
 - [MNN](https://github.com/alibaba/MNN) - Lightweight inference runtime from Alibaba for running and training neural networks on devices.
+- [ninfer](https://github.com/Neroued/ninfer) - Single-GPU inference engine for selected model checkpoints and GPUs, with a CLI and server.
 - [NVIDIA Dynamo](https://github.com/ai-dynamo/dynamo) - NVIDIA datacenter-scale distributed inference server that orchestrates engines such as vLLM and SGLang.
 - [Ollama](https://github.com/ollama/ollama) - Local model runner with a CLI and HTTP API for pulling and serving open-weight LLMs.
 - [omlx](https://github.com/jundot/omlx) - Local LLM server for Apple Silicon that batches requests, caches to SSD, and runs from the macOS menu bar.
@@ -366,6 +370,7 @@ New projects under 500 stars that are worth watching. They move to their categor
 Widely used and self-hostable, but the license adds terms beyond a standard open-source license. Check them before commercial use.
 
 - [Activepieces](https://github.com/activepieces/activepieces) - Self-hostable automation platform that adds AI agents and MCP integrations to workflow building. (MIT core, ee directory under separate terms)
+- [agent-qa](https://github.com/vostride/agent-qa) - Web and mobile QA agent with CLI/MCP, memidex memory, validated self-improvement and reviewable evidence. (FSL-1.1-ALv2; commercial use limited to the license's Permitted Purpose)
 - [Agenta](https://github.com/Agenta-AI/agenta) - Open-source LLMOps platform for prompt management, evaluation and observability. (MIT core, ee/ directories under their own license)
 - [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) - Platform for building, running and monitoring autonomous AI agents with a visual workflow builder. (Polyform Shield for platform, MIT elsewhere)
 - [Browserless](https://github.com/browserless/browserless) - Headless Chrome service that agents and scripts drive over an API for browser automation at scale. (MongoDB SSPL or commercial license)

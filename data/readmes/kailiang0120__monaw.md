@@ -54,7 +54,7 @@ Open **Settings > Connections**, choose a connection below, then select the prov
 | Connection | How to configure it | Implementation |
 | --- | --- | --- |
 | **OpenAI API** | Save your OpenAI API key. | OpenAI Python SDK using the Responses API. |
-| **ChatGPT account** | Choose **Sign in with ChatGPT** and complete sign-in. | Codex SDK and its local app-server connection. This is separate from API-key access. |
+| **ChatGPT account** | Choose **Continue with ChatGPT**, sign in and allow plan use. | OpenAI's [Sign in with ChatGPT](https://developers.openai.com/siwc) flow for open-source apps: requests go to the Responses API with the account's token and use the ChatGPT plan, not API credits. Separate from API-key access. |
 | **Google Gemini API** | Save your Google API key. | Google GenAI Python SDK. |
 
 Optional connections can be configured as needed:
@@ -81,7 +81,7 @@ Choose a permission mode in Settings or the composer: **Default**, **Full Access
 | Interface | **React 18**, **TypeScript**, **Vite**, and **Tailwind CSS** provide chat, settings, workspace selection, and task controls. |
 | Backend | **Python 3.11**, **FastAPI**, **Uvicorn**, and **Pydantic** implement the local HTTP API, validation, and streamed events. |
 | Agent orchestration | A **custom Python runtime and turn loop** assemble prompts, call models, authorize actions, execute tools, and process observations. Skills and the tool registry expose capabilities to the model. |
-| Model clients | **OpenAI Python SDK**, **Codex SDK**, and **Google GenAI SDK** provide the three model connection routes. |
+| Model clients | **OpenAI Python SDK** (with an API key or a ChatGPT sign-in) and **Google GenAI SDK** provide the model connection routes. |
 | Browser and desktop automation | The **Monaw Chrome extension** controls the user's Chrome profile; **Scrapling** fetches pages. **pywinauto**, **pywin32**, and **mss** support Windows controls and screenshots. |
 | Tool integrations | The **MCP Python SDK** connects built-in and user-configured MCP servers. |
 | Storage and credentials | **SQLite** stores conversations, runs, and app state. **Markdown** stores global and workspace memory. Electron **safeStorage** encrypts saved provider keys and the Telegram token using the OS. |
@@ -147,7 +147,7 @@ flowchart TB
 
   subgraph SERVICES["CONFIGURED EXTERNAL CONNECTIONS"]
     direction LR
-    MODELS("<b>Model providers</b><br/>OpenAI API / ChatGPT via Codex<br/>Google Gemini API")
+    MODELS("<b>Model providers</b><br/>OpenAI API / ChatGPT plan<br/>Google Gemini API")
     REMOTE("<b>Connected services</b><br/>Websites / search / remote MCP")
     BOT("<b>Telegram Bot API</b><br/>Messages + run results")
   end
@@ -187,7 +187,7 @@ The agent repeats **update context → fit context → call model → authorize 
 | **Context and tool discovery** | The runtime combines workspace `AGENTS.md`, skill instructions, history, attachments, and retrieved memory. Tool search can expose deferred schemas for later model calls. |
 | **Authorization** | Default, Full Access, Auto Review, and Custom modes determine action handling. Pending approvals or access grants wait for resolution; blocked actions return feedback, and repeated denials can pause the turn. |
 | **Execution** | Compatible tool calls can overlap. Workers enforce timeouts, cooperative cancellation, and resource conflict checks. Shell commands use the configured sandbox policy; Chrome automation goes through the Monaw extension on the user's own profile. |
-| **User control and recovery** | Steering enters at model or tool boundaries. Stop, exhausted budgets, or failures can end or pause a turn; history, checkpoints, and the tool ledger support recovery. |
+| **User control and recovery** | Steering enters at model or tool boundaries. Stop, exhausted budgets, or failures can end or pause a turn; history, checkpoints, and the tool ledger support recovery. A message may use 5 million model tokens by default (**Settings > Model**): Monaw says so at 80% and pauses at the limit until you continue. |
 | **Persistence and observability** | Conversation history, results, run status, usage, latency, and failure evidence are recorded locally. Progress and tool events stream back to the caller. |
 
 See [docs/development.md](docs/development.md) for the module map and implementation details.

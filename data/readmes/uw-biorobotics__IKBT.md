@@ -1,14 +1,123 @@
 # IKBT
 A python based system for generating closed-form solutions to the manipulator inverse kinematics problem using
 behavior trees for action selection. 
-Solutions are fully symbolic and are output as LaTex, Python, and C++.
+Solutions are symbolic where possible, and otherwise symbolic plus numerical, and are output as LaTex, Python, and C++.
 
-# Latest News
+# Announcing IKBT 3.0  Released 31-Oct-2026
 
-## September 2026
+Developed as "IKBT2" (the release candidate below), released as 3.0 because tags v2.0-v2.3 were used in 2021.
 
-Release Candidate for IKBT2 is available on branch `RelCandidate2`.   Please check it out 
-to learn about major new features which are **ready for user testing**.
+The main new features are two new hybrid (symbolic + numerical) 
+solvers which are tried if the symbolic solver cannot find a closed 
+form solution:
+* The "One-variable" method:  Sometimes if one joint variable is *assumed* to 
+   be known, the others have a symbolic form (Friedman et al., 2010, see IKdocs/ folder). In this case the remaining joints are solved symbolically 
+   and a 1-D search is performed on the "assumed" variable.
+   
+* The "Hybrid method": (see notes below)
+   In this method, IKBT finds a solvable arm which is as close as possible to the true arm.  Then the solution becomes: 
+
+   1. Get an exact IK solution set for the approximate arm.
+   2. User selects one of the solutions as desired (or refines all of them).
+   3. Selected solution seeds an accurate numerical solution to the true arm by a damped least squares method using the true arm's FK and Jacobian matrix.
+
+* The top level of the BT automatically tries the three 
+solvers in order to minimize the numerical portion of the 
+solution. 
+
+* Generated code will include the needed numerical algorithms as well as the symbolic solution.
+
+* Python and C++ code are generated for all three methods, and the C++ is validated against the Python (see the C++ notes below).
+
+* Release IKBT 3.0 has been validated on Puma (symbolic), C-Arm (one-variable) and Raven-II (hybrid):
+every returned solution reproduces the target end-effector configuration, and none are missing, in both Python and C++.
+
+* The rigorous "closed loop" test (described in the JAIR paper for Puma validation) is now automated and can be run for any solved robot.
+
+    
+#  28-Sept-2026
+
+* **New branch dev_OneVarSolve merged into RelCandidate2** (now released on `main` as v3.0)
+  Developed a major new feature for RelCandidate2: 
+
+  One-Variable hybrid solution for faster and more robust numerical solution finding when no
+  fully analytic solution can be found.  Based on Friedman et al., 2010 (see IKdocs/ folder).
+  If fully symbolic solve fails, this **assumes** that one joint variable is known, which often unlocks the rest of the joint variables'  symbolic solutions.  
+  
+  First, all variables
+  are ranked as candidates for the `known` value based on how many new one-unknown equations they create.  Then **IK becomes a 1D search** of the EE configuration produced by various values of
+  the selected joint variable.
+
+  So the top level of the BT is
+  
+    ```b3.Selector([ symbolic solver, one-variable solver, hybrid numerical solver]).```
+  
+  The three solvers are tried in order until one succeeds. 
+  
+  All the AI generated new code or modified code in this Release Candidate was manually
+  reviewed in detail by BH.  Many of the AI generated comments and docstrings were 
+  verbose, contained too much jargon, and described what "used to be there".   These
+  were extensively edited.   
+  
+  Some code and data structures were deemed unnecessary and refactored out. 
+  
+  A big payoff of this AI enabled release is much more detailed tests.  This includes
+  closed loop numerical testing of all the robots known to be solvable by this software
+  (currently 31 robots!).
+  
+
+## Sept 2026: Release candidate for IKBT2 on branch RelCandidate2 (now released on `main` as v3.0).
+  
+* Summer of 2026 marks significant upgrades to IKBT resulting from a collaboration between Blake Hannaford and Claude Code Pro. 
+* Key new feature:  IKBT2 introduces a new hybrid symbolic/numerical solver for arms which cannot be solved (by IKBT) symbolically.   In this method, IKBT finds a solvable arm which is as close as possible to the true arm.  Then the solution becomes: 
+    1. Get an exact IK solution set for the approximate arm.
+    2. User selects one of the solutions as desired.
+    3. Selected solution seeds an accurate numerical solution to the true arm by a damped least squares method using the true arm's FK and Jacobian matrix. 
+    
+* Additionally, there are two new scripts for validation of symbolic solutions: `check_solution_sets.py`,
+and `numerical_closed_loop_sol_check.py`.  
+Both perform the full *closed-loop* solution validation: 
+    1. Solves the IK symbolically (where possible)
+    2. Chooses one or more random end-effector configurations
+    3. Generates all IK solutions for each EE configuration.
+    4. Evaluates the FK for each solution and verifies that each solution produces (matches) the input EE configuration. 
+    
+ The difference is that `check_solution_sets.py` checks the symbolic solution sets numerically by plugging in joint values and `numerical_closed_loop_sol_check.py` checks the numerical solutions returned by the *generated* python solution code.  These scripts automate the rigorous validation demonstrated for the Puma in our JAIR paper to easily apply it to any robot. 
+ 
+For detailed usage, see `tests/TESTING_HOWTO.md`. 
+
+
+* Native C++ code generation, for **every** solution path.  Each Python generator function has a
+C++ counterpart written from it, so a symbolic, one-variable or hybrid solve now produces working
+code in both languages.  Everything a robot needs is in one file,
+`CodeGen/Cpp/<Robot>CppCode/<Robot>.cpp`.  The generated C++ is **C++17**, and its types are
+[Eigen](https://eigen.tuxfamily.org)'s -- Eigen ships inside `Cpp_src/`, so there is nothing to
+install, no build system and no `-I`:
+
+```
+> g++ -std=c++17 -O2 -DIKBT_MAIN CodeGen/Cpp/PumaCppCode/Puma.cpp -o ik && ./ik
+```
+
+`IKdocs/CPP_API.md` is the reference for calling it from an application.
+
+The two languages are checked against each other rather than assumed to agree --
+`scripts/cpp_closed_loop_check.py` runs the same robot at the same pose through both and
+requires the same solution branches, in the same order.  Across the robot set they usually
+agree bit for bit.  `scripts/cpp_expr_check.py` does the same one expression at a time.
+
+The one-variable path's 1-D search runs about 15x faster in C++ (9 ms per pose on C-Arm,
+against 0.14 s), finding the same root set.
+
+
+* New Solution set visualization: London Tube Map output
+
+The solutions to  a robot arm can be viewed as a London Tube Map!   After solving the robot, go 
+into /graphs and run
+
+```
+> python3 ../scripts/tube_map.py ROBOTNAME_graph.txt 
+```
+That will generate a .svg vector graphics file which you can view in a browser or Inkscape. 
 
 ## August 2026
 
@@ -91,6 +200,12 @@ A list of all DH parameters tested in the paper:
 'Sims11', 'Srisuan11', 'Axtman13', 'Mackler13', 'Minder13', 'Palm13', 
 'Parkman13', 'Frei13', 'Wachtveitl', 'Bartell', 'DZhang', 'Khat6DOF'.]
 
+Many more robots have been added since the paper, including the arms that motivate the hybrid
+solver (KinovaLite, Panda, ArmRobo) and several standard industrial arms (UR5, KR16, KawasakiRS007L).
+For the current set see `ROBOT_LIST` in `ikbtfunctions/ik_robots.py`, or run
+
+ > python3 -m scripts.robot_baseline --list
+
 We suggest you first run the Wrist since it is relatively fast:
 
  > python ikSolver.py Wrist 
@@ -99,11 +214,11 @@ To solve your own problem open the file ikbtfunctions/ik_robots.py and create an
 for your robot.  You should copy an entry for an existing robot and edit it's entries. 
 Create an "unknown" for each joint variable and package them into the vector "variables".
 Enter the DH parameters in matrix form.   Also, enter the name of your robot into the list
-of valid names (ikbtfunctions/ik_robots.py, line 31).
+of valid names (the `ROBOT_LIST` list near the top of ikbtfunctions/ik_robots.py).
 
 DH parameters explained:
 The vector "vv" encodes whether each joint is rotary (1) or prismatic (0).   If your 
-robot is less than 6 DOF, create empty rows:  [      0 ,     0,   0,   0  ], in the 
+robot is less than 6 DOF, create empty rows([      0 ,     0,   0,   0  ]) in the 
 DH table so that it has six rows.  Many standard symbols in robot kinematics are pre-defined
 for you but if you use any new ones, be sure to define them using sp.var().  See "Wrist" 
 for an example in which the three joint variables "A, B, C" are set up for sympy by

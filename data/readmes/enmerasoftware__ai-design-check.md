@@ -5,12 +5,14 @@
 ![A generated dashboard checked, fixed and checked again: 266 findings to 0](examples/story-dashboard.webp)
 
 Finds and fixes what makes interfaces built with AI coding agents (Claude Code, Cursor, Codex) look generated:
-74 design rules, a zero-dependency checker that marks every finding, and an agent skill that fixes the screen and
-proves it by checking again. For dashboards, admin panels, SaaS screens and landing pages.
+76 design rules, a zero-dependency checker that marks every finding, and an agent skill that fixes the screen and
+proves it by checking again. For dashboards, admin panels, SaaS screens and landing pages, and for SwiftUI and
+Jetpack Compose apps.
 
 ```bash
 npx @enmera/ai-design-check                    # check the project (or: ai-design-check src lang)
 npx skills add enmerasoftware/ai-design-check  # the rules and the fix skill for your agent
+npx @enmera/ai-design-check system --brand "#1E5A63"  # fonts, type and colours that pass contrast
 ```
 
 Then ask your agent to "fix the design of this screen". It measures, proposes a direction from your product, fixes
@@ -54,10 +56,29 @@ name, a font size off the scale, spacing off the 4 px grid, a raw `<button>` nex
 
 The full list with reasons: [RULES.md](RULES.md).
 
+### Mobile apps
+
+The same rules read SwiftUI and Jetpack Compose: spacing off the 4 pt grid (`.padding(13)`, `10.dp`), radii off the
+scale, fixed `.system(size:)` text that ignores Dynamic Type, `.heavy` and `FontWeight.Black` headings, purple
+gradients, `sparkles` for AI, emoji in strings, Title Case labels, exclamation copy, heavy shadows, big blurs,
+looping animations and tap targets under 44 pt / 48 dp (a small `.frame` on a button label or a `.size()` on a
+`clickable`; padding or an outer frame around a small icon passes). Point it at the app folder:
+
+```bash
+npx @enmera/ai-design-check Cebbin/Views
+```
+
+[![Unslopping a SwiftUI app: the Cebbin home screen before and after](examples/unslop-cebbin-swiftui.webp)](examples/unslop-cebbin-swiftui.mp4)
+
+[Unslopping a SwiftUI app](examples/unslop-cebbin-swiftui.mp4): our own iOS app, Cebbin, live on the App Store. The
+home screen goes through 16 fixes one at a time (spacing, one accent, decoration, copy, hierarchy, layout); every
+frame is the real app on the simulator and the card under it shows the SwiftUI line that changed.
+[The first run](examples/story-cebbin-swiftui.mp4) took the same screen from 23 findings to 0.
+
 ## The checker
 
-Plain Node (20+), no dependencies. It reads `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, Blade, CSS and i18n JSON and
-reports rule ids with file and line. Rules that need judgement (layout, selectors, empty states) are marked *review*
+Plain Node (20+), no dependencies. It reads `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`, Blade, CSS and i18n JSON, and native app code:
+SwiftUI (`.swift`) and Jetpack Compose (`.kt`). It reports rule ids with file and line. Rules that need judgement (layout, selectors, empty states) are marked *review*
 and are left to people and agents.
 
 ```
@@ -165,6 +186,30 @@ desktop but hidden on phones. Run it with your longest locale; German labels are
 [examples/narrow-de.html](examples/narrow-de.html) breaks all four at 320 px,
 [examples/narrow-de.fixed.html](examples/narrow-de.fixed.html) fixes them without hiding content or shrinking text.
 
+### A design system from your brand: `system`
+
+```bash
+npx @enmera/ai-design-check system --character calm --brand "#1E5A63" --kind app --out design-system
+npx @enmera/ai-design-check fonts --character calm   # the pairing and the alternatives
+```
+
+For a new product, or one with no tokens yet. From a character (`calm`, `precise`, `friendly`, `warm`, `bold`,
+`editorial`, `luxurious`, `playful`, `technical`, `trustworthy`), a brand colour and the kind of screen (`dashboard`,
+`app`, `marketing`, `reading`) it decides:
+
+- **Fonts**: a UI, display, numbers and code family from a curated library of 50 (40 Google Fonts, free to bundle in
+  apps; 10 Adobe Fonts, web only). `--ui` and `--display` override, `fonts` lists them all.
+- **Type scale**: eight roles (caption to display, plus stat) with size, weight, line height and letter-spacing; app
+  sizes follow the iOS text styles so they map to Dynamic Type and Material 3.
+- **Colours** for light and dark: surfaces, three text levels, borders, the accent with its hover, ink and soft
+  variants, success, warning, danger, info and chart colours. Every text colour is checked against its background
+  and moved until it passes WCAG 2 (12:1 for body text, 7:1 secondary, 4.5:1 for the rest).
+- **Shape**: a 4 px spacing scale, radii that nest, control heights and card padding.
+
+It writes `tokens.css` (variables with a dark theme), `theme.css` (Tailwind v4 `@theme`), `tokens.json`,
+`DesignSystem.swift`, `DesignSystem.kt` (Compose colour schemes and Typography) and `preview.html`, a page that shows
+every role and component in both themes. `--json` prints the system for an agent instead of writing files.
+
 ### Before/after video: `story`
 
 ```bash
@@ -199,7 +244,8 @@ Or point your agent's instructions (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules`) a
 
 Rules live in [`rules.json`](rules.json): `id`, `area`, `severity`, and `title` / `rule` / `why` / `fix` in `en` and
 `tr`, plus an optional `check`: `class` (pattern on class strings, with `unless`, `exceptElements`, `unlessBefore`,
-`css`), `regex` (pattern on code, comments excluded, with `flags` and `files`) or a structural check. Run `npm run docs` to regenerate
+`css`), `native` (one pattern per platform under `swift` and `kt`, with `notMultipleOf`, `min`, `max`, `unlessBefore`,
+`unlessAfter` and `onlyIf`), `regex` (pattern on code, comments excluded, with `flags` and `files`) or a structural check. Run `npm run docs` to regenerate
 RULES.md and RULES.tr.md and `npm test` before opening a pull request.
 
 Inspired in part by [Impeccable](https://github.com/pbakaus/impeccable), [unslop](https://github.com/heydamir/unslop) by Damir Sokolovsky and Anthropic's frontend-design skill.

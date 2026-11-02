@@ -198,6 +198,15 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 294.0
+- The native chat welcome card now scrolls when it is taller than the chat, so the tips shown under the recent conversations can be read on a short tab.
+- New *⚙ → Settings... → Native mode → When a new chat opens, show* option chooses what the welcome card of a new chat shows: nothing, tips only, recent conversations only, or both (the default, as before).
+- The Settings dialog has a search box that finds a setting in any tab by its name, description or choices, in the language you use (English names also work); Ctrl+F jumps to it and Esc clears it.
+
+### Version 293.0
+- Clicking a file reference in an earlier answer of the native chat now opens the file on the first click, and the chat stays where you scrolled instead of jumping to a recent answer.
+- Thanks to [@fanyu99](https://github.com/fanyu99) for reporting (#250).
+
 ### Version 292.0
 - *Settings → Terminal* now tells the two native mode situations apart: with the chat docked in the panel, the prompt panel position and toolbar alignment stay editable and a note marks the rest as terminal-only; with the chat in its own tab everything is greyed out as before.
 - The banner on that tab gained *Attach chat to Panel* / *Detach chat to Tab*, so the chat can be moved between the panel and its own tab right from Settings.
@@ -1709,10 +1718,3 @@ This extension is provided free of charge under the MIT License.
 - **No Third-Party Access**: Data is only accessible to the configured model provider
 
 ### Contact
-For licensing inquiries or permission requests, please contact the author at dliedke@gmail.com.
-
----
-
-*Claude Code Extension for Visual Studio - Enhancing your AI-assisted development workflow*
-
-*Built with Claude Code, GPT, Codex, Qwen Code and Antigravity*

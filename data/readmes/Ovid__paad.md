@@ -30,7 +30,14 @@ In Claude Code:
 /plugin marketplace add Ovid/paad
 ```
 
-And then:
+**In the Claude desktop app**, that command just opens **Settings → Plugins**
+and adds nothing. Add PAAD from there instead: click **+ Add** → **Add
+marketplace** → **Add from a repository**, enter `Ovid/paad`, and click
+**Sync**. PAAD then appears in the list — click **Add to this computer** and
+you're done; skip the steps below. [See this ticket for more
+details](https://github.com/Ovid/paad/issues/25).
+
+In the terminal, follow that with:
 
 ```
 /plugin install paad@paad
@@ -45,6 +52,9 @@ Cursor, Codex, GitHub Copilot, Gemini CLI, Cline, Zed, Warp, Amp, OpenCode:
 ```bash
 npx skills@latest add Ovid/paad
 ```
+
+`npx` comes with [Node.js](https://nodejs.org/); if `npx --version` says
+"command not found", install Node first.
 
 See [Installation](#installation) for the details, including the experimental
 **Pi** package.
@@ -210,7 +220,7 @@ Rerun `pushback` and `alignment` whenever the spec or the task list changes.
 ## Configuring skills per project
 
 > **Experimental.** This may change or be withdrawn in any release, including
-> a patch release. If you build on it, pin your plugin version.
+> a patch release. Read the [CHANGELOG](CHANGELOG.md) before you update.
 
 Tired of typing the same extra instructions after every slash command, or of
 writing a wrapper skill just to add them? Put them in a file and every paad
@@ -466,6 +476,9 @@ One command, and it covers 70+ agents:
 ```bash
 npx skills@latest add Ovid/paad
 ```
+
+`npx` comes with [Node.js](https://nodejs.org/); if `npx --version` says
+"command not found", install Node first.
 
 It opens a picker. Everything under **Universal (`.agents/skills`)** — Amp,
 Antigravity, Cline, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode, Warp,
@@ -1048,8 +1061,8 @@ or `trunk`), it stops and offers to create a branch first, so your primary
 branch never fills up with half-built tests.
 
 **This skill writes tests and commits them** — one commit per phase, onto the
-branch you are on. `/fix-architecture` and `/vibe` also commit; `/backlog fix`
-edits source and leaves the commit to you. Every other skill reports, advises,
+branch you are on. `/fix-architecture` also commits; `/vibe` and `/backlog fix`
+edit source and leave the commit to you. Every other skill reports, advises,
 or edits documents.
 
 </details>
@@ -1156,9 +1169,8 @@ Shows help for all PAAD skills or detailed help for one skill.
 These skills are shipped so they get real use, but they are **not settled**.
 Their arguments, output paths, and behavior may change — or the skill may be
 withdrawn — in **any** release, including a patch release. The semver promise
-the other skills carry does not apply to them. If you build a workflow on one,
-pin your plugin version — on Claude Code and Pi you can; the npx route tracks
-`main` and has no pinned form, so budget for the churn instead. Please [file what
+the other skills carry does not apply to them. Read the
+[CHANGELOG](CHANGELOG.md) before you update. Please [file what
 breaks](https://github.com/Ovid/paad/issues).
 
 <details>
@@ -1205,8 +1217,7 @@ It never refactors anything. The report is the deliverable.
 <summary><code>/agentic-owasp [scope]</code> — reviews code against the OWASP Top 10:2025</summary>
 
 > **Note**: this skill is experimental and may change in any release, including
-> a patch release. If you build a workflow on it, pin your plugin version (not
-> available on the npx route, which tracks `main`).
+> a patch release. Read the [CHANGELOG](CHANGELOG.md) before you update.
 > Further, **it is not a replacement for static security tools or human review.** It
 > is a deeper automated backstop that can catch issues those tools miss, but it
 > is not a guarantee of security. 

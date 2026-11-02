@@ -27,6 +27,7 @@ tracks what has changed between releases.
 ##### v17
 
 The v17 series requires Ruby 3.4 or later. <br>
+This version works with older rubies and dependencies (ie: json v2).
 
 ```bash
 gem install llm.rb
@@ -34,8 +35,14 @@ gem install llm.rb
 
 ##### v18
 
-The v18 series is available as a prerelease. <br>
-It requires Ruby 4.0.0 or later. Ruby 4.1.0+ is recommended.
+The v18 series is available as a prerelease. It requires 
+Ruby 4.0.0 or later. Ruby 4.1.0+ is recommended.
+The _optional_ dependencies ActiveRecord and Sequel
+must be updated to their latest version(s). The major
+[json](https://github.com/ruby/json) 
+version bump (v2 => v3) can require changes and not
+all gems have caught up yet. The [r-uby-dev/llm](https://github.com/r-uby-dev/llm)
+gem is an early adopter of json v3.
 
 ```bash
 gem install llm.rb --pre
@@ -925,11 +932,21 @@ end
 agent = Agent.find_by(id: 1)
 
 ##
+# Read the number of tokens used directly from
+# the jsonb column
+p agent.context_used
+
+##
+# Read the overall context window size of the model
+# directly from the jsonb column
+p agent.context_available
+
+##
 # Returns a relation over the agent's messages.
 # It is scoped to the agent, and it yields one
 # instance of LLM::ActiveRecord::Message per
 # message the agent has produced.
-messages = LLM::ActiveRecord::Message.for(agent:)
+messages = agent.messages
 
 ##
 # The relation chains like any other
@@ -961,7 +978,7 @@ Each row carries a message, flattened into columns:
 The queries the view runs are already covered. They expand
 one agent, found by primary key, so they are index scans.
 There is nothing to add for
-`LLM::ActiveRecord::Message.for(agent:)`.
+`agent.{context_used,context_window,messages}`.
 
 The queries you write on top of it are not. Once a question
 is asked of every agent, the column is expanded row by row
@@ -1690,11 +1707,9 @@ The [r.uby.dev](https://r.uby.dev) website.
 <summary>What about local LLM support?</summary>
 <br>
 
-The following providers can be run used with models that
-are running on your own hardware.
-
-* Ollama
-* Llamacpp
+Try:  
+* `LLM.ollama(...)`
+* `LLM.llamacpp(...)`
 </details>
 
 <details>
@@ -1723,11 +1738,10 @@ welcome.
 <summary>How well tested is llm.rb?</summary>
 <br>
 
-It is battle tested daily.
-
-It powers the [r.uby.dev](https://r.uby.dev)
-website and I'm aware of at least one production
-Rails deployment at a large-ish company.
+I use it all the time. Especially the console.  
+It also powers the [r.uby.dev](https://r.uby.dev) website.  
+I'm aware of at least one production Rails deployment at 
+a large-ish company.
 </details>
 
 ## License
@@ -1742,8 +1756,8 @@ Rails deployment at a large-ish company.
       </p>
     </td>
     <td align="right" valign="middle" width="128">
-      <a href="https://www.youtube.com/shorts/eDmeXqB_CAM">
-        <img src="jam.jpg" width="128" alt="Jam">
+      <a href="https://www.youtube.com/watch?v=Dai9lZ4Sne0">
+        <img src="easteregg.jpg" width="128" alt="Easter Egg">
       </a>
     </td>
   </tr>

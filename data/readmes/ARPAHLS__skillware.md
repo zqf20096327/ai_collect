@@ -116,6 +116,7 @@ Category hubs live under `docs/skills/<category>/`. Full catalog: [Skill library
 | [Bio](docs/skills/bio/README.md) | 1 | Life sciences, bioinformatics, genomics, and biotechnology |
 | [Dev Tools](docs/skills/dev_tools/README.md) | 1 | Developer workflows, repo tooling, and coding |
 | [Linguistics](docs/skills/linguistics/README.md) | 1 | Language adapters and internet-register lexicons |
+| [Networking](docs/skills/networking/README.md) | 1 | Egress proxy rotation, multi-region inspection, and transport middleware |
 | [Wellness](docs/skills/wellness/README.md) | 1 | Coaching guardrails and mental health support |
 
 ## Quick Start
@@ -257,7 +258,7 @@ PyPI download counts measure **install activity** from public aggregators (inclu
 
 <a href="https://doi.org/10.5281/zenodo.21552745"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21552745-c7d2fe?style=flat-square" alt="DOI 10.5281/zenodo.21552745"></a>
 
-If you use Skillware in research or products, please cite it using [CITATION.cff](CITATION.cff) (GitHub **Cite this repository**) or the Zenodo **concept DOI** above. That DOI is stable across releases. For reproducibility, also record the **Skillware version** you used (PyPI or Git tag, for example `0.6.0`).
+If you use Skillware in research or products, please cite it using [CITATION.cff](CITATION.cff) (GitHub **Cite this repository**) or the Zenodo **concept DOI** above. That DOI is stable across releases. For reproducibility, also record the **Skillware version** you used (PyPI or Git tag, for example `0.6.1`).
 
 ## Contact
 

@@ -403,7 +403,7 @@ In regular system design, a server runs our application code and returns a respo
 
 In AI System Design, we have something called the **Inference Server**.
 
-An inference server is a special kind of server that runs the LLM. It loads the model into the GPU memory and serves prediction requests.
+An inference server is a special kind of server that runs the LLM. It loads the model into the GPU memory and serves prediction requests. We have a detailed blog on [Model Serving](https://outcomeschool.com/blog/model-serving) that explains how serving works step by step.
 
 Most teams do not write the inference server from scratch. They use famous open-source ones like:
 
@@ -1541,6 +1541,4 @@ As we fill the context with more tokens, three things happen, and they all hurt 
 
 **1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised context does not mean an equally large effective context.
 
-**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to send less but send the right thing (use a reranker and keep the top few chunks), and to place the most relevant chunks at the start and the end.
-
-**3. RoPE Positional Decay.** Modern LLM
+**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to send less but send the right thing (use a reranker 

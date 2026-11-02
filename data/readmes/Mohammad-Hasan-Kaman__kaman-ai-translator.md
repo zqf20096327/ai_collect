@@ -1,4 +1,4 @@
-![Kaman AI Translator v3.0.0 – مترجم هوشمند کتاب](assets/translator-banner.jpg)
+![Kaman AI Translator v3.1.0 – مترجم هوشمند کتاب](assets/translator-banner.jpg)
 
 ### 🌐 Telegram: [@mohaka_programmer](https://t.me/mohaka_programmer)
 
@@ -10,7 +10,7 @@
 
 # Kaman AI Translator
 
-**A Persian-first desktop studio that turns PDF & EPUB books into fluent, academic Persian — and back into English — one page or an entire book, with a quality pipeline built for real, long documents.**
+**A Persian-first desktop studio that turns PDF & EPUB books into fluent, academic translations between English, Persian and Arabic — one page or an entire book, with a quality pipeline built for real, long documents.**
 
 <p align="center">
   <img src="icon.png" width="128" alt="Kaman AI Translator icon">
@@ -20,7 +20,7 @@
   <a href="../../releases/latest"><img src="https://img.shields.io/github/v/release/Mohammad-Hasan-Kaman/kaman-ai-translator?label=release&color=blue" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/platform-Windows-0078D6?logo=windows" alt="Windows">
   <img src="https://img.shields.io/badge/python-3.11%2B-orange?logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/UI-PyQt6%20·%20100%25%20RTL-3b82f6" alt="UI: PyQt6, 100% RTL">
+  <img src="https://img.shields.io/badge/UI-PyQt6%20·%20FA%2FEN-3b82f6" alt="UI: PyQt6, Persian/English">
   <img src="https://img.shields.io/badge/tests-303%20offline%20checks-brightgreen" alt="303 offline tests">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License">
 </p>
@@ -75,8 +75,8 @@ Translating a 300-page book with a chat window does not work: context windows ar
 - **Pause / Resume / Cancel** with instant state save; after a quota stop, “Resume” continues from the same page.
 - **Live page following:** the app displays the page currently being translated (image or extracted text) while **page navigation stays fully unlocked**; if you browse manually, auto-following steps aside.
 - **Settings remain editable while paused** (and after a quota stop) — a new key, model or endpoint applies from the very next page.
-- Optional **request delay** between calls for rate-limited providers.
-- **Scanned pages** are not skipped: they are translated through image-based OCR.
+- Optional **request delay** between calls for rate-limited providers — applied between pages *and* between the chunks of a page.
+- **Scanned pages** are not skipped: they are translated through image-based OCR. Truly blank pages (e.g. chapter separators that carry only a header) are detected and skipped instead of being sent as paid image requests.
 
 ### 2. Quality engine
 
@@ -93,14 +93,16 @@ Translating a 300-page book with a chat window does not work: context windows ar
   - list numbers and mid-text formulas are protected.
 - **Completeness-enforcing prompts:** no omissions, no summaries; paragraph structure, numbers, equations and citation markers (`[12]`) are preserved; one consistent term per concept.
 - **Automatic QC review loop** (optional): each translation is compared against the source; meaning drift and omissions are flagged and corrected (doubles API usage).
-- **JSON-safety:** raw-JSON model replies are detected, unwrapped and cleaned — you never see JSON garbage in the output.
-- **Bidirectional:** English ⇄ Persian with a dedicated language bar; the direction is remembered across sessions.
+- **JSON-safety:** raw-JSON model replies are detected, unwrapped and cleaned — you never see JSON garbage in the output. Fields a model returns as arrays or numbers instead of strings are normalized instead of crashing the run.
+- **Three languages, every direction:** English, Persian and Arabic in any pairing, with a dedicated language bar; the direction is remembered across sessions. Arabic uses direction-specific academic prompts and native bibliographic labels (المؤلف، العنوان، الناشر …), with correct RTL handling for Arabic as source and as target.
+- **Errors that teach:** a reply cut off by the model's context limit is detected (`finish_reason`) and reported as a context-size problem together with its fix, and the "output could not be parsed" error names the likely causes (a model too weak for structured output, a truncated reply) instead of failing silently.
 
 ### 3. Engines & providers
 
 - **Google Gemini** (official SDK), or **any OpenAI-compatible endpoint** — Ollama / LM Studio / llama.cpp locally, or cloud aggregators.
-- Built-in **Test connection** with a clear success/failure report.
-- Automatic **retry** on transient failures and quota detection with a safe pause.
+- **Per-engine memory:** each engine keeps its own base URL, API key and model — switching engines never leaks one engine's values into the other, and switching back restores yours.
+- Built-in **Test connection** with a clear success/failure report; for OpenAI-compatible servers it also verifies structured (JSON) output and warns about small local context windows.
+- Automatic **retry** on transient failures — including transport-level errors (connection resets, DNS failures, timeouts) on both engines — and quota detection with a safe pause.
 
 ### Local servers (Ollama / LM Studio)
 
@@ -118,17 +120,20 @@ The translator also works fully offline against a local OpenAI-compatible server
 - **This is not universal.** Some local servers and gateways enforce their own API key when authentication is enabled on them (for example 9Router, or vLLM started with `--api-key`). With those, enter the real key the server issued instead of a placeholder.
 - **Raise the context window (Ollama).** Ollama allocates a small context by default (4,096 tokens on machines with less than 24 GiB of VRAM), and long prompts are truncated silently — a book chunk plus its context tail easily overflows it, which surfaces as invalid-JSON translation errors. The OpenAI-compatible API has no context-size field, so raise it on the Ollama side: set `OLLAMA_CONTEXT_LENGTH=16384` before starting the server, or bake it into a custom model with a Modelfile (`FROM <model>` plus `PARAMETER num_ctx 16384`, then `ollama create <name> -f Modelfile`) and use that model name in Settings.
 
-Press **Test connection** after entering the values; a success report means the local model is reachable and ready.
+Press **Test connection** after entering the values; a success report means the local model is reachable, answers in the structured format book translation needs, and is ready. The same guidance (recommended models, the context-window warning) is also shown inside **Settings** whenever an OpenAI-compatible engine is selected — pick a model that is strong enough for structured output (e.g. `qwen2.5:14b` or stronger); very small models may reply in ways that cannot be parsed.
 
 ### 4. Security
 
-- The API key is entered once, masked in the UI, and stored **encrypted with Windows DPAPI** (tied to your Windows account).
+- The API key is entered once, masked in the UI, and stored **encrypted with Windows DPAPI** (tied to your Windows account). Each engine's key is stored separately.
+- **Atomic config writes:** settings are written via write-then-replace, so a crash or power loss mid-save cannot corrupt `config.json` and wipe your key; if a config file is ever found corrupt, it is preserved as `config.json.corrupt.bak` instead of being silently discarded.
+- If a stored key cannot be decrypted (for example the config folder was copied from another Windows account), the app starts with an empty key field instead of crashing.
 - The key never appears in the source code, in the repository, in releases, or in logs.
 - No telemetry, no update-checkers, no background network activity beyond the provider **you** configured.
 
 ### 5. Interface
 
-- **100% right-to-left Persian UI** with Persian numerals — every dialog, menu and alignment.
+- **Bilingual UI (Persian / English)** with automatic RTL/LTR layout — every dialog, menu and alignment follows the chosen language.
+- The **Settings dialog is height-capped with a scrollable body** — its action buttons stay visible on short screens and can no longer slide under the Windows taskbar.
 - Themes: **System / Dark / Light**.
 - Clear control states: the **Copy** button is blue when the page is ready and gray otherwise; every action carries a tooltip explaining when to use it.
 - Progress percentage follows RTL (fills from the right, number on the right).
@@ -137,7 +142,7 @@ Press **Test connection** after entering the values; a success report means the 
 ### 6. Save & export
 
 - Per-page auto-save to a per-file job store (resume-safe across restarts and app updates).
-- Export the current page as **TXT**, the whole book as **Markdown**, or a complete **RTL HTML book with page images** — open it in any browser and use *Print → Save as PDF* for a finished Persian PDF.
+- Export the current page as **TXT**, the whole book as **Markdown**, or a complete **HTML book with page images** (direction follows the target language) — open it in any browser and use *Print → Save as PDF* for a finished PDF.
 - Per-page **“Reviewed ✓”** human-approval checkbox that feeds the statistics and your final quality check.
 
 ---
@@ -160,7 +165,7 @@ provider (Gemini or any OpenAI-compatible server)
 optional QC pass — translation compared against the source & corrected
    │
    ▼
-per-page save (resume-safe job store)  →  TXT / Markdown / RTL HTML export
+per-page save (resume-safe job store)  →  TXT / Markdown / HTML export
 ```
 
 The UI runs on `QThread` workers — translation, structure analysis and exports never freeze the window.
@@ -171,7 +176,7 @@ The UI runs on `QThread` workers — translation, structure analysis and exports
 
 - Everything lives **only on your PC**, under `%APPDATA%\kaman-ai-translator\`:
   - `config.json` — settings + the API key **encrypted with Windows DPAPI**,
-  - `jobs\<hash>.json` — your translations and review marks, one file per book (keyed by the file path),
+  - `jobs\<hash>.json` — your translations and review marks, one file per book (keyed by the file path; a size/mtime fingerprint detects when the file at that path has been replaced — e.g. a new edition — and starts a fresh job, keeping the previous job file as `.bak` instead of mixing two editions),
   - `encrypt_fallback.log` — only written if DPAPI is ever unavailable: timestamp plus the error message, **never any secret** (the key then falls back to clearly-labelled base64 storage so the app keeps working).
 - The in-app **Settings** dialog shows this exact folder (copyable) and has an **“open folder” button**, so nothing is ever hidden from you.
 - The only network traffic is from your computer **to the provider you configured**.
@@ -183,7 +188,7 @@ The UI runs on `QThread` workers — translation, structure analysis and exports
 
 ### Option A — Windows executable (recommended)
 
-Download `kaman-ai-translator-3.0.0.exe` from the [latest release](../../releases/latest) and run it. No Python required.
+Download `kaman-ai-translator-3.1.0.exe` from the [latest release](../../releases/latest) and run it. No Python required.
 
 ### Option B — Run from source
 
@@ -198,7 +203,7 @@ python translator_app_v3.py
 
 ## Quick start
 
-1. **⚙️ Settings** → pick the engine (Gemini or OpenAI-compatible), paste your API key, set the model name, press **Test connection**.
+1. **⚙️ Settings** → pick the engine (Gemini or OpenAI-compatible), paste your API key, set the model name, press **Test connection**. You can also choose the **app language** (Persian / English) here.
 2. **📂 Open book (PDF / EPUB)** → open your book.
 3. **Single page:** *Translate this page* · **Whole book:** *Translate the whole book* and in the dialog:
    - choose the page range,
@@ -215,16 +220,17 @@ python translator_app_v3.py
 
 | Setting | Description |
 |---|---|
-| Engine | Google Gemini, or any OpenAI-compatible server (local or cloud). |
+| Engine | Google Gemini, or any OpenAI-compatible server (local or cloud). Each engine remembers its own Base URL, API key and model. |
 | Base URL | Endpoint of an OpenAI-compatible server (ignored for Gemini). |
 | Model | Model name, e.g. `gemini-2.5-flash` or a local model id. |
-| API Key | Stored encrypted with Windows DPAPI; masked in the UI. |
+| API Key | Stored encrypted with Windows DPAPI; masked in the UI. Stored per engine. |
+| App language | Persian or English interface; the layout direction (RTL/LTR) follows automatically and applies fully after a restart. |
 | Theme | System / Dark / Light. |
 | Auto-analyze structure on file open | Free, fully local detection of headings & recurring labels of the opened book. |
 | AI deep structure pass | One extra API request that reads the table of contents and extracts headings, labels and a summary. |
 | Show Template editor | Two text areas (headings / recurring labels — one item per line) saved **per open book**; steers term consistency in every prompt. |
 | Chunk size / context tail | Advanced parameters of the translation pipeline. |
-| Request delay | Pause between API calls (0–30 s). |
+| Request delay | Pause between API calls (0–30 s) — between pages and between chunks. |
 
 ---
 
@@ -236,7 +242,7 @@ pyinstaller --noconfirm --clean --onefile --windowed ^
   --icon icon.ico ^
   --add-data "icon.png;." ^
   --collect-all google --collect-all google_genai ^
-  --name kaman-ai-translator-3.0.0 ^
+  --name kaman-ai-translator-3.1.0 ^
   translator_app_v3.py
 ```
 
@@ -252,10 +258,10 @@ The suite is **fully offline** — fake engines, temporary profiles, no network,
 
 ```bash
 python tests/test_v3.py
-# expected: ALL V3 TESTS PASSED  (303 checks)
+# expected: ALL V3 TESTS PASSED  (329 checks)
 ```
 
-Covered: prompts & JSON parsing, chunking and context rolling, structure detection & template merging, header/footer removal, job store resume/restart, RTL geometry of every screen, the batch UI state machine (pause/cancel/settings-while-paused), exports, and the encrypted-config round-trip.
+Covered: prompts & JSON parsing, chunking and context rolling, structure detection & template merging, header/footer removal, job store resume/restart, RTL geometry of every screen, the batch UI state machine (pause/cancel/settings-while-paused), exports, the encrypted-config round-trip, Arabic directions, the bilingual UI, and per-engine settings persistence.
 
 ---
 
@@ -269,7 +275,7 @@ kaman-ai-translator/
 │                           #   prompts, chunking, structure analysis,
 │                           #   engines (Gemini / OpenAI-compatible),
 │                           #   job store, exporters
-├── tests/test_v3.py       # 303-check offline test-suite
+├── tests/test_v3.py       # 329-check offline test-suite
 ├── icon.png / icon.ico
 ├── requirements.txt
 ├── LICENSE

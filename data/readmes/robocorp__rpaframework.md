@@ -91,6 +91,10 @@ Packages
    :target: https://pypi.python.org/pypi/rpaframework-openai
    :alt: rpaframework-openai latest version
 
+.. image:: https://img.shields.io/pypi/v/rpaframework-decision.svg?label=rpaframework-decision&style=for-the-badge&color=blue
+   :target: https://pypi.python.org/pypi/rpaframework-decision
+   :alt: rpaframework-decision latest version
+
 .. image:: https://img.shields.io/pypi/v/rpaframework-pdf.svg?label=rpaframework-pdf&style=for-the-badge&color=blue
    :target: https://pypi.python.org/pypi/rpaframework-pdf
    :alt: rpaframework-pdf latest version
@@ -179,6 +183,7 @@ The ``x`` in the **PACKAGE** column means that library **is** included in the **
 +----------------------------+-------------------------------------------------------+------------------------+
 | `Notifier`_                | Notify messages using different services              | x                      |
 +----------------------------+-------------------------------------------------------+------------------------+
+| `Decision`_                | Decision model (Jev, Laya) for typed decisions        | decision               |
 | `OpenAI`_                  | Artificial Intelligence service                       | openai                 |
 +----------------------------+-------------------------------------------------------+------------------------+
 | `Outlook.Application`_     | Control the Outlook desktop application               | x                      |
@@ -242,6 +247,7 @@ The ``x`` in the **PACKAGE** column means that library **is** included in the **
 .. _MFA: https://rpaframework.org/libraries/mfa/
 .. _MSGraph: https://rpaframework.org/libraries/msgraph/
 .. _Notifier: https://rpaframework.org/libraries/notifier/
+.. _Decision: https://rpaframework.org/libraries/decision/
 .. _OpenAI: https://rpaframework.org/libraries/openai/
 .. _Outlook.Application: https://rpaframework.org/libraries/outlook_application/
 .. _PDF: https://rpaframework.org/libraries/pdf/
@@ -272,7 +278,7 @@ Minimum required `conda.yaml` to install Playwright:
     channels:
       - conda-forge
     dependencies:
-      - python=3.10.14
+      - python=3.11.13
       - nodejs=22.9.0
       - pip=24.0
       - pip:
@@ -293,7 +299,7 @@ Default installation method with Robocorp `Developer Tools`_ using `conda.yaml`:
    channels:
      - conda-forge
    dependencies:
-     - python=3.10.14
+     - python=3.11.13
      - pip=24.0
      - pip:
        - rpaframework==31.1.2
@@ -305,7 +311,7 @@ To install all extra packages (including Playwright dependencies), you can use:
    channels:
      - conda-forge
    dependencies:
-     - python=3.10.14
+     - python=3.11.13
      - tesseract=5.4.1
      - nodejs=22.9.0
      - pip=24.0
@@ -326,7 +332,7 @@ Separate installation of AWS, PDF and Windows libraries without the main
    channels:
      - conda-forge
    dependencies:
-     - python=3.10.14
+     - python=3.11.13
      - pip=24.0
      - pip:
        - rpaframework-aws==5.3.3  # included in the rpaframework as an extra
@@ -430,10 +436,9 @@ to see where to get started.
 Development
 -----------
 
-Repository development is `Python`_ based and requires Python **3.9.2 or higher**
-(tested up to 3.13) installed on the development machine. Python 3.10.14 is the
-default version used in the Robocorp Robot template and is a solid choice. Versions
-3.7.6 and 3.8.1 are known to have issues with some dependencies and are not supported.
+Repository development is `Python`_ based and requires Python **3.11 or higher**
+(tested up to 3.14) installed on the development machine. Python 3.10 and older are
+not supported since the November 2026 releases (3.10 reached end of life in October 2026).
 
 Repository development tooling is based on `uv`_ and `invoke`_. ``uv`` is used for
 dependency management, building and running the package. Invoke is used for
@@ -508,15 +513,19 @@ First steps to start developing:
 Packaging and publishing are done after changes have been merged into master branch.
 All the following steps should be done within master branch.
 
-#. git pull latest changes into master branch
-#. in the package directory containing changes execute ``invoke lint`` and ``invoke test``
-#. update **pyproject.toml** with new version according to semantic versioning
-#. update **docs/source/releasenotes.rst** with changes
-#. in the repository root (so called "meta" package level) run command ``uv sync``
-#. git commit changed **uv.lock** files (on meta and target package level), **releasenotes.rst**
-   and **pyproject.toml** with message "PACKAGE. version x.y.z"
-#. git push
-#. ``invoke publish`` after Github action on master branch is all green
+#. in a pull request: update **pyproject.toml** with the new version according to semantic
+   versioning, run ``uv lock`` in the package (and at the repository root when the root lock
+   file is affected), and move the changes in **docs/source/releasenotes.rst** from
+   *Upcoming release* into a dated block under *Released* that ends with the list of released
+   versions, one bullet per package in the form ``rpaframework-core`` **14.0.0**
+#. merge the pull request once the GitHub Actions on it are green
+#. ``git checkout master && git pull``, then in the package directory run
+   ``python ../../tools/tag.py``. It creates and pushes the tag ``<package>-<version>``
+#. the ``release`` workflow builds the package from the tagged commit, publishes it to PyPI
+   (trusted publishing from the ``pypi`` environment) and creates the GitHub release from the
+   dated release-notes block that contains the version
+#. when a package depends on another package of this repository with a raised version floor,
+   release the dependency first: the dependent can only be relocked once the dependency is on PyPI
 
 Some recommended tools for development
 

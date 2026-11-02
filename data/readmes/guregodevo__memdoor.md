@@ -1,9 +1,10 @@
 <div align="center">
   <img src="web/public/icon-512.png" alt="" width="72" height="72">
   <h1>Memdoor</h1>
-  <p><strong>Your daemon agents on every door.</strong><br>A lightweight coding and automation agent in a single CLI binary. Run it locally or connect over SSH to another machine — no Docker or Python required. Work interactively from a terminal, your IDE or phone, or start a run from a shell script, CI or a schedule and finish it from any of those, on a gateway you own, using your own key.</p>
+  <p><strong>Your daemon agents on every door.</strong><br>A lightweight coding and automation agent in a single CLI binary. Run it locally or connect over SSH to another machine — no Docker or Python required. Work interactively from a terminal, your IDE or phone, or start a run from a shell script, CI or a schedule and finish it from any of those, on a gateway you own. BYOK.</p>
   <p>One binary to deploy. A headless-first CLI. Multi-step jobs kept as files in your repo, with checks, approval gates and resume. Less of your token bill, through a decision model in front of the chat model.</p>
   <p>
+    <a href="https://news.ycombinator.com/item?id=50320995"><img alt="Hacker News" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhacker-news.firebaseio.com%2Fv0%2Fitem%2F50320995.json&query=%24.score&label=Hacker%20News&suffix=%20points&logo=ycombinator&logoColor=white&color=ff6600"></a>
     <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue"></a>
     <a href="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml"><img alt="CI" src="https://github.com/guregodevo/memdoor/actions/workflows/lint.yml/badge.svg"></a>
     <a href="https://github.com/guregodevo/memdoor/actions/workflows/installers.yml"><img alt="Installers" src="https://github.com/guregodevo/memdoor/actions/workflows/installers.yml/badge.svg"></a>
@@ -12,11 +13,21 @@
   </p>
 </div>
 
+> **Five Qwen3.8-27B agents beat Fable 5 on LiveCodeBench Hard, as a Memdoor workflow.**
+> [GVS5H](https://github.com/slee-persis/GVS5H)'s harness rebuilt with the authors' exact prompts and loop,
+> on the first ten problems of their list, five passes each: a mean of **9.8 of 10**, against 9.6 for the
+> authors' own harness and 8.0 for Fable 5 in a single call, the gap the authors measured on these ten
+> (across their full 100: 92.4 and 90.4). All 50 runs are published: every request, reply, program and
+> grader output. The workflow is YAML and names no model: point it at yours, or at a
+> local one with `memdoor connect local` (Ollama, llama.cpp, vLLM, LM Studio; [how to run it on an open-weight model, no key](https://memdoor.ai/docs/open-weight)).
+> [examples/workflows/team-solve](examples/workflows/team-solve/) · [the result page](https://memdoor.ai/docs/team-solve) · [the HN thread](https://news.ycombinator.com/item?id=50320995)
+
 On this machine:
 
 ```bash
 curl -fsSL https://memdoor.ai/install.sh | bash
-export OPEN_ROUTER_API_KEY=sk-or-...   # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, …
+export OPENROUTER_API_KEY=sk-or-...    # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, …
+# or no key: memdoor connect local    # an open-weight model on this machine — https://memdoor.ai/docs/open-weight
 cd your-project && memdoor             # the first run sets the machine up
 ```
 
@@ -80,9 +91,11 @@ On a ChatGPT Plus or Pro plan? Skip the key: `memdoor connect chatgpt` (or
 allowance answers Memdoor's turns. A Claude subscription cannot be used this
 way (Anthropic's terms); Claude needs an API key.
 
-No money on a key yet? A free OpenRouter account and `/model
-nvidia/nemotron-3-super-120b-a12b:free` run a real session: 50 requests a day,
-and the free hosts train on what they are sent, so a trial, not private code.
+No key at all? The first `memdoor` signs you in with OpenRouter in the browser,
+a free account included (or with ChatGPT), from a gateway on this machine, over
+ssh or on a box. An account with no credit runs on a free model picked from
+OpenRouter's list, and the connect says so: 50 requests a day, and the free hosts
+train on what they are sent, so a trial, not private code.
 Or no key at all: `memdoor connect local` finds a model running on this machine
 ([janis](https://github.com/guregodevo/janis), Ollama, llama.cpp, LM Studio),
 and nothing leaves it. janis is ours: one Go server that runs the open models on
@@ -162,7 +175,7 @@ the fixes applied) plays at [memdoor.ai/workflows](https://memdoor.ai/workflows)
 
 ```bash
 curl -fsSL https://memdoor.ai/install.sh | bash
-export OPEN_ROUTER_API_KEY=sk-or-...   # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, … or /connect inside
+export OPENROUTER_API_KEY=sk-or-...    # or ANTHROPIC_API_KEY, OPENAI_API_KEY, GEMINI_API_KEY, … or /connect inside
 cd your-project && memdoor             # the first run sets the machine up
 ```
 
@@ -238,9 +251,10 @@ A workflow in GitHub Actions is one step: [In GitHub Actions](#in-github-actions
 Files, sessions and commands stay on your machine. What leaves is what the
 model reads, sent to the provider you connected; on OpenRouter every request
 carries `data_collection: deny` and hosts that train on paid inputs are kept out
-of the ladders. The one exception is a model you pin whose id ends in `:free`:
-its hosts train on what they are sent, the request says so (`allow`), and the
-pin warns; use one for a trial, not on private code. On a vendor key or a company gateway nothing else is contacted:
+of the ladders. The one exception is a `:free` model, one you pin or the one an
+OpenRouter account with no credit answers on: its hosts train on what they are
+sent, the request says so (`allow`), and Memdoor says so at the pin or when the key is connected; use one for a trial, not
+on private code. On a vendor key or a company gateway nothing else is contacted:
 [`docs/SECURITY.md`](docs/SECURITY.md) lists every host the binary can name and
 a test fails the build on a new one.
 

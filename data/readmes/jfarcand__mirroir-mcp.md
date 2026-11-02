@@ -377,7 +377,9 @@ mirroir test --dry-run apps/settings/check-about    # validate without executing
 |---|---|
 | `--junit <path>` | Write JUnit XML report |
 | `--report-json <path>` | Write a Playwright JSON-reporter document — the format `mirroir-run` ingests |
-| `--capture <key>` | Attach each skill's final-screen OCR text to the `--report-json` document under `cross_surface.<key>` |
+| `--capture <key>` | Attach each skill's final-screen OCR text to the `--report-json` document under `cross_surface.<key>`, with the structural fingerprint of the start screen and of each step's settled screen under `screens` (`start`, `0`, `1`, …) and the window under `device` |
+| `--compiled-out <path>` | After the one skill given passes, write its `.compiled.json` to `<path>`: each step that ran as a passthrough step carrying the screen it left (`arrivalFingerprint`), the start screen as `screenFingerprint`. A failed run, or a pass whose start screen or any step's screen could not be read, writes nothing and exits `1`. Needs `--compiled-source`; refused with `--dry-run` or more than one skill |
+| `--compiled-source <file>` | The file whose SHA-256 the `--compiled-out` skill records as its source — the scenario `mirroir-run` rendered the skill from |
 | `--screenshot-dir <dir>` | Save failure screenshots (default: `./mirroir-test-results/`) |
 | `--timeout <seconds>` | `wait_for` timeout (default: 15) |
 | `--verbose` | Step-by-step detail |
@@ -388,7 +390,7 @@ mirroir test --dry-run apps/settings/check-about    # validate without executing
 
 Exit code `0` = all pass, `1` = any failure, `2` = refused arguments (an unknown option is named, never ignored). A skill whose every step was skipped is a failure, and a skill holding a step the parser cannot read (an unknown verb, a malformed `target:`) or cannot use (a `drag:` naming neither end, a `measure:` with no action) is refused before anything runs, `--dry-run` included. A skill holding an AI-only step (`verify`, `remember`, `condition`, `repeat`, `summarize`) fails with `not evaluated: <step> needs an AI client`: the CLI has no AI to check it, so it never reports that skill as passed.
 
-`mirroir test` only reads `.compiled.json` files, never rewrites them. A compiled file stale for its source, format version or window size is named and the skill runs on live OCR.
+`mirroir test` only reads `.compiled.json` files, never rewrites them; it writes one only to the path `--compiled-out` names. A compiled file stale for its source, format version or window size is named and the skill runs on live OCR.
 
 ### Compiled Skills
 
@@ -403,6 +405,8 @@ mirroir test --no-compiled check-about            # force full OCR
 `mirroir compile` re-records coordinates by running a skill's steps on the device. For a SKILL.md those are the steps in its existing `.compiled.json`, so the first compile of a SKILL.md always happens through an MCP client.
 
 An AI agent compiles a skill on its first MCP run by calling `record_step` after each step and `save_compiled` at the end. See [Compiled Skills](docs/compiled-skills.md) for details.
+
+Two different files are named `.compiled.json`. The one next to a skill, written by `save_compiled` or `mirroir compile`, is the speed cache `mirroir test` replays. The `<scenario>.compiled.json` next to an `.ios.yaml` in a consumer repo's `.mirroir/` is the screen-drift baseline `mirroir-run` records itself on a passing run; the runner never replays from it, every `ios` block runs live. So `save_compiled` with `emit: true` writes the skill's `.compiled.json` and a `.mirroir/` scenario, never a `.compiled.json` into `.mirroir/`.
 
 ### AI-Assisted Diagnosis
 
@@ -528,7 +532,7 @@ mirroir-run --scenarios all          # include nice-to-pass entries too
 
 Each plan entry either points at a `local:` sample tree or extends a shared **archetype** (`archetypes: ["<pack>/<name>@<ver>"]`) with per-instance `vars:` and `boot:`. An archetype captures a reusable app shape — say, an AI chat console — once, and parameterizes it per app.
 
-**Where the iOS leg comes from.** `generate_skill … emit=true` (on `finish` or `explore`) writes the captured flow into `.mirroir/apps/<app>/` as a runnable iOS leg: a `target: { kind: ios }` scenario, a `SAMPLE.md` declaring it, and a `must_pass` plan entry. `mirroir-run` hands each `ios` block to `mirroir-mcp test` on a macOS host with iPhone Mirroring connected, and refuses it by name on any other host. Run the MCP from your consumer repo (or pass `output_dir`) so the tree lands in the right `.mirroir/`; emitting into `~/.mirroir` (the runner's pack home) is refused. One scenario can hold both legs: a `web` block, an `ios` block, and a `cross_surface:` step whose `captures:` record the page's scrape and the phone's final screen live, then compare them — the run that checks the gate produces both halves. See [`runner/docs/mirroir-dotfile.md`](runner/docs/mirroir-dotfile.md).
+**Where the iOS leg comes from.** `generate_skill … emit=true` (on `finish` or `explore`), `save_compiled … emit=true` (a skill an AI ran step by step) and `mirroir record` (a walk driven by hand) each write the flow into `.mirroir/apps/<app>/` as a runnable iOS leg: a `target: { kind: ios }` scenario, a `SAMPLE.md` declaring it, and a `must_pass` plan entry. `mirroir-run` hands each `ios` block to `mirroir-mcp test` on a macOS host with iPhone Mirroring connected, and refuses it by name on any other host. Run the MCP from your consumer repo (or pass `output_dir`) so the tree lands in the right `.mirroir/`; emitting into `~/.mirroir` (the runner's pack home) is refused. One scenario can hold both legs: a `web` block, an `ios` block, and a `cross_surface:` step whose `captures:` record the page's scrape and the phone's final screen live, then compare them — the run that checks the gate produces both halves. See [`runner/docs/mirroir-dotfile.md`](runner/docs/mirroir-dotfile.md).
 
 Web steps compile to a Playwright `.spec.ts` and run across chromium, firefox, and webkit. Selectors resolve three ways: raw CSS, Playwright engine prefixes (`role=button[name="Save"]`, `text=Welcome`, `xpath=…`), or a bare label resolved in Playwright's own priority — role, label, placeholder, `data-test`, visible text. Every compiled spec also collects uncaught page errors and failed responses, so a page that throws is a failure even when every locator resolved. The spec, its config, and the trace / video / screenshot of a failure persist under `target/playwright/<sample>/<scenario>/`. Process and HTTP steps dispatch natively; an LLM judge step scores agent responses against expected signals, and drift detection catches output divergence vs. a baseline.
 
@@ -577,11 +581,29 @@ See [Permissions](docs/permissions.md) and [Security](docs/security.md) for the 
 
 ### Recorder
 
-Record interactions as a skill file:
+Record a walk by hand and emit it as a replayable iOS scenario — the same
+`.mirroir/apps/<app>/scenarios/<flow>.ios.yaml` that `generate_skill … emit=true`
+writes, declared in `SAMPLE.md` and the plan:
 
 ```bash
-mirroir record -o login-flow.yaml -n "Login Flow" --app "MyApp"
+mirroir record --app Calculator --name calculator-add --output-dir ~/code/my-repo
 ```
+
+The app is reset and launched first, so the walk starts where its replay
+starts. Tap, long-press, swipe and type on the mirrored phone, then press
+Ctrl+C. Each interaction is stored with the OCR text of the screen it acted on,
+so taps replay by label and each screen a tap reaches gets a `wait_for:`.
+
+- `--app` and `--name` are required; `--name`'s slug names the scenario file.
+- `--output-dir` is the consumer repo root; without it the nearest `.mirroir/`
+  above the working directory is used (`~/.mirroir` is refused).
+- Every session is saved first to
+  `~/.mirroir-mcp/recordings/<app>/<flow>.recording.json`. When the emit is
+  refused — a tap OCR could not name, say — the error names the step and the
+  recording is kept.
+- `--from-recording <file>` re-renders a saved recording without the device
+  (the file names its own app and flow, so `--app`/`--name` are refused with it).
+- `--no-ocr` is refused: a walk without OCR names no element for any tap.
 
 ### Doctor
 

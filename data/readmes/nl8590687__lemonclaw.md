@@ -177,6 +177,8 @@ All configuration lives in `.lemonclaw/.env` (see `.env.example` for the full li
 Model requests use `LLM_API_TIMEOUT` per request and `LLM_TOTAL_TIMEOUT` for the whole call, including retries and fallback. `LLM_MAX_RETRIES` (default 10 retries shared by primary and fallback), `LLM_RETRY_BASE_DELAY`, and `LLM_RETRY_MAX_DELAY` control exponential backoff with jitter; rate limits respect `Retry-After`. Set `LLM_FALLBACK_MODEL` and optionally `LLM_FALLBACK_BASE_URL`/`LLM_FALLBACK_API_KEY` for a backup. Provider circuit breakers use `LLM_CIRCUIT_FAILURE_THRESHOLD` and `LLM_CIRCUIT_COOLDOWN`. Automatic retries/fallback apply to transient failures before streaming begins. A failed request retains the existing conversation checkpoint. The total deadline releases the caller; an SDK call already in progress may finish in its bounded daemon thread.
 
 
+Feishu user requests receive a `Typing` emoji reaction when accepted, followed by `DONE` after the foreground agent turn returns a nonempty reply. Errors and interrupted/empty turns remove `Typing` without adding `DONE`. System commands and bot messages are skipped; image-analysis commands participate. Standalone attachments awaiting instructions receive no processing reaction. Enable the bot permission `im:message.reactions:write_only` (add/delete message reactions). Reaction failures are logged and do not stop message handling. For background Workflows, `DONE` indicates the foreground reply has finished; Workflow results continue through the existing event mechanism.
+
 ### Image input
 
 Set `ENABLE_VISION=True` (default) when the main model supports image input. Images are saved under `FEISHU_RECEIVED_DIR` and referenced from conversation checkpoints; their original bytes are encoded as Base64 Data URLs when making model requests. JPEG, PNG, GIF and WebP are validated by actual content. The application accepts up to 8 images and 20 MiB of image data per request, with a 10 MiB per-image limit. Plain text requests keep the existing behavior.
@@ -192,7 +194,7 @@ Set `ENABLE_VISION=True` (default) when the main model supports image input. Ima
 
 Set `LLM_FALLBACK_ENABLE_VISION=True` only if the backup model also supports images. Image requests require a vision-capable fallback. Turning vision off sends textual image references in place of image data. Keep referenced files available; changed, missing or over-budget images produce an explicit error. Context summarization uses the same image adapter. For Workflow `llm`/`subagent` nodes, set `config.image_ids` or `config.image_ids_field` (a list state field) to explicitly pass image IDs from the originating conversation. Image generation is a separate future capability; existing file-sending tools remain available.
 
-The existing shared main conversation is retained. If its history contains images from another origin, use a distinct `session_key` or `/clear` before switching origins; the agent blocks that request to avoid cross-origin image access.
+The existing shared main conversation is retained: terminal and Feishu requests can continue the same image conversation. Historical images use their stored attachment scope; selecting new attachments still checks the current origin. Use distinct `session_key` values when separate conversations are needed.
 
 ---
 
@@ -437,3 +439,9 @@ Contributions are welcome! Please read [AGENTS.md](AGENTS.md) first — it docum
 ## 📄 License
 
 Licensed under the [Apache License 2.0](LICENSE). Copyright © 2026 LemonClaw Contributors.
+
+### Key updates and silent completion
+
+The main agent normally sends a final reply. `notify_progress(message, kind)` sends necessary milestones, blockers, or a complete result through the current output channel, with duplicate suppression and a limit of three notifications of up to 2000 characters per turn.
+
+`finish_silently(reason, outcome)` must be called alone. `no_action_needed` is allowed for background webhook, system, Workflow completion, and custom events; user messages and scheduled tasks require a reply. `already_delivered` requires a successful `notify_progress(kind="delivered_result")` in this turn. Progress alone does not qualify. Rejected requests return to the model. Successful requests save the tool result before ending the graph and still complete Typing → DONE. Both tools are restricted to the main agent. Prompts require reports, errors, and questions to be delivered; the model remains responsible for deciding whether a background event actually needs attention.

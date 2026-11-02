@@ -5,6 +5,20 @@
 
 </div>
 
+## URDF and MuJoCo models
+
+**[Open the PAROL6 model guide and downloads](parol6_description/)**
+
+The `parol6_description/` folder contains the product README, preview images and
+download links for all six robot/end-effector configurations.
+All maintained model files live in [robot_descriptions](https://github.com/Source-Robotics/robot_descriptions).
+Download the model ZIP for your product and simulator from the guide, then
+extract it into your working directory. This hardware repository needs no
+model submodule or recursive clone.
+
+
+
+
 
 <img src="Images/img3.png" alt="drawing" width="5000"/>
 
@@ -67,6 +81,7 @@ If you want to Source all the parts yourself and build your own follow these ste
 | Discord | Forum | Hackaday | Blog |
 |--------|-------|------| ------|
 | [![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://discord.com/invite/prjUvjmGpZ) | [![Forum](https://img.shields.io/badge/Forum-0A0A0A)](https://discourse.source-robotics.com/) | [![Hackaday](https://img.shields.io/badge/Hackaday-000000?logo=hackaday&logoColor=white)](https://hackaday.io/project/191860-parol6-desktop-robotic-arm) | [![Blog](https://img.shields.io/badge/Blog-Source%20Robotics-blue)](https://source-robotics.com/blogs/blog) 
+
 
 ## ⚠️ Safety, Liability & Disclaimer
 This project includes experimental software, hardware designs, and assembly documentation that are still under development and may contain bugs, errors, or incomplete features. By using, building, or modifying this project, you acknowledge that:

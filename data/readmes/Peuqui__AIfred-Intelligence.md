@@ -16,6 +16,9 @@ AIfred runs on your own machine and works for you across every channel you use: 
 
 **At a glance**
 - 🔗 **Autonomous tool chains** across plugins — one prompt, many steps, from any channel
+- 📬 **Your mail, read properly** — unread mail, several at once, PDFs and Office files as text, scans and photos through the vision model; nothing is cut off, long mails are read in steps
+- 📅 **Nextcloud as your hub** — calendar, tasks, contacts, notes and files, with rights per module
+- 🌅 **Morning briefing** — by mail every morning: the next seven days of appointments, birthdays, open tasks and unread mail, anything with a deadline first
 - 🎩 **Multi-agent system** — AIfred, Sokrates, Salomo and your own agents debate, criticise, judge — or take delegated tasks as sub-agents
 - 📡 **Reachable everywhere** — web UI, Telegram, Discord, e-mail, Echo Dot voice terminal; runs headless
 - 🎤 **Voice** — speech-to-text plus the TTS-Suite service over seven engines (local, other hosts, cloud, browser), voice cloning, spoken announcements on the Echo Dot
@@ -47,6 +50,17 @@ AIfred runs this as one continuous chain:
 
 All local, a single prompt, no clicks in between. Files from the conversation (uploaded images, PDFs or plots from the sandbox) can be sent as attachments over **any** channel, isolated per session.
 
+**Second example (real, tested end to end):** mail with a scanned invoice and a PDF report attached:
+
+> *"Which mails are unread? One of them has an invoice as a scan and a report of a test drive. Read both attachments and give me only the invoice number, the amount, the due date and the driver's name."*
+
+1. **📬 Unread mail** — lists only what you have not read yet; reading changes nothing in your mailbox
+2. **📖 Several at once** — reads the mails in a single call, HTML turned into plain text
+3. **📄 PDF** — reads the report through the same parsers as the document index
+4. **👁️ Scan** — the invoice has no text layer, so its pages go to the vision model, which ran beside the chat model without unloading it
+
+No fixed limit decides what AIfred may see: how much fits in one step follows the model's context, and long mails and attachments are read by lines, like files. Text from a mail stays marked as foreign, so a mail cannot give AIfred orders.
+
 **Prerequisites & knobs:**
 - **Security tier:** creating things (contact, appointment, running code) needs `WRITE_DATA` or higher. In the browser you always have it; external channels are raised as needed in the **Plugin Manager** — deliberately only there, no sender can grant itself rights. See [Security](#-security)
 - **Vision + tool chains:** for reliable tool calls on the image path, **turn thinking off for the vision LLM** (🧠 icon; the 💭 reasoning prompt may stay on). Reasoning models with speculative decoding (MoE/MTP) otherwise swallow tool calls after thinking
@@ -59,10 +73,11 @@ All local, a single prompt, no clicks in between. Files from the conversation (u
 
 The LLM decides on its own which tools to use — OpenAI-compatible function calling, up to 100 tool calls per request, every tool delivered by a plugin:
 
-- **E-mail** — read, search, send via IMAP/SMTP; sending needs explicit confirmation (draft → review → confirm)
+- **E-mail** — read, send and search across all folders, parts of words and attachments included (own local index), via IMAP/SMTP; sending needs explicit confirmation (draft → review → confirm). A second private mailbox can be connected strictly read-only: mails stay unread. AIfred lists unread mail, leaves out its own, reads several mails in one call and works through attachments: PDF, Office, text and calendar invitations as text, scans and images through the vision model, into the document index on request. See [E-mail](docs/en/guides/plugins/email.md)
+- **Nextcloud** — calendar, tasks, contacts, notes and files over CalDAV, CardDAV and WebDAV, with off, read or write per module; shares from your account are found by their plain name. Searches report the real total. See [Nextcloud](docs/en/guides/plugins/nextcloud.md)
 - **Google Suite** — Calendar, Contacts, Drive and Tasks via OAuth 2.0; agents work in one dedicated Drive folder (setting `GOOGLE_DRIVE_AGENT_FOLDER`) and nowhere else, the Document Manager shows your whole Drive
 - **EssentialPIM** — full read/write access to the [EssentialPIM](https://www.essentialpim.com/) database: appointments, contacts, notes, to-dos, password entries; name-to-ID resolution and anti-hallucination guards
-- **Workspace (files & documents)** — upload PDF, Word, Excel, PowerPoint, LibreOffice, TXT, MD, CSV; AIfred browses, reads (PDFs page by page), writes, patches, renames, copies, moves and deletes files, indexes them in ChromaDB (**bge-m3**, token-accurate chunking) and searches them semantically with folder filter and neighbour-chunk context. Document Manager UI with preview, bulk folder indexing and orphan cleanup; **Google Drive** appears there as a second, live source (browse, search, download, upload — no local mirror)
+- **Workspace (files & documents)** — upload PDF, Word, Excel, PowerPoint, LibreOffice, TXT, MD, CSV; AIfred browses, reads (PDFs page by page), writes, patches, renames, copies, moves and deletes files, indexes them in ChromaDB (**bge-m3**, token-accurate chunking, uploads by themselves) and searches every passage by meaning and exact words at once, with folder filter and neighbour-chunk context. Document Manager UI with preview, bulk folder indexing and orphan cleanup; **Google Drive** appears there as a second, live source (browse, search, download, upload — no local mirror)
 - **Sandboxed code execution** — Python in an isolated subprocess (numpy, pandas, matplotlib, plotly, scipy, sklearn, …); interactive HTML/JS results (Plotly 3D, canvas games, simulations) right in the chat, verified by a headless-browser screenshot
 - **Web research** — the agent decides when to search: SearXNG (self-hosted) plus optional Tavily and Brave, LLM-based URL ranking, parallel scraping incl. PDFs; every research runs fresh, no result cache. Modes and pipeline: [Research Pipeline](docs/en/architecture/research-pipeline.md)
 - **Long-term memory** — per-agent memory in ChromaDB, recalled before every answer; agents read, store, update and delete entries themselves. Memory Browser for inspection, incognito mode 🔒
@@ -162,6 +177,7 @@ Enforced by the framework, not left to plugins:
 
 - **Five permission tiers** — READONLY → COMMUNICATE → WRITE_DATA → WRITE_SYSTEM → ADMIN; every tool has a fixed tier (badges T0–T4 in the Agent Editor), every channel a configurable maximum
 - **Prompt-injection defences** — inbound sanitisation (HTML strip, zero-width removal, NFC), `<external_message>` fencing with sender and trust level, security-boundary prompt, research results fenced as untrusted data
+- **Who asks, not which channel** — agent memory and the shared documents folder are open to you wherever you are verified: the browser, your Telegram user ID, e-mail with SPF, DKIM and DMARC passed, your own scheduled jobs. A forged sender gets nothing, and a new channel follows the same rule
 - **Rule of two** — write-tier tools are blocked for external channels unless raised in the Plugin Manager
 - **Limits** — rate limiting per channel, max 100 tool calls per request
 - **Secrets** — plugins only get credentials via the credential broker; secret patterns are stripped from tool output

@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: October 29, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 1, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: October 29, 2026
+- **Last Updated**: November 1, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -187,6 +187,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 #### 📱 Browser/Extension Tools
 - **[Canva AI](https://canva.com)** 🔄 - Integrated design platform with Dream Lab
 - **[Adobe Photoshop Generative Fill](https://adobe.com)** 💰 - AI features in Photoshop
+- **[Breatic](https://github.com/orime-org/breatic)** 🔄 - Real-time collaborative AI documents and canvases for creative teams
 - **[Microsoft Designer](https://designer.microsoft.com)** 🔄 - AI-powered design tool
 - **[Fotor AI](https://www.fotor.com/features/ai-image-generator/)** 🔄 - Online photo editor with AI
 
@@ -350,6 +351,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Writesparkle.ai](https://writesparkle.ai)** 🔄 - Creative writing assistant
 - **[Asterix Writer](https://asterixwriter.com)** 🔄 - Fiction and story writing
 - **[ImagineYourBook](https://www.imagineyourbook.com/)** 💰 - Plans, drafts, and rewrites full-length books in your voice, with EPUB and Word export
+- **[CoverNice](https://covernice.com)** 🔄 - KDP-safe book covers: five directions, real spine width, print-ready wrap PDF
 
 #### 📝 Content Creation
 - **[CreatorSkills](https://creatorskills.co)** 💰 - Marketplace of downloadable AI skills for content creators (Claude & ChatGPT)
@@ -403,6 +405,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 
 #### 🔥 AI-Native Code Editors
 - **[Cursor](https://cursor.sh)** 🆕💰 - AI-first VS Code fork with deep automation
+- **[Volt](https://github.com/LeulAria/volt)** 🆕🆓 - Open-source VS Code-core editor driving Claude Code, Codex and Ollama models over ACP
 - **[Windsurf](https://codeium.com/windsurf)** 🆕🔄 - Cascade AI assistant with one-click deploy
 - **[Zed](https://zed.dev)** 🆕🔄 - High-performance editor with AI features
 
@@ -414,6 +417,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Aider](https://aider.chat)** 🆕🆓 - Terminal-based pair programming
 - **[YYLO](https://github.com/yylo-dev/yylo)** 🆓 - Command-line orchestrator for coding agents with typed task, validation, and merge boundaries
 - **[Sqwakie](https://sqwakie.si)** 🆕🔄 - Live dashboard for team Claude Code and Codex agents that talk over MCP
+- **[Mercury CLI](https://github.com/Whq02/MercuryCLI)** 🆕🆓 - Terminal coding agent: parallel sessions, git-worktree crewmates, 22 providers or local models
 
 #### 💻 Code Assistants
 - **[GitHub Copilot](https://github.com/features/copilot)** 💰 - AI pair programmer from GitHub
@@ -449,6 +453,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[UI Verify](https://uiverify.ai)** 🔄 - Visual regression testing with an AI judge that triages UI diffs
 - **[BetterToken](https://bettertoken.ai)** 💰 - LLM API gateway: one key for Claude, GPT, DeepSeek, Qwen, Kimi and GLM
 - **[Scalekit](https://scalekit.com)** 🔄 - AI agent integration platform: 600+ connectors, 35,000+ tools, per-user OAuth
+- **[Model Salt](https://modelsalt.com)** 🆓 - MCP server that gives a model outside random choices so one prompt gives varied answers
 
 
 
@@ -921,6 +926,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - fast.ai
 - Jagoda
 - linnk
+- **[Derivative Calculator AI](https://derivativecalculatorai.com/)** 🆓 - Calculus solver for derivatives, integrals and limits with AI step explanations
 
 ## Text to Video
 - Synthesia

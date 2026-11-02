@@ -32,7 +32,7 @@ RouterArena bridges this gap by providing an open evaluation platform and benchm
 > **RouterArena is an evaluation-only dataset.** Submissions that train, fit, or tune any router component on RouterArena data (including the label files) will be rejected, and any accepted submission found in violation will be withdrawn. This includes:
 > - **Routing by dataset or template.** Routing must depend on the query's own content, not on which RouterArena dataset it comes from: for example, not by matching the instruction text the evaluation harness adds to each dataset, and not by reading `config/eval_config/`.
 > - **Building router data from RouterArena's templates or configs.** Calibration or training prompts must not be rendered with RouterArena's prompt templates or config files.
-> - **Reusing other submissions' answers.** Every row must come from the router's own model calls. Answers copied from other submissions' prediction files are not accepted.
+> - **Reusing other submissions' answers.** Every row must come from the router's own model calls, or unchanged from RouterArena's official cached answers in `cached_results/`. Answers copied from other submissions' prediction files are not accepted. A router that uses the official cache must still choose the model for each query from that query alone; the cached answers and their scores must not inform the choice.
 
 # Current Leaderboard
 
@@ -40,43 +40,41 @@ For more details, please see our [website](https://routeworks.github.io/leaderbo
 
 | Rank | Router | Affiliation | Acc-Cost Arena | Accuracy | Cost/1K Queries | Optimal Selection | Optimal Cost | Optimal Accuracy | Latency | Robustness |
 |------|--------------------|-----------------------------|--------|----------|---------|-----------------|--------------|----------------|---------|------------|
-| 🥇 | [Divyam](https://divyam.ai) | 👤&nbsp;[@samikd](https://github.com/samikd) | 77.22 | 80.83 | $0.65 | 6.56 | 17.35 | 93.29 | — | 75.71 |
+| 🥇 | [Divyam](https://divyam.ai) | 👤&nbsp;[@samikd](https://github.com/samikd) | 77.19 | 80.83 | $0.66 | 17.06 | 19.96 | 93.29 | — | 75.71 |
 | 🥈 | [BizRouter](https://bizrouter.ai) | 💼&nbsp;BizRouter | 77.08 | 81.66 | $1.00 | — | — | — | — | 97.38 |
-| 🥉 | [KT-ModelRouter](https://github.com/KT-A-Autonomous-Tech-Team/ModelRouter) | 👤&nbsp;[@DusanBaek](https://github.com/DusanBaek) | 76.37 | 78.24 | $0.27 | — | — | — | — | 80.48 |
-| 4 | [Sqwish Router](https://www.sqwish.ai/) | 👤&nbsp;[@namitha-sqwish](https://github.com/namitha-sqwish) | 76.31 | 79.88 | $0.70 | 9.31 | 24.06 | 94.36 | — | 51.67 |
-| 5 | [R\*\*2: Reasonometry Router]() | 👤&nbsp;[@sashakolpakov](https://github.com/sashakolpakov) | 76.16 | 78.97 | $0.48 | — | — | — | — | 99.76 |
-| 6 | [Cross-Router]() | 👤&nbsp;[@JiaHg](https://github.com/JiaHg) | 75.87 | 78.27 | $0.40 | 17.24 | 33.64 | 90.46 | — | 67.14 |
-| 7 | [LLM Router](https://github.com/ypollak2/llm-router)&nbsp;[[PyPI]](https://pypi.org/project/llm-routing/) | 👤&nbsp;[@ypollak2](https://github.com/ypollak2) | 75.77 | 78.54 | $0.49 | — | — | — | — | 100.00 |
-| 8 | [SapientAI Auto Router]() | 💼&nbsp;Publicis Sapient | 75.69 | 78.23 | $0.43 | 5.93 | 19.86 | 92.15 | — | 73.33 |
-| 9 | [vLLM‑SR](https://vllm-semantic-router.com/)&nbsp;[[Code]](https://github.com/vllm-project/semantic-router)&nbsp;[[HF]](https://huggingface.co/llm-semantic-router) | 🎓&nbsp;vLLM SR Team | 74.96 | 77.30 | $0.42 | 16.81 | 21.17 | 89.37 | — | 67.62 |
-| 10 | [nadir-caliper]() | 👤&nbsp;[@doramirdor](https://github.com/doramirdor) | 74.81 | 76.14 | $0.22 | — | — | — | — | 79.76 |
-| 11 | [BARouter]() | 👤&nbsp;[@zulk2002](https://github.com/zulk2002) | 74.22 | 76.22 | $0.36 | 64.62 | 67.53 | 93.87 | — | 68.81 |
-| 12 | [AgentForge Router]() | 👤&nbsp;[@YangY-Z](https://github.com/YangY-Z) | 74.20 | 74.80 | $0.13 | 18.08 | 53.56 | 98.69 | — | 40.48 |
-| 13 | [NuRoute Artemis](https://nuroute.ai) | 💼&nbsp;NuRoute | 73.47 | 76.19 | $0.60 | — | — | — | — | 80.00 |
-| 14 | [Weave Router](https://workweave.ai) | 🎓&nbsp;Weave | 72.88 | 76.22 | $0.87 | — | — | — | — | 100.00 |
-| 15 | [OrcaRouter‑Adaptive](https://www.orcarouter.ai/)&nbsp;[[Code]](https://github.com/Continuum-AI-Corp/OrcaRouter-Lite)&nbsp;[[Paper]](https://arxiv.org/abs/2605.30736)&nbsp;[[X]](https://x.com/orcarouter) | 🎓&nbsp;[Continuum&nbsp;AI](https://www.continuum01.ai/) | 72.41 | 75.63 | $0.86 | — | — | — | — | 22.62 |
-| 16 | [Nadir Router](https://github.com/NadirRouter/NadirClaw) | 🎓&nbsp;NadirRouter | 72.24 | 74.96 | $0.68 | 100.00 | 100.00 | 100.00 | — | 25.48 |
-| 17 | [Hybrid Router]() | 👤&nbsp;[@mikemao27](https://github.com/mikemao27) | 72.15 | 71.46 | $0.04 | 89.87 | 94.19 | 92.81 | — | 96.67 |
-| 18 | [R2-Router](https://arxiv.org/abs/2602.02823/) | 🎓&nbsp;UCF | 71.86 | 71.18 | $0.04 | 66.87 | 80.13 | 99.85 | — | 45.71 |
-| 19 | [cruq-router]() | 👤&nbsp;[@nabaruns](https://github.com/nabaruns) | 70.82 | 71.41 | $0.18 | — | — | — | — | 81.67 |
-| 20 | [chuzom-solo-v32]() | 👤&nbsp;[@ypollak2](https://github.com/ypollak2) | 70.64 | 70.62 | $0.10 | — | — | — | — | 100.00 |
-| 21 | [Azure-Model-Router](https://ai.azure.com/catalog/models/model-router)&nbsp;[[Web]](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/model-router) | 💼&nbsp;Microsoft | 70.41 | 72.93 | $0.73 | — | — | — | — | 71.43 |
-| 22 | [Auto Router]() | 👤&nbsp;[@cxf2015](https://github.com/cxf2015) | 70.27 | 70.42 | $0.12 | 37.77 | 41.21 | 86.09 | — | 49.52 |
-| 23 | [Lynkr]() | 👤&nbsp;[@vishalveerareddy123](https://github.com/vishalveerareddy123) | 68.02 | 68.83 | $0.29 | 11.29 | 17.03 | 84.95 | — | 92.38 |
-| 24 | [MIRT‑BERT](https://arxiv.org/pdf/2506.01048)&nbsp;[[Code]](https://github.com/Mercidaiha/IRT-Router) | 🎓&nbsp;USTC | 66.89 | 66.88 | $0.15 | 3.44 | 19.62 | 78.18 | 27.03 | 61.19 |
-| 25 | [AsiaInfo-Router]() | 👤&nbsp;[@Uncle-LL](https://github.com/Uncle-LL) | 66.30 | 75.82 | $8.54 | — | — | — | — | 69.52 |
-| 26 | [NIRT‑BERT](https://arxiv.org/pdf/2506.01048)&nbsp;[[Code]](https://github.com/Mercidaiha/IRT-Router) | 🎓&nbsp;USTC | 66.12 | 66.34 | $0.21 | 3.83 | 14.04 | 77.88 | 10.42 | 49.29 |
-| 27 | [GPT‑5](https://openai.com/index/introducing-gpt-5/) | 💼&nbsp;OpenAI | 64.32 | 73.96 | $10.02 | — | — | — | — | — |
-| 28 | [CARROT](https://arxiv.org/abs/2502.03261)&nbsp;[[Code]](https://github.com/somerstep/CARROT)&nbsp;[[HF]](https://huggingface.co/CARROT-LLM-Routing) | 🎓&nbsp;UMich | 63.87 | 67.21 | $2.06 | 2.68 | 6.77 | 78.63 | 1.50 | 89.05 |
-| 29 | [Chayan](https://huggingface.co/adaptive-classifier/chayan)&nbsp;[[HF]](https://huggingface.co/adaptive-classifier/chayan) | 🎓&nbsp;Adaptive&nbsp;Classifier | 63.70 | 64.87 | $0.61 | 43.03 | 43.75 | 88.74 | — | — |
-| 30 | [RouterBench‑MLP](https://arxiv.org/pdf/2403.12031)&nbsp;[[Code]](https://github.com/withmartian/routerbench)&nbsp;[[HF]](https://huggingface.co/datasets/withmartian/routerbench) | 🎓&nbsp;Martian | 57.56 | 61.62 | $4.83 | 13.39 | 24.45 | 83.32 | 90.91 | 80.00 |
-| 31 | [NotDiamond](https://www.notdiamond.ai/) | 💼&nbsp;NotDiamond | 57.29 | 60.83 | $4.10 | 1.55 | 2.14 | 76.81 | — | 55.91 |
-| 32 | [GraphRouter](https://arxiv.org/abs/2410.03834)&nbsp;[[Code]](https://github.com/ulab-uiuc/GraphRouter) | 🎓&nbsp;UIUC | 57.22 | 57.00 | $0.34 | 4.73 | 38.33 | 74.25 | 2.70 | 94.29 |
-| 33 | [RouterBench‑KNN](https://arxiv.org/pdf/2403.12031)&nbsp;[[Code]](https://github.com/withmartian/routerbench)&nbsp;[[HF]](https://huggingface.co/datasets/withmartian/routerbench) | 🎓&nbsp;Martian | 55.48 | 58.69 | $4.27 | 13.09 | 25.49 | 78.77 | 1.33 | 83.33 |
-| 34 | [RouteLLM](https://arxiv.org/abs/2406.18665)&nbsp;[[Code]](https://github.com/lm-sys/RouteLLM)&nbsp;[[HF]](https://huggingface.co/routellm) | 🎓&nbsp;Berkeley | 48.07 | 47.04 | $0.27 | 99.72 | 99.63 | 68.76 | 0.40 | 100.00 |
-| 35 | [RouterDC](https://arxiv.org/abs/2409.19886)&nbsp;[[Code]](https://github.com/shuhao02/RouterDC) | 🎓&nbsp;SUSTech | 33.75 | 32.01 | $0.07 | 39.84 | 73.00 | 49.05 | 10.75 | 85.24 |
+| 🥉 | [Sqwish Router](https://www.sqwish.ai/) | 👤&nbsp;[@namitha-sqwish](https://github.com/namitha-sqwish) | 76.34 | 79.88 | $0.69 | 11.46 | 24.13 | 94.36 | — | 51.67 |
+| 4 | [R\*\*2: Reasonometry Router]() | 👤&nbsp;[@sashakolpakov](https://github.com/sashakolpakov) | 76.16 | 78.97 | $0.48 | — | — | — | — | 99.76 |
+| 5 | [KT-ModelRouter](https://github.com/KT-A-Autonomous-Tech-Team/ModelRouter) | 👤&nbsp;[@DusanBaek](https://github.com/DusanBaek) | 76.08 | 78.24 | $0.34 | — | — | — | — | 80.48 |
+| 6 | [LLM Router](https://github.com/ypollak2/llm-router)&nbsp;[[PyPI]](https://pypi.org/project/llm-routing/) | 👤&nbsp;[@ypollak2](https://github.com/ypollak2) | 75.77 | 78.54 | $0.49 | — | — | — | — | 100.00 |
+| 7 | [SapientAI Auto Router]() | 💼&nbsp;Publicis Sapient | 75.58 | 78.23 | $0.47 | 5.78 | 19.04 | 92.15 | — | 73.33 |
+| 8 | [Cross-Router]() | 👤&nbsp;[@JiaHg](https://github.com/JiaHg) | 75.25 | 78.27 | $0.59 | 45.73 | 35.46 | 90.46 | — | 67.14 |
+| 9 | [nadir-caliper]() | 👤&nbsp;[@doramirdor](https://github.com/doramirdor) | 74.63 | 76.14 | $0.25 | — | — | — | — | 79.76 |
+| 10 | [vLLM‑SR](https://vllm-semantic-router.com/)&nbsp;[[Code]](https://github.com/vllm-project/semantic-router)&nbsp;[[HF]](https://huggingface.co/llm-semantic-router) | 🎓&nbsp;vLLM SR Team | 74.24 | 77.30 | $0.67 | 20.40 | 29.18 | 89.37 | — | 67.62 |
+| 11 | [BARouter]() | 👤&nbsp;[@zulk2002](https://github.com/zulk2002) | 73.67 | 76.22 | $0.54 | 66.16 | 46.55 | 93.87 | — | 68.81 |
+| 12 | [NuRoute Artemis](https://nuroute.ai) | 💼&nbsp;NuRoute | 73.63 | 76.19 | $0.54 | — | — | — | — | 80.00 |
+| 13 | [OrcaRouter‑Adaptive](https://www.orcarouter.ai/)&nbsp;[[Code]](https://github.com/Continuum-AI-Corp/OrcaRouter-Lite)&nbsp;[[Paper]](https://arxiv.org/abs/2605.30736)&nbsp;[[X]](https://x.com/orcarouter) | 🎓&nbsp;[Continuum&nbsp;AI](https://www.continuum01.ai/) | 72.48 | 75.63 | $0.83 | — | — | — | — | 22.62 |
+| 14 | [Nadir Router](https://github.com/NadirRouter/NadirClaw) | 🎓&nbsp;NadirRouter | 72.25 | 74.96 | $0.67 | 100.00 | 100.00 | 100.00 | — | 25.48 |
+| 15 | [Hybrid Router]() | 👤&nbsp;[@mikemao27](https://github.com/mikemao27) | 71.20 | 71.46 | $0.13 | 16.67 | 63.09 | 92.81 | — | 96.67 |
+| 16 | [chuzom-solo-v32]() | 👤&nbsp;[@ypollak2](https://github.com/ypollak2) | 70.64 | 70.62 | $0.10 | — | — | — | — | 100.00 |
+| 17 | [Azure-Model-Router](https://ai.azure.com/catalog/models/model-router)&nbsp;[[Web]](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/model-router) | 💼&nbsp;Microsoft | 70.37 | 72.93 | $0.75 | — | — | — | — | 71.43 |
+| 18 | [Weave Router](https://workweave.ai) | 🎓&nbsp;Weave | 70.00 | 76.22 | $3.21 | — | — | — | — | 100.00 |
+| 19 | [AsiaInfo-Router]() | 👤&nbsp;[@Uncle-LL](https://github.com/Uncle-LL) | 70.00 | 75.82 | $2.86 | — | — | — | — | 69.52 |
+| 20 | [cruq-router]() | 👤&nbsp;[@nabaruns](https://github.com/nabaruns) | 69.89 | 71.41 | $0.41 | — | — | — | — | 81.67 |
+| 21 | [Auto Router]() | 👤&nbsp;[@cxf2015](https://github.com/cxf2015) | 69.80 | 70.42 | $0.21 | 47.71 | 60.25 | 86.09 | — | 49.52 |
+| 22 | [Lynkr]() | 👤&nbsp;[@vishalveerareddy123](https://github.com/vishalveerareddy123) | 67.97 | 68.83 | $0.31 | 13.48 | 19.93 | 84.95 | — | 92.38 |
+| 23 | [MIRT‑BERT](https://arxiv.org/pdf/2506.01048)&nbsp;[[Code]](https://github.com/Mercidaiha/IRT-Router) | 🎓&nbsp;USTC | 66.89 | 66.88 | $0.15 | 3.44 | 19.62 | 78.18 | 27.03 | 61.19 |
+| 24 | [NIRT‑BERT](https://arxiv.org/pdf/2506.01048)&nbsp;[[Code]](https://github.com/Mercidaiha/IRT-Router) | 🎓&nbsp;USTC | 66.12 | 66.34 | $0.21 | 3.83 | 14.04 | 77.88 | 10.42 | 49.29 |
+| 25 | [GPT‑5](https://openai.com/index/introducing-gpt-5/) | 💼&nbsp;OpenAI | 64.32 | 73.96 | $10.02 | — | — | — | — | — |
+| 26 | [CARROT](https://arxiv.org/abs/2502.03261)&nbsp;[[Code]](https://github.com/somerstep/CARROT)&nbsp;[[HF]](https://huggingface.co/CARROT-LLM-Routing) | 🎓&nbsp;UMich | 63.87 | 67.21 | $2.06 | 2.68 | 6.77 | 78.63 | 1.50 | 89.05 |
+| 27 | [Chayan](https://huggingface.co/adaptive-classifier/chayan)&nbsp;[[HF]](https://huggingface.co/adaptive-classifier/chayan) | 🎓&nbsp;Adaptive&nbsp;Classifier | 63.70 | 64.87 | $0.61 | 43.03 | 43.75 | 88.74 | — | — |
+| 28 | [RouterBench‑MLP](https://arxiv.org/pdf/2403.12031)&nbsp;[[Code]](https://github.com/withmartian/routerbench)&nbsp;[[HF]](https://huggingface.co/datasets/withmartian/routerbench) | 🎓&nbsp;Martian | 57.56 | 61.62 | $4.83 | 13.39 | 24.45 | 83.32 | 90.91 | 80.00 |
+| 29 | [NotDiamond](https://www.notdiamond.ai/) | 💼&nbsp;NotDiamond | 57.29 | 60.83 | $4.10 | 1.55 | 2.14 | 76.81 | — | 55.91 |
+| 30 | [GraphRouter](https://arxiv.org/abs/2410.03834)&nbsp;[[Code]](https://github.com/ulab-uiuc/GraphRouter) | 🎓&nbsp;UIUC | 57.22 | 57.00 | $0.34 | 4.73 | 38.33 | 74.25 | 2.70 | 94.29 |
+| 31 | [RouterBench‑KNN](https://arxiv.org/pdf/2403.12031)&nbsp;[[Code]](https://github.com/withmartian/routerbench)&nbsp;[[HF]](https://huggingface.co/datasets/withmartian/routerbench) | 🎓&nbsp;Martian | 55.48 | 58.69 | $4.27 | 13.09 | 25.49 | 78.77 | 1.33 | 83.33 |
+| 32 | [RouteLLM](https://arxiv.org/abs/2406.18665)&nbsp;[[Code]](https://github.com/lm-sys/RouteLLM)&nbsp;[[HF]](https://huggingface.co/routellm) | 🎓&nbsp;Berkeley | 48.07 | 47.04 | $0.27 | 99.72 | 99.63 | 68.76 | 0.40 | 100.00 |
+| 33 | [RouterDC](https://arxiv.org/abs/2409.19886)&nbsp;[[Code]](https://github.com/shuhao02/RouterDC) | 🎓&nbsp;SUSTech | 33.75 | 32.01 | $0.07 | 39.84 | 73.00 | 49.05 | 10.75 | 85.24 |
 
-> **Under review:** Paix2 ([#164](https://github.com/RouteWorks/RouterArena/pull/164)) is temporarily removed from the ranking pending an integrity review. See [#211](https://github.com/RouteWorks/RouterArena/issues/211).
+> **Under review:** Paix2 ([#164](https://github.com/RouteWorks/RouterArena/pull/164)), R2-Router ([#68](https://github.com/RouteWorks/RouterArena/pull/68)) and AgentForge Router ([#111](https://github.com/RouteWorks/RouterArena/pull/111)) are temporarily removed from the ranking pending an integrity review. See [#211](https://github.com/RouteWorks/RouterArena/issues/211), [#258](https://github.com/RouteWorks/RouterArena/issues/258) and [#259](https://github.com/RouteWorks/RouterArena/issues/259).
 
 🎓 Open-source  💼 Closed-source 
 
@@ -142,16 +140,17 @@ Create a config file in `./router_inference/config/<router_name>.json`. An examp
 }
 ```
 
-For each model in your config, add an entry with the pricing per million tokens in this format at [`model_cost/model_cost.json`](./model_cost/model_cost.json):
+Every model in your config needs a price. Prices live in [`model_cost/model_profiles.yaml`](./model_cost/model_profiles.yaml): one entry per model, keyed by its OpenRouter id, with the other spellings of the same model as aliases. If your model is listed under another spelling, add yours to its `aliases`. For a new model, add an entry with its price per million tokens and a link to the published price:
 
-```json
-{
-  "gpt-4o-mini": {
-    "input_token_price_per_million": 0.15,
-    "output_token_price_per_million": 0.6
-  },
-}
+```yaml
+  "openai/gpt-4o-mini":
+    price: {input: 0.15, output: 0.6}
+    aliases: ["gpt-4o-mini"]
+    as_of: "2026-10-31"
+    source: "https://openrouter.ai/openai/gpt-4o-mini"
 ```
+
+Then regenerate [`model_cost/model_cost.json`](./model_cost/model_cost.json), which the evaluator reads, with `python scripts/pricing/build_model_cost.py`. A model name with no entry is charged the highest price in the table.
 
 > [!NOTE]
 > Ensure all models in your above config files are listed in [`./universal_model_names.py`](./universal_model_names.py). If you add a new model, you must also add the API inference endpoint in [`llm_inference/model_inference.py`](./llm_inference/model_inference.py).
@@ -219,11 +218,15 @@ To get your router on the leaderboard, you can open a Pull Request with your rou
    - `router_inference/config/<router_name>.json` - Your router configuration
    - `router_inference/predictions/<router_name>.json` - Your prediction file with `generated_result` fields populated
    - `router_inference/predictions/<router_name>-robustness.json` - Your prediction file for robustness evaluation, no `generated_result` fields needed
+
+   > [!NOTE]
+   > **Routers that call LLMs themselves.** If your router calls an LLM to make its decision (a routing model, a classifier, voters, a critic, or the earlier steps of a cascade), record each call in the row's `router_usage` list as `{"model": ..., "input_tokens": ..., "output_tokens": ...}`, with an optional `purpose`. Count reasoning tokens in `output_tokens`. The evaluator adds these calls to the row's cost at each model's price. Check your total with `uv run python scripts/pricing/compute_cost.py <router_name>`.
+
 2. **Open a Pull Request to `main` branch and call `/evaluate` in the PR comment**
    - When the PR is ready for evaluation, call `/evaluate` in the PR comment to trigger the evaluation workflow. See an example [here](https://github.com/RouteWorks/RouterArena/pull/71#issuecomment-3904936480).
    - The automated workflow will:
      - Validate your submission
-     - Run evaluation on the full dataset with the evaluation code on `main`. Only the three files above are taken from your branch, plus any new models you add to `model_cost/model_cost.json` and `universal_model_names.py` (models already listed keep their price on `main`)
+     - Run evaluation on the full dataset with the evaluation code on `main`. Only the three files above are taken from your branch, plus any new models you add to the price table (`model_cost/model_profiles.yaml` and the generated `model_cost/model_cost.json`) and `universal_model_names.py` (models already listed keep their price on `main`)
      - Post results as a comment on your PR
      - Update the leaderboard upon approval
 

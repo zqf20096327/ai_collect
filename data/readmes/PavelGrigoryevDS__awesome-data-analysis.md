@@ -372,8 +372,11 @@ A collection of libraries and drivers for seamless database access and interacti
 - [SQLiteviz](https://github.com/lana-k/sqliteviz) - A tool for exploring SQLite databases and visualizing the results of your queries.
 - [DB Browser for SQLite](https://github.com/sqlitebrowser/sqlitebrowser) - A high quality, visual, open source tool to create, design, and edit database files compatible with SQLite.
 - [DBeaver](https://github.com/dbeaver/dbeaver) - A free universal database tool and SQL client for developers, SQL programmers, and administrators.
+- [StackRender](https://github.com/stackrender/stackrender) - A free visual database schema designer and SQL migration generator.
 - [Beekeeper Studio](https://github.com/beekeeper-studio/beekeeper-studio) - A modern, easy-to-use SQL client and database manager with a clean, cross-platform interface.
+- [LibreDB Studio](https://github.com/libredb/libredb-studio) - A self-hosted, browser-based SQL IDE covering sixteen database engines, with AI-assisted query writing and ER diagrams.
 - [DBConvert Streams](https://streams.dbconvert.com/) - Database IDE for exploring, migrating, and syncing PostgreSQL, MySQL, files, and S3.
+- [Bytebase](https://github.com/bytebase/bytebase) - Database DevSecOps platform for teams: governed data access requests, data masking, SQL review, and compliance/audit across PostgreSQL, MySQL, and more.
 - [SQLFluff](https://github.com/sqlfluff/sqlfluff) - A modular SQL linter and auto-formatter designed to enforce consistent style and catch errors in SQL code.
 - [PyMySQL](https://github.com/PyMySQL/PyMySQL) - A pure-Python MySQL client library for interacting with MySQL databases from Python applications.
 - [Vanna.AI](https://github.com/vanna-ai/vanna) - An AI-powered tool for generating SQL queries from natural language questions.
@@ -588,6 +591,7 @@ A collection of resources for learning mathematics, particularly in the context 
 - [Immersive Linear Algebra](http://immersivemath.com/ila/) - Interactive resource for understanding linear algebra.
 - [Hackermath](https://github.com/amitkaps/hackermath) - Resource for learning statistics and mathematics for data science.
 - [Stats Maths with Python](https://github.com/tirthajyoti/Stats-Maths-with-Python) - Collection of Python scripts and notebooks for statistics and mathematics.
+- [Awesome Python Math Packages](https://github.com/VascoSch92/awesome_python_math_packages) - A curated list of Python packages for mathematics, grouped by field.
 - [Fast.ai - Computational Linear Algebra](https://github.com/fastai/numerical-linear-algebra) - Resource for learning linear algebra computationally.
 
 [⬆ back to contents](#contents)
@@ -765,6 +769,7 @@ A collection of tools for building, deploying, and managing data pipelines and i
 - [Apache Arrow](https://github.com/apache/arrow) - Universal columnar format and multi-language toolbox for fast data interchange.
 - [Kestra](https://github.com/kestra-io/kestra) - An open-source, event-driven orchestrator that simplifies data workflow management.
 - [Conductor](https://github.com/conductor-oss/conductor) - Orchestration engine for running complex, multi-step workflows and business processes.
+- [Dex](https://github.com/exmergo/dex) - Agent skills for analytics engineering on dbt: read-only warehouse profiling, PII flags, verified joins, reviewable model edits, and schema-drift detection.
 
 [⬆ back to contents](#contents)
 
@@ -1030,6 +1035,7 @@ ogrammatically.
 - [Flowise](https://github.com/FlowiseAI/Flowise) - Open-source UI visual tool for building custom LLM orchestration flows and AI agents.
 - [MetaGPT](https://github.com/FoundationAgents/MetaGPT) - Multi-agent framework that simulates roles in a software company to build projects.
 - [Local Deep Research](https://github.com/LearningCircuit/local-deep-research) - Local AI research assistant that searches web, papers, and documents.
+- [Dr. Claw](https://github.com/OpenLAIR/dr-claw) - Open-source research workspace for literature surveys, local experiments, data analysis, and paper writing with multiple AI agent backends.
 - [Gptme](https://github.com/gptme/gptme) - AI agent CLI that writes code, uses terminal, browses web, and runs locally.
 - [Rowboat](https://github.com/rowboatlabs/rowboat) - Open-source AI coworker that learns from your emails/meetings to automate drafting, prep, and tasks.
 - [FutureSearch SDK](https://github.com/futuresearch/futuresearch-python) - Python SDK that dispatches parallel web-research agents across
@@ -1338,9 +1344,4 @@ A collection of extensions to enhance functionality and productivity in Visual S
 - [SQL Notebooks](https://marketplace.visualstudio.com/items?itemName=cmoog.sqlnotebook) - Open SQL files as VSCode Notebooks.
 - [SQL Tools](https://marketplace.visualstudio.com/items/?itemName=mtxr.sqltools) - Database management tools for VSCode.
 - [Kanban Board](https://marketplace.visualstudio.com/items/?itemName=mkloubert.vscode-kanban) - A Kanban board extension for organizing tasks within VS Code.
-- [Path Autocomplete](https://marketplace.visualstudio.com/items?itemName=ionutvmi.path-autocomplete) - Provides path completion for files and directories in VS Code.
-- [Path Intellisense](https://marketplace.visualstudio.com/items/?itemName=christian-kohler.path-intellisense) - Autocompletes filenames in your code.
-- [Python Imports Utils](https://marketplace.visualstudio.com/items?itemName=mgesbert.python-path) - Utilities for managing Python imports.
-- [Workspace Dashboard](https://marketplace.visualstudio.com/items?itemName=kruemelkatze.vscode-dashboard) - Organize your workspaces in a speed-dial manner.
-- [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) - Open any folder in a container, on a remote machine, or in WSL.
-- [Text Power Tools](https://marketplace.visualstudio.com/items/?itemName=qcz.text-power-tools) - An all-in-one sol
+- [Path Autocomplete](https://marketplace.visualstudio.com/items?itemName=ionutvmi.path-autocomplete) - Provides path completion for files and directori

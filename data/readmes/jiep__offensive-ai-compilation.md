@@ -439,6 +439,7 @@ AI is used to accomplish malicious tasks and boost classic attacks.
   * [BugTraceAI](https://github.com/BugTraceAI/BugTraceAI): Open-source multi-agent platform for authorized web application security testing with validation, evidence capture, and reporting. [![stars](https://badgen.net/github/stars/BugTraceAI/BugTraceAI](https://github.com/BugTraceAI/BugTraceAI)
   * [Co-RedTeam: Orchestrated Security Discovery and Exploitation with LLM Agents](https://arxiv.org/abs/2607.18538)
   * [CryptanalysisBench: Can LLMs do Cryptanalysis?](https://arxiv.org/abs/2607.18538)
+  * [ExploitGym](https://github.com/sunblaze-ucb/exploitgym): ExploitGym is a large-scale, realistic benchmark built from real-world vulnerabilities designed to evaluate AI agents' ability to develop exploits. [![stars](https://badgen.net/github/stars/sunblaze-ucb/exploitgym)](https://github.com/sunblaze-ucb/exploitgym)
 
 ### 🦠 Malware 🦠
 
@@ -473,6 +474,7 @@ AI is used to accomplish malicious tasks and boost classic attacks.
   * [Malware Reverse Engineering is no longer a human problem!](https://blog.securitybreak.io/malware-reverse-engineering-is-no-longer-a-human-problem-5441e4a0564f)
   * [GhidraMCP](https://github.com/LaurieWired/GhidraMCP): MCP Server for Ghidra. [![stars](https://badgen.net/github/stars/LaurieWired/GhidraMCP)](https://github.com/LaurieWired/GhidraMCP)
   * [ghidra-mcp](https://github.com/bethington/ghidra-mcp): Production-grade Ghidra MCP Server — 179 MCP tools, 147 GUI + 172 headless endpoints, Ghidra Server integration, cross-binary documentation transfer, batch operations, AI documentation workflows, and Docker deployment for AI-powered reverse engineering. [![stars](https://badgen.net/github/stars/bethington/ghidra-mcp)](https://github.com/bethington/ghidra-mcp)
+  * [REA (Reverse Engineer Anything)](https://github.com/morluto/rea): Local CLI/MCP server for evidence-backed analysis of shipped native, managed, and JavaScript/Electron applications with AI agents. Deep native analysis requires separately installed Hopper, Ghidra, or IDA. [![stars](https://badgen.net/github/stars/morluto/rea)](https://github.com/morluto/rea)
 
 ### 🌀 Side channels 🌀
 
@@ -770,4 +772,5 @@ General AI-generated Image Detection. [![stars](https://badgen.net/github/stars/
   * [nanoGPT](https://github.com/karpathy/nanoGPT): The simplest, fastest repository for training/finetuning medium-sized GPTs. [![stars](https://badgen.net/github/stars/karpathy/nanoGPT)](https://github.com/karpathy/nanoGPT)
   * [whatsapp-gpt](https://github.com/danielgross/whatsapp-gpt) [![stars](https://badgen.net/github/stars/danielgross/whatsapp-gpt)](https://github.com/danielgross/whatsapp-gpt)
   * [ChatGPT Chrome Extension](https://github.com/gragland/chatgpt-chrome-extension): A ChatGPT Chrome extension. Integrates ChatGPT into every text box on the internet.
-  * [Unilm](https://github.com/microsoft/unilm): Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities. [![stars](https://badgen.net/github/stars/micros
+  * [Unilm](https://github.com/microsoft/unilm): Large-scale Self-supervised Pre-training Across Tasks, Languages, and Modalities. [![stars](https://badgen.net/github/stars/microsoft/unilm)](https://github.com/microsoft/unilm)
+  * [minGPT](https://github.com/karpathy/minGPT): A minimal PyTo

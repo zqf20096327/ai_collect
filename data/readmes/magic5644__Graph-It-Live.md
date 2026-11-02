@@ -16,11 +16,21 @@
 
 Graph-It-Live analyzes imports, symbols, calls, cycles, unused exports, and change impact. Use it as a VS Code extension, a standalone CLI, or an MCP/native tool provider for GitHub Copilot and other AI clients. Analysis runs locally and returns evidence from your codebase.
 
-### ▶ Watch the 75-second tour
+### ▶ Watch the videos
+
+Click an image to play its video (sound on).
+
+**The 75-second tour**
 
 [![Graph-It-Live 75-second tour: the dependency graph in VS Code, coloured by import clusters](media/graph-it-live-promo-poster.png)](media/graph-it-live-promo.mp4)
 
-Click the image to play the video (sound on). It walks through the file graph with Louvain import clusters, the Dependency Structure Matrix, boundary rules declared in `graphit.architecture.json`, and an AI agent fixing a rule violation through the Graph-It-Live MCP server.
+It walks through the file graph with Louvain import clusters, the Dependency Structure Matrix, boundary rules declared in `graphit.architecture.json`, and an AI agent fixing a rule violation through the Graph-It-Live MCP server.
+
+**A real architecture fix in 120 seconds**
+
+[![Graph-It-Live 120-second architecture fix: before and after diagram where src/shared stops importing src/analyzer and the analyzer depends on interfaces in src/shared](media/graph-it-live-architecture-fix-poster.png)](media/graph-it-live-architecture-fix.mp4)
+
+It replays how this repository fixed issue #434, with real outputs. You see a circular import in the live dependency graph (ReactFlow) and units in layers with their cycle in the Architecture view, both on `tests/fixtures/workspaces-project`. Then come the call graph, the matrix cycle between `analyzer` and `shared`, and `graph-it check-architecture` failing on 12 violations. Next, the REPL walks the importers, an AI agent extracts interfaces into `src/shared` through the MCP server to invert the dependency, and the review gate scores the pull request. The check ends green.
 
 ## Table of Contents
 
@@ -178,10 +188,10 @@ Declare your intended architecture in `graphit.architecture.json` at the workspa
 *Write `graphit.architecture.json` at the workspace root, then click *Refresh*: click a rule to list the file pairs that break it, then a file to open it.*
 
 <div align="center">
-<img src="media/cli-check-architecture.png" alt="Terminal running graph-it check-architecture on Graph-It-Live: passed true, 8 rules, 0 violations, exit code 0" width="800"/>
+<img src="media/cli-check-architecture-report.png" alt="Terminal running graph-it check-architecture on the rules test fixture: FAILED with 3 new error violations, a rules table, new violations grouped by rule with the importing line, one unmatched file, exit code 1" width="800"/>
 </div>
 
-*`graph-it check-architecture` on this repository: 8 rules, no violation, exit code 0.*
+*`graph-it check-architecture` on the rules test fixture: verdict, totals, rules table, then each new violation as `importing/file.ts:line → target`. Add `--verbose` to list baselined violations, `--format markdown` for a PR comment.*
 
 ### Unused dependencies and impact analysis
 
@@ -233,6 +243,14 @@ graph-it --help                       Show all commands and options
 Analysis commands support `--format json|toon|markdown`. `trace`, `path` and `architecture` also support `--format mermaid`, `architecture --matrix` supports `--format csv`, and `check-architecture` supports `--format sarif`. Use `--workspace <path>` or `-w` to analyze a project other than the current directory.
 
 See the [complete CLI reference](docs/CLI.md), including installation troubleshooting, REPL commands, output formats, and tool details.
+
+Run `graph-it` without arguments for the interactive REPL. Press `Esc` on an empty line to move into the results: `j`/`k` move a cursor, `[`/`]` jump between results, `Space` folds one, `z` folds all, and `Enter` on a file or symbol line opens its actions (`/explain`, `/check-dependencies`, `/trace`, Open in editor). File rows are clickable links in terminals that support OSC 8; `/mouse on` adds wheel and click support.
+
+<div align="center">
+<img src="media/repl-results-navigation.gif" alt="graph-it REPL on this repository: two commands run, Esc moves focus into the results, the cursor jumps between result titles, the first result folds, Enter on a file line opens the actions menu, z folds and unfolds every result" width="800"/>
+</div>
+
+*The REPL on this repository: results focus, jumps between results, folding and the actions menu ([key reference](docs/CLI.md#results-navigation)).*
 
 ### Unified graph context
 
@@ -377,7 +395,7 @@ The skill documents graph queries, codemaps, impact analysis, dead-code detectio
 
 ### Branch Watch
 
-Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head uses the current branch plus the final on-disk state; an explicit head compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, the same signature review as `graph-it review-pr` (TypeScript, JavaScript, Vue and Python, deleted files included, an unreadable file reported as a limitation), cycle history when the graphs are complete, and explicit limitations. Impact traversal is intentionally bounded (depth 3 and at most 200 affected files), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
+Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head, or a head equal to the checked-out branch, uses the current branch plus the final on-disk state; another head branch compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, the same signature review as `graph-it review-pr` (TypeScript, JavaScript, Vue and Python, deleted files included, an unreadable file reported as a limitation), cycle history when the graphs are complete, and explicit limitations. Impact traversal is intentionally bounded (depth 3 and at most 200 affected files), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
 
 Branch Watch requires the Graph-It-Live workspace root to be a supported Git repository. A folder without Git, an unborn or detached repository, conflicts, an inaccessible index, or an unsupported VCS is shown as `Branch watch unavailable`; the normal graph and CLI/MCP tools remain available.
 

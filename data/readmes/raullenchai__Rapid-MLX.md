@@ -162,7 +162,7 @@ own Apple Silicon Mac. Runs stay local until you explicitly choose to publish;
 you do not need a GitHub account or a benchmark JSON pull request.
 
 - **Desktop:** Enable **Community Benchmark** in **Settings → Experimental**,
-  then choose a model in the Community Benchmark tab, run it, review the result
+  then open the **Benchmark** tab in the sidebar, choose a model, run it, review the result
   in **My Results**, and select **Publish** if you want to share it.
 - **CLI:** Run `rapid-mlx benchmark catalog`, then
   `rapid-mlx benchmark run <model>`. Review the saved result and publish it
@@ -367,7 +367,7 @@ compute per second of footage, not real time.
 
 The dependency commands below use the official `install.sh` environment. For Homebrew or another install method, follow [optional extras](https://rapidmlx.com/docs/extras.html).
 
-44 audio aliases behind the OpenAI-compatible `/v1/audio/*` endpoints — any
+Audio aliases behind the OpenAI-compatible `/v1/audio/*` endpoints — any
 OpenAI SDK works unchanged.
 
 ```bash
@@ -375,7 +375,7 @@ OpenAI SDK works unchanged.
 
 # Text to speech
 rapid-mlx serve kokoro
-curl http://localhost:8000/v1/audio/speech \
+curl --fail http://localhost:8000/v1/audio/speech \
   -H "Content-Type: application/json" \
   -d '{"model":"kokoro","input":"hello from rapid-mlx"}' --output hello.wav
 
@@ -403,7 +403,7 @@ Beyond the basics, three things you may not expect to run locally:
 Also: word-level timestamps on transcription, and local text-to-music at
 `/v1/audio/music`.
 
-→ [All 44 aliases across 13 families](https://rapidmlx.com/docs/models/families/audio.html)
+→ [All 53 aliases across 17 families](https://rapidmlx.com/docs/models/families/audio.html)
 
 ---
 
@@ -657,7 +657,7 @@ and newer Macs; Rapid does not silently swap checkpoint precision.
 The pinned `ornith-1.5-122b-a10b-4bit` alias offers the publisher’s 122B hybrid MoE checkpoint on Macs with at least 96 GB unified memory. Install the `[vision]` runtime for its checkpoint loader; this alias qualifies text chat, streaming, tools, and thinking controls. Its download is about 69.6 GB. See the [October 27 qualification record](docs/engineering/performance/2026-10-27-trending-models.md) for results and the two excluded candidates.
 
 → [Full RAM tier map + serve flags per tier](https://rapidmlx.com/docs/hardware-tiers.html)
-→ [Every alias, quant, and family (216 text + 13 image + 10 video + 44 audio aliases, 283 total)](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
+→ [Every alias, quant, and family](https://rapidmlx.com/docs/aliases.html) · interactive at [models.rapidmlx.com](https://models.rapidmlx.com/)
 
 ---
 

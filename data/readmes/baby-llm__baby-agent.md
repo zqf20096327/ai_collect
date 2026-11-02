@@ -16,11 +16,13 @@
 
 ## 🏗 核心技术栈
 
-*   **Language:** Go 1.24+
+*   **Language:** Go 1.25+
 *   **LLM Concepts:** Chat Completions API, SSE 流式传输, Function Calling, ReAct Agent Loop
 *   **Advanced AI:** 上下文工程, Memory 系统, Agentic RAG, 技能系统（Skills）
 *   **System Design:** MCP 协议,  Guardrails 安全防护, Web 服务化
 *   **Engineering:** LLM 评测, 可观测性（Trace/Metrics/Log）
+
+> **SDK fork**：项目通过 `go.mod` 的 `replace` 使用 [baby-llm/openai-go](https://github.com/baby-llm/openai-go)（基于 `openai-go v3.24.0`）。该 fork 在 SDK 层原生支持 `reasoning_content`，避免在业务代码里手工拼装该字段；详见 `BABYAGENT_FORK.md`。
 
 ---
 
@@ -128,7 +130,7 @@
 *   **会话与消息持久化**：SQLite 存储 Conversation / ChatMessage，`Rounds` 字段序列化完整 LLM 消息
 *   **树形对话历史**：每条消息记录 `parent_message_id`，`buildHistory` 沿祖先链追溯重建 LLM context
 
-### 第十一章：Agent 可观测性（Observability）🚧
+### 第十一章：Agent 可观测性（Observability）
 
 **目标**：让 Agent 的每次执行都透明、可追溯，从「能用」走向「可运维」。
 
@@ -139,7 +141,7 @@
 
 ---
 
-### 第十二章：Agent 评测与自动化测试（LLM Eval）🚧
+### 第十二章：Agent 评测与自动化测试（LLM Eval）
 
 **目标**：摒弃"靠肉眼看效果"的黑盒测试，构建自动化评测流水线。
 
@@ -150,21 +152,33 @@
 
 ---
 
-## 🚧 进行中与规划中
+## ✅ 章节状态
 
-以上标注 🚧 的章节为规划中内容，正在持续更新中。敬请期待！
+ch01–ch12 均已有可运行代码。额外前置条件：
+
+- **ch07**：需要 PostgreSQL + pgvector，以及兼容 OpenAI 格式的 Embedding 服务；
+- **ch11**：Jaeger/Tempo/Grafana 为可选部署，不配置也能本地查看 Prometheus 指标与 `AgentTrace`；
+- **ch12**：使用 Mock LLM，无需 API Key。
 
 ---
 
 ## 🛠 开发环境准备
 
-1.  **安装 Go:** 确保本地已安装 Go 1.24 或更高版本。
+1.  **安装 Go:** 确保本地已安装 Go 1.25 或更高版本。
 2.  **获取 API Key:** 你需要一个 LLM 供应商的 API Key（如 OpenAI, 或国内的 DeepSeek/GLM）。
-3.  **配置文件:**
+3.  **配置文件（按章节分两套）:**
     ```bash
+    # ch01-ch04：单模型配置
     cp .env.example .env
-    # 编辑 .env 文件，填入你的 API_KEY
+    # 编辑 .env，填入 OPENAI_API_KEY；BASE_URL / MODEL 留空会使用默认值
+
+    # ch05-ch11：前台模型 + 后台模型（摘要 / 记忆更新）
+    cp config.example.json config.json
+    # 编辑 config.json，填入 front_model 与 back_model
+    # config.json 已被 .gitignore 忽略，不会提交
     ```
+4.  **MCP（可选，ch04 起）:** 按需修改根目录 `mcp-server.json`；默认配置需要本地有 `npx`。
+5.  **RAG（可选，ch07）:** 需要 PostgreSQL + pgvector，以及 Embedding / Rerank 服务，详见 `ch07/README.md`。
 
 ---
 
@@ -191,10 +205,11 @@ baby-agent/
 ├── ch08/           # ✅ 第八章：沙盒与安全防御
 ├── ch09/           # ✅ 第九章：Agent 技能插件
 ├── ch10/           # ✅ 第十章：Web 服务化与 SSE 流式传输
-├── ch11/           # 🚧 第十一章：Agent 可观测性（规划中）
-├── ch12/           # 🚧 第十二章：Agent 评测与自动化测试（规划中）
+├── ch11/           # ✅ 第十一章：Agent 可观测性
+├── ch12/           # ✅ 第十二章：Agent 评测与自动化测试
 ├── shared/         # 共享代码（配置、MCP 等）
-├── .env            # 环境变量配置
+├── frontend/       # React + assistant-ui 前端（ch10/ch11）
+├── config.example.json
 └── README.md       # 本文件
 ```
 
@@ -202,7 +217,7 @@ baby-agent/
 
 ## 🚀 快速开始
 
-各章节均可独立运行，按需学习：
+各章代码相互独立（只依赖 `shared/`），按需学习；运行前置条件见各章 README：
 
 ```bash
 # 第一章：体验流式输出
@@ -231,9 +246,15 @@ go run ./ch09/main
 
 # 第十章：Web 服务（监听 :8080）
 go run ./ch10/main
+
+# 第十一章：可观测性 Web 服务（监听 :8080，含 /metrics 与 /api/trace/:id）
+go run ./ch11/main
+
+# 第十二章：离线评测（无需 API Key）
+go run ./ch12/main
 ```
 
-第七章是独立的索引和工具实现，可参考 `ch07/README.md` 中的使用示例。
+第七章提供可运行的索引/搜索 CLI（需要 PostgreSQL + pgvector 与 Embedding 服务），运行方式和 Agent 接入示例见 `ch07/README.md`。
 
 ---
 
@@ -248,7 +269,7 @@ go run ./ch10/main
 
 ## 🤝 参与贡献
 
-我们非常欢迎社区贡献！如果你有更好的 Agent 设计模式或有趣的工具实现，请随时提交 PR。
+我们非常欢迎社区贡献！如果你有更好的 Agent 设计模式或有趣的工具实现，请随时提交 PR。贡献者名单见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
 
 ## 📄 开源协议
 

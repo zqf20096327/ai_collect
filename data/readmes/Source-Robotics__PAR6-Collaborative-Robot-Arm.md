@@ -79,6 +79,20 @@ Status options: `Open`, `In progress`, `Needs review`, `Blocked`, `Done`.
 
 </div>
 
+## URDF and MuJoCo models
+
+**[Open the PAR6 model guide and downloads](par6_description/)**
+
+The `par6_description/` folder contains the product README, preview images and
+download links for all six robot/end-effector configurations.
+All maintained model files live in [robot_descriptions](https://github.com/Source-Robotics/robot_descriptions).
+Download the model ZIP for your product and simulator from the guide, then
+extract it into your working directory. This hardware repository needs no
+model submodule or recursive clone.
+
+
+
+
 ---
 
 
@@ -148,7 +162,7 @@ Key focus areas:
 | [3D Print Files](3D%20Print%20Files/) | Printable STL part files for the PAR6 robot arm,  |
 | [BOM](BOM/) | Bill of materials and reference images for sourcing the required parts |
 | [Building Instructions](Building%20Instructions/) | Assembly notes, cable building instructions, and supporting datasheets -- **Check Video Manuals below**|
-| [PAR6 Description](PAR6%20Description/) |  XML files, and URDF resources for simulation  |
+| [PAR6 models and setup guide](par6_description/) | Maintained URDF and MuJoCo models, all end effectors |
 
 Video Assembly manual
 * https://youtu.be/3Rrd6hjBnM4
@@ -180,6 +194,7 @@ TODO
 ## 🛡️ Licensing
 
 **CERN Open Hardware Licence Version 2 - Strongly Reciprocal**
+
 
 
 ## 💸Support us

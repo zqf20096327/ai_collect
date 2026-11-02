@@ -1,5 +1,19 @@
 # herbert-rs
 
+> [!IMPORTANT]
+> **herbert-rs is no longer maintained.** I am sorry to those who opened issues and pull requests here and waited for an answer: I stopped working on this code to rewrite Herbert from scratch.
+>
+> The new Herbert is one repository per target. Each engine emits its own kernels at startup, for the model and for the machine in front of it:
+>
+> - CPU: [herbert-jit-bf16](https://github.com/xigh/herbert-jit-bf16) (x86 machine code emitted at startup), benchmarks in [herbert-cpu-bench](https://github.com/xigh/herbert-cpu-bench)
+> - Vulkan: [herbert-vk-bf16](https://github.com/xigh/herbert-vk-bf16) and [herbert-vk-f16](https://github.com/xigh/herbert-vk-f16) (SPIR-V), benchmarks in [herbert-gpu-bench](https://github.com/xigh/herbert-gpu-bench)
+> - CUDA: [herbert-cuda-bf16](https://github.com/xigh/herbert-cuda-bf16) and [herbert-cuda-f16](https://github.com/xigh/herbert-cuda-f16) (PTX), benchmarks in [herbert-cuda-bench](https://github.com/xigh/herbert-cuda-bench)
+> - Apple GPUs: [herbert-metal-bf16](https://github.com/xigh/herbert-metal-bf16) (Metal Shading Language), benchmarks in [herbert-metal-bench](https://github.com/xigh/herbert-metal-bench)
+>
+> They run Qwen3.5 in bf16 and f16 for now. **The Q4 and INT8 versions are coming in the next few weeks**: until then, herbert-rs stays here as it is, and it will be archived when they are out.
+>
+> The story of the rewrite, with every measurement, is told in the series « One level down » on [philippe-anel.fr](https://philippe-anel.fr/en/blog/).
+
 A local LLM inference engine written from scratch in Rust, with hand-written SIMD kernels and GPU compute shaders. No GGML, no llama.cpp — every matrix multiply, attention kernel, and quantization routine is implemented directly.
 
 - [Supported Models](#supported-models)

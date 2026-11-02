@@ -113,6 +113,7 @@ Also, a leaderboard should be included if only:
 
 | Name | Description |
 | ---- | ----------- |
+| [AGI Meridian](https://auerin.com/) | What AI can do in coding, hacking, science, jobs and the US-China race. |
 | [AI Benchmarking Hub](https://epoch.ai/benchmarks) | AI Benchmarking Hub tracks and compares AI model performance in reasoning, coding, and knowledge tasks. |
 | [Arena](https://arena.ai/leaderboard) | Arena operates a chatbot arena where various foundation models compete based on user preferences across multiple categories: text generation, web development, computer vision, text-to-image synthesis, search capabilities, and coding assistance. |
 | [BenchGecko](https://benchgecko.ai) | BenchGecko is a comprehensive leaderboard that tracks thousands of models across 128 benchmarks, featuring cross-provider pricing comparisons, AI economy insights, an agent leaderboard, and an MCP server directory. |
@@ -214,6 +215,7 @@ Also, a leaderboard should be included if only:
 | [FuseReviews](https://huggingface.co/spaces/lovodkin93/FuseReviews-Leaderboard) | FuseReviews aims to advance grounded text generation tasks, including long-form question-answering and summarization. |
 | [GAIA](https://huggingface.co/spaces/gaia-benchmark/leaderboard) | GAIA aims to test fundamental abilities that an AI assistant should possess. |
 | [GAVIE](https://github.com/FuxiaoLiu/LRV-Instruction?tab=readme-ov-file#leaderboards) | GAVIE is a GPT-4-assisted benchmark for evaluating hallucination in LMMs by scoring accuracy and relevancy without relying on human-annotated groundtruth. |
+| [German Language LLM Index](https://dach.peerbench.ai) | German Language LLM Index ranks LLMs on German-language tasks (named-entity recognition, knowledge, multistep reasoning, sentiment, linguistic acceptability and MMLU-ProX-de) and publishes the raw per-item outputs. |
 | [GPT-Fathom](https://github.com/GPT-Fathom/GPT-Fathom?tab=readme-ov-file#-leaderboard) | GPT-Fathom is an LLM evaluation suite, benchmarking 10+ leading LLMs as well as OpenAI's legacy models on 20+ curated benchmarks across 7 capability categories, all under aligned settings. |
 | [GrailQA](https://dki-lab.github.io/GrailQA) | Strongly Generalizable Question Answering (GrailQA) is a large-scale, high-quality benchmark for question answering on knowledge bases (KBQA) on Freebase with 64,331 questions annotated with both answers and corresponding logical forms in different syntax (i.e., SPARQL, S-expression, etc.). |
 | [Guerra LLM AI Leaderboard](https://huggingface.co/spaces/luisrguerra/guerra-llm-ai-leaderboard) | Guerra LLM AI Leaderboard compares and ranks the performance of LLMs across quality, price, performance, context window, and others. |
@@ -621,6 +623,4 @@ Also, a leaderboard should be included if only:
 | [AI-Trader](https://hkuds.github.io/AI-Trader) | AI-Trader is a fully autonomous trading benchmark to compare the performance of different AI models in trading NASDAQ 100 stocks. |
 | [Aiera Leaderboard](https://huggingface.co/spaces/Aiera/aiera-finance-leaderboard) | Aiera Leaderboard evaluates LLM performance on financial intelligence tasks, including speaker assignments, speaker change identification, abstractive summarizations, calculation-based Q&A, and financial sentiment tagging. |
 | [Alpha Arena](https://nof1.ai/leaderboard) | Alpha Arena is a benchmark to evaluate AI models' investing abilities. |
-| [BookSQL](https://huggingface.co/spaces/Exploration-Lab/BookSQL-Leaderboard) | BookSQL is a benchmark to evaluate Text-to-SQL systems in the finance and accounting domain across various industries with a dataset of 1 million transactions from 27 businesses. |
-| [CFLUE](https://github.com/aliyun/cflue?tab=readme-ov-file#leaderboard) | CFLUE is a benchmark to evaluate LLMs' understanding and processing capabilities in the Chinese financial domain. |
-| [ESGenius](https://angel-ntu.github.io/ESGenius) | ESGenius ranks LLMs on Environmental, Social, and Governance (ESG) and sustainability kno
+| [BookSQL](https://huggingface.co/spaces/Exploration-Lab/BookSQL-Leaderboard) | BookSQL is a benchmark to evaluate Text-to-SQL systems in the finance and accounting domain across various industries with a 

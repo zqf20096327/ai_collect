@@ -78,6 +78,7 @@ Skills 会按以下优先级扫描：
 | `/continue` | 继续当前对话，或选择历史对话恢复                 |
 | `/compact`  | 手动压缩当前对话上下文                       |
 | `/model`    | 切换模型、思考模式和推理强度                   |
+| `/permissions` | 配置工具权限                          |
 | `/raw`      | 切换显示模式（Normal / Lite / Raw 滚动回溯） |
 | `/init`     | 初始化 AGENTS.md 文件                 |
 | `/skills`   | 列出可用 skills                      |
@@ -90,12 +91,13 @@ Skills 会按以下优先级扫描：
 | `Enter`       | 发送消息               |
 | `Shift+Enter` | 插入换行（也可用 `Ctrl+J`） |
 | `Ctrl+V`      | 从剪贴板粘贴图片           |
+| `Ctrl+R`      | 搜索当前及历史会话中的用户输入    |
 | `Esc`         | 中断当前模型回复           |
 | 连续 `Ctrl+D`   | 退出                 |
 
 ## 支持的模型
 
-- `deepseek-flash`（推荐使用）
+- `deepseek-flash`（即 V4.1 Flash，推荐使用）
 - `deepseek-v4-pro`
 - `deepseek-v4-flash`
 - `deepseek-v4-flash-vision-exp`
@@ -125,7 +127,7 @@ Deep Code 的收益来自于工具约束、上下文管理、Agent Skills 和权
 
 ### 怎样启用联网搜索功能？
 
-Deep Code自带免费的、且大部分情况够用的Web Search工具。如果你希望使用自定义脚本进行联网搜索，可以在 `~/.deepcode/settings.json` 中将 `webSearchTool` 设为脚本的完整路径即可。详细步骤可参考：https://github.com/qorzj/web_search_cli
+Deep Code 已支持 [DeepSeek 官方网页搜索](https://api-docs.deepseek.com/zh-cn/guides/search)，在 `~/.deepcode/settings.json` 中将 `deepseekSearchApiEnabled` 设为 `true` 即可启用。如果你希望使用自定义脚本进行联网搜索，可以在 `~/.deepcode/settings.json` 中将 `webSearchTool` 设为脚本的完整路径即可。详细步骤可参考：https://github.com/qorzj/web_search_cli
 
 ### 如何配置 MCP？
 

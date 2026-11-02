@@ -417,7 +417,7 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 30. [smolagents](https://github.com/huggingface/smolagents): a barebones library for agents. Agents write python code to call tools and orchestrate other agents.
 31. [Cooragent](https://github.com/LeapLabTHU/cooragent): Cooragent is an AI agent collaboration community.
 32. [Agno](https://github.com/agno-agi/agno): Agno is a lightweight library for building Agents with memory, knowledge, tools and reasoning.
-33. [Suna](https://github.com/kortix-ai/suna): Open Source Generalist AI Agent.
+33. [Kortix](https://github.com/kortix-ai/suna): The open-source AI Operating System — agents, skills, memory and connectors live in a git repo you own, and every session runs on its own cloud computer.
 34. [rowboat](https://github.com/rowboatlabs/rowboat): Let AI build multi-agent workflows for you in minutes.
 35. [EvoAgentX](https://github.com/EvoAgentX/EvoAgentX): Building a Self-Evolving Ecosystem of AI Agents.
 36. [ii-agent](https://github.com/Intelligent-Internet/ii-agent): a new open-source framework to build and deploy intelligent agents.
@@ -446,6 +446,7 @@ To speed up Long-context LLMs' inference, approximate and dynamic sparse calcula
 3. [OpenSquilla](https://github.com/opensquilla/opensquilla): a token-efficient, microkernel AI agent.
 4. [PenguinHarness](https://github.com/Prism-Shadow/penguin-harness): Your Automated Agent Builder, Right on Your Desktop / Server.
 5. [FrontierAgent](https://github.com/ApodexAI/FrontierAgent): an open-source agent runtime, terminal product, and evaluation suite for long-horizon research and file-based work.
+6. [oh-my-agent](https://github.com/first-fluke/oh-my-agent): Vendor-agnostic harness that adds planner, engineer, reviewer and debugger roles to the coding agent you already use (Claude Code, Codex CLI, Cursor and others), from one portable `.agents/` folder.
 
 <div align="right">
     <b><a href="#Contents">↥ back to top</a></b>
@@ -1448,9 +1449,4 @@ MCP工具聚合：
 5. [LLMs for Text Classification: A Guide to Supervised Learning](https://www.striveworks.com/blog/llms-for-text-classification-a-guide-to-supervised-learning)
 6. [Unsupervised Text Classification: Categorize Natural Language With LLMs](https://www.striveworks.com/blog/unsupervised-text-classification-how-to-use-llms-to-categorize-natural-language-data)
 7. [Text Classification With LLMs: A Roundup of the Best Methods](https://www.striveworks.com/blog/text-classification-with-llms-a-roundup-of-the-best-methods)
-8. [LLM Pricing](https://docs.google.com/spreadsheets/d/18GHPEBJzDbICmMStPVkNWA_hQHiWmLcqUdEJA1b4MJM/edit?gid=0#gid=0)
-9. [Uncensor any LLM with abliteration](https://huggingface.co/blog/mlabonne/abliteration)
-10. [Tiny LLM Universe](https://github.com/datawhalechina/tiny-universe)
-11. [Zero-Chatgpt](https://github.com/AI-Study-Han/Zero-Chatgpt)
-12. [Zero-Qwen-VL](https://github.com/AI-Study-Han/Zero-Qwen-VL)
-13. [f
+8. [LLM Pricing](https://docs.googl

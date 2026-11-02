@@ -118,6 +118,7 @@ In this step, we will learn the Machine Learning basics that every FDE must know
 - [What is One-hot Encoding in Machine Learning?](https://outcomeschool.com/blog/one-hot-encoding)
 - [One-hot Encoding in Machine Learning](https://www.youtube.com/watch?v=6AmedU5i9go) (Video)
 - [Why do we split data into train, validation, and test sets?](https://outcomeschool.com/blog/train-validation-test-split)
+- [What are Epoch, Batch, Batch Size, and Iteration in Machine Learning?](https://outcomeschool.com/blog/epoch-batch-and-iteration)
 - [Epoch, Batch, Batch Size, Iteration](https://www.youtube.com/watch?v=NFLlXE-6vno) (Video)
 - [Precision vs Recall](https://outcomeschool.com/blog/precision-vs-recall)
 - [What is a Neural Network and How Does It Work?](https://outcomeschool.com/blog/neural-network)
@@ -288,6 +289,7 @@ In this step, we will learn how to design a complete AI system end to end and wh
 
 Learn AI System Design step by step: [AI System Design](https://github.com/amitshekhariitbhu/ai-system-design)
 
+- [How does Model Serving work?](https://outcomeschool.com/blog/model-serving)
 - [How does a GPU work for Deep Learning?](https://outcomeschool.com/blog/how-does-a-gpu-work-for-deep-learning)
 - [How do CUDA Kernels work?](https://outcomeschool.com/blog/how-do-cuda-kernels-work)
 - [How does a Google TPU work?](https://outcomeschool.com/blog/how-does-a-google-tpu-work)
@@ -304,6 +306,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How does endpointing decide when the user has finished speaking?](https://outcomeschool.com/blog/endpointing-in-voice-agents)
 - [How do silence-based and model-based turn detection differ?](https://outcomeschool.com/blog/silence-vs-model-based-turn-detection)
 - [How does dynamic endpointing adapt to how fast a user talks?](https://outcomeschool.com/blog/dynamic-endpointing)
+- [Why does a voice agent cut people off mid-sentence?](https://outcomeschool.com/blog/voice-agents-cutting-users-off)
 - [How does a voice agent handle long pauses when the user is thinking?](https://outcomeschool.com/blog/long-pauses-in-voice-agents)
 - [How does a voice agent know a phone number or email is not finished yet?](https://outcomeschool.com/blog/unfinished-input-in-voice-agents)
 - [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent)

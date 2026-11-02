@@ -63,7 +63,7 @@ Chat Gun 是一套由 Frontend、BFF 與 LangGraph Runtime 組成的全端 Agent
   <img src="./assets/chat-gun-03.png" alt="Entry screen" width="1280" />
 </p>
 
-**其他操作的畫面見[操作畫面](./docs/gun-shop.md#操作畫面)。**
+其他操作的畫面見[操作畫面](./docs/gun-shop.md#操作畫面)。
 
 ## 核心能力
 
@@ -76,24 +76,24 @@ Chat Gun 是一套由 Frontend、BFF 與 LangGraph Runtime 組成的全端 Agent
     - Math Solver 執行算式與數值運算。
     - MCP Agent 透過 Tool Calling 使用 native 與 MCP tools。
 - **Streaming**：即時串流回答與執行活動，可中途取消，錯誤以明確狀態呈現。
-- **HITL**：Human-in-the-Loop 訂單操作先經人工核准；天氣地點不明確時列出候選地點請使用者確認，再接續原本的對話。
+- **HITL**：Human-in-the-Loop 操作經人工核准；不明確時列出候選地點請使用者確認，再接續原本的對話。
 - **Multimodal input**：接受 PNG、JPEG 與 WebP 圖片，經 vision model 分析後納入回答或研究流程。
-- **Model providers**：支援 Qwen、OpenAI-compatible 與 CCR-compatible endpoints，由 LLM Gateway 統一處理模型能力檢查與呼叫。
+- **Model providers**：支援 Qwen、OpenAI-compatible 與 CC-compatible endpoints，由 LLM Gateway 統一處理模型能力檢查與呼叫。
 - **Native Tools 與 MCP**：內建計算、網路搜尋（Tavily）、網頁擷取、天氣、知識庫檢索與模擬訂單操作；可選擇載入 Filesystem 與 Brave Search MCP Server。見 [Tools 與 MCP](./docs/tools-and-mcp.md)。
 - **Agent / Tool SDK**：以版本化 manifest 宣告輸入輸出、副作用類別、所需權限與執行條件；工具只授予宣告它的 Agent。見 [`@gun-ai/harness-sdk`](https://www.npmjs.com/package/@gun-ai/harness-sdk)。
 
 ### Agent 平台: Runtime 治理
-- **檢索與拒答**：PostgreSQL + pgvector 向量索引，經 `qwen3-rerank` 與證據門檻後綁定引用，無依據時明確拒答。Recall@5 1.000、MRR 0.917、引用準確率 1.000、誤拒率 0.100（test split）。見[知識庫檢索](./docs/retrieval.md)與[評測](./docs/evaluation.md#檢索品質)。
+- **檢索與拒答**：PostgreSQL + pgvector 向量索引，經 `qwen3-rerank` 與證據門檻後綁定引用，無依據時明確拒答。詳細 Recall@5 / MRR / 誤拒率等指標見[知識庫檢索](./docs/retrieval.md)與[評測](./docs/evaluation.md#檢索品質)。
 - **副作用**：外部狀態變更須先取得可持久化的人工核准，模型只能請求、不能記錄核准。見[Gun Shop 流程走查](./docs/gun-shop.md#gun-shop-流程走查)。
-- **冪等與結果**：冪等鍵由業務操作推導，並行重複送出只生效一次；提交後失去回應時進入 `outcome_unknown` 並建立對帳任務。見[並行與回歸驗證](./docs/gun-shop.md#並行與回歸驗證)。
+- **冪等與結果**：冪等鍵由業務操作推導，並行重複送出只生效一次。詳細見[並行與回歸驗證](./docs/gun-shop.md#並行與回歸驗證)。
 - **可信邊界**： BFF 將 API key 映射為可信身分，集中處理 CORS、限流、逾時與取消傳遞，並拒絕客戶端直接寫入對話 state。見 [BFF](./docs/bff.md#對話-state-的寫入防護)。
-- **觀測與評測**： 提供 Metrics、OpenTelemetry 與 Opik tracing；評測分 deterministic（驗證 runtime 保證）與 live（衡量模型品質）兩層，各自記錄資料集、模型與 prompt 版本。模型評分經 10 題人工複核，評審一致率 0.600，因此忠實度不發布。見[評測](./docs/evaluation.md)。
+- **觀測與評測**： 提供 Metrics、OpenTelemetry 與 Opik tracing；評測分 deterministic（驗證 runtime 保證）與 live（衡量模型品質）兩層，各自記錄資料集、模型與 prompt 版本。模型評分經 10 題人工複核，評審詳細信息見[評測](./docs/evaluation.md)。
 
 ### 業務場景：Gun Shop AI 智能客服
 
 使用 Agent 平台的能力搭建的業務場景，不新增 Runtime 機制。它的數字同時是平台保證的端到端驗證。
 
-- **售後客服鏈路**： 意圖分流 → 商品卡片 → 政策問答（帶引用）→ 退款申請 → 人工核准 → 冪等執行 → 狀態卡片。live 意圖路由準確率 1.000（18 輪）、禁止結果 0。見[流程走查](./docs/gun-shop.md#gun-shop-流程走查)與[流程評測](./docs/evaluation.md#流程評測)。
+- **售後客服鏈路**： 意圖分流 → 商品卡片 → 政策問答（帶引用）→ 退款申請 → 人工核准 → 冪等執行 → 狀態卡片。意圖路由準確率、禁止結果等見[流程走查](./docs/gun-shop.md#gun-shop-流程走查)與[流程評測](./docs/evaluation.md#流程評測)。
 - **訂單操作狀態**： 等待核准、執行中、已確認、已去重、失敗、生效前已取消、結果未知、核准被拒、核准逾期，九種狀態在介面上互相可辨識；不提供 undo。deterministic test 10 / 10（含核准被拒、逾期、生效前取消）。見[操作狀態](./docs/gun-shop.md#gun-shop-流程走查)與[訂單冪等整合測試](./backend/src/agents/shopping-assistant/order-idempotency.integration.test.ts)。
 - **模擬邊界**： 商品與政策答案只落在合成語料並帶引用；退款與取消作用在模擬訂單系統，不觸及真實交易。見[範圍與限制](./docs/scope-and-limitations.md)。
 
@@ -142,11 +142,11 @@ docker compose up --build
 | 語料中沒有答案 | 可能改用模型自身知識作答 | 明確拒答 |
 | 答案的出處 | 文字描述 | 每個引用解析回已儲存的片段與來源版本 |
 
-**1. 模型產生的是請求，不是副作用。** 退款與取消的工具呼叫會先停在核准；核准紀錄存在 Server 端並與對話綁定，只能消費一次。提交由 Tool Dispatch 在核准後執行，結果寫入 side-effect ledger。
+**1. 模型產生的是請求，而非副作用：** 退款與取消的工具呼叫會先停在核准；核准紀錄存在 Server 端並與對話綁定，只能消費一次。提交由 Tool Dispatch 在核准後執行，結果寫入 side-effect ledger。
 
-**2. 冪等鍵描述業務操作，不描述一次呼叫。** 鍵由操作種類、訂單與正規化後的明細推導，不含重試次數或呼叫識別，所以並行或重複的送出會收斂成同一筆操作。提交後失去回應時，系統承認「不知道」，而不是猜一個結果。
+**2. 冪等鍵描述業務操作，不描述一次呼叫：** 鍵由操作種類、訂單與正規化後的明細推導，不含重試次數或呼叫識別，所以並行或重複的送出會收斂成同一筆操作。提交後失去回應時，系統承認「不知道」，而不是猜一個結果。
 
-**3. 答案必須能回溯到語料。** 候選片段經 rerank 後仍須通過證據門檻，每個引用都綁定到已儲存的片段與其來源版本；沒有片段達標就明確拒答。
+**3. 答案必須能回溯到語料：** 候選片段經 rerank 後仍須通過證據門檻，每個引用都綁定到已儲存的片段與其來源版本；沒有片段達標就明確拒答。
 
 ## 架構設計
 
@@ -238,10 +238,9 @@ flowchart LR
 | `vector_rerank` | 1.000 | 0.917 | 1.000 | 1.000 | 0.100 |
 
 **流程評測（業務實作）**： 
-  - deterministic test 10 / 10；live 意圖路由準確率 1.000（18 輪，`qwen3.7-plus`）、禁止結果 0。
-  - 資料集 `chain-eval-v1`（15 題）、訂單資料 `synthetic-orders-v1`（合成）、prompt `shopping-intent-v1` / `shopping-policy-answer-v1`。
+  - deterministic test 10 / 10；live test 10 / 10、意圖路由準確率 1.000、禁止結果 0。
 
-**已知限制**： live test split 3 / 10 通過，其餘 7 題為同一現象（訂單操作回傳空結果），尚未修正。同一組案例在 deterministic 層全數通過。
+**已知限制**： 訂單請求 Golden 大致上通過；live 引用準確率約 0.380。
 
 完整結果、執行次數、dev split、延遲、指標定義、忠實度未發布的原因、方法學與重跑方式見[評測](./docs/evaluation.md)。
 

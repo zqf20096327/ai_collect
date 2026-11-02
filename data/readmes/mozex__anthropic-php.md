@@ -29,6 +29,7 @@ A community-maintained PHP SDK for the [Anthropic API](https://platform.claude.c
   - [Batches](https://mozex.dev/docs/anthropic-php/v1/usage/batches)
   - [Files](https://mozex.dev/docs/anthropic-php/v1/usage/files)
   - [Completions](https://mozex.dev/docs/anthropic-php/v1/usage/completions)
+  - [Raw Requests](https://mozex.dev/docs/anthropic-php/v1/usage/raw-requests)
 - Reference
   - [Configuration](https://mozex.dev/docs/anthropic-php/v1/reference/configuration)
   - [Error Handling](https://mozex.dev/docs/anthropic-php/v1/reference/error-handling)
@@ -60,7 +61,7 @@ $client = new ClientFake([
 $response = $client->messages()->create([...]);
 
 $client->assertSent(Messages::class, function (string $method, array $parameters): bool {
-    return $parameters['model'] === 'claude-sonnet-4-6';
+    return $parameters['model'] === 'claude-sonnet-5-5';
 });
 ```
 
@@ -74,7 +75,7 @@ $client->assertSent(Messages::class, function (string $method, array $parameters
 
 ## Installation
 
-> **Requires [PHP 8.2+](https://www.php.net/releases/)** - see [all version requirements](https://mozex.dev/docs/anthropic-php/v1/requirements)
+> **Requires [PHP 8.2+](https://php.net/releases/)** - see [all version requirements](https://mozex.dev/docs/anthropic-php/v1/requirements)
 
 ```bash
 composer require mozex/anthropic-php
@@ -90,7 +91,7 @@ Create a client, send a message, read the response:
 $client = Anthropic::client('your-api-key');
 
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-6',
+    'model' => 'claude-sonnet-5-5',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Hello!'],
@@ -106,7 +107,7 @@ Print text as it arrives:
 
 ```php
 $stream = $client->messages()->createStreamed([
-    'model' => 'claude-sonnet-4-6',
+    'model' => 'claude-sonnet-5-5',
     'max_tokens' => 1024,
     'messages' => [
         ['role' => 'user', 'content' => 'Tell me a short story.'],
@@ -127,7 +128,7 @@ Give Claude tools to call, execute them in your code, send results back:
 
 ```php
 $response = $client->messages()->create([
-    'model' => 'claude-sonnet-4-6',
+    'model' => 'claude-sonnet-5-5',
     'max_tokens' => 1024,
     'tools' => [
         [
@@ -157,9 +158,9 @@ Let Claude reason through complex problems before answering:
 
 ```php
 $response = $client->messages()->create([
-    'model' => 'claude-opus-4-6',
+    'model' => 'claude-opus-5-5',
     'max_tokens' => 16000,
-    'thinking' => ['type' => 'adaptive'],
+    'thinking' => ['type' => 'adaptive', 'display' => 'summarized'],
     'messages' => [
         ['role' => 'user', 'content' => 'What is the GCD of 1071 and 462?'],
     ],

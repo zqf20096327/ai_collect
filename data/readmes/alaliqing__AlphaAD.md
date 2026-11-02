@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--31-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1423-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--01-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1417-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1423 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1417 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
 | Perception & Sensor Fusion | 222 | 2026-10-29 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 108 | 2026-10-26 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 99 | 2026-10-28 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 58 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
+| Control & Vehicle Dynamics | 57 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 159 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 223 | 2026-10-29 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 220 | 2026-10-29 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 159 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 29 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 312 | 2026-10-29 | [View papers](#category-cross-cutting-other) |
+| Human Factors & Policy | 28 | 2026-10-17 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 311 | 2026-10-29 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,18 +45,18 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
@@ -117,7 +117,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-33758"></a>
 
-### Road Infrastructure Perception for Autonomous Driving: Taxonomy, Representations, Tasks, and Challenges ![New](https://img.shields.io/badge/New-red)
+### Road Infrastructure Perception for Autonomous Driving: Taxonomy, Representations, Tasks, and Challenges ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Guoyang Zhao, Weiqing Qi, Kai Zhang, Zhihai Bi, Tianshuai Hu, et al.<br>
 **Published:** 2026-10-24<br>
@@ -128,7 +128,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-33504"></a>
 
-### FreqPKC: Frequency-Aware PeakConv for Radar Semantic Segmentation ![New](https://img.shields.io/badge/New-red)
+### FreqPKC: Frequency-Aware PeakConv for Radar Semantic Segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Yangyong Deng, Pengyu Zhang, Shaoqiu Song, Xiaotao Huang, Jian Wang<br>
 **Published:** 2026-10-24<br>
@@ -1129,7 +1129,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-01572"></a>
 
-### Enhancing Visual Perception in Foggy Conditions via Multiclass Fog Density Modeling ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Enhancing Visual Perception in Foggy Conditions via Multiclass Fog Density Modeling
 
 **Authors:** Mohamad Mofeed Chaar, Galia Weidl<br>
 **Published:** 2026-08-02<br>
@@ -1139,7 +1139,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-01535"></a>
 
-### STAR-VLM: Spatiotemporal Grounding Vision-Language Models for Motion and Velocity Estimation via Automotive Radar Supervision ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### STAR-VLM: Spatiotemporal Grounding Vision-Language Models for Motion and Velocity Estimation via Automotive Radar Supervision
 
 **Authors:** Pou-Chun Kung, Aryaman Rao, Utkrisht Sahai, Hemanth Murali, Yi Liu, et al.<br>
 **Published:** 2026-08-02<br>
@@ -1667,4 +1667,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 ### HilDA: Hierarchical Distillation with Diffusion for Advancing Self-Supervised LiDAR Pre-training
 
-**Authors:** Maciej Wozniak
+**Authors:** Maciej Wozniak, Jesper Ericsson, Hariprasath Govindarajan, Truls Nyberg, Thomas Gustafsson, et al.<b

@@ -4,8 +4,13 @@
 
 <h1 align="center">LlamaForge</h1>
 
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
+
 <p align="center"><b>The real llama.cpp server, run from a browser tab.</b><br>
 Pick a model, see if it fits your GPU, load it, chat. Every llama-server flag is still there when you want it.</p>
+
+<p align="center"><a href="docs/content/autoforge.md"><b>Auto-Forge</b></a> measures flags on your own GPUs and keeps the fastest: a Qwen3.8-27B went from <b>26.8 to 126 tokens/s</b> on code here.<br>
+<b>Already on Ollama?</b> Your downloaded models run on upstream llama.cpp in place, nothing re-downloaded.</p>
 
 <p align="center">
   <a href="https://github.com/dadwritestech/LlamaForge/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/dadwritestech/LlamaForge/ci.yml?branch=master&style=flat-square&labelColor=0f1315&color=39d98a&label=CI"></a>
@@ -61,14 +66,14 @@ every server flag instead of a curated subset.
 
 ## What's in it
 
-- **Models**: every model on your machine in one list, with live VRAM/util/temp per GPU. Load, unload, or open Chat from the row.
+- **Models**: every model on your machine in one list, with live VRAM/util/temp per GPU. Load, unload, or open Chat from the row. **Already have Ollama?** The scan finds the models it downloaded and runs those same files on llama.cpp: nothing is copied.
   - Expand a model to edit every llama-server flag, grouped and searchable, next to a GGUF metadata card (architecture, quant, trained context, layers).
   - Save reloads the model in place. A failed load shows the last error from the router log with a best-guess hint.
   - A loading model shows real progress (weights, draft, vision), straight from llama.cpp's load callback. One-click switches for **Thinking** (Auto / On / Off plus a token budget, with a note on whether the model's chat template can really turn it off) and **Vision** (off frees the projector's VRAM; the file stays on disk).
   - Presets, launch profiles (model + preset + pinned llama.cpp build in one click), side-by-side compare, and copy-paste client snippets.
   - **Game mode** unloads your models when a game starts and loads them again when it closes; pick any to keep loaded.
   - **Elastic VRAM** (off by default; NVIDIA): when another app needs the GPU, a loaded model moves layers to the CPU instead of unloading, keeps its conversation, and moves back once the memory is free. Slower while it's shrunk.
-  - **Auto-Forge** (new in v0.17.0; NVIDIA): finds the fastest way to run a model on your GPUs by measuring it. It tries placements, KV cache types and speculative drafters in a sandbox, checks that a drafter gives the same answers, and applies the winner to `models.ini` with one-click Undo. Here it took a Qwen3.8-27B from 26.8 tokens/s on code (mostly on the slower GPU) to 126.0, and to 2.4x the best plain setup. [How it works](docs/content/autoforge.md).
+  - **Auto-Forge** (new in v0.17.0; NVIDIA): finds the fastest way to run a model on your GPUs by measuring it. It tries placements, KV cache types and speculative drafters in a sandbox, checks that a drafter gives the same answers, and applies the winner to `models.ini` with one-click Undo. Here it took a Qwen3.8-27B from 26.8 tokens/s on code (mostly on the slower GPU) to 126.0, and to 2.4x the best plain setup. **Share** turns a result into an image card and a markdown table to post, with no paths, keys or hosts. [How it works](docs/content/autoforge.md).
 
     ![Auto-Forge: from 27 to 126 tokens a second](docs/content/img/forge-speed.png)
 
@@ -76,10 +81,11 @@ every server flag instead of a curated subset.
 - **Chat**: llama.cpp's own chat UI (markdown, reasoning, images) inside the dashboard, on its own port, with the API key added for you.
 - **Voice**: text to speech on your GPU through llama.cpp's own `llama-tts`: Qwen3-TTS in 10 languages, or the tiny English Pocket TTS that runs faster than real time even on a CPU, optionally in a voice you record or upload (only clone voices you may use).
 - **Embers**: small local agents that keep watch on a topic, keep their own wiki and write you a brief on a schedule. A wiki item only counts if it quotes its source verbatim. **Forge** builds one by interviewing you; **Model Scout** needs no setup. Embers have no browser or tools, and nothing leaves the machine unless you turn on push notifications.
-- **Discover**: Hugging Face GGUF search that opens on what's new this week. Every quant gets a rough fit rating for your VRAM before you download (FITS / TIGHT / CPU OFFLOAD). Downloads resume after interruption, register themselves, and end in **Load & Chat**.
+- **Discover**: Hugging Face GGUF search that opens on what's new this week. Every quant gets a rough fit rating for your VRAM before you download (FITS / TIGHT / CPU OFFLOAD). Downloads resume after interruption, register themselves, and end in **Load & Chat**. A link like `http://127.0.0.1:8090/#discover?repo=owner/name&file=x.gguf` opens it on one quant.
 - **Will it run?**: pick a repo and quant, get the fit and a rough speed estimate.
+- **Can I run it?** without installing: [a table of popular models vs graphics cards](https://dadwritestech.github.io/LlamaForge/can-i-run.html), worked out from the real GGUF headers with the same footprint math.
 - **Build / Update**: one-click official llama.cpp builds with rollback, or build from source with flags detected for your GPU. Also drives [ik_llama.cpp](https://github.com/ikawrakow/ik_llama.cpp) and, on Windows, [vLLM](https://github.com/vllm-project/vllm) in WSL2.
-- **Stats**: per-model tokens, speed and run counts from the router's own metrics, plus live GPU memory and system RAM. Per-client stats aren't possible, because clients talk to the router directly.
+- **Stats**: per-model tokens, speed and run counts from the router's own metrics, plus live GPU memory and system RAM. **Share my rig** turns it into a postable card. Per-client stats aren't possible, because clients talk to the router directly.
 - **Context**: Markdown context docs composed into profiles, injected into requests or written into `CLAUDE.md` / `AGENTS.md`.
 - **Recipes**: share a profile as readable JSON; others import it in one paste and LlamaForge downloads the model if missing. There's a [community gallery](recipes/).
 
@@ -89,7 +95,12 @@ A first-run wizard and a **Lite / Advanced** toggle keep the deep knobs out of t
 
 Anything that speaks the OpenAI API (Open WebUI, SillyTavern, Continue, Cline, Aider, the OpenAI SDKs) works against
 `http://127.0.0.1:8080/v1`. The router always runs with an API key, and **Client Config** on any model gives you the
-base URL, key and model id ready to paste.
+base URL, key and model id ready to paste, plus filled-in settings for Open WebUI (Docker address included),
+Continue's `config.yaml`, Cline and an `aider` command.
+
+Embedding and reranker GGUFs are recognized from their header, so they're tagged **embed** or **rerank** and
+started with `--embeddings` or `--reranking`. Their Client Config shows the `/v1/embeddings` or `/v1/rerank` call and
+the Open WebUI **Documents** settings for RAG.
 
 - **Anthropic-compatible** `POST /v1/messages` on the panel, with streaming and tool use.
 - **OpenAI speech-compatible** `POST /v1/audio/speech` on the panel (WAV or PCM), backed by `llama-tts`.
@@ -145,10 +156,16 @@ It starts the router and the dashboard and opens your browser.
 the models it spawned. It stops only processes LlamaForge started; any other
 llama-server you run is left alone.
 
+Want it running whenever you log in (say, an always-on box behind Open WebUI)?
+`llamaforge service on` on Linux (a systemd user unit) or macOS (a launch agent);
+`llamaforge service off` removes it. It's off unless you turn it on.
+
 **Requirements:** Windows 10/11, Linux, or macOS on Apple Silicon. Python 3.10+ (stdlib only;
 the Windows installer brings its own). NVIDIA (CUDA), AMD/Intel (Vulkan) or Apple (Metal) GPUs
 run models when present; CPU-only works. The VRAM preview, fit ratings and GPU stats read
-NVIDIA and Apple memory today; AMD/Intel cards don't show VRAM in the panel yet. Building from source also needs Git, CMake, Ninja and
+NVIDIA and Apple memory; AMD/Intel cards show their total and used memory as llama.cpp's own
+device list reports them (a Vulkan, ROCm or SYCL build; on Linux, AMD sysfs before one is
+installed), without utilization or temperature. Not yet tested on real AMD/Intel hardware. Building from source also needs Git, CMake, Ninja and
 a C++ compiler, which the Setup tab can install where a package manager allows.
 
 ## How it works
@@ -164,6 +181,10 @@ needed. Pinning any of them turns fit off, so they stay unset unless you set the
 **Security:** the dashboard only listens on `127.0.0.1`. The router is keyed even when
 local, so a web page you visit can't drive it. LAN access is opt-in from Setup and always
 needs a key. Details and how to report a vulnerability privately: [SECURITY.md](SECURITY.md).
+
+**A GPU box with no screen:** start it with `./run.sh` over SSH and it prints the tunnel to
+run from your own computer (`ssh -N -L 8090:127.0.0.1:8090 you@box`), then open
+`http://127.0.0.1:8090` there. The dashboard never has to listen on the network.
 
 ## Docs
 

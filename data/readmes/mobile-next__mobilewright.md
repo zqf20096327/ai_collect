@@ -57,7 +57,7 @@ If you've used Playwright, you already know Mobilewright.
 | Setup | `npm install mobilewright` | Server + drivers + caps | React Native only | Xcode/AS only |
 | Cross-platform | iOS + Android, one API | Yes, verbose | React Native only | Single platform |
 | AI agent support | First-class (accessibility tree) | Limited | No | No |
-| Real devices in the cloud | Via [Mobile Next Cloud](https://mobilenext.ai/cloud?utm_source=github&utm_medium=readme&utm_campaign=mobilewright&utm_content=comparison) and [others](https://mobilewright.dev/docs/cloud-providers/) | Yes (complex) | Simulators only | Yes |
+| Real devices in the cloud | [Mobile Next Cloud](https://mobilenext.ai/cloud?utm_source=github&utm_medium=readme&utm_campaign=mobilewright&utm_content=comparison), [BrowserStack](https://mobilewright.dev/docs/cloud-providers/browserstack), [Sauce Labs](https://mobilewright.dev/docs/cloud-providers/saucelabs), [TestMu AI](https://mobilewright.dev/docs/cloud-providers/testmu), [TestingBot](https://mobilewright.dev/docs/cloud-providers/testingbot) | Yes (complex) | Simulators only | Yes |
 | Locators | Semantic roles + labels | XPath, CSS, ID | Test IDs | Native queries |
 
 ## Built for AI agents
@@ -401,6 +401,9 @@ All options:
 | `outputDir` | `string` | Output directory for test artifacts. Default: `test-results` |
 | `reporter` | `'list' \| 'html' \| 'json' \| 'junit' \| Array` | Reporter to use (optional) |
 | `retries` | `number` | Maximum retry count for flaky tests (optional) |
+| `repeatEach` | `number` | Run each test this many times. Default: `1` |
+| `maxFailures` | `number` | Stop the run after this many failures. Default: `0` (no limit) |
+| `failOnFlakyTests` | `boolean` | Fail the run if any test is flagged as flaky. Default: `false` |
 | `workers` | `number \| string` | Number of concurrent workers (optional) |
 | `fullyParallel` | `boolean` | Run all tests in parallel. Default: `false` |
 | `use` | `MobilewrightUseOptions` | Per-action defaults applied to all tests (optional) |
@@ -571,6 +574,8 @@ npx mobilewright test --grep "sign in"      # filter by test name
 npx mobilewright test --reporter html       # generate HTML report
 npx mobilewright test --retries 2           # retry flaky tests
 npx mobilewright test --workers 4           # parallel workers
+npx mobilewright test --repeat-each 20      # run each test 20 times
+npx mobilewright test -x                    # stop after the first failure
 npx mobilewright test --list                # list tests without running
 ```
 
@@ -592,11 +597,15 @@ npx mobilewright merge-reports ./blob-reports        # merge into an HTML report
 npx mobilewright merge-reports ./blob-reports --reporter json
 ```
 
-## Run on real devices with Mobile Next Cloud
+## Run on real devices in the cloud
 
-Need real phones in the cloud? [Mobile Next Cloud](https://mobilenext.ai/cloud?utm_source=github&utm_medium=readme&utm_campaign=mobilewright&utm_content=cloud-section) gives you API access to hundreds of real Android and iOS devices. Your Mobilewright scripts run with zero modification — point your config at the Mobile Next Cloud endpoint and go.
+The same tests that run on a local device run on real devices in the cloud. Only the `driver` in `mobilewright.config.ts` changes. Mobilewright supports these device clouds:
 
-Mobile Next Cloud is the only device cloud with native Mobilewright support.
+- **[Mobile Next Cloud](https://mobilenext.ai/cloud?utm_source=github&utm_medium=readme&utm_campaign=mobilewright&utm_content=cloud-section)**, built by the Mobilewright team. API access to hundreds of real Android and iOS devices, with test results uploaded to your dashboard automatically. [Setup guide](https://mobilewright.dev/docs/cloud-providers/mobile-next-cloud)
+- **[BrowserStack](https://mobilewright.dev/docs/cloud-providers/browserstack)**, App Automate sessions via the `@browserstack/mobilewright` driver
+- **[Sauce Labs](https://mobilewright.dev/docs/cloud-providers/saucelabs)**, real Android and iOS devices via the `@saucelabs/mobilewright-driver` package
+- **[TestMu AI](https://mobilewright.dev/docs/cloud-providers/testmu)**, real Android and iOS devices via the `@testmuai/mobilewright` driver
+- **[TestingBot](https://mobilewright.dev/docs/cloud-providers/testingbot)**, real devices, emulators and simulators via the `@testingbot/mobilewright-driver` package
 
 ## Telemetry
 

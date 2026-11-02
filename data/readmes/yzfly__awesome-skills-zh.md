@@ -556,6 +556,7 @@ Anthropic 官方发布的关于 Agent Skills 的核心指南，是理解技术�
 | [**jezweb/claude-skills**](https://github.com/jezweb/claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/jezweb/claude-skills) | 面向 Claude Code CLI 的全栈开发 Skills，涵盖 Cloudflare、React、Tailwind v4。 |
 | [**JasonColapietro/suede-creator-skills**](https://github.com/JasonColapietro/suede-creator-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/JasonColapietro/suede-creator-skills) | 面向 Claude Code 与 Codex 的 **67 个 MIT 开源 Skills**，覆盖多智能体编排、Codex 工作节点集群、代码审查与发布门禁、AI 评测、产品、设计和增长工作流。 |
 | [**tronghieu/agent-skills**](https://github.com/tronghieu/agent-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/tronghieu/agent-skills) | 面向知识工作（而非编程）的 18 个 MIT 开源 Skills：设计思维、批判性思维、根因分析、市场调研、战略、数据分析、长文档精读、Diataxis 文档与幻灯片，附中文 README。 |
+| [**yylo-dev/yylo-skills**](https://github.com/yylo-dev/yylo-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/yylo-dev/yylo-skills) | YYLO CLI / Ledger / Benchmark 使用的 8 个 MIT 开源 SKILL.md 技能包合集：Kanban 任务管理、任务规划与注册、产物归档、Wiki 知识库、工作流执行、Ralph 循环、项目理解与评测基准运行；一行命令安装（`npx skills add yylo-dev/yylo-skills`），兼容 Claude Code / Codex / Pi。 |
 
 #### 🔬 垂直领域
 | 项目 | ⭐ Stars | 简介 |
@@ -567,6 +568,7 @@ Anthropic 官方发布的关于 Agent Skills 的核心指南，是理解技术�
 | [**chuspeeism/dashi-ppt-skill**](https://github.com/chuspeeism/dashi-ppt-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/chuspeeism/dashi-ppt-skill) | 多视觉主题的浏览器可编辑演示文稿生成 Skill，可导出 HTML / PDF / PPTX。 |
 | [**isjiamu/gzh-design-skill**](https://github.com/isjiamu/gzh-design-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/isjiamu/gzh-design-skill) | 把 Markdown 一键排成可直接粘进微信公众号编辑器的精致 HTML，6 套主题 + 主题生成器。 |
 | [**Vincentwei1021/video-shotcraft**](https://github.com/Vincentwei1021/video-shotcraft) | ![GitHub Repo stars](https://badgen.net/github/stars/Vincentwei1021/video-shotcraft) | 面向 Claude Code / Codex 的 AI 视频 Skill：用 Remotion 做电影感产品视频，含 152 张分镜配方卡。 |
+| [**krisyangdev/motionboard**](https://github.com/krisyangdev/motionboard) | ![GitHub Repo stars](https://badgen.net/github/stars/krisyangdev/motionboard) | 社区复刻 Apple / Linear 发布片的 38 种镜头，提供 HyperFrames 源码与 Skill，辅助 Claude Code / Codex 制作产品发布片；非品牌官方项目。 |
 | [**petergyang/no-ai-slop**](https://github.com/petergyang/no-ai-slop) | ![GitHub Repo stars](https://badgen.net/github/stars/petergyang/no-ai-slop) | 去除写作中 20+ 种「AI 味」套路而不抹平个人语气。 |
 | [**firecrawl/anydoc**](https://github.com/firecrawl/anydoc) | ![GitHub Repo stars](https://badgen.net/github/stars/firecrawl/anydoc) | Firecrawl 的 Rust 文档转 Markdown 库以 Skill 形式分发，让 Agent 读懂 Word / PPT / Excel / PDF / EPUB。 |
 | [**microsoft/skill-recorder**](https://github.com/microsoft/skill-recorder) | ![GitHub Repo stars](https://badgen.net/github/stars/microsoft/skill-recorder) | 微软开源桌面应用：录一遍屏幕操作，用 Copilot CLI 自动生成可复用的 Skill。 |
@@ -589,6 +591,7 @@ Anthropic 官方发布的关于 Agent Skills 的核心指南，是理解技术�
 | [**Pluviobyte/video-production-skills**](https://github.com/Pluviobyte/video-production-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/Pluviobyte/video-production-skills) | 可复用的 AI 视频制作技能库，覆盖创作、复刻、运动设计、片头与 QA 全流程。 |
 | [**iart-ai/motion-skills**](https://github.com/iart-ai/motion-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/iart-ai/motion-skills) | 50 个开源 skill，教 AI 编码智能体制作动态图形、动画与视频——动态排版、数据可视化、讲解动画、短视频、WebGL、Manim，打包成 14 个可安装包（由动态智能体 iart.ai 出品）。 |
 | [**haowjy/creative-writing-skills**](https://github.com/haowjy/creative-writing-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/haowjy/creative-writing-skills) | 专注创意写作的 Claude skills 合集。 |
+| [**lucasbabur/jp-essay**](https://github.com/lucasbabur/jp-essay) | ![GitHub Repo stars](https://badgen.net/github/stars/lucasbabur/jp-essay) | 面向 Claude Code 的英语 / 葡萄牙语文章写作 Skills，覆盖研究、提纲、修改与基于来源的事实核查，包含 Python 流程检查；需 uv 及上游完整安装。 |
 | [**ahmedasmar/devops-claude-skills**](https://github.com/ahmedasmar/devops-claude-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/ahmedasmar/devops-claude-skills) | 面向 DevOps 工作流的 Claude Code Skills 市场。 |
 | [**gamedev-skills/awesome-gamedev-agent-skills**](https://github.com/gamedev-skills/awesome-gamedev-agent-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/gamedev-skills/awesome-gamedev-agent-skills) | **66** 个游戏开发 Agent Skills + 主路由（自动按引擎/任务加载对应技能），版本锁定、可移植的 SKILL.md 格式，跨 Claude Code/Cursor/Codex/Copilot/Gemini CLI，覆盖 Godot、Unity、Unreal 与 Web。 |
 | [**NVIDIA-BioNeMo/bionemo-agent-toolkit**](https://github.com/NVIDIA-BioNeMo/bionemo-agent-toolkit) | ![GitHub Repo stars](https://badgen.net/github/stars/NVIDIA-BioNeMo/bionemo-agent-toolkit) | NVIDIA 官方出品，用 BioNeMo skills 把任意智能体变成生命科学专家。 |
@@ -596,7 +599,9 @@ Anthropic 官方发布的关于 Agent Skills 的核心指南，是理解技术�
 | [**yzfly/awesome-design-html**](https://github.com/yzfly/awesome-design-html) | ![GitHub Repo stars](https://badgen.net/github/stars/yzfly/awesome-design-html) | **115** 个品牌主题 HTML 设计（93 网页 + 22 iOS，含 20 个中国品牌）打包成的 Claude Code skill，一行安装后直接对话「做一个飞书风的页面」（本仓库维护者 [@yzfly](https://github.com/yzfly) 出品）。 |
 | [**saidsurucu/trdizin-skill**](https://github.com/saidsurucu/trdizin-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/saidsurucu/trdizin-skill) | 检索土耳其学术库 TR Dizin（trdizin.gov.tr）的 Agent Skill：通过开放 JSON API 查论文/期刊/作者/机构，支持高级字段检索、引文与 PDF 转文本，无需浏览器、登录或 API key。 |
 | [**vaibhavarora14/job-application-agent**](https://github.com/vaibhavarora14/job-application-agent) | ![GitHub Repo stars](https://badgen.net/github/stars/vaibhavarora14/job-application-agent) | 隐私优先的求职 Agent Skill：只用可核实的简历事实、本机 OS 密钥环存个人资料、提交前需确认并记台账；兼容 Claude Code / Cursor / Codex / OpenClaw。 |
+| [**kasovy/neverapply-mcp**](https://github.com/kasovy/neverapply-mcp) | ![GitHub Repo stars](https://badgen.net/github/stars/kasovy/neverapply-mcp) | NeverApply 求职插件：3 个 Agent Skills（find-jobs / apply-to-jobs / track-applications）+ 托管 MCP server（OAuth 登录），在 Claude Code / Cursor / Gemini CLI 中搜索匹配职位、定制简历、回答筛选问题，并在你确认后投递；插件代码为 MIT 许可，托管服务另需账号并受服务条款约束。 |
 | [**vostride/agent-qa**](https://github.com/vostride/agent-qa) | ![GitHub Repo stars](https://badgen.net/github/stars/vostride/agent-qa) | 用自然语言编写并运行 Web / Android / iOS 回归测试的 QA harness，随包提供编写、失败归因与修复三个 Skill，并带 CLI 与 MCP server；源码可用许可证 FSL-1.1-ALv2 |
+| [**Jeffallan/writing-with-agents**](https://github.com/Jeffallan/writing-with-agents) | ![GitHub Repo stars](https://badgen.net/github/stars/Jeffallan/writing-with-agents) | 按 Betty Flowers「疯子、建筑师、木匠、法官」写作法拆分写作流程的 Claude Code 插件：**10** 个 Skills，主线按发散素材、选结构、定大纲、写初稿、审校五步走，每一步写明由 AI 还是作者主导，另含 SEO 写作、质量评分与多篇选题规划。 |
 
 #### 🛠️ 生态集成
 | 项目 | ⭐ Stars | 简介 |
@@ -612,6 +617,8 @@ Anthropic 官方发布的关于 Agent Skills 的核心指南，是理解技术�
 | [**getsentry/skills**](https://github.com/getsentry/skills) | ![GitHub Repo stars](https://badgen.net/github/stars/getsentry/skills) | Sentry 团队日常开发所用的官方 Agent Skills 合集。 |
 | [**google-labs-code/stitch-skills**](https://github.com/google-labs-code/stitch-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/google-labs-code/stitch-skills) | Google Labs 官方出品，配合 Stitch MCP server 使用的 Agent Skills 库，遵循 Agent Skills 开放标准，兼容 Antigravity / Gemini CLI / Claude Code / Cursor 等编码智能体。 |
 | [**vanshyadav1408/Omentir**](https://github.com/vanshyadav1408/Omentir/tree/main/plugins/omentir/skills/linkedin-outreach) | ![GitHub Repo stars](https://badgen.net/github/stars/vanshyadav1408/Omentir) | Omentir 官方出品的 `linkedin-outreach` Skill：通过 Omentir MCP 服务器做 LinkedIn 获客与外联，查找并评估潜在客户、起草消息、查看外联活动。默认只做调研和草稿，用户要求时才发送，智能体全程不登录 LinkedIn。 |
+| [**voygr-tech/placecall**](https://github.com/voygr-tech/placecall) | ![GitHub Repo stars](https://badgen.net/github/stars/voygr-tech/placecall) | PlaceCall 官方出品的 Agent Skill 与远程 MCP 服务器：让智能体给美国商家拨打真实电话（订位、预约、询价），自动应对 IVR 语音菜单、等待与转接，返回结构化结果与通话文字记录；另含 Claude Code / Codex / Cursor 插件，付费 API，提供试用额度，具体限制见服务说明。 |
+| [**Omega-JS-Stack/omega**](https://github.com/Omega-JS-Stack/omega/tree/main/agent-plugins/claude) | ![GitHub Repo stars](https://badgen.net/github/stars/Omega-JS-Stack/omega) | Omega 框架（一个项目、一个配置文件同时交付网站、后端、桌面应用和浏览器扩展）的 Claude Code 插件：14 个 `omega:*` Skills，覆盖 web、backend、desktop、extension、seo、analytics、accessibility 等，与框架代码同仓发布、随版本对齐。 |
 
 ---
 
@@ -681,6 +688,7 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**Eyadkelleh/awesome-claude-skills-security**](https://github.com/Eyadkelleh/awesome-claude-skills-security) | ![GitHub Repo stars](https://badgen.net/github/stars/Eyadkelleh/awesome-claude-skills-security) | 面向授权渗透测试、CTF 与漏洞赏金的安全工具包：精选 SecLists 字典、注入 payload 与专家级 agent。 |
 | [**DeerYang/server-security-init-skill**](https://github.com/DeerYang/server-security-init-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/DeerYang/server-security-init-skill) | 安全初始化与加固全新 Ubuntu/Debian SSH 服务器的 Agent Skill，面向防御性运维（仅用于你有权管理的服务器）。 |
 | [**morluto/rea**](https://github.com/morluto/rea) | ![GitHub Repo stars](https://badgen.net/github/stars/morluto/rea) | 内含 `reverse-engineer-anything` Skill，指导 Claude Code / Codex 通过本地 CLI 与 MCP 分析原生程序、JavaScript/Electron 和 .NET，保留证据来源与未知项；原生深度分析需自备 Hopper、Ghidra 或 IDA。 |
+| [**salemalem/npmscan-mcp-plugin**](https://github.com/salemalem/npmscan-mcp-plugin) | ![GitHub Repo stars](https://badgen.net/github/stars/salemalem/npmscan-mcp-plugin) | npm 供应链安全 Skills 与远程 MCP：5 个 Skill 指导 Claude Code / Codex / Gemini CLI 在安装或升级 npm 包前检查恶意包、已知漏洞、仿冒包名、维护者变更和安装脚本，并对依赖变更给出 PASS/WARN/FAIL 结论；连接 npmscan.com 免费的只读服务（服务端不开源）。 |
 
 ---
 
@@ -695,6 +703,7 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**alchaincyf/darwin-skill**](https://github.com/alchaincyf/darwin-skill) (达尔文.skill) | ![GitHub Repo stars](https://badgen.net/github/stars/alchaincyf/darwin-skill) | 🔧 让 Skill 无限进化：评估 → 改进 → 测试 → 保留或回滚的自我迭代机制。 |
 | [**tmstack/awesome-persona-skills**](https://github.com/tmstack/awesome-persona-skills) | ![GitHub Repo stars](https://badgen.net/github/stars/tmstack/awesome-persona-skills) | 📚 同事.skill、老板.skill、前任.skill、永生.skill…… 人物 Skill 大合集。 |
 | [**Panmax/awesome-nuwa**](https://github.com/Panmax/awesome-nuwa) | ![GitHub Repo stars](https://badgen.net/github/stars/Panmax/awesome-nuwa) | 📚 用女娲蒸馏的人物思维框架合集。 |
+| [**YannisKiefer/harvey-specter**](https://github.com/YannisKiefer/harvey-specter) | ![GitHub Repo stars](https://badgen.net/github/stars/YannisKiefer/harvey-specter) | 独立的 Harvey Specter 风格对话 Skill：按情境选择谈判、道歉、澄清或支持，附原创示例，并区分角色风格与实际建议。 |
 
 > 此外，作者还用女娲生成了乔布斯、马斯克、芒格、特朗普、Karpathy、纳瓦尔、费曼等多位人物的 `.skill`（均在 1k star 以下），完整清单见上方 awesome 列表与 [作者主页](https://github.com/alchaincyf?tab=repositories)。
 
@@ -724,6 +733,7 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**LearnPrompt/luban-skill**](https://github.com/LearnPrompt/luban-skill) (鲁班) | ![GitHub Repo stars](https://badgen.net/github/stars/LearnPrompt/luban-skill) | 「鲁班」Agent skill 打磨工坊：把「能用的 Skill」打磨成「能装、能传播、能验证、能进化」的公共资产（验料·访行·过尺·慢刨·回炉）。 |
 | [**Fokkyp/SoftwareCopyright-Skill**](https://github.com/Fokkyp/SoftwareCopyright-Skill) | ![GitHub Repo stars](https://badgen.net/github/stars/Fokkyp/SoftwareCopyright-Skill) | 中国软件著作权申请材料生成器：阅读本地项目自动生成全套 .docx 软著申请材料，全开源，无须再付费购买软著申请服务。 |
 | [**handsomestWei/patent-disclosure-skill**](https://github.com/handsomestWei/patent-disclosure-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/handsomestWei/patent-disclosure-skill) | 「中国专利.skill」：从项目文档到可交付的技术交底书，覆盖专利点挖掘、联网国知局查新、脱敏成文与自检闭环。 |
+| [**slywen/suxiaosa-shenbao**](https://github.com/slywen/suxiaosa-shenbao) | ![GitHub Repo stars](https://badgen.net/github/stars/slywen/suxiaosa-shenbao) | 科技型中小企业（科小）申报助手 Skill：辅助核对政策指标、评分与申报材料，分熟手/生手双答法，附离线算分与研发费用辅助账工具；不能保证申报结果。自定义许可仅限企业自主申报，禁止用于收费代办。 |
 | [**jwangkun/claude-for-financial-services-cn**](https://github.com/jwangkun/claude-for-financial-services-cn) | ![GitHub Repo stars](https://badgen.net/github/stars/jwangkun/claude-for-financial-services-cn) | 面向 A 股金融从业者的 63 个 Claude Skills，基于 Anthropic 官方 claude-for-financial-services 深度适配国内市场。 |
 | [**LeastBit/Claude_skills_zh-CN**](https://github.com/LeastBit/Claude_skills_zh-CN) | ![GitHub Repo stars](https://badgen.net/github/stars/LeastBit/Claude_skills_zh-CN) | Anthropic 官方 `anthropics/skills` 仓库的中文学习版，逐个 Skill 翻译讲解，适合中文用户上手官方范例。 |
 | [**chubbyguan/chubbyskills**](https://github.com/chubbyguan/chubbyskills) | ![GitHub Repo stars](https://badgen.net/github/stars/chubbyguan/chubbyskills) | 把抖音 / B 站 / 小红书 / 公众号 / X / 播客等中文全渠道内容采集进个人知识库的 13 个 AI Skill，字幕优先免 GPU，附知识库 MCP server。 |
@@ -746,6 +756,7 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**dososo/blcaptain-ppt-skill**](https://github.com/dososo/blcaptain-ppt-skill) | ![GitHub Repo stars](https://badgen.net/github/stars/dososo/blcaptain-ppt-skill) | AI 原生·单文件 HTML 演示 Skill：7 套锚定公认设计体系的视觉人格，好看（WCAG/间距/32 维审计）与诚实（反伪造）均由机器强制，零依赖。 |
 | [**nathanskill/niubiskill**](https://github.com/nathanskill/niubiskill) | ![GitHub Repo stars](https://badgen.net/github/stars/nathanskill/niubiskill) | 商业化决策 Skill：打断无收入验证的瞎忙——找到离真实收钱最近的一步，二选一（引流 / 成交），停掉一件分散精力的事，并给出 7 天证据测试。 |
 | [**zhuyep/shiji-tongjian-decisions**](https://github.com/zhuyep/shiji-tongjian-decisions) | ![GitHub Repo stars](https://badgen.net/github/stars/zhuyep/shiji-tongjian-decisions) | 史鉴人生抉择：对照《史记》《资治通鉴》原文，比较现实选择、隐性代价与类比边界；附虚构示例和引文核验工具，不作命运预测或专业决策建议。 |
+| [**danfeistar/house-skills-kit**](https://github.com/danfeistar/house-skills-kit) | ![GitHub Repo stars](https://badgen.net/github/stars/danfeistar/house-skills-kit) | 中文房产 Skills 库：按身份拆分可独立安装的技能（房开企业 / 一手案场销售 / 策划 / 二手经纪 / 渠道分销 / 购房者 / 房产自媒体），每个技能含 SKILL.md + playbook + README 三件；配套 `calc-toolkit` 35 城规则库计算工具，提供规则来源与版本记录，使用时需核对适用地区和有效期；另附品牌顾问技能模板生成器（4 类角色原型 × 31 业务模块）。不使用外部 API，纯提示词 + 本地 Python 工具。 |
 
 ---
 
@@ -777,6 +788,9 @@ GitHub 上 Star 数最高、最具话题度的单一用途 Skill。它们大多�
 | [**lognorm/lognorm-mcp**](https://github.com/lognorm/lognorm-mcp) | SEO/GEO 增长 | ![GitHub Repo stars](https://badgen.net/github/stars/lognorm/lognorm-mcp) | 托管式 MCP 服务（[lognorm.com](https://lognorm.com)），把网站的 SEO/GEO 增长待办（站点审计、修复、内容草稿、AI 可见度追踪）交给 Claude Code、Codex 和 Cursor 处理；OAuth 登录，无需 API Key，免费方案支持 1 个网站。 |
 | [**cloudishai/skills**](https://github.com/cloudishai/skills) | 部署托管 | ![GitHub Repo stars](https://badgen.net/github/stars/cloudishai/skills) | Cloudish 部署 Skill：把 Dockerfile、源码目录或容器镜像交给 Cloudish 在服务端构建（无需本地 Docker），运行为常驻容器并返回上线网址；支持持久化存储卷与加密密钥，Agent 可免注册自行创建 API 密钥，消费不超过预付额度。附 Claude Code 插件清单。 |
 | [**Kruhlikau/subagent-tuner**](https://github.com/Kruhlikau/subagent-tuner) | 子智能体调度 | ![GitHub Repo stars](https://badgen.net/github/stars/Kruhlikau/subagent-tuner) | Claude Code 的 mod：为每个子智能体选择模型和推理强度，可在启动前询问、按任务类型推荐，或用保存的默认值覆盖智能体自己指定的模型；`claude -p` 与 SDK 运行不受影响。 |
+| [**Frank-Masciopinto/ironheights**](https://github.com/Frank-Masciopinto/ironheights) | 安全扫描 | ![GitHub Repo stars](https://badgen.net/github/stars/Frank-Masciopinto/ironheights) | 开源、本地运行的 Agent Skills 安全扫描 CLI：安装前用 `npx ironheights scan <技能目录>` 检查含 `SKILL.md` 的技能是否有提示注入、读取凭据、远程执行安装与持久化等风险，适用于 Claude Code、Codex、Cursor、OpenClaw 等；只把文件当数据读取、不执行、无遥测，可输出 JSON / SARIF；默认版本检查可关闭。基于固定静态规则，未发现问题不代表绝对安全。 |
+| [**f-o-x11/deed-page-skill**](https://github.com/f-o-x11/deed-page-skill) | 部署托管 | ![GitHub Repo stars](https://badgen.net/github/stars/f-o-x11/deed-page-skill) | deed.page 发布 Skill：用一次 curl 请求把 Agent 生成的 HTML 或静态文件夹发布到公开 URL（`https://<slug>.deed.page/`），免费套餐无需注册账号；支持 Claude Code、Codex、Cursor（`npx skills add f-o-x11/deed-page-skill`）。官网 https://deed.page · 文档 https://deed.page/docs |
+| [**Aident-AI/aident-skill**](https://github.com/Aident-AI/aident-skill) | 工具接入 | ![GitHub Repo stars](https://badgen.net/github/stars/Aident-AI/aident-skill) | Aident Loadout 的官方 Agent Skill（MIT，托管服务见 [aident.ai](https://aident.ai)）：让 Claude Code、Codex 等智能体在运行时发现并调用 Gmail、Slack、Linear、Notion 等工作应用与平台工具；已连接账号由 Aident Vault 托管，执行前做成本/风险预检，每次调用留有审计记录；也可通过远程 MCP（`https://loadout.aident.ai/mcp`）接入。安装见[官方接入说明](https://aident.ai/SETUP.md)；托管服务闭源，按量付费。 |
 
 ---
 

@@ -2,18 +2,22 @@
 
 [[Blog]](https://mikhalevi.ch/rclip-an-ai-powered-command-line-photo-search-tool/) [[Demo on YouTube]](https://www.youtube.com/watch?v=tAJHXOkHidw) [[Paper]](https://www.thinkmind.org/index.php?view=article&articleid=content_2023_1_20_60011)
 
-<div align="center">
-  <img alt="rclip logo" src="https://raw.githubusercontent.com/yurijmikhalevich/rclip/main/resources/logo-transparent.png" width="600px" />
-</div>
-
 Search any folder by what its images contain. Use natural language, an example image, or both – without tagging, uploading, or importing your files into a photo library.
 
 **Local. Terminal-native. Works over SSH. Plays well with Unix tools.**
 
 ```bash
-cd ~/Photos
-rclip "two parrots on a branch"
+cd ~/images
+rclip "an orange cat"
+# score  filepath
+# 0.307  "/Users/me/images/DSC06415.JPG"
+# 0.306  "/Users/me/images/DSC03514.JPG"
+# 0.287  "/Users/me/images/DSC05871.JPG"
 ```
+
+<img alt="rclip interactive UI showing a grid of orange cat photos ranked by similarity to the query &quot;an orange cat&quot;" src="https://raw.githubusercontent.com/yurijmikhalevich/rclip/main/resources/rclip-tui.webp" />
+
+<sub>`rclip -i`. The interactive UI needs Kitty, Ghostty, or latest iTerm2; previews (`-p`) also work in Konsole. Search and scripting work in any terminal.</sub>
 
 ## Features
 
@@ -26,6 +30,7 @@ rclip "two parrots on a branch"
 - **Fast incremental indexing** – only new and changed images are reprocessed on subsequent runs.
 - **Interactive terminal UI** – search a responsive thumbnail grid without leaving the terminal.
 - **Terminal previews** – view images inline in terminals supporting Kitty graphics, such as Kitty, Ghostty, latest iTerm2, and Konsole.
+- **Scriptable** – pipe filepaths to other tools with `-f` or `-0`, or get JSON results for scripts and AI agents with `--json`.
 - **Cross-platform** – Linux, macOS (Apple Silicon), and Windows.
 
 ## Installation
@@ -160,14 +165,17 @@ Check this video out for the image-to-image search demo: https://www.youtube.com
 You can combine and subtract image and text queries; here are a few examples:
 
 ```bash
-cd photos && rclip horse + stripes
-cd photos && rclip apple - fruit
-cd photos && rclip "./new york city.jpg" + night
-cd photos && rclip "2:golden retriever" + "./swimming pool.jpg"
-cd photos && rclip "./racing car.jpg" - "2:sports car" + "2:snow"
+cd photos
+rclip horse + stripes
+rclip apple - fruit
+rclip "./new york city.jpg" + night
+rclip "2:golden retriever" + "./swimming pool.jpg"
+rclip "./racing car.jpg" - "2:sports car" + "2:snow"
 ```
 
 If you want to see how these queries perform when executed on the 1.28 million images ImageNet-1k dataset, check out the demo on YouTube: https://www.youtube.com/watch?v=MsTgYdOpgcQ.
+
+## FAQ
 
 ### Which formats does **rclip** support?
 
@@ -177,7 +185,7 @@ HEIC images are supported on macOS through Image I/O and on Windows through Wind
 Component (WIC), when the operating system has an HEIF/HEVC codec installed. rclip does not bundle
 an HEVC codec. HEIC is currently unavailable in Linux distributions of rclip.
 
-RAW formats (`arw`, `cr2`, and `dng`) are supported when you pass the `--experimental-raw-support` flag:
+RAW formats (`3fr`, `arw`, `cr2`, `cr3`, `dng`, `erf`, `iiq`, `mos`, `mrw`, `nef`, `nrw`, `orf`, `pef`, `raf`, `rw2`, and `srw`) are supported when you pass the `--experimental-raw-support` flag:
 
 ```bash
 rclip --experimental-raw-support cat
@@ -205,7 +213,7 @@ rclip -p kitty
   ```
 
   The `-0` or `--null` flag makes **rclip** print only file paths, each terminated by a NUL character, which `xargs -0` splits correctly even when paths contain spaces, quotes, or newlines. The `-f` or `--filepath-only` flag prints one path per line instead, which suits tools that read paths line by line, such as **feh**.
-  
+
   I prefer to use **feh**'s thumbnail mode to preview multiple results:
 
   ```bash
@@ -233,18 +241,18 @@ rclip --json -t 2 "search query"
 ### How does **rclip** update the index?
 
 When you run **rclip** in a directory that has already been processed, it indexes
-only the new images added since the last run and removes deleted images from its
-index. This makes consecutive runs much faster.
+only the images added or changed since the last run and removes deleted images
+from its index. This makes consecutive runs much faster.
 
-If you know no images have been added or deleted since the last run, you can use
-the `--no-indexing` (or `-n`) flag to skip indexing entirely and speed up the
-search even more.
+If you know no images have been added, changed, or deleted since the last run,
+you can use the `--no-indexing` (or `-n`) flag to skip indexing entirely and
+speed up the search even more.
 
 ```bash
 rclip -n cat
 ```
 
-### How it works
+### How does **rclip** work?
 
 **rclip** currently uses the [OpenCLIP's ViT-B/32 AI model](https://github.com/mlfoundations/open_clip/blob/55794d65a14dfc547a9ed3514145dd68ccc939e9/README.md) to generate embeddings for images and text. This enables natural-language search, similar-image search, and mixed text-and-image queries entirely on your machine. The model builds on the CLIP architecture introduced by OpenAI.
 
@@ -258,22 +266,24 @@ Run `rclip --help` (or `rclip -h`) to see this list in your terminal. The positi
 | `--add`, `-a`, `+` `QUERY` | A text query or a path/URL to an image file to add to the "original" query. Can be used multiple times. |
 | `--subtract`, `--sub`, `-s`, `-` `QUERY` | A text query or a path/URL to an image file to subtract from the "original" query. Can be used multiple times. |
 | `--top`, `-t` `N` | Number of top results to display, or search results to load per batch with `--interactive`. Default: `10`, or `100` with `--interactive`; interactive maximum: `100`. |
-| `--interactive`, `-i` | Open the interactive terminal UI and enter text queries there. Does not accept a positional query or `--add`/`--subtract`. Mutually exclusive with `--preview`, `--filepath-only`, `--null`, and `--json`. |
+| `--interactive`, `-i` | Open the interactive terminal UI and enter text queries there. Does not accept a positional query or `--add`/`--subtract`. |
 | `--force-interactive` | Force interactive mode even if the terminal is not recognized as supporting Kitty graphics with Unicode placeholders. |
-| `--preview`, `-p` | Preview results in the terminal using Kitty graphics (e.g. Kitty, Ghostty, latest iTerm2, Konsole). Mutually exclusive with `--filepath-only`, `--null`, and `--json`. |
+| `--preview`, `-p` | Preview results in the terminal using Kitty graphics (e.g. Kitty, Ghostty, latest iTerm2, Konsole). |
 | `--force-preview` | Force image previews even if the terminal is not recognized as supporting Kitty graphics. |
-| `--filepath-only`, `-f` | Output only filepaths, without scores or the header. Mutually exclusive with `--preview`. |
-| `--null`, `-0` | Output only filepaths, each terminated by a NUL character instead of a newline, for `xargs -0`. Mutually exclusive with `--preview`, `--filepath-only`, and `--json`. |
-| `--json` | Output results as a JSON array of `{"score": ..., "filepath": ...}` objects, ordered from the best match. Mutually exclusive with `--preview`, `--filepath-only`, and `--null`. |
+| `--filepath-only`, `-f` | Output only filepaths, without scores or the header. |
+| `--null`, `-0` | Output only filepaths, each terminated by a NUL character instead of a newline, for `xargs -0`. |
+| `--json` | Output results as a JSON array of `{"score": ..., "filepath": ...}` objects, ordered from the best match. |
 | `--preview-height`, `-H` `PX` | Preview height in pixels. Default: `400`. |
 | `--no-indexing`, `--skip-index`, `--skip-indexing`, `-n` | Skip updating the index. Use only when no images were added, changed, or removed since the last run. |
 | `--indexing-batch-size`, `-b` `N` | The size of the image batch used when updating the search index. Larger values may slightly improve indexing speed on some hardware but increase RAM usage. Default: `8`. |
 | `--exclude-dir` `DIR` | Directory to exclude from search. Can be used multiple times. Specifying this overrides the default of `@eaDir`, `node_modules`, `.git`, and `System Volume Information`. |
 | `--include-hidden` | Index dot-prefixed hidden files and directories (e.g. `.DS_Store`, `._IMG_1234.JPG`, `.Spotlight-V100`). Skipped by default since they are usually OS metadata rather than user files. |
-| `--experimental-raw-support` | Enable support for RAW images (`arw`, `cr2`, and `dng` are supported). |
+| `--experimental-raw-support` | Enable support for RAW images (`3fr`, `arw`, `cr2`, `cr3`, `dng`, `erf`, `iiq`, `mos`, `mrw`, `nef`, `nrw`, `orf`, `pef`, `raf`, `rw2`, and `srw` are supported). |
 | `--max-image-megapixels` `MP` | Maximum size, in megapixels, an image may have to be indexed. Larger images are skipped to avoid running out of memory on huge or maliciously crafted images. Pass `none` to disable the limit. Default: chosen automatically based on the available memory. |
 | `--version`, `-v` | Print the **rclip** version and exit. |
 | `--help`, `-h` | Show the help message and exit. |
+
+The output modes `--interactive`/`--force-interactive`, `--preview`/`--force-preview`, `--filepath-only`, `--null`, and `--json` are mutually exclusive.
 
 ## Get help
 

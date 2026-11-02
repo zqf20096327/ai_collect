@@ -3,7 +3,8 @@
 <p align="center">
   <a href="https://github.com/octrow/ollama-rename-files/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/octrow/ollama-rename-files/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/octrow/ollama-rename-files/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/octrow/ollama-rename-files"></a>
-  <img alt="Python 3.10+" src="https://img.shields.io/badge/python-3.10%2B-blue">
+  <a href="https://pypi.org/project/ollama-rename-files/"><img alt="PyPI" src="https://img.shields.io/pypi/v/ollama-rename-files"></a>
+  <a href="https://pypi.org/project/ollama-rename-files/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/ollama-rename-files"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/octrow/ollama-rename-files"></a>
 </p>
 
@@ -29,7 +30,7 @@ writers, people who dump quick notes into one inbox folder.
 - Works with any model you have installed in Ollama. Reasoning models work too: their `<think>` output is stripped.
 - The CLI can rename several files at once (`-p 4`).
 - Reads text files and the text layer of PDFs (`--ext .pdf`). Scanned PDFs without text and other
-  binary files are skipped with a reason.
+  binary files are skipped with a reason, and so are empty files.
 
 ## Install
 
@@ -56,6 +57,16 @@ powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/oct
 
 Prefer to read it first? Download [`install.sh`](install.sh) or [`install.ps1`](install.ps1), look through it, then run it.
 Run it again to update; `sh install.sh --uninstall` (or `$env:INSTALL_UNINSTALL = "1"` on Windows) removes the app.
+
+### From PyPI
+
+Already have Python 3.10+? Install it from [PyPI](https://pypi.org/project/ollama-rename-files/):
+
+```bash
+uv tool install ollama-rename-files   # or: pipx install ollama-rename-files
+```
+
+Update with `uv tool upgrade ollama-rename-files` (`pipx upgrade ollama-rename-files`).
 
 ### Standalone build
 
@@ -97,16 +108,17 @@ system GTK bindings (`python3-gi`). Windows and macOS work out of the box.
 ### Command line
 
 ```bash
-# Interactive: asks for the folder, the file pattern, the model and the context length
+# Interactive: asks for the folder, the file pattern, the model and the context length.
+# Options you pass on the command line are not asked again. Lists the files and asks before renaming.
 ollama-rename
 
-# A folder, a model and 500 characters of each file
+# A folder, a model and 500 characters of each file; asks only for the file pattern
 ollama-rename -d ~/notes/inbox -m qwen2.5-coder:7b -c 500
 
 # No prompts: every new*.txt file in the folder
 ollama-rename -a -d ~/notes/inbox --prefix new --ext .txt
 
-# Four files at a time
+# Four files at a time; asks for everything but the folder
 ollama-rename -d ~/notes/inbox -p 4
 ```
 
@@ -116,7 +128,7 @@ ollama-rename -d ~/notes/inbox -p 4
 | `--directory` | `-d`  | Folder with the files to rename.                                                |
 | `--model`     | `-m`  | Ollama model to use (default `qwen2.5-coder:7b`).                               |
 | `--context`   | `-c`  | How many characters of each file to send to the model (default 2048).           |
-| `--prefix`    |       | File name prefix to match (default `new`). Used with `--ext` as the pattern.    |
+| `--prefix`    |       | File name prefix to match (default `new`): `new` takes `new1.txt` and `new.txt`, not `newsletter.txt`. Used with `--ext` as the pattern. |
 | `--ext`       |       | File extension to match, with the dot (default `.txt`).                         |
 | `--parallel`  | `-p`  | Files renamed at the same time. 0 (default) means one by one.                   |
 
@@ -124,10 +136,12 @@ Ollama on another machine or port? Set `OLLAMA_HOST`, e.g. `OLLAMA_HOST=http://1
 
 ## How it works
 
-1. Finds the files in the folder that match the pattern (prefix and extension).
+1. Finds the files in the folder that match the pattern: the prefix as a whole word (`new` takes `new1.txt`, not
+   `newsletter.txt`) and the extension. A prefix typed in the desktop window matches any name that starts with it.
 2. Creates `backup_<timestamp>/` in that folder and copies each file there before renaming it.
 3. Sends the first `--context` characters of the file (for a PDF, of its extracted text) to your local Ollama model.
-4. Cleans the suggested name: lowercase, safe characters, at most 128 characters.
+4. Picks the name out of the reply (skipping chatter like "Here is a name:") and cleans it: lowercase, safe
+   characters, at most 128 characters. Names in any script work: `заметка-про-бэкап.txt`.
 5. Renames the file, keeping its original extension and never overwriting an existing file.
 6. Logs every action and prints which files failed and why.
 

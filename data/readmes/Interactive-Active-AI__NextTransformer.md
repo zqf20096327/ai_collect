@@ -38,11 +38,11 @@ result is an audited, file-backed record, and AI agents can research new archite
 
 ## Highlights
 
-<a href="https://interactive-active-ai.github.io/NextTransformer/docs/methods/zoo/"><img src=".github/assets/readme/card-framework-en.webp" alt="Architecture atlas: dense and sparse attention, linear memory, recurrent depth, residual paths and hybrid layers, with examples including MoBA, KDA, Ouro and AttnRes." width="100%"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/docs/methods/zoo/"><img src=".github/assets/readme/card-framework-en.webp" alt="Many architectures, one framework: attention, sparse, linear, looped, residual and hybrid models such as GQA, NSA, MoBA, GDN, KDA, Ouro, AttnRes and GDN+SWA plug into one shared trainer, data pipeline and evaluation." width="100%"></a>
 
 <a href="https://interactive-active-ai.github.io/NextTransformer/docs/protocol/overview/"><img src=".github/assets/readme/card-protocol-en.webp" alt="A fair, explicit protocol: same data, tokens, optimizer, schedule and evaluation for every model; training compute matched to within 1% and audited over the whole run." width="100%"></a>
 
-<a href="https://interactive-active-ai.github.io/NextTransformer/docs/getting-started/quick-start/"><img src=".github/assets/readme/card-scale-en.webp" alt="49B tokens of pretraining for a model with about 1.4B parameters, in 2–4 days on one 8-GPU node." width="100%"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/docs/getting-started/quick-start/"><img src=".github/assets/readme/card-scale-en.webp" alt="49B tokens of pretraining for a model with about 1.4B parameters, in 2–4 days on one 8-GPU node; 400B tokens and larger models are planned for November." width="100%"></a>
 
 <a href="https://interactive-active-ai.github.io/NextTransformer/docs/arena/task/"><img src=".github/assets/readme/card-agent-en.webp" alt="Agent-native research: hand the arena task to your agent; the full version, Arena v2, ships by November 14, 2026." width="100%"></a>
 
@@ -56,7 +56,7 @@ your browser.
 ## Results
 
 <!-- generated:leaderboard -->
-<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 31 runs, against the Dense Baseline" width="100%"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 33 runs, against the Dense Baseline" width="100%"></a>
 
 [Full leaderboard](https://interactive-active-ai.github.io/NextTransformer/docs/results/leaderboard/) · [Training replay](https://interactive-active-ai.github.io/NextTransformer/#leaderboard)
 <!-- /generated:leaderboard -->
@@ -74,7 +74,7 @@ uv pip install --no-deps --require-hashes -r requirements/linear.txt   # linear-
 **2. Prepare the data** (ClimbMix at a pinned revision, about 600 GB, plus the tokenizer and CORE bundle):
 
 ```bash
-cp site.native.example.json site.local.json        # set data_dir and resources
+cp site.native.example.json site.local.json        # set runtime_dir, resources and data_dir
 hf download karpathy/climbmix-400b-shuffle --repo-type dataset \
   --revision 915333b4f8b8684f39aeaafea600fea6f43fb703 --local-dir /path/to/climbmix-400b-shuffle
 source launch/env.sh --site-config site.local.json
@@ -93,6 +93,7 @@ launch/train.sh --config configs/baseline/dense_full.json --site-config site.loc
 Install `uv pip install accelerate==1.15.0` in the training environment. Submit one distributed job with the following per-node entry point. Map the platform's node rank, main node address and port to the three variables shown:
 
 ```bash
+export FLA_DISABLE_BACKEND_DISPATCH=1   # registered FLA Triton path (linear and hybrid methods)
 accelerate launch --config_file launch/accelerate.yaml \
   --machine_rank "$NODE_RANK" --main_process_ip "$MASTER_ADDR" --main_process_port "$MASTER_PORT" \
   -m nexttransformer.train --config configs/linear/gdn.json --site-config site.local.json \
@@ -113,11 +114,11 @@ covers smoke tests, evaluation, auditing and exporting a result.
 | Family | Models |
 |---|---|
 | <img src="https://img.shields.io/badge/Baseline-7A8288?style=flat-square" alt="Baseline"> | Dense Baseline |
-| <img src="https://img.shields.io/badge/Residual-33456E?style=flat-square" alt="Residual"> | Standard Residual · AttnRes · HC\* · mHC |
+| <img src="https://img.shields.io/badge/Residual-33456E?style=flat-square" alt="Residual"> | Standard Residual · AttnRes · HC · mHC |
 | <img src="https://img.shields.io/badge/Looped-8B5CF6?style=flat-square" alt="Looped"> | UT-ACT · Fixed Recursive · Huginn · Ouro · DeepLoop · MoR · LoopFormer · Circle Loop |
 | <img src="https://img.shields.io/badge/Sparse-E5607E?style=flat-square" alt="Sparse"> | DSA · QSA · NSA · SeerAttention-style · MoBA |
 | <img src="https://img.shields.io/badge/Linear-3F7FD9?style=flat-square" alt="Linear"> | DeltaNet · GSA + QK-norm · GLA · KDA · RetNet · ELU-Norm · GDN |
-| <img src="https://img.shields.io/badge/Hybrid-F07856?style=flat-square" alt="Hybrid"> | GDN–MHA · GDN–SWA · DeltaNet–MHA\* · KDA–MLA-NoPE\* · GDN–QSA\* · MoBA–MHA\* |
+| <img src="https://img.shields.io/badge/Hybrid-F07856?style=flat-square" alt="Hybrid"> | GDN–MHA · GDN–SWA · DeltaNet–MHA\* · KDA–MLA-NoPE · GDN–QSA\* · MoBA–MHA\* |
 | <img src="https://img.shields.io/badge/Others-D99A2B?style=flat-square" alt="Others"> | SSSL · MQA · GQA · MLA-QK · MLA-NoPE-QK |
 <!-- /generated:model-zoo -->
 

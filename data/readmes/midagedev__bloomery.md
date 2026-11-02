@@ -51,7 +51,8 @@ fast card set — see [Which coding agent](docs/agents.md#which-coding-agent).
   RAM, and the engine moves the experts it calls most onto the card while it runs. bloomery serves Muse Spark Open
   816B-A42B (225.6 GB of weights) and MiniMax-M3.1-Flash (250.1 GB, or 143.9 GB as Unsloth's 2-bit GGUF) on two cards
   with 72 GB between them. When the RAM
-  cannot hold the host's share either, Qwen3.8, GLM-5.3-Flash and DeepSeek-V4.1-Flash page the rest from NVMe.
+  cannot hold the host's share either, Qwen3.8, GLM-5.3-Flash, DeepSeek-V4.1-Flash, MiniMax-M3.1-Flash, Muse Spark
+  Open, Solar-Open2 and the Nemotron-3.5 MoE models page the rest from NVMe.
 - **Checkpoint folders as downloaded.** MiniMax-M3.1-Flash loads from its vendor's NVFP4 safetensors folder, and
   Qwen3.8 from its NVFP4 or FP4-Local folder, with no conversion and no requant. Everything else loads from GGUF.
 - **Apple Silicon.** A Metal backend serves Qwen3.6-35B-A3B and Qwen3-30B-A3B on a Mac GPU. The verified path is
@@ -199,7 +200,7 @@ These seats serve a file or a checkpoint folder on disk (`-m PATH`):
 |---|---|---|
 | `minimaxm3` | MiniMax-M3.1-Flash | the vendor's NVFP4 safetensors folder as downloaded (MiniMax-M3: unverified) |
 | `musespark` | Muse Spark Open 816B-A42B | `Muse-Spark-Open-816B-A42B-UD-IQ2_XXS-00001-of-00006.gguf` |
-| `qwen38` | Qwen3.8-Flash-Next, checkpoint folders | NVIDIA's NVFP4 folder, its routed experts split between the card and the host, or the FP4-Local folder on a card that holds every routed expert (a DGX Spark's GB10), no conversion; also `--hf nvidia/Qwen3.8-Flash-Next-NVFP4` |
+| `qwen38` | Qwen3.8-Flash-Next, checkpoint folders | NVIDIA's NVFP4 or FP4-Local folder, its routed experts split between the card and the host, no conversion; also `--hf nvidia/Qwen3.8-Flash-Next-NVFP4` |
 | `nemotron` | Nemotron 3 Nano 4B, Nemotron 3.5 Bolt 74B-A9B, Nemotron-3.5-Lightning 30B-A3B | the GGUF |
 | `solar2` | Solar-Open2-250B, two cards | the GGUF, with `--place bp` |
 | `raon1` | Raon-1-mini-preview | `raon-1-mini-preview-Q4_K_M.gguf`, its DFlash2 draft file beside it |
@@ -276,6 +277,15 @@ RAM, one request at a time at the serving defaults, greedy, 128 tokens, median o
 | Model | ~4K prompt: prefill tok/s, first token | Decode after it | Short prompt decode |
 |---|---|---|---|
 | Qwen3.6-35B-A3B `Q4_K_M`, whole on the card | 14,249, 287 ms code; 14,298, 286 ms prose | 344.1 code, 344.2 prose | — |
+
+With its MTP draft, on the same card at a power limit of 400 W (default 600 W), at `3ebdff767`: unsloth's
+`UD-Q4_K_M`, which carries the next-token layer, `BLOOMERY_DRAFT=mtp`, 4,096-id prompts, 128 greedy tokens, one request
+at a time, median of three rounds
+([`docs/numbers.md`](docs/numbers.md#rtx-5090-qwen36-35b-a3b-with-its-mtp-draft-by-juliankang4)).
+
+| Model | Prefill tok/s | Decode tok/s | First token |
+|---|---|---|---|
+| Qwen3.6-35B-A3B `UD-Q4_K_M`, MTP draft on | 8,747 | 268.2 | 470 ms |
 
 **M5 Ultra**, measured by [@avlp12](https://github.com/avlp12) at 0.3.9's Metal code
 ([#593](https://github.com/midagedev/bloomery/issues/593); conditions in [`docs/mac.md`](docs/mac.md#numbers)).

@@ -1,4 +1,4 @@
-<a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a>
+<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->
 
 <!-- <img src="docs/table-video.gif" width="900" alt="Agent! demo" /> -->
 <img width="1628" height="1152" alt="image" src="https://github.com/user-attachments/assets/5184c93a-9255-4404-98ce-44a319de109a" />
@@ -42,7 +42,7 @@ Meet the Agent! family's newest members: two cross-platform CLIs with the **exac
 
 **One app. Any AI. Total command over your Mac.**
 
-Agent! is a 100% native Swift 6.4 / SwiftUI app that wires **23 LLM providers** — Claude, Codex, OpenAI, Sidrune AI, Gemini, Grok, Mistral, Mistral Vibe, DeepSeek, Hugging Face, Z.ai, BigModel, Alibaba DashScope, Qwen, Qwen Code, Meta Muse, MiniMax, OpenRouter, Requesty, A2Agent, OrcaRouter, Ollama (cloud and local), vLLM, and LM Studio — plus on-device **Apple Intelligence** — into an autonomous task loop that actually *does things*: reads your codebase, fixes the bug, builds the Xcode project, commits the diff, drives any Mac app through the Accessibility API, runs shell commands as you or as root, texts you results over iMessage, and answers to a spoken *"Agent!"*.
+Agent! is a 100% native Swift 6.4 / SwiftUI app that wires **23 LLM providers** — Claude, Codex, OpenAI, <!-- Sidrune AI, -->Gemini, Grok, Mistral, Mistral Vibe, DeepSeek, Hugging Face, Z.ai, BigModel, Alibaba DashScope, Qwen, Qwen Code, Meta Muse, MiniMax, OpenRouter, Requesty, A2Agent, OrcaRouter, Ollama (cloud and local), vLLM, and LM Studio — plus on-device **Apple Intelligence** — into an autonomous task loop that actually *does things*: reads your codebase, fixes the bug, builds the Xcode project, commits the diff, drives any Mac app through the Accessibility API, runs shell commands as you or as root, texts you results over iMessage, and answers to a spoken *"Agent!"*.
 
 No NPM, no Electron, no subscription, no telemetry. Bring your own API key, run fully local, or run free on Apple Intelligence. Every Swift package it depends on was written by the same author. See [Backstory](#backstory) below.
 
@@ -138,11 +138,13 @@ Just type what you want. Agent! figures out how and makes it happen.
 
 ### Sponsors
 
-<a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a>
+<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->
 
+<!--
 | Logo | Sponsor | &nbsp;&nbsp;&nbsp;Level&nbsp;&nbsp;&nbsp; | |
 |:---:|---|:---:|---|
 | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/sidrune-logo-white.svg"><img src="docs/sponsors/sidrune-logo.svg" width="200" alt="Sidrune AI logo" /></picture></a> | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><b>Sidrune&nbsp;AI</b></a> | <img src="docs/badges/sponsor-silver-offset.svg" width="66" height="29" alt="Silver" /> | One API for GPT, Claude and other leading AI models. [Sign up and get $3 in API credits](https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP) (Promo code `SDRAGENTLOOP`). |
+-->
 
 ## Sponsoring
 
@@ -156,7 +158,6 @@ Companies and LLM providers who want to support the project: see [docs/SPONSORSH
 | **Apple Intelligence** | | Free, on-device | Triage, summaries, token compression (brain icon, not available on the provider picker) |
 | **Claude** | | Per-token (API key) or subscription (OAuth) | Long autonomous tasks, extended thinking, prompt caching |
 | **Codex** | | ChatGPT subscription | OpenAI models via ChatGPT OAuth — no API key, no per-token charges |
-| <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><b>Sidrune&nbsp;AI</b></a> | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/sidrune-logo-white.svg"><img src="docs/sponsors/sidrune-logo.svg" width="110" alt="Sidrune AI logo" /></picture></a> | Paid (API credits) | One API for GPT, Claude and other leading AI models; $3 credit with promo `SDRAGENTLOOP` |
 | **DeepSeek** | | Cheap | Budget coding, cache-hit reporting |
 | **Google Gemini** | | Paid (free tier) | Long context, vision |
 | **Grok** (xAI) | | Paid | Real-time info |
@@ -174,6 +175,7 @@ Companies and LLM providers who want to support the project: see [docs/SPONSORSH
 | **Qwen Code** | | Subscription | Alibaba Coding Plan (`sk-sp-` key): qwen3-coder-plus, qwen3.7-plus, GLM-5, Kimi K2.5, MiniMax-M2.5 |
 | **Requesty** | | Paid | 300+ models via one OpenAI-compatible key; per-model pricing and capability metadata |
 | **Z.ai** / **BigModel** | | Cheap | GLM-5.3 — recommended starting point |
+<!-- | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><b>Sidrune&nbsp;AI</b></a> | <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/sponsors/sidrune-logo-white.svg"><img src="docs/sponsors/sidrune-logo.svg" width="110" alt="Sidrune AI logo" /></picture></a> | Paid (API credits) | One API for GPT, Claude and other leading AI models; $3 credit with promo `SDRAGENTLOOP` | -->
 
 > 💡 Self-hosted providers are free only in the API-fee sense — a usable 30B+ model needs an M2/M3/M4 Ultra Mac Studio (64–128GB). Without that hardware, the cheap cloud paths above are dramatically cheaper.
 
@@ -372,7 +374,7 @@ Your files, screen contents and personal data never leave your Mac — cloud pro
 | `⌘ ⇧ M` / `⌘ ⇧ P` | Messages Monitor / Settings |
 | `⌘ ⇧ K` `L` `H` `J` `U` | Clear all / LLM panel / prompt history / task history / token counters |
 
-, `/auto …`.
+Slash commands run locally: `/clear [log|all|llm|history|tasks|tokens]`, `/memory [show|clear|edit|<text>]`, `/auto …` (see below).
 
 ### Auto-pilot (`/auto`)
 
@@ -391,8 +393,6 @@ Runs the task loop in unattended cycles — on the main tab or any LLM tab — u
 
 Each cycle is a normal task; its summary is appended to `.agent/autopilot/progress.md` and fed into the next cycle's prompt. The LLM ends the session by starting its final summary with `AUTOPILOT: GOAL REACHED`. Cycles that end with no summary (errors, cancellations) never end the session — the next cycle just waits longer (15s, 30s, 60s… up to 5 min). `/auto` commands are recorded in prompt history (arrow-up) and goals are saved to the `/auto history` list. Active sessions survive app restarts: quitting (or a crash) pauses them, and on the next launch each one resumes on its tab with the next cycle.
 
-Slash commands run locally: `/clear [log|all|llm|history|tasks|tokens]`, `/memory [show|clear|edit|<text>]`.
-
 ## FAQ
 
 **Do I need to know how to code?** No — plain English (or your native language).
@@ -405,6 +405,22 @@ More: [docs/FAQ.md](docs/FAQ.md) · [Technical Architecture](docs/TECHNICAL.md) 
 ## Backstory
 
 Agent! is the result of three years of building agentic AI apps — ANIE, Game Changer, BattleScript, XCF MCP Server and Client, D1F, and about eight original Swift packages. The missing piece was an intelligent autonomous loop; once achieved, the best of those projects came together into Agent!. It has written video games ([Boss-Man](https://github.com/AgentiLoop/bossman)), created apps, written poetry into Pages via AppleScript, generated disk images and attached them to GitHub releases. Where Claude Code relies on ~65 third-party NPM packages, Agent! is 100% native, uses very little RAM, and ships Xcode automation, Swift Syntax 6.2 analysis, Accessibility, AppleScript, AgentScript/ScriptingBridge, Safari automation and MCP support out of the box.
+
+## Reverse Engineering with Agent!
+
+![Agent! 1.1.95](docs/agent-1.1.95-screenshot.png)
+
+Agent! is also a reverse-engineering workbench. It reads disc images and ROMs, writes the extraction tools, studies the decompiled code, and rebuilds the game in the browser while checking its work against the original data. Four racing games and one fighting game were built this way:
+
+| Game | What Agent! did | Play |
+|---|---|---|
+| 🚕 [CrazyTaxi](https://github.com/AgentiLoop/CrazyTaxi) | Three.js rebuild of the Sega Dreamcast *Crazy Taxi* (USA). Python tools pull the courses, vehicles, characters, motions and audio from your own disc. Collision code is ported from the decomp and checked against the extracted course data | Bring your own disc |
+| 🍄 [MarioKart64JS](https://github.com/AgentiLoop/MarioKart64JS) | Mario Kart 64 rebuilt in Three.js, not emulated. Courses, karts, music and voices come from the original N64 ROM, with all 16 courses, battle arenas, 15 items, HD textures and online play | [mk64js.gokart.games](https://mk64js.gokart.games/play) |
+| 🏎️ [F1](https://github.com/AgentiLoop/F1) | Open-wheel racer with an AI field on 18 real circuits. Layouts, elevation and banking are rebuilt from real car positions and telemetry from the OpenF1 API | [f1.gokart.games](https://f1.gokart.games) |
+| 🏁 [GoKart](https://github.com/AgentiLoop/GoKart) | Original Godot 4 kart racer that recreates Mario Kart 64's rules (slipstream, engine classes, Grand Prix scoring, menus, music cues) with everything generated from code, plus online multiplayer | [gokart.games](https://gokart.games) |
+| 🦇 [BvS](https://github.com/AgentiLoop/bvs) | Batman v Superman, a Three.js 3D fighting game where every pixel is drawn from code: no model files, textures or audio samples | [bvs.agentiloop.ai](https://bvs.agentiloop.ai/) |
+
+No game assets are in any of these repos. CrazyTaxi and MarioKart64JS need your own copy of the game. All are fan-made for personal and educational use.
 
 ## The Agent! family
 
@@ -434,11 +450,9 @@ Star History
  </picture>
 </a>
 
-## 
-
 ## Contributing
 
-See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) — build from source in ~5 minutes with `./build.sh`, no developer account needed. Pull requests run the CI Build & Test workflow and require a one-time [CLA signature](./CLA.md). Check the [good first issues](https://github.com/AgentiLoop/Agent/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) — build from source in ~5 minutes with `./build.sh`, no developer account needed. Pull requests run the CI Build & Test workflow and require a one-time [CLA signature](./.github/CLA.md). Check the [good first issues](https://github.com/AgentiLoop/Agent/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
 ## License
 
@@ -479,4 +493,4 @@ See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) — build from source in ~5 min
 
 ---
 
-<a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a>
+<!-- <a href="https://fluxionai.space/register?source=github&campaign=github-sidrune-agentiloop-agent&promo=SDRAGENTLOOP"><img src="docs/sponsors/sidrune-ai-silver-ad.svg" width="900" alt="Sidrune AI, Silver Sponsor: One API for GPT, Claude and other leading AI models. Sign up and get $3 in API credits." /></a> -->

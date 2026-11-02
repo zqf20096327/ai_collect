@@ -23,7 +23,7 @@
 <br />
 
 <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square&labelColor=18181b&color=6172f3" alt="MIT License" /></a>
-<a href="#skills"><img src="https://img.shields.io/badge/skills-13-blue?style=flat-square&labelColor=18181b&color=8b5cf6" alt="13 Skills" /></a>
+<a href="#skills"><img src="https://img.shields.io/badge/skills-14-blue?style=flat-square&labelColor=18181b&color=8b5cf6" alt="14 Skills" /></a>
 <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/Claude_Code-compatible-blue?style=flat-square&labelColor=18181b&color=d4a574" alt="Claude Code" /></a>
 <a href="https://github.com/emotixco/claude-skills-founder/stargazers"><img src="https://img.shields.io/github/stars/emotixco/claude-skills-founder?style=flat-square&labelColor=18181b&color=6172f3" alt="GitHub Stars" /></a>
 <a href="https://www.skillsdirectory.com/skills/emotixco-validate-idea"><img src="https://www.skillsdirectory.com/api/skills/emotixco-validate-idea/badge" alt="Security grade A on Skills Directory" /></a>
@@ -35,7 +35,9 @@
 > [!NOTE]
 > Most Claude Code skill packs are developer tools: code review, git workflows, security audits. **This one is for the founder sitting in a repo at 2am**, trying to figure out if their idea is worth building.
 
-We built these at [Emotix](https://emotix.co?utm_source=github&utm_medium=oss&utm_campaign=claude-skills-founder) while running our own startup. They encode the frameworks, questions, and patterns we wish we had on day one.
+We built these at [Emotix](https://emotix.az?utm_source=github&utm_medium=oss&utm_campaign=claude-skills-founder) while running our own startup. They encode the frameworks, questions, and patterns we wish we had on day one.
+
+**See it work before you install anything.** [`examples/`](./examples/) holds five ideas run end to end, with every file the runs produced and nothing edited, including the one the skills told us to kill. [`evals/`](./evals/) measures the skills against plain Claude and publishes where they make no difference.
 
 <br />
 
@@ -80,6 +82,7 @@ We built these at [Emotix](https://emotix.co?utm_source=github&utm_medium=oss&ut
 | `/pitch-deck` | 12-slide outline with per-slide content |
 | `/fundraise-prep` | Readiness assessment + investor targeting + 12-week timeline |
 | `/metrics-dashboard` | The 5 metrics that actually matter at your stage |
+| `/status` | Where the company stands, read back from the `founder/` folder |
 
 </td>
 </tr>
@@ -172,6 +175,12 @@ Open Claude Code and type any skill with your context:
 > /founder:pitch-deck Pre-seed raise, $500K, AI competitor analysis for founders, 200 beta users, $2K MRR
 ```
 
+Later, when the folder has something in it:
+
+```bash
+> /founder:status
+```
+
 Run a skill with no input and it asks for what it needs.
 
 > [!IMPORTANT]
@@ -184,9 +193,9 @@ Run a skill with no input and it asks for what it needs.
 
 ## Examples
 
-[`examples/restaurant-inventory/`](./examples/restaurant-inventory/) has unedited output from three skills run in sequence on one idea, including the `founder/` files they wrote. Read it before installing to see what you get.
+[`examples/`](./examples/) has five ideas run end to end, with every file the runs produced and nothing edited: a UK physiotherapy SaaS, an office coffee subscription in Baku, a solo developer's puzzle game, a restaurant inventory tool, and one idea the skills told us to kill. Each one lists what it cost and which of its cited links are dead. Read it before installing to see what you get.
 
-[`evals/`](./evals/) tests the plugin against plain Claude with `claude plugin eval`. The honest summary of the latest run: on Opus 5, 8 of 10 cases score the same with and without the plugin, because the model already keeps the placeholders and reads the saved files on its own. The exception is what happens when a new number contradicts a saved one: only the plugin updates `founder/facts.md`, so the next session doesn't inherit the stale figure. On Haiku 4.5 the plugin scores higher on 3 of the 10, the skills often need calling by name, and the shared rules file goes unread, so most of these rules never reach a Haiku session. Full numbers, including per-run cost, are in [`evals/README.md`](./evals/README.md).
+[`evals/`](./evals/) tests the plugin against plain Claude with `claude plugin eval`, and [`evals/benchmark.md`](./evals/benchmark.md) carries the scheduled re-runs, including the cases where the plugin loses. The honest summary, measured on 2026-10-07 across the 10 cases the suite held then: on Opus 5, 8 of those 10 scored the same with and without the plugin, because the model already keeps the placeholders and reads the saved files on its own. The exception is what happens when a new number contradicts a saved one: only the plugin updates `founder/facts.md`, so the next session doesn't inherit the stale figure. On Haiku 4.5 the plugin scored higher on 3 of the 10, the skills often need calling by name, and the shared rules file goes unread, so most of these rules never reach a Haiku session. Full numbers, including per-run cost, are in [`evals/README.md`](./evals/README.md).
 
 <br />
 
@@ -299,6 +308,15 @@ Interview script that follows The Mom Test: no leading questions, no hypothetica
 <br />
 
 Defines exactly 5 metrics tailored to your stage (not 15 vanity metrics). Each has a definition, target, and specific action if below target. Weekly review template + investor-ready benchmarks.
+
+</details>
+
+<details>
+<summary><strong>/status</strong> · where things stand</summary>
+
+<br />
+
+Reads the `founder/` folder and answers "where are we" in one screen: what each skill decided and how long ago, the facts on record, what is still open, what has gone stale, and which skill to run next. It writes nothing, and it says nothing the folder does not say.
 
 </details>
 

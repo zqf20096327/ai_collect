@@ -84,6 +84,14 @@ flowchart LR
 
 Android 10 及以上，arm64-v8a；安装包约 110 MB，建议预留 500 MB 可用空间；需要能访问 DeepSeek API。
 
+## 安装失败怎么办
+
+- **提示“安装包没有签名文件”或“未签名”**：v0.3.5 起安装包同时带 v1、v2、v3 三种签名，请换用 v0.3.5 及以后的版本。之前的版本只有 v2 签名，部分国内手机的安装器、文件管理器和应用商店不认。
+- **“解析失败”“解析包出现问题”**：多半是安装包没下完整，或者经过微信、QQ 转发后被改了名（比如变成 `.apk.1`）。从 Releases 重新下载，核对 SHA-256 与发布说明一致后再装。
+- **“与已安装应用签名不一致”**：手机上装的是自己编译的或别处来的版本，签名和正式版不同。先卸载再装（会清除 App 数据）。
+- **“不兼容”“与设备不兼容”**：本 App 只支持 Android 10 及以上的 arm64-v8a 手机。
+- **提示“已屏蔽有害应用”**：见下一节。
+
 ## 安装时提示“已屏蔽有害应用”
 
 DSH-Android 不在 Google Play 上分发，又用到了无障碍、通知读取、短信等能力，Google Play 保护机制可能把它误判为有害应用。核对过下载的 APK 和发布说明里的 SHA-256 一致后，可以这样安装：
@@ -137,6 +145,18 @@ tools/      字符串、图标、README 首图（tools/ui/hero.py）、App 内�
 update/     latest.json：App 内更新读取的最新版本清单（docs/RELEASE.md）
 docs/       架构说明、引擎契约、设计 token、截图
 ```
+
+</details>
+
+<details>
+<summary><b>翻译 / 添加界面语言</b></summary>
+
+`app/src/main/res/values/` 是中文（默认），`values-en/` 是英文。添加一种语言只需两步：
+
+1. 新建 `app/src/main/res/values-<语言代码>/`，复制 `values-en/` 下的全部 `strings*.xml` 并翻译（lint 的 MissingTranslation 会报漏翻的条目）；
+2. 在 `app/src/main/res/xml/locales_config.xml` 里加一行 `<locale android:name="<语言代码>" />`。
+
+设置 → 通用 → 语言 的选项和 Android 13+ 系统设置里的“应用语言”都读这份列表，不用改代码；单元测试 `LocalesConfigTest` 会检查两者一致。引擎拿到的语言（`DSH_ANDROID_LOCALE`）跟随 App 语言。
 
 </details>
 

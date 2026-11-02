@@ -31,7 +31,9 @@ This repository is a short block you paste into your agent's config, plus a
 catalogue of the behaviours it is meant to stop. It works with **Claude Code**,
 **Codex**, **Antigravity**, **Cursor**, **GitHub Copilot**, **Windsurf** and
 **Gemini CLI** — anything that loads a config file without being asked. There is
-nothing to install.
+nothing to install for those rules. For long-running Codex Goals, the optional
+[Goal Pulse skill](skills/goal-pulse/README.md) enables execution reminders by
+default when you start or resume a Goal after installing it.
 
 > 🧬 *Generalised out of [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) (~13.7k★), whose cross-model reviewer is genuinely good — and also spent a measurable share of its output proposing hashes nobody reads. HERO keeps the value and drops the tax.*
 
@@ -44,6 +46,7 @@ nothing to install.
 | **[`RULES.md`](RULES.md)** | The contract, in English and Chinese, plus the three places the line is genuinely hard to draw. |
 | **[`cases/`](cases/README.md)** | Observed behaviours: what was asked, what the agent did, why it is disproportionate, what proportionate looks like. **You do not paste this in** — it is what you quote back when the agent argues. |
 | **[`hosts/`](hosts/README.md)** | Where to paste it — Claude Code, Codex, Antigravity, Copilot, Cursor, Windsurf, Gemini CLI. |
+| **[`Goal Pulse`](skills/goal-pulse/README.md)** | Codex skill and timer: once installed, enabled by default for Goal starts and resumes; collect finished work and tackle recurring blockers every 30 minutes. |
 | **[`examples/`](examples/)** | Optional, and not part of HERO. Real `AGENTS.md` / `CLAUDE.md` files contributors wrote for **their own projects** and shared so you can see how they adapted the ideas. Not HERO variants, and not the [short version](RULES.md#the-short-version) — their thresholds are theirs. Borrow the approach, not the file. |
 
 ---
@@ -52,6 +55,20 @@ nothing to install.
 
 Only things that change what you should do. Not rewording, not layout — a
 changelog of everything buries the one line that mattered.
+
+- **2026-11-01** — **Goal Pulse for Codex.** Once installed, the [skill and local timer](skills/goal-pulse/README.md) activates by default when you start or resume a Goal, reminding the main agent to collect finished work and tackle recurring blockers. Bilingual reminders run every 30 minutes; paused Goals stay silent. The core HERO block is unchanged.
+
+  Full Chinese reminder sent by the timer:
+
+  > 中文：以最快的有效速度持续推进当前 Goal，不允许磨洋工、偷懒、空转，或拿计划和汇报代替执行。
+  >
+  > worker/子代理一交付完整产物，立即读取、核验，并推进到下一项已授权的验收或交接步骤，不得搁置或等整批。
+  >
+  > 同一卡点连续两轮无实质进展，主代理立即接管具体缺口或重新拆分，同时推进其它独立任务。
+  >
+  > 复用已有成果与有效验证，砍掉重复检查、无收益的 corner case 和包装。
+  >
+  > 不得降低原目标、难度和验收标准，不得越过授权和预算；直接行动，无需专门回复本提醒。
 
 - **2026-09-03** — ![BLOCK](https://img.shields.io/badge/BLOCK-2E7D32?style=flat-square) 📣 **Rule 7 gains the press-release principle — re-paste it.** A paper is a launch, not a progress report: lead with the strongest result; an unfavorable number that is a tradeoff is explained as one, one that is not is stated plainly, and either way it stays in the table — never narrated as a defeat. Adopted from [anti-defensive-writing-Skill](https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill) by [@Adkid-Zephyr](https://github.com/Adkid-Zephyr), which works the principle out in full for papers.
 - **2026-09-02** — ![BLOCK](https://img.shields.io/badge/BLOCK-2E7D32?style=flat-square) 🏃 **The block changed — re-paste it.** Rule 8: momentum is part of the deliverable — when several options are reasonable, pick one and note the tradeoff instead of handing back a menu. Rule 7 now also bans process traces: intermediate errors, abandoned approaches and AI-assistance markers are not content; rule 9 spells that out in full. Both distilled from a working ML researcher's config — the [original](examples/ml-research-daily-driver.zh-CN.md) is in `examples/`. New sibling named: stalling.
@@ -158,7 +175,7 @@ block at the end.
 — same nine rules, no worked examples, about half the size. The examples are what
 does the calibrating, so take the full block if you have the room.
 
-**That is the whole install.** There is no setting that points at
+**That is the whole install for the core rules.** There is no setting that points at
 [`cases/`](cases/README.md) and nothing else to configure — the catalogue is not
 loaded by your agent, [on purpose](cases/README.md#how-to-use-this). It is what
 *you* quote back, by ID, when the agent insists some hardening is necessary.
@@ -298,7 +315,7 @@ not who hit it.
 **Claude Code · Codex · Antigravity · Cursor · GitHub Copilot · Windsurf · Gemini CLI**
 — and anything else that loads a config file without being asked.
 
-There is nothing to install and no version to track. The block is plain text in
+The core rules need no installation or runtime version. The block is plain text in
 whichever file your agent loads without being asked, so a host this list has
 never heard of works the same way. Codex and Antigravity both read `AGENTS.md`,
 so one file serves both. See [`hosts/`](hosts/README.md) for the exact filename

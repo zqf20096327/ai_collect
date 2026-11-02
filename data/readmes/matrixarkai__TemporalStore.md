@@ -11,7 +11,7 @@ Keys are time-ordered, writes are append-structured, and every workload below is
 temporal index rather than from several stores that each keep their own idea of time. It runs
 locally with one Docker command and scales out to a replicated, shared-storage cluster.
 
-**Every figure on this page is measured, and carries its denominator and its conditions** — store
+**Every figure on this block is measured, and carries its denominator and its conditions** — store
 size, routing range, payload size, node count. Each one names what reproduces it, and all of them
 were re-measured on `main` for this document except the one that says it was not. Where a limit is
 real it is stated plainly, and [What this store is bad at](#what-this-store-is-bad-at) is a section
@@ -54,7 +54,7 @@ the retained length. One append is hard-capped at 100,000 points. Whole-key TTL
 128 in-memory buckets and 8 on-store buckets a round, so expiry never becomes an unbounded scan.
 
 **What the tail costs.** The term that grows with the shard is the resident index. Measured on the
-shipped routing range `0..1023`, one shard, single-page records:
+shipped routing range `0..1023`, one shard, single-block records:
 
 | keys in the shard | resident index | per key |
 |---:|---:|---:|
@@ -75,7 +75,7 @@ This is the case where per-key overhead decides whether the design is affordable
 given rather than an adjective.
 
 **Resident index per key: 39.4 B at 20,000 keys in one shard** (shipped routing range `0..1023`,
-single-page string records). It *falls* with key count — 86.3 B/key at 2,000, 50.6 at 8,000 —
+single-block string records). It *falls* with key count — 86.3 B/key at 2,000, 50.6 at 8,000 —
 because the per-bucket rows are shared by every key that lands in the bucket. Quoting a per-key
 figure without its key count therefore means nothing here.
 
@@ -97,15 +97,15 @@ the rounding is exactly what a change of container shape moves:
 whole-keyspace column is the arm where every key lands alone in its own bucket by construction.*
 
 **At a matched denominator** — same corpus, same 256 B values, one shard, weighing the whole
-resident shard state rather than the index alone — the shipped range costs **316.3 B/key at 8,000
-keys (marginal 274.5 B/key)** against **472.6 B/key at 2,000 keys (marginal 468.0 B/key)** on the
+resident shard state rather than the index alone — the shipped range costs **281.2 B/key at 8,000
+keys (marginal 238.0 B/key)** against **447.4 B/key at 2,000 keys (marginal 438.7 B/key)** on the
 whole keyspace. *(`where_the_resident_index_bytes_go_on_both_routing_ranges`.)*
 
 **The per-key figure is a sawtooth, and that is a property of the measurement.** The hash table
 behind a per-key map is a step function of the key count, so dividing by keys gives a sawtooth that
-doubles the moment the table does: the string table measures **46.9 B/key at 1,792 keys and 93.3
-B/key at 1,800** — 1.99x for eight more keys — while the whole resident index steps 414.1 → 460.7
-B/key (1.113x), diluted by the per-bucket rows that do not move.
+doubles the moment the table does: the string table measures **74.3 B/key at 1,792 keys and 147.9
+B/key at 1,800** — 1.99x for eight more keys — while the whole resident index steps 362.0 → 435.9
+B/key (1.204x), diluted by the per-bucket rows that do not move.
 *(`the_per_key_index_figure_is_a_sawtooth`.)*
 
 **Limits.** A store records the routing range it was built on and **refuses** to load under a
@@ -342,7 +342,7 @@ embedding model means re-embedding the corpus.
 
 ## What this store is bad at
 
-A page that only lists what works is less useful than one that does not.
+A block that only lists what works is less useful than one that does not.
 
 - **Writes scale sublinearly with concurrency, and the cost comes back as latency.** On the durable
   shared-storage write path, 400 writes a run on one box: **471 writes/s at 2 concurrent writers,
@@ -457,7 +457,7 @@ cargo run -p temporalstore-rust --bin storage_modes_harness
 cargo run -p temporalstore-rust --bin raft_secondary_replication_harness
 ```
 
-Reproducing the figures on this page: the byte and allocation measurements need the counting
+Reproducing the figures on this block: the byte and allocation measurements need the counting
 allocator, which is a Cargo feature and test-only, and they are `#[ignore]`d because they seed
 stores and weigh them — so they run by name:
 

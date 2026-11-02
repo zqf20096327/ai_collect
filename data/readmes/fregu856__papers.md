@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-01] [paper610]
+- Interpretable Deep Learning Maps Spatial Morphological Phenotypes to HCC and LUAD Survival
+ [[pdf]](https://www.cell.com/cell-reports-medicine/fulltext/S2666-3791(26)00543-4) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Interpretable%20Deep%20Learning%20Maps%20Spatial%20Morphological%20Phenotypes%20to%20HCC%20and%20LUAD%20Survival.pdf)
+- `Cell Reports Medicine, 2026`
+- [Computational Pathology]
+```
+Fairly interesting paper. I think the overall approach could make sense, to use hand-crafted features, feel like that could be good when you don't have a lot of data. But, all these results are based on small cohorts (HCC: 330 for discovery and 151 for validation, LUAD: 285 and 301), and I'm not sure if the biomarkers in Figure 7 really would generalize to truly external data, large datasets etc. The results in Figure 2.A also seem a bit odd, as CLAM-UNI and CLAM-Res50 have very similar performance.
+```
+
+##### [26-11-01] [paper609]
+- Multiscale Confidence Quantification for Virtual Spatial Transcriptomics with UTOPIA
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.03.01.708850v1) [[annotated pdf]](https://drive.google.com/file/d/12WL7Pw2HwCYAHe59lnJaWTI8booOeaZW/view?usp=sharing)
+- `biorxiv, 2026-03`
+- [Computational Pathology]
+```
+Interesting, but I was quite confused by this. They're not doing what I thought they're doing, they are not estimating predictive uncertainty for the continuous gene-expression values, their confidence is just confidence for binary detection of non-zero / above-threshold expression. I see how this also could be useful, false-positive control and for finding regions where certain genes are expressed, but it's not as general as what it sounds like in some of their claims. Also, the references section seems to be missing in this version of the paper, which is a bit annoying.
+```
+
 ##### [26-10-31] [paper608]
 - Toxicity Assessment in Preclinical Histopathology via Class-Aware Mahalanobis Distance for Known and Novel Anomalies
  [[pdf]](https://www.nature.com/articles/s41598-026-56510-9) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Toxicity%20Assessment%20in%20Preclinical%20Histopathology%20via%20Class-Aware%20Mahalanobis%20Distance%20for%20Known%20and%20Novel%20Anomalies.pdf)
@@ -1062,26 +1080,4 @@ Interesting paper, made me think quite a lot, in a good way. Would probably have
 
 ##### [25-07-31] [paper493]
 - TabLLM: Few-shot Classification of Tabular Data with Large Language Models
- [[pdf]](https://arxiv.org/abs/2210.10723) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/TabLLM%20Few-shot%20Classification%20of%20Tabular%20Data%20with%20Large%20Language%20Models.pdf)
-- `AISTATS 2023`
-- [Language Models]
-```
-Well written and fairly interesting paper. Things are clearly explained, Figure 1 illustrates what they do in a good way. Interesting to see this general method, that standard tabular data can be converted into text and fed as input to LLMs for classification tasks, and that this works quite well compared to standard, especially for few-shot settings. But then I lost interest a bit when getting to the detailes results and discussion etc.
-```
-
-##### [25-07-30] [paper492]
-- Large Language Models Lack Essential Metacognition for Reliable Medical Reasoning
- [[pdf]](https://www.nature.com/articles/s41467-024-55628-6) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Large%20Language%20Models%20Lack%20Essential%20Metacognition%20for%20Reliable%20Medical%20Reasoning.pdf)
-- `Nature Communications, 2025`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Well written and quite interesting paper. Nothing super special, but solid, I quite enjoyed reading it, I think it gave a pretty good introduction to these type of issues in LLMs. Quite interesting that GPT-4o actually is capable of outputting a confidence scores which are relatively accurate.
-```
-
-##### [25-07-29] [paper491]
-- Foundation Models for Clinical Records at Health System Scale
- [[pdf]](https://arxiv.org/abs/2507.00574) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Foundation%20Models%20for%20Clinical%20Records%20at%20Health%20System%20Scale_2.pdf)
-- `ICML Workshops 2025`
-- [ML for Medicine/Healthcare], [EHRs]
-```
-Fairly interesting paper, just 4 pages long. Impressive dataset with 1.29 million unique pat
+ [[pdf]](h
