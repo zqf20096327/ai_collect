@@ -4583,5 +4583,84 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "skyphusion-labs/postern": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 19,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-08",
+  "sec_ids": [
+   "GHSA-xgxm-vjfc-9444(-,high)"
+  ],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 37,
+   "Go": 9,
+   "HTML": 3,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "azrinaldi/zcode-bridge": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "Kreqzxoo/Yume-Companion": {
+  "rel_ver": "v3.0.0-beta13",
+  "rel_pub": "2026-10-28",
+  "rel_days": 5,
+  "rel_n90": 4,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "JavaScript": 35,
+   "Kotlin": 3,
+   "C#": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

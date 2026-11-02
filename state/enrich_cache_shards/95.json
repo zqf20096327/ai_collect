@@ -5675,5 +5675,51 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "Alpha-Park/genpark-personal-agent-respiratory-co2-tolerance-bolti-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "rizagp/arcinferzero": {
+  "rel_ver": "windows",
+  "rel_pub": "2026-10-31",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 73,
+   "C": 9,
+   "HTML": 7,
+   "PowerShell": 6,
+   "Python": 2
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

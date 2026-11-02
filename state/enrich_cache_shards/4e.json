@@ -4456,5 +4456,52 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "shariqriazz/pi-power-pack": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "outerreaches/talkcad": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "OpenSCAD": 3,
+   "JavaScript": 1,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

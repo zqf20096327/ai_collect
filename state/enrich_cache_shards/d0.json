@@ -3734,5 +3734,48 @@
    "contrib": "20261030",
    "lang": "20261030"
   }
+ },
+ "novintriantonius/vintrix": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "Shell": 1,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "SoroushSoleimani/Persian-TTS-using-Neural-Persian-G2P-module": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

@@ -4420,5 +4420,55 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "khaled-dragon/Waey": {
+  "rel_ver": "v1.4.10",
+  "rel_pub": "2026-10-17",
+  "rel_days": 16,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 54,
+   "TypeScript": 37,
+   "CSS": 9,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "SalvatoreCampagnese/unslop-skill": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

@@ -4120,13 +4120,16 @@
    "Python": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261102"
+  },
+  "commit_90d": 246,
+  "commit_7d": 70
  },
  "ice-wocker/frontier-knowledge-base": {
   "rel_ver": "v2026.10.0",

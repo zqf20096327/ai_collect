@@ -1694,13 +1694,16 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261102"
+  },
+  "commit_90d": 2867,
+  "commit_7d": 59
  },
  "AspadaX/tiny-llm": {
   "rel_ver": null,
@@ -3827,6 +3830,52 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "liamseddaoui/FAMILY_RAG": {
+  "rel_ver": "v2.7",
+  "rel_pub": "2025-12-26",
+  "rel_days": 311,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "HTML": 27,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-microbiome-fiber-diversity-index-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

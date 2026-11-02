@@ -91,7 +91,7 @@
  },
  "onnx/models": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -103,10 +103,10 @@
    "Jupyter Notebook": 98,
    "Python": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3626,6 +3626,46 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-hrv-autonomic-recovery-readiness-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "EagleRanger/windows-app-automation-skills": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 4,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

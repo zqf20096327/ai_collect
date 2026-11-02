@@ -4752,5 +4752,60 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "alphaparkinc/genpark-personal-agent-caffeine-adenosine-pharmacokinetics-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "studiomoob/llmoobfs": {
+  "rel_ver": "v0.5.0-experimental",
+  "rel_pub": "2026-10-28",
+  "rel_days": 5,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 12,
+  "sec_worst": "high",
+  "sec_last": "2026-10-29",
+  "sec_ids": [
+   "GHSA-f769-xjf5-54wc(-,low)",
+   "GHSA-3wx4-fh9w-2v66(-,low)",
+   "GHSA-4gr9-rvgr-44qj(-,medium)",
+   "GHSA-82w5-ph62-47wf(-,low)",
+   "GHSA-6xf4-r246-92r6(-,low)",
+   "GHSA-756j-cgwq-gvwm(-,low)",
+   "GHSA-95h9-j7c2-gcw6(-,medium)",
+   "GHSA-qgjj-2f2p-q82m(-,medium)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "C": 40,
+   "Shell": 26,
+   "Python": 24,
+   "HTML": 8,
+   "Makefile": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

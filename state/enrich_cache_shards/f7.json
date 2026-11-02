@@ -1457,11 +1457,11 @@
   }
  },
  "obsei/obsei": {
-  "commit_90d": 116,
-  "commit_7d": 0,
+  "commit_90d": 117,
+  "commit_7d": 1,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -1477,10 +1477,10 @@
    "Astro": 4,
    "MDX": 3
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

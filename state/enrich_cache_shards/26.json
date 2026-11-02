@@ -140,12 +140,12 @@
   }
  },
  "taubyte/tau": {
-  "commit_90d": 31,
-  "commit_7d": 0,
-  "rel_ver": "v1.1.10",
-  "rel_pub": "2026-04-22",
-  "rel_days": 177,
-  "rel_n90": 0,
+  "commit_90d": 10,
+  "commit_7d": 2,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -160,10 +160,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -410,7 +410,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.11.0",
   "rel_pub": "2026-09-04",
-  "rel_days": 43,
+  "rel_days": 59,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -425,10 +425,10 @@
    "C": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4067,6 +4067,25 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-digital-footprint-privacy-shaking-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

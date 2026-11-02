@@ -261,7 +261,7 @@
   }
  },
  "Dicklesworthstone/llm_aided_ocr": {
-  "commit_7d": 8,
+  "commit_7d": 1,
   "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
@@ -274,10 +274,10 @@
    "Python": 98,
    "Dockerfile": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4034,6 +4034,29 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Anhao1314/FCode-FlowCredit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 36,
+   "CSS": 7,
+   "HTML": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

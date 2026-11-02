@@ -1829,13 +1829,16 @@
    "C++": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261102"
+  },
+  "commit_90d": 384,
+  "commit_7d": 4
  },
  "rekursiv-ai/priml": {
   "rel_ver": "v0.1.6",
@@ -3883,6 +3886,51 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Juneo-Lab/decision-forge": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "matiasbellidor/aleph-hack": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 77,
+   "JavaScript": 22,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

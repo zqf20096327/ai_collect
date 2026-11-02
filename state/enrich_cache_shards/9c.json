@@ -4344,5 +4344,28 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "yuchoyao/Deep_Learning_Foundation_and_Concepts-Springer": {
+  "commit_90d": 6,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "TeX": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "commit": "20261102",
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

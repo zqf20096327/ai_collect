@@ -300,11 +300,11 @@
   }
  },
  "Source-Robotics/PAROL6-Desktop-robot-arm": {
-  "commit_7d": 1,
-  "commit_90d": 6,
+  "commit_7d": 14,
+  "commit_90d": 20,
   "rel_ver": "V1",
   "rel_pub": "2025-03-08",
-  "rel_days": 595,
+  "rel_days": 604,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -320,10 +320,10 @@
    "CSS": 1,
    "C": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5213,6 +5213,81 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "FoundDream/Quire": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 96,
+   "Python": 2,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "HIT-Champion/Signet": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 2,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 10,
+   "Vue": 7,
+   "JavaScript": 5,
+   "PLpgSQL": 3
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "cc2025cheng/Stop-Manually-Refreshing-AutoDL-GPU": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 92,
+   "CSS": 5,
+   "HTML": 3,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

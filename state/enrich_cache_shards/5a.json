@@ -30,11 +30,11 @@
   }
  },
  "davisking/dlib": {
-  "commit_7d": 20,
-  "commit_90d": 35,
+  "commit_7d": 4,
+  "commit_90d": 39,
   "rel_ver": "v20.0.1",
   "rel_pub": "2026-03-29",
-  "rel_days": 208,
+  "rel_days": 218,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CMake": 1,
    "C": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

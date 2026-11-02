@@ -356,8 +356,8 @@
   }
  },
  "jmaczan/tiny-vllm": {
-  "commit_90d": 27,
-  "commit_7d": 1,
+  "commit_90d": 29,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -372,10 +372,10 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4133,6 +4133,49 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-light-therapy-melatonin-suppression-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "PIYUSH-KUMAR1809/prehello": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 6
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

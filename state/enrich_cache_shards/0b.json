@@ -435,11 +435,11 @@
   }
  },
  "NomaDamas/CozyClay": {
-  "commit_7d": 359,
-  "commit_90d": 2381,
-  "rel_ver": "v3.1.6",
-  "rel_pub": "2026-10-25",
-  "rel_days": 1,
+  "commit_7d": 64,
+  "commit_90d": 2495,
+  "rel_ver": "v3.2.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -455,10 +455,10 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1927,13 +1927,16 @@
    "Nextflow": 1,
    "CSS": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261102"
+  },
+  "commit_90d": 279,
+  "commit_7d": 13
  },
  "JasonSloan/DeepFusion": {
   "rel_ver": "v111",
@@ -4531,6 +4534,61 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "jimoto-no-llm/rustdsh": {
+  "commit_90d": 2380,
+  "commit_7d": 51,
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "JavaScript": 59,
+   "Rust": 32,
+   "Shell": 3,
+   "Python": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "commit": "20261102",
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "Britneycode/dsh-fish-soul": {
+  "rel_ver": "v0.11.2",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 98,
+   "CSS": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

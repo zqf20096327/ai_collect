@@ -49,8 +49,8 @@
   }
  },
  "skyzh/tiny-llm": {
-  "commit_90d": 104,
-  "commit_7d": 0,
+  "commit_90d": 96,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -65,10 +65,10 @@
    "CMake": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -185,12 +185,12 @@
   }
  },
  "u14app/neo-chat": {
-  "commit_90d": 49,
-  "commit_7d": 4,
+  "commit_90d": 36,
+  "commit_7d": 0,
   "rel_ver": "v2.7.0",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
-  "rel_n90": 4,
+  "rel_days": 12,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -205,10 +205,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4102,6 +4102,50 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "rmr2024/finextract": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "HTML": 12,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-focus-recovery-binaural-beats-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

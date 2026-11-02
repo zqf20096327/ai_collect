@@ -4978,5 +4978,32 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "KorroAi/kinloom": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 24,
+   "Rust": 14,
+   "C++": 13,
+   "C#": 11,
+   "Java": 11
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

@@ -116,12 +116,12 @@
   }
  },
  "getzep/zep": {
-  "commit_90d": 36,
-  "commit_7d": 1,
+  "commit_90d": 24,
+  "commit_7d": 2,
   "rel_ver": "zep-ingest-v0.4.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 9,
-  "rel_n90": 6,
+  "rel_days": 19,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -136,10 +136,10 @@
    "Makefile": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -175,12 +175,12 @@
   }
  },
  "explosion/thinc": {
-  "commit_90d": 2,
-  "commit_7d": 2,
-  "rel_ver": "v8.3.14",
-  "rel_pub": "2026-10-25",
-  "rel_days": 1,
-  "rel_n90": 1,
+  "commit_90d": 3,
+  "commit_7d": 1,
+  "rel_ver": "v10.0.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 6,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -195,10 +195,10 @@
    "Sass": 3,
    "Cuda": 3
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4104,6 +4104,26 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "quzopl/ComfyUI-SolAttn-H3": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "Shell": 8
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

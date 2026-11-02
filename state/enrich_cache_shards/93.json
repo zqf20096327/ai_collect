@@ -4461,5 +4461,32 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "ronininc/kingmaker": {
+  "rel_ver": "v4.4.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 42,
+   "Python": 39,
+   "TypeScript": 8,
+   "Swift": 5,
+   "Shell": 3
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

@@ -376,11 +376,11 @@
   }
  },
  "DeepMyst/Mysti": {
-  "commit_7d": 6,
-  "commit_90d": 243,
+  "commit_7d": 0,
+  "commit_90d": 240,
   "rel_ver": "v2.0.0-beta.1",
   "rel_pub": "2026-10-03",
-  "rel_days": 14,
+  "rel_days": 30,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -396,10 +396,10 @@
    "HTML": 1,
    "Nix": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3926,6 +3926,28 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Nadia0502/Footnote-website": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 0,
+   "Python": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

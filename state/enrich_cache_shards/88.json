@@ -176,8 +176,8 @@
   }
  },
  "WangRongsheng/awesome-LLM-resources": {
-  "commit_7d": 1,
-  "commit_90d": 41,
+  "commit_7d": 2,
+  "commit_90d": 42,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -186,10 +186,10 @@
   "sec_ids": [],
   "contrib_n": 27,
   "lang": {},
-  "enriched_at": "20261023",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

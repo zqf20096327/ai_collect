@@ -277,7 +277,7 @@
  },
  "PKU-YuanGroup/Helios": {
   "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -289,10 +289,10 @@
    "Python": 97,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

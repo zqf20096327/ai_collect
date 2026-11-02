@@ -1417,13 +1417,16 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261102"
+  },
+  "commit_90d": 25,
+  "commit_7d": 3
  },
  "ly1836/spring-ai-rag-demo": {
   "rel_ver": "4.0.0",
@@ -3756,6 +3759,33 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "wera-jobs/Wera": {
+  "rel_ver": "wera-v0.11.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 96,
+   "Typst": 2,
+   "HTML": 1,
+   "TeX": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

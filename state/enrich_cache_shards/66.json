@@ -217,11 +217,11 @@
   }
  },
  "huangwb8/ChineseResearchLaTeX": {
-  "commit_90d": 106,
-  "commit_7d": 9,
+  "commit_90d": 110,
+  "commit_7d": 4,
   "rel_ver": "v4.1.2",
   "rel_pub": "2026-10-17",
-  "rel_days": 7,
+  "rel_days": 16,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "Lua": 2,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4150,6 +4150,52 @@
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-supplement-pharmacokinetic-halflife-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "DKKD13/dsh-finance": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 89,
+   "JavaScript": 4,
+   "Python": 4,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

@@ -4540,5 +4540,27 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "SilosLabs/silo-cli": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 3,
+   "Shell": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

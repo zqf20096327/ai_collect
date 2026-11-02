@@ -142,11 +142,11 @@
   }
  },
  "johannfaouzi/pyts": {
-  "commit_90d": 35,
-  "commit_7d": 22,
+  "commit_90d": 36,
+  "commit_7d": 1,
   "rel_ver": "0.14.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -158,10 +158,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4044,6 +4044,25 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "ze185666/hfut-freshman-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

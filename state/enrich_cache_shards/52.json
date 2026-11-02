@@ -1399,10 +1399,10 @@
   }
  },
  "zereight/gitlab-mcp": {
-  "commit_7d": 203,
-  "commit_90d": 829,
-  "rel_ver": "v2.3.11",
-  "rel_pub": "2026-10-25",
+  "commit_7d": 107,
+  "commit_90d": 927,
+  "rel_ver": "v2.3.19",
+  "rel_pub": "2026-11-01",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1428,10 +1428,10 @@
    "Python": 0,
    "Nix": 0
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

@@ -4332,5 +4332,54 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "shijue-aid/aid-studio": {
+  "commit_90d": 179,
+  "commit_7d": 1,
+  "rel_ver": "v2.2.4",
+  "rel_pub": "2026-09-30",
+  "rel_days": 33,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 56,
+   "TypeScript": 34,
+   "CSS": 5,
+   "Shell": 3,
+   "Go": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "commit": "20261102",
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-total-daily-energy-expenditure-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

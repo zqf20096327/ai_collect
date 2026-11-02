@@ -239,7 +239,7 @@
   }
  },
  "lintsinghua/claude-code-book": {
-  "commit_90d": 10,
+  "commit_90d": 11,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -252,10 +252,10 @@
    "Python": 96,
    "JavaScript": 4
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

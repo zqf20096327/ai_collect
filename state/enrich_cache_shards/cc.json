@@ -4393,5 +4393,53 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "stefandevo/claude-dialects": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 66,
+   "HTML": 12,
+   "TypeScript": 11,
+   "JavaScript": 8,
+   "CSS": 3
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "technamooz/technamooz-free-Ai": {
+  "rel_ver": "technamooz-ai-version1.0.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 84,
+   "CSS": 11,
+   "HTML": 5
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

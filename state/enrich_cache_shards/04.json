@@ -289,8 +289,8 @@
   }
  },
  "VoltAgent/awesome-ai-agent-papers": {
-  "commit_7d": 6,
-  "commit_90d": 50,
+  "commit_7d": 4,
+  "commit_90d": 54,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -299,10 +299,10 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261026",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4022,6 +4022,29 @@
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
+  }
+ },
+ "3MH-Technologies/worm-ai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 51,
+   "TypeScript": 47,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

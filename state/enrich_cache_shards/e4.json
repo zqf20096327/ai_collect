@@ -406,11 +406,11 @@
   }
  },
  "signerlabs/Klee": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-03-19",
-  "rel_days": 212,
+  "rel_days": 228,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -422,10 +422,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4252,6 +4252,55 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "ShadowfetchStudio/ShadowCode": {
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 62,
+   "TypeScript": 24,
+   "JavaScript": 7,
+   "HTML": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "ruodaoai/ruodao-browser": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 76,
+   "CSS": 13,
+   "JavaScript": 10,
+   "HTML": 0
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

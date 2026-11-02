@@ -3990,5 +3990,33 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "kritiksoman/GIMP-ML": {
+  "commit_90d": 7,
+  "commit_7d": 7,
+  "rel_ver": "v1.2",
+  "rel_pub": "2026-11-01",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "AppleScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "commit": "20261102",
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
  }
 }

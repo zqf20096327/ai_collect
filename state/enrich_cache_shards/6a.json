@@ -112,11 +112,11 @@
   }
  },
  "ultralytics/yolov3": {
-  "commit_7d": 3,
-  "commit_90d": 32,
+  "commit_7d": 4,
+  "commit_90d": 18,
   "rel_ver": "v9.6.0",
   "rel_pub": "2021-11-14",
-  "rel_days": 1804,
+  "rel_days": 1814,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Dockerfile": 1,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -237,8 +237,8 @@
   }
  },
  "palxiao/poster-design": {
-  "commit_90d": 5,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -253,10 +253,10 @@
    "Less": 2,
    "CSS": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4630,6 +4630,51 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "chyyynh/commonplot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 6,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
+  }
+ },
+ "Daddaiz/StCardCreator": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-10-31",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 99,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261102",
+  "dim_ts": {
+   "release": "20261102",
+   "security": "20261102",
+   "contrib": "20261102",
+   "lang": "20261102"
   }
  }
 }

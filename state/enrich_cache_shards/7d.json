@@ -77,8 +77,8 @@
   }
  },
  "EmbraceAGI/awesome-chatgpt-zh": {
-  "commit_7d": 18,
-  "commit_90d": 31,
+  "commit_7d": 35,
+  "commit_90d": 80,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,10 +89,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261102",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261102",
+   "release": "20261102",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1773,13 +1773,16 @@
    "Python": 57,
    "Shell": 43
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261102",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261102"
+  },
+  "commit_90d": 12,
+  "commit_7d": 7
  },
  "deathcats4/scholar-ppt-cn": {
   "rel_ver": "v3.4",
