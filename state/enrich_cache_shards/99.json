@@ -132,7 +132,7 @@
   "commit_90d": 0,
   "rel_ver": "0.4.0",
   "rel_pub": "2025-01-03",
-  "rel_days": 659,
+  "rel_days": 669,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -148,10 +148,10 @@
    "SCSS": 1,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4552,6 +4552,55 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "okgrit/done-is-a-claim": {
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 9,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "bladeacer/lccst": {
+  "rel_ver": "v3.8.0",
+  "rel_pub": "2026-10-03",
+  "rel_days": 31,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 38,
+   "JavaScript": 9,
+   "Makefile": 5
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

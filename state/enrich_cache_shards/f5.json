@@ -1913,12 +1913,12 @@
   }
  },
  "wannabespace/tamery": {
-  "commit_7d": 55,
-  "commit_90d": 178,
-  "rel_ver": "untagged-9ff3f341a3d0335fe025",
-  "rel_pub": "2026-10-19",
-  "rel_days": 8,
-  "rel_n90": 3,
+  "commit_7d": 34,
+  "commit_90d": 209,
+  "rel_ver": "untagged-ff20907d3fda28d49cf1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1933,10 +1933,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

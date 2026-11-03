@@ -3035,13 +3035,16 @@
    "Java": 1,
    "Python": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261103"
+  },
+  "commit_90d": 290,
+  "commit_7d": 30
  },
  "bonc-ai/cogseed": {
   "rel_ver": "v1.3.0",

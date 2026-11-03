@@ -638,11 +638,11 @@
  },
  "xvirobotics/metabot": {
   "commit_7d": 0,
-  "commit_90d": 89,
-  "rel_ver": "v1.3.2",
-  "rel_pub": "2026-09-15",
-  "rel_days": 32,
-  "rel_n90": 5,
+  "commit_90d": 100,
+  "rel_ver": "v1.3.4",
+  "rel_pub": "2026-10-26",
+  "rel_days": 8,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -657,10 +657,10 @@
    "PowerShell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

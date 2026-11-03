@@ -242,10 +242,10 @@
  },
  "ParisNeo/lollms-webui": {
   "commit_7d": 0,
-  "commit_90d": 40,
+  "commit_90d": 30,
   "rel_ver": "v14",
   "rel_pub": "2024-11-11",
-  "rel_days": 711,
+  "rel_days": 722,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -264,10 +264,10 @@
    "JavaScript": 2,
    "HTML": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4691,6 +4691,23 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "jeger2019-collab/openai-o3-deepseek-billing-proxy": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

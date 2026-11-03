@@ -613,11 +613,11 @@
   }
  },
  "z91772524-ai/pojia-next": {
-  "commit_7d": 6,
-  "commit_90d": 89,
-  "rel_ver": "v8.18",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 31,
+  "commit_90d": 125,
+  "rel_ver": "v8.29",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -631,10 +631,10 @@
    "HTML": 8,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1212,13 +1212,16 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261103"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "damiansire/genai-fullstack-blueprint": {
   "rel_ver": null,
@@ -1581,11 +1584,11 @@
   }
  },
  "postgres-ai/database-lab-engine": {
-  "commit_7d": 10,
-  "commit_90d": 86,
+  "commit_7d": 6,
+  "commit_90d": 90,
   "rel_ver": "v4.2.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1601,10 +1604,10 @@
    "SCSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

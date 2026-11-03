@@ -4775,5 +4775,29 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "Dancode-188/reeve": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-08-18",
+  "rel_days": 77,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

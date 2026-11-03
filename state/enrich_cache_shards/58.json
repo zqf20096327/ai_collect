@@ -4902,5 +4902,52 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "YDHCUI/manjusaka": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-03-27",
+  "rel_days": 221,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 51,
+   "Vue": 20,
+   "TypeScript": 19,
+   "JavaScript": 5,
+   "C": 3
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "commit": "20261103",
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "tdelowar17-tech/coregold-agent-paygate": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

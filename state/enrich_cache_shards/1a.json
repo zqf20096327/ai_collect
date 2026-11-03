@@ -278,10 +278,10 @@
  },
  "techa03/goodsKill": {
   "commit_90d": 3,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": "v3.2.4",
   "rel_pub": "2024-04-20",
-  "rel_days": 917,
+  "rel_days": 927,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -296,10 +296,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4177,6 +4177,28 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "MoYuSOwO/stintegy-evo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 98,
+   "Python": 1,
+   "GDScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

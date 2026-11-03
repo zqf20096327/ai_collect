@@ -30,8 +30,8 @@
   }
  },
  "ombharatiya/ai-system-design-guide": {
-  "commit_90d": 30,
-  "commit_7d": 0,
+  "commit_90d": 36,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -40,10 +40,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4171,6 +4171,98 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Banan1cee/whale_gril": {
+  "rel_ver": "v3.9",
+  "rel_pub": "2026-10-30",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 55,
+   "Python": 18,
+   "C#": 15,
+   "PowerShell": 6,
+   "HTML": 3
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "tiptreesystems/lacuna-research-mcp": {
+  "rel_ver": "v0.6.8",
+  "rel_pub": "2026-11-03",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "GiacomoSaccaggi/giacomosaccaggi.github.io": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 54,
+   "JavaScript": 36,
+   "CSS": 7,
+   "R": 3
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "mandarvshinde/ai-bill-to-focus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 13
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

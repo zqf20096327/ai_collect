@@ -274,8 +274,8 @@
   }
  },
  "ruc-datalab/DeepAnalyze": {
-  "commit_90d": 58,
-  "commit_7d": 1,
+  "commit_90d": 67,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -290,10 +290,10 @@
    "Jinja": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4465,6 +4465,32 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "k8s-servant/k8s-servant": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 14,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 95,
+   "Shell": 4,
+   "Go Template": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

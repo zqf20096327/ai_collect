@@ -98,11 +98,11 @@
   }
  },
  "josStorer/RWKV-Runner": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 1,
   "rel_ver": "v1.9.12",
   "rel_pub": "2026-07-07",
-  "rel_days": 101,
+  "rel_days": 119,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -118,10 +118,10 @@
    "Go": 6,
    "HIP": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,12 +148,12 @@
   }
  },
  "ant-design/x": {
-  "commit_90d": 50,
-  "commit_7d": 3,
-  "rel_ver": "2.7.0",
-  "rel_pub": "2026-04-30",
-  "rel_days": 180,
-  "rel_n90": 0,
+  "commit_90d": 55,
+  "commit_7d": 8,
+  "rel_ver": "2.10.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -168,10 +168,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4753,6 +4753,109 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "knoxchat/knoxcoder": {
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 95,
+   "CSS": 2,
+   "JavaScript": 1,
+   "Rust": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "Kidding-Ma/ai-auto-resume": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 49,
+   "Shell": 26,
+   "TeX": 25
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "SH0TGUN666/driver-fatigue-dataset": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-retinal-microvascular-caliper-ar-ratio-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "47thtechcorner/RayCodes_Unlimited_OCR_2": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

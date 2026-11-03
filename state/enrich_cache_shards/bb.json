@@ -4865,5 +4865,56 @@
    "contrib": "20261101",
    "lang": "20261101"
   }
+ },
+ "DevDock-AI/Speedy": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C++": 43,
+   "Python": 29,
+   "Cuda": 12,
+   "JavaScript": 8,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "pardnchiu/ToriiDB": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-09-07",
+  "rel_days": 57,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

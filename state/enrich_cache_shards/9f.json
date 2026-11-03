@@ -202,8 +202,8 @@
   }
  },
  "google-deepmind/tapnet": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 3,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -216,10 +216,10 @@
    "Python": 25,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4714,6 +4714,31 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "huyang218/dsh-android": {
+  "rel_ver": "v0.3.1-dev",
+  "rel_pub": "2026-08-23",
+  "rel_days": 72,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 47,
+   "Java": 46,
+   "Shell": 7
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

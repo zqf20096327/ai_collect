@@ -4430,5 +4430,32 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "unstoppable-si/unstoppable-code": {
+  "rel_ver": "source-desktop/v1.15.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 82,
+   "JavaScript": 11,
+   "Dart": 5,
+   "CSS": 0,
+   "C": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

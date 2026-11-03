@@ -4711,5 +4711,29 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "wangjunhan131/whale-card": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

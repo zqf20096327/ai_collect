@@ -415,8 +415,8 @@
   }
  },
  "Ricky-7-Yan/intelligent-audit-system": {
-  "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -431,10 +431,10 @@
    "HTML": 8,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1457,13 +1457,16 @@
    "Swift": 4,
    "TypeScript": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261103"
+  },
+  "commit_90d": 226,
+  "commit_7d": 0
  },
  "rookslog/zlibrary-mcp": {
   "rel_ver": "v1.4.0",
@@ -4499,6 +4502,29 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "toejough/engram": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 73,
+   "Python": 26,
+   "Shell": 2,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

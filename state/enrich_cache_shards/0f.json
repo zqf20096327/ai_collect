@@ -215,12 +215,12 @@
   }
  },
  "chemprop/chemprop": {
-  "commit_90d": 11,
+  "commit_90d": 6,
   "commit_7d": 2,
   "rel_ver": "v2.3.1",
   "rel_pub": "2026-08-04",
-  "rel_days": 81,
-  "rel_n90": 1,
+  "rel_days": 91,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -234,10 +234,10 @@
    "Shell": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

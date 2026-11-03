@@ -1828,13 +1828,16 @@
    "Svelte": 10,
    "CSS": 4
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261103"
+  },
+  "commit_90d": 1147,
+  "commit_7d": 68
  },
  "Anil-matcha/MiniMax-H3-API": {
   "rel_ver": null,
@@ -4374,6 +4377,52 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "xwteam/agnes2api": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-14",
+  "rel_days": 50,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 73,
+   "JavaScript": 21,
+   "CSS": 4,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-somatosensory-temporal-discrimination-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

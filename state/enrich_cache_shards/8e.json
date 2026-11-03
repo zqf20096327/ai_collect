@@ -165,7 +165,7 @@
   "commit_7d": 0,
   "rel_ver": "0.2.4",
   "rel_pub": "2024-12-03",
-  "rel_days": 690,
+  "rel_days": 700,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -180,10 +180,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

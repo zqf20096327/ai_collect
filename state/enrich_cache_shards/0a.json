@@ -1383,13 +1383,16 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261103"
+  },
+  "commit_90d": 12,
+  "commit_7d": 1
  },
  "raphaelmansuy/edgecrab": {
   "rel_ver": "v0.12.1",

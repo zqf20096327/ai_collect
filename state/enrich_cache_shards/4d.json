@@ -289,8 +289,8 @@
   }
  },
  "Guang000/Awesome-Dataset-Distillation": {
-  "commit_7d": 2,
-  "commit_90d": 48,
+  "commit_7d": 31,
+  "commit_90d": 82,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -304,10 +304,10 @@
    "JavaScript": 3,
    "Python": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4325,6 +4325,49 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "wb1016/copernicus-mcp": {
+  "rel_ver": "0.2.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "Alpha-Park/genpark-personal-agent-ocular-vestibulo-ocular-reflex-vor-gain-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

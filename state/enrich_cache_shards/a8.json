@@ -302,11 +302,11 @@
   }
  },
  "Kav-K/GPTDiscord": {
-  "commit_90d": 19,
-  "commit_7d": 12,
+  "commit_90d": 20,
+  "commit_7d": 1,
   "rel_ver": "v13.2.6",
   "rel_pub": "2026-10-18",
-  "rel_days": 6,
+  "rel_days": 16,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -319,10 +319,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4863,6 +4863,45 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-muscle-oxygenation-nirs-smo2-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "dmavrotas/pacenote": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 93,
+   "Python": 7
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

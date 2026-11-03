@@ -174,8 +174,8 @@
   }
  },
  "marcelroed/gigatoken": {
-  "commit_7d": 0,
-  "commit_90d": 54,
+  "commit_7d": 3,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -188,10 +188,10 @@
    "Python": 33,
    "Shell": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4322,6 +4322,67 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "MustafaKemal0146/claude-code-evren": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 76,
+   "PowerShell": 24
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "davidcitahernandez-debug/computer-use-agent-vault": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "AKzar1el/god-prompt": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-03-21",
+  "rel_days": 227,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

@@ -4376,5 +4376,27 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "zhuangzhaoyeye/llm_course": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 95,
+   "JavaScript": 5,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
  }
 }

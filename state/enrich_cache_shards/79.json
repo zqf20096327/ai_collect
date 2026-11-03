@@ -1329,13 +1329,16 @@
    "Swift": 100,
    "Python": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261103"
+  },
+  "commit_90d": 182,
+  "commit_7d": 1
  },
  "emqx/mcp-typescript-sdk": {
   "rel_ver": "v0.2.7",
@@ -4732,6 +4735,82 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "6Robert123/cmp100-100-unlock": {
+  "rel_ver": "v2026.11.02.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 56,
+   "Python": 24,
+   "Shell": 17,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "ccb-ai-solutions/yz-saha-testi-2026": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 58,
+   "Python": 39,
+   "PowerShell": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
+  }
+ },
+ "wipeer/comfyui-elegant-nodes": {
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 61,
+   "Python": 39
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

@@ -3824,13 +3824,16 @@
    "JavaScript": 4,
    "Shell": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261103",
   "dim_ts": {
    "release": "20261101",
    "security": "20261101",
    "contrib": "20261101",
-   "lang": "20261101"
-  }
+   "lang": "20261101",
+   "commit": "20261103"
+  },
+  "commit_90d": 7,
+  "commit_7d": 7
  },
  "liamseddaoui/FAMILY_RAG": {
   "rel_ver": "v2.7",
@@ -3876,6 +3879,33 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "ollama4j/Doota": {
+  "rel_ver": "0.0.1",
+  "rel_pub": "2026-05-19",
+  "rel_days": 168,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 40,
+   "TypeScript": 33,
+   "CSS": 23,
+   "Shell": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

@@ -174,12 +174,12 @@
   }
  },
  "shadcn-ui/lint": {
-  "commit_7d": 2,
-  "commit_90d": 62,
-  "rel_ver": "@shadcn/lint@0.2.3",
-  "rel_pub": "2026-10-19",
-  "rel_days": 5,
-  "rel_n90": 8,
+  "commit_7d": 34,
+  "commit_90d": 96,
+  "rel_ver": "@shadcn/lint@0.2.5",
+  "rel_pub": "2026-11-02",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -192,10 +192,10 @@
    "JavaScript": 10,
    "CSS": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -273,10 +273,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -287,7 +287,7 @@
   "commit_90d": 0,
   "rel_ver": "v.0.4.2",
   "rel_pub": "2025-12-04",
-  "rel_days": 324,
+  "rel_days": 334,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -300,10 +300,10 @@
    "Python": 98,
    "HTML": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4783,6 +4783,25 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "alphaparkinc/genpark-personal-agent-ocular-vestibulo-ocular-reflex-vor-gain-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }

@@ -419,7 +419,7 @@
   "commit_90d": 0,
   "rel_ver": "v4.3.2",
   "rel_pub": "2025-04-04",
-  "rel_days": 561,
+  "rel_days": 578,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261103",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261103",
+   "release": "20261103",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4804,6 +4804,26 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "sepiablue-ai/ComfyUI-MossPanelDataset": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 64,
+   "JavaScript": 36
+  },
+  "enriched_at": "20261103",
+  "dim_ts": {
+   "release": "20261103",
+   "security": "20261103",
+   "contrib": "20261103",
+   "lang": "20261103"
   }
  }
 }
