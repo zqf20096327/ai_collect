@@ -91,8 +91,8 @@ replayed against it as well. A blank cell was not checked.
 | Azure OpenAI | ✅ Chat Completions | ✅ Responses API | |
 | Google Vertex AI (Gemini) | ✅ | ✅ | |
 | Claude on Vertex AI, Google Cloud and Microsoft Foundry | ✅ | ✅ | ✅ read/write |
-| Amazon Bedrock Converse | ✅ | ❌ event-stream responses | ✅ read/write |
-| Amazon Bedrock InvokeModel (Anthropic Claude models) | ✅ | ❌ event-stream responses | ✅ read/write |
+| Amazon Bedrock Converse | ✅ | ✅ ConverseStream (event stream) | ✅ read/write |
+| Amazon Bedrock InvokeModel (Anthropic Claude models) | ✅ | ✅ InvokeModelWithResponseStream, every model | ✅ read/write |
 
 Compressed responses (`gzip`, `br`, `zstd`, `deflate`) are decoded, SSE included.
 
@@ -189,7 +189,7 @@ can be told apart from a drop in traffic. `reason` is one of:
 | `next_request` | a complete HTTP/1.1 response had no usage when the next request started |
 | `connection_closed` | the connection closed before usage was found |
 | `request_too_large` | the captured request bytes (the first 4 KB of each write) passed the 8 MB buffer limit |
-| `response_too_large` | the response passed the 16 MB buffer limit and is not an uncompressed HTTP/1.1 JSON body with usage in its first or last 64 KB (SSE, compressed and HTTP/2 responses always count here) |
+| `response_too_large` | the response passed the 16 MB buffer limit and is neither an uncompressed HTTP/1.1 JSON body with usage in its first or last 64 KB nor an uncompressed HTTP/1.1 SSE stream (compressed and HTTP/2 responses always count here) |
 
 Not counted here: a read lost whole because the ring buffer was full (see `llm_events_total{stage="reserve_fail"}`),
 and a connection left idle for 300 s without being closed (for example a killed process).

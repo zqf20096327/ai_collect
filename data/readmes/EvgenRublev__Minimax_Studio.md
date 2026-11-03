@@ -190,7 +190,7 @@ Minimax_Studio_V7/
 | ОС        | Windows 10/11 x64                              |
 | GPU       | NVIDIA, 12+ ГБ VRAM (рекомендуется), мин. 8 ГБ |
 | Драйвер   | CUDA 12.x                                      |
-| Node.js   | 18+ LTS (или bundled `runtime\node.exe`)       |
+| Node.js   | не нужен — установщик кладёт свой в `runtime\` |
 | ComfyUI   | Portable, папка `ComfyUI-Easy-Install`         |
 
 ## Запуск
@@ -234,9 +234,9 @@ start.bat
 
 | Параметр                | Описание                                        |
 | ----------------------- | ----------------------------------------------- |
-| `reserve_gb`            | VRAM, зарезервированная для системы (ГБ)        |
+| `reserve_gb`            | VRAM, зарезервированная для системы (ГБ, по умолчанию 1) |
 | `dynamic_vram`          | Динамическое управление VRAM ComfyUI            |
-| `vram_headroom`         | Доп. запас свободной VRAM для DynamicVRAM (0–8 ГБ, по умолчанию 2; 0 = выкл) |
+| `vram_headroom`         | Доп. запас свободной VRAM для DynamicVRAM (0–8 ГБ, по умолчанию 1; 0 = выкл) |
 | `async_offload`         | Асинхронный офлоад загрузки моделей (0 = синхронно, стабильно; 1 = быстрее, на RTX 50xx может падать) |
 | `comfy.turbo_lora`      | Зарезервировано (в коде не читается; Turbo LoRA управляется из UI) |
 | `comfy.diffusion_model` | Альтернативная базовая модель (пусто = default) |

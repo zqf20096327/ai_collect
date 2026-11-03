@@ -1,20 +1,51 @@
+<p align="center">
+  <img src="docs/images/social-preview.png" alt="Hermes Life OS: the personal OS that remembers, plans and grows with you" width="720">
+</p>
+
 # Hermes Life OS 🧠
 
 [![Tests](https://github.com/Lethe044/hermes-life-os/actions/workflows/tests.yml/badge.svg)](https://github.com/Lethe044/hermes-life-os/actions/workflows/tests.yml)
 [![PyPI](https://img.shields.io/pypi/v/hermes-life-os)](https://pypi.org/project/hermes-life-os/)
-[![PyPI Downloads](https://static.pepy.tech/badge/hermes-life-os)](https://pepy.tech/project/hermes-life-os)
 [![Python Versions](https://img.shields.io/pypi/pyversions/hermes-life-os)](https://pypi.org/project/hermes-life-os/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/Lethe044/hermes-life-os?style=flat&color=yellow)](https://github.com/Lethe044/hermes-life-os/stargazers)
 [![Last commit](https://img.shields.io/github/last-commit/Lethe044/hermes-life-os)](https://github.com/Lethe044/hermes-life-os/commits/main)
 
-**The personal OS that grows with you.**
+**The personal OS that grows with you.** Track how you feel, plan your day, keep your life
+organised, and let an agent connect the dots. Local first, encrypted if you want, no account needed.
+
+[Quick start](#quick-start) · [Tool reference](docs/TOOLS.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
 > Built for the NousResearch "Show us what Hermes Agent can do" hackathon.
 
-Most productivity tools forget you the moment you close them.
-Hermes Life OS remembers everything - your mood, your meals, your sleep, your stress,
-your wins and your struggles - and gets smarter about you every single day.
+## Quick Tour
+
+Ask in plain language; Hermes calls the right tool and answers from your own data.
+
+<p align="center">
+  <img src="docs/images/demo.svg" alt="Hermes planning a day around free time and showing a life wheel" width="760">
+</p>
+
+| You want to | Say something like | Tool |
+| --- | --- | --- |
+| Pick today's focus | "my top three today are the report, the gym and calling mum" | `add_priority` |
+| Get a plan | "plan my day" | `plan_my_day` |
+| Check in on your life | "rate my health 7 and money 3" | `log_life_wheel` |
+| Keep a backlog | "add Dune to my books" | `add_library_item` |
+| Use your own calendar app | "export my calendar" | `export_calendar` |
+| Undo a mistake | "put the rent task back" | `restore_deleted` |
+| Understand yourself | "what affects my sleep?" | `get_correlations` |
+
+All 270 tools are listed in the [tool reference](docs/TOOLS.md).
+
+## Contents
+
+- **Start here:** [What it does](#what-it-does) · [Architecture](#architecture) · [Quick start](#quick-start) · [Chat mode](#chat-mode)
+- **Your data:** [Encryption](#encryption-at-rest-optional) · [Automatic backups](#automatic-backups) · [Restore](#restore) · [Health check](#health-check-doctor) · [Data export](#data-export)
+- **Planner:** [Tasks, agenda](#planner-tasks-body-metrics-subscriptions-people--todays-agenda) · [Priorities, plan my day, life wheel, library](#daily-priorities-plan-my-day-life-wheel-library--calendar-export) · [Time blocks, objectives, recipes, trips](#time-blocks-objectives-recipes--trips) · [Chores, routines, decisions](#chores-expiry-dates-routines-gift-ideas--decisions) · [Recently deleted](#recently-deleted-recommendation-ledger--pinned-backups)
+- **Insights:** [Pattern detection](#pattern-detection) · [Life review](#life-review---the-flagship-retrospective-report) · [Dashboard](#dashboard)
+- **Connect:** [Telegram](#telegram-bot) · [Discord](#discord-bot) · [Slack](#slack-bot) · [Local REST API](#local-rest-api) · [Plugins](#plugin-system-add-your-own-tools-no-fork-required)
+- **Project:** [Project structure](#project-structure) · [What's new](#whats-new) · [Running tests](#running-tests)
 
 ## What It Does
 
@@ -455,6 +486,33 @@ when encryption is on, and covered by backup, restore, export and the doctor.
 
 The doctor and `get_repair_suggestions` check the trash and the ledger, and
 `search_everything` searches the ledger.
+
+## Daily Priorities, Plan My Day, Life Wheel, Library & Calendar Export
+
+```
+"my priorities today: finish the report, gym, call mum"    "plan my day"
+"I finished the report"                                    "move yesterday's priorities to today"
+"rate my life: health 7, career 8, money 3"                "how is my life wheel?"
+"add Severance to my shows"  "I finished Dune, 5 stars"    "what should I read next?"
+"export my calendar"
+```
+
+- **Priorities**: at most three a day, free text or an open task. Completing a priority also
+  completes its task. Hermes nudges you in the afternoon when some are still open.
+- **Plan my day**: priorities first, then overdue and due tasks, each placed in a free gap of your
+  time blocks using the task's `minutes` estimate (30 by default). The default is a dry run;
+  `apply=true` saves time blocks. Tasks already planned are never placed twice.
+- **Life wheel**: health, career, money, relationships, growth, fun, environment and purpose, each
+  1 to 10, with bars, the change since the previous check-in and the lowest areas.
+- **Library**: books, movies, shows, games, podcasts and courses with status (want, doing, done,
+  dropped), progress, a 1 to 5 rating, a suggestion for what to pick up next and yearly stats.
+- **Calendar export**: an `.ics` file in your exports folder with time blocks, task due dates,
+  birthdays (repeating yearly), countdowns, trips, expiry dates, chores, renewals and decision
+  reviews. Event ids are stable, so re-importing updates events instead of duplicating them.
+  Import it in Google Calendar (Settings > Import & export), Apple Calendar or Outlook.
+
+All three new stores are included in backup, restore, export, the doctor, search and the
+recently deleted list.
 
 ## Project Structure
 
@@ -2093,6 +2151,30 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
+**v1.48.0 - Daily Priorities, Plan My Day, Life Wheel, Library, Calendar Export**
+- New **daily priorities** (the "Big 3"): `add_priority`, `get_priorities`, `complete_priority`,
+  `carry_over_priorities`, `delete_priority`. At most three per day, free text or an open task
+  (finishing the priority finishes the task), a streak of days with every priority done, and
+  the agenda, the nudges and the closing summary show what is still open.
+- New **plan my day**: `plan_my_day` fits priorities, overdue and due tasks into the free
+  gaps of your day plan. It shows a proposal first; `apply=true` saves time blocks linked to
+  the tasks. Tasks take an optional `minutes` estimate (`add_task`, `update_task`).
+- New **life wheel**: `log_life_wheel`, `get_life_wheel`, `delete_wheel_checkin`. Rate eight
+  areas from 1 to 10, see bars, the change since the last check-in and the lowest areas, and get
+  a nudge after five weeks without a check-in.
+- New **library**: `add_library_item`, `get_library`, `update_library_item`,
+  `finish_library_item`, `suggest_library_item`, `get_library_stats`, `delete_library_item`.
+  One backlog for books, movies, shows, games, podcasts and courses.
+- New **calendar export**: `export_calendar` writes an `.ics` file (time blocks, task due
+  dates, birthdays, countdowns, trips, expiry dates, chores, renewals, decision reviews) with
+  stable ids, so a newer import updates earlier events instead of duplicating them.
+- New **tool reference** `docs/TOOLS.md`, generated from the schemas and checked by a test.
+- README restructured (quick tour, contents, demo); release history moved to
+  [CHANGELOG.md](CHANGELOG.md); added SECURITY.md and a pull request template.
+- Doctor, repair suggestions, search, backup, restore, export and recently deleted cover the
+  three new stores.
+- 81 new tests - suite grew from 4859 to 4940.
+
 **v1.47.0 - Recently Deleted, Recommendation Ledger, Pinned Backups**
 - New **recently deleted**: `get_trash`, `restore_deleted`, `empty_trash`. Every
   planner delete or clear tool now keeps what it removed for 30 days, so a wrong
@@ -2123,127 +2205,25 @@ phrased as a nudge, nothing more.
 - Thanks to Matt Abate for the report (issue #34).
 - 24 new tests - suite grew from 4698 to 4722.
 
-**v1.46.0 - Chores, Expiry Dates, Routines, Gift Ideas, Decisions**
-- New **chores**: `add_chore`, `complete_chore`, `get_chores`, `update_chore`,
-  `delete_chore` for anything that repeats, counted from the last time it was done.
-- New **expiry dates**: `add_expiry`, `get_expiries`, `renew_expiry`,
-  `update_expiry`, `delete_expiry` with a reminder window and renewal history.
-- New **routines**: `add_routine`, `get_routines`, `check_routine_step`,
-  `update_routine`, `delete_routine` with per-day ticks and streaks.
-- New **gift ideas**: `add_gift_idea`, `get_gift_ideas`, `update_gift_idea`,
-  `delete_gift_idea`, linked to birthdays in the people list.
-- New **decision journal**: `add_decision`, `get_decisions`, `review_decision`,
-  `update_decision`, `delete_decision` with confidence versus outcome.
-- New **`get_week_ahead`**: one calendar over everything with a date.
-- Due chores, expiring documents, gifts to buy and decisions to review appear in
-  the proactive nudges and in `get_today_agenda`; routines still to finish are
-  in the agenda too. The closing summary, `search_everything`, the doctor and
-  `get_repair_suggestions` cover the five new stores; backup, restore, export
-  and rekey do as well.
-- 379 new tests - suite grew from 4319 to 4698.
+Older releases: see [CHANGELOG.md](CHANGELOG.md).
 
-**v1.45.0 - Time Blocks, Objectives, Recipes, Trips**
-- New **time blocks**: `add_time_block`, `get_day_plan`, `update_time_block`,
-  `delete_time_block`, `finish_time_block`, `find_free_time`, `schedule_task`,
-  `get_time_allocation`.
-- New **objectives and key results**: `add_objective`, `add_key_result`,
-  `record_key_result`, `get_okrs`, `update_okr`, `delete_okr` with pace.
-- New **recipes and meal plan**: `add_recipe`, `get_recipes`, `get_recipe`,
-  `update_recipe`, `delete_recipe`, `suggest_recipes`, `plan_meal`,
-  `get_meal_plan`, `clear_meals`, `log_planned_meal`, `shopping_from_plan`.
-- New **trips**: `add_trip`, `get_trips`, `get_trip`, `update_trip`,
-  `delete_trip`, `add_packing_items`, `pack_items`, `remove_packing_items`,
-  `add_itinerary_item`, `remove_itinerary_item`.
-- New **`get_symptom_triggers`**, **`search_everything`**,
-  **`get_closing_summary`** and **`get_repair_suggestions`**.
-- Upcoming blocks, objectives about to end and trips appear in the proactive
-  nudges and in `get_today_agenda`; the doctor checks the five new stores;
-  backup, restore, export and rekey cover them.
-- 665 new tests - suite grew from 3654 to 4319.
+---
 
-**v1.44.0 - Income, Debts, Countdowns, Supplies**
-- New **income** tracker: `log_income` and `get_cash_flow` (income vs logged
-  spending per month: net, savings rate, average, sources). Income works with
-  `list_logs`, `edit_log`, `delete_log`, `undo_last_log`, backdating and
-  `log_many`.
-- New **debts**: `add_debt`, `record_debt_payment`, `get_debts`, `update_debt`,
-  `delete_debt` for money you owe and money owed to you, with partial payments,
-  due dates and overdue flags.
-- New **countdowns**: `add_countdown`, `get_countdowns`, `update_countdown`,
-  `delete_countdown` for days until and since, with yearly anniversaries.
-- New **supplies**: `add_supply`, `refill_supply`, `get_supplies`,
-  `update_supply`, `delete_supply` with remaining count and run-out date.
-- Debts that are due, countdowns and supplies about to run out appear in the
-  proactive nudges (now up to three planner items) and in `get_today_agenda`;
-  the doctor checks the four new stores and future-dated income; backup,
-  restore, export and rekey cover them.
-- Fix: the `date` property of `log_symptom` was shared with other schemas.
-- 315 new tests - suite grew from 3339 to 3654.
+## Running Tests
 
-**v1.43.0 - Lists, Savings Goals, Symptoms, Notes**
-- New **lists**: `add_list_items`, `get_list`, `get_lists`, `check_list_item`,
-  `remove_list_items`, `clear_checked_items`, `delete_list` for the shopping
-  list and any other named checklist.
-- New **savings goals**: `add_savings_goal`, `contribute_to_savings`,
-  `get_savings`, `update_savings_goal`, `delete_savings_goal` with progress,
-  real pace, estimated finish day and the monthly amount needed for a deadline.
-- New **symptom tracker**: `log_symptom` and `get_symptom_summary` (severity,
-  duration, triggers, frequency trend, worst weekday, sleep comparison).
-  Symptoms are a tracker like the others: `list_logs`, `edit_log`,
-  `delete_log`, `undo_last_log`, backdating and `log_many` work on them.
-- New **notes**: `add_note`, `list_notes`, `search_notes`, `update_note`,
-  `delete_note` with tags and pins.
-- Savings goals close to their deadline appear in the proactive nudges and in
-  `get_today_agenda`; the doctor checks the four new stores and now also looks
-  for future-dated body readings and symptoms; backup, restore, export and
-  rekey cover the new stores.
-- 354 new tests - suite grew from 2985 to 3339.
+```bash
+python -m pytest tests/ -v
+python -c "from environments.life_os_env import smoke_test; smoke_test()"
+```
 
-**v1.42.0 - Planner: Tasks, Body Metrics, Subscriptions, People, Agenda**
-- New **tasks**: `add_task`, `list_tasks`, `complete_task`, `update_task`,
-  `delete_task`, `get_task_summary`, `clear_done_tasks` with natural due dates,
-  priority, tags and daily/weekdays/weekly/monthly repeats.
-- New **body metrics**: `log_body_metric`, `get_body_trend`, `set_body_goal`
-  for weight, body fat, waist, hips, resting heart rate, blood pressure,
-  glucose, temperature and SpO2, with unit conversion, weekly trend and goal
-  ETA. Body readings join `list_logs`, `edit_log`, `delete_log`, backdating and
-  `log_many`.
-- New **subscriptions**: add, list, update, cancel, resume, delete, summary and
-  `pay_subscription` (logs the expense), with monthly-equivalent totals and
-  month-end-safe renewal dates.
-- New **people**: birthdays, keep-in-touch goals, contact history,
-  `get_people_due`.
-- New **`get_today_agenda`** combining tasks, reminders, renewals, birthdays,
-  overdue catch-ups, streaks at risk and budget alerts.
-- Proactive nudges cover overdue tasks, renewals and people; the doctor gets a
-  planner check; backup, restore, export and rekey cover the four new stores.
-- `clock.py` gains `parse_day` and `add_months`.
-- 407 new tests - suite grew from 2578 to 2985.
+## Why This Is Different
 
-**v1.41.0 - Habit Check-ins, Day View, Batch Logging**
-- **Fix:** `update_habit` counted every call as a new day. Checking a habit in
-  twice on one day inflated the streak (and the freeze counter), and a gap of
-  several days never reset it. Check-ins are now one per day, a missed day
-  restarts the streak, and `update_habit` takes an optional `date` (recorded
-  for the analytics, running streak untouched).
-- Hydration joins the entry tools (`list_logs`, `edit_log`, `delete_log`,
-  `undo_last_log`, `delete_entry` cascade): the glass log can be corrected and
-  the running "today" counter is recomputed.
-- New `get_day_log` (everything logged on a day, with ids), `search_logs`
-  (text search across the trackers), `find_duplicate_logs` (identical entries
-  on the same day, report only) and `log_many` (up to 50 logs in one call,
-  validated up front).
-- Doctor: the entry-id check now covers hydration rows.
-- 99 new tests - suite grew from 2479 to 2578.
+Every other agent in this hackathon does something **for** you.
+Hermes Life OS becomes something **with** you.
 
-**v1.40.0 - Fix Any Log, Undo, Catch-Up**
-- New **`list_logs`, `edit_log`, `delete_log`** for 11 trackers: until now
-  only expenses could be corrected, so a wrong meal or a duplicate workout
-  stayed in every average and streak. Edits are validated all-or-nothing and
-  keep the memory-journal entry in sync.
-- New **`undo_last_log`**: removes the most recent log of a tracker, or of
-  whatever was logged last.
-- New **`get_logging_gaps`**: days with nothing logged (one line per used
-  tracker, or every empty day for one tracker), to fill in with `date`.
-- `log_dream` accepts `date`. Every new log carries a persistent `id`, and its
-  journal entry a matc
+It tracks nutrition, sleep, fitness, stress, focus, hydration, habits, and goals -
+and connects them all. Bad Monday? It checks if you slept poorly Sunday.
+Energy crash at 3pm? It looks at what you ate for lunch.
+Mood dip this week? It finds the pattern you missed.
+
+That is not a tool. That is a presence that accumulates.

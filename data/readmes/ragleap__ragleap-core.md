@@ -34,14 +34,17 @@
 
 [![PyPI ragleap-memory](https://img.shields.io/pypi/v/ragleap-memory?label=ragleap-memory)](https://pypi.org/project/ragleap-memory/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-memory?label=downloads)](https://pypi.org/project/ragleap-memory/)
 [![PyPI ragleap-security](https://img.shields.io/pypi/v/ragleap-security?label=ragleap-security)](https://pypi.org/project/ragleap-security/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-security?label=downloads)](https://pypi.org/project/ragleap-security/)
+[![PyPI ragleap-physical](https://img.shields.io/pypi/v/ragleap-physical?label=ragleap-physical)](https://pypi.org/project/ragleap-physical/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-physical?label=downloads)](https://pypi.org/project/ragleap-physical/)
 
-**DevOps libraries (Python)**
+**DevOps libraries (Python; Java jars for terraform and ansible)**
 
 [![PyPI ragleap-ops](https://img.shields.io/pypi/v/ragleap-ops?label=ragleap-ops)](https://pypi.org/project/ragleap-ops/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-ops?label=downloads)](https://pypi.org/project/ragleap-ops/)
 [![PyPI ragleap-app-chart](https://img.shields.io/pypi/v/ragleap-app-chart?label=ragleap-app-chart)](https://pypi.org/project/ragleap-app-chart/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-app-chart?label=downloads)](https://pypi.org/project/ragleap-app-chart/)
 [![PyPI ragleap-observability](https://img.shields.io/pypi/v/ragleap-observability?label=ragleap-observability)](https://pypi.org/project/ragleap-observability/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-observability?label=downloads)](https://pypi.org/project/ragleap-observability/)
 [![PyPI ragleap-terraform](https://img.shields.io/pypi/v/ragleap-terraform?label=ragleap-terraform)](https://pypi.org/project/ragleap-terraform/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-terraform?label=downloads)](https://pypi.org/project/ragleap-terraform/)
+[![Maven Central ragleap-terraform (Java)](https://img.shields.io/maven-central/v/io.github.antonyrag/ragleap-terraform?label=ragleap-terraform%20(Java))](https://central.sonatype.com/artifact/io.github.antonyrag/ragleap-terraform)
 [![PyPI ragleap-ansible](https://img.shields.io/pypi/v/ragleap-ansible?label=ragleap-ansible)](https://pypi.org/project/ragleap-ansible/) [![Downloads](https://img.shields.io/pepy/dt/ragleap-ansible?label=downloads)](https://pypi.org/project/ragleap-ansible/)
+[![Maven Central ragleap-ansible (Java)](https://img.shields.io/maven-central/v/io.github.antonyrag/ragleap-ansible?label=ragleap-ansible%20(Java))](https://central.sonatype.com/artifact/io.github.antonyrag/ragleap-ansible)
 
 **Community**
 
@@ -197,6 +200,8 @@ pip install ragleap-terraform
 uv add ragleap-terraform
 ```
 
+The same module files are also on Maven Central as a jar, `io.github.antonyrag:ragleap-terraform` (see the Maven Central badge in the list above for the current version). It is not a code port: it carries the files of the PyPI wheel, and a small class reads them from the classpath, for example `RagleapTerraform.readString("modules/kind-cluster/main.tf")`. Terraform itself is not included.
+
 Prefer Ansible for a fresh Ubuntu server? `ragleap-ansible` is a set of Ansible roles that create a deploy user, set up sudo and unattended upgrades, and can optionally harden SSH and enable a firewall. It does not install k3s, Helm or the charts yet, and it has been tested in a container only:
 
 ```bash
@@ -204,6 +209,8 @@ pip install ragleap-ansible
 # or, with uv
 uv add ragleap-ansible
 ```
+
+The same files are also on Maven Central as a jar, `io.github.antonyrag:ragleap-ansible` (see the Maven Central badge in the list above for the current version). It is not a code port: it carries the files of the PyPI wheel, and a small read-only class reads them from the classpath, for example `RagleapAnsible.readPlaybookString("bootstrap.yml")`. It does not run Ansible.
 
 Looking at open, local speech models? `ragleap-voice` is a pre-alpha library (MIT) with `transcribe()` and `synthesize()`, an optional Whisper large-v3 engine and an Indic Parler-TTS engine, on top of a licence-checked manifest of candidate models with hash-verified downloads from Hugging Face. Every model is still unverified and none is a default, each engine has been tested on only a few clips, and no claim is made that it is better than any other product:
 
@@ -213,7 +220,7 @@ pip install ragleap-voice
 uv add ragleap-voice
 ```
 
-Need durable, tenant-scoped long-term memory for an LLM app? `ragleap-memory` stores it in one SQLite file with FTS5 keyword search, typed entries with trust labels, supersede and erase (alpha, not independently audited):
+Need durable, tenant-scoped long-term memory for an LLM app? `ragleap-memory` stores it in one SQLite file with FTS5 keyword search, typed entries with trust labels, supersede and erase, plus (version 0.2.0) a token budget on search, per-tenant quotas, one file per tenant and download/upload of a memory (alpha, not independently audited):
 
 ```bash
 pip install ragleap-memory
@@ -375,7 +382,7 @@ ragleap-core/
 ├── skills/ragleap/        # Read-only skill for coding agents
 ├── .codex-plugin/         # Plugin manifest for that skill
 ├── packages/              # Standalone pip packages (ragleap-rag, -graph, -tools, ...)
-├── java/                  # Java ports of ragleap-rag, ragleap-graph and ragleap-vectorstores
+├── java/                  # Java ports of ragleap-rag, ragleap-graph and ragleap-vectorstores, plus jars of the ragleap-terraform and ragleap-ansible files
 ├── .github/workflows/     # CI: compile check, Docker build, smoke tests
 ├── docker-compose.yml     # app + db + voice, plus optional neo4j, redis, worker, sandbox and ollama profiles
 └── Dockerfile
@@ -428,12 +435,13 @@ pip install ragleap-rag
 - **`ragleap-integrations`** — MCP (Model Context Protocol) client over Streamable HTTP that returns `ragleap-tools` `Tool` objects. The owner configures the servers and an exact `server.tool` allowlist; the model only supplies arguments. HTTPS-only transport with DNS pinning and a hard wall-clock deadline. Live-checked against public servers: DeepWiki on the legacy protocol path, and Google Cloud's MCP endpoints on the newest revision (2026-07-28; discovery only). Also live-checked on 2026-10-17 (0.1.1) and again on 2026-10-24 (the published 0.2.0 wheel) against a third party's public mock MCP servers (mcpplaygroundonline.com): modern-path `tools/call` succeeded (pinned and unpinned), bearer-token authentication worked (HTTP 401 without a token, success with a fresh one) and the legacy fallback worked. Not yet live-verified: `x-mcp-header` mirroring, pagination and this client's handling of a live `-32022` reply. The default response cap is 1 MiB (256 KiB in 0.1.0, which Google Cloud's Pub/Sub MCP endpoint exceeded); raise `max_response_bytes` if discovery fails. Version 0.3.0 adds multi-tenant use (`McpHub`: a token per request for each `Scope`, narrowed allowlists, per-tenant approval and rate limits, scoped audit events; `ragleap-security` is an optional extra); it was live-checked on 2026-10-26 (branch source) and 2026-10-27 (published wheel) against a mock MCP auth server, which cannot tell tenants apart, so separation is shown from the requests that were sent. Version 0.2.0 added `connect(url, allow=[...])` (one call from a URL to ready tools and a `ragleap-tools` Toolkit) and governance: server tool hints are treated as untrusted, flagged tools can require approval through an `approve` hook, and an `on_event` hook reports one audit event per discovery and per call (never arguments or results). Live-checked on 2026-10-25 against Google Cloud's Pub/Sub MCP endpoint (`tools/list` only, no credentials): `connect()`, the annotation parsing and the approval flags matched an independent calculation from the real hints. The `approve` hook, its denial text and the per-call audit events are tested against fake servers only. No curated business connectors and no agent loop yet. Install with `pip install ragleap-integrations` or `uv add ragleap-integrations`.
 - **`ragleap-agents`** — a small act-observe agent loop over `ragleap-tools` Tool objects, one proposed action at a time: schema-checked actions, untrusted tool results, a taint rule that forces approval for outbound actions after untrusted content, pause and resume, and (from 0.5.0) sub-agents through a delegate tool. Standard library plus `ragleap-tools`; alpha; live results with real models are limited (see its release notes). Install with `pip install ragleap-agents`.
 - **`ragleap-security`** — small, auditable security primitives: immutable tenant scopes, a hash-chained audit log (tamper-evident, not tamper-proof), secrets that do not print themselves with a heuristic redactor, and hard input limits. Standard library only; alpha; not independently audited. Install with `pip install ragleap-security`.
-- **`ragleap-memory`** — durable, tenant-scoped long-term memory in one SQLite file: FTS5 keyword search, typed entries with trust labels (new entries default to untrusted), supersede, forget, export, and erase that removes the text from the file. Needs `ragleap-security`; alpha; retrieval quality not benchmarked; not independently audited. Install with `pip install ragleap-memory`.
+- **`ragleap-memory`** — durable, tenant-scoped long-term memory in one SQLite file: FTS5 keyword search, typed entries with trust labels (new entries default to untrusted), supersede, forget, export, and erase that removes the text from the file. Version 0.2.0 adds a token budget on search (`max_tokens`), usage counters and per-tenant quotas, `ShardedStore` (one file per tenant) and download/upload of a memory as a file. Needs `ragleap-security`; alpha; retrieval quality not benchmarked; not independently audited. Install with `pip install ragleap-memory`.
+- **`ragleap-physical`** — a simulation-first, observe-first safety bridge between AI agents and simulators (pre-alpha, simulation only). The AI can only propose; a named person approves the exact change; limits are checked again when it is applied; the outcome is verified in the simulator. Four AI-facing tools and a small MCP server, an operator console for the human approval step, MuJoCo adapters (optional extra), workspace limits, two- and three-joint arms, an offline ROS 2 observe-only mock, a simulated machine tool, and observe-only energy and MTConnect mocks. Not built: MQTT, PLC or real-robot bridges; nothing here controls real hardware. Not independently audited. Install with `pip install ragleap-physical`.
 - **`ragleap-ops`** — Kubernetes deployment manifests for RagLeap Core, live-tested end-to-end on a real cluster. Install with `pip install ragleap-ops` or `uv add ragleap-ops`.
 - **`ragleap-app-chart`** — generic, reusable Helm chart for deploying arbitrary services to Kubernetes, not RagLeap-specific. Point it at your own app via a `services:` list. Install with `pip install ragleap-app-chart` or `uv add ragleap-app-chart`.
 - **`ragleap-observability`** — Prometheus, Grafana, Loki + Promtail for `ragleap-ops`, live-verified end-to-end against a real cluster (real connection confirmed, real non-zero metrics returned; 21+ real log streams with correct namespace/pod/container labels). AlertManager is wired to Prometheus with a first real alert rule, plus optional Slack/email receivers (off by default; delivery verified against a stand-in, real send not yet confirmed). Install with `pip install ragleap-observability` or `uv add ragleap-observability`.
-- **`ragleap-terraform`** — Terraform module that creates a local kind cluster and installs the RagLeap Helm charts, applied and destroyed on a real cluster (no cloud modules yet). Install with `pip install ragleap-terraform` or `uv add ragleap-terraform`.
-- **`ragleap-ansible`** — Ansible roles that prepare and harden a fresh Ubuntu server: deploy user, sudo, unattended upgrades, opt-in SSH hardening and an opt-in firewall (tested in a container; does not install k3s, Helm or the charts yet). Install with `pip install ragleap-ansible` or `uv add ragleap-ansible`.
+- **`ragleap-terraform`** — Terraform module that creates a local kind cluster and installs the RagLeap Helm charts, applied and destroyed on a real cluster (no cloud modules yet). Install with `pip install ragleap-terraform` or `uv add ragleap-terraform`. The same files are also on Maven Central as a jar, `io.github.antonyrag:ragleap-terraform` (not a code port).
+- **`ragleap-ansible`** — Ansible roles that prepare and harden a fresh Ubuntu server: deploy user, sudo, unattended upgrades, opt-in SSH hardening and an opt-in firewall (tested in a container; does not install k3s, Helm or the charts yet). Install with `pip install ragleap-ansible` or `uv add ragleap-ansible`. The same files are also on Maven Central as a jar, `io.github.antonyrag:ragleap-ansible` (not a code port).
 - **`ragleap-voice`** — pre-alpha, open and local (MIT). `transcribe()` and `synthesize()` with an optional Whisper large-v3 engine and an Indic Parler-TTS engine, on top of a licence-checked manifest and hash-verified model downloads. Every model is still unverified and none is a default; each engine has been tested on only a few clips. Install with `pip install ragleap-voice` or `uv add ragleap-voice` (engines are optional extras, e.g. `ragleap-voice[whisper]`).
 
 All fourteen are MIT licensed. Browse the full package index at [packages.ragleap.com](https://packages.ragleap.com).

@@ -250,9 +250,14 @@ provided you give appropriate credit — please cite the paper below.
 If you use the dataset or artifact in your research, please cite our paper:
 
 ```bibtex
-@article{freeinference2026requests,
-  title={From Requests to Sessions: A Large-Scale Characterization of Human-Driven Agentic Workloads},
-  author={Nixon, William and Tian, Muxin and Zheng, Yunjia and Gunawi, Haryadi S. and Yang, Juncheng},
-  year={2026}
+@misc{nixon2026requests,
+  title        = {From Requests to Sessions: A Large-Scale Characterization
+                  of Human-Driven Agentic Workloads},
+  author       = {Nixon, William and Tian, Muxin and Zheng, Yunjia
+                  and Gunawi, Haryadi S. and Yang, Juncheng},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.23903440},
+  url          = {https://doi.org/10.5281/zenodo.23903440}
 }
 ```

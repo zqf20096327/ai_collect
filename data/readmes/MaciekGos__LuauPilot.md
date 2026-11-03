@@ -1,9 +1,23 @@
 <p align="center"><img src="assets/logo-wide-dark.png" alt="LuauPilot" width="320"></p>
 
-# LuauPilot
+# LuauPilot development suspended
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+
+> [!WARNING]
+> **LuauPilot development is suspended until further notice.**
+>
+> I'm taking a break from LuauPilot to focus on another project: **Jellyfish Parental Controls**.
+>
+> I may still manage to publish a 0.04 update with a fix in the meantime, but **I can't promise anything**.
+>
+> There is currently no estimated date for when development will resume.
+>
+> **Forks are still welcome!** You're free to fork the repository, modify the project and publish your own versions under the MIT License. Just make sure to follow the license terms.
+
+
+
 
 ## ⚠️ Official Downloads & Security
 

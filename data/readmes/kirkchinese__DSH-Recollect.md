@@ -1,0 +1,163 @@
+# Recollect
+
+[English](README.en.md) · [npm](https://www.npmjs.com/package/@kirkchinese/dsh-recollect) · [更新记录](CHANGELOG.md) · [问题反馈](https://github.com/kirkchinese/DSH-Recollect/issues) · 兄弟项目 [CiteCiter](https://github.com/kirkchinese/CiteCiter)
+
+![Recollect](assets/hero/recollect-hero.png)
+
+**换一个模型，记忆也不会丢。**
+
+Recollect 是 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的插件：一套**兼容 Claude Code 的记忆系统**。它沿用 Claude Code 的约定：按目录分层的 `CLAUDE.md`、`@import`、`.claude/rules`，以及以 `MEMORY.md` 为索引的持久记忆。DeepSeek、GPT、Qwen、Claude 等所有模型都拿到同一套完整的记忆指导，不会因为换了模型就被降级。
+
+## 为什么需要它
+
+在 Claude Code 里，记忆写作指导会随模型变化：不在它模型目录里的模型只能拿到一段很短的说明，"长期积累"、"用户说记住就立即保存"、各类型的示例都被删掉了。这类模型因此很少主动写记忆。Recollect 用自己编写的提示词（中文和英文两套）和完全一样的行为约定，让每个模型都能：
+
+- 在合适的时机**主动记录**用户画像、工作方式反馈、项目背景和外部资源指针；
+- 每个会话开始时读到记忆索引，并在需要时读取或召回记忆正文；
+- 记忆会过期，所以推荐之前先核验。
+
+## 与 Claude Code 的兼容范围
+
+| 内容 | 兼容程度 |
+| --- | --- |
+| 指令文件 | **直接读取同一份文件**：`~/.claude/CLAUDE.md`、`~/.claude/rules/`、项目里的 `CLAUDE.md`、`.claude/CLAUDE.md`、`.claude/rules/`、`CLAUDE.local.md`、`@import`、`/etc/claude-code`。另外还会读取 `AGENTS.md` |
+| 记忆格式 | **一致**：每条记忆一个文件，带 frontmatter（`name`、`description`、`metadata.type`），四种类型，`MEMORY.md` 作索引 |
+| 记忆存储 | **默认分开存放**：Recollect 写在 `~/.dsh/memory/projects/<slug>/`，Claude Code 写在 `~/.claude/projects/<slug>/memory/`。两边的 slug 计算规则相同 |
+| 已有的 Claude Code 记忆 | 用 `/memory-import` 复制过来（`all` 导入全部项目，`--dry-run` 只预览）。来源只读，不会覆盖已有文件，索引按链接去重后合并 |
+| 共用同一份记忆 | 可选全局共用（`memory.shareWithClaudeCode: true`）或按项目共用（`memory.shareProjects`）。面板中的「与 Claude Code 共用本项目」开关控制当前项目；「预览导入 → 确认导入」按钮用于一次性复制。共用时两边会修改同一批文件，Claude Code 的后台整理也会整理它们 |
+| 未实现 | 团队记忆（`CLAUDE_MEMORY_STORES`）、账号记忆、`#` 快捷写入 |
+
+## 安装
+
+| DSH 版本 | Recollect 版本 |
+| --- | --- |
+| `0.2.0-rc.2` 及以后（含官方桌面版；已测 `0.2.1-rc.2`、`0.2.1-rc.5`） | `0.5.0` |
+
+**官方桌面版：** 在插件页安装 npm 包 `@kirkchinese/dsh-recollect`，或在 Git 地址一栏填写 `https://github.com/kirkchinese/DSH-Recollect.git`，然后按提示重启。
+
+**命令行与 Web：**
+
+```sh
+dsh plugin --profile web add @kirkchinese/dsh-recollect@0.5.0
+```
+
+也可以从仓库安装某个发布标签：
+
+```sh
+dsh plugin --profile web add "git+https://github.com/kirkchinese/DSH-Recollect.git#v0.5.0"
+```
+
+安装后重启 DSH 并刷新页面，新会话生效。Recollect 会接管指令文件的加载，并自动过滤 DSH 自带的 AGENTS.md 加载器注入的内容，避免同一份文件被读两次。
+
+### 在 Windows 上安装
+
+在 PowerShell 中通过 npm 包安装（官方桌面版也可以在插件页填写同一个 npm 包名）：
+
+```powershell
+dsh plugin --profile web add "@kirkchinese/dsh-recollect@0.5.0"
+```
+
+安装后重启 DSH 并刷新页面。已知的平台差异：
+
+- 后台提取和 dream 的子代理只放行 bash 只读命令（以及受限的记忆删除命令）；Windows 上 DSH 使用 pwsh，因此它们不能运行 shell 命令。这两个功能默认关闭；常规记忆读写、共用与导入不受此限制。
+- `instructions.managedDirs` 默认是 `/etc/claude-code`，Windows 通常没有这个目录；需要组织策略时改成实际存在的绝对目录。
+- slug 与 Claude Code 使用同一规则：`C:\Users\me\proj` 会变成 `C--Users-me-proj`，按项目共用时能匹配同一份记忆。
+
+### 版本支持策略
+
+`engines.dsh` 只设下限 `>=0.2.0-rc.2`，DSH peer 依赖也使用开放范围，因此新的 DSH rc 不会被安装检查拦下。如果宿主接口变化，相关功能会报错，而不是因为版本上限导致整个插件被拒绝加载。CI 覆盖上表两个已测宿主版本，以及 Linux / Windows；开放范围并不代表未来接口永远不变。
+
+## 它做什么
+
+| 功能 | 默认 | 说明 |
+| --- | --- | --- |
+| 指令文件 | 开 | 按层级加载：组织策略 `/etc/claude-code` → 用户（`~/.claude/CLAUDE.md`、`~/.dsh/AGENTS.md`、`~/.agents/AGENTS.md`、`~/.claude/rules`）→ 从根目录到当前目录逐层加载 `CLAUDE.md`/`AGENTS.md`（`@import` 就地展开，最多 4 层）→ `.claude/CLAUDE.md` → rules（递归 `.md`）→ `CLAUDE.local.md`/`AGENTS.local.md`。各层并列拼接，不截断；单个文件超过 4 MiB 时跳过 |
+| 持久记忆 | 开 | system prompt 里放完整的记忆写作指导：四种类型、不该存什么、两步保存法、访问与核验规则。首条消息注入 `MEMORY.md` 索引，超过 200 行或 25 000 字符时截断并附警告 |
+| 刷新 | 开 | resume 时只注入发生变化的文件；上下文压缩把指令摘要掉以后整份重新注入；切换目录或暂停、恢复记忆时也会刷新 |
+| 子目录发现 | 开 | 读写子目录里的文件时，注入该目录的指令文件，以及 frontmatter 里 `paths:` 匹配的条件 rule |
+| 写后检查 | 开 | 写入记忆后立即提醒：索引超限、单个文件超过召回上限、缺少 `description`、出现 `-2` 式的续写文件 |
+| 召回 | 关 | 每次提问时检索最多 5 条相关记忆正文。`bm25` 在本地检索，支持中英日韩；`selector` 用一次模型调用挑选 |
+| 后台提取 | 关 | 每轮结束后由一个分叉的子智能体补写主对话漏记的内容，写入范围被限制在记忆目录内 |
+| 整理（dream） | 关 | 距上次整理超过 24 小时、且期间有 5 个以上会话时，合并、修正和精简记忆目录。也可以用 `/dream` 手动触发 |
+| 智能体记忆 | 关 | 给指定预设的智能体一份独立记忆，作用域为 `user`、`project` 或 `local` |
+
+记忆存放在 `~/.dsh/memory/projects/<git 根目录对应的 slug>/`，同一仓库的不同子目录和 worktree 共用一份。
+
+**写入方式会自动适配沙箱。** 沙箱允许写记忆目录时，模型直接用内置的 `write`/`edit`；在 `workspace-write` 等模式下记忆目录位于工作区之外，Recollect 会挂载专用工具 `memory_list/read/write/edit/delete`，指导文本也随之切换。这些工具只能写记忆目录里的 `.md` 文件，并会拒绝写入密钥。只读沙箱下不写记忆。
+
+## 设置页
+
+有两个入口：「设置」弹窗左侧的「记忆」分区，以及侧边栏「插件」→ Recollect → 组件行「recollect」。两处是同一份表单，可以调整全部选项：记忆开关与写入方式、记忆文本语言、是否与 Claude Code 共用目录、指令文件的措辞强度与排除规则、召回、后台提取和整理。保存后立即生效，并写入 profile 覆盖；当前对话里已经注入的内容会在下次刷新时更新。
+
+「记忆」分区顶部是「当前加载情况」：选一个工作目录（默认取最近的根会话，排除子代理），列出会注入给模型的指令文件和记忆索引（类型与字符数），以及记忆目录里的主题文件（类型、描述、更新时间）。
+
+面板显示 Claude Code 的记忆目录和主题文件条数。「与 Claude Code 共用本项目」按 Git 根目录保存选择；关闭时会移除该项目的全部别名。全局共用、设置固定 `memory.directory` 或表单不可写时，开关不可用。要保留独立副本，点击「预览导入」，检查复制/相同/冲突数量后再「确认导入」；冲突保留现有文件。切换目录或配置版本变化会清除旧预览。导入后，使用同一目标记忆目录的根会话会在下一次请求时刷新。
+
+## 命令
+
+| 命令 | 作用 |
+| --- | --- |
+| `/memory` | 查看记忆状态、写入方式和已加载的全部指令与记忆文件 |
+| `/pause-memory` | 在本会话中暂停或恢复记忆，状态在重启后保留 |
+| `/remember <内容>` | 让模型把这句话存进记忆 |
+| `/memory-import [all] [--dry-run]` | 复制 Claude Code 已有记忆；单项目已共用则拒绝，`all` 跳过按项目共用的目录，`--dry-run` 只预览 |
+| `/dream` | 立即整理本项目的记忆目录（需先开启 dream） |
+
+记忆关闭时禁止导入。全局共用时 `all` 拒绝执行；单项目只在该项目实际共用时拒绝。固定 `memory.directory` 优先于共用选择；仅配置 `shareProjects` 时，`all` 会把所有项目导入固定目录，不跳过任何项目。来源始终只读，目标同名文件不覆盖，索引按链接去重合并。命令输出随 `language` 使用中文或英文。
+
+## 配置
+
+也可以直接编辑 profile 的 `cordis.patch.yml`。手写覆盖会替换整个 config 对象，未写出的字段使用默认值：
+
+```yaml
+- id: recollect
+  name: '@kirkchinese/dsh-recollect'
+  config:
+    language: zh          # 记忆文本与命令输出语言：zh / en
+    memory:
+      shareWithClaudeCode: false  # 所有项目共用 Claude Code 记忆
+      shareProjects: []          # 按 Git 根目录匹配的绝对项目目录
+      directory: ""              # 固定目录优先于全局和按项目共用
+      claudeHome: ""             # 留空使用 $CLAUDE_CONFIG_DIR 或 ~/.claude
+    recall:
+      enabled: true
+      method: bm25        # 或 selector
+    extract:
+      enabled: false
+    dream:
+      enabled: false
+      minHours: 24
+      minSessions: 5
+    instructions:
+      authority: strong   # strong：指令文件优先于默认行为（与 Claude Code 一致）；soft：仅作参考
+```
+
+共用优先级：固定 `memory.directory` → 全局 `shareWithClaudeCode` → 按项目 `shareProjects` → 独立的 `memory.root/projects/<slug>/`。空或不完整的 `.git` 目录不再算仓库根；无有效仓库时使用工作目录。
+
+全部字段见 [lib/config.js](lib/config.js)。环境变量 `DSH_RECOLLECT_DISABLE_MEMORY=1` 关闭记忆（设为 `0` 则强制开启），`DSH_RECOLLECT_DISABLE_INSTRUCTIONS=1` 关闭指令文件。
+
+## 与 Claude Code 的差异
+
+- 所有模型拿到同一套完整指导，不按模型名单降级或关闭记忆。
+- 提示词都是独立编写的，提供中文和英文两套，不包含 Claude Code 的原文。召回使用独立实现的 BM25F。
+- 除 `CLAUDE.md` 全套文件外，也读取 `AGENTS.md`、`.agents/rules`、`AGENTS.local.md`；同一目录内内容相同的文件只注入一次。
+- 注入前清洗不可见字符和控制字符，并转义文件内容和路径中的 `</system-reminder>`。
+- 新增 `/remember`。设置在「插件」页里调整；`/memory` 以文本形式显示当前状态和已加载的文件。
+
+## 已知限制
+
+- DSH 在上下文溢出时，会在同一步内压缩并重试，不再经过注入流程，所以这一次重试看不到指令块，要到下一步才补回。
+- headless 模式在一轮结束后立即退出，后台提取不会运行。
+- 整理锁的做法是写入 PID 后回读校验，不是原子操作；两个宿主进程同时整理同一目录时可能冲突。同一个 DSH 主目录请不要同时运行两个宿主进程。
+
+## 开发
+
+```sh
+npm test   # node --test，需要能解析到 DSH 宿主包
+```
+
+本项目与 Anthropic 无关。"Claude Code" 只用来说明兼容的文件约定。
+
+## 许可证
+
+[MIT](LICENSE)

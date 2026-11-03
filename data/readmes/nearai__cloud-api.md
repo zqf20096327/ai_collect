@@ -1,6 +1,6 @@
 # NEAR AI Cloud API
 
-A Rust-based cloud API for AI model inference, conversation management, and organization administration. Part of the NEAR AI platform alongside the Chat API.
+A Rust-based cloud API for AI model inference and organization administration. Part of the NEAR AI platform alongside the Chat API.
 
 ## Quick Start
 
@@ -193,6 +193,40 @@ Once all checks pass, you're ready to commit!
 ## API Documentation
 
 For Jev and self-hosted decision models, see [System One integration](docs/jev-systemone.md).
+
+### Temporary migration APIs
+
+During Stage I of the confidential-data migration, cloud-api keeps a small,
+authenticated, workspace-scoped surface so existing migration/export tooling
+can retrieve data it already identifies and existing account deletion can
+complete. This is not a new export API and does not add a Conversation-list
+endpoint.
+
+- Conversations: `POST /v1/conversations/batch`,
+  `GET /v1/conversations/{conversation_id}`, and
+  `GET /v1/conversations/{conversation_id}/items`, plus
+  `DELETE /v1/conversations/{conversation_id}`.
+- Files: `GET /v1/files`, `GET /v1/files/{file_id}`, and
+  `GET /v1/files/{file_id}/content`, plus `DELETE /v1/files/{file_id}`.
+
+Each temporary route requires an API key, is scoped to that key's workspace,
+and returns `Cache-Control: no-store`. Creation, upload, and every Conversation
+or File mutation other than the existing per-resource `DELETE` routes return
+`410 Gone`. The temporary routes will be removed after data migration.
+
+### Stateless Responses
+
+`POST /v1/responses` remains stateless and does not accept a Conversation
+reference, response history, or File input. Both transports normalize omitted
+or null `store` to `false` and reject `store: true`. Clients must send any
+inference history needed for a request themselves. After alias resolution,
+canonical `openai/` models use one native provider Responses inference; other
+models use the typed adapter, with a bounded inference loop for hosted web
+search. Both paths keep no response/item history. Clients execute
+`function` and `custom` tools, including tools grouped in a `namespace`, then
+replay the calls and results in their next request. See the [Responses compatibility and
+replay guide](docs/local-development.md#stateless-responses-and-attestation-retention)
+for streaming, reasoning, Codex tool declarations, and grammar support.
 
 Interactive API documentation is available when running the server:
 

@@ -297,7 +297,7 @@ kubectl create secret generic ktms-secrets \
   --from-literal=BOOTSTRAP_ADMIN_KEY="$(head -c 24 /dev/urandom | base64 | tr -d '/+=')"
 
 # 2. Install the release
-helm install ktms oci://ghcr.io/ai-process/charts/ktms --version 1.4.0 \
+helm install ktms oci://ghcr.io/ai-process/charts/ktms --version 1.5.0 \
   --set secrets.existingSecret=ktms-secrets \
   --set ingress.enabled=true \
   --set "ingress.hosts[0].host=proxy.example.com" \
@@ -322,10 +322,10 @@ Or build the image yourself: `docker build -t ktms .`
 
 ### Node agent
 
-`bin/ktms-node` runs next to a local inference engine (`ollama`, `vllm`, `tgi`, `llamacpp`),
+`bin/ktms-node` runs next to a local inference engine (`ollama`, `vllm`, `tgi`, `llamacpp`, `freetoken`),
 registers it with Keystone and sends heartbeats with the loaded models, GPU metrics and the
 engine's load: running and waiting requests from the `/metrics` of vLLM, TGI and llama.cpp
-(start `llama-server` with `--metrics`). Ollama has no such API, so its nodes report no queue. It
+(start `llama-server` with `--metrics`), and from FreeToken's `/v1/stats`. Ollama has no such API, so its nodes report no queue. It
 authenticates with a node key minted with the `MintNodeKey` admin RPC. KTMS dials the node,
 so the node must be reachable; the agent can do that itself:
 
@@ -348,7 +348,7 @@ cloudflared older than 2026.10.3 trusts the eMudhra intermediates whose keys lea
 
 Flags: `--proxy-addr` (default `127.0.0.1:50051`), `--tls` (dial over TLS with the system CA
 roots, for a proxy behind a TLS load balancer; off by default), `--node-id` (defaults to the
-hostname), `--node-name`, `--engine` (`ollama`, `vllm`, `tgi`, `llamacpp`, `decisions`, `generic`),
+hostname), `--node-name`, `--engine` (`ollama`, `vllm`, `tgi`, `llamacpp`, `freetoken`, `decisions`, `generic`),
 `--base-weight`, `--max-concurrent`.
 `--judge-model` (repeat or comma-separate) tags specific models on the node with the `judge` capability
 for local JEPA / decision evaluation, routing `/v1/decisions` and `Judge` calls to them.
@@ -417,10 +417,81 @@ routes at 100% (the agent logs a warning). `ktms-node schedule --file FILE` chec
 file and prints the level now and the next switch; `doctor` reports it too. Engines other than
 Ollama only stop being routed to.
 
+The owner can override the schedule for a while from the same machine:
+
+```
+ktms-node status                     # level, where it comes from, requests, models, next switch
+ktms-node pause 10m                  # 0% for 10 minutes (default 10m), then the schedule again
+ktms-node pause --until-next         # until the schedule's next switch (at most 24 h)
+ktms-node pause 10m --now            # also cut the requests running now; their callers get an error
+ktms-node level 30 --for 1h          # 30% for an hour
+ktms-node resume                     # back to the schedule now
+```
+
+A manual level lasts from 1 minute to 24 hours, ends by the wall clock (a Mac that slept past the
+end resumes on waking) and survives an agent restart (`~/.ktms-node/override.json`, see
+`--state-dir`). A manual pause does not warm the models before it ends, so the memory stays free
+for the owner; they load right after it, and the proxy falls back meanwhile (`--warm` keeps the
+schedule's behaviour). These commands, and the desktop tray, talk to the running agent over a Unix
+socket, `--control-socket` (default `~/.ktms-node/control.sock`, empty turns it off). It is
+owner-only: mode 0600, and a caller running as another user is refused. Its HTTP/JSON API
+(`GET /v1/status`, `GET /v1/events` as server-sent events, `POST`/`DELETE /v1/override`,
+`GET`/`PUT /v1/schedule`, `POST /v1/schedule/preview`, `GET /v1/stats`, `GET`/`PUT /v1/settings`)
+never returns the node key or any token.
+
+**Desktop tray.** `install-node.sh --tray` adds `ktms-node-tray`: a menu bar app on macOS
+(`~/Applications/Keystone Node.app`, started at login, no Dock icon) or a tray icon on Linux
+(StatusNotifierItem; GNOME needs the AppIndicator extension). The icon shows the level and where it
+comes from, a countdown during a manual pause, and a warning when the agent or KTMS does not
+answer. Its menu pauses for 5, 10 or 30 minutes or until the next switch, limits the node to 50, 30
+or 10% for an hour, cuts running requests, resumes the schedule and turns "Schedule set by KTMS" on
+or off. Its window, a page served on `127.0.0.1` that only the tray's one-time link opens, edits the
+schedule as a week grid or as text with a live preview, shows the usage log for 24 hours, 7 and 30
+days, and turns notifications (pause over, agent silent, schedule invalid) on or off. The tray is a
+client of the control socket and keeps no state of its own beyond `~/.ktms-node/tray.json`;
+quitting it leaves the node running.
+
+**Schedule set by KTMS.** With `--schedule-source=ktms`, or `ktms-node settings
+--schedule-source=ktms` (the tray's "Schedule set by KTMS") at run time, the node takes its
+schedule and load from KTMS and ignores its local file, which stays in place for when the setting
+is turned off. KTMS keeps one schedule per node id (`ktms nodes schedule set|show|list|delete`,
+the `node_schedules` file section, `SetNodeSchedule` in the Admin API), validated with the agent's
+parser, plus an optional override of 1 minute to 24 hours (`ktms nodes schedule override`,
+`SetNodeCapacityOverride`). It reaches the node with a heartbeat within about 15 seconds (KTMS
+re-reads a node's schedule at most every 10 s). The node stores the last
+one it got in `~/.ktms-node/managed-schedule`, so a restart without the proxy keeps it; before the
+first one it runs at 100%. The owner's own pause or level on the machine still wins over both.
+`ListNodes` shows each node's `schedule_source`, `capacity_source` and `capacity_until`.
+
 While the proxy refuses the node (wrong key, other node id, no allowed model) the agent does not
 exit and does not open a tunnel: it checks with the proxy first, then retries with a pause that
 grows to five minutes and says why in the log, so a supervisor never restarts it into a fresh
 Cloudflare tunnel per attempt.
+
+#### FreeToken
+
+[FreeToken](https://github.com/FlashML-org/FreeToken) runs large MoE models on one consumer
+NVIDIA RTX (30 to 50 series, Linux or Windows; not on a Mac, AMD or Intel): expert weights stay in
+RAM and the GPU caches the experts in use. `ft serve` runs one model per process:
+
+```bash
+export FREETOKEN_API_KEY=...              # optional; ft serve and the agent both read it
+ft serve --model <hf-id or path> --served-model-name qwen3.6-35b
+./bin/ktms-node --proxy-addr proxy.example.com:443 --tls --engine freetoken
+```
+
+With `--engine freetoken` the agent polls `http://127.0.0.1:1919`, FreeToken's default, and
+sends `FREETOKEN_API_KEY` as its bearer; the proxy uses it too unless `NODE_AUTH_TOKEN` is set. The model is
+reported with its context length from `/v1/models` and as loaded once `/health` says `ok`; while
+the weights load it is reported cold, and a server whose `/health` says `error` reports no models.
+The load comes from `requests.active` in `/v1/stats`, which counts every admitted request: those
+above `--engine-max-running` (FreeToken's `--max-running-requests`, default 4) count as waiting, so
+a node busy with other clients hands calls to the next model in the chain. `--max-concurrent`,
+what the proxy sends here, defaults to 4 too. FreeToken rejects `response_format`, so its nodes get
+the schema in the prompt; declare `no_structured_output` on the model as well, and the router
+checks the reply and retries a wrong shape. `no_thinking` sends `reasoning_effort: none`.
+`ktms-node doctor` checks that `ft` is installed, the server answers and takes the key, and the
+model is loaded. `install-node.sh` installs Ollama only; install FreeToken yourself.
 
 ### Production checklist
 
@@ -594,6 +665,8 @@ user_rate_limits:
 - What the Admin API cannot change is refused before anything is applied: a key's scopes or
   team, or a revoked key named again. Mint a key under another name instead.
 - A team's cap is its `monthly_budget_usd`; `spend_limits` holds key and user caps.
+- `node_schedules` lists the schedules KTMS sends to nodes that hand theirs to it (`node_id` and
+  `schedule`, the rules as text); temporary overrides are not configuration.
 - Steps run in dependency order (organizations, models, keys, vendor keys, rules, limits, then
   deletes). If one fails, the earlier ones stay applied; plan again to see what is left.
 
@@ -902,6 +975,10 @@ last lines then show the level now and the next switch (`Schedule: now 0%, next 
 during a pause the installer does not load the model into memory. The `Stats:` line gives the
 command that shows how the machine was used (`~/.ktms-node/bin/ktms-node stats`).
 
+Add `--tray` for the menu bar (macOS) or tray (Linux) app that pauses the node for a while and
+edits its schedule without touching the file (see Desktop tray above). A re-run without `--tray`
+keeps it.
+
 Run the same command again to update; a re-run only restarts what changed, and a new agent that
 fails to start is rolled back. Remove everything with the same command plus `--uninstall`
 (downloaded models stay in `~/.ollama`).
@@ -1008,6 +1085,8 @@ ktms limits set key billing day 5             # USD per UTC day; * sets the defa
 ktms spend get key billing                    # or user ID, team org/team
 ktms route explain billing --effort high      # where it would go, and why
 ktms nodes list; ktms nodes drain gpu-1
+ktms nodes schedule set mac --file week.txt   # for nodes that hand their schedule to KTMS
+ktms nodes schedule override mac --level 0 --for 2h
 ktms node-keys mint gpu-1 --node-id gpu-1 --allowed-cidrs 10.0.0.0/8
 ktms keys revoke billing                      # asks first; --yes for scripts
 ktms rotate-encryption
@@ -1497,88 +1576,4 @@ print(reply.content[0].text, reply.model)   # `model` is the one that answered
 | `enable_cache`, `placement` | Extensions, as on chat completions; so are the `X-KTMS-Cache` and `X-KTMS-Placement` request headers (set them in Claude Code with `ANTHROPIC_CUSTOM_HEADERS`). |
 | `temperature`, `top_p`, `stop_sequences` | Passed to the model as on chat completions (see [Sampling](#sampling)). A stop sequence ends the answer with `stop_reason` `end_turn`. |
 | `top_k` | Accepted, sent to no model, and named in `X-KTMS-Ignored-Params`. |
-| `thinking`, `service_tier` | Accepted and ignored. |
-
-The key goes in `x-api-key` or `Authorization: Bearer`. The response's `stop_reason` is `end_turn`,
-`tool_use`, `max_tokens` or `refusal`, and `usage` splits `cache_read_input_tokens` and
-`cache_creation_input_tokens` out of `input_tokens`. Tool call ids are the vendor's, or `toolu_…`
-when the vendor gives none.
-
-`POST /v1/messages/count_tokens` answers with the estimate the token budgets reserve, not a
-tokenizer's count: about four characters per token, tool definitions included, a flat allowance
-per image or document (`url` sources are not fetched), and the `X-KTMS-Token-Count: estimate`
-header.
-
-Errors use the Messages shape, `{"type": "error", "error": {"type", "message"}}`, with the HTTP
-statuses of [the table above](#errors): `invalid_request_error` (400), `authentication_error`
-(401), `permission_error` (403), `not_found_error` (404), `rate_limit_error` (429, with
-`Retry-After`), `overloaded_error` (503), `timeout_error` (504) and `api_error` for the rest. The
-machine-readable reason, such as `throttled:rpm`, is the `message`. An error after the stream has
-started arrives as an `error` event.
-
-## MCP gateway
-
-Keystone is also a gateway for MCP servers. Claude Code, Cursor and other MCP clients reach the
-servers you register through Keystone, with a KTMS key: the gateway holds each server's
-credential, shows a key only the servers and tools it may use, limits calls per tool and
-accounts for every call in light-tokenmeter and Prometheus. The MCP gateway is
-[experimental](#experimental) in 1.x.
-
-- `/mcp` aggregates every server the key may use; tools are named `server__tool`.
-- `/mcp/{server}` is one server, with its tools named as the server names them.
-
-Both are Streamable HTTP on `HTTP_ADDR`, stateless, so any replica answers any request. Set
-`MCP_GATEWAY_ENABLED=false` to turn them off. Upstream servers may speak Streamable HTTP or SSE.
-Only tools are proxied; resources and prompts are not.
-
-```bash
-# register a server and give it the header the gateway sends it
-ktms mcp-servers set github --url https://api.githubcopilot.com/mcp/ --tool-rpm 60
-echo "Bearer $GITHUB_TOKEN" | ktms mcp-servers credential set github
-ktms mcp-servers tools github          # what it offers, as allowed_mcp entries
-
-# a key for the agent: the mcp scope, two tools of github and all of docs
-ktms keys mint coding-agent --scopes mcp --allowed-mcp github/create_issue,github/search_code,docs
-
-# Claude Code
-claude mcp add --transport http ktms https://ktms.example.com/mcp --header "Authorization: Bearer ktms_<key>"
-```
-
-- **Servers** are `MCPServerSpec`: `name` (1-32 of `a-z`, `0-9`, `-`), `url`, `transport`
-  (`streamable_http` or `sse`), `enabled`, `allow_private`, `timeout_ms` (one call, default
-  60 s), `max_response_bytes` (one result, default 4 MiB) and `tool_rpm`. Manage them with
-  `UpsertMCPServer` and `DeleteMCPServer`, `ktms mcp-servers`, the `mcp_servers` section of a
-  [configuration file](#configuration-as-a-file) or the console. `GetConfig` lists them.
-- **Credentials**: `SetMCPCredential` stores a header and its value (`Authorization: Bearer ...`
-  by default), encrypted with the vendor keys' keyring and re-encrypted by `RotateEncryption`.
-  The gateway adds it to every request it sends the server. It is never returned, logged, put in
-  usage events or passed to clients; `GetConfig` shows its header and fingerprint. In a file it is
-  `mcp_credentials` with `value_env`.
-- **Access**: a key needs the `mcp` scope. `allowed_mcp` on the key's policy and on its team lists
-  servers (`github`) and single tools (`github/create_issue`); empty allows any, and a tool must
-  pass both lists. Others are not listed, and calling one is the JSON-RPC error `-32003`
-  `permission_denied` (`/mcp/{server}` for a server outside the lists is HTTP 403); the upstream
-  is not called.
-- **Addresses**: a server whose host is or resolves to a loopback, private, link-local or
-  metadata address is refused at registration and at every connection, unless `allow_private` is
-  set for a server on your own network. `http://` is allowed only then. The gateway ignores
-  `HTTPS_PROXY` for these connections.
-- **Limits and failures**: above `tool_rpm` (per client key and tool, needs Redis), past the
-  timeout, with a result over `max_response_bytes` or with the server down, the call returns a
-  tool error (`isError`) that says so, for the model to act on. A server that cannot list its
-  tools is left out of `/mcp`, not the others.
-- **Accounting**: each forwarded call is a usage event with vendor `mcp`, model `server__tool`,
-  no tokens, its duration, status and `tool_call` (server, tool, result size); `user_id` comes
-  from the `X-KTMS-User` header, or is `svc:<key name>`. Metrics: `ktms_mcp_tool_calls_total`,
-  `ktms_mcp_tool_call_duration_seconds`, `ktms_mcp_response_bytes`.
-
-## Concepts
-
-**Effort** is the only routing field the proxy understands; everything else about a request's
-purpose travels in free-form attributes, so the proxy knows nothing about your product.
-
-**Throttling & Wait Buffer:**
-- **GCRA Rate Limiting:** Enforces requests-per-minute (`rpm`) via the Generic Cell Rate Algorithm in Redis, with configurable burst capacity (`rpm_burst`, defaulting to `rpm - 1` to preserve classic fixed-window behavior, `< 0` to disable burst). Key limits and user limits are evaluated atomically.
-- **User & Model Overrides:** Configure fine-grained limits per user and model with `SetUserRateLimit` (supports `*` wildcards for user-wide or model-wide defaults).
-- **Spend Limits:** Hard USD caps per API key and per end user (UTC day or month), reserved atomically before each call and settled to the actual cost; see [Spend limits](#5-spend-limits-optional).
-- **Daily Toke
+| `thinking`, `service_tier` | A

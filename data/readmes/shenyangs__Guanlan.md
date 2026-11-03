@@ -157,7 +157,7 @@ guanlan read "https://example.com/" --backend direct --no-fallback-search --form
 guanlan status
 ```
 
-看到 `观澜 / Guanlan v0.10.10`，并且安装检查没有版本/路径漂移，就说明基础部署成功。
+看到 `观澜 / Guanlan v0.10.13`，并且安装检查没有版本/路径漂移，就说明基础部署成功。
 
 ## 给 Agent 复制的安装指令
 
@@ -177,6 +177,18 @@ guanlan status
 
 安全要求：不要读取浏览器 Cookie，不要触发登录授权，不要请求钥匙串权限。
 ```
+
+## 可选的本地 Markdown 提取
+
+公开 HTML 中的代码块、表格和链接需要更完整保留时，可以选用 Defuddle 后端：
+
+```bash
+# 已安装 Node.js 时，按需安装可选提取器
+npm install -g defuddle@0.19.6
+guanlan read "https://example.com/article" --backend defuddle --format json
+```
+
+此后端由观澜获取公开 HTML，再在本地转成 Markdown；支持 `--extract article`，沿用正文质量与引用边界。本轮验证版本为 `0.19.6`，兼容范围为 `>=0.19.6,<0.20`。详细限制见[完整使用手册](docs/full-guide.md#可选defuddle-本地提取)。
 
 ## 安全边界
 
@@ -202,6 +214,7 @@ guanlan status
 | 精选信源包 | [Source Packs](docs/source-packs.md) |
 | 热点目录接入 | [热点目录接入](docs/hotboard-api.md) |
 | 输出字段稳定契约 | [Contract](docs/contract.md) |
+| 1.0 Agent 工具稳定面 | [1.0 Tool Surface](docs/1.0-tool-surface.md) |
 | 中文互联网设计依据 | [China-Aware Web Rationale](docs/chinese-web-design.md) |
 | 发版和质量闸门 | [Release Automation](docs/release-automation.md) / [Quality Test Plan](docs/quality-test-plan.md) |
 | 可复跑质量证据 | [Public Quality Report](docs/benchmark-report.md) / [Latest JSON](docs/reports/latest-quality.json) |

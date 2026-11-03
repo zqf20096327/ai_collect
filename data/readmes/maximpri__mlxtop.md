@@ -29,16 +29,17 @@ changed when the model slowed.
 - **A plain verdict:** a single line reads `✓ Healthy`, or names the problem,
   such as heavy paging, a model partly on the CPU, a full card or heat
   throttling.
-- **14 runtimes:** oMLX, Splash, mlx-serve, vLLM, SGLang, llama.cpp,
-  Ollama, LM Studio, KoboldCpp, TensorFold and more, detected automatically.
+- **15 runtimes:** oMLX, Splash, mlx-serve, vLLM, SGLang, llama.cpp,
+  Ollama, LM Studio, KoboldCpp, TensorFold, Strata and more, detected
+  automatically.
 - **Local and read-only:** no sudo, no account, no analytics. It never sends
   prompts or touches your models or runtime settings.
 
-**What's new in 3.1.2:** running requests show their own generation speeds,
-prompt load shows generated tokens, llama.cpp reports a live rate, and Linux
-detects AMD GPUs without ROCm. 3.1.1 added in-place Settings, mlx-serve
-prefill progress and smoother decode rates. 3.1 brought a redesigned Overview,
-`mlxtop update` and oMLX through Splash.
+**What's new in 3.2.1:** a bug fix brings the prefill progress bar and its
+time-left readout back to prompt load. 3.2.0 added Strata and TensorFold,
+dashboard panels that resize with your terminal, and the Journal recording
+overhaul. 3.1.2 gave running requests their own generation speeds and Linux
+AMD detection without ROCm.
 [Release notes →](CHANGELOG.md)
 
 ## Install
@@ -122,6 +123,7 @@ where each reading comes from.
 | [Splash](https://github.com/incoai/splash) | ✓ | Running and waiting requests, prefill progress, decode and prefill speed, prefix-cache reuse, Metal memory, DFlash acceptance, TTFT |
 | [mlx-serve](https://github.com/ddalcu/mlx-serve) | ✓ | Generation and prefill rates, running requests with their own speeds, prefix-cache reuse, MLX memory (start it with `--metrics`; sushi's `sushi:` gauges are read too) |
 | vLLM, SGLang | ✓ | Active and waiting queues, server token rates, KV-cache occupancy, mean first-token time |
+| [Strata](https://github.com/niko1221/strata) | ✓ | Live engine decode and prefill rates, active and waiting queues, KV-cache occupancy, prefix-cache reuse, mean first-token time, engine GPU memory |
 | llama.cpp | ✓ | Active slots, output counts and live generation speed; average rates and queues when `/metrics` is enabled |
 | KoboldCpp | last request | Input and output counts and rates |
 | Ollama | after completion | Loaded models, VRAM, context size, CPU/GPU placement |
@@ -193,8 +195,20 @@ mlxtop was developed with the Duet coding agent.
 
 ## Credits
 
-- TensorFold runtime support contributed by Minoru Mizutani
-  ([@mmizutani](https://github.com/mmizutani)).
+External contributions are credited here, with thanks.
+
+- [Samuel Reed](https://github.com/STRML) (@STRML) — the mlx-serve runtime
+  support, per-request decode speeds, prefill progress with time left, sushi
+  gauge support, and the Journal recording overhaul (#15, #37, #38, #43, #44).
+- David ([@sandbranch](https://github.com/sandbranch)) — AMD GPU monitoring on
+  Linux from amdgpu sysfs, and live llama.cpp generation rate and slot
+  readings (#40, #41, #42).
+- Minoru Mizutani ([@mmizutani](https://github.com/mmizutani)) — the TensorFold
+  runtime support (#45).
+- Sumit Chaudhary ([@EduardoSaverin](https://github.com/EduardoSaverin)) — the
+  configuration file support (#1).
+- Prashant ([@prashant11235](https://github.com/prashant11235)) — Linux
+  monitoring via nvidia-smi (#2).
 
 ## License
 

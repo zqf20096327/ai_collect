@@ -228,3 +228,97 @@ Please have a look at our inference script and double check all parameters (help
 
 [1] Demartsev, V. et al. Signalling in groups: New tools for the integration of animal communication and collective movement. Methods Ecol. Evol. (2022).<br>
 [2] Demartsev, V. et al. Mapping vocal interactions in space and time differentiates signal broadcast versus signal exchange in meerkat groups. Philos. Trans. R. Soc. Lond. B Biol. Sci. 379 (2024)
+# Event evaluation correction
+
+Use `event_average_precision` for event-localization checkpoint selection. The
+fine-tuning examples maximize this metric. We compute validation event metrics
+on all workers before choosing a checkpoint, even when
+`task.verbose_tensorboard_logging=false`.
+
+We retain each worker's validation tensors outside Fairseq's logging-output
+transport. At the validation boundary, all workers gather ragged event records
+with `torch.distributed.all_gather_object` and evaluate the same global result.
+This works without increasing `common.all_gather_list_size`; event data never
+enters Fairseq's fixed-size logging buffer. The master reuses that result for PR
+plots and does not start another collective. In distributed runs, the optional
+frame-classification diagnostic is `frame_mAP_local` for the master's frames;
+event metrics and checkpoint selection use the global event set.
+
+We save the checkpoint selector, maximize/minimize direction, and metric
+definition under `extra_state.animal2vec_metric_identity`. Before Fairseq can
+restore a historical best score, we reject mismatched selectors, changed event
+definitions, and unversioned historical event scores. You can resume an
+unchanged historical frame objective when its saved config confirms the same
+definition. To migrate an old frame-F1 checkpoint to event AP, use
+`checkpoint.reset_meters=true` (and reset optimizer/dataloader as needed), or
+`checkpoint.finetune_from_model` for a model-only restart. We clear previous
+best/early-stopping state for a restart; old frame scores cannot compete with
+new event scores.
+
+We rank fixed proposals by their mean raw class probability, then greedily match
+each proposal to the highest-IoU unmatched truth in the same recording and class.
+A match needs positive overlap and IoU **at least** `criterion.iou_threshold`
+(default `0.1`). A duplicate or unmatched proposal counts as one FP; each
+unmatched truth counts as one FN. A merger can match only one truth. Split
+proposals can match a truth only once. We retain the full truth count in recall
+and AP, including truths with no proposals. We do not create background rows or
+give missed truths synthetic confidence scores.
+
+Ground-truth events are contiguous positive runs in the existing rasterized
+target timeline. Touching or overlapping same-class annotations can merge at
+that earlier rasterization step; annotation-instance evaluation would require
+retaining the original annotation intervals. Historical segmented AP, precision,
+recall and F1 are not comparable with these corrected event scores.
+
+AP integrates the all-points precision envelope after grouping equal-score
+proposals into one PR point. `event_average_precision` averages AP over classes
+with ground-truth support; `event_micro_average_precision` pools detections
+across classes and includes false positives from classes without truths.
+Empty-support AP is zero. Event PR plots use matched counts and full truth
+support; event metrics have no true-negative count. `frame_mAP` remains a
+separate frame-classification metric in single-worker runs.
+
+Keep proposal and operating thresholds separate:
+
+| Setting | Meaning |
+| --- | --- |
+| `criterion.metric_threshold` | Fixed avg/max proposal-generation cutoff |
+| `criterion.confidence_threshold` | Operating cutoff for event precision/recall/F1 (default `0.5`) |
+| `criterion.iou_threshold` | Localization matching criterion (default `0.1`) |
+| `method`, `sigma_s`, `maxfilt_s`, `max_duration_s`, `lowP` | Existing avg/max/canny proposal settings |
+
+For fixed proposals, changing the confidence cutoff changes operating counts
+but leaves AP unchanged. Changing proposal-generation settings can change AP.
+For example, constant probability `0.01` produces no avg/max proposals under a
+`0.25` proposal cutoff, so AP is zero even when truths exist. A correctly
+localized proposal with confidence `0.01` can still have AP one if you choose
+settings that generate that proposal; AP ranks confidence rather than applying
+the operating cutoff. We evaluate one configurable IoU threshold per run;
+multi-IoU averages are outside this correction.
+
+`FusedSegmentationMixin.get_segmented_probs_and_targets` now returns a dictionary
+with `predictions`, `truths`, and corrected `metrics`. Intervals use half-open
+feature-frame coordinates. We convert the existing fuser's inclusive endpoints
+once, include final/single-frame events, exclude model padding, and score
+variable-length recordings without zero-padding metric arrays. The historical
+five padded tensors remain available through
+`get_legacy_segmented_probs_and_targets`; `log_legacy_metrics` provides its old
+pseudo-classification reports. Neither legacy function computes event AP.
+
+Prediction exports now store `event_predictions` rows
+`[class, start, end, confidence]` and `event_truths` rows `[class, start, end]` per
+recording. Run `scripts/get_ap_scores_from_predictions.py` against a new export
+to obtain event AP and TP/FP/FN. You can pass `--iou-threshold` and
+`--confidence-threshold`. Re-export old padded HDF5 files for corrected event
+AP; their arrays do not contain enough information to reconstruct one-to-one
+localization matching. You can request the old report through the explicit
+Python helper `get_legacy_results_from_predictions`. We no longer discard
+all-zero-target rows, since they may contain real false positives.
+
+Run regression tests with `python -m pytest -q`. They include an independent
+matching/AP oracle, empty/missed/duplicate/split/merged events, class and
+recording isolation, ties and thresholds, padding/final frames, avg/max/canny,
+HDF5 false-positive retention, real two-rank Gloo collection with payloads above
+16 KiB, and persisted checkpoint-metric migration guards. The pure `event_metrics.py` implementation
+matches the companion a2v2 package. These tests do not require a GPU or fairseq;
+full model training still needs the dependencies in `requirements.txt`.

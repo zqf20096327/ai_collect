@@ -1,245 +1,180 @@
 <div align="center">
 
-# Emotion Ball 表情馆
+# Aora Bot
 
-**为 AI 助手打造的表情引擎 —— 32 种状态表情 · 3 种身体形态 · 纯 SVG + 原生 JavaScript · 零依赖**
+**A procedural character engine for the web — a roster of generated characters, animated states, three faces, three drawing styles, an SVG HUD, and the UI surfaces built on top of them.**
 
-[![在线预览](https://img.shields.io/badge/demo-emotion--balls.vercel.app-8A63F4?logo=vercel&logoColor=white)](https://emotion-balls.vercel.app/)
-[![许可](https://img.shields.io/badge/license-learning--only-orange)](LICENSE)
-[![零依赖](https://img.shields.io/badge/dependencies-zero-brightgreen)](#)
-[![技术栈](https://img.shields.io/badge/made%20with-vanilla%20JS%20%2B%20SVG-F7DF1E?logo=javascript&logoColor=black)](#)
-
-**中文** | [English](README.en.md)
-
-[在线预览](https://emotion-balls.vercel.app/) · [特性](#特性) · [快速开始](#快速开始) · [集成指南](#集成指南) · [自定义与扩展](#自定义与扩展) · [许可](#许可)
+[Console](https://aora-bot.vercel.app/en/) | [Documentation](https://aora-bot.vercel.app/en/guide/getting-started) | [Scenarios](https://aora-bot.vercel.app/en/scenarios/chat-stream) | [中文](./README.zh-CN.md)
 
 </div>
 
+<p align="center">
+  <img src=".github/media/hero.gif" width="860" alt="Six Aora Bot characters, a mochi, a strawberry, a cat, a star, a robot and an octopus, moving through happy, excited, shy, surprised, curious, thinking, asleep, angry and celebrating">
+</p>
+
 ---
 
-> **授权声明**:仓库内 [emotion-ball/](emotion-ball/) 目录的球形角色**视觉形象**(blob / wedge / gem 身体造型、配色与特效视觉)仅供个人技术学习与研究,**禁止任何商业用途**且永不提供商业授权;表情引擎源代码与表情配置数据(眼形 / 嘴形参数、动画原语、关键帧序列)为独立编写,**双许可**——非商业免费,商业用途可获取授权。详见 [LICENSE](LICENSE)、[LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md) 与 [NOTICE.md](NOTICE.md)。
->
-> [mood-mates/](mood-mates/) 目录为同源引擎的**原创角色子项目**(云宝 Nimbo / 亮亮 Twinkle),独立原创设计,采用**双许可**(个人学习免费 + 可获取商业授权),不受上述限制约束。
+## What this is
 
-本仓库由「一座总馆 + 两个子项目」组成:
+A cartoon character that is drawn entirely by code. There are no sprite sheets and no
+Lottie files — every body is an outline in code (some with ears, leaves or an antenna as
+separate parts), every expression is a few numbers describing a curved stroke,
+interpolated by springs, and every animation frame is written directly to SVG attributes
+by a `requestAnimationFrame` loop.
 
-- **总馆(根目录 `index.html`)**:云宝 × 亮亮 × 球球 三个角色**同台切换展示**——同一面 32 表情陈列墙,点击顶部角色卡即可整馆换角,由两套引擎(MoodMates + EmotionBall)共同驱动;
-- **[mood-mates/](mood-mates/)**:原创角色项目(云宝 / 亮亮),多角色架构、双许可、可商用,自带独立展示站与集成文档;
-- **[emotion-ball/](emotion-ball/)**:球形角色项目(形象仅供学习,引擎与表情数据可商业授权),32 种状态表情、3 种身体形态,自带独立展示站。
+The roster has 46 characters, from round blobs and rice cakes to fruit, critters and people.
+Here they all are, happy, in the default `cute` face:
 
-Emotion Ball 是一套面向 AI 助手的表情引擎:32 种状态表情全部由纯 SVG 与原生 JavaScript 实时驱动,零框架、零图片资源。AI 侧只需输出一个 `emotionId`,即可切换到对应表情,可直接用作聊天机器人、桌面宠物、悬浮助手的情绪表达层。
+<p align="center">
+  <img src=".github/media/cast.png" width="760" alt="The whole roster of 46 characters in a grid, each smiling, with its shape id underneath">
+</p>
 
-它也不只是"一颗球":内置圆胖(blob)、三角(wedge)、菱形(gem)三种身体形态,支持主题色多实例与线稿模式;整套表情体系围绕纯数据配置设计——眼环池、动画原语、关键帧序列自由组合,基于现有设计即可自主扩展新表情与新玩法。
+Every character combines independent choices, all of which you can try in the
+[console](https://aora-bot.vercel.app/en/): the character itself, the style (`vector`, `pixel`
+or `kaomoji`) and its variant, the ink colour, the face and the animation state.
 
-仓库同时内置完整的「表情展示馆」站点:开屏线稿 Hero、陈列墙与画册双浏览模式、中英双语界面、明暗双主题。
+<p align="center">
+  <img src=".github/media/styles.gif" width="860" alt="One cat drawn in every style: the seven vector variants, the three pixel variants and both kaomoji variants, all moving together">
+  <br>
+  <sub>One cat in every style: <code>vector</code> (<code>solid</code>, <code>outline</code>, <code>glass</code>, <code>sticker</code>, <code>paper</code>, <code>soft</code>, <code>riso</code>), <code>pixel</code> (<code>crisp</code>, <code>dot</code>, <code>block</code>) and <code>kaomoji</code> (<code>plain</code>, <code>bubble</code>).</sub>
+</p>
 
-## 预览
+On top of the engine sits a set of React components for the things products actually need
+from a character system: a stable character per user derived from any id, shape and
+colour pickers, an avatar editor with image crop, group avatar stacks, chat activity
+indicators, a numeric emotion protocol for AI agents, a HUD that draws progress, timers,
+waveforms and KPIs in the ring around the character, and a stage that lets hundreds of
+characters share a handful of animations. Onboarding and restricted-state scenes, template
+publishing, occupancy lists and cast stages are a separate package built on those.
 
-![总馆开屏](emotion-ball/assets/screenshots/total.png)
+The default face is `cute` (dot eyes, a small mouth, a blush). The `eyes` face and the
+**line face** — a parametric nose and mouth drawn in the same ink and stroke weight as the
+eyes — are available with `face="eyes"` and `face="line"`.
 
-| 球球 · 暗黑 | 球球 · 明亮 |
-| :---: | :---: |
-| ![球球暗黑](emotion-ball/assets/screenshots/qiuqiu.png) | ![球球明亮](emotion-ball/assets/screenshots/qiuqiu-mingliang.png) |
-
-| 云宝 · 暗黑 | 云宝 · 明亮 |
-| :---: | :---: |
-| ![云宝暗黑](emotion-ball/assets/screenshots/yunbao.png) | ![云宝明亮](emotion-ball/assets/screenshots/yunbao-mingliang.png) |
-
-| 亮亮 · 暗黑 | 亮亮 · 明亮 |
-| :---: | :---: |
-| ![亮亮暗黑](emotion-ball/assets/screenshots/liangliang.png) | ![亮亮明亮](emotion-ball/assets/screenshots/liangliang-mingliang.png) |
-
-## 特性
-
-- **32 种状态表情**:覆盖生命周期(睡眠 / 唤醒 / 待机…)、情绪反应(开心 / 害羞 / 生气 / 惊讶…)与代理工作状态(思考中 / 检索资料 / 出错 / 任务完成…)三大分组,全部由配置驱动
-- **3 种身体形态**:圆胖(blob)、三角(wedge)、菱形(gem),同一套眼睛与动画系统按轮廓自动适配;另支持主题色实例(团队小球)与线稿模式
-- **分段式 emotionId**:十位数字即分组前缀 —— `00-09` 生命周期、`10-29` 情绪、`30-49` 代理状态、`50+` 自定义;组间空号为新表情预留,已有编号永不重排,对接方可放心硬编码
-- **轮廓环眼睛系统**:25 组 48 点轮廓眼环,逐点弹簧插值形变,表情池随机轮换,眨眼带过冲关键帧
-- **球面投影**:眼睛按身体轮廓做经度换算与余弦压缩,自旋绕到背面时自动隐藏
-- **彩带与撒花**:自旋达速甩出 3D 轨道拖尾彩带(5-stop 色相渐变),思考状态头顶常驻环带,庆祝状态物理粒子撒花
-- **鼠标注视**:全页面注视跟随,帧率无关指数平滑,叠加常驻眼神微漂移
-- **配置驱动、可自主扩展**:每个表情都是「眼环池 + 动画原语 + 关键帧序列」的纯数据组合,支持运行时注册自定义表情、导入导出全部配置,详见[自定义与扩展](#自定义与扩展)
-- **AI 对接协议健壮**:`handleAIMessage` 接受对象或 JSON 字符串,未知 ID、解析失败、缺字段均自动回退待机并触发 `error` 事件,永不白屏
-- **零依赖**:HTML + SVG + 原生 JavaScript,无构建步骤,可直接迁移到 Electron 悬浮窗
-- **展示馆站点**:陈列墙(网格 + 点击弹窗大图)与画册(横向长廊 + 大舞台翻页)双模式,顶部工具行集中提供分组 / 形状 / 间隔下拉与线稿、自动播放开关,中英双语、明暗主题,全部偏好经 localStorage 持久化
-
-## 快速开始
+## Quick start
 
 ```bash
-# 任意静态服务器均可,例如:
-python -m http.server 8765
-# 总馆(三角色同台):  http://localhost:8765/
-# Mood Mates 子站:    http://localhost:8765/mood-mates/
-# Emotion Ball 子站:  http://localhost:8765/emotion-ball/
+pnpm add @aora-bot/react
 ```
 
-或直接双击 `index.html`(建议通过本地服务器访问,以正常加载 Google Fonts)。
+```tsx
+import { CharacterMark } from '@aora-bot/react';
+import '@aora-bot/react/styles.css';
 
-## 集成指南
-
-### 最小接入
-
-按顺序引入四个脚本(无构建、无依赖)即可创建实例;`i18n.js` 与 `app.js` 属于展示站,宿主接入不需要:
-
-```html
-<script src="emotion-ball/js/rings.js"></script>
-<script src="emotion-ball/js/emotions.js"></script>
-<script src="emotion-ball/js/ball.js"></script>
-<script src="emotion-ball/js/engine.js"></script>
-
-<div id="bot" style="width:200px;height:200px"></div>
-<script>
-  var ball = EmotionBall.create(document.getElementById('bot'), {
-    emotion: '02', idle: true
-  });
-</script>
+<CharacterMark shape="mochi" state="happy" sizePx={96} />;
 ```
 
-### AI 对接协议
+Requires React 19. The product surfaces (walkthrough, scenes, template dialog,
+occupancy list, cast stage) are optional:
 
-AI 只需输出一段 JSON,交给 `handleAIMessage`(接受对象或字符串):
-
-```js
-ball.handleAIMessage('{"emotionId":"30","tips":"正在思考用户问题"}');
+```bash
+pnpm add @aora-bot/surfaces @aora-bot/react
 ```
 
-- 未知 `emotionId`、JSON 解析失败、缺少字段 → 触发 `error` 事件并自动回退待机(`fallbackId`,默认 `'02'`);
-- `tips` 为可选展示文案,通过 `tips` 事件透出,由宿主决定如何呈现。
-
-### 创建选项
-
-| 选项 | 默认 | 说明 |
-| --- | --- | --- |
-| `emotion` | `'02'` | 初始表情 ID |
-| `shape` | `'blob'` | 身体形态:`blob` 圆胖 / `wedge` 三角 / `gem` 菱形 |
-| `color` / `eyeColor` | — | 主题实例体色 / 眼色,优先于表情配置的体色 |
-| `eyeScale` | `1` | 眼睛放大倍率;小于 80px 的实例建议 `1.5~1.8` 保证可读 |
-| `idle` | `false` | 待机策略,超时自动切换待机 / 睡眠,可传对象自定义时长与目标表情 |
-| `autostart` | `true` | 设为 `false` 时只渲染静态帧,不进入动画循环(缩略图用) |
-| `lite` | 跟随 `autostart` | 精简模式:关闭彩带 / 撒花特效 |
-| `fallbackId` | `'02'` | 未知 ID 的回退表情 |
-
-### 事件与方法
-
-```js
-ball.on('change', e => {});         // 表情已切换 { id, def, auto }
-ball.on('tips',   e => {});         // AI 附带文案 { text }
-ball.on('error',  e => {});         // 协议错误 { message, ... }
-
-ball.setEmotion('21');              // 直接切换表情
-ball.setGaze(nx, ny);               // 归一化目光 [-1, 1],宿主自行监听 pointermove
-ball.setStyle({ sketch: 1 });       // 线稿模式
-ball.spin(3);                       // 自旋甩彩带
-ball.burst(24);                     // 撒花
-ball.bounce();                      // 弹跳
-ball.startTour(ids, 2500);          // 自动巡演 / ball.stopTour()
-ball.setActive(false);              // 视口外停帧省电,true 恢复
-ball.renderStatic();                // 停帧状态下渲染一张静态帧
-ball.registerEmotion(raw);          // 运行时注册自定义表情
-ball.destroy();                     // 销毁实例
+```tsx
+import { RestrictedScene } from '@aora-bot/surfaces';
+import '@aora-bot/react/styles.css';
+import '@aora-bot/surfaces/styles.css'; // after the react stylesheet
 ```
 
-### 多实例与性能
+## Packages
 
-- 所有实例共享同一个 rAF 心跳,实例数量不增加循环开销;
-- 缩略图墙场景:以 `autostart: false` 静态渲染,悬停时 `setActive(true)`、移出时 `setActive(false)`;
-- 配合 IntersectionObserver 在视口外调用 `setActive(false)` 停帧省电。
+| Package              | What it does                                                                                                                                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@aora-bot/engine`   | The engine. Shapes and style series, face fitting, pose projection, spring integrator, state machine, belts, HUD dials, particles, emotion protocol and arbiter. No React; `/static` and `/agent` need no DOM. |
+| `@aora-bot/react`    | React components. `CharacterMark`, `MarkStageProvider`, avatars and stacks, pickers, avatar editor, activity marks, HUD plates, agent state, sprites, confetti, locale provider.                               |
+| `@aora-bot/surfaces` | Product and demo surfaces built on `@aora-bot/react`. Walkthrough pieces, scenes, template dialog and publishing, occupancy list, cast stage. Peer-depends on the engine and the React package.                |
 
-### 桌面宠物 / Electron 接入
+Each package has its own README: [`packages/engine`](./packages/engine/README.md),
+[`packages/react`](./packages/react/README.md),
+[`packages/surfaces`](./packages/surfaces/README.md).
 
-- 窗口参数:`transparent: true, frame: false, alwaysOnTop: true, skipTaskbar: true`,页面背景透明,只保留小球容器;
-- 鼠标穿透:`win.setIgnoreMouseEvents(true, { forwardMouseMove: true })`,穿透的同时仍可驱动 `setGaze` 注视;
-- AI 消息经主进程 IPC 转发:`ipcRenderer.on('emotion', (_, msg) => ball.handleAIMessage(msg))`;
-- 小尺寸悬浮窗(≤ 120px)建议 `eyeScale: 1.5` 并开启 `lite: true`。
-
-## 自定义与扩展
-
-表情引擎与渲染层是稳定基座,基于现有设计即可自主扩展新表情与新玩法——新增表情只需编写纯数据配置,不需要触碰引擎代码。
-
-### 表情配置格式
-
-```js
-{
-  id: '50', name: '自定义', group: 'custom',
-  desc: '中文描述', en: { name: 'Custom', desc: '...' },
-  transition: 380,            // 切入过渡时长(ms)
-  gaze: true,                 // false = 不注视鼠标(睡眠/停止类)
-  pool: [2, 11, 17, 19],      // 眼环索引池,poolMs 间隔内随机轮换
-  poolMs: [2500, 4500],       // 轮换间隔;poolSpeed 控制形变速度
-  blinkMs: [2500, 5000],      // 眨眼间隔(null 不眨)
-  openness: 1,                // 常驻眼睛开合度(疲惫 0.55、睡眠 0.08)
-  antics: true,               // 待机随机小动作(自旋/弹跳)
-  body: { breathe: 0.014, color: '#F6EFE4', zzz: 0, orbit: 0 },
-  anims: [ { target: 'eyes', prop: 'lookY', type: 'glance', amp: 6, period: 3000 } ],
-  sequence: { ... }           // 可选:进入表情时的关键帧序列
-}
-```
-
-### 动画原语
-
-每个表情最多叠加 3 条动画,由 6 种原语组合而成:
-
-| 类型 | 效果 | 关键参数 |
-| --- | --- | --- |
-| `sine` | 正弦漂移 / 呼吸 / 扫视 | `amp, period, phase` |
-| `glance` | 平滑方波,两端停留(左看看、右看看) | `amp, period` |
-| `pulse` | 0 → amp 节奏缩放 | `amp, period` |
-| `jitter` | 伪噪声抖动,可随时间衰减 | `amp, speed, decay` |
-| `scan` | 三角波快速扫动(检索 / 扫读) | `amp, period` |
-| `blink` | 周期闭合(多实例自动错峰) | `interval, dur, phaseMs` |
-
-`target` 可选 `eyes / body / left / right`;`prop` 可选 `lookX / lookY / x / y / scale / open / rotate`。
-
-### 关键帧序列
-
-`sequence` 定义进入表情时的一次性演出,播完后按 `settle` 语义收尾:`'base'` 回落基础姿态(惊讶),`'hold'` 定格末帧(害羞变粉、生气变红),`{ next: '02' }` 自动切换到下一个表情(唤醒 → 待机)。
-
-### 注册与导入导出
-
-```js
-// 运行时注册新表情(50+ 为自定义编号段,带完整校验)
-EmotionBall.config.register({ id: '50', name: '自定义', group: 'custom', ... });
-
-// 全量导出 / 导入配置 JSON(Emotion Ball 子站的设置抽屉内也提供同款按钮)
-EmotionBall.config.exportConfig();
-EmotionBall.config.importConfig(json);
-```
-
-### AI 协作 Skills
-
-`.cursor/skills/` 内置两份工程化规范文档,在 Cursor 等 AI 编辑器中打开本仓库时,AI 会自动遵循:
-
-- **emotion-design**:表情设计规范——眼环池速查表、动画参数取值范围、关键帧语义与双语文案要求,让 AI 按统一视觉语言帮你设计新表情;
-- **emotion-integration**:集成实践——SDK 选项、AI 协议、多实例性能与 Electron 接入要点,让 AI 帮你完成宿主接入。
-
-## 项目结构
+## Repository layout
 
 ```
-(仓库根)
-├── index.html          # 总馆入口:云宝 × 亮亮 × 球球 同台切换
-├── site/               # 总馆外壳:样式 / 文案 / 双引擎适配交互层
-├── mood-mates/         # 原创角色子项目:云宝 / 亮亮(双许可,自带展示站与文档)
-│   ├── index.html      #   Mood Mates 独立展示站
-│   ├── src/            #   引擎:几何 / 渲染 / 五官 / 特效 / 驱动 / 角色包
-│   ├── LICENSE         #   社区许可(个人学习免费)
-│   ├── LICENSE-COMMERCIAL.md  # 商业许可
-│   └── docs/           #   角色设计规范 + 原创证据链
-├── emotion-ball/       # 球形角色项目(形象仅供学习;引擎与表情数据可商业授权)
-│   ├── index.html      #   Emotion Ball 独立展示站
-│   ├── css/ js/        #   双主题样式 + 引擎(rings / emotions / ball / engine)
-│   ├── assets/         #   站点图标与 README 截图
-│   └── docs/           #   发布文案
-└── .cursor/skills/     # AI 协作 Skills:表情设计规范 + 集成实践
+packages/engine/     from-scratch character engine (TypeScript)
+packages/react/      React component layer
+packages/surfaces/   product and demo surfaces on top of the React layer
+docs/                Rspress documentation site
+examples/            standalone samples, not part of the workspace build
 ```
 
-## 许可
+## From Emotion Ball to Aora Bot
 
-本仓库包含三类授权不同的内容,请注意区分:
+This repository used to hold Emotion Ball. Emotion Ball has now been upgraded to Aora Bot; the old code is no longer maintained and no longer kept here.
 
-- **表情引擎与表情数据(根目录及 [emotion-ball/](emotion-ball/) 目录)**:源代码(状态机、弹簧插值、球面投影、配置注册中心等)与表情配置数据(眼环 / 眼形 / 嘴形参数、动画原语、关键帧序列)为独立编写与设计,**双许可**——个人学习、研究免费([LICENSE](LICENSE));商业用途可获取商业授权([LICENSE-COMMERCIAL.md](LICENSE-COMMERCIAL.md)),商业集成须搭配自有或另行合法授权的角色形象。
-- **球形角色视觉形象(blob / wedge / gem 身体造型、配色与特效视觉)**:仅供**个人技术学习与研究**,禁止任何商业用途,**不提供、也永不提供商业授权**,详见 [NOTICE.md](NOTICE.md)。
-- **原创角色 云宝 / 亮亮([mood-mates/](mood-mates/) 目录)**:独立原创设计,**双许可**——个人学习、研究免费使用([社区许可](mood-mates/LICENSE));商业产品、SaaS、客户交付等商业场景可获取授权([商业许可](mood-mates/LICENSE-COMMERCIAL.md))。原创证据链见 [mood-mates/docs/DESIGN-PROVENANCE.md](mood-mates/docs/DESIGN-PROVENANCE.md)。
+- **A rewritten engine**: a handful of plain JavaScript scripts became three npm packages written in TypeScript, with full types, tests and server rendering.
+- **Original characters**: the old ball-shaped characters are retired. All 46 characters are newly designed originals, and Nimbo and Twinkle from Mood Mates have joined the cast as originals too.
+- **More to work with**: 32 expressions grew into 44 animation states, with three faces, three styles (vector, pixel and kaomoji), HUD dials and a full set of React components. The emotion protocol still accepts `{ emotionId }` messages, so the AI side connects the same way.
+- **License**: from free for personal study with separate commercial licensing, to MIT, ready for commercial projects.
 
-## 相关项目
+## Contributing
 
-原创角色表情引擎 **Mood Mates**(云宝 / 亮亮,双许可、可商用)位于本仓库的 [mood-mates/](mood-mates/) 目录:自带独立展示站(`mood-mates/index.html`)、集成指南与角色设计规范,与球形角色项目互不影响。
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Sponsor
+
+If Aora Bot gave your interface a little more expression, you are welcome to buy the author a coffee.
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="docs/content/public/sponsor/wechat-pay.jpg" width="200" alt="WeChat Pay QR code">
+      <br>
+      <sub>WeChat Pay</sub>
+    </td>
+    <td align="center">
+      <img src="docs/content/public/sponsor/alipay.jpg" width="200" alt="Alipay QR code">
+      <br>
+      <sub>Alipay</sub>
+    </td>
+  </tr>
+</table>
+
+More about it on the [sponsor page](https://aora-bot.vercel.app/en/sponsor).
+
+## Contact
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="docs/content/public/sponsor/wechat-contact.jpg" width="160" alt="Personal WeChat QR code">
+      <br>
+      <sub>Add me on WeChat: questions, collaboration or suggestions</sub>
+    </td>
+    <td align="center">
+      <img src="docs/content/public/sponsor/qq-group.jpg" width="160" alt="QQ group QR code">
+      <br>
+      <sub>Join the QQ group: 626080597</sub>
+    </td>
+  </tr>
+</table>
+
+## Become a sponsor
+
+Aora Bot is built for front-end, AI and hardware developers, and designers use it for avatars and mascots. A sponsor's logo goes here and on the [sponsor page](https://aora-bot.vercel.app/en/sponsor).
+
+<table align="center">
+  <tr>
+    <td align="center" colspan="2" width="640" height="100"><b>Lead sponsor</b><br><sub>Open seat</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="320" height="80"><b>Sponsor</b><br><sub>Open seat</sub></td>
+    <td align="center" width="320" height="80"><b>Sponsor</b><br><sub>Open seat</sub></td>
+  </tr>
+</table>
+
+Who reads it: React and front-end developers, AI agent builders, hardware makers, designers and indie developers. Ideal sponsors:
+
+- **AI models and agent platforms**: the core audience builds interfaces for AI assistants and agents; the emotion protocol and the Claude Code and Cursor adapters are made for them.
+- **Dev boards and smart hardware**: makers putting a face on small screens and desk devices, right when they choose a board for a smart toy or desk companion.
+- **Cloud and hosting platforms**: readers are mostly React and front-end developers, and every one of them ships somewhere.
+- **Developer tools and IDEs**: the audience writes code every day, and the people who see the logo decide what their team uses.
+- **Coding education and courses**: one line of code brings a character to life, which also draws developers just learning front end and AI.
+- **Design tools and asset platforms**: designers and indie developers come here for avatars, mascots and expressions.
+
+Add me on WeChat above and mention sponsorship.
+
+## License
+
+[MIT](./LICENSE)

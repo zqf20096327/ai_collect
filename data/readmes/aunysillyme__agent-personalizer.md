@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/agent-personalizer.svg)](https://www.npmjs.com/package/agent-personalizer) [![harness](https://github.com/aunysillyme/agent-personalizer/actions/workflows/harness.yml/badge.svg)](https://github.com/aunysillyme/agent-personalizer/actions/workflows/harness.yml) [![release](https://img.shields.io/github/v/tag/aunysillyme/agent-personalizer?label=release)](https://github.com/aunysillyme/agent-personalizer/blob/main/CHANGELOG.md) [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/aunysillyme/agent-personalizer/badge)](https://scorecard.dev/viewer/?uri=github.com/aunysillyme/agent-personalizer)
 
-**Every AI you use gets the same profile and the rules it can carry:** Claude Code, Codex, Cursor, Gemini CLI and ChatGPT, rendered from one source and kept in sync.
+**Every AI you use gets the same profile and the rules it can carry:** Claude Code, Codex, Cursor, Gemini CLI, Hermes Agent and ChatGPT, rendered from one source and kept in sync.
 
 **The problem:** Custom instructions live in each app separately, drift apart and fade over a long chat.
 
@@ -79,10 +79,10 @@ npx agent-personalizer --dir . --ai claude,agents --level 1 --yes --defaults
 For every project, install one global level-1 profile:
 
 ```bash
-npx agent-personalizer --global --ai claude,agents,gemini --yes
+npx agent-personalizer --global --ai claude,agents,gemini,hermes --yes
 ```
 
-The source lives in `~/.agent-personalizer/`; marked blocks go to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md` and `~/.gemini/GEMINI.md`. User text outside the blocks stays byte for byte. `--global` supports those three targets and level 1; it excludes `--dir`. Re-run with `--global`, learn across all projects with `learn --global`, and remove owned global content with `--global --uninstall`. See [global installation](docs/install.md#every-project-with-one-profile).
+The source lives in `~/.agent-personalizer/`; marked blocks go to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md` and `~/.hermes/SOUL.md` for the selected targets. User text outside the blocks stays byte for byte. For Hermes in a project, use `--ai agents` for `AGENTS.md`. `--global` supports these four targets and level 1; it excludes `--dir`. Re-run with `--global`, learn across all projects with `learn --global`, and remove owned global content with `--global --uninstall`. See [global installation](docs/install.md#every-project-with-one-profile).
 
 Levels 1 and 2 carry the Core 5: read the profile first, evidence before assertion, output style, act or ask, and ask before it repeats. Level 3 retains all eleven, with each target's existing surface and signature selection.
 

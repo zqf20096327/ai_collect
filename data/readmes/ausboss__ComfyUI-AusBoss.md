@@ -335,6 +335,10 @@ Puts batch `b` after `a`. When the sizes match, nothing is resized. When they di
 
 A text box that grows with the node and sends its text, unchanged, down a `STRING` wire. Use it for a prompt, caption, path or other text that several nodes share. Spaces and line breaks are kept. Ctrl + Up and Ctrl + Down change the weight of the selected words, as in ComfyUI's own prompt boxes.
 
+### H3 Prompt Writer
+
+Type what happens, one line for each moment, and leave a blank line to cut to a new place. Connect up to four pictures and give each one a job: a person, a place, an outfit, a thing or a style. Copy the moves from a video, keep a clip going, or add a voice or a song. A timeline on the node shows when each moment plays before you run it. It needs no extra model and you never see H3's prompt format. Connect a small text model and it fills in a one-line idea.
+
 ### Integer
 
 One whole number (`INT`) on a scrub control, for sharing a size, count or other whole number across nodes. Like every number box in the pack, it takes a typed sum: `1024*1.5`.
@@ -422,7 +426,7 @@ People who download your workflow get the nodes through ComfyUI-Manager's missin
 - **Recreate node 🆎** (right-click an AusBoss node) rebuilds a node saved by an older version from the current definition. It keeps the values, links, position and colors.
 - **Replace with AusBoss nodes 🆎** (canvas right-click or the command palette) finds third-party nodes this pack can stand in for, such as VideoHelperSuite's Load Video and Video Combine or KJNodes' Color Match. It previews each swap and replaces the ones you leave ticked.
 - **Snap into line:** a node, group or selection you drag lines up with the nodes and groups around it, edge to edge or middle to middle, and a teal line shows what it lines up with. Pulling a corner to resize lines up the same way. Hold Shift while you drag to skip it, or turn it off in Settings → 🆎 AusBoss → Canvas.
-- **Line up:** select two or more nodes or groups and the selection toolbar gets a Line up button: line up edges or middles, match widths or heights, or space them evenly.
+- **Line up:** select two or more nodes or groups and the selection toolbar gets a Line up button: line up edges or middles, match widths or heights, or space them evenly. With two or more nodes selected, pulling the edge or corner of one resizes them all: a column gets one width, a row one height, a grid both (turn it off in Settings → 🆎 AusBoss → Canvas → Resize together).
 - **Node colors:** Settings → 🆎 AusBoss → Appearance sets the scheme for every AusBoss node (AusBoss, Graphite, Slate, Teal, Moss, Plum, Rust, Navy, Custom or Theme default). A node's right-click **AusBoss color** menu recolors just that node, and nodes you colored by hand keep their colors.
 - **Run status:** under Settings → 🆎 AusBoss → Chrome, the queue status can show in the browser tab's title and icon, running nodes get live progress badges, and each node's run time can be shown.
 - **Completion sound:** Settings → 🆎 AusBoss → Notifications plays a short chime when the queue finishes.

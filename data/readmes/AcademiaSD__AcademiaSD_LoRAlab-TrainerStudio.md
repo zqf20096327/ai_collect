@@ -8,8 +8,14 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-03**
+
+- **Wan 2.2 on 12 GB of VRAM**: the Pre-Cache has 448 x 448 and 480 x 480. At 448 x 448 (rank 8, both experts) training peaks at 10.4 GB, and 1-frame previews stay below that ([details](#wan-22-t2v-a14b--video-and-image-loras-high--low-noise)) [`e95a6ef`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/e95a6ef)
+- Launcher: the browser opens once the launcher is ready, without the error page first, and a trainer opens about 1.3 s sooner [`1dcb7f1`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/1dcb7f1)
+
 **2026-11-02**
 
+- **Dataset Forge: a character dataset from a few images, even one** — 🧬 in the Dataset Manager opens it: it captions the references, writes a character sheet, plans outfits, places and framings, and generates them with FLUX.3 Klein (or Fibo 2.0 / Qwen-Image 2.1 / FLUX.2 Klein 9B / Qwen-Image-Edit-2511), keeping only the images that pass the face likeness ([details](#-dataset-forge))
 - **Face likeness in the previews**: a % on each preview and on the training chart, how much its face looks like the dataset's. Optional and off by default: the InsightFace models (non-commercial research only) are downloaded only after accepting their terms in a popup ([details](#-face-likeness-in-the-previews)) [`f0a45e2`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/f0a45e2)
 - <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **Wan 2.2 T2V-A14B, video and image LoRAs for the high noise and/or low noise expert** — images and clips in the same dataset, the experts in NF4 (downloaded ready from `AcademiaSD/Wan22-T2V-A14B-NF4-for-LoRA-Training`, or converted on your PC shard by shard), image and video previews with both experts and the lightx2v turbo LoRA (12 steps, ~2 min for a 1 s clip), and one LoRA per expert (`_high_noise` / `_low_noise`) for ComfyUI ([details](#wan-22-t2v-a14b--video-and-image-loras-high--low-noise)) [`d2be150`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/d2be150) [`7b2f238`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/7b2f238) [`591152c`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/591152c)
 
@@ -195,7 +201,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **SDXL** | Image LoRAs for SDXL Base, Pony, Illustrious, NoobAI, Juggernaut, RealVis or your own SDXL checkpoint | **4 GB** (NF4) / 12 GB (BF16) |
 | **LTX-2.3** (also LTX-2.5) | Character and style LoRAs for the LTX video model, trained from images | 12 GB |
 | **MiniMax-H3** | Video LoRAs from images, clips and audio, plus training-free **RefMods** | 8 GB |
-| **Wan 2.2 (T2V-A14B)** | Video and image LoRAs from images and clips, for the **high noise** and/or **low noise** expert | **16 GB** (images and 17-frame clips at 480p, measured) |
+| **Wan 2.2 (T2V-A14B)** | Video and image LoRAs from images and clips, for the **high noise** and/or **low noise** expert | **12 GB** (images at 448×448 with image previews), **16 GB** (17-frame clips at 480p), measured |
 | **YuE2-3B** *(experimental / beta)* | Song LoRAs: the AR clones the singer's voice, the NAR learns lyrics and phrasing | ~8 GB (NF4, measured on NAR) |
 
 ---
@@ -211,7 +217,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 5. **Desde otro equipo:** el botón **🌐 Remote access** del lanzador abre el entrenador a tu red con usuario y contraseña. Con **⬆ Subir** (o arrastrando archivos o un `.zip` al Dataset Manager) mandas el dataset desde ese equipo, y con **⬇ Descargar LoRA** te bajas el resultado.
 6. **Previsualizaciones nítidas en ComfyUI:** algunos de estos modelos son lentos al generar, y conviene ver el resultado de forma anticipada, mientras se genera, para cancelar si no va bien. Para eso hace falta una buena previsualización. Mi recomendación: al usar tus LoRAs de Qwen-Image 2.1, Krea 2 o FLUX.2 / Klein 9B, pon el nodo **Model Preview Override** de [KJNodes](https://github.com/kijai/ComfyUI-KJNodes) con el TAE de AcademiaSD correspondiente ([Qwen-Image 2.1](https://huggingface.co/AcademiaSD/TAE-Qwen-Image-2.1) · [Krea 2](https://huggingface.co/AcademiaSD/TAE-Krea-2) · [FLUX.2](https://huggingface.co/AcademiaSD/TAE_Flux2_AcademiaSD)) en `ComfyUI/models/vae_approx/`. Detalles en la sección *Sharp previews in ComfyUI*.
 7. **Sin GPU potente:** entrena en la nube con **[RunPod](https://console.runpod.io/deploy?template=lfxvtg5rrb&ref=jbvdshm0)**. Es una plantilla ya preparada: eliges una GPU con CUDA 13, entras con el usuario `loralab` y la contraseña que aparece en *Logs → Container*, y al terminar paras y borras el pod. Detalles en la sección *RunPod*.
-8. **Requisitos:** Windows 10/11, GPU NVIDIA **RTX 20xx / GTX 16xx o posterior** con driver **580 o superior** (o AMD **RX 7000 / RX 9000** de 16 GB, experimental), 8 GB de VRAM (4 GB para Anima y SDXL en NF4, 12 GB para LTX-2.3, FLUX.2 Klein 9B, Ideogram 4 y SDXL en BF16, 16 GB para Wan 2.2) y 16 GB de RAM (32 GB recomendados).
+8. **Requisitos:** Windows 10/11, GPU NVIDIA **RTX 20xx / GTX 16xx o posterior** con driver **580 o superior** (o AMD **RX 7000 / RX 9000** de 16 GB, experimental), 8 GB de VRAM (4 GB para Anima y SDXL en NF4, 12 GB para LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL en BF16 y Wan 2.2 con imágenes a 448×448, 16 GB para Wan 2.2 con vídeo) y 16 GB de RAM (32 GB recomendados).
 
 **Cola de trabajos:** con un entrenamiento en marcha, *Iniciar / Reanudar* o *Iniciar Pre-Caché* en cualquier entrenador pregunta si añadirlo a la cola, con una copia de los ajustes de ese momento. Los trabajos se ejecutan uno tras otro en la GPU. El botón **Cola** del lanzador y de cada entrenador abre la página de la cola: lo que entrena ahora (progreso, tiempo restante y curva de loss) y lo que espera, que puedes reordenar arrastrando, pausar, continuar o quitar. Pausar guarda un checkpoint y deja el trabajo pausado en la cola; continuar sigue desde ese paso. Mientras un entrenador entrena, **➕ Nuevo entrenamiento en cola** abre un borrador del mismo entrenador en otro puerto para preparar el siguiente sin tocar el que entrena (ponle otro nombre de proyecto). Si un trabajo falla, se queda en la lista en rojo diciendo por qué (no se encuentra la pre-caché o el dataset, falta VRAM…); corrígelo y pulsa **↻** para reintentarlo. **✎** en un trabajo de la cola abre su entrenador con sus ajustes para cambiarlos: el botón de empezar pasa a ser **💾 Guardar cambios en la cola**. Mientras se hace la pre-caché, *Iniciar / Reanudar* sigue disponible y manda el entrenamiento a la cola. **⏻ Pausar todo y salir**, abajo en el lanzador, pausa el entrenamiento en curso guardando su checkpoint y cierra todo desde el navegador; al volver a abrir el lanzador la cola sigue sola donde estaba, empezando por ese entrenamiento. En RunPod y otras nubes el lanzador sigue abierto, con la cola pausada.
 
@@ -225,9 +231,11 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 
 **MOSS-Image:** nuevo entrenador de LoRAs de imagen para MOSS-Image de OpenMOSS (Apache 2.0), sobre **Base** (el recomendado para LoRAs) o **SFT**, con la misma pre-caché para los dos. Entrena a 512² con menos de 6 GB de VRAM. El text encoder (Qwen3.5-9B) se elige en el pre-caché: BF16 exacto repartido entre GPU y RAM (por defecto), INT8 o NF4. Las previews pueden usar el adaptador turbo de 4 pasos de darask0 (unos 4 s por imagen en vez de 43 s). Detalles en la sección *MOSS-Image*.
 
-**Wan 2.2:** nuevo entrenador de LoRAs de vídeo e imagen para **Wan 2.2 T2V-A14B** (Apache 2.0), con imágenes y clips en el mismo dataset. Wan 2.2 tiene dos expertos de 14B: el de **ruido alto** (composición y movimiento) y el de **ruido bajo** (detalle, caras, estilo). *Experto a entrenar* elige cuál aprende: ruido bajo (basta para personajes y estilos), ruido alto (movimientos nuevos) o los dos (por defecto), con un LoRA para cada uno (`_high_noise` / `_low_noise`); en ComfyUI cada uno va en su modelo. Los expertos se descargan ya en NF4 (~7,6 GB cada uno) de `AcademiaSD/Wan22-T2V-A14B-NF4-for-LoRA-Training`; si ese repo aún no tiene uno, se descarga del original shard a shard (57 GB en FP32), se convierte a NF4 en tu PC y se borra cada shard. Las previews pueden usar el LoRA turbo lightx2v (12 pasos, unos 2 minutos por clip de 1 s). Los clips necesitan **ffmpeg** en el PATH. Detalles en la sección *Wan 2.2*.
+**Wan 2.2:** nuevo entrenador de LoRAs de vídeo e imagen para **Wan 2.2 T2V-A14B** (Apache 2.0), con imágenes y clips en el mismo dataset. Wan 2.2 tiene dos expertos de 14B: el de **ruido alto** (composición y movimiento) y el de **ruido bajo** (detalle, caras, estilo). *Experto a entrenar* elige cuál aprende: ruido bajo (basta para personajes y estilos), ruido alto (movimientos nuevos) o los dos (por defecto), con un LoRA para cada uno (`_high_noise` / `_low_noise`); en ComfyUI cada uno va en su modelo. Los expertos se descargan ya en NF4 (~7,6 GB cada uno) de `AcademiaSD/Wan22-T2V-A14B-NF4-for-LoRA-Training`; si ese repo aún no tiene uno, se descarga del original shard a shard (57 GB en FP32), se convierte a NF4 en tu PC y se borra cada shard. Las previews pueden usar el LoRA turbo lightx2v (12 pasos, unos 2 minutos por clip de 1 s). Con 12 GB de VRAM: pre-caché a 448 x 448 y previews de 1 frame (10,4 GB de pico con rank 8 y los dos expertos). Los clips necesitan **ffmpeg** en el PATH. Detalles en la sección *Wan 2.2*.
 
-**Parecido facial:** encima de las previews, **👤 Parecido facial → Activar...** pone en cada preview (y sobre su círculo en la gráfica del entrenamiento) el % de parecido de su cara con la del dataset; la misma persona suele pasar del 40-50%. No se descarga por defecto: los modelos de InsightFace son solo para investigación no comercial, y antes de descargarlos hay que aceptar en una ventana que se usan bajo tu responsabilidad y sin fines comerciales. Funciona en la CPU, también en RunPod. Detalles en la sección *Face likeness in the previews*.
+**Parecido facial:** encima de las previews, **👤 Parecido facial → Activar...** pone en cada preview (y sobre su círculo en la gráfica del entrenamiento) el % de parecido de su cara con la del dataset. En las previews de un LoRA, un 45% o más es mucho parecido (verde) y un 30-45%, parecido parcial (naranja); las fotos reales de la misma persona suelen dar más. También en las previews de vídeo, con su primer fotograma. No se descarga por defecto: los modelos de InsightFace son solo para investigación no comercial, y antes de descargarlos hay que aceptar en una ventana que se usan bajo tu responsabilidad y sin fines comerciales. Funciona en la CPU, también en RunPod. Detalles en la sección *Face likeness in the previews*.
+
+**Dataset Forge:** con pocas fotos de una persona (desde 1), **🧬 Dataset Forge** en la barra del Dataset Manager crea un dataset de personaje. *Analizar* escribe los captions que falten y una ficha con los rasgos fijos (edad, pelo, ojos). El *plan* combina encuadre, ropa, lugar (mitad interiores, mitad exteriores), luz, ángulo y expresión, y se puede editar línea a línea. *Generar* usa FLUX.3 Klein (FLUX Kommunity License), con las imágenes más naturales: anatomía limpia, poses nuevas y el encuadre pedido. En calidad *Rápida* (por defecto) usa la LoRA turbo PDD de NoiseToNova: 4 u 8 pasos, unos 12 o 25 s por imagen, con más parecido pero un aspecto más maquillado; *Mejor calidad* va de 12 a 50 pasos (16, unos 85 s por imagen), más natural. También se puede elegir Fibo 2.0 (CC BY-NC, el de más parecido, unos 5 min por imagen), Qwen-Image 2.1 (licencia Qwen Research, no comercial; rápido, pero con cuerpos a veces desproporcionados), FLUX.2 Klein 9B o Qwen-Image-Edit-2511 (Apache 2.0). El plan reparte la mitad de las imágenes en primeros planos. Solo guarda las imágenes que pasan el parecido facial mínimo (60% por defecto); las demás van a `_rejected`. El resultado va a una carpeta nueva (la de origen no se toca), con un caption por imagen sin los rasgos fijos, para que el trigger aprenda la identidad. **📂 Usar en el Dataset Manager** la carga en el entrenador. Antes de generar hay que confirmar que tienes derecho o permiso para usar las imágenes de esa persona. Detalles en la sección *Dataset Forge*.
 
 **LR Scheduler:** debajo del learning rate puedes elegir cómo cambia durante el entrenamiento: `cosine` (por defecto: sube durante el warmup y baja suavemente hasta el 10%), `constant` (el mismo LR de principio a fin, como el entrenador de Civitai), `constant_with_warmup`, `linear` o `cosine_with_restarts` (repite la curva tantas veces como indique *Ciclos*). Si no lo tocas, cada entrenador funciona igual que antes. Detalles en la sección *LR scheduler*.
 
@@ -268,7 +276,7 @@ The automatic captioner adds, only the first time you use it: **nothing** for Kr
 | | Minimum | Recommended |
 | :--- | :--- | :--- |
 | **OS** | Windows 10 / 11, or 64-bit Linux ([docs/Linux.md](docs/Linux.md)) | Windows 11 |
-| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 12 GB for LTX-2.3, FLUX.2 Klein 9B, Ideogram 4 and SDXL in BF16, 16 GB for Wan 2.2) | 12–24 GB VRAM |
+| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 12 GB for LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL in BF16 and Wan 2.2 with images at 448×448, 16 GB for Wan 2.2 with video) | 12–24 GB VRAM |
 | **AMD GPU** *(experimental)* | Radeon **RX 7000 / RX 9000** or Ryzen AI Max (Strix Halo) with 16 GB of VRAM, using the AMD installer (see *Installation*). Confirmed on an RX 7800 XT 16 GB under Windows with MiniMax-H3 | — |
 | **Driver** | NVIDIA **580 or newer** (CUDA 13). AMD: a recent Adrenalin driver on Windows, or `amdgpu` on Linux | Latest |
 | **RAM** | 16 GB | 32 GB |
@@ -447,8 +455,33 @@ For character LoRAs: each preview gets a badge with how much its face looks like
 - **Off by default, nothing is downloaded.** Click **👤 Face likeness → Enable...** above the previews. A popup explains the terms and has two checkboxes: *I accept that I download and use these models under my own responsibility* and *I will not use them for commercial purposes*. **Download** is enabled only with both checked.
 - It downloads InsightFace's `buffalo_l` (the SCRFD face detector and the ArcFace recognizer, ~280 MB, only those two files are kept) to `Models/FaceMatch-InsightFace/`, and installs `onnxruntime`. **The InsightFace pretrained models are licensed for non-commercial research purposes only**; the acceptance is saved in `settings/face_match.json`.
 - It runs on the CPU of the machine with the trainer, so it uses no VRAM and works the same on Windows, Linux, macOS and RunPod, from any browser or phone.
-- **Reference:** the largest face in each dataset image, averaged. **Likeness:** ArcFace cosine similarity of the preview's closest face to that reference, ×100. The same person usually scores above 40-50%; a different one, under 20-30%. Green from 60%, amber from 40%, red below; *no face* when none is detected.
+- **Reference:** the largest face in each dataset image, averaged. **Likeness:** ArcFace cosine similarity of the preview's closest face to that reference, ×100. Real photos of the same person usually score above 50%; a different one, under 20-30%. Generated faces score lower: in the previews of a LoRA, 45% or more is a strong likeness. Green from 45%, amber from 30%, red below; *no face* when none is detected. Video previews are scored on their first frame.
 - **Show %** hides or shows the badges in the gallery and the chart. Video previews (Wan 2.2, LTX-2.3) are not scored; YuE2 (audio) does not have it.
+
+## 🧬 Dataset Forge
+
+A character dataset from a few images, even just one: new outfits, places and framings that keep the face. Open it with **🧬 Dataset Forge** in the Dataset Manager toolbar of any image or video trainer; it opens in its own tab.
+
+1. **Source and references:** a folder with a few photos of one adult person (it does not touch it). Click the ones to use as reference: up to 4 go into the model, the rest only help the likeness check.
+2. **Analyze:** the shared Qwen3-VL-8B captioner writes the captions the references lack and a character sheet: woman / man and the features that do not change (age, hair, eyes, visible marks). Edit it if needed.
+3. **Plan:** one line per image combining framing (half close-ups, 30% waist-up, 20% full body: the LoRA learns the face from close-ups), outfit, place (half indoors, half outdoors), light, angle and expression, without repeating outfits or places until they run out. Edit, add or delete lines; **🎲 New plan** makes another one.
+4. **Generate:** the model gets the references and each line, with a new pose and expression for every image:
+   - **FLUX.3 Klein** (default, NF4). The most natural images: clean anatomy, new poses and the framing of the plan. **Fast** quality (default): NoiseToNova's turbo LoRA (PDD), 4 or 8 steps (about 12 or 25 s per image), with higher likeness but a more made-up, contrasted look. **Best**: 12 to 50 steps with CFG 3.5 (16 steps about 85 s, 28 about 2.5 min), softer and more natural. **Steps** picks the count. **FLUX Kommunity License:** non-commercial use; commercial use of the images only for Qualifying Users (see the license).
+   - **Fibo 2.0 Dev** (NF4, 30 steps, CFG 5, about 5 min per image). The highest likeness and clean anatomy, with a slightly more retouched look. **CC BY-NC 4.0: non-commercial use only.**
+   - **Qwen-Image 2.1** (NF4, no CFG). High likeness, but bodies can be out of proportion and it tends to copy the pose of the reference. **Best** quality: 20 steps of the base model, clean anatomy, about 40-70 s per image. **Fast**: Viggle's turbo LoRA, 4 steps, about 20-30 s, but more deformed bodies. **Qwen Research License: non-commercial use only.**
+   - **FLUX.2 Klein 9B** (NF4 with kalle07's turbo LoRA, 4 steps). Natural anatomy, but the face drifts more and it does not always follow the framing. **FLUX Non-Commercial License.**
+   - **Qwen-Image-Edit-2511** (NF4 with lightx2v's Lightning LoRA, 4 steps, Apache 2.0). The only one for commercial use, but it drifts most from the face: expect a lower minimum likeness.
+
+   With two references of the same woman (65% minimum), averages in our test: Fibo 2.0 71%, Qwen-Image 2.1 Best 68%, Fast 64%, FLUX.3 Klein Fast 67% (4 steps) / 64% (8), Best 58-60% (16-28 steps), FLUX.2 Klein 55%, Edit-2511 about 50%. The likeness score is not everything: FLUX.3 Klein's images looked the most natural and were judged closest by eye. For reference, real photos of her scored 61-78% against one reference.
+
+   Every image is checked with the [face likeness](#-face-likeness-in-the-previews): under the minimum (60% by default) it is tried again with another seed, and if it still does not reach it, it goes to `_rejected`. It needs a checkbox confirming you have the right or the person's permission to use their images.
+5. **📂 Use in Dataset Manager** sets the new folder as the trainer's dataset: references and generated images, each with its `.txt`.
+
+- **Captions:** the trigger plus the line of the plan (*close-up portrait of a woman, head and shoulders, wearing a black leather jacket, in a coffee shop...*). The fixed features go into the instruction for the model but not into the caption, so the trigger learns the identity.
+- **Output:** a new folder (by default `<source>_forge`), never the source. GPU job: it does not start while a training, pre-cache or caption job is running, and they see it as busy.
+- **Models:** the same folders as their trainers, downloaded the first time if the trainer has not done it: `Models/FLUX.3-Image-Klein_NF4` (~12 GB, plus the PDD turbo LoRA in `LoRAs`, ~1.2 GB), `Models/Fibo2_Dev-NF4` (`transformer`, `text_encoder_BF16`; ~13 GB), `Models/Qwen-Image21-NF4` (`transformer`, `text_encoder_BF16`, the Viggle turbo LoRA; ~22 GB), `Models/FLUX.2-Klein-9B_NF4` (~9 GB) or `Models/Qwen-Image-2512-NF4` (`transformer_edit`, `text_encoder_BF16`, the Edit-2511 Lightning LoRA; ~27 GB). The BF16 text encoders are split between GPU and RAM; the transformers of FLUX.3 Klein (5.5B), Fibo 2.0, 2.1 (7B) and Klein (9B) fit in the GPU and the 20B of 2511 uses BlockSwap.
+- **Two references are better than one:** the likeness check averages them, and the model sees more of the face.
+- Without face likeness installed, the images are kept without checking the likeness.
 
 ## 🧪 The trainers
 
@@ -744,6 +777,8 @@ Each expert exports its own LoRA, named `_high_noise` / `_low_noise`. In ComfyUI
 | Clip, 17 frames | ~18.5 | 12.0 GB |
 | Clip, 33 frames | ~43 | 14.3 GB (does not fit next to a desktop on 16 GB; lower the resolution or use a bigger card) |
 
+**12 GB cards:** pre-cache at **448 x 448** and keep the previews at 1 frame. Measured with rank 8 / alpha 8 and both experts: 10.4 GB peak while training, a bit less for an image preview. A 17-frame video preview goes slightly over 12 GB. 480 x 480 is in between; 512 x 512 is just over 12 GB.
+
 On Windows a sample that does not fit in VRAM is left out with a message instead of letting the driver spill into system RAM, where a step takes 30 times longer. More in [docs/README_Wan22.md](docs/README_Wan22.md).
 
 ### LTX-2.3 — character and style LoRAs for the LTX video model
@@ -798,75 +833,4 @@ YuE2-3B (m-a-p) is a **Mixture-of-Transformers**: every one of its 28 blocks car
 - **Real-audio codes:** m-a-p has not released YuE2's audio-to-code tokenizer, so Pre-Cache uses the community one: MERT-v2-FullSong layer 20 → Mothersuperior's tokenizer head (`v5_30k`) → one semantic code per 40 ms latent frame (`<cache>/_realcodes_<clip>.pt`, ~2.8 GB VRAM, ~1.4 GB downloaded once). It gets about 1 code in 5 exactly right, but rendering those codes with the base NAR keeps the song's voice timbre, harmony and structure.
 - **Stage = `nar`** — lyrics and phrasing: it renders the codes into audio. **In real tests it does not clone the voice**: the voice comes from the codes, which the AR writes. It learns the VAE-latent velocity seeing the text prefix **plus the clip's real codes**, the same context ComfyUI gives it, so the LoRA acts where ComfyUI generates. It is exported in ComfyUI's native layout (`diffusion_model.model.layers.N.self_attn.qkv_proj`, `mlp.gate_up_proj`…, q/k/v and gate/up fused losslessly): load it with **Load LoRA (model only)**.
 - **Stage = `ar`** (default) — voice identity, vocal timbre, instruments and the sound of the artist. **This is the stage that clones the voice in real tests**: the AR writes the semantic codes, and the voice lives in those codes (cross-entropy on the clips' real codes). This is the stage of the community's artist LoRAs, mixed 50 % with the minted regularizer pack so a small dataset cannot collapse YuE2's token grammar. It memorizes the training songs past ~1500 steps.
-- **Stage = `both`** — NAR first, then a fresh base model from disk for AR: two exports, `YuE2_FINAL_NAR_LoRA.safetensors` (ComfyUI layout) + `YuE2_FINAL_AR_LoRA.safetensors` (ComfyUI layout for the CLIP side, `text_encoders.model.layers.N.self_attn.qkv_proj`…). In ComfyUI, load the NAR LoRA on the model and the AR LoRA with **Load LoRA** (clip strength). There is no `_BOTH` file: the two stages load in different places, so they are always two LoRAs.
-- **File names:** every LoRA carries its stage. In the output folder: `YuE2_AR_LoRA_step_N` / `YuE2_FINAL_AR_LoRA` and `YuE2_NAR_LoRA_step_N` / `YuE2_FINAL_NAR_LoRA` (older runs named the NAR `YuE2_LoRA_step_N` / `YuE2_FINAL_LoRA`; they are still recognised). **Send to Models** and **Download LoRA** add `_AR` or `_NAR` to your *Final LoRA Filename* (`yue2_lora_<project>_AR.safetensors`), read from the LoRA's own metadata; Send to Models exports the stage selected in *Training Stage*, and with `both` it exports the two files.
-- **Previews** render short songs (codes → 32-step midpoint ODE → VAE decoder) as 48 kHz WAVs during training.
-- **NF4:** a pre-quantized backbone (`YuE2-3B_NF4`, built with `tools/yue2/5_conversor_YuE2_NF4.py`) loads in ~5 s at 3.1 GB; only the attention+MLP of both branches are quantized — the latent bridges (`llm2vae`/`vae2llm`/`time_embedder`), layernorms, embeddings and heads stay BF16. Without the cache the trainer quantizes the raw model on the fly.
-
-| Starting point (not final) | NAR (lyrics & phrasing) | AR (voice, timbre & sound) |
-| :--- | :--- | :--- |
-| Rank / Alpha | 16 / 16 | 8 / 8 |
-| Learning rate | 3e-4 | 2e-4 |
-| Steps | 1200 | 600 |
-| VRAM (NF4, 30-32 s clips) | ~8 GB steady, peaks 8.7 GB | pending |
-
-Measured on an RTX 5080 with the Agila dataset (91 clips, rank 16/16, lr 3e-4): the NF4 backbone loads in 3.1 GB and the run holds **~8 GB of VRAM with brief peaks to ~8.7 GB** (preview ODE + VAE decode and checkpoint saves) — everything fits comfortably under 9 GB on a 16 GB card. Loss went 1.18 → 1.08 in 300 steps and → 1.056 by step 1200, dropping slowly and cleanly; exact-step resume reproduced the schedule mid-run (step 301 continues the same warmup/cosine curve).
-
-The NAR loss depends on the clips' latent amplitude (the latent is not normalized, std ≈ 1.07): ~2.3 at the start on short synthetic test clips, ~1.15 on real music (91 clips of a full album, 30–32 s). It falls slowly and cleanly: 1.18 → 1.08 in 300 steps and → 1.056 at 1200 (rank 16/16, lr 3e-4). Training holds **~8 GB of VRAM on a 16 GB card with the NF4 backbone** (brief peaks ~8.7 GB at preview decode and checkpoint save) and runs at ~0.4 s/step with 30 s clips; the BF16 backbone takes ~7.3 GB more of headroom (~1 s/step with 12 s clips). The initial AR CE is well below `ln(32768)` and drops steadily.
-
----
-
-## ☁️ RunPod
-
-No suitable GPU at home? Train in the cloud with the ready-made template:
-
-<a href="https://console.runpod.io/deploy?template=lfxvtg5rrb&ref=jbvdshm0"><img src="https://img.shields.io/badge/Deploy%20on-RunPod-673ab7.svg?style=for-the-badge" alt="Deploy on RunPod"></a>
-
-1. Pick a GPU (the template only allows machines with **CUDA 13**). 24 GB or more is comfortable; SDXL and Anima also train on 16 GB. Cheap cards cost around $0.25–0.50 per hour.
-2. Keep the 100 GB volume: models, datasets and LoRAs are stored in `/workspace`.
-3. Open **Logs → Container** and wait for `Open / Abre: https://<pod>-4990.proxy.runpod.net` (the first start takes a few minutes). Log in with user `loralab` and the password printed just above it, or set `LORALAB_PASSWORD` when deploying to choose your own.
-4. Pick a trainer, upload your dataset with **⬆ Upload** (images and captions, or a `.zip`), pre-cache, train and save the result with **⬇ Download LoRA**.
-5. **When you finish, Stop and then Terminate the pod.** Closing the browser does not stop billing, and a stopped pod still pays for its volume.
-
-The image ([`ghcr.io/academiasd/loralab-trainerstudio`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/pkgs/container/loralab-trainerstudio)) only holds the environment; the code comes from this repository on every start, so the pod always runs the latest version. `LORALAB_REF` pins a branch or tag. The image is built from `docker/` by GitHub Actions. The deploy link includes the AcademiaSD referral code, which gives the channel RunPod credit at no cost to you.
-
-## 🌐 Remote access
-
-The launcher and the trainers are web pages, so you can train from a laptop, a tablet or a phone while the GPU works on another PC. By default they only answer this PC (`127.0.0.1`).
-
-1. On the training PC, click **🌐 Remote access** at the bottom of the launcher.
-2. Tick **Allow other devices on the network**, set a **user and password** and, if you need them, other ports (4990 for the launcher, 5000 for the trainers).
-3. Restart the launcher. The panel shows the address to open from the other device, e.g. `http://192.168.1.20:4990`.
-
-- The training PC never asks for the password; other devices always do. Without a password, network access is refused.
-- **Behind a reverse proxy** that already asks for a login (Authelia, Authentik, Cloudflare Access...), tick **I use my own authentication** to drop the built-in login, and set **Trainer public URL** (e.g. `https://trainer.example.com`) so the launcher links there instead of `host:5000`. Without a proxy with authentication in front, that option leaves the PC open to anyone on the network.
-- On Windows, allow Python through the firewall the first time it asks (private networks).
-- **Browse** buttons open a dialog on the training PC's screen, so from another device the folder ones switch to the web folder browser, and for files you type the path.
-- **⬆ Upload** in the Dataset Manager (or dragging files onto it) sends images, captions or a whole `.zip` from your device to the dataset folder, and **⬇ Download LoRA** under *Send to Models* saves the trained LoRA on your device.
-- The settings can only be changed from the training PC and are saved in `settings/network.json` (the password as a hash).
-- It is plain HTTP, meant for your home network. **Do not open these ports to the Internet**: to connect from outside, use [Tailscale](https://tailscale.com) or an SSH tunnel (`ssh -L 4990:localhost:4990 -L 5000:localhost:5000 user@training-pc`).
-
-## 🐍 Using your own Python environment
-
-The installers create `venv\` and install everything there. To use your own environment instead (conda, uv...), install `requirements.txt` in it and set **`LORALAB_PYTHON`** to its python before starting; every launcher uses it instead of `venv\`:
-
-```bat
-set LORALAB_PYTHON=C:\Users\you\miniconda3\envs\loralab\python.exe
-Start_LoRAlab-TrainerStudio.bat
-```
-
-```bash
-LORALAB_PYTHON=~/miniconda3/envs/loralab/bin/python ./Start_LoRAlab-TrainerStudio.sh
-```
-
-It needs Python 3.13, the CUDA 13.0 build of PyTorch (`requirements.txt` takes it from the PyTorch index), diffusers from its main branch and, for MiniMax-H3 clips, ffmpeg on the PATH.
-
-## 📚 Technical notes
-
-Detailed measurements and the reasoning behind each design decision are in `docs\`: [Qwen-Image 2.1](docs/README_QwenImage21.md) · [Krea 2](docs/README_Krea2.md) · [LTX-2.3](docs/README_LTX23.md) · [MiniMax-H3](docs/README_MiniMaxH3.md) · [Wan 2.2](docs/README_Wan22.md) (VRAM tables, block swap, video and audio datasets, RefMods and every setting) · [Linux](docs/Linux.md).
-
-## 🛠️ Tools for advanced users
-
-`tools\` contains the scripts used to build the NF4 models from the originals (`Run_Conversor_Krea2.bat`, `Run_Conversor_LTX23.bat`, `5_conversor_QwenImage21_NF4.py`, `5_conversor_ZImage_NF4.py`, `5_conversor_Klein9B_NF4.py`, `5_conversor_Fibo2_NF4.py`) and a `.parquet` dataset extractor for Qwen-Image 2.1 (`6_extract_parquet.py`). They are not needed to train: the trainers download the ready-made NF4 models.
-
-**Before merging changes to the interfaces or servers**, `tools/smoke_test_ui.py` checks every trainer in under a minute: it starts each server and, in a headless Chrome or Edge, does what the **Pre-Cache**, **Start / Resume** and **Save JSON** (while training) buttons do, without launching anything. It fails on a button that never reaches its script, a JavaScript error or a save that does not answer `ok`, and it works on a
+- **Stage = `both`** — NAR first, then a fresh base model from disk for AR: two exports, `YuE2_FINAL_NAR_LoRA.safetensors` (ComfyUI layout) + `YuE2_FINAL_AR_LoRA.safetensor

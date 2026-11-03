@@ -7,7 +7,7 @@ sent: tokens, cache tokens, models, finish reasons, errors, and whether the span
 [![CI](https://github.com/Plexito-de/spantruth/actions/workflows/ci.yml/badge.svg)](https://github.com/Plexito-de/spantruth/actions/workflows/ci.yml)
 [![Report](https://github.com/Plexito-de/spantruth/actions/workflows/report.yml/badge.svg)](https://plexito-de.github.io/spantruth/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue)
+![Python](https://img.shields.io/badge/python-3.11%20to%203.14-blue)
 
 **[Read the report](https://plexito-de.github.io/spantruth/)**: every library, every scenario,
 every finding with the rule it applies. It is rebuilt every night, at pinned versions and at the
@@ -26,23 +26,27 @@ These bugs live on the paths that normal tests skip: a stream the app leaves ear
 that drops, a 429, a prompt-cache hit. spantruth tests exactly those paths, for every library,
 in the same way.
 
-## What the first run shows
+## What the run shows
 
-Pinned versions, 2026-10-10. Every finding but one was already reported upstream, by the people
-credited below. spantruth reproduces each of them on the same footing, and the nightly run against
-the latest releases shows when a fix lands.
+Pinned versions, 2026-11-03: openai 3.42.1 and anthropic 2.4.0 under every library. Each finding
+is reported upstream, by the people credited below, and the nightly run against the latest
+releases shows when a fix lands.
 
 | Library | Finding | Upstream |
 | --- | --- | --- |
 | OpenLLMetry | Anthropic streams overcount output tokens. `message_delta` carries the cumulative count, and the wrapper adds it to the count in `message_start` (`1` in the scenarios). | [#4377](https://github.com/traceloop/openllmetry/pull/4377), by @arthi-arumugam-git |
-| OpenLLMetry | A sync Anthropic stream that fails mid-way (a dropped connection, an `overloaded_error` event) never ends its span. The async stream ends it with status `ERROR`, but without `error.type`. | not reported yet |
+| OpenLLMetry | A sync Anthropic stream that fails mid-way (a dropped connection, an `overloaded_error` event) never ends its span. The async stream ends it with status `ERROR`, but without `error.type`. | [#4643](https://github.com/traceloop/openllmetry/issues/4643), by @chrikrah |
 | OpenLLMetry | An OpenAI stream that fails mid-way ends its span with status `OK`, sync and async. | [#4535](https://github.com/traceloop/openllmetry/pull/4535), by @feiiiiii5 |
 | OpenLLMetry | An Anthropic stream the app closes early never ends its span. | [#4536](https://github.com/traceloop/openllmetry/issues/4536), by @armanunix |
-| OpenInference | A stream the app closes early never ends its span: OpenAI with `close()` or a `with` block, Anthropic with `close()`. | [#3790](https://github.com/Arize-ai/openinference/issues/3790), by @feiiiiii5; [#3930](https://github.com/Arize-ai/openinference/issues/3930), by @armanunix |
+| OpenInference | Every scenario passes. The early-exit spans that never ended are fixed in `openinference-instrumentation-openai` 0.1.66 and `openinference-instrumentation-anthropic` 3.1.0. | [#3790](https://github.com/Arize-ai/openinference/issues/3790), by @feiiiiii5; [#3930](https://github.com/Arize-ai/openinference/issues/3930), by @armanunix |
 | OpenTelemetry GenAI instrumentation | Every scenario passes. | |
+| Anthropic SDK, built-in tracing | The SDK's own spans get the tokens, the cache counts and the errors right, but record the stop reason as `anthropic.message.stop_reason`, so `gen_ai.response.finish_reasons` is missing. | not reported yet |
+| Any library with anthropic 1.14.0 or later | The SDK creates its own span for every call when a tracer provider is registered, so a library on top reports each call on two spans, and a backend that sums token counts counts them twice. spantruth turns the SDK's spans off for the library subjects (`ANTHROPIC_OPEN_TELEMETRY=false`), and grades them as their own subject. | not reported yet |
 
 Each finding on the report shows the expected value, the reported value, the attribute it was
-read from, and the rule it applies, with a link wherever a spec states it.
+read from, and the rule it applies, with a link wherever a spec states it. It also shows the spans
+the library exported and the command that reproduces it, and it has its own link, so an upstream
+issue can point at it.
 
 ## How it works
 
@@ -86,35 +90,89 @@ library.
 | wrong | A reported value does not match the wire. |
 | lost | The span never ended, so no backend ever receives it. |
 | broken | The app saw something different from an uninstrumented run. |
-| inconclusive | The harness could not run the cell. No verdict on the library. |
+| inconclusive | The cell could not be graded: the harness could not run it, or the library's setup raised (`subject.instrument`). |
 
 ## Run it
 
-You need [uv](https://docs.astral.sh/uv/).
+You need [uv](https://docs.astral.sh/uv/). No clone, no API keys:
 
 ```sh
-git clone https://github.com/Plexito-de/spantruth.git && cd spantruth
-uv sync
-uv run spantruth list                                    # scenarios and subjects
-uv run spantruth run --subject openllmetry               # one library, every scenario
-uv run spantruth run                                     # everything, about 3 minutes
-uv run spantruth report results/latest.json --html site/index.html
+uvx spantruth list                                      # scenarios and subjects
+uvx spantruth run --subject openllmetry                 # one library, every scenario
+uvx spantruth run --out results.json                    # everything, about 3 minutes
+uvx spantruth report results.json --html report.html
 ```
 
-Each subject gets its own virtual environment under `.spantruth/venvs`. `--latest` unpins the
-library's own packages. spantruth runs from a clone, because the subjects live next to the source.
-The run behind the table above is committed as
-[`results/2026-10-10-pinned.json`](results/2026-10-10-pinned.json).
+Each subject gets its own virtual environment under `~/.cache/spantruth/venvs`
+(`$XDG_CACHE_HOME/spantruth` when that is set). A run writes nothing into the directory you run it
+in: without `--out`, the results go to `~/.cache/spantruth/results/latest.json`. `--latest` unpins
+the library's own packages. The run behind the table above is committed as
+[`results/2026-11-03-pinned.json`](results/2026-11-03-pinned.json).
 
-### Test a fix before it merges
+To work on spantruth itself, use a clone: `git clone https://github.com/Plexito-de/spantruth.git`,
+then `uv sync` and `uv run spantruth list` in it.
 
-`--with` replaces one package of a subject with any pip requirement: a pull request's head, a
-branch, or a local checkout. The results record the commit it resolved to.
+### Test your own library, and a fix before it merges
+
+`--with` replaces one package of a subject with a local checkout, a pull request's head, a
+branch, or a version. A checkout is named by its `pyproject.toml`, and the results record what
+each value resolved to.
 
 ```sh
-uv run spantruth run --subject openllmetry --with \
+uvx spantruth run --subject openllmetry --with ./packages/opentelemetry-instrumentation-anthropic
+uvx spantruth run --subject openllmetry --with \
   "opentelemetry-instrumentation-anthropic @ git+https://github.com/traceloop/openllmetry@refs/pull/4377/head#subdirectory=packages/opentelemetry-instrumentation-anthropic"
 ```
+
+A subject can live in your own repository. Copy the two files of a subject in
+[`subjects/`](subjects/), `subject.toml` and `instrument.py`, into a directory and run it by its
+path. A value with a slash is a path, and a value without one is a built-in subject:
+
+```sh
+uvx spantruth run --subject ./spantruth
+```
+
+### Fail CI on a regression, not on a known bug
+
+Record the checks that your library fails today, commit the file, and compare every later run
+with it:
+
+```sh
+uvx spantruth run --subject ./spantruth --write-expect spantruth-expected.toml
+uvx spantruth run --subject ./spantruth --expect spantruth-expected.toml
+```
+
+| Exit code | Meaning |
+| --- | --- |
+| 0 | Every cell ran, and the failing checks equal the expectation file. |
+| 1 | The failing checks differ from the file: a new failure, a fix, or a changed verdict. The output names each one. |
+| 2 | Usage error, for example an unknown scenario in the expectation file. |
+| 3 | spantruth could not build an environment or run a cell. This is not a verdict on the library. |
+
+A fix fails the comparison too, so the file always says what the library fails today: record the
+fix with `--write-expect`. `--summary "$GITHUB_STEP_SUMMARY"` adds the report to a GitHub Actions
+job summary.
+
+### Run it in GitHub Actions
+
+```yaml
+jobs:
+  spantruth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: Plexito-de/spantruth@v0.3.0
+        with:
+          subject: ./spantruth                       # or a built-in subject, such as openllmetry
+          with: ./packages/my-instrumentation        # your checkout, one per line
+          expect: spantruth-expected.toml            # optional: fail only on a change
+```
+
+The step installs spantruth from its own ref, so a new release cannot change your results until
+you move the tag. It writes the matrix, the findings and the differences to the job summary,
+uploads the results and the HTML report as an artifact, and fails with the exit code of the run.
+The `exit-code` output tells a difference (1) from an incomplete run (3). It runs on Linux and
+macOS runners.
 
 ### Show the result
 
@@ -136,11 +194,15 @@ endpoint per library, at `https://plexito-de.github.io/spantruth/badges/<subject
   stream cut after eight recorded events replays kartsan03/wiretruth's
   `stream.missing-finish-abort` fixture, vendored unchanged with its provenance.
 - **Subjects:** the [OpenTelemetry GenAI instrumentation](https://github.com/open-telemetry/opentelemetry-python-genai),
-  [OpenLLMetry](https://github.com/traceloop/openllmetry) and
-  [OpenInference](https://github.com/Arize-ai/openinference), plus the two controls.
+  [OpenLLMetry](https://github.com/traceloop/openllmetry),
+  [OpenInference](https://github.com/Arize-ai/openinference),
+  [OpenLIT](https://github.com/openlit/openlit), and the built-in tracing of the
+  [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-python), plus the two controls.
 
-Next: Logfire, OpenLIT, the JavaScript libraries, AWS Bedrock, Gemini and the rest of the OpenAI
-Responses API. [Help is welcome](CONTRIBUTING.md#ways-to-help).
+Next, from the [plan](PLAN.md): Logfire, the bug classes that repeat (tool calls and
+reasoning tokens in a stream, the SDK helpers such as `messages.stream()`, the rest of the OpenAI
+Responses API), Google Gemini, frameworks such as LiteLLM and Pydantic AI, and the JavaScript
+libraries. [Help is welcome](CONTRIBUTING.md#ways-to-help).
 
 ## Related work
 

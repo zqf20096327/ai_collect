@@ -289,6 +289,12 @@ openai_api_key_cmd = "op read 'op://vault/OpenAI/key'"
 openai_provider_name = "openai"
 ```
 
+## Experimental background tasks
+
+The [managed agent spike](docs/managed-agent-spike.md) adds `claux task` commands
+for detached tasks, isolated worktrees, JSON events, and conversational follow-ups,
+with an example llm-mux workflow.
+
 ## Usage
 
 ```bash
@@ -492,7 +498,7 @@ lists stored metadata without loading full conversations. Session saves retain
 unchanged rows, including inline images, and replace only the changed suffix.
 
 Headless invocations can use `--config PATH` (or `CLAUX_CONFIG`, with the flag
-taking precedence), `--base-url URL`, `--protocol chat_completions|responses|anthropic`,
+taking precedence), `--base-url URL`, `--protocol chat_completions|openrouter|responses|anthropic`,
 and `--reasoning-effort LEVEL`. These transport overrides apply to the selected
 model for this invocation and do not rewrite configuration. Credentials still
 come from the selected provider. A missing explicitly selected config is an error.
@@ -502,7 +508,10 @@ as project configuration; loosening containment requires `--trust-project` or
 an already trusted project.
 
 Chat Completions uses `reasoning_effort` for generic endpoints. OpenRouter's
-reasoning and cache extensions are sent only to `openrouter.ai`; OpenAI's
+reasoning replay, effort, and cache extensions are enabled for `openrouter.ai`
+or an explicit `protocol = "openrouter"` / `--protocol openrouter`. Use the
+explicit protocol when a local credential proxy forwards to OpenRouter;
+changing the endpoint must not discard reasoning between tool rounds. OpenAI's
 endpoint uses `max_completion_tokens`. Anthropic thinking is not yet supported:
 setting `reasoning_effort` there produces a warning rather than enabling thinking.
 
@@ -758,11 +767,14 @@ warning.
 | `plan` | auto | denied | denied |
 
 In `accept-edits` mode, Agent, MCP, and other non-read-only tools still require
-explicit approval. An MCP tool whose server marks it `readOnlyHint: true` is
-treated as read-only and auto-allowed in every mode except `plan`; a server
-you chose to run is trusted to describe its own tools, and the hint changes
-only prompting, never containment. Sub-agents inherit the parent permission mode; because they
-are non-interactive, operations that would require another prompt are denied.
+explicit approval. Globally configured MCP tools marked `readOnlyHint: true` are
+treated as read-only and auto-allowed in every mode except `plan`. Project-local
+and model-loaded MCP tools are always treated as mutating, regardless of the
+server's hint; project-local servers also use the Bash filesystem policy at
+startup and on live load, and must omit `env`. Move a server that needs explicit
+environment variables into owner-controlled global configuration. Permission
+hints affect prompting, not containment. Sub-agents inherit the parent permission
+mode; because they are non-interactive, operations requiring a prompt are denied.
 
 `auto` mode also runs sandboxed development commands, including compound local
 workflows, without prompting. It allows sub-agents, which inherit the same

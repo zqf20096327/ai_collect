@@ -123,23 +123,29 @@ import { ByokyServer } from '@byoky/sdk/server';
 
 const byoky = new ByokyServer();
 wss.on('connection', async (ws) => {
-  const client = await byoky.handleConnection(ws);
-  const fetch = client.createFetch('anthropic');
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: 'Hello!' }],
-    }),
-  });
+  try {
+    const client = await byoky.handleConnection(ws);
+    const fetch = client.createFetch('anthropic');
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: 'Hello!' }],
+      }),
+    });
+  } catch (err) {
+    // Rejects when the browser never says hello or closes the tab mid-request.
+    // Catch it: an unhandled rejection here ends the Node process.
+    console.error('[relay]', err);
+  }
 });
 ```
 
 ### CLI / Local Apps (Bridge)
 
-CLI tools and desktop apps route API calls through the bridge, a localhost HTTP proxy that hands requests to the extension over native messaging. Keys never leave the extension.
+CLI tools and desktop apps route API calls through the bridge, a localhost HTTP proxy that hands requests to the extension over native messaging. API keys never leave the extension. A Claude setup token is the exception: Anthropic needs a non-browser TLS client for it, so the extension hands it to the local bridge process for each request (your user, memory only, never logged).
 
 ```
 CLI app → HTTP → Bridge (localhost) → Native Messaging → Extension → LLM API
@@ -157,7 +163,7 @@ export ANTHROPIC_API_KEY=$(byoky-bridge token)
 
 ### OpenClaw Integration
 
-Use your Byoky wallet as the key provider for [OpenClaw](https://openclaw.ai). The plugin connects through the bridge, so your keys stay in the extension even when the agent runs in your terminal. See the [OpenClaw plugin](packages/openclaw-plugin) for setup.
+Use your Byoky wallet as the key provider for [OpenClaw](https://openclaw.ai). The plugin connects through the bridge, so API keys stay in the extension even when the agent runs in your terminal. A Claude setup token is handed to the local bridge process for each request (memory only; see the [bridge README](packages/bridge/README.md#how-it-works)). See the [OpenClaw plugin](packages/openclaw-plugin) for setup.
 
 ```
 OpenClaw → HTTP → Bridge (localhost) → Native Messaging → Extension → LLM API

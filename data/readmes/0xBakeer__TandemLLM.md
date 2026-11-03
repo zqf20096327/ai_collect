@@ -37,7 +37,7 @@
 
 TandemLLM is an inference engine for one NVIDIA DGX Spark, and it runs several models: Qwen3.8-27B, Qwen3.8-Flash-Next, LiquidAI's LFM2.5-24B-A2B (from 0.9.0), NVIDIA's Nemotron 3.5 Bolt 74B-A9B (from 0.10.0) and NVIDIA's Nemotron 3.5 Super VL 120B-A12B (from 0.11.0). The box serves one at a time, and they share one server and one setup guide. LFM2.5 is the fast one. Its default pack decodes 153.5 tok/s for one request.
 
-We measure the engine's speed on raw `/v1/completions`, one request and 8 at once, with the chat layer out of the way. [CHANGELOG.md](CHANGELOG.md) has each release's rows, and each weight card on Hugging Face has its model's. The built-in chat (the dashboard's Chat tab, chatd and the conductor's chat profiles) is in beta and not measured.
+We measure the engine's speed on raw `/v1/completions`, one request and 8 at once, with the chat layer out of the way. [CHANGELOG.md](CHANGELOG.md) has each release's rows, and each weight card on Hugging Face has its model's. The built-in chat (the dashboard's Chat tab, chatd and the conductor's chat profiles) is in beta and not measured. Each release also carries a benchmark report, a page attached to its GitHub release, and you can make the same page for your own GPU and model with one command ([docs/benchmark-report.md](docs/benchmark-report.md)).
 
 On Qwen3.8-27B with the published NVFP4 weights and StairCut on, it writes about 50 tokens a second for one request. Plain greedy decoding on the same box runs at 13.69 tok/s. The text is the model's own greedy text, with one documented exception: where the two best tokens are within one unit in the last place (ulp), the batched verify can round the other way ([docs/exactness.md](docs/exactness.md)).
 
@@ -74,10 +74,10 @@ Qwen3.8-Flash-Next runs from turboderp's EXL3 packs, one branch each of [`turbod
 | `flashnext-2.05` | `2.05bpw_h4_ng4` | 61.5 GB | 262,144 tokens |
 | `flashnext-3.05` (default) | `3.05bpw_h5_ng5` | 85.1 GB | 262,144 tokens |
 | `flashnext-4.05` | `4.05bpw_h6_ng6` | 106.1 GB | 208,896 tokens with vision on |
-| `flashnext-5.05` | `5.05bpw_h6_ng6` | 121.9 GB | does not load yet |
+| `flashnext-5.05` | `5.05bpw_h6_ng6` | 121.9 GB | load/generation unverified |
 | `flashnext-6.05` | `6.05bpw_h6_ng6` | 137.7 GB | does not fit |
 
-The 5.05 pack codes its experts at 5 and 7 bits a weight, and the MoE kernels take 2 to 6 and 8. [docs/quantisation.md](docs/quantisation.md) has each model's formats.
+The 5.05 pack's earlier blocker was its 7-bit dense projections. The dense dispatch now covers K 2..8; the MoE kernels already supported 7-bit experts. Full-pack load and generation are still unverified. [docs/quantisation.md](docs/quantisation.md) has each model's formats.
 
 LFM2.5-24B-A2B runs from Liquid's BF16 checkpoint or from one of our six EXL3 packs, one collection: [TandemLLM LFM2.5-24B-A2B EXL3](https://huggingface.co/collections/0xBakeer/tandemllm-lfm25-24b-a2b-exl3-6acf468024dd5288750dd683). The model has 24B parameters, but only 4 of its 64 experts run for each token, so a token reads 1.17 GB of the 3.5 pack. The packs and the BF16 checkpoint [LiquidAI/LFM2.5-24B-A2B](https://huggingface.co/LiquidAI/LFM2.5-24B-A2B) are public; a download needs no token. Measured on one DGX Spark on 2026-10-14, one request, 512 greedy tokens of chat through the server:
 

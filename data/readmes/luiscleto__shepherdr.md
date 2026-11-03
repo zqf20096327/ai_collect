@@ -33,24 +33,24 @@
 
 ## Install
 
-Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later, or the Herdr desktop app, running locally under the same OS account, with `herdr` (or `herdr-app`) on `PATH`. Herdr 0.9.0–0.9.5 and the Herdr app 0.1.10–0.1.11 are validated; newer versions run best effort with a warning.
+Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later, or the Herdr desktop app, running locally under the same OS account, with `herdr` (or `herdr-app`) on `PATH`. Herdr 0.9.0–0.9.5, and the Herdr app 0.1.10–0.1.12 with herdr-core 0.1.15–0.1.17, are validated; newer versions run best effort with a warning.
 
 Use matching Herdr CLI and server versions for terminal reads and control.
 
-Download the archive for this machine from the [latest release](https://github.com/luiscleto/shepherdr/releases/latest), plus its matching checksum file. The examples below use v0.5.2.
+Download the archive for this machine from the [latest release](https://github.com/luiscleto/shepherdr/releases/latest), plus its matching checksum file. The examples below use v0.6.1.
 
 | System | Archive |
 | --- | --- |
-| Linux x86-64 | `shepherdr_0.5.2_linux_amd64.tar.gz` |
-| Linux ARM64 | `shepherdr_0.5.2_linux_arm64.tar.gz` |
-| macOS Intel | `shepherdr_0.5.2_darwin_amd64.tar.gz` |
-| macOS Apple silicon | `shepherdr_0.5.2_darwin_arm64.tar.gz` |
+| Linux x86-64 | `shepherdr_0.6.1_linux_amd64.tar.gz` |
+| Linux ARM64 | `shepherdr_0.6.1_linux_arm64.tar.gz` |
+| macOS Intel | `shepherdr_0.6.1_darwin_amd64.tar.gz` |
+| macOS Apple silicon | `shepherdr_0.6.1_darwin_arm64.tar.gz` |
 
 macOS builds are unsigned. Expect a system warning on first run.
 
 ```sh
-archive=shepherdr_0.5.2_linux_amd64.tar.gz
-grep "  ${archive}$" shepherdr_0.5.2_checksums.txt | sha256sum -c -
+archive=shepherdr_0.6.1_linux_amd64.tar.gz
+grep "  ${archive}$" shepherdr_0.6.1_checksums.txt | sha256sum -c -
 tar -xzf "$archive"
 mkdir -p "$HOME/.local/bin"
 install -m 0755 "${archive%.tar.gz}/shepherdr" "$HOME/.local/bin/shepherdr"
@@ -59,14 +59,16 @@ shepherdr --version
 
 On macOS, use `shasum -a 256 -c -` instead of `sha256sum -c -`. Put the binary on `PATH` if `$HOME/.local/bin` is not already there.
 
+To check that Shepherdr's release workflow built the archive, run `gh attestation verify "$archive" --repo luiscleto/shepherdr --signer-workflow luiscleto/shepherdr/.github/workflows/release.yml`.
+
 **Go** (embeds the browser app; release archives are still the usual path):
 
 ```sh
 go install github.com/luiscleto/shepherdr@latest
-# or pin a version: go install github.com/luiscleto/shepherdr@v0.5.2
+# or pin a version: go install github.com/luiscleto/shepherdr@v0.6.1
 ```
 
-**From source** — Go 1.27+, Node.js 20+, npm:
+**From source** — Go 1.27+, Node.js 26+, npm:
 
 ```sh
 npm ci --prefix web
@@ -107,10 +109,10 @@ Open the same private address. Sign in with a passkey. `http://127.0.0.1:8787` i
 ### Sign-in off (not recommended)
 
 ```sh
-shepherdr -no-sign-in
+shepherdr -no-sign-in -no-sign-in-origin PRIVATE_HTTPS_ADDRESS
 ```
 
-Anyone who can reach Shepherdr has operator authority. The flag is not saved. Do not combine it with `-public-origin` or `-session-lifetime`.
+Anyone who can reach Shepherdr has operator authority, including other accounts on this machine. Leave out `-no-sign-in-origin` to allow only loopback. The flags are not saved. Do not combine them with `-public-origin` or `-session-lifetime`.
 
 ## Keep it private
 
@@ -149,7 +151,7 @@ An HTTPS website is also accepted.
 
 | On by default | Off by default |
 | --- | --- |
-| `blocked`, `done`, trusted sign-in added/removed | `working`, `idle`, `unknown`, workspace opened/closed |
+| `blocked`, `error` (Herdr app), `done`, trusted sign-in added/removed | `working`, `idle`, `unknown`, workspace opened/closed |
 
 iPhone or iPad: add Shepherdr to the Home Screen and open it there before enabling. Android Chrome does not need that.
 
@@ -176,7 +178,10 @@ After the workspace is closed, Shepherdr deletes that folder. Cleanup is best ef
 | `-herdr-socket` | `~/.config/herdr/herdr.sock` | Uses `$XDG_CONFIG_HOME/herdr/herdr.sock` when nonempty, including on macOS. Pass an absolute path to override. |
 | `-herdr-core-socket` | `$XDG_RUNTIME_DIR/herdr-core/default.sock` | herdr-core, behind the Herdr desktop app. Absolute path. Without it, when `XDG_RUNTIME_DIR` is unset, Shepherdr follows only the Herdr TUI. |
 | `-log-level` | `info` | Runtime logging: `debug`, `info`, `warn`, or `error`. |
-| `-upload-parent` | system temp | Staging directory for selected files. |
-| `-upload-limit` | `50MiB` | Per send. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
+| `-upload-parent` | system temp | Staging directory for selected files. System temp may be in RAM. |
+| `-upload-limit` | `1GiB` | Per send. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
+| `-upload-min-rate` | `8KiB` | Per second, after a send's first 30 seconds. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
+| `-request-body-time` | `30s` | For every other request body. At least `1s`. |
+| `-herdr-reply-limit` | `64MiB` | Largest reply read from Herdr. At least `1MiB`. |
 
 Apache License 2.0.

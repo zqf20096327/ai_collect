@@ -209,7 +209,7 @@ way.)
 
 **Speed**: ~19 ms to walk + classify + rank + project all six profiles on the 231-file fixture (release build). Zero dependencies by default, so `cargo install` takes seconds and the dependency tree adds exactly nothing to your audit surface.
 
-**vibe-pilot on itself** — 74 files, 16.1k LOC: 26 ms full scan, raw 154,701 tok, **-94.8%** at `lean` (8,017 tok) — binaries (the GIFs above) show up in the map but are never billed as text.
+**vibe-pilot on itself** — 84 files, 23.2k LOC: ~30 ms full scan, raw 228,085 tok, **-96.5%** at `lean` (7,902 tok) — binaries (the GIFs above) show up in the map but are never billed as text.
 
 ## MCP: let your agent call vibe-pilot itself
 
@@ -318,7 +318,11 @@ quotes, unicode) survive byte-exact. Also exposed to MCP agents as
 
 ## Safety
 
-- **Secrets are never read by name — and now not shipped by content either.** `.env`, `*.pem`, keys, credentials are excluded by filename before a byte is read. On top of that, every body that is about to ship gets a **content scan**: AWS/GitHub/GitLab/Slack/Google/OpenAI-shaped tokens, private key blocks, credentials embedded in URLs, and `password = "…"`-style assignments — including qualified key names like `AWS_SECRET_ACCESS_KEY` or `JWT_SECRET` (with a placeholder filter and an entropy floor to keep the false positives livable). Warnings carry a **redacted preview only** — the value is never printed — plus `file:line` so you can jump there. `--strict-secrets` makes any finding a hard CI failure: exit 1, no `.context` written. The MCP tools run the same gate: findings ride along (redacted) in the tool result, and a `strictSecrets` argument refuses to ship the artifact at all.
+- **Secrets are never read by name — and a content scan catches the ones hiding inside normal files.** `.env`, `*.pem`, keys, credentials are excluded by filename before a byte is read. On top of that, every body that is about to ship gets a **content scan**: AWS/GitHub/GitLab/Slack/Google/OpenAI-shaped tokens, private key blocks, credentials embedded in URLs, and `password = "…"`-style assignments — including qualified key names like `AWS_SECRET_ACCESS_KEY` or `JWT_SECRET` (with a placeholder filter and an entropy floor to keep the false positives livable). Be clear about what the two modes do:
+  - **Default: warn.** A finding prints `file:line` with a **redacted preview only** — the value is never printed — but the `.context` is still written, and the flagged value ships inside it verbatim. Treat the warning as "rotate it": anything that reached `.context` may already have been sent.
+  - **`--strict-secrets`: refuse.** Any finding is a hard failure — exit 1, no `.context` written. That is the mode to gate CI with.
+
+  The MCP tools run the same gate: findings ride along (redacted) in the tool result, and a `strictSecrets` argument refuses to ship the artifact at all.
 - **Comment stripping is conservative.** Full-line comments only (a `//` inside a string can't start a line), lint directives like `// eslint-disable` always survive, and pruning never changes program meaning. Test-enforced.
 - **Nothing is deleted.** vibe-pilot writes one new file (`.context`) and reads everything else — and never re-scans its own output, so a stale `.context` can't inflate the bill. Add `.context` to `.gitignore` anyway so it stays out of git.
 

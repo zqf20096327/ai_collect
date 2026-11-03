@@ -20,7 +20,7 @@ Framework-agnostic and built for **OpenAI Agents, LangGraph, CrewAI, and LLM app
 
 ### Observability & Tracing
 
-- **Automatic Instrumentation**: Auto-patch OpenAI, Anthropic, Gemini (google-genai), requests, and HTTP libraries
+- **Automatic Instrumentation**: Auto-patch OpenAI, Anthropic, Gemini (google-genai), Groq (groq), requests, and HTTP libraries
 - **Framework Integrations**: Support for LangChain, CrewAI, and OpenAI Agents SDK
 - **LLM-Aware Tracing**: Track tokens, costs, prompts, completions, and latency automatically
 - **OpenTelemetry Metrics**: Emit OTEL-compliant metrics for accurate token and cost tracking independent of sampling
@@ -103,6 +103,31 @@ response = client.interactions.create(
     input="Write a haiku about Python",
 )
 ```
+
+### Groq (groq)
+
+```python
+from traccia import init
+from groq import Groq
+
+init()  # Auto-patches groq (sync and async clients)
+
+client = Groq()
+response = client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[{"role": "user", "content": "Write a haiku about Python"}],
+)
+
+# Streaming is traced too: the span stays open until the stream is read, closed, or dropped.
+for chunk in client.chat.completions.create(
+    model="llama-3.3-70b-versatile",
+    messages=[{"role": "user", "content": "Write a haiku about Python"}],
+    stream=True,
+):
+    print(chunk.choices[0].delta.content or "", end="")
+```
+
+Each call gets an `llm.groq.chat.completions` span and goes through the Spend Cap. Settlement charges Groq's reported usage at Groq's own price (cached prompt tokens at the cached rate); a stream closed or failed partway is charged an estimate of what it produced; a stream dropped without `close()` has its request aborted and is charged its full reservation, as is a `with_streaming_response` call, whose body you read yourself. A call still open at `stop_tracing()` ends its span; when the Spend Cap reserved budget for it, it is also aborted and charged that reservation (unless Groq reported usage), and otherwise it is left running, so a stream another thread is reading keeps working. Groq reports usage only at the end of a stream, so a call without it records its estimated token counts on the span instead (`llm.usage.source` is `estimated`), the same counts an estimate is charged. `with_raw_response` works as before. Calls made to Groq through the OpenAI client (`base_url="https://api.groq.com/openai/v1"`) go through the OpenAI integration instead, so use the `groq` client for Groq.
 
 
 ### Load a versioned prompt
@@ -425,7 +450,7 @@ file_exporter_path = "traces.jsonl"
 reset_trace_file = false      # Reset file on initialization
 
 [instrumentation]
-enable_patching = true          # Auto-patch libraries (OpenAI, Anthropic, requests)
+enable_patching = true          # Auto-patch libraries (OpenAI, Anthropic, Gemini, Groq, requests)
 enable_token_counting = true    # Count tokens for LLM calls
 enable_costs = true             # Calculate costs
 openai_agents = true            # Auto-enable OpenAI Agents SDK integration
@@ -915,7 +940,7 @@ init(sample_rate=0.1)
 
 ### Token Counting & Cost Calculation
 
-Automatic for supported LLM providers (OpenAI, Anthropic):
+Automatic for supported LLM providers (OpenAI, Anthropic, Gemini, Groq):
 
 ```python
 @observe(as_type="llm")
@@ -955,7 +980,7 @@ Traccia automatically emits these metrics:
 | `gen_ai.agent.turns` | Counter | `1` | Agent turns |
 | `gen_ai.agent.execution_time` | Histogram | `s` | Agent execution time |
 
-**Attributes**: `gen_ai.system` (openai, anthropic), `gen_ai.request.model`, `gen_ai.agent.id`, `gen_ai.agent.name`
+**Attributes**: `gen_ai.system` (openai, anthropic, google_gemini, groq), `gen_ai.request.model`, `gen_ai.agent.id`, `gen_ai.agent.name`
 
 #### Configuration
 
@@ -1076,7 +1101,7 @@ Initialize the Traccia SDK. All parameters are optional; configuration is merged
 - `reset_trace_file` (bool): Clear file on init (default: False)
 
 *Instrumentation*
-- `enable_patching` (bool): Auto-patch OpenAI, Anthropic, requests (default: True)
+- `enable_patching` (bool): Auto-patch OpenAI, Anthropic, Gemini, Groq, requests (default: True)
 - `enable_token_counting` (bool): Count tokens (default: True)
 - `enable_costs` (bool): Calculate costs (default: True)
 - `pricing_override` (dict): Per-model pricing override — always wins over all other sources. See [Pricing](#pricing) section below.
@@ -1246,7 +1271,7 @@ Application Code (@observe)
 
 - **`traccia.instrumentation.*`**: Infrastructure and vendor instrumentation.
   - HTTP client/server helpers (including FastAPI middleware).
-  - Vendor SDK hooks and monkey patching (e.g., OpenAI, Anthropic, Gemini, `requests`).
+  - Vendor SDK hooks and monkey patching (e.g., OpenAI, Anthropic, Gemini, Groq, `requests`).
   - Decorators and utilities used for auto-instrumenting arbitrary functions.
 
 - **`traccia.integrations.*`**: AI/agent framework integrations.
@@ -1339,7 +1364,7 @@ client = OpenAI()
 def lookup_order(order_id: str) -> dict:
     return {"order_id": order_id, "status": "shipped"}
 
-@govern(fail_open=False, name="run_agent")
+@govern(name="run_agent")
 def run_agent(prompt: str) -> str:
     lookup_order("ORD-1")
     resp = client.chat.completions.create(
@@ -1354,9 +1379,18 @@ except AgentBlockedError as exc:
     print(exc.reasons, exc.decision_id, exc.remaining_budget_usd)
 ```
 
-Identity comes from `init(agent_id=...)` (or `TRACCIA_AGENT_ID`). Pass `agent_id` on `@govern` only to override in a multi-agent process. `fail_open=True` (default) lets the agent continue if Traccia is unreachable. On Block deny, `@govern` raises `AgentBlockedError`. Observe and Warn still let the call proceed and record a match. Refund Guard and Purchase Guard can hold a middle amount: `@govern` raises `ApprovalPending`, which is not `AgentBlockedError`. Catch it, do not run the tool, and do not retry the check. `pending_tool_result()` is a normal tool result when a framework retries raised errors.
+Identity comes from `init(agent_id=...)` (or `TRACCIA_AGENT_ID`). Pass `agent_id` on `@govern` only to override in a multi-agent process. Without an agent ID, API key or endpoint, `@govern` raises `GovernanceConfigError` (a subclass of `AgentBlockedError`) instead of running unchecked. On Block deny, `@govern` raises `AgentBlockedError`. Observe and Warn still let the call proceed and record a match. Refund Guard and Purchase Guard can hold a middle amount: `@govern` raises `ApprovalPending`, which is not `AgentBlockedError`. Catch it, do not run the tool, and do not retry the check. `pending_tool_result()` is a normal tool result when a framework retries raised errors.
 
 For a custom tool that is **not** wrapped with `@observe(as_type="tool")`, call `check_policy(action={"type": "tool_call", "name": "refund"}, context={"input": {"amount": amount}})` yourself.
+
+#### When Traccia can't be reached
+
+If a check gets no answer (timeout, connection error, 5xx, or an invalid answer), the call follows your **policy fail mode**: **Settings → Policy Enforcement** in the app, for the organization or one workspace. The default is to block: the call raises `AgentBlockedError`, and the provider or tool is never called. Choose Allow there to let calls through while Traccia is down.
+
+- The setting arrives with answers the SDK already gets: the agent status at the start of each `@govern` run (cached 60 s) and each policy check. There are no extra requests, and tracing-only code never calls Traccia for it.
+- It is kept for 10 minutes after the last answer that carried it, then the SDK goes back to blocking. A process that has had no answer yet, for example one that starts while Traccia is down, blocks. Calling `init()` again forgets it.
+- A local override applies only when there is no answer: `init(policy_fail_mode="open" | "closed")` for the process, or `@govern(policy_fail_mode=...)` for one run and the checks inside it. It never overrides a rejected API key (401/403), a block, a deny or a configuration error. The SDK logs a warning once when it disagrees with your Traccia setting, since the [Traccia Gateway](https://traccia.ai/docs/platform/gateway) follows the setting.
+- `@govern(fail_open=...)` is deprecated: `True` means `policy_fail_mode="open"`, `False` means `"closed"`. Omit it to follow your setting.
 
 Policies in the app: [Policies](https://traccia.ai/docs/platform/policies). SDK guide: [Governance in the SDK](https://traccia.ai/docs/sdk/governance).
 
@@ -1367,9 +1401,10 @@ Policies in the app: [Policies](https://traccia.ai/docs/platform/policies). SDK 
 status_check_endpoint = "https://custom.example/agents/{agent_id}/status"
 post_block_endpoint = "https://custom.example/agents/{agent_id}/blocks"
 status_cache_ttl_seconds = 120
+policy_fail_mode = "closed"   # optional local override, see above
 ```
 
-Or pass `status_check_endpoint`, `post_block_endpoint`, or `status_cache_ttl_seconds` to `init()`.
+Or pass `status_check_endpoint`, `post_block_endpoint`, `status_cache_ttl_seconds`, or `policy_fail_mode` to `init()`.
 
 ### Human review (platform only)
 

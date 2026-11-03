@@ -1,0 +1,188 @@
+# gx3-cli-mcp
+
+[日本語](README.ja.md) · [English](README.md) · [简体中文](README.zh-CN.md) · [한국어](README.ko.md)
+
+<!-- mcp-name: io.github.purinzan/gx3-cli-mcp -->
+
+[![PyPI](https://img.shields.io/pypi/v/gx3-cli-mcp)](https://pypi.org/project/gx3-cli-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/gx3-cli-mcp)](https://pypi.org/project/gx3-cli-mcp/)
+[![CI](https://github.com/purinzan/gx3-cli-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/purinzan/gx3-cli-mcp/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-source--available-blue)](LICENSE.txt)
+[![gx3-cli-mcp MCP server](https://glama.ai/mcp/servers/purinzan/gx3-cli-mcp/badges/score.svg)](https://glama.ai/mcp/servers/purinzan/gx3-cli-mcp)
+
+**Work out why a coil never turns on, without opening GX Works3.**
+
+Reads a GX Works3 `.gx3` project on your own machine and answers questions
+about it — where a device is written, what has to be true for a coil to turn
+on, which conditions come from outside the PLC, which branches can never be
+true. Read-only: it never writes back to the project.
+
+It is a CLI, and the same analysis is a stdio MCP server, so an AI agent can
+answer from indexed facts instead of guessing at a binary file.
+
+日本語: 三菱電機 MELSEC の `.gx3` を GX Works3 を開かずに解析する CLI / MCP
+サーバーです。「このコイルがなぜ ON にならないか」をラダーから追います。
+読み取り専用で、元のプロジェクトは書き換えません。
+
+中文: 不用打开 GX Works3，也能分析三菱电机 MELSEC 的 `.gx3` 工程，
+从梯形图追查「这个线圈为什么不导通」。只读，不改写原工程。
+完整中文说明见 [README.zh-CN.md](README.zh-CN.md)。
+
+---
+
+## Install
+
+```bash
+pip install gx3-cli-mcp
+```
+
+Python 3.10+. Installs two console scripts: `gx3-cli` and `gx3-mcp-server`.
+
+## Try it in 30 seconds
+
+No project needed — generate one:
+
+```bash
+gx3-cli synthetic-project demo.gx3 --profile demo-line
+gx3-cli guide --root demo.gx3
+```
+
+`guide` reads the project and tells you which commands are worth running on it,
+and why. That is the answer to "there are sixty commands, where do I start".
+
+## On a project
+
+```bash
+gx3-cli doctor --root project.gx3        # does it read?
+gx3-cli index-lite build --root project.gx3
+gx3-cli xref build --root project.gx3
+gx3-cli guide --root project.gx3         # what to run next
+```
+
+Then ask it something:
+
+```bash
+# where is this device written, and what reads it?
+gx3-cli xref where-used M100 --root project.gx3
+
+# why is this coil not turning on?
+gx3-cli trace-device M100 --root project.gx3 --strict-logic --compact
+
+# the whole program, one line per rung
+gx3-cli rung-text --root project.gx3
+
+# search the comment you remember, not the device number you don't
+gx3-cli query-comment "clamp pressure" --root project.gx3
+```
+
+Every command takes `--format json` for scripting, and `-o FILE` to write
+instead of print. `gx3-cli --help` lists all of them by group.
+
+Passing a `.gx3` extracts it to `.gx3_cache/<sha256>/` and analyses that copy.
+
+## What it can tell you
+
+| Question | Command |
+|---|---|
+| Why is this coil off? | `trace-device`, `interlock-check` |
+| Where is this device written or read? | `xref where-used`, `xref downstream` |
+| What does this program do? | `rung-text`, `ladder-print`, `metrics` |
+| Show me the rung as a picture | `ladder-layout --format svg` |
+| What comes from outside the PLC? | `external-inputs`, `comm-refresh` |
+| What can never be true? | `dead-logic` |
+| What looks wrong? | `lint PROJECT` (duplicate coils, multi-writer, operand widths, types) |
+| What changed between versions? | `diff`, `semantic-diff` |
+| Did it read the project correctly? | `roundtrip` |
+
+## Use with an AI agent
+
+```json
+{
+  "mcpServers": {
+    "gx3": { "command": "gx3-mcp-server" }
+  }
+}
+```
+
+Or `"command": "python", "args": ["-m", "gx3cli.gx3_mcp_server"]` if your
+client cannot resolve console scripts from PATH. The server exposes read-only
+analysis tools and a restricted command runner.
+
+See [Agent usage guide (JA)](docs/AGENT_USAGE_JA.md) for how an agent should
+drive it.
+
+## Scope, honestly
+
+Read-only analysis of ladder data in local `.gx3` projects.
+
+It does not edit projects, connect to a PLC to change anything, or replace GX
+Works3. `live-read` can read live device values over MC Protocol/SLMP, CLI-only
+and only with explicit connection parameters.
+
+Output is advisory. Verify in GX Works3 and through your own safety process
+before touching real equipment.
+
+If a project fails to parse, `gx3-cli failure-corpus capture` turns it into a
+local regression sample without sending anything anywhere.
+
+## Troubleshooting
+
+**7z-style `.gx3`** — install 7-Zip, or point at it:
+`set GX3_7Z=C:\Program Files\7-Zip\7z.exe`. Encrypted containers are not
+decrypted; export the folder from GX Works3 instead.
+
+**PyPI blocked** — `pip install git+https://github.com/purinzan/gx3-cli-mcp.git`
+
+**Something reads wrong** — `gx3-cli doctor --root ...` first, then
+[open an issue](https://github.com/purinzan/gx3-cli-mcp/issues/new/choose).
+
+## Documentation
+
+- [User manual (JA)](https://github.com/purinzan/gx3-cli-mcp/blob/main/docs/USER_MANUAL_JA.md) / [(EN)](https://github.com/purinzan/gx3-cli-mcp/blob/main/docs/USER_MANUAL_EN.md) / [(ZH)](https://github.com/purinzan/gx3-cli-mcp/blob/main/docs/USER_MANUAL_ZH.md)
+- [Agent usage guide (JA)](docs/AGENT_USAGE_JA.md)
+- [Ladder practical tips (JA)](docs/LADDER_PRACTICAL_TIPS_JA.md) — field-oriented modification and review tips
+- [Security note (JA)](docs/SECURITY_JA.md) — local data handling, read-only MCP policy
+- [Verification tracking](https://github.com/purinzan/gx3-cli-mcp/issues/202) — verification tasks and acceptance criteria
+- [Independent validation ledger (JA)](docs/INDEPENDENT_VALIDATION_LEDGER_JA.md) — GX Works3 evidence tracked for Issue #49
+- [Doctor acceptance ledger (JA)](docs/DOCTOR_ACCEPTANCE_JA.md) — project-health acceptance tracked for Issue #135
+- [GX Works3 feature matrix (JA)](docs/GX_WORKS3_FEATURE_MATRIX_JA.md) — standard-feature coverage, gaps, and implementation priorities
+- [File usage guide (JA)](docs/FILE_USAGE_GUIDE_JA.md) — repository map
+- [Analysis benchmark (JA)](docs/ANALYSIS_BENCHMARK_JA.md) — synthetic performance baseline and measurement limits
+- [Review questions (JA)](docs/REVIEW_QUESTIONS_JA.md) — the questions to ask a
+  change before opening a pull request, and the bugs each of them found
+- [Related projects (JA)](docs/GITHUB_PROJECT_REVIEW_JA.md) — other GX Works3/MELSEC tools and what was taken from them
+- [llms.txt](llms.txt) — machine-readable summary of what this is and is not
+
+Agent skills: [existing project audit](skills/gx3-existing-project-audit/SKILL.md)
+· [failure corpus](skills/gx3-failure-corpus/SKILL.md)
+
+## Analysis contract migration
+
+Current query-by-query status and remaining acceptance work for #153: [解析契約の移行台帳](docs/ANALYSIS_CONTRACT_MIGRATION_JA.md).
+
+## License
+
+**Source-available, not open source.** Full terms in
+[LICENSE.txt](LICENSE.txt); this is a summary and the license text governs.
+
+You **may** read the source and run it for evaluation and internal work,
+including inside a company. You **may not** redistribute it, host it as a
+service, or ship it in a paid product without written permission. There is no
+licence key, activation or paid plan.
+
+日本語: 社内での評価・業務利用は許諾されています。禁止しているのは再配布、
+SaaS 提供、有償製品への組み込みです。実行にライセンスキーや課金は不要です。
+商用利用の相談は Issue からどうぞ。
+
+## Listed on Glama
+
+Indexed as an MCP server, with per-tool scores for how well each tool
+describes what it does. Useful as outside feedback on the tool surface —
+the low scores there are the ones whose descriptions need work.
+
+[![gx3-mcp-server on Glama](https://glama.ai/mcp/servers/purinzan/gx3-cli-mcp/badges/card.svg)](https://glama.ai/mcp/servers/purinzan/gx3-cli-mcp)
+
+Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) · [AGENTS.md](AGENTS.md)
+
+For ladder CSV input, use `gx3-cli rung-text --csv ladder.csv`. See the
+[CSV parser guide](docs/LADDER_CSV_JA.md) for verified scope and limitations.

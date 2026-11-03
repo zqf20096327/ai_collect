@@ -17,7 +17,7 @@ Free AI coding app for Windows — no API keys, no subscriptions, no setup.
 ![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-4f8a60?style=flat-square)
 ![Installer](https://img.shields.io/badge/installer-~6%20MB-4f8a60?style=flat-square)
 ![Price](https://img.shields.io/badge/price-free-4f8a60?style=flat-square)
-![Open modules](https://img.shields.io/badge/open%20modules-MIT-7fa883?style=flat-square)
+![Open skills and templates](https://img.shields.io/badge/open%20skills%20%26%20templates-MIT-7fa883?style=flat-square)
 
 <img src="assets/app.png" alt="GardelyCode — conversation, live preview and code side by side" width="100%" />
 
@@ -71,7 +71,6 @@ Grab a prompt from [`templates/`](templates/) — café site, snake game, pomodo
 
 | Path | What | License |
 |---|---|---|
-| [`crates/gardely-workspace`](crates/gardely-workspace) | File tree, search, file watcher, terminals and preview server from GardelyCode | MIT |
 | [`skills/`](skills/) | Starter Agent Skills | MIT |
 | [`templates/`](templates/) | Ready-to-paste project prompts | MIT |
 | [`docs/`](docs/) | The website | MIT |

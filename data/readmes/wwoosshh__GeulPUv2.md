@@ -162,7 +162,11 @@ of its f16 and q8_0 KV caches; lower is better). RTX 4070 Ti (12 GB), Qwen2.5-7B
 | Decoding (generation) at a depth of 8k / 32k / 64k tokens | 0.97 / 0.89 / 0.82× |
 | Prompt of 512 / 2,048 / 8,192 / 32,768 / 65,536 tokens | 0.83 / 0.87 / 0.90 / 0.95 / 0.92× |
 | 1,024 new tokens into a session 8k / 32k / 64k tokens deep | 0.90 / 0.92 / 0.76× |
-| A recorded coding-agent session (54 requests, Qwen Code) | 0.59× of llama.cpp's fastest setting (a 0.5B draft model) |
+| A recorded coding-agent session replayed (54 requests, Qwen Code), adjusted time¹ | 0.59× of llama.cpp's fastest setting (a 0.5B draft model) |
+
+¹ The recorded requests are sent again, and since each engine answers with a different length, the time is adjusted to the same
+generated length: prompt processing + 16,088 tokens × the time per generated token. It is not the end-to-end time of the task with
+the agent's tool runs.
 
 Exact mode keeps the contract's two-digit activations and costs 1.19–1.40× llama.cpp's time on prompts up to 8k tokens (1.74× at 32k).
 With speculative decoding (on by default), editing code generates 329–356 tokens/s — 3.5× the speed without it and 1.2–1.5× llama.cpp's
@@ -194,8 +198,10 @@ Files GeulPU has run itself (**Verified by GeulPU** in the app — download them
 
 Head sizes 64 · 96 · 128 are accepted, including models that apply RoPE to only part of each head. Fine-tunes of these models run too —
 the server runs each model file's own chat template with a jinja interpreter that matches transformers byte for byte. Qwen2.5 (7B and
-larger) and Qwen3 take up to 131,072 tokens of context with YaRN. GPUs: NVIDIA RTX 30-series and newer on CUDA; other GPUs with Vulkan
-1.3 (verified on an AMD Radeon RX 9060 XT — on GPUs with 32 KB of shared memory, such as AMD's Windows driver, F16 · BF16 · F32 files
+larger) and Qwen3 take up to 131,072 tokens of context with YaRN. Files whose metadata already asks for RoPE scaling
+(`rope.scaling.type` — community "128K" GGUFs and the like) are refused in every architecture; for Qwen2.5 · Qwen3, the same model's
+file without it reaches 131,072 tokens through this YaRN. GPUs: NVIDIA RTX 30-series and newer on CUDA; other GPUs with Vulkan 1.3
+(verified on an AMD Radeon RX 9060 XT — on GPUs with 32 KB of shared memory, such as AMD's Windows driver, F16 · BF16 · F32 files
 don't run yet). Qwen3.5, Qwen3.6 MoE and Gemma 4 run on CUDA only for now. Releases are built for Windows x64 and Linux
 x86-64 (Linux: CUDA only — tested under WSL2 and on native Linux). Not yet: other architectures (Phi, …), Gemma 4's E2B · E4B · 26B-A4B (MoE) · 31B, other
 mixture-of-experts models (Mixtral, Qwen3-30B-A3B, …), image input, Q2_K · Q3_K · IQ formats other than IQ4_XS (which runs on CUDA),

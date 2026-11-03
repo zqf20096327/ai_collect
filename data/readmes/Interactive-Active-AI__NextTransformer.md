@@ -15,6 +15,7 @@
 <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-F2A93B?style=flat-square"></a>
 <img alt="Python 3.10-3.13" src="https://img.shields.io/badge/python-3.10--3.13-3776AB?style=flat-square&logo=python&logoColor=white">
 <img alt="PyTorch 2.9.1" src="https://img.shields.io/badge/PyTorch-2.9.1-EE4C2C?style=flat-square&logo=pytorch&logoColor=white">
+<a href="https://discord.gg/k2XPXW6Jz"><img alt="Discord" src="https://img.shields.io/badge/Discord-join-74638C?style=flat-square&logo=discord&logoColor=white"></a>
 <a href="https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat"><img alt="WeChat group" src="https://img.shields.io/badge/WeChat-group-E5607E?style=flat-square&logo=wechat&logoColor=white"></a>
 <a href="https://github.com/Interactive-Active-AI/NextTransformer/discussions"><img alt="GitHub Discussions" src="https://img.shields.io/badge/discussions-ask-7A5AF0?style=flat-square&logo=github&logoColor=white"></a>
 </p>
@@ -56,7 +57,7 @@ your browser.
 ## Results
 
 <!-- generated:leaderboard -->
-<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 33 runs, against the Dense Baseline" width="100%"></a>
+<a href="https://interactive-active-ai.github.io/NextTransformer/#leaderboard"><img src=".github/assets/readme/results-en.svg" alt="CORE at update 46,875 for all 34 runs, against the Dense Baseline" width="100%"></a>
 
 [Full leaderboard](https://interactive-active-ai.github.io/NextTransformer/docs/results/leaderboard/) · [Training replay](https://interactive-active-ai.github.io/NextTransformer/#leaderboard)
 <!-- /generated:leaderboard -->
@@ -118,7 +119,7 @@ covers smoke tests, evaluation, auditing and exporting a result.
 | <img src="https://img.shields.io/badge/Looped-8B5CF6?style=flat-square" alt="Looped"> | UT-ACT · Fixed Recursive · Huginn · Ouro · DeepLoop · MoR · LoopFormer · Circle Loop |
 | <img src="https://img.shields.io/badge/Sparse-E5607E?style=flat-square" alt="Sparse"> | DSA · QSA · NSA · SeerAttention-style · MoBA |
 | <img src="https://img.shields.io/badge/Linear-3F7FD9?style=flat-square" alt="Linear"> | DeltaNet · GSA + QK-norm · GLA · KDA · RetNet · ELU-Norm · GDN |
-| <img src="https://img.shields.io/badge/Hybrid-F07856?style=flat-square" alt="Hybrid"> | GDN–MHA · GDN–SWA · DeltaNet–MHA\* · KDA–MLA-NoPE · GDN–QSA\* · MoBA–MHA\* |
+| <img src="https://img.shields.io/badge/Hybrid-F07856?style=flat-square" alt="Hybrid"> | GDN–MHA · GDN–SWA · DeltaNet–MHA · KDA–MLA-NoPE · GDN–QSA\* · MoBA–MHA\* |
 | <img src="https://img.shields.io/badge/Others-D99A2B?style=flat-square" alt="Others"> | SSSL · MQA · GQA · MLA-QK · MLA-NoPE-QK |
 <!-- /generated:model-zoo -->
 
@@ -172,6 +173,7 @@ More on the [roadmap](https://interactive-active-ai.github.io/NextTransformer/do
 
 ## Community
 
+- [Discord](https://discord.gg/k2XPXW6Jz) — chat with the community in #general (permanent invite)
 - [GitHub Discussions](https://github.com/Interactive-Active-AI/NextTransformer/discussions) for questions and ideas
 - [WeChat group](https://interactive-active-ai.github.io/NextTransformer/docs/community/#wechat)
 

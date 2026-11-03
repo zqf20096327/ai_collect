@@ -372,22 +372,20 @@ Some model classes do not declare `max_device_top_k`, for example the tt-metal `
 
 Structured-output decode can use TT device sampling on models that declare
 `supports_device_grammar`. It is off by default. To enable it, set a
-`sample_on_device_mode` and turn off async scheduling. The example also sets
+`sample_on_device_mode`. The example also sets
 the [default top-k](#default-top-k-for-device-sampling), because requests
 without `top_k` to the default Llama model would otherwise sample on host:
 
 ```bash
 MESH_DEVICE=T3K \
 python examples/server_example_tt.py \
-  --no-async-scheduling \
   --override-generation-config '{"top_k": 32}' \
   --additional-config '{"tt": {"sample_on_device_mode": "decode_only"}}'
 ```
 
-vLLM enables async scheduling by default, and the platform disables it only
-for models without `supports_async_decode`. On models that declare it,
-structured requests keep host sampling unless the server is started with
-`--no-async-scheduling`.
+Device grammar works with and without async scheduling. Under async scheduling
+a structured decode step does not overlap with the next forward: the runner
+drains pending async work before it and samples after the mask arrives.
 
 | Step | Sampling path |
 | --- | --- |
@@ -407,7 +405,9 @@ Fallback is selected before forward submission. Once an eligible decode is
 submitted with deferred device sampling, its sample-time grammar mask must be
 present and valid. A missing mask or a device-sampling failure is terminal for
 that runner and requires recovery/restart; it is not retried on host, because
-the device decode and sampler state may already have advanced.
+the device decode and sampler state may already have advanced. One exception:
+under async scheduling, a request that finished while the step was in flight
+has no mask row. Its row samples unrestricted and vLLM drops the token.
 
 With `VLLM_LOGGING_LEVEL=DEBUG`, each device-grammar step logs
 `TT device grammar sampling active`. See
@@ -517,7 +517,15 @@ The execution model matches TT hardware characteristics:
   via `TT_VISIBLE_DEVICES`. A per-rank assignment is accepted only when it
   exactly matches the discovered group; a conflicting GPU-style `--device-ids`
   assignment fails before mesh creation. This is upstream vLLM's standard DP
-  mechanism (no gather/scatter; ranks are fully independent).
+  mechanism (no gather/scatter; ranks are fully independent). Each rank also
+  gets its own tt-metal Inspector RPC address (`TT_METAL_INSPECTOR_RPC_SERVER_ADDRESS`,
+  default port plus rank) and log directory (`TT_METAL_LOGS_PATH/dp_rank_<n>`,
+  which is where that rank's watcher, dprint, profiler and inspector output
+  lands), and the auto-triage command in
+  `TT_METAL_DISPATCH_TIMEOUT_COMMAND_TO_EXECUTE` is pointed at them, so a
+  dispatch-timeout triage reads the rank that hung. The variables are
+  tt-metal's own; [`docs/SCHEDULING.md`](docs/SCHEDULING.md#standard-multi-process-dp)
+  lists them.
 
 For a deeper walk-through of the scheduling and execution model, read
 [`docs/SCHEDULING.md`](docs/SCHEDULING.md). The model-facing rules that make

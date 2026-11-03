@@ -51,6 +51,10 @@ To install the eco2AI library, run the following command:
 pip install eco2ai
 ```
 
+`pip install` does not ask questions. `eco2ai` with no arguments prints the settings folder and the results folder for this worktree and writes nothing. `eco2ai --settings-dir C:/Users/User/.eco2ai` stores that directory in `.eco2ai/config.json`. The first country lookup and the first CPU socket count are written to `config.json` inside the settings folder, as `country`, `region`, and `cpu_sockets`. With no `settings_dir`, that folder is `~/.eco2ai`. `Tracker(alpha_2_code=..., region=..., cpu_sockets=...)` overrides those values for one run and does not change the file. `project_name`, `experiment_description`, and `file_name` stay Tracker arguments and `set_params` values: the first two are columns in the results CSV, and `file_name` is that CSV. One file holds many experiments. A relative `file_name` is written in the process working directory. `eco2ai --results-dir D:/project/results` sends every relative results file in this worktree to that directory. An absolute `file_name` is used as given.
+
+Accelerators are read from the driver already on the machine. eco2ai installs no GPU package. NVIDIA is read from the driver NVML library, with `nvidia-smi` as a power fallback. AMD, Intel discrete GPUs, Huawei Ascend, and Google TPU are read from `rocm-smi` or `amd-smi`, `xpu-smi`, `npu-smi`, and `tpu-info` when those tools shipped with the device.
+
 ## Use examples <a name="3"></a> 
 
 Example usage eco2AI [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1hn0DQiKHeyXwvOOR3UEXaGsD6DqVm6b7?authuser=1)
@@ -69,6 +73,10 @@ tracker.start()
 <your gpu &(or) cpu calculations>
 
 tracker.stop()
+
+# The same run as a context manager. Leaving the block stops the tracker.
+with eco2ai.Tracker(project_name="YourProjectName", experiment_description="training the <your model> model") as tracker:
+    <your gpu &(or) cpu calculations>
 ```
 
 The eco2AI also supports decorators. As soon as the decorated function is executed, the information about the emissions will be written to the emission.csv file:
@@ -81,9 +89,38 @@ def train_func(model, dataset, optimizer, epochs):
     ...
 
 train_func(your_model, your_dataset, your_optimizer, your_epochs)
+
+@track(project_name="Malevich", file_name="run.csv")
+def train_named(model, epochs):
+    ...
+
+train_named(model, 2)
 ```
 
-For your convenience, every time you instantiate the Tracker object with your custom parameters, these settings will be saved until the library is deleted. Each new tracker will be created with your custom settings (if you create a tracker with new parameters, they will be saved instead of the old ones). For example:
+The same run can be a context manager. Leaving the block stops the tracker:
+
+```python
+import eco2ai
+
+with eco2ai.Tracker(project_name="Malevich", file_name="run.csv") as tracker:
+    <your gpu &(or) cpu calculations>
+```
+
+A callable passed as `callback` receives each row after it is written. Lightning users can pass `Eco2AICallback` to `Trainer`. That import needs Lightning (`pip install lightning`) and is not loaded by `import eco2ai`.
+
+```python
+import lightning.pytorch as L
+from eco2ai.lightning import Eco2AICallback
+
+trainer = L.Trainer(callbacks=[
+    Eco2AICallback(project_name="Malevich", file_name="fit.csv")
+])
+trainer.fit(model)
+# One row per training epoch. Fit end stops the tracker.
+# The open interval after the last epoch is written only when it used energy.
+```
+
+Arguments passed to Tracker apply only to that instance. Persistent defaults are written by set_params and read by the next Tracker that omits those arguments. For example:
 
 ```python
 import eco2ai
@@ -100,14 +137,9 @@ tracker.stop()
 
 ...
 
-# now, we want to create a new tracker for new calculations
+# The names above were not saved. A Tracker with no names uses set_params
+# defaults, or the built-in defaults when set_params was never called.
 tracker = eco2ai.Tracker()
-# now, it's equivalent to:
-# tracker = eco2ai.Tracker(
-#     project_name="YourProjectName", 
-#     experiment_description="training the <your model> model",
-#     file_name="emission.csv"
-# )
 tracker.start()
 <your gpu &(or) cpu calculations>
 tracker.stop()
@@ -137,13 +169,30 @@ tracker.start()
 tracker.stop()
 ```
 
+A second run with another `experiment_description` and the same `file_name` appends another row. `eco2ai --results-dir` changes only where a relative `file_name` is written:
+
+```
+eco2ai --results-dir D:/project/results
+```
+
+```python
+with eco2ai.Tracker(project_name="demo", experiment_description="baseline", file_name="emission.csv"):
+    train()
+# writes D:/project/results/emission.csv
+```
+
+Omit `results_dir` and `emission.csv` stays in the process working directory. `eco2ai` prints `(working directory)` in that case.
+
 
 
 <!-- There is [sber_emission_tracker_guide.ipynb](https://github.com/vladimir-laz/AIRIEmisisonTracker/blob/704ff88468f6ad403d69a63738888e1a3c41f59b/guide/sber_emission_tracker_guide.ipynb)  - useful jupyter notebook with more examples and notes. We highly recommend to check it out beforehand. -->
 ## Important note <a name="4"></a> 
 
-If for some reasons it is not possible to define country, then emission coefficient is set to 436.529kg/MWh, which is global average.
-[Global Electricity Review](https://ember-climate.org/insights/research/global-electricity-review-2022/#supporting-material-downloads)
+If for some reasons it is not possible to define country, then emission coefficient is set to 458.490 kg/MWh, the 2025 world average. Country rows and this world fallback use Ember Yearly Electricity Data, CO2 intensity (gCO2/kWh, direct CO2, not CO2e). gCO2/kWh and kg/MWh are the same number. Each row records that intensity in `Emission intensity, kg/MWh`, plus the data `year` and a `reference` key. The keys are in [eco2ai/data/SOURCES.md](eco2ai/data/SOURCES.md).
+
+[Ember Yearly Electricity Data](https://ember-energy.org/data/yearly-electricity-data/)
+
+Regional rows, where they exist, use the sources in [eco2ai/data/SOURCES.md](eco2ai/data/SOURCES.md). The country row for that nation stays the Ember value.
 
 For proper calculation of gpu and cpu power consumption, you should create a "Tracker" before any gpu or CPU usage.
 

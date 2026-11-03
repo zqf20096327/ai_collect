@@ -16,7 +16,7 @@ GPUs or on Swiss ones.
 ## What is in this repository
 
 - **Keera Gateway** - the server binary, `cmd/keera-gateway`: guardrails,
-  budgets, filters, routers, sandboxes, the control panel and the audit log.
+  budgets, filters, routers, the control panel and the audit log.
 - **Keera CLI** - the `keera` command, `cmd/keera`. It administers a deployment
   and sets up a developer's editor for it. Every
   [release](https://github.com/bespinian/keera-gateway/releases) has it for
@@ -48,15 +48,15 @@ request, logs it and passes it on.
 ```
 
 Everything runs on one port, `:8080`, split by path: inference under `/api`,
-administration under `/control`, sandbox attach under `/sandbox`, and the
-control panel at `/`. See
-[docs/gateway.md](docs/gateway.md#one-listener-four-surfaces).
+administration under `/control`, and the control panel at `/`. See
+[docs/gateway.md](docs/gateway.md#one-listener-three-surfaces).
 
 The gateway speaks three APIs, all with the same guardrails, accounting and
 audit:
 
 - the OpenAI API: `/api/v1/chat/completions`, `/api/v1/completions` and
   `/api/v1/embeddings`
+- reranking: `/api/v1/rerank`, and `/api/v2/rerank` for Cohere's SDK
 - the Anthropic Messages API, used by Claude Code: `/api/v1/messages`
 - the OpenAI Responses API, used by Codex: `/api/v1/responses`. The gateway
   stores no conversations; see
@@ -135,10 +135,9 @@ heavy reasoning to a large one, or to the next model when one is down. Around it
 redact only what goes to a hosted model, or fall back to the local one once the
 hosted budget is spent. [docs/routers.md](docs/routers.md)
 
-**Sandboxes** are developer machines inside the cluster, each with the
-toolchain, its own API key and an expiry. An agent's sandbox does one task and
-ends by pushing a branch, and where egress is limited, that branch is all that
-leaves it. [docs/sandboxes.md](docs/sandboxes.md)
+**Keera Agents** runs agents that people start from a chat, such as Slack. It
+is a separate app: each agent works with a key in its owner's name, so their
+guardrails, budgets and audit log apply. [docs/agents.md](docs/agents.md)
 
 **MCP servers** get the same controls as models: an agent calls a server's
 tools through `/api/mcp/<alias>` with its Keera key, sees only the tools its

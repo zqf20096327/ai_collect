@@ -12,8 +12,8 @@ many levels as the question needs. Every level inherits only its ancestor path,
 while the main task stays linear and untouched.
 
 [![npm](https://img.shields.io/npm/v/dsh-nested-followups.svg)](https://www.npmjs.com/package/dsh-nested-followups)
-[![Tests: 156 passing](https://img.shields.io/badge/tests-156%20passing-brightgreen.svg)](tests)
-[![DeepSeek Harness: 0.1.x](https://img.shields.io/badge/DeepSeek%20Harness-0.1.x-orange.svg)](https://github.com/deepseek-ai/deepseek-harness)
+[![Tests](https://img.shields.io/badge/check-passing-brightgreen.svg)](docs/dsh-version-compatibility.md)
+[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-0.1.1%20%2F%200.2%20RC-orange.svg)](docs/dsh-version-compatibility.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ![A real DeepSeek Harness session branching repeatedly from answers at multiple depths](assets/demo.gif)
@@ -32,25 +32,70 @@ and sessions are real; the captions and cursor are added in post._
 
 ## Install
 
+Choose the install path that matches your DeepSeek Harness line:
+
+| DeepSeek Harness | Plugin source | Status |
+| --- | --- | --- |
+| `0.1.0-rc.7` through `0.1.1-rc.2` | npm `dsh-nested-followups@0.2.3` | Legacy host support retained |
+| `0.2.1-rc.5` Web / official Desktop | npm `dsh-nested-followups@0.2.3` | Current development target |
+| `0.2.1-alpha.1`, `0.2.2-alpha.2` | Same package | Additional verified preview targets |
+
+### Web
+
 ```sh
-dsh plugin --profile web add dsh-nested-followups
+dsh plugin --profile web add dsh-nested-followups@0.2.3
 ```
 
 Restart the DeepSeek Harness web profile if it is already running, open a
 conversation, and select **Tree View**.
 
-<details>
-<summary>Install from source</summary>
+### Build from source (optional, DSH 0.2 Web)
+
+Use npm for a normal installation. To develop the plugin, clone the repository,
+build it locally, and invoke the matching CLI so an older global
+`dsh` binary cannot install it into the wrong profile contract:
 
 ```sh
-git clone https://github.com/sluminositys/dsh-nested-followups.git
+git clone --branch main --single-branch https://github.com/sluminositys/dsh-nested-followups.git
 cd dsh-nested-followups
-pnpm install
-pnpm run check
-dsh plugin --profile web add .
+corepack pnpm install --frozen-lockfile
+corepack pnpm run check
+corepack pnpm dlx @deepseek-ai/dsh@0.2.1-rc.5 plugin --profile web add .
+corepack pnpm dlx @deepseek-ai/dsh@0.2.1-rc.5 web
 ```
 
-</details>
+This creates a `link:` installation to the checkout. After pulling an update,
+run `corepack pnpm run check` again and restart the web profile.
+
+**If installation fails:** a direct `git+https://...` install runs this package's
+`prepare` script, which pnpm requires you to approve. Install npm `0.2.3`, or clone/build/link using
+the commands above instead; the plugin never changes your script allowlist.
+An error saying npm `0.2.2` is incompatible with DSH `0.2.x` refers to the old
+npm artifact: install `0.2.3` explicitly instead.
+
+### Official Desktop
+
+Desktop uses the same Web UI, so the plugin does not need a separate canvas or
+an Electron extension. Its plugins belong to the **`desktop` profile**, not
+`web`; installing into one does not enable it in the other.
+
+1. Launch a supported DSH Desktop version once. Use **Manage dsh Command… → Install**
+   in its application menu to install the bundled CLI.
+2. **Fully quit Desktop** (closing its window may only hide it).
+3. Run the following command using Desktop's bundled `dsh`:
+
+   ```sh
+   dsh plugin --profile desktop add dsh-nested-followups@0.2.3
+   ```
+
+4. Reopen Desktop and select **Tree View** in a conversation. For a built local
+   checkout, substitute `.` for the package name and run from that checkout.
+
+Do not use npm's `dsh` or `pnpm dlx` for the `desktop` profile: only the bundled
+command can manage it. Existing global installations can shadow that command;
+check `dsh --version` and your shell's command path first. npm installation in
+Desktop uses its bundled runtime; only source builds need separate Node and pnpm.
+See the [official Desktop instructions](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.5/apps/desktop/README.md#bundled-command-runtime).
 
 ## Why not a new chat or a sidebar thread?
 
@@ -161,16 +206,28 @@ inherited conversation again.
 
 | Requirement | Version |
 | --- | --- |
-| DeepSeek Harness | `0.1.x` (verified on `0.1.0-rc.7`, `0.1.0-rc.8`, and `0.1.1-rc.2`) |
-| Node.js | 22.19 or later |
-| Package manager | pnpm |
+| DeepSeek Harness | `0.2.1-rc.5`, plus the verified alpha and legacy host versions above |
+| Node.js (source build / Web) | `^22.19.0` or `>=24.0.0` |
+| Package manager (source build) | pnpm |
 
 ## Compatibility notes
 
-This release is verified against an unmodified `@deepseek-ai/dsh`
-`0.1.1-rc.2` and keeps `0.1.0-rc.7` as its compatibility floor. DeepSeek
-Harness is still in developer preview, so later prereleases may require an
-adapter update.
+The source branch bridges both legacy rc and current 0.2 contracts: Session
+snapshots, inherited history, read-only persistence handles, process-local
+assistant streaming, tool results, native icons, and message rendering. It
+does not patch DSH or rewrite its logs. Forks still stop at completed turns;
+the newer host's ability to fork an open turn is deliberately not used.
+
+Automated validation and the exact runtime checks are recorded separately.
+Desktop shares the Web plugin mechanism; a Web boot is not a packaged Desktop
+end-to-end test.
+See [DSH version compatibility](docs/dsh-version-compatibility.md) for the
+contract mapping and maintainer verification procedure.
+
+The current development target is DSH `0.2.1-rc.5`; the same source is also
+checked against `0.2.1-alpha.1`, `0.2.2-alpha.2`, and legacy `0.1.1-rc.2`.
+These adapters are included in npm `0.2.3`. DSH `0.2.2-alpha.2` requires
+Node.js 24.9 or later; packaged Desktop supplies its own runtime.
 
 **Branches cannot be continued from the standard chat view.** DSH currently
 rejects user messages sent from the normal chat UI to a subagent-origin
@@ -200,7 +257,7 @@ pnpm install
 pnpm run check
 ```
 
-`pnpm run check` runs linting, host and browser type checking, 156 unit and
+`pnpm run check` runs linting, host and browser type checking, unit and
 integration tests, a production build, a smoke test, and package validation.
 
 | Command | Purpose |

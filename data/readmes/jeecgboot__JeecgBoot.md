@@ -3,13 +3,13 @@
 JeecgBoot AI低代码平台
 ===============
 
-当前最新版本： 3.9.5（2026-08-27） 
+当前最新版本： 3.9.6（2026-11-05） 
 
 
 [![AUR](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/jeecgboot/JeecgBoot/blob/master/LICENSE)
 [![](https://img.shields.io/badge/Author-北京国炬软件-orange.svg)](https://jeecg.com)
 [![](https://img.shields.io/badge/blog-技术博客-orange.svg)](https://www.toutiao.com/c/user/token/CiZtC9Gn_yl2qDcTF9Kqhh9LV7tW1cJsdRn2rfFUU5lZy4RJaD4hdBpJCjwAAAAAAAAAAAAAUFvsvy4j57fg5tqwVmxukKxGEhbMl7pE14lY9_YSDq-A26V7xrG3hYuq_Z9y6F3W01oQkIKQDhjDxYPqBCIBA2iiHh0=)
-[![](https://img.shields.io/badge/version-3.9.5-brightgreen.svg)](https://github.com/jeecgboot/JeecgBoot)
+[![](https://img.shields.io/badge/version-3.9.6-brightgreen.svg)](https://github.com/jeecgboot/JeecgBoot)
 [![GitHub stars](https://img.shields.io/github/stars/zhangdaiscott/jeecg-boot.svg?style=social&label=Stars)](https://github.com/jeecgboot/JeecgBoot)
 [![GitHub forks](https://img.shields.io/github/forks/zhangdaiscott/jeecg-boot.svg?style=social&label=Fork)](https://github.com/jeecgboot/JeecgBoot)
 [![Skills](https://img.shields.io/badge/AI%20Skills-自然语言编程-ff4d4f.svg)](https://jeecg.com/skills)
@@ -176,7 +176,7 @@ JeecgBoot平台提供了一套完善的AI应用管理系统模块，是一套类
 
 #### 前端
 
-- 前端环境要求：Node.js要求`Node 20+` 版本以上、pnpm 要求`9+` 版本以上
+- 前端环境要求：Node.js要求`Node 20+` 版本以上、pnpm 要求`10+` 版本以上
 
  ` ( Vite 不再支持已结束生命周期（EOL）的 Node.js 18。现在需要使用 Node.js 20.19+ 或 22.12+)`
 
@@ -195,8 +195,8 @@ JeecgBoot平台提供了一套完善的AI应用管理系统模块，是一套类
 - 微服务框架： Spring Cloud Alibaba 2025.1.0.0
 - AI框架：langchain4j 1.17.2，AI模型支持 `ChatGPT` `DeepSeek` `千问` `智普` `minimax`、`本地模型`等
 - 持久层框架：MybatisPlus 3.5.16
-- 报表工具： JimuReport 2.5.1
-- 大屏设计： JimuBI v2.5.0
+- 报表工具： JimuReport 2.5.6.1
+- 大屏设计： JimuBI v2.5.6.1
 - 安全框架：Apache Shiro 3.0.0，Jwt 4.5.0
 - 微服务技术栈：Spring Cloud Alibaba、Nacos、Gateway、Sentinel、Skywalking
 - 数据库连接池：阿里巴巴Druid 1.2.28

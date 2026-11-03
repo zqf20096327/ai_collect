@@ -28,10 +28,10 @@ passage that shares no words with the question. This project explores two
 ideas on top of that structure:
 
 - **Knowledge-graph-enhanced RAG.** Concepts and their relationships are
-  extracted from each book into Neo4j. Before retrieval, the question is
-  expanded with neighbouring concepts from the graph, and every answer cites the
-  passages it used. An evaluation harness measures whether the expansion
-  actually helps.
+  extracted from each book into Neo4j. Concepts recognised in the question are
+  added to the keyword half of the hybrid search, their graph neighbours are
+  shown as related concepts, and every answer cites the passages it used. An
+  evaluation harness measures whether the graph actually helps.
 - **Adaptive practice.** Quizzes are generated from the same passages, and a
   Bayesian Knowledge Tracing (BKT) model updates per-concept mastery after each
   answer so the next quiz targets a suitable difficulty.
@@ -43,8 +43,8 @@ data stays in a local SQLite file.
 ## Features
 
 - **Cited answers.** Answers are grounded in retrieved passages with numbered
-  citations, source snippets, the expanded concepts and the textbook
-  attribution. They can be streamed token by token over server-sent events.
+  citations, source snippets, the graph concepts used for retrieval, their
+  related concepts and the textbook attribution. They can be streamed token by token over server-sent events.
 - **Knowledge graph explorer.** Concepts, with glossary definitions and aliases
   where the book provides them, and the textbook modules that cover them live
   in Neo4j with `PREREQ` (from glossary definitions), `RELATED`
@@ -120,9 +120,14 @@ pipeline:
    default); an unknown subject returns `404`.
 2. **Expand the question with the knowledge graph.** spaCy named-entity
    recognition and YAKE keyword extraction find concepts in the question. They
-   are matched against the subject's concepts in Neo4j, and neighbours within
-   `RAG_KG_EXPANSION_HOPS` (default 1) are added to the query. If Neo4j is
-   unavailable, the pipeline continues without expansion. The response's
+   are matched against the subject's concepts in Neo4j, and the recognised
+   concepts are added to the keyword (BM25) query; the vector query embeds the
+   question as asked. Their graph neighbours within `RAG_KG_EXPANSION_HOPS`
+   (default 1) come back as `related_concepts`, and
+   `RAG_KG_EXPANSION_MAX_NEIGHBOURS` (default 0) adds some of them to the
+   keyword query too: on the golden set, adding neighbours lowered citation
+   hits (#282). If Neo4j is unavailable, the pipeline continues without
+   expansion. The response's
    `kg_expansion_status` says what happened: `ok`, `empty` (nothing matched),
    `failed` or `disabled`.
 3. **Retrieve with hybrid search.** OpenSearch runs a BM25 query over chunk

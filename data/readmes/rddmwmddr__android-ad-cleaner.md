@@ -8,16 +8,16 @@
 
 插上手机，点几下按钮。不需要 Python，也不需要 AI 工具。
 
-> **v0.3.0 · 2026-11-01**：修 0.2.9 之后社区报告的十几个问题（华为同名渠道行、vivo 旧系统和「运营消息」渠道、安卓 17 页面没画完就找入口、小米商店误点、OPPO 关快应用后快递卡片打不开、POCO 广告组件、连接提示品牌认错等）；新增 vivo X Fold6、Redmi Note 14 5G、一加 Ace 6T、小米 14 Pro 机型脚本和新机型适配辅助 `run.py adapt`；引擎重构，用法不变。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新说明](https://github.com/rddmwmddr/android-ad-cleaner/releases)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
+> **v0.3.1 · 2026-11-03**：这一版修了 0.3.0 之后社区报告的一批问题，新增两个机型脚本；渠道页认不出时，上报的日志会附一份不含文字的页面结构，适配新系统不用再等用户手动导出。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
 
 此前版本已处理 Windows 本地页面超时、荣耀截图越界、通知渠道误操作风险、vivo 快应用与备份问题。各 Issue 的处理范围和待验证项见 [社区问题处理记录](docs/09-社区问题处理.md)。仅支持通过 adb 连接的安卓设备，暂不支持使用 HDC 的原生鸿蒙。
 
 | 电脑 | 下载 | 说明 |
 |---|---|---|
-| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.3.0-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
-| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.3.0-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-mac-intel.dmg) | 同上 |
-| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.3.0-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」 |
-| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.3.0-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.0/AndroidAdCleaner-0.3.0-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe` |
+| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.3.1-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.1/AndroidAdCleaner-0.3.1-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
+| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.3.1-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.1/AndroidAdCleaner-0.3.1-mac-intel.dmg) | 同上 |
+| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.3.1-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.1/AndroidAdCleaner-0.3.1-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」 |
+| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.3.1-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.1/AndroidAdCleaner-0.3.1-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe` |
 
 不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
 
@@ -88,7 +88,7 @@
 
 | 品牌 | 机型（型号） | 系统 | 机型脚本 | 手动清单 | 营销通知 |
 |---|---|---|---|---|---|
-| 魅族 | 21 Pro（MEIZU 21 Pro） | Flyme 12.6.0.0A / Android 16 | ⚠️ 10-30 真机分段验证目标均已关闭；从开启状态自动关闭待验证，其他版本停止 | ✅ | ✅ 本机 8 个营销渠道 |
+| 魅族 | 21 Pro（MEIZU 21 Pro） | Flyme 12.6.0.0A / Android 16 | ⚠️ 10-30 真机分段验证目标均已关闭；浏览器与应用商店两段改过待复测；从开启状态自动关闭待验证，其他版本停止 | ✅ | ✅ 本机 8 个营销渠道 |
 | 华为 | ALN-AL00 | HarmonyOS 4.2.0.223 / Android 12 | ⚠️ 营销通知命令行工具，需先人工审核清单，客户端不自动运行；[用法](docs/清单/华为-ALN-AL00-营销通知.md) | [范围与路径](docs/清单/华为-HarmonyOS.md) | 本次人工审核 79 个候选：关闭 48 个、31 个原已整体屏蔽；不代表新脚本整轮成绩 |
 | 荣耀 | PNM-AN10 | MagicOS 10 | ✅ 实测通过，重跑 4 分钟 | ✅ | ✅ 26 个渠道 |
 | 荣耀 | WKL-AN20 | MagicOS 11.0.0.111 / Android 17 | ⚠️ 2026-10-28 路径逐项实测，新脚本整轮待复测、用时未测；音乐需手动开页，见[说明](recipes/honor-WKL-AN20/README.md) | ✅ | ✅ 人工关闭 13 个渠道，其他渠道和总开关未变 |
@@ -130,6 +130,7 @@
 | vivo | V2417A | OriginOS 6 / Android 16（PD2417D_A_16.2.14.1.W10） | ✅ 社区实测：10-30 八段整段跑通、回读核对 32 项、幂等复跑 179 秒；11-02 浏览器升到 31.3.0.0 后入口变了，改走「我的 → 设置」，八段仍通过；维护方未在本机复跑；[适配说明](recipes/vivo-V2417A/README.md) | ✅ | ✅ 通用流程关闭 5 个明确营销渠道 |
 | vivo | X300 Ultra（V2547A） | OriginOS 7 | ✅ 2026-10-25 实测通过，重跑 126 秒 | ✅ | ⚠️ 只有应用级总开关 |
 | vivo（iQOO） | Z11 Turbo（V2536A） | OriginOS 6 / Android 16（PD2536B_A_16.0.12.8.W10） | — 无专用脚本；`--ref` 安全模式实测 | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
+| vivo | V2309A | OriginOS 6 / Android 16（PD2309E_A_16.2.15.0.W10） | ✅ 社区实测：11-03 从开启状态七段整段跑通，26 个开关逐个关闭、回读核对（213 秒），复跑轮调整 0 项（165 秒）；维护方未在本机复跑；商店「个性化推荐」子页的开关此前读不到（同坐标去重并掉），修复已合入 `main`、待该机复测（[#531](https://github.com/rddmwmddr/android-ad-cleaner/issues/531)）；[#530](https://github.com/rddmwmddr/android-ad-cleaner/issues/530) | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
 | 一加 | Ace 2（PHK110） | ColorOS 16.0.5 / Android 16 | ✅ 2026-10-25 路径实测、整段重跑约 85 秒 | ✅ | 11 个关闭，1 个受限 |
 | 一加 | Ace 2（PHK110） | ColorOS 15.0.0.601 / Android 15 | 2026-10-29 手动路径实测；自动脚本尚未整段真机验证 | 部分路径 | 渠道按独立流程处理 |
 | realme | GT Neo5 SE（RMX3700） | ColorOS 16.0.5.1300(CN01) / Android 16 | ✅ 2026-11-02 六段真机实测通过（广告跟踪、软件商店、浏览器、下拉搜索、小布建议、应用建议）；下拉搜索重跑 83 秒、幂等 | ✅ | —（未跑） |

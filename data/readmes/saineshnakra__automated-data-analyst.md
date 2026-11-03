@@ -1,5 +1,7 @@
 # ADA: the math arm for LLMs
 
+<!-- mcp-name: io.github.saineshnakra/automated-data-analyst -->
+
 [![CI](https://github.com/saineshnakra/automated-data-analyst/actions/workflows/ci.yml/badge.svg)](https://github.com/saineshnakra/automated-data-analyst/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/automated-data-analyst?color=635bff)](https://pypi.org/project/automated-data-analyst/)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-3776ab?logo=python&logoColor=white)](https://www.python.org/)
@@ -13,7 +15,7 @@
   <a href="https://github.com/saineshnakra/automated-data-analyst"><b>⭐ Star ADA</b></a> if it saves you an afternoon ·
   <a href="https://automated-data-analyst.streamlit.app/">Try it in the browser</a> ·
   <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/README.md">Docs</a> ·
-  <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/CHANGELOG.md">What's new in 0.7.0</a>
+  <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/CHANGELOG.md">What's new in 0.8.0</a>
   <br>
   <sub>Read this in <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=zh">中文</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ja">日本語</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ko">한국어</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=es">Español</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=pt">Português</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=de">Deutsch</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=fr">Français</a> · <a href="https://readme-i18n.com/saineshnakra/automated-data-analyst?lang=ru">Русский</a></sub>
 </p>
@@ -66,7 +68,7 @@ printed above the answer.
 Cursor, VS Code, Cline and others. Put this in its `mcp.json`:
 
 ```json
-{"mcpServers": {"ada": {"command": "uvx", "args": ["--from", "automated-data-analyst", "ada", "mcp"]}}}
+{"mcpServers": {"ada": {"command": "uvx", "args": ["automated-data-analyst", "mcp"]}}}
 ```
 
 For Open WebUI, run `ada mcp --http` and add `http://127.0.0.1:8000/mcp` as
@@ -81,11 +83,12 @@ from ada import tools
 
 tools.definitions()                    # four tools for function calling: ask, check a claim, scan, compute
 tools.run("ada_check_claim", {"path": "flights.csv", "claim": "The average departure delay was about 13 minutes."})
+tools.langchain(root="data")           # the same tools for LangChain and LangGraph: pip install "automated-data-analyst[langchain]"
 ```
 
 [ADA as the math tool of a language model](docs/llm-tools.md) has the setup
-for each app, which local models work, a loop with the Anthropic API and
-what comes back.
+for each app, which local models work, loops with the Anthropic API,
+LangChain and LangGraph, and what comes back.
 
 ## Check a number
 
@@ -117,6 +120,7 @@ says the data give a different number. `--json` gives the whole record, and
 ada compute "0.15 * (1200 - 300)"      # 135, with each step
 ada compute "1/3 + 1/6"                # 0.5 = 1/2: fractions stay exact
 ada compute "6/2(1+2)"                 # refused: it reads as 9 or as 1
+ada compute "x + y = 10; x - y = 2"    # x = 6, y = 4, each step, and a check
 ```
 
 `ada compute`, `ada.compute()` and the `ada_compute` tool work out an
@@ -126,6 +130,18 @@ An expression that reads two ways is refused with both values, and so is
 anything that isn't a real number. A model writes the expression and reads
 the answer instead of carrying digits itself. See
 [Exact arithmetic](docs/reference/compute.md).
+
+Given an equation, the same command and tool solve it: linear equations and
+systems in one-letter unknowns, polynomial equations in one unknown, and
+systems of polynomial equations with finitely many solutions, with fractions
+kept exact, values that would divide by zero ruled out, and each answer
+checked as the last step. `x^2 - 3x + 1 = 0` gives (3 - sqrt(5))/2 and
+(3 + sqrt(5))/2, and `x*y = 6; x + y = 5` gives x = 2, y = 3 or x = 3, y = 2;
+a value with no exact form comes with an interval it lies in. A formula is
+solved for one of its letters: `solve h = v*t - g*t^2/2 for t` gives t = (v ±
+sqrt(-2g*h + v^2))/g with the conditions it needs (g ≠ 0, and the number under
+the root not negative). See
+[Algebra](docs/reference/algebra.md).
 
 `ada.check_arithmetic(text)` checks each equation in a worked answer, so a
 model can reason in its own words and be told each slip with the right

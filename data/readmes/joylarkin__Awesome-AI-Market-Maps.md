@@ -50,6 +50,10 @@ OR
 
 ### November 2026
 
+
+#### Enterprise AI 
+- [Tim Tully & Joff Redfern & Deedy Das & Derek Xiao — Menlo Ventures - State of Enterprise AI - November 2026](https://menlovc.com/perspective/2026-the-state-of-enterprise-ai/?utm_source=awesome-ai-market-maps)
+
 #### AI Finance 
 - [The Private Markets Forum - AI in Private Markets Map - November 2026](https://lnkd.in/p/g26qddZW?utm_source=awesome-ai-market-maps)
 
@@ -1141,7 +1145,4 @@ OR
 
 #### AI Infrastructure
 - [Headline VC - The Duality of Infrastructure Software Investing in an AI World - "Infra of AI" and "AI in Infra" Market Maps - March 2025](https://headline.com/blog-latest/article-latest/the-duality-of-infrastructure-software-investing-i?utm_source=awesome-ai-market-maps)
-- [Forum Ventures - AI Infrastructure Market Map - March 2025](https://airtable.com/appJKSyHsK9L7emVe/shrIaPop9BFkCdXx5/tblep1S6vE6nyvsJ3?utm_source=awesome-ai-market-maps)
-
-#### Robotics
-- [Hardware FYI - Deep Tech Market Map - Robotics and Autonomous Systems - March 2025](https://www.linkedin.com/feed/update/urn:li:activity:7308530241210093569/?utm_source=awesome-ai-market-ma
+- [Forum Ventures - AI Infrastructure Market Map - March 2025](https://airtable.com/appJKSyHsK9L7emVe/shrIaPop9BFkCdXx5/tblep1S6vE6nyvsJ3?utm_sour

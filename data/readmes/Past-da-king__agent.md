@@ -2,13 +2,15 @@
 
 # Agent
 
-An autonomous, always-on agent on your phone.
-It has its own browser, keeps a wiki memory of everything it learns about you, and hands the heavy jobs to your own machines.
+An autonomous, always-on agent that is yours alone. It has its own browser, keeps a wiki memory of everything it learns
+about you, and hands the heavy jobs to your own machines.
+
+It lives in two places, and you can use either or both: **on your phone**, or **on your computer with the phone as the
+window**. Same agent, same memory, same approvals; the heavy work and the keys stay where you put them.
+
 You bring the model. Paste an API key, or sign in with the ChatGPT or Claude plan you already pay for.
 
-The best thing since Hermes.
-
-[Get the APK](https://github.com/Past-da-king/agent/releases/latest) | [Watch it work](https://past-da-king.github.io/agent/) | [Build it from source](#build-from-source)
+[Get the APK](https://github.com/Past-da-king/agent/releases/latest) | [Get the desktop app](https://github.com/Past-da-king/agent-desktop-app/releases/latest) | [Build it from source](#build-from-source)
 
 Free and open source, MIT. No account, no subscription, no server of ours.
 
@@ -22,20 +24,43 @@ Home, chat, memory, routines. The two demo recordings are on the [project page](
 
 It is not on the Play Store. You sideload the APK.
 
-1. Open [Releases](https://github.com/Past-da-king/agent/releases/latest) and download `Agent-0.11.14.apk` on your phone.
+1. Open [Releases](https://github.com/Past-da-king/agent/releases/latest) and download the latest `Agent-*.apk` on your phone.
 2. Tap the file and allow the install when Android asks. That is the whole sideload.
 3. Open Agent, give it a name, pick how it looks, then pick how to power it. See [Setup](#setup).
 4. On a Samsung, Xiaomi or OnePlus phone, set the app's battery to **Unrestricted** under Settings, or Android will kill the browser and the routines while they work.
 
-You need Android 10 or newer on an arm64 phone, which is every phone sold in the last few years. The APK is about 360 MB because the Node runtime, Codex and Claude Code ship inside it, so leave room for that and for its data.
+You need Android 8 or newer on an arm64 phone, which is every phone sold in the last few years. The APK is about 36 MB
+without the bundled subscription runtimes, and about 360 MB with them, so leave room for it and for its data.
+
+## Two ways to run it
+
+**On the phone.** The agent loop, the browser, memory, tasks and routines all run in the app. Nothing else is needed, and
+no other computer has to exist.
+
+**On your computer, with the phone as the window.** Pair the phone with the desktop app (Settings, Devices, Add a device).
+From then on the phone shows the same chats, cards, approvals and reports, and the work runs on the computer with its
+accounts, its files and its bigger keys. It behaves like one agent, not two:
+
+- **The phone knows which computer is answering.** A message goes to the brain that should take it; if that computer says
+  nothing within a few seconds, the next one gets the same message id, so the work still runs exactly once.
+- **A card is only "working" while the computer that published it is answering.** A stopped machine says so instead of
+  spinning.
+- **Your computer's files stay on your computer.** When the agent shows a video or a picture, the phone asks for exactly the
+  part of the file it needs, by a token the computer made for that one card, and nothing else is reachable.
 
 ## What it can actually do
 
 **It goes and looks.** The agent drives its own built-in browser. It cannot control your existing Chrome tabs, so you sign in to your sites inside it. That browser runs in a foreground service, so it keeps working while you are in another app or the screen is off. When a site throws a captcha or a sign-in at it, it hands the page to you and carries on when you are done. Profiles keep Personal and Work apart, and helper agents can split a big job up.
 
-**It remembers you.** Everything it learns gets a page in a wiki on the phone, linked to the pages around it. Read it, change it, pin it or delete it. Nothing is kept that you cannot see.
+**It remembers you.** Everything it learns gets a page in a wiki, linked to the pages around it. Read it, change it, pin it or delete it. Nothing is kept that you cannot see.
 
-**It runs on a clock.** A routine can fire at a set time, on a new email, or the moment an app you chose sends a notification. It can watch a price for weeks and only speak up when it actually moves.
+**It answers in cards, not walls of text.** A table, a chart, a set of steps, a row of buttons, one card per listing: the answer is something you can read at a glance, tap, and edit. Pictures and videos the agent finds or makes play inside the chat.
+
+**It runs on a clock.** A routine can fire at a set time, on a new email, or the moment an app you chose sends a notification. It can watch a price for weeks and only speak up when it actually moves. A routine works with the same tools the agent has, including your task list.
+
+**It learns the web apps you use.** Show it a site once and it can write its own tools for that site, so the next visit is one call instead of a hundred clicks. You decide whether those tools may act without asking.
+
+**It builds little apps for you.** A mini-app is a small dashboard or tracker it makes and keeps up to date, on the phone and on the computer, with only the permissions you grant it.
 
 **It uses the accounts you have.** Apps connect through [Composio](https://composio.dev) with your own key: Gmail, Calendar, Drive, Slack and a few hundred more. It asks to connect one only when a job needs it, and the sign-in opens inside the app. You can hold several accounts per app, like two Outlooks or four Gmails.
 
@@ -51,7 +76,7 @@ You need Android 10 or newer on an arm64 phone, which is every phone sold in the
 
 - Not a product. No account, no subscription, nobody to pay.
 - Not on the Play Store, so nobody at Google has looked at it. Read the source, or build it yourself, if that matters to you.
-- Not finished. It has mostly been tested on one Samsung phone, and live voice calls are the newest part.
+- Not finished. It has mostly been tested on one Samsung phone, and the phone-and-computer pairing is the newest part.
 - Not faultless. It is an agent with a browser and access to whatever you connect, so it will get things wrong. Read what you approve.
 - Not for everyone yet. It expects you to be comfortable sideloading an APK and pasting a key.
 
@@ -61,12 +86,13 @@ Nothing is read until you allow it. Location, files, notifications and the rest 
 
 - Keys are stored on the phone in `EncryptedSharedPreferences`, locked by the Android Keystore.
 - Memory, tasks, routines and chat live in a Room database on the phone.
-- Traffic leaves the phone only to the model you picked, the sites the agent browses, Composio if you added a key, your voice provider if you added one, and the machines you added.
+- Traffic leaves the phone only to the model you picked, the sites the agent browses, Composio if you added a key, your voice provider if you added one, and the computers you paired.
 - Machine secrets stay encrypted on the phone and the agent only ever sees a machine's name. A machine is pinned the first time you connect, and refused if its identity changes later.
+- A file the agent shows you is served by the computer that holds it, to the paired phone, by an opaque token with no path in it, read-only. A made up token gets nothing.
 
 ## Star it if you want it to exist
 
-If an agent that lives on your phone and answers to you is something you want to keep existing, [give the repo a star](https://github.com/Past-da-king/agent). It is the only signal this project has, and it is what puts Agent in front of the next person looking for it.
+If an agent that lives on your own hardware and answers to you is something you want to keep existing, [give the repo a star](https://github.com/Past-da-king/agent). It is the only signal this project has, and it is what puts Agent in front of the next person looking for it.
 
 ## Setup
 
@@ -77,6 +103,7 @@ Onboarding walks you through this. In order:
 
    | Option | What you need | Notes |
    |---|---|---|
+   | Your own computer | The Agent desktop app with Devices turned on | The phone becomes the window; nothing to pay, keys stay on the computer |
    | API key | A key from DeepSeek, OpenRouter, Gemini, Claude, OpenAI or OpenCode (Zen or Go) | Runs in the app's own agent loop. Quickest to set up. |
    | Any OpenAI-compatible endpoint | Base URL, model name and a key | Hosted services, or your own server. See [Self-hosted servers](#self-hosted-servers-ollama-lm-studio-vllm). |
    | ChatGPT subscription | A ChatGPT account (the free tier worked in testing) | Runs Codex on the phone through the bundled runtime. Sign in inside the app. |
@@ -97,7 +124,7 @@ Pick **Other (OpenAI-compatible)**, then enter the server's base URL, usually en
 
 ## Machines, over SSH
 
-Your phone is the remote, not the engine. Under **Connections, Machines** you can add any computer you can SSH into: a VPS, a university or work server, your own PC.
+Your phone can be the remote, not the engine. Under **Connections, Machines** you can add any computer you can SSH into: a VPS, a university or work server, your own PC.
 
 - **Sign in** with a password, a private key you already use, or a new key made on the phone. You paste its public half into `~/.ssh/authorized_keys` once, and no password is stored.
 - **Through a gateway**, so a machine behind a login host can be reached as well.
@@ -118,6 +145,8 @@ cd agent
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
+Release builds are signed from a properties file that is never in this repository: pass `-PsigningProps=<file>`.
+
 Tests: `./gradlew testDebugUnitTest`, which runs the unit tests plus Robolectric and Roborazzi screenshots in light and dark.
 
 ## How it works, in short
@@ -126,6 +155,7 @@ Tests: `./gradlew testDebugUnitTest`, which runs the unit tests plus Robolectric
 - On the API key path, a provider-neutral agent loop in Kotlin that speaks both chat formats.
 - On the subscription path, Node 24 (Termux's Android build) ships inside the APK as `lib*.so` files, because Android only lets an app execute files from its native library folder, and the Agent SDK runs on it. Codex and Claude Code ship the same way as their arm64 musl builds; Claude Code gets the musl loader as `libldmusl.so`, and a local proxy resolves DNS for both. The app's own tools are served to them over a local MCP server on `127.0.0.1` with a per-install token.
 - The browser is an Android WebView hosted in a foreground service.
+- With a computer paired, the phone and the computer replicate chats, tasks and memory over an encrypted link of their own: no relay of ours, no account.
 
 ## Risks
 
@@ -134,6 +164,12 @@ Tests: `./gradlew testDebugUnitTest`, which runs the unit tests plus Robolectric
 - **Sideloaded.** It is not reviewed by Google.
 - **Battery.** Background browsing and routines use battery. The overnight routine only runs while charging.
 - **Early software.** Tested mainly on one Samsung phone.
+
+## History
+
+This repository started as an early version of the app and carries the work of its contributors. The line that has been
+shipping since was developed privately and was merged into `main` in November 2026, keeping the earlier history and the
+licence intact. See [Releases](https://github.com/Past-da-king/agent/releases) for what changed when.
 
 ## License
 

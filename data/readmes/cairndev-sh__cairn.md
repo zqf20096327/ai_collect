@@ -8,9 +8,9 @@
 <h1 align="center">cairn</h1>
 
 <p align="center">
-  <b>An open-source control plane for governed ModelOps.</b><br>
+  <b>Cairn runs your AI and ML pipelines behind budgets, policy, approvals and an audit trail.</b><br>
   Fine-tune, evaluate, promote, and serve models as single governed commands —
-  cost-capped before the GPU spins up, policy-gated, and audited end to end.
+  cost-capped before the GPU spins up, policy-gated, and audited.
 </p>
 
 <p align="center">
@@ -18,6 +18,7 @@
   <a href="https://cairndev.sh"><img alt="Website" src="https://img.shields.io/badge/website-cairndev.sh-111827"></a>
   <a href="https://demo.cairndev.sh"><img alt="Live demo" src="https://img.shields.io/badge/live%20demo-demo.cairndev.sh-16a34a"></a>
   <a href="https://github.com/cairndev-sh/cairn/actions/workflows/ci.yml?query=branch%3Amain"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/cairndev-sh/cairn/ci.yml?branch=main&label=ci"></a>
+  <a href="https://github.com/cairndev-sh/cairn/actions/workflows/quickstart.yml?query=branch%3Amain"><img alt="Quickstart" src="https://img.shields.io/github/actions/workflow/status/cairndev-sh/cairn/quickstart.yml?branch=main&label=quickstart"></a>
   <a href="https://pypi.org/project/cairndev/"><img alt="PyPI" src="https://img.shields.io/pypi/v/cairndev"></a>
   <a href="https://pypi.org/project/cairndev/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/cairndev"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/github/license/cairndev-sh/cairn"></a>
@@ -29,7 +30,9 @@
   <a href="https://docs.cairndev.sh/install/">Install</a> ·
   <a href="https://docs.cairndev.sh/reference/catalog/">Pipeline catalog</a> ·
   <a href="https://docs.cairndev.sh/concepts/gates/">Gates and approvals</a> ·
-  <a href="https://github.com/cairndev-sh/cairn-extensions">Extensions</a>
+  <a href="https://github.com/cairndev-sh/cairn-extensions">Extensions</a> ·
+  <a href="https://github.com/cairndev-sh/cairn/discussions">Discussions</a> ·
+  <a href="https://discord.gg/CPyC6bzTJW">Discord</a>
 </p>
 
 <p align="center">
@@ -89,8 +92,12 @@ Walkthrough: [Fine-tune a model](https://docs.cairndev.sh/guides/fine-tune-a-mod
 This is what separates cairn from a bare agent loop or a black-box tool — the
 work runs behind deterministic guardrails you can inspect afterward:
 
-- **Hard budget** — every run accrues cost in a scope; over the cap it raises
-  `BudgetExceeded`, so a fine-tune can't quietly overspend.
+- **Budget cap** — a template's model calls stop at its `budget.max_cost_usd`, or at the
+  deployment's `MAX_COST_USD` ($1 by default) if that's lower: the call that crosses the cap
+  has been paid for, calls already in flight can pass it further, the leg fails, and the pipeline stops. A flow checks its own
+  `budget.max_cost_usd` between stages, and a leg in a series reserves its estimate first.
+- **Holdout door** — a training dataset version that shares rows with a registered test set
+  is refused at launch, and the refusal names the rows.
 - **Policy + human approval** — proposed actions pass declarative policy rules
   before any executor runs; high-risk ones (promote a model, destroy a
   resource) pause for a human and resume durably from a checkpoint.
@@ -119,7 +126,7 @@ measured on: see [`benchmark/`](./benchmark/README.md).
 |---|---|
 | The untouched log, 23 rows, with `cairn admin audit verify` | verifies: exit 0 |
 | The untouched log against its own head, with `cairn admin lineage --expect-head` | matches: exit 0 |
-| The same, without `--json`, on a log with no lineage records | exit 1, because it has no lineage records, though the head matches |
+| The same, without `--json`, on a log with no lineage records | matches: exit 0 |
 | Changed who gave an approval, row 11 | detected: exit 2, row 11 (hash) |
 | Deleted that row | detected: exit 2, row 11 (prev_hash) |
 | Inserted a forged approval before it, correctly linked, so the row after the forgery breaks | detected: exit 2, row 12 (prev_hash) |
@@ -131,10 +138,28 @@ measured on: see [`benchmark/`](./benchmark/README.md).
 | Limit: changed row 1 and recomputed every hash in the file | NOT detected by the chain: exit 0. Detected only against a head saved outside the log (`--expect-head`): exit 2 |
 | Limit: rows written after a head was saved, then cut | NOT detected, even with that head: exit 0 |
 | Limit: a head saved earlier, on a log that has grown since | reported as a mismatch: exit 2. The saved head has to be the latest one |
-| Limit: cut the last 3 rows, with `--expect-head` given an empty or blank value | NOT detected: exit 0. The check compares nothing |
-| Limit: cut the last 3 rows and tried values in the new last row until its hash began with the first 4 characters of the saved head | NOT detected with that prefix: exit 0. With the full saved head: exit 2 |
+| Cut the last 3 rows, with `--expect-head` given an empty or blank value | refused, nothing compared: exit 2 |
+| Cut the last 3 rows and tried values in the new last row until its hash began with the first 4 characters of the saved head | a prefix that short is refused: exit 2. With the full saved head: exit 2 |
 
-cairndev 0.4.0, `uv.lock` `2f3a08bed7ab`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-02.
+cairndev 0.5.0, `uv.lock` `b71bfd534f0d`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-03.
+
+**How far past a cost cap a template's spend gets** ([reproduce](./benchmark/budget_overshoot.py))
+
+| Runtime | Template | Cap | Spend recorded | Past the cap | Calls the model received | Leg and pipeline |
+|---|---|---|---|---|---|---|
+| in-process | 6 calls in a row | $0.000070 | $0.000084 | $0.000014 (20%) | 3 of 6 | failed, next leg never started |
+| in-process | 8 calls at once | $0.000040 | $0.000224 | $0.000184 (460%) | 8 of 8 | failed, next leg never started |
+| DBOS on SQLite | 6 calls in a row | $0.000070 | $0.000084 | $0.000014 (20%) | 3 of 6 | failed, next leg never started |
+| DBOS on SQLite | 8 calls at once | $0.000040 | $0.000224 | $0.000184 (460%) | 8 of 8 | failed, next leg never started |
+| Temporal | not measured | n/a | n/a | n/a | n/a | n/a |
+
+A cap can't take back the call that crosses it, so calls in a row pass it by at most one call. Here that's half a call, and it's 20% only because this test's cap is just 2.5 calls.
+
+Calls sent at once can pass a cap by nearly all of them: all 8 reached the model before any answer came back, and the second answer is the one that crosses this cap. The percentage depends on how many calls there are and how small the cap is. A call answered after the run stops could be paid for without being counted. These runs didn't show that, but it would make the recorded spend too low.
+
+Temporal isn't measured, because this script needs a Temporal server. From the code, the worker only meters, so the run should fail when it ends, with its calls already made.
+
+cairndev 0.5.0, `uv.lock` `b71bfd534f0d`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-03.
 
 **What happens when the server is killed** ([reproduce](./benchmark/crash_matrix.py))
 
@@ -151,21 +176,21 @@ cairndev 0.4.0, `uv.lock` `2f3a08bed7ab`, Linux x86_64 with 4 CPUs and Python 3.
 
 Each entry is what that cell's test required and saw in this run. Of these cells, only the template leg on DBOS resumes; a flow leg killed on the builtin engine fails, and so does its pipeline. What each cell checks, where this holds, and what no cell tests: [What happens when the server is killed](./benchmark/README.md#what-happens-when-the-server-is-killed).
 
-cairndev 0.4.0, `uv.lock` `2f3a08bed7ab`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-02.
+cairndev 0.5.0, `uv.lock` `b71bfd534f0d`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-03.
 
 **The quickstart's path on a local engine** ([reproduce](./benchmark/quickstart_path.py))
 
 | Measured | Result |
 |---|---|
-| Engine start to answering | 2.3 s |
-| Launch to a pipeline paused at its person gate | 1.6 s (median of 5, after one warm-up run) |
-| Both approvals to a finished pipeline, nobody waiting | 0.9 s (median of 5, after one warm-up run) |
+| Engine start to answering | 3.3 s |
+| Launch to a pipeline paused at its person gate | 1.9 s (median of 5, after one warm-up run) |
+| Both approvals to a finished pipeline, nobody waiting | 1.0 s (median of 5, after one warm-up run) |
 | Nothing published before the person gate | held on all 6 runs |
 | A false data gate stops the pipeline before any later step starts, and is logged | held |
 | Each decision a person made is in the audit log with the signed-in user | held for all 12 decisions |
 | Audit chain verifies at the end | held (143 rows) |
 
-cairndev 0.4.0, `uv.lock` `2f3a08bed7ab`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-02.
+cairndev 0.5.0, `uv.lock` `b71bfd534f0d`, Linux x86_64 with 4 CPUs and Python 3.13.13, 2026-11-03.
 
 <!-- benchmark:end -->
 
@@ -177,13 +202,11 @@ you, and writes a hash-chained audit trail. No API key, no spend, about ten minu
 ```bash
 curl -LsSf https://docs.cairndev.sh/install.sh | CAIRN_EXTRAS=hello sh   # or: pip install 'cairndev[hello]'
 mkdir cairn-quickstart && cd cairn-quickstart
-curl -LsSfO https://raw.githubusercontent.com/cairndev-sh/cairn/main/examples/hello-cairn/data/sample.jsonl
 curl -LsSfO https://raw.githubusercontent.com/cairndev-sh/cairn/main/examples/hello-cairn/profiles/hello.toml
 export CAIRN_PROFILE=$PWD/hello.toml                        # the example's profile: audit trail on
 
 cairn setup --port 8471                                     # local engine on SQLite, signed in as dev
-cairn run hello-cairn/profile-and-publish \
-  -i path=$PWD/sample.jsonl --environment sandbox
+cairn run hello-cairn/profile-and-publish --preset sample --environment sandbox
 ```
 
 The pipeline profiles the file, passes its **data gate** (the profile must pass and
@@ -314,6 +337,7 @@ The same governed core is driven from two places in this repository:
 | [Architecture](./docs/architecture/00-overview.md) | Engine, packs, profiles, request lifecycle |
 | [Write a pipeline](https://docs.cairndev.sh/guides/write-a-pipeline/) · [Capabilities and operators](https://docs.cairndev.sh/concepts/capabilities/) | Packs, and how operators pick up a provider |
 | [Gates and approvals](https://docs.cairndev.sh/concepts/gates/) · [Cost and budgets](https://docs.cairndev.sh/concepts/cost/) | Policies, HITL gates, budget, audit |
+| [Gate CI on a check](https://docs.cairndev.sh/guides/gate-ci/) | Fail a pull request on a bad dataset with `cairn run --check` |
 | [Pipelines](https://docs.cairndev.sh/concepts/pipelines/) | Chain governed workflows with gates and events |
 | [Install and deploy](https://docs.cairndev.sh/install/) | Install, Docker Compose, Helm, sign-in |
 | [Operators catalog](https://docs.cairndev.sh/reference/operators/) | Every shipped operator, by domain |

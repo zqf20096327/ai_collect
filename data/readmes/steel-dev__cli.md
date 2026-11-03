@@ -100,32 +100,26 @@ steel browser batch "fill e3 Seoul" "click e7" "snapshot -i"
 - The `default` session starts on first use. Use `--session <name>` for more, or `--session <session-id>` to drive a session created elsewhere.
 - Sessions are released after 10 minutes without commands (`steel browser start --inactivity-timeout <ms>`).
 - A retried command never runs twice. Run the same command again after a lost response to get the stored result.
+- Self-hosted Steel Browser serves these commands only with `ENABLE_COMMANDS_API=true`. `steel dev start` does not set it yet.
 
 See the [Steel browser reference](docs/references/steel-browser.md) and the [command catalog](docs/references/steel-browser-commands.md) for details.
 
 ## Endpoint Resolution
 
-For browser sessions, browser actions, and top-level API tools (`scrape`, `screenshot`, `pdf`), endpoint selection is deterministic.
-
-Self-hosted precedence (highest to lowest):
+Every command that calls the Steel API uses one URL, chosen in this order:
 
 1. `--api-url <url>`
-2. `STEEL_BROWSER_API_URL`
-3. `STEEL_LOCAL_API_URL`
-4. `browser.apiUrl` in `~/.config/steel/config.json`
-5. `http://localhost:3000/v1`
+2. `--local`: `browser.apiUrl` in `~/.config/steel/config.json`, or `http://localhost:3000/v1`
+3. `STEEL_API_URL`
+4. `https://api.steel.dev/v1`
 
-Cloud precedence:
-
-1. `STEEL_API_URL`
-2. `https://api.steel.dev/v1`
+URLs on `steel.dev` are Steel Cloud and need an API key. Any other URL is treated as self-hosted.
 
 ## Output and Runtime Notes
 
-- `steel scrape` defaults to markdown-first output for token efficiency; use `--raw` for the full JSON payload.
-- `steel browser start` and `steel browser sessions` emit display-safe connect URLs with sensitive query values redacted.
-- Browser command paths bypass auto-update checks for lower interactive latency.
-- Piped output auto-switches to JSON for machine-readable workflows. Use `--json` to force it, or `STEEL_FORCE_TTY=1` to disable.
+- `steel scrape` prints markdown by default for token efficiency; use `--json` for the full API response.
+- `steel browser start` prints a display-safe connect URL with sensitive query values redacted.
+- Output is text by default, including when piped. Pass `--json` for machine-readable output.
 
 ## Documentation Map
 

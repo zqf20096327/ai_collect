@@ -11,7 +11,6 @@
 [![MCP: streamable-http](https://img.shields.io/badge/MCP-streamable--http-7c3aed.svg)](docs/mcp.md)
 [![RAG: WASM ONNX](https://img.shields.io/badge/RAG-WASM%20ONNX-ec4899.svg)](#-semantic-search-rag)
 [![Glama MCP server](https://glama.ai/mcp/servers/mi4uu/brain.md/badges/score.svg)](https://glama.ai/mcp/servers/mi4uu/brain.md)
-[![Smithery](https://smithery.ai/badge/mi4uu/brain-md)](https://smithery.ai/server/mi4uu/brain-md)
 
 </div>
 
@@ -165,7 +164,9 @@ curl -fsSL https://raw.githubusercontent.com/mi4uu/brain.md/main/install.sh | ba
 powershell -c "irm https://raw.githubusercontent.com/mi4uu/brain.md/main/install.ps1 | iex"
 ```
 
-The script picks the right asset for your OS and CPU, writes it to
+The script picks the right asset for your OS and CPU, downloads it
+together with the release's `SHA256SUMS`, verifies the checksum
+matches before installing anything, writes the binary to
 `~/.local/bin/brain` (or `%USERPROFILE%\.brain.md\bin\brain.exe`),
 chmod's it, and verifies it boots. Pin a version with
 `BRAIN_VERSION=v0.1.0`, change the install dir with `BRAIN_INSTALL=…`.
@@ -173,8 +174,9 @@ chmod's it, and verifies it boots. Pin a version with
 ### Option B — download the binary manually
 
 Every release ships a **single-file executable** per platform with
-the web UI embedded inside it. No Bun runtime, no Node.js, no
-`git clone`, no `bun install` — just download, mark executable, run.
+the web UI embedded inside it, plus a `SHA256SUMS` file to verify them
+against. No Bun runtime, no Node.js, no `git clone`, no `bun install`.
+Just download, mark executable, run.
 
 Grab the file for your machine from the latest release:
 👉 **[github.com/mi4uu/brain.md/releases/latest](https://github.com/mi4uu/brain.md/releases/latest)**
@@ -334,6 +336,12 @@ that runs comfortably on the free tier of **Oracle Cloud** or
 on a $0/month VPS, route a hostname to it through Cloudflare, and
 you have a private second brain reachable from any device, anywhere.
 
+Without a password the server only accepts requests whose `Host`
+header is `localhost`/`127.0.0.1`/`[::1]` or an entry in
+`ALLOWED_HOSTS`, as a guard against DNS rebinding. Set a password
+(you want one anyway outside loopback) or add your LAN name or tunnel
+hostname to `ALLOWED_HOSTS`. With a password set the check is off.
+
 The mobile layout adapts: editor and preview swap in place via a
 bottom tab, the topbar scrolls horizontally with a sticky brand +
 hamburger, the sidebar slides in as a drawer.
@@ -449,7 +457,7 @@ tool call (Claude Desktop and LM Studio both do this).
 
 ![MCP Server page in brain.md](docs/img/mcp-server-page.png)
 
-Tools (16):
+Tools (17):
 
 | Tool                  | Folder perm | What it does                                                       |
 |-----------------------|-------------|--------------------------------------------------------------------|
@@ -469,6 +477,7 @@ Tools (16):
 | `find_orphans`        | `read`      | Notes with 0 backlinks AND low semantic neighbour density          |
 | `weekly_digest`       | `read`      | Topic clusters across notes modified in a recent window (e.g. 7d)  |
 | `compare_notes`       | `read`      | Cosine sim + unified diff + shared headings between two notes      |
+| `current_datetime`    | none        | Server date, time and timezone, so agents never guess "now"        |
 
 Resources (2):
 
@@ -701,6 +710,7 @@ Every env knob:
 | `XDG_CONFIG_HOME`              | —       | Base for default settings location.       |
 | `GIT_AUTOCOMMIT`               | `1`     | `1` / `0`. Bootstrap default only.        |
 | `GIT_AUTOCOMMIT_DEBOUNCE_MS`   | `15000` | Bootstrap default only.                   |
+| `ALLOWED_HOSTS`                | none    | Comma-separated extra hostnames accepted on the Host header without a password, beyond `localhost`/`127.0.0.1`/`[::1]`. Not needed once a password is set. See [Mobile](#-mobile). |
 
 ---
 
@@ -790,7 +800,7 @@ Contributions welcome.
 1. Open an issue first for anything non-trivial — a quick design
    sketch saves a long PR rewrite.
 2. Write the test before the implementation. Server tests run with
-   `bun test`; the suite is currently **187 green**.
+   `bun test`; keep the suite green.
 3. Open a PR. CI runs typecheck (server + web) + `bun test`.
 
 ---

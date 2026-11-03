@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v80.128, 2026-11-02), the supported distribution.
+Use **current `main`** (v80.145, 2026-11-03), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -230,7 +230,7 @@ Passing a session ID prints one snapshot and exits, even with active work; use `
 | `~Ictx` | Incoming context or `Δctx -> Next Ictx` when the chronological context state is available. |
 | `~Ictx CCost` | Incoming-context reference valuation, not billing. |
 | `~Extra CCost` | Additional causal usage reference valuation beyond incoming context, not billing. |
-| `Token Mix %` | Input / Cached input / Cache write / Output shares, including supported running session usage; otherwise unknown/running. |
+| `Token Mix %` | Input / Cached input / Cache write / Output shares across all attributed calls, including supported running session usage. Any missing category or zero total makes the mix unknown/running on CLI and Web alike. |
 
 Known causal splits show **Main / Subagents / Total**; running prompts may show `running - consider ABORT`. `(Next Ictx CCost 0.3–3)` is the next input's cached–fresh CCost range; price-threshold warnings show `(1.9x more expensive)`, the model table's Relative CCost ratio across that threshold. Amber `nextIctxWarning`: approaching highlights the marker; exceeded the full explanation.
 
@@ -361,7 +361,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.128 (2026-11-02):** Watch: themed tables, natural history, native quotas, quiet Today/plain counts. [Web Beta](docs/web-beta.md).
+**v80.145 (2026-11-03):** Mini Watch opens smaller (native geometry verified at 150% Windows scaling), centers prompt headings and shows the same global Total Today as full Watch in a separate right-aligned header. Accounting, live units and manual resizing are unchanged.
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 
@@ -384,3 +384,5 @@ python development/tools/collect_diagnostics.py
 
 Hosted/web AI runs Quick + validation; local sessions run Full + validation + live checks. No local product-release ZIP is routinely generated; current `main` remains the supported source distribution. Diagnostics bundles are separate troubleshooting artifacts.
 `--working-tree` excludes root `.vs/` generated IDE state without reading or deleting it. It does not ignore nested `.vs/` directories or arbitrary project files. Without that flag, an explicit distributable containing root `.vs/` fails validation; normal path, size, encoding, security and Python checks remain active.
+
+Only this public product README, `VERSION_HISTORY.md` and `docs/web-beta.md` have advisory prose-size warnings. Their 2 MiB artifact cap and all other source/configuration/agent-context safeguards remain hard. Historical release information stays in place; a prose warning needs no approval or unrelated shortening.

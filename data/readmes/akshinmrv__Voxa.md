@@ -205,6 +205,25 @@ were regenerated — the timeline is identical across all three.
 
 ## Installation
 
+**One line.** No Python needed beforehand:
+
+```powershell
+irm https://voxa.servoogle.com/install.ps1 | iex          # Windows (PowerShell)
+```
+
+```bash
+curl -fsSL https://voxa.servoogle.com/install.sh | sh     # macOS / Linux
+```
+
+The installer uses [uv](https://docs.astral.sh/uv/) to put Voxa and its browser console in an
+environment of their own, with the Python they run on (about 1 GB, most of it PyTorch). It
+installs FFmpeg on Windows (winget) and macOS (Homebrew) — on Linux it prints the command,
+since that needs `sudo` — adds a **Voxa Studio** shortcut, and ends with `voxa doctor`.
+Running it again upgrades Voxa; `uv tool uninstall voxa-dub` removes it. Settings such as
+`VOXA_EXTRAS=serve,piper` are listed at the top of each script.
+
+Or install it step by step:
+
 **1. FFmpeg** — Voxa checks for it at startup and tells you if it's missing.
 
 ```bash
@@ -267,8 +286,19 @@ docker run --rm -v "$PWD:/data" -v voxa-cache:/cache \
 The image is ~3.7 GB, almost all of it the CPU build of torch. `voxa serve` runs in the
 container too (`serve --host 0.0.0.0`), but its settings endpoints are restricted to loopback
 callers and a port-mapped request does not qualify — run the console natively for those.
+The image doesn't include the console yet.
 
 </details>
+
+**Check the install.** `voxa doctor` lists what works, what is optional and not set up yet,
+and the command that fixes each item for *this* install — `pipx inject` when Voxa lives in pipx.
+It says whether an API key is set, never what it is.
+
+```bash
+voxa doctor            # FFmpeg, packages, GPU, engines, keys
+voxa doctor --online   # also tries Google, Microsoft Edge and Hugging Face
+voxa doctor --deep     # also loads XTTS and pyannote, which break on dependency updates
+```
 
 **3. Optional engines** — install only what you use.
 
@@ -280,6 +310,7 @@ callers and a port-mapped request does not qualify — run the console natively 
 | `pipx install "voxa-dub[xtts]"` | `--tts xtts` voice cloning |
 | `pipx install "voxa-dub[url]"` | `voxa <video-url>` — download the input first (yt-dlp) |
 | `pipx install "voxa-dub[diarize]"` | `--diarize` — a distinct voice per speaker (pyannote) |
+| `voxa engines install chatterbox` | `--tts chatterbox` — clones each speaker's voice in 23 languages, MIT. Installed into an environment of its own (about 4.5 GB); slow without a GPU |
 
 > [!NOTE]
 > **Multiple speakers** (`--diarize`) detects who speaks when and gives each speaker a distinct
@@ -304,6 +335,15 @@ callers and a port-mapped request does not qualify — run the console natively 
 > MIT-licensed engine through `--openai-tts-base-url`. If `import TTS` fails after install, `pip`
 > picked a `transformers` `coqui-tts` can't use — pin a compatible one, e.g.
 > `pip install "transformers==4.53.0"`.
+
+> [!NOTE]
+> **Engines in environments of their own.** Chatterbox pins its own versions of PyTorch and
+> transformers, so `voxa engines install chatterbox` puts it in a separate environment under
+> `~/.voxa/engines` instead of next to Voxa; nothing clashes, and `voxa engines remove
+> chatterbox` deletes it. The console's **Models** page does the same with a click. On a laptop
+> CPU it took 40–60 seconds per sentence, so a GPU makes the difference here; every clip it
+> makes carries Resemble AI's inaudible PerTh watermark. With faster-whisper installed, Voxa
+> also cuts the words Chatterbox sometimes adds after a line.
 
 **4. GPU acceleration** — optional, NVIDIA only.
 
@@ -432,7 +472,9 @@ voxa video.mp4 --target_lang az --tts openai \
 ```
 
 > [!NOTE]
-> A self-hosted server gets the target language with every line, so a multilingual model speaks
+> Your `OPENAI_API_KEY` is never sent to a self-hosted server; if it wants a key of its
+> own, set `OPENAI_TTS_API_KEY`. A self-hosted server gets the target language with every
+> line, so a multilingual model speaks
 > the right one. The server's model decides what you may do with the dub: VoiceStudio's default,
 > OmniVoice, speaks Azerbaijani but is non-commercial, while Chatterbox is MIT — see
 > [NOTICE](NOTICE.md#46-self-hosted-speech-servers). On a CPU it is slow: through VoiceStudio and
@@ -457,13 +499,13 @@ engine, because it *is* the engine. It binds to `127.0.0.1`; nothing is uploaded
 </div>
 
 ```bash
-# Backend: REST + SSE, drives the same pipeline per job
 pipx install "voxa-dub[serve]"
-voxa serve                              # http://127.0.0.1:8000
-
-# Frontend (separate terminal)
-cd web && npm install && npm run dev    # http://localhost:3000  →  /en/app
+voxa studio                             # starts it and opens the console in your browser
+voxa serve                              # the same, without opening a browser
 ```
+
+The console comes inside the package: no Node, no second terminal. Working on the console
+itself? Run `npm run dev` in [`web/`](web/) next to `voxa serve`.
 
 It also carries the settings the CLI reads: API keys (kept in your local `.env`, never echoed
 back), per-provider models with a connection test, translation style, and speech style presets.
@@ -478,6 +520,7 @@ development, environment variables, and deployment.
 Voxa/
 ├── voxa.py                     # The entire tool: pipeline, engines, registries, CLI
 ├── voxa_server.py              # `voxa serve` operator backend (FastAPI; optional [serve] extra)
+├── voxa_ui/                    # the console, built from web/ into the package (npm run build:console)
 ├── web/                        # Web frontend: public landing + local operator app
 ├── pyproject.toml              # Packaging, extras, ruff and pytest configuration
 ├── requirements.txt            # Core dependencies (optional engines live in extras)
@@ -561,7 +604,14 @@ conditions. Most Piper voices were fine-tuned from an English voice licensed for
 <details>
 <summary><strong>How do I clone a voice for a commercial product?</strong></summary>
 
-Run an MIT-licensed, OpenAI-compatible speech server locally and point Voxa at it:
+Install Chatterbox (MIT) and dub with it; it clones each speaker from the original video:
+
+```bash
+voxa engines install chatterbox
+voxa video.mp4 --tts chatterbox --target_lang de
+```
+
+Or run an MIT-licensed, OpenAI-compatible speech server locally and point Voxa at it:
 
 ```bash
 voxa video.mp4 --tts openai --openai-tts-base-url http://localhost:8004/v1

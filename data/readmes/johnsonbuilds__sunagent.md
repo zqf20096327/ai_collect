@@ -1,94 +1,33 @@
 # SunAgent
 
-> A modular AI Agent runtime implementation built from scratch for understanding, experimenting, and extending modern AI Agent architectures.
+> A small, readable Agent Runtime built from first principles.
 
-SunAgent is an open-source project that explores the core components behind AI Agent systems.
+SunAgent is a modular, provider-agnostic runtime for tool-calling agents. The engine (loop, tracing, events, executors) stays stable; everything that shapes an agent's behavior — prompt, tools, limits, context, recovery, verification — is versioned data in a YAML **harness manifest**. Change one gene, rerun a benchmark, and attribute the score change to that mutation.
 
-Instead of treating agents as black-box applications, this project focuses on understanding and implementing the underlying runtime mechanisms:
+- Any OpenAI-compatible Chat Completions endpoint, with streaming and reasoning replay
+- Harness genome with lineage, content hashes, and immutable evaluation records
+- Schema-validated tool calls; malformed model output never enters history
+- Context strategies (`full_history`, `compact_observations`, `llm_summary`) with output spilling
+- Per-category LLM retries, tool-error feedback, and a context-window hard gate
+- Optional verification gate with evidence grounding and command re-execution
+- Two event streams: internal `RunTrace` JSONL and user-facing `EventEmitter`
+- CLI and browser UI over the same runtime; Harbor adapters for benchmarks
 
-- Agent Loop
-- Tool Calling
-- Context Management
-- Memory
-- Planning
-- Execution Runtime
-- Reliability Engineering
-- Observability
+## Architecture
 
+```text
+CLI · Web UI · Harbor adapter
+        │  AgentEvent / frames
+Channels (CLIRenderer · WebUIChannel)
+        │  run_turn(...)
+AgentTurn (loop · context · recovery · verification)
+        │
+HarnessSpec · LLM provider · Tool registry · Execution
+        │
+RunTrace JSONL · workspace/
+```
 
-## Why This Project?
-
-Modern AI Agents are moving from short-lived interactions toward long-running autonomous workflows.
-
-The main challenge is no longer only model capability, but also:
-
-- How agents manage state
-- How agents execute actions reliably
-- How agents recover from failures
-- How agents observe and update their environment
-- How developers build trustworthy agent systems
-
-
-This project aims to build a modular Agent Runtime from first principles, where each component can be understood, tested, and extended independently.
-
-
-## Project Structure
-
-
-### docs
-
-Contains usage guides for the main subsystems (harness manifest & lineage, user-facing events & CLI renderer, web UI, storage layout).
-
-It explains the "why" behind the Agent Runtime design, including core concepts, implementation decisions, and engineering trade-offs.
-
-### src
-
-Contains the core modular implementation of the Agent Runtime.
-
-Each component is designed as an independent and reusable module: agent loop (`agent/`), tools (`tools/`), harness genome and manifests (`harness/`), tracing (`trace.py`), user-facing events (`events.py`), channels (`channels/`), executors (`execution/`), LLM providers (`providers/`), skills (`skills.py`), storage layout (`storage.py`), and benchmark integration (`integrations/`, `evaluation.py`).
-
-### webui
-
-Contains the browser front end: a FastAPI server, the session store, and the static client. It is a channel like the CLI — it consumes the same user-facing agent events and renders them in a browser. See `docs/webui.md`.
-
-### harnesses
-
-Contains declarative agent configuration files (YAML) used to define and run
-agent setups without changing code. Each harness describes the prompt, enabled
-tools, control limits (e.g. `max_iterations`), context strategy, recovery
-behavior, and verification settings. Harnesses can extend others via `parent`,
-making it easy to iterate on variants (e.g. `baseline-v0`, `meta-v3`) for
-experiments and evaluations.
-
-### evaluation
-
-Contains benchmark task definitions and the records produced by running the
-agent harness against them. `terminal_bench` and `swe_bench` hold the two
-benchmark setups (each with its own readme), `records` stores timestamped JSON
-result files for each evaluation run, and `analysis` holds the written
-per-run comparisons — useful for comparing agent configurations over time.
-
-### scripts
-
-Helper scripts around the runtime: benchmark runner with Docker image GC
-(`run_with_image_gc.py`), standalone LLM diagnostics, a deterministic diff
-harness for refactors, and log/trace stats analysis.
-
-### skills
-
-Named markdown skill bundles injected into the system prompt via the
-harness's `skills` gene (e.g. `coder`).
-
-
-### jobs
-
-Benchmark outputs: one directory per Harbor run (`result.json`, per-task
-trials, and the agent's full `agent-runtime.jsonl` trace).
-
-### tests
-
-Contains unit tests and integration tests to verify the correctness and reliability of the runtime components.
-
+`RunTrace` is the compact internal stream for debugging and benchmark analysis. `EventEmitter` is the channel-facing stream that carries live text, tool cards, and thinking blocks. Channels know nothing about the loop; the loop knows nothing about HTTP or terminals.
 
 ## Quick Start
 
@@ -96,72 +35,150 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv sync
-```
-
-Copy the environment variable template and fill in your configuration:
-
-```bash
 cp .env.example .env
 ```
 
-Then run:
+Configure an OpenAI-compatible provider in `.env`:
+
+```dotenv
+LLM_API_KEY=your-api-key
+LLM_BASE_URL=https://api.example.com/v1
+MODEL_ID=your-model
+```
+
+Run one prompt, or omit it for interactive mode:
 
 ```bash
 uv run python run_agent.py "List the files in the current directory"
+uv run python run_agent.py --harness tb-v4 "Fix the failing test"
+uv run python run_agent.py --trace workspace/traces/demo.jsonl "Inspect the repo"
 ```
 
-`run_agent.py` is interactive when no prompt is given. Use `--harness` to run
-a manifest from `harnesses/` (file path or id) and `--trace PATH` to append the
-run's events as JSONL. Without `--harness` the run uses the default harness
-`common-v0`. If another project's virtual environment is active, use
-`uv run --active` or activate this project's `.venv` first — the
-`VIRTUAL_ENV` warning comes from uv, not the agent runtime.
+Without `--harness`, the runtime uses `AGENT_RUNTIME_HARNESS`, then `common-v0`.
 
-Harbor lives in the `eval` dependency group, which plain `uv sync` does not
-install (a sync without it would remove Harbor from `.venv`). Install it with:
+### Web UI
 
 ```bash
-uv sync --group eval
-```
-
-Then run a benchmark through `uv run` so Harbor shares this project's `.venv`
-with `agent_runtime`:
-
-```bash
-uv run harbor run \
-  -d terminal-bench/terminal-bench-2 \
-  --agent agent_runtime.integrations.harbor:HarborAgent \
-  -l 1 \
-  --debug
-```
-
-`uv run` puts the project's `.venv` on `sys.path` (where `agent_runtime` is
-installed editable), so no `PYTHONPATH` prefix is needed. Full benchmark
-workflows (single-task smoke runs, image GC, job outputs) are documented in
-`evaluation/terminal_bench/readme.md` and `evaluation/swe_bench/readme.md`.
-
-
-## Web UI
-
-The agent can also be driven from a browser. The web UI is a channel: it
-consumes the same user-facing events as the CLI and renders them as a
-conversation with streaming text, thinking blocks, and tool cards.
-
-```bash
-uv sync
 uv run webui --port 8000
 ```
 
-Then open <http://127.0.0.1:8000>. Conversations are grouped in the sidebar
-and persisted under `workspace/sessions/`. The design and the HTTP API are
-documented in `docs/webui.md`.
+Open <http://127.0.0.1:8000>. Sessions and traces live under `workspace/`. The UI can run shell commands, so set credentials before exposing it:
 
+```dotenv
+AGENT_RUNTIME_WEBUI_AUTH_USER=admin
+AGENT_RUNTIME_WEBUI_AUTH_PASSWORD=<long random string>
+```
 
+Basic auth is not encryption — keep it on localhost, use an SSH tunnel, or terminate TLS in a reverse proxy. `run.sh` wraps local development (`start`, `status`, `logs`, `restart`, `stop`).
 
-## RunTrace
+## Project Layout
 
-The agent loop emits a provider-independent event stream for each run. Keep it
-in memory for tests, or append it as JSONL:
+| Path | Contents |
+|---|---|
+| `src/agent_runtime/agent/` | Turn orchestration, tool loop, context, observations, verification |
+| `src/agent_runtime/tools/` | Shell, file, search, patch, code, and symbol tools |
+| `src/agent_runtime/harness/` | Genome schema, YAML loader, lineage CLI |
+| `src/agent_runtime/execution/` | Local/Harbor executors, workspaces, command guard |
+| `src/agent_runtime/` | Events, tracing, memory, skills, storage, channels |
+| `webui/` | FastAPI server, session store, static client |
+| `harnesses/` | Versioned agent manifests |
+| `evaluation/` | Benchmark tasks, records, analyses |
+| `scripts/` | Harbor runner with Docker image GC |
+| `docs/` | Subsystem design and usage guides |
+
+## Harnesses
+
+Seven genes define a run: `prompt`, `tools`, `control`, `context`, `recovery`, `verification`, and `skills`. Lineage lives beside them as `id`, `parent`, `mutation`, and `reason`. `genes_hash` covers genes only, so editing `reason` changes nothing behaviorally. Every trace starts with a harness header, keeping each run attributable.
+
+```bash
+uv run python -m agent_runtime.harness tree      # family tree + warnings
+uv run python -m agent_runtime.harness derive    # create a child
+uv run python -m agent_runtime.harness record    # archive a benchmark run
+uv run python -m agent_runtime.harness annotate  # tag a failure mode
+uv run python -m agent_runtime.harness report    # scores and deltas
+```
+
+Example derivation:
+
+```bash
+uv run python -m agent_runtime.harness derive code-v17 \
+  --from code-v16 \
+  --mutation "raise max_iterations for long tasks" \
+  --reason "smoke runs hit the iteration cap" \
+  --set control.max_iterations=160
+```
+
+Never edit an existing harness in place; derive a child so changes stay attributable. See [`docs/harness-manifest-and-lineage.md`](docs/harness-manifest-and-lineage.md).
+
+## Tools
+
+`tools.enabled` selects what the model sees; `read_output` is always available.
+
+| Tool | Purpose |
+|---|---|
+| `run_command` | One shell command; non-zero exits are normal results |
+| `read_file` / `write_file` | Paged reading; full-file creation or rewrite |
+| `edit_file` / `apply_patch` | One unique match, or atomic multi-block edits |
+| `list_dir` / `read_output` | List directories; page spilled observations |
+| `grep_search` / `find_files` | Regex content search; wildcard discovery |
+| `find_symbol` / `find_references` | Tree-sitter Python symbol lookup and usages |
+| `execute_code` | Run a complete Python, Bash, R, or Node script |
+| `submit_result` | Structured finish signal, validated under verification harnesses |
+
+Scripts are saved under `.scripts/`; long observations spill to `.outputs/`.
+
+## Context, Memory, Skills
+
+Context strategies are `full_history`, `compact_observations` (deterministic folding over budget), and `llm_summary` (structured LLM snapshot plus a verbatim recent tail). Set `AGENT_RUNTIME_MEMORY=1` to inject a `workspace/memory/` listing; the agent maintains it with file tools. A harness declaring `skills: [coder]` loads `skills/coder/SKILL.md` into the prompt.
+
+## Configuration
+
+| Variable | Default | Effect |
+|---|---|---|
+| `LLM_API_KEY` / `LLM_BASE_URL` / `MODEL_ID` | — | provider connection |
+| `AGENT_RUNTIME_HARNESS` | `common-v0` | default harness |
+| `AGENT_RUNTIME_HOME` | `<repo>/workspace` | sessions, traces, runtime state |
+| `AGENT_RUNTIME_WORKSPACE` | cwd | agent sandbox for file tools and scripts |
+| `AGENT_RUNTIME_STREAM` | `1` | set `0` to disable streaming |
+| `AGENT_RUNTIME_REASONING_ECHO` | `auto` | `auto`, `always`, or `never` |
+| `AGENT_RUNTIME_COMMAND_GUARD` | `blocklist` | `off`, `blocklist`, or `allowlist` |
+| `AGENT_RUNTIME_MEMORY` | off | set `1` for persistent memory |
+| `AGENT_RUNTIME_WEBUI_HOST` / `PORT` | `127.0.0.1` / `8000` | Web UI bind address |
+
+See [`.env.example`](.env.example) for all knobs. Keep real keys out of Git.
+
+## Evaluation
+
+```bash
+uv sync --group eval
+
+uv run harbor run \
+  -d terminal-bench/terminal-bench-2 \
+  --agent agent_runtime.integrations.harbor:HarborAgent \
+  -l 1 --debug
+```
+
+For longer runs, use the image-GC wrapper:
+
+```bash
+uv run python scripts/run_with_image_gc.py \
+  --dataset terminal-bench/terminal-bench-2-1 \
+  --harness tb-v4 --job-name tb2-1-tb-v4 -n 4 --timeout-multiplier 3
+```
+
+Then archive and compare:
+
+```bash
+uv run python -m agent_runtime.harness record jobs/<job-name> \
+  --model your-model --notes "what changed"
+uv run python -m agent_runtime.harness report
+```
+
+Details: [`evaluation/terminal_bench/readme.md`](evaluation/terminal_bench/readme.md) and [`evaluation/swe_bench/readme.md`](evaluation/swe_bench/readme.md).
+
+## Observability and Tests
+
+`RunTrace` records spans (`agent`, `llm`, `tool`) and policy events (context, retries, verification, budgets, guards, skills). Each record carries `run_id`, `event_id`, `event_type`, `timestamp`, `iteration`, and `data`; tool arguments and results are intentionally not stored. Traces default to `workspace/traces/`.
 
 ```python
 from agent_runtime.agent import RunTrace, run_turn
@@ -170,127 +187,18 @@ trace = RunTrace(run_id="run-001", output_path="workspace/traces/run-001.jsonl")
 answer = await run_turn("What's the weather in Singapore?", llm, tools, trace=trace)
 ```
 
-When a harness is attached, the first JSONL record is a `record_type: harness`
-header (harness id + `genes_hash`), so a trace stays attributable to the
-configuration that produced it. Every event record then includes `run_id`,
-`event_id`, `event_type`, `timestamp`, `iteration`, and `data`.
-
-The event model covers three families:
-
-- spans: `agent.start/end/error`, `llm.start/end/error`, `tool.start/end/error`
-- LLM streaming/retry detail: `llm.chunk`, `llm.stream.finish`, `llm.retry`,
-  `llm.reasoning_budget`
-- run policy events: `context.{strategy}`, `verification.passed/failed/rerun/aborted`,
-  `budget.reminder`, `loop.guard`, `skills.loaded`
-
-Payloads are compact but not empty: counts, names, IDs, durations, statuses,
-and errors are always recorded; `llm.start` carries the request messages and
-`llm.chunk` carries streamed text, so a full JSONL trace can reproduce what the
-model saw and said. Tool arguments and tool results are not stored on tool
-spans.
-
-This is the internal/debug stream. The user-facing stream (`EventEmitter` +
-`CLIRenderer`, events like `agent.started`, `assistant.delta`, `tool.completed`)
-is a separate, channel-oriented model — see
-`docs/user-facing-events-and-cli-renderer.md`.
-
-Use `trace.span(name, ...)` to record an operation with explicit start, error,
-and end events. The end and error events include `duration_ms`; result metadata
-can be added through the yielded metadata dictionary.
-
-## Environment Variables
-
-The project uses an OpenAI-compatible Chat Completions API:
-
-```dotenv
-LLM_API_KEY=your-api-key
-LLM_BASE_URL=https://api.example.com/v1
-MODEL_ID=your-model
-
+```bash
+uv run pytest -q
+uv run pytest tests/agent -q   # one area while iterating
 ```
 
-Supports OpenAI as well as model providers offering compatible interfaces.
-Optional knobs (temperature, workspace root, output caps, command guard) are
-documented in `.env.example`. The two most relevant to running:
+## Docs
 
-- `AGENT_RUNTIME_HARNESS` — harness id to run when `--harness` is omitted
-  (also used by the Harbor adapter and `scripts/run_with_image_gc.py`);
-  unset means the default harness `common-v0`
-- `AGENT_RUNTIME_STREAM` — set to `0` to disable streaming LLM consumption
-- `AGENT_RUNTIME_REASONING_ECHO` — how the model's `reasoning_content` is
-  replayed on history turns: `auto` (default; echo for thinking-mode families
-  like deepseek/glm/kimi/mimo/ling matched via `MODEL_ID`/`LLM_BASE_URL`, strip
-  for other endpoints), `always` (replay for every provider), `never` (strip
-  before every request — for strict providers that reject extra message fields)
+[`harness-manifest-and-lineage.md`](docs/harness-manifest-and-lineage.md) · [`user-facing-events-and-cli-renderer.md`](docs/user-facing-events-and-cli-renderer.md) · [`webui.md`](docs/webui.md) · [`storage.md`](docs/storage.md) · [`agent-runtime-architecture-review.md`](docs/agent-runtime-architecture-review.md)
 
-Keep your actual API keys strictly in your local `.env` file and do not commit them to Git.
+## Contributing
 
-## Learning Roadmap
-
-Implemented so far:
-
-* Message history and context management (`full_history`, `compact_observations`, `llm_summary`)
-* Tool calling, parameter validation, and a command guard
-* Error handling, retries, and backoff policies
-* Streaming output
-* Harness manifests with lineage (`derive`, `tree`, `record`, `report`)
-* Memory, session summaries, and skill injection
-* Observability, evaluation, and debugging (RunTrace, user-facing events, Harbor benchmarks)
-
-
-## Project Philosophy
-
-This project follows a simple principle:
-
-> Understand agents by rebuilding the fundamental components from scratch.
-
-By decomposing complex agent systems into independent modules, developers can:
-
-- Learn how modern agents work internally
-- Experiment with different architectures
-- Reuse components like building blocks
-- Build customized agent systems
-
-
-## Who Is This For?
-
-- Engineers learning AI Agent architecture
-- Developers building custom agent systems
-- Researchers exploring agent runtime design
-- Anyone interested in reliable autonomous AI systems
-
-## AGENTS
-
-This repository is maintained by both humans and AI coding agents.
-
-All coding agents Should follow below rules and principles.
-
-### 1. Rules
-
-must comply with:
-
-- do not modify exist harnesses yaml, always derive new version if need.
-
-### 2. Engineering Principles
-
-- Simplicity: prefer the simplest and safe solution that meets the requirements.
-- Consistency: follow existing project patterns and conventions.
-- Maintainability: make code easy to understand and extend.
-- Reliability: handle expected failures and edge cases explicitly.
-
-### 3. Tool Feedback Principle
-
-Tool error messages state only verified facts, never guess intent.
-
-- Say what happened (`cannot read file 'x': ...`, `old_text is empty`,
-  `edit 2 matches 0 locations`), not what the model wanted
-  (maybe it meant to create a file, maybe it just typo'd the path —
-  we cannot know).
-- Do not prescribe the next tool (`use write_file ...`, `verify with
-  find_files`, `use edit_file instead`). Routing decisions belong to
-  the model and the harness prompt, not to error text.
-- The same applies to success-adjacent hints: describe the outcome,
-  let the caller decide what to do next.
+This repository is maintained by humans and AI coding agents. Coding rules and principles live in [`agent.md`](agent.md).
 
 ## License
 

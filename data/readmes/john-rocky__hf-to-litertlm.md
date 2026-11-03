@@ -1,7 +1,7 @@
 # hf-to-litertlm
 
 Convert open-weight Hugging Face LLMs and VLMs into `.litertlm` bundles for Google's LiteRT-LM
-runtime (Android, iOS, macOS, Windows, Linux): 100 published conversions below, each with
+runtime (Android, iOS, macOS, Windows, Linux): 101 published conversions below, each with
 measured speeds and a one-command reproduction.
 
 LiteRT-LM is Google's recommended replacement for the MediaPipe LLM Inference API
@@ -143,6 +143,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [Ornith-1.5-9B](https://huggingface.co/litert-community/Ornith-1.5-9B) | 8.95B | agentic coding | — | M4 Max GPU 45.6 | [recipe](REPRODUCE.md#2026-10-16--ornith-15-9b-the-same-9b-hybrid-recipe-plus-one-step-that-puts-the-model-repos-tokenizerjson-in-the-bundle) |
 | [Qwen3.5-9B](https://huggingface.co/litert-community/Qwen3.5-9B) | 8.95B | chat | — | M4 Max GPU 46.1 | [recipe](REPRODUCE.md#2026-10-16--qwen35-9b-the-9b-hybrid-recipe-the-repos-tokenizerjson-in-the-tokenizer-section-the-qwen35-4b-thinking-switch-in-the-metadata) |
 | [Qwen3.8-27B](https://huggingface.co/litert-community/Qwen3.8-27B) | 26.9B | chat | — | M4 Max GPU 18.2 | [recipe](REPRODUCE.md#2026-10-22--qwen38-27b-the-9b-hybrid-recipe-at-27b-exported-from-an-f32-copy-of-the-checkpoint-and-quantized-from-the-float-tflite-without-a-float-litertlm) |
+| [Qwen3-30B-A3B](https://huggingface.co/litert-community/Qwen3-30B-A3B) | 30.5B | chat, thinking (LiteRT-LM built from source) | — | M4 Max GPU 54.8 | [recipe](REPRODUCE.md#qwen3-30b-a3b--a-48-layer-moe-decoder-written-with-the-litert-tensor-api-each-layers-128-silu-experts-in-one-moe-custom-op-with-int4-blockwise-weights-int8-attention-and-lm_head-a-4096--or-2048-token-cache-for-a-litert-lm-built-with-two-open-litert-pull-requests-2026-11-03) |
 | [Falcon-H1-Tiny-R-0.6B](https://huggingface.co/litert-community/Falcon-H1-Tiny-R-0.6B) | 0.62B | reasoning | iPhone 17 Pro CPU 29.4 | M4 Max GPU 97.8 | [recipe](REPRODUCE.md#2026-09-01--falcon-h1-tiny-r-06b-the-familys-first-reasoning-ship-and-the-size-where-two-family-assumptions-break) |
 | [LFM2.5-1.2B-Thinking](https://huggingface.co/litert-community/LFM2.5-1.2B-Thinking) | 1.2B | reasoning | iPhone 17 Pro GPU 69.7 | M4 Max GPU 317.9 | [recipe](REPRODUCE.md#lfm25-family-hybrid-shortconv--attention) |
 | [Spark-X2.5-1.7B](https://huggingface.co/litert-community/Spark-X2.5-1.7B) | 1.71B | reasoning | Galaxy S26 GPU 17.4–17.8 | M4 Max GPU 103.6 | [recipe](REPRODUCE.md#spark-x25-17b--4b-sparkllm-team-thinking--a-remote-code-architecture-exported-by-patching-the-vendor-file-not-re-implementing-it) |
@@ -305,6 +306,47 @@ script ends with a tokenizer-parity gate (`scripts/gate_specials.py`: every adde
 Latin-1, emoji — the engine's encode against the upstream `tokenizer.json`). The 2026-08 failure
 on a format-exact derivative, first blamed on the runtime, was the bundle's own SentencePiece
 section; the gate is what catches it, and REPRODUCE.md carries the correction.
+
+## Speech recognition models
+
+A standalone speech recognition checkpoint converts with the same command. Today that is transformers'
+`ParakeetForTDT` (model_type `parakeet_tdt`): nvidia/parakeet-tdt-0.6b-v3 and finetunes saved with
+transformers. The model_type picks the route; `--task asr` names it.
+
+```bash
+uvx hf-to-litertlm nvidia/parakeet-tdt-0.6b-v3 --smoke               # the package from 0.1.2 on
+uv run python scripts/convert.py nvidia/parakeet-tdt-0.6b-v3 --smoke  # the same from a clone, today
+# -> out/parakeet-tdt-0.6b-v3/parakeet-tdt-0.6b-v3_int8.litertlm (614 MB) + .lock.json + convert_report.json
+```
+
+The file has the form of litert-torch [PR #1426](https://github.com/google-ai-edge/litert-torch/pull/1426):
+a Speech2TextMetadata section, the repo's own `tokenizer.json` and one `.tflite` with the `encode` /
+`decode` / `decode_1` signatures of litert-community's
+[parakeet-tdt-0.6b-v3](https://huggingface.co/litert-community/parakeet-tdt-0.6b-v3) file. MediaPipe's
+`AudioTranscriber` runs it (`pip install mediapipe==1.2.0 soundfile`), and LiteRT-LM's C++ `OmniEngine`
+reads the same sections; the `litert-lm` 0.19.0 Python package and CLI have no speech-to-text API.
+
+```python
+from mediapipe.tasks.python.audio import audio_transcriber
+from mediapipe.tasks.python.core import base_options
+import soundfile as sf
+
+audio, rate = sf.read("speech.wav", dtype="float32")
+if audio.ndim > 1:
+    audio = audio.mean(axis=1)  # the task takes mono samples
+options = audio_transcriber.AudioTranscriberOptions(
+    base_options=base_options.BaseOptions(model_asset_path="out/parakeet-tdt-0.6b-v3/parakeet-tdt-0.6b-v3_int8.litertlm"),
+    sample_rate_hz=rate)
+with audio_transcriber.AudioTranscriber.create_from_options(options) as transcriber:
+    print(transcriber.transcribe(audio, end_of_stream=True).text)
+```
+
+The gate transcribes LibriSpeech clips through that task on the CPU: `--smoke` one clip, by default 73
+clips with a word error rate of at most 0.10 (on a Mac, litert-community's own file scores 0.0609 on them
+and this route's file 0.0626). The export needs no NeMo. CTC, RNN-T, Whisper, Moonshine and the streaming
+Nemotron models are refused with the reason. The design, the field-by-field match with PR #1426 and the
+measurements: [docs/asr-route.md](docs/asr-route.md). `verify <lock>` rebuilds an ASR file to the same bytes
+like any other.
 
 ## Reproduce a published model
 

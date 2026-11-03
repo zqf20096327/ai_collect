@@ -903,7 +903,7 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/digimezzo/dopamine) [Dopamine](https://github.com/digimezzo/dopamine) (Windows, Linux and Mac)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/GStreamer/gstreamer) [GStreamer](https://github.com/GStreamer/gstreamer) GStreamer open-source multimedia framework
 - [Winamp](https://winamp.com) (Android, iOS)
-- [Qmmp](https://qmmp.yloftware.com) (Windows) 开源的音乐播放器Qt-based Multimedia Player
+- [Qmmp](https://qmmp.yloftware.com) (Windows) 开源的音乐播放器，Qt-based Multimedia Player，支持winamp的皮肤
 - ![GitHub Repo stars](https://img.shields.io/github/stars/Greedysky/TTKMusicPlayer) [TTKMusicPlayer](https://github.com/Greedysky/TTKMusicPlayer) (Windows, Linux) ![Last Commit](https://img.shields.io/github/release-date/Greedysky/TTKMusicPlayer)
 - [EverPlay Music](https://everplay.mobi) (Android)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/any-listen/any-listen) [any-listen](https://github.com/any-listen/any-listen) 一个跨平台的私人音乐播放服务
@@ -1282,4 +1282,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Linux) 使用Rust和Flutter构建
 - ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industries/zed) [Zed](https://github.com/zed-industries/zed) (Windows, macOS, Linux) code editor
 - ![GitHub Repo stars](https://img.shields.io/github/stars/marktext/marktext) [Marktext](https://github.com/marktext/marktext) 搜索效率太慢
-- ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, Android) E2EE端
+- ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, A

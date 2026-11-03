@@ -259,7 +259,7 @@ MCP servers. With no client detected, it prints the snippet for manual paste.
 
 The intelligence layer (WAF signatures, tech/CVE/port correlations, fuzzer
 data, vuln ontology, exploit payloads, nuclei detection templates) is sourced
-from airecon (MIT), PayloadsAllTheThings (MIT), and nuclei-templates (MIT) —
+from MIT-licensed public datasets, PayloadsAllTheThings (MIT), and nuclei-templates (MIT) —
 loaded at runtime and wired into the tool surface above. The attack-vector
 taxonomy (`intelligence/attack_vectors.json`) is first-party.
 

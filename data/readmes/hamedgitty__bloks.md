@@ -143,8 +143,9 @@ join password, checked only on your computer, can sit behind it too.
 
 What they get is decided by you:
 
-- **Roles.** You are the owner. Admins invite and manage people; members
-  use the agents, rooms and memory.
+- **Roles.** You are the owner. Admins invite and manage people and
+  look after every agent's settings with you; members use the agents,
+  rooms and memory.
 - **Team agents.** Each agent has one shared team conversation, and you
   choose who is in it: everyone, only some people, or everyone except a
   few. Rooms are chosen the same way, one by one.
@@ -160,7 +161,12 @@ What they get is decided by you:
   their own keys, under Your connections in their app. Their private
   conversations and solo agents use them, so "pull my email" means the
   inbox of whoever asked; a room, a team conversation, you and everyone
-  else never do. Your own apps and keys stay yours the same way.
+  else never do. Your own apps and keys stay yours the same way, and so
+  does the rest of you: your profile, your shared memory, and what the
+  engines on your computer are signed in to as you (the Gmail and
+  Calendar of your claude.ai sign-in, the tool servers in your own Claude
+  Code and Codex settings) never reach a member's turn or a member's own
+  agent, so their agents never take your accounts for theirs.
 - **A welcome of their own.** Someone who joins is shown, once, who they
   are signed in as, what is shared and what is theirs, and where to tell
   agents about themselves, connect their apps or make their own agent.
@@ -170,17 +176,21 @@ What they get is decided by you:
   can ask an agent to message someone ("message Sam about the draft"),
   and it writes in Sam's private conversation, marked as sent for you.
 - **Solo agents.** Members can make agents of their own, private to
-  them, on the engines you allow.
+  them, on the engines you allow, and change them from the agent's menu:
+  name, instructions, engine and model, how it asks, its own browser.
+  Letting one act without asking, or giving it a computer, stays yours
+  and your admins', and the setting says so where it is off.
 - **Limits per person.** What each member may spend on your API keys a
   month, their share of Bloks AI, and how many solo agents they may
   make. A member at their limit is stopped; nobody else notices.
 - **Their own agents, never read.** You and your admins see the agents
-  members made for themselves, by name and maker, and can delete one:
-  it goes with its conversations, unread, and the record says who did
-  it.
+  members made for themselves, by name and maker, and can open their
+  settings or delete one: it goes with its conversations, unread, and
+  the record says who did it.
 
-Every agent they talk to runs on your computer, with your engines, and
-they never reach your settings, your keys or your own conversations.
+Every agent they talk to runs on your computer, with your engines.
+Admins change agents' settings as you do; nobody you let in reaches your
+keys, your own settings or your own conversations.
 Whoever runs the computer can read what is kept on it, and the app says
 so to everyone who joins.
 Conversations with more than two people are drawn as bubbles, with faces
@@ -254,6 +264,12 @@ Naming someone with @ always wins, and the same choice is said in a room
 carried into Slack, Discord or WhatsApp. It uses an engine your agents
 already run on unless you pick one in Settings, Behaviour.
 
+What you say while a room is mid-round waits for the round. **Send now**
+puts it in sooner without stopping anyone: into the speaking member's
+turn when its engine takes words mid-turn, otherwise as that turn ends,
+before the next member speaks. Whoever has not heard it yet answers it
+after. Stop, Esc or Cmd+Enter stop the room instead.
+
 A lead that needs more people can propose a team: who it wants, what each
 owns, which skills to give them. You approve or you don't. Agents can
 message each other, hire, open rooms, start a new conversation for a
@@ -269,22 +285,29 @@ or bring to you, instead of letting it fail quietly or in a storm.
 
 ### A browser you can watch
 
-The desktop app has a browser of its own, docked beside the chat, with
-tabs, an address bar and a downloads shelf. Agents drive it with
+Bloks has a browser of its own, docked beside the chat, with tabs, an
+address bar and a downloads shelf. In the desktop app it is the app's;
+on a server of your own it runs on the server, headless, and the panel
+shows it live wherever you are, in the app, the browser or your phone,
+with your clicks and keys going back to it. Agents drive it with
 `bloks browser` (and other AI apps through the MCP server): open a page,
 read it, list what is on it, click, type, choose, scroll, wait and take a
 picture. You watch it happen, each tab showing which agent drives it,
 and **Take over** whenever you like; the agent's next step waits until
-you **Give back**. Each workspace browses in a session of its own, so
-its sign-ins stay its own and never the app's.
+you **Give back**. Sign in yourself and hand an agent the page you are
+on; tabs, pages and sign-ins stay put through every handoff. Each
+workspace browses in a session of its own, so its sign-ins stay its own
+and never the app's.
 
 It is careful in the same way the rest of Bloks is. In Ask first, a site
 not on your list asks on a card the first time an agent goes there;
 blocked sites are never opened; a password, a card number or a file to
 upload always asks you, whatever the mode. What a page says reaches an
-agent framed as untrusted data, never as instructions. On your phone the
-conversation says the agent is browsing in the desktop app, with a small
-live picture of the page.
+agent framed as untrusted data, never as instructions. When the desktop
+app runs the workspace, your phone's conversation says the agent is
+browsing there, with a small live picture of the page. On a server, the
+browser needs Chrome or Chromium installed there
+([SELF_HOSTING.md](docs/SELF_HOSTING.md#the-bloks-browser-on-your-server)).
 
 ### Ready teams and skills
 
@@ -479,7 +502,10 @@ over.
   an address of your own, too, signed in with Authentik, Keycloak, Google
   or any OpenID Connect provider: you as the owner, your family or team
   from an invite link or straight from a group, and the Members page
-  there to manage them.
+  there to manage them. Pair your phone or the desktop app from Settings,
+  Phone and devices, there too: the code, QR and link `bloks-server pair`
+  prints, with no terminal on the server. One server is one workspace;
+  Settings, Workspace says how to run a second beside it.
   Or let Bloks run one for you: managed hosting is a private machine
   of your own that stays on, and moves your agents over when you sign up
   at [bloks.dev/pricing](https://bloks.dev/pricing). On Windows, the
@@ -619,6 +645,18 @@ Bloks's own engine; Claude Code always uses your own Claude plan or key.
 A custom endpoint is chat only until you turn on **This model can use
 tools** for it in Settings. Turn it on only when the model behind it
 supports tool calls; if the host refuses them, the turn stops and says so.
+
+An agent's own browser and its computer (Cloud box, Local VM, or this
+Mac's screen) reach it as tools on Claude Code, on Codex, and on the ACP
+agents that take tool servers: Devin, OpenCode, Gemini CLI, Cursor, Grok
+CLI and Command Code. An agent working in a container or over SSH still
+has both: they run on this computer and it reaches them through Bloks.
+The API models reach a cloud box through Bloks, and nothing else. Pi,
+Cline and Antigravity get neither yet. On those, the agent's settings
+say so beside **Its own browser** and **Computer**, the agent is told it
+has no browser or screen rather than promised one, and its turns never
+hold the Local VM from agents that could use it. On a Linux server with
+no display, the agent's browser runs headless.
 
 Give an agent a **backup engine** and a turn that hits a usage limit, a
 rate limit or an outage is picked up by the backup, with the conversation

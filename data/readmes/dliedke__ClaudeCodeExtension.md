@@ -198,6 +198,25 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 303.0
+- *Switch Account* in Claude Usage now fully resets the embedded browser before the login screen, so "Continue with Google" is no longer greyed out (you sign in to Google again there).
+
+### Version 302.0
+- *Switch Account* in Claude Usage no longer leaves "Continue with Google" greyed out in an installation that had used the old account switcher; your Google sign-in is kept.
+
+### Version 301.0
+- *Switch Account* in Claude Usage now simply logs out of claude.ai, so you can sign in with any account, including with "Continue with Google".
+- The usage popup in the chat composer now shows the account Claude Code itself is signed in with.
+
+### Version 300.0
+- Claude Usage no longer reloads itself every few seconds, and *Switch Account* works again: it opens the claude.ai account menu and returns to the usage view once you switch or sign in again.
+- The Claude Usage view now fills the whole tab and scrolls to the end of the page.
+- The usage popup in the chat composer shows the e-mail of the claude.ai account the limits belong to.
+
+### Version 299.0
+- Pasting a screenshot from a clipboard that carries no transparency information (for example a shared clipboard from a virtual machine) no longer attaches a blank, fully transparent image.
+- Thanks to [@Morzilla](https://github.com/Morzilla) for reporting (#260).
+
 ### Version 298.0
 - Claude Code in the embedded terminal now starts with a dark or light theme that suits the terminal background when its own theme would leave text unreadable, for that launch only; on by default, turn it off with *Match Claude Code's theme to the terminal background* in *⚙ → Settings → Appearance*.
 - Thanks to [@rbuss93](https://github.com/rbuss93) for this release (#259).
@@ -1653,60 +1672,4 @@ Native mode now in beta phase
 - Prompt history with Ctrl+Up / Ctrl+Down.
 
 ### Version 2.5
-- Updated install instructions.
-
-### Version 2.4
-- Simplified window titles for Claude Code variants.
-
-### Version 2.3
-- Fixed WSL agent detection right after system boot.
-
-### Version 2.2
-- **Claude Code (WSL)** support.
-- Unified exit logic across providers.
-
-### Version 2.1
-- Codex now runs in WSL.
-- Improved Codex exit handling.
-
-### Version 2.0
-- **Update Agent** button added with per-provider update commands.
-
-### Version 1.8
-- Fixed terminal not opening when VS restarts with a solution loaded.
-
-### Version 1.7
-- Cleaner single-border UI.
-- Terminal initializes on solution open.
-- Improved solution switching.
-
-### Version 1.6
-- **Cursor Agent (WSL)** support with automatic detection and installation guide.
-
-### Version 1.5
-- Internal code reorganization (no functional changes).
-
-### Version 1.4
-- Fixed extension re-initialization when switching between windows.
-
-### Version 1.3
-- Automatic temp directory cleanup on startup.
-- Simpler image naming.
-
-### Version 1.2
-- **OpenAI Codex** as a second AI assistant option.
-
-### Version 1.1
-- Theme support (follows VS light / dark).
-- Helpful install instructions if Claude Code is not found.
-- Fixed image pasting.
-
-### Version 1.0
-- Initial release: embedded AI assistant terminal in Visual Studio.
-
-## License & Usage
-
-This extension is provided free of charge under the MIT License.
-
-### Usage Rights
-- *
+- Updated install instruction

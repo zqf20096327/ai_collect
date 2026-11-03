@@ -30,9 +30,9 @@ python main_debug.py
 ```
 
 直接依赖统一维护在 `pyproject.toml`。`requirements.txt` 是 Qt profile 的锁定
-文件，`requirements-web.txt` 是 Web profile 的锁定文件；请勿直接编辑这些
-生成文件。Web profile 请将上面的依赖和启动命令分别替换为
-`requirements-web.txt` 和 `python web_main_debug.py`。官方 PyPI 的 pip 索引地址
+文件，使用 ok-script `3.0.0b3`，请勿直接编辑生成文件。
+ok-script 3 已移除 Web 界面；`requirements-web.txt`、`web` extra 和 Web 启动器
+保留为桌面应用的兼容入口。官方 PyPI 的 pip 索引地址
 必须包含 `/simple/`；`https://pypi.org/` 不是有效的包索引地址。
 
 详细的仓库初始化、目标配置、首个任务和 tag 打包流程请阅读[快速开始](docs/getting-started.md)。

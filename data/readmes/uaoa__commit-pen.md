@@ -2,9 +2,9 @@
 
 # Commit Pen
 
-[![Install](https://img.shields.io/visual-studio-marketplace/i/ZakhariiMelnyk.commit-pen?style=for-the-badge&logo=visualstudiocode&label=Installs)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.commit-pen)
-[![Version](https://img.shields.io/visual-studio-marketplace/v/ZakhariiMelnyk.commit-pen?style=for-the-badge&logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.commit-pen)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/ZakhariiMelnyk.commit-pen?style=for-the-badge&logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.commit-pen)
+[![Install](https://img.shields.io/visual-studio-marketplace/i/ZakhariiMelnyk.claude-git-commit?style=for-the-badge&logo=visualstudiocode&label=Installs)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.claude-git-commit)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/ZakhariiMelnyk.claude-git-commit?style=for-the-badge&logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.claude-git-commit)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/ZakhariiMelnyk.claude-git-commit?style=for-the-badge&logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=ZakhariiMelnyk.claude-git-commit)
 [![License](https://img.shields.io/github/license/uaoa/commit-pen?style=for-the-badge)](LICENSE)
 
 Commit Pen writes Git commit messages for you. It reads the diff of your repository, sends it to Claude through the Claude Code CLI you are signed in to (or through the Anthropic API, if you prefer), and puts the result into the Source Control input box. You review it, tweak it if needed, and commit.

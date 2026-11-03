@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--02-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1418-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--03-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1416-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1416 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 221 | 2026-10-30 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 109 | 2026-10-29 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 99 | 2026-10-30 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 56 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 54 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-10-29 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 220 | 2026-10-29 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 158 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 28 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 313 | 2026-10-30 | [View papers](#category-cross-cutting-other) |
+| Perception & Sensor Fusion | 222 | 2026-11-01 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 109 | 2026-11-01 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 99 | 2026-11-01 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 56 | 2026-11-01 | [View papers](#category-control-vehicle-dynamics) |
+| Mapping & Localization | 53 | 2026-10-29 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 161 | 2026-10-31 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 221 | 2026-11-01 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 158 | 2026-11-02 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 27 | 2026-10-17 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 310 | 2026-11-01 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -46,24 +46,34 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Tag | Papers | Filter |
 |:--|--:|:--|
 | Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 35 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| World Model | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Explainability | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 221 papers
+## Perception & Sensor Fusion · 222 papers
+
+<a id="paper-2611-01682"></a>
+
+### Leveraging 2D Foundation Priors for Generalized Category Discovery under Test-Time Adaptation in 3D LiDAR Segmentation ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Hanqi Chen, Chaoqi Chen, Tian Ji, Hui Huang<br>
+**Published:** 2026-11-01<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.01682) | [PDF](https://arxiv.org/pdf/2611.01682.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** In autonomous driving, 3D LiDAR semantic segmentation is expected to adapt to evolving environments and recognize previously unseen categories, making generalized category discovery under test-time...
 
 <a id="paper-2610-41834"></a>
 
@@ -107,7 +117,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-35630"></a>
 
-### Revisiting Direct Control: A Field Evaluation of Sensor Fusion Efficacy in Teleoperating Full-Scale Autonomous Vehicles via Bird's Eye View ![New](https://img.shields.io/badge/New-red)
+### Revisiting Direct Control: A Field Evaluation of Sensor Fusion Efficacy in Teleoperating Full-Scale Autonomous Vehicles via Bird's Eye View ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Stanisław Kuczma, Sławomir K. Tadeja, Michał R. Nowicki<br>
 **Published:** 2026-10-26<br>
@@ -117,7 +127,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-34976"></a>
 
-### Sparse Recovery Bird's-Eye View Model Soup for Robust Camera-Based 3D Object Detection ![New](https://img.shields.io/badge/New-red)
+### Sparse Recovery Bird's-Eye View Model Soup for Robust Camera-Based 3D Object Detection ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Jinwoo Chung, Sangho An, Hyunsung Park, Jangho Kim<br>
 **Published:** 2026-10-26<br>
@@ -262,6 +272,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Links:** [arXiv abstract](https://arxiv.org/abs/2610.25448) | [PDF](https://arxiv.org/pdf/2610.25448.pdf) | [↑ BackToTop](#browse-by-topic)
 
 **Abstract:** Multimodal perception improves autonomous-driving performance by combining complementary sensor information. However, stronger multimodal predictions do not necessarily imply stronger representations...
+
+<a id="paper-2611-00071"></a>
+
+### How Reliable Are Object Detection Models Beyond Clear Weather? A Deployment-Oriented Robustness Study for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+
+**Authors:** Munshaibur Rahman Mahin, Isha Das, Most. Sonia Islam, Mohammad Sakib Mahmood, M. F. Mridha, et al.<br>
+**Published:** 2026-10-15<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.00071) | [PDF](https://arxiv.org/pdf/2611.00071.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Autonomous driving perception systems must maintain reliable object detection under diverse environmental conditions, not only in clear daytime scenes. However, the cross-weather robustness of modern...
 
 <a id="paper-2610-21207"></a>
 
@@ -455,7 +475,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-04356"></a>
 
-### SelectOccFlow: Selective Spatiotemporal Aggregation for 3D Occupancy and Scene Flow Prediction ![Recent](https://img.shields.io/badge/Recent-orange)
+### SelectOccFlow: Selective Spatiotemporal Aggregation for 3D Occupancy and Scene Flow Prediction ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Yuhang Wang, Kai Luo, Yuanfan Zheng, Kailun Yang<br>
 **Published:** 2026-10-03<br>
@@ -1099,7 +1119,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-07577"></a>
 
-### Open-World Hierarchical Perception: Taxonomic Abstraction over Class-Agnostic Proposals for the Safe Handling of Out-of-Vocabulary Road Objects ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Open-World Hierarchical Perception: Taxonomic Abstraction over Class-Agnostic Proposals for the Safe Handling of Out-of-Vocabulary Road Objects
 
 **Authors:** Felix Schaller<br>
 **Published:** 2026-08-04<br>
@@ -1109,7 +1129,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-04130"></a>
 
-### Radar4D-VLM: Proposal-Grounded Temporal 4D Radar Reasoning Across Frozen Language Models ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Radar4D-VLM: Proposal-Grounded Temporal 4D Radar Reasoning Across Frozen Language Models
 
 **Authors:** Jiaju Han, Xuemeng Sun, Qike Zhang, Xiang Chen, Luwei Yang, et al.<br>
 **Published:** 2026-08-04<br>
@@ -1119,7 +1139,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-03490"></a>
 
-### Lightweight 3D Object Detection via Mamba-Based Knowledge Distillation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Lightweight 3D Object Detection via Mamba-Based Knowledge Distillation
 
 **Authors:** Quoc Cuong Ninh, Huy Xuan Pham, Anh Tung Nguyen, Dinh Hoan Trinh<br>
 **Published:** 2026-08-04<br>
@@ -1647,25 +1667,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Authors:** Hongli Xiao, Youjian Zhang, Yucai Bai, Chaoyue Wang, Yaohui Jin, et al.<br>
 **Published:** 2026-06-23<br>
-**Research tags:** Simulation<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.24301) | [PDF](https://arxiv.org/pdf/2606.24301.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Recovering realistic 3D vehicle models from autonomous driving scenes is crucial for synthesizing training data and building simulation environment. However, most existing vehicle generation methods...
-
-<a id="paper-2606-22971"></a>
-
-### Humanoid-OmniOcc: Stereo-Based Full-View Occupancy Dataset for Embodied AI
-
-**Authors:** Xianda Guo, Bohao Zhang, Chenwei Huang, Shiyuan Chen, Ruilin Wang, et al.<br>
-**Published:** 2026-06-22<br>
-**Research tags:** Dataset<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.22971) | [PDF](https://arxiv.org/pdf/2606.22971.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Occupancy prediction at voxel-level granularity is essential for safe robotic navigation and interaction in complex environments. Existing occupancy datasets, however, are predominantly designed for...
-
-<a id="paper-2606-22881"></a>
-
-### A Vendor-Agnostic LiDAR Data Conversion System with Multi-Signal Detection and Multi-Format Output
-
-**Authors:** Param Patel, Jay Dave, Pratyush Chakraborty<br>
-**Published:** 2026-06
+**R

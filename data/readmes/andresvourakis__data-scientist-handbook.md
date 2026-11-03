@@ -1,4 +1,4 @@
-# Data Scientist Handbook 2025
+# Data Scientist Handbook 2026
 
 **Curated Data Science resources (Free & Paid) to help data scientists learn, grow, and break into the field** 
 
@@ -38,19 +38,22 @@ Great YouTube channels with lots of free tutorials to help you learn data scienc
 - [Two Minute Papers](https://www.youtube.com/@TwoMinutePapers): Quick and engaging summaries of the latest AI research, making complex topics accessible.
 - [Sentdex](https://www.youtube.com/@sentdex): In-depth Python programming and machine learning tutorials, suitable for all skill levels.
 - [Boris Meinardus](https://www.youtube.com/@borismeinardus): Tutorials and insights on AI and machine learning with a focus on practical applications.
+- [Andres Vourakis](https://www.youtube.com/@andresvourakis): Practical tutorials on AI workflows, ML in production, and the engineering skills data scientists need to stay relevant as AI reshapes the field.
+- [Egor Howell](https://www.youtube.com/@egorhowell): Practical advice on landing data science, ML and AI jobs, from job hunting to interviews, drawn from his own experience.
 
 ### Data & Analytics
 - [Alex The Analyst](https://www.youtube.com/@AlexTheAnalyst/videos): Real-world data analytics tutorials, especially useful for learning SQL.
 - [Luke Barousse](https://www.youtube.com/@LukeBarousse): Data science projects and tutorials, focusing on practical applications and real-world use cases.
 - [Thu Vu Data Analytics](https://www.youtube.com/@Thuvu5/videos): Educational videos on data analytics, machine learning tutorials, career advice, and insights to help viewers advance in the data analytics field.
+- [Karina Data Scientist](https://www.youtube.com/@karinadatascientist): Data analytics and data science career videos, from SQL, Python data cleaning and data storytelling to building a portfolio and resume that gets you hired.
 
 ## Blogs
 - [Towards Data Science](https://towardsdatascience.com/): A Medium publication that publishes well-written, informative articles on various data science topics.
 - [freeCodeCamp.org](https://www.freecodecamp.org/news/tag/data-science/): Articles and tutorials covering a wide range of data science concepts, from basic to advanced.
+- [Data Science Collective](https://medium.com/data-science-collective): A Medium publication with advice, insights, and ideas from the Medium data science community, covering data science, machine learning, and AI.
 
 ## Newsletters
-- [Neural Pulse](https://neuralpulse.io/subscribe): A 5-minute, human-curated newsletter delivering the best in AI, ML, and data science (twice a week).
-- [To Be a Data Scientist](https://tobeadatascientist.substack.com/): A weekly newsletter exploring the journey to becoming a data scientist and providing practical insights to break into the field and stay relevant!
+- [Future Proof Data Science](https://read.futureproofds.com/): A weekly newsletter for data scientists who want to stay relevant and grow their careers in the age of AI (and beyond).
 - [Data Elixir](https://dataelixir.com/): A weekly newsletter that curates the best data science news, resources, and tutorials from around the web.
 - [Data Science Weekly](https://datascienceweekly.substack.com/): A newsletter that provides a weekly roundup of data science news, articles, and tutorials.
 
@@ -71,6 +74,7 @@ Great YouTube channels with lots of free tutorials to help you learn data scienc
 - [AI Data Scientist Handbook 2026](https://github.com/andresvourakis/ai-data-scientist-handbook): A curated list of AI-native tools, workflows, and resources to help data scientists accelerate their careers in the age of AI.
 - [Awesome Generative AI Guide](https://github.com/aishwaryanr/awesome-generative-ai-guide): A comprehensive hub for updates on generative AI research, interview materials, notebooks, and more!
 - [Free 6-Week SQL Roadmap for Data Science & Data Analytics](https://github.com/andresvourakis/free-6-week-sql-roadmap-data-science): Roadmap to guide you through mastering SQL for Data Science in just 6 weeks.
+- [Interactive AI and ML Tools for Data Scientists](https://github.com/Future-Proof-DS/interactive-ai-ml-tools): Free, interactive tools for learning MLOps, ML system design and agentic analytics, right in your browser.
 
 # 💼 Breaking into the Job Market
 
@@ -96,7 +100,8 @@ Resources to help you build a competitive Data Science portfolio
 - [1:1 Resume/Portfolio Review](https://topmate.io/andres_vourakis/826184) :heavy_dollar_sign:: Personalized feedback on your resume and portfolio to help you land your dream job. Use code `HANDBOOK20` for a discount.
 
 ## Job Market Insights
-- [The Data Scientist Job Market in 2024](https://365datascience.com/career-advice/data-scientist-job-market/): Article with insights on the data job market in 2024 based on research of 1,000 job postings.
+- [AI in Data Science Job Market Dashboard](https://futureproofds.com/job-market): Weekly-refreshed dashboard of thousands of real Data Scientist job postings, showing how AI is reshaping the role: what share of roles require AI skills, which seniority levels are most affected, and the salary premium for AI skills.
+- [ML in Production Job Market Dashboard](https://ai-in-ds.streamlit.app/ml_in_production): How often Data Scientist job postings require production skills (deploying, serving, monitoring, CI/CD) and which cloud platforms companies ask for.
 - [Data Job Market Dashboard](https://datajobmarket.streamlit.app/): Regularly updated dashboard of the data job market, providing insights into in-demand skills for Data Scientist and Data Analyst roles.
 - [Glassdoor](https://www.glassdoor.com/): Reviews, salary data, and interview experiences for companies and job roles in data science.
 
@@ -135,26 +140,24 @@ Data Scientists who share valuable insights and tutorials
 
 ### United States
 
-| Conference Name                                   | Date                | Location             | Details                                                                                                     | Cost                            | Official Website                                      |
-|---------------------------------------------------|---------------------|----------------------|-------------------------------------------------------------------------------------------------------------|---------------------------------|-------------------------------------------------------|
-| Open Data Science Conference (ODSC East)          | **May 13-15, 2025** | Boston, MA           | Various tracks including ML, NLP, MLOps, and Data Visualization. 250+ speakers.                              | Starting at $499 (virtual) / $1,299 (in-person) | [ODSC East](https://odsc.com/boston/)                |
-| Open Data Science Conference (ODSC West)          | **October 28-30, 2025** | San Francisco, CA    | Focuses on AI and data science with workshops, hands-on training, and strategic insights.                    | Starting at $499 (virtual) / $1,299 (in-person) | [ODSC West](https://odsc.com/california/)            |
-| IBM Think 2025                                    | **May 5-8, 2025**   | Boston, MA           | Focuses on AI productivity, trusted data, scalable AI architectures, and cost optimization. Features case studies from Ferrari, UFC, the US Open, and The Masters. | TBD                             | [IBM Think 2025](https://www.ibm.com/events/think/)  |
-| Data + AI Summit                                  | **June 9-12, 2025** | San Francisco, CA    | Hosted by Databricks. Includes discussions, networking, and hands-on training.                               | Free (virtual); In-person passes TBD | [Data + AI Summit](https://databricks.com/dataaisummit) |
-| Machine Learning Week                             | **June 3-7, 2025**  | Las Vegas, NV        | Covers ML use cases, including deep learning, NLP, and predictive analytics.                                | From $1,295                      | [ML Week](https://www.predictiveanalyticsworld.com/machinelearningweek/) |
-| The AI Conference                                 | **September 10-11, 2025**  | San Francisco, CA    | Organized by O’Reilly, featuring AI research, engineering, and applied machine learning.                     | TBD                             | [The AI Conference](https://aiconference.com/)       |
-| The Data Science Conference                       | **May 14-15, 2025** | Chicago, IL          | Vendor-free, sponsor-free, and recruiter-free conference for data science professionals.                     | Early registration: $1,800; Discounts available for groups and academics. | [The Data Science Conference](https://www.thedatascienceconference.com/shop) |
+| Conference Name | Date | Location | Details | Cost | Official Website |
+|---|---|---|---|---|---|
+| Open Data Science Conference (ODSC East) | **May 10-12, 2027** | Boston, MA | Various tracks including ML, NLP, MLOps, and Data Visualization. 250+ speakers. | Free (virtual); in-person from $359 | [ODSC East](https://odsc.ai/east/) |
+| The Data Science Conference | **May 27-28, 2027** | Chicago, IL | Vendor-free, sponsor-free, and recruiter-free conference for data science professionals. | Early registration: from $800 (academic/government/nonprofit); $1,200 single registration; group discounts available. | [The Data Science Conference](https://www.thedatascienceconference.com/shop) |
+| IBM Think 2027 | **June 7-10, 2027** | Boston, MA | Focuses on AI productivity, trusted data, scalable AI architectures, and cost optimization. Features case studies from Ferrari, UFC, the US Open, and The Masters. | TBD | [IBM Think 2027](https://www.ibm.com/events/think/) |
+| Data + AI Summit | **June 21-24, 2027** | San Francisco, CA | Hosted by Databricks. Includes discussions, networking, and hands-on training. | TBD (virtual option available) | [Data + AI Summit](https://databricks.com/dataaisummit) |
+| The AI Conference | **October 12-14, 2027** | San Francisco, CA | Organized by O’Reilly, featuring AI research, engineering, and applied machine learning. | TBD | [The AI Conference](https://aiconference.com/) |
+| Machine Learning Week | **TBA 2027** | TBA | Covers ML use cases, including deep learning, NLP, and predictive analytics. | TBD | [ML Week](https://machinelearningweek.com/) |
+| Open Data Science Conference (ODSC West) | **TBA 2027** | TBA | Focuses on AI and data science with workshops, hands-on training, and strategic insights. | TBD | [ODSC West](https://odsc.ai/west) |
 
 ### Europe
 
-| Conference Name                                   | Date                  | Location               | Details                                                                                                     | Cost                            | Official Website                                      |
-|---------------------------------------------------|-----------------------|------------------------|-------------------------------------------------------------------------------------------------------------|---------------------------------|-------------------------------------------------------|
-| Data Innovation Summit                            | **May 7-8, 2025**     | Stockholm, Sweden      | Covers data governance, literacy, machine learning, with speakers from major companies.                     | From €499                        | [Data Innovation Summit](https://datainnovationsummit.com/)      |
-| IASSIST Conference                                | **June 3-6, 2025**    | Bristol, UK            | Focuses on data sharing and management, data access, and repository tools. Theme: "IASSIST at 50! Bridging oceans, harbouring data & anchoring the future." | TBD                             | [IASSIST 2025](https://www.iassistdata.org/conferences/) |
-| ECML PKDD                                         | **September 15-19, 2025** | Porto, Portugal       | Premier European conference on machine learning and knowledge discovery in databases.                       | TBD                             | [ECML PKDD 2025](https://www.ecmlpkdd.org/)      |
-| NeurIPS                                           | **December 8-14, 2025** | Barcelona, Spain       | Leading AI/ML research conference. Covers deep learning, AI ethics, and large-scale models.                  | TBD                             | [NeurIPS](https://neurips.cc/)                         |
-| World Artificial Intelligence Cannes Festival     | **February 13-15, 2025** | Cannes, France       | Focuses on AI, ML, and data science. Features AI technologies and global innovators.                         | From €390                        | [WAICF](https://www.worldaicannes.com/)                |
-| DATA 2025                                         | **June 26-28, 2025**  | Athens, Greece         | International conference on data science, technology, and applications.                                     | Non-member: €625; INSTICC members: €565. | [DATA 2025](https://data.scitevents.org/RegistrationFees.aspx) |
+| Conference Name | Date | Location | Details | Cost | Official Website |
+|---|---|---|---|---|---|
+| NeurIPS 2026 (Paris satellite) | **December 9-13, 2026** | Paris, France | Leading AI/ML research conference. Covers deep learning, AI ethics, and large-scale models. | From €300 (student); €435 academic / €650 industry (conference sessions and tutorials) | [NeurIPS](https://neurips-europe.cc) |
+| Data Innovation Summit | **May 18-20, 2027** | Stockholm, Sweden | Covers data governance, literacy, machine learning, with speakers from major companies. | From €299 (online); €599 full access | [Data Innovation Summit](https://datainnovationsummit.com/) |
+| ECML PKDD | **August 30 - September 3, 2027** | Eindhoven, Netherlands | Premier European conference on machine learning and knowledge discovery in databases. | TBD | [ECML PKDD 2027](https://ecmlpkdd.org/2027/) |
+| DATA 2027 | **TBA 2027** | Rome, Italy | International conference on data science, technology, and applications. | Non-member: €640; INSTICC members: €580. | [DATA 2027](https://data.scitevents.org/RegistrationFees.aspx) |
 
 # About
 Even though there are hundreds of resources out there (too many to keep track of), I will try to limit them to a maximum of 5 per category to ensure you get the most valuable and relevant resources out there, plus, the whole point of this repository is to help you avoid getting overwhelmed by too many choices. This way you can focus less time researching and more time learning.

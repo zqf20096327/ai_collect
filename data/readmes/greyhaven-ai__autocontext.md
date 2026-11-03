@@ -23,6 +23,15 @@ autocontext is a harness for agent improvement. Give it a goal, it runs the task
 
 **Docs:** [autocontext.ai/docs](https://autocontext.ai/docs) · [quickstart](https://autocontext.ai/docs/get-started/quickstart) · [CLI reference](https://autocontext.ai/docs/cli/reference) · [changelog](https://autocontext.ai/docs/changelog)
 
+Experimental Python research: the [Qwen weight-space reproduction](examples/weight_evolution/qwen_reproduction/README.md)
+pins model/data/scorer assets, verifies the published checkpoint, and provides bounded paired inference with replayable reproduction reports.
+The [GPU acceptance workflow](examples/weight_evolution/qwen_reproduction/GPU_ACCEPTANCE.md) gates full execution; live reproduction remains pending.
+The [comparison-condition harness](examples/weight_evolution/qwen_comparison/README.md) exercises baseline, context, weight, combined and decoding conditions with offline synthetic fixtures.
+The [CPU-only editing sessions](examples/weight_evolution/qwen_sessions/README.md) create context, weight-descriptor and decoding candidates with finite durable budgets, practice-only adapter views and sealed exports into that comparison harness. Real GPU editing and benchmark practice selection remain deferred.
+The [adaptive editing fixtures](examples/weight_evolution/qwen_adaptive/README.md) add feedback-conditioned proposals, equal search caps, practice-based selection, and a separate confirmation gate before the final fixture audit.
+The [checkpoint-backed editing fixtures](examples/weight_evolution/qwen_checkpoints/README.md) apply typed edits to tiny CPU safetensors and carry independently verified input/program/output hashes through selection and confirmation. Model and GPU inference remain deferred.
+The [CPU inference study](examples/weight_evolution/cpu_inference/README.md) runs a pinned tiny classifier on verified checkpoint bytes and measures baseline, context, weight, combined, and decoding conditions. Its constructed tasks establish execution correctness; Qwen reproduction and GPU execution remain deferred.
+
 ## Install
 
 For Python CUDA/SFT installation, follow the [maintained Accelerate build guide](docs/security/accelerate-risk-assessment.md).

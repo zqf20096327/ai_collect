@@ -279,7 +279,7 @@ echo "YANTRIKDB_EMBEDDER_MODEL2VEC=minishlab/potion-multilingual-128M" >> ~/.her
 echo "YANTRIKDB_EMBEDDER_HF=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2" >> ~/.hermes/.env
 ```
 
-> **Embedder dependencies and Hermes updates.** `model2vec` is declared as a hard runtime dependency in the plugin manifest's `pip_dependencies` (and `pyproject.toml`'s `[project] dependencies`) on `main`, fixing #92 so it survives Hermes' uv-managed environment regeneration — `hermes update` will no longer silently drop it once this ships in the next release (current published release is v0.27.1; this fix is merged but unreleased). Until then, `model2vec` can still be dropped on `hermes update` and may need reinstalling. Only `sentence-transformers` (which pulls in PyTorch) and anything a custom `YANTRIKDB_EMBEDDER_CLASS` imports remain outside the manifest: if you configure `YANTRIKDB_EMBEDDER_HF`, reinstall its dependencies into the plugin's environment after a regeneration (`uv pip install --python <plugin-env>/bin/python 'yantrikdb-hermes-plugin[sentence-transformers]'` or `sentence-transformers`). If an embedder stops loading after an update, the error message names the interpreter (`sys.executable`) and `sys.path` it searched. Hermes runs plugins with `-I`, so `PYTHONPATH` and user-site installs don't help. The bundled default and `YANTRIKDB_EMBEDDER=potion-base-*` need no extra packages and are unaffected.
+> **Embedder dependencies and Hermes updates.** `model2vec` is declared as a hard runtime dependency in the plugin manifest's `pip_dependencies` (and `pyproject.toml`'s `[project] dependencies`) on `main`, fixing #92 so it survives Hermes' uv-managed environment regeneration — `hermes update` no longer silently drops it as of v0.28.0. On earlier versions, `model2vec` can still be dropped on `hermes update` and may need reinstalling. Only `sentence-transformers` (which pulls in PyTorch) and anything a custom `YANTRIKDB_EMBEDDER_CLASS` imports remain outside the manifest: if you configure `YANTRIKDB_EMBEDDER_HF`, reinstall its dependencies into the plugin's environment after a regeneration (`uv pip install --python <plugin-env>/bin/python 'yantrikdb-hermes-plugin[sentence-transformers]'` or `sentence-transformers`). If an embedder stops loading after an update, the error message names the interpreter (`sys.executable`) and `sys.path` it searched. Hermes runs plugins with `-I`, so `PYTHONPATH` and user-site installs don't help. The bundled default and `YANTRIKDB_EMBEDDER=potion-base-*` need no extra packages and are unaffected.
 
 ### Optional: quiet the HuggingFace embedder
 
@@ -343,7 +343,7 @@ The differentiator versus other Hermes memory plugins is not the vector store �
 | Why did a memory rank? | ¯\\_(ツ)_/¯ | every `recall()` result carries a `why_retrieved` reason list |
 | Cross-entity recall | semantic-only | graph edges from `relate()` boost related memories |
 
-Twelve tools exposed to the agent by default: `yantrikdb_remember`, `_recall`, `_forget`, `_think`, `_conflicts`, `_resolve_conflict`, `_relate`, `_stats`, plus the trigger-lifecycle consumers `_pending_triggers`, `_acknowledge_trigger`, `_dismiss_trigger`, `_act_on_trigger` (v0.4.13+). Three additional **opt-in** skill tools (v0.3.0+): `_skill_search`, `_skill_define`, `_skill_outcome` — see [Skills](#skills-opt-in-v030) below.
+Thirteen tools exposed to the agent by default: `yantrikdb_remember`, `_recall`, `_links`, `_forget`, `_think`, `_conflicts`, `_resolve_conflict`, `_relate`, `_stats`, plus the trigger-lifecycle consumers `_pending_triggers`, `_acknowledge_trigger`, `_dismiss_trigger`, `_act_on_trigger` (v0.4.13+). Three additional **opt-in** skill tools (v0.3.0+): `_skill_search`, `_skill_define`, `_skill_outcome` — see [Skills](#skills-opt-in-v030) below.
 
 ### Tool response envelope (v0.4.16+)
 
@@ -373,6 +373,62 @@ Why this matters: tool failures used to be communicated as `{"error": "..."}` on
 - `yantrikdb_act_on_trigger` — agent took action; records an audit-trail entry.
 
 All three closers remove the trigger from `pending_triggers`. Without these tools (pre-v0.4.13) the pending queue grew indefinitely because the producer (`think()`) had no matching consumer surface.
+
+### Correction chains and historical recall (v0.28.0)
+
+Memory that cannot be corrected is memory you have to distrust. Before this
+release the plugin could store a corrected sentence, but nothing tied it to the
+sentence it replaced: both stayed live, and a recall that happened not to
+surface the newer one returned the refuted rule as current.
+
+Three additions close that gap without introducing a second correction store —
+they surface primitives the engine already has:
+
+- **`supersedes_rid` on `yantrikdb_remember`** writes a `supersedes` edge
+  (`new → old`) atomically with the new record. The new record is preferred in
+  recall; the old one stays on disk and remains retrievable.
+- **`include_superseded` on `yantrikdb_recall`** (default `false`) exposes the
+  whole chain. Default recall returns only the current head, so an agent does
+  not receive two contradictory rules and have to guess which is newer.
+- **`as_of` on `yantrikdb_recall`** answers "what was true at time T?" — the
+  predecessor that was current then is returned, the later successor is not.
+- **`yantrikdb_links`** reads the edges around a record (`outbound`, `inbound`,
+  `both`, optional `link_type`), so a correction can be audited rather than
+  merely trusted.
+
+`as_of` accepts a Unix timestamp, ISO-8601 with an explicit offset (`Z`,
+`+02:00`), or a naive ISO timestamp, which is interpreted in the host's local
+zone. A value that cannot be parsed is **rejected**; it never falls back to
+"now", because a silent fallback turns a historical question into a
+present-tense one.
+
+Boundary semantics of `as_of`: the cut-off is evaluated against the
+`supersedes` **edge** timestamp, not the successor's `created_at`. The edge is
+written a few hundred microseconds after the record itself (measured ≈0.5 ms).
+So `as_of == successor.created_at` returns the state immediately *before* the
+correction took effect: the predecessor is still current, the successor already
+exists. That is intentional — at that instant the correction did not exist yet.
+To see the successor as current, query at or after the edge timestamp (in
+practice: a timestamp clearly after the write). An inclusive cut-off anchored
+on `successor.created_at` is not expressible without redefining when a
+correction takes effect, so this plugin does not attempt it. Asserted in
+`tests/test_memory_integrity_v11.py`.
+
+**Backend support.** These additions are embedded-only. The HTTP backend has no
+endpoints for link creation or traversal, so the client accepts the new keyword
+arguments and refuses them loudly with `YantrikDBClientError` pointing at
+`YANTRIKDB_MODE=embedded`, instead of letting a `TypeError` escape at the first
+tool call:
+
+- `yantrikdb_remember(supersedes_rid=...)` → error
+- `yantrikdb_recall(include_superseded=true)` or `(as_of=...)` → error
+- `yantrikdb_links(...)` → error, always
+
+Calls that omit the new arguments behave exactly as before on both backends.
+
+`supersedes_rid` and `idempotency_key` are mutually exclusive: a superseding
+write must never collapse onto an existing rid, because that would silently
+turn a correction into a no-op.
 
 ### Compared to other Hermes memory providers
 
@@ -496,7 +552,7 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
 
 ## Status
 
-**v0.27.1** (current, 2026-10-05) — embedder `ImportError`s now name `sys.executable`/`sys.path`; the v0.27.0 multiplexed gateway reads each profile's `YANTRIKDB_*` settings from that profile's own `.env` instead of the launch profile's environment; v0.26.0 fixed `think()` (consolidation, conflict scan) failing on every call on the embedded backend with engine 0.15.3 and later. `model2vec` becoming a manifest hard dependency (fixes #92) is merged to `main`, pending the next release (unreleased). Engine range `>=0.12.1,<0.24.0`. 500+ tests, CI on Python 3.11–3.14. **Standalone-by-design** per Hermes maintainer guidance — Hermes is not accepting new memory providers upstream; standalone plugins installed via `pip` are the recommended pattern. PR [#9989](https://github.com/NousResearch/hermes-agent/pull/9989) closed 2026-05-13 with that resolution.
+**v0.28.0** (current, 2026-11-03) — correction chains (`supersedes_rid`), historical recall (`include_superseded`, `as_of`) and the `yantrikdb_links` tool; `model2vec` is now a manifest hard dependency (fixes #92); the `sentence-transformers` extra no longer breaks Hermes' resolve on android/emscripten. v0.27.1 (2026-10-05) — embedder `ImportError`s now name `sys.executable`/`sys.path`; the v0.27.0 multiplexed gateway reads each profile's `YANTRIKDB_*` settings from that profile's own `.env` instead of the launch profile's environment; v0.26.0 fixed `think()` (consolidation, conflict scan) failing on every call on the embedded backend with engine 0.15.3 and later. Engine range `>=0.12.1,<0.24.0`. 500+ tests, CI on Python 3.11–3.14. **Standalone-by-design** per Hermes maintainer guidance — Hermes is not accepting new memory providers upstream; standalone plugins installed via `pip` are the recommended pattern. PR [#9989](https://github.com/NousResearch/hermes-agent/pull/9989) closed 2026-05-13 with that resolution.
 
 ### Release cadence
 
@@ -518,8 +574,9 @@ YANTRIKDB_INTEGRATION_TOKEN=ydb_... \
 | v0.26.0 | 2026-09-17 | Self-maintenance (`think()`) runs again on the default backend |
 | v0.27.0 | 2026-09-19 | Multiplexed gateway keeps each profile's settings separate |
 | v0.27.1 | 2026-10-05 | Embedder ImportErrors name `sys.executable`/`sys.path` |
+| v0.28.0 | 2026-11-03 | Correction chains, historical recall, `yantrikdb_links`; `model2vec` hard dependency; android/emscripten-safe extra |
 
-59 tagged releases in total; every one is in the [CHANGELOG](yantrikdb/CHANGELOG.md) (`model2vec` becoming a manifest hard dependency, fixes #92, is merged to `main` as the next one, v0.27.2, not yet tagged/released).
+60 tagged releases in total; every one is in the [CHANGELOG](yantrikdb/CHANGELOG.md) (v0.27.2 was never tagged separately; it ships inside v0.28.0).
 
 ### Durability signals
 

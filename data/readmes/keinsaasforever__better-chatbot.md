@@ -1,6 +1,10 @@
 <div align="center">
 
-# better-chatbot
+<img src="docs/assets/navigator-banner.webp" alt="keinsaas Navigator: your operating system for the AI era. Powered by agents, skills, MCP and workflows." width="100%" />
+
+# keinsaas Navigator – Community Edition
+
+<sub>formerly <b>better-chatbot</b></sub>
 
 **An open-source AI chat and agent platform you can host yourself.**
 
@@ -43,9 +47,12 @@ Free Supabase projects pause after a week without use. If your app stops
 loading after a quiet week, open the project in the Supabase dashboard and
 click **Restore**.
 
-**Updates come to you.** Once a week your copy checks for a new version. When
-there is one, GitHub emails you a short guide: try the preview Vercel builds,
-then click **Merge**. Nothing changes in your live app until you do.
+**Updates come to you.** After your first sign-in, the app asks once to
+**Turn on** automatic updates: it opens GitHub with the update check ready,
+and you click **Commit changes**. From then on your copy checks every week.
+When there is a new version, GitHub emails you a short guide: try the preview
+Vercel builds, then click **Merge**. Nothing changes in your live app until
+you do.
 
 Details and optional features: [docs/self-hosting.md](docs/self-hosting.md#vercel).
 
@@ -85,6 +92,25 @@ Prefer running it directly? See [docs/self-hosting.md](docs/self-hosting.md).
 
 ---
 
+## See it in action
+
+<table>
+<tr>
+<td width="50%" valign="top"><img src="docs/assets/demo-web-search.webp" alt="A chat that searches the web and answers with sources" width="100%" /><br /><sub><b>Web search</b> with sources, right in the chat (with the optional Exa key).</sub></td>
+<td width="50%" valign="top"><img src="docs/assets/demo-chart.webp" alt="A chat that answers with a bar chart" width="100%" /><br /><sub><b>Charts and tables</b> from a single sentence.</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/assets/demo-code.webp" alt="A chat that runs Python and shows the result as a table" width="100%" /><br /><sub><b>Code execution</b> in a sandbox (optional E2B key), results as an interactive table.</sub></td>
+<td width="50%" valign="top"><img src="docs/assets/demo-agent.webp" alt="Mentioning an agent with @ and getting a researched answer" width="100%" /><br /><sub><b>Agents</b>: mention one with <code>@</code> and it takes over.</sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top"><img src="docs/assets/demo-image.webp" alt="A chat that generates a watercolor image" width="100%" /><br /><sub><b>Image generation</b> inside the conversation.</sub></td>
+<td width="50%" valign="top"><img src="docs/assets/demo-mcp.webp" alt="Connected apps and the catalog of tools to connect" width="100%" /><br /><sub><b>Tools and MCP servers</b>: connect your apps (catalog via the optional Composio integration).</sub></td>
+</tr>
+</table>
+
+---
+
 ## What you get
 
 **Chat that does things.** Streaming conversations with tool calling, file
@@ -114,8 +140,13 @@ Self-hosted instances can run stdio servers; the desktop app runs them locally.
 
 **Voice.** Realtime voice conversations through the gateway, plus transcription.
 
-**Desktop app.** An Electron build that adds local MCP servers, filesystem
-access, and the system keychain.
+**Desktop app (beta for self-hosting).** The keinsaas Navigator desktop app
+([download at keinsaas.com](https://keinsaas.com)) adds local (stdio) MCP servers, which a server on Vercel cannot run, plus
+native notifications. On first launch it asks where to connect: pick **My own
+server** and enter your instance's address, e.g. `https://my-chatbot.vercel.app`.
+Connecting it to a self-hosted instance is in beta; tell us in
+[Discord](https://discord.gg/9dwdAYKBPp) what works and what does not. You can
+switch servers any time under **Change Server…** in the app menu.
 
 **Model routing.** Pick a model per message, or let the router choose from the
 catalog based on the task.
@@ -227,7 +258,7 @@ The gateway is the default and covers the whole catalog. You can also:
 ## Partners
 
 **[TensorX](https://tensorx.ai/)** — EU-hosted model inference with zero data
-retention. better-chatbot talks to TensorX directly rather than through a
+retention. The Community Edition talks to TensorX directly rather than through a
 gateway, so prompts go straight to TensorX's EU infrastructure. Create a key at
 [tensorx.ai](https://tensorx.ai/), set `TENSORX_API_KEY`, and its models appear
 in the model picker next to the gateway's. See its
@@ -250,8 +281,10 @@ TensorX is optional. Without the key everything else works as before.
 
 ## This edition, and the hosted one
 
-better-chatbot is the community edition of
-[keinsaas Navigator](https://keinsaas.com). Everything above is here, in full,
+This repository is the Community Edition of
+[keinsaas Navigator](https://keinsaas.com), formerly known as better-chatbot. The
+repository keeps its name, so existing links, forks and automatic updates keep
+working. Everything above is here, in full,
 with no usage caps and no telemetry.
 
 What Navigator adds is what teams need and single users do not: shared team

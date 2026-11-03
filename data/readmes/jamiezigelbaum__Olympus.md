@@ -1,6 +1,4 @@
-<div align="center">
-
-![Olympus: a towering mountain crowned by a celestial palace, surrounded by cyborg gods, AI agents, and lobster adventurers](assets/olympus-banner.png)
+![Olympus: a towering mountain crowned by a celestial palace, surrounded by cyborg gods, AI agents, and lobster adventurers](https://raw.githubusercontent.com/jamiezigelbaum/Olympus/main/assets/olympus-banner.png)
 
 # ⛰️ Olympus
 
@@ -8,17 +6,9 @@
 
 *A private second brain on your own computer, for ChatGPT, Claude, Grok and any AI app that speaks MCP. On a Mac, and on [Omarchy](https://omarchy.org) and Ubuntu 24.04 LTS Linux. Free and open source.*
 
-[![version](https://img.shields.io/badge/version-1.3.0-534AB7)](CHANGELOG.md)
-[![license](https://img.shields.io/badge/license-MIT-0F6E56)](LICENSE)
-[![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](CONTRIBUTING.md)
-[![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai)
-[![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
+[![version](https://img.shields.io/badge/version-1.3.3-534AB7)](https://github.com/jamiezigelbaum/Olympus/blob/main/CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-0F6E56)](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) [![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](https://github.com/jamiezigelbaum/Olympus/blob/main/CONTRIBUTING.md) [![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai) [![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
 
-[olympusplugin.ai](https://olympusplugin.ai) · [Get started](#get-started) · [Olympus in ChatGPT](#olympus-for-chatgpt) · [Claude, Grok and other apps](#claude-grok-and-other-apps) · [How it works](#how-it-works) ·
-[Sources](#supported-sources) · [Security model](#the-security-model) · [OpenClaw quickstart](docs/QUICKSTART.md) ·
-[Commands](#command-reference)
-
-</div>
+[olympusplugin.ai](https://olympusplugin.ai) · [Get started](#get-started) · [Olympus in ChatGPT](#olympus-for-chatgpt) · [Claude, Grok and other apps](#claude-grok-and-other-apps) · [How it works](#how-it-works) · [Sources](#supported-sources) · [Security model](#the-security-model) · [OpenClaw quickstart](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/QUICKSTART.md) · [Commands](#command-reference)
 
 ---
 
@@ -233,7 +223,7 @@ computer**, marked **Not sent to ChatGPT**.
 
 Your computer needs to be awake and online. The panel runs inside ChatGPT's page,
 so it relies on the panel code ChatGPT loads; the
-[design](docs/design/chatgpt-plugin.md#who-can-read-the-answer) states that
+[design](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/design/chatgpt-plugin.md#who-can-read-the-answer) states that
 limit plainly.
 
 ### What ChatGPT can and can't see
@@ -263,8 +253,8 @@ ChatGPT **can't** see:
 The relay at `mcp.olympusplugin.ai` passes ChatGPT's requests to your computer. It
 stores and logs no questions, answers or tokens, but like any HTTPS service
 it handles them in transit. Full details: the
-[ChatGPT design](docs/design/chatgpt-plugin.md) and the
-[trust model](docs/TRUST_MODEL.md).
+[ChatGPT design](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/design/chatgpt-plugin.md) and the
+[trust model](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/TRUST_MODEL.md).
 
 ## Claude, Grok and other apps
 
@@ -376,7 +366,7 @@ Olympus uses **Personal** (ordinary personal and work content), **Private**
 Public tier on any new install, ChatGPT or OpenClaw, whichever posture you
 choose: anything that would have been Public is Personal. Installs made
 before 1.0 keep a **Public** tier. See the
-[tier mapping](docs/TRUST_MODEL.md#product-tier-names) for the unchanged
+[tier mapping](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/TRUST_MODEL.md#product-tier-names) for the unchanged
 storage identifiers.
 
 Four postures, chosen (and changeable) in setup — a config file, not a code
@@ -450,7 +440,7 @@ starting with the automatic download and existing-install checks. Its install
 command for a clean machine is:
 
 ```bash
-openclaw plugins install npm-pack:/absolute/path/to/olympus-1.3.0.tgz --force --accept-capabilities
+openclaw plugins install npm-pack:/absolute/path/to/olympus-1.3.3.tgz --force --accept-capabilities
 # On OpenClaw 2026.7.1, omit both flags for a clean install.
 # On newer hosts, --force also overwrites an existing plugin: check first.
 openclaw plugins enable olympus
@@ -473,10 +463,10 @@ and requires its own Gateway's Control UI over HTTPS or localhost. Olympus uses
 your signed-in OpenClaw permissions; its worker token stays on the server.
 The standalone `olympus dashboard` command remains available for older hosts,
 when custom plugin UI is off, and for direct access when needed. See the
-[dashboard guide](docs/QUICKSTART.md#5-open-your-dashboard-and-connect-sources).
+[dashboard guide](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/QUICKSTART.md#5-open-your-dashboard-and-connect-sources).
 
 For Gemini embeddings, Venice accounts/API credit, or local models, use the
-[agent-led model setup guide](docs/SOVEREIGNTY_CONFIG.md#agent-led-model-setup-for-the-v04-beta).
+[agent-led model setup guide](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/SOVEREIGNTY_CONFIG.md#agent-led-model-setup-for-the-v04-beta).
 It explains the separate Private and Personal routes, registered embedding
 defaults, and custom-model requirements before you connect keys or restart.
 In the dashboard you paste each key into its **Models** card. For a headless
@@ -623,8 +613,22 @@ snippet has a copy button.
   the page that opens in this computer's browser.
 - **Grok Bot**: nothing to add. Once Olympus is connected on grok.com,
   Grok Bot uses that connection, with the same xAI account.
+- **Agent on another account of this computer**: for OpenClaw, Hermes or an
+  MCP client running under another account. Name the agent and choose
+  **Create key**, then copy its setup line into the agent. It connects to
+  this computer only, without reading your Olympus files or signing in.
+- **Agent on my tailnet**: for an agent on your Tailscale network. Keep
+  Tailscale running on both computers, then create a key and copy the setup
+  line. If Tailscale is not running here, the page says so.
 - The **Grok API** and other agents in the cloud need a tunnel you run
-  yourself (below); the panel says so until remote access runs through one.
+  yourself (below), unless the agent can use one of the private choices above.
+
+The private choices use a different key for each named agent. Each address
+starts listening only while it has an active key; revoking its last key stops
+it. The connection list shows which route each key uses. Keys and setup lines
+are shown once, so copy them before choosing **Done**. These connections use
+the same remote tools and privacy rules as the relay, with no question limits.
+They work independently of the remote access switch.
 
 Agents in the cloud reach Olympus only when remote access is on; the Agents
 page says whether it is. To turn it on, press **Turn on remote access**
@@ -660,7 +664,7 @@ Each agent's steps end with a short instruction that tells it when to ask
 Olympus. Paste it into Claude project instructions, Grok's custom
 instructions or Grok Bot's skills, or
 load the packaged Agent Skills folder
-[`integrations/agent-skills/ask-olympus/`](integrations/agent-skills/ask-olympus/SKILL.md).
+[`integrations/agent-skills/ask-olympus/`](https://github.com/jamiezigelbaum/Olympus/blob/main/integrations/agent-skills/ask-olympus/SKILL.md).
 
 ### Using Olympus from other agents (MCP)
 
@@ -759,13 +763,14 @@ hard-coding them. A cited-answer round trip uses the discovered
 
 The optional packaged Hermes skill is
 [`integrations/hermes/ask-sources/SKILL.md`](integrations/hermes/ask-sources/SKILL.md).
-Copy its directory to `~/.hermes/skills/ask-sources/` or expose the parent with
+It is also published on ClawHub, which Hermes's skills hub searches, so
+`hermes skills install clawhub/olympus-hermes` installs it. Or copy its
+directory to `~/.hermes/skills/ask-sources/` or expose the parent with
 `skills.external_dirs`; it declares the same four tools and no fallback access.
 
 No `hermes://mcp/install` link is published: current Hermes upstream documents
 custom MCP installation through `hermes mcp add` but does not document that URI
-handler. No Nous catalog submission has been made; that remains a later,
-separately reviewed external action.
+handler.
 
 There are no operator agent tools. Index maintenance — sync, extraction,
 embedding, retries — is the worker's own scheduler, and what a person drives by
@@ -812,15 +817,15 @@ bun run test:focus -- test/example.test.ts
 
 Use focused local proof while editing; GitHub requires each substantive CI lane
 and runs the complete suite in parallel before merge. See the canonical
-[engineering process](docs/ENGINEERING_PROCESS.md).
+[engineering process](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/ENGINEERING_PROCESS.md).
 
-Deep-dive docs: [contracts and architecture](docs/CONTRACTS.md) ·
-[trust model](docs/TRUST_MODEL.md) · [sovereignty config](docs/SOVEREIGNTY_CONFIG.md) ·
-[uninstall](docs/UNINSTALL.md)
+Deep-dive docs: [contracts and architecture](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/CONTRACTS.md) ·
+[trust model](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/TRUST_MODEL.md) · [sovereignty config](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/SOVEREIGNTY_CONFIG.md) ·
+[uninstall](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/UNINSTALL.md)
 
 ## License
 
-[MIT](LICENSE) — free for any use, including commercial. Olympus is provided
+[MIT](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) — free for any use, including commercial. Olympus is provided
 as is, without warranty; keep your own backups. Olympus is published by Open
 Coordination Unlimited, Inc. Its hosted relay is governed by the
 [Terms of Service](https://olympusplugin.ai/terms/) and

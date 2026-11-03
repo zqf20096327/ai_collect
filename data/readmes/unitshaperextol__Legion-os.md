@@ -129,5 +129,3 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 **Built with ❤️ for the Frontier AI & AGI Community.**
 
 </div>
-
-   

@@ -1,5 +1,7 @@
 # Fortune Skill — 中国传统命理 AI 分析技能
 
+[简体中文](README.md) | [English](README.en-US.md)
+
 Source-available，非商用使用。详见 [LICENSE](LICENSE) 和
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
@@ -10,12 +12,14 @@ Source-available，非商用使用。详见 [LICENSE](LICENSE) 和
 > 不对应任何真实人物。请勿据此推算真人命盘或还原个人画像。
 >
 > 用户在本地使用本 Skill 生成的命理报告默认存放于 `reports/`，
-> 该目录已加入 `.gitignore`，不上传到任何远程仓库。如需提交相关变更，
+> 该目录已加入 `.gitignore`，默认不纳入 Git 提交；这不能防止强制添加或其他上传方式。如需提交相关变更，
 > 请先运行 `node scripts/privacy-check.mjs` 自查。
 
 ---
 
 ## 30 秒上手
+
+需要 Node.js 18+、npm、Python 3.9+ 和 pip。以下命令在仓库根目录运行。
 
 ```bash
 git clone https://github.com/ai-freer/fortune-skill.git
@@ -40,7 +44,7 @@ Trae）并把仓库 symlink 到对应 skill 目录。**重启 agent**，对话�
 
 ### 时间基准原则
 
-本项目以出生地校正后的真太阳时为排盘基准。用户提供的现代标准时间只作为原始输入，脚本会自动进行夏令时和真太阳时校正；未校正 Raw Time 不作为正式命盘依据。
+本项目先将出生地民用钟表时间（含当时夏令时）解析为唯一 UTC 瞬时，再按各项规则计算：年月柱、交节和大运使用固定 UTC+08:00 参考，日时柱与紫微使用地方视太阳时近似。不能用一个校正日期替代所有时基；未校正 Raw Time 不作为正式命盘依据。
 
 外部 benchmark 或预计算命盘如果使用未校正时间，其结果只用于研究参考，不作为本项目正确性标准。需要验证分析质量时，应使用本项目自己的时间校正规则重新排盘。
 
@@ -54,8 +58,7 @@ PolyForm Noncommercial License 1.0.0 发布，仅限非商用使用；这不是 
 
 第三方依赖、vendored 代码和引用材料保留各自的原始协议或权利状态，详见
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。其中 `vendor/bazi/`
-对应的上游 `china-testing/bazi` 在本地审查时未发现声明式 license，本仓库保留
-该目录用于个人、研究和非商用场景，但不对其作额外转授权。
+对应的上游 `china-testing/bazi` 未随附许可证文件；维护者于 2026-11-03 确认此前已解决上游分发授权。本轮审查未独立查验许可凭证，不将该确认描述为独立验证，也不作额外转授权。
 
 ---
 
@@ -64,19 +67,19 @@ PolyForm Noncommercial License 1.0.0 发布，仅限非商用使用；这不是 
 核心排盘依赖优先选择成熟项目；第三方协议状态以实际仓库和
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 为准。
 
-| 项目 | ⭐ | 语言 | License | 最近更新 | 用途 |
-|------|-----|------|---------|---------|------|
-| [SylarLong/iztro](https://github.com/SylarLong/iztro) | 3,617 | TypeScript | MIT | 2026-04-15 | 紫微斗数排盘引擎（12 宫、运限、四化、三方四正、插件系统） |
-| [6tail/lunar-javascript](https://github.com/6tail/lunar-javascript) | 1,502 | JavaScript | MIT | 2026-04-30 | 万年历+八字排盘（四柱、十神、五行、大运、流年、神煞、纳音） |
-| [china-testing/bazi](https://github.com/china-testing/bazi) | 1,285 | Python | 未声明 / accepted risk | 2026-02-03 | 三命通会论断、冲刑合会分析、五行分数、格局判定、合婚 |
-| [jinchenma94/bazi-skill](https://github.com/jinchenma94/bazi-skill) | 1,208 | Markdown | MIT | 2026-04-04 | 分析流程框架 + 经典典籍 references（穷通宝典等九本） |
+| 项目 | 语言 | License | 用途 |
+|------|------|------|------|
+| [SylarLong/iztro](https://github.com/SylarLong/iztro) | TypeScript | MIT | 紫微斗数排盘引擎（12 宫、运限、四化、三方四正、插件系统） |
+| [6tail/lunar-javascript](https://github.com/6tail/lunar-javascript) | JavaScript | MIT | 万年历+八字排盘（四柱、十神、五行、大运、流年、神煞、纳音） |
+| [china-testing/bazi](https://github.com/china-testing/bazi) | Python | 未随附许可证 / 维护者确认分发权限 | 三命通会论断、冲刑合会分析、五行分数、格局判定、合婚 |
+| [jinchenma94/bazi-skill](https://github.com/jinchenma94/bazi-skill) | Markdown | MIT | 分析流程框架 + 经典典籍 references（穷通宝典等九本） |
 
 ### 参考项目（不直接依赖）
 
-| 项目 | ⭐ | 参考价值 |
-|------|-----|---------|
-| [hhszzzz/taibu](https://github.com/hhszzzz/taibu) | 119 | AGENTS.md / CLAUDE.md 的 agent 友好设计、MCP 工具定义方式、taibu-core 的 API 设计思路 |
-| [DestinyLinker/MingLi-Bench](https://github.com/DestinyLinker/MingLi-Bench) | 133 | LLM 命理评测基准（160 道题），可作为题库和评测流程参考；若预计算命盘未校正真太阳时，不作为本项目排盘标准 |
+| 项目 | 参考价值 |
+|------|------|
+| [hhszzzz/taibu](https://github.com/hhszzzz/taibu) | AGENTS.md / CLAUDE.md 的 agent 友好设计、MCP 工具定义方式、taibu-core 的 API 设计思路 |
+| [DestinyLinker/MingLi-Bench](https://github.com/DestinyLinker/MingLi-Bench) | LLM 命理评测基准（160 道题），可作为题库和评测流程参考；若预计算命盘未校正地方视太阳时近似，不作为本项目排盘标准 |
 
 ---
 
@@ -135,7 +138,7 @@ fortune-skill/
 └──────────────────────────────────────────────────┘
 ```
 
-Layer 1 保证排盘精确（LLM 自己算干支会出错），Layer 2 提供系统化的专业知识，Layer 3 发挥 LLM 的综合分析和表达能力。
+Layer 1 按明确规则计算排盘（精度限制见下文，LLM 不自行推算干支），Layer 2 提供系统化的专业知识，Layer 3 发挥 LLM 的综合分析和表达能力。
 
 ### 报告增强脚本
 
@@ -145,7 +148,7 @@ Layer 1 保证排盘精确（LLM 自己算干支会出错），Layer 2 提供系
 |------|------|
 | `npm run report-data -- ...` | 聚合基础盘、年度/逐月流年、方法论框架、报告模板、紫微三方四正与专项评分 |
 | `npm run hecan-summary -- ...` | 输出结构化合参 v2 判断卡片，汇总八字、紫微、经典规则、现实校准、证据节点、反证/约束和可解释置信度 |
-| `npm run hecan-audit -- ...` | 审计结构化合参 v2 卡片是否具备字段追溯、反证/约束、置信度拆解、真太阳时边界和未校准上限 |
+| `npm run hecan-audit -- ...` | 审计结构化合参 v2 卡片是否具备字段追溯、反证/约束、置信度拆解、地方视太阳时近似边界和未校准上限 |
 | `npm run rule-matcher -- ...` | 输出调候、病药、作用优先级、神煞边界、大运切换、伏吟反吟、十神现代映射等规则命中点 |
 | `npm run report-draft -- ...` | 按模板生成主报告摘要、十年流年、两年逐月或长期综合 Markdown 草稿 |
 | `npm run report-qa -- --file reports/xxx.md` | 检查最终报告是否覆盖免责声明、时辰边界、方法论、现实校准、v2 合参卡片、隐私、条件性贵人边界和绝对化风险 |
@@ -154,6 +157,7 @@ Layer 1 保证排盘精确（LLM 自己算干支会出错），Layer 2 提供系
 说明：历史经历不是默认产品化输入，只有用户主动提供时才作为可选校准材料；贵人也不是默认专项报告，只有用户明确询问人脉、平台资源或贵人问题时才单独展开。
 
 `hecan-summary` v2 判断卡片包含：
+
 - `evidenceNodes[]`：字段级证据节点，含 `source`、`system`、`layer`、`aspect`、`fieldPath`、`polarity` 和 `weight`。
 - `counterEvidence[]`：反证或约束，覆盖八字/紫微信号冲突、规则缺失、覆盖不足、时间可靠性、未校准、反向例和漏触发。
 - `coverage`：每个领域的最低证据要求、必要来源、已覆盖来源、缺口和正文必须承接的现实边界。
@@ -179,8 +183,8 @@ Layer 1 保证排盘精确（LLM 自己算干支会出错），Layer 2 提供系
 
 ```bash
 npm ci
-python3 -m pip install -r requirements.txt
-npm run verify        # 26 项自检
+python3 scripts/install-python.py
+npm run verify        # 完整自检，项目数以运行输出为准
 ```
 
 **单脚本快速验证**（出生信息为虚构演示数据）：
@@ -221,6 +225,7 @@ node scripts/hecan-audit.mjs --solar "1990-05-15" --hour 15 --gender male --birt
 ### 2. exec 调用（零服务集成）
 
 所有计算通过 exec 调用命令行脚本。不需要 MCP 协议、HTTP Server、特殊 SDK；克隆后按“安装”章节安装 Node.js 和 Python 依赖即可使用。任何能执行 shell 命令的 agent 都能用：
+
 - OpenClaw → exec tool
 - Claude Code → bash tool
 - Codex → terminal
@@ -267,7 +272,7 @@ references/ 目录的 Markdown 文件在分析阶段被读入 agent 上下文。
 
 ### 6. 错误处理对 agent 友好
 
-脚本在输入错误时返回结构化错误 JSON（不是 traceback），让 agent 能理解并重试：
+脚本对已处理的输入和计算错误返回结构化 JSON，便于 agent 理解并重试；调用方还应检查退出码和 stderr，参数解析或依赖启动失败不保证返回 JSON：
 
 ```json
 { "error": "invalid_date", "message": "日期格式错误，请使用 YYYY-MM-DD", "input": "1990/5/15" }
@@ -293,13 +298,15 @@ references/ 目录的 Markdown 文件在分析阶段被读入 agent 上下文。
 ### Wrapper 方案
 
 `scripts/bazi-classic.py` 做一层 wrapper：
+
 1. `sys.path.insert` 引入 `vendor/bazi/`
 2. 接收命令行参数（阳历日期、时间、性别）
-3. 调用 bazi.py 的核心函数
-4. 捕获 print 输出，解析提取关键数据
+3. 调用时间校正及历法适配器，结合 lunar-python 和 vendor 数据模块计算
+4. 直接组织经典论断、关系、分数等结果
 5. 输出结构化 JSON 到 stdout
 
 提取的数据：
+
 - 三命通会论断文本（sizi.py 的 summarys）
 - 冲刑合会关系
 - 五行分数
@@ -323,7 +330,7 @@ Agent："出生时间大概是几点？"
 用户："下午3点左右"
 Agent："性别？"
 用户："男"
-Agent："出生地？（用于真太阳时参考）"
+Agent："出生地？（用于地方视太阳时近似参考）"
 用户："上海"
 → 确认信息，开始排盘
 ```
@@ -345,6 +352,7 @@ python3 scripts/bazi-classic.py --solar "1990-05-15" --hour 15 --minute 0 --gend
 Agent 读取 references/ 中的典籍规则，结合三份排盘数据，按 SKILL.md 定义的分析框架输出：
 
 **八字分析：**
+
 1. 日主强弱（得令、得地、得势）
 2. 十神分析与六亲关系
 3. 五行平衡与喜用神（参考穷通宝典调候）
@@ -354,6 +362,7 @@ Agent 读取 references/ 中的典籍规则，结合三份排盘数据，按 SKI
 7. 综合建议（事业、财运、感情、健康）
 
 **紫微分析：**
+
 1. 命宫主星与格局
 2. 十二宫逐宫分析
 3. 四化飞星与三方四正
@@ -375,16 +384,16 @@ Agent 读取 references/ 中的典籍规则，结合三份排盘数据，按 SKI
 
 ## 时间校正
 
-本项目坚持真太阳时为正式排盘基准。标准时间仅用于记录用户原始输入；若时间校正导致时辰变化，应以校正后的时辰排盘，并在报告中说明差异。
+日时柱与紫微采用地方视太阳时近似；年月柱、交节和大运采用下文说明的 UTC+08:00 参考。出生地民用钟表时间用于记录原始输入；若校正导致时辰变化，应在适用计算中采用校正后的时辰，并在报告中说明差异。
 
 出生地是必填项。系统会在排盘前调用 `scripts/time-normalize.mjs` 完成：
 
 1. 出生地匹配到时区和经度；县区别名会优先归属到对应地级市。
-2. 用 Node.js `Intl.DateTimeFormat` 检测该日期是否处于夏令时。
-3. 按出生地经度与时区标准经度差值计算真太阳时。
-4. 用校正后的日期和小时调用下游排盘引擎。
+2. 用固定版本 TZif 与 Python 标准库解析唯一 UTC 瞬时、历史偏移及夏令时；不使用主机 ICU 决定命盘。
+3. 用 UTC 钟读数加东经每度 4 分钟及 NOAA 均时差近似，计算地方太阳钟。
+4. 按明确规则分别计算年月柱/交节、大运、日时柱和紫微；不能把一个校正日期统一替代所有时基。
 
-中国城市统一使用 `Asia/Shanghai` 时区，并按城市经度修正真太阳时。县区或复合出生地会先尝试解析到地级市，例如 `当涂`、`当涂县`、`马鞍山-当涂` 会按 `马鞍山` 校正。海外城市依赖内置城市表；英文或非中文城市如果不在表中，会返回结构化 `unknown_city` 错误。
+中国城市统一使用 `Asia/Shanghai` 时区，并按城市经度修正地方视太阳时近似。县区或复合出生地会先尝试解析到地级市，例如 `当涂`、`当涂县`、`马鞍山-当涂` 会按 `马鞍山` 校正。海外城市依赖内置城市表；任何语言的城市名称如果无法匹配，时间校正脚本都会返回结构化 `unknown_city` 错误，排盘入口停止出盘。
 
 ## 验证
 
@@ -393,6 +402,7 @@ npm test
 ```
 
 验证覆盖：
+
 - 时间校正有效案例和非法日期错误。
 - 三个排盘脚本的关键字段。
 - 八字流年快查。
@@ -427,5 +437,46 @@ npm run privacy-check
 1. **排盘精度**：LLM 不应自行计算四柱，必须以脚本 JSON 为准。
 2. **时辰未知**：不要用默认时辰生成伪精确盘，按 `SKILL.md` 的未知时辰流程处理。
 3. **节气边界**：立春前后、月令交界需要用户尽量提供具体时间。
-4. **出生地覆盖**：未知中文城市会先尝试县区/复合地名归属；仍无法匹配时会降级为 `Asia/Shanghai` 并跳过真太阳时。未知非中文城市会返回错误。
+4. **出生地覆盖**：城市名称会先尝试县区/复合地名归属；仍无法匹配时，不论中文或其他语言都返回错误并停止精确排盘，不默认上海时区。
 5. **免责声明**：输出必须包含“仅供文化研究和娱乐参考”。
+
+
+## 时间与验证边界
+
+输入为出生地民用钟表时间（包含当时的夏令时），通过固定 IANA TZif 快照解析为唯一 UTC 瞬时。不存在或重复的钟表时间、未知城市、缺失或损坏的数据均拒绝出盘，不回退原始时间。当前没有折叠时刻选择参数，须先核实原始记录。
+
+年月柱与交节：同一 UTC 瞬时转为固定 UTC+08:00，与 lunar-javascript 的节气标签比较。日柱、时柱：UTC 加东经每度 4 分钟，再加 NOAA 分数年均时差近似；保留小数计算到秒，不先四舍五入跨越边界。八字采用 sect=2（午夜换日，晚子时时干按次日）；胎元、命宫、身宫等也使用对应的年月与时柱。大运保留依赖 sect=1 的传统天数/时辰离散规则，但出生与交节均来自同一物理时基，不使用校正后的太阳钟去减北京时间节气。
+
+紫微单独采用地方视太阳钟日期与时辰，显式保留 iztro 的 normal 年界、forward 晚子时规则；紫微附带四柱不是八字交节结果。默认当前运限日期按 UTC+08:00 取值，不受主机时区影响。
+
+均时差依据 [NOAA 公式](https://gml.noaa.gov/grad/solcalc/solareqns.PDF)，使用 UTC 分数年以保持同一瞬时一致；这是近似算法，不是高精度星历，未证明最坏误差界。项目支持 1900–2100 年的诊断计算；1970 年以前保留基于固定时区数据的条件性计算，输出历史时区假设标志与警告，需核实当地实际钟表制度，不能声称唯一确定。太阳钟换日/时辰边界和交节前后 2 分钟拒绝精确出盘。该窗口是保守业务规则，不是天文精度保证，窗口外也需说明近似。城市经度为代表坐标，县区别名不等同于具体出生点经度。
+
+快照为本机已安装的 macOS 2026f.1.0、IANA 派生 2026f-rearguard 数据；版本与每区 SHA256 在 `data/tzdb/manifest.json`，许可与更新方法见 `data/tzdb/NOTICE.md`。需要 Python 3.9+ 标准库，不依赖主机 ICU/ZoneInfo 数据版本。1970 年前结果以城市代表时区规则为假设；历史偏移不能证明所有地点当时使用该钟表制度。固定版本也不能预知未来政治改时，更新数据后须重跑回归。
+
+兼容保留 `trueSolarTime` 字段，`method: local_apparent_solar_time_approximation`、`equationOfTimeApplied: true` 明示实际算法；输出 `instant`、`calendarReference`、`calendarPolicy`、`precisionGuard` 可追溯各项口径。与旧版平太阳时结果有实质差异，不能混用新旧时间校正结果。
+
+`npm test` / `npm run verify` 运行完整回归。`node scripts/privacy-check.mjs` 检查 staged 新增内容；`--tracked` 检查索引中的全部源码路径及密钥形状，适用于 CI；`--no-git` 只校验策略加载，不扫描内容。隐私检查是启发式检查，不能代替人工检查。
+
+`.skill-publish-ignore` 为技能打包排除规则；其他打包工具未必读取它。个人报告、开发归档、环境文件和工具记忆应始终排除，发布前需检查实际产物。
+
+## 翻译贡献
+
+英文 README 基于 [@webbrain-one 在 PR #3 中贡献的译文](https://github.com/ai-freer/fortune-skill/pull/3)（版本 `7bce8bd24f140ec8925b213afb5328df455ff36e`），并按当前代码和中文 README 更新术语与行为说明。继续适用仓库 [LICENSE](LICENSE) 及其必需声明，不改变第三方材料的权利状态。
+
+## 流日历法查询
+
+查询某地、某个民用时刻的日干支及年月背景，不需要伪造出生资料：
+
+```bash
+node scripts/daily-context.mjs --date "2026-07-05" --hour 12 --minute 0 --location "北京"
+```
+
+查询地不是默认出生地。“今天”须先按查询地确定；日期、小时和城市必填，分钟默认 0。输出只代表该参考时刻，太阳钟换日或交节可能使民用一天内的干支变化。复用固定时区、均时差近似及边界拒绝规则；失败不回退原始时间。该入口不输出个人评分或指定日期的紫微流日。个性化解释仍须结合本命盘，完整流程见 `SKILL.md`。
+
+## Python 安装加固
+
+未设置 `PYTHON` 时，`python3 scripts/install-python.py` 创建／复用项目 `.venv`，按固定 SHA-256 安装运行依赖，无需激活，也不修改全局包。Node 与直接经典脚本均优先使用 `PYTHON` 覆盖，其次项目环境，最后兼容旧系统环境。源码包构建工具未纳入哈希锁，不能将此称为完整供应链验证。详情见 [Python 安装与供应链边界](references/python-supply-chain.md)。
+
+已有全局环境可以继续使用；新安装默认项目环境，显式 `PYTHON` 优先。`--environment current` 可按哈希安装到所选解释器，`--user` 可选择用户级安装；运行偏好由 Agent 环境中的 `PYTHON` 保持，不自动改写 shell 配置。venv 是依赖隔离，不是安全沙箱。
+
+依赖升级与用户更新步骤见 [依赖维护清单](references/python-supply-chain.md#dependency-maintenance)。

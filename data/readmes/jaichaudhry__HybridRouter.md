@@ -26,6 +26,7 @@
 </p>
 
 - **One conversation, three models.** Apple's on-device model, Apple Private Cloud Compute and a cloud model (Claude, Meta's Muse Wonder, or any model on OpenRouter) share a single transcript. Each turn goes to the one that fits it.
+- **Answers from your documents.** Pass documents to a `KnowledgeBase` and every route can search them on the device. Ones marked private are only ever searched by Apple's models.
 - **Private stays private.** Sensitive turns never reach the cloud model, even after retries or follow-ups. This is enforced in code and checked in tests.
 - **Measured, not guessed.** Every reply shows its route, reason, speed and cost, and a benchmark grades routing on answer quality against cost.
 
@@ -89,7 +90,7 @@ All three models implement Apple's `LanguageModel` protocol, so one `LanguageMod
 ## Use HybridRouterKit in your app
 
 ```swift
-.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.8.0")
+.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.10.1")
 ```
 
 ```swift

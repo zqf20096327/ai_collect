@@ -2,7 +2,7 @@
 
 [![LibreChat](https://img.shields.io/badge/LibreChat-v0.8.4_–_v0.8.8-blue)](https://github.com/LibreChat-AI/LibreChat/releases/tag/v0.8.8)
 
-A third-party native mobile client for [LibreChat](https://www.librechat.ai/) (Android & iOS). Not affiliated with the official LibreChat project — this is an independent app that connects to any self-hosted LibreChat server, no backend modifications required.
+All of [LibreChat](https://www.librechat.ai/), built for Android and iOS. Switchboard keeps the experience you're used to while making it faster and more natural to use on a phone. It also brings new possibilities, from offline chats to interactive content you can keep on your home screen.
 
 > **Backend compatibility:** Tested against LibreChat **v0.8.4 – v0.8.8**. Older releases may work but are not guaranteed; newer releases are supported on a best-effort basis until the next sync.
 
@@ -11,9 +11,7 @@ A third-party native mobile client for [LibreChat](https://www.librechat.ai/) (A
 <p align="center">
   <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/garfiec/Librechat-Mobile"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="80"></a>
   <a href="https://f-droid.org/packages/com.garfiec.librechat/"><img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
-  <!-- Uncomment once the listing is live.
   <a href="https://play.google.com/store/apps/details?id=com.garfiec.librechat.play"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80"></a>
-  -->
   <a href="https://testflight.apple.com/join/pVhFr3a5"><img src="docs/badges/testflight.png" alt="Join the beta on TestFlight" height="80"></a>
 </p>
 
@@ -22,7 +20,7 @@ A third-party native mobile client for [LibreChat](https://www.librechat.ai/) (A
   <a href="https://f-droid.org/packages/com.garfiec.librechat/"><img src="https://img.shields.io/f-droid/v/com.garfiec.librechat?logo=fdroid" alt="F-Droid version"></a>
 </p>
 
-<p align="center"><sub>Google Play is coming soon. iOS is in public beta on TestFlight. See <a href="#install-android">Install (Android)</a> and <a href="#install-ios">Install (iOS)</a> for details.</sub></p>
+<p align="center"><sub>iOS is in public beta on TestFlight. See <a href="#install-android">Install (Android)</a> and <a href="#install-ios">Install (iOS)</a> for details.</sub></p>
 
 ## Why use this instead of the web app?
 
@@ -162,7 +160,7 @@ Without this setting, the server's violation system may accumulate ban points ag
 
 - **Registration** — The app respects your server's registration settings. If registration is disabled server-side, only the login form is shown.
 - **Access gateways** — If your server sits behind Cloudflare Access, Authelia, Authentik or oauth2-proxy, add the headers your gateway expects under **Advanced** on the server URL screen, or later in **Settings → Account → Server connection**.
-- **Self-signed TLS certificates** — Both platforms enforce certificate requirements stricter than browsers, and Android additionally does not trust user-installed CAs by default. See [FAQ.md](FAQ.md#can-i-use-a-self-signed-tls-certificate) for details and workarounds.
+- **Self-signed TLS certificates** — Both platforms enforce certificate requirements stricter than browsers. Install your private CA on the device and the app trusts it; on Android, sign-in and **Settings → General** say when a server relies on one. See [FAQ.md](FAQ.md#can-i-use-a-self-signed-tls-certificate) for the requirements and setup.
 
 ## Requirements
 

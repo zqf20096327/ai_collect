@@ -67,6 +67,8 @@
 
 **2026-11-03：主线已切到脉冲 SoS**（[ADR-0030](docs/adr/ADR-0030-mainline-shift-to-spiking-sos.md)）。上面两格的状态不变——触发线按 ADR-0029 暂缓、纯 CIL 与脉冲 actor 按 ADR-0029 归档；新主线自己的账在 [research/sos](research/sos/DESIGN.md)，那里 E0/E1 已过、E2/E3 两次停线。
 
+**2026-11-04：容量轴归档（[ADR-0033](docs/adr/ADR-0033-capacity-axis-archival.md)）；SEL 的 TI-LIF + CWSSA + SSM + KD 路径收口（[ADR-0034](docs/adr/ADR-0034-sel-distillation-archival.md)），概念保留、路径停止，产品回退 Phase 2；唯一活跃研究线是线 A 脑区特化（预注册已锁，已起跑，结果待出），并行 Paper C（结构见 [paper/c/OUTLINE.md](paper/c/OUTLINE.md)）。** 四条硬边界：纯 CIL（ADR-0029）、脉冲 SoS（ADR-0031）、容量轴（ADR-0033）、SEL 脉冲蒸馏（ADR-0034）。
+
 ## 研究定位
 
 把"智能为什么涌现"拆成四轴：**基质**（规模、维度、突触数）、**动力学**（全局状态变量偏置学习——
@@ -83,7 +85,7 @@
 
 | 部分 | 状态 | 最近更新 |
 | :--- | :--- | :--- |
-| `biosnn-bus` 骨架库 | **0.4.0（音频插件自 0.3.0 起；已发布到 PyPI）；仓内已有 0.5.0（`AdaptiveMembrane`，纯 numpy 的 ALIF），未发布**——插件接口、注册与发现、脉冲总线、**TAAF 时间注意力融合**（rate-based gating，权重由各路发放率现算，**无反向传播**）；`Used in:` [Axo](https://github.com/lzmd-arch/Axo)（生产终端）：其独立进程 `axo.busd` 常驻实例化 `SpikeBus` 并持续 `step()`（融合 + 稀疏随机投影），新记忆经自定义 `ModalityPlugin` 编码后进总线；UI 只读 stdlib 写的 JSONL 事件，不 import 本库 | 2026-11-02 |
+| `biosnn-bus` 骨架库 | **0.6.0（音频插件自 0.3.0 起；已发布到 PyPI）**——0.5.0 加了 `AdaptiveMembrane`（纯 numpy 的 ALIF），0.6.0 加了 `TernaryMembrane`（有符号多值膜，ALIF 的超集）——插件接口、注册与发现、脉冲总线、**TAAF 时间注意力融合**（rate-based gating，权重由各路发放率现算，**无反向传播**）；`Used in:` [Axo](https://github.com/lzmd-arch/Axo)（生产终端）：其独立进程 `axo.busd` 常驻实例化 `SpikeBus` 并持续 `step()`（融合 + 稀疏随机投影），新记忆经自定义 `ModalityPlugin` 编码后进总线；UI 只读 stdlib 写的 JSONL 事件，不 import 本库 | 2026-11-03 |
 | 模态插件 | **四路**：`image_diff`（DVS 事件编码）、`mnist_pulse`（发放率）、**`text_zscore`**（冻结本地 embedding + z-score top-k 群体编码）、**`audio_cochlea`**（对数频带分解 + 发放率；随 0.3.0 发布到 PyPI） | 2026-10-18 |
 | 研究代码：三条验证线 | **第一阶段实现完成**——W1 Hebbian 感知 MNIST **97.79%**（默认闭式解读出；SGD 读出 98.01%）✓；W2 e-prop 序列 sMNIST **0.7764**（30 epoch × 5 种子）→ **0.8889**（**官方收官**：**LIF** @ lr=1e-2 @ 250 epoch，已收敛；同档 ALIF 0.8831 为对照；**同预算 BPTT 对照 0.9630，领先 7.41 个百分点**，这条差距照实写：局部规则仍落后于反向传播；**配方待遇量化**：BPTT 的优化器形式在小学习率上值 **+8.53 pp**（1e-3），在最终选定的学习率上只剩 **+0.88 pp**（落在并列带内）——操作点上两臂的配方是可比的）；lr 交互扫描完成，**LIF 在四档 lr 上全网格领先** ✓；W3 R-STDP CartPole 中位数 **237.8 步**（阈值 ≥ 200）✓。数字与复现记录见[复现记录](docs/reproducibility.md) | 2026-10-18 |
 | **网络规模** | **256 个脉冲神经元**（W2）；W1 另有 3,072 个**速率型**单元（不算脉冲神经元）。计划书 §2.2 的认知核心目标是约 5 万——**差约 195 倍**，详见 [research/README](research/README.md) | 2026-10-18 |
@@ -94,7 +96,9 @@
 | 跨模态检索 | **十轮检索实验**：原标准（绝对 R@1 50%）在两种数据上都无法区分「局部学习成立」，已重述为**恢复率**（合成集 75.2%、Flickr8k **78.7%**，完整网格）；Flickr8k 的**前端**另有验收口径——caption 内容词线性探针 AUC 中位数 **0.790**（文本侧自查 1.000） | 2026-10-17 |
 | 第五阶段：LLM 协同 | **MCP 0.3（只读版 9 工具：4 只读 + 5 提议 `propose.*`；写版本 13 工具：提议进队列、门控落库、可撤销——两版默认都是只读档位，写版本要显式启动，全程 JSONL 审计）→ M1 mock LLM/trace → M2 规则触发（30 场景 0.733）→ M3b 真 qwen3-4b 四判据全过（完成率 0.975 vs 基线 0.350）→ M3e/M3f 真实嵌入闭环（6/8 合并、6 对误合并，间隔规则无效）→ M3h ES 调度 10/10 严格优于规则门 → M3i–M3k 脉冲触发（合成流 5/5 种子 4/4、误触发 0）**；**M3l 真实对话流 ROC：AUC 0.732 vs 规则门 0.7475、工作点 0/5；M3m 留一重标定把命中救到 3–5/5 但留出判据只过 1/5 折、池化 AUC 0.7472；M3n 换分数（`Rmean` 0.80 / `Rcentroid` 0.83）同批过线，M3o 换一批语料后判据复现、「换分数更好」却没复现（`R5` 自己就有 0.84），M3p 扩到 20 段：`Rmean` 均值 0.809、难批 0.752，但逐段只 12/20 比 `R5` 好 → 符号判据不过 → 仍不 ready；M3p 之后把判据换成 conformal（α=0.10 预先写死、只测判据不换分数）：T-1 误触发 0.153、T-2 命中 0.420、T-3 逐段 11/20，三条都不过，但 500 次随机划分的误触发率均值 0.100 = α → 失败点是打分函数太弱，不是分布漂移；单个 10/10 划分认证不了 0.10 量级（sd 0.040，需约 140 段）；判据 v3 换成零参数表面线索分数（数字串 / 中文数字+单位 / 星期 / 引号）：T-1 0.067、T-2 0.760、T-3 20/20 三条全过——但四格分解显示 75/100 的目标轮带具体信息、285/300 的背景轮不带，说明这 20 段测的是「这轮有没有具体事实」而不是「该不该搜索」；事后探针更进一步——20 段的目标轮下标完全相同（按下标猜 100% 准确）、`len(text)` 单独 AUC 0.877，这份语料结构上就不能检验内容信号。触发器仍 not ready**。见 [ADR-0020](docs/adr/ADR-0020-phase-five-m0-readonly-mcp.md)、[M3l 结果](sweep_results/phase5_m3l/README.md)、[M3m 结果](sweep_results/phase5_m3m/README.md)、[M3n](sweep_results/phase5_m3n/README.md)、[M3o](sweep_results/phase5_m3o/README.md)、[M3p](sweep_results/phase5_m3p/README.md)、[v2](sweep_results/phase5_trigger_v2/README.md)、[v3](sweep_results/phase5_trigger_v3/README.md) | 2026-11-02 |
 | **研究项：脉冲 SoS**（[ADR-0030](docs/adr/ADR-0030-mainline-shift-to-spiking-sos.md) → [ADR-0031](docs/adr/ADR-0031-mainline-to-scale.md) 降级） | **E0 全过 → E1 过 → E2/E3 停线 → E3→E7 状态三连**——E0 迷宫难度跨度 **23 档 [12, 62]**；E1 世界模型不确定度 **p1_ready**（ρ 0.842、覆盖 5/5）；状态 0.140 → 0.390 → 0.740 → **0.930**（训练池，GRU confirm **0.90**）；**H1' 两次独立设置都不成立**（E6 −0.015、E7 −0.005，区间都跨 0）。见 [research/sos](research/sos/DESIGN.md)、[E1](sweep_results/sos_e1_v4/README.md)、[E7](sweep_results/sos_e7/README.md) | 2026-11-03 |
-| **主线：规模实验**（[ADR-0031](docs/adr/ADR-0031-mainline-to-scale.md)） | **S2 三条全过，规模是真实有效的轴**——稀疏臂 1024→8192：准确率 **0.628 → 0.774（+14.6pp）**，显存 676 → 3,899.5 MiB（**0.48 MiB/神经元**），耗时恒定 ~1,110 s；稠密臂 256/512/1024：0.4713 / 0.5270 / 0.5872，显存 1,104 → 3,700 MiB、耗时 86 → 734 s（超线性），**2048 放不下**。ADR-0031 的「≤2pp 停止加宽」未触发。**S3**：12288 → **0.788**（+1.4pp）、16384 → **0.797**（+0.9pp），斜率从每倍 +5pp 掉到每档 1pp。**S4 更正了显存的口径**：那 7,489.5 MiB 里有 **7,309 MiB 来自一次 predict 1000 个测试样本**，训练一次 update 只要 **129.9 MiB**。**S5/S6 把这条轴走到底**：32k → 0.805、64k → 0.794（无增益）；把预算从 2 epoch 提到 5，两臂都涨（8k **+5.0pp**、32k **+2.4pp**），但**两臂之差从 3.1pp 缩到 0.5pp**——**饱和是容量的，规模轴到此为止**。见 [S3](sweep_results/scale_s3/README.md)、[S4](sweep_results/scale_s4/README.md)、[S5](sweep_results/scale_s5/README.md)、[S6](sweep_results/scale_s6/README.md) | 2026-11-03 |
+| **主线：规模实验**（[ADR-0031](docs/adr/ADR-0031-mainline-to-scale.md)） | **S2 三条全过，规模是真实有效的轴**——稀疏臂 1024→8192：准确率 **0.628 → 0.774（+14.6pp）**，显存 676 → 3,899.5 MiB（**0.48 MiB/神经元**），耗时恒定 ~1,110 s；稠密臂 256/512/1024：0.4713 / 0.5270 / 0.5872，显存 1,104 → 3,700 MiB、耗时 86 → 734 s（超线性），**2048 放不下**。ADR-0031 的「≤2pp 停止加宽」未触发。**S3**：12288 → **0.788**（+1.4pp）、16384 → **0.797**（+0.9pp），斜率从每倍 +5pp 掉到每档 1pp。**S4 更正了显存的口径**：那 7,489.5 MiB 里有 **7,309 MiB 来自一次 predict 1000 个测试样本**，训练一次 update 只要 **129.9 MiB**。**S5/S6 把这条轴走到底**：32k → 0.805、64k → 0.794（无增益）；把预算从 2 epoch 提到 5，两臂都涨（8k **+5.0pp**、32k **+2.4pp**），但**两臂之差从 3.1pp 缩到 0.5pp**。**S7/S8 换到更吃容量的 SHD**：2 epoch 两臂贴地板（无效），推到 10 epoch 后 8k **0.338** / 32k **0.348**——**只差 1.0pp**。四组（sMNIST 2/5 ep、SHD 2/10 ep）没有一组让 4 倍神经元换来超过 3pp。**8k 附近是容量膝点。** **S9 换到连接轴**：8k 神经元上把 fan-in 从 32 加到 128——准确率 **0.774 → 0.766（−0.8pp）**，时间 **3.2×**。**两条容量轴（神经元、连接）都买不到精度，容量这一类问题整体关掉。**见 [S3](sweep_results/scale_s3/README.md)、[S4](sweep_results/scale_s4/README.md)、[S5](sweep_results/scale_s5/README.md)、[S6](sweep_results/scale_s6/README.md)、[S8](sweep_results/scale_s8/README.md)、[S9](sweep_results/scale_s9/README.md) | 2026-11-03 |
+
+| **研究线 A：脑区特化**（ADR-0034 后的唯一活跃线） | 已起跑（2026-11-04），结果待出：8,192 神经元、fan_in 32、2 臂 × 3 种子；H_A0 两臂 ≥0.60、H_A1 特化 − 均匀 >3pp、H_A2 特化不更密；成本约 1.8 小时 | 2026-11-04 |
 
 **第二阶段的四条成功标准，实况**：
 
@@ -111,7 +115,7 @@
 - **感知层允许冻结预训练前端**（边界声明，见[计划书 §2.3](BioSNN-Plug_项目计划书_v6.3.md)）：「纯局部学习」的主张范围是**突触学习规则**，不是**输入编码器**。判据是「参数进不进梯度」，不是「模型大不大」——冻结的 2GB 预训练 embedding 与固定随机投影等价；反过来，100 行的本地编码器若用反向传播训自己参数，就**违反**这条边界。文本插件用的 `nomic-embed-text`（Ollama，768 维）就是冻结的。
 - （骨架库为何独立成包、为何刻意不包含这些东西，见 [ADR-0001](docs/adr/ADR-0001-skeleton-as-separate-library.md)。）
 - **两个包都已发布到 PyPI**：骨架库 `pip install biosnn-bus`（**0.4.0**：`ProjectedFusionStrategy` 能力协议、公开 `EmbeddingBackend` 注入点、统一 `SpikeBus.step()` 的 dtype 契约）；阶段五 MCP 服务器 `pip install biosnn-mcp`（**0.3.0**：只读版 4 只读 + 5 提议工具；写版本另加队列/撤销/门控 4 个，共 13 个）。都走 PyPI trusted publishing（OIDC，不存 token）：[release.yml](.github/workflows/release.yml)、[release-mcp.yml](.github/workflows/release-mcp.yml)。
-- **骨架库仓内已到 0.5.0（未发布）**：新增 `AdaptiveMembrane`——纯 numpy 的自适应阈值 LIF（ALIF），与研究层 torch 版 `ALIFCell` 逐项对齐（同一输入下的期望脉冲已固化进测试），`beta=0` 退化为 LIF。它是给插件作者的**参考实现**，**没有**接入 Axo 主路径；用法见 [骨架库 README](packages/biosnn-bus/README.md)。
+- **骨架库已发到 0.6.0**：0.5.0 的 `AdaptiveMembrane` 是纯 numpy 的自适应阈值 LIF（ALIF），与研究层 torch 版 `ALIFCell` 逐项对齐；0.6.0 的 `TernaryMembrane` 把脉冲从 0/1 扩到 `-D…+D`，`depth=1, signed=False` 时与 `AdaptiveMembrane` **逐位一致**。两者都是给插件作者的**参考实现**，**没有**接入 Axo 主路径；用法见 [骨架库 README](packages/biosnn-bus/README.md)。
 
 ## 探索项（不进当前排期）
 
@@ -211,7 +215,7 @@ flowchart TB
     SOSN -.->|策略候选| ACT
 
     subgraph SCALE["规模实验主线（ADR-0031）"]
-        SCALEN["稠密 vs 事件驱动稀疏，1k → 8k<br/>◐ 稠密：8 GB 上限约 1.35k（已量）<br/>◐ 稀疏：10k 已跑通单 epoch（40 min / acc 0.697）<br/>✅ S2：稀疏 1024→8192 是 0.628→0.774（+14.6pp），3,900 MiB、耗时恒定<br/>✅ S3：12k 0.788、16k 0.797（斜率 1pp/档）<br/>✅ S4：7.5 GB 里 7.3 GB 是**评测批次**——训练只要 130 MiB<br/>✅ S5/S6：32k 0.805、64k 无增益；5 epoch 下 8k +5.0pp / 32k +2.4pp，**差距从 3.1pp 缩到 0.5pp**<br/>✗ 规模轴到头（容量饱和，不是资源）"]
+        SCALEN["稠密 vs 事件驱动稀疏，1k → 8k<br/>◐ 稠密：8 GB 上限约 1.35k（已量）<br/>◐ 稀疏：10k 已跑通单 epoch（40 min / acc 0.697）<br/>✅ S2：稀疏 1024→8192 是 0.628→0.774（+14.6pp），3,900 MiB、耗时恒定<br/>✅ S3：12k 0.788、16k 0.797（斜率 1pp/档）<br/>✅ S4：7.5 GB 里 7.3 GB 是**评测批次**——训练只要 130 MiB<br/>✅ S5/S6：32k 0.805、64k 无增益；5 epoch 下 8k +5.0pp / 32k +2.4pp，**差距从 3.1pp 缩到 0.5pp**<br/>✅ S7/S8：换 SHD、10 epoch，8k 0.338 vs 32k 0.348（**差 1.0pp**）<br/>✗ 规模轴到头——四组设置无一超过 3pp<br/>✗ **S9 连接轴也不行**：fan-in ×4 → −0.8pp、时间 3.2×<br/>→ 容量这一类问题整体关掉"]
     end
     SCALEN -.->|规模轴| ACT
 ```

@@ -6,37 +6,32 @@
 
 # RecSys-Industrial-Book
 
-**《推荐系统：工业架构与核心算法》开源书稿**  
-AI Agent 使用入口:[`AGENTS.md`](AGENTS.md)、[`CLAUDE.md`](CLAUDE.md)、[`docs/agent-guide.md`](docs/agent-guide.md)；按学习反馈运行 12 周课程见 [`docs/learning-agent-guide.md`](docs/learning-agent-guide.md)。仓库仅从已发布 PDF 在本地临时建立检索索引,不公开 LaTeX 或正文等价 Markdown。
+**《推荐系统：工业架构与核心算法》开源书稿 + AI-native 学习工作台**
 
-🔖 定位：工业级推荐系统硬核专著，主打全链路系统化思维，拒绝碎片化知识点  
-🎯 受众：具备机器学习 / 推荐基础的研究生、算法 / 架构 / 策略工程师、技术研究者  
-❗ 不适合纯零基础小白（建议先学习机器学习与深度学习入门知识）  
-💡 创作理念：随着AI的快速发展，写代码门槛已逐步降低。因此本书主要聚焦于系统认知、架构设计、模块协同、工业策略、业务权衡等方面，帮助大家建立一种系统化、模块化的思维。  
-📦 内容：全书上下册 PDF + 配套可运行代码、实验案例、补充资料（持续更新）  
-📄 授权：个人学习非商用，转载 / 引用请注明出处
+把已发布章节 PDF 作为权威知识源，通过本地优先的 AI Agent 将书稿连接到检索引用、课程学习、复习评估和可运行的推荐系统实践。知识地图帮助定位内容，Agent 帮助读者把内容学会、用起来。
 
-## 社交媒体
+> 面向具备机器学习或推荐基础的研究生、推荐/算法工程师、架构师和技术研究者。零基础读者建议先补机器学习与深度学习基础。书稿和主要学习资料以中文为主。
 
-以下是我的小红书账号，欢迎大家关注我！
+**English:** An industrial recommender-systems e-book paired with a local-first AI Agent learning toolkit for PDF-grounded Q&A, cited retrieval, adaptive courses, review, and hands-on engineering practice.
 
-![小红书账号](/image/social_media.JPG)
+📖 [站内 PDF 阅读器](knowledge-map/reader.html) · 🗺️ [全书知识地图](knowledge-map/) · 🤖 [Agent 五分钟开始](knowledge-map/agent.html#start) · 🎓 [12 周课程](learning-paths/new-engineer.md) · 🧭 [章节地图](knowledge/chapters/README.md) · 🧪 [可运行项目](templates/)
 
+**书稿**：持续更新的上下册电子书稿，聚焦工业推荐系统的全链路架构、算法、工程实践与业务权衡；只发布已审阅的章节 PDF，不公开 LaTeX 或正文等价 Markdown。
 
-## Star趋势
+**AI Agent**：直接基于发布 PDF 建立本地检索索引，提供页码引用、学习路径、练习与工程工作流；无需 MCP 或云端知识库，索引和个人进度保存在本机。
 
-[![Star History Chart](https://api.star-history.com/chart?repos=jhljx/RecSys-Industrial-Book&type=date&legend=top-left&sealed_token=QQ2nabIzoDUPOEalArQIzS-v5IfLPFt1QCHPIOv6cVpQ1_1Jr3aHpqMvn2UzxFgzK7_ffFuYFvOlUWDCFLbBwK3rnBGHKhQGYV2skkO1mpFpdRsGeNaDakGPE8gCDxbp9bWUHa7zFbic3GZgZd6TaDEieKMAQDbD-ye4ECar1or6E0Oxl3kGG75I3qFK)](https://www.star-history.com/?repos=jhljx%2FRecSys-Industrial-Book&type=date&legend=top-left)
+**授权**：个人学习非商用；转载或引用请注明出处。
 
 
-## AI Agent：把电子书变成可执行的工业级推荐系统知识库
+## AI Agent 学习工作台：让电子书可检索、可学习、可实践
 
-发布 PDF 是唯一权威正文；`knowledge/` 提供独立撰写的章节地图、概念卡和前置图谱；`learning-paths/` 提供证据化课程；`.agents/skills/` 可安装到 Claude Code 等兼容客户端；`templates/` 提供可运行的工业推荐系统练习。无需 MCP 或云端知识库，索引和个人进度都只保存在本机且被 Git 忽略。
+发布 PDF 是唯一权威正文。Agent 从本地 PDF 索引检索并引用页码；`knowledge/` 提供独立撰写的章节地图、概念卡和前置图谱；`learning-paths/` 提供按证据和反馈运行的课程；`.agents/skills/` 可安装到 Claude Code 等兼容客户端；`templates/` 提供可运行的工业推荐系统练习。无需 MCP 或云端知识库，索引和个人进度都保存在本机且被 Git 忽略。
 
 ### 你可以直接做什么
 
 | 能力 | 读者获得什么 | 入口 |
 |---|---|---|
-| 查书与可靠引用 | 混合检索 20 章发布 PDF，读取命中页并引用 PDF 页码 | `search`、`page`、`eval` |
+| 查书与可靠引用 | 检索 20 章发布 PDF，读取命中页并引用 PDF 页码 | `search`、`page`、`eval` |
 | 12 周学习课程 | 新人全链路或研究生可信实验路线，按反馈和时间预算生成今日任务 | `course start/today/feedback/status` |
 | 证据化掌握 | 用提交物、实际命令输出、主路径、失败路径和测验分数验收；不接受口头“学会了” | `course submit`、`complete` |
 | 自适应复习 | 前置满足后推荐下一主题，低分补救，七天后安排回忆、纠错和迁移 | `next`、`course review` |
@@ -75,6 +70,18 @@ python3 tools/install_skills.py --client claude
 
 项目入口：[`knowledge/chapters/`](knowledge/chapters/README.md) 的章节阅读地图、[`knowledge/`](knowledge/README.md) 的概念卡与前置图谱、[`learning-paths/new-engineer.md`](learning-paths/new-engineer.md) 的新人课程、[`learning-paths/graduate.md`](learning-paths/graduate.md) 的研究生课程，以及 [`templates/`](templates/) 的四个可运行项目。完整命令和引用规则见 [`docs/agent-guide.md`](docs/agent-guide.md)；课程提示词、证据模板、反馈与隐私边界见 [`docs/learning-agent-guide.md`](docs/learning-agent-guide.md)；评测协议见 [`evals/usability.md`](evals/usability.md)。
 
+### 可视化知识地图
+
+[`knowledge-map/index.html`](knowledge-map/index.html) 是可直接本地打开的静态知识蓝图：五个知识板块汇总 20 章、56 张概念卡及前置依赖，并连接两条 12 周课程路线。页面只使用仓库公开导航元数据，不发布 PDF 提取文本或个人学习记录。GitHub Pages 当前从 `main` 根目录发布，合并到 `main` 后可访问 [`/RecSys-Industrial-Book/knowledge-map/`](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/)；未合并前请使用本地文件入口。
+
+[`knowledge-map/reader.html`](knowledge-map/reader.html) 是无需构建工具的站内章节 PDF 阅读器，可本地以 `file://` 打开，也可通过 [GitHub Pages](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html) 使用；左侧选择已发布章节、上一章/下一章和 PDF 页码跳转均保持在阅读器内。链接如 `reader.html#ch10&page=60` 可直达第 10 章 PDF 第 60 页。PDF 在浏览器内嵌显示，若浏览器禁用内嵌 PDF 或本地文件预览，可使用页面底部的直接打开/下载链接；PDF 页码片段的具体展示由浏览器 PDF 查看器决定。
+
+知识内容更新后运行 `python3 tools/build_knowledge_map.py` 重建 `knowledge-map/data.js`，再运行 `python3 -m unittest discover -s tools/tests -v` 检查章节、概念、依赖、课程及 PDF 链接。网页没有服务端、账号或在线 Agent；全文检索和个人进度仍通过本地 CLI。
+
+## Star 趋势
+
+[![Star History Chart](https://api.star-history.com/chart?repos=jhljx/RecSys-Industrial-Book&type=date&legend=top-left)](https://www.star-history.com/?repos=jhljx%2FRecSys-Industrial-Book&type=date&legend=top-left)
+
 ### 内容更新不会漏掉课程
 
 新章节在私有写作仓库完成 LaTeX 和审阅 PDF 后，发布工作流要求同时提交章节地图、1–3 张概念卡以及新人/研究生两条课程的单元更新。发布器会拒绝缺失课程更新、未知 concept、未覆盖新章节或仍有待定 PDF 页码的发布，再确定性重建知识目录与图谱。因此 `knowledge/`、`concepts` 和 `learning-paths/courses.json` 与新章节一同演进，而不是靠事后手工补齐。
@@ -85,26 +92,26 @@ python3 tools/install_skills.py --client claude
 
 | 章节         | 章节名称                     | 快捷链接      |
 | :--------- | :----------------------- | :-------- |
-| **第 0 章**  | 前言            | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch00%20%E5%89%8D%E8%A8%80/%E7%AC%AC0%E7%AB%A0-%E5%89%8D%E8%A8%80.pdf) |
-| **第 1 章**  | 推荐系统概述                   | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch01%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0.pdf) |
-| **第 2 章**  | 推荐系统架构              | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch02%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.pdf) |
-| **第 3 章**  | 推荐系统评价体系            | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch03%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB.pdf) |
-| **第 4 章**  | 召回与过滤模块           | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch04%20%E5%8F%AC%E5%9B%9E%E4%B8%8E%E8%BF%87%E6%BB%A4%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%8F%AC%E5%9B%9E%E4%B8%8E%E8%BF%87%E6%BB%A4%E6%A8%A1%E5%9D%97.pdf) |
-| **第 5 章**  | 粗排模块           | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch05%20%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9D%97.pdf) |
-| **第 6 章**  | 精排模块          | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch06%20%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%85%AD%E7%AB%A0-%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9D%97.pdf) |
-| **第 7 章**  | 重排模块               | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch07%20%E9%87%8D%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%B8%83%E7%AB%A0-%E9%87%8D%E6%8E%92%E6%A8%A1%E5%9D%97.pdf) |
-| **第 8 章**  | 混排模块               | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch08%20%E6%B7%B7%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%B7%B7%E6%8E%92%E6%A8%A1%E5%9D%97.pdf) |
-| **第 9 章**  | 生成式推荐模块        | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch09%20%E7%94%9F%E6%88%90%E5%BC%8F%E6%8E%A8%E8%8D%90%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E7%94%9F%E6%88%90%E5%BC%8F%E6%8E%A8%E8%8D%90%E6%A8%A1%E5%9D%97.pdf) |
-| **第 10 章** | 召回模型          | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch10%20%E5%8F%AC%E5%9B%9E%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E7%AB%A0-%E5%8F%AC%E5%9B%9E%E6%A8%A1%E5%9E%8B.pdf) |
-| **第 11 章** | 粗排模型       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch11%20%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B.pdf) |
-| **第 12 章** | 精排模型 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch12%20%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0-%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9E%8B.pdf) |
-| **第 15 章** | 特征工程       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch15%20%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.pdf) |
-| **第 16 章** | 推荐系统离线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch16%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf) |
-| **第 17 章** | 推荐系统在线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch17%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf) |
-| **第 18 章** | 向量检索系统 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch18%20%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F.pdf) |
-| **第 19 章** | 推荐系统偏差问题 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch19%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98/%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98.pdf) |
-| **第 23 章** | 时长预估建模 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch23%20%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1/%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0-%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1.pdf)
-| **第 28 章** | 强化学习推荐场景 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/ch28%20%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E6%8E%A8%E8%8D%90%E5%9C%BA%E6%99%AF/%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E6%8E%A8%E8%8D%90%E5%9C%BA%E6%99%AF.pdf)
+| **第 0 章**  | 前言            | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch0&page=1) |
+| **第 1 章**  | 推荐系统概述                   | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch1&page=1) |
+| **第 2 章**  | 推荐系统架构              | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch2&page=1) |
+| **第 3 章**  | 推荐系统评价体系            | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch3&page=1) |
+| **第 4 章**  | 召回与过滤模块           | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch4&page=1) |
+| **第 5 章**  | 粗排模块           | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch5&page=1) |
+| **第 6 章**  | 精排模块          | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch6&page=1) |
+| **第 7 章**  | 重排模块               | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch7&page=1) |
+| **第 8 章**  | 混排模块               | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch8&page=1) |
+| **第 9 章**  | 生成式推荐模块        | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch9&page=1) |
+| **第 10 章** | 召回模型          | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch10&page=1) |
+| **第 11 章** | 粗排模型       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch11&page=1) |
+| **第 12 章** | 精排模型 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch12&page=1) |
+| **第 15 章** | 特征工程       | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch15&page=1) |
+| **第 16 章** | 推荐系统离线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch16&page=1) |
+| **第 17 章** | 推荐系统在线服务      | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch17&page=1) |
+| **第 18 章** | 向量检索系统 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch18&page=1) |
+| **第 19 章** | 推荐系统偏差问题 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch19&page=1) |
+| **第 23 章** | 时长预估建模 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch23&page=1) |
+| **第 28 章** | 强化学习推荐场景 | [阅读本章](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch28&page=1) |
 
 ---
 
@@ -134,7 +141,7 @@ python3 tools/install_skills.py --client claude
 后续整本书籍还是会按照上下两册的目录结构进行持续更新。其中前4部分从第一章截止到第十七章为上册内容，第十八章到第三十七章为下册内容。
 
 - **第一部分 推荐系统基础**  
-    - [**第 1 章 推荐系统概述**](https://jhljx.github.io/RecSys-Industrial-Book/ch01%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0/%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0.pdf)  
+    - [**第 1 章 推荐系统概述**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch1&page=1)
         - 1.1 什么是推荐系统  
         - 1.2 推荐系统发展历程
             - 1.2.1 人工推荐时代
@@ -155,7 +162,7 @@ python3 tools/install_skills.py --client claude
             - 1.5.3 多目标优化挑战
             - 1.5.4 冷启动挑战      
         - 1.6 本章小结  
-    - [**第 2 章 推荐系统架构**](https://jhljx.github.io/RecSys-Industrial-Book/ch02%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84/%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84.pdf)  
+    - [**第 2 章 推荐系统架构**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch2&page=1)
         - 2.1 混合推荐系统架构  
         - 2.2 级联式推荐系统  
         - 2.3 推荐系统的离线架构与在线架构  
@@ -170,7 +177,7 @@ python3 tools/install_skills.py --client claude
             - 2.6.4 大模型驱动的内容理解数据   
         - 2.7 本章小结  
         - 2.8 参考文献  
-    - [**第 3 章 推荐系统评价体系**](https://jhljx.github.io/RecSys-Industrial-Book/ch03%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB/%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E8%AF%84%E4%BB%B7%E4%BD%93%E7%B3%BB.pdf)  
+    - [**第 3 章 推荐系统评价体系**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch3&page=1)
         - 3.1 离线评价指标  
             - 3.1.1 分类指标  
             - 3.1.2 排序指标  
@@ -184,7 +191,7 @@ python3 tools/install_skills.py --client claude
         - 3.4 推荐系统监控体系  
         - 3.5 本章小结  
 - **第二部分 推荐系统模块**  
-    - [**第 4 章 召回与过滤模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch04%20%E5%8F%AC%E5%9B%9E%E4%B8%8E%E8%BF%87%E6%BB%A4%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%8F%AC%E5%9B%9E%E4%B8%8E%E8%BF%87%E6%BB%A4%E6%A8%A1%E5%9D%97.pdf)  
+    - [**第 4 章 召回与过滤模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch4&page=1)
         - 4.1 为什么需要召回
         - 4.2 多路召回架构  
         - 4.3 召回技术分类
@@ -202,7 +209,7 @@ python3 tools/install_skills.py --client claude
             - 4.5.5 过滤模块面临的挑战
         - 4.6 本章小结  
         - 4.7 参考文献  
-    - [**第 5 章 粗排模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch05%20%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9D%97.pdf)  
+    - [**第 5 章 粗排模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch5&page=1)
         - 5.1 为什么需要粗排  
         - 5.2 粗排模型  
         - 5.3 链路一致性模型  
@@ -221,7 +228,7 @@ python3 tools/install_skills.py --client claude
         - 5.7 粗排候选集集合优化   
         - 5.8 本章小结
         - 5.9 参考文献  
-    - [**第 6 章 精排模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch06%20%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%85%AD%E7%AB%A0-%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9D%97.pdf)  
+    - [**第 6 章 精排模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch6&page=1)
         - 6.1 精排模块架构  
         - 6.2 精排模型与 LTR 模型  
         - 6.3 精排模型常见的预估任务  
@@ -242,7 +249,7 @@ python3 tools/install_skills.py --client claude
             - 6.5.5 精排保量与强插策略  
         - 6.6 本章小结  
         - 6.7 参考文献  
-    - [**第 7 章 重排模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch07%20%E9%87%8D%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%B8%83%E7%AB%A0-%E9%87%8D%E6%8E%92%E6%A8%A1%E5%9D%97.pdf)  
+    - [**第 7 章 重排模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch7&page=1)
         - 7.1 为什么需要重排
         - 7.2 重排模块架构  
         - 7.3 序列生成  
@@ -254,7 +261,7 @@ python3 tools/install_skills.py --client claude
         - 7.6 重排后处理  
         - 7.7 本章小结  
         - 7.8 参考文献  
-    - [**第 8 章 混排模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch08%20%E6%B7%B7%E6%8E%92%E6%A8%A1%E5%9D%97/%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%B7%B7%E6%8E%92%E6%A8%A1%E5%9D%97.pdf)
+    - [**第 8 章 混排模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch8&page=1)
         - 8.1 多业务混排问题
         - 8.2 混排前处理
             - 8.2.1 分数校准方法
@@ -271,7 +278,7 @@ python3 tools/install_skills.py --client claude
             - 8.6.4 保量与降权  
         - 8.7 本章小结
         - 8.8 参考文献  
-    - [**第 9 章 生成式推荐模块**](https://jhljx.github.io/RecSys-Industrial-Book/ch09%20%E7%94%9F%E6%88%90%E5%BC%8F%E6%8E%A8%E8%8D%90%E6%A8%A1%E5%9D%97/%E7%AC%AC%E4%B9%9D%E7%AB%A0-%E7%94%9F%E6%88%90%E5%BC%8F%E6%8E%A8%E8%8D%90%E6%A8%A1%E5%9D%97.pdf)  
+    - [**第 9 章 生成式推荐模块**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch9&page=1)
         - 9.1 生成式推荐概述  
         - 9.2 生成式推荐架构
         - 9.3 语义ID生成
@@ -295,7 +302,7 @@ python3 tools/install_skills.py --client claude
         - 9.9 本章小结  
         - 9.10 参考文献  
 - **第三部分 推荐系统核心算法**  
-    - [**第 10 章 召回模型**](https://jhljx.github.io/RecSys-Industrial-Book/ch10%20%E5%8F%AC%E5%9B%9E%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E7%AB%A0-%E5%8F%AC%E5%9B%9E%E6%A8%A1%E5%9E%8B.pdf)  
+    - [**第 10 章 召回模型**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch10&page=1)
         - 10.1 协同过滤召回    
             - 10.1.1 ItemCF召回  
             - 10.1.2 UserCF召回  
@@ -382,7 +389,7 @@ python3 tools/install_skills.py --client claude
         - 10.7 召回模型落地讨论    
         - 10.8 本章小结  
         - 10.9 参考文献  
-    - [**第 11 章 粗排模型**](https://jhljx.github.io/RecSys-Industrial-Book/ch11%20%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E4%B8%80%E7%AB%A0-%E7%B2%97%E6%8E%92%E6%A8%A1%E5%9E%8B.pdf)  
+    - [**第 11 章 粗排模型**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch11&page=1)
         - 11.1 双塔模型
             - 11.1.1 DSSM模型
             - 11.1.2 TDSSM模型
@@ -425,7 +432,7 @@ python3 tools/install_skills.py --client claude
         - 11.6 粗排模型实践案例
         - 11.7 粗排模型实践讨论       
         - 11.8 本章小结  
-    - [**第 12 章 精排模型**](https://jhljx.github.io/RecSys-Industrial-Book/ch12%20%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9E%8B/%E7%AC%AC%E5%8D%81%E4%BA%8C%E7%AB%A0-%E7%B2%BE%E6%8E%92%E6%A8%A1%E5%9E%8B.pdf)
+    - [**第 12 章 精排模型**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch12&page=1)
         - 12.1 精排模型的发展历程
             - 12.1.1 机器学习时代
             - 12.1.2 深度学习时代
@@ -491,7 +498,7 @@ python3 tools/install_skills.py --client claude
         - 14.3 本章小结
         - 14.4 参考文献
 - **第四部分 推荐系统工程实践**
-    - [**第 15 章 特征工程**](https://jhljx.github.io/RecSys-Industrial-Book/ch15%20%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/%E7%AC%AC%E5%8D%81%E4%BA%94%E7%AB%A0-%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B.pdf)
+    - [**第 15 章 特征工程**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch15&page=1)
         - 15.1 特征体系
             - 15.1.1 用户特征
             - 15.1.2 物品特征
@@ -527,7 +534,7 @@ python3 tools/install_skills.py --client claude
             - 15.6.7 特征治理   
         - 15.7 本章小结  
         - 15.8 参考文献  
-    - [**第 16 章 推荐系统离线服务**](https://jhljx.github.io/RecSys-Industrial-Book/ch16%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E5%85%AD%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E7%A6%BB%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf)
+    - [**第 16 章 推荐系统离线服务**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch16&page=1)
         - 16.1 样本流服务  
             - 16.1.1 普通任务样本流服务  
                 - 16.1.1.1 特征预处理消费者  
@@ -576,7 +583,7 @@ python3 tools/install_skills.py --client claude
             - 16.8.6 混合精度、异常指标与故障回滚      
         - 16.9 本章小结  
         - 16.10 参考文献  
-    - [**第 17 章 推荐系统在线服务**](https://jhljx.github.io/RecSys-Industrial-Book/ch17%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1/%E7%AC%AC%E5%8D%81%E4%B8%83%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%9C%A8%E7%BA%BF%E6%9C%8D%E5%8A%A1.pdf)
+    - [**第 17 章 推荐系统在线服务**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch17&page=1)
         - 17.1 在线推理架构
             - 17.1.1 全链路请求处理流程
             - 17.1.2 RPC调用、限流、熔断与兜底链路
@@ -612,7 +619,7 @@ python3 tools/install_skills.py --client claude
             - 17.6.6 DNN精排模型的在线-离线整体框架
             - 17.6.7 训练与在线服务一致性   
         - 17.7 本章小结  
-    - [**第 18 章 向量检索系统**](https://jhljx.github.io/RecSys-Industrial-Book/ch18%20%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F/%E7%AC%AC%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F.pdf)
+    - [**第 18 章 向量检索系统**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch18&page=1)
         - 18.1 ANN概述
         - 18.2 基于树结构的ANN  
             - 18.2.1 KD树
@@ -636,7 +643,7 @@ python3 tools/install_skills.py --client claude
         - 18.8 本章小结  
         - 18.9 参考文献  
 - **第五部分 推荐系统进阶**
-    - [**第 19 章 推荐系统偏差问题**](https://jhljx.github.io/RecSys-Industrial-Book/ch19%20%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98/%E7%AC%AC%E5%8D%81%E4%B9%9D%E7%AB%A0-%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F%E5%81%8F%E5%B7%AE%E9%97%AE%E9%A2%98.pdf)  
+    - [**第 19 章 推荐系统偏差问题**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch19&page=1)
         - 19.1 推荐偏差问题概述  
         - 19.2 样本选择偏差  
         - 19.3 用户群体偏差  
@@ -675,7 +682,7 @@ python3 tools/install_skills.py --client claude
         - 22.3 HCCP
         - 22.4 链路一致性建模讨论
         - 22.5 本章小结
-    - [**第 23 章 时长预估建模**](https://jhljx.github.io/RecSys-Industrial-Book/ch23%20%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1/%E7%AC%AC%E4%BA%8C%E5%8D%81%E4%B8%89%E7%AB%A0-%E6%97%B6%E9%95%BF%E9%A2%84%E4%BC%B0%E5%BB%BA%E6%A8%A1.pdf)
+    - [**第 23 章 时长预估建模**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch23&page=1)
         - 23.1 基于阈值化定义的时长建模  
             - 23.1.1 Duration-aware的时长阈值定义  
             - 23.1.2 基于比例的Duration-aware时长阈值定义  
@@ -745,7 +752,7 @@ python3 tools/install_skills.py --client claude
         - 27.9 Uplift 模型
         - 27.10 本章小结
 - **第六部分 强化学习推荐**
-    - [**第 28 章 强化学习推荐场景**](https://jhljx.github.io/RecSys-Industrial-Book/ch28%20%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E6%8E%A8%E8%8D%90%E5%9C%BA%E6%99%AF/%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%85%AB%E7%AB%A0-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E6%8E%A8%E8%8D%90%E5%9C%BA%E6%99%AF.pdf)
+    - [**第 28 章 强化学习推荐场景**](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html#ch28&page=1)
         - 28.1 流量分配与调控  
         - 28.2 流量降级优化  
         - 28.3 多任务融合  
@@ -840,4 +847,9 @@ python3 tools/install_skills.py --client claude
         - 38.1 全书回顾
         - 38.2 核心研究方向
         - 38.3 前沿展望
- 
+
+## 作者与联系
+
+欢迎关注小红书账号：
+
+![小红书账号](/image/social_media.JPG)

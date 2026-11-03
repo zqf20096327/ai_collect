@@ -63,7 +63,7 @@ Checked against [Super-agent 设计探索](https://mp.weixin.qq.com/s/zoS7GlReWP
 
 - [x] **Triggers.** Semi-structured events from IM / GitHub-style sources.
 - [x] **Fast Path.** Deterministic source and noise rules (`ingress/filter`).
-- [x] **Slow Path.** Semantic or policy filter. The shipped classifier is deterministic (`ruleClassify`); a model-backed policy classifier is not wired, so rules stand in.
+- [x] **Slow Path.** Semantic or policy filter. The shipped classifier is deterministic (`ruleClassify`) for both `MockModel` and `HttpOpenAI`; a model-backed policy classifier is not wired, so rules stand in. `test/slow-path-policy.test.ts` pins this and proves classification never calls the network.
 - [x] **Thread.** One topic or PR. One event stream. Thread key.
 - [x] **Already subscribed.** Straight to the Worker. Log line `bypass=subscription` plus `ticketId`.
 - [x] **Not subscribed.** Cold start: Intake → Eval → Ticket.
@@ -263,7 +263,7 @@ export DS_AGENT_GH_REPO=your-account/your-writable-repo
 pnpm demo
 ```
 
-[GitHub Actions](./.github/workflows/ci.yml) runs `pnpm typecheck` and `pnpm test` on pushes to `main` and on pull requests. The demo job runs `pnpm demo:local` (in-memory fixture smoke, no repository writes) when `DEEPSEEK_API_KEY` or `DS_AGENT_API_KEY` is set; real-channel acceptance is `pnpm demo` run by an operator with `gh` auth.
+[GitHub Actions](./.github/workflows/ci.yml) runs `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm test`, and `pnpm test:coverage` on pushes to `main` and on pull requests. `pnpm lint` checks repo-specific invariants (roadmap board shape, removed-extension-switch naming, tracked build paths, and `console` usage outside the CLI); `pnpm format:check` uses `git diff --check`. `pnpm test:coverage` runs the offline fixture suite with a text and JSON summary and no failure threshold. The demo job runs `pnpm demo:local` (in-memory fixture smoke, no repository writes) when `DEEPSEEK_API_KEY` or `DS_AGENT_API_KEY` is set; real-channel acceptance is `pnpm demo` run by an operator with `gh` auth.
 
 State lives in `DS_AGENT_HOME`, or in `./.ds-agent` (SQLite).
 
@@ -347,6 +347,14 @@ A provider key alone fills in the base and default model. The first matching row
 `pnpm ds-agent chat` calls `createModelFromEnv()` (legacy offline Mock only when no key). Demo and `pnpm test` call `requireLiveModelFromEnv()` / Magpie HttpOpenAI and refuse MockModel.
 
 Use a small model for the Router and Watchdog. Use a stronger one for the Worker. The table is one model for the process.
+
+## Local gateway and iMessage
+
+`ds-agent gateway` is a local OpenAI-compatible proxy in front of the providers you already configure. It speaks `POST /v1/chat/completions` (JSON and SSE), `/v1/messages` (Anthropic), `/v1/responses`, `/v1/embeddings`, and Gemini `generateContent`, and routes by model, priority, or a `provider/model` prefix with failover and per-provider metering. It mints a local bearer token at `<stateDir>/gateway.token` (0600), and the CLI reuses it when `DS_AGENT_GATEWAY_URL` is set. With a `gateway.config.json` present, `chat` and `imessage` start it in-process. See [docs/GATEWAY.md](./docs/GATEWAY.md).
+
+`ds-agent setup --write` discovers local OpenAI-compatible products (Magpie, Ollama, LM Studio, llama.cpp, vLLM) and scaffolds `gateway.config.json`. Fill `apiKey` for any provider that needs auth; the gateway never reads a product's stored credentials.
+
+`ds-agent imessage` is a two-way iMessage channel for a dedicated Apple ID: inbound from `~/Library/Messages/chat.db` (read-only, `is_from_me = 0` only), outbound through Messages.app via `osascript` with the text passed in the environment. It needs macOS Full Disk Access plus Automation permission. See [docs/IMESSAGE.md](./docs/IMESSAGE.md).
 
 ## Credits
 

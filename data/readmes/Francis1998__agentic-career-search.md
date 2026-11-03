@@ -652,6 +652,15 @@ uv run uvicorn autoapply_agent.main:app --reload
 ![BereavementTravelGapAdvisor](assets/demo/bereavement-travel-gap-advisor.gif)
 | Carrot/Progyny/Maven IVF cycle-coverage planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `FertilityIvfCycleGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
 ![FertilityIvfCycleGapAdvisor](assets/demo/fertility-ivf-cycle-gap-advisor.gif)
+| Bright Horizons/Care.com/Rippling emergency backup-childcare planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `EmergencyBackupChildcareGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![EmergencyBackupChildcareGapAdvisor](assets/demo/emergency-backup-childcare-gap-advisor.gif)
+
+| Notion/Rippling/Deel sabbatical-travel stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `SabbaticalTravelStipendGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![SabbaticalTravelStipendGapAdvisor](assets/demo/sabbatical-travel-stipend-gap-advisor.gif)
+
+| Rippling/Lattice/BambooHR Q4 bonus-cliff planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `Q4BonusCliffGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
+![Q4BonusCliffGapAdvisor](assets/demo/q4-bonus-cliff-gap-advisor.gif)
+
 
 | Notion/Rippling/Deel cybersecurity / hardware-security stipend planners bury related math in closed UIs | Workers lack a local `offered_usd` vs `needed_usd` band | `CybersecurityStipendGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-approves |
 ![CybersecurityStipendGapAdvisor](assets/demo/cybersecurity-stipend-gap-advisor.gif)

@@ -1,6 +1,9 @@
+
 # EmberLing
 
 ![EmberLing](assets/brand/app-icon.svg)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-f54e00.svg)](LICENSE)
 
 **EmberLing** is a desktop AI agent for Windows — chat, tools, bots, automations, MCP, voice, publishing — rebuilt from static reverse-engineering (REA) of a shipped 124 MB installer (`Grok_Bot_0.75.8_Setup.exe`) and re-wired to run entirely on **free / keyless AI providers**. Built for learning and hackathon use.
 
@@ -11,6 +14,12 @@
 **One-line pitch:** every feature of a paid desktop agent, running on a free API key — or no key at all.
 
 ---
+
+## The 22-second demo
+
+No sound, no narration — it types, builds, asks before it acts and then repeats on schedule, all by itself. Turn the volume up; there's nothing to hear.
+
+https://github.com/user-attachments/assets/9eb6c3ff-79d5-4489-9b2c-59b6ccafb978
 
 ## Screenshots
 

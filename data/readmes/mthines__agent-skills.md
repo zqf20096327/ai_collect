@@ -153,7 +153,6 @@ How it works inside: [`full-tier.md`](./skills/workflow/autonomous-workflow/aw/r
 | **`quality/`** | *Code, tests, plans, AI apps* |
 | [`/pr-review`](./skills/quality/pr-review/SKILL.md) | One read-only review of a PR: a single report plus inline findings. Drop a `REVIEW.md` in any directory to brief the reviewer, or a [team lens](./skills/quality/pr-review/README.md) in `.agents/review/lenses/` to have it check your own rules on your paths. |
 | [`/review-loop`](./skills/quality/review-loop/SKILL.md) | Reviews, fixes, and resolves a PR's threads until it converges; with no PR, it does the same on the local branch. |
-| [`/pr-review-lite`](./skills/quality/pr-review-lite/SKILL.md) | A cost-first shadow reviewer: a script, not an agent, that reviews the same packet with direct cached model calls and lists every file it skipped. `lite-compare` shows how it differs from `/pr-review`. Writes artifacts only; never posts. |
 | [`/optimize-approach`](./skills/quality/optimize-approach/SKILL.md) | Asks whether a change or plan takes the best approach, and names a better one only when it clearly wins. |
 | [`/polish`](./skills/quality/polish/SKILL.md) | Pre-PR cleanup: simplifies the changed code and prunes noise comments. |
 | [`impact-map`](./skills/quality/impact-map/SKILL.md) | An impact-first view of a PR: a verdict, one colored diagram, and the decisions a reviewer must make. |
@@ -200,6 +199,39 @@ How it works inside: [`full-tier.md`](./skills/workflow/autonomous-workflow/aw/r
 
 A `/` name is a slash command; the rest also trigger from plain language.
 The skills dispatch five agents of their own: [`pr-reviewer`](./agents/pr-reviewer.md), [`branch-reviewer`](./agents/branch-reviewer.md), [`feature-pr-verifier`](./agents/feature-pr-verifier.md), [`aw-executor`](./skills/workflow/autonomous-workflow/templates/aw-executor.agent.md), and [`aw-tester`](./skills/workflow/autonomous-workflow/templates/aw-tester.agent.md).
+
+## Configuring pr-reviewer
+
+Two independent settings control a review: **depth** (how much work it does) and **model** (which model does it).
+Set either per run on `/pr-review`, or for the whole repo in `.agents/review/config.yaml`, which is read from the PR's base commit so a PR cannot lower its own bar.
+
+| Depth preset | Adds |
+| --- | --- |
+| `quick` | correctness, intent, and quality finders; measurability lens |
+| `standard` | consumer-impact, dependency, and standards on the delta; verifier tier 2 |
+| `deep` | consumer-impact and standards on every file; ×1.5 tool-call budget; forces the `deep` tier |
+| `max` | tier-3 (execution) verification; ×2 budget; forces the `deep` tier |
+
+With no setting, the routed tier picks the preset.
+A high-stakes diff (auth, payments, schema migration, secrets, infra, or a high blast radius) is lifted to at least `standard`, and the report says so: `depth quick -> standard (floor: infra)`.
+
+```yaml
+# .agents/review/config.yaml
+depth: standard        # quick | standard | deep | max
+models:
+  workers: haiku       # opus | sonnet | haiku | claude-* id; the intent and pass-2 sub-agents
+finder_passes: 1       # 1 | 2
+impact_image: false    # true | false
+```
+
+```text
+/pr-review 42 --depth deep --model sonnet
+```
+
+Precedence is CLI over config over default; `depth:` beats the deprecated `effort:` and `thoroughness:` keys.
+A bad flag or flag combination exits before any model turn.
+`--model` sets the reviewer's model; where a harness cannot set a model, the run says so.
+Full reference for people and agents setting this up: [`arguments.md`](./agents/pr-reviewer/rules/arguments.md); why it is shaped this way: [`depth-presets.md`](./agents/pr-reviewer/references/depth-presets.md).
 
 ## Install
 

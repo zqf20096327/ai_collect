@@ -174,12 +174,18 @@ It seeds no data. Re-run any time with `portopt setup`.
 Lifecycle:
 
 ```bash
-portopt start     # decrypt secrets → render as compose secrets → docker compose --profile fund up -d --wait
+portopt start     # decrypt secrets → render as compose secrets → docker compose up -d --wait (ingestion always, fund when an LLM backend is configured)
 portopt stop      # stop the fund engine + delete its plaintext LLM keys (daemon + db keep running)
 portopt stop --all  # stop the whole stack + delete every rendered plaintext secret
 portopt status    # report Docker + service health (non-zero exit if anything is down)
 ```
 
+> `portopt start` brings up the fund engine only when an LLM backend is configured
+> (a local Ollama base URL, or the selected provider's key plus an explicit model
+> id; Ollama Cloud is the default provider). Without one it starts the data
+> pipeline alone and prints one line saying so; run `portopt setup --reconfigure`
+> to add a backend, then `portopt start` again.
+>
 > `portopt start` renders the encrypted secrets into git-ignored
 > `./secrets/<name>` files. `portopt stop` deletes the LLM keys only the fund
 > mounts, but keeps the three the ingestion daemon mounts (Trading 212 key and
@@ -188,6 +194,16 @@ portopt status    # report Docker + service health (non-zero exit if anything is
 > Both refuse while a `fund run`, `fund approve` or `fund-tui` is running inside
 > the fund container, because stopping it would kill that round mid-flight; add
 > `--force` to stop anyway.
+
+**First run.** Setup seeds no data, so a fresh database has an empty `instruments`
+table. The first `daily_pipeline` (07:00, or run it straight away with
+`docker compose exec scheduler python -m app.cli daily`) therefore builds the
+universe first, a multi-minute yfinance Screener sweep, and then downloads prices
+and fundamentals for every instrument it found. Plan for many hours: about 8,700
+tickers on 14 exchanges took roughly 14 hours on the first reported install. The
+scheduler logs a notice when it starts that download, later daily runs are
+incremental and short, and an interrupted bootstrap resumes on the next run
+because already-fresh data is skipped.
 
 ### 3. Developer setup (all four packages)
 
@@ -258,7 +274,9 @@ It schedules seven jobs with APScheduler in-process (a `SQLAlchemyJobStore`):
 | `orphan_reaper` | on an interval |
 
 `universe_build` runs **before** `weekly_refetch` (a stale universe caps
-yfinance). The reaper is a pure **heartbeat lease**: it fails any active
+yfinance). `daily_pipeline` additionally builds the universe itself when
+`instruments` has no active rows (a fresh install), so prices do not wait for the
+first Saturday. The reaper is a pure **heartbeat lease**: it fails any active
 (`pending`/`running`) job whose `last_heartbeat_at` is NULL or older than the
 lease TTL — so **run exactly one daemon per database**.
 
@@ -272,9 +290,10 @@ docker compose exec scheduler python -m app.cli yfinance --mode full --period 5y
 
 Full CLI surface (`portopt <command>` or `python -m app.cli <command>`):
 `daily`, `refetch-all`, `universe`, `yfinance`, `macro`, `fx`, `fred`, `news`,
-`market-structure`, `calendars`, `market-summary`, `options`, `daily-events`
-(`--backfill START:END` rebuilds a date range), plus the lifecycle commands
-`setup`, `start`, `stop`, `status`.
+`market-structure`, `calendars`, `market-summary`, `options`, `add-instrument`
+(validates one Yahoo ticker, stores 5y of prices; `--pin` keeps it through the
+weekly universe build), `daily-events` (`--backfill START:END` rebuilds a date
+range), plus the lifecycle commands `setup`, `start`, `stop`, `status`.
 
 ### The fund manager (`fund`)
 
@@ -292,7 +311,7 @@ a provider's SDK with the matching extra (`uv sync --package portopt-fund
 | Command | What it does |
 |---|---|
 | `fund profile <portfolio_id>` | Build/refresh an investor profile from a questionnaire |
-| `fund mandate set <portfolio_id>` / `fund mandate show <portfolio_id>` | Write or display a portfolio's mandate (capital, base currency, drift threshold, benchmark) |
+| `fund mandate set <portfolio_id>` / `fund mandate show <portfolio_id>` | Write or display a portfolio's mandate (capital, base currency, drift threshold, benchmark, eligible tickers via repeatable `--eligible` / `--clear-eligible`, the Trading 212 scope via `--tradeable-only` / `--no-tradeable-only`) |
 | `fund run <portfolio_id> --asof <date>` | Run a decision round for a rebalance bar |
 | `fund approve <run_id>` / `fund reject <run_id>` | Resolve a paused (human-in-the-loop) run |
 | `fund status [portfolio_id]` | Show the paused-run queue |
@@ -312,6 +331,47 @@ Two more entry points ship with it:
   and lands in the audit log; **Ask** answers questions about the fund in plain
   language. Press `?` for the key map.
 
+#### Restricting a portfolio to a set of instruments
+
+A portfolio can be limited to a hand-picked list (an ETF-only book, say). The list is
+a hard allowlist: the fund tools only list, optimise, risk-check and order tickers on
+it, and an empty list (the default) leaves the portfolio unrestricted. To set one up:
+
+```bash
+# 1. put each ticker in the universe (validates it on Yahoo, stores 5y of prices and the
+#    ETF fund data; --pin keeps it through the weekly universe build)
+portopt add-instrument VWCE.DE --asset-class equity --pin
+portopt add-instrument IBGS.L --asset-class fixed_income --fi-subclass government --pin
+
+# 2. allowlist them on the portfolio's mandate (repeatable; replaces the list)
+fund mandate set <portfolio_id> --eligible VWCE.DE --eligible IBGS.L
+fund mandate set <portfolio_id> --clear-eligible   # back to unrestricted
+```
+
+The same field is on the TUI Mandate view ("eligible tickers", comma-separated, saved
+with `ctrl+s`). A ticker with no priced instrument yet is accepted with a warning, so
+the mandate can be written before the instrument exists; until it has prices the
+ticker stays barred. Saving the mandate also pins the tickers (source
+`mandate:<portfolio_id>`) so the weekly build cannot delist them.
+
+A run that must be executable at the broker can also be scoped to Trading 212 with
+`fund mandate set <portfolio_id> --tradeable-only` (`--no-tradeable-only` lifts it; the
+Mandate view has a "Tradeable on Trading 212 only" box). It composes with `--eligible`
+(both must hold) and works without an allowlist, then dropping every instrument the
+broker lacks from the whole universe, while research and benchmarking keep the full
+multi-region one. Only an instrument the ingestion annotation step found absent from the
+Trading 212 catalogue is barred (`not_t212_tradeable`); one it never evaluated stays.
+Until the step has evaluated anything the flag restricts nothing, which the save warns
+about and the PM seed repeats rather than silently emptying the universe.
+
+With ESG exclusions in the client's profile, a fund is allowed by look-through: its
+latest sector snapshot must keep the excluded share within the client's tolerance
+(`look_through_tolerance`, strict 0 by default). Commodity funds and government or
+inflation-linked bond funds pass; any other fund whose snapshot is missing, older than
+`FUND_ESG_SECTOR_WEIGHTS_MAX_AGE_DAYS` (180) or incomplete is barred, so most corporate
+and aggregate bond ETFs are out under exclusions. The PM's instruction names every
+barred ticker with its reason.
+
 ---
 
 ## Dependencies
@@ -319,22 +379,22 @@ Two more entry points ship with it:
 Each member declares its own; the single shared venv installs one version of
 each shared pin. Exact runtime pins:
 
-**`portopt-core`** (library): `numpy==2.5.3`, `pandas==3.0.6`, `scipy==1.18.1`,
+**`portopt-core`** (library): `numpy==2.5.4`, `pandas==3.0.6`, `scipy==1.18.1`,
 `scikit-learn==1.9.1`, `skfolio==1.9.10`, `jinja2==3.1.6`.
 *(`arch` is **not** declared — it reaches bootstrap uncertainty-set classes
 transitively via skfolio. Code importing it directly must guard with
 `try/except ImportError` or declare it.)*
 
 **`portopt-db`** (DB layer): `SQLAlchemy==2.0.52`, `psycopg2-binary==2.9.12`,
-`alembic==1.19.1`, `pandas==3.0.6`, `pydantic==2.13.4`. Owns the SQLAlchemy pin
+`alembic==1.19.1`, `pandas==3.0.6`, `pydantic==2.14.1`. Owns the SQLAlchemy pin
 the whole workspace inherits.
 
 **`portopt`** (ingestion): `yfinance==1.7.0`, `scikit-learn==1.9.1` (declared,
-for DBSCAN price-repair), `numpy==2.5.3`, `pandas==3.0.6`, `APScheduler==3.11.3`,
+for DBSCAN price-repair), `numpy==2.5.4`, `pandas==3.0.6`, `APScheduler==3.11.3`,
 `SQLAlchemy==2.0.52`, `exchange_calendars==4.13.2`, `httpx==0.28.1`,
 `beautifulsoup4==4.15.0`, `requests==2.34.2`, `prometheus-client==0.26.0`,
-`typer==0.27.1`, `questionary==2.1.1`, `rich==15.0.0`, `cryptography==50.0.1`,
-`pydantic==2.13.4`, `pydantic-settings==2.15.0`, `python-dotenv==1.2.3`, plus
+`typer==0.27.1`, `questionary==2.1.1`, `rich==15.0.0`, `cryptography==50.0.2`,
+`pydantic==2.14.1`, `pydantic-settings==2.15.0`, `python-dotenv==1.2.3`, plus
 `portopt-db` (workspace; psycopg2-binary/alembic arrive transitively).
 
 **`portopt-fund`** (bridge): `deepagents==0.7.14` (the only exact pin),
@@ -361,7 +421,7 @@ cd ingestion && uv run pytest tests/
 
 # Shared DB layer (portopt-db)
 cd packages/portopt-db && uv run pytest
-cd packages/portopt-db && DATABASE_URL=postgresql://postgres:postgres@localhost:54320/optimizer_db alembic upgrade head   # head: d2f4b6a8c0e1
+cd packages/portopt-db && DATABASE_URL=postgresql://postgres:postgres@localhost:54320/optimizer_db alembic upgrade head   # head: f4b6d8a0c2e3
 
 # Fund bridge (portopt-fund)
 cd fund && uv run pytest tests/

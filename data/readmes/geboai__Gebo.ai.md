@@ -1,0 +1,226 @@
+![Gebo.ai image logo](./images/gebo-ai-readme-header-home-logo.svg) 
+# Gebo.ai, The open source Enterprise AI vendor agnostic platform (visit https://gebo.ai)
+This software is an open source enterprise AI and retrieve augmented generation platform that can be installed in every company
+to take the most out from their documentation and informations using modern large language models.
+It's a "No AI vendor lock-in"  alternative to cloud vendors platform, it can work with almost all cloud or on premise AI infrastructures and connects to widely used enterprise systems. 
+## Gebo.ai features:
+**From zero to agentic AI in five steps, for free:** run the initial setup → configure your LLMs with the easy setup → connect your enterprise tools and file systems → publish your knowledge bases → start delivering powerful agentic chat to your users, and close the door on shadow AI.
+
+### Administrative features
+ The admin, chat,rag chat,graphrag chat user interfaces are **fully multilanguage** and the application is **fully multiuser**.
+ All the following features are fully configurable using the administrative user interface.
+ - Configure large language models from providers like:
+      - **OpenAI** chatgpt
+      - **Anthropic** Claude
+      - **AWS Bedrock** (Claude, Amazon Nova, Llama, Mistral & more)
+      - **Google** Vertex AI / Gemini (experimental, disabled by default)
+      - **XaI** Grok
+      - **Nvidia** AI provider
+      - **Groq**
+      - **Deepseek**
+      - **MistralAI**
+      - **Regolo.ai** (Italian/European)
+      - **OpenRouter.ai** (multi-model router)
+      - **Subconscious.dev**
+      - **Awan LLM**
+      - **llmax.ai**
+      - **CheapestInference**
+      - **Profundo AI**
+      - Almost every local large language model using **Ollama** or **vLLM**       
+      - Every provider/local server compatible with **OpenAi API**
+ - Configure tools & functions that each llm configuration can use, including **web search** (**Google Programmable Search**, **Tavily**, **Brave Search**, **SerpApi** or a self-hosted **SearXNG**) — see [Web search & deep search](#web-search--deep-search) below
+ - Configure additional AI model types besides chat & embedding models:
+    - **Image generation** models (OpenAI, AWS Bedrock, Regolo.ai, OpenRouter.ai & OpenAI-compatible providers)
+    - **Text to speech** models (OpenAI, AWS Bedrock, Regolo.ai, OpenRouter.ai)
+    - **Speech to text / transcription** models (OpenAI, AWS Bedrock, Regolo.ai, OpenRouter.ai)
+    - **Reranking** models to improve retrieve augmented generation relevance (AWS Bedrock, Regolo.ai, OpenRouter.ai, vLLM & OpenAI-compatible providers)
+ - Most providers support **guided fast-setup** with ready-to-use model presets and automatic models lookup
+ - Connect to **Model Context Protocol (MCP)** servers to give your chatbots extra tools & data sources, or expose Gebo.ai itself as an **MCP server**
+ - **Agent-to-agent interoperability** — through the open **Agent2Agent (A2A) protocol**, Gebo.ai plugs into the wider agentic ecosystem in **both directions**: **connect external A2A agents** — whatever framework or vendor built them — and put them to work as tools and participants inside your own agent networks, or **publish your Gebo.ai agents, a single agent or an entire network of agents, as standards-compliant A2A agents** with their own Agent Card, ready to be consumed by any A2A-capable platform. It is **secure by default**: every import/export is admin-enabled, off and invisible until you switch it on, inbound calls are validated by the platform security chain (self-issued JWT / API key or corporate OAuth2) and run under the caller's own identity, and outbound credentials are handled by the platform secrets vault with OAuth2 token relay. The **"no AI vendor lock-in"** promise now reaches the agents themselves.
+ - **Build your own AI agents and networks of agents from the admin console, without code.** Give each agent its job, its LLM, its prompt — the standard one or a copy customized in page — and the **tools it may call, picked from one catalogue**: knowledge base search and browsing, **Confluence**, **Jira**, **SharePoint/OneDrive** and **Google Drive** searches, **web search** and deep search, **MCP tools** and **external A2A agents**.
+ - **Compose the network on a visual graph** — wire the agents, mark the **controller** that paces the loop — with every move checked against the rules the runtime enforces, then **choose which network answers each chat type and each chatbot profile**. Users see in the chat infos which agents work for them and which tools they may call.
+ - Configure gebo.ai rag system to access several company documents repository and information sharing tools such as:
+    - **Microsoft Onedrive/Sharepoint**
+    - **Atlassian Confluence**
+    - **Atlassian Jira**
+    - **Google Workspaces/Drives** 
+    - **GitHub/GIT/Bitbucket** or other **git** compatible servers
+    - Company shared filesystems
+     - **Amazon AWS S3** buckets
+     - **WebDAV** compatible servers (Nextcloud, ownCloud, OpenCloud, Pydio Cells, Seafile/SeafDAV, ONLYOFFICE Workspace, Synology DSM WebDAV Server...)
+ - Configure **company single sign** on (SSO) using one of the following oauth2 providers:
+ 	- **Microsoft Entra**
+ 	- **Google auth**   
+ 	- **AWS Cognito**
+ 	- **AWS IAM Identity Center** (ex AWS SSO)
+ 	- **KeyCloak**, with its own dedicated single sign on settings
+ 	- Any other standard **oauth2/OpenID Connect** identity provider, through the **generic oauth2** connector
+ - Configure **GraphRag** features (experimental)
+ 	- The software can use cheap models provided (on premise or in cloud) to export knowledge graphs persisted with neo4j. 	
+ - Create knowledge bases collectioning documents from the previus mentioned system.  
+ - Schedule document updates for AI reindexing (embedding) on updates.
+ - Monitor embedding batch job.
+ - Monitor **LLM usage** with built-in dashboards (admin: every user; user: own usage only) — drill down by provider, model, model type (chat/embedding/image/reranking/TTS/transcription), user and month to track calls/tokens over time.
+ - Keep **LLM costs** under control: record your **provider deals** and **model prices** (imported automatically for OpenRouter.ai and Regolo.ai) and read the **cost evaluation** on the usage dashboard, together with each model's **response time** and **time to first token**.
+ - Set **daily or monthly token limits** on each provider deal: administrators are warned as soon as they are reached.
+ - **NIS2-oriented security audit logging**: login/logout, LLM configuration changes, LLM invocations, secrets/API-key/3rd-party-integration changes and user administration are all traced to a dedicated, append-only, **Wazuh-compatible JSON** audit trail — see [Security & compliance](#security--compliance) below.
+ - **Compliance / data-flow register** (GDPR Art. 30 · NIS2 Art. 21): a live **record of processing activities** built from the components actually running — data sources, transformation engines, retaining stores and external providers, with per-source personal-data scope, retention & erasure per store, an interactive data-flow graph and CSV export, plus the Wazuh/SIEM security-audit-logging status — see [Security & compliance](#security--compliance) below.
+ - Configure company users and groups.      
+ - Organize multiple specific Retrieve augmented generation chats for specific company tasks:
+    - Examples:
+       - Customer support **chatbots to support customer support employees or directly the customers**
+       - Tech/Production **productivity chatbots to support employee on mananging internal technical documentation**.
+ - Chatbot access can be granted individually to users/groups
+ - Knowledge bases can be granted individually to users/groups
+
+
+
+### Users features        
+ - Chat using chatbots without retrieve augmented generation according to admin config.
+ - Chat using chatbots with retrieve augmented generation  according to admin config.
+ - Work with the **AI agent** in "Agentic chat": it takes the question step by step with its own tools — it searches the company knowledge bases, the web and the connected enterprise tools, ranks the results with your reranking model, runs deep searches, browses the knowledge bases, reads whole documents and finds them by what their name, title or author mean.
+ - Chat with uploaded documents/user documents uploaded in chat session (rag or normal chat sessions).
+ - Browse company knowledge bases to select  documents to chat/work with  according to admin config.  
+ - Generate **images** directly in chat using configured image generation models.
+ - Run a **deep search** from the chat, choosing which sources to work on — company knowledge bases, Confluence, Jira, SharePoint/OneDrive, Google Drive and the web — see [Web search & deep search](#web-search--deep-search) below.
+ - Voice interface (speech to text & text to speech) working with OpenAI provider.   
+
+### Web search & deep search
+ - Choose the **web search provider** the chatbots will use, from a guided wizard:
+    - **Google Programmable Search**
+    - **Tavily**
+    - **Brave Search**
+    - **SerpApi** (real Google/Bing/DuckDuckGo results pages)
+    - **SearXNG**, self-hosted, for companies that do not want their queries handled by a search vendor
+ - Only one provider is active at a time: switching provider is just entering the new key, nothing else to reconfigure. Keys are stored as protected secrets and every change to them is traced in the security audit log.
+ - The AI does not just send keywords: depending on the chosen provider it also decides **how** to search — how recent the results must be (last day/week/month/year), whether to look at news or general content, which country or language to favour, the safe-search level, or which underlying search engine to use.
+ - The configured provider is available in three different ways:
+    - as a **tool the chatbot can call** during a normal conversation, to check something on the internet;
+    - as one of the **deep search** sources;
+    - as a dedicated **searching agent** gathering evidences when the chatbot works as a network of agents.
+ - **Deep search** answers a question by working on it instead of replying in one shot: it breaks the question into several searches, runs them **in parallel on all the sources the user is entitled to**, opens and reads what it found, drops what is irrelevant and writes a final analysis with the references it used. Sources are:
+    - the company **knowledge bases**
+    - **Atlassian Confluence** — searched by space, labels, page title & text, authors
+    - **Atlassian Jira** — searched by project, issue type, status, priority, affected/fix versions, labels, people
+    - **Microsoft SharePoint/OneDrive** — searched by site, folder path, document type, title & text, people
+    - **Google Workspaces/Drives**
+    - the **web**, through the configured provider
+ - The user picks which sources to use for each question, and the administrator decides, per data source and per user/group, who is allowed to use them at all.
+ - Web searches leave the company installation, so each active provider is listed among the external providers of the compliance data-flow register — see [Security & compliance](#security--compliance).
+
+## How to install Gebo.ai 
+
+You can use docker, docker-compose, download an already configured appliance or install a Ubuntu or windows package, 
+visit [https://gebo.ai/downloads/](https://gebo.ai/downloads/)
+
+For the monolith via Docker Compose there is **one file for every operating system** — [`dockers/docker-compose-deploy/docker-compose.yml`](./dockers/docker-compose-deploy/docker-compose.yml) runs unchanged on Linux, macOS and Docker Desktop for Windows. It uses named volumes only, with no host bind mounts, so all data survives updates/upgrades (see [dockers/PERSISTENCE.md](./dockers/PERSISTENCE.md)) and downloading that single file into an empty directory is a complete install:
+
+```bash
+curl -O https://raw.githubusercontent.com/geboai/Gebo.ai/develop/dockers/docker-compose-deploy/docker-compose.yml
+docker compose pull
+docker compose up -d
+```
+
+On Windows PowerShell, write `curl.exe -O` on the first line.
+
+### Post install configuration procedure:
+
+After you've installed with docker go to http://<your server ip>:12999/ and configure your enterprise rag system account & setup your system.
+
+### What the docker-compose file installs  
+The docker-compose file installs the required 
+- MongoDB
+- Qdrant Vector Database
+- Neo4J Graph Database 
+- OpenSearch
+- geboai/gebo.ai open source version software https://hub.docker.com/r/geboai/gebo.ai  
+
+That is the whole default stack, and the compose file is self-contained — downloading just that one file into an empty directory is a complete install. An **observability stack** — OpenTelemetry Collector, Prometheus, Tempo and Grafana (pre-provisioned with datasources and a starter dashboard) — is available as an **optional overlay**, [`dockers/docker-compose-deploy/docker-compose.observability.yml`](./dockers/docker-compose-deploy/docker-compose.observability.yml) — see [Observability & monitoring](#observability--monitoring) below.
+
+## For devs/software architects/software companies 
+
+This software is build with latest spring boot technologies and the new spring-ai framework, with UI developed in Angular 19+PRIMENG
+Is made to accelerate professionals/companies that invested in these technologies to accelerate your own business opportunities 
+start building having this as base.
+
+The platform can run either as a single **bootable jar** (monolith) or be deployed as a set of **distributed microservices** (content-handler, brain, vectorizator & graphicator apps) with **Eureka** service discovery and **Hazelcast** clustering for horizontal scalability and high availability.
+
+### Delivery & deployment
+
+| Target | What | Where |
+|---|---|---|
+| Monolith (single jar) | One bootable Spring Boot fat jar, all controllers in one process | `gebo.apps.parent/gebo.ai.app` |
+| Docker Compose monolith | The monolith plus Mongo, Qdrant, Neo4j and OpenSearch — one OS-neutral file, optional observability overlay | `dockers/docker-compose-deploy/docker-compose.yml` |
+| Docker Compose microservices | 20 containerized microservices + infra (Mongo, Rabbit, Qdrant, Neo4j, OpenSearch, Eureka, gateway) | `dockers/gebo.microservices/docker-compose.yml` |
+| Kubernetes (Helm) | The same microservices stack as Helm charts with per-service install toggles, topology-synced ConfigMaps, and optional in-cluster observability | `deploy/helm/gebo-microservices` |
+
+**Microservices** — the full set of 20+ services (brain, vectorizator, graphicator, chunker, git, filesystem, uploads, userspace, sharepoint, confluence, jira, aws-s3, googledrive, webdav, mcpclient, integration, fulltextor, heimdall, tyr, gateway, eureka) is built with `mvn -P docker,swagger-on clean package jib:buildTar` and deployed via Docker Compose or Helm. Each service exposes its REST surface under a context-path (e.g. `/brain`); per-service Java and Angular client stubs are auto-generated from live OpenAPI specs under `gebo.api.clients/gebo.microservices.clients.parent`.
+
+**Kubernetes / Helm chart** — a production-ready Helm chart at `deploy/helm/gebo-microservices` deploys the entire microservices platform to any Kubernetes cluster. It mirrors the Docker Compose stack and adds:
+- **Per-service optional/mandatory install toggles** — disable connectors you don't need (e.g. `graphicator`, `fulltextor`, `jira`); mandatory services (heimdall, brain, tyr, chunker, vectorizator, eureka, gateway) are always rendered.
+- **Topology-synced ConfigMaps** — the messaging topology `gebo.microservices.topology` is rendered to match the deployed footprint, so declared topology never drifts from what is deployed.
+- **Stateful dependencies** — MongoDB, RabbitMQ, Qdrant, Neo4j, OpenSearch are deployed in-cluster by default, or pointed at external/managed instances.
+- **Optional observability** — OpenTelemetry collector, Tempo (traces), Prometheus (metrics), and Grafana (dashboards) can be enabled with `observability.enabled: true`.
+
+```bash
+helm install gebo deploy/helm/gebo-microservices \
+  --namespace gebo --create-namespace \
+  --set image.registry=myregistry.example.com/ \
+  --set image.tag=1.0.2.1-SNAPSHOT
+```
+
+### Observability & monitoring
+
+Every service (the monolith and each microservice) ships with **Micrometer** + **Spring Boot Actuator**, built once in the shared `gebo.architecture.telemetry` module and pulled in by every starter (`gebo.apps.monolithic.starter`, `gebo.microservices.starter`, `gateway.gebo.ai`):
+- `micrometer-registry-prometheus` exposes `/actuator/prometheus` metrics (JVM, HTTP, message-broker routing rate/latency).
+- `micrometer-tracing-bridge-otel` + `opentelemetry-exporter-otlp` export distributed traces (including message-broker hops) over OTLP.
+
+**Docker Compose** — `dockers/gebo.microservices/docker-compose.yml` bundles the full stack out of the box. For the monolith it is an opt-in overlay, so the default install stays at five containers:
+
+```bash
+cd dockers/docker-compose-deploy
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+```
+
+Either way you get an `otel-collector`, `prometheus` (scraping every service's `/actuator/prometheus`), `tempo` (trace storage) and `grafana` — provisioned with Prometheus/Tempo datasources and a starter "Gebo overview" dashboard (services up, HTTP request rate/latency, message-broker throughput, JVM memory). Reach it at `http://<host>:3000`.
+
+**Kubernetes / Helm** — the same stack is available as an opt-in add-on (`observability.enabled: true`), see [deploy/helm/gebo-microservices/README.md](./deploy/helm/gebo-microservices/README.md#observability-optional).
+
+**LLM usage dashboards** — independent of the infra metrics above, Gebo.ai also tracks per-call LLM usage (tokens, provider, model, model type, calling module, user) and exposes it through dedicated admin/user REST APIs and Angular dashboards — see [Administrative features](#geboai-features) above.
+
+### Security & compliance
+
+Gebo.ai ships with two always-on capabilities for **GDPR / NIS2** obligations, both surfaced in the admin **Compliance** screen:
+
+- **Security audit logging — Wazuh / SIEM compatible** (GDPR Art. 32 · NIS2 Art. 21): every security-relevant action (logins, LLM config changes, LLM invocations — *metadata only*, secret/API-key & integration changes, user administration) is written to a dedicated, append-only `security-log.jsonl` audit trail in Wazuh-compatible JSON Lines — verified against a real Wazuh manager on every build.
+- **Records of processing & data-flow register** (GDPR Art. 30 · NIS2 Art. 21): a live record of processing activities built from the components *actually running* — data sources, transformation engines, retaining stores and external providers — with per-source personal-data scope, retention & erasure per store, an interactive data-flow graph and CSV export.
+
+**Feature detail: [docs/security-and-compliance.md](./docs/security-and-compliance.md)** · **Wazuh setup: [docs/wazuh-integration.md](./docs/wazuh-integration.md)**
+
+### How to build the software:
+
+- Use Maven 3.8+
+- Use JDK 20+ 
+- Run "mvn clean package -P bootables,angular-ui" 
+- The Bootable jar file will be generated in:   /gebo.ai.app/target 
+
+### Environment variables to run the software:
+
+To run the software uoy have to put 2 variables in your environment (with set on windows and export on bash/linux) 
+ - GEBO_HOME ==> it points to the home directory the software it uses to allocate its own 
+ - GEBO_WORK_DIRECTORY ==> it points to a local filesystem area that the software uses to archive informations/files (please back it up)
+
+In a container deployment both are mounted on persistent volumes. **What has to
+survive an update/upgrade, in every image and every compose file - and how to
+back it up or migrate it - is documented in
+[dockers/PERSISTENCE.md](./dockers/PERSISTENCE.md).** The short version: the work
+directory and the MongoDB database are ONE backup unit, because Mongo only
+*indexes* the files that live in the work directory.
+
+## Gebo.ai licence
+
+The open source version is available under a variation of the Mozilla Public License Version 2.0 (MPL-2.0), 
+an enterprise version with more feature and support is also available.  
+ 
+ - [Click here to see the licence](./LICENCE.md)
+ - [Click here the ORIGIN declaration](./ORIGIN.md)

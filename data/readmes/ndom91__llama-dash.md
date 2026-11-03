@@ -3,7 +3,7 @@
   &nbsp;llama-dash
 </h1>
 
-<img alt="Dark - Dashboard" src="./.github/assets/dashboard.png" />
+<img alt="Dark - Dashboard" src="./.github/assets/dashboard_001.png" />
 
 llama-dash turns a self-hosted local inference box into an observable, policy-controlled AI gateway: one UI for model state, request history, API keys, routing rules, proxy metrics, and client setup. The implemented inference backend is currently [llama-swap](https://github.com/mostlygeek/llama-swap) over llama.cpp.
 
@@ -36,7 +36,7 @@ OpenAI SDK / Claude Code / Continue / Open WebUI
 <table>
   <tr>
     <td align="center" valign="top">
-      <sub><strong>Dashboard</strong><br />Live traffic, tokens, model residency, upstream and GPU health</sub>
+      <sub><strong>Dashboard</strong><br />Live traffic, tokens, model residency with per-request ticks, upstream and GPU health</sub>
     </td>
     <td align="center" valign="top">
       <sub><strong>Playground</strong><br />Chat against local endpoints with request/response inspection</sub>
@@ -50,7 +50,7 @@ OpenAI SDK / Claude Code / Continue / Open WebUI
   </tr>
   <tr>
     <td valign="top">
-      <img alt="Dark - Dashboard" src="./.github/assets/dashboard.png" />
+      <img alt="Dark - Dashboard" src="./.github/assets/dashboard_001.png" />
     </td>
     <td valign="top">
       <img alt="Dark - Playground" src="./.github/assets/playground-chat.png" />

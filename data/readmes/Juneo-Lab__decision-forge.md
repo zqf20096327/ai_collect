@@ -16,6 +16,7 @@ Every organization's judgment, turned into the data that makes AI agents trustwo
 [![Typed](https://img.shields.io/badge/typing-strict%20mypy-2a6db2)](pyproject.toml)
 
 [Why Decision Forge](#why-decision-forge) ·
+[See it in action](#see-it-in-action) ·
 [Quickstart](#quickstart) ·
 [How it works](#how-it-works) ·
 [Documentation](docs/index.md) ·
@@ -92,7 +93,7 @@ verified labels, source provenance, and stable family assignments. The result is
 can audit, reproduce, and hand to a trainer.
 
 > [!NOTE]
-> **Status: `v0.3.1` alpha — organizational decision data pipeline.**
+> **Status: `v0.3.2` alpha — organizational decision data pipeline.**
 > Reviewed or authored specifications build into training data locally, without model credentials.
 > Document compilation and model-assisted synthesis use an explicitly selected model endpoint.
 > See [project status](docs/status.md) for the current implementation and next milestones.
@@ -107,8 +108,22 @@ can audit, reproduce, and hand to a trainer.
 | **Leak-resistant splits** | Related variants share a family split; cross-split duplicates are reported and dropped |
 | **Training-ready exports** | Four formats, including the candidate-readout decision contract |
 | **Broad ingestion** | Text, Markdown, JSON/YAML, PDF, DOCX/XLSX/PPTX, HTML, CSV/TSV, and local OCR |
-| **Validated** | 280 tests, 88.41% statement coverage in the full optional-adapter environment |
+| **Validated** | 311 tests, 90.89% statement coverage in the full optional-adapter environment |
 | **Continuous checks** | 10 CI jobs across Linux and macOS, including adapter, OCR, and Harbor controls; CodeQL and OpenSSF Scorecard scans |
+
+## See it in action
+
+Two fictional organizations, a speed-first startup and a clinic network, deploy agents that attempt
+the same actions. Each writes its own policy, and Decision Forge compiles each into verified decisions:
+
+| Agent action | Lumen Labs | Halcyon Health |
+| --- | --- | --- |
+| Refund 400 to a verified customer | **proceed**: “Agents may issue refunds of up to 1000 dollars to verified customers without approval.” | **hand back**: “Every other refund for a verified patient goes to a person in patient accounts.” |
+| Send a health record to an internal team | **send in full**: “Agents may share full customer records with internal teams.” | **send a summary**: “Health information may reach internal teams only as a minimum-necessary summary.” |
+| Delegate more authority than the agent holds | **block**: “An agent must never delegate more authority than it holds.” | **block**: “An agent must never delegate more authority than it holds.” |
+
+Of 17 situations, 8 are decided differently, and every decision cites the sentence that governs it.
+Run the [agent delegation example](examples/agent_delegation/README.md) offline in one command.
 
 ## How it works
 
@@ -129,7 +144,10 @@ delegates to people and agents:
 
 ## Quickstart
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). No API keys, no model downloads.
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/). No API keys, no model downloads. New here? The
+[five-minute tutorial](docs/tutorial.md) goes from a written policy to training data, and the
+[notebook version](https://colab.research.google.com/github/Juneo-Lab/decision-forge/blob/main/examples/agent_delegation/tutorial.ipynb)
+runs in Colab.
 
 ```bash
 git clone https://github.com/Juneo-Lab/decision-forge
@@ -251,7 +269,7 @@ publishes only proposals whose label is replayed from the declared policy.
 
 <br>
 
-**Local validation (macOS ARM64, Python 3.12, all optional extras):** 280 tests, 88.41% statement coverage, Ruff, strict
+**Local validation (macOS ARM64, Python 3.12, all optional extras):** 311 tests, 90.89% statement coverage, Ruff, strict
 mypy, strict MkDocs, wheel and sdist builds. CI runs 10 jobs: quality, six test jobs (Ubuntu and macOS ×
 Python 3.11/3.12/3.13), pinned Data Designer and LangGraph adapter contracts, and Harbor task execution
 in Docker under oracle and no-op controls, plus real local OCR inference and seven-format ingestion.
@@ -298,6 +316,7 @@ small fictional inputs; organizational training-quality evaluation remains a sep
 - Training exports in four formats, including the candidate-readout decision contract.
 - Multi-step mock business workflows with independent trace grading and Harbor task export.
 - Runtime event ingestion, reviewed development feedback, and split-preserving dataset updates.
+- Offline audits of recorded agent tool calls (JSON Lines or OpenTelemetry GenAI traces) against the declared policy.
 
 </td>
 <td valign="top">
@@ -321,6 +340,7 @@ The [roadmap](ROADMAP.md) tracks each remaining acceptance item against a milest
 
 | Guide | What it covers |
 | --- | --- |
+| [Tutorial](docs/tutorial.md) | From a written policy to training data in five minutes |
 | [Why Decision Forge](docs/vision.md) | The problem, the data it needs, and where this project fits |
 | [Project status](docs/status.md) | Implemented paths and remaining validation |
 | [Architecture](docs/architecture.md) | Component boundaries and data flow |
@@ -372,7 +392,7 @@ repository** button reads [CITATION.cff](CITATION.cff); export formats are versi
 @software{decision_forge,
   title   = {Decision Forge: Organizational Decision Data Infrastructure},
   author  = {{Decision Forge contributors}},
-  version = {0.3.1},
+  version = {0.3.2},
   license = {Apache-2.0},
   url     = {https://github.com/Juneo-Lab/decision-forge}
 }

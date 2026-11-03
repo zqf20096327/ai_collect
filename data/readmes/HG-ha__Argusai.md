@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.1.7-0967a6?style=flat-square" alt="版本 0.1.7">
+  <img src="https://img.shields.io/badge/version-0.1.8-0967a6?style=flat-square" alt="版本 0.1.8">
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=flat-square" alt="Python 3.12+">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-555f70?style=flat-square" alt="Windows、macOS 与 Linux">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPLv3-0078a8?style=flat-square" alt="许可证 GPL-3.0-only"></a>
@@ -19,6 +19,7 @@
 <p align="center">
   <a href="wiki/Home.md"><strong>使用文档</strong></a> ·
   <a href="wiki/Quick-Start.md">快速开始</a> ·
+  <a href="#工作架构">工作架构</a> ·
   <a href="#运行界面">运行界面</a> ·
   <a href="#持续执行与主动发现">持续执行</a> ·
   <a href="https://github.com/HG-ha/Argusai/releases">下载发行包</a> ·
@@ -35,6 +36,81 @@ ArgusAI 是由[达瓦科技](https://dawahezhi.com/)开源的 Agent 原生安全
 侧栏的完整对话与可拖动悬浮球都是任务入口，进入的是同一个 Agent 工作区。Agent 能理解当前应用页面、正在查看的任务或逆向作业，以及相关工作状态；引用具体材料后，它可以接着你正在做的工作继续执行。功能页与对话之间共享任务、样本和证据。
 
 项目面向企业安全团队、应用安全工程师、安全研究人员和明确授权的测试人员。底层 Agent 运行时也支持文件处理、日常信息整理和桌面协作，当前内置工具与工作流重点覆盖安全分析和逆向研究。
+
+## 工作架构
+
+主 Agent 围绕目标建立计划，按需读取 Skills、发现工具，委派子 Agent 或组织持久小队，联动工作台各项能力。工具围绕有状态的工作对象组织，Agent 可以查询当前状态、沿同一对象继续操作，记录步骤与产物，再复核、调整计划，交付报告或进入下一阶段。
+
+```mermaid
+flowchart TB
+    Input["桌面 / 悬浮球 / CLI<br/>手机等设备的配对通讯渠道"] --> Session["会话执行控制<br/>session_id / 运行锁 / runtime 绑定"]
+    Events["间隔 / Cron<br/>Webhook / 文件变化"] --> Session
+    Session --> Native["AssistantSession<br/>原生端点 / 流式 Provider<br/>工具循环 / 进展守卫"]
+    Session --> ACP["本地 Agent（ACP）<br/>Codex / Cursor<br/>Claude Code"]
+    Native --> Main["主 Agent / 任务编排<br/>计划、委派、工具调用<br/>状态与结果复核"]
+    ACP --> Main
+
+    Main -->|并行委派 / 汇总| Sub["临时子 Agent<br/>独立历史 / 工作台工具范围<br/>原生或 ACP 子 Agent"]
+    Main -->|组织 / 复核| Team["持久 Agent Team<br/>群聊序号 / 阅读游标<br/>成员执行邮箱"]
+    Main -->|按需读取| Skills["Skills<br/>任务方法与工作流"]
+    Main --> Tools["固定核心 tools[] / 工具目录<br/>按需取 schema / 调用工具<br/>读状态 / 操作工作对象"]
+    Sub --> Tools
+    Team --> Tools
+    Skills -.->|方法指导| Tools
+
+    Tools --> Web["浏览器 / MITM 代理<br/>标签页 / 流量 / 暂停请求<br/>断点 / 重放 / HAR"]
+    Tools --> Analysis["扫描 / 全域逆向<br/>Task / ReverseJob<br/>样本 / 派生产物 / 分析记录"]
+    Tools --> Execution["沙盒 / 主机 / 桌面<br/>Shell 会话 / 文件 / 环境<br/>脚本、SSH 与设备"]
+    Tools --> Knowledge["知识 / 证据 / 报告<br/>Case、Artifact、Evidence"]
+    Tools --> Recall["长期与跨会话记忆<br/>检索 → 会话 / 消息定位<br/>按页回读原文与归档引用"]
+    Tools -.-> Extensions["可选扩展与工具链<br/>MCP / 外部扫描器<br/>Ghidra / Frida / JADX"]
+    Web --> Review["主 Agent 复核<br/>状态 / 步骤 / 证据"]
+    Analysis --> Review
+    Execution --> Review
+    Knowledge --> Review
+    Recall -->|查证旧工作与关联任务| Review
+    Extensions -.-> Review
+    Review --> Delivery["交付报告 / PoC<br/>摘要与会话沙盒产物"]
+    Delivery -.->|按任务约定远程交付| Outbox["配对身份 / 持久 Outbox<br/>Adapter 发送<br/>投递状态核验"]
+    Review -->|更新计划 / 继续 / 复测| Main
+    Sub -.->|完成通知 / 条件唤醒| Main
+    Team -->|公开消息入队，成员处理或跳过| Team
+    Team -.->|查询群聊与产物| Review
+```
+
+内置领域工具与 Skills 按需发现和使用。会话沙盒提供文件与脚本环境，浏览器、代理、扫描服务及外部 Agent 使用各自的运行环境。单轮循环与跨轮唤醒见[持续执行与主动发现](#持续执行与主动发现)，模块入口见[架构与开发](wiki/Architecture-and-Development.md)。
+
+### 运行时设计
+
+会话历史、执行状态、流式事件和领域产物分别管理，再通过运行身份与材料引用连接。长任务与多 Agent 协作依赖以下机制：
+
+| 设计点 | 实际实现 |
+| --- | --- |
+| [运行身份与执行所有权](argusai/core/assistant/run_jobs.py) | `session_id` 标识会话，持久 `job_id` 标识任务运行，临时 `run_id` 标识增量事件流。恢复运行可以创建新流；真正的 worker 退出后才释放会话运行锁。运行状态以原子快照和单调 JSONL 事件保存。 |
+| [稳定控制面与能力目录](argusai/core/assistant/session_chat_loop.py) | 原生会话核心 `tools[]` 和 system 工具目录冻结；`tool_search` 返回领域 schema，`invoke_catalogue_tool` 执行真实工具，发现新能力不反复扩展常驻数组。Skills 先给短名单，再按需读取正文。 |
+| [有状态工具与连续操作](wiki/Architecture-and-Development.md#有状态工具与连续操作) | 模型使用对象 ID、步骤和材料引用，宿主管理实际资源与生命周期。浏览器标签、代理流量与暂停请求、交互式 Shell、Task、ReverseJob 各有状态查询及后续操作；Todo 记录阶段、完成条件、阻塞与证据，支持按当前状态推进。 |
+| [上下文预算与协议修复](argusai/core/assistant/session_budget.py) | 原生模型请求前压缩旧工具结果、提炼早期对话，并修复 tool-call/result 邻接关系。选定高值输出保留完整 Artifact，模型使用摘要与 `artifact_ref` 续接，按需重新读取原文。 |
+| [长期与跨会话记忆召回](argusai/core/assistant/session_memory.py) | 摘要、关键词索引与会话历史分开：索引保留全部可见用户消息摘要及最近 600 条消息中的细节。`search_memory` / `search_all_memory` 定位旧会话和消息，再由 `list_session_messages` / `read_session_message` 或 `read_assistant_session` 分页、按条回读；有归档引用时，沿 `case_id` / `artifact_ref` 读取原始产物。 |
+| [按资源分批执行](argusai/core/assistant/session_loop_control.py) | 原生工具循环将连续只读调用按允许的并行度和 resource keys 组成无冲突波次；修改、控制和待确认调用保留各自执行边界。并行完成后仍按原调用顺序写入历史。 |
+| [调用授权与能力投影](argusai/core/assistant/confirmation_broker.py) | 先展开真实工具名，再进入策略、确认与执行。Todo 计划批准、具体工具确认、子 Agent 的 readonly/scoped 工具范围分别处理，委派能力与确认模式一起决定子任务权限。 |
+| [ACP 会话与工具桥](argusai/core/agent_runtimes/tool_broker.py) | ACP 按 `initialize → session/new 或 load → prompt` 协商与运行。工作台工具经随机会话 token 绑定的回环 MCP broker 接入，每个绑定以执行锁串行确认和调用；外部 Agent 自有工具仍由其运行时管理。 |
+| [协作消息与条件唤醒](argusai/core/assistant/agent_threads.py) | 子 Agent 保存独立历史和能力范围；Team Room 的消息序号、阅读游标与成员执行邮箱分开。成员忙时保留输入，可合批、去重和静默跳过；完成通知先记录，再合批尝试唤醒可运行的父会话。 |
+| [持久调度控制](argusai/core/assistant/cron.py) | 用数据目录级宿主租约和执行锁协调调度；计划、运行记录、事件队列与文件基线原子落盘。签名 Webhook、文件变化及时间规则可投递到指定、专属或新会话，按检查点与任务材料接续。 |
+| [材料引用与派生关系](argusai/core/workspace/cases.py) | Case Artifact 保存原始内容、SHA-256 与大小，Evidence 关联材料、交互和 Finding；ReverseJob 记录样本与派生物。扫描报告、`artifact_ref` 和 `rev://` 各有存储及读取路径，可显式关联。 |
+| [流式事件与界面协议](argusai/core/assistant/ui_protocol.py) | 正文增量形成 `text_chunk`，工具结果与确认形成 `block_upsert`；UI 协议规范 block 身份、版本和 action，再投影到各入口。`StreamHub` 按 offset 消费内存事件，与持久 RunJob 日志分开。 |
+| [渠道出站与投递回执](argusai/core/channels/store.py) | 文件由执行会话沙盒按配对 identity 路由进入持久 Outbox；发送 worker 领取租约，由 Adapter 投递，记录分段进度并有限重试。`channel_delivery_status` 区分 `pending`、`processing`、`sent`、`failed`，保留平台错误原因。 |
+
+执行线程、事件流和存储之间的关系、关键函数及设计边界，见 [Agent 运行时与数据流](wiki/Architecture-and-Development.md#agent-运行时与数据流)。
+
+**Agent 围绕有状态工具连续工作。** 它可以继续操作同一浏览器标签页，检查代理中的既有流量和暂停请求，向同一个交互式 Shell 发送后续命令，或沿 ReverseJob 中的样本、分析结果和派生产物继续研究。Todo 记录步骤，任务与作业提供状态，证据引用连接阶段产物；Agent 根据这些信息决定下一步。实时连接、运行进程与持久记录分别管理，接续工作时先查询状态，再决定继续操作或重建环境。示例见[有状态工具与连续操作](wiki/Agent-and-Sessions.md#有状态工具与连续操作)。
+
+**旧工作可以主动找回。** Agent 根据目标生成检索词，必要时换词重查，从命中记录定位旧会话、消息与任务线索，回读原文和证据，再核验关联任务的当前状态继续工作。可检索的长期记录能够远超单次模型请求的上下文窗口，本轮只取需要的材料。检索覆盖本机当前数据环境中保存的会话；普通渠道入站消息发起的查询还受配对身份可访问会话的范围限制。用法与承接旧任务的示例见[跨会话长期记忆](wiki/Agent-and-Sessions.md#跨会话长期记忆与材料承接)。
+
+**模型端点与本地 Agent 都能驱动工作。** 可以使用自己配置的 AI 端点，也可以通过 ACP 接入已在本机安装、登录的 Codex、Cursor、Claude Code 等 Agent，让它们在 ArgusAI 内工作，并经工具桥调用工作台能力。ACP 主对话无需重复配置 ArgusAI 原生端点；原生子 Agent、小队成员及其他 AI 分析任务使用各自的运行时与模型配置。
+
+**一部手机，也能接续电脑与服务器上的工作。** 在 QQ、飞书、Telegram 等渠道完成配对后，手机、平板或另一台电脑都能成为任务入口，用于下达任务、查看进度、接收报告和文件。Agent 通过工作宿主上已配置的 SSH、MCP 或其他连接处理可达电脑与服务器上的任务，桌面控制操作运行工具的宿主桌面，结果可回传到当前配对渠道。接入方式见[扩展与通讯渠道](wiki/Integrations.md)。
+
+需要任务完成后远程交付时，把“将摘要与报告文件发回当前配对渠道，并核验投递结果”写入交付条件。普通渠道回答可用 `channel_reply` 回复本次入站身份；主动通知使用 `channel_send_message`，文件使用 `channel_send_file`，按目标路由与工具确认策略执行。入队成功表示已接受投递，`sent` 表示发送接口成功，不代表收件人已读。定时任务的 `report_to_origin` 回报创建任务的应用内会话；发往 QQ 等渠道的目标与产物应在任务中另行约定。
 
 ## 运行界面
 
@@ -110,7 +186,8 @@ ArgusAI 是由[达瓦科技](https://dawahezhi.com/)开源的 Agent 原生安全
 <tr>
 <td width="50%" valign="top">
 <h3>证据、记忆与知识</h3>
-<p>Case、Artifact、Evidence 与发现相互关联；会话记忆、知识库和大结果归档支持复查与跨轮延续。</p>
+<p>Agent 能主动检索长期与跨会话记忆，找回当前模型窗口之外的旧讨论、任务线索与分析结论，按需回读原文和证据，接续工作。</p>
+<p>Case、Artifact、Evidence 与发现相互关联；知识库和大结果归档为复查提供可追溯材料。</p>
 <p>扫描报告可导出为 HTML、Markdown 和 JSON，便于整理交付。</p>
 <a href="wiki/Enterprise-Workflows.md">企业工作流与交付 →</a>
 </td>
@@ -136,6 +213,50 @@ ArgusAI 支持数十小时级的单轮自主执行。这里的“单轮”指一
 
 这是运行时配置与控制流提供的能力，实际时长受任务、模型额度、工具、资源和授权限制。长调查、样本批分析和多阶段验证可以在同一轮内持续推进；需要跨轮或在下一次事件发生时继续的工作，由持久任务与调度器接续。
 
+原生运行时保留稳定的核心控制工具，领域工具通过目录渐进发现和调用；每次模型请求前按上下文预算整理历史，大结果可保留摘要和产物引用。需要旧工作时，Agent 主动检索记忆并回读相关会话、任务与产物，再接回当前循环。下面展示记忆召回、当前轮继续、子任务完成唤醒和后台状态查询的关系。ACP 会话的推理循环由所选外部 Agent 执行。
+
+```mermaid
+sequenceDiagram
+    participant U as 用户 / 会话入口
+    participant A as 主 Agent 运行时
+    participant M as 模型
+    participant T as 工具 / 子 Agent
+    participant S as 状态与产物
+    U->>A: 目标、材料或续跑请求
+    loop 尚有可推进工作，且运行条件允许
+        A->>M: 稳定控制工具 / 预算内上下文
+        M-->>A: 下一步调用、委派或等待
+        alt 调用领域能力
+            A->>T: 工具发现、技能读取，创建或选择工作对象
+            T-->>A: 对象 ID / 当前状态 / 已有材料
+            A->>T: 按状态选择下一步，经确认后操作同一对象
+            T-->>A: 更新后的状态 / 结果 / 证据引用 / 后台回执
+        else 主动召回旧工作
+            A->>T: search_memory / search_all_memory
+            T-->>A: 会话与消息定位、任务与产物线索
+            A->>T: 分页回读历史，按 ID 核验任务与归档
+            T-->>A: 相关原文与证据引用
+        else 当前轮短等待
+            A->>A: wait_for_duration，到时返回，可取消
+        else 等待子 Agent
+            A->>T: wait_for_agents
+            T-->>A: 完成、超时或用户插话后返回状态
+        else 查询后台作业
+            A->>T: background_job_status(job_ref)
+            T-->>A: 运行状态或已有结果，按需再等再查
+        end
+        A->>S: 更新 Todo / 检查点，保存所需产物
+        S-->>A: 摘要、引用与下一步依据
+    end
+    opt 子任务结束，父会话空闲且满足继续条件
+        T-->>A: agent_completion 批次通知，唤醒父会话
+        A->>M: 读取结果，继续复核与汇报
+    end
+    A-->>U: 交付结果 / 等待人工 / 报告本轮停止原因
+```
+
+`wait_for_agents` 可因用户插话结束等待，子任务仍可继续；`wait_for_duration` 是可取消的短等待。普通后台作业通过 `job_ref` 查询，持久小队通过群聊和成员队列协作；监督这些工作也可交给下面的持续任务。
+
 ### 跨轮续跑与事件驱动
 
 Agent 将进度保存为待办、检查点、知识和产物，调度器在后续触发时接上工作。
@@ -144,23 +265,31 @@ Agent 将进度保存为待办、检查点、知识和产物，调度器在后�
 
 ```mermaid
 flowchart TB
-    T[间隔 / Cron / Webhook / 文件变化] --> work
-    subgraph work[每轮执行]
-        direction LR
-        A[唤醒 Agent<br/>读取计划与检查点] --> W[检查、分析与验证]
-        W --> E[归档证据<br/>更新基线与进度]
-    end
-    work --> D{任务状态}
-    D -->|待继续| T
-    D -->|有变化或需人工处理| N[报告与通知]
-    D -->|已完成| F[收束与停用续跑]
-    classDef accent fill:#102b40,stroke:#1687c9,color:#e8f3fa
-    classDef result fill:#332014,stroke:#f05123,color:#fff0e7
-    class A,W,E accent
-    class N,F result
+    Register["已配置的持续任务"] --> T
+    T["间隔 / Cron<br/>签名 Webhook / 文件变化"] --> Scheduler["调度器<br/>宿主租约 / 执行锁"]
+    Scheduler --> Ready{"会话可执行？"}
+    Ready -->|正忙| Busy["延期检查<br/>超窗可跳过本次"]
+    Busy --> Waiting["等待后续检查、时间或事件"]
+    Ready -->|可执行| Destination["执行对话"]
+    Destination --> Existing["session<br/>唤醒指定已有会话"]
+    Destination --> Dedicated["dedicated_session<br/>首次创建，后续复用"]
+    Destination --> New["new_session<br/>每次独立新会话"]
+    Existing --> Context["读取对应任务上下文、Todo<br/>检查点、知识与产物引用"]
+    Dedicated --> Context
+    New --> Context
+    Context --> Run["执行下一阶段<br/>巡检 / 分析 / 验证<br/>小队或作业状态检查"]
+    Run --> Save["保存进度与产物<br/>对比基线 / 更新检查点"]
+    Save --> Notify["按策略通知<br/>可选回报来源对话"]
+    Notify --> Enabled{"仍启用且可运行？"}
+    Enabled -->|继续| Waiting
+    Waiting --> T
+    Enabled -->|停用 / 次数耗尽| Stop["停止后续触发<br/>保留记录与产物"]
+    Scheduler -->|已停用 / 次数耗尽| Stop
 ```
 
 </div>
+
+新会话通过任务上下文、知识和产物接续工作；指定会话与任务专属会话可以继续各自历史。一次运行结束后，计划仍可等待下一次触发；目标完成时由 Agent 按约定停用，或由用户停用、达到次数上限后停止。调度宿主需要保持运行，每次调度执行有独立截止。
 
 | 何时触发 | 适合做什么 |
 | --- | --- |
@@ -203,7 +332,30 @@ flowchart TB
 
 ## 快速开始
 
-当前版本为 `0.1.7`。源码运行需要 Python 3.12+、uv、Node.js 18+ 和 npm；在项目根目录执行：
+当前版本为 `0.1.8`。从 [Releases](https://github.com/HG-ha/Argusai/releases) 下载对应平台的预编译包和 `.sha256`，按[安装与环境](wiki/Installation.md)校验、安装后即可启动桌面。终端示例使用 `argusai` 命令入口；未设置入口时，Windows 在安装目录中使用 `.\ArgusAI.exe`、Linux 在解压目录中使用 `./ArgusAI`，macOS 入口见[CLI 命令参考](wiki/CLI-Reference.md)。
+
+```sh
+argusai version --json
+argusai --gui
+argusai chat
+```
+
+首次启动后，确认数据目录，配置原生 AI 端点与模型，或选择已安装、登录并测试通过的本地 ACP Agent；按需要检查浏览器与外部工具路径。打开完整 Agent 对话或点击悬浮球，把目标、材料和约束交给 Agent，让它建立计划并开展工作。第一次可以提供一份允许分析的 HAR 或 JS，让 Agent 整理接口、标注疑点并归档证据，再到相应功能页核对结果。
+
+| 选择入口 | 如何开始 | 继续阅读 |
+| --- | --- | --- |
+| 完整 Agent 对话 | 从侧栏进入或新建对话，直接描述目标并交给 Agent 执行 | [Agent 与会话](wiki/Agent-and-Sessions.md) |
+| Agent 悬浮球 | 在功能页点击浮球接续当前工作；可拖动位置，查看运行和未读提示 | [浮球与工作台协作](wiki/Agent-and-Sessions.md) |
+| 启动桌面 | 安装后的桌面入口，或 `argusai --gui` | [快速开始](wiki/Quick-Start.md) |
+| 交互终端 | `argusai` 或 `argusai chat` | [CLI 命令参考](wiki/CLI-Reference.md) |
+| 发行包 | 从 [Releases](https://github.com/HG-ha/Argusai/releases) 下载发布后对应平台的包与 `.sha256` | [安装与环境](wiki/Installation.md) |
+
+Windows 桌面需要 WebView2 Runtime，Windows ARM64 还需要原生 Microsoft .NET Desktop Runtime；macOS 桌面自动化需要系统权限；Linux 桌面需要 GTK 与 WebKitGTK。外部模型、扫描器、逆向 CLI 和设备按功能准备，详细步骤见[安装说明](wiki/Installation.md)。
+
+<details>
+<summary><strong>源码开发、构建与发布</strong></summary>
+
+源码运行需要 Python 3.12+、uv、Node.js 18+ 和 npm。在项目根目录准备依赖并构建前端：
 
 ```sh
 uv sync --locked
@@ -211,21 +363,6 @@ npm --prefix argusai/webui ci
 npm --prefix argusai/webui run build
 uv run argusai --gui
 ```
-
-首次启动后，在设置页配置 AI 端点、模型和数据目录，按需要检查浏览器与外部工具路径。接着打开完整 Agent 对话或点击悬浮球，把目标、材料和约束交给 Agent，让它建立计划并开展工作。第一次可以提供一份允许分析的 HAR 或 JS，让 Agent 整理接口、标注疑点并归档证据，再到相应功能页核对结果。
-
-| 选择入口 | 如何开始 | 继续阅读 |
-| --- | --- | --- |
-| 完整 Agent 对话 | 从侧栏进入或新建对话，直接描述目标并交给 Agent 执行 | [Agent 与会话](wiki/Agent-and-Sessions.md) |
-| Agent 悬浮球 | 在功能页点击浮球接续当前工作；可拖动位置，查看运行和未读提示 | [浮球与工作台协作](wiki/Agent-and-Sessions.md) |
-| 启动桌面 | `uv run argusai --gui` | [快速开始](wiki/Quick-Start.md) |
-| 交互终端 | `uv run argusai` 或 `uv run argusai chat` | [CLI 命令参考](wiki/CLI-Reference.md) |
-| 发行包 | 从 [Releases](https://github.com/HG-ha/Argusai/releases) 下载发布后对应平台的包与 `.sha256` | [安装与环境](wiki/Installation.md) |
-
-Windows 桌面需要 WebView2 Runtime，Windows ARM64 还需要原生 Microsoft .NET Desktop Runtime；macOS 桌面自动化需要系统权限；Linux 桌面需要 GTK 与 WebKitGTK。外部模型、扫描器、逆向 CLI 和设备按功能准备，详细步骤见[安装说明](wiki/Installation.md)。
-
-<details>
-<summary><strong>构建、开发与发布</strong></summary>
 
 三个平台统一使用 Python 构建入口，在目标系统和目标架构环境中运行：
 
@@ -247,7 +384,7 @@ Windows 可加 `--nsis`，macOS 可加 `--dmg`，`--onefile` 生成单文件；L
 <tr>
 <td width="33%" valign="top">
 <h3>开始使用</h3>
-<p><a href="wiki/Quick-Start.md">快速开始</a><br><a href="wiki/Installation.md">安装与环境</a><br><a href="wiki/Agent-and-Sessions.md">Agent、对话与小队</a><br><a href="wiki/CLI-Reference.md">CLI 命令参考</a></p>
+<p><a href="wiki/Quick-Start.md">快速开始</a><br><a href="wiki/GUI-Guide.md">桌面图文入门</a><br><a href="wiki/Installation.md">安装与环境</a><br><a href="wiki/Agent-and-Sessions.md">Agent、对话与小队</a><br><a href="wiki/CLI-Reference.md">CLI 完整命令示例</a><br><a href="wiki/CLI-Options.md">CLI 完整参数表</a></p>
 </td>
 <td width="33%" valign="top">
 <h3>开展工作</h3>

@@ -8,7 +8,7 @@
 npx skills add zhuyep/shiji-tongjian-decisions --skill shiji-tongjian-decisions
 ```
 
-不装先看：[跳槽完整示例](examples/job-switch-decision.zh-CN.md) · [晋升完整示例](examples/promotion-decision.zh-CN.md) · [核源翻车→exact](examples/verify-flip.zh-CN.md) · [English](README.en.md)
+不装先看：[跳槽完整示例](examples/job-switch-decision.zh-CN.md) · [晋升完整示例](examples/promotion-decision.zh-CN.md) · [合伙/长期承诺示例](examples/partner-commitment-decision.zh-CN.md) · [核源翻车→exact](examples/verify-flip.zh-CN.md) · [normalized_only≠exact](examples/verify-normalized.zh-CN.md) · [English](README.en.md)
 
 ---
 
@@ -27,12 +27,12 @@ python3 skills/shiji-tongjian-decisions/scripts/corpus.py verify \
   --id shiji-041 --quote '君行令，臣行意。'
 ```
 
-可分享对照（正确引文 vs 故意改一字）：[核源翻车→exact](examples/verify-flip.zh-CN.md)。
+可分享对照（正确引文 vs 故意改一字）：[核源翻车→exact](examples/verify-flip.zh-CN.md)。只改标点、去标点才命中时是 `normalized_only`，不能冒充 `exact`：[normalized_only≠exact](examples/verify-normalized.zh-CN.md)。
 
 ## 30 秒判断值不值得
 
 - **引文可离线核验**；找不到出处就明说缺口，不编造引文。
-- 不安装也能先读[晋升](examples/promotion-decision.zh-CN.md)或[跳槽](examples/job-switch-decision.zh-CN.md)完整示例，或看[核源翻车演示](examples/verify-flip.zh-CN.md)；入口见[示例索引](examples/README.md)。
+- 不安装也能先读[晋升](examples/promotion-decision.zh-CN.md)、[跳槽](examples/job-switch-decision.zh-CN.md)或[合伙/长期承诺](examples/partner-commitment-decision.zh-CN.md)完整示例，或看[核源翻车](examples/verify-flip.zh-CN.md) / [normalized_only≠exact](examples/verify-normalized.zh-CN.md)；入口见[示例索引](examples/README.md)。
 - 需要时一行安装：`npx skills add zhuyep/shiji-tongjian-decisions --skill shiji-tongjian-decisions`
 
 
@@ -59,7 +59,7 @@ python3 skills/shiji-tongjian-decisions/scripts/corpus.py verify \
 
 这些对照提出需要验证的问题，不能由古代君臣关系推断现代上司的动机。完整示例包含原文、出处、反事实标签和三条现代路径；现实困境为虚构，未使用个人私密经历。
 
-**不安装也能先判断有没有用：**读[晋升](examples/promotion-decision.zh-CN.md)或[跳槽](examples/job-switch-decision.zh-CN.md)完整推演，挑一条你认为有用或不成立的判断，填[具体反馈表](https://github.com/zhuyep/shiji-tongjian-decisions/issues/new?template=experience.yml)。选择“只看公开示例”即可，无需提供私人经历；提交内容公开可见。读过示例与实际运行会分开记录。
+**不安装也能先判断有没有用：**读[晋升](examples/promotion-decision.zh-CN.md)、[跳槽](examples/job-switch-decision.zh-CN.md)或[合伙/长期承诺](examples/partner-commitment-decision.zh-CN.md)完整推演，挑一条你认为有用或不成立的判断，填[具体反馈表](https://github.com/zhuyep/shiji-tongjian-decisions/issues/new?template=experience.yml)。选择“只看公开示例”即可，无需提供私人经历；提交内容公开可见。读过示例与实际运行会分开记录。
 
 
 ## 何时不该用史鉴
@@ -127,11 +127,11 @@ python3 skills/shiji-tongjian-decisions/scripts/corpus.py verify \
   --id shiji-041 --quote '君行令，臣行意。'
 ```
 
-返回 `status: exact`，并给出来源、原文偏移、行号和上下文。替换过的字不会被当作原句；忽略标点才命中时返回 `normalized_only`，不能冒充逐字一致。详见[来源与检索](skills/shiji-tongjian-decisions/references/sources.md)。
+返回 `status: exact`，并给出来源、原文偏移、行号和上下文。替换过的字不会被当作原句；忽略标点才命中时返回 `normalized_only`，不能冒充逐字一致（可分享对照：[normalized_only≠exact](examples/verify-normalized.zh-CN.md)）。详见[来源与检索](skills/shiji-tongjian-decisions/references/sources.md)。
 
 ## 当前完成度
 
-- 三卷的选段缓存、三个结构化演示案例、十三条原文短引。
+- 三卷的选段缓存、多篇公开示例（晋升/跳槽/合伙·长期承诺推演，以及核源 exact 与 normalized_only 演示）、十三条原文短引。
 - 离线工具测试、证据登记与公开 Markdown 引文/来源一致性检查，并用故意改字、错绑 ID、错改出处等变异验证检查会失败。
 - 六个虚构场景及人工验收标准；自动测试只校验夹具和原文基准，尚未完成模型行为回归。
 - 一条虚构困境的制作代理走读；尚无独立真人评价与真实决策效果验证。
@@ -141,7 +141,7 @@ python3 skills/shiji-tongjian-decisions/scripts/corpus.py verify \
 
 ## 反馈与贡献
 
-**不安装也能反馈：**读上面的虚构晋升或跳槽示例后，用[一分钟反馈表](https://github.com/zhuyep/shiji-tongjian-decisions/issues/new?template=experience.yml)告诉我们：你尝试到哪一步、哪一条判断有用或不成立、什么情况下会再用。看过示例、安装失败和实际使用会分开记录；请勿提供私人经历，表单提交后公开可见。
+**不安装也能反馈：**读上面的虚构晋升、跳槽或合伙/长期承诺示例后，用[一分钟反馈表](https://github.com/zhuyep/shiji-tongjian-decisions/issues/new?template=experience.yml)告诉我们：你尝试到哪一步、哪一条判断有用或不成立、什么情况下会再用。看过示例、安装失败和实际使用会分开记录；请勿提供私人经历，表单提交后公开可见。
 
 欢迎提交[问题或使用反馈](https://github.com/zhuyep/shiji-tongjian-decisions/issues)：提供脱敏问题、引用出处、观察到的错误或遗漏，以及怎样才算改进。新增案例请同时说明不适用之处。请勿提交真实同事姓名、家庭信息或未授权材料。
 

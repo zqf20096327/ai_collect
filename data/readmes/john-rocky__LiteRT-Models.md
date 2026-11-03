@@ -52,9 +52,9 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [Places365 ResNet18](#places365-resnet18-scene-recognition) | Scene recognition | Pixel 8a | ~2 ms | [🤗 HF](https://huggingface.co/litert-community/Places365-ResNet18-LiteRT) |
 | [DINOv2 ViT-S/14](#dinov2-vit-s14) | Dense features (PCA visualization) | Galaxy S26 | 53.58 ms (NPU 86.00) | [🤗 HF](https://huggingface.co/litert-community/DINOv2-ViT-S14-LiteRT) |
 | [DSINE](#dsine) | Surface normal estimation |  |  | [GitHub](https://github.com/john-rocky/LiteRT-Models/releases/download/v2/dsine.tflite) |
-| [Parakeet (FastConformer-CTC)](#parakeet-fastconformer-ctc) | Speech recognition | Pixel 8a | ~0.4 s per 16 s window | [🤗 HF](https://huggingface.co/litert-community/Parakeet-tdt-ctc-110m-LiteRT) |
+| [Parakeet (FastConformer-CTC)](#parakeet-fastconformer-ctc) | Speech recognition | Pixel 8a | ~0.4 s per 16 s window | [scripts](parakeet/) |
 | [Whisper-tiny](#whisper-tiny) | Speech recognition |  |  | [GitHub](https://github.com/john-rocky/LiteRT-Models/releases/download/v2/whisper_encoder.tflite) |
-| [wav2vec2-CTC](#wav2vec2-ctc-fully-gpu-single-pass) | Speech recognition (CTC, single pass) | Pixel 8a | ~22 ms per 10 s clip | [🤗 HF](https://huggingface.co/litert-community/wav2vec2-base-960h-CTC-LiteRT) |
+| [wav2vec2-CTC](#wav2vec2-ctc-fully-gpu-single-pass) | Speech recognition (CTC, single pass) | Pixel 8a | ~22 ms per 10 s clip | [scripts](asr/) |
 | [Kokoro-82M](#kokoro-82m) | Text-to-speech (EN / JA) | Pixel 8a (CPU) | RTF 0.60 | [🤗 HF](https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX/resolve/main/onnx/model_fp16.onnx) |
 | [Matcha-TTS](#matcha-tts) | Text-to-speech (FFT-free) | Pixel 8a | RTF ~0.8 | [🤗 HF](https://huggingface.co/litert-community/Matcha-TTS) |
 | [Dia2-1B](#dia2-1b-dialogue) | Dialogue text-to-speech | Pixel 8a (CPU) | ~190 s per 4 s utterance | [scripts](dia2/) |
@@ -78,6 +78,8 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [pyannote 3.1 stack](#pyannote-31-stack-segmentation--wespeaker) | Speaker diarization | Pixel 8a | ~1.2 ms per embedding window | [🤗 HF](https://huggingface.co/litert-community) |
 | [Nemotron-3-Diarization](#nemotron-3-diarization-streaming-sortformer-8-speakers) | Speaker diarization (streaming, up to 8 speakers) | Galaxy S26 | 171 ms per 0.72 s step (RTF 0.24, FP32) | [🤗 HF](https://huggingface.co/litert-community/Nemotron-3-Diarization-LiteRT) |
 | [CMGAN](#cmgan-noise-suppression) | Speech enhancement | Pixel 8a | ~20 ms per 2 s chunk | [🤗 HF](https://huggingface.co/litert-community) |
+| [RE-USE](#re-use-universal-speech-restoration) | Speech restoration (noise, reverb, clipping, band limit, codec) | Galaxy S26 | 2.448 s per second of audio (GPU) | [🤗 HF](https://huggingface.co/litert-community/NVIDIA-NemotronLabs-RE-USE-LiteRT) |
+| [RE-USE-laughter](#re-use-universal-speech-restoration) | Speech restoration that keeps laughter (RE-USE's laughter-preserving weights) | Galaxy S26 | 2.384 s per second of audio (GPU) | [🤗 HF](https://huggingface.co/litert-community/NVIDIA-NemotronLabs-RE-USE-laughter-LiteRT) |
 | [Basic Pitch](#basic-pitch-audio-to-midi) | Music transcription (audio → MIDI) | Pixel 8a | ~4.4 ms per 2 s window | [🤗 HF](https://huggingface.co/litert-community) |
 | [XFeat](#xfeat-local-features) | Image matching (local features) | Pixel 8a | ~0.4 ms per 640×480 image | [🤗 HF](https://huggingface.co/litert-community) |
 | [CLIPSeg](#clipseg) | Text-prompted segmentation | Pixel 8a | ~8.7 ms text + ~8.2 ms vision | [🤗 HF](https://huggingface.co/litert-community) |
@@ -892,7 +894,4 @@ Converted via **litert-torch** with encoder + decoder initial prediction only (C
 
 NVIDIA Parakeet (`parakeet-tdt_ctc-110m`, the CTC branch): the 17-layer FastConformer encoder + CTC head run **fully on the LiteRT CompiledModel GPU** on a Pixel 8a — the first big global-attention transformer in this zoo to survive the Mali fp16 path end to end. On-device transcript matches PyTorch exactly (real-frame logits corr 0.99997), 3105/3105 ops on LITERT_CL (1 partition), ~330 ms GPU + ~70 ms host mel ≈ 0.4 s end-to-end per 16 s window (device-app measured).
 
-Converted via **litert-torch**: RelPositionMultiHeadAttention re-authored as manual ≤4D matmuls, GLU→`a·sigmoid(b)`, masking folded into a GPU-clean additive attention bias for the fixed window, CTC `ConvASRDecoder` fused into the graph. Key fix: the subsampling front-end emits very large pre-norm activations (|x|≈7000), so the LayerNorm variance is reduced entirely in a down-scaled domain (never rebuilding the large variance, which overflows fp16 on Mali → blank output).
-
-| Model | Download Link | Size | Input | Output | API |
-| ----- | --
+Converted via **litert-torch**: RelPositionMultiHeadAttention re-authored as manual ≤4D matmuls, GLU→`a·sigmoid(b)`, masking folded 

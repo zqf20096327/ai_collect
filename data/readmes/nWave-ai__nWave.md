@@ -2,6 +2,8 @@
 
 nWave supplies specialist roles and a host-led delivery workflow for software teams. Its `nwdes` command builds one canonical handoff per feature — the single JSON record of the feature's facts — and renders briefs, role prompts, output schemas, and review packets from it. Your coding host (Claude Code, Codex, OpenCode, OMP, Cursor, Copilot, or Devin) invokes the roles and runs the models; the root assistant — the session you talk to — runs verification and decides what happens next. You decide scope and trade-offs.
 
+> Coming from 3.x? nWave 4 is a major release and a breaking change from 3.x. The old delivery runtime is removed, the 3.x delivery commands are replaced by the nwdes verbs, and Python 3.11 or newer is required. There is no converter for 3.x roadmaps or execution logs. Read the migration guide before you upgrade: https://github.com/nWave-ai/nWave/blob/main/docs/guides/migrating-from-3x.md.
+
 New to the vocabulary? Each term below is defined at first use; the [glossary](https://github.com/nWave-ai/nWave/tree/main/docs/guides/glossary.md) collects them in one place.
 
 ## What is new in v4
@@ -12,7 +14,7 @@ New to the vocabulary? Each term below is defined at first use; the [glossary](h
 - **Commit attribution is on by default** (a `Co-Authored-By: nWave <nwave@nwave.ai>` trailer). An explicit off still wins.
 - **Jev questions are on by default.** Jev, the remote judgment service for bounded questions, is authorized by default in `nwdes`; an explicit refusal always wins (`--jev unauthorized` on the call, or `"jev": "unauthorized"` in `~/.nwave/config.json`). The `TYPESAFE_API_KEY` environment variable is only a technical prerequisite — nwdes never reads it.
 
-Full notes and upgrade steps: [nWave 4.0.0 release](https://github.com/nWave-ai/nWave/releases), [What's new in v4](https://github.com/nWave-ai/nWave/tree/main/docs/guides/whats-new-v4/), [Migrate from 3.x](https://github.com/nWave-ai/nWave/tree/main/docs/guides/migrating-from-3x.md).
+Full notes and upgrade steps: [release notes](https://github.com/nWave-ai/nWave/releases), [What's new in v4](https://github.com/nWave-ai/nWave/tree/main/docs/guides/whats-new-v4/), [Migrate from 3.x](https://github.com/nWave-ai/nWave/tree/main/docs/guides/migrating-from-3x.md).
 
 ## Install
 
@@ -43,7 +45,7 @@ nwave-ai install --platform claude-code             # then install
 | `copilot` | Hook integration only | Installer self-validation | [Vendor support](https://github.com/nWave-ai/nWave/tree/main/docs/guides/vendor-support.md) (no guide yet) |
 | `devin` | Public skills under `~/.config/devin/skills/` plus a manifest | Installer self-validation | [Installing for Devin](https://github.com/nWave-ai/nWave/tree/main/docs/guides/installing-devin.md) |
 
-Verification depth differs per host, as the table states: container end-to-end install tests exercise a full install in a container, while installer self-validation means the installer's own prerequisite checks and final validation report — no dedicated end-to-end test covers those hosts yet. Cursor and Copilot are hook-only (no agents or native skills); Devin is skills-only; OMP receives skills, agents, commands and an extension. Restart the host after installation, then confirm `nwdes --help` works.
+Verification depth differs per host, as the table states: container end-to-end install tests exercise a full install in a container, while installer self-validation means the installer's own prerequisite checks and final validation report — no dedicated end-to-end test covers those hosts yet. Cursor and Copilot are hook-only (no agents or native skills); Devin is skills-only; OMP receives skills, agents, commands and an extension. Restart the host after installation, then confirm `nwdes --help` works — the one `nwdes` command you run at setup.
 
 Installation is host-wide; project activation is separate and opt-in:
 
@@ -53,11 +55,16 @@ nwave-ai project enable
 nwave-ai status        # expect: This project is active.
 ```
 
-`project enable` writes `.nwave/config.json` with `"enabled": true` and makes it trackable. Commit that file if your team should inherit the activation. Then, inside the host, ask `/nw-buddy What should I do next?` (Claude Code), `$nw-buddy` (Codex, OpenCode) or `/nw-buddy` (OMP installs the same `/nw-*` commands). Cursor, Copilot and Devin have no host command: restart the host, then drive a delivery with the `nwdes` command in your terminal — see [Deliver a feature](https://github.com/nWave-ai/nWave/tree/main/docs/guides/nwdes/deliver-feature.md) — or, on Devin, ask about the installed `nw-` skills.
+`project enable` writes `.nwave/config.json` with `"enabled": true` and makes it trackable. Commit that file if your team should inherit the activation. Then, inside the host, ask `/nw-buddy What should I do next?` (Claude Code), `$nw-buddy` (Codex, OpenCode) or `/nw-buddy` (OMP installs the same `/nw-*` commands). Cursor, Copilot and Devin have no host command: restart the host, then point your assistant at [Deliver a feature](https://github.com/nWave-ai/nWave/tree/main/docs/guides/nwdes/deliver-feature.md) — on Devin by asking about the installed `nw-` skills; on Cursor and Copilot the assistant has no nWave skills, so paste it the sentence from [For your assistant](https://github.com/nWave-ai/nWave/tree/main/docs/guides/README.md#for-your-assistant) (the `nwdes` terminal route stays as a fallback there).
 
 Before an upgrade you can create a recovery point with `nwave-ai install --backup-only`. `nwave-ai install --restore` rolls back a Claude Code installation; on Codex a restore is currently a no-op, and the other hosts differ — read the [installation guide](https://github.com/nWave-ai/nWave/tree/main/docs/guides/installation-guide/README.md) for your host's recovery surface. On Claude Code, `nwave-ai doctor` checks the installation; on the other hosts, read the installer's own final validation (doctor checks Claude Code assets, so a host-only install can fail it without being broken).
 
 ## First steps
+
+The `nwdes` steps in these guides are your assistant's to run; the
+[For your assistant](https://github.com/nWave-ai/nWave/tree/main/docs/guides/README.md#for-your-assistant) block gives you
+the exact sentence to paste. The first lesson below is the one you type
+yourself, once, to learn the command flow.
 
 - [First feature with nwdes](https://github.com/nWave-ai/nWave/tree/main/docs/guides/tutorial-nwdes-first-feature/) — a safe walk through the command flow in a throwaway repository.
 - [Deliver a feature](https://github.com/nWave-ai/nWave/tree/main/docs/guides/nwdes/deliver-feature.md) — the real route, end to end.

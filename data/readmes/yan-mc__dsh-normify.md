@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.5.4-0891b2?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.7.0-0891b2?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/DSH-Plugin-7C3AED?style=flat-square" alt="DSH Plugin">
-  <img src="https://img.shields.io/badge/DSH-0.1.5--rc.2-7C3AED?style=flat-square" alt="DSH">
+  <img src="https://img.shields.io/badge/DSH-0.2.1--rc.5-7C3AED?style=flat-square" alt="DSH">
   <img src="https://img.shields.io/badge/node-%E2%89%A518-339933?style=flat-square" alt="Node">
-  <img src="https://img.shields.io/badge/tools-31-0ea5e9?style=flat-square" alt="31 tools">
+  <img src="https://img.shields.io/badge/primitives-7-0ea5e9?style=flat-square" alt="7 primitives (+31 legacy)">
 </p>
 
 <h1 align="center">Normify · 归一化框架图构建器</h1>
@@ -21,15 +21,16 @@
 
 Normify 是 **DeepSeek Harness（DSH）插件**，也是**一套写给 AI 用的开发流程**：
 
-- **给 AI 的**：`normify-gen` 技能 + **31 个 `normify_*` 工具** —— 让模型把仓库分析成模块树结构数据，
+- **给 AI 的**：`normify-gen` 技能 + **7 个原语工具**（`normify_project` / `read` / `write` / `check` / `build` /
+  `render` / `change`，按 `op` 分派；旧 31 个工具名可经 `legacyTools` 过渡）—— 让模型把仓库分析成模块树结构数据，
   并在后续开发中**先建图后编程、伴随编程改图**（计划态建树 → 逐个实现 → 关单收尾）。
-- **给引擎的**：零容忍校验（L1 写时 / L2 全项目 / L3 冻结）+ 确定性编译（`tree.json` 等四件产物，SHA-256 冻结）
+- **给引擎的**：零容忍校验（L1 写时 / L2 全项目 / L3 冻结）+ 确定性编译（`tree.json` 等五件产物 + `receipt.sha256` 回执自证链）
   + 渲染数据（`renders/`，决定"每一层怎么画"）。
 - **给人的**：**单文件交互式架构图**（`normify.html`）—— 逐层下钻、悬停看介绍、一键中英切换、深链接、
   多树、**API 直连箭头**、跨层聚合、缩放与搜索。零依赖，双击即开。
 
-> 它不是"生成一张图就结束"的工具：结构数据与代码**互为契约**，每次改动都能被 `normify_sync` 检出漂移，
-> 并以 `normify_change_close`（**0 error 强制**）收尾，让"代码 → 架构图"永远同步。
+> 它不是"生成一张图就结束"的工具：结构数据与代码**互为契约**，每次改动都能被 `normify_check{op:"drift"}` 检出漂移，
+> 并以 `normify_change{op:"close"}`（**0 error 强制**）收尾，让"代码 → 架构图"永远同步。
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yan-mc/dsh-normify/main/docs/screenshots/engine.png" alt="引擎层：API 直连箭头" width="100%">
@@ -40,10 +41,10 @@ Normify 是 **DeepSeek Harness（DSH）插件**，也是**一套写给 AI 用的
 
 | 痛点 | Normify 的做法 |
 | --- | --- |
-| 架构图一画完就过期 | 结构数据是**可校验的源数据**：`normify_sync` 按 `fingerprint` 检出漂移，`normify_change_close` 强制 0 error 收尾 |
+| 架构图一画完就过期 | 结构数据是**可校验的源数据**：`normify_check{op:"drift"}` 按 `fingerprint` 检出漂移，`normify_change{op:"close"}` 强制 0 error 收尾 |
 | 图太粗，看不出接口契约 | 粒度到**单一功能单元**，API 写在叶子上，箭头可锚定到具体 API（`from_api`/`to_api`） |
-| AI 改代码时"看不见全局" | `normify_brief` 给出目标模块契约、影响面（谁依赖我）、规则约束与验收清单 |
-| 设计先写代码后补文档，必然漂移 | **计划态先建树**（`state: planned`）→ 实现后 `normify_module_refresh(activate)` 自动转 active |
+| AI 改代码时"看不见全局" | `normify_read{op:"brief"}` 给出目标模块契约、影响面（谁依赖我）、规则约束与验收清单 |
+| 设计先写代码后补文档，必然漂移 | **计划态先建树**（`state: planned`）→ 实现后 `normify_change{op:"close"}` 自动刷新指纹并激活 planned（legacy 可手动 `normify_module_refresh(activate)`） |
 | 结构规范靠人自觉 | `policy.yml` 架构规则（依赖方向 / 禁依赖 / 无环 / 深度 / 跨树 / 命名）由 `validate` 强制执行 |
 | 大仓库一次生成太重 | 增量再生成：只重建受影响子树，`layouts_to_review` 点名要复核的层 |
 
@@ -63,8 +64,8 @@ Normify 是 **DeepSeek Harness（DSH）插件**，也是**一套写给 AI 用的
 | 层 | 时机 | 内容 |
 | --- | --- | --- |
 | **L1** | 每次写入 | 必填字段、id 文法、uid、parent 一致性、双语长度、source/apis/deps 形状、state/replacement |
-| **L2** | `normify_validate` | 全项目：唯一性、文件↔id 映射、叶子/非叶子规则、API 键唯一、依赖目标、环、渲染数据交叉校验、架构规则、变更日志、（可选）仓库证据（source 存在性 + 指纹一致） |
-| **L3** | `normify_build` | 任何 error 都不产出产物；产出即 SHA-256 冻结进 `receipt.json` |
+| **L2** | `normify_check{op:"validate"}` | 全项目：唯一性、文件↔id 映射、叶子/非叶子规则、API 键唯一、依赖目标、环、渲染数据交叉校验、架构规则、变更日志、（可选）仓库证据（source 存在性 + 指纹一致） |
+| **L3** | `normify_build{op:"build"}` | 任何 error 都不产出产物；产出 5 件产物（tree/outline/api-index/structure-manifest/receipt）+ `receipt.sha256` 回执链 |
 
 每条诊断都带 `severity / code / message / subject / evidence / supportedFixes` —— **AI 可自行修复**。
 
@@ -75,20 +76,20 @@ Normify 是 **DeepSeek Harness（DSH）插件**，也是**一套写给 AI 用的
 - **API 直连**：叶子框内展示 API 明细行，箭头锚定到具体 API 行的端口；同一 API 行上的多条边自动扇形分离。
 - 跨层依赖聚合为虚线 `×N`（默认隐藏，工具栏或 `?agg=1` 开启，悬停看明细）。
 - 深链接：`#module=<id>`、`#api=<rpc:key>`、`#view=outline`、`?lang=zh|en`、`?agg=1`；缩放 / 悬停高亮 / 明暗主题。
-- **几何自检**：仓库自带 `check-geometry.mjs`，逐层断言"线不出界 / 不贴框 / 不穿框 / 不压线"。
+- **几何自检**：渲染器内置逐层几何断言思路（线不出界 / 不贴框 / 不穿框 / 不压线）；早期用于校验截图的独立脚本未随仓库分发。
 
 ### 2.4 伴随开发：先建图后编程
 
 ```
-change_open → brief → check → module_batch(state=planned) → 【写代码】
-   → module_refresh(activate) → change_close(0 error 强制) → verified + revision.after
+normify_change{op:"open"} → normify_read{op:"brief"} → normify_check{op:"check"}
+  → normify_write{op:"batch"}(state=planned) → 【写代码】→ normify_change{op:"close"}(0 error 强制) → verified + revision.after
 ```
 
-- **计划态**：源码还不存在也能先建树（`fingerprint: pending`），`validate` 放行；
-- **禁止假激活**：源码没落地就 `activate` 直接被拒；
-- **收尾即闭环**：`change_close` 会刷新指纹 → 校验（0 error 强制）→ 编译（可选渲染）→ 标记 `verified`，
+- **计划态**：源码还不存在也能先建树（`fingerprint: pending`），`normify_check{op:"validate"}` 放行；
+- **禁止假激活**：源码没落地就 `activate` / `close` 直接被拒；
+- **收尾即闭环**：`change{op:"close"}` 会刷新指纹 → 校验（0 error 强制）→ 编译（可选渲染）→ 标记 `verified`，
   任何一步失败都不关闭，变更保持原状态；
-- **改图随代码**：`normify_sync` 用 `git diff` + 未跟踪文件定位受影响模块与指纹漂移，`module_patch` 跟随更新。
+- **改图随代码**：`normify_check{op:"drift"}` 用 `git diff` + 未跟踪文件定位受影响模块与指纹漂移，`write{op:"patch"}` 跟随更新。
 
 ### 2.5 架构规则先行（policy.yml）
 
@@ -101,11 +102,44 @@ change_open → brief → check → module_batch(state=planned) → 【写代码
 | `cross-tree` | 跨树依赖策略：`forbid` / `allow` / `require-to-api` |
 | `naming` | 作用域内 id 段的命名正则 |
 
-安装后 `normify_validate` / `normify_build` / `normify_check` 全部强制执行；**违规先改设计，不能绕过**。
+安装后 `normify_check`（op=validate/check/drift）与 `normify_build`（op=build）全部强制执行；**违规先改设计，不能绕过**。
 
 ## 3. 最新变化
 
-### v0.5.4 · 把"第二轮 A/B 实测"暴露的 4 个工具缺陷修掉（当前版本）
+### v0.7.0 · 默认工具面切换为 7 原语（当前版本）
+
+- **默认 7 原语**：`normify_project / read / write / check / build / render / change`（按 `op` 分派，见 §7）；
+  常驻 schema 体积与工具选择歧义显著下降。
+- **平滑过渡**：`config.legacyTools: true` 在 7 原语外额外注册 31 旧名（过渡 1 个 minor）；`config.toolset: "full"` 完全回旧面。
+- **不变**：结构数据格式 v1、五件产物 + SBOM + `verify` 回执链、CLI 命令与退出码、安装方式与 DSH 兼容范围。
+- **评测**：新增检索层评测（n≥3、可复跑，见 [docs/EVAL-RESULTS.md](docs/EVAL-RESULTS.md)）；旧 A/B 表述改为
+  "n=1 可行性实验"（方法学见 [docs/EVAL.md](docs/EVAL.md)）。
+- **分发与决策门**：新增 [docs/MARKET.md](docs/MARKET.md)（官方市场/dshbase/dshhub 材料）；ADR-0011（0.7 不做 Harness 内 UI 面板）、
+  ADR-0012（0.7 不做 MCP 适配，CLI-first）。
+- 验收：`pack-smoke --all --strict` **PASS 43 / FAIL 0 / WARN 0**；platform-contract 25/25（7 原语 / legacy / full 三模式）。
+
+### v0.6.0 · Phase 1 内部重构（core/dsh/cli + CLI + SBOM）
+
+- `src/core`（纯 Node 引擎）/ `src/dsh`（DSH 适配层）/ `src/cli`（跨 agent CLI）；`lib/` 不再入库。
+- 新增 CLI、结构 SBOM（`structure-manifest.json`）、`receipt.sha256` 自证链、`normify verify`、语义化结构 diff。
+- DSH 适配层：真实 `output.schema` / presenters / destroy 审批；测试与 CI 矩阵；写路径性能大幅提升。
+- **公开面不变**：31 工具名、数据格式 v1、安装契约不变（7 原语为 opt-in）。
+
+### v0.5.5 · P0 止血：兼容当前 DSH 0.2.x
+
+- **兼容当前最新 DSH**：`engines.dsh` 改为 `>=0.2.1-rc.1 <0.3.0`（目标运行时 DSH `0.2.1-rc.5`）；
+  只支持当前 DSH 线，0.1.x 环境请留在 0.5.4。
+- **安全修复**：`normify_sync` 的 `diff` 范围拒绝以 `-` 开头的选项注入；`normify_render` 的 `out` 只接受纯文件名
+  （越界报 `render/invalid-out`）；`normify_fingerprint` 的 `source` 只接受仓库内 POSIX 相对路径，越界/符号链接按缺失处理。
+- **L3 回执可自证**：`receipt.json` 不再把自身写入 `artifacts`，新增同目录 `receipt.sha256` sidecar，五件产物可逐件复算。
+- **数据正确性**：`id` 末段保留段名 `index` 写入前拒绝（`structure/id-reserved`）、空 batch / 孤儿 upsert /
+  坏文件读取显式报错（`args/empty-batch` / `structure/parent-not-exist`）、环检测回归 L2
+  （`structure/dependency-cycle`）、delete 型变更单不再死锁（`change_close` 可用）。
+- **渲染安全**：HTML `<title>` 转义与 `/s+/g` 修正；写盘统一原子写。
+- **文档**：安装段改为 DSH 0.2.x 插件管理器/插件市场；兼容表、工具数（31）、源码规模（17 个 `.ts` / 约 7.6k 行）、
+  测试套数（5 套）口径统一。
+
+### v0.5.4 · 把"第二轮 A/B 实测"暴露的 4 个工具缺陷修掉
 
 第二轮 A/B 换了题目（**表格公式引擎 + CLI**，同一份规范、隐藏黑盒 88 项、外加**差分模糊测试**）。
 两组最终 B 88/88、A 87/88（差异只有一条 §5.2 语义）；这一版修的是**工具侧**新暴露的 4 个坑：
@@ -114,9 +148,8 @@ change_open → brief → check → module_batch(state=planned) → 【写代码
   `ok:true, count:1` 却**一个字段都没改**——最危险的"假成功"。现在直接报 `args/invalid-patch`，
   evidence 里给出收到的键与正确形状 `{patch:{id, patch:{...}}}`；单模块 `normify_module_patch` 传空补丁
   同样报 `args/empty-patch`（只给 `expect_updated_at` 也不再静默通过）。
-- **`normify_module_refresh` 不再强依赖 git**：`repoRoot` 不是 git 仓库时，以前直接
-  `refresh/git-failed` 失败（实测中 AI 只能 `git init` 才能激活模块）。现在改成**降级**：指纹照常重算、
-  `state` 照常激活，`revision` 保持模块原值，并给出 `refresh/git-unavailable` 警告与修法。
+- **`normify_module_refresh` 不再强依赖 git**：`repoRoot` 不是 git 仓库时，以前直接失败
+  （实测中 AI 只能 `git init` 才能激活模块）；现改为降级并给 `refresh/git-unavailable` 警告。
 - **`change_open` 的 `acceptance` 报错具体化**：以前把 `{zh,en}` 写进 acceptance 只有一句笼统报错；
   现在明确写出"**第 N 条不是非空字符串（收到 …）：验收标准只接受纯字符串**"，并提示双语描述写进 `title`/`intent`。
 - **`normify_help` 支持 `topic:"tool:<工具名>"`**：`tools` 主题现在每个工具都带**必填/可选**摘要，
@@ -134,7 +167,7 @@ change_open → brief → check → module_batch(state=planned) → 【写代码
   `policy` / `errors`（常见诊断码与修法）/ `all`；**传错主题会直接报错并列出可用主题**，不再静默忽略。
 - **项目初始化通道**：新增第 31 个工具 `normify_project_init` —— 建 `normify-<slug>/` + 默认架构规则，
   可选 `root` 一步创建"计划态根模块"（幂等）；同时 `normify_change_open` 现在也会**自动建项目目录**
-  （此前报 `project/no-modules`，AI 只能用 `module_batch {items:[],dry_run:true}` 绕过去）；
+  （此前报“项目目录不存在”错误，AI 只能用 `module_batch {items:[],dry_run:true}` 绕过去）；
   `normify_brief` 遇到不存在的模块会给出"先 init / 先建树 / 改用 task"的可执行提示。
 - **批量诊断的因果链**：一条 `label-too-long` 曾连带出 3 条 `dep/target-missing`（因为 L1 失败的模块会被移出批次工作集），
   AI 只能去读源码才能确认根因。现在连带错误改报 `dep/target-dropped` / `structure/parent-dropped`，
@@ -188,7 +221,7 @@ change_open → brief → check → module_batch(state=planned) → 【写代码
 
 ## 4. 截图
 
-| 总览层（129 模块） | 工具层（31 个工具、五族） |
+| 总览层（129 模块） | 工具层（0.6 视图：31 工具；0.7 起默认 7 原语） |
 | --- | --- |
 | ![overview](https://raw.githubusercontent.com/yan-mc/dsh-normify/main/docs/screenshots/overview.png) | ![tools](https://raw.githubusercontent.com/yan-mc/dsh-normify/main/docs/screenshots/tools.png) |
 
@@ -200,47 +233,39 @@ change_open → brief → check → module_batch(state=planned) → 【写代码
 
 ## 5. 安装
 
-### 方式 A：从压缩包安装（推荐，不依赖源码目录）
+Normify 以 **DSH bundle** 形式分发，只支持 **DSH 0.2.x**（`engines.dsh: ">=0.2.1-rc.1 <0.3.0"`）。
+安装后请**新开一个 DSH 会话**：工具列表在会话启动时快照。
+
+### 方式 A：插件管理器 / 插件市场（推荐）
+
+在 DSH 会话里让 AI 通过插件管理器安装（`plugin_manager` 的 `install_bundle`），目标可以是：
+
+- **本仓库目录**（从源码安装时先 `npm install && npm run build`；`lib/` 已不再入 git，需先构建）；
+- **本地发行包**（`npm pack` 生成的 `dsh-external-dsh-normify-<version>.tgz`，或对应 Release 附件），安装 spec 以插件管理器提示为准；
+- **插件市场条目**（若你配置的市场索引已收录本插件，可直接在插件市场页面安装）。
+
+安装由 DSH 插件管理器完成：校验 `engines` → 写入 profile → 登记 bundle。
+**不需要手工编辑 profile 的 `package.json`、`node_modules` 或 `cordis.patch.yml`** ——
+插件行由 bundle 自身声明（`package.json > dsh.bundle.patch: ./cordis.patch.yml`）。
+
+### 方式 B：`dsh plugin` CLI
 
 ```bash
-# 1) 构建发行包（或直接使用仓库 Releases 里的 tgz）
-cd dsh-normify && npm install && npm run build && npm pack
-
-# 2) 把包解到目标 profile 的 node_modules（DSHEAC AIO 6.9.x 的 profile 是 web-desktop）
-#    <profile>/node_modules/@dsh-external/dsh-normify/
-
-# 3) 编辑 <profile>/package.json：
-#    dependencies       增加  "@dsh-external/dsh-normify": "file:<tgz 绝对路径>"
-#    dsh.profile.bundles 增加  "@dsh-external/dsh-normify"
-
-# 4) 重启 DSH 桌面端（工具在会话启动时快照，需新会话）
+# <profile> 为当前 DSH profile 名（可在 ~/.dsh/profiles/ 下查看）
+dsh plugin --profile <profile> add <dsh-normify 包目录或 .tgz 的绝对路径>
 ```
 
-插件行的注册**由 bundle 自身完成**：`package.json > dsh.bundle.patch: ./cordis.patch.yml`，
-DSH 会把它插进 cordis 树，**不需要手改 profile 的 `cordis.patch.yml`**。
-
-### 方式 B：`dsh plugin`（自动登记 bundle）
-
-```bash
-dsh plugin --profile web-desktop add <dsh-normify 目录的绝对路径>
-# 或：dsh plugin --profile web-desktop add link:F:/dsh-normify
-```
-
-### 方式 C：开发模式（改源码 → 重启即生效）
-
-把 profile 的依赖写成 `link:<本仓库绝对路径>`，并在 `node_modules` 里建立指向本仓库的
-目录联接（junction）。此时插件按**真实路径**解析依赖，因此本仓库需要 `node_modules/yaml`（`npm install` 即可）。
-
-> ⚠️ **注意**：DSHEAC AIO **应用升级会按 `resources/profile-seed` 重播种 profile**，
-> 已安装的插件登记会被抹掉；升级后请用方式 A/B 重装一次。
+CLI 参数以当前 DSH 版本自带的 `dsh plugin --help` 为准；不同 DSH build 的语法可能略有差异。
 
 ### 验证安装
 
-```bash
-# 在 profile 目录下用裸包名导入，应打印 31 个工具 + 技能
-node -e "import('@dsh-external/dsh-normify').then(m=>console.log(m.name))"
-# 或在 DSH 里直接问 AI：「列出你手上的 normify 工具」
+```text
+在 DSH 新会话里直接问 AI：列出你手上的 normify 工具
+# 默认应看到 7 个原语；legacyTools:true 时额外有 31 个旧名；toolset:"full" 时为 31 个旧工具
 ```
+
+> ⚠️ 版本不兼容时插件管理器会报 `incompatible-version` 并回滚：请使用 **0.7.0+**（支持 DSH 0.2.x）；
+> 仍需运行在 0.1.x 的旧环境请保留 0.5.4。
 
 ## 6. 快速开始
 
@@ -251,20 +276,21 @@ node -e "import('@dsh-external/dsh-normify').then(m=>console.log(m.name))"
 用 normify-gen 技能为 F:\my-project 建结构树并渲染架构图，粒度到单一功能单元。
 
 # ② 先建图后编程（推荐开发姿势）
-我要给 my-project 加一个「限流」模块：先 normify_brief 给我指引，建计划态模块，我实现完再 refresh 激活、change_close 收尾。
+我要给 my-project 加一个「限流」模块：先给我 brief 指引（normify_read op=brief），建计划态模块，我实现完再 change_close 收尾（它会自动刷新并激活 planned）。
 
 # ③ 代码改了，同步结构图
-同步 my-project 的结构图（normify_sync），把受影响的模块与渲染数据更新掉，0 error 后重新 build + render。
+同步 my-project 的结构图（normify_check op=drift），把受影响的模块与渲染数据更新掉，0 error 后重新 build + render。
 ```
 
-AI 侧实际会跑：
+AI 侧实际会跑（0.7 默认 7 原语；括号内为 op）：
 
 ```text
-normify_tree_list → normify_module_upsert（根 + 一级子模块）
-  → normify_module_list（逐层下钻）→ normify_module_batch（批量建树，原子）
-  → normify_layout_upsert（每个容器一层渲染数据）
-  → normify_fingerprint（写 fingerprint 前必算）
-  → normify_validate（0 error 门禁）→ normify_build → normify_render
+normify_project{op:"init"} → normify_write{op:"batch"}（根 + 一级子模块，原子）
+  → normify_read{op:"list"}（逐层下钻）
+  → normify_write{op:"layout_upsert"}（每个容器一层渲染数据）
+  → normify_check{op:"validate"}（0 error 门禁）
+  → normify_build{op:"build"} → normify_render{op:"render"}
+  → normify_build{op:"verify"}（或 CLI `verify`）确认回执链
 ```
 
 产物（默认写在结构数据目录 `normify-<slug>/` 下）：
@@ -277,33 +303,52 @@ normify_tree_list → normify_module_upsert（根 + 一级子模块）
 | `changes/<id>.json` | 开发变更日志（随结构目录一起回档） |
 | `tree.json` | 编译产物：模块字典 + API 索引 + 边 + 渲染数据 + 规则 + 变更统计 |
 | `outline.md` / `api-index.json` | 人类可读大纲 / API 索引 |
-| `receipt.json` | 产物 SHA-256 冻结回执（含 stats 与 warning 摘要） |
+| `structure-manifest.json` | 结构 SBOM：模块/API/依赖确定性清单 + 产物哈希（0.6.0 起） |
+| `receipt.json` | 各产物 SHA-256 冻结回执（不含自身） |
+| `receipt.sha256` | `receipt.json` 自身的校验和（sidecar，供外部复算） |
 | `normify.html` | 单文件交互式架构图 |
 
-## 7. 31 个工具
+## 7. 工具面：7 原语（legacyTools 过渡）
 
-| 族 | 工具 | 用途 |
+0.7.0 起 DSH 默认只注册 **7 个原语**（按 `op` 分派）。CLI 内部仍用 full 工具集（命令不变）。
+
+| 原语 | op | 用途 |
 | --- | --- | --- |
-| **参数** | `normify_help` | **分主题**速查：`fields` 字段 / `deps` 箭头与 API 直连 / `renders` 渲染数据 / `flow` 伴随流程 / `tools` 工具清单 / `policy` 规则 / `errors` 诊断码 / `all`（0.5.3 起忽略入参会报错并列出主题） |
-| **读取** | `normify_tree_list` | 列出项目与每棵树的根 |
-| | `normify_module_get` / `normify_module_list` | 读单个模块 / 按父级或树列模块（含统计） |
-| | `normify_search` / `normify_deps_find` / `normify_outline` | 检索、反查"谁依赖我"、重建 `outline.md` |
-| **写入** | `normify_project_init` | 初始化结构数据项目（建目录 + 默认架构规则；可一步建"计划态根模块"）——**开新项目的第 0 步** |
-| | `normify_module_upsert` | 创建/更新模块（写时 L1 校验、文件形态自动晋升/降级） |
-| | `normify_module_delete` / `normify_module_promote` | 删子树（附悬空边预警）/ 叶子晋升容器 |
-| **演进** | `normify_module_patch` | 部分更新（`expect_updated_at` 并发保护 + `dry_run`） |
-| | `normify_module_batch` | 原子批量 upsert/patch（失败整批回滚） |
-| | `normify_module_move` | 改名/挪层（保 uid、级联 parent、重写全项目 deps） |
-| | `normify_module_refresh` | 重算指纹/revision；`activate` 把已落地的 planned 转 active |
-| **渲染数据** | `normify_layout_get/upsert/delete` | 维护"这一层怎么画"（顺序/分组/模式/导语/车道） |
-| **流水线** | `normify_validate` | 全项目 L2 校验（0 error 门禁；可带 `repoRoot` 做证据校验） |
-| | `normify_build` / `normify_render` | 编译并冻结产物 / 渲染单文件 HTML |
-| | `normify_fingerprint` | 按引擎确定性算法计算 source 指纹（写 `fingerprint` 前必调） |
-| | `normify_sync` | 增量再生成规划器（只读）：脏子树 / 新文件建议 / 指纹漂移 / 破坏性 API 变更 |
-| **伴随开发** | `normify_brief` | 开发指引：目标契约、影响面、规则约束、建议模块、验收清单 |
-| | `normify_check` | 动手前预检（拟建模块与依赖：parent、深度、环、规则） |
-| | `normify_change_open/update/list/close` | 变更日志；`close` **0 error 强制**收尾 |
-| | `normify_policy_get/upsert` | 读取/安装架构规则 `policy.yml` |
+| `normify_project` | `init` / `list` / `status` | 初始化项目（可一步建计划态根模块）/ 列出全部项目 / 项目概览 |
+| `normify_read` | `get` / `list` / `search` / `deps` / `outline` / `brief` / `layout` / `policy` | 只读查询：模块 / 列模块 / 检索 / 反查依赖 / 大纲 / 开发指引 / 渲染数据 / 架构规则 |
+| `normify_write` | `upsert` / `patch` / `batch` / `move` / `delete` / `promote` / `layout_upsert` / `layout_delete` | 事务化写入（L1 校验、原子批、`dry_run`） |
+| `normify_check` | `validate` / `check` / `drift` / `policy` | L2 校验 / 设计预检 / git 漂移与增量规划 / 读规则 |
+| `normify_build` | `build` / `verify` / `sbom` | 编译五件产物 + SBOM + 回执链 / 只校验不重编译 |
+| `normify_render` | `render` | 渲染单文件交互式 HTML（`out` 只接受纯文件名） |
+| `normify_change` | `open` / `update` / `list` / `close` | 变更生命周期；`close` **0 error 强制**并激活 planned |
+
+**工具面配置**（插件 config）：
+
+| 配置 | 默认 | 效果 |
+| --- | --- | --- |
+| `toolset: "core"` | ✅ | 只注册 7 原语 |
+| `toolset: "full"` | — | 只注册 31 旧工具（完全回 0.6 面） |
+| `legacyTools: true` | `false` | 在 7 原语外**额外**注册 31 旧名（过渡 1 个 minor，0.8 移除） |
+
+- `legacyTools:true` 的注册项 = 7 + 28 = 35；其中 `normify_check` / `normify_build` / `normify_render` 三个名字与旧名同名，
+  过渡期请直接用原语 `op`。
+- CLI（`normify ...` / `call <tool>`）不受插件 `toolset` 影响，始终可用 full 31 工具。
+
+**31 旧名 → 原语 op 映射（迁移用）**
+
+| 旧工具名（0.6） | 0.7 用法 |
+| --- | --- |
+| `normify_project_init` / `normify_tree_list` | `normify_project{op:"init" / "list"}` |
+| `normify_module_get` / `_list` / `_search` / `_deps_find` / `_outline` / `_brief` | `normify_read{op:"get"/"list"/"search"/"deps"/"outline"/"brief"}` |
+| `normify_layout_get` / `normify_policy_get` | `normify_read{op:"layout"/"policy"}` |
+| `normify_module_upsert` / `_patch` / `_batch` / `_move` / `_delete` / `_promote` | `normify_write{op:"upsert"/"patch"/"batch"/"move"/"delete"/"promote"}` |
+| `normify_layout_upsert` / `normify_layout_delete` | `normify_write{op:"layout_upsert"/"layout_delete"}` |
+| `normify_validate` / `normify_check` / `normify_sync` | `normify_check{op:"validate"/"check"/"drift"}` |
+| `normify_build` / `normify_render` | `normify_build{op:"build"/"verify"/"sbom"}` / `normify_render{op:"render"}` |
+| `normify_change_open` / `_update` / `_list` / `_close` | `normify_change{op:"open"/"update"/"list"/"close"}` |
+| `normify_fingerprint` / `normify_module_refresh` / `normify_help` / `normify_policy_upsert` | **无原语等价**：需要时开 `legacyTools:true` 或走 CLI（`normify call ...`） |
+
+> 每个原语的参数树可用 `normify_help{topic:"tool:<name>"}`（legacy 模式）或 `node lib/cli/index.js call <tool> --args-json ...` 查看。
 
 ## 8. 数据结构（模块 frontmatter）
 
@@ -384,7 +429,8 @@ rules:
     scope: ["dsh-normify.**"]
 ```
 
-项目创建时自动安装默认规则（无环 + 禁指向废弃模块），可随时用 `normify_policy_upsert` 覆盖。
+项目创建时自动安装默认规则（无环 + 禁指向废弃模块）；读取用 `normify_read{op:"policy"}` / `normify_check{op:"policy"}`，
+覆盖用 legacy `normify_policy_upsert` 或 CLI `normify call normify_policy_upsert`。
 **深度上限是可选项**：不写 `max-depth` 就是不限层。
 
 ## 11. 伴随开发：先建图后编程 / 伴随编程改图
@@ -392,17 +438,17 @@ rules:
 ### 11.1 先建图后编程（design-first）
 
 ```text
-① normify_change_open   开变更单（title / intent / modules / acceptance）
-② normify_brief          拿指引：目标模块与契约、影响面（谁依赖我）、规则约束、建议模块、验收清单
-③ normify_check          预检：拟建模块与依赖是否违反核心约束或 policy
-④ normify_module_batch   建「计划态」模块（state=planned, fingerprint=pending, 源码可以先不存在）
-                          同一轮用 normify_layout_upsert 写该层渲染数据
-⑤ 【人/AI 写代码】        实现对应模块
-⑥ normify_module_refresh 重算指纹与 revision，activate:true → planned 自动转 active
-⑦ normify_change_close   0 error 强制收尾：刷新 → 校验 → 编译 → 标记 verified + revision.after
+① normify_change{op:"open"}      开变更单（title / intent / modules / acceptance）
+② normify_read{op:"brief"}       拿指引：目标模块与契约、影响面（谁依赖我）、规则约束、建议模块、验收清单
+③ normify_check{op:"check"}      预检：拟建模块与依赖是否违反核心约束或 policy
+④ normify_write{op:"batch"}      建「计划态」模块（state=planned, fingerprint=pending, 源码可以先不存在）
+                                  同一轮用 normify_write{op:"layout_upsert"} 写该层渲染数据
+⑤ 【人/AI 写代码】               实现对应模块
+⑥ normify_change{op:"close"}     自动刷新指纹并激活 planned（legacy 模式可手动 normify_module_refresh）
+⑦ 0 error 强制收尾：刷新 → 校验 → 编译 → 标记 verified + revision.after
 ```
 
-- 计划态下 `normify_validate` **0 error**（源码未落地也合法，只记 warning）；
+- 计划态下 `normify_check{op:"validate"}` **0 error**（源码未落地也合法，只记 warning）；
 - 源码没落地就 `activate` / `close` 会被**拒绝**（禁止"假激活"）；
 - 变更单存在结构目录内（`changes/<id>.json`），**随工程一起回档**。
 
@@ -410,15 +456,15 @@ rules:
 
 ```text
 ① 改代码（提交与否都行）
-② normify_sync            检出：changed_files / affected / drift_fingerprints / layouts_to_review
-                          新文件还会给出「建议模块」（含 id 与目标路径）
-③ normify_module_patch    跟随代码更新模块：补 API、改介绍、重算 fingerprint 与 revision
-④ normify_validate        0 error
-⑤ normify_change_close    收尾并重建产物（tree.json 会反映本次变更统计）
+② normify_check{op:"drift"}      检出：changed_files / affected / drift_fingerprints / layouts_to_review
+                                  新文件还会给出「建议模块」（含 id 与目标路径）
+③ normify_write{op:"patch"}      跟随代码更新模块：补 API、改介绍、标签等
+④ normify_check{op:"validate"}   0 error
+⑤ normify_change{op:"close"}     收尾并重建产物（tree.json 会反映本次变更统计）
 ```
 
-> 实测（本项目自身）：改完 `src/engine/layout.ts` + `CHANGELOG.md` 后，`sync` 报出 **7 个 `evidence/fingerprint-drift`**，
-> `refresh` 后回到 0 error —— 这正是"图与码不脱节"的日常形态。
+> 实测（本项目自身）：改完源码 + `CHANGELOG.md` 后，`drift` 报出多个 `evidence/fingerprint-drift`，
+> 刷新后回到 0 error —— 这正是"图与码不脱节"的日常形态。
 
 ## 12. 渲染器细节（v3 / 0.5.2）
 
@@ -430,42 +476,53 @@ rules:
 - **API 直连**：叶子框内展示 `max_api_rows` 行 API（0 = 全部，也是缺省），箭头锚定到具体 API 行的端口。
 - **跨层聚合**：跨层依赖默认聚合为虚线 `×N`（`?agg=1` 或工具栏开启，悬停看明细）。
 - **viewBox 自适应**：由全部几何包围盒动态计算（线不出视口）；缩放 / 适配 / 100%。
-- **几何自检**：`check-geometry.mjs` 逐层断言五项指标（越界 / 贴边 / 穿框 / 贴组框 / 线压线）。
+- **几何自检**：渲染器内置逐层几何断言思路（越界 / 贴边 / 穿框 / 贴组框 / 线压线）；早期独立校验脚本未随仓库分发。
   本项目自身 129 模块 / 28 层：**线压线 0 处**，27/28 层五项全 0。
 
 ## 13. 工程与测试
 
 ```bash
-npm install          # 安装 devDependencies（typescript / @types/node / cordis / schemastery / cosmokit）
-npm run build        # src/ → lib/（tsc；两条路径：本地 vendor-ts 或 npm）
+npm install          # devDependencies（typescript / @types/node / cordis / schemastery / cosmokit）
+npm run build        # src/ → lib/（tsc；lib/ 不入 git，使用/开发前必须构建）
 npm run typecheck    # tsc --noEmit
-npm test             # engine-e2e.mjs + companion-e2e.mjs（不依赖 DSH 的 node 端到端）
-node ci-contract-check.cjs   # 契约检查：bundle 声明 + 恰好 31 个工具 + provider 安全命名
+npm test             # 6 套 e2e/回归：engine / companion / regression-0.5.2 / 0.5.3 / 0.5.4 / 0.5.5
+npm run test:unit    # core-unit（引擎单测）
+npm run test:contract # platform-contract（7 原语/legacy/full 三模式）+ pack-smoke --contract
+npm run test:perf    # 性能冒烟（300 模块，宽松阈值）
+node ci-contract-check.cjs           # 契约检查：bundle 声明 + full 31 工具 + provider 安全命名
+node scripts/check-core-boundary.mjs # 边界检查：core 禁 @deepseek-ai；cli 禁 ../dsh
+node scripts/gen-diagnostics.mjs     # 从源码生成 docs/DIAGNOSTICS.md
+node scripts/pack-smoke.mjs --all --strict   # 发布包冒烟（需本机 DSH 桌面端）
 ```
 
 | 目录 | 内容 |
 | --- | --- |
-| `src/` | TypeScript 源码（16 个模块，7168 行）：`index.ts` / `tools.ts` / `engine/*` |
-| `lib/` | 编译产物（`tsc` 输出，随包发布） |
-| `skills/normify-gen/SKILL.md` | 生成器技能（铁律、流程、粒度、可读性配方） |
-| `tests/` | 两个端到端：引擎链路 + 伴随开发闭环（8 个环节） |
-| `docs/SPEC.zh-CN.md` | 正式规范（数据模型 / 源格式 / 产物 / 校验 / 生成器 / 渲染器 / 插件工程） |
+| `src/core/` | 纯 Node 引擎（DSH 无关）：`engine/*`（id/校验/编译/渲染/变更/事务写）+ `toolset.ts`（31 旧工具规格）+ `primitives.ts`（7 原语规格） |
+| `src/dsh/` | DSH 适配层：真实 `ToolDefinition`（output schema + presenters + 审批）；决定注册 7 原语 / legacy / full |
+| `src/cli/` | CLI（构建后 `lib/cli/index.js`，`bin: normify`），只依赖 core |
+| `lib/` | 构建产物（`tsc` 输出；**不入 git**，随发行包发布） |
+| `skills/normify-gen/` | 薄技能入口 `SKILL.md`（≤150 行）+ `references/`（格式/校验/配方/迁移/示例/工具面） |
+| `tests/` | 6 套 e2e/回归 + core-unit + platform-contract + 性能冒烟 |
+| `docs/` | `SPEC.zh-CN.md`（唯一规范真源）+ COMPATIBILITY / MIGRATION / RELEASE-CHECKLIST / DIAGNOSTICS / MARKET / EVAL / adr |
 | `vendor/` | 内联第三方（schemastery / cosmokit，按相对路径加载） |
 
 ## 14. 兼容性与排错
 
 | 项 | 要求 |
 | --- | --- |
-| DSH | `0.1.5-rc.2`（peer：`@deepseek-ai/cordis ^4`；`dsh-tools` / `dsh-skill` 可选） |
-| DSHEAC AIO | 6.9.x（profile `web-desktop`） |
+| DSH | `0.2.1-rc.5`（engines `>=0.2.1-rc.1 <0.3.0`；peer：`@deepseek-ai/cordis ^4`） |
+| 支持策略 | **只支持当前最新 DSH 线（0.2.x）**；0.1.x 环境请留在 0.5.4 |
+| 工具面 | 默认 7 原语；`legacyTools:true` → 额外 31 旧名；`toolset:"full"` → 31 旧工具 |
 | Node.js | ≥ 18 |
+
+> 完整兼容矩阵与验证证据：[docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)；升级说明：[docs/MIGRATION.md](docs/MIGRATION.md)。
 
 **常见问题**
 
-- **装了但工具不出现** → 工具列表在**会话启动时快照**：请**新开一个会话**（或重启桌面端）。
-- **升级 AIO 后插件消失** → 应用升级会按 `resources/profile-seed` 重播种 profile，重装一次即可。
-- **`Cannot find package 'yaml'`** → `link:` 安装时按真实路径解析依赖，请在本仓库执行一次 `npm install`。
-- **`evidence/fingerprint-drift`** → 源码变了而结构数据没跟上：`normify_sync` 看漂移清单，`normify_module_refresh` 重算指纹。
+- **装了但工具不出现** → 工具列表在**会话启动时快照**：请**新开一个会话**（或重启 DSH）。
+- **旧工具名报 unknown tool** → 0.7 默认只注册 7 原语：设置 `legacyTools: true`（过渡期）或改用原语 op（映射见 §7）。
+- **安装报 `incompatible-version`** → 插件版本与 DSH 运行时的 engines 区间不符：请升级插件到 0.7.0+；旧 DSH 0.1.x 请留在 0.5.4。
+- **`evidence/fingerprint-drift`** → 源码变了而结构数据没跟上：`normify_check{op:"drift"}` 看漂移清单，再 `change{op:"close"}` 刷新（legacy 模式用 `normify_module_refresh`）。
 - **`structure/leaf-too-coarse`** → 不是错，是提示：该叶子还能继续拆（推荐拆到"单一功能单元"）。
 
 ## 15. 安全与隐私
@@ -476,14 +533,55 @@ node ci-contract-check.cjs   # 契约检查：bundle 声明 + 恰好 31 个工�
 - **只读仓库**：生成器遵守"只读源码"铁律 —— 结构数据只写入 `normify-<slug>/`，绝不修改被分析的仓库。
 - `source` 字段只记录**仓库相对路径**与行号，不会把源码内容复制进结构数据。
 
-## 16. 文档索引
+## 16. CLI（跨 agent / CI）
+
+CLI 与 DSH 工具**同引擎**，不依赖 DSH 运行时：适合终端、CI 与其他 agent。
+`lib/` 不入 git，从源码用 CLI 前先 `npm run build`（npm 发行包内已含 `lib/`）。
+
+```bash
+node lib/cli/index.js --help        # 命令、选项与退出码
+node lib/cli/index.js tools         # JSON：full 工具集 31 个（CLI 不受插件 toolset 影响）
+node lib/cli/index.js verify --project demo   # receipt.sha256 → receipt → artifacts 逐件复算
+
+# 常用：结构项目用 --project <slug> 或 --dir <结构目录绝对路径>
+node lib/cli/index.js init --project demo --root-id demo
+node lib/cli/index.js validate --project demo --repo-root F:/repo
+node lib/cli/index.js build --project demo    # tree/outline/api-index/structure-manifest/receipt
+node lib/cli/index.js render --project demo --out normify.html
+node lib/cli/index.js sync --project demo --repo-root F:/repo --diff HEAD~1
+node lib/cli/index.js change-open --project demo --args-json '{"title":{"zh":"…","en":"…"},"acceptance":["…"]}'
+node lib/cli/index.js call <tool-name> --args-json '<json>'   # 直接调用任意工具
+```
+
+| 命令 | 用途 |
+| --- | --- |
+| `init` / `status` / `list` / `get` / `search` / `brief` | 初始化 / 概览 / 列模块 / 读模块 / 检索 / 开发指引 |
+| `validate` / `check` | L2 全项目校验 / 设计预检 |
+| `build` / `verify` / `render` | 编译 5 件产物 / 回执链自证 / 渲染单文件 HTML |
+| `sync` | 增量同步规划（只读） |
+| `change-open` / `change-list` / `change-close` | 变更日志与 0 error 收尾 |
+| `project-list` / `policy` / `help` / `tools` / `call` | 项目清单 / 读 policy / 帮助 / 工具清单 / 直调工具 |
+
+- 安装后可直接用 `normify <command>`（`bin` 映射 `lib/cli/index.js`）；未安装时用 `node lib/cli/index.js`。
+- 输出默认 JSON；`--quiet` 输出单行 JSON。**退出码是稳定契约**：
+  `0` 成功；`2` 校验/L2 错误（含 `verify` 不一致）；`4` 参数/用法错误；`5` 其它失败；`6` 安全拒绝。
+- `build --verify-only`（CLI）/ `normify_build{op:"verify"}`（原语）只校验回执链、不重编译。
+
+## 17. 文档索引
 
 | 文档 | 内容 |
 | --- | --- |
-| [`docs/SPEC.zh-CN.md`](docs/SPEC.zh-CN.md) | 正式规范 v1.0（含 v0.4.x/0.5.x 实现状态） |
-| [`skills/normify-gen/SKILL.md`](skills/normify-gen/SKILL.md) | 生成器技能全文（AI 的工作手册） |
-| [`CHANGELOG.md`](CHANGELOG.md) | 版本变更记录（0.1.0 → 0.5.4） |
-| [`docs/VIDEO-SCRIPT.zh-CN.md`](docs/VIDEO-SCRIPT.zh-CN.md) | **视频文字稿**（10 分钟完整版 + 60 秒速览 + 数字备忘卡 + 录制清单） |
+| [`docs/SPEC.zh-CN.md`](docs/SPEC.zh-CN.md) | 正式规范 v1.0（数据模型 / 源格式 / 产物 / 校验 / 生成器 / 渲染器 / 插件工程，唯一真源） |
+| [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) | DSH × 插件版本 × 验证状态（含 pack-smoke 证据） |
+| [`docs/MIGRATION.md`](docs/MIGRATION.md) | 0.5.4→0.5.5、0.5.x→0.6.0、0.6.x→0.7.0（默认面切换 + legacyTools） |
+| [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md) | 发布前逐项检查清单（构建/测试/冒烟/checksum/tag） |
+| [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) | 诊断码总表（由 `scripts/gen-diagnostics.mjs` 从源码生成） |
+| [`docs/MARKET.md`](docs/MARKET.md) | 市场分发材料（官方市场/dshbase/dshhub + 需用户执行清单） |
+| [`docs/EVAL.md`](docs/EVAL.md) / [`docs/EVAL-RESULTS.md`](docs/EVAL-RESULTS.md) | 评测协议（n≥3/独立 profile/盲评）与检索层评测结果 |
+| [`docs/adr/0011-ui-panel-decision.md`](docs/adr/0011-ui-panel-decision.md) / [`0012-mcp-adapter-decision.md`](docs/adr/0012-mcp-adapter-decision.md) | 决策门：0.7 不做 UI 面板 / 不做 MCP（CLI-first） |
+| [`skills/normify-gen/SKILL.md`](skills/normify-gen/SKILL.md) | 薄技能入口（`references/` 放格式/校验/配方/迁移/示例/工具面） |
+| [`docs/RELEASE-0.7.0.md`](docs/RELEASE-0.7.0.md) | 当前版本发布说明（7 原语默认面） |
+| [`CHANGELOG.md`](CHANGELOG.md) | 版本变更记录（0.1.0 → 0.7.0） |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 参与贡献 |
 | [`SECURITY.md`](SECURITY.md) | 安全策略 |
 
@@ -494,3 +592,4 @@ node ci-contract-check.cjs   # 契约检查：bundle 声明 + 恰好 31 个工�
 ---
 
 <p align="center"><sub>Normify —— 让架构图跟着代码一起生长。</sub></p>
+

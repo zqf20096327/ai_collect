@@ -195,3 +195,7 @@ We stand on the shoulders of giants:
 <b>Enjoying the project? Share some love by giving it a ⭐ and spreading the word!</b><br>
 Licensed under the <b>GPL 3.0</b> License
 </p>
+
+## Links
+
+Linux Do Community: https://linux.do

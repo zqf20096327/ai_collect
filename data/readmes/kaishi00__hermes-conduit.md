@@ -47,7 +47,7 @@ The app works with any Hermes dashboard on its own. The free [Hermes Conduit Not
 - Attach photos, camera shots and any file, or drag them onto a chat (Finder on a Mac, Files on an iPad); a long paste becomes a text attachment you can open, edit or put back as text; quote a message, react to it, copy it
 - Open a picture full screen and swipe through the chat's pictures (or Artifacts' or a folder's): pinch or double-tap to zoom, swipe down to close, share or save
 - Steer, queue or stop a running turn; context meter; slash commands
-- Branch, pin (in the order you set), archive and delete sessions; project chats, with a dot on a project that holds an unread reply; Artifacts browser for every file and page Hermes made
+- Branch, pin (in the order you set), archive and delete sessions; project chats, with a dot on a project that holds an unread reply; make a project from the Projects heading's +, from a new or an existing folder on the Hermes host; Artifacts browser for every file and page Hermes made
 - Browse the chat's folder and your projects' folders beside Artifacts: preview and edit files, search names and contents, make, rename, move and delete files, upload from the phone, and tap a file path in a reply to open it (the folder's search and changes need the plugin)
 - Saved chats open instantly, and you can type while Conduit reconnects
 
@@ -63,7 +63,7 @@ The app works with any Hermes dashboard on its own. The free [Hermes Conduit Not
 **Tasks, bots and groups**
 
 - Tasks board for Hermes' Kanban tasks
-- Bots and their Bot Chats, with each bot's model, skills, tools and MCP servers, pictures Hermes can generate, and @mentions that bring another bot in; gateway-hosted group chats with @mentions, files and approvals
+- Bots Home, the first tab: your bots as portraits, each opening its Bot Chat, dragged into your own order or dropped on each other to start a room, the rooms whose bots are talking now over them, with an overview of its chat, work and artifacts; Bots and their Bot Chats, with each bot's model, skills, tools and MCP servers, pictures Hermes can generate, and @mentions that bring another bot in; gateway-hosted group chats with @mentions, files and approvals
 - Scheduled jobs: review runs, run now, edit, mute their notifications, delete
 - Pulse (beta): once you turn it on, Hermes brings things up on its own (a morning brief, follow-ups on what you said you'd do, deadlines and birthdays) as cards you can act on, rate or put off, and learns what's worth raising
 
@@ -224,7 +224,7 @@ The app connects to the Hermes dashboard's WebSocket (`/api/ws`) and REST routes
 Key places:
 - `Conduit/Services/HermesClient.swift` - WebSocket client and RPC layer
 - `Conduit/Services/AppState.swift` (and its `AppState+*.swift` extensions) - state and session lifecycle
-- `Conduit/Views/V2/` - the app shell: Chats, Tasks, Bots, Settings
+- `Conduit/Views/V2/` - the app shell: Bots, Sessions, Tasks, Settings
 - `Conduit/Voice/` - Classic voice, dictation and the live voice engines (Gemini Live, Qwen Live, GPT-Live, Grok Live, Local Live)
 - `Conduit/Health`, `Conduit/Location`, `Conduit/Phone` - opt-in phone data sync
 - `ConduitWatch/` - the Apple Watch app

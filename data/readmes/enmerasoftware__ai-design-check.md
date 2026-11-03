@@ -6,10 +6,11 @@
 [![license: MIT](https://img.shields.io/npm/l/@enmera/ai-design-check)](LICENSE)
 [Türkçe](README.tr.md)
 
-For anyone building with Claude Code, Cursor or Codex: 95 design rules, a checker with no dependencies and no API key, and
-an agent skill that repairs the screen. It reads web projects and SwiftUI and Jetpack Compose apps.
+For anyone building with Claude Code, Cursor or Codex: 137 design rules, a checker with no dependencies and no API key, and
+an agent skill that repairs the screen. It reads web projects (React, Vue, Svelte, Laravel Blade, HTML) and SwiftUI, Jetpack
+Compose, Flutter and React Native apps. Finding needs no agent, and neither do the mechanical fixes.
 
-## Start in two steps
+## Start in three steps
 
 **1. Check your project.**
 
@@ -33,7 +34,16 @@ lang/tr.json
 1 accessibility, 3 style: 3 errors, 1 warnings, 0 notes.
 ```
 
-**2. Let your agent fix it.**
+**2. Fix what has one answer, with no agent.**
+
+```bash
+npx @enmera/ai-design-check --fix --dry-run
+```
+
+This lists the changes; drop `--dry-run` to make them. Spacing and corners move to the nearest step of your scale, and very
+heavy type becomes bold. Tap sizes, colours, emoji, words and hierarchy stay in the report, since they take a decision.
+
+**3. Let your agent fix the rest.**
 
 ```bash
 npx skills add enmerasoftware/ai-design-check
@@ -53,6 +63,8 @@ it, and shows the count before and after. Features, data and words stay.
 |---|---|---|
 | **Checker** | What is wrong, in which file and on which line? | `npx @enmera/ai-design-check` |
 | **Fix skill** | Can an agent repair this screen and prove it? | `npx skills add enmerasoftware/ai-design-check` |
+| **`scan`** | What does the running page really show? Contrast, sizes, what covers what, script errors | `npx @enmera/ai-design-check scan http://localhost:3000` |
+| **`redesign`** | Can my agent study this page and redo it on a branch, proving each step? | `npx @enmera/ai-design-check redesign http://localhost:3000` |
 | **`inventory`** | How many different buttons, inputs, headings and cards do we have? | `npx @enmera/ai-design-check inventory` |
 | **`narrow`** | What breaks on a phone or in a long language? | `npx @enmera/ai-design-check narrow page.html` |
 | **`system`** | What fonts, type and colours should a new product start with? | `npx @enmera/ai-design-check system --brand "#1E5A63"` |
@@ -60,8 +72,8 @@ it, and shows the count before and after. Features, data and words stay.
 
 ## What it catches
 
-The checker tests 57 rules automatically. The other 38 need eyes on the screen, so they are marked *review* and left to you
-and the fix skill. Each rule says what to do, why and how to fix it, in English and Turkish: [RULES.md](RULES.md).
+67 rules read your code (33 of them in app code too) and 55 read the running page (`scan`), some of them both. The other 33 need eyes on the screen, so they
+are marked *review* and left to you and the fix skill. Each rule says what to do, why and how to fix it, in English and Turkish: [RULES.md](RULES.md).
 
 | Area | Examples |
 |---|---|
@@ -80,6 +92,19 @@ and the fix skill. Each rule says what to do, why and how to fix it, in English 
 The rules come from screens we shipped at [Enmera](https://enmera.com.tr) and [Searvia](https://searvia.com): what read as
 generated, what broke at narrow widths, what people did not understand. We then compared them with 16 highly rated
 dashboard designs. Method and findings: [RESEARCH.md](RESEARCH.md).
+
+## The running page and the redesign
+
+`scan` opens the page in your Chrome at desktop and phone width, with no model and no API key. It reads what the source can't
+show: real contrast, sizes, what covers what, broken images, script errors, content that never appears. Add `--format github`
+for pull requests. With `designSystem` in the config (`fonts`, `sizes`, `radii`, `colors`) it also names what drifts.
+
+`redesign` is the one part that needs your agent (Claude Code or Codex), because deciding what a page should show takes
+judgement. The agent studies the screenshots, the code and the subject, and writes one card per section: what it says, what
+is wrong, the idea that comes from its own content, the colours it uses from your site. Those cards are checked against the
+measured page. Then the numbered fixes and the cards are applied pass by pass on a new git branch, and a pass that loses
+content, adds rule errors or looks worse is thrown away. `--plan` stops after the cards so you can read and edit them;
+`--brief` builds them.
 
 ## Mobile apps
 
@@ -106,6 +131,9 @@ The package ships two skills, both installed by `npx skills add enmerasoftware/a
 - **ai-design-fix** repairs a screen that already looks generated. It measures gaps and radii, writes a four-line brief (job,
   claim, proof, keep), works through the screen in order of harm, and reports before and after. It never removes content
   to lower the count, and never silences a finding without a reason.
+
+In Claude Code the same skills install as a plugin: `/plugin marketplace add enmerasoftware/ai-design-check`, then
+`/plugin install ai-design-check@ai-design-check`. In Codex: `codex plugin marketplace add enmerasoftware/ai-design-check`.
 
 Without skills, point your agent's instructions (`CLAUDE.md`, `AGENTS.md`, `.cursor/rules`) at
 `node_modules/@enmera/ai-design-check/RULES.md`.
@@ -264,8 +292,9 @@ number) leaves the 4 px grid and a note in the report. It is not guessed, and la
 decide it yourself. With a list and no `base`, margins, paddings and gaps must be on the list; widths, heights and offsets
 only have to fit the list's common divisor.
 
-SwiftUI and Compose use `spacing` from the config file (`native` when it differs from the web) or 4 pt/dp. They read
-nothing else: Swift and Kotlin constants have no shared place to look, and a web theme next to an app says nothing about the app.
+App code (SwiftUI, Compose, Flutter, React Native) uses `spacing` from the config file (`native` when it differs from the web)
+or 4 pt/dp. It reads nothing else: constants in app code have no shared place to look, and a web theme next to an app says
+nothing about the app.
 
 </details>
 

@@ -69,15 +69,16 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (413 total)
+- `hostinger-api-mcp` — unified server over every operation (412 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
 - `hostinger-dns-mcp` — 9 operations for dns
 - `hostinger-domains-mcp` — 43 operations for domains
 - `hostinger-ecommerce-mcp` — 30 operations for ecommerce
+- `hostinger-gpu-mcp` — 5 operations for gpu
 - `hostinger-horizons-mcp` — 7 operations for horizons
-- `hostinger-hosting-mcp` — 62 operations for hosting
+- `hostinger-hosting-mcp` — 57 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
 - `hostinger-reach-mcp` — 71 operations for reach
 - `hostinger-vps-mcp` — 68 operations for vps
@@ -1740,6 +1741,60 @@ store currency. Returns the created variant.
 - **Method**: `POST`
 - **Path**: `/api/ecommerce/v1/stores/{store_id}/products/{product_id}/variants`
 
+### `hostinger-gpu-mcp`
+
+#### changelog_list-entries
+
+What's new and what's coming at Hostinger: list entries of the public Hostinger changelog (release notes, product updates, recent changes, new features and improvements) and of the public roadmap (upcoming features not released yet). Released entries come newest first; upcoming items come soonest expected release first. Reads released changelog entries by default; pick upcoming for the roadmap or all for both. Filter by product or date. Each entry has its title, summary, product, URL, status (released or upcoming), and plan when the entry states one; released entries have their date, upcoming items their expected release date when set. Needs no API token.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### gpu_catalog_pool-groups
+
+Retrieve GPU pool groups, ordered by name.
+
+Each group bundles the pools of one GPU model and lists its currently available pools,
+whether any of them is available and the lowest hourly price among its instance types.
+The price is returned even when the group is out of stock.
+
+Use this endpoint to show which GPU models can be ordered and from what price.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/pools/groups`
+
+#### gpu_catalog_pool-instance-types
+
+Retrieve the instance types offered by a specified GPU pool, ordered by CPU core count.
+
+Each instance type describes its CPU, memory and storage, and its hourly price.
+Only instance types that can currently be ordered are returned.
+
+Use this endpoint to choose the `pool_instance_id` for a new GPU instance.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/pools/{poolId}/instances`
+
+#### gpu_catalog_pool-os-templates
+
+Retrieve the OS templates that can be installed on a specified GPU pool instance type.
+
+Use this endpoint to choose the `os_template_id` for a new GPU instance.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/pools/{poolId}/instances/{poolInstanceId}/os-templates`
+
+#### gpu_catalog_pool
+
+Retrieve all available GPU pools, ordered by name.
+
+A pool serves GPU accelerators of one model from a single region.
+
+Use this endpoint to choose a pool before listing its instance types.
+
+- **Method**: `GET`
+- **Path**: `/api/gpu/v1/pools`
+
 ### `hostinger-horizons-mcp`
 
 #### changelog_list-entries
@@ -1901,6 +1956,27 @@ Change a website's HTTPS redirect, CDN and server cache settings in one call. Pa
 #### hosting_cache_clear
 
 Clear a website's server cache (the hosting server's page cache) and Hostinger CDN cache, so updated content shows at once. By default (scope: all) it clears the server cache and, when the CDN is on, purges the CDN too. scope: cdn purges only the CDN edge cache and leaves the server cache alone; that fails with 422 when the CDN is off. For a WordPress site installed in a subdirectory, pass directory to clear that installation's cache (only with scope all). This does not purge the WordPress LiteSpeed Cache plugin: that is a separate WordPress operation (wordpress_litespeed-cache_purge-lite-speed). To turn caching or the CDN on or off use hosting_websites_update-settings. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_websites_list-domains
+
+List the extra domains of a website: its parked (alias) domains, which show the same site under another domain name, and its subdomains (e.g. blog.example.com), with each one's root directory. parked items have domain (a domain name or an IP address) and type (domain or ip); subdomains items have domain (the full name), subdomain (the prefix) and root_directory. A list that cannot be read comes back as { error } and the other is still returned. To add or remove one use hosting_websites_add-domain or hosting_websites_remove-domain. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_websites_add-domain
+
+Add a domain to an existing website: type parked adds a parked (alias) domain, a second domain name (or an IP address) that shows the same site; type subdomain creates a subdomain such as blog.example.com with its own directory. For a parked domain the domain must be owned by the account or already point to the website: check a domain from outside the account with hosting_domains_verify-ownership first. www belongs to the main domain: do not add it as a subdomain. To create a new website use hosting_websites_create instead. Works for Shared and Cloud hosting websites.
+
+- **Method**: `custom`
+- **Path**: `custom`
+
+#### hosting_websites_remove-domain
+
+Remove a parked (alias) domain or a subdomain from a website. Pass its name as hosting_websites_list-domains shows it: a parked domain, or a subdomain's full name or prefix; the tool finds which one it is. To delete a whole website use hosting_websites_delete. Works for Shared and Cloud hosting websites.
 
 - **Method**: `custom`
 - **Path**: `custom`
@@ -2071,73 +2147,6 @@ requirements.
 
 - **Method**: `GET`
 - **Path**: `/api/hosting/v1/datacenters`
-
-#### hosting_domains_generate-free-subdomain
-
-Generate a unique free subdomain that can be used for hosting services without purchasing custom domains.
-Free subdomains allow you to start using hosting services immediately
-and you can always connect a custom domain to your site later.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/domains/free-subdomains`
-
-#### hosting_domains_list-website-parked
-
-Retrieve all parked or alias domains created under the selected website.
-
-Use this endpoint to inspect parked domain configuration for a specific website,
-including the parent domain and root directory assigned to each parked domain.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/parked-domains`
-
-#### hosting_domains_create-website-parked
-
-Create a parked or alias domain for the selected website.
-
-Provide a domain name or IP address to park on the website so it serves the same content
-as the parent domain.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/parked-domains`
-
-#### hosting_domains_delete-website-parked
-
-Delete an existing parked or alias domain from the selected website.
-
-Use this endpoint to remove parked domains that are no longer needed.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/parked-domains/{parkedDomain}`
-
-#### hosting_domains_list-website-subdomains
-
-Retrieve all subdomains created under the selected website.
-
-Use this endpoint to inspect subdomain configuration for a specific website,
-including the parent domain and root directory assigned to each subdomain.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/subdomains`
-
-#### hosting_domains_create-website-subdomain
-
-Create a new subdomain for the selected website.
-
-Provide a subdomain prefix and, optionally, a custom directory or the
-website public directory to use as the subdomain root.
-
-- **Method**: `POST`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/subdomains`
-
-#### hosting_domains_delete-website-subdomain
-
-Delete an existing subdomain from the selected website.
-
-Use this endpoint to remove subdomains that are no longer needed.
-
-- **Method**: `DELETE`
-- **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/subdomains/{subdomain}`
 
 #### hosting_domains_verify-ownership
 
@@ -2373,34 +2382,4 @@ website shows up in the websites list before its server-side setup has finished,
 while the setup is `running` endpoints that operate on that website may respond with
 `404` or `409`. Poll this endpoint with the `domain` filter every 10 to 15 seconds and
 wait for `status: completed` before uploading files, deploying or creating databases.
-`failed` means the setup stopped before finishing or has not reported progress for
-over an hour. Setups older than 24 hours are not listed.
-
-`type` is the website type the setup was started with (`wordpress`, `headless_empty`,
-`headless_wordpress`, `headless_ecommerce`, `headless_pocketbase`), or `null` for an empty
-website.
-
-- **Method**: `GET`
-- **Path**: `/api/hosting/v1/onboardings`
-
-#### hosting_websites_start-setup
-
-Starts a website setup on a Web or Cloud hosting order and returns the created setup
-right away; the website itself is provisioned asynchronously. Poll the list website
-setups endpoint (`hosting_websites_list-setups`) with the `domain` filter every 10 to 15
-seconds and wait for `status: completed` before uploading files, deploying or creating
-databases.
-
-Omit `type` for an empty website. `type: wordpress` installs WordPress in the website
-root with the admin user, email and password from `wordpress`, the domain as the site
-title, and `en_US` when `wordpress.language` is omitted. The headless types
-(`headless_empty`, `headless_wordpress`, `headless_ecommerce`, `headless_pocketbase`)
-create a headless website; `headless_wordpress` additionally installs WordPress into the
-`cms` directory of the website root with generated credentials. `headless_empty` installs
-nothing: WordPress can be added later through
-`POST /api/hosting/v1/accounts/{username}/wordpress/installations`
-(`wordpress_installations_install`) with `type: headless`.
-
-Omit `domain` to set the website up on a generated temporary free subdomain. To know the
-free subdomain before the call, so a timed-out call can be looked up and retried on the
-same 
+`failed` means the setup stopped before 

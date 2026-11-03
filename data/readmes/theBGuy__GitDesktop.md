@@ -198,7 +198,9 @@ default's name), and a PR badge.
 - **No-checkout and remote-branch ops**: update a branch *without* checking
   it out (from the default branch or its own upstream, e.g. to bring the
   default current after a merged PR), and check out or delete remote-only
-  branches straight from the switcher's Remote section.
+  branches straight from the switcher's Remote section. Updating from the
+  default branch merges its upstream tip when your local copy is behind, and
+  the menu and toast name the commit it merges.
 - **Push or publish without switching**: from the switcher's context menu,
   push a branch that's ahead of the remote it tracks (its own remote, not
   just `origin`) or publish an unpushed one, choosing the remote when
@@ -235,7 +237,8 @@ default's name), and a PR badge.
 ### History
 
 Paged, filterable history with rich commit detail, commit-author avatars, and
-an at-a-glance marker on every commit that hasn't been pushed yet. Per-file
+an at-a-glance marker on every commit that hasn't been pushed yet (with no
+remote, the commits your branch adds on top of `main` or `master`). Per-file
 history and line blame are reachable from any file list (History, pull
 requests, Compare) or the command palette, pinned at that commit or branch
 where it applies; each blame line's commit gets a hover-card preview and a
@@ -1117,7 +1120,7 @@ agents read this repo through GitDesktop.
   - **`--allow-git-write`**: recoverable git ops (stage, commit, branch,
     push/pull/fetch, stash, merge, rebase, revert, cherry-pick, tags)
   - **`--allow-destructive`**: the irreversible ones (discard, reset,
-    force-push, delete branch/tag)
+    force-push, drop a stash, delete branch/tag)
 - **Generation recipes**: hands a connected agent the fully assembled
   commit-message, PR-description, or branch-name prompt (the same context
   the in-app features build) to complete with its own model, as recipe
@@ -1146,9 +1149,9 @@ review via its subscription login. The full list is under
 - **Mention & reference autocomplete**: on GitHub and GitLab repos, type
   `@` in a comment box, reply, edit, diff line comment, release notes, or a
   local PR or issue's description and comments to pick a person and `#` to
-  pick from the recently updated open issues and pull requests, with arrow
-  keys and Enter to accept. GitLab adds `!` for merge requests; each forge
-  offers only the references it links.
+  pick from recent issues and pull requests, open and closed, each marked
+  with its state; arrow keys and Enter accept. GitLab adds `!` for merge
+  requests; each forge offers only the references it links.
 - **References are links**: `#123` and `@user` in a rendered description,
   comment, review thread, AI review, or release note open what they name. On
   GitHub, `#123` opens that issue or pull request in the app, whichever it

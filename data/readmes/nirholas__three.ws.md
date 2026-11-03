@@ -1,14 +1,77 @@
-# three.ws                  
+# three.ws
+
+<!-- mcp-name: io.github.nirholas/three.ws -->                  
   
 [**Website**](https://three.ws) · [**Docs**](https://three.ws/docs) · [**Changelog**](https://three.ws/changelog) · [**X / Twitter**](https://x.com/trythreews) · [**GitHub**](https://github.com/nirholas/three.ws) · [**$THREE on pump.fun**](https://pump.fun/FeMbDoX7R1Psc4GEcvJdsbNbZA3bfztcyDCatJVJpump)
 
-[![site](https://img.shields.io/website?url=https%3A%2F%2Fthree.ws&label=three.ws)](https://three.ws) [![npm](https://img.shields.io/npm/v/%40three-ws%2Fsdk?label=%40three-ws%2Fsdk)](https://www.npmjs.com/package/@three-ws/sdk) [![npm](https://img.shields.io/npm/v/%40three-ws%2Fmcp-server?label=%40three-ws%2Fmcp-server)](https://www.npmjs.com/package/@three-ws/mcp-server) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.nirholas-blue)](https://registry.modelcontextprotocol.io/?q=io.github.nirholas) [![x402scan](https://img.shields.io/badge/x402scan-listed-green)](https://www.x402scan.com/server/17cbd874-52ac-4920-a020-b22ff2489a07) [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![good first issues](https://img.shields.io/github/issues/nirholas/three.ws/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/nirholas/three.ws/labels/good%20first%20issue)
+[![3D models forged](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fthree.ws%2Fapi%2Fhome-stats&query=%24.forge_models&label=3D%20models%20forged&color=7057ff)](https://three.ws/forge) [![agents](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fthree.ws%2Fapi%2Fhome-stats&query=%24.agents&label=agents%20created&color=7057ff)](https://three.ws/discover) [![site](https://img.shields.io/website?url=https%3A%2F%2Fthree.ws&label=three.ws)](https://three.ws) [![npm](https://img.shields.io/npm/v/%40three-ws%2Fsdk?label=%40three-ws%2Fsdk)](https://www.npmjs.com/package/@three-ws/sdk) [![npm](https://img.shields.io/npm/v/%40three-ws%2Fmcp-server?label=%40three-ws%2Fmcp-server)](https://www.npmjs.com/package/@three-ws/mcp-server) [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.nirholas-blue)](https://registry.modelcontextprotocol.io/?q=io.github.nirholas) [![x402scan](https://img.shields.io/badge/x402scan-listed-green)](https://www.x402scan.com/server/17cbd874-52ac-4920-a020-b22ff2489a07) [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![good first issues](https://img.shields.io/github/issues/nirholas/three.ws/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/nirholas/three.ws/labels/good%20first%20issue)
+
+**English** | [简体中文](docs/readme/README.zh-CN.md) | [日本語](docs/readme/README.ja.md) | [한국어](docs/readme/README.ko.md)
 
 https://github.com/user-attachments/assets/d52515d1-cb04-4dd6-98bd-fef233312dc4
 
 **Give your AI a body.** three.ws is an open source (Apache-2.0), browser-native 3D AI agent platform. Type a prompt and [**Forge**](https://three.ws/forge) generates a textured 3D model, or drop a GLB you already have. Add an LLM brain, register on-chain, and embed anywhere: no plugins, no server uploads, no installs required.
 
-> **Try it in 60 seconds:** open [three.ws/forge](https://three.ws/forge), type *"a brass steampunk owl, full body"*, and download the GLB. Text→3D, image→3D, and sketch→3D — free draft tier, no account. [Jump to the Forge section ↓](#forge--text--image-to-3d)
+> **Try it in 60 seconds:** open [three.ws/forge](https://three.ws/forge), type *"a brass steampunk owl, full body"*, and download the GLB. Text→3D, image→3D, and sketch→3D - free draft tier, no account. [Jump to the Forge section ↓](#forge-text--image-to-3d)
+
+### Give your coding agent a 3D pipeline
+
+Free text to 3D and rigged avatars from inside your editor. No key, no account. Works with **Claude Code, Claude Desktop, Cursor, VS Code, Codex, Gemini CLI and OpenCode**.
+
+**Claude Code plugin** (skills plus the keyless 3D server, wired for you):
+
+```text
+/plugin marketplace add nirholas/three.ws
+/plugin install three-ws-3d@three-ws
+```
+
+**Any MCP client:** add `https://three.ws/api/mcp-studio` (Streamable HTTP, keyless, 16 tools: text to 3D, image to 3D, rigged avatars, talking personas). Then ask your agent for *"a low-poly treasure chest as a GLB"*.
+
+<details>
+<summary>Copy-paste config for each client</summary>
+
+**Claude Code** (CLI)
+
+```bash
+claude mcp add --transport http three-ws-studio https://three.ws/api/mcp-studio
+```
+
+**Claude Desktop and claude.ai**: Settings, Connectors, Add custom connector, paste `https://three.ws/api/mcp-studio`.
+
+**Cursor** (`~/.cursor/mcp.json`)
+
+```json
+{ "mcpServers": { "three-ws-studio": { "url": "https://three.ws/api/mcp-studio" } } }
+```
+
+**VS Code** (`.vscode/mcp.json`)
+
+```json
+{ "servers": { "three-ws-studio": { "type": "http", "url": "https://three.ws/api/mcp-studio" } } }
+```
+
+**Codex** (`~/.codex/config.toml`)
+
+```toml
+[mcp_servers.three-ws-studio]
+url = "https://three.ws/api/mcp-studio"
+```
+
+**Gemini CLI** (`~/.gemini/settings.json`)
+
+```json
+{ "mcpServers": { "three-ws-studio": { "httpUrl": "https://three.ws/api/mcp-studio" } } }
+```
+
+**OpenCode** (`opencode.json`)
+
+```json
+{ "mcp": { "three-ws-studio": { "type": "remote", "url": "https://three.ws/api/mcp-studio" } } }
+```
+
+Your own library, agents and wallet need the authenticated servers: see [Install the MCP server in any client](#install-the-mcp-server-in-any-client).
+
+</details>
 
 > **Want to build it with us?** [Your first contribution](docs/first-contribution.md) goes from clone to open pull request in about 15 minutes, with a full worked example. Every [`good first issue`](https://github.com/nirholas/three.ws/labels/good%20first%20issue) names the file to change and the command that proves it worked. Say hello in [Discussions](https://github.com/nirholas/three.ws/discussions) or [Telegram](https://t.me/three_ws_community).
 
@@ -4643,115 +4706,3 @@ solid threews_avatar
    vertex 18.22 5.83 86.97
    vertex 19.64 4.31 87.94
    vertex 19.60 7.11 85.93
-  endloop
- endfacet
- facet normal 0.78 0.62 0.07
-  outer loop
-   vertex 18.49 4.60 58.18
-   vertex 19.46 3.33 58.61
-   vertex 20.33 2.84 53.04
-  endloop
- endfacet
- facet normal -0.32 0.29 -0.90
-  outer loop
-   vertex 18.54 7.21 74.10
-   vertex 19.93 5.01 72.90
-   vertex 19.78 1.87 71.95
-  endloop
- endfacet
- facet normal -0.67 -0.10 -0.74
-  outer loop
-   vertex 18.93 2.50 23.81
-   vertex 20.26 3.48 22.48
-   vertex 19.99 1.49 22.99
-  endloop
- endfacet
- facet normal -0.71 0.19 -0.68
-  outer loop
-   vertex 18.75 -0.34 29.66
-   vertex 19.81 4.08 29.79
-   vertex 22.22 3.87 27.21
-  endloop
- endfacet
- facet normal -0.33 0.94 0.04
-  outer loop
-   vertex 19.40 8.41 83.74
-   vertex 19.89 8.80 78.04
-   vertex 18.19 7.96 84.49
-  endloop
- endfacet
- facet normal -0.29 0.96 0.05
-  outer loop
-   vertex 18.19 7.96 84.49
-   vertex 19.89 8.80 78.04
-   vertex 18.42 8.44 76.34
-  endloop
- endfacet
- facet normal -0.09 0.99 -0.13
-  outer loop
-   vertex 19.89 8.80 78.04
-   vertex 19.58 8.54 76.35
-   vertex 18.42 8.44 76.34
-  endloop
- endfacet
- facet normal -0.07 0.87 -0.48
-  outer loop
-   vertex 18.42 8.44 76.34
-   vertex 19.58 8.54 76.35
-   vertex 18.54 7.21 74.10
-  endloop
- endfacet
- facet normal 0.64 0.75 -0.15
-  outer loop
-   vertex 17.68 5.59 55.51
-   vertex 20.33 2.84 53.04
-   vertex 18.43 4.21 51.70
-  endloop
- endfacet
- facet normal -0.75 0.15 -0.64
-  outer loop
-   vertex 18.93 2.50 23.81
-   vertex 19.00 3.74 24.02
-   vertex 20.26 3.48 22.48
-  endloop
- endfacet
- facet normal -0.90 0.22 0.37
-  outer loop
-   vertex 19.80 0.58 24.64
-   vertex 18.84 0.12 22.57
-   vertex 18.46 -1.70 22.74
-  endloop
- endfacet
- facet normal 0.73 0.68 0.03
-  outer loop
-   vertex 18.49 4.60 58.18
-   vertex 20.33 2.84 53.04
-   vertex 17.68 5.59 55.51
-  endloop
- endfacet
- facet normal -0.89 0.44 0.07
-  outer loop
-   vertex 19.31 4.42 43.53
-   vertex 19.67 6.58 34.61
-   vertex 17.76 1.94 39.51
-  endloop
- endfacet
- facet normal 0.04 -0.02 -1.00
-  outer loop
-   vertex 19.30 -4.41 0.13
-   vertex 18.35 -9.34 0.20
-   vertex 16.62 -11.67 0.18
-  endloop
- endfacet
- facet normal -0.87 0.49 -0.07
-  outer loop
-   vertex 17.94 3.99 37.76
-   vertex 19.67 6.58 34.61
-   vertex 16.93 2.01 36.18
-  endloop
- endfacet
- facet normal -0.87 0.50 -0.06
-  outer loop
-   vertex 16.93 2.01 36.18
-   vertex 19.67 6.58 34.61
-   vertex 18

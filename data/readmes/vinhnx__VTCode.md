@@ -10,27 +10,30 @@
 [![Rust](https://img.shields.io/badge/rust-1.99.1%2B-000000?style=flat-square&logo=rust&logoColor=white)](https://github.com/vinhnx/VTCode)
 [![License](https://img.shields.io/badge/License-MIT_OR_Apache--2.0-30363D?style=flat-square)](#license)
 [![GitHub release](https://img.shields.io/github/release/vinhnx/VTCode.svg)](https://github.com/vinhnx/VTCode/releases)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/vinhnx/vtcode)
+<!-- NB: not https://deepwiki.com/badge.svg — that route is behind a Vercel bot
+  challenge, so GitHub's camo proxy gets 429 and renders the alt text instead.
+  This shields.io URL reproduces the same 109x20 badge, logo, and colors. -->
+<!-- markdownlint-disable-next-line MD013 -->
+[![Ask DeepWiki](https://img.shields.io/badge/-Ask_DeepWiki-007ec6?logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAPoAAAD6AG1e1JrAAACIUlEQVRYw%2B2XP2gUQRTGv7d3JhYWQawkIBaCVWzETos0gmAnVoKNTSoLK0E7EQQvC20sBVFBtLPQRgTBtBaKjYgIQUSxiJq7fT%2BLvCGPJZdNLt4dQj5Y3u7sznzfzLw%2Fs9IO%2FicANiniCujEfWdsQgBLxAbsbraPZcmBfcAt4DNwKQsZNfEUsAB8YRV12LfA6ZHuedg7AO7ed%2Fc%2BUBcbQhbiu%2B6wXIM6EnZWkszMJe2Ke0n6I2la0v51hFeSMLN6OwIK6jJwEBdUYb2MAxRSz6sY4geiahFgLe1Hwq6YWe3us8AN4FQQU4QM64SPY69Xyr43fADgNjAPXHb3peSsD4FDQ0VLEjAHvIhBPS6AHvA1bBO9JPAXcHFbIRtJ5yzwIQZ9CZwAusDJENIkLqsG8DpNyIZJwSUk9wLHgakcesC1JCCjiHm1kYDNOEjptCxpSVK%2F8f73OFLxPLAYM3oCzEX7MXf%2FlJbc%2F8kWpA4HgQdpYI9IWAbeh83whi84cHXL%2B58EPBoQhnmm94EzwE3gZ2p%2FDhzdbhg%2BTaRr01x7ftb4%2FjBwFzjXrCvDpmLW9crVLNeR9CaapoGemb2TdCERW1tNaBNQ8jktwmozqwtpqRNtdWAjARYk39IS12ZWRX7vmJmA71nQZgi36gN7gCvAj5xc3P0jcH7kx7Ik5IC73wsh14GZsZySow5002l4Jr0b6%2Bm4eSyvpAn8lEzsx2QHo8RfUrlN%2BuPq4ksAAAAASUVORK5CYII%3D&labelColor=000000)](https://deepwiki.com/vinhnx/vtcode)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-000000?style=flat-square&logo=apple)](#desktop-app)
 [![arm64 and x64](https://img.shields.io/badge/arch-arm64_%7C_x64-30363D?style=flat-square)](#desktop-app)
 
-> **Native macOS app:** the full engine behind a desktop interface — see the [desktop app](#desktop-app).
-
 <p>
   <!-- markdownlint-disable MD033 -->
-  <video src="./resources/gif/demo-desktop.mov" width="100%" autoplay loop muted playsinline controls
-    poster="./resources/screenshots/vtcode-desktop-light.png"
-    aria-label="VT Code Desktop app demo">
-    <a href="./resources/gif/demo-desktop.mov">Open the demo video</a>
-  </video>
+  <!-- NB: plain linked images, not <video>: GitHub's README renderer strips video embeds. -->
+  <a href="https://github.com/vinhnx/VTCode/blob/main/resources/gif/demo-desktop.mp4">
+    <img src="./resources/screenshots/vtcode-desktop-dark-agent.png"
+      alt="VT Code Desktop in light appearance — click to watch the demo video" />
+  </a><br />
   <!-- markdownlint-enable MD033 -->
+  <sub>Desktop app · <a href="https://github.com/vinhnx/VTCode/blob/main/resources/gif/demo-desktop.mp4">watch the demo video</a></sub>
+
 </p>
-<sub>Desktop app demo (video; open it directly if playback is unavailable).</sub>
 
 <p>
-  <img src="./resources/screenshots/vtcode-cli-tui.gif" width="39%"
-    alt="Terminal TUI demo: launch, ask, stream the reply, exit" />
-  <img src="./resources/screenshots/vtcode-cli-ask.gif" width="58%"
+  <img src="./resources/screenshots/vtcode-cli-tui.gif" width="100%"
+    alt="Terminal TUI demo: launch, ask, stream the reply, exit" /><br />
+  <img src="./resources/screenshots/vtcode-cli-ask.gif" width="100%"
     alt="One-shot ask demo: a single tool-free terminal reply" /><br />
   <sub>Terminal TUI &nbsp;·&nbsp; One-shot ask</sub>
 </p>
@@ -148,26 +151,11 @@ and [full automation](./docs/guides/full-automation.md) for configuration detail
 
 ### The full VT Code engine in a native Mac app
 
-[![macOS 15+](https://img.shields.io/badge/macOS-15%2B-000000?style=flat-square&logo=apple)](./docs/development/desktop-workspace.md)
-[![arm64 and x64](https://img.shields.io/badge/arch-arm64_%7C_x64-30363D?style=flat-square)](./docs/development/desktop-workspace.md)
-
-<p>
-  <sub>Everything the CLI does: providers, tool policy, sandboxing, sessions, behind a native interface.</sub>
-</p>
-
 </div>
 
 The GUI talks to a matching local service binary while the unified runloop still owns providers, tool policy,
 sandboxing, and sessions. Desktop reuses your CLI configuration, provider credentials, workspace trust, and sandbox
 policy. Configure a provider from Terminal first, for example with `vtcode secret add openai`.
-
-<p>
-  <img src="./resources/screenshots/vtcode-desktop-light.png" width="49%"
-    alt="VT Code Desktop in light appearance" />
-  <img src="./resources/screenshots/vtcode-desktop-dark.png" width="49%"
-    alt="VT Code Desktop in dark appearance" />
-</p>
-<p align="center"><sub>Light and dark appearances</sub></p>
 
 ### Install (macOS 15+)
 

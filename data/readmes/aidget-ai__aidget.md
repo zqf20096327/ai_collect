@@ -102,8 +102,8 @@ Community widgets are maintained in [aidget-ai/widgets](https://github.com/aidge
 flowchart LR
     A["Agent"]
     A -->|"Reads Skill"| S["~/.aidget/skills"]
-    A -->|"Calls MCP"| M["~/.aidget/aidget mcp"]
-    A -->|"Calls CLI"| C["~/.aidget/aidget"]
+    A -->|"Calls MCP"| M["aidget mcp"]
+    A -->|"Calls CLI"| C["aidget"]
     M --> U["aidget ui"]
     U --> W["widgets"]
 ```
@@ -124,9 +124,9 @@ pnpm install
 pnpm dev
 ```
 
-> To run development, tests, or a portable setup against an isolated directory, point `AIDGET_HOME` at a throwaway path:
+> `pnpm dev` uses the repository's `.aidget/` directory by default, separate from an installed copy. Override it with `--home` when needed:
 >
-> `AIDGET_HOME=/tmp/aidget-dev pnpm dev`
+> `pnpm dev --home /tmp/aidget-dev`
 
 ### Build
 
@@ -162,6 +162,7 @@ cargo test
 ### CLI
 
 ```text
+aidget [--home DIR] <command> [options]
 aidget ui [--background]
 aidget mcp
 aidget widget list|show|create|update|patch|delete
@@ -180,7 +181,7 @@ The default data root is `~/.aidget` (`C:\Users\<user>\.aidget` on Windows).
 
 ```text
 ~/.aidget
-├── aidget                    # stable CLI entry (aidget.cmd on Windows)
+├── aidget[.exe]              # CLI symlink on macOS/Linux; executable copy on Windows
 ├── board.json                # widget positions and sizes
 ├── settings.toml             # application settings
 ├── run/                      # runtime IPC endpoint (Unix socket on macOS/Linux)

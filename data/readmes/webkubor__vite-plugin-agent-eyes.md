@@ -28,6 +28,7 @@
 | 翻配置猜当前连了哪个 API、用哪个环境 | 启动横幅直接列环境、代理目标、别名和技术栈 |
 | 手工确认 robots、sitemap、llms.txt | 网页面板显示文件状态与风险；源码存在不等于线上已收录 |
 | 复现错误后翻散落的 console 和网络请求 | 结构化错误、API、交互与代理层日志留给 agent 自己读 |
+| 上线才发现某个 env 开关只在测试环境有 | 提交时硬拦环境文件分叉：非寻址类变量两环境必须一致 |
 
 <div align="center">
 
@@ -66,5 +67,15 @@ React、Vue、Svelte、Solid 与原生 JS 均可用。CI 验证 Vite 4–8；安
 截图仅在找到**唯一匹配当前项目与路由**的 CDP 页面时生成；检测到 robots / sitemap 也不代表线上可访问或已收录。运行时日志、面板和截图只在 dev 生效；版本戳记也参与构建。详细条件与关闭选项见[文档](https://webkubor.github.io/vite-plugin-agent-eyes/guide/install)。
 
 复杂排障留给 [AGENT_GUIDE.md](./AGENT_GUIDE.md) 和自动生成的 `log/README.md`；如果需要让 agent 主动发现插件，读 [AGENT_BOOTSTRAP.md](./AGENT_BOOTSTRAP.md)。
+
+## Star History
+
+<a href="https://www.star-history.com/#webkubor/vite-plugin-agent-eyes&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=webkubor/vite-plugin-agent-eyes&amp;type=Date&amp;theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=webkubor/vite-plugin-agent-eyes&amp;type=Date" />
+    <img alt="Star History Chart for webkubor/vite-plugin-agent-eyes" src="https://api.star-history.com/svg?repos=webkubor/vite-plugin-agent-eyes&amp;type=Date" width="100%" />
+  </picture>
+</a>
 
 MIT · [Issues](https://github.com/webkubor/vite-plugin-agent-eyes/issues)

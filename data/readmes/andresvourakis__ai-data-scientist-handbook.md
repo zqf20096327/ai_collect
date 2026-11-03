@@ -15,6 +15,7 @@ If you want to read more about the motivation behind this project, see the [Abou
 - [Learning Resources](#learning-resources)
   - [Newsletters](#newsletters)
   - [Courses](#courses)
+  - [Interactive Tools](#interactive-tools)
   - [YouTube Channels](#youtube-channels)
 - [Conferences](#conferences)
 - [About](#about)
@@ -114,7 +115,6 @@ This section lists **learning resources** that go beyond generic theory and eith
 - [Jam with AI](https://jamwithai.substack.com/): A newsletter inspired by real-world AI/ML events & projects
 - [To Data & Beyond](https://youssefh.substack.com/): A newsletter for mastering Data Science & AI—Beyond the Basics
 - [Daily Dose of Data Science](https://blog.dailydoseofds.com/): A free newsletter for continuous learning about data science and ML, lesser-known techniques, and how to apply them in 2 minutes.
-- [Neural Pulse](https://neuralpulse.io/subscribe): A 5-minute, human-curated newsletter delivering the best in AI, ML, and data science (twice a week).
 
 
 ### Courses
@@ -126,6 +126,13 @@ This section lists **learning resources** that go beyond generic theory and eith
 | [Building AI Agents and Agentic Workflows Specialization (Coursera)](https://www.coursera.org/specializations/building-ai-agents-and-agentic-workflows) | Building and orchestrating agent-based AI systems (LangChain, LangGraph, tool calling) | Focuses on *agentic workflows* that map directly to DS productivity scenarios. |
 | [Introduction to LangGraph (LangChain Academy)](https://academy.langchain.com/courses/intro-to-langgraph) | Building stateful, multi-actor agents with LangGraph | Hands-on course for building agentic workflows directly applicable to DS automation. |
 
+
+### Interactive Tools
+
+| Resource | What It Covers | Why It Belongs Here |
+|----------|----------------|---------------------|
+| [Agentic Analytics System Map](https://futureproofds.com/tools/agentic-analytics-system?utm_source=github&utm_medium=readme&utm_campaign=andres_vourakis_github&utm_content=ai_data_scientist_handbook) | The components of an AI analytics agent, explained. | Free and interactive: see how an AI analyst answers a data question, step by step. |
+| [Evals, Step by Step](https://futureproofds.com/tools/ai-evals?utm_source=github&utm_medium=readme&utm_campaign=andres_vourakis_github&utm_content=ai_data_scientist_handbook) | How to test whether an AI agent's answers are correct. | Free and interactive: learn to tell a correct answer from a convincing one. |
 
 ### YouTube Channels
 

@@ -19,15 +19,15 @@ This repository curates research papers, agent benchmarks, and open-source syste
   - [3D CT / MRI / Volumetric Imaging Agents (39)](#3d-ct--mri--volumetric-imaging-agents-39)
   - [Segmentation and Annotation Agents (23)](#segmentation-and-annotation-agents-23)
   - [Report Generation Agents (23)](#report-generation-agents-23)
-  - [Medical Vision-Language Model (VLM) Agents (41)](#medical-vision-language-model-vlm-agents-41)
+  - [Medical Vision-Language Model (VLM) Agents (42)](#medical-vision-language-model-vlm-agents-42)
 - [Tool-Using and Multi-Agent Frameworks](#tool-using-and-multi-agent-frameworks)
-  - [Clinical Reasoning Agents (78)](#clinical-reasoning-agents-78)
-  - [Workflow and Simulation Agents (62)](#workflow-and-simulation-agents-62)
+  - [Clinical Reasoning Agents (79)](#clinical-reasoning-agents-79)
+  - [Workflow and Simulation Agents (63)](#workflow-and-simulation-agents-63)
   - [Agent Skills and Tool Learning (11)](#agent-skills-and-tool-learning-11)
 - [Benchmarks and Evaluation](#benchmarks-and-evaluation)
   - [Benchmark Overview](#benchmark-overview)
-  - [Benchmark Papers (55)](#benchmark-papers-55)
-  - [Safety, Robustness, and Fairness (39)](#safety-robustness-and-fairness-39)
+  - [Benchmark Papers (57)](#benchmark-papers-57)
+  - [Safety, Robustness, and Fairness (40)](#safety-robustness-and-fairness-40)
 - [Toolboxes](#toolboxes)
 - [Surveys and Position Papers (26)](#surveys-and-position-papers-26)
 - [Related Awesome Lists](#related-awesome-lists)
@@ -41,8 +41,8 @@ Classify each work along four independent axes: **where it is used**, **what it 
 
 | Browse by | Categories | Entry points |
 |---|---|---|
-| **Application and input** | Radiology, pathology, ultrasound, endoscopy/surgery, ophthalmology; CT/MRI/PET volumes; multimodal inputs | [Imaging domains](#imaging-domains) · [3D imaging](#3d-ct--mri--volumetric-imaging-agents-39) · [Medical VLMs](#medical-vision-language-model-vlm-agents-41) |
-| **Clinical task** | Acquisition and navigation; diagnosis and reasoning; segmentation and annotation; reporting; treatment planning; workflow and simulation | [Segmentation](#segmentation-and-annotation-agents-23) · [Reporting](#report-generation-agents-23) · [Reasoning](#clinical-reasoning-agents-78) · [Workflows](#workflow-and-simulation-agents-62) |
+| **Application and input** | Radiology, pathology, ultrasound, endoscopy/surgery, ophthalmology; CT/MRI/PET volumes; multimodal inputs | [Imaging domains](#imaging-domains) · [3D imaging](#3d-ct--mri--volumetric-imaging-agents-39) · [Medical VLMs](#medical-vision-language-model-vlm-agents-42) |
+| **Clinical task** | Acquisition and navigation; diagnosis and reasoning; segmentation and annotation; reporting; treatment planning; workflow and simulation | [Segmentation](#segmentation-and-annotation-agents-23) · [Reporting](#report-generation-agents-23) · [Reasoning](#clinical-reasoning-agents-79) · [Workflows](#workflow-and-simulation-agents-63) |
 | **Agent mechanism** | Tool use, retrieval, multi-agent collaboration, reinforcement learning, human feedback, memory and self-improvement | [Frameworks](#tool-using-and-multi-agent-frameworks) · [Skills](#agent-skills-and-tool-learning-11) · [Mechanism index](docs/themes.md#agent-mechanisms) |
 | **Evaluation and resources** | Task/process evaluation; reliability, safety, fairness and privacy; benchmarks, datasets, tools, foundation models and surveys | [Benchmarks](#benchmarks-and-evaluation) · [Trustworthiness index](docs/themes.md#trustworthiness) · [Datasets](docs/datasets.md) · [Foundation models](docs/foundation-models.md) · [Surveys](#surveys-and-position-papers-26) |
 

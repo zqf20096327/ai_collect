@@ -36,19 +36,25 @@ English | [简体中文](README.zh-CN.md)
 **Desktop**
 
 <p align="center">
-  <img src="docs/screenshots/windows-dashboard.png" alt="TokenBar dashboard on Windows" width="49%">
-  <img src="docs/screenshots/windows-history.png" alt="TokenBar stacked usage history on Windows" width="49%">
+  <img src="docs/screenshots/windows-dashboard.png" alt="Dashboard on Windows, light theme" width="49%">
+  <img src="docs/screenshots/windows-dashboard-dark.png" alt="Dashboard on Windows, dark theme" width="49%">
 </p>
 <p align="center">
-  <img src="docs/screenshots/windows-tray-panel.png" alt="Tray panel" width="26%">
+  <img src="docs/screenshots/windows-settings.png" alt="Settings on Windows, light theme" width="49%">
+  <img src="docs/screenshots/windows-settings-dark.png" alt="Settings on Windows, dark theme" width="49%">
+</p>
+<p align="center">
+  <img src="docs/screenshots/windows-tray-panel.png" alt="Tray panel, light theme" width="26%">
+  <img src="docs/screenshots/windows-tray-panel-dark.png" alt="Tray panel, dark theme" width="26%">
 </p>
 
 **Mobile**
 
 <p align="center">
-  <img src="docs/screenshots/android-dashboard.png" alt="Dashboard on Android" width="26%">
-  <img src="docs/screenshots/android-detail.png" alt="Account detail on Android" width="26%">
-  <img src="docs/screenshots/android-history.png" alt="Usage history on Android" width="26%">
+  <img src="docs/screenshots/android-dashboard.png" alt="Dashboard on Android, light theme" width="23%">
+  <img src="docs/screenshots/android-dashboard-dark.png" alt="Dashboard on Android, dark theme" width="23%">
+  <img src="docs/screenshots/android-settings.png" alt="Settings on Android, light theme" width="23%">
+  <img src="docs/screenshots/android-settings-dark.png" alt="Settings on Android, dark theme" width="23%">
 </p>
 
 > The app interface is available in Simplified Chinese and English. Switch in **Settings → Language**; the default follows your system language (Chinese systems get Chinese, everything else gets English). Text that comes from the provider integrations (setup hints, some field names and error messages) is still Chinese for now, see the [roadmap](#roadmap). Provider names, plan names and numbers are shown as the providers report them.
@@ -65,7 +71,7 @@ English | [简体中文](README.zh-CN.md)
 | **Languages** | Simplified Chinese and English. Choose in **Settings → Language**; defaults to the system language. |
 | **Light and dark themes** | Follows the system or set manually. |
 | **Phone widgets** | Native Android home-screen widget. iOS WidgetKit sources are included but unverified. |
-| **Update check** | Looks for a newer GitHub release at launch (can be turned off) or on demand. See [Updates](#updates). |
+| **Update check** | Looks for a newer GitHub release at launch (can be turned off) or on demand, and can download and install it in the app. See [Updates](#updates). |
 | **Optional sync server** | Self-hosted. Push snapshots from your PC, view them on your phone or in the browser. |
 | **CLI** | `tokenbar usage` prints the same data in a terminal or as JSON. |
 
@@ -257,7 +263,7 @@ Runtime libraries: GTK 3, `libsecret` (credential storage, with a running keyrin
 2. Open **Accounts → Add account** to add anything else: pick a service (the list is searchable), paste the key or cookie, save. Several accounts of the same service are fine (for example, different `CODEX_HOME` directories).
 3. The dashboard refreshes every few minutes (configurable). Tap an account for per-window detail and history.
 
-**Tray panel (desktop).** Click the tray icon to open it. It lists each account's two tightest windows with reset countdowns, closes when it loses focus, and **Open TokenBar** brings back the main window.
+**Tray panel (desktop).** Click the tray icon to open it. It lists each account's two tightest windows with reset countdowns, closes when it loses focus, and **Open TokenBar** brings back the main window. Clicking the tray icon again steps through the states: panel → full window → hidden, so a quick double click opens the full window directly. On Windows 11 the panel has rounded corners.
 
 **Usage history.** On an account's page choose 24 hours, 7 days or 30 days. Each bar is the usage added in a time slot, stacked by item:
 
@@ -270,7 +276,16 @@ Cursor and Codex can additionally be viewed **per model** as a stacked bar chart
 
 ## Updates
 
-TokenBar checks the latest [GitHub release](https://github.com/lwh0630/TokenBar/releases) once at launch and whenever you press **Settings → About → Check for updates**. When a newer version exists it shows the release notes and opens the release page so you can download it. You can turn the launch check off, or skip a specific version.
+TokenBar checks the latest [GitHub release](https://github.com/lwh0630/TokenBar/releases) once at launch and whenever you press **Settings → About → Check for updates**. When a newer version exists it shows the release notes. Press **Update now** to download the installer for your platform inside the app; nothing is downloaded until you do. You can turn the launch check off, or skip a specific version.
+
+The download is only taken from this repository's GitHub release and is checked against the release's `SHA256SUMS.txt` before it is used (a mismatch deletes the file). The checksum proves the file is intact, not who built it: the Windows installer and the macOS app are not code-signed.
+
+| Platform | What "Update now" does |
+|---|---|
+| Windows (installed with the setup) | Runs the new installer silently, closes TokenBar and starts the new version. A portable copy only opens the release page. |
+| Android | Hands the APK to the system installer (the first time, Android asks you to allow TokenBar to install apps). |
+| macOS / Linux | Saves the dmg / archive to your Downloads folder, verifies it and opens it; you finish the install. |
+| iOS / Web | Opens the release page. |
 
 The check sends one anonymous `GET` to `api.github.com` with the app version in the `User-Agent`. Drafts and pre-releases are ignored. TokenBar never downloads or installs anything by itself.
 
@@ -303,7 +318,7 @@ On the PC: **Settings → Server sync → Push local data**, enter the server UR
 
 ## Build from source
 
-Requirements: Flutter 3.47.7 (Dart 3.13.5). For Android also JDK 17 and the Android SDK; for Windows, Visual Studio 2022 with the *Desktop development with C++* workload.
+Requirements: Flutter 3.47.9 (Dart 3.13.7). For Android also JDK 17 and the Android SDK; for Windows, Visual Studio 2022 with the *Desktop development with C++* workload.
 
 ```bash
 git clone https://github.com/lwh0630/TokenBar.git

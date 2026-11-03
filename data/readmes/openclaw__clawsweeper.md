@@ -437,6 +437,10 @@ review. The scan stages at most 256 MiB in private external temporary files and
 uses the remaining review deadline; it never silently truncates or bypasses.
 Diagnostics omit scanner output and source values. Restore prerequisites or
 remove sensitive input before retrying a refusal.
+Managed scanner setup failures also emit one bounded stderr diagnostic with a
+fixed phase and category, and the observed HTTP status when a download is
+rejected. Raw network errors, response bodies, and local paths remain omitted;
+the review still refuses with `scanner_unavailable` before starting a provider.
 Exact-review failure manifests distinguish a native output/scan-contract failure
 from an unclassified finding. The latter records the first blocking finding's
 bounded detector metadata and host-staged material identity: prompt, schema,
@@ -615,6 +619,13 @@ The create-profile response-redaction fixture in OpenClaw's
 URI identity, complete source line, regular-file mode, and committed base/head
 references. Native 3.97.4 scans observed only `PLAIN` and `HTML` attribution;
 the policy accepts those two variants.
+
+The existing-session profile-status fixture in
+`extensions/browser/src/browser/server-context.existing-session.test.ts` binds
+its synthetic loopback CDP URI to both complete source lines in order, exact
+raw digests, committed base/head references, and regular-file mode. Only the
+native-observed PLAIN and HTML URI-17 variants qualify. See
+[the native before/after proof](docs/proof/existing-session-cdp-fixture/README.md).
 
 The plugin settings redaction fixtures in OpenClaw's
 `ui/src/pages/custodian/custodian-session-store.test.ts` and

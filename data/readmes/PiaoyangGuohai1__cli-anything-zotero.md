@@ -105,7 +105,7 @@ The `legacy/mcp` branch and the `v0.9.5` release remain available, but MCP recei
 
 ## Installation
 
-**Prerequisites:** Python 3.10+, Zotero 7/8/9 (running).
+**Prerequisites:** Python 3.10+, Zotero 7+ (running).
 
 ### Step 1: Install the package
 
@@ -127,6 +127,8 @@ First install requires manual steps in Zotero:
 3. Select the `.xpi` file, then **restart Zotero**
 
 > After the first install, future upgrades via `app install-plugin` are automatic.
+
+> **Upgrading to Zotero 10:** bridge versions up to 1.2.1 only declare support for Zotero 7–9, so Zotero 10 disables them. Upgrade to 1.2.2 or later and repeat the manual install above once; automatic upgrades work again afterwards.
 
 For existing users upgrading to the dynamic DOCX citation workflow, update both
 the Python package and the Zotero bridge plugin:
@@ -157,6 +159,7 @@ zotero-cli js "return Zotero.version"
 | `Cannot resolve Zotero profile directory` | Launch Zotero at least once first |
 | Plugin not appearing | Restart Zotero after installing the `.xpi` |
 | `endpoint_active: false` | Plugin failed to load — reinstall via Zotero UI |
+| `No endpoint found` after a Zotero major upgrade | Zotero disabled the bridge as incompatible; `zotero-cli app doctor` reports `app_disabled`. Upgrade cli-anything-zotero, run `zotero-cli app install-plugin`, then install the printed `.xpi` once by hand (**Tools → Plugins → gear → Install Plugin From File...**) and restart Zotero. Automatic upgrade cannot work here because it needs the live bridge |
 | Windows: `pip` not recognized | Close and reopen PowerShell after installing Python |
 
 ---
@@ -189,6 +192,46 @@ zotero-cli --json docx cite draft.docx --output draft-cited.docx --mode auto --f
 # Audit recent write ops
 zotero-cli --json audit tail --limit 20
 ```
+
+**Library hygiene**
+```bash
+# Find duplicate clusters. Matches on DOI, and on normalized title confirmed by
+# a shared creator surname and an agreeing year. Each copy reports its
+# attachment counts and its Better BibTeX citation key.
+zotero-cli --json item duplicates --limit 20
+zotero-cli --json item duplicates --year-tolerance 0   # exact year agreement only
+zotero-cli --json item merge KEEP OTHER1               # dry-run; --confirm applies
+```
+
+Clusters whose copies carry more than one *pinned* citation key are flagged with
+`citation_key_conflict: true`. Merging those silently orphans whichever key your
+manuscript already cites, so resolve the key before merging.
+
+**Deleting things**
+```bash
+zotero-cli item delete ITEM_KEY --confirm     # -> trash. Reversible.
+zotero-cli item restore ITEM_KEY              # <- back out of the trash
+zotero-cli collection delete COLLECTION_KEY --confirm   # with its subcollections
+zotero-cli collection restore COLLECTION_KEY            # brings the subcollections back too
+```
+
+`delete` moves things to the Zotero trash, exactly as the Delete key does in the
+Zotero UI. Trashed items keep their keys and stay recoverable until you empty the
+trash, which the CLI never does for you. `collection delete --delete-items` also
+trashes the items of the collection and of every subcollection; `collection restore`
+leaves those items in the trash, as the Zotero UI does, so restore them with
+`item restore`.
+
+Permanent erasure is a separate path and bypasses the trash entirely:
+
+```bash
+zotero-cli item delete ITEM_KEY --permanent --yes-erase
+```
+
+`--permanent` prompts before erasing **even when `--confirm` is given**; only the
+explicit `--yes-erase` suppresses that prompt. `--confirm` is the flag people
+paste into scripts out of habit, so it is deliberately not the flag that can
+destroy anything.
 
 **Read & Export**
 ```bash
@@ -252,11 +295,40 @@ feature and is not part of the DOCX writing workflow.
 ```bash
 zotero-cli item update KEY --field title="New Title"
 zotero-cli item tag KEY --add "important"
+zotero-cli item tag KEY1 KEY2 KEY3 --add "reviewed"     # one bridge call for all keys
 zotero-cli item attach KEY ./paper.pdf
 zotero-cli item find-pdf KEY
 zotero-cli note add KEY --text "My note"
 zotero-cli sync
 ```
+
+**Bulk operations**
+```bash
+# Tag everything a search returns, in one call
+zotero-cli --json item find "graph" | jq -r '.[].key' | zotero-cli item tag --keys-from - --add reviewed
+
+# Many write operations from one JSONL file, in one process
+zotero-cli --json batch ops.jsonl --dry-run          # validate only, change nothing
+zotero-cli --json batch ops.jsonl --jsonl-progress   # run, one result line per operation
+```
+
+`ops.jsonl` holds one operation per line:
+
+```jsonl
+{"op": "tag", "key": "ABCD1234", "add": ["reviewed"], "remove": ["unread"]}
+{"op": "update", "key": "ABCD1234", "fields": {"extra": "checked 2026-11"}}
+{"op": "note", "key": "ABCD1234", "file": "notes/ABCD1234.md"}
+{"op": "add-doi", "doi": "10.1371/journal.pcbi.1003285", "collection": "COLLKEY1", "tags": ["to-read"], "fetch_pdf": true}
+{"op": "add-pmid", "pmid": "32015507", "tags": ["to-read"]}
+```
+
+Every line is validated before anything runs, so a typo on one line does not leave
+the lines before it applied. Operations then run in order and a failed one does
+not stop the rest (pass `--stop-on-error` to stop). Consecutive `tag` lines go to
+Zotero in a single bridge call; with `--op tag`, lines can leave out `"op"`. Note
+files ending in `.md` are read as Markdown, and relative paths resolve against
+the JSONL file. The exit code is 1 when any operation failed; a DOI imported
+without an open-access PDF still counts as done and is reported under `partial`.
 
 **Advanced**
 ```bash

@@ -3,7 +3,7 @@
   <h1>Tidings RSS</h1>
   <p><strong>RSS lets you subscribe to sources you choose, bringing quality news, blogs, WeChat articles, YouTube updates, and podcasts into one reader without platform-inserted feed ads; in an age of algorithmic filter bubbles, it puts you in control of what you follow and which perspectives you explore.</strong></p>
   <p><strong>High-quality feeds, organized into OPML bundles you can import directly.</strong></p>
-  <p>Start with the Top 200, then use topic bundles or the 718-source directory when you want more. Catalog last checked: 2026-10-01.</p>
+  <p>Start with the Top 200, then use topic bundles or the 718-source directory when you want more. Catalog last checked: 2026-11-03.</p>
   <p><a href="README.zh-CN.md">简体中文</a> · <a href="#downloads">Download OPML</a> · <a href="RSS-GUIDE.md">RSS guide</a> · <a href="#complete-source-directory">Browse every source</a> · <a href="CONTRIBUTING.md">Suggest a feed</a> · <a href="https://tidings.info/">Get Tidings</a></p>
   <p>
     <a href="https://github.com/fuxiaoai/tidings-rss/actions/workflows/validate.yml"><img alt="Catalog validation" src="https://github.com/fuxiaoai/tidings-rss/actions/workflows/validate.yml/badge.svg"></a>
@@ -621,4 +621,36 @@ All 718 feeds in the complete collection are listed below with their primary cat
 </details>
 
 <details>
-<summary>🎨 Produc
+<summary>🎨 Product & Design · 5</summary>
+
+| Source | Description | Primary category | Feed | Bundles |
+| --- | --- | --- | --- | --- |
+| [61’s life](https://61.life/) | Chinese independent blog. | Product & Design | [RSS](https://61.life/feed.xml) | all, blogs, chinese, top200 |
+| [jax](https://cdjax.com) | Chinese independent blog. | Product & Design | [RSS](https://cdjax.com/?feed=rss2) | all, blogs, chinese, top200 |
+| [Velas电波站](https://www.velasx.com/) | Chinese independent blog. | Product & Design | [RSS](https://www.velasx.com/feed) | all, blogs, chinese, top200 |
+| [拾月的博客](https://www.skyue.com/) | Chinese independent blog. | Product & Design | [RSS](https://www.skyue.com/feed/) | all, blogs, chinese, top200 |
+| [阿里云设计中心](https://wechat2rss.xlab.app/feed/31e04606d37f684059e23a8fd3e05f1db0186495.xml) | WeChat article feed covering 产品设计与用户体验. | Product & Design | [RSS](https://wechat2rss.xlab.app/feed/31e04606d37f684059e23a8fd3e05f1db0186495.xml) | all, chinese, company-tech, top200, wechat |
+
+</details>
+
+<details>
+<summary>💼 Business & Startups · 5</summary>
+
+| Source | Description | Primary category | Feed | Bundles |
+| --- | --- | --- | --- | --- |
+| [Macin](https://macin.org/atom.xml) | Chinese independent blog. | Business & Startups | [RSS](https://www.macin.org/atom.xml) | all, blogs, chinese, top200 |
+| [扯氮集](http://weiwuhui.com) | Chinese independent blog. | Business & Startups | [RSS](http://weiwuhui.com/feed) | all, blogs, chinese |
+| [知足常乐-水星投资理财的基本意念](http://mercurychong.blogspot.com/) | Chinese independent blog. | Business & Startups | [RSS](http://mercurychong.blogspot.com/feeds/posts/default) | all, blogs, chinese, top200 |
+| [虹线](https://1q43.blog) | Chinese independent blog. | Business & Startups | [RSS](https://1q43.blog/feed) | all, blogs, chinese, top200 |
+| [雷蒙三十｜幫助忙碌現代人的聰明工作、好好生活的生產力指南](https://raymondhouch.com) | Chinese independent blog. | Business & Startups | [RSS](https://raymondhouch.com/feed) | all, blogs, chinese, top200 |
+
+</details>
+
+<details>
+<summary>✍️ Personal Blogs · 64</summary>
+
+| Source | Description | Primary category | Feed | Bundles |
+| --- | --- | --- | --- | --- |
+| [ABB00717](https://blog.abb00717.com) | Chinese independent blog. | Personal Blogs | [RSS](https://blog.abb00717.com/index.xml) | all, blogs, chinese, top200 |
+| [Another Dayu](https://anotherdayu.com/) | Chinese independent blog. | Personal Blogs | [RSS](https://anotherdayu.com/feed/) | all, blogs, chinese, top200 |
+| [Blog \| Lyunvy](https://blog.lyunvy.top/) | Chinese independent

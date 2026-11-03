@@ -39,9 +39,9 @@ decoder with the remote.
 - **One place** — playlists (M3U, Xtream Codes: the TV playlists you are
   entitled to use) and local folders of movies and series in the same home,
   search and "continue watching".
-- **Private by design** — playlist traffic goes only through a VPN (the
-  built-in WireGuard tunnel or one you run on the router); credentials are
-  encrypted; no telemetry.
+- **Private by design** — playlist traffic can be limited to a VPN (the
+  built-in WireGuard tunnel or one you run on the router), on by default;
+  credentials are encrypted; no telemetry.
 
 ## Features
 
@@ -57,9 +57,9 @@ decoder with the remote.
 | 📡 **Sources** | Xtream Codes, M3U playlists and Stalker portals (MAC) |
 | 🧹 **Catalog selection** | Keep only the countries, years and categories you want, with a live preview |
 | 👪 **Profiles** | Per-person progress and favourites, kids profiles, devices paired with a short code or signed in with your home account (OpenID Connect: Authelia, Authentik, Keycloak…) |
-| ✨ **Assistant** | Optional: built in (VodMax downloads and runs the model at home), Claude and other online services with an API key, or your own server. Write a recording rule as a sentence, ask what to watch tonight |
+| ✨ **Assistant** | Optional: built in (VodMax downloads and runs the model at home), Claude and other online services with an API key, or your own server. Write a recording rule as a sentence, record "just once" ("tonight's film on Rai 1", "Feyenoord Inter"), ask what to watch tonight |
 | 🔌 **Other apps** | Plex, Jellyfin and Emby see VodMax as an HDHomeRun tuner; M3U playlist and XMLTV guide for TiviMate, Kodi, VLC |
-| 🔒 **Built-in VPN** | WireGuard in user space inside the server and the app: without the VPN, playlists are never contacted |
+| 🔒 **Built-in VPN** | WireGuard in user space inside the server and the app: with *only through a VPN* on (the default), playlists are never contacted without it |
 | 💾 **Backups** | Encrypted backups and automatic copies, health warnings for VPN, playlists, guide and disk |
 | 🖼️ **Metadata** | From the playlist, from `.nfo` files, or from TMDB with your own key |
 
@@ -68,7 +68,7 @@ decoder with the remote.
 | Platform | |
 |---|---|
 | **Browser** | The full interface, made for the remote and the mouse |
-| **Android, Android TV, Fire TV** | Native player (Media3) for every format; can also run **standalone, without a server** |
+| **Android, Android TV, Fire TV** | Native player (Media3) for every format, picture in picture on phones and tablets; can also run **standalone, without a server** |
 | **LG webOS** | TV app (webOS 22+ recommended) |
 | **Linux server** | x86-64, ARM64 (Raspberry Pi 4/5), ARMv7; one binary, SQLite |
 
@@ -82,8 +82,12 @@ decoder with the remote.
 | Channel list with favourites | Movies |
 | <img src="docs/screenshots/detail.jpg" alt="Movie details"> | <img src="docs/screenshots/series.jpg" alt="Series with seasons and episodes"> |
 | Movie details | Series, seasons and progress |
-| <img src="docs/screenshots/settings.jpg" alt="Local collections settings"> | <img src="docs/screenshots/phone-home.jpg" alt="Phone home" width="45%"> <img src="docs/screenshots/phone-tv.jpg" alt="Phone channel list" width="45%"> |
+| <img src="docs/screenshots/settings.jpg" alt="Local collections settings"> | <img src="docs/screenshots/phone-home.jpg" alt="Phone home" width="30%"> <img src="docs/screenshots/phone-tv.jpg" alt="Phone channel list" width="30%"> <img src="docs/screenshots/phone-assistant.jpg" alt="Phone: what to watch tonight" width="30%"> |
 | Local collections with the folder picker | On the phone |
+| <img src="docs/screenshots/assistant-tonight.jpg" alt="Assistant: what shall I watch tonight"> | <img src="docs/screenshots/assistant-once.jpg" alt="Assistant: record just once"> |
+| Assistant: what to watch tonight, from TV and your library, with the reason | Assistant: "record tonight's film", just once or every time it airs |
+| <img src="docs/screenshots/assistant-rule.jpg" alt="Assistant: a recording rule from a sentence"> | <img src="docs/screenshots/assistant-settings.jpg" alt="Assistant settings"> |
+| Assistant: a recording rule from a sentence, checked before saving | Assistant settings: built in, online service or your own server |
 
 <sub>Screenshots use demo data: invented channels and guide, and the titles
 of the Blender Studio open movies with generated artwork. The interface is in
@@ -137,7 +141,8 @@ Build from source: [docs/sviluppo.md](docs/sviluppo.md) and
    `/var/lib/vodmax/admin.token`. The language (Italian or English) follows
    the device and can be changed in **Settings → Language**.
 2. **Settings → VPN**: import your WireGuard `.conf`, or declare a VPN you
-   already run on the router.
+   already run on the router. Without a VPN, switch off *Contact providers
+   only through a VPN*.
 3. **Settings → Subscriptions**: add an M3U or Xtream Codes playlist, then
    *Sync now*.
 4. **Settings → Collections**: add a folder of movies or series.

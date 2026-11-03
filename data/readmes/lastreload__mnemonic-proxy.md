@@ -100,11 +100,48 @@ mnemonic-proxy init-config --engine strata        # or llama-server, ds4, openai
 mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.json
 ```
 
-`init-config` writes `config.json` from the example that ships inside the package (no network, no clone), prints
-which example it used and never overwrites a file you have already edited (`--force` does). The same files are
-browsable at [`examples/`](https://github.com/lastreload/mnemonic-proxy/tree/main/examples); `check` prints the
-full `raw.githubusercontent.com` URL of the one for *your* version whenever it suggests one. Fields:
+`init-config` writes a **minimal** `config.json` (0.3.24): only what the proxy cannot work out by itself, so the
+[automatic configuration](#automatic-configuration) keeps deciding the rest. For Strata, llama-server and
+ds4-server that is *nothing at all* (`{}`) — the window comes from the engine, and the saved-state options, the
+exact token count and the window-sized budgets are chosen from the engine and the machine. The exceptions are the
+only two things nobody can discover: `--slot-dir DIR` (the engine's own `--slot-save-path`, for saved state) and,
+for a plain OpenAI-compatible engine that reports no context, `window`.
+
+<!-- readme-test: illustrative -->
+```sh
+mnemonic-proxy init-config --engine strata --slot-dir /path/to/sessions   # {"slot_dir": "/path/to/sessions"}
+mnemonic-proxy init-config --engine strata --full                         # every field, documented
+mnemonic-proxy init-config --engine strata --launcher                     # + the one-click starter, below
+```
+
+`--full` writes the complete documented example from the copy inside the package (no network, no clone) — every
+field explicit, which is also what *switches the automatic configuration off*, so use it as a reference and delete
+the lines you do not mean to pin. `init-config` prints which file it used and never overwrites a file you have
+already edited (`--force` does). It never writes `"auto_config"`: it is already the default, and writing it would
+remove a protection — on a data folder that already holds conversations the automatic choices are only *applied*
+when `auto_config` is explicit, so that an upgrade cannot change how a running setup behaves. The complete
+examples are browsable at [`examples/`](https://github.com/lastreload/mnemonic-proxy/tree/main/examples); `check`
+prints the full `raw.githubusercontent.com` URL of the one for *your* version whenever it suggests one. Fields:
 [Configuration](#configuration).
+
+**One click** (`--launcher`, 0.3.24; asked for by the first Windows user). Writes `start-mnemonic-proxy.bat` on
+Windows and `start-mnemonic-proxy.sh` elsewhere, next to the config and with the values you passed baked in:
+
+<!-- readme-test: ci -->
+```sh
+mnemonic-proxy init-config --engine strata --launcher --dir ./one-click \
+  --upstream http://127.0.0.1:8095 --port 8096 --data ./data
+```
+
+It starts **only the proxy** — your engine's own command line stays yours — and in this order: it refuses to go on
+if the engine does not answer, runs `check` once (a port already taken is reported there, with the fix), then runs
+the proxy. Every value is a variable at the top of the file (`UPSTREAM`, `PORT`, `DATA`, `CONFIG`, `VENV`, and a
+commented-out `TOKENIZER` unless `--tokenizer` was given), so it can be edited or overridden from the environment;
+on Windows it ends with `pause`, so a console opened by a double-click does not vanish with the error in it. For
+llama-server *and* its engine in one file, see
+[`examples\start-windows.bat`](https://github.com/lastreload/mnemonic-proxy/blob/main/examples/start-windows.bat)
+([Platforms](#platforms)).
+
 
 ### Strata in two commands
 
@@ -134,41 +171,49 @@ strata --slot-save-path /path/to/sessions        # plus your usual Strata option
 ```
 
 and the same folder named in the proxy's config (the proxy creates it if it does not exist, so there is no
-`mkdir` step):
+`mkdir` step) — one command writes exactly that file and nothing else:
+
+<!-- readme-test: ci -->
+```sh
+mnemonic-proxy init-config --engine strata --slot-dir /path/to/sessions --dir ./saved-state
+```
 
 <!-- readme-test: illustrative; config: partial -->
 ```json
 {
-  "slot_dir": "/path/to/sessions",
-  "slot_save": true, "mask_anchor": true, "autosave": true
+  "slot_dir": "/path/to/sessions"
 }
 ```
 
-Then start the proxy with `--config config.json`. `check` reports `saved state: supported by the engine,
-configured in the proxy`, and `check --live` verifies that `slot_dir` really is Strata's `--slot-save-path`
-(same folder, same host) by saving and restoring a real state file. Nothing else changes.
+Then start the proxy with `--config config.json`. `slot_save`, `mask_anchor` and `autosave` are **not** written:
+the proxy switches them on by itself once `slot_dir` is there and the engine, the RAM and the disk allow it, and
+it says so in one line at startup and in `check` ([Automatic configuration](#automatic-configuration)); writing
+them by hand only matters to force them, or to keep them off. `check` reports `saved state: supported by the
+engine, configured in the proxy`, and `check --live` verifies that `slot_dir` really is Strata's
+`--slot-save-path` (same folder, same host) by saving and restoring a real state file. Nothing else changes.
 
-**Your engine.** Start it as below and copy the config from
-[`examples/`](https://github.com/lastreload/mnemonic-proxy/tree/main/examples). `slot_dir` and the engine's
-`--slot-save-path` are only for saved state: skip both to run in base mode, add them later (the shortest Strata
-path is [above](#strata-in-two-commands)).
+**Your engine.** Start it as below. The `config` column is what `init-config` writes for that engine: minimal by
+default, the complete example with `--full`.
+[`examples/`](https://github.com/lastreload/mnemonic-proxy/tree/main/examples) holds the complete ones. `slot_dir`
+and the engine's `--slot-save-path` are only for saved state: skip both to run in base mode, add them later (the
+shortest Strata path is [above](#strata-in-two-commands)).
 
 | engine | engine command (minimum) | config | saved state |
 |---|---|---|---|
-| Strata, any version | Strata's own start | none, or `config.official-strata.json` | no (base mode) |
-| Strata ≥ 0.1.40, with saved state | Strata's own start, plus `--slot-save-path DIR` | `config.example.json`, `slot_dir` = DIR | yes |
-| llama-server | `llama-server -m model.gguf -c 32768 --parallel 1 --jinja --port 8095` (add `--slot-save-path ./slots` for saved state) | `config.llama-server.json` | yes with `--slot-save-path` |
-| llama-server, router mode (several models) | `llama-server --models-preset preset.ini --models-max 1 --port 8095`; preset: `[*]` with `slot-save-path` and `parallel = 1`, a `ctx-size` (`c`) ≥ 16384 per model | `config.llama-server-router.json` + `preset.router.example.ini` | yes, per model |
-| ds4-server | `ds4-server -m MODEL.gguf --ctx 65536 --kv-disk-dir ./kv --port 8110` | `config.ds4.json` | kept by ds4 itself |
-| Ollama, LM Studio | engine context set to 32768 (see below); `--tokenizer` recommended | `config.openai-32k.json`, or no `window` (read from the engine) | no (base mode) |
-| any OpenAI-compatible (vLLM, online APIs) | — | `config.openai-32k.json` at 32K; at 131072 none is needed (the defaults are for 131072) | no (base mode) |
+| Strata, any version | Strata's own start | none; base mode on an engine that *could* save state: `--engine official-strata` | no (base mode) |
+| Strata ≥ 0.1.40, with saved state | Strata's own start, plus `--slot-save-path DIR` | `--engine strata --slot-dir DIR` (one field; `--full` = `config.example.json`) | yes |
+| llama-server | `llama-server -m model.gguf -c 32768 --parallel 1 --jinja --port 8095` (add `--slot-save-path ./slots` for saved state) | `--engine llama-server --slot-dir ./slots` (`--full` = `config.llama-server.json`) | yes with `--slot-save-path` |
+| llama-server, router mode (several models) | `llama-server --models-preset preset.ini --models-max 1 --port 8095`; preset: `[*]` with `slot-save-path` and `parallel = 1`, a `ctx-size` (`c`) ≥ 16384 per model | `--engine llama-server-router --slot-dir ./slots` + `preset.router.example.ini` | yes, per model |
+| ds4-server | `ds4-server -m MODEL.gguf --ctx 65536 --kv-disk-dir ./kv --port 8110` | none (`--full` = `config.ds4.json`) | kept by ds4 itself |
+| Ollama, LM Studio | engine context set to 32768 (see below); `--tokenizer` recommended | none: the window is read from the engine | no (base mode) |
+| any OpenAI-compatible (vLLM, online APIs) | — | `--engine openai-32k` at 32K (just `{"window": 32768}`); at 131072 none is needed | no (base mode) |
 
 The proxy reads the window from Strata, llama-server (`n_ctx`, per model in router mode), ds4-server (`--ctx`),
 Ollama and LM Studio (the context of the loaded model, 0.3.8), and scales its thresholds to it, unless `window` is
-written in the config (the two Strata examples set 131072: change it if Strata runs with another window). From any
-other engine it cannot: `window` in the config is used as it is (131072 when missing), so write the engine's real
-context there; `config.openai-32k.json` has the thresholds the proxy itself uses at 32K. Details per engine:
-[Engines](#engines).
+written in the config. From any other engine it cannot: write the engine's real context in `window`, and since
+0.3.24 the thresholds scale from it exactly as they would from an engine-reported one (so
+`{"window": 32768}` is a complete 32K configuration — `config.openai-32k.json` spells the same numbers out).
+Details per engine: [Engines](#engines).
 
 **Ollama and LM Studio** (tested on Linux, small model, details in [Tested combinations](#tested-combinations)). Both
 serve an OpenAI-compatible API (Ollama `http://127.0.0.1:11434/v1`, LM Studio `http://127.0.0.1:1234/v1`;
@@ -979,11 +1024,18 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
   ```
 
   `config.llama-server.json` is in `examples\` (`"slot_dir": "./slots"`: relative paths are resolved from the folder
-  you start the proxy in, so start the engine and the proxy from the same folder).
-  [`examples\start-windows.bat`](https://github.com/lastreload/mnemonic-proxy/blob/main/examples/start-windows.bat) does the same in one double-click: it starts
+  you start the proxy in, so start the engine and the proxy from the same folder), and
+  `mnemonic-proxy init-config --engine llama-server --slot-dir .\slots` writes the minimal version of it.
+  **One click, any engine** (0.3.24): `mnemonic-proxy init-config --engine strata --launcher` writes
+  `start-mnemonic-proxy.bat` next to the config, with your `--upstream`, `--port`, `--data`, `--config` and
+  (optional) `--tokenizer` already in it — start Strata yourself, then double-click the `.bat`. It checks that the
+  engine answers, runs `check` once (a taken port is reported there), starts the proxy and ends with `pause`.
+  [`examples\start-windows.bat`](https://github.com/lastreload/mnemonic-proxy/blob/main/examples/start-windows.bat)
+  is the llama-server variant that also *starts the engine*: it runs
   `llama-server.exe` in its own window with `--slot-save-path .\slots`, waits for it, runs `check`, then the proxy on
   port 8096 (edit the four paths at the top: `LLAMA`, `MODEL`, `CONFIG`, `VENV`). What CI proves on Windows: unit
-  tests, demo on a cp1252 console, `check --live` READY, chat through the proxy, `start-windows.bat`, autosave and
+  tests, demo on a cp1252 console, `check --live` READY, chat through the proxy, `start-windows.bat`, the generated
+  `start-mnemonic-proxy.bat` against a fake engine, autosave and
   autorestore after an engine restart (3.2K tokens restored in 95 ms; the turn takes 2.3 s instead of 35.7 s),
   `kv_archive` round trip.
   Not tested: real agents (pi, Claude Code, Codex) on Windows, GPU builds, the dashboard. `sha256sum` is
@@ -1394,52 +1446,4 @@ Every answer below is graded by tests and regexes written before the runs.
 | 29 steps (`salepren`), same model | steps done (4 h limit) | 29/29 | 10/29 |
 | | re-reads from token 0 | **1** | 38 |
 | | tokens read / prefill time | **362K / 4,447 s** | 511K / 6,368 s |
-| | memory probes at steps 8, 14, 20 | 17/18 | 5/6 (only step 8 reached) |
-| | hidden tests on the final code | 87/87 ⚠ | 59/87 |
-| 16 steps, DeepSeek V4 Flash Q2 (official ds4, no patches) | steps / re-reads / facts | 16/16 in 61 min / 0 / 7 of 8, one "I don't know" | not run |
-
-Prompt reading (~82 tok/s) and generation (~19 tok/s) were the same with and without the proxy.
-
-**⚠ The 29-step run is not a clean quality result.** Both sides ran with pi's `maxTokens 4096`, and that limit
-includes the model's reasoning. Qwen3.8 often thought for more than 4,096 tokens before acting, so the answer was
-cut before the tool call (`finish_reason: length`): 26 times with the proxy, 8 without. pi stores a cut answer
-without an action and sends the next step, so unanswered requests pile up. With the proxy they reached 13 in a
-row; the model tried to do all of them in one turn, ran out of tokens again, and kept looping. It wrote no code
-from step 2 to step 25, then rewrote the whole package from memory at step 26 (which passes all 87 tests). Without
-the proxy, pi's summaries happened to clear the backlog. The first cut came before the proxy had changed anything,
-and it also happened without the proxy: the cause is the limit, but the proxy keeps the history faithfully and so
-does not break the loop.
-
-What this means in practice:
-- **give reasoning models room**: set the client's max output tokens well above their usual reasoning length
-  (8192 or more for Qwen3.8 with reasoning on);
-- the 16-step runs did not show this loop (with the proxy all 16 steps produced code; 57 of the agent's own tests
-  passed at the end, 40 without the proxy) and are the cleaner comparison;
-- a rerun of the 29-step task with 8192, and a proxy note when the last answer was cut, are planned.
-
-Other findings: once (16-step run with `checkpoint_align_tokens`) a `recall` found the right chunk but the result
-was cut for lack of room in the window, and the model answered "never discussed" — a weak point seen once, not yet
-reproduced. With DeepSeek V4 Flash, ds4's default q8→f16 cache left only ~9 GB of free RAM on a 128 GB machine;
-the run used `DS4_CUDA_NO_Q8_F16_CACHE=1`.
-
-Reports (Italian): [DS4-LONG-RESULT.md](https://github.com/lastreload/mnemonic-proxy/blob/main/docs/dev-notes/DS4-LONG-RESULT.md) (16 steps, Qwen3.8),
-[DS4-LONG2-RESULT.md](https://github.com/lastreload/mnemonic-proxy/blob/main/docs/dev-notes/DS4-LONG2-RESULT.md) (29 steps, Qwen3.8),
-[DS4-FLASH-RESULT.md](https://github.com/lastreload/mnemonic-proxy/blob/main/docs/dev-notes/DS4-FLASH-RESULT.md) (16 steps, DeepSeek V4 Flash).
-
-`GET /v1/strata/engine` shows what was detected. Measurements: [docs/dev-notes/ENGINES-RESULT.md](https://github.com/lastreload/mnemonic-proxy/blob/main/docs/dev-notes/ENGINES-RESULT.md) (Italian).
-
-## Configuration
-
-Output limits in managed mode: `max_completion_tokens` takes precedence over `max_tokens` when both are supplied;
-without either field, `default_response` is used (16384 by default). These values are ceilings, not a reason to
-switch segments. After masking and any necessary switch, the proxy caps the response to
-`window - estimated_prompt - reserve - 8` and sends the reduced limit to the engine (both fields are synchronized
-when present). The final window guard may reduce it further for its margin and estimate slack; it refuses a
-prompt with no space for even one generated token. Tokenizer-based bounds require the current model's tokenizer
-and matching template/settings (see Window guard above); estimates are not proof of actual engine token usage.
-
-A genuinely large prompt still triggers a segment switch when there is not enough room for a useful response:
-`max(response_floor, min(requested_output, default_response))`, bounded to at least one token and at most a quarter
-of the window. A floor never raises the actual output ceiling requested by the client. Every reduction produces
-`response_clamped` in `journal.jsonl` (requested and sent limits, prompt estimate, window and reserve), plus one
-warnin
+| | memory probes at steps 8, 14, 20 | 17/18 | 5/6 (only st

@@ -46,6 +46,10 @@ No trial and error. You know before you download whether a model fits.
 ## Key Features
 
 * **Honest memory math:** Real-time fit calculation using proper GQA (Grouped-Query Attention) KV cache sizing, your chosen context window (2K up to 32K+), and GPU offload layers. You get a straight answer: Fits, Tight Fit, or Exceeds Limits.
+* **Curated catalog of 140 models:** Pre-verified weights across reasoning, coding, conversational LLMs, sentence embeddings, and dedicated OCR VLMs (PaddleOCR-VL, GLM-OCR, DeepSeek-OCR, Dots.OCR, HunyuanOCR, LightOnOCR, Qianfan-OCR) with automatic companion `mmproj` handling.
+* **First-class OCR and vision:** Run dedicated OCR multimodal models locally. Trained prompt presets are preserved in catalog metadata, tested directly in the Playground, or transcribed via `modelsift ocr`.
+* **Side-by-side model compare:** Send one prompt to two chat models at once and compare answers with per-model speed (tok/s), TTFT, elapsed time, and resident process memory (RSS) — no external benchmark harness required.
+* **Hardware benchmark scorecard:** Run a one-click benchmark over installed chat models with three fixed prompts (short latency, reasoning throughput, long-context prefill) and get a machine score (S–F) for generation speed, TTFT, prefill, and VRAM/RAM headroom. Reports are saved as JSON and exposed in the desktop app, admin API, and `modelsift benchmark`.
 * **Small and fast:** Native Rust backend, ThinLTO-optimized — roughly a 13 MB core binary and a ~30 MB installer. No bundled Chromium.
 * **Downloads you can trust:** Resumable multi-stream downloads straight from HuggingFace Hub, with SHA-256 verification and a check of the actual GGUF header (`n_layers`, `n_kv_heads`, `head_dim`) so a bad file never slips through.
 * **Works with the tools you already use:** A zero-buffering OpenAI gateway fixed at `http://127.0.0.1:13370/v1`. Point Cursor, Continue, Cline, Aider, the OpenAI Python/TS SDKs, or plain `curl` at it and it just works.
@@ -69,9 +73,12 @@ A few useful variations:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yoel3imari/modelsift/main/install.sh | bash -s -- --version v0.1.91
+curl -fsSL https://raw.githubusercontent.com/yoel3imari/modelsift/main/install.sh | bash -s -- --with-cli
 curl -fsSL https://raw.githubusercontent.com/yoel3imari/modelsift/main/install.sh | bash -s -- --dry-run
 curl -fsSL https://raw.githubusercontent.com/yoel3imari/modelsift/main/install.sh | bash -s -- --format appimage
 ```
+
+`--with-cli` also installs the `modelsift` command-line client (and the legacy `llm-advisor` alias when that name is not already used by the desktop binary).
 
 > **Minimum systems for the prebuilt installers:** Linux with glibc 2.39+ — Ubuntu 24.04+, Debian 13+, Fedora 40+, RHEL/Rocky/Alma 10+, openSUSE Leap 16+ or Tumbleweed — and macOS 15+ (Sequoia). The installer stops with a clear error on older systems; use the source build (below) there.
 
@@ -130,6 +137,76 @@ npm run tauri dev
 # Builds the frontend and packages a release bundle
 npm run tauri build
 ```
+
+---
+
+## Command-Line Interface
+
+ModelSift ships a `modelsift` CLI for headless servers, terminals, and scripts. It controls the same token-guarded local admin API as the desktop app, so it can inspect a running GUI or run its own background daemon.
+
+### Install
+
+```bash
+# Alongside the desktop app
+curl -fsSL https://raw.githubusercontent.com/yoel3imari/modelsift/main/install.sh | bash -s -- --with-cli
+
+# From a source checkout
+cargo build --release -p modelsift-cli
+# binary: target/release/modelsift
+```
+
+The installer puts `modelsift` in `~/.local/bin` (override with `--cli-dir DIR`). It also adds an `llm-advisor` symlink unless that name already belongs to the desktop binary.
+
+### Usage
+
+```bash
+modelsift serve                              # foreground gateway on 13370
+modelsift serve --detach                     # background daemon; returns when ready
+modelsift start --detach                     # `start` is an alias for `serve`
+modelsift serve --detach --model qwen2.5-coder-7b-instruct-q4_k_m
+modelsift status
+modelsift models list
+modelsift models show qwen2.5-coder-7b-instruct-q4_k_m
+modelsift models load qwen2.5-coder-7b-instruct-q4_k_m --context 8192 --kv q8_0
+modelsift models unload qwen2.5-coder-7b-instruct-q4_k_m
+modelsift models unload-all
+modelsift models download qwen2.5-coder-7b-instruct-q4_k_m --wait
+modelsift ocr glm-ocr-q8_0 document.png        # transcribe image using catalog prompt preset
+modelsift ocr glm-ocr-q8_0 document.png --json # output structured JSON envelope
+modelsift jobs list                         # recent background jobs
+modelsift jobs verify --wait                # re-hash installed models, wait for the report
+modelsift jobs logs <job-id>
+modelsift workspaces create "Research" --kind notebook --description "Papers and sources"
+modelsift workspaces list
+modelsift workspaces gc --max-age-days 30   # prune old artifacts and orphan files
+modelsift engines                           # detected llama.cpp / diffusion / whisper / TTS engines
+modelsift logs --model qwen2.5-coder-7b-instruct-q4_k_m --follow
+modelsift restart                            # restart the CLI-owned daemon
+modelsift shutdown                           # stop only a CLI-owned daemon
+modelsift doctor                             # check paths, sidecar, token, port
+```
+
+`--json` and `--data-dir PATH` are global flags. JSON output is either `{"ok":true,"data":...}` or `{"ok":false,"error":{"code":N,"message":"..."}}`.
+
+### Background jobs & workspaces
+
+Long-running one-shot work (model verification today; transcription, image and speech jobs next) runs through a durable queue instead of blocking the UI. Job state lives in `<data-dir>/jobs.json`, logs in `<data-dir>/logs/jobs/<job-id>.log`, and artifacts in `<data-dir>/artifacts/<job-id>/`. Queued and running jobs survive navigation, can be cancelled, and are pruned from history once finished.
+
+Workspaces group chats, artifacts and the future Notebook/Writing/TTS/Image surfaces under one project. They are stored in `<data-dir>/workspaces/`, with presets in `<data-dir>/workspace-presets.json`. The desktop app exposes both under **Workspaces**; the CLI uses `modelsift jobs` and `modelsift workspaces`.
+
+| Exit code | Meaning |
+|-----------|---------|
+| `0` | Success |
+| `1` | General error |
+| `3` | Gateway not running |
+| `4` | Port or ownership conflict |
+| `5` | Model load/install error |
+
+The gateway still binds strictly to `13370` by default. `--port 0` binds an ephemeral port (useful for tests) and reports the actual port in `runtime.json` and the command output. Detached daemons log to `<data-dir>/logs/modelsift.log`.
+
+The desktop app and CLI can inspect each other, but `modelsift shutdown` is refused for a desktop-owned gateway — quit ModelSift from the app instead.
+
+Environment overrides: `MODELSIFT_DATA_DIR`, `LLM_ADVISOR_DATA_DIR`, and `MODELSIFT_SIDECAR`.
 
 ---
 
@@ -213,6 +290,8 @@ Under the hood it's a modular Rust workspace with a React 19 frontend:
 modelsift/
 ├── crates/
 │   ├── domain/           # Shared domain types, ServeConfig, FitResult, and error taxonomy
+│   ├── app_core/         # Shared orchestration for the desktop app and CLI daemon
+│   ├── cli/              # `modelsift` terminal client and headless server
 │   ├── hw_probe/         # Hardware inspection (sysinfo, macOS Metal sysctl, GPU bandwidth tables)
 │   ├── fit_engine/       # Memory-fit math, GQA KV sizing and roofline models
 │   ├── catalog/          # Curated GGUF catalog parsing, validation, and CDN sync
@@ -236,6 +315,9 @@ Tests cover both the Rust backend and the React frontend:
 ```bash
 # All Rust unit and integration tests
 cargo test --workspace
+
+# CLI integration tests (spawns a real daemon on an ephemeral port)
+cargo test -p modelsift-cli
 
 # TypeScript type checks and Vitest suites
 npm test
@@ -292,7 +374,7 @@ Found a bug, hit a hardware detection quirk, or have an idea? We'd genuinely lik
   4. **Logs:** check the **Server Logs** tab in the app, or look in:
      * **Linux:** `~/.local/share/dev.yoel3imari.llm-advisor/`
      * **macOS:** `~/Library/Application Support/dev.yoel3imari.llm-advisor/`
-     * **Windows:** `%LOCALAPPDATA%\dev.yoel3imari.llm-advisor\`
+     * **Windows:** `%APPDATA%\dev.yoel3imari.llm-advisor\`
   5. **Steps to reproduce:** numbered steps work best.
 * **Feature requests:** open an issue with what you want, why you want it, and any alternatives you've considered.
 

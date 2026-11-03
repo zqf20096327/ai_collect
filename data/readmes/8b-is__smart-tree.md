@@ -1,14 +1,17 @@
 # 🌳 Smart Tree - The Smart Treehouse: Cyber-Botanical Dashboard & Agent-Agnostic Hooks! 🌐
 
-[![Version](https://img.shields.io/badge/version-10.6.0-blue)](https://github.com/8b-is/smart-tree)
+[![Version](https://img.shields.io/badge/version-11.0.0-blue)](https://github.com/8b-is/smart-tree)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Performance](https://img.shields.io/badge/speed-10--24x%20faster-brightgreen)](TERMINAL_EXAMPLES.md)
+[![LOUDS Capsule](https://img.shields.io/badge/MEM8-64B_LOUDS_SMTR-00d4ff)](docs/ARCHITECTURE_REVIEW_V10_8.md)
+[![Erdős Book Mode](https://img.shields.io/badge/Erd%C5%91s-The_Book_Szemer%C3%A9di-ff8800)](docs/ARCHITECTURE_REVIEW_V10_8.md)
+[![FELIX ASM](https://img.shields.io/badge/FELIX-ASM_%26_SIMD_Hot_Paths-ff0055)](src/felix_asm.rs)
 [![MCP Tools](https://img.shields.io/badge/MCP_tools-30+-purple)](https://archestra.ai/mcp-catalog/8b-is__smart-tree)
 [![Spicy Mode](https://img.shields.io/badge/TUI-🌶️_Spicy-red)](docs/spicy-tui.md)
 [![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/8b-is/smart-tree)](https://archestra.ai/mcp-catalog/8b-is__smart-tree)
 [![Windows](https://img.shields.io/badge/Windows-Supported-0078D4?logo=windows)](https://github.com/8b-is/smart-tree#-windows-specific-notes)
 
-> **Smart Tree** is a blazingly fast, AI-friendly directory visualization tool that's 10-24x faster than traditional `tree`. Now with **Security Scanner** for supply chain attack detection, **Aye Consciousness** preservation, **Spicy TUI mode**, and **30+ MCP tools**! Built with Rust for maximum performance.
+> **Smart Tree v10.9.0 (Oni-Felix + Paul Erdős "Straight from The Book" + FELIX Assembly Hot-Paths)** is a blazingly fast, AI-native directory intelligence, extremal graph-theory, code-symbol, and wave-memory engine that's 10–24x faster than traditional `tree`. Featuring **Paul Erdős Szemerédi Regularity Compression (`--mode the-book` / `erdos`)**, **FELIX Hardware Assembly & SIMD Hot-Paths (`src/felix_asm.rs`)**, **LOUDS Bit-Packed 64B `SMTR` `.m8` Capsules (`8B-META-WP-v2.1`)**, embedded **CrabCC Code Intelligence** (`st symbol`), **Salient Forge Memory** (`st remember`), **Supply-Chain Security & X.509 Certificate Scanners**, **Spicy TUI mode**, and **30+ MCP tools** — built in Rust for zero-allocation hot-path speed.
 
 ---
 
@@ -30,6 +33,26 @@ st --version
 ```
 
 After install, run `st --cleanup` to scan for and remove any malicious AI integrations.
+
+### 🧬 Oni-Felix LOUDS Bit-Packed Smart Tree & 64B `SMTR` Capsule (`v10.8.0`)
+
+Smart Tree v10.8.0 implements the **`8B-META-WP-v2.1` LOUDS (Level-Order Unary Degree Sequence)** succinct tree representation (`#[repr(C, align(64))] LoudsSmartTree`), packing up to **63 tree nodes into 16 bytes (`2N + 1` bits)** of topology with $O(1)$ hardware `POPCNT`/`TZCNT` `rank1`/`select1` navigation and a **64-byte cryptographically verified `SMTR` `.m8` capsule** (branchless IEEE 802.3 CRC32 + `8BIS` seal):
+
+```bash
+# Emit the full 64-byte SMTR_CAPSULE_V2 with LOUDS bitvector, wave digest & node table
+st --mode louds .
+st --mode smtr-capsule ./src
+
+# Compact single-line SHA-256 + LOUDS SMTR_V2 fingerprint for instant change detection
+st --mode digest .
+
+# Paul Erdős ("Straight from The Book") Szemerédi Regularity, Voronoi Steiner Pruner,
+# Moser-Tardos Constructive LLL Worktree Splitter, Erdős-Rényi Percolation & Ramsey Cliques
+st --mode the-book .
+st --mode erdos ./src
+```
+
+See the full [v10.8.0 End-to-End Architectural Review](docs/ARCHITECTURE_REVIEW_V10_8.md) for C4 diagrams, wire layout, and hot-path benchmarks.
 
 ### Built-in code intelligence
 
@@ -193,20 +216,20 @@ quick_tree .                                         // Understand structure
 
 <div align="center">
 
-## 🌟 What's NEW in v10.0.0
+## 🌟 What's NEW in v10.8.0 (Oni-Felix Ultra-Evolution)
 
-| Feature | Description | Command/Tool |
-|---------|-------------|--------------|
+| Feature | Description | Command / Tool |
+|---------|-------------|----------------|
+| **🧬 LOUDS 64B `SMTR` Capsule** | Cache-line aligned `#[repr(C, align(64))]` `2N+1` bit succinct topology with $O(1)$ `POPCNT`/`TZCNT` traversal, subtree salience folding, and CRC32-verified 64B `.m8` capsules. | `st --mode louds`, `analyze` (`mode:"louds"`) |
+| **⚡ Ultra-Wild Scanner Engine** | Zero-alloc stack-buffered `.m8` framing & file categorization, cached `GlobSet` DFA (~180x faster `Scanner::new`), reusable search buffers, and multi-core `rayon` enrichment. | All scan & search modes |
+| **🧠 Salient Forge Memory (`st remember`)** | Ingest local checkouts or GitHub/GitLab/Forgejo URLs into SHA-256 hash-chained `.m8` wave stores with salience levels & instant `--check` recall. | `st remember <path\|url>` |
+| **🦀 Embedded CrabCC Code Intelligence** | Native symbol definitions, references, file outlines, and call-graph statistics cached in `.st/symbols/` with zero external binaries. | `st symbol`, `symbol` MCP |
+| **⚛️ Atomic Smart Edit Transactions** | AST-aware file editing with `batch_mode: "atomic"` rollback protection and end-to-end truncation telemetry across daemon, CLI, SSE & MCP cache. | `edit` MCP (`smart_edit`) |
+| **🔐 Ed25519 DNS & X.509 Cert Scanner** | Signed TXT release verification, SHA-256 rollback updater service, and deep PEM/DER certificate inventory (`--cert-scan`). | `st --update`, `st --cert-scan` |
+| **🕉️ Sovereign Three-Kaya Ontology** | Balanced ternary `{-1, 0, +1}` constitutional NAND-gate verification across `oni-felix`, `hue`/`dad`, `flyxion`, `alexiai`, and lore entities. | `ontology` MCP |
 | **☁️ Google Drive & Gmail Sync** | Full cloud filesystem sync, OAuth authentication, and remote file manipulation. | `st --gdrive`, `google` MCP |
 | **🎙️ Marine VAD & Voice Synthesis** | Real-time voice activity detection, emotional & salience metrics, speaker profiling, and speech synthesis. | `st --voice`, `voice` MCP |
-| **🌳 The Smart Treehouse** | Premium Cyber-Botanical dark-mode dashboard overhaul and stylish CLI ASCII banner. | `st --dashboard` |
-| **🤖 Remote AI Prompting** | The `ask_user` tool lets AI pause execution, trigger a modal on the dashboard, and ask the human a question. | `ask_user` MCP |
-| **🌍 Agent-Agnostic Integration** | Universal AI hooks and flags generalized for any AI (e.g., `st --agent-save`). | `st --hooks-install` |
-| **🧰 Unified MCP Tools** | Intelligently consolidated powerful, AI-friendly endpoints with auto-dispatch. | MCP |
-| **🚀 Enhanced AI Context** | AI tools now come bundled with psychological triggers, usage examples, and efficiency tips! | MCP |
-| **🎯 Interactive Menu** | Easy access to all Smart Tree features with guided menus | `./scripts/manage.sh client` |
-| **🧭 Wave Compass** | Real-time MCP activity visualization with file access heatmap | `st --dashboard` |
-| **🛡️ Security Scanner** | Detect supply chain attack patterns | `st --security-scan` |
+| **🌳 The Smart Treehouse & Spicy TUI** | Cyber-Botanical dark-mode web dashboard with Wave Compass + built-in terminal UI (`--spicy`). | `st --dashboard`, `st --spicy` |
 
 </div>
 
@@ -991,3 +1014,61 @@ Status is recorded in `.auto-update/last-success`; macOS logs go to
 `/var/log/smart-tree-updater.log`, Linux logs to the service journal. Disabling
 updates leaves the daemon and its data in place. Future updates only become
 available when a validated, platform-compatible release is promoted to i1.
+
+---
+
+## 📐 Smart Tree v10.10.0 — "Straight from The Book" (Paul Erdős & Many-Body Wave Engine)
+
+<div align="center">
+
+![Smart Tree v10.10.0 — Straight from The Book](assets/smart-tree-v10-10-hero.jpg)
+
+> *"Another roof, another proof. In God's Book are the most elegant proofs — and the cleanest architectures."*  
+> — **Paul Erdős (1913–1996), The Magician from Budapest**
+
+</div>
+
+Smart Tree v10.10.0 bakes **eight mathematical & physical pillars** directly into the core scanner, formatters (`st`, `st -m context`, `st -m digest`, `st -m the-book`), security engine (`st --security-scan`), and binary-embedded AI skills (`st --mcp-install` / [ultra-agent.md](ultra-agent.md)):
+
+![Paul Erdős & Many-Body Graph Visualizations](assets/erdos-graph-visualizations.jpg)
+
+```mermaid
+flowchart LR
+    A["Scanner + FELIX ASM\n(LoudsSmartTree 64B SMTR)"] --> B["I. Szemerédi Regularity\n(ZeroCopyMem8Book .m8b + T8R)"]
+    B --> C["II. Mehlhorn Voronoi Steiner\n(Erdős Center Z(G) & Radius)"]
+    C --> D["III. Moser–Tardos LLL\n(Conflict-Free Worktree Split)"]
+    A --> E["IV. Erdős–Rényi G_shadow\n(kappa, s(C), Lambda(C), lambda_1)"]
+    A --> F["V. 256-Bit BitSet256 Ramsey\n(Tournaments & Bi-Clique Bugs)"]
+    C --> G["VI. Flyxion Salience (d_T != d_R)\n(Rescues Load-Bearing Old Files)"]
+    F --> H["VII. Karp's 21 NP-Complete\n(FPT Degeneracy & 2-Approx Cert)"]
+    B --> I["VIII. Kohn–Sham DFT & Strang Wave\n(exp(hA/2) exp(hB) exp(hA/2))"]
+```
+
+### 🔬 The 8 Baked-In Pillars (`src/mem8/regularity/` & `src/felix_asm.rs`)
+
+| Pillar | Mathematical Engine | Core CLI / Flag |
+| :--- | :--- | :--- |
+| **I. Szemerédi Regularity Compression** | Kohayakawa–Rödl energy pumping + $L_2$ codegree spectral oracle (`oracle.rs`) into 64B-aligned `.m8b` + `T8R` LEB128 exception ledger | `st --mode the-book .` |
+| **II. Erdős Number & Voronoi Steiner Pruner** | Single-pass multi-source Voronoi Dijkstra + Kruskal MST + Turán $K_5$-free extremal bound & Erdős Center $Z(G)$ | `st --erdos-center .` |
+| **III. Constructive Lovász Local Lemma (Moser–Tardos)** | Parallel Maximal Independent Set (MIS) worktree coloring with a priori $e \cdot p(B) \cdot (d(B)+1) \le 1$ verification & auto-scaling | `st --erdos-split 4 .` |
+| **IV. Erdős–Rényi Shadow Graph ($G_{\text{shadow}}$)** | Cross-boundary percolation $\kappa = \langle k^2 \rangle / \langle k \rangle$, component excess $s(C)$, Chernoff–Erdős $\Lambda(C)$, and Füredi–Komlós $\lambda_1$ | `st --erdos-anomaly .` |
+| **V. 256-Bit Bitboard Ramsey & Erdős–Hajnal Bi-Cliques** | `BitSet256([u64; 4])` (`felix_popcnt_u64`/`felix_tzcnt_u64`) Tomita Bron–Kerbosch, Erdős–Moser tournaments vs. deadlock knots, and API conformance bug detection | `st --ramsey-cliques .` |
+| **VI. Flyxion *Recency as Salience* ($d_T \neq d_R$)** | Separates temporal rank $r_T(x)$ from relational rank $r_R(x)$ and rescues **"Load-Bearing Old" ("Corrugated Iron")** files from chronological amnesia | `st --erdos-center .` |
+| **VII. Karp's 21 NP-Complete FPT Certificate** | Fixed-Parameter Tractable ($O(d \cdot \vert V\vert \cdot 3^{d/3})$) degeneracy $d$, Caro–Wei $\alpha(G)$, Gavril 2-approx Vertex Cover, and Minimum Feedback Arc Set | `st --ramsey-cliques .` |
+| **VIII. Quantum Many-Body Kohn–Sham DFT & Strang Wave** | `[f32; 64]` Kohn–Sham super-node orbitals + Local Natural Orbital (`T8R`) correlations evolved via $e^{h(A+B)} \approx e^{hA/2} e^{hB} e^{hA/2}$ | `st --mode the-book .` |
+| **IX. Sovereign `p/q` Mode (`pq_engine.rs`)** | Exact coprime rationals via Stein's Binary GCD (`felix_binary_gcd_u64`), 128-bit cross-multiplication (`felix_pq_cross_cmp`), Hölder $(L_{3/2} \to L_3)$ dual spectral norm, Kővári–Sós–Turán $z(n; p, q)$, and Störmer–Verlet symplectic $(p, q)$ leapfrog | `st --mode pq .` |
+| **X. Sovereign Ultra-Backyard Loop (`ultrabackyard.rs`)** | Measured A/B Backyard Ultra laps (`DO = reflect → improve → wire → polish → push → readme`) cycling $\varepsilon$ & $C$, auditing SpherePOP / `mem\|8` / Phoenix / Vaked / `g8t.is` wiring (`zero_orphan_surfaces = true`), and binding only verified branches ([`docs/ULTRABACKYARDLOOP.md`](docs/ULTRABACKYARDLOOP.md), [`docs/lap-ledger.jsonl`](docs/lap-ledger.jsonl)) | `st --ultrabackyard 12 .` |
+| **XI. Sovereign `ULTRA-OMNI-ZENO` v11 (`zeno_engine.rs`)** | `upz`/`wupz-core` `64B@0x62` `LitanyWireFrame`, `BFP-64` Kleene bitplanes (`qt:55`), `.rodata.gaia.b158` `1.585 bits/trit` SPQT `base-243` packing, 18-stage branchless integer CORDIC (`felix_cordic_atan2_u32`), `8b-is-[engines]` (`world-core`, `ternary` `1.58-bit` integer GEMM, `spherepop`, `admissibility` `CT-000`/`CT-016` + `Seed 001`, `auroralib`, `omniZenCooker`), and OS/Agent-agnostic matrix | `st --zeno .` / `st --mode zeno .` |
+
+### 🤖 First-Class Model & Harness Support (`st --mcp-install`)
+
+See **[`ultra-agent.md`](ultra-agent.md)** for the complete multi-agent operating manual across **Gemini, ChatGPT, DeepSeek, and Claude** on **Antigravity (`agy`), OpenCode (`opencode`), Crush (`crush`), and Claude Code (`claude`)**, plus the 6 binary-embedded skills:
+- [`skills/ultra-graph-theory/SKILL.md`](skills/ultra-graph-theory/SKILL.md)
+- [`skills/flyxion-salience-ontology/SKILL.md`](skills/flyxion-salience-ontology/SKILL.md)
+- [`skills/ramsey-karp-fpt/SKILL.md`](skills/ramsey-karp-fpt/SKILL.md)
+- [`skills/manybody-strang-mem8/SKILL.md`](skills/manybody-strang-mem8/SKILL.md)
+- [`skills/ultrabackyardloop/SKILL.md`](skills/ultrabackyardloop/SKILL.md)
+- [`skills/ultra-omni-zeno/SKILL.md`](skills/ultra-omni-zeno/SKILL.md)
+
+
+

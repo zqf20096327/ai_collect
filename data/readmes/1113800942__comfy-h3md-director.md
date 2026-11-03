@@ -40,9 +40,14 @@ generate them segment by segment, keep every finished segment on disk, and repai
 1. No `pip install` is needed.
 2. You need a ComfyUI version with MiniMax H3 support (0.43 or newer recommended).
 3. Open an example workflow: ComfyUI **Templates** → `ComfyUI-H3MD-Director`, or drag one from
-   [`example_workflows/`](example_workflows) into ComfyUI. New here? Start with **H3MD Director (lite)**: it needs only
-   ComfyUI-KJNodes besides H3MD. **H3MD Director** is the full setup (face refine, 48 fps interpolation and more).
-   Hardware, render times and the dependency table: see **More** below.
+   [`example_workflows/`](example_workflows) into ComfyUI. **New here? Start with `H3MD Director simple`** (v0.3):
+   only three things on the canvas – the **H3MD Control Panel** (size, fps / interpolation, face refine, seed, which
+   segments to run, style buttons Balanced / High motion / Motion copy, low-res and high-res LoRA lists), the
+   **Director** (media, shots, prompts) and the video preview. Models, sampler and save settings sit in subgraphs
+   (click to open). `H3MD Director` is the older flat full layout.
+   Hardware: 40 / 50-series GPU with **16 GB VRAM minimum, 24 GB+ recommended** (measured on an RTX 5090; reports from
+   16 / 24 GB cards welcome). On RunningHub and other platforms where subgraphs are awkward, unpack them first
+   (right-click the subgraph node → Unpack). See **More** below for render times and the dependency table.
 4. Missing node packs: ComfyUI-Manager → **Install Missing Custom Nodes**. Missing models: follow the
    **Model links** note inside the workflow (every file with its download link and folder).
 5. **Prompts: write them with the [H3MD prompt skill](skills/h3md-prompt/SKILL.md).** Each shot is a full official H3
@@ -53,6 +58,15 @@ generate them segment by segment, keep every finished segment on disk, and repai
    npx skills add https://github.com/MiniMax-AI/MiniMax-H3 --skill h3-prompt-writing
    ```
    No agent? Paste the SKILL.md into any chat AI and ask it to write your shots.
+6. **Fastest first run: the demo pack.** Download
+   [`H3MD_demo_bluedress_seg1.zip`](https://github.com/1113800942/comfy-h3md-director/releases/download/0.2.0/H3MD_demo_bluedress_seg1.zip)
+   (one 12 s shot: picture, music and all settings). On the H3MD Director click **Import plan…** → pick the zip →
+   **Plan + all settings** → Run. Only the two-stage sampling (low-res + latent upscale) runs inside the Loop node;
+   there is nothing else to set.
+7. **Shared or server ComfyUI** (started with `--listen`, a LAN address or a cloud platform): H3MD then only reads
+   media inside ComfyUI's input / output / temp folders, only saves videos inside the output folder and keeps its
+   cache in ComfyUI's temp folder (each run its own; plan imports capped at 1 GB). Local use (the default `127.0.0.1`) is unchanged. Override with
+   `H3MD_PATHS=local` / `H3MD_PATHS=shared`; allow extra media folders with `H3MD_MEDIA_DIRS`.
 
 ## Quick start
 1. Put your photos, reference video and music into the Director, write the prompt per shot (use the
@@ -103,10 +117,10 @@ H3MD Director --plan--> H3MD Loop Sampler (+ H3MD Loop Options) --long video--> 
    `minimax_h3_latent_upscaler_3d_fp16.safetensors` or a fine-tune such as
    `h3_upscaler_sharpness_2000steps_v0.1_fp32.safetensors`. Without one, set `upscaler_model = none` (nearest, softer).
 
-**Two example workflows**
-* `H3MD Director (lite).json` — the fewest dependencies: ComfyUI + H3MD + ComfyUI-KJNodes (+ ComfyUI-ClipProj for the
-  small 4B text encoder). Everything H3MD does is there: Director, long-video continuation, `lowres_anchor`, tiling,
-  disk cache, `rerun_segments`, locked-audio lip sync, motion copy.
+**Example workflows**
+* `H3MD Director simple.json` — **start here** (v0.3): Control Panel + Director + preview; models / sampler / save in
+  subgraphs; no rgthree, Crystools, easy-use, LayerStyle or TE-Speed nodes. Low VRAM: the 4B text encoder + ClipProj
+  are inside the models subgraph (bypassed), with a note on how to switch.
 * `H3MD Director.json` — the full setup used for the samples; adds face refine, RIFE interpolation to 48 fps, one extra
   refine step and a few convenience nodes.
 
@@ -114,12 +128,12 @@ H3MD Director --plan--> H3MD Loop Sampler (+ H3MD Loop Options) --long video--> 
 |---|---|---|---|
 | ComfyUI 0.43+ (core MiniMax H3 nodes) | models, sampler, VAE | **required** | — |
 | H3MD Director (this pack) | Director, Loop Sampler, Save Video Interp, depth / SAM3 motion copy | **required** | — |
-| [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) | SageAttention and chunked feed-forward patches (less VRAM) | recommended (lite + full) | runs, but needs more VRAM; the SageAttention patch also needs the SageAttention package, otherwise bypass that node |
+| [ComfyUI-KJNodes](https://github.com/kijai/ComfyUI-KJNodes) | SageAttention and chunked feed-forward patches (less VRAM) | recommended (simple + full) | runs, but needs more VRAM; the SageAttention patch also needs the SageAttention package, otherwise bypass that node |
 | [ComfyUI-ClipProj](https://github.com/nicolab28/ComfyUI-ClipProj) | 4B text encoder projection, saves 10+ GB VRAM | only with the 4B encoder | use the 32B encoder |
-| [ComfyUI-VFI](https://github.com/GACLove/ComfyUI-VFI) | RIFE interpolation in `H3MD Save Video Interp` | full only, optional | keep `interpolate` off: 24 fps output |
-| TE-Speed-VOSR2 / TE-Speed-SeedVR2 | face refine in `H3MD Save Video Interp` | full only, optional | keep `face_refine` off (default) |
-| [ComfyUI-YCNodes-MiniMax-H3](https://github.com/yichengup/ComfyUI-YCNodes-MiniMax-H3) | `H3SigmaRefiner`: one extra refine step | full only, optional | plain `BasicScheduler` |
-| [rgthree-comfy](https://github.com/rgthree/rgthree-comfy) | Power Lora Loader (many LoRAs in one node) | full only, optional | chain the core `LoraLoaderModelOnly` (lite does this) |
+| [ComfyUI-VFI](https://github.com/GACLove/ComfyUI-VFI) | RIFE interpolation in `H3MD Save Video Interp` | optional | keep `interpolate` off: 24 fps output |
+| [ComfyUI-VOSR2](https://github.com/ylchen333/ComfyUI-VOSR2) (simple) / TE-Speed-VOSR2 (full) | face refine in `H3MD Save Video Interp` | optional | keep `face_refine` off (default) |
+| [ComfyUI-YCNodes-MiniMax-H3](https://github.com/yichengup/ComfyUI-YCNodes-MiniMax-H3) | `H3SigmaRefiner`: one extra refine step | optional | plain `BasicScheduler` |
+| [rgthree-comfy](https://github.com/rgthree/rgthree-comfy) | Power Lora Loader (many LoRAs in one node) | full only, optional | the simple workflow's Control Panel loads LoRAs itself |
 | ComfyUI-Dehypnotic, Crystools, Easy-Use, LayerStyle, CRT-Nodes | aspect-ratio picker, switch, number, VRAM purge, timer | full only, optional | not needed to render |
 
 H3MD looks up the face-refine and RIFE packs only when you turn those features on, so the save node works without them.
@@ -153,6 +167,27 @@ hybrid b25-49 int8 model, 32B int8 text encoder, 4-step turbo LoRAs, two-pass sa
 </details>
 
 <details>
+<summary><b>Save and share a plan (Export plan / Import plan…)</b></summary>
+
+The row above the Director's plan header (shown even on an empty Director):
+* **Export plan + media** — one plain `.zip` with the plan, the whole workflow (every node setting: LoRAs and
+  strengths, seed, Loop Options, Save settings), a readable settings list, a first-frame thumbnail of the newest
+  finished video, and the pictures and songs. For yourself: re-open a recipe that worked, swap the photo, change a
+  length, run again. Reference videos over 200 MB are added only with "incl. big ref video" ticked.
+* **Export plan (no media)** — the same without pictures and songs, to share a recipe without anyone's photos or music.
+* **Import plan…** — a `.zip` from above, or a plan `.json` written by an agent with the
+  [H3MD prompt skill](skills/h3md-prompt/SKILL.md) (section 12b). Media go to `input/H3MD_plans/<name>/` (never
+  overwritten). **Plan only** replaces this Director's plan; **Plan + all settings** opens the saved workflow in a new
+  tab through ComfyUI's normal loader, so missing node packs show red and missing models open the usual download
+  dialog. Problems (lengths that are not 5 + 17n, wrong overlaps, `<Picture N>` tags with no picture, missing files)
+  are listed, never fixed silently.
+
+Never inside: finished videos, caches, model weights, RefMod files (they are listed in `manifest.json`).
+Format: [docs/plan_format.md](docs/plan_format.md).
+
+</details>
+
+<details>
 <summary><b>Re-render only the bad segments (rerun_segments)</b></summary>
 
 When a few segments of a finished video are bad (jumps, glitches), do not re-render the whole video:
@@ -177,11 +212,33 @@ The log lists every segment as "cache" or "RERUN (head/tail)" first; a missing c
 This is common to every chained H3 continuation; it can be held down, not removed. Measured over 16 segments:
 saturation 0.32 -> 0.46 and rising sharpness. The colour drift is born in the **low-res pass** (the model continuing its
 own result) as a slow shift of the 24 latent channels' mean and spread.
-* One continuous scene (motion copy, a long take): set `lowres_anchor` (last widget of `H3MD Loop Options`) to 1. After
+* One continuous scene (motion copy, a long take): set `lowres_anchor` (near the end of `H3MD Loop Options`) to 1. After
   each continued segment's low-res pass, before the upscale, the new frames' channel statistics are pulled back to the
   shot's first segment, and the low-res carry is corrected too, so the error does not reach the next segment. Needs
   `continue_lowres_prefix = native_lowres_carry`. Not for a story whose colours should change (a hard cut starts a new
   reference).
+* v0.2.0: `hires_anchor` (now the last widget of `H3MD Loop Options`) does the same on the high-res result, which the
+  next segment also continues from. Small gain on its own (5 segments, same seed: colour shift 0.29 -> 0.13, sharpness
+  −10.6 % -> −7.6 %, saturation unchanged), so it is off by default.
+* v0.2.0: **`drift_correct = auto`** on the save node (H3MD Save Video Interp / Face Refine) fixes what is left, in
+  pixel space, while the video is written. The cache is not changed, so switch it off and save again to compare.
+  * **How it decides.** A hard cut always starts a new reference. Inside a shot, a clear change of brightness,
+    contrast or colour (night falls, indoors -> outdoors) also starts a new reference: drift does not do that (3-minute
+    take: brightness within 0.7 %, contrast 1 %, colour shift < 1 over 14 segments). Then, per stretch with the same
+    reference, saturation and sharpness are corrected only when they follow a clear, steady trend (drift creeps a
+    little every segment); values that jump around with the content (a dancer, someone walking in) are left alone.
+    Only the drift is removed, smoothed over neighbouring segments; sharpness is only ever raised back, never blurred.
+    Stretches of 1–2 segments are not touched. Every decision and the reason: `<video>_drift.json`.
+  * **Measured.** 3-minute single take (saved through the node from its cache): saturation +8.4 % -> at most +1.5 %,
+    sharpness −18 % -> at most +3.1 %, brightness and contrast unchanged. 11-shot music video (all hard cuts): nothing
+    changed. A 16-segment dance (motion copy): only a gentle 2–6 % colour pull, sharpness untouched. A synthetic day ->
+    night shot: the night part was recognised as a new scene and kept dark. It is a guess from measurements: check the
+    report and switch it off for a film where it guessed wrong.
+  * Finished videos (or not made with H3MD): [`tools/drift_correct.py`](tools/drift_correct.py)
+    `video.mp4 --segments 294,362,362,362:0,362` (`:0` = hard cut) or `--plan workflow.json` (plans without autosplit).
+  * Related work: the same "pull back to scene one in RGB" idea is in matlowai's ComfyUI-MAINodes (H3 Delta Color
+    Carry) and its source, NikoDemon80 / ethanfel's ComfyUI-MiniMaxH3-Contex-Loop (latent_color_carry); they correct
+    the carried prefix *before* the next segment is sampled. No code from them is used here.
 * Also: give every segment the reference photos; avoid over-saturated / over-sharp reference photos; avoid lighting
   adjectives (glowing, radiant ...) in prompts; restart very long pieces from the reference photos at natural cuts.
 

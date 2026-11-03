@@ -1,83 +1,139 @@
-<p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="The UBIT Hub Resources. A shelf for notes worth keeping.">
+<h1 id="top">
+  <img src="assets/readme/department-building.webp" align="right" width="36%" alt="Illustration of the UBIT department building, with its dome, columned entrance, and cream facade.">
+  <picture>
+    <source media="(max-width: 600px) and (prefers-color-scheme: dark)" srcset="assets/readme/intro-title-compact-dark.svg">
+    <source media="(max-width: 600px)" srcset="assets/readme/intro-title-compact-light.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/readme/intro-title-dark.svg">
+    <img src="assets/readme/intro-title-light.svg" width="56%" height="42" align="texttop" alt="The UBIT Hub Resources">
+  </picture>
+</h1>
+
+**Notes and study guides for UBIT students at the University of Karachi.**
+
+Useful notes get buried in class chats. I keep them here, sorted by subject, so you can find a file without asking around for it. There are **lecture notes, revision guides, MCQ practice, and my DSA roadmap**.
+
+This is part of **The UBIT Hub**. Students from any UBIT batch or degree program can use it and contribute.
+
+<p>
+  <a href="#find-your-course">Courses</a>&nbsp;·
+  <a href="#how-to-use-this-repo">How&nbsp;to&nbsp;use</a>&nbsp;·
+  <a href="#the-dsa-blueprint">DSA&nbsp;Blueprint</a>&nbsp;·
+  <a href="#ubit-results-portal">Results&nbsp;&amp;&nbsp;GPA</a>&nbsp;·
+  <a href="#help-improve-the-library">Contribute</a>&nbsp;·
+  <a href="#the-ubit-hub">Community</a>
 </p>
 
-<p align="center">
-  <a href="#the-shelves">Browse the shelves</a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="#a-better-way-to-use-the-archive">How to use it</a>
-  &nbsp;&nbsp;·&nbsp;&nbsp;
-  <a href="#add-to-the-shelf">Contribute</a>
-</p>
+## Find your course
 
-> **A good set of notes should outlive the semester.**
-
-Finals finish, groups go quiet, and useful material gets buried in old chats and unnamed drives. Then the next batch starts searching for the same things again.
-
-This is the shelf I wanted to exist: course material kept in one place, named clearly, and explained before you open the first PDF. Start with the README inside the course folder. It tells you what the files are, where to begin, and when a textbook chapter is worth your time.
-
-<br>
-
-## The shelves
-
-<img src="./assets/readme/archive-card.svg" align="right" width="31%" alt="A card catalogue for notes, guides, and chapters.">
-
-There are **5 course folders**, **31 PDFs**, and one DLD logic-gates reference sheet here so far. Each shelf has its own map. The archive will grow course by course, only when material can be labeled well enough for someone else to use it without guessing.
-
-| Course | Start here | On the shelf |
-| :-- | :-- | :-- |
-| **[Software Requirement Engineering](./software-requirement-engineering/)** | Course outline, then the comprehensive notes | 11 PDFs: typed and handwritten notes, three references, and focused chapters |
-| **[Digital Logic Design](./digital-logic-design/)** | Final Exam Target Guide | 13 PDFs: notes, MCQ bank, Floyd chapters, and a logic-gates sheet |
-| **[Linear Algebra](./linear-algebra/)** | Complete semester notes | 1 complete set of lecture notes by Miss Fozia Hanif |
-| **[Communication & Presentation Skills](./communication-and-presentation-skills/)** | Complete notes | 3 PDFs: course notes plus Murphy and Guffey references |
-| **[Urdu](./urdu/)** | Comprehensive notes | 3 PDFs: notes, ghazals, and selected prose chapters |
-
-<br clear="right">
-
-## A better way to use the archive
-
-<table>
-  <tr>
-    <td width="33%" valign="top"><strong>01 · Orient yourself</strong><br><sub>Open the course README first. It is the map, not decoration.</sub></td>
-    <td width="33%" valign="top"><strong>02 · Learn from the primary notes</strong><br><sub>Use the compiled or handwritten notes for the first proper pass.</sub></td>
-    <td width="33%" valign="top"><strong>03 · Reach for depth on purpose</strong><br><sub>Open extracts and full textbooks only when a topic needs more explanation or practice.</sub></td>
-  </tr>
-</table>
-
-That order keeps a 900-page book from becoming your first obstacle. It also makes the archive useful whether you are revising early, catching up mid-semester, or trying to make the final week less chaotic.
+**6 subjects · 12 PDFs · 1 logic-gates reference sheet.** Open the list below to find your course and a PDF to start with. You can also [browse the subject folders](./resources/).
 
 <details>
-<summary><strong>A PDF will not preview on GitHub?</strong></summary>
+<summary><strong>Browse courses and notes</strong></summary>
 
-Some larger PDFs trigger GitHub's red “Unable to render code block” message. The file is still there. Use the download button in the file viewer to save it locally.
+- **[Communication & Presentation Skills](./resources/communication-and-presentation-skills/)**: [Complete course notes](./resources/communication-and-presentation-skills/notes/CPS_Complete_Notes.pdf).
+- **[Data Structures & Algorithms](./resources/data-structures-and-algorithms/)**: [The DSA Blueprint](./resources/data-structures-and-algorithms/roadmaps/The-DSA-Blueprint-Roadmap.pdf).
+- **[Digital Logic Design](./resources/digital-logic-design/)**: [Final Exam Target Guide](./resources/digital-logic-design/DLD_Final_Exam_Target_Guide.pdf).
+- **[Linear Algebra](./resources/linear-algebra/)**: [Miss Fozia Hanif’s notes](./resources/linear-algebra/linear-algebra-complete-notes-Miss-Fozia-Hanif.pdf).
+- **[Software Requirement Engineering](./resources/software-requirement-engineering/)**: [Course outline](./resources/software-requirement-engineering/SE453_SRE_Course_Outline.pdf), then [comprehensive notes](./resources/software-requirement-engineering/SE453_SRE_Comprehensive_Notes_ShaikhMahad.pdf).
+- **[Urdu](./resources/urdu/)**: [Comprehensive notes](./resources/urdu/notes/Urdu_Comprehensive_Notes_ShaikhMahad.pdf).
 
-<p align="center">
-  <img src="./assets/github_pdf_error.png" width="82%" alt="GitHub's PDF viewer with the Download button highlighted.">
-</p>
+The **course name** opens its guide and full file list. The link beside it opens the suggested PDF. If your course is missing, it hasn’t been added yet. You can [request it here](https://github.com/codewithmahad/the-ubit-hub-resources/issues/new).
 
 </details>
 
-## Add to the shelf
+## How to use this repo
 
-If you have notes, an assignment guide, a clean MCQ bank, or a resource that helped you understand a course, it may save the next person the same late-night search.
+<img src="assets/readme/study-notes.svg" align="right" width="16%" alt="">
 
-Before opening a pull request, keep it simple:
+1. **Pick your course.** Open its guide for the file list, or use a PDF link above to start reading.
+2. **Read or download.** Read the PDF on GitHub, or use the file viewer’s download button to save it. You don’t need to clone the repo or install anything.
 
-- Put the file in the right course folder and give it a clear, searchable name.
-- Add it to that course’s README with one honest sentence about what it contains.
-- Share clean, complete material that students can actually study from.
-- Do not add restricted exam material, mystery files, or duplicates.
+Check the notes against your current outline and your teacher’s instructions. A course can change between batches.
 
-The full process, naming examples, and rules are in [CONTRIBUTING.md](./CONTRIBUTING.md).
+<details>
+<summary>PDF not opening?</summary>
 
-## Keep the shelf useful
+Try the download button in the file viewer and open the saved file. If it still fails, [report the filename](https://github.com/codewithmahad/the-ubit-hub-resources/issues/new) so I can check it.
 
-This archive is not trying to be a dump of every PDF ever forwarded in a class group. The useful parts are the context, the course maps, and the decision to keep the next student from starting at zero.
+</details>
 
-If one of these folders saves you time before an exam, a [star](https://github.com/codewithmahad/the-ubit-hub-resources/stargazers) is a quiet way to say the next shelf is worth building. You can follow [codewithmahad](https://github.com/codewithmahad) to see it grow.
+## The DSA Blueprint
 
-<p align="center">
-  <img src="./assets/readme/closing-mark.svg" width="100%" alt="">
-  <br>
-  <sub>Maintained by <a href="https://github.com/codewithmahad">Shaikh Mahad Ud Din</a> · <a href="./CONTRIBUTING.md">Contributing guide</a> · <a href="./LICENSE">MIT License</a></sub>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/readme/dsa-tree-dark.svg">
+  <img src="assets/readme/dsa-tree-light.svg" align="right" width="18%" alt="A binary search tree with the path from 8 to 4 to 6 highlighted.">
+</picture>
+
+I wrote **The DSA Blueprint** for students who know programming basics but aren’t sure what to learn next. It gives you an order to follow and practice problems to try along the way.
+
+**31 pages · 6 phases · practice links · 16-week printable tracker**
+
+**[Read the roadmap →](./resources/data-structures-and-algorithms/roadmaps/The-DSA-Blueprint-Roadmap.pdf)** &nbsp;·&nbsp; [See the study guide](./resources/data-structures-and-algorithms/)
+
+## UBIT Results Portal
+
+**Results, GPA, and transcripts for UBIT students.**
+
+I built **UBIT Results** for other UBIT students, alongside this library. It gives you one place to check the results available for your batch and keep track of your progress across semesters.
+
+- **Results and transcripts:** view your course grades and open a printable transcript.
+- **GPA and class standings:** check your semester GPA, CGPA, and rankings.
+- **GPA calculator:** enter marks and credit hours to see how different scores affect your GPA.
+
+**I’m still working on it.** If something is missing or looks wrong, [let me know](mailto:codewithmahad@gmail.com) so I can check it.
+
+<p>
+  <a href="https://ubit-results.vercel.app/"><img src="assets/readme/ubit-results-button.svg" width="210" height="44" alt="UBIT Results: open the results and GPA website"></a>
 </p>
+
+## Help improve the library
+
+Have notes that helped you, or spotted a mistake in a file? I’d like to hear from you.
+
+- **Add notes:** follow the [contributing guide](./CONTRIBUTING.md). Include the course, author, and what the file covers. Share only work you own or have permission to redistribute.
+- **Request or fix something:** [open an issue](https://github.com/codewithmahad/the-ubit-hub-resources/issues/new). Tell me the course, filename if there is one, and what’s missing or wrong.
+
+<details>
+<summary><strong>Repository structure</strong></summary>
+
+```text
+.
+├── resources/
+│   ├── README.md
+│   ├── communication-and-presentation-skills/
+│   ├── data-structures-and-algorithms/
+│   ├── digital-logic-design/
+│   ├── linear-algebra/
+│   ├── software-requirement-engineering/
+│   └── urdu/
+├── assets/
+│   └── readme/
+├── docs/
+├── CONTRIBUTING.md
+├── LICENSE
+└── README.md
+```
+
+Put new subjects inside `resources/` and include a guide with each one. The [subject directory](./resources/) links to all the course folders.
+
+</details>
+
+<h2 id="the-ubit-hub"><img src="assets/readme/ubit-emblem.webp" align="right" width="12%" alt="Department of Computer Science, UBIT, University of Karachi emblem.">From our batch to yours</h2>
+
+I’m **Shaikh Mahad Ud Din**. We spent a lot of time finding notes and working through these courses. I keep that work here so juniors, especially those studying with the same teachers, have something to start with.
+
+**The UBIT Hub** is the WhatsApp community I founded for course updates, questions, and student support. This repo and the Results Portal are part of that work.
+
+If this helped, **[star the repo](https://github.com/codewithmahad/the-ubit-hub-resources)** and pass the course link on. Follow me for more notes, guides, and projects I’m building for students.
+
+<p>
+  <a href="https://github.com/codewithmahad"><img src="assets/readme/follow-github.svg" width="184" height="40" alt="Follow Shaikh Mahad on GitHub"></a>
+  <a href="https://shaikhmahad.vercel.app/"><img src="assets/readme/portfolio-button.svg" width="146" height="40" alt="mahad.dev: visit my portfolio"></a>
+  <a href="mailto:codewithmahad@gmail.com"><img src="assets/readme/email-button.svg" width="96" height="40" alt="Email Shaikh Mahad"></a>
+</p>
+
+## Credits & permissions
+
+Keep the author’s credit and check the terms before reusing a file. This repo’s [MIT license](./LICENSE) doesn’t give permission to redistribute someone else’s work. For a missing credit or a removal request, [email me](mailto:codewithmahad@gmail.com).
+
+<p><sub>Maintained by <a href="https://github.com/codewithmahad">Shaikh Mahad Ud Din</a> &nbsp;·&nbsp; <a href="./LICENSE">Repository license</a> &nbsp;·&nbsp; <a href="#top">Back to top ↑</a></sub></p>

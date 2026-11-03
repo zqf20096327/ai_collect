@@ -239,6 +239,25 @@ rm -rf ~/claude-mem-lite/   # unhidden data dir from before the first release (n
     repos/               # Shallow-cloned source repos
 ```
 
+## Upgrading to 6.31.0
+
+**Recall injects less that does not apply to the step at hand; nothing to run, and the schema
+version stays 49.** Each change that drops an injection has a switch back; to undo the text
+changes, pin `claude-mem-lite@6.30.15`.
+
+- **PreToolUse recall no longer injects the lesson of a same-named file in another directory of
+  the project** (`src/mcp/server/mod.rs` when you edit `src/snapshot/mod.rs`). Bare names, worktree
+  copies, paths outside the project, spellings that cannot be placed and paths that name no file
+  now (a file that moved) still match. Back: `CLAUDE_MEM_PRETOOL_PATH_PRECISION=off`.
+- **Error recall shows a thread a memory once while the thread lasts**, not once per 30 minutes.
+  Back: `CLAUDE_MEM_ERROR_RECALL_REPEAT_MIN=30`.
+- **Error recall reads an exit-0 git command's output without the commit records git prints** (a
+  subject such as `fix: a traceback on …`) and stays silent when nothing left reads as a failure;
+  the record shapes are listed under `CLAUDE_MEM_ERROR_RECALL_GIT_RECORD` below. Back:
+  `CLAUDE_MEM_ERROR_RECALL_GIT_RECORD=off`.
+- **Text only:** the error-recall block no longer ends with `→ Use mem_get(…)`; the MCP server
+  instructions list the flags of `defer add` and `save`. Details in CHANGELOG.md.
+
 ## Upgrading to 6.29.0
 
 **Chinese text in lessons, facts, concepts and aliases becomes searchable, and the database opens
@@ -1205,6 +1224,7 @@ claude-mem-lite.
 | `CLAUDE_MEM_SUMMARY_TAIL` | `0`/`off` stops Stop from using the head of the final reply (first 120 characters, code blocks and line-leading markers removed) as a session's Completed line when that reply has no Done / Not done / Failed / Uncertain section; Completed then falls back to observation titles, as before v6.18.0; a line already written gives way to the titles at the session's next turn. A later reply under 400 characters does not replace an earlier one. | _(on)_ |
 | `CLAUDE_MEM_EPISODE_INPUT_FILTER` | What the episode summarizer may learn from. A subagent's tool calls stay out of the episode buffer unless they edit a file inside the project, and mutation probes (mutate → RED run → restore) and the agent's own failing inline scripts (a patch's `anchor not found`) are dropped before a window is saved or summarized — replayed over the 30 audited events, this removes 3 of the 16 that were wrong outright; with `CLAUDE_MEM_LESSON_GROUNDING` none of the 16 lessons is injected. `off` restores the unfiltered input. | _(on)_ |
 | `CLAUDE_MEM_BASH_RECALL` | File recall before a Bash command that views (`cat`, `sed -n`, `head`…) or writes (`sed -i`, `cat > f`, a python patch…) a file, like the Read / Edit recall. A bash prefilter keeps Node from starting for other commands. `off` disables this leg only. | _(on)_ |
+| `CLAUDE_MEM_PRETOOL_PATH_PRECISION` | `off` restores the name-only file match of PreToolUse recall. **On by default** (R3 O1): a lesson recorded for a same-named file in another directory of the project (`src/mcp/server/mod.rs` when you edit `src/snapshot/mod.rs`, the root `README.md` when you edit `tasks/x/README.md`) is not injected; bare names, Claude Code worktree copies, paths outside the project, spellings that cannot be placed (`../`, `~/`, a drive letter) and paths that name no file now (a file that moved) still match. Paths are compared as POSIX paths, so on a native Windows host the match is unchanged. 210 of 4,037 injected rows on 194 transcripts were such a different file. | _(on)_ |
 | `CLAUDE_MEM_LESSON_GROUNDING` | An auto-captured event keeps its lesson only when the lesson quotes the window's own diagnosis (a failing output line, a comment the edit added, or the commit message); otherwise the row is kept without it at importance 1, below every injection face. `off` keeps unquoted lessons. | _(on)_ |
 | `CLAUDE_MEM_LESSON_OUTPUT_CAP` | An auto-captured lesson that shares four consecutive words with TOOL OUTPUT (a command's printed text or a tool's response, which whoever controls that output can write) is kept off the injection faces: an event keeps its row and lesson, searchable, at importance 1; a `change` observation, whose importance later reads can raise, loses the lesson, and the lesson-less row is then dropped like any other (kept only with `CLAUDE_MEM_KEEP_LOW_SIGNAL=1`). Four shared words of filler ("is not in the") count too, so a lesson quoting your own comment or commit message is demoted when it also happens to share such a run with output in the same window. The row's title is not checked. `off` restores the model's importance and the lesson. | _(on)_ |
 | `MEM_NO_AUTO_ADOPT` | Global opt-out for auto-adopt (v2.82.0+). `1` stops auto-adopt across **all** projects — no injected steering, no new local file (`CLAUDE.local.md` or `.claude/rules/claude-mem-lite.md`), and no sync of an existing `CLAUDE.md` or local block (those stay, and keep loading, until `claude-mem-lite unadopt`). For per-project opt-out use `claude-mem-lite adopt --disable` instead (writes a durable `<memdir>/.mem-no-auto-adopt` sentinel that survives marker deletion). | _(disabled)_ |
@@ -1218,25 +1238,4 @@ claude-mem-lite.
 | `CLAUDE_MEM_FILE_INTEL` | `1` turns on the file-intel line on the first read of a large file — a `Read`, or a Bash `cat` / `sed -n` / `head` — (its approximate token size and a one-line summary). Off by default since the injection-budget change: the line reaches the model next to the read's result, so it cannot shape that read. | _(off)_ |
 | `CLAUDE_MEM_FILE_INTEL_MIN_TOKENS` | Files smaller than this stay silent — file-intel only pays for itself on large files. | `800` |
 | `CLAUDE_MEM_REREAD_GUARD` | `0` disables the warning when the same file is read twice in a session. Never fires on `offset`/`limit` paging. | _(on)_ |
-| `CLAUDE_MEM_REREAD_MIN_TOKENS` | Token floor below which the re-read guard stays silent. | `600` |
-| `CLAUDE_MEM_PRETOOL_NUDGE` | `1` extends the pre-tool recall nudge from `Read` to other tools. | _(Read only)_ |
-| `CLAUDE_MEM_KEEP_LOW_SIGNAL` | `1` keeps low-signal observations that the deterministic filter would otherwise drop before dedup/vector work. | _(filtered)_ |
-| `CLAUDE_MEM_NO_TEMPLATE_REFRESH` | `1` stops SessionStart from refreshing the adopted `CLAUDE.md` managed block when the shipped template changes. | _(refreshes)_ |
-| `CLAUDE_MEM_RULES_STEERING` | `1` makes auto-adopt write its block to `.claude/rules/claude-mem-lite.md` (git-excluded) where `CLAUDE.local.md` would stop Claude Code reading the project's `AGENTS.md`, instead of injecting it; the file reaches subagents and leaves `AGENTS.md` loading. A file written while it was on stays the channel. Off by default: a pre-registered A/B showed no gain over injection that cleared the bar (`docs/audits/20261006-d212-ab.md`). | _(inject)_ |
-| `MEM_QUIET_HOOKS` | See Core above — the broadest injection-volume switch. | _(disabled)_ |
-
-
-### Retrieval tuning
-
-Prompt-time search (`UPS_*` = the UserPromptSubmit surface). Defaults are the values the
-benchmark and A/B harness are calibrated against — changing them invalidates the numbers in
-[Search Quality](#search-quality).
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_MEM_UPS_MAX_RESULTS` | Max memories injected per prompt. | `3` |
-| `CLAUDE_MEM_UPS_REQUIRE_SIGNAL` | `0` restores always-search; by default the prompt must carry an explicit retrieval signal. | _(signal required)_ |
-| `CLAUDE_MEM_UPS_BM25_MIN` | BM25 relevance floor for a result to be injected. | `1e-5` |
-| `CLAUDE_MEM_UPS_BM25_MIN_FOLLOWUP` | Looser floor for follow-up prompts inside an already-injected session. | `5e-6` |
-| `CLAUDE_MEM_UPS_OR_BM25_MIN` | Floor applied to the OR-fallback arm (looser query, needs a stricter floor). | `30` |
-| `CLAUDE_MEM_UPS_TOP_MIN` | Minimum score for the top hit; `0` disab
+| `CLAUDE_MEM_REREAD_MIN_TOKENS` | Token floor below which the re-read

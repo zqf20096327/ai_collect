@@ -389,7 +389,7 @@ Learn more → [Policy](docs/config-schema.md#policy-per-tool-call-policy)
 
 ### Schema Pinning
 
-Gridctl pins every tool definition the first time it sees it and flags drift on later applies, so a server that quietly rewrites a tool's description or schema surfaces as a reviewable diff instead of reaching your agent unnoticed. Pinned definitions are also scanned for injection signals: hidden instructions, sensitive-file references, hidden Unicode, and cross-server tool shadowing. Skill documents get the same trust-on-first-use treatment (`gridctl skill pins`): per-file digests over the whole document set, drift held for human approval, and the same injection heuristics as advisory findings.
+Gridctl pins every tool definition the first time it sees it and flags drift on later applies, so a server that quietly rewrites a tool's description or schema surfaces as a reviewable diff instead of reaching your agent unnoticed. Pinned definitions are also scanned for injection signals: hidden instructions, sensitive-file references, hidden Unicode, and cross-server tool shadowing. Skill documents get the same trust-on-first-use treatment (`gridctl skill pins`): per-file digests over the whole document set, drift held for human approval, and the same injection heuristics as advisory findings. Context fragments, or the single `AGENTS.md` when fragments mode is off, are pinned the same way (`gridctl ctx pins`): a write pass records the first digest, later edits stay pin drift until approved, and projection warns rather than refusing.
 
 ```bash
 gridctl pins verify                # Exit 1 on drift
@@ -465,7 +465,7 @@ Learn more → [Skills guide](docs/skills.md)
 
 ### Packs
 
-A pack is a git repo with a `gridctl-pack.yaml` manifest: a versioned selection of skills, agents, rule fragments, gateway wiring, and an optional stack. A booster extends another pack's stack with a fragment, and `gridctl pack lock` writes `gridctl-pack.lock.yaml` so source commits stay pinned. `pack add` imports that selection, then `pack apply` starts a carried stack and projects the selected resources, with secret values supplied on the host. Skills and agents may also come from git repositories the manifest names. Rules and the stack still come from the pack repository. Starting, replacing, and reloading the carried stack are CLI-only; REST and the web UI project resources but do not start, stop, or reload the daemon, and they do not write the pack lock.
+A pack is a git repo with a `gridctl-pack.yaml` manifest: a versioned selection of skills, agents, hook definitions, rule fragments, gateway wiring, and an optional stack. Hooks are opt-in and come from the pack repository only. `pack add` imports and pins them. `pack apply` does not project them. See [Hooks](docs/hooks.md). A booster extends another pack's stack with a fragment, and `gridctl pack lock` writes `gridctl-pack.lock.yaml` so source commits stay pinned. `pack add` imports that selection, then `pack apply` starts a carried stack and projects skills, agents, rules, and wiring, with secret values supplied on the host. Skills and agents may also come from git repositories the manifest names. Rules, hooks, and the stack still come from the pack repository. Starting, replacing, and reloading the carried stack are CLI-only; REST and the web UI project resources but do not start, stop, or reload the daemon, and they do not write the pack lock.
 
 ```bash
 gridctl pack add <git-repo>               # Clone, scan, and import the manifest's selection
@@ -511,7 +511,7 @@ Learn more → [Packs guide](docs/packs.md)
 
 - **Getting started**: [Installation](docs/installation.md)
 - **Reference**: [CLI](docs/cli-reference.md) · [Configuration](docs/config-schema.md) · [REST API](docs/api-reference.md)
-- **Guides**: [Concepts](docs/concepts.md) · [Skills](docs/skills.md) · [Packs](docs/packs.md) · [Tools Workspace](docs/tools-workspace.md) · [Global Context Sync](docs/global-context.md) · [Scaling](docs/scaling.md) · [Usage Observability](docs/usage-observability.md)
+- **Guides**: [Concepts](docs/concepts.md) · [Skills](docs/skills.md) · [Packs](docs/packs.md) · [Hooks](docs/hooks.md) · [Tools Workspace](docs/tools-workspace.md) · [Global Context Sync](docs/global-context.md) · [Scaling](docs/scaling.md) · [Usage Observability](docs/usage-observability.md)
 - **Operations**: [Project Status](docs/project-status.md) · [Troubleshooting](docs/troubleshooting.md)
 
 Full index at [`docs/`](docs/README.md).

@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  Part of <a href="https://directionallylocal.com">Directionally Local</a>, an open-source stack for running coding agents on your own hardware, alongside <a href="https://directionallylocal.com/hotcell/">Hotcell</a> and <a href="https://directionallylocal.com/serverless-objects/">Serverless Objects</a>. Product page: <a href="https://directionallylocal.com/autopilot/">directionallylocal.com/autopilot</a>.
+  Part of <a href="https://directionallylocal.com">Directionally Local</a>, an open-source stack for running coding agents on your own hardware, alongside <a href="https://directionallylocal.com/hotcell/">Hotcell</a> and <a href="https://directionallylocal.com/serverless-objects/">Serverless Objects</a>. Product page: <a href="https://directionallylocal.com/autopilot/">directionallylocal.com/autopilot</a>. Start a coding agent on your computer at <a href="https://dl.new">dl.new</a>.
 </p>
 
 ## How it works
@@ -90,6 +90,8 @@ Requires Node.js 22.23.4+, 24.22.1+ or 26.12.1+ (earlier releases have the Brotl
 If npm warns that it blocked `isolated-vm`'s install script, nothing is broken: `isolated-vm` is an optional dependency that ships prebuilt binaries for Node 22 and 24, and on a Node version without one Autopilot runs with Code Mode's sandbox off and tells you once per session how to build it.
 
 To pick up an earlier conversation, run `autopilot resume <id>` (the exact command is printed when you exit), `autopilot resume` to choose one from this directory, or `autopilot -c` for the most recent one. Inside autopilot, `/resume` does the same.
+
+To continue a Claude Code conversation (say it stopped on a usage limit), run `autopilot --from-claude-code` in the same folder. It finds that folder's most recent conversation in `~/.claude/projects`, asks first, and starts a new session whose first message is a short handoff: your last request, the files changed, commands run and last errors, and Claude's last message (at most 12,000 characters, likely keys redacted). The transcript is read on this machine and goes only to your model, as the session's first message.
 
 ### Providers
 
@@ -406,7 +408,8 @@ autopilot
 
 | Command | Effect |
 |---------|--------|
-| `/settings` | List feature settings; `/settings modes on\|off` turns plan/edit/auto modes on or off (off by default), `/settings diagnostics on\|off` toggles post-edit diagnostics |
+| `/settings` | List feature settings; `/settings modes on\|off` turns plan/edit/auto modes on or off (off by default), `/settings diagnostics on\|off` toggles post-edit diagnostics, `/settings tour on\|off` the project tour, `/settings refocus on\|off` bringing the terminal back after a browser sign-in (macOS) |
+| `/tour` | Summarize this project (name, kind, file count, test command, open GitHub issues when `gh` is signed in) and suggest three tasks; type 1–3 to start one. Shown automatically on the first session in each git repository (remembered in `~/.local/state/autopilot/project-tour.json`, never in the repo); one small model call words the tasks (capped at 200 output tokens, local suggestions after 4 s) |
 | `/mode edit\|plan\|auto` | Switch permission mode (needs modes on) |
 | `/shell auto\|bash\|cmd\|powershell` | Show or set the shell for the bash tool |
 | `/resume` | Pick a past conversation to restore |

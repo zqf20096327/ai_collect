@@ -209,7 +209,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-iOS.git',
-      :tag => '1.1.0'
+      :tag => '1.1.1'
 end
 
 post_install do |installer|
@@ -230,7 +230,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.1.0.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.1.0/XmaxSDK-1.1.0.xcframework.zip),
+[`XmaxSDK-1.1.1.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-iOS/releases/download/1.1.1/XmaxSDK-1.1.1.xcframework.zip),
 then follow the [manual integration guide](./Materials/installation.md#manual-integration)
 to add the required dependencies and configure your Xcode target.
 
@@ -290,6 +290,16 @@ let remoteStream = try await realtime.startGeneration(
 videoView.remoteTrack = remoteStream.videoTrack
 ```
 
+Generation commands (`start`, `change_condition`, and `change_target_size`) carry a stable
+`xid` and retry in the background at 0/300/1000 and 3000/3300/4000 ms. Matching
+`xid_ack` receipts stop retries; missing receipts stop retries after six seconds with a
+warning, without changing generation readiness. Stopping or replacing a task cancels
+obsolete attempts. Each logical command retains its payload and `xid` across retries.
+
+HTTP session heartbeats begin when the session enters `generating`. The first request
+includes `firstHeartbeatGraceSeconds`, measured from connection startup and rounded up
+to whole seconds; subsequent requests omit this field. RTC room heartbeats remain separate.
+
 Add the video view to your view hierarchy. The view displays a local camera
 preview until the first generated frame arrives, with touch interaction enabled
 by default.
@@ -298,6 +308,20 @@ Set `remoteVideoFadeInDuration` to customize the remote video's fade-in duration
 in seconds. The default is `0.3`; use `0` to show it without animation.
 
 <br>
+
+### Account credits
+
+Query the balance for the account owning the client's API key:
+
+```swift
+let balance = try await client.getCreditBalance()
+print(balance.currentBalance)
+```
+
+Each call fetches the current server balance from the configured general API environment,
+preserving fractional credits. Invalid responses throw instead of becoming a zero balance.
+This query does not create a realtime session. XLab shows credits next to the homepage
+API Key field and refreshes every five seconds while the homepage is visible and active.
 
 ### Using SwiftUI
 

@@ -1,3 +1,11 @@
+## 🚀 Updates v0.12.21: Composer Provider Pill & In-Card Regenerate Modal (#501, #502)
+- **Quick Provider Switcher Pill in Composer (#501)**: Mounted in `conversation.input.right` slot. Quick-switch providers and models on the fly directly from the composer toolbar without navigating to settings.
+- **In-Card Regenerate with Prompt Edit Modal (#502)**: Edit prompt and choose new vs same seed right from the chat message card with the `🔄 Regenerate…` button.
+
+## 🚀 Updates v0.12.20: Interactive A/B Comparison Slider & Persistent Revision Carousel (#499, #500)
+- **Interactive In-Chat A/B Comparison Slider (#499)**: Touch- and mouse-friendly Before/After split comparison slider with draggable vertical divider handle and translucent badges. Seamlessly reveals original vs enhanced versions in chat cards for face restoration, inpainting, remix variations, and multi-version revisions.
+- **Persistent Revision Switcher Carousel in Chat Cards (#500)**: In-card revision history switcher with `< v1 / N >` navigation buttons, seed / timestamp metadata badges, and client-side `localStorage` caching (`dsh_image_gen_revisions:`) capped at 20 revisions across page reloads.
+
 
 ## 🚀 Updates v0.12.12: Right Sidebar Image Studio & Session Asset Cataloging (#452, #453)
 - **Native Image Studio Workspace Panel (#452)**: Registered persistent right sidebar extension slot `sidebarRightTabs` and `sidebar.right.pane.tab` with identifier `dsh-image-studio`. Includes prompt style tag auto-completion, negative prompt exclusion chips, provider/model/aspect ratio selectors, transparent background toggle, compact recent thumbnail grid, and one-click Copy File Path / Insert into Chat actions.
@@ -136,6 +144,12 @@
 
 ## 🛠️ Complete Tools Reference
 
+* **`save_image_to_workspace` (#510)**: Deterministic content-addressed export of generated images to the workspace disk (`image-<digest-prefix>.<ext>`) with dual lexical/realpath containment checks and staged atomic rename.
+* **`compose_baoyu_prompt` (#505)**: 5-dimension style & composition prompt assembler. Synthesizes orthogonal design specifications across Composition Type, Palette, Rendering Medium, Text Layout, and Mood with rendering constraints and taxonomy discovery.
+* **`canvas_state` (#506)**: Inspect the image-gen workbench infinite canvas: shapes, image provenance, hand-drawn sketches, notes, and active selection metrics.
+* **`view_canvas` (#507)**: Materialize current workbench canvas selection as a durable conversation image attachment for sketch-to-image and multimodal visual reasoning.
+* **`compare_models_matrix` (#503)**: Multi-model shootout benchmarking tool. Concurrently generates a prompt across multiple models (Gemini Imagen 3, FAL FLUX Dev, Replicate FLUX Schnell, Seedream 3, DALL-E 3) with target aspect ratio adapters, latency/cost metering, and Sharp contact sheet grid preview.
+* **`search_inspiration_prompts` (#504)**: Curated offline inspiration catalog of 970+ battle-tested prompts from `awesome-gpt-image-2` and `handraw-style`. Filterable by style, category, scene, and keywords with zero token/network overhead.
 * **`generate_seamless_texture` (#468)**: Production-ready seamless repeating textures and materials for 3D surfaces, games, and web patterns with toroidal wrapping and 3×3 inspection grid.
 * **`reverse_prompt_and_recreate` (#465)**: Deconstruct visual aesthetics, lighting, optics, medium, and palette mood of any image into a structured reverse-engineered prompt, with optional instant style recreation.
 * **`restore_face_and_details` (#467)**: Localized face, eyes, and high-frequency detail restoration (Hi-Res detail fix) with automatic zone targeting and seamless feathered edge alpha blending.

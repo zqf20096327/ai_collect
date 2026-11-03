@@ -1,24 +1,64 @@
 # gpuq
 
-[![ci](https://github.com/elektricM/gpuq/actions/workflows/ci.yml/badge.svg)](https://github.com/elektricM/gpuq/actions/workflows/ci.yml)
-[![license](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+[![CI status](https://github.com/elektricM/gpuq/actions/workflows/ci.yml/badge.svg)](https://github.com/elektricM/gpuq/actions/workflows/ci.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
-gpuq is a GPU scheduler for Linux machines with one or more GPUs. Programs request the GPU
-through gpuq, which grants it by priority and available VRAM. To free the card, gpuq can
-signal running jobs, stop and start services, and unload models from LLM servers.
+gpuq lets several programs share your GPUs without running out of VRAM: it queues jobs,
+unloads LLM models and stops services until there is room.
 
-AI programs fight over the GPU: an LLM, ComfyUI, Whisper and your own tools each assume they
-own the card, and whichever starts second runs out of memory. gpuq gives each one the card in
-turn, by priority and free VRAM.
+![Without gpuq, every program grabs the GPU and one runs out of memory. With gpuq, programs queue by priority class and each gets a card when there is room.](docs/overview.svg)
 
-![gpuq overview](docs/overview.svg)
+```
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has a total
+capacity of 23.57 GiB of which 1.06 GiB is free.
+```
 
-It works with any program that uses the GPU: renders, video encodes, simulations, games,
-compute jobs, and AI tools such as LLM servers and image generators.
+```
+ggml_backend_cuda_buffer_type_alloc_buffer: allocating 9216.00 MiB on device 0: cudaMalloc
+failed: out of memory
+```
 
-gpuq is in early development. The configuration format may change before 1.0.
+This is what you get when several programs share a GPU. Ollama keeps a model loaded, ComfyUI
+starts a workflow, a training script starts, and whichever asks for VRAM last fails. Each one
+assumes it has the card to itself.
 
-How the scheduler works inside, with a diagram: [docs/how-it-works.md](docs/how-it-works.md).
+gpuq is a scheduler for Linux machines with one or more GPUs that hands the cards out in turn,
+by priority and free VRAM. Programs that fit run side by side. When one does not fit, it
+waits, or gpuq makes room: it unloads the model from the LLM server, stops a service, or
+signals a lower-priority job so it can exit cleanly. HTTP requests to Ollama, ComfyUI and
+similar servers are held until the card is free, so their clients do not need to know about
+gpuq.
+
+It is for a home server where Ollama, ComfyUI and Whisper share one card, a gaming PC
+whose card also runs local AI, or a lab machine where several people run jobs on the same
+GPUs.
+
+## Quick start
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/elektricM/gpuq/main/install.sh | sh
+mkdir -p ~/.config/gpuq
+printf '[llm]\nbackend = "none"\n' > ~/.config/gpuq/config.toml
+gpuq check-config        # lists the GPUs gpuq found
+gpuq daemon
+```
+
+In another terminal:
+
+```sh
+gpuq run --class batch --vram 8G -- blender -b scene.blend -a
+gpuq status              # the lease, the queue and each card's VRAM
+```
+
+A second `gpuq run` that does not fit next to the first waits in the queue until the card has
+room. To put Ollama, ComfyUI or another server behind gpuq, see
+[docs/integrations.md](docs/integrations.md) and the configs in [examples/](examples/).
+
+gpuq works with any program that uses the GPU, not only AI tools: renders, video encodes,
+simulations and compute jobs go through `gpuq run`. It is in early development; the
+configuration format may change before 1.0.
+
+How the scheduler works inside: [docs/how-it-works.md](docs/how-it-works.md).
 
 ## Features
 
@@ -26,14 +66,20 @@ How the scheduler works inside, with a diagram: [docs/how-it-works.md](docs/how-
 - Leases tied to a client connection, released when the client exits
 - VRAM accounting, so jobs that fit can share the card
 - Cooperative preemption: jobs receive a signal and exit on their own
-- Service control through systemd, Docker, Podman or custom commands
+- Service control through systemd, Docker, Podman, custom commands, or the server's own model
+  unload API
 - HTTP gate in front of LLM servers and services, holding requests while the GPU is busy
 - Resident LLM model, reloaded with its KV cache after other jobs
 - Every AMD and NVIDIA GPU detected and scheduled from one queue, with device ids worked out
   from PCI addresses; integrated GPUs can be left out
 - Jobs on one card, on any card with room, or on several cards at once, granted all together
 - LLM servers split over several cards, unloaded and reloaded on all of them together
+- Optional per-class model hold: while an important client uses the LLM server, requests for
+  other models from less important clients wait, so a server with one model at a time does
+  not swap back and forth
 - AMD and NVIDIA VRAM probes, plus a custom probe command
+- Optional: the graphical desktop is stopped or moved to another GPU while its VRAM is needed,
+  and given back afterwards
 
 ## Supported software
 
@@ -42,14 +88,24 @@ How the scheduler works inside, with a diagram: [docs/how-it-works.md](docs/how-
 - Programs that integrate directly, through the [lease API](docs/lease-api.md)
 - LLM servers, with model unloading: llama-swap, Ollama, llama.cpp `llama-server`, vLLM, SGLang
 - ComfyUI, with request gating
+- Stable Diffusion web UIs (AUTOMATIC1111, Forge, SD.Next), LM Studio and text-generation-webui,
+  with request gating and model unloading through their APIs
+- KoboldCpp, with request gating, stopped and started as a service
 - Immich ML, by pausing its job queues until the GPU is free, or with request gating
 
-Example configurations are in [examples/](examples/).
+Example configurations are in [examples/](examples/), including a Docker Compose stack of
+Ollama, Open WebUI and ComfyUI ([examples/compose](examples/compose/)).
 
 ## Installation
 
 Static binaries for x86_64 and aarch64, and `.deb` and `.rpm` packages, are available on the
-[releases page](https://github.com/elektricM/gpuq/releases/latest).
+[releases page](https://github.com/elektricM/gpuq/releases/latest). `install.sh` downloads the
+binary for your machine, checks it against the release's `SHA256SUMS` and installs it to
+`~/.local/bin`, or to `/usr/local/bin` with `--system`:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/elektricM/gpuq/main/install.sh | sh
+```
 
 Building from source requires Rust 1.80 or later:
 
@@ -64,7 +120,7 @@ without network access. Recipes for the AUR, Fedora and openSUSE, Ubuntu and Nix
 
 ## Usage
 
-Minimal configuration, `/etc/gpuq/config.toml`:
+Minimal system configuration, `/etc/gpuq/config.toml`:
 
 ```toml
 [llm]
@@ -75,7 +131,7 @@ gpuq detects the GPUs itself. To leave one out, for example the CPU's integrated
 `exclude = ["0000:15:00.0"]` (its PCI address, shown by `gpuq check-config`) or
 `skip_integrated = true` to a `[gpu]` table.
 
-Start the daemon:
+Start the daemon as a service:
 
 ```sh
 gpuq check-config
@@ -100,17 +156,31 @@ Other commands:
 ```
 gpuq status          show the current lease holders and the queue
 gpuq hold            hold the GPU until interrupted
-gpuq check-config    validate the configuration and read the GPU
+gpuq check-config    validate the configuration and read the GPUs
 gpuq daemon          run the scheduler
+gpuq desktop         see "The desktop" below
 ```
 
 To run an LLM server behind gpuq, see [docs/integrations.md](docs/integrations.md).
+
+### The desktop
+
+On a machine used mostly remotely, the display manager and the session hold VRAM on the card.
+With `[desktop] policy = "stop"`, gpuq stops them while a large model is loaded or a job does
+not fit, and starts the display manager again later. `policy = "offload"` restarts the desktop
+on another GPU instead, when the monitors are connected there. Nothing happens while someone is
+logged in at the seat. See [docs/desktop.md](docs/desktop.md).
+
+```
+gpuq desktop                 state and the processes on the card
+gpuq desktop restore         give the desktop back now
+```
 
 ## Roadmap
 
 - One LLM server per GPU
 - Web UI
-- Desktop and game detection
+- Foreground and game detection
 - Prometheus metrics
 - Configuration reload
 - Intel VRAM probe
@@ -122,6 +192,7 @@ See [docs/roadmap.md](docs/roadmap.md).
 - [How it works](docs/how-it-works.md)
 - [Integrations](docs/integrations.md)
 - [Configuration reference](docs/config.md)
+- [The desktop](docs/desktop.md)
 - [Lease API](docs/lease-api.md)
 - [Roadmap](docs/roadmap.md)
 

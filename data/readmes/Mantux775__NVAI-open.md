@@ -1,6 +1,6 @@
 # NVAI-open
 
-Images, videos with sound, music, speech and 3D models, made on your own computer. Free, private, no account, no subscription, no cloud.
+A studio for whole videos, plus images, video with sound, speech, music and 3D models on demand, all made on your own computer. Free, private, no account, no subscription, no cloud.
 
 <p align="center"><img src="docs/images/photo-to-video-captain.gif" width="420" alt="A generated photo becomes a ship captain in a storm who says his line"></p>
 <p align="center"><sub>Made with NVAI-open: a generated photo becomes a ship captain who speaks in a storm. <a href="docs/videos/photo-to-video-captain.mp4">With sound</a></sub></p>
@@ -10,19 +10,19 @@ Images, videos with sound, music, speech and 3D models, made on your own compute
 | | |
 |---|---|
 | Windows 10/11, NVIDIA or AMD Radeon | [NVAI-open-Setup-0.5.21.exe](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.21/NVAI-open-Setup-0.5.21.exe) |
-| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.2.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.20/NVAI-open-0.5.2.dmg) |
+| macOS 15+ on Apple Silicon, signed and notarized | [NVAI-open-0.5.3.dmg](https://github.com/Mantux775/NVAI-open/releases/download/v0.5.21/NVAI-open-0.5.3.dmg) |
 
 Install, open, download a model under "Models", generate. The setup brings everything else along. [Installation details](docs/INSTALL.md) · [All releases](https://github.com/Mantux775/NVAI-open/releases)
 
 ## What's new? / Was gibt's Neues?
 
-November 2026: NVAI-open 0.5.21 for Windows ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.21))
+November 2026: NVAI-open 0.5.21 for Windows and 0.5.3 for the Mac ([release notes](https://github.com/Mantux775/NVAI-open/releases/tag/v0.5.21))
 
 - **Narrator voice in the Studio:** voice scenes speak their text with Qwen3-TTS (Apache-2.0, 10 languages). Describe a voice in one sentence or take it over from a recording; "Same voice as" keeps one speaker over all lines. Also in the new Speech tab and for Claude Code. [Details](docs/STUDIO.md#narrator-voice)
 - **A big bug hunt** (0.5.20): the whole code was checked, 57 bugs are fixed. Quitting no longer hangs while a job runs, "■ Stop" at the top really cancels, phone photos are no longer restored sideways, and the Studio on the Mac no longer loses takes. The documentation is shorter and sorted by topic.
 - **MiniMax H3, with a license warning** (since 0.5.18): video with stereo sound, 9 seconds in about 7 minutes. **Its license forbids any use in the EU, the UK, South Korea and the USA without a separate license from MiniMax, and nothing made with it may be published.** The app marks it in red. [Details](docs/MODELS.md#minimax-h3-since-0518)
 
-Neu in 0.5.21:
+Neu in 0.5.21 (Mac 0.5.3):
 
 - **Sprecherstimme im Studio:** Sprecher-Szenen sprechen ihren Text mit Qwen3-TTS (Apache-2.0, 10 Sprachen). Eine Stimme in einem Satz beschreiben oder aus einer Aufnahme übernehmen; „Gleiche Stimme wie“ hält einen Sprecher über alle Zeilen. Auch im neuen Reiter Sprache und für Claude Code. [Einzelheiten](docs/de/STUDIO.md#sprecherstimme)
 - **Große Fehlersuche** (0.5.20): Der ganze Code wurde durchgesehen, 57 Fehler sind behoben. Beenden hängt nicht mehr, solange ein Auftrag läuft, „■ Stopp“ oben bricht wirklich ab, Handyfotos werden nicht mehr quer restauriert, und das Studio auf dem Mac verliert keine Takes mehr. Die Dokumentation ist kürzer und nach Themen geordnet.
@@ -42,9 +42,10 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 
 ### What you can do
 
+- **Studio:** build a whole video from scenes, cut it and export it with your graphics card's encoder.
+- **Swap in a face:** a person from a photo (someone who agreed to it) in a new role, as a start image from FLUX 3 and a video with sound from LTX-2.5.
 - **Images:** FLUX 3, Qwen-Image-2512, Krea 2, MOSS-Image and many more. Edit with reference images, fill in or extend a picture.
 - **Video with sound:** LTX-2.5 makes picture and sound in one pass, speech included: clips of up to 20 seconds, in up to 1080p.
-- **Studio:** build a whole video from scenes, cut it and export it with your graphics card's encoder.
 - **Music and sounds:** instrumental music up to 5 minutes, sound effects.
 - **Speech:** a narrator voice you describe in one sentence or take over from a recording, in 10 languages. In the Studio one speaker keeps the same voice over many lines.
 - **3D models:** from an image to a textured model for Unity, Blender or any engine.
@@ -53,18 +54,6 @@ It is tested on my own hardware: Windows with an RTX 5060 Ti (16 GB) and a Mac m
 - **Claude Code:** Claude creates your assets while it works on your project.
 - **No filter of its own:** uncensored models are one click away. You are responsible for what you make.
 - **Windows and Mac**, NVIDIA and AMD Radeon, and an add-on for the photo editor PhotoCraft.
-
-### From a portrait to a video
-
-![A photo, the start image from FLUX 3 and two frames of the video from LTX-2.5](docs/images/photo-to-video-captain.jpg)
-
-1. **Generate → Image:** create a portrait, or use a photo of someone who agreed to it.
-2. **Generate → Video:** pick the portrait as the start image.
-3. **Person from a photo:** describe the role. FLUX 3 keeps the face and makes four start images; pick the one that looks most alike.
-4. **Prompt:** describe what moves, what the camera does and what the person says. LTX-2.5 makes the video with speech and sound.
-5. **Keep the face:** tick "Loop" (with a still camera) or give an end image. Without one, the face changed after a second in our test. The price: water and smoke stand still too.
-
-Step by step with screenshots: [docs/PHOTO_TO_VIDEO.md](docs/PHOTO_TO_VIDEO.md)
 
 ### Studio: whole videos from scenes
 
@@ -83,6 +72,18 @@ The Studio is the first tab when NVAI-open starts. At the top you compose: scene
 - **Mac:** NVAI-open for Mac has the Studio too, with the same project format.
 
 Step by step: [docs/STUDIO.md](docs/STUDIO.md)
+
+### From a portrait to a video
+
+![A photo, the start image from FLUX 3 and two frames of the video from LTX-2.5](docs/images/photo-to-video-captain.jpg)
+
+1. **Generate → Image:** create a portrait, or use a photo of someone who agreed to it.
+2. **Generate → Video:** pick the portrait as the start image.
+3. **Person from a photo:** describe the role. FLUX 3 keeps the face and makes four start images; pick the one that looks most alike.
+4. **Prompt:** describe what moves, what the camera does and what the person says. LTX-2.5 makes the video with speech and sound.
+5. **Keep the face:** tick "Loop" (with a still camera) or give an end image. Without one, the face changed after a second in our test. The price: water and smoke stand still too.
+
+Step by step with screenshots: [docs/PHOTO_TO_VIDEO.md](docs/PHOTO_TO_VIDEO.md)
 
 ### Video with sound
 
@@ -247,9 +248,10 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 
 ### Was geht damit?
 
+- **Studio:** ein ganzes Video aus Szenen bauen, schneiden und mit dem Encoder der Grafikkarte exportieren.
+- **Gesicht tauschen:** eine Person aus einem Foto (die damit einverstanden ist) in einer neuen Rolle, als Startbild von FLUX 3 und als Video mit Ton von LTX-2.5.
 - **Bilder:** FLUX 3, Qwen-Image-2512, Krea 2, MOSS-Image und viele weitere. Mit Referenzbildern bearbeiten, Bereiche füllen, Bilder erweitern.
 - **Video mit Ton:** LTX-2.5 macht Bild und Ton in einem Durchgang, samt Sprache: Clips bis 20 Sekunden, bis 1080p.
-- **Studio:** ein ganzes Video aus Szenen bauen, schneiden und mit dem Encoder der Grafikkarte exportieren.
 - **Musik und Sounds:** instrumentale Musik bis 5 Minuten, Soundeffekte.
 - **Sprache:** eine Sprecherstimme, die du in einem Satz beschreibst oder aus einer Aufnahme übernimmst, in 10 Sprachen. Im Studio behält ein Sprecher über viele Zeilen dieselbe Stimme.
 - **3D-Modelle:** aus einem Bild ein texturiertes Modell für Unity, Blender oder jede Engine.
@@ -258,18 +260,6 @@ Getestet ist sie auf meiner eigenen Hardware: Windows mit RTX 5060 Ti (16 GB) un
 - **Claude Code:** Claude erzeugt deine Assets, während es an deinem Projekt arbeitet.
 - **Kein eigener Filter:** unzensierte Modelle sind einen Klick entfernt. Für das, was du erzeugst, bist du selbst verantwortlich.
 - **Windows und Mac**, NVIDIA und AMD Radeon, dazu ein Add-on für den Bildeditor PhotoCraft.
-
-### Vom Porträt zum Video
-
-![Ein Foto, das Startbild von FLUX 3 und zwei Bilder aus dem Video von LTX-2.5](docs/images/photo-to-video-captain-de.jpg)
-
-1. **Generieren → Bild:** ein Porträt erzeugen oder das Foto eines Menschen nehmen, der damit einverstanden ist.
-2. **Generieren → Video:** das Porträt als Startbild wählen.
-3. **Person aus einem Foto:** die Rolle beschreiben. FLUX 3 übernimmt das Gesicht und macht vier Startbilder; das ähnlichste auswählen.
-4. **Prompt:** beschreiben, was sich bewegt, was die Kamera macht und was die Person sagt. LTX-2.5 macht daraus das Video mit Sprache und Ton.
-5. **Gesicht halten:** „Schleife“ anhaken (mit ruhiger Kamera) oder ein Endbild mitgeben. Ohne veränderte sich das Gesicht im Test nach einer Sekunde. Der Preis: Wasser und Rauch stehen dann auch still.
-
-Schritt für Schritt mit Screenshots: [docs/de/FOTO_ZU_VIDEO.md](docs/de/FOTO_ZU_VIDEO.md)
 
 ### Studio: ganze Videos aus Szenen
 
@@ -288,6 +278,18 @@ Das Studio ist der erste Reiter, wenn NVAI-open startet. Oben komponierst du: Sz
 - **Mac:** NVAI-open für Mac hat das Studio auch, mit demselben Projektformat.
 
 Schritt für Schritt: [docs/de/STUDIO.md](docs/de/STUDIO.md)
+
+### Vom Porträt zum Video
+
+![Ein Foto, das Startbild von FLUX 3 und zwei Bilder aus dem Video von LTX-2.5](docs/images/photo-to-video-captain-de.jpg)
+
+1. **Generieren → Bild:** ein Porträt erzeugen oder das Foto eines Menschen nehmen, der damit einverstanden ist.
+2. **Generieren → Video:** das Porträt als Startbild wählen.
+3. **Person aus einem Foto:** die Rolle beschreiben. FLUX 3 übernimmt das Gesicht und macht vier Startbilder; das ähnlichste auswählen.
+4. **Prompt:** beschreiben, was sich bewegt, was die Kamera macht und was die Person sagt. LTX-2.5 macht daraus das Video mit Sprache und Ton.
+5. **Gesicht halten:** „Schleife“ anhaken (mit ruhiger Kamera) oder ein Endbild mitgeben. Ohne veränderte sich das Gesicht im Test nach einer Sekunde. Der Preis: Wasser und Rauch stehen dann auch still.
+
+Schritt für Schritt mit Screenshots: [docs/de/FOTO_ZU_VIDEO.md](docs/de/FOTO_ZU_VIDEO.md)
 
 ### Video mit Ton
 

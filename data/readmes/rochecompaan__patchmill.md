@@ -24,14 +24,16 @@ narrow race between separate clones remains possible. The lock file and its
 parent directory must stay in place, even after a crash.
 
 Phase derivation reads git and the issue host. Spec and plan gates are optional
-and default off. Each required gate uses a separate planning pull request. Only
-merging that pull request unlocks the next stage. Logs, result files, and
-approval labels never decide what happens next.
+and default off. A required gate passes when its planning pull request is merged
+into base, or its document is on the pushed implementation branch after an
+interactive approval without a PR. Logs, result files, and approval labels never
+decide what happens next.
 
 Outcome verification checks facts after Pi finishes. Planning needs the pushed
 branch and required documents. A gated stage also needs its planning pull
-request. Implementation needs an open, non-draft pull request whose head matches
-the branch and whose body closes the issue. `agent-done` means that this pull
+request unless the maintainer approved it without a PR in an interactive run.
+Implementation needs an open, non-draft pull request whose head matches the
+branch and whose body closes the issue. `agent-done` means that this pull
 request exists, not that it merged.
 
 Stable names give humans and agents the same paths. Branches use
@@ -74,7 +76,10 @@ gate. The issue stays `in-progress` while waiting, and no Pi session runs then.
 With both gates enabled, merge the spec PR, then the plan PR, before
 implementation. Each later branch starts from the fetched base with the merged
 documents. Ungated documents go into the next gated PR or the implementation PR.
-The kernel never deletes these worktrees.
+After a confirmed implementation PR merge, interactive runs remove the issue's
+implementation, spec, and plan worktrees and local branches when each worktree's
+`git status --porcelain` is empty. Dirty worktrees are kept, with the reason
+shown in chat. Non-interactive runs leave them in place.
 
 ## Commands
 
@@ -90,6 +95,50 @@ The kernel never deletes these worktrees.
 | `patchmill version`                                        | Print the version.                                                                                                                                            |
 | `patchmill setup-test-repo`                                | Development tool for the end-to-end CI (#320). Outside the kernel.                                                                                            |
 
+## Interactive Issue runs
+
+```sh
+patchmill run-once --issue 225 --interactive
+```
+
+This opens a Pi console for planning with you and running implementation in a
+background worker, using the same Run-once workflow. `--issue N` (a positive
+integer) is optional: without it, the CLI selects the next eligible issue before
+opening the console. If none is eligible, it exits successfully without opening
+the console. `--interactive` cannot be combined with `--dry-run` or
+`--plan-only`. The console agent calls four tools:
+
+- `patchmill_submit_planning_result`: submit a planning outcome after your
+  review in one dialog; requesting changes or Escape keeps planning open.
+- `patchmill_continue_issue_run`: recheck a waiting merge and continue the run.
+- `patchmill_run_status`: show the current run, worker, wait, and estimated
+  cost.
+- `patchmill_confirm_block_guidance`: send guidance to a blocked worker after
+  your confirmation.
+
+The planning dialog names the issue and document, shows the files and branch
+with a short commit, and lists 2–5 key decisions rather than the agent's full
+summary. A required gate offers **Approve and open a planning PR**, **Approve
+without a PR (continue now)**, or **Request changes** in one dialog. Choosing PR
+waits for its merge; choosing no PR lets Patchmill push the approved planning
+head to the implementation branch and continue at once. Later documents stay on
+that branch. A later required gate offers **Approve (continue now)** or
+**Request changes** and explains which earlier document prevents a planning PR.
+Ungated planning asks whether you have reviewed the spec, plan, or both, with
+**Reviewed, continue** and **Request changes**. Requesting changes or Escape
+keeps planning open and pushes nothing through Patchmill. A restart derives
+approvals from the pushed documents, never saved workflow state.
+
+Type `/patchmill-issue <N>` to start another issue once the current run ends. It
+switches to that issue's conversation without a confirmation dialog. Sessions
+live under `<runsDir>/issue-<N>/console/`; reopening an issue resumes its newest
+session, while a new issue gets a fresh conversation.
+
+Quitting the console stops the worker. At startup, Patchmill checks for stray
+workers and stops them before starting an Issue run; if cleanup fails, it will
+not start the run. Do not launch this command inside a pi-subagents child
+process: `PI_SUBAGENT_CHILD=1` disables pi-subagents.
+
 ## Configuration
 
 `patchmill.config.json` accepts only these keys. Each key has a default. Unknown
@@ -103,8 +152,7 @@ keys fail by name. `git.baseBranch: null` uses the remote default branch.
     "inProgress": "in-progress",
     "needsInfo": "needs-info",
     "done": "agent-done",
-    "unsuitable": "agent-unsuitable",
-    "blocked": "blocked"
+    "unsuitable": "agent-unsuitable"
   },
   "paths": {
     "specsDir": "docs/specs",
@@ -127,26 +175,57 @@ keys fail by name. `git.baseBranch: null` uses the remote default branch.
 ```
 
 `init` leaves valid existing configuration unchanged and rejects invalid
-configuration. Retired spec/plan review-label settings are accepted but ignored.
-New configuration omits them. Other removed keys remain invalid. GitHub init can
-seed `host.login` from the detected user. For Forgejo, an empty login selects
-Tea's default profile. Only an explicit profile alias selects another profile.
-The detected username is not that alias. The authenticated username and
-`host.trustedAuthors` identify trusted comment authors. GitHub also trusts its
-configured `host.login`. A Tea profile alias does not grant author trust.
+configuration. Retired spec/plan review-label settings and string-valued
+`labels.blocked` are accepted but ignored. New configuration omits them. Other
+removed keys remain invalid. GitHub init can seed `host.login` from the detected
+user. For Forgejo, an empty login selects Tea's default profile. Only an
+explicit profile alias selects another profile. The detected username is not
+that alias. The authenticated username and `host.trustedAuthors` identify
+trusted comment authors. GitHub also trusts its configured `host.login`. A Tea
+profile alias does not grant author trust.
 
 ## Label lifecycle
 
 | Label         | Meaning                                               | Set by                    | Removed by              |
 | ------------- | ----------------------------------------------------- | ------------------------- | ----------------------- |
-| `agent-ready` | Eligible for a Run attempt.                           | Human or triage           | Kernel on claim         |
+| `agent-ready` | Suitable for automation; dependencies must close.     | Human or triage           | Kernel on claim         |
 | `in-progress` | Work is active or waiting for a planning PR merge.    | Kernel on claim           | Kernel on final release |
 | `needs-info`  | The agent asked questions, or the Run attempt failed. | Kernel                    | Kernel on next claim    |
 | `agent-done`  | A ready pull request that closes the issue exists.    | Kernel after verification | Human                   |
 
-Triage returns one of `agent-ready`, `agent-unsuitable`, `blocked`, or
-`needs-info` by default. The kernel applies labels and comments. Agents own git
-and the pull request. They do not change issue labels or post issue comments.
+Triage returns one of `agent-ready`, `agent-unsuitable`, or `needs-info` by
+default, plus a comment and structured `blockedBy` issue numbers. The kernel
+adds missing native dependency links before it applies labels and comments.
+Agents own git and the pull request, not issue mutations.
+
+GitHub **Blocked by** and Forgejo/Gitea **Depends on** links control when work
+can start. Automatic runs skip issues with open or unreadable dependencies.
+Explicit runs refuse them, including interactive, dry-run, and resumed attempts.
+Closing the last blocker makes an issue eligible on the next selection without
+another triage run, label change, or comment. Reopening a blocker reverses that.
+Triage dry run previews links, labels, and comments without host writes.
+
+### Manual upgrade from blocked labels
+
+After upgrading, run `patchmill init` to refresh the managed triage skill.
+Custom triage skills must also return the required `blockedBy` array.
+
+There is no automatic migration. Before running the upgraded Patchmill, update
+each affected issue manually:
+
+1. Add its dependencies through GitHub **Blocked by** or Forgejo/Gitea **Depends
+   on**.
+2. Remove the old `blocked` label or its configured replacement.
+3. If the work suits automation, apply the configured ready label.
+4. Remove `labels.blocked` from `patchmill.config.json`.
+
+Old blocked labels no longer prevent work, and old comments do not create native
+links. If a dependency write fails, triage warns and skips the label and
+comment. Added links remain intact. Explicit re-triage of ready or in-progress
+issues can leave them runnable with missing links after an error. Resolve the
+warning before starting another run on that issue.
+
+### Releasing a stale claim
 
 After a hard crash, `patchmill release --issue N` acquires the same OS lock and
 resets a stale `in-progress` label to `agent-ready`. Contention prevents label

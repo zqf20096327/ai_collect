@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/CarlOpenLab/Gloss/releases/latest"><img src="https://img.shields.io/badge/Release-v0.3.27-4F46E5?style=flat-square" alt="Release v0.3.27"></a>
+  <a href="https://github.com/CarlOpenLab/Gloss/releases/latest"><img src="https://img.shields.io/badge/Release-v0.3.28-4F46E5?style=flat-square" alt="Release v0.3.28"></a>
   <a href="https://go.dev/"><img src="https://img.shields.io/badge/Go-1.27+-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go 1.27+"></a>
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-000000?style=flat-square&logo=apple&logoColor=white" alt="macOS | Windows | Linux">
   <a href="https://github.com/egoist/mygo"><img src="https://img.shields.io/badge/GUI-mygo%20(GPU%20Direct)-4F46E5?style=flat-square" alt="mygo"></a>
@@ -145,15 +145,21 @@ cd Gloss
 # 2. Install the required toolchain
 mise install
 
-# 3. Run development mode with live hot-reload
-go tool mygo dev
+# 3. Run development mode with live hot-reload (signed with your Apple
+#    Development identity so macOS keeps permission grants across rebuilds)
+sh scripts/dev.sh
 
 # 4. Build production release binaries (.app / .dmg)
-go tool mygo build
+sh scripts/build.sh
 
 # 5. Run headless test suite
 go test ./...
 ```
+
+The scripts sign with the first `Apple Development` identity found in your
+keychain (override with `MACOS_SIGNING_IDENTITY`). A stable signature keeps
+macOS permission grants — Screen Recording, Files & Folders, Accessibility —
+across rebuilds instead of asking again every time.
 
 ---
 

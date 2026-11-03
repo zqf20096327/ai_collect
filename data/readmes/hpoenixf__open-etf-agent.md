@@ -15,7 +15,7 @@ For developers learning Agent engineering, and readers who want to check an arch
 <a id="reading"></a>
 **Latest module articles** (module order, not publication dates):
 
-[v0.16 · Document revocation](https://hpoenixf.com/eff-agent-article/en/articles/027-rag-revocation-publish-replay) · [v0.14 · Read-only Memory](https://hpoenixf.com/eff-agent-article/en/articles/026-agent-memory-forget-durable-effects) · [v0.13 · Human interaction](https://hpoenixf.com/eff-agent-article/en/articles/agent-durable-human-interaction-response-adoption)
+[v0.18 · Scheduled Research Beyond a Conversation](https://hpoenixf.com/eff-agent-article/en/articles/agent-autonomous-scheduled-research) · [v0.17 · Why the Next Model Request Still Queues After HTTP 200](https://hpoenixf.com/eff-agent-article/en/articles/agent-provider-admission-capacity-lease) · [v0.16 · RAG: Revocation and Historical Replay](https://hpoenixf.com/eff-agent-article/en/articles/027-rag-revocation-publish-replay)
 
 <p align="center">
   <a href="https://github.com/hpoenixf/open-etf-agent/actions/workflows/verify.yml?query=branch%3Amain"><img src="https://github.com/hpoenixf/open-etf-agent/actions/workflows/verify.yml/badge.svg?branch=main" alt="Verify (main)" height="20" /></a>
@@ -71,15 +71,15 @@ npm run demo -- --case document-compare
 <a id="versions"></a>
 ## Latest three modules
 
-**v0.16.0 adds current document-revocation checks** to the original query, acquisition, Report, Publication and Reader path. The explicit local profile uses synthetic fixtures; it does not enable protected live-model input, arbitrary document ingestion or enterprise ACLs. [Release qualification and retained boundaries](docs/verification/v016-release.md).
+**v0.20 adds local research projects**: import your selected text, Markdown or PDF, submit a natural task, work or resume the original Run and read its persisted report. Memory, Child and trusted tools stay behind original permission and budget owners. [Public CLI/API](docs/research-project.md) · [Run control and bounded correction](docs/run-control.md) · [Layered evidence](docs/verification/v020-release.md). [Fixed public source](https://github.com/hpoenixf/open-etf-agent/tree/a5cef6d5cf1a4597f0f1271025cd6cc16be151e5) is byte-verified. The final package, its CI and release tag are separate from this source pin; layered evidence does not mean every historical gate passed.
 
 **2026-11-02 foundation repair:** [Working-input admission, cancellation facts, Child settlement and no-saving summary precheck](docs/verification/foundation-repair-20261102.md). Provider-free regressions passed; this is not a new release or live qualification.
 
 | Module | What changes | Run and inspect |
 | --- | --- | --- |
-| v0.16 · Document revocation | Current permission is rechecked before disclosure and later reads; previously delivered bytes cannot be recalled | [Commands](docs/module-guide.md#v016--revocable-documents) · [Contract and evidence](openspec/changes/v016-document-revocation/evidence.md) |
-| v0.15 · Serial specialist Child | One bounded source-checking Child returns original results to Main; derived advice gains no source authority | [Commands](docs/module-guide.md#v015--serial-specialist-child) · [Contract and evidence](openspec/changes/serial-specialist-child/evidence.md) |
-| v0.14 · Read-only Memory | Select an existing library and consume current revisions; temporary mode takes effect before library access | [Commands](docs/module-guide.md#v014--read-only-existing-memory) · [Contract and evidence](openspec/changes/v014-memory-consumer/evidence.md) |
+| v0.20 · Local research projects | User-selected sources, original Run lifecycle and bounded tool correction | [CLI/API](docs/research-project.md) · [Evidence](docs/verification/v020-release.md) |
+| v0.19 · Composition contracts | Explicit inputs and combinations through original owners, with recoverable summary reuse | [Contracts and boundaries](docs/composition.md) · [Qualification](docs/verification/v019-release.md) |
+| v0.18 · Schedule Occurrence | One confirmed, explicitly woken occurrence through original owners | [Commands and boundaries](docs/schedule-occurrence.md) · [Qualification](docs/verification/v018-release.md) |
 
 [All fixed versions and commands](docs/module-guide.md#versions) · [Machine-readable version lineage](versions.json) · [GitHub Releases](https://github.com/hpoenixf/open-etf-agent/releases)
 

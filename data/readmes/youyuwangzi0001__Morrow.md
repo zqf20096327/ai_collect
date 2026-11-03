@@ -41,8 +41,8 @@ npm run dev
 
 ```powershell
 npm run typecheck     # 类型检查
-npm run test:unit     # 450 项单元
-npm run test:e2e      # 68 条 Electron 流程（会先构建）
+npm run test:unit     # 493 项单元
+npm run test:e2e      # 77 条 Electron 流程（会先构建）
 npm run verify        # 类型、UI、文档、清单、单元与 Electron
 npm run dist:final    # 重建两个交付 exe
 npm run smoke:packaged
@@ -71,7 +71,7 @@ npm run smoke:packaged
 - 工作 / 聊天 / 计划三种基础方式，叠加深度研究与长期目标。
 - 权限三档（只读 / 询问 / 完全访问）与危险动作审批；拒绝优先于允许。
 - 真实 PTY 终端、Git 工作台、多标签内置浏览器与 Windows UI Automation。
-- Super-Agent：Router 拆解、并行 Worker、独立工作副本、成果版本、独立验收、追溯、并发预算、卡住提醒与试点回退。
+- Super-Agent：Morrow 负责拆解与汇总，成员并行执行；支持独立工作副本、成果版本、独立验收、记录、并发上限、卡住提醒与试点回退。
 
 ![审批卡](docs/screens/guide-permission.png)
 
@@ -86,10 +86,11 @@ npm run smoke:packaged
 
 ## 项目规模与质量
 
-- `src/`：86 个 TS/TSX 文件，约 14.4 万行。
-- 核心回归：450 项单元 + 68 条 Electron 流程；38 个功能域。
+- `src/`：89 个 TS/TSX 文件，149,109 行；含 CSS/HTML 共 119 个文件，192,587 行。
+- 代码合计（统一口径：生产源码 + 测试 + 构建脚本 + 启动器，按 `wc -l` 换行计）：186 个文件，233,355 行；运行 `node scripts/count-code.mjs` 可复现。
+- 核心回归：493 项单元 + 82 条 Electron 流程；41 个功能域。
 - 质量门槛：类型检查、UI token 审计、核心清单、单元、Electron 与打包冒烟。
-- 文档截图：27 张，全部 2100×1200 原始 PNG，不缩放、不压缩。
+- 文档截图：27 张主文档截图 + 18 张修复记录截图，全部 2100×1200 原始 PNG，不缩放、不压缩。
 
 ## 开发与打包
 

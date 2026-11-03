@@ -51,7 +51,7 @@ Say these in plain words; exact wording doesn't matter. **Where:** MAIN = a chat
 | **clean up** *file* / **slim** *area file* | MAIN | The rule S2 procedure (section 16) | A backup file and a cut list; nothing removed until you approve |
 | **catalog this chat** | ANY | Section 5 (inside a Project it writes only that Project's files) | Candidates and questions, then the three-part report |
 | **catalog my past chats** / **catalog chats about** *topic* | ANY | Section 5, one chat at a time (for many chats, section 18); only reaches chats in the same scope | The same, per chat |
-| **what's next** / **backlog for** *stream* | ANY | Reads the backlog | The matching task lines |
+| **what's next** / **backlog for** *stream* | ANY | Sweeps chats newer than the lines it relies on (section 19), then reads the backlog | The matching task lines; any line that could not be rechecked is marked unverified |
 | **park** *task* / *task* **is done** / **drop** *task* | ANY | Status change + log line; "done" needs evidence (section 4). Wording that could mean doing or removing ("clear", "close", "sort out") is asked about first (section 4) | Confirmation of the change |
 | **status digest** | ANY | Reads the index and backlog | A plain text summary |
 | **was** *idea* **considered?** / **what was left undiscussed about** *stream* | ANY | Reads the register | Matching lines with status and checkpoint |

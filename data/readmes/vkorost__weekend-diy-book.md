@@ -1,3 +1,5 @@
+[![Claude Code — The Definitive Guide to Agentic Development](./claude-code-book-social-800x400.jpg)](https://github.com/vkorost/weekend-diy-book/releases/latest)
+
 # Claude Code: The Definitive Guide to Agentic Development
 
 A technical book about Claude Code — written entirely by Claude Code in one weekend,
@@ -49,6 +51,7 @@ how much of the pipeline is rerun.
 ├── about_this_book.md                   # About page included in the book
 ├── metadata.yaml                        # EPUB/PDF build metadata
 ├── cover.jpg                            # Cover image
+├── claude-code-book-social-800x400.jpg  # README banner / social preview card
 ├── combined.md                          # Full manuscript in one file
 ├── quick_reference.md                   # Command/config cheat sheet
 └── chapters/                            # Individual chapter files

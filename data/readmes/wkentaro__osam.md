@@ -14,8 +14,12 @@
   <img src="assets/dogs_efficientsam.png" width="32%">
 </div>
 
-*Osam* (/oʊˈsɑm/) is a tool to run open-source promptable vision models locally
-(inspired by [Ollama](https://github.com/ollama/ollama)).
+*Osam* (/oʊˈsɑm/) is a Python library and CLI that runs open-source promptable
+vision models locally. Applications such as
+[labelme](https://github.com/wkentaro/labelme) embed it, and each
+`osam.Client` runs models in a server process of its own. `osam serve` is an
+optional shared server, and its commands and HTTP API follow
+[Ollama](https://github.com/ollama/ollama).
 
 *Osam* provides:
 
@@ -39,12 +43,6 @@ For other GPUs (AMD, Intel, or NVIDIA without the CUDA libraries), install
 `osam[webgpu]`; osam then uses the GPU without `--device`. It runs on Vulkan,
 Direct3D 12 or Metal, and needs Python 3.11 or later. On Linux it also needs
 the system Vulkan loader (`libvulkan.so.1`).
-
-**For `osam serve`**:
-
-```bash
-pip install osam[cpu,serve]
-```
 
 ## Quickstart
 
@@ -164,7 +162,7 @@ osam run sam3 --image examples/_images/dogs.jpg --text dog --device coreml
 ```
 
 ```python
-model = osam.apis.get_model_type_by_name("sam3")(device="cuda")
+client = osam.Client(device="cuda")
 ```
 
 `cpu`, `cuda`, `coreml` and `webgpu` are supported. An unavailable device raises an
@@ -175,7 +173,7 @@ faster on CoreML than on WebGPU, but its first CoreML load takes about 40 s.
 Without a device, inference runs on CUDA when the installed onnxruntime has it,
 then on WebGPU when `osam[webgpu]` finds a GPU, otherwise on CPU. A session that
 fails to start on the GPU, for example without a Vulkan driver, runs on CPU.
-`model.device` tells which one was picked. To use another accelerator (CoreML on
+`client.ps()` tells which one was picked. To use another accelerator (CoreML on
 macOS, DirectML on Windows, TensorRT, ROCm), set `OSAM_ONNX_PROVIDERS` to a
 comma-separated list tried in the given order:
 
@@ -229,6 +227,24 @@ osam run sam3 --image examples/_images/dogs.jpg --prompt @prompt.json \
 <img src="assets/dogs_efficientsam.png" width="24%"> <img src="assets/dogs_sam2.png" width="24%"> <img src="assets/dogs_sam3.png" width="24%"> <img src="assets/dogs_sam3_box.png" width="24%">\
 <i>Output images: 'efficientsam_point.png', 'sam2_box.png', 'sam3_text.png', 'sam3_box.png'</i>
 
+Each command starts a private server for its run, so every `osam run` loads
+the model again. To keep it loaded across commands, start `osam serve` and set
+`OSAM_HOST`, which `list`, `pull`, `rm` and `run` then use:
+
+```bash
+# In one terminal
+osam serve
+
+# In another, once it has started
+export OSAM_HOST=127.0.0.1:11368
+osam run efficientsam --image examples/_images/dogs.jpg --point 1439,504 > a.png
+# The model and the image embedding are still loaded, so this skips both.
+osam run efficientsam --image examples/_images/dogs.jpg --point 1439,1289 > b.png
+```
+
+The server unloads a model 5 minutes after its last request. `OSAM_HOST` can
+also name another machine, such as `gpu-box:11368`.
+
 ### Python
 
 ```python
@@ -238,12 +254,14 @@ from PIL import Image
 import osam
 
 image = np.asarray(Image.open("examples/_images/dogs.jpg"))
-request = osam.types.GenerateRequest(
-    model="efficientsam",
-    image=image,
-    prompt=osam.types.Prompt(points=[[1439, 504], [1439, 1289]], point_labels=[1, 1]),
-)
-response = osam.apis.generate(request=request)
+with osam.Client() as client:
+    response = client.generate(
+        "efficientsam",
+        image=image,
+        prompt=osam.types.Prompt(
+            points=np.array([[1439, 504], [1439, 1289]]), point_labels=np.array([1, 1])
+        ),
+    )
 annotation = response.annotations[0]
 mask = np.zeros(image.shape[:2], dtype=np.bool_)
 bbox = annotation.bounding_box
@@ -254,12 +272,18 @@ Image.fromarray(mask).save("mask.png")
 <img src="examples/_images/dogs.jpg" width="35%"> <img src="assets/dogs_efficientsam_mask.png" width="35%">\
 <i>Input and output images ('dogs.jpg', 'mask.png').</i>
 
+`osam.Client()` starts a server process of its own and stops it on `close()` or
+when your program exits, so each program keeps its model and image embeddings
+loaded between calls. Further prompts on the same image skip the image encoder.
+A frozen application, such as a PyInstaller bundle, must call
+`multiprocessing.freeze_support()` first. `osam.Client(host="gpu-box:11368")`, or
+`OSAM_HOST`, uses a running `osam serve` instead; it checks that both run the
+same minor version of osam. Errors from the server raise `osam.ResponseError`.
+
 ### HTTP
 
 ```bash
-# pip install osam[cpu,serve]  # required for `osam serve`
-
-# Get up the server
+# Get up the server (--host and --port change where it listens)
 osam serve
 
 # POST request
@@ -268,3 +292,20 @@ base64 < examples/_images/dogs.jpg \
   | curl 127.0.0.1:11368/api/generate -X POST --json @- \
   | jq -r '.annotations[0].mask' | base64 --decode > mask.png
 ```
+
+`/api/generate` takes the fields of `osam.types.GenerateRequest`, with the image
+base64-encoded. `osam serve --device` picks the execution device for every
+request. The server keeps one model loaded. An application using two passes
+`--max-loaded-models 2`, or `osam.Client(max_loaded_models=2)` for its private
+server, so they don't reload in turn; a full server unloads the least recently
+used model first. It also keeps the
+embeddings of recent images, so further prompts on the same image skip the
+image encoder. A model unloads 5 minutes after its last request; `keep_alive` changes that,
+in seconds or as a duration such as `"10m"`, with `-1` to keep it loaded and `0`
+to unload it now. `/api/ps` lists the loaded models and `/api/version` the
+server's version. Errors come back as `{"error": "..."}`. `/api/models`,
+`/api/pull` and `DELETE /api/models/{name}` match `osam list`, `osam pull` and
+`osam rm`. `/api/pull` streams NDJSON lines such as
+`{"status": "pulling encoder.onnx", "completed": 524288, "total": 24799761}` and
+ends with `{"status": "success"}` or `{"error": "..."}`. The full schema is at
+<http://127.0.0.1:11368/docs>.

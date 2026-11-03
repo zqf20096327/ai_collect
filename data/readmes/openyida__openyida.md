@@ -105,7 +105,7 @@ npm install -g dingtalk-workspace-cli
 dws version
 ```
 
-Alternatively, `openyida dws install` displays official instructions for your platform without running an installer. Once installed, `openyida dws <command> [args]` forwards arguments to your system's dws.
+Run the installed `dws <command> [args]` directly. Check `dws --help` and the relevant subcommand's help for supported options.
 
 OpenYida does not bundle or automatically install dws. Dws manages its own version, updates and login. Use `dws auth login` for DingTalk business access and verify the target organization and account. Native YiDA cool-card creation, reads and editor links work without dws; updating a chat card through dws does not save a YiDA template. See the official instructions for other installation methods and check the installed command's `--help` before use.
 
@@ -261,7 +261,9 @@ openyida publish pages/src/home.canvas.jsx APP_XXX FORM_XXX
 
 Custom page source is authored directly from PRD and design guidance. Custom page development uses `yida-canvas-custom-page` and `.canvas.jsx`.
 
-For member, department, attachment, and image upload components, `.canvas.jsx` pages should follow `yida-canvas-custom-page/references/native-components-bridge.md` for feature detection, fallback, and value normalization.
+For member and department components, `.canvas.jsx` pages should follow `yida-canvas-custom-page/references/native-components-bridge.md` for feature detection, fallback, and value normalization. Attachment and image uploads use the automatically installed `window.__OPENYIDA_FILE_API__` bridge (`upload`, `getDownloadUrl`, `bindFiles`): obtain credentials, upload to OSS, confirm, get private URLs, then bind to the saved instance. This requires a signed-in browser session and does not support anonymous uploads. See `yida-canvas-custom-page/references/file-upload.md`.
+
+Extract the upload control with `openyida sample openyida-page-template canvas-file-upload`. Legacy JSX pages can extract the shared client with `openyida sample openyida-page-template file-upload-client` and call `createYidaFileClient(window)`.
 
 For the current custom page native-component support matrix, see [Yida native components supported by custom pages](https://demo.aliwork.com/o/openyida/sample/canvas-native-components).
 
@@ -488,8 +490,8 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida app-list [--type managed\|created] [--page N] [--size N]` | Page through apps I manage or created |
 | `openyida solution-template <search\|detail\|prepare\|ai-build\|enable\|status> [templateId\|requestId] [options] [--json]` | Solution templates for independent local agents: discovery, cloud AI handoff and direct enable |
 | `openyida corp-efficiency [overview\|details\|detail\|groups\|notify] [options] [--open\|--no-open]` | Query enterprise efficiency overview and detail reports |
-| `openyida create-app "<name>"\|--name <name> [options] [--locale zh_CN\|en_US\|ja_JP] [--open\|--no-open]` | Create a Yida app |
-| `openyida design-plan catalog [--json]` | List available planning themes and page patterns |
+| `openyida create-app "<name>"\|--name <name> [options] [--locale zh_CN\|en_US\|ja_JP] [--open\|--no-open] [--json]` | Create a Yida app |
+| `openyida design-plan catalog [--compact] [--json]` | List available planning themes and page patterns |
 | `openyida design-plan init <requirement-brief.json> [--theme-id <id>] [--output-dir <dir>] [--json]` | Initialize a plan draft from confirmed requirements |
 | `openyida design-plan preview <build-plan.json> --part-file <module.json> [--json]` | Update plan drafts by module |
 | `openyida design-plan materialize <build-plan.json> [--from-preview \| --business-file <json> --visual-file <json>] [--output-dir <dir>] [--rebase-parts] [--check] [--json]` | Generate or update plan documents and theme with consistency checks |
@@ -532,7 +534,7 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida custom-button <list\|inspect\|options\|create\|update\|delete> <appType> <formUuid> [buttonUuid] [--config <file>] [--expected-hash <hash>] [--backup <file>] [--yes] [--json]` | Native custom buttons: inspect and configure form edits, automation flows and page links |
 | `openyida form-message <list\|inspect\|options\|create\|update\|delete> <appType> <formUuid> [messageId] [--config <file>] [--expected-hash <hash>] [--backup <file>] [--yes] [--json]` | Native form notifications: inspect triggers, recipients and templates, then safely maintain bindings |
 | `openyida get-schema <appType> <formUuid\|--all> [--summary-json\|--field-map-json\|--analysis-json]` | Get one form Schema or all form Schemas |
-| `openyida check-prd-completeness <prd.md> --app-type <appType> [--build-manifest <file>] [--json]` | Check resources, frontend menu hiding and application theme delivery |
+| `openyida check-prd-completeness [<prd.md> \| --build-spec <build-context.json> \| --manifest-only] --app-type <appType> [--build-manifest <file>] [--json]` | Check resources, frontend menu hiding and application theme delivery |
 | `openyida check-design <design.md> [--prd <prd.md>] [--base-dir <dir>] [--json]` | Validate design documents, theme tokens and PRD handoff |
 | `openyida er <appType> [--format mermaid\|json] [--output file] [--include-system] [--include-pages]` | Export app entity relationship diagram |
 | `openyida create-page <appType> "<name>" [--mode dashboard] [--hide-nav] [--locale zh_CN\|en_US\|ja_JP] [--open\|--no-open]` | Create a custom display page |
@@ -622,8 +624,6 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida integration check <appType...>` | Check abnormal integration automation run logs |
 | `openyida integration detail-log <appType> <procInstId> [--json] [--include-params]` | View integration automation run log details |
 | `openyida integration diagnose (--text <text>\|--file <path>\|--rules) [--json]` | Diagnose integration automation tickets and common pitfalls |
-| `openyida dws <command> [args]` | DingTalk CLI (contacts/calendar/todo/approval etc.) |
-| `openyida dws contact user search --keyword <text>` | DingTalk CLI (contacts/calendar/todo/approval etc.) |
 | `openyida dingtalk-link <url> [--target fullScreen] [--legacy-scheme] [--json]` | Generate DingTalk AppLink / legacy dingtalk:// page links |
 
 ### Utility
@@ -633,10 +633,8 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida commands [--json]` | Output machine-readable command manifest |
 | `openyida agent-capabilities [--json] [--summary-json\|--compact]` | Output one-shot agent capability snapshot |
 | `openyida agent <doctor\|diagnose\|status\|connect\|run\|disconnect\|logout\|logs> [options]` | Connect a local Agent (Go runtime, development preview) |
-| `openyida a2a <serve\|agent-card> [options]` | Start local read-only A2A adapter or print Agent Card |
-| `openyida bridge start [--token <pair-token>] [--port 6736] [--origin https://demo.aliwork.com] [--open\|--no-open]` | Start OpenYida local web bridge service |
 | `openyida copy [--force]` | Copy project working directory |
-| `openyida sample [--list] [<skill> <name>] [--output <file-or-directory>] [--var KEY=VALUE ...] [--design-file <design.md>] [--style-id <themeId\|free-creative>] [--theme-ids <id,...>] [--pop-art-context <explicit-request\|showcase>]` | Output code samples/templates |
+| `openyida sample [--list] [<skill> <name>] [--output <file-or-directory>] [--var KEY=VALUE ...] [--design-file <design.md>] [--spec-file <spec.json>] [--primary-color <color>] [--tokens-file <theme.json>] [--nav-theme light\|dark] [--check] [--style-id <themeId\|free-creative>] [--theme-ids <id,...>] [--pop-art-context <explicit-request\|showcase>]` | Output code samples/templates |
 | `openyida doctor [--fix]` | Environment diagnostics & auto-fix |
 | `openyida db-seq-fix [--fix]` | Detect and repair PostgreSQL sequence drift |
 | `openyida formula evaluate <formula\|file> [--schema file] [--contract field-value\|validation-rule\|business-action\|node-expression] [--context form\|validation\|automation\|business] [--target-type NumberField] [--metadata file] [--strict] [--json]` | Static-check Yida formula syntax and field refs |
@@ -649,7 +647,7 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida update` | Check and update to latest version |
 | `openyida export-conversation [options]` | Export AI conversation records |
 | `openyida feedback <report\|github\|setup\|url\|dismiss\|status> [options]` | Prepare local issue reports, configure feedback forms and reminders |
-| `openyida batch <file>\|--commands "cmd1 ; cmd2" [--stop-on-error] [--json]` | Run OpenYida commands in batch |
+| `openyida batch <file>\|--commands "cmd1 ; cmd2" [--concurrency 1..4] [--stop-on-error] [--json]` | Run OpenYida commands in batch |
 | `openyida flash-to-prd --file <path> --name "<project>"` | Convert flash notes or meeting notes to a PRD prompt |
 | `openyida ai <text\|image> [options]` | Call Yida AI text and image recognition APIs |
 | `openyida asset <status\|resolve\|sources> [options]` | Detect asset capability / resolve materials |

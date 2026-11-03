@@ -16,7 +16,7 @@
 
 AI Canvas Tauri 将文本、图像、视频、音频、逐帧动画、Markdown、分镜、360° 全景和手绘笔记组织成可连接的画布节点。你可以在同一个项目中编排生成链路、统一管理角色库、人物/场景/道具与本地素材、执行 ComfyUI 工作流、安装 JavaScript 或可信 Python 用户插件，也可以通过对话助手查询或修改画布、生成媒体、派出只读子智能体、读取授权文件并沉淀项目记忆。项目还能拆成剧集与分集，一部 AI短剧的每一集各占一张画布，角色库与素材整部剧共用。
 
-![Version](https://img.shields.io/badge/version-0.10.23-6366f1)
+![Version](https://img.shields.io/badge/version-0.10.25-6366f1)
 ![Tauri](https://img.shields.io/badge/Tauri-2-24c8db)
 ![React](https://img.shields.io/badge/React-19-61dafb)
 ![React Flow](https://img.shields.io/badge/React_Flow-12-ff0072)
@@ -27,7 +27,7 @@ AI Canvas Tauri 将文本、图像、视频、音频、逐帧动画、Markdown�
 
 **下载：** <https://github.com/tenney95/AI-Canvas-tauri/releases>（获取桌面安装包）
 
-[在线体验](https://tenney95.github.io/AI-Canvas-tauri/) · [下载](https://github.com/tenney95/AI-Canvas-tauri/releases) · [核心能力](#核心能力) · [快速开始](#快速开始) · [项目文档](#项目文档) · [License](#license)
+[在线体验](https://tenney95.github.io/AI-Canvas-tauri/) · [下载](https://github.com/tenney95/AI-Canvas-tauri/releases) · [赞助支持](#赞助支持) · [核心能力](#核心能力) · [快速开始](#快速开始) · [项目文档](#项目文档) · [License](#license)
 
 > 在线版适合体验画布与界面。用户插件、文件系统、凭据存储、独立窗口、3D 导演台、本地模型等能力依赖 Tauri 桌面环境；完整体验请按下方步骤启动桌面应用。
 
@@ -53,6 +53,28 @@ AI Canvas Tauri 将文本、图像、视频、音频、逐帧动画、Markdown�
 
 ![帧动画编辑：逐帧预览、偏移调整与角色对齐](doc/images/animation-editor.jpg)
 
+## 赞助支持
+
+<table>
+  <tr>
+    <td align="center" width="140">
+      <a href="https://www.runninghub.ai/call-api?source=github"><img src="doc/images/sponsors/runninghub-logo.png" alt="RunningHub API" width="80" height="80"></a><br>
+      <a href="https://www.runninghub.ai/call-api?source=github"><strong>RunningHub API</strong></a>
+    </td>
+    <td>
+      <strong>感谢 <a href="https://www.runninghub.ai/call-api?source=github">RunningHub API</a> 支持本项目！</strong>
+      <ul>
+        <li><strong>400+ 主流模型、8000+ 版本</strong>，覆盖 Seedance、Kling、MiniMax、Nano Banana、Veo 等，并支持国际版模型访问。</li>
+        <li><strong>高并发、按量付费</strong>，随用随充；Seedance 在线工具低至 <strong>0.21 元/秒</strong>。</li>
+        <li><strong>从剧本到成片</strong>：无限画布、ComfyUI 与 Agent 等在线工具协同完成创作。</li>
+        <li><strong>统一 API 接入</strong>：LLM、多模态、工作流 API 与 AI 应用。</li>
+      </ul>
+      <a href="https://www.runninghub.ai/call-api?source=github">查看模型与 API</a> · 折扣与免费测试请联系 <a href="mailto:zhenyuedong@haima.me">zhenyuedong@haima.me</a>。<br>
+      <sub>模型、版本、价格、优惠及可用权限以 RunningHub 官方页面和实际开通情况为准。</sub>
+    </td>
+  </tr>
+</table>
+
 ## 核心能力
 
 | 能力 | 说明 |
@@ -61,6 +83,8 @@ AI Canvas Tauri 将文本、图像、视频、音频、逐帧动画、Markdown�
 | 帧动画编辑与导出 | 导入或生成 Sprite Sheet，编辑动画帧与播放效果，导出 GIF、PNG 序列帧或图集。 |
 | AI 与工作流 | 连接云端与自定义模型、CCC、LibAPI 的文本/图片/视频/音频模型、ComfyUI 多服务器、RunningHub、通用工作流 API、Dreamina 和本地 ONNX 模型。 |
 | 工作流参数配置 | 本地 ComfyUI 与 RunningHub 共用参数浮层，按真实声明提供比例、分辨率、步数、调度器等设置；标记 `C#` 节点编号和提示词用途，默认正文与参考素材沿用节点输入框。 |
+| 云工作流输入引用 | 选择 RunningHub 工作流或 AI 应用后，输入 `@` 可在 ComfyUI 标签按类型、名称或原节点编号选择定向输入；RefMod 角色目录仍仅限本地 ComfyUI。 |
+| 工作流种子与下载恢复 | 工作流数字种子支持随机或固定；新建空节点沿用最近工作流与尺寸。输出历史可重新下载原任务结果，Windows 多层素材路径与项目导出错误定位同步修复。 |
 | 快捷指令编排与分享 | 高级步骤可参考原始输入或上一步结果，按顺序或依赖并发执行；复制、导出或导入 JSON 创建独立指令副本。 |
 | 视频参数保持 | 切换视频型号保留已有比例和兼容的分辨率、帧率、时长及音轨设置，生成前按所选模型核对。 |
 | 用户插件 | 通过本地文件、市场或 GitHub Release 安装插件，扩展工具、节点与界面。支持受限运行的 JavaScript 和拥有当前用户权限的可信 Python 插件。 |

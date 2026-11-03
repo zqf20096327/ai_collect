@@ -216,7 +216,7 @@ bili mcp install --yes      # 写入配置（先备份为 .bak，只改 bili-cli
 | `bili upload video / edit / list / status / stats / zones` | 投稿、改稿（`--desc-at` 简介里 @ 人，`--video` 换源）、稿件管理、单稿数据（互动率、完播率） |
 | `bili upload chapters show / set / clear` | 分段章节 |
 | `bili me show / stats / set-sign / set-name / set-avatar` | 个人资料、创作中心数据 |
-| `bili data overview / trend / audience / fans / videos / video / diagnose` | 数据中心：累计与昨日增量、30 天趋势、观众画像、粉丝、稿件数据表、单稿诊断（3 秒退出率 / 封面点击倍数 / 播转粉率 / 同类分位） |
+| `bili data overview / trend / audience / fans / active-hours / videos / video / diagnose` | 数据中心：累计与昨日增量、30 天趋势、观众画像、粉丝、粉丝活跃时间（24 小时 / 星期分布 + 大盘对比）、稿件数据表、单稿诊断（3 秒退出率 / 封面点击倍数 / 播转粉率 / 同类分位） |
 | `bili asr setup local / setup cloud / status / use` | 语音转写引擎 |
 | `bili skills install / uninstall / status / show` | 把技能装进 Agent |
 | `bili mcp serve / install / uninstall` | MCP 服务与客户端配置 |
@@ -267,6 +267,18 @@ bili mcp install --yes      # 写入配置（先备份为 .bak，只改 bili-cli
 设置环境变量 `BILI_CLI_HOME` 指向不同目录，每个目录是一套独立的登录、限流和审计日志。本项目不提供批量控制多账号的功能。
 
 **命令卡住怎么办？** 不会无限卡住：普通命令超过 3 分钟没完成会自己中止，返回 `network_error`，Agent 重试即可；投稿、语音转写、`dm watch` 这类长任务不受限制。用环境变量 `BILI_CLI_TIMEOUT` 改上限（秒，0 表示不限）。单个读请求最多等 45 秒。报错里带 `stalled_seconds` 说明整个进程被暂停过（机器或容器挂起、CPU 被占满），不是网络问题；排查时加 `BILI_CLI_DEBUG=1`，stderr 会打出每个请求的耗时。
+
+</details>
+
+<details>
+<summary>在沙箱 / 只读环境里，写操作为什么会报错？</summary>
+
+写操作成功后 bili-cli 要记一条本地记录（`ratelimit.json`、`audit.log`），默认写在配置目录。如果进程只能写某个工作区（沙箱、只读容器），这一步会失败。现在分两层处理：
+
+- 真正调用接口**之前**，`guard.check()` 会先确认状态目录可写；写不了就直接报错（此时还没有产生任何副作用），并在 hint 里提示设置 `BILI_CLI_STATE_DIR`。
+- 接口成功之后如果状态仍然写不进去，只往 stderr 打一条警告，命令仍返回 `ok: true`——不要因为记账失败让 Agent 误以为没发出去而重发。
+
+设置 `BILI_CLI_STATE_DIR` 指向一个可写目录即可把状态文件挪过去：`ratelimit.json`、`audit.log`、`seen.json` 会写到那里，登录凭证仍然留在 `BILI_CLI_HOME`（Windows：`%APPDATA%\bili-cli`）。确实不需要本地限流时，可以设 `BILI_CLI_NO_RATE_LIMIT=1` 跳过检查。
 
 </details>
 

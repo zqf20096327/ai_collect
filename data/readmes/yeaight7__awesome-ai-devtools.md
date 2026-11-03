@@ -8,7 +8,7 @@
 
 <p align="center">Window-shop coding agents, IDE assistants, MCP tooling, evals, observability, security, and self-hosted AI dev stacks.</p>
 
-<p align="center"><code>388 tools</code> <code>300 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
+<p align="center"><code>390 tools</code> <code>302 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
 
 ## Why this exists
 
@@ -74,7 +74,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Extend agents
 
-[MCP servers](#mcp-servers) (23) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (28)
+[MCP servers](#mcp-servers) (24) · [MCP clients](#mcp-clients) (7) · [MCP tooling](#mcp-tooling) (19) · [Agent skill packs](#agent-skill-packs) (28)
 
 ### Operate agents
 
@@ -82,7 +82,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Run locally/self-host
 
-[Self-hosted AI dev stacks](#self-hosted-ai-dev-stacks) (26) · [Local LLM developer tools](#local-llm-developer-tools) (31)
+[Self-hosted AI dev stacks](#self-hosted-ai-dev-stacks) (27) · [Local LLM developer tools](#local-llm-developer-tools) (31)
 
 ### Automate repo work
 
@@ -90,7 +90,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ## Comparison Matrix
 
-_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 300 reviewed tools._
+_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 302 reviewed tools._
 
 | Tool | Main shelf | OSS | Local | Self-hosted | CLI | IDE | MCP | Links |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -289,6 +289,7 @@ Model Context Protocol servers that expose tools, resources, or prompts.
 | [ax](https://github.com/Necmttn/ax) | Local telemetry and recall graph for AI coding agents, with CLI, dashboard, MCP queries, and OTLP ingestion. | CLI · MCP · Web · Local | [Repo](https://github.com/Necmttn/ax) |
 | [Browserbase MCP Server](https://browserbase.com) | MCP server that lets AI agents control cloud browsers through Browserbase and Stagehand. | MCP · Hybrid | [Website](https://browserbase.com) / [Repo](https://github.com/browserbase/mcp-server-browserbase) |
 | [Chrome DevTools MCP](https://developer.chrome.com/blog/chrome-devtools-mcp) | MCP server that gives AI agents Chrome DevTools debugging capabilities for web applications. | MCP · Local | [Docs](https://developer.chrome.com/blog/chrome-devtools-mcp) / [Repo](https://github.com/ChromeDevTools/chrome-devtools-mcp) |
+| [Concord](https://getconcord.ai) | MCP server and CLI that lets coding agents such as Claude Code, Codex, Cursor and Gemini CLI message each other, claim work, share task memory and hand off. | CLI · MCP · Hybrid | [Website](https://getconcord.ai) / [Repo](https://github.com/Get-Concord-AI/concord-mcp) |
 | [Context7 MCP Server](https://context7.com) | MCP server for retrieving up-to-date library documentation and code examples for AI coding assistants. | MCP · Hybrid | [Website](https://context7.com) / [Repo](https://github.com/upstash/context7) |
 | [e2b-mcp](https://e2b.dev) | CLI and API for running MCP servers inside isolated E2B cloud sandboxes. | CLI · Hosted | [Website](https://e2b.dev) / [Repo](https://github.com/cased/e2b-mcp) |
 | [Exa MCP Server](https://github.com/exa-labs/exa-mcp-server) | MCP server for connecting AI assistants to Exa web search, crawling, and research tools. | MCP · Hosted | [Repo](https://github.com/exa-labs/exa-mcp-server) |
@@ -496,6 +497,7 @@ Self-hostable platforms and infrastructure for AI developer workflows.
 | [Scalable Agentic RAG Platform (FareedKhan-dev)](https://github.com/FareedKhan-dev/scalable-rag-pipeline#readme) | Production-grade agentic RAG platform with Kubernetes, Ray, LangGraph, and multi-plane architecture. | CLI · Self-hosted | [Docs](https://github.com/FareedKhan-dev/scalable-rag-pipeline#readme) / [Repo](https://github.com/FareedKhan-dev/scalable-rag-pipeline) |
 | [Self-hosted AI Package](https://sourceforge.net/projects/self-hosted-ai-package.mirror/) | Open-source Docker Compose starter kit bundling Ollama, n8n, Supabase, Open WebUI, Flowise, Neo4j, Langfuse, and related tools. | API · Web · Self-hosted | [Website](https://sourceforge.net/projects/self-hosted-ai-package.mirror/) / [Repo](https://github.com/coleam00/ai-agents-masterclass) |
 | [Self-hosted AI Starter Kit (n8n)](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) | Docker Compose-based local AI and low-code stack bundling n8n, Ollama, Qdrant, PostgreSQL, and related services. | API · CLI · Web · Self-hosted | [Docs](https://docs.n8n.io/hosting/starter-kits/ai-starter-kit/) / [Repo](https://github.com/n8n-io/self-hosted-ai-starter-kit) |
+| [SpaceApp](https://spaceapp.dev/) | Self-hosted web workspace that runs coding CLIs such as OpenCode, Codex, Claude Code and Gemini CLI side by side as terminal panes in persistent rooms. | CLI · MCP · Web · Self-hosted | [Website](https://spaceapp.dev/) / [Docs](https://spaceapp.dev/docs/) / [Repo](https://github.com/oll4com/spaceapp) |
 | [Synaplan AI Platform](https://synaplan.com/solutions/developers) | Open-source, self-hosted AI platform with full stack deployment via Docker Compose and local inference via Ollama. | API · Web · Self-hosted | [Website](https://synaplan.com/solutions/developers) / [Docs](https://synaplan.com/docs) |
 | [Tabby](https://www.tabbyml.com/) | Self-hosted AI coding assistant for teams that want private code assistance and repository-aware development. | API · IDE · Self-hosted | [Website](https://www.tabbyml.com/) / [Docs](https://tabby.tabbyml.com/docs/) / [Repo](https://github.com/TabbyML/tabby) |
 | [Winy RAG Sample Stack](https://github.com/mfranzon/winy) | Sample RAG application with Ollama, Qdrant, and Streamlit web app orchestrated via Docker Compose. | Web · Self-hosted | [Docs](https://github.com/mfranzon/winy#readme) / [Repo](https://github.com/mfranzon/winy) |
@@ -511,7 +513,4 @@ Tools that help developers run or integrate local models in coding workflows.
 | [ChromaDB](https://www.trychroma.com) | Lightweight vector database and Python library for local embeddings storage and RAG-style similarity search. | API · Library · Local | [Website](https://www.trychroma.com) / [Docs](https://docs.trychroma.com) / [Repo](https://github.com/chroma-core/chroma) |
 | [Docker Model Runner](https://www.docker.com/products/model-runner) | Docker Desktop-integrated local model runtime that runs GGUF models via an OpenAI-compatible API. | API · CLI · Local | [Website](https://www.docker.com/products/model-runner) / [Docs](https://docs.docker.com/ai/model-runner/) |
 | [ExLlamaV2](https://github.com/turboderp-org/exllamav2#readme) | Inference library for running GPTQ-quantized LLMs on modern consumer GPUs with high performance. | CLI · Library · Local | [Docs](https://github.com/turboderp-org/exllamav2#readme) / [Repo](https://github.com/turboderp-org/exllamav2) |
-| [GPT4All](https://gpt4all.io) | Local LLM desktop client and Python library with optional OpenAI-compatible API server on localhost. | API · Desktop · Library · Local | [Website](https://gpt4all.io) / [Docs](https://docs.gpt4all.io) / [Repo](https://github.com/nomic-ai/gpt4all) |
-| [Haystack](https://github.com/deepset-ai/haystack) | Open-source framework for building RAG pipelines, agents, and semantic search over private data. | API · Framework · Local | [Docs](https://docs.haystack.deepset.ai) / [Repo](https://github.com/deepset-ai/haystack) |
-| [Intel Neural Compressor](https://github.com/intel/neural-compressor) | Open-source compression toolkit supporting quantization and pruning for deep learning and LLM workloads. | Library · Local | [Docs](https://intel.github.io/neural-compressor) / [Repo](https://github.com/intel/neural-compressor) |
-| [KoboldC
+| [GPT4All](https://gpt4all.io) | Local LLM desktop client and Python library with optional OpenAI-compatible API server on localhost. | API · Desktop · Library · Local | [Website](https://gpt4all.io) / [Docs](https://d

@@ -131,6 +131,12 @@ project/
 
 Disable with `--no-changelog` or `changelog_enabled = false` in config.
 
+When staged changes have a changelog boundary, one synthesis call generates the commit analysis and all applicable changelog updates together. Compose uses the same synthesis for each already-planned group; grouping and staging are unchanged. Large inputs reuse per-file map observations, and valid summaries avoid a separate summary call.
+
+Summary repair/rewrite, authored-entry protection, existing-entry revisions, and staged/worktree isolation still apply. Malformed shared output falls back to separate generation. `--dry-run`, commit/unstaged analysis, and `--no-changelog` retain their existing generation paths.
+
+Prompt overrides remain explicit: a relevant `analysis.md`, `fast.md`, `map.md`, `reduce.md`, or `changelog.md` override keeps separate calls unless the override directory also supplies `synthesis.md`.
+
 ## Configuration
 
 Create `~/.config/llm-git/config.toml`:
@@ -156,6 +162,19 @@ changelog_enabled = true
 auto_fast_threshold_lines = 200           # Auto-use fast mode for small diffs; 0 disables
 map_reduce_enabled = true                 # Parallel analysis for large commits
 disable_git_background_features = true    # Disables fsmonitor/untrackedCache for lgit subprocesses
+
+# Typed judgments (TypeSafe jev, ~$0.04 per million input tokens, ~1s per round trip).
+# With a key: mechanical follow-through hunks (imports, call sites, formatting, lockfiles)
+# are pruned from analysis prompts and the rest get a per-hunk type hint; compose binds
+# hunks to groups by judgment instead of the analysis model; changelog generation is
+# skipped for changes judged not user-visible and paraphrased duplicate entries are
+# dropped. Shared commit/changelog synthesis does not require a judge key.
+judgment_api_key = ""                     # Or TYPESAFE_API_KEY env var; `!cmd` runs a command
+judgment_model = "jev-latest"
+mechanical_hunk_threshold = 0.7           # Prune hunks judged mechanical with >= this probability
+mechanical_prune_min_tokens = 5000        # Skip pruning below this diff size (round trip not worth it)
+mechanical_prune_min_model_rate = 1.0     # ...and unless the analysis model bills >= this $/M (judging costs ~$0.08/M of diff)
+changelog_gate_threshold = 0.3            # Skip the changelog model below this user-visibility; 0 disables
 
 # Commit signing
 gpg_sign = false                          # GPG sign commits by default (-S)
@@ -186,7 +205,13 @@ analysis_model = "gpt-4o"
 summary_model = "gpt-4o-mini"
 ```
 
-The client asks all providers for markdown/plain-text responses and parses the same response format across OpenRouter, LiteLLM, Anthropic, and OpenAI endpoints.
+**Judgments (optional, any provider above):**
+```toml
+judgment_api_key = "!cat ~/.secrets/typesafe"   # key from https://console.typesafe.ai/
+```
+Set `LLM_GIT_JUDGMENT_DISABLED=1` to switch judgments off without removing the key.
+
+The client uses the same response formats across OpenRouter, LiteLLM, Anthropic, and OpenAI endpoints: markdown/plain text for individual operations and a validated JSON object for shared commit/changelog synthesis.
 
 ### Commit Types
 

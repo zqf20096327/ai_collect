@@ -26,107 +26,41 @@
 
 # Roop-FaceSwap
 
-## Requirements
+## Getting started
 
-- [Python 3.10.0rc2 (or 3.10.x)](https://www.python.org/downloads/release/python-3100rc2/)
-- [CUDA Toolkit](https://developer.nvidia.com/downloads) (must be compatible with your GPU and TensorFlow)
-- [cuDNN](https://developer.nvidia.com/cudnn-downloads) (extract into your CUDA installation path)
+You need **Python 3.9 - 3.12** (3.11 is best; get it from [python.org](https://www.python.org/downloads/)) and **ffmpeg** on your PATH for videos. Python 3.13 and newer won't work (TensorFlow and PyTorch don't support them yet), but they can stay installed: the scripts find a 3.9 - 3.12 through the `py` launcher.
 
-### Verifying CUDA and cuDNN Installation
+Then just run it:
 
-To verify that CUDA is installed correctly, run the following in Command Prompt or PowerShell:
+| Windows | PowerShell | Linux / macOS / Git Bash |
+|---|---|---|
+| `run.bat` | `.\run.ps1` | `./run.sh` |
 
-```bash
-nvcc --version
-This should return the version of the CUDA compiler. If it says 'nvcc' is not recognized, make sure the CUDA bin directory is added to your system PATH (e.g., C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.0\bin).
+The first run sets everything up by itself, then opens the app:
+
+1. makes a virtual environment, `psdenv`, in this folder
+2. installs the packages from `requirements.txt` (several GB the first time: PyTorch and TensorFlow, so give it a while)
+3. downloads the models into `models/` (`inswapper_128.onnx`, `GFPGANv1.4.pth`)
+
+After that it starts straight away. Running it again only redoes what's missing or changed, so if a download fails halfway, run it again and it carries on.
+
+- **The GPU:** with an NVIDIA card it uses CUDA automatically (no CUDA Toolkit or cuDNN to install: PyTorch brings its own). Add `--execution-provider cpu` to force the CPU.
+- **Older cards (GTX 10xx, 4 GB):** they work. CUDA 12 needs NVIDIA driver **531 or newer**; check with `nvidia-smi` ("Driver Version") and update from nvidia.com if it's older, or the swap quietly falls back to the slow CPU. Out of video memory? Add `--execution-threads 2`. The face enhancer (GFPGAN) is the slow part: leave it off for tests.
+- **Set up without opening the app:** `setup.bat`, `.\setup.ps1` or `./setup.sh`.
+- **A prompt inside the environment:** `activate_env.bat`.
+- **PowerShell won't run scripts?** Once: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`.
+- **Start over:** delete the `psdenv` folder and run it again.
+
+### Without the app (headless)
+
+Give a source face, a target and an output, and it swaps without opening the window:
+
+```
+run.bat -s face.png -t clip.mp4 -o out.mp4
+run.bat -s face.png -t clip.mp4 -o out.mp4 --frame-processor face_swapper face_enhancer --keep-fps
 ```
 
-For cuDNN, ensure the following cuDNN files are copied into your CUDA folder:
-
-```bash
-bin\cudnn*.dll → into CUDA_PATH\bin
-```
-```bash
-include\cudnn*.h → into CUDA_PATH\include
-```
-```bash
-lib\x64\cudnn*.lib → into CUDA_PATH\lib\x64
-```
-
-## Setup Instructions
-
-### 1. Create and Activate the Virtual Environment
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-& "C:\Users\YourUsername\AppData\Local\Programs\Python\Python310\python.exe" -m venv onnx-env
-. .\onnx-env\Scripts\Activate.ps1
-```
-
-```bash
-pip install -r requirements.txt
-```
-Or run: 
-- `install_requirements.bat`
-  
-  pip install torch torchvision
-  <br>
-
-. .\onnx-env\Scripts\Activate.ps1
-onnx-env\Scripts\activate.bat
-source onnx-env/Scripts/activate
-
-### Run main.py
-
-Using Python directly:
-
-```bash
-python run.py
-```
-
-Using provided scripts:
-
-Windows:
-- `.\run.bat`
-or
-- `.\run.ps1`
-
-Unix-like systems (Linux/macOS):
-- `.\run.sh`
-
-  <br>
-
-## Python Requirements:
-
-```bash
---extra-index-url https://download.pytorch.org/whl/cu118
-
-numpy==1.24.3
-opencv-python==4.8.0.74
-onnx==1.14.0
-insightface==0.7.3
-psutil==5.9.5
-tk==0.1.0
-customtkinter==5.2.0
-tkinterdnd2==0.3.0; sys_platform != 'darwin' and platform_machine != 'arm64'
-tkinterdnd2-universal==1.7.3; sys_platform == 'darwin' and platform_machine == 'arm64'
-pillow==10.0.0
-onnxruntime==1.15.1; python_version != '3.9' and sys_platform == 'darwin' and platform_machine != 'arm64'
-onnxruntime-coreml==1.13.1; python_version == '3.9' and sys_platform == 'darwin' and platform_machine != 'arm64'
-onnxruntime-silicon==1.13.1; sys_platform == 'darwin' and platform_machine == 'arm64'
-onnxruntime-gpu==1.15.1; sys_platform != 'darwin'
-tensorflow==2.13.0
-opennsfw2==0.10.2
-protobuf==4.23.4
-tqdm==4.65.0
-gfpgan==1.3.8
-```
-
-## Installation
-
-[Basic](https://github.com/s0md3v/roop/wiki/1.-Installation) - It is more likely to work on your computer, but will be quite slow
-
-[Acceleration](https://github.com/s0md3v/roop/wiki/2.-Acceleration) - Unleash the full potential of your CPU and GPU
+The swap refuses explicit targets: Roop's NSFW check (`roop/predictor.py`) stays on.
 
 <br>
 

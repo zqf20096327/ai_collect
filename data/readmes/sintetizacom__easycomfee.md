@@ -106,12 +106,12 @@ On smaller cards, **Config Models** shows which packages run well on that GPU an
 
 | Tab | What you get | Models |
 |---|---|---|
-| **Image** | Text to image, with up to 3 reference images (@image1…) | Krea 2, Kroma, Qwen Image 2.1, Flux 2 Klein, FLUX 3 Klein, Z-Image, Mage, Ideogram 4 · light: FLUX.1 schnell, SD 3.5 Medium, SDXL, SD 1.5 |
+| **Image** | Text to image, with up to 3 reference images (@image1…) | Krea 2, Kroma, Qwen Image 2.1, Flux 2 Klein, FLUX 3 Klein (*Faster* or *Best quality* switch), Z-Image, Mage, Ideogram 4 · light: FLUX.1 schnell, SD 3.5 Medium, SDXL, SD 1.5 |
 | **Edit** | 12 photo tools: Relight, Copy the light, Change the angle, Orbit (3D body preview), Head swap, Character swap, Character sheet, Adjust the face, Edit an area, Upscale, Follow the structure, Remove background | TRELLIS 2 · Qwen Image Edit 2511 · Qwen Image 2.1 + SAM 3 · FLUX 3 Klein · Flux 2 Klein · Krea 2 Anygles · SeedVR2 · Z-Image · LivePortrait · optional: Nano Banana 2, Seedream 5 Pro, GPT Image 2.5, Magnific, Topaz, Recraft |
-| **Video** | Text → video, image → video, first & last frame, references (up to 4 people/objects), keyframes, with sound | LTX 2.5 · LTX 2.3 · MiniMax H3 · FastH3 · light: LTX-Video 2B, Wan 2.2 5B, Wan 2.1 1.3B |
+| **Video** | Text → video, image → video, first & last frame, references (up to 4 people/objects; up to 9 with MiniMax H3), keyframes, with sound | LTX 2.5 · LTX 2.3 · MiniMax H3 (*Cinematic*, *Pika Flex* or, with references, *Singularity V2* style; up to 720p / 10 s on a 16 GB card, 15 s on 24 GB+) · FastH3 · light: LTX-Video 2B, Wan 2.2 5B, Wan 2.1 1.3B |
 | **LTX Studio** | Every LTX workflow in one place, with its own screens: **Keyframes** on a timeline (drag images to the second they should appear), **Ingredients** (a shot built from several images), **Latent upscale** | LTX 2.5 / 2.3 |
 | **Lip Sync** | A portrait and a voice track become a talking video, up to 30 s | LTX 2.3 |
-| **Music** | Songs from a style, with your lyrics or instrumental: BPM, key, voice, guide track, lyrics/score review | MiniMax Music 3 · ACE-Step 1.5 · Stable Audio 3 · YuE2 |
+| **Music** | Songs from a style, with your lyrics or instrumental: BPM, key, voice, guide track, lyrics/score review | MiniMax Music 3 · ACE-Step 1.5 (*Faster* or *Best quality*: Turbo or XL) · Stable Audio 3 · YuE2 |
 | **Voice** | Narrate a text, design a voice, or clone one from a short sample | OmniVoice (local) · Qwen3-TTS (Comfy Cloud) |
 | **Cinema Studio** | Direct the shot like a film set: camera, lens, light, film, look and grade cards, shot list, cast, Director mode | Image models + LTX |
 | **Genjutsu** | Swap a character in a video, keeping motion, camera and timing | **Recast** (Qwen Image Edit + LTX Union Control) · Wan Animate 2 · Wan 2.2 Animate Replace · MiniMax H3 Character Swap |
@@ -145,7 +145,10 @@ Paid partner models (Kling, Veo, Seedance, Runway, Nano Banana…) are **off by 
 
 Open **Config Models → Local models**:
 
-1. **Your machine.** The app reads your GPU, VRAM, RAM and free disk from ComfyUI.
+> [!IMPORTANT]
+> **Press _Confirm_ in _Your machine_ first.** The model packages only appear after you confirm your machine (GPU, VRAM, RAM). If you only see the settings cards and no packages, this is why.
+
+1. **Your machine.** The app reads your GPU, VRAM, RAM and free disk from ComfyUI. **Check it and press Confirm** (or *I'll pick Comfy Cloud*); the packages show up right below.
 2. **Packages.** Each feature is a package, in collapsible groups (Image, Edit & tools, Video, Video effects & swap, Lip Sync, Music & voice). Every card says whether it **runs well**, is **limited** or **won't run** on your machine, with its size, license, source links and the files already present. Light packages (SD 1.5 from 4 GB, SDXL and LTX-Video 2B from 6 GB, Wan from 8 GB) make the app usable on small cards.
 3. **Download.** Files come straight from Hugging Face into the exact ComfyUI subfolders the workflows expect. Downloads resume if interrupted.
 4. **Custom nodes.** Missing node packs are installed at pinned versions. Then restart ComfyUI once.
@@ -233,7 +236,7 @@ install.bat
 - **Start ComfyUI with Windows** (Config Models → Local models, when EasyComfee installed ComfyUI): an On/Off switch that loads ComfyUI while the PC starts, so it is ready when you open the studio. Off removes it; it also shows in Task Manager → Startup apps.
 - **Safe mode** (Config Models → Local models, **on by default**): explicit prompts are refused, local models get an anti-nudity negative prompt, and any result a small on-device classifier (Falconsai NSFW detector, Apache-2.0, ONNX on the CPU) marks as NSFW is shown blurred; the file on disk is kept. Open-weight models have no filter of their own, so turning it off is your choice and your responsibility.
 
-Then open **Config Models** and install a package: *Z-Image* (or *SD 1.5* on a small card) plus *LTX 2.5 Video* is a good first pick.
+Then open **Config Models**, press **Confirm** in *Your machine* (the packages only appear after that), and install a package: *Z-Image* (or *SD 1.5* on a small card) plus *LTX 2.5 Video* is a good first pick.
 
 ### Updating
 
@@ -305,6 +308,8 @@ The studio's code is released under the [MIT License](LICENSE). Models are not p
 | LTX 2.3 (Lightricks) | Video, Lip Sync, Union Control, In/Outpainting, Relight, Add sound (Foley V2A) | [LTX-2 Community License](https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2); the Foley V2A LoRA card says part of its training data (FoleyBench) is CC BY-NC-SA, non-commercial |
 | LTX-Video 2B 0.9.8 | Light video | Apache 2.0 / LTX-Video license |
 | MiniMax H3 · FastH3 | Video, Character Swap | [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE) |
+| Pika Flex adapter for MiniMax H3 (Pika Labs; compressed version by Kijai) | Video, *Pika Flex* style | Derived from MiniMax H3, under the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE) |
+| Singularity V2 adapter for MiniMax H3 (compressed version by Kijai) | Video, *Singularity V2* style (references) | Derived from MiniMax H3, under the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE) |
 | Wan 2.2 5B · Wan 2.1 1.3B · Wan Animate | Light video, Genjutsu | Apache 2.0 |
 | Qwen Image Edit 2511 | Recast first frame, editing | Apache 2.0 |
 | Qwen Image 2.1 | Image | [Qwen Research License](https://huggingface.co/Qwen/Qwen-Image-2.1/blob/main/LICENSE) (non-commercial) |

@@ -19,9 +19,9 @@ configuration; optional agent support requires an installed, authenticated Codex
 [Documentation](#documentation) ·
 [Community](https://discord.gg/5PWvAUNRHU)
 
-<!-- current-release: 0.10.0 -->
+<!-- current-release: 0.11.0 -->
 The current documented release is
-[v0.10.0](https://github.com/codersauce/red/releases/tag/v0.10.0).
+[v0.11.0](https://github.com/codersauce/red/releases/tag/v0.11.0).
 
 ![Red editing its Rust rendering pipeline with the project tree open](docs/images/editor-overview.jpg)
 
@@ -55,7 +55,7 @@ The PowerShell installer verifies the release checksum, installs to
 To pin a release or choose another directory:
 
 ```shell
-RED_VERSION=0.10.0 RED_INSTALL_DIR="$HOME/bin" \
+RED_VERSION=0.11.0 RED_INSTALL_DIR="$HOME/bin" \
   sh -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://getred.dev/install.sh)"
 ```
 
@@ -98,21 +98,21 @@ completed `codex login`.
   sessions retain buffers, plugins, LSP state, and running agents across
   terminal or SSH disconnects.
 
-## New in v0.10.0
+## New in v0.11.0
 
-- **Pick up a previous Codex conversation.** Press `Alt-s` in the Agent pane or
-  run `:AgentSessions` to search previous sessions from Red, this workspace, or
-  all of Codex, and resume or continue one.
-- **Keep the conversation after a relaunch.** Reopening Red in a workspace
-  resumes the same Codex thread, and a reply cut off by a crash asks whether to
-  retry, continue, or leave it.
-- **Updates install themselves.** Official standalone installations install a
-  new stable release in the background after verifying its signed checksums. Set
-  `[updates] mode = "notify"` to install when you choose.
-- **Agent edits respect your work.** Edits change only the lines they need, and
-  Red asks before saving a buffer with your unsaved changes.
-- **Copy from anywhere.** Yanks reach your local clipboard over SSH, Herdr, and
-  tmux through OSC 52.
+![A Markdown file in Red with hidden link markup, an inline chart, and a rendered table](docs/images/markdown.jpg)
+
+- **Markdown that reads like the document.** Tables draw as grids, link URLs
+  and emphasis markers take no space, and images appear in the buffer at full
+  resolution in terminals that support graphics. Move onto a line to edit its
+  source. See the [Markdown guide](docs/MARKDOWN.md).
+- **Follow links and tick tasks.** `gx` opens files, headings, and `file:line`
+  references, `Ctrl-w x` keeps the document beside them, and `gT` toggles a task.
+- **Explore code without asking a model.** `Space e e` opens a sidebar that
+  follows names, dims a function to the calls that matter, and keeps a trail
+  back. See [Code explore](docs/EXPLORE.md). The error list moved to `Space D`.
+- **Change a setting for one launch.** `red -c theme=onedark.json` sets any
+  dotted key for a single run.
 
 See the [release notes](https://github.com/codersauce/red/releases/latest) for
 everything else.
@@ -246,51 +246,38 @@ setting that ships with Red. Custom themes go in `~/.config/red/themes/`, and
 custom Husk plugins go in `~/.config/red/plugins/`. Run `red --runtime-files`
 to see every visible runtime asset and its source.
 
-Markdown files show pipe tables as aligned grids in Normal mode, with wrapped
-cells, column alignment, and inline formatting. Enter Insert or Visual mode in
-a table to reveal its original Markdown; Escape restores the grid. The display
-does not reformat the file or add undo entries. Use `:markdown-tables` (also in
-the command palette) to toggle this per split, or set `markdown_tables = false`
-to default to source. Fenced code, nested tables, malformed rows with extra cells,
-and documents larger than 2 MiB stay in source form.
+Override settings for a single launch with repeatable `-c` or `--config`
+flags. The key is a dotted path. The value is TOML, and a value that is not
+valid TOML is used as a plain string, so ordinary words do not need quotes.
+Later flags win. `--config-override` is the same flag and still accepts a
+TOML document.
 
-Markdown source also highlights **bold**, *emphasis*, `inline code`, and links,
-including nested formatting, reference links, and URL/email autolinks. Markdown
-delimiters remain visible in both Normal and Insert mode, so navigation and
-editing use the original source positions.
+```shell
+red -c theme=onedark.json -c languages.rust.indent_width=2 src/main.rs
+red -c 'disabled_plugins=["indent_guides"]' -c 'search={ignorecase=true}'
+red --print-config -c scrolloff=8
+```
 
-List markers and task checkboxes retain their source characters and indentation.
-Ordered-list numbers are emphasized separately from their punctuation, and checked
-tasks highlight the `x` or `X` without dimming the item text. In Normal mode, press
-`gT` anywhere on a task's first source line, or choose **Toggle task** in the command
-palette, to switch between `[ ]` and `[x]`. Nested tasks and tasks in block quotes
-work too; code examples are left alone. Each toggle preserves the cursor and is
-one undo step. The action is `ToggleMarkdownTask` for custom keybindings and is
-available for Markdown documents up to 2 MiB.
+Precedence, from lowest to highest:
 
-In Normal mode, press `gx` on a Markdown link's label or destination, or choose
-**Follow link** in the command palette. Web links open in your browser and email
-links in your mail app. Local files open in Red relative to the Markdown file's
-directory, reusing open buffers and their unsaved edits. `#heading` and
-`guide.md#heading` jump to headings; duplicate headings use `-1`, `-2`, and so on.
-Source links such as `src/main.rs:42:3` or `src/main.rs#L42` also work. Use
-`Ctrl-o` and `Ctrl-i` to go back and forward. Reference links, autolinks, and
-links in rendered tables follow the same rules; missing targets leave you in
-place. Link navigation is available for Markdown documents up to 2 MiB.
+1. Embedded defaults
+2. `config.toml` (`$XDG_CONFIG_HOME/red/config.toml`, or `~/.config/red/config.toml`)
+3. `-c` / `--config` / `--config-override`
 
-Press `Ctrl-w x`, or choose **Open link in split**, to keep the Markdown document
-visible while opening a local link in a split to its right. That source pane
-remembers the destination: later `gx` or `Ctrl-w x` opens reuse it. A `[links → N]`
-indicator in the source's filename identifies the destination pane number.
-Focus stays in the source by default; set `markdown_link_split_focus = "target"`
-in your config and restart Red to focus the opened file instead.
+Red does not read configuration from an environment variable. `XDG_CONFIG_HOME`
+only chooses the directory that contains `config.toml`. `red --print-config`
+prints the merged result, and `:config-diagnostics` lists startup overrides
+next to any configuration problems. `:set relativenumber` still toggles that
+option for the current session after startup.
 
-The destination has its own `Ctrl-o`/`Ctrl-i` history. Changing files there keeps
-it assigned, and unsaved edits remain in their buffers. **Clear link destination**
-in the command palette releases it without closing the pane. Closing either pane
-or changing the source document also clears the association; ordinary `gx` then
-opens in the current pane again. Associations are independent for each source pane
-and last only for the current session. Web and email links still open externally.
+Markdown reads like the rendered document and edits as source. In Normal
+mode, pipe tables draw as aligned grids, link URLs and emphasis markers are
+hidden so paragraphs wrap on the words you see, and a line holding only an
+image shows the picture in the buffer, at full resolution in Kitty,
+Ghostty, WezTerm, iTerm2, and Sixel terminals. Move onto a line and its raw
+Markdown comes back. `gx` follows links to files, headings, and `file:line`
+references, `Ctrl-w x` keeps the document open beside what it links to, and
+`gT` toggles a task. See the [Markdown guide](docs/MARKDOWN.md).
 
 Add new highlighting, exact filenames, comment syntax, indentation, and language
 servers through a unified `[languages.<id>]` configuration or an installable
@@ -346,6 +333,8 @@ platform details.
 | Guide | Covers |
 | --- | --- |
 | [Getting started](docs/GETTING_STARTED.md) | Editing, keymaps, LSP, Git, CLI, and troubleshooting |
+| [Markdown](docs/MARKDOWN.md) | Rendered tables, hidden markup, inline images, links, and tasks |
+| [Code explore](docs/EXPLORE.md) | Reading mode: symbol follow, sidebar, skeleton dimming, review trail |
 | [Husk language server](docs/HUSK_LSP.md) | Husk editor features, external crates, configuration, and safety boundaries |
 | [Language extensions](docs/LANGUAGES.md) | Custom syntax, trusted Tree-sitter grammars, language packs, LSP settings, and live reload |
 | [Vim compatibility](docs/VIM_COMPATIBILITY.md) | Supported behavior and intentional differences |

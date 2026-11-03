@@ -123,6 +123,14 @@ Tap the pill, then the label, to open the panel.
   progress bar and final log lines to arrive, then disconnects — unless a
   file you viewed is still being auto-downloaded (it waits for that to
   finish) or you've turned on **Keep GPU warm**.
+- If the remote refuses a job (for example, a node has a value that is not in
+  its list), the error dialog shows as usual. The proxy then closes the live
+  progress connection at once, unless you have other jobs running. The GPU
+  can then shut down.
+- If the live progress connection has no job on it for 60 seconds, the proxy
+  closes it. This stops an idle connection from keeping the GPU awake. To
+  change the time, edit `IDLE_STREAM_TIMEOUT` in `proxy/config.py`. Set it to
+  `0` to turn this off.
 - Model/checkpoint dropdowns show what your remote machine has, not your
   local files. The list is fetched when you save a URL or turn the proxy on;
   the panel says **Updating model list...** meanwhile, then **Remote model

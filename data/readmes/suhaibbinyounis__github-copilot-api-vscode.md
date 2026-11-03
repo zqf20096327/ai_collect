@@ -245,9 +245,13 @@ Customize in VS Code Settings (`githubCopilotApi.*`):
 | `server.port` | 3030 | Local server port |
 | `server.host` | 127.0.0.1 | Bind address (use `0.0.0.0` for LAN access) |
 | `server.apiKey` | *(empty)* | Optional Bearer token for authentication |
+| `server.allowedHosts` | `[]` | Additional exact Host names accepted by HTTP and WebSocket APIs through a reverse proxy |
+| `server.allowedOrigins` | `[]` | Exact browser origins allowed to call the APIs cross-origin |
 | `server.autoStart` | false | Start server when VS Code opens |
 
 For advanced options (TLS, IP allowlisting, audit logging), see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+HTTP and WebSocket requests validate Host and Origin. Browser requests are same-origin by default; add an exact origin such as `https://app.example.com` to `server.allowedOrigins` only when a browser app needs cross-origin access. For a reverse proxy, add its exact gateway hostname to `server.allowedHosts`. JSON POST requests must use `Content-Type: application/json`. The former `server.webSocketAllowedHosts` and `server.webSocketAllowedOrigins` settings remain supported as deprecated aliases. Native WebSocket clients can send `Authorization: Bearer <key>` or `x-api-key`; browser clients can pass `api-key.<key>` as a WebSocket subprotocol. The credential subprotocol is not returned in the handshake response.
 
 ---
 

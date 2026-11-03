@@ -123,8 +123,8 @@ Canonical backend names are shown below. Method-specific aliases are only accept
 | --- | --- | --- |
 | `METHOD.GPTQ` CPU | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2` | `BACKEND.GPTQ_TORCH_CPU_AVX512` |
 | `METHOD.AWQ` CPU | `FORMAT.GEMM` | `BACKEND.AWQ_TORCH_CPU_AVX512` |
-| `METHOD.GPTQ` | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2`, `FORMAT.GPTQ_P`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GPTQ`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_MACHETE`, `BACKEND.GPTQ_MARLIN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_V2`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_P`: `BACKEND.GPTQ_TORCH`<br>`FORMAT.MARLIN`: `BACKEND.GPTQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.GPTQ_BITBLAS` |
-| `METHOD.AWQ` | `FORMAT.GEMM`, `FORMAT.GEMV`, `FORMAT.GEMV_FAST`, `FORMAT.LLM_AWQ`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GEMM`: `BACKEND.AWQ_TORCH_ATEN`, `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`, `BACKEND.AWQ_EXLLAMA_V2`, `BACKEND.AWQ_GEMM`, `BACKEND.AWQ_GEMM_TRITON`, `BACKEND.AWQ_TORCH_FUSED`, `BACKEND.AWQ_TORCH`, `BACKEND.AWQ_TORCH_INT8`, `BACKEND.AWQ_BITBLAS`<br>`FORMAT.GEMV`: `BACKEND.AWQ_GEMV`<br>`FORMAT.GEMV_FAST`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.LLM_AWQ`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.MARLIN`: `BACKEND.AWQ_MACHETE`, `BACKEND.AWQ_MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.AWQ_BITBLAS` |
+| `METHOD.GPTQ` | `FORMAT.GPTQ`, `FORMAT.GPTQ_V2`, `FORMAT.GPTQ_P`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GPTQ`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.MACHETE`, `BACKEND.MARLIN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_V2`: `BACKEND.GPTQ_TORCH_ATEN`, `BACKEND.GPTQ_EXLLAMA_V2`, `BACKEND.GPTQ_TORCH_FUSED`, `BACKEND.GPTQ_TRITON`, `BACKEND.GPTQ_BITBLAS`, `BACKEND.GPTQ_TORCH`, `BACKEND.GPTQ_TORCH_INT8`<br>`FORMAT.GPTQ_P`: `BACKEND.GPTQ_TORCH`<br>`FORMAT.MARLIN`: `BACKEND.MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.GPTQ_BITBLAS` |
+| `METHOD.AWQ` | `FORMAT.GEMM`, `FORMAT.GEMV`, `FORMAT.GEMV_FAST`, `FORMAT.LLM_AWQ`, `FORMAT.MARLIN`, `FORMAT.BITBLAS` | `FORMAT.GEMM`: `BACKEND.AWQ_TORCH_ATEN`, `BACKEND.MACHETE`, `BACKEND.MARLIN`, `BACKEND.AWQ_EXLLAMA_V2`, `BACKEND.AWQ_GEMM`, `BACKEND.AWQ_GEMM_TRITON`, `BACKEND.AWQ_TORCH_FUSED`, `BACKEND.AWQ_TORCH`, `BACKEND.AWQ_TORCH_INT8`, `BACKEND.AWQ_BITBLAS`<br>`FORMAT.GEMV`: `BACKEND.AWQ_GEMV`<br>`FORMAT.GEMV_FAST`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.LLM_AWQ`: `BACKEND.AWQ_GEMV_FAST`<br>`FORMAT.MARLIN`: `BACKEND.MACHETE`, `BACKEND.MARLIN`<br>`FORMAT.BITBLAS`: `BACKEND.AWQ_BITBLAS` |
 | `METHOD.PARO` | `FORMAT.PAROQUANT` | `BACKEND.PAROQUANT_CUDA`, `BACKEND.PAROQUANT_TRITON` |
 | `METHOD.QQQ` | `FORMAT.QQQ` | `BACKEND.QQQ`, `BACKEND.QQQ_TORCH` |
 | `METHOD.VPTQ` | `FORMAT.VPTQ` | `BACKEND.VPTQ_CUDA`, `BACKEND.VPTQ_TORCH` |
@@ -132,6 +132,14 @@ Canonical backend names are shown below. Method-specific aliases are only accept
 | `METHOD.FP8` | `FORMAT.FP8` | `BACKEND.FP8_TORCH` |
 | `METHOD.BITSANDBYTES` | `FORMAT.BITSANDBYTES` | `BACKEND.BITSANDBYTES` |
 | `METHOD.EXL3` | `FORMAT.EXL3` | `BACKEND.EXL3_EXLLAMA_V3`, `BACKEND.EXL3_TORCH` |
+
+Marlin, Machete, and Swordfish are each one backend (`BACKEND.MARLIN`,
+`BACKEND.MACHETE`, `BACKEND.SWORDFISH`). The quantization method and checkpoint
+format select the GPTQ or AWQ sub-kernel automatically, so `gptq_marlin`/
+`awq_marlin`, `gptq_machete`/`awq_machete`, and `gptq_swordfish`/
+`awq_swordfish` are no longer separate backend names. The stable `hf_` packing
+and repacking APIs still accept those legacy strings and resolve them to the
+shared backend.
 
 `BACKEND.GPTQ_TORCH_CPU_AVX512` and `BACKEND.AWQ_TORCH_CPU_AVX512` share the
 same AVX512-BF16 int4 GEMM on Linux x86-64 hosts with AVX512-BF16,
@@ -256,6 +264,7 @@ The table mirrors every explicit registration in `gptqmodel.models.auto.MODEL_MA
 | Klear | `klear` |
 | Laguna | `laguna` |
 | LFM2 / LFM2 MoE / LFM2-VL | `lfm2`, `lfm2_moe`, `lfm2_vl` |
+| LFM3 / LFM3 Omni / LFM3-VL | `lfm3`, `lfm3_omni`, `lfm3_vl` |
 | LLaDA2 MoE | `llada2_moe` |
 | Llama 1-4 / TinyLlama / Nemotron Ultra | `llama`, `llama4`, `llama4_text` |
 | Llama 3.2 VL | `mllama`, `mllama_text_model` |
@@ -348,6 +357,11 @@ reports the HIP runtime version, not the ROCm release, so version checks use
 
 ROCm pip SDK installations that expose `_rocm_sdk_core` as `ROCM_HOME` need the
 matching `rocm-sdk-devel` package and `rocm-sdk init` before building JIT kernels.
+JIT builds on ROCm always use the HIP/torch headers only: NVIDIA `nvidia` wheel
+headers are never added to a hipcc command line, even when those packages are
+installed in the environment, because their `vector_types.h` conflicts with
+HIP's vector type aliases.
+
 On gfx950 (CDNA4) and the gfx120*/gfx125* RDNA4 family, the Torch GPTQ backend
 uses a fused Triton GEMV for single-token 2/4/8-bit inference and a fused
 small-M GEMM for M=2..16, and falls back to the existing path for other shapes

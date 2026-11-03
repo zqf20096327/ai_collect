@@ -26,7 +26,7 @@
 
 ---
 
-> **OpenCockpit is the open Claude Code GUI for any LLM** — an IDE-like workbench for the whole dev loop. Run multi-project Claude sessions out of the box; pop open a tab for **Codex, DeepSeek, GLM, Kimi, or local Ollama** whenever you need, side by side, with no environment variables to edit. Built-in terminal, Chrome control, PostgreSQL / MySQL / Redis bubbles, code review, and slash modes — all local. And it's web client–server: **self-host it on a shared dev box and every teammate gets a seat.**
+> **OpenCockpit is the open Claude Code GUI for any LLM** — an IDE-like workbench for the whole dev loop. Run multi-project Claude sessions out of the box; pop open a tab for **Codex, Grok Build, DeepSeek, GLM, Kimi, or local Ollama** whenever you need, side by side, with no environment variables to edit. Built-in terminal, Chrome control, PostgreSQL / MySQL / Redis bubbles, code review, and slash modes — all local. And it's web client–server: **self-host it on a shared dev box and every teammate gets a seat.**
 
 https://github.com/user-attachments/assets/18f1a5dc-64f3-4ff6-b9fc-9cd08181fbb8
 
@@ -42,7 +42,7 @@ Cockpit is the instrument panel. It does **not** replace Claude Code; it stands 
 
 | Pain with raw Claude Code | What Cockpit adds |
 |---|---|
-| Stuck on one model | **6 engines side by side** in tabs: Claude (default), Codex, DeepSeek, GLM, Kimi, local Ollama — each its own session |
+| Stuck on one model | **7 engines side by side** in tabs: Claude (default), Codex, Grok Build, DeepSeek, GLM, Kimi, local Ollama — each its own session |
 | One session at a time, terminal chaos at 3+ projects | **Multi-project tabs**, parallel agent sessions, red-dot inbox, desktop notifications |
 | Image attachments are awkward | Drop / paste images straight into chat |
 | "What was I debugging yesterday?" | Cmd+K cross-project session browser, pinning, forking; `/ss` finds any past session from one sentence |
@@ -50,7 +50,7 @@ Cockpit is the instrument panel. It does **not** replace Claude Code; it stands 
 | Agent can't reach your browser / DB | **Smart Bubbles**: Chrome, PostgreSQL, MySQL, Redis — drivable by the agent |
 | Reading an unfamiliar repo means a 90-min file-tree scavenger hunt | **Code Map** chip view — caller / callee pins, click to walk the call graph |
 | Reviewing AI output is friction | Line-level comments on any file, send any comment back as AI context |
-| Same "do X but don't change code" prompt every day | **Slash modes** `/qa /fx /ex /go /cg /cc /cr` + custom `SKILL.md` via the Skills sidebar |
+| Same "do X but don't change code" prompt every day | **Slash modes** `/qa /spec /fx /ex /go /cg /cc /cr` + custom `SKILL.md` via the Skills sidebar |
 | No automation hooks | One-time / interval / cron-based **scheduled tasks** |
 | "Cloud relay" trust concerns | **Fully local**. No telemetry. API keys (DeepSeek / GLM / Kimi) stay in `~/.cockpit/<engine>/credentials.json` on your laptop. |
 
@@ -63,12 +63,12 @@ An honest snapshot as of July 2026 — each tool wins somewhere. Spotted an erro
 | Positioning | **IDE-like workbench for the whole dev loop** | agent session companion | session manager for Claude Code |
 | Architecture | ✅ **web client–server** — deploy on a shared dev box; the whole team codes with AI in parallel, each on their own project / worktree | single-user desktop app | single-user desktop app |
 | Open source | ✅ MIT | ❌ closed source | ✅ AGPL-3.0 |
-| Engines | ✅ **Claude + Codex / DeepSeek / GLM / Kimi / Ollama** (BYOK) | Claude only | Claude only |
+| Engines | ✅ **Claude + Codex / Grok Build / DeepSeek / GLM / Kimi / Ollama** (BYOK) | Claude only | Claude only |
 | Parallel multi-project sessions | ✅ | ✅ | ✅ |
 | Agent-drivable browser & DB (Chrome / Postgres / MySQL / Redis) | ✅ Smart Bubbles | ❌ preview pane only | ❌ |
 | Fully offline / air-gapped | ✅ via Ollama | ❌ | ❌ |
 | Phone / tablet access | ✅ any LAN browser — code runs on **your** machine | ✅ via Claude Code on the web (cloud sandbox) | ❌ desktop only |
-| Native desktop app | ❌ local web app (needs Node ≥ 20) | ✅ | ✅ Tauri |
+| Native desktop app | ❌ local web app (needs Node ≥ 22.19) | ✅ | ✅ Tauri |
 | Newest Claude Code features on day one | ⏳ tracks Agent SDK releases with a lag | ✅ first party | ❌ |
 | Automation triggers | one-time / interval / cron | ✅ Routines: cron + API + GitHub events | background agents |
 | Session checkpoints / rewind | pinning & forking only | ✅ | ✅ checkpoint timeline |
@@ -85,6 +85,7 @@ An honest snapshot as of July 2026 — each tool wins somewhere. Spotted an erro
 
 - **Claude** *(default)* — full official Agent SDK; zero setup if `claude` CLI is already configured
 - **Codex** — reuses your `~/.codex` config; same chat, same shell + bubbles
+- **Grok Build** — ships a pinned Grok CLI and uses your subscription login and native coding tools through ACP. Select **Grok** from the new-chat menu; The model and reasoning menus use a fixed list (Grok 4.7, 4.6 and 4.5; Low through Extra High) and save choices per session. Commands and edits run with full access, like Claude/Codex. Session resume, streaming, tool results, and background-task continuations are supported. Independent tasks use isolated native context; prefix/single-turn forks and turn deletion synchronize both native and display history. Exact edits of turns already replaced by native compaction are refused to avoid retaining excluded content.
 - **DeepSeek** — DeepSeek key + live model picker (`deepseek-v4-pro` by default) and a **balance check**
 - **GLM** *(Zhipu / BigModel)* — BigModel key + live model picker (`glm-5.2` by default) and a Coding Plan **quota check**; one key, two hosts — switch **Region** between `open.bigmodel.cn` and `api.z.ai`
 - **Kimi** *(Moonshot)* — Kimi Code key + live model picker (`kimi-for-coding`, `k3`, …) and a **quota check**; no `kimi` CLI needed
@@ -130,13 +131,14 @@ An honest snapshot as of July 2026 — each tool wins somewhere. Spotted an erro
 
 ### Slash modes — change the agent's posture
 
-- `/qa` — **Clarify-only**: restate, ask back, never code
-- `/fx` — **Diagnose-only**: bug evidence chain, never edit
-- `/ex` — **Explore**: 6-step structured discussion skeleton (study → diverge → converge → re-diverge → iterate-verify → summarize)
-- `/go` — **Land**: take a converged plan, slice into MVP stages, write + self-verify per stage, recap at end
-- `/cg` — **CodeGraph** project exploration: 10 HTTP endpoints for symbol / callers / impact / co-edit / risk / affected queries (precise where grep is fuzzy)
-- `/cc` — **Cockpit CLI**: drive the cockpit CLI surface — codegraph subcommands, terminal observation, browser automation
-- `/cr` — **Code review**: full PR review — static triangulation (intent / input domain / surroundings) + dynamic modelling (state diagram + timeline → 6 risk classes), findings ranked by impact × probability
+- `/qa` — **Clarify requirements**: produce a lean PRD with goals, scope, assumptions, and decisions; no solution design or code
+- `/spec` — **Specify**: turn agreed requirements into behavior, contracts, and acceptance criteria; no implementation
+- `/fx` — **Diagnose**: trace evidence to the root cause, then give blast radius, fix options, and verification steps; no code changes
+- `/ex` — **Deep analysis**: answer first, then evidence, options, and open points; no clarification pauses or code changes
+- `/go` — **Implement**: build agreed work in small verified slices, record decisions the spec did not cover, and report blockers and residuals
+- `/cg` — **Explore code**: use CodeGraph symbols, call relations, and co-edit history to locate code, trace calls, and assess change impact
+- `/cc` — **Cockpit CLI**: open and control browser bubbles, observe terminal output read-only, and query the codegraph; production instance by default
+- `/cr` — **Code review**: independently review static correctness and state, timing, and concurrency; report a solution diagram, severity-ranked findings, and coverage; `hard` fans out by dynamic slice
 - **Custom**: drop any `SKILL.md` and add it via the Skills sidebar — it auto-appears in the slash autocomplete menu (see [Skills](#skills--extensibility))
 
 ### Scheduled tasks — Cron for AI
@@ -181,7 +183,7 @@ No install, no AI chat (read-only sandbox, 5 min):
 ## Prerequisites
 
 - **macOS, Linux, or Windows** — Windows support is experimental ([details](#windows))
-- **Node.js ≥ 20** — [nodejs.org](https://nodejs.org/)
+- **Node.js ≥ 22.19** — [nodejs.org](https://nodejs.org/)
 - **Claude Code** — [docs.anthropic.com/en/docs/claude-code](https://docs.anthropic.com/en/docs/claude-code) (default engine)
 - **Git** — for git features (blame, diff, worktree, etc.)
 - **Chrome** *(optional)* — for Browser Bubble; install the bundled extension from `~/.cockpit/chrome-extension`
@@ -189,6 +191,7 @@ No install, no AI chat (read-only sandbox, 5 min):
 ### Optional, per non-Claude engine
 
 - **Codex** — log in once with `codex login` to populate `~/.codex`
+- **Grok Build** — the [official Grok Build CLI](https://x.ai/cli) is installed with Cockpit. Run `grok login` to sign in once. If it is not on PATH, use `~/.grok/bin/grok login` (or `npx --no-install grok login` from this checkout). A separate global CLI installation is unnecessary. Cockpit launches its bundled binary with automatic updates disabled and uses the cached subscription login, including when `XAI_API_KEY` is set in the host environment. Display history is stored under `$COCKPIT_HOME/grok/sessions` (default `~/.cockpit/grok/sessions`); native context and credentials stay in the CLI's data directory.
 - **DeepSeek** — get an API key at [api-docs.deepseek.com](https://api-docs.deepseek.com/); paste it into the engine picker
 - **GLM (Zhipu / BigModel)** — get an API key (`<id>.<secret>`) at [bigmodel.cn/apikey/platform](https://bigmodel.cn/apikey/platform); paste it into the **API Key** field of the model picker in the chat header. The same key works on both hosts, so **Region** (`open.bigmodel.cn` / `api.z.ai`) is just routing — it defaults from your UI language and can be overridden in the picker.
 - **Kimi (Moonshot)** — get a **Kimi Code** API key (`sk-kimi-…`) at [kimi.com/code/console](https://www.kimi.com/code/console); paste it into the **API Key** field of the model picker in the chat header. *(A `platform.moonshot.cn` Open Platform key is a different product and will not work.)* The `kimi` CLI is no longer used.
@@ -267,7 +270,7 @@ wsl --install          # once, from an admin PowerShell, then reboot
 
 ```bash
 wsl                                  # enter your Linux shell
-npm install -g @surething/cockpit    # install Node ≥ 20 inside WSL first
+npm install -g @surething/cockpit    # install Node ≥ 22.19 inside WSL first
 cockpit
 ```
 

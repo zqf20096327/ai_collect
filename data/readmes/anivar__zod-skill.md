@@ -6,11 +6,11 @@ An AI agent skill for writing, validating, and debugging Zod v4 schemas with mod
 
 ## The Problem
 
-AI agents often generate outdated Zod v3 patterns — `z.string().email()` instead of `z.email()`, `z.nativeEnum()` instead of the unified `z.enum()`, `required_error` instead of the `error` parameter — and miss critical parsing pitfalls like using `parse()` instead of `safeParse()`, forgetting `parseAsync` for async refinements, or assuming `z.object()` preserves unknown keys. These produce schemas that compile but silently misbehave at runtime.
+AI agents often generate outdated Zod v3 patterns — `z.string().email()` instead of `z.email()`, `z.nativeEnum()` instead of the unified `z.enum()`, `required_error` instead of the `error` parameter — and miss critical parsing pitfalls like using `parse()` instead of `safeParse()`, forgetting `parseAsync` for async refinements, or assuming `z.object()` preserves unknown keys. Some of these no longer compile, some are deprecated, and some compile but misbehave at runtime.
 
 ## This Solution
 
-27 rules with incorrect→correct code examples that teach agents Zod v4's actual API behavior, schema design patterns, error handling, architectural placement, observability, and TypeScript integration. Each rule targets a specific mistake and shows exactly how to fix it.
+30 rules with incorrect→correct code examples that teach agents Zod v4's actual API behavior, schema design patterns, error handling, architectural placement, observability, and TypeScript integration. Each rule targets a specific mistake and shows exactly how to fix it.
 
 ## Install
 
@@ -18,8 +18,9 @@ AI agents often generate outdated Zod v3 patterns — `z.string().email()` inste
 npx skills add anivar/zod-skill -g
 ```
 
-Testing schemas is covered too, merged from the former `zod-testing` skill —
-see `references/testing.md`.
+Testing schemas is covered too, in `references/testing.md`. The
+[zod-testing](https://github.com/anivar/zod-testing) skill carries the same guide,
+generated from these files by `.github/check/sync-testing.ts`.
 
 Or with full URL:
 
@@ -29,26 +30,29 @@ npx skills add https://github.com/anivar/zod-skill
 
 ## Baseline
 
-- zod ^4.6.0 (tracks 4.6.x; audited against zod.dev, October 2026)
+- zod ^4.6.0, checked against zod 4.6.7 and the zod.dev pages
 - TypeScript ^5.5
 
-The skill is checked against Zod's own documentation rather than its release
-notes, which matters more than it sounds: several APIs announced in 4.3
-releases — `slugify`, `.with()`, `.apply()`, `.overwrite()`, `.register()` —
-have no presence in the documentation, and a skill that taught them would be
-teaching an interface the project has not committed to.
+The skill teaches what Zod's documentation commits to. `.apply()`, `.overwrite()`
+and `.register()` are documented and covered. `.slugify()` and `.with()` exist in
+4.6.7 but the zod.dev pages do not mention them, so the skill
+does not teach them.
+
+Every TypeScript block in the skill compiles against the pinned zod and TypeScript,
+and every behaviour claim with a runtime test runs on zod 4.6.7. Run the check with
+`bun install && bun run check` in `.github/check`.
 
 ## What's Inside
 
-### 27 Rules Across 9 Categories
+### 30 Rules Across 9 Categories
 
 | Priority | Category | Rules | Impact |
 |----------|----------|-------|--------|
-| 1 | Parsing & Type Safety | 3 | CRITICAL |
-| 2 | Schema Design | 4 | CRITICAL |
+| 1 | Parsing & Type Safety | 4 | CRITICAL |
+| 2 | Schema Design | 5 | CRITICAL |
 | 3 | Refinements & Transforms | 3 | HIGH |
 | 4 | Error Handling | 3 | HIGH |
-| 5 | Performance & Composition | 3 | MEDIUM |
+| 5 | Performance & Composition | 4 | MEDIUM |
 | 6 | v4 Migration | 3 | MEDIUM |
 | 7 | Advanced Patterns | 3 | MEDIUM |
 | 8 | Architecture & Boundaries | 3 | CRITICAL/HIGH |
@@ -60,25 +64,32 @@ Each rule file contains:
 - Correct code with explanation
 - Decision tables and additional context
 
-### 9 Deep-Dive References
+### 15 Deep-Dive References
 
 | Reference | Covers |
 |-----------|--------|
-| `schema-types.md` | All primitives, string formats, numbers, enums, dates, files, JSON |
-| `parsing-and-inference.md` | parse, safeParse, parseAsync, z.infer, z.input, coercion |
-| `objects-and-composition.md` | object/strict/loose, pick, omit, partial, recursive, unions, tuples |
+| `schema-types.md` | Primitives, string formats, numbers, enums, dates, files, JSON, functions, branded types |
+| `parsing-and-inference.md` | parse, safeParse, validate, z.infer, z.input, coercion, Standard Schema |
+| `objects-and-composition.md` | object/strict/loose, optional keys, pick, omit, partial, recursive, unions, tuples, properties |
 | `refinements-and-transforms.md` | refine, superRefine, transform, pipe, defaults, catch |
 | `error-handling.md` | ZodError, flattenError, treeifyError, error customization, i18n |
-| `advanced-features.md` | Codecs, branded types, JSON Schema, registries, Standard Schema |
-| `anti-patterns.md` | 14 common mistakes with BAD/GOOD examples |
+| `behaviour-changes.md` | What parses differently in 4.0, 4.4, 4.5 and 4.6, each row tested |
+| `codecs.md` | z.codec, decode and encode, each direction, 16 copy-in recipes |
+| `metadata-and-json-schema.md` | Registries, .meta(), z.toJSONSchema options, z.fromJSONSchema |
+| `compile.md` | z.compile, zod/compile, what does not compile, z.withParser, bundle cost |
+| `anti-patterns.md` | 15 common mistakes with BAD/GOOD examples |
 | `boundary-architecture.md` | Where Zod fits: Express, tRPC, Next.js, React Hook Form, env, external APIs |
 | `linter-and-ci.md` | ESLint rules, CI schema snapshots, unused schema detection, circular deps |
+| `testing.md` | Testing schemas: safeParse assertions, boundary values, mock data, property-based tests |
+| `testing-api.md` | Jest and Vitest patterns for schema tests |
+| `testing-anti-patterns.md` | Testing mistakes with BAD/GOOD examples |
 
 ## Structure
 
-```
+```text
 ├── SKILL.md                          # Entry point for AI agents
-├── AGENTS.md                         # Compiled guide with all rules expanded
+├── AGENTS.md                         # Compiled guide, generated by .github/check/agents.ts
+├── .github/check/                    # Compiles every code block; runs the behaviour claims
 ├── rules/                            # Individual rules (Incorrect→Correct)
 │   ├── parse-*                       # Parsing & type safety (CRITICAL)
 │   ├── schema-*                      # Schema design (CRITICAL)
@@ -95,10 +106,16 @@ Each rule file contains:
     ├── objects-and-composition.md
     ├── refinements-and-transforms.md
     ├── error-handling.md
-    ├── advanced-features.md
+    ├── behaviour-changes.md
+    ├── codecs.md
+    ├── metadata-and-json-schema.md
+    ├── compile.md
     ├── anti-patterns.md
     ├── boundary-architecture.md
-    └── linter-and-ci.md
+    ├── linter-and-ci.md
+    ├── testing.md
+    ├── testing-api.md
+    └── testing-anti-patterns.md
 ```
 
 ## Ecosystem — Skills by [Anivar Aravind](https://anivar.net)

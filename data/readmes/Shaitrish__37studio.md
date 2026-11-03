@@ -35,7 +35,7 @@ You bring your own keys (a Claude plan or an Anthropic API key; optionally OpenA
 - **An editor agent.** Claude Opus 5.5 builds each video as an animated HyperFrames composition, checks its own frames and takes changes in plain words. Edit by hand on a real timeline when you want to.
 - **Many kinds of output.** Hook reels, captioned clips, motion-graphics explainers, podcast clips, promo ads, square and portrait posts, and thumbnails. Save any finished video as a template for the next one.
 - **Long recordings into many videos.** A 2-hour class becomes ten reels. Transcription runs locally with faster-whisper: free, private, about 100 languages. YouTube and Google Drive links import directly.
-- **Generated media.** Gemini images; video clips from Gemini or, through fal.ai, Seedance, Kling, Veo, Wan and others; ElevenLabs voiceover, sound effects and music. The agent asks before media on one project costs more than the limit in Settings → Spending, and keeps a person or product consistent by reusing one reference image across shots. The agent uses them only when the footage and brand library can't do the job, and says what it made.
+- **Generated media.** Gemini images; video clips from Gemini or, through fal.ai, Seedance, Kling, Veo, Wan and others; ElevenLabs voiceover, sound effects and music. Each brand can keep its own voices, cloned from a short recording of the founder or presenter, with a default per language; ask the agent for a voice by name, or to switch a finished video to it. The agent asks before media on one project costs more than the limit in Settings → Spending, and keeps a person or product consistent by reusing one reference image across shots. The agent uses them only when the footage and brand library can't do the job, and says what it made.
 - **Publishing and Autopilot.** Post to any mix of a brand's accounts on nine platforms now or on a schedule, or let a content plan make a fresh video before every slot and wait for one-click approval.
 - **One inbox.** Messenger, Instagram and WhatsApp messages and Facebook and Instagram comments, with replies drafted in the customer's language, following the brand's own rules. Off, drafts to approve, or fully automatic, per brand.
 - **Assistant and MCP.** Run everything by chatting with the Assistant in the sidebar, or from your own AI agent (Claude Code, Claude Desktop, Cursor) through 37Studio's MCP server: brands, campaigns, videos, publishing, Autopilot, settings and connections.
@@ -85,6 +85,26 @@ docker compose up --build
 - **Windows.** Use Docker Desktop with the WSL 2 backend. Footage under `./data` is a bind mount, so for multi-GB files keep the repo inside the WSL filesystem (`\\wsl$\...`) rather than on `C:\`.
 
 To work on the code with hot reload, see [CONTRIBUTING.md](CONTRIBUTING.md#running-it-from-source).
+
+### Desktop app, without Docker (preview)
+
+37Studio in its own window, in your app menu, with no Docker. For now it is Linux and Windows; a Mac build comes later. From 0.9.0 on, download the file for your computer from [studio.shaitrish.com/desktop](https://studio.shaitrish.com/desktop) or the [latest release](https://github.com/Shaitrish/37studio/releases/latest).
+
+On Ubuntu or Debian, the `.deb`:
+
+```bash
+sudo apt install ./37studio_*_amd64.deb                  # also installs ffmpeg and Python
+sudo npm install -g @anthropic-ai/claude-code            # needs Node.js 22 or newer
+```
+
+On Windows 10 or 11, the `.zip`: unpack it and run `install-windows.ps1`, then install the tools the agent uses.
+
+```powershell
+winget install Git.Git Gyan.FFmpeg OpenJS.NodeJS.LTS Python.Python.3.13
+npm install -g @anthropic-ai/claude-code
+```
+
+Then open **37Studio** from the app menu or the Start menu. [docs/desktop.md](docs/desktop.md) has the full guide: other Linux, building it yourself, using your Docker data, and how it differs from the Docker version.
 
 ### Run it in the cloud
 

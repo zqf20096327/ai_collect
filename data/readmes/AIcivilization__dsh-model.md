@@ -94,7 +94,7 @@ dsh-model setup
 | **模型统计** | 按模型显示成功率、延迟和速度 |
 | **关于** | 当前版本和 npm 上的最新版本；「更新」「卸载」一键完成（VPS 上要 root，这里给出命令） |
 
-还没在这台机器上装好服务时，这一页会说明缺什么，并提供「一键安装」按钮，安装过程实时显示。刚装好时有「开始使用」向导；插件更新后还没重启 dsh 时页面顶部会提示（dsh-vps 上可一键重启）；额度快用完时，dsh 任何页面的右下角都会提醒。所以也可以先从 dsh 的插件市场装 dsh-model，再在这一页里点安装。
+从插件市场装好后，dsh 一加载插件就会在后台自动安装（引擎随 npm 一起装好，不用连 GitHub），约 1 分钟；这时打开这一页能看到进度，没装成会显示原因，点「一键安装」再试。执行过 `dsh-model uninstall` 的机器不会被自动装回去。刚装好时有「开始使用」向导；插件更新后还没重启 dsh 时页面顶部会提示（dsh-vps 上可一键重启）；额度快用完时，dsh 任何页面的右下角都会提醒。所以从 dsh 的插件市场装好 dsh-model、打开这一页，就装好了。
 
 登录全由 dsh-model 自己完成，服务器上不装各家的 CLI，也不需要浏览器：
 
@@ -171,7 +171,7 @@ dsh · 编辑器 · 脚本 ──Bearer key──▶ 引擎 127.0.0.1:8317/v1（
 - 适合个人使用：每家用自己的一个账号，不要拿来对外提供服务。
 - 订阅和 WorkBuddy 的凭据在官方客户端之外使用，可能不符合服务商的条款，账号有风险，请自行判断。
 - 支持 Windows 10 / 11（x64、ARM64）、macOS、Linux，需要 Node ≥ 20。
-- 下载引擎要连 GitHub：setup 会自动用上系统代理（Windows、macOS）或 `HTTPS_PROXY`；连不上时会说明原因，可以用 `--proxy <地址>` 指定代理，或手动下载后设置 `DSH_MODEL_ENGINE_ARCHIVE`。
+- 引擎随 npm 一起装，国内免代理：引擎（CLIProxyAPI）按平台拆成了几个 npm 包，装 dsh-model 时只把当前平台那一个带下来（npm 国内有镜像），setup 不用再连 GitHub。npm 上没有对应平台的包时，才回退到从 GitHub 下载：这时 setup 会自动用上系统代理（Windows、macOS）或 `HTTPS_PROXY`，也可以用 `--proxy <地址>` 指定代理，或手动下载后设置 `DSH_MODEL_ENGINE_ARCHIVE`。
 - Windows：后台服务登录后自动运行、不弹窗口。如果被杀毒软件拦下（程序不见了或启动不了），把 `%USERPROFILE%\.dsh-model` 加入信任，再执行 `dsh-model repair`。
 
 ## License

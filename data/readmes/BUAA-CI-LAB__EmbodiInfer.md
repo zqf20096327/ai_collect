@@ -3,184 +3,170 @@
 </p>
 
 <h3 align="center">One engine for embodied inference and RL rollout.</h3>
+
 <p align="center">
-  <a href="https://embodiinfer.readthedocs.io/">Documentation</a> ·
+  <a href="#demos">Demos</a> ·
+  <a href="#benchmarks">Benchmarks</a> ·
+  <a href="#supported-models">Supported models</a> ·
   <a href="#quick-start">Quick start</a> ·
-  <a href="#supported-models">Models</a> ·
-  <a href="#performance">Performance</a> ·
-  <a href="README.zh-CN.md">简体中文</a>
+  <a href="#deployment">Deployment &amp; Recipes</a> ·
+  <a href="https://embodiinfer.readthedocs.io/">Docs</a> ·
+  <a href="https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/README.zh-CN.md">Chinese</a>
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="License"></a>
-  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python"></a>
-  <a href="https://embodiinfer.readthedocs.io/"><img src="https://readthedocs.org/projects/embodiinfer/badge/?version=latest" alt="Documentation"></a>
+  <a href="https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache-2.0"></a>
+  <a href="https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
 </p>
 
-**EmbodiInfer is an inference and RL-rollout engine for embodied models.** Run
-manipulation policies, world-action models, and recurrent navigation policies
-through a common Python interface, with model-specific execution optimizations
-and shared batching, session, and multi-GPU machinery.
+**EmbodiInfer is a high-performance inference engine for embodied AI.** It accelerates VLA manipulation and VLN navigation with model-specific kernels, CUDA Graphs and hardware-aware precision.
 
-Embed it in your application or trainer, or serve predictions to
-[EmbodiRun](https://github.com/BUAA-CI-LAB/EmbodiRun) for robot deployment and
-execution.
+Use **EmbodiInfer** for model execution and optimization. Use **[EmbodiRun][run]** for complete robot and simulation demos, Recipes and one-command deployment workflows.
 
-![Applications, RL trainers, and EmbodiRun connect to a shared engine with model-specific policy adapters](docs/assets/engine-overview.svg)
+<a id="demos"></a>
 
-## Why EmbodiInfer?
+## Demos
 
-Optimize the model path. Reuse the engine from robot inference to RL rollout.
+### VLN · ActiveVLN on RTX 4090
 
-<table>
-<tr>
-<td width="50%" valign="top">
-<h3>⚡ Capture, compile, replay</h3>
-<p><b>CUDA Graphs · torch.compile / Inductor</b></p>
-<p>Replay static prefix and decode paths and compile model computation. Policy-specific profiles target the repeated work in denoising and token generation.</p>
-<a href="docs/en/architecture.md#cuda-graph-capture">Execution paths →</a>
-</td>
-<td width="50%" valign="top">
-<h3>🎚️ Precision to fit your GPU</h3>
-<p><b>BF16 · FP8 · INT8 · NVFP4</b></p>
-<p>Choose hardware-specific π0.5 and StreamVLN profiles: INT8 on AGX Orin, FP8 on RTX 4090 and Thor, and NVFP4 on Thor.</p>
-<a href="docs/en/models.md#optimization-profiles">Precision and backend guide →</a>
-</td>
-</tr>
-<tr>
-<td valign="top">
-<h3>🔥 Optimized down to the operators</h3>
-<p><b>Triton attention · fused model operations</b></p>
-<p>Specialized attention kernels and fused normalization, rotary embeddings, and gated activations accelerate supported native model paths.</p>
-<a href="docs/en/models.md#optimization-profiles">Native optimizations →</a>
-</td>
-<td valign="top">
-<h3>🧠 Reuse context, retain history</h3>
-<p><b>Prefix KV reuse · recurrent sessions</b></p>
-<p>Reuse fixed observation context across denoising steps. Navigation policies retain episode history, with transactional updates and explicit reset and cancellation.</p>
-<a href="docs/en/architecture.md#sessionstore">Context and session lifecycle →</a>
-</td>
-</tr>
-<tr>
-<td valign="top">
-<h3>🚀 From one request to many environments</h3>
-<p><b>Request batching · multi-GPU execution</b></p>
-<p>Batch observations, aggregate asynchronous requests, and distribute work across replicas. Supported policies also offer tensor parallelism.</p>
-<a href="docs/en/parallelism.md">Parallel execution →</a>
-</td>
-<td valign="top">
-<h3>🔄 Inference that fits the RL loop</h3>
-<p><b>Action sampling · log probabilities · weight refit</b></p>
-<p>Use RL-capable decoders to collect rollouts and refresh policy weights. Keep your trainer and learning objective; reuse model execution.</p>
-<a href="docs/en/api.md#generating-rl-rollouts">RL integration →</a>
-</td>
-</tr>
-</table>
+[![ActiveVLN: EmbodiInfer, SGLang and vLLM in Habitat](docs/assets/demos/activevln-engines.webp)][vln-video]
 
-Choose features by policy and hardware in the [capability reference](docs/en/models.md#capabilities-and-installation).
-Adapters own model-specific optimizations; the shared scheduler stays model-independent.
+**EmbodiInfer · SGLang · vLLM**, using the same EmbodiRun observation and execution loop. BF16, B=1, the same R2R episode and starting state, **1× playback**. This film shows single-episode task time; the inference tables below measure independent first frames. [Recording & conditions][vln-demo] · [EmbodiRun setup][vln-recipe]
 
-**Agent-tuned kernels:** coding agents tune operator kernels for a specific GPU and
-software stack. On Jetson AGX Orin, with all else equal, the `orin_pi05_r2` profile reduces
-π0.5 latency from 396.6 ms with hand-written kernels to **302.0 ms** (BF16, batch size 1;
-[conditions](docs/proposals/0008-kernel-tuning.md#93-orin_pi05_r2-in-uniform-bf16),
-[example](examples/pi05_inference.py)). The [workflow](docs/proposals/0008-kernel-tuning.md)
-is a developer tool for π0.5 today; user-facing tuning for your own hardware and
-environment is planned. It draws on
-[NVIDIA Kernel Design Agents (KDA)](https://github.com/NVlabs/kda)
-([acknowledgments](THIRD_PARTY_NOTICES.md#kernel-tuning-workflow-references)).
+### VLA · π0.5 on RTX 4090
 
-## Performance
+[![π0.5 on RTX 4090: OpenPI, FlashRT and EmbodiInfer](docs/assets/pi05/libero-4090-comparison.webp)][pi05-4090-video]
 
-### Lower latency on a single RTX 4090
+**OpenPI BF16 · FlashRT FP8 · EmbodiInfer FP8**. LIBERO-spatial task 6 / initial state 2, 10 denoising steps, exclusive GPU use for each engine, **1× playback**.
 
-Native inference optimizations reduced mean end-to-end latency by **47.7% for
-π0.5** and **31.2% for GR00T N1.7**, compared with the earlier EmbodiInfer path:
+### VLA · π0.5 on Jetson AGX Thor
 
-| Policy | Before | Optimized | Optimized throughput |
-|---|---:|---:|---:|
-| [π0.5](benchmarks/pi05-benchmark/README.md#pi05-原生优化2026-09-09) | 74.33 ms | **38.89 ms** | **25.71 observations/s** |
-| [GR00T N1.7](benchmarks/gr00t-benchmark/README.md#4090-原生优化2026-09-09) | 45.51 ms | **31.30 ms** | **31.95 observations/s** |
+[![π0.5 on Thor: OpenPI, FlashRT and EmbodiInfer](docs/assets/pi05/libero-thor-comparison.webp)][pi05-thor-video]
 
-Recorded on September 9, 2026: RTX 4090, BF16, batch size 1, and 1,600 LIBERO-10
-observations per model. π0.5 uses `pi05_libero_finetuned_v044_gitcode` with 10
-denoising steps; GR00T uses `nvidia/GR00T-N1.7-LIBERO` with 4. Both paths use
-Inductor and denoising CUDA graphs. The baseline uses SDPA; the optimized
-paths add native inference and prefix graphs, with Triton prefix and denoising
-attention for π0.5 and SDPA for GR00T.
+**OpenPI BF16 · FlashRT NVFP4 · EmbodiInfer NVFP4**. LIBERO-spatial task 0, **2× playback**. The π0.5 timelines combine a 20 Hz control period with measured inference latency; each film shows one successful episode per engine. [Conditions & reproduction][pi05] · [EmbodiRun Recipe][so101]
 
-Timing covers decoded CPU observations through CPU action output, after warmup
-on 10 cross-task observations.
-The linked reports include checkpoint details, environments, commands, numerical
-checks, and batch-size sweeps. At **batch size 32**, the optimized GR00T path
-reached **59.33 observations/s** on the same GPU.
+<a id="performance"></a>
+<a id="benchmarks"></a>
 
-Explore [navigation and world-action benchmarks](docs/en/benchmark.md),
-[quantized π0.5](benchmarks/pi05-quant-benchmark/README.md),
-[quantized StreamVLN](benchmarks/streamvln-quant-benchmark/README.md), and
-[multi-GPU measurements](docs/en/parallelism.md).
+## Benchmarks
 
-The [ActiveVLN EmbodiInfer/vLLM comparison](benchmarks/activevln-benchmark/README.md#feature-matched-embodiinfer-and-vllm-comparison)
-reports R2R/RxR batch sizes 1/2/4 with separate E2E, complete-forward and amortized
-timings. Closed-loop navigation summaries are organized by
-[RTX 4090](benchmarks/activevln-benchmark/rtx-4090/README.md) and
-[Orin NX](benchmarks/activevln-benchmark/orin-nx/README.md).
-First-frame results for ActiveVLN ([RTX 4090](benchmarks/activevln-benchmark/rtx-4090/README.md),
-[Thor](benchmarks/activevln-benchmark/thor/README.md)) and StreamVLN
-([RTX 4090](benchmarks/streamvln-benchmark/rtx-4090/README.md),
-[Thor](benchmarks/streamvln-benchmark/thor/README.md)) cover the same 128 R2R/RxR
-first frames, BF16/INT8 and batch sizes 1/2/4/8. Historical closed-loop results
-follow the first-frame tables.
+Recent engine comparisons and RLinf integration results. **Lower latency is better; speedup is baseline time / EmbodiInfer time.** Each workload has its own timing protocol.
+
+[VLA · π0.5](#vla) | [VLN · ActiveVLN & StreamVLN](#vln) | [RLinf rollout](#rlinf)
+
+<a id="vla"></a>
+
+### VLA · π0.5 across inference engines
+
+**17.06 ms on RTX 4090 — 1.29× faster than FlashRT in FP8, with all 10 denoising steps.** Same `RLinf-Pi05-LIBERO-SFT` weights, B=1, two 224×224 cameras and a 10-action chunk.
+
+| Device | EmbodiInfer precision | EmbodiInfer | FlashRT | APXinf | Embodied.cpp | OpenPI |
+|---|---|---:|---:|---:|---:|---:|
+| RTX 4090 | FP8 | **17.06** | 22.06 | 40.62 (INT8) | — | — |
+| RTX 4090 | BF16 | **30.08** | 31.93 (FP16) | 32.06 | 57.48 | — |
+| Jetson AGX Thor | FP8 | **33.60** | 40.70 | 40.88 | — | — |
+| Jetson AGX Thor | BF16 | **61.63** | 69.24 (FP16) | 67.12 | 223.97 | 261.18 |
+| Jetson AGX Thor | NVFP4 | **20.04** | 21.07 | — | — | — |
+
+Latency in **ms**, averaged over the P50s of three interleaved rounds; 200 warmup + 1,000 timed calls per round, using the FlashRT v0.2.0 harness. Thor uses MAXN and locked clocks; RTX 4090 uses default clocks. NVFP4 uses a separate interleaved run with the same settings.
+
+Unless noted, peer cells use the row's precision. FlashRT's RTX 4090 BF16 result is **33.04 ms**; the table retains its faster FP16 result. Precision labels describe the main execution format; mixed-precision details and numerical checks are in the [report][pi05].
+
+With the official **OpenPI `pi05_libero` checkpoint** and separate calibration and timing, RTX 4090 FP8 at 10 steps measures **17.08 ms P50 / 17.19 ms P95**. This is a separate latency evaluation, not a success-rate result. [Protocol][pi05-official]
+
+<a id="vln"></a>
+
+### VLN · Native inference
+
+**RTX 4090 · BF16 · 128 independent R2R first frames.** Whole-batch **mean / P95 in ms**, measured after a full warmup pass from CPU RGB to CPU actions, including preprocessing. HTTP and simulation are excluded; SGLang includes local SRT process communication.
+
+#### ActiveVLN — up to 3.20× over SGLang
+
+| Batch | EmbodiInfer | SGLang SRT | vs SGLang | vLLM | vs vLLM |
+|---:|---:|---:|---:|---:|---:|
+| 1 | **55.39 / 57.88** | 177.22 / 218.77 | **3.20×** | 117.26 / 131.11 | **2.12×** |
+| 2 | **73.60 / 77.25** | 214.48 / 252.51 | **2.91×** | 152.81 / 163.19 | **2.08×** |
+| 4 | **112.02 / 113.83** | 280.95 / 319.75 | **2.51×** | 223.69 / 232.43 | **2.00×** |
+| 8 | **220.13 / 290.67** | 364.19 / 407.99 | **1.65×** | 315.69 / 323.11 | **1.43×** |
+
+#### StreamVLN — up to 3.13× over the official implementation
+
+| Batch | EmbodiInfer | Official implementation | Speedup |
+|---:|---:|---:|---:|
+| 1 | **91.25 / 93.74** | 276.84 / 289.67 | **3.03×** |
+| 2 | **132.20 / 138.94** | 414.05 / 432.91 | **3.13×** |
+| 4 | **214.90 / 223.88** | 530.92 / 550.44 | **2.47×** |
+| 8 | **381.75 / 391.61** | 768.72 / 780.07 | **2.01×** |
+
+Recorded November 2, 2026. Each batch resets history and learned speculative candidates while retaining graphs and compiled code. The ActiveVLN B=8 first-batch spike remains included. Action outputs can differ; these are latency comparisons, not navigation success-rate measurements. [ActiveVLN report][active-bench] · [StreamVLN report][stream-bench]
+
+<a id="rlinf"></a>
+
+### VLN · ActiveVLN in RLinf
+
+**2.15–2.59× faster inference calls and 1.24–1.46× faster full rollout versus SGLang.** All six measured hardware/batch configurations are shown below.
+
+Times are **seconds per training step**; paired values read **SGLang → EmbodiInfer**. Inference totals eight batched calls, while full rollout also includes environment interaction and trajectory transfer.
+
+| Hardware | Batch | Inference · 8 calls (s) | Speedup | Full rollout (s) | Speedup |
+|---|---:|---:|---:|---:|---:|
+| 2× RTX 4090 | 2 | 2.255 → **0.872** | **2.59×** | 5.001 → **3.484** | **1.44×** |
+| 2× RTX 4090 | 4 | 3.148 → **1.259** | **2.50×** | 6.690 → **4.944** | **1.35×** |
+| 2× RTX 4090 | 8 | 4.789 → **2.057** | **2.33×** | 10.878 → **7.987** | **1.36×** |
+| 2× H20 | 2 | 1.654 → **0.639** | **2.59×** | 3.392 → **2.322** | **1.46×** |
+| 2× H20 | 4 | 2.358 → **1.043** | **2.26×** | 5.292 → **3.707** | **1.43×** |
+| 2× H20 | 8 | 4.125 → **1.916** | **2.15×** | 9.404 → **7.576** | **1.24×** |
+
+BF16, `Arvil/Qwen2.5-VL-3B_rl_r2r_4000`, repeated R2R episode 1; means over five post-warmup training steps. One GPU runs actor/rollout and the other renders Habitat-Sim. These stage totals are neither single-request latency nor complete training iterations. [Configuration & results][rlinf-pr]
+
+**Complete training iterations:** a separate 2× A800-SXM4 GRPO run using the same HF actor implementation measured **20.64 ± 0.15 s → 19.73 ± 0.41 s** when switching the rollout backend from SGLang to EmbodiInfer, with rollout phase **15.27 s → 14.77 s**. Mean ± sample SD over five iterations after discarding the first. [A800 setup & full results][a800-pr]
+
+*RLinf integration is experimental: the upstream PR is unmerged, full HabitatLab training and convergence remain unvalidated, and the incremental/full-history logprob check has an outstanding mismatch (0.119415 vs 0.02 tolerance). See the [integration report][rlinf-report] for each experiment's validation scope.*
+
+More models, devices and historical measurements: [full benchmark index][benchmark-index].
+
+<a id="supported-models"></a>
 
 ## Supported models
 
-✓ **Implemented** · ◐ **Experimental** · ○ **Planned**
-
 <table>
 <tr>
-<th align="left">🦾 Manipulation</th>
-<th align="left">🧭 Navigation</th>
-<th align="left">🌐 World-action models</th>
+<th align="left" width="34%">🦾 VLA · Manipulation</th>
+<th align="left" width="38%">🧭 VLN · Navigation</th>
+<th align="left" width="28%">🌐 World-action</th>
 </tr>
 <tr>
 <td valign="top">
 <p>✓ <b>π0.5</b><br>✓ <b>GR00T N1.7</b><br>✓ <b>OpenVLA-OFT</b><br>✓ <b>LingBot-VLA</b><br>✓ <b>DM0.5</b></p>
-<p>Manipulation policies with<br>RL decoder interfaces.</p>
 </td>
 <td valign="top">
-<p>✓ <b>StreamVLN</b><br>✓ <b>Qwen R2R</b> · low / panoramic<br>✓ <b>NaViDA</b><br>◐ ActiveVLN</p>
-<p>Episode-scoped history<br>and recurrent inference.</p>
+<p>✓ <b>ActiveVLN</b><br>✓ <b>StreamVLN</b><br>✓ <b>Qwen R2R</b> · low / panoramic<br>✓ <b>NaViDA</b></p>
 </td>
 <td valign="top">
 <p>✓ <b>Cosmos Policy</b></p>
-<p>Diffusion-based action generation<br>and candidate planning.</p>
 </td>
 </tr>
 </table>
 
-**Network serving:** π0.5, DM0.5, and StreamVLN use HTTP / WirelessComm.
-π0.5 supports cross-session batching with `--max-batch`; the default is 1.
-DM0.5 and StreamVLN currently execute one request at a time and require
-`--max-batch 1`. All model families have Python entry points.
-The [capability reference](docs/en/models.md#capabilities-and-installation) covers
-batching, CUDA graphs, RL interfaces, and installation profiles.
-ActiveVLN's real-checkpoint GPU parity is pending.
+See the [model guide][models] for checkpoints, available interfaces and optimization profiles.
 
-### Planned models
+<a id="engine"></a>
 
-- [ ] **SmolVLA** — model adapter, input processing, and serving integration.
-- [ ] **OpenVLA** — base-model inference, separate from OpenVLA-OFT.
+## One engine, from inference to rollout
 
-See the [model roadmap](docs/en/models.md#roadmap) for the implementation steps.
-Robot and simulator integrations live in
-[EmbodiRun](https://github.com/BUAA-CI-LAB/EmbodiRun/blob/main/docs/en/support-matrix.md).
+![Applications, RLinf and EmbodiRun share the EmbodiInfer engine](docs/assets/engine-overview-rlinf.svg)
+
+- **Fast model execution:** CUDA Graphs, compiled paths, fused kernels and hardware-specific precision.
+- **Stateful and batched inference:** recurrent navigation sessions, context reuse, request batching and multi-GPU execution.
+- **RL integration:** action sampling, log probabilities and weight refit for supported policies.
+
+[Architecture][architecture] · [Python API][api] · [Serving][serving] · [Parallelism][parallelism]
+
+<a id="quick-start"></a>
 
 ## Quick start
 
-### Run without a checkpoint
-
-For a first run without a checkpoint, install the core package with Python
-3.10+ and [uv](https://docs.astral.sh/uv/) 0.12.x:
+Python 3.10+ and uv 0.12.x. Run a synthetic-policy example without a checkpoint:
 
 ```bash
 git clone https://github.com/BUAA-CI-LAB/EmbodiInfer.git
@@ -189,67 +175,81 @@ uv sync --frozen
 uv run python examples/quickstart.py
 ```
 
-This CPU-friendly example uses a synthetic policy to walk through single and
-batched requests and print their action-chunk shapes.
-The Linux lock includes CUDA-enabled Torch wheels, so installation
-can be large even on a CPU-only machine.
+This synthetic-policy example demonstrates single and batched requests. For real models, follow the [installation profiles][installation], [model quick start][quickstart] and [π0.5 example][pi05-example]; benchmark reproduction uses the checkpoints and settings linked above.
 
-### Load π0.5
+<a id="deployment"></a>
 
-Use the isolated π0.5 profile and a CUDA GPU:
+## Complete demos & deployment · EmbodiRun
 
-```bash
-uv sync --python 3.12 --frozen --no-dev --group pi05
-uv run --no-sync python examples/pi05_inference.py \
-  --ckpt lerobot/pi05_base --envs 1
-```
+**[EmbodiRun][run] provides complete deployment Recipes** that connect the inference engine to robots or simulators. Prepare each Recipe's checkpoints, scene assets and hardware, then use its task entrypoint.
 
-This example loads real weights but uses synthetic observations to demonstrate
-the engine API. Follow [Quick start](docs/en/quickstart.md) for the input contract
-and [Serving](docs/en/serving.md) to connect real observations and configure their
-mapping to a checkpoint.
+- **ActiveVLN / Habitat:** [Habitat setup (vLLM example)][vln-recipe] and [three-engine recording guide][vln-demo]. The packaged vLLM entrypoint awaits a GPU rerun.
+- **π0.5 / SO-101:** [grasping Recipe][so101] and [backend comparison][run-comparison].
+- **More robots and simulators:** [all Recipes][recipes] · [deployment coverage][run-support].
 
-### Choose an integration
+<a id="agent-optimization"></a>
 
-| Workflow | Interface | Start here |
-|---|---|---|
-| Inference inside an application | `EmbodiInfer.act(observation)` or `EmbodiInfer.act(observations)` | [Python API](docs/en/api.md) |
-| Network inference for a robot runtime | HTTP / WirelessComm sessions | [Serve and send your first observation](docs/en/serving.md) |
-| RL rollout and weight updates | Rollout / refit interfaces | [RL integration](docs/en/api.md#generating-rl-rollouts) |
-| Multi-GPU execution | Data parallelism / tensor parallelism | [Parallelism](docs/en/parallelism.md) |
+## Agent-assisted optimization · In progress
 
-To share a π0.5 service across clients, add `--max-batch 3 --max-wait-ms 5`
-to the HTTP or WirelessComm launcher. Requests from independent sessions share
-batches of up to three; a partially filled batch runs when the 5 ms collection
-window expires. This window excludes queueing and inference time. See the
-[serving guide](docs/en/serving.md#share-one-service-across-clients) for setup.
+An experimental workflow lets coding agents tune developer-selected operators, with whole-model numerical checks and timing. Broader automation across models and hardware is in progress. [Design & experiments][agent-workflow]
 
-The distribution is named `embodiinfer`; Python imports, the `embodiinfer-*` command-line
-entry points, and the `embodiinfer.policy.*` wire schemas all use the same name.
+## Roadmap
 
-## Documentation
+- Expand optimized model and hardware coverage with reproducible benchmarks.
+- Complete RLinf backend integration and training-consistency validation.
+- Improve agent-assisted tuning and deployment Recipes in EmbodiRun.
 
-| Task | Guide |
-|---|---|
-| Install a model profile | [Installation](docs/en/installation.md) |
-| Run inference | [Quick start](docs/en/quickstart.md) · [Examples](examples/) |
-| Deploy a service | [Serving](docs/en/serving.md) |
-| Use multiple GPUs | [Parallelism](docs/en/parallelism.md) |
-| Integrate or extend the engine | [Architecture](docs/en/architecture.md) · [Python API](docs/en/api.md) |
-| Inspect model behavior | [Models](docs/en/models.md) |
-| Evaluate performance | [Benchmarks](docs/en/benchmark.md) |
-| Profile and tune kernels with an agent | [Kernel tuning workflow](docs/proposals/0008-kernel-tuning.md) |
+Planned model adapters: **SmolVLA** and the **base OpenVLA** model. [Model roadmap][model-roadmap]
 
-## Contributing
+## Contributing & license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, model integration,
-and numerical validation requirements. Use
-[GitHub issues](https://github.com/BUAA-CI-LAB/EmbodiInfer/issues) for bugs and
-feature requests, and [SECURITY.md](SECURITY.md) for private vulnerability
-reports. Community participation follows our [Code of Conduct](CODE_OF_CONDUCT.md).
+Contributions to model adapters, hardware optimizations and reproducible evaluation are welcome. [Contributing][contributing] · [Issues](https://github.com/BUAA-CI-LAB/EmbodiInfer/issues) · [Code of Conduct][conduct] · [Security][security]
 
-## License
+Thanks to [FlashRT][flashrt], [APXinf][apxinf], [Embodied.cpp][embodied-cpp], [OpenPI][openpi], [LeRobot][lerobot], [SGLang][sglang], [vLLM][vllm] and [RLinf][rlinf-repo], alongside the upstream model, dataset and kernel authors. The π0.5 comparison uses FlashRT's v0.2.0 harness; Thor NVFP4 channel scaling draws on [SmoothQuant (ICML 2023)][smoothquant], and the tuning workflow draws on [NVIDIA KDA][kda].
 
-Apache-2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE), and
-[third-party notices](THIRD_PARTY_NOTICES.md). Model weights and datasets retain
-their upstream licenses.
+Apache-2.0. [License][license] · [Notice][notice] · [Third-party notices][third-party]. Model weights and datasets retain their respective licenses.
+
+[run]: https://github.com/BUAA-CI-LAB/EmbodiRun
+[pi05]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/pi05-performance.md
+[pi05-official]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/pi05-performance.md#libero-on-rtx-4090-with-openpis-checkpoint-and-evaluation
+[pi05-4090-video]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/assets/pi05/libero-4090-comparison.mp4
+[pi05-thor-video]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/assets/pi05/libero-thor-comparison.mp4
+[vln-video]: https://github.com/BUAA-CI-LAB/misc/blob/2781315579ea1f53d95d7433de36c79ac606ee9a/embodirun/v0.1/activevln_engines/activevln_engines_1x.mp4
+[vln-demo]: https://github.com/BUAA-CI-LAB/EmbodiRun/blob/4e6b392fc94c067d27594d4b65d1d9381b91cec9/docs/en/demos/activevln-engines.md
+[vln-recipe]: https://github.com/BUAA-CI-LAB/EmbodiRun/tree/4e6b392fc94c067d27594d4b65d1d9381b91cec9/examples/activevln_engines
+[active-bench]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/benchmarks/activevln-benchmark/rtx-4090/README.md
+[stream-bench]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/benchmarks/streamvln-benchmark/rtx-4090/README.md
+[rlinf-pr]: https://github.com/RLinf/RLinf/pull/1789
+[a800-pr]: https://github.com/BUAA-CI-LAB/EmbodiInfer/pull/16
+[rlinf-report]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/benchmark.md#activevln--rlinf-integration
+[models]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/models.md
+[architecture]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/architecture.md
+[api]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/api.md
+[serving]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/serving.md
+[installation]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/installation.md
+[quickstart]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/quickstart.md
+[so101]: https://github.com/BUAA-CI-LAB/EmbodiRun/blob/4e6b392fc94c067d27594d4b65d1d9381b91cec9/examples/so101_grasping.md
+[run-comparison]: https://github.com/BUAA-CI-LAB/EmbodiRun/blob/4e6b392fc94c067d27594d4b65d1d9381b91cec9/examples/engine_comparison/README.md
+[recipes]: https://github.com/BUAA-CI-LAB/EmbodiRun/blob/4e6b392fc94c067d27594d4b65d1d9381b91cec9/examples/README.md
+[run-support]: https://github.com/BUAA-CI-LAB/EmbodiRun/blob/4e6b392fc94c067d27594d4b65d1d9381b91cec9/docs/en/support-matrix.md
+[agent-workflow]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/proposals/0008-kernel-tuning.md
+[contributing]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/CONTRIBUTING.md
+[security]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/SECURITY.md
+[license]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/LICENSE
+[notice]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/NOTICE
+[third-party]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/THIRD_PARTY_NOTICES.md
+[benchmark-index]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/docs/en/benchmark.md
+[parallelism]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/parallelism.md
+[pi05-example]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/examples/pi05_inference.py
+[model-roadmap]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/5f237690fee1f55d633c2961bf2e3d3c56829f7b/docs/en/models.md#roadmap
+[conduct]: https://github.com/BUAA-CI-LAB/EmbodiInfer/blob/main/CODE_OF_CONDUCT.md
+[flashrt]: https://github.com/flashrt-project/FlashRT
+[apxinf]: https://github.com/infinigence/ApxInf
+[embodied-cpp]: https://github.com/SEU-PAISys/Embodied.cpp
+[openpi]: https://github.com/Physical-Intelligence/openpi
+[lerobot]: https://github.com/huggingface/lerobot
+[sglang]: https://github.com/sgl-project/sglang
+[vllm]: https://github.com/vllm-project/vllm
+[rlinf-repo]: https://github.com/RLinf/RLinf
+[smoothquant]: https://proceedings.mlr.press/v202/xiao23c.html
+[kda]: https://github.com/NVlabs/kda

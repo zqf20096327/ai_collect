@@ -61,7 +61,9 @@ the failed attempts tried. A builder that finds its task cannot pass
 without changing a check of a done task says so in
 `.tenaz/conflicts/<TASK>.md`; the task is blocked at once, and a replan
 may add a card that amends those checks, judged against the spec (ADR
-0009). Work too heavy for a session, such as a long render, is declared
+0009). The replan may also set the blocked task back to `todo`: it waits
+until that card is built, then starts again with no attempts (ADR 0018).
+Work too heavy for a session, such as a long render, is declared
 by the builder in `.tenaz/jobs/<TASK>.json`; Tenaz runs it between
 sessions, with the engine's memory freed where it can, for at most
 `jobMinutes` (60), and the next session of the attempt reads how it went
@@ -88,8 +90,9 @@ project's own tests.
   the task. A reply cut at the output limit is the session's: it counts as
   an attempt, and the next session reasons at a lower effort.
 - **Watchdogs.** Loops, repeated calls, idle turns and huge outputs get a
-  steering message first, then the session is stopped. A file written
-  outside the project is logged and the session told so.
+  steering message first (fx and Pi; OpenCode and Qwen Code get none),
+  then the session is stopped. A file written outside the project is
+  logged and the session told so.
 - **Resident models.** When the agent asks for an image, Tenaz unloads
   the LLM, runs the image model, frees it and reloads the LLM. With
   `--model-for`, every model named is loaded at once: Tenaz checks before
@@ -107,9 +110,9 @@ project's own tests.
 - **Engine**: the server that runs the model and answers OpenAI-compatible
   requests (llama.cpp, LM Studio, Ollama, ...). Tenaz needs only that API
   to run; freeing memory for images needs more (see [Images](#images)).
-- **Harness**: the coding agent Tenaz drives in each session, fx or Pi.
-  Tenaz talks to fx over ACP (the Agent Client Protocol) and to Pi over its
-  RPC mode.
+- **Harness**: the coding agent Tenaz drives in each session: fx, Pi,
+  OpenCode or Qwen Code. Tenaz talks to fx, OpenCode and Qwen Code over
+  ACP (the Agent Client Protocol) and to Pi over its RPC mode.
 - **Brief**: the goal in your words, in `.tenaz/brief.md`. It does not
   change after `init`.
 - **Task card**: one small task in `.tenaz/tasks/`, with the requirements it
@@ -123,7 +126,9 @@ project's own tests.
 
 - macOS on Apple silicon or Linux x86_64, and `git`.
 - **A coding agent** Tenaz can drive: [fx](https://github.com/vercel-labs/fx)
-  or [Pi](https://github.com/earendil-works/pi).
+  or [Pi](https://github.com/earendil-works/pi), or, newer to Tenaz,
+  [OpenCode](https://opencode.ai) or
+  [Qwen Code](https://github.com/QwenLM/qwen-code).
 - **An OpenAI-compatible engine** serving a model with tool calling:
   llama.cpp's `llama-server`, LM Studio, Ollama, vLLM, MLX's
   `mlx_lm.server`, TensorFold, Sushi or similar. A context window of 32k
@@ -249,9 +254,9 @@ it best; a run takes hours.
    ```
 
    `tenaz watch` follows it session by session instead. Each session's
-   prompt, events (Pi's own records with Pi) and, with fx, the model's
-   reasoning are kept in `.tenaz/private/` (`<label>.prompt.md`,
-   `.rpc.jsonl`, `.thinking.md`).
+   prompt, events (Pi's own records with Pi) and, with an ACP agent (fx,
+   OpenCode, Qwen Code), the model's reasoning are kept in
+   `.tenaz/private/` (`<label>.prompt.md`, `.rpc.jsonl`, `.thinking.md`).
 
 4. When the run is done (or stopped), turn it into something to review:
 
@@ -397,6 +402,21 @@ and model are the same answers or flags. When your `~/.pi/agent/models.json`
 lists the model, the wizard offers it and the run keeps its settings there
 (API key, thinking map); the file is only read.
 
+### OpenCode or Qwen Code
+
+`--harness opencode` and `--harness qwen` drive OpenCode and Qwen Code
+over ACP, as fx is. Each runs in a `HOME` of its own under
+`.tenaz/private/`, with a configuration Tenaz writes for each session's
+model, so your own settings, plugins, MCP servers and memories stay out of
+the run ([ADR 0019](docs/adr/0019-opencode-and-qwen-code.md)). Qwen Code's
+memory and chat recording are turned off, and the context files it reads
+from its `HOME` are removed before each session, so every session starts
+from the plan and the repository alone. Neither takes a steering message:
+a watchdog stops the session without one. On its first run OpenCode
+installs its plugin package (about 60 MB) into that `HOME`, from npm's
+cache when it is there. Each has been tried in one real run, much less
+than fx and Pi; see [Compatibility](docs/COMPATIBILITY.md).
+
 ### Images
 
 The agent gets an image tool from one of two kinds of image engine:
@@ -436,6 +456,20 @@ depends on the engine:
   stays loaded and serving while the image renders, so the memory has to
   hold the two models together.
 
+### 3D
+
+`--meshes http://127.0.0.1:11234/v1 --mesh-model <model>` gives the agent
+`generate_3d`, which turns a picture of one object into a 3D mesh (GLB)
+through mlx-serve's `POST /v1/3d/generations`, with models such as Idol
+or TRELLIS.2 ([ADR 0020](docs/adr/0020-a-3d-tool.md)). The agent names a
+PNG or JPEG inside the project and where to write the `.glb`, also inside
+the project, and may set `resolution`, `seed`, `steps` and `mode`.
+TRELLIS.2 needs a cutout whose alpha is the object; Idol cuts the object
+out itself. A call frees the LLM first, as an image does, and is limited
+by `--media-timeout` (1800 s by default): TRELLIS.2 at 1024 took about
+7 minutes on an M5 Mac. A run may have an image engine, a 3D engine or
+both, on the same server or not. Pi gets no media tools.
+
 ### Protocol, prompts and skills
 
 The protocol in `.tenaz/protocol.md` and the prompts in `.tenaz/prompts/`
@@ -456,7 +490,11 @@ Skill directories passed with `--skill` at `init` are pinned read-only into
 `.tenaz/skills/`, and are the only skills the agent is offered; `--set
 agentSkills=true` also lets it load the ones it finds by itself. fx 0.0.14
 can still find and load the skills in the folders above the project; see
-[Known gaps](docs/COMPATIBILITY.md#known-gaps).
+[Known gaps](docs/COMPATIBILITY.md#known-gaps). OpenCode is refused every
+skill but the pinned ones; Qwen Code loads only its user-level skills,
+which are the pinned ones. Both run in a `HOME` of their own, so with
+`agentSkills=true` they add the project's skills (and Qwen Code its
+bundled ones), not your own.
 
 ### Sandbox
 

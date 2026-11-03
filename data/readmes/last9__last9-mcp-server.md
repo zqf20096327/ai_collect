@@ -313,6 +313,7 @@ Point these at a different datasource/cluster than the default by setting `LAST9
 - **`get_change_events`** — Deployments, config changes, rollbacks. Correlate incidents with what changed
 - **`analyze_change_impact`** — Did a change break anything? Compares a service and its direct callers before and after a change: golden signals, APM and trace-attribute deviations, new firing alerts, and a verdict (`regression likely` / `no significant change` / `insufficient data`)
 - **`get_alert_groups`** — Configured Compass alert groups with metadata labels, team, tier, and rule counts — including groups with zero rules and groups that are not firing
+- **`get_alert_coverage`** — What you are not alerting on: uncovered golden signals, fully disabled or unrouted alert groups, and rules muted too long, each with a suggested fix tool. Read-only.
 - **`get_alert_config`** — Alert rule configurations — searchable by name, severity, type, tags
 - **`get_entity_kpis`** — Every KPI (id, name, PromQL, unit) on one alert group, including KPIs no rule uses yet — the ids `create_alert` and `validate_alert_expression` need
 - **`create_kpi`** — Create a KPI (PromQL + unit) on an alert group when no existing KPI fits. Create once and keep the returned id
@@ -352,6 +353,16 @@ Rules, channels and attachments these tools create are marked `created_via: last
 - **`list_dashboard_snapshots`** — Frozen point-in-time snapshots for a dashboard (metadata only)
 - **`get_dashboard_snapshot`** — Full frozen snapshot including panel data for RCA / shareable views
 - **`delete_dashboard_snapshot`** — Delete a frozen snapshot by ID
+
+Dashboard authoring is available through MCP `prompts/list` and `prompts/get`, without installing a skill. All three prompts take no arguments:
+
+- **`create_dashboard_guide`** — Discovery, layout and panel selection; validate the complete candidate and run each panel's query before approval, create once, patch targeted edits, then read back.
+- **`dashboard_examples`** — A complete example covering service RED, endpoint latency, status classes, host health, log counts and trace panels, with dependent variables.
+- **`query_guide`** — Counter/gauge/histogram and derived trace metric semantics, instant versus range, rate windows, percentage bounds, and logjson/tracejson rules.
+
+The same content is readable at `last9://reference/create_dashboard_guide`, `last9://reference/dashboard_examples`, and `last9://reference/query_guide`. Prompts and resources remain discoverable under every toolset; executing the workflow needs the relevant tools (for mixed-signal authoring, use `--toolsets=dashboards,investigate`, which also serves `list_datasources`). Read-only sessions can prepare and validate but cannot save. Check tool availability before following a step.
+
+Panel checks currently use `prometheus_range_query`, `prometheus_instant_query`, `get_logs` and `get_traces` alongside `validate_dashboard`. The validator's unsupported query types and simplified defaults do not establish rendering parity. The separate query-check step will switch to `query_panel` after #475 lands.
 
 ### Continuous Profiling
 
@@ -760,9 +771,9 @@ Requires the companion backend capability to be enabled.
 - `start_time_iso` / `end_time_iso` (string, optional)
 - `lookback_minutes` (integer, optional): Default: 4320 (72 hours).
 - `selected_span_id` (string, optional): Returns attributes, events, and links for that span only.
-- `max_spans` (integer, optional): Default: 500. Maximum: 1000.
+- `max_spans` (integer, optional): Default: 500. Maximum: 1000; the org's redaction policy may cap it lower.
 
-Returns an `investigation-evidence/v1` envelope; the waterfall is under `data`.
+Returns the trace service's `investigation-evidence/v1` envelope unchanged; the waterfall is under `data`. The service builds the waterfall and redacts values under a per-org policy (credentials, query literals, URLs, emails, IPs, user identifiers) before it leaves the backend: `sanitizer` names the policy that ran and `evidence.sanitization` counts what it redacted or truncated. If something needed is redacted, ask an org admin to adjust the policy rather than working around it. The tool refuses a response with no `sanitizer` block, a `sanitizer.version` other than `trace-evidence-sanitizer/v1`, a body that repeats a JSON key, or a body over 512 KiB (lower `max_spans`). Requires the companion backend capability to be enabled.
 
 ### get_change_events
 
@@ -796,6 +807,19 @@ Configured Compass alert-group inventory for changeboard / label-coverage audits
 - `label_key` + `label_value` (string, optional): Must be set together. Exact case-insensitive match on one `metadata.labels` pair — both key and value.
 
 Returns compact JSON `{"count":N,"groups":[...]}` with `id`, `name`, `type`, `entity_class`, `team`, `tier`, `metadata.labels`, and rule counts. Empty `team` / `labels` means unset.
+
+### get_alert_coverage
+
+Answers "what am I not alerting on?" for a service, an environment, one alert group, or the whole organization when no scope is given. Read-only: it never creates, changes, or unmutes anything. Also served in the `investigate` toolset.
+
+- `service` (string, optional): Service name.
+- `environment` (string, optional): Deployment environment (for example `prod`).
+- `entity_id` (string, optional): Alert group (entity) UUID, as returned by `get_alert_groups`.
+- `muted_days` (integer, optional): Whole days, 1 to 3650. Default: 7; 0 means the default. A rule muted longer than this is a `muted_too_long` gap.
+
+Values are trimmed; blank strings are ignored. Gap kinds: **uncovered_signal** (no enabled rule on latency, error_rate, throughput, or saturation; names a disabled rule that would cover it), **all_rules_disabled** (an alert group whose rules are all disabled), **no_notification_channel** (a rule whose severity no channel on its alert group routes), **muted_too_long** (muted indefinitely or for more than `muted_days`; `muted_since` is the rule's last update and `mute_until` is omitted for an indefinite mute).
+
+Returns compact JSON `{scope, generated_at, complete, summary, counts, groups}`. `groups` holds one `{kind, count, gaps, omitted}` entry per kind present, listing at most 10 gaps per kind (`omitted` counts the rest; narrow the scope to see them); each gap carries `suggested_tool` (`create_alert`, `create_alert_from_chart`, `attach_notification_channel`, or `patch_alert`) and `suggested_args`, holding only inputs that tool accepts (`patch_alert`: `entity_id`, `id` and `is_disabled=false` or `mute_until=0`; `attach_notification_channel`: `alert_group_id` and a `breach`/`threat` `severity`; `create_alert`: `entity_id`; `create_alert_from_chart`: `service_name`); the gap's own `entity_id`, `rule_id` and `signal` are listed beside them. Call the suggested tool only if it is available in the session and the user confirms. `complete` is true only when the API lists no gaps, every count is 0, and at least one alert group matches the scope (exact `service_name` / `env` labels, checked against `get_alert_groups`' list); a scope matching none, a failed lookup, or counts with no listed gaps are not complete, and `summary` says why.
 
 ### get_alert_config
 

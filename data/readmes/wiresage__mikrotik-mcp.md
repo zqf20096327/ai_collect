@@ -74,6 +74,7 @@ review and idea.
 <a href="https://github.com/lilianmoraru" title="lilianmoraru"><img src="https://avatars.githubusercontent.com/u/621738?s=72" width="72" height="72" alt="lilianmoraru" /></a>
 <a href="https://github.com/Kn-ut99" title="Kn-ut99"><img src="https://avatars.githubusercontent.com/u/73541663?s=72" width="72" height="72" alt="Kn-ut99" /></a>
 <a href="https://github.com/vanelin" title="vanelin"><img src="https://avatars.githubusercontent.com/u/18135591?s=72" width="72" height="72" alt="vanelin" /></a>
+<a href="https://github.com/siderakis" title="siderakis"><img src="https://avatars.githubusercontent.com/u/1545690?s=72" width="72" height="72" alt="siderakis" /></a>
 </p>
 
 Contributions of every kind are welcome: code, bug reports, documentation and
@@ -89,3 +90,16 @@ welcome, whether you're connecting your first router or working on a PR.
 ## License
 
 This MCP server is licensed under the MIT License. This means you are free to use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For more details, please see the LICENSE file in the project repository.
+
+## Presentations
+
+Prefer to watch instead of read? The official MikroTik MCP presentations,
+including walkthroughs of new features and pull requests, live on Bisque:
+[bisque.today/p/wiresage/mikrotik-mcp](https://bisque.today/p/wiresage/mikrotik-mcp).
+
+<a href="https://bisque.today/p/wiresage/mikrotik-mcp"><img src="https://bisque.cloud/poster/AlY6OT2Cd1YpfqlZ5jsfdWcae933/landing-demo/og-slide.png" alt="Watch the MikroTik MCP presentations on Bisque" width="600" /></a>
+
+> [!NOTE]
+> The Presentations section was added on 3 November 2026, after release
+> `v0.26.2`. Releases up to `v0.26.2` don't have it, and it ships with the
+> next release.

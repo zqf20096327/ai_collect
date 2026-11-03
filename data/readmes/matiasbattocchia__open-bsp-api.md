@@ -187,33 +187,18 @@ The official n8n community node package for OpenBSP.
 
 ## Claude Code plugin
 
-The OpenBSP plugin gives Claude Code full API access and optionally bridges
-WhatsApp messages in real-time. Claude can query contacts, conversations,
-templates, and more via the `query` tool, and reply to WhatsApp messages via the
-`reply` tool.
+With the OpenBSP plugin, Claude Code reads and answers your WhatsApp, Instagram,
+TikTok and Slack messages — asking you before each answer goes out, or answering
+on its own — and reaches the whole API through its `query` tool.
 
-Install the plugin:
-
-```
-/plugin marketplace add matiasbattocchia/open-bsp-api
-/plugin install openbsp@matiasbattocchia-open-bsp-api
+```bash
+claude plugin install openbsp --marketplace matiasbattocchia/open-bsp-api
 ```
 
-Sign in with Google (same account as the web UI) — Claude walks you through it
-in the terminal:
-
-```
-/openbsp:config login
-```
-
-Then configure allowed contacts for the WhatsApp channel:
-
-```
-/openbsp:config contacts add 5491155551234
-```
-
-No contacts are forwarded until explicitly added (secure by default). API access
-works regardless of channel configuration. See
+Then, in Claude Code, `/openbsp:setup` walks you through menus in the terminal:
+Google or GitHub sign-in (a first one creates your account), creating or joining
+an organization, connecting accounts, whether Claude may send (read only, ask
+first, allow) and how often it checks. No visit to the web app is needed. See
 [`plugin/README.md`](plugin/README.md) for full documentation.
 
 ## Description
@@ -336,18 +321,18 @@ Partner**.
 
 ### Plans
 
-|                 | Free             | Starter        | Pro             | Business        |
-| --------------- | ---------------- | -------------- | --------------- | --------------- |
-| Price           | $0               | $5 / month     | $20 / month     | $99 / month     |
-| Messages        | 5,000 / month    | 15,000 / month | 100,000 / month | 750,000 / month |
-| Extra messages  | —                | $0.001 each    | $0.0006 each    | $0.0004 each    |
-| Messages, up to | 5,000 / month    | 50,000 / month | 300,000 / month | 2M / month      |
-| Storage         | 1 GB             | 10 GB          | 50 GB           | 250 GB          |
-| Extra storage   | —                | $0.10 / GB     | $0.06 / GB      | $0.04 / GB      |
-| Storage, up to  | 1 GB             | 25 GB          | 250 GB          | 1,000 GB        |
-| Conversations   | Unlimited        | Unlimited      | Unlimited       | Unlimited       |
-| Connections     | 3                | Unlimited      | Unlimited       | Unlimited       |
-| AI Credits      | $1.00 (one-time) | —              | —               | —               |
+|                 | Free             | Starter     | Pro          | Business     |
+| --------------- | ---------------- | ----------- | ------------ | ------------ |
+| Price           | $0               | $5 / month  | $20 / month  | $99 / month  |
+| Messages        | 5k / month       | 15k / month | 100k / month | 750k / month |
+| Extra messages  | —                | $0.001 each | $0.0006 each | $0.0004 each |
+| Messages, up to | 5k / month       | 50k / month | 300k / month | 2M / month   |
+| Storage         | 1 GB             | 10 GB       | 50 GB        | 250 GB       |
+| Extra storage   | —                | $0.10 / GB  | $0.06 / GB   | $0.04 / GB   |
+| Storage, up to  | 1 GB             | 25 GB       | 250 GB       | 1 TB         |
+| Conversations   | Unlimited        | Unlimited   | Unlimited    | Unlimited    |
+| Connections     | 3                | Unlimited   | Unlimited    | Unlimited    |
+| AI Credits      | $1.00 (one-time) | —           | —            | —            |
 
 Messages count both ways: sent and received, on any channel, including those
 sent from the phone or a linked device. On Free, once the month's messages run
@@ -1147,8 +1132,11 @@ npx supabase start
 After editing the schema files, generate a migration
 
 ```
-npx supabase db diff -f <migration_name>
+npx supabase db diff --use-migra -f <migration_name>
 ```
+
+(`--use-migra` makes the CLI diff the schema files; without it, it compares
+`supabase/migrations` with the database and finds nothing.)
 
 Apply the migration to the local database
 

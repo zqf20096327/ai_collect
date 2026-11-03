@@ -1,7 +1,31 @@
-[![Upload Python Package](https://github.com/Blaizzy/mlx-vlm/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Blaizzy/mlx-vlm/actions/workflows/python-publish.yml)
-# MLX-VLM
+<h1 align="center">MLX-VLM</h1>
 
-MLX-VLM is a package for inference and fine-tuning of Vision Language Models (VLMs) and Omni Models (VLMs with audio and video support) on your Mac using MLX.
+[![Any input. Any output. All local. Runs locally on your Mac. Install with pip install -U mlx-vlm or try it in Nativ.](https://raw.githubusercontent.com/Blaizzy/mlx-vlm/b7fda105064b609fcc2ef243bd628c3dad317564/docs/assets/mlx-vlm-banner.png)](https://runnativ.ai)
+
+<p align="center">
+  <strong>Run and fine-tune multimodal models on Apple Silicon.</strong> Text, images, video, and audio in — any out. Built on MLX.
+</p>
+
+<p align="center">
+  <a href="#installation"><strong>Installation</strong></a> &middot;
+  <a href="https://blaizzy.github.io/mlx-vlm/">Documentation</a> &middot;
+  <a href="https://github.com/Blaizzy/mlx-vlm/releases">Releases</a>
+</p>
+
+<p align="center">
+  macOS &middot; Apple silicon
+</p>
+
+<p align="center">
+  Built by <a href="https://www.neywalabs.ai">Neywa Labs</a>, the local AI company behind <a href="https://runnativ.ai">Nativ</a>.
+</p>
+
+<p align="center">
+  <a href="https://github.com/Blaizzy/mlx-vlm/actions/workflows/python-publish.yml"><img src="https://github.com/Blaizzy/mlx-vlm/actions/workflows/python-publish.yml/badge.svg" alt="Upload Python Package"></a>
+  <a href="https://pypi.org/project/mlx-vlm/"><img src="https://img.shields.io/pypi/v/mlx-vlm" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/mlx-vlm/"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
+  <a href="https://github.com/Blaizzy/mlx-vlm/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Blaizzy/mlx-vlm" alt="MIT license"></a>
+</p>
 
 ## Table of Contents
 - [Installation](#installation)
@@ -712,6 +736,20 @@ The server provides multiple endpoints for different use cases and supports dyna
 ### Continuous Batching
 
 The server supports continuous batching for higher throughput when handling multiple concurrent requests. New requests join the active batch immediately without waiting for existing requests to finish, and mixed batches of image and text-only requests are supported.
+
+Prompt processing and decoding are interleaved, with decoding taking priority. The
+server's `--prefill-step-size` (default: 2048) is a shared prompt-token budget per
+step, including padding, so increasing the batch size does not multiply the prompt
+work between decode steps. While peers decode, the scheduler also caps prompt
+work at 256 tokens per step. Lower the configured budget to reduce pauses further.
+Models that require unchunked prefill do not use this budget.
+
+Ready decode tokens are published before the next prefill step. Pending prompts
+are grouped by comparable length within the oldest candidate window to limit
+padding without starving long prompts. APC retains its cached-suffix grouping and
+memory admission checks. Python streaming integrations can
+use `BatchGenerator.decode_step()` and `prefill_step()` separately; `next()`
+continues to advance both phases for existing callers.
 
 Continuous batching is enabled automatically when the server loads a model. You can pre-load a model at startup so it's ready to serve immediately:
 

@@ -51,7 +51,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to explore
 - **The Vibe Coding Workflow** — the full 7-step process from brain dump to production deploy
 
 **Building & Shipping**
-- **Real Project Walkthrough** — how I built Siteo in 3 days using this exact workflow
+- **Real Project Walkthrough** — how I built the first version of Mentorship Boss (then called Siteo) in 3 days using this exact workflow
 - **Supabase RLS Patterns** — Row Level Security done right, with AI generating every migration
 - **Beating the Generic AI Look** — skill files and design tokens that stop AI-generated aesthetics
 

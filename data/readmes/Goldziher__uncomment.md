@@ -82,7 +82,7 @@ cd uncomment
 cargo install --path .
 ```
 
-Requires Rust 1.70+. npm and pip packages download pre-built binaries automatically.
+Requires Rust 1.99+. npm and pip packages download pre-built binaries automatically.
 
 </details>
 
@@ -163,6 +163,19 @@ cargo install uncomment --features bench-tools
 # Or run locally
 cargo run --release --features bench-tools --bin benchmark -- --target /path/to/repo --iterations 3
 cargo run --release --features bench-tools --bin profile -- /path/to/repo
+```
+
+</details>
+
+<details>
+<summary><b>Using uncomment as a library</b></summary>
+
+The command-line front end (binary, argument parsing, directory walk and its `rayon` parallelism,
+and the `lint`, `scan`, `keep`, `check` and `init` subcommands) sits behind the default-on `cli`
+feature. Library consumers that only need the per-file `Processor` API opt out:
+
+```toml
+uncomment = { version = "3", default-features = false }
 ```
 
 </details>

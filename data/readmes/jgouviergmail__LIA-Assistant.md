@@ -185,13 +185,13 @@ Every optional subsystem is governed by a `{FEATURE}_ENABLED` flag, checked at s
 ## Try LIA Online
 
 <details>
-<summary><strong>Public walkthrough and hosted beta access</strong></summary>
+<summary><strong>Public walkthrough and hosted access</strong></summary>
 
 [Explore LIA and its real interface](https://lia.jeyswork.com/) or try the [public demonstration](https://lia.jeyswork.com/demo).
 
 The public walkthrough is available without an account and uses example data. It shows how context, results and approval controls fit together. A live demonstrator is also offered when the instance publishes one.
 
-**Hosted beta access** — account access and activation are granted at the administrator's discretion. To request an invitation, write to **liamyassistant@gmail.com**.
+**Hosted access** — account access and activation are granted at the administrator's discretion. To request an invitation, write to **liamyassistant@gmail.com**.
 
 To run your own LIA, start with [Quick Start](#quick-start) or the [production installation guide](docs/GETTING_STARTED.md).
 
@@ -1029,4 +1029,4 @@ Three layers: a **Next.js** front end (chat, settings, six languages, SSE stream
 
 Switchable per user from the chat header:
 
-- **Pipeline** (default) — a **Planner** decomposes the reques
+- **Pipeline** (default) — a **Planner** decomposes the request into an 

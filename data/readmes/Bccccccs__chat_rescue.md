@@ -1,4 +1,6 @@
-# chat_rescue：微信聊天记录误删恢复工具（macOS）
+# chat_rescue：微信聊天记录误删恢复工具（Mac / Windows 离线实验支持）
+
+**Windows 0.3.6 实验版：** [下载安装包 / 便携包](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.3.6)，内置 Python 和 SQLCipher，按 **先 A → 核验并退出 → 再 B** 操作。首次部署、依赖配置与多电脑使用见 [安装部署说明](docs/windows-deployment.md)，界面步骤见 [五步向导](docs/windows-desktop.md)。4.2.0.12 已验证两个账号的取钥、四库导出和文本方向；三条合成文本的副本恢复、源账号本地写入验证通过，目标账号仅生成预览。完全空白库初始化、真实双账号 GUI 应用、微信显示及手机迁移尚未验收；名片/文件方向尚未核验。下文下载与 Mac 取钥教程适用于已发布的 Mac 版。
 
 **这个工具的作用，是帮助你恢复与重要的人的微信聊天记录。**
 
@@ -10,11 +12,15 @@
 
 **English:** Open-source WeChat chat history recovery for macOS. Restore supported one-to-one messages from the other participant's retained copy, with perspective conversion, backups, preview, and agent-assisted steps. Experimental; both participants must consent. Attachment content and automatic phone synchronization are not supported.
 
-## 最新版：0.3.5 · 本机实验版
+## 已发布 Mac 版：0.3.7 · 本机实验版
 
-桌面版把双方聊天互相补齐收进五步向导：**准备软件 → 登录两个账号 → 读取双方聊天 → 确认补齐预览 → 检查恢复结果**。原有 CLI 保留，支持在不同 Mac 之间通过授权单聊 bundle 完成 B → A 恢复。
+桌面版把双方聊天互相补齐收进五步向导：**准备软件 → 依次登录 A、B → 读取双方聊天 → 确认补齐预览 → 检查恢复结果**。原有 CLI 保留，支持在不同 Mac 之间通过授权单聊 bundle 完成 B → A 恢复。
 
-[下载与发布说明](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.3.5) · [更新记录](CHANGELOG.md)
+[下载与发布说明](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.3.7) · [更新记录](CHANGELOG.md)
+
+**第一次使用 Mac 版？请看 [Mac 零基础手把手教程](docs/beginner-guide.md)**：从下载安装、四项权限授权，到分别登录、确认旧聊天、核对补齐预览和检查结果，按实际按钮一步一步操作。Windows 使用上方安装包入口和 Windows 五步说明。
+
+当前源码已改为顺序登录：**打开 A → 登录并确认 A → 打开 B → 登录并检查 B 的旧聊天 → 读取并预览**。0.3.7 下载包已包含此流程；原版微信运行时会先提示退出，避免与 A 副本争用账号目录。
 
 ### 五步图示
 
@@ -25,7 +31,7 @@
 | 步骤 | 你需要做什么 | 软件负责什么 |
 | --- | --- | --- |
 | 1. 准备软件 | 首次退出所有微信，按系统提示授权 | 检查环境，准备固定 A/B 副本；提供软件、Terminal 和两个副本的路径复制与访达定位 |
-| 2. 登录两个账号 | 分别登录不同账号，完成扫码与手机确认；确保所需聊天在电脑可见 | 打开两个副本，显示进程状态；运行中不代表身份已验证 |
+| 2. 依次登录 A、B | 先登录并确认 A，再登录 B 并勾选旧聊天检查 | 先只打开 A，确认后才打开 B；完成检查后可读取，昵称在读取后核验 |
 | 3. 读取双方聊天 | 确认正常退出；首次读取时在终端启动的副本里登录；有歧义时选择已核验昵称 | 依次取钥、验证四个必要数据库、识别本人昵称、读取双方会话、备份并生成预览 |
 | 4. 确认补齐预览 | 核对双方昵称、各侧新增和重复数量，再确认补齐 | 确认前不写入聊天库；保留已有消息、跳过重复，冲突或不支持内容停止处理 |
 | 5. 检查恢复结果 | 打开两个微信核对时间、内容、头像和收发方向；需要手机记录时自行迁移并验收 | 提供备份与回执入口；数据库验证不能代替实际客户端检查 |
@@ -40,11 +46,13 @@
 - 账号设置、密钥、备份与任务留在 `~/Library/Application Support/Chat Rescue`。终端可能显示或短暂弹出，用户无需手输命令；登录、手机确认与授权仍由本人操作。
 - 当前仅支持单个 `message_0.db` 的授权单聊文本、名片和文件消息条目；不恢复附件本体，不自动同步到微信服务器或手机。
 
-**验证状态：** 本机 61 项合成测试通过，覆盖双向补齐、去重、身份与方向映射、变化拒绝、部分失败回执和撤回保护。截图展示了读取与预览界面；不据此宣称真实双账号数据库应用、微信显示或手机迁移已验收。
+**验证状态：** 本次 macOS 本机 118 项测试中 105 项通过、13 项平台限制跳过，覆盖双向补齐、去重、身份与方向映射、变化拒绝、部分失败回执和撤回保护。截图展示了读取与预览界面；不据此宣称真实双账号数据库应用、微信显示或手机迁移已验收。
 
 ### 下载与运行
 
-在 Releases 下载 `Chat-Rescue-0.3.5-macOS-arm64.zip`，解压并打开 `Chat Rescue.app`。仅面向 Apple Silicon；打包目标为 macOS 14+，当前实测环境与微信版本见“开始前”，最低打包版本不等于完整兼容性验证。应用内置 Python 与 SQLCipher，取钥仍需 Apple LLDB / Xcode Command Line Tools。应用使用本地临时签名，尚未完成 Apple 开发者公证。
+换到另一台 Mac 安装，按 [Mac 安装与跨电脑使用](docs/macos-deployment.md) 操作；应用包不包含本机账号、密钥或聊天资料。
+
+在 Releases 下载 `Chat-Rescue-0.3.7-macOS-arm64.zip`，解压并打开 `Chat Rescue.app`。仅面向 Apple Silicon；打包目标为 macOS 14+，当前实测环境与微信版本见“开始前”，最低打包版本不等于完整兼容性验证。应用内置 Python 与 SQLCipher，取钥仍需 Apple LLDB / Xcode Command Line Tools。应用使用本地临时签名，尚未完成 Apple 开发者公证。
 
 源码构建（在仓库根目录执行）：
 
@@ -52,7 +60,7 @@
 ./desktop/build.sh
 ```
 
-产物：`dist/Chat Rescue.app` 与 `dist/Chat-Rescue-0.3.5-macOS-arm64.zip`。构建需 Python 3.14、SQLCipher 和 Xcode Command Line Tools。首次使用按准备页完成权限授权；不要使用 sudo 或关闭 SIP。
+产物：`dist/Chat Rescue.app` 与 `dist/Chat-Rescue-<源码版本>-macOS-arm64.zip`。构建需 Python 3.14、SQLCipher 和 Xcode Command Line Tools。当前 Mac 发布包为 0.3.7。首次使用按准备页完成权限授权；不要使用 sudo 或关闭 SIP。
 
 ## 让 agent 帮你运行
 
@@ -114,6 +122,10 @@ python3.14 -m chat_rescue doctor
 
 ## 文档
 
+- [Windows 安装包与跨电脑部署](docs/windows-deployment.md)
+- [Windows 五步桌面向导](docs/windows-desktop.md)
+
+- [零基础手把手教程：桌面版从安装到结果检查](docs/beginner-guide.md)
 - [双账号恢复 SOP：可复制的命令与操作顺序](docs/recovery-sop.md)
 - [命令说明与输出约定](docs/cli.md)
 - [隐私、密钥与分享规则](docs/privacy.md)

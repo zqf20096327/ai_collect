@@ -1,152 +1,176 @@
-<img src="./website/static/img/banner.png" />
+<div align="center">
 
-# 🌊 [Lagune AI](https://lagune.ai)
+# 🪼 Lagune [AI](https://lagune.ai)
 
 [![Secured By Lagune](https://img.shields.io/badge/Lagune-2f7bff?logo=springsecurity&logoColor=white&label=Secured%20By&labelColor=303952)](https://lagune.ai)
 [![Version](https://img.shields.io/npm/v/lagune?label=&color=2f7bff&logo=npm&logoColor=white)](https://www.npmjs.com/package/lagune)
-[![No API Key Needed](https://img.shields.io/badge/No%20API%20Key%20Needed-2f7bff?logo=claudecode&logoColor=white)](https://lagune.ai/docs/supported-agents)
+[![No API Key Needed](https://img.shields.io/badge/No%20API%20Key%20Needed-2f7bff?logo=claudecode&logoColor=white)](https://lagune.ai/docs)
 
-**Lagune** helps your AI agent make a project more secure. You point it at your code, and the agent figures out what your system actually does, then guides you through the security work that matters for it.
-
-- **Lagune** works with projects in **any programming language** and supports [**78 agents**](https://lagune.ai/docs/supported-agents) ✨
+Instead of running a generic checklist, what if security existed **before**, **during**, and **after** development?
 
 ---
 
-Love **Lagune**? [**Give us a ⭐ on GitHub**](https://github.com/wellwelwel/lagune)!
+[**Give us a ⭐ on GitHub**](https://github.com/wellwelwel/lagune)<br />
+It helps more people discover the project.
 
 ---
 
-## Table of Contents
+#### 📘 Documentation
 
-- 🌊 [**Get Started**](#get-started)
-  - 📦 [**Dashboard**](#dashboard) | [**CLI**](#cli)
-  - 💬 [**Slash Commands**](#slash-commands)
-- 💽 [**Requirements**](#requirements)
-- 🔐 [**Security**](#security)
-- 🤝 [**Contributing**](#contributing)
-- 🖖 [**Acknowledgements**](#acknowledgements)
-- 🧑‍⚖️ [**License**](#license)
+<a href="https://lagune.ai/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/us.svg" alt="English" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/pt-BR/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/br.svg" alt="Português (Brasil)" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/es-ES/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/es.svg" alt="Español (España)" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/de-DE/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/de.svg" alt="Deutsch" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/fr-FR/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/fr.svg" alt="Français" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/it-IT/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/it.svg" alt="Italiano" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/tr-TR/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/tr.svg" alt="Türkçe" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/uk-UA/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/ua.svg" alt="Українська" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/ru-RU/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/ru.svg" alt="Русский" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/zh-CN/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/cn.svg" alt="简体中文" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/ja-JP/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/jp.svg" alt="日本語" width="32" align="absmiddle" /></a>
+<a href="https://lagune.ai/ko-KR/docs"><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/flags/kr.svg" alt="한국어" width="32" align="absmiddle" /></a>
+
+</div>
 
 ---
 
 ## Get Started
 
-**Lagune** adapts to your environment, whether it is a new project or an existing one.
+### Install and Update
+
+Pick your agent:
+
+<table>
+<tr>
+<th width="50%" align="left">Install</th>
+<th width="50%" align="left">Update</th>
+</tr>
+<tr>
+<td colspan="2"><picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/claude.svg" width="20" align="absmiddle" /></picture> <a href="https://lagune.ai/docs/install/claude-code"><b>Claude Code</b></a></td>
+</tr>
+<tr>
+<td>
+
+```bash
+claude plugin install lagune --marketplace wellwelwel/lagune
+```
+
+</td>
+<td>
+
+```bash
+claude plugin marketplace update lagune
+claude plugin update lagune@lagune
+```
+
+</td>
+</tr>
+<tr>
+<td colspan="2"><picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/claude.svg" width="20" align="absmiddle" /></picture> <a href="https://lagune.ai/docs/install/claude-code"><b>Claude Code Extension</b></a></td>
+</tr>
+<tr>
+<td>
+
+- Type `/plugin` and select **Manage plugins**.
+- Add `wellwelwel/lagune` on the **Marketplaces** tab.
+- Install `lagune` on the **Plugins** tab.
+
+</td>
+<td>
+
+- Type `/plugin` and select **Manage plugins**.
+- Open the **Marketplaces** tab.
+- Select the refresh icon on `lagune`.
+
+</td>
+</tr>
+<tr>
+<td colspan="2"><picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/codex.svg" width="20" align="absmiddle" /></picture> <a href="https://lagune.ai/docs/install/codex"><b>Codex</b></a></td>
+</tr>
+<tr>
+<td>
+
+```bash
+codex plugin marketplace add wellwelwel/lagune
+codex plugin add lagune@lagune
+```
+
+</td>
+<td>
+
+```bash
+codex plugin marketplace upgrade lagune
+```
+
+</td>
+</tr>
+</table>
+
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/antigravity.svg" width="20" align="absmiddle" /></picture> [**Antigravity**](https://lagune.ai/docs/install/antigravity-cli)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/cursor.svg" width="20" align="absmiddle" /></picture> [**Cursor**](https://lagune.ai/docs/install/cursor)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/devin.svg" width="20" align="absmiddle" /></picture> [**Devin for Terminal**](https://lagune.ai/docs/install/devin-cli)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/droid.svg" width="20" align="absmiddle" /></picture> [**Factory Droid**](https://lagune.ai/docs/install/factory-droid)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/gemini.svg" width="20" align="absmiddle" /></picture> [**Gemini CLI**](https://lagune.ai/docs/install/gemini-cli)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/copilot.svg" width="20" align="absmiddle" /></picture> [**GitHub Copilot**](https://lagune.ai/docs/install/github-copilot-cli)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/grok.svg" width="20" align="absmiddle" /></picture> [**Grok Build**](https://lagune.ai/docs/install/grok-build)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/hermes.svg" width="20" align="absmiddle" /></picture> [**Hermes Agent**](https://lagune.ai/docs/install/hermes-agent)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/kimi.svg" width="20" align="absmiddle" /></picture> [**Kimi Code**](https://lagune.ai/docs/install/kimi-code)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/muse.svg" width="20" align="absmiddle" /></picture> [**Muse Code**](https://lagune.ai/docs/install/muse-code)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/opencode.svg" width="20" align="absmiddle" /></picture> [**OpenCode**](https://lagune.ai/docs/install/opencode)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/pi.svg" width="20" align="absmiddle" /></picture> [**Pi**](https://lagune.ai/docs/install/pi)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/qwen.svg" width="20" align="absmiddle" /></picture> [**Qwen Code**](https://lagune.ai/docs/install/qwen-code)
+- <picture><img src="https://raw.githubusercontent.com/wellwelwel/lagune/main/.github/readme/assets/agents/vercel.svg" width="20" align="absmiddle" /></picture> [**Universal (skills.sh)**](https://lagune.ai/docs/install/universal)
+
+> [!NOTE]
+>
+> - See the [**Install**](https://lagune.ai/docs) section for **detailed instructions**.
+> - [**Migrate from previous Lagune**](https://lagune.ai/docs/commands/migrate) manifest-based setup.
+
+---
+
+### Skills
+
+Once installed, your **AI** agent unlocks a set of commands, all governed by the **charter**: secure new work as you build it, or run the full audit over a project.
 
 > [!TIP]
 >
 > See real-world [**Prompt Samples**](https://lagune.ai/docs/examples/prompts) 🪼
 
----
+#### › Build
 
-### Dashboard
+Harden the work as you write it, with no flow to follow:
 
-For an interactive live view, follow-up, and maintenance, run:
+| Skill                                                               | What it does for you                                                        |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [**/lagune-charter**](https://lagune.ai/docs/commands/charter)      | Sets your project's security rules, the foundation `/lagune` builds against |
+| [**/lagune**](https://lagune.ai/docs/commands/lagune) _(Universal)_ | Builds what you ask and hardens it as it is written, guided by the charter  |
 
-```bash
-npx -y lagune@latest
-```
-
-It serves a dashboard and opens it in a random port:
-
-- [x] **Live Reload**
-- [x] **Private** and **Local**
-- [x] **Install**, **Pull**, **Update**, and **Manage** all **Lagune** features directly from your browser
-- [x] No `node_modules` or `package.json` is needed 📦
-
-<details>
-<summary>Overview</summary>
-<br />
-
-<img width="320" src="./website/static/img/dashboard/01.png" />
-<img width="320" src="./website/static/img/dashboard/02.png" />
-<img width="320" src="./website/static/img/dashboard/03.png" />
-<img width="320" src="./website/static/img/dashboard/04.png" />
-<img width="320" src="./website/static/img/dashboard/05.png" />
-<img width="320" src="./website/static/img/dashboard/06.png" />
-
-</details>
-
-> [!TIP]
->
-> - 🚪 Use `--port` or `-p` to specify a custom port.
-> - ⏏️ Press `Ctrl+C` to stop.
-
----
-
-### CLI
-
-#### › Install
-
-```bash
-npx -y lagune@latest init
-```
-
-- 🃏 **Lagune** runs on **Node.js** under the hood, you use whatever language you want.
-
-#### › Update
-
-To update **Lagune**'s own files and its commands to their latest versions, run:
-
-```bash
-npx -y lagune@latest update
-```
-
-> [!TIP]
->
-> Your charter, the phase artifacts, and any custom specializations stay untouched.
-
-#### › Pull
-
-When you clone or fork a project that already has **Lagune**, run pull to install its files from the manifest:
-
-```bash
-npx -y lagune@latest pull
-```
-
-> [!TIP]
->
-> 💡 Think of it as the **Lagune** equivalent of `npm i`, `pip install -r requirements.txt`, and the like.
-
----
-
-### Slash Commands
-
-Once **Lagune** is set up in your project, your **AI** agent unlocks a set of slash commands:
-
-#### › Development flow
-
-Harden the work as you build it, guided by the charter, with no flow to follow:
-
-| Command                                               | What it does for you                                                      |
-| ----------------------------------------------------- | ------------------------------------------------------------------------- |
-| [**/lagune**](https://lagune.ai/docs/commands/lagune) | Enforces security along with your development, on any prompt, at any time |
-
-- Pull in the on-demand specializations in real time while your agent works.
-- Combine it with the [**/lagune.charter**](https://lagune.ai/docs/commands/charter) command to shape every build around your project's own security rules.
-
-#### › The Blue Team flow
+#### › Audit: the Blue Team flow
 
 These five run in order. Each builds on the previous, so following the list top to bottom is all it takes:
 
-| #   | Command                                                        | What it does for you                                                           |
+| #   | Skill                                                          | What it does for you                                                           |
 | --- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| 1   | [**/lagune.charter**](https://lagune.ai/docs/commands/charter) | Sets your project's security rules, proposed for you or shaped by what you say |
-| 2   | [**/lagune.detect**](https://lagune.ai/docs/commands/detect)   | Reads your code and maps what your system does and where the risks are         |
-| 3   | [**/lagune.plan**](https://lagune.ai/docs/commands/plan)       | Turns what detect found into a defense plan, with a fix for each finding       |
-| 4   | [**/lagune.harden**](https://lagune.ai/docs/commands/harden)   | Applies the plan's fixes to your code, safely and one at a time                |
-| 5   | [**/lagune.verify**](https://lagune.ai/docs/commands/verify)   | Proves each applied fix holds and closes out the ones that do                  |
+| 1   | [**/lagune-charter**](https://lagune.ai/docs/commands/charter) | Sets your project's security rules, proposed for you or shaped by what you say |
+| 2   | [**/lagune-detect**](https://lagune.ai/docs/commands/detect)   | Reads your code and maps what your system does and where the risks are         |
+| 3   | [**/lagune-plan**](https://lagune.ai/docs/commands/plan)       | Turns what detect found into a defense plan, with a fix for each finding       |
+| 4   | [**/lagune-harden**](https://lagune.ai/docs/commands/harden)   | Applies the plan's fixes to your code, safely and one at a time                |
+| 5   | [**/lagune-verify**](https://lagune.ai/docs/commands/verify)   | Proves each applied fix holds and closes out the ones that do                  |
 
-#### › Special commands
+#### › Special skills
 
-| Command                                                              | What it does                                                                            |
-| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| [**/lagune.specialize**](https://lagune.ai/docs/commands/specialize) | Specializes **Lagune** in a new security _sub_-skill from articles, exploits, or topics |
-| [**/lagune.prove**](https://lagune.ai/docs/commands/prove)           | Turns each detected finding into a runnable proof for responsible disclosure            |
+| Skill                                                                | What it does                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [**/lagune-specialize**](https://lagune.ai/docs/commands/specialize) | Teaches **Lagune** a new security specialization from articles, exploits, or topics        |
+| [**/lagune-prove**](https://lagune.ai/docs/commands/prove)           | Turns each detected finding into a runnable, defense-only proof for responsible disclosure |
 
 > [!TIP]
 >
 > Security is not a cost, it is an investment: what you put in upfront, you save many times over in the incidents you never have 🙋🏻‍♂️
+
+> [!NOTE]
+>
+> Some agents take the commands under the plugin's name, such as `/lagune:lagune-charter`. Your agent's [**install page**](https://lagune.ai/docs) shows how to type them.
 
 > [!IMPORTANT]
 >
@@ -154,18 +178,49 @@ These five run in order. Each builds on the previous, so following the list top 
 
 ---
 
+### Dashboard
+
+For an interactive live view of `.lagune/`, run:
+
+```bash
+npx lagune
+```
+
+It serves a dashboard and opens it on a random port:
+
+- [x] **Live Reload**
+- [x] **Private** and **Local**
+- [x] Follow the findings, fixes, and verdicts, and manage the categories, directly from your browser
+- [x] No `node_modules` or `package.json` is needed 📦
+
+<details>
+<summary>Overview</summary>
+<br />
+
+<img width="320" src="https://raw.githubusercontent.com/wellwelwel/lagune/main/website/static/img/dashboard/02.png" />
+<img width="320" src="https://raw.githubusercontent.com/wellwelwel/lagune/main/website/static/img/dashboard/03.png" />
+<img width="320" src="https://raw.githubusercontent.com/wellwelwel/lagune/main/website/static/img/dashboard/04.png" />
+<img width="320" src="https://raw.githubusercontent.com/wellwelwel/lagune/main/website/static/img/dashboard/05.png" />
+<img width="320" src="https://raw.githubusercontent.com/wellwelwel/lagune/main/website/static/img/dashboard/06.png" />
+
+</details>
+
+> [!TIP]
+>
+> - 🚪 Use `--port` to specify a custom port.
+> - ⏏️ Press `Ctrl+C` to stop.
+
+---
+
 ## Requirements
 
-You will need these tools installed on your system:
-
-- [**Node.js (LTS)**](https://nodejs.org/en/download/package-manager)
-- At least one of the [**Supported Agents**](https://lagune.ai/docs/supported-agents)
+You will need [**Node.js (LTS)**](https://nodejs.org/en/download/package-manager) installed on your system.
 
 ---
 
 ## Security
 
-To details, report a vulnerability, and see the supported versions, see the [**Security Policy**](https://github.com/wellwelwel/lagune/blob/main/SECURITY.md).
+To report a vulnerability and see the supported versions, check the [**Security Policy**](https://github.com/wellwelwel/lagune/blob/main/SECURITY.md).
 
 ---
 
@@ -197,3 +252,5 @@ Really thanks to everyone who has supported and keeps supporting my work.
 
 **Lagune** is under the [**Apache License 2.0**](https://github.com/wellwelwel/lagune/blob/main/LICENSE).<br />
 Copyright © 2026-present [**Weslley Araújo**](https://github.com/wellwelwel) and [**contributors**](https://github.com/wellwelwel/lagune/graphs/contributors).
+
+All product names, trademarks, and registered trademarks mentioned are the property of their respective owners and are used for identification purposes only.

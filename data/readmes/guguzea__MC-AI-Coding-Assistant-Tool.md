@@ -4,7 +4,7 @@
 
 **简体中文** · [English](README.en.md) · [人类读本](README_human.md) · [Human Guide](README_human.en.md)
 
-### 一个跑在本地的 MCP知识/工具库：让 AI 知道你这一版 Minecraft 该用哪套 API、哪套构建、哪套映射。并提供一个完整的工具包去反复验证实现效果
+### 一个跑在本地的 MCP知识/工具库：一站式MC模组解决方案
 ### 显著降低AI幻觉·AI不再瞎编
 ####  检查不好找?AI也是一个好老师!
 #### 显著降低模组开发,整合包开发的工作量! 
@@ -814,6 +814,65 @@ Cursor 主路径是 **tools**；协议层仍注册 Prompt/Resource，工具兜�
 
 Fabric 另含 `mc-fabric-api`、`mc-kotlin`、`mc-cloth-config`；Forge 1.12.2–1.20.4 与 Fabric 主档均含 `mc-events`（经 `FABRIC_SKILL_DONORS` 回填的薄档带 DONOR_SKILL 横幅）。代码模式示范见 `community_knowledge/patterns/`（也可经 `mcskill://patterns/README` 读取）。
 
+## 纹理与模型
+
+建模与贴图不在 MCP 工具面里。模型 JSON 骨架由 `generate_model` 出，纹理走 `mc-texture` 技能。
+
+### 分工
+
+| 环节 | 用什么 | 本仓库给什么 |
+|---|---|---|
+| 方块模型 / blockstate / 物品 `items/` | `generate_model`（须传 `version`） | cube 与 `item/generated` 骨架 |
+| 有形状的模型、基岩 `.geo.json`、GeckoLib 动画 | 外部 Blockbench MCP | 落位规则（`geo/`、`animations/`、`textures/`） |
+| 纹理 / 纹理动画 / 粒子特效 | `mc-texture` | 完整流程 + 三个零依赖脚本 |
+| 32px 以上大图、人物立绘 | `pixel-art-upstream` | 上游方法论 + `grid.py` |
+| 引用完整性 | `audit_resources` | 不判 `pack_format` |
+
+模型 MCP 是 GPL-3.0 的独立程序，按外部工具安装，与本仓库通过 MCP 协议通信：<https://github.com/jasonjgardner/blockbench-mcp-plugin>
+
+### 技能入口
+
+`read_knowledge_resource uri=mcskill://skill/mc-texture`，源稿 `common_skill/mc-texture/SKILL.md`。`activate_platform_pack task=mc-texture` 的 warning 同时指向它与 `pixel-art-upstream`。
+
+步骤：定尺寸 → 定风格 → 定调色板 → 分层画 → 渲染 → 1× 核对 → 改（≥3 轮）。用户指定的风格、色数、尺寸优先于原版惯例；未指定时按 16×16、可平铺、4–8 色、左上光源。分层顺序为平涂剪影 → 打光 → 内部细节 → 描边 → 五官。
+
+材质按游戏内状态区分：铜为四级锈蚀（Unoxidized / Exposed / Weathered / Oxidized），绿色自棱角扩散、逐级反转，四套图一并制作；木头分原木 / 去皮 / 木板，石头分石头 / 圆石 / 石砖，金属用高光块而非噪点。依据为 Minecraft Wiki 的 Oxidation 条目与本仓 `data/` 语料。
+
+### 纹理动画
+
+竖排图集 + 同名 `.png.mcmeta`（文件名含 `.png`）。字段 `frametime` / `interpolate` / `frames` / `width`·`height`，默认 1 / false / 全部按序 / 按最短边推断。图集总高须被帧高整除；`frames: [0,1,2,1]` 可用于来回循环。
+
+多帧制作用 `render-pixels.mjs` 的图集模式：一帧一个网格文件，一次渲染出竖排 PNG 并写好 mcmeta。预览用 `gif.mjs` 转 GIF，逐帧核对仍看 PNG 图集。
+
+### 粒子特效
+
+按规则逐帧计算：拆元素 → 带种子生成 → 固定步长积分 → 按已飞出距离着色。结构性图案（脸、logo、文字）用栅格，自然扩散（球、火花）用粒子。
+
+MC 烟花的 `shape` 合法值为 `small_ball` / `large_ball` / `star` / `creeper` / `burst`（缺省 `small_ball`），另有 `trail` 与 `flicker`。出处 `data/neoforge_*/…/resources_server_loottables_lootfunctions.md`。
+
+### 脚本
+
+三个脚本零依赖，PNG 与 GIF 均由 `node:zlib` 手写。
+
+| 脚本 | 作用 | 写入前校验 |
+|---|---|---|
+| `render-pixels.mjs` | 调色板 + 像素网格 → 1× PNG；多文件时拼竖排图集并写 mcmeta | 行宽、色号未定义、尺寸不符；警告孤立像素与半透明 |
+| `firework.mjs` | 五形状烟花图集 + mcmeta | 参数合法性，剔除尾部空帧 |
+| `gif.mjs` | 竖排图集 → GIF 预览 | GIF89a 结构 |
+
+```bash
+# 单张纹理
+node common_skill/mc-texture/tools/render-pixels.mjs sprite.txt --out out.png --size 16x16 --scale 16
+
+# 纹理动画：多帧拼竖排图集，同时写出 .png.mcmeta
+node common_skill/mc-texture/tools/render-pixels.mjs f0.txt f1.txt f2.txt --atlas out/anim.png --frametime 3
+
+# 烟花特效
+node common_skill/mc-texture/tools/firework.mjs temp/firework --shape star --fps 12 --size 32 --trail --flicker
+
+# 转 GIF 预览
+node common_skill/mc-texture/tools/gif.mjs temp/firework/firework.png out.gif --delayCs 8 --scale ，6
+
 ## MCP/CLI TOOLS:89
 
 服务名：`MC-AI-Coding-Assistant-Tool`。
@@ -1069,11 +1128,4 @@ jar 未缓存时返回 `CACHE_MISS` 引导（先调 `get_minecraft_source`），
 ### 11. 日志与依赖诊断（8）
 
 | 工具                    | 作用                                      | 判读（三态）                                               | 错误码                                                     |
-| --------------------- | --------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------- |
-| `analyze_log`         | 解析游戏/崩溃日志片段（可复用 `crash_analyze` 分类）。    | 读取类：`ok` + 分类结论；片段解析 ⇒ 结论只覆盖你贴进来的那一段            | —                                                        |
-| `analyze_build_log`   | 解析粘贴的 Gradle/javac 构建失败日志（不执行 gradlew）；返回符号/文件与建议工具。 | 读取类：`ok` + 符号/文件 + 建议工具；**它不跑 gradlew**           | —                                                        |
-| `get_migration_guide` | 默认 Primer **toc**；`section` 只返回该章；`full=true` 才全文（含 url/license/loader）。route 含 platform 或 `from->to`。 | 命中类：默认只给 toc（三档：`toc` / `section` / `full`）；**没给全文不等于没有该章** | —                                                        |
-| `check_dependencies`  | 根据 `build.gradle` / `mods.toml` / `fabric.mod.json` / `quilt.mod.json` / `litemod.json` / `riftmod.json` / 基岩 manifest 提示依赖问题：loader 判定（quilt/fabric/forge/neoforge/liteloader/rift/modloader/bedrock）、库模组识别（catalog 接线）、冲突/陷阱检测。返回 `detectedLibraries`（含 `supportedVersions` 反编译验证版本窗口与 `manifestSummary` 版本/加载器摘要，数据来自 `library-catalog.ts` + `mcp-server/data/lib-manifests/all.json`）。 | 命中类：`ok` + `detectedLibraries`；**启发式 + catalog ⇒ 未收录的库会漏**（不是完整 Gradle 解析） | —                                                        |
-| `inspect_playtest_evidence` | 读游玩自测证据（exit-code / state.json / `[QA]` 段 / calls.jsonl / 截图），每件三态 `present\|absent\|unreadable`；须 `MC_SKILL_PLAYTEST_ALLOW=1` + `MC_SKILL_PLAYTEST_ROOT`（realpath 硬边界）。可选委派 `inspect_runtime` 读日志。 | **三态**：每件 `present` / `absent` / `unreadable`；**缺件不得读成"没有失败"** | —                                                        |
-| `inspect_playtest_multi` | 多客户端**联合判读**（多会话）：`clients[]`（{id,evidenceDir}）或 `evidenceRoot`（扫直接子目录当客户端；保留名 `sync/` 跳过并在 `autoSkipped` 里留痕）。逐客户端三态 + 联合判绿 + 锚点（state.json 的 `at` / plan.txt mtime / rounds 末轮）+ 会合 marker。 | **联合 fail-closed**：客户端数 ≥1 ∧ 每个 exit-code=0 ∧ state 与 qa 都 present ∧ rounds 末轮 ok≠false ∧（给了 `expectMarkers` 时）每个 marker 都 present；任一客户端目录 realpath 越出授权根 ⇒ **整体拒** | `NO_CLIENTS` · `CLIENT_NOT_GREEN` · `MARKERS_MISSING` · `OUTSIDE_AUTHORIZED_ROOT` · `DUPLICATE_CLIENT_ID` |
-| `playtest_intent` | 游玩自测**意图邮箱**（`in_jvm_player_agent` 真执行器的 LLM 侧接线）：`action=read\|write`；write 写 `<evidenceDir>/intent.json`（driver 的 `waitintent` 步消费并改名 `intent.done.json`）。校验顺序：confirmed 
+| --------------------- | ---------------

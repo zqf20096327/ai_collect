@@ -364,7 +364,7 @@
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget), [How does the voice-to-voice latency of a voice agent get measured?](https://outcomeschool.com/blog/voice-to-voice-latency), [Why does the time-to-first-audio matter more than total response time?](https://outcomeschool.com/blog/time-to-first-audio), [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents) and [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - Design barge-in / interruption handling for a voice agent.
   - Asked at: [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent) and [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent) and [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise)
 - Cascaded ASR+LLM+TTS versus native speech-to-speech: argue both sides.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
@@ -615,6 +615,7 @@
 #### ML and DL Fundamentals
 
 - Define the bias-variance trade-off and discuss the relationship between the two.
+  - Answer: [How does the Bias-Variance Tradeoff work?](https://outcomeschool.com/blog/bias-variance-tradeoff)
 - What are the assumptions of linear regression?
 - Distinguish regularization from validation: when is each the right tool?
   - Answer: [Regularization in Machine Learning: L1 vs L2](https://outcomeschool.com/blog/regularization-in-machine-learning)
@@ -1334,6 +1335,4 @@
 
 ### Databricks
 
-> **Roles this covers:** Software Engineer (ML Platform / Mosaic AI), Machine Learning Engineer, GenAI Solutions Architect, Forward Deployed / Delivery Solutions Architect, Applied AI Engineer.
->
-> **Interview loop, as publicly reported:** Recruiter screen → technical screen (practical coding, often concurrency or data-heavy) → onsite: two coding rounds, a distributed-systems
+> **Roles this covers:** Software Engineer (ML Platform / Mosaic AI), Machine Learning Engineer, GenAI Solutions Arch

@@ -57,7 +57,8 @@ require 'vectra'
 client = Vectra::Client.new(
   provider: :pinecone,
   api_key: ENV['PINECONE_API_KEY'],
-  environment: 'us-west-4'
+  environment: 'us-west-4',
+  index: 'docs'
 )
 
 # Upsert vectors
@@ -103,6 +104,7 @@ puts "Provider: #{status[:provider]}, Latency: #{status[:latency_ms]}ms"
 
 # Hybrid search (semantic + keyword)
 # Supported by: Qdrant, Weaviate, Pinecone, pgvector
+# Qdrant/Pinecone require matching sparse ingestion and a configured sparse_encoder.
 results = client.hybrid_search(
   index: 'docs',
   vector: embedding,
@@ -170,7 +172,7 @@ graph TB
 ## Features
 
 - **🔌 Provider Agnostic** - Switch between 5 providers with one line change
-- **🚀 Production Ready** - Ruby 3.2+, 95%+ test coverage, enterprise patterns
+- **Ruby 3.2+** - Tested core API, optional reliability helpers and provider contract tests
 - **🛡️ Resilient** - Circuit breaker, rate limiter, retry logic with exponential backoff
 - **📈 Observable** - Grafana dashboards, Prometheus metrics, 4 instrumentation backends
 - **🏗️ Rails Ready** - ActiveRecord integration with `has_vector` DSL
@@ -208,7 +210,7 @@ end
 doc = Document.create!(title: 'Hello', embedding: [0.1, 0.2, ...])
 
 # Search
-Document.vector_search(embedding: query_vector, limit: 10)
+Document.vector_search(query_vector, limit: 10)
 ```
 
 ### Rails Generator: vectra:index
@@ -247,14 +249,14 @@ Real-world patterns for common use cases:
 - **Blog Hybrid Search** - Combine semantic + keyword matching
 - **Multi-Tenant SaaS** - Namespace isolation per tenant
 - **RAG Chatbot** - Context retrieval for LLMs
-- **Zero-Downtime Migration** - Switch providers safely
+- **Provider Migration** - Copy and verify vectors with a coordinated application cutover
 - **Recommendation Engine** - Find similar items
 
 👉 **[Browse all Recipes & Patterns](https://vectra-docs.netlify.app/guides/recipes/)**
 
 ## Migration Tool
 
-Migrate vectors between providers with zero downtime:
+Copy a selected namespace between providers and verify its content:
 
 ```ruby
 source_client = Vectra::Client.new(provider: :memory)
@@ -336,9 +338,9 @@ Vectra::Client.use MyAuditMiddleware
 
 ## Production Patterns
 
-Vectra includes 7 production-ready patterns out of the box:
+Vectra includes these reliability tools; wrappers and circuit breakers are opt-in:
 
-- **Circuit Breaker** - Automatic failover when providers are down
+- **Circuit Breaker** - Opt-in request blocking and application-provided fallback
 - **Rate Limiter** - Token bucket algorithm to prevent API throttling
 - **Retry Logic** - Exponential backoff with jitter
 - **Connection Pooling** - Efficient connection management (pgvector)
@@ -359,6 +361,10 @@ High-level roadmap for `vectra-client`:
   - Deeper documentation and recipes around reranking and hybrid search.
 
 For a more detailed, always-up-to-date version, see the online roadmap: https://vectra-docs.netlify.app/guides/roadmap/
+
+## Upgrade and compatibility
+
+Read [the stability upgrade guide](docs/guides/stabilization.md) before deploying to existing collections. It covers namespace semantics, legacy IDs, explicit pgvector schema upgrades, hybrid prerequisites and migration consistency. Existing collections and keys are never rewritten automatically.
 
 ## Development
 

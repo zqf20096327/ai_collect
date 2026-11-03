@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.24.5`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.0`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,29 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.24.5 and earlier)</summary>
+<summary>Recent release notes (v11.25.0 and earlier)</summary>
+
+## What's New in v11.25.0
+
+**Fresh chains start at the supported app version.** A new personal `sage-gui serve`
+starts directly at app29. For a shared chain, create one signed, full-roster
+artifact with `init-genesis`, then run `init-fresh-node` on each Unix node against
+its exact genesis digest before starting `serve`. Existing chains keep their
+keys, genesis and governed upgrade history. See the
+[fresh-genesis guide](docs/reference/fresh-genesis.md).
+
+**App30 taint and authenticated lineage ship as explicit rules.** The merged
+implementation includes immutable multi-parent `derived_from` references,
+governed apply/clear decisions, bounded canonical traversal, provenance and
+recovery/state-sync support. `latest` and automatic upgrade voting remain at
+app29; an explicit signed app30 genesis or quorum-approved plan selects app30.
+
+**The native-shell control contract accepts v11.25 daemons.** Native standalone
+packages retain their preview identity and separate promotion requirements.
+Evidence-operator integration and complete count, coverage and error parity
+across clients/backends remain open in [#460](https://github.com/l33tdawg/sage/issues/460).
+
+Container: `ghcr.io/l33tdawg/sage:11.25.0`. SDK 11.25.0.
 
 ## What's New in v11.24.5
 
@@ -965,27 +987,4 @@ unchanged.
 
 The native-shell build also refreshes its fail-closed checksum for the official
 September `linuxdeploy-plugin-appimage` rebuild. The replacement was produced
-by the upstream project's successful scheduled workflow from its unchanged
-source commit, and its downloaded SHA-256 matches GitHub's release-asset
-digest. An unexpected future replacement will continue to stop the build.
-
-This patch changes no consensus rule, AppHash input, key encoding, fork target,
-or application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.12`. SDK 11.19.12.
-
-## What's New in v11.19.11
-
-**CEREBRUM now supports operator-configured hostnames behind a local TLS
-reverse proxy.** Set `SAGE_ALLOWED_CEREBRUM_HOSTS` to an exact comma-separated
-hostname allowlist when Caddy, Traefik, or another loopback proxy preserves the
-browser-facing `Host` instead of rewriting it to `localhost`. Ports are
-normalized and wildcards are deliberately unsupported.
-
-The trust boundary stays local: the connected peer and every forwarded IP hop
-must still be loopback, unconfigured hostnames still fail closed, and browser
-origin matching accepts `X-Forwarded-Proto` only when every field-line and
-comma-joined token is a valid, case-insensitive `http` or `https` value and all
-hops agree. Empty, malformed, or mixed scheme chains are rejected.
-
-This patch changes no consensus rule, AppHash input, key encoding, fork target,
+by the upstream project's successful scheduled workflow fro

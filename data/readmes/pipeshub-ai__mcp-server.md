@@ -11,6 +11,8 @@ PipesHub exposes a remote MCP endpoint over **Streamable HTTP** at `/mcp`. MCP C
 > **Coding agent?** Start at [For coding agents](https://docs.pipeshub.com/for-agents.md). Install the skill into the *user's* repo with `npx skills add pipeshub-ai/mcp-server` (see [`skills/pipeshub`](./skills/pipeshub/SKILL.md)) and append the `AGENTS.md` snippet on that page. Listed on the [official MCP registry](https://registry.modelcontextprotocol.io) as `io.github.pipeshub-ai/mcp` and on [Cursor Directory](https://cursor.directory/plugins/mcp-server-3) as PipesHub. The listing files (`plugin.json`, `mcp.json`) default MCP to `http://localhost:3000/mcp` (Docker). Change the URL for a company instance; they contain no secrets. Contributors working in this repository: read [AGENTS.md](./AGENTS.md).
 >
 > **Claude Code plugin:** `/plugin marketplace add pipeshub-ai/mcp-server`, then `/plugin install pipeshub@pipeshub`, adds the MCP server, the skill, and the `/pipeshub:ask` and `/pipeshub:setup` commands. It connects to `${PIPESHUB_MCP_URL:-https://app.pipeshub.com/mcp}` with `Authorization: Bearer ${PIPESHUB_MCP_TOKEN}`; export both in your shell (self-hosted: set the URL to `https://<your-instance>/mcp`), then restart Claude Code.
+
+> **Cursor plugin:** a Cursor team admin imports this repository as a team marketplace (Import from Repo; `.cursor-plugin/marketplace.json`, plugin in [`cursor-plugin/`](./cursor-plugin/README.md)) to add the local MCP server, the docs search server, the skill, and the `ask` and `setup` commands. Sign in once with `pipeshub login`; no token goes in the config.
 >
 > **Looking for the tool reference?** See [TOOLS.md](./TOOLS.md) for descriptions, arguments, and a decision guide for each tool the MCP server exposes (`pipeshub_chat`, `pipeshub_search`, `pipeshub_get_record_content`, `pipeshub_download_record`, `pipeshub_directory`, `pipeshub_sources`, `pipeshub_agents`). Searching and reading records is the recommended default; `pipeshub_chat` is optional (see [Leaving `pipeshub_chat` out](#leaving-pipeshub_chat-out)).
 >
@@ -53,6 +55,7 @@ The `/.well-known/oauth-protected-resource/mcp` discovery endpoint lists the sco
 | `agent:read`, `agent:execute` | `pipeshub_agents`, `pipeshub_sources`, `pipeshub_chat` with an agent |
 | `kb:read`, `connector:read`, `config:read` | `pipeshub_sources`, `pipeshub_get_record_content`, `pipeshub_download_record`, `pipeshub_indexing_status` |
 | `kb:write`, `kb:upload` | `pipeshub_create_collection`, `pipeshub_upload` |
+| `connector:write`, `connector:sync` | `pipeshub_add_web_source` |
 | `user:read`, `team:read`, `usergroup:read` | `pipeshub_directory` |
 | `code:read` | The `pipeshub_code_*` tools |
 
@@ -754,7 +757,7 @@ Both are set with environment variables, in the MCP client's `env` block or with
 
 ## Read-only mode
 
-Two tools write: `pipeshub_create_collection` and `pipeshub_upload` add collections and documents (they never delete or overwrite). They need the `kb:write` and `kb:upload` scopes. To serve read tools only from the local server, pass `--scope read` to `start` or `serve`. On the remote `/mcp`, a token without those scopes is not offered the write tools.
+Three tools write, and none of them delete or overwrite. `pipeshub_create_collection` and `pipeshub_upload` add collections and documents; they need the `kb:write` and `kb:upload` scopes. `pipeshub_add_web_source` sets up a Web connector that crawls a website now and daily; it also needs `connector:write` and `connector:sync` (scope group `connect`). To serve read tools only from the local server, pass `--scope read` to `start` or `serve`. On the remote `/mcp`, a token is offered only the write tools its scopes allow.
 
 ---
 

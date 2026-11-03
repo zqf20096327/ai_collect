@@ -161,7 +161,7 @@ An Apple Silicon Mac on macOS 14 Sonoma or later (PyTorch no longer ships for 13
 - Docker — [OrbStack](https://orbstack.dev/) or Docker Desktop on a Mac, Docker Engine on Linux (Postgres). The desktop app requires it too.
 - Optional: an AI model for translation, rewrites, cleanup, digests, Ask AI, chat, and LLM chapter detection — [Ollama](https://ollama.com) or LM Studio running locally (auto-discovered, fully offline), or a [DeepSeek](https://platform.deepseek.com/) / OpenAI / Anthropic / Gemini API key.
 - Optional: a [Cartesia](https://cartesia.ai) or [ElevenLabs](https://elevenlabs.io) API key for their cloud voices.
-- Optional: a [HuggingFace](https://huggingface.co) account for Pocket TTS **voice cloning** — accept the terms at [kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts) and put a read token in `HF_TOKEN`. The 26 built-in Pocket TTS voices need no account and no token.
+- Optional: a [HuggingFace](https://huggingface.co) account for Pocket TTS **voice cloning** — accept the terms at [kyutai/pocket-tts](https://huggingface.co/kyutai/pocket-tts) and put a read token in `HF_TOKEN` (in `.env`, or the container's environment) — `pnpm run setup` fetches the weights, and every install, Docker and the Mac app included, can download them from **Your voices** in the voice picker after a restart. The 26 built-in Pocket TTS voices need no account and no token.
 
 </details>
 
@@ -187,6 +187,8 @@ The ⚙️ button on the home page opens Settings: it shows which local servers 
 <summary><b>Docker: volumes, ports, and exposing it beyond localhost</b></summary>
 
 Nothing in the image is Linux-specific, so the same command is also the Windows route, through Docker Desktop with the WSL2 backend — that path is new, so [open an issue](https://github.com/subev/libratory/issues/new) if it does not work. Migrations apply at boot, and the first boot caches the essential Kokoro voice (~350 MB) before the server starts. The database lives in the `pgdata17` volume, the library's files in `data`, every lazily-downloaded model in `models` — backing up those three is the whole story (the models can be downloaded again, the other two cannot). API keys set in ⚙️ Settings persist in `/data/.env`.
+
+**Ollama and LM Studio on the host.** Inside the container `localhost` is the container itself, so the install file points discovery at `host.docker.internal` (`OLLAMA_URL`, `LMSTUDIO_URL`). Docker Desktop and OrbStack reach a server listening on the host's loopback that way. Docker Engine on Linux reaches only the host's bridge address, so start Ollama with `OLLAMA_HOST=0.0.0.0` and turn on *Serve on Local Network* in LM Studio. A server on another machine works too: set either variable to its address.
 
 The port is published on **127.0.0.1 deliberately**: there is no login, so anyone who can reach it can read and delete everything. Postgres is not published at all by the install file (the checkout's development file binds it to 127.0.0.1:5433) — its password is the default `libratory`. To serve your LAN, replace the mapping in an override file passed after the first, `-f oci://ghcr.io/subev/libratory-compose -f override.yaml` (`services: app: ports: !override ["3034:3034"]` — Compose *appends* a plain `ports` entry, and the second binding then fails on the port the first already holds) — and know who is on that network — or front it with a reverse proxy or Tailscale. The image sets `NETWORK_ACCESS=all` because a container is a server you put behind a login of your own; `NETWORK_ACCESS=shelf` instead answers the network only the phone shelf (`docs/shelf.md`), which is what a laptop does by default.
 
@@ -231,6 +233,23 @@ Every engine covers a different set, so the answer to "does it do language X" de
 ![Scrolling the voice picker's Italian list: 73 voices grouped under Kokoro, Pocket TTS, macOS system voices, Cartesia and ElevenLabs, the ElevenLabs voices not made for Italian marked as such](docs/images/voice-picker-languages.gif)
 
 The picker leads with the language, not the engine: pick Italian and you get every voice that can read it — 73 here, grouped by engine, with a preview button on each one. Each row says whether the voice times every word (words light up as they are read) or only sentences. ElevenLabs voices appear under every language their model reads; the ones not made for it are marked and preview in that language.
+
+<details>
+<summary><b>Picking a narrator: speed, quality, cost</b></summary>
+
+An AI provider key (DeepSeek, OpenAI, Anthropic, Gemini) drives the text features: cleanup, translation, rewrites, chat. It has no effect on narration. Speed comes from the engine you pick:
+
+| Engine | Where it runs | Good for |
+| --- | --- | --- |
+| Kokoro | The GPU where there is one (Metal on a Mac), else the CPU | The most natural local English voices |
+| Pocket TTS | CPU, ~12x realtime | Six languages, and cloning your own voice |
+| Piper, BgTTS-38M | CPU | Bulgarian |
+| macOS voices | CPU, ~25x realtime | Fast drafts, many languages, Mac only |
+| Cartesia, ElevenLabs | Their servers, billed per character | A slow machine, or a language no local engine reads |
+
+Docker on a Mac cannot reach the GPU, so a container narrates Kokoro on the CPU; the desktop app or a source install uses Metal. Narration that stops partway — a crash, a restart, a container that went down — resumes when the server comes back, from the pieces already made.
+
+</details>
 
 <details>
 <summary><b>Notes on the edges</b></summary>

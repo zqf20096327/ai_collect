@@ -124,7 +124,8 @@ AgentFailureException: Invalid tool arguments
 
 Beyond single runs, Tracedown checks each claim in an answer against its sources, compares runs across prompt and model versions, groups failures into incidents with Slack, PagerDuty or GitHub alerts, and shows cost per run, step, model and agent.
 
-<p align="center"><img src="web/docs-screenshots/run-detail.png" alt="Run detail in the web app: the AI stack trace, who is at fault, and the step graph with the cause highlighted" width="820"></p>
+<p align="center"><img src="docs/demo/webapp-fix.gif" alt="In the web app: a failed CalendarAssistant run opens with its AI stack trace, root cause (bad LLM output at step 4) and who is at fault; the Fixes tab shows the suggested prompt change marked Works after a replay, and the comparison shows the replay succeeded with an ISO date instead of 'Friday'." width="820"></p>
+<p align="center"><sub>The web app, from a failed run to a proven fix. Recorded from <code>tracedown up</code> with the bundled demo runs.</sub></p>
 
 ## Integrations
 
@@ -279,7 +280,7 @@ pip install -e ./sdk/python -e "./server[dev]" && pytest
 
 Thank you to everyone who has made Tracedown better:
 
-<table><tr><td align="center"><a href="https://github.com/HarshRajSinghania"><img src="https://github.com/HarshRajSinghania.png?size=80" width="64" alt="HarshRajSinghania"><br><sub><b>HarshRajSinghania</b></sub></a><br><sub>Langfuse tutorial</sub></td><td align="center"><a href="https://github.com/AndreIsraelAO"><img src="https://github.com/AndreIsraelAO.png?size=80" width="64" alt="AndreIsraelAO"><br><sub><b>AndreIsraelAO</b></sub></a><br><sub>TypeScript drift demo</sub></td><td align="center"><a href="https://github.com/Vamsi-2581"><img src="https://github.com/Vamsi-2581.png?size=80" width="64" alt="Vamsi-2581"><br><sub><b>Vamsi-2581</b></sub></a><br><sub><code>@tdn.traced_run</code></sub></td><td align="center"><a href="https://github.com/Sonike"><img src="https://github.com/Sonike.png?size=80" width="64" alt="Sonike"><br><sub><b>Sonike</b></sub></a><br><sub>free port for <code>tracedown up</code></sub></td><td align="center"><a href="https://github.com/Jiritsuteki"><img src="https://github.com/Jiritsuteki.png?size=80" width="64" alt="Jiritsuteki"><br><sub><b>Jiritsuteki</b></sub></a><br><sub>FAQ page</sub></td></tr></table>
+<table><tr><td align="center"><a href="https://github.com/HarshRajSinghania"><img src="https://github.com/HarshRajSinghania.png?size=80" width="64" alt="HarshRajSinghania"><br><sub><b>HarshRajSinghania</b></sub></a><br><sub>Langfuse tutorial</sub></td><td align="center"><a href="https://github.com/AndreIsraelAO"><img src="https://github.com/AndreIsraelAO.png?size=80" width="64" alt="AndreIsraelAO"><br><sub><b>AndreIsraelAO</b></sub></a><br><sub>TypeScript drift demo</sub></td><td align="center"><a href="https://github.com/Vamsi-2581"><img src="https://github.com/Vamsi-2581.png?size=80" width="64" alt="Vamsi-2581"><br><sub><b>Vamsi-2581</b></sub></a><br><sub><code>@tdn.traced_run</code></sub></td><td align="center"><a href="https://github.com/Sonike"><img src="https://github.com/Sonike.png?size=80" width="64" alt="Sonike"><br><sub><b>Sonike</b></sub></a><br><sub>free port for <code>tracedown up</code></sub></td><td align="center"><a href="https://github.com/Jiritsuteki"><img src="https://github.com/Jiritsuteki.png?size=80" width="64" alt="Jiritsuteki"><br><sub><b>Jiritsuteki</b></sub></a><br><sub>FAQ page</sub></td><td align="center"><a href="https://github.com/jovial-liu"><img src="https://github.com/jovial-liu.png?size=80" width="64" alt="jovial-liu"><br><sub><b>jovial-liu</b></sub></a><br><sub>injection and success-claim detectors</sub></td></tr></table>
 
 Your name goes here with your first merged pull request.
 

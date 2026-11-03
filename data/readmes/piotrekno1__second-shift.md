@@ -77,7 +77,7 @@ Open the sign-in link printed in the terminal. Then let SecondShift review its
 own documentation:
 
 1. Clone this repository: `git clone https://github.com/piotrekno1/second-shift.git`
-2. In **Connections**, add a model provider.
+2. In **Models**, add an API key or a Claude Code or Codex subscription.
 3. In **Repositories**, choose **Add local repository** and select the clone.
 4. In **Jobs**, open **Documentation drift** and click **Run now**.
 
@@ -94,6 +94,9 @@ SecondShift serves an MCP server at `/mcp`. Your agent can check a
 `.secondshift.yaml` before you commit it, start approved jobs, and read results.
 It cannot approve access or see credentials. See the
 [MCP guide](https://second-shift.app/docs/mcp/).
+
+To run jobs through Claude Code or Codex subscriptions, see the
+[agent subscriptions guide](docs/agent-subscriptions.md).
 
 ## Learn more
 

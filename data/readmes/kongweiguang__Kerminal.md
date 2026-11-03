@@ -1,11 +1,11 @@
 <!-- @author kongweiguang -->
 
 <div align="center">
-  <img src="docs/assets/kerminal-icon.png" width="76" alt="Kerminal logo" />
+  <img src="resources/icons/128x128.png" width="76" alt="Kerminal logo" />
   <h1>Kerminal</h1>
-  <p><strong>把终端、远程服务器、文件传输、容器运维与 AI Agent 放进同一个桌面工作台。</strong></p>
+  <p><strong>把终端、远程服务器、文件传输、容器运维与 AI Agent 放进同一个原生桌面工作台。</strong></p>
   <p>
-    <a href="https://github.com/kongweiguang/Kerminal/releases/latest">下载最新版</a>
+    <a href="https://github.com/kongweiguang/Kerminal/releases/tag/v0.4.0-beta.4">下载 GPUI 测试版</a>
     ·
     <a href="#快速开始">快速开始</a>
     ·
@@ -13,184 +13,174 @@
     ·
     <a href="#源码开发">源码开发</a>
   </p>
-  <p><sub>当前稳定版 v0.3.47 · Tauri 2 · Windows / Linux / macOS</sub></p>
+  <p><sub>0.4.0-beta.4 · Rust + GPUI · Windows / Linux / macOS</sub></p>
 </div>
 
-![Kerminal 中的 SSH 终端与 Codex Agent 并行工作](docs/assets/kerminal-hero.png)
+![Kerminal GPUI 完整应用窗口：本机终端与已进入会话的 Codex AI 助手](docs/assets/kerminal-hero.png)
 
-Kerminal 是一个本地优先的桌面终端和远程运维工作台。它围绕“当前目标”组织本机与远程终端、SFTP、Docker/Podman、Compose、tmux、SSH 隧道、服务器监控和 Agent 会话，让开发、排障和交付不必在多个窗口之间反复切换。
+Kerminal 是一个本地优先的桌面终端和远程运维工作台。围绕明确的主机、Tab 与 Pane，把本机与远程终端、SFTP、Docker/Podman、Compose、tmux、SSH 隧道、服务器信息和 Agent 会话组织在同一个窗口里。
 
-内置 Agent Launcher 支持 Codex、Claude、PI Agent 和可持久化的自定义 CLI。每个终端 Tab 都有独立的右栏助手与历史；每个 Agent 会话都有独立工作目录，仍可通过 Kerminal MCP 操作整个应用的用户终端与远程工具。当前终端只是新建或显式继续时的首选目标，普通切换 Tab 不会重绑它，也不是访问限制。
+`main` 是使用 Rust、GPUI 与 GPUI Kit 重建的 **0.4 原生桌面版本**；[tauri 分支](https://github.com/kongweiguang/Kerminal/tree/tauri) 保留 0.3.x Tauri 实现。新版本不再使用旧版的 WebView / xterm.js 界面，开发也不需要先启动 Node.js 前端。
 
-> README 截图使用固定的脱敏演示数据生成，不包含真实主机、凭据或用户会话。
+> **当前为 beta 测试版，功能迁移与跨平台原生验收仍在进行，请勿用于生产环境。** GPUI 默认使用 `~/.kerminal-gpui`，与旧版 `~/.kerminal` 隔离。下面的截图来自 GPUI 开发版隔离窗口，使用演示数据，均保留完整应用窗口，仅遮盖必要的本机信息；首图为真实 Codex CLI 已进入会话的画面。不是 Tauri 版截图，也不代表全功能验收通过。
 
 ## 当前能力
 
-| 领域 | 当前已实现能力 |
+| 领域 | GPUI 版能力 |
 | --- | --- |
-| 连接 | Local、SSH、独立 SFTP、RDP、Telnet、Serial；SSH 支持密码、私钥、SSH Agent、代理、跳板机和多跳。 |
-| 终端工作区 | 多 Tab、多 Pane、跨主机自定义标签组、标签与整组拖拽排序、横向/纵向分屏、批量发送、命令块、搜索、日志、自动重连、命令建议和 URL Ctrl/Command 点击。 |
-| 文件与传输 | SFTP 文件浏览、双面板传输、队列与进度、取消/重试、断点续传、冲突策略、远程预览与文本编辑。 |
-| 容器 | 在 SSH 主机上管理 Docker、Podman 与 Compose，查看容器、镜像、服务、日志和状态，进入终端并操作容器内文件。 |
-| 远程工具 | SSH 本地/远程/SOCKS 隧道、tmux 会话、CPU/内存/磁盘/网络/GPU/NPU/进程信息和命令历史。 |
-| Agent | Codex、Claude、PI Agent、自定义 CLI；每个终端 Tab 独立保存助手与会话历史，支持恢复、重命名、归档、发送预览和排队提示；显式继续才更新该助手的首选终端，仍可跨 Tab 使用其它终端与工具。 |
-| MCP | 本机 loopback Streamable HTTP；提供终端、SSH/SFTP、容器与容器文件、tmux、端口转发、服务器信息、历史和诊断等运行态工具。 |
-| 配置与安全 | `~/.kerminal` 文件化配置、加密凭据库、配置校验、Workspace Sync、主题/壁纸/透明度、快捷键与自动更新。 |
+| 连接 | Local、SSH、独立 SFTP、RDP、Telnet、Serial；SSH 支持密码、私钥、SSH Agent、代理与有序跳板。 |
+| 终端工作区 | 多 Tab、多级分屏、标签分组与拖拽排序、批量发送、搜索、选择复制、命令块、日志与重连。 |
+| 命令辅助 | 命令、参数、路径与历史建议，命令片段、变量填充、预览及命令历史查询。 |
+| 文件与传输 | 本机 / SFTP 双端浏览、多主机标签、独立传输标签、队列与进度、取消 / 重试、冲突处理及文本编辑。 |
+| 容器 | SSH 宿主上的 Docker、Podman 与 Compose；容器详情、日志、监控、交互终端和容器文件。 |
+| 远程工具 | 本机 / SSH tmux、SSH 本地 / 远端 / SOCKS 转发、服务器资源与进程信息。 |
+| Agent | Codex、Claude、PI Agent 与自定义 CLI；按 Tab 保留助手界面和历史，支持新建、继续、重命名及归档。 |
+| MCP | Streamable HTTP；后台终端、SSH 命令、传输队列、端口转发、历史、配置校验与加密凭据入口。 |
+| 配置与桌面 | 文件化配置、加密 Vault、Git 配置同步、浅色 / 深色 / 跟随系统、独立应用与终端配色、快捷键及数据迁移。 |
+
+协议、远端工具和系统客户端各有前置条件；能力入口存在不等于所有平台及异常场景均已验收。当前没有 macOS 真实桌面验收结果，Windows / Linux 的分项验证不能替代它。
 
 ## 下载与安装
 
-前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases/latest) 获取当前稳定版。v0.3.47 提供以下产物：
+前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases) 选择 **GPUI beta**，不要用只指向稳定版的 `releases/latest` 判断 0.4 版本。当前 `v0.4.0-beta.4` 的下载入口：
 
-| 平台 | 发布产物 |
+| 平台 | 安装包 |
 | --- | --- |
-| Windows x64 | NSIS 安装程序 |
-| Linux x64 | AppImage、Deb |
-| macOS Apple Silicon | App、DMG |
-| macOS Intel | App、DMG |
+| Windows x64 | [NSIS 安装程序](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_x64-setup.exe)（当前用户安装） |
+| Linux x64 | [AppImage](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_x86_64.AppImage) / [DEB](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_amd64.deb) |
+| macOS Apple Silicon | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/Kerminal_0.4.0-beta.4_aarch64.dmg) |
+| macOS Intel | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/Kerminal_0.4.0-beta.4_x64.dmg) |
 
-应用显示名和后续安装包使用 `Kerminal`。已发布的历史安装包保留原文件名；`~/.kerminal` 配置目录、`kerminal://` 协议、MCP 工具标识及命令行可执行文件名继续使用小写，兼容已有配置与外部接入。Windows MSI 固定沿用改名前的 Upgrade Code，避免仅因显示名大小写变化而被识别为另一款应用。
-
-macOS 产物目前没有 Apple Developer ID 签名和公证。如果确认应用来自本仓库 Releases，但仍被 Gatekeeper 阻止，可在将应用拖入“应用程序”后运行：
-
-```bash
-sudo xattr -rd com.apple.quarantine /Applications/Kerminal.app
-```
-
-该命令只移除 Kerminal 的隔离标记，不会全局关闭 Gatekeeper。
+- 下载后可对照同一 Release 的 [`SHA256SUMS.txt`](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/SHA256SUMS.txt) 校验文件。
+- 当前 beta 为未签名构建，Windows 可能提示 SmartScreen，macOS 可能被 Gatekeeper 拦截；请先核实下载来源，不要全局关闭系统保护。
+- **本 beta 未配置更新器签名与更新 feed，不会自动更新。** 后续测试版请从 Releases 手动下载。
+- Linux AppImage 仍依赖宿主的 glibc 和图形环境；当前 DEB 的基础要求为 glibc 2.35 及相应图形运行库。
+- GPUI 与旧版使用相同产品安装身份；**数据目录隔离不等于安装包隔离**，安装 GPUI 可能覆盖原安装。试用前备份旧版数据；需要保留旧安装时优先从源码运行。
 
 ## 快速开始
 
-### 1. 添加连接
+### 1. 添加主机或打开本地终端
 
-点击左下角的添加按钮，选择连接类型并填写目标信息。
+点击左栏底部的添加按钮，选择连接类型并填写信息；也可以直接点击标签栏的 `+` 打开默认本地终端。
 
-![Kerminal 新建 SSH、SFTP、Local、RDP、Telnet 或 Serial 连接](docs/assets/kerminal-connect.png)
+- 左栏单击主机只选择，双击或按 Enter 才连接；同一主机可以打开多个独立终端。
+- SSH 首次连接先核对服务端指纹。密码、私钥口令与代理凭据进入加密 Vault，主机配置只保存引用。
+- 本地主机可从 Profile 复制 Shell、参数、工作目录与环境；保存后是独立连接，修改模板不会重写已保存主机。
+- 独立 SFTP 只提供文件能力，不提供 Shell、tmux、容器或隧道；Telnet / Serial 使用原生协议适配，RDP 交给对应平台客户端，不嵌入远程桌面画面。
 
-- SSH 可组合密码、私钥、SSH Agent、代理和跳板机；密码与私钥口令进入本地加密凭据库。
-- 独立 SFTP 目标只提供文件能力，不会获得 shell、tmux、容器、监控或端口转发能力。
-- RDP 会生成并交给系统 RDP 客户端打开；Telnet 与 Serial 依赖本机可用的对应客户端。
+保存连接与发起连接是两个明确动作；修改设置不会自动向远端执行命令。
 
-### 2. 打开终端并确认当前目标
+### 2. 组织终端与分屏
 
-选择主机即可创建终端。一个 Tab 可以拆成多个 Pane，并在同一任务内混合不同目标；批量发送前可以显式选择 Pane，避免命令发错机器。
+使用终端页头的向右 / 向下分屏按钮创建 Pane，右键可选择其它主机。标签支持分组、重命名、折叠与拖动；分组折叠不停止里面的终端。
 
-“当前上下文”集中显示主机、目录、连接状态、工作区详情和 Agent 状态，适合在多服务器、多分屏和多会话之间确认目标。
-
-![Kerminal 当前上下文面板](docs/assets/kerminal-context.png)
+搜索、复制、日志、命令建议和命令块均作用于明确的终端。批量发送前显式选择目标 Pane，避免将命令发到错误机器。打开终端 URL 时，Windows / Linux 使用 `Ctrl` 点击，macOS 使用 `Command` 点击；普通点击仍用于选择文本。
 
 ### 3. 启动 Agent
 
-打开右侧 Agent 工具，从统一选择器中选择 Codex、Claude、PI Agent 或已保存的自定义 Agent，然后点击“进入”。
+点击右侧 Agent 工具，选择启动器，再点击“进入”。**选择启动器本身不会启动 CLI。**
 
-![Kerminal Agent 选择器，包含 Codex、Claude、PI Agent 和自定义 Agent](docs/assets/kerminal-agent.png)
+![GPUI 完整应用窗口：Agent 启动器与 Codex、Claude、PI Agent 选择](docs/assets/kerminal-agent.png)
 
-| Agent | 本机前置条件 |
+| 启动器 | 本机前置条件 |
 | --- | --- |
-| Codex | 已安装 `codex` CLI，并完成账号登录。 |
-| Claude | 已安装 `claude` CLI，并完成账号登录。 |
-| PI Agent | 已安装支持原生 MCP 的 Pi CLI（已验证 Pi 1.1.0），且 Kerminal 探测通过。 |
-| 自定义 Agent | 在选择器中保存可执行命令；命令会以明文写入 `settings.toml`，不要放密码、API Key 或 token。 |
+| Codex | 已安装 `codex` CLI，并完成相应账号登录。 |
+| Claude | 已安装 `claude` CLI，并完成相应账号登录。 |
+| PI Agent | 已安装支持原生 MCP 的 `pi` CLI，并完成对应模型配置。 |
+| 自定义 Agent | 保存可执行命令；命令以明文进入 `settings.toml`，不要填写密码、API Key 或 token。 |
 
-首次进入会创建独立会话；已有历史会话时，可以继续上次或新建会话。
+Kerminal 管理 CLI 启动、原生终端展示、会话工作目录和上下文，不代替 Agent 服务商的安装、登录或模型配置。内置 Codex / Claude 默认使用完整权限启动模式；运行前应了解所选 CLI 的权限设置。
 
-PI Agent 使用 `pi --approve` 启动，继续会话使用 `pi --approve --continue`。Kerminal 在会话工作目录生成 `.pi/mcp.json`，Pi 通过本次运行的项目信任自动加载当前会话的 MCP endpoint。旧会话继续时也会生成该原生配置，无需安装 `pi-mcp-adapter`。Kerminal 保留配置中的其它 MCP 服务，不修改用户级 `~/.pi/agent/mcp.json`。
+每个 Tab 保留自己的助手界面和历史；Agent 可以访问整个 Kerminal，启动时的终端只是首选目标，不是权限边界。普通切换 Tab 不会重绑目标；显式继续或绑定时才更新，失效目标不会自动转投其它终端。删除 Kerminal 中的本地会话记录不会删除服务商侧历史。
 
-![Kerminal Agent 会话恢复与会话列表](docs/assets/kerminal-agent-session.png)
+### 4. 按需安排工具面板
 
-Agent 默认可操作整个 Kerminal，优先使用启动时所在的终端；任务需要时直接选择其它 Tab 或 Pane，无需切换权限范围。旧 Tab 范围会话也按全局访问兼容。右栏 Agent 自己的 TUI 不作为用户命令执行目标。
+右侧工具提供 Agent、文件、命令片段、tmux、端口、系统信息、容器和命令历史。工具目标由实际 Tab / Pane 上下文决定，不会仅因左栏选中另一台主机就悄悄切换。
 
-“进入”和继续会话默认使用内置 Codex、Claude 的完整权限启动模式；PI 和自定义 Agent 沿用各自的命令，不要求用户再选择权限范围。
+右击工具栏，或聚焦后按 `Shift+F10`，可调整显示、顺序、底部固定，以及右侧、左侧、底部和自由浮窗四种打开位置。窄窗口会临时使用抽屉，不覆盖保存的布局。
 
-普通命令优先通过已有终端执行，输入和输出显示在对应终端中。`ssh.command` 是独立的后台非交互通道，不会显示在左侧终端；需要结构化后台结果时才使用这条路径。
+![GPUI 自定义工具栏：显示、排序、底部分组与面板位置](docs/assets/kerminal-tool-rail.png)
 
-第三方 MCP 客户端不必先打开终端 Tab：需要交互终端时可调用 `terminal.create` 创建后台终端，再用返回的 `sessionId` 读取、输入和关闭。SSH 命令、SFTP、容器等运行态工具同样不以终端 Tab 为前提。
+## SFTP、传输与文件编辑
 
-### 4. 使用右侧工具
+文件工具可以作为跟随当前终端的紧凑浏览器，也可以打开中央双端传输工作台。左右两侧独立选择主机与目录，支持多个主机标签；独立传输 Tab 可以保存自己的双端目标和路径。
 
-右侧工具跟随当前主机、Tab 或 Pane，提供当前上下文、Agent、文件、片段、tmux、端口、系统信息和命令历史。右击工具栏或按 `Shift+F10` 可调整显示、顺序、底部分组与面板位置；布局会持久化到本地设置。
+![GPUI 双端 SFTP 工作台与文件操作菜单](docs/assets/kerminal-sftp.png)
 
-![Kerminal 自定义工具栏的显示、顺序、固定区域与面板位置](docs/assets/kerminal-tool-rail.png)
+- 本机与远端、远端与远端的文件 / 目录复制，共用传输队列与进度。
+- 支持取消、显式重试、冲突改名 / 覆盖；具备可信恢复条件的传输可从断点继续。
+- 支持列表 / 树形浏览、隐藏文件、路径书签、新建目录、重命名、权限与删除操作。
+- 右侧文件栏与中央传输工作台分别保留浏览状态，切换终端不会覆盖另一处的目录。
+- 本机、SFTP 与容器文本通过原生编辑器打开；保存前核对 revision，冲突或提交结果未知时先读回，不盲目覆盖或自动重放。
 
-## 终端与工作区
-
-- 本机、SSH、Telnet、Serial 与容器交互终端统一使用 xterm 工作区。
-- 支持多标签、多级分屏、拖拽调整、输出搜索、命令块复制和多 Pane 批量发送。
-- 命令建议可组合命令、参数、路径、历史和 Git 引用，并对生产主机使用更严格策略。
-- 普通点击终端 URL 仍用于选择文本；Windows/Linux 按住 `Ctrl`、macOS 按住 `Command` 才会交给外部浏览器打开。
-- GPU 渲染不可用或异常时可回退到兼容渲染路径；渲染模式、字体、主题、字号、行高和交互行为都可独立配置。
-
-## Agent 会话与 Kerminal MCP
-
-Kerminal 为每个 Agent 创建 `~/.kerminal/agents/sessions/<agentSessionId>`，保存会话 scope、目标绑定、终端快照和启动信息。历史会话可以继续、同 Agent 新建、重命名、归档或删除本地记录；终端断开后，Agent 可通过运行态工具重新发现并恢复连接。
-
-Agent 发送链路支持当前上下文、终端选区和命令块预览。内容在真正发送前可检查；过长内容会受限并脱敏，Agent 忙碌时可以排队后续提示。
-
-Kerminal MCP 只监听本机回环地址，提供全局入口与 Agent session 入口。常用发现顺序是：
-
-1. `kerminal.app_guide` / `kerminal.capabilities` 了解应用入口和工具族。
-2. `kerminal.agent.current_session` / `kerminal.agent.target_context` 刷新当前会话与 scope。
-3. `terminal.list` 获取用户终端；没有合适终端时用 `terminal.create` 创建后台终端，再使用返回的 ID 调用 snapshot、write 或 close。
-4. 按需使用 SFTP、容器文件、tmux、端口转发、服务器信息、历史或诊断工具。
-
-工具确认、审批、权限和审计由 Codex、Claude 等 MCP host 负责。设置、Profile、主机、片段和工作流配置不通过 MCP CRUD 管理；Agent 应直接编辑工作区文件并运行 validator。
-
-## SFTP、传输与远程编辑
-
-SFTP 既可以停靠在右侧作为文件浏览器，也可以打开为中央双面板传输工作台。
-
-![Kerminal SFTP 双面板传输与传输队列](docs/assets/kerminal-sftp.png)
-
-- 上传、下载、目录传输、远端复制和跨主机传输。
-- 队列、实时进度、取消、无进度失败后继续传输、断点续传、完成历史和冲突策略；持续有进度的传输不受总时长限制。
-- 列表、树形和工作区模式，支持隐藏文件、路径书签和终端目录跟随。
-- 远程文件预览与文本编辑；保存时校验 revision，避免静默覆盖远端并发修改。
-
-![Kerminal 远程文本文件编辑 Tab](docs/assets/kerminal-file-tab.png)
+![GPUI 完整应用窗口：原生文件编辑器与多个文件 Tab](docs/assets/kerminal-file-tab.png)
 
 ## 容器与 Compose
 
-连接 SSH 主机后，可以切换左栏到容器视图，按运行时和 Compose 应用组织 Docker/Podman 资源。
+连接 SSH 主机后，从右侧容器工具管理对应宿主的 Docker / Podman。容器 Pane 继续关联创建它的 SSH 宿主，不从终端文字猜测目标。
 
-![Kerminal Docker、Podman 与 Compose 视图](docs/assets/kerminal-docker.png)
+![GPUI 完整应用窗口：SSH 终端与容器详情](docs/assets/kerminal-containers.png)
 
-- 查看容器、镜像、Compose 服务、端口、状态和详情。
-- 启动、停止、重启或删除容器，打开日志、stats 和交互终端。
-- 浏览、预览、写入、上传、下载、创建、重命名、改权限和删除容器内文件。
-- 容器管理依赖 SSH 宿主；独立 SFTP、RDP、Telnet 和 Serial 目标不提供该能力。
+容器列表可按 Compose 项目组织，查看详情、日志与 stats，执行启动、停止、重启及删除，或进入交互终端。Compose 提供项目操作与 YAML 预览；容器内文件浏览和传输复用统一文件服务与队列。
+
+需要远端已安装相应运行时并具备访问权限。右栏容器入口依赖 SSH 宿主；本机终端、独立 SFTP、RDP、Telnet 与串口不因此获得容器能力。危险操作保留明确目标与确认，取消请求也不等于远端命令已经撤销。
 
 ## 服务器信息、SSH 隧道与 tmux
 
-系统工具提供“概览、资源、进程”视图，可手动刷新或按间隔采样。
+服务器工具按“概览、资源、进程”组织信息，支持手动刷新与间隔采样。CPU、内存、磁盘、网络和运行时间来自目标机；GPU / NPU 指标依赖目标机可用的探测工具，不是长期指标存储服务。
 
-![Kerminal 服务器概览与资源监控](docs/assets/kerminal-system.png)
+tmux 工具面向明确的 Local / SSH 目标，提供会话查看、创建、连接、重命名、分离与结束，并保留常用命令速查。
 
-CPU、内存、磁盘、网络、系统、架构、Kernel、运行时间和进程信息为基础能力。GPU/NPU 指标只会在目标机存在并允许执行 `nvidia-smi`、`npu-smi` 等探测工具时出现；这里是运维观察面板，不是长期指标存储系统。
+![GPUI 完整应用窗口：SSH 终端与服务器资源面板](docs/assets/kerminal-system.png)
 
-![Kerminal GPU 与 Ascend NPU 资源视图](docs/assets/kerminal-resources.png)
+![GPUI 完整应用窗口：SSH 终端与 tmux 会话管理](docs/assets/kerminal-tmux.png)
 
-SSH 隧道把常用场景直接映射为 OpenSSH `-L`、`-R` 与 SOCKS，支持本地动态和远端动态代理、绑定范围、保存后启动/停止，以及向当前终端注入临时代理环境。
+SSH 隧道按访问远端服务、暴露本机服务和 SOCKS 场景组织，支持本地 / 远端端口转发、本地 / 远端动态代理，以及显式启停和代理环境应用。
 
-![Kerminal SSH 隧道编排器](docs/assets/kerminal-ports.png)
+![GPUI SSH 隧道表单：服务方向、绑定范围与端口](docs/assets/kerminal-ports.png)
 
-tmux 工具可在 Local/SSH 目标上查看、创建、连接、重命名、分离和关闭会话，并提供常用命令入口。
+## Agent 与外部 MCP 接入
 
-![Kerminal tmux 会话管理](docs/assets/kerminal-tmux.png)
+Kerminal MCP 使用 Streamable HTTP，默认本机地址为 `http://127.0.0.1:37657/mcp`。在设置的 MCP 页启动服务，并以该实例显示的**实际连接配置**为准；端口可修改，停止服务或改变地址后客户端需要重新连接。
 
-## 外部 SSH 启动
+支持该配置格式的 MCP host 可使用：
 
-Kerminal 可以接收并解析来自 PuTTY、MobaXterm、Xshell、SecureCRT、OpenSSH、URL 或命令行参数的 SSH/SFTP 启动请求。该能力表示 Kerminal 对这些来源格式的接入，不代表第三方厂商官方集成。
+```json
+{
+  "mcpServers": {
+    "kerminal": {
+      "type": "http",
+      "url": "http://127.0.0.1:37657/mcp"
+    }
+  }
+}
+```
 
-Windows 可由用户显式注册 `kerminal://` 系统协议；外部请求进入后仍会经过参数校验、主机身份检查和必要的安全确认，传入的密码与私钥口令只用于当前会话，不写入连接配置。
+推荐调用流程：
 
-![Kerminal 外部 SSH 启动与 kerminal 协议设置](docs/assets/kerminal-external-launch.png)
+1. 调用 `kerminal.help` 了解应用、配置与操作流程，或查询具体工具 schema；实际可调用目录以 `tools/list` 为准。
+2. 用 `kerminal.runtime_snapshot` / `terminal.list` 发现运行态。受管 Agent 可用 `kerminal.agent.target_context` 刷新首选目标。
+3. 外部客户端执行非交互 SSH 命令使用 `ssh.command`；需要本地、持续或交互 Shell 时，调用 `terminal.create` 创建**后台 PTY**，后续操作显式传递返回的 `sessionId`，结束后关闭。
+4. 按需使用 `sftp.transfer.*`、`port_forward.*`、`history.search` 和配置校验。容器、tmux 与系统查询可通过 SSH 命令执行；UI 入口不等于存在同名 MCP 工具。
+
+外部客户端不必先打开终端 Tab；只有用户明确要求操作指定可见终端时才使用它。后台失败不会自动转用可见 Tab，失效目标也不会换成其它会话。0.3.x 的工具目录不能直接当成 0.4 契约，当前定义见 [`tool_catalog.json`](crates/kerminal-mcp/resources/tool_catalog.json)。
+
+工具审批、权限与审计由 MCP host 负责。局域网监听需显式开启，非回环请求使用 Vault 中的 Bearer token；当前 HTTP 不加密传输，只应在可信网络内使用，不能直接暴露到公网。
 
 ## 设置与配置工作区
 
-设置页覆盖界面外观、终端、关键词高亮、命令提示、SFTP、外部启动、MCP、配置同步、桌面通知、快捷键和自动更新。界面支持浅色、深色和跟随系统主题，也可配置壁纸、窗口透明度与终端配色。
+设置覆盖界面外观、终端、Profile、关键词高亮、命令提示、SFTP、外部启动、MCP、同步、通知、快捷键与关于。应用配色与终端色盘相互独立，支持浅色、深色、跟随系统，以及背景图片和透明度配置。
 
-![Kerminal 终端主题、字体和交互设置](docs/assets/kerminal-settings.png)
+![GPUI 深色设置：应用配色、界面密度与外观](docs/assets/kerminal-settings-dark.png)
 
-长期配置位于 `~/.kerminal`：
+<details>
+<summary>查看浅色设置截图</summary>
+
+![GPUI 浅色设置：同一套原生控件与配色选择](docs/assets/kerminal-settings-light.png)
+
+</details>
+
+长期配置保存在当前数据根：
 
 ```text
 settings.toml
@@ -201,41 +191,127 @@ snippets/*.toml
 workflows/*.toml
 ```
 
-配置规则由工作区生成的 `kerminal-config.md` 和 MCP `kerminal.config_guide` 提供。主机 TOML 只保存 `secret_ref`、`key_passphrase_ref` 等 vault 引用，禁止写入密码、私钥正文或私钥口令。Workspace Sync 只同步可移植配置，并排除 vault key、备份和事务恢复文件等本机私有数据。
+完整字段、示例与关联校验以 [`config-guide.md`](crates/application/resources/config-guide.md) 为准，应用工作区生成的 `kerminal-config.md` 与它同源。
 
-## 数据与安全边界
+- 配置文件可由用户或获准的 Agent 直接编辑，完成后运行 `kerminal.config.validate`；MCP 不提供通用配置 CRUD。
+- 普通设置按 revision 检测并发修改；冲突保留草稿，提交结果未知时先读回核实。
+- 密码、私钥口令及敏感环境进入加密 Vault；普通 TOML 只保存引用。`secrets/vault-key.toml` 是本机解密密钥，不提交到 Git、同步、聊天或日志。
+- Workspace Sync 使用 Git 同步可移植配置，排除本机密钥、备份与恢复材料；同步不会让两个正在运行的实例共享会话。
+- 外部启动接受 `kerminal://`，并可解析 SSH / SFTP URL 和受支持客户端的启动参数；安装包只登记应用自有 scheme，不接管系统通用 `ssh://` / `sftp://` 关联，也不代表第三方厂商官方集成。
 
-- 主机、布局、传输记录、历史和 Agent 会话默认保存在本机。
-- 密码、私钥口令等敏感信息进入本地加密凭据库；普通配置只保存引用。
-- 向 Agent 发送终端内容前提供预览；删除本地 Agent 记录不会删除服务商侧历史。
-- MCP 只提供必须依赖正在运行应用、既有终端或远程连接的能力，不接管 host 的审批与审计策略。
-- 覆盖、删除、停止、信任未知 host key 等有副作用操作使用对应的确认边界。
-- 浏览器预览模式只用于前端开发，不能证明本地命令、SSH/SFTP、容器、隧道、系统协议或真实 Agent 已可用；完整能力必须在 Tauri 桌面运行时验证。
+## 从 0.3.x 导入与数据迁移
+
+**试用时保留旧目录，不把 GPUI 直接指向真实的 `~/.kerminal`。** debug / release 默认都使用 `~/.kerminal-gpui`，单实例身份按数据根隔离，可以与旧版数据实例并存。
+
+导入已有连接时，只将旧根的主机 / 分组、Profile、`known_hosts`、加密 Vault 及配套 key 复制到新根，并在**新根**完成迁移。保留 key 原访问权限，不转换成明文；旧会话、历史数据库、Git 仓库和运行态不随这次连接导入复制。两个目录之后独立保存，不自动同步。
+
+0.4 正常业务只读写当前格式；旧数据转换集中到一次性迁移用例。普通启动与独立 `kerminal-migrate` helper 共用转换逻辑，按格式标记和实际结构预检，提供备份、校验、幂等重试与中断恢复；损坏或未来版本的数据保留原文件并报告原因。
+
+<details>
+<summary>手动预检与迁移入口</summary>
+
+先退出使用待迁移目录的全部新旧实例。安装包把 helper 与脚本放在资源根的 `migration/` 下；从该资源根运行下面的示例，并将路径换为**已备份的待迁移副本**：
+
+```powershell
+& .\migration\kerminal-migrate.ps1 -Root 'C:\path\to\config-copy' -DryRun
+& .\migration\kerminal-migrate.ps1 -Root 'C:\path\to\config-copy' -Apply
+```
+
+Linux / macOS 对应 `migration/kerminal-migrate.sh`，使用 `--root /path/to/config-copy --dry-run` 预检，明确提交时改为 `--apply`。脚本只调用同目录随包 helper，资源是否随具体安装包交付以包内文件为准。
+
+预检不写数据。成功后不要再让旧版直接读写该目录；迁移前备份保存在 `.kerminal-migration/<operation-id>/`。提交结果未知时保留整个操作目录，由同一入口读回恢复，不能盲目重放或删除备份。开发验收只使用独立临时根，不自动迁移真实用户数据。
+
+</details>
 
 ## 源码开发
 
-准备 Node.js 20+、Rust stable 和对应平台的 Tauri 依赖。仓库使用 `pnpm@10.33.0`：
+准备 Git、[Rust 工具链](rust-toolchain.toml) 指定的 **1.98.0**、`rustfmt`、`clippy` 和平台原生构建依赖。Windows 使用 MSVC C++ 构建工具与 Windows SDK；Linux 需要图形、字体及系统开发库，完整安装清单可参考 [原生构建工作流](.github/workflows/gpui-release.yml)。打包脚本另外需要 Python 3.11+。
 
 ```powershell
-corepack enable
-pnpm install --frozen-lockfile
-pnpm run tauri:dev
+git clone --branch main https://github.com/kongweiguang/Kerminal.git
+Set-Location Kerminal
+cargo xtask run
 ```
 
-常用验证命令：
+也可直接运行 `cargo run -p kerminal-desktop`。两种普通开发入口均默认使用 GPUI 数据根。需要隔离运行时，在 PowerShell 中显式指定：
 
 ```powershell
-pnpm run build
-pnpm run check
+$env:KERMINAL_CONFIG_ROOT = Join-Path $PWD 'target/kerminal-local-config'
+cargo run -p kerminal-desktop
 ```
 
-`pnpm run dev` 只启动浏览器前端预览。维护 README 截图时，先启动固定端口的前端，再运行脱敏场景采集：
+`cargo xtask smoke` 默认使用 `target/kerminal-native-smoke`。`run` / `smoke` 都支持用绝对路径 `KERMINAL_DEV_CONFIG_ROOT` 优先覆盖配置根；并行工作时再用 `CARGO_TARGET_DIR` 隔离构建产物，避免占用正在运行的二进制。
+
+### 常用验证
+
+| 命令 | 用途 |
+| --- | --- |
+| `cargo xtask architecture` | 检查模块边界与依赖方向。 |
+| `cargo xtask fmt` | 检查 Rust 格式，不自动改写文件。 |
+| `cargo xtask check` | 检查 workspace 与全部目标。 |
+| `cargo xtask clippy` | 严格 Clippy 检查。 |
+| `cargo xtask test` | 运行 workspace 测试。 |
+| `cargo xtask ci` | 统一架构、格式、Clippy 与测试门禁。 |
+| `cargo xtask smoke` | 使用隔离数据根启动原生 smoke。 |
+| `cargo xtask source-fingerprint` | 输出当前源码树 SHA-256 JSON。 |
+
+测试通过只证明对应范围；真实连接、窗口交互、安装升级与性能要分别验证，不能用命令存在、编译成功或后端 PTY 指标代替原生验收。
+
+### 工作区结构
+
+```text
+crates/
+  domain/             领域实体与不变量
+  application/        用例、端口与生命周期编排
+  terminal/           独立终端解析引擎与数据契约
+  infrastructure/     存储、连接、进程和平台适配
+  kerminal-ui/        GPUI / GPUI Kit 界面
+  kerminal-mcp/       面向 MCP host 的协议适配
+  kerminal-desktop/   桌面组合根与启动入口
+xtask/                开发、质量门禁与交付命令
+```
+
+<details>
+<summary>本地打包与发布入口</summary>
+
+从仓库根目录安装固定版工具到仓库私有目录，并显式选择 target；以下为 Windows x64 示例：
 
 ```powershell
-pnpm run dev -- --host 127.0.0.1 --port 1425
-pnpm run docs:capture-readme-screenshots -- http://127.0.0.1:1425/
+$target = 'x86_64-pc-windows-msvc'
+cargo install cargo-about --version 0.9.2 --locked --features cli --root target/tools/cargo-about
+cargo install cargo-packager --version 0.11.8 --locked --root target/tools/cargo-packager
+$env:PATH = (Resolve-Path 'target/tools/cargo-packager/bin').Path + [IO.Path]::PathSeparator + $env:PATH
+cargo +1.98.0 build --locked --release -p kerminal-desktop --target $target
+cargo +1.98.0 xtask package --target $target
 ```
+
+`package` 不代替 release build：先验证私有 `cargo-about` 与第三方许可证报告，再运行 cargo-packager、收集实际产物。缺失工具、版本不符或报告不完整都会停止打包。
+
+平台配置位于 [`packaging/`](packaging/)，资源路径相对配置目录解析。原始产物先进入 `target/package-output/`，整理后位于 `target/package-candidates/<target>/`：Windows 为 NSIS，Linux 为 AppImage / DEB，macOS 为应用包 / DMG；必要的 updater archive 单独生成，不以改扩展名替代真实打包。
+
+支持的 target 为 `x86_64-pc-windows-msvc`、`x86_64-unknown-linux-gnu`、`x86_64-apple-darwin`、`aarch64-apple-darwin`。[候选打包工作流](.github/workflows/gpui-package.yml) 可手动触发；[beta 发布工作流](.github/workflows/gpui-release.yml) 核对 `vX.Y.Z-beta.N` tag 与 workspace 版本，构建四个平台并发布 prerelease 及摘要，不等于正式版签名或安装验收。
+
+稳定候选应同时记录构建前后源码指纹与实际二进制摘要。源码指纹覆盖锁文件和非忽略的新源码，但单独的 Git revision 或指纹不能证明二进制与源码的对应关系。
+
+</details>
+
+<details>
+<summary>原生窗口性能采集</summary>
+
+同时启用 `acceptance-metrics` feature 与环境开关；默认先预热 5 秒，下面采集 60 秒。输出必须是绝对路径，且不能覆盖已有文件：
+
+```powershell
+$env:KERMINAL_CONFIG_ROOT = Join-Path $PWD 'target/acceptance/native/config'
+$env:KERMINAL_ACCEPTANCE_METRICS = '1'
+$env:KERMINAL_ACCEPTANCE_METRICS_DURATION_MS = '60000'
+$env:KERMINAL_ACCEPTANCE_METRICS_OUTPUT = Join-Path $PWD 'target/acceptance/native/frames.json'
+cargo run --locked --release -p kerminal-desktop --features acceptance-metrics
+```
+
+采集期间需要实际操作窗口。报告保留测量区间、样本数、直方图与 p95；样本不足时不能宣称性能通过。记录硬件、字体、DPI、窗口尺寸及构建模式；GPUI 提交 / 输入处理耗时不等于屏幕显示时刻，也不等于 PTY 回显延迟。本段仅说明采集入口，不提供未经实测的性能结论。
+
+</details>
 
 ## 开源协议
 
-Kerminal 以 GNU General Public License v3.0 or later（GPL-3.0-or-later）授权，详见 [LICENSE](LICENSE)。
+Kerminal 以 **GNU General Public License v3.0 or later（GPL-3.0-or-later）** 授权，详见 [LICENSE](LICENSE)。第三方依赖及随包资源说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

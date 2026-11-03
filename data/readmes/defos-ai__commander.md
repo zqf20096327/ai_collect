@@ -14,9 +14,9 @@ What are the use cases for Commander? [Ask ChatGPT](https://chatgpt.com/?q=What%
 
 Each option opens Playground. Choose a model, enter its API key, and ask:
 
-> Create a Hacker News digest.
+> Create a Hacker News digest
 
-The demo asks for topics and saves a reading list as Markdown and JSON.
+The demo installs [example-agent](https://github.com/defos-ai/commander-example-agent), asks for topics, and saves a reading list as Markdown and JSON.
 
 ### Docker
 
@@ -80,7 +80,8 @@ See [Playground](apps/playground/README.md) for native dependencies and configur
 | --- | --- |
 | Run and configure Commander | [Setup](docs/deployment.md) · [Playground](apps/playground/README.md) |
 | Inspect operations in a browser | [Admin UI](apps/admin/ui/README.md) |
-| Build an agent or workflow | [Agents](apps/agents/README.md) · [Missions and rules](docs/abstractions.md) |
+| Use Commander features | [Feature guides](docs/features/README.md) |
+| Build an agent or workflow | [Agents](apps/agents/README.md) · [Missions and policies](docs/features/missions.md) |
 | Integrate or extend Commander | [Framework](framework/README.md) · [Controllers](apps/controllers/README.md) · [HTTP API](apps/adapters/api/README.md) · [Providers](providers/README.md) |
 | Understand the architecture and limits | [Overview](docs/overview.md) |
 | Connect existing agent frameworks | [Frameworks](docs/frameworks.md) |

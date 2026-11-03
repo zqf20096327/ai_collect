@@ -8,7 +8,7 @@ A curated list of OSINT tools and resources for penetration testing, reverse sea
 <!--SPONSOR-->
 <div align="center">
   <a href="https://webvetted.com/awesome-osint?utm_source=github&utm_medium=sponsorship&utm_campaign=awesome-osint1">
-    <img src="/assets/sponsor/sponsor_banner.png" alt="WebVetted OSINT" width="800">
+    <img src="/assets/Images/sponsor_banner.png" alt="WebVetted OSINT" width="800">
   </a>
   <br><br>
   <i><b>Stop juggling dozens of OSINT tools.</b> WebVetted brings 32 tools into one unified dashboard. Turn any email, phone, or username into a complete identity investigation with deep OSINT enrichment, breach intel, AI analysis, and an interactive identity graph.</i><br>
@@ -178,7 +178,6 @@ A curated list of OSINT tools and resources for penetration testing, reverse sea
 - [Leak-Lookup](https://leak-lookup.com/) - Data breach search engine with over 3 billion records from 3000+ databases.
 - [Leaked.domains](https://leaked.domains/) - Search for domain-related leaked credentials and data.
 - [WhiteIntel](https://whiteintel.io/) - Dark web data leak search engine for threat intelligence.
-- [PSBDMP](https://psbdmp.ws/) - Pastebin dump search and monitoring platform.
 - [OsintCat](https://www.osintcat.net/) - Check if an email address has been exposed in known data breaches. Covers multiple breach databases with both a web interface and an API.
 - [CheckLeaked](https://checkleaked.cc/) - Check if an email, username or phone appears in a data breach, with the sources shown; free searches, developer API and Telegram/Discord bots.
 - [Lunar Cyber](https://lunarcyber.com/) - Search and monitor compromised credentials across data breaches and infostealer logs.
@@ -196,7 +195,6 @@ Data Leak, scam, username, domain, social
 - [OffshoreLeaks](https://offshoreleaks.icij.org/) - Find out who's behind offshore companies.
 - [WorldWide OSINT Map](http://cybdetective.com/osintmap/) - Gather basic info around the world.
 - [WhatsMyName](https://whatsmyname.app/) - This tool allow to enumerate usernames across many websites.
-- [os-surveillance](https://os-surveillance.io/) - Gather real-time intelligence from social media, cameras, IoT, amber alerts, Wi-Fi networks, vessels, and city traffic.
 - [Chiasmodon](https://github.com/chiasmod0n/chiasmodon) - Chiasmodon is an OSINT tool designed to assist in the process of gathering information about a target domain. Its primary functionality revolves around searching for domain-related data, including domain emails, domain credentials, CIDRs , ASNs , and subdomains, the tool also allows users to search Google Play application ID.
 - [Tookie-osint](https://github.com/alfredredbird/tookie-osint) - Tookie is a advanced OSINT information gathering tool that finds social media accounts based on inputs.
 - [dangerzone](https://github.com/freedomofpress/dangerzone) - Take potentially dangerous PDFs, office documents, or images and convert them to safe PDFs.
@@ -327,7 +325,6 @@ Data Leak, scam, username, domain, social
 #### Jailbreak & Prompt Injection Resources
 
 - [Jailbreak Chat](https://www.jailbreakchat.com/) - Collection of ChatGPT jailbreaks and prompts.
-- [Awesome GPT Prompt Injection](https://github.com/FonduAI/awesome-gpt-prompt-injection) - Curated list of prompt injection resources.
 - [LLM Security](https://llmsecurity.net/) - Resources and research on LLM security vulnerabilities.
 - [OWASP Top 10 for LLM](https://owasp.org/www-project-top-10-for-large-language-model-applications/) - Top 10 security risks for LLM applications.
 
@@ -342,10 +339,8 @@ Data Leak, scam, username, domain, social
 
 - [AI Safety Papers](https://www.alignmentforum.org/) - Forum for AI alignment and safety research.
 - [AI Security Conference Papers](https://www.papersdigest.org/tag/ai-security/) - Academic papers on AI security.
-- [ML Security Reading List](https://github.com/0xRadi/AI-ML-Security-Reading-List) - Curated reading list for AI/ML security.
 - [Awesome ML for Cybersecurity](https://github.com/jivoi/awesome-ml-for-cybersecurity) - ML tools and resources for cybersecurity.
 - [MITRE ATLAS](https://atlas.mitre.org/) - Knowledge base of adversarial tactics against ML systems.
-- [Trail of Bits AI Security](https://github.com/trailofbits/ai-security-bestpractices) - Best practices for AI/ML security.
 
 <br>
 
@@ -395,7 +390,6 @@ Tools for Image/Audio/Video/Doc reconnaissance
 - [unfurl](https://dfir.blog/unfurl/) - Break down url into pieces and find out what each thing do.
 - [Wolfram|Alpha](https://www.wolframalpha.com/) - Solve mathematical Equations.
 - [Cryptpad.fr](https://cryptpad.fr/) - Flagship instance of CryptPad, the end-to-end encrypted and open-source collaboration suite. Administered by the CryptPad development team.
-- [Recontool.org](https://recontool.org/) - Recon tools.
 - [MindMup 2](https://app.mindmup.com/map/new) - Create MindMap online.
 - [Dotspotter](https://www.forensicdots.de/) - Discover the tracking dots on a scanned document. Upload an image (600 dpi) of your print out. Dottspotter will try to detect the yellow dot code (MIC).
 - [Encrypted Pastebin](https://defuse.ca/pastebin.htm) - Pre-Internet Encryption for Text.
@@ -455,13 +449,10 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## File Upload
 
+- [Upload | Disroot](https://upload.disroot.org/) - Encrypted, zero-knowledge temporary file hosting powered by Lufi.
 - [MEGA](https://mega.io/) - Secure Cloud Storage and Communication Privacy by Design Get 20GB of storage for free.
 - [transfer.sh](https://transfer.sh/) - Easy, fast command-line and web file sharing.
-- [Upload | Disroot](https://disroot.org/en/services/upload) - Lufi - Encrypted temporary file upload service.
 - [Chibisafe.moe](https://chibisafe.moe/) - Blazing fast file uploader. For real A modern and self-hosted file upload service that can handle anything you throw at it.
-- [Bunker.is](https://bunker.is/) - Encrypted temporary file storage and sharing platform.
-- [Send](https://send.actionsack.com/) - Send lets you share files with end-to-end encryption and a link that automatically expires upload upto 2GB.
-- [Zz.fo](https://zz.fo/) - Fast and anonymous temporary file uploader.
 - [Upload files to IPFS from Browser](https://anarkrypto.github.io/upload-files-to-ipfs-from-browser-panel/public/) - Decentralize file sharing.
 - [BlackHole](https://blackhole.run/) - BlackHole is a file transfer application built on top of blockchain for the new internet. You can share any super security file with ease and be sure the data is yours forever. You can use BlackHole for free, with no storage or bandwidth limit, but for files bigger than 512 MB.
 
@@ -490,7 +481,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Text and File Hash Calculator](https://defuse.ca/checksums.htm) - This page lets you hash ASCII text or a file with many different hash algorithms. Checksums are commonly used to verify the integrety of data. The most common use is to verify that a file has been downloaded without error. The data you enter here is 100% private, neither the data nor hash values are ever recorded.
 - [HTML Sanitizer Tool](https://defuse.ca/html-sanitize.htm) - This tool will take your text and convert all the special characters to their proper HTML codes, so you can paste text with special characters or HTML code onto your website. It has been carefully designed so that the HTML produced by this tool looks and behaves exactly like the original text does in a text editor.
 - [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/) - Encode/decode URL in url form.
-- [ODA - The Online Disassembler](https://onlinedisassembler.com/odaweb/) - A lightweight, online service for when you don’t have the time, resources, or requirements to use a heavier-weight alternative. Explore executables by dissecting its sections, strings, symbols, raw hex and machine level instructions.
 - [Disasm.pro](https://disasm.pro/) - A realtime assembler/disassembler (formerly known as disasm.ninja).
 - [Fotor](https://www.fotor.com/photo-editor-app/editor/basic) - Online image editor remove bg, crop, edit...
 - [Decompiler.com](http://www.decompiler.com/) - Online decompiler for java, apk, lua ....
@@ -499,7 +489,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [HTML editor](https://onlinehtmleditor.dev/) - Online HTML editor.
 - [Online Color Picker](https://colorpicker.me/) - Online color picker in HSL, Hex code, RGB, HSV.
 - [Convert text to image file](https://text2image.com/en/) - Generate online free an image from text (words) you supply. Then download your image file or link to it on our system. You can have text up to 500 characters; size (width/height): between 10 and 1500 pixels; format: one of several popular formats - GIF, JPEG or PNG; font: the size of your letters in a range from 6pt to 54pt (6 point to 54 point); colors: the forecolor (color of the letters in your text) and backcolor (background color behind the letters).
-- [relational algebra calculator](https://dbis-uibk.github.io/relax/calc/local/uibk/local/0) - If you want to learn SQL you take a database system and try some queries. But if you want to learn relational algebra what do you use? Pen and paper? The relational algebra calculator helps you learn relational algebra (RelAlg) by executing it.
 - [Data Structure : Infix Postfix Prefix - Converter & Evaluator](https://raj457036.github.io/Simple-Tools/prefixAndPostfixConvertor.html) - This is a simple infix to prefix or postfix Converter.
 - [RSA encryption, decryption and prime calculator](https://canihavesomecoffee.github.io/js-rsa-tool/) - RSA encryption, decryption and prime calculator.
 - [Tools.digitalmethods.net](https://tools.digitalmethods.net/beta/searchEngineScraper/) - The Search Engine Scraper allows you to scrape the search results for a given search query, and has as output a list of results the search engine returned for the query.
@@ -511,7 +500,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [DISA Code Template Generator](https://duncanford.github.io/disa-code-generator) - To purpose of this generator is to quickly create the content for all the separate five files you need to create a template DISA integration. Almost everything can be keyed from a single name: the name of the plugin.
 - [Canary Tokens](http://canarytokens.org/generate) - You'll be familiar with web bugs, the transparent images which track when someone opens an email. They work by embedding a unique URL in a page's image tag, and monitoring incoming GET requests. Canarytokens helps track activity and actions on your network.
 - [explainshell.com](https://explainshell.com/) - Write down a command-line to see the help text that matches each argument.
-- [ShowTheDocs](http://showthedocs.com/) - Showthedocs is a documentation browser that finds the relevant docs for your code. It works by parsing the code and connecting parts of it to their explanation in the docs.
 - [osint-cli-tool-skeleton](https://pypi.org/project/osint-cli-tool-skeleton/) - OSINT cli tool skeleton.
 - [BOSINT](https://app.bosint.gg/) - All-in-one OSINT investigation platform.
 - [SkyOSINT](https://skyosint.io) - OSINT platform for intelligence gathering and analysis.
@@ -530,12 +518,9 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [SimpleLogin](https://simplelogin.io/) - Receive and send emails anonymously.
 - [MailDrop](https://maildrop.cc/) - Save your inbox from spam. Use Maildrop when you don't want to give out your real address No signup required - Maildrop is free for anyone to use when you need a quick, disposable email address.
 - [Send text free](https://globfone.com/send-text/) - Send text online without worrying about phone bills. Free SMS to hundreds of GSM operators worldwide.
-- [SendaText](https://www.sendatext.co/) - SENDaTEXT allows you to send free text and SMS from your computer or smartphone. All you need to use SENDaTEXT is a standard web browser and internet. You can now send free text online from your computer or smartphone. No need to sign up. No need to make any payment. Send a text now!
 - [Free Fax](https://faxzero.com/) - Send faxes for free to anywhere in the U.S. and Canada Or, Send an International Fax.
-- [Receive SMS Online](http://receive-sms-online.com/) - On this site you will find some numbers you can send SMS text messages to and the messages will show up on the web.
 - [Receive-sms-now.com](http://receive-sms-now.com/) - Free temporary phone numbers for SMS verification.
 - [Receive SMS Online](https://hs3x.com/) - Receive sms online.
-- [Receive SMS Online for FREE](http://freesmsverification.com/) - Free SMS Verification Receive SMS Online Verify your SMS received from any place in the World. The messages will show up on the webpage.
 - [Smstome.com](https://smstome.com/) - Virtual Temporary and Disposable Phone Numbers.
 - [Amazon SNS](https://aws.amazon.com/sns/) - Amazon Simple Notification Service (SNS) sends notifications two ways, A2A and A2P. A2A provides high-throughput, push-based, many-to-many messaging between distributed systems, microservices, and event-driven serverless applications. These applications include Amazon Simple Queue Service (SQS), Amazon Kinesis Data Firehose, AWS Lambda, and other HTTPS endpoints. A2P functionality lets you send messages to your customers with SMS texts, push notifications, and email.
 - [Twilio](https://www.twilio.com/) - Api for sms services.
@@ -579,7 +564,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Fake Youtube Channel Generator](https://fakeinfo.net/fake-youtube-channel-generator) - D you ever wish to become a YouTuber with a large number of subscribers? Well, dreams do come true. By using the Fake Youtube Channel Generator tool, you may create a fake youtube channel with an attractive channel name and several subscribers.
 - [Resume Builder](https://vinaysomawat.github.io/Resume-Builder/) - Simple resume builder.
 - [Fake Generator Tools](https://fauxid.com/tools) - Here are a list of tools that can help you create fake identities, fake emails, fake credit cards, fake driver's license, and a fake company.
-- [RandTap](https://randtap.com) - Free random data generator tools. Generate phone numbers, addresses, passwords, colors and more.
 
 <br>
 
@@ -617,7 +601,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) - Command-line program to download videos from YouTube.com and other video sites.
 - [SaveTheVideo](https://savethevideo.com/) - Online video downloader for many sites including YouTube.
-- [Media-downloader.net](https://media-downloader.net/) - Online tool to download videos and audio from various platforms.
 - [Imgur Album Downloader](https://dschep.github.io/imgur-album-downloader/#/) - A Pure client-side webapp to download entire or parts of Imgur albums.
 - [Export Comments](https://exportcomments.com/) - Easily exports all comments from your social media posts to Excel file.
 - [Image Extractor](https://extract.pics/) - Extract Images From any public website by using a virtual browser.
@@ -633,7 +616,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Privacy / Security
 
-- [The Hitchhiker’s Guide to Online Anonymity](https://anonymousplanet.org/guide.html) - The Hitchhiker’s Guide to Online Anonymity.
+- [The Hitchhiker’s Guide to Online Anonymity](https://anonymousplanet.net/) - The Hitchhiker’s Guide to Online Anonymity.
 - [Privacy Guides](https://privacyguides.org/) - The guide to restoring your online privacy.
 - [Surveillance Self-Defense](https://ssd.eff.org/) - Surveillance Self-Defense Tips, Tools and How-tos for Safer Online Communications.
 - [Consumer Reports Security Planner](https://securityplanner.consumerreports.org/) - Get personalized recommendations to cut down on data collection and secure sensitive personal info.
@@ -646,7 +629,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [View Exif data online, remove Exif online](http://www.verexif.com/en/) - View and remove Exif online.
 - [Bitcoinprivacy.guide](https://bitcoinprivacy.guide/) - Bitcoin privacy guide a beginners guide to Bitcoin privacy.
 - [Speech Jammer](https://mynoise.net/NoiseMachines/audioJammerNoiseGenerator.php) - Audio jammers are popular tools used during confidential meetings. They produce a unique sound for masking and protecting conversations from external listening devices, such as a smartphone running an audio recording app, hidden in one of your guests' pocket.
-- [Stutterbox](https://www.stutterbox.co.uk/) - A speech jammer is a device that inhibits a user from speaking in coherent sentences due to the user hearing their own voice played back to them with a slight delay.
 - [StegOnline](https://stegonline.georgeom.net/upload) - A web-based, enhanced and open-source port of StegSolve. Upload any image file, and the relevant options will be displayed.
 - [Tor2web](https://www.tor2web.org/) - Allows internet users to access Tor onion services through standard web browsers.
 - [TrickyBird](https://trickybird.com/) - Free web proxy allowing instant browsing without installing software or creating an account.
@@ -682,6 +664,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Resources
 
+- [Technisette OSINT Tools](https://start.me/p/wMdQMQ/tools) - Curated start.me investigation dashboard covering social networks, people, search engines, and utilities.
 - [The Ultimate OSINT Collection](https://start.me/p/DPYPMz/the-ultimate-osint-collection) - This page is for anyone who loves open source investigating, and feels overwhelmed by the amount of resources and information out there. This is my personal one-stop shop for the best OSINT content available online, and I hope it helps you find new ways to learn from some amazing people.
 - [OSINT Resources in Canada](https://start.me/p/aLe0vp/osint-resources-in-canada) - OSINT Resources in Canada. This is a free resource dedicated to open source tools located in the different provinces and territories in Canada.
 - [FAROS OSINT Resources](https://start.me/p/1kvvxN/faros-osint-resources) - Financial Open Source Intellige.
@@ -691,11 +674,9 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [OSINT Is A State Of Mind](https://medium.com/secjuice/osint-as-a-mindset-7d42ad72113d) - Dutch guy with Open Source Intelligence & Analysis skills • Osint • Security Awareness • Opsec.
 - [sinwindie/OSINT](https://github.com/sinwindie/OSINT) - Collections of tools and methods created to aid in OSINT collection.
 - [New Online Investigation (OSINT) Resources – IntelTechniques Blog](https://inteltechniques.com/blog/2019/04/09/new-online-investigation-osint-resources/) - New Online Investigation (OSINT) Resources.
-- [Technisette](https://www.technisette.com/p/home) - Here you'll find my collected tutorials, tools, databases, addons, search engines and more to help you with your Open Source Intelligence (OSINT) research.
 - [OSINT Framework](https://osintframework.com/) - OSINT framework focused on gathering information from free tools or resources. The intention is to help people find free OSINT resources. Some of the sites included might require registration or offer more data for $$$, but you should be able to get at least a portion of the available information for no cost.
 - [jivoi/awesome-osint](https://github.com/jivoi/awesome-osint) - A curated list of amazingly awesome OSINT.
 - [START CARING STOP SHARING](https://medium.com/@Dutchosintguy/start-caring-stop-sharing-9c108d957b2c) - An Open Source Intelligence perspective on the online sharing behavior of humans as effect of COVID19 pandemic to enable better Security Awareness.
-- [Osint Curious OSINT Resource List](https://docs.google.com/document/d/14li22wAG2Wh2y0UhgBjbqEvZJCDsNZY8vpUAJ_jJ5X8/edit) - OSINT Curious Project Resource List! Below you can find links to all the blog posts and 10 Minute Tips that we’ve created to help share knowledge and skills with the OSINT Community. The list is regularly updated as we create new content but you can also find us at OSINTCurio.us.
 - [OSINT Tools](https://www.osinttechniques.com/osint-tools.html) - OSINT Tools.
 - [OSINT tools for investigating websites](https://www.aware-online.com/en/osint-tools/website-tools/) - Guide and toolset for investigating domain infrastructure and websites.
 - [Shodan Cheat Sheet](https://thedarksource.com/shodan-cheat-sheet/) - Quick reference guide for advanced Shodan search queries and filters.
@@ -708,7 +689,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [QueryTool](https://github.com/oryon-osint/querytool) - Querytool is an OSINT framework based on Google Spreadsheets. With this tool you can perform complex search of terms, people, email addresses, files and many more.
 - [Investigating the source code of a website](https://www.aware-online.com/en/osint-tutorials/investigating-the-source-code-of-a-website/) - The source code of a website can be seen as the readable text written by a programmer in a programming language. Simply said, the source code consists of a variety of code lines, which together ensure that a website ‘ works ‘ and that a website looks a certain way.
 - [Find open FTP Servers](https://www.aware-online.com/en/osint-tutorials/find-open-ftp-servers/) - Find an open ftp server osint.
-- [10 Minute Tips](https://osintcurio.us/10-minute-tips/) - A library of OSINT tips, tricks, tools, and techniques.
 - [Boolean Strings | Tools](https://booleanstrings.com/tools/) - 150+ Top Sourcing / #OSINT Tools.
 - [osintme.com](https://www.osintme.com/) - 3 years an OSINT blog.
 - [Bellingcat’s Online Investigation Toolkit](https://docs.google.com/spreadsheets/d/18rtqh8EG2q1xBo2cLNyhIDuK9jrPGwYr9DI2UncoqJQ/edit#gid=930747607) - This toolkit includes satellite and mapping services, tools for verifying photos and videos, websites to archive web pages, and much more.
@@ -728,7 +708,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Osint.support](https://osint.support/) - Open Source Intelligence (OSINT) is the collection and analysis of information that is gathered from public, or open, sources. OSINT is primarily used in national security, law enforcement, and business intelligence functions and is of value to analysts who use non-sensitive intelligence in answering classified, unclassified, or proprietary intelligence requirements across the previous intelligence disciplines.
 - [How to find anyone with an advanced LinkedIn People Search](https://nubela.co/blog/how-to-find-anyone-with-an-advanced-linkedin-people-search/) - How To Find Anyone With An Advanced LinkedIn People Search.
 - [Calls Node Status](https://www.broadcastify.com/calls/status/) - Current Active Call Ingest Nodes.
-- [Free WiFi Search Engine](http://instabridge.com/free-wifi/) - Search WiFi spots worldwide.
 
 <br>
 
@@ -747,14 +726,14 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Threat Intel
 
+- [DarkTracer](https://darktracer.in/) - Comprehensive OSINT intelligence platform built for digital footprint audits, identity resolution, asset mapping, and breach scanning across India.
 - [defend.network](https://defend.network) - Free, no-login cyber threat intelligence with daily threat briefings and weekly vulnerability reports; every CVE cross-checked against NVD and the CISA KEV catalog, structured by threat type, industry, and severity.
 - [ICHI](https://ichi.global) - Free, source-transparent daily internet cyber-health barometer aggregating real-time telemetry, threat news, and signals from dozens of public feeds; directional outside-in view of internet-wide conditions, not an org-specific risk score.
 - [ThreatCluster](https://threatcluster.io/) - Reporting from 20,000+ sources clustered into one record per incident, with every source that covered it; includes validated IOCs, CVE data and ransomware leak-site victims. Free API key, no card.
-- [Threatbutt](https://threatbutt.com/map/) - Threatbutt Internet Hacking Attack Attribution Map.
 - [Cyberthreat Real-Time Map](https://cybermap.kaspersky.com/) - Cyberthreat real-time attack map of the world.
 - [Live Cyber Attack Threat Map](https://www.checkpoint.com/ThreatPortal/livemap.html) - Live cyber threat map.
 - [Digital Attack Map](https://www.digitalattackmap.com/) - Live Global DDoS Attack.
-- [Cyber Threat Map](https://www.fireeye.com/cyber-map/threat-map.html) - Interactive live visualization of global cyber attacks by FireEye / Trellix.
+- [Check Point ThreatMap](https://threatmap.checkpoint.com/) - Interactive live visualization of global cyber attacks by FireEye / Trellix.
 - [Bitdefender Threat Map](https://threatmap.bitdefender.com/) - Cyberthreat realtime map.
 - [Cyber Threat Intelligence](https://pulsedive.com/) - Frictionless threat intelligence solutions for growing teams.
 - [Threat Landscape](https://threatlandscape.io/) - Extracts, structures, and connects global OSINT and darknet signals into intelligence.
@@ -763,7 +742,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [FortiGuard](http://www.fortiguard.com/) - AI-Powered Threat Intelligence for an Evolving Digital World.
 - [Hunt](https://www.hunt.io/) - Hunt is a threat hunting tool with good open directory counter intelligence and IOC hunting that detects and neutralizes malicious activities.
 - [ThreatMiner](https://www.threatminer.org/) - ThreatMiner is a threat intelligence portal designed to enable analysts to research under a single interface.
-- [cymon](https://cymon.io/) - Threat intelligence aggregator indexing security feeds, IP addresses, and domains.
 - [intelowlproject/IntelOwl](https://github.com/intelowlproject/IntelOwl) - Manage your Threat Intelligence at scale.
 - [THREAT MAP by LookingGlass](https://map.lookingglasscyber.com/) - Global map tracking real-time internet threat traffic and botnet command centers.
 - [NETSCOUT Cyber Threat Horizon](https://horizon.netscout.com/) - NETSCOUT Cyber Threat Horizon (Horizon) is a global cybersecurity situational awareness platform that provides organizations with highly contextualized visibility into 'over the horizon' threat activity on the landscape.
@@ -780,7 +758,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [C2IntelFeeds](https://github.com/drb-ra/C2IntelFeeds) - C2 intelligence feeds for threat hunting.
 - [PhishTank](https://phishtank.org/) - Community-driven anti-phishing site.
 - [Shodan Monitor](https://monitor.shodan.io/) - Monitor your network exposure.
-- [BinaryEdge](https://www.binaryedge.io/) - Threat intelligence and attack surface analysis.
 - [Spamhaus](https://www.spamhaus.org/) - Tracking spam and cyber threats.
 - [AbuseIPDB](https://www.abuseipdb.com/) - IP address abuse reports and monitoring.
 - [IBM X-Force Exchange](https://exchange.xforce.ibmcloud.com/) - Threat intelligence sharing platform.
@@ -830,7 +807,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [IDCrawl](https://www.idcrawl.com/) - People Search a friend, relative, yourself, or someone else you may know (US ONLY).
 - [WebMii](https://webmii.com/) - People search engine.
 - [Free People Search](https://www.peoplefinder.com/) - Police Records, Background Checks, Social Media, Photos, Assets, Contact Information and Much More! (us only).
-- [Yandex People Search](https://yandex.ru/people) - Yandex people search engine.
 - [fastpeoplesearch](https://fastpeoplesearch.com/) - Find a person by name, phone number, or street address.
 - [People Search](http://itools.com/search/people-search) - Use the best people search tools to find someone's contact information. Find a person's street address, phone number or email address.
 - [People Search Engine](https://cse.google.com/cse?cx=14db36e158cd791c0) - People search engine.
@@ -856,6 +832,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Username
 
+- [Profil3r](https://github.com/Greyjedix/Profil3r) - OSINT intelligence-gathering tool to reconstruct digital profiles across platforms.
 - [namechk](https://namechk.com/) - Check available username across 30 domain 90 social sites.
 - [Phantom Finder (iOS)](https://apps.apple.com/gb/app/phantom-finder-username-search/id6736408372) - Mobile reverse username search with direct profile links.
 - [WhatsMyName Web](https://whatsmyname.app/) - Username search.
@@ -875,14 +852,11 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Username search tool](https://www.aware-online.com/en/osint-tools/username-search-tool/) - Username search with customization.
 - [snoop](https://github.com/snooppr/snoop) - Snoop Project One of the most promising OSINT tools to search for nicknames. Over 4000+ sites (THE BEST ONE).
 - [Blackbird](https://github.com/p1ngul1n0/blackbird) - OSINT tool to search for accounts by username across social networks.
-- [Detective](https://detective.run/) - Search for usernames across multiple platforms.
 - [Nexfil](https://github.com/thewhiteh4t/nexfil) - OSINT tool for finding profiles by username.
 - [Search4Faces](https://search4faces.com/) - Reverse face search in social networks.
 - [Usersearch.org](https://usersearch.org/) - Find someone by username across 600+ sites.
 - [Instant Username Search](https://instantusername.com/) - Check username availability across 100+ sites.
 - [Namecheckr](https://www.namecheckr.com/) - Check username and domain availability.
-- [UserRecon](https://github.com/thelinuxchoice/userrecon) - Find usernames across over 75 social networks.
-- [Profil3r](https://github.com/Rog3rSm1th/Profil3r) - OSINT tool to find a person's profile across social networks.
 
 <br>
 
@@ -890,6 +864,8 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Email
 
+- [ContactOut](https://contactout.com/) - Chrome extension and search engine to uncover personal and work emails and phone numbers.
+- [Voila Norbert](https://www.voilanorbert.com/) - Locate and verify corporate email addresses using name and domain queries.
 - [Email Lookup](https://epieos.com/) - The ultimate OSINT tool for email and phone reverse lookup.
 - [EmailFinder](https://snov.io/email-finder) - Find any company mail.
 - [holehe](https://pypi.org/project/holehe/) - Holehe allows you to check if the mail is used on different sites like twitter, instagram , snapchat and will retrieve information on sites with the forgotten password function.
@@ -940,6 +916,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Phone
 
+- [PhoneInfoga](https://sundowndev.github.io/phoneinfoga/) - Advanced open-source tool for scanning and investigating international phone numbers.
 - [CallSpy](https://callspy.profiler.me/) - Get real-time details about any phone number from our 10+ sources, including Truecaller, Eyecon, CallApp, and many more.
 - [Phonerator](https://www.martinvigo.com/tools/phonerator/) - An advanced valid phone number generator.
 - [Reverse Phone Lookup](https://www.idcrawl.com/phone) - Find out who's behind the phone: Reverse phone lookup made easy.
@@ -990,7 +967,6 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Social Search Engine](https://www.socialsearchengine.org/) - Search social information from multiple social networking sites including Facebook, Twitter, Steemit, Google Plus, Blogspot, LinkedIn and more at same time.
 - [Instagram, Reddit & Snapchat](https://one-plus.github.io/Instagram) - Search people, posts ...
 - [Google to search profiles on Dribbble](https://recruitin.net/dribbble.php) - Dribbble is good for finding front end developers, graphic designers, illustrators, typographers, logo designers, and other creative types.
-- [Social-Media-OSINT-Tools-Collection](https://github.com/osintambition/Social-Media-OSINT-Tools-Collection) - A collection of most useful osint tools for SOCINT.
 - [trape](https://github.com/jofpin/trape) - People tracker on the Internet: OSINT analysis and research tool.
 
 <br>
@@ -1014,6 +990,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 
 ## Twitter
 
+- [Fedica (formerly Followerwonk)](https://fedica.com/) - Twitter/X bio search, audience segmentation, demographics, and account comparisons.
 - [GetXAPI](https://www.getxapi.com/) - Twitter / X data API for OSINT collection. Read endpoints (search, profiles, follower graph, mentions, lists, communities, trends) and write endpoints. Bearer-token auth. Public OpenAPI 3.1 spec.
 - [BirdHunt](https://birdhunt.co/) - BirdHunt will show you all tweets within the chosen geographic location.
 - [Nitter](https://github.com/zedeus/nitter/) - Alternative Twitter front-end.
@@ -1024,23 +1001,67 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 - [Twitter Advanced Search](https://twitter.com/search-advanced) - Search with additional filters.
 - [Twitter search tool](https://www.aware-online.com/en/osint-tools/twitter-search-tool/) - Create advanced search queries within Twitter. In addition, we refer you to useful tools that allow you to analyze and monitor an account on Twitter.
 - [Google to search profiles on Twitter](https://recruitin.net/twitter.php) - Easily use Google to search profiles on X (Twitter).
-- [The one million tweet map](https://onemilliontweetmap.com/) - Create map of tweets from hashtag, username, keywords.
 - [Tweet Binder](https://www.tweetbinder.com/) - Free Twitter Hashtag Analytics of up to 200 posts from the last 7 days.
 - [Thread Reader](https://threadreaderapp.com/) - Thread Reader helps you read and share Twitter threads easily!
 - [Getdewey.co](https://getdewey.co/) - Save your favorite X (Twitter) and Bluesky bookmarks in one place.
 - [geosocial footprint](http://geosocialfootprint.com/) - GeoSocial Footprint: A geosocial footprint is the combined bits of location information that a user divulges through social media, which ultimately forms the users location "footprint". For Twitter.com users, this footprint is created from GPS enabled tweets, social check-ins, natural language location searching (geocoding), and profile harvesting.
 - [Twitter Analytics](https://foller.me/) - Looking for someone in the United States? Our free people search engine finds social media profiles, public records, and more!
 - [getdaytrends](https://getdaytrends.com/) - Twitter trends worldwide.
-- [Twitter Trending Hashtags and Topics](https://www.trendsmap.com/) - Trendsmap has been providing unique and powerful analytical and visualisation tools to analyse Twitter data. With the demise of Twitter, we are now providing access to over ten years historical data.
 - [Socialbearing](https://socialbearing.com/) - Insights & analytics for tweets & timelines.
 - [SocialData API](https://socialdata.tools/) - SocialData is an unofficial Twitter API that allows scraping tweets, user profiles, lists and Twitter spaces without using Twitter's API.
 - [TwitterAPI.io](https://twitterapi.io/?utm_source=awesome-osint-for-everything&utm_medium=awesome-list&utm_campaign=backlink-2026q2) - Real-time and historical X (Twitter) data API for investigators: tweet search, profile lookup, follower/following extraction, account monitoring with webhooks. $0.15 per 1K tweets, sub-500ms latency, no auth required for read access.
 - [TweetAPI](https://tweetapi.com/) - Twitter data API for collecting public tweets, profiles, followers and following, lists, communities and Spaces, with batch lookups of up to 200 tweets by ID. Paid, with 100 free requests to test it.
 - [Twitonomy](https://www.twitonomy.com/) - Twitter analytics and management tool.
 - [TweeterID](https://tweeterid.com/) - Convert between Twitter ID and username.
-- [AccountAnalysis](https://accountanalysis.app/) - Analyze Twitter accounts for authenticity.
 - [TweetDeck](https://tweetdeck.twitter.com/) - Official Twitter dashboard for monitoring.
 - [Xquik](https://xquik.com/) - X (Twitter) data extraction platform for tweet search, user lookup, follower/following lists, engagement metrics, account monitoring, and trending topics. REST API with 40+ endpoints.
 - [Nitter Instances](https://github.com/zedeus/nitter/wiki/Instances) - List of alternative Twitter front-end instances for privacy.
 - [FollowerWonk](https://followerwonk.com/) - Twitter analytics tool to search bios and analyze followers.
-- [Tweetbeaver
+
+<br>
+
+[⇧ Top](#index)
+
+## YouTube
+
+- [Filmot](https://filmot.com/) - Search within YouTube subtitles, captions and transcripts.
+- [yt-dlp](https://pypi.org/project/yt-dlp/) - Youtube downloader with additional features.
+- [Location Search](https://mattw.io/youtube-geofind/location) - Search YouTube by location for geotagged videos. Find videos near you or anywhere in the world.
+- [YouTube Metadata Bulk](https://mattw.io/youtube-metadata/bulk) - Metadata bulk grabs details about multiple YouTube videos, a playlist's videos, or a channel's public videos.
+- [Hadzy.com](https://hadzy.com/) - Search, sort and analyze youtube comments.
+- [AudienceCue](https://audiencecue.com/en/tools/youtube-comment-downloader) - Download the latest public YouTube video or Shorts comments as CSV for audience research and OSINT workflows.
+- [Youtube channel ID](https://commentpicker.com/youtube-channel-id.php) - Find YouTube Channel ID, and related channel information and statistics.
+- [Yout](https://yout.com/) - Search for something in the search bar, click your video, and then record it as a Mp3 (Audio), you can toggle to Mp4 (Video), or Gif (Image) if you want those instead.
+- [Youtube, Periscope, Twitch & Dailymotion](https://one-plus.github.io/Youtube) - General search tool for youtube.
+- [Unlistedvideos.com](https://unlistedvideos.com/) - A website for submitting, searching for, and watching unlisted YouTube videos.
+- [Youtube Comments Downloader](https://youtubecommentsdownloader.com/) - Effortlessly export comments from YouTube videos, live streams, shorts, and community posts. Perfect for YouTubers, social media managers, researchers [PAID].
+- [ActiveTK](https://www.activetk.jp/tools/yt-not-well-known) - Search for YouTube videos filtered by number of views or likes.
+- [youtubetranscript](https://youtubetranscript.com/) - Extremely fast free online service for converting YouTube videos to text. Not perfect quality, but quite acceptable and very fast.
+- [Voqusa](https://www.voqusa.com/) - Free web tool and Chrome extension that converts a public TikTok, YouTube Shorts or Instagram Reels link into a text transcript with timestamps; useful for quoting and archiving short-video claims.
+
+<br>
+
+[⇧ Top](#index)
+
+## Reddit
+
+- [Vapor](https://vapor.selva.ee/) - Get Profile data by username.
+- [Reveddit.com](https://www.reveddit.com/) - Reveal Reddit's secretly removed content. Search by username or subreddit.
+- [redditsfinder](https://pypi.org/project/redditsfinder/) - Archive a reddit user's post history. Formatted overview of a profile, JSON containing every post, and picture downloads.
+- [SocialGrep](https://www.socialgrep.com/search) - Search reddit posts and comments. Advanced filters via date, score, subreddit, keywords, website urls and more. All searches can be exported via csv or json.
+- [Reddit_Persona](https://github.com/n2itn/reddit_persona) - A Python module to extract personality insights, sentiment & keywords from reddit accounts.
+- [Reddit Downloader](https://redditdownloader.github.io/) - Download media from reddit like image, audio, video.
+- [Reddit User Analyser](https://reddit-user-analyser.netlify.app/) - Analyse a Reddit user by username.
+- [RedditMetis](https://redditmetis.com/) - See statistics for your Reddit account.
+- [Search Reddit Comments by User](https://www.redditcommentsearch.com/) - Search through comments of a particular reddit user. Just enter the username and a search query.
+- [Pushshift API Guide](https://github.com/pushshift/api) - The pushshift.io Reddit API was designed and created by the /r/datasets mod team to help provide enhanced functionality and search capabilities for searching Reddit comments and submissions.
+
+<br>
+
+[⇧ Top](#index)
+
+## LinkedIn
+
+- [LinkedIn Search](https://recruitin.net/) - Easily use Google to search profiles on LinkedIn.
+- [LinkedIn Search Engine](https://cse.google.com/cse?cx=daaf18e804f81bed0) - Custom google search for linkedin.
+- [LinkedIn Email Reverse Lookup](https://osint.support/chrome-extensions/2019/09/03/linkedin-email-reverse-lookup.html) - Chrome extention for linkedin Simply provide an email address which is of interest to you and click Search. If a match is found the name, p

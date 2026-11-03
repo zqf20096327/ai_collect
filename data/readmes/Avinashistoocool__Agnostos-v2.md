@@ -26,6 +26,53 @@ Point it at your CV and a spreadsheet of professors. It reads your resume, ranks
 
 ---
 
+## Windows desktop viewer (view/review only)
+
+This optional standalone app reads your **existing v2 workspace**. Select the
+repository folder on first launch; if started from this checkout it suggests
+the current folder. It remembers the folder in
+`%LOCALAPPDATA%\Agnostos-v2-Review\workspace.json` (only the path, not a copy
+of your workbook). The dashboard reads `output\professors.xlsx`, the
+Conversations tab displays the **last saved** `output\conversations.html`, and
+Reply drafts reads `output\reply_queue.json`. Refresh rereads local files;
+it never connects to IMAP or runs an outreach command.
+
+You can edit an unsent reply's body and explicitly approve or unapprove that
+individual draft. **Approval is not sending**, but an approved unsent draft
+can be sent later by your separately scheduled v2 CLI; inspect the recipient
+and text carefully. Sent replies are read-only. The CLI and viewer now share
+cross-process queue locks and atomically replace queue files. If a reply job is
+busy or the queue changed since you loaded it, the viewer rejects the save
+and asks you to reload; it never overwrites a newer send status. Already-running
+pre-upgrade live senders are also detected via their existing lock. A selected
+older checkout without the coordinated v2 CLI stays viewable but editing is
+disabled until its CLI is updated. No send, resend or restart controls exist
+in this app.
+
+Windows needs Microsoft Edge WebView2 Runtime. Download the entire distribution
+and launch `Agnostos-v2-Review.exe` beside its `_internal` folder. To build
+your own ZIP from a Windows checkout with Python 3.13:
+
+```powershell
+.\build-desktop-review.ps1 -Python "C:\Path\To\Python313\python.exe"
+.\dist\Agnostos-v2-Review\Agnostos-v2-Review.exe --health-check
+.\dist\Agnostos-v2-Review\Agnostos-v2-Review.exe
+python -m unittest discover -s tests -p desktop_review_test.py -v
+.\tests\check_desktop_review_package.ps1
+```
+
+Output: `dist\Agnostos-v2-Review.zip` (containing the executable folder).
+After a successful push to `main`, the **Windows desktop review** GitHub
+Actions run also offers this ZIP as a downloadable artifact (Actions →
+workflow run → Artifacts); extract the inner ZIP from the downloaded artifact.
+Artifacts expire after 14 days and are not installer releases.
+The UI uses bundled CSS and Windows system fonts, so viewing works offline.
+The server listens on a random `127.0.0.1` port; private API requests require
+an in-memory desktop token. It is not designed for a public listener or
+untrusted local processes. The ZIP contains only the executable and allowlisted
+viewer assets/dependencies: no `.env`, mailbox keys, workbooks, conversation
+HTML, reply queue or other user data. The app creates **no new v3 database**.
+
 ## Quick start
 
 ```bash
@@ -37,6 +84,14 @@ cp .env.example .env                       # Windows: copy .env.example .env
 ```
 
 Open `.env` and fill in section 1 only: your resume path, your target `.xlsx`, a free [Groq key](https://console.groq.com/keys), and your SMTP details. Then:
+
+On another computer, set `RESUME_PATH` to **that computer's actual resume file**;
+do not reuse someone else's absolute path. Use a genuine PDF or DOCX (not a
+renamed image or folder). In Windows Explorer, turn on **File name extensions**
+to check that the file does not have a hidden extra extension.
+Install dependencies with `python -m pip install -r requirements.txt` on that
+computer too; `python-dotenv` is needed to read `.env`. Run the CLI from this
+checkout, which reads its own `.env` instead of one from an unrelated folder.
 
 ```bash
 python -m outreach.cli profile             # sanity-check resume parsing
@@ -548,6 +603,10 @@ python tests/openai_stub_test.py    # real OpenAI SDK against a local stub serve
 ```
 
 Both suites run on a fresh clone with **no `.env` and no API key** — they fall back to synthetic fixtures (`tests/fixtures/`) generated on demand. If your `.env` points at real files, those are used instead, so the same tests double as a check of your own setup. CI runs them on Python 3.10, 3.12, and 3.13.
+Windows CI additionally checks Python 3.15 using prebuilt wheels only. A
+fresh 3.15 installation does not need Visual C++ Build Tools: the base
+requirements use a pure-Python YAML reader and include `tzdata` for
+recipient-local send windows. See the [Windows guide](docs/install-windows.md).
 
 `smoke_test.py` covers resume parsing, Excel round-trips, filter behaviour, cost maths on both free and paid providers, a mocked LLM pass, early abort on repeated API failures, draft formatting repair, the humanising layer, idempotent column writes, attachment handling, resume-safety on interrupted sends, `.eml` export, scraper extraction, block detection, email verification, discovery batch planning and resume fingerprints, append-only workbook growth, institution matching for `recheck`, skipping already-sent rows (including ones parked in the pending sidecar), and the rule that `--apply` never replaces an address that already passed.
 
@@ -610,4 +669,3 @@ If Agnostos helps your research or a report, cite it using GitHub's **Cite this 
 ## License
 
 MIT — see [LICENSE](LICENSE).
-

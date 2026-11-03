@@ -359,7 +359,7 @@ ai-summary-helper/
 | `mainScreen.js`, `composerState.js`, `qaView.js`, `conversation.js` | Summarize screen: feed, composer states, follow-up thread, prompt building and answer parsing |
 | `suggestions.js`, `typewriter.js` | Follow-up suggestions with short answers; human-like typing of the short answer |
 | `feedManager.js`, `feedAi.js`, `feedRollup.js`, `feedParse.js`, `feedPlayer.js`, `feedInsights.js`, `feedMood.js`, `feedSentiment.js`, `feedUtil.js` | RSS reader, OPML, AI recaps, podcast player, insights, mood |
-| `articleManager.js`, `archiveManager.js`, `archiveGraph.js`, `analyticsManager.js`, `topicsChart.js`, `historyMood.js`, `moodView.js`, `digestBuilder.js`, `annotationExporter.js` | History, knowledge graph, analytics, digests and exports |
+| `articleManager.js`, `archiveManager.js`, `archiveGraph.js` (see [GRAPH.md](GRAPH.md)), `graphStructure.js`, `analyticsManager.js`, `topicsChart.js`, `historyMood.js`, `moodView.js`, `digestBuilder.js`, `annotationExporter.js` | History, knowledge graph, analytics, digests and exports |
 | `settingsManager.js`, `modelManager.js`, `promptManager.js`, `promptSettings.js`, `promptBuilder.js`, `languageManager.js`, `moodSetting.js`, `workspaceManager.js` | Settings, providers and models, prompts, languages, workspaces |
 | `authManager.js` | byphil Cloud sign-in (shared form for onboarding and Account, code boxes, plan card) |
 | `syncStamps.js`, `syncStampStore.js`, `syncMerge.js`, `syncApply.js`, `syncEngine.js`, `syncDataAdapter.js`, `syncIdentity.js`, `syncCrypto.js` | Library sync: stamps, merge, applying merged records, the two-way engine, same-URL merge, keys and encrypted files |
@@ -533,9 +533,10 @@ This extension vendors the following open-source libraries under
 
 | Library | Version | License | Source |
 | --- | --- | --- | --- |
-| pdf.js | 4.0.379 | Apache-2.0 | https://github.com/mozilla/pdf.js |
+| pdf.js (incl. JBIG2 / JPEG 2000 decoders) | 6.5.438 | Apache-2.0, BSD | https://github.com/mozilla/pdf.js |
 | D3.js | 7.9.0 | ISC | https://github.com/d3/d3 |
 | AFINN-111 | — | Apache-2.0 | https://github.com/fnielsen/afinn |
+| qrcode-generator | 1.4.4 | MIT | https://github.com/kazuhikoarase/qrcode-generator |
 
 > These libraries are vendored by hand (not via npm), so there's no
 > automatic drift detection. When you replace any `lib/*` file, bump the

@@ -154,6 +154,8 @@ The template defines how the model data is stored in the generated code:
 - `exported`: the model data is saved in a separate JSON file.
 - `combined`: the model data is compiled into the logic of the code (e.g. nested if-else statements).
 
+In Java the template `exported` reads the JSON file with [Gson](https://github.com/google/gson). `make()` and `test()` download the jar and verify its checksum, or use the jar in the environment variable `SKLEARN_PORTER_GSON_PATH` (e.g. offline).
+
 
 ## Usage
 
@@ -206,16 +208,20 @@ porter {show,port,save} [-h] [-v]
 porter show [-l {c,cs,go,java,js,php,ruby}] [-h]
 
 porter port <estimator> [-l {c,cs,go,java,js,php,ruby}]
-                        [-t {attached,combined,exported}]
+                        [-t {attached,combined}]
+                        [--class-name CLASS_NAME]
                         [--ignore-preprocessing]
                         [--skip-warnings] [-h]
 
 porter save <estimator> [-l {c,cs,go,java,js,php,ruby}]
                         [-t {attached,combined,exported}]
                         [--directory DIRECTORY]
+                        [--class-name CLASS_NAME]
                         [--ignore-preprocessing]
                         [--skip-warnings] [-h]
 ```
+
+The subcommand `port` prints the source code, `save` saves it to a file (with the template `exported` also the model data to a JSON file). Show the help of a subcommand with `-h`, e.g. `porter port -h`.
 
 First, save the trained estimator to a file (see [model persistence](https://scikit-learn.org/stable/model_persistence.html)):
 

@@ -34,6 +34,7 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | 🪟 **Overlays** | Workspace overview with a tile and icon per window (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording (with system sound or the microphone), optional dock, rounded screen corners |
 | ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, AI chat, translator, clipboard history with image thumbnails |
 | 🎯 **Focus Mode** | Sessions with a minimal bar, Pomodoro cycles, blocked apps and sites, profiles, statistics and achievements |
+| ⏱️ **Screen time** | How long each app had the focus, per day and for the week; a daily limit per app with a notification when its time runs out (Settings → Screen time), and a desktop card for today |
 | ⏳ **Wait Mode** | A cover for the person while an AI works on the machine: a player or the wallpaper, keyboard and mouse shut out, no sleeping, Esc three times to exit; automation can still see and click what's underneath |
 | 🔋 **Power saving** | One switch turns off animations, blur, transparency, the visualizer and the dancing frame, and puts them back when it's turned off |
 | ➡️ **Right sidebar** | Quick toggles (Android-style pills or classic buttons, editable), volume / brightness / mic, Wi-Fi and Bluetooth pages, per-app volume, notification center, calendar, to-do, focus / stopwatch / countdown timers |
@@ -132,6 +133,15 @@ The optional apps (all off by default): Zen Browser, Telegram, Vesktop, osu!laze
 Each one goes through `pacman` if a configured repository has it, otherwise through `paru` / `yay`.
 
 Options: `--yes` (no menu and no questions: installs everything except the optional apps), `--with-apps` (those too), `--no-deps`, `--no-start`, `--no-dots`, `--channel=git|release`. Then tap <kbd>Super</kbd>.
+
+### NixOS
+
+The installer runs on NixOS too, but it doesn't install packages there: it prints the nixpkgs names of what hi-shell
+needs (`matugen`, `quickshell`, `hyprlock`, `ffmpeg`, ...). Add them to `environment.systemPackages` in your
+configuration and run `nixos-rebuild switch`, then run `install.sh` again for the config files. Things that are
+different there: the Updates widget is off (updates come with `nixos-rebuild`), and Focus Mode's site blocking runs
+the helper with `/run/current-system/sw/bin/python3`. Optional apps are not installed by the installer; add them to
+your configuration yourself. Only the Arch path is tested so far.
 
 ### Update
 

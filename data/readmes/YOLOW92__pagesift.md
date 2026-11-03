@@ -2,7 +2,7 @@
 
 <img src="https://raw.githubusercontent.com/YOLOW92/pagesift/main/docs/assets/logo.png" alt="PageSift Logo" width="300" />
 
-# pagesift 0.81.5
+# pagesift 0.91.1
 
 **Turn web pages, PDFs and Office files into clean Markdown for LLMs and AI agents.**  
 One self-hosted Rust binary: CLI, Firecrawl-compatible HTTP API, Jina Reader endpoint, MCP server, Python and Node.js packages.
@@ -37,12 +37,12 @@ Can replace or sit alongside: **Firecrawl** (same v1/v2 API, self-hosted), **Jin
 - **Input:** URLs (HTTP, or a headless browser when needed), HTML, PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), EPUB, CSV
 - **Output:** Markdown, HTML, raw HTML, links, images, metadata (title, publication date, …), JSON; warnings when a result is incomplete
 - **Interfaces:** CLI · Firecrawl v1/v2 HTTP API · Jina Reader `/r/` · MCP (stdio or HTTP) · Python · Node.js / TypeScript · Rust crate
-- **Platforms:** Linux x86_64 / aarch64 (glibc ≥ 2.28 and musl), macOS x86_64 / arm64, Windows x86_64; Docker image `ghcr.io/yolow92/pagesift`
+- **Platforms:** Linux x86_64 / aarch64 (glibc ≥ 2.28 and musl), macOS arm64 (Apple Silicon), Windows x86_64; Docker image `ghcr.io/yolow92/pagesift`
 - **Crawling:** robots.txt and per-host rate limits by default, sitemaps, focused crawls by query, bounded memory
 - **Memory:** 14–380 MB peak per worker across the 0.81 benchmarks (lowest at 16 workers on HTML and PDF); capacity is sized from the cgroup limit (no OOM at 768 MiB)
 - **Not for:** OCR of scanned PDFs or images; pagesift reads the text layer only (see *When to use it* below)
 - **License:** AGPL-3.0, or a [commercial license](docs/COMMERCIAL.md)
-- **Latest:** 0.81.5 · [release notes](docs/releases/0.81.5.md)
+- **Latest:** 0.91.1 · [release notes](docs/releases/0.91.1.md)
 
 <!-- section: install -->
 ## Install and use
@@ -52,7 +52,7 @@ Can replace or sit alongside: **Firecrawl** (same v1/v2 API, self-hosted), **Jin
 | CLI | `cargo install pagesift --locked` | `pagesift scrape https://example.com` |
 | Python | `pip install pagesift` | `pagesift.scrape("https://example.com").markdown` |
 | Node.js | `npm install @pagesift/node` | `(await scrape("https://example.com")).markdown` |
-| Server | `docker run -p 3002:3002 ghcr.io/yolow92/pagesift:0.81.5` | `curl localhost:3002/r/https://example.com` |
+| Server | `docker run -p 3002:3002 ghcr.io/yolow92/pagesift:0.91.1` | `curl localhost:3002/r/https://example.com` |
 | MCP | — | `claude mcp add pagesift -- pagesift mcp` |
 
 **CLI**
@@ -95,7 +95,7 @@ for await (const p of scrapeMany(['https://a.com', 'https://b.com'], { concurren
 
 ```bash
 docker run -d -p 3002:3002 -v pagesift-data:/data \
-  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.81.5
+  -e PAGESIFT_API_KEYS=sk-test ghcr.io/yolow92/pagesift:0.91.1
 ```
 
 ```python
@@ -190,11 +190,13 @@ Architecture: [docs/architecture.md](docs/architecture.md).
 [commercial license](docs/COMMERCIAL.md) or write to `licensing@pagesift.dev`.
 
 <!-- section: changelog -->
-## What's new in 0.81.5
+## What's new in 0.91.1
 
-The Linux glibc builds (Node binding and command-line binary) are now compiled against glibc 2.28, so they
-load on older distributions; 0.81.4 and earlier required glibc 2.34 to 2.35 symbols. No API changes.
-[Release notes](docs/releases/0.81.5.md) · [all releases](docs/releases/) · [CHANGELOG](CHANGELOG.md)
+**Intel Macs (macOS x86_64) are no longer supported.** Also fixes a small bug (the cluster crate did not compile
+with newer stable Rust when warnings are denied). 0.91.0 fixed the problems found in a code review of 0.90.0 (failures reported instead of
+counted as done, lease fencing for the standby, small JSON-LD islands, bounded block merge, persisted
+attachments).
+[Release notes](docs/releases/0.91.1.md) · [0.91.0](docs/releases/0.91.0.md) · [all releases](docs/releases/) · [CHANGELOG](CHANGELOG.md)
 
 ---
 
@@ -210,7 +212,7 @@ Questions or feedback: [Discord](https://discord.gg/esA3wMZVvA) · [Issues](http
   author = {YOLOW92},
   year   = {2026},
   url    = {https://github.com/YOLOW92/pagesift},
-  note   = {Version 0.81.5}
+  note   = {Version 0.91.1}
 }
 ```
 

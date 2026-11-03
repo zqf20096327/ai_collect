@@ -117,6 +117,8 @@ See [Releases](https://github.com/QAInsights/jmeter-ai/releases) for the latest 
 
 You can connect a provider from the Feather Wand panel's ⋯ menu > Connect a provider and use it immediately in Chat and Agent Mode, without restarting JMeter. Smart routing and Apple on-device can also be configured in this dialog. The manual properties below remain documented. The JSR223 refactor menu picks up a new provider after a JMeter restart.
 
+An empty chat offers three contextual suggestions from the open plan, in rounded-rectangle buttons just above the message box. The first suggests creating a Thread Group, adding a request, adding a CSV data set, or reviewing an existing group. CSV data under child controllers counts when it covers every enabled sampler. If the selected group is disabled, or the plan has groups but none are enabled, suggestions are plan-wide and the first option is **Review this test plan** instead. A plan without any Thread Groups offers **Create a Thread Group**. The other options offer relevant plan review, response-check review, or workload-planning prompts. For enabled selections, they follow the containing Thread Group; selections outside a group use the first enabled group. Duplicate enabled group names are disambiguated by tree position in the draft. Suggestions refresh as the plan changes. Click any option to fill the message box, review the draft, then press Enter to send. Clicking never overwrites a draft, calls AI, or changes the plan on its own. Suggestions disappear when the conversation starts and return on New Chat. Provider setup remains the first step when no provider is connected.
+
 ```properties
 jmeter.ai.service.type=anthropic
 anthropic.api.key=YOUR_ANTHROPIC_API_KEY
@@ -1183,14 +1185,4 @@ Every conversation is **autosaved after each turn** to `~/.jmeter-ai/sessions/` 
 The input options row (the row with the paperclip) carries a live readout: `ctx 12.3k/400k · $0.04`.
 
 - **Context fill** - how much of the selected model's context window your conversation uses. When an API provider reports usage, the latest server prompt size is used; until then it falls back to an estimate over the history with attachments inlined, marked with `~`. Attachments are the usual context hogs - watch this number when you attach big logs.
-- **Session cost** - cumulative cost of API calls, priced per call at [models.dev](https://models.dev) list prices from the vendored catalog (the same daily-refreshed file that powers the model picker's metadata). Hidden when the catalog has no pricing for the model (e.g. some Grok models); local Ollama models never show cost.
-
-The one-shot CLI providers do not currently feed token usage into the session-cost total, so their context remains locally estimated. OpenCode reports token and cost fields, but Feather Wand does not yet import them.
-
-Hover the label for the exact breakdown: precise context count and percentage, session input/output tokens over N responses, and the exact estimated cost. The denominator hides for models with unknown context windows (e.g. local Ollama models), and the label resets when you start a new conversation.
-
-## 🎬 Browser Recording
-
-Record a real browser session into a JMeter test plan without leaving the chat. Recording is **off by default**; enabling it adds a recording control panel to the chat panel. Traffic is captured through JMeter's built-in proxy recorder into a *Recording Controller* (the same shape as JMeter's `recording.jmx` template, with its suggested excludes), then finalized into a proper plan - think-time injection and artifact cleanup included.
-
-```
+- **Session cost** - cumulative cost of API calls, priced per call at [models.dev](https://models.dev) list prices

@@ -81,13 +81,13 @@ The last command should return the sentence you just added. `mm add` writes to y
 
 ### 4. Connect your coding agent
 
-Install the plugin for your tool — [Claude Code](packages/memtomem-claude-plugin/), [Codex CLI](plugins/memtomem/), [OpenCode](packages/opencode-memtomem/), [Kimi Code](packages/memtomem-kimi-skills/), or [Antigravity](packages/memtomem-antigravity-plugin/) — then, in the project you work on, register the memory tier the session loop writes to:
+Install the plugin for your tool — [Claude Code](packages/memtomem-claude-plugin/), [Codex CLI](plugins/memtomem/), [OpenCode](packages/opencode-memtomem/), [Kimi Code](packages/memtomem-kimi-skills/), [Antigravity](packages/memtomem-antigravity-plugin/), or [Cursor](packages/memtomem-cursor-plugin/) — then, in the project you work on, register the memory tier the session loop writes to:
 
 ```bash
 cd <your-project> && mm mem init --scope project_local
 ```
 
-Start a new session and run the brief workflow: `/memtomem:brief` in Claude Code, and the name each other host uses is in the [Project workflows](docs/guides/project-workflows.md) guide. The [Claude Code & Codex CLI plugin quickstart](docs/guides/plugin-quickstart.md) ([한국어](docs/guides/vibe-coding-getting-started-ko.md)) walks through plugin installation and a first memory save-and-search round trip in 10–15 minutes. For Cursor, Windsurf, Claude Desktop, Gemini CLI, and other MCP clients, see [MCP Client Setup](docs/guides/mcp-clients.md); from any client, asking it to call the `mem_status` tool confirms the connection.
+Start a new session and run the brief workflow: `/memtomem:brief` in Claude Code, and the name each other host uses is in the [Project workflows](docs/guides/project-workflows.md) guide. The [Claude Code & Codex CLI plugin quickstart](docs/guides/plugin-quickstart.md) ([한국어](docs/guides/vibe-coding-getting-started-ko.md)) walks through plugin installation and a first memory save-and-search round trip in 10–15 minutes. For Windsurf, Claude Desktop, Gemini CLI, other MCP clients, and registering Cursor by hand instead of through the plugin, see [MCP Client Setup](docs/guides/mcp-clients.md); from any client, asking it to call the `mem_status` tool confirms the connection.
 
 <a id="4-web-ui-optional"></a>
 ### 5. Open the Web UI (optional)
@@ -117,7 +117,7 @@ uv add 'memtomem[all]' && uv run mm init    # all commands need `uv run` prefix
 
 **No install** (uvx on demand):
 ```bash
-claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- uvx --isolated --from "memtomem[all]==0.7.3" memtomem-server
+claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- uvx --isolated --from "memtomem[all]==0.7.4" memtomem-server
 ```
 
 </details>
@@ -127,7 +127,7 @@ claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- u
 
 - **`mm --version` shows an older version than the [latest release](https://github.com/memtomem/memtomem/releases)** right after installing: `uv` is likely serving cached PyPI metadata. Re-run with `uv tool install 'memtomem[all]' --refresh`, or clear the cache first with `uv cache clean memtomem`. To upgrade an existing uv tool install, use `mm upgrade` rather than re-running `uv tool install`; see the [CLI reference](docs/guides/reference/data-config-cli.md#cli-reference) for what it preserves and stops.
 - **`mm: command not found`**: `uv tool install` drops the shim into `~/.local/bin`, which is not on `$PATH` in fresh shells on macOS/Linux. Run `uv tool update-shell`, then open a new shell and re-run `mm --version`.
-- **Duplicate tools after upgrading the Claude plugin**: re-check `/mcp` after reloading. The plugin launches `memtomem[onnx]==0.7.3`. A manual registration whose launch differs — base-only `memtomem`, or the ONNX launch pinned to an earlier release — no longer matches for deduplication. Confirm the manual entry's name and scope, then align its launch command with the plugin or remove the redundant registration.
+- **Duplicate tools after upgrading the Claude plugin**: re-check `/mcp` after reloading. The plugin launches `memtomem[onnx]==0.7.4`. A manual registration whose launch differs — base-only `memtomem`, or the ONNX launch pinned to an earlier release — no longer matches for deduplication. Confirm the manual entry's name and scope, then align its launch command with the plugin or remove the redundant registration.
 - **Indexing vs. discovery (Claude Code)**: provider memory folders that setup auto-discovers (such as `~/.claude/projects/*/memory/`) are added to the search *index*. That is separate from the Web UI's opt-in Context Gateway scan of `~/.claude/projects/`, which discovers project *roots* for Skills, Commands, and Subagents; see [Configuration → Context Gateway](docs/guides/configuration.md#context-gateway).
 
 </details>
@@ -153,6 +153,7 @@ These are **experimental** — their behaviour, output, or format can still chan
 - **LLM-written output** — anything memtomem's configured LLM (`MEMTOMEM_LLM__ENABLED=true`) writes: LLM auto-tagging and entity extraction, `strategy="llm"` query expansion, LLM consolidation and policy summaries, session auto-summaries, source summaries (`indexing.auto_summarize`), and contextual chunk enrichment (`indexing.enrich_chunk_context`). The rule-based modes beside them are supported.
 - **Claude projects scan** in the Context Gateway (`MEMTOMEM_CONTEXT_GATEWAY__EXPERIMENTAL_CLAUDE_PROJECTS_SCAN`).
 - **Antigravity CLI plugin** ([`packages/memtomem-antigravity-plugin/`](packages/memtomem-antigravity-plugin/)).
+- **Cursor plugin** ([`packages/memtomem-cursor-plugin/`](packages/memtomem-cursor-plugin/)).
 
 ## Works with
 
@@ -165,6 +166,7 @@ These are **experimental** — their behaviour, output, or format can still chan
 | [**opencode-memtomem**](packages/opencode-memtomem/) | Exact-pinned MCP server, commands, and read skills for OpenCode | handoff · brief · update |
 | [**Kimi Code skills**](packages/memtomem-kimi-skills/) | Skill bundle for Kimi Code (not a plugin) | handoff · brief · update |
 | [**Antigravity CLI plugin**](packages/memtomem-antigravity-plugin/) | Exact-pinned MCP server and skills for `agy` — [experimental](#stability) | handoff · brief · update |
+| [**Cursor plugin**](packages/memtomem-cursor-plugin/) | Exact-pinned MCP server and skills for Cursor — [experimental](#stability) | handoff · brief · update |
 | [**Hermes Agent plugin**](packages/memtomem-hermes-plugin/) | Exact-pinned MCP server and the search, recall, status, remember, index, and setup skills | — (needs a project root) |
 | [**Hermes memory provider**](packages/memtomem-hermes-memory/) | Recall-only provider that adds relevant notes to each Hermes turn | — |
 | [**memtomem-stm**](https://github.com/memtomem/memtomem-stm) | STM proxy: proactive memory surfacing via tool interception | — |

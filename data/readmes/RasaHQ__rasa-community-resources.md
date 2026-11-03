@@ -1,16 +1,16 @@
 # Rasa Community Resources
 
-**Here for the router-helper tutorial?** [Start the browser workshop](workshops/software-factories-masterclass/router-helper/README.md#start-here-from-a-browser-tab-to-your-first-check). It walks through the two keys, saving them on GitHub and opening the prepared Codespace.
+**New: the Rasa Travel Agent Factory masterclass.** [Start here: credentials, Codespaces and your first live result](workshops/software-factories-masterclass/README.md) · [Teaching deck](workshops/software-factories-masterclass/slides/masterclass-slides.pdf) · [Instructor card](workshops/software-factories-masterclass/FACILITATOR.md) · [Printed setup sheet (PDF)](workshops/software-factories-masterclass/handout/rasa-travel-workshop-one-pager.pdf) · [Join the Rasa Community](https://rasa.community/join/)
 
 Choose what you want to do:
 
 - **Learn at your own pace:** [Build your first Mantle agent](https://rasa.community/library/tutorials/mantle-starter-pack/) with a self-paced tutorial and a runnable companion.
-- **Join the live workshop:** [Open the Mantle Codespace](https://codespaces.new/RasaHQ/rasa-community-resources?ref=main&devcontainer_path=.devcontainer/software-factories-workshop/devcontainer.json) to build in your browser with your own Rasa and OpenAI keys. [First time? Follow the step-by-step guide.](workshops/software-factories-masterclass/README.md#start-here-at-minute-0--from-a-browser-tab-to-your-first-router-check)
+- **Join the live workshop:** [Open the Rasa Travel Agent Factory Codespace](https://codespaces.new/RasaHQ/rasa-community-resources?ref=main&devcontainer_path=.devcontainer/travel-factory/devcontainer.json) to speak to a Mantle travel agent and review agents that Codex and a hosted OpenAI Agents session build. It needs your own Rasa, OpenAI and Deepgram keys. [First time? Follow the step-by-step guide.](workshops/software-factories-masterclass/README.md)
 - **Run a finished agent:** [Start with the Atlas voice agent](examples/mantle-voice-agent/README.md) to try a complete travel assistant before adapting it.
 - **Find a reusable pattern:** [Browse patterns](patterns/README.md) for focused implementations you can bring into an existing agent.
 - **Contribute a resource:** [Read the contribution guide](CONTRIBUTING.md) to choose a folder, check your example, and keep its authors credited.
 
-This is the code companion to [rasa.community](https://rasa.community/). Tutorials, examples, and reference code live in their own folders, with setup instructions and the versions they were tested against. For the presenter-led Software Factories workshop, follow the [attendee pack](workshops/software-factories-masterclass/ATTENDEE-PACK.md). It needs your own Rasa and OpenAI keys and no local installation. Chatting with the helper uses your OpenAI key; the practice builder starts no Agents session, and one optional Agents build is billed separately.
+This is the code companion to [rasa.community](https://rasa.community/). Tutorials, examples, and reference code live in their own folders, with setup instructions and the versions they were tested against. For the presenter-led Software Factories workshop, follow the [workshop guide](workshops/software-factories-masterclass/README.md). It needs no local installation; the hosted builds use your own OpenAI key and can incur charges.
 
 ## Browse the repository
 
@@ -113,6 +113,21 @@ Resources here typically assume:
 Individual resources state any additional requirements.
 
 ---
+
+## Run any resource in a GitHub Codespace
+
+Every example, tutorial, pattern and community resource opens in its own Codespace with its locked dependencies installed, and its README starts with an **Open in GitHub Codespaces** button. Nothing needs installing on your laptop.
+
+1. Get a free [Rasa Developer Edition license](https://rasa.community/#request-license) and the provider key your resource names (OpenAI, Anthropic, Gemini, Deepgram and so on).
+2. Open [GitHub → Settings → Codespaces](https://github.com/settings/codespaces), choose **New secret**, and save each value under the exact name the resource's README lists, such as `RASA_LICENSE` or `OPENAI_API_KEY`. Under **Repository access**, pick `RasaHQ/rasa-community-resources`. You do this once; every resource reuses the secrets.
+3. Click the resource's **Open in GitHub Codespaces** button, choose **Create codespace**, and wait for the install to finish.
+4. Run the first command in the README. It checks the install without calling a model.
+
+Use each resource's own button, not the Codespaces picker: the picker lists every configuration in this repository, and only the button opens the right one. The one exception is the Software Factories masterclass, which has its own guide.
+
+**What the SSH feature changes.** Each configuration adds the dev container `sshd` feature (pinned to version 1.1.0) so that maintainers and instructors can check a Codespace with `gh codespace ssh`. It installs the OpenSSH server and client and `lsof`, creates an SSH group, edits the PAM configuration, sets `PermitRootLogin yes` in the SSH server configuration, and starts the server on port 2222 from an entrypoint script. These configurations forward no port for it and set no password by default, and the intended way to reach it is `gh codespace ssh` with your own GitHub sign-in through GitHub's tunnel. The feature does not make that client the only route, and this repository has not verified who or what can reach port 2222 from inside or outside the Codespace. This is the published feature's documented behaviour, not something these configurations test. It affects only the Codespace, never your laptop.
+
+If you add or fix a secret after the Codespace exists, stop and reopen that Codespace so it picks the secret up. The configurations are generated by `python3 scripts/generate_codespaces.py` from each resource's own files; do not edit them by hand.
 
 ## Validating the catalog
 

@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://glama.ai/mcp/servers/attalla1/photopea-mcp-server"><img src="https://glama.ai/mcp/servers/attalla1/photopea-mcp-server/badges/score.svg" alt="Glama score"></a>
+  <a href="https://github.com/attalla1/photopea-mcp-server/actions/workflows/ci.yml"><img src="https://github.com/attalla1/photopea-mcp-server/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.npmjs.com/package/photopea-mcp-server"><img src="https://img.shields.io/npm/v/photopea-mcp-server.svg" alt="npm version"></a>
   <a href="https://github.com/attalla1/photopea-mcp-server/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/photopea-mcp-server.svg" alt="node"></a>
@@ -40,7 +41,7 @@ graph LR
 
 Your agent sends editing commands through the MCP protocol. The server translates these into Photopea JavaScript API calls and executes them via a WebSocket bridge to the browser.
 
-**Note:** A browser window will open automatically on the first tool call. This is expected -- Photopea runs entirely in the browser and the server needs it to perform image editing operations.
+**Note:** A browser window will open automatically on the first tool call. This is expected -- Photopea runs entirely in the browser and the server needs it to perform image editing operations. If you close the tab, the next tool call opens it again.
 
 ## Quick Start
 
@@ -129,7 +130,7 @@ Add to Windsurf MCP settings (`~/.windsurf/mcp.json`):
 
 ## Available Tools
 
-### Document (5 tools)
+### Document (9 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -138,8 +139,12 @@ Add to Windsurf MCP settings (`~/.windsurf/mcp.json`):
 | `photopea_get_document_info` | Get active document info (name, dimensions, resolution, color mode) |
 | `photopea_resize_document` | Resize the active document (resamples content to fit) |
 | `photopea_close_document` | Close the active document |
+| `photopea_crop` | Crop to a rectangle |
+| `photopea_resize_canvas` | Change the canvas size without scaling content, with an anchor and optional fill color |
+| `photopea_trim` | Trim transparent or solid-color borders |
+| `photopea_rotate_canvas` | Rotate and/or flip the whole document |
 
-### Layer (11 tools)
+### Layer (16 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -154,6 +159,11 @@ Add to Windsurf MCP settings (`~/.windsurf/mcp.json`):
 | `photopea_group_layers` | Group named layers into a layer group |
 | `photopea_ungroup_layers` | Ungroup a layer group |
 | `photopea_get_layers` | Get the full layer tree as JSON |
+| `photopea_layer_mask` | Add a reveal-all, hide-all or from-selection mask, or delete it |
+| `photopea_set_clipping_mask` | Clip a layer to the layer below it |
+| `photopea_add_adjustment_layer` | Non-destructive brightness/contrast, hue/saturation or levels layer |
+| `photopea_merge_layers` | Merge down or flatten |
+| `photopea_set_layer_style` | Drop shadow, outer glow and stroke effects |
 
 ### Text & Shape (3 tools)
 
@@ -163,11 +173,12 @@ Add to Windsurf MCP settings (`~/.windsurf/mcp.json`):
 | `photopea_edit_text` | Edit content or style of an existing text layer |
 | `photopea_add_shape` | Add a shape (rectangle or ellipse) |
 
-### Image & Effects (9 tools)
+### Image & Effects (10 tools)
 
 | Tool | Description |
 |------|-------------|
 | `photopea_place_image` | Place an image from URL or local path |
+| `photopea_fill_placeholder` | Fit an image into a template's placeholder layer and mask it to its shape |
 | `photopea_apply_adjustment` | Apply brightness/contrast, hue/saturation, levels, or curves |
 | `photopea_apply_filter` | Apply gaussian blur, sharpen, unsharp mask, noise, or motion blur |
 | `photopea_transform_layer` | Scale, rotate, or flip a layer |
@@ -177,12 +188,14 @@ Add to Windsurf MCP settings (`~/.windsurf/mcp.json`):
 | `photopea_fill_selection` | Fill the current selection with a color |
 | `photopea_clear_selection` | Deselect the current selection |
 
-### Export & Utility (6 tools)
+### Export & Utility (8 tools)
 
 | Tool | Description |
 |------|-------------|
+| `photopea_get_preview` | Return a downscaled PNG of the document so the agent can see its work |
 | `photopea_export_image` | Export to PNG, JPG, WebP, PSD, or SVG |
-| `photopea_load_font` | Load a custom font from a URL (TTF, OTF, WOFF2) |
+| `photopea_batch_process` | Open many images, run a script on each, export them to a folder |
+| `photopea_load_font` | Load a custom font from a URL (TTF, OTF) |
 | `photopea_list_fonts` | List available fonts, with optional search filter |
 | `photopea_run_script` | Execute arbitrary Photopea JavaScript |
 | `photopea_undo` | Undo one or more actions |
@@ -200,6 +213,12 @@ Once installed, ask your agent to perform image editing tasks:
 
 **Composite images:**
 > "Create a 1200x630 document, place ~/assets/background.png as the base layer, then place ~/assets/logo.png and move it to the top-right corner"
+
+**Fill a template:**
+> "Open ~/templates/post.psd, put ~/photos/product.jpg into the 'Photo' layer, change the 'Title' text to 'Summer Sale', check the preview, and export as PNG"
+
+**Batch convert:**
+> "Resize every JPG in ~/photos to 1200px wide and save them as WebP in ~/photos/web"
 
 **Batch adjustments:**
 > "Open ~/photos/sunset.jpg, apply hue/saturation with +20 saturation, apply an unsharp mask with amount 50 and radius 2, then export as PNG"
@@ -226,7 +245,7 @@ npm run build
 
 The server has four main components:
 
-**MCP Server** (`src/server.ts`) -- Registers all 34 tools with the MCP SDK and connects via stdio transport.
+**MCP Server** (`src/server.ts`) -- Registers all 46 tools with the MCP SDK and connects via stdio transport.
 
 **WebSocket Bridge** (`src/bridge/websocket-server.ts`) -- Manages the connection between the MCP server and the browser. Queues script execution requests and handles responses with timeouts.
 
@@ -243,11 +262,11 @@ src/
     script-builder.ts   # Photopea JS code generators
     types.ts            # Protocol message types
   tools/
-    document.ts         # Document operations (5 tools)
-    layer.ts            # Layer operations (11 tools)
+    document.ts         # Document and canvas operations (9 tools)
+    layer.ts            # Layers, masks, adjustment layers, styles (16 tools)
     text.ts             # Text and shape operations (3 tools)
-    image.ts            # Image, adjustment, filter operations (9 tools)
-    export.ts           # Export and utility operations (6 tools)
+    image.ts            # Image, adjustment, filter, template operations (10 tools)
+    export.ts           # Preview, export, batch and utility operations (8 tools)
   utils/
     file-io.ts          # Local file read/write, URL fetching
     platform.ts         # Port discovery, browser launch
@@ -257,15 +276,16 @@ src/
 
 ## Security
 
-- The MCP server binds to `127.0.0.1` (localhost only) and is not accessible from the network.
-- The `photopea_run_script` tool executes arbitrary JavaScript inside Photopea's sandboxed iframe. It is marked as destructive and requires user approval in MCP clients that support tool annotations.
+- The MCP server talks to your agent over stdio. Its browser bridge binds to `127.0.0.1` (localhost only) and is not accessible from the network.
+- The bridge only accepts WebSocket connections from its own page, and that page cannot be framed or scripted by other sites. A website open in the same browser cannot take over the session or read your files.
+- The `photopea_run_script` tool executes arbitrary JavaScript inside Photopea's sandboxed iframe. It is marked as destructive, so MCP clients that honor tool annotations can ask for approval before running it.
 - File operations (`open_file`, `export_image`, `place_image`) read and write files with the same permissions as the user running the server.
 
 ## Known Limitations
 
 - Heavy scripts (e.g., gradients with many color steps) may cause the Photopea browser UI to become unresponsive. The operations still complete successfully in the background and exports will work as expected.
 - Refreshing the browser page will discard all unsaved work. Export your documents before refreshing.
-- Only one browser tab should be open at a time. Multiple tabs will conflict over the WebSocket connection.
+- Only one bridge tab is active at a time. If you open another, the newest tab takes over and the older one shows "Session moved to another tab". Documents open in the older tab are not carried over.
 - The `reorder_layer` tool may cause the Photopea UI to become unresponsive. To avoid this, create layers in the desired order rather than reordering after creation.
 
 ## Requirements

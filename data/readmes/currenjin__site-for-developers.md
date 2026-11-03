@@ -203,6 +203,7 @@
     - [Amazon Q Developer (구 CodeWhisperer) <sub>F, $</sub>](https://aws.amazon.com/q/developer/) - AWS의 AI 개발 보조 도구. IDE 플러그인 지원은 2027-04-30 종료 예정이므로 공식 지원 공지 확인
     - [Qodo <sub>F, $</sub>](https://www.qodo.ai) - AI 기반 코드 품질 및 테스트 자동화 도구
     - [Agent QA <sub>EN, F</sub>](https://github.com/vostride/agent-qa) - 자연어 기반 웹·모바일 테스트 도구. FSL-1.1-ALv2의 허용된 사용은 소프트웨어 비용이 없으나 외부 모델·브라우저·기기 서비스 비용은 별도
+    - [Archcore <sub>EN, F, O</sub>](https://github.com/archcore-ai/archcore) - 스펙, 아키텍처, 결정(ADR), 규칙, 계획을 저장소의 `.archcore/`에 Git으로 관리하고 CLI·MCP 서버·플러그인으로 AI 코딩 에이전트에 프로젝트 컨텍스트를 제공. CLI는 끌 수 없는 자동 업데이트를 하며(쓰기 권한이 없는 경로에 설치하면 멈춤), 설치·업데이트 통계를 전송(`DO_NOT_TRACK=1`로 해제)
 
   - <span id="ai-design-tools">디자인 도구</span>
     - [Canva AI <sub>F, $</sub>](https://www.canva.com/ai-image-generator/) - AI 이미지 생성 및 디자인 도구
@@ -480,6 +481,7 @@
     - [Spotify Engineering <sub>EN</sub>](https://engineering.atspotify.com/) - Spotify 엔지니어링 블로그
     - [Github Engineering <sub>EN</sub>](https://github.blog/engineering/) - Github 엔지니어링 블로그
     - [Grab Tech <sub>EN</sub>](https://engineering.grab.com/) - Grab 엔지니어링 블로그
+    - [Aeneia Signal <sub>F</sub>](https://blog.aeneia.pl/) - 폴란드어로 발행하는 Aeneia의 블로그. 외부 PR을 CI에서 검토하는 코딩 에이전트의 신뢰 경계와 권한 점검 등 개발 실무 글이 있으며, 디자인과 사업 주제도 함께 다룸
 
   - <span id="personal-blog">개인 블로그</span>
     - [기억보단 기록을 <sub>KR</sub>](https://jojoldu.tistory.com/) - jojoldu의 개발 기록. 개별 글의 문제 상황과 해결 과정을 참고하려는 독자를 위한 블로그
@@ -566,12 +568,14 @@
     - [Cohesivity <sub>EN, F, $</sub>](https://cohesivity.ai) - 코딩 에이전트용 백엔드 인프라와 MCP 연동 제공. 계정 요구사항과 서비스별 비용은 이용 전 확인
     - [CurlShot <sub>EN, F, $</sub>](https://curlshot.com) - URL·HTML·Markdown을 PNG·JPEG·WebP·PDF로 만드는 스크린샷 API. API 키 필요, 무료 플랜 월 100장. 홈페이지의 온라인 도구는 계정 없이 사용 가능
     - [deed.page <sub>EN, F, $</sub>](https://deed.page) - HTML 파일이나 정적 사이트 폴더를 PUT 요청 한 번으로 고정 HTTPS 주소(`이름.deed.page`)에 게시하는 정적 호스팅 API. 원격 MCP 서버로 코딩 에이전트에서도 사용 가능. 첫 게시는 계정·API 키 없이 가능하고 응답으로 받은 토큰으로 같은 주소를 갱신. 무료 플랜은 사이트 25개·사이트당 25MB, 서버 측 코드·DB는 지원하지 않음
+    - [npmscan <sub>EN, F, O</sub>](https://npmscan.com/) - npm 패키지의 알려진 취약점·악성 패키지 정보와 신뢰 신호를 조회하는 원격 API·MCP 서비스. 계정·API 키 없이 사용 가능하며 MCP는 IP당 분당 30회 제한. MIT 라이선스 클라이언트 플러그인 제공
 
   - <span id="online-utilities">Online Utilities</span>
     - [All Tools Verse <sub>EN, F</sub>](https://alltoolsverse.com/) - 파일·이미지·텍스트·데이터 변환 등 브라우저 도구 모음
     - [A Box of Tools <sub>KR, F, O</sub>](https://abox.tools/ko/) - 이미지·영상·오디오·PDF·텍스트를 처리하는 브라우저 도구 모음. 코드는 MIT 라이선스로 공개
     - [Stayput <sub>EN, F, O</sub>](https://stayput.dev) - 이미지·PDF·오디오·영상 파일을 브라우저에서 처리하는 무료 도구 모음. 파일을 업로드하지 않고 계정이 필요 없으며, 코드는 MIT 라이선스로 공개
     - [Nutilz <sub>EN, F</sub>](https://nutilz.com/) - 정규식 테스트·JSON 포맷 등 개발 보조 유틸리티. 도구에 따라 서버 처리가 포함되므로 업로드 여부 확인 필요
+    - [imgmov Last Frame Extractor <sub>EN, F</sub>](https://imgmov.com/extract-last-frame-from-video) - Browser tool for saving a video's ending frame as a PNG for demo references or bug reports. No account or video upload; clips up to 512 MB and two minutes, subject to browser codec support.
 
   - <span id="search-tool">Search</span>
     - [Google](https://www.google.com/) - 검색 엔진
@@ -684,6 +688,7 @@
     - [Let's Encrypt](https://letsencrypt.org/ko/) - 무료 SSL/TLS 인증서 발급 사이트
     - [Online Mini Tools <sub>EN</sub>](https://onlineminitools.com) - 개발자를 위한 2,300여 개의 무료 브라우저 도구 모음. JSON·XML 포맷터, 인코더, 검증 도구, CSS·색상 생성기, 변환기, 계산기를 제공하며 대부분 브라우저에서 로컬로 실행되고 계정이 필요하지 않습니다.
     - [vhr-bench <sub>EN, F, O</sub>](https://github.com/vpshostreview/vhr-vps-benchmark) - Linux 서버의 CPU·메모리(sysbench)와 디스크 4K 랜덤 읽기/쓰기 IOPS(fio)를 약 1분 만에 측정하는 MIT 라이선스 단일 Bash 스크립트. sysbench·fio 설치 전에 확인을 요청하고, 업로드 토큰을 지정하지 않으면 결과를 외부로 보내지 않으며, --cleanup 옵션으로 스크립트가 설치한 패키지를 제거함
+    - [ImagineYourBook <sub>EN, $</sub>](https://www.imagineyourbook.com/) - 공개 기술 글·강의 노트나 업로드 권한이 확인된 자료(Word·Markdown·텍스트 업로드)를 바탕으로 장별 기술 전자책·학습 가이드 초안(5,000~120,000 단어)을 만들고 Word·EPUB로 내보내는 AI 책 작성 서비스. 계정 필요. 7일 체험은 카드 등록 후 미취소 시 유료 전환. 자료는 서버에서 처리하므로 기밀 문서 업로드 전 정책 확인, 코드 예제와 기술 내용은 직접 검토 필요
 
 ---
 

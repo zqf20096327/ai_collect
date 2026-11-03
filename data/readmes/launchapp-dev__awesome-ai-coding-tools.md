@@ -103,6 +103,7 @@ Lower-level CLI tooling that pairs with agents or runs solo.
 - [llm](https://github.com/simonw/llm) 🟢 — Simon Willison's CLI for talking to any LLM. Plugin ecosystem.
 - [mods](https://github.com/charmbracelet/mods) 🟢 — Charm's AI for the command line. Pipes-friendly.
 - [OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay) 🟢 — Records a coding-agent run below the harness, then replays it offline against the recorded bytes with no model called.
+- [Ponder](https://github.com/Quinnod345/ponder) 🟢 - Zero-dependency Node.js CLI and Agent Skill that gates coding-agent plans and diffs on a 7-step multi-role deliberation state machine, 1.00 unit coverage, convergence checks, and an append-only JSONL review ledger.
 - [shell-gpt (sgpt)](https://github.com/TheR1D/shell_gpt) 🟢 — Shell command generation and chat.
 - [Talavine Code](https://github.com/scrossen/talavine-code) 🟢 🏠 — C# desktop and CLI coding harness with API models, coding CLI backends, local Ollama models, and cross-model review.
 - [unsent](https://github.com/GeiserX/unsent) 🟢 — Go CLI that saves the prompt you are still typing in Claude Code, Codex, pi and agy every 0.4 seconds and recovers it after a crash, a closed window or a reboot.
@@ -235,7 +236,7 @@ Frontier and open-weight models with strong code performance.
 
 - **Closed:** [Claude Sonnet/Opus 4.x](https://www.anthropic.com/), [GPT-5 / o-series](https://openai.com/), [Gemini 2.5/3 Pro](https://ai.google.dev/)
 - **Open weights:** [Qwen2.5-Coder](https://github.com/QwenLM/Qwen2.5-Coder), [DeepSeek-Coder-V3](https://github.com/deepseek-ai/DeepSeek-Coder), [Codestral](https://mistral.ai/news/codestral/), [StarCoder2](https://github.com/bigcode-project/starcoder2)
-- **Gateways:** [XiuRouter](https://router.xiu.ai/) 💰 — Hosted multi-provider API gateway for Claude, GPT and Gemini, with setup guides for Codex, Claude Code, Cursor, OpenCode and Cline.
+- **Gateways:** [Code By AI](https://www.codebyai.net) 💰 — Hosted API gateway that puts Claude, GPT/Codex and Gemini models behind one key and one prepaid balance, used from Claude Code, Codex CLI, Gemini CLI and Cline by changing the base URL; [XiuRouter](https://router.xiu.ai/) 💰 — Hosted multi-provider API gateway for Claude, GPT and Gemini, with setup guides for Codex, Claude Code, Cursor, OpenCode and Cline.
 
 ## Prompt & Context Engineering
 

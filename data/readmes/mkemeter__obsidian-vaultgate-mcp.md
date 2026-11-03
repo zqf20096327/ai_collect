@@ -4,7 +4,7 @@
 
 # VaultGate
 
-**Your Obsidian vault, accessible to any AI assistant — locally, privately, with no plugins.**
+**Your Obsidian vault, with controlled access for any AI assistant — locally, privately, with no plugins.**
 
 [![npm version](https://img.shields.io/npm/v/obsidian-vaultgate-mcp)](https://www.npmjs.com/package/obsidian-vaultgate-mcp)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
@@ -15,7 +15,7 @@
 
 </div>
 
-VaultGate is a local [Model Context Protocol](https://modelcontextprotocol.io) server that bridges any MCP-compatible AI client with your Obsidian vault — built on Obsidian's native integration APIs. No community plugins, no cloud relay, no API keys.
+VaultGate is a local [Model Context Protocol](https://modelcontextprotocol.io) server that bridges any MCP-compatible AI client with your Obsidian vault — built on Obsidian's native integration APIs. Locally, privately, with no plugins.
 
 **A different design:** VaultGate never reads or writes your vault files directly. Every operation is delegated to the running Obsidian instance, and the local server binds to `127.0.0.1` only — never exposed to the network. Your notes stay behind Obsidian's own application layer.
 
@@ -38,13 +38,13 @@ Ask your AI to read notes, run full-text or semantic search, manage tasks, apply
 <td width="50%">
 
 **🔒 Private by design**
-Note content never leaves your machine. Binds to `127.0.0.1` only — unreachable from the network. Every operation is mediated by the running Obsidian instance; the AI never touches your files directly.
+No external connections. Binds to `127.0.0.1` only — unreachable from the network.
 
 </td>
 <td width="50%">
 
 **🤖 Any MCP client**
-Joule Work Desktop, Claude, Cursor, Windsurf, Zed, and anything else that speaks MCP — via HTTP or stdio.
+Joule Work, Claude, Cursor, Windsurf, Zed, and anything else that speaks MCP — via HTTP or stdio.
 
 </td>
 </tr>
@@ -96,7 +96,7 @@ Drop a `VAULTGATE.md` at your vault root — injected into every AI session auto
 
 ### Why VaultGate
 
-Most vault bridges read and write your `.md` files directly on disk. VaultGate doesn't — every read and write is delegated to Obsidian itself, so indexes, links, and plugins stay consistent, and there's no second process mutating your files. The optional local HTTP transport binds to `127.0.0.1` only, never exposed to the network, and the server makes zero external calls. That application-layer boundary is what makes VaultGate a clean integration point for any MCP-compatible AI assistant — including SAP's Joule Work Desktop.
+Most vault bridges read and write your `.md` files directly on disk. VaultGate doesn't — every read and write is delegated to Obsidian itself, so indexes, links, and plugins stay consistent, and there's no second process mutating your files. The optional local HTTP transport binds to `127.0.0.1` only, never exposed to the network, and the server makes zero external calls. That application-layer boundary is what makes VaultGate a clean integration point for any MCP-compatible AI assistant — including SAP's Joule Work.
 
 ---
 
@@ -144,7 +144,7 @@ VaultGate ships in two distributions that share the same MCP server core. Pick o
 | **Bundle size** | ~6 MB + lazy model | ~200 MB DMG |
 
 > [!NOTE]
-> Requires **Obsidian 1.8.9 or later** on all paths. The npm package additionally requires **Node.js 18+**.
+> Requires **Obsidian 1.8.9 or later** on all paths. The npm package requires **Node.js 18+** — Windows users can use the one-click installer below, which installs Node.js automatically.
 
 ### Before you start
 
@@ -270,6 +270,14 @@ The reference distribution — runs on macOS, Linux, and Windows with no GUI. Id
 
 ### Install
 
+#### Windows (one-click installer)
+
+No Node.js required. Download [`install.bat`](https://github.com/mkemeter/obsidian-vaultgate-mcp/blob/main/server/deploy/install.bat) and [`install.ps1`](https://github.com/mkemeter/obsidian-vaultgate-mcp/blob/main/server/deploy/install.ps1) from the repository into the same folder, then double-click `install.bat`. It installs Node.js and Git if needed, installs the npm package, and registers VaultGate to start at login — no terminal required. Once done, skip ahead to [Connect your AI client](#connect-your-ai-client).
+
+> Already have Node.js? You can skip the one-click installer and follow the standard path below.
+
+#### macOS / Linux / Windows with Node.js
+
 ```bash
 npm install -g obsidian-vaultgate-mcp
 ```
@@ -356,6 +364,9 @@ Claude Code manages the process lifecycle via stdio — no separate startup need
 > Replace the path with your actual install location. The standard per-user NSIS install lands at `%LOCALAPPDATA%\Programs\Obsidian\Obsidian.exe`.
 
 ### Auto-start at login
+
+> [!NOTE]
+> **Windows users who ran `install.bat`:** auto-start is already configured — skip this step.
 
 ```bash
 obsidian-vaultgate-mcp-install
@@ -807,7 +818,7 @@ After the tray icon shows `● Running — <Vault Name>`:
 
 1. Click the tray icon → **Copy URL**. This copies the exact URL VaultGate is listening on — use this rather than typing the address manually, since the port may differ from the default if 3002 is already taken.
 2. Paste the copied URL into your client's MCP configuration:
-   - **Joule Work Desktop / Cursor / Windsurf / Zed**: add it as a Streamable HTTP MCP server.
+   - **Joule Work / Cursor / Windsurf / Zed**: add it as a Streamable HTTP MCP server.
    - **Claude Code**: prefer the npm-package + stdio transport (see [Claude Code](#claude-code) above).
 
 The URL never leaves `127.0.0.1` — it is bound to localhost and refuses other origins.

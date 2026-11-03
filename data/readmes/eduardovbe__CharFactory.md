@@ -24,7 +24,7 @@
   <a href="#command-line">Command line</a> ·
   <a href="#development">Development</a>
   <br>
-  <sub>English · Español · Português (Brasil)</sub>
+  <img src="https://flagcdn.com/24x18/us.png" width="24" height="18" alt="English"> <b>English</b> &nbsp;·&nbsp; <a href="README.es.md"><img src="https://flagcdn.com/24x18/es.png" width="24" height="18" alt="Español"> Español</a> &nbsp;·&nbsp; <a href="README.fr.md"><img src="https://flagcdn.com/24x18/fr.png" width="24" height="18" alt="Français"> Français</a> &nbsp;·&nbsp; <a href="README.pt-BR.md"><img src="https://flagcdn.com/24x18/br.png" width="24" height="18" alt="Português (Brasil)"> Português (Brasil)</a> &nbsp;·&nbsp; <a href="README.zh-CN.md"><img src="https://flagcdn.com/24x18/cn.png" width="24" height="18" alt="简体中文"> 简体中文</a>
 </p>
 
 ## Get started
@@ -287,6 +287,8 @@ timeline sized by its duration, MUGEN 1.1 scale, angle and interpolation, and GI
 - **Stages:** layers, properties and a preview with camera and parallax.
 - **Projects:** several characters in tabs, undo and redo everywhere, automatic backup, compare with a
   backup, find and replace in every file, open and pack `.zip` files.
+- **Languages:** English, Spanish, French, Portuguese (Brazil) and Simplified Chinese, with adjustable
+  text size for the interface and the code.
 
 </details>
 

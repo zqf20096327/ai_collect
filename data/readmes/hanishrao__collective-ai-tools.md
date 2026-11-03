@@ -439,6 +439,7 @@ Use these hashtags in search to filter out the tools
 - [BLACKBOX AI](https://www.blackbox.ai/) - Trusted code auto-completion for enterprises. `#freemium`
 - [Bolt.new](https://bolt.new/) - AI-powered full-stack web development platform `#freemium`
 - [Boxy](https://boxy.ai/) - Logic understanding and error diagnosis tool. `#paid`
+- [Browser Agent Blueprint](https://github.com/LydiaTools/browser-agent-blueprint) - Open-source browser agent prompt modules and synthetic recovery examples for uncertain actions. `#free` `#opensource`
 - [Bugasura](https://bugasura.io/) - Bug tracker designed to streamline the reporting, tracking, and closing of bugs for modern technology teams. `#freemium`
 - [Clacky AI](https://clacky.ai/) - L3 Agentic AI cloud development environment. `#freemium`
 - [Claude](https://claude.ai/) - Anthropic's AI assistant with advanced reasoning capabilities. `#freemium`
@@ -489,6 +490,7 @@ Use these hashtags in search to filter out the tools
 - [JamGPT](https://jam.dev/) - Automated error reporting and fixing assistant. `#free`
 - [Jet Browser](https://github.com/masakaai/jet-browser) - Portable WPE WebKit runtime for agents with isolated Docker sessions, native input, DOM/text reads, fresh screenshots, and ordered JSONL, MCP, and JavaScript SDK interfaces. `#free` `#opensource`
 - [Junie](https://www.jetbrains.com/junie/) - JetBrains context-aware IDE assistant. `#paid`
+- [Keenable](https://keenable.ai) - Independent web search index for AI agents: search and page fetch over API, CLI and MCP (`https://api.keenable.ai/mcp`), with 100K free requests a month and keyless public endpoints. `#freemium` `#api` `#mcp`
 - [Keploy](https://keploy.io/) - AI-powered automation API and Unit testing, latest UTG pr agent generates unit tests after each pr. `#free`
 - [Keploy](https://www.keploy.io/) - A  developer-centric backend testing tool which makes backend tests with built-in-mocks faster than unit tests, from user traffic, making it easy to use, powerful, and extensible. `#opensource`
 - [LangChain](https://www.langchain.com/) - Open-source framework for building LLM-powered applications and agents, with 1000+ integrations. `#free` `#opensource`
@@ -500,6 +502,7 @@ Use these hashtags in search to filter out the tools
 - [MCP Use](https://mcp-use.com/) - Fullstack MCP framework to develop MCP Apps for ChatGPT, Claude & MCP Servers. `#free` `#opensource`
 - [MEDIAPRONET](https://mediapronet.com/) - Launch and discovery directory where builders list newly shipped startups, SaaS tools and online products, with a free read-only remote MCP server (https://mediapronet.com/api/mcp) for searching listings, reading profiles and finding alternatives from AI assistants, no API key. `#free` `#mcp`
 - [ml0x](https://ml0x.com/) - Open-source pipeline that wraps Claude Code in four stages (analyze, implement, test, review) with hard budget caps and quality gates that run before output is shown; MIT-licensed core, paid full system. `#freemium` `#opensource`
+- [Model Salt](https://modelsalt.com/) - Open source MCP server with one tool: before a creative task the model gets a few choices drawn from atmospheric and quantum noise, so one prompt gives different answers that still do what was asked. `#free` `#opensource` `#mcp`
 - [ModelRush](https://modelrush.ai/) - API platform for text, image, video, and audio models, with OpenAI-compatible chat access, published pricing, and request-level usage tracking. `#paid`
 - [molt](https://solvyx.xyz/work/molt) - Coding agent that won't say done on a false claim — on-disk verification and receipts for accepts/refusals. `#free` `#opensource`
 - [Oh My Android](https://github.com/ateymoori/oh-my-android) - Native macOS control panel for the Android Emulator and real phones, with a built-in MCP server (18 tools) so Claude Code, Codex and Cursor can see and drive the emulator. `#mcp` `#free` `#opensource`
@@ -525,6 +528,7 @@ Use these hashtags in search to filter out the tools
 - [SitePatent](https://sitepatent.com/) - Discovery directory for newly launched startups, SaaS tools and online products, with a free read-only remote MCP server (https://sitepatent.com/api/mcp) that lets AI assistants search listings, read full profiles and find alternatives, no API key. `#free` `#mcp`
 - [Sizzle AI](https://web.szl.ai/) - AI-powered tutor for math and coding problems. `#free`
 - [Solo](https://soloist.ai/) - Free AI website creation and domain hosting. `#free`
+- [SoloPup Memory](https://github.com/OakcoderX/solopup-memory) - Native DeepSeek Harness text-memory beta with source references, project scope and correction history; requires Node >=24.9 and DSH >=0.2.1-rc.0 <0.3.0, and configured model APIs may charge. `#opensource` `#memory`
 - [Sourcegraph Cody](https://sourcegraph.com/cody) - AI coding assistant with deep codebase context, for VS Code, JetBrains and web. `#freemium`
 - [Supermaven](https://supermaven.com/) - Fast AI code completion with 300k token context window. `#freemium`
 - [Tabby](https://tabbyml.com/) - Self-hosted Rust-based Copilot alternative. `#free`
@@ -793,6 +797,7 @@ Use these hashtags in search to filter out the tools
 - [AIPhotoeditor](https://photoeditor.ai/) - AIPhotoeditor is a free photo editor that allows users to remove unwanted objects, people, blemishes, or text from their images in seconds. `#free`
 - [BatchSet](https://batchset.com/tools/ai-background-removal) - Remove image backgrounds with AI right in your browser, then convert, compress or resize whole folders at once. Free without signup. `#freemium`
 - [BulkPicTools](https://bulkpictools.com/) - Free browser-based bulk image workspace. Upload once, chain 40+ tools (compress, convert, crop, background removal, face blur) without re-uploading. Files never leave your device. `#free`
+- [Clarpex AI](https://clarpex.ai/) - Free online AI photo fixer to unblur, restore old photos, colorize black and white photos, remove glare and upscale to 4K or 8K, with daily free credits and no sign-up. `#freemium` `#photo`
 - [Crisp](https://crisp.photos/) - Free AI photo upscaler that runs entirely in your browser. No upload, no signup, no watermark. Includes a dedicated anime upscaler. `#free`
 - [Cutout.Pro](https://www.cutout.pro/) - Creative visual platform and automated tasks. `#free`
 - [DishVivid](https://dishvivid.com/) - Restaurant-photo editing with free local manual controls and optional sign-in/allowance-based AI, with food details requiring human review (AI-assisted listing submitted on behalf of the project). `#photo-editing`
@@ -844,6 +849,7 @@ Use these hashtags in search to filter out the tools
 - [Kaiber](https://kaiber.ai/) - Tell stories like never before with our advanced AI generation engine `#freemium`
 - [Kling AI](https://kling.kuaishou.com/) - Advanced video and image generation with realistic motion `#freemium`
 - [Leonardo](https://leonardo.ai) - Text-to-image Create production-quality visual assets for your projects with unprecedented quality, speed, and style-consistency `#free`
+- [MakeImg](https://makeimg.ai/) - AI photo generator that turns a text prompt or reference photo into a new image, with 11 models and free daily credits. `#freemium` `#image`
 - [Midjourney v6](https://www.midjourney.com/) - Latest version with enhanced photorealism and prompt understanding `#paid`
 - [Muse Studio](https://muse-me-avatar-beta.zhangwei798879.chatgpt.site/create) - Generates static ad concepts from text with editable headline, offer and CTA, and PNG export. Limited free beta; ChatGPT sign-in; no card. `#free` `#design`
 - [MyPhotoAI](https://myphotoai.io/) - Turn your selfies into AI headshots and portraits. `#paid`
@@ -854,6 +860,7 @@ Use these hashtags in search to filter out the tools
 - [Picsart](https://picsart.com/ai-image-generator/) - Convert words into an image in mere seconds with the Picsart AI Image Generator. `#freemium`
 - [Playground AI](https://playground.com/) - Free-to-use online tool to create art, social media posts, presentations, posters, videos, logos and more. `#free`
 - [Punch Needle Generator](https://www.punchneedle.co.il/en) - AI-generated punch needle embroidery patterns with color-coded yarn maps from text prompts or image uploads. `#freemium` `#design`
+- [QuestStudio](https://queststudio.io/) - Generate and edit images, then continue related video, voice, and music workflows in a connected creative studio. `#paid` `#design`
 - [Remaker-Ai](https://remaker.ai/en) - All-in-one tool leveraging the capabilities of artificial intelligence. Craft and produce diverse content formats, spanning text, images, and beyond. `#free`
 - [removebg](https://remove.bg/) - Remove any Image Background `#free`
 - [Rentoor](https://rentoor.vercel.app) - Enhance your images with Rentoor's super-resolution feature, restoring clarity and detail for stunning visuals. `#freemium`
@@ -1044,17 +1051,4 @@ Use these hashtags in search to filter out the tools
 - [DigestDiff](https://www.digestdiff.com/) - Codebase Insights Without Code Access with DigestDiff `#free`
 - [Gezhe AI (Caixuan)](https://gezhe.com/) - Manuscript management and sharing website. `#free`
 - [Glimpse](https://glimpse.surf/) - Seamless browsing experience with conversation, writing, and editing assistance `#free`
-- [Happy Copy](https://www.hoppycopy.co/) - Use AI to create powerful content for hundreds of different email campaigns, drips, newsletters and more—in seconds `#paid`
-- [Hoarder](https://hoarder.app/) - AI-powered bookmark organizer and retrieval. `#free`
-- [ima.copilot](https://ima.qq.com/) - Tencent Hunyuan-based search/write workbench. `#free`
-- [Merlin](https://www.getmerlin.in/) - Research and writing plugin with multi-model access. `#free`
-- [Message AI](https://apps.apple.com/us/app/message-ai-gpt-tts/id6448740961) - Transform Text to Speech with Natural Accuracy `#paid`
-- [Motion](https://www.usemotion.com/) - AI-powered task management and calendar optimization. `#paid`
-- [Multi Gen](https://aimultigen.com/) - Multi-Gen: All-in-one AI platform for content and productivity solutions. `#free`
-- [Notion](https://www.notion.so/product/ai/) - Access the limitless power of AI, right inside Notion. Work faster. Write better. Think bigger. `#paid`
-- [Notion AI](https://www.notion.so/product/ai) - AI-powered workspace with writing, planning, and organization features. `#freemium`
-- [Orkas](https://orkas.ai/?source=gh_collective&lang=en) - Turns project goals and local files into reports, presentations and code with a coordinated AI team in an open-source, local-first desktop workspace, using managed models or supported own-provider access. `#opensource`
-- [Otter.ai](https://otter.ai/) - AI-powered transcription and meeting assistant. `#freemium`
-- [Posylanki](https://www.posylanki.live/) - Streamline Web Content Management & Enhance Browsing Experience `#free`
-- [Raycast AI](https://www.raycast.com/ai) - Mac-native operating system AI extension. `#freemium`
-- [Reclai
+- [Happy Copy](https://www.hoppycopy.co/) - Use AI to create powerful content for hundreds of different email campaign

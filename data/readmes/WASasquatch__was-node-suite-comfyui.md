@@ -7,7 +7,7 @@ first packs to put hundreds of nodes into users' hands. WAS-NS has over a millio
 and is used by thousands of users daily. It has been MIT since the first commit: use it, change it, 
 teach with it, or run it in paid services.
 
-The pack contains **659 nodes for ComfyUI**, across images, filters and colour, masking, 
+The pack contains **678 nodes for ComfyUI**, across images, filters and colour, masking, 
 text and prompts, logic and flow, numbers, latents and sampling, files, animation and video, 
 and Llama-Index in ComfyUI. 
 
@@ -27,9 +27,10 @@ without it the pack needs no packages. [What it covers](FEATURES.md#llama-index-
 
 # Installation
 
-**ComfyUI Manager**, search for `WAS Node Suite v3` and install. This is the recommended route.
+> [!WARNING]
+> **WAS Node Suite v3** should not be installed through ComfyUI Manager. ComfyUI Manager is broken and will silently downgrade, and break your installation without warning. Either directly clone the repository or use the [Open Manager](https://github.com/WASasquatch/open-manager-comfyui).
 
-**Manually**, clone into `custom_nodes`:
+### Manually clone into `custom_nodes`:
 
 ```sh
 cd ComfyUI/custom_nodes
@@ -65,13 +66,13 @@ group's keys, model folders and servers: [`docs/LLM.md`](docs/LLM.md).
 
 # What changed since v2
 
-659 nodes across a package of source files. The pack itself needs no packages, and nothing is
+678 nodes across a package of source files. The pack itself needs no packages, and nothing is
 fetched from a git URL. What it bundles ships in the repository with its licence beside it,
 listed in [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).
 
 | | v2 | v3 |
 |---|---|---|
-| Nodes | 220 | 659 |
+| Nodes | 220 | 678 |
 | Default packages installed | 20 | 0 |
 | Installed from a git URL | 3 | 0 |
 | Third-party carried in the repository | SAM and BLIP, 75 files of python | 143 files: browser libraries, fonts, eight face cascades, three sets of weights and two networks, each with its licence |
@@ -168,7 +169,7 @@ a core ComfyUI node. Only the label changed, and the old names still find them i
 
 # Nodes
 
-**659 nodes** across 66 categories. [`NODES.md`](NODES.md) carries every input, output and
+**678 nodes** across 67 categories. [`NODES.md`](NODES.md) carries every input, output and
 tooltip, and groups them by the `config.yaml` switch that gates them:
 [feature gates](NODES.md#feature-gates).
 
@@ -208,11 +209,15 @@ explains it. Edit it there as it will survive updates.
 
 # Third-party code in the pack
 
-The suite is MIT, see [`LICENSE`](LICENSE). It bundles 162 third-party files: three.js and
+The suite is MIT, see [`LICENSE`](LICENSE). It bundles 166 third-party files: three.js and
 three-gpu-pathtracer, HugeRTE, Prism.js, KaTeX and Mermaid, the EMA-VFI, SEA-RAFT, FlowSeek,
-MiniMax H3 latent upscaler and Kandinsky 6 networks,
-the DejaVu and Liberation fonts, eight face cascades and three sets of weights. Each keeps its own licence text
-in the folder it ships in, and none of it is ever fetched. Every licence permits redistribution.
+MiniMax H3 latent upscaler and Kandinsky 6 networks, the DejaVu, Liberation and Aileron fonts,
+eight face cascades and three sets of weights. Each keeps its own licence text in the folder it
+ships in, and none of it is ever fetched. Every licence permits redistribution.
+
+The measurements and charts of **Dataset Health** and **Caption Statistics** come from
+[ZenTrainer](https://github.com/Nynxz/ZenTrainer) by Nynxz, MIT, with its licence in
+[`modules/dataset/`](modules/dataset/LICENSE.zentrainer).
 
 Versions, copyright lines, which licence covers what and a byte-level account of every bundled
 copy: [`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).

@@ -1,69 +1,111 @@
-# Elpis
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/elpis-wordmark-burning-dark.svg">
+    <img src="docs/assets/elpis-wordmark-burning-light.svg" alt="Elpis" width="300">
+  </picture>
+</p>
 
-Elpis is a Linux coding-agent environment built on OpenAI's Codex CLI. It keeps the execution and terminal foundation while adding control over admitted context, durable memory, continuity and provider selection.
+<p align="center"><b>The ultimate harness: the perfect home for your agents.</b></p>
+<p align="center"><i>You put an agent into an Elpis, and it becomes Elpis. Be Elpis, my friend.</i></p>
 
-**Change the runtime. Keep the thread.**
+<p align="center">A coding agent should only see what you chose to show it, and a team of agents should only touch what each was given. Elpis is an engineered agent harness for Linux, built on OpenAI’s Codex CLI: a home where your agents keep their context, and a board where you design how several of them work together.</p>
 
-See what your agent is working with. Elpis makes its admitted instructions, files and
-memory inspectable, lets you control that context, and keeps a working checkpoint
-across sessions. Its local dashboard shows activity, context and recorded usage.
+<p align="center"><img src="docs/assets/elpis-demo.gif" alt="Elpis in the terminal: the agent reads the project, a long search result is shortened before the model sees it, and the reply arrives with 87% of the context left"></p>
 
-[Releases](https://github.com/MasihMoafi/Elpis/releases) · [Website](https://elpis.masihmoafi.com) · [Technical guide](docs/GUIDE.md) · [License](LICENSE)
+<p align="center"><img src="docs/assets/workflows-team.gif" alt="Workflows: the Mother agent designs a code-review team of eight agents in four waves, shown flat and in isometric, runs it and checks each agent's work"></p>
+
+<p align="center"><a href="https://github.com/MasihMoafi/Elpis/releases">Releases</a> · <a href="https://elpis.masihmoafi.com">Website</a> · <a href="docs/GUIDE.md">Technical guide</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="LICENSE">License</a></p>
 
 ## Install
 
-[v0.4.1](https://github.com/MasihMoafi/Elpis/releases/tag/v0.4.1) is the Linux x86_64 release, based on Codex `rust-v0.160.0`. Review the installer before running it:
+Linux x86_64. Download from the [v0.5.1 release](https://github.com/MasihMoafi/Elpis/releases/tag/v0.5.1):
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/MasihMoafi/Elpis/v0.4.1/scripts/install-elpis.sh | bash
-~/.local/bin/elpis
+- **Ubuntu, Debian:** `sudo apt install ./elpis_0.5.1_amd64.deb ./elpis-desktop_0.5.1_amd64.deb`, then `elpis-app`.
+- **Fedora, Arch, Omarchy, any Linux:** `chmod +x Elpis-0.5.1-x86_64.AppImage`, then run it; add `elpis` to run the terminal app.
+- **Arch, Omarchy (native package):** `git clone https://github.com/MasihMoafi/Elpis && cd Elpis/packaging/aur/elpis-bin && makepkg -si`.
+- **Terminal app only:** `curl -fsSL https://raw.githubusercontent.com/MasihMoafi/Elpis/v0.5.1/scripts/install-elpis.sh | bash` (read it first).
+
+Both apps share one engine and one state folder, `~/.elpis-next`. Sign in with ChatGPT or Claude, or set up a provider. Claude models run through your own [Claude Code](https://code.claude.com) install.
+
+## Why Elpis?
+
+Today's coding agents load every instruction file they find and keep the whole conversation until the window fills; you cannot see what they were told or take it back. Put several of them on one task and it gets worse: they write over each other's files, nobody checks the work, and you merge the result by hand.
+
+Elpis treats both as one problem, **context management**, and answers it with two rules:
+
+- **You choose what each agent sees.** The Context Ledger lists every instruction file, chosen file and memory with its token cost, and you include or exclude each one.
+- **Each agent owns what it writes.** In a workflow, every agent has its own folder, a second agent checks its work, and the Mother agent reviews the combined result before anything reaches your project.
+
+## The desktop app
+
+Chat with GPT, Claude and Gemini models; use your ChatGPT or Claude subscription or an API key, and switch models without losing the thread. Under the composer you choose the Ledger, Smart Prune and subagents. Import chats from Claude Code and Codex.
+
+Pick a theme (Elpis, Paper, Midnight or Plum), each in light and dark, or build your own in Settings → Appearance.
+
+![One Elpis desktop chat in six themes: Elpis dark and light, Midnight dark, Paper light, Plum dark and Midnight light](docs/assets/themes.gif)
+
+### Workflows
+
+![Workflows: the Mother agent designs a team, runs it and checks each agent's work](docs/assets/workflows.gif)
+
+Describe a job. The Mother agent, the planning agent, either does it herself or designs a team of agents you can see and edit on a board. Ready-made patterns: Sequential, Parallel, Kahn graph waves, Recursive (with a round limit) and Voting; ready-made teams: Transcribe images, Translate and Logo. Past ten agents, a Father agent runs the rest in his own chat and reports to her. Each agent may use a different model, and each is told how much time is left.
+
+**How steps are ordered.** Elpis sorts the board with Kahn's algorithm: an agent starts once everything it waits for, and that work's check, has passed. Agents in one wave run side by side. A loop is refused before any agent starts, unless you choose the Recursive pattern and a round limit. The Voting team below runs in four waves:
+
+```mermaid
+%% id: voting-waves
+%% alt: The Voting team in four waves: the Mother agent starts three answering agents, each answer has its own check, a tally agent joins the checked answers, a check reviews the tally, and the Mother agent reviews and merges.
+flowchart LR
+  M([Mother agent]) --> A1[Answer 1] & A2[Answer 2] & A3[Answer 3]
+  A1 --> C1{{Check 1}}
+  A2 --> C2{{Check 2}}
+  A3 --> C3{{Check 3}}
+  C1 & C2 & C3 --> T[Tally]
+  T --> CT{{Check tally}}
+  CT --> R([Mother agent reviews and merges])
 ```
 
-The installer verifies SHA-256 checksums and installs Elpis, its Code Mode host and the bundled Linux sandbox. A Debian package is also available in the release. RTK is optional and is not installed automatically. macOS and Windows binaries are not included.
+**Who may write what: ownership, as in Rust.** Rust lets many readers or one writer hold a value, never both, and checks this before the program runs. Elpis applies the same idea to agents, each a small unit that owns one job:
 
-Sign in or configure a provider, then choose a model with `/model`.
+| Rust | Elpis workflow | Where |
+| --- | --- | --- |
+| A value has one owner | Each agent owns `agents/<its name>` and the folders you give it. In a Git project it works in its own worktree, and a step that changed files outside its folders fails. | `bridge/workflow-worktrees.mjs` |
+| Shared borrows read, never write | Every writer is followed by a check that reads its work and writes only `agents/<name>/check`. A writer without a check is refused. | `lib/canvas.ts`, `bridge/workflow-acp.mjs` |
+| No two mutable borrows at once | Two agents linked to work alongside may not share a folder, and an agent that writes the whole project cannot work alongside anyone. Both are refused before the run. | `lib/canvas.ts` |
+| The owner decides what lives | The Mother agent reviews the combined commit and must pass it with evidence. Elpis then fast-forwards your project, and refuses if she changed the commit or your project moved. | `bridge/workflow-acp.mjs` |
 
-## State and upgrades
+Two limits remain: two side-by-side agents without an "alongside" link are not yet checked for a shared folder before the run (a Git project still catches the overlap afterwards), and outside a Git project the folders are instructions, not enforced.
 
-Elpis uses `~/.elpis-next`, or the directory explicitly selected by `ELPIS_HOME`. It ignores inherited `CODEX_HOME`. Existing next-build users keep their state there.
+**Tested on real models.** A Voting team (three answering agents and one tally agent, each with its own check) finished on GPT-6 Luna through a ChatGPT subscription and on Claude Haiku 5.5 through a Claude subscription, in 74 to 100 seconds; the tally agent used the other three agents' answers. The test is [`tests/canvas-live.runtime.mjs`](apps/elpis-desktop/tests/canvas-live.runtime.mjs).
 
-v0.3.0's state database is incompatible with the new foundation. Elpis refuses that database and preserves it; automatic migration is not included. Keep a backup of the old executable for rollback. The [v0.3.0 guide](https://github.com/MasihMoafi/Elpis/blob/v0.3.0/readme.md) records that release's behavior and historical evidence.
+<img src="docs/launch/img/workflows-voting-dark.png" alt="A finished Voting workflow in the Elpis desktop app: the Mother agent starts three answering agents, each checked, and a tally agent joins their answers">
 
-## Included
+### Love Spot
 
-The October 10 candidate restores the inherited Codex `/review` and `/worktree` menus and `--worktree` launch option through the local provider launcher. It refreshes admitted bridge context each turn and isolates generated goal/checkpoint files by thread. The installed candidate passed its hosted and local checks; see the [contract](docs/specs/continuity-workflows.md) and [verification with rollback](docs/continuity-verification.md).
+A drawing board where Matilda, the app's companion, answers and draws with you. Paste screenshots onto the board and draw on them.
 
-- Context Ledger controls admission of workspace instructions, chosen files and memory; `/add` and `/context` expose the working set.
-- The responding agent explicitly saves durable knowledge and the workspace checkpoint through a guarded local tool. Saving and admission are separate choices.
-- `/compact` accepts a pressure threshold or custom instructions. Experimental Smart Prune and reasoning expiry limit disposable context.
-- `/model` and `--provider` select providers; the local gateway supports Anthropic, Gemini and OpenRouter paths alongside OpenAI.
-- `/dashboard` and `/usage` expose local session information. Subscription price remains unavailable.
-- Elpis identity, composer queuing, chosen skills and permission controls surround the selected model.
+![Love Spot: Matilda answers on the drawing board](docs/assets/lovespot.gif)
 
-Multi-agent work is inspectable too: the agents view shows the hierarchy and each
-agent's model. Experimental work graphs add task dependencies, bounded write scopes
-and verification requirements; they are off by default. See the
-[work-graph contract](docs/WORK_GRAPHS.md).
+## The terminal app
 
-No model weights, retrieval engine or speech engine are bundled. External capabilities come through tools or explicitly registered integrations.
+The same engine in your terminal. `/add` and `/context` show the working set; the agent saves lasting memory through a guarded local tool, and saving something is a separate choice from sending it. `/compact` takes a pressure threshold or your own instructions. `/model` and `--provider` reach Anthropic, Gemini and OpenRouter beside OpenAI.
 
-## Context Ledger
+![The Agent command center in the Elpis terminal app, with example tasks: GPT and Claude helpers under their parent chat, each model in its own colour](docs/assets/tui-agent-command-center.webp)
 
-[<img src="docs/assets/elpis-context-ledger-20261013.png" alt="Elpis Context Ledger showing admitted memory and instructions, context categories, Smart Prune and subagent controls" width="676" height="1012">](docs/assets/elpis-context-ledger-20261013.png)
+<img src="docs/assets/context-ledger.webp" alt="The Context Ledger in the Elpis terminal app: each instruction file with its token cost and an INCLUDED mark" width="420">
 
-Context Ledger · 13 October 2026 · light theme. Smart Prune and subagent
-delegation are enabled in this session. Smart Prune is experimental and off by
-default. Category shares and source sizes are estimates; the measured request
-total is separate. Open the original image to inspect it at full size.
+## How it works
 
-## Verification and limits
+Elpis keeps the Codex execution and sandbox and adds its controls around the chosen model. The desktop app is Electron with a Node bridge that drives each agent over the Agent Client Protocol. No model weights are bundled. Details: [runtime architecture](docs/GUIDE.md#runtime-architecture), [context](docs/context.md), [sessions](docs/sessions.md), [desktop scope and limits](apps/elpis-desktop/SPEC.md).
 
-Masih tested the September 30 candidate and accepted it for release. [Release CI](https://github.com/MasihMoafi/Elpis/actions/workflows/embedded-elpis-linux.yml) gates publication on focused Elpis Rust checks, actual runtime evals with failing controls, installer checks and clean offline binary/Debian installations. Automated evidence does not establish general coding-quality gains.
+State lives in `~/.elpis-next`, or in the folder `ELPIS_HOME` names; an inherited `CODEX_HOME` is ignored. The v0.3.0 state database is incompatible: Elpis refuses it and leaves it untouched.
 
-The whole inherited Codex suite is not claimed green: appearance/snapshot differences and identity-rename failures remain. `/force-prune`, Auto routing and `tui.appearance` are not ported. Strict configuration currently misses unknown keys in gateway-provider tables. Light-theme acceptance and all historical outcome-ledger cases remain separate from this release's acceptance.
+## Current state
 
-## Development
+- **Checked by CI:** [release CI](https://github.com/MasihMoafi/Elpis/actions/workflows/embedded-elpis-linux.yml) gates each terminal release on Elpis Rust checks, runtime evals with failing controls, installer checks and clean offline installs. These checks do not prove that Elpis writes better code.
+- **Not claimed:** the whole inherited Codex test suite; `/force-prune`, Auto routing and `tui.appearance` are not ported. No macOS or Windows builds.
+- **Experimental:** Smart Prune and reasoning expiry. The Mother agent steps in on a failed step (retry, steer or stop) but does not yet steer a healthy run.
 
-Read [the guide](docs/GUIDE.md), [shipping rules](docs/SHIPPING_RULES.md) and [local build rules](docs/LOCAL_BUILD_RULES.md) before changing or building Elpis. The upstream Rust workspace version stays at `0.160.0`; the Elpis product version lives in the CLI manifest and TUI branding constant.
+## Contribute
 
-Upstream Codex is Apache-2.0. Elpis retains its attribution and notices. See [LICENSE](LICENSE).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) to build, test and report a bug. Upstream Codex is Apache-2.0; Elpis keeps its attribution and notices ([LICENSE](LICENSE)).

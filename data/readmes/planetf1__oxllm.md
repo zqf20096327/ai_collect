@@ -16,13 +16,16 @@ Built to operate entirely in memory with zero local disk persistence, `oxllm` is
 * **Zero-Disk Dependency**: No SQLite, local caching, or file write operations during routing. State is strictly in memory.
 * **&lt;2ms Routing Overhead**: Lock-free concurrency across routing loop, counters, and probe permits. Verified by CI benchmark.
 * **Adaptive Circuit Breaker**: Strict `HalfOpen` state machine with lock-free `probe_in_flight` atomic check-and-set. Rate limits and server errors trip per-provider circuits with exponential backoff. Idle-based penalty decay automatically rehabilitates providers.
-* **Tiered Failover**: Configure fallback chains across multiple providers. If the primary returns 429 or 5xx, the proxy transparently cascades to the next.
+* **Tiered Failover**: Configure fallback chains across multiple providers. If the primary returns 429 or 5xx, the proxy transparently cascades to the next. Per-target `priority` states the preference explicitly instead of implying it from array order.
+* **Decision-Model Endpoint**: `POST /v1/systemone` routes llama.cpp decision models (typed choice/score questions answered in one forward pass) through the same provider pool — model rewrite, circuit breaking, and failover included.
 * **Routing Policies**: Per-virtual-model `priority` (configuration order), `fastest` (lowest measured time-to-first-byte), or `cheapest` (lowest configured cost) selection among healthy candidates.
 * **Session Affinity**: Requests carrying a session key stay on one provider while it is healthy, keeping upstream prompt-prefix caches warm. Bounded LRU, idle TTL, automatic break-and-re-pin on failure.
 * **Optional Inbound Auth**: `server.api_keys` gates the public `/v1/*` routes behind constant-time `Authorization: Bearer` checks. Admin routes are always localhost-only.
 * **Raw Completions Route**: `POST /v1/completions` (with SSE streaming) for fill-in-the-middle clients such as editor autocomplete.
-* **Hot Config Reloading**: `SIGHUP` signal or `POST /reload` HTTP endpoint — parses updated `config.toml` and hot-swaps the provider pool via `tokio::sync::watch` without dropping connections.
+* **Hot Config Reloading**: the daemon watches `config.toml` and hot-reloads on change (invalid edits are rejected, the old config keeps serving). Also available on demand via `POST /reload` or `SIGHUP` — hot-swaps the provider pool via `tokio::sync::watch` without dropping connections, preserving circuit state, counters, and session pins for providers that keep their name.
+* **Model Aliases & Default Route**: `[aliases]` maps client-facing names (`gpt-4o = "smart"`) onto virtual models, and `server.default_model` routes unknown names instead of 400 — point unmodified OpenAI clients straight at it.
 * **Local Stats Dashboard**: Every provider tracks request count, success count, token volumes, and last request time via lock-free atomics. Query via `oxllm status` or `curl /status` — no external collector needed.
+* **Traffic Visibility**: a bounded in-memory ring of recent request records (metadata only) plus `oxllm tail` for a live stream — route, provider, attempts, status, latency, TTFT per request, no collector needed.
 * **OOM-Proof Telemetry**: Bounded OTel event channel (1024 cap) with non-blocking `try_send` drops. If `otelite` is offline, telemetry degrades gracefully and the proxy keeps running.
 * **W3C Trace Context Propagation**: Extracts and injects `traceparent` headers for continuous trace spans.
 * **Dual-Stack IPv4/IPv6**: Configurable via `bind_family`: `"ipv4"` (default), `"ipv6"`, or `"dual"` for both.
@@ -124,6 +127,13 @@ export GROQ_API_KEY="gsk_..."
 export GOOGLE_API_KEY="AIza..."
 cp config.toml ~/.config/oxllm/config.toml
 oxllm serve
+
+# Or install it as a persistent user service (launchd on macOS,
+# systemd on Linux): starts now, at login, and restarts on failure.
+oxllm install
+oxllm status
+# ...and when you want it gone:
+oxllm uninstall
 ```
 
 
@@ -197,6 +207,13 @@ oxllm serve --config config-local-test.toml
 | `otel_endpoint` | — | OTLP HTTP endpoint (e.g. `http://127.0.0.1:4318`). If unreachable, proxy starts without telemetry. Records spans with GenAI semantic attributes, 3 metrics (provider status gauge, request duration histogram, token counter), and W3C trace context propagation. See [architecture docs](docs/architecture.md#4-telemetry-layer--trace-context-propagation). |
 | `upstream_timeout_secs` | `5` | Upstream request timeout in seconds |
 | `bind_family` | `"ipv4"` | Address family: `"ipv4"`, `"ipv6"`, or `"dual"` (both) |
+| `shutdown_timeout_secs` | `30` | Graceful-shutdown deadline after SIGTERM/SIGINT: in-flight requests drain until it expires, then the process exits anyway. `0` waits indefinitely. |
+| `watch_config` | `true` | Watch the config file and hot-reload on change. Disable on flash-storage edge targets, or to make reloads strictly manual. |
+| `request_log_capacity` | `256` | Recent request records kept in memory for `oxllm status` / `oxllm tail` (metadata only). `0` disables. Applies at startup. |
+| `circuit_failure_threshold` | `3` | Consecutive failures before a provider's circuit opens. Lower it for twitchy free-tier upstreams. |
+| `circuit_base_cooldown_secs` | `60` | Base circuit-open cooldown; doubles per failure beyond the threshold. |
+| `rate_limit_fallback_secs` | `30` | Rate-limit cooldown when a 429 carries no `Retry-After`. |
+| `default_model` | — | Virtual model that serves requests naming an unknown model, instead of returning 400. |
 
 ### Provider Definition
 
@@ -204,7 +221,12 @@ Each provider requires `name`, `enabled`, `base_url` (with trailing `/v1/`), `ap
 
 ### Virtual Models (Fallback Chains)
 
-Virtual models define the routing order. If a provider returns 429 or 5xx, the proxy transparently tries the next:
+Virtual models define the routing order. If a provider returns 429 or 5xx, the proxy transparently tries the next. Optional per-target fields state the routing intent explicitly:
+
+- `priority` (lower = preferred): targets without one keep their configured order after all prioritized targets.
+- `weight` (default policy only): proportional sharing among healthy targets in the same priority tier — `{ weight = 3 }` and `{ weight = 1 }` split traffic ~75/25 per request via a weighted lottery, instead of the first healthy target taking everything. Ignored by `fastest`/`cheapest`.
+
+Configs that set neither behave exactly as before:
 
 ```toml
 [virtual_models]
@@ -221,8 +243,8 @@ smart = [
 2. For each provider, it checks: **circuit breaker state** (Closed? Open? HalfOpen?), **rate-limit window** (cooling down?), **manual override** (admin-disabled?).
 3. The first healthy provider is selected for the request.
 4. On success: circuit resets to Closed, failure count drops to 0.
-5. On 429 (rate limit): sets a cooldown timer based on `retry-after` header (default 30s). After 3 failures, circuit opens.
-6. On 5xx: increments failure counter. After 3 failures, circuit opens for **60 × 2^(failures-3)** seconds.
+5. On 429 (rate limit): sets a cooldown timer based on `retry-after` header (default `rate_limit_fallback_secs`, 30s). After `circuit_failure_threshold` failures, circuit opens.
+6. On 5xx: increments failure counter. After `circuit_failure_threshold` (default 3) failures, circuit opens for **`circuit_base_cooldown_secs` × 2^(failures−threshold)** seconds (default 60s base).
 7. **HalfOpen probes**: After cooldown expires, a single probe request is allowed. Only one concurrent probe — others bypass via atomic `compare_exchange`.
 8. **Idle decay**: Every 5 minutes without a request, failure count decreases by 1. Below 3 failures, Open circuits automatically rehabilitate to Closed.
 
@@ -245,6 +267,33 @@ sampled, and unmeasured providers sort first so a newly added one is tried
 immediately rather than starved. Health checks (circuit breaker, rate limits,
 manual overrides) apply before ordering in all cases.
 
+### Model Aliases
+
+Point unmodified OpenAI clients at oxllm without editing their model lists:
+requests for an alias name route to its target virtual model, and `GET
+/v1/models` lists the aliases alongside their targets.
+
+```toml
+[aliases]
+gpt-4o = "smart"
+gpt-4o-mini = "fast"
+```
+
+`server.default_model` goes one step further and routes *any* unknown model
+name to a chosen virtual model instead of returning 400 — useful for clients
+whose model names you do not control.
+
+### Hot-Reload State Preservation
+
+A reload (config-file change, `oxllm reload`, or SIGHUP) keeps runtime state
+for every provider that keeps its name: circuit-breaker position, failure and
+rate-limit windows, request/token counters, admin offline overrides, and
+session-affinity pins. Editing the config mid-incident no longer re-enables a
+provider you took offline or resets failover history. Server-level fields
+that cannot be hot-swapped (`port`, `host`, `bind_family`, `otel_endpoint`,
+affinity TTL/capacity, `shutdown_timeout_secs`, `watch_config`) produce an
+explicit "restart required" warning in the reload response and logs.
+
 ### Session Affinity
 
 Requests that carry a session key stick to one provider while it stays
@@ -257,6 +306,41 @@ bounded (`session_affinity_capacity`, default 1024, LRU eviction). When the
 pinned provider's circuit trips, the session re-routes by policy immediately
 and re-pins to whatever serves it. Keyless traffic is unaffected and keeps
 rotating by policy.
+
+### Traffic Visibility
+
+A bounded ring of recent request records (metadata only: timestamp, endpoint,
+route, provider, model, status, attempts, latency, TTFT, error, request id —
+never bodies) is kept in memory (`server.request_log_capacity`, default 256):
+
+- `oxllm status` renders the most recent records, plus the daemon version and
+  the last reload outcome (failures and pending restart-required warnings).
+- `oxllm tail [-n N]` prints the last N records and then follows live traffic
+  over a localhost-only SSE stream; plain lines, so `grep`/`jq` compose.
+- Admin-offline providers show as "Offline (admin)" instead of looking healthy.
+
+### Decision Endpoints (/v1/systemone)
+
+llama.cpp decision models (typed choice/score questions answered in one
+forward pass) route through the provider pool like chat. Point a virtual
+model at decision-capable providers and POST to `/v1/systemone`:
+
+```toml
+[virtual_models]
+route-decisions = [
+  { provider = "llamacpp-local", model = "Kev-4B-Q4_K_M" },
+  { provider = "hosted-jev",     model = "jev" },
+]
+```
+
+```sh
+curl -X POST http://127.0.0.1:8080/v1/systemone \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"route-decisions","state":"router","questions":[...]}'
+```
+
+Model rewrite per target, circuit breaking, and failover all apply; the
+response passes through verbatim.
 
 ### Status & Metrics
 
@@ -290,7 +374,12 @@ oxllm serve -vv                      # trace: full request/response dump
 oxllm validate                       # checks env vars, provider cross-refs
 
 # Live dashboard (no external collector needed)
-oxllm status                         # virtual model routing table + per-provider counters
+oxllm status                         # version, routing tables, counters, recent requests
+oxllm status --host router.lan       # against a remote daemon (OXLLM_HOST/OXLLM_PORT)
+
+# Watch traffic as it happens (Ctrl-C to stop)
+oxllm tail                           # live stream of request records
+oxllm tail -n 20                     # last 20 records, then follow live traffic
 
 # Manage providers at runtime
 oxllm provider list                  # condensed provider status table
@@ -298,12 +387,16 @@ oxllm provider offline <name>        # take a provider out of rotation
 oxllm provider online <name>         # re-enable a disabled provider
 oxllm provider reset <name>          # clear circuit breaker, failures, rate limit
 
-# Config hot-reload (SIGHUP)
-oxllm reload
+# Config hot-reload (automatic on file change; manual trigger below)
+oxllm reload                         # POST /reload on -p PORT (default 8080),
+                                     # or --pid <pid> to SIGHUP directly
 
 # Graceful stop (drains in-flight SSE streams)
 oxllm stop
 ```
+
+`oxllm reload` and `oxllm stop` exit non-zero when no daemon can be reached, so
+`edit && oxllm reload` chains fail loudly instead of silently doing nothing.
 
 ### Example `oxllm status` Output (after ~5 hours of real use)
 

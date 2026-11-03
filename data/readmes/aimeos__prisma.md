@@ -117,9 +117,11 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 - [Google Translate](https://cloud.google.com/translate/docs/reference/rest/v2/translate)
 - [Google VertexAI](https://cloud.google.com/vertex-ai/generative-ai/docs)
 - [Groq](https://groq.com/)
+- [fal](https://fal.ai/docs)
 - [Hydracept](https://hydracept.com/)
 - [Ideogram](https://ideogram.ai/api)
 - [Kimi](https://platform.kimi.ai/docs/overview)
+- [Kling](https://kling.ai/document-api/)
 - [Luma](https://docs.agents.lumalabs.ai/)
 - [Meta Model API](https://dev.meta.ai/docs/overview)
 - [MiniMax](https://platform.minimax.io/docs/)
@@ -151,6 +153,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Azure**             | -       | -     | -       | -        |        | -       | beta  | -          | beta       |
 | **Deepgram**          | -       | -     | -       | -        |        | -       | yes   | -          | yes        |
 | **ElevenLabs**        | -       | -     | -       | -        |        | yes     | yes   | -          | yes        |
+| **fal**               | beta    | beta  | beta    | -        | beta   | beta    | beta  | beta       | -          |
 | **Google Gemini**     | -       | -     | -       | yes      |        | -       | -     | -          | -          |
 | **Groq**              | -       | -     | -       | yes      |        | -       | yes   | -          | yes        |
 | **Hydracept**         | yes     | -     | -       | -        | yes    | -       | yes   | yes        | -          |
@@ -172,6 +175,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Black Forest Labs** | -          | -      | -        | -      | -     | beta    | beta    | -       | -         | -        | beta    | beta   | beta   | -       | -         |
 | **Clipdrop**          | yes        |        | -        | yes    | yes   | yes     | -       | yes     | -         | -        | -       |        | yes    | yes     | -         |
 | **Cohere**            | -          |        | -        | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | yes       |
+| **fal**               | beta       | beta   | beta     | beta   | beta  | beta    | beta    | beta    | beta      | beta     | beta    | beta   | beta   | beta    | -         |
 | **Google Gemini**     | -          |        | yes      | -      | -     | yes     | -       | -       | -         | -        | yes     |        | -      | -       | -         |
 | **Groq**              | -          |        | yes      | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | -         |
 | **Hydracept**         | -          | yes    | -        | -      | -     | yes     | -       | -       | -         | -        | -       | beta   | -      | -       | -         |
@@ -200,6 +204,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Bedrock**           | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | yes             |
 | **Cohere**            | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | -               |
 | **Deepseek**          | yes   |        | yes        |           | -         | yes   | -         | yes          |                | yes           | yes             |
+| **fal**               | beta  |        | beta       |           | beta      | beta  | -         | yes          |                | yes           | yes             |
 | **DeepL**             |       |        |            | yes       |           |       |           |              |                |               |                 |
 | **Google Gemini**     | yes   |        | yes        |           | yes       | yes   | yes       | yes          | yes            | yes           | yes             |
 | **Google**            |       |        |            | yes       |           |       |           |              |                |               |                 |
@@ -227,10 +232,12 @@ must accept the mapped token budget or effort level; see [withThinkingBudget](#w
 | **Alibaba**           | beta   | yes      | beta   | beta    | beta    | beta   | beta   | -       |
 | **Bedrock Nova**      | -      | beta     | -      | beta    | -       | beta   | -      | -       |
 | **BytePlus**          | beta   | beta     | beta   | beta    | beta    | beta   | -      | -       |
+| **fal**               | beta   | -        | beta   | beta    | beta    | beta   | beta   | beta    |
 | **Google Gemini**     |        | yes      | -      | -       | -       |        | -      | -       |
 | **Google Omni**       |        | -        | -      | beta    | beta    |        | -      | -       |
 | **Google Veo**        | -      | -        | -      | beta    | -       | beta   | -      | -       |
 | **Hydracept**         | yes    | -        | -      | yes     | -       | yes    | -      | -       |
+| **Kling**             | -      | -        | -      | beta    | beta    | beta   | -      | -       |
 | **Luma**              | -      | -        | -      | beta    | beta    | beta   | beta   | -       |
 | **Meta**              |        | beta     | -      | -       | -       |        | -      | -       |
 | **MiniMax**           | -      | -        | -      | beta    | -       | beta   | -      | -       |
@@ -961,7 +968,7 @@ $provider->withToolChoice( Provider::REQUIRED );
 ```
 
 The choice applies to the first tool-loop step. Supported choices vary: Deepseek,
-Meta, Openrouter, Requesty and Z.AI only send `AUTO`; Groq and xAI omit `NONE`.
+fal, Meta, Openrouter, Requesty and Z.AI only send `AUTO`; Groq and xAI omit `NONE`.
 
 **Limiting tool calls:**
 
@@ -1192,6 +1199,7 @@ ignores the rest. Provider-native options can be supplied in the same array.
 
 **Supported options:**
 
+* [fal](https://fal.ai/models/fal-ai/elevenlabs/music/api) (any fal endpoint via `model()`)
 * [Hydracept](https://docs.hydracept.com)
 
 **Example:**
@@ -1221,6 +1229,13 @@ public function demix( Audio $audio, int $stems, array $options = [] ) : FileRes
 **Supported options:**
 
 * AudioPod
+* [fal](https://fal.ai/models/fal-ai/demucs/api) (any fal endpoint via `model()`)
+
+fal uses Demucs with four stems (vocals, drums, bass, other) for up to four `$stems`,
+six stems (plus guitar and piano) above, and returns the vocals only for one stem. The
+files of the response are keyed by the stem name, e.g. `$response->files()['vocals']`.
+Like all fal audio methods, `model()` selects another fal endpoint, all options are
+passed to it unchanged and pending requests can be stopped with `cancel()`.
 
 ### denoise
 
@@ -1237,6 +1252,7 @@ public function denoise( Audio $audio, array $options = [] ) : FileResponse
 **Supported options:**
 
 * [AudioPod](https://docs.audiopod.ai/api-reference/noise-reduction)
+* [fal](https://fal.ai/models/fal-ai/deepfilternet3/api) (any fal endpoint via `model()`)
 
 ### describe
 
@@ -1274,6 +1290,7 @@ public function resume( string $jobId ) : FileResponse|TextResponse
 **Supported providers:**
 
 * AudioPod: Only for `demix()`, `denoise()`, `revoice()`, `speak()` and `transcribe()`; the job ID is the status path
+* fal: The job ID is the response URL of the `queue.fal.run` HTTPS host or the configured API host
 * Hydracept: Only for `compose()`, `speak()` and `synthesize()`; the job ID is the Hydracept job ID
 
 **Example:**
@@ -1320,6 +1337,7 @@ public function revoice( Audio $audio, string $voice, array $options = [] ) : Fi
 
 * AudioPod
 * [ElevenLabs](https://elevenlabs.io/docs/api-reference/speech-to-speech/convert)
+* [fal](https://fal.ai/models/fal-ai/elevenlabs/voice-changer/api) (any fal endpoint via `model()`)
 * [Murf](https://murf.ai/api/docs/api-reference/voice-changer/convert)
 
 ### speak
@@ -1342,6 +1360,7 @@ public function speak( string $text, ?string $voice = null, array $options = [] 
 * [Azure](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech#convert-text-to-speech)
 * [Deepgram](https://developers.deepgram.com/reference/text-to-speech/speak-request)
 * [ElevenLabs](https://elevenlabs.io/docs/api-reference/text-to-speech/convert)
+* [fal](https://fal.ai/models/fal-ai/elevenlabs/tts/eleven-v3/api) (any fal endpoint via `model()`)
 * Groq
 * [Hydracept](https://docs.hydracept.com)
 * [Murf](https://murf.ai/api/docs/api-reference/text-to-speech/stream)
@@ -1365,6 +1384,7 @@ ignores the rest. Provider-native options can be supplied in the same array.
 
 **Supported options:**
 
+* [fal](https://fal.ai/models/fal-ai/elevenlabs/sound-effects/v2/api) (any fal endpoint via `model()`)
 * [Hydracept](https://docs.hydracept.com)
 
 **Example:**
@@ -1467,6 +1487,7 @@ public function background( Image $image, string $prompt, array $options = [] ) 
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/generateObjectCompositeV3Async)
 * Clipdrop
+* [fal](https://fal.ai/models/fal-ai/bria/background/replace/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/replace-background-v3#request)
 * [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/ai-backgrounds)
 * [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#replace-background) ([masked background](https://www.recraft.ai/docs/api-reference/endpoints#generate-background))
@@ -1499,6 +1520,7 @@ public function cancel( string $jobId ) : void
 **Supported providers:**
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/): Pending and running jobs; the job ID is the status URL
+* [fal](https://docs.fal.ai/model-apis/model-endpoints/queue#cancelling-a-request): Queued and running requests; the job ID is the response URL
 * [Hydracept](https://docs.hydracept.com): Pending and running jobs; the job ID is the Hydracept job ID
 * [Replicate](https://replicate.com/docs/reference/http#predictions.cancel): Starting and processing predictions; the job ID is the prediction URL
 
@@ -1532,6 +1554,7 @@ public function describe( Image $image, ?string $lang = null, array $options = [
 
 **Supported options:**
 
+* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via `model()`)
 * Google Gemini
 * Groq
 * [Ideogram V4](https://developer.ideogram.ai/api-reference/describe-prompts/describe-v4)
@@ -1568,6 +1591,7 @@ public function detext( Image $image, array $options = [] ) : FileResponse
 **Supported options:**
 
 * Clipdrop
+* [fal](https://fal.ai/models/fal-ai/image-editing/text-removal/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/tools/layerize-text-v3#request)
 * [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/ai-text-removal)
 
@@ -1605,6 +1629,7 @@ to remove.
 **Supported options:**
 
 * [Clipdrop](https://clipdrop.co/apis/docs/cleanup)
+* [fal](https://fal.ai/models/fal-ai/bria/eraser/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/tools/remove-object#request)
 * [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#erase-region)
 * [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1erase/post)
@@ -1645,6 +1670,7 @@ public function imagine( string $prompt, array $images = [], array $options = []
 * [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
 * [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-[pro])
 * Clipdrop
+* [fal FLUX.2](https://fal.ai/models/fal-ai/flux-2/api) ([Editing](https://fal.ai/models/fal-ai/flux-2/edit/api), any fal endpoint via `model()`)
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/image-generation#optional_configurations)
 * [Hydracept](https://docs.hydracept.com)
 * [Ideogram V4](https://developer.ideogram.ai/api-reference/generate-images/generate-v4) ([V3 fallback for reference and style options](https://developer.ideogram.ai/api-reference/generate-images/generate-v3))
@@ -1663,6 +1689,23 @@ public function imagine( string $prompt, array $images = [], array $options = []
 * [StabilityAI Ultra](https://platform.stability.ai/docs/api-reference#tag/Generate/paths/~1v2beta~1stable-image~1generate~1ultra/post)
 * [xAI Grok Image](https://docs.x.ai/docs/guides/image-generations) ([Multi-image editing](https://docs.x.ai/developers/model-capabilities/images/multi-image-editing))
 * [Z.AI](https://docs.z.ai/api-reference/image/generate-image)
+
+fal hosts hundreds of models, so each method uses a default endpoint and `model()` selects
+any other compatible fal endpoint. Prisma maps the prompt and images only and passes all
+options to the endpoint unchanged, so use the input fields documented on the model page.
+fal returns images on its `fal.media` CDN; pass `download_hosts` in the configuration if
+your requests are routed differently:
+
+```php
+Prisma::image()
+    ->using( 'fal', ['api_key' => 'xxx'] )
+    ->model( 'fal-ai/nano-banana-pro' )
+    ->imagine( 'A watercolor lighthouse at dusk', [], ['aspect_ratio' => '16:9'] );
+```
+
+The fal `describe()` and `recognize()` methods call the OpenRouter vision endpoint of fal
+synchronously, so `model()` selects the LLM (default: `google/gemini-3.8-flash`) and the
+response can't be resumed.
 
 Hydracept jobs belong to the `project_id` passed in the configuration and are polled for up to
 900 seconds by default; set `poll_timeout` to another number of seconds or `0` to disable the
@@ -1765,6 +1808,7 @@ to edit.
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/fillImagesV3Async)
 * [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
 * [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-an-image-with-flux1-fill-[pro]-using-an-input-image-and-mask)
+* [fal](https://fal.ai/models/fal-ai/flux-pro/v1/fill/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/edit-v3#request)
 * [OpenAI Dall-e-2](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-2#customize-image-output)
 * [OpenAI Dall-e-3](https://platform.openai.com/docs/guides/image-generation?image-generation-model=dall-e-3#customize-image-output)
@@ -1805,6 +1849,7 @@ public function isolate( Image $image, array $options = [] ) : FileResponse
 
 * [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
 * [Clipdrop](https://clipdrop.co/apis/docs/remove-background)
+* [fal](https://fal.ai/models/fal-ai/birefnet/v2/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/tools/remove-background#request)
 * [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/hd-background-removal)
 * [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#remove-background)
@@ -1841,6 +1886,7 @@ public function recognize( Image $image, array $options = [] ) : TextResponse;
 **Supported options:**
 
 * [Azure](https://learn.microsoft.com/en-us/rest/api/computervision/image-analysis/analyze-image)
+* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via `model()`)
 * [Mistral](https://docs.mistral.ai/api/endpoint/ocr#operation-ocr_v1_ocr_post)
 * Openrouter
 
@@ -1886,6 +1932,7 @@ public function relocate( Image $image, Image $bgimage, array $options = [] ) : 
 **Supported options:**
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/preciseComposite) ([adaptive](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/adaptiveComposite))
+* [fal](https://fal.ai/models/fal-ai/bria/background/replace/api) (any fal endpoint via `model()`)
 * [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/static-background)
 * [RemoveBG](https://www.remove.bg/api#api-reference)
 
@@ -1922,6 +1969,7 @@ public function repaint( Image $image, string $prompt, array $options = [] ) : F
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/firefly_image_v5_generate_async_v4)
 * [Black Forest Labs](https://docs.bfl.ai/flux_2/flux2_image_editing)
+* [fal](https://fal.ai/models/fal-ai/flux-pro/kontext/api) (any fal endpoint via `model()`)
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/image-generation#optional_configurations)
 * [Ideogram V4](https://developer.ideogram.ai/api-reference/edit-images/remix-v4) ([V3 fallback for reference and style options](https://developer.ideogram.ai/api-reference/edit-images/remix-v3))
 * [Meta Muse Image](https://dev.meta.ai/docs/api-reference/images/edit-image)
@@ -1962,6 +2010,7 @@ public function resume( string $jobId ) : FileResponse
 
 * Adobe Firefly: The job ID is the status URL and must point to a `firefly-*.adobe.io` HTTPS host or the configured API host
 * Black Forest Labs: The job ID is the polling URL and must be an HTTPS URL of `api.bfl.ai` or a regional host like `api.eu1.bfl.ai`
+* fal: The job ID is the response URL of the `queue.fal.run` HTTPS host or the configured API host
 * Hydracept: The job ID is the Hydracept job ID
 * Ideogram: Only for `imagine()` with the `async` option
 * ModelsLab: Only for queued generations; the job ID is the fetch URL of the `modelslab.com` HTTPS host or the configured API host
@@ -2014,6 +2063,7 @@ public function uncrop( Image $image,  int $top, int $right, int $bottom, int $l
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/expandImagesV3Async)
 * [Black Forest Labs](https://docs.bfl.ai/api-reference/models/expand-an-image-by-adding-pixels-on-any-side)
 * Clipdrop
+* [fal](https://fal.ai/models/fal-ai/bria/expand/api) (any fal endpoint via `model()`)
 * [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#image-outpainting)
 * [StabilityAI](https://platform.stability.ai/docs/api-reference#tag/Edit/paths/~1v2beta~1stable-image~1edit~1outpaint/post)
 
@@ -2049,6 +2099,7 @@ public function upscale( Image $image, int $factor, array $options = [] ) : File
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/preciseUpsamplerV3Async)
 * Clipdrop
+* [fal](https://fal.ai/models/fal-ai/seedvr/upscale/image/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/upscale#request)
 * [Photoroom](https://docs.photoroom.com/image-editing-api-plus-plan/preview-ai-upscale)
 * [Recraft](https://www.recraft.ai/docs/api-reference/endpoints#crisp-upscale) ([creative upscale](https://www.recraft.ai/docs/api-reference/endpoints#creative-upscale))
@@ -2187,6 +2238,7 @@ Iterating `$response->stream()` yields:
 * [Anthropic](https://docs.anthropic.com/en/api/messages-streaming)
 * [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-chat-completion)
 * [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
+* [fal](https://fal.ai/models/openrouter/router/openai/v1/chat/completions/api)
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/text-generation)
 * [Groq](https://console.groq.com/docs/text-chat)
 * [Kimi](https://platform.kimi.ai/docs/guide/utilize-the-streaming-output-feature-of-kimi-api)
@@ -2314,6 +2366,7 @@ public function structure( string $prompt, Schema $schema, array $files = [], ar
 * [Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html)
 * [Cohere](https://docs.cohere.com/reference/chat)
 * [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
+* [fal](https://fal.ai/models/openrouter/router/openai/v1/chat/completions/api)
 * [Google Gemini](https://ai.google.dev/gemini-api/docs/structured-output)
 * [Groq](https://console.groq.com/docs/api-reference#chat-create)
 * [Kimi](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart#structured-output)
@@ -2352,100 +2405,4 @@ $json = $textResponse->text(); // '{"name":"John","age":30}'
 Providers with mode selection default to sending the schema through their native
 structured-output API. Pass `['mode' => 'json']` to embed the schema in the prompt
 and parse the JSON response instead; `['mode' => 'structured']` selects native
-mode explicitly. Other values throw `BadRequestException` on these providers.
-`Schema::strict()` controls the strict flag where supported and defaults to false.
-
-Bedrock, Deepseek and Ollama always use JSON mode and ignore the option. Cohere
-also ignores `mode`, but always sends `response_format.json_schema`. Mistral uses
-prompt-based JSON through Chat Completions when custom tools are configured and
-ignores `mode` on that path.
-
-```php
-$textResponse = Prisma::text()
-    ->using( 'openai', ['api_key' => 'xxx'] )
-    ->ensure( 'structure' )
-    ->structure( 'Extract the person', $schema, [], ['mode' => 'json'] );
-```
-
-> **Warning:** `structured()` is the model's output parsed as-is — always treat it as untrusted. Guard two separate things:
->
-> * **Shape** — it is not validated against your schema. Native strict mode is provider-enforced, but JSON mode (`['mode' => 'json']`, and the JSON-only providers above) gives no guarantee the result matches the schema. Check it with `$schema->validate( $data )` (returns `[]` when valid).
-> * **Values** — even a schema-conformant result contains model-generated text. `validate()` verifies types and constraints, not safety, so never drop a value straight into SQL, a shell command, a file path, or markup. Use bound parameters, escaping, or allow-lists, exactly as you would for any user input.
->
-> ```php
-> $data = $textResponse->structured();
-> $errors = $schema->validate( $data ); // [] when valid
-> if( $errors ) {
->     // reject, retry, or handle the mismatch
-> }
-> ```
-
-### translate
-
-Translate one or more texts from one language to another.
-
-```php
-public function translate( array $texts, string $to, ?string $from = null, ?string $context = null, array $options = [] ) : TextResponse
-```
-
-* @param **array&#60;string&#62;** `$texts` Input texts to be translated
-* @param **string** `$to` ISO language code to translate the text into
-* @param **string&#124;null** `$from` ISO language code of the input text (optional, auto-detected if omitted)
-* @param **string&#124;null** `$context` Context for the translation (optional)
-* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
-* @return **TextResponse** Response text
-
-**Supported options:**
-
-* [Azure](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/translate)
-* [DeepL](https://developers.deepl.com/docs/api-reference/translate/openapi-spec-for-text-translation)
-* [Google](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate#authorization)
-
-**Example:**
-
-```php
-use Aimeos\Prisma\Prisma;
-
-$textResponse = Prisma::text()
-    ->using( 'deepl', ['api_key' => 'xxx'])
-    ->ensure( 'translate' )
-    ->translate( ['Hello', 'World'], 'de', 'en' );
-
-$texts = $textResponse->texts(); // ['Hallo', 'Welt']
-```
-
-Azure uses the global Translator endpoint `https://api.cognitive.microsofttranslator.com`
-by default. Pass the `region` of your resource if required or use the endpoint of your
-resource as `translate_url` option instead:
-
-```php
-Prisma::text()
-    ->using( 'azure', ['api_key' => 'xxx', 'region' => 'westeurope'] )
-    ->translate( ['Hello'], 'de', null, null, [
-        'translate_url' => 'https://myres.cognitiveservices.azure.com/translator/text/v3.0',
-    ] );
-```
-
-### vectorize
-
-Creates embedding vectors of the texts' content.
-
-```php
-public function vectorize( array $texts, ?int $size = null, array $options = [] ) : VectorResponse
-```
-
-* @param **array&#60;int, string&#62;** `$texts` List of input texts
-* @param **int&#124;null** `$size` Size of the resulting vector or null for provider default
-* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
-* @return **VectorResponse** Response vector object
-
-**Supported options:**
-
-* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/embedding-api-details)
-* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-embedding)
-* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/titan-embedding-models.html)
-* [Cohere](https://docs.cohere.com/reference/embed)
-* [Google Gemini](https://ai.google.dev/api/embeddings)
-* [Mistral](https://docs.mistral.ai/api/#tag/embeddings)
-* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
-* [Open
+mode explicitly. Other values throw `BadRequestException` on th

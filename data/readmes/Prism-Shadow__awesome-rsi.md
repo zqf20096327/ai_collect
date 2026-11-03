@@ -38,16 +38,16 @@ Awesome RSI collects **benchmarks, methods, and systems for Recursive Self-Impro
 
 <!-- BEGIN GENERATED COUNTS -->
 
-**115 method papers · 33 benchmark papers · 3 systems**
+**117 method papers · 33 benchmark papers · 3 systems**
 
 <!-- END GENERATED COUNTS -->
 
 | Looking for… | Start with… |
 | :--- | :--- |
-| An introduction to RSI | [Understanding RSI](https://prism-shadow.github.io/awesome-rsi/#blog/understanding-rsi) — an illustrated guide, available in English and Chinese. |
-| A method to build on | [Methods & Systems](https://prism-shadow.github.io/awesome-rsi/#methods) — filter by artifacts, topology, feedback, and more. |
-| A way to measure improvement | [Benchmarks](https://prism-shadow.github.io/awesome-rsi/#benchmarks) — compare artifacts and online, offline, or hybrid protocols. |
-| Connections between papers | [Citation graphs](https://prism-shadow.github.io/awesome-rsi/#graph-methods) — switch between methods and benchmarks, search for a node, zoom, and pan. |
+| An introduction to RSI | [Understanding RSI](https://prism-shadow.github.io/awesome-rsi/blog/understanding-rsi/) — an illustrated guide, available in English and Chinese. |
+| A method to build on | [Methods & Systems](https://prism-shadow.github.io/awesome-rsi/methods/) — filter by artifacts, topology, feedback, and more. |
+| A way to measure improvement | [Benchmarks](https://prism-shadow.github.io/awesome-rsi/benchmarks/) — compare artifacts and online, offline, or hybrid protocols. |
+| Connections between papers | [Citation graphs](https://prism-shadow.github.io/awesome-rsi/graph/) — switch between methods and benchmarks, search for a node, zoom, and pan. |
 
 ## Paper map
 
@@ -70,7 +70,7 @@ The tree shows examples from the collection. The lists below use the website's e
 
 ## Methods & Systems
 
-[Compare all dimensions on the website →](https://prism-shadow.github.io/awesome-rsi/#methods)
+[Compare all dimensions on the website →](https://prism-shadow.github.io/awesome-rsi/methods/)
 
 Grouped by RSI artifact and ordered by first publication or project release date, newest first. Conference labels reflect the venue recorded in the collection; projects link to their repositories.
 
@@ -317,6 +317,7 @@ Information or experience is stored, updated, and retrieved across steps, trajec
 | [From Failed Trajectories to Reliable LLM Agents: Diagnosing and Repairing Harness Flaws](https://arxiv.org/abs/2606.06324) | arXiv preprint |
 | [SkillSmith: Co-Evolving Skills and Tools for Self-Improving Agent Systems](https://arxiv.org/abs/2606.01314) | arXiv preprint |
 | [ExpGraph: Model-Agnostic Experience Learning with Graph-Structured Memory for LLM Agents](https://arxiv.org/abs/2605.30712) | arXiv preprint |
+| [Learning from Repair Experience: Self-Evolving Agents for Automated Vulnerability Repair](https://arxiv.org/abs/2605.30105) | ICSE 2027 |
 | [PANDO: Efficient Multimodal AI Agents via Online Skill Distillation](https://arxiv.org/abs/2605.24785) | arXiv preprint |
 | [Continual Harness: Online Adaptation for Self-Improving Foundation Agents](https://arxiv.org/abs/2605.09998) | arXiv preprint |
 | [LLMs Improving LLMs: Agentic Discovery for Test-Time Scaling](https://arxiv.org/abs/2605.08083) | arXiv preprint |
@@ -389,6 +390,7 @@ Reusable strategies, procedures, workflows, or skill resources are created and r
 | [DIVE: Unlocking Self-Improvement in Frozen Language Models Through Diversity-Driven Skill Evolution](https://arxiv.org/abs/2608.12486) | arXiv preprint |
 | [SkillHEX: Improving Agent Skills via Hypothesis-Driven Autonomous Exploration and Exploitation](https://arxiv.org/abs/2608.05628) | arXiv preprint |
 | [DarwinX: Evolving Agent Harnesses Through Natural Selection](https://arxiv.org/abs/2608.07545) | arXiv preprint |
+| [SKILL-KD: Contrastive Skill Distillation for LLM Agents](https://arxiv.org/abs/2607.28048) | arXiv preprint |
 | [SAGEAgent: A Self-Evolving Agent for Cost-Aware Modality Acquisition in Multimodal Survival Prediction](https://arxiv.org/abs/2607.09521) | arXiv preprint |
 | [ISM: Self-Improving Strategy Memory for Continual Mathematical Reasoning](https://arxiv.org/abs/2606.31191) | ICML 2026 AI for Math Workshop |
 | [When Rules Learn: A Self-Evolving Agent for Legal Case Retrieval](https://arxiv.org/abs/2606.17220) | ACL 2026 |
@@ -418,7 +420,7 @@ Other artifacts evolve, such as data strategies, experiment configurations, or t
 
 ## Benchmarks
 
-[Compare benchmark dimensions on the website →](https://prism-shadow.github.io/awesome-rsi/#benchmarks)
+[Compare benchmark dimensions on the website →](https://prism-shadow.github.io/awesome-rsi/benchmarks/)
 
 Grouped by RSI mode, newest first. Benchmarks that support multiple protocols appear in each relevant group. Artifact labels describe what evolves in the evaluated workflow.
 

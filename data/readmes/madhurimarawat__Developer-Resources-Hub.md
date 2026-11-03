@@ -113,6 +113,18 @@ Write articles, share ideas, and grow your developer presence online:
 
 ---
 
+### ✨ Text Formatting & Styling Tools
+
+Make your text stand out with stylish fonts, Unicode designs, bold formatting, and clean text for LinkedIn, Instagram, and other social media platforms:
+
+- **🎨 [YayText](https://yaytext.com/)**: A fantastic collection of fonts, text styles, and creative designs. Features a convenient side dropdown to explore different styles and a clipboard history to revisit previously copied text.
+- **✍️ [TextConverter](https://www.textconverter.net/)**: A handy collection of stylish fonts, text designs, and formatting options for creative text customization.
+- **🌈 [CoolFonts](https://coolfonts.cool/#generator)**: Explore a variety of creative fonts, decorative text, and emoji-based styles to make your posts more expressive.
+- **🧹 [MiniWebTool – Text Formatter](https://miniwebtool.com/text-formatter/)**: A simple tool for cleaning up text by removing extra spaces and blank lines, trimming lines, and converting text into different cases (UPPERCASE, lowercase, Title Case, and Sentence case).
+- **𝗕 [LingoJam – Bold Text Generator](https://lingojam.com/BoldTextGenerator)**: Quickly convert regular text into bold Unicode styles for headings, highlights, and emphasis in social media posts.
+
+---
+
 ### 📄 PDF Tools
 
 Convert, scan, edit, organize, and manage PDFs with these handy tools:
@@ -188,6 +200,7 @@ Convert, scan, edit, organize, and manage PDFs with these handy tools:
 
 #### 💻 Developer Tools
 
+- **🧪 [agent-qa](https://vostride.com)**: Run natural-language web and mobile tests through CLI or MCP, with memidex persistent memory, validated self-improvement, and reviewable run evidence.
 - **🔍 [BestJSON JSON Diff](https://bestjson.com/json-diff)**: Compare JSON API responses and inspect added, removed, or changed values by path, with positional, unordered, and record-ID array comparison modes.
   
 #### ⚙️ Dev Starter Kits
