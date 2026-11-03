@@ -194,9 +194,10 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 | [@15326325141](https://github.com/15326325141) | 🌹🌹🌹🌹🌹 | [#1786](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1786) [#1788](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1788) [#1789](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1789) [#1790](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1790) [#1791](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1791) |
 | [@zhengcookie](https://github.com/zhengcookie) | 🌹🌹🌹🌹🌹 | [#960](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/960) [#1003](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1003) [#1160](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1160) [#1291](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1291) [#1005](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/discussions/1005) |
 | [@Shimmernight](https://github.com/Shimmernight) | 🌹🌹🌹🌹 | [#277](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/277) [#106](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/106) [#275](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/275) [#287](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/287) |
+| [@ACGNnsj](https://github.com/ACGNnsj) | 🌹🌹🌹 | [#1498](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1498) [#1809](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1809) [#1771](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/1771) |
 | [@anupamme](https://github.com/anupamme) | 🌹🌹🌹 | [#727](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/727) [#728](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/728) [#1156](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/1156) |
 | [@9agj](https://github.com/9agj) | 🌹🌹🌹 | [#992](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/992) [#993](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/993) [#994](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/994) |
-| [@ACGNnsj](https://github.com/ACGNnsj) | 🌹🌹 | [#1498](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1498) [#1771](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/pull/1771) |
+| [@CypressStar](https://github.com/CypressStar) | 🌹🌹 | [#1671](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1671) [#1808](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1808) |
 | [@SAXEM1997](https://github.com/SAXEM1997) | 🌹🌹 | [#1566](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1566) [#1612](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1612) |
 | [@Drayee](https://github.com/Drayee) | 🌹🌹 | [#1101](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1101) [#1606](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1606) |
 | [@q4452542007](https://github.com/q4452542007) | 🌹🌹 | [#1555](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1555) [#1578](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/discussions/1578) |
@@ -216,7 +217,6 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 | [@clipsheep6](https://github.com/clipsheep6) | 🌹 | [#1767](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1767) |
 | [@Ba7nice](https://github.com/Ba7nice) | 🌹 | [#1733](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1733) |
 | [@shadapang](https://github.com/shadapang) | 🌹 | [#1672](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1672) |
-| [@CypressStar](https://github.com/CypressStar) | 🌹 | [#1671](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1671) |
 | [@yzysdq](https://github.com/yzysdq) | 🌹 | [#1621](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1621) |
 | [@SupingZhou](https://github.com/SupingZhou) | 🌹 | [#1598](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1598) |
 | [@danyanp](https://github.com/danyanp) | 🌹 | [#1595](https://github.com/FeatherHunter/dsh-mattpocock-skills-deck/issues/1595) |
@@ -257,7 +257,7 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 
 👏欢迎提交PR、ISSUE。星星之火可以燎原🔥有任何建议、意见、想法、吐槽、idea都可以进群交流。
 
-<table align="center"><tr><td align="center"><b>飞书群（主）</b></td><td align="center"><b>QQ群（新）</b></td><td align="center"><b>微信群（新）</b></td></tr><tr><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.5/data/img/card-feishu.png" width="260" alt="DSH 插件交流群 飞书群二维码" /></td><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.5/data/img/card-qq.png" width="260" alt="DSH 插件交流群 QQ 群二维码" /></td><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.5/data/img/card-wechat-2026-10-31.png?v=20261031" width="260" alt="DSH 插件交流群微信群二维码" /></td></tr></table>
+<table align="center"><tr><td align="center"><b>飞书群（主）</b></td><td align="center"><b>QQ群（新）</b></td><td align="center"><b>微信群（新）</b></td></tr><tr><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.7/data/img/card-feishu.png" width="260" alt="DSH 插件交流群 飞书群二维码" /></td><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.7/data/img/card-qq.png" width="260" alt="DSH 插件交流群 QQ 群二维码" /></td><td><img src="https://cdn.jsdelivr.net/npm/dsh-featherhunter-plugin-base@0.1.7/data/img/card-wechat-2026-10-31.png?v=20261031" width="260" alt="DSH 插件交流群微信群二维码" /></td></tr></table>
 
 </div>
 <!-- CONTACT-END -->
@@ -267,9 +267,9 @@ DSH侧边栏-总览任务面板全貌。通过插件内置SKILLS的任务拆分�
 
 <a href="https://featherhunter.github.io/dsh-mattpocock-skills-deck/star-history.html">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=202611010000" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611010000" />
-  <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611010000" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-dark.svg?v=202611020000" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611020000" />
+  <img alt="Star History Chart" src="https://raw.githubusercontent.com/FeatherHunter/dsh-mattpocock-skills-deck/main/docs/star-history-light.svg?v=202611020000" />
   </picture>
 </a>
 

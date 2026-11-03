@@ -17,9 +17,9 @@ imagery). Across forty-five subject-fold runs per configuration, ATCNet achieves
 inference 44 percent faster per trial. Normalized by parameter count, Mini-ATCNet is approximately
 twelve times more efficient in accuracy delivered per million parameters. These results are
 presented as a quantified trade-off rather than a claim that either configuration is unconditionally
-superior, and the per-subject and per-class breakdowns further show that the accuracy gap between
-the two configurations is not uniform, but concentrated in subjects and classes that are already
-harder to classify under the full model.
+superior. The per-subject breakdown shows that the full model was more accurate for every subject,
+with differences ranging from 7.0 to 18.0 percentage points that did not depend measurably on how
+well the full model performed for a given subject.
 
 ## 1. Introduction
 
@@ -224,14 +224,16 @@ showing one standard deviation across forty-five subject-fold runs per configura
 *Figure 2. Mean accuracy per subject (averaged across five folds), compared against chance level
 (25 percent for four-class classification).*
 
-The accuracy gap between the two configurations is not uniform across subjects. For subjects with
-comparatively high accuracy under both configurations (S03, S07, S08), Mini-ATCNet remains within
-four to eight percentage points of ATCNet_full. For subjects with comparatively low accuracy under
-both configurations (S04, S05, S06), the gap widens considerably. This pattern is consistent with
-the reduced capacity of Mini-ATCNet mattering most precisely where the underlying classification
-problem is already harder for a given subject's EEG signal, a phenomenon documented elsewhere in the
-BCI literature under the informal term "BCI illiteracy," rather than the smaller model imposing a
-fixed accuracy penalty uniformly across all subjects.
+ATCNet_full was more accurate than Mini-ATCNet for every subject, but the size of the difference
+varied from 7.0 percentage points (S03) to 18.0 (S01). The largest differences occurred for S01
+(18.0), S09 (17.0), and S05 (14.9), and the smallest for S03 (7.0), S08 (8.0), and S06 (8.4). The
+difference did not depend on how well the full model performed for a subject: the Spearman
+correlation between the accuracy of ATCNet_full and the difference was -0.10 (p = 0.80, n = 9).
+The retained accuracy, defined as the ratio of the accuracy of Mini-ATCNet to that of ATCNet_full,
+ranged from 0.72 (S05) to 0.91 (S03), and its correlation with the accuracy of ATCNet_full was
+positive but not significant (rho = 0.52, p = 0.15). With nine subjects, these correlations cannot
+exclude a moderate dependence, so the data do not support a claim that the smaller model fails
+specifically on the subjects that are hardest for the full model.
 
 ### 4.2 Per-Class Analysis
 
@@ -239,11 +241,11 @@ fixed accuracy penalty uniformly across all subjects.
 
 *Figure 3. Per-class F1 score, pooled across all subjects and folds.*
 
-The same unevenness observed across subjects is also present across classes. The "Foot" class shows
-the largest gap between configurations (F1 of 0.64 for ATCNet_full versus 0.50 for Mini-ATCNet),
-while "Right" shows the smallest (0.68 versus 0.57). Foot is also the weakest class for ATCNet_full
-itself, suggesting that Mini-ATCNet's reduced capacity again disproportionately affects classes that
-were already the most difficult for the full model, rather than degrading all classes equally.
+Mini-ATCNet scored a lower F1 than ATCNet_full for every class: by 0.11 for left hand, 0.11 for
+right hand, 0.14 for foot (0.64 versus 0.50), and 0.12 for tongue. Foot was the weakest class for
+both configurations, and its recall fell the most (from 0.58 to 0.43). The differences between
+classes are small relative to the two-decimal rounding of the classification reports, so they should
+not be read as a strong class-specific effect.
 
 ### 4.3 Accuracy-Efficiency Trade-off
 
@@ -337,8 +339,8 @@ unconditionally superior to the other.
   deployment-realistic generalization setting.
 - **Per-subject hyperparameter tuning.** Tuning learning rate, warm-up length, and regularization
   strength individually per subject, rather than sharing one configuration across all nine subjects,
-  could close part of the observed gap, particularly for the lower-accuracy subjects identified in
-  Section 4.1.
+  could close part of the observed gap, particularly for the subjects with the largest differences
+  identified in Section 4.1.
 - **Ensembling across fold-level models.** Combining the predictions of the five fold-level models
   saved for each subject at inference time could reduce the high per-subject variance visible in
   Figure 2 without requiring any architectural change.

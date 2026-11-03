@@ -91,9 +91,9 @@ coexist out of the box.
 
 ```bash
 kubectl create namespace dexaflow
-helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.7 -n dexaflow \
-  --set image.tag=v0.5.7 \
-  --set migrations.image.tag=v0.5.7 \
+helm install dexaflow oci://ghcr.io/dexadata/charts/dexaflow --version 0.5.8 -n dexaflow \
+  --set image.tag=v0.5.8 \
+  --set migrations.image.tag=v0.5.8 \
   --set database.url='postgres://USER:PASS@HOST:5432/dexaflow?sslmode=verify-full' \
   --set redis.url='rediss://HOST:6380/0' \
   --set auth.jwtSecret="$(openssl rand -base64 64)" \
@@ -288,7 +288,9 @@ certified for production; pin to a specific tag, read the
 [backup/restore](https://dexaflow.dexadata.ai/operate/backup-restore/) before you need to.
 
 Versioning follows [ADR 0037](https://dexaflow.dexadata.ai/project/adrs/0037-release-version-scheme/):
-`vX.Y.Z-rc.N → vX.Y.Z`, no separate alpha/beta.
+`vX.Y.Z-rc.N → vX.Y.Z`, no separate alpha/beta. What a patch may contain, how long each minor is
+supported and how features are deprecated is in the
+[versioning and support policy](website/content/project/versioning.md).
 
 **Implemented today:**
 

@@ -141,6 +141,7 @@ on the Notes page to choose its papers; untick one and the note's highlight ther
 - The **Notes** page lists every note, and filters them by paper or by "No paper".
 - Each note shows who wrote it: **You**, **AI**, or **AI · edited**.
 - Filter the notes list to show only your notes, only AI notes, or both.
+- Test yourself after each reading pass: write the five Cs, a summary or a reconstruction, and the model points out what's missing or unsupported, with links to the passages. It never writes the answer for you.
 
 **Ask a paper questions**
 
@@ -225,14 +226,17 @@ arXiv and Unpaywall resolution still applies.
 API keys stay in your local database and are never sent back to the browser. Adding a paper downloads its PDF from the
 free link found. Importing from Zotero fetches free copies exactly like adding a paper by DOI; it's on by default and
 you can turn it off for an import. None of them send a paper's text.
+Checking an exit test sends that note and the passages it reads to the model you picked; a Cloud model asks first.
 An MCP client you connect, such as Claude Desktop, receives what its tools return: passages from your papers, paper
-details (with your reading pass and decision) and workspace names, and every note on a paper marked as yours or AI.
+details (with your reading pass and decision) and workspace names, and every note on a paper marked as yours or AI. If it works on a manuscript, it also receives the text of the files it reads and the compile output.
 Claude Desktop and Claude Code send what the tools return to Anthropic.
+- **Your words are yours.** Claude can write in your manuscripts only through an MCP client you connect, and it asks you first (until you choose "Always allow"). Each change keeps an earlier version you can restore; History holds the newest 20 Claude edits, and your own history is kept apart. PaperLab's own AI reviewer never writes your text.
 - **Updates are announced, never installed.** Each time it opens, the desktop app asks GitHub whether a newer version
 is out and offers a download link when there is one. It is the only request the app makes on its own; turn it off in
 **Settings → Desktop app**.
 - **An upgrade keeps a way back.** Before a new version first starts, the desktop app saves a copy of your library's
 database in its data folder, keeping only the latest.
+- **The model checks your understanding; it never stands in for it.** Reading-pass tests take only text you wrote. The model's side is a list of what's missing or unsupported, each line citing the paper, with nothing to paste.
 - **AI is always labelled.** AI text is stored separately from yours, keeps the model and prompt version that
 produced it, and shows an AI badge. Editing an AI note marks it "AI · edited", never "You".
 - **Answers show their sources.** Chat answers cite passages you can click, so you can check every claim against the paper.
@@ -431,6 +435,7 @@ Systematic search and screening:
 - `list_hits`: a run's results, filtered by your decision, with any AI suggestion and each hit's source type, peer-review status, published DOI and venue;
 - `review_hits`: records your screening decisions on hits, with a reason when you exclude, and optional `tags` that land on the paper when it is imported;
 - `run_prescreen`: has your default model suggest include, exclude or unsure for undecided hits (a remote default model is refused, naming its host, unless you agreed and the assistant passes `allow_remote`, since your abstracts would leave your machine; a workspace-wide run over 500 hits asks for `confirm`; `run_ids` queues several search runs as one job);
+- `recheck_free_copies`: looks again for free PDFs of a workspace's papers saved without one, optionally by tag.
 - `enrich_papers`: finds the published venue, DOI and peer-review status of library papers that are the arXiv copy of a published paper, from Semantic Scholar in the background (call it again to see how many are left); papers you edited by hand keep your values;
 - `enrich_hits`: fills peer-review, published DOI and venue, and missing abstracts, for hits found before those existed, from Semantic Scholar in the background (call it again to see how many are left); it also clears the "no abstract" suggestion of undecided hits that now have one, so `run_prescreen` picks them up again;
 - `stop_prescreen`: stops AI pre-screening that is running; the suggestions made so far stay;
@@ -442,6 +447,23 @@ Systematic search and screening:
 - `get_prisma`: the PRISMA flow counts for a workspace or one run;
 - `get_screening_criteria`: a workspace's research question and screening criteria;
 - `set_screening_criteria`: changes them, which clears the AI suggestions, so Claude asks you first.
+
+Writing studio:
+- `list_manuscripts`: your manuscripts, with workspace, main file and compile status;
+- `create_manuscript`: a new manuscript from a template (article, IEEE, ACM, LNCS or Elsevier), optionally tied to a workspace;
+- `list_manuscript_files`: a manuscript's files, without their text;
+- `read_manuscript_file`: a file's text, or a range of lines, with the `updated_at` Claude passes back as `base` when it changes the file;
+- `create_manuscript_file`: a new text file, such as `sections/results.tex`;
+- `write_manuscript_file`: replaces a whole text file;
+- `edit_manuscript_file`: changes one passage that matches exactly once;
+- `rename_manuscript_file`: renames or moves a text file (not the main file);
+- `delete_manuscript_file`: deletes a text file, only when you ask;
+- `add_manuscript_figure`: adds an image or PDF at a new path; it never overwrites a file;
+- `compile_manuscript`: starts a compile and returns at once;
+- `get_compile_result`: the latest compile's status, errors with file and line, and page count;
+- `read_manuscript_pdf_text`: the compiled PDF's text, page by page.
+
+Claude Desktop asks you before each tool call until you choose "Always allow" for it. A write to a manuscript keeps an earlier version in History, marked as a Claude edit; History holds the newest 20 of these, and your own autosaves and compiles are kept separately. Every change names the version it was based on, so Claude cannot overwrite what you typed meanwhile. It cannot write `paperlab.bib`, which PaperLab generates from your papers, or delete a manuscript.
 
 Checking claims:
 - `verify_claim`: whether a library paper supports a claim, with a quote from the paper;
@@ -522,7 +544,7 @@ backend/
   app/core/        domain logic: chunking, retrieval, chat, note provenance rules
   app/providers/   PDF extraction, the search model and its download, OpenAlex, LLM adapters (Ollama, Anthropic, OpenAI-compatible, fake), Ollama pull/delete
   app/workers/     the ARQ jobs: ingestion and the references fetch
-  mcp_server/      the MCP server Claude Desktop starts: search, papers, related papers, notes
+  mcp_server/      the MCP server Claude Desktop starts: search, papers, notes, search runs, manuscripts
   prompts/         versioned prompts
   evals/           retrieval eval: recall@k over questions.yaml
 frontend/

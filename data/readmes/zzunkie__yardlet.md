@@ -47,6 +47,10 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
   (see [Personal agents](docs/PERSONAL_AGENTS.md) for current limits).
 - **Scheduled tasks** that run while Yardlet is open, and session tools that let one task read,
   message or start another.
+- **Another Mac's tasks.** Pair Yardlet on another Mac once with a link from Settings › Remote, then
+  follow and drive that Mac's tasks in a window of their own (File › Connect to Mac…), on the same
+  network, over Tailscale or through the end-to-end encrypted relay. Sign-ins and sessions stay on
+  the Mac that runs them.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/review-dark.png">
@@ -111,7 +115,7 @@ Settings > General > Login Items & Extensions**. To remove Yardlet's own data as
 
 Yardlet has no analytics and no server that receives your work. Task metadata, drafts and reading
 caches live under `~/.yardlet`; agent sessions stay in each agent's own store. If you pair a phone
-with the phone remote and it is away from your network, its end-to-end encrypted messages pass
+or another Mac with the remote and it is away from your network, its end-to-end encrypted messages pass
 through Yardlet's relay at `relay.yardlet.app`, which cannot read them and stores none
 ([relay/README.md](relay/README.md)). Connector sign-ins are kept in the
 macOS Keychain, and connector calls go straight from your Mac to the service. What an agent reads
@@ -156,8 +160,9 @@ Three helpers in the app bundle do work outside the main process:
 
 - Yardlet runs on macOS 15 or later on Apple silicon only.
 - Connectors, browser tools and session tools reach Codex, Claude Code and the agents that use ACP
-  (OpenCode, Kimi Code, Grok Build, Hermes). Cursor Agent, Antigravity CLI, Pi and Muse Code have
-  no way to add an MCP server to one session, so their tasks run without them.
+  (OpenCode, Antigravity CLI 1.4.11 or later, Kimi Code, Grok Build, Hermes). Cursor Agent, Pi,
+  Muse Code and earlier Antigravity CLI versions have no way to add an MCP server to one session,
+  so their tasks run without them.
 - Scheduled tasks run only while Yardlet is open. A run missed while it was closed runs once when it
   opens again, within 7 days.
 - The built-in browser cannot use passkeys saved in iCloud Keychain
@@ -261,12 +266,13 @@ of Xcode 16.0, since its macOS 15 images run the latest 15.x.
 ### Screenshots and demo videos
 
 Debug builds carry a showcase scene for public screenshots and videos: made-up projects, people and
-accounts, in English, with Codex, Claude Code and OpenCode tasks, a pull request whose checks
-passed, and a turn that can play over and over for recording (`--ui-fixture=showcase`, optionally
-with `--ui-fixture-playback`). `scripts/showcase/capture.sh <folder>` takes the stills and the
-looping videos in light and dark mode from a QA copy of `.build/Yardlet.app` with its own bundle
-identifier and temporary home, then moves that copy to the Trash. It needs the screen unlocked and
-the Screen Recording permission; see the script's header for the scenes and file names.
+accounts, in English, with Codex, Claude Code and OpenCode tasks and a pull request whose checks
+passed (`--ui-fixture=showcase`). With `--ui-fixture-playback` it plays a round over and over for
+recording: beside a running Claude Code task, a Codex task is started on the account with room
+left. `scripts/showcase/capture.sh <folder>` takes the stills and the looping videos in light and
+dark mode from a QA copy of `.build/Yardlet.app` with its own bundle identifier and temporary home,
+then moves that copy to the Trash. It needs the screen unlocked and the Screen Recording permission;
+see the script's header for the scenes and file names.
 
 ### Signing and notarization
 

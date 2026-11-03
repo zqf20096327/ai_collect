@@ -160,10 +160,18 @@ memory model and per-slice verification:
 half-truncated rotary on the q and k thirds of qkv replaces the learned `wpe` add: `wpe` stays in
 the parameter layout (checkpoint tensor list, ZeRO shards and Muon owner-space unchanged) but is
 not added, gets no gradient, is zero from a from-scratch init and is left out of the Muon-mode
-AdamW ranges. A rotary checkpoint is only meaningful in a rotary build: the flag is stored in the
-checkpoint headers, a rotary model `.bin` is refused by a non-rotary build, and resuming refuses a
-mismatch in either direction (a non-rotary `.bin`, e.g. pretrained GPT-2, still initialises a
-rotary run, with the obvious loss jump). Default-build checkpoints are byte-identical to before.
+AdamW ranges. A rotary checkpoint is only meaningful in a rotary build, and a QK-norm
+(`-D LLMM_QK_NORM=1`) checkpoint only in a QK-norm build, so both are recorded in the checkpoint
+headers (flags word: bit 0 rotary, bit 1 untied head in state files, bit 2 QK-norm). A model `.bin`
+carrying a bit the build lacks is refused by the trainer's `-e`, by resume and by `infer_gpt2`,
+naming the bit; resuming refuses a mismatch in either direction (a state file written before bit 2
+existed records rotary only, so a QK-norm build refuses to resume it). A `.bin` without the bit,
+e.g. pretrained GPT-2, still initialises a flagged run (`-e`) and `infer_gpt2` runs it with the
+build's architecture after printing a note, as the trainer's `-e` does (the verify gates rely on this);
+`infer_gpt2` refuses a stock-`gpt2` safetensors in a flagged build. Checkpoints written
+before the QK-norm bit existed record rotary only (the published headline files were corrected and that
+repo's history squashed, though the originals can still be fetched by their old commit IDs); write a corrected copy with `scripts/set_checkpoint_arch_flags.py`. The MAX graphs refuse any flagged file.
+Default-build checkpoints are byte-identical to before.
 Reference (`GPT2_ROTARY=1` in `train_gpt2.py`), gates and results:
 [`docs/ai/rotary_embeddings_w8_2026-10-30.md`](docs/ai/rotary_embeddings_w8_2026-10-30.md).
 
@@ -181,6 +189,20 @@ Muon vs AdamW on this box (GPT-2 124M from scratch, FineWeb, bf16, B=32 T=1024 a
 Val loss vs step for the three arms (left: 600 steps x 3 seeds; middle: 2000 steps, tuned Muon passes AdamW's final loss by step 800) and the 300-step Muon lr sweep (right). Reproduce with `make figure-muon`.
 
 The follow-up campaign ranked nine modded-nanogpt ideas on the tuned-Muon recipe at 300 steps (single seed, so differences under about 0.02 are noise): a zero-warmup linear-cooldown (WSD) schedule is the largest gain, rotary embeddings are second, QK-norm helps and bounds the attention logit, the AdamW-range learning rate has to stay at the shared rate, and the rest sit inside the noise band. Nothing becomes a default without three seeds. Details in [`docs/ai/modded_nanogpt_adoption_results_2026-10-30.md`](docs/ai/modded_nanogpt_adoption_results_2026-10-30.md); reproduce with `make figure-adoption`.
+
+Three-seed confirmation of the recommended recipe (WSD cooldown, momentum ramp, rotary, QK-norm; 600 steps, init seeds 42/1/2, same setup as the table above but with `-c 0.1 -gc 1.0`): val loss at step 600 is 4.346 for the campaign base and 4.095 for the combined recipe, a gain of 0.250 (per seed 0.246 to 0.256) against seed spreads of 0.010 (base) and 0.003 (combined). The gain is smaller than the sum of the 300-step single-item gains, and the recipe costs about 6% step time measured interleaved with the base before the row passes were fused (fusing saves about 1.7% on an idle GPU; still no fresh idle base in the same session). Reproduce with `make figure-adoption-seeds`; details and per-seed table in the [results doc](docs/ai/modded_nanogpt_adoption_results_2026-10-30.md).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/modded_nanogpt_adoption_seeds_2026-10-31_dark.png">
+  <img alt="Three-seed confirmation of the combined adoption recipe: val loss per seed, paired step-600 values, gain by step, train loss and step time" src="figures/modded_nanogpt_adoption_seeds_2026-10-31.png">
+</picture>
+
+Headline run: the same recipe at the full 524,288 tokens/step (one seed, `-x 5700`, 2.99B tokens, 17 h on one GB10, pre-fusion kernels) against two in-house AdamW runs of 10.25B tokens. On the same 10.5M-token val set (`-m 320`) the better one, the current `model.safetensors` of `gpt2-124m-fineweb-mojo` (7 GPUs, 458,752 tokens/step), scores 3.2784, and the recipe passes that by 2.99B tokens, about 3.4x fewer, ending at 3.2704. The 524k-token AdamW run the recipe was designed against (`model_19552.bin`) scores 3.2900 there, and the recipe passes that at 2.88B tokens, about 3.6x fewer. That second run's own 20-batch val bottoms out at 3.2807 and reads 0.0093 below the 320-batch one at its final checkpoint (the bias at earlier checkpoints is unmeasured, so its crossing tokens on that val are not same-val). The recipe's first val <= 3.28 is at 2.94B tokens. That figure belongs to the (recipe, horizon) pair, since it falls in the cooldown: the same recipe at `-x 3800` (1.99B tokens) ends at 3.3249 and does not cross. It is one seed, the 5700-step run resumed from step 2000 of the 3800-step run (before either cooldown), and the learning rate was tuned at 131k tokens/step. modded-nanogpt's under 0.7B tokens uses a larger architecture stack and is not like-for-like. Reproduce with `make figure-adoption-headline`; table, caveats and the per-eval numbers in the [results doc](docs/ai/modded_nanogpt_adoption_results_2026-10-30.md). Weights and resume state: [ulmentflam/gpt2-124m-fineweb-muon-rotary-qknorm-mojo](https://huggingface.co/ulmentflam/gpt2-124m-fineweb-muon-rotary-qknorm-mojo) (the raw `.bin` plus a `model.safetensors` with `model_type: llm_mojo_gpt2`; both need a `-D LLMM_ROTARY=1 -D LLMM_QK_NORM=1` build of llm.mojo to compute the right model). `AutoConfig`, `AutoModelForCausalLM` and `pipeline` refuse that safetensors by design; an explicit `GPT2LMHeadModel.from_pretrained` loads it with a warning and a randomly initialised `wpe` and computes the wrong model (it is not stock GPT-2). The safetensors comes from `python scripts/export_to_hf.py --input model_5700.bin --output <dir>` (a rotary-only file needs `--flags-confirmed`, `--attn-scale` records a non-default scale) and is checked by `scripts/check_hf_export.py --expect-loss`; see [the doc](docs/ai/arch_flags_and_safetensors_export_2026-11-02.md).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/modded_nanogpt_adoption_headline_2026-11-02_dark.png">
+  <img alt="Headline run: val loss vs tokens for the recipe at two horizons and the AdamW baseline, the crossing zoomed with both cooldowns, the learning rate, and the max attention logit" src="figures/modded_nanogpt_adoption_headline_2026-11-02.png">
+</picture>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="figures/modded_nanogpt_adoption_2026-10-30_dark.png">

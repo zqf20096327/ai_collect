@@ -162,6 +162,8 @@ langfuse skills install --all
 langfuse skills update
 ```
 
+Skills commands reject API manifests that do not match the requested version or label (exit code 7). `--force` does not bypass this validation.
+
 Publish a skill maintained in your repository:
 
 ```sh
@@ -170,6 +172,17 @@ langfuse skills push ./path/to/skills/skill_name \
   --commit-message "commit message"
 langfuse skills push ./path/to/skills/skill_name --label production
 ```
+
+Push includes tracked files and non-ignored untracked files in Git checkouts, and skips `.git` and `.gitignore` metadata. Git must be installed and able to read the checkout; inspection failures stop the push. Outside Git, all supported files are included by default.
+
+Use repeatable `--exclude <path>` to omit specific files or directories, including outside Git. Paths are literal (no globs) and relative to each skill directory. Excluding the required root `SKILL.md` makes a skill invalid.
+
+```sh
+langfuse skills push ./path/to/skills/skill_name \
+  --exclude credentials.json --exclude private/ --dry-run --json
+```
+
+Dry runs list `included` paths and `excluded` paths with reasons (`gitignore`, `exclude`, or `git-metadata`). Excluded directories are listed once and are not traversed. Tracked files remain eligible even if an ignore rule matches them; review the file list before publishing. Exclusions only affect new versions, so credentials exposed in older versions still need rotation.
 
 Push all skills under a directory with opt-in recursive discovery:
 

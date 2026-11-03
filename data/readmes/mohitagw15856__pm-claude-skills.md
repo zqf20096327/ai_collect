@@ -52,6 +52,8 @@ Your assistant loads [user-interview-synthesis](skills/user-interview-synthesis/
   <a href="https://github.com/mohitagw15856/pm-claude-skills/releases"><img src="https://img.shields.io/github/v/release/mohitagw15856/pm-claude-skills?label=version&color=brightgreen" alt="Version"></a>
   <a href="https://www.npmjs.com/package/pm-claude-skills"><img src="https://img.shields.io/npm/v/pm-claude-skills?logo=npm&color=cb3837" alt="npm"></a>
   <a href="#-install-in-30-seconds"><img src="https://img.shields.io/badge/Anthropic%20Plugin%20Directory-Published-D97757?logo=anthropic&logoColor=white" alt="In the official Anthropic plugin directory"></a>
+  <a href="https://github.com/BehiSecc/awesome-claude-skills"><img src="https://img.shields.io/badge/Listed%20in-awesome--claude--skills-blue" alt="Listed in awesome-claude-skills"></a>
+  <a href="https://codespaces.new/mohitagw15856/pm-claude-skills"><img src="https://img.shields.io/badge/Open%20in-Codespaces-181717?logo=github" alt="Open in GitHub Codespaces"></a>
   <a href=".github/workflows/skillcheck.yml"><img src="https://img.shields.io/github/actions/workflow/status/mohitagw15856/pm-claude-skills/skillcheck.yml?branch=main&label=SkillCheck" alt="SkillCheck"></a>
   <a href="SKILLSPEC.md"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fpm-skills-mcp.pm-claude-skills.workers.dev%2Fbadge%3Frepo%3Dmohitagw15856%2Fpm-claude-skills%26path%3Dskills" alt="SkillSpec conformance level, graded live"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License"></a>
@@ -73,6 +75,20 @@ npx --registry=https://registry.npmmirror.com pm-claude-skills add  # 中国大�
 ```
 
 Then just say what you need: *"Decode this job ad and tell me where I am weak."* Nothing here can break your setup: a skill is a markdown file your AI reads; installing copies text files, uninstalling deletes them. [Read one first](skills/lease-decoder/SKILL.md). Per-tool instructions: [docs/installation.md](docs/installation.md) · ChatGPT and Gemini: copy from [`exports/`](https://github.com/mohitagw15856/pm-claude-skills/tree/exports) · MCP: `claude mcp add pm-skills -- npx -y -p pm-claude-skills pm-claude-skills-mcp`
+
+## 🔄 Keep it updated
+
+Skills improve every week. Whichever way you installed, updating is one step.
+
+| You installed with | Update with |
+|---|---|
+| `npx pm-claude-skills add` (any tool) | Run the same command again. `npx pm-claude-skills doctor` lists what is installed and what is stale. |
+| The Claude Code marketplace | Open `/plugin`, pick the pm-claude-skills marketplace and choose Update. |
+| The Python package | `pip install -U pm-skills` |
+| The MCP server | Use `npx -y -p pm-claude-skills@latest pm-claude-skills-mcp` in your MCP config and every start is the latest release. |
+| A fork of this repository | The bundled `sync-fork.yml` workflow fast-forwards your `main` every week. See [docs/fork-sync.md](docs/fork-sync.md). |
+
+Stuck? The **[FAQ](docs/faq/README.md)** answers the common questions in English, [简体中文](docs/faq/zh-CN.md), [繁體中文](docs/faq/zh-TW.md), [日本語](docs/faq/ja.md), [한국어](docs/faq/ko.md), [Español](docs/faq/es.md) and [Português](docs/faq/pt-BR.md).
 
 ## 🌅 Claude Duet, OpenAI Dots and other proactive agents
 

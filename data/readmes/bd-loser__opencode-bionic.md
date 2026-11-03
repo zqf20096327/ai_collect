@@ -6,8 +6,8 @@
 > two channels (stable and dev).
 
 <!-- versions:badges -->
-[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.6.8-green.svg)](https://www.npmjs.com/package/@androidtui/core)
-[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.6.8-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
+[![opentui-js](https://img.shields.io/badge/opentui--js-@androidtui%400.8.0-green.svg)](https://www.npmjs.com/package/@androidtui/core)
+[![opentui-so](https://img.shields.io/badge/libopentui.so-@androidtui%400.8.0-green.svg)](https://www.npmjs.com/package/@androidtui/core-android-arm64)
 <!-- /versions:badges -->
 
 ## Screenshots
@@ -63,6 +63,14 @@ suite (`stable`/`v1`/`dev`) in
 `$PREFIX/etc/apt/sources.list.d/opencode-bionic.list` yourself. The package
 is `opencode` on every line.
 
+Each apt line only ever carries the **newest** build on that line — apt
+downloads a `.deb` from `pool/<line>/` (rebuilt from the newest release on
+every publish), so `pkg install opencode=<old version>` won't work and there
+is nothing older to downgrade to. To install or pin a specific/older build,
+use `install.sh` with `OPENCODE_VERSION`, or grab the `.deb` from that
+release's assets (`releases/download/v<ver>/`); the recipe is in the
+[FAQ](#faq).
+
 ### Channels
 
 All lines build automatically from upstream — an hourly watcher mirrors
@@ -80,6 +88,21 @@ the recommended start.** Still on 1.x? The **v1** channel keeps shipping 1.x
 releases. Live package index:
 [bd-loser.github.io/opencode-bionic](https://bd-loser.github.io/opencode-bionic/).
 
+### Web UI
+
+`stable` and `v1` embed the web UI in the binary, so it works offline out of the
+box:
+
+```bash
+opencode serve     # prints the URL and a password
+opencode pair      # or: one-time link that authenticates the browser for you
+```
+
+Open the printed `http://127.0.0.1:<port>` in any browser on the device — it is
+a PWA, so "Add to home screen" gives you an app icon. Embedding it costs about
+25 MB (binary 172 → 197 MB); the `dev` channel skips it to keep the hourly
+rolling downloads small.
+
 ## How it compares
 
 [Hope2333/opencode-termux](https://github.com/Hope2333/opencode-termux) and
@@ -94,7 +117,7 @@ is different here:
 | dev freshness | tracks upstream commits hourly | — | — |
 | terminal sessions (PTY) | works, bun-pty rebuilt for Bionic | — | — |
 | what you install | one self-contained .deb | one of five package families | package + wrapper + libs |
-| exact pinning | by version or upstream commit, curl or apt | — | — |
+| exact pinning | by version or upstream commit via `install.sh`; apt tracks the newest per channel | — | — |
 
 Blank cells: not verified, read their README.
 
@@ -136,8 +159,8 @@ release. The other channel lives on its own branch
 | Component | Version |
 |---|---|
 | opencode (upstream) | `2.2.5` |
-| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.6.8` |
-| `@androidtui/core-android-arm64` (native `.so`) | `0.6.8` |
+| `@opentui/{core,keymap,solid}` (JS, via `@androidtui`) | `0.8.0` |
+| `@androidtui/core-android-arm64` (native `.so`) | `0.8.0` |
 | `bun-termux` runtime | `1.4.4-patched` ([bd-loser/bun-termux](https://github.com/bd-loser/bun-termux)) |
 | `bun-pty` (Bionic pty `.so`, embedded) | `0.4.11` ([release asset](https://github.com/bd-loser/bun-termux/releases/tag/bun-pty-v0.4.11)) |
 
@@ -176,6 +199,22 @@ see <a href="https://opencode.ai/docs">opencode.ai/docs</a>.
 Automatically, within about an hour: upstream stable and dev activity each
 trigger a matching build here (one release per upstream version).
 See <a href="#channels">Channels</a>.
+</details>
+
+<details>
+<summary><b>How do I install an older or specific version?</b></summary>
+
+apt can't do it — each line's pool keeps only the newest build. Use the
+release installer with an explicit version, or the `.deb` from the release:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bd-loser/opencode-bionic/main/install.sh \
+  | OPENCODE_VERSION=2.2.4 bash
+```
+
+Both verify before installing (`SHA256SUMS`/`sha256sum -c`). Note that apt
+will then see a newer build and `pkg upgrade opencode` will move you back to
+the newest one.
 </details>
 
 ## Related repos

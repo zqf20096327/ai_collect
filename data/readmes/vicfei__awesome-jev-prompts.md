@@ -12,6 +12,41 @@
 
 Jev returns typed answers — **Choice**, **Score**, **Noul** — with probabilities, in 70–500 ms. It never writes text, so none of your prompt-engineering habits transfer. What transfers instead is **question design**: how you split a decision into atomic judgments, how you word option descriptions, where you set thresholds, and when you refuse to trust the number. This list collects the patterns that work — and the anti-patterns that quietly break production systems.
 
+
+<p align="center">
+  <img src="assets/banner.png" alt="Awesome Jev Prompts — question patterns, anti-patterns and calibration notes for typed decision models" width="880">
+</p>
+
+## Contents
+
+- [Leaderboard — every listed project by stars & weekly change](#leaderboard)
+- [Lint your questions](#lint-your-questions)
+- [Ask the same question on every engine](#ask-the-same-question-on-every-engine)
+- [Using this with the skills](#using-this-with-the-skills)
+- [Ecosystem notes](#ecosystem-notes)
+- [Official resources](#official-resources)
+- [Related](#related)
+- [Related lists](#related-lists)
+
+## Leaderboard
+
+<!-- leaderboard:start -->
+Top 10 of the 59 GitHub projects this list references, by stars — the full ranking plus the weekly-change table live in [LEADERBOARD.md](LEADERBOARD.md).
+
+| # | Project | Stars | Δ 7d |
+|---|---|---:|---:|
+| 1 | [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | 119,844 | — |
+| 2 | [virattt/ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) | 64,432 | — |
+| 3 | [HKUDS/Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) | 37,446 | — |
+| 4 | [vllm-project/semantic-router](https://github.com/vllm-project/semantic-router) | 6,375 | — |
+| 5 | [typesafe-ai/skills](https://github.com/typesafe-ai/skills) | 2,864 | — |
+| 6 | [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | 2,526 | — |
+| 7 | [StartLuxLabs/Startlux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) | 1,637 | — |
+| 8 | [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 1,021 | — |
+| 9 | [mode-io/vllm-jev](https://github.com/mode-io/vllm-jev) | 923 | — |
+| 10 | [Liuziyu77/Valen](https://github.com/Liuziyu77/Valen) | 899 | — |
+<!-- leaderboard:end -->
+
 ## What is Jev?
 
 A "System One" model (the fast-thinking reference is Kahneman's): unstructured state in, typed probabilistic decisions out. It gives up string generation for type-safe, calibrated outputs, which makes it two orders of magnitude faster and cheaper than chat models on judgment-shaped work.
@@ -108,7 +143,7 @@ const result = await client.systemOne({
 
 *(Quick-start example adapted from [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe), MIT.)*
 
-## The library — 60 entries in 10 categories
+## The library — 63 entries in 10 categories
 
 Every entry gives the question template, threshold/wiring guidance, known failure modes, and sources.
 
@@ -128,6 +163,10 @@ Every entry gives the question template, threshold/wiring guidance, known failur
 **The one rule that generates most of the others:** *questions describe judgments; code owns composition, thresholds, and side effects.*
 
 ## Which pattern do I need?
+
+<p align="center">
+  <img src="assets/which-pattern.svg" alt="Decision shape routing: pick-one-option → Choice, grade-on-a-scale → Score, true-or-violates → Noul; cross-cutting categories and the code-owns-composition rule" width="880">
+</p>
 
 - **Picking one option from a set you control** → [Choice patterns](categories/choice-patterns.md) — intent, tool, model routing, best-of-N
 - **Grading intensity or quality on a scale** → [Score patterns](categories/score-patterns.md) — severity, gates, moderation, relevance
@@ -151,6 +190,8 @@ Every entry cites its sources, and sources come in three kinds — read them bef
 ## Ecosystem notes
 
 The question-design approach in this list transfers across System One models. Notable developments:
+
+- **2026-10-31 — JevAny: one training pipeline, five backbones, two readouts.** [JevAny](https://github.com/SimpleJev/JevAny) (127★, Apache-2.0, bilingual) is open infrastructure for training, evaluating and deploying System 1 decision models across multiple LLM backbones — five released LoRA checkpoints (Gemma-4B, Qwen3.5-4B, Qwen3.8-27B default, Muse-Glimmer-30B), trained on 2.18M labeled decisions. Two readout methods diverge: **Pointer** (attention from input to candidate positions — options need not be single tokens) vs **Direct-token** (last-position logit readout, the inner-Jev route). Their agent-loop demos are the best visual proof of the "model proposes, Jev answers, code composes" contract: WebShop with Jev picks the right color/size in 5 actions vs 9 for LLM-only; FrozenLake in 1 LLM call vs 4. Their benchmark table reports NLL / Brier / ECE alongside accuracy — notably, hosted Jev 1.13 has the lowest ECE (0.033) but not the lowest NLL, confirming that ranking quality and probability calibration are different properties. Design impact: the Pointer/Direct-token split means question wording interacts with the readout — Pointer tolerates longer option descriptions (multi-token), Direct-token prefers terse labels; check your engine's readout before porting questions.
 
 - **2026-10-28 — decision models enter the trading-agent mainstream.** [TradingAgents](https://github.com/TauricResearch/TradingAgents) (117k★, multi-agent LLM financial trading, arXiv:2412.20138) ships optional Jev screening of social posts (v0.5.1): a Noul gate deciding whether a post is signal or noise before analysts read it. [ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) (64k★, AI hedge fund team) lists TypeSafe (Jev) as a first-class model provider for its investor agents — the same tier as Anthropic, OpenAI, and DeepSeek. Combined 181k★ of trading infrastructure now treats decision models as a native component: LLM agents propose, Jev judges, code composes the trade. Design impact: the [signal-vs-noise screening](categories/guardrails-and-verification.md#signal-vs-noise-screening) and [research conviction scoring](categories/score-patterns.md#research-conviction-scoring) patterns below are the question-design layer those integrations need.
 
@@ -194,6 +235,10 @@ Errors (E\*) are violations; warnings (W\*) are judgment calls for the reviewer.
 ## Ask the same question on every engine
 
 The wire format is converging (see the ecosystem notes below): one question set, many engines. The same ticket-triage trio — `team` (Choice), `urgent` (Noul), `severity` (Score) — against the state `"I was charged twice for order #4411 and the app still shows it as unpaid."`:
+
+<p align="center">
+  <img src="assets/engine-cookbook.svg" alt="One question set (team Choice, urgent Noul, severity Score) served by five engines — Jev, StartLux, SGLang, Clef, vllm-jev — with portability notes" width="880">
+</p>
 
 | Engine | Endpoint / transport | Notes |
 |---|---|---|
@@ -246,16 +291,16 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,515 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,014 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 753 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 706 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 679 |
-| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 613 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,526 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,021 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 754 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 711 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 681 |
+| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 614 |
 | [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 596 |
-| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 588 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 471 |
-| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 88 |
+| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 587 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 475 |
+| [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 89 |
 | [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 2 |
 <!-- related-lists:end -->
 
@@ -272,5 +317,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-10-31*
+*Last checked: 2026-11-02*
 <!-- last-checked:end -->

@@ -27,10 +27,10 @@ Draggy is a desktop assistant that talks, browses, and works in project folders,
 running open models on your own computer.
 
 It runs weights locally using an embedded `llama.cpp` engine with GGUF weights
-from Hugging Face. There is no account, no telemetry, and no network traffic
-unless you request it. The one exception is the price refresh behind the cost
-counters, which fetches public price lists and exchange rates and can be turned
-off in Settings. Available as an Electron application on Windows, a native
+from Hugging Face. There is no account and no telemetry. The app only touches
+the network for things you ask for or switch on: model and engine downloads,
+update checks, ad-block lists, and the price refresh behind the cost counters.
+Automatic updates and the price refresh can be turned off in Settings. Available as an Electron application on Windows, a native
 SwiftUI app on macOS, and a native GTK 4 app on Linux.
 
 Compared with LM Studio, Jan or Ollama, the difference is the coding agent: it
@@ -40,32 +40,26 @@ Mixture-of-Experts models that do not fit in memory can still run from your driv
 
 Documentation lives on the wiki at [draggy.org/wiki](https://draggy.org/wiki):
 installation details, hardware requirements, features, troubleshooting, and
-architecture in English, French, Spanish, and Chinese. Start with
+architecture in English, French, Spanish, and Russian. Start with
 [Installation](https://draggy.org/wiki/installation), or
 [Building and architecture](https://draggy.org/wiki/development) to work on the code.
 
 ## Features
 
-- Guided setup for interface language, theme, and hardware-matched models.
-- Local llama.cpp engine running GGUF models on your hardware.
-- Optional ROCm build of llama.cpp for AMD graphics cards, off by default.
-- Background terminal tasks in Code mode.
-- Compact system prompts tuned for 1B to 7B models.
-- Separate chat and coding workspaces with independent model selection.
-- File editing, terminal commands, and undoable diff reviews.
-- Four permission modes: plan, ask, accept edits, and auto.
-- Interactive task checklists with real-time step reordering.
-- Interactive question cards for single-choice, multiple-choice, and text clarifications.
-- Thumbnail preview cards for image attachments in the composer.
-- Sandboxed ad-blocking browser, web search, and document generation.
-- Semantic search and retrieval across local folders.
-- Support for MCP servers and 572 built-in skills across chat and code.
-- Colibri engine streams large MoE models from disk.
-- Voice chat with turn detection and interruption handling.
-- Real-time streaming replies with text fade-in.
-- Local GPU image generation with Stable Diffusion and Z-Image, with reference images.
-- Optional token-protected OpenAI-compatible local server.
-- Connect external runtimes or cloud APIs with secured keys.
+- Local GGUF models via llama.cpp.
+- GPU acceleration: CUDA, Metal, Vulkan, ROCm.
+- Coding agent with undoable diffs.
+- Separate chat and code workspaces.
+- Sandboxed browser and web search.
+- Document generation.
+- Semantic search across local folders.
+- MCP servers, 572 built-in skills.
+- Large MoE models from disk.
+- Voice chat.
+- Local image generation.
+- OpenAI-compatible local server.
+- External runtimes and cloud APIs.
+- Cost counters for cloud usage.
 
 ## Installing and requirements
 
@@ -94,6 +88,7 @@ If Draggy is useful to you, a star on this repository helps other people find it
 [![M8ven Score](https://m8ven.ai/badge/mcp/lucki74-draggy-1jbywd?v=cb3b9216ec8930f61be77210c1f8a9ce)](https://m8ven.ai/mcp/lucki74-draggy-1jbywd?s=readme)
 
 ```bash
+cd win
 npm install
 npm run electron:dev
 ```

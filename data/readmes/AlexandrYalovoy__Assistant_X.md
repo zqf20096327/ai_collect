@@ -6,8 +6,8 @@ English | [Русский](README.ru.md)
 
 Assistant X turns a folder of your documents (from a few files to tens of thousands of books, standards, papers,
 reports and scans) into a private library that your AI assistant understands by meaning, not just by words. Ask in
-your own words, and in seconds it finds the right passage among thousands of files, reads the page and answers with
-an exact quote. The library runs on your computer and works with Claude, Codex, the ChatGPT desktop app, DeepSeek
+your own words, and in under a second it finds the right passage among thousands of files, reads the page and
+answers with an exact quote. The library runs on your computer and works with Claude, Codex, the ChatGPT desktop app, DeepSeek
 Harness, LM Studio and any other MCP client. It is made for anyone who works from documents: engineers, researchers,
 students, doctors, lawyers, economists.
 
@@ -19,6 +19,9 @@ students, doctors, lawyers, economists.
   FB2, DjVu, images, HTML, archives (ZIP, 7z, RAR) and e-mails with attachments. Duplicates and new editions are
   found, every document gets a card and a shelf, every step is journaled.
 - **Search by words and by meaning**, with reranking, tables of contents of books and a warning when a scan is weak.
+  Measured on a real library of 7 208 documents (945 262 fragments), 25 questions: 0.63 s a question (median), 0.89 s
+  for 95 % of them on a laptop NVIDIA RTX 5080; 2.1 s and 3.7 s on its processor (Intel Core Ultra 9 275HX). The first
+  question after a start waits about 20 s for the models; meanwhile the search answers by words.
 - **One library for all your AI apps.** A single local service loads the models once (an NVIDIA, AMD or Intel video
   card, or the processor) and serves every connected app at the same time.
 - **Private by design.** Documents, texts and the search stay on your PC; a model sees only the pages it reads to
@@ -30,7 +33,7 @@ students, doctors, lawyers, economists.
 - **Easy to install.** Ask your agent to install it, double-click [`Setup.bat`](Setup.bat), or use an offline medium;
   no administrator rights needed.
 
-Version 0.5.6 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the data folders also CC-BY-4.0 (see
+Version 0.5.11 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the data folders also CC-BY-4.0 (see
 [License](#license)) · Author: Alexandr Yalovoy. What comes next: [`ROADMAP.md`](ROADMAP.md).
 
 ## Features in detail
@@ -195,12 +198,16 @@ the PC, in `%USERPROFILE%\.assistant_x\models`). Keep your own copy of `library`
 
 1. [`Setup.bat`](Setup.bat) — finds or installs Python, installs the packages and the program, makes the workspace
    `Documents\Assistant X` with the profile `general`, connects the library to every app it finds (Claude Desktop,
-   Claude Code, Codex, DeepSeek Harness, LM Studio: `assistant-x connect auto`), writes the skills and runs a
+   Claude Code, Codex, DeepSeek Harness, LM Studio, Gemini CLI, Antigravity, Cursor, Cline:
+   `assistant-x connect auto`), writes the skills and runs a
    self-test. From a medium (`assistant-x prepare-media --out E:\` on a PC with internet:
    [`Setup.bat`](Setup.bat), `app\`, `packages\`, `models\` with `MODELS.json`, `programs\`) everything of the program goes to
    `%USERPROFILE%\.assistant_x` — `app\<version>`, the environment `venv`, the models (checked against `MODELS.json`),
-   the programs of the intake — and the workspace holds your data only; `Setup.bat --base E:\base\x.axbase` installs
-   a base package right after. Another folder or the oil-and-gas profile: `Setup.bat --workspace "D:\My library"
+   the programs of the intake — and the workspace holds your data only; a base package (a `.axbase` file) beside `Setup.bat`
+   is offered at its end, else the window "Open a file" asks for one (Cancel goes on without a base);
+   [`Install-Base.bat`](Install-Base.bat) installs one later and [`Update.bat`](Update.bat) takes the latest release,
+   each with a double click ([docs/LMSTUDIO.md](docs/LMSTUDIO.md)); `Setup.bat --base E:\base\x.axbase` installs it
+   with no question. Another folder or the oil-and-gas profile: `Setup.bat --workspace "D:\My library"
    --profile oil-gas-ru`. From a folder of the code (a development checkout) it uses `.venv` beside it; then
    `assistant-x.bat download-models` downloads the models (≈ 4.5 GB) into `%USERPROFILE%\.assistant_x\models`;
    without them the search is by words. The PC folder `%USERPROFILE%\.assistant_x` (program, models, programs of the
@@ -306,6 +313,8 @@ on 127.0.0.1: the models are loaded once for all the apps. By hand (any MCP clie
   }
 }
 ```
+
+A local model in LM Studio step by step: [docs/LMSTUDIO.md](docs/LMSTUDIO.md).
 
 **Add to LM Studio** without the command line: `assistant-x connect lmstudio --link` prints a link
 (`lmstudio://add_mcp?...`, the entry of this PC); opened, LM Studio asks to add the server. The installer's summary

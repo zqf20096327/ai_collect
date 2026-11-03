@@ -57,10 +57,11 @@ before planning against it.
 **Context-aware mode** blends prior conversation turns into the lookup vector, so
 a vague follow-up such as *"what about the second one?"* is moved toward stored
 questions that resemble the conversation and can find a fully specified answer
-already in the cache. It does **not** keep apart answers stored under the same
-words: entries are stored under their own query's embedding, with no context, so
-an answer stored as *"how do I fix it?"* is a candidate for every conversation
-that asks it. Store answers under a self-contained version of the question. How
+already in the cache. Since 1.1.1 a follow-up in a session (a set after the session's first turn) is answered and
+recorded but **not stored** unless `standalone=True`: entries are stored under their own query's embedding, with no
+context, so an answer stored as *"how do I fix it?"* would be a candidate for every conversation that asks it. Vague
+words you store yourself (no `session_id`, or `standalone=True`) still are — store a self-contained question. The
+blend is strongest one turn back; several unrelated turns dilute it. How
 much blending helps depends entirely on your query mix, and **this README does not carry
 a number for it.** Run `python3 benchmark/run.py --use-sulci --fresh --no-sweep
 --context --out /tmp/sulci-bench-context` and read the harness's own note: the context corpus is 125 follow-ups
@@ -249,7 +250,8 @@ sulci-mcp --backend sqlite --db-path ./sulci_db
 ```
 
 Tools: `cache_lookup` and `cache_stats` (both annotated `readOnlyHint`), and
-`cache_store` (annotated as a write). `SULCI_MCP_READ_ONLY=1` registers only
+`cache_store` (annotated as a write; it takes `standalone` since 1.2.0 — with a
+`session_id` that already holds a turn it stores nothing unless `standalone` is true). `SULCI_MCP_READ_ONLY=1` registers only
 the read-only pair. Transports: `stdio` (default), `sse`, `streamable-http`.
 
 Requires **mcp >= 2.0.0**. mcp 1.x is not supported — the `FastMCP` entry
@@ -280,9 +282,15 @@ export ANTHROPIC_BASE_URL=http://localhost:8787
 
 Serves `POST /v1/chat/completions` and `POST /v1/messages`, plus `/healthz`
 and `/stats`. Every response carries `x-sulci-cache: hit | miss |
-miss-uncacheable | bypass`; hits also carry `x-sulci-similarity`.
+miss-followup | miss-session-unavailable | miss-uncacheable | bypass`; hits also carry
+`x-sulci-similarity`. The proxy's own `x-sulci-*` request headers are not forwarded upstream.
 
 Scope a lookup with the `x-sulci-tenant-id` and `x-sulci-session-id` headers.
+In a session, a miss after the first turn is a follow-up: it is answered and
+recorded, not stored, and reads `miss-followup` (the rule since 1.1.1, the label since 1.2.0; on `--backend sulci`
+the managed gateway decides and the label stays `miss`). Send
+`x-sulci-standalone: true` when the request's last user turn stands on its own
+(a self-contained rewrite), and it is stored.
 On `--backend sulci` (1.0.1) the tenant header is refused with 400 — the API key is the only partition there —
 and `x-sulci-cache` reads `refused`.
 
@@ -329,7 +337,10 @@ print(reply.choices[0].message.content)
 LiteLLM has no `custom` cache type — `install()` replaces the inner
 implementation on `litellm.cache`, which is how LiteLLM's own semantic
 caches are wired. Pass the conversation id as
-`metadata={"sulci_session_id": ...}` to get context blending.
+`metadata={"sulci_session_id": ...}` to get context blending, and
+`metadata={"sulci_standalone": True}` to store a follow-up that stands on its
+own (LlamaIndex: `complete(..., session_id=..., standalone=True)`; MCP:
+`cache_store(..., standalone=true)`).
 
 
 ## ⚠️ The MCP, proxy, LiteLLM and LlamaIndex extras need Python 3.10+
@@ -527,7 +538,8 @@ cache.cached_call(prompt, llm_fn, session_id="task-42", standalone=True, thresho
 ```
 
 Before 0.10.2 the SDK sent neither, so a Python app on the managed backend blended no context unless the dashboard
-was set, and never stored a follow-up.
+was set, and never stored a follow-up. Self-hosted backends apply the same rule since 1.1.1: a follow-up is recorded and not stored unless
+`standalone=True`.
 
 **Tokens Saved (1.1.0).** Your dashboard can show the tokens your cache hits saved, as your app reports them. Hand
 the provider's usage object back with the answer, and every later hit on that entry is credited with its counts:
@@ -974,8 +986,12 @@ lookup_vec = α · embed(query) + (1−α) · Σ(decay^i · turn_i)
 - `decay` = `context_decay` (default **0.50**) — halves weight per older turn
 - Only **user query** vectors are stored in context (not LLM responses)
 - Raw un-blended vectors stored in cache; blending happens at lookup time only —
-  so an entry stored under a vague follow-up's words matches that wording in any
-  conversation. Store answers under self-contained questions.
+  so an entry stored under a vague follow-up's words would match that wording in any
+  conversation. That is why a follow-up is **not stored** (oss-0049, every backend;
+  the managed backend since 0.10.2): a `set` whose session already holds a turn — a
+  set's, or a hit's, which `get` records — records the turn and writes no entry, and
+  a session store that cannot be read stores nothing. Pass `standalone=True` for a
+  follow-up that stands on its own (a self-contained rewrite), and it is stored.
 
 **Context-aware benchmark:** run it rather than reading a number here, and
 run it on the shipped engine — `--use-sulci` is opt-in, and without it this

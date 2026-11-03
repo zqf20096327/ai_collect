@@ -2,13 +2,49 @@
 [![npm version](https://img.shields.io/npm/v/mobile-debug-mcp.svg)](https://www.npmjs.com/package/mobile-debug-mcp)
 
 Build, install, control, and inspect Android and iOS apps from an MCP-compatible
-client. Mobile Debug MCP connects your client to local device toolchains and
+client. Mobile Debug Tools connects your client to local device toolchains and
 provides UI actions, screenshots, logs, state assertions, and optional Android
 performance capture and runtime debugging.
 
 Android, iOS, and Kotlin Multiplatform projects are supported. Flutter and React
 Native have not been tested. Platform and device limitations are described in the
 [tool reference](docs/tools/TOOLS.md).
+
+## What you can use it for
+
+Mobile Debug Tools gives a coding agent access to a running app, so development
+can include feedback from the device as well as the source code. For example:
+
+- **Build and test a feature.** After adding a settings screen, build and install
+  the app, navigate to it, and check that its controls display and behave as
+  expected. See [app management](docs/tools/manage.md) and
+  [UI interactions and assertions](docs/tools/interact.md).
+- **Check a bug fix or regression.** Reproduce a sequence such as opening a form,
+  entering text and submitting it, then verify the resulting screen or control
+  state. Repeat the journey after a code change to check the outcome.
+- **Review the UI on a device.** Capture screenshots to inspect layout and visual
+  changes, or inspect the UI hierarchy for exposed labels and control state.
+  See [observations](docs/tools/observe.md).
+- **Investigate an app failure.** Collect logs, screenshots and a debug snapshot
+  around a failing action to understand what happened. [Evidence
+  correlation](docs/tools/correlated-evidence.md) links observations to the action.
+- **Investigate Android performance or runtime behaviour.** Capture a
+  [Perfetto trace](docs/tools/system-traces.md) during a slow flow, or attach the
+  [runtime debugger](docs/tools/debugger.md) to a debuggable app to inspect
+  breakpoints, call stacks and locals.
+
+## How it works
+
+Your agent client launches a local MCP server and communicates with it over
+stdio. The server translates tool calls into operations through Android's ADB
+or Apple's Xcode tools and idb, then returns device observations and action
+results to the client. It connects to emulators, simulators and supported
+physical devices through those toolchains.
+
+The agent plugin bundles the server configuration and usage skill. The same
+server can also be configured directly in an MCP client or run from a source
+checkout. See [code structure](docs/code-structure.md#module-ownership) for the
+implementation's module boundaries.
 
 ## Start here
 
@@ -20,8 +56,7 @@ Choose how to connect:
    to another MCP-compatible client.
 3. **[Manual setup](#manual-setup).** Build and run a local source checkout.
 
-Check the [requirements](#requirements) for your platform, then follow
-[Getting started](#getting-started) to select a device and verify an interaction.
+Check the [requirements](#requirements) for your platform before installing.
 
 ## Requirements
 
@@ -31,72 +66,116 @@ Check the [requirements](#requirements) for your platform, then follow
 - [idb](https://github.com/facebook/idb) for iOS UI inspection and interaction
 - JDK 17+ for optional [Android runtime debugging](docs/tools/debugger.md)
 
-## Environment setup
-
-The server discovers platform tools from standard locations and `PATH`. Leave
-path overrides unset for a standard installation. Use them for non-standard
-locations, multiple toolchains, or a pinned development environment.
-
-| Variable | Purpose |
-| --- | --- |
-| `ADB_PATH` | Path to `adb`. |
-| `ANDROID_SDK_ROOT` or `ANDROID_HOME` | Android SDK root. |
-| `XCRUN_PATH` | Path to `xcrun`. |
-| `MCP_IDB_PATH` or `IDB_PATH` | Path to `idb`. |
-| `GRADLE_JAVA_HOME` or `JAVA_HOME` | Java home for Gradle-backed operations. |
-
-After connecting the client, call `get_system_status` to check discovery and
-prerequisites. See [environment diagnostics](docs/tools/system.md) if a toolchain
-or device is unavailable.
-
 ## Agent plugin
 
-The preferred setup for supported agent clients is the
-[agent plugin](agent-plugin/README.md). It installs the MCP server configuration
-and usage skill together. Choose your client below.
+The plugin installs the MCP server configuration and the `mobile-debug-mcp` usage
+skill together. These are GitHub/local installation routes; they do not require
+approval from a client's public curated marketplace.
 
 <details>
 
-<summary>Codex plugin</summary>
+<summary>Codex</summary>
 
-Install the plugin from this repository's marketplace:
+In a terminal with a current Codex CLI:
 
 ```bash
-codex plugin marketplace add clivejefferies/mobile-debug-tools
+codex plugin marketplace add clivejefferies/mobile-debug-tools --ref main
 codex plugin add mobile-debug-tools@mobile-debug-tools
+codex plugin list
 ```
+
+Start a new chat/session and confirm the plugin is enabled and its skill and MCP
+tools are available. These commands use the repository's marketplace, named
+`mobile-debug-tools`, not a public directory listing. See the
+[official packaging instructions](https://developers.openai.com/plugins/build/plugins).
 
 </details>
 
 <details>
 
-<summary>Claude Code plugin</summary>
+<summary>Claude Code</summary>
 
-Install the plugin from this repository's marketplace:
+Run these shell commands (not slash commands inside a chat):
 
 ```bash
-claude plugin marketplace add clivejefferies/mobile-debug-tools
-claude plugin install mobile-debug-tools@mobile-debug-tools
+claude plugin marketplace add clivejefferies/mobile-debug-tools --scope user
+claude plugin install mobile-debug-tools@mobile-debug-tools --scope user
+claude plugin list
 ```
+
+Restart the session after installation. In an interactive Claude Code chat, the
+corresponding commands start with `/plugin` instead of `claude plugin`. See
+[Claude Code's installation guide](https://code.claude.com/docs/en/discover-plugins).
 
 </details>
 
 <details>
 
-<summary>Cursor plugin</summary>
+<summary>Cursor</summary>
 
-The repository includes a [Cursor marketplace](.cursor-plugin/marketplace.json).
-Teams and Enterprise admins can import the repository in Dashboard → Plugins & MCPs → Team
-Marketplaces. To test it locally, copy [agent-plugin](agent-plugin/) into
-`~/.cursor/plugins/local/mobile-debug-tools`, then reload Cursor.
+For local installation, clone this repository and run these commands from its
+root in a macOS/Linux shell:
+
+```bash
+git clone https://github.com/clivejefferies/mobile-debug-tools.git
+cd mobile-debug-tools
+cursor_plugin_dir="$HOME/.cursor/plugins/local/mobile-debug-tools"
+if [ -e "$cursor_plugin_dir" ]; then
+  echo "Move the existing plugin directory aside before copying the new package."
+else
+  mkdir -p "$(dirname "$cursor_plugin_dir")"
+  cp -R agent-plugin/cursor "$cursor_plugin_dir"
+fi
+```
+
+On Windows, copy the contents of `agent-plugin/cursor` into a new
+`~/.cursor/plugins/local/mobile-debug-tools` folder, including `.cursor-plugin`.
+Use this generated Cursor-native package, not the portable parent: Cursor does
+not expand `${PLUGIN_DATA}` in portable `mcp.json`. Do not symlink to the checkout.
+
+Run **Developer: Reload Window**, open **Customize**, and confirm the skill and
+MCP server are loaded. For Teams/Enterprise distribution, import this repository
+under **Dashboard → Plugins & MCPs → Team Marketplaces**; its
+[Cursor catalog](.cursor-plugin/marketplace.json) selects the native package.
+Members install from Customize. See [Cursor's plugin guide](https://cursor.com/docs/plugins).
 
 </details>
 
-Start a new chat or session after installation so the client loads the skill
-and MCP tools. Each plugin launches the published npm package locally and needs
-Node.js 22 or newer and the platform toolchains for your device. If you also
-registered the MCP server directly, disable that registration to avoid
-duplicate tools.
+<details>
+
+<summary>Antigravity</summary>
+
+Install the [Antigravity CLI](https://antigravity.google/docs/getting-started?tab=cli),
+then clone this GitHub repository and export its plugin:
+
+```bash
+git clone https://github.com/clivejefferies/mobile-debug-tools.git
+cd mobile-debug-tools
+npm run package:antigravity -- "$PWD/antigravity-dist"
+agy plugin validate --strict "$PWD/antigravity-dist"
+agy plugin install "$PWD/antigravity-dist"
+agy plugin list --json
+```
+
+No `npm install` is needed for the export script. Choose a new output directory;
+the exporter refuses to overwrite an existing one. Check the installed entry has
+one skill (`mobile-debug-mcp`) and one MCP server (`mobile-debug-mcp`), then start
+a new session and approve the specific MCP calls you intend to use.
+
+The Antigravity-only export avoids strict-validation warnings from the other
+clients' compatibility files. It uses `mcp_config.json` and the same pinned npm
+server and shared skill. GitHub/local installation does not require the
+Antigravity Marketplace interest form. See [Google's plugin guide](https://antigravity.google/docs/build-plugins).
+
+</details>
+
+Each client needs Node.js 22 or newer, `npx` on its PATH, npm registry access on
+first launch, and the platform toolchains for your device. After installation,
+ask the agent to list devices, select an explicit emulator/device, and inspect
+its screen. An installed component list alone does not prove a working device
+connection. Disable any separate manual registration of this MCP server in the
+same client to avoid duplicate tools. If a plugin command is unavailable, update
+the client; the [direct MCP configuration](#mcp-configuration) works independently.
 
 ## MCP configuration
 
@@ -187,103 +266,26 @@ launch that build over stdio:
 ```
 
 Replace the path with your checkout location. Rebuild after source changes.
-Continue with [Getting started](#getting-started) once your client connects.
 
-## Getting started
+## Environment setup
 
-This walkthrough takes you from a connected MCP client to a verified interaction
-with an installed app. Complete the [requirements and client
-configuration](#start-here) first. The examples use Android; use
-`"platform": "ios"` and a discovered simulator ID for supported iOS operations.
+The server discovers platform tools from standard locations and `PATH`. Leave
+path overrides unset for a standard installation. Use them for non-standard
+locations, multiple toolchains, or a pinned development environment.
 
-Tool names label MCP calls. Submit the JSON through your client's tool interface,
-or ask the client to perform the described step. These are not shell commands.
-Replace device IDs, app identifiers, and example UI labels with your own values.
+| Variable | Purpose |
+| --- | --- |
+| `ADB_PATH` | Path to `adb`. |
+| `ANDROID_SDK_ROOT` or `ANDROID_HOME` | Android SDK root. |
+| `XCRUN_PATH` | Path to `xcrun`. |
+| `MCP_IDB_PATH` or `IDB_PATH` | Path to `idb`. |
+| `GRADLE_JAVA_HOME` or `JAVA_HOME` | Java home for Gradle-backed operations. |
 
-### 1. Check the environment and select a device
+After connecting the client, call `get_system_status` to check discovery and
+prerequisites. See [environment diagnostics](docs/tools/system.md) if a toolchain
+or device is unavailable.
 
-Call `get_system_status` with `{}`. Read the platform summary and resolve missing
-prerequisites before continuing. Then call `list_devices`:
-
-```json
-{ "platform": "android" }
-```
-
-Choose a connected device and pass its ID in subsequent calls. Explicit targeting
-keeps observations and actions on the same device, especially when several are
-connected. If discovery fails, see [environment diagnostics](docs/tools/system.md).
-
-### 2. Launch your app
-
-With the app already installed, call `start_app`:
-
-```json
-{
-  "platform": "android",
-  "deviceId": "emulator-5554",
-  "appId": "com.example.app"
-}
-```
-
-If you need to build or install it first, follow [app management](docs/tools/manage.md).
-A successful launch reports execution, so inspect the resulting screen before
-assuming the app has reached the state you need.
-
-### 3. Inspect the screen
-
-Call `capture_screenshot` for a visual view, or `get_ui_tree` for element labels,
-identifiers, and exposed control state. Both accept:
-
-```json
-{ "platform": "android", "deviceId": "emulator-5554" }
-```
-
-Use a selector from the observed UI for the next action. Prefer a stable resource
-or accessibility identifier when available. For loading screens, see
-[app readiness](docs/tools/observe.md#app-readiness); a fresh capture may still show a
-transition.
-
-### 4. Act and verify the result
-
-For example, if the tree exposes a button labelled Settings, call `tap_element`:
-
-```json
-{
-  "platform": "android",
-  "deviceId": "emulator-5554",
-  "selector": { "text": "Settings" }
-}
-```
-
-Then assert a visible element that identifies the destination. If your Settings
-screen contains an Account heading, call `expect_element_visible`:
-
-```json
-{
-  "platform": "android",
-  "deviceId": "emulator-5554",
-  "selector": { "text": "Account" },
-  "timeout_ms": 15000
-}
-```
-
-Choose an assertion that represents your app's intended outcome. A delivered tap
-alone does not prove navigation succeeded. Use [UI waits](docs/tools/interact.md#wait_for_ui)
-when you need to resolve a target or synchronize before continuing, and
-[assertions](docs/tools/interact.md#expect_element_visible) to check the result.
-
-### When a step fails
-
-Read the tool's error and inspect the current UI before retrying an action with
-uncertain delivery. Refine an ambiguous selector or allow enough observation time
-for the device. If the UI does not explain the failure, collect
-[logs or a debug snapshot](docs/tools/observe.md). Use [evidence
-correlation](docs/tools/correlated-evidence.md) to associate those observations with a
-specific action.
-
-For setup problems, return to [environment diagnostics](docs/tools/system.md). For slow
-Android flows, see [system traces](docs/tools/system-traces.md); for paused runtime
-inspection, see [Android runtime debugging](docs/tools/debugger.md).
+Android debugger errors include bounded, sanitized failure classifications and recovery guidance; see the [debugger guide](docs/tools/debugger.md#failure-diagnostics).
 
 ## Documentation
 

@@ -196,6 +196,9 @@ fedit -file nginx.conf -op replaceall -match "old.example.com" -text "new.exampl
 fedit -file Makefile -op replaceall -match "1.1.0" -text "1.2.0" -v
 ```
 
+- Every replaceall is verified by default: after the write, fedit re-reads the file from disk and prints `VERIFY: PASS` or `VERIFY: FAIL` followed by the changed lines. This covers a single file, `-match-regex`, `-stream`, `-files` and a file list in `-file`, and `fedit_replaceall` over MCP. `-v` adds a context window for every match (not printed with `-stream`).
+- Exit codes for replaceall: 0 ok, 1 the edit did not happen, 3 the file was written but verification failed or could not be done. With several files, one FAIL file makes the exit code 3 even when the others succeeded, and the MCP result is an error.
+
 ---
 
 
@@ -318,7 +321,7 @@ fedit -file '*.md' -op delete -match '<!-- start -->' -endmatch '<!-- end -->'
 ```
 
 - A problem in one file (no match, unreadable, read-only, write failed) is reported as SKIP and never stops the batch. A skipped file is never modified.
-- The report lists OK or SKIP per file, then `N/M file(s) succeeded`. Exit code 0 if at least one file succeeded, 1 if none did.
+- The report lists OK, SKIP or FAIL per file, then `N/M file(s) succeeded`. A FAIL is a replaceall file that was written but did not pass the on-disk verification. Exit code 0 if at least one file succeeded and none failed, 1 if none succeeded, 3 if any file is FAIL (FAIL wins).
 - Only -match (plus -endmatch for delete and replace), -nth and -text/-textfile/-texthex are accepted, plus -sourcefile/-sourceblock/-lang on insertafter and insertbefore (since v1.11.0). -match-regex works with replaceall, and write needs no -match and writes the same content to every file. -block, -line, -cleanfirst, -stream and -files are rejected, and so are move and copy, all before any file is read.
 - MCP: fedit_replaceall, fedit_insertafter, fedit_insertbefore, fedit_delete and fedit_replace take a comma list or glob in file, with the same rules and a per-file report; block, line, stream and files are rejected. fedit_write always treats file as one path. fedit_show, fedit_find and fedit_map also take a list.
 
@@ -378,7 +381,7 @@ fedit -file b.go -op insertafter -match '// helpers' -sourcefile a.go -sourceblo
 `fedit guided` takes the source, the verb and the destination in plain order and turns them into the explicit `-op` command, which it prints to stderr before running it. It is a CLI shortcut only: there is no MCP tool for it, and the engine and the explicit flags are unchanged.
 
 ```
-fedit guided SRCFILE SRCBLOCK copy|move DESTFILE [before TARGET | after TARGET | at-end] [silent|report-only]
+fedit guided SRCFILE SRCBLOCK copy|move DESTFILE [before TARGET | after TARGET | at-end] [silent|report-only] [dry]
 fedit guided SRCFILE SRCBLOCK replace DESTFILE [TARGET]
 fedit guided SRCFILE SRCBLOCK insertbefore|insertafter DESTFILE TARGET
 fedit guided "new text" insertbefore|insertafter FILE TARGET
@@ -397,7 +400,34 @@ fedit guided a.go Helper replace b.go
 - `replace` overwrites TARGET (default: the same name as the source) in each destination and skips a destination that does not have it.
 - `silent` runs the plan with `-quiet`: no echo, no notes, and no engine report when every file succeeded (skips and errors still print).
 - `report-only` runs the plan without the verify output and without the echo line, but keeps the notes and the engine's own summary. Both modifiers go last and work with every verb.
+- `dry` goes last, after `silent` or `report-only` when you use one. It adds `-dry` to every step, so each step prints its diff and writes nothing, and the parent log record carries `dry=true`. A destination file that does not exist is not created: the plan says `guided: dry-run: would create FILE and put the block into it` instead (for a move it adds that the block would then be removed from the source), and no diff is shown for that file. The bare prompt accepts `dry`, `silent dry` and `report-only dry`. A target block literally named dry cannot be the last word.
 - Bare `fedit guided` (no other arguments) asks the questions one at a time: the operation, the source file and block, the destination, the position, then the modifier. Operation and position can be answered by name or by number, and a wrong choice is asked again (three tries). The prompts go to stderr and the answers are read from stdin, one per line, so piped input works. If the input ends before the last answer, nothing is changed.
+
+### -dry -- Preview a change without writing it (since v1.12.0)
+
+`-dry` turns an operation that changes files into a preview. Nothing is written, truncated or created. fedit prints a unified diff (three lines of context, and `/dev/null` for a file that does not exist yet) to stdout, and the report on stderr ends with `dry-run: applied=false (no file was changed)`. Exit codes are the same as for a real run, so a script can try a change before it makes it.
+
+```bash
+# Preview, then apply
+fedit -file app.conf -op replaceall -match old.example.com -text new.example.com -dry
+fedit -file app.conf -op replaceall -match old.example.com -text new.example.com
+
+# Preview a multi-file run: one diff per file, and the total reads would succeed
+fedit -file "*.conf" -op replaceall -match old.example.com -text new.example.com -dry
+
+# Preview a cross-file copy
+fedit -file a.go -op copy -block Helper -lang go -dest b.go,c.go -afterblock Init -dry
+```
+
+- The verify step is skipped, because nothing was written: replaceall and `-v` print `VERIFY: SKIP (dry-run)` and the exit code is 0. There is no VERIFY window and no STATS block; `move` and `copy` keep their own STATS block, which is computed from the plan.
+- Multi-file and `-dest` runs print one diff per file. The batch total reads `N/M file(s) would succeed`, each file line is worded as a preview (`would replace on 1 line(s)`, `would insert 1 line(s) at match on line 3`, `block "X" would be replaced with N line(s)`) and a replaceall line ends with `VERIFY: SKIP (dry-run)`, and a `-dest` move reports `move: would remove lines N-M from SRC` instead of removing them.
+- `-stream` with `-dry` reads the file, runs the replacement and prints counts only: no diff, no temporary file, nothing written.
+- On the command line the summary line of a single-file run is worded as a preview too, with the wording the MCP tools use: `Would insert 1 line(s) after line 1 (4 total after)`, `Would delete lines 2-2 (2 total after)`, `Would write 1 line(s) to FILE`, `Would regex-replace on 1 line(s) (3 total)`.
+- `-cleanfirst` with `-dry` truncates nothing; the diff shows the old content removed and the new content added.
+- A run that would fail still fails: no match or a missing block gives the usual error and exit code, with no diff.
+- `-dry` works with `-outputresult`. It cannot be combined with `fedit -config` or `fedit -log merge` (usage error, exit 1), and `-dry=false` is refused too.
+- A dry run is logged like any run: its end record carries `dry=true` (see "Audit log" below). In `fedit guided` add the word `dry` at the end; over MCP pass `dry_run` (see "MCP Server Mode" below).
+- Limits: a guided dry run shows no diff for a destination file that does not exist yet, and a guided target block literally named dry cannot be the last word.
 
 ### -cleanfirst — Truncate before writing (v1.6.0)
 
@@ -588,9 +618,16 @@ Most mappers detect **duplicates** (functions, tables, keys, header columns, blo
 | -match "s" | Substring to search for |
 | -nth N | Which occurrence (default 1, -1 = last) |
 | -lang LANG | Language for map and for -block operations |
-| -v | Verify: show affected lines after edit |
+| -v | Verify: show affected lines after edit (replaceall always verifies the written file; -v adds a window for every hit) |
 | -endmatch "s" | Content-anchor end of range (show/replace/delete/move/copy) |
 | -quiet | Suppress output on success, including the per-file report of multi-file and -dest runs (skips and errors still print); exit code signals result (since v1.11.0) |
+| -outputresult FILE | Write the operation report to FILE (UTF-8, no BOM) and print one summary line on the terminal. FILE may not be any file being edited (-file, -files, -dest) and its directory must exist. On a non-zero exit nothing is written to FILE: the whole report goes to stderr with the same exit code |
+| -outappend | With -outputresult: append to FILE instead of overwriting it |
+| -dry | Dry run: print a unified diff of what the operation would change and write nothing; the report ends with applied=false (since v1.12.0); see "-dry" above |
+| -log-mode, -log-file, -log-max-mb, -log-content, -log-level, -log-scope | Audit log settings, each also an environment variable FEDIT_LOG_* (since v1.12.0); off by default, see "Audit log" below |
+| fedit -log merge | Append the spooled audit records to the main log now (since v1.12.0); see "Audit log" below |
+| -noconfig | Do not read the settings file for this run (since v1.12.0); see "Settings file" below |
+| fedit -config path\|show\|get KEY\|set KEY VALUE\|unset KEY | Show or change the settings file (since v1.12.0); see "Settings file" below |
 | -texthex HEX | Hex-encoded UTF-8 content, bypasses shell quoting (v1.6.0) |
 | -matchhex HEX, -endmatchhex HEX | Hex-encoded -match and -endmatch anchors, for anchors that contain double quotes (v1.8.1) |
 | -match-regex P | replaceall: regex with capture groups ($1 $2) |
@@ -620,6 +657,63 @@ With `-block NAME` (and `-sourceblock`, `-destblock`, `-beforeblock`, `-afterblo
 - Comments: `//` and `/* */` (nested in Rust), and `#` in PHP, HCL and Nix (in PHP, `#[` starts an attribute and is not a comment). Nix has no `//` comment, because `//` is its update operator.
 
 Known gaps: a JS regular expression with an unescaped `/*`, and a block comment that opens outside any block. For a block like that, check the range with `show` first and fall back to `-line`.
+
+### Audit log (since v1.12.0, off by default)
+
+fedit can write one record per operation to an audit log: who ran what, on which files, with what result. It is off unless you turn it on, and while it is off nothing in a run changes. It covers command-line runs, `guided` runs and the MCP server.
+
+Modes (`-log-mode` or `FEDIT_LOG_MODE`):
+
+- `off` (default): nothing is written.
+- `permissive`: the operation always runs. If the log cannot be written, the records are saved in a spool folder under the fedit user folder, `The action was not logged` is printed to stderr (over MCP it is also returned in the tool result as an extra text item), and the next logged run (or `fedit -log merge`) appends them to the log with `late=true`.
+- `strict`: if the begin record cannot be written, the run is refused before anything changes (exit 4). If the operation succeeded but the end record cannot be written, the exit code is 5. A run that already failed keeps its own exit code.
+
+Settings are read in this order: flag, then environment variable, then the settings file (see "Settings file" below), then default. An invalid value is an error (exit 1, nothing edited) even when logging is off.
+
+| Flag | Environment | Meaning |
+|------|-------------|---------|
+| -log-mode M | FEDIT_LOG_MODE | off (default), permissive or strict |
+| -log-file FILE | FEDIT_LOG_FILE | Log file; `%VAR%` and `~` are expanded. Default `%LOCALAPPDATA%\fedit\fedit.log` (the user config folder when that variable is not set) |
+| -log-max-mb N | FEDIT_LOG_MAX_MB | Rotate the log at N MB (default 10, 0 = never). A rotated file is named `<log>.<UTC timestamp>` |
+| -log-content on\|off | FEDIT_LOG_CONTENT | on: log `-text` values verbatim. off (default): length and SHA-256 only |
+| -log-level L | FEDIT_LOG_LEVEL | all (default), warning or error: which severities are written. Strict always writes all |
+| -log-scope S | FEDIT_LOG_SCOPE | all (default: every operation, reads included) or writes (only operations that can change a file) |
+
+Every record is one line with a UTC timestamp, a level (`[INFO]` for exit 0, `[WARNING]` for 1, `[ERROR]` otherwise) and `key=value` pairs. The begin and end records of a run share the same `id`.
+
+- Begin record: `op`, `source` (cli, guided or mcp), `user` (with the domain on Windows), `host`, `pid`, `cwd`, then, when given, `file`, `files` and `dest` as absolute paths (a glob keeps its pattern), `text_len` and `text_sha256` (or `text` with `-log-content on`; `-texthex` is hashed after decoding) and `textfile` (the path), then `textfile_len` and `textfile_sha256` of that file when it can be read (the content itself is never logged, not even with `-log-content on`; since v1.12.0). Over MCP a call that uses `output_file` also logs it (an absolute path, plus `output_append=true` when it is set; since v1.12.0), and every call carries `client` and `client_version`. In permissive mode a `not logged` notice (the audit log could not be written, so the record went to the spool) is also returned in the MCP tool result as an extra text item after the result, besides the server stderr (since v1.12.0).
+- End record: `phase=end`, `exit` and `ms`, plus the result when the operation reports one: `lines_changed` for every plain write operation on a single file (lines inserted, deleted, replaced or written; for move and copy the block size times the number of copies; none for a dry run or a failed call) and for replaceall, which also gets `replacements` (occurrences; `lines_changed` counts lines, and both are noted the same way over MCP) and `verify` (PASS or FAIL), and for multi-file runs `files_total`, `files_ok`, `files_skip`, `files_fail` and a per-file `results` list. A write on a single file also gets `sha256_before` and `sha256_after`.
+- Dry run: a run with `-dry` (also guided `dry` and MCP `dry_run`) is logged like any other run, and its end record carries `dry=true`. For an existing file `sha256_after` is the same as `sha256_before`, a dry multi-file run logs `verify=none`, and a dry run notes no `replacements` and no `lines_changed`.
+- A usage error (no `-op`, unknown `-op`) is not an operation and is not logged. `-outputresult` never receives log records.
+
+`fedit -log merge` appends the spooled records to the main log now, in any mode, using the `FEDIT_LOG_*` environment and the settings file. It prints `Merged N spooled record(s) into FILE` or `No spooled records to merge` on stderr, and exits 1 on a usage error, an invalid setting or a merge that stops. It is not logged itself.
+
+`guided`: a plain one-step command is logged as one run with `source=guided`. A run with several steps or a file to create has a parent record (`op=guided`, `steps`, `create`) and one child run per step, each with `parent=<id of the parent>`. Strict refuses before the parent creates any file.
+
+MCP: every tool call is one logged run with `source=mcp`. The settings come from the `FEDIT_LOG_*` environment of the server process and from the settings file (there are no flags), so set the environment variables in the `env` block of your MCP client config; `FEDIT_CONFIG` there points the server at another settings file. An error result is logged as exit 1 and a failed verification as exit 3. In strict mode a call whose begin record cannot be written returns an error result and changes nothing; a call that succeeded but whose end record cannot be written returns an error result that says the operation completed.
+
+Limits: multi-file runs have per-file results but no per-file hashes; a guided parent exits 1 when any step fails.
+
+### Settings file (since v1.12.0)
+
+The logging settings can also be kept in a settings file, so you do not need environment variables on every machine or in every MCP client config. The file is optional: without it nothing changes.
+
+- Location: `fedit\fedit.ini` in the user config folder (on Windows `%APPDATA%\fedit\fedit.ini`, on Linux `~/.config/fedit/fedit.ini`). `FEDIT_CONFIG` names another file; `~` and `%VAR%` are expanded and a relative path is made absolute.
+- Format: one `key = value` per line. Blank lines and lines that start with `#` or `;` are ignored. Keys are not case-sensitive, there are no sections, and a UTF-8 byte order mark (Notepad adds one) is ignored. If a key appears twice, the last one wins.
+- Keys: `log_mode`, `log_file`, `log_max_mb`, `log_content`, `log_level` and `log_scope`, with the same values as the matching flags in the table above.
+- Order: flag, then environment variable, then settings file, then default.
+- Errors: a missing file is not an error. A file that cannot be read, a line that is not `key = value` and an invalid value are errors that name the file and the line (exit 1, before anything is edited), even when logging is off. An unknown key is a warning on stderr and is ignored.
+- `-noconfig` (command line only) ignores the file for that run. `guided` runs and the MCP server always read it. `fedit -log merge -noconfig` skips it for that merge; without `-noconfig` a broken file stops `fedit -log merge`, and the message names `-noconfig` (since v1.12.0).
+- `fedit -config` reads and changes the file without opening it by hand: `path` prints its location, `show` lists every key with its effective value and where it comes from (environment, ini or default), `get KEY` prints one effective value (exit 1 for an unknown key), and `set KEY VALUE` and `unset KEY` check the key and the value, then write the file atomically (the folder is created when needed; comments, blank lines and line endings are kept). `set` and `unset` are logged like any write operation, with `config_key` and `config_value` in the begin record, and are not available over MCP. A broken settings file stops `show`, `get`, `set` and `unset` (exit 1, naming the line); `path` still works.
+
+Example:
+
+```
+# fedit settings
+log_mode = permissive
+log_file = ~/fedit-audit.log
+log_scope = writes
+```
 
 ## Real-World Examples
 
@@ -834,7 +928,7 @@ This starts a JSON-RPC 2.0 server on stdin/stdout. The server exposes all 14 edi
 | `fedit_insert` | Insert content after a line number |
 | `fedit_delete` | Delete one or more lines; comma list or glob in `file` with `match` |
 | `fedit_replace` | Replace a line range or named block; comma list or glob in `file` with `match`; `dest` + `destblock` overwrite a named block in other files |
-| `fedit_replaceall` | Global find-and-replace; `match_regex` for regex and `textfile` for replacement text (both since v1.11.0); comma list or glob in `file` |
+| `fedit_replaceall` | Global find-and-replace; `match_regex` for regex and `textfile` for replacement text (both since v1.11.0); comma list or glob in `file`; the written file is re-read and verified, and a VERIFY: FAIL comes back as an error result |
 | `fedit_write` | Create or overwrite a file |
 | `fedit_writeraw` | Create or overwrite a file with no escape expansion (backslashes literal) |
 | `fedit_map` | Structural overview (21 languages; `lang` is detected from the extension when omitted); comma list or glob in file |
@@ -844,6 +938,10 @@ This starts a JSON-RPC 2.0 server on stdin/stdout. The server exposes all 14 edi
 | `fedit_move` | Move a line range to a new position; destination-overlap rejected; `dest` moves the block into other files |
 | `fedit_copy` | Copy a line range; snapshot semantics, overlap allowed, -times N; `dest` copies it into other files |
 | `fedit_fields` | Extract column N from CSV/TSV/delimited file (`-col N -delim CHAR`); always streaming |
+
+The ten tools that change files (`fedit_insert`, `fedit_delete`, `fedit_replace`, `fedit_write`, `fedit_writeraw`, `fedit_replaceall`, `fedit_insertafter`, `fedit_insertbefore`, `fedit_move` and `fedit_copy`) also take an optional boolean `dry_run` (since v1.12.0). With `dry_run` true nothing is written, truncated or created. The result text starts with `dry-run: applied=false (no file was changed)`, followed by a unified diff of each file that would change and then the summary of the tool, worded as a preview (`Would insert ...`, `Would replace ...`, `Would write ...`) because nothing was done; a real call keeps its past tense. A multi-file total reads `N/M file(s) would succeed`. A call that would fail is still an error, and the read-only tools have no `dry_run` parameter. A dry call is logged like any call, with `dry=true` on its end record.
+
+All 14 tools also take two optional parameters, `output_file` (string) and `output_append` (boolean) (since v1.12.0), for results that should not enter the conversation, such as a large `fedit_show`, `fedit_find` or `fedit_map` result. With `output_file` the full result text is written to that file (UTF-8, no BOM; overwritten, or appended when `output_append` is true) and the tool returns only one line, `result written to FILE (N lines)` or `result appended to FILE (N lines)`. The operation itself runs as usual, so a changing tool still changes its files; with `dry_run` the dry-run text (the `applied=false` line and the diff) is what is written. Some calls are refused before the tool runs and write nothing: `output_append` without `output_file`, a result file that is also an edited file (`file`, `dest` or a glob match) and a result file whose folder does not exist. A call that fails returns its error in full and leaves the result file untouched. If the result file cannot be written after the operation succeeded, the error says so and carries the text. A relative path resolves against the working directory of the server, like every other path. This is the MCP counterpart of `-outputresult` and `-outappend` on the command line.
 
 ### Configuring with Claude Desktop
 

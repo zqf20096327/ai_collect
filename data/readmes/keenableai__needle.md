@@ -194,7 +194,10 @@ needle legal run --queries legal.jsonl --out legal.json
 
 Two suites (`--suites`): **`caselaw`** — recent published opinions from the
 CourtListener API across 14 federal courts, one caption-style query per case
-(gold: reporter citations, docket + party tokens, cluster id); **`code`** —
+(gold: reporter citations, docket + party tokens, cluster id); each court
+searches `--months-per-court` (default 3) random months of the last
+`--months-back` (18), one request each, to stay under the token's 50
+searches/hour; **`code`** —
 eCFR sections; an LLM projects each into a query about the section's
 substance with one verbatim quoted span, and the bench rejects it if it
 leaks the citation (gold: the `title CFR section` citation). `run` scans
@@ -275,7 +278,7 @@ engine's per-query results)
 and refreshes `daily_queries.jsonl` at the dataset root: a rolling window of
 the queries evaluated by runs from the last 24 hours
 (`scripts/daily_queries.py`; `backfill` rebuilds it from the archive). The
-workflow needs repo secrets `OPENROUTER_API_KEY`, `HF_TOKEN`, and the
+workflow needs repo secrets `OPENROUTER_API_KEY`, `HF_TOKEN`, `COURTLISTENER_API_TOKEN`, and the
 per-engine keys.
 
 The deployed site also serves the results page at

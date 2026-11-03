@@ -1,11 +1,11 @@
 # FPS 帧律 · fps-tune
 
-[简体中文](README.md) · [English](README.en.md) · [官方下载](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.3.6)
+[简体中文](README.md) · [English](README.en.md) · [官方下载](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.4.0)
 
 面向 Windows 玩家的系统设置调校与性能测量工具：检测 → 审阅 → 应用 → 实测 → 还原。
 提供桌面界面和命令行两种使用方式。
 
-[![release](https://img.shields.io/github/v/release/jidekaixin2dian/fps-tune?style=flat)](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.3.6)
+[![release](https://img.shields.io/github/v/release/jidekaixin2dian/fps-tune?style=flat)](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.4.0)
 ![platform](https://img.shields.io/badge/Windows-10%2F11%20x64-blue?style=flat)
 [![license](https://img.shields.io/github/license/jidekaixin2dian/fps-tune?style=flat)](LICENSE)
 [![build](https://img.shields.io/github/actions/workflow/status/jidekaixin2dian/fps-tune/build.yml?branch=main&label=build&style=flat)](https://github.com/jidekaixin2dian/fps-tune/actions/workflows/build.yml)
@@ -13,12 +13,12 @@
 
 ## 版本与下载
 
-当前版本为 **[v0.3.6](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.3.6)**。
+当前版本为 **[v0.4.0](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.4.0)**。
 1.x 版本线已停止维护。
 
-从本仓库 [Releases](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.3.6) 下载，适用于 Windows 10/11 x64；具体系统版本需满足 .NET 10 的运行条件。
+从本仓库 [Releases](https://github.com/jidekaixin2dian/fps-tune/releases/tag/v0.4.0) 下载，适用于 Windows 10/11 x64；具体系统版本需满足 .NET 10 的运行条件。
 
-**优先下载 [EXE 安装版：FpsTune-Setup-0.3.6.exe](https://github.com/jidekaixin2dian/fps-tune/releases/download/v0.3.6/FpsTune-Setup-0.3.6.exe)**，已包含 .NET 运行时，按向导安装即可。便携 ZIP 适合已有对应运行时、需要免安装使用的用户。
+**优先下载 [EXE 安装版：FpsTune-Setup-0.4.0.exe](https://github.com/jidekaixin2dian/fps-tune/releases/download/v0.4.0/FpsTune-Setup-0.4.0.exe)**，已包含 .NET 运行时，按向导安装即可。便携 ZIP 适合已有对应运行时、需要免安装使用的用户。
 
 | 文件 | 用途 |
 |---|---|
@@ -26,7 +26,7 @@
 | `FpsTune-Portable-<版本>.zip` | 便携包，需要 [.NET 10 Windows Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0) |
 | `SHA256SUMS-v<版本>.txt` | 使用 `Get-FileHash -Algorithm SHA256 <文件>` 校验下载文件 |
 
-本版校验清单：[SHA256SUMS-v0.3.6.txt](https://github.com/jidekaixin2dian/fps-tune/releases/download/v0.3.6/SHA256SUMS-v0.3.6.txt)。
+本版校验清单：[SHA256SUMS-v0.4.0.txt](https://github.com/jidekaixin2dian/fps-tune/releases/download/v0.4.0/SHA256SUMS-v0.4.0.txt)。
 
 当前程序未做代码签名，Windows 可能提示未知发布者。运行前核对来源及校验值；校验值用于检查内容一致性，不能替代发布者签名。
 便携包和安装包均包含完整 LICENSE 与第三方声明；软件「设置 → 关于 → 开源许可」和 CLI `-License` 也可查看全文。
@@ -140,7 +140,7 @@ A/B 使用固定硬件、游戏、画质与路线，要求至少 3 次有效样�
 
 默认启动检查本仓库 GitHub Releases，可在设置中关闭，也可手动检查。
 发现新版本时展示主要变化；点击「打开下载页面」前往对应版本，优先选择 EXE 安装包。更新由你决定。
-无需第三方网盘。下载使用官方 HTTPS 发布资产并核验同一 Release 的 SHA256 清单。
+下载使用官方 HTTPS 发布资产，并核验同一 Release 的 SHA256 清单。GitHub 直连不稳时，更新弹窗会给出一个蓝奏云备用链接（与安装包内容一致，同样用 SHA256SUMS 核对）。
 
 硬件检测、游戏路径、设置备份、会话和日志保存在 `%LocalAppData%\FpsTune`，不自动上传。
 更新请求会向 GitHub 提供网络连接所需的 IP 和 `FpsTune` User-Agent，不发送硬件、游戏清单或日志。GitHub 与 QQ 各自按其服务规则处理访问和社区资料。

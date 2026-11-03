@@ -36,6 +36,7 @@ Gateways built for model traffic: one API in front of many providers, with routi
 - [Otari](https://github.com/mozilla-ai/otari) - OpenAI-compatible gateway from Mozilla.ai that routes one endpoint to 40+ providers, issues virtual keys, enforces budgets, and tracks usage (`Apache-2.0`, `Python`).
 - [Plano](https://github.com/katanemo/plano) - Out-of-process proxy and data plane for agentic apps that handles LLM routing with its own routing model, agent orchestration, guardrails, and tracing (`Apache-2.0`, `Rust`).
 - [Portkey AI Gateway](https://github.com/Portkey-AI/gateway) - Gateway that routes to 1,600+ models through one API with retries, fallbacks, load balancing, conditional routing, and guardrails, with an MCP gateway in Portkey's hosted platform (`MIT`, `TypeScript`).
+- [Teapot Router](https://teapotrouter.com) - Hosted gateway for coding agents that speaks the Anthropic and OpenAI protocols on one key, with per-request cost, token, and latency logging, public machine-readable pricing, multi-upstream failover, and credit that never expires (`Proprietary`).
 - [Traceloop Hub](https://github.com/traceloop/hub) - LLM gateway that exposes an OpenAI-compatible API over OpenAI, Anthropic, Azure OpenAI, Vertex AI, and Bedrock and records every call as OpenTelemetry traces (`Apache-2.0`, `Rust`).
 - [TrueFoundry AI Gateway](https://www.truefoundry.com/ai-gateway) - Enterprise gateway for hundreds of models with unified governance and real-time observability, offered alongside TrueFoundry's MCP gateway and agent gateway (`Proprietary`).
 
@@ -100,9 +101,11 @@ Hosted APIs for many models behind one key, and routers that pick a model for ea
 
 - [Amazon Bedrock Intelligent Prompt Routing](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-routing.html#prompt-routing-works) - Serverless Bedrock endpoint that routes each request between models in the same family based on predicted response quality (`Proprietary`).
 - [Microsoft Foundry Model Router](https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router#how-model-router-works) - Trained language model, deployed like any other Foundry model, that routes each prompt in real time to the most suitable underlying LLM (`Proprietary`).
+- [Nivana](https://nivana.one/docs/routing) - Hosted model router that profiles each request by task and difficulty, scores every model in its pool on measured quality, live price, and speed, and sends the request to the highest scorer (`Proprietary`).
 - [Not Diamond](https://www.notdiamond.ai) - Model router for coding agents that predicts which model to use for each input and works with existing harnesses and gateways (`Proprietary`).
 - [OpenRouter](https://openrouter.ai/docs/quickstart#using-the-openrouter-api) - Hosted API for hundreds of models behind one endpoint, with automatic fallbacks and cost-based provider selection (`Proprietary`).
 - [Requesty](https://www.requesty.ai) - Hosted gateway and router for 600+ models through one OpenAI-compatible API, with routing, caching, failover, spend limits, and EU data residency (`Proprietary`).
+- [Septor Labs](https://septorlabs.com/docs/introduction) - Hosted gateway that serves OpenAI-style and Anthropic-style clients from one key, routes by priority, weight, least-connections, or latency, fails over before the first token, and adds semantic caching, per-key budgets, and prepaid credits (`Proprietary`).
 - [vLLM Semantic Router](https://github.com/vllm-project/semantic-router) - Policy-driven router from the vLLM project that selects or combines models for each call across local, private, and cloud backends (`Apache-2.0`, `Go`).
 
 ## Inference Gateways
@@ -153,4 +156,4 @@ Vendor-neutral guides from the [AI Gateways](https://github.com/ai-gateways#star
 
 ## Contributing
 
-Contributions are welcome. Read the [contribution guidelines](contributing.md) before opening a pull request.
+Contributions are welcome, including from vendors who disclose their affiliation. Read the [contribution guidelines](contributing.md) before opening a pull request; an automated review checks each entry within a few minutes.

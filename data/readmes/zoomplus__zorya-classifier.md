@@ -38,6 +38,10 @@ npm install zorya-classifier
 
 The release archive also installs with `npm install ./zorya-classifier-0.2.3.tgz` (filename follows `package.json` version). Runtime dependencies are Zod and Sharp; model weights, Electron, a database and background services are not included. Optional local segmentation backends and their model assets are a separate responsibility of the caller; the library does not download or choose them.
 
+## MCP server
+
+The separate [`zorya-classifier-mcp`](packages/mcp/README.md) package adds stdio and HTTP transports on top of the published `zorya-classifier@0.2.3` package. HTTP supports OIDC or an explicit IP allowlist mode with per-session capability tokens for clients such as ChatGPT that cannot supply custom authentication headers. The server requires an explicit model/provider profile or a programmatically injected `DecisionPort`, and does not select models or download segmentation assets. See its Russian guide for bounded inputs, both access modes, Docker and runtime behavior.
+
 ## Capability and status
 
 Spatial APIs are implemented and documented; the [H8a vs Jev DEV12 box comparison](https://github.com/zoomplus/zorya-classifier/blob/v0.2.3/docs/research/v03-jev-native-box-results.ru.md) is one research recipe, not a promoted default. Historical metrics below and in `docs/evidence/**` are preserved as recorded.
@@ -94,6 +98,8 @@ Native Choices retain the provider distribution and select a maximum; ties use s
 Use the same `createClassifier` with `createOpenRouterVision` from `zorya-classifier/openrouter`, for example `{ apiKey, model: 'openai/gpt-6-luna', provider: 'openai', reasoningEffort: 'none' }`. This adapter uses ordinary chat completions. Choose prompt/JSON-object/JSON-schema mode to match server support.
 
 Ordinary chat models return a closed ranking, **not manufactured probabilities**. `choice` is its first ID, `ranking` contains the returned ordered IDs, and `probabilities` / `nativeChoice` are `null`. Invalid IDs, duplicates, missing answers, refusals, truncation and malformed JSON fail validation. A valid structured answer is still not proof of factual correctness. Classification/final selection request one ranked ID; spatial beam stages request four. These rank-only results remain distinct from native probability-valued results.
+
+Настройка OpenRouter и выбор узла провайдера по скорости описаны в [руководстве](docs/openrouter.ru.md).
 
 ## Direct providers and local servers
 

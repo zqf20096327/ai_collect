@@ -6,14 +6,12 @@
 
 Your photos and prompts stay on your computer. No cloud image service or subscription is needed.
 
-[![Status](https://img.shields.io/badge/status-beta-d29922?style=flat-square)](CHANGELOG.md)
 [![Windows](https://img.shields.io/badge/windows-10%20%7C%2011-0078D4?style=flat-square&logo=windows&logoColor=white)](#what-you-need)
 [![Tested GPU](https://img.shields.io/badge/tested%20GPU-RTX%203060%2012%20GB-76B900?style=flat-square&logo=nvidia&logoColor=white)](#what-you-need)
 [![Model](https://img.shields.io/badge/model-Qwen--Image--2.1-615CED?style=flat-square)](https://huggingface.co/Qwen/Qwen-Image-2.1)
 [![Code license](https://img.shields.io/badge/code%20license-MIT-green?style=flat-square)](LICENSE)
 
-<p><img src="assets/Screenshot%20-%202026-10-12%2017.44.28.png" alt="PicaLum QwenImage — Create mode with a description field and image settings" width="100%"/></p>
-<p><img src="assets/Screenshot%20-%202026-10-12%2017.44.39.png" alt="PicaLum QwenImage — Edit mode with photo references and editing instructions" width="100%"/></p>
+<p><img src="assets/Screenshot%20-%202026-11-02%2007.35.11.png" alt="PicaLum QwenImage — Create mode with quality presets, CFG, seed and format controls" width="100%"/></p>
 
 [**Download Windows installer**](https://github.com/thejohnd0e/PicaLum-QwenImage/releases/latest) · [Get started](#get-started) · [All features](#what-you-can-do) · [Help](#troubleshooting) · [For developers](#for-developers-and-advanced-users)
 
@@ -27,15 +25,15 @@ Your photos and prompts stay on your computer. No cloud image service or subscri
 | **Edit a photo** | Ask to change the lighting, style, background, clothing or text, or remove objects or people |
 | **Combine photos** | Use up to **10 photos** together — for example, put a subject from one photo into the scene of another |
 | **Change just one area** | Paint the area to edit and describe the change. Everything outside it stays unchanged. You can also choose another photo as the content for that area. This feature is beta |
+| **Erase objects** | Paint an unwanted object and press **Erase**. The LaMa model fills the area without an instruction; the first use downloads the model with a progress button. Everything outside the painted area stays unchanged |
 | **Create with a transparent background** | Make a new image with no background, useful for stickers and cutouts |
-| **Let the app invent an idea** | Use **Surprise**, with an optional theme, then keep or edit the proposed description |
 | **Choose quality and shape** | Three quality levels: Draft, Standard and Max. Choose square, portrait or landscape shapes from seven proportions |
 | **Make several versions** | Generate one image, a series of **4 or 8**, or keep generating until you stop |
 | **Control when to stop** | Cancel the current generation, or let a finite series finish its current image before stopping |
 | **Reuse a random starting number** | Lock the **seed** to reuse the same starting number, or leave it random for new variations |
 | **Save editing instructions** | Use six ready-made prompts, or create, duplicate, rename, edit and delete your own |
 | **Prepare your photos** | Add photos by drag-and-drop or a file picker, rotate them, and remove references without changing the original files |
-| **Compare before and after** | For regular photo edits, view the original and result side by side or move a comparison slider; zoom and pan to inspect details |
+| **Compare before and after** | For photo edits and area/erase results, view the original and result side by side, move a comparison slider, or hold to reveal the original; zoom and pan to inspect details |
 | **Review and reuse results** | Select recent images, enlarge them, copy their descriptions, reuse a seed or send a result back for another edit |
 | **Save automatically** | Every completed image is saved as a PNG. Choose the output folder, open images in another app or reveal them in Explorer |
 | **Keep generation details** | Descriptions and settings are stored inside the PNG; separate JSON information files are optional |
@@ -43,7 +41,7 @@ Your photos and prompts stay on your computer. No cloud image service or subscri
 | **Manage the engine** | Start or stop the program's image engine, and run an optional **Check GPU** test from Settings |
 | **Use your language** | English, Russian and Spanish interface; your choice is remembered |
 | **Use keyboard shortcuts** | Generate with Ctrl+Enter, cancel with Esc, and use shortcuts in the area editor |
-| **Work locally** | The app downloads what it needs once. Image generation and the idea generator then run on your PC |
+| **Work locally** | The app downloads what it needs once. Image generation then runs on your PC; the optional CLI still includes the local idea generator |
 | **Automate from the terminal** | An optional command-line tool supports generation, editing, setup, diagnostics and benchmarks; see the [advanced section](#quick-start-cli) |
 
 The app uses Qwen-Image-2.1. Results depend on the model and your instructions: an editing prompt is a request, not a guaranteed photo filter. **The model's license allows non-commercial use only.** This is an unofficial app, not affiliated with Alibaba or the Qwen team.
@@ -110,6 +108,14 @@ Tell the model both **what to change** and **what to keep**. Ordinary editing ca
 5. Describe exactly what should appear there. If you added other photos, select one under **Reference photo**; call it `<image2>` in this instruction, regardless of its position in the main list. Choose **None** to use the instruction only.
 6. Press **Generate**. The saved result keeps the source size, and **every pixel outside the selected area stays unchanged**. The original file is never modified.
 
+#### Erase an object with LaMa
+
+1. Paint the object you want to remove. No instruction is needed.
+2. If LaMa is not installed, press **Download model**. The app downloads about **206 MB** with progress and keeps the verified model in the app's `models\lama` folder. When it is ready, the button changes to **Erase**. A failed download can be retried.
+3. Press **Erase**. LaMa fills the painted area, restores every pixel outside it, and saves a separate result in history. The source is never overwritten.
+
+Erase requires the engine to be running. The model is Apache-2.0 licensed; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). If the GPU runs out of memory, LaMa falls back to CPU, which is slower.
+
 Paint enough space for the entire inserted object: anything the model draws outside the selection is discarded. Specific instructions work better, for example `Dark smoky eye shadow and bold red lipstick`. Standard is a better starting point for fine edits than Draft.
 
 On success, the editor closes and only the final result is added to history. If generation fails or is cancelled, the selection stays in the open editor so you can retry. Closing a painted selection asks whether to discard it. During generation, the close button / Esc requests cancellation. The selection is not saved for another session or after the editor is closed.
@@ -132,17 +138,11 @@ Open **Manage presets** to:
 
 Saved prompts remain available after you restart the app. They store the instruction, not image settings.
 
-### Surprise: let the app invent an idea
-
-Choose **Surprise**, optionally enter a **Theme**, select quality and press **Surprise me**. The app invents an English description locally. Choose **Random** format to let it choose the image's shape, or pick one of the seven fixed proportions.
-
-The description appears under **Last idea**. **Edit as text** copies it into Create so you can refine it. A Surprise series invents a fresh idea for each image, even with a locked seed.
-
 ### Make a series and stop generation
 
-The main button makes one image. Its arrow opens **Generate 4 images**, **Generate 8 images** and **Generate forever**. These work in Create, regular Edit and Surprise; the area editor makes one result at a time.
+The main button makes one image. Its arrow opens **Generate 4 images**, **Generate 8 images** and **Generate forever**. These work in Create and regular Edit; the area editor makes one result at a time.
 
-- Images are made one after another and saved as they finish. Create / Edit keep the starting inputs and settings; Surprise invents a new idea each time.
+- Images are made one after another and saved as they finish. Create / Edit keep the starting inputs and settings.
 - Leave the seed unlocked for random variations. A locked seed is reused for every image; unchanged inputs can repeat the same composition.
 - **Stop after this image** finishes the current image and stops the rest of a finite 4/8-image series.
 - **Cancel now** or **Esc** requests cancellation of the current run and stops the series. Images already completed remain saved.
@@ -165,9 +165,9 @@ Click a history thumbnail to select a result. Its description, size, seed, quali
 
 Click the result for an enlarged view; click again or press Esc to close it.
 
-For **regular photo edits**, the viewer has **Result**, **Side by side** and **Wipe**. Side by side displays the original and result together. Wipe lets you drag a divider over them. Use **Fit** or **100%**, or the mouse wheel to switch; at 100%, drag to move both views together. Different-sized images are displayed without cropping. Keep the original photo on disk so comparison can load it. This comparison toolbar is not currently available for Create, Surprise or area-edited results.
+For **photo edits and area/erase results**, the viewer has **Result**, **Side by side**, **Wipe** and **Hold**. Side by side displays the original and result together. Wipe lets you drag a divider over them. Hold reveals the original while you hold the pointer or Space. Use **Fit** or **100%**, or the mouse wheel to switch; at 100%, drag to move both views together. Different-sized images are displayed without cropping. Keep the original photo on disk so comparison can load it. This comparison toolbar is not currently available for Create results.
 
-**History is only for the current session**, with up to 60 recent thumbnails visible. Restarting the app clears this list. **Clear history** clears the list and preview, not your saved files. Use Open folder to find images from earlier sessions.
+History shows up to 60 recent images from the output folder that carry app metadata: images saved with **Create JSON metadata files** enabled, and Erase results, whose metadata is always embedded in the PNG. Restarting the app reloads those images with their comparison data. **Clear history** clears the current list and preview, not your saved files; images that still have metadata can reappear after a restart. Use Open folder to find everything on disk.
 
 ### Settings, saving and engine controls
 
@@ -201,7 +201,7 @@ For **regular photo edits**, the viewer has **Result**, **Side by side** and **W
 | Not enough graphics memory | Close other GPU-heavy apps and check the memory meter. A card with enough total memory can still have too much in use |
 | Generate is disabled | Wait for **Engine ready**, enter a description / instruction and, in Edit, add a photo. Generation cannot run during Check GPU |
 | Check GPU failed | Read its error, then retry from the test screen or Settings. The test is optional |
-| Earlier pictures disappeared | Open the output folder. History resets on restart; your saved pictures are not deleted. If you changed the folder, check the old one too |
+| Earlier pictures disappeared | Open the output folder. History reloads saved images that carry app metadata after a restart; pictures saved with JSON metadata disabled may not reappear in the list. Your files are not deleted. If you changed the folder, check the old one too |
 | Saved prompts will not load / save | Use the displayed error and **Retry loading**. Every prompt needs a name and instruction. Check that the app can write to its data folder |
 | Too much of the photo changes | Say what must stay the same, or use **Edit an area**. Paint enough room for an inserted object |
 
@@ -209,7 +209,7 @@ For **regular photo edits**, the viewer has **Result**, **Side by side** and **W
 
 - This is a **beta** application. Tested hardware is **RTX 3060 12 GB**; other GPU models are untested. Real 10 GB cards are untested and experimental, and cards below 10 GB are not accepted by setup. AMD, Intel and Apple Silicon are not supported.
 - The model can make mistakes, especially with detailed text and complicated descriptions. In our comparison it did better at photo editing than at following complex image-creation prompts; [results are below](#honest-benchmark-where-it-wins-and-where-it-loses).
-- There is no live image preview while generating, no tool to extend an image beyond its canvas, and no custom size / step controls in the desktop app.
+- There is no live image preview while generating, and no tool to extend an image beyond its canvas.
 - Your files stay local. Internet is needed to install dependencies and weights, not to send your photos to an online image generator.
 - The **model weights are non-commercial**. The app's code is MIT; see [License](#license) for the distinction.
 
@@ -284,6 +284,7 @@ qil setup
 qil generate "a red fox asleep in the snow" --preset draft
 qil generate "a mate gourd sticker" --transparent --aspect 1:1
 qil edit "Change the scene to a snowy night" -i street.jpg --preset standard
+qil edit "Warm up the lighting" -i portrait.jpg --denoising-strength 0.55
 qil edit "Put the dog from <image2> next to the bike in <image1>" -i bike.jpg -i dog.jpg
 qil surprise --theme capybaras
 qil config --output-dir "D:\Qwen Images"
@@ -299,7 +300,7 @@ qil bench --only E3_cartel_texto --only E7_bici_recorte --preset max
 | `qil doctor` | Inspect GPU, installation and verification status; does not install or generate |
 | `qil setup` | `--profile balanced\|compact` selects manually; omission chooses from VRAM. `--gpu-uuid GPU-…` selects a stable GPU identity. `--models-dir PATH` reuses / relocates weights; `--runtime-dir PATH` chooses the runtime directory. Saves configuration |
 | `qil generate "PROMPT"` | Create one image; accepts shared options and `--transparent` for native RGBA |
-| `qil edit "INSTRUCTION" -i PHOTO` | Edit / combine up to 10 references. Repeat `-i` / `--image` in order; the first is the canvas. Accepts shared options |
+| `qil edit "INSTRUCTION" -i PHOTO` | Edit / combine up to 10 references. Repeat `-i` / `--image` in order; the first is the canvas. Accepts shared options and `--denoising-strength 0.10..1.00` (default `0.75`) |
 | `qil surprise` | Create one local idea, with optional `--theme "THEME"`. Accepts shared quality, seed and output options; uses the idea's generated aspect instead of `--aspect` |
 | `qil config` | Show configuration as JSON. `--profile balanced\|compact`, `--models-dir PATH` and `--output-dir PATH` update settings; do not move old files or download models |
 | `qil bench` | Run a JSON suite and record images, timing, sampling speed, dimensions, seed, profile, GPU and peak VRAM in `results.json` |
@@ -309,6 +310,8 @@ Shared options for `generate`, `edit` and `surprise`:
 - `-p, --preset draft|standard|max`: quality, default **standard**; not a saved editing prompt.
 - `-a, --aspect RATIO`: one of the seven ratios, default `1:1`, used for text creation. Edit takes its canvas from the first photo; Surprise uses the generated idea's ratio.
 - `--seed NUMBER`: fixed seed; omitted means random.
+- `--cfg NUMBER`: CFG Scale from `1.0` to `5.0`; default `1.0` (off). The desktop slider/number field uses `0.1` steps. Higher values guide the image more strongly toward the prompt. The desktop also offers an optional negative prompt.
+- `--denoising-strength NUMBER` (`qil edit` only): `0.10`–`1.00`, default `0.75`; the desktop control uses `0.01` steps. Lower values generally preserve more of the first source photo; `1.00` uses the historic fully-noised edit path. This changes the initial latent, not a pixel blend, and the visual effect is nonlinear.
 - `-o, --out PATH`: output folder or `.png` filename for this run; otherwise the configured folder. Existing files receive a unique name rather than being overwritten.
 - `--keep-engine`: keep a CLI-started engine running for subsequent calls. Otherwise it stops when the command exits. Externally started engines are reused and not stopped by the CLI.
 
@@ -332,7 +335,9 @@ The bundled PyTorch proves the selected GPU's architecture before model weights 
 | Standard | 30 | About 1.6 MP | 1280 px |
 | Max | 40 | Official native 2K aspect presets; 2048 × 2048 at `1:1` | 1536 px |
 
-Create dimensions depend on aspect ratio. Regular editing gets its canvas from the first reference and can change its pixel dimensions. Area editing resamples and composites back to the source size.
+Create dimensions depend on aspect ratio. Regular editing gets its canvas from the first reference and can change its pixel dimensions. Denoising is available only in desktop Photos and for CLI `qil edit`; legacy requests without the setting retain `1.00`. The new interactive and CLI edit default is `0.75`.
+
+Expand **Quality presets** to adjust **Steps** (1–100) and **Size** (each side 256–4096 px, multiples of 32; area up to 4,500,000 pixels). Changing a value switches the summary to **Custom**. Changing **Format** preserves the pixel budget and recalculates the paired side. For photo edits, dimensions come from the source and cannot be edited.
 
 ### Local files and metadata
 
@@ -340,15 +345,18 @@ Create dimensions depend on aspect ratio. Regular editing gets its canvas from t
 - Shared Windows configuration: `%APPDATA%\picalum-qwenimage\config.json`. Desktop output settings also affect the CLI. Changing a path does not move existing files.
 - Editing prompts: `<runtime_dir>/presets.json`. Back up this file to preserve your prompt collection; it stores prompt text and names, not quality, references or seed.
 - Reused model folders need `diffusion_models/`, `text_encoders/` and `vae/` subfolders. Matching existing weights are reused rather than downloaded again.
-- Folder-mode PNG filenames include timestamp, mode and seed. Generation metadata is embedded even when JSON saving is off. Optional JSON sidecars add reference paths, timings and other details; enabled by default on a fresh configuration.
+- Folder-mode PNG filenames include timestamp, mode and seed where applicable. Generation and Erase metadata is embedded even when JSON saving is off; optional JSON sidecars add the same details as a separate file and are enabled by default on a fresh configuration.
+- LaMa erase weights live in `<models_dir>\lama\big-lama.pt`; they are downloaded on first use, checked against a pinned SHA-256, and stay after restarts. They are not part of the installer.
 - Engine log: `<runtime_dir>/engine.log`. The installed ComfyUI process listens on `127.0.0.1`; reference uploads are local.
 - To remove an installed desktop app, use Windows Installed apps. To remove the downloaded runtime too, close the app and delete its runtime folder. Configuration and separately chosen model / output folders are separate; preserve images and preset backups you want to keep.
 
 ### Mask-guided editing
 
-The model does not receive a native mask. It sees the source marked with a red outline and tint, plus an instruction to edit there. The app resamples the model result to the source size and composites it with the source, preserving every pixel outside the painted mask. Edge softness feathers inward; it never expands the edited area. Anything the model draws outside the mask is discarded. Only the final composite enters history; the original is unchanged and the mask is not saved for later sessions.
+The model does not receive a native mask. It sees the source marked with a red outline and tint, plus an instruction to edit there; the denoising init latent comes from a separate clean copy of the source. The app resamples the model result to the source size and composites it with the source. **Inward** feathering (default) keeps zero-mask pixels unchanged and never expands the editable area. **Gaussian · both sides** blurs the mask in both directions and can affect pixels outside the painted selection; its radius is the Gaussian sigma in source-image pixels (support extends to about three sigma), not the width of an inward transition. Radius `0` uses the raw mask. The colored preview uses the same effective-mask calculation as the final composite, while the raw mask is sent for processing. Denoising controls how much the model regenerates the photo; feathering controls only the boundary blend. Only the final composite enters history; the original is unchanged and the mask is not saved for later sessions.
 
 The prototype in `bench/mask_proto` compared this with sending the mask as another reference (the outline leaked into results) and with instructions alone (neighbouring objects changed). This is application-level compositing, not native Qwen inpainting. The feature was tested on a few photos and seeds on RTX 3060 12 GB, Balanced; Compact is untested for area editing.
+
+**Erase** is separate from Qwen. It runs a pinned LaMa TorchScript model in the app's own Python environment, pads the image to a multiple of 8, fills the painted area, then restores the original pixels outside the mask. It does not use the instruction, CFG, denoising or feather controls. The worker runs as a separate process with no console window; if CUDA runs out of memory, it retries on CPU. The model download is explicit, resumable and SHA-256 verified; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the Apache-2.0 attribution. Erase was verified on CPU on a small fixture; GPU and installed-app behavior still need testing.
 
 ### How it fits in 12 GB
 

@@ -2,58 +2,45 @@
 
 <img src="./resources/logo/vt_code_adaptive.svg" alt="VT Code" width="600" />
 
-**Plan, change, and verify code from your terminal, with every step auditable.**
+<p>
+  <sub>Terminal-first. Desktop-ready.</sub><br />
+  <sub>Explore, plan, edit, and verify; all with the model you choose.</sub>
+</p>
 
-VT Code is an open-source coding agent for your repository. Choose the model, keep tool calls under
-policy, and review every change.
-
-[![GitHub release](https://img.shields.io/github/release/vinhnx/VTCode.svg)](https://github.com/vinhnx/VTCode/releases)
-[![Rust](https://img.shields.io/badge/rust-1.98.1%2B-000000?style=flat-square&logo=rust&logoColor=white)](https://github.com/vinhnx/VTCode)
+[![Rust](https://img.shields.io/badge/rust-1.99.1%2B-000000?style=flat-square&logo=rust&logoColor=white)](https://github.com/vinhnx/VTCode)
 [![License](https://img.shields.io/badge/License-MIT_OR_Apache--2.0-30363D?style=flat-square)](#license)
-[![hotpath-cloud](https://img.shields.io/endpoint?url=https://hotpath.rs/badge-cloud.json)](https://hotpath.rs/app/repos/vinhnx/VTCode)
+[![GitHub release](https://img.shields.io/github/release/vinhnx/VTCode.svg)](https://github.com/vinhnx/VTCode/releases)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/vinhnx/vtcode)
+[![macOS 15+](https://img.shields.io/badge/macOS-15%2B-000000?style=flat-square&logo=apple)](#desktop-app)
+[![arm64 and x64](https://img.shields.io/badge/arch-arm64_%7C_x64-30363D?style=flat-square)](#desktop-app)
 
-<a href="https://deepwiki.com/vinhnx/vtcode"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+> **Native macOS app:** the full engine behind a desktop interface — see the [desktop app](#desktop-app).
 
-<!-- markdownlint-disable-next-line MD013 -->
-<img src="./resources/gif/vtcode.gif" alt="VT Code demo: plan, then review changes in the terminal" width="76%" />
+<p>
+  <!-- markdownlint-disable MD033 -->
+  <video src="./resources/gif/demo-desktop.mov" width="100%" autoplay loop muted playsinline controls
+    poster="./resources/screenshots/vtcode-desktop-light.png"
+    aria-label="VT Code Desktop app demo">
+    <a href="./resources/gif/demo-desktop.mov">Open the demo video</a>
+  </video>
+  <!-- markdownlint-enable MD033 -->
+</p>
+<sub>Desktop app demo (video; open it directly if playback is unavailable).</sub>
+
+<p>
+  <img src="./resources/screenshots/vtcode-cli-tui.gif" width="39%"
+    alt="Terminal TUI demo: launch, ask, stream the reply, exit" />
+  <img src="./resources/screenshots/vtcode-cli-ask.gif" width="58%"
+    alt="One-shot ask demo: a single tool-free terminal reply" /><br />
+  <sub>Terminal TUI &nbsp;·&nbsp; One-shot ask</sub>
+</p>
+
 </div>
-
-## Contents
-
-- [Contents](#contents)
-- [Overview](#overview)
-- [Quick start](#quick-start)
-    - [1. Install](#1-install)
-    - [2. Configure your project](#2-configure-your-project)
-    - [3. Run your first task](#3-run-your-first-task)
-- [Usage](#usage)
-    - [Interactive](#interactive)
-    - [Modes](#modes)
-    - [Automation](#automation)
-    - [Sessions](#sessions)
-- [Documentation](#documentation)
-    - [Get started](#get-started)
-    - [Work in the TUI](#work-in-the-tui)
-    - [Automate](#automate)
-    - [Extend and integrate](#extend-and-integrate)
-    - [Develop and evaluate](#develop-and-evaluate)
-- [Development](#development)
-- [Contributing](#contributing)
-- [Security](#security)
-- [Community](#community)
-- [Thanks to our contributors](#thanks-to-our-contributors)
-    - [Security Advisors](#security-advisors)
-    - [Main Contributor](#main-contributor)
-    - [Core Contributors](#core-contributors)
-    - [Contributors](#contributors)
-    - [Resources](#resources)
-- [Sponsorship](#sponsorship)
-- [License](#license)
 
 ## Overview
 
-VT Code runs in your terminal and works on your repository: explore, plan, edit, and verify with the model you
-choose. It owns context, tool calls, and execution policy, so long tasks stay auditable and resumable.
+VT Code works on your repository from the terminal or its native macOS app. It owns context, tool calls, and
+execution policy, so long tasks stay auditable and resumable.
 
 | At a glance      | What you get                                                                         |
 | ---------------- | ------------------------------------------------------------------------------------ |
@@ -64,22 +51,9 @@ choose. It owns context, tool calls, and execution policy, so long tasks stay au
 | **Integrations** | [MCP](./docs/guides/mcp-integration.md), Skills, plugins, and editor bridges.        |
 | **Models**       | [Hosted or local providers](./docs/README.md#provider-index) per task.               |
 
-```mermaid
-flowchart LR
-    H[Hypothesize] --> O[Observe tool evidence]
-    O --> V[Verify outcome]
-    V --> E[Evaluate vs hypothesis]
-    E -->|mismatch| R[Revise and retry corrected]
-    R --> H
-    E -->|match| D[Done]
-```
-
-Every loop states the expected outcome, gathers bounded evidence, and revises only when the evidence disagrees.
-See the [HOVER acceptance table](./docs/development/hypothesis-revision-validation.md) for the full contract.
-
 ## Quick start
 
-Requirements: macOS, Linux, or Windows/WSL. Building from source needs Rust 1.98.1+ (edition 2024).
+Requirements: macOS, Linux, or Windows/WSL. Building from source needs Rust 1.99.1+ (edition 2024).
 
 ### 1. Install
 
@@ -88,8 +62,7 @@ Requirements: macOS, Linux, or Windows/WSL. Building from source needs Rust 1.98
 curl -fsSL https://raw.githubusercontent.com/vinhnx/VTCode/main/scripts/install.sh | bash
 ```
 
-The installer also attempts to add the optional `ripgrep` and `ast-grep` search tools. To manage installation
-yourself, use Homebrew or Cargo:
+To manage installation yourself, use Homebrew or Cargo:
 
 ```bash
 brew trust vinhnx/tap
@@ -99,19 +72,18 @@ brew install vinhnx/tap/vtcode
 cargo install vtcode
 ```
 
-On Windows, install with PowerShell; Windows artifacts are best-effort and may lag behind macOS/Linux:
+On Windows, install with PowerShell (artifacts are best-effort and may lag behind macOS/Linux):
 
 ```powershell
 irm https://raw.githubusercontent.com/vinhnx/VTCode/main/scripts/install.ps1 | iex
 ```
 
-Run `vtcode --version` to verify the installation. The [installation guide](./docs/installation/README.md) covers
-prerequisites, other install methods, and optional search tools.
+Run `vtcode --version` to verify the installation. The [installation guide](./docs/installation/README.md)
+covers prerequisites, other install methods, desktop flags, and optional search tools.
 
 ### 2. Configure your project
 
-In your project directory, scaffold the configuration and agent instructions, then add credentials for your provider.
-For example, to use OpenAI:
+In your project directory, scaffold the configuration and add credentials for your provider:
 
 ```bash
 cd path/to/your/project
@@ -119,21 +91,15 @@ vtcode init                # scaffolds config + AGENTS.md; review before committ
 vtcode secret add openai   # stores your OpenAI API key in secure storage
 ```
 
-Replace `openai` with your provider. `vtcode secret add` uses secure storage (OS keyring or encrypted file). You can
-also set credentials in environment variables or a workspace `.env` file, or use `vtcode login` if your provider has a
-supported login flow. See
-[Getting started](./docs/user-guide/getting-started.md) and [Provider guides](./docs/providers/PROVIDER_GUIDES.md) for
-provider-specific instructions.
+Replace `openai` with your provider. Keys use secure storage (OS keyring or encrypted file); alternatives include
+environment variables, a workspace `.env` file, or `vtcode login` where supported. See
+[Getting started](./docs/user-guide/getting-started.md) and [Provider guides](./docs/providers/PROVIDER_GUIDES.md).
 
-> [!NOTE]
-> ChatGPT OAuth reuses the Codex CLI's public client identity via an unofficial compatibility flow; prefer your
-> own OpenAI API key. GitHub Copilot uses the official `copilot` CLI. See
+> **Note:** ChatGPT OAuth reuses the Codex CLI's public client identity via an unofficial compatibility flow;
+> prefer your own OpenAI API key. GitHub Copilot uses the official `copilot` CLI. See
 > [OAuth authentication](./docs/guides/oauth-authentication.md).
-
-<!-- -->
-
-> [!CAUTION]
-> Keep API keys out of Git and `vtcode.toml`. If you use a workspace `.env` file, make sure it is not committed.
+>
+> **Caution:** Keep API keys out of Git and `vtcode.toml`; never commit a workspace `.env` file.
 
 ### 3. Run your first task
 
@@ -141,9 +107,8 @@ provider-specific instructions.
 vtcode   # open the interactive TUI in your project
 ```
 
-Ask a focused question, such as "Explain how this project handles authentication," and review proposed changes and
-test results before committing. For automation and session commands, see [Usage](#usage); for a guided walkthrough,
-see the [getting started guide](./docs/user-guide/getting-started.md).
+Ask a focused question, review proposed changes and test results before committing, and see [Usage](#usage) for
+automation and session commands.
 
 ## Usage
 
@@ -159,14 +124,10 @@ Common commands:
 | Resume the last session | `vtcode continue`                                  |
 | Inspect a run log       | `vtcode trajectory`                                |
 
-### Interactive
-
-Use `vtcode` to explore, plan, and implement changes in the TUI. For larger tasks, start with
-[read-only planning](./docs/guides/planning-workflow.md) and review the
-[turn diff](./docs/development/diff-preview.md) before committing. `/explain` then summarizes the outcome,
-changes, decisions, and verification without another model call; see the
-[explanation options](./docs/user-guide/commands.md#execution-explanations) and the
-[interactive guide](./docs/user-guide/interactive-mode.md) for controls.
+Use `vtcode` to explore, plan, and implement changes in the TUI. For larger tasks, begin with
+[read-only planning](./docs/guides/planning-workflow.md), then review the
+[turn diff](./docs/development/diff-preview.md) before committing. Run `/explain` to summarize the outcome
+without another model call; see the [interactive guide](./docs/user-guide/interactive-mode.md) for controls.
 
 ### Modes
 
@@ -176,37 +137,45 @@ changes, decisions, and verification without another model call; see the
   explicit denies, and execution policy still apply.
 - **`review`** inspects uncommitted changes.
 
-See [exec mode](./docs/user-guide/exec-mode.md) and [full automation](./docs/guides/full-automation.md) for
-configuration and output details.
-
-### Automation
-
 Recurring work uses [scheduled tasks](./docs/user-guide/scheduled-tasks.md), durable prompt jobs on the same exec
-runtime:
+runtime. Resume or fork earlier work with `vtcode continue` (or `--session-id <id>`), continue a headless run with
+`vtcode exec resume --last`, and inspect logs with `vtcode trajectory`. See [exec mode](./docs/user-guide/exec-mode.md)
+and [full automation](./docs/guides/full-automation.md) for configuration details.
 
-```bash
-# Weekly dependency audit (Mondays 09:00)
-vtcode schedule create --name "weekly-dep-audit" \
-  --cron "0 9 * * 1" \
-  --prompt "Check for outdated dependencies and report known vulnerabilities"
-```
+## Desktop app
 
-### Sessions
+<div align="center">
 
-Resume or inspect earlier work:
+### The full VT Code engine in a native Mac app
 
-```bash
-# Resume the most recent interactive session
-vtcode continue
+[![macOS 15+](https://img.shields.io/badge/macOS-15%2B-000000?style=flat-square&logo=apple)](./docs/development/desktop-workspace.md)
+[![arm64 and x64](https://img.shields.io/badge/arch-arm64_%7C_x64-30363D?style=flat-square)](./docs/development/desktop-workspace.md)
 
-# Continue the last headless run with a follow-up prompt
-vtcode exec resume --last "continue the refactor"
+<p>
+  <sub>Everything the CLI does: providers, tool policy, sandboxing, sessions, behind a native interface.</sub>
+</p>
 
-# Inspect the execution log
-vtcode trajectory
-```
+</div>
 
-Use `vtcode continue --session-id <id>` to fork an earlier session.
+The GUI talks to a matching local service binary while the unified runloop still owns providers, tool policy,
+sandboxing, and sessions. Desktop reuses your CLI configuration, provider credentials, workspace trust, and sandbox
+policy. Configure a provider from Terminal first, for example with `vtcode secret add openai`.
+
+<p>
+  <img src="./resources/screenshots/vtcode-desktop-light.png" width="49%"
+    alt="VT Code Desktop in light appearance" />
+  <img src="./resources/screenshots/vtcode-desktop-dark.png" width="49%"
+    alt="VT Code Desktop in dark appearance" />
+</p>
+<p align="center"><sub>Light and dark appearances</sub></p>
+
+### Install (macOS 15+)
+
+On Apple Silicon, download the app from the [latest release](https://github.com/vinhnx/VTCode/releases/latest) or
+install it with `vtcode desktop --install`. Intel Macs can build the app from source. Launch an installed app with
+`vtcode desktop`. See the
+[desktop workspace guide](./docs/development/desktop-workspace.md) for system requirements, source builds,
+Gatekeeper approval, and troubleshooting.
 
 ## Documentation
 
@@ -217,6 +186,7 @@ none are required for the quick start.
 ### Get started
 
 - [Installation](./docs/installation/README.md) and [getting started](./docs/user-guide/getting-started.md)
+- [Desktop app](./docs/development/desktop-workspace.md) for the native macOS GUI
 - [Providers](./docs/providers/PROVIDER_GUIDES.md) and [OAuth login](./docs/guides/oauth-authentication.md)
 - [FAQ](./docs/FAQ.md) and [compatibility](./docs/COMPATIBILITY.md)
 
@@ -244,9 +214,6 @@ none are required for the quick start.
 - [Architecture](./docs/ARCHITECTURE.md), [HOVER](./docs/development/hypothesis-revision-validation.md), and [protocols](./docs/protocols/OPEN_RESPONSES.md)
 - [Loop engineering](./docs/project/PLAN-loop-engineering.md)
 
-Elsewhere: [WebMCP app](https://vtcode.vinhnx.chatgpt.site/), [mirror](https://vinhnx.github.io/VTCode/), and the
-[Memcode write-up](https://memcode.in/blogs/vt-code-memory-across-threads).
-
 ## Development
 
 ```mermaid
@@ -261,10 +228,8 @@ graph LR
     CORE --> UI[vtcode-ui]
 ```
 
-Build with Rust 1.98.1+ (edition 2024) and install `cargo-nextest` to run tests. Context handling separates session
-history from provider request projections; see [context architecture](./docs/ARCHITECTURE.md#request-projection-and-context-budgets)
-and the [compaction guide](./docs/development/compaction.md). The [architecture guide](./docs/ARCHITECTURE.md) maps all
-23 crates.
+Build with Rust 1.99.1+ (edition 2024) and install `cargo-nextest` to run tests. The
+[architecture guide](./docs/ARCHITECTURE.md) maps all 25 crates, including the context and compaction design.
 
 ```bash
 git clone https://github.com/vinhnx/VTCode.git
@@ -283,12 +248,8 @@ Release binaries and notes: [GitHub releases](https://github.com/vinhnx/VTCode/r
 ## Contributing
 
 Contributions are welcome: code, docs, [evals](./docs/guides/eval.md), and bug reports (include `vtcode trajectory`
-output when possible). Before a PR, read the [contribution guide](./docs/CONTRIBUTING.md) for Conventional Commits,
-the local gates, and diff expectations.
-
-Maintainers of other MCP servers or MCP clients: VT Code interops on both sides of the protocol (client and server
-surfaces). See the [MCP interop guide](./docs/guides/mcp-interop.md) for what is implemented, how to register your
-server, how to point your client at VT Code's read-only `search`/`fetch` surface, and how to propose interop fixes.
+output when possible). Before a PR, read the [contribution guide](./docs/CONTRIBUTING.md). MCP maintainers: see the
+[interop guide](./docs/guides/mcp-interop.md) for client and server integration.
 
 ## Security
 
@@ -297,9 +258,6 @@ Report vulnerabilities privately via
 issue. Details: [security policy](./docs/SECURITY.md).
 
 ## Community
-
-VT Code is created and maintained by Vinh Nguyen with help from the community. You can contribute code,
-fix docs, or report what broke in a release. You can also fork the repository and adapt it for your own use.
 
 - [Report a bug](https://github.com/vinhnx/VTCode/issues/new?template=bug_report.md) - something looks off? Tell us,
   and include `vtcode trajectory` output if you can.
@@ -312,9 +270,8 @@ fix docs, or report what broke in a release. You can also fork the repository an
   would genuinely help.
 - [Contributing guide](./docs/CONTRIBUTING.md) - setup, checks, and commit conventions.
 
-New to open source or to Rust? That is completely fine. Pick a good first issue or a docs fix, leave a comment, and we
-will help you scope it and land it. The [Code of Conduct](./docs/CODE_OF_CONDUCT.md) keeps review kind and
-constructive.
+New to open source or Rust? Pick a good first issue or docs fix and we will help scope it. The
+[Code of Conduct](./docs/CODE_OF_CONDUCT.md) keeps review kind and constructive.
 
 Partnerships and private matters: `vinhnguyen2308 [at] gmail [dot] com`.
 
@@ -323,7 +280,7 @@ Partnerships and private matters: `vinhnguyen2308 [at] gmail [dot] com`.
 Thank you to everyone below. You are the reason this project keeps moving.
 
 <details>
-<!-- CONTRIBUTORS-COUNT:START --><summary>View all contributors (28)</summary><!-- CONTRIBUTORS-COUNT:END -->
+<!-- CONTRIBUTORS-COUNT:START --><summary>View all contributors (30)</summary><!-- CONTRIBUTORS-COUNT:END -->
 
 <!-- CONTRIBUTORS:START -->
 
@@ -362,9 +319,11 @@ Thank you to everyone below. You are the reason this project keeps moving.
 <a href="https://github.com/RobertBorg"><img src="https://avatars.githubusercontent.com/u/1288566?v=4&s=60" width="40" height="40" alt="@RobertBorg" title="@RobertBorg Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/raphamorim"><img src="https://avatars.githubusercontent.com/u/3630346?v=4&s=60" width="40" height="40" alt="@raphamorim" title="@raphamorim Contributor (1 commit) - PR #708, rio-vt migration" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/poelzi"><img src="https://avatars.githubusercontent.com/u/66107?v=4&s=60" width="40" height="40" alt="@poelzi" title="@poelzi Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
+<a href="https://github.com/pawurb"><img src="https://avatars.githubusercontent.com/u/1131944?v=4&s=60" width="40" height="40" alt="@pawurb" title="@pawurb Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/morler"><img src="https://avatars.githubusercontent.com/u/478444?v=4&s=60" width="40" height="40" alt="@morler" title="@morler Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/georgeatparallel"><img src="https://avatars.githubusercontent.com/u/297992784?v=4&s=60" width="40" height="40" alt="@georgeatparallel" title="@georgeatparallel Contributor (1 commit) - opt-in Parallel Search MCP config (#779)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/ForrestThump"><img src="https://avatars.githubusercontent.com/u/44280834?v=4&s=60" width="40" height="40" alt="@ForrestThump" title="@ForrestThump Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
+<a href="https://github.com/f-o-x11"><img src="https://avatars.githubusercontent.com/u/239233855?v=4&s=60" width="40" height="40" alt="@f-o-x11" title="@f-o-x11 Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/EvoLinkAI"><img src="https://avatars.githubusercontent.com/u/253253881?v=4&s=60" width="40" height="40" alt="@EvoLinkAI" title="@EvoLinkAI Contributor (1 commit) - Evolink provider (#664)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/ericcurtin"><img src="https://avatars.githubusercontent.com/u/1694275?v=4&s=60" width="40" height="40" alt="@ericcurtin" title="@ericcurtin Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
 <a href="https://github.com/diegosouzapw"><img src="https://avatars.githubusercontent.com/u/8016841?v=4&s=60" width="40" height="40" alt="@diegosouzapw" title="@diegosouzapw Contributor (1 commit)" style="border-radius: 50%; border: 2px solid #B19CD9;" /></a>&nbsp;
@@ -385,24 +344,36 @@ figure it out together.
   evals, security, and lessons learned.
 - [Podcast](https://www.youtube.com/watch?v=XLoswcd5rH0) · [Video](https://www.youtube.com/watch?v=PvL_kPjgU6o)
 
-## Sponsorship
-
-VT Code is maintained in spare time; a [sponsorship](https://github.com/sponsors/vinhnx) keeps it independent.
+## Support VT Code
 
 <div align="center">
 
----
+**Special thanks to current sponsors: [Codemod](https://codemod.com/) and [CodeRabbit](https://www.coderabbit.ai/) for ongoing support.**
 
 [![@codemod](https://avatars.githubusercontent.com/u/78830094?s=80)](https://github.com/codemod)&nbsp;
 [![@coderabbitai](https://avatars.githubusercontent.com/u/132028505?s=80)](https://github.com/coderabbitai)&nbsp;
 
----
-
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/vinhnz?style=for-the-badge&label=Click%20to%20sponsor&labelColor=BFB38F&color=000000&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fvinhnx)](https://github.com/sponsors/vinhnx)
+
+## Thank you
+
+<a
+  href="https://www.star-history.com/?repos=vinhnx%2FVTCode&type=timeline&legend=top-left">
+<picture>
+
+   <source media="(prefers-color-scheme: dark)"
+     srcset="https://api.star-history.com/chart?repos=vinhnx/VTCode&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)"
+     srcset="https://api.star-history.com/chart?repos=vinhnx/VTCode&type=timeline&legend=top-left" />
+   <img alt="Star History Chart"
+     src="https://api.star-history.com/chart?repos=vinhnx/VTCode&type=timeline&legend=top-left" />
+ </picture>
+</a>
 
 </div>
 
 ## License
 
-First-party code is **MIT OR Apache-2.0** under [LICENSE](LICENSE). Third-party code keeps its original licenses,
-listed in [THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES).
+First-party code is **MIT OR Apache-2.0**, available under either [LICENSE-MIT](LICENSE-MIT) or
+[LICENSE](LICENSE) (Apache-2.0). Third-party code keeps its original licenses, listed in
+[THIRD-PARTY-NOTICES](THIRD-PARTY-NOTICES).

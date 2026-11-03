@@ -1087,6 +1087,42 @@ Gap vs LangGraph/CrewAI/AutoGen subgraph deadlock-residual monitors. Distinct fr
 
 Gap vs LangGraph/CrewAI/AutoGen planner context-overflow monitors. Distinct from `PlannerStepBudgetBandAdvisor` / `PlannerHorizonBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PLANNER_CONTEXT_OVERFLOW_BAND_ADVISOR_GUIDE.md`.
 
+### WorkerQueueDepthBandAdvisor
+
+![WorkerQueueDepthBandAdvisor](assets/demo/worker-queue-depth.gif)
+
+HITL `queue_depth_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen worker-queue depth monitors. Distinct from `WorkerStarvationBandAdvisor` / `WorkerHeartbeatMissBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/WORKER_QUEUE_DEPTH_BAND_ADVISOR_GUIDE.md`.
+
+### HandoffSchemaDriftBandAdvisor
+
+![HandoffSchemaDriftBandAdvisor](assets/demo/handoff-schema-drift.gif)
+
+HITL `drift_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen handoff-schema drift monitors. Distinct from `ToolResultSchemaDriftBandAdvisor` / `AgentHandoffLoopBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/HANDOFF_SCHEMA_DRIFT_BAND_ADVISOR_GUIDE.md`.
+
+### AgentAffinitySkewBandAdvisor
+
+![AgentAffinitySkewBandAdvisor](assets/demo/agent-affinity-skew.gif)
+
+HITL `skew_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen agent-affinity skew monitors. Distinct from `FanInSkewBandAdvisor` / `SharedStateWriteSkewBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/AGENT_AFFINITY_SKEW_BAND_ADVISOR_GUIDE.md`.
+
+### CriticCalibrationDriftBandAdvisor
+
+![CriticCalibrationDriftBandAdvisor](assets/demo/critic-calibration-drift.gif)
+
+HITL `drift_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen critic-calibration drift monitors. Distinct from `CriticCollusionBandAdvisor` / `CriticLatencySkewBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/CRITIC_CALIBRATION_DRIFT_BAND_ADVISOR_GUIDE.md`.
+
+### PlannerGoalChurnBandAdvisor
+
+![PlannerGoalChurnBandAdvisor](assets/demo/planner-goal-churn.gif)
+
+HITL `churn_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen planner goal-churn monitors. Distinct from `PlannerContextOverflowBandAdvisor` / `PlanGoalContradictionBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/PLANNER_GOAL_CHURN_BAND_ADVISOR_GUIDE.md`.
+
+### SharedKvLeaseExpiryBandAdvisor
+
+![SharedKvLeaseExpiryBandAdvisor](assets/demo/shared-kv-lease-expiry.gif)
+
+HITL `expiry_ratio` band guard. Gap vs LangGraph/CrewAI/AutoGen shared-KV lease-expiry monitors. Distinct from `BlackboardWriteLeaseAdvisor` / `SharedLockContentionBandAdvisor`. Stack: GPT-5.5 / Claude Sonnet 4.6 / Gemini 3.x / Kimi K2. See `docs/guides/SHARED_KV_LEASE_EXPIRY_BAND_ADVISOR_GUIDE.md`.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

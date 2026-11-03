@@ -5,6 +5,11 @@
 > **在 DSH 内核之上构建企业级 AI Agent 业务系统的平台。**
 > 你只写业务逻辑。多租户隔离、安全审计、审批、配额计费、会话持久化、演进兼容——这些由平台实现，契约测试钉死，不需要你自己写。
 
+> [!IMPORTANT]
+> **🖱️ Vibe coding 必读：[AGENTS.md](AGENTS.md) —— 任何 coding agent 动第一行代码前必读。**
+> 其中钉死了：架构红线（LAYER-001）、域内外信任模型（SEC-032）、fail-closed、契约测试先行、平台能力复用清单、提交前自检清单。
+> **约定：下游业务仓库以本文件为模板，复制/改编为自己仓库根目录的 `AGENTS.md`**，让每个 coding agent 打开仓库即读约定、按约开发。
+
 ## 为什么会有这个项目
 
 DSH 开源之后，我一直在思考一个问题：**如何把 DSH 的能力引入企业级应用中去？**
@@ -178,6 +183,37 @@ node tools/lint-specs.mjs && node tools/check-gates.mjs
 node tools/validate-contracts.mjs && node tools/lint-docs.mjs
 ```
 
+## 部署：DSH 内核运行时如何被安装与发现
+
+DSH-BOOT **不 import DSH 内核源码**——内核以**运行时**形式与平台并存于同一部署单元，靠「安装 + 环境变量 + 进程边界」对接。三层各自怎么到位：
+
+**第 1 步：安装内核运行时。** `@deepseek-ai/dsh` 以 npm 包（或只读挂载）装进部署单元，`dsh` CLI 进入 PATH。这一步相当于"装 Java"——内核是已发布的运行时产品，不需要也不应该改它源码。
+
+**第 2 步：环境变量定位。** 平台与内核之间没有代码级耦合，全靠约定：
+
+| 环境变量 | 作用 |
+|---|---|
+| `DSH_HOME` | 内核数据目录（profiles、状态、审计），CLI 与平台都从这里读写 |
+| `DSH_GATEWAY_PORT` | 平台网关端口（默认 7301），平台内各服务按它互相发现 |
+| `LITELLM_GATEWAY_API_KEY` | 模型网关凭证（模型调用出域计费） |
+
+**第 3 步：进程边界调用。** 平台与业务系统通过 `execFile` 调用 `dsh` CLI 消费内核能力（如内核插件清单、Profile 管理）——**不 import 内核源码**，这是 LAYER-001（产品壳禁止直接 import 内核）的落地形态。
+
+### 参考部署形态（单容器）
+
+一个业务应用的完整部署单元，参考本仓库自带的运维后台（ops-console）：
+
+| 部署单元内容 | 说明 |
+|---|---|
+| 内核运行时 | `@deepseek-ai/dsh` npm 包或只读挂载 + `dsh` CLI 进 PATH |
+| 平台拓扑 | 控制面服务 + 网关（`DSH_GATEWAY_PORT` 对接） |
+| 你的业务应用 | BFF + 前端（或 CLI），经平台 API 消费多租户/审批/审计能力 |
+| 内核数据目录 | `DSH_HOME` 指向（profiles / 状态 / 审计） |
+
+容器以 `restart: always` 交给 Docker 或编排器管理；公网接入按既有网关/隧道体系加一条路由即可。
+
+> **如实标注**：反向网关当前为桩实现（内存 attest + 种子 Profile）；内核的程序级接线（`packages/domain-bridge/src/llm/attribution.ts` 预留了接内核 `@deepseek-ai/dsh-llm` 具名导出的位置）为 P0-A2 待落地项——落地前，内核能力的消费走 `dsh` CLI 进程边界，这也是运维后台"内核插件管理"的既有实现方式。
+
 ## 设计原则
 
 1. **强制力只来自域外**——层级合法性在 Profile 生成时判定，域内不自我证明（域内自证合规即不通过）。
@@ -198,6 +234,7 @@ node tools/validate-contracts.mjs && node tools/lint-docs.mjs
 
 ## 文档
 
+- [完整说明](docs/完整说明.md) — **从这开始**：三层架构、平台能力、五步开发业务系统、信任模型、部署与发现、已知边界
 - [工程手册](docs/ENGINEERING-HANDBOOK.md) — 权威顺序、门禁速查、缺口台账、变更记录（贡献者必读）
 - [规格总纲](spec/00-规格总纲.md) — 规格集入口
 - [故障域矩阵](docs/reliability/failure-domain-matrix.md) / [降级阶梯](docs/reliability/degradation-ladder.md) / [DSR 清单](docs/security/dsr-inventory-and-proof.md)

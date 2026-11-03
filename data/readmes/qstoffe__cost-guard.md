@@ -2,7 +2,7 @@
 
 **Monitor AI model usage, cost and quotas in OpenCode.**
 
-Cost Guard analyzes [OpenCode](https://opencode.ai/) prompts/sessions, relative model costs and account quotas locally, with real-time Watch.
+Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs and quotas locally, with real-time Watch.
 
 [Synthetic CLI text](development/tests/fixtures/token-categories/120.txt): Watch, Normal, history and detail—not Web screenshots.
 
@@ -18,9 +18,9 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) prompts/sessions, relative 
 
 ## Quick start
 
-Cost Guard changes rapidly. Use **current `main`**: the latest supported Cost Guard code.
+Use **current `main`** (v80.128, 2026-11-02), the supported distribution.
 
-Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Extract with the folder structure intact; download again to update.
+Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
 With Git:
 
@@ -31,7 +31,7 @@ cd cost-guard
 git pull --ff-only
 ```
 
-Install **Python 3.11+**; standard supported OpenCode installations need no configuration.
+Install **Python 3.11+**; standard OpenCode installations need no configuration.
 
 ### Optional Web Beta
 
@@ -48,11 +48,11 @@ Update old shortcuts/bookmarks to the hyphenated names; no aliases ship.
 | `Cost-Guard.cmd` | Normal model comparison/account quota report. |
 | `Cost-Guard-Watch.cmd` | Live/global Watch; Ctrl+C stops Watch only. |
 
-Report, Watch and Diagnostics open a **separate, persistent console** with PowerShell 7/5.1. Completion, errors and Ctrl+C leave a usable child prompt with Python's `$LASTEXITCODE` (9009 for missing Python 3.11+). The caller returns launch status only; for synchronous use run `py -3 cost-guard.py` (optionally `--watch`). See [download trust](#open-source-license-and-windows-download-trust).
+Report, Watch and Diagnostics use a **separate, persistent PowerShell 7/5.1 console**. Completion, errors and Ctrl+C retain a child prompt with Python's `$LASTEXITCODE` (9009 for missing Python 3.11+). The caller returns launch status only; synchronous: `py -3 cost-guard.py` (optionally `--watch`). See [download trust](#open-source-license-and-windows-download-trust).
 
 ### macOS
 
-Equivalent launchers are under `macos/`:
+Launchers under `macos/`:
 
 | Launcher | Mode |
 | --- | --- |
@@ -67,7 +67,7 @@ chmod +x macos/*.command macos/Beta/*.command development/user-tools/diagnostics
 
 Use Finder's **Open** for quarantine prompts.
 
-Terminal examples: `windows\Cost-Guard.cmd`, `./macos/Cost-Guard.command`. Quote parent paths containing spaces, not these basenames.
+Terminal: `windows\Cost-Guard.cmd`, `./macos/Cost-Guard.command`. Quote parent paths containing spaces.
 
 See [CLI usage](#setup-and-usage); use `python3` on macOS or `py -3` on Windows if needed.
 
@@ -254,7 +254,7 @@ Reports explain daily/window/local-month CCost and provider/account provenance. 
 
 **OpenRouter** shows authenticated-key Day/Week/Month spend and genuine key limits; **DeepSeek** shows separate native balances without a fabricated bar; **MiniMax Token Plan** supports native subscription windows, not entitlement inferred from a generic key. See [account support](docs/account-support.md) for all providers, Copilot Remaining/overage semantics, alignment, resets and limitations.
 
-## Watch
+## CLI Watch
 
 Global Watch keeps history above active/recent sessions in one six-column table, with one horizontal divider only when both groups exist. A whole session stays in the lower group while any prompt runs or retains its finite completion/abort/error highlight (`watchRecentEventSeconds`). There, ordering and header time use latest prompt/`/compact` start; history uses latest supported completion/terminal time (event start if unavailable). Both groups sort oldest first with session-ID ties. Highlight expiry moves the block to history even while idle, showing the event end, never poll/expiry time; a new prompt/compaction moves it back. Session-specific Watch keeps its existing ordering and start-time header.
 
@@ -310,7 +310,7 @@ Quota credentials stay memory-only: V2 precedes legacy, explicit `authJsonPath` 
 
 Useful settings include:
 
-- `ccostDisplayUnit`: `credits` (default) or `usd`; CLI override: `--ccost-unit usd`. Web's CCost selector is page-memory only; reload restores configuration. 100 credits = $1.00 reference USD, not billing; small positive amounts may show $0.00. Quotas/Billed/rates are unchanged.
+- `ccostDisplayUnit`: CLI `credits` (default) / `usd`; override: `--ccost-unit usd`. Web uses independent `webSettings.ccostDisplayUnit` (Credits default), saved in Settings. 100 credits = $1.00 reference USD, not billing. Quotas/Billed/rates stay unchanged.
 - `runningPromptWarningCCost`: 1800 credits by default (0 disables), independent of display units.
 
 - `openCode.source`: `auto`, `v1` or `v2`.
@@ -324,6 +324,7 @@ Useful settings include:
 - `pricingMaxAgeHours`: pricing/model metadata cache age.
 - `thresholds`: running-cost, context, percentile and quota warning thresholds.
 - `colorScheme`, `colorSchemes`, `colors`: terminal palette selection and per-role overrides.
+- `webSettings`: saved Web-only `theme` (`classic` default / `web`) and `ccostDisplayUnit` (`credits` default / `usd`). Legacy `webTheme` is fallback; other keys stay shared.
 
 `modelComparisonNew` colors new names/dates; `modelComparisonPromotion` colors active rates/Relative CCost. Superseded colors fade; plain output is unchanged.
 
@@ -360,7 +361,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.117 (2026-10-30):** Windows OpenAI quota uses verified root-store trust instead of cached intermediates. TLS failures stay distinct; credentials and sign-in are unchanged.
+**v80.128 (2026-11-02):** Watch: themed tables, natural history, native quotas, quiet Today/plain counts. [Web Beta](docs/web-beta.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

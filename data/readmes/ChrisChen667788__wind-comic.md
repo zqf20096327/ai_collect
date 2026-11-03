@@ -2,7 +2,7 @@
   <img src="assets/banner.jpg" alt="Wind Comic — One line of text. One finished short drama." width="100%" />
 </p>
 
-<h1 align="center">Wind Comic <sub><sup>v13.5</sup></sub></h1>
+<h1 align="center">Wind Comic <sub><sup>v13.12</sup></sub></h1>
 
 <p align="center">
   <b>One sentence in. A finished short-form drama out — script, cast, storyboards, voiceover, timeline, mp4.</b><br/>
@@ -17,7 +17,7 @@
   <a href="https://github.com/ChrisChen667788/wind-comic/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://github.com/ChrisChen667788/wind-comic/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ChrisChen667788/wind-comic/ci.yml?branch=main&label=CI&logo=github" alt="CI" /></a>
   <a href="https://github.com/ChrisChen667788/wind-comic/stargazers"><img src="https://img.shields.io/github/stars/ChrisChen667788/wind-comic?style=social" alt="GitHub stars" /></a>
-  <img src="https://img.shields.io/badge/Tests-6635%2F6635-2ea44f"  alt="6635 tests passing" />
+  <img src="https://img.shields.io/badge/Tests-6887%2F6887-2ea44f"  alt="6887 tests passing" />
   <img src="https://img.shields.io/badge/Node-20%2B-339933?logo=node.js&logoColor=white" alt="Node 20+" />
   <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16" />
 </p>
@@ -110,7 +110,7 @@ v13.0 consolidates **v12.461 – v12.473** (13 releases, 2026-09-30 → 10-09). 
 </tr>
 </table>
 
-**Engine requests that were silently wrong** *(v12.461, 465, 471, 472)* — MiniMax's `subject_reference[].image_file` had been sent as an array since v2.20 while the official schema is a string, so **every MiniMax generation with reference images was rejected (2013) and quietly fell back to another engine**; a live call found it. The Vidu host default existed twice, one copy wrong; Midjourney prompts carried duplicated and mid-prompt parameters; video engines were handed Midjourney syntax as prompt text.
+**Engine requests that were silently wrong** *(v12.461, 465, 471, 472)* — MiniMax's `subject_reference[].image_file` had been sent as an array since v2.20 while the official schema is a string, so **every MiniMax generation with reference images was rejected (2013) and quietly fell back to another engine**; a live call found it. The Vidu host default existed twice, one copy wrong (that copy had no reader, so no request ever used it — removed before anyone wired it up); Midjourney prompts carried duplicated and mid-prompt parameters; video engines were handed Midjourney syntax as prompt text.
 
 > **Not verified yet:** sketch delivery to Seedream / kontext / Midjourney follows their documented request formats but could not be confirmed with a live generation (gateway quota exhausted / no Midjourney channel / upstream saturated on 10-01, 10-06 and 10-08); `npx tsx scripts/probe-sketch-engines.ts --yes <engine>` re-runs the check, one paid image per engine. fal is unverified (no key configured).
 
@@ -283,7 +283,7 @@ Every finding points at the shots to change. All pure functions over existing fi
 ### 9. **Bring Your Own LLM** (v3.1.3)
 Every text-LLM call (Director / Writer / Vision / Audit) goes through one OpenAI-compatible `chat/completions` endpoint. Want to swap to DeepSeek-r1 / GPT-4o / Claude (via OpenRouter) / Qwen-Max / local Ollama? **Edit 3 lines in `.env`. Zero code change.** See [`docs/llm-providers.md`](docs/llm-providers.md) for the full matrix.
 
-### 10. **6635 tests, TypeScript strict, no fake "coming soon"s**
+### 10. **6887 tests, TypeScript strict, no fake "coming soon"s**
 Every feature listed above is in `main`, type-checked, unit-tested, and visible at `/projects/[id]` if you `npm install && npm run dev` right now.
 
 ---
@@ -553,13 +553,16 @@ Every model call is provider-pluggable (priority chain + automatic fallback). Cr
 ### Zero-key trial (one command, **no API key needed**)
 
 ```bash
-docker run -p 3100:3100 -e MOCK_ENGINES=1 -e JWT_SECRET=demo -e NEXTAUTH_SECRET=demo \
+docker run -p 3100:3100 -v wind-comic-demo:/app/data \
+  -e MOCK_ENGINES=1 -e JWT_SECRET=demo-only-not-for-production -e DEMO_PASSWORD=wind-comic-demo \
   ghcr.io/chrischen667788/wind-comic:latest
 ```
 
-Then open <http://localhost:3100>. **No clone, no npm install, no local build.**
+Then open <http://localhost:3100> and sign in as **`demo@qfmanju.ai`** / **`wind-comic-demo`**. **No clone, no npm install, no local build.**
+(Without `DEMO_PASSWORD` the demo account gets a random password that is printed **once** in `docker logs`, and sign-up needs an invite code by default.)
+For a ready-made sample project, click **「导入演示工程《雨夜信号》」** on the Projects page.
 
-Prefer compose (also seeds a demo project):
+Prefer compose (same thing, same demo login):
 
 ```bash
 docker compose -f docker-compose.demo.yml up
@@ -570,6 +573,44 @@ docker compose -f docker-compose.demo.yml up
 > **not representative of real generation quality**. Every artifact is labelled as mock — passing a
 > placeholder off as a finished film is exactly the thing this project keeps hunting down.
 > Add a single API key to switch to real engines.
+
+### Self-host on a NAS / home server (Docker Compose)
+
+A verified single-box setup lives in [`deploy/`](deploy/): [`docker-compose.yml`](deploy/docker-compose.yml) + [`.env.example`](deploy/.env.example).
+Full walkthrough, Synology notes and troubleshooting: [`docs/DEPLOYMENT.md` → Docker 与 NAS 自托管](docs/DEPLOYMENT.md#docker-与-nas-自托管).
+
+```bash
+mkdir -p wind-comic && cd wind-comic
+curl -fsSLO https://raw.githubusercontent.com/ChrisChen667788/wind-comic/main/deploy/docker-compose.yml
+curl -fsSL  https://raw.githubusercontent.com/ChrisChen667788/wind-comic/main/deploy/.env.example -o .env
+# edit .env: JWT_SECRET=$(openssl rand -hex 32), DEMO_PASSWORD=<your password>
+mkdir -p data && sudo chown -R 1001:1001 data   # the container runs as uid/gid 1001
+docker compose up -d
+curl http://localhost:3100/api/health           # {"ok":true,"checks":{"db":"ok","auth":"ok"}}
+```
+
+**Hardware (measured on the v13.6 image)**
+
+| | |
+|---|---|
+| Architecture | `linux/amd64` or `linux/arm64` — **no 32-bit ARM**. No GPU needed (all generation is via APIs; ffmpeg runs on CPU). |
+| CPU | 2 cores work; more cores only make the final compose faster (6-shot 30 s film at 720p: ~16 s on 2 cores, ~10 s on 4). |
+| Memory | Idle **70–120 MB**. Composing a 6-shot, 30 s film (xfade + CJK subtitles + loudness normalisation) peaks at **≈ 0.95 GB at 720p** and **≈ 1.75 GB at 1080×1920** for the whole container. Below that the compose is OOM-killed (768 MB killed 720p; 1 GB killed vertical 1080p). Measured floor: 1 GB / 2 GB — **give the container ≥ 1.5 GB for 720p, ≥ 2.5 GB for vertical 1080p**. |
+| Disk | Image **~830 MB** download, **~3 GB** unpacked; plus room for assets and films under `data/` (10 GB+ is comfortable). |
+
+**Home page loads but you can't log in?** From v13.11 the login page says what is misconfigured and how to fix it (the API returns 503 with the `reason` below; before that it was a bare 500). `docker logs wind-comic` has the matching line:
+
+| Login page says (`reason`) | Log line | Cause | Fix |
+|---|---|---|---|
+| 服务端数据库打不开 — database can't be opened (`db_unavailable`) | `[db] 数据库打不开(SQLITE_CANTOPEN: unable to open database file)` | `data/` is owned by your NAS user (Synology: `1026:100`), the container runs as `1001:1001` | `sudo chown -R 1001:1001 data`, or use a named volume instead of `./data`; then restart the container |
+| 服务端没配置 JWT_SECRET — not set (`jwt_secret_missing`) | `[auth] JWT_SECRET 未设置` | `JWT_SECRET` not set | set it (`openssl rand -hex 32`) and recreate the container |
+| 服务端没配置 JWT_SECRET — public placeholder (`jwt_secret_weak`) | `[auth] JWT_SECRET 是公开占位/弱默认值` | `JWT_SECRET` is a placeholder copied from an example | same — generate a real one |
+| 服务端连不上数据库(PostgreSQL)— can't reach Postgres (`db_unreachable`, only with `DB_DRIVER=pg`, since v13.12) | `[db] PostgreSQL 连不上或没配好(ECONNREFUSED)` (or `28P01` wrong password, `3D000` no such database, `database_url_missing`, …) | `DATABASE_URL` wrong or unset, Postgres not running or not reachable from the container (`localhost` inside a container is the container itself), wrong user / password / database name | fix `DATABASE_URL` or start Postgres; recreate the container if you changed env vars |
+
+The container health check probes `/api/health` (since v13.6; DB read/write + JWT key, same reason codes as above), so all of these show up as **unhealthy** instead of a green container that cannot log anyone in. With `PIPELINE_QUEUE=1` an unopenable database no longer takes the whole site down (before v13.11 even the home page returned 500).
+
+**First login & first creation**: the first account is `demo@qfmanju.ai` with your `DEMO_PASSWORD` (set it later and restart — the password is rotated to match). Sign-up needs an invite code unless you set `BETA_INVITE_REQUIRED=false` (only on a network you trust). New accounts are on the free tier with a **¥5 monthly budget**, which blocks a full real-engine film (pre-checked at ¥11.6–18.8 for the default 8 shots, depending on the video engine) — raise **「月预算 ¥」** at `/dashboard/usage` (saved when the field loses focus).
+**Other devices on your LAN** can open plain `http://<NAS-IP>:3100` directly — since v13.5 the session cookie only carries `Secure` when the request is HTTPS (`COOKIE_SECURE=auto`, the default). Plain HTTP sends the session token unencrypted, so keep that to a network you trust; **from the Internet, put it behind HTTPS** (Caddy / Traefik / nginx with `X-Forwarded-Proto`). Details: [`docs/DEPLOYMENT.md` → 会话 Cookie 与 HTTPS](docs/DEPLOYMENT.md#12-会话-cookie-与-https).
 
 ### Full setup (real engines)
 
@@ -616,7 +657,7 @@ npm run dev:ws             # Yjs WebSocket server on :1234
 
 We're open to PRs. Two things matter most:
 1. **Don't break the multi-agent contracts.** Each agent has explicit input/output shapes — see `types/agents.ts`.
-2. **Tests gate everything.** Vitest 6635/6635 must stay green. Add tests for new lib/service files.
+2. **Tests gate everything.** Vitest 6887/6887 must stay green. Add tests for new lib/service files.
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the repo's contribution guide.
 
@@ -638,15 +679,18 @@ MIT. Use it, fork it, build a startup on it. We just ask: if you ship a feature 
 
 ### ⚠️ Redistribution notice — bundled binaries are not all MIT
 
-**Wind Comic's own source is MIT.** But three npm dependencies ship pre-built binaries under copyleft licenses. This does **not** affect the MIT status of this repository, and it does not affect you if you simply run or fork the source. It **does** matter the moment you redistribute a bundle that embeds those binaries (a Docker image, a desktop build, a hosted appliance you hand to a customer):
+**Wind Comic's own source is MIT.** But four npm dependencies ship pre-built binaries under copyleft licenses. This does **not** affect the MIT status of this repository, and it does not affect you if you simply run or fork the source. It **does** matter the moment you redistribute a bundle that embeds those binaries (a Docker image, a desktop build, a hosted appliance you hand to a customer):
 
 | Dependency | License | What you must do when redistributing a bundle |
 |---|---|---|
-| `ffmpeg-static` | **GPL-3.0-or-later** | **Strongest constraint.** Ship the GPL-3 text and a written offer for the corresponding FFmpeg source — or drop the dependency and point `FFMPEG_PATH` at a system ffmpeg you obtained separately. |
+| `ffmpeg-static` | **GPL-3.0-or-later** (the macOS arm64 build we checked, 6.0, is also compiled with `--enable-nonfree`, which makes it not redistributable at all) | **Strongest constraint.** Ship the GPL-3 text and a written offer for the corresponding FFmpeg source — or leave the binary out: point `FFMPEG_PATH` / `FFPROBE_PATH` at an ffmpeg you obtained separately and delete `node_modules/ffmpeg-static/ffmpeg` and `node_modules/ffprobe-static/bin` before you bundle; the app runs without them. Setting the variables alone does **not** take the files out of your bundle. (Before v13.8 the code never read `FFMPEG_PATH`, so this route did not exist.) |
+| `ffprobe-static` | package metadata says MIT; **the binaries it ships are GPL-3.0-or-later FFmpeg builds** (`--enable-gpl --enable-version3`), for macOS, Linux and Windows all in one package | Same as `ffmpeg-static`. `license-check` reads `license` fields, so it cannot see this one — it is listed here by hand. |
 | `lightningcss` (+ platform binaries) | MPL-2.0 | File-level weak copyleft. Unmodified use/redistribution carries no extra duty; only if you modify its MPL-licensed files must you publish those files. |
 | `@img/sharp-libvips-*` | LGPL-3.0-or-later | Dynamic linking does not infect your code. On redistribution you must let end users replace/relink the library and point them to its source. |
 
-CI enforces this: [`scripts/license-check.mjs`](scripts/license-check.mjs) scans the **production** dependency tree every run and **fails the build** if a copyleft dependency appears that is not registered in the table above — so a new GPL dependency can never slip in unnoticed.
+**The official Docker image** (v13.8+) ships neither bundled binary: they are deleted at build time and the build fails if they come back. It runs Alpine's `ffmpeg` package through `FFMPEG_PATH=/usr/bin/ffmpeg` / `FFPROBE_PATH=/usr/bin/ffprobe` — and that package is copyleft too (checked 2026-11-03 on a freshly built image: Alpine's ffmpeg 8.0.1 declares `GPL-2.0-or-later AND LGPL-2.1-or-later` and is built with `--enable-gpl --enable-version3`), so redistributing the image means redistributing it; its source is published in Alpine's aports. Leaving the npm binaries out avoids shipping *them*, not FFmpeg's licence.
+
+CI enforces this: [`scripts/license-check.mjs`](scripts/license-check.mjs) scans the **production** dependency tree every run and **fails the build** if a copyleft dependency appears that is not registered in the table above — so a new GPL dependency can never slip in unnoticed. It reads each package's declared licence, so a package that declares MIT but carries GPL binaries (`ffprobe-static`) passes it; such cases are listed above by hand.
 
 ---
 

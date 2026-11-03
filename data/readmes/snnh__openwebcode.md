@@ -21,7 +21,7 @@ OpenWebCode 是一个跑在浏览器里的 AI 编码工作台，界面中英双�
    - 系统：Windows 10+（Win7 未测试）和 Linux
      - Linux：glibc ≥ 2.28；内核 ≥ 5.13（Landlock 起步，≥ 6.7 支持禁网）。沙盒默认档为 bubblewrap（完整 namespace 隔离）：未安装 bubblewrap 的环境默认档会明确报错，需 `apt install bubblewrap`（或等价包），或将会话沙盒模式显式切换为 Landlock 兼容档（更弱）。开发与实测环境为 Debian 13 / Ubuntu 24.04。
      - 鸿蒙版本正在开发。
-   - 架构：x86-64 / arm64 / loongarch64（龙芯包不内置 Node.js，需系统 Node.js ≥ 24）
+   - 架构：x86-64 / arm64 / loongarch64（龙芯包不内置 Node.js，需系统 Node.js ≥ 24.22.1）
    - CPU：双核 2.0 GHz
    - 内存：≥ 512 MiB 空闲（推荐1GiB空余）
    - 硬盘：≥ 500 MiB 可用
@@ -38,14 +38,14 @@ OpenWebCode 是一个跑在浏览器里的 AI 编码工作台，界面中英双�
 - **git 与文件系统级快照**：ZFS / Btrfs / overlayfs / VHDX / qcow2 多种后端，自动探测、失败静默回落。
 - **上下文管理**：可调的自动压缩阈值与压缩输出预算；手动 `/compact` 校验输出防复述、快速模型失败优雅降级；滚动驱逐、上下文条目管理与选择性上下文（pin/exclude）由官方 context-saver 扩展提供，可整体关闭。
 - **多模型适配**：支持 Anthropic Messages / OpenAI Chat Completions / OpenAI Responses 三大接口；**运行中可直接更换模型与思考档**（不打断在途请求，下一轮生效）。
-- **环境模拟（env-sim）**：系统提示词与工具形态可切换为知名 AI 编码产品的风格（Claude Code / Kimi / ZCode / Codex / DSH 五档预设），底层工具实现与权限链不变。已对 DeepSeek V4 Pro 0813 专项适配——使用该模型时建议开启 DSH 极简模拟（`dsh-minimal`）。
+- **Agent 预设**：提示词与工具集在**经典**（零侵入，默认）、**精简**（OWC 原生精简提示词 + 工具白名单）、**拟态**（Claude Code / Kimi / ZCode / Codex / DSH 五档）与**自定义**之间切换，底层工具实现与权限链不变；设置页平铺选择，全局默认 + 会话级覆盖。已对 DeepSeek V4 Pro 0813 专项适配——使用该模型时可用 `dsh-minimal` 拟态或精简模式。
 - **子代理与 agent swarm**：隔离上下文的并行派发，可见进度与转录；普通子代理与可互相沟通的子代理集群。
 - **较多的扩展支持**：Skills、斜杠命令、Hooks、自定义子代理、MCP 和 Extension Host 第三方扩展。
 - **自由的会话管理**：消息随意改写、分叉随时创建；手工分组、归档、多选批量管理（删除/归档/置顶）；会话导出分享页（自包含只读 HTML）/ Markdown / JSONL。
 - **本机会话**：侧栏「终端」图标一键创建，以 server 身份直接在宿主机管理本机文件/服务（HOME 外访问需人工批准）。
 - **内置工具面板**：符号索引（`repo_map` / `code_search`）、测试诊断（Problems 面板）、SCM 面板（diff、stage、worktree 合回、生成提交信息）。
 - **任务清单**：标签栏右端折叠 chip，随时查看 agent 当前任务与进度；落盘跨重启存活（`/clear` 同步清空）。
-- **联网搜索与抓取**：Web Search / Web Fetch 走可配置的联网服务商（Jina / Brave / Tavily / Bing / SearXNG / Exa / LinkUp / Bocha / Firecrawl / Custom 共 10 种），或由模型服务商在服务端执行搜索（仅 OpenAI Responses）。
+- **联网搜索与抓取**：Web Search / Web Fetch 走可配置的联网服务商（Jina / Brave / Tavily / Bing / 百度 AI 搜索（千帆）/ SearXNG / Exa / LinkUp / Bocha / Firecrawl / ScrapingBee / ScraperAPI / ZenRows / Custom 共 14 种），或由模型服务商在服务端执行搜索（仅 OpenAI Responses）。
 - **定时任务（cron）**：会话内创建定时任务，到点自动注入 prompt 续跑；5 字段 cron 语法，持久化跨重启。
 - **移动端与远程访问**：响应式适配手机/平板；非回环监听强制访问令牌（自动生成或 `OWC_ACCESS_TOKEN`），可选 TOTP 全局登录。
 - **`owc run` CLI**：Headless NDJSON 事件流，支持 CI 集成。
@@ -72,11 +72,11 @@ curl -fsSL https://raw.githubusercontent.com/snnh/openwebcode/main/packaging/ins
 
 2. 手动下载对应架构的 tar.gz，解压后运行 `./install.sh`（交互式终端里会问你安装前缀、端口和数据目录；脚本或 CI 里加 `--yes` 跳过提问）。
 
-注：龙芯包不内置 Node.js，需要系统里有 Node.js ≥ 24。完整的安装选项和 systemd 服务说明见 [`packaging/README.md`](./packaging/README.md)。
+注：龙芯包不内置 Node.js，需要系统里有 Node.js ≥ 24.22.1。完整的安装选项和 systemd 服务说明见 [`packaging/README.md`](./packaging/README.md)。
 
 ### Docker（Linux / macOS，x86_64 / arm64）
 
-发布镜像托管在 GitHub Container Registry（`ghcr.io/snnh/openwebcode`），内置完整运行时（core、Node 24、bubblewrap、git、python3），数据目录可持久化：
+发布镜像托管在 GitHub Container Registry（`ghcr.io/snnh/openwebcode`），内置完整运行时（core、Node 24.22.1、bubblewrap、git、python3），数据目录可持久化：
 
 ```sh
 # 1. 在仓库根目录启动（拉取 GHCR 发布镜像）
@@ -160,7 +160,7 @@ owc run "给 main.ts 加个单元测试" --cwd . --json --yolo
 
 ## 从源码构建
 
-需要 Node.js ≥ 20、CMake ≥ 3.19、C11 编译器和 Python 3（core 协议测试用）。三层各自独立构建，仓库根目录没有 `package.json`：
+需要 Node.js ≥ 24.22.1、CMake ≥ 3.19、C11 编译器和 Python 3（core 协议测试用）。三层各自独立构建，仓库根目录没有 `package.json`：
 
 ```sh
 cmake -S core -B build && cmake --build build && ctest --test-dir build   # core（C 执行器）

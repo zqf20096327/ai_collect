@@ -13,7 +13,7 @@ npx prodlint
 ```
 
 ```
-  prodlint v0.10.4
+  prodlint v0.10.6
   Scanned 148 files · 2 critical · 5 warnings · 1 info
 
   src/app/api/checkout/route.ts
@@ -90,7 +90,7 @@ npm i -g prodlint     # Global install
 | `env-fallback-secret` | Security-sensitive env vars with hardcoded fallback values |
 | `verbose-error-response` | Error stack traces or messages leaked in API responses |
 | `missing-webhook-verification` | Webhook routes without signature verification |
-| `server-action-auth` | Server actions with mutations but no auth check |
+| `server-action-auth` | Server actions with mutations or AI model calls but no auth check |
 | `eval-injection` | `eval()`, `new Function()`, dynamic code execution |
 | `next-public-sensitive` | `NEXT_PUBLIC_` prefix on secret env vars |
 | `ssrf-risk` | User-controlled URLs passed to fetch in server code |
@@ -145,7 +145,7 @@ npm i -g prodlint     # Global install
 
 prodlint avoids common false positives:
 
-- **AST parsing** — Babel-based analysis for 13 rules (imports, catch blocks, redirects, redirects in try/catch, SSRF, path traversal, JWT, HTML injection, hydration, transactions, env leaks, loops, SQL) with regex fallback
+- **AST parsing** — Babel-based analysis for 14 rules (imports, catch blocks, redirects, redirects in try/catch, SSRF, path traversal, JWT, HTML injection, hydration, transactions, env leaks, loops, SQL, route handlers) with regex fallback
 - **Monorepo support** — npm/yarn/pnpm workspace dependencies resolved automatically
 - **Framework awareness** — Prisma, Drizzle, Supabase, Knex, and Sequelize whitelists prevent false SQL injection flags
 - **Middleware detection** — Clerk, NextAuth, Supabase middleware (`middleware.ts`, or `proxy.ts` on Next.js 16) detected — auth findings downgraded

@@ -1,0 +1,112 @@
+<p align="center">
+  <img width="250" alt="doota-logo"  src="https://github.com/user-attachments/assets/e32d88a6-dde5-4007-9018-a1535cba3b4d" />
+</p>
+
+<p align="center">
+  <small>
+    <sub>
+      <strong>Doota</strong> (pronounced <em>Dhoo-tha</em> / <em>Dhūta</em> / <em>Dhootha</em>) 
+      comes from the Sanskrit and Kannada word 
+      <strong>दूत / ದೂತ</strong>, meaning 
+      <em>messenger</em>, <em>envoy</em>, or <em>agent</em> — someone that carries 
+      information, executes tasks, and acts on behalf of another.
+    </sub>
+  </small>
+</p>
+
+<div align="center">
+  Doota is agentic system for Ollama with built-in tools and an autonomous agent loop to power your private AI ecosystem.
+</div>
+
+<div align="center">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/ollama4j/doota">
+</div>
+
+## Requirements
+
+<a href="https://ollama.com/" target="_blank">
+  <img src="https://img.shields.io/badge/Java-17_+-green.svg?style=for-the-badge&labelColor=gray&label=Java&color=orange" alt=""/>
+  <img src="https://img.shields.io/badge/v0.6.2+-green.svg?style=for-the-badge&labelColor=gray&label=Ollama&color=blue" alt=""/>
+</a>
+
+## Download and Run
+
+
+Find the latest release [here](https://github.com/ollama4j/doota/releases/latest) and download the `.jar` file. Then, run the following command:
+
+```bash
+java -jar /path/to/doota-<version>-runner.jar
+```
+
+#### Chat with model selection
+
+<p align="center">
+  <img width="1920" height="1080" alt="Doota - Meaning" src="https://github.com/user-attachments/assets/46a6d913-79db-48b3-a1f8-753ffba9ae5c" />
+</p>
+
+#### Agentic conversation
+
+<p align="center">
+<img width="1080" height="608" alt="Doota - Agent" src="https://github.com/user-attachments/assets/f25381ba-1200-463d-8814-59710035be84" />
+</p>
+
+## Features
+
+### 🤖 Autonomous Agentic Chat Loop
+* **Client-Driven Reasoning**: A fully autonomous agentic loop running directly in the browser (supporting up to 10 iterations per request).
+* **Dynamic Decision Making**: The LLM autonomously determines when to execute tools, sequences multiple tool calls dynamically, and compiles final answers.
+* **Live Status Diagnostics**: Visually track the step-by-step thinking process (e.g., "Thinking...", "Asking the model...", "Executing tool: x...").
+* **Performance Metrics**: Real-time generation statistics featuring live tokens-per-second (TPS) metrics.
+
+### 🔌 Interactive Tool Execution & Inspection
+* **Live Tool Status**: Status states with beautiful visual cues for Pending (⏳), Running (⚙️), Success (✅), and Error (❌) executions.
+* **Collapsible Details**: Accordion cards display parsed JSON arguments, execution time, and raw results for every tool invoked.
+* **Error Resilience**: Robust system-level and LLM-level error handling ensuring stable execution of sequential tool logic.
+
+### 🛠️ Built-in Agent Tools (Out-of-the-box)
+* **Filesystem & Search**:
+  * `find_files_by_name`: Recursively searches files across a chosen directory (defaults to home directory) using keyword/substring search.
+  * `find_files_by_extension`: Recursively locates files matching specific file formats (e.g., `.java`, `.pdf`, `.png`).
+  * `read_file`: Safe retrieval of text-based file contents.
+  * `get_home_directory`: Resolves the absolute path of the user's home directory.
+* **System Diagnostics & Environment**:
+  * `system_info`: Inspects system hardware details, including OS name/version, CPU cores, JVM memory capacity, and drive storage sizes.
+  * `platform_type`: Safely identifies the operating system family (`mac`, `windows`, or `linux`).
+* **General Utilities**:
+  * `calculator`: Safe mathematical expression evaluator supporting basic and complex arithmetic.
+  * `get_current_datetime`: Queries the real-time system date and time.
+  * `get_weather`: Location-based weather report function.
+
+### 📊 Advanced Model Management
+* **Search, Filter & Sort**: Easily query models via name, family, parameter size, or quantization level. Sort lists by name, file size, or modified date.
+* **Detailed Specifications**: Hover and view comprehensive metadata cards detailing model family (e.g., Llama, Mistral, Qwen), parameter sizes, and quantization.
+* **Memory Management**: Polls loaded models in real time; allows one-click unloading to release system RAM, or permanent deletion from disk.
+
+### ⚙️ Real-time Settings & Connection Diagnostics
+* **Custom Host URL**: Seamlessly configure custom Ollama URLs (e.g., `http://localhost:11434` or remote setups) in a dedicated settings view.
+* **Heartbeat & Polling**: Active background pings (every 3 seconds) verify host connection health and show a live server reachability status.
+* **Live Polling**: Programmatic loaded-model checks (every 1 second) keep the UI perfectly in sync with Ollama's active memory usage.
+
+### 💾 Local Chat Persistence & UX Polish
+* **Local Persistence**: Conversations are automatically persisted as JSON files under your home directory (`~/doota/chats`), preserving full multi-turn context.
+* **Premium Theme**: Modern dark-themed user interface styled with premium layouts and powered by smooth hover animations.
+* **Vibrant Details**: Clean Markdown rendering (with full GFM support), code highlighting, simple sidebar navigation, and quick copy-to-clipboard buttons.
+
+<p align="center">
+  <img width="3780" height="1890" alt="Untitled design (6)" src="https://github.com/user-attachments/assets/77a39875-4692-444c-a066-d3c590f667fd" />
+  <img width="3780" height="1890" alt="Untitled design (5)" src="https://github.com/user-attachments/assets/3d11553d-bacf-4b83-811e-faf8d55599b1" />
+  <img width="3780" height="1890" alt="Untitled design (4)" src="https://github.com/user-attachments/assets/328a3fdb-43a0-420d-b4c7-1c261863e2f8" />
+  <img width="3780" height="1890" alt="Untitled design (3)" src="https://github.com/user-attachments/assets/89802742-881f-4d35-a78d-d1c6caa00e94" />
+  <img width="3780" height="1890" alt="Untitled design (2)" src="https://github.com/user-attachments/assets/236abf5b-d385-4382-9527-50c65f9cc9ed" />
+  <img width="3780" height="1890" alt="Untitled design (1)" src="https://github.com/user-attachments/assets/8f2a784b-8334-4abf-a007-70a028b0b524" />
+</p>
+
+## ⭐ Give us a Star!
+
+If you like or are using this project to build your own, please give us a star. It's a free way to show your support.
+
+### Appreciate the work?
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/amithkoujalgi" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+</p>

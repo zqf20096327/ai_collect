@@ -10,6 +10,12 @@ and check on all of it from your phone.
   <img alt="AgentOS: sessions grouped by state, a chat with its plan, steps and diffs, and the git panel" src="screenshots/hero.png">
 </picture>
 
+<p align="center">
+  <a href="https://youtu.be/JAukzHLTM5Y"><img alt="Watch the AgentOS video: You're the boss. They do the work." src="screenshots/video-boss.jpg" width="640"></a>
+  <br>
+  <a href="https://youtu.be/JAukzHLTM5Y">▶ Watch: what AgentOS does, in about a minute</a>
+</p>
+
 ## What it does
 
 - **An orchestrator for each workspace.** A chat that starts tasks, answers blocked agents, and merges pull requests only through gates. Anything that is yours to decide waits as an ask. [More](docs/reference/orchestrator.md)
@@ -67,6 +73,8 @@ curl -fsSL https://raw.githubusercontent.com/saadnvd1/agent-os/main/scripts/inst
 It ends by offering `agent-os setup`. If another device can't reach the machine later, `agent-os check` names the cause and the fix ([guide](docs/guides/reachability.md)).
 
 Then open AgentOS, add a project from ⌘K, and press ⌥N. The [install guide](docs/guides/install.md) covers Windows (WSL2), the supported agents, first run and the `agent-os` commands. To use it from your phone, see the [phone guide](docs/guides/phone.md).
+
+AgentOS keeps itself up to date: once a release is two hours old and nothing has been working for 10 minutes, it installs it, and puts the previous version back if the new one doesn't come up healthy. Turn it off or change the idle time in **Settings → Updates**, or pin it with `AGENTOS_AUTO_UPDATE=off` and `AGENTOS_AUTO_UPDATE_IDLE_MIN`. Details are in [Automatic updates](docs/guides/install.md#automatic-updates).
 
 ## Connect
 

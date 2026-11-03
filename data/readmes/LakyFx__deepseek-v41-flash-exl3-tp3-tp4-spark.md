@@ -1,3 +1,50 @@
+# TensorFold TP4 4.0.3 - DeepSeek 1017 on four DGX Sparks
+
+**Current production update: [4.0.3](docs/DS41F-4.0.3.md).** Adds the
+**Smart CUDA Graph Controller**, bounded HTTP memory and repaired durable
+vision retention/admission, including images inside agent histories.
+Preserves Smart KV cache, Smart Adaptive speculation and C16/R48/9M/3.5 GiB.
+[4.0.3 short tests and live audit](docs/BENCHMARK-4.0.3.md).
+
+## Preserved 4.0.2 benchmark and release
+
+The following artwork and benchmark table were measured on **4.0.2**.
+
+[![LakyFX TensorFold 4.0.2: cold prefill, code/prose and full-concurrency workflow medians](assets/4.0.2-X.png)](assets/4.0.2-master-4K.png)
+
+**Smart KV cache controller + Smart Adaptive speculation.** Switchless TP4,
+mixed EXL3 **~3.51 bpw**, **C16 / adaptive R48 / 9M KV / 3.5 GiB checkpoints**.
+Cold prefill: **4,264 tok/s median at 64K**, three samples with **zero KV hits**.
+
+| Concurrency | Code sum (tok/s) | Prose sum (tok/s) | MAX per task (tok/s) | MAX total (tok/s) |
+| --- | ---: | ---: | ---: | ---: |
+| **C1** | **112.9** | **88.1** | 86.5 | **86.5** |
+| **C3** | **184.9** | **151.3** | 44.8 | **134.5** |
+| **C6** | **244.5** | **198.4** | 29.7 | **178.0** |
+| **C12** | **302.2** | **258.7** | 18.9 | **226.5** |
+| **C16** | **320.1** | **285.4** | 15.4 | **246.0** |
+
+**Code/prose:** thinking OFF, greedy, warm pass 2, 512 tokens/request; sum of
+individual native decode rates. **MAX workflow:** thinking MAX, non-greedy;
+both columns are medians from the **same actual full-concurrency intervals**,
+excluding completed-thread tails. Per task is the concurrent total divided by
+the active task count before taking the median. These are distinct protocols.
+
+**136/136 workflow tasks completed correctly.** 4.0.2 publishes the exact
+qualified production payload tested as **4.0.1a**. It adds reduced decode work,
+measured adaptive cost priors, distributed draft work, lossless TP4 weight
+balancing, bounded checkpoint cleanup/first-continuation placement, and
+confirmed-cancellation vision recovery to the existing controllers.
+
+- **[Install the complete 4.0.2 recipe](docs/DS41F-4.0.2.md)** - [profile](tensorfold/tp4/v402/profile.json) - [exact source](tensorfold/variants/recipes/v402.json)
+- **[Full results, sampling settings and metric definitions](docs/BENCHMARK-4.0.2.md)** - [numeric evidence](results/20261101-4.0.2/) - [offline audit](tools/audit_402.py)
+- [Model weights](https://huggingface.co/LakyFx/DeepSeek-V4.1-Flash-1017-EXL3-3.5bpw-TensorFold) - [TP3 1.2.8 recipe](docs/DS41F-1.2.8.md) - [all previous recipes](docs/RECIPES.md)
+
+**Source-only kernel builds:** [Triton generators and AOT rebuild instructions](docs/AOT-SOURCE-REBUILD.md)
+for the original TP3 kit and TP3 1.2.8, including the files requested in issue #1.
+
+## Preserved releases and previous README
+
 # DeepSeek V4.1 Flash on 3 or 4 DGX Sparks
 
 **Choose TP3 or TP4 - the same TensorFold foundations, smart adaptive

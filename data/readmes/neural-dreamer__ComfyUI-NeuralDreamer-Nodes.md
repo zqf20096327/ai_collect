@@ -2,7 +2,7 @@
 
 Custom nodes for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) by Neural Dreamer.
 
-![Version](https://img.shields.io/badge/version-1.2.0-2f7de1)
+![Version](https://img.shields.io/badge/version-1.3.1-2f7de1)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2f7de1)](LICENSE)
 
 **English** · [Русский](README_RU.md)
@@ -20,6 +20,7 @@ Custom nodes for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) by Neural 
 | [ND Outfit Builder](#nd-outfit-builder) | `Neural Dreamer/Prompt` | Outfit description by slot, with styles; feeds the Character Builder |
 | [ND Pose Builder](#nd-pose-builder) | `Neural Dreamer/Prompt` | Pose description: ready-made poses (Simple) or every part of the body (Advanced) |
 | [ND Composition Settings](#nd-composition-settings) | `Neural Dreamer/Prompt` | Camera, lens and placement; one shot or a collage of up to 8 panels |
+| [ND LoRA Stack](#nd-lora-stack) | `Neural Dreamer/Loaders` | A stack of LoRAs with previews (pictures and video), a gallery, an NSFW filter and ± buttons for the strength |
 | [ND Load Images](#nd-load-images) | `Neural Dreamer/Images` | 1–20 image blocks with upload, mask, crop/rotate/flip, Keep Proportion and a slider |
 | [ND Resolution](#nd-resolution) | `Neural Dreamer/Images` | Image size from an aspect ratio and one number |
 | [ND Batch Images](#nd-batch-images) | `Neural Dreamer/Images` | Joins images into one batch, fitting them to the size of the first |
@@ -82,6 +83,7 @@ Shows an image batch as thumbnails with a main preview. Select a variant with a 
 - **Live preview** (off by default, in the settings): while the variants or the Upscale pass are generated, the main preview shows the sampler frames, with a `LIVE 12/30` badge (sampler steps). The eye button at the bottom left of the preview hides or shows them in this node. It always shows the image being generated right now (with several samplers, the one running; with a batch, its first image); the thumbnails keep the last results until the new ones arrive. With an [ND Live Preview Bridge](#nd-live-preview-bridge) in front of the samplers the frames come from the bridge and ComfyUI's own sampler preview is turned off for that run, also while the eye hides the live preview. Without a bridge the node shows ComfyUI's own previews: they must be on (Settings → Comfy → Execution → Live preview method).
 - The mouse wheel over the node zooms the canvas, and dragging with the middle button pans it. If the thumbnails do not fit, scroll the strip with Shift+wheel or a horizontal trackpad swipe.
 - **Preview with Metadata** (settings, off by default): puts the prompt and workflow into the preview images, as in the saved files. A preview dragged out of the node or opened in a new tab then carries them. Images can be dragged out of the node, for example into an ND Load Images block.
+- **Interface for other panels**: the node exposes its state (variants, selection, toggle label, Upscale, live frames) so that other interfaces, such as the Variant Preview widget of ND UI Builder, can show it and drive it. Nothing changes in the node itself.
 
 **Saving**
 
@@ -147,6 +149,7 @@ A list input (several items) is shown item by item. Output is limited to 100,000
 - The × button deletes a note tab. A tab with text asks for a second click.
 - Notes and the last preview text are saved in the workflow and stay after reloading the workflow or ComfyUI. The preview changes only when new input data arrives.
 - Canvas navigation over the node works as with the Variant Selector. The wheel scrolls a text area only when its text does not fit; otherwise, and with Ctrl, it zooms the canvas.
+- Drag a note tab with the pointer to change the order of the tabs (Preview always stays first).
 - With many tabs the strip scrolls: arrow buttons (hold to keep going), the wheel or Shift+wheel. The **Copy** button above the Preview text copies it.
 
 ## ND Slider
@@ -296,6 +299,27 @@ Output: one `ND_PARAMS` wire. Unpack Parameters opens it into `width` and `heigh
 
 Joins images into one batch. The first image sets the size; every image added after it is fitted to that size with the same modes as Keep Proportion in ND Load Images (`crop`, `pad white`, `pad black`, `pad edge`, `pad edge color`, `stretch`). Two inputs are shown at first and a new empty one appears as soon as the last is connected (up to 32). An input can be a batch itself; its images are added one after another in the order of the pins, and empty pins are skipped. Output: `images` (IMAGE).
 
+## ND LoRA Stack
+
+Applies several LoRAs one after another. Each LoRA has a switch, a strength for the model and one for the CLIP (or the CLIP follows the model), and the order can be changed by dragging.
+
+- **Inputs**: `model`, optional `clip`. **Outputs**: `model`, `clip`, `trigger_words` (the trigger words of the enabled LoRAs). Without `clip` only the model is changed.
+- **+ LoRA** opens a gallery with search (name, trigger word or base model), a folder filter, a base model filter, favourites and recently used LoRAs. Every tile has an *info* button (trigger words you can tick and copy, usage tips, notes) and a link to the LoRA page when the metadata has one.
+- **Strength**: a slider (default range -1.5 to 1.5), a field where any number can be typed (a typed number is never limited) and arrow buttons. The arrows change the value by 0.05, with Shift by 0.25; hold to repeat.
+- **Previews**: a picture or a video next to the LoRA file, muted, the first frame is shown until the pointer is over the tile (the video plays only on hover).
+- **NSFW filter**: previews of adult LoRAs are blurred. The eye button in the gallery and under the list turns the blur off for the whole page. A LoRA is marked automatically from the metadata (level R and above), and you can mark any LoRA yourself with the shield button on its tile: *Mark as NSFW*, *Mark as safe* or *Back to automatic*. Your mark is kept next to the LoRA in `name.nd.json`; files of other tools are never changed.
+- The interface of this node is in English.
+
+What is read next to a LoRA file `name.safetensors` (the first that exists wins):
+
+| Data | Files |
+|---|---|
+| Preview | the file named by `preview_url` in `name.metadata.json` (if it lies in the same folder), `name.preview.mp4` / `.webm`, `name.mp4` / `.webm`, `name.preview.png` / `.jpg` / `.jpeg` / `.webp`, `name.png` ..., the cover inside a safetensors header |
+| Title, base model, trigger words, notes | `name.metadata.json` (LoRA Manager), `name.civitai.info` / `name.info` (Civitai), `name.txt`, the safetensors header |
+| NSFW | `preview_nsfw_level`, `nsfwLevel` of the first image or `model.nsfw` in that metadata; your mark in `name.nd.json` |
+
+Files are read only from ComfyUI's own LoRA folders. Workflows saved with an older `ND LoRA Stack` open as they are.
+
 ## ND Multi Switch
 
 Switches whole groups of values at once. The inputs come in pairs, `true N` and `false N`, with one output per pair. The `condition` toggle picks the side the outputs are taken from: `out N` is `true N` when it is on and `false N` when it is off.
@@ -365,6 +389,7 @@ ComfyUI-NeuralDreamer-Nodes/
 │   ├── composition_settings.py
 │   ├── resolution.py
 │   ├── batch_images.py
+│   ├── lora_stack.py, lora_catalog.py  # ND LoRA Stack and the catalog of LoRAs (previews, NSFW marks)
 │   └── params.py
 ├── js/
 │   ├── nd_common.js        # shared UI helpers (canvas zoom/pan over node UIs)
@@ -380,6 +405,7 @@ ComfyUI-NeuralDreamer-Nodes/
 │   ├── outfit_builder.js, pose_builder.js, composition_settings.js  # the other builders (+ .json data and *_icons.js)
 │   ├── nd_i18n.js, i18n/   # interface languages (ru.json, zh.json)
 │   ├── resolution.js, batch_images.js
+│   ├── lora_stack.js, lora_gallery.js  # ND LoRA Stack: the list in the node and the gallery
 │   ├── character_icons.js  # Character Builder icons (generated by tools/make_character_icons.py)
 │   └── params.js
 ├── tools/  # dev scripts, not loaded by ComfyUI

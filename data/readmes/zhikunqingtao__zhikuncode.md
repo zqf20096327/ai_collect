@@ -345,7 +345,7 @@ ZhikunCode 在八方审查中找到工具输出 `outputTruncated` 与上层读�
 | Docker 基础部署 | 对话、文件修改、命令和测试；镜像含前端与 Node，无需宿主安装 Java、Node | 下方命令 → [首次任务](#first-task) |
 | 本地三服务 | 开发调试、完整前端代理，以及依赖就绪的 Python 分析／浏览器能力 | [本地安装](#local-setup) → [首次任务](#first-task) |
 
-Docker 入口检查 DashScope、Token Plan、DeepSeek、Moonshot、Zhipu、ZenMux 或旧式 `LLM_API_KEY`；仅有 Kimi Code、MiniMax、OpenRouter 专用 Key 时会在入口退出，请使用本地三服务路径。基础部署在本机构建镜像，不是拉取预构建应用镜像。
+Docker 入口检查 OpenAI、DashScope、Token Plan、DeepSeek、Moonshot、Zhipu、ZenMux 或旧式 `LLM_API_KEY`；仅有 Kimi Code、MiniMax、OpenRouter 专用 Key 时会在入口退出，请使用本地三服务路径。基础部署在本机构建镜像，不是拉取预构建应用镜像。
 
 ```bash
 git clone https://github.com/zhikunqingtao/zhikuncode.git
@@ -1367,7 +1367,7 @@ ZhikunCode 提供个人记忆与项目约定管理，也有团队 Markdown 组�
 
 | 层级 | 文件 | 作用域 | 说明 |
 |------|------|--------|------|
-| **个人记忆** | `~/.ai-code-assistant/MEMORY.md` | 全局跨项目 | 通过 Memory 工具或页面读写，按需使用 |
+| **个人记忆** | `~/.ai-code-assistant/MEMORY.md` | 全局跨项目 | 通过 Memory 工具或页面读写，主会话请求自动限量加载 |
 | **项目记忆** | `zhikun.md` / `zhikun.local.md` | 当前项目 | 项目级编码约定、架构决策、构建流程 |
 | **团队记忆** | `.zhikun/team-memories/*.md` | 团队共享 | 随代码库分发，经普通文件读取按需使用；未自动注入普通会话 |
 
@@ -1384,13 +1384,14 @@ ZhikunCode 提供个人记忆与项目约定管理，也有团队 Markdown 组�
 
 ### 自动记忆与搜索
 
-- **项目自动加载** — 所选 Project 根的 `zhikun.md` 与 `zhikun.local.md` 加入系统提示，不向父目录搜索。
+- **主会话自动加载** — 普通主会话与 Coordinator 主模式每次请求重新读取个人 `MEMORY.md`，并加载所选 Project 根的 `zhikun.md` 与 `zhikun.local.md`，不向父目录搜索。页面保存成功后，下一次请求生效；同一次请求内的工具循环不会中途刷新。
+- **范围与优先级** — Override 完全替换系统提示时跳过记忆注入和 append；custom system prompt 实际被选为基础提示时，也不自动注入记忆，但保留 append。仅提供 custom 字段而由更高优先级的 Coordinator／Agent 分支胜出时，仍按该分支加载记忆。子代理尚未统一接入这条加载链路。记忆冲突时，`zhikun.local.md > zhikun.md > MEMORY.md`，记忆不凌驾于用户当前的明确指令。
 - **个人记忆工具** — Memory 提供 read／write／delete；实际是否写入取决于调用，不保证每轮自动记忆。
 - **团队资料** — 可用普通文件读取工具按需查看团队 Markdown；没有全量自动注入保证。
 - **来源记录** — 条目支持 source 等元数据。
 - **检索实现的状态** — 代码包含 BM25 与可选 LLM 重排，但尚未接入普通 Memory 工具或会话自动加载。不能把内部方法当作已经开放的搜索入口。
 
-实现：[MemdirService](backend/src/main/java/com/aicodeassistant/memdir/MemdirService.java) · [项目约定加载](backend/src/main/java/com/aicodeassistant/service/ProjectMemoryService.java)。
+实现：[记忆提示组装](backend/src/main/java/com/aicodeassistant/prompt/MemoryPromptService.java) · [MemdirService](backend/src/main/java/com/aicodeassistant/memdir/MemdirService.java) · [项目约定加载](backend/src/main/java/com/aicodeassistant/service/ProjectMemoryService.java)。
 
 ### 页面管理记忆
 
@@ -1399,6 +1400,8 @@ ZhikunCode 提供个人记忆与项目约定管理，也有团队 Markdown 组�
 - **卡片模式** — 逐条查看、编辑、删除记忆条目，支持手动新增
 - **整篇模式** — 以 Markdown 编辑器整体修改，支持实时预览
 - **安全保护** — 保存时自动规范化条目格式、生成 `.bak` 备份，并在内容被并发修改时进行冲突检测；PC / 平板 / 手机响应式布局
+
+使用文件 API 时，先 `GET /api/memory/file`，将返回的 `updatedAt` 作为该份原稿的基线；提交 `PUT /api/memory/file` 或 `PUT /api/memory/file/entries` 时，通过 `baseUpdatedAt` 原样带回。不要给旧草稿换上后来刷新获得的新基线。省略 `baseUpdatedAt`、传 `null` 或空白字符串，均表示“加载原稿时文件不存在”，不是“文件存在但内容为空”；已有空文件也应使用 GET 返回的时间。基线与当前文件状态不一致时返回 HTTP 409；保留草稿、重新加载并核对合并后再保存，不自动强制覆盖。
 
 ### 项目记忆文件
 
@@ -1424,13 +1427,15 @@ ZhikunCode 提供个人记忆与项目约定管理，也有团队 Markdown 组�
 - 本地数据库端口: 5432
 ```
 
-> 项目记忆仅从所选 Project 根目录加载 `zhikun.md` 和 `zhikun.local.md`，不向父目录搜索；单文件上限 100KB。`zhikun.md` 随代码库提交用于团队共享，`zhikun.local.md` 用于个人本地配置。
+> 项目记忆仅从所选 Project 根目录加载 `zhikun.md` 和 `zhikun.local.md`，不向父目录搜索；每个文件注入提示的正文最多保留 100 KiB（102,400 字节），超出时追加截断标记。`zhikun.md` 随代码库提交用于团队共享，`zhikun.local.md` 用于个人本地配置。
 
 ### 安全保护
 
 - 页面保存有 50,000 字符限制，并提供备份、并发冲突检测和原子替换。
+- Memory 追加后的全文（含条目元数据）超过 50,000 字符时返回 `MEMORY_FULL`，原文件保持不变，不会自动删旧记忆腾空间。先用 Memory 的 `read` 查看，再以 `delete` 删除明确匹配的旧条目（`content` 是删除匹配文本），或在页面整理、缩短后保存，即可重新追加；删除前确认匹配范围，避免误删同样包含该文本的其他条目。
 - 项目约定有单文件读取上限与路径／符号链接检查。
-- 代码中的提示读取截断和过期清理是辅助路径；普通会话未接入个人／团队记忆全量加载，也没有周期清理调用。
+- 个人记忆自动注入先取文件前 200 行（含元数据与空行），再限制为 25,000 字节（含截断标记）；页面可保存的全文不保证全部进入系统提示，截断不修改原文件。
+- 独立团队记忆目录未接入上述自动加载链路；过期清理也没有周期调用。
 
 ---
 
@@ -1827,6 +1832,8 @@ ZhikunCode 提供多种可视化能力，展示 AI 编程过程中的数据和�
 
 | 变量 | 必填 | 默认值 | 说明 |
 |------|:---:|--------|------|
+| `LLM_PROVIDER_OPENAI_API_KEY` | — | 空 | OpenAI 官方直连 API Key；留空不注册此 Provider |
+| `LLM_PROVIDER_OPENAI_MODELS` | — | gpt-6-astra | 官方直连模型列表（逗号分隔）；与 ZenMux 的 `openai/gpt-6-astra` 分开路由 |
 | `LLM_PROVIDER_DASHSCOPE_API_KEY` | — | — | 千问/DashScope API Key |
 | `LLM_PROVIDER_DASHSCOPE_TOKEN_PLAN_API_KEY` | — | — | 阿里云百炼 Token Plan 专属 API Key |
 | `LLM_PROVIDER_DEEPSEEK_API_KEY` | — | — | DeepSeek API Key |
@@ -1842,7 +1849,9 @@ ZhikunCode 提供多种可视化能力，展示 AI 编程过程中的数据和�
 | `LLM_COMPACT_PROVIDER` | — | deepseek | 压缩摘要 Provider；需已注册该 Provider，配合 `LLM_COMPACT_MODEL` 使用 |
 | `LLM_VISION_FALLBACK_MODEL` | — | deepseek-v4.1-flash | 当前模型不支持图片时优先使用的视觉模型 |
 
-> 前端可切换已配置且可用的 Provider。当前 Docker 入口只检查 DashScope、Token Plan、DeepSeek、Moonshot、Zhipu、ZenMux 或旧式 Key；仅 Kimi Code、MiniMax、OpenRouter Key 时会退出，可先按本地三服务启动。
+> 前端可切换已配置且可用的 Provider。当前 Docker 入口只检查 OpenAI、DashScope、Token Plan、DeepSeek、Moonshot、Zhipu、ZenMux 或旧式 Key；仅 Kimi Code、MiniMax、OpenRouter Key 时会退出，可先按本地三服务启动。
+
+OpenAI Docker 配置回归：`python3 scripts/test-openai-docker-config.py`（需 Python 3、Bash、Docker Compose；使用假 key，不读取本地 `.env`，不启动容器或调用模型）。
 
 **WebSearch 配置（本地启动与 Docker Compose 均支持）：**
 
@@ -1964,7 +1973,7 @@ Claude Fable 5.1 使用已有 OpenRouter Key，默认请求 `reasoning.effort=ma
 | Python 活着但能力不可用 | `/api/health/capabilities` 中的 available／reason、实际解释器、依赖和 Chromium |
 | 页面断线／审批未出现 | WebSocket 代理与服务日志；重连恢复过程，默认完全访问可能不弹审批，后端重启则旧运行中断 |
 
-使用 `start.sh` 时日志位于 `log/backend-console.log`、`log/python-console.log`、`log/frontend-console.log`。Compose 的 `zhikun-data` 卷保存 `/app/data` 下的会话和全局配置，项目来自独立挂载；备份应同时覆盖两者，保留数据时不要执行 `docker compose down -v`。错误信息中先移除凭证再分享。
+使用 `start.sh` 时日志位于 `log/backend-console.log`、`log/python-console.log`、`log/frontend-console.log`。Compose 的 `zhikun-data` 卷保存 `/app/data` 下的会话和全局配置，`zhikun-memory` 卷保存 `/app/.ai-code-assistant` 下的个人记忆及受信任设备文件，项目来自独立挂载；停服一致备份应同时覆盖这两个卷和项目挂载，保留数据时不要执行 `docker compose down -v`。错误信息中先移除凭证再分享。
 
 
 <details>
@@ -2011,71 +2020,19 @@ docker compose up -d --build  # 构建并启动
 **应用状态和数据库保存在本地**；提示词、相关代码上下文和其他模型输入会发送给你配置的 LLM 服务商：
 
 - **会话数据** — SQLite 数据库，存储在 Docker Volume `zhikun-data` 中
+- **个人记忆与设备信任** — `MEMORY.md`、其 `.bak` 备份及 `trusted-devices.json` 位于 Docker Volume `zhikun-memory` 的 `/app/.ai-code-assistant`；备份按应用私有数据保管，不将设备信任文件分享给其他部署
 - **项目代码** — 通过 Volume 挂载你本地的项目目录
 - **API Key** — 由部署环境和配置管理；排查日志或分享资料前应移除凭证
 
 > **旧授权数据库升级边界：** 当前 V015 持久交互与 V019 授权表不保证兼容旧版授权 schema，旧权限不会自动转成当前 Grant。旧表可能缺少必需列或与新表同名，迁移校验失败会阻止启动。升级前应停止应用并一致备份项目库、全局库及相关数据，先在隔离副本验证目标版本迁移与启动；不兼容时停止升级、保留原库，采用经过验证的迁移方案后重新授权。项目库也保存会话和消息，不能直接删库或无条件重建；只有明确可丢弃的开发库才适合重建。
 >
-> **已验证兼容后的存储路径迁移：** Compose 现在把 Session 数据库和全局配置数据库分别持久化到 `zhikun-data` 中的 `/app/data/.ai-code-assistant` 和 `/app/data/global.db`。以下步骤仅处理旧容器数据的复制与恢复，不转换授权 schema。确认上述副本验证通过后，停止并备份 `/app/.ai-code-assistant` 和 `/app/.config/ai-code-assistant/global.db`，再恢复到新位置；全程不要使用 `docker compose down -v`。
->
-> ```bash
-> docker compose stop zhikuncode
-> docker cp zhikuncode:/app/.ai-code-assistant ./ai-code-assistant.backup
-> docker cp zhikuncode:/app/.config/ai-code-assistant/global.db ./global.db.backup
-> docker compose down
-> docker compose create --build zhikuncode
-> docker cp ./ai-code-assistant.backup \
->   zhikuncode:/app/data/.ai-code-assistant
-> docker cp ./global.db.backup \
->   zhikuncode:/app/data/global.db
-> docker compose run --rm --user root --entrypoint chown \
->   zhikuncode -R zhikun:zhikun \
->   /app/data/.ai-code-assistant /app/data/global.db
-> docker compose start zhikuncode
-> ```
->
-> `docker compose create` 只创建、不启动新容器；必须在首次 `start` 前完成恢复和 `chown`。旧路径不存在时可跳过对应的 `docker cp` 和恢复目标。确认 Session、配置和已授权 Project 正常后再删除本地备份。
+**已验证兼容后的存储路径迁移：** 新卷不会自动接收旧容器可写层的数据。先完成上述兼容性验证，再停止应用并备份；数据库与个人记忆须分别恢复，不能把整个旧主目录统一复制到数据库目录。使用默认 Compose 路径时：
 
-实际请求发往你配置的模型／MCP／云服务端点；如果选择聚合 Provider 或代理，请求也会经过该渠道。自托管不代表所有输入只留在本地。
+| 旧数据／备份中的文件 | 当前恢复目标 | 持久化位置 |
+|---|---|---|
+| 旧 `/app/.ai-code-assistant/data.db` 及同次备份的 SQLite 伴随文件 | `/app/data/.ai-code-assistant/data.db` 及对应伴随文件 | `zhikun-data` |
+| 旧 `/app/.config/ai-code-assistant/global.db` 及同次备份的 SQLite 伴随文件 | `/app/data/global.db` 及对应伴随文件 | `zhikun-data` |
+| `/app/.ai-code-assistant/MEMORY.md`、`MEMORY.md.bak` | 同名文件，仍在 `/app/.ai-code-assistant/` | `zhikun-memory` |
+| `/app/.ai-code-assistant/trusted-devices.json` | 同名文件，仍在 `/app/.ai-code-assistant/` | `zhikun-memory` |
 
-</details>
-
-<details>
-<summary><b>Q4：支持内网 / 离线部署吗？</b></summary>
-
-可以部署在内网；使用云模型、联网搜索、MCP 或发布时仍需访问相应端点。完全离线还需提前准备构建依赖、模型和运行资源，并验证所选模型的工具调用兼容性。
-
-- **使用国产模型（千问/DeepSeek）：** 国内网络直连，无需科学上网
-- **本地模型：** 可配置 Ollama 的兼容端点；例如 Docker Desktop 下宿主服务为 `http://host.docker.internal:11434/v1`，Linux 需另行配置宿主地址。是否适合当前任务需实际验证
-- **企业内网：** 只需确保服务器能访问 LLM API 端点即可
-
-</details>
-
-<details>
-<summary><b>Q5：Agent 委派与后台任务怎么用？</b></summary>
-
-在对话中说明任务、分工范围和预期结果，例如：
-
-> “让两个 explore Agent 并行调查认证接口和前端登录流程，分别给出文件位置与风险；你汇总结论后提出修改方案。实现完成后，再让 verification Agent 执行已授权的测试并报告证据。”
-
-主 Agent 可同步等待子任务，或通过 `run_in_background=true` 在推进其他工作后收集当前 Run 的结果。需要隔离文件修改时可指定 `isolation=worktree`，执行基于已提交 HEAD 的独立工作区，并在安全检查通过后合回。
-
-需要持续查询的后台执行，可要求“用 TaskCreate 运行测试，随后用 TaskGet 查询结果”；取消时按该任务 ID 使用 TaskStop，并查询停止是否确认。TodoWrite 用于计划清单。具体角色、模型选择与交付边界见上文“Agent 委派与后台任务”。
-
-</details>
-
-<details>
-<summary><b>Q6：和 VS Code 插件（Copilot/Cline）冲突吗？</b></summary>
-
-**不冲突。** ZhikunCode 是独立的 Web 应用，不依赖任何 IDE，不需要安装插件。
-
-你可以同时使用：
-- **VS Code + Copilot** —— 做行级代码补全
-- **ZhikunCode** —— 做对话式 Agent 编程、复杂任务编排
-
-两者可并用；同时修改同一项目时应协调文件范围，避免覆盖彼此改动。
-
-</details>
-
-<details>
-<summary><b>Q7：怎么贡献代码？</b></s
+已使用 `/app/data` 的部署应保留该卷现有数据库，不用旧主目录中的数据库覆盖它。项目挂载中的数据也应另行备份。以下命令从

@@ -9,13 +9,17 @@ internal modules, not separate registry packages. Earlier releases have a
 different API; see the [migration notes](MIGRATION.md) when upgrading.
 Rust 1.85 or newer is required (edition 2024).
 
+Try the algorithms in the browser with the
+[interactive demo](https://rmitsuboshi.github.io/miniboosts/), or use them
+from Python with `pip install miniboosts` (see [Python bindings](#python-bindings)).
+
 ## Getting started
 
 Add MiniBoosts to your application's `Cargo.toml`:
 
 ```toml
 [dependencies]
-miniboosts = "0.5.1"
+miniboosts = "0.5.2"
 ```
 
 The optimization routines use Clarabel for linear, quadratic, and conic
@@ -54,19 +58,22 @@ set to evaluate performance on unseen data.
 
 The optional [Python package](python/README.md) exposes the same Rust algorithms
 through classes such as `AdaBoostClassifier`, with `fit(X, y)`, `predict(X)`,
-and `decision_function(X)`. Weak learners can be native decision trees or
-compatible custom Python/sklearn estimators; confidence values are strictly
-validated in [-1, +1]. Binary labels are encoded with a mapping warning and
+and `decision_function(X)`. Weak learners can be native Rust learners
+(decision trees, bounded linear functions, logistic regression, Gaussian naive
+Bayes, RBF bumps, finite classes) or compatible custom Python/sklearn
+estimators; confidence values are strictly
+validated in [-1, +1]. Gradient boosting and LogitBoost use regression weak
+learners (the native regression tree or sklearn regressors). Binary labels are encoded with a mapping warning and
 restored on prediction.
 
-From a checkout, with Rust and a Python virtual environment available:
+Install it from PyPI (prebuilt wheels for Linux, macOS, and Windows):
 
 ```sh
-python -m pip install ./python
+python -m pip install miniboosts
 ```
 
-This builds the extension locally; the Python package is not yet on PyPI.
-Rust users need no Python dependencies. See the Python guide for examples,
+To build it from a checkout instead (requires Rust), run
+`python -m pip install ./python`. Rust users need no Python dependencies. See the Python guide for examples,
 algorithm parameters, the explicit sklearn `PredictionAdapter`, and limits.
 
 ## Decision boundaries from Python
@@ -110,7 +117,10 @@ Import these types from `miniboosts` or `miniboosts::prelude`:
 | --- | --- |
 | `AdaBoost` | [Freund and Schapire][adaboost] |
 | `AdaBoostV` | [Rätsch and Warmuth][adaboostv] |
+| `ArcGv` | [Breiman][arcgv] |
+| `BoostByMajority` | [Freund][bbm] |
 | `BrownBoost` | [Freund][brownboost] |
+| `RobustBoost` | [Freund][robustboost] |
 | `MadaBoost` | [Domingo and Watanabe][madaboost] |
 | `LpBoost` | [Demiriz, Bennett, and Shawe-Taylor][lpboost] |
 | `ErlpBoost` | [Warmuth, Glocer, and Vishwanathan][erlpboost] |
@@ -121,6 +131,8 @@ Import these types from `miniboosts` or `miniboosts::prelude`:
 | `SparsiBoost` | [Grønlund, Larsen, and Mathiasen][sparsiboost] |
 | `TotalBoost` | [Warmuth, Liao, and Rätsch][totalboost] |
 | `GraphSeparationBoosting` | [Alon, Gonen, Hazan, and Moran][graphsepboost] |
+| `GradientBoosting` | [Friedman][gbm] |
+| `LogitBoost` | [Friedman, Hastie, and Tibshirani][logitboost] |
 
 The built-in weak learners are a [decision tree][decisiontree], `FiniteClass`
 (an exact edge maximizer over a finite hypothesis class, including one given as
@@ -128,8 +140,10 @@ a table of confidences), `RbfClassBuilder` (Gaussian bumps centered at training
 examples, as a `FiniteClass`), `BoundedLinear` (exact edge maximization over
 bounded linear functions; boosting it yields a linear classifier),
 `LogisticRegression` (weighted logistic regression returning halfspaces or
-`tanh` rules, with no edge guarantee), and `NaiveBayes` (weighted Gaussian naive
-Bayes). Implement `WeakLearner` to use your own
+`tanh` rules, with no edge guarantee), `NaiveBayes` (weighted Gaussian naive
+Bayes), and `RegressionTreeBuilder` (a weighted least-squares regression tree for
+`GradientBoosting` and `LogitBoost`, which fit real-valued responses and return
+an `AdditiveModel`). Implement `WeakLearner` to use your own
 learner. The gradient boosting machine (GBM) and
 regression tree are not included; see the migration notes.
 See the [migration notes](MIGRATION.md) for removed APIs.
@@ -235,7 +249,12 @@ MiniBoosts is licensed under [MIT](https://github.com/rmitsuboshi/miniboosts/blo
 
 [adaboost]: https://www.sciencedirect.com/science/article/pii/S002200009791504X?via%3Dihub
 [adaboostv]: http://jmlr.org/papers/v6/ratsch05a.html
+[arcgv]: https://doi.org/10.1162/089976699300016106
+[bbm]: https://doi.org/10.1006/inco.1995.1136
 [brownboost]: https://doi.org/10.1023/A:1010852229904
+[robustboost]: https://arxiv.org/abs/0905.2138
+[gbm]: https://doi.org/10.1214/aos/1013203451
+[logitboost]: https://doi.org/10.1214/aos/1016218223
 [cerlpboost]: https://link.springer.com/article/10.1007/s10994-010-5173-z
 [decisiontree]: https://www.amazon.co.jp/-/en/Leo-Breiman/dp/0412048418
 [erlpboost]: https://www.stat.purdue.edu/~vishy/papers/WarGloVis08.pdf

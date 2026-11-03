@@ -10,7 +10,7 @@
 
 **[Help center](https://dj-huang.github.io/LeafLoom/docs/en/)** · Searchable guides for notes, attachments, Design Studio, AI connections and recovery.
 
-**[New in 0.1.6: note databases, task boards and a unified workspace](docs/en/RELEASE_NOTES_0.1.6.md)**
+**[New in 0.1.7: work hub, multiple office platforms and reliable asset collection](docs/en/RELEASE_NOTES_0.1.7.md)**
 
 Turn scattered notes, project docs and saved webpages into a connected knowledge base. **LeafLoom is an open-source, local-first knowledge management workspace and personal wiki** for Markdown and HTML, with source-linked search, a knowledge graph, MCP, Skills, AI Chat and ChatGPT integration.
 
@@ -81,7 +81,7 @@ Use your knowledge where you already work, with source references you can check.
 | --- | --- |
 | **MCP** | Connect clients such as Codex, Cursor or Claude Code to the local HTTP MCP endpoint at `http://127.0.0.1:18080/mcp` (default port). Enable full access to find, create, edit, organize and recover connected notes. RAG keeps your selected scope; writing starts disabled. |
 | **Feishu / Lark** | Connect an externally configured lark-cli to verify your account and let MCP clients work with documents and Base records. Local and Tunnel permissions are separate and start disabled. [Setup](docs/en/GUIDE.md#optional-feishu--lark-connection). |
-| **Skills** | Install the included [`wiki-search` Skill](wiki-search/SKILL.md) from **Settings → Skill → Install skill**. It guides compatible assistants through retrieval, Wiki navigation and source checking. Configure MCP separately. |
+| **Skills** | Install [`wiki-search`](wiki-search/SKILL.md) for sourced retrieval or [`work-hub`](work-hub/SKILL.md) for work capture, local tasks and reports, with multi-select office preferences and optional Feishu imports and sync from **Settings → AI integration**. Configure MCP separately. [Work hub guide](docs/WORK_HUB.md). |
 | **AI Chat** | Requires a separately installed, signed-in Codex or Codely CLI. Discuss a note or selection and open cited sources. Preview suggested changes, accept them into a draft, then save when ready. |
 
 [Set up AI Chat, MCP and Skills](docs/en/AI.md)

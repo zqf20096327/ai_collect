@@ -6,7 +6,7 @@
 
 [![PyPi Version](https://img.shields.io/pypi/v/meshioplusplus.svg?style=flat-square)](https://pypi.org/project/meshioplusplus/) [![npm Version](https://img.shields.io/npm/v/%40meshioplusplus%2Fwasm.svg?style=flat-square)](https://www.npmjs.com/package/@meshioplusplus/wasm) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/meshioplusplus.svg?style=flat-square)](https://pypi.org/project/meshioplusplus/) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21629061.svg?style=flat-square)](https://doi.org/10.5281/zenodo.21629061)
 
-[![C++][c++-image]][c++standard] [![Python](https://img.shields.io/badge/Python-3.9%2B-3776ab.svg?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/meshioplusplus/) [![C](https://img.shields.io/badge/C-99-a8b9cc.svg?style=flat-square&logo=c&logoColor=white)](doc/c_api.md) [![Fortran](https://img.shields.io/badge/Fortran-2008-734f96.svg?style=flat-square&logo=fortran&logoColor=white)](doc/fortran.md) [![Julia](https://img.shields.io/badge/Julia-1.9%2B-9558b2.svg?style=flat-square&logo=julia&logoColor=white)](doc/julia.md) [![R](https://img.shields.io/badge/R-4.0%2B-276dc3.svg?style=flat-square&logo=r&logoColor=white)](doc/r.md) [![WebAssembly](https://img.shields.io/badge/WebAssembly-npm-654ff0.svg?style=flat-square&logo=webassembly&logoColor=white)](https://www.npmjs.com/package/@meshioplusplus/wasm) [![TypeScript](https://img.shields.io/badge/TypeScript-viewer-3178c6.svg?style=flat-square&logo=typescript&logoColor=white)](src/viewer/) [![Spack](https://img.shields.io/badge/spack-meshioplusplus-1f79c2.svg?style=flat-square)](https://packages.spack.io/package.html?name=meshioplusplus) [![Blender](https://img.shields.io/badge/Blender-4.2%2B-ea7600.svg?style=flat-square&logo=blender&logoColor=white)](doc/blender.md)
+[![C++][c++-image]][c++standard] [![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab.svg?style=flat-square&logo=python&logoColor=white)](https://pypi.org/project/meshioplusplus/) [![C](https://img.shields.io/badge/C-99-a8b9cc.svg?style=flat-square&logo=c&logoColor=white)](doc/c_api.md) [![Fortran](https://img.shields.io/badge/Fortran-2008-734f96.svg?style=flat-square&logo=fortran&logoColor=white)](doc/fortran.md) [![Julia](https://img.shields.io/badge/Julia-1.9%2B-9558b2.svg?style=flat-square&logo=julia&logoColor=white)](doc/julia.md) [![R](https://img.shields.io/badge/R-4.0%2B-276dc3.svg?style=flat-square&logo=r&logoColor=white)](doc/r.md) [![WebAssembly](https://img.shields.io/badge/WebAssembly-npm-654ff0.svg?style=flat-square&logo=webassembly&logoColor=white)](https://www.npmjs.com/package/@meshioplusplus/wasm) [![TypeScript](https://img.shields.io/badge/TypeScript-viewer-3178c6.svg?style=flat-square&logo=typescript&logoColor=white)](src/viewer/) [![Spack](https://img.shields.io/badge/spack-meshioplusplus-1f79c2.svg?style=flat-square)](https://packages.spack.io/package.html?name=meshioplusplus) [![Blender](https://img.shields.io/badge/Blender-4.2%2B-ea7600.svg?style=flat-square&logo=blender&logoColor=white)](doc/blender.md)
 
 [![GitHub stars](https://img.shields.io/github/stars/loumalouomega/meshioplusplus.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/loumalouomega/meshioplusplus) [![PyPi downloads](https://img.shields.io/pypi/dm/meshioplusplus.svg?style=flat-square)](https://pypistats.org/packages/meshioplusplus)
 [![GitHub release date](https://img.shields.io/github/release-date/loumalouomega/meshioplusplus?style=flat-square&label=release)](https://github.com/loumalouomega/meshioplusplus/releases/latest) [![Commits since latest release](https://img.shields.io/github/commits-since/loumalouomega/meshioplusplus/latest?style=flat-square&label=commits%20since)](https://github.com/loumalouomega/meshioplusplus/compare/v16.22.0...master) [![GitHub last commit](https://img.shields.io/github/last-commit/loumalouomega/meshioplusplus?style=flat-square&label=latest%20commit)](https://github.com/loumalouomega/meshioplusplus/commit/master)
@@ -157,6 +157,7 @@ meshioplusplus extrude    profile.vtu slab.vtu --num-layers 4  # sweep a surface
 meshioplusplus clean      in.vtu out.vtu --weld              # weld / prune / de-dup
 meshioplusplus crop       in.vtu out.vtu --bbox 0,0,0,1,1,1  # subset by region
 meshioplusplus crop       in.vtu out.vtu --where "d<0"       # ... or by a data predicate
+meshioplusplus select     in.vtu out.vtu --name inlet --kind side --seed 0,0,-1  # a named BC patch
 meshioplusplus split      in.vtu 'out_{key}.vtu' --by type   # split by criterion
 meshioplusplus stats      mesh.vtu                           # geometric statistics
 meshioplusplus convert-cells in.msh out.vtu --mode simplexify  # hexes -> tetra
@@ -182,6 +183,22 @@ meshioplusplus hausdorff  a.stl b.stl --max 1e-3             # worst-case distan
 meshioplusplus check      part.vtu -r "scaled_jacobian >= 0.2"  # quality gate: exit 1 on failure, 2 if unchecked
 meshioplusplus regions    in.msh out.msh --union inlet=in_a,in_b --rename "Surface 3=Outlet"  # region algebra
 meshioplusplus periodic   in.msh --slave inlet --master outlet --translate 2,0,0  # periodic node pairs
+meshioplusplus graph      in.vtu part.graph --kind cell     # dual graph as a METIS file (or .grf: Scotch)
+meshioplusplus geodesic   skin.stl dist.vtu --source 0     # surface distance from a point (heat method)
+meshioplusplus parameterize bunny.stl bunny.obj             # a UV atlas, written as texture coordinates
+meshioplusplus eigenmodes skin.stl modes.vtu -k 16         # lowest Laplace-Beltrami eigenpairs
+meshioplusplus morph      duct.vtu moved.vtu --array d     # move the boundary, carry it into the mesh
+meshioplusplus untangle   deformed.vtu fixed.vtu          # repair inverted tetrahedra and hexahedra
+meshioplusplus metric     flow.vtu sized.vtu --arrays m_p,m_T --target-vertices 20000  # combine metrics
+meshioplusplus coordinates rotor.vtu cyl.vtu --arrays U     # vectors/tensors in cylindrical components
+meshioplusplus hull       scan.xyz hull.stl                 # convex hull of a point cloud (--dimension 2: outline)
+meshioplusplus point-normals scan.ply scan.pcd             # normals of a point cloud (plane fits, oriented)
+meshioplusplus reconstruct scan.ply surface.stl            # a triangle surface through an oriented point cloud
+meshioplusplus register   scan.ply design.stl --method point_to_plane --output aligned.vtu  # ICP
+meshioplusplus delaunay   survey.pcd terrain.vtu            # Delaunay triangulation in x, y (z kept)
+meshioplusplus completion bash > ~/.local/share/bash-completion/completions/meshioplusplus  # also zsh, fish
+meshioplusplus convert    case.msh.gz case.vtu            # compressed input (.gz .bz2 .xz .zst .zip) read transparently
+meshioplusplus convert    s3://bucket/run/out.vtu out.msh # remote input through fsspec (Python CLI, [remote] extra)
 meshioplusplus repair     in.vtu out.vtu                     # orientation, holes, bowties
 meshioplusplus shrinkwrap in.vtu scan.stl out.vtu           # project onto a target surface
 meshioplusplus sobolev-deform in.vtu out.vtu --array d --length-scale 0.5  # filter a displacement
@@ -205,7 +222,7 @@ with any of the supported formats.
 
 The same verbs are available as a **standalone C++ binary** that needs no Python: grab a ready-to-run, statically-linked build for Linux/macOS/Windows from the [GitHub Releases](https://github.com/loumalouomega/meshioplusplus/releases) page, or build it yourself with `build/configure.sh --cli --build` (or `-DMESHIOPLUSPLUS_BUILD_CLI=ON`). It links only the C++ core. Named [regions](https://loumalouomega.github.io/meshioplusplus/regions) — and so point/cell *sets* — are carried there since v8.1.0, so `info` lists them and `diff` compares them; `convert -s/-d` is still Python-only.
 
-A whole *chain* of operations can be described declaratively in one `settings.json` (`Input` → `Operations` → `Output`) and run with `meshioplusplus pipeline settings.json` — or `meshioplusplus.run_pipeline(...)` from Python, and the same engine from C/Fortran/Julia/R/WASM. See [the settings pipeline](https://loumalouomega.github.io/meshioplusplus/pipeline).
+A whole *chain* of operations can be described declaratively in one `settings.json` (`Input` → `Operations` → `Output`) and run with `meshioplusplus pipeline settings.json` — or `meshioplusplus.run_pipeline(...)` from Python, and the same engine from C/Fortran/Julia/R/WASM. `meshioplusplus.apply_operations(mesh, operations)` applies the same steps to a mesh in memory and returns `(mesh, report)`. See [the settings pipeline](https://loumalouomega.github.io/meshioplusplus/pipeline).
 
 In Python, simply do
 
@@ -263,7 +280,7 @@ meshioplusplus.write_points_cells("foo.vtk", points, cells)
 For both input and output, you can optionally specify the exact `file_format` (in case you would like to enforce ASCII over binary VTK, for example).
 
 <details>
-<summary><b>Mesh and data operations</b> — skin/surface extraction, quality, reorder, diff, merge, transform/clean/crop/split/stats, cell conversion, tessellation, subdivide/agglomerate, refine, undo-green, decimate, partition, remesh, MMG adaptation, smoothing, interpolation, slice, isosurface, derivatives, Hessian, error estimation, field integration, data ops (click to expand)</summary>
+<summary><b>Mesh and data operations</b> — skin/surface extraction, quality, reorder, diff, merge, transform/clean/crop/split/stats, select (named regions), cell conversion, tessellation, subdivide/agglomerate, tet_to_poly/poly_to_tet, refine, undo-green, decimate, partition, remesh, MMG adaptation, smoothing, interpolation, slice, isosurface, derivatives, Hessian, error estimation, field integration, data ops (click to expand)</summary>
 
 #### Skin extraction
 
@@ -421,6 +438,17 @@ meshioplusplus.write("fine.mesh", fine, file_format="mfem")         # patches in
 ev = meshioplusplus.iga_evaluate(fine, [[0.3, 0.7, 0.4]], derivatives=1)
 ```
 
+#### Named regions from geometry (select)
+
+**`meshioplusplus.select(mesh, name, kind)`** writes one named point, cell or side region chosen by a box, half-space or ball, a `cell_data`/`point_data` or quality threshold, a node-connected component, or a smooth patch grown from a seed point across the edges `feature_edges` would not draw — the boundary-condition patch or contact surface a solver deck names, reproducible from a script. Everything else is left bit-identical. See [`doc/select.md`](doc/select.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+mesh = meshioplusplus.select(mesh, "inlet", "side", seed=(0.0, 0.0, -1.0))
+mesh = meshioplusplus.select(mesh, "slivers", quality=("min_dihedral", "<", 10))
+```
+
 #### Interfaces and contact
 
 `meshioplusplus.region_adjacency(mesh, regions=None)` extracts conforming facets shared by Cell regions (or by cell blocks when fewer than two Cell regions exist). `find_interface` matches two parts by shared node ids or geometric proximity, `contact_pairs` projects a Point region onto master facets, and `split_interface` duplicates point fans along a Side region with optional cohesive elements. The API and tolerances are documented in [`doc/region_adjacency.md`](doc/region_adjacency.md).
@@ -518,6 +546,17 @@ coarse, report = meshioplusplus.agglomerate(
 )
 ```
 
+#### Tetrahedral ⇄ polyhedral conversion
+
+**`meshioplusplus.tet_to_poly`** converts a tetrahedral mesh into its polyhedral (median) dual — the tet-to-poly conversion CFD meshers perform: one polyhedron per vertex, bounded by the ring of tetrahedron and triangle centroids around each edge and, on the boundary, by the boundary triangles' pieces, fused while their normals agree within `feature_angle` so feature edges and corners survive. A vertex on an interface between `tetra` blocks gets one cell per block. **`meshioplusplus.poly_to_tet`** goes back: `convert_cells(mode="simplexify")`, except that a polyhedron that already is a tetrahedron becomes that one `tetra`. See `doc/tet_poly.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+poly, report = meshioplusplus.tet_to_poly(tets, return_report=True)
+tets_again = meshioplusplus.poly_to_tet(poly)  # valid and volume-conserving, not the original
+```
+
 #### Refinement
 
 **`meshioplusplus.refine`** subdivides cells into congruent children of the *same* cell type, increasing a mesh's resolution: `line` → 2, `triangle` → 4, `quad` → 4, `tetra` → 8, `wedge` → 8, `hexahedron` → 8, with `levels=n` applying the templates `n` times. Given a **selection** — a cell list, a region name, or a `cell_data` threshold — it refines only those cells and resolves the resulting hanging nodes, so the output is still conforming. See `doc/refine.md`.
@@ -608,6 +647,135 @@ quality = meshioplusplus.partition(mesh, 16, method="kahip", mode="strong")
 
 Pieces keep the input's block structure 1:1, so they recombine into the input: every cell lands in exactly one piece. `ghost_layers=N` instead grows each piece by N shared-node layers of its neighbours' cells (an MPI-style halo), tagged `partition:ghost`.
 
+#### Geodesic distance (heat method)
+
+**`meshioplusplus.geodesic_distance(mesh, sources)`** measures the distance along a triangle surface from source points (ids, or a region's points) to every point, as `geodesic:distance` point data, by Crane et al.'s heat method over the surface's own cotangent operators: a heat step, its normalised gradient, a Poisson solve. Deterministic, about 1% accurate on a sphere at `h = 0.04`, on every surface — Python, C++, C, Fortran, Julia, R, WASM, both CLIs (`geodesic`), the pipeline (`GeodesicDistance`) and MCP. See `doc/geodesic.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+out = meshioplusplus.geodesic_distance(skin, "inlet")   # the points of a region
+d = out.point_data["geodesic:distance"]
+```
+
+#### UV parameterization
+
+**`meshioplusplus.parameterize(mesh)`** gives a triangle surface a UV atlas: it cuts the surface into charts, flattens each without flipping a triangle (least-squares conformal maps, else mean-value coordinates, the kernels `fit_cad` uses), halves a chart that stretches too much, and shelf-packs the charts into the unit square. The result is split at its seams and carries `uv` point data, which the OBJ (`vt`), glTF (`TEXCOORD_0`) and USD (`primvars:st`) writers turn into texture coordinates, and their readers turn back. On every surface — Python, C++, C, Fortran, Julia, R, WASM, both CLIs (`parameterize`), the pipeline (`Parameterize`) and MCP. See `doc/parameterize.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+out, report = meshioplusplus.parameterize(bunny, return_report=True)
+meshioplusplus.write("bunny.glb", out)   # TEXCOORD_0 from out.point_data["uv"]
+```
+
+#### Metric toolbox
+
+**`meshioplusplus.prepare_metric(mesh, arrays)`** intersects the anisotropic metrics of several fields (so one mesh resolves them all), normalises the result to a target vertex count (continuous-mesh L^p), clamps its sizes and grades it, with no MMG needed: the input `adapt` takes. See [metric toolbox](doc/metric.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+m = meshioplusplus.prepare_metric(mesh, ["m_p", "m_T"], target_vertices=20000, gradation=1.5)
+```
+
+#### Untangling
+
+**`meshioplusplus.untangle(mesh)`** repairs inverted tetrahedra and hexahedra by moving nodes until every corner has a positive signed volume (Escobar et al.'s untangling functional), keeping the connectivity and, by default, the boundary, and moving only the nodes near the tangles. See [untangling](doc/untangle.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+fixed = meshioplusplus.untangle(meshioplusplus.read("deformed.vtu"))
+```
+
+#### Mesh morphing
+
+**`meshioplusplus.morph(mesh, displacement)`** moves the boundary (or chosen points) by a prescribed displacement and carries it into the rest of the mesh by a harmonic extension with Jacobian-based stiffening, in increments for large motions, refusing a result with inverted cells: shape optimisation and fluid–structure mesh motion. See [morphing](doc/morph.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+moved = meshioplusplus.morph(fluid, "wall_motion", steps=4)
+```
+
+#### Laplacian eigenmodes
+
+**`meshioplusplus.laplacian_eigenmodes(surface, num_modes)`** computes the lowest eigenpairs of a triangle surface's Laplace–Beltrami operator (cotangent stiffness against lumped mass) as `laplacian:modes` point data and `laplacian:eigenvalues` field data: spectral positional encodings for graph networks, and shape descriptors. Repeated eigenvalues come out whole (a sphere's `l (l + 1)`, `2 l + 1` times). See [eigenmodes](doc/eigenmodes.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+out = meshioplusplus.laplacian_eigenmodes(skin, 16)
+encoding = out.point_data["laplacian:modes"]   # (n, 16)
+```
+
+#### Cylindrical and spherical coordinates
+
+**`meshioplusplus.convert_coordinates(mesh, system, axis=..., arrays=[...])`** records each point's `(r, θ, z)` or `(r, θ, φ)` about an axis as point data and rewrites the named vector and tensor fields in the local basis of each point (a cell's at its centroid), the components rotating machinery and pressure vessels are read in; `inverse=True` turns them back. The points do not move. See [coordinates](doc/coordinates.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+out = meshioplusplus.convert_coordinates(rotor, "cylindrical", arrays=["U"])
+u_r, u_theta, u_z = out.point_data["U"].T
+```
+
+#### Rigid registration (ICP)
+
+**`meshioplusplus.register_rigid(source, target)`** finds the rotation and translation laying a scan onto its design (or one run's mesh onto another's) by iterative closest points, point-to-point or point-to-plane, and returns the 4 × 4 matrix `transform` applies. See [rigid registration](doc/registration.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+matrix, report = meshioplusplus.register_rigid(scan, design, method="point_to_plane")
+aligned = meshioplusplus.transform(scan, matrix=matrix)
+```
+
+#### Point-cloud normals
+
+**`meshioplusplus.estimate_normals(points, k=16)`** gives every point of a scan a normal from its `k` nearest neighbours' plane fit, oriented consistently (a spanning tree over the neighbour graph, then outward) or towards a viewpoint, as the `normals` array the PCD and XYZ writers emit. See [point-cloud normals](doc/point_normals.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+scan = meshioplusplus.estimate_normals(meshioplusplus.read("scan.ply"), k=24)
+meshioplusplus.write("scan.pcd", scan)   # with normal_x normal_y normal_z
+```
+
+#### Surface reconstruction
+
+**`meshioplusplus.reconstruct_surface(cloud)`** turns an oriented point cloud into a triangle surface: the zero level set of the signed distance to the samples' tangent planes (Hoppe et al. 1992), cut by marching tetrahedra on a band of lattice cells about the samples. Normals come from the cloud's `normals` array or are estimated; an open scan stays open. See [surface reconstruction](doc/reconstruct_surface.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+surface = meshioplusplus.reconstruct_surface(meshioplusplus.read("scan.ply"))
+meshioplusplus.write("scan.stl", surface)
+```
+
+#### Convex hull and planar Delaunay
+
+**`meshioplusplus.convex_hull(points)`** is the closed hull of scattered points (a `triangle` surface, or with `dimension=2` the `x, y` outline as a `line` loop), its vertices the extreme points alone with `hull:point_id`; **`meshioplusplus.delaunay_2d(points)`** triangulates the points' `x, y` coordinates, every point keeping its `z` and data, so survey scatter becomes a terrain. Every decision is an exact predicate: coplanar and cocircular points need no tolerance. See [hull](doc/hull.md).
+
+<!--pytest-codeblocks:skip-->
+
+```python
+hull = meshioplusplus.convex_hull(meshioplusplus.read("scan.xyz"))
+terrain = meshioplusplus.delaunay_2d(meshioplusplus.read("survey.pcd"))
+```
+
+#### Adjacency graphs (CSR) and METIS / Scotch files
+
+**`meshioplusplus.adjacency(mesh, kind)`** returns the mesh's graph in compressed-sparse-row form, `(indptr, indices)`: `"node"` (nodes joined by a cell edge), `"clique"` (nodes sharing a cell: the sparsity pattern of an assembled FEM matrix) or `"cell"` (cells sharing a facet: the dual graph partitioners cut), sorted, symmetric and byte-identical on every backend. **`write_graph`** writes it as a METIS `.graph` or a Scotch `.grf` file for an external partitioner. Both are on every surface — Python, C++, C, Fortran, Julia, R, WASM, both CLIs (`graph`) and MCP. See `doc/adjacency.md`.
+
+<!--pytest-codeblocks:skip-->
+
+```python
+indptr, indices = meshioplusplus.adjacency(mesh, "clique")   # FEM preallocation pattern
+meshioplusplus.write_graph("mesh.graph", mesh, "cell")        # gpmetis mesh.graph 16
+```
+
 #### Surface remeshing (ACVD clustering)
 
 **`meshioplusplus.remesh`** replaces a **surface** mesh's own triangulation with a new, near-uniformly-sized, well-shaped one at a caller-chosen vertex count, by approximated centroidal Voronoi diagram (ACVD) clustering — the one resolution-changing operation that does not inherit the input's element shapes, so it can *raise* quality at every target count rather than only remove elements. See `doc/remesh.md`.
@@ -693,8 +861,10 @@ volume, report = meshioplusplus.tetrahedralize(surface, max_size=0.1, return_rep
 ```python
 out = meshioplusplus.optimize_volume(mesh)                       # a tetrahedral mesh
 out, report = meshioplusplus.optimize_volume(mesh, return_report=True)
-print(report["num_flips"], report["min_quality_before"], report["min_quality_after"])
+print(report["min_dihedral_before"], report["min_dihedral_after"])  # never lower, by default
 ```
+
+By default (`objective="worst"`) it raises the least dihedral angle and never lowers it — guarded relocation, 2-3 flips, edge removal, multi-face removal and worst-cell smoothing (Freitag and Ollivier-Gooch 1997; Klingner and Shewchuk 2007), taking Netgen's optimised sphere from 17.4 to 32.4 degrees; `objective="energy"` is the ODT energy with scaled-Jacobian flips it ran alone up to v18.0.0. See [`doc/optimize_volume.md`](doc/optimize_volume.md).
 
 The flips touch only interior faces/edges, so the boundary surface is preserved exactly (watertight in ⇒ watertight out); the point set is invariant, so `point_data`/`field_data` and named Point regions carry through while `cell_data`/Cell/Side regions are dropped. Tet-only, and (like `remesh_volume`) C++-core only.
 
@@ -814,171 +984,4 @@ Six operations built for the physics-ML surface, each with its own CLI verb, MCP
 
 #### Parametric primitives (grids, disks, spheres, tori, cones, balls, shells, curves, point clouds, reference cells)
 
-Thirty-four generators build a shape from parameters, so a test, a notebook or a demo needs no fixture file: `meshioplusplus.rectangle`, `box`, `disk`, `uv_sphere`, `icosa_sphere`, `cylinder`, the planar domains `reference_triangle`, `ngon`, `annulus` (or a sector of one, with a seam pair), `lshape`, `plate_with_hole` and `honeycomb` (a ragged `polygon` block of hexagons), `reference_cells` (one cell of each type in its reference coordinates), the curves and point clouds `line`, `circle`, `helix`, `sphere_points` (a Fibonacci lattice) and `box_points` (seeded, the same cloud on every platform), the surfaces `tetra_sphere`, `octa_sphere`, `cube_sphere`, `geo_sphere`, `torus`, `moebius` (non-orientable), `tube`, `cone`, `capsule`, `box_surface` and `platonic`, and the solids `ball` (the seven-block butterfly), `spherical_shell` and `pipe` (graded walls), `fichera` and `solid_torus`. Surfaces come out oriented outward, volumes positive, the boundary as named side regions (`xmin` … `zmax`, `rim`, `side`/`top`/`bottom`, `inner`/`outer`, `hole`), and `order=2` places the mid-edge nodes on the exact geometry, so a quadratic sphere or cylinder is genuinely curved; `complete=True` gives the full-Lagrange `quad9`, `hexahedron27` and `wedge18`, and `order` 3 to 10 the `VTK_LAGRANGE_*` family, every node on the geometry too. The same generators are on every surface — C, Fortran, Julia, R, WASM, both CLIs (`meshioplusplus generate box block.vtu --dims 8,8,8 --cell-type tetra`), MCP and the pipeline (`{"Op": "Generate", ...}`, which needs no `Input`). See [parametric primitives](doc/primitives.md).
-
-```python
-block = meshioplusplus.box(dims=(4, 4, 4), cell_type="tetra", order=2)   # tetra10, six side regions
-ball = meshioplusplus.uv_sphere(radius=2.0, nu=24, nv=12, order=2)      # triangle6 on the exact sphere
-```
-
-#### Data operations (rename / average / calc / condition / invariants / summarize)
-
-A second bundle operates on the **data arrays** a mesh carries (`point_data` / `cell_data` / `field_data`) rather than on its geometry, which none of them ever modifies:
-
-- **`meshioplusplus.data_rename` / `data_drop` / `data_keep`** — rewrite which arrays a mesh carries and under what names; values, dtypes and shapes are copied verbatim. See `doc/data_manage.md`.
-- **`meshioplusplus.point_data_to_cell_data` / `cell_data_to_point_data`** — move data between locations by averaging, optionally weighted by cell area/volume. See `doc/data_average.md`.
-- **`meshioplusplus.data_calc`** — derive a new array from an elementwise expression (`+ - * /`, parentheses, `abs`/`sqrt`/`min`/`max`/`norm`) evaluated by a hand-written parser — no external parser library, no arbitrary-code path. See `doc/data_calc.md`.
-- **`meshioplusplus.data_condition`** — clamp, normalize to a target range, or standardize to zero mean / unit standard deviation, per component or by row magnitude. See `doc/data_condition.md`.
-- **`meshioplusplus.tensor_invariants`** — von Mises, principal, hydrostatic and deviatoric fields of a symmetric or general 3x3 tensor array. See `doc/tensor_invariants.md`.
-- **`meshioplusplus.data_info`** — a read-only per-array summary (dtype, shape, components, min/max/mean, NaN/inf counts) — the data-side complement to `info` and `compute_stats`. See `doc/data_info.md`.
-
-<!--pytest-codeblocks:skip-->
-
-```python
-out = meshioplusplus.data_calc(mesh, "norm(velocity)", location="point", output="speed")
-out = meshioplusplus.point_data_to_cell_data(out, keys=["speed"], suffix="_c")
-out = meshioplusplus.data_condition(out, "cell", ["speed_c"], mode="normalize")
-out = meshioplusplus.data_rename(out, "point", "T", "temperature")
-arrays = meshioplusplus.data_info(out)                     # list of per-array dicts
-```
-
-These are likewise exposed across every binding surface, and as the ten CLI verbs under the `meshioplusplus data` group (`info`, `rename`, `drop`, `keep`, `to-cell`, `to-point`, `calc`, `clamp`, `normalize`, `invariants`). See `doc/data_operations.md`. A second nested group, `meshioplusplus dataset` (`add`, `list`, `split`, `tag`, `annotate`), curates the hand-editable [dataset manifests](https://loumalouomega.github.io/meshioplusplus/datasets.html) used for ML training collections (Python CLI only, like `data export`).
-
-</details>
-
-<details>
-<summary><b>Time series and transient / multi-file datasets</b> (click to expand)</summary>
-
-#### Time series
-
-The [XDMF format](https://xdmf.org/index.php/XDMF_Model_and_Format) supports time series with a shared mesh. You can write times series data using meshio++ with
-
-<!--pytest-codeblocks:skip-->
-
-```python
-with meshioplusplus.xdmf.TimeSeriesWriter(filename) as writer:
-    writer.write_points_cells(points, cells)
-    for t in [0.0, 0.1, 0.21]:
-        writer.write_data(t, point_data={"phi": data})
-```
-
-and read it with
-
-<!--pytest-codeblocks:skip-->
-
-```python
-with meshioplusplus.xdmf.TimeSeriesReader(filename) as reader:
-    points, cells = reader.read_points_cells()
-    for k in range(reader.num_steps):
-        t, point_data, cell_data = reader.read_data(k)
-```
-
-#### Transient / multi-file datasets
-
-Most formats cannot express time at all, so transient output usually arrives as
-a *set* of files (`out_0000.vtu … out_0500.vtu`). meshio++ treats such a set as
-one ordered dataset:
-
-```bash
-meshioplusplus convert 'out_*.vtu' series.xdmf         # fan-in (quote the glob!)
-meshioplusplus convert series.xdmf 'step_{step}.vtu'   # fan-out
-meshioplusplus pipeline transient.json                 # chain applied per step
-```
-
-<!--pytest-codeblocks:skip-->
-
-```python
-for time, mesh in meshioplusplus.read_sequence("out_*.vtu"):  # lazy
-    ...
-meshioplusplus.write_sequence("series.xdmf",
-                              meshioplusplus.read_sequence("out_*.vtu"))
-```
-
-Ordering is **natural-numeric**, so `out_10.vtu` follows `out_9.vtu`; each step's
-time comes from an explicit list, the file, its filename or its index, and which
-one applied is reported. Fan-in and fan-out **stream** — one mesh is alive at a
-time, whatever the step count — and a multi-step input aimed at a single-step
-output is an error naming `{step}`, never a silent write of step 0.
-`meshioplusplus.resample_sequence("out_*.vtu", "u_{index}.vtu", times="0:2:0.1")`
-puts a run on new times (a linear blend, nearest or previous step, or
-another run's own times with `times_from`) holding at most two steps in memory,
-which aligns two solvers before a `diff`. Available from Python, both CLIs, C,
-Fortran, Julia and R. See [`doc/sequences.md`](doc/sequences.md).
-
-</details>
-
-<details>
-<summary><b>Interactive viewer</b> — desktop (Polyscope) and browser (vtk.js) backends, screenshots, dataset manager (click to expand)</summary>
-
-### Interactive viewer
-
-[![Try it in your browser](https://img.shields.io/badge/try%20it-in%20your%20browser-4c9ffe?logo=webassembly&logoColor=white)](https://loumalouomega.github.io/meshioplusplus/viewer/)
-
-<img alt="the meshio++ browser viewer" src="https://loumalouomega.github.io/meshioplusplus/viewer/browser-viewer.png" width="85%">
-
-*The browser viewer — reading, rendering and converting entirely client-side.*
-
-One call, two backends:
-
-```python
-import meshioplusplus
-
-mesh = meshioplusplus.read("part.msh")
-meshioplusplus.view(mesh)                      # pick a backend automatically
-meshioplusplus.view(mesh, backend="polyscope") # a native desktop window
-meshioplusplus.view(mesh, backend="browser")   # vtk.js, in a browser or notebook
-```
-
-The **desktop** backend is [Polyscope](https://polyscope.run), an optional Python-only extra (`pip install meshioplusplus[viewer]`). It draws solids you can slice into, colours by any point or cell array, and renders headless screenshots for CI and docs:
-
-```python
-meshioplusplus.screenshot(mesh, "part.png", color_by="temperature")
-```
-
-<img alt="the example bracket in Polyscope, coloured by scaled Jacobian" src="https://loumalouomega.github.io/meshioplusplus/viewer/desktop-viewer.png" width="70%">
-
-*The bundled `example.msh` bracket coloured by element quality — this image is generated by `screenshot()` itself.*
-
-The **[browser](https://loumalouomega.github.io/meshioplusplus/viewer/)** backend needs nothing extra. The same app is hosted as a live demo: drag in any supported format, colour by point or cell data, and convert and download to another format — all client-side, with no server and no upload. Since it runs the WebAssembly build, every format meshio++ reads works there too.
-
-A second page, the **[dataset manager](https://loumalouomega.github.io/meshioplusplus/viewer/dataset.html)**, curates the [dataset manifests](https://loumalouomega.github.io/meshioplusplus/datasets.html) used for ML training collections visually — an overview of every manifest in a directory (cards with split balance, health badges and thumbnails, plus a manifest diff view, and — with an optional local companion process — server-side scans and PhysicsNeMo training launched, followed, compared and previewed from the page; see [the dashboard page](https://loumalouomega.github.io/meshioplusplus/dashboard.html)), directory picking with in-place manifest save (Chromium), per-entry previews with a time-series scrubber, and NaN/Inf/quality scanning — against the same hand-editable JSON the CLI and Python API use:
-
-<img alt="the meshio++ dataset manager, previewing a transient case with a step scrubber and a per-array NaN/Inf summary table" src="https://loumalouomega.github.io/meshioplusplus/viewer/dataset-manager.png" width="85%">
-
-*Splits, tags and groups on the left; a live preview and per-array summary on the right — all against the manifest JSON the CLI and Python API read and write.*
-
-From the command line:
-
-```sh
-meshioplusplus view part.msh
-meshioplusplus screenshot part.msh part.png --size 1600 1200
-```
-
-See [the viewer docs](https://loumalouomega.github.io/meshioplusplus/viewer.html) for how volume meshes are handled and what each backend can and cannot do.
-
-</details>
-
-<details>
-<summary><b>Terminal rendering</b> — a deterministic software rasterizer: draw a mesh in a terminal, a PNG, HTML or asciinema recording with no display or GPU (click to expand)</summary>
-
-### Terminal rendering
-
-Where there is no window, browser or GPU — an SSH session on a login node, a container, a CI log — `snapshot` draws the mesh anyway. A dependency-free software rasterizer (depth buffer, flat or smooth shading, element or feature edges, a mapped data field with a colour bar) turns it into pixels, and the pixels into Unicode block characters with terminal colours, a PNG, an HTML page or an [asciinema](https://asciinema.org) orbit. The output is the same bytes on every platform, thread count and CLI.
-
-```sh
-meshioplusplus snapshot part.vtu -                                    # draw it in this terminal
-meshioplusplus snapshot result.vtu - --color-by temperature --colorbar --encoding braille
-meshioplusplus snapshot part.vtu part.png --edges feature --axes      # a PNG, no display needed
-meshioplusplus tui part.vtu                                           # orbit and zoom it right here
-```
-
-```python
-print(meshioplusplus.render_text(mesh, color_by="temperature"))      # ANSI text for this terminal
-image = meshioplusplus.render_image(mesh, 800, 600, supersample=2)   # an (H, W, 4) uint8 array
-meshioplusplus.snapshot(mesh, "part.png", edges="all")               # .png .txt .ansi .html .cast
-meshioplusplus.tui(mesh)                                             # the interactive viewer
-```
-
-Field rendering colours by an array, a `data_calc` expression or a tensor invariant on a linear, log or symlog scale with percentile clipping and a legend, draws categories, regions, isolines, vector arrows, streamlines that follow a vector field and a warp with its undeformed outline, and offers quality, orientation and free-edge diagnostic views. The same options reach C, Fortran, Julia, R, WebAssembly and the settings pipeline's `Snapshot` step.
-
-`tui` is the interactive viewer for a machine with no display: drag to orbit, wheel to zoom, click to probe a cell, `x`/`y`/`z` to cut the model open, `[` `]` to step through a time series (`--follow` watches a run that is still writing), `--compare` to put two meshes side by side, a `:` command line that takes the flags of `snapshot`, and sessions saved as JSON; only the changed cells are sent, and the terminal is restored however it ends. `view()` picks it by itself when there is no display but a terminal. For fun, `--theme synthwave` puts a banded sunset and a grid floor behind the model in neon, and `--music` plays a generated loop on whichever audio player the system has (off unless asked for, and silen
+Thirty-four generators build a shape from parameters, so a test, a notebook or a demo needs no fixture file: `meshioplusplus.rectangle`, `box`, `disk`, `uv_sphere`, `icosa_sphere`, `cylinder`, the planar domains `reference_triangle`, `ngon`, `annulus` (or a sector of one, with a seam pair), `lshape`, `plate_with_hole` and `honeycomb` (a ragged `polygon` block of hexagons), `reference_cells` (one cell of each type in its reference coordinates), the curves and point clouds `line`, `circle`, `helix`, `sphere_points` (a Fibonacci lattice) and `box_points` (seeded, the same cloud on every platform), the surfaces `tetra_sphere`, `octa_sphere`, `cube_sphere`, `geo_sphere`, `torus`, `moebius` (non-orientable), `tube`, `cone`, `capsule`, `box_surface` and `platonic`, and the solids `ball` (the seven-block butterfly), `spherical_shell` and `pipe` (graded walls), `fichera` and `solid_torus`. Surfaces come out oriented outward, volumes positive, the bounda

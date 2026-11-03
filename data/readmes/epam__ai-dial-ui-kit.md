@@ -270,6 +270,7 @@ breaking change and goes through the migration-guide process.
 | `skeleton`      | `dial-kit-skeleton`       | The root of a `Skeleton`                                                                 |
 | `notification`  | `dial-kit-notification`   | The `Notification` surface, including every toast and section-message wrapper             |
 | `noDataContent` | `dial-kit-no-data-content` | The empty-state root of `NoDataContent`                                                 |
+| `loginScreen`   | `dial-kit-login-screen`   | The `section` root of a `LoginScreen`                                                    |
 | `stateScreen`   | `dial-kit-state-screen`   | The `section` root of a `StateScreen`                                                    |
 | `liveRegion`    | `dial-kit-live-region`    | The always-mounted wrapper of a `LiveRegion`, or of an `announce`d `CaptionText` / `ErrorText` |
 | `transferQueue` | `dial-kit-transfer-queue` | The `role="status"` panel of a `TransferQueue`: header, rows and aggregate bar           |
@@ -386,9 +387,10 @@ target already carries a stable class:
 | `MarkdownEditor`                              | `dial-kit-markdown-editor` |
 | `Grid`                                        | `dial-kit-grid` (exported as `GRID_ROOT_CLASS`) |
 
-Four more contribute no element of their own, and are addressed through what
+Five more contribute no element of their own, and are addressed through what
 they render: `ThemeScope` (a `display: contents` wrapper), `MultiSelectTags`
-(`Tag`s), and `TooltipContainer` / `TooltipTrigger`.
+(`Tag`s), `TooltipContainer` / `TooltipTrigger`, and `ErrorBoundary` (its
+`LiveRegion` and fallback `StateScreen`).
 
 Two neighbouring elements are reached through props instead, and keep being: a
 `Dropdown`'s floating panel takes `listClassName`, and a `Popup`'s backdrop

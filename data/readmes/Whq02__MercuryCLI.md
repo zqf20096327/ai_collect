@@ -62,6 +62,8 @@ npm install -g mercury-tech-cli                    # npm; `bun install -g mercur
 mise use -g npm:mercury-tech-cli                   # mise, through the npm package
 ```
 
+To run a Windows archive without installing it, extract it and run `mercury\mercury.exe` from PowerShell or Command Prompt. `mercury.cmd` and `mercury.ps1` are also in that folder.
+
 The install addresses keep approximate script-request counts by source and UTC day (completed installs are not counted); the counter stores no IP address, user-agent string or cookie. Open a new terminal (or run the `export PATH=…` line the shell installer prints), check `mercury --version`, and run `mercury` inside a repository. See [docs/INSTALL.md](docs/INSTALL.md), [docs/INSTALL-WINDOWS-FROM-SOURCE.md](docs/INSTALL-WINDOWS-FROM-SOURCE.md) and [AGENTS.md](AGENTS.md) for `mercury update`, release verification, requirements and building from source.
 
 ## What is inside
@@ -83,13 +85,13 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 | Domain | Commands |
 | --- | --- |
 | current work | `/run` `/runs` `/workbench` `/diff` `/mission` |
-| crew & delegation | `/agents` `/crewmates` `/crew` `/workflows` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
+| crew & delegation | `/agents` `/crewmates` `/crew` `/swarm` `/swarmchat` `/general` `/team` `/whisper` `/workflows` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
 | session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` `/restart` |
 | memory & goals | `/memory` `/console` |
 | model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` |
 | git & review | `/review` `/audit` |
 | health & introspection | `/health` `/verify` `/trace` `/capabilities` `/lsp` |
-| config & setup | `/config` `/jev` `/localsetup` `/llmhost` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
+| config & setup | `/config` `/jev` `/localsetup` `/llmhost` `/imagesetup` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
 | appearance & cockpit | `/appearance` `/critter` `/palette` `/zen` `/browse` |
 | account & app | `/logins` `/logout` `/accounts` `/defaultprovider` `/update-notes` `/feedback` `/help` `/exit` |
 
@@ -102,7 +104,7 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 
 ## Author
 
-Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 46 public releases, 565,000 lines of TypeScript and 4,200 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
+Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 48 public releases, 572,000 lines of TypeScript and 4,300 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
 
 ## Reporting a problem
 

@@ -1,19 +1,21 @@
 # Esri developer agent skills
 
-Install **Esri developer agent skills** and **MCP servers** to enhance your AI workflows via [Agent Plugins](https://agent-plugins.org/specification/). This repository packages technology-specific guidance and access to Esri documentation.
+Install **Esri developer agent skills** and an **MCP server** via [Agent Plugins](https://agent-plugins.org/specification/) to give AI clients ArcGIS development guidance and access to official Esri documentation.
 
 ## What's Included
 
-- **Esri developer agent skills:** Skills for ArcGIS development, including account requirements, authentication guidance, and instructions for querying official documentation with technology-specific focus areas.
-- **MCP servers:** The current server integration is **MCP for Esri Developers**, which lets agents search Esri developer documentation.
+- **Esri developer agent skills:** Core and SDK/API plugins and skills for ArcGIS development, including account requirements, authentication guidance, coding best practices, and instructions for querying official documentation with technology-specific focus areas.
+- **MCP server:** The **MCP for Esri developer documentation** lets agents search Esri's official ArcGIS developer documentation.
 
 ## Installation
 
 1. Follow your client's installation documentation below to add plugins from this repository.
 2. Install [arcgis-developer-core](plugins/developers/arcgis-developer-core) for the shared development skills.
-3. Install the technology-specific plugins you need from the catalog below.
+3. Install the core and SDK/API plugins you need from the catalog below.
 
-For example, a web mapping project can use `arcgis-developer-core`, `arcgis-maps-sdk-for-javascript`, and `calcite-design-system` together.
+For example, a web mapping project may use `arcgis-developer-core`, `arcgis-maps-sdk-for-javascript`, and `calcite-design-system` together.
+
+Note: The `arcgis-developer-core` plugin must be installed to support all SDK/API plugins.
 
 ### Client Documentation
 
@@ -28,7 +30,12 @@ Installation steps and support for skills, MCP servers, and agent extensions var
 
 ## Plugin Catalog
 
-- [arcgis-developer-core](plugins/developers/arcgis-developer-core): Shared development skill and MCP for Esri Developers connection
+### Core skills
+
+- [arcgis-developer-core](plugins/developers/arcgis-developer-core): Shared development skill and MCP for Esri developer documentation connection
+
+### SDK/API skills
+
 - [arcgis-api-for-python](plugins/developers/arcgis-api-for-python): ArcGIS API for Python
 - [arcgis-rest-js](plugins/developers/arcgis-rest-js): ArcGIS REST JS
 - [calcite-design-system](plugins/developers/calcite-design-system): Calcite Design System
@@ -50,7 +57,7 @@ Installation steps and support for skills, MCP servers, and agent extensions var
 After installation, verify that:
 
 - The skills from each installed plugin are discoverable.
-- **MCP for Esri Developers** is connected through `arcgis-developer-core`, with no duplicate server connections.
+- ** MCP for Esri developer documentation** is connected through `arcgis-developer-core`, with no duplicate server connections.
 
 When editing packages, validate manifests against the official [Agent Plugins 1.0 plugin schema](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json) and [MCP schema](https://agent-plugins.org/schemas/1.0.0/mcp.schema.json).
 

@@ -9,10 +9,10 @@ through `llama.cpp` and `.litertlm` bundles through LiteRT-LM, on Android, iOS,
 macOS, Linux, Windows and the web, behind one Dart API. Web support is
 experimental. Native targets need no network once the model is on the device.
 
-- Streaming chat and text generation, with structured JSON output.
+- Streaming chat and text generation, with structured JSON output and cancellable task handles.
 - Tool calling driven by the model's chat template.
 - Embeddings, reranking, and image and audio input with multimodal models.
-- Speech to text, text to speech, and decision models.
+- Speech to text, text to speech, and decision models with cooperative task cancellation.
 - Image generation from text prompts on native platforms (Preview).
 - Runtime LoRA adapters, observability hooks and typed capability checks.
 
@@ -22,11 +22,18 @@ for your application. Genkit is a
 the Flutter Edge AI connector is owned upstream and pins its own llamadart
 version.
 
+All five engine types implement `LlamadartEngine<C extends EngineCapabilities>`
+for shared capability inspection and disposal. Keep loading and requests on the
+concrete engine; see [shared lifecycle ownership](https://llamadart.leehack.com/docs/guides/model-lifecycle#shared-engine-ownership).
+
+LFM2 Python-style tool calls use declared argument types and preserve copied string backslashes; see [tool calling](https://llamadart.leehack.com/docs/guides/tool-calling).
+LFM2 replies cut off at a reported length limit expose raw `partialToolCalls` diagnostics separately from executable calls and history. LFM2 tool markers inside reasoning stay in reasoning and produce no executable calls. Explicit parallel-tool requests reach supported Dart tool grammars even when template probes do not recognize parallel history.
+
 ## Install
 
 ```yaml
 dependencies:
-  llamadart: ^0.17.4
+  llamadart: ^0.17.5
 ```
 
 ```bash
@@ -47,17 +54,18 @@ companion shares its core's `MAJOR.MINOR` and constrains `llamadart` to it.
 
 ```yaml
 dependencies:
-  llamadart: ^0.17.4
-  llamadart_llama_cpp_flutter: ^0.17.2 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.17.2 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.17.2 # Apple image generation, opt-in
+  llamadart: ^0.17.5
+  llamadart_llama_cpp_flutter: ^0.17.3 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.17.3 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.17.3 # Apple image generation, opt-in
 ```
 
 Pairing rules, the SwiftPM bootstrap and the privacy manifest are in
 [Installation](https://llamadart.leehack.com/docs/getting-started/installation) and
 [Apple setup](https://llamadart.leehack.com/docs/platforms/apple-setup).
 Web apps run `dart run llamadart:web_setup` once; see the
-[WebGPU bridge](https://llamadart.leehack.com/docs/platforms/webgpu-bridge).
+[WebGPU bridge](https://llamadart.leehack.com/docs/platforms/webgpu-bridge). Lazy tool-call grammars and
+custom grammar roots follow the loaded bridge core's `lazyGrammar` capability.
 
 llamadart also ships [agent skills](https://dart.dev/tools/pub/package-skills)
 that teach coding agents its APIs. Install them from your app's root:
@@ -137,8 +145,12 @@ Current default runtime pins:
 | --- | --- |
 | Native llama.cpp / GGUF | `leehack/llamadart-native@v0.8.0-1` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.1-4` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.79` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.81` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
+
+Native LiteRT-LM overrides must match the package's pre-1.0 C bindings.
+LiteRT-LM 0.19 / C API 1.0 is rejected before engine calls; use the pinned
+runtime until the consumer migration in #1677 is delivered.
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and explicit
 historical or nightly `bNNNN` artifacts. New nightly wrapper rebuilds use

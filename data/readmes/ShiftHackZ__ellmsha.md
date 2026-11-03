@@ -28,8 +28,9 @@ eLLMsha brings those pieces into one desktop harness. Use your preferred coding 
 - **One product can span several repositories.** Attach the backend, frontend and mobile client to the same project. Memory stays with the project; source indexes and search retain each repository's identity.
 - **Build an agent team on a diagram.** Auto Router separates the root model, default subagents and task classifier. Add model overrides for coding, QA or research, choose a cost/speed/quality priority, and keep independent settings for automatic, semi-automatic and manual modes. Available routes follow each adapter's capabilities.
 - **A desktop browser with project-specific sign-ins.** Real Chromium tabs keep cookies, storage and history separate between projects. Chats within a project share its browser profile; ordinary chats share a separate default profile. On macOS, use an existing USB security key to sign in without leaving the workspace; AWS Console sign-in has been confirmed in the installed app.
+- **A terminal shared with your agent.** Open an interactive terminal tab in the project or temporary chat workspace. You and the agent use the same shell, with live output, full-screen commands, keyboard input and Ctrl+C. Desktop sessions run locally; WebUI sessions run on the server, inside the container for Docker deployments. Closing a session stops its owned processes.
 - **Useful tools without an enormous starting prompt.** Skills and MCP tools are discovered and loaded as needed. Per-chat and global Usage views expose token consumption and context composition, distinguishing reported counters from estimates or unavailable measurements.
-- **Several work accounts, one workspace.** Connect multiple Linear, Notion and Clockify identities. Agents can use the appropriate account without permanently binding a project folder to it; ambiguous requests require an account choice.
+- **Several work accounts, one workspace.** Connect multiple Linear, Notion, Clockify and Figma identities. Agents can use the appropriate account without permanently binding a project folder to it; ambiguous requests require an account choice.
 
 **The desktop bundles its backend, memory services and their runtime.** No Docker setup is needed for desktop memory. Cloud/API models, installed coding agents and local Ollama models use the same project workspace.
 
@@ -62,7 +63,7 @@ Choose the **macOS Apple silicon DMG** or **Windows x64 EXE** on the [latest rel
 
 1. Install the app and open a project folder. Attach additional repositories from the Files panel when needed.
 2. Choose an agent and model. For local inference, configure Ollama and download a suitable model.
-3. Open **Settings → Memory** to select the embedding model, and **Settings → Plugins** to connect your work accounts.
+3. Open **Settings → Memory → Memory embeddings** to select the embedding model, and **Settings → Plugins** to connect your work accounts.
 4. Give the agent a task; inspect its tools, delegated work and Usage alongside the conversation.
 
 **USB security-key sign-in on macOS.** Connect a key already registered with the website, start sign-in in an in-app browser tab, and follow eLLMsha's confirmation, PIN and key-touch prompts. Successful AWS Console sign-in was confirmed in the signed local `2026.10.29 Patch 2` build. This integration covers USB keys; Touch ID/iCloud passkeys and new-key registration are outside its scope. Google sign-in with this method has not passed verification; another 2FA method was used successfully. See [browser authentication support and limits](docs/browser-profiles.md#usb-security-key-sign-in-on-macos).
@@ -172,6 +173,7 @@ These are shipped alongside the core as skills, plugins or tool runtimes. Servic
 | [Open Computer Use](https://github.com/ShiftHackZ/ellmsha-open-codex-computer-use/tree/ellmsha-main) | **Bundled plugin + native MCP runtime** — operate desktop applications through their accessibility interfaces. |
 | [Linear](plugins/linear) | **eLLMsha plugin + skill** — multiple OAuth accounts, issues, projects, comments and attachments through Linear's hosted MCP. |
 | [Notion](plugins/notion) | **eLLMsha plugin + skill** — multiple OAuth identities/workspaces for pages, databases, search and comments through Notion's hosted MCP. |
+| [Figma](plugins/figma) | **eLLMsha plugin + skill** — independent token accounts, design inspection, image exports, folders and authorized comments; private browser-assisted token import on desktop. |
 | [Clockify](plugins/clockify) | **eLLMsha plugin + skill** — independent API-key accounts, time reports and approval-gated time-entry changes. |
 | [Plugin Authoring](plugins/plugin-dev) | **eLLMsha plugin + skill/templates** — create, validate and install compatible plugin packages, including selected Git subdirectories. |
 | [Copilot IDE bridge](scripts/copilot-ide/PROVIDER.md) | **Bundled desktop provider/runtime** — use Copilot models through an isolated, lazily started Code OSS extension host with persistent sign-in. GitHub account and organization access policies still apply. |

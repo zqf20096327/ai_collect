@@ -1,0 +1,177 @@
+<!-- mcp-name: io.github.Lexus2016/turbo-quant-memory -->
+
+<p align="center">
+  <!-- Absolute on purpose: this file is the PyPI long_description, and PyPI proxies
+       images through pypi-camo, which cannot resolve a repo-relative path. Keep the
+       localized READMEs relative — they are only ever rendered on GitHub. -->
+  <img src="https://raw.githubusercontent.com/Lexus2016/turbo_quant_memory/main/assets/readme-hero-en.svg" alt="Turbo Quant Memory" width="820">
+</p>
+
+<h3 align="center">Local-first memory and knowledge graph for AI coding agents</h3>
+
+<p align="center">
+  Your agent stops re-reading files and re-deriving the same conclusions.<br>
+  Your notes, code and secrets never leave your machine.
+</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/turbo-quant-memory/"><img alt="PyPI" src="https://img.shields.io/pypi/v/turbo-quant-memory.svg"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://registry.modelcontextprotocol.io/v0/servers?search=turbo-quant-memory"><img alt="MCP Registry" src="https://img.shields.io/badge/MCP%20Registry-listed-6f42c1.svg"></a>
+  <img alt="Python 3.11+" src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg">
+  <a href="https://github.com/Lexus2016/turbo_quant_memory/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Lexus2016/turbo_quant_memory/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="MCP tools" src="https://img.shields.io/badge/MCP-24%20tools-green.svg">
+  <img alt="Local-first" src="https://img.shields.io/badge/data-100%25%20local-success.svg">
+</p>
+
+---
+
+## Demo
+
+<!-- Absolute on purpose, same as the hero: this file is the PyPI long_description.
+     PyPI's camo proxy cannot resolve a repo-relative image, and a relative link
+     would not open the mp4 on GitHub. README.uk.md / README.ru.md stay relative. -->
+<p align="center">
+  <a href="https://github.com/Lexus2016/turbo_quant_memory/blob/main/assets/turbo-quant-memory-promo.mp4">
+    <img src="https://raw.githubusercontent.com/Lexus2016/turbo_quant_memory/main/assets/turbo-quant-memory-poster.jpg" alt="30-second demo of Turbo Quant Memory" width="300">
+  </a>
+  <br>
+  <a href="https://github.com/Lexus2016/turbo_quant_memory/blob/main/assets/turbo-quant-memory-promo.mp4">Watch the 30-second demo</a>
+</p>
+
+## The problem
+
+A long session accumulates hard-won detail about why the code is the way it is. Then the context compacts and it is gone. Next session the agent re-reads the same files, re-derives the same conclusions, and bills you for the same tokens again.
+
+`CLAUDE.md` does not scale past a few dozen lines, and it cannot answer *"what did we decide about X, and why?"*.
+
+**Turbo Quant Memory** is an MCP server that gives the agent a persistent, searchable store it writes to while it works — decisions, lessons, patterns, session handoffs — plus a compact index of your Markdown. Retrieval returns ~220-character result cards rather than whole documents; the agent loads full content only when a card is not enough.
+
+## Why this one
+
+|                          | **Turbo Quant Memory**                | mem0 / OpenMemory        | MCP `memory` server |
+| :----------------------- | :------------------------------------ | :----------------------- | :------------------ |
+| Where your data lives    | your disk, always                     | vendor cloud or self-host | your disk          |
+| Your data leaves the host | **never**                            | yes, unless self-hosted  | never               |
+| Retrieval                | hybrid BM25 + dense vector, RRF-fused | dense vector             | exact graph lookup  |
+| What a search returns    | compact cards, hydrate on demand      | full memories            | full nodes          |
+| Knowledge graph          | yes — with lifecycle + linting        | no                       | yes                 |
+| Non-English content      | Cyrillic exact-match out of the box   | varies                   | n/a                 |
+| Measures its own savings | **yes — `server_info()`**             | no                       | no                  |
+| Price                    | free, MIT                             | paid tiers               | free                |
+
+No HTTP client, no telemetry, no phone-home. Verify it yourself — this returns nothing:
+
+```bash
+grep -rnE '^[[:space:]]*(import|from)[[:space:]]+(requests|httpx|aiohttp|urllib3)\b' src/
+```
+
+To be precise about the one exception: on first run `fastembed` downloads the embedding model (~0.22 GB) from Hugging Face. After that the server runs fully offline. Your notes, code and secrets are never transmitted anywhere — there is nothing in the package that could send them.
+
+## Install
+
+### Let your agent install it
+
+Paste this into Claude Code, Codex, Gemini CLI, Cursor or Antigravity:
+
+> Install and configure the Turbo Quant Memory MCP server for this workspace from
+> https://github.com/Lexus2016/turbo_quant_memory — follow the README, register the
+> `tqmemory` server, run `turbo-memory-mcp skill install`, run the health check, and
+> index this project.
+
+`skill install` copies an operating manual into every agent skill directory on the machine, so every future session already knows how to use the memory without being told.
+
+### Or install it yourself
+
+```bash
+uv tool install turbo-quant-memory
+```
+
+Upgrading from 0.27.x or earlier? The distribution was renamed in 0.28.0, so
+`uv tool upgrade turbo-memory-mcp` no longer resolves — run
+`uv tool install --force turbo-quant-memory` once, and `uv tool upgrade
+turbo-quant-memory` afterwards. The `turbo-memory-mcp` command itself is
+unchanged, so client configs keep working.
+
+Then register the server with your client:
+
+```bash
+claude mcp add --scope project tqmemory -- turbo-memory-mcp serve   # Claude Code
+codex  mcp add tqmemory -- turbo-memory-mcp serve                   # Codex
+gemini mcp add tqmemory turbo-memory-mcp serve                      # Gemini CLI
+```
+
+Cursor, OpenCode, Antigravity and other clients → [CLIENT_INTEGRATIONS.md](CLIENT_INTEGRATIONS.md).
+Hermes runs MCP through a systemd gateway → [docs/hermes.md](docs/hermes.md).
+
+<!-- TQ-STATS:BEGIN (auto-generated by scripts/refresh_readme_stats.py — do not edit by hand) -->
+### 📈 It measures its own savings — see for yourself
+
+Turbo Quant Memory doesn't just *claim* to save tokens — every install keeps a running tally you can read anytime with `server_info()` (field `usage_stats.headline`). The savings are yours to verify, not ours to promise.
+
+**Live snapshot from a real developer instance (v0.28.2):**
+
+| What the memory did | Number |
+| :--- | :--- |
+| 🔢 Input tokens saved (cumulative) | **≈ 2,640,000** and counting |
+| 🔁 Retrievals served | **2,280** searches + **280** deep hydrations |
+| 📉 Average saved per retrieval | **≈ 1,200 tokens** |
+| 📚 Knowledge under management | **237** active notes + **763** indexed code blocks |
+| 🛡️ Integrity | **0** corrupted records · **0** pending migrations |
+
+> These are one machine's cumulative numbers, not a synthetic benchmark — your own counter starts at zero and grows as your agent works. Run `server_info()` on your install to see your real figure.
+<!-- TQ-STATS:END -->
+
+## What it does
+
+* **Typed notes.** `decision`, `lesson`, `pattern`, `handoff` — each stored with tags, provenance and a knowledge-graph link to the file or issue it is about.
+* **Tiered memory.** `durable` (decisions, patterns) and `reference` (indexed docs) are searched by default; `episodic` (session handoffs) stays out of the way until you ask for it, so yesterday's noise never buries an architectural decision.
+* **Hybrid retrieval.** A dense vector lane leads; a BM25 lane rescues exact terms — function names, file paths, IDs — fused with Reciprocal Rank Fusion. Cyrillic and other non-English terms match exactly, case- and accent-insensitive, with no configuration.
+* **Knowledge graph.** Directed, timestamped relations between notes, files and issues. Search results carry the linked context inline, so the agent does not need a second lookup.
+* **Human notes outrank agent notes.** Anything you explicitly asked to remember is flagged `human-explicit` and ranks above the agent's own observations at equal relevance.
+* **Encrypted secrets vault.** Project-scoped, AES-256-GCM, structurally unreachable from search. → [docs/secrets-vault.md](docs/secrets-vault.md)
+* **Runs on a small machine.** The default embedder is ONNX via fastembed — no PyTorch, ~0.22 GB model, comfortable on 2 GB of RAM.
+* **Several agents, one project — automatically.** Agents working in the same git working tree see each other's sessions, announced work and recent file changes; while two or more of them share the tree, changes to text files are recorded so they can be restored. No setup.
+
+Full technical detail → [docs/features.md](docs/features.md)
+
+## Several agents in one project
+
+If you run more than one agent in the same working tree, tqmemory connects them automatically. There is nothing to configure.
+
+* **Agents see each other.** `workspace_status` lists the active sessions, what each one announced it is working on (`announce_work`, `finish_work`) and which files changed recently. A session that made no tqmemory call for 30 minutes is listed under `idle_sessions` instead: it is not an active peer and its announced areas are left out of `overlaps`. Other tqmemory responses carry a short `workspace` note only when something new has happened, and never for a lone session. `health` and `server_info` always include a workspace diagnostics block.
+* **Changes are recorded.** While two or more sessions share a git working tree, the watcher records new versions of text files it sees change (up to 1 MiB each, skipping anything matched by `.gitignore` or `.tqmemoryignore`). Several quick writes in a row can be merged into one version. `file_history` lists the versions and `restore_file` brings one back; the restore is itself undoable. The same is available from a terminal: `turbo-memory-mcp files log` and `turbo-memory-mcp files restore`.
+* **Limits.** Versions are recorded only while two or more sessions share a git working tree. The journal never runs outside a git working tree, in your home directory or at a filesystem root. Defaults: 1 MiB per file, a 256 MiB per-project size target and 14 days of retention. Recorded versions stay recoverable for 14 days; past that, or when the project is over its size target, the oldest are removed. The newest version of each file changed in the last 24 hours is never dropped for size. These defaults are set by `TQMEMORY_JOURNAL_MAX_FILE_BYTES`, `TQMEMORY_JOURNAL_MAX_BYTES` and `TQMEMORY_JOURNAL_RETENTION_DAYS`; the size limit is a target, not a hard maximum.
+
+This is partial protection, not a guarantee that every change is saved. It does not block writes: two agents can still overwrite each other's work, and tqmemory can only show it and help you recover. Agents that never call tqmemory see nothing. It works on one computer only. To turn it off, set `TQMEMORY_WORKSPACE_DISABLE=1`.
+
+## The 24 MCP tools
+
+| Group | Tools |
+| :--- | :--- |
+| Write | `remember_note` · `deprecate_note` · `promote_note` · `index_paths` |
+| Read | `semantic_search` · `hydrate` · `recent_context` · `list_scopes` |
+| Graph | `link_entities` · `unlink_entities` · `get_related_entities` |
+| Hygiene | `lint_knowledge_base` · `health` · `self_test` · `server_info` |
+| Vault | `set_secret` · `get_secret` · `list_secrets` · `delete_secret` |
+| Workspace | `announce_work` · `finish_work` · `workspace_status` · `file_history` · `restore_file` |
+
+## Documentation
+
+| | |
+| :--- | :--- |
+| [MEMORY_STRATEGY.md](MEMORY_STRATEGY.md) | How to actually use the memory day to day |
+| [CLIENT_INTEGRATIONS.md](CLIENT_INTEGRATIONS.md) | Per-client setup: Cursor, OpenCode, Antigravity, … |
+| [TECHNICAL_SPEC.md](TECHNICAL_SPEC.md) | Architecture and storage format |
+| [docs/features.md](docs/features.md) | Retrieval, graph, tiers, embedder, FTS language |
+| [docs/secrets-vault.md](docs/secrets-vault.md) | Vault setup, threat model, FAQ |
+| [docs/hermes.md](docs/hermes.md) | Hermes gateway setup and troubleshooting |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
+
+## License
+
+[MIT](LICENSE). Copy it, modify it, fork it, ship it inside a closed-source product, sell it. Attribution is the only condition.
+
+## Languages
+
+🇺🇸 [English](README.md) · 🇺🇦 [Українська](README.uk.md) · 🇷🇺 [Русский](README.ru.md)

@@ -70,9 +70,13 @@ Anthropic::assertSent(Messages::class, function (string $method, array $paramete
 });
 ```
 
+**Batches the Laravel way.** `Anthropic::batch($requests)->then(fn ($batch) => ...)->dispatch()` sends a Message Batch at half the price and queues a job that polls it until it ends, then hands each result to a `BatchResultReceived` listener and runs your callback. [See batches →](https://mozex.dev/docs/anthropic-laravel/v1/usage/batches)
+
 **Named connections and tenant keys.** `Anthropic::connection('support')` gives a client of its own settings, `Anthropic::withApiKey($tenant->anthropic_key)` one for a key known only at runtime, and `Anthropic::organization()` the Admin API's. [See connections →](https://mozex.dev/docs/anthropic-laravel/v1/reference/configuration#connections)
 
 **Your logs, Telescope and Nightwatch see the calls.** Every request dispatches events without a credential in them, a logged API error carries its request ID, Context can carry the IDs into every log line, Telescope can record tagged entries, and Nightwatch picks the calls up on its own. [See the configuration docs →](https://mozex.dev/docs/anthropic-laravel/v1/reference/configuration#context)
+
+**Queued jobs that know Claude's errors.** `ThrottlesAnthropic` job middleware fails a job on the monthly spend cap (with a `SpendCapReached` event) and on errors a retry can't fix, releases it on rate limits and overloads for as long as the API asks, and holds back every job of the same model key meanwhile. [See retries →](https://mozex.dev/docs/anthropic-laravel/v1/reference/error-handling#retrying-failed-jobs)
 
 **`php artisan anthropic:doctor`.** Checks the key, one API call that spends no tokens, your queues' `retry_after` against the longest call, and your fallback models' lifecycle, and exits non-zero on a failure so CI can run it. [See diagnostics →](https://mozex.dev/docs/anthropic-laravel/v1/reference/diagnostics)
 

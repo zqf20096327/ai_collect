@@ -1,7 +1,7 @@
 # Awesome Dataset Distillation 
 
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
-<img src="https://img.shields.io/badge/Contributions-Welcome-278ea5" alt="Contrib"/> <img src="https://img.shields.io/badge/Number%20of%20Items-354-FF6F00" alt="PaperNum"/> ![Stars](https://img.shields.io/github/stars/Guang000/Awesome-Dataset-Distillation?color=yellow&label=Stars) ![Forks](https://img.shields.io/github/forks/Guang000/Awesome-Dataset-Distillation?color=green&label=Forks)
+<img src="https://img.shields.io/badge/Contributions-Welcome-278ea5" alt="Contrib"/> <img src="https://img.shields.io/badge/Number%20of%20Items-370-FF6F00" alt="PaperNum"/> ![Stars](https://img.shields.io/github/stars/Guang000/Awesome-Dataset-Distillation?color=yellow&label=Stars) ![Forks](https://img.shields.io/github/forks/Guang000/Awesome-Dataset-Distillation?color=green&label=Forks)
 
 **Awesome Dataset Distillation** provides the most comprehensive and detailed information on the Dataset Distillation field.
 
@@ -20,19 +20,13 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + :book: `bibtex`
 
 ## Latest Updates
-+ [2026/07/08] [FD2: A Dedicated Framework for Fine-Grained Dataset Distillation](https://arxiv.org/abs/2603.25144) (Hongxu Ma & Guang Li et al., ECCV 2026) [:globe_with_meridians:](https://guang000.github.io/FD2-Webpage/) [:octocat:](https://github.com/Guang000/FD2) [:book:](./citations/ma2026fd2.txt)
-+ [2026/07/08] [Adaptive Latent Trajectory Anchoring for Action Segmentation Dataset Condensation](https://arxiv.org/abs/2607.09081) (Arthème Gauthier-Villars & Guodong Ding et al., ECCV 2026) [:book:](./citations/gauthier2026adaptive.txt)
-+ [2026/07/08] [Condensing Large-Scale Datasets Directly with Minimal Information Loss](https://arxiv.org/abs/2607.00916) (Xinyi Shang & Peng Sun & Bei Shi et al., ECCV 2026) [:octocat:](https://github.com/LINs-lab/CIM) [:book:](./citations/shang2026cim.txt)
-+ [2026/07/08] [Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation](https://arxiv.org/abs/2606.29464) (Jongoh Jeong et al., ECCV 2026) [:globe_with_meridians:](https://andyj1.github.io/raha/) [:octocat:](https://github.com/andyj1/raha) [:book:](./citations/jeong2026raha.txt)
-+ [2026/07/08] [Structural Assessment for Understanding and Guiding Dataset Distillation in Discrete Token Space](https://arxiv.org/abs/2606.21705) (Yue Cao et al., ECCV 2026) [:book:](./citations/cao2026structural.txt)
-+ [2026/07/08] [Distill Once, Adapt Life-Long: Exploring Dataset Distillation for Continual Test-Time Adaptation](https://arxiv.org/abs/2606.20196) (Hyun-Kurl Jang & Jihun Kim & Hyeokjun Kweon et al., ECCV 2026) [:octocat:](https://github.com/blue-531/DOALL) [:book:](./citations/jang2026doall.txt)
-+ [2026/07/07] [Hard Labels In! Rethinking the Role of Hard Labels in Mitigating Local Semantic Drift](https://arxiv.org/abs/2512.15647) (Jiacheng Cui et al., ICML 2026) [:octocat:](https://github.com/Jiacheng8/HALD) [:book:](./citations/cui2026hard.txt)
-+ [2026/07/07] [One Batch Is Enough: A Unified Dataset Condensation Framework for General Time Series Analysis](https://openreview.net/forum?id=i8FO7f2OYJ) (Wei Shao et al., ICML 2026) [:octocat:](https://github.com/ZJU-DAILY/UniTSC) [:book:](./citations/shao2026unitsc.txt)
-+ [2026/07/07] [ProtoVAR: Efficient Dataset Distillation via Prototype-Guided Visual Autoregressive Modeling](https://openreview.net/forum?id=5YvTHX0QS9) (Mingyu Wang et al., ICML 2026) [:book:](./citations/protovar2026.txt)
-+ [2026/07/07] [Utility Boundary of Dataset Distillation: Scaling and Configuration-Coverage Laws](https://openreview.net/forum?id=wbXPNPw5jW) (Zhengquan Luo et al., ICML 2026) [:book:](./citations/luo2026utility.txt)
-+ [2026/07/07] [Efficient Multi-modal Dataset Distillation via Analytic Parameter Matching](https://openreview.net/forum?id=Yh4dMR5mJ0) (Deyu Bo et al., ICML 2026) [:octocat:](https://github.com/bdy9527/MMDD) [:book:](./citations/bo2026apm.txt)
-+ [2026/07/07] [Attention Hijacking: Backdooring Text Dataset Distillation via Semantic Anchors](https://openreview.net/forum?id=g4BWfkULIo) (Hang Ren et al., ICML 2026) [:book:](./citations/ren2026attention.txt)
-+ [2026/07/07] [Set-Coupled Guidance: Set-Level Coordination in Diffusion-Based Dataset Distillation](https://openreview.net/forum?id=onosLtwoiK) (Ziang Gan et al., ICML 2026) [:octocat:](https://github.com/tade1s/SCG) [:book:](./citations/gan2026scg.txt)
++ [2026/11/02] [S2-RL: Sample-Set Dual Reinforcement Learning for Generative Semantic Segmentation Dataset Distillation](https://arxiv.org/abs/2610.35491) (Haoyu Wang et al., NeurIPS 2026) [:globe_with_meridians:](https://00why00.github.io/S2RL/) [:octocat:](https://github.com/00why00/S2RL) [:book:](./citations/wang2026s2rl.txt)
++ [2026/11/02] [X-AVDD: Cross-Attentive Audio-Visual Dataset Distillation](https://arxiv.org/abs/2610.13687) (Saumyaranjan Mohanty et al., NeurIPS 2026) [:book:](./citations/mohanty2026xavdd.txt)
++ [2026/11/02] [Rethinking Dataset Distillation for Classification: Do Distilled Sets Outperform Coresets?](https://arxiv.org/abs/2606.18209) (Trisha Mittal & Akshay Mehra et al., NeurIPS 2026) [:book:](./citations/mittal2026rethinking.txt)
++ [2026/11/02] [D3S2: Diffusion-Guided Dataset Distillation for Semantic Segmentation](https://arxiv.org/abs/2605.25022) (Wenjie Zheng et al., NeurIPS 2026) [:book:](./citations/zheng2026d3s2.txt)
++ [2026/11/02] [Closed-Form Linear-Probe Dataset Distillation for Pre-trained Vision Models](https://arxiv.org/abs/2605.07194) (Bincheng Peng & Guang Li et al., NeurIPS 2026) [:globe_with_meridians:](https://guang000.github.io/CLP-DD-Webpage/) [:octocat:](https://github.com/Guang000/CLP-DD) [:book:](./citations/peng2026clpdd.txt)
++ [2026/11/02] [Efficient Dataset Distillation for Pre-Trained Self-Supervised Models via Statistical Flow Matching](https://arxiv.org/abs/2602.05391) (Qianxin Xia et al., NeurIPS 2026) [:octocat:](https://github.com/einsteinxia/SFM) [:book:](./citations/xia2026efficient.txt)
++ [2026/11/02] [DD-Ranking: Rethinking the Evaluation of Dataset Distillation](https://arxiv.org/abs/2505.13300) (Zekai Li & Xinhao Zhong et al., NeurIPS 2026) [:globe_with_meridians:](https://nus-hpc-ai-lab.github.io/DD-Ranking/) [:octocat:](https://github.com/NUS-HPC-AI-Lab/DD-Ranking) [:book:](./citations/li2026ranking.txt)
 
 ## Contents
 - [Main](#main)
@@ -90,6 +84,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
   - [Fine-Grained](#fine)
   - [Test-Time Adaptation](#tta)
   - [Semantic Segmentation](#segmentation)
+  - [Human Motion](#motion)
 <a name="main" />
 
 ## Main
@@ -131,6 +126,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Dataset Condensation with Latent Quantile Matching](https://openaccess.thecvf.com/content/CVPR2024W/DDCV/html/Wei_Dataset_Condensation_with_Latent_Quantile_Matching_CVPRW_2024_paper.html) (Wei Wei et al., CVPR 2024 Workshop) [:book:](./citations/wei2024lqm.txt)
 + [DANCE: Dual-View Distribution Alignment for Dataset Condensation](https://arxiv.org/abs/2406.01063) (Hansong Zhang et al., IJCAI 2024) [:octocat:](https://github.com/Hansong-Zhang/DANCE) [:book:](./citations/zhang2024dance.txt)
 + [Diversified Semantic Distribution Matching for Dataset Distillation](https://dl.acm.org/doi/10.1145/3664647.3680900) (Hongcheng Li et al., MM 2024) [:octocat:](https://github.com/Li-Hongcheng/DSDM) [:book:](./citations/li2024dsdm.txt)
++ [Koopcon: A new approach towards smarter and less complex learning](https://arxiv.org/abs/2405.13866) (Vahid Jebraeeli et al., ICIP 2024) [:book:](./citations/jebraeeli2024koopcon.txt)
 + [Dataset Distillation with Neural Characteristic Function: A Minmax Perspective](https://arxiv.org/abs/2502.20653) (Shaobo Wang et al., CVPR 2025) [:octocat:](https://github.com/gszfwsb/NCFM) [:book:](./citations/wang2025ncfm.txt)
 + [OPTICAL: Leveraging Optimal Transport for Contribution Allocation in Dataset Distillation](https://openaccess.thecvf.com/content/CVPR2025/html/Cui_OPTICAL_Leveraging_Optimal_Transport_for_Contribution_Allocation_in_Dataset_Distillation_CVPR_2025_paper.html) (Xiao Cui et al., CVPR 2025) [:book:](./citations/cui2025optical.txt)
 + [Dataset Distillation via the Wasserstein Metric](https://arxiv.org/abs/2311.18531) (Haoyang Liu et al., ICCV 2025) [:globe_with_meridians:](https://liu-hy.github.io/WMDD/) [:octocat:](https://github.com/Liu-Hy/WMDD) [:book:](./citations/liu2025wasserstein.txt)
@@ -209,6 +205,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Geometry-Aware Dataset Condensation for Diffusion Model Training](https://arxiv.org/abs/2606.05883) (Xiao Cui et al., ICML 2026) [:octocat:](https://github.com/2018cx/GADC) [:book:](./citations/cui2026gadc.txt)
 + [DIVER: Diving Deeper into Distilled Data via Expressive Semantic Recovery](https://arxiv.org/abs/2605.12649) (Qianxin Xia et al., ICML 2026) [:octocat:](https://github.com/einsteinxia/DIVER) [:book:](./citations/xia2026diver.txt)
 + [Set-Coupled Guidance: Set-Level Coordination in Diffusion-Based Dataset Distillation](https://openreview.net/forum?id=onosLtwoiK) (Ziang Gan et al., ICML 2026) [:octocat:](https://github.com/tade1s/SCG) [:book:](./citations/gan2026scg.txt)
++ [Towards Consistent and Efficient Dataset Distillation via Diffusion-Driven Selection](https://arxiv.org/abs/2412.09959) (Xinhao Zhong et al., ECCV 2026) [:book:](./citations/zhong2026towards.txt)
 
 #### VAR
 + [HIERAMP: Coarse-to-Fine Autoregressive Amplification for Generative Dataset Distillation](https://arxiv.org/abs/2603.06932) (Lin Zhao & Xinru Jiang et al., CVPR 2026) [:octocat:](https://github.com/Oshikaka/HIERAMP) [:book:](./citations/zhao2026hieramp.txt)
@@ -252,6 +249,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [A Theoretical Study of Dataset Distillation](https://openreview.net/forum?id=dq5QGXGxoJ) (Zachary Izzo et al., NeurIPS 2023 Workshop) [:book:](./citations/izzo2023theo.txt)
 + [What is Dataset Distillation Learning?](https://arxiv.org/abs/2406.04284) (William Yang et al., ICML 2024) [:octocat:](https://github.com/princetonvisualai/What-is-Dataset-Distillation-Learning) [:book:](./citations/yang2024learning.txt)
 + [Mitigating Bias in Dataset Distillation](https://arxiv.org/abs/2406.06609) (Justin Cui et al., ICML 2024) [:book:](./citations/cui2024bias.txt)
++ [Deep Support Vectors](https://arxiv.org/abs/2403.17329) (Junhoo Lee et al., NeurIPS 2024) [:globe_with_meridians:](https://junhoo.me/dsv) [:book:](./citations/lee2024deep.txt)
 + [Dataset Distillation from First Principles: Integrating Core Information Extraction and Purposeful Learning](https://arxiv.org/abs/2409.01410) (Vyacheslav Kungurtsev et al., 2024) [:book:](./citations/kungurtsev2024first.txt)
 + [Flowing Datasets with Wasserstein over Wasserstein Gradient Flows](https://arxiv.org/abs/2506.07534) (Clément Bonet & Christophe Vauthier et al., ICML 2025) [:octocat:](https://github.com/clbonet/Flowing_Datasets_with_WoW_Gradient_Flows) [:book:](./citations/bonet2025flowing.txt)
 + [Information-Guided Diffusion Sampling for Dataset Distillation](https://arxiv.org/abs/2507.04619) (Linfeng Ye et al., NeurIPS 2025 Workshop) [:book:](./citations/ye2025igds.txt)
@@ -262,7 +260,8 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Dataset Distillation Efficiently Encodes Low-Dimensional Representations from Gradient-Based Learning of Non-Linear Tasks](https://arxiv.org/abs/2603.14830) (Yuri Kinoshita et al., ICML 2026) [:book:](./citations/kinoshita2026lowdim.txt)
 + [Utility Boundary of Dataset Distillation: Scaling and Configuration-Coverage Laws](https://openreview.net/forum?id=wbXPNPw5jW) (Zhengquan Luo et al., ICML 2026) [:book:](./citations/luo2026utility.txt)
 + [Structural Assessment for Understanding and Guiding Dataset Distillation in Discrete Token Space](https://arxiv.org/abs/2606.21705) (Yue Cao et al., ECCV 2026) [:book:](./citations/cao2026structural.txt)
-+ [Rethinking Dataset Distillation for Classification: Do Distilled Sets Outperform Coresets?](https://arxiv.org/abs/2606.18209) (Trisha Mittal & Akshay Mehra et al., 2026) [:book:](./citations/mittal2026rethinking.txt)
++ [Rethinking Dataset Distillation for Classification: Do Distilled Sets Outperform Coresets?](https://arxiv.org/abs/2606.18209) (Trisha Mittal & Akshay Mehra et al., NeurIPS 2026) [:book:](./citations/mittal2026rethinking.txt)
++ [The Composition Gap in Dataset Distillation](https://arxiv.org/abs/2609.34343) (Guang Li et al., arXiv 2026) [:book:](./citations/li2026composition.txt)
 
 <a name="label" />
 
@@ -308,8 +307,10 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Fixed Anchors Are Not Enough: Dynamic Retrieval and Persistent Homology for Dataset Distillation](https://arxiv.org/abs/2602.24144) (Muquan Li et al., CVPR 2026) [:book:](./citations/li2026reta.txt)
 + [Balanced Dataset Distillation via Modeling Multiple Visual Pattern Distribution](https://openaccess.thecvf.com/content/CVPR2026/html/Shi_Balanced_Dataset_Distillation_via_Modeling_Multiple_Visual_Pattern_Distribution_CVPR_2026_paper.html) (Guanghui Shi et al., CVPR 2026) [:octocat:](https://github.com/BeCarefulOfYournaoke/BPS) [:book:](./citations/shi2026bps.txt)
 + [Beyond Soft Label: Dataset Distillation via Orthogonal Gradient Matching](https://openaccess.thecvf.com/content/CVPR2026/html/Bo_Beyond_Soft_Label_Dataset_Distillation_via_Orthogonal_Gradient_Matching_CVPR_2026_paper.html) (Deyu Bo et al., CVPR 2026) [:book:](./citations/bo2026ogm.txt)
-+ [Condensing Large-Scale Datasets Directly with Minimal Information Loss](https://arxiv.org/abs/2607.00916) (Xinyi Shang & Peng Sun & Bei Shi et al., ECCV 2026) [:octocat:](https://github.com/LINs-lab/CIM) [:book:](./citations/shang2026cim.txt)
 + [Hard Labels In! Rethinking the Role of Hard Labels in Mitigating Local Semantic Drift](https://arxiv.org/abs/2512.15647) (Jiacheng Cui et al., ICML 2026) [:octocat:](https://github.com/Jiacheng8/HALD) [:book:](./citations/cui2026hard.txt)
++ [Condensing Large-Scale Datasets Directly with Minimal Information Loss](https://arxiv.org/abs/2607.00916) (Xinyi Shang & Peng Sun & Bei Shi et al., ECCV 2026) [:octocat:](https://github.com/LINs-lab/CIM) [:book:](./citations/shang2026cim.txt)
++ [Flash-DD: An Ultra Parameter-Efficient Approach to Dataset Distillation](https://link.springer.com/chapter/10.1007/978-3-032-37086-0_30) (Ruonan Yu et al., ECCV 2026) [:book:](./citations/yu2026flashdd.txt)
++ [PSM: Dataset Distillation Based on Precise Statistical Matching by Difficulty](https://arxiv.org/abs/2609.34299) (Hongxu Ma & Guang Li et al., arXiv 2026) [:book:](./citations/ma2026psm.txt)
 
 <a name="multi" />
 
@@ -328,6 +329,8 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Multimodal Distribution Matching for Vision-Language Dataset Distillation](https://arxiv.org/abs/2605.23482) (Jongoh Jeong & Hoyong Kwon & Minseok Kim et al., CVPR 2026) [:octocat:](https://github.com/andyj1/mdm) [:book:](./citations/jeong2026mdm.txt)
 + [Efficient Multi-modal Dataset Distillation via Analytic Parameter Matching](https://openreview.net/forum?id=Yh4dMR5mJ0) (Deyu Bo et al., ICML 2026) [:octocat:](https://github.com/bdy9527/MMDD) [:book:](./citations/bo2026apm.txt)
 + [Rank-Aware Hyperbolic Alignment for Vision-Language Dataset Distillation](https://arxiv.org/abs/2606.29464) (Jongoh Jeong et al., ECCV 2026) [:globe_with_meridians:](https://andyj1.github.io/raha/) [:octocat:](https://github.com/andyj1/raha) [:book:](./citations/jeong2026raha.txt)
++ [Fragmented Text is Insufficient for Image Representation: Fine-Grained Correspondence in Multimodal Dataset Distillation](https://link.springer.com/chapter/10.1007/978-3-032-37252-9_8) (Jingwei Fang et al., ECCV 2026) [:octocat:](https://github.com/yiqiqiandefanhua/P2DE) [:book:](./citations/fang2026fragmented.txt)
++ [X-AVDD: Cross-Attentive Audio-Visual Dataset Distillation](https://arxiv.org/abs/2610.13687) (Saumyaranjan Mohanty et al., NeurIPS 2026) [:book:](./citations/mohanty2026xavdd.txt)
 
 <a name="self" />
 
@@ -338,23 +341,23 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Dataset Distillation via Knowledge Distillation: Towards Efficient Self-Supervised Pre-Training of Deep Networks](https://arxiv.org/abs/2410.02116) (Siddharth Joshi et al., ICLR 2025) [:octocat:](https://github.com/jiayini1119/MKDT) [:book:](./citations/joshi2025kd.txt)
 + [Boost Self-Supervised Dataset Distillation via Parameterization, Predefined Augmentation, and Approximation](https://arxiv.org/abs/2507.21455) (Sheng-Feng Yu et al., ICLR 2025) [:book:](./citations/yu2025self.txt)
 + [Dataset Distillation for Pre-Trained Self-Supervised Vision Models](https://arxiv.org/abs/2511.16674) (George Cazenavette et al., NeurIPS 2025) [:globe_with_meridians:](https://linear-gradient-matching.github.io/) [:octocat:](https://github.com/GeorgeCazenavette/linear-gradient-matching) [:book:](./citations/cazenavette2025dataset.txt)
-+ [Closed-Form Linear-Probe Dataset Distillation for Pre-trained Vision Models](https://arxiv.org/abs/2605.07194) (Bincheng Peng & Guang Li et al., 2026) [:book:](./citations/peng2026clpdd.txt)
++ [Efficient Dataset Distillation for Pre-Trained Self-Supervised Models via Statistical Flow Matching](https://arxiv.org/abs/2602.05391) (Qianxin Xia et al., NeurIPS 2026) [:octocat:](https://github.com/einsteinxia/SFM) [:book:](./citations/xia2026efficient.txt)
++ [Closed-Form Linear-Probe Dataset Distillation for Pre-trained Vision Models](https://arxiv.org/abs/2605.07194) (Bincheng Peng & Guang Li et al., NeurIPS 2026) [:globe_with_meridians:](https://guang000.github.io/CLP-DD-Webpage/) [:octocat:](https://github.com/Guang000/CLP-DD) [:book:](./citations/peng2026clpdd.txt)
++ [Self-Supervised Representation-Guided Generative Dataset Distillation](https://arxiv.org/abs/2608.03218) (Mingzhuo Li & Guang Li et al., arXiv 2026) [:book:](./citations/li2026selfsupervised.txt)
 
 <a name="benchmark" />
 
 ### Benchmark
-
 + [DC-BENCH: Dataset Condensation Benchmark](https://arxiv.org/abs/2207.09639) (Justin Cui et al., NeurIPS 2022) [:globe_with_meridians:](https://dc-bench.github.io/) [:octocat:](https://github.com/justincui03/dc_benchmark) [:book:](./citations/cui2022dc.txt)
 + [A Comprehensive Study on Dataset Distillation: Performance, Privacy, Robustness and Fairness](https://arxiv.org/abs/2305.03355) (Zongxiong Chen & Jiahui Geng et al., 2023) [:book:](./citations/chen2023study.txt)
 + [BEARD: Benchmarking the Adversarial Robustness for Dataset Distillation](https://arxiv.org/abs/2411.09265) (Zheng Zhou et al., 2024) [:globe_with_meridians:](https://beard-leaderboard.github.io/) [:octocat:](https://github.com/zhouzhengqd/BEARD/) [:book:](./citations/zhou2024beard.txt)
 + [DD-RobustBench: An Adversarial Robustness Benchmark for Dataset Distillation](https://arxiv.org/abs/2403.13322) (Yifan Wu et al., TIP 2025) [:octocat:](https://github.com/FredWU-HUST/DD-RobustBench) [:book:](./citations/wu2025robust.txt)
-+ [DD-Ranking: Rethinking the Evaluation of Dataset Distillation](https://arxiv.org/abs/2505.13300) (Zekai Li & Xinhao Zhong et al., 2025) [:globe_with_meridians:](https://nus-hpc-ai-lab.github.io/DD-Ranking/) [:octocat:](https://github.com/NUS-HPC-AI-Lab/DD-Ranking) [:book:](./citations/li2025ranking.txt)
 + [Rectified Decoupled Dataset Distillation: A Closer Look for Fair and Comprehensive Evaluation](https://arxiv.org/abs/2509.19743) (Xinhao Zhong et al., ICLR 2026) [:book:](./citations/zhong2026rd3.txt)
++ [DD-Ranking: Rethinking the Evaluation of Dataset Distillation](https://arxiv.org/abs/2505.13300) (Zekai Li & Xinhao Zhong et al., NeurIPS 2026) [:globe_with_meridians:](https://nus-hpc-ai-lab.github.io/DD-Ranking/) [:octocat:](https://github.com/NUS-HPC-AI-Lab/DD-Ranking) [:book:](./citations/li2026ranking.txt)
 
 <a name="survey" />
 
 ### Survey
-
 + [Data Distillation: A Survey](https://arxiv.org/abs/2301.04272) (Noveen Sachdeva et al., TMLR 2023) [:book:](./citations/sachdeva2023survey.txt)
 + [A Survey on Dataset Distillation: Approaches, Applications and Future Directions](https://arxiv.org/abs/2305.01975) (Jiahui Geng & Zongxiong Chen et al., IJCAI 2023) [:octocat:](https://github.com/Guang000/Awesome-Dataset-Distillation) [:book:](./citations/geng2023survey.txt)
 + [A Comprehensive Survey to Dataset Distillation](https://arxiv.org/abs/2301.05603) (Shiye Lei et al., TPAMI 2023) [:octocat:](https://github.com/Guang000/Awesome-Dataset-Distillation) [:book:](./citations/lei2023survey.txt)
@@ -426,7 +429,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Multi-modal Vision Pre-training for Medical Image Analysis](https://arxiv.org/abs/2410.10604) (Shaohao Rui & Lingzhi Chen et al., CVPR 2025) [:octocat:](https://github.com/openmedlab/BrainMVP) [:book:](./citations/rui2025brain.txt)
 + [FedWSIDD: Federated Whole Slide Image Classification via Dataset Distillation](https://arxiv.org/abs/2506.15365) (Haolong Jin et al., MICCAI 2025) [:octocat:](https://github.com/f1oNae/FedWSIDD) [:book:](./citations/jin2025fedwsidd.txt)
 + [High-Order Progressive Trajectory Matching for Medical Image Dataset Distillation](https://arxiv.org/abs/2509.24177) (Le Dong et al., MICCAI 2025) [:octocat:](https://github.com/Bian-jh/HoP-TM) [:book:](./citations/dong2025hop.txt)
-+ [Low-Level Dataset Distillation for Medical Image Enhancemen](https://arxiv.org/abs/2511.13106) (Fengzhi Xu et al., 2025) [:book:](./citations/xu2025low.txt)
++ [Low-Level Dataset Distillation for Medical Image Enhancemen](https://arxiv.org/abs/2511.13106) (Fengzhi Xu et al., ECCV 2026) [:book:](./citations/xu2026low.txt)
 + [Towards Data Quality-Aware Dataset Distillation in Bioimaging](https://www.scitepress.org/publishedPapers/2026/143417) (Bárbara Capelo et al., Bioimaging 2026) [:book:](./citations/capelo2026bioimaging.txt)
 
 <a name="fed" />
@@ -549,6 +552,7 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 + [Distill Video Datasets into Images](https://arxiv.org/abs/2512.14621) (Zhenghao Zhao et al., 2025) [:book:](./citations/zhao2025video.txt)
 + [PRISM: Video Dataset Condensation with Progressive Refinement and Insertion for Sparse Motion](https://arxiv.org/abs/2505.22564) (Jaehyun Choi et al., CVPR 2026) [:book:](./citations/choi2026prism.txt)
 + [Adaptive Latent Trajectory Anchoring for Action Segmentation Dataset Condensation](https://arxiv.org/abs/2607.09081) (Arthème Gauthier-Villars & Guodong Ding et al., ECCV 2026) [:book:](./citations/gauthier2026adaptive.txt)
++ [Efficient Video Dataset Distillation via Cluster-Guided Prototype Blending](https://arxiv.org/abs/2608.03269) (Chongle Ren & Guang Li et al., arXiv 2026) [:book:](./citations/ren2026efficient.txt)
 
 <a name="tabular" />
 
@@ -632,62 +636,60 @@ In recent years (2022-now), dataset distillation has gained increasing attention
 <a name="uni" />
 
 ### Universal Distillation
-
 + [Towards Universal Dataset Distillation via Task-Driven Diffusion](https://openaccess.thecvf.com/content/CVPR2025/html/Qi_Towards_Universal_Dataset_Distillation_via_Task-Driven_Diffusion_CVPR_2025_paper.html) (Ding Qi et al., CVPR 2025) [:book:](./citations/qi2025unidd.txt)
 
 <a name="snn" />
 
 ### Spiking Neural Network
-
 + [Learning from Dense Events: Towards Fast Spiking Neural Networks Training via Event Dataset Distillation](https://arxiv.org/abs/2511.12095) (Shuhan Ye et al., 2025) [:book:](./citations/ye2025snn.txt)
 
 <a name="eeg" />
 
 ### EEG
-
 + [EEG-DLite: Dataset Distillation for Efficient Large EEG Model Training](https://arxiv.org/abs/2512.12210) (Yuting Tang et al., AAAI 2026) [:octocat:](https://github.com/t170815518/EEG-DLite) [:book:](./citations/tang2026eeg.txt)
 
 <a name="finance" />
 
 ### Finance
-
 + [Secure and Explainable Fraud Detection in Finance via Hierarchical Multi-source Dataset Distillation](https://arxiv.org/abs/2512.21866) (Yiming Qian et al., ICAIFW 2025) [:book:](./citations/qian2025finance.txt)
 
 <a name="music" />
 
 ### Music
-
 + [ConceptCaps: a Distilled Concept Dataset for Interpretability in Music Models](https://arxiv.org/abs/2601.14157) (Bruno Sienkiewicz et al., 2026) [:book:](./citations/sienkiewicz2026music.txt)
 
 <a name="rs" />
 
 ### Remote Sensing
-
 + [Towards Realistic Remote Sensing Dataset Distillation with Discriminative Prototype-guided Diffusion](https://arxiv.org/abs/2601.15829) (Yonghao Xu et al., 2026) [:book:](./citations/xu2026rs.txt)
 
 <a name="dr" />
 
 ### Deraining
-
 + [UniRain: Unified Image Deraining with RAG-based Dataset Distillation and Multi-objective Reweighted Optimization](https://arxiv.org/abs/2603.03967) (Qianfeng Yang et al., CVPR 2026) [:octocat:](https://github.com/QianfengY/UniRain) [:book:](./citations/yang2026unirain.txt)
 
 <a name="fine" />
 
 ### Fine-grained
-
 + [FD2: A Dedicated Framework for Fine-Grained Dataset Distillation](https://arxiv.org/abs/2603.25144) (Hongxu Ma & Guang Li et al., ECCV 2026) [:book:](./citations/ma2026fd2.txt)
++ [DeCO: Discriminative Evidence Composition for Fine-Grained Dataset Distillation](https://arxiv.org/abs/2608.25480) (Chuixuan Fan & Guang Li et al., NeurIPS 2026 Workshop) [:book:](./citations/fan2026deco.txt)
+
+<a name="tta" />
+
+### Test-Time Adaptation
++ [Distill Once, Adapt Life-Long: Exploring Dataset Distillation for Continual Test-Time Adaptation](https://arxiv.org/abs/2606.20196) (Hyun-Kurl Jang & Jihun Kim & Hyeokjun Kweon et al., ECCV 2026) [:octocat:](https://github.com/blue-531/DOALL) [:book:](./citations/jang2026doall.txt)
 
 <a name="segmentation" />
 
-### Test-Time Adaptation
-
-+ [Distill Once, Adapt Life-Long: Exploring Dataset Distillation for Continual Test-Time Adaptation](https://arxiv.org/abs/2606.20196) (Hyun-Kurl Jang & Jihun Kim & Hyeokjun Kweon et al., ECCV 2026) [:octocat:](https://github.com/blue-531/DOALL) [:book:](./citations/jang2026doall.txt)
-
 ### Semantic Segmentation
++ [D3S2: Diffusion-Guided Dataset Distillation for Semantic Segmentation](https://arxiv.org/abs/2605.25022) (Wenjie Zheng et al., NeurIPS 2026) [:book:](./citations/zheng2026d3s2.txt)
++ [S2-RL: Sample-Set Dual Reinforcement Learning for Generative Semantic Segmentation Dataset Distillation](https://arxiv.org/abs/2610.35491) (Haoyu Wang et al., NeurIPS 2026) [:globe_with_meridians:](https://00why00.github.io/S2RL/) [:octocat:](https://github.com/00why00/S2RL) [:book:](./citations/wang2026s2rl.txt)
 
-+ [D3S2: Diffusion-Guided Dataset Distillation for Semantic Segmentation](https://arxiv.org/abs/2605.25022) (Wenjie Zheng et al., arXiv 2026) [:book:](./citations/zheng2026d3s2.txt)
+<a name="motion" />
 
-<a name="tta" />
+### Human Motion
++ [Latent Dataset Distillation for Human Motion Prediction](https://arxiv.org/abs/2609.26430) (Ge Tian & Guang Li et al., 2026) [:book:](./citations/tian2026latent.txt)
++ [ProMoDD: Dataset Distillation for 3D Human Motion via Prototype-Conditioned Diffusion Models](https://arxiv.org/abs/2610.16134) (Yijin Wei et al., 2026) [:book:](./citations/wei2026promodd.txt)
 
 ## Media Coverage
 + [Beginning of Awesome Dataset Distillation](https://twitter.com/TongzhouWang/status/1560043815204970497?cxt=HHwWgoCz9bPlsaYrAAAA)
@@ -707,6 +709,6 @@ If you find this project useful for your research, please use the following BibT
 ```
 
 ## Acknowledgments
-We would like to express our heartfelt thanks to [Nikolaos Tsilivis](https://github.com/Tsili42), [Wei Jin](https://github.com/ChandlerBang), [Yongchao Zhou](https://github.com/yongchao97), [Noveen Sachdeva](https://github.com/noveens), [Can Chen](https://github.com/GGchen1997), [Guangxiang Zhao](https://github.com/zhaoguangxiang), [Shiye Lei](https://github.com/LeavesLei), [Xinchao Wang](https://sites.google.com/site/sitexinchaowang/), [Dmitry Medvedev](https://github.com/dm-medvedev), [Seungjae Shin](https://github.com/SJShin-AI), [Jiawei Du](https://github.com/AngusDujw), [Yidi Jiang](https://github.com/Jiang-Yidi), [Xindi Wu](https://github.com/XindiWu), [Guangyi Liu](https://github.com/lgy0404), [Yilun Liu](https://github.com/superallen13), [Kai Wang](https://github.com/kaiwang960112), [Yue Xu](https://github.com/silicx), [Anjia Cao](https://github.com/CAOANJIA), [Jianyang Gu](https://github.com/vimar-gu), [Yuanzhen Feng](https://github.com/fengyzpku), [Peng Sun](https://github.com/sp12138), [Ahmad Sajedi](https://github.com/AhmadSajedii), [Zhihao Sui](https://github.com/suizhihao), [Ziyu Wang](https://github.com/yuz1wan), [Haoyang Liu](https://github.com/Liu-Hy), [Eduardo Montesuma](https://github.com/eddardd), [Shengbo Gong](https://github.com/rockcor), [Zheng Zhou](https://github.com/zhouzhengqd), [Zhenghao Zhao](https://github.com/ichbill), [Duo Su](https://github.com/suduo94), [Tianhang Zheng](https://github.com/tianzheng4), [Shijie Ma](https://github.com/mashijie1028), [Wei Wei](https://github.com/WeiWeic6222848), [Yantai Yang](https://github.com/Hiter-Q), [Shaobo Wang](https://github.com/gszfwsb), [Xinhao Zhong](https://github.com/ndhg1213), [Zhiqiang Shen](https://github.com/szq0214), [Cong Cong](https://github.com/thomascong121), [Chun-Yin Huang](https://github.com/chunyinhuang), [Dai Liu](https://github.com/NiaLiu), [Ruonan Yu](https://github.com/Lexie-YU), [William Holland](https://github.com/rayneholland), [Saksham Singh Kushwaha](https://github.com/sakshamsingh1), [Ping Liu](https://github.com/pinglmlcv), [Wenliang Zhong](https://github.com/Zhong0x29a), [Ning Li](https://github.com/Ning9319), [Guochen Yan](https://github.com/Youth-49), [Saumyaranjan Mohanty](https://github.com/arareddy), [Taehyung Kwon](https://github.com/kbrother), [Dongwook Kim](https://github.com/donguk071), [Bárbara Capelo](https://github.com/BarbaraCapelo), [Guanghui Shi](https://github.com/BeCarefulOfYournaoke), [Jongoh Jeong](https://github.com/andyj1), [Akshay Mehra](https://github.com/akshaymehra24), [Hyun-Kurl Jang](https://github.com/blue-531), and [Jiacheng Cui](https://github.com/Jiacheng8) for their valuable suggestions and contributions.
+We would like to express our heartfelt thanks to [Nikolaos Tsilivis](https://github.com/Tsili42), [Wei Jin](https://github.com/ChandlerBang), [Yongchao Zhou](https://github.com/yongchao97), [Noveen Sachdeva](https://github.com/noveens), [Can Chen](https://github.com/GGchen1997), [Guangxiang Zhao](https://github.com/zhaoguangxiang), [Shiye Lei](https://github.com/LeavesLei), [Xinchao Wang](https://sites.google.com/site/sitexinchaowang/), [Dmitry Medvedev](https://github.com/dm-medvedev), [Seungjae Shin](https://github.com/SJShin-AI), [Jiawei Du](https://github.com/AngusDujw), [Yidi Jiang](https://github.com/Jiang-Yidi), [Xindi Wu](https://github.com/XindiWu), [Guangyi Liu](https://github.com/lgy0404), [Yilun Liu](https://github.com/superallen13), [Kai Wang](https://github.com/kaiwang960112), [Yue Xu](https://github.com/silicx), [Anjia Cao](https://github.com/CAOANJIA), [Jianyang Gu](https://github.com/vimar-gu), [Yuanzhen Feng](https://github.com/fengyzpku), [Peng Sun](https://github.com/sp12138), [Ahmad Sajedi](https://github.com/AhmadSajedii), [Zhihao Sui](https://github.com/suizhihao), [Ziyu Wang](https://github.com/yuz1wan), [Haoyang Liu](https://github.com/Liu-Hy), [Eduardo Montesuma](https://github.com/eddardd), [Shengbo Gong](https://github.com/rockcor), [Zheng Zhou](https://github.com/zhouzhengqd), [Zhenghao Zhao](https://github.com/ichbill), [Duo Su](https://github.com/suduo94), [Tianhang Zheng](https://github.com/tianzheng4), [Shijie Ma](https://github.com/mashijie1028), [Wei Wei](https://github.com/WeiWeic6222848), [Yantai Yang](https://github.com/Hiter-Q), [Shaobo Wang](https://github.com/gszfwsb), [Xinhao Zhong](https://github.com/ndhg1213), [Zhiqiang Shen](https://github.com/szq0214), [Cong Cong](https://github.com/thomascong121), [Chun-Yin Huang](https://github.com/chunyinhuang), [Dai Liu](https://github.com/NiaLiu), [Ruonan Yu](https://github.com/Lexie-YU), [William Holland](https://github.com/rayneholland), [Saksham Singh Kushwaha](https://github.com/sakshamsingh1), [Ping Liu](https://github.com/pinglmlcv), [Wenliang Zhong](https://github.com/Zhong0x29a), [Ning Li](https://github.com/Ning9319), [Guochen Yan](https://github.com/Youth-49), [Saumyaranjan Mohanty](https://github.com/arareddy), [Taehyung Kwon](https://github.com/kbrother), [Dongwook Kim](https://github.com/donguk071), [Bárbara Capelo](https://github.com/BarbaraCapelo), [Guanghui Shi](https://github.com/BeCarefulOfYournaoke), [Jongoh Jeong](https://github.com/andyj1), [Akshay Mehra](https://github.com/akshaymehra24), [Hyun-Kurl Jang](https://github.com/blue-531), [Jiacheng Cui](https://github.com/Jiacheng8), [Vahid Jebraeeli](https://github.com/VahidJbrl), [Junhoo Lee](https://github.com/JunHoo-Lee), and [Haoyu Wang](https://github.com/00why00/) for their valuable suggestions and contributions.
 
 The [Homepage](https://guang000.github.io/Awesome-Dataset-Distillation/) of Awesome Dataset Distillation was designed by [Longzhen Li](https://github.com/LOVELESSG) and maintained by [Mingzhuo Li](https://github.com/SumomoTaku).

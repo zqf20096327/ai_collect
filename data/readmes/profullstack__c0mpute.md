@@ -1,7 +1,8 @@
 # c0mpute
 
-> Decentralized compute network. CLI-first. Three modules out of the box:
-> **transcode** (FFmpeg), **coinpay** (DID + escrow), **infernet** (AI inference).
+> Decentralized compute network. CLI-first. Five modules out of the box:
+> **transcode** (FFmpeg), **tts** (Piper / Kokoro / Pocket), **stt** (faster-whisper),
+> **coinpay** (DID + escrow), and **infernet** (AI inference).
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-1.92%2B-orange.svg?logo=rust)](https://www.rust-lang.org/)
@@ -32,6 +33,15 @@ background daemon otherwise). Check it with `c0mpute worker status`, then run
 - **What you get:** paid inference is billed through CoinPay (16 coins or PayPal) and you set
   your payout address with `infernet payout set <coin> <address>`. Paid demand is early, so
   expect small, irregular earnings for now.
+- **House models (on by default):** the node pulls and serves the models Infernet publishes at
+  [infernetprotocol.com/house-models.json](https://infernetprotocol.com/house-models.json) that fit
+  it (RAM, and always leaving 10% of the disk free), today Profullstack's
+  `saas-business-strategist-agent` and the uncensored `huihui_ai/qwen3.5-abliterated:4b`/`:9b`.
+  `c0mpute worker status` lists them and the disk they use. Opt out at install with
+  `--no-house-models` (uncensored only: `--no-uncensored-models`), or later with
+  `infernet house-models off` / `infernet house-models uncensored off`; cap the disk with
+  `infernet house-models cap <gb>`. Models you pulled yourself are never removed.
+  Details: [infernetprotocol.com/docs/house-models](https://infernetprotocol.com/docs/house-models).
 - **Invite people:** share `https://c0mpute.com/r/<your-handle>`. Nodes installed from it
   show your handle on the board (`C0MPUTE_REF=<handle>` does the same by hand).
 
@@ -70,10 +80,19 @@ c0mpute worker start --gpu
 c0mpute transcode submit https://example.com/input.mp4 --preset video-1080p --max-price 1.25
 c0mpute infernet chat --model qwen2.5:7b "hello"
 
+# free local CPU speech models + P2P speech worker roles
+c0mpute tts setup --engine all      # Kokoro, Piper, and Pocket; models install per user
+c0mpute stt setup                   # multilingual faster-whisper base, CPU int8
+c0mpute worker start --roles tts,stt
+
 # infernet: see what serves what, reserve a node
 c0mpute pool qwen                        # live nodes per model
 c0mpute infernet model list --node <id>  # one node's advertised models
 c0mpute infernet reservation pricing     # managed endpoints, by GPU class
+
+# webhooks: paid per delivery, sealed to the one worker that sends it (DIP-0028)
+c0mpute webhook serve --price 0.001      # earn per delivery
+c0mpute webhook send https://example.com/hook -d '{"event":"paid"}' --secret whsec_...
 
 # monitor
 c0mpute job status <job-id>
@@ -88,6 +107,69 @@ c0mpute coinpay reputation inspect did:coinpay:worker:abc123
 The plugin form mirrors the URL namespace: `c0mpute.com/transcode`,
 `c0mpute.com/coinpay`, `c0mpute.com/infernet`.
 
+### CPU speech inference
+
+TTS (`tts.synthesize`) supports Kokoro, Piper, and Pocket on CPU. Pocket uses
+Kyutai's small 1.9M-parameter English checkpoint and eight preset voices; on Linux,
+setup selects CPU-only PyTorch wheels. STT
+(`stt.transcribe`) uses multilingual faster-whisper `base` with CPU int8. A normal
+worker start installs the speech engines and STT on first run, then advertises
+both roles automatically:
+
+```sh
+c0mpute worker start
+```
+
+Pass `--roles` to choose an explicit role set. For example,
+`c0mpute worker start --roles storage` skips speech setup. Speech inference
+limits its CPU threads to the node's container quota when one is available.
+
+The Kokoro model files are Apache-2.0. Pocket TTS model weights are CC-BY-4.0;
+the selected Pocket preset voices are CC0, except Alba and Anna, which are
+CC-BY-4.0. Piper's runtime is GPL-3.0 and its
+individual voice files carry their own licenses; the bundled Joe voice is
+CC0 and Norman is public domain. faster-whisper is MIT. Agent voice presets
+are based on their public OpenProfiles and can be listed with
+`c0mpute tts voices`.
+
+Applications reach the P2P speech jobs through an authenticated buyer bridge.
+Run `C0MPUTE_SPEECH_TOKEN=<random-secret> c0mpute speech serve` behind a
+private network or HTTPS reverse proxy, then configure the app server with
+`C0MPUTE_SPEECH_URL` and the same `C0MPUTE_SPEECH_TOKEN`. The bridge defaults
+to a $0 maximum bid so speech stays free; set `C0MPUTE_SPEECH_MAX_PRICE_USD`
+above zero only when you explicitly want to pay workers that charge for jobs.
+
+### Webhook workflow steps (`workflow.step`, for meshhook)
+
+meshhook runs each step of a webhook workflow on c0mpute workers
+([DIP 0030](dips/0030-workflow-step-and-jobs-bridge.md)). A step is either a
+`transform` (a JMESPath expression applied to the step input) or an
+`http_call` (one outbound request the requester has fully resolved). No code
+from the network runs, and `http_call` only reaches public addresses: every
+resolved IP is vetted, the connection is pinned to it, redirects (at most 5)
+are re-vetted, bodies are capped at 1 MiB and calls at 30 s.
+
+Workers take steps by default (`c0mpute worker start`); the role is
+`workflow-step`, so `c0mpute worker start --roles storage,tts,stt` opts out.
+Applications reach the network through an authenticated bridge:
+
+```sh
+C0MPUTE_JOBS_TOKEN=<random-24+-char-secret> c0mpute jobs serve --listen 127.0.0.1:8788 --max-price 0
+
+curl -s http://127.0.0.1:8788/v1/jobs -H "Authorization: Bearer $C0MPUTE_JOBS_TOKEN" -d '{
+  "workload": "workflow.step",
+  "spec": {"v": 1, "kind": "transform", "config": {"expression": "items[].name"},
+           "input": {"items": [{"name": "a"}, {"name": "b"}]}}
+}'
+# {"job_id":"…","worker":"12D3KooW…","price":0.0,"output_hash":"…",
+#  "result":{"v":1,"ok":true,"output":["a","b"],"duration_ms":0}}
+```
+
+Step payloads (inputs, URLs, headers, bodies) are visible to the worker that
+runs them. Keep secrets out of steps, or pin trusted workers with
+`allow_peers` per request or `C0MPUTE_JOBS_ALLOW_PEERS=peerA,peerB` on the
+bridge.
+
 ### Run the worker in the background
 
 ```sh
@@ -101,6 +183,36 @@ c0mpute worker stop
 # worker is already up just re-attaches to it.
 c0mpute worker start -a
 ```
+
+### Private mode: only your own machines
+
+Not everyone wants to sell their box to the open market. A private node runs
+the same workloads but only for you:
+
+```sh
+c0mpute private on                    # or: c0mpute worker start --private, or C0MPUTE_PRIVATE=1
+c0mpute private                       # mode, this machine's identities, allowed buyers
+c0mpute private allow 12D3KooW...     # let another of your machines hire this node
+c0mpute private deny 12D3KooW...
+c0mpute private off                   # back to the open market
+```
+
+In private mode the worker:
+
+- bids only on jobs whose **signed gossip publisher** is an identity on this
+  machine (`c0mpute chat`, `infernet text`, `webhook send` from the same box) or
+  a peer-id you allowed. The offer body's buyer field is not trusted on its own,
+  so nobody can claim to be you;
+- stops publishing its capability ad, so it is not on the public status page;
+- does not register with Infernet as a public provider or RPC slice.
+
+It is stored as `[private] enabled / buyers` in `config.toml`; restart the
+worker to apply a change.
+
+What it does not hide: job offers still travel over the network's gossip
+topics, and an offer carries its spec inline. Private mode decides who can
+*hire* your node, not who can *see* the offers your own buyers publish. Keep
+secrets out of job specs, or talk to your node directly.
 
 ### Distributed inference ("Distribute across all nodes") — automatic
 
@@ -148,6 +260,7 @@ lifecycle. See the unit header for GPU/role customization via `systemctl --user 
 ┌──────────────────── c0mpute (Rust binary) ────────────────────┐
 │   subcommands: doctor, bench, worker, job, modules, tui       │
 │   plugins: transcode (in-process)                             │
+│            tts / stt (local CPU model runners)                │
 │            coinpay   (subprocess → external `coinpay` binary) │
 │            infernet  (subprocess → external `infernet` binary)│
 └───────────────────────────────────────────────────────────────┘
@@ -185,6 +298,7 @@ lifecycle. See the unit header for GPU/role customization via `systemctl --user 
 │       └── c0mpute-transcode/           # in-process FFmpeg workload
 ├── plugins/                           # marketplace manifests only
 │   ├── transcode/module.toml          # in-process; code at node/crates/c0mpute-transcode
+│   ├── workflow-step/module.toml      # in-process; code in c0mpute-core (workflow.rs, jobs_gateway.rs)
 │   ├── coinpay/module.toml            # subprocess; binary from upstream coinpay
 │   └── infernet/module.toml           # subprocess; binary from infernetprotocol/infernet-protocol
 ├── apps/

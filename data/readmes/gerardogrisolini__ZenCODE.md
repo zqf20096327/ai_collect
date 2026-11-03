@@ -1,0 +1,278 @@
+[![CI](https://github.com/gerardogrisolini/ZenCODE/actions/workflows/ci.yml/badge.svg)](https://github.com/gerardogrisolini/ZenCODE/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/gerardogrisolini/ZenCODE?sort=semver)](https://github.com/gerardogrisolini/ZenCODE/releases)
+[![Swift 6.4](https://img.shields.io/badge/Swift-6.4-F05138?logo=swift&logoColor=white)](https://www.swift.org)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20WSL-blue)](#install)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**ZenCODE** is a native-Swift coding agent built around three ideas: sub-agents you
+can talk to while they work, routing each task to the cheapest model strong enough
+for it, and tools built on request as compiled Swift packages. It is one native
+binary with no Node runtime, for the terminal and for ACP clients, including
+Xcode 27, and it runs on macOS, Linux, and Windows (via WSL), all the way down to a
+Raspberry Pi. Bring any OpenAI-compatible API key, run a local
+[DS4](https://github.com/antirez/ds4) model in-process from an existing checkout,
+or sign in with your existing ChatGPT or Claude subscription.
+
+![ZenCODE coordinating two sub-agents that edit Swift files and talk in the live shared chat](Docs/Images/zencode-subagents.gif)
+
+*Two Developer sub-agents work in parallel on a Swift package, agree on the API in the shared chat (with an `@all` reply from the operator), and the coordinator verifies the result with `swift test`.*
+
+## Highlights
+
+- **Sub-agents you can talk to** — while sub-agents run, the operator, coordinator, and agents share a transient chat room: from the terminal, message the coordinator or broadcast to all agents with `@coordinator` / `@all`, or reach a specific agent by its handle. An agent that is already working answers right away through the chat and then resumes its current work. See [agents.md](Docs/agents.md).
+- **Capability-based routing** — each profile's model bindings carry a capability (1–10) and every task a complexity (1–10); the coordinator steers each task to the lowest-capability binding that still meets it. A sub-agent can only run on its profile's authorized bindings, and a session `/models` override never widens that. `binding-presets.json` applies a provider's bindings to every profile in one step. See [bindings.md](Docs/bindings.md).
+- **Tools built on request** — the Builder generates a real Swift package (a Dynamic Swift Feature) as a durable tool; it runs out of process and uses the same contracts as bundled tools. Skills are selectable per session and installable from GitHub or a local folder. See [builder.md](Docs/builder.md).
+- **Full control over what the model can do** — granular `/tools` selection (filesystem, shell, Git, search, memory, sub-agents, Xcode, Figma, features), with change tracking and `/undo` as a safety net.
+- **Agentic workflows** — dependency-aware task graph with `/plan`, `/goal`, and `/review`; `/plan save` and `/plan load` hand plans between sessions of the same project. Incomplete task graphs are detected per project at startup and shown in a scrollable picker, so you can resume the selected graph or remove obsolete work.
+- **Durable project memory** — workspace-scoped facts are recalled automatically without bloating conversation history; default retrieval stays local with BM25, and optional embeddings add semantic ranking.
+- **ACP native** — connects over stdio to compatible clients, including **Xcode 27**, as a native coding agent.
+- **Provider-agnostic** — any OpenAI-compatible endpoint (OpenRouter, local servers, any `/v1` API), or a browser sign-in with your ChatGPT or Claude subscription.
+- **One native binary** — a single compiled binary with no interpreter or Node event loop, suitable for constrained ARM boards. It runs on macOS, Linux, and Windows (via WSL); inference always stays on the configured provider, whether cloud, subscription, or local.
+- **Automation-friendly** — run a one-shot prompt as plain text or consume the versioned `--jsonl` lifecycle stream from scripts and CI.
+- **Voice and remote control** — `/voice on` lets you speak prompts to any agent and hear the answers. Speech is recognized and synthesized on your machine (Apple speech frameworks on macOS, sherpa-onnx on Linux); the provider only receives text. You can also drive ZenCODE remotely via Telegram, where voice notes become prompts. See [voice.md](Docs/voice.md).
+
+See [Why ZenCODE](Docs/why-zen.md) for the full rationale.
+
+## Providers
+
+ZenCODE supports several ways to run the model, all selected during automatic first-run setup or later with `/setup`:
+
+- **Cloud API providers** — bring an API key for any OpenAI-compatible endpoint, including OpenRouter, local servers, and any `/v1`-compatible provider.
+- **ChatGPT Subscription** — sign in with your existing ChatGPT subscription through the browser. No API key required.
+- **Claude Subscription** — sign in with your existing Claude (Anthropic) subscription through the browser. No API key required.
+- **DS4 local runtime** — run a DS4 model in-process from an existing DS4 checkout,
+  with no server process. Select **DS4 local runtime (in-process engine)** in
+  `/setup` to choose the GGUF files and to build the small `libzencode-ds4`
+  library against your checkout with the toolchain of the chosen backend. Setup
+  does not download a checkout or models. See the [DS4 guide](Docs/ds4.md).
+
+## Run
+
+- `zen` opens the standalone terminal coding agent.
+- `zen -p "Summarize the current changes"` runs one headless turn and prints only
+  the final assistant text.
+- `zen -f /absolute/path/prompt.md` runs one headless turn with the prompt read
+  from that file.
+- `zen --jsonl -p "Summarize the current changes"` emits a versioned JSON Lines
+  lifecycle stream for scripts and CI. See the [JSONL protocol guide](Docs/jsonl.md).
+- `zen --acp` runs the ACP stdio agent for compatible clients.
+
+## Install
+
+### macOS
+
+```bash
+curl -fsSL "https://raw.githubusercontent.com/gerardogrisolini/ZenCODE/main/Scripts/install.sh" \
+  | bash -s -- --ref v3.2.0
+```
+
+`--ref` pins the source checkout to the release tag. Replace it with the latest
+[published release](https://github.com/gerardogrisolini/ZenCODE/releases).
+Omit it for a development build from the moving `main` branch:
+
+```bash
+curl -fsSL "https://raw.githubusercontent.com/gerardogrisolini/ZenCODE/main/Scripts/install.sh" \
+  | bash
+```
+
+The installer labels a moving ref clearly as a development build. See
+[release and reproducibility](Docs/release.md) for the full release procedure.
+
+Requires macOS 26 (Tahoe) or newer, Apple Silicon, Git, and a Swift 6.4 or
+newer toolchain from a compatible Xcode or Apple command line tools installation.
+The package's macOS deployment minimum is separate from the toolchain's host OS
+requirements; confirm the selected compiler with `swift --version`.
+
+### Linux and Windows via WSL
+
+```bash
+curl -fsSL "https://raw.githubusercontent.com/gerardogrisolini/ZenCODE/main/Scripts/install-linux.sh" \
+  | bash -s -- --ref v3.2.0
+```
+
+For a development build from the moving `main` branch:
+
+```bash
+curl -fsSL "https://raw.githubusercontent.com/gerardogrisolini/ZenCODE/main/Scripts/install-linux.sh" \
+  | bash
+```
+
+Drive the agent through configured cloud, subscription, or local providers.
+Running `zen` opens setup automatically when configuration is missing or
+invalid; use `/setup` later to reconfigure it without leaving the TUI. The
+standalone agent, TUI, and ACP bridge work normally. Optional Swift feature
+packages are selected from the Features step of `/setup`, or installed later with
+`zen --install-features`; they are compiled on demand under
+`~/.zencode/features/<id>/`, not distributed as executables next to `zen`. The
+[web tools guide](Docs/web.md) covers the `web-tools` package (`web.search`,
+`web.fetch`).
+
+Windows is supported through WSL. Install Ubuntu first, then run the Linux
+installer inside the Ubuntu shell:
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+The installer requires Swift 6.4 or newer and reuses a supported toolchain already
+available on `PATH`. If Swift is missing, it automatically installs the latest
+stable toolchain with Swiftly, following the
+[official Linux installation instructions](https://www.swift.org/install/linux/).
+An existing older toolchain is rejected rather than silently replaced.
+
+`/setup` supports both subscription logins on Linux: ChatGPT uses the
+device-code page and Claude asks for the authorization code shown by its hosted
+OAuth flow. ChatGPT generation remains WebSocket-based and, together with
+HTTP/SSE generation, uses the shared cross-platform SwiftNIO transport.
+
+## Quick Start
+
+Choose a cloud API provider, a ChatGPT or Claude subscription, or a local
+provider (see [Providers](#providers)) in the setup that opens automatically on
+first launch:
+
+```bash
+zen
+```
+
+Use `/setup` from the TUI whenever you want to reconfigure it without closing
+the app.
+
+### Optional workspace guidance
+
+`AGENTS.md` is optional. If a project needs workspace-specific instructions,
+create and edit `AGENTS.md` manually in the working directory, then commit it
+to version control when appropriate. When the file is present, ZenCODE reads it
+and adds its contents to the agent's context; ZenCODE does not automatically
+create or rewrite a project file.
+
+This project file is separate from the global `~/.zencode/AGENTS.md`, which
+contains operating guidance shared across workspaces. The global file applies
+to every project, while a project `AGENTS.md` applies only to its working
+directory.
+
+## Build From Source
+
+Use a source checkout when developing ZenCODE itself:
+
+```bash
+git clone https://github.com/gerardogrisolini/ZenCODE.git
+cd ZenCODE
+swift build -c release --product zen
+./.build/release/zen --install-features swift-tools --zen-package-path "$PWD"
+```
+
+## TUI Commands
+
+```text
+/help        Show available commands
+/setup       Reconfigure ZenCODE, then restore the current session
+/models      Select a model for the current session
+/think       Select the thinking level for the current model
+/agents      Select an agent profile
+/tools       Select tool groups (`/tools logs` opens the system log viewer)
+/skills      Select, install, or uninstall prompt skills (`/skills uninstall`)
+/sessions    Manage sessions and checkpoint trees
+/attach      Attach image or video files to the next prompt
+/open        Open a referenced file, URL, or attachment
+/artifacts   Show the current session's file artifacts, grouped by turn
+/changes     Review the latest tracked file changes
+/undo        Revert the latest tracked agent changes
+/tasks       Inspect, retry, cancel, or clear the session task graph
+/plan        Create, save, load, approve, inspect, or clear a delegated session plan
+/goal        Work until complete or genuinely blocked; delegate when useful
+/review      Review tracked changes and verify task/plan claims
+/feature     Manage Swift features with the Builder agent
+/cron        Schedule headless prompts in your crontab (list/add/remove/run/mailto)
+/telegram    Turn Telegram remote control on/off when paired in setup
+/voice       Voice mode: speak prompts, hear answers (on/off/pause/resume)
+/exit        Close the session
+```
+
+`/sessions` also handles snapshots and checkpoint trees
+(`save`, `new`, `compact`, `delete`, `restore`). See the
+[ZenCODE guide](Docs/zen.md#terminal-tui-commands) for the complete command
+reference.
+
+`/plan save` writes the active plan — or the latest non-empty assistant response
+when no plan is active — to the current project's reusable plan library. In a
+session with no active plan, `/plan load` presents the latest saved plan as an
+unapproved draft for review; use `/plan approve` only when it is ready to
+implement. The [Planner guide](Docs/planner.md#saving-and-loading-plans)
+describes the complete handoff flow.
+
+`/voice on` starts voice mode with any agent: each utterance becomes a prompt
+after a short pause and every final answer is read aloud; `Esc` stops the
+reading, `/voice` pauses or resumes, `/voice off` stops. macOS needs nothing
+more than the microphone and speech recognition permissions; on Linux, first
+download the speech files (about 580 MB) from `/setup` > **Voice mode**. The
+[voice guide](Docs/voice.md) covers languages, Telegram voice messages,
+privacy, and troubleshooting.
+
+`/cron add 0 9 * * 1-5 Summarize the open pull requests` schedules a prompt in
+the crontab of your system user: cron runs it as a headless `zen -p` turn in
+the session's working directory with the default `Developer` profile, or with
+the profile named by `-agent` (`/cron add -agent Organizer @daily …`), and
+mails the answer text (`/cron add -json …` runs with `--jsonl` and mails the
+JSONL records instead). `/cron add <schedule> -f <path>` reads the prompt from a
+file, checked when you add it and read again at every run. `/cron list` shows
+the numbered entries, `/cron run <n>` runs one now and reports in the terminal,
+and `/cron mailto` sets the recipient.
+Cron runs ZenCRON, a small program that starts `zen`, so that macOS asks for the
+privacy permissions of a job once and not after every update. Build ZenCRON once
+from `/setup` > **Scheduled prompts (ZenCRON)** before the first `/cron add`; it
+looks for `zen` in `/usr/local/bin`, where the installers put it. The
+[scheduled prompts guide](Docs/zen.md#scheduled-prompts-crontab) covers
+schedules, mail, and troubleshooting.
+
+## Layout
+
+- `Sources/ToolCore`: dependency-light tool wire, descriptor, environment, and compatibility types.
+- `Sources/FeatureKit`: feature contracts, schemas, process protocol, and runner support.
+- `Sources/FeatureMCPBridgeKit`: generic MCP feature integration, transports, and injectable local-transport policies.
+- `Sources/LocalToolsSupport`: reusable local file, search, text, and patch tooling.
+- `Sources/ZenPackageMetadata`: internal bundled-feature distribution metadata and catalog parity support.
+- `Sources/ZenCODECore`: reusable agent runtime, interactive setup, TUI, tools, skills, ACP, config, memory, sessions, and feature management.
+- `Sources/zen`: the `zen` composition root and command-line dispatch.
+- `Sources/ZenCRON`: the standalone SwiftPM package of ZenCRON, the program that cron runs for scheduled prompts. It has no dependencies, is outside the root graph, and is built by `/setup`, not by the installers.
+- `Sources/Features`: self-contained optional SwiftPM feature packages. They own their implementations and package-local tests, are excluded from the root graph, and are installed on demand into `~/.zencode/features/<id>/` as local Builder-compatible features. The macOS-only Xcode integration lives entirely in `Sources/Features/XcodeTools`.
+- `Tests`: SwiftPM test targets.
+- `Docs`: detailed guides and feature documentation.
+
+## Development Commands
+
+```bash
+swift build --target ZenCODECore     # fast shared-runtime compile
+swift build -c release --product zen # release product
+
+zen --help
+zen --doctor
+zen --working-directory /path/to/project
+zen --acp --working-directory /path/to/project
+```
+
+The full validation gate CI enforces is defined once in
+[CONTRIBUTING.md](CONTRIBUTING.md#validation); run it before opening a pull
+request.
+
+## More Docs
+
+The [Docs index](Docs/README.md) is the complete catalogue of guides, grouped by
+getting started, agents and delegation, integrations, and project maintenance,
+with a suggested reading order. The most common entry points are the
+[ZenCODE guide](Docs/zen.md) for daily use, [agents.md](Docs/agents.md) for
+profiles and delegation, and
+[architecture.md](Docs/architecture.md) before changing the codebase.
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the build
+requirements, the validation gate CI enforces, and the architecture rules a
+change must preserve. Release history lives in [CHANGELOG.md](CHANGELOG.md).
+
+To report a vulnerability, follow [SECURITY.md](SECURITY.md) — please do not
+open a public issue.
+
+## License
+
+ZenCODE is released under the [MIT License](LICENSE).

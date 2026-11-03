@@ -13,6 +13,9 @@
 
 仓库：<https://github.com/liberalchang/LiberAstra>
 
+> GitHub Pages 主页：<https://liberalchang.github.io/LiberAstra/>  
+> - 首页为产品落地页；文档骨架位于 `/docs/`（示例：`https://liberalchang.github.io/LiberAstra/docs/`）
+
 搜索这个名字时，[liberastra.com.br](https://liberastra.com.br/) 是另一个项目。这里是开源的自托管 AIGC 编排台。
 
 <a id="中文"></a>
@@ -50,6 +53,12 @@ Windows：下载 [LiberAstra-Setup.exe](https://github.com/liberalchang/LiberAst
 功能演示（约 6 分钟）：
 
 https://github.com/user-attachments/assets/7d134651-f796-43b1-8c5a-3a038228ca9d
+
+![画布](docs/images/canvas.webp)
+
+画布导演台演示：
+
+https://github.com/user-attachments/assets/8334b7ba-5259-416b-a717-68c27e35fd7b
 
 ## 和谁不同
 
@@ -100,15 +109,13 @@ https://github.com/user-attachments/assets/7d134651-f796-43b1-8c5a-3a038228ca9d
 
 ### 画布
 
-侧栏「工作台 → 画布」。在无限画布上把输入、工作流包、语音和合成连成流程图，按节点执行。
+侧栏「画布」。在无限画布上把输入、工作流包、语音和合成连成流程图，按节点执行。
 
 - **节点**：图片 / 视频 / 音频 / 文本输入，功能节点（按「所属」选一组工作流包），文字转语音 / 语音转文字，视频或音频合成。
 - **分组**：功能节点的「所属」在「设置 → 工作流包 → 画布分组」里维护，也可按图像 / 视频 / 语音一键建默认组。选包后会按必填媒体自动补建输入节点。
 - **执行**：选中节点则重跑选中项、上游未变则复用；未选中时确认后整张画布强制重跑。右侧可强制重跑当前节点及其上游。
 - **结果**：功能、语音、合成节点的产物默认是中间结果，在预览上保存后进入资源库。资产页可勾选「含画布中间结果」查看未发布文件。输入节点上传的文件会直接进入资产库。
 - **变量**：文本用 `{{变量名}}` 引用，`/` 可插入已连接节点；媒体标签如 `<Picture 1>` 原样交给工作流。图片输入可标记、涂蒙版、裁剪，并保留版本。
-
-![画布](docs/images/canvas.webp)
 
 ### 图像生成
 
@@ -258,7 +265,7 @@ astra mcp
 - `packaging/windows/`、`packaging/speech/` — Windows 主程序与语音插件的构建脚本
 - `skills/liberastra/` — Agent Skill
 - `docs/` — 使用与部署；研发笔记在 `docs/internal/`
-- `site/` — 一页落地，尚未发布到 GitHub Pages
+- `site/` — GitHub Pages 站点（产品落地页 + VitePress 文档输出）
 - `.github/workflows/ci.yml` — lint、测试、前端构建、镜像构建
 
 ## 参考项目
@@ -317,6 +324,12 @@ Feature walkthrough, about 6 minutes:
 
 https://github.com/user-attachments/assets/7d134651-f796-43b1-8c5a-3a038228ca9d
 
+![Canvas](docs/images/canvas.webp)
+
+Canvas director demo:
+
+https://github.com/user-attachments/assets/8334b7ba-5259-416b-a717-68c27e35fd7b
+
 ### How it differs
 
 Roles only. There is no speed or quality benchmark.
@@ -355,9 +368,7 @@ Prompt fields share one control: raw and optimized drafts, scene presets, and an
 
 **Home.** Pick image, video, or speech and start from one line.
 
-**Canvas.** Workspace → Canvas. Connect inputs, workflow packs, speech, and concat, then run the graph. Groups are maintained under Settings → Workflow Packs. Unchanged upstream nodes are reused. Save a preview into the asset library when you want to keep it. Text references use `{{variable}}`; media tags such as `<Picture 1>` pass through to the workflow.
-
-![Canvas](docs/images/canvas.webp)
+**Canvas.** Open Canvas in the sidebar. Connect inputs, workflow packs, speech, and concat, then run the graph. Groups are maintained under Settings → Workflow Packs. Unchanged upstream nodes are reused. Save a preview into the asset library when you want to keep it. Text references use `{{variable}}`; media tags such as `<Picture 1>` pass through to the workflow.
 
 **Images.** Text-to-image, including Qwen-Image 2.1 packs and classic checkpoints, plus online image APIs. Edit: full frame, up to four references, or inpaint with a mask. Upscale uses an upscale model.
 

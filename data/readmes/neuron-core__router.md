@@ -68,7 +68,7 @@ Once you need to choose providers per request, add a [routing rule](#routing-rul
 
 ## Default Provider
 
-The router delegates `messageMapper()` and `toolPayloadMapper()` to an underlying provider. After each inference call, these delegate to whichever provider the routing rule selected. If you need the mappers available before any inference call (e.g., during agent bootstrapping), set a default:
+`getModel()` returns the model of the provider that served the last call. Before any call it returns the model of the default provider, which is the first one registered. To choose another, set it:
 
 ```php
 RouterProvider::make()
@@ -78,7 +78,7 @@ RouterProvider::make()
     ->setRule(new LoadBalancingRule(['anthropic', 'openai']));
 ```
 
-The default is overwritten each time the routing rule resolves a provider, so it only acts as the initial fallback.
+The default is overwritten each time a call resolves a provider, so it only applies until the first call.
 
 ## Fallback Providers
 

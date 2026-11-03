@@ -1,0 +1,501 @@
+<div align="center">
+
+<!-- Shields split on a single hyphen, so cursor-agent is cursor--agent in the URL. Each color is that harness's own hue, darkened until the white shield text stays readable. -->
+
+[![CI](https://github.com/omesser/fidget/actions/workflows/tests.yml/badge.svg)](https://github.com/omesser/fidget/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
+[![harness](https://img.shields.io/badge/harness-claude-C25B3A)](#harness-support) [![harness](https://img.shields.io/badge/harness-codex-0E8A6A)](#harness-support) [![harness](https://img.shields.io/badge/harness-cursor--agent-D04200)](#harness-support) [![harness](https://img.shields.io/badge/harness-hermes-5C5AD6)](#harness-support) [![harness](https://img.shields.io/badge/harness-opencode-005BBB)](#harness-support) [![harness](https://img.shields.io/badge/harness-pi-0C7EA8)](#harness-support) [![harness](https://img.shields.io/badge/harness-grok-2B2B2B)](#harness-support) [![harness](https://img.shields.io/badge/harness-copilot-57606A)](#harness-support) [![harness](https://img.shields.io/badge/harness-goose-B83800)](#harness-support) [![harness](https://img.shields.io/badge/harness-antigravity-C5221F)](#harness-support)
+
+<img src="./branding/banner.jpg" width="100%" alt="Fidget, a desktop pet" />
+
+[omesser.github.io/fidget](https://omesser.github.io/fidget/)
+
+</div>
+
+# Fidget is a desktop pet that keeps you company, and pitches in when you ask
+
+An AI character that lives on your screen. It walks, talks, naps, and can assist in whatever you are up to. Pick it up, throw it around, let it nap, or talk to it. Attach the AI harness you already use, and it can do anything that an AI agent can.
+
+Each character has a personality and a life of its own.
+
+An AI harness is optional. Attach the one you already use and it can talk and pitch in with tools; leave it off and the pet still works. It doesn't read your screen without consent and [never takes screenshots](#computer-use).
+
+https://github.com/user-attachments/assets/da8ab992-de5e-4d1e-89ab-95b5a6ec9fc5
+
+Try the gestures in your browser: [Fidget Cues](https://omesser.github.io/fidget/cues.html)
+
+## What It Does
+
+<p align="center">
+<img src="./docs/readme/buddy-bot-perch-poke.gif" width="480" alt="Buddy Bot walks off a terminal window, drops onto another window, and reacts when poked" /><br>
+<b>Perch and poke</b><br>
+<sub>Buddy Bot hops off a terminal, lands on the next window, and flinches when you poke it.</sub>
+</p>
+
+- **Keeps you company:** It walks, naps, and reacts to your open windows. It works offline, with no AI account or subscription, for presence and play; hook it up to an AI and it takes on a life of its own, with full conversation and tool use.
+- **Pick a built-in character, or build your own:** Each character has its own sprites, animation loops, and personality. Edit any character's prompt or behavior using a plain-text personality file and a simple [manifest format](./docs/DEVELOPMENT.md#character-packages). Create your own characters, or [import and convert](./docs/DEVELOPMENT.md#importing-pets) one from the [Pets Codex](https://petscodex.com/) and [Shimeji Shop](https://shimejishop.com/) galleries.
+- **Personalize your Fidget's behavior:** Write your own text for any fidget's behavior through its Instance Prompt. It holds on top of its Character's personality, and changes how that fidget reacts. See [Give It an Instance Prompt](#give-it-an-instance-prompt) for examples.
+- **Pitches in:** Double-click to chat with the agent you already use (Claude Code, Codex, Cursor, or any ACP [harness](#harness-support)); it acts on your machine and answers in words and motion.
+- **Knows what you're up to:** It reacts to your open windows for context-aware chatter. **It never takes screenshots or reads screen pixels**, and it reads window titles and app names only with [your consent](#computer-use).
+- **Gets out of your way when you ask it to:** Automatically fades away when in fullscreen, hides at will on hotkey, and comes back when you want it to.
+- **Keeps your computer awake when you ask:** The cup in Chat's header or Caffeinate on the menu stops the computer from sleeping until you turn it off or quit. Linux asks systemd-logind or elogind, and the desktop's screen saver. Without either, the cup is disabled and says why.
+- **Small and native:** A Rust core on [Tauri](https://tauri.app/), drawn in the webview your OS already has instead of a bundled copy of Chromium. The Windows installer is sub 10 MB, and the macOS disk image and the `.deb` are each sub 15 MB. The AppImage carries its own WebKitGTK, so it's larger.
+
+## Characters
+
+Buddy Bot is the default. Eleven Characters ship; each moves and speaks differently. A name links to its full prompt.
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="./docs/readme/buddy-bot-walk.gif" height="96" alt="Buddy Bot" /><br><b><a href="./characters/buddy-bot/personality.txt">Buddy Bot</a></b><br><sub>Friendly and curious; he's your helpful assistant.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/black-mage-talk.gif" height="96" alt="Black Mage" /><br><b><a href="./characters/black-mage/personality.txt">Black Mage</a></b><br><sub>Cynical spellcaster, cryptic and theatrical.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/bmo-sing.gif" height="96" alt="BMO" /><br><b><a href="./characters/bmo/personality.txt">BMO</a></b><br><sub>Earnest, childlike, delighted to be here.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/cat-walk.gif" height="96" alt="Cat" /><br><b><a href="./characters/cat/personality.txt">Cat</a></b><br><sub>Every window is furniture. Never helpful.</sub></td>
+</tr>
+<tr>
+<td align="center" width="25%"><img src="./docs/readme/jotaro-kujo-react.gif" height="96" alt="Jotaro Kujo" /><br><b><a href="./characters/jotaro-kujo/personality.txt">Jotaro Kujo</a></b><br><sub>Terse, perpetually bored, tougher than he lets on.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/nim-sleep.gif" height="96" alt="Nim" /><br><b><a href="./characters/nim/personality.txt">Nim</a></b><br><sub>Sleeps eleven hours a day. Soft-spoken.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/timber-wolf-walk.gif" height="96" alt="Timber Wolf" /><br><b><a href="./characters/timber-wolf/personality.txt">Timber Wolf</a></b><br><sub>Patrol mech. Clan warriors don't waste words.</sub></td>
+<td align="center" width="25%"><img src="./docs/readme/trump-wave.gif" height="96" alt="Trump" /><br><b><a href="./characters/trump/personality.txt">Trump</a></b><br><sub>The desktop is his rally. Bombastic.</sub></td>
+</tr>
+<tr>
+<td align="center" colspan="2"><img src="./docs/readme/rubber-duck-talk.gif" height="96" alt="Rubber Duck" /><br><b><a href="./characters/rubber-duck/personality.txt">Rubber Duck</a></b><br><sub>Patient listener. One small question at a time.</sub></td>
+<td align="center" colspan="2"><img src="./docs/readme/tux-recover-card.gif" height="96" alt="Tux" /><br><b><a href="./characters/tux/personality.txt">Tux</a></b><br><sub>Cozy penguin. Small commands and a flipper salute.</sub></td>
+</tr>
+<tr>
+<td align="center" colspan="4"><img src="./docs/readme/tuxedo-bean-review.gif" height="96" alt="Tuxedo Bean" /><br><b><a href="./characters/tuxedo-bean/personality.txt">Tuxedo Bean</a></b><br><sub>Aloof tuxedo cat. Chases the cursor, then naps.</sub></td>
+</tr>
+</table>
+
+See them all in the [Character Gallery](https://omesser.github.io/fidget/characters.html).
+
+<p align="center">
+<img src="./docs/readme/rubber-duck-import.gif" width="480" alt="Settings imports a Rubber Duck character ZIP, and Rubber Duck replaces Buddy Bot on the desktop" /><br>
+<b>Bring your own character</b><br>
+<sub>Import a character ZIP in Settings, and Rubber Duck clocks in for Buddy Bot.</sub>
+</p>
+
+### Trump takes the stage
+
+https://github.com/user-attachments/assets/31bf24c7-7fe7-43d0-92d7-a4a3bd6d4c11
+
+Characters are packages of art, personality, and tuning. See [DEVELOPMENT.md](./docs/DEVELOPMENT.md#character-packages); the format is still evolving.
+
+## Get It
+
+Fidget runs on macOS (Apple Silicon), Linux (x86_64) and Windows (x86_64). Every build is on the [latest Release](https://github.com/omesser/fidget/releases/latest). The builds are not signed yet, so the first open warns.
+
+### macOS
+
+On Apple Silicon with [Homebrew](https://brew.sh):
+
+```sh
+brew install --cask omesser/fidget/fidget
+```
+
+That taps [omesser/homebrew-fidget](https://github.com/omesser/homebrew-fidget) and installs Fidget.app. Later Releases arrive with `brew update` and `brew upgrade --cask fidget`.
+
+Or download `Fidget_<version>_aarch64.dmg` from the [latest Release](https://github.com/omesser/fidget/releases/latest), drag Fidget.app from the disk image into Applications and open it. Dismiss the Gatekeeper dialog, then System Settings → Privacy & Security → Open Anyway.
+
+macOS may block `/Applications/Fidget.app` after a Homebrew or download install. Removing its quarantine attribute bypasses a macOS security check. Run the command at your own risk. Never run it on an app you do not trust. Fidget is open source, so you can inspect its code, but that alone does not verify the downloaded app. To remove the quarantine attribute, run:
+
+```sh
+xattr -d com.apple.quarantine /Applications/Fidget.app
+```
+
+### Linux
+
+Download `Fidget_<version>_amd64.AppImage` or `Fidget_<version>_amd64.deb` from the [latest Release](https://github.com/omesser/fidget/releases/latest), then run the commands from the folder you saved it in.
+
+The AppImage runs without installing and carries its own WebKitGTK. It mounts itself with FUSE, which desktop installs usually have (`fuse3` on Debian and Ubuntu):
+
+```sh
+chmod +x Fidget_*_amd64.AppImage
+./Fidget_*_amd64.AppImage
+```
+
+Without FUSE, run it as `./Fidget_*_amd64.AppImage --appimage-extract-and-run`.
+
+The `.deb` is for Debian and Ubuntu, and needs no FUSE. apt installs the WebKitGTK and tray libraries it depends on:
+
+```sh
+sudo apt install ./Fidget_*_amd64.deb
+fidget
+```
+
+After that, Fidget is in your app menu. `sudo apt remove fidget` uninstalls it.
+
+Full support for window Perches and edges via X11/XWayland (the normal Linux desktop path). Pure Wayland sessions without an X server fall back to screen edges only. Linux packages and the AppImage's FUSE dependency are in [DEVELOPMENT.md](./docs/DEVELOPMENT.md#linux-dependencies).
+
+### Windows
+
+Download `Fidget_<version>_x64-setup.exe` from the [latest Release](https://github.com/omesser/fidget/releases/latest) and run it. SmartScreen warns about the unsigned installer: choose More info → Run anyway. It needs no admin rights. It installs Fidget for your user in `%LOCALAPPDATA%\Fidget`, adds it to the Start menu, and fetches WebView2 if Windows lacks it. Uninstall it from Settings → Apps.
+
+### From Source
+
+Clone and run from the repo root (macOS, Linux, Windows):
+
+```sh
+git clone https://github.com/omesser/fidget.git fidget
+cd fidget
+cargo run -p fidget
+```
+
+Developers and CI can override Settings with optional environment variables:
+
+```sh
+# Optional. Overrides Settings → AI → AI source.
+FIDGET_HARNESS=claude cargo run -p fidget
+
+# Optional. Overrides Settings → Character.
+# Any of: buddy-bot (default), black-mage, bmo, cat, jotaro-kujo, nim, rubber-duck, timber-wolf, trump, tux, tuxedo-bean
+FIDGET_CHARACTER=nim cargo run -p fidget
+```
+
+The full variable list, including `FIDGET_DIRECTOR_*`, is in [harness.md](./docs/harness.md#director-environment).
+
+### First Run
+
+<p align="center">
+<img src="./docs/readme/settings-switch-character.gif" width="480" alt="Right-click menu opens Settings, and the Character tab switches Buddy Bot to Cat" /><br>
+<b>Switch between characters</b><br>
+<sub>Right-click, open Settings, and trade Buddy Bot for Cat in the Character tab.</sub>
+</p>
+
+It works offline with no key. With nothing configured, Static weights pick idle Behaviors from the Character.
+
+Right-click the fidget, or click the tray icon, and choose Settings….
+
+Settings → Character picks which character it wears. Buddy Bot is the default. The others are in [Characters](#characters).
+
+Settings → AI chooses who answers. Under AI source, pick `Harness · claude` or another name from [Harness Support](#harness-support). The Harness signs in on its own. Model under Harness names the model it runs on, and blank keeps the Harness's own default. For a Model API, pick Model API in AI source, then set Base URL, Model, and API key under Model / API. Presets fill the Base URL for OpenAI, Anthropic, xAI, and Ollama. Type any other OpenAI-compatible endpoint into Base URL. Apply saves the choice.
+
+Character packages are in [DEVELOPMENT.md](./docs/DEVELOPMENT.md#character-packages). Keychain dialogs an unsigned build costs are in [harness.md](./docs/harness.md#settings-and-keyring).
+
+## Interact
+
+<table>
+<tr>
+<td align="center" valign="bottom" width="50%"><img src="./docs/readme/buddy-bot-react.gif" width="144" alt="Buddy Bot react" /><br><b>Poke</b><br><sub>One click and Buddy Bot jumps, then gets back to its business.</sub></td>
+<td align="center" valign="bottom" width="50%"><img src="./docs/readme/buddy-bot-throw.gif" width="400" alt="Buddy Bot is picked up, thrown in an arc, and lands on an editor window" /><br><b>Throw</b><br><sub>Grab it, fling it, and it arcs across the screen onto your editor.</sub></td>
+</tr>
+</table>
+
+- **Poke** - click once for a react, then it resumes.
+- **Summon** - double-click to open a chat window for that fidget.
+- **Pick up** - click and drag; the pressed point stays under the pointer.
+- **Throw** - release while moving; it flies on an arc and lands.
+- **Perch** - let it settle on a window's top edge; drag slowly to ride, fling to drop.
+- **Hide** - Control-Option-Command-B (the default; change it in Settings) toggles the fidget instantly.
+- **Fullscreen** - fades out for fullscreen apps, fades back when you exit.
+
+### Talk to It
+
+Summon opens that fidget's chat window. What you type joins the same
+conversation that decides what it does on your desktop, so an answer arrives as
+words and a Behavior, not only as text. Lines it says unprompted appear here
+too, labelled with what it was reacting to.
+
+<table>
+<tr>
+<td align="center" valign="bottom" width="50%"><img src="./docs/readme/buddy-bot-chat.gif" width="400" alt="Double-clicking Buddy Bot opens its chat; asked for its best dance move, it answers in the chat and a speech bubble" /><br><b>Ask it anything</b><br><sub>Double-click to chat; ask for its best dance move and it answers in the chat and a speech bubble.</sub></td>
+<td align="center" valign="bottom" width="50%"><a href="./docs/readme/chat-surface.png"><img src="./docs/readme/chat-surface.png" width="240" alt="The chat surface: a line labelled WHEN SUMMONED, a typed question, and BMO's answer, over a status bar naming the Behavior, State and next wake" /></a><br><b>Inside the chat</b><br><sub>A line it said on its own, your question, BMO's answer, and a status bar showing what it's up to. Click to enlarge.</sub></td>
+</tr>
+</table>
+
+The bar at the bottom says what the fidget is doing and when it next thinks.
+Advanced opens the ladder: Behavior, Primitive, Animation, State, Facing, and
+the Director's countdown. Answers need a Director; see [Get It](#get-it).
+
+### Give It an Instance Prompt
+
+An Instance Prompt is your own text for one fidget, layered on top of its Character's personality. To write one, double-click the fidget to summon it, open the **Prompt** tab, and type in the **Your own layer** box. That box is the Instance Prompt. Paste one of the examples below and edit it to fit. Saving starts a new conversation, and the Instance Prompt stays with that fidget if you switch its Character.
+
+The examples below need this setup:
+
+- **Model:** A [Harness](#harness-support) or a Model API is attached. Three of the four examples need nothing more.
+- **Consent:** Only the theatre critic example needs the **Window and application names** consent, on in Settings → Privacy. Fidget then reads app names and window titles only, never pixels, and it [never takes screenshots](#computer-use).
+
+| Paste and edit | How it reacts on a wake |
+|---|---|
+| `When I throw you, react like you just pulled off your own movie stunt.` | Throw it across the screen and it takes the landing as its own stunt. |
+| `When I tell you what I'm eating, review it like a food critic, in one dramatic line.` | Tell it what you're eating in the chat and it reviews the dish in one line. |
+| `You're a theatre critic. When you're perched on a window, review that app in one dramatic line.` | Perch it on a window and it reviews the app it's standing on. |
+| `When I tell you how my day's going, give it as a weather report.` | Tell it how your day is going and it answers with a forecast. |
+
+<p align="center">
+<img src="./docs/readme/buddy-bot-instance-prompt.gif" width="480" alt="The movie-stunt Instance Prompt is saved in the Prompt tab, then Buddy Bot is thrown and calls out its mid-air stunt" /><br>
+<b>Give it a stunt to brag about</b><br>
+<sub>Save the movie-stunt Instance Prompt, throw Buddy Bot, and it calls out its own mid-air stunt.</sub>
+</p>
+
+## How It Works
+
+A pet first. The AI is the part that makes it someone.
+
+```mermaid
+flowchart LR
+  subgraph always["Always on. No AI needed."]
+    F["Frame loop"] --> Y(("Your fidget"))
+    P["You"] --> Y
+  end
+  subgraph mind["Optional: the Director"]
+    C["Personality"] --> D{"Director"}
+    I["Instance Prompt"] --> D
+    W["Window titles"] --> D
+  end
+  D -- "A Behavior" --> Y
+  D -- "A line" --> Y
+  H["Your agent"] -.->|"attach over ACP on stdio"| D
+  D -.->|"the Harness calls back over MCP"| H
+```
+
+### Always on. No AI needed.
+
+- **Frame loop:** Walks, falls, lands, perches. Every frame, on your machine.
+- **You:** Poke, throw, drag, summon.
+
+### Optional: the Director
+
+- **Personality:** Who it is. A plain text file.
+- **Instance Prompt:** Your own twist, on top.
+- **Window titles:** Only if you say yes. Never pixels.
+- **Director:** Wakes now and then and decides what's next.
+- **A Behavior:** nap, prowl, patrol…
+- **A line:** in character.
+- **Your agent:** Attach the one you already use. It can talk and use tools.
+- **ACP:** attach over ACP on stdio.
+- **MCP:** the Harness calls back over MCP.
+
+A sample of an opening wake and a later follow-up, not a live dump:
+
+```text
+Opening wake
+  Personality Prompt: Cat claimed the desktop and treats every window as furniture.
+  Instance Prompt: You're a theatre critic. When you're perched on a window, review that app in one dramatic line.
+  Behaviors it may propose: nap, prowl, patrol
+  This moment: perched on the editor
+
+A later wake
+  What just happened: you poked it
+  Recent Behaviors: patrol, nap
+  Time of day: afternoon
+  State: Perched
+  Window titles (allowed): README.md - VS Code
+```
+
+## Harness Support
+
+Which Harness you attach changes what Fidget can do with it.
+
+<table>
+<thead>
+<tr>
+<th align="left" nowrap width="170">Harness</th>
+<th align="left">Command</th>
+<th align="left">Standing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/claude" width="14" alt="" />&nbsp;<code>claude</code></td>
+<td><code>npx -y @agentclientprotocol/claude-agent-acp@latest</code></td>
+<td>Zed's adapter over the Claude Agent SDK; no first-party ACP mode. Fresh and resumed sessions both work.</td>
+</tr>
+<tr>
+<td nowrap width="170"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/readme/openai-on-dark.svg" /><img src="./docs/readme/openai-on-light.svg" width="14" alt="" /></picture>&nbsp;<code>codex</code></td>
+<td><code>npx -y @agentclientprotocol/codex-acp@latest</code></td>
+<td>Zed's adapter (<code>codex-acp</code>); no first-party ACP mode. Fresh and resumed sessions both work.</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/githubcopilot" width="14" alt="" />&nbsp;<code>copilot</code></td>
+<td><code>copilot --acp</code></td>
+<td>First-party, GitHub. <code>copilot</code> alone is the interactive TUI. Fresh and resumed sessions both work, smoked on copilot 1.0.88 (<a href="https://github.com/omesser/fidget/issues/1016">#1016</a>).</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/cursor" width="14" alt="" />&nbsp;<code>cursor-agent</code></td>
+<td><code>cursor-agent acp</code></td>
+<td>First-party. <code>cursor-agent</code> alone is the interactive TUI. Every attach opens a fresh session, because it advertises no <code>loadSession</code>.</td>
+</tr>
+<tr>
+<td nowrap width="170"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/readme/grok-on-dark.svg" /><img src="./docs/readme/grok-on-light.svg" width="14" alt="" /></picture>&nbsp;<code>grok</code></td>
+<td><code>grok agent stdio</code></td>
+<td>First-party, Grok Build. <code>grok</code> alone is the interactive TUI. Fresh and resumed sessions both work.</td>
+</tr>
+<tr>
+<td nowrap width="170"><picture><source media="(prefers-color-scheme: dark)" srcset="./docs/readme/goose-on-dark.svg" /><img src="./docs/readme/goose-on-light.svg" width="14" alt="" /></picture>&nbsp;<code>goose</code></td>
+<td><code>goose acp</code></td>
+<td>First-party, Block. <code>goose</code> alone is the interactive CLI. Fresh and resumed sessions both work, smoked on goose 1.51.0.</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/opencode" width="14" alt="" />&nbsp;<code>opencode</code></td>
+<td><code>opencode acp</code></td>
+<td>First-party. Fresh and resumed sessions both work.</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="./docs/readme/nous.svg" width="14" alt="" />&nbsp;<code>hermes</code></td>
+<td><code>hermes acp</code></td>
+<td>First-party. Fresh sessions work; a resume that cannot restore the session reopens (<a href="https://github.com/omesser/fidget/issues/448">#448</a>).</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/pi" width="14" alt="" />&nbsp;<code>pi</code></td>
+<td><code>npx -y pi-acp@latest</code></td>
+<td>Zed-registry adapter (<code>pi-acp</code>); no first-party ACP. Fresh and resumed sessions both work.</td>
+</tr>
+<tr>
+<td nowrap width="170"><img src="https://cdn.simpleicons.org/google" width="14" alt="" />&nbsp;<code>antigravity</code></td>
+<td><code>agy_acp_server.par</code> (<code>agy_acp_server.exe</code> on Windows)</td>
+<td>First-party, Google's ACP server; <code>agy</code> itself has no ACP mode. Fresh and resumed sessions both work, smoked on agy_acp_server 1.2.1 (<a href="https://github.com/omesser/fidget/issues/604">#604</a>).</td>
+</tr>
+<tr>
+<td nowrap width="170">anything else</td>
+<td>as typed, split on whitespace</td>
+<td>Unnamed, and it works: any command that speaks ACP on stdio attaches.</td>
+</tr>
+</tbody>
+</table>
+
+Tools each harness keeps under ACP, session and auth behavior, and per-harness setup notes are in [docs/harness.md](./docs/harness.md#harness-support).
+
+### Harness ↔ MCP
+
+Fidget attaches to a Harness over ACP on stdio. The Harness calls back over MCP, on the route the [MCP transport column](./docs/harness.md#harness-support) describes. [harness.md](./docs/harness.md#mcp-server) has the transport details.
+
+**Eight tools** from `crates/core/src/dispatch.rs`. The opening turn of the Character Prompt tells the model to use the tools it has, without naming them, so this table stays the only catalog (#917). There is no tool for saying something: a Character says things only in its reply (ADR-0040).
+
+| Tool | Category | What it does |
+|---|---|---|
+| `play_behavior` | Expression | Play a named Behavior; pass `direction` (`left` or `right`) to aim a walk instead of letting it keep its last heading |
+| `list_windows` | Sensing | List visible windows with bounds, and their names under consent |
+| `describe_screen` | Sensing | Describe screen (v1: window metadata only) |
+| `recall` | Memory | Read everything Memory holds |
+| `remember` | Memory | Write one fact under a heading |
+| `list_instances` | Identity | List Character Instances: id, name, and the three Character Prompt layers |
+| `whereabouts` | Placement | Which display each Instance is on, the other displays, and its feet in that display. Each display includes its name when the platform has one, its origin, and its size, in logical points |
+| `caffeinate` | Power | Keep the computer awake until turned off or Fidget quits, and say what keeps it awake |
+
+Every tool takes an optional `instance_id`. Each Character Instance has its own Harness session, and that session's opening turn names its id, so `play_behavior` lands on the Instance whose session called it. An id no running Instance has is refused.
+
+**Three readonly resources** (`resources/list`, `resources/read`; no write, no subscribe):
+
+| URI | What it is |
+|---|---|
+| `fidget://windows` | Visible windows, frontmost first, with the owning application and the title. Empty without the window-names consent, which covers both (ADR-0032). Same excluded applications as `list_windows`. |
+| `fidget://memory` | The Memory Manifest file every Character Instance shares. |
+| `fidget://action-log` | The current Action Log file only. Rotated siblings are not this resource. A large current file is tailed to complete JSONL lines. |
+
+**Explicitly not served:** mouse/keyboard/Executor tools (ADR-0003). No click, no type, no input events by design.
+
+### Computer Use
+
+Fidget never reads screen pixels. Sensing is OS window metadata: bounds and idle for free, plus the owning application, the title and the frontmost app under one consent ([ADR-0032](./docs/adr/0032-one-consent-for-titles-and-application-names.md)). So `describe_screen` describes the window layout, not what is on screen. Decline it and the fidget still knows where the windows are, and not what they are. The fidget takes no screenshots, runs no OCR, and embeds no vision model for desktop content. The "Appear in screenshots and screen shares" setting is the other direction: whether the *sprite* shows up in captures you take.
+
+That bounds Fidget's own code, not the agent you attach to it. An agent that needs to see and act on your desktop still can. The capability comes from the Harness itself, or from a computer-use MCP server you attach to the Harness, never through Fidget, whose MCP serves no input events.
+
+The portable option across the Harnesses above is [cua-driver](https://github.com/trycua/cua) (MIT; macOS, Windows, Linux), attached over stdio MCP. [The cua-driver guide](./docs/computer-use.md) has the install for each OS, the permission each one grants, the config for each Harness above, and one way to check the agent can see its tools. Attach it deliberately: it drives the real desktop with your signed-in sessions, and its permission mode is chosen by the process that owns the driver runtime, not by the agent asking. Some Harnesses bring computer use of their own instead; the [Capture decision note](./docs/research/capture-drop-and-harness-cu-path.md) has the per-Harness table and the other drivers surveyed.
+
+## Platform Support
+
+What works today on each OS.
+
+| Capability | macOS | Linux | Windows |
+|---|---|---|---|
+| Overlay that never takes focus | yes | yes | yes |
+| Click-through off the sprite | yes | yes | yes |
+| Grab, Throw and Poke | yes | yes | yes |
+| Perch on window edges | yes | yes | yes |
+| Dock or panel as a Perch | yes | degraded¹ | degraded² |
+| Fade out for a fullscreen app | yes | degraded⁵ | degraded³ |
+| Capturable; opt-out in settings | yes | degraded⁴ | yes |
+| Settings window | yes | yes | yes |
+
+- `yes` - implemented.
+- `degraded` - runs in reduced form. A supported mode, not an error.
+
+**Degraded cell notes:**
+
+1. **Linux desktop panels:** Desktop panels come from each display's work area, as on Windows: a bottom one is the floor, a side one is a wall, and a top one is the ceiling. Under a window manager that publishes no per-monitor work area (xfwm4), a desktop panel on a display that isn't primary is ignored. Tracked in [#1300](https://github.com/omesser/fidget/issues/1300).
+2. **Windows Dock/panel:** Taskbar from work area (full-width strip) rather than exact island bounds. Taskbar spans the edge by design; no Windows API equivalent to macOS's `CoreDockGetRect`.
+3. **Windows fullscreen:** Fades for true fullscreen and properly-sized borderless windowed modes. Apps using non-standard fullscreen or leaving gaps may not trigger fade.
+4. **Linux Capturable:** Always capturable. Linux has no platform API to exclude windows from capture tools ([ADR-0024](./docs/adr/0024-capturable-by-default.md)).
+5. **Linux fullscreen:** X11 works for all apps. XWayland under Mutter/KWin: native Wayland fullscreen apps do not trigger fade or move; XWayland clients still trigger correctly. Pure Wayland without XWayland: neither XWayland clients (not present without an X server) nor native Wayland fullscreen apps trigger fade or move ([#1369](https://github.com/omesser/fidget/issues/1369), [#1360](https://github.com/omesser/fidget/issues/1360)).
+
+Detailed investigation: [`docs/research/platform-support-degraded-cells.md`](./docs/research/platform-support-degraded-cells.md).
+
+Linux support is full on normal desktops (X11 or XWayland under GNOME/KDE). Rare pure Wayland sessions without an X server fall back to screen edges only - no window Perches, Grab, Throw, or fullscreen fade. See [DEVELOPMENT.md](./docs/DEVELOPMENT.md).
+
+## FAQ
+
+### Do I need an AI account?
+
+No. Without one, your fidget still walks, naps, perches on windows and reacts when you poke or throw it. Attach the agent you already use, like Claude Code, Codex or Cursor, or a Model API key, and it starts talking. A local model you serve through Ollama or MLX works too. Use a Harness for the most powerful experience.
+
+### Does it read my screen?
+
+Fidget doesn't read pixels. It takes no screenshots and runs no OCR. With your consent, it reads only [window titles and app names](#computer-use), so it can react to what's in front of you with more context. Without your consent, it still knows where windows are, just not what they are. An agentic Harness like Claude Code or Hermes is different. Your permissions and plugin setup there decide what it can do, and that can include computer use and taking screenshots. That is powerful and dangerous, so Fidget leaves it to the Harness on purpose.
+
+### Can it control my computer?
+
+Fidget itself never clicks or types. It has no mouse or keyboard tools by design. The agent you attach can still use its own tools, most of the ones it already has in your terminal.
+
+### Will it get in my way while I work?
+
+It shouldn't. It never takes window focus unless you type in the quick-message pill or use the chat, and clicks pass through everywhere except the sprite. It fades out for fullscreen apps, and the hotkey Control-Option-Command-B hides it instantly. On macOS and Windows, a setting also keeps it out of screenshots and screen shares.
+
+### What does it cost?
+
+Fidget is free and MIT licensed. A Harness uses the subscription you already have, so you manage usage there and Fidget just uses it. A Model API bills your own key with your provider. Even with an agent attached or Model API configured, if left alone, Fidget costs very little. It only thinks and speaks now and then, and its banter spends very few tokens compared to most uses. When you actively use it by prompting and talking to it, it will incur usage costs from your AI subscription, just like any session or calls.
+
+### Does it work offline?
+
+Yes, for physical desktop presence and play. Walking, poking, throwing, sleeping, perching and every gesture run locally. Only talking needs an AI, and that can be a local model. So whether you pay, and how much, is up to you.
+
+### Which systems does it run on?
+
+macOS on Apple Silicon, Windows on x86_64 and Linux on x86_64. On Linux, it's fully supported on normal X11 or XWayland desktops. Pure Wayland sessions without an X server fall back to screen edges only.
+
+### Is it safe to install?
+
+It's open source, so you can read every line. I'm diligent with code reviews, security reviews and updates. The builds aren't signed yet, so macOS and Windows warn on first open, and the [install steps](#get-it) say what to click. If you'd rather not trust a download, build it from source. You're welcome to report any issue you find on the repository.
+
+## Developing
+
+**Want to help?** [Open issues](https://github.com/omesser/fidget/issues) welcome bugs, ideas, and PRs. Start with [DEVELOPMENT.md](./docs/DEVELOPMENT.md) for toolchains, hooks, verification, character writing, and imports. See how Fidget compares to other desktop pets in [alternatives.md](./docs/research/alternatives.md).
+
+**Design and decisions:**
+
+- [GLOSSARY.md](./GLOSSARY.md) - vocabulary
+- [DESIGN.md](./DESIGN.md) - design decisions (the chat window ships; the [chat mockups](https://omesser.github.io/fidget/chat-mockups.html) are a Dated page, a frozen proposal, not what ships)
+- [docs/SPEC.md](./docs/SPEC.md) - v1 scope
+- [docs/adr/](./docs/adr/) - ADRs
+
+## Prior Art and Attribution
+
+Harness brand marks identify each Harness and belong to their owners. The Grok
+logomark is xAI's own file from [their brand guidelines](https://x.ai/legal/brand-guidelines),
+used unaltered to refer to Grok, which those guidelines permit and may revoke.
+The Nous Research mark (`docs/readme/nous.svg`) identifies the Hermes Harness.
+The Codex row uses the OpenAI mark from
+[Simple Icons](https://simpleicons.org), kept in the repo because the CDN no
+longer serves that slug (CC0, trademark reserved to OpenAI).
+`docs/readme/openai-on-light.svg` is that glyph in near-black;
+`docs/readme/openai-on-dark.svg` is the same path in white, so it stays visible
+on a dark README. The Goose mark is the Goose icon from
+[Lobe Icons](https://github.com/lobehub/lobe-icons) (MIT), split the same way
+(`docs/readme/goose-on-light.svg`, `docs/readme/goose-on-dark.svg`); the
+trademark stays with Block. Every other mark is served from Simple Icons (CC0, with each
+brand's trademark reserved to its owner).
+
+[WindowPet](https://github.com/SeakMengs/WindowPet) (MIT) inspired the Tauri desktop-pet shape. Fidget is a greenfield build, not a fork ([ADR-0001](./docs/adr/0001-greenfield-tauri-not-fork-windowpet.md)). Overlay code is independent; tray, launch-at-login, and updater follow WindowPet's MIT-licensed patterns.
+
+
+The Chat window's mind mark - the small brain beside what answers - is the
+`brain` glyph from [Font Awesome Free](https://fontawesome.com/) 6.x, used
+under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) and inlined as
+a path in `src/chat.html`. The license asks for the credit; this is it.
+
+Character provenance is in each Character Package manifest, under `[source]`, and on the [Character Gallery](https://omesser.github.io/fidget/characters.html). In short: Buddy Bot and Nim are this project's own art. Timber Wolf derives, with the creator's permission, from [MekaRamen](https://mekaramen.com/)'s [Sketchfab model](https://sketchfab.com/3d-models/clans-timberwolf-battlemech-74e4d72e0cf3409ba3992cd0d895bc2f). BMO is cut from the [shimejishop BMO pack](https://shimejishop.com/free/bmo-shimeji/). Cat, Jotaro Kujo, Rubber Duck, Trump, Tux, and Tuxedo Bean are cut from [petscodex](https://petscodex.com/) pets. Black Mage is sliced from GigaGuy's sprite sheet on The Spriters Resource. A package is prose, a manifest and art: the personality and the manifest - animations, Behaviors, Director and cursor tuning - are this project's work and MIT throughout. The art is not always ours. Some characters adapt art that declares no license, and each manifest names what it adapts and whose IP the character is.
+
+## License
+
+MIT.

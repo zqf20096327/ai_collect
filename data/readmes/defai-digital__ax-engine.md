@@ -32,21 +32,30 @@ Additional native families (GLM 4.7 Flash, Nemotron Omni, Unlimited-OCR, Whisper
 MiniCPM-V, and others) are documented under
 [Supported Models](docs/SUPPORTED-MODELS.md).
 
-**Requires macOS 26 (Tahoe)+ on Apple Silicon (M2 or newer).** Product SKUs:
+**Requires macOS 26 (Tahoe)+ on Apple Silicon.** Hardware tiers:
 
-- **Mac mini M4 Pro 64 GB** — best experience and qualification SKU for Qwen 3.8 27B AXQ (`qwen3.8-27b:axq`); MXFP4 SKU qualification pending
+| Tier | Chips | What to expect |
+| --- | --- | --- |
+| Primary | **M5 and later** | Defaults, tuning and published performance are measured here. Best experience. |
+| Supported | M3, M4 | Tested for correctness every release; may be slower than M5. |
+| Best-effort | M2 | Runs, but is not tuned or qualified. |
+| Not supported | M1 | Startup fails closed. |
+
+Product SKUs:
+
+- **Qwen 3.8 27B AXQ (`qwen3.8-27b:axq`)** — optimized on M5-class Macs (32 GB+ recommended). The existing qualification record was measured on a Mac mini M4 Pro 64 GB, a supported M4-tier configuration; MXFP4 SKU qualification pending
 - **MacBook Pro M5 Max 128 GB** — qualification and certification standard for Qwen 3.8 Flash Next MXFP4 MTP
   (125B-A6B). Second SKU. Qualification and certification standard: MacBook Pro M5 Max 128 GB, single-stream resident (one request at a time, MTP off, contexts up to 32k). MXFP4 MTP target; native functional controls verified; direct-default release gates passed on this standard host; model MTP is an explicit experimental opt-in. MTP Tier 2 pending. AX certification record: Candidate (direct-default release gates passed on MacBook Pro M5 Max 128 GB; MTP gates open). `qwen3.8-flash-next:axq` and `qwen3.8-flash-next:mxfp4` select the pinned MXFP4 MTP pack.
   Start the server with `--max-concurrent-requests 1`. Measured decode on one machine: 32 / 32 / 28 tok/s at 2k / 8k / 32k context.
   Historical 6-bit numbers do not qualify MXFP4. This host is also the benchmark host for other packs.
-- **Mac Studio, Ultra-class Apple Silicon (M2 Ultra or newer) with 192 GB+ RAM** — larger-memory host for the same Flash Next pack.
+- **Mac Studio, Ultra-class Apple Silicon with 192 GB+ RAM** (M3 Ultra or newer; M2 Ultra is best-effort) — larger-memory host for the same Flash Next pack.
   The 2026-10-05 direct-default release gates were measured here and stay bound to this host.
 
 Compact single models (Qwen 3.5 9B 4-bit preferred) still fit **16 GB**. Prefer
 4-bit for headroom on that class.
 
-Wired-memory controls are available across supported M2-or-newer Macs; they
-are not M5-only. The automatic **no-wire optimization** currently targets only
+Wired-memory controls are available on every Mac AX Engine runs on (M2 and
+newer); they are not M5-only. The automatic **no-wire optimization** currently targets only
 the two audited Tiel MXFP4 MTP exports on **M5 Max with at least 128 GiB**.
 Other supported hosts retain existing wiring. Model fit and measured speed
 still depend on memory capacity and workload; see the
@@ -58,6 +67,19 @@ still depend on memory capacity and workload; see the
   MXFP4 MTP pack. Flash Next has its own `qwen4_exp` route and MXFP4 MTP
   selector. MXFP8 is in scope with pack admission pending. See the
   [format and migration policy](docs/QWEN38-FORMAT-POLICY.md).
+- **DFlash2 on eligible greedy Qwen text** — Qwen 3.8 27B and Qwen 3.6
+  35B-A3B draft a block with DFlash2 when the matching Apache-2.0 checkpoint
+  is already on disk (`z-lab/Qwen3.8-27B-DFlash2`,
+  `incoai/Qwen3.6-35B-A3B-DFlash2`). The server does not download it, and it
+  is not inside the AXQ pack. Sampled requests, grammars, images, and a
+  missing checkpoint stay on the normal routes. MTP stays explicit opt-in.
+  See [DFlash2](docs/mtp/README.md#dflash2).
+- **NAX attention on M5** — on M5 or later with macOS 26.2 or newer, MLX
+  selects Neural Accelerator GEMM and SDPA. AX keeps native causal attention
+  for allowlisted full-attention prefill of at least 1024 tokens, including
+  Qwen 3.8 27B. Gemma stays off that policy. M3 and M4 do not arm it.
+  `AX_MLX_NAX_ATTENTION=0` turns the attention policy off. See
+  [NAX attention](docs/MLX-BACKEND.md#nax-attention).
 - **Evidence tied to the pack** — historical 6-bit benchmark results remain
   published below and do not describe the replacement default. MXFP4 and
   MXFP8 need their own runtime, quality, memory and MTP evidence.
@@ -95,13 +117,15 @@ still depend on memory capacity and workload; see the
 Clients enter through the HTTP server, the Python binding, or a language SDK.
 `ax-engine-sdk` keeps one session per loaded model on that model's worker
 thread. `ax-engine-core` admits the request, plans a decode-first batch, and
-owns the paged KV ledger. `ax-engine-mlx` runs the graph. Optional
-`mlx_lm.server` and llama.cpp adapters stay on the compatibility route.
+owns the paged KV ledger. `ax-engine-mlx` runs the graph, including DFlash2
+block drafting for eligible greedy Qwen text, MTP, n-gram acceleration,
+expert paging, and NAX attention on M5. Optional `mlx_lm.server` and llama.cpp
+adapters stay on the compatibility route.
 Normative detail is in [Architecture](docs/ARCHITECTURE.md).
 
 ## Install AX Engine for macOS
 
-Use the curl installer on **Apple Silicon (M2 or newer), macOS 26.2 or newer**.
+Use the curl installer on **Apple Silicon (M5 or later recommended; M3–M4 supported; M2 best-effort), macOS 26.2 or newer**.
 It installs **AX Engine.app with its native inference runtime bundled**. You do
 not need Homebrew, Python, Xcode or a Hugging Face account for public models.
 Quit AX Engine before installing or upgrading, then run in Terminal:
@@ -144,7 +168,7 @@ for usage and [distribution guide](docs/MACOS-DISTRIBUTION.md) for release verif
 
 The curl command above is the end-user app installation path. The channels below
 are for shell automation, direct API serving or Python development; they do not
-install the GUI app. Native CLI packages require Apple Silicon (M2 or newer)
+install the GUI app. Native CLI packages require Apple Silicon (M5 or later recommended; M3–M4 supported; M2 best-effort)
 and macOS 26 or newer.
 
 | Goal | Channel |
@@ -174,7 +198,7 @@ and macOS 26 or newer.
    python3.13 -m venv "$HOME/.venvs/ax-engine"
    source "$HOME/.venvs/ax-engine/bin/activate"
    python -m pip install --upgrade pip
-   python -m pip install --upgrade "ax-engine[download]>=8.0.3,<9"
+   python -m pip install --upgrade "ax-engine[download]>=8.0.7,<9"
    ax-engine doctor
    ```
 
@@ -279,7 +303,7 @@ Python wheel, source builds, and troubleshooting:
 `ax-engine download --list` prints the curated public
 [AutomatosX model collection](https://huggingface.co/AutomatosX/models?sort=alphabetical).
 The GUI shows the runtime catalog in **Models → Catalog**, completed models in
-**Local Library**, and current downloads in **Transfers**. Downloads are public,
+**Your Models**, and current downloads in **Downloads**. Downloads are public,
 unrestricted AutomatosX packs only; no Hugging Face account or token is needed.
 Download other models independently and use the CLI with a local model path.
 Local models remain accessible when the Hub is unavailable. Qwen 3.8 27B AXQ (MXFP4 MTP pack),
@@ -477,7 +501,10 @@ Decode and prefill for Qwen 27B are 20-run medians. Tiel completion includes TTF
 
 Qwen 3.8 6-bit rows below are **historical retired-pack evidence**. The
 old AXQ selector binding selected 6-bit; it now selects MXFP4 MTP. These
-numbers and MTP findings do not qualify MXFP4 or MXFP8.
+numbers and MTP findings do not qualify MXFP4 or MXFP8. The charts in this
+section measure MTP or direct decode. They do not measure DFlash2. Greedy
+text uses DFlash2 when its checkpoint is already present; see
+[DFlash2](docs/mtp/README.md#dflash2).
 
 
 ### Qualification SKU: Mac mini M4 Pro 64 GB (2026-09-17)

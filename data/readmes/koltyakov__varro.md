@@ -81,9 +81,11 @@ Use slash commands for reviews, compaction, exports, stats, skills, diagnostics,
 
 On v2, `/pause` interrupts the run and pauses its queue in the current view. Resume from the transcript divider or send a message. It preserves the conversation, not an in-flight operation for exact resumption. Paused time does not count toward work duration or usage statistics.
 
-### Handy dictation
+### Dictation with Handy or Hex
 
-Install and configure [Handy](https://github.com/cjpais/Handy) to enable the microphone button. Click to start or stop dictation; right-click to cancel. Disable Handy's Auto Submit to review text before sending. Set `varro.dictation.handyPath` if detection fails. Requires Handy's CLI remote-control support and a local desktop host, not SSH, WSL, or containers.
+Install and configure [Handy](https://github.com/cjpais/Handy) or [Hex](https://github.com/anomalyco/hex) to enable the microphone button. Start the app yourself, then click the mic to start or finish dictation; right-click to cancel. The app inserts the text into the focused composer. Varro never launches either app or changes its settings.
+
+Varro automatically uses the running app, preferring Hex when both are running. Both apps are detected in standard installation locations and on `PATH`. Handy needs CLI remote-control support; Hex needs `hex status --json` and `hex dictation start|stop|cancel --json`. Disable Handy's Auto Submit to review text before sending. Both integrations require a local desktop extension host, not SSH, WSL, or containers.
 
 ## Permissions
 
@@ -100,6 +102,10 @@ Varro starts in `Auto` unless overridden by `varro.chat.defaultPermissionMode` o
 ## Models, providers, and MCP
 
 Connect or reauthenticate supported API-key and OAuth providers in the Models view. The picker shows known model capabilities and lets you pin, hide, or rename models locally. MCP servers come from OpenCode configuration and can be toggled per session.
+
+Use **Manage MCPs** at the bottom of the MCP picker to open the separate configuration screen. Use the **Global** and **This project** tabs to choose which servers connect automatically; unchecked servers stay available on demand. These settings update OpenCode configuration, including the startup connection setting. A project setting takes priority over Global, and **Use global** removes it. Choosing the global value writes no project entry, and a project entry with its own connection settings is kept until you edit it in the config file. Project-only servers must be added to global OpenCode configuration before their global setting can be changed. Defaults are editable when sessions are idle and file-based configuration is available; attached servers must be configured on their host.
+
+The MCP picker keeps its own session selection without changing defaults. On-demand servers stay visible and connect when selected. Connections are shared, so a server needed by a running session or child task remains connected until that work finishes. Selection is not per-session tool isolation.
 
 Follow-ups are enabled by default using the session's model and reasoning. Override with **Use for follow-ups** in a model's context menu or `varro.chat.followupModel`; opt out with `varro.chat.followupsEnabled: false`. Requires OpenCode V2; sends the current request and answer for extra inference that may consume tokens or subscription quota. Hover to preview prompts; click to send, preserving your agent, permissions, draft, and attachments. No history backfill or helper chats.
 

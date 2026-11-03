@@ -235,8 +235,8 @@ the suppressing pole from L34 ([§5](docs/findings.md#5-prediction-and-suppressi
 
 Early neurons detect tokens and token families (阔 "wide"; words starting with 出; English given names),
 which no output-facing lens reads: at L2, 95% of a typical write, carried forward by the R-lens, lies
-along one direction. The S-lens recovers these detectors from the weights: at L0, on average 40% of a
-pole's top firings have their token in its S-lens read's top 10 (another pole's read: 0.1%), and 2-9%
+along one direction. The S-lens recovers these detectors from the weights: at L0, on average 38% of a
+pole's top firings have their token in its S-lens read's top 10 (another pole's read: under 0.1%), and 2-9%
 at L1-L8, where the R-lens read gets under 1.5% (3.5% at L8). Early neurons also write back the
 footprint of the tokens they detect: layers 0-8 in effect act as an extended embedding. From L9
 the R-lens read of the input direction names exact drivers more often; L13-L20 is the weakest stretch
@@ -307,13 +307,13 @@ concepts ([§10](docs/findings.md#10-outside-labels)).
 
 Qwen3-8B has 33 induction heads (which continue repeated text: after `A B … A`, they attend to `B` and
 predict it), 33 duplicate-token heads (which attend to earlier copies of the current token), 4
-previous-token heads and 60 sink heads, and removing any one head costs in-context copying at most
+previous-token heads and 16 sink heads, and removing any one head costs in-context copying at most
 0.07 nats: the work is spread over many heads. A head's input reads best through the S-lens (a head
 reads what a position holds, not what it is about to say); its output with the S-lens up to L8 and the
 R-lens from L9, as for neurons. Feeding each vocabulary token's S-lens footprint through a head's
 circuits gives two token-by-token maps. The OV map says what it copies and suppresses (L26h31 copies
 quantities: ` weight | 体重 | strength`; L32h9 suppresses the surnames L34h1 copies), and predicts where
-the attended token ranks in the head's actual output at each firing (Spearman +0.54; 0.00 under
+the attended token ranks in the head's actual output at each firing (Spearman +0.51; 0.00 under
 another head). The QK map finds the duplicate-token heads from the weights (AUROC 0.96), and late
 heads attend to the classes they copy or suppress
 ([§11](docs/findings.md#11-attention-heads-circuits-read-token-by-token)).
@@ -463,8 +463,8 @@ heads.query("layer == 20 and head == 17")[["ov_R_str", "qk_S_str", "duplicate", 
 ```
 
 Browse a local copy with `python -m neuron_lens.catalog show 8 344 +`, `head 20 17` or
-`search 'Bible|圣经'`. The R-lens also loads in [Drowse](https://github.com/stdlogits/drowse):
-`drowse lens fetch Qwen/Qwen3-8B workspace-r --repo stdlogits/rs-lenses`.
+`search 'Bible|圣经'`. Both lenses also load in [Drowse](https://github.com/stdlogits/drowse) (6.0 or
+later): `drowse lens fetch Qwen/Qwen3-8B rs-r` for the R-lens and `rs-s` for the S-lens.
 
 For Gemma 4 12B, with this package installed (`neuron_lens.weights.tensors` reads only the named
 weights from the checkpoint, so no model is loaded), read a neuron's write, then see its image read,
@@ -506,7 +506,7 @@ Sound is the same with `audio` for `image`: `read_wave` and `opt_wave` hold 640 
 ## Reproducing
 
 ```bash
-uv pip install -e ".[plots]"     # add the drowse extra (Drowse >= 5.4) to export lenses to Drowse
+uv pip install -e ".[plots]"     # add the drowse extra (Drowse >= 6.0) to export lenses to Drowse
 python -m pytest -q              # estimator tests: brute-force Jacobians, agreement with Drowse
 ```
 
@@ -534,14 +534,15 @@ take about 1.5× as long.
 | `12_release.py` | release the lenses and the catalog on the Hub | |
 
 An Apple-silicon Mac runs everything but the lens fits and the GPU passes, which want a CUDA card (24
-GB is enough for the text passes). `scripts/checks/` holds the analyses behind the findings (steering,
-the blind tests, sinks and entropy neurons, outside labels, head lens sides; for Gemma 4, the media
-lens tests, the cross-modal ranks `14_media_tables.py` reads, and the heads in media contexts);
-analyses the pipeline later absorbed are retired. The package `neuron_lens/` holds the
-estimator (`transport.py`, with `rules.py` as its test reference, and Gemma 4's layer maps in
-`gemma4.py`), the models' geometry (`arch.py`, `neurons.py`), the readouts (`readout.py`, `heads.py`),
-lens loading (`lenses.py`), images and sound (`media.py`, `media_sets.py`) and the catalog
-(`catalog.py`).
+GB is enough for the text passes). `scripts/checks/` holds the analyses behind the findings, each
+named in its findings section (steering and per-context linearization, prediction and suppression, read
+depth, driver precision, the description pilot and the blind tests, sinks and entropy neurons, outside
+labels, heads' ablation, copying, census and lens sides; for Gemma 4, the media lens tests, the
+cross-modal ranks `14_media_tables.py` reads, and the heads in media contexts). The package
+`neuron_lens/` holds the estimator (`transport.py`, the layer maps of every model in `layers.py`, and
+`rules.py` as their test reference), the models' geometry (`arch.py`, `neurons.py`), the readouts
+(`readout.py`, `heads.py`), lens loading (`lenses.py`), images and sound (`media.py`, `media_sets.py`)
+and the catalog (`catalog.py`).
 
 <details><summary>Gemma 4 12B, in order</summary>
 

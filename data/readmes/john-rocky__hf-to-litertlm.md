@@ -1,7 +1,7 @@
 # hf-to-litertlm
 
 Convert open-weight Hugging Face LLMs and VLMs into `.litertlm` bundles for Google's LiteRT-LM
-runtime (Android, iOS, macOS, Windows, Linux): 97 published conversions below, each with
+runtime (Android, iOS, macOS, Windows, Linux): 100 published conversions below, each with
 measured speeds and a one-command reproduction.
 
 LiteRT-LM is Google's recommended replacement for the MediaPipe LLM Inference API
@@ -136,6 +136,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [Agents-A1-4B](https://huggingface.co/litert-community/Agents-A1-4B) | 4B | agentic research, tool calls | Galaxy S26 CPU 11.8 | M4 Max GPU 67.2 | [recipe](REPRODUCE.md#2026-09-21--agents-a1-4b-internscience-the-qwen35-4b-rail-on-an-agentic-finetune-tools--thinking-template) |
 | [FastContext-1.0-4B-SFT](https://huggingface.co/litert-community/FastContext-1.0-4B-SFT) | 4B | chat | iPhone 17 Pro GPU 14.0 | M4 Max GPU 73.8 | [card](cards/fastcontext-4b-litert.md) |
 | [Qwen3.5-4B](https://huggingface.co/litert-community/Qwen3.5-4B) | 4B | chat | iPhone 17 Pro GPU 11.4 | M4 Max GPU 68.5 | [recipe](REPRODUCE.md#qwen35-gateddeltanet--attention-hybrid--first-qwen35-in-litert-form) |
+| [Qwen3.5-4B-3D-Coder](https://huggingface.co/litert-community/Qwen3.5-4B-3D-Coder) | 4B | coding, Three.js 3D scenes | iPhone 18 Pro GPU 10.5 | M4 Max GPU 48.6 | [recipe](REPRODUCE.md#2026-11-02--qwen35-4b-3d-coder-the-qwen35-4b-rail-with-a-kv-cache-sized-for-the-models-long-answers-mixed-int4-at-16384-and-32768-tokens) |
 | [granite-4.1-8b](https://huggingface.co/litert-community/granite-4.1-8b) | 8.38B | chat | Galaxy S26 GPU 5.4 | M4 Max GPU 58.3 | [recipe](REPRODUCE.md#granite-41-8b--the-lightweight-export-path-for-an-8b-and-the-gpu-composite-graph-by-rewrite) |
 | [Ministral-3-8B-Instruct-2512](https://huggingface.co/litert-community/Ministral-3-8B-Instruct-2512) | 8.49B | chat | Galaxy S26 GPU 5.7 | M4 Max GPU 61.7 | [recipe](REPRODUCE.md#ministral-3-8b-instruct-2512--a-text-tower-out-of-a-vision-checkpoint-the-lightweight-export-path-for-an-8b-and-the-gpu-composite-graph-by-rewrite) |
 | [Ornith-1.0-9B](https://huggingface.co/litert-community/Ornith-1.0-9B) | 8.95B | agentic coding | — | M4 Max GPU 44.9 | [recipe](REPRODUCE.md#2026-10-16--ornith-10-9b-a-qwen35-9b-finetune-on-the-9b-hybrid-recipe-with-thinking-off-in-the-template) |
@@ -174,6 +175,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [SmolVLM2-500M](https://huggingface.co/litert-community/SmolVLM2-500M) | 0.5B | chat + image | Galaxy S26 GPU 76.3 | M4 Max CPU 63.9 | [card](cards/smolvlm2-500m-litert.md) |
 | [Qwen3.5-0.8B](https://huggingface.co/litert-community/Qwen3.5-0.8B) | 0.8B | chat; separate image file | iPhone 17 Pro GPU 65.8 | M4 Max GPU 161.8 | [recipe](REPRODUCE.md#qwen35-gateddeltanet--attention-hybrid--first-qwen35-in-litert-form) |
 | [OvisOCR2](https://huggingface.co/mlboydaisuke/OvisOCR2-LiteRT) | 0.85B | document OCR | iPhone 17 Pro GPU 48.5 | M4 Max GPU 140.9 | [recipe](REPRODUCE.md#ovisocr2--an-ocr-finetune-rides-the-08b-vision-rail-unchanged) |
+| [Xiaomi-OCR-0](https://huggingface.co/litert-community/Xiaomi-OCR-0) | 0.873439B | OCR: pages, text, tables, formulas, fields | iPhone 18 Pro GPU 71.8 | M4 Max CPU 41.2 | [recipe](REPRODUCE.md#xiaomi-ocr-0--an-ocr-vlm-as-a-fast_vlm-bundle-that-reads-one-tall-768--1344-picture-the-checkpoints-12-layer-vit-exported-at-that-size-with-its-layernorm-scales-pinned-and-the-qwen35-text-hybrid-decoder-on-the-qwen35-rail-2026-11-03) |
 | [PaddleOCR-VL-1.6](https://huggingface.co/litert-community/PaddleOCR-VL-1.6) | 0.9B | OCR, 109 languages | — | M4 Max GPU 208.3 | [card](cards/paddleocr-vl-1.6-litert.md) |
 | [InternVL3-1B](https://huggingface.co/litert-community/InternVL3-1B) | 1B | chat + image | Galaxy S26 GPU 84.4 | M4 Max CPU 94.0 | [card](cards/internvl3-1b-litert.md) |
 | [InternVL3_5-1B](https://huggingface.co/litert-community/InternVL3_5-1B) | 1B | chat + image | Galaxy S26 GPU 42.9 | M4 Max GPU 176.2 | [card](cards/internvl3_5-1b-litert.md) |
@@ -193,7 +195,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [InternVL3_5-4B](https://huggingface.co/litert-community/InternVL3_5-4B) | 4B | chat + image | Galaxy S26 GPU 13.3 | M4 Max GPU 86.5 | [card](cards/internvl3_5-4b-litert.md) |
 | [Mage-VL](https://huggingface.co/litert-community/Mage-VL) | 4.7B | chat + image | Galaxy S26 GPU 17.1 | M4 Max GPU 80.0 | [card](cards/magevl-litert.md) |
 | [Muse-Glimmer-30B](https://huggingface.co/litert-community/Muse-Glimmer-30B-LiteRT) | 29.7766B | chat + image (one picture at 448 × 448) | — | M4 Max GPU 18.3 | [recipe](REPRODUCE.md#muse-glimmer-30b--a-dense-52-layer-decoder-through-export_hf-behind-a-text-only-wrapper-int4-with-its-kv-cache-shortened-to-2048-tokens-in-the-int4-file-and-a-vision-tower-re-authored-for-one-448--448-picture-and-lifted-to-rank-4-for-the-gpu-2026-10-31) |
-| [Qwen2.5-VL-72B-Instruct](https://huggingface.co/litert-community/Qwen2.5-VL-72B-Instruct-LiteRT) | 73.4108B | chat + image (one picture at 448 × 448) | — | M4 Max GPU 8.3 | [recipe](REPRODUCE.md#qwen25-vl-72b-instruct--the-80-layer-text-decoder-written-with-the-litert-tensor-api-one-tensor-at-a-time-int4-a-2048-token-cache-prefill-32--128--1024-and-the-vision-tower-re-authored-for-one-448--448-picture-and-lifted-to-rank-4-for-the-gpu-2026-10-31) |
+| [Qwen2.5-VL-72B-Instruct](https://huggingface.co/litert-community/Qwen2.5-VL-72B-Instruct-LiteRT) | 73.4108B | chat + image (one picture at 448 × 448) | — | M4 Max GPU 8.6 | [recipe](REPRODUCE.md#qwen25-vl-72b-instruct--the-80-layer-text-decoder-written-with-the-litert-tensor-api-one-tensor-at-a-time-int4-a-2048-token-cache-prefill-32--128--1024-and-the-vision-tower-re-authored-for-one-448--448-picture-and-lifted-to-rank-4-for-the-gpu-2026-10-31) |
 | [Tashkeel-350M-v2](https://huggingface.co/mlboydaisuke/Tashkeel-350M-v2-LiteRT) | 0.34B | Arabic diacritization | Galaxy S26 CPU 67.2–69.0 | M4 Max CPU 97.2 | [recipe](REPRODUCE.md#granite-40-h-finetune-intake-tashkeel-350m-v2--the-recipe-rides-derivatives-unchanged) |
 | [S1-mini](https://huggingface.co/mlboydaisuke/S1-mini-LiteRT) | 0.6B | ASR transcript normalization | iPhone 17 Pro GPU 32.0 | M4 Max GPU 144.6 | [card](cards/s1-mini-litert.md) |
 | [decider-0.8b](https://huggingface.co/litert-community/decider-0.8b-LiteRT) | 0.752393B | typed decisions with calibrated probabilities (System One) | Galaxy S26 CPU 36.9 | M4 Max CPU 42.5 | [recipe](REPRODUCE.md#decider-08b-mapika--a-system-one-decision-model-on-the-qwen35-08b-hybrid-rail-the-readout-is-the-recipe-2026-09-23) |
@@ -202,6 +204,7 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 | [Confucius4-R2T2](https://huggingface.co/mlboydaisuke/Confucius4-R2T2-LiteRT) | 2.04B | streaming speech to text (zh / en / ja) | — | — | [card](cards/confucius4-r2t2-litert.md) |
 | [Hy-MT2-1.8B](https://huggingface.co/litert-community/Hy-MT2-1.8B) | 2.04B | translation, 33 languages | Galaxy S26 GPU 26.3–27.5 | M4 Max GPU 150.7 | [recipe](REPRODUCE.md#2026-08-27--hy-mt2-18b-intake-one-config-bake-closes-the-sweeps-real-gap-and-the-engines-start_token-prepend-gets-proven) |
 | [Qwen3-ASR-1.7B](https://huggingface.co/litert-community/Qwen3-ASR-1.7B) | 2.04B | speech to text (scored on zh / en / ja) | Galaxy S26 CPU 25.3 | — | [card](cards/qwen3-asr-1.7b-litert.md) |
+| [LFM3-Omni-2B](https://huggingface.co/litert-community/LFM3-Omni-2B-LiteRT) | 2.17B | questions about a picture or a recording (en); speech output through LiteRT graphs | Galaxy S26 GPU 27.0 | M4 Max GPU 84.3–139.0 | [recipe](REPRODUCE.md#lfm3-omni-2b--text-one-picture-and-audio-in-through-one-generic_model-litertlm-file-the-decoder-rescaled-per-input-channel-then-dynamic-int8-and-speech-out-as-litert-graphs-for-a-host-loop-with-the-depth-decoder-of-a-whole-speech-frame-in-one-graph-for-the-phone-gpu-2026-10-29-the-one-frame-graph-2026-11-01) |
 | [VibeVoice-ASR-BitNet](https://huggingface.co/litert-community/VibeVoice-ASR-BitNet) | 2.2B | speech to text | Galaxy S26 GPU 36.1 | M4 Max GPU 138.6 | [card](cards/vibevoice-asr-bitnet-litert.md) |
 | [decider-2b-vision](https://huggingface.co/litert-community/decider-2b-vision-LiteRT) | 2.21324B | decisions from an image with calibrated option probabilities (System One) | Galaxy S26 GPU 8.6 | — | [recipe](REPRODUCE.md#decider-2b-vision-mapika--a-vision-system-one-model-on-the-qwen35-2b-hybrid-rail-the-authors-m-rope-positions-are-derived-inside-the-graph-2026-09-29) |
 | [VibeVoice-ASR-Streaming-1.5B](https://huggingface.co/litert-community/VibeVoice-ASR-Streaming-1.5B) | 2.8B | streaming speech to text | Galaxy S26 CPU 46.5 | M4 Max GPU 139.6 | [card](cards/vibevoice-asr-streaming-1.5b-litert.md) |
@@ -211,6 +214,8 @@ manifest. A range is the spread across runs. A dash means no measured row for th
 Conversions published without a manifest (personal-namespace mirrors, desktop-only files) and
 the 11 non-chat conversions (encoders, embeddings, TTS, image generation) are in
 [REPRODUCE.md](REPRODUCE.md).
+
+[`tools/coverage/COVERAGE.md`](tools/coverage/COVERAGE.md) lines this up against what people download: the Hub's 100 most-downloaded `text-generation` and 100 most-downloaded `image-text-to-text` models (30-day count, quantized re-uploads left out), each joined to the `litert-community` repos whose card names it as `base_model`, with what the conversion still lacks: a `.litertlm` file, a manifest, a file verified on GPU, external weights, image input. In the 2026-11-01 (UTC) fetch, 36 of the 200 have a conversion there and 4 lack none of these. `python3 tools/coverage/make_coverage_table.py` rebuilds it from the public Hub API.
 
 ## What lives here
 
@@ -379,6 +384,10 @@ The same manifest drives Google Play delivery: [`tools/play_ai_pack/`](tools/pla
 it into a Play for On-device AI pack — one device group per manifest recommendation, the
 device-targeting XML, and a host app that fetches the pack and runs the file on the backend the
 manifest names.
+
+## Audit an org's files
+
+[`tools/community_audit/`](tools/community_audit/) reads the header of every `.litertlm` file of a Hugging Face org (HTTP ranges, no weights) and writes one table of what each file carries: inline or external weights, the ExecutorMetadata section, vision and audio sections, the model type, whether the chat template reads `tools` and `enable_thinking`, the channels, the sampler, and flags for the files to rebuild. Each repo is read at a recorded commit, and `--pin` reads the same commits again, so a second read gives the same table. `run_check.py` runs a file from each of the most-downloaded repos, plus files named on the command line, on the CPU and the GPU (a text question, a tool-call exchange, and a photo question and thinking on and off where the file has them) and notes where the run and the header disagree. The current `litert-community` table is [`tools/community_audit/table/audit.md`](tools/community_audit/table/audit.md).
 
 ## Layout
 

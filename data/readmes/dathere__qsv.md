@@ -73,7 +73,7 @@
 | [pivotp](docs/help/pivotp.md)✨<br>🐻‍❄️🚀🪄 | Pivot CSV data. Features "smart" aggregation auto-selection based on data type & stats. |
 | [pragmastat](docs/help/pragmastat.md)<br>📇🤯🎲🪄 | Compute pragmatic statistics using the [Pragmastat](https://pragmastat.dev/) library. Uses the stats cache to auto-filter non-numeric columns and support Date/DateTime columns. |
 | [pro](docs/help/pro.md) | Interact with the [qsv pro](https://qsvpro.dathere.com) API. |
-| [profile](docs/help/profile.md)✨<br>📇🧠🤖📚⛩️ ![CKAN](docs/images/ckan.png) | Extract, derive & infer metadata from a CSV (local path or URL) - using the statistical profile of a dataset, mapped and driven by a configurable metadata [scheming](https://github.com/ckan/ckanext-scheming) YAML spec ([DCAT-US v3](https://resources.data.gov/resources/dcat-us3/), [DCAT-AP v3](https://semiceu.github.io/DCAT-AP/releases/3.0.0/) and [Croissant 1.1](https://docs.mlcommons.org/croissant/docs/croissant-spec-1.1.html) bundled; [Geoconnex](https://docs.geoconnex.us/reference/overview) when built with the `geoconnex` feature), with optional CKAN/DCAT metadata discovery for URL inputs. This enables [FAIRification](https://www.go-fair.org/fair-principles/fairification-process/) at scale. |
+| [profile](docs/help/profile.md)✨<br>📇🧠🤖🌐📚🌎⛩️ ![CKAN](docs/images/ckan.png) | Extract, derive & infer metadata from a CSV (local path or URL) - using the statistical profile of a dataset, mapped and driven by a configurable metadata [scheming](https://github.com/ckan/ckanext-scheming) YAML spec ([DCAT-US v3](https://resources.data.gov/resources/dcat-us3/), [DCAT-AP v3](https://semiceu.github.io/DCAT-AP/releases/3.0.0/) and [Croissant 1.1](https://docs.mlcommons.org/croissant/docs/croissant-spec-1.1.html) bundled; [Geoconnex](https://docs.geoconnex.us/reference/overview) when built with the `geoconnex` feature), with optional CKAN/DCAT metadata discovery for URL inputs. This enables [FAIRification](https://www.go-fair.org/fair-principles/fairification-process/) at scale. |
 | [prompt](docs/help/prompt.md)✨<br>🐻‍❄️🖥️ | Open a file dialog to either pick a file as input or save output to a file. |
 | [pseudo](docs/help/pseudo.md)<br>🔣👆 | [Pseudonymise](https://en.wikipedia.org/wiki/Pseudonymization) the value of the given column by replacing them with an incremental identifier.  |
 | [py](docs/help/py.md)✨<br>📇🔣 | Create a new computed column or filter rows by evaluating a Python expression on every row of a CSV file. Python's [f-strings](https://www.freecodecamp.org/news/python-f-strings-tutorial-how-to-use-f-strings-for-string-formatting/) is particularly useful for extended formatting, [with the ability to evaluate Python expressions as well](https://github.com/dathere/qsv/blob/4cd00dca88addf0d287247fa27d40563b6d46985/src/cmd/python.rs#L23-L31). [Requires Python 3.11 or greater](https://github.com/dathere/qsv/blob/master/docs/INTERPRETERS.md#building-qsv-with-python-feature). |
@@ -115,7 +115,7 @@
 🧠: expensive operations are memoized with available inter-session Redis/Disk caching for fetch commands.  
 🗄️: [Extended input support](#extended-input-support).  
 🗃️: [Limited Extended input support](#limited-extended-input-support).  
-🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.1.0](https://img.shields.io/badge/polars-0.55.1:py--2.1.0-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.1.0) vectorized query engine.  
+🐻‍❄️: command powered/accelerated by [![polars 0.55.1 at py-2.1.0:0b47007](https://img.shields.io/badge/polars-0.55.1:py--2.1.0:0b47007-blue?logo=polars)](https://github.com/pola-rs/polars/releases/tag/py-2.1.0) vectorized query engine.  
 🤖: command uses Natural Language Processing or Generative AI.  
 🏎️: multithreaded and/or faster when an index (📇) is available.  
 🚀: multithreaded even without an index.  
@@ -542,7 +542,7 @@ It can process well-formed CSVs in _any_ language so long as its UTF-8 encoded. 
 Finally, though the default Geonames index of the `geocode` command is English-only, the index can be rebuilt with the `geocode index-update` subcommand with the `--languages` option to return place names in multiple languages ([with support for 254 languages](http://download.geonames.org/export/dump/alternatenames/)).
 
 ## Testing
-qsv has 6,808 tests: 6,071 for the qsv binaries (4,741 integration in the [tests](https://github.com/dathere/qsv/tree/master/tests) directory + 1,330 unit across `src/` modules), plus 737 for the MCP server & Cowork plugin (in [`.claude/skills/tests`](https://github.com/dathere/qsv/tree/master/.claude/skills/tests)).
+qsv has 6,928 tests: 6,191 for the qsv binaries (4,807 integration in the [tests](https://github.com/dathere/qsv/tree/master/tests) directory + 1,384 unit across `src/` modules), plus 737 for the MCP server & Cowork plugin (in [`.claude/skills/tests`](https://github.com/dathere/qsv/tree/master/.claude/skills/tests)).
 Most commands have their own test suite in a separate file with the convention `test_<COMMAND>.rs`.
 Apart from preventing regressions, the tests also serve as good illustrative examples, and are often linked from the usage text of each corresponding command.
 

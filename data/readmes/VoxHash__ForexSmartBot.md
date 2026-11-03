@@ -2,21 +2,23 @@
 
 ![PyPI version](https://img.shields.io/pypi/v/forexsmartbot.svg)
 ![Python Versions](https://img.shields.io/pypi/pyversions/forexsmartbot.svg)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)
 ![PyQt6](https://img.shields.io/badge/PyQt6-6.7+-green.svg)
 
 
 
-> Professional-grade desktop application for automated forex trading with advanced risk management, multiple trading strategies, and real-time portfolio monitoring.
+> ForexSmartBot — multi-venue desktop trading desk for forex, spot crypto (Binance / Kraken), and DEX swaps (1inch), with risk controls, strategy plugins, and real-time portfolio monitoring.
 
 
 
 ## ✨ Features
 
 - **Modern Trading Desk UI (3.4.0)**: Left nav, content stage, and session strip (equity / P&L / connection) with VoxHash dark branding
+- **App icon**: Packaged window / notification / launcher icon (`assets/icons/forexsmartbot_256.png` + `.ico`) in VoxHash palette `#0B0F14` / `#3D9CF0` / `#26C281`
 - **Paper / sandbox venues (3.4.2)**: Venue Paper (live public prices + local fills) and Binance Spot Test Network sandbox orders
 - **Live opt-in (3.4.3–3.4.4)**: Binance + Kraken Spot mainnet via `FSB_LIVE_TRADING=1` + dedicated live keys; kill-switch reuses RiskEngine
 - **1inch DEX (3.4.5)**: Classic Swap quote + swap path with dry-run fills by default; on-chain broadcast double opt-in (`FSB_DEX_BROADCAST`)
+- **Wallet connect (3.4.6)**: MetaMask (WalletConnect URI / deep link) + Phantom Solana scaffold; chain registry (Ethereum, Base, Solana, Robinhood Chain, …); Settings → Wallet; session public address only
 - **Multi-Strategy Trading**: 17+ built-in strategies including 7 ML-based approaches
 - **Real-time Monitoring**: Live portfolio tracking with P&L updates and health checks
 - **Risk Management**: Advanced risk controls with Kelly Criterion and drawdown protection
@@ -72,6 +74,16 @@ cd ForexSmartBot
 pip install -r requirements.txt
 python app.py
 ```
+
+### Linux app menu (Favorites)
+
+After a local `.venv` install (`pip install -e .`), register the GUI in your desktop launcher:
+
+```bash
+./packaging/install-desktop.sh
+```
+
+Then open the app menu → **All Applications** or **Office**, find **ForexSmartBot**, and right-click **Add to Favorites** (or drag it onto Favorites).
 
 Optional TA-Lib / deep-learning / remote API stack:
 
@@ -140,6 +152,7 @@ Full configuration reference: [docs/Configuration-Guide.md](docs/Configuration-G
 - **v3.4.3 Live opt-in**: [Binance Live + kill-switch](docs/V3.4.3_FEATURES.md)
 - **v3.4.4 Kraken Live**: [Kraken Live opt-in](docs/V3.4.4_FEATURES.md)
 - **v3.4.5 1inch DEX**: [DEX aggregator dry-run execution](docs/V3.4.5_FEATURES.md)
+- **v3.4.6 Wallet connect**: [MetaMask / Phantom / chains](docs/V3.4.6_FEATURES.md)
 - **Data Providers**: [Provider Setup Guide](docs/DATA_PROVIDERS_SETUP.md)
 - **Examples**: [Example Scripts](examples/)
 - **FAQ**: [Frequently Asked Questions](docs/FAQ.md)
@@ -161,7 +174,11 @@ Please report vulnerabilities via [SECURITY.md](SECURITY.md).
 
 ## 📄 License
 
-This project is licensed under the terms in [LICENSE](LICENSE).
+This project is licensed under the **GNU General Public License v3.0 or later** ([SPDX: `GPL-3.0-or-later`](https://spdx.org/licenses/GPL-3.0-or-later.html)). See [LICENSE](LICENSE).
+
+Desktop builds depend on **PyQt6** (Riverbank GPL-3.0, unless you hold a commercial PyQt license). The GPL copyleft matches that dependency for source and bundled installers. Trademark rights in VoxHash / ForexSmartBot names and logos are not granted by the GPL.
+
+Not a lawyer / solicitor — professional review recommended before shipping a live-trading product.
 
 ## 🆘 Support
 

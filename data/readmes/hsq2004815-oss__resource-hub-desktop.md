@@ -37,11 +37,12 @@ searchable list and one hotkey away.
 - **Websites, folders and files — one list.** Same search box, same keyboard flow, different icons.
 - **Open a folder without opening Explorer.** Click a folder row and its contents unfold as a mind
   map you can zoom, pan and drill into.
-- **A quick panel, not a window.** `Ctrl + Alt + Shift + L` / `F` drops a compact tree in the middle
-  of the screen: type, arrow, Enter — gone.
+- **A quick panel, not a window.** `Alt + Space` drops a compact tree in the middle of the
+  screen: type, arrow, Enter — gone. Press it again to switch to the folders tree.
 - **Nothing leaves your machine.** No account, no sync server, no telemetry. All data is a few JSON
-  files next to the executable. The only requests go to the sites you saved (their favicon, cached
-  locally afterwards) and, if you enable it, your own AI endpoint.
+  files next to the executable. Requests go to the sites you saved (their favicon, cached locally
+  afterwards), to DuckDuckGo's public icon service when a site has no icon of its own (the domain
+  name only), and, if you enable it, your own AI endpoint.
 
 ## Screenshots
 
@@ -64,11 +65,11 @@ searchable list and one hotkey away.
 <tr>
 <td width="50%" align="center" valign="top">
   <img src="docs/images/quick-panel.png" width="300" alt="Quick panel"><br>
-  <sub><b>Quick panel</b> — the compact tree behind <code>Ctrl+Alt+Shift+L/F</code>.</sub>
+  <sub><b>Quick panel</b> — opened with <code>Alt + Space</code> or a mouse side button; press again to switch trees.</sub>
 </td>
 <td width="50%" align="center" valign="top">
   <img src="docs/images/settings.png" width="300" alt="Settings"><br>
-  <sub><b>Settings</b> — language, theme, hotkeys, bookmark sync, AI suggestions.</sub>
+  <sub><b>Settings</b> — language, theme, hotkeys, bookmark sync, AI tagging.</sub>
 </td>
 </tr>
 </table>
@@ -88,10 +89,12 @@ searchable list and one hotkey away.
 **Quick panel**
 
 - A compact Spotlight-style tree instead of the full window, centered on the current screen.
-- `Ctrl + Alt + Shift + L` — websites; `Ctrl + Alt + Shift + F` — folders (both configurable).
+- `Alt + Space` opens the panel: websites first, press it again for folders (configurable).
 - Optional mouse side buttons: back opens the websites panel, forward the folders panel. While the
   switch is on, Drawer takes over the mouse back / forward buttons.
 - `↑` / `↓` select, `→` expand, `Enter` open, `Esc` close, `Tab` switch panel; type to search.
+- A footer button switches the order: flat by default (the main window's order), or grouped under
+  category headers; while flat, drag a row to reorder and the main window follows.
 
 **Folder mind map**
 
@@ -107,16 +110,24 @@ searchable list and one hotkey away.
 - Per-site browser: installed browsers are detected automatically. Right-click a site in the quick
   panel to open it once in another browser; the details panel's **Open with** dropdown saves the
   site's default. Bookmark imports remember their origin browser.
+- Folders and files have an **Open with** too: system default, VS Code, Windows Terminal, PowerShell
+  or Command Prompt — pick one for a single open from the context menu, or save it as the default in
+  the details panel. Double-click then uses that default. Programs are found via the registry, so a
+  custom install folder works too.
 - Explorer context menu: right-click a folder background or folder icon → **Add to Drawer**
   (Windows 11: under "Show more options"). The entries can be switched off in Settings.
 - Tray icon, close-to-tray, optional launch at startup, global hotkey with `Ctrl / Alt / Shift / Win`
   combinations.
 
-**Optional AI category suggestions** (experimental, off by default)
+**Optional AI tagging** (off by default)
 
-- A DeepSeek or OpenAI-compatible endpoint proposes categories for uncategorized resources.
-- Nothing is written until you review and apply the proposals; the API key is stored with Windows
-  DPAPI and never committed.
+- A DeepSeek or OpenAI-compatible endpoint tags anything you add, drop in or import from bookmarks,
+  and writes a one-line note for it (≤40 characters, in the UI language; a folder's note also gets
+  a look at its child names).
+- It writes straight in and offers a five-second undo. **A note you wrote yourself is never
+  replaced**, and your categories stay yours.
+- **More → AI fills in notes** backfills every row that has no note, leaving categories untouched.
+- The API key is stored with Windows DPAPI and never committed.
 
 **Quality of life**
 
@@ -142,8 +153,7 @@ deleting it.
 | Shortcut | Action |
 |---|---|
 | `Ctrl + Alt + Space` | Show / hide the main window |
-| `Ctrl + Alt + Shift + L` | Quick panel: websites |
-| `Ctrl + Alt + Shift + F` | Quick panel: folders |
+| `Alt + Space` | Quick panel: press once for websites, again for folders |
 | Mouse Back / Mouse Forward (optional) | Quick panel: websites / folders |
 | `↑` `↓` / `→` / `Enter` / `Esc` / `Tab` | Navigate / expand / open / close / switch panel |
 

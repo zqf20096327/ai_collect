@@ -44,6 +44,20 @@ A .NET library and CLI tool to download files (ONNX models, tokenizers, voice pr
 dotnet add package ElBruno.HuggingFace.Downloader
 ```
 
+#### .NET Framework
+
+The package also targets `netstandard2.0`, so it works on .NET Framework 4.6.2 and later. `DownloadRequest` and the other request types use `required` and `init` properties, which need C# 11 or later (the samples below also use collection expressions, so `latest` is the simplest choice). Passing options or an `HttpClient` to the `HuggingFaceDownloader` constructor also needs a reference to `System.Net.Http`:
+
+```xml
+<PropertyGroup>
+  <LangVersion>latest</LangVersion>
+</PropertyGroup>
+
+<ItemGroup>
+  <Reference Include="System.Net.Http" />
+</ItemGroup>
+```
+
 ### CLI Tool
 
 ```bash
@@ -153,6 +167,8 @@ var request = new DownloadRequest
 await downloader.DownloadFilesAsync(request);
 Console.WriteLine(request.ResolvedCommitSha);
 ```
+
+When `ExpectedCommitSha` is set, the download fails if the resolved commit is missing or differs from the expected SHA. Downloads use the verified immutable commit URL so a moving branch cannot change between verification and transfer. If a custom endpoint or redirect hides revision headers, set `Revision` to the immutable commit SHA.
 
 ### 4) Check if files are already downloaded
 

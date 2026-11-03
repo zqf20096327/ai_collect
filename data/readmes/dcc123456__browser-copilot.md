@@ -15,6 +15,9 @@ through a whole checkout or setup flow — while you watch or stay hands-off.
 - 🧠 **Works with the model you already use.** Any OpenAI-compatible endpoint:
   DeepSeek, 火山方舟 Ark, OpenAI, OpenRouter, Moonshot, DashScope, SiliconFlow,
   or a local Ollama/LM Studio. Bring your own key.
+- 🆓 **Free by default.** A fresh install starts on the keyless Pollinations
+  provider — no key, no setup. Gemini, Groq, Cerebras, SambaNova, Chutes,
+  OpenRouter, GitHub Models and Zhipu GLM-4-Flash have free tiers.
 - 🎚️ **You choose how autonomous it is.** Five modes from plain chat to full
   auto, plus a workflow-generate mode that turns a run into a reusable
   workflow; semi-auto asks only before risky actions — payments, passwords,
@@ -61,9 +64,11 @@ through a whole checkout or setup flow — while you watch or stay hands-off.
 - 🤝 **Your coding agent can drive it too.** Claude Code, Codex, Trae — any
   MCP client — gets a browser toolbox through a local adapter and operates
   your real Chrome (see [Agent integration](#agent-integration-mcp)).
-- 🔒 **Private by construction.** No accounts, no telemetry, no cloud server.
-  Your keys and data stay on your machine; passwords are filled locally and
-  never shown to the model.
+- 🔒 **Private by construction.** No accounts, no telemetry, no cloud server of
+  ours. Keys and data stay on your machine; passwords are filled locally and
+  never shown to the model. The default free Pollinations provider does send
+  prompts to Pollinations — choose a local model or your own provider if text
+  must stay local.
 - 💾 **Own your data as files.** Pick a folder in Settings and everything —
   conversations, skills, workflows — is written to real files on your disk and
   nowhere else; the browser's own storage is left empty.
@@ -343,6 +348,30 @@ configuration, not a code path — unlisted endpoints work too.
 | 硅基流动 SiliconFlow | `https://api.siliconflow.cn/v1`                     | `deepseek-ai/DeepSeek-V3`            |
 | Ollama (local)       | `http://localhost:11434/v1`                         | `qwen3:8b`                           |
 | LM Studio (local)    | `http://localhost:1234/v1`                          | `local-model`                        |
+
+**Free options.** A fresh install already has Pollinations active. Settings →
+Models keeps only providers usable directly for free (no key) under **Free to
+try**; providers with a free quota or daily credits stay in **All providers**.
+Their free models still show **Free**.
+
+| Free preset                 | Base URL                                                  | Notes                                                        |
+| --------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| Pollinations                | `https://text.pollinations.ai/openai`                     | Direct free — no key; anonymous tier, rate-limited, tools    |
+| Google AI Studio (Gemini)   | `https://generativelanguage.googleapis.com/v1beta/openai` | Free quota with an AI Studio key                             |
+| Groq / Cerebras / SambaNova | vendor endpoints                                          | Free quota with a key; tool support varies                   |
+| Hugging Face                | `https://router.huggingface.co/v1`                        | Free monthly quota with an HF token                          |
+| ModelScope 魔搭             | `https://api-inference.modelscope.cn/v1`                  | Free quota with a ModelScope token                           |
+| Together AI                 | `https://api.together.xyz/v1`                             | Free models end in `-Free` (free quota)                      |
+| Novita / Nebius / Fireworks | vendor endpoints                                          | Free starting quota with a key                               |
+| OpenRouter                  | `https://openrouter.ai/api/v1`                            | Free models end in `:free` (free quota); the catalog rotates |
+| GitHub Models               | `https://models.github.ai/inference`                      | Free quota with a GitHub PAT                                 |
+
+In the composer's model picker, free models show **Free**. Mixed catalogs only
+tag their free family (OpenRouter `:free`, Together `-Free`, Zhipu
+`glm-4-flash`), so a paid model never carries a badge.
+
+The official DeepSeek and OpenAI API endpoints are paid. Free DeepSeek/GPT
+access comes through the free tiers above.
 
 **Choosing one:** function calling is required for autonomous read/act. Use a
 cheap fast model (`deepseek-chat`, `gpt-4o-mini`, `qwen-plus`) for daily work, a

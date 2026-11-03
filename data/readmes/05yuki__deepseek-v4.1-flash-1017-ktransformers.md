@@ -11,7 +11,7 @@ to 1M tokens.
 
 This repository is everything needed: patches against two public upstream commits, a
 setup script that builds them, a launcher that reads the machine it runs on, and tests.
-It is a snapshot against those commits as of October 2026 (SGLang main at `20036b7a`,
+It is a snapshot against those commits as of November 2026 (SGLang main at `3edea93c`,
 KTransformers `95009ea`, torch 2.14.1 with CUDA 13 wheels, FlashInfer 0.7.2, CUDA toolkit
 13.1); later upstream versions are not tracked.
 
@@ -34,6 +34,13 @@ It remembers the directory in `state/run.env`, so the next `./run.sh` only start
 `MODEL=/models/dsv41-1017 tools/check.sh` starts the server once, sends one short request,
 checks that an answer comes back, and stops the server: the one command that says a setup works.
 
+`MODEL=<dir> tools/qualify.sh` writes a report for the machine it runs on, as one Markdown file.
+It checks an answer, tool calls, the NLL against the reference implementation's scores, and the prefix cache.
+It also measures decode on seven kinds of text and the 35K-token prefill.
+It takes about 15 minutes after the server is up.
+The report names the hardware and software, and nothing that identifies the machine.
+The Results here come from one machine, so reports from other GPUs and CPUs are welcome as issues.
+
 The server speaks SGLang's OpenAI-compatible API on `127.0.0.1:8080`, one request at a
 time by default. `SGLANG_MAX_RUNNING_REQUESTS=4` runs up to four at once.
 
@@ -43,6 +50,11 @@ time by default. `SGLANG_MAX_RUNNING_REQUESTS=4` runs up to four at once.
   The CPU reads every expert any of them routes to.
 - A long prompt holds the others while it prefills: the prefill lends the GPU's weights and free KV
   pages to itself. Three running answers waited 62 s for a 131K-token prompt.
+
+The prefix cache is on, with a copy in host memory (SGLang's HiCache).
+A prompt that starts like an earlier one reads that part from the cache.
+The same 35K-token prompt again takes 2 s instead of 20; a 900K-token one 5-17 s instead of 855.
+`DSV41_RADIX=0` turns the cache off ([docs/tier1.md](docs/tier1.md#21-hicache)).
 
 To serve other machines, set `SGLANG_HOST=0.0.0.0` and `SGLANG_API_KEY=<key>`
 (clients then send `Authorization: Bearer <key>`). The same setup also serves the earlier
@@ -72,7 +84,7 @@ pages on the GPU. If the server runs out of memory at launch, a shorter context
 (`SGLANG_CONTEXT_LENGTH`) makes the pool smaller; it is the only setting memory needs.
 
 - **RAM: a 512 GB class machine, or one socket with 256 GB.** The server uses about 420 GiB,
-  most of it the MXFP4 CPU experts on 2 MB pages.
+  most of it the MXFP4 CPU experts on 2 MB pages. The prefix cache's host copy adds about 5 GiB a GPU.
   - With one CPU expert pool on a NUMA node of less than 370 GiB, `serve.sh` keeps the
     experts in a RAM cache of the node's memory less 50 GiB and reads the others from the
     checkpoint when they are routed ([One socket, 256 GB](#one-socket-256-gb)).
@@ -100,6 +112,14 @@ pages on the GPU. If the server runs out of memory at launch, a shorter context
     inference, so a 1 TB NVMe drive is the practical choice.
 - **Software.** Linux, bash 4.4 or newer, the CUDA toolkit (built and run with 13.1), git,
   gcc/g++, the libnuma and hwloc headers (`libnuma-dev libhwloc-dev`), and `uv` or Python 3.12.
+  A system toolkit is used when it is CUDA 13.x (the pinned torch is built with CUDA 13).
+  With glibc 2.42 or later it must also be 13.2 or newer, or a 13.1 updated since: older
+  headers declare `rsqrt` differently from glibc and every DeepGEMM kernel build fails.
+  Otherwise setup.sh downloads NVIDIA's toolkit wheels (CUDA 13.2, pinned in
+  `lib/cuda-wheels.txt`, 1.3 GB) into `build/` and the kernels compiled at run time use those;
+  nothing outside the checkout changes, and `CUDA_WHEELS=0` forbids the download. A prebuilt
+  archive (`PREBUILT=`, below) takes the place of the builds, so then only gcc/g++, `libnuma1`
+  and `libgomp1` are needed.
   The Python packages are pinned in `requirements.txt` (torch 2.14.1 + cu130): the tested
   venv's `pip freeze`, kept whole so that a build repeats it, measurement tools included.
 - **Host settings.** Set these as root, persistently:
@@ -108,10 +128,16 @@ pages on the GPU. If the server runs out of memory at launch, a shorter context
   - `vm.min_free_kbytes = 8388608`. Without it, the CUDA JIT can hit a node-local OOM
     while the experts fill the nodes.
   - Swap off.
+- **In a container.** The host settings above are set on the host. The recipe was tested in
+  Docker on plain Ubuntu 24.04 and 26.04 images with the NVIDIA Container Toolkit, run as
+  `docker run --gpus all --network host --shm-size 32g --ulimit memlock=-1 --cap-add SYS_NICE`.
+  `--cap-add SYS_NICE` is required: Docker's default seccomp profile refuses NUMA memory-policy
+  calls such as `set_mempolicy` without it. With a prebuilt archive, the image needs only git,
+  curl, ca-certificates, gcc/g++, `libnuma1`, `libgomp1` and uv.
 
 ## What setup.sh does
 
-1. Clones sgl-project/sglang at `20036b7a` on its main branch and applies the SGLang patches
+1. Clones sgl-project/sglang at `3edea93c` on its main branch and applies the SGLang patches
    up to `TIER` (default 2), each tier on top of the ones below it:
 
    | `TIER` | patch | what it adds |
@@ -140,6 +166,25 @@ is applied; one that does not fit stops the setup with nothing applied. If the l
 system paths, pass them in through `CPLUS_INCLUDE_PATH` and `LIBRARY_PATH`. CMake
 flags go in `CMAKE_ARGS`.
 
+### Prebuilt pieces
+
+`PREBUILT=<archive> ./setup.sh` installs the pieces setup.sh otherwise compiles, from an archive
+made by `tools/prebuilt-pack.sh` on a machine that has the toolkit: kt-kernel with its six CPU
+variants (AVX2, AVX-512 base / VNNI / VBMI / BF16, AMX; one is picked at import), the streamed
+prefill's MMQ extension for GPU archs sm89, sm90, sm100 and sm120, kv-vmm, the engram row store
+and hwloc. The archive's `manifest.json` names the recipe, the pinned trees, the torch, CUDA and
+Python versions and every file's SHA-256; setup.sh checks them all. Nothing is built at setup, and
+the FlashInfer CUTLASS MoE of the MMQ-off path is not built. The kernels SGLang compiles at run time
+(DeepGEMM's indexer logits, FlashInfer's sparse attention, TileLang's mHC, sgl-kernel's and Triton's
+small kernels) are built on the first launch, about nine minutes on an RTX 5070 Ti, with the system
+toolkit or, without one, the pip wheels' toolkit assembled by `lib/cuda-home.sh` into `build/cuda-home`.
+The archive is for the pinned torch (`requirements.txt`) and Python 3.12. The archive for a tag is
+on that tag's [release page](https://github.com/05yuki/deepseek-v4.1-flash-1017-ktransformers/releases),
+with its SHA-256 beside it (34 MB). GitHub Actions builds it from the tag
+(`.github/workflows/prebuilt.yml`, Ubuntu 24.04, no GPU), so it runs on glibc 2.39 and later, and a
+maintainer publishes the release. Only archives built by this repository's CI or its maintainers
+are published; please do not send binaries.
+
 ## What serve.sh does
 
 At start it reads the GPUs, their compute capability, the NUMA nodes and the physical
@@ -154,7 +199,11 @@ variable named next to it. Among them:
 - an expert cache in RAM when one CPU pool's NUMA node holds less than 370 GiB
   ([One socket, 256 GB](#one-socket-256-gb))
 - a prefill chunk calibrated once, on the first launch of a setup (the server starts
-  one extra time for this)
+  one extra time for this, about 12 minutes here). A shipped hint stands in for it when
+  one matches the GPU model and count (`hints/kt-lend/`; RTX 5070 Ti, one or two) and
+  the launch is at the defaults; the server replaces it with its own measurement at the
+  first long prompt. `KT_LEND_SEED=0` calibrates instead; `tools/lend-hint-export.py`
+  turns a calibrated setup's hint into a file to contribute
 - FlashInfer autotune off, so outputs reproduce across launches
 - V4.1's tool-call and reasoning parsers (below)
 
@@ -207,7 +256,7 @@ The earlier release did not have this step; 1017's weights were made with it.
   checkpoint's own `inference/model.py`. The step therefore turns on for 1017 (block
   32) and stays off for the earlier release.
 - `patches/sglang-dsv4-o-fp8-qdq.py` installs the same step in another SGLang tree on
-  its own. It applies to SGLang main at `20036b7a` unmodified.
+  its own. It applies to SGLang main at `3edea93c` unmodified.
 
 It works the same at any tensor-parallel size. Its 32-value blocks lie inside a head
 (512 values), so splitting heads across GPUs never cuts a block.
@@ -392,6 +441,8 @@ MODEL=<checkpoint dir> ./serve.sh --background
 python tools/nll.py score <checkpoint dir> served.json
 python tools/nll.py compare ref.json served.json
 ```
+
+`tools/nll-ref-1017.json` holds the reference run's scores on an RTX 5070 Ti; `tools/qualify.sh` compares against them.
 
 ## Fixes from dsv41-flash-dual-epyc
 

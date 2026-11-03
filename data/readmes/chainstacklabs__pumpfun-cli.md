@@ -65,36 +65,58 @@ pumpfun sell <mint> all
 # Check if a transaction landed
 pumpfun tx-status <signature>
 
-# Launch a token
-pumpfun launch --name "MyToken" --ticker "MTK" --desc "A great token"
+# Launch a token, buying it in the same transaction
+pumpfun launch --name "MyToken" --ticker "MTK" --uri https://example.com/mytoken.json --buy 0.1
 ```
+
+pump.fun no longer accepts anonymous metadata uploads, so `launch` takes the
+URI of a metadata JSON you host (`name`, `symbol`, `description`, `image`).
+Without `--uri` it still tries the upload and says so when it is refused.
+
+Amounts are in the coin's quote asset. Most pump.fun coins are priced in SOL,
+but a coin can be priced in USDC or another admitted mint; `buy`, `sell` and
+`info` read it from the coin and label their output with it. Buying such a coin
+spends that asset, so the wallet has to hold it.
+
+In `--json` output an exact amount comes twice: in whole units for reading
+(`tokens_sold`) and as the integer in raw units (`tokens_sold_raw`). Use the
+`_raw` field for anything that has to add up; the float can drop a unit. An
+amount known only as an estimate has no `_raw` twin: `quote_received`, the
+`collect-creator-fee` totals, and `tokens_received` unless the buy ran with
+`--confirm`, in which case it is read from the confirmed transaction. If that
+transaction cannot be read back, a confirmed buy also reports the estimate
+without `tokens_received_raw`, so check for the field. Dry-run fields
+(`expected_tokens_raw`, `expected_quote_raw`, `min_*_out_raw`) are exact
+integers of the quote the transaction would be built from, not executed amounts.
 
 ## Commands
 
 ```
-Token discovery (zero config):
-  pumpfun tokens trending [--limit N]     Top runners + recommended
+Token discovery (zero config; price and progress added when an RPC is set):
+  pumpfun tokens trending [--limit N]     pump.fun's movers board
   pumpfun tokens new [--limit N]          Recently launched
-  pumpfun tokens graduating [--limit N]   Near bonding curve completion
-  pumpfun tokens recommended [--limit N]  Recommended by pump.fun
-  pumpfun tokens search <query>           Search by keyword
+  pumpfun tokens graduating [--limit N]   Closest to bonding curve completion
+  pumpfun tokens recommended [--limit N]  Recommended by pump.fun (at most 10)
+  pumpfun tokens search <query>           Search by name or ticker
 
 Token info (requires RPC):
   pumpfun info <mint>                     Price, bonding progress, reserves
 
 Trading (requires RPC + wallet):
-  pumpfun buy <mint> <sol_amount> [--slippage N] [--dry-run] [--confirm]
-  pumpfun sell <mint> <amount|all> [--slippage N] [--dry-run] [--confirm]
-  pumpfun migrate <mint> [--slippage N] [--confirm]
-  pumpfun claim-cashback <mint> [--confirm]
-  pumpfun collect-creator-fee <mint> [--confirm]
-  pumpfun close-volume-acc <mint> [--confirm]
+  pumpfun buy <mint> <amount> [--slippage N] [--force-amm] [--dry-run] [--confirm]
+  pumpfun sell <mint> <amount|all> [--slippage N] [--force-amm] [--dry-run] [--confirm]
+  pumpfun migrate <mint> [--confirm]
+  pumpfun claim-cashback [--quote-mint M] [--confirm]
+  pumpfun collect-creator-fee [--quote-mint M] [--confirm]
+  pumpfun close-volume-acc [--confirm]
 
 Transaction inspection (requires RPC):
   pumpfun tx-status <signature>              Confirmation status, slot, fee, errors
 
 Token launch (requires RPC + wallet):
-  pumpfun launch --name X --ticker Y --desc Z [--image path] [--buy N]
+  pumpfun launch --name X --ticker Y [--uri U | --desc D --image P] [--buy N]
+                 [--quote-mint M] [--creator-fee-bps N] [--holder-reward]
+                 [--mayhem] [--slippage N] [--confirm]
 
 Wallet management:
   pumpfun wallet create                   Generate + encrypt keypair
@@ -123,15 +145,16 @@ Global options:
 
 | Command | Endpoint | Protocol |
 |---------|----------|----------|
-| `tokens trending` | `frontend-api-v3.pump.fun/coins/top-runners` + `/coins/recommended` | HTTPS |
-| `tokens new` | `frontend-api-v3.pump.fun/coins/recommended` | HTTPS |
-| `tokens graduating` | `frontend-api-v3.pump.fun/coins/recommended` | HTTPS |
-| `tokens recommended` | `frontend-api-v3.pump.fun/coins/recommended` | HTTPS |
-| `tokens search` | `frontend-api-v3.pump.fun/coins/recommended` (client-side filter) | HTTPS |
+| `tokens trending` | `frontend-api-v3.pump.fun/coins/boards/movers` | HTTPS |
+| `tokens new` | `frontend-api-v3.pump.fun/coins/boards/new` | HTTPS |
+| `tokens graduating` | `frontend-api-v3.pump.fun/coins/boards/graduating` | HTTPS |
+| `tokens recommended` | `frontend-api-v3.pump.fun/coins/recommendations` | HTTPS |
+| `tokens search` | `frontend-api-v3.pump.fun/coins/search-unrestricted` | HTTPS |
+| `tokens *` with an RPC set | + Solana RPC (`getMultipleAccounts` for the bonding curves) | JSON-RPC |
 | `info` | Solana RPC (`getAccountInfo` for bonding curve PDA) | JSON-RPC |
 | `buy` | Solana RPC (`getAccountInfo`, `getLatestBlockhash`, `sendTransaction`) | JSON-RPC |
 | `sell` | Solana RPC (`getAccountInfo`, `getTokenAccountBalance`, `getLatestBlockhash`, `sendTransaction`) | JSON-RPC |
-| `launch` | `pump.fun/api/ipfs` (metadata upload) + Solana RPC (`sendTransaction`) | HTTPS + JSON-RPC |
+| `launch` | Solana RPC (`sendTransaction`); `pump.fun/api/ipfs` only without `--uri` | JSON-RPC (+ HTTPS) |
 | `tx-status` | Solana RPC (`getTransaction`) | JSON-RPC |
 | `migrate` | Solana RPC (`sendTransaction`) | JSON-RPC |
 | `claim-cashback` | Solana RPC (`sendTransaction`) | JSON-RPC |
@@ -142,6 +165,11 @@ Global options:
 | `wallet drain` | Solana RPC (`getTokenAccountsByOwner`, `sendTransaction`) | JSON-RPC |
 | `wallet create/show/import/export` | None (local keystore only) | — |
 | `config *` | None (local config file only) | — |
+
+The `tokens` listings use pump.fun's frontend API, which is unofficial and
+changes without notice. They are narrowed to pump.fun coins on Solana; the API
+no longer returns curve reserves, so price and bonding progress come from the
+chain and need an RPC endpoint.
 
 ## Security
 

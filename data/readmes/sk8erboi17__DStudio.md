@@ -4,10 +4,10 @@
 
 # DStudio: Local AI Studio
 
-**An open-source, local-first workspace for DeepSeek V4, GLM 5.3 Flash, Laguna S 2.1 and Qwen: private chat, coding and knowledge-work agents, document research, visual design, images and MiniMax H3 video. Three bundled inference engines (ds4, llama.cpp, MLX), DStudio's own agents plus pi and OpenCode. A cloud account is optional.**
+**Run open-weight models such as DeepSeek V4, GLM 5.3, Laguna and Qwen on your own Mac and put them to work on your files: chat, a coding agent, document work, web research, learning paths, design, images and video, in one native app. Where it can, DStudio checks the model's work against tool results and sources instead of taking its word. No cloud account required.**
 
 ![license](https://img.shields.io/badge/license-BSD%203%20Clause-blue)
-![platform](https://img.shields.io/badge/platform-macOS_%7C_Linux_%7C_Windows-black)
+![platform](https://img.shields.io/badge/platform-macOS_tested_%7C_Linux%2FWindows_untested-black)
 ![inference](https://img.shields.io/badge/inference-local_by_default-success)
 ![engines](https://img.shields.io/badge/engines-ds4_%7C_llama.cpp_%7C_MLX-informational)
 ![models](https://img.shields.io/badge/models-DeepSeek_V4_%7C_GLM_5.3_%7C_Laguna_%7C_Qwen3.6%2F3.8-orange)
@@ -16,62 +16,130 @@
 
 </div>
 
+> **Status: work in progress, tested on one Apple M2 Max (96 GB).** There is no
+> downloadable build: [build from source](#build-from-source) to use it.
+> [What works today and what does not](#current-status-october-3-2026).
+
+DStudio is one desktop application for local AI. It runs large open-weight
+models on your own machine behind a single interface: private **Chat**,
+**Learn** paths with a Tutor, a coding **Agent** (with Plan, GSA and RSA
+workflows), document-focused **Cowork**, a **Design** studio, local image
+understanding/generation/editing and optional MiniMax H3 video. Model
+execution, project files and generated artifacts stay under your control.
+
+**Who it is for.** People with a high-memory Apple Silicon Mac who want capable
+AI on their own code and documents without uploading them: developers,
+researchers, students and anyone working with files they would rather keep
+local. If no model fits your machine, a DeepSeek API key or another
+OpenAI-compatible endpoint can provide inference while every tool keeps running
+locally. DStudio is early: Linux and Windows builds are prepared but untested,
+and most models are integrated without being fully qualified.
+
+<div align="center">
+
+<img src="assets/demo.gif" width="820" alt="DStudio Chat demo showing local DeepSeek V4 chat, file generation and canvas preview">
+
+</div>
+
 ## Contents
 
+- [What DStudio can do](#what-dstudio-can-do) · [Why DStudio](#why-dstudio) · [Can my Mac run it?](#can-my-mac-run-it)
 - [Current status: what works today and what does not](#current-status-october-3-2026)
 - [Install](#install)
+- [Modes](#modes): [Chat](#chat), [Learn](#learn--interactive-learning-paths), [Search](#search--deep-research), [Agent](#agent), [Cowork](#cowork), [Design](#design-a-local-design-studio)
 - [Supported models and limitations](#supported-models-and-limitations)
   - [Qwen3.6 and Qwen3.8-27B on llama.cpp](#qwen36-and-qwen38-27b-on-llamacpp)
   - [Qwen3.6 on MLX (Apple Silicon)](#qwen36-on-mlx-apple-silicon)
   - [Every Qwen3.6 and Qwen3.8-27B quantization](#every-qwen36-and-qwen38-27b-quantization)
   - [Downloading models](#downloading-models)
 - [Harnesses: every engine with every agent loop](#harnesses-every-engine-with-every-agent-loop)
-- [What DStudio can do](#what-dstudio-can-do)
-- [Modes](#modes): [Chat](#chat), [Learn](#learn--interactive-learning-paths), [Search](#search--deep-research), [Agent](#agent), [Cowork](#cowork), [Design](#design-a-local-design-studio)
 - [Measured results](#latest-measured-results)
 - [Requirements](#requirements)
 - [Development and tests](#development-and-tests)
 - [Network access](#network-lan) · [How it works](#how-it-works) · [Security](#security)
+- [Contributing](#contributing)
 - [WIP checklist](#wip-checklist--october-27-2026)
 - [Project layout](docs/PROJECT_LAYOUT.md)
 
-DStudio is one desktop application for local AI. It runs large open-weight
-models on your own machine and puts them behind a single interface: private
-**Chat**, **Learn** paths with a Tutor, **Agent** (with Plan, GSA and RSA
-workflows), document-focused **Cowork**, a **Design** studio, local image
-understanding/generation/editing and optional MiniMax H3 video. Model
-execution, project files and generated artifacts stay under your control.
+## What DStudio can do
 
-Under the interface DStudio owns three inference engines and picks the right
-one for the model you choose:
+- Run **DeepSeek V4/V4.1, GLM 5.3 Flash, Laguna S 2.1 and Qwen** locally through one native interface and model picker; DStudio selects ds4, llama.cpp or MLX for you.
+- Use a **private AI chat** with reasoning display, prefix-cache reuse, citations from optional Web Search and local history.
+- Use **Learn** to build an interactive learning path from a goal, PDFs and links, and open a dedicated **Tutor** for any block.
+- Run **Web Search or Deep Research** through DStudio's local browser helper, with read-page evidence and source cards.
+- **Check PDF sources**: open the cited page with the quoted words highlighted and recheck simple calculations.
+- Send image pixels directly to **DeepSeek V4 Flash Vision-Exp**, **GLM 5.3 native vision** or **Qwen3.8-27B**; generate images with **Ideogram 4 FP8**, edit them with **HunyuanImage 3 NF4**, and create video with the optional **MiniMax H3** pipeline.
+- Use a **local coding agent** that reads, edits and verifies files in a folder you choose, with an **Open IDE** view, **Open Blueprint** code maps and automatic Task Graph checks; or run **pi** or **OpenCode** as the agent loop.
+- Use **Cowork** for source-grounded spreadsheet, PDF, document and presentation work with native Office tools and no arbitrary shell.
+- Toggle **Plan** for a Markdown execution plan, keep working towards a saved **/goal**, and add context while a turn runs.
+- Create **Skills**: private instruction packs for Agent, Cowork and Design.
+- Run **Guided Security Analysis (GSA)** for authorized reviews or **Reverse Structure Analysis (RSA)** for public websites.
+- Generate and refine complete interfaces in **Design**, with 25 offline design systems, measured layout checks and export.
+- Use an optional **DeepSeek API** or remote endpoint for inference while all tools keep running locally, and reach the UI from another device on your LAN.
 
-- **[ds4](https://github.com/antirez/ds4)**, antirez's native engine, for
-  DeepSeek V4/V4.1, GLM 5.3 Flash, Laguna S 2.1 and Qwen3.8-Flash-Next;
-- **[llama.cpp](https://github.com/ggml-org/llama.cpp)** for Qwen3.6-35B-A3B
-  and Qwen3.8-27B;
-- **[MLX](https://github.com/ml-explore/mlx)** for Qwen3.6-35B-A3B on Apple
-  Silicon.
+## Why DStudio
 
-Their sources ship inside this repository and are built or installed offline;
-setup never clones an engine. Agent mode can use DStudio's own agent or the
-third-party **pi** and **OpenCode** harnesses, with any of those engines.
+- **Your files stay on your machine.** Models run locally by default; the app
+  has no telemetry and listens only on localhost unless you enable LAN access.
+  Model downloads, web research, harness dependencies and the optional remote
+  API are separate, documented outbound paths, used only when you ask for them.
+  [Network](#network-lan) · [Security](#security)
+- **It checks instead of trusting.** An Agent action on your workspace counts
+  as done only after a real tool result and a completion receipt. A PDF
+  citation opens the original page with the quoted words highlighted.
+  Comparison-table cells keep their source excerpt, Blueprint diagrams cite
+  file lines that DStudio checks against the bytes, and Design renders each page
+  at three widths before accepting it. These checks prove that the evidence
+  exists, not that the model's interpretation is right.
+- **Not only a chat box.** Work happens in views made for it: an IDE that
+  shows the agent's edits while it writes them, a canvas for Design, an
+  editable roadmap for Learn, real Office files and source-backed tables in
+  Cowork, and a task graph you can pause, resume and reopen.
+- **One app for several engines and agents.** Choose a model and DStudio picks
+  and starts its engine (ds4, llama.cpp or MLX); there is no engine to
+  configure. The engine sources ship in this repository and build or install
+  offline.
+  Agent mode can also run pi or OpenCode on the same model and folder.
+- **Results keep their failures.** On 50 diverse workspace tasks, DStudio's
+  checked Agent, pi and OpenCode each completed 50/50, against 42/50 for the
+  same agent without checks. Search and Deep Research answers met the checked
+  requirements on 4/4 questions instead of 2/4, but took longer; Design shows no
+  overall win yet.
+  These are small samples on one Mac, not rankings, and failed runs stay in the
+  published charts. [All results](#latest-measured-results)
 
-On macOS DStudio ships as **DStudio.app** (double-click, no Terminal); on
-Windows as a portable folder. The UI is a single vanilla `index.html`
-embedded in a small C launcher: no Electron, no framework build, no CDN and no
-telemetry. Network access is explicit: model and harness-dependency downloads,
-Web Search/Research and the optional DeepSeek API backend are the documented
-outbound paths, used only when you request or configure them.
+## Can my Mac run it?
+
+The memory a model needs follows from its engine: llama.cpp and MLX keep the
+whole model in memory, so pick a file comfortably smaller than your RAM, with
+room left for context and macOS. Only a 96 GB M2 Max has been tested.
+
+| Starting point | Engine | Download | Memory | Status on the 96 GB test Mac |
+| --- | --- | ---: | --- | --- |
+| Qwen3.8-27B Q6_K_XL + projector | llama.cpp | 26.2 GB | Whole model in memory | Real workflow checks 6/6 on the previous llama.cpp pin, not yet rerun on `b11836`; Design is slow |
+| Qwen3.6-35B-A3B Q6_K_XL | llama.cpp | 31.8 GB | Whole model in memory | Real workflow checks 6/6 |
+| Qwen3.6-35B-A3B MXFP8 (macOS 26) | MLX | 36.7 GB | Whole model in memory | Real workflow checks 6/6 |
+| Laguna S 2.1 Q4_K_M | ds4 | ~68 GB | Must fit entirely (no SSD streaming) | Experimental; engine acceptance 10/12 (September) |
+| DeepSeek V4 Flash Q2 | ds4 | ~87 GB | ~96–128 GB RAM | Engine acceptance 11/12 (September); most agent benchmarks ran on it |
+| GLM 5.3 Flash Q2 | ds4 | ~96.5 GB | Runs only with SSD streaming on 96 GB | Qualification blocked on this Mac |
+
+Smaller Qwen quantizations (from 7.1 GB for the 27B and 10.0 GB for Qwen3.6)
+can be downloaded but have not been individually verified. Qwen3.8-Flash-Next
+(147–177 GB), DeepSeek V4.1 Flash and DeepSeek V4 Pro (~430 GB, ~512 GB RAM)
+are experimental or not validated on the test Mac. Details and limits:
+[Supported models](#supported-models-and-limitations) ·
+[Requirements](#requirements).
 
 ## Current status (October 3, 2026)
 
-**This is an in-progress source tree, not a qualified release.** The latest
-downloadable release, [DStudio 1.1.0](https://github.com/sk8erboi17/DStudio/releases)
-(September 1, 2026), predates everything in this section. To use it today,
-[build from source](#build-from-source).
+**This is an in-progress source tree, not a qualified release.** There is no
+downloadable build; to use it today, [build from source](#build-from-source).
 
-**What changed since that release**
+**Recent changes**
 
+- **Breaking for existing source installs (October 27).** Older installations
+  are not upgraded: reinstall the bundled engines and restart unfinished Qwen
+  downloads. [Details](#wip-checklist--october-27-2026).
 - **Qwen moved to bundled engines.** Qwen3.6-35B-A3B and Qwen3.8-27B run on
   llama.cpp `b11836`; Qwen3.6 also runs on MLX on Apple Silicon. The former
   Qwen side engines (vagrillo/ds4 and Ninnix/q36) are retired. Qwen3.8-Flash-Next
@@ -149,25 +217,13 @@ These are focused development checks, not a quality score or a ranking.
 
 ## Install
 
-### macOS release
-
-Download the Apple Silicon zip from [GitHub Releases](https://github.com/sk8erboi17/DStudio/releases), extract it and move **DStudio.app** to Applications. The app is ad-hoc signed but not Apple-notarized (notarization requires a paid Apple Developer account), so Gatekeeper may warn that Apple cannot verify it. To open it the first time:
-
-1. **Right-click** DStudio.app → **Open** → **Open** in the confirmation dialog, or
-2. [**System Settings → Privacy & Security → Open Anyway**](https://support.apple.com/guide/mac-help/mh40616/mac), or
-3. from Terminal: `xattr -cr /Applications/DStudio.app` (clears the download quarantine).
-
-**Easiest install** — downloads the release, verifies its SHA-256, removes the
-download quarantine and installs to `~/Applications`:
-
-```sh
-bash <(curl -fsSL https://raw.githubusercontent.com/sk8erboi17/DStudio/main/scripts/install-macos.sh)
-```
-
-Or open the DMG from the release and drag **DStudio.app** into Applications.
-
-> The current release (1.1.0) does not include the llama.cpp, MLX and harness
-> changes described above. Build from source for those.
+DStudio is installed from source; there is no downloadable build. On macOS the
+build produces **DStudio.app** (double-click to open); on Windows a portable
+folder. The UI is a single vanilla `index.html` embedded in a small C launcher:
+no Electron, no framework build, no CDN and no telemetry. Network access is
+explicit: model and harness-dependency downloads, Web Search/Research and the
+optional DeepSeek API backend are the documented outbound paths, used only when
+you request or configure them.
 
 ### Build from source
 
@@ -201,7 +257,543 @@ DStudio offers only the publishers' official weights. Abliterated,
 the app and are not selectable even if such a file is already in the model
 folder; DStudio leaves that file untouched.
 
+## Modes
+
+A sidebar switches between Chat, Agent, Cowork, Design and Learn. Plan, GSA and
+RSA are Agent workflows; Tutor rooms live inside Learn; image and video
+generation are routed from Chat and Design. Every mode has reopenable local
+history. Restorable on-disk engine sessions depend on the engine: ds4 models
+have them, the llama.cpp and MLX Qwen models do not yet.
+
+### Chat
+
+Streaming chat backed by the selected local model: context lives in the
+engine's cache (prefix reuse is shown as *cached* tokens) and every message is
+saved locally. You get live tokens/s, collapsible reasoning, native MathML for
+LaTeX, syntax-highlighted code, file artifacts, image/PDF attachments and
+optional Web Search sources. A configured DeepSeek API key or remote endpoint
+can replace local inference without moving DStudio's workspace tools into the
+cloud.
+
+The composer model picker has search, quantization/size details and the current
+model highlighted. Choose a model and DStudio selects its engine automatically.
+Download progress stays in Settings → Models.
+
+With DeepSeek Vision-Exp or GLM 5.3 and the matching encoder installed, image
+attachments stay multimodal: DStudio sends PNG/JPEG pixels to the engine; Agent
+and Cowork use ds4's `view_image`, and Design uses its native `see_image`.
+Qwen3.8-27B reads images through its own projector on llama.cpp. There is no
+text-description detour or secondary visual model. Text-only models (older
+DeepSeek checkpoints, Laguna, Qwen3.6) expose no image tools and read only PDF
+text layers.
+
+#### Check PDF sources
+
+For newly read PDF attachments in local Chat, DStudio adds a source-checking workflow inspired by [NanoIndex](https://github.com/NanoNets/nanoindex):
+
+- **See where a quotation comes from.** Click a PDF citation in the answer to open the original physical page, with the exact words highlighted. Zoom in for small text or tables.
+- **Handle repeated references.** If the model uses `[P1]` for several passages, the modal lets you choose the intended passage instead of guessing. Identical entries are merged. Internal evidence JSON is hidden, including malformed output; unreadable source details show an explanation, not a verification badge. Saved replies are reparsed too.
+- **Know when a source cannot be located.** Missing or repeated quotations are reported without selecting a misleading highlight. On a scanned page, a quotation is searched in the page's local OCR reading: whole recognized lines are highlighted and labelled as OCR, and they never count as an exact passage for calculations.
+- **Move around the document.** The attachment preview offers recognized numbered chapter/section headings, nested section hints and explicit “see section…” links. These are text-based hints, not a complete outline or a semantic knowledge graph.
+- **Check the arithmetic.** “Check passages and calculations” first locates the cited passages, then recalculates supported sums, differences, products, ratios and percentages using the quoted numbers. It shows the operands, sources, rounding and any difference from the answer. It does not verify units, whether the right numbers were chosen, or the answer’s interpretation.
+
+No extra model or cloud OCR service is added. Citations and calculations appear
+when the answering model supplies the structured source information;
+unsupported or malformed output is not silently marked as verified. Original
+PDFs are kept in a local cache limited to **32 documents / 2 GiB**; source
+identity is checked against the PDF bytes, and an evicted or changed original
+must be attached again. This is **host-local on macOS/Linux** (not exposed to
+LAN clients) and needs Poppler and `shasum` or `sha256sum`.
+`make test-pdf-evidence` exercises real Poppler extraction/rendering, citation
+matching, identity, calculations and the browser viewer with **no model
+loaded**; it is an implementation test, **not a model-quality benchmark**.
+
+#### Multimodal PDFs
+
+<div align="center">
+
+<img src="assets/pdf.gif" width="820" alt="DStudio multimodal PDF demo showing local document understanding and semantic page retrieval">
+
+</div>
+
+Attach a PDF and ask in any language. **When all its text fits, DStudio reads
+it directly**: no extra model turn to choose pages and no embedding index to
+build. All physical pages, extracted text, numbers and citation links are kept.
+This applies to Chat, Learn attachments and Cowork.
+
+Long PDFs, scans and uncertain text layers use the planner: the active model
+decides whether to build a bounded overview, read exact physical pages or search
+semantically. DStudio extracts text locally and uses the small pinned
+**Qwen3-Embedding-0.6B only as a text embedding index**, never as a visual
+router. With DeepSeek Vision-Exp or GLM 5.3 active, up to four selected pages
+are rendered and sent to that model's native encoder. Text-only models receive
+the extracted text and report any image-only pages they could not read.
+
+**Scanned pages.** On macOS, pages without a text layer are read with local
+OCR: the page is rendered on the Mac and recognized with Apple's Vision
+framework, offline. These pages are labelled OCR wherever their text appears,
+because recognition can misread characters: on a generated test scan it read
+"Applied" as "AppLiea" while reporting full confidence. One read recognizes at
+most 64 new pages (about 1 second each on an M2 Max); recognized pages are
+cached, and the reply says which page range to ask for next. Linux and Windows
+builds have no OCR yet and keep reporting scanned pages as unread.
+`make test-pdf-ocr` runs the real reader and Vision on generated scans, with no
+model.
+
+`make test-pdf-complete` checks complete text against Poppler byte for byte,
+fallbacks, real citation highlights and upload-to-Chat behavior with a
+simulated answering model: it proves extraction and routing, **not answer
+accuracy or a speed multiplier**. See [PDF reading](docs/PDF_READING.md).
+
+### Learn — interactive learning paths
+
+<div align="center">
+
+<img src="assets/roadmap.gif" width="820" alt="DStudio Learning Roadmap demo showing roadmap generation, editable learning blocks and focused tutor rooms">
+
+</div>
+
+Describe what you want to learn and optionally attach PDFs, notes or public
+links. Every Learn path starts with mandatory Deep Research, even when the
+prompt contains no link. Discovery tries Google first in DStudio's Chrome
+session and falls back to Brave, Bing and DuckDuckGo when a search page blocks
+it; every search page and selected source is opened through Chrome (CDP), and
+dynamic pages are scrolled until their content stabilizes before extraction.
+DStudio looks for authoritative curricula, current documentation, prerequisite
+evidence, practical exercises, assessment criteria and common pitfalls; your
+links and PDFs are included as evidence but never treated as the whole plan.
+Only after at least five substantial pages from four independent hosts and
+fifteen grounded curriculum facts does a semantic judge decide whether the
+knowledge gaps are closed; failed browser reads do not count as progress.
+
+The generated path records cross-topic prerequisites, key concepts, effort
+estimates, observable outcomes, practice, mastery checks, stage objectives,
+checkpoints and a final project. There is no preset topic catalogue or fixed
+quota: a broad field becomes several stages or branches, a narrow skill stays
+compact. A structural gate rejects shallow or truncated drafts; a separate
+adversarial factual audit checks every stage and then the whole path, and only a
+factually clean draft reaches the independent curriculum judge (coverage,
+sequencing, granularity, practice, assessment, sources, capstone). Repairs are
+audited again until both pass or you press **Stop**. The result opens as an
+editable graph inspired by [roadmap.sh](https://roadmap.sh/): complete, reorder
+or delete blocks, or add one and let the model write a coherent outcome and
+exercise for it. The graph is saved with its history and exports as PNG, PDF or
+JSON.
+
+#### Study with a dedicated Tutor
+
+<div align="center">
+
+<img src="assets/tutor.png" width="920" alt="DStudio Tutor study room opened from a Roadmap block, with focused context, visible reasoning and the full chat composer">
+
+</div>
+
+Every stage, topic and final project has a **Study** button that opens a
+full-screen Tutor chat for that block. The Tutor already knows the goal, stage,
+prerequisites, outcome, practice task and sources, so it can teach from first
+principles, answer follow-ups, give guided and independent exercises, run
+quizzes and correct your work. It keeps the normal Chat tools (Thinking, files,
+PDFs and images, LaTeX, ASCII diagrams, hints, canvas previews). Each block owns
+its transcript and attachments, so **Study** resumes the same lesson.
+
+Learn generation and its verification roles use **Thinking: max**. Local ds4
+needs at least 393,216 context tokens for Max, so DStudio temporarily launches
+the Learn pipeline at that size when your Chat context is smaller, without
+changing the saved setting. Learn has not been qualified on the llama.cpp/MLX
+Qwen models.
+
+### Local Image Generation
+
+<div align="center">
+
+<img src="assets/generating.png" width="820" alt="DStudio local image-generation pipeline showing live model preparation and generation progress">
+
+</div>
+
+Ask for an image in any language. DeepSeek Vision-Exp or GLM 5.3 interprets the
+request and any source pixels, then emits an explicit `generate` or `edit`
+directive. `generate` goes to Ideogram 4 FP8 with your image preset; `edit` goes
+to the full, non-distilled HunyuanImage-3.0-Instruct model (NF4 so it fits the
+96 GB reference Mac, with critical layers and compute in BF16, `think_recaption`
+and 50 diffusion steps through Tencent's official implementation). Text-only
+models cannot issue source-dependent edits.
+
+The reply gets a placeholder immediately while DStudio reports real load,
+reasoning, sampling and decode phases. Presets are explicit choices, never an
+automatic downgrade. One lock serializes Ideogram, Hunyuan and H3, and the
+media-memory lease evacuates a resident chat/Design model when required.
+Generated files stay local and are attached to the conversation.
+
+#### Image presets
+
+Choose **Settings → Vision → Image preset**. It controls new Chat images,
+generated video opening frames and new Design sessions; changing it does not
+restart a model or alter a render in progress.
+
+| Preset | Intended use | Generation steps | Landscape image (16:9) |
+| --- | --- | ---: | --- |
+| Low | Quick drafts and composition checks | 12 | 1024 × 576 |
+| Medium | A balance of detail and waiting time | 20 | 1024 × 576 |
+| High | More refinement at the same size | 48 | 1024 × 576 |
+| MAX | A larger, natively generated image | 48 | 2048 × 1152 |
+
+MAX preserves DStudio's previous default. Low, Medium and High use Ideogram's
+Turbo-12, Default-20 and Quality-48 samplers; MAX uses Quality-48 at twice the
+width and height, not an upscale. More steps or pixels do **not** guarantee
+better prompt adherence.
+
+Measured on an **M2 Max with 96 GiB**, with other apps left running:
+
+| Preset | Classical illustration | Headphone portrait |
+| --- | ---: | ---: |
+| Low | 4m 31s | 6m 37s |
+| Medium | 6m 51s | 10m 13s |
+| High | 15m 46s | 24m 35s |
+| MAX | 78m 01s | 123m 33s |
+
+**These times include failed outputs.** All eight attempts finished, but only
+four produced illustrations; the other four returned refusal-message images,
+and the illustrations missed details of the brief. This small comparison does
+not establish a quality winner or guaranteed waiting times.
+
+![Local image preset attempt times, including failures](extension/benchmarks/image-presets/timings.png)
+
+[Full preset benchmark](extension/benchmarks/image-presets/README.md): every
+original image, findings, exact settings and reproduction steps.
+
+### Local Video Generation (MiniMax H3)
+
+DStudio runs the downloadable MiniMax H3 weights through a pinned
+[antirez/h3.c](https://github.com/antirez/h3.c) checkout: a native
+C/Objective-C engine on Metal, MPSGraph and Accelerate, without ComfyUI or
+PyTorch. Ask for a video in Chat; DStudio routes it to the one-shot executable,
+optionally uses a recent image as the first frame, reports h3.c's real progress
+and returns a locally streamed MP4. You can also ask for an opening image first
+(Ideogram 4) and then animate it. No hosted generation API is used.
+
+> **Work in progress — two-photo H3 references.** With MiniMax H3 selected, two
+> attached images become ordered Ref2VA inputs (`<Picture 1>`, `<Picture 2>`).
+> Settings has a separate preparation action for the official Ref2VA
+> transformer (about **61.7 GiB / 66 GB** on top of FL2VA). This path has not yet
+> completed end-to-end validation.
+
+Open **Settings → Video** before the first generation, review the upstream
+terms, confirm that your territory and use are authorized, then select
+**Prepare local H3**. Setup compiles an immutable h3.c revision and downloads
+only the official `FL2VA/` files (about **134 GiB / 144 GB**, resumable) into
+`~/.dstudio/minimax-h3`. Three render profiles expose h3.c's controls:
+**Quality** (default; all 50 blocks, no reuse, 768p-class), **Balanced**
+(`--layers 45 --reuse 2`, ~512-class) and **Preview** (40/50 blocks, reuse 3,
+upscaled). DStudio never switches profile on its own. M3 and older GPUs use the
+portable BF16/MPS path; M5-class hardware can use Metal 4/TensorOps paths.
+
+### Search & Deep Research
+
+<div align="center">
+
+<img src="assets/search.gif" width="820" alt="DStudio Search and Deep Research demo showing live web evidence, citations and source cards">
+
+</div>
+
+Search runs through DStudio's local web helper, not a hosted browsing service.
+**Web Search** plans targeted queries, reads the best pages, extracts facts and
+answers with clickable citations. **Deep Research** runs a longer evidence loop:
+classify the request, search, read primary sources, extract facts, judge
+sufficiency, write a grounded report and keep the source cards.
+
+Before delivering a Deep Research answer, DStudio checks it against the
+collected evidence and the request; it can revise unsupported claims, missing
+details or undisclosed disagreements, and counts explicit word limits. A failed
+review is shown as an incomplete draft, not a verified result. The reviewer is
+the local model too: it helps catch errors but cannot guarantee truth.
+
+Relevant details can come from later page sections, and with an active native
+vision model research can inspect real pixels of an image or chart (one
+viewport per page, three captures per run). **Settings → Web research** lets you
+set separate page-read and candidate-source limits for Search and Deep Research.
+Defaults are 8 reads / 96 candidates for Search and 24 reads / 256 candidates
+for Deep Research, including learning-path research. Each mode accepts 1–512
+page reads and 1–4096 candidates; changes apply to new runs. These are ceilings,
+not targets: sufficient evidence can end discovery earlier. Query/action budgets
+also remain bounded: Search admits up to 6 queries; Deep Research up to 18 queries
+and 12 follow-up actions. Source selection and report writing, including reviewed
+revisions, omit application output-token caps. The engine's context/output limits
+and retained-draft size bounds still apply.
+There is no application elapsed-time cutoff on discovery, writing or review: a
+slow valid local-model request continues until it completes, fails or you press
+Stop. [Measured scope and limits](extension/search/bench/README.md).
+
+### Agent
+
+<div align="center">
+
+<img src="assets/agent.gif" width="820" alt="DStudio Agent demo showing the local coding agent editing and validating files">
+
+</div>
+
+Agent is a local coding agent: it reads and edits files, runs commands inside a
+working directory you choose, streams its answer while it works, folds private
+reasoning into a **Thought** disclosure and groups tool calls into a compact
+action timeline. The header shows the mode, model and working folder;
+`/help`, `/list`, `/save`, `/new` and `/compact` are available below the
+composer. A post-edit verifier catches common syntax errors so the model can
+repair them in the same turn. By default this is DStudio's own agent;
+[pi or OpenCode](#harnesses-every-engine-with-every-agent-loop) can run instead.
+
+**Open IDE.** The header's **Open IDE** replaces the conversation with a VS
+Code-style view of the working folder: file tree, tabs, a syntax-highlighted
+editor and a terminal panel with the agent's `bash` commands and output. While
+the agent writes a file, a cursor labelled with the active model shows the text
+as it is generated and **Follow** keeps the editor on that file. While the model
+reasons, a thought bubble shows the newest words of that reasoning. Streamed
+text is marked *not on disk yet* until the tool finishes and the IDE re-reads
+the file. After the turn you can edit and save (⌘S); DStudio refuses the save if
+the agent started again or the file changed on disk, and asks which version to
+keep. Limits: UTF-8 text up to 2 MB, links open read-only, not available on
+Windows yet; runtimes that do not stream tool results show the files when the
+turn ends.
+
+**Open Blueprint.** Turns the working folder into interactive diagrams the
+Agent maps from the code: **Architecture**, **Workflow**, **Sequence**,
+**Data flow** or **Lifecycle**, optionally focused on a question. The Agent
+writes a typed blueprint (`dstudio.blueprint/1`) to `.dstudio/blueprints/`,
+citing a file, a line range and a quoted line for every node and relationship.
+DStudio checks every citation against the file's bytes and shows how many claims
+are backed; click a node for its evidence, **Trace** what it reaches, find a
+**Route** between nodes, search with `/`, open a citation in the IDE, and
+**Export** HTML, SVG or JSON. **Send to Design** starts Design in a `design/`
+folder with the blueprint attached; **Implement code** asks the Agent to build
+what the blueprint describes, in dependency order, running the build and tests
+after each group. The check proves that quoted lines exist, not that the model
+described the behaviour correctly. The idea follows
+[Archify](https://github.com/tt-a1i/archify) (MIT); no Archify code is included.
+
+Thinking defaults to **high**. Selecting **max** below ds4's 384k-token
+threshold explains the required context and estimated memory cost before
+restarting; declining changes nothing.
+
+**Prompt lookup (experimental, ds4 Chat / Agent / Cowork).** The managed ds4
+runtimes can reuse text already in the conversation as candidate output,
+checked by the same model. It helps when copying or preserving existing text;
+it does not invent new answers faster. Normal generation stays the default;
+accelerated batching is opt-in. [Modes and tests](patch/ds4-agent-jsonl/PLD.md).
+
+#### Prompt lookup: real-engine results
+
+**The clearest benefit was in Chat; it was not a general Agent speedup.** The
+actual DeepSeek V4 Flash engine ran on an M2 Max with 96 GB, **Minecraft left
+running and SSD streaming off**: 78 tasks (13 cases × 3 modes × 2 repetitions).
+Faster but incorrect results did not count.
+
+| Workspace | Checks passed in each mode | Experimental PLD vs disabled, in this run |
+|---|---:|---|
+| Chat | 14/14 | **2.84× observed speed**, comparing the same correct outputs |
+| Agent | 6/6 | **About the same overall**; long copies helped, new code did not |
+| Cowork | 2/6 | No useful overall conclusion: document-fidelity failures remained (fixed since: see below) |
+
+<div align="center">
+  <img src="assets/README%20images/benchmarks/prompt-lookup-minecraft-real-engine.png" width="1100" alt="Real engine tests with Minecraft running: Chat passes 14 of 14 per mode with 2.84 times observed experimental speed; Agent passes 6 of 6 with essentially unchanged speed; Cowork passes 2 of 6 in every mode. Shared-host timings are not an isolated speed guarantee.">
+</div>
+
+Median Chat copy time fell from **30.0 to 12.3 seconds**; an Agent file copy
+from **86.0 to 75.0 seconds**, while a small edit stayed around **36.7 seconds**
+and a new function became slower (**21.8 to 28.3 seconds**). **66/78 checks
+passed**: the 12 failures were the same Cowork copy cases in every mode (a lost
+final newline). [Method and per-task results](extension/prompt-lookup/bench/README.md) ·
+[data](extension/prompt-lookup/bench/results/2026-09-05-m2-max-minecraft-no-ssd.json).
+
+**Cowork copies, fixed (October 3).** Rerun on DeepSeek V4 Flash Vision-Exp
+IQ2XXS at 16k context, 2 runs per case: copies and revisions of files that end
+with a newline went from **0/2 to 2/2**, and a new case copying a file
+*without* a final newline stays **2/2**. The model still drops the trailing
+newline; `write_document` now ends a text document with one unless
+`final_newline=false`, and the runtime now forwards that argument.
+[Details, retained failures and data](extension/prompt-lookup/bench/README.md#follow-up-the-lost-final-newline-3-october-2026).
+
+### Cowork
+
+Cowork turns the selected local model into a knowledge-work partner for a
+folder of real files. It reads PDF, DOCX, PPTX, ODT, RTF, Markdown and text;
+inspects, reads and writes XLSX, CSV and TSV; creates verified documents,
+paginated PDFs and 16:9 presentations; and reopens its outputs before reporting
+completion. Uploaded names are sanitized, macro-enabled formats are rejected,
+writes are atomic and file access is confined to the workspace, including
+symlink and traversal checks.
+
+The Office bridge is a small standard-library Python helper invoked with a
+bounded JSON request; there is no command shell or arbitrary Python in Cowork.
+Cowork's tool list no longer offers the shell tools it refuses (`bash`,
+`bash_status`, `bash_stop`). Before this, models called them and got an error.
+Spreadsheet and document text is framed as untrusted source content, so
+embedded instructions are not treated as tasks. Cowork uses the context size
+from Settings and the same conversation surface, Thinking view and action
+timeline as Agent.
+
+Cowork can also turn several documents into a **source-backed comparison
+table**, for example “Compare these course programs by topic, duration and
+prerequisites.” Each cell can show its original excerpt, file and page; missing
+and conflicting values stay explicit; sources are rechecked on inspection and
+export (expandable HTML or an Excel workbook with data, status and evidence
+sheets). A source match confirms the quote and value occur in the document, **not
+that the interpretation is correct**. Limits: text-layer PDFs and Office/text
+sources (scanned PDF pages are read with local OCR on macOS, and quotes matched
+in OCR text are marked for review), up to 5,000 rows, 128 columns and 100,000 cells per table, and
+512 files (PDFs up to 2,000 pages). Extracted text is cached by content in the
+user's cache folder, so a recheck does not extract unchanged files again. In
+the [scale test](tests/integration/document_table_scale_test.py), a 5,000 × 20
+table built from 512 synthetic text files took 8–13 seconds per create, recheck
+or export, with a peak of about 0.5 GB of memory. That was one run on an M2 Max
+shared with a running game; it is not a speed guarantee.
+[Document-table tests](tests/unit/document_table_test.py) exercise real files
+without a model; they are not an extraction-accuracy benchmark.
+
+### Skills: local task recipes
+
+<div align="center">
+
+<img src="assets/skills.png" width="820" alt="DStudio Skills editor showing private user-created task recipes">
+
+</div>
+
+Create a recipe, pick it, and the next Agent, Cowork or Design turn inherits its
+workflow, constraints and quality bar without restarting the model. There is no
+skill marketplace: every skill is a local Markdown pack written by you, stored
+in your user data directory and injected only when selected. GSA and RSA use
+their own deterministic phase templates instead.
+
+### GSA: guided security analysis
+
+<div align="center">
+
+<img src="assets/gsa.png" width="820" alt="DStudio GSA demo showing guided security analysis and managed tool status">
+
+</div>
+
+GSA gives the Agent a security-analysis operating mode. Open **RSA/GSA** beside
+**Open IDE**, choose **GSA**, describe an **authorized** mission and optionally a
+target URL. The run goes through **selection** (files and hypotheses),
+**preflight** (evidence, trust boundaries, safe checks), **validation**
+(concrete proof with bounded scripts or optional local tools) and **report**
+(verdict, sources, limits, next actions). Security profiles distinguish passive,
+blue-team, explicitly authorized red-team and purple-team work; authorization is
+never inferred from the prompt. External tools are listed, can be disabled and
+have their invocations, parameters and output recorded verbatim; **Install
+missing** runs a supervised background installer. Each phase is committed
+through a structured control call validated by the host, and a slow evidence
+collector is not killed as idle. See the [GSA/RSA workflow](docs/workflow-ui.md).
+
+**RSA** is the non-security reverse-structure workflow: it inventories a public
+site's visible routes and assets, captures ordinary browser evidence and writes
+`STRUCTURE.MD`, labelling claims **VERIFIED**, **INFERRED** or **UNKNOWN**. It
+never scans, fuzzes, brute-forces or calls private endpoints.
+
+GSA, RSA and Plan were developed and tested with DStudio's own Agent; they are
+not qualified with pi or OpenCode.
+
+### Design: a local design studio
+
+Design is a separate local design agent that runs a designer's pipeline end to
+end. **`ds4-design` is DStudio's own harness**
+([`src/harness/design/ds4_design.c`](src/harness/design/ds4_design.c)): it has
+its own system prompt, tools and structured events, and runs on ds4 models
+(DSML tool protocol), on the llama.cpp/MLX Qwen models (structured function
+calls) and on remote endpoints.
+
+<div align="center">
+
+<img src="assets/design.gif" width="820" alt="DStudio Design demo showing the brief, questions, generation progress, proposals and canvas pipeline">
+
+</div>
+
+- **1 · Brief.** A new design opens on “What should we design?” with **Visual
+  starting points**: one card per bundled design system with its real palette
+  and type. Filter, search and load a system's brief into the composer. Design
+  can start in any folder; clearing the project removes only files the design
+  run created.
+- **2 · Questions and building.** The designer's questions appear above the
+  composer, thinking folds into **Thought**, and every action lands in one
+  **Working** timeline, with proposals and finished screens as cards.
+- **Open IDE with a live design.** **Code · Split · Design** views: while the
+  model writes an HTML file, the Design pane builds the page from the streamed
+  bytes (scripts off), updated in place so you can scroll while it grows. After
+  the turn the pane shows the saved file with scripts on, and you can edit it.
+- **25 original visual systems**, offline: editorial, operational, portfolio,
+  service, event, commerce, community, map, editor, finance, correspondence,
+  planning, inventory, documentation, recipe, media and product-landing
+  directions, each with light/dark colors, interactive examples and behaviour
+  contracts. [Catalog, tests and remaining qualification](docs/DESIGN_SYSTEMS.md):
+  authored previews pass their checks; model-generated projects are not yet
+  qualified.
+- **Measured layout checks.** Before registering HTML, Design renders it at
+  1280, 768 and 390 px and blocks page overflow, overlapping controls and
+  distorted media; a missing renderer is reported, not counted as a pass.
+- **Reliable delivery.** Incomplete writes are rejected with recovery guidance;
+  unfinished answers are not marked complete.
+  [Before/after experiment](docs/DESIGN_AGENT_EXPERIMENT.md): individual
+  improvements, no overall quality win established.
+- **Reasoning control.** Thinking effort and context are independent; Design
+  honors your context (32k minimum) even at Max.
+- **3 · Proposal.** Distinct directions side by side, each with a rationale.
+- **4 · Native visual loop.** With DeepSeek Vision-Exp or GLM 5.3, Design can
+  generate a PNG with Ideogram 4 or edit pixels with HunyuanImage, then inspect
+  the result with the same model's encoder and grade the composed page against
+  deterministic desktop/mobile evidence. Text-only models skip this loop.
+- **5 · Quality gate, canvas and export.** Deterministic checks plus a
+  role-weighted critique (minimum 8.5) gate artifact registration; accepted
+  screens land on the canvas for refinement and zip export. **Select to edit**
+  in the full-screen preview sends the exact element and your comment back to
+  Design.
+
+### Plan, goals and Task Graph
+
+**Plan.** Toggle **Plan** in Agent mode, describe the outcome, and DStudio
+writes a Markdown planning file (`plan.md` or `<topic>-plan.md`) with objective,
+assumptions, milestones, tasks, decisions, risks, validation checklist and next
+actions. It plans; it does not build.
+
+**Adding context while working.** In Agent, Cowork and Design, sending while a
+turn runs adds context to the **current turn** after the current model/tool
+round; it does not press Stop or repeat an executed tool. Chat keeps the partial
+answer and continues with the new context.
+
+**Goals.** In Agent, `/goal <objective>` keeps working across turns towards one
+saved objective (default limit **8 turns**, no default elapsed-time cutoff).
+`/goal pause`, `/goal resume` and `/goal clear` are also buttons above the
+composer. A goal needs a successful verification command and a completion
+receipt; this checks execution evidence, **not whether the chosen test covers
+every requirement**. [Behavior and limits](docs/GOALS_AND_STEERING.md).
+
+**Task Graph** is part of Agent automatically. A normal question takes the direct
+path; a request to inspect, edit or test the workspace runs inside a checked
+graph around the same agent. An action is not marked successful because the
+model stopped talking: DStudio requires a real tool result followed by a
+completion receipt. You can watch the graph, pause, resume and reopen it after a
+restart; automatic undo is offered only when DStudio can prove exactly what will
+be restored. [Implementation and local API](extension/task-graph/README.md).
+
+| | Native Agent baseline | Agent with automatic checks |
+| --- | --- | --- |
+| When used | Simple questions, or the benchmark baseline | Workspace actions, selected automatically |
+| Completion | The agent decides when it is done | Tool evidence and a completion gate are required |
+| Rules | Normal tool permissions | Every action checked against the graph's rules |
+| Interruption | Continue manually | Pause, resume and recover from the saved journal |
+| Undo | Depends on what the agent changed | Exact writes get checkpoints; uncertain effects are reported |
+
 ## Supported models and limitations
+
+Under the interface DStudio owns three inference engines and picks the right
+one for the model you choose:
+
+- **[ds4](https://github.com/antirez/ds4)**, antirez's native engine, for
+  DeepSeek V4/V4.1, GLM 5.3 Flash, Laguna S 2.1 and Qwen3.8-Flash-Next;
+- **[llama.cpp](https://github.com/ggml-org/llama.cpp)** for Qwen3.6-35B-A3B
+  and Qwen3.8-27B;
+- **[MLX](https://github.com/ml-explore/mlx)** for Qwen3.6-35B-A3B on Apple
+  Silicon.
+
+Their sources ship inside this repository and are built or installed offline;
+setup never clones an engine. Agent mode can use DStudio's own agent or the
+third-party **pi** and **OpenCode** harnesses, with any of those engines.
 
 **Listed here means integrated, not equally tested.** “All four modes” means
 Chat, Agent, Cowork and Design. You pick a model; DStudio picks its engine.
@@ -472,549 +1064,6 @@ plain **pi** with llama.cpp, MLX or a remote endpoint.
 Results, process ownership, patches and the full list of what was not run:
 [docs/HARNESSES.md](docs/HARNESSES.md).
 
-## What DStudio can do
-
-- Run **DeepSeek V4/V4.1, GLM 5.3 Flash, Laguna S 2.1 and Qwen** locally through one native interface and model picker; DStudio selects ds4, llama.cpp or MLX for you.
-- Use a **private AI chat** with reasoning display, prefix-cache reuse, citations from optional Web Search and local history.
-- Use **Learn** to build an interactive learning path from a goal, PDFs and links, and open a dedicated **Tutor** for any block.
-- Run **Web Search or Deep Research** through DStudio's local browser helper, with read-page evidence and source cards.
-- **Check PDF sources**: open the cited page with the quoted words highlighted and recheck simple calculations.
-- Send image pixels directly to **DeepSeek V4 Flash Vision-Exp**, **GLM 5.3 native vision** or **Qwen3.8-27B**; generate images with **Ideogram 4 FP8**, edit them with **HunyuanImage 3 NF4**, and create video with the optional **MiniMax H3** pipeline.
-- Use a **local coding agent** that reads, edits and verifies files in a folder you choose, with an **Open IDE** view, **Open Blueprint** code maps and automatic Task Graph checks; or run **pi** or **OpenCode** as the agent loop.
-- Use **Cowork** for source-grounded spreadsheet, PDF, document and presentation work with native Office tools and no arbitrary shell.
-- Toggle **Plan** for a Markdown execution plan, keep working towards a saved **/goal**, and add context while a turn runs.
-- Create **Skills**: private instruction packs for Agent, Cowork and Design.
-- Run **Guided Security Analysis (GSA)** for authorized reviews or **Reverse Structure Analysis (RSA)** for public websites.
-- Generate and refine complete interfaces in **Design**, with 25 offline design systems, measured layout checks and export.
-- Use an optional **DeepSeek API** or remote endpoint for inference while all tools keep running locally, and reach the UI from another device on your LAN.
-
-## Modes
-
-A sidebar switches between Chat, Agent, Cowork, Design and Learn. Plan, GSA and
-RSA are Agent workflows; Tutor rooms live inside Learn; image and video
-generation are routed from Chat and Design. Every mode has reopenable local
-history. Restorable on-disk engine sessions depend on the engine: ds4 models
-have them, the llama.cpp and MLX Qwen models do not yet.
-
-### Chat
-
-<div align="center">
-
-<img src="assets/demo.gif" width="820" alt="DStudio Chat demo showing local DeepSeek V4 chat, file generation and canvas preview">
-
-</div>
-
-Streaming chat backed by the selected local model: context lives in the
-engine's cache (prefix reuse is shown as *cached* tokens) and every message is
-saved locally. You get live tokens/s, collapsible reasoning, native MathML for
-LaTeX, syntax-highlighted code, file artifacts, image/PDF attachments and
-optional Web Search sources. A configured DeepSeek API key or remote endpoint
-can replace local inference without moving DStudio's workspace tools into the
-cloud.
-
-The composer model picker has search, quantization/size details and the current
-model highlighted. Choose a model and DStudio selects its engine automatically.
-Download progress stays in Settings → Models.
-
-With DeepSeek Vision-Exp or GLM 5.3 and the matching encoder installed, image
-attachments stay multimodal: DStudio sends PNG/JPEG pixels to the engine; Agent
-and Cowork use ds4's `view_image`, and Design uses its native `see_image`.
-Qwen3.8-27B reads images through its own projector on llama.cpp. There is no
-text-description detour or secondary visual model. Text-only models (older
-DeepSeek checkpoints, Laguna, Qwen3.6) expose no image tools and read only PDF
-text layers.
-
-#### Check PDF sources
-
-For newly read PDF attachments in local Chat, DStudio adds a source-checking workflow inspired by [NanoIndex](https://github.com/NanoNets/nanoindex):
-
-- **See where a quotation comes from.** Click a PDF citation in the answer to open the original physical page, with the exact words highlighted. Zoom in for small text or tables.
-- **Handle repeated references.** If the model uses `[P1]` for several passages, the modal lets you choose the intended passage instead of guessing. Identical entries are merged. Internal evidence JSON is hidden, including malformed output; unreadable source details show an explanation, not a verification badge. Saved replies are reparsed too.
-- **Know when a source cannot be located.** Missing or repeated quotations are reported without selecting a misleading highlight. On a scanned page, a quotation is searched in the page's local OCR reading: whole recognized lines are highlighted and labelled as OCR, and they never count as an exact passage for calculations.
-- **Move around the document.** The attachment preview offers recognized numbered chapter/section headings, nested section hints and explicit “see section…” links. These are text-based hints, not a complete outline or a semantic knowledge graph.
-- **Check the arithmetic.** “Check passages and calculations” first locates the cited passages, then recalculates supported sums, differences, products, ratios and percentages using the quoted numbers. It shows the operands, sources, rounding and any difference from the answer. It does not verify units, whether the right numbers were chosen, or the answer’s interpretation.
-
-No extra model or cloud OCR service is added. Citations and calculations appear
-when the answering model supplies the structured source information;
-unsupported or malformed output is not silently marked as verified. Original
-PDFs are kept in a local cache limited to **32 documents / 2 GiB**; source
-identity is checked against the PDF bytes, and an evicted or changed original
-must be attached again. This is **host-local on macOS/Linux** (not exposed to
-LAN clients) and needs Poppler and `shasum` or `sha256sum`.
-`make test-pdf-evidence` exercises real Poppler extraction/rendering, citation
-matching, identity, calculations and the browser viewer with **no model
-loaded**; it is an implementation test, **not a model-quality benchmark**.
-
-#### Multimodal PDFs
-
-<div align="center">
-
-<img src="assets/pdf.gif" width="820" alt="DStudio multimodal PDF demo showing local document understanding and semantic page retrieval">
-
-</div>
-
-Attach a PDF and ask in any language. **When all its text fits, DStudio reads
-it directly**: no extra model turn to choose pages and no embedding index to
-build. All physical pages, extracted text, numbers and citation links are kept.
-This applies to Chat, Learn attachments and Cowork.
-
-Long PDFs, scans and uncertain text layers use the planner: the active model
-decides whether to build a bounded overview, read exact physical pages or search
-semantically. DStudio extracts text locally and uses the small pinned
-**Qwen3-Embedding-0.6B only as a text embedding index**, never as a visual
-router. With DeepSeek Vision-Exp or GLM 5.3 active, up to four selected pages
-are rendered and sent to that model's native encoder. Text-only models receive
-the extracted text and report any image-only pages they could not read.
-
-**Scanned pages.** On macOS, pages without a text layer are read with local
-OCR: the page is rendered on the Mac and recognized with Apple's Vision
-framework, offline. These pages are labelled OCR wherever their text appears,
-because recognition can misread characters: on a generated test scan it read
-"Applied" as "AppLiea" while reporting full confidence. One read recognizes at
-most 64 new pages (about 1 second each on an M2 Max); recognized pages are
-cached, and the reply says which page range to ask for next. Linux and Windows
-builds have no OCR yet and keep reporting scanned pages as unread.
-`make test-pdf-ocr` runs the real reader and Vision on generated scans, with no
-model.
-
-`make test-pdf-complete` checks complete text against Poppler byte for byte,
-fallbacks, real citation highlights and upload-to-Chat behavior with a
-simulated answering model: it proves extraction and routing, **not answer
-accuracy or a speed multiplier**. See [PDF reading](docs/PDF_READING.md).
-
-### Learn — interactive learning paths
-
-<div align="center">
-
-<img src="assets/roadmap.gif" width="820" alt="DStudio Learning Roadmap demo showing roadmap generation, editable learning blocks and focused tutor rooms">
-
-</div>
-
-Describe what you want to learn and optionally attach PDFs, notes or public
-links. Every Learn path starts with mandatory Deep Research, even when the
-prompt contains no link. Discovery tries Google first in DStudio's Chrome
-session and falls back to Brave, Bing and DuckDuckGo when a search page blocks
-it; every search page and selected source is opened through Chrome (CDP), and
-dynamic pages are scrolled until their content stabilizes before extraction.
-DStudio looks for authoritative curricula, current documentation, prerequisite
-evidence, practical exercises, assessment criteria and common pitfalls; your
-links and PDFs are included as evidence but never treated as the whole plan.
-Only after at least five substantial pages from four independent hosts and
-fifteen grounded curriculum facts does a semantic judge decide whether the
-knowledge gaps are closed; failed browser reads do not count as progress.
-
-The generated path records cross-topic prerequisites, key concepts, effort
-estimates, observable outcomes, practice, mastery checks, stage objectives,
-checkpoints and a final project. There is no preset topic catalogue or fixed
-quota: a broad field becomes several stages or branches, a narrow skill stays
-compact. A structural gate rejects shallow or truncated drafts; a separate
-adversarial factual audit checks every stage and then the whole path, and only a
-factually clean draft reaches the independent curriculum judge (coverage,
-sequencing, granularity, practice, assessment, sources, capstone). Repairs are
-audited again until both pass or you press **Stop**. The result opens as an
-editable graph inspired by [roadmap.sh](https://roadmap.sh/): complete, reorder
-or delete blocks, or add one and let the model write a coherent outcome and
-exercise for it. The graph is saved with its history and exports as PNG, PDF or
-JSON.
-
-#### Study with a dedicated Tutor
-
-<div align="center">
-
-<img src="assets/tutor.png" width="920" alt="DStudio Tutor study room opened from a Roadmap block, with focused context, visible reasoning and the full chat composer">
-
-</div>
-
-Every stage, topic and final project has a **Study** button that opens a
-full-screen Tutor chat for that block. The Tutor already knows the goal, stage,
-prerequisites, outcome, practice task and sources, so it can teach from first
-principles, answer follow-ups, give guided and independent exercises, run
-quizzes and correct your work. It keeps the normal Chat tools (Thinking, files,
-PDFs and images, LaTeX, ASCII diagrams, hints, canvas previews). Each block owns
-its transcript and attachments, so **Study** resumes the same lesson.
-
-Learn generation and its verification roles use **Thinking: max**. Local ds4
-needs at least 393,216 context tokens for Max, so DStudio temporarily launches
-the Learn pipeline at that size when your Chat context is smaller, without
-changing the saved setting. Learn has not been qualified on the llama.cpp/MLX
-Qwen models.
-
-### Local Image Generation
-
-<div align="center">
-
-<img src="assets/generating.png" width="820" alt="DStudio local image-generation pipeline showing live model preparation and generation progress">
-
-</div>
-
-Ask for an image in any language. DeepSeek Vision-Exp or GLM 5.3 interprets the
-request and any source pixels, then emits an explicit `generate` or `edit`
-directive. `generate` goes to Ideogram 4 FP8 with your image preset; `edit` goes
-to the full, non-distilled HunyuanImage-3.0-Instruct model (NF4 so it fits the
-96 GB reference Mac, with critical layers and compute in BF16, `think_recaption`
-and 50 diffusion steps through Tencent's official implementation). Text-only
-models cannot issue source-dependent edits.
-
-The reply gets a placeholder immediately while DStudio reports real load,
-reasoning, sampling and decode phases. Presets are explicit choices, never an
-automatic downgrade. One lock serializes Ideogram, Hunyuan and H3, and the
-media-memory lease evacuates a resident chat/Design model when required.
-Generated files stay local and are attached to the conversation.
-
-#### Image presets
-
-Choose **Settings → Vision → Image preset**. It controls new Chat images,
-generated video opening frames and new Design sessions; changing it does not
-restart a model or alter a render in progress.
-
-| Preset | Intended use | Generation steps | Landscape image (16:9) |
-| --- | --- | ---: | --- |
-| Low | Quick drafts and composition checks | 12 | 1024 × 576 |
-| Medium | A balance of detail and waiting time | 20 | 1024 × 576 |
-| High | More refinement at the same size | 48 | 1024 × 576 |
-| MAX | A larger, natively generated image | 48 | 2048 × 1152 |
-
-MAX preserves DStudio's previous default. Low, Medium and High use Ideogram's
-Turbo-12, Default-20 and Quality-48 samplers; MAX uses Quality-48 at twice the
-width and height, not an upscale. More steps or pixels do **not** guarantee
-better prompt adherence.
-
-Measured on an **M2 Max with 96 GiB**, with other apps left running:
-
-| Preset | Classical illustration | Headphone portrait |
-| --- | ---: | ---: |
-| Low | 4m 31s | 6m 37s |
-| Medium | 6m 51s | 10m 13s |
-| High | 15m 46s | 24m 35s |
-| MAX | 78m 01s | 123m 33s |
-
-**These times include failed outputs.** All eight attempts finished, but only
-four produced illustrations; the other four returned refusal-message images,
-and the illustrations missed details of the brief. This small comparison does
-not establish a quality winner or guaranteed waiting times.
-
-![Local image preset attempt times, including failures](extension/benchmarks/image-presets/timings.png)
-
-[Full preset benchmark](extension/benchmarks/image-presets/README.md): every
-original image, findings, exact settings and reproduction steps.
-
-### Local Video Generation (MiniMax H3)
-
-DStudio runs the downloadable MiniMax H3 weights through a pinned
-[antirez/h3.c](https://github.com/antirez/h3.c) checkout: a native
-C/Objective-C engine on Metal, MPSGraph and Accelerate, without ComfyUI or
-PyTorch. Ask for a video in Chat; DStudio routes it to the one-shot executable,
-optionally uses a recent image as the first frame, reports h3.c's real progress
-and returns a locally streamed MP4. You can also ask for an opening image first
-(Ideogram 4) and then animate it. No hosted generation API is used.
-
-> **Work in progress — two-photo H3 references.** With MiniMax H3 selected, two
-> attached images become ordered Ref2VA inputs (`<Picture 1>`, `<Picture 2>`).
-> Settings has a separate preparation action for the official Ref2VA
-> transformer (about **61.7 GiB / 66 GB** on top of FL2VA). This path has not yet
-> completed end-to-end validation.
-
-Open **Settings → Video** before the first generation, review the upstream
-terms, confirm that your territory and use are authorized, then select
-**Prepare local H3**. Setup compiles an immutable h3.c revision and downloads
-only the official `FL2VA/` files (about **134 GiB / 144 GB**, resumable) into
-`~/.dstudio/minimax-h3`. Three render profiles expose h3.c's controls:
-**Quality** (default; all 50 blocks, no reuse, 768p-class), **Balanced**
-(`--layers 45 --reuse 2`, ~512-class) and **Preview** (40/50 blocks, reuse 3,
-upscaled). DStudio never switches profile on its own. M3 and older GPUs use the
-portable BF16/MPS path; M5-class hardware can use Metal 4/TensorOps paths.
-
-### Search & Deep Research
-
-<div align="center">
-
-<img src="assets/search.gif" width="820" alt="DStudio Search and Deep Research demo showing live web evidence, citations and source cards">
-
-</div>
-
-Search runs through DStudio's local web helper, not a hosted browsing service.
-**Web Search** plans targeted queries, reads the best pages, extracts facts and
-answers with clickable citations. **Deep Research** runs a longer evidence loop:
-classify the request, search, read primary sources, extract facts, judge
-sufficiency, write a grounded report and keep the source cards.
-
-Before delivering a Deep Research answer, DStudio checks it against the
-collected evidence and the request; it can revise unsupported claims, missing
-details or undisclosed disagreements, and counts explicit word limits. A failed
-review is shown as an incomplete draft, not a verified result. The reviewer is
-the local model too: it helps catch errors but cannot guarantee truth.
-
-Relevant details can come from later page sections, and with an active native
-vision model research can inspect real pixels of an image or chart (one
-viewport per page, three captures per run). **Settings → Web research** lets you
-set separate page-read and candidate-source limits for Search and Deep Research.
-Defaults are 8 reads / 96 candidates for Search and 24 reads / 256 candidates
-for Deep Research, including learning-path research. Each mode accepts 1–512
-page reads and 1–4096 candidates; changes apply to new runs. These are ceilings,
-not targets: sufficient evidence can end discovery earlier. Query/action budgets
-also remain bounded: Search admits up to 6 queries; Deep Research up to 18 queries
-and 12 follow-up actions. Source selection has no application output-token cap;
-the engine's context and output limits still apply.
-There is no application elapsed-time cutoff on discovery, writing or review: a
-slow valid local-model request continues until it completes, fails or you press
-Stop. [Measured scope and limits](extension/search/bench/README.md).
-
-### Agent
-
-<div align="center">
-
-<img src="assets/agent.gif" width="820" alt="DStudio Agent demo showing the local coding agent editing and validating files">
-
-</div>
-
-Agent is a local coding agent: it reads and edits files, runs commands inside a
-working directory you choose, streams its answer while it works, folds private
-reasoning into a **Thought** disclosure and groups tool calls into a compact
-action timeline. The header shows the mode, model and working folder;
-`/help`, `/list`, `/save`, `/new` and `/compact` are available below the
-composer. A post-edit verifier catches common syntax errors so the model can
-repair them in the same turn. By default this is DStudio's own agent;
-[pi or OpenCode](#harnesses-every-engine-with-every-agent-loop) can run instead.
-
-**Open IDE.** The header's **Open IDE** replaces the conversation with a VS
-Code-style view of the working folder: file tree, tabs, a syntax-highlighted
-editor and a terminal panel with the agent's `bash` commands and output. While
-the agent writes a file, a cursor labelled with the active model shows the text
-as it is generated and **Follow** keeps the editor on that file. While the model
-reasons, a thought bubble shows the newest words of that reasoning. Streamed
-text is marked *not on disk yet* until the tool finishes and the IDE re-reads
-the file. After the turn you can edit and save (⌘S); DStudio refuses the save if
-the agent started again or the file changed on disk, and asks which version to
-keep. Limits: UTF-8 text up to 2 MB, links open read-only, not available on
-Windows yet; runtimes that do not stream tool results show the files when the
-turn ends.
-
-**Open Blueprint.** Turns the working folder into interactive diagrams the
-Agent maps from the code: **Architecture**, **Workflow**, **Sequence**,
-**Data flow** or **Lifecycle**, optionally focused on a question. The Agent
-writes a typed blueprint (`dstudio.blueprint/1`) to `.dstudio/blueprints/`,
-citing a file, a line range and a quoted line for every node and relationship.
-DStudio checks every citation against the file's bytes and shows how many claims
-are backed; click a node for its evidence, **Trace** what it reaches, find a
-**Route** between nodes, search with `/`, open a citation in the IDE, and
-**Export** HTML, SVG or JSON. **Send to Design** starts Design in a `design/`
-folder with the blueprint attached; **Implement code** asks the Agent to build
-what the blueprint describes, in dependency order, running the build and tests
-after each group. The check proves that quoted lines exist, not that the model
-described the behaviour correctly. The idea follows
-[Archify](https://github.com/tt-a1i/archify) (MIT); no Archify code is included.
-
-Thinking defaults to **high**. Selecting **max** below ds4's 384k-token
-threshold explains the required context and estimated memory cost before
-restarting; declining changes nothing.
-
-**Prompt lookup (experimental, ds4 Chat / Agent / Cowork).** The managed ds4
-runtimes can reuse text already in the conversation as candidate output,
-checked by the same model. It helps when copying or preserving existing text;
-it does not invent new answers faster. Normal generation stays the default;
-accelerated batching is opt-in. [Modes and tests](patch/ds4-agent-jsonl/PLD.md).
-
-#### Prompt lookup: real-engine results
-
-**The clearest benefit was in Chat; it was not a general Agent speedup.** The
-actual DeepSeek V4 Flash engine ran on an M2 Max with 96 GB, **Minecraft left
-running and SSD streaming off**: 78 tasks (13 cases × 3 modes × 2 repetitions).
-Faster but incorrect results did not count.
-
-| Workspace | Checks passed in each mode | Experimental PLD vs disabled, in this run |
-|---|---:|---|
-| Chat | 14/14 | **2.84× observed speed**, comparing the same correct outputs |
-| Agent | 6/6 | **About the same overall**; long copies helped, new code did not |
-| Cowork | 2/6 | No useful overall conclusion: document-fidelity failures remained (fixed since: see below) |
-
-<div align="center">
-  <img src="assets/README%20images/benchmarks/prompt-lookup-minecraft-real-engine.png" width="1100" alt="Real engine tests with Minecraft running: Chat passes 14 of 14 per mode with 2.84 times observed experimental speed; Agent passes 6 of 6 with essentially unchanged speed; Cowork passes 2 of 6 in every mode. Shared-host timings are not an isolated speed guarantee.">
-</div>
-
-Median Chat copy time fell from **30.0 to 12.3 seconds**; an Agent file copy
-from **86.0 to 75.0 seconds**, while a small edit stayed around **36.7 seconds**
-and a new function became slower (**21.8 to 28.3 seconds**). **66/78 checks
-passed**: the 12 failures were the same Cowork copy cases in every mode (a lost
-final newline). [Method and per-task results](extension/prompt-lookup/bench/README.md) ·
-[data](extension/prompt-lookup/bench/results/2026-09-05-m2-max-minecraft-no-ssd.json).
-
-**Cowork copies, fixed (October 3).** Rerun on DeepSeek V4 Flash Vision-Exp
-IQ2XXS at 16k context, 2 runs per case: copies and revisions of files that end
-with a newline went from **0/2 to 2/2**, and a new case copying a file
-*without* a final newline stays **2/2**. The model still drops the trailing
-newline; `write_document` now ends a text document with one unless
-`final_newline=false`, and the runtime now forwards that argument.
-[Details, retained failures and data](extension/prompt-lookup/bench/README.md#follow-up-the-lost-final-newline-3-october-2026).
-
-### Cowork
-
-Cowork turns the selected local model into a knowledge-work partner for a
-folder of real files. It reads PDF, DOCX, PPTX, ODT, RTF, Markdown and text;
-inspects, reads and writes XLSX, CSV and TSV; creates verified documents,
-paginated PDFs and 16:9 presentations; and reopens its outputs before reporting
-completion. Uploaded names are sanitized, macro-enabled formats are rejected,
-writes are atomic and file access is confined to the workspace, including
-symlink and traversal checks.
-
-The Office bridge is a small standard-library Python helper invoked with a
-bounded JSON request; there is no command shell or arbitrary Python in Cowork.
-Cowork's tool list no longer offers the shell tools it refuses (`bash`,
-`bash_status`, `bash_stop`). Before this, models called them and got an error.
-Spreadsheet and document text is framed as untrusted source content, so
-embedded instructions are not treated as tasks. Cowork uses the context size
-from Settings and the same conversation surface, Thinking view and action
-timeline as Agent.
-
-Cowork can also turn several documents into a **source-backed comparison
-table**, for example “Compare these course programs by topic, duration and
-prerequisites.” Each cell can show its original excerpt, file and page; missing
-and conflicting values stay explicit; sources are rechecked on inspection and
-export (expandable HTML or an Excel workbook with data, status and evidence
-sheets). A source match confirms the quote and value occur in the document, **not
-that the interpretation is correct**. Limits: text-layer PDFs and Office/text
-sources (scanned PDF pages are read with local OCR on macOS, and quotes matched
-in OCR text are marked for review), up to 5,000 rows, 128 columns and 100,000 cells per table, and
-512 files (PDFs up to 2,000 pages). Extracted text is cached by content in the
-user's cache folder, so a recheck does not extract unchanged files again. In
-the [scale test](tests/integration/document_table_scale_test.py), a 5,000 × 20
-table built from 512 synthetic text files took 8–13 seconds per create, recheck
-or export, with a peak of about 0.5 GB of memory. That was one run on an M2 Max
-shared with a running game; it is not a speed guarantee.
-[Document-table tests](tests/unit/document_table_test.py) exercise real files
-without a model; they are not an extraction-accuracy benchmark.
-
-### Skills: local task recipes
-
-<div align="center">
-
-<img src="assets/skills.png" width="820" alt="DStudio Skills editor showing private user-created task recipes">
-
-</div>
-
-Create a recipe, pick it, and the next Agent, Cowork or Design turn inherits its
-workflow, constraints and quality bar without restarting the model. There is no
-skill marketplace: every skill is a local Markdown pack written by you, stored
-in your user data directory and injected only when selected. GSA and RSA use
-their own deterministic phase templates instead.
-
-### GSA: guided security analysis
-
-<div align="center">
-
-<img src="assets/gsa.png" width="820" alt="DStudio GSA demo showing guided security analysis and managed tool status">
-
-</div>
-
-GSA gives the Agent a security-analysis operating mode. Open **RSA/GSA** beside
-**Open IDE**, choose **GSA**, describe an **authorized** mission and optionally a
-target URL. The run goes through **selection** (files and hypotheses),
-**preflight** (evidence, trust boundaries, safe checks), **validation**
-(concrete proof with bounded scripts or optional local tools) and **report**
-(verdict, sources, limits, next actions). Security profiles distinguish passive,
-blue-team, explicitly authorized red-team and purple-team work; authorization is
-never inferred from the prompt. External tools are listed, can be disabled and
-have their invocations, parameters and output recorded verbatim; **Install
-missing** runs a supervised background installer. Each phase is committed
-through a structured control call validated by the host, and a slow evidence
-collector is not killed as idle. See the [GSA/RSA workflow](docs/workflow-ui.md).
-
-**RSA** is the non-security reverse-structure workflow: it inventories a public
-site's visible routes and assets, captures ordinary browser evidence and writes
-`STRUCTURE.MD`, labelling claims **VERIFIED**, **INFERRED** or **UNKNOWN**. It
-never scans, fuzzes, brute-forces or calls private endpoints.
-
-GSA, RSA and Plan were developed and tested with DStudio's own Agent; they are
-not qualified with pi or OpenCode.
-
-### Design: a local design studio
-
-Design is a separate local design agent that runs a designer's pipeline end to
-end. **`ds4-design` is DStudio's own harness**
-([`src/harness/design/ds4_design.c`](src/harness/design/ds4_design.c)): it has
-its own system prompt, tools and structured events, and runs on ds4 models
-(DSML tool protocol), on the llama.cpp/MLX Qwen models (structured function
-calls) and on remote endpoints.
-
-<div align="center">
-
-<img src="assets/design.gif" width="820" alt="DStudio Design demo showing the brief, questions, generation progress, proposals and canvas pipeline">
-
-</div>
-
-- **1 · Brief.** A new design opens on “What should we design?” with **Visual
-  starting points**: one card per bundled design system with its real palette
-  and type. Filter, search and load a system's brief into the composer. Design
-  can start in any folder; clearing the project removes only files the design
-  run created.
-- **2 · Questions and building.** The designer's questions appear above the
-  composer, thinking folds into **Thought**, and every action lands in one
-  **Working** timeline, with proposals and finished screens as cards.
-- **Open IDE with a live design.** **Code · Split · Design** views: while the
-  model writes an HTML file, the Design pane builds the page from the streamed
-  bytes (scripts off), updated in place so you can scroll while it grows. After
-  the turn the pane shows the saved file with scripts on, and you can edit it.
-- **25 original visual systems**, offline: editorial, operational, portfolio,
-  service, event, commerce, community, map, editor, finance, correspondence,
-  planning, inventory, documentation, recipe, media and product-landing
-  directions, each with light/dark colors, interactive examples and behaviour
-  contracts. [Catalog, tests and remaining qualification](docs/DESIGN_SYSTEMS.md):
-  authored previews pass their checks; model-generated projects are not yet
-  qualified.
-- **Measured layout checks.** Before registering HTML, Design renders it at
-  1280, 768 and 390 px and blocks page overflow, overlapping controls and
-  distorted media; a missing renderer is reported, not counted as a pass.
-- **Reliable delivery.** Incomplete writes are rejected with recovery guidance;
-  unfinished answers are not marked complete.
-  [Before/after experiment](docs/DESIGN_AGENT_EXPERIMENT.md): individual
-  improvements, no overall quality win established.
-- **Reasoning control.** Thinking effort and context are independent; Design
-  honors your context (32k minimum) even at Max.
-- **3 · Proposal.** Distinct directions side by side, each with a rationale.
-- **4 · Native visual loop.** With DeepSeek Vision-Exp or GLM 5.3, Design can
-  generate a PNG with Ideogram 4 or edit pixels with HunyuanImage, then inspect
-  the result with the same model's encoder and grade the composed page against
-  deterministic desktop/mobile evidence. Text-only models skip this loop.
-- **5 · Quality gate, canvas and export.** Deterministic checks plus a
-  role-weighted critique (minimum 8.5) gate artifact registration; accepted
-  screens land on the canvas for refinement and zip export. **Select to edit**
-  in the full-screen preview sends the exact element and your comment back to
-  Design.
-
-### Plan, goals and Task Graph
-
-**Plan.** Toggle **Plan** in Agent mode, describe the outcome, and DStudio
-writes a Markdown planning file (`plan.md` or `<topic>-plan.md`) with objective,
-assumptions, milestones, tasks, decisions, risks, validation checklist and next
-actions. It plans; it does not build.
-
-**Adding context while working.** In Agent, Cowork and Design, sending while a
-turn runs adds context to the **current turn** after the current model/tool
-round; it does not press Stop or repeat an executed tool. Chat keeps the partial
-answer and continues with the new context.
-
-**Goals.** In Agent, `/goal <objective>` keeps working across turns towards one
-saved objective (default limit **8 turns**, no default elapsed-time cutoff).
-`/goal pause`, `/goal resume` and `/goal clear` are also buttons above the
-composer. A goal needs a successful verification command and a completion
-receipt; this checks execution evidence, **not whether the chosen test covers
-every requirement**. [Behavior and limits](docs/GOALS_AND_STEERING.md).
-
-**Task Graph** is part of Agent automatically. A normal question takes the direct
-path; a request to inspect, edit or test the workspace runs inside a checked
-graph around the same agent. An action is not marked successful because the
-model stopped talking: DStudio requires a real tool result followed by a
-completion receipt. You can watch the graph, pause, resume and reopen it after a
-restart; automatic undo is offered only when DStudio can prove exactly what will
-be restored. [Implementation and local API](extension/task-graph/README.md).
-
-| | Native Agent baseline | Agent with automatic checks |
-| --- | --- | --- |
-| When used | Simple questions, or the benchmark baseline | Workspace actions, selected automatically |
-| Completion | The agent decides when it is done | Tool evidence and a completion gate are required |
-| Rules | Normal tool permissions | Every action checked against the graph's rules |
-| Interruption | Continue manually | Pause, resume and recover from the saved journal |
-| Undo | Depends on what the agent changed | Exact writes get checkpoints; uncertain effects are reported |
-
 ## Latest measured results
 
 These are separate experiments, not one product score. All charts use
@@ -1224,7 +1273,7 @@ Engine pins: ds4 main `0aaea5a`, Laguna `448d569`, llama.cpp `b11836`
 
 ### Windows notes
 
-For normal use, extract the portable zip and run `DStudio.exe`. Keep
+For normal use, run `DStudio.exe` from the folder `make windows` produces. Keep
 `DStudio.exe`, `ds4-server.exe`, `ds4-agent-jsonl.exe`, `ds4-cowork.exe`,
 `ds4-agent-jsonl.ver`, `ds4-design.exe` and the packaged `src/harness/cowork`
 helper together. Cowork also needs a reachable Python 3.
@@ -1243,7 +1292,7 @@ not been rerun.
 make run        # build + start on http://127.0.0.1:5500
 make check-fast # deterministic unit, HTTP, UI and fixture checks; no model
 make check      # check-fast plus explicitly configured real-model suites
-make dist-macos VERSION=1.1.0  # bundle smoke + upstream admission + release zip/checksum
+make dist-macos VERSION=x.y.z  # bundle smoke + upstream admission + release zip/checksum
 ```
 
 `make run PORT=8080 DS4_DIR=/path/to/ds4` or `./dstudio [web_port] [ds4_dir]`
@@ -1436,9 +1485,16 @@ Ideas, not promises:
 ## Contributing
 
 DStudio is early, hardware-hungry and built for the local-AI crowd. The most
-useful contributions are setup and hardware reports (especially Linux, Windows,
-CUDA, ROCm and Vulkan, which are prepared but untested), reproducible agent
-failures, design-output examples and small PRs that reduce first-run friction.
+useful contributions:
+
+- **Hardware reports.** [Open an issue](https://github.com/sk8erboi17/DStudio/issues)
+  with your machine and memory, the model and quantization, the mode and what
+  happened. Failures are as useful as passes, especially on Linux, Windows,
+  CUDA, ROCm and Vulkan (prepared but not yet run), and from any Apple Silicon
+  Mac that can qualify GLM 5.3 and DeepSeek V4.1 ([how to help](PLAN.MD#contributors)).
+- **Reproducible agent failures** and Design output examples.
+- **Small PRs** that reduce first-run friction.
+
 Read [AGENTS.md](AGENTS.md) for the contribution rules. If you want open-source
 local AI tools outside cloud subscriptions, a ⭐ helps the project reach the
 right testers.

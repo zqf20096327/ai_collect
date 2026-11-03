@@ -219,6 +219,7 @@ The NPM route is easier on Windows — no path management.
 | ---------------------------- | -------------------- | ----------- |
 | `LAST9_REFRESH_TOKEN`        | *(required)*         | Refresh token from [API Access](https://app.last9.io/settings/api-access) |
 | `LAST9_DATASOURCE`           | org default          | Datasource/cluster name — useful when you have multiple Levitate clusters |
+| `LAST9_FAKE_NOW_ISO`         | *(unset)*            | **For evals/replays only; never set in production.** RFC3339 instant (e.g. `2026-01-02T15:04:05Z`) that replaces the current time when resolving relative windows such as `lookback_minutes`, so runs are reproducible. An invalid value is a startup error. Timeouts, caches and token expiry keep using real time |
 | `LAST9_API_HOST`             | `app.last9.io`       | Override the API host |
 | `LAST9_TOOLSETS`             | all tools            | Comma-separated toolsets to expose (`logs`, `traces`, `metrics`, `alerts`, `dashboards`, `profiles`, `grafana`, `investigate`, `all`). Alias: `LAST9_MCP_TOOLSETS` |
 | `LAST9_MCP_READ_ONLY`        | `false`              | Set `true` to serve only read-only tools; see [Read-only mode](#read-only-mode). A value that is not a boolean is a startup error. Alias: `LAST9_READ_ONLY` |
@@ -342,6 +343,7 @@ Rules, channels and attachments these tools create are marked `created_via: last
 
 - **`list_dashboards`** — All custom dashboards in your org: IDs, names, and metadata
 - **`get_dashboard`** — Full dashboard definition by ID, including panels and queries
+- **`preview_dashboard`** — Read-only preview of an unsaved dashboard or patch: resolved queries, bounded per-panel results and a net panel diff; never saves
 - **`validate_dashboard`** — Read-only lint + execute + classify for a saved dashboard id or an inline `dashboard_definition` over a ≤24h window. Never creates or updates dashboards
 - **`create_dashboard`** — Create a net-new custom dashboard once (panels, queries, metadata). After the id is returned, edit panels with `patch_dashboard`.
 - **`update_dashboard`** — Restructure most of an existing dashboard by ID (full replacement; readonly system dashboards return an error). For individual panel edits use `patch_dashboard`
@@ -1031,6 +1033,25 @@ Read-only. Never creates or updates dashboards. Accept exactly one of `dashboard
 - `region` (string, optional): Region for panel query execution.
 
 Returns `dashboard_validation/v1`: per-panel lint + execute classification (`data` / `no_data` / `invalid` / `error`). Day-1 empty results classify as `valid_no_data` without diagnose probes.
+
+### preview_dashboard
+
+Read-only client-side preview. Pass either `dashboard` (the unsaved dashboard object from a create request) or `id` plus `ops` (the same ordered operations as `patch_dashboard`). Required `start_time_iso` and `end_time_iso` are RFC3339 timestamps spanning at most 24 hours. Optional `variables` contains scalar overrides; otherwise dashboard values and built-in defaults apply.
+
+```json
+{
+  "id": "dashboard-id",
+  "ops": [{"op": "update_panel", "panel_id": "panel-id", "fields": {"name": "Request latency"}}],
+  "start_time_iso": "2026-10-01T08:00:00Z",
+  "end_time_iso": "2026-10-01T09:00:00Z"
+}
+```
+
+Returns `saved: false`, a definition/query `validation` summary (including `definition_error` for a create-schema mismatch), and `panels` with `ok` / `empty` / `error` status, resolved queries and target diagnostics. PromQL and LogJSON execute; unsupported query types and unresolved variables make the panel an error. Valid non-query panels are `ok`; invalid panel definitions are `error`. Patch `diff` includes net `panels_added`, `panels_changed` (including moves) and `panels_removed`, plus ordered operation changes. IDs and zero-based indices identify panels; removed indices refer to the original dashboard. Saved panels must have distinct, nonempty IDs.
+
+Limits: 50 panels, 100 queries, 100 operations, 65536 JSON bytes each for input and candidate dashboard, and a 60-second execution deadline. Resolved queries over 65536 JSON bytes are rejected before execution. Evidence keeps at most three samples and 1024 JSON bytes per target, with `truncated: true` when samples are omitted. A JSON report over 262144 bytes fails with guidance to reduce the input.
+
+No dashboard is created or updated. This checks the candidate against the create schema and queries using the existing validator; it does not guarantee backend acceptance or rendering. Backend-assigned IDs, defaults, discarded fields or concurrent edits can change the saved result. The preview uses the same local patch operations and panel-version defaults as a write.
 
 ### create_dashboard
 

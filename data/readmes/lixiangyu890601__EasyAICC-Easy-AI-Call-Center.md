@@ -26,12 +26,26 @@
 
 # 😄大客户案例：电信、广电、联通，四大运营商已合作3家
 
+# 😄中小客户版本：10个坐席以内，可部署一体化版本
+
 # 注意事项
 
 代码中使用的开源模块遵循各自的开源协议。
 
 # 商业使用
 
-请联系微信ID：easyaicc，获取商业许可。我们会将源代码进行交付，并安排源代码培训。
+请联系微信ID：easyaicc，获取商业许可。我们采用的是一个简单的许可证协议条款:
+付费购买源代码相关服务之后，可自用，可商用；我方会安排对你进行一次源代码培训。
+
+注意：
+项目所使用的、涉及开源项目的模块，需要遵守各个模块自身的协议要求。
+
+**English**:
+We use a simple license agreement:
+After paying for the source code service, you can use it for personal or commercial purposes; we will arrange a source code training for you.
+Note:
+The modules used in the project and involving open source projects need to comply with the protocol requirements of each module.
 
 <img width="418" height="471" alt="image" src="https://github.com/user-attachments/assets/463086d9-15be-4f08-9a24-9d86a26f17b4" />
+
+

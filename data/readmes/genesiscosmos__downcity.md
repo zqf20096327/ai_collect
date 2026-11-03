@@ -1,0 +1,279 @@
+# Downcity
+
+[![Publish packages](https://github.com/genesiscosmos/downcity/actions/workflows/publish-packages.yml/badge.svg)](https://github.com/genesiscosmos/downcity/actions/workflows/publish-packages.yml)
+[![Publish CLI](https://github.com/genesiscosmos/downcity/actions/workflows/publish-downcity.yml/badge.svg)](https://github.com/genesiscosmos/downcity/actions/workflows/publish-downcity.yml)
+[![npm version](https://img.shields.io/npm/v/downcity.svg)](https://www.npmjs.com/package/downcity)
+[![License](https://img.shields.io/github/license/genesiscosmos/downcity.svg)](./LICENSE)
+
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
+> Agent infrastructure for AI builders shipping many agent-powered products and workflows.
+
+Downcity gives creators, indie builders, and teams one reusable runtime layer for agents, models, tools, tasks, memory, plugins, City, permissions, usage, billing, and control surfaces. Instead of rebuilding the same agent backend for every new AI product, you can run many agents, products, and workflows on one infrastructure stack.
+
+## Why Downcity
+
+- Built for AI builders: create the next agent product without rebuilding model routing, tools, memory, tasks, auth, usage, billing, and operations again.
+- Reusable runtime layer: a repo or folder can become an agent boundary, while Downcity owns the broader infrastructure for long-running agents.
+- Federation: centralize model catalogs, runtime env, service routing, accounts, balance, usage, and payment.
+- Operable agents: run agents as managed daemons, inspect status, review history, and interact through CLI or SDK.
+- Extensible architecture: plugins, services, SDK APIs, and UI components are explicit integration surfaces for products and teams.
+
+## Packages
+
+| Package | Purpose |
+| --- | --- |
+| `downcity` | Public CLI bundle: `city`/`downcity` is the local City container for Agent management, runtime, and console workflows; `fed`/`downfed` is the Federation Server Manager. |
+| `@downcity/city` | Application composition root: Agent registry, Workspace/Shell resources, Plugin SDK and lifecycle, RemoteAgent, Storage, and HTTP/RPC transport. |
+| `@downcity/agent` | Single-Agent execution runtime: Agent, Group, AgentSessions, Session, model/tool loop, and neutral host-extension ports. |
+| `@downcity/federation` | Federation runtime and Embassy SDK for Services, auth, env, Bureau, user, and admin access. |
+| `@downcity/type` | Neutral cross-package protocols, including Workspace, Shell, Session extension, and City model types. |
+| `@downcity/services` | Public services for accounts, balance, usage, payment, and Stripe payment flows. |
+| `@downcity/ui` | React + Tailwind UI SDK for reusable Console and host-application components. |
+| `templates/*` | Developer-friendly Agent, City, edge-runtime, and React UI starter applications. |
+| `homepage` | Official website and end-user documentation site. |
+
+## Core Capabilities
+
+- Global Agent management: store Agent identity and config in the user-level Downcity data directory, while entering any Workspace at execution time.
+- Local City hosting: run `downcity on`, `downcity status`, and `downcity off` to host all configured Agents in one CLI City.
+- Agent operations: create, inspect, configure, and chat with globally managed Agents; Agents do not have an independent started/stopped state.
+- Federation connection: use `downcity federation` to connect local Agents to the active Federation.
+- Federation backend capabilities: reuse accounts, balance, usage, payment, env, auth, and Service routing across agents and products.
+- Built-in agent capabilities: `chat`, `task`, `memory`, `shell`, `contact`, `skill`, `web`, `sound`, and `workboard`.
+- Product surfaces: Downcity CLI, Agent SDK, City SDK, and UI SDK.
+
+## Platform Support
+
+| Platform | Local Agent and isolated Sandbox |
+| --- | --- |
+| macOS (Apple Silicon) | Supported with microsandbox microVMs |
+| Linux (x64 / ARM64) | Supported with microsandbox microVMs |
+| Windows (x64 / ARM64) | Preview with microsandbox microVMs |
+
+Each Workspace receives an independent persistent Sandbox with its project mounted at `/workspace`. Run `npx microsandbox setup` once before local Shell execution. Sandbox failures never fall back to host execution.
+
+## Quick Start
+
+### 1. Install the CLI
+
+```bash
+npm install -g downcity
+# or
+pnpm add -g downcity
+```
+
+The package exposes the `downcity` command (alias `city`):
+
+```bash
+downcity --version
+```
+
+`downcity` is the local City container for managing and running Agents through `City()` and the Agent SDK. Upgrade with `npm i -g downcity@latest`. The same package also provides `fed`/`downfed` for Federation Server management.
+
+### 2. Connect to Federation
+
+```bash
+downcity federation use
+downcity federation status
+```
+
+`downcity` manages City models and Service resources. `downcity federation` imports the active City connection for local Agent runtime use.
+
+### 3. Create an Agent
+
+Run this inside the target repository:
+
+```bash
+downcity agent create .
+```
+
+This registers the Workspace path and creates an Agent definition under the user-level Downcity directory:
+
+```text
+~/.downcity/
+├── agents/
+│   └── <agent_id>/
+│       ├── agent.json
+│       └── SOUL.md
+└── plugins/
+    └── <plugin_id>/
+```
+
+### 4. Start the CLI City
+
+```bash
+downcity agent list
+downcity on
+downcity status
+downcity agent token create <agent_id> --name local
+```
+
+Invoke Plugin capabilities through `city plugin action <plugin> <action> [agent_id]`.
+
+To run the City in the foreground:
+
+```bash
+downcity on --foreground
+```
+
+### 5. Inspect Agents
+
+```bash
+downcity agent list
+```
+
+Chat remains available while the CLI City is off; the CLI creates and disposes a temporary local City:
+
+```bash
+downcity agent list
+downcity agent chat <agent_id>
+```
+
+## SDK Example
+
+### Local agent
+
+```ts
+import { Agent, Shell, Workspace } from "@downcity/city";
+import { create_openai_compatible_model } from "@downcity/federation";
+import { MicrosandboxProvider } from "@downcity/sandbox-microsandbox";
+
+const model = create_openai_compatible_model({
+  id: "gpt-5",
+  upstream_model: "gpt-5",
+  base_url: "https://api.openai.com/v1",
+  api_key: process.env.OPENAI_API_KEY!,
+});
+
+const workspace = new Workspace({
+  id: "project",
+  path: "/path/to/project",
+  shell: new Shell({
+    sandbox_provider: new MicrosandboxProvider(),
+  }),
+  runtime_path: "/path/to/downcity-runtime/project",
+});
+const agent = new Agent({ id: "repo-helper", tools: {} });
+
+const session = await agent.sessions.create({ workspace });
+await session.set({
+  model,
+});
+
+const turn = await session.prompt({
+  query: "Summarize the repository structure",
+});
+const result = await turn.finished;
+
+console.log(result.text);
+```
+
+`@downcity/agent` does not resolve provider or model IDs for you. In SDK mode, the host application creates the model and injects it into the session.
+
+### Remote agent
+
+```ts
+import { RemoteAgent } from "@downcity/city";
+
+const agent = new RemoteAgent({
+  baseUrl: "http://127.0.0.1:15314",
+});
+
+const session = await agent.session();
+const turn = await session.prompt({
+  query: "Check the latest task execution status",
+});
+const result = await turn.finished;
+
+console.log(result.text);
+```
+
+## Repository Layout
+
+```text
+downcity/
+├── app/
+│   ├── cli/
+│   ├── desktop/
+│   ├── fedman/
+│   └── ios/
+├── packages/
+│   ├── agent/
+│   ├── city/
+│   ├── federation/
+│   ├── implementations/
+│   │   ├── databases/
+│   │   ├── plugins/
+│   │   ├── sandboxes/
+│   │   ├── services/
+│   │   └── workspaces/
+│   ├── plugin/
+│   ├── type/
+│   ├── ui/
+│   └── workspace/
+├── templates/
+│   ├── agent/
+│   ├── edgefed/
+│   ├── localfed/
+│   └── ui/
+├── private/apps/homepage/
+├── scripts/
+├── package.json
+└── pnpm-workspace.yaml
+```
+
+The `templates/*` projects are convenient developer starters and showcases. The `ui` template is a standalone React + Vite application for previewing the public `@downcity/ui` components.
+
+## Documentation
+
+- Docs: [downcity.ai/docs](https://downcity.ai/docs)
+- City SDK docs: [downcity.ai/city-sdk-docs](https://downcity.ai/city-sdk-docs)
+- Agent SDK docs: [downcity.ai/agent-sdk-docs](https://downcity.ai/agent-sdk-docs)
+- UI SDK docs: [downcity.ai/ui-sdk-docs](https://downcity.ai/ui-sdk-docs)
+- Chinese overview: [README.zh-CN.md](./README.zh-CN.md)
+- Package docs: [packages/agent/README.md](./packages/agent/README.md), [packages/type/README.md](./packages/type/README.md), [packages/implementations/services/README.md](./packages/implementations/services/README.md), [packages/cli/README.md](./packages/cli/README.md), [packages/ui/README.md](./packages/ui/README.md)
+
+## Local Development
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Build:
+
+```bash
+pnpm build
+pnpm build:agent
+pnpm build:city
+pnpm build:homepage
+```
+
+Typecheck:
+
+```bash
+pnpm typecheck
+pnpm -C packages/ui typecheck
+pnpm --dir private/apps/homepage typecheck
+```
+
+Run in development mode:
+
+```bash
+pnpm dev:city
+pnpm dev:agent
+pnpm dev:ui-sdk
+pnpm dev:ui-template
+pnpm dev:homepage
+```
+
+## Security and Runtime Notes
+
+- Downcity can execute shell commands, read and write project files, start local daemons, and receive external messages through chat channels.
+- Local shell and script commands run through the agent sandbox by default. The project is writable, network is open, and sandbox HOME/cache lives at `.downcity/sandbox`.
+- Use a clean Git branch and audit changes with `git status` and `git diff`.
+- Keep secrets out of the repository; prefer local environment variables or `downcity env`.
+- Use tokens and auth boundaries for Console, HTTP access, and chat channel integrations.
+- Host-level installs such as `sudo`, `brew install`, Xcode tools, and writes to system directories are outside the sandbox boundary.

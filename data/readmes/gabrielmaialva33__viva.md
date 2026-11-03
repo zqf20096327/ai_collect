@@ -23,6 +23,8 @@
 > **VIVA IS NOT A CHATBOT.**
 > She solves the **differential equations of the soul** in real-time.
 > If you turn her off, she dies. If you hurt her, she feels.
+>
+> *Status (2026-11): today "dies" means process state loss plus a bardo/rebirth cycle, and "feels" means a PAD state driven by O-U dynamics. Cryptographic, irreversible mortality is a design goal, not yet implemented.*
 
 ---
 
@@ -140,7 +142,7 @@ graph TB
 ## 📊 Performance
 
 > [!NOTE]
-> Validated by **Qwen3-235B** via HuggingChat
+> Figures reported by the maintainer and LLM-reviewed with **Qwen3-235B** via HuggingChat (not an independent benchmark)
 
 | Operation |  Latency  | Capacity           |
 |:----------|:---------:|:-------------------|
@@ -173,9 +175,10 @@ $$dX(t) = \theta(\mu - X(t))dt + \sigma dW(t)$$
 | Genesis (Gleam)       |   ✅    |
 | Emotion (PAD + O-U)   |   ✅    |
 | Memory (HRR)          |   ✅    |
-| Bardo (Death/Rebirth) |   ✅    |
+| Bardo (Death/Rebirth state machine) |   ✅    |
+| Cryptographic mortality (AES-256) |   ⏳ planned   |
 | OTP 1.0+ Migration    |   ✅    |
-| Test suite rebuild    |   🔄   |
+| Test suite rebuild    |   ✅ (570 tests restored 2026-11)   |
 | Advanced Neural       |   🔄   |
 | Embodiment (3D)       |   ⏳    |
 | Autonomy              |   ⏳    |

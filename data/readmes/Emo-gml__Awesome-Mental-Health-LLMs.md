@@ -52,119 +52,213 @@ If you find missing work or have suggestions, feel free to open an issue or cont
 We would like to acknowledge the researchers, clinicians, and practitioners devoted to advancing mental health and mental-health-oriented AI. In a time when mental health challenges continue to rise worldwide, their steady efforts have driven meaningful progress and made new possibilities achievable.
 ## 🔄 Updates (2026, Ongoing)
 
-<details>
-<summary><strong>Update v1.1</strong></summary>
+<details open>
+<summary><strong>🆕 Update v1.10 · 4 papers</strong> — Therapy Strategies, Psychiatric Evaluation & Client Simulation</summary>
 
-- (*EMNLP'25*) PanicToCalm: A Proactive Counseling Agent for Panic Attacks  [[📝 Paper](https://aclanthology.org/2025.emnlp-main.649.pdf)]  [[💻 Code](https://github.com/JihyunLee1/PanicToCalm)]
+- **Move by Move: Measuring and Steering How LLMs Conduct Psychotherapy**  
+  *arXiv 2026* · `Therapy Strategies`  
+  [📄 Paper](https://arxiv.org/abs/2608.21325)
 
-- (*Arxiv'25*) Kardia-R1: Unleashing LLMs to Reason toward Understanding and Empathy for Emotional Support via Rubric-as-Judge Reinforcement Learning  [[📝 Paper](https://arxiv.org/abs/2512.01282)]  [[💻 Code](https://github.com/JhCircle/Kardia-R1)]
+- **PsychiatryBench: a multi-task benchmark for LLMs in psychiatry**  
+  *npj Digital Medicine 2026* · `Psychiatric Evaluation`  
+  [📄 Paper](https://www.nature.com/articles/s41746-026-02582-w) · [🌐 Project](https://compumacy.com/benchmarks/psychiatrybench)
 
-- (*AAAI'26*) CARE-Bench: A Benchmark of Diverse Client Simulations Guided by Expert Principles for Evaluating LLMs in Psychological Counseling  [[📝 Paper](https://arxiv.org/abs/2511.09407v1)]  [[💻 Code](https://github.com/Syx1030/CARE-Bench?tab=readme-ov-file)]
+- **MindEval2: Clinically Grounded Patients and Rubrics for Evaluating Language Models in Mental Health Support**  
+  *arXiv 2026* · `Counseling Evaluation` · `Patient Simulation`  
+  [📄 Paper](https://arxiv.org/abs/2610.22314) · [💻 Code & Data](https://github.com/SWORDHealth/mind-eval)
 
-</details>
-
-
-<details>
-<summary><strong>Update v1.2</strong></summary>
-
-- (*ICLR'26*) Moving Beyond Medical Exams: A Clinician-Annotated Fairness Dataset of Real-World Tasks and Ambiguity in Mental Healthcare  [[📝 Paper](https://openreview.net/pdf?id=tSy7OtONsg)]
-
-- (*ICLR'26*) Can LLMs Move Beyond Short Exchanges to Realistic Therapy Conversations?  [[📝 Paper](https://openreview.net/attachment?id=3Bdl1wL1S3&name=pdf)]
-
-- (*ICLR'26*) CounselBench: A Large-Scale Expert Evaluation and Adversarial Benchmarking of Large Language Models in Mental Health Question Answeringpdf icon [[📝 Paper](https://openreview.net/pdf?id=8MBYRZHVWT)]
-
-- (*ICLR'26*) From Medical Records to Diagnostic Dialogues: A Clinical-Grounded Approach and Dataset for Psychiatric Comorbidity  [[📝 Paper](https://openreview.net/pdf?id=sWWAZVHtke)]
-
-- (*Arxiv'26*) PSYCHEPASS: Calibrating LLM Therapeutic Competence via Trajectory-Anchored Tournaments  [[📝 Paper](https://arxiv.org/abs/2601.20330)] 
+- **PATIENTACT: Theory-Grounded Mental Health Client Simulation**  
+  *Findings of EMNLP 2026* · `Patient Simulation`  
+  [📄 Paper](https://arxiv.org/abs/2608.12750) · [💻 Code & Data](https://github.com/Sahandfer/PatientHub)
 
 </details>
 
 <details>
-<summary><strong>Update v1.3</strong></summary>
+<summary><strong>Update v1.9 · 6 papers</strong> — Benchmarks, CBT & Longitudinal Counseling</summary>
 
-- (*Arxiv'26*) Empirical Modeling of Therapist-Client Dynamics in Psychotherapy Using LLM-Based Assessments  [[📝 Paper](https://arxiv.org/abs/2602.12450)]
+- **MentalHealthBench: An Expert-Informed Benchmark of AI Capabilities in Realistic Mental Health Conversations**  
+  *OpenAI 2026* · `Counseling Evaluation`  
+  [📝 Blog](https://openai.com/index/introducing-mentalhealthbench/) · [📄 Paper](https://cdn.openai.com/ctf-cdn/MentalHealthBench_A_Comprehensive_Benchmark_of_AI_Capabilities_in_Realistic_Mental_Health_Conversations.pdf) · [📊 Dataset](https://cdn.openai.com/ctf-cdn/OAI_MentalHealthBench.zip)
 
-- (*Arxiv'26*) MentalSeek-Dx: Towards Progressive Hypothetico-Deductive Reasoning for Real-world Psychiatric Diagnosis  [[📝 Paper](https://arxiv.org/abs/2602.03340)]
+- **MIND: An Evidence-State Decision Interface for Criteria-Grounded Psychiatric Inquiry and Diagnosis**  
+  *EMNLP 2026* · `Psychiatric Diagnosis`  
+  [📄 Paper](https://arxiv.org/abs/2603.03677) · [💻 Code](https://github.com/Lingxi-mental-health/MIND)
 
-- (*Arxiv'25*) When Can We Trust LLMs in Mental Health? Large-Scale Benchmarks for Reliable LLM Evaluation  [[📝 Paper](https://arxiv.org/abs/2510.19032)]
+- **Steering the Compass: Aligning Dynamic Psychological Counseling Conversations with Cognitive Behavioral Therapy Strategies**  
+  *EMNLP 2026* · `Therapy Strategies` · `CBT`  
+  [📄 Paper](https://arxiv.org/abs/2609.20565) · [💻 Code & Data](https://github.com/zimuwangnlp/StratCBT)
 
-- (*Arxiv'25*) PsychBench: A comprehensive and professional benchmark for evaluating the performance of LLM-assisted psychiatric clinical practice  [[📝 Paper](https://arxiv.org/abs/2510.19032)]
+- **Mind2Dialogue: Training Human-Aware Language Models by Simulating User Mental States**  
+  *arXiv 2026* · `Mental State Modeling`  
+  [📄 Paper](https://arxiv.org/abs/2609.15972) · [💻 Code](https://github.com/wannabeyourfriend/mind2dialogue) · [🌐 Project](https://wannabeyourfriend.github.io/mind2dialogue/)
 
-- (*Arxiv'26*) PatientHub: A Unified Framework for Patient Simulation  [[📝 Paper](https://arxiv.org/abs/2602.11684v1)]
+- **RESCUE-BENCH: Towards Relation-Aware Multi-Party Emotional Support Conversation Systems**  
+  *Findings of AACL 2026* · `Emotional Support` · `Multi-Party Conversation`  
+  [📄 Paper](https://arxiv.org/abs/2609.09657) · [💻 Code](https://github.com/Tomsawyerhu/RESCUE-bench)
 
-</details>
-
-<details>
-<summary><strong>Update v1.4</strong></summary>
-
-- (*WWW'26*) Boosting Large Language Models for Mental Manipulation Detection via Data Augmentation and Distillation  [[📝 Paper](https://arxiv.org/abs/2505.15255)] [[💻 Code](https://github.com/Yuansheng-Gao/MentalMAD?tab=readme-ov-file)]
-
-- (*KDD'26*) LingxiDiagBench: A Multi-Agent Framework for Benchmarking LLMs in Chinese Psychiatric Consultation and Diagnosis  [[📝 Paper]( https://arxiv.org/abs/2602.09379)] [[💻 Code](https://huggingface.co/datasets/XuShihao6715/LingxiDiag-16K)]
-
-- (*EACL'26*) JiraiBench: A Cross-lingual Benchmark for Evaluating Large Language
-Models’ Detection of Human Risky Health Behavior Content in Jirai  [[📝 Paper](https://arxiv.org/pdf/2503.21679)]
-
-
-</details>
-
-<details>
-<summary><strong>Update v1.5</strong></summary>
-
-- (*IEEE SoutheastCon '26*) MHDash: An Online Platform for Benchmarking Mental Health-Aware AI Assistants  [[📝 Paper](https://arxiv.org/abs/2602.00353)]
-
-- (*ACL'26*) PsychEval: A Multi-Session and Multi-Therapy Benchmark for High-Realism AI Psychological Counselor  [[📝 Paper]( https://arxiv.org/html/2601.01802v1)] [[💻 Code](https://github.com/ECNU-ICALK/PsychEval)]
+- **LongCounsel-8: A Benchmark Suite for Longitudinal Depression Tracking from Multi-Session Counseling Dialogues**  
+  *arXiv 2026* · `Longitudinal Counseling` · `Depression Assessment`  
+  [📄 Paper](https://arxiv.org/abs/2609.03507) · [🤗 Dataset](https://huggingface.co/datasets/hiddensev/LongCounsel-8)
 
 </details>
 
 <details>
-<summary><strong>Update v1.6</strong></summary>
+<summary><strong>Update v1.8 · 4 papers</strong> — Multimodal Evaluation & Mental World Modeling</summary>
 
-- (*ACL'26*) MHSafeEval: Role-Aware Interaction-Level Evaluation of Mental Health Safety in Large Language Models  [[📝 Paper](https://arxiv.org/abs/2604.17730)]
+- **PsyEval: a comprehensive large language model evaluation benchmark for mental health**  
+  *npj, 2026* · `Mental Health Evaluation`  
+  [📄 Paper](https://www.nature.com/articles/s44184-026-00227-0)
 
-- (*ACL'26*) PUPPET: Neural-Symbolic Standardized Patients for Mental Health  [[📝 Paper]( https://openreview.net/forum?id=m4mhft8nAa#discussion)]
+- **MMHBench: A Multi-Perspective Benchmark for Mental Health Understanding in Long-Form Videos**  
+  *arXiv 2026* · `Multimodal Evaluation` · `Video Understanding`  
+  [📄 Paper](https://arxiv.org/abs/2607.27895)
 
-- (*Arxiv'26*) Synthetic or Authentic? Building Mental Patient Simulators from Longitudinal Evidence  [[📝 Paper]( https://arxiv.org/abs/2603.22704)]
+- **Mental World Modeling**  
+  *arXiv 2026* · `Mental State Modeling`  
+  [📄 Paper](https://arxiv.org/abs/2607.27201)
+
+- **CBT-Audio: Evaluating Audio Language Models for Patient-Side Distress Intensity Estimation in CBT Session Recordings**  
+  *arXiv 2026* · `Multimodal Evaluation` · `CBT`  
+  [📄 Paper](https://arxiv.org/abs/2605.17370)
 
 </details>
 
 <details>
-<summary><strong>Update v1.7</strong></summary>
+<summary><strong>Update v1.7 · 4 papers</strong> — Cognitive Interventions, Virtual Support & Depression Assessment</summary>
 
-- (*ACL'26*) Cognitive Policy-Driven LLM for Diagnosis and Intervention of Cognitive Distortions in Emotional Support Conversation  [[📝 Paper](https://arxiv.org/abs/2604.17178)]
+- **Cognitive Policy-Driven LLM for Diagnosis and Intervention of Cognitive Distortions in Emotional Support Conversation**  
+  *ACL 2026* · `Cognitive Distortions` · `Emotional Support`  
+  [📄 Paper](https://arxiv.org/abs/2604.17178)
 
-- (*CSCW'26*) "When I see Jodie, I feel relaxed": Examining the Impact of a Virtual Supporter in Remote Psychotherapy  [[📝 Paper](https://arxiv.org/abs/2604.16003)]
+- **"When I see Jodie, I feel relaxed": Examining the Impact of a Virtual Supporter in Remote Psychotherapy**  
+  *CSCW 2026* · `Virtual Supporter` · `Remote Psychotherapy`  
+  [📄 Paper](https://arxiv.org/abs/2604.16003)
 
-- (*ACL-Workshop'26*) MHGraphBench: Knowledge Graph-Grounded Benchmarking of Mental Health Knowledge in Large Language Models  [[📝 Paper](https://arxiv.org/abs/2605.15589)]
-  
-- (*IEEE TAC'26*) MA-DLE: Speech-based Automatic Depression Level Estimation via Memory Augmentation  [[📝 Paper](https://arxiv.org/abs/2606.11197)]
+- **MHGraphBench: Knowledge Graph-Grounded Benchmarking of Mental Health Knowledge in Large Language Models**  
+  *ACL Workshop 2026* · `Mental Health Evaluation` · `Knowledge Graphs`  
+  [📄 Paper](https://arxiv.org/abs/2605.15589)
+
+- **MA-DLE: Speech-based Automatic Depression Level Estimation via Memory Augmentation**  
+  *IEEE TAC 2026* · `Depression Assessment` · `Speech Analysis`  
+  [📄 Paper](https://arxiv.org/abs/2606.11197)
+
 </details>
 
 <details>
-<summary><strong>Update v1.8</strong></summary>
+<summary><strong>Update v1.6 · 3 papers</strong> — Mental Health Safety & Patient Simulation</summary>
 
-- (*NPJ*) PsyEval: a comprehensive large language model evaluation benchmark for mental health  [[📝 Paper](https://www.nature.com/articles/s44184-026-00227-0)]
+- **MHSafeEval: Role-Aware Interaction-Level Evaluation of Mental Health Safety in Large Language Models**  
+  *ACL 2026* · `Safety Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2604.17730)
 
-- (*Arxiv'26*) MMHBench: A Multi-Perspective Benchmark for Mental Health Understanding in Long-Form Videos  [[📝 Paper](https://arxiv.org/abs/2607.27895)]
+- **PUPPET: Neural-Symbolic Standardized Patients for Mental Health**  
+  *ACL 2026* · `Patient Simulation`  
+  [📄 Paper](https://openreview.net/forum?id=m4mhft8nAa)
 
-- (*Arxiv'26*) Mental World Modeling  [[📝 Paper](https://arxiv.org/abs/2607.27201)]
-  
-- (*Arxiv'26*) CBT-Audio: Evaluating Audio Language Models for Patient-Side Distress Intensity Estimation in CBT Session Recordings  [[📝 Paper](https://arxiv.org/abs/2605.17370)]
+- **Synthetic or Authentic? Building Mental Patient Simulators from Longitudinal Evidence**  
+  *arXiv 2026* · `Patient Simulation` · `Longitudinal Evidence`  
+  [📄 Paper](https://arxiv.org/abs/2603.22704)
+
 </details>
 
 <details>
-<summary><strong>Update v1.9</strong></summary>
+<summary><strong>Update v1.5 · 2 papers</strong> — Evaluation Platforms & Multi-Session Counseling</summary>
 
-- (*OpenAI'26*) MentalHealthBench: An Expert-Informed Benchmark of AI Capabilities in Realistic Mental Health Conversations  [[📝 Blog](https://openai.com/index/introducing-mentalhealthbench/)] [[📄 Paper](https://cdn.openai.com/ctf-cdn/MentalHealthBench_A_Comprehensive_Benchmark_of_AI_Capabilities_in_Realistic_Mental_Health_Conversations.pdf)][[📊 Dataset](https://cdn.openai.com/ctf-cdn/OAI_MentalHealthBench.zip)]
+- **MHDash: An Online Platform for Benchmarking Mental Health-Aware AI Assistants**  
+  *IEEE SoutheastCon 2026* · `Mental Health Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2602.00353)
 
-- (*EMNLP'26*) MIND: An Evidence-State Decision Interface for Criteria-Grounded Psychiatric Inquiry and Diagnosis  [[📝 Paper](https://arxiv.org/abs/2603.03677)] [[💻 Code](https://github.com/Lingxi-mental-health/MIND)]
+- **PsychEval: A Multi-Session and Multi-Therapy Benchmark for High-Realism AI Psychological Counselor**  
+  *ACL 2026* · `Counseling Evaluation` · `Longitudinal Counseling`  
+  [📄 Paper](https://arxiv.org/html/2601.01802v1) · [💻 Code](https://github.com/ECNU-ICALK/PsychEval)
 
-- (*EMNLP'26*) Steering the Compass: Aligning Dynamic Psychological Counseling Conversations with Cognitive Behavioral Therapy Strategies   [[📝 Paper](https://arxiv.org/abs/2609.20565)]  [[💻 Code/Dataset](https://github.com/zimuwangnlp/StratCBT)]
+</details>
 
-- (*Arxiv'26*) Mind2Dialogue: Training Human-Aware Language Models by Simulating User Mental States  [[📝 Paper](https://arxiv.org/abs/2609.15972)] [[💻 Code](https://github.com/wannabeyourfriend/mind2dialogue)][[🌐 Project](https://wannabeyourfriend.github.io/mind2dialogue/)]
+<details>
+<summary><strong>Update v1.4 · 3 papers</strong> — Manipulation Detection, Psychiatric Diagnosis & Risk Detection</summary>
 
-- (*AACL Findings'26*) RESCUE-BENCH: Towards Relation-Aware Multi-Party Emotional Support Conversation Systems  [[📝 Paper](https://arxiv.org/abs/2609.09657)] [[💻 Code](https://github.com/Tomsawyerhu/RESCUE-bench)]
+- **Boosting Large Language Models for Mental Manipulation Detection via Data Augmentation and Distillation**  
+  *WWW 2026* · `Manipulation Detection`  
+  [📄 Paper](https://arxiv.org/abs/2505.15255) · [💻 Code](https://github.com/Yuansheng-Gao/MentalMAD)
 
-- (*Arxiv'26*) LongCounsel-8: A Benchmark Suite for Longitudinal Depression Tracking from Multi-Session Counseling Dialogues  [[📝 Paper](https://arxiv.org/abs/2609.03507)] [[🤗 Dataset](https://huggingface.co/datasets/hiddensev/LongCounsel-8)]
+- **LingxiDiagBench: A Multi-Agent Framework for Benchmarking LLMs in Chinese Psychiatric Consultation and Diagnosis**  
+  *KDD 2026* · `Psychiatric Diagnosis` · `Multi-Agent Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2602.09379) · [🤗 Dataset](https://huggingface.co/datasets/XuShihao6715/LingxiDiag-16K)
+
+- **JiraiBench: A Cross-lingual Benchmark for Evaluating Large Language Models’ Detection of Human Risky Health Behavior Content in Jirai**  
+  *EACL 2026* · `Risk Detection` · `Cross-Lingual Evaluation`  
+  [📄 Paper](https://arxiv.org/pdf/2503.21679)
+
+</details>
+
+<details>
+<summary><strong>Update v1.3 · 5 papers</strong> — Therapeutic Dynamics, Diagnostic Reasoning & Patient Simulation</summary>
+
+- **Empirical Modeling of Therapist-Client Dynamics in Psychotherapy Using LLM-Based Assessments**  
+  *arXiv 2026* · `Therapeutic Dynamics`  
+  [📄 Paper](https://arxiv.org/abs/2602.12450)
+
+- **MentalSeek-Dx: Towards Progressive Hypothetico-Deductive Reasoning for Real-world Psychiatric Diagnosis**  
+  *arXiv 2026* · `Psychiatric Diagnosis` · `Diagnostic Reasoning`  
+  [📄 Paper](https://arxiv.org/abs/2602.03340)
+
+- **When Can We Trust LLMs in Mental Health? Large-Scale Benchmarks for Reliable LLM Evaluation**  
+  *arXiv 2025* · `Mental Health Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2510.19032)
+
+<!-- TODO: 上下两篇论文沿用了原文中的同一个 arXiv 链接，需核对。 -->
+
+- **PsychBench: A comprehensive and professional benchmark for evaluating the performance of LLM-assisted psychiatric clinical practice**  
+  *arXiv 2025* · `Psychiatric Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2510.19032)
+
+- **PatientHub: A Unified Framework for Patient Simulation**  
+  *arXiv 2026* · `Patient Simulation`  
+  [📄 Paper](https://arxiv.org/abs/2602.11684v1)
+
+</details>
+
+<details>
+<summary><strong>Update v1.2 · 5 papers</strong> — Clinical Fairness, Realistic Therapy & Psychiatric Comorbidity</summary>
+
+- **Moving Beyond Medical Exams: A Clinician-Annotated Fairness Dataset of Real-World Tasks and Ambiguity in Mental Healthcare**  
+  *ICLR 2026* · `Fairness Evaluation` · `Clinical Ambiguity`  
+  [📄 Paper](https://openreview.net/pdf?id=tSy7OtONsg)
+
+- **Can LLMs Move Beyond Short Exchanges to Realistic Therapy Conversations?**  
+  *ICLR 2026* · `Counseling Evaluation` · `Multi-Turn Conversation`  
+  [📄 Paper](https://openreview.net/attachment?id=3Bdl1wL1S3&name=pdf)
+
+- **CounselBench: A Large-Scale Expert Evaluation and Adversarial Benchmarking of Large Language Models in Mental Health Question Answering**  
+  *ICLR 2026* · `Counseling Evaluation` · `Adversarial Evaluation`  
+  [📄 Paper](https://openreview.net/pdf?id=8MBYRZHVWT)
+
+- **From Medical Records to Diagnostic Dialogues: A Clinical-Grounded Approach and Dataset for Psychiatric Comorbidity**  
+  *ICLR 2026* · `Psychiatric Diagnosis` · `Comorbidity`  
+  [📄 Paper](https://openreview.net/pdf?id=sWWAZVHtke)
+
+- **PSYCHEPASS: Calibrating LLM Therapeutic Competence via Trajectory-Anchored Tournaments**  
+  *arXiv 2026* · `Counseling Evaluation`  
+  [📄 Paper](https://arxiv.org/abs/2601.20330)
+
+</details>
+
+<details>
+<summary><strong>Update v1.1 · 3 papers</strong> — Proactive Counseling, Empathy & Client Simulation</summary>
+
+- **PanicToCalm: A Proactive Counseling Agent for Panic Attacks**  
+  *EMNLP 2025* · `Proactive Counseling` · `Panic Attacks`  
+  [📄 Paper](https://aclanthology.org/2025.emnlp-main.649.pdf) · [💻 Code](https://github.com/JihyunLee1/PanicToCalm)
+
+- **Kardia-R1: Unleashing LLMs to Reason toward Understanding and Empathy for Emotional Support via Rubric-as-Judge Reinforcement Learning**  
+  *arXiv 2025* · `Emotional Support` · `Reinforcement Learning`  
+  [📄 Paper](https://arxiv.org/abs/2512.01282) · [💻 Code](https://github.com/JhCircle/Kardia-R1)
+
+- **CARE-Bench: A Benchmark of Diverse Client Simulations Guided by Expert Principles for Evaluating LLMs in Psychological Counseling**  
+  *AAAI 2026* · `Counseling Evaluation` · `Patient Simulation`  
+  [📄 Paper](https://arxiv.org/abs/2511.09407v1) · [💻 Code](https://github.com/Syx1030/CARE-Bench)
+
+</details>
 
 </details>
 

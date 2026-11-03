@@ -1,0 +1,327 @@
+# postern
+
+[![Release](https://img.shields.io/github/v/release/skyphusion-labs/postern?label=release)](https://github.com/skyphusion-labs/postern/releases)
+[![CI](https://github.com/skyphusion-labs/postern/actions/workflows/ci.yml/badge.svg)](https://github.com/skyphusion-labs/postern/actions/workflows/ci.yml)
+[![npm @skyphusion/postern-mcp](https://img.shields.io/npm/v/@skyphusion/postern-mcp?label=postern-mcp)](https://www.npmjs.com/package/@skyphusion/postern-mcp)
+[![PyPI postern-client](https://img.shields.io/pypi/v/postern-client?label=postern-client)](https://pypi.org/project/postern-client/)
+
+Email, for humans and agents. Postern is a self-hostable mailbox on Cloudflare:
+it sends and receives mail, stores every message in a searchable store, and
+exposes one structured API that agents and human clients (IMAP/webmail) both
+speak. Cloudflare Email is the default transport on each seam, never a hard
+dependency.
+
+Humans and agents each **send as themselves**, under per-identity credentials
+rather than a shared mailbox (see [docs/SEND-IDENTITIES.md](docs/SEND-IDENTITIES.md)),
+and agents speak the mailbox natively over **MCP**
+([`@skyphusion/postern-mcp`](https://www.npmjs.com/package/@skyphusion/postern-mcp)) as
+a first-class door, not an afterthought.
+
+From a fresh clone, with only your own domain, you can deploy it, send a
+message, and receive + read it back. Outbound send needs Cloudflare Email Sending
+on the **Workers Paid** plan (USD 5/month); inbound via Email Routing is free-plan
+OK. See **[DEPLOY.md](DEPLOY.md)** for the
+clean-install quickstart and **[inbound/smoke.mjs](inbound/smoke.mjs)** for the
+scripted v1.0 acceptance smoke (issue #25).
+
+## Try it live
+
+Live read-only demo: [https://demo.posternonline.com](https://demo.posternonline.com)
+(landing) or [webmail](https://demo.posternonline.com/webmail). Log in with the demo
+token below. Apex [posternonline.com](https://posternonline.com) **301s** to the demo
+host. Sitemap: [demo.posternonline.com/sitemap.xml](https://demo.posternonline.com/sitemap.xml).
+
+Mail **any** address `@posternonline.com` and watch it appear in the mailbox.
+That is the product working: Email Routing -> worker -> D1 store.
+
+The demo token is READ-scoped and public by design. Here is what that means.
+
+It can read. It lists messages, reads one, walks a thread, searches, downloads an
+attachment, and lists folders.
+
+It cannot write. The API scope wall refuses send, reply and delete. It also refuses the
+three routes that change stored state: mark read, set flags, and move between folders.
+Those need the `organize` scope, which this token does not carry. Webmail hides compose
+for it.
+
+A read token cannot change anything in the mailbox. If you run your own Postern, a read
+token you issue has the same limits.
+
+The demo mailbox is shared and public, so do not mail anything private.
+
+The demo being readable by anyone is not the agent-credential default described under
+[Auth](#what-an-agent-credential-can-read) below, even though both look like "one token
+reads every address". The demo token is the static `POSTERN_API_TOKEN_READ` slot, which is
+un-bound and has read the whole mailbox on every release; the demo issues no per-identity
+registry entries, and that default is about registry entries. Read the demo as one shared
+mailbox that is public on purpose, and read the Auth section as what a credential you issue
+reaches on an instance that is not.
+
+MCP config for agents:
+
+```
+POSTERN_API_URL=https://demo.posternonline.com
+POSTERN_API_TOKEN=a5fb2da1a13ab468adc1d147272126a4a977f3db44ace5c961ce87d26e0055d8
+```
+
+Run your own in about 10 minutes: follow [DEPLOY.md](DEPLOY.md). No Cloudflare account
+yet? DEPLOY.md section 0 runs the whole mailbox locally under `wrangler dev` first.
+
+Six surfaces in one repo (one store, one API):
+
+| Path | Role |
+|------|------|
+| **`inbound/`** | Core Cloudflare Worker: ingest, store (D1 + R2 + Vectorize), mailbox API, send |
+| **`relay/`** | Optional Go SMTP daemon: loopback ingest, submission 587/465, BYO dispatch |
+| **`mcp/`** | MCP server for agents ([`@skyphusion/postern-mcp`](https://www.npmjs.com/package/@skyphusion/postern-mcp) on npm) |
+| **`webmail/`** | Browser UI embedded at `/webmail`: read, plus compose/reply when the token is send-capable |
+| **`imap/`** | IMAP proxy (read, `\Seen`, delete) for Thunderbird / mutt / iOS Mail |
+| **`clients/python/`** | Stdlib HTTP client + CLI ([`postern-client`](https://pypi.org/project/postern-client/) on PyPI) |
+
+```mermaid
+flowchart TD
+    subgraph transports[Transport seams]
+        cfIn[CF Email Routing]
+        cfOut[CF Email Sending]
+        relay[postern-relay SMTP]
+    end
+
+    subgraph core[inbound Worker]
+        store[(D1 + R2 + Vectorize)]
+        api[Mailbox API + RPC]
+    end
+
+    subgraph clients[Clients]
+        webmail[webmail]
+        imap[imap]
+        mcp[mcp]
+        py[clients/python]
+    end
+
+    cfIn --> store
+    relay --> store
+    api --> cfOut
+    api --> relay
+    webmail --> api
+    imap --> api
+    mcp --> api
+    py --> api
+```
+
+See [docs/architecture.md](docs/architecture.md) for the full visual map (inbound/outbound
+sequences, client doors). [docs/CONTRACT.md](docs/CONTRACT.md) is the authoritative data
+model; [docs/INTEGRATION.md](docs/INTEGRATION.md) covers RPC + REST caller setup.
+
+## Email for humans, too: webmail and IMAP
+
+Agents speak the structured API; humans get two doors onto the same mailbox, both
+clients of that API (never a second store):
+
+- **Webmail** (`webmail/`): a single self-contained page (vanilla HTML/CSS/JS, no
+  build step) served by the worker at **`/webmail`**. Paste your API origin and
+  token and browse the mailbox (list, read, threads, search); compose and reply
+  unlock when the token is send-capable.
+- **IMAP proxy** (`imap/`): a small Twisted server that fronts the API as IMAP
+  (read, the `\Seen` read/unread flag, and delete via a `both`-scoped token), so
+  Thunderbird / mutt / iOS Mail can open the mailbox too.
+
+Webmail adds compose/reply when the token is send-capable; IMAP adds read/unread
+(`\Seen`) and delete via a `both`-scoped token. Both are API clients, never a second
+store, and all sending funnels through the structured API.
+
+An HTML email rendered in the webmail (safely, in a sandboxed iframe; no scripts,
+no remote trackers running):
+
+![Postern webmail rendering an HTML email](webmail/screenshots/webmail-html-email.png)
+
+The inbox list, a message read view, and search:
+
+![Postern webmail: inbox list, message read view, and thread](webmail/screenshots/webmail-inbox.png)
+
+| Read a message (trust verdict + attachments) | Search the mailbox |
+|---|---|
+| ![Reading a message](webmail/screenshots/webmail-message.png) | ![Searching](webmail/screenshots/webmail-search.png) |
+
+> The shots above use synthetic example data. See [webmail/README.md](webmail/README.md)
+> for setup and the security model (BYO-token, token in `sessionStorage` only, no
+> `innerHTML` of message content, locked-down CSP).
+
+## Quick start
+
+Full steps in [DEPLOY.md](DEPLOY.md). In short:
+
+```bash
+cd inbound                                   # everything below runs from inbound/
+npm ci                                       # installs the pinned wrangler; before any npx wrangler
+npx wrangler login
+npx wrangler d1 create postern --binding DB  # writes database_id into the existing DB block
+npx wrangler r2 bucket create postern-attachments --binding ATTACHMENTS
+# edit wrangler.jsonc: DEFAULT_FROM / ALLOWED_FROM_DOMAIN, and set
+# "workers_dev": true (default is false: no reachable URL to smoke without it)
+npx wrangler d1 migrations apply postern --remote
+npm run deploy                               # first deploy creates the Worker
+npx wrangler secret put POSTERN_API_TOKEN    # openssl rand -hex 32
+```
+
+Then route inbound mail to the Worker (Email Routing -> Routing Rules ->
+catch-all to the Worker), and run the smoke (see DEPLOY.md).
+
+## Client packages
+
+After deploy, connect agents and scripts without cloning the repo. Both packages
+talk to the same token-gated mailbox API; they are clients of the store, not a
+second copy of it.
+
+| Package | Registry | Install | Docs |
+|---------|----------|---------|------|
+| **@skyphusion/postern-mcp** | [npm](https://www.npmjs.com/package/@skyphusion/postern-mcp) | `npx -y @skyphusion/postern-mcp` | [mcp/README.md](mcp/README.md) |
+| **postern-client** | [PyPI](https://pypi.org/project/postern-client/) | `pip install postern-client` | [clients/python/README.md](clients/python/README.md) |
+
+Configure with your deployed origin and token:
+
+```bash
+export POSTERN_API_URL=https://postern.<your-subdomain>.workers.dev
+export POSTERN_API_TOKEN=<your token>
+```
+
+`<your token>` is the `POSTERN_API_TOKEN` you set at deploy (full access). For a
+read-only client, give it a `POSTERN_API_TOKEN_READ` value instead (see "Scoped
+tokens" in [DEPLOY.md](DEPLOY.md)); for several people or agents, one per-identity
+token each ([docs/SEND-IDENTITIES.md](docs/SEND-IDENTITIES.md)).
+
+**MCP (Cursor / Claude Code):** add an MCP server entry with `command: npx`,
+`args: ["-y", "@skyphusion/postern-mcp"]`, and the env vars above in `env`. Send tools
+(`mailbox_send`, `mailbox_reply`) register only when `POSTERN_SEND_TOKEN` is also
+set (opt-in; see [docs/SEND-IDENTITIES.md](docs/SEND-IDENTITIES.md)).
+
+**Python CLI:** `postern ping`, `postern list`, `postern search`, `postern send`,
+and the rest; see [clients/python/README.md](clients/python/README.md).
+
+Release tags: `postern-mcp-v*` (npm CI) and GitHub Release `v*` matching
+`clients/python/pyproject.toml` (PyPI CI). See [docs/INTEGRATION.md](docs/INTEGRATION.md).
+
+## Auth
+
+- **Same-account Workers:** the `MailboxService` RPC entrypoint (or legacy `EmailService` alias), tokenless.
+- **Everyone else:** `Authorization: Bearer <POSTERN_API_TOKEN>`, constant-time
+  compared.
+- Transports (`/ingest`, relay `/dispatch`) use a **separate**
+  `POSTERN_TRANSPORT_TOKEN`, never the API token, so an API-token leak cannot
+  inject mail and vice versa.
+
+### What an agent credential can read
+
+**An agent credential on a Postern deployment can read the mail addressed to the humans
+on it. This is on by default and there is no key to turn it off.**
+
+That is the product, not an accident of the implementation: Postern is email for agents
+AND humans, and an agent that cannot read the humans' mail does not deliver it. An agent
+asked to find last month's invoice has to be able to find it in the mailbox it was
+delivered to.
+
+Concretely, for a read-capable entry in `POSTERN_SEND_IDENTITIES`:
+
+| Credential | Reads | Sends as | May change |
+|---|---|---|---|
+| agent (registry token, `scopes` includes `read`) | **every address in the deployment** | its own bound address | **only its own mail** |
+| human with a cookie SESSION (`WEBMAIL_AUTH_BACKEND = "native"`) | its own address, plus any role queue it is on | its own address | only its own mail |
+| human in DEFAULT BYO-token webmail, pasting a read-capable registry token | **every address in the deployment**, because the worker sees a registry Bearer and not a person | that token's bound address | only that address's mail |
+| static `POSTERN_API_TOKEN` / `_READ` | every address (unchanged, always did) | un-bound | per slot |
+
+One boundary did NOT move, and one is narrower than it looks. Both are deliberate:
+
+- **The widening follows the CREDENTIAL, not the person.** A cookie SESSION is scoped
+  exactly as it was, to that person plus any role queue they are on. But sessions exist
+  only under `WEBMAIL_AUTH_BACKEND = "native"`, and **unset is the default**: default
+  webmail is BYO-token and sends an `Authorization: Bearer`. So a human who pastes a
+  read-capable registry token into webmail reads the estate, because the worker sees a
+  registry Bearer and has no way to know a browser is on the other end. Being in a browser
+  is not what scopes you; the credential is.
+- **An agent can read a message it cannot act on.** Marking read, flagging, filing and
+  quoting on reply or forward stay bound to the agent's own address, so a wider read
+  never becomes a wider write.
+
+Every read states the scope it was answered under, in `identityScope` on the response, so
+a caller never has to guess whether an empty result means "not in the mailbox" or "not in
+my slice". See [docs/CONTRACT.md](docs/CONTRACT.md) section 10.9.1.
+
+If that reach is wider than you want for your deployment, do not issue read-capable
+registry entries: an entry whose `scopes` omits `read` is refused on every read route, and
+it is the supported way to keep an agent send-only.
+
+None of this is why the [public demo](#try-it-live) is readable. The demo token is the
+static `_READ` slot in the last row of the table, un-bound and estate-wide on every release,
+and the demo issues no registry entries. The demo shows a mailbox that is public on purpose;
+this section describes what a credential you issue reaches on one that is not. Neither is a
+measure of the other.
+
+## Relay (optional, bring-your-own-SMTP)
+
+Go 1.25+ (what `relay/go.mod` requires; an older Go with the default
+`GOTOOLCHAIN=auto` downloads the pinned toolchain, one set to `GOTOOLCHAIN=local`
+refuses to build):
+
+```bash
+cd relay
+go build -o skyphusion-email-relay .   # the name the unit in relay/systemd/ runs
+```
+
+Configure via env (no values are baked in; every variable is in
+`relay/skyphusion-email-relay.env.example`, systemd bring-up in
+[relay/README.md](relay/README.md)). For local SMTP-only producers (cron, backups),
+set `POSTERN_INGEST_URL` (your worker's `/ingest`) and `POSTERN_TRANSPORT_TOKEN`:
+each message is stored in the mailbox as received, addressed by the envelope
+`RCPT TO`. `DEFAULT_FROM` / `FROM_DOMAIN` apply only to the legacy
+`EMAIL_WORKER_URL` path, which sends the message instead of storing it and
+rewrites an off-domain `From` to `DEFAULT_FROM`, keeping the original as `Reply-To`.
+
+## Conventions
+
+No em/en-dashes in source, commits, or docs. Commits use conventional-commits
+(`feat(inbound): ...`, `fix(relay): ...`).
+
+Merges to `main` require the `ci`, `coverage`, CodeQL, and `code_quality` checks
+green, with the branch up to date with `main` (#419). There are 0 required
+approvals and no CODEOWNERS: this is a solo-maintainer project, so review theater
+would be dishonest gatekeeping; the checks above are the actual gate.
+
+---
+
+## Operating the reference deployment (skyphusion)
+
+These notes are specific to the maintainers' own deployment and are **not**
+required to run Postern. A stranger should follow [DEPLOY.md](DEPLOY.md) instead.
+
+The reference instance sends from `skyphusion.org` (and `.net`), both onboarded
+to Email Sending, and deploys the worker to Cloudflare via CI on a pushed
+SemVer tag (`v*`); a bare merge to `main` runs CI only and ships nothing. No
+secrets live in the tree: `POSTERN_API_TOKEN` is a Worker secret, untouched by
+deploy.
+
+## Who this is for
+
+Self-hosters, agent builders, and mail admins who want a mailbox they own on Cloudflare: one searchable store, one API for humans and agents, webmail and IMAP included.
+
+## Links
+
+- **Quickstart:** [DEPLOY.md](DEPLOY.md)
+- **Operations (backup, restore, monitoring):** [docs/OPERATIONS.md](docs/OPERATIONS.md)
+- **Demo:** https://demo.posternonline.com · **Webmail:** https://demo.posternonline.com/webmail
+- **Write-ups:** [v1.4.1 identity-bound credentials](https://skyphusion.net/blog/postern-identity-bound/) · [v1.0.0 milestone](https://skyphusion.net/blog/postern-v1/) · [intro](https://skyphusion.net/blog/postern/)
+- **Skyphusion Labs:** https://skyphusion.org · **Blog:** https://skyphusion.net · **Org:** https://github.com/skyphusion-labs
+- **Related:** [prism](https://github.com/skyphusion-labs/prism) (AI playground), [search-mcp](https://github.com/skyphusion-labs/search-mcp), [security-audit](https://github.com/skyphusion-labs/security-audit)
+
+## License
+
+The server core in this repository is [AGPL-3.0-only](LICENSE): Postern is software you self-host, and
+if you run it as a network service for others, you must offer them the complete corresponding source
+under the same license.
+
+Three client-side components are MIT-licensed so they are trivial to embed in any codebase:
+the MCP server [`@skyphusion/postern-mcp`](mcp/LICENSE), the Python client
+[`postern-client`](clients/python/LICENSE), and the IMAP proxy [`posternimap`](imap/LICENSE)
+(`imap/`). Each ships its own `LICENSE` and metadata, which govern that component.
+
+See [NOTICE](NOTICE) for the short version and [PRIVACY.md](PRIVACY.md) for what self-hosting means for
+data (short version: Skyphusion Labs operates no mail service, so we hold none of your mail; the one
+instance it runs is the public demo mailbox, and PRIVACY.md says what that holds).

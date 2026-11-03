@@ -1,5 +1,6 @@
 # awesome-ai-prompts
 
+[![Mentioned in Awesome Prompt Engineering](https://awesome.re/mentioned-badge.svg)](https://github.com/brandonhimpfen/awesome-prompt-engineering#prompt-libraries)
 ![Build](https://github.com/shauryagangrade/awesome-ai-prompts/actions/workflows/ci.yml/badge.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/shauryagangrade/awesome-ai-prompts?style=social)](https://github.com/shauryagangrade/awesome-ai-prompts)
@@ -46,6 +47,9 @@ Want it in video form? [Download the MP4](docs/media/prompt-in-action.mp4).
 1. Browse a category below and pick a prompt.
 2. Open its `*-prompt.md`, then copy everything after the `---` divider.
 3. Paste it into your AI coding agent along with your task - it handles the rest.
+
+Using opencode? [docs/opencode.md](docs/opencode.md) shows how to run a prompt as
+a slash command and keep the verification rules in `AGENTS.md`.
 
 That's it. Here's the shape of it (from
 [`feature-implementation-prompt.md`](core-coding/feature-implementation-prompt.md)):

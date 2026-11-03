@@ -113,7 +113,7 @@ CoursePilot 就是为这个问题而生的。不管是 B 站上的公开课、�
 
 | 平台 | 安装包 | 说明 |
 | --- | --- | --- |
-| macOS（Apple Silicon） | [`.dmg`](https://github.com/wansui976/CoursePilot/releases/latest) | 已内置 ffmpeg、whisper.cpp 等依赖 |
+| macOS（Apple Silicon / Intel） | [`.dmg`](https://github.com/wansui976/CoursePilot/releases/latest) | Apple 芯片选 `aarch64`，Intel 选 `x64`；已内置 ffmpeg、whisper.cpp 等依赖 |
 | Windows（x64） | [`.exe` / `.msi`](https://github.com/wansui976/CoursePilot/releases/latest) | 已内置依赖 |
 | Android（arm64） | [`.apk`](https://github.com/wansui976/CoursePilot/releases/latest) | 语音识别、OCR 走云端；暂时只能导入本地视频 |
 | iOS / iPadOS | [`.ipa`](https://github.com/wansui976/CoursePilot/releases/latest)（未签名） | 需要自签安装；同上，暂时只能导入本地视频 |
@@ -301,6 +301,17 @@ cd src-tauri && cargo test   # 后端测试
 <summary><b>火山引擎（语音识别）</b></summary>
 
 在火山引擎控制台开通[录音文件识别大模型版](https://console.volcengine.com/speech/service/10012)，拿到 App ID 和 Access Token，填进 **设置 → 语音识别**。
+
+**它是怎么跑的**：桌面端把音轨抽成 16 kHz 单声道 WAV，用 ffmpeg 切成 5 分钟一段、单声道 16 kHz / 48 kbps 的 MP3，并发 4 路调用「录音文件识别大模型」的 `submit` / `query` 接口，再按每段的时间偏移合并。提交阶段失败会退避重试；提交成功后云端已经在计费，绝不换 request_id 重来。已认完的分片会落库，中断后接着跑不会重复付费。
+
+**常见报错**：
+
+| 现象 | 原因 / 处理 |
+| --- | --- |
+| `45000030 requested resource not granted`（HTTP 403） | **不是 App ID / Token 的问题，是模型版本和资源 ID 对不上**：控制台开通「豆包录音文件识别模型2.0」要发 `volc.seedasr.auc`，只开通 1.0 才是 `volc.bigasr.auc`。应用现在先用 2.0 的 ID，被拒自动退回 1.0；两个都报这一条时，再查这个 App ID 是否就是开通了该服务的那个应用、账号是否已实名。 |
+| `missing Volcengine ASR credentials` | 设置里 App ID / Access Token 没填，或复制时带了空格。 |
+| `volcengine submit: ...` / `query ... 网络失败` | 跨境网络抖动，应用会自动退避重试；连续失败再查代理。 |
+| 一直「正在识别」到 30 分钟超时 | 服务端排队或单段太长；缩短分段长度、降低并发后再试。 |
 
 </details>
 

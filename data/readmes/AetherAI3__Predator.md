@@ -353,33 +353,80 @@ RC is in controlled private preview. The production viewer and relay have been e
 
 Quantum Comm Ops is Predator's research into coordinating large agent workflows. A shared evidence bank holds the findings; a compiler prepares small, task-specific messages; receivers check those messages before using them. Adaptive **Custom Fanout Controls (CFC)** decide which branches need more attention next.
 
-The programme compares ordinary delivery with an experimental quantum-search route through **Nano → ATLAS → FakeFez**, a simulator configured to model an IBM device. Compact packets select or reconstruct records from the shared bank. Useful reasoning from those records is a separate model-qualification step.
+The programme compares ordinary delivery with an experimental quantum-search route through **Nano → ATLAS → an IBM backend**: first **FakeFez**, a simulator configured to model an IBM device, and since October 31 the real devices **ibm_fez** and **ibm_kingston** on IBM's free open plan. Compact packets select or reconstruct records from the shared bank. Useful reasoning from those records is a separate model-qualification step.
 
 <p align="center">
-  <a href="docs/research/quantum-comm-ops.md"><img src="docs/assets/quantum-comm-ops-overview.svg" width="960" alt="Conceptual handoff: compile a packet from shared evidence, deliver it, and check its receipt and message tag. Accept a verified handoff or retry within the budget. The measured route uses FakeFez simulation; model continuation remains under qualification."></a>
+  <a href="docs/research/quantum-comm-ops.md"><img src="docs/assets/quantum-comm-ops-overview.svg" width="960" alt="Conceptual handoff: compile a packet from shared evidence, deliver it, and check its receipt and message tag. Accept a verified handoff or retry within the budget. The route was measured on the FakeFez simulator and then on IBM hardware; model continuation remains under qualification."></a>
 </p>
 
-### Current milestone: repeated 400-recipient delivery
+### Current milestone: 400 agents, 400 messages, one IBM job, five seconds
 
-**Three fresh datasets, 400 scripted recipients each.** All recipients verified after any required retry. These datasets come from the same generator; the tests measure message delivery.
+**What the mission is, in plain words.** Picture a team of **400 AI worker agents**. Each one needs its own short briefing before it can start its task. Quantum Comm Ops writes those 400 briefings, sends each one through an IBM quantum computer, and checks that every agent received exactly the briefing meant for it.
 
-| Measurement | Recorded result |
-| :--- | :--- |
-| **First-pass verification** | **400/400, 400/400 and 399/400** across the three datasets |
-| **After verified retry** | **400/400 on every dataset** |
-| **Jobs, including retries** | **1,200–1,203**, compared with 3,232 in the earlier F2 configuration |
-| **Samples (“shots”), including retries** | **3,600–3,618**, compared with 13,056 in F2 |
-| **Latest two mission times** | **About 49–51 minutes** on the research host; timing varies with host performance |
+- Each briefing is a **96-bit message**. It is cut into three small pieces and each piece becomes one tiny quantum circuit, so a mission is **1,200 circuits**.
+- The quantum computer runs each circuit a few times (**shots**) and reports the bits it read. A majority vote over those readings gives the bits of the message.
+- Each message carries a **check code** (a 32-bit tag), like a tamper seal. The receiving agent recomputes the code with its key; if it does not match, the message is refused and that agent's pieces are re-sent.
+- IBM also returns a **signed receipt** for the job. Predator stores it so the delivery can be re-checked later.
+- **"400/400 verified"** means all 400 agents got a message whose check code matched, so every briefing arrived intact. **"First try"** means no agent needed a re-send.
 
-Smaller dataset-specific frames, fewer samples, pooled simulator setup and exact compiler checks reduced the work. In one run, a wrong majority vote failed its message-tag check; a six-shot retry recovered that recipient. **Three shots plus capped six-shot rescue is now the adopted research baseline.**
+In this research the 400 agents are **scripted stand-ins**, not 400 reasoning language models. The test measures message delivery. Whether a model can use the briefing well is tested separately (see "Evidence flows onward" below).
 
-### What comes next
+**What happened, October 31 – November 1, 2026.** The mission that previously ran on a simulator now runs on real IBM quantum hardware, and the whole thing fits in **one IBM job billed 5.0 seconds of quantum-computer time**. Every run was preregistered and rehearsed on the simulator first; the attempts that missed their targets or did not run are listed below and in the [guide](docs/research/quantum-comm-ops.md#ibm-hardware-missions).
 
-Qualify models that use the delivered evidence, test other dataset constructions, measure a small packed request on IBM hardware, and validate production and independent-sandbox integration. The tested **superposition multiplexing** scheme did not beat ordinary packed circuits in the cost models.
+| What we measured | Simulator (Oct 31) | IBM hardware (Oct 31 – Nov 1) |
+| :--- | :--- | :--- |
+| **Agents whose message arrived intact on the first try** (out of 400) | 400, 400 and 399 on three runs | **400 on all five runs**: three different message sets on ibm_kingston, then two runs with a secret key (ibm_kingston, then ibm_fez) |
+| **After one re-send** | 400 on every run | 400 on every run; no re-send was needed |
+| **IBM jobs per mission** | 1,200–1,203 | **1** (all 1,200 circuits in one request) |
+| **Quantum-computer time IBM billed** | — (simulator) | **5.0 seconds**, down from **162 seconds in 81 jobs** when the same mission first ran on ibm_fez |
+| **Wrong bits after the majority vote** | 1 wrong piece in three runs | **0 wrong bits in 480,000 readings** across the five runs; before the vote, 0.41–0.52% of single readings were wrong |
+| **Secret key check** | — | With the wrong key, **0 of 400** messages pass the check (as intended); a scan of the run's files found the secret nowhere |
+| **Does packing save money? Three circuits, same device** | — | Sent as one job: **2.0 s**. Sent as three jobs: **6.0 s**. Same result in both orders (ibm_fez) |
 
-**Status, October 31, 2026:** Comm Ops results are simulator benchmarks, with no demonstrated quantum advantage or IBM billing savings. The separate joint5 hardware pilot is described below.
+**Why it got cheaper.** IBM bills by the second of quantum-computer time, and it charges much less for 1,200 small circuits in one job than for the same circuits spread over many jobs. The saving is **IBM's billing for batched circuits**, not a quantum speed-up: the circuits here carry ordinary, known bit patterns. The 162 → 5 s comparison also mixes different devices, days and shot counts; the clean like-for-like test is the three-circuit row above.
 
-**[Plain-English guide, history and open questions →](docs/research/quantum-comm-ops.md)** · [Public aggregate data and source pins](docs/research/quantum-comm-ops.json)
+**What did not work.** A one-job run at three shots had 395 and 392 of 400 messages arrive intact on the first try, below its target of 396 (a re-send fixed the rest; five shots fixed the problem for good). A compiler setting that looked better on paper did no better on the real device and was dropped. One ibm_kingston job waited eleven hours in the queue and was cancelled. One ibm_marrakesh job was stopped by a time limit we had set too low. IBM finalized both on November 2: the cancelled job at 0 seconds (its 30-second reservation released) and the stopped job at 5 seconds (settled), so the hardware programme total stays at **254 of the 600 free seconds**.
+
+<p align="center">
+  <a href="docs/research/quantum-comm-ops.md#ibm-hardware-missions"><img src="docs/assets/quantum-comm-ops-hardware-ladder.svg" width="960" alt="Seconds of quantum-computer time IBM billed for the same 400-agent mission: 162 seconds in 81 jobs on October 31 (ibm_fez), 6 seconds in two jobs (ibm_kingston), then 5 seconds in one job, repeated on three message sets, with a secret key, and on ibm_fez on November 1. Inset: three circuits compiled once bill 2.0 seconds as one job and 6.0 seconds as three jobs."></a>
+</p>
+
+**Evidence flows onward.** Four of the hardware-delivered briefings (one from ibm_fez, three from ibm_kingston under the secret key) were re-checked from their signed receipts, decoded, matched to the shared evidence bank, turned into a compact typed message, read by a frontier model, and the model's answer was scored by a deterministic checker: **4 of 4 correct end to end**. The typed-message format itself passed **12 of 12 held-out tasks** with zero formatting errors. The whole hardware programme used **254 of the 600 free seconds** on IBM's open plan and about **$18.65 of a $50 model budget**.
+
+The simulator milestone it builds on, **three fresh 400-agent runs at three shots with a capped six-shot re-send** (1,199 of 1,200 intact on the first try, 1,200 of 1,200 after re-send), remains the research baseline and is kept in full in the [guide](docs/research/quantum-comm-ops.md#earlier-simulator-milestone).
+
+### Feel the pins, then set them: what the agents measured
+
+The delivery step is measured on hardware (five one-job missions, 400 of 400 each). On November 1 the programme measured the **agents** on either side of it, on fixture tasks with known answers scored by a deterministic checker, with **no quantum-computer time**. The work follows the same [lockpick](#crucible-adaptive-quantum-threat-modeling) that Crucible already uses. In plain words:
+
+| Lockpick | What it means for the 400-agent loop | Measured November 1 (fixtures, no QPU) |
+| :--- | :--- | :--- |
+| **Hold tension** | The shared evidence bank holds every verified record with its receipt; a stronger **encoder** picks each agent's briefing from it, and the **compiler** filters what reaches the agent | **MET for the encoder; the selection-to-agent gate was met only with the compiler filter, not as first registered.** The encoder put about **87%** of an agent's relevant records in its top eight within the agent's evidence pool (57% across the whole bank), where keyword search managed 38% (17%). But a scripted agent verified only **5 of 110** briefings until the compiler *dropped* other chains' records and contradicted records; then **99 of 110**. Keyword search with the same filter: 0 of 110. The filter matters more than the label |
+| **Feel many pins** | 400 cheap agents each take one briefing (one IBM job, 5 s) and report **HIT / MISS / REJECT** with a short reason | **NOT MET on price.** No cheap model verified at least 11 of 12 test tasks at a quarter of the frontier model's price or less. The best mid-cost model verified **12 of 12** at about **63%** of that price; a free-tier model **7 of 12** at about **2%**. Two models failed the strict output format; re-parsed leniently after the fact they would have verified 6 and 10 of 12 |
+| **Keep the pins that bind** | The program's own check decides; a verdict is recorded only when it type-checks and its receipt matches, and agents that disagree are recorded as a split rather than averaged away | **MET.** A plain majority was right on 9 of 12 test tasks; a reliability-weighted vote reached **12 of 12** across the same 12 tasks (3 where the majority split or was wrong). Quantum-style selectors run on a classical simulator matched it and added nothing |
+| **Set the binding pin** | Stop narrowing once the few real leads are known; each survivor gets a **deep cell**: a "think longer" model plus a frontier model working that one lead | **NOT MET for the "think longer" model.** It verified **0 of 12** at depths 4, 8 and 16; depth 32 was stopped by the memory limit. Deeper runs produced well-formed records whose steps were invented, and its adaptive early exit fired on only 8 of 192 tokens because the state never settled below its threshold. Deep cells stay frontier-only. A preregistered ladder found a **harder task family** where the frontier model alone verifies **2 of 12**, so deep cells have a calibration target |
+| **Only as many hands as we have** | Deep cells open only up to the machines we actually have; leads that cannot be deepened yet wait with their evidence intact | **NOT RUN.** The narrow-then-deepen comparison stopped at its **$5** cap before any deep cell opened. On the hard family the free-tier first model verified **0 of 24** (on the long briefings 19 of its 24 replies were not valid records, 4 missed, 1 was wrong), the mid-cost model verified **9 of the 9** leads it reached, and 15 leads are waiting |
+| **Next cycle** | Each cycle's verified records feed the next cycle's briefings, so the bank deepens where the lock is binding | **MET on fixtures.** Three cycles over the same 40 fixture chains with one shared bank: first-try verified **24 → 38 → 39 of 40**, hand-offs to the mid-cost model **16 → 2 → 1**, cost per verified record **0.45×** of cycle one. Two earlier runs with a free-tier first model showed the same shape (23 → 39; cost per verified down 7.6–14×) until a per-hour quota at the model gateway stopped their third cycle. Fresh, non-fixture tasks are still open |
+
+<p align="center">
+  <a href="docs/research/quantum-comm-ops.md#agent-lanes-november-1-2026-evening"><img src="docs/assets/quantum-comm-ops-compounding.svg" width="960" alt="Compounding measured on fixture tasks with no quantum-computer time: across three cycles over the same 40 chains, agents verified first try 24, then 38, then 39 of 40; hand-offs to the mid-cost model fell from 16 to 2 to 1; and the cost per verified record fell to 0.45 times cycle one."></a>
+</p>
+
+**What one cycle looks like now.** The shared bank feeds the encoder; the compiler filters what each agent sees; the 400 briefings go out in one IBM job; verified records come back into the bank with their receipts; disagreements go to a weighted vote; and the next cycle starts from a deeper bank. The delivery step is measured on hardware; the encoder, filter, vote and compounding steps are measured on fixtures; the deep cells on surviving leads are not yet run. The stages were measured separately; no cycle has yet run with the hardware delivery step inside it.
+
+<p align="center">
+  <a href="docs/research/quantum-comm-ops.md"><img src="docs/assets/quantum-comm-ops-agent-loop.svg" width="960" alt="One cycle of the agent loop: the shared evidence bank feeds the encoder, which picks each agent's records (measured on fixtures: about 87 percent of relevant records in the top eight); the compiler drops other chains' and contradicted records (fixtures: 99 of 110 verified with the filter, 5 of 110 without); 400 briefings go out in one IBM job (hardware: 400 of 400 intact, 5 seconds billed); verified records are banked with their receipts; disagreements go to a reliability-weighted vote (fixtures: 12 of 12); deep cells on surviving leads are not run; and the bank feeds the next cycle (fixtures: first-try 24, 38, 39 of 40)."></a>
+</p>
+
+Why this matters for a real security mission: a cheap agent that cannot tell a hard lead is real discards it, so a loop that only narrows would find the easy findings and lose the hard ones; deepening on survivors is the untested hypothesis for setting those. For scale, the worker survey projects about **$4 of model calls plus 5 seconds of quantum-computer time** for a 400-agent round with the first-tier worker alone (one call per agent, no escalation), against about **$18** with a frontier model on every agent; the measured third cycle above implies roughly **$9–10** per 400 verified records with escalation. These are projections from measured per-call costs, not a measured 400-agent mission.
+
+The agent lanes cost about **$24** of model calls; **$42.50 of the $50 model budget** has been used in total.
+
+Still open, in order: the narrow-then-deepen comparison at matched budget (it needs a higher cap than the $5 it ran under); the stronger encoder *inside* a live compounding loop; gating or replacing the cheap first-tier worker above about 20 evidence rows; then the repeat on ibm_kingston after a fresh calibration, packing beyond three circuits, real key management, and production dispatch. The tested **superposition multiplexing** idea (several messages in one circuit) ran on hardware but did not beat ordinary packing as a way to *carry* messages; whether it helps *choose* between disagreeing agents is still to be tested against a plain vote on hardware (on a classical simulator a quantum-style selector only matched the weighted vote).
+
+**Status, November 2, 2026:** the 400-agent delivery mission is measured on IBM hardware, including what IBM billed, and the two reserved hardware attempts are now finalized by IBM. No quantum advantage is claimed or demonstrated: the saving is IBM's billing for batched circuits that carry known bit patterns. Scripted agents, one synthetic message generator, two devices, one day each; the agent lanes are measured on fixture tasks with no quantum-computer time. The separate joint5 compiler pilot is described below.
+
+**[Plain-English guide, hardware missions and open questions →](docs/research/quantum-comm-ops.md)** · [Public aggregate data and source pins](docs/research/quantum-comm-ops.json)
 
 <a id="joint5-compiler-the-ibm-fez-hardware-result"></a>
 
@@ -498,7 +545,7 @@ Help build the CLI, repair chains, verification tools, or classical/quantum comp
 | **[HTB training evidence](docs/htb/README.md)** | Courses, tracks, machines, certificates, and replay index |
 | **[Crucible](#crucible-adaptive-quantum-threat-modeling)** | The loop explained as a lockpick, with [MITRE chains](#mitre-attck-chain-library) and the [CVE catalog](#cve-research-catalog) it draws on |
 | **[CodePro and System-2](#codepro-and-system-2)** | How the fanout runs, and the private CLI around it |
-| **[Quantum Comm Ops](docs/research/quantum-comm-ops.md)** | Agent mailboxes, adaptive CFC, packing and multiplexing; [aggregate data and verification scope](docs/research/quantum-comm-ops.json) |
+| **[Quantum Comm Ops](docs/research/quantum-comm-ops.md)** | Agent mailboxes, adaptive CFC, packing and multiplexing; [the 400-agent message mission on IBM hardware](docs/research/quantum-comm-ops.md#ibm-hardware-missions) and [aggregate data with source pins](docs/research/quantum-comm-ops.json) |
 | **[CharLS Q3](docs/research/charls-q3.md)** | [Public data](docs/research/charls-q3.json) and the completed dependent repair |
 | **[QPACK study](docs/research/gen3-qpack-experiment1.md)** | [Episode data](docs/research/gen3-qpack-experiment1.json), comparisons, and missing outcomes |
 | **[joint5 IBM Fez pilot](docs/research/ibm-fez-pilot.md)** | [Public data](docs/research/ibm-pilot.json), uncertainty, and the energy regression |

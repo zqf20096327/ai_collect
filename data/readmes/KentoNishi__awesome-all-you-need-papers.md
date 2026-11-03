@@ -1,6 +1,6 @@
 # <a href="https://github.com/KentoNishi/awesome-all-you-need-papers">Awesome <u><strong><i>"all you need"</i></strong></u> papers</a>
 
-![Last Added](https://img.shields.io/badge/Last%20Added-2026--10--25-informational)
+![Last Added](https://img.shields.io/badge/Last%20Added-2026--10--30-informational)
 [![Update Paper List](https://github.com/KentoNishi/awesome-all-you-need-papers/actions/workflows/update.yaml/badge.svg)](https://github.com/KentoNishi/awesome-all-you-need-papers/actions/workflows/update.yaml)
 
 ## About
@@ -526,7 +526,7 @@ This repository is a list of all "all you need" papers. The list is updated dail
 | [Privacy is All You Need: Revolutionizing Wearable Health Data with Advanced PETs](http://arxiv.org/abs/2503.03428v2) | Karthik Barma | 2025-03-05 |
 | [Rethinking Deep Clustering Paradigms: Self-Supervision Is All You Need](http://arxiv.org/abs/2503.03733v1) | Amal Shaheena et al. | 2025-03-05 |
 | [Memory Is All You Need: Testing How Model Memory Affects LLM Performance in Annotation Tasks](http://arxiv.org/abs/2503.04874v1) | Joan C. Timoneda et al. | 2025-03-06 |
-| [Slim attention: cut your context memory in half without loss -- K-cache is all you need for MHA](http://arxiv.org/abs/2503.05840v2) | Nils Graef et al. | 2025-03-07 |
+| [Slim attention: cut your context memory in half without loss -- K-cache is all you need for MHA](http://arxiv.org/abs/2503.05840v3) | Nils Graef et al. | 2025-03-07 |
 | [Global Context Is All You Need for Parallel Efficient Tractography Parcellation](http://arxiv.org/abs/2503.07104v1) | Valentin von Bornhaupt et al. | 2025-03-10 |
 | [Oasis: One Image is All You Need for Multimodal Instruction Data Synthesis](http://arxiv.org/abs/2503.08741v3) | Letian Zhang et al. | 2025-03-11 |
 | [Reasoning is All You Need for Video Generalization: A Counterfactual Benchmark with Sub-question Evaluation](http://arxiv.org/abs/2503.10691v2) | Qiji Zhou et al. | 2025-03-12 |

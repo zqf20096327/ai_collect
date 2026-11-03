@@ -313,6 +313,12 @@
   <a href="https://github.com/Fr0zenCrane/MJev-Spatial"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
   <a href="https://huggingface.co/mindlab-research/MJev-Spatial-4B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
 
+- **Look Only When Needed: Certificate-Guided Visual Routing for Efficient Diffusion VLMs** (2026.10) \
+  **Description**: LOWN avoids repeatedly processing an image during diffusion VLM decoding by reusing the last image-conditioned prediction when it agrees with a text-only prediction, and adapts the number of tokens unmasked at each step. Without additional training, it retains 99.6% of LLaDA-V's score across ten benchmarks using 35.3% of the decoding FLOPs on average. \
+  <a href="https://arxiv.org/abs/2610.36671"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://hyeon9698.github.io/LOWN/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/hyeon9698/LOWN"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+
 - **Intern-S2-Preview: Scientific Agentic Foundation Model** (2026.08) \
   **Description**: Intern-S2-Preview is a series of scientific agentic foundation models that combines multimodal scientific pre-training with unified supervised fine-tuning, multi-task and agentic reinforcement learning, and on-policy distillation for scientific understanding, reasoning, generation, and long-horizon tasks. Its 397B model adds time-series forecasting and a separate Memory Decoder path for rapid scientific specialization, achieving competitive or leading results across scientific, multimodal, agentic, and general-purpose benchmarks. \
   <a href="https://arxiv.org/abs/2608.13505"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -508,6 +514,11 @@
   <a href="https://yihaohu0118.github.io/Trajectory2Gym-page/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
   <a href="https://github.com/yihaohu0118/Trajectory2Gym"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
   <a href="https://huggingface.co/datasets/mis2/Trajectory2gym"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
+- **A-RSI: Adaptive Task Refresh for Zero-Data Multimodal Self-Improvement** (2026.10) \
+  **Description**: A-RSI monitors reward variation and accuracy in training logs to refresh a multimodal task pool when its learning signal declines. Model-authored programs generate questions with independently checkable answers without external training examples or human-written labels, raising the average score across eleven benchmarks from 57.77 to 61.05 with 800 fresh tasks. \
+  <a href="https://arxiv.org/abs/2610.38568"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://seerray-lab.github.io/A-RSI/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
 
 - **GraphForge: Training Working Agents with Graph-Anchored Workspace Synthesis** (2026.09) \
   **Description**: GraphForge synthesizes training tasks for working agents from real-file workspaces, using an evidence graph to ground both task requirements and verification rubrics. It checks executability and revises tasks before collecting trajectories, improving downstream agent performance through fine-tuning. \
@@ -831,13 +842,4 @@
 ## Agentic RL
 
 - **Sharpening Tax in Post-Training** (2026.10) \
-  **Description**: This paper finds that RL post-training often raises agents' single-shot accuracy while reducing the range of tasks they can solve with repeated attempts, and introduces Sharpening Tax to measure the lost test-time scalability. Posterior-tempered group sampling adapts rollout temperature to task difficulty during RL training, improving both accuracy and solution coverage. \
-  <a href="https://arxiv.org/abs/2610.01509"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://changdaeoh.github.io/sharpening-tax/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/changdaeoh/sharpening-tax"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement** (2026.10) \
-  **Description**: MiMo-V2.6 scales agentic reinforcement learning through asynchronous large-batch training, diverse environments and harnesses, and groupwise agentic grading for more informative rewards on long-horizon tasks. Router freezing, layered defenses against reward hacking, and unified mixed-task rollout infrastructure support stable scaling across coding, general, visual, and cybersecurity tasks. \
-  <a href="https://arxiv.org/abs/2610.11959"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://mimo.xiaomi.com/rl/mimo-v26/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Distill-Qwen-9B"><img src="assets/icons/huggingface.svg" alt="Hugg
+  **Description**: This paper finds that RL post-training often raises agents' sing

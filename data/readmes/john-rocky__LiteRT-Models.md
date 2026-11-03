@@ -115,6 +115,8 @@ This repository is the model zoo for that path: **91 converted models** (as of 2
 | [GLiClass-Edge v3.0](#gliclass-edge-v30-zero-shot-text-classification) | Zero-shot text classification (EN): up to 25 labels scored in one forward pass, single- or multi-label | Galaxy S26 | 5.8 ms per request at 128 tokens, 8.3 ms at 256 (GPU FP32) | [🤗 HF](https://huggingface.co/litert-community/GLiClass-Edge-v3.0-LiteRT) |
 | [Kev-0.8B](#kev-08b-typed-decisions) | Typed decisions: choice / score / yes-no questions about a text or JSON state, calibrated probabilities (EN) | Galaxy S26 | 102 ms per question at the 128-token window, a 3-question request in 367 ms (GPU); 66 ms and 298 ms (NPU) | [🤗 HF](https://huggingface.co/litert-community/Kev-0.8B-LiteRT) |
 | [d1-omni-600M](#d1-omni-600m-typed-decisions-about-text-photos-and-speech) | Typed decisions: yes-no / choice / score questions about a voice note, a photo or a text, a probability for every option | Galaxy S26 | an 8.3 s voice note and 1 question in 153 ms, a photo and 1 question in 211 ms, a text and 2 questions in 96 ms (sample app, GPU; decision graphs at FP32) | [🤗 HF](https://huggingface.co/litert-community/d1-omni-600M-LiteRT) |
+| [d1-2B](#d1-2b-typed-reads-and-decisions-about-text-json-and-photos) | Typed reads and decisions: dates, numbers and texts read out of a text, a JSON record or a photo with their span and P(found), next to yes-no / choice / score / range / box questions, up to 16 questions in one forward pass | Galaxy S26, Pixel 11 Pro | one decision-graph call for up to 256 tokens in 645.7 ms (Galaxy S26, per-length file) and 1,047.0 ms (Pixel 11 Pro, timed on a file of the seven length graphs), GPU FP32 | [🤗 HF](https://huggingface.co/litert-community/d1-2B-LiteRT) |
+| [d1-Omni-2B](#d1-omni-2b-typed-reads-and-decisions-about-recordings-text-and-photos) | Typed reads and decisions about recordings, text and photos, with written or spoken questions: yes-no / choice / score / range / box questions, and dates, numbers and texts read out of a text with their span and P(found), up to 16 questions in one forward pass, without a transcript | Galaxy S26, Pixel 11 Pro | one question in 67.0 ms (Galaxy S26, NPU) and 733.6 ms (Pixel 11 Pro, GPU FP32); a 10 s clip and 1 question in 131.6 ms (audio encoder on the GPU, decision graph on the NPU) and 1,111.9 ms (one call per graph) | [🤗 HF](https://huggingface.co/litert-community/d1-Omni-2B-LiteRT) |
 | [d1-3B](#d1-3b-typed-decisions-desktop) | Typed decisions: yes-no / choice / score questions about a text, a JSON value or a photo, a probability for every option | Apple M4 Max (Mac, Metal float32) | 3 questions in 153.9 ms, a photo and 1 question in 389.3 ms | [🤗 HF](https://huggingface.co/litert-community/d1-3B-LiteRT) |
 | [clef-flash](#clef-flash-typed-decisions-desktop) | Typed decisions: yes-no / choice / score questions about a text, a JSON value or a photo, every question answered at once with a probability for every option | Apple M4 Max (Mac, Metal float32) | a 236-token request in 360.7 ms, a 1,007-token request in 1,346.9 ms, a request with one photo (448 px tile, 688 tokens) in 1,493.8 ms | [🤗 HF](https://huggingface.co/litert-community/clef-flash-LiteRT) |
 | [Phocinae-Largha-150M](#phocinae-largha-150m-typed-decisions) | Typed decisions: choice / score / yes-no questions about a text, calibrated probabilities (EN / ZH) | Galaxy S26 | 19.8 ms per question at 384 tokens (NPU), 22.9 ms (GPU FP16); a 3-question request in 114 ms (NPU, the editor) | [🤗 HF](https://huggingface.co/litert-community/Phocinae-Largha-150M-LiteRT) |
@@ -893,19 +895,4 @@ NVIDIA Parakeet (`parakeet-tdt_ctc-110m`, the CTC branch): the 17-layer FastConf
 Converted via **litert-torch**: RelPositionMultiHeadAttention re-authored as manual ≤4D matmuls, GLU→`a·sigmoid(b)`, masking folded into a GPU-clean additive attention bias for the fixed window, CTC `ConvASRDecoder` fused into the graph. Key fix: the subsampling front-end emits very large pre-norm activations (|x|≈7000), so the LayerNorm variance is reduced entirely in a down-scaled domain (never rebuilding the large variance, which overflows fp16 on Mali → blank output).
 
 | Model | Download Link | Size | Input | Output | API |
-| ----- | ------------- | ---- | ----- | ------ | --- |
-| Encoder + CTC | [parakeet_ship_fp16.tflite](https://huggingface.co/litert-community/Parakeet-tdt-ctc-110m-LiteRT) | 226 MB | mel [1, 80, 1601] + frame mask [1, 201] | CTC logits [1, 201, 1025] | CompiledModel GPU |
-
-**Preprocessing**: 16 kHz mono → NeMo log-mel (80 bins, preemphasis 0.97, 512-pt FFT, slaney filterbank, per-feature norm), computed in Kotlin. Audio up to 16 s is padded to the fixed window.
-
-**Decoding**: greedy CTC (drop blank + repeats) + SentencePiece detokenize (1024 pieces), on the host.
-
-**Sample app**: [parakeet/](parakeet/) — Microphone recording + bundled sample + transcription display.
-
-**Original project**: [NVIDIA NeMo / parakeet-tdt_ctc-110m](https://huggingface.co/nvidia/parakeet-tdt_ctc-110m) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
-
-### Whisper-tiny
-
-Whisper: OpenAI's speech recognition model running on-device. First implementation with LiteRT GPU-accelerated encoder. Supports microphone recording and audio file input with 10 language options.
-
-Encoder converted via **litert-torch** with SigmoidGELU patch. Decoder exported to ONNX with manual attention (SDPA disabled for ONNX compatibility). No KV-cache — acceptable for tiny's 4 
+| ----- | --

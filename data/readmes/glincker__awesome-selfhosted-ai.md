@@ -2,9 +2,9 @@
 
 > Open-source AI you can run on your own hardware or server.
 
-308 projects across local LLMs, chat interfaces, agents, MCP servers, RAG, speech and image generation. A weekly job checks every project against the GitHub API, and anything archived, deleted or silent for over a year moves to [UNMAINTAINED.md](UNMAINTAINED.md).
+309 projects across local LLMs, chat interfaces, agents, MCP servers, RAG, speech and image generation. A weekly job checks every project against the GitHub API, and anything archived, deleted or silent for over a year moves to [UNMAINTAINED.md](UNMAINTAINED.md).
 
-**308** projects | **307** active in the last 90 days | **10.6M** combined stars | **0** unmaintained | refreshed 2026-10-31
+**309** projects | **308** active in the last 90 days | **10.7M** combined stars | **0** unmaintained | refreshed 2026-11-02
 
 See the [live health table](LIVE.md) for stars, last push and license per project.
 
@@ -12,7 +12,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 
 - [Agents and Automation](#agents-and-automation) (27)
 - [Chat Interfaces](#chat-interfaces) (11)
-- [Coding Assistants](#coding-assistants) (24)
+- [Coding Assistants](#coding-assistants) (25)
 - [Document AI and OCR](#document-ai-and-ocr) (10)
 - [Fine-Tuning and Training](#finetuning-and-training) (10)
 - [Home and Personal AI](#home-and-personal-ai) (13)
@@ -97,6 +97,7 @@ See the [live health table](LIVE.md) for stars, last push and license per projec
 - [PR-Agent (Qodo)](https://github.com/qodo-ai/pr-agent) - AI pull request reviewer that runs on GitHub, GitLab, Bitbucket, and Azure DevOps.
 - [Qwen Code](https://github.com/QwenLM/qwen-code) - Terminal coding agent tuned for Qwen models and compatible with other OpenAI-style APIs.
 - [screenshot-to-code](https://github.com/abi/screenshot-to-code) - Turns screenshots, mockups, and Figma designs into frontend code using vision-language models.
+- [Sno Station](https://github.com/sno-ai/sno-station) - Runs Codex, Claude Code, Cursor, Hermes Agent and OpenClaw as one team on your machine, with handoff at usage limits.
 - [SWE-agent](https://github.com/SWE-agent/SWE-agent) - Software engineering agent that resolves GitHub issues by editing code and running commands in a container.
 - [T3 Code](https://github.com/pingdotgg/t3code) - Minimal web and desktop GUI for driving coding agents such as Codex and Claude Code.
 

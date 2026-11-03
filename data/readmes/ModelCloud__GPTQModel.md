@@ -26,6 +26,16 @@
 
 ## Latest News 🗞️🚀
 
+* **7.8.0**:
+  * **GSQ:** Added staged GSQ training with public method adapters, distributed staged training that reuses captured activations, and per-block bit allocation driven by an RCO search verified bit-identical against the IST-DASLab reference (measured results on Llama 3.2 1B). Added a paper-reproduction harness, best-epoch restore, HIPRTC-compiled fused scalar relaxation on ROCm, and segment-sum scale gradients.
+  * **ROCm:** Added RDNA4 (gfx1200/gfx1201/gfx1250) kernel and quantization support with per-architecture kernel tuning. MI350/gfx950 behavior is unchanged.
+  * **GGUF:** Added CPU coverage for every ggml tensor type (all K-quant and IQ variants plus explicit MXFP4/NVFP4) and a native ggml SIMD inference path with per-shape autotuning, measured 3–100x faster than the torch paths on AVX2. New `gguf` install extra.
+  * **Multi-GPU:** Added automatic GPU peer-access enablement on CUDA and ROCm with measured-link validation, so multi-GPU quantization copies stay on the interconnect instead of the driver's staging path.
+  * **Experimental W4A:** Revalidated the NVFP4 packed layout at load time, removed the retained E4M3 weight expansion, and relaxed the Triton build requirement on the Gluon FP8 GEMM.
+  * **Performance:** Package import now builds the kernel registry lazily and defers optional backend probes (previously ~9s and 6767 modules). Vectorized the GPTQ/QQQ MSE shrink-grid and AWQ clip-grid evaluation; grid workspace budgets moved from environment variables to a new MSE configuration option.
+  * **Models:** Added RecursiveSI Flint and Raon-1 mini support, Gemma 3 multimodal checkpoint compatibility, Qwen2.5-Omni thinker lm_head quantization, and the Transformers 5.22 Qwen-Omni layout.
+  * **Compat:** Kept the AVX512-BF16 GPTQ/AWQ CPU kernels trainable for PEFT LoRA; fixed OpenAI-server auth, stop handling, and ChatCompletion schema; surfaced compatibility-shim failures instead of failing silently; fixed the Marlin CPU-offload snapshot refresh; fixed the calibration minimum-length setting not reaching the dataset filter; re-checked for an emptied calibration set after min-length filtering; tolerated MoE early-stop in data-parallel forward; bounded remote image fetches; read accelerator memory telemetry from the active device; fixed config serialization mutating dynamic overrides; fixed GPTAQ loss-log capture and evaluation-metadata coercion for fast eval tasks.
+
 * **7.7.0**:
   * **CPU inference:** Added the shared AVX512-BF16 `int4_qzero_group_scaled_cpu` kernel for GPTQ/AWQ group sizes 16/32/64/128/256/512 and prioritized it ahead of ATen when supported. Added packed/low-precision CPU decode paths for QQQ, VPTQ, EXL3, FP8, NVFP4, and BitsAndBytes, plus oneDNN BF16x3 accumulation and shape-aware BitsAndBytes INT8 dispatch. GPTQ/AWQ measured up to 2.02x faster than ATen; BitsAndBytes INT8 reached 1.28x at M=64.
   * **GGUF:** Added fused CPU Q4_0/Q8_0/Q4_K/Q5_K/Q6_K forward with FP32 accumulation under oneDNN BF16x3, fused bias, per-shape autotuning, and no retained dense weights. K-quant fused paths measured up to 1.92x faster than dense at M=7.
@@ -156,7 +166,9 @@ On ROCm, quantization runs with torch's rocBLAS backend instead of hipBLASLt: hi
 loads one Tensile library per (dtype, layout) pair on first use, and those one-time loads
 dominate a cold quantize while rocBLAS covers the same math. The override is scoped to the
 quantization phase and the previous backend is restored afterwards. Set
-`GPTQMODEL_ROCM_QUANT_BLAS=hipblaslt` to keep torch's default backend.
+`GPTQMODEL_ROCM_QUANT_BLAS=hipblaslt` to keep torch's default backend. This
+applies to RDNA4 as well; the RDNA4 hipBLASLt Tensile libraries exist but are
+not tuned, so rocBLAS remains the default there too.
 
 ## Features ✨
 * ✨ Native integration with HF [Transformers](https://github.com/huggingface/transformers), [Optimum](https://github.com/huggingface/optimum), and [Peft](https://github.com/huggingface/peft)
@@ -320,18 +332,33 @@ GPT-QModel is validated on Linux, macOS, and Windows 11:
 | Platform | Device |  | Optimized Arch | Kernels |
 |---|---|---|---|---|
 | 🐧 Linux | NVIDIA GPU | ✅ | `Turing+` (`sm_75+`) | Machete, Marlin, Exllama V3 / EXL3, Exllama V2, AWQ GEMM/GEMV, ParoQuant CUDA/Triton, GGUF CUDA/Triton, QQQ, VPTQ, BitBLAS, Triton, BitsAndBytes, Torch |
-| 🐧 Linux | AMD GPU | ✅ | `7900XT+`, `ROCm 6.2+` | Exllama V2, AWQ Triton GEMM, AWQ GEMV, QQQ, FP8 Torch, Torch (gfx950 fused GPTQ GEMV) |
+| 🐧 Linux | AMD GPU | ✅ | `7900XT+`, `ROCm 10.1+`, `gfx950` (CDNA4), `gfx1200/1201/1250` (RDNA4) | Exllama V2, AWQ Triton GEMM, QQQ, FP8 Torch, Torch (fused GPTQ GEMV on gfx950 and gfx120*/gfx125*) |
 | 🐧 Linux | Huawei Ascend NPU | ✅ | `Ascend 910B`, `torch-npu` / `CANN` | Native Torch kernels for GPTQ, AWQ, ParoQuant, GGUF, QQQ, and EXL3 |
 | 🐧 Linux | Intel XPU | ✅ | `Arc`, `Datacenter Max` | TorchFused, TorchFusedAWQ, FP8 Torch, Torch |
 | 🐧 Linux | Intel/AMD CPU | ✅ | `avx`, `amx` | TorchFused, TorchFusedAWQ, TorchAten int4, TorchInt8, GGUF C++, BitsAndBytes, VPTQ, Torch |
 | 🍎 macOS | GPU (Metal) / CPU | ✅ | `Apple Silicon`, `M1+` | Torch, FP8 Torch, MLX via conversion |
 | 🪟 Windows | GPU (NVIDIA) / CPU | ✅ | `NVIDIA` | Torch |
 
+**ROCm 10.1 or newer is required.** GPT-QModel only supports and validates
+ROCm >= 10.1; older releases are unsupported and `import gptqmodel` or model
+loading logs a warning asking you to upgrade. Use the latest ROCm release and a
+matching ROCm PyTorch build. ROCm 10.1 ships HIP 7.16; `torch.version.hip`
+reports the HIP runtime version, not the ROCm release, so version checks use
+`torch.version.rocm`.
+
 ROCm pip SDK installations that expose `_rocm_sdk_core` as `ROCM_HOME` need the
 matching `rocm-sdk-devel` package and `rocm-sdk init` before building JIT kernels.
-On gfx950, the Torch GPTQ backend uses a fused Triton GEMV for single-token
-2/4/8-bit inference and falls back to the existing path for other shapes. Set
-`GPTQ_TORCH_ROCM_GEMV=0` to disable the fused path.
+On gfx950 (CDNA4) and the gfx120*/gfx125* RDNA4 family, the Torch GPTQ backend
+uses a fused Triton GEMV for single-token 2/4/8-bit inference and a fused
+small-M GEMM for M=2..16, and falls back to the existing path for other shapes
+or unregistered architectures. Launch constants are selected per architecture
+by `gptqmodel/utils/arch.py`. On gfx1201 (R9700) the fused small-M GEMM measured
+1.1x-3.2x faster than dequantize+matmul for M=2..16 in FP16 up to K=17408, and
+its `.amdgcn` contains `v_wmma_f32_16x16x16_f16`. The fused small-M GEMM is
+FP16-only on RDNA4: BF16 measured 0.43x-1.42x of the split path there (median 0.85x), so BF16
+falls back to dequantize+matmul (GEMV keeps both dtypes). Set
+`GPTQ_TORCH_ROCM_GEMV=0` / `GPTQ_TORCH_ROCM_GEMM=0` to disable the fused paths. See [`docs/rocm-rdna4.md`](docs/rocm-rdna4.md) for the per-backend RDNA4
+matrix and known limitations.
 
 `Marlin` and JIT CUDA kernels now support NVIDIA `Turing+` (`sm_75+`) GPUs.
 Huawei Ascend NPU support uses native Torch kernels through `torch-npu` / `CANN`.
@@ -378,6 +405,10 @@ uv pip install -v gptqmodel
 ```
 
 The package depends on `ninja` for first-use JIT kernel compilation.
+
+AMD ROCm support requires **ROCm >= 10.1** and a matching ROCm PyTorch build.
+Older ROCm releases are unsupported; GPT-QModel logs a warning at import/model
+load time and asks you to upgrade.
 
 ### Install from source 🛠️
 

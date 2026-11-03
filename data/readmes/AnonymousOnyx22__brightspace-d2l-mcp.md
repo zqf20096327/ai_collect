@@ -169,9 +169,9 @@ This one checks your actual submission for every assignment:
 | Tool | What it does |
 |---|---|
 | `get_todo` | Prioritized to-do list across every course: what's due soon, overdue, not open yet, and already done |
-| `get_upcoming_due_dates` | Upcoming deadlines with the real submission status of each assignment |
+| `get_upcoming_due_dates` | Upcoming deadlines with the real submission status of each assignment, for all courses or one course by name or code |
 | `get_my_courses` | Your enrolled courses with names, codes and ids |
-| `get_my_grades` | Grade breakdown per course with points, percentages and instructor comments |
+| `get_my_grades` | Grade breakdown per course with points, percentages and instructor comments, for all courses or one course by name or code |
 | `get_assignments` | Assignments (dropboxes) and quizzes with due dates, status and rubrics |
 | `get_assignment_files` | Reads the instructions, handouts and rubric files attached to an assignment |
 | `get_course_content` | Course modules, lecture slides, files and links |
@@ -399,6 +399,24 @@ Any school on D2L Brightspace, whether the address looks like `yourschool.bright
 <summary><b>Can it submit assignments or post for me?</b></summary>
 
 No. It's read-only on purpose.
+</details>
+
+<details>
+<summary><b>Is Brightspace the same as D2L or Desire2Learn?</b></summary>
+
+Yes. D2L, short for Desire2Learn, is the company, and Brightspace is its learning platform. Schools use the names loosely, and older school addresses often end in `desire2learn.com`. This server works with all of them.
+</details>
+
+<details>
+<summary><b>Does it work with Brightspace Pulse?</b></summary>
+
+Not directly. Brightspace Pulse is D2L's student mobile app, and this server does not connect to it or to any phone. It reads the same courses, due dates and grades from your school's Brightspace site on your computer, so you can ask your AI app about what Pulse would show you.
+</details>
+
+<details>
+<summary><b>Is it read only? Can it change my grades or my work?</b></summary>
+
+It is read only. It can look at your courses, grades, files and class lists, but it cannot submit work, post to a discussion, edit anything or change a grade. See [how read only is enforced](SECURITY.md#how-read-only-is-enforced).
 </details>
 
 <details>

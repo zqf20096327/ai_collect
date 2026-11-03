@@ -101,8 +101,8 @@ npm install -g @anthropic-ai/claude-code   # then run `claude` once to sign in
 ### Quick install
 
 ```sh
-git clone https://github.com/imu-useful/hi-shell.git ~/Projects/hi-shell
-~/Projects/hi-shell/install.sh
+git clone https://github.com/imu-useful/hi-shell.git ~/hi-shell
+~/hi-shell/install.sh
 ```
 
 or without cloning first (the repo goes to `~/.local/share/hi-shell/repo`):
@@ -158,16 +158,16 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 1. Clone the repo and link it where Quickshell looks for configs:
 
    ```sh
-   git clone https://github.com/imu-useful/hi-shell.git ~/Projects/hi-shell
+   git clone https://github.com/imu-useful/hi-shell.git ~/hi-shell
    mkdir -p ~/.config/quickshell
-   ln -s ~/Projects/hi-shell ~/.config/quickshell/hi-shell
+   ln -s ~/hi-shell ~/.config/quickshell/hi-shell
    ```
 
 2. Copy the Hyprland integration (autostart, keybinds, window and layer rules) next to your Hyprland config and load it
    from there, e.g. from `~/.config/hypr/custom/execs.lua` on illogical-impulse or `hyprland.lua` otherwise:
 
    ```sh
-   cp -r ~/Projects/hi-shell/hypr/hi-shell ~/.config/hypr/hi-shell
+   cp -r ~/hi-shell/hypr/hi-shell ~/.config/hypr/hi-shell
    ```
 
    ```lua
@@ -200,7 +200,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> | Copy text from a region (OCR) |
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> | Translate text from a region (OCR into the sidebar translator) |
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | Record a region (press again to stop) |
-| <kbd>Super</kbd>+<kbd>V</kbd> | Clipboard history, images too with thumbnails and a preview of the selected one (Enter copies) |
+| <kbd>Super</kbd>+<kbd>V</kbd> | Clipboard history, images too with thumbnails and a preview of the selected one (Enter copies); pin an entry to keep it when the history is cleared (right-click for Pin / Delete) |
 | <kbd>Super</kbd>+<kbd>.</kbd> | Emoji picker |
 | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Delete</kbd> | Session screen |
 | Display key (<kbd>Fn</kbd>+<kbd>F10</kbd> on Lenovo, `XF86Display`) | Display mode: this screen only, duplicate, extend left / right, second screen only; press again for the next, Enter to apply |
@@ -213,6 +213,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | right click a notification | Dismiss it (a popup or one in the notification center; swiping it sideways works too) |
 | right click the desktop | Edit desktop widgets (the toolbar can be dragged by its title out of the way): drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame (it snaps to the screen edges, center and the widgets; its corner resizes it, double click = normal size), toggle them in the toolbar; Esc or Done to finish |
 | hover a bar widget | Details popup (media controls, resources, weather forecast, battery, updates) |
+| click the weather in the bar | Weather details: the current conditions, the next 24 hours and the 7 days (refresh button inside); `qs -c hi-shell ipc call weatherDetails toggle` |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |
 
 Change the keys in `~/.config/hypr/hi-shell/keybinds.lua` (the other files in that folder hold the startup, window and layer rules; `update.sh` keeps your edits and leaves a new version of a changed file as `<name>.lua.new`; turn on Settings → Hyprland → "Keep my Hyprland files on update", `hyprland.keepFiles` in the config, and updates don't touch that folder at all, they only list what changed upstream). Every panel can also be toggled over IPC, e.g. for your own binds or scripts:
@@ -410,6 +411,12 @@ with the active profile; `qs -c hi-shell ipc call focus start` does the same.
   are locked; they say so instead of opening.
 - **Pomodoro:** focus periods, short breaks, and a long break after the last cycle. A notification marks each change.
   Nothing is blocked during breaks.
+- **Held notifications:** during a focus period the ordinary notifications don't pop up. They stay in the history, and when
+  the break (or the session's end) starts, one summary says what came in ("Telegram 3 · Почта 2"). Critical ones and the
+  shell's own messages still show. Settings → Focus → Timer has the switch (`notifications.holdInFocus`).
+- **Breathing on breaks:** a 16-second box pattern (in, hold, out, hold). The bar's cue says which step it is, and the
+  shaped wallpaper frame swells and shrinks with it. Off with the power saving, or with the switch in Settings → Focus →
+  Timer (`focus.breathing`).
 - **Exit:** *Manual* has a Stop button. *Timer* has none and ends after the last focus period. *Tasks* has none and ends
   when the tasks picked for the session are done (a Tasks session can't start without one). From a terminal,
   `qs -c hi-shell ipc call focus abort` ends any session.

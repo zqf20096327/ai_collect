@@ -2,7 +2,7 @@
 
 > **记忆星海**：给**任何 AI 机器人**的跨会话长期记忆 + 3D 记忆星海可视化。不绑定某一款机器人——SnowLuma / NapCat / qq-bridge / SurfCore / DSH / AstrBot，能发 HTTP 就能接。
 >
-> v1.0.0：分层遗忘（事实 30 天 / 事件 14 天半衰期）+ 三态淡忘（清晰/模糊/折叠）+ 事实键冲突待裁决 + 双通道召回（核心与事件互不挤占）+ 召回解释 + 承诺账本 + 记忆体检 + 审计日志。核心机制见 [docs/FEATURES.md](docs/FEATURES.md)。
+> **v1.2.0**：五路混合召回 + 2 跳图扩散 + 双时间线 + 分层遗忘（频率感知 / 干扰加速 / 情绪巩固）+ 规则自动冲突检测 + 永久规则层 + 承诺自动认领与闭环（中文时间解析）+ 开机包 `/boot` + 反思洞察 + 证据链溯源 + 时间窗口召回 + 违规巡查。核心机制见 [docs/FEATURES.md](docs/FEATURES.md)，完整接口见 [docs/INTEGRATION.md](docs/INTEGRATION.md)。
 
 **给 AI QQ 机器人一副跨会话的长期记忆。** 零依赖 · 单文件部署 · 自带"大脑"可视化面板。
 
@@ -12,7 +12,7 @@
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-blue)](https://nodejs.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![Deps](https://img.shields.io/badge/依赖-0-brightgreen)](#快速开始)
-[![Tests](https://img.shields.io/badge/自测-14%20通过-9cf)](scripts/test.mjs)
+[![Tests](https://img.shields.io/badge/自测-122%20通过-9cf)](scripts/test.mjs)
 
 ---
 
@@ -32,11 +32,36 @@
 
 ## 快速开始
 
+### 一键部署（推荐）
+
 ```bash
 git clone https://github.com/xiazhuo123456789/mind-sea-memory.git
 cd mind-sea-memory
+node scripts/install.mjs          # 提问式：端口 / Key / DSH 注册 / 演示数据 / 启动
+```
+
+非交互（全默认）：
+
+```bash
+node scripts/install.mjs --yes
+node scripts/install.mjs --yes --key sk-xxxx --register-dsh --dsh-home "E:\DSH-data\dot-dsh"
+```
+
+装完自检：
+
+```bash
+node scripts/install.mjs --check   # 部署体检（Node/config/数据/MCP 握手）
+```
+
+- 完整部署手册：[docs/DEPLOY.md](docs/DEPLOY.md)
+- **丢给 AI 让它帮你装**：[docs/AI_DEPLOY_PROMPT.md](docs/AI_DEPLOY_PROMPT.md)（整段复制给任意 AI 即可）
+- 接口与接入：[docs/INTEGRATION.md](docs/INTEGRATION.md)
+
+### 手动启动
+
+```bash
 node server.mjs          # http://127.0.0.1:8790  ·  面板 /panel
-node scripts/test.mjs    # 14 项自测（用临时目录，不污染数据）
+node scripts/test.mjs    # 自测（用临时目录，不污染数据）
 node scripts/seed-demo.mjs 3000    # 可选：灌入三千条演示记忆，先看星海效果（需重启服务）
 ```
 

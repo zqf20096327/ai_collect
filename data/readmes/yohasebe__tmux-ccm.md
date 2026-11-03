@@ -423,7 +423,7 @@ ccm clear-notifications           Remove ccm notifications from macOS Notificati
 | `(bg)` | IDLE | Claude waits for your input, but work it started is still running (a background agent or command, a scheduled loop, a leftover process). Drawn in BUSY's colour beside Claude's state, ahead of any sidekick badge; auto-exit leaves the window alone. On the dashboard, `(bg 9h)` says how long the oldest such task has run, and the preview lists each one |
 | `[N]` | (any state, multi-pane window) | Pane count marker (brackets dim, digit cyan) when a window has more than one pane |
 | `⊘` | (any state) | Hidden-pane marker (dim): the window has a pane excluded from ccm via `CCM_IGNORE` |
-| `▸ <name>` | (any state) | Sidekick marker: a pane in the window is running an external agent CLI. Dim while it sits there; yellow `▸ <name> ⚠` while it waits for you (with sidekick hooks installed); for Codex also `▸ codex ◉` in BUSY's colour while it works. The window's own state is unaffected |
+| `▸ <name>` | (any state) | Sidekick marker: a pane in the window is running an external agent CLI. Dim while it sits there; yellow `▸ <name> ⚠` while it waits for you (with sidekick hooks installed, or read from the screen for Codex and Antigravity `agy`); for those two also `▸ <name> ◉` in BUSY's colour while it works. With several sidekicks, each name carries its own state (`▸ codex ◉,agy ⚠`). The window's own state is unaffected |
 | ■ | SHELL | Shell active, Claude not running |
 | ○ | DOWN | Window not available |
 | ⊘ | IGNORED | Every Claude pane in the window is hidden via `CCM_IGNORE` — ccm deliberately cannot see the window's Claude, so it claims no state. `ccm send` is refused and points at `ccm unignore` |
@@ -446,6 +446,8 @@ This adds hooks to `~/.claude/settings.json` that signal state changes:
 - **Notification** → PERMIT (permission_prompt / elicitation_dialog) or clears signal (idle_prompt)
 - **SessionEnd** → SHELL when Claude Code session ends (/exit, Ctrl+D, etc.)
 - **PermissionDenied** → PERMIT when auto mode denies an action (check `/permissions` to retry)
+
+A subagent's permission request also shows as PERMIT, including a background agent's. It stays until that agent goes on (its tool runs or fails, or the agent ends), even while you carry on in the main conversation, because the request is still waiting. A request older than 10 minutes stops counting once the screen is idle, in case its answer was never reported. When another tool's hook answers permission requests outside the terminal, the dialog may not be on screen at all; answer it where that tool asks.
 
 ccm has hook-independent fallbacks so detection keeps working when Claude Code stops firing hooks mid-session:
 

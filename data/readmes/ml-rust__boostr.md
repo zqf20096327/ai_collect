@@ -62,17 +62,17 @@ Add boostr to `Cargo.toml`:
 
 ```toml
 [dependencies]
-boostr = "0.9"
+boostr = "0.10"
 ```
 
 Enable a backend with a feature:
 
 ```toml
 # CUDA: requires CUDA 12.8+ or 13.x
-boostr = { version = "0.9", features = ["cuda"] }
+boostr = { version = "0.10", features = ["cuda"] }
 
 # WebGPU: requires Vulkan, Metal, or DX12 GPU drivers
-boostr = { version = "0.9", features = ["wgpu"] }
+boostr = { version = "0.10", features = ["wgpu"] }
 ```
 
 ### Build from Source
@@ -188,7 +188,7 @@ cache.update(&k, &v, &slots, &client)?;
 | `cuda`         | CUDA GPU acceleration (CUDA 12.8+ or 13.x)                | numr/cuda, cudarc       |
 | `nccl`         | Multi-GPU via NCCL                                        | numr/nccl               |
 | `wgpu`         | WebGPU cross-platform GPU                                 | numr/wgpu, wgpu         |
-| `distributed`  | Distributed inference over nexar (implies `f16`)          | nexar, anyhow, bytemuck |
+| `distributed`  | Distributed inference over nexar (implies `f16`)          | nexar, anyhow, bytemuck, tokio |
 | `f16`          | Half-precision float support                              | numr/f16                |
 | `fp8`          | FP8 precision support                                     | numr/fp8                |
 | `audio`        | Tensor-level signal ops (STFT, iSTFT, mel)                | —                       |

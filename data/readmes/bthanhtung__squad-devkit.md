@@ -85,6 +85,12 @@ which installed CLI to use), lists the worker engines it found, and, when
 claude-hud is installed, turns on its weekly-quota and usage-pace display.
 Run `squad-devkit --setup` to choose another manager later.
 
+The installer also adds a `squad-devkit` skill to Claude Code and Codex
+(`~/.claude/skills`, `~/.codex/skills`, linked to this repository so `git pull`
+updates it). In any session you can then ask to hand work to workers, check
+them, or merge a worker's worktree, without starting a separate manager.
+`squad-devkit --doctor` checks the setup.
+
 ## Usage
 
 ```bash
@@ -163,6 +169,8 @@ processed instead of Claude during this session.
 | `SQUAD_WORKER_CODEX_PROFILE` | `high` | Default Codex profile for workers |
 | `SQUAD_WORKER_TIMEOUT` / `SQUAD_WORKER_STALL` | `45` / `10` | Minutes before a run is stopped / counted as stuck |
 | `SQUAD_WORKER_PANE_HOLD` | `60` | Seconds a finished monitor pane stays open |
+| `SQUAD_WORKER_WORKTREE` | `auto` | `0` disables git worktree isolation |
+| `SQUAD_WORKER_SANDBOX` | `1` | `0` disables engine sandbox (Codex and Claude workers) |
 | `SQUAD_DEVKIT_ROUTER_URL` | unset | Optional advisory triage router for `squad-route` |
 
 `squad-devkit --clean` prunes old worker runs on demand and `--clean-all`

@@ -1,4 +1,7 @@
-![catllm Logo](https://github.com/chrissoria/cat-llm/blob/main/images/logo.png?raw=True)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/chrissoria/cat-llm/main/images/logo_dark.png">
+  <img src="https://github.com/chrissoria/cat-llm/blob/main/images/logo.png?raw=True" alt="catllm Logo">
+</picture>
 
 # cat-llm
 

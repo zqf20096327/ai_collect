@@ -40,13 +40,13 @@ reveal src/auth.py validate_token    # exact code (~100-600 tokens)
 **Cross-file call graph analysis:**
 ```bash
 reveal 'calls://src/?callers=fn&depth=3'  # full impact radius before a refactor
-reveal 'calls://src/?rank=callers&top=20'  # most architecturally coupled functions
+reveal 'calls://src/?rank=callers&top=20'  # most-called functions and classes defined in src/
 ```
 
 **Deep-dive code navigation (works on Python, PHP, and the other tree-sitter languages; see `reveal --languages`):**
 ```bash
 reveal app.py process_batch --boundary       # inputs read, outputs/effects produced
-reveal app.py process_batch --sideeffects    # DB / HTTP / FS / logging calls, classified
+reveal app.py process_batch --effects    # DB / HTTP / FS / logging calls, classified
 reveal app.py process_batch --inputs         # candidate inputs; builtins marked separately
 reveal app.py process_batch --outputs        # read-after-write hazards; use --range for a block
 reveal app.py process_batch --callsites      # calls within the selected function

@@ -1,0 +1,195 @@
+<div align="center">
+  <img src="https://raw.githubusercontent.com/BaumSebastian/DDACS/main/docs/images/icon/DDACS.png" width="150"/>
+  <h1>Deep Drawing and Cutting Simulations (DDACS) Dataset</h1>
+</div>
+
+[![Code License: MIT](https://img.shields.io/badge/Code-MIT-yellow.svg)](LICENSE)
+[![Dataset License: CC BY 4.0](https://img.shields.io/badge/Dataset-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Documentation](https://readthedocs.org/projects/ddacs/badge/?version=latest)](https://ddacs.readthedocs.io)
+[![DaRUS Repository](https://img.shields.io/badge/repository-DaRUS-green.svg)](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-4801)
+[![DOI](https://img.shields.io/badge/DOI-10.18419%2FDARUS--4801-blue.svg)](https://doi.org/10.18419/DARUS-4801)
+[![Paper](https://img.shields.io/badge/paper-MATEC%20Web%20Conf.-red.svg)](https://www.matec-conferences.org/articles/matecconf/abs/2025/02/matecconf_iddrg2025_01090/matecconf_iddrg2025_01090.html)
+
+<div align="center">
+
+![Simulation overview](https://raw.githubusercontent.com/BaumSebastian/DDACS/main/docs/images/simulation_overview.gif)
+
+*Simulation with the tool geometries showing sheet metal thinning, stress, and strain.*
+
+</div>
+
+**A large-scale dataset and benchmark for training AI models that replace computationally expensive FEA simulations in industrial sheet metal manufacturing.** Each simulation models a two-stage stamping process (deep drawing in OP10 and cutting with elastic recovery in OP20) for a cup geometry parameterised by 8 input dimensions. Train ML surrogates that predict mesh deformation, stress, strain, and springback in seconds instead of the minutes-to-hours a CAE solver would take.
+
+|  |  |
+|---|---|
+| **Simulations** | 32,466 |
+| **Total size** | ~640 GB (HDF5, lossless) |
+| **Process steps per sim** | 2 (OP10 deep drawing, OP20 cutting) |
+| **Input parameters** | 8 (4 geometric + 4 process) |
+| **Train / val / test** | 25,973 / 3,246 / 3,247 (predefined) |
+| **Mesh-node states** | ~2.1 B across all sims, timesteps, components |
+
+**[Documentation](https://ddacs.readthedocs.io)** · **[Dataset DOI](https://doi.org/10.18419/DARUS-4801)** · **[Paper](https://www.matec-conferences.org/articles/matecconf/abs/2025/02/matecconf_iddrg2025_01090/matecconf_iddrg2025_01090.html)**
+
+Try the 22 MB teaser (one full simulation, manifest, parameter table, runnable tutorials): **[Kaggle](https://www.kaggle.com/datasets/baumsebastian/ddacs-teaser)** · **[Hugging Face](https://huggingface.co/datasets/BaumSebastian/ddacs-teaser)** · **[Zenodo](https://zenodo.org/records/21272450)**
+
+A Croissant-native Python package for accessing the [DDACS Dataset](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-4801) ships with this repo: one CLI for the download, one Python module for access, and an optional PyTorch `IterableDataset` for training.
+
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [What's new in v3](#whats-new-in-v3)
+- [Installation](#installation)
+- [Download the dataset](#download-the-dataset)
+- [Basic usage](#basic-usage)
+- [PyTorch integration](#pytorch-integration)
+- [Tutorials](#tutorials)
+- [Version compatibility](#version-compatibility)
+- [Citation](#citation)
+- [Development](#development)
+- [License](#license)
+
+## What's new in v3
+
+v3 is a major release because the dataset itself now ships with a [Croissant 1.1](https://docs.mlcommons.org/croissant/) manifest (`metadata.json`). The manifest is the single source of truth for the dataset schema: every HDF5 field, every CSV column, the SIM-KAx simulation provenance, and a set of task-specific views are declared once and consumed by both the package and external Croissant tools.
+
+The Python surface was rewritten around it:
+
+- `ddacs.load(data_dir)` parses the manifest and exposes published RecordSets (`process-parameters`, `field-map`, `simulation-provenance`, plus task views such as `springback-minimal`, `springback-prediction`, `forming-snapshot`, `cutting-view`).
+- `ddacs.open_h5(sim_id, data_dir)` reads any simulation by id without needing the zip extracted.
+- `ddacs.add_view(ds, name, fields)` appends a custom view to the in-memory dataset.
+- `ddacs.streaming.iter_view` / `export_to_numpy` / `load_export` iterate any view without PyTorch and materialise it as `.npy` memmap shards; `ddacs.plot_mesh` / `plot_point_cloud` / `plot_vectors` / `plot_2d_projection` plot the results.
+- `DDACSDataset(view=...)` streams records of any view (published or custom) with worker-shard / DDP-safe partitioning, manifest-driven filtering, and graceful skip on partial downloads.
+- The CLI default flipped to keep zips intact (`mlcroissant` reads HDF5 members in place); `--extract` and `--remove-zip` opt in to the loose-HDF5 layout.
+
+The v2 helpers (`iter_ddacs`, `count_available_simulations`, the data extraction utilities) are removed. See the [tutorials](#tutorials) for the migration path.
+
+## Installation
+
+```bash
+pip install ddacs
+```
+
+The PyTorch adapter is an optional extra. For hardware-specific PyTorch builds (CUDA, ROCm, MPS), install PyTorch first from [pytorch.org](https://pytorch.org/get-started/locally/), then install the extra:
+
+```bash
+pip install 'ddacs[torch]'
+```
+
+## Download the dataset
+
+```bash
+# Small sample bundle (22 MB): manifest, CSV, and one simulation.
+ddacs download --small -y
+
+# Full release.
+ddacs download
+
+# Show available versions on DaRUS.
+ddacs info
+```
+
+Files land in `./data` by default. The same path is the default for `ddacs.load(data_dir=...)` and `DDACSDataset(data_dir=...)`, so no further configuration is needed.
+
+All options (`--files`, `--out`, `--extract`, `--remove-zip`, `--quiet`, the global `--token`) are documented in the [CLI reference](https://ddacs.readthedocs.io/en/latest/cli/).
+
+By default zip files are kept on disk and are *not* extracted; `mlcroissant` reads HDF5 members in place. Pass `--extract --remove-zip` to switch to a loose-HDF5 layout instead; see the [Loose HDF5 recipe](https://ddacs.readthedocs.io/en/latest/tutorials/loose-h5/) for the matching iteration pattern.
+
+## Basic usage
+
+`ddacs.load` parses the Croissant manifest; `ddacs.open_h5` opens a single simulation in memory and returns an `h5py.File`.
+
+```python
+import ddacs
+
+# Load the dataset manifest. Lists every published RecordSet.
+ds = ddacs.load(data_dir="./data")
+print([rs.id for rs in ds.metadata.record_sets])
+
+# Open one simulation. OP10 carries the blank and the three tools.
+with ddacs.open_h5(258864, data_dir="./data") as f:
+    blank_thickness = f["OP10/blank/element_shell_thickness"][-1]
+    print("final-timestep thickness:", blank_thickness.shape)
+```
+
+For custom RecordSets and slicing the field map, see [Build your own view](https://ddacs.readthedocs.io/en/latest/tutorials/views/). For mesh / point-cloud / vector plotting, see [Visualization](https://ddacs.readthedocs.io/en/latest/tutorials/visualization/).
+
+## PyTorch integration
+
+`DDACSDataset` is a `torch.utils.data.IterableDataset` over a Croissant view. It builds a `sim_id -> local zip` index at construction time and silently skips simulations whose zip is missing, so partial downloads stream cleanly.
+
+```python
+from ddacs.pytorch import DDACSDataset
+from torch.utils.data import DataLoader
+
+ds = DDACSDataset(view="springback-minimal", data_dir="./data")
+loader = DataLoader(ds, batch_size=16, num_workers=0)
+
+for batch in loader:
+    forming    = batch["op10_blank_node_displacement_forming"]
+    springback = batch["op10_blank_node_displacement_springback"]
+    # ... training step ...
+    break
+```
+
+For filtering, train / val / test splits, shuffling, and the partial-download story, see [PyTorch training](https://ddacs.readthedocs.io/en/latest/tutorials/pytorch/).
+
+## Tutorials
+
+The tutorials walk through the package end to end. Each one is published on Read the Docs as a [tutorial page](https://ddacs.readthedocs.io/en/latest/tutorials/) and shipped as an executable notebook under [`notebooks/`](./notebooks/) that reproduces every page.
+See [`notebooks/README.md`](./notebooks/README.md) for prerequisites and run instructions.
+
+## Version compatibility
+
+The `ddacs` package major version tracks the DaRUS dataset major version. The pairing is enforced by the Croissant manifest bundled with each release: a mismatched package version will fail to resolve the field map.
+
+| Package | DaRUS dataset |
+|---------|---------------|
+| `ddacs 3.x` | [v3.0](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-4801&version=3.0) and any future v3.x updates (current) |
+| `ddacs 2.x` | [v1.0](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-4801&version=1.0) and [v2.0](https://darus.uni-stuttgart.de/dataset.xhtml?persistentId=doi:10.18419/DARUS-4801&version=2.0) |
+
+Pin the package major to the dataset major you target, for example `pip install 'ddacs~=3.0'` to stay on the v3 line.
+
+## Citation
+
+If you use this dataset or code in your research, please cite both the dataset and the paper:
+
+```bibtex
+@dataset{baum2025ddacs,
+  title={Deep Drawing and Cutting Simulations Dataset},
+  subtitle={FEM Simulations of a deep drawn and cut dual phase steel part},
+  author={Baum, Sebastian and Heinzelmann, Pascal},
+  year={2025},
+  version={3.0},
+  publisher={DaRUS},
+  doi={10.18419/DARUS-4801},
+  license={CC BY 4.0},
+  url={https://doi.org/10.18419/DARUS-4801}
+}
+
+@article{heinzelmann2025benchmark,
+  title={A Comprehensive Benchmark Dataset for Sheet Metal Forming: Advancing Machine Learning and Surrogate Modelling in Process Simulations},
+  author={Heinzelmann, Pascal and Baum, Sebastian and Riedmueller, Kim Rouven and Liewald, Mathias and Weyrich, Michael},
+  journal={MATEC Web of Conferences},
+  volume={408},
+  year={2025},
+  pages={01090},
+  doi={10.1051/matecconf/202540801090},
+  url={https://www.matec-conferences.org/articles/matecconf/abs/2025/02/matecconf_iddrg2025_01090/matecconf_iddrg2025_01090.html}
+}
+```
+
+## Development
+
+```bash
+git clone https://github.com/BaumSebastian/DDACS.git
+cd DDACS
+pip install -e ".[dev,torch]"
+pre-commit install   # set up code formatting hooks
+pytest               # run the full test suite (PyTorch tests skip without the torch extra)
+```
+
+## License
+
+The dataset on DaRUS is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The `ddacs` software is licensed under the MIT License, see [LICENSE](LICENSE).

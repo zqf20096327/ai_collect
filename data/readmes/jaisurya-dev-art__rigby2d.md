@@ -57,6 +57,7 @@
 
 - **YouTube architectural review:** [Rigby2D GitHub Explained: 2D Rigging Across Game and Film Runtimes](https://www.youtube.com/watch?v=K9hDnlXZ2No) by [Alex Hitt](https://www.youtube.com/channel/UCKhKnxp8JhHu1FsbyZYxqwg) — an 8-minute technical breakdown of AutoRig mesh topology, deterministic physics solver parity across engines, the Game and Film workspaces, and the built-in MCP server.
 - **Polydium (CG · VFX · Game Daily Briefing):** [Rigby2D — 레이어 PSD를 자동으로 리깅하는 오픈소스 2D 스켈레탈 애니메이션 에디터](https://polydium.net/briefing/8df9db93-0abf-4032-bd88-acbdf95ec431) — featured in the [Polydium Pipeline Briefing](https://polydium.net/briefing) for Korean game and VFX studios.
+- **Portable Linux Apps:** [Rigby2D AppImage for Linux](https://portable-linux-apps.github.io/en/app/rigby2d.html) — listed in the AppImage catalog of the [AM package manager](https://github.com/ivan-hc/AM).
 - **Open-source & AI indexes:** Listed in [Trendshift Top Game Engine Open-Source Projects (2026)](https://trendshift.io/topics/game-engine), [Nicheloom](https://www.nicheloom.com/launches/57217/), and [Context7](https://context7.com/jaisurya-dev-art/rigby2d).
 
 ## Documentation
@@ -135,13 +136,22 @@ src/core/       Runtime: data model, skeleton JSON/.skel + atlas I/O, pose evalu
 src/editor/     Editor UI: viewport, tree, inspector, dopesheet, graph editor, import/export, scripting
 src/webgl/      Reference WebGL renderer for the runtime
 src/mcp/        Model Context Protocol server for AI assistants
-runtimes/       Rust runtime and the Godot 4 node (preview)
+runtimes/       Rust runtime and the Godot 4 nodes
 site/           Website and documentation site (GitHub Pages)
 docs/           Documentation pages and images
 branding/       Logo, icons, Rigbytron and NILA (proprietary, see TRADEMARKS.md)
 src-tauri/      Native desktop shell
 test/           node:test suites
 ```
+
+## Support Rigby2D
+
+Rigby2D is free and open source, and it stays that way. Monthly support pays for what one person
+can't, starting with **code signing in Rigby2D's name**, so Windows and macOS stop warning the people
+who download it. The first goal is $25 a month; the first 20 monthly supporters are Founding Supporters.
+
+<a href="https://github.com/sponsors/jaisurya-dev-art"><img src="https://img.shields.io/badge/Sponsor_on_GitHub-7ba7c7?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Sponsor on GitHub"></a>
+&nbsp;[Where the money goes](https://rigby2d.com/fund/)
 
 ## Contributing
 

@@ -181,6 +181,7 @@ via the primary gateway.
 | `hub_ingress.bind_address`   | `""`                                                                    | Master tunnel address the hub connects to, e.g. `10.20.30.10`                                                                                                                         |
 | `hub_ingress.port`           | `8443`                                                                  | TCP port of the bind (HAProxy `accept-proxy`, then Traefik websecure)                                                                                                                 |
 | `hub_ingress.source_ips`     | `[]`                                                                    | Hub peers allowed to connect (iptables INPUT accept), e.g. `["10.20.30.1/32"]`                                                                                                        |
+| `hub_ingress_mail`           | `{}`                                                                    | Mail ports from the hub, merged over `hub_ingress_mail_defaults` (`smtp`, `submission(s)`, `imap(s)`: `enabled`, `gate_port`, `nodeport`)                                             |
 
 `public` apps allow every source in Traefik and are reachable only through the upstream ingress hub, which delivers the real client IP via PROXY protocol on `hub_ingress`. `lan` apps accept the customer LAN, ops tunnel peers, k3s CIDRs and VPN user peers (`vpn_ingress.networks`), so a client arriving through the hub is blocked by Traefik. Tenant hostnames (`tenants`, `hermes_users[*].tenant`) are served with per-tenant wildcard certs from `tenant_tls_issuer`; they need `app_exposure.hermes: public` and the hub's wildcard A records. The hermes LAN hostnames (`<user>.hermes.<dns_external_domain_suffix>`) stay internal regardless of `app_exposure.hermes`.
 
@@ -207,6 +208,8 @@ All persistent data uses hostPath volumes under `/var/lib/k8s-data/` on k3smaste
 | Loki + Fluent Bit      | loki                      | Log aggregation (filesystem backend, DaemonSet log collector; gate `fluentbit_enabled`; promtail removed, EOL since 2026-03-02) |
 | NUT Exporter           | monitoring                | Prometheus exporter for NUT UPS metrics (`druggeri/nut_exporter:3.3.0`, per-UPS scrape jobs)                                                                   |
 | Uptime Kuma            | uptimekuma                | Uptime monitoring                                                                                                                                              |
+| Postfix                | mail                      | MX + submission, accounts in the shared `mail` DB, inbound via the hub (`hub_ingress_mail`), outbound via the hub relay, LMTP/SASL to Dovecot                  |
+| Dovecot                | mail                      | IMAP/ManageSieve + LMTP delivery and SASL for Postfix (rootless, maildirs on hostPath), same account DB, IMAP inbound via the hub                              |
 
 FQDNs follow the pattern `<service>.<domain-suffix>` (configured via `dns_external_domain_suffix` in vault).
 

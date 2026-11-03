@@ -28,6 +28,9 @@ an agent and an OpenAI-compatible backend: the agent sends its history as usual;
 uvx mnemonic-proxy demo
 ```
 
+No `uv` yet? `pip install uv` (or `curl -LsSf https://astral.sh/uv/install.sh | sh`), or skip `uv` entirely and
+use the three `pip` lines of [T0](#t0--see-it-work-1-minute-no-model).
+
 Expected result: **`PASS`**.
 
 The demo uses the real proxy with a **scripted fake model** to check archive, masking and byte-for-byte recall.
@@ -60,21 +63,48 @@ OpenAI-compatible backends; capabilities and test coverage vary ([Engines](#engi
 
 ## Install
 
-The first time: install, watch it work with no model, check your engine, start.
+The first time: install, watch it work with no model, check your engine, start. No configuration file is needed
+to begin — these four lines are the whole first run.
 
 <!-- readme-test: ci -->
 ```sh
 python3 -m venv mnemonic-venv && . mnemonic-venv/bin/activate
 pip install mnemonic-proxy
 mnemonic-proxy demo      # 1 minute, no model: archive, masking, recall -> PASS
-mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.json
-mnemonic-proxy --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.json
+mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data
+mnemonic-proxy --upstream http://127.0.0.1:8095 --port 8096 --data ./data
 ```
 
-`check` ends with `READY` (exit 0) or says, line by line, what to change; `--live` adds a real generation, a tool
-call and a save/restore. `--upstream` is the engine's address. Then point the agent at the proxy (port 8096)
-instead of the engine. The engine window must be at least 16K tokens, 32K or more recommended
-([Requirements](#requirements)). Step by step with a small model on CPU: [Quick start](#quick-start).
+`check` ends with one of three outcomes: **`READY` (exit 0)**, **`READY with warnings` (exit 2)** — it works, but
+something optional is off (typically saved state) — or **`NOT READY` (exit 1)**, and then it says, line by line,
+what to change; `--live` adds a real generation, a tool call and a save/restore. `--upstream` is the engine's
+address. Then point the agent at the proxy (port 8096) instead of the engine. The engine window must be at least
+16K tokens, 32K or more recommended ([Requirements](#requirements)). Step by step with a small model on CPU:
+[Quick start](#quick-start).
+
+**No engine running yet?** The package ships the fake engine the test suite uses, so `check` and the proxy can be
+tried with nothing installed but this package:
+
+<!-- readme-test: ci -->
+```sh
+python3 -m ctxproxy.fake_engine --flavor llama --n-ctx 32768 --port 8095 &
+mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data
+```
+
+**A configuration file, when you want one** (saved state, or an engine that needs explicit thresholds). It is a
+separate, explicit step — the proxy runs on its defaults without it:
+
+<!-- readme-test: ci -->
+```sh
+mnemonic-proxy init-config --engine strata        # or llama-server, ds4, openai-32k
+mnemonic-proxy check --upstream http://127.0.0.1:8095 --port 8096 --data ./data --config config.json
+```
+
+`init-config` writes `config.json` from the example that ships inside the package (no network, no clone), prints
+which example it used and never overwrites a file you have already edited (`--force` does). The same files are
+browsable at [`examples/`](https://github.com/lastreload/mnemonic-proxy/tree/main/examples); `check` prints the
+full `raw.githubusercontent.com` URL of the one for *your* version whenever it suggests one. Fields:
+[Configuration](#configuration).
 
 ### Strata in two commands
 
@@ -151,7 +181,10 @@ switches, tool calls, streaming, `/v1/messages` and `/v1/responses` worked, no s
   LM Studio: `lms load <model> --context-length 32768`, then `lms server start`; `lms ps` shows it.
 - **The proxy reads that context** (0.3.8): Ollama `GET /api/ps` (`context_length` of the loaded model: the context
   it runs with, not the training context of `POST /api/show`), LM Studio `GET /api/v0/models`
-  (`loaded_context_length`). It reads it again before every request (one cheap GET; a model that is not loaded is
+  (`loaded_context_length`). Ollama is recognised only when `GET /api/version` **and** a coherent `/api/ps` models
+  array both answer (0.3.24): a gateway such as llama-swap that exposes the version but not `/api/ps` runs as a
+  generic engine, and its `/v1/models` catalog is reported as model availability with the loaded state and the
+  window unverified. It reads it again before every request (one cheap GET; a model that is not loaded is
   loaded first with a 1-token request), so the window follows the engine and a prompt never goes over it. Below
   16384 the proxy refuses to start; a `window` in the config bigger than the engine context also refuses the start
   and fails `check`, with the command that fixes it. You can leave `window` out of the config.
@@ -172,6 +205,7 @@ switches, tool calls, streaming, `/v1/messages` and `/v1/responses` worked, no s
 | agent | point it at | turn off | setup |
 |---|---|---|---|
 | pi, omp | `http://127.0.0.1:8096/v1` (`openai-completions`) | `"compaction": {"enabled": false}` | [T1 step 6](#t1--a-real-model-on-cpu), [omp](#pi-hermes-continue--chat-completions) |
+| opencode | `http://127.0.0.1:8096/v1` (`openai-compatible` provider) | `"compaction": {"auto": false}` | [opencode](#opencode-chat-completions) |
 | Hermes Agent | `http://127.0.0.1:8096/v1` (custom provider) | `compression.enabled: false` | [Hermes setup and test notes](docs/hermes-agent.md) |
 | Continue, other Chat Completions clients | `http://127.0.0.1:8096/v1` | the client's own context compaction | [Chat Completions](#pi-hermes-continue--chat-completions) |
 | Claude Code | `ANTHROPIC_BASE_URL=http://127.0.0.1:8096` (no `/v1`) | `DISABLE_AUTO_COMPACT=1` | [Claude Code](#claude-code-anthropic-messages) |
@@ -205,6 +239,13 @@ Archived content stays verbatim; the model writes handoff notes at segment switc
 3. **Segment — handoff notes.** When even the masked window fills up, the model writes its own notes, the segment is
    sealed and a fresh one starts. Pinned lines (`!!` or `📌`) survive every switch; lines starting with `🗑` (or `~`)
    mark a message as disposable once answered.
+   *A copy is labelled a copy.* Several of these blocks — handoff notes, the verbatim first request, the 📌 block,
+   an automatic-recall insertion — are themselves `role:"user"` messages, so a client's own control frame carried
+   inside them would read as a fresh delivery. Clients mark out-of-band messages with frames the model is told to
+   trust (Hermes: `[OUT-OF-BAND USER MESSAGE … delivered once at this position] … [/OUT-OF-BAND USER MESSAGE]`);
+   in every copy the proxy writes, such a frame is relabelled `[quoted OUT-OF-BAND USER MESSAGE …]` — same words,
+   whole text, visibly a quotation. The message the client actually delivered stays byte for byte as it was, in its
+   own place (issue #61).
 4. **Save — engine state on disk.** On engines that support it (llama-server, Strata with session files) the KV
    state is saved to disk: resuming after a pause, a restart or another client takes 1–3 s instead of a full
    re-read.
@@ -254,7 +295,9 @@ mnemonic-proxy demo
 With [uv](https://docs.astral.sh/uv/), no venv to create: `uvx mnemonic-proxy demo`. `uvx` runs the command from a
 temporary environment and installs nothing, so keep the prefix for the next commands (`uvx mnemonic-proxy check ...`)
 or install the command once with `uv tool install mnemonic-proxy`. The development version (the
-`main` branch, newer than the last PyPI release): `pip install git+https://github.com/lastreload/mnemonic-proxy`.
+`main` branch, newer than the last PyPI release): `pip install git+https://github.com/lastreload/mnemonic-proxy`
+(needs `git` on PATH: `sudo apt install git`). Its `--version` ends in `.dev0` — a `main` build is not the next
+release, and the examples it points at are the ones on `main`.
 
 The demo starts the real proxy in a temporary folder, in front of a scripted fake model. An agent reads a long
 `build.log` that contains one build id; the session grows until the proxy hides the log; the demo prints what the
@@ -462,8 +505,54 @@ With `--tokenizer`, the final guard and planning total now load an adjacent `cha
 (from the pack directory, or beside a supplied HF tokenizer file). This matters for fine-tunes such as Tiel:
 its Sharp template adds instructions and tool-error warnings that the built-in Qwen renderer does not write.
 Install/update `mnemonic-proxy[exact]` for both the tokenizer and sandboxed Jinja renderer. A discovered template
-that cannot load or render is never silently replaced by the built-in one. Current pack-template counting is
-text-only: image requests are refused locally rather than claiming to know dynamic image patch counts.
+that cannot load or render is never silently replaced by the built-in one. Pictures are forwarded to the engine and
+budgeted, not refused: the template writes one vision marker per picture (never its bytes), and the guard counts each
+marker as `image_tokens` tokens. That number is an **upper bound**, and it has to be: no engine reports the real
+patch count before the request (Strata has no `/tokenize`, and its `/v1/messages/count_tokens` counts the marker
+alone). The rule is **`image_tokens >= vision.max_tokens + 2`**: the reader clamps one picture's expansion to
+`vision.max_tokens` (Strata's `vision.max_tokens`, 1024 on GPU and 300 on CPU by default; without it a picture once
+became 93,700 tokens), while the marker itself is three special tokens of which two - `<|vision_start|>` and
+`<|vision_end|>` - stay in the prompt around the expansion the allowance replaces. So a pack clamped to 300 needs
+**302**, and Strata's GPU default clamp of 1024 needs **1026** - which is the shipped default; a round 1120 is the
+same rule with a little free headroom. An over-reservation costs a little context, an under-reservation would send a
+prompt over the window.
+`image_tokens` has to be a non-negative integer (config load rejects anything else), and a request that carries a
+picture while the bound is `0` is refused with `image_tokens=0` in its message: a picture cannot be priced at
+nothing, and the startup line says the same before the first request.
+
+Everything else about pictures is fail-closed, because a counted prompt that is not the prompt the engine builds is
+a window nobody can guarantee. The markers the template wrote must be exactly the pictures being priced - a template
+without a vision branch (a fine-tune that prints `content` as text) cannot serve pictures and is refused, never
+tolerated. A picture in a `system` message is refused: Strata hands that message its text parts and the pack template
+raises on its images, so its bytes would never reach the model. A picture with no readable source (a `file_id`, an
+empty url) is refused instead of turning into an empty image, and a picture carried under a content type the adapter
+does not read is refused instead of disappearing from the prompt. Video and audio parts stay refused: no supported
+engine reads them, so their marker would have no honest budget. `window_guard` events for a prompt with pictures
+carry `guarantee=image_bounded` with `images` and `image_allowance`, text-only prompts keep `guarantee=exact` and
+their journal lines are byte-identical to before, and a refusal carries the reason in its 400 message. The structural
+part of that holds on the estimated path too: without a tokenizer the count is only `guarantee=estimated`, but a
+picture the adapter would not read is still a lost turn, so it is refused there as well.
+
+A marker **quoted in text** is not a picture. Someone pasting `<|vision_start|><|image_pad|><|vision_end|>` into a
+message - asking about the template, or pasting a log - puts the real spelling of the marker in the prompt, and
+Strata shields such spellings instead of reading a picture (#28). The guard subtracts quoted spellings before it
+checks markers against pictures and before it prices them (their characters stay reserved as literal slack), and the
+saved-state stamp counts only pictures, so a quote cannot steal a picture's identity. The quote still changes the
+prompt's identity: it is part of the prompt.
+
+Picture bytes never reach disk. `live_dump` and the KV sidecar name a picture by hash the way the journal does, and
+they fold a `data:` URI or a long base64 run found inside *text* too - a tool result that prints a screenshot used to
+write megabytes of base64 into `live/last_request.json`. The prompt forwarded to the engine is not folded: the
+picture gets there whole.
+
+Engine state (autosave checkpoints, masking anchors) is keyed by the prompt's hash, so a picture joins that identity
+only where the proxy can name its bytes: a `data:` URI is hashed by content and stamped at the marker the template
+wrote, so the same text with another picture is a different state and can never be restored under the previous
+image's embeddings. A picture referenced from *outside* the prompt - an `http(s)` url or a file path - can hold
+different bytes on the next turn under the same name, so a prompt carrying one records no state, restores none and
+seals no anchor (`anchor_skip reason=volatile_picture`); its tokens are budgeted the same way. Send `data:` URIs
+(OpenCode does) when a conversation should keep its state reuse. The proxy cannot make the *engine's* own prefix
+cache safe for a url whose content changed under the same pad count - a second reason to prefer `data:`.
 Without that file, the historical built-in Qwen rendering remains (`template=builtin-qwen` at startup);
 use it only with a matching server template. Per-message planning costs remain Qwen approximations; the full
 pack-rendered total and final guard are what enforce the window.
@@ -498,6 +587,25 @@ The full structured log stays at `<--data>/journal.jsonl`; recent events are als
 port with the proxy's. `where=answer|recall_round|final|notes|seal|anchor|answerfix` identifies the upstream phase;
 a client continuation is a new answer request, not a distinct server-side phase. `seal` and `anchor` deliberately
 request one token to establish saved state; this differs from a client answer clamped to one token.
+
+**The prompt head is measured, not guessed (`tool_heads`, 0.3.24).** The head — the template scaffolding, the tool
+definitions and the system prompt — is the largest single occupant of an interactive prompt, and until 0.3.24 it was
+recorded nowhere: the `request` event carries aggregate counters only, and the archive holds messages, not tools.
+`journal_tool_heads` (on by default) writes **one** `tool_heads` line **per conversation and per change of the tool
+list** — not per request — with the list's fingerprint, the number of tools, for every tool its **name**, the tokens
+of the full definition and the tokens of its `description` alone, the counted head total (`head_tokens` =
+`defs_tokens` + `system_tokens` + `frame_tokens`), and, when `tools_paging` is on, which tools stayed in the head
+(`base`) and which went to the loadable catalog (`catalog`). `counting` says whether the numbers are `exact` (pack
+tokenizer + real template) or `estimated` (the chars/`chars_per_token` fallback); the counter is the one the proxy
+already uses for the window. **Names and numbers only: no definition text, no `description` text and no system
+prompt ever enter the journal** — the record is built from names and integers, so it cannot carry text, and
+`tests/test_tool_heads.py` proves it (`toolheads.leaks`, `toolheads.unknown_strings`). One line is about 450 bytes
+and its size does not grow with the length of the definitions. This makes `tooldefs_desc_max`, `tooldefs_param_max`
+and `tools_paging` measurable after the fact. Note that the pager itself journals nothing: `tools_search` and
+`tool_not_loaded` only appear when the **model** calls `tools` or an unloaded tool, so before this event a journal
+without them could not tell "paging never ran" from "paging ran and the model never touched the catalog" — this line
+tells them apart. `tool_heads` is a measurement, not a decision: the prompt sent to the engine is byte-identical
+with it on or off.
 
 If PolyStrata rejects a request *before generation* with its explicit context/count error, the proxy records
 both counts and retries **once**, unchanged except for lower output/reasoning limits derived from that engine
@@ -554,8 +662,10 @@ example SoL-Pi's ObservationPack), we have not tested them together with the pro
 
 ### opencode (Chat Completions)
 
-Tested with opencode **1.19.5** on Strata: one 1 h 32 min session, 554 requests, 51 masks, 44 `recall` calls all
-used, numbers [below](#opencode-on-strata-measured). Put this in `$XDG_CONFIG_HOME/opencode/opencode.json` (global)
+Tested with opencode **1.19.5** on Strata: one 1 h 32 min session, 554 requests, 51 masks, 44 `recall` calls of
+which 19 returned archived text, numbers [below](#opencode-on-strata-measured). Put this in
+`$XDG_CONFIG_HOME/opencode/opencode.json`
+(global; `$XDG_CONFIG_HOME` defaults to `~/.config`, so that is usually `~/.config/opencode/opencode.json`)
 or `opencode.json` in the project:
 
 <!-- readme-test: real-engine; config: client -->
@@ -740,7 +850,7 @@ module, then answer questions about the session from memory.
 | masking | 51 masks, from `93,470 → 57,659` (3 pieces) down to 1-piece emergency batches |
 | segments | 3 switches; `seal` 1.8–2.8 s, `save` 0.80–0.84 s per file |
 | anchor | 39 `anchor_save`, 36 `anchor_restore`, 2 `anchor_skip` |
-| `recall` | **44 calls by the model, all 44 served and used** (22 of them in one turn, 7 in the memory-quiz turn) |
+| `recall` | **44 calls by the model; 19 returned archived text** (8 by `query`, 11 by arguments id as 700-char excerpts), 25 returned none (21 output ids with `mode=output`, which by design answers only with a pointer to the arguments id; 4 `path` calls empty because of the filter fixed in 0.3.24). All 32 id calls asked for blocks masked inside the current turn: `mode=output` served them without that filter, but a plain `recall(id=…)` of the same blocks would have been refused by 0.3.23 (see CHANGELOG). `recall_use` marks 35 of 44 as used |
 | tool calls | 669 (`read` 434, `bash` 190, `edit` 33, `write` 10, `grep` 2); 0 empty results |
 | errors | 0 `proxy_error`, 0 `upstream_error`, 0 `client_disconnect`, 0 non-200; 5 `edit` calls rejected by opencode (stale `oldString`), 1 turn with no final answer (`final_answer_missing`) |
 
@@ -748,7 +858,13 @@ What it shows: masking costs about **5 s of extra prefill on the request where i
 median) and **nothing on the next one** (1.93 s against 1.886 s for requests far from a mask), because the anchor is
 saved and restored instead of re-prefilling the shortened prompt. The model asked for `recall` on its own whenever
 it needed a masked tool result, and the three memory questions at the end of the session were answered correctly
-after seven `recall` calls. What it does not show: the interactive TUI, `opencode serve`/`web`/`attach`, MCP servers
+after seven `recall` calls. What it does NOT show, and what a re-reading of this journal found later: the id calls
+of this session all pointed at blocks masked inside the *current* turn. They all used `mode=output`, which in
+0.3.23 skipped the archive filter: each output id got only a pointer to its arguments id, and the arguments id gave
+700-char excerpts, never the verbatim text. A plain `recall(id=…)` of those blocks would have been refused
+(`idx < max_idx`), and the 4 `path` calls came back empty for that reason. The filter is fixed in 0.3.24; these
+numbers are the 0.3.23 behaviour. Also not shown: the
+interactive TUI, `opencode serve`/`web`/`attach`, MCP servers
 or sub-agents, opencode's own compaction running *together* with the proxy, and the client-side TTFT (we measured
 the proxy's `prompt_ms`). One turn out of eight ended with no final answer: the model spent the whole turn reading.
 
@@ -836,7 +952,8 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
 | `check`: engine detected as `openai` | llama-server too old, or another engine | saved state needs llama-server with `--slot-save-path`, or Strata ≥ 0.1.40 with `--slot-save-path`; everything else works |
 | Strata has no saved state | Strata older than 0.1.40, or started without `--slot-save-path` | optional: base mode keeps working. For the fast resume, update to Strata ≥ 0.1.40 and start it with `--slot-save-path DIR` |
 | `check`: `slot_dir … does not exist and the proxy could not create it` | the path is not writable by the user running the proxy | run the `mkdir` command the message prints, or point `slot_dir` at a writable folder (the engine's `--slot-save-path`) |
-| answers get shorter and shorter / summaries appear in the history | the client's own compaction is on as well | turn it off: pi `"compaction": {"enabled": false}`, Claude Code `DISABLE_AUTO_COMPACT=1`, Codex: [threshold](#codex-openai-responses) |
+| answers get shorter and shorter / summaries appear in the history | the client's own compaction is on as well | turn it off: pi `"compaction": {"enabled": false}`, opencode `"compaction": {"auto": false}`, Claude Code `DISABLE_AUTO_COMPACT=1`, Hermes `compression.enabled: false`, Codex: [threshold](#codex-openai-responses) |
+| Windows: `\u27ea` in the output of `demo` / `check`, or `?` where `·` `—` `«»` should be | before 0.3.24 a non-UTF-8 console got `errors="backslashreplace"` | fixed in 0.3.24: on a console that is not UTF-8 the proxy prints ASCII stand-ins (`<<`, `>>`, `--`). Nothing sent to the engine or written to disk changes; `chcp 65001` (UTF-8) brings the real characters back |
 | Codex: `wire_api = "chat"` rejected | Codex ≥ 0.160 only speaks the Responses API | `wire_api = "responses"` |
 | `kv_archive` refused | needs Python ≥ 3.14 (`compression.zstd`) | Python 3.14, or leave `kv_archive` off (default) |
 
@@ -871,6 +988,12 @@ Start with `mnemonic-proxy check` (add `--live` to exercise the engine): every f
   `kv_archive` round trip.
   Not tested: real agents (pi, Claude Code, Codex) on Windows, GPU builds, the dashboard. `sha256sum` is
   `Get-FileHash -Algorithm SHA256`.
+  **Console**: a PowerShell window whose code page is not UTF-8 cannot carry the characters the proxy prints
+  (`⟪ ⟫ · — «»`). Since 0.3.24 the commands detect it and print ASCII stand-ins instead (`<<ctx-archive id=… -
+  output of bash …>>`, `--`, `"…"`), so the report stays readable and nothing arrives mangled; accents in paths are
+  folded (`Projet par défaut` -> `Projet par defaut`). `chcp 65001` before running the command brings the real
+  characters back. This is the console view only: the text sent to the engine, the archive, the journal and
+  `last_request.json` are byte for byte the same on every platform.
 - **Windows, WSL 2**: follow the Linux commands inside WSL. Keep the engine, the proxy and the `slots` folder all
   inside WSL, so that `slot_dir` and `--slot-save-path` are the same path. Not yet tested.
 - **Android (Termux)** (0.3.8; tested in Waydroid 1.6.2 on Linux — Android 13, x86_64 — with Termux 0.118.3 and its
@@ -1319,133 +1442,4 @@ A genuinely large prompt still triggers a segment switch when there is not enoug
 `max(response_floor, min(requested_output, default_response))`, bounded to at least one token and at most a quarter
 of the window. A floor never raises the actual output ceiling requested by the client. Every reduction produces
 `response_clamped` in `journal.jsonl` (requested and sent limits, prompt estimate, window and reserve), plus one
-warning per conversation in the process log, remembered across restarts. No new option is required; for example,
-a client ceiling of 120000 in a 131072 window no longer causes a switch on every short turn.
-
-**Small windows (including Strata/PolyStrata at 32K).** Unset thresholds scale when `window` is read from the
-engine's `/v1/status` (`context.native` / `max_positions`). Oversized explicit `response_floor` and
-`notes_max_tokens` are capped at one quarter of the window at startup, with warnings also shown by `check`.
-With masking anchors enabled below 128K, `anchor_min_tokens` is capped at `24000 * window / 131072` (6000 at 32K)
-so a 128K anchor threshold does not prevent useful anchors on a small window. A Strata `window` override larger
-than its reported context is lowered to that context with a warning (`check` reports the mismatch).
-These are budget/threshold adaptations, not token-count repairs; the final guard still handles every call.
-For 32K, prefer removing these three overrides to get scaled defaults, or start conservatively with
-`"response_floor": 4096, "notes_max_tokens": 2048, "anchor_min_tokens": 6000`. Keep `window` unset when discovery
-works, and check the startup log for `window from engine n_ctx: 32768`. The 128K recommendations below are not
-32K settings. Existing values within these bounds are unchanged.
-
-`--config` takes a JSON object with any field of `ctxproxy.core.Config`. Defaults below are the real ones in the
-code. Most features are off by default so that 0.1 behaviour is unchanged; the last column is what we recommend
-with an engine that has saved state (`examples/config.example.json` plus the options the benchmarks above support).
-
-| field | default | meaning | recommended |
-|---|---|---|---|
-| `window` | 131072 | physical context of the engine (llama-server, ds4, Strata, Ollama, LM Studio: taken from the engine if unset; Ollama / LM Studio: a bigger value refuses the start) | 131072 |
-| `window_margin`, `window_estimate_slack` | 64, 0 (0.15 on generic engines without `--tokenizer`) | window guard: tokens kept free; inflation of the estimated prompt count | default |
-| `mask_trigger` / `mask_target` | 80000 / 40000 | start a masking block above trigger, mask oldest-first down to target | default |
-| `min_batch_tokens` | 16000 | a block runs only if it frees at least this much | default |
-| `keep_recent_tokens` / `min_age_turns` | 16000 / 2 | protected tail, never masked | default |
-| `mask_reasoning` / `mask_tool_args` | false / false | also mask old reasoning / large old tool-call arguments | **true / true** |
-| `mask_anchor`, `anchor_min_tokens` | false, 24000 | save/restore engine state at the masking frontier (saved state) | **true**, 24000 |
-| `slot_dir` | "" | the engine's `--slot-save-path` folder, same host (anchor cleanup, autosave, `kv_archive`) | set |
-| `segments_enabled`, `tail_max`, `notes_max_tokens` | true, 24000, 8192 | segment switch with handoff notes | true, 24000, **12288** |
-| `slot_save` / `seal_experimental` | false / false | save the old segment to disk before switching (saved state) | **true / true** |
-| `response_floor` | 0 | minimum useful response budget for segment switching (bounded to a quarter of the window) | **16384** |
-| `inject_recall`, `max_recall_rounds`, `recall_max_tokens` | true, 4, 6000 | the `recall` tool | default |
-| `recall_tool_name` / `tools_tool_name` | "recall" / "tools" | names of the proxy's tools for new conversations | default |
-| `prompt_language` | "en" | language of the texts the proxy writes into the prompt, for NEW conversations: `"en"` or `"it"`; stored per conversation at first use; conversations from before 0.3.1 stay Italian | default |
-| `rich_receipts` | false | opt-in (benefit not yet measured): richer receipt for a hidden tool output, for NEW conversations: output size in lines/bytes, error type and the FIRST error line (160 characters), plus a receipt for outputs whose kind is not recognised; stored per conversation at first use, so a conversation from before 0.3.22 keeps the receipts it was masked with | default |
-| `recall_struct`, `recall_flex`, `recall_multi` | false, false, false | structured recall: file timelines, links, flexible words, several queries per call (the benchmark above) | **true, true, true** |
-| `auto_recall` / `auto_recall_hint` | false / false | `auto_recall` enables automatic retrieval on new user messages; `auto_recall_hint` only selects a one-line hint with ids instead of pieces and requires `auto_recall: true` | false / false (automatic retrieval off) |
-| `recall_leaf_select` | false | on structured outputs (yaml/toml (Python ≥ 3.11)/xml/json, tables, diffs, logs, git log, pytest) `recall` returns only the matching record and the key lines of its ancestors, verbatim, with `⋮` markers and offsets for the gaps; falls back to the normal recall when unsure ([dev note](docs/dev-notes/LEAF-SELECT-RESULT.md)) | default (experimental) |
-| `answer_thinking_after_recall`, `answer_thinking_budget` | false, 512 | turn thinking on only for the answer that follows a recall (fixes answers cut in the middle of a value) | default (experimental) |
-| `truncation_guard` | false | replay once, with thinking, a short answer that ends on a prefix of a recalled token | default (experimental) |
-| `tools_paging`, `tools_core` | false, read/bash/edit/write/grep/find/ls | tools on demand: only core tools + `recall` + `tools` in the prompt | **true** |
-| `typed_receipts`, `receipt_guard` | true, true | typed one-line receipts for hidden outputs; block write/edit/shell calls (pi, Claude Code, Codex names) that copy a receipt or the shortened form of an old argument | default |
-| `pins_max_tokens` | 8192 | cap of the carried-over 📌 block | default |
-| `autosave`, `autosave_idle_s`, `autosave_keep`, `autosave_max_gb` | false, 180, 10, 25 | save engine state when the conversation is idle (saved state) | **true**, 180, 10, 25 |
-| `autorestore`, `autorestore_min_gain` | true, 8192 | restore before forwarding when it saves at least this many tokens | default |
-| `kv_archive`, `kv_archive_idle_s`, `kv_archive_min_age_s` | false, 600, 1800 | cold archive of state files (needs Python ≥ 3.14 for `compression.zstd`) | **true** |
-| `engine`, `slot_id`, `engine_tokenize` | "auto", 0, false | engine type, slot, token counting via the engine's `/tokenize` | auto |
-| `router_model`, `router_load_timeout_s`, `router_keepalive_s` | "", 600, 10 | llama-server router mode: model used when the client's `model` is not served (empty = refuse), how long a model may take to load, seconds between two SSE comments to a streaming client while the model loads | default |
-| `live_dump` | false | write `data/live/last_request.json` for the dashboard | **true** |
-
-A config for llama-server with saved state, as recommended above:
-
-<!-- readme-test: illustrative; config: proxy -->
-```json
-{
-  "mask_reasoning": true, "mask_tool_args": true,
-  "mask_anchor": true, "slot_dir": "/path/to/slots",
-  "slot_save": true, "seal_experimental": true,
-  "notes_max_tokens": 12288, "response_floor": 16384,
-  "recall_struct": true, "recall_flex": true, "recall_multi": true,
-  "auto_recall": false,
-  "tools_paging": true,
-  "autosave": true
-}
-```
-
-The recommended config above and `examples/config.ds4.json` keep automatic retrieval off
-(`auto_recall: false`). The 100-question AgentLongBench confirmation run also used no automatic
-retrieval: its journals contain 379 model-requested `recall` calls and zero `auto_recall` events.
-`auto_recall_hint: true` alone does not enable hints: it only changes the mode when
-`auto_recall: true` is also set. To opt into automatic hints, set both options to `true`.
-The previously listed hint setting was inert and has been removed from the recommended examples;
-this documentation correction does not enable automatic retrieval or change their effective behavior.
-
-On a generic OpenAI engine drop the saved-state fields (`mask_anchor`, `slot_dir`, `slot_save`,
-`seal_experimental`, `autosave`, `kv_archive`); the proxy turns them off anyway, with a warning.
-
-### Every command-line option
-
-Three commands are installed: `mnemonic-proxy` (the proxy, with its `demo`, `check` and `forget`
-subcommands; `ctxproxy` is a 0.1 alias of the same program) and `mnemonic-mcp` (the read-only MCP
-recall server). `tests/test_readme_coverage.py` fails if an option exists in the code and is not
-listed here.
-
-| command | option | what |
-|---|---|---|
-| `mnemonic-proxy` | `--upstream URL` | the engine's address (default `http://127.0.0.1:8095`) |
-| | `--host ADDR` | bind address (default `127.0.0.1`, local only) |
-| | `--port N` | listen port (default `8096`) |
-| | `--data DIR` | archive, journal and lock (default `./data`) |
-| | `--config FILE` | JSON file with the `Config` fields below |
-| | `--mode tools\|off` | `tools` = managed context (default); `off` = plain pass-through, nothing archived or masked, useful to compare a session with and without the proxy |
-| | `--tokenizer PATH` | Hugging Face `tokenizer.json` (or a Strata pack `tokenizer/` folder) for exact token counts; needs `pip install 'mnemonic-proxy[exact]'` |
-| | `--api-key KEY` | key sent to the upstream engine |
-| | `--engine auto\|strata\|llama.cpp\|ds4\|openai` | force the engine type instead of detecting it |
-| | `--version` | print the version and exit |
-| `mnemonic-proxy demo` | `--keep DIR` | keep the demo's archive in `DIR` (`archive.sqlite`, `journal.jsonl`) instead of a temporary folder, to look at it afterwards or to point `mnemonic-mcp --db` at it |
-| `mnemonic-proxy check` | all the server options | `check` reads the configuration the server would run with |
-| | `--live` | also run a real generation, a tool call and a save/restore on the engine |
-| | `--json` | machine-readable report: `{"ready", "exit_code", "checks": [...]}`, for a script or a health probe |
-| `mnemonic-proxy forget` | `--data DIR` | the data folder to delete from (required) |
-| | `--list` | list conversation ids, logical sizes and UTC timestamps |
-| | `--conv ID` | the conversation to remove |
-| | `--dry-run` | report what would be removed, change nothing (requires `--conv`) |
-| | `--slot-dir DIR`, `--kv-archive DIR` | saved-state and cold-archive folders, when they are not in the config |
-| | `--config FILE` | the proxy's config; defaults to `$MNEMONIC_CONFIG` |
-| `mnemonic-mcp` | `--db FILE` | the proxy's `archive.sqlite`, opened read-only (required) |
-| | `--journal FILE` | `journal.jsonl`; by default the one next to the database |
-| | `--max-tokens N` | token cap of one recall result (default `6000`) |
-| | `--tokenizer PATH` | tokenizer for those token counts |
-| | `--http PORT` | streamable HTTP on `/mcp` instead of stdio |
-| | `--host ADDR` | bind address for `--http` (default `127.0.0.1`) |
-
-### Every configuration field
-
-The table above covers what most setups need. These are the remaining fields of
-`ctxproxy.core.Config`, with their real defaults; they exist for tuning and for reproducing our
-measurements, and changing them is rarely necessary.
-
-<details>
-<summary>The remaining configuration fields</summary>
-
-| field | default | meaning |
-|---|---|---|
-| `mask_enabled` | true | level 1 on/off: with false nothing is ever masked (the archive still records everything) |
-| `min_mask_tokens` | 200 | outputs shorter than this always stay in clear text |
-| `data_dir` | "" | where the physical prompt of the outgoing segment is written when `slot_save` is on; empty = the `--data` folder |
-| `index_max_tokens` | 2000 | cap of the segment index block |
-| `keep_first_user` | true | carry the first user message over to
+warnin

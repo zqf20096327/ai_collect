@@ -49,9 +49,9 @@ strict Examples/Sum.strict 5 10 20        run on the Strict VM, arguments go to 
 strict test Examples/Sum.strict           explicitly run this file, including Slow tests, on the VM
 strict test Examples/Sum.strict Run       explicitly run the tests of one method
 strict test Examples/Sum.strict unit      run only unit tests (a folder on the VM too)
-strict build Examples/Sum.strict          pass cached or current unit tests, then build the executable
-strict build Examples/Sum.strict linux    also the Linux executable (on Windows through WSL)
-strict build Examples/Sum.strict web      .html, .js and .wasm for the browser (Emscripten, installed when missing)
+strict build Examples/Sum.strict          pass cached or current unit tests, then build Examples/Sum.exe
+strict build Examples/Sum.strict linux    also the Linux executable in Release/Linux (on Windows through WSL)
+strict build Examples/Sum.strict web      .html, .js and .wasm for the browser in Release/Web (Emscripten, installed when missing)
 strict build Examples/Sum.strict android  arm64-v8a shared library and assets in Release/Android (Android NDK)
 strict build Examples/Sum.strict ios      arm64 iOS static archive and assets in Release/iOS (native packages need Xcode)
 strict build Examples/Sum.strict ios simulator  the same for the iOS Simulator of this Mac
@@ -69,9 +69,11 @@ strict update .                           copy or download the packages of a fol
 strict version                            version and build time of this strict
 ```
 - `strict build` needs the file's unit tests to pass on the VM first, a type without `Run` produces its unit-test executable. Test failures and toolchain errors fail the command.
-- Files whose tests passed on the VM get a `Name.strictbinary` (bytecode of all used types): while it is up to date `strict test` reports them as passed right away and running and building reuse it. Desktop builds and native tests keep a `.nativecache` stamp and print `Up to date` when nothing changed.
+- Build outputs: a console program builds next to its source (`Examples/Sum.exe`, Linux and macOS without extension), a windowed one also into `Release/<Platform>` with its Content, every platform build (`linux`, `web`, `android`, `ios`) into `Release/<Platform>`. Everything else a build or test run writes (`.strictbinary`, `.mlir`, `.ptx`, `.fatbin`, `.nativecache`, test executables, ...) goes into `obj/` next to the source; a program reads its GPU code from next to it or from that `obj/`.
+- Files whose tests passed on the VM get an `obj/Name.strictbinary` (bytecode of all used types): while it is up to date `strict test` reports them as passed right away and running and building reuse it. Desktop builds and native tests keep a `.nativecache` stamp and print `Up to date` when nothing changed.
 - `strict build` and `strict test ... lines` run `Compiler/NativeCompiler.exe`. When a file of `Compiler/`, `Bytecode/` or `Expressions/` or a `Compiler/NativeRuntime*.mlir` is newer than it, they build the compiler again first.
 - Icons: a program uses `Name.ico` next to it or `<Folder>/<Folder>.ico` (else `Strict.ico`) for its executable. Web builds copy that own icon into `Release/Web/favicon.ico` and link it in the page, without one the page links https://strict-lang.org/img/favicon.ico; a `<Name>.shell.html` with its own `rel="icon"` keeps it.
+- Web pages: the page (its `<Name>.shell.html`) hands lines to `Process.InputLine` with `Module.strictInput(text)`, writes uploaded files into the program's file system with `Module.strictFile(name, arrayBuffer)` (with `Process.InputLine`) and maps file names to URLs in `Module.strictFiles = { 'taef2.safetensors': 'https://huggingface.co/...' }`: a mapped .safetensors or .gguf file is read in 16 MB range requests, any other mapped file whole into the program's file system before it starts (a tokenizer folder for `File` and `Directory`); both are kept in the browser's origin private file system for the next visit, and every block downloaded prints `Downloading <name>: <MB> of <total> MB`.
 - Exit codes: 0 success, `test` returns the number of failed tests, `build` returns nonzero on a compilation or toolchain failure, 2 wrong usage or a missing file, an unhandled Error from `Run` exits with 1.
 - `strict check` prints each issue as `<File>.strict:line <N>: <Rule>: <detail>`, then runs the unit tests.
 - Types are looked up in the current folder (and its sub folders in a project), next to `strict` (base types and packages like `Math`), in the projects next to the current one, then in GitHub repositories linked in the project's README and github.com/strict-lang (copied into the project with a `.origin` file).
@@ -207,6 +209,12 @@ if operation is
 ```
 	for (1, 2, 3)
 		logger.Log(index + ": " + value)
+```
+A single iterator is always `value`, two or more are named in one `for` instead of nesting loops: `for y, x in Height, Width` runs the loop of x for every y (each iterator can use the names before it: `for type, method in types, type.methods`), `for width, height in sizes` names the parts of each element.
+```
+	for y, x in Range(-Radius, Radius + 1), Range(-Radius, Radius + 1)
+		if bitmap.IsInside(pixel, x, y)
+			bitmap.Colors(pixel + x + y * bitmap.Size.Width)
 ```
 `for 10` counts from 0 to 9, `for Range(2, 5)` gives 2, 3 and 4, iterating an enum (a type of only constants) gives its constants. `for as long as condition` repeats while the condition holds:
 ```

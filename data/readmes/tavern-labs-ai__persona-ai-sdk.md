@@ -30,13 +30,13 @@ Labs persona catalog with a provider-neutral memory and response runtime.
 
 ---
 
-> [!NOTE] `persona-ai-sdk` is published to npm as
-> [`persona-ai-sdk`](https://www.npmjs.com/package/persona-ai-sdk). One install includes the memory
+> [!NOTE] `ai-persona-sdk` is published to npm as
+> [`ai-persona-sdk`](https://www.npmjs.com/package/ai-persona-sdk). One install includes the memory
 > runtime, the persona catalog, and the provider adapters.
 
 ## What is this?
 
-`persona-ai-sdk` is a TypeScript SDK for applications where an AI character should remain
+`ai-persona-sdk` is a TypeScript SDK for applications where an AI character should remain
 recognizably itself and remember what matters across conversations. It separates five concerns that
 are often tangled together:
 
@@ -89,7 +89,7 @@ voice delivery metadata.
 ### Install
 
 ```bash
-npm install persona-ai-sdk
+npm install ai-persona-sdk
 ```
 
 From a source checkout:
@@ -102,7 +102,7 @@ npm run build
 ### 1. Pick a persona
 
 ```js
-import { getPersona, listPersonas, DEFAULT_PERSONAS } from "persona-ai-sdk";
+import { getPersona, listPersonas, DEFAULT_PERSONAS } from "ai-persona-sdk";
 
 // the two personas used in Tavern Labs demos
 const atlas = getPersona("atlas");
@@ -118,9 +118,9 @@ for (const p of listPersonas()) {
 ### 2. Create a memory runtime
 
 ```js
-import { createCharacterMemoryRuntime } from "persona-ai-sdk";
-import { createBedrockExtractor, createBedrockTitanEmbeddings } from "persona-ai-sdk/bedrock";
-import { JsonFileMemoryStore } from "persona-ai-sdk/stores/json-file";
+import { createCharacterMemoryRuntime } from "ai-persona-sdk";
+import { createBedrockExtractor, createBedrockTitanEmbeddings } from "ai-persona-sdk/bedrock";
+import { JsonFileMemoryStore } from "ai-persona-sdk/stores/json-file";
 
 const region = process.env.AWS_REGION ?? "us-east-1";
 const modelId = process.env.BEDROCK_MODEL_ID;
@@ -140,8 +140,8 @@ const memory = createCharacterMemoryRuntime({
 ### 3. Generate a character response
 
 ```js
-import { createBedrockCharacterModel } from "persona-ai-sdk/bedrock";
-import { createPersonaRuntime } from "persona-ai-sdk/persona";
+import { createBedrockCharacterModel } from "ai-persona-sdk/bedrock";
+import { createPersonaRuntime } from "ai-persona-sdk/persona";
 
 const runtime = createPersonaRuntime({
   persona: toManifest(card), // map the card onto a persona manifest - see below
@@ -286,7 +286,7 @@ import {
   createOpenAICharacterModel,
   createOpenAIEmbeddings,
   createOpenAIExtractor,
-} from "persona-ai-sdk/openai";
+} from "ai-persona-sdk/openai";
 ```
 
 The adapters use the Responses API for extraction and character generation and the Embeddings API
@@ -299,7 +299,7 @@ import {
   createBedrockCharacterModel,
   createBedrockExtractor,
   createBedrockTitanEmbeddings,
-} from "persona-ai-sdk/bedrock";
+} from "ai-persona-sdk/bedrock";
 
 const region = process.env.AWS_REGION ?? "us-east-1";
 const modelId = process.env.BEDROCK_MODEL_ID;
@@ -327,8 +327,8 @@ generation and OpenAI embeddings, or replace embeddings with an entirely local a
 | Adapter     | Import                            | Best for                                 | Durability       |
 | ----------- | --------------------------------- | ---------------------------------------- | ---------------- |
 | In-memory   | Root package                      | Unit tests and ephemeral sessions        | Process lifetime |
-| Atomic JSON | `persona-ai-sdk/stores/json-file` | Prototypes and local tools               | File-backed      |
-| SQLite      | `persona-ai-sdk/stores/sqlite`    | Desktop, single-node, and small services | Transactional    |
+| Atomic JSON | `ai-persona-sdk/stores/json-file` | Prototypes and local tools               | File-backed      |
+| SQLite      | `ai-persona-sdk/stores/sqlite`    | Desktop, single-node, and small services | Transactional    |
 
 SQLite is an optional native dependency:
 
@@ -345,16 +345,16 @@ tenant-partitioned database such as PostgreSQL or DynamoDB.
 
 | Import                       | Provides                                                           |
 | ---------------------------- | ------------------------------------------------------------------ |
-| `persona-ai-sdk`             | Core memory runtime, persona loader, and all bundled persona cards |
-| `persona-ai-sdk/personas`    | Persona catalog utilities without the core runtime exports         |
-| `persona-ai-sdk/personas/*`  | Direct JSON access to one bundled card                             |
-| `persona-ai-sdk/bedrock`     | Bedrock Converse extraction, Titan V2 embeddings, character models |
-| `persona-ai-sdk/openai`      | OpenAI extraction, embeddings, and character models                |
-| `persona-ai-sdk/persona`     | Persona response runtime with relationship state                   |
-| `persona-ai-sdk/service`     | Framework-neutral web handlers and the Node adapter                |
-| `persona-ai-sdk/sillytavern` | Character Card and JSONL chat import                               |
-| `persona-ai-sdk/evaluation`  | Retrieval and persona evaluation helpers                           |
-| `persona-ai-sdk/stores/*`    | Atomic JSON and SQLite persistence                                 |
+| `ai-persona-sdk`             | Core memory runtime, persona loader, and all bundled persona cards |
+| `ai-persona-sdk/personas`    | Persona catalog utilities without the core runtime exports         |
+| `ai-persona-sdk/personas/*`  | Direct JSON access to one bundled card                             |
+| `ai-persona-sdk/bedrock`     | Bedrock Converse extraction, Titan V2 embeddings, character models |
+| `ai-persona-sdk/openai`      | OpenAI extraction, embeddings, and character models                |
+| `ai-persona-sdk/persona`     | Persona response runtime with relationship state                   |
+| `ai-persona-sdk/service`     | Framework-neutral web handlers and the Node adapter                |
+| `ai-persona-sdk/sillytavern` | Character Card and JSONL chat import                               |
+| `ai-persona-sdk/evaluation`  | Retrieval and persona evaluation helpers                           |
+| `ai-persona-sdk/stores/*`    | Atomic JSON and SQLite persistence                                 |
 
 ---
 
@@ -410,7 +410,7 @@ When referencing the software, cite the package name, semantic version, and exac
 result can be reproduced:
 
 ```text
-persona-ai-sdk, version 1.0.3, commit <git-commit>, MIT License.
+ai-persona-sdk, version 1.0.3, commit <git-commit>, MIT License.
 ```
 
 Released under the [MIT License](./LICENSE). See [CHANGELOG.md](./CHANGELOG.md) for version history.

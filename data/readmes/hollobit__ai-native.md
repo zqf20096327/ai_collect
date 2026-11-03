@@ -16,9 +16,10 @@
 
 ## 소개 영상
 
-<a href="https://hollobit.github.io/ai-native/trailer.mp4"><img src="trailer.jpg" alt="소개 영상 보기 (77초)" width="49%"></a> <a href="https://hollobit.github.io/ai-native/trailer2.mp4"><img src="trailer2.jpg" alt="제6·7부 미리 보기 (64초)" width="49%"></a>
+<a href="https://hollobit.github.io/ai-native/trailer.mp4"><img src="trailer.jpg" alt="소개 영상 보기 (77초)" width="32%"></a> <a href="https://hollobit.github.io/ai-native/trailer3.mp4"><img src="trailer3.jpg" alt="제1·2부 요약 영상 (2분 12초)" width="32%"></a> <a href="https://hollobit.github.io/ai-native/trailer2.mp4"><img src="trailer2.jpg" alt="제6·7부 미리 보기 (64초)" width="32%"></a>
 
 - **소개 영상(77초)**: 증기와 전기에 이어 지능이 전기처럼 흐르기 시작한 변화를, 이 책이 전력망의 비유와 7부 89편의 이야기로 어떻게 풀어내는지, 그리고 왜 오픈소스 북으로 공개하는지 담았습니다.
+- **제1·2부 요약(2분 12초)**: 1776년 증기기관에서 전기와 정보를 지나 네 번째 혁명으로, 지능의 가격과 속도, 지능 에너지 시스템, 에너지 전쟁과 각국의 선택, 대한민국의 독자 모델 경쟁까지 지능 에너지 혁명으로 넘어가는 과정을 담았습니다.
 - **제6·7부 미리 보기(64초)**: 개인 에이전트, Physical AI, 오케스트레이터, 누전과 차단기, 지능 격차를 지나 "발전소는 몇 사람이 짓지만, 전기는 모두의 것이 되었을 때 비로소 세상을 바꿨습니다"까지, 에이전트가 만드는 세상과 지능 에너지 사회의 내일을 담았습니다.
 
 이미지를 누르면 브라우저에서 바로 재생됩니다([안내 페이지](https://hollobit.github.io/ai-native/#trailer)에서도 볼 수 있습니다).

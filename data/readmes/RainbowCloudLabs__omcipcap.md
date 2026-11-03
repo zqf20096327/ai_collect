@@ -1,0 +1,380 @@
+# OMCIPcap
+
+[![PyPI Version](https://img.shields.io/pypi/v/omcipcap?color=blue)](https://pypi.org/project/omcipcap/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/omcipcap?label=downloads&color=green)](https://pypi.org/project/omcipcap/)
+[![GitHub Total Downloads](https://img.shields.io/github/downloads/RainbowCloudLabs/omcipcap/total?label=github%20total&color=orange)](https://github.com/RainbowCloudLabs/omcipcap/releases)
+[![License](https://img.shields.io/github/license/RainbowCloudLabs/omcipcap)](https://github.com/RainbowCloudLabs/omcipcap/blob/main/LICENSE)
+
+`omcipcap` is a professional GPON/XGS-PON OMCI Semantic Analysis Framework for ITU-T G.988 protocols. By implementing a table-driven semantic engine, it transforms raw pcap data into structured, human-readable insights—covering MIB state auditing, VLAN logic decoding, and T-CONT traffic hierarchy tracing.
+
+
+## 🌟 Master Branch: AI-Native OMCI Analysis Framework
+
+The **Master** branch represents the latest evolution of OMCIPcap, transforming it from a standalone protocol parser into an **AI-native OMCI analysis framework**.
+
+- **AI Diagnosis** — Analyze single captures or compare Target vs. Golden captures using cloud or local LLMs.
+- **Automation Ready** — All analysis commands support structured **JSON IR** (`-j / --json-output`) for scripting, AI workflows, and CI/CD integration.
+- **Semantic Analysis** — Full OMCI semantic decoding, lifecycle MIB reconstruction, VLAN analysis, traffic hierarchy, and topology visualization.
+- **Multiple Output Formats** — Commands support **Rich Print**, **Markdown**, and **JSON** outputs for engineers, documentation, AI, and automation.
+- **Optional Local RAG** — Build a private OMCI troubleshooting knowledge base using your own issue cases.
+
+The legacy **v0.2.x-lts** branch remains available for field engineers who prefer the traditional CLI workflow.
+
+## Why Use omcipcap?
+
+`omcipcap` is built to bridge the gap between complex raw protocol data and actionable engineering insights. It significantly reduces the time required for root-cause analysis in both lab and field environments.
+
+![omcipcap_workflow_impact](https://github.com/RainbowCloudLabs/omcipcap/blob/master/examples/omcipcap_workflow_impact.png)
+
+> **Key Impact**: Transform hour-long manual packet tracing into seconds of automated analysis, allowing engineers to focus on fixing bugs rather than finding them.
+
+## Features
+
+| Command | Description | Output Modes |
+|---|---|---|
+| `version` | Display OMCIPcap version and project information | Text / JSON |
+| `check` | Analyze RTT, TID duplicates, and ME failures | Table / JSON / Markdown |
+| `mibdb` | Dump the Semantic MIB Database | Table / JSON / Markdown |
+| `mibdb-diff (diff)` | Compare two MIBs with semantic decoding | Table / JSON / Markdown |
+| `vlan-tbl` | Analyze OMCI VLAN tagging logic (Table-driven) | Table / JSON / Markdown |
+| `tcont-flow` | Trace T-CONT → GEM → PQ traffic hierarchy | Table / JSON / Markdown |
+| `topology (graphic)` | Generate interactive topology HTML | Interactive HTML / JSON / Markdown |
+| `overview` | Combine ONU capability, checks, MIB, VLAN, flow, and topology analysis | Markdown / JSON |
+
+## Optional AI Features
+
+OMCIPcap also provides optional AI capabilities. See:
+
+- [AI Diagnosis User Guide](./docs/user/AI_DIAG_README.md)
+- [AI/RAG User Guide](./docs/user/AI_RAG_README.md)
+
+See the [Documentation Index](./docs/README.md).
+
+## Analysis Model
+
+`omcipcap` is a vendor-neutral OMCI protocol analyzer.
+
+All analysis is derived **only from the observed OMCI protocol exchanges** in the captured PCAP. It does **not** emulate or reconstruct the actual runtime MIB state inside an ONU.
+
+For correct interpretation:
+
+- `mibdb` shows the MIB inferred from captured OMCI transactions.
+- Always review `mibdb` together with `check`, since missing packets, retransmissions, or protocol errors may affect the inferred state.
+
+## Current Limitations
+
+- Service switch-over analysis is not yet supported.
+- ONU delete / MIB reset reconstruction is not yet implemented.
+
+## Project Structure
+
+```text
+.
+├── LICENSE         # MIT License
+├── README.md       # Project documentation
+├── examples        # pcap and json samples
+├── extensions      # semantic extensions
+├── omci            # Core package
+├── pyproject.toml  # Build system & entry points
+├── tests           # Test suites
+└── utils           # pcap generators
+
+```
+
+## Installation
+```bash=
+pip install omcipcap
+```
+## ⚡ Quick Start (No Python Required!)
+
+### Download Pre-compiled Binaries
+Get ready-to-run executables for your platform:
+
+- **Windows (64-bit)**: [omcipcap.exe](https://github.com/RainbowCloudLabs/omcipcap/releases/latest/download/omcipcap.exe)
+- **Linux (64-bit)**: [omcipcap_linux](https://github.com/RainbowCloudLabs/omcipcap/releases/latest/download/omcipcap_linux)
+- **macOS (ARM64)**: [omcipcap_mac](https://github.com/RainbowCloudLabs/omcipcap/releases/latest/download/omcipcap_mac)
+
+No Python installation required!
+
+### Windows and Linux Usage
+
+```bash
+# Windows
+omcipcap.exe check your_file.pcap
+
+# Linux
+chmod +x omcipcap_linux
+./omcipcap_linux check your_file.pcap
+```
+
+## Sub-Command
+### omcipcap version
+
+Display version and project information, or use `omcipcap --version` for the
+short form:
+
+```bash
+omcipcap version
+omcipcap version -j
+omcipcap --version
+```
+
+### omcipcap check
+Analyze a pcap file to display a summary of all OMCI packets:
+```
+# print all vendor, failed, late and duplicates packets
+omcipcap check omcicheck_example.pcap
+# get JSON output of OMCI resp failed
+omcipcap check --only-failed -j omcicheck_example.pcap
+```
+![omcicheck](https://github.com/RainbowCloudLabs/omcipcap/blob/master/examples/omcicheck_example.png)
+
+omcipcap check with --rtt-threshold argument
+```bash
+(venv) $ omcipcap check --rtt-threshold=1500 omcicheck_example.pcap
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No.   ID   Action            ME Class   ME Instance   Result                      RTT   Status            ME desc
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   38    19   MIB_UPLOAD_NEXT   241        0x0001                                      0                     Reserved for vendor-specific managed entities
+   40    20   MIB_UPLOAD_NEXT   350        0x0001                                      0                     Reserved for vendor-specific use
+   52    26   MIB_UPLOAD_NEXT   500        0x000a                                      0                     Reserved for future standardization
+   58    29   CREATE            84         0x0001        Err: INSTANCE_EXISTS   0.000033                     VLAN tagging filter data
+   59    30   SET               241        0x0001                                      0                     Reserved for vendor-specific managed entities
+   60    30   SET               241        0x0001        Err: UNKNOWN_ME        0.000033                     Reserved for vendor-specific managed entities
+   64    32   GET               257        0x0000                                      0   [TID_DUPLICATE]   ONT2-G
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Summary: Found 2 failures, 5 Vendor packets, 1 duplicate packets, 0 late packets
+```
+
+### omcipcap mibdb
+MIB Database Dump
+
+Dump all or filtered MIB instances from a pcap.
+
+```bash
+# print all MIB infomation
+omcipcap mibdb examples/omci.pcap
+# print all MIB for class 84 and 171
+omcipcap mibdb --class-id 84,171 examples/omci.pcap
+# print JSON of MIB snapshots (MIB uploads)
+omcipcap mibdb -j --only-upload examples/omci.pcap
+```
+
+#### Unknown ME Data
+
+An ME is unknown when its class has no built-in or loaded custom definition. Without an attribute schema, the reconstruction retains each observed record's attribute mask and raw hexadecimal payload, including repeated masks, instead of merging them into decoded attributes. This is intentional: the tool cannot reliably interpret how those payloads update the ME.
+
+Currently, `mibdb` output (Table / JSON / Markdown) and the MIB data in `overview.json` expose only the last retained record for each unknown ME instance. These outputs therefore do not show its complete raw record history. To decode attributes, provide the ME definition with `--mib-json`; see **Advanced: Custom ME JSON Format** below.
+
+#### Sensitive Data Masking
+
+By default, sensitive ME classes and attributes whose names contain `password`
+or `secret` (case-insensitively) are masked as `*****`. You can replace these
+rules through environment variables without adding CLI options:
+
+```bash
+export OMCIPCAP_SENSITIVE_ME_CLASSES="148,153"
+export OMCIPCAP_SENSITIVE_ME_ATTRIBUTES="password,secret"
+omcipcap mibdb input.pcap
+```
+
+Each variable replaces its corresponding list. Class IDs are comma-separated
+decimal numbers from `0` to `65535`; attribute entries are comma-separated,
+case-insensitive name fragments. Surrounding whitespace is ignored. Invalid
+lists cause an error before capture analysis.
+
+An unset variable uses the built-in defaults. An empty value clears its list.
+A matching class **or** attribute fragment still masks the value; to expose
+original values, clear both lists:
+
+```bash
+export OMCIPCAP_SENSITIVE_ME_CLASSES=""
+export OMCIPCAP_SENSITIVE_ME_ATTRIBUTES=""
+omcipcap mibdb input.pcap
+```
+
+These settings apply to MIB output, diff values, reports that reuse them, and
+topology HTML tooltips. They do not change unknown-ME raw payloads or topology
+JSON attributes. Use `unset` to restore defaults:
+
+```bash
+unset OMCIPCAP_SENSITIVE_ME_CLASSES OMCIPCAP_SENSITIVE_ME_ATTRIBUTES
+```
+
+#### Semantic Extensions with --semantic-dir
+
+Customize attribute decoding with specific semantics
+
+##### Load semantic extensions from a directory and ME 134 option decoding
+```bash
+omcipcap mibdb --semantic-dir ./extensions --class-id 134 input.pcap
+```
+##### extensions/add_me134_option.py
+```python 
+try:
+    from omci.omcisemantic import OMCISemantic
+except ImportError:
+    pass
+
+
+def ip_host_mode(value):
+    if value & 0x1:
+        return "DHCP"
+    return "Static"
+
+
+OMCISemantic.register(134, "IP options", ip_host_mode)
+```
+
+#### Advanced: Custom ME JSON Format
+To define your own Vendor MEs for the --mib-json flag, use the following structure:
+```json
+{
+  "355": ["HWTC 355 ME", [
+    ["CPE mode", 3, "str", False],
+    ["Support VOIP", 1, "u8", False]
+  ]]
+}
+```
+
+##### Schema and Field Definitions
+
+The custom ME JSON configuration is a map where the top-level key represents the **ME Class ID**, and the value is a nested array containing the metadata and attribute schemas:
+
+* **`"355"`** *(String/Integer)*: The **ME Class ID** (Managed Entity Class Identifier) defined by the vendor.
+* **`"HWTC 355 ME"`** *(String)*: The human-readable **ME Name** descriptor used for CLI outputs and structured logs.
+* **`Attribute Array`** *(Array of Arrays)*: A sequence of arrays defining each attribute within the ME chronologically. Each attribute descriptor must contain exactly four positional fields in the following order:
+
+| Position | Field Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| `0` | **Attribute Name** | `str` | The human-readable identifier of the specific attribute. |
+| `1` | **Byte Length** | `int` | The size of the attribute field in bytes within the OMCI payload message. |
+| `2` | **Data Type** | `str` | The decoding target data type. Supported types include primitive network byte representations such as `"u8"`, `"u16"`, `"u32"`, or byte sequences decoded as `"str"`. |
+| `3` | **Set-By-Create** | `bool` | Indicates whether the attribute property is **Set-By-Create** (SBC). Set to `True` if the attribute can be configured during the `Create` action phase; set to `False` if it is read-only or modified exclusively via `Set` actions. |
+
+
+#### Advanced: Filter and Decode Vendor-Specific MEs with Custom Semantics
+The combination of `--only-vendor`, `--mib-json`, and `--semantic-dir` allows you to isolate proprietary vendor behaviors, apply custom schemas, and inject high-level semantics into raw data dumps.
+
+```bash
+omcipcap mibdb --only-vendor examples/mibdb_vendor.pcap \
+    --mib-json examples/mibdb_vendor.json \
+    --semantic-dir examples/mibdb_vendor
+
+                              OMCI MIB Database Snapshot
+ ────────────────────────────────────────────────────────────────────────────────────
+  Class ID   ME Name                            Inst ID   Attributes (Semantic View)
+ ────────────────────────────────────────────────────────────────────────────────────
+     65300   Reserved for vendor-specific use         1   CTC: CTC
+                                                          attribute 2: 0x1
+                                                          attribute 3: 0x1
+                                                          attribute 4: Disabled
+ ────────────────────────────────────────────────────────────────────────────────────
+     65400   Reserved for vendor-specific use         1   FW Verion: v1.0.5
+                                                          Health Check: Enabled
+ ────────────────────────────────────────────────────────────────────────────────────
+```
+
+
+### omcipcap mibdb-diff
+ Analyze two pcap files to identify differences in MIB provisioning
+```bash
+# Compare MIB snapshots between two pcaps, only compare MIB upload MIBs by default
+omcipcap mibdb-diff mib_vendor_v1.pcap mib_vendor_v2.pcap
+# Compare MIB snapshots between two pcaps with user defined MIB
+omcipcap mibdb-diff mib_vendor_v1.pcap mib_vendor_v2.pcap --mib-json examples/vendor_355.json
+# Compare Full provision MIB between two pcaps
+omcipcap mibdb-diff --full ont1.pcap ont2.pcap
+# Compare full MIB provisioning between two PCAPs for Class 84 and 171, and output JSON
+omcipcap diff -j --full --class-id=84,171 ont1.pcap ont2.pcap
+```
+
+Example Output
+When comparing a vendor-specific configuration (Class 355), omcidiff provides a clear view of the state change:
+```Plaintext
+(venv) $ omcipcap mibdb-diff mib_vendor_v1.pcap mib_vendor_v2.pcap --mib-json examples/vendor_355.json
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Status         ME Name (ID)                                           Inst   Attribute          Pcap 1     Pcap 2
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   MODIFIED       Reserved for vendor-specific use (355)                  0x0   CPE mode           HGU        SFU
+   MODIFIED       Reserved for vendor-specific use (355)                  0x0   Support VOIP       0x1        0x0
+ ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Summary: Added: 0, Removed: 0, Modified: 2
+```
+
+
+### omcipcap topology 
+```
+omcipcap topology omci.pcap -o example.html
+```
+![PPTP](https://github.com/RainbowCloudLabs/omcipcap/blob/master/examples/pptp_graphic.png)
+![IPHOST](https://github.com/RainbowCloudLabs/omcipcap/blob/master/examples/iphost_graphic.png)
+
+### omcipcap vlan-tbl
+```
+omcipcap vlan-tbl omci.pcap
+```
+List All ME 171 instances and detail of VLAN table
+![omcivlan](https://github.com/RainbowCloudLabs/omcipcap/blob/master/examples/omcivlan.png)
+
+### omcipcap tcont-flow
+```
+omcipcap tcont-flow single_unit_1_tont_2_gem.pcap
+```
+Traces the complete upstream traffic hierarchy from T-CONT → GEM Port → Priority Queue and displays bandwidth/scheduling parameters in a tree view.
+
+Example Output:
+```plaintext
+(venv) $ omcipcap tcont-flow single_unit_1_tont_2_gem.pcap
+GPON T-CONT Flow Analysis
+├── T-CONT 32768 (alloc-id=1000)
+│   ├── GEM 1001
+│   │   ├── [US] PQ 32775 → up:CIR=0.128Mbps/PIR=9953.28Mbps
+│   │   └── [DS] PQ 0 → Priority 0 dn:Unrestricted
+│   └── GEM 1002
+│       ├── [US] PQ 32768 → up:CIR=0.128Mbps/PIR=100Mbps
+│       └── [DS] PQ 6 → Priority 6 dn:Unrestricted
+└── T-CONT 32769 (Unassigned)
+(venv) $
+```
+
+Each T-CONT entry shows:
+- **alloc-id**: The Alloc-ID assigned by the OLT; `Unassigned` means the T-CONT has not been activated (Alloc-ID = 0xFFFF).
+- **GEM ports**: All GEM Port Network CTPs bound to this T-CONT.
+- **[US] PQ**: Upstream Priority Queue with CIR/PIR bandwidth limits.
+- **[DS] PQ**: Downstream Priority Queue with scheduling priority.
+
+### omcipcap overview
+
+Generate a combined overview report. Markdown is printed to stdout by default:
+
+```bash
+omcipcap overview sample.pcap
+omcipcap overview sample.pcap | glow -t
+omcipcap overview sample.pcap > overview.md
+```
+
+Markdown output is suitable for human reading, GitHub preview, RAG, LLM
+context, and issue attachments.
+
+Use `-j` for JSON output:
+
+```bash
+omcipcap overview sample.pcap -j
+omcipcap overview sample.pcap -j > overview.json
+omcipcap overview sample.pcap -j | jq
+```
+
+JSON output is suitable for programs, CI/CD pipelines, and automation.
+`overview` always writes to stdout and does not create an output file
+automatically. See the [CLI design guide](./docs/spec/CLI_DESIGN.md) for details.
+
+## Disclaimer
+this software is for educational and network debugging purposes only. The author (daneshih1125) provides this software "as is" without warranty of any kind. 
+
+- The users are solely responsible for ensuring that they have the legal right and proper authorization to capture, process, and analyze any network packets (pcap/log) used with this tool.
+- The author shall not be held liable for any data breaches, compliance violations (such as GDPR, PDPA), leakage of trade secrets, or security incidents caused by the users processing sensitive or production network data with this tool or exporting data to third-party AI models.
+
+## License & Copyright
+**Copyright (c) 2026 Dong-Yuan Shih <daneshih1125@gmail.com>
+Licensed under the MIT License.**

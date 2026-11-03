@@ -171,6 +171,14 @@ let hits = warm.search_documents("restore backups", &SearchOptions::default())?;
 println!("{} {:?}", hits[0].document_id, hits[0].source_uri);
 ```
 
+Unreleased Rust API change: `WarmCore::query`, `query_batch`, and
+`analyze_components` return `Result`. Handle the result with `?` or an explicit
+error branch; deferred-encoding failures no longer become successful partial
+query results. `get_document`, `list_documents`, `get_document_info`, and `list_document_info`
+also return `Result`; retained-text and checkpoint decoding failures propagate
+instead of panicking, and reads no longer hydrate the
+entire checkpoint or hold store locks during text I/O.
+
 </details>
 
 <details>
@@ -179,7 +187,7 @@ println!("{} {:?}", hits[0].document_id, hits[0].source_uri);
 Install the Node.js package and its platform-specific native binary:
 
 ```sh
-npm install writerslogic-warm
+npm install warm-sdk
 ```
 
 To build from source, run `npm ci --omit=optional && npm run build` with Rust installed.
@@ -188,8 +196,8 @@ The WARM release includes `listDocuments` for scoped pruning. See the
 provenance, namespace isolation, dry runs and deletion limits.
 
 ```js quickstart-check
-const { WarmMemorySystem } = require('writerslogic-warm')
-const { DocumentMemory } = require('writerslogic-warm/semantic')
+const { WarmMemorySystem } = require('warm-sdk')
+const { DocumentMemory } = require('warm-sdk/semantic')
 
 async function main() {
   const dir = require('node:fs').mkdtempSync(require('node:path').join(require('node:os').tmpdir(), 'warm-readme-'))

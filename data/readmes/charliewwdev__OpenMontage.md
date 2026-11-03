@@ -23,12 +23,33 @@
 
 <p align="center"><b>English</b> · <a href="README_zh-CN.md">简体中文</a></p>
 
-<!--
-  DEMO GIF PLACEHOLDER (TODO before launch)
-  Record a 20–30 s capture: type one line → walk through the 7 stages → play the exported clip.
-  Save as docs/demo.gif (< 10 MB) or upload an MP4 to a GitHub issue/release, then replace this comment with:
-  <p align="center"><img src="docs/demo.gif" alt="One line in, short drama out" width="720"/></p>
--->
+## Demo
+
+<p align="center">
+  <a href="https://github.com/charliewwdev/OpenMontage/releases/download/v0.1.0/drama-studio-promo-1080p.mp4"><img src="docs/media/drama-studio-demo.gif" alt="OpenMontage Drama Studio demo: one-line idea, script, character and scene references, storyboard workspace, rendered shots" width="880"/></a>
+</p>
+<p align="center"><em>One-line idea → script → characters &amp; scenes → storyboard workspace → rendered shots (clips from the promo video).</em></p>
+
+<p align="center">
+  ▶️ <a href="https://github.com/charliewwdev/OpenMontage/releases/download/v0.1.0/drama-studio-promo-1080p.mp4"><b>Watch the full promo (1080p, 1:41)</b></a> ·
+  <a href="https://github.com/charliewwdev/OpenMontage/releases/download/v0.1.0/drama-studio-promo-60s-vertical.mp4">60 s vertical cut</a> ·
+  🌐 <a href="https://openmontage.dtok.io/"><b>Try the live demo</b></a> ·
+  💡 <a href="docs/examples.md">Starter prompts</a>
+</p>
+<p align="center"><sub>Self-host with Docker Compose · bring your own LLM key · Seedream / Seedance (paid, Volcengine Ark) for images and video shots · edge-tts voice · FFmpeg edit · AGPL-3.0</sub></p>
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="docs/screenshots/04-workshop.png" alt="Workshop project library"/><br/><sub>Workshop project library</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/05-workshop-script.png" alt="Script desk"/><br/><sub>Script desk</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/06-workshop-character.png" alt="Character looks"/><br/><sub>Character looks</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="docs/screenshots/07-workshop-storyboard.png" alt="Storyboard desk"/><br/><sub>Storyboard desk</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/03-agent.png" alt="Creation agent"/><br/><sub>Creation agent</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/10-canvas.png" alt="Infinite canvas (7-stage node graph)"/><br/><sub>Infinite canvas (7-stage node graph)</sub></td>
+  </tr>
+</table>
 
 ---
 
@@ -45,7 +66,7 @@ become reference images that feed the video shots, so you can redo a single char
 - **Step by step or one click.** Run each stage yourself, or let the agent run the whole pipeline in the background
   and then re-run any stage or swap a version.
 
-Try the hosted instance: **[openmontage.dtok.io](https://openmontage.dtok.io/)**
+Try the hosted instance: **[openmontage.dtok.io](https://openmontage.dtok.io/)** · Starter prompts: [`docs/examples.md`](docs/examples.md) · Studio docs: [`studio/README.en.md`](studio/README.en.md)
 
 ## The 7-stage workshop
 
@@ -119,9 +140,6 @@ Skill market
 Infinite canvas
 ![Canvas](docs/screenshots/10-canvas.png)
 
-Model settings
-![Model settings](docs/screenshots/11-keys.png)
-
 </details>
 
 ## Architecture
@@ -150,34 +168,27 @@ Model settings
 | Studio app (UI + API) and media worker | ✅ built from this repo |
 | PostgreSQL 16 | ✅ bundled |
 | Redis 7 (media job queue) | ✅ bundled |
-| S3-compatible object storage (MinIO / S3) | ❌ **you provide** an endpoint, access key, secret and bucket (`OSS_*` / `MINIO_*` / `S3_*`) |
-| Text LLM key | ❌ **you provide**: DeepSeek, OpenAI, Claude, Gemini, Qwen (通义), Doubao (豆包), Kimi, GLM, MiniMax, OpenRouter or another OpenAI-compatible endpoint |
-| Image + video generation | ❌ **you provide**: a Volcengine Ark key for **Seedream** (images) and **Seedance** (video). These are **paid third-party APIs**. Images can instead go to your own ComfyUI server. |
+| MinIO (S3-compatible object storage) | ✅ bundled (`drama-minio`, bucket auto-created) |
+| Text LLM key | ❌ **you provide** for script/generation: DeepSeek, OpenAI, Claude, Gemini, Qwen, … |
+| Image + video generation | ❌ **you provide**: Volcengine Ark **Seedream** / **Seedance** (**paid**), or your own ComfyUI for images |
 | TTS | edge-tts by default (no key); optional OpenAI-compatible speech endpoint |
 
-**Fully self-hosted (no DTok account):** `studio/.env.example` still ships sample values for the public demo
-(`openmontage.dtok.io`, its MinIO host, and `API_BASE_URL` → DTok auth). For a private deployment, use **local
-demo auth** (`STUDIO_DEMO_ENABLED=true`, sign in with the Demo button — `POST /api/auth/demo`, no call to DTok),
-point `MINIO_*` / `OSS_*` at storage you control, and put your own LLM / Seedream / Seedance (or ComfyUI) keys in
-env or *Model settings*. Password / Google login still proxy to whatever `API_BASE_URL` is set; leave that path
-unused, or point it at an account API you own.
-
-Step-by-step standalone guide (auth modes, MinIO example, which stages need paid APIs):
-**[docs/SELF_HOSTING.md](docs/SELF_HOSTING.md)** · [中文](docs/SELF_HOSTING_zh-CN.md).
+Compose boots with **local Demo auth** (no external account API) and in-stack MinIO. Add model keys in `.env` or *Model settings* when you want generation. Hosted overrides: **[docs/SELF_HOSTING.md](docs/SELF_HOSTING.md)** · [中文](docs/SELF_HOSTING_zh-CN.md).
 
 The hosted instance has a credits / top-up page. Self-hosted, you pay your model providers directly.
 
 ## Quick start
 
-Docker (Compose reads `.env` from the repo root):
+Docker — one shot (Postgres + Redis + MinIO + Studio):
 
 ```bash
 cp studio/.env.example .env
-# Standalone: set STUDIO_PUBLIC_URL, STUDIO_DEMO_ENABLED=true, your MINIO_*/OSS_*, and model keys.
-# See docs/SELF_HOSTING.md — do not keep the DTok sample API_BASE_URL/MinIO hosts if you want zero DTok dependency.
 docker compose -f docker-compose.studio.yml up --build
-# open http://localhost:8787 · sign in with Demo · health: GET /api/health
+# open http://localhost:8787 → click Demo
+# health: GET http://localhost:8787/api/health
+# MinIO console: http://localhost:9001 (minioadmin / minioadmin)
 ```
+
 
 Local development:
 

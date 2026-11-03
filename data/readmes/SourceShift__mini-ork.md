@@ -29,6 +29,11 @@ an isolated sandbox — not a model's opinion of its own output.
 This page is the install guide. For the argument behind the project, see
 [Why mini-ork exists](docs/WHY.md).
 
+**Handing the setup to a coding agent?** Give it [SETUP.md](SETUP.md) instead of
+this page. It states its own attention budget — at most six questions, one plan,
+one confirmation, and no secret ever typed into the conversation — and it is
+checked by `tests/unit/test_setup_doc_py.py`, so every command it names exists.
+
 ## Quick start
 
 macOS, Linux, or WSL:
@@ -128,7 +133,7 @@ See [docs/ZED.md](docs/ZED.md) and [docs/UI.md](docs/UI.md).
 cd ~/my-project
 mini-ork onboard                      # initialize the project
 mini-ork providers configure <lane>   # hidden prompt; keys never touch argv
-mini-ork doctor                       # dependencies, environment, provider preflight
+mini-ork doctor                       # preflight with a verdict; ends with one Next: command
 
 cp ~/.local/share/mini-ork/examples/01-hello-world/kickoff.md ./kickoff.md
 

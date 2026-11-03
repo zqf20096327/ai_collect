@@ -1,6 +1,6 @@
 # AI PowerShell Team (AIPSTeam) 3.10.4
 
-AIPSTeam helps PowerShell builders and automation engineers turn a project description or existing script into a draft. It simulates a team that can propose requirements, code, documentation and review feedback using Azure OpenAI, Ollama or LM Studio.
+AIPSTeam helps PowerShell builders and automation engineers turn a project description or existing script into a draft. It simulates a team that can propose requirements, code, documentation and review feedback using Azure OpenAI, Ollama, LM Studio or llama.cpp.
 
 **Beta:** generated code requires human review and testing. AIPSTeam does not execute the generated script. Model quality and context size affect the result. Prompts, script contents and retrieved context may be sent to your selected providers; do not include secrets or sensitive data without authorization.
 
@@ -32,7 +32,7 @@ If the installed script is not on `PATH`, locate it with `Get-InstalledScript -N
 
 ## First run: a small code draft
 
-Configure Azure credentials securely through [PSAOAI](https://github.com/voytas75/PSAOAI). Replace the deployment, endpoint and dated API version below with values supported by your Azure deployment. Do not put an API key in the command.
+Configure Azure credentials securely through [PSAOAI](https://github.com/voytas75/PSAOAI). Replace the deployment and endpoint below with values supported by your Azure deployment. Azure defaults to the v1 Responses API, without a dated API version. Do not put an API key in the command.
 
 Run this from the checkout directory (for the published script, use its installed path instead):
 
@@ -41,11 +41,10 @@ $prompt = "Create a PowerShell tool that checks local administrator membership a
 $prompt | ./AIPSTeam.ps1 -LLMProvider AzureOpenAI `
     -DeploymentChat 'your-deployment-name' `
     -AzureEndpoint 'https://your-resource.openai.azure.com' `
-    -AzureAPIVersion 'YYYY-MM-DD' `
     -MaxTokens 2048 -NORAG -ReducedWorkflow -NOInteraction -Stream $false
 ```
 
-`-ReducedWorkflow` runs Manager → Developer and final PSScriptAnalyzer analysis; it skips intermediate reviews, documentation and reports. Remove it when you want the fuller team workflow. `-NORAG` disables web retrieval, not model calls. Add `-AzureReasoningModel` only if your Azure model needs PSAOAI reasoning-mode handling.
+`-ReducedWorkflow` runs Manager → Developer and final PSScriptAnalyzer analysis; it skips intermediate reviews, documentation and reports. Remove it when you want the fuller team workflow. `-NORAG` disables web retrieval, not model calls. `-AzureReasoningModel` and dated `-AzureAPIVersion` apply only with explicit `-AzureAPIProtocol ChatCompletions`; they do not affect Responses.
 
 `-NOInteraction` disables AIPSTeam questions and menus, but missing provider configuration can still trigger dependency setup prompts. Configure and test the backend first. For Ollama or LM Studio, use the [backend-specific setup](docs/provider-configuration.md), not just a different provider name.
 
@@ -61,7 +60,7 @@ Review the generated script, permissions and assumptions before testing it in a 
 
 ## Documentation
 
-- [Provider configuration](docs/provider-configuration.md): Azure, Ollama and LM Studio setup.
+- [Provider configuration](docs/provider-configuration.md): Azure, Ollama, LM Studio and dedicated llama.cpp setup.
 - [Usage and parameters](docs/usage.md): existing scripts, full workflow, logs and saved projects.
 - [RAG setup](docs/rag.md): optional web search and data handling.
 - [Troubleshooting](docs/troubleshooting.md): installation, provider and output issues.

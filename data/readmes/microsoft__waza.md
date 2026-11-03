@@ -1465,6 +1465,15 @@ skills/                Example skills
 
 ## Eval Spec Format
 
+Task YAML's `inputs.environment` is accepted for compatibility but is **not
+applied** during execution. Non-empty maps emit a task-load warning and an
+unsupported `task.environment` preflight diagnostic; omitted or empty maps do
+not. Variable names and values are not included in these messages. Existing run
+exit policies and preflight's default warning-only / opt-in `--strict` behavior
+are unchanged. Configure required environment outside Waza before starting the
+process, not per task. Native snapshot execution still rejects non-empty maps.
+See the [task schema reference](https://microsoft.github.io/waza/reference/schema/#inputsenvironment-unsupported).
+
 ```yaml
 name: my-eval
 skill: my-skill
@@ -2028,13 +2037,4 @@ For skills that ask follow-up questions, configure a `responder` — an LLM that
 inputs:
   prompt: "Add a new agent to my application"
   responder:
-    model: gpt-4o          # optional; defaults to config.model
-    instructions: |
-      The agent you want is "research-agent" with system instructions
-      "Search the web and summarise findings", tools web_search + url_fetch,
-      and no handoffs. Answer the skill's questions consistently with this.
-      If you genuinely can't infer an answer, abstain.
-    max_followups: 8
-```
-
-After each agent turn the responder either **replies** (the answer is sent back, continuing the conversation), **stops** (the agent is done), or **abstains** — which fails the run with a distinct `abstained` outcome, signalling the brief is too vague. If `max_followups` is reached while the agent is still
+    model: gpt-4o          # op

@@ -24,9 +24,9 @@
 
 <h3 align="center">Real Google Search for your AI agent. No API key. Self-hosted. Over MCP.</h3>
 
-Your agent calls `google_search` and gets Google's actual results page as typed JSON: every link resolved to
-its real URL, plus Google's answer boxes (sports results, top stories, videos), the AI Overview, People
-also ask and related searches. A real Firefox
+Your agent calls `google_search` and gets Google's actual results page as typed JSON: every result with its
+title, snippet and site, plus Google's answer boxes (sports results, top stories, videos), the AI Overview,
+People also ask and related searches. A real Firefox
 ([Camoufox](https://github.com/daijro/camoufox)) runs Google's page as it is, on your own IP or through any
 proxy you already have.
 
@@ -111,10 +111,11 @@ with `uvx --from gsearch-agent gsearch setup`.
 [F-0001](docs/findings/F-0001-cold-start-chrome-vs-camoufox.md): Playwright Chrome was sent to a CAPTCHA 2 of 2
 times on an IP where gsearch was served. Read [Legal](#-legal-and-responsible-use) before running live searches.</sub>
 
-<p align="center"><img src="docs/assets/results.svg" alt="Results: 24 of 24 searches served with 0 CAPTCHAs on a home IP, 1.2 s per search on a warm session, 0.6 MB per search on a clean proxy IP, every link resolved to its real URL" width="100%"></p>
+<p align="center"><img src="docs/assets/results.svg" alt="Results: 24 of 24 searches served with 0 CAPTCHAs on a home IP, 0.6 s per search on a warm session and 2 s with the top 3 pages read, 0.6 MB per search on a clean proxy IP, every link resolved to its real URL" width="100%"></p>
 
 <p align="center"><sub>
-Measured in October 2026:
+Measured in October and November 2026:
+<a href="docs/findings/F-0016-home-ip-warm-search-and-read-top.md">F-0016</a>,
 <a href="docs/findings/F-0014-eh1-hybrid-session-reuse.md">F-0014</a>,
 <a href="docs/findings/F-0006-fixture-provenance-and-serp-anatomy.md">F-0006</a>,
 <a href="docs/findings/F-0011-goto-resolution-leak-and-fix.md">F-0011</a>,
@@ -133,8 +134,9 @@ Google's official search API is closed to new customers and shuts down on 1 Janu
 
 - 🦊 **A real browser, not a scraper.** Camoufox, a hardened Firefox, runs Google's page as it is, with a
   real-device fingerprint and a locale that matches its IP.
-- 🔗 **Real URLs.** Google hides result links behind `/goto` redirects. gsearch resolves every one to the
-  page it points to, without loading that page.
+- 🔗 **Real pages.** Google hides result links behind `/goto` redirects. `fetch_page` follows one to the
+  page it points to when the agent reads it; `resolve_links` resolves them all up front instead, and
+  `read_top` returns the top pages' text with the results, in one call.
 - 🤖 **Built for agents.** One MCP server: search, page reading and status, typed JSON. Blocks come back as clear errors with
   `retry_after_s`, never as empty results, and every string is flagged as untrusted web content.
 - 🌍 **Any proxy, any format.** Rotating residential, static VPS or datacenter lists, HTTP, HTTPS or SOCKS5,
@@ -159,7 +161,7 @@ A block is never an empty list. It comes back as an error that says what happene
 
 | Field | What it holds |
 |---|---|
-| `organic[].url` | The real destination of each result, resolved from Google's `/goto` redirect in the same session. |
+| `organic[].url` | The real destination of each result, with `resolve_links`; otherwise null, and `link` goes to `fetch_page`. |
 | `organic[].title`, `snippet`, `date`, `domain`, `display_url` | What the result shows, as text. `link` keeps the exact link Google served. |
 | `organic[].sitelinks`, `source_meta` | A result's sub-links, and what Google shows instead of a URL on forum and video results (`2 years ago`). |
 | `ai_overview` | The AI Overview text and its sources, when Google shows one. |
@@ -182,8 +184,8 @@ Error codes: `captcha`, `soft_block`, `hard_block`, `consent_wall`, `js_gate`, `
   ([F-0015](docs/findings/F-0015-b1-residential-proxy-benchmark.md)). The query is typed into the address
   bar. WebRTC is off, so your own IP can't leak around the proxy.
 - **Never forged.** gsearch never generates or alters Google's tokens: the browser runs the page as it is.
-- **Cheap links.** Links are resolved on the same IP with the same cookies and a TLS fingerprint matching the
-  browser's ([F-0011](docs/findings/F-0011-goto-resolution-leak-and-fix.md),
+- **Cheap links.** Links are resolved only when asked, on the same IP without the search session's cookies,
+  with a TLS fingerprint matching the browser's ([F-0011](docs/findings/F-0011-goto-resolution-leak-and-fix.md),
   [F-0013](docs/findings/F-0013-tls-camoufox-vs-curl-cffi.md)).
 - **Runs on servers.** On a Linux machine without a screen, the browser uses a virtual display
   automatically (`sudo apt install xvfb`).
@@ -206,8 +208,11 @@ GSEARCH_PROXY=/path/to/proxies.txt
 - **Rotating:** a new IP and a new browser for every search, up to 3 at once. A blocked IP is replaced, up to
   4 IPs per search. `country-xx` or `cc-xx` in the login is checked, and exits elsewhere are dropped.
 - **Static:** each IP keeps one warm session, and the IPs take turns. Each IP has its own budget (20 searches
-  an hour, 150 a day) and rests until midnight after a CAPTCHA, so ten IPs allow up to about 200 searches an
-  hour.
+  an hour, 150 a day, shared by ports that exit through the same IP) and rests until midnight after a CAPTCHA, so ten IPs allow up to about 200 searches an
+  hour. The MCP server gets two of them ready in the background from the start, so a search never waits for
+  a browser, and a CAPTCHA hands over to the other one. A login whose IP changes on its own (sticky sessions)
+  is looked up again every 3 minutes, so a CAPTCHA rests the IP Google saw, and an exit that moves to
+  another country is dropped.
 - **Data:** every byte goes through a local relay that counts it, and `GSEARCH_DATA_LIMIT_MB` stops
   everything at your limit, across restarts.
 
@@ -228,9 +233,19 @@ IP costs a browser launch (about 0.7–1 MB and 20 s) before the next one is tri
 | Searches per hour (3 browsers) | ~500–600 | ~72 |
 | 1,000 searches | ~0.6–1 GB, under 2 hours | ~5–6.5 GB, ~14 hours |
 
-Without a proxy, a warm session on your own IP takes **~1.2 s per search**, with every link resolved and 0
-CAPTCHAs in testing ([F-0014](docs/findings/F-0014-eh1-hybrid-session-reuse.md)), capped at 20 searches an
-hour to protect your IP. Static proxies have not been benchmarked yet.
+Without a proxy, your own IP is capped at 20 searches an hour to protect it, with 0 CAPTCHAs in testing:
+
+| Own IP, no proxy | Measured |
+|---|---|
+| First search (the browser opens the session) | ~17 s |
+| Search on a warm session | **~0.6 s** |
+| Search with `read_top=3` (the top 3 pages' text included) | **~2 s** |
+| `fetch_page` on a result | ~1 s |
+| Search with `resolve_links` (every real URL up front) | ~1.2 s |
+
+From [F-0016](docs/findings/F-0016-home-ip-warm-search-and-read-top.md) (November 2026) and
+[F-0014](docs/findings/F-0014-eh1-hybrid-session-reuse.md) for `resolve_links`; one session each, so
+anecdotes rather than rates. Static proxies have not been benchmarked yet.
 
 **Measure your own proxy** within your data limit:
 
@@ -241,7 +256,7 @@ python tools/benchmark.py -n 10
 ## 🛠 Reference
 
 <details>
-<summary><b>Settings</b> (five in total; most people need the first two)</summary>
+<summary><b>Settings</b> (seven in total; most people need the first two)</summary>
 
 | Setting | What it does |
 |---|---|
@@ -250,10 +265,11 @@ python tools/benchmark.py -n 10
 | `GSEARCH_ENV_FILE` | Absolute path of your `.env`. Needed in MCP client configs. If set, the file must exist. |
 | `GSEARCH_FIXTURES_DIR` | Answer from saved pages instead of Google (demos and tests). |
 | `GSEARCH_STATE_DIR` | Where budgets, the data meter and saved block pages live. Default: `%LOCALAPPDATA%\gsearch` or `~/.local/share/gsearch`. |
+| `GSEARCH_PAGES_DIRECT` | `1`: `fetch_page` loads sites from your own IP (faster, no proxy data). Google's own links still go through the proxy. |
+| `GSEARCH_SHARE_COOKIES` | `0`: each new static-proxy port does its own warm-up (~3 min, 13–20 MB). Default: it copies the Google cookies of a warm port in the same country and is ready in seconds; a CAPTCHA on one copy can then follow the others. |
 
 Everything else is fixed to what worked best in testing: a new IP per search with rotating proxies, a
-visible browser, address-bar search, real-device fingerprints, 4 attempts per search, always resolving URLs,
-and a 10-minute cache for repeated queries.
+visible browser, address-bar search, real-device fingerprints, 4 attempts per search, and a 10-minute cache for repeated queries.
 
 </details>
 
@@ -262,8 +278,8 @@ and a 10-minute cache for repeated queries.
 
 | MCP tool | Arguments | Returns |
 |---|---|---|
-| `google_search` | `query`, and optionally `page` (1–50), `lang` (`en`, `fr`, …), `country` (`us`, …), `time_range` (`h`, `d`, `w`, `m`, `y`), `site` (a domain) | The JSON above plus a short text summary, or an error result on a block. |
-| `fetch_page` | `url` (a public `http`/`https` page) | The page's title, readable text (up to 30,000 characters) and the links in its main content. Goes through your proxy and counts against the data limit. Refuses this machine and private networks. |
+| `google_search` | `query`, and optionally `page` (1–50), `lang` (`en`, `fr`, …), `country` (`us`, …), `time_range` (`h`, `d`, `w`, `m`, `y`), `site` (a domain), `resolve_links`, `read_top` (0–5: also read the top pages, 8,000 characters each) | The JSON above plus a short text summary, or an error result on a block. |
+| `fetch_page` | `url` (a public `http`/`https` page, or a result's Google `link`) | The page's title, readable text (up to 30,000 characters) and the links in its main content. Goes through your proxy and counts against the data limit, unless `GSEARCH_PAGES_DIRECT=1`. Refuses this machine and private networks. |
 | `google_search_status` | none | Proxy data used against the limit, IPs used and blocked, and the cache. Never contacts Google. |
 
 ```text
@@ -308,7 +324,7 @@ To call it over MCP from your own code, the way an agent does, see
 | `captcha` with hours to wait, no proxy | Your own IP was challenged and rests until midnight. | Wait, or add a proxy. |
 | `rate_limited` | Every IP is at its hourly or daily budget (own IP or static proxies). | Wait `retry_after_s`, or add proxies. |
 | `proxy: no usable exit in 4 draws` | Four IPs in a row were dead or in the wrong country. | Check the country part of the login, and the provider. |
-| `proxy: proxy data limit reached` | `GSEARCH_DATA_LIMIT_MB` is used up. | Raise it, or delete `proxy_bytes.json` in the state folder to count from zero. |
+| `proxy: proxy data limit reached` | `GSEARCH_DATA_LIMIT_MB` is used up. | Raise it, or delete `proxy_bytes.sqlite` in the state folder to count from zero. |
 | `parse_drift` | Google changed its page layout. | Update gsearch, or see [CONTRIBUTING.md](CONTRIBUTING.md#when-google-changes-its-page). |
 | `GSEARCH_ENV_FILE=… does not exist` | The settings path is wrong. | Use an absolute path. gsearch refuses to start rather than fall back to your own IP. |
 | `the Camoufox browser is not installed` | The browser has not been downloaded yet. | Run `gsearch setup` once. |
@@ -321,7 +337,7 @@ When the browser hits a block or an error, the page is saved with a screenshot i
 
 ## ❓ FAQ
 
-**Do I need a proxy?** No. Without one, gsearch uses your own IP with a warm session (~1.2 s per search),
+**Do I need a proxy?** No. Without one, gsearch uses your own IP with a warm session (~0.6 s per search),
 capped at 20 searches an hour and 150 a day to keep your IP clean. For volume, use a proxy.
 
 **Which proxy should I buy?** A rotating residential proxy with sticky sessions (a session id in the

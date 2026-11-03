@@ -40,10 +40,10 @@ go install github.com/alash3al/hfy@latest
 
 ## Run it
 
-You need Postgres with pgvector. One line starts one:
+You need Postgres. One line starts one:
 
 ```sh
-docker run -d --name hfy-db -p 5432:5432 -e POSTGRES_PASSWORD=hfy -e POSTGRES_DB=hfy pgvector/pgvector:pg17
+docker run -d --name hfy-db -p 5432:5432 -e POSTGRES_PASSWORD=hfy -e POSTGRES_DB=hfy postgres:17
 ```
 
 Then:
@@ -66,10 +66,11 @@ providers:
     url: https://api.openai.com/v1
     api_key: ${OPENAI_API_KEY}
 
-agent:
-  model: openai/gpt-4o-mini
-  settings: { context_window: 128000 }   # required: the model's context size
-  system: You are the support assistant for Acme.
+agents:
+  main:                                    # the default agent
+    model: openai/gpt-4o-mini
+    settings: { context_window: 128000 }   # required: the model's context size
+    system: You are the support assistant for Acme.
 ```
 
 No model yet? Use the built-in fake one. It replies instantly and needs no network:
@@ -77,9 +78,10 @@ No model yet? Use the built-in fake one. It replies instantly and needs no netwo
 ```yaml
 providers:
   mock: { type: mock, mock: { reply: "Hello from mock" } }
-agent:
-  model: mock/demo
-  settings: { context_window: 8192 }
+agents:
+  main:
+    model: mock/demo
+    settings: { context_window: 8192 }
 ```
 
 ## Put the chat in your app
@@ -118,8 +120,9 @@ in `hfy.yaml`, then:
 That's it. When a pass expires, the chat asks for a new one by itself.
 
 For **mobile and desktop apps**, open `/embed` in a WebView instead; see
-[WebViews](docs/llms.txt) for Flutter, React Native, iOS and Android. To build
-your own UI, use `/embed/client.js` or the HTTP API.
+[WebViews](docs/llms.txt) for React Native, iOS and Android. Flutter apps use the
+native hfy_flutter SDK (in development), not a WebView. To build your own UI,
+use `/embed/client.js` or the HTTP API.
 
 ## Give it your tools
 
@@ -151,6 +154,7 @@ Read https://alash3al.github.io/hfy/llms.txt and add an hfy chat to our app.
 | `hfy queue:work` | workers only, to scale them separately |
 | `hfy validate` | check the config |
 | `hfy migrate up\|down\|status` | database migrations (also run on start) |
+| `hfy context:show <conversation> [--agent name]` | print the model request a conversation's newest turn would send (read-only; the output is conversation content) |
 | `hfy config:example` | print the starter config |
 | `hfy version` | print the version |
 

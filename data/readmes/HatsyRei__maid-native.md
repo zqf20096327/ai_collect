@@ -89,7 +89,9 @@ server.
   tools:
   - **Streamable HTTP** with an optional bearer token (encrypted at rest like
     API keys). Point it at a server on your network, in the cloud, or on the
-    phone itself (e.g. in Termux, at `http://127.0.0.1`).
+    phone itself (e.g. in Termux, at `http://127.0.0.1`). Plain `http://`
+    servers, local ones included, need **Allow HTTP endpoints**, the same
+    switch the chat endpoint uses.
   - **Tools are listed as soon as the URL is entered** and cached, so a reply
     never waits on the server just to know what it offers; **Refresh tools**
     picks up changes.
@@ -144,7 +146,7 @@ independently.
 
 Gradle 9.8.2 is pinned by the wrapper in
 `gradle/wrapper/gradle-wrapper.properties`; the rest of the toolchain is pinned
-in `gradle/libs.versions.toml`: AGP 9.4.1, Kotlin 2.4.21, KSP 2.3.12, Compose
+in `gradle/libs.versions.toml`: AGP 9.5.0, Kotlin 2.4.21, KSP 2.3.12, Compose
 BOM 2026.09.00. AGP 9 supplies
 built-in Kotlin support, so the `org.jetbrains.kotlin.android` plugin is not
 applied; the Kotlin and KSP plugin versions are declared on the root

@@ -7,7 +7,8 @@ A private AI agent for your Mac or Linux computer that runs **LFM3 1.7B** and **
 - **Voice chat** with LFM3 Omni 2B: it listens, thinks and talks back in one model. Talk over it to interrupt. Turn on the camera and it also sees what you show it.
 - **Omni where it matters**: dictation, reading answers aloud, pictures, audio and your screen all go through LFM3 Omni 2B. Everyday text and documents go to the Everyday brain (LFM3 1.7B). The app picks the model for you.
 - **Thinks first**: the built-in LFM3 1.7B reasons before every answer. The reasoning stays folded away; tap **Thinking for a better answer…** to read it. LFM3 Omni 2B, or a custom model whose template has no thinking mode, answers right away.
-- **Three safety modes**: *Ask for Approval*, *Approve for Me* and *Full Auto*. Approve for Me needs the [Auto 200M INT4](https://huggingface.co/ProCreations/auto-200m-2-int4) classifier, which approves safe actions and asks you about the rest; picking it downloads Auto 200M first. Commands that could wipe data always ask.
+- **Three safety modes**: *Ask for Approval*, *Approve for Me* and *Full Auto*. Approve for Me needs the [Auto 150M](https://huggingface.co/ProCreations/auto-150m-3) classifier, which approves safe actions and asks you about the rest; picking it downloads Auto 150M first. Commands that could wipe data always ask.
+- **Choose project**: the button under the message box ties a chat to one folder. The agent then works only there: file tools refuse paths outside it, and shell commands run in a sandbox that can write only inside the folder and can't read the rest of your home folder (`sandbox-exec` on macOS, [bubblewrap](https://github.com/containers/bubblewrap) on Linux; without bubblewrap, commands that name a path outside the folder are refused and every command asks you first). Recent projects are one click away.
 - **Memory and For You**: it learns small facts about you, uses only the relevant ones (to keep prompts short) and suggests ideas based on them.
 - **Routines** you can run with one click or on a schedule, and an **Activity** log of every action and who approved it.
 - **One-click downloads** inside the app, with a choice of model size (Smaller, Balanced, Best, or any GGUF quant in Settings). The app still routes each message itself.
@@ -16,15 +17,22 @@ Everything stays on your computer. The only network traffic is the one-time down
 
 ## Install
 
-Paste this into Terminal on macOS, or a terminal on Linux:
+On a Mac, download the app and drag it to Applications:
+
+- [Liquid Agent for Apple silicon](https://github.com/morriszdweck/liquid-agent/releases/latest/download/Liquid-Agent-arm64.dmg)
+- [Liquid Agent for Intel](https://github.com/morriszdweck/liquid-agent/releases/latest/download/Liquid-Agent-x64.dmg)
+
+The app isn't notarized yet, so macOS blocks it the first time. Either install with the Terminal command below instead, or open System Settings → Privacy & Security, scroll down and click **Open Anyway**. On first launch it installs Liquid Agent (the same copy the command below installs) and shows the setup screen.
+
+Or paste this into Terminal on macOS, or a terminal on Linux:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/morriszdweck/liquid-agent/main/install.sh | bash
 ```
 
-It installs a ready-to-run copy in `~/.liquid-agent` (no npm or build step, and a private copy of Node.js if you don't have one), adds **Liquid Agent** to your Applications folder (or app menu on Linux) and a `liquid-agent` command, then opens the setup screen in your browser at <http://127.0.0.1:8170>. Pick what to download and a model size there; that's it.
+It installs a ready-to-run copy in `~/.liquid-agent` (no npm or build step, and a private copy of Node.js if you don't have one), adds **Liquid Agent** to your app menu on Linux and a `liquid-agent` command, then opens the setup screen at <http://127.0.0.1:8170> (in the Mac app when it's installed). Pick what to download and a model size there; that's it.
 
-Afterwards, open it from Applications, Spotlight or your app menu, or with `liquid-agent`. `liquid-agent stop` stops it.
+Afterwards, open it from Applications, Spotlight or your app menu, or with `liquid-agent`. The Mac app is a window onto that same copy (`desktop/`), so it updates along with it. `liquid-agent stop` stops it.
 
 It keeps itself up to date: every push to `main` is published as a release, new versions download in the background and go in when nothing is running, and if one doesn't start the previous version comes back. Turn this off in Settings → General; `liquid-agent update` gets the newest version right away.
 
@@ -61,12 +69,12 @@ Screenshots use `grim` on Wayland (or GNOME's and KDE's own screenshot tools, or
 | AI engine | [llama.cpp](https://github.com/ggml-org/llama.cpp) server, latest release | ~30 MB |
 | Everyday brain | [LFM3 1.7B](https://huggingface.co/LiquidAI/LFM3-1.7B-GGUF) (GGUF, QAD-Q4_0 to F16) | 1.05–3.5 GB |
 | Eyes and ears | [LFM3 Omni 2B](https://huggingface.co/LiquidAI/LFM3-Omni-2B-GGUF) (Q4_0 to F16) plus its audio and vision projector | 1.6–4 GB |
-| Safety helper | Auto 200M INT4, run with Python through `uv` | ~900 MB |
+| Safety helper | Auto 150M, run with Python through `uv` | ~1.1 GB |
 | Web helper | Betterwright and its browser | ~250 MB |
 
 Files live in `~/Library/Application Support/LiquidAgent` on macOS and `~/.local/share/liquid-agent` on Linux. Settings → Downloads switches model sizes (the old size keeps answering until the new one is ready) and removes any part.
 
-**Advanced: your own model.** Settings → Advanced → Everyday brain model → **Use a model from Hugging Face** takes a link such as `https://huggingface.co/<org>/<model>-GGUF`. Liquid Agent reads the repository's GGUF list, groups split files, picks a size that should fit this computer, checks the GGUF header and chat template, and runs it on the same llama.cpp engine. A `blob` link to one `.gguf` file preselects that file. Public repositories work directly; for a gated or private one, accept its terms on Hugging Face and set `HF_TOKEN` (or `HUGGING_FACE_HUB_TOKEN`) before starting Liquid Agent. Only text GGUF models are used here; vision/audio projectors are skipped. Switch back to the built-in LFM3 1.7B at any time. A model you add hasn't been tested with Liquid Agent's tools, so while it answers, Full Auto works like Approve for Me and Auto 200M checks each action.
+**Advanced: your own model.** Settings → Advanced → Everyday brain model → **Use a model from Hugging Face** takes a link such as `https://huggingface.co/<org>/<model>-GGUF`. Liquid Agent reads the repository's GGUF list, groups split files, picks a size that should fit this computer, checks the GGUF header and chat template, and runs it on the same llama.cpp engine. A `blob` link to one `.gguf` file preselects that file. Public repositories work directly; for a gated or private one, accept its terms on Hugging Face and set `HF_TOKEN` (or `HUGGING_FACE_HUB_TOKEN`) before starting Liquid Agent. Only text GGUF models are used here; vision/audio projectors are skipped. Switch back to the built-in LFM3 1.7B at any time. A model you add hasn't been tested with Liquid Agent's tools, so while it answers, Full Auto works like Approve for Me and Auto 150M checks each action.
 
 ## How it works
 
@@ -74,7 +82,7 @@ Files live in `~/Library/Application Support/LiquidAgent` on macOS and `~/.local
 browser ──HTTP/WebSocket──▶ server/ (Node, 127.0.0.1:8170)
                               ├─ llama-server  Everyday brain :8180  (LFM3 1.7B or your GGUF)
                               ├─ llama-server  LFM3 Omni 2B   :8181  (chat, ASR, TTS, realtime voice)
-                              ├─ guardian/     Auto 200M      :8766
+                              ├─ guardian/     Auto 150M      :8766
                               └─ bridge/       Betterwright   :8767
 ```
 

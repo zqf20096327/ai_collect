@@ -580,20 +580,25 @@ Bamboogle, MultiHop-RAG, RAGBench, KILT, 2WikiMultihop. Your own JSONL, CSV or
 BEIR folder runs with no adapter
 ([own data](https://github.com/dolev31/lasagna/blob/main/docs/own-data.md)).
 
-`2wikimultihopqa` adds retrieval over the validation split's full contexts,
-including distractors, alongside the existing generation-only `wiki_multihop`
-entry. It reads the Apache-2.0
+For multi-hop retrieval against hard negatives, use `2wikimultihopqa`. Its
+corpus is every distinct context paragraph of the validation split, 55,020 of
+them, distractors included. The dataset's authors picked the distractors to
+resemble each question, so a question's supporting paragraphs have to be found
+among near misses, and `complete_recall@10` says whether every one of them was.
+The corpus is built from the questions' own contexts, not from open Wikipedia.
+IRCoT, Search-o1 and Search-R1 also evaluate on these questions, each with its
+own corpus and answer metrics, so their numbers do not carry over to this
+benchmark. It reads the Apache-2.0
 [official mirror](https://huggingface.co/datasets/xanhho/2WikiMultihopQA) at a
-fixed revision. Paragraph identity collapses whitespace and removes spacing
-around punctuation/symbols, preserving case and all non-whitespace characters.
-The exact rule first applies `" ".join(text.split())`, then
-`re.sub(r"\s*([^\w\s])\s*", r"\1", text)` before hashing.
-The first version of a title uses the title as its document ID; other versions
-add a stable hash of that normalized text. Formatting copies share one ID and
-the first original text is stored unchanged, giving 55,020 validation documents.
-`validation` is the default.
-`train` can be loaded as samples, but `load_corpus()` always supplies validation's
-corpus, so use `--split validation` for retrieval evaluation.
+fixed revision. Two paragraphs with the same title count as one document when
+they differ only in whitespace or in spacing around punctuation and symbols;
+case and every other character still matter. The first version of a title uses
+the title as its document ID, a different version adds a stable hash of its
+text, and the first original text is stored unchanged. The exact rule is in the
+adapter's docstring. `validation` is the default split. `train` can be loaded as
+samples, but `load_corpus()` always supplies validation's corpus, so use
+`--split validation` for retrieval evaluation. The generation-only
+`wiki_multihop` entry is a separate benchmark.
 
 | Family | Metrics |
 |---|---|
@@ -631,7 +636,7 @@ Python 3.12 and needs 3.12 or later (its numpy does not install on 3.10 or
 3.11):
 
 ```bash
-pip install "lasagna-rag[eval]==0.1.0" -c https://raw.githubusercontent.com/dolev31/lasagna/v0.1.0/constraints/0.1.0.txt
+pip install "lasagna-rag[eval]==0.2.0" -c https://raw.githubusercontent.com/dolev31/lasagna/v0.2.0/constraints/0.2.0.txt
 ```
 
 `eval` adds the RAGAS metrics, benchmark loaders and statistics; the other
@@ -776,6 +781,28 @@ recompute the id, which is why the hub's trust model calls results
 self-reported. [hub/](https://github.com/dolev31/lasagna/tree/main/hub) has what
 is needed to run a public leaderboard for bundles: a generated JSON Schema, a
 pull-request validation workflow, and that trust model.
+
+## Contributors
+
+Lasagna is maintained by [Ido Levy](https://github.com/dolev31). Thank you to
+everyone whose work is merged:
+
+- [@ect2000](https://github.com/ect2000): the `2wikimultihopqa` benchmark with
+  its distractor paragraphs ([#24](https://github.com/dolev31/lasagna/pull/24)),
+  and the agentic-pipeline checks in `lasagna component validate`
+  ([#17](https://github.com/dolev31/lasagna/pull/17)).
+- [@juliasadler](https://github.com/juliasadler): the fix for two services
+  racing to create a collection, measured against the stack's own Qdrant
+  ([#23](https://github.com/dolev31/lasagna/pull/23)).
+
+To join them, pick a
+[good first issue](https://github.com/dolev31/lasagna/labels/good%20first%20issue)
+or read [Start here](https://github.com/dolev31/lasagna/discussions/33). Every
+issue is written as numbered steps with a "Done when" list, and every pull
+request gets a line-by-line review. AI coding agents are welcome, under the
+same bar.
+
+If Lasagna is useful to you, a star helps others find it.
 
 ---
 

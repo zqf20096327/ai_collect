@@ -56,6 +56,8 @@ cargo build --release -p lantern-context
 claude mcp add lantern -- <path-to-lantern> mcp <project>
 ```
 
+**What a change left behind.** `lantern check` compares symbols before and after a change and looks up removed names in the code graph, with no model, key or network. It is name based and mostly quiet: on 71 public multi-file commits it pointed to another changed file in 6. On the author's own agent sessions it found no real misses (0 of 30 sampled warnings, judged by a Claude agent, one person's sessions), so it never stops an agent. `lantern autopsy` runs the same check over past Claude Code and Codex logs on your disk. Method and limits: [eval/check](eval/check/README.md), [docs/에이전트_부검.md](docs/에이전트_부검.md).
+
 ## Install
 
 Download from [Releases](https://github.com/Lantern-IDE/lantern/releases). Builds are not code-signed yet:

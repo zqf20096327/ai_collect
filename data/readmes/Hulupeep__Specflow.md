@@ -64,9 +64,12 @@ caller for a configured Improve service. The full plugin uses the same versioned
 npm payload as the source kit, including the canonical scripts, agents, skills,
 commands and hooks.
 
-Release status: **0.12.0 is a candidate, not yet published**. These marketplace
-commands are the release path being qualified; the published 0.11.1 package does
-not establish their current behavior.
+Release status: **0.12.1 is published and qualified through public npm and the
+registered GitHub marketplace**. The published tarball and fresh npm install
+matched all 416 qualified files. The installed plugin passed `/specflow:about`
+and four owning-hook journeys from the merged catalog. These installation checks
+do not establish customer outcomes or qualify the default UX evidence adapter's
+frame capacity; see the [release evidence](https://github.com/Hulupeep/Specflow/pull/308).
 
 ```text
 /plugin marketplace add Hulupeep/Specflow
@@ -92,7 +95,7 @@ These controls cover supported scoped execution paths; they are not a general OS
 
 ## Direction and current scope
 
-The goal is useful, explainable intent-to-evidence development with replaceable research, build and review roles. HeyStax is the intended operational control plane. Repo-local Improve code, controller interfaces and qualified source adapters exist; real-product benefit, final released installs and unattended end-to-end operation each need their own evidence. No recurring schedule is activated by this documentation.
+The goal is useful, explainable intent-to-evidence development with replaceable research, build and review roles. HeyStax is the intended operational control plane. Repo-local Improve code and controller interfaces exist, and the 0.12.1 npm and registered marketplace installation routes have been qualified. The #219/#215 owner-local release demonstrated a separately granted fixture draft PR and one configured HeyStax action update. Real-product benefit and unattended recurring operation still need their own evidence. No recurring schedule is activated by this documentation.
 
 The intended commercial wedge is an evidence packet an agency or product team can review with a client: accepted scope, current checks, actual outcomes, unresolved findings and authorization. Customer acquisition and measurable benefit are not established by producing more tickets or green checks.
 

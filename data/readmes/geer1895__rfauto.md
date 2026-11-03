@@ -4,7 +4,7 @@
 
 # rfauto
 
-[![tests](https://img.shields.io/badge/tests-28000%2B-brightgreen)]()
+[![tests](https://img.shields.io/badge/tests-30000%2B-brightgreen)]()
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)]()
 [![License](https://img.shields.io/badge/license-GPLv3-blue)]()
 [![code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230)]()
@@ -25,14 +25,14 @@ Measured counts for this revision (exact; verifiable with `scripts/check_numbers
 
 <!-- numbers-start（check_numbers 门控锚；实测注入，勿手改数字） -->
 `CALCULATOR_REGISTRY 340 (with experimental 341)` · `TEMPLATE_META 75` ·
-`EXPECTED_TEMPLATES 75` · `ANCHORS 87` · CLI commands 280 (leaves) ·
-(157 MCP tools + 10 resources)
+`EXPECTED_TEMPLATES 75` · `ANCHORS 87` · CLI commands 297 (leaves) ·
+(166 MCP tools + 10 resources)
 <!-- numbers-end -->
 
 <!-- AUTO-NUMBERS:START（scripts/sync_readme_numbers.py 生成，勿手改） -->
 <!-- PR-13a：由 scripts/sync_readme_numbers.py 从 check_numbers 同源计数生成；漂移修复=仓根重跑 `python scripts/sync_readme_numbers.py --write` 并同笔提交（#97） -->
 
-**Scale numbers**: MCP tools 157 (+10 resources) | CLI commands 280 (leaves) | CALCULATOR_REGISTRY 340 [with experimental 341] | device templates 75 | anchors 87
+**Scale numbers**: MCP tools 166 (+10 resources) | CLI commands 297 (leaves) | CALCULATOR_REGISTRY 340 [with experimental 341] | device templates 75 | anchors 87
 <!-- AUTO-NUMBERS:END -->
 
 **Contents** · [Capability map](#1-capability-map-nine-domains) · [Quick start](#quick-start) ·
@@ -167,7 +167,7 @@ rfauto remote status
 
 ### 1.8 AI orchestration (MCP)
 
-**157 MCP tools** and 10 resources: Claude Desktop, Cursor or your own agent can
+**166 MCP tools** and 10 resources: Claude Desktop, Cursor or your own agent can
 operate the framework. Agent changes land in a sandbox draft and must pass
 validation gates before touching the workspace; the agent emits typed tool calls
 only, and the kernel fills in the physics.
@@ -417,8 +417,8 @@ cli / mcp_server / ui  →  service  →  linkage / optimization / models
 
 ```text
 src/rfauto/
-├── cli/            # command line (280 leaf commands)
-├── mcp_server/     # MCP server (157 tools + 10 resources)
+├── cli/            # command line (297 leaf commands)
+├── mcp_server/     # MCP server (166 tools + 10 resources)
 ├── ui/             # browser workbench (24 views, zero-build native ESM)
 ├── service/        # business layer: JSON in, JSON out
 ├── linkage/        # HFSS ↔ circuit linkage
@@ -512,3 +512,54 @@ rfauto is **GPL-3.0** (see [LICENSE](LICENSE)). Third-party dependency licenses 
 listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The optional openEMS
 adapter drives GPL openEMS in a separate process; this repository does not bundle
 the openEMS bindings — build them from the official openEMS sources.
+
+## Changelog
+
+### v0.13.0 (2026-11-02)
+
+Added:
+
+- Pin-level schematics: `rfauto diagram schematic` renders ADS netlists
+  as schematics with pins, wires and net names
+- SVG export: `rfauto diagram to-svg` converts .drawio to SVG so diagrams
+  can be viewed on servers and in reports without draw.io
+- 3D stackup preview: `rfauto diagram stackup --preview` renders a 3D
+  preview PNG alongside the cross-section view
+- Review annotations: annotations from multiple reviewers merge into one
+  file, with per-reviewer colors, attribution and counts
+- Test-setup diagrams: new CISPR 25 conducted-emission scene, with
+  optional professional electrical component shapes
+- ADS tuning: active-chain and HB load-pull templates now support
+  diagram-driven tuning; back-annotation can embed S-parameter curve
+  plots; the optimizer can call ADS circuit simulation as its objective
+- Design reports: `rfauto design-report` gains Pareto-front and
+  two-run parameter/metric comparison sections
+- Calibration design: `rfauto cal-wizard trl` proposes Thru/Reflect/Line
+  dimensions, bandwidth coverage checks and a test-setup diagram for a
+  given frequency band
+- Operations: `rfauto remote board` shows the server and local solve
+  queues; one-command performance profiling; affected tests pre-run
+  automatically when source files change (`devtest_speculative --watch`)
+- Surrogates: Liquid Neural Network (CfC), complex stamp family
+  (ngo_stamp_rf), multi-port parametric VF, SVGP, per-parameter SPICE
+  netlist export, ONNX export
+- Optimization: TuRBO multi-restart joins the competition leaderboard;
+  SAAS posterior supports NUTS sampling; multi-objective optimization
+  supports constraints (c-EHVI)
+- Architecture credit: event-driven execution, liveness-probe and
+  channel-separation ideas absorbed from DeepSeek Super-agent (MIT) land
+  as speculative test pre-runs, `rfauto watchdog` and unified CLI/JSON
+  output rules; two design notes in
+  `docs/explanation/agent-orchestration.md` and
+  `docs/explanation/cli-json-channel.md`
+
+Fixed and improved:
+
+- The serial test gate pins BLAS to a single thread, removing flaky
+  timeouts in multi-thread environments
+- A failed comparison gate no longer reports "ADS stage failed"; the two
+  failure kinds now have distinct messages
+- 297 CLI commands, 166 MCP tools, 30738 unit tests (same source as the
+  README badge)
+
+Current version: v0.13.0 (previous: v0.12.1).

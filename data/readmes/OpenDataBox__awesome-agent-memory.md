@@ -934,4 +934,4 @@ Memory organized as entities, relations, notes, events, or episodes connected by
 
 1. **TokenMizer: Graph-Structured Session Memory for Long-Horizon LLM Context Management**\
    Shweta Mishra. *arXiv 2026*. [[Paper](https://arxiv.org/abs/2606.06337)]\
-   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Episodic-g
+   ![](https://img.shields.io/badge/-Method-lightgrey) ![](https://img.shields.io/badge/-External-blue) ![](https://img.shields.io/badge/-Graph-purple) ![](https://img.shields.io/badge/-Episodic-green) ![](https://img.shields.io/ba

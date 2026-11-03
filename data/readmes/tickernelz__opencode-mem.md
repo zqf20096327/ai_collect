@@ -279,6 +279,21 @@ memories do not consume slots that could hold eligible memories. Setting
 `chatMessage.maxMemories` to `0` disables project-memory injection while still allowing
 the user profile to be injected when enabled.
 
+Injected memory tags identify `selection="recent"` or `selection="semantic"`.
+Recent selections (including fallback and recent fill in `both`) have no
+numeric score. Semantic selections carry a finite `retrieval_score` when available;
+this is a ranking signal that can include the current-project boost, not a probability
+of relevance or factual correctness. Missing or invalid scores are omitted. This
+replaces the former `relevance="...%"` prompt attribute without changing memory
+selection, ordering, content, or provenance. Compaction retains its existing format.
+
+When semantic recall fails (for example, embedding is unavailable), `relevant` and
+`both` fall back to the existing recent listing with the same scope, count, session,
+and age restrictions. A successful search with no eligible matches stays empty in
+`relevant`; `both` still fills from recent as usual. Partial-shard warnings do not
+trigger failure fallback. If recent fallback also fails, recall remains empty and
+nonfatal. Missing-query fallback and per-turn refresh behavior are unchanged.
+
 ### Update-on-capture (optional)
 
 Opt-in path that keeps memories current as facts change. When `updateOnCaptureEnabled` is
@@ -368,7 +383,7 @@ Example — local bge-m3 (pooling defaults to CLS via preset; override if needed
 
 Changing `embeddingModel`, dimensions, pooling, or task prefixes can require re-embedding stored memories so store and query vectors stay aligned. Prefer picking a model (and pooling/prefix settings) once and sticking with them for a given data directory.
 
-**Unsupported — Intel Mac (`darwin/x64`):** Local persistence requires `@tursodatabase/database`, which does not publish an Intel Mac native binding. Fixed `onnxruntime-node` releases (`1.24.1+`, including the pinned `1.30.0`) also lack darwin/x64. Use an Apple Silicon Mac, Linux, or Windows, or a remote endpoint via `embeddingApiUrl` + `embeddingApiKey` (example above). On supported platforms, `opencode-mem` pins `onnxruntime-node@1.30.0` (Ort::Env teardown fix from `1.24.1` / #225) and loads transformers through a CJS resolve shim so OpenCode nested installs keep that binding. Transformers is resolved to an absolute path before that shim is installed so OpenCode's Bun `--compile` host does not fail with `Cannot find module '@huggingface/transformers' from ''`. After upgrading, clear OpenCode's nested plugin cache (`~/.cache/opencode/packages/opencode-mem@*`) and reinstall.
+**Unsupported — Intel Mac (`darwin/x64`):** Local persistence requires `@tursodatabase/database`, which does not publish an Intel Mac native binding. Fixed `onnxruntime-node` releases (`1.24.1+`, including the pinned `1.31.1`) also lack darwin/x64. Use an Apple Silicon Mac, Linux, or Windows, or a remote endpoint via `embeddingApiUrl` + `embeddingApiKey` (example above). On supported platforms, `opencode-mem` pins `onnxruntime-node@1.31.1` (Ort::Env teardown fix from `1.24.1` / #225) and loads transformers through a CJS resolve shim so OpenCode nested installs keep that binding. Transformers is resolved to an absolute path before that shim is installed so OpenCode's Bun `--compile` host does not fail with `Cannot find module '@huggingface/transformers' from ''`. After upgrading, clear OpenCode's nested plugin cache (`~/.cache/opencode/packages/opencode-mem@*`) and reinstall.
 
 ### Memory Scope
 
@@ -587,17 +602,59 @@ Manual `memoryProvider` modes:
   "memoryApiKey": "env://RUNCRATE_API_KEY",
   ```
   When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://api.runcrate.ai`.
+- `cloudgpu`: OpenAI-compatible Chat Completions preset for [CloudGPU](https://cloudgpu.app). `memoryApiUrl` and `memoryModel` are optional — they default to `https://cloudgpu.app/v1` and `deepseek-v4.1-flash`. If `memoryApiKey` is omitted, `CLOUDGPU_API_KEY` from the environment is used (create a key at https://cloudgpu.app/api/console; API docs: https://cloudgpu.app/api/docs). Example:
+  ```jsonc
+  "memoryProvider": "cloudgpu",
+  "memoryApiKey": "env://CLOUDGPU_API_KEY",
+  ```
+  When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://cloudgpu.app`.
 
 Troubleshooting:
 
 - Auto-capture failures do not block manual `memory` tool usage.
+- Auto-capture preserves bounded final assistant text and terminal tool outcomes from
+  delivered V1/V2 events before the delayed summarization runs. Normal idle capture still
+  prefers the live host transcript; ready pending evidence is the fallback when the session
+  is already gone (deletion or startup replay). Recovery is scoped to the same project
+  and uses the normal capture provider and claim queue. It does not infer completed work
+  from the request alone. Deleting an OpenCode session does **not** delete this pending
+  memory evidence or already captured memories.
+- Pending evidence is private-tag redacted before persistence (including tags spanning
+  final text parts within one assistant message); reasoning, attachments, raw provider
+  metadata, streaming deltas, and tool arguments are excluded. Limits are 16 KiB per
+  part, 16 parts per prompt, 256 parts globally (at most 4 MiB of text), and 64 KiB per
+  capture. Truncation is marked; oldest parts are evicted when the budget is exceeded.
+  Evidence expires after 24 hours and is pruned on subsequent store access. It is cleared
+  when capture finishes/skips or its prompt is removed by existing deletion/retention
+  paths. These are logical retention limits, not secure erasure of SQLite/WAL backups.
+- V2 events are a volatile stream: disconnected/missed events, unresolvable prompt
+  association, and evidence lost to expiry/eviction cannot be recovered. The guarantee
+  is capture from evidence received, saved, and checkpointed ready by an idle/deleted
+  event, not reconstruction of unseen or previously deleted transcripts. After that
+  checkpoint the session is sealed against late rebinds until the next authored user
+  input (V2 `session.inbox.delivered`, V1 user `message.updated`), so buffered parts
+  cannot flip ready evidence back to unreadiness. A disconnect before the terminal
+  checkpoint leaves the partial evidence deferred until a later checkpoint; restart
+  does not assume unfinished work is complete. V1 uses explicit assistant parent IDs;
+  V2 freezes the delivered input at step start rather than guessing the latest queued
+  prompt.
+- If the live host reports `Session.NotFoundError` (or deletion/startup replay has no
+  ready evidence), capture logs `skipped` / `session_not_found`, releases its claim
+  without backoff or consuming retries, and skips further host-dependent lookups in that
+  batch. Later prompts with ready saved evidence still proceed. A later independent idle
+  may retry. Already exhausted prompts are not revived. Other failures retain their
+  existing retry behavior.
+- Auto-capture additions use a stable per-project/prompt ID so sequential crash/restart
+  replay reuses the prior memory, including soft-deleted records, instead of inserting or
+  resurrecting it. This does not claim distributed exactly-once semantics for optional
+  semantic update/supersede operations or every multi-process crash interleaving.
 - If auto-capture reports that a provider is not connected, confirm the provider name with `opencode providers list` and configure that provider in opencode first.
 - If a proxy or custom provider returns plain text instead of structured/tool output, choose another model/provider or use one of the manual provider modes above.
 - For models that reject `temperature`, add `"memoryTemperature": false` when using manual API configuration.
-- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate`.
+- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate` / `cloudgpu`.
 - For `opencodeProvider` / `opencodeModel` (e.g. DeepSeek V4 thinking), OpenCode still sends forced `tool_choice` for structured output. opencode-mem disables thinking on the internal `opencode-mem-structured` agent (and re-applies that in `chat.params` after variant merge) so auto-capture and profile learning can complete. Your interactive chat agent is unchanged. If capture still fails with a thinking/`tool_choice` error, pick a non-thinking model for `opencodeModel` or configure a complete manual fallback (`memoryModel` + `memoryApiUrl`).
 - **`opencode-claude-auth` / Claude Code:** auto-capture uses OpenCode with your authenticated `anthropic` provider. Forced `format: json_schema` often loops with Claude-auth, so opencode-mem uses an auth-preserving **text-JSON** path for `opencodeProvider: "anthropic"` (no forced `StructuredOutput` tools; reply is parsed with Zod). A step watchdog still aborts runaway internal sessions after 2 steps. If capture still fails, configure a complete manual Anthropic API-key fallback (`memoryProvider: "anthropic"` + `memoryModel` + `memoryApiUrl` + `memoryApiKey`) — Claude Pro/Max OAuth cannot be reused outside OpenCode.
-- **Unsupported platforms:** Intel Mac (`darwin/x64`) is not supported — `@tursodatabase/database` and fixed `onnxruntime-node` releases (pinned `1.30.0`) ship no x64 native binding. Use Apple Silicon, Linux, or Windows, or a remote embedding endpoint via `embeddingApiUrl` + `embeddingApiKey`. MLX is not supported.
+- **Unsupported platforms:** Intel Mac (`darwin/x64`) is not supported — `@tursodatabase/database` and fixed `onnxruntime-node` releases (pinned `1.31.1`) ship no x64 native binding. Use Apple Silicon, Linux, or Windows, or a remote embedding endpoint via `embeddingApiUrl` + `embeddingApiKey`. MLX is not supported.
 
 ## Public Subpath Exports
 

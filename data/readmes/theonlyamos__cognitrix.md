@@ -163,6 +163,19 @@ For more options and usage details, use the help command:
 cognitrix --help
 ```
 
+### Second-model review of risky actions
+
+Tool calls that would normally ask for approval (deleting, overwriting a file, sending something out, shell commands) can be screened by a second model first. It answers **allow** (runs without asking), **block** (refused, and the agent is told why) or **ask** (you get the usual approval prompt). Errors, timeouts and unclear answers count as **ask**.
+
+```bash
+COGNITRIX_REVIEWER=unattended          # off | unattended (task runs, auto mode) | always
+COGNITRIX_REVIEWER_PROVIDER=anthropic  # defaults to AI_PROVIDER
+COGNITRIX_REVIEWER_MODEL=claude-haiku-5-5
+COGNITRIX_REVIEWER_MAX_ALLOW=medium    # high lets it allow deletes on its own too
+```
+
+The reviewer never answers for tools you set to "Ask first" or for commands that need the full shell. Task runs record each verdict as an `action_reviewed` run event.
+
 ## Web UI
 
 Cognitrix includes a web UI built with React, TypeScript, and Vite. This UI allows users to interact with the AI agents and manage their configurations easily.
@@ -240,6 +253,16 @@ curl -X POST http://localhost:8000/api/v1/teams/<team_id>/run \
 ```
 
 Poll `GET /api/v1/tasks/<task_id>` and `GET /api/v1/tasks/<task_id>/runs`, or supply a `callback_url` to receive a webhook when the run finishes. `POST /api/v1/tasks/<task_id>/run` starts a pre-created task the same way.
+
+### Group chat with a team
+
+Open a team and click **Group chat** to talk with all of its agents in one conversation (web and desktop):
+
+- `@name` asks that agent; mention several and they answer in that order. `@all` asks everyone.
+- With no mention, the agent who spoke last answers (the team lead starts a new chat).
+- Agents hand work to each other by @mentioning a teammate in their reply. One message gets at most 6 agent replies (`COGNITRIX_GROUP_MAX_TURNS`), and each agent answers at most twice.
+
+Group chats run in the background like normal chats, so you can leave and come back. They use your signed-in session (`/api/v1/teams/<team_id>/chats`), not API keys.
 
 ### Schedule a task
 

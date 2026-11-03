@@ -174,12 +174,18 @@ Full step list and the complete env-var table:
 | `HAL0_CHANNEL=preview` | Install from a channel other than `stable` |
 | `HAL0_NONINTERACTIVE=1` | Force flag/env defaults; never prompt, even on a TTY |
 | `HAL0_SKIP_SETUP=1` | Skip first-run seeding **and** the brain, agent and image model steps |
-| `HAL0_SKIP_BRAIN_MODEL=1` | Keep the seeding, skip the brain pull (`brain` stays model-less) |
+| `--no-brain-model` / `HAL0_SKIP_BRAIN_MODEL=1` | Keep the seeding, skip the brain pull (`brain` stays model-less) |
 | `HAL0_BRAIN_MODEL=<id>` | Force a specific curated brain quant |
 | `HAL0_PULL_AGENT_MODEL=1` / `=0` | Opt in to the big agent pull unattended / force-skip it on a TTY |
 | `HAL0_IMAGE_MODELS=recommended` / `=<id>,<id>` / `=none` | Download starter image models unattended / skip the image step on a TTY |
 | `HAL0_PY_AUTOINSTALL=1` | Let the installer install `python3.12` when the box has no Python in 3.12-3.14 |
-| `HAL0_SKIP_HINDSIGHT=1`, `HAL0_SKIP_OPENWEBUI=1`, `HAL0_SKIP_HERMES=1` | Skip individual companion services |
+| `--no-owui` / `HAL0_SKIP_OPENWEBUI=1` | Skip Open WebUI |
+| `--no-comfyui` / `HAL0_IMAGE_MODELS=none` | Skip the starter image models (the `img` slot still exists, parked) |
+| `--no-hermes` / `HAL0_SKIP_HERMES=1` | Skip the Hermes agent |
+| `--no-pi` / `HAL0_SKIP_PI=1` | Skip the Pi agent (`HAL0_INSTALL_PI=1` installs it unattended) |
+| `--no-memory` / `HAL0_SKIP_HINDSIGHT=1` | Skip the Hindsight memory service |
+| `--no-agents` | Same as `--no-hermes --no-pi` |
+| `--bare` (or `--bare-inference`) | Turn every optional component off: inference only. On a terminal it still asks for the models dir, the Hugging Face token and the optional agent model `[y/N]`; set `HAL0_PULL_AGENT_MODEL=0` and `HAL0_NONINTERACTIVE=1` for a prompt-free bare install |
 | `--no-start` | Provision everything, leave services stopped |
 | `--summary-json=PATH` | Write a versioned, machine-readable install summary (see [`installer/README.md`](./installer/README.md#--summary-jsonpath)) |
 
@@ -191,10 +197,11 @@ On a Proxmox host:
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Hal0ai/hal0/main/scripts/proxmox-ve/hal0.sh)"
 ```
 
-Creates an unprivileged Debian 13 LXC and runs the standard bootstrap inside
-it. `--advanced` opens whiptail prompts; every parameter has an env-var
-override (`CTID`, `RAM_MB`, `STORAGE`, …). Hardware-agnostic — Strix Halo
-passthrough still needs the privileged-LXC recipe. See
+Creates a privileged Ubuntu 26.04 LXC, forwards the host's AMD GPU and NPU
+nodes when it has any, and runs the standard bootstrap inside it. Pass
+`UNPRIVILEGED=1` for the narrower container. `--advanced` opens whiptail
+prompts; every parameter has an env-var override (`CTID`, `RAM_MB`,
+`STORAGE`, …). See
 [`scripts/proxmox-ve/README.md`](./scripts/proxmox-ve/README.md).
 
 ### Uninstall
@@ -342,7 +349,7 @@ from zero.
   is missing or an unmanaged `gateway run --idle-exit` runs) and `API journal
   read`; the `hermes-api` row warns instead of failing when you turned the
   gateway off.
-- **`sudo hal0 agent upgrade pi`** reruns the pinned pi installer and
+- **`sudo hal0 update component pi`** (`sudo hal0 agent upgrade pi` in 1.6.0) reruns the pinned pi installer and
   redeploys hal0's two extensions, leaving your own extensions, provider,
   model and theme alone.
 - **Upgrade floor is 1.4.0.** A 1.3.x box steps through 1.5.0 first, then
@@ -552,7 +559,7 @@ are `Hermes-Agent` (service shape, via the hal0-owned `hermes` wrapper —
 side. Install either with `hal0 agent install <name>`. Destructive MCP
 calls (`model_pull`, `slot_delete`, `config_write`, …) gate through a header bell + inbox modal
 in the dashboard, with CLI parity via
-`hal0 agent approvals {list,approve,deny}`.
+`hal0 agent approvals {list,approve,deny}` (deciding needs `sudo`).
 
 The **hal0-brain steward** is a third, built-in persona wired to the
 dashboard's top-bar agent chat — no install step. It drives the platform
@@ -1074,15 +1081,10 @@ The agent chat proxy is gone: `/api/agents/{id}/events`, `/submit` and
 
 ### Migrations left to you
 
-Two migrations are deliberately left to you, because both rewrite state in
-ways that want a human deciding when. The **slot-flag fold**
-(`hal0 slot migrate-flags`) moves per-slot tunes onto their bound model; it
-is a dry run until `--apply`, and `--apply` refuses while `hal0-api` or any
-`hal0-slot@*` unit is active unless you add `--stop-services`. Back up
-`hal0.db` and your slot dirs first, and expect it to refuse the whole run —
-rather than write half of it — when slots share a model with divergent
-tunes. **Slot id-keying** (`hal0 slot migrate-id-keying`) is optional and
-reversible; the runtime reads either layout, so run it in a downtime window.
+One migration is deliberately left to you, because it rewrites state in a way
+that wants a human deciding when. **Slot id-keying**
+(`hal0 slot migrate-id-keying`) is optional and reversible; the runtime reads
+either layout, so run it in a downtime window.
 
 Everything else — schema migrations, the config-load repairs, and the
 runner-system conversion (`hal0 runner-images migrate`, which archives every

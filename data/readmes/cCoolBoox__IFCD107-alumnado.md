@@ -217,7 +217,7 @@ Cada sprint responde a **una pregunta del cliente** y termina en **un reto**.
 
 | # | Fechas | Foco | Entregable |
 |---|---|---|---|
-| **14** | 26–30/11 | Reto, equipo y datos | Ficha de proyecto (antes del 27/11) |
+| **14** | 26–30/11 | Reto, equipo y datos | Ficha de proyecto (antes de las 14:30 del 26/11) |
 | **15** | 1–3/12 | Modelado y experimentos | Baseline y modelos comparados |
 | **16** | 4–10/12 | Evaluación, IA responsable y entrega | Demostrador + memoria técnica |
 | **17** | 11 y 14/12 | Storytelling, ensayos y defensa | Defensa ante el tribunal |
@@ -261,7 +261,7 @@ flowchart LR
     F10 --> F14D["11–14/12 Defensa"]
 ```
 
-Toda la información en [`proyecto-final/briefs_y_rubrica.md`](proyecto-final/briefs_y_rubrica.md). ¿Cuántos sprints tiene? Son 4 (14–17); en [esta guía](sprints/S13/3_Reto/4_Plantillas_y_entrega/guia_cuantos_sprints_tiene_el_proyecto.md) aprendes a decidir qué cabe en ellos.
+Toda la información en [`proyecto-final/briefs_y_rubrica.md`](proyecto-final/briefs_y_rubrica.md). ¿Cuántos sprints tiene? Son 4 (14–17); en [esta guía](sprints/S13/3_Reto/1_Trabajar/plantillas/guia_cuantos_sprints_tiene_el_proyecto.md) aprendes a decidir qué cabe en ellos.
 
 ---
 

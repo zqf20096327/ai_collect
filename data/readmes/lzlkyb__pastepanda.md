@@ -1,0 +1,347 @@
+# PastePanda — 智能剪贴板管理器 × 个人知识库
+
+> 🚀 一款基于 Tauri 2 的 Windows 桌面工具：管好剪贴板（历史 / 热键粘贴 / 栈模式），把复制过的东西沉淀成**本地知识库**（全文检索、带引用问答、MCP 接给 AI、多设备同步），另内置编解码 / SQL / 日志 / 配置转换等开发者工具箱。
+>
+> **复制即沉淀** —— 你复制过的东西，本来就该是你的知识。笔记只存在你自己电脑里，AI 能力默认关闭。
+
+**[English](README.en.md)**
+
+<p align="center">
+  <img src="src-tauri/icons/128x128@2x.png" alt="PastePanda Logo" width="128" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Tauri-2-FFC131?logo=tauri&logoColor=white" alt="Tauri 2" />
+  <img src="https://img.shields.io/badge/Rust-1.70+-DEA584?logo=rust&logoColor=white" alt="Rust" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?logo=windows&logoColor=white" alt="Windows" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+  <img src="https://img.shields.io/badge/version-7.1.4-green" alt="Version" />
+</p>
+
+---
+
+## 📖 目录
+
+- [核心功能](#-核心功能)
+  - [知识库（v7 主线）](#kb)
+- [快捷键速查](#️-快捷键速查)
+- [界面预览](#️-界面预览)
+- [安装](#-安装)
+- [技术栈](#️-技术栈)
+- [项目结构](#️-项目结构)
+- [开发指南](#-开发指南)
+- [贡献](#-贡献)
+- [许可证](#-许可证)
+
+---
+
+## ✨ 核心功能
+
+### 剪贴板管理
+
+| 功能 | 说明 |
+|------|------|
+| 📋 **剪贴板历史** | 自动记录文本、图片、文件，400ms 轮询 + MD5 去重 |
+| 📌 **粘贴到前台** | 文本/图片通过 WM_PASTE 消息注入到目标窗口 |
+| 🏷️ **工作区管理** | 多工作区隔离历史记录，按场景切换 |
+| 🔍 **搜索与筛选** | 拼音首字母搜索、类型筛选、标签分类、时间过滤 |
+| 📝 **片段库** | 常用文本模板管理，使用次数统计，支持动态变量插入 |
+| 🔗 **信息提取** | 自动识别电话号码、邮箱、URL |
+| 🔒 **敏感内容防护** | 密钥/凭证模式自动识别，不记录敏感剪贴板 |
+
+<a id="kb"></a>
+
+### 📚 知识库（v7 主线）
+
+> 主流笔记软件要你「专门去记」，PastePanda 直接拿你本来就在用的剪贴板当入口。
+> 省掉的不是一步操作，是「要不要记」这个心理成本。
+
+| 功能 | 说明 |
+|------|------|
+| 📥 **复制即沉淀** | 任意剪贴板卡片右键「转为笔记」，也可直接新建；支持文件夹、标签与 Markdown |
+| 🔍 **本机全文检索** | 一次搜索同时命中剪贴板与笔记；长笔记按节（section）定位，直接跳到命中位置 |
+| 💬 **带引用的问答** | 基于你的笔记作答，回答带 `[1][2]` 角标，点开即达原文。检索在本机完成，只有作答走你**在设置里显式开启**的 AI |
+| 🔌 **接给外部 AI** | 通过 MCP 暴露 18 个工具，一键接入 Claude Code / WorkBuddy，让 AI 检索、引用、写入你的笔记。服务只绑 `127.0.0.1` |
+| 🔗 **双向链接 + 库体检** | 自动梳理笔记之间的引用关系；找出没人引用的笔记和失效链接，库越大越不慌 |
+| 🔄 **多设备同步** | 两台设备用 6 位配对码直接连接，不经过我们的服务器 |
+| 🔒 **存储与隐私** | 笔记全存本机 SQLite；截图 OCR 走本地离线模型（PP-OCRv6），全程不联网；AI 开关默认关闭，不开就是零请求、零上传 |
+
+**AI 红线**：所有 AI 能力受 `ai_enabled` 门控（前后端双校验）。未开启时不会发起任何外部请求，
+也不会产生费用；只有「测试连接 / 试跑自定义动作」这类你主动点按钮的操作是例外。
+本地 OCR 与自动打标签是纯本地规则，不算 AI。
+
+### 高效粘贴
+
+| 功能 | 说明 |
+|------|------|
+| ⌨️ **全局热键** | 呼出窗口、依次粘贴、索引粘贴，均可自定义 |
+| 📚 **粘贴栈模式** | 连续收集多条剪贴板内容，再逐条或全部粘贴 |
+| 🔤 **正则替换** | 粘贴时应用正则变换（去空行/URL 解码/手机号脱敏等），自定义规则 SQLite 持久化 |
+| 🧹 **HTML 剥离** | 一键将富文本转为纯文本粘贴 |
+
+### 开发者工具箱
+
+| 功能 | 说明 |
+|------|------|
+| 🔀 **变换枢纽** | 右键/全屏一键触发，按内容类型智能推荐可用变换 |
+| 🔐 **编解码工具组** | Base64 / URL / Unicode / HTML 实体编解码，JWT 解析，时间戳互转 |
+| 🗄️ **SQL 工具族** | JSON→IN 子句、列→IN、JSON→INSERT、SQL 格式化/压缩/关键字大写 |
+| 📊 **日志统计** | 级别分布柱状图、时间范围、高频错误 Top5、一键提取错误行 |
+| 🔄 **配置互转** | Properties ↔ YAML ↔ JSON 格式转换，跨格式语义对比（Diff） |
+| ✏️ **批量替换** | 多规则并行应用，正则/字面量，实时预览 |
+| 📤 **导出** | 历史记录导出为 Excel (.xlsx) / CSV / JSON |
+| 🧩 **片段变量** | 片段模板支持 `{{date}}` `{{clipboard}}` `{{uuid}}` 等动态变量 |
+
+### 内容编辑与预览
+
+| 功能 | 说明 |
+|------|------|
+| 📝 **Markdown 预览** | 实时渲染 GFM 全语法，代码高亮，可复制为 HTML/纯文本 |
+| 🎨 **颜色值预览** | 自动识别颜色值，显示色块，支持 HEX/RGB/HSL 互转 |
+| 📊 **CSV 表格** | 表格/编辑双视图，导出 Markdown/JSON |
+| 🔑 **密钥编辑器** | 自动脱敏显示，类型识别，15 秒限时查看 |
+| 🖼️ **图片编辑** | 格式转换（PNG/JPG/WebP）、质量压缩、自由裁剪 |
+| 📁 **文件预览** | 图片缩略图、文本前 20 行带行号，多文件批量管理 |
+| 🔀 **文本对比** | 多选两条记录进行 Diff 对比，按行/按词，同步滚动 |
+| 📱 **二维码生成** | 右键生成 QR 码，支持复制图片或保存 PNG |
+| 🖥️ **全屏编辑器** | CodeMirror 6 多语法高亮，Markdown 实时预览，行号显示 |
+| 🔡 **编码转换** | 自动检测 GBK/Big5/Shift_JIS 等编码，一键转 UTF-8 |
+
+### 系统与同步
+
+| 功能 | 说明 |
+|------|------|
+| 🌐 **剪贴板局域网同步** | 多设备间同步剪贴板文本/图片/文件，AES-256-GCM 加密 + 重放防护（笔记走知识库自己的设备直连同步） |
+| 🎨 **6 套主题** | 经典白 / 深海 / 午夜 / 森林 / 美乐蒂 / 晨曦 |
+| ⚙️ **系统集成** | 系统托盘、开机自启、数据导入/导出（JSON） |
+| 🔄 **自动更新** | 多源加速（GitHub + Gitee 镜像），版本更新弹框 + 分类日志 |
+
+---
+
+## ⌨️ 快捷键速查
+
+### 全局热键（可在设置中自定义）
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+Alt+V` | 显示/隐藏窗口 |
+| `Ctrl+Alt+Q` | 依次粘贴 |
+| `Ctrl+Alt+1~9` | 索引粘贴前 9 条 |
+| `Ctrl+Alt+K` | 开启/关闭粘贴栈模式 |
+| `Ctrl+Alt+P` | 从栈顶粘贴 |
+
+### 窗口内快捷键
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Enter` | 粘贴选中项 |
+| `Ctrl+C` | 仅复制不粘贴 |
+| `Ctrl+F` | 聚焦搜索框 |
+| `Ctrl+A` | 全选 |
+| `Ctrl+D` | 置顶/取消置顶 |
+| `Ctrl+Z` | 撤销删除 |
+| `Ctrl+S` | 打开设置 |
+| `Space` | 快速预览 |
+| `Delete` | 删除选中项 |
+| `↑` / `↓` | 上下导航 |
+| `Home` / `End` | 跳转首/末条 |
+| `Escape` | 关闭弹窗 / 取消选择 / 隐藏窗口 |
+| `?` | 显示快捷键帮助 |
+
+---
+
+## 🖥️ 界面预览
+
+| 主界面 | 设置 |
+|--------|------|
+| ![主界面](docs/screenshots/main.png) | ![设置](docs/screenshots/settings.png) |
+
+| 右键菜单 | 帮助 |
+|----------|------|
+| ![右键菜单](docs/screenshots/context-menu.png) | ![帮助](docs/screenshots/help.png) |
+
+---
+
+## 📦 安装
+
+### 下载预编译版本
+
+前往 [Releases](https://github.com/lzlkyb/pastepanda/releases) 页面下载最新 `.exe` 安装包。
+
+### 系统要求
+
+- **操作系统**: Windows 10/11 (64位)
+- **运行时**: 无需额外安装，自带 WebView2
+
+---
+
+## 🛠️ 技术栈
+
+### 前端
+
+| 技术 | 用途 |
+|------|------|
+| React 19 | UI 框架 |
+| TypeScript | 类型安全 |
+| Vite 7 | 构建工具 |
+| Zustand | 状态管理 |
+| Radix UI | 无障碍 UI 组件 |
+| Framer Motion | 动画 |
+| Lucide React | 图标库 |
+| Tailwind CSS 4 | 样式系统 |
+
+### 后端 (Rust)
+
+| 依赖 | 用途 |
+|------|------|
+| Tauri 2 | 桌面框架 |
+| rusqlite (bundled) | SQLite 数据库 |
+| arboard | 剪贴板读写 |
+| tokio | 异步运行时 |
+| image | 图片处理/缩放/格式转换 |
+| windows | Win32 API 调用 |
+| pinyin | 中文拼音搜索 |
+| encoding_rs + chardetng | 编码检测与转换（GBK/Big5 等） |
+| rust_xlsxwriter | Excel (.xlsx) 导出 |
+| csv | CSV 解析/导出 |
+| serde_yaml | YAML 配置解析（配置互转/对比） |
+| axum | MCP 服务的 HTTP 传输层（MCP 协议手写，不引 SDK） |
+
+---
+
+## 🏗️ 项目结构
+
+```
+├── src/                        # React 前端
+│   ├── components/             # UI 组件
+│   │   ├── editors/            # 专用编辑器（14 个）
+│   │   │   ├── MarkdownEditor  # Markdown 实时预览
+│   │   │   ├── ImageEditor     # 图片裁剪/格式转换/压缩
+│   │   │   ├── CsvEditor       # CSV 表格编辑
+│   │   │   ├── ColorEditor     # 颜色值预览与互转
+│   │   │   ├── SecretEditor    # 密钥脱敏查看
+│   │   │   ├── JsonEditor      # JSON 格式化
+│   │   │   └── ...             # Text/Html/Fullscreen 等
+│   │   ├── KnowledgeView.tsx   # 知识库主视图（三栏：文件夹树/列表/详情）
+│   │   ├── notes/              # 知识库子组件（编辑器/问答面板/库体检/同步状态）
+│   │   ├── CardList.tsx        # 卡片列表（核心组件）
+│   │   ├── SettingsDialog.tsx  # 设置对话框
+│   │   ├── FileDetailDialog.tsx # 文件/多文件详情
+│   │   └── ...
+│   ├── stores/                 # Zustand 状态管理
+│   │   ├── appStore.ts         # 全局配置与数据
+│   │   └── dialogStore.ts      # 弹窗/编辑器状态
+│   ├── lib/                    # 工具模块
+│   │   ├── api/                # Tauri invoke 封装
+│   │   ├── transforms/         # 变换注册表（编解码/SQL/日志/文本/配置）
+│   │   ├── color.ts            # 颜色解析与转换
+│   │   ├── csv.ts              # CSV 解析/导出
+│   │   ├── imageFormat.ts      # 图片格式/质量/体积
+│   │   ├── keyboardActions.ts  # 键盘事件处理
+│   │   ├── regexRules.ts       # 正则替换规则（SQLite 持久化）
+│   │   ├── secret.ts           # 密钥识别与脱敏
+│   │   └── ...
+│   └── styles/                 # CSS 样式 + 主题变量
+├── src-tauri/                  # Rust 后端
+│   └── src/
+│       ├── lib.rs              # 启动逻辑 + 命令注册
+│       ├── clipboard_monitor.rs # 剪贴板轮询监听
+│       ├── paste_engine.rs     # 粘贴引擎（WM_PASTE）
+│       ├── hotkey_manager.rs   # 全局热键管理
+│       ├── content_classifier.rs # 内容类型识别（日志/JSON/SQL 等）
+│       ├── data_store/         # SQLite 数据层（含 note / kb_* 知识库表）
+│       ├── commands/           # Tauri Commands（含 mcp_connect 一键接入）
+│       ├── mcp/                # MCP 服务（18 个 kb_* 工具，只绑 127.0.0.1）
+│       ├── tray_manager.rs     # 系统托盘
+│       └── lan_sync.rs         # 剪贴板局域网同步（AES-256-GCM）
+├── docs/                       # 文档与截图
+└── scripts/                    # 构建脚本
+```
+
+---
+
+## 🔧 开发指南
+
+### 环境要求
+
+- **Rust** ≥1.70 ([rustup.rs](https://rustup.rs))
+- **Node.js** ≥20 ([nodejs.org](https://nodejs.org))
+- **Visual Studio 2022 Build Tools** — "使用 C++ 的桌面开发" + Windows SDK
+
+### 快速开始
+
+```bash
+# 克隆仓库（协作开发推荐 SSH，本机 HTTPS 访问 GitHub 常超时）
+git clone git@github.com:lzlkyb/pastepanda.git
+cd pastepanda
+
+# Windows 一键环境准备（检查工具链 / npm install / 补 libclang / 预热 MNN）
+powershell -ExecutionPolicy Bypass -File scripts\setup-dev.ps1
+
+# ⚠️ 硬性前置：设 LIBCLANG_PATH（ocr-rs bindgen 需要；.libclang/ 不在 git 里，需自备）
+# Git Bash: export LIBCLANG_PATH="$(pwd -W)/src-tauri/.libclang"   ← 是 `pwd -W`，裸 `pwd` 给的 /d/... bindgen 不认
+# PowerShell: $env:LIBCLANG_PATH = "$(Get-Location)\src-tauri\.libclang"
+
+# 开发模式（必须 npm run tauri，不要裸 npx tauri dev）
+npm run tauri dev
+
+# 生产构建
+npm run tauri build
+
+# 运行前端测试
+npx vitest run
+
+# Rust 类型检查
+cargo check --manifest-path src-tauri/Cargo.toml
+```
+
+> **从零到能跑 dev 的完整说明**（含两样不在 git 里的构建资产：`libclang.dll`、MNN 预编译）见 [`CONTRIBUTING.md` §2](CONTRIBUTING.md)。协作者与 AI 都按那一节走。
+
+### OCR 引擎构建注意（重要）
+
+本项目的 OCR 基于 `ocr-rs`（PP-OCRv6，MNN 推理），已 **vendoring 进仓库**（`src-tauri/vendor/ocr-rs`），构建**完全离线**，无需联网下载预编译 MNN：
+
+- 依赖通过 `[patch.crates-io]` 指向本地 `vendor/ocr-rs`，预编译 MNN 在 `vendor/ocr-rs/3rd_party/prebuilt/`；`.gitignore` 已忽略该预编译目录（约 170MB）与 `src-tauri/.libclang/`，crate 源码与 OCR 模型入库。**clone 后这两样要自备**：跑 `scripts\setup-dev.ps1`，或见 [`CONTRIBUTING.md` §2](CONTRIBUTING.md)。
+- 构建期仍需要 `libclang`（`bindgen` 生成 FFI）：装 LLVM，或 `pip install libclang`，把 `libclang.dll` 放到 `src-tauri\.libclang\`，编译前设 `LIBCLANG_PATH`。这只是构建期依赖，发布版 exe 自包含。
+- 无本地 MNN 缓存时，首次 cargo 构建会从 [MNN-Prebuilds](https://github.com/zibo-chen/MNN-Prebuilds) 自动下载（需联网一次）。
+
+```bash
+# 示例：设置 libclang 后构建
+export LIBCLANG_PATH="$PWD/src-tauri/.libclang"   # 含 libclang.dll 的目录
+export PATH="$PATH:$LIBCLANG_PATH"
+
+npm run tauri build      # 前端 vite build → Rust 离线编译 → nsis 安装包
+```
+
+> 打包若提示 `TAURI_SIGNING_PRIVATE_KEY` 未设置，仅影响自动更新签名，不影响安装包。
+> 识别率评估、体积权衡与构建细节见 `docs/OCR引擎替换说明.md`。
+
+---
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！**参与开发前请先阅读 [`CONTRIBUTING.md`](CONTRIBUTING.md)**（环境搭建、项目硬性规则、PR 流程），并按 PR 模板逐项自检。
+
+快速流程：
+
+1. Fork 本仓库（或直接由维护者加为协作者）
+2. 创建特性分支（`git checkout -b feature/amazing-feature`，前缀限 `feature/`、`fix/`、`refactor/`、`docs/`）
+3. 提交更改（commit 前缀 `feat:` / `chg:` / `fix:` / `refactor:` / `docs:`，中文描述）
+4. 推送到分支（`git push origin feature/amazing-feature`）
+5. 创建 Pull Request，勾选模板自查清单，等 CI 全绿 + 维护者 review
+
+> 注意：本项目版本号由维护者统一管理，提交时**不要**修改 `tauri.conf.json` / `Cargo.toml` 中的版本号。
+
+---
+
+## 📄 许可证
+
+MIT © 2025 PastePanda
+
+---
+
+<p align="center">
+  <sub>Made with ❤️ using Tauri + React + Rust</sub>
+</p>

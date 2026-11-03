@@ -7,7 +7,7 @@
 <p align="center">
   <strong>A provider-agnostic AI agent runtime for real work in your terminal.</strong>
   <br>
-  Durable execution · approval-gated tools · coding workflows · web research · MCP · local web gateway
+  Durable execution ¡¤ approval-gated tools ¡¤ coding workflows ¡¤ web research ¡¤ MCP ¡¤ local web gateway
 </p>
 
 <p align="center">
@@ -27,14 +27,14 @@
 </p>
 
 <p align="center">
-  <a href="#-overview">Overview</a> ·
-  <a href="#-supported-providers">Providers</a> ·
-  <a href="#-features">Features</a> ·
-  <a href="#-quick-start">Quick start</a> ·
-  <a href="#-architecture">Architecture</a> ·
-  <a href="#-safety-model">Safety</a> ·
-  <a href="#-mcp-and-google-workspace">MCP</a> ·
-  <a href="#-interfaces">Interfaces</a> ·
+  <a href="#-overview">Overview</a> ¡¤
+  <a href="#-supported-providers">Providers</a> ¡¤
+  <a href="#-features">Features</a> ¡¤
+  <a href="#-quick-start">Quick start</a> ¡¤
+  <a href="#-architecture">Architecture</a> ¡¤
+  <a href="#-safety-model">Safety</a> ¡¤
+  <a href="#-mcp-and-google-workspace">MCP</a> ¡¤
+  <a href="#-interfaces">Interfaces</a> ¡¤
   <a href="#-development">Development</a>
 </p>
 
@@ -47,34 +47,34 @@
 
 ---
 
-## ✨ Overview
+## �7¿8 Overview
 
 Eurus is an async-first Python agent runtime that connects language models to tools and repeatable workflows. An agent plans a task, calls tools, inspects the results, decides what to do next, and reports only what it could verify.
 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <h3>🔌 Provider-agnostic</h3>
+      <h3>”9ä2 Provider-agnostic</h3>
       OpenAI-compatible endpoints, Anthropic, Gemini, and optional official Groq and Google GenAI SDKs, with configurable fallback chains.
     </td>
     <td width="50%" valign="top">
-      <h3>💾 Durable by design</h3>
+      <h3>”9Ü4 Durable by design</h3>
       Every run goes through one boundary, <code>AgentEngine</code>, which persists runs, events, tool attempts, checkpoints, approvals, and budgets in SQLite.
     </td>
   </tr>
   <tr>
     <td valign="top">
-      <h3>✅ Honest about results</h3>
+      <h3>�7¼3 Honest about results</h3>
       A run is not marked <code>COMPLETED</code> until verification and persistence succeed. Unsupported claims are recorded as unverified, never as success.
     </td>
     <td valign="top">
-      <h3>🛡️ Fail-closed safety</h3>
+      <h3>•0•1„1‚5 Fail-closed safety</h3>
       Mutating tools need an approver. With no approver, the action is denied.
     </td>
   </tr>
   <tr>
     <td colspan="2" valign="top">
-      <h3>📱 Small-footprint friendly</h3>
+      <h3>”9á5 Small-footprint friendly</h3>
       Built with Android Termux and small VPS instances in mind. Optional integrations stay optional, and the core needs neither Docker nor a native compiler.
     </td>
   </tr>
@@ -82,7 +82,7 @@ Eurus is an async-first Python agent runtime that connects language models to to
 
 ---
 
-## 🤖 Supported providers
+## •0Í6 Supported providers
 
 Models are addressed as `provider/model`. Any OpenAI-compatible endpoint can be added through config.
 
@@ -110,25 +110,26 @@ Models are addressed as `provider/model`. Any OpenAI-compatible endpoint can be 
 
 ---
 
-## 🚀 Features
+## •0‹4 Features
 
 | | Area | What is included |
 |---|---|---|
-| 🧠 | **Agent execution** | Async tool-calling loop, deterministic and structured planners, bounded iterations, token, cost, and time budgets, interruption and cancellation |
-| 💾 | **Durable runtime** | SQLite stores for runs, events, tool attempts, jobs, and checkpoints. Write-ahead tool attempts, safe resume, recovery classification |
-| 🔎 | **Verification** | Step and completion checks that separate supported results from unverified claims. Research answers must carry citations |
-| 🧑‍💻 | **Coding workflows** | Guarded file tools, project index, reviewable patchsets with SHA-256 freshness checks, validation runner, per-run undo, disposable git worktrees for coder subagents |
-| 🌐 | **Web research** | `web_search`, `web_fetch`, and `deep_search` with no search API key, all behind a DNS-pinning network guard |
-| 🧭 | **Browser automation** | Snapshot-driven Chromium control by element reference. Pure-Python CDP backend (Termux-friendly) or Playwright |
-| 🧩 | **MCP platform** | Native MCP client and server, risk-classified tools, nine built-in Google Workspace services with OAuth 2.0 |
-| 🧬 | **Memory and learning** | Trust-tiered memory with FTS5 retrieval, bounded prompt injection, lessons, validated skill learning with owner-approved promotion |
-| 📄 | **Documents** | Read and create `.docx`, `.xlsx`, and `.pptx` with an approval-gated review workflow |
-| 🔭 | **Observability** | Redacted traces, run inspection, history, events, and metrics, all read-only |
-| ⏰ | **Automation** | Scheduler daemon and persistent Telegram reminders that survive restarts |
+| •0á8 | **Agent execution** | Async tool-calling loop, deterministic and structured planners, bounded iterations, token, cost, and time budgets, interruption and cancellation |
+| ”9Ü4 | **Durable runtime** | SQLite stores for runs, events, tool attempts, jobs, and checkpoints. Write-ahead tool attempts, safe resume, recovery classification |
+| ”9ä4 | **Verification** | Step and completion checks that separate supported results from unverified claims. Research answers must carry citations |
+| •0à3�6¤9”9Ü1 | **Coding workflows** | Guarded file tools, project index, reviewable patchsets with SHA-256 freshness checks, validation runner, per-run undo, disposable git worktrees for coder subagents |
+| ”9±4 | **Web research** | `web_search`, `web_fetch`, and `deep_search` with no search API key, all behind a DNS-pinning network guard |
+| •0ã1 | **Browser automation** | Snapshot-driven Chromium control by element reference. Pure-Python CDP backend (Termux-friendly) or Playwright |
+| •0â7 | **MCP platform** | Native MCP client and server, risk-classified tools, nine built-in Google Workspace services with OAuth 2.0 |
+| •0ã0 | **Memory and learning** | Trust-tiered memory with FTS5 retrieval, bounded prompt injection, lessons, validated skill learning with owner-approved promotion |
+| ”9Ý0 | **Office Department** | Multi-agent production for Word, Excel, and PowerPoint through the `office_specialist` gateway: client analysis, research, design, production, structural QA, rendered visual QA, critic review, client acceptance, and bounded revision loops |
+| 📄 | **Document engines** | Native editable DOCX (cover pages, TOC fields, real tables, headers/footers, page-number fields), hybrid HTML-designed PPTX (native text, shapes, and charts), formula-preserving XLSX (named ranges, conditional formatting, native charts) |
+| ”9ç5 | **Observability** | Redacted traces, run inspection, history, events, and metrics, all read-only |
+| �7�4 | **Automation** | Scheduler daemon and persistent Telegram reminders that survive restarts |
 
 ---
 
-## ⚡ Quick start
+## �7²3 Quick start
 
 ### Requirements
 
@@ -184,7 +185,7 @@ eurus gateway web --open
 Model IDs are illustrative and depend on your provider account.
 
 <details>
-<summary><b>📦 Optional extras</b></summary>
+<summary><b>”9à4 Optional extras</b></summary>
 
 <br>
 
@@ -207,7 +208,7 @@ pip install -e ".[web,web-gateway,documents]"
 
 ---
 
-## 🏗️ Architecture
+## ”9Å3„1‚5 Architecture
 
 All production entry points converge on one durable execution boundary, `AgentEngine` in `src/eurus/runtime/engine.py`. Interfaces differ, but execution, persistence, verification, and recovery are shared.
 
@@ -258,7 +259,7 @@ flowchart TD
 | Redaction and net guard | Secret redaction before persistence, validated network egress | `security/` |
 
 <details>
-<summary><b>🔁 Run lifecycle and recovery</b></summary>
+<summary><b>”9ã1 Run lifecycle and recovery</b></summary>
 
 <br>
 
@@ -294,24 +295,73 @@ If completion lacks sufficient evidence, the outcome is recorded as `completed_u
 
 ---
 
-## 🛡️ Safety model
+## 🏢 Office Department
+
+Office production is delegated, not improvised. Requests for Word, Excel, or PowerPoint artifacts
+go through exactly one Main Agent tool, `office_specialist`, which starts an isolated Office
+Department job:
+
+```mermaid
+flowchart TD
+    MAIN["Eurus Main Agent"] -->|"office_specialist delegation"| SPEC["Office Specialist"]
+    SPEC --> CLIENT["Client Agent"]
+    SPEC --> RESEARCH["Research Agent"]
+    SPEC --> DESIGN["Design Agent"]
+    SPEC --> PROD["Production Agent"]
+    SPEC --> CRITIC["Critic Agent"]
+    SPEC --> VQA["Visual QA Agent"]
+    PROD --> R["Office Rendering Engine"]
+    R --> SQ["Structural QA"]
+    SQ --> VQ["Visual QA"]
+    VQ --> LOOP{"Acceptance?"}
+    LOOP -->|"defects, revisions left"| PROD
+    LOOP -->|"accepted"| OUT["Final Artifact Package"]
+    OUT --> MAIN
+```
+
+- Six bounded worker roles with dedicated prompts, budgets, and structured JSON contracts.
+- Lifecycle stages: received, brief analysis, team planning, research, design, production,
+  structural QA, rendering, visual QA, critic review, client acceptance, revision, finalization,
+  completed (plus failed, cancelled, requires user input, quality limit reached).
+- Every job writes under `~/.eurus/office/jobs/<job_id>/` with task, plan, state, events, source,
+  staging, renders, reviews, and final areas. Staging never overwrites final artifacts; state is
+  recoverable after interruption.
+- Word output is a genuine editable DOCX: styled cover page, TOC field, heading hierarchy, native
+  tables with repeating header rows, callouts, timelines, headers/footers, and page-number fields.
+- PowerPoint decks are planned by a layout engine (cover, agenda, section divider, content,
+  two-column, timeline, process, metrics, chart, comparison, quote, case study, conclusion,
+  references) over nine design directions. The HTML preview and the PPTX export are built from the
+  same layout model; text, shapes, and charts stay native and editable.
+- Excel workbooks preserve formulas, named ranges, conditional formatting, data validation,
+  freeze panes, filters, and native charts, with recalculation on load.
+- Structural QA validates the real file; visual QA renders it through LibreOffice to page images
+  and runs deterministic layout inspection. Model-based image inspection is used only when the
+  configured provider actually supports image input; otherwise the report says so honestly.
+- Acceptance thresholds (content 85, visual 85, structural 95 by default) and bounded revisions
+  (3 by default) gate delivery; critical defects auto-reject the artifact.
+- Direct creation tools (`word_create`, `excel_create`, `powerpoint_create`, `office_replace`,
+  `office_team_create`, and the DOCX route of `document_create`) were removed from the Main Agent;
+  read tools are untouched. Configure the department in the `[office]` config section.
+
+---
+## •0•1„1‚5 Safety model
 
 Eurus is built to fail closed, but safety controls do not make an autonomous agent risk-free.
 
 | Control | What it does |
 |---|---|
-| 🔐 **Approval-gated mutations** | Mutating tools pass an approval boundary. No approver means denied. CLI approval is scoped to the displayed call |
-| 📜 **Execution envelope** | Each call is authorized by an immutable envelope: run identity, workspace, isolation backend, network profile (default `offline`), capabilities, budget, expiry |
-| 📁 **Guarded workspace** | Relative paths only, no `..`, no symlinks, strict containment, atomic writes, `O_NOFOLLOW` opens |
-| 🌍 **Network guard** | Public HTTP(S) only. Private, loopback, link-local, CGNAT, and metadata addresses are rejected. Redirects are validated and connections pinned against DNS rebinding |
-| ☣️ **Untrusted content** | Web pages, memory, emails, documents, and MCP output are data, never instructions |
-| 🕵️ **Secret redaction** | Events, approvals, logs, and traces are redacted before storage or display |
-| 🧾 **Audit journal** | Security events are written to `<home>/security/execution.jsonl` with owner-only permissions |
+| ”9ä6 **Approval-gated mutations** | Mutating tools pass an approval boundary. No approver means denied. CLI approval is scoped to the displayed call |
+| ”9ß4 **Execution envelope** | Each call is authorized by an immutable envelope: run identity, workspace, isolation backend, network profile (default `offline`), capabilities, budget, expiry |
+| ”9Ü7 **Guarded workspace** | Relative paths only, no `..`, no symlinks, strict containment, atomic writes, `O_NOFOLLOW` opens |
+| ”9±1 **Network guard** | Public HTTP(S) only. Private, loopback, link-local, CGNAT, and metadata addresses are rejected. Redirects are validated and connections pinned against DNS rebinding |
+| �7¥9„1‚5 **Untrusted content** | Web pages, memory, emails, documents, and MCP output are data, never instructions |
+| ”9î7„1‚5 **Secret redaction** | Events, approvals, logs, and traces are redacted before storage or display |
+| •0ä8 **Audit journal** | Security events are written to `<home>/security/execution.jsonl` with owner-only permissions |
 
 These controls are defense-in-depth, not a security certification. Test in a disposable workspace, keep backups, and never give an experimental agent unrestricted access to secrets or production infrastructure. To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 <details>
-<summary><b>🐳 Shell isolation</b></summary>
+<summary><b>”9Î5 Shell isolation</b></summary>
 
 <br>
 
@@ -339,7 +389,7 @@ pids_limit = 128
 
 ---
 
-## 🧩 MCP and Google Workspace
+## •0â7 MCP and Google Workspace
 
 Eurus is both an **MCP client** and an **MCP server**. Every entry point builds its MCP stack through one `MCPRuntime`.
 
@@ -373,7 +423,7 @@ eurus mcp google status
 | `unknown` | unmatched tools, external-server tools by default | Required |
 
 <details>
-<summary><b>🔧 External servers and Eurus as a server</b></summary>
+<summary><b>”9æ9 External servers and Eurus as a server</b></summary>
 
 <br>
 
@@ -399,31 +449,31 @@ Nothing is exposed by default. Tools are allowlisted explicitly, arguments are s
 
 ---
 
-## 🖥️ Interfaces
+## ”9ó5„1‚5 Interfaces
 
 <table>
   <tr>
     <td width="25%" valign="top">
-      <h4>⌨️ CLI</h4>
+      <h4>�6ë4„1‚5 CLI</h4>
       <code>ask</code>, <code>run</code>, <code>chat</code> with persistent sessions
     </td>
     <td width="25%" valign="top">
-      <h4>🎨 Terminal UI</h4>
+      <h4>”9À6 Terminal UI</h4>
       Themes, model picker, slash commands, undo
     </td>
     <td width="25%" valign="top">
-      <h4>🌐 Web gateway</h4>
+      <h4>”9±4 Web gateway</h4>
       React UI over the same runtime, sessions, and approvals
     </td>
     <td width="25%" valign="top">
-      <h4>✈️ Telegram</h4>
+      <h4>�7¼6„1‚5 Telegram</h4>
       Durable tasks, in-chat approvals, reminders
     </td>
   </tr>
 </table>
 
 <details>
-<summary><b>🌐 Web gateway</b></summary>
+<summary><b>”9±4 Web gateway</b></summary>
 
 <br>
 
@@ -449,7 +499,7 @@ Local security: loopback by default, host-header allowlist, bearer-token auth on
 </details>
 
 <details>
-<summary><b>✈️ Telegram gateway and scheduler</b></summary>
+<summary><b>�7¼6„1‚5 Telegram gateway and scheduler</b></summary>
 
 <br>
 
@@ -470,18 +520,18 @@ eurus schedule daemon
 
 ---
 
-## 🧠 Web research, browser, memory
+## •0á8 Web research, browser, memory
 
 <details>
-<summary><b>🌐 Web research and browser automation</b></summary>
+<summary><b>”9±4 Web research and browser automation</b></summary>
 
 <br>
 
 | Tool | Description |
 |---|---|
-| `web_search` | Public web search through DDGS |
-| `web_fetch` | Fetches one public page and extracts readable text (2 MB cap) |
-| `deep_search` | Fetches up to five sources in parallel and returns evidence with URLs |
+| `web_search` | Public web search through the configured providers (DDGS by default) |
+| `web_fetch` | Fetches one public page and extracts readable text; HTML, PDF, RSS/Atom, JSON, and plain text (2 MB cap) |
+| `deep_search` | Fetches several sources in parallel and returns evidence with URLs; optional `depth: "deep"` runs multi-round research with gap analysis and citation verification |
 
 | Backend | Extra | Notes |
 |---|---|---|
@@ -491,10 +541,12 @@ eurus schedule daemon
 
 Clicks, typing, key presses, dialogs, screenshots, and uploads always need individual owner approval. The browser is disabled by default and uses a dedicated profile at `~/.eurus/browser/profile`.
 
+**EURUS Research Engine.** The three web tools are thin wrappers over a shared research service (`eurus.research`). It provides a provider registry with real fallback (DDGS today; Brave, Tavily, and SerpAPI activate automatically when their `BRAVE_API_KEY`, `TAVILY_API_KEY`, or `SERPAPI_API_KEY` environment variables are set), URL canonicalization and deduplication, source ranking with domain diversity, a unified fetcher that reuses the full SSRF/private-IP/metadata egress policy, deterministic and LLM-assisted query planning, an evidence engine with citation validation and contradiction detection, and bounded multi-round deep research with budgets, deadlines, and resumable jobs stored under `~/.eurus/research/`. Everything is configured in the `[research]` section; setting `research.enabled = false` restores the exact pre-engine tool behavior. Web content is always treated as untrusted data, never as instructions. The full audit and implementation report lives in [`RESEARCH_ENGINE.md`](RESEARCH_ENGINE.md).
+
 </details>
 
 <details>
-<summary><b>🧬 Memory, sessions, and skills</b></summary>
+<summary><b>•0ã0 Memory, sessions, and skills</b></summary>
 
 <br>
 
@@ -513,7 +565,7 @@ eurus skills promote NAME --yes --outcome "..."
 
 ---
 
-## ⚙️ Configuration
+## �7±5„1‚5 Configuration
 
 Eurus reads `~/.eurus/config.toml` (override with `EURUS_HOME`). A complete example is in [`eurus.example.toml`](eurus.example.toml).
 
@@ -548,7 +600,7 @@ eurus diagnose groq/llama-3.3-70b-versatile nvidia/meta/llama-3.3-70b-instruct
 
 ---
 
-## 📚 Command reference
+## ”9ß2 Command reference
 
 Use `eurus --help` and `eurus <command> --help` for what your installed version provides.
 
@@ -569,7 +621,7 @@ Use `eurus --help` and `eurus <command> --help` for what your installed version 
 
 ---
 
-## 🚧 Known limitations
+## •0�3 Known limitations
 
 - **Docker isolation is not yet validated against a real daemon.** Container invocation is covered by mock-based tests only.
 - **Termux runs unisolated.** Host mode relies entirely on the approval gate.
@@ -578,16 +630,16 @@ Use `eurus --help` and `eurus <command> --help` for what your installed version 
 - **Undo covers file tools only.** Shell mutations, files over 1 MB, and non-UTF-8 files are not restored.
 - **Memory retrieval is lexical.** There are no learned embeddings yet.
 
-## 🗺️ Roadmap
+## ”9ü0„1‚5 Roadmap
 
 - Richer deterministic verifiers selected by plan step and changed files
 - Session-scoped approvals for narrowly defined safe patterns, with expiry and revocation
 - Optional remote embedding providers for memory retrieval
-- More orchestration roles on the graph scheduler behind the same trusted boundary
+- More specialist profiles for the unified `delegate` tool behind the same trusted boundary
 
 ---
 
-## 🛠️ Development
+## •0•0„1‚5 Development
 
 ```bash
 pip install -e ".[dev]"
@@ -601,31 +653,31 @@ pytest -q
 CI runs linting, formatting, strict type checks, tests, packaging checks, and command smoke tests on Python 3.11 to 3.13.
 
 <details>
-<summary><b>📂 Project layout</b></summary>
+<summary><b>”9Ü8 Project layout</b></summary>
 
 <br>
 
 ```text
 src/eurus/
-├── agent/          loop, planners, verification, delegation
-├── runtime/        AgentEngine, state machine, recovery
-├── tools/          registry and ToolExecutionBoundary
-├── execution/      execution envelope, container sandbox
-├── coding/         file tools, patchsets, checks, office tools
-├── providers/      protocol adapters and router
-├── browser/        CDP and Playwright backends, snapshots, policy
-├── mcp/            client, server, Google Workspace provider, OAuth
-├── gateway/        web (FastAPI) and telegram
-├── memory/ learning/ skills/ sessions.py
-├── tui/ cli/ bootstrap/
-└── security/       redaction, net guard, audit journal
+©À©¤©¤ agent/          loop, planners, verification, delegation
+©À©¤©¤ runtime/        AgentEngine, state machine, recovery
+©À©¤©¤ tools/          registry and ToolExecutionBoundary
+©À©¤©¤ execution/      execution envelope, container sandbox
+©À©¤©¤ coding/         file tools, patchsets, checks, office tools
+©À©¤©¤ providers/      protocol adapters and router
+©À©¤©¤ browser/        CDP and Playwright backends, snapshots, policy
+©À©¤©¤ mcp/            client, server, Google Workspace provider, OAuth
+©À©¤©¤ gateway/        web (FastAPI) and telegram
+©À©¤©¤ memory/ learning/ skills/ sessions.py
+©À©¤©¤ tui/ cli/ bootstrap/
+©¸©¤©¤ security/       redaction, net guard, audit journal
 frontend/           React web gateway UI
 tests/              deterministic test suite
 ```
 
 </details>
 
-## 🤝 Contributing
+## •0Î3 Contributing
 
 1. Fork the repository and branch from `main`.
 2. Install with `pip install -e ".[dev]"`.
@@ -634,14 +686,14 @@ tests/              deterministic test suite
 
 Eurus is implemented from scratch. Do not paste or translate code from other projects, including AGPL or GPL projects. Permissively licensed code may be used only with its notice recorded in a `NOTICE` file.
 
-## 🔒 Security
+## ”9ä8 Security
 
 Please do not open public issues for vulnerabilities. See [SECURITY.md](SECURITY.md) for private reporting.
 
-## 📄 License
+## ”9Ý0 License
 
 Released under the [MIT License](LICENSE).
 
 <p align="center">
-  <sub>Built by <a href="https://github.com/kyyinfinite">Ripki Dwi Putra</a> · kyyinfinite</sub>
+  <sub>Built by <a href="https://github.com/kyyinfinite">Ripki Dwi Putra</a> ¡¤ kyyinfinite</sub>
 </p>

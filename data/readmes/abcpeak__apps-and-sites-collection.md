@@ -10,7 +10,7 @@
 
 Welcome to the **Curated List of Best Awesome Apps & Sites Collection**!
 
-Multi-platform: Web, Windows, Apple (iOS/iPhone, macOS/Mac, iPadOS/iPad, tvOS/Apple TV, watchOS/Apple Watch, visionOS/Apple Vision), Android (Android TV, Android Watch), Linux, ChromeOS. Mobile and Desktop.
+Multi-platform: Web, Windows, Apple (iOS/iPhone, macOS/Mac, iPadOS/iPad, tvOS/Apple TV, watchOS/Apple Watch, visionOS/Apple Vision), Android (Android TV, Android Watch), Linux, ChromeOS. Extensions (Add-ons). Mobile and Desktop.
 
 Don't forget to show your appreciation by giving this repository a ⭐Star!
 
@@ -1282,4 +1282,4 @@ Enjoy 🤩
 - ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Linux) 使用Rust和Flutter构建
 - ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industries/zed) [Zed](https://github.com/zed-industries/zed) (Windows, macOS, Linux) code editor
 - ![GitHub Repo stars](https://img.shields.io/github/stars/marktext/marktext) [Marktext](https://github.com/marktext/marktext) 搜索效率太慢
-- ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, Android) E2EE端到端加密。安卓不支持笔记内搜索，附件管理比较
+- ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, Android) E2EE端

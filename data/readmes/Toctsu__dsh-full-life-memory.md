@@ -8,11 +8,12 @@
 像人一样遗忘，也像人一样回忆。</p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-0.3.5-6d5efc?style=flat-square" alt="version" />
+  <img src="https://img.shields.io/badge/version-0.7.1-6d5efc?style=flat-square" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-1fc8b3?style=flat-square" alt="license" />
   <img src="https://img.shields.io/badge/node-%E2%89%A5%2024-339933?style=flat-square&logo=node.js&logoColor=white" alt="node" />
   <img src="https://img.shields.io/badge/dependencies-0-52525b?style=flat-square" alt="zero dependencies" />
   <img src="https://img.shields.io/badge/DSH-bundle-4f46e5?style=flat-square" alt="DSH bundle" />
+  <a href="https://hub.xerj.org/contributors/Toctsu"><img src="https://hub.xerj.org/contributors/Toctsu/badge.svg" alt="XERJ Corpus Hub contributor" /></a>
 </p>
 
 <p><code>@tuhengyu/dsh-full-life-memory</code></p>
@@ -148,6 +149,108 @@ sceneOverrides:
 - 场景可以反向打开全局关闭的折叠——全局 `autoForget: false` 只影响没有场景覆盖的会话
 
 设置页的「场景」标签页可以增删改这些覆盖，不用手写 YAML。
+
+## 👥 群聊记忆隔离（Phase 3）
+
+DSH 把一个 QQ 群当成**一个 Session**，默认是「全群共用一份记忆」——群友 A 说的话，B 一问就可能被召回，这就是串台。
+
+打开 `isolateByUser` 后：
+
+| 阶段 | 行为 |
+|---|---|
+| **识别** | 从最新一条用户消息的正文前缀抽发送者：`[User: 12345]`、`[用户: 12345]`、`小明(123456):`、`qq: 10001`；正则可用 `senderPatterns` 覆盖 |
+| **折叠** | 按发送者分组：自己的对话存成私有线索（`user_id = 10001`），别人的存成全群共享（`user_id IS NULL`）；`othersAsGlobal: false` 则直接丢弃别人的对话 |
+| **召回** | 默认 `scope: auto` = 自己的 + 全群共享；`scope: user` 只看自己；`scope: global` 只看共享 |
+| **降级** | 认不出发送者 → 自动回到全局模式，不报错、不丢数据 |
+
+```yaml
+isolateByUser: false        # 全局默认关
+othersAsGlobal: true        # 别人的对话进共享记忆
+sceneOverrides:
+  qqbot:
+    isolateByUser: true     # 群聊场景打开
+```
+
+旧库不用手动处理：启动时检测 `memory_clues` 缺 `user_id` 就自动 `ALTER TABLE` 补上，历史线索保留为共享记忆（`user_id` 为 `NULL`），新折叠的才按人归档。
+
+### 🔌 NapCat / AstrBot 这类桥接的兼容
+
+桥接插件不会给 DSH 传结构化发送者，只能从正文里读。为了少踩坑，做了四件事：
+
+| 场景 | 处理 |
+|---|---|
+| `昵称: 内容`（AstrBot 常见） | 新增昵称前缀正则；`注意:`、`12:30` 这类不会误判 |
+| 一条 prompt 合并多个发言人 | **逐行**识别，按行归属，不再整条算给第一个人 |
+| `[CQ:at,qq=…]`、`[User: 123]` | 蒸馏前剥掉，不会变成线索词 |
+| 格式对不上、识别失败 | 退化成全群共享，不报错；日志里 `owners: global` 能看出来 |
+
+排查格式时打开 `debugSender: true`，折叠时会打印：
+
+```text
+full-life-memory: sender probe preset="qqbot" sender="小明" groups=2 sample="我的猫叫豆豆"
+```
+
+还有两个边界要记住：
+
+- **纯昵称做键不稳定**（改名、同名）；能让桥接带上 QQ 号就带 `[User: 12345]`，比昵称可靠。
+- **桥接必须按群复用 DSH Session**；如果每次请求都新建会话，永远凑不出「已完成轮次」，折叠不会触发。
+
+### 🎯 场景兜底：桥接不设 agentPreset 怎么办
+
+场景原本只认 `header.agentPreset`。如果桥接不设预设，用 `sceneMap` 按正则匹配会话的 preset / origin / 会话 id / cwd：
+
+```yaml
+sceneMap:
+  '^qq-': qqbot          # 会话 id 前缀
+  'napcat|astrbot': qqbot
+sceneOverrides:
+  qqbot:
+    isolateByUser: true
+```
+
+匹配到场景后，线索会带上 `scene` 字段，排错时能直接看出这条记忆来自哪个场景。
+
+### 🚧 隔离粒度：跨群还是按群
+
+`isolationScope` 决定同一个人的记忆能不能跨群看到：
+
+```yaml
+isolationScope: user        # 默认：同一个人跨群共享（人设一致）
+# isolationScope: user+scene  # 更严格：同一个群才共享（避免 A 群的事在 B 群被抖出来）
+```
+
+`user+scene` 下查询会额外带上 `scene = 当前场景` 的条件；全群共享记忆（`user_id IS NULL`）两种粒度都可见。
+
+### 🤖 AstrBot / NapCat：对话不经过 DSH 时
+
+如果整条链路是 `NapCat → AstrBot → 模型`，DSH 根本不在场，插件的钩子不会执行。
+仓库里的 `astrbot/` 是一个独立的 AstrBot 插件，**默认用纯 Python 读取同一个 SQLite，不需要 Node**：
+
+```
+QQ 消息 ──► AstrBot ──► astrbot/ 插件 ──► memory.py (sqlite3) ──► 线索
+```
+
+安装（AstrBot 插件页 → 安装插件）：
+
+- **从链接安装**：填插件仓库地址（仓库根目录就是 `astrbot/` 的内容）
+- **从文件安装**：下载 `astrbot_plugin_full_life_memory.zip`（Release 附件）
+- 或者直接把 `astrbot/` 拷进 `data/plugins/astrbot_plugin_full_life_memory/`
+
+配置里把 `db_path` 指到 DSH 用的同一个库即可（留空默认 `~/.dsh/full-life-memory/memory.db`）。
+命中触发词（记得 / 上次 / 之前…）时回忆一次并注入 `system_prompt`，同一个群友 120 秒内只查一次。
+
+也可以用 **`flm` CLI** 自己接别的平台：
+
+```bash
+npm i -g @tuhengyu/dsh-full-life-memory     # 安装后得到 flm 命令
+flm recall --text "你还记得上次那个数据库吗" --user 10001 --scene qqbot
+flm remember --keywords "数据库,sqlite" --seed "用 node:sqlite 存线索" --user 10001
+flm stats
+```
+
+输出是 JSON，方便任何语言调用。安装与配置细节见 [astrbot/README.md](astrbot/README.md)，
+发布到插件的步骤见 [astrbot/MARKETPLACE.md](astrbot/MARKETPLACE.md)。
+核心逻辑只有一份（同一个 SQLite、同一套 SQL），DSH 插件、AstrBot 插件、CLI 都只是消费者。
 
 ## 🛠 设置界面
 
@@ -303,6 +406,6 @@ node test/client-smoke.mjs
 
 ## 📄 License
 
-MIT © tuhengyu
+MIT © tuhengyu · 完整文本见 [LICENSE](LICENSE)
 
 <div align="center"><sub>记忆不是存储，是重建。</sub></div>

@@ -1,5 +1,6 @@
 # ableton-mcp
 
+[![npm](https://img.shields.io/npm/v/@cavi-ai/ableton-mcp)](https://www.npmjs.com/package/@cavi-ai/ableton-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![M8ven Score](https://m8ven.ai/badge/mcp/cavi-ai/ableton-mcp)](https://m8ven.ai/mcp/cavi-ai/ableton-mcp)
 
@@ -10,49 +11,53 @@ Local-first Ableton Live control for MCP clients. It has three parts: a Remote S
 Requirements: macOS, Ableton Live 12 (tested with 12.4.6), Node.js 22.13 or newer, and `ffmpeg` for the audio analysis tools.
 
 ```bash
-git clone https://github.com/cavi-ai/ableton-mcp.git
-cd ableton-mcp
-npm ci
-npm run cli -- install
+npm install -g @cavi-ai/ableton-mcp
+ableton-mcp install
 ```
 
 In Live's preferences, select **CaviMcpBridge** as a Control Surface. Then check the connection:
 
 ```bash
-npm run cli -- doctor --json
+ableton-mcp doctor --json
 ```
+
+To update, run the same `npm install -g` command, then `ableton-mcp install`, and restart Live so the bridge matches the server.
+
+To run from a source checkout instead, clone the repository, run `npm ci`, and use `npm run cli --` in place of `ableton-mcp`.
 
 ## Quickstart
 
-Register the stdio server with your MCP client, using the absolute path of your checkout:
+Register the stdio server with your MCP client:
 
 ```json
 {
   "mcpServers": {
     "ableton": {
-      "command": "node",
-      "args": ["/path/to/ableton-mcp/apps/ableton-mcp/src/cli.mjs", "serve"]
+      "command": "ableton-mcp",
+      "args": ["serve"]
     }
   }
 }
 ```
 
+If your client does not inherit your shell's `PATH`, use the absolute path printed by `which ableton-mcp`.
+
 Or call tools from the shell:
 
 ```bash
-npm run cli -- status --json
-npm run cli -- call list_devices --args '{"trackId":"track-0"}' --json
+ableton-mcp status --json
+ableton-mcp call list_devices --args '{"trackId":"track-0"}' --json
 ```
 
 Find workflow guidance before choosing individual tools:
 
 ```bash
-npm run cli -- call get_producer_workflow --args '{"query":"silent part","limit":3}' --json
+ableton-mcp call get_producer_workflow --args '{"query":"silent part","limit":3}' --json
 ```
 
 Search returns keyword candidates with their required arguments. Retrieve a chosen reference by its exact `workflow` name and named string `arguments`. Searching and reading guidance do not execute Live operations.
 
-To try client wiring without Live, run `ABLETON_MCP_FIXTURE=1 npm start`.
+To try client wiring without Live, run `ABLETON_MCP_FIXTURE=1 ableton-mcp serve`.
 
 For a smaller initial tool catalog, set `ABLETON_MCP_TOOL_PROFILE=core` in the MCP server's environment. It advertises 63 common tools instead of the full catalog. Use the default `all` profile when an agent needs the complete MIDI, audio, rack, or snapshot toolset; restart the server after changing profiles. The CLI's direct `call` command remains independent of the discovery profile.
 
@@ -116,7 +121,7 @@ It publishes 328 tools, 9 concrete resources, 13 resource templates and 89 promp
 | `ABLETON_MCP_SPLICE_ROOTS` | Existing macOS `~/Splice/Sounds` and `~/Library/Splice/Plug-in/samples` directories; otherwise `[]` | Override with a JSON array of absolute local Splice folders. Set `[]` to disable discovery. Local cache files are not proof of a download license; cloud search and sync are not supported. |
 | `ABLETON_MCP_CONFIRMATION_DIR` | `~/.cavi/ableton-mcp/confirmations` | Confirmation tokens for CLI `call`. |
 | `ABLETON_MCP_SNAPSHOT_DIR` | `~/.cavi/ableton-mcp/snapshots` | Saved track, device-chain, group-system, and MIDI-feel snapshots in separate subdirectories. |
-| `ABLETON_MCP_FIXTURE` | unset | `1` makes `npm start` serve fixture data without Live. |
+| `ABLETON_MCP_FIXTURE` | unset | `1` makes `ableton-mcp serve` serve fixture data without Live. |
 | `ABLETON_MCP_TOOL_PROFILE` | `all` | `core`: 63 common tools; `producer`: 12 specialist/session tools; `directory`: named native tools without coordinators; `all`: every tool. Compact profiles retain full runtime result validation. |
 
 ## Security

@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.10](https://arxiv.org/abs/2610.41877), Movens-Zero: Scaling Humanoid Motion Foundation Models with Large-Scale Human Videos
+- [arXiv 2026.10](https://arxiv.org/abs/2610.40748), WorldBridge: Bridging Video and Action for Task Generalization in World Action Models
+- [arXiv 2026.10](https://arxiv.org/abs/2610.41654), ∇Mimic: Ultra-Efficient Humanoid Control with Differentiable Simulation
 - [arXiv 2026.10](https://arxiv.org/abs/2610.34356), RynnVLA-Latent: Scaling Robotic Manipulation Foundation Models with 3D-Grounded Latent Actions
 - [arXiv 2026.10](https://arxiv.org/abs/2610.40564), Training Foundation Models with a Single Algorithm
 - [arXiv 2026.10](https://arxiv.org/abs/2610.34593), What Does World Modeling Actually Improve in Robot Action Learning?
@@ -755,6 +758,4 @@ Papers:
 - arXiv 2023.02, SceneDreamer: Unbounded 3D Scene Generation from 2D Image Collections, [code](https://github.com/FrozenBurning/SceneDreamer) / [page](https://scene-dreamer.github.io/)
 - arXiv 2023.04, Generative Agents: Interactive Simulacra of Human Behavior, [arXiv](https://arxiv.org/abs/2304.03442)
 - ICLR 2023 notable, NTFields: Neural Time Fields for Physics-Informed Robot Motion Planning, [OpenReview](https://openreview.net/forum?id=ApF0dmi1_9K)
-- arXiv 2023, For Pre-Trained Vision Models in Motor Control, Not All Policy Learning Methods are Created Equal, [arXiv](https://arxiv.org/abs/2304.04591)
-- code, Instruct-NeRF2NeRF: Editing 3D Scenes with Instructions, [GitHub](https://github.com/ayaanzhaque/instruct-nerf2nerf)
-- arXiv 2023, Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection, [arXiv](https://arxiv.org/abs/2303.05499) / [GitHub](https://
+- arXiv 2023, For Pre-Trained Vision Mode

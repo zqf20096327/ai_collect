@@ -1,0 +1,511 @@
+<h1 align="center">HACI&nbsp;Footprint</h1>
+
+<p align="center"><b>Human &amp; Agent · Computer Interaction</b></p>
+
+<p align="center">A TypeScript library for declaring web-app actions and journeys, serving their live availability to agents, and recording interaction outcomes.</p>
+
+<p align="center">
+  <strong>Your agent can reach your app — but it's flying blind.<br/>
+  Your app already knows what can be done here, and by whom. Hand the agent that map.</strong>
+</p>
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/haci-hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/haci-hero-light.svg">
+    <img alt="HACI Footprint — the classic term HCI becomes HACI as a yellow A (Agent) joins the Human's side; a person and an AI act on the app as a team." src="docs/assets/haci-hero-light.svg" width="100%">
+  </picture>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/npm/v/hcifootprint?style=flat&color=e0a400" alt="npm version">
+  <img src="https://img.shields.io/badge/tests-3541%20passing-f5b301?style=flat" alt="3541 tests passing">
+  <img src="https://img.shields.io/badge/core-zero--dependency-f5b301?style=flat" alt="zero-dependency core">
+  <img src="https://img.shields.io/badge/serves-a%20real%20MCP%20server-f5b301?style=flat" alt="serves a real MCP server">
+  <a href="https://github.com/footprintjs/hcifootprint/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+</p>
+
+<p align="center">
+  <strong>🌐 <a href="https://footprintjs.github.io/hcifootprint/">footprintjs.github.io/hcifootprint</a></strong> ·
+  <a href="https://footprintjs.github.io/hcifootprint/docs/">Docs</a> ·
+  <a href="https://footprintjs.github.io/hcifootprint/docs/get-started/quick-start">Quick start</a>
+</p>
+
+```bash
+npm install hcifootprint
+```
+
+> **1.0 — the names are frozen.** You author **actions**, you name **journeys**, and a **tool** is
+> what is served to a model. The pre-1.0 spellings (`tools:`, `skills:`) are gone, not deprecated —
+> see the [migration](CHANGELOG.md#100---2026-08-02).
+> **Coding agents:** start with the portable [adoption skill](skills/hcifootprint-adoption/SKILL.md).
+> [`llms.txt`](llms.txt) carries the API guide, with package version and import metadata generated from `package.json`.
+
+---
+
+## The problem
+
+An agent can already reach your app. The question is how it *operates* one.
+
+| How agents drive a UI today | What the integration still needs |
+|---|---|
+| Observe the page and operate browser controls | a way to connect what was clicked or seen to the intended business result |
+| Inspect the DOM | a choice of context to send, and the action's meaning beyond its markup |
+| Use selectors or RPA scripts | mappings kept current as the interface changes |
+
+These approaches work from the rendered interface. Browser automation remains useful
+for apps you do not own and for observing what a real screen does. With hcifootprint, an app you
+do own can also expose the meaning of its actions, their live availability and their outcomes.
+The two approaches can work together: a browser observation can be authoritative evidence when
+the app's adapter defines and reports it that way. A click or visible change alone does not
+automatically establish that the intended business action finished successfully.
+
+**Measured, on a real page**: a five-page demo's rendered DOM is 2,027 tokens; what this library
+sends for the same page is 332 — **6.1× less per turn**, at 41.5 tokens per available action. That is
+one page of one small app whose DOM is dominated by its shell, not a general saving guarantee;
+the script is in the repo (`node bench/token-cost/token-cost.mjs`) and the honest way to
+know your own number is to run it against your own app. A returning human doesn't — they carry a
+mental model of where things are and what they're allowed to do. **Your app holds that same map. This
+hands it to the agent.**
+
+And it is safe to adopt for one reason: **you are not opening your backend — you are letting an agent
+drive the frontend a human already can.** It acts as the signed-in user, through your own buttons and
+handlers, inside exactly the permissions they already have. No new endpoints, no new grants.
+
+---
+
+## The model
+
+**Three contexts.** An agent driving your app asks three questions, and this library answers exactly
+those — each in the same three parts: what you **declare**, what you **wire**, and what the **agent
+gets**.
+
+### 1 · The map — *what can this app do?*
+
+**Declare** the app as the tree you already picture: places, the things inside them, the named flows
+worth finishing. One sentence per action — that sentence is your label *and* the tool description the
+model reads.
+
+```ts
+pages: {
+  catalog:  { route: '/catalog',  actions: { 'add-to-cart': { does: 'Add the open dress to the cart', writes: ['cart.items'] } } },
+  checkout: { route: '/checkout', actions: { 'place-order': { does: 'Place the order', enabledWhen: { 'cart.items': { gt: 0 } }, confirm: true } } },
+},
+journeys: { purchase: { does: 'Buy a dress end to end', steps: ['add-to-cart', 'place-order'] } },
+```
+
+Already have a route table, a router's own nested route tree, a journey list, a live action store?
+`fromRoutes`, `fromReactRouter`, `fromJourneys` and `fromLiveStore` adopt them under one documented
+merge order — nobody re-types anything. `fromReactRouter` transcribes a page name from a fully-static
+address (`/projects/new` → `projects-new`) and refuses, naming both doors, wherever there is nothing
+to transcribe — a `:param`, a `*`, the root. It never guesses a name.
+
+**Wire: nothing.** A map is static data. It validates and freezes in one call, so it can be linted in
+CI and argued about in a pull request before your app runs at all.
+
+**The agent gets** one tool per journey, plus four fixed generics. **The tool list *is* the map**, and
+its bytes never change for the life of a conversation. A whole-page dump is never served — that is the
+thesis, not an optimisation.
+
+### 2 · Traversal — *where am I, and how do I get there?*
+
+**Declare** two fields, on the map you already wrote: `route` on a page, `goTo` on an action. An
+action's claim **is** the edge; pages declare no edges to one another.
+
+```ts
+cart: { route: '/cart', actions: { pay: { does: 'Check out', goTo: 'checkout' } } },
+```
+
+**Wire** the session, and one line wherever your router already knows the page changed.
+
+```ts
+const session = graph.createSession({ node: 'catalog' });
+session.sync('checkout');            // the router moved → the cursor moves
+```
+
+**The agent gets** where it is, whether arrival is `claimed` or `observed` — never a guessed third
+value meaning *did not arrive* — and the declared hops to any destination.
+
+### 3 · Actions — *what is possible here?*
+
+**Declare** what an action is, once, where it lives: `does`, `writes`, `enabledWhen`, `goTo`,
+`confirm`, `verify`, `input`, `humanDecides`.
+
+**Wire** your own functions, by reference, when the component that renders them mounts.
+
+```ts
+const group = session.registerActions('checkout', {
+  handlers: { 'place-order': (input) => shop.placeOrder(input) },
+});
+group.setEnabled('place-order', false);                // the greyed button
+group.setBusy('place-order', 'Placing your order…');   // your words, never ours
+session.updateState({ 'cart.items': 3 });              // your store → conditions re-evaluate
+```
+
+**The agent gets** one row per action that is offered here, carrying `enabled`, `blockedBecause`,
+`busy`, `holds`, `goesTo`, `expects`, `highEffect`, `humanDecides` and `unblockedBy`. Every stamp is
+presence-only: a key means your app said so, and no key means the library does not know.
+
+### Declared or wired? One question decides
+
+> **Can this fact change while the page is open?** If **no**, it is a declaration
+> (`enabledWhen`). If **yes**, it is a wire (`setBusy`).
+
+That is why there is no `busyWhen`: a condition can prove a state, but it cannot author a label, and a
+library-written label would be a library-written meaning.
+
+### And a fourth thing — which you never build
+
+The relations *between* actions are the part people expect to have to author. You don't.
+
+*Is `place-order` blocked, and by what?* `add-to-cart` writes `cart.items`; `place-order` waits on it.
+Nobody wrote an edge, and the edge is unambiguously there — so it is **derived, never authored**, and
+cannot drift from your graph:
+
+```ts
+session.whatUnblocks('checkout.place-order');
+// [{ affordanceId: 'catalog.add-to-cart', viaKeys: ['cart.items'] }]
+```
+
+*How do I get to checkout?* A route is walked from the `goTo` claims you already made:
+
+```ts
+session.howToReach('checkout');   // [{ action: 'catalog.open', to: 'product' }, …]
+```
+
+**Everything relational is derived from declarations you make for other reasons.** There is no edge
+API in this library — not between pages, not between actions. The only thing you declare that cannot
+be derived is *intent*: "these steps, in this order, toward this goal" — a
+[journey](https://footprintjs.github.io/hcifootprint/docs/map/journeys), because a preferred order is
+meaning, and meaning is yours.
+
+→ [The three contexts](https://footprintjs.github.io/hcifootprint/docs/get-started/three-contexts) ·
+[What would free it](https://footprintjs.github.io/hcifootprint/docs/actions/what-would-free-it) ·
+[How to reach a page](https://footprintjs.github.io/hcifootprint/docs/traversal/how-to-reach) ·
+[Navigation graph](https://footprintjs.github.io/hcifootprint/docs/map/navigation-graph)
+
+---
+
+## Map & Walker
+
+The three contexts above have one sentence under them, and it is the same sentence this
+library's siblings say at their own altitude:
+
+> **You declare the JourneyMap; the session is the Walker; the recording carries both.**
+
+Since 1.10.0 those two nouns have names in the API — `defineJourneyMap` and `JourneyMap`,
+**permanent aliases** of `buildNavigationGraph` and `NavigationGraph`. Same function object,
+same type, both names forever; neither is a rename, and a codebase may speak either dialect.
+
+```ts
+import { defineJourneyMap } from 'hcifootprint';
+
+const map = defineJourneyMap('shop', { pages: { /* … */ } });
+const walker = map.createSession({ node: 'catalog' });   // the walker IS the session
+```
+
+There is deliberately **no `Walker` to construct**. A walker is not a thing you wire up — it is
+the session you already create, standing on a node, moving. Three movers move it, and each
+lands on the record as a `Cause` (`kind` — was an offered edge fired, or did the world move? —
+plus `principal`, whose move it was):
+
+| Mover | What moves the cursor | On the record |
+|---|---|---|
+| **human** | a real click in your own controls — `watchPage` senses it, `contextful` catches the app's own call | `kind: 'fired'`, `principal: 'user'`, with `Attribution` grading what that claim is worth |
+| **agent** | the four served verbs through the MCP door — `whats_here`, `why`, `do_action`, `did_it_work` | `kind: 'fired'`, `principal: 'agent'`, plus the `offerId` of the row it planned against |
+| **guard** | your data: an action's `when` / `enabledWhen` judged against the state your store pushed | the guard's own evidence, and `blockedBecause` / `unblockedBy` when it says no |
+
+And the world moves on its own — a back button, a server push, an expiry. That is
+`kind: 'stimulus'`: recorded, never silently absorbed.
+
+Five moves make up walking, and every one of them is answered by something that already ships:
+
+| A walker… | Here it is |
+|---|---|
+| **looks** | `whats_here` — one row per action offered on this node |
+| **navigates** | `do_action` on an action declaring `goTo`; the row carries `goesTo`, and `howToReach` walks the hops first |
+| **moves inside a screen** | a fire landing on an area, a tab or a modal moves the **focus**, not the page — `session.focus`, with `focusHistory` recording who moved it |
+| **keeps a task list** | **journeys** — `commitJourney` opens a frame, `journeyStanding` says where the flow stands |
+| **verifies** | `did_it_work` — the settled facts of one fire, never a guess; the drift sensor (`checkGraph`) is the honesty backstop under it |
+
+The same pattern sits at three altitudes: [footprintjs](https://github.com/footprintjs/footPrint)
+walks **stages**, [agentfootprint](https://github.com/footprintjs/agentfootprint)
+(`defineSkillMap`) walks **skills**, and this walks **screens**.
+
+### Where the reader is: page, container, state
+
+> **Sync pages; observe the deeper place. `sync()` moves the walker and decides what is
+> served; `observeFocus()` says which tab or area the reader is in. Declare containers, and
+> report the deepest one on screen.**
+
+Position has three tiers, and each has one door: the page (`sync('run-detail')` — the walker
+moves, and what is served moves with it), the container inside it
+(`observeFocus('run-detail.why')` — any declared tab, area or modal path, and serving does NOT
+move), and state (`updateState`, which is not position). The middle one gets skipped because
+nothing forces it: declaring `tabs:` compiles, mounts and masks perfectly well while never once
+saying which tab the person is looking at.
+
+It has to be its own door. A tab is not a place the walker can stand — actions are served from
+the **page**, so a cursor parked on a tab would be served nothing — and a **person** clicking a
+tab fires nothing, which is exactly the case worth reporting.
+
+```ts
+session.show('run-detail.why');                              // which tab is VISIBLE
+session.observeFocus('run-detail.why', { principal: 'user' }); // where the READER is
+```
+
+```text
+You are on: run-detail.        →   You are on: run-detail.
+                                   Focus: run-detail.why.
+```
+
+Every served answer carries both halves as data: `youAreOn` is the page that serves,
+`lookingAt` is the deeper place. Without it a screen-driving agent has to deduce the open tab
+from whatever unlabelled state keys happen to move. `lintGraph` proves the authored half
+(`unevidenceable-tab`).
+
+→ [Map & Walker](https://footprintjs.github.io/hcifootprint/docs/map/map-and-walker)
+
+### When the action is already done
+
+> **An effect that is already true is not a pending one. When an action's declarative verify
+> contract covers every key it declares it writes and already holds at fire time, the fire never
+> waits for a state report that nothing will send — it settles on its own handler and answers
+> `alreadyTrue`.**
+
+An agent pressed a control while the thing it does was already the case — it asked to open a domain
+view while already inside that domain. The app's store publishes on *change*, so writing the value
+it already held notified nobody, no state report arrived, and the fire waited for one forever.
+`did_it_work` could only answer `still-pending`; the model read that as *the app is still working*
+and burned fifteen of its thirty steps on an outcome that could never arrive.
+
+Declare the postcondition beside the action and the library can see it, because `verify` is the one
+declaration carrying a **value** (`writes` is key names only, by design — nothing here infers what
+your handler would set):
+
+```ts
+'open-billing': {
+  does: 'Open the billing domain view',
+  writes: ['view.domain'],
+  verify: { 'view.domain': { eq: 'billing' } },
+}
+```
+
+The fire comes back carrying `alreadyTrue` — the conditions that already hold — plus one authored
+sentence that tells the model to move on. Your handler still runs; what changed is only what the
+fire *waits on*.
+
+→ [When it is already true](https://footprintjs.github.io/hcifootprint/docs/actions/already-true)
+
+---
+
+## Why this makes an agent better
+
+Not by making the model smarter. By never making it guess.
+
+Every turn, the agent gets **only what is true here, now** — one page's actions, not your whole app:
+
+```
+You are on: Checkout   (step 3 of 4)
+
+Actions here:
+  edit-address   Change the delivery address
+  place-order    Place the order          [not available]
+                 waiting on: cart.items
+                 which "Add to cart" writes — and it is running right now
+                 needs a person's approval before an agent may fire it
+
+Last outcome: address update — performed, verified
+```
+
+Follow what that removes. The model doesn't infer the page — it's told. It doesn't guess whether a
+control is clickable — it's told, and told *why not*, and *what would change it*. It doesn't wonder
+whether its last action worked — the outcome is a fact, not an assumption. It doesn't hunt for the
+finish line — a journey names the steps and the library says which are still open.
+
+**A greyed button is the whole argument.** A production integration's agent met one, was told only
+that it was disabled, fired it again to find out what would change, then told its human the app was
+broken. Nothing had failed — an upload was still running. That agent wasn't bad at its job; it was
+answering a question nobody had given it the facts for.
+
+Three consequences, in order of how much they matter:
+
+- **It stops hallucinating capability.** Anything derived rather than observed is flagged
+  (`arrival: 'claimed'`, `guardUnevaluated`, `presence: 'unknown'`). Every refusal is typed and
+  teaches — so the agent replans instead of inventing a cause.
+- **A smaller model goes further.** The reasoning that used to reconstruct your app from a DOM dump is
+  simply not spent. This is context engineering, not model choice.
+- **Context is scoped to the current page.** Large action lists can also use an opt-in byte
+  budget for complete action rows; that is not a bound on the whole response or model tokens.
+
+→ [Reading an action row](https://footprintjs.github.io/hcifootprint/docs/actions/reading-an-action-row) ·
+[Grounding](https://footprintjs.github.io/hcifootprint/docs/actions/grounding) ·
+[Modes](https://footprintjs.github.io/hcifootprint/docs/map/modes)
+
+---
+
+## Quick start
+
+Three steps. The first two run offline, with no API key.
+
+**1 · Describe the app** — the tree you already picture.
+
+```ts
+import { buildNavigationGraph } from 'hcifootprint';
+
+const graph = buildNavigationGraph('shop', {
+  pages: {
+    catalog: { actions: { 'add-to-cart': { does: 'Add the open dress to the cart' } } },
+    checkout: { actions: { 'place-order': { does: 'Place the order', confirm: true } } },
+  },
+});
+```
+
+**2 · Connect it** — components register what they have when they render; your router reports the page.
+
+```ts
+const session = graph.createSession();
+
+const group = session.registerActions('catalog', {
+  handlers: { 'add-to-cart': (input) => shop.add(input.id) },   // your own function, by reference
+});
+
+session.sync('checkout');                       // router change → the cursor moves
+session.updateState({ cartCount: 1 });          // your store → guards re-evaluate
+```
+
+**3 · Serve it** as a fixed set of MCP-shaped tools. The tool list never changes; what's doable *right
+now* arrives inside each result.
+
+```ts
+import { mcpServer } from 'hcifootprint/mcp';
+mcpServer(session);
+```
+
+For an existing agent loop, `serveToAgent(session)` exposes `tools()` + `call()` directly.
+The optional [`hcifootprint/webmcp`](https://footprintjs.github.io/hcifootprint/docs/reference/webmcp)
+entry point registers that same port with an explicitly supplied browser context. The owner
+uses an `AbortSignal` for cleanup, including React unmount; execution and approval still belong
+to the session. Browser support varies, so follow the host and lifecycle guidance.
+
+For large action lists, opt into `actionProjection: { maxBytes: 4096 }` on `serveToAgent` or
+`mcpServer`. The limit covers only the UTF-8 JSON bytes of the `actions` array. Rows stay whole,
+omissions are explicit, and a cursor retrieves the next page; changed state refuses a stale
+continuation. [Bounded action rows](https://footprintjs.github.io/hcifootprint/docs/map/modes#bounded-action-rows)
+explains the limits and refusals. This does not cap the rest of the response or model tokens.
+
+→ [Quick start](https://footprintjs.github.io/hcifootprint/docs/get-started/quick-start) ·
+[Adoption ladder](https://footprintjs.github.io/hcifootprint/docs/get-started/adoption-ladder) —
+start in guide mode, where the agent can only *describe* what's possible.
+
+### Continue a task across actions
+
+This is not limited to one button per model turn. There are two existing surfaces:
+
+- **Session journeys** describe a named flow across pages and model turns. The served tools
+  disclose ready and later steps, human decisions and settlement; the agent chooses its next move.
+  See [journeys and frames](https://footprintjs.github.io/hcifootprint/docs/map/journeys).
+- **Callable action walks** run an already-known sequence without another model call between
+  every step. `beginWalk(runtime, 'agent')` refreshes each live offer, can carry an earlier declared
+  output, and records which steps ran, refused or were never reached. `onRow` reports each landed
+  row; `interrupt` stops future steps with a reason. A new decision or missing input belongs back
+  with the planner or person. See [the checked two-action example](https://footprintjs.github.io/hcifootprint/docs/actions/the-walk).
+
+Within one callable action, `settle.progress` and `reportProgress` expose declared execution stages
+to subscribers. These observations, a returned handler, and a walk's invocation-complete manifest
+are separate from effect verification. Read the action's settlement before claiming business
+success. Callable walks do not automatically become Session journeys, MCP tools or WebMCP tools.
+
+**Since 3.2.0:** `walk.parallel([...], { concurrency })` runs independently available actions,
+including background reads. The sequential `run` API remains unchanged. Parallel dispatch still
+refreshes every offer and uses the existing principal/input gates, progress channels and effect receipts; it does
+not prove that the actions are independent or visible.
+
+**Page 1 → page 2 in one browser tab is a sequence.** When a second action depends on navigation
+or a screen becoming ready, use sequential execution and wait for the application's actual readiness
+evidence before the next action.
+A binding's `node` is a label, not a visibility check, and two different nodes do not prove
+independence. Disconnect unmounted controls and reflect the active page in enabledness for
+controls kept mounted but hidden. Separate browser contexts help only when the host actually
+provides them; hcifootprint does not create them. Browsers can batch operations too—the useful
+choice is the app's declared meaning and live checks, not a claim that every browser click needs
+another model turn. See [parallel semantics and the background-read example](https://footprintjs.github.io/hcifootprint/docs/actions/the-walk#parallel-independent-actions).
+
+The session's record is provided by `foottrace`. If you name its rows, import
+`CommitBundle` from `foottrace` instead of `hcifootprint`; trace readers such as
+`causalChain` and `sliceForKey` come from `foottrace` too. Add `foottrace ^1.0.0`
+to your application's dependencies when importing these names. This type export removal
+is a breaking change from 2.x; session methods and record bytes are unchanged.
+HCI supports `footprintjs ^9.47.0 || ^10.0.0` with `foottrace ^1.0.0`.
+
+---
+
+## Honest by construction
+
+Two properties do most of the safety work, and they are why this is worth adopting over a DOM dump.
+
+**It says what it can't see.** Derived facts are marked as derived. Unknowable ones are `unknown`,
+never guessed. A failed read says *"the app could not re-read its actions here"* instead of serving an
+empty list as truth. Silence is never a verdict, and a clock is never evidence.
+
+**A human's yes is a reference, not a claim.** For a high-effect action, an agent asserting *"the user
+approved"* proves nothing. The library requires a pointer to a decision a person actually recorded,
+bound to the receipts they were shown.
+
+**And some choices are not the agent's to make at all.** `humanDecides` says a decision belongs to a
+person — the agent presents the options and stops, and the human answers through your own control.
+It is disclosed on every surface and enforced on none: the flow is simply in someone's hands, and
+the library can say so without inventing a gate you never declared.
+
+```ts
+'choose-shipping-speed': {
+  does: 'Choose a shipping speed',
+  writes: ['checkout.shipping'],
+  humanDecides: {
+    about: 'which shipping speed',                   // your words, carried as data
+    doneWhen: { 'checkout.shipping': { ne: '' } },   // your own "it has been decided"
+  },
+}
+```
+
+→ [Human-in-the-loop](https://footprintjs.github.io/hcifootprint/docs/actions/receipts) ·
+[Whose decision it is](https://footprintjs.github.io/hcifootprint/docs/actions/whose-decision-it-is) ·
+[Paused is not failed](https://footprintjs.github.io/hcifootprint/docs/actions/paused-not-failed) ·
+[The human sensor](https://footprintjs.github.io/hcifootprint/docs/actions/human-sensor)
+
+---
+
+## More
+
+| | |
+|---|---|
+| **Async & progress** — the promise is the completion signal; `busy` in the app's own words | [Going async](https://footprintjs.github.io/hcifootprint/docs/actions/going-async) · [Waiting for the app](https://footprintjs.github.io/hcifootprint/docs/actions/waiting-for-the-app) |
+| **Keep the graph true** — a drift harness that fails in CI, not in front of a user, and a conformance check no source adapter can silently drop a declared field past | [Testing](https://footprintjs.github.io/hcifootprint/docs/reference/testing) |
+| **Adopt what you have** — routes, journeys or a live store as graph sources | [Graph sources](https://footprintjs.github.io/hcifootprint/docs/map/graph-sources) |
+| **React** — one hook per control, and a five-line port for any other framework | [React binding](https://footprintjs.github.io/hcifootprint/docs/actions/react-binding) |
+| **Tree-shakeable, ESM-first** — the sensor is 11.9 KB; the React hook 610 B | [Tree-shaking](https://footprintjs.github.io/hcifootprint/docs/reference/tree-shaking) |
+| **The gap ledger** — what the agent *couldn't* do, recorded, never hidden | [Grounding](https://footprintjs.github.io/hcifootprint/docs/actions/grounding) |
+
+---
+
+## Development
+
+```bash
+npm install && npm test        # the suite, with the badge gate
+npm run build                  # dist/, ESM-first
+npm run docs:truth             # does the documentation describe what ships?
+```
+
+## Built on
+
+[footprintjs](https://github.com/footprintjs/footPrint) for guard evaluation and schema normalization ·
+[foottrace](https://github.com/footprintjs/foottrace) for the commit log and its readers ·
+[agentfootprint](https://github.com/footprintjs/agentfootprint) if you want the agent loop too.
+
+## Citing
+
+See [`CITATION.cff`](CITATION.cff), or use GitHub's **Cite this repository**.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

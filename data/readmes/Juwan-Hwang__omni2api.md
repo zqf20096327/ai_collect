@@ -77,6 +77,70 @@ What the server does for whoever sits in the seat:
   `input_file`, Anthropic `document`, a PDF from Claude Code's Read, any
   binary) are saved locally for the seat. Standard `/v1/files` uploads and
   `file_id` references work too.
+- **More than chat.** Other OpenAI endpoints reach the seat as one-off
+  tasks with a one-line contract (`API images.generations: 1 png image(s),
+  size 1024x1024 ...`); the seat answers with files (`oh-seat reply -a
+  out.png`) or text, and the caller gets the standard response:
+  `/v1/images/generations`, `/edits`, `/variations` (`b64_json`, `url`, `n`,
+  streaming); `/v1/audio/speech` (raw audio or SSE), `/transcriptions` and
+  `/translations` (json, text, srt, vtt, verbose_json, diarized_json,
+  streaming); `/v1/videos` (queued job, the seat attaches an mp4 and
+  optionally a thumbnail; content, remix, list, delete); `/v1/embeddings` (the seat sends vectors, checked before they
+  reach the caller; `dimensions`, float or base64); `/v1/moderations`
+  (text and image inputs, the seat names the categories); legacy
+  `/v1/completions` (suffix fill-in, `n`, `echo`, `stop`, streaming).
+- **Realtime.** `/v1/realtime` over WebSocket (header key, or
+  `client_secrets` ephemeral keys as the browser subprotocol): text or
+  voice turns, tools, server VAD turn taking, cancel. Each response is one
+  turn of a conversation the seat sits in; input audio arrives as WAV, and
+  for voice the seat attaches its spoken answer with the transcript as text.
+- **Stored objects.** Responses are kept (`store`, default on):
+  `previous_response_id`, `background` with polling and cancel, retrieve,
+  delete, `input_items`, `input_tokens`, `compact` (the seat writes the
+  summary; the compaction item stands in for the history afterwards). Chat completions with
+  `store: true` can be listed, retrieved, re-tagged, deleted, and their
+  messages read. The Conversations API (`conv_` ids, items, `conversation`
+  on Responses) shares `/v1/conversations` with this server's own history
+  (`cnv_` ids, responder key). `/v1/uploads` (parts into a file) and
+  `/v1/batches` (each JSONL line runs through the endpoint it names, four
+  at a time; output and error files, cancel). `/v1/vector_stores` with
+  files, file batches and content; search is a seat task (the store's files
+  attached, ranked passages back, checked). `/v1/containers` and their
+  files. In memory, per key.
+- **Assistants API.** Assistants, threads, messages, runs (poll or
+  stream, function tools with `submit_tool_outputs`, steps, cancel,
+  create-and-run). A thread is one conversation of the seat's.
+- **Fine-tuning, evals, graders.** A fine-tuning job hands the training
+  file to the seat and succeeds with an `ft:` model (events, checkpoints,
+  listed in `/v1/models`, deletable). Evals sample each row through the
+  seat and grade it: `string_check` and `text_similarity` here, model and
+  python graders answered by the seat; `/v1/fine_tuning/alpha/graders` run
+  and validate.
+
+- **Libraries.** Custom voices and voice consents (used by
+  `/v1/audio/speech`), skills with versions and content, video characters.
+- **Realtime extras.** Input audio transcription in realtime sessions,
+  `/v1/realtime/transcription_sessions` and translation sessions over
+  WebSocket with their client secrets.
+- **Agents API (beta).** Agents, sessions with an event stream (SSE),
+  turns and items, function tools answered with `tool_result` events,
+  cancel; environments with files, templates, vaults and credentials (never
+  echoed back), automations (cron or once) with invocations, pause and
+  resume. A session is one conversation of the seat's.
+- **ChatKit.** `/v1/chatkit/sessions` and threads, plus the ChatKit server
+  protocol at `POST /v1/chatkit` (create, add message, retry, list, update,
+  delete, feedback), streamed the way ChatKit clients expect.
+- **Webhooks.** `/v1/webhook_endpoints` (rotate secret, test) and
+  `/v1/webhook_event_types`; status changes of jobs (videos, batches,
+  responses, fine-tuning, evals) are delivered signed per Standard Webhooks,
+  so the SDKs' `webhooks.unwrap` verifies them, with retries.
+- **Decisions and provenance.** `/v1/decisions` (the seat answers each
+  question; probabilities checked) and `/v1/content_provenance_checks`
+  (C2PA manifest check, and files the seat made are recognized).
+- **Not offered (501).** Organization and admin, projects, safety,
+  `/v1/live`, and SIP/WebRTC realtime calls: they need an OpenAI account
+  behind them, so they answer `501` with an OpenAI-style error rather than
+  pretending.
 
 ## Quick start
 

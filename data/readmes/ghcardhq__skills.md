@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://githubcard.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://githubcard.com/brand/githubcard-lockup-white.svg">
+      <img src="https://githubcard.com/brand/githubcard-lockup.svg" alt="GitHubCard" height="48">
+    </picture>
+  </a>
+</p>
+
 # GitHubCard skills for Claude Code
 
 A Claude Code plugin marketplace from [GitHubCard](https://githubcard.com). The

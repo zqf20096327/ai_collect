@@ -93,13 +93,13 @@ command before it runs.
 ## How well it works
 
 Pilot is an early beta. On four blind test sets (56 requests never used during development,
-three runs each), gemma4 e4b on 0.1.0-beta.8:
+three runs each), gemma4 e4b on [0.1.0-beta.9](https://github.com/dutchman-cad/pilot/releases/tag/v0.1.0-beta.9):
 
 | How the part was built | Attempts | Built correctly |
 | --- | ---: | ---: |
-| The model filled in a recipe's form | 150 | 100 (67%) |
-| Pilot read every value from the request, no model | 4 | 3 |
-| The model drove SolidCraft itself, with Pilot's repairs | 14 | 3 (21%) |
+| The model filled in a recipe's form | 149 | 101 (68%) |
+| Pilot read every value from the request, no model | 3 | 3 |
+| The model drove SolidCraft itself, with Pilot's repairs | 16 | 2 (12%) |
 | **All** | **168** | **106 (63%)** |
 
 The same model without Pilot built 4 of the 56 (7%). So the recipes are what make a small
@@ -108,22 +108,23 @@ so these numbers say more about recipe parts than about everything people ask fo
 numbers, and results with other models, are in
 [the results issue](https://github.com/dutchman-cad/pilot/issues/1).
 
-Free-form requests are harder. A fifth blind set has 30 everyday requests (spacers, knobs,
-brackets, hinges, cable clips, enclosures, and seven edits to an existing part), written
-without looking at the recipes. Pilot offers a recipe for 16 of them. gemma4 e4b, three runs
-each, the same settings with and without Pilot, average parts built correctly:
+Free-form requests are harder. A fifth blind set has everyday requests (spacers, knobs,
+brackets, hinges, cable clips, and enclosures), written without looking at the recipes. Five
+of its 30 requests are no longer blind, so these numbers use the other 25. gemma4 e4b, three
+runs each, the same settings with and without Pilot, average parts built correctly:
 
 | Requests | Without Pilot | With Pilot |
 | --- | ---: | ---: |
-| A recipe was offered (16) | 3.7 (23%) | 4.0 (25%) |
-| No recipe (14) | 3.7 (26%) | 3.0 (21%) |
-| **All 30** | **7.3 (24%)** | **7.0 (23%)** |
+| A recipe was offered (15) | 3.7 (24%) | 6.0 (40%) |
+| No recipe (10) | 2.0 (20%) | 3.3 (33%) |
+| **All 25** | **5.7 (23%)** | **9.3 (37%)** |
 
-So on requests like these, Pilot does not help yet. A recipe that is offered often does not
-fit the part (a hinge leaf or a flanged pulley is not a plate), and edits to an existing part
-went worse with Pilot (1.0 of 7 against 2.7). The most common failures are holes that are
-missing or the wrong size, parts left as separate pieces, and wrong overall sizes. Each of
-these is being worked on, and these numbers will be updated as the fixes are measured.
+So Pilot helps on requests like these, mostly where a recipe fits, and most of them still
+fail. The most common failures are holes that are missing or the wrong size, wrong overall
+sizes, and missing features. Without a recipe, expect little from a small model.
+
+Edits to an existing part: on a separate blind set of 12 edit requests, measured the same
+way, gemma4 e4b built 5.3 with Pilot against 2.7 without.
 
 ## Models that work
 

@@ -12,6 +12,13 @@ Skills are now invoked as `cpython:dev`, `cpython:build`, `cpython:style`, `cpyt
 
 To use these skills in Claude Code within a CPython repository checkout:
 
+On Claude Code 2.1.275 or later, one step adds the marketplace and installs the plugin:
+```
+/plugin install cpython --marketplace gpshead/cpython-skills
+```
+
+Or, on any version:
+
 1. Add the marketplace:
    ```
    /plugin marketplace add gpshead/cpython-skills
@@ -93,11 +100,14 @@ Covers:
 
 Covers:
 - Mirroring findings locally and treating them as untrusted data - only repro scripts run, under `build/python -I` from `do-not-commit/sandbox/`
+- Running every repro and test under a bundled memory-capped runner (`scripts/run-capped.sh`), so one runaway allocation can't get the whole session OOM-killed
 - Parallel read-only triage: reproduce on current main, find the introducing change, critique the scanner's patch, search GitHub for duplicates and related work
+- Classifying each finding against the devguide security policy (vulnerability, borderline or ordinary bug) and, separately, on whether it is worth fixing
 - Verdicts (new PR, needs redesign, already covered upstream, docs-only) and a ranked triage report published as a private artifact
 - One worktree and subagent per worthwhile finding: minimal fix, tests that fail without it, one commit with a `gh-XXXXXX` placeholder
-- Terse issue/PR drafts plus an `open.sh` the human runs to file the issue, fill in the number, push to their fork and open a draft PR
-- Reviewing every agent's result before anything is called ready
+- Terse issue/PR drafts plus an `open.sh` the human runs to file the issue, fill in the number, push to their fork and open a draft PR; the brief and per-route scripts ship as files in the skill's `assets/`
+- For possible vulnerabilities, one neutral text and a script that asks the human whether to file a public issue or a private security advisory; the human always picks the route, and a match to an existing private advisory gets a script that only touches the advisory's private fork
+- Independent review of every branch by a fresh agent, and by the orchestrator, before anything is called ready
 
 ### Commands
 

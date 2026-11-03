@@ -53,16 +53,15 @@ Cinq opérations façon système de fichiers, données au modèle de réponse, d
 - **Reranking Cohere + parent-child + multi-query** : petits chunks pour matcher, gros chunks pour répondre.
 
 ## Stack de modèles
-Claude et les embeddings passent, au choix (`MODEL_PROVIDER`), par **Amazon Bedrock** (région
-`eu-west-3`, par défaut) ou directement par les **API Anthropic et Cohere**. Les mêmes modèles
-dans les deux cas :
+Claude, les embeddings et le rerank passent, au choix (`MODEL_PROVIDER`), directement par les
+**API Anthropic et Cohere** (par défaut) ou par **Amazon Bedrock** (région `eu-west-3`) :
 - 💎 Claude Sonnet 4.6 (recherche à outils + génération) + Claude Haiku 4.5 (sous-agents : pertinence, routage, multi-query)
-- ⚖️ Évaluation, toujours sur Bedrock : Qwen3 235B (juge LLM, à Francfort, calibré sur annotation humaine) et Ministral 3 14B (answer relevancy, en eu-west-1). Hors famille Claude : le juge ne note pas sa propre famille
 - 🧠 Cohere Embed v4 (embeddings, 1024 dimensions) — identique des deux côtés : changer de fournisseur ne demande pas de réindexer
-- 🧠 Cohere Rerank 3.5 (absent de Paris : appelé à Francfort, données en UE). En mode `direct` : Cohere Rerank 4 Pro par l'API Cohere
+- 🧠 Cohere Rerank 4 Pro par l'API Cohere. En mode `bedrock` : Cohere Rerank 3.5 (absent de Paris : appelé à Francfort, données en UE)
+- ⚖️ Évaluation, hors famille Claude (le juge ne note pas sa propre famille) : Mistral Large 4 (juge LLM, par l'API Mistral) et Ministral 3 14B (answer relevancy, toujours sur Bedrock, en eu-west-1)
 
 Toujours par leur propre API :
-- ⚡ Mistral OCR (absent de Bedrock)
+- ⚡ Mistral OCR (absent de Bedrock) et juge Mistral Large 4
 - 🗄️ Qdrant Cloud (base vectorielle, un espace et un HNSW par utilisateur)
 
 ## Installation
@@ -81,36 +80,35 @@ uv sync
 
 Choisissez d'abord le fournisseur des modèles Claude et des embeddings :
 
-| `MODEL_PROVIDER` | Claude (Sonnet 4.6, Haiku 4.5) | Embeddings (Cohere Embed v4) | Prérequis |
+| `MODEL_PROVIDER` | Claude (Sonnet 4.6, Haiku 4.5) | Embeddings et rerank (Cohere) | Prérequis |
 |---|---|---|---|
-| `bedrock` (défaut) | Amazon Bedrock | Amazon Bedrock | Compte AWS avec `bedrock:InvokeModel`, accès activé dans la console Bedrock à Claude Sonnet 4.6, Claude Haiku 4.5 et Cohere Embed v4 |
-| `direct` | API Anthropic | API Cohere | Clé [platform.claude.com](https://platform.claude.com) |
+| `direct` (défaut) | API Anthropic | API Cohere | Clés [platform.claude.com](https://platform.claude.com) et [dashboard.cohere.com](https://dashboard.cohere.com) |
+| `bedrock` | Amazon Bedrock | Amazon Bedrock | Compte AWS avec `bedrock:InvokeModel`, accès activé dans la console Bedrock à Claude Sonnet 4.6, Claude Haiku 4.5, Cohere Embed v4 et Rerank 3.5 |
 
 Dans tous les cas :
-- **Mistral** : une clé sur [console.mistral.ai](https://console.mistral.ai), pour l'OCR.
-- **Cohere** : une clé sur [dashboard.cohere.com](https://dashboard.cohere.com), pour le reranker (et les embeddings en mode `direct`).
+- **Mistral** : une clé sur [console.mistral.ai](https://console.mistral.ai), pour l'OCR et le juge d'évaluation.
 - **Qdrant** : un cluster sur [cloud.qdrant.io](https://cloud.qdrant.io) (AWS, région proche d'eu-west-3). Sans `QDRANT_URL`, Qdrant tourne en mémoire (données perdues au redémarrage).
 
 Fichier `.env` :
 ```bash
-# --- Fournisseur des modèles : bedrock (défaut) ou direct ---
-MODEL_PROVIDER=bedrock
+# --- Fournisseur des modèles : direct (défaut) ou bedrock ---
+MODEL_PROVIDER=direct
 
 # --- Toujours requis ---
-MISTRALAI_API_KEY=votre_clé_api_mistral_ici      # OCR
+MISTRALAI_API_KEY=votre_clé_api_mistral_ici      # OCR et juge d'évaluation
 QDRANT_URL=https://xxxx.eu-central-1-0.aws.cloud.qdrant.io:6333
 QDRANT_API_KEY=votre_clé_qdrant_ici
 
-# --- MODEL_PROVIDER=bedrock ---
+# --- MODEL_PROVIDER=direct ---
+ANTHROPIC_API_KEY=votre_clé_api_anthropic_ici
+COHERE_API_KEY=votre_clé_api_cohere_ici          # embeddings et reranker
+
+# --- MODEL_PROVIDER=bedrock, ou métrique answer relevancy de l'évaluation ---
 # Facultatif si ~/.aws/credentials ou un rôle IAM suffit. Présentes ici, ces clés passent
 # AVANT les variables AWS du shell (un AWS_SESSION_TOKEN expiré dans le terminal ne gêne plus).
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=eu-west-3
-
-# --- MODEL_PROVIDER=direct ---
-ANTHROPIC_API_KEY=votre_clé_api_anthropic_ici
-COHERE_API_KEY=votre_clé_api_cohere_ici          # embeddings et reranker
 ```
 
 Réglages facultatifs (valeurs par défaut) :
@@ -123,6 +121,7 @@ REASONING_MODEL_ID=
 MODEL_SMALL_ID=
 MODEL_ID=
 EMBEDDING_MODEL_ID=
+EVAL_JUDGE_MODEL_ID=mistral-large-4  # juge d'évaluation, par l'API Mistral
 REASONING_EFFORT=medium          # low | medium | high | max
 RERANK_MODEL=
 RERANK_REGION=eu-central-1       # Bedrock : Rerank 3.5 n'existe pas à Paris
@@ -225,7 +224,7 @@ qu'un jeton signé qui lie la trace à son espace : en production, définir `DJA
    rejetée et le commentaire en métadonnées. `uv run python backend/evals/feedback/collect.py` rattrape les
    votes manqués (redémarrage du serveur, LangSmith indisponible), sans doublon.
    `FEEDBACK_AUTO_COLLECT=false` coupe le rangement automatique.
-2. **Analyser** : chaque 👎 reçoit une cause d'échec proposée par le juge (Qwen3 235B, pas Claude) :
+2. **Analyser** : chaque 👎 reçoit une cause d'échec proposée par le juge (Mistral Large 4, pas Claude) :
    `mauvais_document`, `passage_manquant`, `erreur_lecture`, `erreur_calcul`, `refus_a_tort`,
    `hors_corpus`, `forme` ou `autre`. Elle est aussi posée en feedback `failure_category` sur la trace,
    et `collect.py` affiche la répartition de ce qu'il rattrape. La cause dit où corriger : routage, retrieval, prompt ou outils.
@@ -242,14 +241,14 @@ d'un utilisateur et fuiraient vers les autres espaces. Elles servent de référe
 
 **1. Les vraies questions** — *tout seul, à chaque question*
 
-4 juges (Claude Sonnet 4.6 sur Bedrock) relisent chaque question posée en production et disent oui
+4 juges (Mistral Large 4) relisent chaque question posée en production et disent oui
 ou non : l'agent a-t-il bien choisi entre chercher et répondre (`tool_selection`) ? le
 vérificateur de pertinence a-t-il donné le bon label (`relevance_check_correct`) ? la réponse
 ne dit-elle que ce qu'il y a dans les passages (`faithfulness`) ? répond-elle à la question
-posée (`answer_relevance`) ? ~0,01 à 0,04 $ par question. Les règles se créent une fois avec
-`backend/evals/online_evaluators.py`, après avoir ajouté `AWS_ACCESS_KEY_ID` et
-`AWS_SECRET_ACCESS_KEY` dans LangSmith (Settings → Secrets). Le juge est de la même famille que
-l'agent : choix assumé de tout passer par Bedrock (avant le 11 oct. 2026 : Mistral Large). `backend/evals/judge_calibration.py` mesure ensuite l'accord de ces juges
+posée (`answer_relevance`) ? Les règles se créent une fois avec
+`backend/evals/online_evaluators.py`, après avoir ajouté `MISTRAL_API_KEY` dans
+LangSmith (Settings → Secrets) : ce nom exact, sans le « AI » de `MISTRALAI_API_KEY`. Le juge est hors
+famille Claude (Claude Sonnet 4.6 sur Bedrock jusqu'au 1er nov. 2026 : verdicts non comparables). `backend/evals/judge_calibration.py` mesure ensuite l'accord de ces juges
 avec les 👍/👎 (lecture seule, gratuit).
 
 Un seul projet LangSmith, `agentic-rag` : les vraies questions, et tout ce que produisent les
@@ -289,7 +288,7 @@ Rien n'est livré dans le dépôt : ni PDF, ni questions, ni index. Une seule co
 | `LANGSMITH_API_KEY` | écrire le dataset de questions dans LangSmith |
 | `MISTRALAI_API_KEY` | l'OCR des documents listés dans `FULL_OCR_DOCS` (Mistral OCR) |
 | `QDRANT_URL`, `QDRANT_API_KEY` | l'index persistant (sans `QDRANT_URL`, Qdrant tourne en mémoire et l'index serait perdu) |
-| AWS (`MODEL_PROVIDER=bedrock`) ou `COHERE_API_KEY` (`direct`) | les embeddings Cohere Embed v4 des chunks |
+| `COHERE_API_KEY` (`direct`) ou AWS (`MODEL_PROVIDER=bedrock`) | les embeddings Cohere Embed v4 des chunks |
 
 **2. Lancer la préparation** :
 ```bash

@@ -19,16 +19,34 @@ This repository is the public home for Selfcoder documentation, Marketplace inst
 
 ## What Selfcoder Does
 
+Selfcoder connects to models served by **LM Studio**, **Ollama**, **vLLM**, **llama.cpp**, and other OpenAI-compatible servers.
+
+**Plan, build, and chat**
+
 - Adds a dedicated chat panel for self-hosted AI coding sessions.
 - Adds **Plan mode** for investigating a codebase and designing a solution without editing files or running terminal commands.
 - Includes **Agent mode** for implementing and verifying larger workspace tasks, with permission controls, change review, and revert.
-- Connects to models served by **LM Studio**, **Ollama**, **vLLM**, **llama.cpp**, and other OpenAI-compatible servers.
+- Lets Plan and Agent use **skills** and **workspace agents** from OpenCode, Claude Code, Codex, Copilot, Cursor, and Gemini folders.
 - Supports model-aware workspace context, pinned files, attachments, and explicit `@` mentions for files, folders, symbols, Git changes, terminal output, and codebase search.
 - Keeps searchable chat history with editable names and favorites, and lets you branch any assistant response into a new conversation.
-- Includes sidepanel slash commands for help, context preview, review, model listing, export, compaction, and project initialization.
+- Includes sidepanel slash commands for help, context preview, review, model listing, skills, export, compaction, and project initialization.
+
+**In the editor**
+
+- Suggests code as you type with **inline code completion** from a local fill-in-the-middle model.
+- Adds a **Selfcoder** editor menu to explain, fix, document, refactor, or generate tests for the selected code.
+- Adds a **Fix with Selfcoder** quick fix that sends errors and warnings with the surrounding code.
+
+**VS Code integration**
+
 - Integrates with VS Code native chat through the `@Selfcoder` participant.
 - Exposes eligible configured models to the VS Code model picker.
 - Supports image attachments for vision-capable models.
+
+**Setup and health**
+
+- Includes a **Get Started with Selfcoder** walkthrough, from starting a model server to your first chat and inline completion.
+- Shows a **Backend Health** view with the server status, the models in memory and their GPU/CPU split, and likely causes of slow replies.
 
 
 <p align="center">
@@ -47,7 +65,9 @@ To install it from VS Code:
 4. Install the extension published by "Coderoom".
 5. Reload VS Code if prompted.
 
-After installing, start your model backend, pick a model, and open Selfcoder from the VS Code activity bar.
+Selfcoder requires VS Code 1.106 or later.
+
+After installing, start your model backend, pick a model, and open Selfcoder from the VS Code chat bar. The **Get Started with Selfcoder** walkthrough opens after install and guides you through the setup.
 
 ## Chat, Plan, And Agent
 
@@ -61,7 +81,19 @@ Use the mode selector in the Selfcoder composer to choose how much action the mo
 
 Plan and Agent require a tool-capable model. They run through Selfcoder's managed OpenCode runtime and share one session, so you can investigate in Plan and switch to Agent without losing the reasoning and repository context. Switching modes never starts implementation by itself.
 
-See [Plan Mode](docs/plan-mode.md) for the safety model and workflow, or [Core Workflows](docs/core-workflows.md) for all three modes.
+In Plan and Agent, add a skill with `@skill` or the **Skills** button, or run a turn as one of your workspace agents. An agent's declared tools can narrow the mode's permissions, but never widen them.
+
+See [Plan Mode](docs/plan-mode.md) for the safety model and workflow, [Skills and Workspace Agents](docs/skills-and-agents.md) for supported folders, or [Core Workflows](docs/core-workflows.md) for all three modes.
+
+## Selfcoder In The Editor
+
+**Inline code completion.** Selfcoder can suggest code as ghost text while you type, using a local fill-in-the-middle (FIM) model such as Qwen Coder, Codestral, DeepSeek Coder, StarCoder, CodeGemma, or Code Llama. Press **Tab** to accept a suggestion. Inline completion is off by default; run **Selfcoder: Select Inline Code Completion Model** to turn it on. The completion model is separate from the chat model, so a small, fast model can complete code while a larger one handles chat.
+
+**Editor actions.** Right-click in the editor and open the **Selfcoder** menu to **Explain**, **Fix**, **Generate Tests**, **Add Docs**, or **Refactor** the selected code, or the whole file when nothing is selected.
+
+**Quick fixes.** Use **Fix with Selfcoder** from the lightbulb, `Ctrl+.` / `Cmd+.`, the problem hover, or the Problems view to send errors and warnings with the surrounding code.
+
+Editor actions and quick fixes run in the sidepanel's current Chat, Plan, or Agent mode. See [Inline Code Completion](docs/inline-completion.md) and [Editor Actions and Quick Fixes](docs/editor-actions.md).
 
 ## Supported Backends
 
@@ -83,6 +115,9 @@ Useful starting points:
 - [Getting Started](docs/getting-started.md)
 - [Core Workflows](docs/core-workflows.md)
 - [Plan Mode](docs/plan-mode.md)
+- [Inline Code Completion](docs/inline-completion.md)
+- [Editor Actions and Quick Fixes](docs/editor-actions.md)
+- [Skills and Workspace Agents](docs/skills-and-agents.md)
 - [Slash Commands](docs/slash-commands.md)
 - [Context and Attachments](docs/context-and-attachments.md)
 - [Models and Backends](docs/models-and-backends.md)

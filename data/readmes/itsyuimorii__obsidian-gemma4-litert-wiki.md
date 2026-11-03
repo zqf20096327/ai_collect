@@ -189,7 +189,7 @@ All of these are on the command palette (<kbd>Cmd/Ctrl</kbd> + <kbd>P</kbd>) und
 
 | Command | What it does |
 |---|---|
-| **Ingest this note into wiki (local Gemma)** | One strict JSON extraction (summary, 3 tags, 3–5 key points, salient mentions, self-rated confidence) plus a validated related-pages pick from the index — previewed in a review modal, written only on approval. Raw notes are never modified by the plugin; ingested notes get a badge in the file explorer. |
+| **Ingest this note into wiki (local Gemma)** | One strict JSON extraction (summary, up to 3 English tags, 3–12 key points scaled to the note's sections, salient mentions, self-rated confidence; summary and key points in the note's own language), a yes-or-no check on any tag reused from the wiki that the note does not name, and a validated related-pages pick from the index — previewed in a review modal, written only on approval. Raw notes are never modified by the plugin; ingested notes get a badge in the file explorer. |
 | **Scan a folder into the wiki (batch, local Gemma)** | The same extraction across whole folders, for new or changed notes only. Opens a dialog that **counts what each folder holds and estimates the run time before you commit**, remembers your last pick, drafts everything first, then shows one review list **sorted low-confidence first**. Scope is opt-in: it never sweeps the vault without you ticking a folder. |
 | **Stop the running scan** | Only in the palette while a scan is running; the *Scan a folder* chip becomes *Stop scan* at the same time. A model call cannot be interrupted, so **the note in flight finishes and is kept** — everything drafted so far still goes to the review list, and the rest is offered on the next scan. Stopping never loses work and never writes anything. |
 | **Suggest tags & links for active note (local Gemma)** | Proposes frontmatter tags and links to related wiki pages for one note, behind a preview. |
@@ -243,7 +243,7 @@ The first row is the only one this project can claim and the others cannot. Most
 | **Which model** | One. Gemma 4 E4B, plus whatever LiteRT-LM comes to support. You cannot bring your own. | Your pick, frontier cloud models included — far more capable than anything that fits in a renderer process. Sixteen or more providers is unremarkable in this category. |
 | **Mobile** | No, and structurally so: it needs WebGPU and ~3 GB on disk. | Yes, wherever the provider is reachable over HTTP. |
 | **What it can read** | Markdown notes. | Markdown, and commonly PDFs, images and Office documents as well — through providers that take files directly, or a conversion backend. |
-| **Interface language** | English. This README is also in Japanese; the plugin's interface is not translated. | Often many. Eleven-language interfaces exist in this category. |
+| **Interface language** | English, Japanese and Simplified Chinese. This README is also in Japanese. | Often many. Eleven-language interfaces exist in this category. |
 | **What it costs to run** | ~3 GB of disk, once. | Free against a local daemon; per-token against a cloud provider. |
 | **Index on disk** | None. The wiki is plain Markdown in your vault: nothing is embedded, nothing is rebuilt when you open a note, nothing has to be regenerated on a second machine. | Commonly a separate embedding index — hundreds of megabytes per few thousand notes, rebuilt per device, and a second one if you run two such plugins. |
 | **Paid tier** | None. GPL-3.0, every feature, no account. | Free tiers with paid features are common in this category. |
@@ -279,7 +279,7 @@ No. It needs WebGPU, Node APIs that Obsidian mobile does not have, and about 3 G
 Windows may be running Obsidian on the integrated GPU. **Check setup (diagnostics)** names the GPU in use, and [Not for you if](#-not-for-you-if) has the fix.
 
 **Which languages do my notes need to be in?**
-English, Japanese, Chinese and Korean notes are covered by the [manual test protocols](docs/tri-lingual-test.md). The chat panel is also in Japanese and Simplified Chinese: it follows Obsidian's language, and **Interface language** in settings overrides it. Settings, notices, the other dialogs and command names are still English and are being moved over one surface at a time (#166). The questions the chips send, the prompts to the model and everything written into your vault stay in English.
+English, Japanese, Chinese and Korean notes are covered by the [manual test protocols](docs/tri-lingual-test.md). The interface is also in Japanese and Simplified Chinese — the chat panel, settings, notices, the status bar, dialogs and command names. It follows Obsidian's language, and **Interface language** in settings overrides it; command names switch after the plugin reloads. The questions the chips send, the prompts to the model, everything written into your vault (including `log.md`), the [Test] developer commands and the Check setup report stay in English, so a log or a bug report reads the same whatever the interface says. The command tables below use the English names.
 
 **How good are the answers?**
 Good at reading what you wrote, weak at the wider world: it is a 4B model. Answers about your notes list their sources; anything the model adds from its own knowledge is labelled as such.
@@ -354,7 +354,7 @@ No backend, no telemetry, no analytics. This plugin makes network requests to ex
 | Host | What | When |
 | --- | --- | --- |
 | `huggingface.co` | the [Gemma 4 E4B model](https://huggingface.co/litert-community/gemma-4-E4B-it-litert-lm) (~3 GB) | once, when you press **Download model** |
-| `cdn.jsdelivr.net` | the LiteRT-LM WebAssembly runtime (~20-31 MB), from the pinned `@litert-lm/core` version this build was compiled against | once, on first use |
+| `cdn.jsdelivr.net` | the LiteRT-LM WebAssembly runtime (~20-31 MB), from the pinned `@litert-lm/core` version this build was compiled against | once on first use, and once more after an update that moves to a new runtime version |
 
 The runtime is fetched rather than bundled because it ships in four variants totalling ~101 MB and your machine loads exactly one, chosen by the library's own feature probes; shipping all four would put a 101 MB payload in every install to use a fifth of it. Only files matching `litertlm_wasm_*internal.{js,wasm}` are accepted, and nothing here updates the plugin itself — the version is fixed at build time.
 

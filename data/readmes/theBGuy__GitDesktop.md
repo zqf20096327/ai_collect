@@ -140,7 +140,8 @@ and discarding (drag across the line numbers, spanning hunks freely — a drag
 picks up added and removed lines together in either view, Shift keeps it to
 one side, and Ctrl, or Cmd on macOS, adds to a selection), including
 committing or discarding only part of a brand-new (untracked) file. Partial
-staging is for UTF-8 text; other encodings stage and discard as a whole file.
+staging is for UTF-8 text, where a long diff opens with up to 1,000 lines and
+Show full diff loads the rest; other encodings stage and discard as a whole file.
 Stage or unstage a drag-made selection with `Ctrl`/`⌘`+`Shift`+`Enter`,
 without reaching for the button. Press `Space` on a focused file to stage or
 unstage it. Once the file you're viewing has nothing left to stage, whole or
@@ -1049,9 +1050,11 @@ touches your checkout.
   between the two mid-session** as the idea narrows; the conversation
   carries over. Hand a report **straight to Plan**, or **save** it as a
   local Markdown file (yours to review and commit, in `.gitdesktop/research/`).
-  It searches and reads but never writes, and runs on **any agent** (Claude,
-  Codex, Copilot, or opencode), each using its own native web search and
-  fetch.
+  It searches and reads, and runs on **any agent** (Claude, Codex, Copilot,
+  or opencode), each using its own native web search and fetch. Outside
+  opencode it never writes; on opencode it also loads the repository's own
+  opencode config and plugins, which can widen what it does, so use another
+  agent for a repository you don't trust.
 - **Plan before you build**: a read-only **Plan** mode drafts an agent-ready
   issue from a task (or an existing issue): a repo-aware agent explores your
   code and writes the problem, approach, affected files, acceptance
@@ -1060,7 +1063,9 @@ touches your checkout.
   in an inline panel (pick a suggestion or write your own) and **refine**
   the plan with your choices. Then file it as a local, GitHub, or GitLab
   issue, or hand it **straight to a write-capable agent session** to
-  implement. Nothing is changed during planning; it never writes.
+  implement. Planning never writes outside opencode; on opencode, Plan loads
+  the repository's own opencode config and plugins the same way Research
+  does, which can widen what it does.
 - **From issue to implementation**: a **Solve with agent** button on any
   local, GitHub, or GitLab issue (and **Implement** on a finished plan)
   seeds the agent composer with the spec, so you pick the agent and

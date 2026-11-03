@@ -177,7 +177,7 @@ powershell -File scripts/legacy/install-mori-claude.ps1   # Windows
 | **Web dashboard** | Built-in memory browser served at the mori root URL — search, browse, unfurl | — |
 | **Universal ingestion** | Feed PDFs, images, git, transcripts into the memory store | `/ingest` |
 | **Strategic review** | LLM guidance with focus areas and auto-injected standards | `/consult` |
-| **Requirements tracking** | Lightweight project checklist surfaced via `/brief` | `/req` |
+| **Requirements tracking** | Lightweight project checklist, listed with `/req list` (not shown in `/brief`) | `/req` |
 | **Governance** | Capability-scoped API keys (read/write/dreamer roles), versioning, trusted dreamers, rollback, attribution; a universal in-transaction write-audit + tier-capability & anatomy enforcement at the `store.write` chokepoint (flag-gated, audit-mode by default) | — |
 | **Curation queue** | Ingestion's canonical/standard proposals await trusted-dreamer sign-off in a review UI (`/review`, with source/diff/approve-reject) before becoming canonical — memory that's *curated*, not just accumulated | — |
 | **One-click deploy** | Stand up your own server on Render / Railway / Fly / Cloud Run (or free managed Postgres + any stateless host) | — |
@@ -368,8 +368,8 @@ agent obeys them mid-task. Surfaced standards inform; they don't bind.)
 Delegate tasks, ask questions, and share decisions across your Claude Code
 instances — without a shared session. Messages are typed, reply-threaded, and
 picked up at the next `/brief`. The `mori-msg` daemon receives messages
-server-side: `decision` messages are written directly to the memory store
-without any human session on the receiving end.
+server-side: `decision` messages are queued for human review (`memory_pending_list` /
+`memory_approve`); nothing an agent decides reaches memory until a human approves it.
 
 ```bash
 # From your laptop, delegate a task to a workstation:

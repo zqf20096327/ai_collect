@@ -166,6 +166,15 @@ and a clear message. Claude defaults to `claude-sonnet-4-6`.
 | `provider_order` | — | Comma-separated AI failover order (`claude,openai`); the static engine stays the last fallback |
 | `repo_context_chars` | `12000` | Character budget for the extra repository context described below; `0` disables it |
 
+`review_mode` — the roadmap's `response_budget` — selects a **documented
+response token ceiling**: `economy` → 2048, `balanced` → 4096, `maximum` →
+8192, `automatic` → 4096 unless repository policy names another keyword.
+One mapping (`RESPONSE_BUDGET_TOKENS`) both caps what a provider may spend
+per response and, when the budget ledger is enabled (`BUDGET_LEDGER=1`,
+default off), what a run reserves for its analysis task — so a run can never
+be admitted against a ceiling different from the one it actually spends
+under.
+
 **Outputs:** `findings_count`, `critical_count`, `report_path`, `health_score`,
 `health_grade`. A markdown digest is also written to the job's **Step Summary**;
 the example workflow uploads `review-report.json` as an artifact.
@@ -193,7 +202,8 @@ at any time):
   `category`, `title`, `explanation`, `suggestion`, `confidence`,
   `rule_id`, `fingerprint`, `state`, `first_seen_sha`, `last_seen_sha`,
   `resolved_at`, `github_comment_id`, `verification_status`,
-  `verification_reason`, `verified_at`, `provenance_engine`,
+  `verification_reason`, `verified_at`, `verification_tier`,
+  `provenance_engine`,
   `provenance_model`, `provenance_agent`, `provenance_origin`,
   `evidence`, `provenance_sources`, `merged_fingerprints`.
   `evidence` records *why the engine believes this* (rule reference and
@@ -203,6 +213,10 @@ at any time):
   deduplication. All three are additive V4 fields: `null`/empty on
   findings produced by older state, and stripped from provider prompts by
   the lifecycle-field allowlist (the model never sees them).
+  `verification_tier` (additive, V4.2-E05) names the evidence tier that
+  decided the finding's verification status — `t0` diff coverage, `t1`
+  static re-check, `t2` observed test evidence — and is `null` for
+  findings whose verification predates the tier model.
 
 ### Configuration layering
 
@@ -251,6 +265,36 @@ is listed at all.
   also **not** advanced — the analysis that should have covered those commits
   did not happen, so the next run re-reviews them and gives the providers
   another try.
+
+### Provider registry
+
+Every review backend is one declarative entry in
+`ai_pr_reviewer/provider_registry.py`. Backend selection (model prefix, custom
+endpoint, which credentials are set), construction, the explicit-model policy,
+`provider_order` parsing and the report/Step Summary labels are all read from
+that registry, so a backend is added in one place and nowhere else in the
+routing or reporting code.
+
+- **Capabilities** — an entry declares which task types it can run
+  (`review`, `security-review`, `test-review`, `arch-review`, `synthesis`; the
+  declaration is a closed vocabulary, anything else is rejected). Asking a
+  backend for a task it does not declare is a configuration error: the CLI
+  prints what the backend supports and exits with code `1` instead of quietly
+  degrading. The static rule engine declares only `review` and
+  `security-review`.
+- **Existing inputs are unchanged** — `provider_order`, `model`,
+  `openai_base_url` and the API-key inputs keep exactly their previous
+  meaning; the registry maps them onto backends rather than replacing them.
+  Only Claude has a built-in default model; OpenAI and Gemini still require an
+  explicit `model`.
+- **Entries are validated** — names, display labels and capability claims are
+  checked against restrictive patterns before registration (labels are
+  rendered into pull-request comments), a built-in backend can never be
+  shadowed or removed, and a string factory can only name a module inside this
+  package.
+- **No cost- or latency-based routing** — entries carry descriptive metadata
+  only (`billing_class`, `context_window_tokens`, `tool_support`); nothing
+  branches on it. Unknown facts are declared unknown, not guessed.
 
 ### Repository context
 
@@ -629,7 +673,8 @@ ai_pr_reviewer/          # the engine (run by the composite Action; also buildab
   context.py              #   diff + rules + previous findings + memory + repo context → ReviewContext
   repo_context.py         #   bounded set of other repo files (imports, project config) for C3
   memory.py               #   project-memory rows: categories, mute rows, path selection (C7)
-  model_router.py         #   picks Claude / OpenAI / Gemini per config, provider failover + circuit breaker
+  provider_registry.py    #   provider capability registry: one entry per backend (selection, labels, tasks)
+  model_router.py         #   registry-driven provider selection, failover + circuit breaker
   circuit.py              #   in-process circuit breaker that paces provider failover
   retry.py                #   backoff + jitter for the Anthropic call
   ai/
@@ -672,7 +717,7 @@ Dockerfile               #   optional container build of the same engine (built 
 `v3.0.0` (the current release), `v2.0.0` (an immutable release), `v2`
 (the *moving* major tag, left in place for existing users) and `v1`;
 a full commit SHA pins one exact build. New roadmap stages ship as
-`@v3`, `@v4`, … — **majors are
+v4 minors (`v4.0.0` … `v4.10.0`) — **majors are
 reserved for breaking changes**, and an old major receives security
 fixes for 12 months after a new major ships
 (`docs/planning/MIGRATION_PLAN.md` §6.2).

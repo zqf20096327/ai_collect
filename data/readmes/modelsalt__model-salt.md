@@ -50,6 +50,8 @@ Want more or less of it? Say so in your prompt ("make it really different", "kee
 
 The model skips the tool for questions with one right answer (a sum, a fact, a bug fix).
 
+**Keep what you like.** Like part of a result? Say what to keep in plain words ("keep the palette and layout, give me new illustrations"). Your model copies those decided answers from the earlier Model Salt reply into the tool's `keep` field and calls it again. Only the open choices are rolled again, and the reply starts with one line, e.g. `Kept: palette = burnt orange on cream; layout = split screen, text left`. That holds on later runs until you say start fresh, and "give me something new" leaves it out. In a new chat, paste the `Kept:` line or say it in your own words. A kept answer that no longer fits a new request is dropped, and the reply says so. Nothing is stored on our side.
+
 ## What it changes
 
 Same prompt, 10 runs each, from the examples on [modelsalt.com](https://modelsalt.com).
@@ -85,9 +87,9 @@ Every run, plain and salted, is in [`examples/`](https://github.com/modelsalt/mo
 ## What it needs
 
 - **Node 18 or later.** `npx` fetches the package the first time.
-- **Claude Code or Codex, signed in.** Each call runs one short extra request on your machine, on your own plan, with no API key: through Codex when you use Codex, and through Claude Code (Claude Opus 5.5) when you use Claude Code, Gemini CLI or Kimi Code. If that request can't run, the tool says so and your model carries on with the request as asked.
+- **Claude Code or Codex, signed in, or neither.** With one of them on the machine, each call runs one short extra request on your machine, on your own plan, with no API key: through Codex when you use Codex, and through Claude Code (Claude Opus 5.5) when you use Claude Code, Gemini CLI or Kimi Code. If that request can't run (signed out), the tool says so and your model carries on with the request as asked. With neither on the machine (a Docker container, Cursor or Copilot alone), your own model does that step in its own chat: it calls the tool twice, first with the request, then with its reply to the exploring step, and uses more of its own tokens for it.
 - **Time and tokens.** A salted answer takes longer and uses more tokens than a plain one. On the pelican prompt, Claude Opus 5.5 used about 3,300 more output tokens per answer.
-- **Network.** The server fetches random bytes from public randomness sources (atmospheric and quantum noise, and the drand beacon). Your prompt is not sent to them. Offline, it uses your computer's own random generator.
+- **Network.** The server fetches random bytes from public randomness sources (quantum noise from the LfD quantum random number service, and the public drand and NIST beacons). Your prompt is not sent to them. Offline, it uses your computer's own random generator.
 
 ## Other ways to run it
 
@@ -101,7 +103,7 @@ Every run, plain and salted, is in [`examples/`](https://github.com/modelsalt/mo
 
 ## How it works
 
-In a separate short run, the model names the biggest open decisions in your request (the questions an expert would ask) and a range of answers to each, its usual one included. Randomness from outside the model picks one answer per question. Your model then does the request with those answers settled. More, and why simpler ways failed: [docs/how-it-works.md](https://github.com/modelsalt/model-salt/blob/main/docs/how-it-works.md).
+In a separate short run (with no Claude Code or Codex on the machine, in your own model's chat, over two tool calls), the model names the biggest open decisions in your request (the questions an expert would ask) and a range of answers to each, its usual one included. Randomness from outside the model picks one answer per question. Your model then does the request with those answers settled. More, and why simpler ways failed: [docs/how-it-works.md](https://github.com/modelsalt/model-salt/blob/main/docs/how-it-works.md).
 
 ## Contributing
 

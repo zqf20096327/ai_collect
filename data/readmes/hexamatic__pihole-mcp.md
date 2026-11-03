@@ -89,6 +89,8 @@ brew install hexamatic/tap/pihole-mcp
 
 Installs on both macOS and Linux (Homebrew on Linux). On macOS the cask clears the
 quarantine attribute during install, so the binary runs without a Gatekeeper prompt.
+From v0.10.0 the macOS binaries need macOS 13 Ventura or later; v0.9.0 is the last
+release that runs on macOS 12.
 
 ### Scoop (Windows)
 
@@ -123,7 +125,7 @@ sudo rpm -i pihole-mcp_X.Y.Z_linux_amd64.rpm
 
 ### Binary Download
 
-Pre-built binaries for Linux, macOS, and Windows (amd64 and arm64) are available on the [Releases](https://github.com/hexamatic/pihole-mcp/releases) page.
+Pre-built binaries for Linux, macOS 13 or later, and Windows (amd64 and arm64) are available on the [Releases](https://github.com/hexamatic/pihole-mcp/releases) page.
 
 Releases are checksummed, signed with keyless cosign, and ship SPDX SBOMs and SLSA build provenance. See [SECURITY.md](SECURITY.md#verifying-release-artefacts) for the verification commands.
 
@@ -136,14 +138,14 @@ PIHOLE_URL=http://192.168.1.2 PIHOLE_PASSWORD=your-password pihole-mcp -check
 ```
 
 ```text
-pihole-mcp 0.9.0
+pihole-mcp 0.10.0
 
-PASS  primary (http://192.168.1.2)  core v6.1.4, FTL v6.7
+PASS  primary (http://192.168.1.2)  core v6.5, FTL v6.8
 
 All 1 instance(s) reachable and authenticated.
 ```
 
-It exits non-zero if any instance fails, and prints what to change. Worth running before you wire the server into a client: most clients hide the server's output, so a bad URL or password looks the same as a server that never started.
+It exits non-zero if any instance fails, and prints what to change. It also warns when a Pi-hole runs an FTL release affected by published security advisories, naming the release that fixes them. Worth running before you wire the server into a client: most clients hide the server's output, so a bad URL or password looks the same as a server that never started.
 
 ## Configuration
 
@@ -158,9 +160,10 @@ It exits non-zero if any instance fails, and prints what to change. Worth runnin
 | `PIHOLE_RETRY_MAX_DELAY` | No | `8s` | Upper bound on a single backoff wait. |
 | `PIHOLE_HTTP_AUTH_TOKEN` | No | - | Shared bearer token required on every HTTP/SSE request. Minimum 16 characters. Unset means no authentication. |
 | `PIHOLE_HTTP_AUTH_TOKEN_FILE` | No | - | Path to a file holding the bearer token, so it stays out of `ps`. Mutually exclusive with `PIHOLE_HTTP_AUTH_TOKEN`. |
-| `PIHOLE_RATE_LIMIT` | No | `120` | Per-session requests-per-minute cap on the HTTP/SSE transports, under a per-address ceiling of four times that. `0` disables. |
+| `PIHOLE_RATE_LIMIT` | No | `120` | Requests per minute per MCP session on the HTTP/SSE transports, under a per-address ceiling of four times that. Clients on MCP revision `2026-07-28` send no session, so only the ceiling applies to them. `0` disables. |
 | `PIHOLE_ALLOWED_ORIGINS` | No | `localhost,127.0.0.1,[::1]` | Comma-separated Origin/Host allowlist for HTTP/SSE transports. The literal `*` disables enforcement (unsafe). Not authentication. |
 | `PIHOLE_TRUSTED_PROXIES` | No | - | Comma-separated IPs or CIDR blocks whose `X-Forwarded-For` the rate limiter believes. Unset means the header is ignored. |
+| `PIHOLE_BACKUP_DIR` | No | - | Absolute path of an existing directory to keep teleporter backups in. When set, `pihole_teleporter_export` writes only inside it and `pihole_teleporter_import` reads only from it, and the server never removes anything there. Unset, backups go to the system temp directory by default, where the server removes its own after a day, and any absolute path is accepted. |
 | `PIHOLE_TLS_SKIP_VERIFY` | No | `false` | Disable TLS certificate verification for Pi-hole connections. Only for instances serving self-signed certificates. A trusted certificate is preferable where possible. |
 | `TZ` | No | System timezone (UTC in Docker) | IANA timezone for rendered timestamps (e.g. `Australia/Adelaide`). Timezone data is embedded in the binary, so this works in the Docker image out of the box. |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | No | - | OpenTelemetry collector endpoint. Setting it enables tracing; ignored in slim builds. |
@@ -174,12 +177,13 @@ Application passwords are recommended for automation: they bypass TOTP 2FA and c
 By default the server offers every tool, including 34 that change Pi-hole and 27 that are
 destructive. Two variables narrow that.
 
-`PIHOLE_READ_ONLY=true` exposes only tools that cannot change anything. Write tools are absent from
-`tools/list` **and** rejected if called anyway, so a client working from a cached listing cannot
-reach one either.
+`PIHOLE_READ_ONLY=true` exposes only tools that cannot change anything, on Pi-hole or on the host
+the server runs on, so it leaves out `pihole_teleporter_export`, which writes a file. Write tools are
+absent from `tools/list` **and** rejected if called anyway, so a client working from a cached listing
+cannot reach one either.
 
 ```bash
-PIHOLE_READ_ONLY=true    # 49 tools instead of 82
+PIHOLE_READ_ONLY=true    # 48 tools instead of 82
 ```
 
 `PIHOLE_TOOLSETS` selects which families of tools exist at all, which is worth doing on its own
@@ -422,6 +426,7 @@ For clients that support Docker-based MCP servers:
         "-e", "PIHOLE_URL=http://192.168.1.2",
         "-e", "PIHOLE_PASSWORD=your-password",
         "-e", "TZ=Australia/Adelaide",
+        "-e", "PIHOLE_BACKUP_DIR=/backups",
         "-v", "/host/path/for/backups:/backups",
         "ghcr.io/hexamatic/pihole-mcp:latest"]
     }
@@ -431,7 +436,7 @@ For clients that support Docker-based MCP servers:
 
 Useful when you don't have Go installed or want to run the server on a remote host.
 
-The `-v` mount is there for `pihole_teleporter_export`. Without it, a backup is written inside the container's own filesystem and is gone as soon as `--rm` removes the container on exit. Pass `output_path` pointing inside the mount (e.g. `/backups/pihole.zip`) to keep it on the host.
+The `-v` mount is there for `pihole_teleporter_export`. Without it, a backup is written inside the container's own filesystem and is gone as soon as `--rm` removes the container on exit. Add `-e PIHOLE_BACKUP_DIR=/backups` to keep every backup on the host under a name of its own, or pass an `output_path` inside the mount (e.g. `/backups/pihole-2026-11-02.zip`). An export never replaces an existing file, so a fixed `output_path` works only once.
 
 To check the container can reach your Pi-hole, run the same image with `-check`. Remember that `localhost` inside a container is the container itself, which is the usual cause of a failure here:
 
@@ -677,8 +682,9 @@ network.
 
   The address ceiling is what actually bounds a caller, because `Mcp-Session-Id` is a header the
   client writes: without a ceiling, a caller sending a fresh session id on every request would never
-  be limited at all. The header is also being removed from the transport in MCP revision
-  `2026-07-28`, after which the ceiling is the whole limiter. Every request is charged to the
+  be limited at all. MCP revision `2026-07-28` removes the header from the transport, so for a
+  client on that revision the ceiling is the whole limiter, shared by every such client behind one
+  address; clients on earlier revisions still get a session bucket beneath it. Every request is charged to the
   ceiling first, including one the session bucket then rejects, so a client that is already being
   throttled keeps drawing on the budget its neighbours share. IPv6 clients are counted per `/64`,
   since a single host is routinely given a whole one.
@@ -716,14 +722,14 @@ pihole-mcp
 
 All tool calls are automatically traced with tool name, duration, and error status.
 
-If you don't need tracing, the slim build strips the OpenTelemetry SDK, gRPC, protobuf and grpc-gateway dependencies entirely. The binary is 43% smaller:
+If you don't need tracing, the slim build strips the OpenTelemetry SDK, gRPC, protobuf and grpc-gateway dependencies entirely. The binary is 40% smaller:
 
 | Variant | Binary (linux/amd64) | Download (linux/amd64 `.tar.gz`) | Docker image (linux/arm64) |
 |---|---|---|---|
-| Default | 17.9 MB | 6.8 MB | 19.0 MB |
-| Slim | 10.3 MB | 4.1 MB | 11.8 MB |
+| Default | 18.9 MB | 7.3 MB | 20.0 MB |
+| Slim | 11.3 MB | 4.6 MB | 12.9 MB |
 
-Measured from the v0.9.0 release assets. MB here is a million bytes, and the image figure is the unpacked size `docker images` reports for the linux/arm64 image, the one a Raspberry Pi pulls.
+Measured from the v0.10.0 release assets. MB here is a million bytes, and the image figure is the unpacked size `docker images` reports for the linux/arm64 image, the one a Raspberry Pi pulls.
 
 ```bash
 just build-slim

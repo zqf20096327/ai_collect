@@ -23,7 +23,8 @@ YuE（乐）是 [m-a-p](https://github.com/multimodal-art-projection) 团队开�
 
 YuE (乐) is an open-source full-song music generation foundation model by the [m-a-p](https://github.com/multimodal-art-projection) team (lyrics2song) — often called "open-source Suno". Since its release in January 2025 the community has built a rich ecosystem of UIs, quantized runtimes, ComfyUI nodes, local ports and music-production workflows. YuE2 (September 2026) adds symbolic planning with editable ABC scores, zero-shot covers, instrumental generation and agentic music editing; the ecosystem now spans GGUF/C++ runtimes, LoRA training, DAW integration and mobile. This repo curates the best of the **YuE / YuE2 ecosystem**.
 
-> 📊 **收录 99 条（78 个 GitHub 项目 + 模型权重/教程/云服务）** · 最近更新见 [提交历史](https://github.com/RevolutionLA/awesome-YuE/commits/main) · 链接有效性由 [每周自动巡检](https://github.com/RevolutionLA/awesome-YuE/actions/workflows/link-check.yml) 守护
+> 📊 **收录 99 条（78 个 GitHub 项目 + 模型权重/教程/云服务）**，其中 12 条停更条目已移入[归档](#-归档-archive) · 最近更新见 [提交历史](https://github.com/RevolutionLA/awesome-YuE/commits/main) · 链接有效性由 [每周自动巡检](https://github.com/RevolutionLA/awesome-YuE/actions/workflows/link-check.yml) 守护
+> 🫀 项目活性（77 个 GitHub 仓库参与分级）：🟢 63 · 🟡 2 · 🔴 12 · ⚪ 0 · 巡检 2026-11-02 · 分级只看活跃度，不看推荐度，阈值见 [贡献指南](CONTRIBUTING.md#-维护约定--maintenance) · 明细 [liveness-report.json](docs/liveness-report.json) <!-- liveness:stats -->
 > 📌 收录标准与提交方式见 [贡献指南](CONTRIBUTING.md)。分类排序大致按热度/活跃度，仅供浏览参考。
 > 📌 See [CONTRIBUTING.md](CONTRIBUTING.md) for inclusion criteria. Categories are loosely ordered by popularity/activity.
 
@@ -41,6 +42,7 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 - [音乐制作工具链 Music Production Toolchain](#️-音乐制作工具链-music-production-toolchain)
 - [云部署与服务化 Cloud & Serving](#️-云部署与服务化-cloud--serving)
 - [教程与最佳实践 Tutorials & Best Practices](#-教程与最佳实践-tutorials--best-practices)
+- [归档 Archive](#-归档-archive)
 - [相关项目 Related Projects](#-相关项目-related-projects)
 - [社区 Community](#-社区-community)
 - [贡献 Contributing](#-贡献-contributing)
@@ -60,7 +62,7 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 | 显存 24GB+，要最好音质 | [官方 YuE2 BF16](https://github.com/multimodal-art-projection/YuE) + [官方 Skill](https://github.com/multimodal-art-projection/YuE/tree/main/skills/yue2-music) |
 | 显存 12–16GB | [YuE2 Q8 GGUF](https://huggingface.co/audio-cpp/Yue2-3B-GGUF)（audio.cpp）或 [Serveurperso Q8 套件](https://huggingface.co/Serveurperso/YuE2-GGUF)（yue2.cpp） |
 | 显存 8GB | [YuE2 Q4/Q8 GGUF](https://huggingface.co/audio-cpp/Yue2-3B-GGUF) + [audio.cpp](https://github.com/0xShug0/audio.cpp) / [yue2.cpp](https://github.com/ServeurpersoCom/yue2.cpp)；社区实测 8–9GB 可出歌 |
-| 只有 8GB，且只想跑 YuE1 | [deepbeepmeep/YuEGP](https://github.com/deepbeepmeep/YuEGP) 或 [joeljuvel/YuE-UI](https://github.com/joeljuvel/YuE-UI)（仅 YuE1，不能加载 YuE2） |
+| 只有 8GB，且只想跑 YuE1 | [deepbeepmeep/YuEGP](https://github.com/deepbeepmeep/YuEGP) 或 [joeljuvel/YuE-UI](https://github.com/joeljuvel/YuE-UI)（仅 YuE1，不能加载 YuE2；两者 2025 年初停更、已[归档](#-归档-archive)，离线旧工程仍可用） |
 | Mac（Apple Silicon） | [vanch007/mlx-Yue](https://github.com/vanch007/mlx-Yue) 或 [arinltte/YuE2Mac](https://github.com/arinltte/YuE2Mac)；也可走 [audio.cpp](https://github.com/0xShug0/audio.cpp) Metal |
 | iPhone 上直接出歌（不连服务器） | [PocketAnthem](https://apps.apple.com/us/app/pocketanthem/id6815755463) — App Store 应用，YuE2-3B 经 MLX 全程跑在手机本地 |
 | Android 上直接出歌 | [Killa YuE](https://github.com/JackKnifeAI/killa-yue) — 手机本地 YuE2（实验性，Snapdragon GPU / CPU） |
@@ -70,6 +72,8 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 | 不想装 Python 环境 | [audio.cpp](https://github.com/0xShug0/audio.cpp) 或 [yue2.cpp](https://github.com/engival/yue2.cpp) — C++ 运行时 + GGUF，无需 Python |
 
 > 显存不够？直接翻到 [量化与推理加速](#-量化与推理加速-quantization--acceleration)；想系统了解写法，看 [教程与最佳实践](#-教程与最佳实践-tutorials--best-practices)。
+>
+> 📐 本表位序依据 [Quick Picks 位序规则](CONTRIBUTING.md#-quick-picks-位序规则--position-rules)：按到达成本排序，维护者 own 的项目不因所有权获得位序豁免。
 
 ---
 
@@ -115,20 +119,11 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 | [lvxworld/lux-in-music](https://github.com/lvxworld/lux-in-music) | 通过 audio.cpp 在 Apple Silicon 本地出歌：Vibe 风格参考、分轨混音、段落编辑 | macOS Apple Silicon | MIT |
 | [yeufonic/yeufonic](https://github.com/yeufonic/yeufonic) | Web 界面 + Docker/Windows 安装器：提示词写歌/录音翻唱、ABC 编辑、分轨、LoRA 训练与导入分享；后端用 ComfyUI + YuE2 节点 | Docker/Win | — |
 | [victorcampeanu/OpenSuno-YuE2](https://github.com/victorcampeanu/OpenSuno-YuE2) | Mac/NVIDIA 本地歌曲工作室：Melody/Chords 规划、Composition/Weirdness 等音乐化滑杆、模型编曲、LoRA 目录、从保存 token 重渲染 | macOS/Win | MIT |
-| [deepbeepmeep/YuEGP](https://github.com/deepbeepmeep/YuEGP) | YuEGP（YuE1）：专为"显卡穷人"优化（GPU Poor），MMGP 显存管理 | Linux/Win | YuE-v1 README 推荐 |
-| [joeljuvel/YuE-UI](https://github.com/joeljuvel/YuE-UI) | YuE-UI（YuE1）：Gradio 界面，批量生成、时间线可视化、增量续写、会话保存/加载，8GB 显存可跑（量化模型） | 跨平台 | YuE-v1 README 推荐 |
-| [sgsdxzy/YuE-exllamav2](https://github.com/sgsdxzy/YuE-exllamav2) | ExLlamaV2 加速实现（含 GUI），YuE1 时代最高效的推理方案之一 | Linux/Win | Apache-2.0 |
-| [alisson-anjos/YuE-exllamav2-UI](https://github.com/alisson-anjos/YuE-exllamav2-UI) | （YuE1）基于 YuE-exllamav2 的 Gradio UI，RTX 4090 实测端到端 5.45× 提速；提供 Docker 镜像 | Linux/Win/Docker | Apache-2.0 |
-| [alisson-anjos/YuE-Interface](https://github.com/alisson-anjos/YuE-Interface) | （YuE1）Docker 化 Gradio 界面，环境变量一键拉取全部官方/量化模型，本地与 RunPod 均可部署 | Docker/RunPod | — |
-| [WrongProtocol/YuE-exllamav2-UI](https://github.com/WrongProtocol/YuE-exllamav2-UI) | YuE-exllamav2 的原始 Gradio UI（YuE1；YuE-v1 README 推荐） | Linux/Win | — |
 | [vrgamegirl19/Yue2_Studio](https://github.com/vrgamegirl19/Yue2_Studio) | YuE2 桌面音乐工作室 | Windows | Apache-2.0 |
 | [krakenunbound/yue2-studio](https://github.com/krakenunbound/yue2-studio) | 原生 Windows 音乐工作室：本地模型下载、歌词/封面编辑 | Windows | — |
 | [Ladypoly/YuE2_WebUI](https://github.com/Ladypoly/YuE2_WebUI) | YuE2 WebUI | — | Apache-2.0 |
-| [dynamohum/YuE2gen-studio](https://github.com/dynamohum/YuE2gen-studio) | 翻唱录音 / 提示词写歌 / 编辑的 Web 界面 | — | Apache-2.0 |
-| [Mozer/YuE-extend](https://github.com/Mozer/YuE-extend) | YuE1 音乐续写（mp3 extend）+ GUI，另有 Colab 版 | 跨平台 | Apache-2.0 |
 | [CodeCat04/Whiskerwave-Studio](https://github.com/CodeCat04/Whiskerwave-Studio) | 本地优先的 YuE2 生成 GUI + Ollama 辅助作词 | — | — |
 | [DocShotgun/ds-yue-webui](https://github.com/DocShotgun/ds-yue-webui) | YuE2 WebUI：生成 / 翻唱 / 编辑 | — | — |
-| [aidec/YuE-exllamav2-GUI-easy](https://github.com/aidec/YuE-exllamav2-GUI-easy) | （YuE1）YuE-exllamav2 简易版 GUI（繁体中文界面） | Windows | — |
 | [LeeAeron/YuE2UI](https://github.com/LeeAeron/YuE2UI) | YuE2 桌面应用（深度改版独立开发，暂未公开源码） | Windows 10/11 | Apache-2.0 |
 
 ## ⚡ 量化与推理加速 Quantization & Acceleration
@@ -163,7 +158,6 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 | [daig/yue2-mlx](https://github.com/daig/yue2-mlx) | BF16 优先的 MLX/MPS 实验，自动跟随上游 | Apache-2.0 |
 | [arinltte/YuE2Mac](https://github.com/arinltte/YuE2Mac) | macOS 原生歌曲创作工作室：YuE2-3B 本地 MLX 运行，LITE/PRO 双 UI、队列、歌曲库、草稿→成品、可编辑 ABC 乐谱、高级采样、Apple Intelligence 本地 AI 写词 | MIT |
 | [stavitian/yue2-studio](https://github.com/stavitian/yue2-studio) | macOS 应用 + 安装器：YuE2-3B 生成/翻唱/转写（含 24GB Mac 修复） | — |
-| [sdbds/YuE-for-windows](https://github.com/sdbds/YuE-for-windows) | YuE1 Windows 原生支持（Gradio + Docker） | Apache-2.0 |
 | [Cognito-Inc-451/Yue2-CUDA-Windows](https://github.com/Cognito-Inc-451/Yue2-CUDA-Windows) | YuE2 CUDA Windows 适配 | — |
 | [siliconsense/yue2-studio-pc](https://github.com/siliconsense/yue2-studio-pc) | 一键批处理在 NVIDIA 显卡上运行 YuE2（生歌 + 翻唱） | — |
 | [Rdx-ai-art/yue2-mlx.pinokio](https://github.com/Rdx-ai-art/yue2-mlx.pinokio) | YuE2-3B 的 Pinokio 一键安装包（Mac MLX） | — |
@@ -221,14 +215,12 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 
 | 项目 | 说明 | 备注 |
 |---|---|---|
-| [yolanother/runpod-yuegp-serverless](https://github.com/yolanother/runpod-yuegp-serverless) | RunPod Serverless 上的 YuEGP worker | — |
 | [lee101/yue-cog](https://github.com/lee101/yue-cog) | YuE2 的 Cog 打包 + RunPod serverless 适配器 | — |
 | [sruckh/Yue2-runpod](https://github.com/sruckh/Yue2-runpod) | YuE2 RunPod Serverless worker（风格+歌词 → 完整歌曲） | — |
 | [Sparaa/yue2-sidecar](https://github.com/Sparaa/yue2-sidecar) | FastAPI 任务 API（基于 yue2-infer，支持 ABC 翻唱与长歌） | Apache-2.0 |
 | [arthurfarache/muvflow-yue](https://github.com/arthurfarache/muvflow-yue) | YuE 音乐生成 API（SaladCloud） | — |
 | [giapnguyen74/yue2-server](https://github.com/giapnguyen74/yue2-server) | YuE2 模型服务器 | — |
 | [John-yg-Yim/LastAlbum-music-api](https://github.com/John-yg-Yim/LastAlbum-music-api) | 基于 YuE 的 FastAPI 歌曲生成服务（LastAlbum 后端） | — |
-| [usamireko/YuE-exllamav2-Colab](https://github.com/usamireko/YuE-exllamav2-Colab) | Google Colab 一键运行 YuE-exllamav2 | Apache-2.0 |
 
 ## 📚 教程与最佳实践 Tutorials & Best Practices
 
@@ -249,6 +241,27 @@ YuE (乐) is an open-source full-song music generation foundation model by the [
 - **ComfyUI Wiki：YuE2-3B 介绍与原生支持**：[comfyui-wiki.com/en/news/2026-09-11-yue2-3b](https://comfyui-wiki.com/en/news/2026-09-11-yue2-3b) — 含 ComfyUI 依赖冲突（PyTorch/Transformers 版本 pin）注意事项。
 - **DeepWiki：YuE 代码解读**：[deepwiki.com/multimodal-art-projection/YuE](https://deepwiki.com/multimodal-art-projection/YuE) — `YuE2Pipeline` 架构、AR/NAR/VAE 模块与后端加速的可视化文档。
 - **显存速查（YuE2）**：24GB+ → 官方 BF16；12–16GB → Q8 GGUF / FP8；8GB → Q4/Q8 GGUF（audio.cpp / yue2.cpp，社区实测 8–9GB）；Mac → MLX / audio.cpp Metal。YuE1 的 YuEGP / YuE-UI 不能加载 YuE2。
+
+## 🗄️ 归档 Archive
+
+> 停更超过一年或仓库已归档的条目移入此处，保留考古价值；分级规则见[贡献指南 · 维护约定](CONTRIBUTING.md#-维护约定--maintenance)。**归档 ≠ 删除**——它们对旧 YuE1 工作流仍然可用；🔴 条目欢迎提交接替者。
+
+| 项目 | 说明 | 最后活动 |
+|---|---|---|
+| [aidec/YuE-exllamav2-GUI-easy](https://github.com/aidec/YuE-exllamav2-GUI-easy) | （YuE1）YuE-exllamav2 简易版 GUI（繁体中文界面）（Windows） | — · 🔴 最后活动 2025-02 |
+| [alisson-anjos/YuE-exllamav2-UI](https://github.com/alisson-anjos/YuE-exllamav2-UI) | （YuE1）基于 YuE-exllamav2 的 Gradio UI，RTX 4090 实测端到端 5.45× 提速；提供 Docker 镜像（Linux/Win/Docker） | Apache-2.0 · 🔴 最后活动 2025-02 |
+| [alisson-anjos/YuE-Interface](https://github.com/alisson-anjos/YuE-Interface) | （YuE1）Docker 化 Gradio 界面，环境变量一键拉取全部官方/量化模型，本地与 RunPod 均可部署（Docker/RunPod） | — · 🔴 最后活动 2025-04 |
+| [deepbeepmeep/YuEGP](https://github.com/deepbeepmeep/YuEGP) | YuEGP（YuE1）：专为"显卡穷人"优化（GPU Poor），MMGP 显存管理（Linux/Win） | YuE-v1 README 推荐 · 🔴 最后活动 2025-02 |
+| [dynamohum/YuE2gen-studio](https://github.com/dynamohum/YuE2gen-studio) | 翻唱录音 / 提示词写歌 / 编辑的 Web 界面 | Apache-2.0 · 🔴 最后推送 2026-09，仓库已归档 |
+| [joeljuvel/YuE-UI](https://github.com/joeljuvel/YuE-UI) | YuE-UI（YuE1）：Gradio 界面，批量生成、时间线可视化、增量续写、会话保存/加载，8GB 显存可跑（量化模型）（跨平台） | YuE-v1 README 推荐 · 🔴 最后活动 2025-04 |
+| [Mozer/YuE-extend](https://github.com/Mozer/YuE-extend) | YuE1 音乐续写（mp3 extend）+ GUI，另有 Colab 版（跨平台） | Apache-2.0 · 🔴 最后活动 2025-02 |
+| [sdbds/YuE-for-windows](https://github.com/sdbds/YuE-for-windows) | YuE1 Windows 原生支持（Gradio + Docker） | Apache-2.0 · 🔴 最后活动 2025-03 |
+| [sgsdxzy/YuE-exllamav2](https://github.com/sgsdxzy/YuE-exllamav2) | ExLlamaV2 加速实现（含 GUI），YuE1 时代最高效的推理方案之一（Linux/Win） | Apache-2.0 · 🔴 最后活动 2025-03 |
+| [usamireko/YuE-exllamav2-Colab](https://github.com/usamireko/YuE-exllamav2-Colab) | Google Colab 一键运行 YuE-exllamav2 | Apache-2.0 · 🔴 最后活动 2025-02 |
+| [WrongProtocol/YuE-exllamav2-UI](https://github.com/WrongProtocol/YuE-exllamav2-UI) | YuE-exllamav2 的原始 Gradio UI（YuE1；YuE-v1 README 推荐）（Linux/Win） | — · 🔴 最后活动 2025-02 |
+| [yolanother/runpod-yuegp-serverless](https://github.com/yolanother/runpod-yuegp-serverless) | RunPod Serverless 上的 YuEGP worker | — · 🔴 最后活动 2025-02 |
+
+---
 
 ## 🔗 相关项目 Related Projects
 

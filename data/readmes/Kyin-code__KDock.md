@@ -42,6 +42,7 @@
 
 需要 Windows x64 和 WebView2 Runtime。程序未签名，首次运行可能触发 SmartScreen；
 测试版可能改配置或崩溃，请先备份。
+应用发现新版本后会在程序内下载并校验 SHA-256，校验通过后仍需手动确认启动安装程序。
 
 ## 能做什么
 
@@ -49,7 +50,8 @@
 - **设备**：`.fw` 升级、OpenOCD/J-Link、设备文件、FTP/FTPS/TFTP、ADB。
 - **分析**：ELF/BIN 运行结构、调用链、CFG、逻辑分析仪。
 - **工具**：示波器、命令表、实时图表、批量文本、计算器、中控编排。
-- **Agent**：对话、技能、MCP、工作区、权限审批与设备分析。
+- **Agent**：对话、技能、MCP、工作区、权限审批、设备分析、共享浏览器、结构化页面断言、
+  Windows 本机 UI 自动化、AppContainer 命令沙箱、子 Agent 和可跨进程唤醒的定时任务。
 
 ## 如何协作
 
@@ -75,15 +77,17 @@ npm run tauri dev
 # 测试与正式出包
 npm run test:vite
 cargo test --workspace --locked
+# 自动调用 Semifold 递增版本；首次会通过 cargo 安装 semifold 0.3.4
 npm run tauri build
 ```
 
 产物：
 
 - `target/release/kdock.exe`
-- `target/release/bundle/nsis/KDock_0.3.0_x64-setup.exe`
+- `target/release/bundle/nsis/KDock_<Semifold 生成的版本>_x64-setup.exe`
 
 不要直接用 `cargo build --release` 代替 Tauri 打包，否则前端资源和 `devUrl` 配置不会完整。
+版本由 `.changes/config.toml` 和 `scripts/semfold-version.ps1` 统一管理，不要手工改三份清单。
 
 ## 界面展示
 

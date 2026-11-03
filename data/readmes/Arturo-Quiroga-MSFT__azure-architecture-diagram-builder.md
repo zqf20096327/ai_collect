@@ -14,7 +14,7 @@
 
 **A professional AI-powered tool for designing, validating, and deploying Azure cloud architectures**
 
-[Live Demo](https://azure-diagram-builder.ashywater-ce264412.eastus2.azurecontainerapps.io) • [Short Link](https://aka.ms/diagram-builder) • [Documentation](DOCS/ARCHITECTURE.md) • [Report Bug](../../issues)
+[Live Demo](https://azure-diagram-builder.ashywater-ce264412.eastus2.azurecontainerapps.io) • [Short Link](https://aka.ms/diagram-builder) • [Website: how it works, deploy, connect MCP](https://arturo-quiroga-msft.github.io/azure-architecture-diagram-builder/) • [Documentation](DOCS/ARCHITECTURE.md) • [Report Bug](../../issues)
 
 </div>
 

@@ -78,7 +78,20 @@ reflection is on, so `grpcurl` works without the `.proto` files.
 
 ## Quick start (Docker Compose)
 
-The fastest way to run KTMS locally is with Docker Compose. With `AUTO_SEED` enabled (default in compose), the proxy automatically initializes default models, routing rules, and a ready-to-use client key (`ktms_dev_default_key`).
+The fastest way to try Keystone is one command. It needs Docker with the Compose plugin, runs the
+published images (no clone, no build) with Postgres and Redis on localhost only, asks for an
+OpenAI, Anthropic or Gemini key unless one is in the environment, and prints your first request:
+
+```bash
+curl -fsSL https://ai-process.dev/install.sh | sh
+```
+
+It keeps its files in `~/ktms` (a generated keyring, admin and client keys in `.env`), and a re-run
+keeps them while it adds new vendor keys or moves to a new release. Options such as `--port`,
+`--version` and `--uninstall` are in `sh -s -- --help`; the script is
+[`scripts/install.sh`](scripts/install.sh).
+
+From a clone instead, Docker Compose builds the image from source. With `AUTO_SEED` enabled (default in compose), the proxy automatically initializes default models, routing rules, and a ready-to-use client key (`ktms_dev_default_key`).
 
 ### 1. Launch the stack
 
@@ -1568,5 +1581,4 @@ purpose travels in free-form attributes, so the proxy knows nothing about your p
 - **GCRA Rate Limiting:** Enforces requests-per-minute (`rpm`) via the Generic Cell Rate Algorithm in Redis, with configurable burst capacity (`rpm_burst`, defaulting to `rpm - 1` to preserve classic fixed-window behavior, `< 0` to disable burst). Key limits and user limits are evaluated atomically.
 - **User & Model Overrides:** Configure fine-grained limits per user and model with `SetUserRateLimit` (supports `*` wildcards for user-wide or model-wide defaults).
 - **Spend Limits:** Hard USD caps per API key and per end user (UTC day or month), reserved atomically before each call and settled to the actual cost; see [Spend limits](#5-spend-limits-optional).
-- **Daily Token Budgets:** Limits tokens per API key (`daily_tokens_per_key`) and per end-user (`daily_tokens_per_user`, UTC day). A configurable grace margin (`budget_grace_margin`, default 5%, `< 0` to strictly disable) absorbs requests that exceed the budget on their last call without refusing them mid-stream.
-- **Inference Pool Wait Buffer:** For local node pools, requests waiting for free slots use jittered backoff polling up to `queue_timeout_ms`. Interactive requests (non-service callers) are automatically capped to 250ms to safeguard Time-To-First-Token (TTFT). Little's Law predictive admission evaluates the queue depth (KTMS's own leases plus other clients' request
+- **Daily Toke

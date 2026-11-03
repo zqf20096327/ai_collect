@@ -68,7 +68,7 @@ Most autocomplete tools operate in one editor, and they send your text to a serv
 | <kbd>Tab</kbd> | Accept the next word. With no suggestion on the screen, <kbd>Tab</kbd> operates as usual. |
 | <kbd>⇧Tab</kbd> | Accept all of the suggestion. |
 | <kbd>⌥Tab</kbd> | Fix the selected text. With no selection, fix the last word. You see a preview first. |
-| <kbd>⌥⇧Tab</kbd> | Write a draft of your next message from the conversation on the screen. In the prompt of an AI agent, from the agent's session. |
+| <kbd>⌥⇧Tab</kbd>, or press <kbd>⌥</kbd> two times | Write a draft of your next message from the conversation on the screen. In the prompt of an AI agent, from the agent's session. |
 | <kbd>⏎</kbd> / <kbd>Esc</kbd> | Accept or reject a rewrite or a typo fix. |
 | Hold <kbd>⌥</kbd> | Dictate while you hold the key. |
 | <kbd>⌃⌥D</kbd> | Start or stop hands-free dictation. |
@@ -108,7 +108,7 @@ To reject a suggestion, continue to type. You can change the accept key to <kbd>
 * Hold <kbd>⌥</kbd>, say a sentence, and release the key. For longer text, push <kbd>⌃⌥D</kbd> to start and push it again to stop.
 * The speech models of macOS transcribe on your Mac. Audio does not go to the disk.
 * A tidy-up pass adds the punctuation and the capital letters.
-* Dictation uses the language of your keyboard layout.
+* Dictation uses the language of your keyboard layout. With Parakeet on and the language set to **Automatic**, Parakeet hears the language itself.
 * **Names.** Names and terms in the field, and in the session of an AI agent, come out as they are written there: "mlx" becomes "MLX", "suggestion controller" becomes "SuggestionController". This also operates with Parakeet. Add your own names and terms in **Settings → Dictation → My words**. Dictation always writes them as you wrote them there.
 * **Voice commands.** Select text and dictate an instruction, for example *"make it shorter"* or *"translate to English"*. Enable this in **Settings → Dictation → Advanced**.
 * **Send.** Pretype can push <kbd>Return</kbd> after a dictation, for example in a chat. To enable this for an app, select **Press Return after Dictation** in the menu.
@@ -205,7 +205,6 @@ If Pretype is useful to you, give it a star (⭐). Stars help other people find 
 | [MiniCPM](https://huggingface.co/openbmb) | One of the two fastest models in the catalog |
 | [swift-transformers](https://github.com/huggingface/swift-transformers) | The tokenizers |
 | [swift-huggingface](https://github.com/huggingface/swift-huggingface) | The Hugging Face hub client and cache |
-| [Cotypist](https://cotypist.app) | The original idea |
 
 ## License
 

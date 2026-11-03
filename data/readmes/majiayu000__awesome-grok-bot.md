@@ -10,7 +10,7 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-> 6656 live `x.ai/bot` shares for Grok Bot you can preview and Add — plus field cases of how people actually run them.
+> 7328 live `x.ai/bot` shares for Grok Bot you can preview and Add — plus field cases of how people actually run them.
 
 **This week:** catalog grows daily; skim [recent commits](https://github.com/majiayu000/awesome-grok-bot/commits/main) or the [searchable site](https://majiayu000.github.io/awesome-grok-bot/) for what just landed.
 
@@ -97,7 +97,7 @@ These are `shelf=featured` in [catalog.json](catalog.json). Start with one share
 
 `shelf` in [catalog.json](catalog.json) is editorial navigation (featured, solid, studio-door, aka, raw). Reachable is not the same as safe. `verified` is a separate maintainer flag.
 
-Studio doors (orchestrators, installers, front desks): **202** listed in [docs/studio-doors.md](docs/studio-doors.md).
+Studio doors (orchestrators, installers, front desks): **214** listed in [docs/studio-doors.md](docs/studio-doors.md).
 
 The full list is below, grouped by job. Field cases and gotchas sit above the wall of links.
 
@@ -105,17 +105,17 @@ The full list is below, grouped by job. Field cases and gotchas sit above the wa
 
 | Category | Listed |
 | --- | ---: |
-| [Coding & shipping](#coding--shipping) | 849 |
-| [Inbox & calendar](#inbox--calendar) | 260 |
-| [Research & briefings](#research--briefings) | 777 |
-| [Customer & sales](#customer--sales) | 548 |
-| [Finance & ops](#finance--ops) | 672 |
-| [Content & publishing](#content--publishing) | 841 |
-| [Personal admin](#personal-admin) | 2003 |
-| [Teams & handoffs](#teams--handoffs) | 706 |
-| **Total** | **6656** |
+| [Coding & shipping](#coding--shipping) | 908 |
+| [Inbox & calendar](#inbox--calendar) | 291 |
+| [Research & briefings](#research--briefings) | 864 |
+| [Customer & sales](#customer--sales) | 590 |
+| [Finance & ops](#finance--ops) | 728 |
+| [Content & publishing](#content--publishing) | 934 |
+| [Personal admin](#personal-admin) | 2225 |
+| [Teams & handoffs](#teams--handoffs) | 788 |
+| **Total** | **7328** |
 
-On 27 Oct 2026, 6649 of 6688 share pages returned HTTP 200 (39 older shares now 404). Reachable is not the same as safe or correct. Maintainer review status is **0 verified / 6656 listed** (`verified: true` in [catalog.json](catalog.json) means a maintainer imported the Bot and finished a safe first task).
+On 27 Oct 2026, 6649 of 6688 share pages returned HTTP 200 (39 older shares now 404); on 2 Nov 2026, 711 of 726 new candidates returned 200 (15 skipped as 404). Reachable is not the same as safe or correct. Maintainer review status is **0 verified / 7328 listed** (`verified: true` in [catalog.json](catalog.json) means a maintainer imported the Bot and finished a safe first task).
 
 ## Field cases
 
@@ -253,35 +253,35 @@ One share is one bot. Assemble the roster yourself.
 
 ## Coding & shipping
 
-Full list (849 shares): [catalog/en/coding-shipping.md](catalog/en/coding-shipping.md)
+Full list (908 shares): [catalog/en/coding-shipping.md](catalog/en/coding-shipping.md)
 
 ## Inbox & calendar
 
-Full list (260 shares): [catalog/en/inbox-calendar.md](catalog/en/inbox-calendar.md)
+Full list (291 shares): [catalog/en/inbox-calendar.md](catalog/en/inbox-calendar.md)
 
 ## Research & briefings
 
-Full list (777 shares): [catalog/en/research-briefings.md](catalog/en/research-briefings.md)
+Full list (864 shares): [catalog/en/research-briefings.md](catalog/en/research-briefings.md)
 
 ## Customer & sales
 
-Full list (548 shares): [catalog/en/customer-sales.md](catalog/en/customer-sales.md)
+Full list (590 shares): [catalog/en/customer-sales.md](catalog/en/customer-sales.md)
 
 ## Finance & ops
 
-Full list (672 shares): [catalog/en/finance-ops.md](catalog/en/finance-ops.md)
+Full list (728 shares): [catalog/en/finance-ops.md](catalog/en/finance-ops.md)
 
 ## Content & publishing
 
-Full list (841 shares): [catalog/en/content-publishing.md](catalog/en/content-publishing.md)
+Full list (934 shares): [catalog/en/content-publishing.md](catalog/en/content-publishing.md)
 
 ## Personal admin
 
-Full list (2003 shares): [catalog/en/personal-admin.md](catalog/en/personal-admin.md)
+Full list (2225 shares): [catalog/en/personal-admin.md](catalog/en/personal-admin.md)
 
 ## Teams & handoffs
 
-Full list (706 shares): [catalog/en/teams-handoffs.md](catalog/en/teams-handoffs.md)
+Full list (788 shares): [catalog/en/teams-handoffs.md](catalog/en/teams-handoffs.md)
 
 ## Skills and tools
 
@@ -331,6 +331,7 @@ No official Linux desktop app. The Bot computer in the cloud is already Linux. T
 - [Convoy](https://github.com/Deploy-Forward/convoy) - Public MCP plus hop CLI. Grok Bot conducts; BYO harness CLIs do the hops.
 - [grokbot-openai](https://github.com/owenisas/grokbot-openai) - PKCE login like the app, then a local OpenAI /v1/chat/completions for Hermes, OpenCode, or curl.
 - [grok-bot-gateway](https://github.com/dimpurr/grok-bot-gateway) - Skill so Claude Code, Codex, or scripts can list Grok Bots, read a transcript, and message a Bot through an official webhook routine. Results come back over a return path you choose, none by default.
+- [Ironheights](https://github.com/Frank-Masciopinto/ironheights) - Open-source, local-first CLI that scans a skill folder with a `SKILL.md` for prompt injection, credential reads, and remote-exec installs before you add it to a Bot. Static rules only, so a clean result is not proof of safety.
 
 ### Chat bridges
 
@@ -346,6 +347,7 @@ No official Linux desktop app. The Bot computer in the cloud is already Linux. T
 - [grokbot-discord](https://github.com/RudeDude/grokbot-discord) - Python Discord gateway. One Discord bot, many Grok Bots, webhook wake, async reply.
 - [Discord for Grok Bot](https://github.com/NinjaProtocol/grokbot-discord-plugin) - Paste-in Discord plugin. Mentions in allowlisted channels wake the Bot.
 - [twilio-grok-voice-bridge](https://github.com/jeffhuber/twilio-grok-voice-bridge) - Experimental Twilio Media Streams bridge so a Bot can place outbound Grok Voice calls.
+- [call-me](https://github.com/radres/call-me) - Remote MCP server and Grok plugin so an agent can ring or text your phone and take your spoken answer back as text. Phone app is paid ($4.99/week, 3-day trial).
 
 ### Skill packs and playbooks
 
@@ -370,7 +372,7 @@ No official Linux desktop app. The Bot computer in the cloud is already Linux. T
 - [Werewolf gamemaster](https://github.com/Heyvhuang/werewolf-gamemaster) - Skill pack so the Bot runs a Werewolf table, not a hello-world SKILL.md.
 - [Hyperliquid 7-agent trading desk](https://github.com/galleonlabs/hypergrok-trading-desk) - Experimental. Seven specialized Bots on one desk. Read the code first.
 - [grokbot-for-gtm](https://github.com/bcharleson/grokbot-for-gtm) - Playbook plus skills so a Bot can run outbound GTM. Instantly, HeyReach, human-approved sends.
-- [Grok Bot Plays](https://github.com/ZooHero500/plays) - How-to catalog of plays rewritten from public posts, with source links.
+- [Grok Bot Plays](https://grokbotplays.com) - How-to catalog of plays rewritten from public posts, each linked to its source.
 - [Uncle-Gizmo notes](https://github.com/Uncle-Gizmo/grok-bot-info) - Public notes on safe example workflows and how Bot sits next to Grok Build.
 - [learn-grok-bot](https://github.com/yuanyijie/learn-grok-bot) - Unofficial 16-lesson course on the desktop-agent harness. Electron, turn loop, sandbox, MCP.
 - [PhoneZero](https://github.com/function1st/PhoneZero) - Paste-in Grok Bot skill that books a table by phone over Telnyx and xAI voice, plan-first then dial.
@@ -390,6 +392,7 @@ No official Linux desktop app. The Bot computer in the cloud is already Linux. T
 - [pigeon-mcp](https://github.com/iXanadu/pigeon-mcp) - Self-hosted multi-account Gmail MCP with real MIME send and attachments, not Google's hosted MCP.
 - [multiBot](https://github.com/simo255/multiBot) - Factory pack that spawns CLI-delegated teammates through CreateAgent.
 - [GojiberryAI Sales OS](https://github.com/romangojiberryAI/gojiberryai-sales-os) - Open outbound sales roster for Grok Bot on the GojiberryAI MCP.
+- [deed-page-skill](https://github.com/f-o-x11/deed-page-skill) - Skill plus `.grok-plugin` and remote MCP so a Bot can publish HTML or a folder to a permanent `<slug>.deed.page` URL, no account needed.
 
 ### Open-source alternatives
 
@@ -428,6 +431,7 @@ Community walkthroughs.
 
 See also [Grok Bot 橙皮书](https://github.com/KinGao294/grok-bot-orange-book) under Skill packs.
 - [Grok Bot setup guide for small business](https://whatshouldmybotdo.com/guides/grok-bot-setup-guide) - WhatShouldMyBotDo. First Bot, connector permissions, a drafts-you-approve rule, then the first routine.
+- [grokguide.si (Chinese)](https://grokguide.si/) - Independent Chinese-language tutorial site. Beginner course plus step-by-step guides on setup, routines, skills and the Linux app.
 
 ## Reviews
 
@@ -453,6 +457,6 @@ Do not invent share URLs. Do not paste another person's full standing instructio
 
 ## Related
 
-Community galleries of live shares: [somi.ai/grok-bots](https://somi.ai/grok-bots) · [grokbot.dev](https://grokbot.dev) · [grokyard.com](https://www.grokyard.com)
+Community galleries of live shares: [somi.ai/grok-bots](https://somi.ai/grok-bots) · [grokbot.dev](https://grokbot.dev) · [grokyard.com](https://www.grokyard.com) · [agentcookbook.dev](https://agentcookbook.dev/grok-bot-use-cases)
 
 Catalog and recipes (`catalog.json`, `catalog/`, `templates/`, `packs/`) are CC0-1.0 ([LICENSE](LICENSE)). Scripts (`scripts/`) are MIT ([LICENSE-MIT](LICENSE-MIT)). Chinese: [README.zh-CN.md](README.zh-CN.md).

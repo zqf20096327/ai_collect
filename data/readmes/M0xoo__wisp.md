@@ -47,7 +47,7 @@ brew install m0xoo/tap/wisp-agents             # Homebrew: CLI and browser mode,
 wisp "fix the flaky auth test"
 ```
 
-The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.50.0 bash`).
+The Homebrew formula lives in [M0xoo/homebrew-tap](https://github.com/M0xoo/homebrew-tap) (the release workflow bumps it from [`packaging/homebrew`](packaging/homebrew/wisp-agents.rb)). `install.sh` honors `WISP_VERSION` to pin a release (`curl -fsSL https://trywisp.dev/install.sh | WISP_VERSION=0.55.0 bash`).
 
 **Or download the desktop app** (no Node needed, it updates itself). The builds aren't signed yet, so on a Mac the one-liner is the easy way: curl doesn't quarantine what it downloads, so macOS opens it without asking.
 
@@ -66,7 +66,7 @@ Every build is on the [latest release](https://github.com/M0xoo/wisp/releases/la
 | Channel | What it is | npm | Desktop app |
 |---|---|---|---|
 | **Stable** | Releases | `npm install -g wisp-agents` | [latest release](https://github.com/M0xoo/wisp/releases/latest) |
-| **Beta** | Previews of the next release (`0.50.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
+| **Beta** | Previews of the next release (`0.55.0-beta.1`) | `npm install -g wisp-agents@next` | its [prerelease](https://github.com/M0xoo/wisp/releases) |
 | **Nightly** | `main`, built every night its full test suite passes (`0.44.3-nightly.20261028.317`) | `npm install -g wisp-agents@nightly` | [nightly release](https://github.com/M0xoo/wisp/releases/tag/nightly) (`releases/download/nightly/<name>`) |
 
 Set **Settings → General → Updates** to the one you want, and *Update to …* follows it. Beta and nightly also take a stable release once it's newer, so they never leave you behind; switching back to stable waits for the next release rather than going back a version. `WISP_VERSION=next` or `WISP_VERSION=nightly` picks one in `install.sh` (`--app` too, for nightly). Homebrew only has stable releases.
@@ -111,6 +111,7 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | | |
 |---|---|
 | **Fire and forget** | Launch a task from the UI or from any folder with `wisp "…"`. Each folder becomes a project. |
+| **Start from an issue** | New task's **Issue** button lists the project's open GitHub issues (and the Linear issues assigned to you, with a Linear connector); pick one and the prompt says *Fix #123*, with its link and text. |
 | **Presentations, not transcripts** | Agents end with structured blocks that render as an animated, skimmable report. |
 | **The full transcript, if you want it** | Off by default. Settings → General → *Full transcript*, or a card's **Transcript** button (`V`), shows the agent's messages and every step on a timeline. Click a step to see its output or diff. The presentation still renders as blocks at the end. |
 | **Live questions** | Agents get an `ask_user` tool, so they can pause mid-run. Your answer goes straight back to the running agent. |
@@ -123,11 +124,12 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **Goals** | Say what *done* means and wisp checks it after every round, sending the task back until it holds. See [Goals](#goals). |
 | **Auto** | The default harness: wisp picks the harness, model and thinking level per task from what worked before, and learns from merges, 👍 / 👎 and follow-ups. See [Auto](#auto). |
 | **Any harness** | Claude Code, Codex, opencode, Cursor CLI, Antigravity CLI, Grok Build, or GitHub Copilot CLI. Pick the harness, model and thinking level together in the launcher; both are remembered per harness. Each card shows the harness it ran on. |
+| **Changed-harness warning** | wisp remembers each harness's program (where it is, its size, sha256 and version). When that changes, the task and Settings → Agents say so (*Codex changed since 2 Nov: 0.1.2 → 0.1.3*) with **Trust this version**: an update in the same folder is a plain line, another folder or the same version with other bytes is a warning. Turn on *Ask before running a changed harness* and a run waits for **Trust and start** or **Skip this run**. |
 | **Take over** | Resumes the harness's own session (`claude --resume <id>`, `codex resume <id>`, …) in the project folder, in a terminal inside wisp by default (macOS and Linux). Settings → General → **Take over in** can open it in a terminal app instead: Terminal, iTerm, Ghostty, Warp, cmux, kitty, WezTerm, GNOME Terminal, Konsole, Alacritty, Windows Terminal, PowerShell, or a custom command. |
 | **Attachments** | Paste screenshots or drop images, video, logs, or PDFs into the launcher. |
 | **Learns as you go** | After a session goes quiet, a background retro records your preferences and the agent's lessons (a mistake and the way that worked), globally and per project. Later runs get them in their prompt. See [Learning](#learning). |
 | **One task, several folders** | ⌘-click a second project in the launcher (or its **+**) and one agent works in both, e.g. the API and the web app that uses it. Each git repo gets its own worktree, and **Ship it** opens a PR in each. |
-| **A worktree per task** | In a git repo each task gets its own worktree and branch from `origin/main`, so parallel agents never collide. |
+| **A worktree per task** | In a git repo each task gets its own worktree and branch from `origin/main`, so parallel agents never collide. It brings what git ignores: the files `.worktreeinclude` lists (gitignore-style; without one, the root's `.env` files), and runs the repo's setup from `.wisp/worktree.json` (`{ "setup": ["npm ci"] }`) or Cursor's `.cursor/worktrees.json`, with `ROOT_WORKTREE_PATH` set. Add `"run": "npm run dev"` (and optionally `"port": 5173`) and the side panel's **Preview** runs the app from the worktree and shows it beside the task, with an element picker for the reply box. |
 | **Ship it** | One click commits, pushes and opens the PR. The card follows CI and reviews; **Merge** squash-merges and syncs your local main. |
 | **Clash warnings** | Two active tasks (Working or Needs you) in one repo changing the same files are flagged on both cards, with the files, before you ship or merge either. When merging both would really conflict (checked with `git merge-tree`, uncommitted edits included), the warning says so and names the conflicting files. |
 | **Delegate** | Give the lead agent a team on other harnesses and other machines (e.g. Claude Code hands tests to Codex ×3 and a refactor to Claude on your GPU box). It delegates through a `delegate` tool; their edits land in its worktree. See [Delegate](#delegate). |
@@ -135,7 +137,7 @@ From there you can **follow up**, **answer its questions**, **take it over** in 
 | **Split view** | Tasks in a sidebar, the open one beside it with room to read, and the prompt box as home. On a wide window the task's details (harness, branch, its PR with Merge, the actions) sit in a column beside it that stays put as you scroll. `J` / `K` move through tasks with each one open; `[` hides the list. Drag the sidebar's edge to resize it. Under 900px, and on the phone, the list fills the screen and a task opens as a page of its own with Back. |
 | **Compare** | Run one task on two harnesses side by side, and keep the better run. |
 | **Spells** | Change wisp itself while it runs: ask for a floating button that opens your PRs, a panel with your tool stats, a block agents can use in their reports, a different prompt box, quick replies, buttons on cards, a new look. An agent writes it as a *spell*; you try it in the window and keep it. Share one as a file, and turn any of them off to put wisp back as it was. See [Spells](#spells). |
-| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.50.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
+| **Recipes & triggers** | Saved prompts with `{params}` (`wisp run release 0.55.0`), run by hand, on a schedule, when CI fails, or when an issue is labelled. |
 | **Usage** | Spend, success rate and questions per project and per harness · model. |
 | **wisp Cloud** | Your own wisp on a server, at [grid.trywisp.dev](https://grid.trywisp.dev): sign in with GitHub or Google and your agents keep working after you close the laptop. Use it from the browser, from wisp on your computer (Machines) or from the phone app, and add your own computers to it so the phone and your other computers reach them with no SSH. Or run your own grid with `npx wisp-agents grid init`. See [wisp Cloud](#wisp-cloud). |
 | **Sign in from wisp** | Settings → Agents signs Claude Code, Codex and GitHub in for you: a link and a code, no terminal. For opencode Zen and Go, paste your API key there. The model picker only offers the agents you're signed in to. |
@@ -170,7 +172,7 @@ wisp btw <id> "did you do X?"     # ask on the side without interrupting the run
 wisp stop <id>
 wisp ship <id> [--draft]          # commit, push and open a PR for a worktree task
 wisp merge <id>                   # squash-merge its PR, fast-forward your local main
-wisp run release 0.50.0            # run a recipe; values fill its {params} (or version=0.50.0)
+wisp run release 0.55.0            # run a recipe; values fill its {params} (or version=0.55.0)
 wisp recipes                      # list recipes
 wisp usage [--days 7]             # spend and outcomes
 wisp computer on [--grid HOST]    # add this computer to your wisp Grid (signs in with a code first); off, or no word for its status
@@ -217,6 +219,7 @@ console.log((await wisp.wait(s.id)).state, (await wisp.presentation(s.id)).markd
 - **HTTP API**: `GET /api/openapi.json`. The new routes are `/api/health`, `/api/sessions/:id/wait` (long-poll), `/api/sessions/:id/presentation` (blocks + markdown), and filters on `/api/sessions`.
 - **Discovery**: the running server writes `~/.wisp/server.json` (`url`, `port`, `pid`, `version`).
 - **Webhooks**: `PATCH /api/config {"webhooks":[…]}`. wisp POSTs `session.finished` and `session.waiting` with the presentation as markdown.
+- **Webhook triggers** (Settings → Automations → *Webhook triggers*, off by default): a trigger can start a task when something outside calls its secret URL, `POST /api/hooks/<token>`. *When a webhook is called*: the JSON or form body fills the prompt (`{{body.ref}}`, `{{text}}`), optionally signed with an HMAC sha256 secret. *When someone mentions wisp in Slack*: the URL is your Slack app's Events API request URL (signing secret checked, one channel, an optional keyword). *When a Linear issue is created*: a Linear webhook (Linear-Signature checked, an optional label). At most one task per trigger every 30 s; the editor lists the last five calls. On this computer the URL is local, so put a tunnel in front; on wisp Cloud it's public.
 
 ## Keyboard shortcuts
 
@@ -403,6 +406,8 @@ In a git repo, every launch (except Plan mode) runs in its own [git worktree](ht
 
 Turn worktrees off in Settings → *Worktree per task*, with the launcher's **Worktree / In place** toggle, or per launch (`--no-worktree`, `"worktree": false`).
 
+Coming from Google Jules (read-only from 11 November 2026, closed on 31 December)? [Moving off Jules](https://trywisp.dev/guides/moving-off-jules.html) maps its tasks, setup scripts, environment variables and scheduled tasks onto wisp.
+
 ## Delegate
 
 The launcher's **Delegate** button gives the lead agent a team it can hand parts of the task to (the API calls them subagents). The lead gets a `delegate` tool on wisp's MCP server, and its harness's own subagent tool is switched off, so every helper is one you picked. Up to 6 members, 12 agents counting copies. Each member has:
@@ -461,7 +466,7 @@ A check-in that found nothing marks itself `quiet`: it's logged and archived (it
   <img src="docs/assets/shots/light-org.webp" alt="wisp's Org page: Ada, a tech lead, hands work to Scout, Quill and three Codex copies; Quill hands work to Echo" width="880" />
 </picture>
 
-**Ask any task to change the crew.** *Add a crew member who reviews new PRs every hour*, *pause Ada*, *remove Quill*: every agent wisp runs has `wisp_crew`, `wisp_crew_add`, `wisp_crew_edit` and `wisp_crew_remove`, and writes the brief from what you asked. A subagent or a member's own job can't change the crew. `wisp mcp` has the same tools, so Claude Code, Codex or any MCP client outside wisp can manage it too.
+**Ask any task to change the crew.** *Add a crew member who reviews new PRs every hour*, *pause Ada*, *remove Quill*: every agent wisp runs has `wisp_crew`, `wisp_crew_add`, `wisp_crew_edit` and `wisp_crew_remove`, and writes the brief from what you asked. Crew members and subagents can too, so a lead can hire help for a job; a member's job just can't remove that member. `wisp mcp` has the same tools, so Claude Code, Codex or any MCP client outside wisp can manage it too.
 
 **They follow up by themselves.** A member tagged in a task, or delegated to by one, can send that task's agent a follow-up of its own when it finds something that agent should act on (`followUp` in its block). It shows in the task as *@Ada (your crew’s CI watcher): …*, Ada's thread there moves along with it, and Ada's job says where it followed up. Ada also joins that task's delegates, so its agent can hand the work back for her to check; that delegated job reports to the agent rather than following up again, so they can't loop.
 
@@ -508,7 +513,7 @@ Before each turn, wisp snapshots the git working tree (pinned at `refs/wisp/chec
 Prepare release {version}: update CHANGELOG, README and docs/, bump package.json, tag v{version}.
 ```
 
-Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.50.0` fills the fields in order, `wisp run release version=0.50.0` by name.
+Make one from ⌘K → *Recipes*, or *Save as recipe…* on any card. A recipe may pin a project, harness, model and mode. Run it from ⌘K (*Run: Release*), from the Recipes view, or from a terminal: `wisp run release 0.55.0` fills the fields in order, `wisp run release version=0.55.0` by name.
 
 **Triggers** launch sessions on their own while wisp is open (⌘K → *Triggers*):
 
@@ -618,7 +623,7 @@ The machine runs macOS or Linux (on Windows, use WSL). It only needs **SSH turne
 
 ### On your phone (Android, prototype)
 
-[`mobile/`](mobile/) is wisp on Android, for your own computers and for wisp Cloud. Its first screen starts with **wisp Cloud** (sign in with a code, nothing to set up): it then lists your cloud wisp and every computer you added to the grid from its Machines, online or not, each one a tap away. Over SSH is still there, folded under *Connect over SSH instead*: add a computer with its address and your password (once; the app installs its own key there), and the app sets it up the way Machines does: Node.js if it's missing, then wisp. Tap it and you're in that computer's wisp, with every feature; the agents keep running when the phone sleeps. **Computers** in wisp's top bar goes back to the app's list to switch or add one. Build it with `cd mobile && npm install && npm run build`; see [mobile/README.md](mobile/README.md).
+[`mobile/`](mobile/) is wisp on Android, for your own computers and for wisp Cloud. Its first screen starts with **wisp Cloud** (sign in with a code, nothing to set up): it then lists your cloud wisp and every computer you added to the grid from its Machines, online or not, each one a tap away. Over SSH is still there, folded under *Connect over SSH instead*: add a computer with its address and your password (once; the app installs its own key there), and the app sets it up the way Machines does: Node.js if it's missing, then wisp. Tap it and you're in that computer's wisp, with every feature; the agents keep running when the phone sleeps. In New task and a reply, the paperclip takes a photo or records a video, and the mic beside it types what you say. **Computers** in wisp's top bar goes back to the app's list to switch or add one. Build it with `cd mobile && npm install && npm run build`; see [mobile/README.md](mobile/README.md).
 
 ## Learning
 

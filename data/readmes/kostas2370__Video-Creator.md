@@ -42,8 +42,24 @@ form does not start another paid request. Draft recovery does not sync between
 browsers or devices and depends on browser storage. If an uploaded reference cannot
 be recovered, reattach or explicitly remove it before generating.
 
+Use **Delete draft project** on AI creation or storyboard review to remove a saved
+draft after confirmation. Your creation settings stay in this browser so you can
+draft again. Draft projects can also be deleted from **My videos**. Active generation
+and exports must finish before deletion; reusable library media and usage history
+are preserved. **Start over** only discards the browser draft and keeps saved projects.
+
 Accounts can use shared service credentials or encrypted personal provider keys.
 AI generation requires access to the selected providers and may incur API charges.
+AI creation estimates scenario costs before drafting. Storyboard review includes
+the scenario already drafted alongside planned media costs, and scene generation
+controls show estimates before paid requests. **Usage** shows costs from recorded requests; **Project extras →
+Generation costs** compares these with the project's original estimate. Unknown
+prices remain unavailable. See [cost coverage and rate configuration](docs/ai-usage.md#generation-cost-estimates).
+
+For lower-cost new OpenAI images and starting frames, choose **Generation mode →
+Economy** in creation review, storyboard review, or project settings. This optional
+mode trades image detail for cost; Standard remains the default. Saved media is
+kept, and animation and narration prices are unchanged.
 
 ## Quick start with Docker
 
@@ -133,12 +149,54 @@ Removed scenes can be restored from **Project extras → Recently deleted** for 
 days. Reusable scene assets remain in the media library after their project is
 deleted; assets still used by a scene cannot be deleted from the library.
 
+### Animate photo scenes
+
+Open a scene's **Animation** control to preview **Playful**, **Dramatic**, **Calm**,
+or **Explainer**. Presets combine camera movement with entrances for text overlays;
+Playful, Dramatic, and Calm also offer optional decorative particles. Adjust the
+intensity, save, and render again to include the animation in the downloaded video.
+Use **Text & logos** to add titles, labels, or an arrow and set when they appear.
+Watermarks stay static. The sample label in the animation picker is for preview only.
+
+Under **Project extras → Photo animations**, choose **Animate all photos** to apply
+a preset across existing image scenes. Video clips keep their appearance. Choose
+**Camera only** for individual zoom/pan controls (or varied Auto movement when
+applying to all photos). Existing projects keep their current appearance until a
+preset is saved. These effects reuse the existing photos and do not request AI video
+generation. Moving separate character/object cutouts is not included in this version.
+
+### Plan visual storytelling from the script
+
+Enable **AI visual planning** in the advanced settings when creating an AI video.
+The storyboard request then suggests varied framing, each shot's role in the story
+(such as a hook, comparison, reveal, or payoff), what the viewer should notice,
+a photo animation, and up to two short emphasis labels per shot. Review or edit
+these choices before pressing **Proceed**. Camera movement for generated video
+clips stays with the visual provider; photo animation presets apply to images.
+
+Label timing is an approximate percentage of each finished scene. After media
+generation, the app converts those percentages to editable seconds using the actual
+scene duration. These labels are not synchronized to individual spoken words.
+Labels, animation, and timing can be adjusted in the scene editor; resuming
+generation preserves your edits, including labels you removed. Existing drafts
+without visual plans still work. Planning uses the existing storyboard request and
+does not add AI video generation requests.
+
+When updating an already running installation, apply the database migrations and
+restart the API and Celery workers as well as rebuilding the frontend. The API must
+load the new scene fields before animation settings can be saved.
+
 ## Provider configuration
 
 Both Docker and manual installations read [`backend/.env`](backend/.env_example).
 The [environment template](backend/.env_example) lists available settings. Blank
 values generally use application defaults; credentials are required for whichever
 providers you select.
+
+YouTube clipping projects first check for suitable captions. When captions cannot
+be used, audio transcription defaults to OpenAI (`whisper-1`) and requires a service
+or personal API key. See [transcription setup](docs/clips.md) for the optional local
+Whisper service.
 
 | Purpose | Service credentials |
 | --- | --- |
@@ -386,8 +444,19 @@ See [visual continuity](docs/visual-continuity.md) for the full workflow.
 
 Generated images, character references, shared references, covers and scene logos
 are saved in the media library. If video generation fails after the starting image
-is created, the scene keeps that image and offers **Retry video with saved image**.
-The existing result is retained until its replacement succeeds.
+is created, the scene keeps that image for retry. Character video shots now stop
+after preparing their starting images. In each scene, review the characters and
+composition, edit the description and regenerate if needed, or upload a PNG, JPEG
+or WebP replacement (up to 10 MB). Choose **Approve starting image**, then
+**Animate approved image** to start that shot's paid animation request. Image
+preparation and animation are separate requests; approving an image makes no AI
+request. A failed animation offers **Retry animation** using the approved image.
+Click the **Starting image** heading to hide or reopen the review controls; your
+choice is remembered for each scene in this browser. Existing clips remain until
+their replacement succeeds. Resume prepares missing images without starting animations. Changed shot guidance or frame settings
+invalidate image approval and require preparing and reviewing a new image.
+Restart the API and general worker and rebuild the frontend together when
+upgrading to this workflow; no new database migration is required.
 
 After upgrading, apply the included migrations, restart the API and workers, and
 rebuild the frontend. Run `python manage.py archive_reference_images` to add older

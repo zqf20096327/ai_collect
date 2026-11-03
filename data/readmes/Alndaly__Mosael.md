@@ -34,7 +34,7 @@ already pay for — Mosael doesn't resell credits — and keeps your projects an
 | Platform | Installer | Notes |
 | --- | --- | --- |
 | macOS | `Mosael-<version>-arm64.dmg` | Apple silicon (M-series); signed and notarized |
-| Windows | `Mosael.Setup.<version>.exe` | Windows 10 / 11, x64 |
+| Windows | `Mosael Setup <version>.exe` | Windows 10 / 11, x64 |
 
 Get the latest stable build from **[GitHub Releases](https://github.com/Alndaly/Mosael/releases/latest)** (users in
 mainland China can use the [Baidu Netdisk mirror](https://mosael.com/zh/docs/start/download)). Free for personal,
@@ -100,6 +100,7 @@ agents can edit the same timeline at once, and ⌘Z undoes only your own step. [
 
 Dub a subtitle track line by line with a voice cloned **locally** (F5-TTS or Fish Speech), with a copy of that voice in
 your own Alibaba Cloud Bailian account for **CosyVoice**, with free Edge voices, or with OpenAI and Volcengine voices.
+Every engine has speed control (engines without their own speed parameter are time-stretched after synthesis, keeping pitch).
 Split a clip into voice and background, denoise it, or keep only the voice. The translated-dubbing templates transcribe,
 translate, subtitle and dub a whole video, and can re-sync the speaker's lips. [Voice-over](https://mosael.com/en/docs/guides/editing#voiceover)
 
@@ -140,29 +141,31 @@ The agent reads project context and uses tools across media, notes, boards, scen
 need approval show a confirmation card. Import footage, record your screen or camera, or download a supported video
 URL; PDFs, Word files, slides and spreadsheets are parsed into text on your machine. Notes keep scripts and research,
 and a selected passage can be polished, rewritten or translated with each change shown for approval. Recurring
-characters, locations and props live in the asset library — `@` one while generating and its references come along.
+characters, locations and props live in the asset library, along with poses and outfits that fit any character — `@`
+one while generating and its references come along; a pose is sent as a dedicated pose reference for the shot's camera
+angle. The Assets page's reference library brings in external atlases, with the PoseAtlas pose and outfit atlas built in.
 [AI Studio & agents](https://mosael.com/en/docs/guides/ai-studio) · [Media library](https://mosael.com/en/docs/guides/media) · [Notes](https://mosael.com/en/docs/guides/notes) · [Asset library](https://mosael.com/en/docs/guides/assets)
 
 ### Publish to Douyin, TikTok, Bilibili, Xiaohongshu and YouTube
 
 Browser Pool keeps persistent sign-ins and proxies for several accounts. Each platform takes the content it supports —
-video on every one of them, **image-text** on Douyin, Xiaohongshu, WeChat Channels, TikTok and X, and **articles
-(columns)** on Bilibili. Publishing forms follow each destination's options; review the media, account and copy before
-submitting, then track the result.
+video on every one of them, **image-text** on Douyin, Xiaohongshu, WeChat Channels, Bilibili, TikTok, X and YouTube, and
+**articles (columns)** on Douyin, Xiaohongshu, X and Bilibili. Publishing forms follow each destination's options;
+review the media, account and copy before submitting, then track the result.
 [Publishing](https://mosael.com/en/docs/guides/publishing) · [Browser profiles](https://mosael.com/en/docs/guides/browser-pool)
 
 ### Plugins and the Chrome companion
 
-ComfyUI, object storage and MinerU document parsing ship with the app; Blender, Manim, Remotion, TikHub, Baidu Netdisk
+ComfyUI, object storage, MinerU document parsing and the PoseAtlas reference library ship with the app; Blender, Manim, Remotion, TikHub, Baidu Netdisk
 and more are in the [plugin market](https://mosael.com/en/plugins). Plugins connect local scripts or MCP servers to the
 agent and workflows. The Chrome video companion reads transcripts in the side panel, translates and imports media.
 [Using plugins](https://mosael.com/en/docs/guides/plugins) · [Writing a plugin](https://mosael.com/en/docs/guides/writing-plugins) · [Chrome companion](browser-extension/README.md)
 
 ### AI-generated content labels
 
-When an export contains AI-generated or AI-altered content, Mosael writes the standard implicit AIGC label into the
-file and, by default, a visible "AI-generated" mark — in line with China's rules on labelling synthetic content.
-Turning the visible mark off is your call and is stated in the export dialog.
+When an export contains AI-generated or AI-altered content, Mosael always writes the standard implicit AIGC label into
+the file. A visible "AI-generated" mark at the head and in a corner is off by default — turning it on is your call and
+is stated in the export dialog, in line with China's rules on labelling synthetic content.
 
 ## Supported models and providers
 
@@ -245,6 +248,7 @@ Install dependencies:
 
 ```bash
 pnpm install
+pnpm --dir website install   # website/ is its own pnpm workspace
 cd backend && uv sync && cd ..
 pnpm fetch:tts-python   # the interpreter local engines' environments are built with — same one the app ships
 ```
@@ -302,7 +306,9 @@ pnpm --dir agent-sidecar typecheck && pnpm --dir agent-sidecar build && pnpm --d
 pnpm typecheck:electron
 pnpm --dir browser-extension test && pnpm --dir browser-extension typecheck && pnpm build:extension
 pnpm --dir website test && pnpm --dir website build
-pnpm test:scripts                           # release tooling (download page, TTS interpreter manifest + sha256) via node:test
+pnpm test:scripts                           # release tooling (download page, R2 publish, platform-smoke, release CI, TTS interpreter manifest + sha256) via node:test
+python3 scripts/sync-ratchet-docs.py --check
+xvfb-run -a ./node_modules/.bin/electron --no-sandbox test/differential-update.smoke.cjs  # Linux CI; needs xvfb
 ```
 
 Run checks from the repository root. Locally it is enough to run `pnpm lint` plus the lines for what you changed; CI runs all of them.

@@ -307,6 +307,7 @@ These projects are evaluated for their focused capability or research pattern ra
 - **[Concordia](https://github.com/google-deepmind/concordia)** — A library for generative agent-based simulations grounded in physical, social, or digital worlds.
 - **[SkillOpt](https://github.com/microsoft/SkillOpt)** — Bounded skill optimization from scored trajectories with evaluation gates.
 - **[Harness²](https://github.com/google-research/harness2)** — Early research code for proposing, probing, and composing persistent changes to prompts, guardrails, memory, tool guidance, subagents, skills, scripts, and plugins.
+- **[Agent Role Contracts](https://github.com/suirindo/agent-role-contracts)** — Offline preflight checks for declared role authority, task scope, reviewer separation, handoffs, and stale task/action bindings; PASS establishes declaration consistency, not identity, evidence authenticity, runtime enforcement, or execution authority. [v1.0.0 integration boundary](https://github.com/suirindo/agent-role-contracts/blob/9f6771056c47de971202360952af6d41941f7625/docs/INTEGRATION.md) (accessed 2026-10-31).
 
 #### Evaluation infrastructure
 
@@ -555,6 +556,7 @@ Tool governance spans registration, selection, dispatch, execution, result handl
 - <u>ExACT</u>†: **"ExACT: Teaching AI Agents to Explore with Reflective-MCTS and Exploratory Learning"**. *Yu et al.* arXiv 2024. [[Paper](https://arxiv.org/abs/2410.02052)]
 - <u>Steer, Don't Solve</u>†: **"Steer, Don't Solve: Training Small Critic Models for Large Code Agents"**. *Gandhi et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2606.21811)] [[Code](https://github.com/shubhamrgandhi/critic-training)]
 - <u>LongHorizon-Harness</u>†: **"LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks"**. *Ma et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2608.01964)] [[Code](https://github.com/AMAP-ML/LongHorizon-Harness)]
+- <u>AutoSR</u>†: **"AutoSR: Automatic Symbolic Regression by Searching Research States"**. *Zhang et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2608.16876)] [[Code](https://github.com/AutoResearch-Factory/AutoSR)]
 
 #### Multi-Agent Coordination
 
@@ -578,6 +580,7 @@ Illustrative coordination patterns expose different identity, authority, state-c
 - <u>Concordia</u>†: **"Generative Agent-Based Modeling with Actions Grounded in Physical, Social, or Digital Space Using Concordia"**. *Vezhnevets et al.* arXiv 2023. [[Paper](https://arxiv.org/abs/2312.03664)]
 - <u>PEvo</u>: **"Implicit Behavioral Alignment of Language Agents in High-Stakes Crowd Simulations"**. *Wang et al.* EMNLP 2025. [[Paper](https://arxiv.org/abs/2509.16457)]
 - <u>Agon</u>†: **"Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy"**. *Sun et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2606.24177)] [[Code](https://github.com/AutoResearch-Factory/Agon)]
+- <u>AgonAlpha</u>†: **"AgonAlpha: Autonomous Alpha Discovery via Prompt Economy and Scalable Agentic Search"**. *Ye et al.* arXiv 2026. [[Paper](https://arxiv.org/abs/2608.11250)] [[Code](https://github.com/AutoResearch-Factory/AgonAlpha)]
 
 #### Compute Economics
 

@@ -9,7 +9,7 @@
 <h1 align="center">K8s Incident Diagnosis AI Agent</h1>
 
 [![CI](https://github.com/Mkft1/ai_agent_DevOps/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Mkft1/ai_agent_DevOps/actions/workflows/ci.yml)
-![Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Docker](https://img.shields.io/badge/docker-multistage-2496ED?logo=docker&logoColor=white)](./Dockerfile)
@@ -29,14 +29,15 @@ The agent is strictly **read-only by default**: it never mutates the cluster (`E
 | 📚 **Hybrid RAG over runbooks** | Local Markdown runbooks (`docs/runbooks/*.md`) ranked by **hybrid search**: `0.5 × TF-IDF` (exact terms) + `0.5 × cosine similarity` of sentence-transformers embeddings (`all-MiniLM-L6-v2`, semantic match). No vector DB, no external service; if the model is unavailable the agent gracefully falls back to pure TF-IDF. Top playbooks are injected into the LLM context as `relevant_runbooks` and drive `suggested_fix`. |
 | ☸️ **Kubernetes integration** | Official Python client: pods, events, deployments, nodes, container logs (including pre-restart logs for OOMKilled/CrashLoopBackOff). |
 | 📈 **Prometheus integration** | instant & range queries, per-pod CPU/memory usage via `container_*` cAdvisor metrics. |
-| 🛡️ **Guardrails** | Namespace allow-list (`ALLOWED_NAMESPACES`), log-size cap (`MAX_LOG_LINES`), context-size cap in tokens (`MAX_CONTEXT_TOKENS`, tiktoken), read-only mode (`ENABLE_WRITE_ACTIONS`), **dangerous-action policy** (fixes mentioning `delete`/`drop`/`rm -rf`/`scale 0` are flagged `requires_approval: true` and routed to a human via Slack), and cluster-level **Policy-as-Code**: least-privilege RBAC + Kyverno ClusterPolicies in `manifests/`. All configurable via `.env`, nothing hardcoded. |
+| 🛡️ **Guardrails** | Namespace allow-list (`ALLOWED_NAMESPACES`), log-size cap (`MAX_LOG_LINES`), context-size cap in tokens (`MAX_CONTEXT_TOKENS`, tiktoken), read-only mode (`ENABLE_WRITE_ACTIONS`), **two-level dangerous-action policy** (destructive patterns — `delete`/`drop`/`rm -rf`/`scale 0` and paraphrases like `remove the pod`, `terminate all instances`, `set replicas to 0`, `kubectl apply -f`, `chmod 777` — plus ANY non-read-only `kubectl`/`helm`/`oc` command are flagged `requires_approval: true` and routed to a human via Slack), cluster-level **Policy-as-Code**: least-privilege RBAC + Kyverno ClusterPolicies in `manifests/`, and **PII/secret scrubbing before LLM calls** (`ENABLE_SCRUBBING`: JWTs, API keys, passwords in URLs, Bearer tokens and emails in logs/events are masked as `[REDACTED:<type>]` before the context leaves the perimeter). All configurable via `.env`, nothing hardcoded. |
+| 🔐 **Authentication & RBAC (OIDC)** | Optional JWT auth (`OIDC_ENABLED`, default `false` = full backward compatibility): `POST /diagnose` and `POST /webhook/alertmanager` require a Bearer JWT from any OIDC provider (Keycloak/Auth0/Azure AD/Okta) — signature verified against the provider JWKS (RS/PS/ES/EdDSA only, `HS256` rejected), `iss`/`aud`/`exp` enforced, roles from the `roles`/`groups` claim (`401`/`403`, fail-closed); the webhook also accepts a constant-time-compared `X-Webhook-Secret` for Alertmanager. `/health`, `/ready`, `/metrics` stay open for probes/scraping. Dashboard login + admin-only approvals included. See [Authentication & Authorization](#authentication--authorization-oidc). |
 | 🩹 **Graceful degradation** | If any data source fails (K8s API down, Prometheus unreachable, empty logs), the agent records a warning in the report and continues diagnosing with whatever data it has — it never crashes the pipeline. |
-| 📊 **Observability** | `/metrics` endpoint (`prometheus-fastapi-instrumentator`) + custom counters/histograms: `diagnose_requests_total`, `diagnose_duration_seconds`, `k8s_api_errors_total`, `llm_fallback_total`. `X-Request-ID` correlation (echoed/generated per request), optional structured JSON logging (`LOG_FORMAT=json`) for Loki/CloudWatch, an append-only audit journal (`AUDIT_LOG_PATH`, JSON Lines) of every diagnosis, and **OpenTelemetry distributed tracing** (auto HTTP spans + manual spans per K8s/Prometheus/logs/RAG/LLM call, OTLP export to Jaeger/Tempo). |
+| 📊 **Observability** | `/metrics` endpoint (`prometheus-fastapi-instrumentator`) + custom counters/histograms: `diagnose_requests_total`, `diagnose_duration_seconds`, `k8s_api_errors_total`, `llm_fallback_total`, `scrubbed_items_total`, `policy_approval_required_total`. `X-Request-ID` correlation (echoed/generated per request), optional structured JSON logging (`LOG_FORMAT=json`) for Loki/CloudWatch, an append-only audit journal (`AUDIT_LOG_PATH`, JSON Lines) of every diagnosis, and **OpenTelemetry distributed tracing** (auto HTTP spans + manual spans per K8s/Prometheus/logs/RAG/LLM call, OTLP export to Jaeger/Tempo). |
 | 🚨 **Alertmanager webhook** | `POST /webhook/alertmanager` accepts the standard Alertmanager payload, diagnoses every `firing` alert (namespace/pod from labels, text from `annotations.summary`/`description`), skips `resolved`, and answers `400` on malformed payloads. |
 | 🔁 **Chaos self-test** | `scripts/chaos_test.py` creates an ImagePullBackOff pod, asks the agent to diagnose it, asserts the RCA mentions "image"/"pull", and cleans up. Idempotent. |
 | ☸️ **Helm chart** | Production-ready `charts/ai-agent` (v0.1.0): Deployment with probes & non-root securityContext, ClusterIP Service, least-privilege RBAC, ConfigMap/Secret from `values.yaml`, `make helm-lint` / `make helm-install`. |
-| 🖥️ **Operator dashboard** | `make dashboard` — Streamlit UI over the audit journal: incident table (Timestamp/Namespace/Severity/Root Cause), severity metrics, and approval cards with `suggested_fix` + "Approve & Apply" for every `requires_approval` incident. |
-| 🧪 **Testing & CI/CD** | 273 unit/integration tests with mocked clients (93% coverage, CI gate `--cov-fail-under=85`, SentenceTransformer mocked so tests never download models), plus an offline **evaluation framework** (`make eval`) with a golden dataset and LLM-as-a-judge scoring; | GitHub Actions pipeline: lint → test+coverage → Docker build+smoke → kind-based e2e on `main` (auto-skipped when no LLM secret is configured). |
+| 🖥️ **Operator dashboard** | `make dashboard` — Streamlit UI over the audit journal: incident table (Timestamp/Namespace/Severity/Root Cause), severity metrics, and approval cards with `suggested_fix` + "Approve & Apply" for every `requires_approval` incident. With OIDC enabled: JWT login screen, current user/roles in the sidebar, and the approve button rendered only for `sre-admin`/`devops-admin`. |
+| 🧪 **Testing & CI/CD** | 439 unit/integration tests with mocked clients (94% coverage, CI gate `--cov-fail-under=85`, SentenceTransformer mocked so tests never download models), plus an offline **evaluation framework** (`make eval`) with a golden dataset and LLM-as-a-judge scoring; | GitHub Actions pipeline: lint → test+coverage → Docker build+smoke → kind-based e2e on `main` (auto-skipped when no LLM secret is configured). |
 | 🐳 **Containerized** | Multi-stage `python:3.12-slim` image, non-root user, healthcheck, no secrets baked into the image. |
 
 ---
@@ -295,16 +296,39 @@ Behaviour: `labels.namespace` → incident namespace (default `default`), `label
 ## Security Policies & Approvals
 
 The agent never mutates the cluster — but its *suggestions* can be dangerous.
-Before an operator acts on them, a role-based policy gate runs:
+Before an operator acts on them, a role-based policy gate runs
+(`src/agent/policies.py::check_policy(suggested_fix)`) with **two defense levels**:
 
-1. `src/agent/policies.py::check_policy(suggested_fix)` scans the LLM's recommendation
-   for dangerous commands: `delete`, `drop`, `rm -rf`, `scale 0` (case-insensitive).
-2. If a dangerous pattern is found while the agent is read-only
-   (`ENABLE_WRITE_ACTIONS=false`), the diagnosis is flagged
+1. **Dangerous patterns (level 1).** The recommendation is scanned with
+   case-insensitive regexes for destructive actions *and their synonyms /
+   paraphrases* — the model cannot slip through by rewording the command
+   ("remove the pod", "terminate all instances", "set replicas to zero"):
+
+   | Dangerous action | Detected patterns (regex, case-insensitive) | Why it is dangerous |
+   |---|---|---|
+   | Resource deletion | `delete`, `remove\s+(the\s+)?pod`, `terminate\s+(all\s+)?(instance\|pod)`, `kill\s+(the\s+)?pod` | Irreversible loss of pods/PVCs/namespaces and in-memory state |
+   | Replica zeroing | `scale\s+0`, `set\s+replicas\s+to\s+(0\|zero)`, `scale\s+down\s+to\s+(0\|zero)`, `replicas\s*[:=]\s*0` | Full service outage — covers YAML manifests (`replicas: 0`), CLI flags (`--replicas=0`) and word form ("to zero") |
+   | Arbitrary manifests | `kubectl\s+apply\s+-f`, `kubectl\s+create\s+-f` | Privileged pods, hostPath mounts, RBAC backdoors — a classic prompt-injection foothold |
+   | Filesystem destruction | `rm\s+-rf` | Unrecoverable data loss on the node |
+   | Database destruction | `drop`/`drop\s+table`, `truncate\s+table` | Irreversible loss of tables and their data |
+   | Permission escalation | `chmod\s+777`, `chown\s+root` | World-writable data; breaks non-root security contexts (`runAsNonRoot`) |
+   | Secret / system-file injection | `export\s+.*=\s*.*secret`, `echo\s+.*>\s*/etc/passwd` | Secret leakage via env/child processes; node compromise and root accounts |
+
+2. **CLI mention (level 2, defense in depth).** ANY mention of `kubectl`, `helm`
+   or `oc` (OpenShift) that is not a read-only command (`get` / `describe` /
+   `logs`) sets `requires_approval: true` automatically — even when no level-1
+   pattern matched — and logs a `WARNING`:
+   `Policy guardrail: kubectl/helm command detected, requiring approval`.
+   Rationale: to actually mutate a cluster the model inevitably needs a CLI
+   tool, so tool mentions are guarded even for subcommands the regexes do not
+   know yet. Read-only diagnostics (`kubectl get pods`, `kubectl describe pod`,
+   `kubectl logs`) remain approval-free — they mutate nothing.
+3. In read-only mode (`ENABLE_WRITE_ACTIONS=false`) every hit flags the diagnosis
    **`requires_approval: true`** (visible in `POST /diagnose` and
    `POST /webhook/alertmanager` responses, in the audit journal and as a 🔔 line
-   in the Slack/Telegram report).
-3. If `SLACK_WEBHOOK_URL` is configured, the agent posts an approval request to an
+   in the Slack/Telegram report) and increments the `policy_approval_required_total`
+   Prometheus counter.
+4. If `SLACK_WEBHOOK_URL` is configured, the agent posts an approval request to an
    incoming webhook:
 
    ```
@@ -314,15 +338,16 @@ Before an operator acts on them, a role-based policy gate runs:
    Without the webhook the agent logs a `WARNING` (approval still required in the
    diagnosis) — it never crashes. A Slack outage also cannot break diagnosis:
    send failures are logged and the response is returned as usual.
-4. Every approval request increments the `approval_requests_total` Prometheus metric.
+5. Every approval request increments the `approval_requests_total` Prometheus metric.
 
 ```bash
 # .env
 SLACK_WEBHOOK_URL=https://hooks.slack.com/services/T000/B000/XXXX
 ```
 
-Safe recommendations (raise limits, fix image tags, add probes...) skip the gate:
-`requires_approval: false`, no Slack message.
+Safe recommendations (raise limits, fix image tags, add probes...) and read-only
+CLI commands (`kubectl get pods`, `kubectl describe pod`, `kubectl logs`) skip the
+gate: `requires_approval: false`, no Slack message.
 
 ### Rate limiting (alert-storm / financial DoS protection)
 
@@ -332,6 +357,147 @@ default; set `RATE_LIMIT_REDIS_URL` to share counters across API replicas).
 Exceeding the limit returns **429** with `{"detail": "Rate limit exceeded. Please retry later."}`
 and a `Retry-After` header. Liveness/readiness probes (`/health`, `/ready`) are
 never limited — Kubernetes must always be able to check the pod.
+Automated proof that the limits work: `make load-test` — a Locust scenario verifying
+429 on `/diagnose` overload (see [Testing → Load Testing](#load-testing-rate-limit-verification)).
+
+## Authentication & Authorization (OIDC)
+
+The API and the operator dashboard support **OIDC authentication with role-based
+access control** (`src/auth.py`). It is **disabled by default**
+(`OIDC_ENABLED=false`): every endpoint behaves exactly as before, so dev
+environments, CI and existing deployments are unaffected. When enabled,
+state-changing endpoints require a valid **JWT** issued by your OIDC provider.
+
+### How it works
+
+```
+┌──────┐  1. sign-in   ┌───────────────────────┐
+│ User │ ────────────▶ │ OIDC Provider          │ Keycloak / Auth0 /
+└──┬───┘               │ (authorization server) │ Azure AD / Okta
+   │  2. JWT           └───────────┬───────────┘
+   │ ◀──────────────────────────── │
+   │                               │ 4. OIDC Discovery + JWKS
+   │ 3. Authorization: Bearer JWT  │    (public keys, cached 300 s)
+   ▼                               ▼
+┌──────────────────────────────────────────────┐
+│ AI DevOps Agent — FastAPI API + Streamlit UI │
+│ verify signature (RS/PS/ES/EdDSA) + iss/aud/ │
+│ exp, then check roles/groups claim (RBAC)    │
+└──────────────────────────────────────────────┘
+```
+
+### What is protected
+
+| Endpoint | Requirement when `OIDC_ENABLED=true` |
+|---|---|
+| `POST /diagnose` | Bearer JWT **+** at least one role from `ALLOWED_ROLES_DIAGNOSE` (default: `sre-user`, `sre-admin`) |
+| `POST /webhook/alertmanager` | Bearer JWT with a role from `ALLOWED_ROLES_WEBHOOK` (default: `alertmanager`, `sre-admin`) **or** header `X-Webhook-Secret` equal to `WEBHOOK_SHARED_SECRET` |
+| `GET /health`, `GET /ready`, `GET /metrics` | **Never protected** — kubelet probes and Prometheus scraping must keep working |
+
+- Missing / invalid / expired token → **401** with `WWW-Authenticate: Bearer`;
+  valid token but insufficient role → **403**.
+- Auth runs *before* the orchestrator bootstrap: an unauthenticated caller can
+  never reach the LLM pipeline (401/403 take precedence over 503).
+- Roles are read from the `roles` **or** `groups` claim (Keycloak / Azure AD /
+  Okta / Auth0 shapes); one match is enough.
+- `WEBHOOK_SHARED_SECRET` covers Alertmanager and similar integrations that
+  cannot sign JWTs; comparison is constant-time (`secrets.compare_digest`).
+  Generate one with `openssl rand -hex 32`.
+
+### Security properties
+
+- **Asymmetric algorithms only** (`RS*`, `PS*`, `ES*`, `EdDSA`) — `HS256` is
+  rejected by design, preventing algorithm-confusion attacks with public keys.
+- **Full claim validation**: `iss`, `aud`, `exp` are essential; the signature
+  is verified against the provider JWKS fetched via OIDC Discovery
+  (`{issuer}/.well-known/openid-configuration` → `jwks_uri`) and cached for
+  **300 s**, so key rotation is picked up automatically.
+- **Fail-closed**: provider unreachable or JWKS broken → `401`, never "open".
+- **No secrets in logs**: tokens and webhook secrets are never logged — only
+  error types and the `sub` claim.
+
+### Configuration (`.env`)
+
+All variables are documented in [`.env.example`](./.env.example):
+
+```bash
+OIDC_ENABLED=true
+OIDC_ISSUER_URL=https://keycloak.example.com/realms/devops
+OIDC_AUDIENCE=ai-agent-devops-api
+ALLOWED_ROLES_DIAGNOSE=["sre-user", "sre-admin"]
+ALLOWED_ROLES_WEBHOOK=["alertmanager", "sre-admin"]
+WEBHOOK_SHARED_SECRET=<openssl rand -hex 32>
+```
+
+`OIDC_ENABLED=true` with an empty issuer or audience is a **fail-fast
+configuration error** at startup (pydantic validator), not a runtime surprise.
+
+**Keycloak** — issuer is the realm URL (`https://keycloak.example.com/realms/devops`).
+Create a client (e.g. `ai-agent-devops-api`), add client roles `sre-user`,
+`sre-admin`, `alertmanager`, and attach a *Client scopes → Role list* mapper so
+roles land in the access-token `roles`/`groups` claim. Set `OIDC_AUDIENCE` to
+the client ID and make sure tokens are requested with `audience=ai-agent-devops-api`.
+
+**Auth0** — issuer `https://<tenant>.auth0.com/`, audience = the *API identifier*
+registered under Applications → APIs. Manage roles via *Auth0 → RBAC → Roles*
+and enable "Add permissions in the Access Token"; map permissions into the
+`roles` claim with an Action (or list your permission names in `ALLOWED_ROLES_*`).
+
+**Azure AD (Entra ID)** — issuer
+`https://login.microsoftonline.com/<tenant-id>/v2.0`. Expose an API
+(App registrations → Expose an API), add **App roles** `sre-user` / `sre-admin` /
+`alertmanager` (they appear in the token's `roles` claim) and set
+`OIDC_AUDIENCE` to the Application (client) ID.
+
+Calling the API:
+
+```bash
+TOKEN=<obtained from your provider: browser SSO, client-credentials, oidc-cli>
+curl -sS -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"namespace": "default", "description": "Pod restarts repeatedly"}' \
+  http://localhost:8000/diagnose
+
+# Alertmanager-style webhook call with the shared secret instead of a JWT:
+curl -sS -H "X-Webhook-Secret: $WEBHOOK_SHARED_SECRET" \
+  -H 'Content-Type: application/json' \
+  -d @alertmanager-payload.json http://localhost:8000/webhook/alertmanager
+```
+
+For Alertmanager itself, put the secret into `http_config.http_headers`:
+
+```yaml
+receivers:
+  - name: ai-agent
+    webhook_configs:
+      - url: http://ai-agent.monitoring.svc:8000/webhook/alertmanager
+        http_headers:
+          X-Webhook-Secret: <WEBHOOK_SHARED_SECRET>   # store in a K8s Secret
+```
+
+### Role model (defaults)
+
+| Role | `POST /diagnose` | `POST /webhook/alertmanager` | Dashboard approvals |
+|---|---|---|---|
+| `sre-user` | ✅ allowed | ❌ 403 | view only |
+| `sre-admin` | ✅ allowed | ✅ allowed | ✅ "Approve & Apply" |
+| `devops-admin` | ❌ 403 (add to `ALLOWED_ROLES_DIAGNOSE` to allow) | ❌ 403 (add to `ALLOWED_ROLES_WEBHOOK` to allow) | ✅ "Approve & Apply" |
+| `alertmanager` (service account) | ❌ 403 | ✅ allowed | — |
+
+To assign roles: create them in your IdP (client roles / App roles / RBAC
+roles), assign to users or service accounts, and make sure the IdP emits them
+in the access-token `roles` or `groups` claim — the agent reads whichever is
+present (`roles` takes precedence).
+
+### Dashboard (Streamlit)
+
+With `OIDC_ENABLED=true` the dashboard shows a **login screen** first: a link
+button to the provider's sign-in page plus a JWT paste field. The token is
+kept in `st.session_state["user_token"]` only — never logged, never persisted.
+The sidebar shows the current user (`sub`) and roles with a **Logout** button.
+The "✅ Approve & Apply" button on approval cards is rendered **only for
+`sre-admin` / `devops-admin`** — roles are decoded client-side from the JWT
+payload (no signature check in the browser; the API remains the actual
+enforcement point). With OIDC disabled the dashboard behaves exactly as before.
 
 ## Security & Policy-as-Code
 
@@ -462,6 +628,24 @@ All limits are configuration-driven (see table above), enforced **before** any c
 4. **No secrets anywhere** — API keys come exclusively from `.env` (never committed, excluded from the Docker image via `.dockerignore`); prompt/response logging at DEBUG never includes auth headers.
 5. **Graceful degradation** — a failing tool produces a warning in the report ("K8s API unavailable, using only Prometheus metrics"), not a crash; even a missing kubeconfig at startup only degrades K8s/log tools to empty results, and an unconfigured LLM key yields an actionable `503` (or stub mode via `LLM_OFFLINE=true`), never a bare `500`.
 6. **Non-root container** — the runtime image runs as `appuser` (UID 10001) with a read-only kubeconfig mount.
+7. **PII/secret scrubbing before LLM calls** — pod logs and Kubernetes events are masked (`[REDACTED:<type>]`) before the context is serialized for the external LLM provider; see [Data Privacy & PII Scrubbing](#data-privacy--pii-scrubbing) below.
+
+### Data Privacy & PII Scrubbing
+
+Container logs and Kubernetes events routinely carry secrets, and the diagnosis context is sent to a **third-party LLM provider** — so before serialization every payload passes through the scrubber (`src/utils/scrubber.py`, called by the orchestrator right before the LLM step):
+
+| Pattern | Example | Masked as |
+|---|---|---|
+| JWT tokens | `eyJhbGciOi...` | `[REDACTED:jwt]` |
+| API keys | `sk-...` (OpenAI), `ghp_...` (GitHub), `AKIA...` (AWS), `key-...` | `[REDACTED:api_key]` |
+| Passwords in URLs | `postgres://app:hunter2@db:5432/orders` | `postgres://app:[REDACTED:password]@db:5432/orders` |
+| Bearer tokens | `Authorization: Bearer abc...` | `[REDACTED:bearer]` |
+| Emails | `admin@example.com` | `[REDACTED:email]` |
+
+- **What is scrubbed**: `pod_logs_tail` and every Kubernetes event in the LLM context. **What is not**: the model's own answer (`root_cause`, `evidence`, `suggested_fix`) is returned as-is — it is generated text, not raw cluster data.
+- **IP addresses are NOT masked by default** — they are essential for network diagnosis; set `REDACT_IPS=true` to mask IPv4 addresses as well (`[REDACTED:ip]`).
+- **Disabling**: `ENABLE_SCRUBBING=false` turns masking into a pure passthrough — only do this for trusted local models (e.g. Ollama inside the cluster). Default is `true`; this is a hard requirement for enterprise compliance review.
+- **Observability**: every masked item increments the Prometheus counter `scrubbed_items_total{type="jwt|api_key|password|bearer|email|ip"}` — a sudden spike shows what kind of secrets are circulating in your workloads.
 
 ---
 
@@ -478,21 +662,56 @@ tests/
 ├── test_text_utils.py        # truncate_context recursion & guarantees
 ├── test_chaos_test.py        # chaos script logic (mocked k8s + requests)
 ├── test_config.py            # Settings validators: fail-fast on bad LOG_LEVEL/LOG_FORMAT/limits
+├── test_auth.py              # OIDC: real RS256 JWTs vs fake JWKS provider, 401/403, webhook secret, UI login
 ├── test_logger.py            # JSON structured logging + request_id correlation
 ├── test_webhook_alertmanager.py  # Alertmanager payload parsing, 400s, resolved-skip, audit journal
 ├── test_tracing.py           # OTel provider, FastAPI auto-spans, manual tool/LLM spans
 ├── test_policies.py          # dangerous-fix policy, Slack approval flow, no-webhook fallback
+├── test_scrubber.py          # PII/secret masking: patterns, false positives, config, orchestrator wiring
 ├── test_evaluate.py          # eval harness: dataset schema, judge parsing, exit codes
 ├── test_dashboard.py         # audit journal parsing, table build, approval filter
 └── test_api.py               # FastAPI TestClient: /health /ready /diagnose /metrics, CORS, errors, X-Request-ID
 ```
 
 - **Unit tests**: every external boundary (Kubernetes API, Prometheus HTTP, LLM HTTP) is mocked — the suite runs offline in ~2 seconds.
-- **Coverage**: `pytest --cov=src --cov-report=xml --cov-fail-under=85` — currently **~93%** (uploaded as a CI artifact every run; the CI fails if coverage drops below 85%).
+- **Coverage**: `pytest --cov=src --cov-report=xml --cov-fail-under=85` — currently **~94%** (uploaded as a CI artifact every run; the CI fails if coverage drops below 85%).
 - **Docs drift guard**: `make docs-check` (и шаг CI после pytest) сверяет числа
   тестов/покрытия в этом README с реальным прогоном — расхождение роняет CI.
 - **Integration (end-to-end)**: `scripts/run_integration_test.sh` spins up a real [kind](https://kind.sigs.k8s.io/) cluster, creates a pod with a bad image tag, runs the agent under uvicorn, sends a real `POST /diagnose`, and asserts the RCA mentions *"image"*/*"pull"* (via `jq`). Idempotent: leftover clusters/pods are removed before each run; cleanup happens even on failure.
 - **CI jobs** (GitHub Actions, target 5-6 min): `lint` and `helm` run **in parallel**; `test` (pytest **-n auto** via pytest-xdist, coverage gate ≥85%, docs drift-guard) needs only `lint`; on push to `main`/dispatch, `build` (Docker + smoke, needs [test, helm], BuildKit gha-cache `mode=max` + pip cache-mounts; NOT run on PRs) and `integration-test` (kind e2e, needs only test, runs **parallel to build**, gracefully skipped without `QWEN_API_KEY`/`OPENAI_API_KEY` secret) finish the pipeline. PRs run lint+helm+test+dependency-audit for fast feedback; `[skip ci]` in a commit title skips the run. Security layer: `dependency-audit` (pip-audit, blocking on runtime `requirements.txt`, dev-deps report-only) runs parallel to tests, and `security-scan` (Hadolint + Trivy image scan, `CRITICAL,HIGH` fail-fast, cached Trivy DB) runs after build parallel to e2e; both are skippable via repo variable `SKIP_SECURITY_SCAN=true`.
+
+### Load Testing (rate-limit verification)
+
+[`scripts/load_test.py`](scripts/load_test.py) (Locust) is the automated proof that the
+slowapi limits actually work: under overload `POST /diagnose` returns **429**, the app
+does not crash (no 5xx), and `GET /health` stays unrestricted.
+
+```bash
+make install     # once: installs locust (requirements-dev.txt)
+make run         # terminal 1 — the agent on http://localhost:8000
+make load-test   # terminal 2 — locust headless: 10 users, 10 seconds
+```
+
+**Expected result:** ~50% of `/diagnose` requests get **429** — of the burst of 10, the
+first 5 pass with 200 and the next 5 are strictly 429 (the `POST /diagnose [429 expected]`
+row in the stats table); `/health` — **100% 200** (thousands of requests while the limit
+is being hit). Scenario verdicts are the `SCENARIO test_diagnose_rate_limit` and
+`SCENARIO test_health_unlimited` rows with **0 failures**; any unexpected behaviour (500,
+429 within the first five, non-429 beyond the limit, non-200 on `/health`) is recorded as
+a real locust failure and a non-zero exit code.
+
+Notes:
+
+- The slowapi counter is keyed by client IP, so all Locust users on localhost share one
+  60-second window — the `/diagnose` burst runs exactly once per run, while the other
+  9 users keep hammering `/health` in parallel (proving health checks are not blocked
+  under overload).
+- `/diagnose` needs an LLM: `QWEN_API_KEY`/`OPENAI_API_KEY`, or `LLM_OFFLINE=true` in
+  `.env` (stub mode — fast responses, recommended for this test). Without either, the
+  endpoint honestly returns 503 before the limiter fires and the scenario fails with a
+  hint. With a real (slow) LLM key, raise the run duration:
+  `locust -f scripts/load_test.py --headless -u 10 -t 120s --host=http://localhost:8000`.
+- Rerun at most once per minute (the limit window is 60 s), or restart the agent.
 
 ---
 
@@ -635,11 +854,12 @@ ai_agent_DevOps/
 ├── src/
 │   ├── main.py                  # FastAPI app: /health /ready /diagnose /metrics /webhook/alertmanager
 │   ├── api/models.py            # pydantic contracts: Alertmanager payload -> Incident
+│   ├── auth.py                  # OIDC auth & RBAC: JWT verification (JWKS), FastAPI dependencies
 │   ├── config.py                # pydantic-settings (.env driven)
 │   ├── prompts/sre_system.txt   # system prompt for the LLM (loaded at init, fallback in code)
 │   ├── agent/
 │   │   ├── orchestrator.py      # IncidentOrchestrator: pipeline, guardrails, degradation, reporting
-│   │   ├── policies.py          # dangerous-fix policy (delete/drop/rm -rf/scale 0) -> approval
+│   │   ├── policies.py          # 2-level dangerous-fix policy (synonym regexes + kubectl/helm/oc) -> approval
 │   │   ├── llm_client.py        # OpenAI-compatible client: tenacity retries, 30s timeout
 │   │   ├── rag.py               # RunbookRAG: hybrid retrieval (TF-IDF + embeddings) over docs/runbooks
 │   │   └── tools/               # k8s_tools.py, prometheus_tools.py, logs_tools.py
@@ -647,10 +867,11 @@ ai_agent_DevOps/
 │       ├── audit.py             # append-only audit journal (JSON Lines)
 │       ├── logger.py            # stdlib logging setup
 │       ├── metrics.py           # custom Prometheus metrics
+│       ├── scrubber.py          # PII/secret masking before LLM calls ([REDACTED:<type>])
 │       └── text_utils.py        # truncate_context (bounded, JSON-safe)
 ├── charts/ai-agent/             # production Helm chart (v0.1.0): deployment,
 │                                # service, SA/RBAC, configmap, secret, helpers
-└── tests/                       # 273 tests, fully mocked externals
+└── tests/                       # 439 tests, fully mocked externals
 ```
 
 ---

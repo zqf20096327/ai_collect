@@ -5,8 +5,8 @@
 <p align="center"><b>English</b> · <a href="assets/README_zh.md">简体中文</a> · <a href="assets/README_ja.md">日本語</a></p>
 
 <p align="center">
+  <a href="https://arxiv.org/abs/2610.42148"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-Paper-B31B1B?style=flat-square&logo=arxiv&logoColor=white"></a>
   <a href="https://pypi.org/project/flide/"><img alt="PyPI" src="https://img.shields.io/pypi/v/flide?style=flat-square&logo=pypi&logoColor=white&color=3A86FF"></a>
-  <a href="https://github.com/OmniJev/Flide"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-Flide-18202F?style=flat-square&logo=github&logoColor=white"></a>
   <a href="https://flide.org"><img alt="Website" src="https://img.shields.io/badge/Website-flide.org-00A890?style=flat-square&logo=googlechrome&logoColor=white"></a>
   <a href="https://docs.flide.org"><img alt="Docs" src="https://img.shields.io/badge/Docs-latest-1F5FD1?style=flat-square&logo=materialformkdocs&logoColor=white"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-EF476F?style=flat-square&logo=apache&logoColor=white"></a>
@@ -21,6 +21,7 @@
 
 ## 🔥 News
 
+- 🔥 **2026-11-02** We released our paper [Flide: Accelerating Decision Inference with Exact State Forking](https://arxiv.org/abs/2610.42148) on arXiv.
 - 🔥 **2026-10-29** We added three decision model families in Flide 0.1.7, including [SynACK Decide](https://huggingface.co/SkyPanther/synack-decide-26b-a4b), [Wald](https://huggingface.co/collections/org2ai/wald) and [Xor](https://huggingface.co/juspay/Xor-26B-A4B), and Gemma 4 mixture-of-experts models such as [KnowLine-26B-A4B](https://huggingface.co/PelaAI/KnowLine-26B-A4B-Gen2.5).
 - 🔥 **2026-10-29** We added two decision model families in Flide 0.1.6, including [Drex](https://huggingface.co/nace-ai/drex-v2.0) and [KnowLine](https://huggingface.co/PelaAI/KnowLine-35B-A3B-Gen1.5), and `flide verify` checks exact forking on your own model and requests.
 - 🔥 **2026-10-28** We added six decision model families in Flide 0.1.5, including [Jeffan](https://huggingface.co/collections/tattrongvu/decision-model-6ad5c85a79bd246cc1c18c4a), [JevAny](https://huggingface.co/collections/SimpleJev/jevany-adaptive-decision-systems-6abc8fd39266b1c17b11b4e6), [Kev](https://huggingface.co/collections/jaredpalmer/kev-6aad9d0ea49f2589665e07cd), [Lychee](https://huggingface.co/LycheeAI/Lychee-27B), [pplx-decider](https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2) and [StartLux](https://huggingface.co/collections/startlux-models/startlux-decision-v11-instant-6aca8158623e8e001724cc82), and images for [Lumma](https://huggingface.co/collections/FrontiersMind/lumma-decision-models-6ab6356434b3db6856ec7ae6) and [mammoth](https://huggingface.co/baselabs/mammoth-1).
@@ -169,3 +170,16 @@ The last three columns say how much faster Flide answers one request than the en
 Apache-2.0. `flide/kernels/gdn.py` holds a kernel derived from two kernels of
 [flash-linear-attention](https://github.com/fla-org/flash-linear-attention) (MIT); THIRD_PARTY_NOTICES lists it with
 the other code Flide builds on.
+
+## Citation
+
+If you use Flide in your research, please cite our [paper](https://arxiv.org/abs/2610.42148).
+
+```bibtex
+@article{li2026flide,
+  title   = {Flide: Accelerating Decision Inference with Exact State Forking},
+  author  = {Li, Bobo and Song, Jiajia and Fei, Hao and Hsu, Wynne and Lee, Mong Li},
+  journal = {arXiv preprint arXiv:2610.42148},
+  year    = {2026}
+}
+```

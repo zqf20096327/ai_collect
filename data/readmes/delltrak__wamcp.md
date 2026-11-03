@@ -36,7 +36,7 @@
 
 **WA MCP** is a WhatsApp MCP server built with TypeScript that gives AI agents full access to WhatsApp through the [Model Context Protocol](https://modelcontextprotocol.io). It supports both **Baileys** (WhatsApp Web) and **Meta Cloud API** as dual-channel backends, deployable with **Docker** in a single command.
 
-Your agent connects once and auto-discovers **167 tools**, **10 resources**, and **22 real-time events** — zero configuration, zero REST wrappers, zero glue code. Three instance webhook tools are added when `WA_INSTANCE_WEBHOOK_TOOLS_ENABLED=true`.
+Your agent connects once and auto-discovers **169 tools**, **10 resources**, and **22 real-time events** — zero configuration, zero REST wrappers, zero glue code. Three instance webhook tools are added when `WA_INSTANCE_WEBHOOK_TOOLS_ENABLED=true`.
 
 ```
 Your AI Agent ←→ MCP Protocol ←→ WA MCP ←→ WhatsApp
@@ -82,7 +82,7 @@ from google.adk.tools.mcp_tool import McpToolset
 
 tools = McpToolset(url="http://localhost:3000/mcp")
 
-# Agent auto-discovers 167 WhatsApp tools
+# Agent auto-discovers 169 WhatsApp tools
 # wa_create_instance, wa_send_text, wa_send_image, ...
 ```
 
@@ -157,7 +157,7 @@ See [OTP delivery](docs/otp.md).
 
 ## 🛠️ Tools
 
-WA MCP exposes **167 tools** across 17 domains. All tools use the `wa_` prefix.
+WA MCP exposes **169 tools** across 17 domains. All tools use the `wa_` prefix.
 See [channel discovery and send tracking](docs/channel-discovery.md) for capability checks, authentication-template discovery and safe queued-job inspection.
 `WA_INSTANCE_WEBHOOK_TOOLS_ENABLED=true` adds the three #142 instance webhook tools.
 
@@ -209,7 +209,7 @@ See [channel discovery and send tracking](docs/channel-discovery.md) for capabil
 | `wa_forward_message`   | Forward a message       |
 | `wa_edit_message`      | Edit sent message       |
 | `wa_delete_message`    | Delete message          |
-| `wa_pin_message`       | Pin a message           |
+| `wa_pin_message`       | Pin a message for 24h, 7d, or 30d (default 7d) |
 | `wa_send_view_once`    | Send view-once media    |
 | `wa_send_presence`     | Show typing / recording / paused |
 | `wa_subscribe_presence` | Subscribe to contact or group presence updates (Baileys) |
@@ -404,13 +404,14 @@ this operation.
 </details>
 
 <details>
-<summary>📢 <strong>Status / Stories</strong> (4 tools)</summary>
+<summary>📢 <strong>Status / Stories</strong> (5 tools)</summary>
 
 | Tool                   | Description       |
 | ---------------------- | ----------------- |
 | `wa_send_text_status`  | Post text status  |
 | `wa_send_image_status` | Post image status |
 | `wa_send_video_status` | Post video status |
+| `wa_send_group_status` | Post a text or image status to one group (`WA_GROUP_STATUS_ENABLED=true`; video needs `WA_GROUP_STATUS_VIDEO_ENABLED=true`) |
 | `wa_get_status_viewers` | List viewers observed from story read receipts (Baileys) |
 
 </details>
@@ -490,11 +491,14 @@ See the [community management roadmap](docs/COMMUNITIES.md) for supported operat
 Baileys rc14 has no quick-reply list API, and this server does not store quick-reply sync actions locally. Use the WhatsApp Business app to find an existing reply's timestamp before editing or deleting it.
 
 <details>
-<summary>📞 <strong>Calls</strong> (1 tool)</summary>
+<summary>📞 <strong>Calls</strong> (2 tools)</summary>
 
-| Tool             | Description          |
-| ---------------- | -------------------- |
-| `wa_reject_call` | Reject incoming call |
+| Tool                   | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `wa_reject_call`       | Reject incoming call                     |
+| `wa_create_call_link`  | Create an audio or video call link       |
+
+`wa_create_call_link` calls Baileys `createCallLink`. In 7.0.0-rc14 that method returns only the `link_create` token. The tool turns it into `https://call.whatsapp.com/voice/<token>` or `https://call.whatsapp.com/video/<token>`. `type` is `audio` or `video`. Optional `startTime` is Unix seconds and is sent as `link_create/event@start_time`. This is a call query, not an app-state patch. Cloud API does not support it.
 
 </details>
 
@@ -925,6 +929,9 @@ Copy `.env.example` to `.env` and configure. Leave the new HTTP auth settings un
 | `WA_BAILEYS_EVENT_BUFFER_STALL_MS` | `60000` | Time a Baileys event buffer may remain active after connect before the watchdog flushes it |
 | `WA_APP_STATE_WRITES_ENABLED` | `false`                 | Enable protected Baileys app-state patches and remaining gated account/server changes |
 | `WA_GROUP_WRITES_ENABLED` | `false` | Enable Baileys group, community, and Channel server writes without enabling app-state patches |
+| `WA_GROUP_STATUS_ENABLED` | `false` | Enable `wa_send_group_status`. Off by default. Not an app-state write |
+| `WA_GROUP_STATUS_VIDEO_ENABLED` | `false` | Allow `type: video` on `wa_send_group_status`. Also requires `WA_GROUP_STATUS_ENABLED=true` |
+| `WA_GROUP_STATUS_MIN_INTERVAL_MS` | `1500` | Minimum delay between group-status posts per instance. `0` disables spacing |
 | `WA_GROUP_HISTORY_ON_JOIN` | `false` | Automatically DM a new member a local group-history digest after a `GROUP_PARTICIPANT_ADD` stub authored by this account; requires `WA_GROUP_WRITES_ENABLED=true`. Only `true` or `false` |
 | `WA_GROUP_HISTORY_ON_JOIN_COUNT` | `50` | Integer count of local messages in automatic digests, clamped to `25`–`100`. Any other value fails startup |
 | `WA_APP_STATE_MIN_INTERVAL_MS` | `1500` | Minimum delay between app-state write attempts per instance; accepts `0` to disable spacing |
@@ -1455,20 +1462,4 @@ Open `http://<host>:3000/dashboard`. The browser asks for that username and pass
 
 The page shows connection health, each instance's state, last connect and disconnect, webhook configuration, dropped events, recent delivery successes and failures, and recent channel events. It does not show webhook URLs, tokens, header values, or signing secrets. Cloud webhook settings appear only as yes/no configured flags. Its API calls are relative to the page URL, so the same handler can be mounted under a path prefix.
 
-The only write action is `POST /dashboard/api/instances/{instanceId}/pairing` for an existing Baileys instance that has never registered. The dashboard does not create instances. An instance whose stored credentials are already registered, whose credential record does not say `registered: false`, or whose state is `connected`, is left untouched: the dashboard does not connect it, request a pairing code, or load a QR. Pairing requires `Content-Type: application/json` even when the body is empty, and the server rejects a cross-site `Sec-Fetch-Site` or an `Origin` that does not match `Host`. Port 80 matches an `http` origin with no port, and port 443 matches `https` the same way. When nginx proxies the page, set `proxy_set_header Host $host;`. The default `$proxy_host` is the upstream address, so the browser origin does not match and pairing returns 403. `X-Forwarded-Proto` is not trusted. The scheme is compared only when the socket to this process is TLS; a TLS terminator that speaks plain HTTP to the process skips that check. It also does not send messages, log out, delete, or restart instances. `WA_DATABASE_PATH`, the Baileys auth keys, and the Compose volume stay where they are.
-
-**HTTP routing.** The shared listener serves the dashboard at `WA_BASE_PATH + "/dashboard"`. Login limits use the trusted-proxy address rules from `WA_TRUST_PROXY`, including IPv6 `/64` buckets; without that setting, forwarded addresses are ignored. Dashboard credentials and pairing CSRF checks remain independent of MCP OAuth. The Chatwoot webhook also follows `WA_BASE_PATH`.
-
----
-
-## 🐳 Docker
-
-### Production
-
-```bash
-docker compose up -d
-```
-
-Services:
-
-- **wa-mcp** — The MCP server on port `3000`. The image installs `ffmpeg` for sticker conversion and optional image/video compression (`libwebp`, `libwebp_anim`, `mjpeg`, `libx26
+The only write action is `POST /dashboard/api/instances/{instanceId}/pairing` for an existing Baileys instance that has never registered. The dashboard does not create instances. An instance whose stored credentials are already registered, whose credential record does not say `registered: false`, or whose state is `connected`, is left untouched: the dashboard does not connect it, request a pairing code, or load a QR. Pairing requires `Content-Type: application/json` even when the body is empty, and the server rejects a cross-site `Sec-Fetch-Site` or an `Origin` that does not match `Host`. Port 80 matches an `http` origin with no port, and port 443 matches `https` the same way. When nginx proxies the page,

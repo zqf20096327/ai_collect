@@ -6,11 +6,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 [![Release](https://img.shields.io/github/v/release/melihbirim/csvql)](https://github.com/melihbirim/csvql/releases)
 
-**Read-only SQL on CSV files, in place, for AI agents.**
+**Give an AI agent SQL over your CSV files, not your computer.** Out of the box it can't write, can't reach the network, can't leave its folder, and can't pour a whole table into the context.
 
 > A database is something you load your data *into*. csvql is a query you run on the data where it already lives.
 
-csvql runs `SELECT` on CSV files where they sit: no import, no ingest, no server. It is about as fast as DuckDB and polars on raw CSV and uses 3 to 11x less memory. It ships as an [MCP](https://modelcontextprotocol.io/) server, so an agent can ask a question of a gigabyte file and get back a few rows instead of the file. One static Zig binary, no network calls, no way to write to your data.
+csvql runs `SELECT` on CSV files where they sit: no import, no ingest, no server. It ships as an [MCP](https://modelcontextprotocol.io/) server, so an agent can ask a question of a gigabyte file and get back a few hundred tokens instead of the file. Safe by construction, not by configuration: the SQL has no write statements and the binary has no network code. It is about as fast as DuckDB and polars on raw CSV and uses 3 to 11x less memory.
 
 ```bash
 $ csvql "SELECT cab_type, COUNT(*) FROM 'trips.csv' GROUP BY cab_type"
@@ -29,8 +29,9 @@ Agents are getting access to company data. The usual paths are a database connec
 
 - **Read-only by construction.** The parser has no `INSERT`, `UPDATE`, `DELETE` or `DROP`. Nothing writes to an input file.
 - **No network.** No `std.net`, `std.http` or socket call in the codebase. No telemetry, no update check. `strace -f -e trace=network` shows an empty trace.
-- **Sandboxed by a flag.** `--root /data` confines every file the process can open. `/etc/passwd` and `../` traversal fail with `PathOutsideAllowedRoot`.
-- **Bounded output.** MCP results are capped at about 100 rows / 12 KB per call. A careless `SELECT *` cannot flood the context or pull a table out one call at a time.
+- **Sandboxed by default for agents.** `csvql --mcp` only opens files under its working directory and refuses to start in the filesystem root; `--root /data` picks the folders instead, and `--root /` allows everything. `/etc/passwd` and `../` traversal fail with `PathOutsideAllowedRoot`.
+- **Private columns stay private.** `--deny-columns email,ssn` refuses any query that reads those columns, in SELECT, WHERE, ORDER BY or a subquery, and `SELECT *` leaves them out. The agent can still run `AVG(salary) GROUP BY dept`.
+- **Bounded output.** MCP results are capped at about 100 rows / 12 KB per call. A careless `SELECT *` cannot flood the context. The cap is per call, so an agent that pages with `OFFSET` can still read a whole table; keep data it must never see out with `--deny-columns`.
 - **Flat memory.** An aggregate holds a running accumulator, not a dataset: 74 MB on a 0.7 GB file and 74 MB on an 8 GB one. It fits on the small VM beside the data.
 - **Auditable.** `--audit <file>` appends one JSONL record per query. Over SSH you inherit your existing keys, bastion and logs.
 
@@ -38,8 +39,9 @@ Full posture, including two known gaps on macOS and Windows: [SECURITY.md](SECUR
 
 ## What it does not do
 
-- **It is not a database.** No `UNION`, no window functions, no `LEFT`/`RIGHT`/`FULL`/`CROSS JOIN` (inner hash join only). The only subquery shape is `col IN (SELECT ...)`. These error rather than return wrong data. If you need full SQL, use DuckDB.
+- **It is not a database.** No `UNION`, no window functions, no `RIGHT`/`FULL`/`CROSS JOIN` (inner and left hash joins only). The only subquery shape is `col IN (SELECT ...)`. These error rather than return wrong data. If you need full SQL, use DuckDB.
 - **Scalar functions in `WHERE`** are limited to `DATEDIFF`, `DATEADD` and `EXTRACT`. Others (`UPPER`, `ROUND`, ...) are `SELECT`-only and currently fail in `WHERE` with a misleading `ColumnNotFound`.
+- **Excel files are read, not streamed.** `FROM 'sales.xlsx'` queries the first sheet (dates come out as `YYYY-MM-DD`, formulas as their saved value), but the sheet is unpacked in memory first: a 9 MB, 300k row workbook takes about 230 MB and 0.6 s. Other sheets, `.xls` and `.xlsb` are not supported.
 - **Quoted CSV is about 3x slower** than unquoted. Quotes disable the 16-byte skip the scanner relies on.
 - **`MEDIAN` buffers every value in a group**, so on 20M rows it is 5x slower than DuckDB ([#205](https://github.com/melihbirim/csvql/issues/205)). High-cardinality `GROUP BY` (millions of groups) is also slower.
 - **CSV only.** JSON and JSONL are output formats, not input formats.
@@ -67,21 +69,21 @@ csvql "SELECT name, age FROM 'data.csv' LIMIT 3" --json      # or --jsonl, --mar
 csvql --schema data.csv
 ```
 
-Flags: `-d/--delimiter`, `--json`, `--jsonl`, `--markdown`, `--no-header`, `--no-input-header` (headerless files get `c1..cN`), `-o/--output`, `--threads`, `--strict`, `--schema`, `--root`, `--audit`, `--mcp`. Details in `csvql --help`. Simple mode: [SIMPLE_QUERY_LANGUAGE.md](SIMPLE_QUERY_LANGUAGE.md).
+Flags: `-d/--delimiter`, `--json`, `--jsonl`, `--markdown`, `--no-header`, `--no-input-header` (headerless files get `c1..cN`), `-o/--output`, `--threads`, `--strict`, `--schema`, `--root`, `--deny-columns`, `--audit`, `--mcp`. Details in `csvql --help`. Simple mode: [SIMPLE_QUERY_LANGUAGE.md](SIMPLE_QUERY_LANGUAGE.md).
 
 ## For agents (MCP)
 
 ### Setup
 
 ```bash
-csvql install          # registers csvql in Claude Code and Claude Desktop; --print to dry-run
+cd ~/data && csvql install    # registers csvql in Claude Code and Claude Desktop; --print to dry-run
 ```
 
-It runs `claude mcp add` if the Claude Code CLI is present and merges an `mcpServers.csvql` entry into the Claude Desktop config, preserving your other servers. Restart Claude afterward.
+It runs `claude mcp add` if the Claude Code CLI is present and merges an `mcpServers.csvql` entry into the Claude Desktop config, preserving your other servers. Claude Desktop starts MCP servers in `/`, so the Desktop entry gets `--root` set to the folder you ran `install` from (or `--root <folder>`). Without a `--root`, `csvql --mcp` refuses to start in the filesystem root. Restart Claude afterward.
 
 Without MCP, a Claude Code skill teaches the agent to use the `csvql` CLI whenever a CSV comes up: `claude plugin marketplace add melihbirim/csvql` then `claude plugin install csvql@csvql`.
 
-Alternatives: a one-click `csvql-<platform>.mcpb` bundle for Claude Desktop on the [Releases](https://github.com/melihbirim/csvql/releases) page (Settings → Extensions), or a manual entry:
+Alternatives: a one-click `csvql-<platform>.mcpb` bundle for Claude Desktop on the [Releases](https://github.com/melihbirim/csvql/releases) page (Settings → Extensions), which asks for the data folder on install, or a manual entry:
 
 ```json
 { "mcpServers": { "csvql": { "command": "/usr/local/bin/csvql", "args": ["--mcp", "--root", "/data"] } } }
@@ -114,7 +116,22 @@ Run csvql on the server next to the data and connect over SSH. Only the SQL and 
 { "command": "ssh", "args": ["analyst@dataserver", "csvql", "--mcp", "--root", "/data"] }
 ```
 
-Always set `--root` when an agent or another user can reach csvql. Pair it with an unprivileged OS user and a read-only mount. Checklist: [SECURITY.md#hardening-for-on-prem-and-remote-access](SECURITY.md#hardening-for-on-prem-and-remote-access).
+Without `--root`, `--mcp` is confined to the directory it was started in. Set `--root` explicitly when an agent or another user can reach csvql, since that directory depends on how the client launches the server. Pair it with an unprivileged OS user and a read-only mount. Checklist: [SECURITY.md#hardening-for-on-prem-and-remote-access](SECURITY.md#hardening-for-on-prem-and-remote-access).
+
+### What an agent can do, out of the box
+
+Default settings, no hardening flags. DuckDB is the CLI an agent with a shell would call; it can be locked down with `SET enable_external_access = false` and read-only mode, but only if someone remembers to.
+
+| An agent asks the tool to... | csvql `--mcp` | DuckDB 1.5 CLI |
+| --- | --- | --- |
+| write a file (`COPY ... TO 'x.csv'`) | no, there is no write statement | yes |
+| read `/etc/hosts` or `../` outside its folder | no, `PathOutsideAllowedRoot` | yes |
+| fetch a URL or install an extension | no, no network code | yes (`enable_external_access` and `autoinstall_known_extensions` default to true) |
+| return a whole large table in one call | no, about 100 rows / 12 KB cap | yes |
+| read a column you marked private | no, with `--deny-columns email` | yes, unless you build views and only expose those |
+| peak memory, `GROUP BY` on a 0.72 GB file | 54 MB | 221 MB (polars 2.0: 1137 MB) |
+
+Check the DuckDB column yourself: `duckdb -c "COPY (SELECT 1) TO 'x.csv'"` and `duckdb -c "SELECT current_setting('enable_external_access')"`.
 
 ### Token cost
 
@@ -192,7 +209,7 @@ Every number has a reproduce script. Full tables, including quoted CSV, wide fil
 
 ## SQL
 
-`SELECT` / `FROM` / `WHERE` / `GROUP BY` / `HAVING` / `ORDER BY` / `LIMIT` / `OFFSET`, inner `JOIN` (chained), `col IN (SELECT ...)`, `LIKE` / `ILIKE` / `BETWEEN` / `IS NULL` / `AND` / `OR` / `NOT`, `DISTINCT`, `CASE WHEN`. Aggregates: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `VARIANCE`, `STDDEV`, `MEDIAN`, `QUANTILE`, `MODE`, `GROUP_CONCAT`, `COUNT(DISTINCT)`. Scalars in `SELECT`: string (`UPPER`, `LOWER`, `TRIM`, `LENGTH`, `REVERSE`, `CONCAT`, `LTRIM`, `RTRIM`, `LEFT`, `RIGHT`, `REPEAT`, `POSITION`, `INSTR`, `SUBSTR`, `REPLACE`, `SPLIT_PART`, `LPAD`, `RPAD`), math (`ABS`, `SIGN`, `CEIL`, `FLOOR`, `MOD`, `ROUND`, `TRUNC`, `SQRT`, `POWER`, `LN`, `LOG`, `EXP`, `GREATEST`, `LEAST`), `CAST`, `COALESCE`, `NULLIF`, `IFNULL`, dates (`STRFTIME`, `DATE_PART`, `EXTRACT`, `DATEDIFF`, `DATEADD`, `CURRENT_DATE`, `NOW()`, `CURRENT_TIMESTAMP`).
+Files: `.csv`, `.tsv` (with `-d '\t'`) and `.xlsx` (first sheet). `SELECT` / `FROM` / `WHERE` / `GROUP BY` / `HAVING` / `ORDER BY` / `LIMIT` / `OFFSET`, `JOIN` and `LEFT JOIN` (chained), `col IN (SELECT ...)`, `LIKE` / `ILIKE` / `BETWEEN` / `IS NULL` / `AND` / `OR` / `NOT`, `DISTINCT`, `CASE WHEN`, arithmetic (`+ - * /` in `SELECT`, `WHERE`, inside aggregates and over their results: `SUM(price * qty)`, `WHERE price * qty > 100`, `SUM(a) / COUNT(*)`), column names with spaces as `"First Name"`, `` `First Name` `` or `[First Name]`. Aggregates: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `VARIANCE`, `STDDEV`, `MEDIAN`, `QUANTILE`, `MODE`, `GROUP_CONCAT`, `COUNT(DISTINCT)`. Scalars in `SELECT`: string (`UPPER`, `LOWER`, `TRIM`, `LENGTH`, `REVERSE`, `CONCAT`, `LTRIM`, `RTRIM`, `LEFT`, `RIGHT`, `REPEAT`, `POSITION`, `INSTR`, `SUBSTR`, `REPLACE`, `SPLIT_PART`, `LPAD`, `RPAD`), math (`ABS`, `SIGN`, `CEIL`, `FLOOR`, `MOD`, `ROUND`, `TRUNC`, `SQRT`, `POWER`, `LN`, `LOG`, `EXP`, `GREATEST`, `LEAST`), `CAST`, `COALESCE`, `NULLIF`, `IFNULL`, dates (`STRFTIME`, `DATE_PART`, `EXTRACT`, `DATEDIFF`, `DATEADD`, `CURRENT_DATE`, `NOW()`, `CURRENT_TIMESTAMP`).
 
 ```bash
 csvql "SELECT department, COUNT(*), AVG(salary) FROM 'data.csv' WHERE salary > 50000 GROUP BY department HAVING COUNT(*) > 10 ORDER BY department"

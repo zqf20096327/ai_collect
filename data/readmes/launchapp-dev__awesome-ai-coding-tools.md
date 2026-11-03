@@ -97,6 +97,7 @@ Lower-level CLI tooling that pairs with agents or runs solo.
 - [ax](https://github.com/Necmttn/ax) 🟢 — Local agent telemetry and recall.
 - [Cage](https://github.com/vitalik1921/cage) 🟢 — TypeScript contract harness that gates Claude Code or Codex on spec compatibility, invariant-linked tests, and fresh reviews.
 - [codex-profiles](https://github.com/Ducksss/codex-profiles) 🟢 — Small Bash utility for switching Codex CLI and Desktop accounts with isolated `CODEX_HOME` profiles.
+- [Flisk](https://github.com/flisk-sh/flisk) 🟢 🆓 — Local environment CLI for coding agents that generates Dockerfiles, Tiltfiles, and Traefik routing from service manifests and runs stacks with Docker and Tilt.
 - [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) 🟢 🏠 - Developer-alpha Rust store for coding-agent memory with encrypted, append-only records and scoped MCP access.
 - [Kolega Code](https://github.com/kolega-ai/kolega-code) 🆓 🏠 — Source-available terminal coding agent where the model writes its own multi-agent workflows (Gigacode), provider-agnostic with MCP support.
 - [llm](https://github.com/simonw/llm) 🟢 — Simon Willison's CLI for talking to any LLM. Plugin ecosystem.
@@ -128,6 +129,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [Orkas](https://github.com/Orkas-AI/Orkas) 🟢 🆓 🏠 — Open-source, local-first desktop AI workforce whose Commander coordinates specialist and external coding agents through one chat.
 - [Podium](https://podium.do/) 🟢 🏠 — Open-source workspace for taking ideas from conversation to coordinated work with coding agents. A shared task system lets them organize the effort while developers follow progress and change direction.
 - [smolagents](https://github.com/huggingface/smolagents) 🟢 — Hugging Face's minimal code-writing agents.
+- [SpaceApp](https://github.com/oll4com/spaceapp) 🟢 🆓 🏠 — MIT-licensed self-hosted web workspace that runs OpenCode, Codex, Claude Code, Gemini CLI and other coding CLIs side by side as terminal panes in persistent rooms, each on your own account and reachable from a computer or phone.
 - [Sqwakie](https://sqwakie.si/) 🆓 💰 🏠 — Source-available (FSL-1.1-ALv2) team channel for Claude Code and Codex agents across machines, with peer-to-peer messaging as CLI and MCP tools, a live Mission Control dashboard, and kanban project boards that agents can start, review and finish.
 - [Tale](https://github.com/tale-project/tale) 🟢 🏠 — Self-hosted project workspace that delegates tasks to coding agents such as Claude Code and Codex in persistent sandboxes and supports shared review of their reports and deliverables.
 - [The Hive Code](https://thehivecode.ai/) 🆓 — Free hosted platform where people post and back software ideas and AI agents help build them, with a person approving every change.
@@ -186,6 +188,7 @@ Prompt-to-app tools — for prototyping or full apps.
 - [Lovable](https://lovable.dev/) 💰 🆓 — End-to-end app generator with deploy.
 - [Replit Agent](https://replit.com/agent) 💰 — In-browser app generation + hosting.
 - [Tempo](https://www.tempo.new/) 💰 — Visual + AI React app builder.
+- [WeInc](https://we.inc/) 💰 🆓 — Prompt-to-site builder for websites, stores and web apps; edit by chat or point-and-click, publish to your own domain, white-label for agencies.
 - [a0.dev](https://a0.dev/) — React Native app generator.
 
 ## Open-Source & Self-Hosted
@@ -205,14 +208,16 @@ For when you want to own the stack.
 
 Anthropic's open standard for connecting AI tools to data sources and capabilities.
 
-- [MCP Specification](https://modelcontextprotocol.io/) — The spec.
-- [Official MCP servers](https://github.com/modelcontextprotocol/servers) 🟢 — Reference implementations (filesystem, git, GitHub, Slack, etc).
 - [Aident Loadout](https://aident.ai) 🆓 — Remote MCP that connects Codex, Claude Code, Cursor and ChatGPT to 1,000+ apps and 400+ Skills through one setup.
 - [awesome-mcp-servers](https://github.com/punkpeye/awesome-mcp-servers) — Curated MCP server directory.
 - [CurlShot MCP](https://github.com/SergiuPogor/curlshot-mcp) 🆓 💰 — Hosted MCP server that lets coding agents screenshot a web page as an image, PDF or scrolling video, on phone, tablet or desktop presets.
-- [mcp-agent](https://github.com/lastmile-ai/mcp-agent) 🟢 — Build agents on top of MCP.
 - [FastMCP](https://github.com/jlowin/fastmcp) 🟢 — Pythonic MCP server framework.
 - [Firecrawl MCP](https://github.com/firecrawl/firecrawl-mcp-server) 🟢 🆓 💰 — MCP server that lets coding agents search the web and scrape docs pages to Markdown, with a hosted endpoint that works without an API key.
+- [Kilobat CLI](https://github.com/seifip/kilobat-cli) 🟢 🆓 — Local macOS CLI and stdio MCP server for coding agents to diagnose failed API connections and check network conditions before downloads.
+- [MCP Specification](https://modelcontextprotocol.io/) — The spec.
+- [mcp-agent](https://github.com/lastmile-ai/mcp-agent) 🟢 — Build agents on top of MCP.
+- [npmscan](https://github.com/salemalem/npmscan-mcp-plugin) 🆓 — Hosted MCP server and agent plugin (Claude Code, Codex, Gemini CLI) that lets coding agents check npm packages for malware, known vulnerabilities, maintainer changes and install scripts before installing them, with no API key.
+- [Official MCP servers](https://github.com/modelcontextprotocol/servers) 🟢 — Reference implementations (filesystem, git, GitHub, Slack, etc).
 - [Oh My Android](https://github.com/ateymoori/oh-my-android) 🟢 🆓 — Native macOS app whose built-in MCP server lets coding agents see and drive the Android Emulator and phones: screenshots and UI tree in dp, taps, logcat, dark mode, font scale, RTL.
 
 ## DevOps & CI/CD
@@ -235,6 +240,7 @@ Frontier and open-weight models with strong code performance.
 ## Prompt & Context Engineering
 
 - [CLAUDE.md convention](https://docs.claude.com/en/docs/claude-code/memory) — Project-level instructions for Claude Code.
+- [Clogmeter](https://clogmeter.vercel.app) 🆓 💰 — Browser-only AGENTS.md / CLAUDE.md / Cursor rules / skills inspector: token weight, duplicate and conflict detection, trimmed export.
 - [coding-agent-prompts](https://github.com/Ai-VibeCheck/coding-agent-prompts) 🟢 🆓 — CC0 set of 10 copy-paste prompts for Claude Code, Codex and Cursor (secret hunt, two-pass security review, sandbox reach map, agent-config audit, PR split) that each make the agent report findings before editing any file.
 - [Cursor Rules](https://docs.cursor.com/context/rules) — Cursor's rules format (also adopted by other tools).
 - [files-to-prompt](https://github.com/simonw/files-to-prompt) 🟢 — CLI to bundle files into a prompt.

@@ -13,7 +13,8 @@
 - 支持 MCP：任何 MCP 服务器提供的工具都会并进模型可调用的工具表
 - 支持技能（Skill）：把写好的操作手册放进手机，模型需要时自己读
 - 支持插件（Plugin）：安装一个 zip 就能带来新工具、新的上下文注入与新的执行闸门
-- 当前源码版本：**0.8.578**（`versionCode` 599）
+- 目标与斜杠指令：输入 `/goal 一句话目标` 设置跨轮次目标；`/工具名 文本`（或 `/工具名 {"json":"参数"}`）直接从对话框调用工具，仍受审批档控制
+- 当前源码版本：**0.8.650**（`versionCode` 671）
 
 ## 界面与设计
 
@@ -245,7 +246,13 @@ description: 打开某 App 完成签到，用户说「签到」时使用
 - **出包纪律**：只出 release，不构建 debug——debug 的 `applicationId` 带 `.debug` 后缀，装上去会变成另一个应用。打包要等放行。
 - 装机前必须 `aapt dump badging` 核对 APK 的 `versionName` / `versionCode`（历史上出过一次「构建没跑、把旧包当新包装机」的事故；几个版本的 APK 字节数完全相同，光看大小分不出来）。发错了用 `gh release upload --clobber` 覆盖附件。
 - 推送到 GitHub 后 `.github/workflows/android.yml` 会自动跑：`./gradlew :app:testReleaseUnitTest` → 上传测试报告 → `./gradlew :app:assembleDebug :app:assembleRelease` → 上传 `suixing-debug` / `suixing-release` 两个 APK artifact。单测跑的是 **Release 变体**（与出包同一份编译配置，Release-only 的问题才拦得住）。
-- release 用仓库内的 `app/sideload.keystore` 自签（alias / 密码都是更名前的 `lingshu`。**不要改**：keystore 就是用这个名字生成的，改了等于换签名，已装的版本将无法覆盖安装）——这是自用侧载包，不是上架包；该 keystore 必须入库，否则覆盖安装会失败。release 目前不开 minify（`isMinifyEnabled = false`），`proguard-rules.pro` 里的规则是为将来开混淆准备的。
+- release 用仓库内的 `app/sideload.keystore` 自签（alias / 密码都是更名前的 `lingshu`。**不要改**：keystore 就是用这个名字生成的，改了等于换签名，已装的版本将无法覆盖安装）——这是自用侧载包，不是上架包；该 keystore 必须入库，否则覆盖安装会失败。**由此带来的安全含义（签名不等于来源证明）与校验方法见 [SECURITY.md](SECURITY.md)。**
+- release **已开 R8**（`isMinifyEnabled = true` / `isShrinkResources = true`，见 `app/build.gradle.kts`）：
+  APK 从 **18,556,906 B（0.8.613，未开 R8）** 降到 **5,272,728 B（0.8.614 起）**；
+  0.8.624 实测 5,275,144 B。其中约 4.2MB 是去掉 `material-icons-extended` 的收益，
+  其余来自 R8 删未使用代码 + `shrinkResources` 收资源。
+  `proguard-rules.pro` 里的 `@Serializable` 与 Shizuku keep 规则因此真正生效；
+  **改动这些规则后必须真机冒烟**（单测跑的是未混淆类，拦不住运行期反射）。
 
 ## 目录结构
 

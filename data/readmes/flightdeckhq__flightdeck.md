@@ -65,6 +65,8 @@ To use a local checkout instead of the marketplace: `claude --plugin-dir /path/t
 
 Marketplace installs do not update themselves: after a Flightdeck release run `claude plugin update flightdeck@flightdeck-plugins` (or enable auto-update for the `flightdeck-plugins` marketplace under `/plugin`).
 
+For runs the plugin does not report, such as `claude --bare`, CI jobs and cloud sessions without the plugin, and the TypeScript Agent SDK, point Claude Code's own OpenTelemetry export at Flightdeck instead: see [Claude Code over OpenTelemetry](#claude-code-over-opentelemetry).
+
 ### Production agents
 
 Install the sensor and point your agent at it:
@@ -122,8 +124,8 @@ Each script self-skips when its API keys aren't set, so `make playground-all` ru
 | Provider  | Chat | Embeddings | Streaming | Errors |
 |-----------|------|------------|-----------|--------|
 | Anthropic | `messages.create`, `messages.stream`, `messages.parse`, `beta.messages.*` (sync + async) | route via litellm to Voyage | `messages.stream`, `messages.create(stream=True)` (sync + async) | 14-entry `llm_error` taxonomy |
-| OpenAI    | `chat.completions.create` / `.parse`, `responses.create` / `.parse`, and their `with_raw_response` counterparts (sync + async) | `embeddings.create` (sync + async) | `create(stream=True)` on chat and Responses (sync + async); the `.stream()` helpers and `with_streaming_response` are not intercepted | same |
-| litellm   | `litellm.completion`, `litellm.acompletion` (chat path; a call litellm serves through the OpenAI SDK is counted once; `text_completion` and `responses` are not patched, see Known limitations) | `litellm.embedding`, `litellm.aembedding` | `completion(stream=True)`, `acompletion(stream=True)` (sync + async) | same |
+| OpenAI    | `chat.completions.create` / `.parse` (also on `beta.chat`), `responses.create` / `.parse`, and their `with_raw_response` and `with_streaming_response` counterparts (sync + async) | `embeddings.create` (sync + async) | `create(stream=True)` on chat and Responses, the `.stream()` helpers and the streaming views (sync + async) | same |
+| litellm   | `litellm.completion`, `text_completion`, `responses` and their async forms (each call counted once, also where litellm serves it through the OpenAI SDK or its own `completion`) | `litellm.embedding`, `litellm.aembedding` | `stream=True` on `completion`, `text_completion` and `responses` (sync + async) | same |
 
 The Anthropic row applies to every `anthropic` client class — first-party, Bedrock, Vertex, Google Cloud, Foundry, AWS, Mantle — and to the raw view (`with_raw_response`) and the streaming view (`with_streaming_response`): the streaming view is metered when you call `parse()`, and `create(stream=True)` through either view is metered as the parsed stream is iterated. Every Anthropic `post_call` records the platform the client talked to in `provider_metadata.platform` (`anthropic`, `bedrock`, `bedrock-mantle`, `aws`, `vertex`, `google-cloud`, `foundry`, or the host of a gateway the SDK was pointed at).
 
@@ -140,6 +142,7 @@ After `init()` + `patch()`, frameworks that build Anthropic or OpenAI clients in
 | LlamaIndex       | `llama-index-llms-anthropic`, `llama-index-llms-openai` | inherits |
 | CrewAI 1.14+     | `LLM(model=...).call()` via native Anthropic / OpenAI provider classes | inherits |
 | bifrost          | multi-protocol LLM gateway (point the matching SDK at bifrost's `base_url`) | multi-protocol |
+| Claude Agent SDK | `query()` and `ClaudeSDKClient`: each run is its own `claude_agent_sdk` session, reported from the SDK's message stream, that the dashboard can stop and the MCP policy holds (`pip install flightdeck-sensor[claude-agent-sdk]`) | n/a |
 
 The per-event `framework` field carries the bare name (`langchain`, `crewai`, etc.). Higher-level framework wins over SDK transport: a LangChain pipeline routing through litellm reports `framework=langchain`.
 
@@ -152,11 +155,75 @@ Claude Code agents attach via a separate plugin distributed through this repo's 
 /plugin install flightdeck@flightdeck-plugins
 ```
 
-The plugin defaults to `http://localhost:4000` + `tok_dev` for the local-dev path; export `FLIGHTDECK_SERVER` + `FLIGHTDECK_TOKEN` before launching `claude` to point at a different stack. See [Quickstart > Coding agents](#coding-agents-claude-code) for the full flow. Tool inputs and LLM call content are captured by default, so the Prompts tab is populated without extra setup.
+The plugin defaults to `http://localhost:4000` + `tok_dev` for the local-dev path; export `FLIGHTDECK_SERVER` + `FLIGHTDECK_TOKEN` before launching `claude` to point at a different stack. For `claude -p` scripts, CI and the GitHub Action, see [plugin/README.md](plugin/README.md#headless-runs-ci-and-the-github-action). See [Quickstart > Coding agents](#coding-agents-claude-code) for the full flow. Tool inputs and LLM call content are captured by default, so the Prompts tab is populated without extra setup.
 
 Sessions carry `flavor=claude-code`, `agent_type=coding`, and `client_type=claude_code`. By default the plugin only observes and the Stop Agent button is hidden for these sessions; with its `enforcement` option on, a stop or a token budget denies the session's next tool call and blocks its prompts (see [plugin/README.md](plugin/README.md#enforcement-opt-in)). Raw file bodies written by `Write` / `Edit` are never forwarded; tool inputs go through a sanitised whitelist.
 
-`client_type` names the client that produced a session. Flightdeck accepts nine values (`claude_code`, `flightdeck_sensor`, `claude_agent_sdk`, `codex`, `copilot`, `opencode`, `gemini_cli`, `cursor`, `otlp`), each with a display label, an expected agent type, a billing-mode default and whether the client can act on directives; see "Client type registry" in [ARCHITECTURE.md](ARCHITECTURE.md). The plugin sends `claude_code` and the sensor sends `flightdeck_sensor`; the other values are reserved for the integrations on the [Roadmap](#roadmap).
+`client_type` names the client that produced a session. Flightdeck accepts nine values (`claude_code`, `flightdeck_sensor`, `claude_agent_sdk`, `codex`, `copilot`, `opencode`, `gemini_cli`, `cursor`, `otlp`), each with a display label, an expected agent type, a billing-mode default and whether the client can act on directives; see "Client type registry" in [ARCHITECTURE.md](ARCHITECTURE.md). The plugin sends `claude_code`, the sensor sends `flightdeck_sensor`, and the sensor's Claude Agent SDK interceptor sends `claude_agent_sdk`. A session reported over OpenTelemetry takes the type of the tool that produced it, so Claude Code's own telemetry, the one source the receiver maps, also lands as `claude_code` (see [Claude Code over OpenTelemetry](#claude-code-over-opentelemetry)). The other values are reserved for the integrations on the [Roadmap](#roadmap), `otlp` for an OpenTelemetry source no other value names.
+
+### Claude Code over OpenTelemetry
+
+Claude Code exports OpenTelemetry of its own, and Flightdeck's ingestion API receives it. This reaches runs the plugin does not see: `claude --bare` (it runs no hooks, a plugin's included), CI jobs and cloud sessions without the plugin, the TypeScript Agent SDK (the sensor covers the Python one), and any Claude Code whose telemetry is pointed at Flightdeck. Set these in the environment Claude Code starts in:
+
+```bash
+export CLAUDE_CODE_ENABLE_TELEMETRY=1
+export OTEL_LOGS_EXPORTER=otlp
+export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://flightdeck.example.com/ingest
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer ftd_..."
+export OTEL_LOGS_EXPORT_INTERVAL=1000
+export OTEL_RESOURCE_ATTRIBUTES="host.name=$(hostname)"
+```
+
+- `CLAUDE_CODE_ENABLE_TELEMETRY=1` turns Claude Code's export on.
+- `OTEL_LOGS_EXPORTER=otlp`: every event Flightdeck stores comes from Claude Code's log events (prompts, model calls with tokens, TTFT and Claude Code's own cost, tool calls, denied tools, API errors, sub-agents). Leave `OTEL_METRICS_EXPORTER` and `OTEL_TRACES_EXPORTER` unset: the receiver accepts metrics and traces and counts them in its response, but stores neither.
+- `OTEL_EXPORTER_OTLP_PROTOCOL`: Claude Code has no default. `http/protobuf` and `http/json` both work, gzip-compressed or not; `grpc` does not, since the receiver speaks OTLP over HTTP only.
+- `OTEL_EXPORTER_OTLP_ENDPOINT`: the exporter appends `/v1/logs`, which the edge proxy routes to ingestion. On the dev stack: `http://localhost:4000/ingest`.
+- `OTEL_EXPORTER_OTLP_HEADERS`: a Flightdeck token, the kind the sensor and the plugin use (`tok_dev` on the dev stack).
+- `OTEL_LOGS_EXPORT_INTERVAL=1000`: Claude Code sends logs in batches every 5 seconds and flushes at exit under a short timeout, so a `claude -p` or Agent SDK run that is killed, or slow to flush, can lose its last batch. A 1-second interval narrows that window; an interactive session can keep the default.
+- `OTEL_RESOURCE_ATTRIBUTES`: Claude Code sends no host name, so without `host.name` all of a user's machines are one agent, `<user>@unknown`. The same comma-separated list takes Flightdeck's own keys: `flightdeck.flavor` (default `claude-code`), `flightdeck.billing_mode` and `flightdeck.capture_prompts` (below). The billing mode defaults to `subscription`; set `metered` for a run that pays per token, so its cost counts toward estimated cost. A `claude --bare` run always does: it signs in only with `ANTHROPIC_API_KEY`, an `apiKeyHelper` or a cloud provider's credentials, never a claude.ai login.
+- Leave `OTEL_SERVICE_NAME` unset. Flightdeck recognises Claude Code by `service.name=claude-code` and counts the records of any other service name as rejected (`source "<name>" is not mapped`); tell agents apart with `flightdeck.flavor`.
+
+**Tool details (opt-in).** `OTEL_LOG_TOOL_DETAILS=1` makes Claude Code name an MCP tool call's server and tool, which Flightdeck puts on the `mcp_tool_call` and on a denied call's signal (without them the call is a `tool_call` named `mcp_tool`), and a custom sub-agent by its name rather than `custom`. It also sends each tool's parameters and input, such as a Bash command line, and a failed tool's error text. Flightdeck stores a tool's input and a failed tool's error text only on a session whose `flightdeck.capture_prompts` is `true`, and a repository can set that flag (below) unless managed settings, or `--settings`, set `OTEL_RESOURCE_ATTRIBUTES`.
+
+**What a repository can change.** Claude Code applies the `env` of a repository's `.claude/settings.json` and `.claude/settings.local.json` over your shell, but ignores there the variables that turn telemetry on or choose where it goes and what content it carries: `CLAUDE_CODE_ENABLE_TELEMETRY`, the exporter selectors, the `OTEL_LOG_*` content switches and the `OTEL_EXPORTER_OTLP_*` endpoint, header and protocol variables (Claude Code 2.1.282 and later). Of those, a repository can only switch an exporter or a content switch off, and only over your user settings. Two variables Flightdeck reads stay open to it: `OTEL_RESOURCE_ATTRIBUTES`, whose value replaces yours, so it can set `flightdeck.capture_prompts=true`, a flavor or a host; and `OTEL_SERVICE_NAME`, which can keep its runs out of Flightdeck. Prompt text, tool inputs and a failed tool's error text still reach Flightdeck only when your own `OTEL_LOG_USER_PROMPTS` and `OTEL_LOG_TOOL_DETAILS` send them, gates a repository cannot open; an API error's message, up to 200 characters, needs only the capture flag. Only managed settings, or JSON passed with `--settings`, outrank a repository's settings. `--setting-sources user` leaves them out, and with them the repository's CLAUDE.md, rules, skills, commands, agents and hooks (checked on Claude Code 2.1.316).
+
+What the dashboard shows for such a session:
+
+- A `claude_code` session (`agent_type=coding`) with an `OTEL` pill beside its Claude Code pill, and "via OpenTelemetry" in its run drawer. Its agent is `<user>@<host>`, the user being the signed-in `user.email` (personal data, stored on the agent), else the account id, else `unknown`.
+- It observes only: no Stop, no Stop All and no custom directive reaches it.
+- Content stays off unless the exporter asks for it twice: `flightdeck.capture_prompts=true` (not `1`) in `OTEL_RESOURCE_ATTRIBUTES` turns capture on for the session, and Claude Code then sends the prompt text only with `OTEL_LOG_USER_PROMPTS=1`, and tool inputs and a failed tool's error text only with `OTEL_LOG_TOOL_DETAILS=1`. An API error's message, up to 200 characters, needs only the capture flag, which a repository can set (above). With capture off, Flightdeck stores names, ids, counts, durations and whether each call succeeded. No server setting overrides this; the settings Claude Code runs with decide (see What a repository can change, above). `OTEL_LOG_USER_PROMPTS=1` also makes Claude Code send response text, which Flightdeck does not store; `OTEL_LOG_ASSISTANT_RESPONSES=0` keeps it off the wire.
+- Running the plugin as well is safe. When the plugin, or the sensor's Agent SDK interceptor, already reports the Claude Code session, its OpenTelemetry records are dropped (counted as rejected in the export response), so nothing is counted twice. The check runs on the session's first export, so a session whose telemetry arrives before the plugin's first event is reported by both.
+- Claude Code sends no event when a session ends. The session goes `stale` after 2 minutes without a record and `lost` after 30, and the workers close it 24 hours after its last record by default (`FLIGHTDECK_ORPHAN_TIMEOUT_HOURS`, `close_reason=orphan_timeout`). A record that arrives later reopens it.
+- Each sub-agent is a child session, labeled with its type as `agent_role`, that closes when Claude Code reports the sub-agent completed; one resumed with `SendMessage` reopens its child session. Claude Code 2.1.310 and later tags a sub-agent's log events, so `CLAUDE_CODE_ENHANCED_TELEMETRY_BETA` is not needed: it adds traces, which Flightdeck does not store.
+
+If no session appears, start Claude Code with `--debug-file <path>`: the log names the exporter's failures in `[3P telemetry]` lines. Under the Agent SDK, set `CLAUDE_CODE_OTEL_DIAG_STDERR=1` and read them through the SDK's `stderr` option (TypeScript) or callback (Python).
+
+Rolling it out:
+
+- **Across an organization**, put the variables in the `env` block of Claude Code's managed settings (a managed settings file or server-managed settings). Managed settings outrank every other source, and Claude Code 2.1.217 and later also removes a developer's own endpoint variables, so the export cannot be pointed elsewhere. Set `OTEL_SERVICE_NAME=claude-code` and `OTEL_RESOURCE_ATTRIBUTES` there too, so a repository cannot change them (above). The managed `OTEL_RESOURCE_ATTRIBUTES` replaces each machine's own, and no shell expands a settings file, so write `host.name` into each machine's managed settings file. Server-managed settings are the same on every machine, so pinning `OTEL_RESOURCE_ATTRIBUTES` there makes every session `<user>@unknown`. From Claude Code 2.1.223, managed sources merge `env` variable by variable, and `OTEL_RESOURCE_ATTRIBUTES` and `OTEL_SERVICE_NAME` sit outside the telemetry variables that must come from one source, so server-managed settings can carry the export while each machine's own managed settings file carries `OTEL_RESOURCE_ATTRIBUTES` with its `host.name`. A token made for the rollout can be revoked on its own. Ingestion allows each token 1000 events a minute (`FLIGHTDECK_RATE_LIMIT_PER_MINUTE`, counted per replica), shared with the sensor and the plugin, so a large rollout may need a higher budget or a token per team.
+- **In GitHub Actions**, `anthropics/claude-code-action` passes nine telemetry variables from the step's `env` to Claude Code: `CLAUDE_CODE_ENABLE_TELEMETRY`, `OTEL_METRICS_EXPORTER`, `OTEL_LOGS_EXPORTER`, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_EXPORTER_OTLP_HEADERS`, `OTEL_METRIC_EXPORT_INTERVAL`, `OTEL_LOGS_EXPORT_INTERVAL` and `OTEL_RESOURCE_ATTRIBUTES`. This example sends the export through them and pins the two variables a repository could set with `--settings` in `claude_args`:
+
+  ```yaml
+  - uses: anthropics/claude-code-action@v1
+    env:
+      CLAUDE_CODE_ENABLE_TELEMETRY: "1"
+      OTEL_LOGS_EXPORTER: otlp
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_ENDPOINT: https://flightdeck.example.com/ingest
+      OTEL_EXPORTER_OTLP_HEADERS: Authorization=Bearer ${{ secrets.FLIGHTDECK_TOKEN }}
+      OTEL_LOGS_EXPORT_INTERVAL: "1000"
+    with:
+      anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+      claude_args: |
+        --settings '{"env": {"OTEL_SERVICE_NAME": "claude-code", "OTEL_RESOURCE_ATTRIBUTES": "host.name=github-actions,flightdeck.billing_mode=metered"}}'
+  ```
+
+  The run pays with an API key, hence `metered`; leave it out for `claude_code_oauth_token`. The Action also loads the repository's settings (on a pull request, the base branch's: it restores `.claude/` and `CLAUDE.md` from the base branch before Claude Code starts), which outrank the step's `env` and the `settings` input, so the repository's committed settings can set `OTEL_RESOURCE_ATTRIBUTES` and `OTEL_SERVICE_NAME` for the run. The `--settings` pin outranks them without dropping any of the repository's settings; `--setting-sources user` in `claude_args` also shuts them out, but drops the repository's CLAUDE.md, rules, skills, commands, agents and hooks too. Send any other variable, such as `OTEL_EXPORTER_OTLP_COMPRESSION`, through the `env` of the `settings` input, which the Action writes to the runner's user settings. The runner must reach your Flightdeck deployment.
+- **Cloud sessions** (Claude Code on the web) read the variables from your organization's server-managed settings, which reach every cloud session except Claude Tag channel sessions. Claude Code's documentation advises against putting a credential such as the token in a cloud environment's own variables, since anyone who uses the environment can read them, and those variables are the only route to Claude Tag sessions. The session's network must reach your Flightdeck host: add its domain to the environment's allowed domains if its network access level does not cover it.
+- **The TypeScript Agent SDK** runs the Claude Code CLI, which does the exporting: set the variables in the process environment, or in `options.env`, which replaces the inherited environment, so spread `process.env` into it. Anthropic's Agent SDK observability guide suggests renaming the service with `OTEL_SERVICE_NAME`; leave it unset for Flightdeck and set `flightdeck.flavor` instead. An app that pays with an API key also sets `flightdeck.billing_mode=metered`.
+
+A proxy in front of ingestion must accept 4 MiB request bodies on `/ingest/`; the bundled nginx does, and so does the Helm chart's `values.prod.yaml` for ingress-nginx. The limit applies to the body as sent, and a gzip body may inflate to 16 MiB. With content logging on, a batch carries prompts, responses (each cut at 60 KB by default) and tool parameters, so a backlog can pass 4 MiB; the receiver then answers 413 and the exporter drops the whole batch. Add `OTEL_EXPORTER_OTLP_COMPRESSION=gzip` when capture is on.
 
 ### Sub-agent observability
 
@@ -306,15 +373,14 @@ The sensor reports over HTTP on background daemon threads. Control plane downtim
 
 - `patch()` must run before OpenAI clients are constructed. Instances that already accessed `.chat`, `.responses`, or `.embeddings` before `patch()` keep the raw resource cached and are not intercepted. Anthropic clients are intercepted from their next call on, whenever they were built, except that a `with_raw_response` / `with_streaming_response` view first touched before `patch()` binds the unpatched method and is not metered.
 - The Anthropic patch needs `anthropic>=0.86` (the lowest release with the resource layout it imports); an older SDK is reported with a warning at import and its calls are not metered.
-- An Anthropic `with_raw_response.create(stream=True)` response that is never parsed emits no `post_call`: the event stream is metered once `parse()` hands it to the sensor, and a raw response has no close hook to settle on. The streaming view (`with_streaming_response`) always settles: when its `with` block exits, or, for a response dropped without `parse()` or `close()`, at the next LLM call the sensor intercepts after the response is collected or when the session ends.
+- A `with_raw_response.create(stream=True)` response (Anthropic or OpenAI) that is never parsed has no close hook to settle on: it is reported on the pre-call estimate (as an aborted stream with no chunks when its body was never read), at the next LLM call the sensor intercepts after the response is collected, or when the session ends. The streaming view (`with_streaming_response`) settles when its `with` block exits, whether or not its stream was parsed or read.
 - Anthropic Message Batches (`messages.batches.*`) and `count_tokens` are not patched: batch spend runs outside the kill switch and the token budget.
 - With `capture_prompts=True`, prompts sent through the Bedrock, Vertex, Foundry, AWS and Mantle clients — platforms often chosen for data residency — reach the Flightdeck control plane like any other captured prompt. Keep capture off for those sessions, or keep the control plane inside the same residency boundary.
 - llama-index-llms-anthropic (through 0.12.3) always sends `temperature`, which anthropic 1.x's `Messages.create` rejects, so LlamaIndex's Anthropic LLM fails on anthropic 1.x with or without the sensor; the playgrounds skip it there.
 - On mcp 2.x, `mcp.Client` answers `list_tools`, `list_resources`, `list_resource_templates`, `list_prompts` and `read_resource` from its response cache when it can; a cached answer makes no MCP request, so no `mcp_*` event is emitted for it (pass `cache=None` to the `Client` to observe every request). Tool calls are not cached and are always observed and policed.
 - Per-thread Session isolation is not yet supported. Multi-agent frameworks (CrewAI, LangGraph, etc.) work fine under a single `init()` and shared `AGENT_FLAVOR`.
 - Custom directive handler input validation is yours. The `parameters` schema drives the dashboard form and the directive fingerprint; it is not enforced at execution time.
-- litellm's `text_completion` and `responses` entry points are not patched: `text_completion` on an OpenAI chat model is reported by the OpenAI interceptor, `responses` on a provider without a native Responses API is reported once as a chat call, and litellm's own httpx routes of either are unobserved. Chat calls, streaming or not, and embeddings round-trip cleanly.
-- While a litellm call is in flight, an SDK call made from inside it (by a litellm callback, guardrail or custom provider, or by a task created inside the call and run before it ends) is neither policed nor metered: the litellm wrapper has already metered the call it serves, and the mark that tells the SDK interceptors so covers the whole call.
+- While a litellm call is in flight, an SDK call made from inside it (by a litellm callback, guardrail or custom provider, or by a task created inside the call and run before it ends) is neither policed nor metered: the litellm wrapper has already metered the call it serves, and the mark that tells the SDK interceptors so covers the whole call. A litellm call made from inside it is reported as a call of its own, except litellm's own re-issues of the same call (its responses/completion bridge and its `fallbacks` loop, which report once, with the model that answered). A chat call through litellm's MCP gateway is reported twice, and a sync call with `fallbacks` made while an event loop is running in its thread (a notebook) has each attempt reported as a call of its own beside it (a failed primary and one fallback: three `pre_call`s, two `post_call`s, one `llm_error`). Under a DEGRADE policy a litellm call's `fallbacks` are dropped, so it runs only the degrade target.
 
 ---
 

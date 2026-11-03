@@ -95,7 +95,8 @@ The `mcp.json` entry looks like this, with your own paths filled in:
     "args": ["/Users/you/.factory/codex-computer-use/launcher.mjs"],
     "env": {
       "CODEX_APP_PATH": "/Applications/ChatGPT.app",
-      "CODEX_HOME": "/Users/you/.codex"
+      "CODEX_HOME": "/Users/you/.codex",
+      "CODEX_CU_RUNTIME_VERSION": "<runtime-sha256>"
     },
     "connectTimeout": 120000,
     "timeout": 600000
@@ -136,20 +137,36 @@ To test that Computer Use can control a specific app without an approval prompt,
 curl -fsSL https://raw.githubusercontent.com/nikships/droid-codex-computer-use/main/verify.sh | sh -s -- --app Calculator
 ```
 
+The check warns when no browsers are connected, even if desktop control works. Use `./verify.sh --require-browser` to fail unless browser control is available, or `--timeout-ms 30000` to limit each check request to 30 seconds.
+
+For a deeper, repeatable desktop stress check:
+
+```sh
+./verify.sh --exercise --app Calculator --iterations 100
+```
+
+This checks persistent JavaScript state, repeated full accessibility reads with latency measurements, actual screenshot image delivery, recovery after a JavaScript error and a short execution timeout, fresh bindings after reset, app access after reset, and turn cleanup. It opens the selected app but does not click, type, edit documents, or record audio. `--iterations` accepts 1–1000 (default 10). Ordinary verification checks inventory and optional app attachment, not screenshot delivery.
+
+Some Codex builds require a browser-access host in addition to the Chrome extension. If verification reports `The browser access host is unavailable`, desktop control can still work, but browser control cannot be claimed. The launcher preserves Codex's host requirements rather than fabricating access grants.
+
 If you already set up a `computer-use` server by hand, the installer stops rather than overwrite it. Re-run with `--force` to replace it. Your old file is still backed up first.
+
+Reinstalling preserves your server's enabled/disabled state, tool filters, timeouts, and extra environment variables. The Codex app and home paths are updated to match the install options. Runtime edits in a checkout are not live: run `./install.sh` to copy them into the installed launcher. A content fingerprint in the MCP entry changes with the runtime, so upgrades trigger a config reconnect rather than rewriting an identical entry. If the session does not reconnect, use `/mcp` or restart it.
 
 ## How it works
 
 The launcher fixes two gaps between Droid and the Codex server. See [docs/how-it-works.md](docs/how-it-works.md) for the details.
 
-1. **Approval forms.** Before it controls an app, the server asks for approval through MCP form elicitation. Droid doesn't support form elicitation, so the server fails. The launcher tells the server that forms are supported, then answers every approval request with "accept, always". Approved apps are saved to the same list the Codex app uses.
-2. **Codex turn metadata.** The browser surface expects each tool call to carry `x-codex-turn-metadata`, which only Codex sends. The launcher adds a session ID and turn ID to every call, and starts a new turn after `turn_ended`.
+1. **Approval forms.** Before it controls an app, the server asks for approval through MCP form elicitation. Droid doesn't support form elicitation, so the server fails. The launcher tells the server that forms are supported, then answers every form approval with "accept, always" (or session-only when the server disallows saving). Approved apps are saved to the same list the Codex app uses.
+2. **Codex turn metadata.** The browser surface expects each tool call to carry `x-codex-turn-metadata`, which only Codex sends. The launcher adds a session ID and turn ID to every call, aligns `turn_ended` with those IDs, and starts a new turn after cleanup succeeds.
 
 The launcher reads the server definition each time it starts. It prefers the one the Codex app writes to `~/.codex/plugins/cache/*/unified-computer-use/<version>/.mcp.json`, so Codex app updates take effect without reinstalling. If that file doesn't exist yet, the launcher builds the same definition from the app bundle.
 
+Node preload flags such as `--import` are preserved. Large image responses use backpressure and are flushed before exit; disconnected clients trigger bounded server shutdown. The launcher never automatically replays a tool call, so a timeout cannot silently duplicate clicks or typing.
+
 ## Security
 
-- **Every approval prompt from this server is accepted automatically.** That includes using any app, recording computer audio, and running JavaScript in the server's REPL. Install this only if you want Droid to control your Mac without asking first.
+- **Every form approval from this server is accepted automatically.** That includes using any app, recording computer audio, and running JavaScript in the server's REPL. Session-only persistence restrictions are respected. URL-based authentication is not completed automatically. Install this only if you want Droid to control your Mac without asking first.
 - Apps that Codex blocks outright, by organization policy or for safety reasons, stay blocked. Those blocks aren't approval prompts.
 - Droid's own tool permission checks still apply, based on your Droid autonomy level.
 - Saved app approvals live in `~/Library/Group Containers/2DC432GLL2.com.openai.sky.CUAService/Library/Application Support/Software/ComputerUseAppApprovals.json`. The Codex app shares this file. Delete it to clear every saved app approval.
@@ -164,6 +181,9 @@ The launcher reads the server definition each time it starts. It prefers the one
 | The connection check shows a browser surface warning | Computer Use for desktop apps still works. Browser control needs Chrome and the Codex Chrome extension from the Codex app. |
 | Tools don't appear in Droid | Run `/mcp` in Droid to see the server's status, or start a new session. |
 | Clicks or screenshots fail | Check System Settings > Privacy & Security, under Accessibility and Screen Recording, for `Codex Computer Use`. |
+| `SCStreamErrorDomain` / `-3811` / `-3812` | Capture failed inside the Codex macOS helper. Check Screen Recording access and an unlocked desktop. Re-observe the app before retrying; do not blindly replay clicks or typing. |
+| `js execution timed out; kernel reset` | JavaScript bindings were cleared. Rebind the app or tab and observe its current state. Earlier actions may already have happened. |
+| `The browser access host is unavailable` | This Codex build requires its browser-access host. Auto-approving forms does not provide host-issued access grants. Desktop control remains independently usable. |
 
 ## Uninstall
 
@@ -172,6 +192,18 @@ curl -fsSL https://raw.githubusercontent.com/nikships/droid-codex-computer-use/m
 ```
 
 This removes the `computer-use` entry from `~/.factory/mcp.json`, after a backup, and deletes `~/.factory/codex-computer-use/`. It leaves the shared app-approval file in place.
+
+If another named MCP entry still uses the installed launcher, its files are kept until that entry is removed too.
+
+## Tests
+
+Run the dependency-free protocol and setup regression suite with the Codex-bundled Node runtime:
+
+```sh
+./scripts/run-node.sh --test tests/*.test.mjs
+```
+
+These tests use isolated temporary configurations. For a real desktop smoke test, run `./verify.sh --app Calculator`; for screenshot and recovery coverage, run `./verify.sh --exercise --app Calculator --iterations 100`.
 
 ## Project Structure
 
@@ -187,6 +219,7 @@ droid-codex-computer-use/
 ├── scripts/
 │   ├── common.mjs        # shared helpers for the setup scripts
 │   ├── install.mjs
+│   ├── mcp-client.mjs    # bounded diagnostic client; does not auto-approve
 │   ├── run-node.sh       # runs scripts with Node from the Codex app
 │   ├── uninstall.mjs
 │   └── verify.mjs

@@ -39,14 +39,16 @@ dsh-houdini 将 Houdini 的真实场景接入 [DeepSeek Harness Desktop](https:/
 ### 安装
 
 1. 安装兼容的官方 DSH Desktop 和 Houdini，在 DSH 原生模型设置中配置主模型。
-2. 在 Desktop 的 **插件 → 添加插件 → 包名或地址** 中粘贴下方正式包地址，点击 **安装**；也可填入已下载完整 `.tgz` 的本地绝对路径。
+2. 在 Desktop 的 **插件 → 添加插件 → 包名或地址** 中填写下方包名和版本，点击 **安装**；也可使用正式发布页的完整 `.tgz` 地址或已下载文件的本地绝对路径。
 3. 点击 **立即启用**，或在插件列表启用 `dsh-houdini`。
 
 ```text
-https://github.com/eee1723/dsh-houdini/releases/download/v0.1.4/dsh-houdini-0.1.4.tgz
+dsh-houdini@0.1.6
 ```
 
-[正式发布与校验文件](https://github.com/eee1723/dsh-houdini/releases/tag/v0.1.4)。当前通过 GitHub 完整包直链安装，未上架 npm；直接粘贴地址即可，无须解压或运行脚本。已有 0.1.1～0.1.3 用户需先按[更新说明](docs/setup.md#connection--support连接与维护)完成这次更新，之后才能使用新增的更新提醒。
+[npm 包](https://www.npmjs.com/package/dsh-houdini)与[GitHub 正式包及校验文件](https://github.com/eee1723/dsh-houdini/releases/tag/v0.1.6)提供同一完整安装包，无须解压或运行脚本。仅填写 `dsh-houdini` 可安装 npm 的当前 latest 版本；指定本次安装版本使用上面的写法。包名分发不等于宿主自动更新，已有用户按[更新说明](docs/setup.md#connection--support连接与维护)操作；0.1.1～0.1.3 完成首次更新后才能使用新增的更新提醒。
+
+若显示“未找到相关插件”，可按[安装说明](docs/setup.md#普通安装)切换到npm官方源，或使用GitHub完整包地址；新版本可能尚未同步到所选镜像。
 
 新装插件默认停用，启用后才会提供 Houdini 模式。完整包包含 FFmpeg / ffprobe，普通 Python 自动从 Houdini 安装定位；使用插件无需另装 Node、编译源码或配置 FFmpeg PATH。
 
@@ -147,6 +149,7 @@ Houdini 的 Python API（HOM）只在 Houdini 侧运行。媒体准备在普通 
 | [任务拆分](skills/houdini-task-decomposition/SKILL.md) | 按目标与依赖组织模块、观察和集成 |
 | [独立执行](skills/houdini-isolated-execution/SKILL.md) | 在独立 Houdini 进程中构建与验证 |
 | [SOP](skills/houdini-sop-workflow/SKILL.md) | 程序化建模、曲线与几何操作 |
+| [模拟](skills/houdini-simulation-workflow/SKILL.md) | 反馈求解、时序、缓存与模拟修改 |
 | [表面外观](skills/houdini-surface-workflow/SKILL.md) | 参考图、表面细节、UV 与贴图 |
 | [COP](skills/houdini-cop-workflow/SKILL.md) | 按需进行图层与图像处理 |
 | [工具开发](skills/houdini-tool-development/SKILL.md) | HDA、脚本、面板与工具交付 |

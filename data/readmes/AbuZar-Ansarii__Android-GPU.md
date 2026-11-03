@@ -201,6 +201,8 @@ Choose a model matched to your phone's total RAM capacity. Using 4-bit (`Q4_K_M`
 | **Qwen 2.5** | 0.5B | Q4_K_M | ~390 MB | Multilingual & basic code generation |
 | **Llama 3.2** | 1B | Q4_0 | ~700 MB | **[Fastest 1B]** Meta lightweight model with fastest SIMD math |
 | **Llama 3.2** | 1B | Q4_K_M | ~800 MB | Meta's flagship lightweight general assistant |
+| **Liquid AI LFM3** | 1.7B | QAD-Q4_0 | ~1.00 GB | **[Liquid AI]** Tri-hybrid Conv/Attn with QAD 4-bit distillation |
+| **Liquid AI LFM3** | 1.7B | Q4_K_M | ~1.05 GB | **[Liquid AI]** 256K context tri-hybrid edge reasoning model |
 | **Qwen 2.5** | 1.5B | Q4_K_M | ~1.0 GB | High reasoning, logic, and multi-language |
 
 ---
@@ -210,6 +212,7 @@ Choose a model matched to your phone's total RAM capacity. Using 4-bit (`Q4_K_M`
 
 | Model | Parameters | Quantization | RAM Footprint | Strengths |
 | :--- | :--- | :--- | :--- | :--- |
+| **Liquid AI LFM3 Omni** | 2B | Q4_K_M | ~1.05 GB | **[Omni-Modal]** End-to-end multimodal (text, vision & audio offload) |
 | **Google Gemma 2** | 2B | Q4_K_M | ~1.6 GB | High-intelligence 2B model derived from Gemini |
 | **Llama 3.2** | 3B | Q4_K_M | ~2.0 GB | Recommended daily driver for chat & summaries |
 | **Qwen 2.5** | 3B | Q4_K_M | ~2.1 GB | Exceptional Python/JS code synthesis & math |
@@ -229,7 +232,25 @@ Choose a model matched to your phone's total RAM capacity. Using 4-bit (`Q4_K_M`
 
 ## 🔌 OpenAI API Integration
 
-You can use your phone as the local AI engine inside your favorite development tools.
+You can use your phone as a private, local OpenAI-compatible API endpoint directly on the **same phone** or connected across your PC.
+
+### 📍 Available Base URLs
+
+| Location / Client | Protocol / Framework | Base URL | Network / Requirements |
+| :--- | :--- | :--- | :--- |
+| **📱 On the Same Phone** | **OpenAI API (`/v1`)** | `http://127.0.0.1:8080/v1` *(or `localhost`)* | 100% offline, zero Wi-Fi required |
+| **🤖 Phone Automation Agents** | **Native Ollama (`11434`)** | `http://127.0.0.1:11434` | Default Ollama port (AutoDroid, DroidRun) |
+| **🤖 Phone Automation Agents** | **Native Ollama (`8080`)** | `http://127.0.0.1:8080/api` | Ollama format on primary port |
+| **💻 On PC via USB (ADB)** | **OpenAI API (`/v1`)** | `http://localhost:8080/v1` | Run `start_pc_bridge.bat` (zero latency) |
+| **🌐 Over Local Wi-Fi** | **OpenAI API (`/v1`)** | `http://<PHONE_IP>:8080/v1` | Same Wi-Fi network (displayed in app) |
+
+> **Note on API Keys:** The endpoint is 100% local and open. If your client app (like Chatbox, ChatterUI, or Continue) requires an API key, you can enter any string (e.g. `phone-gpu` or `not-needed`).
+
+### 📱 Using on the Same Phone (Android Apps / Scripts)
+You can point mobile AI chat apps (like **Chatbox**, **ChatterUI**, **NextChat**, **LibreChat**, or **Termux Python scripts**) directly to the engine running in the background:
+* **API Host / Base URL:** `http://127.0.0.1:8080/v1` (or `http://localhost:8080/v1`)
+* **API Key:** `phone-gpu`
+* **Models:** Call `GET http://127.0.0.1:8080/v1/models` or pick your loaded `.gguf` model from the dropdown.
 
 ### VS Code (Continue / Roo Code / Cline)
 Add this to your `config.json`:
@@ -242,19 +263,20 @@ Add this to your `config.json`:
       "provider": "openai",
       "model": "local-phone-model",
       "apiBase": "http://localhost:8080/v1",
-      "apiKey": "not-needed"
+      "apiKey": "phone-gpu"
     }
   ]
 }
 ```
 
-### Python (OpenAI SDK)
+### Python (OpenAI SDK on Phone or PC)
 ```python
 from openai import OpenAI
 
+# Works in Termux on the phone (127.0.0.1:8080/v1) or on PC (localhost:8080/v1)
 client = OpenAI(
-    base_url="http://localhost:8080/v1",
-    api_key="not-needed"
+    base_url="http://127.0.0.1:8080/v1",  # Use http://localhost:8080/v1 on PC
+    api_key="phone-gpu"
 )
 
 response = client.chat.completions.create(
@@ -266,6 +288,134 @@ response = client.chat.completions.create(
 )
 
 print(response.choices[0].message.content)
+```
+
+---
+
+## 👁️ Multimodal Vision & Document Intelligence (Images & PDFs)
+
+Android-GPU includes native multimodal vision support designed for **Liquid AI LFM3 Omni 2B**, LLaVA, and vision-enabled models.
+
+### 🖼️ In the Web UI
+* **📎 Attach Any Media:** Click the attachment button, drag & drop files onto the prompt box, or paste directly from your clipboard (`Ctrl+V` / `Cmd+V`).
+* **📸 Images:** Supports PNG, JPEG, WEBP, and GIF. Images are automatically optimized and resized client-side to prevent network bottlenecks over mobile loopback.
+* **📄 PDFs with Zero Server Dependencies:** Upload multi-page PDF documents. The in-browser engine (PDF.js) automatically renders the pages as high-resolution visual canvases for the vision model to inspect (charts, diagrams, tables, and document layout) while extracting text for 100% precision context injection.
+* **🔍 Full-Resolution Lightbox:** Click on any attached thumbnail in the chat thread to inspect it in full high resolution.
+
+---
+
+### 🤖 Autonomous AI Agents (Vision via Base URL)
+
+If you are building an AI agent (with **LangChain**, **AutoGen**, **CrewAI**, **LlamaIndex**, or the **OpenAI SDK**) that needs visual perception (e.g. inspecting web screenshots, analyzing diagrams, reading documents), you can pass images directly to the OpenAI-compatible Base URL:
+
+* **On the Same Phone:** `http://127.0.0.1:8080/v1`
+* **On PC over USB Tunnel:** `http://localhost:8080/v1`
+
+#### How the Engine Handles Vision & Ollama Agent Payloads:
+1. **Full Ollama API & Dual Port Listening (11434 & 8080):** In addition to OpenAI (`/v1/chat/completions`), Android-GPU natively supports Ollama endpoints (`/api/chat`, `/api/generate`, `/api/tags`, `/api/version`). The engine automatically listens on both port **8080** and standard Ollama port **11434**, allowing apps targeting Ollama's default host (`http://127.0.0.1:11434`) to connect out-of-the-box.
+2. **Raw Base64 & `"images"` Arrays:** AI agents can send images using Ollama's `"images": ["<raw_base64>"]` array or OpenAI's `{"type": "image_url", ...}` format. Raw base64 strings and remote HTTP/HTTPS URLs are automatically normalized into data URIs.
+3. **Ultra-Robust Action JSON Sanitizer (`robust_clean_json`):** Autonomous phone-controlling agents (which take screenshots to decide where to tap and parse the output with `json.loads` or Android `JSONObject`) frequently crash with `could not parse AI output as an action JSON` when models emit thinking process tags (`<think>...</think>`, `<thought>...</thought>`), conversational preamble, Python single quotes (`{'action': 'tap'}`), or trailing commas. Android-GPU forces JSON grammar at the sampler level, strips all thinking tags and code fences, repairs syntax flaws, and ensures 100% valid parseable action JSON for both non-streaming and streaming requests.
+4. **Manual Storage Import with Explicit Modality Selection:**
+   * 📝 **Text Only:** Standard LLM mode (fast, minimal RAM overhead, context 2048).
+   * 👁️ **Vision + Text:** Multimodal VLM mode (pairs model with its `mmproj` projector, context 4096).
+   * 🎙️ **Vision + Text + Audio (Omni):** Liquid AI LFM3 Omni mode (tuned repeat penalty & sampling for omni-modal weights).
+   * Users can enter any storage path (`/sdcard/Download/model.gguf` or USB OTG) and pick or auto-detect any projector (`mmproj-*.gguf`) from storage.
+5. **Paired Projector Auto-Discovery:** Multimodal models like Liquid AI LFM3 Omni 2B require both the model weights and the companion visual projector (`mmproj-LFM3-Omni-2B-F16.gguf`). The engine automatically locates matching projectors across all phone storage folders (`/sdcard/Download`, `~/models`, etc.).
+6. **Dynamic Vision Context Scaling:** When multimodal weights or images are loaded, the context buffer automatically scales to 4096+ tokens to accommodate visual projector tokens (~576–1152 tokens per image).
+
+#### Ollama-Style Phone Automation Agent Example (Take Screenshot -> Output Action JSON)
+```python
+import base64
+import requests
+import json
+
+# 1. Take phone screenshot and encode to base64
+with open("phone_screen.png", "rb") as f:
+    screen_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+# 2. Call local endpoint (using Ollama /api/chat or OpenAI /v1/chat/completions)
+url = "http://127.0.0.1:8080/api/chat"
+payload = {
+    "model": "lfm3-omni",
+    "messages": [
+        {
+            "role": "user",
+            "content": "Look at this phone screenshot. Where should I tap to open Settings? Respond ONLY with an action JSON.",
+            "images": [screen_base64]  # Raw base64 supported just like Ollama!
+        }
+    ],
+    "format": "json",
+    "stream": False
+}
+
+resp = requests.post(url, json=payload)
+data = resp.json()
+
+# 3. Clean JSON guaranteed! No markdown code fences or conversational errors:
+action_json = json.loads(data["message"]["content"])
+print("Action JSON parsed successfully:", action_json)
+# Example output: {"action": "tap", "coordinate": [540, 960]}
+```
+
+#### Python AI Agent Example (Multimodal Vision)
+```python
+import base64
+from openai import OpenAI
+
+# 1. Initialize client pointing to your phone
+client = OpenAI(
+    base_url="http://127.0.0.1:8080/v1",  # or http://localhost:8080/v1 on PC
+    api_key="phone-gpu"
+)
+
+# 2. Encode local image to base64
+with open("screenshot.png", "rb") as image_file:
+    base64_image = base64.b64encode(image_file.read()).decode("utf-8")
+
+# 3. Request visual analysis
+response = client.chat.completions.create(
+    model="LFM3-Omni-2B-Q4_K_M.gguf",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "What do you see in this screenshot? Extract any key metrics and summarize the chart."
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{base64_image}"
+                        # Remote URLs like "https://example.com/chart.jpg" are also supported!
+                    }
+                }
+            ]
+        }
+    ],
+    max_tokens=500
+)
+
+print(response.choices[0].message.content)
+```
+
+#### cURL Agent Example
+```bash
+curl http://localhost:8080/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer phone-gpu" \
+  -d '{
+    "model": "LFM3-Omni-2B-Q4_K_M.gguf",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {"type": "text", "text": "Describe this architecture diagram in detail."},
+          {"type": "image_url", "image_url": {"url": "https://raw.githubusercontent.com/AbuZar-Ansarii/Android-GPU/main/web/favicon.png"}}
+        ]
+      }
+    ]
+  }'
 ```
 
 ---

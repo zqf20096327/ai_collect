@@ -16,6 +16,8 @@
 
 💭 **[Amey's Arc](https://amey-thakur.github.io/)** ⟶ Advancing Ideas & Projects
 
+📚 **[AI Engineering](https://github.com/Amey-Thakur/AI-ENGINEERING)** ⟶ Fifty Lessons, Nothing Installed
+
 🎓 **[Computer Engineering](https://github.com/Amey-Thakur/COMPUTER-ENGINEERING)** & **[MEng](https://github.com/Amey-Thakur/MENG-COMPUTER-ENGINEERING)** ⟶ Throughout Courses
 
 📁 **[Projects](https://github.com/stars/Amey-Thakur/lists/projects)** ⟶ Curated Collection
@@ -51,11 +53,11 @@
 
 ---
 
-<p align="center">&nbsp;<img align="center" src="docs/languages.svg?t=1793441773" alt="Amey-Thakur" title="Amey-Thakur's Most Used Languages" /></p>
+<p align="center">&nbsp;<img align="center" src="docs/languages.svg?t=1793661747" alt="Amey-Thakur" title="Amey-Thakur's Most Used Languages" /></p>
 
 ---
 
-<p align="center">&nbsp;<img align="center" src="docs/stats.svg?t=1793441699" alt="Amey-Thakur" title="Amey-Thakur's GitHub Productivity Stats" /></p>
+<p align="center">&nbsp;<img align="center" src="docs/stats.svg?t=1793661691" alt="Amey-Thakur" title="Amey-Thakur's GitHub Productivity Stats" /></p>
 
 ---
 

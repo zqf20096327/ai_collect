@@ -12,7 +12,7 @@ An open-source MCP server that turns your AI coding agent into a capable UI desi
 
 ### What an agent actually ships
 
-Every screen below was built end-to-end by an agent with framesmith's own vocabulary — one `generate_design_system` call each (a seed color + a personality), stamped patterns, real controls, and every quality gate cleared (score ≥ 95, states designed, stress-tested, both themes):
+Every screen below was built end-to-end by an agent with framesmith's own vocabulary — one `generate_design_system` call each (a seed color + a personality), stamped patterns, real controls, and every quality gate cleared (score ≥ 95, stress-tested, both themes, and every state the evaluator demands designed):
 
 ![A customer-support dashboard built by an agent in framesmith, light theme: sidebar with grouped navigation and an account row, four KPI cards (tickets resolved, first reply, SLA breaches, CSAT) with sparklines and tinted delta pills, a tickets-per-day bar chart with a highlighted day and a floating tooltip, a data-bound tickets-by-channel donut with a center total and legend, an agent-workload table with tinted status chips, and a top-performers panel. Generated from one seed (#2563EB) on the "technical" personality.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-support-dashboard.png?v=2.0)
 
@@ -22,7 +22,11 @@ Every screen below was built end-to-end by an agent with framesmith's own vocabu
 
 ![A specialty-coffee checkout built by an agent in framesmith, light theme: a masthead with the store mark and a secure-checkout note, a form column with Contact, Delivery and Payment sections — real radio, checkbox and input controls, a two-option delivery-speed selector — beside a sticky order summary listing two line items, subtotal, free delivery, a first-order credit, the total, and a Place order button, with a gift-code card beneath. Generated from one seed (#A24B1E) on the "soft" personality and stamped with the commerce genre.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-checkout.png?v=2.1)
 
-> Not every screen is a dashboard. This checkout carries the `commerce` genre — the transactional counterpart to `dashboard` — so the evaluator reads its line prices and total as the design rather than as fabricated data. It still cleared the same bar as the two screens above, including designed **empty-basket** and **loading** states.
+> Not every screen is a dashboard. This checkout carries the `commerce` genre — the transactional counterpart to `data` — so the evaluator reads its line prices and total as the design rather than as fabricated data. It still cleared the same bar as the two screens above, including designed **empty-basket** and **loading** states.
+
+![A trail-running app's home screen built by an agent in framesmith, one phone screen shown in light and dark side by side: a status bar, a "Good morning, Fiona" large title with a notifications bell, a This week card reading 42.8 km with a progress bar toward a 55 km goal, a two-by-two grid of Start run, Routes, Plan and Gear buttons, a daily-distance bar chart with Saturday highlighted, the start of a recent-runs list, and a pinned tab bar with a raised centre start-run button above the home indicator.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-mobile.png?v=2.4)
+
+> Not every screen is a web page either. This one is declared `type: "mobile"`, so it is judged as a phone screen: a 44px tap target on every button, row and tab, content clear of the status bar and home indicator, and a minimum body size. It started from the `dashboard` structure, which stamps its phone version on a mobile canvas, and is built from the phone primitives (status bar, nav bar, buttons, list rows, tab bar) with no hand-built device chrome, in 33 nodes. framesmith's test suite rebuilds it on every run.
 
 ```
 MCP Client → stdio → framesmith server
@@ -38,7 +42,7 @@ MCP Client → stdio → framesmith server
 
 Left to itself, an AI agent tends to produce UI that *looks* AI-generated — generic spacing, no icons, a purple gradient by default, placeholder text that reads like placeholder text. framesmith closes that gap by moving design **before** code and holding it to a bar:
 
-1. **Start from taste, not a blank canvas.** The agent stamps one of **11 vetted page patterns** (dashboard, auth, pricing, settings, onboarding, and more) — each regression-tested to score **> 95 with zero cliché tells** under the neutral default theme and all four presets, and every structure (page and component alike) built entirely from type-role tokens so it re-voices under a generated design system instead of injecting stray pixel sizes, and hardened to survive hostile-length content (`canvas_stress` CLEAN) — then adapts it. A blank canvas is where slop comes from; a pattern is a non-slop starting point. *(`list_structures` / `apply_structure`)*
+1. **Start from taste, not a blank canvas.** The agent stamps one of **11 vetted page patterns** (dashboard, auth, pricing, settings, onboarding, and more), or on a phone canvas one of **6 mobile realisations** built from the mobile primitives — each regression-tested to score **> 95 with zero cliché tells** under the neutral default theme and all four presets (a mobile realisation takes the presets' colours over a phone type scale, is also held to every personality's generated phone system, and raises no mobile-ruleset finding), and every structure (page and component alike) built entirely from type-role tokens so it re-voices under a generated design system instead of injecting stray pixel sizes, and hardened to survive hostile-length content (`canvas_stress` CLEAN) — then adapts it. A blank canvas is where slop comes from; a pattern is a non-slop starting point. *(`list_structures` / `apply_structure`)*
 2. **Use the whole toolkit — like a real UI does.** Real icons (Lucide + Material Symbols), fonts resolved by name, real input controls (`toggle` / `checkbox` / `radio` / `select`), data-driven charts (line/bar/donut/sparkline, multi-series, bar emphasis), reusable components, and layered design tokens — never faked with Unicode glyphs, stray ellipses, or hand-drawn SVG paths standing in for a chart.
 3. **Evaluate, then self-correct.** `canvas_evaluate` scores the design across five craft categories plus a **cliché-tell** detector, a **state-coverage** check (a data screen without designed empty/loading states isn't done), and a **usability** layer (hit-target floor, label association, honest action copy), and returns a **`READY` / `NOT READY` directive**. The agent resolves every warning and tell and only presents once it's `READY` — polishing to the bar is the agent's job, not yours.
 4. **Review in the browser, own the output.** You browse canvases like design files, with a live **quality inspector** and **design-system panel**. Designs persist as **open JSON checked into your repo** — no proprietary format, no lock-in — and can be re-imported from shipped HTML to keep the design honest.
@@ -48,23 +52,23 @@ Left to itself, an AI agent tends to produce UI that *looks* AI-generated — ge
 | Area | What you get |
 |------|--------------|
 | **Rendering** | Scene graph → HTML/CSS → Puppeteer PNG · responsive breakpoints · real CSS grid (`layout: "grid"` + spans) for bento/editorial compositions · gradients, shadows, blur, glassmorphism · SVG paths · animations · data-driven charts (line/bar/donut/sparkline, multi-series, bar emphasis + in-SVG gradients) |
-| **Pattern library** | 11 vetted page archetypes + 5 component scaffolds, all scoring > 95 with zero cliché tells, typography built from type-role tokens (not literal pixel sizes), and stress-hardened to survive hostile-length content; taxonomy axes + a diversification signal so successive screens vary |
+| **Pattern library** | 11 vetted page archetypes + 6 mobile realisations + 14 component scaffolds, all scoring > 95 with zero cliché tells, typography built from type-role tokens (not literal pixel sizes), and stress-hardened to survive hostile-length content; taxonomy axes + a diversification signal so successive screens vary |
 | **Quality & taste** | `canvas_evaluate` (8 categories incl. cliché tells, state coverage + usability floors) with a `READY`/`NOT READY` directive · `canvas_autofix` (mechanical fixes) · optional vision-model rubric critique + `canvas_revise` · `canvas_add_variant` clones a screen into a linked empty/loading/error state · `canvas_stress` content-perturbation testing (long text, i18n, big numbers, empty/many rows) · `project_evaluate` rolls up a project's screens for cross-screen consistency (radius/accent drift, token adoption, hand-copied chrome, state coverage) plus an optional multi-screen flow critique — advisory, never a gate |
 | **Design systems** | `generate_design_system`: one seed + one personality (`technical` / `editorial` / `soft` / `data-dense`) → the complete design language — colors, curated font pairing, typography roles, radius/density stances, `$elevation` depth tokens (dark-aware), `$motion` defaults · layered `$token`s (workspace ▸ project ▸ canvas) · style presets · `DESIGN.md` import · `generate_scale` derives a modular type + spacing scale from a named ratio (optional fluid `clamp()` sizes) · `generate_color_system` turns one seed color into OKLCH ramps + AA-checked semantic tokens, a categorical chart palette, and a tint layer for chips/tiles/badges, dark theme included · dual-theme rendering + evaluation (`theme: "dark"` on screenshot/export, both-theme contrast in `canvas_evaluate` with APCA advisory) · token-detachment lint re-attaches literals that drift from a token |
 | **Primitives** | Lucide + Material Symbols icons · Google Fonts by name · real form controls · components with instance overrides — `create_component` promotes existing work, `copy_nodes` carries subtrees (and their component defs) across canvases |
 | **Import from code** | `canvas_import_html` / `canvas_import_url` — token-mapped, structure-reconstructed · `canvas_sync_from_url` pixel drift · `canvas_check_drift` structural drift · `framesmith verify` / `check-drift` CLI for CI/pre-commit gates, no MCP client needed |
-| **Viewer** | Browser gallery + detail view · quality inspector (score, issues, click-to-highlight) · design-system token panel · point-and-tell feedback (Comment mode + Feedback tab) |
+| **Viewer** | Browser gallery + detail view · phone canvases in a device frame with a safe-area overlay · quality inspector (score, issues, click-to-highlight) · design-system token panel · point-and-tell feedback (Comment mode + Feedback tab) |
 | **Open by design** | MIT · plain HTML/CSS · open JSON you own in your repo · content-hash versioning (`canvas_version`) so approvals reference an exact design, not just a name · works with any MCP-compatible client |
 
 ## Viewer
 
-Run `npx -p framesmith framesmith-viewer` to start the standalone browser viewer (it takes the first free port from 3001 up; pass a port to pin one). Open any canvas to review it at multiple breakpoints, compare them side-by-side, inspect the underlying JSON, or archive / delete.
+Run `npx -p framesmith framesmith-viewer` to start the standalone browser viewer (it takes the first free port from 3001 up; pass a port to pin one). Open a web canvas to review it at multiple breakpoints and compare them side-by-side; open any canvas to inspect its JSON, leave comments, or archive / delete it. Cards keep each artboard's proportions (between a phone held upright and 2:1; a longer page shows its top), so phone screens are portrait cards. A canvas declared `mobile` opens at 1:1 in a device frame instead of the breakpoint buttons, with a **Safe area** toggle that shades the status-bar and home-indicator insets (47 and 34 on the default `iphone-390`). The overlay is viewer-only: it never changes a screenshot.
 
 ![framesmith canvas detail view — the dashboard pattern rendered (grouped sidebar navigation with an account row, KPI cards with sparklines and delta pills, a real multi-series line chart with an area fill and a dashed reference line beside a recent-activity feed) with the Quality inspector open on the right: a 99/100 "Excellent" score, per-category bars (spacing, color, typography, structure, consistency, usability, coverage, cliche), and honest APCA advisories in the issue list. The toolbar shows the canvas's designed states (default / loading / empty), theme and viewport toggles, and a Comment toggle.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-canvas.png?v=2.0)
 
 > Above: a canvas in the detail view with the **Quality inspector** on the right — the same `canvas_evaluate` score the agent sees, with per-category bars and the issue list; the tabs along the top switch to the **Design-system** and **Feedback** panels. The toolbar exposes breakpoint previews, Compare, Fit, JSON, a **Comment** toggle for point-and-tell feedback, and lifecycle actions.
 
-**Quality panel.** The canvas detail view shows a read-only **quality inspector** on the right: the heuristic `canvas_evaluate` score (0–100), per-category bars, and the issue list — each cliché tell with its `category · tell` badge, severity, and suggestion. Issues that `canvas_autofix` can resolve carry an **auto-fixable** tag, and clicking any issue **highlights its node** in the live preview. Every gallery card also shows a color-coded score badge so weak canvases stand out at a glance. The score matches what your agent sees over MCP (same fast-mode evaluation, genre-relaxed by the canvas's preset) — it's computed for display only and never written back.
+**Quality panel.** The canvas detail view shows a read-only **quality inspector** on the right: the heuristic `canvas_evaluate` score (0–100), per-category bars, and the issue list — each cliché tell with its `category · tell` badge, severity, and suggestion. Issues that `canvas_autofix` can resolve carry an **auto-fixable** tag, and clicking any issue **highlights its node** in the live preview. Every gallery card also shows a color-coded score badge so weak canvases stand out at a glance. The score matches what your agent sees over MCP (same fast-mode evaluation, relaxed by the canvas's stored genre and applied preset) — it's computed for display only and never written back.
 
 ![framesmith point-and-tell feedback — a newsletter signup card in the detail view with Comment mode active: a popover anchored to the clicked paragraph shows breadcrumb chips (Body · Signup Card · Document · whole page) and a typed note, while the Feedback inspector tab on the right lists one open comment on "Fine Print" and one resolved comment with the agent's reply beneath it.](https://raw.githubusercontent.com/vicmaster/framesmith/master/docs/framesmith-feedback.png?v=1.8)
 
@@ -179,10 +183,12 @@ Create a new canvas. If `projectId` is omitted, it lands in the built-in `Untitl
 |-------|------|-------------|
 | `name` | string? | Canvas name |
 | `projectId` | string? | Target project. Defaults to the built-in Untitled project. See `project_list`. |
-| `width` | number? | Artboard width in px, a positive integer (default 1440). A phone screen is `width: 390, height: 844`. |
-| `height` | number? | Artboard height in px, a positive integer (default 900). Each dimension defaults on its own. |
+| `width` | number? | Artboard width in px, a positive integer (default 1440, or the device width for `type: "mobile"`). |
+| `height` | number? | Artboard height in px, a positive integer (default 900, or the device height for `type: "mobile"`). Each dimension defaults on its own. |
+| `type` | `"web"` \| `"mobile"`? | What medium the canvas is on. `"mobile"` declares a phone app screen: the artboard defaults to the device size and the root gets the device's safe-area insets as `safeArea: { top, bottom }`, which the renderer adds to the root's top and bottom padding. Omitted, the canvas is undeclared and judged as web. On a mobile canvas `apply_structure` stamps the mobile realisations (`dashboard`, `settings`, `auth`, `onboarding`, `feed`, `detail`). |
+| `device` | string? | Device profile for `type: "mobile"` (default `"iphone-390"`, the only profile today: 390×844, insets 47 top and 34 bottom). Passing it without `type: "mobile"`, or naming an unknown device, is an error. An explicit `width`/`height` overrides the profile's size for that side; the insets stay the profile's. |
 
-The response also carries the artboard `width`/`height` and a `diversification` signal for the target project: the recently-built structures (newest first) and a hint to differ on at least one taxonomy axis, so successive canvases don't converge on the same layout. It's advisory — never blocking.
+The response also carries the artboard `width`/`height`, `type`, `typeSource` (`"declared"` or `"default"`), `device` and `safeArea` for a mobile canvas, and a `diversification` signal for the target project: the recently-built structures (newest first) and a hint to differ on at least one taxonomy axis, so successive canvases don't converge on the same layout. It's advisory — never blocking.
 
 ### `canvas_list`
 
@@ -304,9 +310,9 @@ R("nodeId", { type: "text", content: "Replaced" })
 
 **Returns** `{ ok, nodeIds, results }`. `nodeIds` maps each bound variable to the node ID it created — e.g. `{ "header": "n_a1b2" }` — so you can target those nodes in later calls (bindings only live within a single call). `results` lists each op's outcome in order; an op that succeeded but will not fully take effect carries a `warning` (a `shadow` beside an active `shadows`, a chart `highlight` entry outside the series data). If the call wrote a `fontFamily` nothing can serve yet (not cached, registered, or system/generic), a `Font warnings` content item names it — a cache-only check with no network call, so it's a heads-up, not exhaustive.
 
-**Node types:** `frame`, `text`, `rectangle`, `ellipse`, `image`, `icon`, `path`, `component`, `instance`, `toggle`, `checkbox`, `radio`, `select`, `chart`, `skeleton` (loading-placeholder block — token-derived neutral fill; pulses subtly in the live viewer, always static in screenshots/exports so diffs stay deterministic; `pulse: false` opts a block out)
+**Node types:** `frame`, `text`, `rectangle`, `ellipse`, `image`, `icon`, `path`, `component`, `instance`, `toggle`, `checkbox`, `radio`, `select`, `chart`, `skeleton` (loading-placeholder block — token-derived neutral fill; pulses subtly in the live viewer, always static in screenshots/exports so diffs stay deterministic; `pulse: false` opts a block out), and the mobile primitives `status-bar`, `home-indicator`, `nav-bar`, `tab-bar`, `button`, `list-row`, `sheet` (see [Mobile primitives](#mobile-primitives))
 
-**Properties:** `fill`, `gradient`, `stroke`, `strokeWidth`, `strokeStyle`, `borderTop`, `borderRight`, `borderBottom`, `borderLeft`, `cornerRadius`, `width`, `height`, `minWidth`, `minHeight`, `maxWidth`, `layout` (`"horizontal"` | `"vertical"` | `"grid"`), `gap`, `rowGap`, `gridColumns`, `gridColumn`, `gridRow`, `padding`, `alignItems`, `justifyContent`, `fontSize`, `fontFamily`, `fontWeight`, `color`, `content`, `textAlign`, `lineHeight`, `letterSpacing` (px), `textDecoration`, `textTransform`, `textOverflow` (`"ellipsis"` — designed single-line truncation; `canvas_stress` reports clips behind it as info), `tabularNums`, `fontVariationSettings`, `src`, `objectFit`, `opacity`, `shadow` (CSS string, or `"$elevation.<name>"` referencing an elevation token), `shadows`, `blur`, `backdropBlur`, `backdropFilter`, `overflow`, `wrap`, `position`, `x`, `y`, `icon`, `iconSize`, `iconColor`, `iconStyle`, `checked`, `disabled`, `value`, `d`, `viewBox`, `strokeLinecap`, `strokeLinejoin`, `strokeDasharray`, `animation`, `transition` (object, or `"$motion.<name>"` referencing a motion token), `kind`, `series`, `segments`, `innerRatio`, `centerValue`, `centerLabel`, `sparkKind`, `xDomain`, `yDomain`, `curve`, `gridlines`, `xLabels`, `yLabels`, `componentId`, `overrides`, `name` (a readable label — `find_nodes` and component overrides match on it), `pulse` (skeleton only), `responsive` (`"stack"` | `"wrap"`)
+**Properties:** `fill`, `gradient`, `stroke`, `strokeWidth`, `strokeStyle`, `borderTop`, `borderRight`, `borderBottom`, `borderLeft`, `cornerRadius`, `width`, `height`, `minWidth`, `minHeight`, `maxWidth`, `layout` (`"horizontal"` | `"vertical"` | `"grid"`), `gap`, `rowGap`, `gridColumns`, `gridColumn`, `gridRow`, `padding`, `alignItems`, `justifyContent`, `fontSize`, `fontFamily`, `fontWeight`, `color`, `content`, `textAlign`, `lineHeight`, `letterSpacing` (px), `textDecoration`, `textTransform`, `textOverflow` (`"ellipsis"` — designed single-line truncation; `canvas_stress` reports clips behind it as info), `tabularNums`, `fontVariationSettings`, `src`, `objectFit`, `opacity`, `shadow` (CSS string, or `"$elevation.<name>"` referencing an elevation token), `shadows`, `blur`, `backdropBlur`, `backdropFilter`, `overflow`, `wrap`, `position` (`"absolute"` | `"relative"` | `"fixed"` | `"sticky"`), `x`, `y`, `bottom`, `right`, `icon`, `iconSize`, `iconColor`, `iconStyle`, `checked`, `disabled`, `value`, `d`, `viewBox`, `strokeLinecap`, `strokeLinejoin`, `strokeDasharray`, `animation`, `transition` (object, or `"$motion.<name>"` referencing a motion token), `kind`, `series`, `segments`, `innerRatio`, `centerValue`, `centerLabel`, `sparkKind`, `xDomain`, `yDomain`, `curve`, `gridlines`, `xLabels`, `yLabels`, `componentId`, `overrides`, `safeArea` (`{ top, bottom }`, document root only — insets the renderer adds to the root's top and bottom padding; `canvas_create` with `type: "mobile"` writes the device's), `name` (a readable label — `find_nodes` and component overrides match on it), `pulse` (skeleton only), `responsive` (`"stack"` | `"wrap"`)
 
 Chart `series` entries take their own keys: `data`, `stroke`, `strokeWidth`, `strokeDasharray`, `area`, `points`, `highlight`, `barGradient`.
 
@@ -343,6 +349,36 @@ Multi-series in one node; x positions are data indexes (a shorter series stops e
 Borders: `stroke` + `strokeWidth` draw all four sides (`strokeStyle: "dashed" | "dotted"` for forecast/placeholder outlines); per-side borders take an object — `borderTop: { width: 1, color: "$border", style? }` for table row rules, `borderLeft: { width: 3, color: "$primary" }` for accent edges. Paths dash via `strokeDasharray: "6 4"` (or `[6, 4]`).
 
 Grid: `layout: "grid"` + `gridColumns` (a count → equal columns; an array of fr weights / CSS lengths like `[2, 1, "240px"]`; or a raw template string) gives real CSS grid for bento/editorial compositions that flex can only approximate. Children place with `gridColumn` / `gridRow` — a number means "span N", strings accept `"span 2"` or `"1 / 3"`. `gap` covers both axes, `rowGap` overrides the row axis; `responsive: "stack"` collapses the grid to one column on mobile with spans reset. Tracks render as `minmax(0, Nfr)` so long content can't blow a column past its share. Values outside the supported forms never reach the DOM. A `gridColumns` that isn't a count, an array of numbers / CSS lengths (`px`, `fr`, `%`, `em`, `rem`, `auto`, `min-content`, `max-content`, `minmax(…)`) or a plain template string falls back to equal columns. A `gridColumn` / `gridRow` that isn't a number, `"span N"` or `"A / B"` is dropped.
+
+#### Mobile primitives
+
+Phone screens are built from seven primitives that carry their own sizes, 44px hit areas and token colours (`$accent`, `$border`, `$bg-surface`, `$text-primary`, `$text-secondary`, `$danger`; neutral fallbacks unthemed). Labels truncate to one line with an ellipsis.
+
+| Type | Key props | What it is |
+|---|---|---|
+| `status-bar` | `time`, `appearance` | Device chrome pinned to the top, as tall as the root's `safeArea.top` (47 without one) |
+| `home-indicator` | `appearance` | The home pill pinned to the bottom, as tall as `safeArea.bottom` (34) |
+| `nav-bar` | `title`, `leading`, `trailing` (≤2), `largeTitle` | 44 tall (96 large), in flow; every action a 44×44 target |
+| `tab-bar` | `items: [{ icon, label, active?, badge? }]`, `variant` (`standard` / `floating` / `fab`), `fab` | Pinned to the bottom, 49 + the inset; 2–5 labeled tabs; `fab` adds a raised 56px centre action |
+| `button` | `label`, `icon`, `iconPosition`, `variant`, `size` (`sm` 32 / `md` 44 / `lg` 52), `disabled` | `md` meets the phone floor; `sm` is a mobile error by design |
+| `list-row` | `title`, `subtitle`, `leading`, `trailing` (`text` / `chevron` / `toggle` / `badge`), `divider` | 44 tall (56 with a subtitle); repeated rows count as reuse |
+| `sheet` | `detent`, `grabber`, children | A bottom sheet over a scrim, padded past the home indicator |
+
+`fill`, `stroke`, `color`, `iconColor`, `secondaryColor` (list-row subtitle and trailing) and `badgeColor` (badges) override the token defaults.
+
+`position: "fixed"` pins a node to the screen (the root's width × height is the viewport; content taller than it scrolls and the root grows with it, keeping its bottom padding), `"sticky"` sticks at its `y` while its container scrolls; `bottom` and `right` join `x` / `y`. The renderer raises the root's padding to at least the reach of any pinned `status-bar`, `tab-bar` or `home-indicator`, so content never starts or ends under chrome:
+
+```
+I("document", { type: "status-bar" })
+I("document", { type: "nav-bar", title: "Settings", largeTitle: true })
+list=I("document", { type: "frame", layout: "vertical" })
+I(list, { type: "list-row", title: "Notifications", leading: { icon: "bell" }, trailing: { toggle: true }, divider: true })
+I(list, { type: "list-row", title: "Account", subtitle: "ada@example.com", leading: { initials: "AL" }, trailing: { chevron: true } })
+I("document", { type: "tab-bar", items: [{ icon: "house", label: "Home" }, { icon: "settings", label: "Settings", active: true }] })
+I("document", { type: "home-indicator" })
+```
+
+The mobile ruleset judges them (see [`canvas_evaluate`](#canvas_evaluate)); [GUIDELINES](docs/GUIDELINES.md#mobile-vocabulary-primitives-and-pinning) has the pinned-CTA-bar idiom.
 
 ### `find_nodes`
 
@@ -410,7 +446,7 @@ Render canvas to PNG (returned as base64 image).
 | `nodeId` | string? | Specific node to capture |
 | `width` | number? | Viewport width (default: the canvas's artboard width) |
 | `height` | number? | Viewport height (default: the canvas's artboard height) |
-| `fullPage` | boolean? | Capture the whole design instead of one viewport — default false, so existing captures (diffs, responsive sets, the pattern gate) are byte-identical. A canvas taller than its artboard otherwise cuts off at the artboard height. `export` takes the same option (ignored for PDF, which paginates) |
+| `fullPage` | boolean? | Capture the whole design instead of one viewport — default false, so existing captures (diffs, responsive sets, the pattern gate) are byte-identical. A canvas taller than its artboard otherwise cuts off at the artboard height. The capture grows to the content, so `position: "fixed"` elements land at its ends (a bottom-pinned tab bar at the bottom of the image). `export` takes the same option (ignored for PDF, which paginates) |
 | `scale` | number? | Device scale (default 2) |
 | `theme` | string? | `"dark"` renders the design system's dark token layer (`dark.colors`/`dark.elevation` overrides); default light — a no-op without a dark layer |
 
@@ -466,7 +502,7 @@ The headline call for a new project's look: **one seed color + one personality �
 |-------|------|-------------|
 | `seed` | string | The brand color everything derives from (`#RRGGBB`) |
 | `personality` | string | **Required** — `technical`, `editorial`, `soft`, or `data-dense`. Dashboards → `data-dense`/`technical`, marketing/content → `editorial`, consumer → `soft` |
-| `baseSize` / `ratio` | number? | Override the personality's type pivot / scale ratio |
+| `baseSize` / `ratio` | number? | Override the type pivot / scale ratio. On a canvas declared `type: "mobile"` the pivot defaults to the device body size (17px; 16px for `data-dense`); `baseSize` still wins. The result reports the pivot as `baseSize` + `baseSizeSource` (`"explicit"`, `"personality"` or `"mobile"`). |
 | `canvasId` / `projectId` / `workspaceId` | string? | Exactly one — the token layer written to |
 | `preserveInherited` | boolean? | Canvas scope only. Default `true` — see "Inherited tokens" below. Pass `false` to write the generated language whole. |
 
@@ -582,7 +618,7 @@ List available style guide presets. No params. Returns preset names and descript
 
 ### `apply_preset`
 
-Apply a style guide preset to a canvas. Merges preset design tokens into the canvas variables, and copies in any reusable components (`button`, `card`, `badge`) the preset defines so they can be instanced. The preset is also recorded in the canvas provenance + per-project build log. Tokens the canvas already resolves through an inherited workspace/project design system are kept rather than overwritten and reported as `preservedFromDesignSystem` — for typography this merge is field-wise (a partially-specified inherited token, e.g. just `fontSize`, is filled out with the preset's other fields rather than shadowing the whole role); set them explicitly with `set_variables` if you want the preset's values instead.
+Apply a style guide preset to a canvas. Merges preset design tokens into the canvas variables, and copies in any reusable components (`button`, `card`, `badge`) the preset defines so they can be instanced. The preset is recorded in `metadata.provenance.preset` and the per-project build log. It never changes the canvas's genre (`canvas_set_genre` owns that); a genre an older framesmith stored in the preset field is moved to `provenance.genre` first. The material preset relaxes the accent-hue and pure-black-white tells on its own, whatever the genre. Tokens the canvas already resolves through an inherited workspace/project design system are kept rather than overwritten and reported as `preservedFromDesignSystem` — for typography this merge is field-wise (a partially-specified inherited token, e.g. just `fontSize`, is filled out with the preset's other fields rather than shadowing the whole role); set them explicitly with `set_variables` if you want the preset's values instead.
 
 | Param | Type | Description |
 |-------|------|-------------|
@@ -591,10 +627,12 @@ Apply a style guide preset to a canvas. Merges preset design tokens into the can
 
 ### `list_structures`
 
-List available layout structures — named scaffolds you stamp onto a canvas and then populate. Returns each structure's name, `kind`, description, and (for pages) taxonomy axes. Distinct from presets: structures define **layout skeleton**, presets define **color/token theme** — they compose.
+List available layout structures — named scaffolds you stamp onto a canvas and then populate — for one canvas type. Returns each structure's name, `kind`, description, (for pages) taxonomy axes, its `anatomy` (the screen kind it realises), its `surface` (`web`, `mobile`, or `any` for a component that stamps on every type), and `surfaces` (the types its anatomy is realised on). Distinct from presets: structures define **layout skeleton**, presets define **color/token theme** — they compose.
 
 | Param | Type | Description |
 |-------|------|-------------|
+| `canvasId` | string? | List what stamps on this canvas: its declared type picks the realisations (an undeclared canvas lists web). Passing it with `type` is an error. |
+| `type` | `"web"` \| `"mobile"`? | List for this canvas type instead. With neither, the web listing. |
 | `projectId` | string? | If given, also return a `diversification` signal for the project (recently-built structures + a hint to differ on ≥ 1 axis), so you pick a shape that contrasts with recent work. Omit it to get just the structure list. |
 
 Two kinds:
@@ -602,12 +640,15 @@ Two kinds:
 - **`page`** — whole-page scaffolds stamped once at the canvas root: `marquee-hero`, `bento-grid`, `stat-led`, `editorial-longform`, `split-workbench`, `catalogue`, `dashboard`, `auth`, `pricing`, `settings`, `onboarding`. Each is tagged on four independent axes — `heroTreatment`, `density`, `rhythm`, `alignment` — so you can deliberately vary page shape instead of defaulting to the same layout. Every page scaffold is regression-tested to score **> 95 with zero cliché tells** under the neutral default theme and all four presets (the pattern library's taste bar) and to pass `canvas_stress` CLEAN under long-text and i18n content, so it's a non-slop starting point you adapt, not boilerplate.
 - **`component`** — reusable fragments stamped under **any** node via `targetId`, repeatably: `data-table` (header + 3 rows with avatar/name/email, role chip, status dot, right-aligned numeric cell, actions, and a pagination footer), `form-field`, `toolbar`, `stat-card` (the original name for the KPI-card anatomy below, kept as an alias), `toggle-row`, plus the state scaffolds `empty-state` (icon + title + hint + CTA — an empty screen is a first-run experience, not a void), `skeleton-table` (real header + skeleton rows matching `data-table` geometry, so the loaded table lands without layout shift), `skeleton-card`, and `skeleton-stat-card` (so a loading dashboard skeletons every data surface — the coverage check warns when a loading variant leaves a live region beside skeletoned ones). The dashboard micro-patterns: `kpi-card` (tinted icon tile + uppercase metric label + big tabular value + live sparkline + tinted delta pill — the dashboard structure stamps these), `status-chip` (the tint pair: `$success-tint` fill + `$success` ink), `segmented-control`, `breadcrumb`, and `initials-avatar`. A high-fidelity table costs one stamp instead of ~90 hand-placed nodes; a reference-grade KPI card costs one.
 
+**Mobile realisations.** Each structure realises an anatomy for one canvas type. Six page anatomies have a mobile realisation for a `type: "mobile"` canvas, built from the mobile primitives (status bar, nav bar, list rows, buttons, a pinned tab bar or home indicator) and gated like the web set: > 95 with zero cliché tells and zero mobile-ruleset findings in fast mode (the default theme, the four presets' colours over a phone type scale, and every personality's generated phone system), zero mobile-ruleset findings in detailed mode (as stamped and with every list tripled), and a CLEAN full `canvas_stress` run unthemed and under every personality: `dashboard-mobile`, `settings-mobile`, `auth-mobile`, `onboarding-mobile`, and two mobile-first anatomies, `feed-mobile` (a list of rows) and `detail-mobile` (an item with a pinned primary action). Of the components, `form-field`, `stat-card`, `empty-state`, `skeleton-card`, `skeleton-stat-card`, `kpi-card`, `status-chip` and `initials-avatar` stamp on every type; the rest are web-only. The other web pages (`marquee-hero`, `bento-grid`, `stat-led`, `editorial-longform`, `split-workbench`, `catalogue`, `pricing`) have no mobile realisation.
+
 ### `apply_structure`
 
 Stamp a layout structure onto a canvas and return the placeholder node IDs to populate. Scaffolds are token-driven, not hard-coded: every scaffold's spacing, radius, elevation, and typography — all of it, every text node's `fontSize`, not just titles — reference `$space-*` / `$radius-*` / `$elevation.*` / the type-role tokens (`$display`/`$title`/`$heading`/`$text-lg`/`$text-sm`/`$body`/`$label`/`$caption`, plus the usual `$color` tokens), so once a project has a generated design system, stamping a pattern already reads in its density, depth, and voice — no re-theming pass needed, and no scaffold can inject a size the generated scale doesn't have. `apply_structure` seeds neutral defaults (the pre-generator literal values) for any of those tokens the canvas can't already resolve, so an unthemed canvas still renders correctly; the result's `seededColors` / `seededTokens` list exactly which names got seeded. Populate the placeholders with `batch_design` `U` ops, then `screenshot` to verify.
 
 - **Page scaffolds** insert at the canvas root (refusing on a non-empty canvas unless `replace`), record provenance (`metadata.provenance`), and append to the **per-project build log** that feeds the `diversification` signal.
 - **Component scaffolds** insert under `targetId` (default root), repeatably — every stamp re-keys its node IDs (`form-field-1-…`, `form-field-2-…`) and returns an `idMap` (template ID → live ID) for follow-up ops. Component stamps don't touch provenance or the build log: they don't shape the page.
+- **The name resolves by the canvas's declared type.** An anatomy name stamps that anatomy's realisation for the type: `dashboard` on a mobile canvas stamps `dashboard-mobile`. A realisation name is used as is. A name with no realisation for the type is refused with the anatomies of the same kind that have one (`pricing` on a phone; a web-only component too, whose anatomy is its own name); `realisation` stamps another type's realisation anyway. Resolution reads the *declared* type (`canvas_create({ type: "mobile" })` or `canvas_set_type`): an undeclared canvas is web, whatever its width. The result names the `anatomy` and `surface` it stamped, and its `placeholders` include every copy field of its primitives, with `prop` the field's path (`title`, `subtitle`, `label`, `trailing.text`, `leading.initials`, `leading.label`, `items[0].label`); a `prop` is a path, not an op key: set a nested one by writing its whole object or array, siblings included (`U(id, { trailing: { text: "2h" } })` replaces `trailing`, so carry a `chevron` along; `items[0].label` means rewriting `items`). A stamp holding a primitive also seeds the colours the primitives read by default (`$text-primary`, `$text-secondary`, `$border`, and `$accent` / `$bg-surface` / `$danger` unless the canvas resolves `$primary` / `$surface` / `$error`), so `seededColors` can list names no node mentions. A scaffold node that names `$accent` or `$bg-surface` itself still seeds it, as every scaffold always has, so a hand-themed canvas should define both before stamping (the presets and `generate_design_system` do).
 
 | Param | Type | Description |
 |-------|------|-------------|
@@ -615,6 +656,7 @@ Stamp a layout structure onto a canvas and return the placeholder node IDs to po
 | `structure` | string | Structure name (use `list_structures`, e.g. `"marquee-hero"`, `"data-table"`) |
 | `replace` | boolean? | Page scaffolds: if the root already has children, clear them before stamping. Default `false` (refuses on a non-empty canvas) |
 | `targetId` | string? | Component scaffolds: node to stamp under (default `"document"`) |
+| `realisation` | `"web"` \| `"mobile"`? | Stamp the realisation for this type instead of the canvas's own (e.g. `"web"` for the web dashboard on a phone canvas) |
 
 ### `canvas_import_html`
 
@@ -750,7 +792,7 @@ Compatible with the 55+ design systems in [awesome-design-md](https://github.com
 
 Render a canvas at multiple viewport sizes. Defaults to mobile (390x844), tablet (768x1024), and desktop (1440x900).
 
-The renderer emits `clamp()` for paddings ≥ 32px and font sizes ≥ 24px, so headlines and large spacing shrink proportionally at narrower viewports (assuming a 1440px design width). Smaller values stay static.
+The renderer emits `clamp()` for paddings ≥ 32px and font sizes ≥ 24px, so headlines and large spacing shrink proportionally at narrower viewports. Font sizes render as authored at the root's own width (a 33px title on a 390 phone artboard renders 33px; 1440 when the root has no numeric width) and shrink below it, to 60% at most (16px floor); paddings shrink against a 1440px design width. Smaller values stay static.
 
 | Param | Type | Description |
 |-------|------|-------------|
@@ -788,14 +830,26 @@ Comments are authored in the viewer: toggle **Comment** in the detail-page toolb
 
 ### `canvas_set_genre`
 
-Durably declare what a canvas *is* — writes the evaluation genre to `metadata.provenance.preset` without the token/component churn of `apply_preset`, so an already-styled canvas can be calibrated in one call. The stamp is what `canvas_evaluate` / `canvas_autofix` / the viewer's quality panel read when no explicit `genre` param is passed.
+Durably declare what a canvas *is* — writes the evaluation genre to `metadata.provenance.genre` without the token/component churn of `apply_preset`, so an already-styled canvas can be calibrated in one call. Genre and preset are separate fields: `apply_preset` never changes the genre, and a genre an older framesmith stored in the preset field moves to its own field on the first write. The stamp is what `canvas_evaluate` / `canvas_autofix` / the viewer's quality panel read when no explicit `genre` param is passed.
 
 | Param | Type | Description |
 |-------|------|-------------|
 | `canvasId` | string | Canvas to stamp |
-| `genre` | string \| null | Genre to stamp (`"dashboard"`, `"commerce"`, `"material"`, …) — `null` clears the stamp |
+| `genre` | string \| null | Genre to stamp (`"data"`, `"commerce"`, `"material"`, …) — `null` clears the stamp |
 
-Returns `{ canvasId, genre, previous, relaxes, note?, versionHashUnchanged }` — `relaxes` lists the cliché tells the stamp relaxes; an unknown genre is stored but relaxes nothing, and the `note` says so immediately. Other provenance facts (structure, `importedFrom`) are preserved, and the stamp never moves the canvas's `versionHash` (the hash covers design content only) — recorded approvals stay valid.
+Returns `{ canvasId, genre, canonical, previous, relaxes, presetRelaxes?, note?, versionHashUnchanged }` — `canonical` is the genre with its alias folded (`"dashboard"` → `"data"`, `"checkout"` → `"commerce"`, what evaluate reports); `relaxes` lists the cliché tells the stamp relaxes; `presetRelaxes` (`{ preset, relaxed }`) appears when the canvas's preset relaxes tells on its own (the material preset), which a genre clear doesn't remove; an unknown genre is stored but relaxes nothing, and the `note` says so immediately. Other provenance facts (structure, `importedFrom`) are preserved, and the stamp never moves the canvas's `versionHash` (the hash covers design content only) — recorded approvals stay valid.
+
+### `canvas_set_type`
+
+Declare what medium an existing canvas is on. Writes `metadata.surface` only: it never resizes the artboard and never writes the root's `safeArea`, because either would reflow what is already placed. For a new phone screen, `canvas_create({ type: "mobile" })` does all of it at once.
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `canvasId` | string | Canvas to declare |
+| `type` | `"web"` \| `"mobile"` \| null | The medium; `null` clears the declaration (the canvas reads as undeclared web again) |
+| `device` | string? | Device profile for `"mobile"` (default `"iphone-390"`). Only valid with `"mobile"`. |
+
+Returns `{ canvasId, type, device, source, previous, artboard, hint?, variantsOutOfSync?, versionHashUnchanged }`. `previous` is the declaration it replaced (or `null`); `artboard` is the root's unchanged size. State variants keep the type they were created with, so `variantsOutOfSync` lists each variant (`{ state, canvasId, type }`) whose type now differs from the base's; declare those too. Clearing the type leaves the root, including any `safeArea`, as it is. On a mobile result whose root doesn't reserve both insets or has a size other than the device's, `hint` names the ops that finish the job: `U("document", { safeArea: { top: 47, bottom: 34 } })` and `U("document", { width: 390, height: 844 })`. Those ops change the root, so they move the `versionHash`; the declaration alone is metadata and doesn't. It changes the evaluate result's `surface` report and which rules run, so re-evaluate after it.
 
 ### `canvas_evaluate`
 
@@ -805,9 +859,21 @@ The **`directive`** is the operating contract that keeps unfinished work off the
 
 Open point-and-tell comments block too: when the canvas has any, the result carries `openFeedback: n` and the directive stays blocking even at a READY score — the human's note outranks the heuristics. Read them with `get_feedback`, address each, close them with `resolve_feedback`.
 
-A `FRAGILE` stress run blocks too. Once `canvas_stress` has recorded a verdict for the canvas, the result carries **`stress`**: `{ verdict, warnings, current }`, where `current` says whether that run was on the canvas's present `versionHash`. A `FRAGILE` verdict keeps the directive `NOT READY` even with zero evaluate issues, until a full `CLEAN` run (all five perturbations) replaces it; a subset run can record `FRAGILE` but never clear it. When `current` is false the directive tells you to re-run stress to confirm your fix. The verdict lives in server memory, so a restart forgets it. `canvas_evaluate` never runs stress itself.
+A `FRAGILE` stress run blocks too. Once `canvas_stress` has recorded a verdict for the canvas, the result carries **`stress`**: `{ verdict, warnings, type, current }`, where `type` is the canvas type the run used and `current` says whether that run was on the canvas's present `versionHash` and type. A `FRAGILE` verdict keeps the directive `NOT READY` even with zero evaluate issues, until a full `CLEAN` run (all five perturbations) replaces it; a subset run can record `FRAGILE` but never clear it. When a `FRAGILE` run's `current` is false the directive tells you to re-run stress, naming whether an edit or a type change made it stale; the verdict still blocks. A stale `CLEAN` run only reads `current: false`. The verdict lives in server memory, so a restart forgets it. `canvas_evaluate` never runs stress itself.
 
-Whenever the `cliche` category runs, the result also carries a **`genre`** field auditing the genre decision: `{ active, source, relaxed, notRelaxed }` — the genre in effect, whether it came from the `genre` param or the canvas's provenance stamp, the tells it relaxed, and `notRelaxed` (`[{ tell, relaxedBy }]`) — tells still flagging that a *different* genre would relax. A score pinned by tells listed in `notRelaxed` usually means the wrong genre was declared.
+Whenever the `cliche` category runs, the result also carries a **`genre`** field auditing the genre decision: `{ active, source, relaxed, notRelaxed, byPreset? }` — the genre in effect (canonical: a `"dashboard"` stamp reports `"data"`, a `"checkout"` one `"commerce"`), whether it came from the `genre` param or the canvas's provenance stamp, the tells relaxed, `notRelaxed` (`[{ tell, relaxedBy }]`) — tells still flagging that a *different* genre would relax — and `byPreset` (`{ preset, relaxed }`), present when the applied preset relaxed tells on its own (the material preset relaxes accent-hue and pure-black-white whatever the genre). A score pinned by tells listed in `notRelaxed` usually means the wrong genre was declared.
+
+Every result also carries a **`surface`** field: `{ type, device, source, rulesOn, rulesOff, conflicts }` — the canvas type (`"web"` or `"mobile"`), its device profile (`null` on web), whether the type was `"declared"` (by `canvas_create` or `canvas_set_type`) or is the `"default"` web of an undeclared canvas, and the rule ids the composed type, genre and preset rulesets turned on (`rulesOn`) and off (`rulesOff`). A rule both enabled and disabled stays on: it is listed in `rulesOn` and in `conflicts`. `canvas_autofix` returns the same field. Every finding from a rule carries its id in a **`rule`** field. On a web canvas `rulesOn` is `["mobile-artboard"]`; a mobile canvas runs the whole mobile ruleset:
+
+| Rule | Category | Severity | Fires on |
+|---|---|---|---|
+| `mobile-touch-target` | usability | error | A tap target below 44px: a control (its target extends to its row only when the row is a horizontal frame holding that one tappable), a `button` (`size: "sm"` is 32), a `list-row`, each `tab-bar` tab and FAB, or each `nav-bar` action. Primitives are measured by their own box; nodes inside an instance are judged as rendered and reported on the instance. |
+| `mobile-tab-bar` | usability | warning | A `tab-bar` with fewer than 2 or more than 5 tabs (the FAB is not a tab), a tab with no label, or a bar not pinned to the bottom (a `position` override or any `y`). |
+| `mobile-handbuilt-target` | usability | info | A frame shaped like a tap target (one icon, or an icon plus a label of up to three words) whose box is below 44px; rebuild it as a `button` if it is tappable. |
+| `mobile-safe-area` | usability | warning | Content under the 47px status-bar or 34px home-indicator inset, or left under a pinned bar. With the root's `safeArea` or pinned chrome the renderer reserves the insets, so fast mode checks positioned content (`absolute`, `fixed`, `sticky` at its stuck `y`) and pinned bars: the scroll's end (or start) must clear a bar you pinned, and the finding names the spacer height to add to your content frame. Without `safeArea`, the first and last content must clear the insets. Padding of 32px or more scales down on a phone, so clear an inset with a spacer frame. A `sheet`'s content is never judged. Detailed mode checks rendered positions and is authoritative. |
+| `mobile-type-floor` | typography | warning | Text below 11px, `$body` below 16px, or prose of five or more words below 13px (copy of twelve or more words at 13–15px is an info). |
+| `mobile-one-column` | usability | info | Prose set side by side in a horizontal or grid frame: two or more children each holding eight or more words. |
+| `mobile-artboard` | structure | warning / info | Runs on every type. A mobile canvas 500px or wider warns, and any other size than the device's is an info. An undeclared canvas narrower than 500px warns until `canvas_set_type` declares it; one declared `web` gets an info. |
 
 Whenever the `coverage` category runs on a **base** canvas, the result also carries a **`coverage`** field: `{ dataBearing, states, missing }` — whether the screen carries data-bearing content, which state variants (`canvas_add_variant`) already exist, and which demanded states are missing. It's absent on variant canvases (a variant *is* a designed state, so it doesn't demand states of itself).
 
@@ -816,7 +882,7 @@ Whenever the `coverage` category runs on a **base** canvas, the result also carr
 | `canvasId` | string | Canvas ID to evaluate |
 | `mode` | `"fast"` \| `"detailed"` \| `"llm"` | `"fast"` = JSON-tree analysis only (<100ms). `"detailed"` adds Puppeteer-based pixel-level overlap checks, laid out at the canvas's artboard size. `"llm"` runs fast-mode heuristics plus a vision-model critique (provider picked from `FRAMESMITH_LLM_PROVIDER` or whichever of `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` is set — costs one paid API call per invocation). Default `"fast"`. |
 | `categories` | string[]? | Subset of `spacing`, `color`, `typography`, `structure`, `consistency`, `cliche`, `coverage`, `usability`. Defaults to all. |
-| `genre` | string? | Style that relaxes specific `cliche` gates — `"material"` allows purple and white elevated surfaces; `"dashboard"` (alias `"data"`) allows realistic figures on data-dense screens; `"commerce"` (alias `"checkout"`) allows the money on a transactional screen — cart, checkout, order confirmation, billing history. Defaults to the canvas's provenance preset if stamped (`canvas_set_genre` stamps it durably, no token churn). Pick by what the screen is *for* (read screens with published figures → `dashboard`; a screen you complete a purchase on → `commerce`; editors/admin forms → `material`; a pricing page is marketing and gets none of them), not what it contains — the result's `genre` field audits the choice. |
+| `genre` | string? | Style that relaxes specific `cliche` gates — `"material"` allows purple and white elevated surfaces; `"data"` (alias `"dashboard"`) allows realistic figures on a screen whose numbers are the user's own data (dashboards, activity, finance, fitness, logistics); `"commerce"` (alias `"checkout"`) allows the money on a transactional screen — cart, checkout, order confirmation, billing history. Defaults to the canvas's stored genre (`canvas_set_genre` stamps it durably, no token churn; `apply_preset` never changes it). Replaces only the genre: a material-preset canvas keeps the material relaxation. Pick by what the screen is *for* (read screens with the user's own figures → `data`; a screen you complete a purchase on → `commerce`; editors/admin forms → `material`; a pricing page is marketing and gets none of them), not what it contains — the result's `genre` field audits the choice. |
 
 **Categories and what they check**
 
@@ -824,207 +890,8 @@ Whenever the `coverage` category runs on a **base** canvas, the result also carr
 |----------|--------|--------|
 | `spacing` | 20 | Off-scale padding/gap values (`gap: 0`, a flush stack, is never flagged), plus spacing variety measured against the canvas's **declared** scale (`set_variables`/`generate_scale` spacing tokens) — only values *not* on that scale count toward sprawl, so a design built entirely from its own multi-step scale (framesmith's generated scale ships nine: `space-3xs`…`space-3xl`) isn't penalized for using it. No declared scale falls back to the old total-unique-values count, with a suggestion to declare one |
 | `color` | 25 | WCAG AA contrast ratios for text against nearest background — checked in BOTH themes when a `dark` token layer exists (dark-run issues carry `theme: "dark"`, score takes the worse theme, and dark failures point at the dark layer instead of carrying a literal fix). WCAG-passing pairs that are perceptually weak by **APCA** get an info advisory (Lc vs ~75 body / ~60 large) — APCA is a candidate method, not a standard; it never blocks |
-| `typography` | 20 | Type-scale ratios (1.1–2.0; adjacent sizes both declared as typography tokens are pinned and skip the check), font-family count, weight variation — plus score-neutral craft advisories: measure (prose past ~75 characters per line; warning past 90), tracking (display text ≥28px without negative letter-spacing, autofixable), and tabular numerals (numeric table columns without `tabularNums`, autofixable) |
-| `structure` | 15 | Tree depth, naming coverage, design-token usage %, component reuse, unknown icon names (an icon that resolves in neither set renders an empty slot: a directive-blocking warning, −10 structure score each; autofixable when one spelling resolves) |
-| `consistency` | 20 | Frames missing `layout`, sibling overlap (detailed mode) — plus score-neutral advisories: **token detachment** (a literal `fill`/`stroke`/`color`/`cornerRadius` that exactly equals a token's value flags with a mechanical `$ref` autofix; ambiguous matches list candidates and never guess) and **ad-hoc motion** (3+ distinct duration/easing combos with no motion tokens declared) |
+| `typography` | 20 | Type-scale ratios (1.1–2.0; adjacent sizes both declared as typography tokens are pinned and skip the check), font-family count, weight variation — plus score-neutral craft advisories: measure (prose past ~75 characters per line; warning past 90), tracking (display text ≥28px without negative letter-spacing, autofixable), and tabular numerals (numeric table columns without `tabularNums`, autofixable) On a mobile canvas `mobile-type-floor` adds −10 per warning. |
+| `structure` | 15 | Tree depth, naming coverage, design-token usage %, component reuse, unknown icon names (an icon node, or a mobile primitive's icon prop — `button.icon`, `leading.icon`, nav-bar `trailing[].icon`, `tab-bar` `items[].icon` (required) and `fab.icon` — that resolves in neither set renders an empty slot: a directive-blocking warning, −10 structure score each; autofixable for icon nodes and `button.icon` when one spelling resolves) `mobile-artboard` adds −10 per warning, on every type. |
+| `consistency` | 20 | Frames missing `layout`, sibling overlap (detailed mode; positioned siblings that content scrolls under — absolute, sticky, pinned chrome, a sheet, a bar pinned to the bottom — are exempt, while a bar pinned to the top still counts) — plus score-neutral advisories: **token detachment** (a literal `fill`/`stroke`/`color`/`cornerRadius` that exactly equals a token's value flags with a mechanical `$ref` autofix; ambiguous matches list candidates and never guess) and **ad-hoc motion** (3+ distinct duration/easing combos with no motion tokens declared) |
 | `cliche` | 15 | Machine-made tells: default purple/indigo accent, gradient/glow overuse, fake browser/OS chrome (traffic-light dots), the hanging eyebrow-beside-heading header, fabricated metrics/testimonials/logos, eyebrow rhythm (an eyebrow above nearly every section), slop copy (stock AI phrasing — filler verbs, scroll cues, placeholder names, hype labels), radius consistency (too many distinct corner radii), pure black/white (`#000000` ink / `#ffffff` page vs off-black/off-white), accent consistency (multiple competing accent hues — the `$success`/`$warning`/`$danger` status vocabulary is exempt when referenced as tokens, since those are semantics rather than a second accent; the same hues as literals still count). Each issue carries a `tell` discriminator. Tells are warning or info severity, but **every tell blocks the directive**, whatever its severity (see the `directive` above). Relaxable per `genre`. The tells know dashboard vocabulary: a violet reached only through a `$chart-*` or `$*-tint` token doesn't count as the default-purple tell (a literal violet, or one through any other token, still does), a gradient reached through a `$token` doesn't count toward gradient overuse, thin rounded sparkline bars aren't mistaken for traffic-light dots (fake-chrome now requires a near-square shape), and an uppercase label sitting beside a large tabular figure reads as a KPI-card metric, not an eyebrow. It also knows retail copy: a numeral bound to a unit noun by a tight hyphen (`"30-day returns"`, `"2-year warranty"`, `"24/7 support"`) is a compound modifier, not a numbered section eyebrow. |
-| `coverage` | 10 | State coverage on **base** canvases with data-bearing content: a detected table demands designed `empty` + `loading` variants, a form (3+ input controls) demands `error` — each missing state is a directive-blocking warning whose suggestion names the `canvas_add_variant` + scaffold path. Variant canvases and non-data screens get no findings. Table detection needs three matching horizontal rows to read as data (two stacked rows are treated as a layout, e.g. a topbar over a greeting); an import-named `Table` frame keeps the looser two-row shape. On a **`loading`** variant itself, a warning fires per data surface (a detected table, or a frame with 2+ large tabular/numeric texts) that still shows live values while a sibling region is skeletoned — "Loading state is half-designed" — naming the region and suggesting the matching skeleton scaffold. The result's `coverage` field reports `{ dataBearing, states, missing }`. |
-| `usability` | 20 | The mechanical UX floors beyond contrast. A control below the **24px hit-target floor** is an **error** (WCAG 2.5.8) — the effective target counts a lone control's padded row, so a well-padded settings row passes while two small controls sharing a row are measured bare; phone-width artboards additionally get a 44px touch-first info. A control with **no text label** in its row or group is a warning (selects carry their own value text). **Vague action copy** — "Click here", "Learn more", "Read more", or "Submit" as the exact label — is an info: name the action. Controls also render with accent-derived `:focus-visible` rings in the live viewer; screenshots stay byte-identical (nothing is focused in a static capture). |
-
-The weights are relative, not points out of 100. Each category scores 0–100, and `overallScore` is their weighted mean: the sum of score × weight over the categories that ran, divided by the sum of their weights.
-
-**Return shape**
-
-```json
-{
-  "overallScore": 87,
-  "categories": [{ "name": "spacing", "score": 90, "issueCount": 1, "weight": 20 }],
-  "issues": [
-    {
-      "category": "color",
-      "severity": "error",
-      "nodeId": "abc123",
-      "message": "Text \"Sign In\" has contrast ratio 2.8:1 against #1a1a2e. WCAG AA requires 4.5:1.",
-      "suggestion": "Increase contrast by darkening/lightening the text or background."
-    }
-  ],
-  "summary": "Overall quality: Good (87/100). Strongest: spacing (90/100). Weakest: color (75/100)...",
-  "stats": { "totalNodes": 14, "textNodes": 5, "frameNodes": 8, "maxDepth": 4, "tokenUsagePercent": 61, "componentReusePercent": 0 },
-  "mode": "fast",
-  "genre": { "active": null, "source": null, "relaxed": [], "notRelaxed": [{ "tell": "accent-hue", "relaxedBy": ["material"] }] },
-  "coverage": { "dataBearing": true, "states": [], "missing": ["empty", "loading"] },
-  "directive": "NOT READY — 87/100 with 1 issue(s) to resolve. Fix them now: canvas_autofix for the mechanical subset, batch_design for the rest (cliché tells included), then re-run canvas_evaluate. Repeat until there are zero warnings and zero cliché tells. Do NOT show this design to the user yet."
-}
-```
-
-**With `mode: "llm"`**, the vision model scores a **fixed rubric** — five axes, each 1–5 with a rationale — instead of one opaque number. The verdict is stamped on the canvas (`metadata.critique`) and the per-project build log so quality is auditable over time. Add `floor` (1–5, default 3, or `FRAMESMITH_CRITIQUE_FLOOR`) to set the per-axis threshold that trips `needsRevision`. **Without an `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`, the call doesn't fail** — the full heuristic result still returns with an `llmNote` explaining the critique was skipped, and the heuristic directive alone decides whether the design is ready.
-
-**The critique never gates presenting, with or without a key.** The heuristic `directive` is the only presentation gate. With a key, the critique loop is the standard last step: judge, run `canvas_revise` on the failing axes, and re-judge. If `canvas_revise` stops (`max-iterations` or `no-improvement`) and `needsRevision` is still `true`, present the design anyway and tell the user which axes still fail. A judge the agent can't satisfy by improving the design would strand it, and a model verdict varies from run to run.
-
-```json
-{
-  "llmCritique": {
-    "provider": "anthropic",
-    "model": "claude-sonnet-4-6",
-    "rubric": {
-      "hierarchy":   { "score": 4, "rationale": "clear primary metric, secondary stats recede" },
-      "execution":   { "score": 4, "rationale": "tidy alignment and consistent spacing" },
-      "specificity": { "score": 3, "rationale": "reads a touch generic for a dashboard" },
-      "restraint":   { "score": 5, "rationale": "flat surfaces, no gratuitous effects" },
-      "variety":     { "score": 2, "rationale": "the default centered three-card row" }
-    },
-    "score": 72,
-    "summary": "Clean, restrained dashboard; layout is conventional.",
-    "suggestions": ["break the symmetric three-card row with an asymmetric feature tile"],
-    "needsRevision": true,
-    "failingAxes": [{ "axis": "variety", "score": 2, "rationale": "the default centered three-card row" }]
-  }
-}
-```
-
-Axes: **hierarchy** (focal order), **execution** (craft — alignment/spacing/contrast), **specificity** (designed-for-purpose vs generic), **restraint** (no overdone effects — the LLM sibling of the `cliche` category), **variety** (avoids same-shape sameness). `score` is **derived**: `round(mean(axisScores) / 5 * 100)`. To close the loop automatically, see `canvas_revise`.
-
-Provider selection: `FRAMESMITH_LLM_PROVIDER` env var (`anthropic` | `openai`), else falls back to whichever of `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` is set. Default models: `claude-sonnet-4-6` / `gpt-4.1` (override via `FRAMESMITH_LLM_ANTHROPIC_MODEL` / `FRAMESMITH_LLM_OPENAI_MODEL`). Adding a third provider is one entry in the `judges` table in `src/llm-judge.ts`.
-
-**Example generator-evaluator loop**
-
-```
-batch_design({ canvasId, operations: "..." })
-const r = canvas_evaluate({ canvasId, mode: "fast" })
-// r.issues[].nodeId points to exactly what to fix
-batch_design({ canvasId, operations: `U("${r.issues[0].nodeId}", { color: "#ffffff" })` })
-canvas_evaluate({ canvasId })  // re-score
-```
-
-Issues that have a mechanical fix come back with an extra `fix: { op, rationale }` field — see `canvas_autofix` below.
-
-### `canvas_autofix`
-
-Runs `canvas_evaluate` in fast mode and returns just the subset of issues with a mechanically derived fix — no judgement calls. By default it proposes: each fix carries a ready-to-paste `batch_design` Update op string. With `apply: true` it writes the fixes in the same call and reports applied/failed per op. Closes the generator-evaluator loop without a second AI hop.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `canvasId` | string | Canvas to autofix |
-| `categories` | string[]? | Restrict to fixes from these categories (default: all) |
-| `genre` | string? | Style that relaxes specific `cliche` gates — `"material"` allows purple and white elevated surfaces; `"dashboard"` (alias `"data"`) allows realistic figures on data-dense screens; `"commerce"` (alias `"checkout"`) allows the money on a transactional screen — cart, checkout, order confirmation, billing history. Defaults to the canvas's provenance preset if stamped (`canvas_set_genre` stamps it durably, no token churn). |
-| `apply` | bool? | Write the fixes to the canvas in this call (default `false`: propose only) |
-
-**What gets auto-fixed**
-
-- **Spacing** — off-scale `gap` or scalar `padding` snaps to the nearest scale value; array `padding` gets one fix per node that writes the complete snapped array (e.g. `[9, 0, 9, 18]` → `[8, 0, 8, 16]`).
-- **Consistency** — frames with multiple children but no `layout` get `layout: "vertical"`; a literal `fill`/`stroke`/`color`/`cornerRadius` that exactly equals a single token's value gets re-pointed to `$token` (a value shared by multiple tokens is reported with candidates but never auto-fixed — no guessing).
-- **Color** — recoverable WCAG contrast failures get `color: "#000000"` or `"#FFFFFF"`, whichever wins against the resolved background. Failures so bad that neither black nor white meets the threshold are not auto-fixed (the background also needs to change).
-- **Cliché** — a *known-default* purple/indigo accent (`#6366f1` and friends) written literally on a node swaps to a neutral accent; a dedicated fake-chrome strip (a row that is just traffic-light dots) gets a `D(...)` delete; pure-black ink (`#000000` text/icon/stroke) softens to off-black. Taste-dependent tells (gradient/glow overuse, the hanging header, fabricated copy, eyebrow rhythm, slop copy, mixed radius systems, competing accents) are reported by `canvas_evaluate` with a suggestion but carry **no** auto-fix op.
-- **Structure** — an unknown icon name with exactly one spelling that resolves (hyphen ↔ underscore, or a missing `material:` prefix; if several resolve, the one matching the icon set the rest of the canvas uses) is rewritten via `U(id, { icon: "<name>" })`. Icons inside component definitions are flagged but carry no fix op — edit the component. A name with no resolving spelling is reported with a suggestion only.
-- **Coverage** — missing state variants (empty/loading/error) have no mechanical fix either — designing a state is a judgment call. `canvas_evaluate` reports the gap with a suggestion naming the `canvas_add_variant` + scaffold path.
-
-**Return shape**
-
-```json
-{
-  "totalIssues": 18,
-  "fixableCount": 5,
-  "fixes": [
-    {
-      "nodeId": "abc123",
-      "category": "color",
-      "op": "U(\"abc123\", { color: \"#000000\" })",
-      "rationale": "Switch text color to #000000 for WCAG AA contrast against #F8FAFC",
-      "message": "Text \"Sign In\" has contrast ratio 2.8:1 against #F8FAFC. WCAG AA requires 4.5:1."
-    }
-  ]
-}
-```
-
-Apply the ops by joining them with newlines and passing to `batch_design`, then re-evaluate.
-
-### `canvas_stress`
-
-Content stress test — does the design survive real data? Re-renders the canvas under hostile-but-realistic content perturbations and reports exactly what broke, by node id. Never mutates the canvas. The verdict is remembered for `canvas_evaluate`: any run with warnings records `FRAGILE` (its directive then stays `NOT READY`), and only a run of the full default set records `CLEAN`, so a passing subset never clears an earlier `FRAGILE`.
-
-| Perturbation | What it does |
-|---|---|
-| `long-text` | Non-data text ×2.2 plus one long unbroken token (the wrap-breaker) |
-| `i18n` | Text ×1.4 — the German/Finnish expansion rule |
-| `big-numbers` | Data-like text to its widest realistic form: `9` → `999+`, `$1.5M` → `$1,520,847.33` |
-| `empty` | Detected tables lose their data rows |
-| `many` | Data rows ×3 |
-
-Finding kinds: `clip` (content cut off — *info* when a designed `text-overflow: ellipsis` is doing its job, or when it's just the page growing taller than a fixed artboard — that scrolls on a real page; *warning* otherwise), `overflow-x` (a node escapes its parent box or the canvas), `layout-shift` (an **untouched** node ballooning — perturbed nodes, their ancestors, and a stretch sibling that merely follows a legitimately growing parent are exempt). Only **new** breakage counts: anything already clipping at baseline is the design's standing state. Tables are found with the same inventory drift and coverage use; component instances are expanded first.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `canvasId` | string | Canvas to stress |
-| `perturbations` | string[]? | Subset of the five (default: all) |
-| `screenshots` | bool? | Attach a render of each perturbation that produced warnings |
-
-Returns `{ canvasId, versionHash, perturbations: [{ name, touchedCount, findings } | { name, skipped }], counts, verdict }` — `CLEAN` only with zero warnings. Fix findings with fluid widths, `minWidth` or `minHeight` floors, and wrapping (see [Width strategies](docs/GUIDELINES.md#width-strategies) in the authoring guidelines), then re-run. Chrome required (~1 render per perturbation).
-
-### `project_evaluate`
-
-The set-level review no single canvas can give: per-screen score summaries plus checks that only exist **across** screens. Run it when a multi-screen module feels done.
-
-| Finding kind | What it catches |
-|---|---|
-| `radius-drift` | A screen whose corner-radius set shares nothing with the project's common scale |
-| `accent-drift` | An accent hue more than 30° from the project's dominant one |
-| `token-adoption` | A screen styling by hand while the rest of the project references tokens |
-| `copied-chrome` | The same substantial top-level shape hand-copied on 2+ screens instead of component instances — named with the `create_component` + `copy_nodes` fix path |
-| `state-coverage` | The aggregated missing empty/loading/error table across screens |
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `projectId` | string | The project whose screens to roll up |
-| `canvasIds` | string[]? | Restrict to specific canvases (e.g. one flow); default: every non-variant canvas |
-| `mode` | string? | `"fast"` (default — heuristic roll-up, Chrome-free, keyless) or `"llm"` — adds the **flow critique** |
-
-Returns `{ canvases: [{ canvasId, name, score, blocking, states, missingStates, tokenUsagePercent }], findings, counts, verdict }`. **Advisory, not a gate**: only the per-canvas directives block presenting — this reviews coherence and points at fixes. Every finding names its evidence (which canvases, which values). Variants are excluded from the rows and feed their base's states column. The default mode is Chrome-free and needs no API key.
-
-**`mode: "llm"` — the flow critique.** Up to 8 screens are rendered and judged *together* (one multi-image call) against a fixed flow rubric — `navigation-consistency`, `terminology-consistency`, `state-visibility`, `hierarchy-consistency` — each 1–5 with a rationale, plus per-screen notes naming the canvas (notes naming unknown screens are dropped in parsing; anchoring stays honest). Screens past the cap are listed in `flowSkipped` — pass `canvasIds` to pick the flow yourself; nothing is silently dropped. Needs Chrome and an `ANTHROPIC_API_KEY` / `OPENAI_API_KEY`; **without a key the full heuristic roll-up still returns, with a `flowNote` instead of an error** — same contract as `canvas_evaluate`'s llm mode.
-
-### `canvas_revise`
-
-Closes the critique loop. Judges the canvas against the rubric; if any axis is below the floor, asks an LLM for targeted `batch_design` ops that raise the failing axes, applies them, re-renders, and re-judges — up to `maxIterations` passes. **Mutates the canvas.** Opt-in and bounded; it never runs implicitly.
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `canvasId` | string | Canvas to revise |
-| `maxIterations` | number? | Revise passes, 1–3 (default 1) |
-| `floor` | number? | Per-axis rubric floor 1–5 (default 3 / `FRAMESMITH_CRITIQUE_FLOOR`) |
-| `provider` | `"anthropic"` \| `"openai"`? | Force an LLM provider (default auto-detect) |
-
-**Loop & safety**
-
-- Each pass: render → judge → if `needsRevision`, revise the failing axes → apply (validated through `batch_design`) → re-render → re-judge.
-- **Stops** when the canvas passes (`passed`), at the cap (`max-iterations`), when a pass doesn't improve the overall (`no-improvement` — the regressing edit is **reverted**), when the reviser returns nothing (`no-ops`), or when an op fails to apply (`apply-error` — the partial edit is reverted).
-- Every **accepted** pass re-stamps `metadata.critique` + the build log. Costs ≥2 paid API calls per pass (one judge + one revise) and renders between passes (Chrome required).
-- **It never gates presenting.** The heuristic `directive` does. If the loop stops (`max-iterations`, `no-improvement`) with `needsRevision` still `true`, present the design and name the failing axes (see [`canvas_evaluate`](#canvas_evaluate)).
-
-**Return shape**
-
-```json
-{
-  "iterations": [
-    { "pass": 1, "overallBefore": 72, "failingAxes": ["variety"],
-      "opsApplied": "U(\"cards\", { ... })", "overallAfter": 84 }
-  ],
-  "finalVerdict": { "rubric": { "...": {} }, "score": 84, "needsRevision": false, "failingAxes": [] },
-  "stoppedReason": "passed"
-}
-```
-
-## Resources
-
-- **`framesmith://guidelines`** — markdown authoring guide: width strategies (fixed / percentage / fluid+cap / floor / fit-content), responsive hint semantics (`stack` / `wrap`), common patterns (pricing tiers, two-column hero, tag list, toolbar), and anti-patterns. Source: [`docs/GUIDELINES.md`](docs/GUIDELINES.md).
-
-## Benchmark
-
-`npm run bench` runs `canvas_evaluate` over a fixed corpus of canvases (a high-quality dashboard hero, a minimal well-formed canvas, an intentional-contrast-failure canvas) and diffs the result against [`benchmark/baselines.json`](benchmark/baselines.json). Catches drift in scoring across renderer / evaluator changes — exit code is nonzero on any score, issue-count, or issue-message change. Re-baseline with `npx tsx benchmark/run.ts --update` after intentional evaluator rewrites.
-
-## Gradients
-
-Nodes support linear and radial gradients via the `gradient` property:
-
-```
-# Linear gradient (angle in degrees)
-I("parent", { type: "frame", width: 400, height: 200, gradient: { type: "lin
+| `coverage` | 10 | State coverage on **base** canvases with data-bearing content: a detected table demands designed `empty` + `loading` variants, a form (3+ input controls) demands `error` — each missing state is a directive-blocking warning whose suggestion names the `canvas_add_variant` + scaffold path. Variant canvases and non-data screens get no findings. Table detection needs three matching horizontal rows to read as data (two stacked rows are treated as a layout, e.g. a topbar over a greeting); an import-named `Table` frame keeps the looser two-row shape. On a **`loading`** variant itself, a warning fires per data surface (a detected table, or a frame with 2+ large tabular/numeric texts) that still shows live values while a sibling region is skeletoned — "Loading state is half-designed" — naming the region and suggesting the matching skeleton scaffold. The result's `coverage` field reports `{ dataBearing, state

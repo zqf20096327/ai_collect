@@ -180,7 +180,7 @@ A huge thank you to every developer who took the time to improve this extension 
 
 - [@Gh61](https://github.com/Gh61) — 21 PRs
 - [@ClaudioCas](https://github.com/ClaudioCas) — 13 PRs
-- [@rbuss93](https://github.com/rbuss93) — 9 PRs
+- [@rbuss93](https://github.com/rbuss93) — 13 PRs
 - [@MartinWooChina](https://github.com/MartinWooChina) — 6 PRs
 - [@metman-oss](https://github.com/metman-oss) — 6 PRs
 - [@karpach-relativity](https://github.com/karpach-relativity) — 4 PRs
@@ -197,6 +197,22 @@ A huge thank you to every developer who took the time to improve this extension 
 - [@wluisdev](https://github.com/wluisdev) — 1 PR
 
 ## Version History
+
+### Version 298.0
+- Claude Code in the embedded terminal now starts with a dark or light theme that suits the terminal background when its own theme would leave text unreadable, for that launch only; on by default, turn it off with *Match Claude Code's theme to the terminal background* in *⚙ → Settings → Appearance*.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for this release (#259).
+
+### Version 297.0
+- Switching the forced theme back to Automatic while chats are open in the window that holds all chats now also restores the chat link colors, instead of leaving the dark-theme blue on a light background.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for this release (#257).
+
+### Version 296.0
+- With a forced Dark, Light or Custom theme, native chats in their own tabs and the window that holds all chats now use the forced colors too, instead of staying in the IDE's theme.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for this release (#255).
+
+### Version 295.0
+- With a forced Dark, Light or Custom theme, the dropdown menus, the native chat's effort and usage popups, your own prompt bubble in the chat and the title bar of the Session History, Rename Session and Resume Conversation dialogs now use the forced colors instead of staying unreadable in the IDE's colors.
+- Thanks to [@rbuss93](https://github.com/rbuss93) for this release (#253).
 
 ### Version 294.0
 - The native chat welcome card now scrolls when it is taller than the chat, so the tips shown under the recent conversations can be read on a short tab.
@@ -1693,28 +1709,4 @@ Native mode now in beta phase
 This extension is provided free of charge under the MIT License.
 
 ### Usage Rights
-- **Free for All**: The extension is free to use for personal, educational, and commercial purposes
-- **Output Ownership**: All prompts, source code, and generated outputs belong to the user
-- **Internal Use**: Commercial organizations may use this extension internally without restriction
-
-### Restrictions
-- **No Reselling**: The extension itself may not be sold commercially
-- **No Unauthorized Clones**: Creating derivative extensions requires author permission
-
-### Data Handling & Privacy
-- **Local Storage**: Up to 50 prompts are cached locally at `%LocalAppData%\ClaudeCodeExtension\claudecode-settings.json`
-- **Cloud Processing**: All prompts are sent to the configured AI provider
-- **Data Retention**: Follows each provider's data usage policy:
-  - [Anthropic/Claude Code](https://code.claude.com/docs/en/data-usage)
-  - [OpenAI/Codex](https://platform.openai.com/docs/guides/your-data)
-  - [Cursor](https://cursor.com/privacy)
-  - [Open Code](https://opencode.ai/legal/privacy-policy)
-  - [Devin/Cognition](https://cognition.com/legal/privacy-policy)
-  - [PI](https://pi.dev/)
-  - [Google Antigravity](https://policies.google.com/privacy)
-  - [Reasonix](https://reasonix.io/)
-  - [Qwen Code](https://github.com/QwenLM/qwen-code)
-  - [Grok Build](https://grok.com/build)
-- **No Third-Party Access**: Data is only accessible to the configured model provider
-
-### Contact
+- *

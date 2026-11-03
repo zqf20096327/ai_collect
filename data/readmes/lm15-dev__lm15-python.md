@@ -39,7 +39,9 @@ Measured by [`benchmarks/suite/run.py`](benchmarks/suite/run.py) on Python 3.13.
 
 ## Install
 
-**1.5.0** is the current release (1.0.1 was the first stable one). Python 3.10 or newer,
+**2.0.0** is the current release (1.0.1 was the first stable one; 2.0 gives
+every usage counter one meaning on every provider, see the
+[changelog](CHANGELOG.md)). Python 3.10 or newer,
 on Linux, macOS and Windows.
 
 ```bash
@@ -440,8 +442,8 @@ print(lm.complete(request).text)
 This image shows a blue atom symbol with a central nucleus and three elliptical electron orbits.
 ```
 
-**Provisional in 1.0:** the standalone generation and resource APIs below
-may change in 1.x. This does not change the frozen status of media parts
+**Provisional:** the standalone generation and resource APIs below
+may change within a major version. This does not change the frozen status of media parts
 used inside chat messages.
 
 Non-chat endpoints have separate request/response types — `ImageGenerationRequest`, `SpeechGenerationRequest`, `FileUploadRequest`, `BatchRequest`, `LiveConfig` — and generated media comes back as the same typed parts you send in:
@@ -515,10 +517,10 @@ including streaming errors and Azure request IDs.
 
 ## Stability
 
-The chat core has a frozen contract in 1.x: requests, responses, streaming,
+The chat core has a frozen contract within 2.x: requests, responses, streaming,
 tools, structured output, media inside messages, reasoning, errors,
 credential resolution and model listing. These ship as **provisional** and
-may change in 1.x, with an entry in the contract's change log: files,
+may change in 2.x, with an entry in the contract's change log: files,
 batches, standalone media generation, stored-cache resources, realtime
 sessions, Chat Completions ingest, and saved sign-ins. Pin your version if
 you use them. See the [release scope](docs/roadmap.md#what-ships-in-10-and-what-is-stable).
@@ -547,12 +549,12 @@ were captured from live runs; model text and token counts vary.
 
 | | Version | Repository |
 |---|---|---|
-| Python | 1.5.0 | this repository |
-| TypeScript | 1.0.0 | [lm15-ts](https://github.com/lm15-dev/lm15-ts) |
-| Rust | 1.0.0-rc.11 | [lm15-rs](https://github.com/lm15-dev/lm15-rs) |
-| Go | v1.1.0-rc.10 | [lm15-go](https://github.com/lm15-dev/lm15-go) |
-| Julia | 1.0.0 (registration pending) | [LM15.jl](https://github.com/lm15-dev/LM15.jl) |
-| R | 1.4.0 (not yet on CRAN) | [lm15-r](https://github.com/lm15-dev/lm15-r) |
+| Python | 2.0.0 | this repository |
+| TypeScript | 2.0.0 | [lm15-ts](https://github.com/lm15-dev/lm15-ts) |
+| Rust | 2.0.0 | [lm15-rs](https://github.com/lm15-dev/lm15-rs) |
+| Go | v2.0.0 | [lm15-go](https://github.com/lm15-dev/lm15-go) |
+| Julia | 2.0.0 (registration pending, as `LanguageModel15`) | [LanguageModel15.jl](https://github.com/lm15-dev/LanguageModel15.jl) |
+| R | 2.0.0 (not yet on CRAN) | [lm15-r](https://github.com/lm15-dev/lm15-r) |
 | The contract | — | [lm15-contract](https://github.com/lm15-dev/lm15-contract) |
 
 ## Contributing and reporting

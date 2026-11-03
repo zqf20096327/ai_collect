@@ -1,12 +1,12 @@
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.3">
-    <img src="docs/screenshots/0.4.3/annonce_043.png" alt="DiffusionBear v0.4.3 — Local AI Image Studio for Apple Silicon" width="100%">
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.4">
+    <img src="docs/screenshots/0.4.4/annonce_044.png" alt="DiffusionBear v0.4.4 — Local AI Image Studio for Apple Silicon" width="100%">
   </a>
 </p>
 
 <h1 align="center">DiffusionBear</h1>
 
-<p align="center"><strong>v0.4.3</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
+<p align="center"><strong>v0.4.4</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
 
 <p align="center">
   <a href="https://www.diffusionbear.com"><strong>Website</strong></a> &nbsp;·&nbsp;
@@ -16,7 +16,7 @@
 
 ---
 
-**DiffusionBear** A free macOS studio that runs SDXL (and its derivatives), FLUX.1, FLUX.2 Klein 4B/9B, FLUX.3 Klein 5.6B, MOSS-Image SFT 5B, Qwen-Image-2.1 & Turbo, Krea 2 Turbo, Z-Image-Turbo, and Bria FIBO 2.0 Edit Turbo on your Mac's own Metal GPU. No account, no cloud, no per-image
+**DiffusionBear** A free macOS studio that runs SDXL (and its derivatives), FLUX.1, FLUX.2 Klein 4B/9B, FLUX.3 Klein 5.6B, MOSS-Image SFT 5B, Qwen-Image-2.1 & Edit & Turbo, Krea 2 Turbo, Z-Image-Turbo, and Bria FIBO 2.0 Edit Turbo on your Mac's own Metal GPU. No account, no cloud, no per-image
 billing.
 
 It is built on Apple's [MLX](https://github.com/ml-explore/mlx) framework, so it is
@@ -29,6 +29,15 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 — released under the [MIT licence](LICENSE).
 
 ---
+
+## What's new in v0.4.4 (beta)
+
+- **Qwen-Image-2.1 Edit support:**
+- **Qwen-Image-2.1, KREA 2 Turbo:** HugginFace depot repackaging
+- **Linoy Tsaban 2-step DMD2 Distill LoRA for Qwen-Image 2.1:** High-speed 2-step image generation (~33s–50s per image after initial compile) with automatic step clamping, locked CFG 1.0, and auto-selected linear sampler. < HUGE 
+- **Gallery Reference Image Filtering:** Direct filter toggle (`gallery-ref-filter-btn`) to isolate and review generations using visual reference conditioning across all 9 supported languages.
+- **Website & Documentation Upgrades:** Typography fixes, unified navigation bars, ...
+- **Minors bugs fixes:**
 
 ## What's new in v0.4.3 (beta)
 
@@ -63,7 +72,7 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 `DiffusionBear.app` is a self-contained macOS application: it bundles the backend, two relocatable Python/MLX runtimes, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
 
-**[⬇ Download DiffusionBear v0.4.3 for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.3/DiffusionBear-0.4.3-arm64.zip)** &nbsp;·&nbsp; [v0.4.3 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.3)
+**[⬇ Download DiffusionBear v0.4.4 for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.4/DiffusionBear-0.4.4-arm64.zip)** &nbsp;·&nbsp; [v0.4.4 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.4)
 
 | | Detail |
 |---|---|
@@ -83,7 +92,7 @@ Because DiffusionBear is a free, open-source project signed ad-hoc (without a pa
 
 **Follow this one-time 60-second procedure:**
 
-1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.3-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
+1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.4-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
 2. **Bypass Gatekeeper (choose Option A or Option B):**
    * **Option A — Fastest (Terminal 1-Liner):** Open **Terminal.app**, paste this command, and press Return:
      ```bash
@@ -102,26 +111,30 @@ Once authorized, macOS remembers your choice and **never shows the alert again**
 
 ## Supported models
 
-**Twelve+ checkpoints across eight families**, 4-bit quantised and memory-tuned for 16 GB of unified memory. Switching engines swaps weights on demand rather than keeping everything resident.
+**Twelve+ checkpoints across nine families**, 4-bit quantised and memory-tuned for 16 GB of unified memory. Switching engines swaps weights on demand rather than keeping everything resident.
 
 | Model | Family | Default steps | What it supports |
 |---|---|---|---|
-| **SDXL & Derivatives** *(Juggernaut XL Lightning, RealVisXL V5.0 Lightning / Hyper-SD, Juggernaut XI v11, Custom SDXL / Pony / Illustrious)* | SDXL | 4–50 | Ultra-fast 4-step Lightning (~9s) or full 20–50 step custom `.safetensors` checkpoints (auto-converted), negative prompts, sampler picker, CLIP Skip, DeepCache, and TAESD fast decode. |
+| **FIBO 2.0 Edit Turbo** | FIBO 2.0 | 4 | Up to 4 reference images, 4-step distilled editing, guidance-free (no negative prompt), and a Qwen3-VL 4B text encoder. |
 | **FLUX.1-schnell** | FLUX.1 | 4 | Classic 4-step rectified flow, 1 reference image, FLUX.1 LoRAs, and fast-VAE decode. |
 | **FLUX.2-klein 4B** | FLUX.2 | 4 | Up to 10 reference images, FLUX.2 LoRAs, and generative fill. Guidance-distilled (no negative prompt). |
 | **FLUX.2-klein 9B** | FLUX.2 | 4 | 9-billion-parameter flagship DiT with up to 10 reference images, LoRAs, and superior detail. |
 | **FLUX.3-klein 5.6B** | FLUX.3 | 16 | 16-step flow-matching distilled, up to 10 reference images, and interactive **Virtual Boxes** on the Studio Canvas. |
-| **MOSS-Image SFT 5B** *(+ Base 5B)* | MOSS | 4–8 (DMD) / 25 | Interactive **Virtual Boxes**, reference image, LoRAs, MLX q8-g64 text encoder, and automatic **4-step (`⚡ DMD 4`) / 8-step (`⚡ DMD 8`)** distillation adapters. |
-| **Qwen-Image-2.1** | Qwen-Image | 25 | 7B single-stream DiT with Qwen3-VL text encoder, 1 reference image, and negative prompts. |
-| **Qwen-Image-Turbo-2.1** | Qwen-Image | 8 | 8-step distilled Qwen-Image 2.1 variant for fast generation on 16 GB Macs. |
 | **Krea 2 Turbo 13B** | Krea 2 | 4–8 | 13B photorealistic engine with 1 reference image, LoRAs, persistent Q4 text-encoder cache, and auto-applied 4-step distilled LoRA. |
+| **MOSS-Image SFT 5B** *(+ Base 5B)* | MOSS | 4–8 (DMD) / 25 | Interactive **Virtual Boxes**, reference image, LoRAs, MLX q8-g64 text encoder, and automatic **4-step (`⚡ DMD 4`) / 8-step (`⚡ DMD 8`)** distillation adapters. |
+| **Qwen-Image Edit** | Qwen-Image | 8–25 | Instruction-based editing with up to 3 reference images, negative prompts and guidance, plus 8/15/20/25-step presets. No 2-step adapter (the 60-layer edit transformer is incompatible with Qwen-Image 2.1 DMD2). |
+| **Qwen-Image-2.1** | Qwen-Image | 2–25 | 7B single-stream DiT with Qwen3-VL text encoder, 1 reference image, negative prompts, and an auto-injected **2-step DMD2 LoRA** (`linoyts/Qwen-Image-2.1-DMD2-2steps`, ~33–50 s). |
+| **Qwen-Image-Turbo-2.1** | Qwen-Image | 4–8 | 8-step distilled Qwen-Image 2.1 variant for 16 GB Macs, with its own 4-step distillation LoRA (slightly slower than the 2-step DMD2 path). |
+| **SDXL & Derivatives** *(Juggernaut XL Lightning, RealVisXL V5.0 Lightning / Hyper-SD, Juggernaut XI v11, Custom SDXL / Pony / Illustrious)* | SDXL | 4–50 | Ultra-fast 4-step Lightning (~9s) or full 20–50 step custom `.safetensors` checkpoints (auto-converted), negative prompts, sampler picker, CLIP Skip, DeepCache, and TAESD fast decode. |
 | **Z-Image-Turbo 6B** | Z-Image | 6–8 | Compact 6B engine with 1 reference image, LoRAs, fast VAE, and crisp architectural geometry. |
+
+> **Recommended fast path:** Qwen-Image 2.1 at 2 steps with the `linoyts/Qwen-Image-2.1-DMD2-2steps` LoRA (downloaded automatically on first use, guidance locked to 1.0). Qwen-Image Turbo 2.1 uses its separate 4-step LoRA and is slightly slower. Qwen-Image Edit has no 2-step adapter.
 
 **Bring any SDXL, Pony, or Illustrious checkpoint you own:** single-file Civitai `.safetensors` checkpoints are converted in place, unlisted models can be onboarded from a local folder or your Hugging Face cache, and the app also browses models and LoRAs already downloaded by **Draw Things** and **DiffusionBee** (strictly read-only).
 
 ---
 
-## Screenshots & MOSS-Image Showcase Gallery (v0.4.3)
+## Screenshots & MOSS-Image Showcase Gallery (v0.4.4)
 
 All images below were generated locally in DiffusionBear on an **Apple MacBook Pro M1 with 16 GB of RAM**.
 
@@ -161,27 +174,31 @@ The following original images demonstrate the versatility of **MOSS-Image SFT 5B
 | Interactive Virtual Boxes: Multi-Subject Spatial Layout (⚡ DMD 4-Step) |
 | :---: |
 | <img src="docs/screenshots/0.4.1/MOSS/cb1b6cba98f14289a32f14f7d365a900.png" width="700" alt="Spatial virtual box layout with shutter shades on pedestal and logo poster on wall"> |
-| **Virtual Box Spatial Layout:** Studio scene with shutter shades on stone pedestal + interactive bounded box `wall_1` (`[35, 0, 527, 1000]`): *"Logo from Image 1 posterized on the wall"*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 415.2 s (~6 min 55 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4 (`darask0-4step`) with **Studio Virtual Boxes**<br>• **Size:** 1024×768 · **Steps:** 4 (CFG 1.0) · **Sampler:** `moss_dataspace_dmd` · **Seed:** 1003<br>• ⚠️ **Notice Image de référence :** *Une image de référence a été fournie lors de ce test ("Logo from Image 1..."), mais **les images de référence ne fonctionnent pas sur MOSS-Image** (MOSS-Image est un modèle purement text-to-image et layout-to-image ; le conditionnement par image de référence n'est pas supporté par l'architecture du modèle et est ignoré). La disposition spatiale a été pilotée uniquement par la Virtual Box.* |
+| **Virtual Box Spatial Layout:** Studio scene with shutter shades on stone pedestal + interactive bounded box `wall_1` (`[35, 0, 527, 1000]`): *"Logo from Image 1 posterized on the wall"*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 415.2 s (~6 min 55 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4 (`darask0-4step`) with **Studio Virtual Boxes**<br>• **Size:** 1024×768 · **Steps:** 4 (CFG 1.0) · **Sampler:** `moss_dataspace_dmd` · **Seed:** 1003<br>• ⚠️ **Reference image notice:** *A reference image was supplied for this test ("Logo from Image 1..."), but **reference images are not supported on MOSS-Image** (MOSS-Image is a pure text-to-image and layout-to-image model; reference-image conditioning is not part of its architecture and is ignored). The spatial layout was driven by the Virtual Box only.* |
 
 ---
 
-### 🖥️ Studio Interface Screenshots (v0.4.3)
+### 🖥️ Studio Interface Screenshots (v0.4.4)
 
 | Studio Generation (Dark Mode) | Studio Generation (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.3 Studio generation interface in dark mode](docs/screenshots/0.4.1/1-generate-dark.png) | ![DiffusionBear v0.4.3 Studio generation interface in light mode](docs/screenshots/0.4.1/2-generate-light.png) |
+| ![DiffusionBear v0.4.4 Studio generation interface in dark mode](docs/screenshots/0.4.4/1-generate-dark.png) | ![DiffusionBear v0.4.4 Studio generation interface in light mode](docs/screenshots/0.4.4/2-generate-light.png) |
 
 | Gallery / Browser (Dark Mode) | Gallery / Browser (Light Mode) |
 |---|---|
-| ![DiffusionBear v0.4.3 Gallery with search and favorites in dark mode](docs/screenshots/0.4.1/3-browser-dark.png) | ![DiffusionBear v0.4.3 Gallery with search and favorites in light mode](docs/screenshots/0.4.1/4-browser-light.png) |
+| ![DiffusionBear v0.4.4 Gallery with search and favorites in dark mode](docs/screenshots/0.4.4/3-browser-dark.png) | ![DiffusionBear v0.4.4 Gallery with search and favorites in light mode](docs/screenshots/0.4.4/4-browser-light.png) |
 
-| Models: Installed & Manage | Models: External Disk Detection (Draw Things & DiffusionBee) |
+| Models: Installed & Manage | Models: Hugging Face Browser |
 |---|---|
-| ![DiffusionBear v0.4.3 Models tab and installed model management](docs/screenshots/0.4.1/5-models-dark.png) | ![DiffusionBear v0.4.3 external model detection for Draw Things and DiffusionBee](docs/screenshots/0.4.1/6-models-detect-light.png) |
+| ![DiffusionBear v0.4.4 Models tab and installed model management](docs/screenshots/0.4.4/5-models-dark.png) | ![DiffusionBear v0.4.4 Hugging Face model browser](docs/screenshots/0.4.4/6-models-browse-light.png) |
 
 | Parameters: Engine, GPU Memory & Model Defaults | Parameters: Language & System Preferences |
 |---|---|
-| ![DiffusionBear v0.4.3 Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.1/7-parameters-dark.png) | ![DiffusionBear v0.4.3 Parameters preferences in light mode](docs/screenshots/0.4.1/8-parameters-light.png) |
+| ![DiffusionBear v0.4.4 Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.4/7-parameters-dark.png) | ![DiffusionBear v0.4.4 Parameters preferences in light mode](docs/screenshots/0.4.4/8-parameters-light.png) |
+
+| Gallery: Generation Parameters & Metadata | Prompt Enhancer: FIBO 2.0 Engine Guidance |
+|---|---|
+| ![DiffusionBear v0.4.4 gallery detail card with model, seed, size, steps, guidance, sampler and generation time](docs/screenshots/0.4.4/9-gallery-detail-dark.png) | ![DiffusionBear v0.4.4 prompt enhancer configured for the FIBO 2.0 Edit Turbo engine](docs/screenshots/0.4.4/10-fibo-prompt-enhancer-dark.png) |
 
 ---
 
@@ -271,9 +288,9 @@ exactly what MLX is built to exploit.
 
 ---
 
-## Benchmarks (v0.4.3)
+## Benchmarks (v0.4.4)
 
-Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **v0.4.3 snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution):
+Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **v0.4.4 snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution):
 
 | Model | Steps | Median | Range | Family / Notes |
 |---|---|---|---|---|
@@ -398,7 +415,7 @@ credential-shaped files and weights, and refuses to ship anything unsafe;
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to build, verify and propose a change
 - [SECURITY.md](SECURITY.md) — privacy posture and vulnerability reporting
 - [USER_GUIDE.md](USER_GUIDE.md) — full usage guide
-- [docs/VirtualBox.md](docs/VirtualBox.md) — How does Virtual Boxes works ?
+- [docs/VirtualBox.md](docs/VirtualBox.md) — How Virtual Boxes work
 
 ---
 

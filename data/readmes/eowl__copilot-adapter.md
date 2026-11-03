@@ -8,6 +8,8 @@
 
 Extend VS Code's native Copilot Chat with third-party AI models. Switch between [supported models](#models) directly from the Copilot model selector — the same experience as built-in Copilot models, with your own API keys, no Copilot subscription, and no local proxy needed.
 
+> For FAQ and usage notes, see [Notes](#notes).
+
 [简体中文](README.zh-cn.md)
 
 - [Models](#models)
@@ -32,8 +34,8 @@ Extend VS Code's native Copilot Chat with third-party AI models. Switch between 
 | Provider | Endpoints | Models | Remarks |
 |---|---|---|---|
 | **DeepSeek** | [`Deepseek Platform`](https://platform.deepseek.com) | `DeepSeek V4 Pro` `DeepSeek V4.1 Flash` | |
-| **MiniMax** | [`minimaxi.com`](https://www.minimaxi.com/) [`minimax.io`](https://www.minimax.io/) | `M3` `M2.7` `M2.7 Highspeed` `M2.5` `M2.5 Highspeed` `M2.1` `M2.1 Highspeed` `M2` | |
-| **Moonshot (Kimi)** | [`platform.moonshot.cn`](https://platform.moonshot.cn/) [`platform.moonshot.ai`](https://platform.moonshot.ai/) [`Kimi Code`](https://www.kimi.com/code/docs/) | `Kimi K3` `Kimi K2.7 Code` `Kimi K2.7 Code High-Speed` `Kimi K2.6` `Kimi K2.5` | |
+| **MiniMax** | [`minimaxi.com`](https://www.minimaxi.com/) [`minimax.io`](https://www.minimax.io/) | `M3` `M3.1 Flash` | |
+| **Moonshot (Kimi)** | [`platform.moonshot.cn`](https://platform.moonshot.cn/) [`platform.moonshot.ai`](https://platform.moonshot.ai/) [`Kimi Code`](https://www.kimi.com/code/docs/) | `Kimi K3.1 Pro` `Kimi K3.1 Pro High-Speed` `Kimi K3` `Kimi K2.7 Code` `Kimi K2.7 Code High-Speed` `Kimi K2.6` | |
 | **Qwen** | [`bailian.console.aliyun.com`](https://bailian.console.aliyun.com/) `CN` `US` `SGP` `EU` `JP` `Token Plan` | `Qwen3.8 Max` `Qwen3.7 Max` `Qwen3.7 Plus` `Qwen3.6 Max` `Qwen3.6 Plus` `Qwen3.6 Flash` `Qwen3.5 Plus` `Qwen3.5 Flash` `Qwen3 Max` `Qwen3 Coder Plus` `Qwen3 Coder Flash` `Qwen Plus (US only)` `Qwen Flash (US only)` `MiniMax-M3 (Third Party)` `MiniMax-M2.7 (Third Party)` `MiniMax-M2.5 (Third Party)` `Kimi-K3 (Third Party)` `Kimi-K2.5 (Third Party)` `Kimi-K2.6 (Third Party)` `Kimi-K2.7-Code (Third Party)` `GLM-5.2 (Third Party)` `GLM-5.1 (Third Party)` `MIMO-V2.5-PRO (Third Party)` | *Models marked `(Third Party)` must be manually enabled via **Service Activation** on the model card in the Qwen Dashboard before they can be used.* |
 | **Zhipu** | [`BigModel`](https://open.bigmodel.cn/) [`Z.ai`](https://api.z.ai/) `Coding Plan` | `GLM-5.3-Flash` `GLM-5.3` `GLM-5.2` `GLM-5.1` `GLM-5` `GLM-5-Turbo` `GLM-4.7` `GLM-4.7-FlashX` `GLM-4.6` `GLM-4.5-Air` `GLM-4.5-AirX` `GLM-4-Long` `GLM-4-FlashX-250414` `GLM-4.7-Flash` `GLM-4.5-Flash` `GLM-4-Flash-250414` `GLM-5V-Turbo` `GLM-4.6V` `GLM-OCR` `GLM-4.1V-Thinking-FlashX` `GLM-4.6V-Flash` `GLM-4.1V-Thinking-Flash` `GLM-4V-Flash` | |
 | **Xiaomi MIMO** | [`Xiaomi MIMO`](https://mimo.mi.com/) `Token Plan CN` `Token Plan SGP` `Token Plan EU` | `mimo-v2.6-pro` `mimo-v2.6-flash` | |
@@ -135,7 +137,7 @@ For a step-by-step guide with screenshots, see [How to Add a Custom Model](docs/
 
 ### Balance & usage display
 
-For API-key based providers (DeepSeek, Moonshot), the extension can display your account balance on each model's information card. For Coding Plan providers (Kimi Code), the extension displays plan usage quotas (rate-limit window, weekly usage and total quota). The result appears at the bottom of the model hover card in the Language Models panel.
+For API-key based providers (DeepSeek, Moonshot), the extension can display your account balance on each model's information card. For Coding Plan providers (Kimi Code), the extension displays plan usage quotas (rate-limit window, weekly usage and total quota). The result is appended to the model's description line on the model hover card in the Language Models panel.
 
 The query result is cached to avoid excessive API calls. You can control the cache duration via the `copilot-adapter.balanceCacheTime` setting. Changing it to `Off (no cache)` fetches the balance on every model list refresh.
 
@@ -148,7 +150,7 @@ The extension uses VS Code's unit-price API. Some models are configured with pri
 1. Currency returned in the balance API response
 2. Currency specified in the endpoint configuration
 3. Currency from the `copilot-adapter.pricingCurrency` setting
-4. VS Code UI language (Chinese → CNY, others → USD)
+4. VS Code UI language (Chinese -> CNY, others -> USD)
 
 *Note:* for `DeepSeek` models, the default price shown on the hover card is the official off-peak pricing, while the long-context price represents the official peak pricing (this is because VS Code's unit-price API only distinguishes `default` and `longContext`).
 
@@ -170,7 +172,7 @@ The extension uses VS Code's unit-price API. Some models are configured with pri
 | `copilot-adapter.tokenRatioCalibrationThreshold` | `0.1` | Minimum relative change (1–100%) to persist auto-calibrated ratio |
 | `copilot-adapter.toolWarmup` | `false` | Send fake `activate_*` tool calls before real requests (improves tool stability on some models) |
 | `copilot-adapter.balanceCacheTime` | `60` | Cache duration (seconds) for balance/usage queries. `0` disables caching — see [Balance & usage display](#balance--usage-display) |
-| `copilot-adapter.pricingCurrency` | `""` | Fallback currency for credits unit on model hover cards. Priority: balance API > endpoint > this setting > VS Code language (zh → CNY, else USD) |
+| `copilot-adapter.pricingCurrency` | `""` | Fallback currency for credits unit on model hover cards. Priority: balance API > endpoint > this setting > VS Code language (zh -> CNY, else USD) |
 | `copilot-adapter.maxWarmupRounds` | `3` | Max warmup rounds per request (requires `toolWarmup` on) |
 | `copilot-adapter.debugMode` | `"off"` | Log verbosity: `off` / `info` / `meta` / `verbose` |
 
@@ -204,6 +206,8 @@ Some models' thinking modes can produce very large outputs (for example, lengthy
 ## Notes
 
 **Profile isolation:** If you use VS Code [Profiles](https://code.visualstudio.com/docs/editor/profiles), the official Copilot Chat configuration is isolated per profile — and Copilot Adapter's configuration follows the same rule.  API keys, model groups, and custom model definitions are all scoped to the active profile.
+
+**Extension models require Local mode:** All models provided by this extension — both the built-in third-party models and [custom models](#custom-models) — only appear in the model selector after switching the Copilot Chat session to **Local** mode.
 
 ---
 

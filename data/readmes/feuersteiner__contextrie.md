@@ -99,34 +99,12 @@ console.log(context);
 
 ---
 
-## What This Is
-
-Contextrie is for systems where agents should not see everything all the time.
-
-It gives you primitives to:
-
-- define sources around the content you want to retrieve
-- generate metadata for those sources
-- score relevance against a task
-- compose a tighter working context for the next agent step
-
----
-
-## Why It Exists
-
-Most agent systems fail gradually, not instantly. They accumulate irrelevant context, lose precision, and waste tokens. Contextrie makes context selection a first-class part of the system instead of an afterthought.
-
----
-
 ## Packages
 
 - `@contextrie/core`: published now, TypeScript contracts and core agents
 - `@contextrie/parsers`: published now, file parsers for `.csv`, `.md`, and `.txt`
 - `@contextrie/cli`: published npm CLI for indexing local sources and composing task-specific context
-- `coding-agent`: planned coding agent harness with a stub README in `coding-agent/README.md`
-- `benchmarks`: benchmark definitions and protocol for evaluating agent workflows
 - `docs`: documentation site in progress
-- `python`: Python core library with mirrored source and agent contracts
 
 ---
 
@@ -142,28 +120,6 @@ Start with [`examples/demo/README.md`](./examples/demo/README.md) for the smalle
 
 Use [`examples/parsers/README.md`](./examples/parsers/README.md) for a standalone package example that consumes `@contextrie/parsers` and parses local files into Contextrie sources.
 
-Benchmark planning lives in [`benchmarks/README.md`](./benchmarks/README.md), and the coding agent harness stub lives in [`coding-agent/README.md`](./coding-agent/README.md).
-
----
-
-## Roadmap 🚧
-
-- Coding agent harness and eval protocol
-- Hosted docs site
-- CLI binary distribution
-- More examples and eval coverage
-
----
-
-## Call To Action
-
-- Install and try `@contextrie/core`
-- Install and try `@contextrie/parsers`
-- Read the manifesto
-- Watch the demo
-- Join the Discord
-- Open an issue if you want a parser, adapter, or language target
-
 ---
 
 ## Repo Layout
@@ -171,14 +127,12 @@ Benchmark planning lives in [`benchmarks/README.md`](./benchmarks/README.md), an
 ```
 .
 ├─ assets/        Visuals and branding
-├─ benchmarks/    Benchmark protocol and future harness
 ├─ cli/           Published npm CLI package
-├─ coding-agent/  Coding agent harness stub and future implementation
 ├─ core/          TypeScript library (npm)
 ├─ docs/          SvelteKit documentation site
 ├─ examples/      Minimal examples
-├─ python/        Python core library
-└─ README.md      Project overview
+├─ parsers/       File parsing library (npm)
+└─ readme.md      Project overview
 ```
 
 ---
@@ -198,15 +152,15 @@ flowchart LR
 
 ---
 
-## Getting Started
+## Development
 
-Each package maintains its own development and contribution instructions. Start in the package README for the area you are working on.
+Each package installs dependencies independently. Run `bun install` in the relevant directory, then use its commands:
 
-For library usage, start with [`core/README.md`](core/README.md).
-For evaluation work, start with [`benchmarks/README.md`](benchmarks/README.md).
+| Directory | Commands | Guide |
+| --- | --- | --- |
+| `core/` | `bun run typecheck` | [Core](./core/README.md) |
+| `parsers/` | `bun run typecheck` | [Parsers](./parsers/README.md) |
+| `cli/` | `bun run typecheck`, `bun run build` | [CLI](./cli/README.md) |
+| `docs/` | `bun run dev`, `bun run check`, `bun run build` | [Docs](./docs/README.md) |
 
----
-
-## Status
-
-Early development; expect breaking changes.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.

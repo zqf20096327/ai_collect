@@ -95,7 +95,7 @@ Fresh 2026 work that is already drawing attention.
 - [⭐ Starter Kit](#starter-kit)
 - [🔥 10 to Watch (2026)](#to-watch)
 - **🧭 Background**
-  - [📚 Surveys & Position Papers (61)](#surveys)
+  - [📚 Surveys & Position Papers (62)](#surveys)
   - [🏗️ Agent Architectures & Frameworks (54)](#architectures)
 - **🧱 Part I: Core Components**
   - [🧠 Planning & Reasoning (55)](#planning)
@@ -104,7 +104,7 @@ Fresh 2026 work that is already drawing attention.
   - [🤝 Multi-Agent Systems (57)](#multi-agent)
 - **🌍 Part II: Agents in Context**
   - [🌐 Interactive Environments (60)](#environments)
-  - [🚀 Applications (58)](#applications)
+  - [🚀 Applications (60)](#applications)
 - **⚖️ Part III: Cross-Cutting Concerns**
   - [📊 Evaluation & Benchmarks (58)](#evaluation)
   - [🛡️ Safety & Alignment (62)](#safety)
@@ -112,11 +112,11 @@ Fresh 2026 work that is already drawing attention.
 ## 🧭 Background
 
 <a id="surveys"></a>
-### 📚 Surveys & Position Papers (61)
+### 📚 Surveys & Position Papers (62)
 *Corresponds to §1-§3 (Introduction, Background, Taxonomy).*
 
 <details>
-<summary><b>Show 61 papers</b></summary>
+<summary><b>Show 62 papers</b></summary>
 
 - **[A Survey on Large Language Model based Autonomous Agents](https://arxiv.org/abs/2308.11432)** (Wang et al., arXiv 2023) - *The canonical, most-cited general-purpose LLM-agent survey.* ⭐ [[code](https://github.com/Paitesanshi/LLM-Agent-Survey)]
 - **[The Rise and Potential of Large Language Model Based Agents: A Survey](https://arxiv.org/abs/2309.07864)** (Xi et al., arXiv 2023) - *Co-foundational with Wang et al. 2023 as one of the two seminal general surveys.* [[code](https://github.com/WooooDyy/LLM-Agent-Paper-List)]
@@ -180,6 +180,7 @@ Fresh 2026 work that is already drawing attention.
 - **[Why Agentic Workflows Fail: A Taxonomy Derived from Literature and Empirical Data](https://arxiv.org/abs/2610.17418)** (Li et al., arXiv 2026) - *Codes agentic-workflow failures along four dimensions, responsible source (agent, external system or both), mechanism among 65 types, workflow stage and agent capability, and applies the scheme to 397 failure records from papers and 1,196 from GitHub issues and pull requests in 229 repositories: GitHub failures concentrate in actuation during execution, 64.8% of records against 14.1% in the literature, and 61% of those are not the agent's fault, such as a failing external API; 68 of 69 records from later papers fit the existing types, and the counts are not prevalence estimates.*
 - **[Distilling Agentic Systems: A Roadmap across Models, Artifacts, and Harnesses](https://arxiv.org/abs/2609.36630)** (Luo et al., arXiv 2026) - *Widens distillation from a teacher model to a teacher agent and sorts the literature by where the student keeps what it learned: in the weights, in reusable artifacts such as memories, skills and tools, in the execution harness through workflows, routing and verification, or across these, as when a textual workflow is compiled into a controller or an artifact becomes an enforceable gate; it asks each transfer claim for intrinsic, causal and end-to-end evidence and finds no substrate preferable in general, though each method is filed under a single primary substrate.*
 - **[Agentic Societies Need a Social Harness](https://arxiv.org/abs/2609.17527)** (Chugh et al., arXiv 2026) - *Argues that agents acting for different people need a social harness that governs the messages between them, on top of each agent's own harness, and supports the case with OpenClaw agents scheduling university meetings, on GPT-5.4 alone or with one agent on Claude Opus 4.8: over ten runs per setting, isolated per-peer sessions make the mixed setup fail every group meeting with more than one teaching assistant, shared sessions lift it from 0% to 90% with seven, and relayed false cancellations succeed in 100% of GPT-5.4 runs; the proposed five-layer stack, from verifiable identity to social institutions, is not built or costed.*
+- **[Harness Engineering for Language Agents: The Harness Layer as Control, Agency, and Runtime](https://doi.org/10.20944/preprints202603.1756.v2)** (He et al., Preprints 2026) - *Position paper that splits the layer around the model into control (instructions, repository maps, tests, permissions), agency (the tools, interfaces and roles the model acts through) and runtime (memory, checkpoints, retries, budgets), and proposes HarnessCard, a template for reporting an agent's harness next to its model. In its audit of 63 works, the 38 papers and benchmarks most often foreground observability, interfaces and feedback, while the 25 engineering notes, protocols and articles foreground runtime, control and governance. The authors call the audit a visibility check over a selected set with interpretive tags, not a field-wide count, rely substantially on engineering notes from a few frontier labs, and run no experiment that separates model effects from harness effects.*
 </details>
 
 <sub><a href="#contents">↑ Back to Contents</a></sub>
@@ -403,7 +404,4 @@ Fresh 2026 work that is already drawing attention.
 - **[Chameleon: Plug-and-Play Compositional Reasoning with Large Language Models](https://arxiv.org/abs/2304.09842)** (Lu et al., NeurIPS 2023) - *Prominent example of natural-language-planned tool composition/orchestration across heterogeneous tool types, widely cited in tool-use and compositional-reasoning literature.* [[code](https://github.com/lupantech/chameleon-llm)]
 - **[Large Language Models as Tool Makers](https://arxiv.org/abs/2305.17126)** (Cai et al., arXiv 2023) - *Foundational for the tool-creation (as opposed to tool-use) direction, showing LLMs can author their own reusable tools rather than only calling pre-existing ones.* [[code](https://github.com/ctlllll/LLM-ToolMaker)]
 - **[GPT4Tools: Teaching Large Language Model to Use Tools via Self-instruction](https://arxiv.org/abs/2305.18752)** (Yang et al., NeurIPS 2023) - *Widely used reference for open-source instruction-tuning approaches to multimodal tool use, complementing proprietary-model tool-use papers.* [[code](https://github.com/StevenGrove/GPT4Tools)]
-- **[ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via Tool Embeddings](https://arxiv.org/abs/2305.11554)** (Hao et al., NeurIPS 2023) - *An influential alternative architecture for scalable tool selection that avoids the context-length bottleneck of prompt-based tool listing.* [[code](https://github.com/Ber666/ToolkenGPT)]
-- **[ToolAlpaca: Generalized Tool Learning for Language Models with 3000 Simulated Cases](https://arxiv.org/abs/2306.05301)** (Tang et al., arXiv 2023) - *Key evidence that generalized tool-use capability is achievable in small open models via automatically synthesized tool-use corpora, influential for later synthetic-data tool-training pipelines.* [[code](https://github.com/tangqiaoyu/ToolAlpaca)]
-- **[RestGPT: Connecting Large Language Models with Real-World RESTful APIs](https://arxiv.org/abs/2306.06624)** (Song et al., arXiv 2023) - *Demonstrates tool-use extended to complex, stateful real-world REST APIs beyond toy tool sets, with a benchmark still used for API-grounded agent evaluation.* [[code](https://github.com/Yifan-Song793/RestGPT)]
-- **[ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs](https://arxiv.org/abs/2307.16789)** (Qin et al., ICLR 2024) -
+- **[ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via Tool Embeddings](https://arxiv.org/abs/2305.11554)** (Hao et al., NeurIPS 2023) - *An influential alternative architecture for scalable tool selection that avoids the context-length bottleneck 

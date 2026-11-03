@@ -1,0 +1,314 @@
+# Reeve
+
+[![CI](https://github.com/Dancode-188/reeve/actions/workflows/ci.yml/badge.svg)](https://github.com/Dancode-188/reeve/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Rust](https://img.shields.io/badge/rust-1.85%2B-orange.svg)](https://www.rust-lang.org)
+
+A terminal cockpit for AI agents. Watch a run live, score it, and step in
+when it goes sideways.
+
+![Reeve catching a looping research agent and redirecting it back to health, live through the proxy](docs/assets/demo.gif)
+
+---
+
+Your agent ran for 40 minutes. It called the same search tool 89 times with the
+same query because something broke in its context and it got stuck. You found out
+this morning when you opened the dashboard and looked at the chart.
+
+The chart looked great, by the way.
+
+Maybe you tried guardrails instead. You wrote rules upfront to catch bad behavior.
+Your agent found eight failure modes you hadn't predicted and the guardrail watched
+all eight happen and did nothing. Because none of them matched.
+
+Or maybe you're doing the thing where you just tail the logs and grep for errors.
+Honest approach. Completely useless when the agent is looping.
+
+The problem is not that existing tools are bad. The problem is that they live in the
+wrong moment. Post-hoc evaluation shows you what happened after the run ended.
+Pre-defined guardrails catch what you predicted. Neither one helps when something is
+going wrong right now and you want to stop it or change direction without killing the
+whole process.
+
+Reeve is for that moment.
+
+---
+
+## Quick start
+
+```bash
+cargo install reeve-cockpit
+reeve
+```
+
+Reeve listens on `:4317` for OTel spans and `:4316` for the control channel.
+In a second terminal, `eval "$(reeve env)"` sets the exports your agent needs,
+then launch it and it shows up. If Ollama is running with phi4-mini available,
+quality scoring starts immediately at zero cost. No account, no API key, no
+setup wizard.
+
+---
+
+## What it does
+
+Five things. In order.
+
+**Watch.** Connect via OTel SDK integration or HTTP proxy. You get a live trace tree
+that builds as your agent works. When a span is streaming, the LLM response
+accumulates in the terminal with a blinking cursor. You are watching the model think.
+Nothing else does this.
+
+**Score.** Every span gets evaluated. Heuristic checks run in under a millisecond:
+loop detection, cost efficiency, latency anomalies, intent vs action mismatch. LLM
+judge scoring for faithfulness, hallucination, and tool selection quality runs in the
+background via Ollama locally. Most of these feed a single health score from 0 to 100 that
+changes color as it drops. Green, amber, red. The anomaly checks, like hallucination,
+raise alerts instead of quietly dragging the number. You know at a glance.
+
+**React.** Write policy rules in plain conditions: `health_score < 30`,
+`cost_usd > 5.0`, `predicted_cost_at_completion > 10.0` to fire before a limit
+is hit instead of after. Rules fire automatically, combine with `&&` and
+`||`, and any quality metric (`faithfulness`, `hallucination_detection`)
+works as a variable too.
+
+**Intervene.** Press `i`. Pause the agent, redirect it with a new instruction, inject
+context, or kill the trace. The agent applies the command at its next safe yield
+point and acknowledges every step back to the cockpit, so you watch the command
+land instead of hoping it did.
+
+**Learn.** Every applied command gets a measured before/after health delta,
+shown inline in the trace tree. When a policy rule fires again, its alert
+carries the track record of what has historically fixed it. History (`3`)
+keeps completed traces; `R` replays one like a DVR, with the health gauge
+re-animating exactly as it happened, and `W` charts what an intervention
+changed against where the trend was heading.
+
+---
+
+## Connecting your agent
+
+### SDK (full capability)
+
+**LangChain**
+```python
+from reeve_sdk import ReeveSdk
+from reeve_sdk.adapters.langchain import ReeveCallbacks
+
+sdk = await ReeveSdk.connect("research-bot")
+agent = create_agent(llm=llm, tools=tools, callbacks=[ReeveCallbacks(sdk)])
+```
+
+**Custom Python**
+```python
+from reeve_sdk import CheckpointResult, ReeveSdk
+
+sdk = await ReeveSdk.connect("my-agent")
+
+@sdk.trace()
+async def run():
+    while not done:
+        result = await sdk.checkpoint()  # pauses here if you command it to
+        if isinstance(result, CheckpointResult.Redirect):
+            steer_toward(result.instruction)
+        response = await llm.invoke(messages)
+        await sdk.checkpoint()
+```
+
+**Rust**
+```rust
+let reeve = ReeveSdk::connect(SdkConfig::new("my-agent")).await?;
+loop {
+    reeve.checkpoint().await?;  // returns Err(AgentError::Killed) on kill
+    let mut span = reeve.llm_span();
+    let response = llm.invoke(&messages).await?;
+    span.set_token_usage(response.usage.total_tokens);
+}
+```
+
+The OpenAI Agents SDK and the Claude Agent SDK have adapters too, wiring
+the same checkpoints and spans.
+
+Any OTel-instrumented agent can point directly at Reeve:
+```bash
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 python your_agent.py
+```
+
+### HTTP proxy (no SDK required)
+
+Point `ANTHROPIC_BASE_URL` at Reeve and any tool that speaks the Anthropic
+API appears in the cockpit with zero integration work:
+
+```bash
+ANTHROPIC_BASE_URL=http://localhost:4318 claude
+```
+
+The trace tree is reconstructed from the traffic itself: agentic clients
+resend the conversation on every call, so consecutive requests thread into
+turns, and a `tool_use` in one response plus its `tool_result` in the next
+request becomes a tool span with a real duration. Claude Code's task
+structure renders live without a single line of instrumentation, web
+searches included.
+
+Interventions work through the proxy too. Redirect and inject context apply
+by modifying the agent's next request. Kill is a circuit breaker: the proxy
+refuses to forward the agent's Messages requests, which means kill on the
+proxy path is stronger than the SDK's cooperative version, not weaker. Pause
+is the honest exception; holding a request reads as an outage to the client,
+so proxy agents show reduced capabilities rather than a pause that lies.
+
+Your API key passes through in memory only. It is never logged, never
+persisted, and never attached to any span; a test pins this.
+
+The full story, including budgets, secret scanning, and exactly which
+guarantee each intervention carries on this path, is in the
+[proxy path guide](docs/guides/proxy-path.md).
+
+---
+
+## A few things worth saying upfront
+
+**Nothing leaves your machine.** Quality evaluation runs locally via Ollama. If
+Ollama is available, the status bar shows the local backend; if not, Tier 2
+evaluation turns itself off and says so. There is no cloud path, no telemetry,
+no account. This matters if your agents handle anything sensitive. Also just on
+principle.
+
+**Steer, don't block.** Most guardrail systems stop execution when something goes
+wrong. Reeve biases toward redirecting the agent and letting it self-correct. A good
+redirect preserves the work done so far. Kill is there for when you need it. It is
+not the first suggestion.
+
+**One number, not ten.** Faithfulness, tool selection, loop detection, cost, latency: they feed
+one health score. You set one threshold, not ten. The
+individual metrics are still there when you want to understand why the score dropped.
+But the gauge in the header tells you at a glance.
+
+**Reeve is a local developer tool.** Not a production monitoring SaaS. No account to
+create, no cloud dashboard, no team seats. It runs on your machine, talks to your
+agent on localhost, stores data locally. When that's not what you need, other tools
+exist. Datadog and similar platforms handle fleet-level production observability.
+Reeve handles the moment when you are building and running agents locally and
+something is going wrong right now.
+
+---
+
+## Supported frameworks
+
+| Framework | Integration | Observation | Pause/Resume | Redirect |
+|-----------|-------------|-------------|--------------|----------|
+| LangChain | SDK | Full | Yes | Yes |
+| Custom Python | SDK | Full | Yes | Yes |
+| Rust agents | SDK | Full | Yes | Yes |
+| OpenAI Agents SDK | SDK | Full | Yes | Yes |
+| Claude Agent SDK | SDK | Full | Yes | Yes |
+| Claude Code | Proxy | Full | No (by design) | Yes |
+| Any OTel agent | OTel | Full | No | No |
+
+---
+
+## Install
+
+Prebuilt binaries for Linux and macOS are on the
+[releases page](https://github.com/Dancode-188/reeve/releases/latest).
+Download, `chmod +x`, run. Nothing to build.
+
+From crates.io:
+```bash
+cargo install reeve-cockpit
+```
+
+From source:
+```bash
+git clone https://github.com/Dancode-188/reeve
+cd reeve
+cargo build --release
+./target/release/reeve
+```
+
+Building from source needs Rust 1.85+ and nothing else. Linux and macOS,
+both in CI; on Windows, run it inside WSL (native Windows is not
+supported). Use `--ascii` if the Unicode characters do not render
+correctly.
+
+---
+
+## Configuration
+
+Works without any config file. When you want your own policy rules:
+
+```toml
+# ~/.config/reeve/config.toml
+
+[[rules]]
+id = "my_cost_ceiling"
+name = "cost ceiling"
+description = "Trace crossed two dollars"
+trigger_condition = "cost_usd > 2.0"
+command_type = "pause"            # pause | resume | kill
+requires_confirmation = true      # default true
+cooldown_secs = 300               # default 300
+auto_confirm_after_secs = 30      # optional: auto-execute countdown
+```
+
+Pause and resume reach the agent through its control channel, which only SDK
+agents have. To stop a proxied agent like Claude Code, use kill.
+
+Rules load at startup and reload on `SIGUSR1` without a restart. Conditions
+use the same primitives as the built-in rules: `health_score`, `cost_usd`,
+`span_count`, `predicted_cost_at_completion`, and any evaluation metric by name.
+
+---
+
+## Documentation
+
+- [Architecture Decision Records](docs/adr/README.md): every significant design
+  decision documented with context, alternatives considered, and consequences.
+  Why a 2-second straggler window and not 30 seconds. Why phi4-mini. Why the
+  control channel is separate from the OTel channel. Most projects lose this
+  reasoning the moment a decision is made. It is all in here.
+- [Roadmap](ROADMAP.md)
+- [Architecture](docs/ARCHITECTURE.md): the pipeline, the crates, and the
+  invariants they hold each other to.
+
+---
+
+## Contributing
+
+Issues and PRs are welcome. If you find a bug, open an issue. If you want to add
+a framework adapter, read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+
+Before opening a PR for a design-level change, check [docs/adr/](docs/adr/) to see
+if the relevant decision is already there. If it is, your PR should explain why you
+are departing from it. If it is not, your PR should include a new ADR. This is not
+bureaucracy. It is just how the project keeps its reasoning from getting lost.
+
+---
+
+## Credits
+
+[Ratatui](https://ratatui.rs) powers the terminal UI. Without it this would be a
+wall of `println!` calls and nobody would use it.
+
+The cockpit layout draws from three things: [btop](https://github.com/aristocratos/btop)
+for information density and the braille graph aesthetic,
+[lazygit](https://github.com/jesseduffield/lazygit) for the navigation model and
+always-visible footer keybindings, and [k9s](https://github.com/derailed/k9s) for
+real-time context switching without interrupting focus. All three are worth using
+on their own.
+
+The [OpenTelemetry](https://opentelemetry.io) GenAI semantic conventions team for
+the unglamorous work of standardizing how AI systems report behavior.
+
+---
+
+## License
+
+Apache 2.0. See [LICENSE](LICENSE).
+
+Use it, modify it, build on it. Attribution required. Works for individuals and
+companies alike.
+
+---
+
+*Named after the historical reeve: an overseer who managed workers on behalf of
+an authority. That is exactly what this does.*

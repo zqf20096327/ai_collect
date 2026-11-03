@@ -1,6 +1,8 @@
 # H3 Higgsfield
 
-**Current release: 2.6.0 · verified installation and adapter readiness**
+**Current release: 2.7.0 · guarded updates and Comfy Kitchen attention by default**
+
+The launcher prepares pinned ComfyUI 0.43.0 and selects native Comfy Kitchen INT8 attention for the server. It verifies loaded attention, Python environment and runtime source before readiness. Use `--attention-backend pytorch` for the explicit baseline. [2.7 verification and upgrade limits](docs/RELEASE_2_7.md): this release has not completed a new GPU render.
 
 ### Start a scene directly
 
@@ -17,6 +19,8 @@ Create Image follows the same new-page/reload rule and keeps its client identity
 [2.6 release verification](docs/RELEASE_2_6.md) records code, installation and current-server GPU test boundaries.
 
 ### Updates and ComfyUI
+
+Source ZIP launches now create a persistent official Git checkout under the selected ComfyUI root for automatic main updates. The archive remains preserved; packaged ancestry and hashes reject older main or modified archive files. `--no-update` explicitly keeps a frozen archive.
 
 The shared video/image header opens the ComfyUI node editor in a separate tab. Updates shows a numbered badge when a new official revision is available and checks again while Studio is in use. Checks compare official source, installed interface/backend files and the code observed by the running worker. An incomplete copy or missing restart reports installation attention; a failed check cannot keep an older up-to-date claim. This checks Studio code; model/LoRA files are separate prerequisites. The update sheet preserves generation and recovery guards; installation still requires an idle queue and a manual ComfyUI restart.
 

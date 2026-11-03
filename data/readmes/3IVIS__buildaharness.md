@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-v0.8.0-brightgreen.svg)](https://github.com/3IVIS/buildaharness/releases)
 [![Status](https://img.shields.io/badge/status-public%20alpha-orange.svg)](https://github.com/3IVIS/buildaharness)
-[![Tests](https://img.shields.io/badge/tests-6%2C941%20passing-brightgreen.svg)](#)
+[![Tests](https://img.shields.io/badge/tests-6%2C979%20passing-brightgreen.svg)](#)
 [![GitHub Stars](https://img.shields.io/github/stars/3IVIS/buildaharness?style=social)](https://github.com/3IVIS/buildaharness/stargazers)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -157,6 +157,14 @@ await aielia.turn('Send an email to my boss saying I quit.', { approved: true })
 **[Try it in your browser → myaielia.com/try](https://myaielia.com/try)**
 — bring your own key (stored only in your browser), or see the approval gate
 fire before you add one.
+
+**[Aielia Write → myaielia.com/write](https://myaielia.com/write)** — a second browser
+page for writing an article with Aielia beside it. It tracks the article's claims and their
+sources, checks claims against web pages, code files and repositories, and changes the text
+only as suggestions you accept. Same bring-your-own-key model as the chat page; see
+[`packages/chat-ui/README.md`](packages/chat-ui/README.md#aielia-write-write). It is alpha
+software. The desktop app has it too: the drop-down next to "Aielia" in the title switches
+between Chat and Write, on the web pages as well.
 
 One core, three front ends: terminal CLI, browser (`@buildaharness/chat-ui`),
 and native desktop (`@buildaharness/desktop`).
@@ -312,5 +320,7 @@ Full props reference: [`packages/canvas/README.md`](packages/canvas/README.md)
 <div align="center">
 
 Apache 2.0 — see [LICENSE](LICENSE).
+
+The Aielia apps and the myaielia.com site are covered by the [Terms of Use](https://myaielia.com/terms.html) and the [Privacy Policy](https://myaielia.com/privacy.html).
 
 </div>

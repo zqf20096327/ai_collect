@@ -11,7 +11,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2603.04379-b31b1b.svg?logo=arxiv)](https://arxiv.org/abs/2603.04379)
 [![hf_paper](https://img.shields.io/badge/🤗-Paper%20In%20HF-red.svg)](https://huggingface.co/papers/2603.04379)
 [![Project Page](https://img.shields.io/badge/Project-Website-2ea44f)](https://pku-yuangroup.github.io/Helios-Page)
-[![hf_space](https://img.shields.io/badge/🤗-Gradio-00b4d8.svg)](https://huggingface.co/spaces/multimodalart/Helios-Distilled/)
+[![hf_space](https://img.shields.io/badge/🤗-Gradio-00b4d8.svg)](https://huggingface.co/spaces/BestWishYsh/Helios-14B-RealTime)
 [![HuggingFace](https://img.shields.io/badge/🤗-HuggingFace-blue)](https://huggingface.co/collections/BestWishYsh/helios)
 [![ModelScope](https://img.shields.io/badge/🤖-ModelScope-purple)](https://modelscope.cn/collections/BestWishYSH/Helios)
 [![GitHub](https://img.shields.io/badge/GitHub-black?logo=github)](https://github.com/PKU-YuanGroup/Helios)
@@ -21,6 +21,7 @@
 [![Diffusers](https://img.shields.io/badge/Inference-Diffusers-blueviolet)](https://github.com/huggingface/diffusers/pull/13208)
 [![SGLang Diffusion](https://img.shields.io/badge/Backend-SGLang--Diffusion-yellow)](https://github.com/sgl-project/sglang/pull/19782)
 [![vLLM-Omni](https://img.shields.io/badge/Backend-vLLM--Omni-orange)](https://github.com/vllm-project/vllm-omni/pull/1604)
+
 
 
 </h5>
@@ -44,18 +45,14 @@ This repository is the official implementation of Helios, which is a breakthroug
 
 ## 🎬 Video Demos
 
-<!-- <div align="center">
-  <video src="https://github.com/PKU-YuanGroup/Helios-Page/blob/main/videos/helios_features.mp4?raw=true" width="70%" controls="controls" poster=""></video>
-</div>
-
-or you can click <a href="https://www.youtube.com/watch?v=vd_AgHtOUFQ">here</a> to get the video. Some best prompts are [here](./example/prompt.txt). -->
-
 [![Demo Video of Helios](https://github.com/user-attachments/assets/1d10da4a-aba9-4ac1-ab02-cd0dfce8d35b)](https://www.youtube.com/watch?v=vd_AgHtOUFQ)
 or you can click <a href="https://github.com/PKU-YuanGroup/Helios-Page/blob/main/videos/helios_features.mp4">here</a> to get the video. Some best prompts are [here](./example/prompt.txt).
 
 
 ## 📣 Latest News!!
 
+* `[2026.11.01]` 🎉 Helios has been accepted by IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)!
+* `[2026.07.28]` 👋 [CNAPS.AI](https://cnaps.ai/) has provided a flexible workflow of Helios on their online inference service platform. You can check their [blog 1](https://docs.cnaps.ai/helios-base) and [blog 2](https://docs.cnaps.ai/helios-distilled) for an easy tutorial and more adaptable parameters to better use Helios there.
 * `[2026.03.26]` 🔥 Add summary of FAQ, Tips, and Tutorals: https://github.com/PKU-YuanGroup/Helios/issues/47.
 * `[2026.03.24]` 👋 A community-made, unofficial YouTube tutorial for Helios is available [here](https://www.youtube.com/watch?v=AvFniggt6qg). It covers installation on a **consumer-grade PC** and supports **4K video generation**.
 * `[2026.03.20]` 🚀 Helios now supports [Ahead-of-Time Compilation (AOTI)](https://huggingface.co/blog/zerogpu-aoti) on Spaces, with special thanks to the HuggingFace Team! Please refer to [this Space](https://huggingface.co/spaces/BestWishYsh/Helios-14B-RealTime-AOTI) for a usage example.
@@ -82,8 +79,36 @@ If your work has improved **Helios** and you would like more people to see it, p
 * [SGLang-Diffusion](https://github.com/sgl-project/sglang/pull/19782): An inference framework for accelerated image and video generation using diffusion models. It provides an end-to-end unified pipeline with optimized kernels and an efficient scheduler loop.
 * [vLLM-Omni](https://github.com/vllm-project/vllm-omni/pull/1604): A fully disaggregated serving system for any-to-any models. vLLM-Omni breaks complex architectures into a stage-based graph, using a decoupled backend to maximize resource efficiency and throughput.
 * [Cache-DiT](https://github.com/vipshop/cache-dit/pull/834): A PyTorch-native and Flexible Inference Engine with Hybrid Cache Acceleration and Parallelism for DiTs. It built on top of the Diffusers library and now supports nearly ALL DiTs from Diffusers.
+* [CNAPS.AI](https://docs.cnaps.ai/helios-base): An AI creation platform for generating and editing visual content through text, images, and videos, with an accessible interface for creative production workflows.
 
+## ⚙️ Requirements and Installation
 
+### Video Tutorial
+
+If you prefer a step-by-step walkthrough, check out this **community-made** [YouTube Tutorial](https://www.youtube.com/watch?v=AvFniggt6qg). It covers local installation, 4K video generation, and how to run Helios on a **consumer-grade PC**, along with other practical usage tips.
+
+### Prepare Environment
+
+```bash
+# 0. Clone the repo
+git clone --depth=1 https://github.com/PKU-YuanGroup/Helios.git
+cd Helios
+
+# 1. Create conda environment
+conda create -n helios python=3.11.2
+conda activate helios
+
+# 2. Install PyTorch (adjust for your CUDA version)
+# CUDA 12.6
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu126
+# CUDA 12.8
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu128
+# CUDA 13.0
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu130
+
+# 3. Install dependencies
+bash install.sh
+```
 
 ### Model Download
 
@@ -117,7 +142,6 @@ modelscope download BestWishYSH/Helios-Mid --local_dir BestWishYSH/Helios-Mid
 modelscope download BestWishYSH/Helios-Distilled --local_dir BestWishYSH/Helios-Distilled
 ```
 
-
 ## 🚀 Inference
 
 
@@ -131,6 +155,34 @@ Helios uses an autoregressive approach that generates **33 frames per chunk**. F
 | 720        | 726 (33×22)     | ~30s | ~45s |
 | 240        | 264 (33×8)      | ~11s | ~16s |
 | 129        | 132 (33×4)      | ~5.5s | ~8s |
+| 81         | 99  (33×3)      | ~4s | ~6s |
+
+### Run the model
+
+We provide inference scripts for all models covering text-to-video, image-to-video, and video-to-video in this [directory](./scripts/inference).
+
+```bash
+cd scripts/inference
+
+# For Helios-Base
+bash helios-base_t2v.sh
+bash helios-base_i2v.sh
+bash helios-base_v2v.sh
+
+# For Helios-Mid
+bash helios-mid_t2v.sh
+bash helios-mid_i2v.sh
+bash helios-mid_v2v.sh
+
+# For Helios-Distilled
+bash helios-distilled_t2v.sh
+bash helios-distilled_i2v.sh
+bash helios-distilled_v2v.sh
+
+# For Interactive
+# ⚠️ This feature is still under development — results may not always meet expectations
+cd scripts/inference/experiment_interactive
+```
 
 ### Sanity Check
 
@@ -192,7 +244,6 @@ For example, let's take Helios-Base with 4 GPUs.
   ```
   
 </details>
-
 
 ### ✨ Diffusers Pipeline
 
@@ -485,11 +536,52 @@ For example, let's take Helios-Base. **(Diffusers Backend)**
   ```
 </details>
 
-## 🙌 Description
+### ✨ CNAPS.AI Online Workflow
 
-- **Repository:** [Code](https://github.com/PKU-YuanGroup/Helios), [Page](https://pku-yuangroup.github.io/Helios-Page/)
-- **Paper:** [https://huggingface.co/papers/2603.04379](https://huggingface.co/papers/2603.04379)
-- **Point of Contact:** [Shenghai Yuan](shyuan-cs@hotmail.com)
+[CNAPS.AI](https://cnaps.ai/) has provided a flexible workflow of Helios on their online inference service platform. You can check their [blog 1](https://docs.cnaps.ai/helios-base) and [blog 2](https://docs.cnaps.ai/helios-distilled) for an easy tutorial and more adaptable parameters to better use Helios there.
+
+[![CNAPS.AI](https://github.com/user-attachments/assets/d04d94d0-1e64-4200-b76e-96cc597ae37f)](https://docs.cnaps.ai/helios-base)
+
+## 🗝️ Training
+
+We use a three-stage progressive pipeline, all the setting can be found [here](./scripts/training/configs/). Stage-1 (Base) performs architectural adaptation: we apply Unified History Injection, Easy Anti-Drifting, and Multi-Term Memory Patchification to convert the bidirectional pretrained model into an autoregressive generator. Stage-2 (Mid) targets token compression by introducing Pyramid Unified Predictor Corrector, which aggressively reduces the number of noisy tokens and thus the overall computation. Stage-3 (Distilled) applies Adversarial Hierarchical Distillation, reducing the sampling steps from 50 to 3 and eliminating the need for classifier-free guidance (CFG). Throughout training, we apply dynamic shifting to all timestep-dependent operations to match the noise schedule to the latent size.
+
+### Data Preparation
+
+Please refer to [this guide](./tools/offload_data/README.md) for how to obtain the training data required by Helios. And we prepare a toy training data [here](https://huggingface.co/BestWishYsh/HeliosBench-Weights/tree/main/demo_data).
+
+### Run the model
+
+```bash
+# Use DDP
+bash scripts/training/train_ddp.sh
+
+# or
+
+# Use DeepSpeed
+bash scripts/training/train_deepspeed.sh
+```
+
+Training configuration can be adjusted in `scripts/training/configs`. You can use `scripts/training/compare_yaml.py` to check for configuration completeness or differences between stages.
+
+### Model Merging
+
+After training, you can use this [script](./tools/merge_lora_for_helios.py) to merge all the checkpoints and obtain the final safetensors file, similar to [this](https://huggingface.co/BestWishYsh/Helios-Distilled/tree/main/transformer).
+
+
+## 📊 HeliosBench
+
+HeliosBench is a specialized benchmark for real-time long-video generation, please refer to [this guide](./eval/README.md) for how to eval your own model.
+
+
+## 👍 Acknowledgement
+
+This project wouldn't be possible without the following open-sourced repositories: [Open-Sora Plan](https://github.com/PKU-YuanGroup/Open-Sora-Plan), [Ascend](https://www.hiascend.com), [Diffusers](https://github.com/huggingface/diffusers), [vLLM-Omni](https://github.com/vllm-project/vllm), [SGLang Diffusion](https://github.com/sgl-project/sglang), [Wan](https://github.com/Wan-Video/Wan2.1), [FramePack](https://github.com/lllyasviel/FramePack), [PyramidFlow](https://github.com/jy0205/Pyramid-Flow), [DMD](https://github.com/tianweiy/DMD2).
+
+
+## 🔒 License
+
+This project is released under the Apache 2.0 license as found in the [LICENSE](LICENSE) file.
 
 ## ✏️ Citation
 
@@ -503,3 +595,9 @@ If you find our paper and code useful in your research, please consider giving a
   year={2026}
 }
 ```
+
+## 🤝 Contact
+
+For questions and feedback, please contact us at: shyuan-cs@hotmail.com
+
+

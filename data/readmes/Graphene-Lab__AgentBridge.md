@@ -19,6 +19,117 @@ AgentBridge stands apart from the harnesses you are familiar with because it is 
 > **Why teams choose this architecture**
 > AgentBridge is built on the AIOrchestrator library model: one runtime, one agent core, and one consistent operational flow across terminal and API. The result is faster execution, lower integration overhead, and stronger control than traditional multi-server MCP setups. Read the white paper: [Why the AIOrchestrator Library Model Outperforms Traditional MCP Deployments](docs/AIORCHESTRATOR-WHITEPAPER.md).
 
+## The architecture: one solution, and everything in it is a plugin
+
+AgentBridge is **not a single project**. It is a **solution** — a set of .NET projects that form
+one whole — and the repository you are reading is only the *host* that assembles it. The other
+pieces live in repositories of their own, and each one is a plugin: a library that gives the agent
+one family of abilities.
+
+| Layer | What it does | Where it lives |
+| :--- | :--- | :--- |
+| **AgentBridge** — the host | Terminal UI, OpenAI-compatible API, sessions, voice, TTS, Telegram and SIP bridges, OfficeManager | **this repository** |
+| **AIOrchestrator / AgentHarness** — the core | The agent loop, the deterministic memory, and the tool contract every plugin implements | [Graphene-Lab/AIOffice](https://github.com/Graphene-Lab/AIOffice) |
+| **The plugins** — the abilities | One compiled library per domain: Word, Excel, PowerPoint, PDF, podcasts, CAD, maps, ERP, Odoo, Power BI, Markdown | one repository each — list below |
+| **The support libraries** | Deterministic code intelligence that reads a compiled assembly and derives its tool interface from it | [UISupportGeneric](https://github.com/Graphene-Lab/UISupportGeneric) · [GiraffeAI](https://github.com/Graphene-Lab/GiraffeAI) |
+
+```mermaid
+flowchart TB
+    subgraph Host["AgentBridge — the host (this repository)"]
+        TUI["Terminal UI · Web GUI · API"]
+        LOOP["Agent loop<br/>(AgentHarness)"]
+    end
+    subgraph Plugins["Tools/ — the plugins folder"]
+        DOC["OfficeTool → .docx .xlsx .pptx .pdf"]
+        WORD["DocumentTool → Word"]
+        SHEET["SpreadsheetTool → Excel"]
+        DECK["PresentationTool → PowerPoint"]
+        MORE["PodcastTool · MapTool · FreeCADTool<br/>ErpTool · OdooTool · PowerBITool …"]
+    end
+    TUI --> LOOP
+    LOOP -- "direct method call<br/>in-process, no protocol" --> DOC
+    LOOP --> WORD
+    LOOP --> SHEET
+    LOOP --> DECK
+    LOOP --> MORE
+```
+
+**No project references a plugin at compile time.** The host hands the agent tool *names*; the
+plugin host scans the plugins folder (`Tools/`, next to the executable) at startup, loads the
+assemblies and resolves those names to real types at runtime — then hot-adds any plugin that
+appears later, 30 seconds after it lands. Adding an ability means dropping a folder in: no
+rebuild, no registration, no service to start, no schema to keep in sync.
+
+### The idea: the agent calls software, not a protocol
+
+The mainstream way to make an agent agentic is MCP: the model speaks JSON-RPC to a separate
+process, which does the work and answers. AgentBridge does the opposite, and that is why this
+product is a solution of libraries instead of a bundle of servers.
+
+**The agent uses the library directly.** It has to create or modify a Word document? It calls the
+library that edits Word documents — exactly the way any application calls a low-level library —
+and gets the result back as a value, in the same process, as a native method call.
+
+Concretely, what changes:
+
+- **No protocol hop.** No second process, no HTTP round-trip, no serialization between the agent
+  and its action: a tool call *is* a method call. The failure modes of a protocol — timeouts,
+  transport errors, version skew between client and server — simply do not exist.
+- **Granular control, not a reduced surface.** The agent drives the real API of the library, not
+  the handful of endpoints someone decided to expose: it can style a run of text, set a page
+  break, keep a template's numbering — every parameter the library accepts.
+- **Deterministic interfaces.** The tool interface is derived from the compiled code, so the model
+  is offered the methods that exist and only those: no invented endpoints, no drifting schema.
+- **Type-safe errors.** A failure arrives as a .NET exception that the harness catches and reports
+  back in words the model can act on — not as an opaque protocol error.
+- **Context economy.** Only the plugins that are **enabled** exist for the agent. A disabled
+  plugin is absent from the catalog entirely: it costs zero context tokens and cannot be
+  hallucinated, because for the agent it does not exist. Abilities are not paid for twice — once
+  in the prompt prefix on every turn, and again when they are unused. The agent cannot switch one
+  on either: nothing in the tool set writes the tool policy, so what an agent is allowed to do
+  stays your decision — taken from `/tools`, from `tools.json`, or from the `tools` field of an
+  API request.
+- **One artifact, no drift.** The tool and the code it calls are the same assembly, built and
+  shipped together.
+- **A sandbox around every call.** Every tool call passes through the harness, which enforces the
+  action perimeter structurally — no plugin method can step outside it.
+
+MCP solved a real problem: reaching software you cannot link against, written by someone else,
+running somewhere else. As the *general* architecture of a system you build yourself, though, it
+puts a protocol where a function call belongs, and pays for that in latency, in configuration and
+in context window. Here the software is ours, it is compiled, and it sits on disk — so the agent
+gets the libraries themselves, and the architecture the agent follows is the one programmers
+already use.
+
+MCP stays in the product as an **interoperability** channel, not as an internal one: outside
+clients can drive these agents over MCP ([Use AgentBridge as an MCP server](#use-agentbridge-as-an-mcp-server)),
+and the agent can reach third-party MCP servers it is given. What it never does is speak MCP to
+its own abilities — those are assemblies, called directly.
+
+**The plugins** — each a repository of its own, each a compiled library:
+
+- **Documents** — [OfficeTool](https://github.com/Graphene-Lab/OfficeTool) (real DOCX/XLSX/PPTX/PDF
+  from a prompt), [DocumentTool](https://github.com/Graphene-Lab/DocumentTool) (Word: paragraphs,
+  tables, headers, charts, images), [SpreadsheetTool](https://github.com/Graphene-Lab/SpreadsheetTool)
+  (Excel: cells, ranges, styles, charts, tables),
+  [PresentationTool](https://github.com/Graphene-Lab/PresentationTool) (slide decks PPTX and HTML),
+  [OfficeSupportTool](https://github.com/Graphene-Lab/OfficeSupportTool) (document workflows from
+  HTML content)
+- **Media and research** — [PodcastTool](https://github.com/Graphene-Lab/PodcastTool) (script, TTS,
+  mixing, RSS), [MapTool](https://github.com/Graphene-Lab/MapTool),
+  [AllToMarkdown](https://github.com/Graphene-Lab/AllToMarkdown) (any document format → Markdown)
+- **Engineering and business** — [FreeCADTool](https://github.com/Graphene-Lab/FreeCADTool)
+  (parametric 3D CAD), [ErpTool](https://github.com/Graphene-Lab/ErpTool),
+  [OdooTool](https://github.com/Graphene-Lab/OdooTool),
+  [PowerBITool](https://github.com/Graphene-Lab/PowerBITool)
+- **Always in the front line** — WebTool, FileTool, GitTool, TaskSchedulerTool and
+  MalfunctionReporterTool ship inside the host, because every agent needs them on its first turn.
+
+Writing one yourself is the whole integration: derive from `BaseAgentTool`, build, drop the folder
+into `Tools/`, and the agent can use it. How the pieces fit together — the system tools inside the
+engine, the plugins loaded from `Tools/`, and how a name becomes a type — is described in
+[AgentBridge → AIOrchestrator → tools](docs-dev/02-AgentBridge-AIOrchestrator-Tools.md).
+
 ## Install & download
 
 [![Download for your OS](https://img.shields.io/badge/Download%20for%20your%20OS-238636?style=for-the-badge&logo=download&logoColor=white)](https://graphenelab.it/AgentBridge/download/)
@@ -207,7 +318,7 @@ Our **Agentic AI** is designed to be installed on standalone devices, such as mi
   A robust anonymization service protects personal data — names, keys and sensitive identifiers — before any request reaches an external LLM provider (Copilot, Gemini, ChatGPT, DeepSeek and more), and restores it seamlessly in the reply. It is enabled with a single switch, adds no perceptible latency to agentic interactions, and is completely transparent to the user: the agent keeps its full power while the machine never exposes what should stay private. This makes the platform a strong fit for the European market, where GDPR compliance is a hard requirement.
 
 - **Universal Tool System (UTS) — Tools That Run Natively, Not as Scripts**
-  Our Universal Tool System gives the AI its abilities through **plugins that are compiled .NET assemblies** the agent drives directly — no Python, no Node, no interpreter, and no framework stack to install. Deterministic intelligence (UISupportGeneric) reads the compiled code and builds the tool interface **on the fly**, exactly and without hallucination; the generative AI then picks and drives the right tool. The result is a **faster, more responsive AI**: tools run as native machine code — modern .NET compilers rival hand-tuned C/C++ — and are called **in-process with zero overhead**, with no interpreters, no HTTP and no serialization between the agent and its actions. The machine stays light, answers come back sooner, and the heaviest jobs finish faster — all inside a **native application‑level sandbox** (a structural action perimeter that no tool method can breach) that needs no chroot, Docker or VMs. Tools are **universal** — a single AnyCPU binary runs on Windows, Linux, macOS and iOS — and are installed by simply dropping a folder into `Tools/`, with **hot‑add**: new plugins are activated live, 30 seconds after they appear, without a restart. End‑user guide: [Universal Tool System (UTS)](https://github.com/Graphene-Lab/AgentHarness/blob/master/docs/universal-tool-system.md).
+  with **hot‑add**: new plugins are activated live, 30 seconds after they appear, without a restart. End‑user guide: [Tools — the agent's hands](docs/guide/00-How-It-Works.md#tools--the-agents-hands).
 
 - **Native MCP Interoperability — One Agent, Standard Control**
   AgentBridge now exposes its autonomous runtime through a native MCP interface, so the same production agent can be controlled from standard MCP clients without external adapter layers. This means one orchestrator, one memory flow and one operational perimeter across terminal chat, OpenAI-compatible integrations and MCP ecosystems. In practice, teams can adopt AgentBridge as a high-capability agent core while preserving protocol-level compatibility and reducing integration complexity.
@@ -381,6 +492,7 @@ feature-by-feature comparison with the closest alternatives in that space.
   endpoint any client uses, so you can chat in the TUI while a script keeps driving the
   agents on the same port, simultaneously.
 - **Map tool** — this tool represents a versatile solution for exploring the surrounding territory, offering professionals and individuals the ability to access detailed geographic information with remarkable simplicity. For businesses, it becomes a valuable strategic ally, enabling the identification of specific commercial activities in any geographic area while supporting market analysis through the mapping of competitors and services present in a given region. Sales teams can leverage it to generate new business contacts, while corporate logistics benefits from optimized route planning for deliveries or technical interventions. For private users, the tool transforms into a daily guide for discovering restaurants, pharmacies, ATMs, parks, museums, and tourist attractions nearby, facilitating the search for essential services and leisure venues. The platform supports various search methods: category-based search allows quick identification of all establishments of a particular type, while name-based search enables finding a specific place by typing its address or business name. An advanced search function applies precise filters, such as locating restaurants with a specific cuisine type, wheelchair-accessible facilities, or establishments open 24 hours a day. Route calculation completes the experience by providing detailed driving directions with distances and travel times, adaptable to different transportation modes including driving, cycling, or walking. With global coverage extending to every country worldwide, this search engine proves to be a powerful and reliable tool both for those making strategic business decisions and for those simply looking for a good restaurant or essential service nearby.
+- **Legal assistant tool** — professional legal opinions and consultations, not generic answers: [LegalAssistantTool](https://github.com/Graphene-Lab/LegalAssistantTool) grounds every statement in a verifiable body of law — the Italian civil and criminal codes, article by article — correlated with the case law that interprets them, quoting the article text and the exact judgment reference with a link to the official source, and it refuses to cite a norm or a decision that does not exist in its archive. Ask the agent for an opinion on a concrete case, attach the documents, and the answer comes back reasoned and cited — optionally turned into a formal Word document by the office tools. Other jurisdictions can be added on request.
 
 ## Quick start
 
@@ -485,7 +597,9 @@ investigated immediately. How the reporting works — and how to switch it off �
 ## How it works
 
 `AIOrchestrator` is a .NET library — it cannot run alone. AgentBridge hosts it and exposes
-its chat pipeline as a standard web API. **One process. Your machine. Your agents.**
+its chat pipeline as a standard web API. **One process. Your machine. Your agents.** How the
+pieces fit together, and why the agent calls libraries instead of MCP servers, is described in
+[the architecture section](#the-architecture-one-solution-and-everything-in-it-is-a-plugin).
 
 **Why .NET.** .NET is open source — MIT license, developed in the open at
 [github.com/dotnet/runtime](https://github.com/dotnet/runtime) — and the same code runs on
@@ -631,7 +745,9 @@ work it automates can indeed be automated.
   harness whose tools are compiled .NET assemblies driven as plugins.
 - **Is AgentBridge free?** Yes — fully open-source under the
   [GNU Affero General Public License v3.0](LICENSE.md). The **plugin tools** — the agent's
-  action engine — ship under the same **AGPL v3.0** license (each `*Tool` repository).
+  action engine — ship under the same **AGPL v3.0** license (each `*Tool` repository), except
+  [LegalAssistantTool](https://github.com/Graphene-Lab/LegalAssistantTool), released under the
+  Andrea Bruno License 1.4.
 - **Which LLMs does it support?** DeepSeek, Z.ai, Gemini, Anthropic and any
   OpenAI-compatible endpoint — plus local models via Ollama, ExLlamaV2 or a local bridge,
   switchable on the fly.
@@ -645,6 +761,12 @@ work it automates can indeed be automated.
   `io.github.Graphene-Lab/agentbridge`) and it goes further: tools run in-process as
   compiled .NET plugins inside an application-level sandbox, with no separate servers,
   interpreters or HTTP hops between the agent and its actions.
+- **Can it give legal advice?** Yes, with a scope that is stated instead of implied. The
+  [LegalAssistantTool](https://github.com/Graphene-Lab/LegalAssistantTool) plugin answers Italian civil
+  and criminal questions and drafts legal opinions that cite only articles and judgments present in its
+  local archive, each with the exact reference and a link to the official source; a citation that cannot
+  be verified is removed before the answer is returned, and the output always carries the disclaimer
+  that it supports — and does not replace — a lawyer. Other countries can be added on request.
 - **What hardware does it need?** From a Raspberry Pi / Rockchip RK3588-class device up to
   a Ryzen AI Max+ 395, NVIDIA GB10 or Jetson — see the
   [hardware section](#agent-bridge-your-ai-assistant-for-office-work).

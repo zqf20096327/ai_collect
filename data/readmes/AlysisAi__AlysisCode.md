@@ -14,6 +14,7 @@
   <a href="https://github.com/AlysisAi/AlysisCode/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/AlysisAi/AlysisCode/ci.yml?style=flat-square&label=ci"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/pypi/l/alysis-code?style=flat-square"></a>
   <a href="https://github.com/AlysisAi/AlysisCode"><img alt="Stars" src="https://img.shields.io/github/stars/AlysisAi/AlysisCode?style=flat-square"></a>
+  <a href="https://discord.gg/psEVWZgzFS"><img alt="Discord members" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Fv10%2Finvites%2FpsEVWZgzFS%3Fwith_counts%3Dtrue&amp;query=%24.approximate_member_count&amp;label=discord&amp;suffix=%20members&amp;style=flat-square&amp;logo=discord&amp;logoColor=white&amp;color=5865F2"></a>
 </p>
 
 <p align="center">
@@ -21,6 +22,7 @@
   <a href="https://alysiscode.com/docs">Docs</a> ·
   <a href="https://alysiscode.com/#desktop-download">Download</a> ·
   <a href="docs/CHANGELOG.md">Changelog</a> ·
+  <a href="https://discord.gg/psEVWZgzFS">Discord</a> ·
   <a href="https://x.com/alysiscode">X</a>
 </p>
 
@@ -118,4 +120,4 @@ Apache-2.0. You can use, modify and distribute the code, including commercially,
 
 ---
 
-**Join the community** [X](https://x.com/alysiscode) | [LinkedIn](https://www.linkedin.com/company/alysisai/) | [GitHub Issues](https://github.com/AlysisAi/AlysisCode/issues)
+**Join the community** [Discord](https://discord.gg/psEVWZgzFS) | [X](https://x.com/alysiscode) | [LinkedIn](https://www.linkedin.com/company/alysisai/) | [GitHub Issues](https://github.com/AlysisAi/AlysisCode/issues)

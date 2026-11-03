@@ -11,7 +11,7 @@
   <a href="https://github.com/metiutek/editorvideo-ai/actions/workflows/ci.yml"><img src="https://github.com/metiutek/editorvideo-ai/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <a href="https://pypi.org/project/vedit-mcp/"><img src="https://img.shields.io/pypi/v/vedit-mcp.svg?style=flat-square" alt="PyPI"/></a>
   <a href="https://pypi.org/project/vedit-mcp/"><img src="https://img.shields.io/pypi/pyversions/vedit-mcp.svg?style=flat-square" alt="Python versions"/></a>
-  <img src="https://img.shields.io/badge/AI%20tools-114-blueviolet?style=flat-square" alt="114 AI tools"/>
+  <img src="https://img.shields.io/badge/AI%20tools-130-blueviolet?style=flat-square" alt="130 AI tools"/>
   <img src="https://img.shields.io/badge/runs-100%25%20local-brightgreen?style=flat-square" alt="Runs locally"/>
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"/>
 </p>
@@ -130,7 +130,7 @@ difference between a demo and something you would actually cut a video with:
 
 | | |
 |---|---|
-| **An agent can actually edit** | 114 MCP tools that are the *same* operations as the buttons: cut, split, speed, keyframes, effects, transitions, render. Nothing is agent-only, nothing is UI-only. |
+| **An agent can actually edit** | 130 MCP tools that are the *same* operations as the buttons: cut, split, speed, keyframes, effects, transitions, render. Nothing is agent-only, nothing is UI-only. |
 | **The agent can see what it did** | `preview_frame` returns the **real rendered frame**, `preview_grid` the whole edit as a contact sheet. An agent that guesses produces garbage; this one looks. |
 | **It cuts on the beat, for real** | `music_beats` returns BPM, beat and bar length, first-beat offset and an energy profile, so cuts land on the music instead of near it. |
 | **It picks the takes** | `plan_edit` splits shots longer than 12s into their own segments and scores them individually — three minutes of continuous footage becomes dozens of candidates with a real in-point. |
@@ -265,7 +265,9 @@ the timeline stays, the frame changes, and `--fill` crops the clips instead of l
 **Cover.** The thumbnail you make elsewhere (an image editor, an image generator, the
 assistant) goes in the *cover* tab: full size in the video's format and small next to the
 title, as it looks in a feed, with a warning when its ratio differs from the video's or it is
-too small or too heavy for YouTube. Over MCP: `set_cover(path)`. The render does not use it.
+too small or too heavy for YouTube. *Make 6 from the video* builds cover options from the
+sharpest frames of the edit, with your title on them; click one to see it full screen, pick it,
+download it. Over MCP: `make_covers`, `add_covers`, `set_cover(path)`. The render does not use it.
 
 ---
 
@@ -292,6 +294,11 @@ server on first launch (approve it once). Anywhere else:
 ```bash
 claude mcp add vedit -- uvx vedit-mcp
 ```
+
+**As a plugin or skill** — the repo is also a Claude Code plugin marketplace:
+`claude plugin marketplace add metiutek/editorvideo-ai` then `claude plugin install vedit@vedit`
+installs the MCP server and the editing skill together; `npx skills add metiutek/editorvideo-ai`
+installs just the skill (`skills/vedit/SKILL.md`) for Codex, Cursor and other agents.
 
 Typical tool flow:
 
@@ -567,6 +574,43 @@ tool fixes it. The agent can also **create styles** on its own with `create_styl
 guide plus a recipe (look, movement, transitions, music curve, accents) that lands in your
 style menu and that `apply_style` actually executes.
 
+<p align="center"><img src="https://raw.githubusercontent.com/metiutek/editorvideo-ai/main/docs/blocchi/demo.gif" alt="Ten of the ready-made blocks, edited and rendered by vedit itself" width="560"/></p>
+
+**Ready-made motion graphics** — `list_blocks` / `add_block` puts a tuned animation on a track
+in one call, no CSS to write. 52 blocks in six families — titles (`lower_third`, `title`,
+`mask_reveal_title`, `glitch_title`, `word_cycle`, `countdown`, `logo_shine`, `chapter_card`,
+`end_card`), text (`caption_pill`, `kinetic_words`, `typewriter`, `chat_messages`,
+`notification_toast`, `location_pin`, `ticker`, `sticker_text`, `speech_bubble`, `quote`...), data
+(`counter`, `bar_chart`, `donut_chart`, `line_chart`, `timeline`, `rating_stars`, `price_tag`,
+`checklist`, `stat_card`, `steps`, `comparison`...), emphasis (`highlight_box`, `circle_highlight`,
+`arrow_pointer`, `marker_highlight`, `subscribe_button`, `alert_banner`), transitions
+(`color_wipe`, `flash_frame`, `iris_wipe`, `blinds_wipe`) and style (`letterbox`, `vignette`,
+`film_grain`, `light_leak`, `scanlines`, `viewfinder`). In the app: *library → graphics*, pick one, fill
+in its text and add it at the playhead. [See them all, rendered by
+vedit itself](docs/blocchi/README.md). Every parameter has a default and is checked (a text is never read as HTML),
+sizes are relative so the same block looks right in 16:9, 9:16 and 1:1, and each one fades out
+inside its own duration. It is an ordinary clip afterwards: move it, trim it, open its HTML.
+
+**Camera moves** — `camera_move` puts a real move on a clip instead of hand-written keyframes: 16
+recipes (`list_moves`) — push in / pull out, pans and tilts, Ken Burns drift, punch-in on a beat,
+zoom burst, whip pan, impact shake, a pulse on every beat of the music (give it the BPM from
+`music_beats`), hand-held, sway, dutch tilt. Pans and tilts start zoomed in just enough that the
+edges never show, the shake is a hash and not `random()` (same clip, same render), and one undo
+removes the whole move.
+
+**A plan before the work** — for a long edit, or anything that generates images or video (it costs),
+`propose_plan` puts the scene list in front of you first: what, how many seconds, which source, an
+estimated cost per scene. You see the times and the totals and approve or ask for changes; nothing is
+built or generated before that. An approved plan is saved next to the project.
+
+**Generate images and video** — `generate_media` makes an image or a video from a prompt
+(optionally starting from an image, to keep the same subject across scenes) and imports it.
+Services: OpenAI or anything with the same `/images/generations` shape (also a local server),
+and fal.ai for images and video (Kling, Veo, Seedance, MiniMax... models are yours to set).
+Keys live in `~/.vedit/gen.json` — set them in the app (the *generate* button, which also lets you generate by hand) or with `vedit gen-setup fal --key …` — never in the project. It costs
+credits, so it is never the agent's call: the editor asks you first, and the same request is
+never paid twice (the file is named after its fingerprint).
+
 **HTML motion graphics** — `add_html` puts an HTML/CSS/JS document on a track as a clip:
 lower thirds, animated titles, counters, infographics, whole screens. The background is
 transparent, so the footage shows through. The page's clock is the clip's clock: CSS
@@ -655,13 +699,33 @@ black, white flashes, slow zooms and punch-ins, shake on the cuts, colour and th
 look, format and letterbox bars, title cards on black, fade in and out. It turns them into a
 personal style: a guide with the real numbers plus a recipe that `apply_style` applies —
 including the reference's actual colour, carried onto every shot with `colormatch` — then
-opens it so you can read and adjust it. Text, graphics and subtitles aren't measured: the
-assistant (chat or MCP) gets a contact sheet with one frame per shot and adds them to the
-guide. Also from the chat ("edit it like this video"), MCP (`learn_style`) and the terminal
+opens it so you can read and adjust it. It also measures what makes narrated videos what
+they are: whether a voice carries the video (how much it speaks, phrase and pause length, and
+how many scene changes land on a pause), slow zooms *and* slow pans, how much happens
+inside a scene while the camera stays still (animation), the dominant palette as hex colours
+and flat-colour chapter cards. Text, characters and graphics can't be measured: from the app,
+the model you picked in the assistant settings looks at two contact sheets (one frame per
+shot, and the longest shots frame by frame) and writes the *visual language* into the saved
+style; from chat or MCP the agent gets the same sheets and adds it to the guide. Also from the chat ("edit it like this video"), MCP (`learn_style`) and the terminal
 (`vedit style learn <link|file> --name … --max-seconds 600`). The first ten minutes are
 analysed by default, and from a video page only that stretch is downloaded; downloads go to
 `~/.vedit/riferimenti`. YouTube needs a recent yt-dlp with its JavaScript solver: the `web`
 extra installs `yt-dlp[default]`, and Node.js is used when there is no Deno.
+
+**Built-in animation and editing skills** — nine skills ship inside the package and the agent
+reads them *before* doing that kind of work (`list_skills`, `use_skill`): `motion-craft` (timing,
+easing, springs, title holds, transitions with a cause), `kinetic-typography`, `data-animation`
+(counters, charts, races), `short-form-video` (retention arc, hooks, caption grouping),
+`lower-thirds`, `explainer-styles` (story arc, whiteboard draw-on), `product-launch` (hook /
+tease / reveal / montage cut to the drop), `talking-head-edit` (word-boundary cuts, padding, audio
+fades, self-checks) and `external-engines` (what to make in Manim, Remotion, HyperFrames or
+Three.js and how to import it). They are condensed and adapted for vedit's own tools from the
+MIT and Apache-2.0 skills of [iart.ai](https://github.com/iart-ai/motion-skills),
+[HyperFrames](https://github.com/heygen-com/hyperframes),
+[video-use](https://github.com/browser-use/video-use) and
+[video-shotcraft](https://github.com/Vincentwei1021/video-shotcraft), with attribution in
+`backend/vedit/skills_incluse/NOTICE.md`. Write a skill with the same name in `~/.vedit/skills`
+and yours wins.
 
 **Editing skills** — your own ways of editing (a podcast format, your travel reels, a channel's
 look) saved as skills: a folder with a `SKILL.md`, the same format as Claude Code skills. Add

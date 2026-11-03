@@ -10,6 +10,8 @@ Lost in a sea of audio model names, papers, and codebases? Explore **100+ audio 
 
 [![Hugging Face](https://img.shields.io/badge/Hugging_Face-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/audio-cpp/audio.cpp-gguf) [![ModelScope](https://img.shields.io/badge/ModelScope-624AFF)](https://www.modelscope.cn/models/HereIsMark/audio.cpp-gguf) [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/0xShug0/audio.cpp/blob/main/Notebooks/colab_audio_cpp.ipynb) [![Open Architecture Atlas](https://img.shields.io/badge/Open-Architecture_Atlas-007e70?logo=huggingface&logoColor=white)](https://huggingface.co/spaces/audio-cpp/Audio-Model-Architecture-Atlas)
 
+**Supported backends:** [![CPU](https://img.shields.io/badge/CPU-555555)](#linux-build) [![CUDA](https://img.shields.io/badge/CUDA-76B900?logo=nvidia&logoColor=white)](#linux-build) [![HIP/ROCm](https://img.shields.io/badge/HIP%2FROCm-ED1C24?logo=amd&logoColor=white)](#hiprocm-build) [![Vulkan](https://img.shields.io/badge/Vulkan-AC162C?logo=vulkan&logoColor=white)](#linux-build) [![Metal](https://img.shields.io/badge/Metal-000000?logo=apple&logoColor=white)](#metal-build) [![WebGPU](https://img.shields.io/badge/WebGPU-005A9C?logo=webgpu&logoColor=white)](#webgpu-build)
+
 <p align="center">
   <a href="assets/figure/technology_cloud_v1.png">
     <img src="assets/figure/technology_cloud_v1.png" alt="Core technologies used by audio.cpp models" width="36%" align="top">
@@ -37,7 +39,7 @@ Highlights:
 
 - **Parity.** Strong parity tooling against Python reference paths.
 - **Performance.** Performance-focused execution, reusable sessions, and batch-style offline inference. **Optimized for CUDA**.
-- **Portability.** A portable native stack centered on `ggml`, with CUDA, HIP/ROCm, Vulkan, Metal, and CPU backends behind shared CLI and server entry points instead of Python-only deployment paths.
+- **Portability.** A portable native stack centered on `ggml`, with CUDA, HIP/ROCm, Vulkan, Metal, WebGPU, and CPU backends behind shared CLI and server entry points instead of Python-only deployment paths.
 - **Pipelines.** Experimental JSON pipeline support for higher-level multi-step workflows.
 - **Audio Utilities.** Built-in denoise, enhancement, resampling, and STFT/ISTFT utilities for real production-style task paths. Model-based utilities need separately downloaded weights; see [downloads and usage](docs/audio_tools.md#built-in-audio-utilities).
 
@@ -239,6 +241,7 @@ Community model ports live under `community_models` to make the ownership bounda
 | **soprano_tts** | TTS | en | GGUF Q8, Stream | [@drzsdrtfg](https://github.com/drzsdrtfg) | [Soprano-1.1-80M](https://huggingface.co/WalkingCat/Soprano-1.1-80M-GGUF) ultra-lightweight TTS with Qwen3 LM + Vocos decoder |
 | **sopro_tts** | TTS, Clone | en, pt, fr, de | Safetensors, GGUF F16, Stream | [@Brioch](https://github.com/Brioch), [@samuel-vitorino](https://github.com/samuel-vitorino) (model author) | [Sopro V2 Turbo](docs/models/sopro_tts.md) updated for Sopro 2.2.0: 120M zero-shot voice cloning, chunked streaming, and optional voice caching |
 | **sortformer_diar_v2** | Diar | multilingual | GGUF F32/mixed F16, Stream | [@LysanderdeJong](https://github.com/LysanderdeJong) | [NVIDIA Sortformer v2.1](docs/models/sortformer_diar_v2.md) four-speaker streaming diarization; local conversion only pending redistribution approval |
+| **soulx_flashhead** | Audio-to-video | lang agnostic | GGUF Q8/BF16, Stream | Soul-AILab | [SoulX-FlashHead Lite](docs/models/soulx_flashhead.md) audio-driven portrait video generation |
 | **vibeasr** | ASR | en | GGUF I8_S + I2_S | [@XsquirrelC](https://github.com/XsquirrelC) / VibeASR | [VibeASR](docs/models/vibeasr.md) fully quantized port of [VibeASR.cpp](https://github.com/microsoft/VibeASR.cpp): VibeVoice acoustic/semantic tokenizers on INT8 weights and INT8 activations, feeding a ternary BitNet Qwen2 decoder. Offline, CPU only |
 | **vieneu_v3_turbo** | TTS, Clone | vi, en | GGUF | Bảo [@pnnbao97](https://github.com/pnnbao97) (model author); first port by Phuoc [@phuocnguyen90](https://github.com/phuocnguyen90) | [VieNeu-TTS v3 Turbo](docs/models/vieneu_v3_turbo.md) 48 kHz Vietnamese/English TTS and voice cloning (formerly `vietneu_tts`) |
 | **voxcpm1** | TTS, Clone | zh, en, ja, ko | GGUF Q8, Stream, LoRA | [@jasonchen31](https://github.com/jasonchen31) | [VoxCPM1](docs/models/voxcpm1.md) tokenizer-free 0.5B TTS with 16 kHz output, streaming, and continuation-mode voice cloning |
@@ -568,6 +571,26 @@ powershell -ExecutionPolicy Bypass -File scripts\build_windows_hip.ps1
 ```
 
 Run with `--backend hip` (`rocm` is accepted as an alias). For GPU target selection, hipBLASLt GEMM notes, iGPU tuning, and known limitations, see [docs/build/HIP.md](docs/build/HIP.md).
+
+</details>
+
+<a id="webgpu-build"></a>
+<details>
+<summary><strong>WebGPU Build</strong></summary>
+
+Native WebGPU builds use Dawn. Enable the backend explicitly and point CMake to the directory containing `DawnConfig.cmake`:
+
+```bash
+cmake -S . -B build/debug \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENGINE_ENABLE_WEBGPU=ON \
+  -DDawn_DIR=/path/to/dawn/lib/cmake/Dawn
+cmake --build build/debug --target audiocpp_cli -j 8
+```
+
+Run with `--backend webgpu`. Browser builds use Emscripten to run the C++ CLI and load GGUF models inside a Web Worker, with playable/downloadable outputs. They require a browser with WebGPU, `shader-f16`, and JSPI support.
+
+For native and browser build commands, WASM32/WASM64 memory limits, and Kokoro/eSpeak setup, see [docs/build/webgpu.md](docs/build/webgpu.md).
 
 </details>
 

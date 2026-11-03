@@ -13,7 +13,7 @@
 <!-- TODO(release): point the paper badge, the "Paper" link and the banner to the arXiv page. -->
 <p align="center">
   <a href="#citation"><img src="https://img.shields.io/badge/paper-NeurIPS%202026%20E%26D-8250df" alt="Paper: NeurIPS 2026, Evaluations and Datasets Track"></a>
-  <a href="https://pypi.org/project/tsseg/0.3.0/"><img src="https://img.shields.io/badge/tsseg-0.3.0-2d3743?logo=pypi&logoColor=white" alt="tsseg 0.3.0"></a>
+  <a href="https://pypi.org/project/tsseg/0.3.1/"><img src="https://img.shields.io/badge/tsseg-0.3.1-2d3743?logo=pypi&logoColor=white" alt="tsseg 0.3.1"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/code-AGPL--3.0-blue" alt="Code license: AGPL-3.0"></a>
   <a href="results/README.md"><img src="https://img.shields.io/badge/results-CC%20BY%204.0-lightgrey" alt="Results license: CC BY 4.0"></a>
@@ -73,7 +73,7 @@ that implements the methods of the benchmark behind one `fit`/`predict` API.
 - **26 algorithms** spanning five decades, organised by how they search the
   segmentation and what must stay the same within a segment. A **main pool**
   of 21 methods (15 CPD, 6 SD) runs on every series and gives the ranking; an
-  **extended-scope pool** gathers the 5 methods that cannot. 14 of them were
+  **extended-scope pool** gathers the 5 methods that cannot. 13 of them were
   absent from existing toolkits and were reimplemented or adapted in `tsseg`.
 - **Two evaluation axes.** Each method runs its **Default** configuration and
   a **parameter grid** (tuned and worst-case scores per dataset, and the
@@ -83,7 +83,7 @@ that implements the methods of the benchmark behind one `fit`/`predict` API.
   Covering and Gaussian F1 for CPD; the State Matching Score (SMS, primary),
   ARI, AMI and WARI for SD. SD methods are also scored on CPD, through the
   change points their labels induce.
-- **Every run is published**: 555,768 series runs of 10,259 configurations,
+- **Every run is published**: 552,605 series runs of 10,064 configurations,
   as Parquet tables from which `make paper` rebuilds every figure and table of
   the paper in minutes.
 
@@ -218,7 +218,7 @@ nondeterministic methods and the known deviations.
 
 ## Software versions
 
-- [`tsseg` 0.3.0](https://pypi.org/project/tsseg/0.3.0/), installed by `pip install -e .` (see `pyproject.toml`).
+- [`tsseg` 0.3.1](https://pypi.org/project/tsseg/0.3.1/), installed by `pip install -e .` (see `pyproject.toml`).
   The methods that need PyTorch, TensorFlow, Prophet or stumpy come with
   `pip install -e ".[methods]"`.
 - Python 3.12; `environment.yml` pins the versions of the cluster environment

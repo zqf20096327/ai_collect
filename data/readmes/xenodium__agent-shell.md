@@ -1087,6 +1087,17 @@ All of the above settings can be applied on a per-project basis using [[https://
                   ("C-c C-k" . agent-shell-interrupt)))
   #+end_src
 
+*** Folding sections
+
+Thoughts, tool calls, user messages and activity groups fold under their header line. With point on a header:
+
+- =RET= (or click) - Expand or collapse the section.
+- =C-u RET= - Expand or collapse the section's activity group, along with every section inside it.
+
+These keys only apply on headers, so =RET= still submits the prompt everywhere else. To fold with other keys, add them to =agent-shell-ui-fragment-map=.
+
+Use =M-x agent-shell-ui-toggle-all-fragments= to expand or collapse every section in the buffer.
+
 *** Session controls
 
 When the active agent advertises the corresponding session option, you can switch it from the shell buffer:
@@ -1097,6 +1108,8 @@ When the active agent advertises the corresponding session option, you can switc
 - =C-<tab>= - Cycle session mode.
 
 The current selections are shown in the header right after the agent name; click any segment to open a popup menu. The thought level segment only appears for models that expose it (e.g. Claude Sonnet/Opus with effort levels; Codex's reasoning_effort).
+
+Any other options the agent advertises (e.g. Codex's speed) are counted after the header settings as =(+N)=; click it to change them. They are also appended to the graphical header's settings menu. =C-c C-s= sets any of them from the keyboard.
 
 From the viewport (=agent-shell-viewport-view-mode= / =agent-shell-viewport-edit-mode=), the same controls are bound to:
 
@@ -1493,8 +1506,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-prompt-queue-remove                | Remove pending prompts.                                                       |
 |                                                       | agent-shell-viewport-prompt-queue-resume                | Resume processing pending prompts in the queue.                               |
 |                                                       | agent-shell-viewport-quote-reply                        | Reply with the entire response block-quoted.                                  |
-|                                                       | agent-shell-viewport-refresh                            | Refresh viewport buffer content with current item from shell.                 |
-|                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
-|                                                       | agent-shell-viewport-reply-1                            | Reply with "1" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immediately.                                          |
-|                                        
+|                                         

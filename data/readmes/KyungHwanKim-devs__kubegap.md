@@ -8,9 +8,9 @@
 
 Auditing a cluster is toil. Google's *Site Reliability Engineering* book calls work toil when it is manual, repetitive, automatable and grows with the service, and says reducing it is the point of SRE. kubegap takes that toil off your hands so your time goes to engineering.
 
-kubegap comes out of running three clusters alone on three platforms: a small k3s cluster, EKS at work, and a client's Kubernetes on Azure. Alerts and dashboards catch only what someone already defined. Everything else shows up only when you go digging through the cluster by hand, and three clusters do not leave time for that every day. kubegap does the digging: it reads the cluster, judges it against 402 written checks, and writes a report a person can read.
+kubegap comes out of running three clusters alone on three platforms: a small k3s cluster, EKS at work, and a client's Kubernetes on Azure. Alerts and dashboards catch only what someone already defined. Everything else shows up only when you go digging through the cluster by hand, and three clusters do not leave time for that every day. kubegap does the digging: it reads the cluster, judges it against 407 written checks, and writes a report a person can read.
 
-kubegap is a skill in the [Agent Skills](https://agentskills.io) standard, the open format that coding agents such as Claude Code and Codex read, so any of them can run it with one command. It reads your cluster, read-only, and never touches a Secret value. It grades the cluster against 402 checks in 12 areas. Then it writes you a report: what is wrong, what the evidence is, why it happened, what to do, and, when the check definition records one, a public case that looked the same.
+kubegap is a skill in the [Agent Skills](https://agentskills.io) standard, the open format that coding agents such as Claude Code and Codex read, so any of them can run it with one command. It reads your cluster, read-only, and never touches a Secret value. It grades the cluster against 407 checks in 12 areas. Then it writes you a report: what is wrong, what the evidence is, why it happened, what to do, and, when the check definition records one, a public case that looked the same.
 
 ![A kubegap daily run on an 8-node EKS cluster: collection, first-pass evaluation, two report files](docs/media/kubegap-run.gif)
 
@@ -42,18 +42,16 @@ On its first run against a production EKS cluster, kubegap caught a live spot in
 ## Install
 
 ```bash
+# One line, any Agent Skills host: the skills CLI clones the repository and links it where your agent looks
+npx skills add KyungHwanKim-devs/kubegap
+
+# Or by hand
 git clone https://github.com/KyungHwanKim-devs/kubegap ~/src/kubegap
-
-# Claude Code
-ln -s ~/src/kubegap ~/.claude/skills/kubegap
-/kubegap
-
-# Codex
-ln -s ~/src/kubegap ~/.agents/skills/kubegap
-$kubegap
+ln -s ~/src/kubegap ~/.claude/skills/kubegap    # Claude Code, then /kubegap
+ln -s ~/src/kubegap ~/.agents/skills/kubegap    # Codex, then $kubegap
 ```
 
-The folder must be named `kubegap`. Other Agent Skills hosts such as Cursor and GitHub Copilot take the same link in their own skills folder, and `npx skills add KyungHwanKim-devs/kubegap` installs it in one line.
+The folder must be named `kubegap`. Other Agent Skills hosts such as Cursor and GitHub Copilot take the same link in their own skills folder.
 
 You need kubectl, jq, python3 3.11 or newer, and a kubeconfig that can read the cluster. `/kubegap` asks once whether you want the report in English or Korean and confirms the context. It checks for optional tools and installs them only with your consent. Then it finds and port-forwards Prometheus and Loki and runs collection through to the report. The optional tools aws, helm, krr, polaris, pluto, kubent, promtool, amtool, argocd and ssh are not required. If one is missing, only the checks that depend on it are dropped, and the report lists it under "tools missing".
 
@@ -74,7 +72,7 @@ Supported platforms: macOS on Apple Silicon and Intel, Linux on amd64 and arm64,
 | | `daily` (default) | `full` |
 |---|---|---|
 | Collects | Kubernetes objects, events, Prometheus metrics, component logs, AWS inventory | the same plus node OS scripts (SSM/SSH), CloudWatch control-plane logs and metrics, cost and pricing, ECR, service quotas, krr/polaris/pluto/kubent/helm |
-| Checks | 402 minus the ones that need full-only inputs; those are reported as "not collected", not as findings | all 402 |
+| Checks | 407 minus the ones that need full-only inputs; those are reported as "not collected", not as findings | all 407 |
 | Report | `report.md`: the 3 problems, each with evidence, cause, action and cases; what changed since the previous daily run; what the run could not see. `report-details.md`: every table | `report.md`: the same shape with 5 problems. `report-details.md`: the 12-area detail and the full first-pass list as well |
 | Compared with | the previous daily snapshot | the previous full snapshot |
 
@@ -84,21 +82,21 @@ A full snapshot is about 40 MB. `scripts/kubegap prune --keep-daily 14 --keep-fu
 
 ## What it checks
 
-Twelve areas, 402 checks. Each row gives the count and a few examples; the full list is [`docs/CHECKS.md`](docs/CHECKS.md).
+Twelve areas, 407 checks. Each row gives the count and a few examples; the full list is [`docs/CHECKS.md`](docs/CHECKS.md), which also says how many checks carry a public incident write-up and links each one. The rest are configuration rules with no known public incident, and the report says so instead of inventing one.
 
 | Area | Checks | Examples |
 |---|---|---|
 | Resources | 15 | requests 3x above 7-day p95 usage, repeated OOMKills, nodes full of requests but single-digit utilization |
 | Scaling | 27 | HPAs stuck at min for 15 days, expired Karpenter nodes never replaced, KEDA external triggers without fallback |
 | Observability | 64 | no symptom-based alerts, alerts firing for 7 days straight, observability stack on emptyDir, ingress controller metrics not scraped |
-| Traffic | 53 | database ports open to the internet, unhealthy ALB targets, deregistration delay longer than termination grace |
+| Traffic | 57 | database ports open to the internet, unhealthy ALB targets, deregistration delay longer than termination grace |
 | Resilience | 43 | all replicas on one node, no PDB, backup dumps on the same disk as the source, workloads that can only land on one node |
-| Hygiene | 34 | `latest` tags, deprecated APIs, Helm releases left in a pending or failed state, dependence on custom node labels |
+| Hygiene | 35 | `latest` tags, deprecated APIs, Helm releases left in a pending or failed state, dependence on custom node labels |
 | Storage | 25 | unencrypted EBS, StorageClasses without expansion, local-path volumes over capacity |
 | Security | 46 | NetworkPolicies not enforced, IMDSv1 allowed, plaintext secret env vars (names only), wildcard RBAC |
 | Cost | 13 | idle compute ratio, monthly cost of request waste, ECR repos without lifecycle |
 | Multi-tenancy | 13 | prod namespaces without quota/NetworkPolicy/PSA, CI and prod on the same nodes |
-| Node OS | 37 | disk and inodes, kernel OOM and NIC errors, no kubelet reservations, cgroup v1, images over 3 GB |
+| Node OS | 37 | disk and inodes, kernel OOM and NIC errors, no kubelet reservations, cgroup v1, images over 3 GiB |
 | Platform | 32 | Kubernetes EOL, outdated add-ons, AMI age, service quotas near limit, slow k3s etcd, secrets encryption off |
 
 Where it runs:
@@ -136,8 +134,8 @@ kubegap does not have its own credential store. It reuses what is already on you
 
 **Node OS access.** This is the only part that may need preparation on the nodes themselves.
 - EKS: nodes are read through SSM `send-command`. The commands live in an SSM document, [`deploy/permissions/ssm-document.yaml`](deploy/permissions/ssm-document.yaml), that has to exist in your account once: `kubegap setup` reports whether it is there and current, and uploads it when you agree (`setup --install-ssm-document`; this one call needs `ssm:CreateDocument`, `ssm:UpdateDocument`, `ssm:UpdateDocumentDefaultVersion` and `ssm:ListDocumentVersions` on your own credentials, not on the audit key). The node IAM role must include `AmazonSSMManagedInstanceCore` (the EKS-optimized AMI already runs the SSM agent).
-- k3s / bare metal / kubeadm: nodes are read over SSH. kubegap connects to each node's InternalIP with the user and key from your `~/.ssh/config`. If that is not how you reach the nodes, add an `ssh:` block to the config: `user`, `key`, `port`, and `hosts:` mapping node name → address (or `user@address`) for networks where the node InternalIP is not reachable from your machine (overlay networks such as Tailscale). The user needs the log-reading groups described in [`deploy/node-access/README.md`](deploy/node-access/README.md); the optional sudoers file unlocks the remaining root-only reads.
-- Neither SSM nor SSH (GKE, AKS, managed nodes): apply [`deploy/node-access/daemonset.yaml`](deploy/node-access/daemonset.yaml) and kubegap reads nodes through `kubectl exec` into that pod.
+- k3s / bare metal / kubeadm: nodes are read over SSH. kubegap connects to each node's InternalIP with the user and key from your `~/.ssh/config`. If that is not how you reach the nodes, add an `ssh:` block to the config: `user`, `key`, `port`, and `hosts:` mapping node name → address (or `user@address`) for networks where the node InternalIP is not reachable from your machine (overlay networks such as Tailscale). Only nodes whose host key is already in your `~/.ssh/known_hosts` are reached, so connect to each node once by hand before the first run, or set `accept_new_hosts: true` in that block. The user needs the log-reading groups described in [`deploy/node-access/README.md`](deploy/node-access/README.md); the optional sudoers file unlocks the remaining root-only reads.
+- Neither SSM nor SSH (GKE, AKS, managed nodes): apply [`deploy/node-access/daemonset.yaml`](deploy/node-access/daemonset.yaml) and kubegap reads nodes through `kubectl exec` into that pod. The kubeconfig user also needs [`deploy/permissions/role-daemonset-exec.yaml`](deploy/permissions/role-daemonset-exec.yaml) for the exec.
 - Without any of these, only the node-OS checks (`node.*`) are skipped as "no node access". Everything else runs.
 
 **Optional tools.** helm, krr, polaris, pluto, kubent, argocd, promtool, amtool are found on your `PATH`. `kubegap setup` lists what is missing, which checks each one powers, and installs them with your consent (policy `install_tools: ask|always|never` in the config).
@@ -160,7 +158,7 @@ kubegap **never changes the cluster.** It makes read calls only. Secret values a
 - AWS (EKS): [`deploy/permissions/iam-policy.json`](deploy/permissions/iam-policy.json) — Describe/List/Get actions, CloudWatch `GetMetricData`, and SSM `SendCommand` limited in two ways: only the document `kubegap-node-read` ([`deploy/permissions/ssm-document.yaml`](deploy/permissions/ssm-document.yaml)), which embeds the read commands and takes no free command text, and only instances tagged `kubernetes.io/cluster/<CLUSTER_NAME>=owned`, the tag managed node groups and Karpenter already put on every node. Replace `<ACCOUNT_ID>` and `<CLUSTER_NAME>` in the policy before attaching it; the account id keeps a same-named document shared from another account from matching. A key with this policy can run those commands on that cluster's nodes and nothing else.
 - Every command that reaches a node, on any backend: [`deploy/node-access/COMMANDS.md`](deploy/node-access/COMMANDS.md). It is generated from the collector definitions and a test keeps it current.
 - Nodes reached over SSH (k3s, bare metal): [`deploy/node-access/README.md`](deploy/node-access/README.md) — one line to join the log-reading groups, optionally a sudoers file allowing read-only commands. Without it, only those node checks are skipped as "no node access".
-- Nodes with neither SSM nor SSH (GKE, AKS, kubeadm): apply [`deploy/node-access/daemonset.yaml`](deploy/node-access/daemonset.yaml) and kubegap reads nodes through `kubectl exec` into that pod. It runs privileged; you can delete it after the audit.
+- Nodes with neither SSM nor SSH (GKE, AKS, kubeadm): apply [`deploy/node-access/daemonset.yaml`](deploy/node-access/daemonset.yaml) and kubegap reads nodes through `kubectl exec` into that pod. It runs privileged; you can delete it after the audit. The exec needs one more permission, `get` and `create` on `pods/exec` in the `kubegap` namespace: [`deploy/permissions/role-daemonset-exec.yaml`](deploy/permissions/role-daemonset-exec.yaml), applied after the DaemonSet because that file creates the namespace. It opens a shell in that pod and writes nothing to the cluster.
 
 ## What leaves your machine
 

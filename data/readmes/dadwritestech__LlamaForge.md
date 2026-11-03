@@ -31,13 +31,20 @@ curl -fsSL https://raw.githubusercontent.com/dadwritestech/LlamaForge/master/ins
 Then **Install llama.cpp** (the official build for your GPU, no compiler) → **Discover** → **Chat**.
 Early preview: Windows + NVIDIA is the most-tested path. Linux and macOS pass CI but have had little real-hardware use.
 
+<p align="center"><a href="https://dadwritestech.github.io/LlamaForge/demo/"><b>▶ Try the live demo in your browser</b></a>: the real panel, recorded from a two-GPU box. No install, nothing runs.</p>
+
 <p align="center">
-  <img src="docs/demo.gif" alt="Fetch the official llama.cpp build, see every model drawn into your GPUs at its real size, know a model will not fit before loading it, see what is new in llama.cpp, watch live speed per model" width="100%">
+  <a href="docs/content/autoforge.md"><img src="docs/autoforge.webp" alt="Auto-Forge on one machine: Qwen3.8-27B IQ4_XS on an RTX 5080 plus 5060 Ti went from 26.8 to 126 tokens per second on code. 53 setups tried, the drafter finalists checked to give the same tokens as plain decoding, applied in one click and undone in one click" width="100%"></a>
+  <br><sub>Auto-Forge, one real run on my two-GPU box. Your numbers will differ.</sub>
 </p>
 
 LlamaForge runs no models itself. It installs and drives llama.cpp's own `llama-server` router and
 edits its `models.ini` for you. Not affiliated with ggml-org. If you'd rather have polish than
 control, use [LM Studio](https://lmstudio.ai), [Ollama](https://ollama.com) or [Jan](https://jan.ai).
+
+<p align="center">
+  <img src="docs/demo.gif" alt="Fetch the official llama.cpp build, see every model drawn into your GPUs at its real size, know a model will not fit before loading it, see what is new in llama.cpp, watch live speed per model" width="100%">
+</p>
 
 ## Why LlamaForge
 
@@ -79,6 +86,8 @@ every server flag instead of a curated subset.
 
   - Turn on **Multi-model** in Setup to keep a main model and workers loaded at once. A planner places each one on the GPUs that fit it, using footprints measured on your machine. A model can also be pinned to its own llama.cpp (or ik_llama.cpp) build.
 - **Chat**: llama.cpp's own chat UI (markdown, reasoning, images) inside the dashboard, on its own port, with the API key added for you.
+- **Phone**: scan a QR code and chat with your models from your phone, on your Wi-Fi or over Tailscale. Off until you turn it on; the link can chat and nothing else. See [Phone Remote](docs/content/phone.md).
+- **Arena**: two of your models answer one prompt with their names hidden; you vote, and an Elo board on your PC ranks them on your prompts and your GPUs. Copy the board as a markdown table. See [Blind Arena](docs/content/arena.md).
 - **Voice**: text to speech on your GPU through llama.cpp's own `llama-tts`: Qwen3-TTS in 10 languages, or the tiny English Pocket TTS that runs faster than real time even on a CPU, optionally in a voice you record or upload (only clone voices you may use).
 - **Embers**: small local agents that keep watch on a topic, keep their own wiki and write you a brief on a schedule. A wiki item only counts if it quotes its source verbatim. **Forge** builds one by interviewing you; **Model Scout** needs no setup. Embers have no browser or tools, and nothing leaves the machine unless you turn on push notifications.
 - **Discover**: Hugging Face GGUF search that opens on what's new this week. Every quant gets a rough fit rating for your VRAM before you download (FITS / TIGHT / CPU OFFLOAD). Downloads resume after interruption, register themselves, and end in **Load & Chat**. A link like `http://127.0.0.1:8090/#discover?repo=owner/name&file=x.gguf` opens it on one quant.
@@ -110,6 +119,9 @@ the Open WebUI **Documents** settings for RAG.
   load and unload models, check what fits, pull GGUFs from Hugging Face, and hand a whole task to
   [pi](https://github.com/earendil-works/pi) running on a loaded local model (`pi_run`). One-line setup under
   **Setup -> MCP server**, e.g. `claude mcp add --scope user llamaforge -- python <LlamaForge>/backend/mcp_server.py`.
+- **Agent skill**: `npx skills add dadwritestech/LlamaForge` (or the Claude Code plugin) teaches your coding agent the
+  rest: what fits your GPUs, downloading, Auto-Forge, handing it grunt work. Your coding agent, on your own GPU.
+  See [Agent Skill](https://dadwritestech.github.io/LlamaForge/skill.html).
 
 ## Screenshots
 

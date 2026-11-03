@@ -144,6 +144,69 @@ Run outcome or prevent stream completion. Recovery with built-in SQL Run and Eve
 sharing an engine uses one pooled connection for each guarded event write, so it
 can publish with only one pool slot available. See [Run Event Stream](backend/docs/RUN_EVENT_STREAM.md#authoritative-run-outcome).
 
+PostgreSQL async ORM connections and the offline command accept `postgres://`
+and `postgresql://` URLs, including `?sslmode=disable` or `?sslmode=verify-full`.
+SSL modes are preserved; conflicting `ssl`/`sslmode` settings are rejected.
+Explicit `channel_binding` options are rejected because asyncpg cannot enforce
+them. Synchronous psycopg and LangGraph DSNs retain their libpq options.
+
+With a fencing-capable SQL RunStore and `DbRunEventStore`, host-authorized
+producer writes validate the persisted Run incarnation, producer epoch and state
+even with `run_events.producer_fencing: "off"`. Stale Journal flushes after
+takeover or deletion may therefore be rejected in the default configuration.
+On PostgreSQL, these writes hold the Thread Fence and RunRow lock through commit.
+Checkpoint and branch history imports use a separate host grant bound to a
+durable thread-operation reservation and the captured thread identity. Strict
+mode permits these imports without treating synthetic turn IDs as admitted Runs;
+deletion, reservation revocation or lease expiry invalidates their grant.
+Messages preceding the first human input retain their existing synthetic turn 0.
+
+On PostgreSQL, `run_events.producer_fencing: "strict"` additionally enables
+database-level authorization checks against raw SQL and unaware legacy writers
+after an offline cutover. The `"off"` setting keeps application-level producer
+validation active. Before activation, the database INSERT trigger skips its
+Thread/RunRow locks and retains a shared cutover lock until each INSERT
+transaction ends. This does not remove the application locks above. Off-mode
+event INSERTs require `READ COMMITTED` (also accepting PostgreSQL's `READ UNCOMMITTED`);
+`REPEATABLE READ` and `SERIALIZABLE` are rejected to prevent stale policy snapshots
+from bypassing activation. A write that loses a race with activation rolls back
+with SQLSTATE `40001`; retry the entire transaction with strict producer authority.
+Activation requires stopping every Gateway and using the offline cutover command;
+all restarted Gateways must use the same cutover ID. This does not recover missing
+terminal events. To activate:
+
+1. Deploy this version everywhere with `run_events.producer_fencing: "off"`.
+   Complete migrations 0049 and 0050 and recover previously active Runs, then
+   drain admissions and completion hooks. A terminal Run status alone does not
+   prove its producer has drained.
+2. Stop every Gateway, Worker and other database client, including checkpointer
+   pools and monitoring clients, and keep them stopped during activation.
+3. From the repository root, using the installed backend environment, run:
+
+   ```bash
+   uv run --no-sync --project backend python backend/scripts/run_producer_fencing.py \
+     --config config.yaml --cutover-id deployment-2026-10-27 --all-gateways-stopped
+   ```
+
+   The command refuses activation if other database sessions or pending/running
+   Runs remain. Use a deployment ID that every Gateway will share.
+4. Set `database.backend: postgres`, `run_events.backend: db`,
+   `run_events.producer_fencing: strict` and
+   `run_events.producer_cutover_id: deployment-2026-10-27` everywhere, then restart.
+   Verify a new Run persists its initial event, Journal/Hook, delivery and terminal
+   events and closes normally; unaware old writers must receive a database rejection.
+
+Activation is durable: missing or mismatched cutover IDs and downgrades to `"off"`
+or unsupported stores fail startup. This release requires controlled downtime;
+it does not support a mixed-version rolling cutover. A crashed producer may stay
+open until explicitly closed or revoked by authorized takeover/deletion; no
+producer-expiry or terminal-reconciliation job is introduced.
+
+Scheduled-task orphan recovery carries the captured Run incarnation and retention
+revision when publishing delivery and terminal evidence, including in strict mode.
+Unconfirmed publication is logged separately from the committed takeover; it does
+not undo the recovered Run or queue a new publication attempt.
+
 Operators can extend lead-agent, subagent, and DeerMem extraction prompts with
 literal prepend/append configuration without editing source templates. See
 [prompt overlays](backend/docs/CONFIGURATION.md#prompt-overlays).
@@ -395,7 +458,7 @@ fences, including unclosed fences, in complete and streamed replies.
 
    To route OpenAI models through `/v1/responses`, keep using `langchain_openai:ChatOpenAI` and set `use_responses_api: true` with `output_version: responses/v1`.
 
-   The lead agent also recognizes Responses output-token caps (`status: incomplete` with `incomplete_details.reason: max_output_tokens`), including streaming responses. It suppresses tool execution, removes the suppressed calls from later model requests, and preserves text and reasoning. A capped tool-call response includes a visible notice; other incomplete reasons retain their existing handling.
+   The lead agent also recognizes Responses output-token caps (`status: incomplete` with `incomplete_details.reason: max_output_tokens`), including streaming responses. It suppresses tool execution, removes the suppressed calls from later model requests, and preserves text and reasoning. A capped tool-call response includes a visible notice. Text-only output caps preserve the response and end the turn without unfinished-todo retries; other incomplete reasons retain their existing handling.
 
    When thinking is disabled on a legacy profile, blank `extra_body`, `thinking`, and nested `extra_body.thinking` keys in a `when_thinking_enabled` template are treated as absent during dialect inference. When thinking is enabled, template values are forwarded as configured.
 
@@ -1115,6 +1178,9 @@ keeps the Goal, while explicitly replacing the work can clear it. Unapplied
 messages survive database-backed Gateway restarts and require **Send again**;
 interrupted child side effects are not replayed automatically. Existing execution
 limits still apply. Busy input currently accepts text only.
+If a run rejects an update because it has finished, retrying the retained draft
+during the next run targets that run. Uncertain network failures retain the
+original submission identity so retries can reconcile the same accepted input.
 
 Markdown and JSON conversation exports from the chat header or sidebar read all
 persisted history pages, including earlier turns outside the loaded view or
@@ -1139,27 +1205,4 @@ integration contract above for required fields, scopes, and feature boundaries.
 
 Plugin brand icons are bundled locally. When adding or editing one personal MCP plugin, users can upload a PNG, JPG, or WebP image (up to 2 MB), preview it, or restore the default icon. Changes take effect only after Save; custom icons persist across browsers as a normalized 128px PNG in the server entry's display-only `presentation.icon` metadata. They are not sent to the MCP transport.
 
-Capability Center > Plugins adds, replaces, and deletes one MCP server at a time through targeted mutations that preserve concurrent sibling changes; deletes use a bodyless URL-addressed request. An invalid stdio command on one server no longer blocks toggling another, while enabling that invalid server remains protected by the command allowlist and surfaces the backend validation message in the UI.
-Targeted updates accept both DeerFlow's `type` field and the MCP-spec `transport` field for SSE/HTTP servers.
-Runtime MCP and skill updates replace `extensions_config.json` atomically, so an interrupted write cannot leave the shared configuration truncated or partially written. Every Gateway worker or instance that reads the same file picks up a new revision on its next read (the cache checks the file's content signature), so MCP and skill changes made through one replica apply to the others without a restart; a missing, truncated, or invalid revision keeps the previous configuration until a complete one lands, including when the file disappears during a reload.
-The admin MCP cache reset advances a durable generation marker in the writable config directory. Every Gateway worker mounting that same directory retires its own cached tools and pooled sessions before the next lookup; replicas with independent filesystems are not implicitly covered. If no config path is available, the API reports a process-local reset instead.
-The parsed extensions configuration and its recorded content digest come from the same read, so a racing edit followed by a timestamp-preserving backup restore cannot leave a different revision cached indefinitely.
-Changes to the global `mcpInterceptors` chain rebuild every server's tool wrappers,
-including when a server configuration is edited at the same time.
-
-`extensions_config.json` accepts UTF-8 with or without a leading byte-order mark (BOM), including files saved as UTF-8 with BOM by an editor.
-
-When deferred MCP tool discovery is enabled, `tool_search` supports opt-in literal keyword queries such as `keywords:notebook jupyter`. Keywords match names and descriptions in any order, ranked by distinct term coverage and then name hits; ties retain catalog order. This mode uses the first 256 characters after the prefix and at most 16 unique whitespace-separated terms, returning up to five tools. Punctuation stays literal. Bare queries and `+required` ranking keep their existing regular-expression semantics; `select:tool_a,tool_b` still fetches all exact, case-sensitive name matches.
-
-MCP routing hints can also prefer a specific MCP tool for matching requests without forbidding other tools. When `tool_search` defers MCP schemas, matching routing metadata can auto-promote up to `tool_search.auto_promote_top_k` deferred schemas before the model call.
-
-Deferred MCP schema promotions last for the current user turn. They remain active across that turn's model/tool loop and checkpoint resume, then become deferred again when a new user message starts the next turn; the next turn must discover them again through `tool_search` or match their routing hints. Resuming a legacy in-flight checkpoint preserves previously searched tools even when routing hints also match that turn.
-
-Deferred `tool_search` regex queries share a 100 ms execution budget across the catalog, including `+required` ranking. Patterns are limited to 256 characters and searchable names/descriptions to 65,536 characters each. Queries that exceed a limit return a retry hint without promoting partial results; use a simpler pattern, `keywords:`, or `select:` with exact names. Oversized catalog fields are reported with the tool name, field and length, and logged with the MCP server name when available; use `keywords:` or `select:` because simplifying the pattern cannot shrink a catalog field. Exact selection remains uncapped and bypasses regex limits; the literal `keywords:` mode also bypasses regex limits. Invalid regex syntax still falls back to a literal substring match.
-
-OpenViking users can register the official Streamable HTTP endpoint at `/mcp`
-with an owner-bound USER API key. The native `forget` tool is exposed for
-capability parity; deletion is irreversible, so it should be called only after
-explicit user confirmation. DeerFlow does not enforce that confirmation. This
-explicit, model-selected MCP tool path can run alongside the separate automatic
-OpenViking memory backend; it does not replac
+Capability Center > Plugins adds, replaces, and deletes one MCP s

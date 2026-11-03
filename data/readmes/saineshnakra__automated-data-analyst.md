@@ -7,10 +7,11 @@
 [![Stars](https://img.shields.io/github/stars/saineshnakra/automated-data-analyst?style=flat&logo=github&color=f5b731)](https://github.com/saineshnakra/automated-data-analyst/stargazers)
 [![Agent skill: Claude Code and Codex](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%C2%B7%20Codex-0e0f13)](#use-it-from-claude-code-or-codex)
 [![Tool calling: Ollama, vLLM, llama.cpp, LM Studio](https://img.shields.io/badge/tool%20calling-Ollama%20%C2%B7%20vLLM%20%C2%B7%20llama.cpp%20%C2%B7%20LM%20Studio-0e0f13)](docs/llm-tools.md)
+[![MCP server](https://img.shields.io/badge/MCP-server-0e0f13)](docs/llm-tools.md#apps-that-take-mcp-servers)
 
 <p align="center">
   <a href="https://github.com/saineshnakra/automated-data-analyst"><b>⭐ Star ADA</b></a> if it saves you an afternoon ·
-  <a href="https://automated-data-analyst.streamlit.app/example-study">Try it in the browser</a> ·
+  <a href="https://automated-data-analyst.streamlit.app/">Try it in the browser</a> ·
   <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/docs/README.md">Docs</a> ·
   <a href="https://github.com/saineshnakra/automated-data-analyst/blob/main/CHANGELOG.md">What's new in 0.7.0</a>
   <br>
@@ -36,19 +37,55 @@ pip install automated-data-analyst     # Python 3.11 or newer
 
 ## Give a language model a math arm
 
+**Chat with a local model.** With [Ollama](https://ollama.com) running:
+
+```bash
+ollama pull qwen3:1.7b       # any model with tool calling works
+ada chat penguins.csv        # ask in plain words; the model asks ADA for every number
+```
+
+```console
+$ ada chat penguins.csv
+ADA chat: qwen3:1.7b at http://localhost:11434/v1, reading penguins.csv. Ask about the data; Ctrl-D or 'exit' leaves.
+> Which species has the longest bills on average?
+  ADA ada_ask(path="penguins.csv", question="average bill_length_mm by species")
+    -> answered: Chinstrap has the highest average bill_length_mm of any species, at 48.83 (n = 68). The species groups do differ (Welch ANOVA, p < 0.001; η² = 0.71). Based on the 342 rows with bill_length_mm recorded, of 344 rows. Each: Chinstrap 48.83; Gentoo 47.50; Adelie 38.79.
+The species with the longest average bill length is **Chinstrap**, with an average of **48.83 mm** (n = 68). This result is based on the mean calculation of `bill_length_mm` grouped by species, sorted in descending order. The data spans 342 rows, and the values are as follows:
+- **Chinstrap**: 48.83 mm
+- **Gentoo**: 47.50 mm
+- **Adelie**: 38.79 mm
+
+The p-value indicates significant differences between species (p < 0.001), confirming the observed trends.
+```
+
+The model, 1.4 GB on four processor cores with no GPU, picked the tool; ADA
+computed every number and showed how. Each tool call and its result are
+printed above the answer.
+
+**Add ADA to an app that takes MCP servers**: LM Studio, Jan, Claude Desktop,
+Cursor, VS Code, Cline and others. Put this in its `mcp.json`:
+
+```json
+{"mcpServers": {"ada": {"command": "uvx", "args": ["--from", "automated-data-analyst", "ada", "mcp"]}}}
+```
+
+For Open WebUI, run `ada mcp --http` and add `http://127.0.0.1:8000/mcp` as
+an MCP (Streamable HTTP) server under External Tools.
+
+**In your own code**, `ada.chat.chat(question, "penguins.csv", model=...)`
+runs the whole loop, or give the model `tools.definitions()` and run its
+calls with `tools.run`:
+
 ```python
 from ada import tools
 
-tools.definitions()                    # four tools for function calling: ask, check a claim, scan, model
+tools.definitions()                    # four tools for function calling: ask, check a claim, scan, compute
 tools.run("ada_check_claim", {"path": "flights.csv", "claim": "The average departure delay was about 13 minutes."})
 ```
 
-`tools.definitions()` is in the format OpenAI-compatible servers take, local
-ones included (`tools.definitions("anthropic")` for the Anthropic API), and
-`tools.run` runs the tool the model picks and returns JSON to send back.
-`ada tools` prints the same definitions for any other client.
-[ADA as the math tool of a language model](docs/llm-tools.md) has a complete
-loop with a local model, the Anthropic API and shell commands.
+[ADA as the math tool of a language model](docs/llm-tools.md) has the setup
+for each app, which local models work, a loop with the Anthropic API and
+what comes back.
 
 ## Check a number
 
@@ -74,6 +111,28 @@ says the data give a different number. `--json` gives the whole record, and
 `ada.check_claim(...)` does the same in Python. See
 [Checking claims](docs/reference/claims.md) for the reasons, intervals and units.
 
+## Do the arithmetic exactly
+
+```bash
+ada compute "0.15 * (1200 - 300)"      # 135, with each step
+ada compute "1/3 + 1/6"                # 0.5 = 1/2: fractions stay exact
+ada compute "6/2(1+2)"                 # refused: it reads as 9 or as 1
+```
+
+`ada compute`, `ada.compute()` and the `ada_compute` tool work out an
+expression with exact fractions and integers, write each step with the
+values it combined, and state each convention they rely on (-2^2 is -4).
+An expression that reads two ways is refused with both values, and so is
+anything that isn't a real number. A model writes the expression and reads
+the answer instead of carrying digits itself. See
+[Exact arithmetic](docs/reference/compute.md).
+
+`ada.check_arithmetic(text)` checks each equation in a worked answer, so a
+model can reason in its own words and be told each slip with the right
+value. With three small local models on GSM8K and GSM-Hard, that turned 32
+wrong answers right and one right answer wrong
+([benchmarks](benchmarks/README.md)).
+
 ## Compute an answer, or map a folder
 
 ```bash
@@ -97,6 +156,10 @@ subject once when several rows come from one, says when groups reverse a
 pooled figure, adds up the count column of a table of counts, and gives a
 reason instead of a number when the data are too thin.
 
+`ada analyze data.csv` takes a first look at any table: problems in the data,
+which groups differ, what relates to what and changes over time, each with
+its calculation.
+
 ## Use it from Claude Code or Codex
 
 ```bash
@@ -108,53 +171,6 @@ It also installs as a plugin ([how](plugins/automated-data-analyst/README.md)).
 The [skill](ada/skills/ada/SKILL.md) has the assistant let ADA do the
 arithmetic, check every number it states with `ada claim`, and ask you ADA's
 question instead of choosing a reading.
-
-## Paper assets for a study
-
-```bash
-ada demo mice && cd mice           # an example study to try first
-ada init data/measurements.csv     # asks about the study; writes study.yml
-ada build                          # writes paper-assets/
-ada verify                         # rebuilds and compares every number
-```
-
-`ada build` makes a data audit, a data dictionary, a record of every
-exclusion, results tables in Word, LaTeX and CSV, figures with captions and a
-methods draft. See [Paper assets for a study](docs/research.md). `ada analyze`
-gives a first look at any table, and `ada app` opens the same in a browser
-(`pip install "automated-data-analyst[app]"`).
-
-## Predict a column
-
-```bash
-pip install "automated-data-analyst[model]"
-ada model titanic/ --metric accuracy --out submission.csv
-```
-
-`ada model` predicts one column of a table from the others, as a tabular
-Kaggle competition asks. The features come from rules on the columns' shapes,
-LightGBM, XGBoost and a linear model are blended on out-of-fold predictions,
-every score is cross-validated, and the submission is checked before it is
-written. See [Predicting a column](docs/reference/modelling.md).
-
-`ada auto` does the same with a wider search and takes longer: CatBoost,
-LightGBM with random split points, extremely randomized trees and a neural
-network join the blend, a second layer is fitted on their out-of-fold predictions, and the
-weights come from greedy selection. Each step stays only when the folds say it
-helps. `--jobs N` fits N learners at once and gives the same model.
-
-`--explain` predicts with a model a person can read instead, a linear or an
-additive one, with its coefficients and 95% intervals, each column's effect
-curve, and what explaining costs against the full search, fold by fold.
-
-It is scored on Kaggle competitions with no code for any one of them: the
-runner passes ADA the competition's folder and the name of its metric, and
-ADA does the rest. Each competition is also split inside itself, the way its
-test is made, so a change is measured on all 22 without a submission. On the 22 scored so far, with `ada auto` where it was
-run, it places in the top 10% on 2 (Titanic, and Housing Prices on Kaggle
-Learn, at 2%), in the top 15% on 6 and in the top 30% on 13. Store Sales, a
-forecast of 1,782 series, is its weakest, at 58%.
-[Every score](results/kaggle/README.md).
 
 ## What it doesn't do yet
 
@@ -180,6 +196,14 @@ cases, only scored ([details](results/verification/README.md)).
 Each change is also scored on rounds of new public data, six datasets at a
 time from statistics offices, city portals and research projects, with claims
 written as reports write them; the pull request gives the scores.
+
+## ADA Lab
+
+The research workflow (paper tables, figures and a methods draft from a
+study.yml), the modelling mode (`ada model`) and the browser app are in
+[ADA Lab](https://github.com/saineshnakra/ada-lab): `pip install ada-lab`.
+With it installed, `ada init`, `ada build`, `ada model` and `ada app` run
+from the `ada` command too.
 
 ## More
 

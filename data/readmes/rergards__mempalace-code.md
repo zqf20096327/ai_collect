@@ -973,7 +973,15 @@ conversation mines at the same time:
 
 - **Writers take turns.** Each `mine` (project or `--mode convos`), each `mine-all`
   project, each watcher re-mine cycle, and each optimize or cleanup holds a per-palace
-  write lease (`~/.mempalace/locks/palace-<id>.lock`). A second writer of the same palace
+  write lease (`~/.mempalace/locks/palace-<id>.lock`) and a permanent sibling
+  `.<canonical-palace-name>.mempalace-writer.lock` beside the canonical palace path.
+  The sibling anchor coordinates upgraded writers that use different HOME directories;
+  older clients with a different HOME must upgrade to participate. The legacy HOME
+  lease still coordinates older clients using the same HOME. The palace parent directory
+  must exist and be usable. An unsafe or unavailable sibling anchor refuses the write;
+  there is no HOME-only fallback. The anchor must be a regular, single-link file owned
+  by the current user. A safe existing anchor can be read-only or nonempty: locking
+  does not write, truncate, or remove its contents. A second writer of the same palace
   prints `Waiting for another MemPalace writer to finish with <palace> (operation=..., pid=...)`
   and then runs, so overlapping mines never file a drawer twice. The CLI waits up to
   30 minutes, then exits 75 and prints the exact command to rerun; `mempalace_mine`
@@ -988,7 +996,11 @@ conversation mines at the same time:
   automatically, and an owner entry left by a killed process is cleared the next time that
   palace is written. When no MemPalace process is running (no MCP server, watcher, mine, or
   scheduled job), the whole `~/.mempalace/locks` directory can be deleted; it is recreated
-  on the next write.
+  on the next write. Keep the sibling anchor during ordinary cleanup. Never unlink
+  or replace it while clients can use the palace: active clients would keep the old
+  inode locked. The anchor is outside the palace and is not included in palace backups.
+  Release footprint verification exempts only known empty lock anchors; a nonempty
+  anchor remains subject to the normal data checks.
 - **Long-running readers stay current.** Every store handle reads the latest committed
   table version at the start of each operation, so an MCP server or watcher sees drawers
   that other processes wrote, without a restart. The MCP server reopens the palace when
@@ -1427,7 +1439,7 @@ the same way, and `version-check --status` says the value is unrecognized. Run `
 
 This is a code-first fork of the upstream `mempalace` project. The canonical upstream repository is [MemPalace/mempalace](https://github.com/MemPalace/mempalace); the older `milla-jovovich/mempalace` URL redirects there.
 
-Snapshot reviewed on 2026-10-23 against upstream `develop` at commit `f41e8e75ddaadf5588d5127715fa531d79eadb45` (upstream release 3.12.0), using pinned upstream public sources. Nothing below is a performance, quality, or adoption comparison — no upstream build or benchmark was run.
+Snapshot reviewed on 2026-10-31 UTC against upstream `develop` at commit `da6e21fbbebff250193812a5786180bb65cfa459` (upstream release 3.12.0), using pinned upstream public sources. Nothing below is a performance, quality, or adoption comparison — no upstream build or benchmark was run.
 
 | Area | Upstream, as advertised at that commit | This fork |
 |---|---|---|
@@ -1615,18 +1627,4 @@ mempalace-code fetch-model                             # cache or verify model f
 mempalace-code migrate-storage SRC DST --verify         # retired; exits before mutation and points here
 uvx --python 3.12 --from 'mempalace-code[chroma]==1.13.4' mempalace-code migrate-storage SRC DST --verify
 mempalace-code preflight mirror --command "<cmd>"      # inspect an rsync command for state-dir risks
-mempalace-code version-check                           # show version-check status (opt-in PyPI checks)
-mempalace-code version-check --check-now               # check PyPI now; prints a pip fallback for unmanaged installs
-mempalace-code update status                            # inspect upgrade eligibility (supported installs)
-mempalace-code agent-plugin path --json                # locate the installed Agent Plugins package directory
-mempalace-code wing-migration qualify --mode synthetic # qualify the receipt-bound copy migration operator
-```
-
-Plain `status` prints a full wing/room breakdown, so its output grows with palace size. Do not use it as a routine agent bootstrap or machine-readable health check; use `status --summary` for bounded shell-based CLI discovery, task-specific MCP retrieval, or `mempalace-code health --json` for a compact CLI integrity report.
-
-</details>
-
-<details>
-<summary><strong>Saving Conversation Context</strong></summary>
-
-Code mining is automatic via `mempalace-code watch`. For conversation context (decisions, discussions, debugging notes), an MCP-capable client can expose the stor
+mempalace-code version-check                           # show version-check s

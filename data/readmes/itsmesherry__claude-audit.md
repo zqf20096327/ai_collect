@@ -108,7 +108,7 @@ Usage: claude-audit [options] [path]
   --static                  Static analysis only
   --fast                    One-shot AI mode instead of the agentic audit
   -c, --categories <list>   Only these categories, comma-separated
-  -o, --output <formats>    terminal, markdown, html, json (default: "terminal,markdown,html")
+  -o, --output <formats>    terminal, markdown, html, json, sarif (default: "terminal,markdown,html")
   --output-dir <dir>        Where report files go (default: .claude-audit/)
   --json                    Print the JSON report to stdout and nothing else
   --max-files <n>           Maximum files to scan (default: 500)
@@ -139,6 +139,8 @@ Claude works through a fixed set of read-only tools: `get_project_summary`, `get
 - No tool can write files, run commands or reach the network.
 - A run stops after `--max-turns` turns or `--max-budget` tokens, or when Claude keeps repeating the same tool call.
 - A tool result is capped at 16 KB and a file read at 200 KB.
+- Static findings are regular expressions, so Claude may dismiss one after reading the code behind it. Dismissed findings are listed in every report with a reason and are left out of the scores. Critical findings cannot be dismissed.
+- The report lists what Claude checked and what it did not get to.
 - Every tool call is recorded in `.claude-audit/agent-trace.jsonl` (turn, input, a preview of the output, duration), unless you pass `--no-trace`.
 
 Your code is sent to the Anthropic API in the two AI modes. It is not sent anywhere in `--static` mode.
@@ -154,7 +156,9 @@ As a GitHub Action:
     fail-on-critical: true
 ```
 
-The action sets the outputs `score`, `grade`, `critical-count`, `high-count`, `total-findings` and `report-json`, and adds a summary table to the workflow run. `@v0` follows the latest 0.x release; pin a full version such as `@v0.4.0` if you prefer.
+The action sets the outputs `score`, `grade`, `critical-count`, `high-count`, `total-findings`, `report-json` and `report-sarif`, and adds a summary table to the workflow run. `@v0` follows the latest 0.x release; pin a full version such as `@v0.5.0` if you prefer.
+
+To see findings as code-scanning alerts and inline on pull requests, set `upload-sarif: true` and give the job `permissions: security-events: write`. Code scanning on a private repository needs GitHub Advanced Security. Findings without a file, such as "no tests found", stay in the other reports only.
 
 Or call the CLI yourself:
 

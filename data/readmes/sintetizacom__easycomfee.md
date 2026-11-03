@@ -8,11 +8,15 @@ LTX is the core of the app: video, keyframes, VFX, camera moves, lip sync and th
 
 ### Made with the app (before → after, open LTX models on a 16 GB GPU)
 
-| Day → Night | 3D render → Video | Remove compression |
+| Day → Night | 3D render → Video `BETA` | Remove compression |
 |---|---|---|
 | ![Day to Night: the same shot at night](docs/galeria/noite.gif) | ![A grey Blender blockout becomes a finished film shot](docs/galeria/maquete-blender.gif) | ![Blocky compressed footage cleaned up](docs/galeria/compressao.gif) |
 | **Add water** | **Expand frame** (inside the green box is the original vertical clip) | **Follow depth** |
 | ![A street flooded with water](docs/galeria/agua.gif) | ![A vertical clip expanded to widescreen](docs/galeria/expandir.gif) | ![The same street turned into a snowy night](docs/galeria/profundidade.gif) |
+| **Remove background** (alpha matte, no green screen) | **Relight** `BETA` (overcast → strong backlight) | **Cinemagraph** `BETA` (only the water moves) |
+| ![A woman cut out of a night market onto a transparent background](docs/galeria/alpha.gif) | ![An overcast mountain trail relit with strong backlight](docs/galeria/relight.gif) | ![A still waterfall photo where only the water flows](docs/galeria/cinemagraph.gif) |
+| **Add sound** `BETA` (silent clip → hooves on stone, with sound in the app) | **Upscale 2×** `BETA` | **SDR → HDR** `BETA` (HLG, 10-bit; shown here tone-mapped) |
+| ![A silent clip of a horse gets the sound of its hooves](docs/galeria/foley.gif) | ![A low-resolution cat close-up upscaled 2x](docs/galeria/ampliar2x.gif) | ![A sunset over the sea converted to HDR](docs/galeria/hdr.gif) |
 
 ### From a Blender blockout to a finished shot
 
@@ -20,7 +24,16 @@ LTX is the core of the app: video, keyframes, VFX, camera moves, lip sync and th
 
 - Tested with real Blender renders on a 16 GB card: up to 353 frames (14.7 s) in about 4 minutes.
 
-#### Advanced mode: no style image needed (experimental)
+**Beta.** Tips that make the difference, from our tests:
+
+- **Give each block its own color** and render in those colors: the model can then tell which block is which.
+- **Frame 1 is the anchor of the whole video.** Make the style image from the colored frame 1 with an edit model (FLUX 3 in the Image tab: *"Turn this 3D blockout into a real photograph of …, the red box becomes …"*). Generating it from a grey render made the model invent or move objects. Check it against the render first.
+- **Camera moving around still objects?** Put walls, buildings or a textured floor behind them. On a plain grey void the model cannot read the camera move and slides the objects instead.
+- **One description per block.** Describing a block twice makes the model add a second object.
+- **Keyframes only help when each one matches its frame**; frames that drift in different ways pull the video with them.
+- The optional [Blender Bridge](blender-bridge/README.md) does all of this for you from a chat.
+
+#### Advanced mode: no style image needed (beta)
 
 Turn on **Advanced** in the 3D render → Video box and the app makes the look with you, in three steps:
 
@@ -33,13 +46,25 @@ Notes: still in development and tested only on NVIDIA (RTX 5070 Ti, 16 GB). It n
 - **Follow depth** takes a depth video too: estimated from any footage, or a ready one such as Blender's depth pass.
 - **Video → Depth map** goes the other way: a stable depth map of any video, with optional 32-bit EXR frames for Blender or After Effects.
 
-### The studio
+### EasyComfee V2: every screen
 
-| LTX Studio | VFX Studio |
+A new layout for every tab: a fixed sidebar, a title line for each page, a large preview in the middle and the controls on the side.
+
+| Image | Edit |
 |---|---|
-| ![LTX Studio tab](docs/galeria/tela-ltx-v2.png) | ![VFX Studio tab](docs/galeria/tela-apps-v2.png) |
-| **Cinema Studio** | **Music** |
-| ![Cinema Studio tab](docs/galeria/tela-cinema-v3.png) | ![Music tab](docs/galeria/tela-music-v2.png) |
+| ![EasyComfee V2, Image tab](docs/galeria/v2-image.jpg) | ![EasyComfee V2, Edit tab](docs/galeria/v2-edit.jpg) |
+| **Video** | **VFX Studio** |
+| ![EasyComfee V2, Video tab](docs/galeria/v2-video.jpg) | ![EasyComfee V2, VFX Studio](docs/galeria/v2-vfx.jpg) |
+| **LTX Studio** | **MiniMax H3 Studio** |
+| ![EasyComfee V2, LTX Studio](docs/galeria/v2-ltx.jpg) | ![EasyComfee V2, MiniMax H3 Studio](docs/galeria/v2-h3.jpg) |
+| **Wan Studio** | **FLUX 3 Studio** |
+| ![EasyComfee V2, Wan Studio](docs/galeria/v2-wan.jpg) | ![EasyComfee V2, FLUX 3 Studio](docs/galeria/v2-flux3.jpg) |
+| **Cinema Studio** | **Lip Sync** |
+| ![EasyComfee V2, Cinema Studio](docs/galeria/v2-cinema.jpg) | ![EasyComfee V2, Lip Sync](docs/galeria/v2-lipsync.jpg) |
+| **Music** | **Voice** |
+| ![EasyComfee V2, Music](docs/galeria/v2-music.jpg) | ![EasyComfee V2, Voice](docs/galeria/v2-voice.jpg) |
+| **Genjutsu** | **Assets** |
+| ![EasyComfee V2, Genjutsu](docs/galeria/v2-genjutsu.jpg) | ![EasyComfee V2, Assets](docs/galeria/v2-assets.jpg) |
 
 ### Edit your photos
 
@@ -90,7 +115,7 @@ On smaller cards, **Config Models** shows which packages run well on that GPU an
 | **Voice** | Narrate a text, design a voice, or clone one from a short sample | OmniVoice (local) · Qwen3-TTS (Comfy Cloud) |
 | **Cinema Studio** | Direct the shot like a film set: camera, lens, light, film, look and grade cards, shot list, cast, Director mode | Image models + LTX |
 | **Genjutsu** | Swap a character in a video, keeping motion, camera and timing | **Recast** (Qwen Image Edit + LTX Union Control) · Wan Animate 2 · Wan 2.2 Animate Replace · MiniMax H3 Character Swap |
-| **VFX Studio** | One-click effects on your own footage: Day → Night, Remove people, Add water, Swap character, Expand frame, Colorize, Unblur, Remove compression, Refine details, Restore, Follow depth, 3D render → Video, Slow motion, **Video → Depth map** (video or EXR frames) | LTX 2.5 / 2.3 IC-LoRAs · Video Depth Anything |
+| **VFX Studio** | One-click effects on your own footage, in two groups. **Ready:** **Remove background** (alpha matte, transparent WebM or ProRes 4444, with choke, feather and black/white point controls), Day → Night, Remove people, Add water, Swap character, Expand frame, Colorize, Unblur, Remove compression, Refine details, Restore, Follow depth, Slow motion, **Video → Depth map** (video or EXR frames). **Beta** (tips for each one in *Beta · Tips*): 3D render → Video, Relight, Add sound (foley), Cinemagraph, Upscale 2×, SDR → HDR (HLG, 10-bit) | LTX 2.5 / 2.3 IC-LoRAs · Video Depth Anything |
 | **Assets** | Everything you made | |
 | **Advanced** | ComfyUI itself, with its node editor, inside the app | |
 
@@ -121,9 +146,18 @@ Paid partner models (Kling, Veo, Seedance, Runway, Nano Banana…) are **off by 
 Open **Config Models → Local models**:
 
 1. **Your machine.** The app reads your GPU, VRAM, RAM and free disk from ComfyUI.
-2. **Packages.** Each feature is a package. Every card says whether it **runs well**, is **limited** or **won't run** on your machine, with its size, license, source links and the files already present. Light packages (SD 1.5 from 4 GB, SDXL and LTX-Video 2B from 6 GB, Wan from 8 GB) make the app usable on small cards.
+2. **Packages.** Each feature is a package, in collapsible groups (Image, Edit & tools, Video, Video effects & swap, Lip Sync, Music & voice). Every card says whether it **runs well**, is **limited** or **won't run** on your machine, with its size, license, source links and the files already present. Light packages (SD 1.5 from 4 GB, SDXL and LTX-Video 2B from 6 GB, Wan from 8 GB) make the app usable on small cards.
 3. **Download.** Files come straight from Hugging Face into the exact ComfyUI subfolders the workflows expect. Downloads resume if interrupted.
 4. **Custom nodes.** Missing node packs are installed at pinned versions. Then restart ComfyUI once.
+
+Generation time of the open video models, measured on an RTX 5070 Ti (16 GB) with 64 GB RAM on 2026-11-01:
+
+| Model | Clip | Time |
+|---|---|---|
+| LTX-Video 2B | 10 s, 720p | ~1 min |
+| Wan 2.2 5B | 5 s, 720p | ~5 min |
+| Kandinsky 5 Lite | 5 s, 480p | ~14 min |
+| HunyuanVideo 1.5 | 5 s, 720p | ~47 min (the 8.3B model only partly fits in 16 GB) |
 
 ## Requirements
 
@@ -197,6 +231,7 @@ install.bat
 - If EasyComfee installed ComfyUI, it starts it for you. Right after turning the PC on, ComfyUI takes a minute or two to load; a strip at the top says *ComfyUI is starting* and goes away by itself, and the model menus fill in on their own.
 - If you use your own ComfyUI, start it first, as usual.
 - **Start ComfyUI with Windows** (Config Models → Local models, when EasyComfee installed ComfyUI): an On/Off switch that loads ComfyUI while the PC starts, so it is ready when you open the studio. Off removes it; it also shows in Task Manager → Startup apps.
+- **Safe mode** (Config Models → Local models, **on by default**): explicit prompts are refused, local models get an anti-nudity negative prompt, and any result a small on-device classifier (Falconsai NSFW detector, Apache-2.0, ONNX on the CPU) marks as NSFW is shown blurred; the file on disk is kept. Open-weight models have no filter of their own, so turning it off is your choice and your responsibility.
 
 Then open **Config Models** and install a package: *Z-Image* (or *SD 1.5* on a small card) plus *LTX 2.5 Video* is a good first pick.
 
@@ -239,6 +274,10 @@ cd backend && .venv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8600
 
 To show ComfyUI inside the **Advanced** tab, start ComfyUI with `--enable-cors-header http://127.0.0.1:8600` (Firefox blocks it otherwise).
 
+## Optional: Blender Bridge (MCP)
+
+Describe a shot in words: an AI assistant blocks it out in Blender with colored boxes and a solved camera move, you watch it in the viewport, and **3D render → Video** (LTX 2.5) turns the greybox into the finished video, on your GPU. It is an **MCP** server, so it works with any MCP client (Claude, LM Studio with an open-weights model, VS Code, Cursor...), not one vendor. Setup and tools: [`blender-bridge/`](blender-bridge/README.md).
+
 ## ComfyUI workflows
 
 [`comfy_workflows/`](comfy_workflows/) has the graphs the app sends to ComfyUI, one JSON per feature, in ComfyUI's API format. Drag one onto the ComfyUI canvas to open it. They are generated from the app's own builders by `scripts/exportar_workflows.py`.
@@ -263,7 +302,7 @@ The studio's code is released under the [MIT License](LICENSE). Models are not p
 | Model | Used for | License |
 |---|---|---|
 | LTX 2.5 (Lightricks) | Video, VFX, Cinema Studio, Recast | [LTX-2.x Community License](https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2_x) |
-| LTX 2.3 (Lightricks) | Video, Lip Sync, Union Control, In/Outpainting | [LTX-2 Community License](https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2) |
+| LTX 2.3 (Lightricks) | Video, Lip Sync, Union Control, In/Outpainting, Relight, Add sound (Foley V2A) | [LTX-2 Community License](https://github.com/Lightricks/LTX-2/blob/main/LICENSE-2); the Foley V2A LoRA card says part of its training data (FoleyBench) is CC BY-NC-SA, non-commercial |
 | LTX-Video 2B 0.9.8 | Light video | Apache 2.0 / LTX-Video license |
 | MiniMax H3 · FastH3 | Video, Character Swap | [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE) |
 | Wan 2.2 5B · Wan 2.1 1.3B · Wan Animate | Light video, Genjutsu | Apache 2.0 |

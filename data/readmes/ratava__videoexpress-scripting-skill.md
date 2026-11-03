@@ -10,14 +10,14 @@ An example video planned, scripted and produced in VideoExpress with this skill.
 
 ## Wiki: how-to and style catalogue
 
-- **Install walkthroughs** with screenshots: [Claude Desktop](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Claude-Desktop) · [ChatGPT](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-ChatGPT) · [Grok](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Grok) · [Gemini](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Gemini). Claude Desktop and ChatGPT add this repo as a plugin marketplace; Grok installs the skill from its GitHub folder; Gemini takes the unzipped skill folder as an upload, or installs it in Gemini CLI.
+- **Install walkthroughs** with screenshots: [Claude Desktop](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Claude-Desktop) · [ChatGPT](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-ChatGPT) · [Grok](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Grok) · [Gemini](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Gemini) · [DeepSeek](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-DeepSeek). Claude Desktop and ChatGPT add this repo as a plugin marketplace; Grok installs the skill from its GitHub folder; Gemini takes the unzipped skill folder as an upload, or installs it in Gemini CLI; DeepSeek Harness installs this repo as a plugin.
 - **[How-To](https://github.com/ratava/videoexpress-scripting-skill/wiki)**: install, start methods (concept, script, existing images), intake, the prompt pack, the three operating modes (manual, automated with Claude driving VideoExpress, shared), fixing problems and finishing, with flow diagrams for each step.
 - **[Style catalogue](https://github.com/ratava/videoexpress-scripting-skill/wiki/Styles)**: 67 Creative mode styles, each with its own style sheet. The catalogue has a page and demo clip for the first 45; pages and clips for the 22 added in v2.6 are on the way.
 - **See all styles:** [existing presets reel](https://youtu.be/FGaEioxNt3Y) · [v2.2 new styles reel](https://youtu.be/HKx2000WEyc) · [full playlist](https://www.youtube.com/playlist?list=PLGPXytdy02o0)
 
 ## Platforms
 
-The skill follows the open Agent Skills standard, so the same core method runs in Claude, ChatGPT, Grok and Gemini. This repo ships one build per platform, each with its own install guide; Grok and Gemini use the platform-neutral ChatGPT build. The repo is also a plugin marketplace for both: add `ratava/videoexpress-scripting-skill` once (Claude Desktop: Customize → Personal plugins → Add Marketplace; ChatGPT: Settings → Plugins → Add a Marketplace) and install the skill from there. Walkthroughs with screenshots: [Install in Claude Desktop](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Claude-Desktop) · [Install in ChatGPT](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-ChatGPT).
+The skill follows the open Agent Skills standard, so the same core method runs in Claude, ChatGPT, Grok, Gemini and DeepSeek's agent tools. This repo ships one build per platform, each with its own install guide; Grok, Gemini and DeepSeek use the platform-neutral ChatGPT build. The repo root is also a DeepSeek Harness (dsh) plugin bundle that serves both skills. The repo is also a plugin marketplace for both: add `ratava/videoexpress-scripting-skill` once (Claude Desktop: Customize → Personal plugins → Add Marketplace; ChatGPT: Settings → Plugins → Add a Marketplace) and install the skill from there. Walkthroughs with screenshots: [Install in Claude Desktop](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Claude-Desktop) · [Install in ChatGPT](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-ChatGPT).
 
 | Platform | Folder | Guide | Release package |
 |---|---|---|---|
@@ -25,12 +25,13 @@ The skill follows the open Agent Skills standard, so the same core method runs i
 | ChatGPT | [`chatgpt/`](chatgpt/) | [Install in ChatGPT](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-ChatGPT) (wiki, with screenshots) · [chatgpt/README.md](chatgpt/README.md) | Add the repo as a plugin marketplace (`ratava/videoexpress-scripting-skill`), or `videoexpress-scripting-chatgpt.zip` |
 | Grok | [`chatgpt/`](chatgpt/) | [Install in Grok](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Grok) (wiki) · [chatgpt/README.md](chatgpt/README.md#installing) | Ask Grok to install it from the `chatgpt/skills/videoexpress-scripting` folder link (free trial and paid plans only) |
 | Gemini (web, Mac, CLI) | [`chatgpt/`](chatgpt/) | [Install in Gemini](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-Gemini) (wiki) · [chatgpt/README.md](chatgpt/README.md#installing) | Unzip `videoexpress-scripting-chatgpt.zip` and upload the folder under Customize → Skills at gemini.google.com, or `gemini skills install` with `--path chatgpt/skills/videoexpress-scripting` |
+| DeepSeek (Harness, Deep Code) | [`chatgpt/`](chatgpt/) | [Install in DeepSeek](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-DeepSeek) (wiki, with screenshots) · [chatgpt/README.md](chatgpt/README.md#installing) | Plugins → add `github:ratava/videoexpress-scripting-skill` (installs both skills), or unzip `videoexpress-scripting-chatgpt.zip` into `~/.agents/skills/` |
 
 The two builds share the same method, bible rules, prompt template, style sheets and failure fixes. They differ only in wording (which assistant is being addressed), the platform notes in the browser workflow, and platform metadata (`agents/openai.yaml` in the ChatGPT build).
 
 ## Companion skill: VideoExpress Prompt
 
-**VideoExpress Prompt** is a step-by-step wizard for **one** prompt: a start image, a clip, or an image and its clip, or an improved version of a prompt you already have. It uses the same prompt rules, styles and lip-sync methods, and installs from the same marketplace (Claude Desktop, ChatGPT) or the same way in Grok and Gemini: [Install VideoExpress Prompt](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-VideoExpress-Prompt). Builds: [`claude-prompt/`](claude-prompt/) and [`chatgpt-prompt/`](chatgpt-prompt/) (also used by Grok and Gemini).
+**VideoExpress Prompt** is a step-by-step wizard for **one** prompt: a start image, a clip, or an image and its clip, or an improved version of a prompt you already have. It uses the same prompt rules, styles and lip-sync methods, and installs from the same marketplace (Claude Desktop, ChatGPT) or the same way in Grok and Gemini, and the DeepSeek Harness plugin installs it alongside the main skill: [Install VideoExpress Prompt](https://github.com/ratava/videoexpress-scripting-skill/wiki/Install-VideoExpress-Prompt). Builds: [`claude-prompt/`](claude-prompt/) and [`chatgpt-prompt/`](chatgpt-prompt/) (also used by Grok and Gemini).
 
 ## What's new
 
@@ -75,6 +76,8 @@ chatgpt/                             Codex plugin root
 claude-prompt/, chatgpt-prompt/      the VideoExpress Prompt plugin roots, same layout
 
 CHANGELOG.md                         release notes for both skills
+package.json, cordis.patch.yml       make the repo root a DeepSeek Harness (dsh) plugin bundle
+lib/index.js                         the dsh skill provider (serves the two ChatGPT-build skills)
 .claude-plugin/marketplace.json      makes this repo a Claude plugin marketplace (Claude Desktop)
 .agents/plugins/marketplace.json     makes this repo a Codex plugin marketplace
 .codex/config.toml                   enables the plugins when the repo is opened as a project

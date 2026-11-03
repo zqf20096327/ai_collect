@@ -5,17 +5,14 @@
 localagents is an MCP server that gives Claude Code a `run_agent` tool. Each call
 starts a full headless Claude Code session — same tools, same `CLAUDE.md`, same
 working tree — except its API traffic goes to a llama.cpp or vLLM server you run
-instead of to Anthropic. Claude writes the brief, the local model does the work,
-Claude reviews the result. Your Anthropic token budget goes on the parts that
-need it.
+instead of to Anthropic. Claude writes the brief and checks the result. The local
+model does the work, and the Anthropic tokens go where Claude is actually needed.
 
-A 27B Qwen on one GPU is perfectly capable of "add a CLI for this module and
-tests to match"; Opus is better spent on the design conversation than on
-watching pytest run. Two local agents in parallel can build the two halves of a
-package against a pinned interface.
+A 27B Qwen on one GPU can handle "add a CLI for this module and tests to match" on
+its own, while Opus does the design instead of watching pytest. Two local agents can
+build the two halves of a package in parallel against an agreed interface.
 
-> **Status: early.** It works, I use it daily, and the interface will move. It
-> targets llama.cpp and vLLM specifically; Ollama isn't a goal.
+It comes with a web **monitor** for the servers and the jobs running on them.
 
 ## How it works
 
@@ -32,221 +29,221 @@ localagents ── spawns ──▶ headless `claude` (Agent SDK)
    llama-server / vllm   (/v1/messages, on your machine or your LAN)
 ```
 
-Three things make this more than an environment variable:
+Pointing `ANTHROPIC_BASE_URL` at a local server almost works by itself. localagents
+adds three things on top. The config is a list of servers. The model each one is
+serving, the real context window and how many slots are busy are read from the server
+on every call. You start and stop models yourself. A shim between Claude Code and the
+backend mediates the requests, reports the real context window and translates overflow
+errors ([what the shim does](docs/shim.md)). Every result is recorded in one SQLite
+database, so Claude can read a job after the work is completed.
 
-1. **Endpoints, not models, in the config.** `models.yaml` is a list of servers.
-   What each one is actually serving right now, its real context window, and how
-   many slots are busy are discovered on every call via `/v1/models` and friends.
-   You bring models up and down by hand — the server never launches anything —
-   and Claude uses whatever is up. If nothing suitable is running it asks you to
-   start something.
+## Quick start
 
-2. **A shim between Claude Code and the backend.** Claude Code sends things local
-   chat templates reject, and local servers fail in ways Claude Code doesn't
-   recognise. The shim fixes both directions (details below) and writes a
-   `requests.jsonl` per job so you can see exactly what went over the wire.
+You need Python 3.12+, [uv](https://docs.astral.sh/uv/), Claude Code (the Agent
+SDK bundles its own `claude` binary, so nothing else to install), and a server that
+speaks Anthropic's `/v1/messages`: llama.cpp's `llama-server`, Strata, or vLLM. The
+model has to be able to drive Claude Code — solid native tool calling and a context
+window of 128k or more per request. Qwen3.8-27B works well. Smaller windows work but
+compact constantly; see [Context windows](docs/shim.md#context-windows).
 
-3. **The same isolation model as Claude's own subagents.** By default a job works
-   in your tree, like the Agent tool does. `isolation: worktree` gives it a fresh
-   git worktree on a `local-agent/<job>` branch, kept only if it changed something,
-   with a diffstat in the job record so Claude can review it as a diff.
+1. **Install it.** Editable, so edits in the checkout take effect:
 
-## Requirements
+   ```bash
+   git clone https://github.com/ccebelenski/localagents.git && cd localagents
+   uv tool install -e .          # puts `localagents` on PATH
+   ```
 
-- Python 3.12+ and [uv](https://docs.astral.sh/uv/)
-- Claude Code. The Agent SDK bundles its own `claude` binary, so nothing else to install.
-- A server that speaks Anthropic's `/v1/messages`:
-  - **llama.cpp** `llama-server` — start it with `--jinja`; add `--slots --metrics`
-    to get occupancy and cache stats in the tool output.
-  - **vLLM** with `--enable-auto-tool-choice --tool-call-parser <parser>`.
-- A model that can actually drive Claude Code: solid native tool calling and a
-  context window of 128k or more per request. Qwen3.8-27B works well.
-  Smaller windows work but compact constantly; see [Context windows](#context-windows).
+2. **Tell it where your servers are.** Copy the example and edit it (the file is
+   gitignored). It lists servers and their kind; which model is loaded on each is
+   discovered at call time. See [Backends](#backends) for starting each kind and
+   [Config](#config-modelsyaml) for the file:
 
-## Install
+   ```bash
+   cp models.example.yaml models.yaml
+   ```
 
-```bash
-git clone https://github.com/ccebelenski/localagents.git && cd localagents
-uv tool install -e .                  # `localagents` on PATH; editable, so repo edits apply
-cp models.example.yaml models.yaml    # edit for your servers (gitignored)
-claude mcp add --scope user local -- localagents --config "$PWD/models.yaml"
-```
+3. **Register the MCP server with Claude Code.** User scope means every project
+   gets it; the server inherits the cwd of the Claude Code session that launched
+   it, so `run_agent` defaults to that project's tree:
 
-User scope means every project gets the `local` server. It inherits the cwd of the
-Claude Code session that launched it, so `run_agent` defaults to that project's
-tree. A project can carry its own `./models.yaml` to override the registry.
+   ```bash
+   claude mcp add --scope user local -- localagents --config "$PWD/models.yaml"
+   ```
 
-If you'd rather keep it to one project, put this in that project's `.mcp.json`:
+   To keep it to one project instead, put this in that project's `.mcp.json`:
 
-```json
-{"mcpServers": {"local": {"command": "localagents", "args": ["--config", "/path/to/models.yaml"]}}}
-```
+   ```json
+   {"mcpServers": {"local": {"command": "localagents", "args": ["--config", "/path/to/models.yaml"]}}}
+   ```
 
-Restart Claude Code (or `/mcp` → reconnect) after adding it; MCP servers load at startup.
+   MCP servers load at startup: restart Claude Code, or `/mcp` and reconnect. The
+   same applies after every `git pull` of this repo — a running server keeps the
+   code it started with until you reconnect.
 
-Then install the `local-agent` subagent, so jobs show up as agents (see [below](#the-local-agent-subagent)):
+4. **Shorten the auto-background delay.** `run_agent` blocks until the job ends, and
+   Claude Code only moves a blocking MCP call to a background task after
+   `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS` milliseconds — two minutes by default, per
+   agent you launch. Ten seconds is about right; `list_models` and the other quick
+   calls still return inline:
 
-```bash
-mkdir -p ~/.claude/agents && ln -s "$PWD/agents/local-agent.md" ~/.claude/agents/
-```
+   ```json
+   {"env": {"CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS": "10000"}}
+   ```
 
-It names the server's tools as `mcp__local__*`; if you registered the server under
-another name than `local`, copy the file instead and change the `tools:` line.
+5. **Install the `local-agent` subagent.** Jobs then show up as agents, and it covers
+   the cases where auto-backgrounding is off (see [Using it](docs/using.md#the-local-agent-subagent)):
 
-## Using it
+   ```bash
+   mkdir -p ~/.claude/agents && ln -s "$PWD/agents/local-agent.md" ~/.claude/agents/
+   ```
 
-Claude picks it up like any tool. Ask for it by name and it'll do the right thing:
+   It names the server's tools as `mcp__local__*`; if you registered the server under
+   a name other than `local`, copy the file instead and fix its `tools:` line.
 
-> Use the local agent to add a `--json` flag to the CLI and cover it in the tests.
+6. **Optionally, the status line.** `localagents statusline` prints the running jobs
+   for your status line script; see [Status line](docs/using.md#status-line).
 
-What Claude does behind that: `list_models` to see what's up and pick a model, then
-`run_agent` with the brief and `wait_s` set to the job's timeout. The call blocks
-until the job ends; after two minutes Claude Code moves it to a background task (shown
-in `/tasks`), Claude keeps working, and the final job record arrives as a task
-notification. Claude reads `files_touched` (or the worktree diff) and checks the work.
-The server sends a progress notification every minute while it waits, so the call never
-trips Claude Code's idle timeout, and the tool timeout itself defaults to about 28 hours.
+7. **Run a job.** Start a model on one of your servers, then ask Claude:
 
-The two minutes are Claude Code's default (`CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`, in
-milliseconds). MCP calls run one after another, so with several agents to launch that
-is two minutes each. Set the variable lower in the `env` block of your settings: `10000`
-backgrounds `run_agent` after ten seconds and leaves `list_models` and the other quick
-calls inline (a `local_complete` that runs long comes back as a notification instead).
-Then a swarm is one blocking `run_agent` per job, and every job delivers its own
-notification when it finishes, with nothing for Claude to re-arm.
+   > Use the local agent to add a `--json` flag to the CLI and cover it in the tests.
 
-`wait_jobs` is the fallback for calls that cannot background: start each job with
-`wait_s: 0` and wait on all the ids in one call. Use it knowingly: a `mode: "any"` wait
-returns on the first finish and must be re-armed at once, or the remaining jobs finish
-with nobody watching (one coordinator lost six hours to that).
+   Claude calls `list_models`, picks a served model, and runs `run_agent` with the
+   brief. If nothing suitable is up it asks you to start something. Which model that
+   is, is your call; the config does not name one, and anything you leave running
+   may get used.
 
-If nothing suitable is running you'll be asked to start one:
+`localagents monitor` opens the [Monitor](#monitor) at <http://127.0.0.1:8765/> when you
+want to watch. The tools, the relay subagent, the status line and where a job's record
+lives are in [docs/using.md](docs/using.md).
 
-> No live endpoint is serving a model matching `qwen`. Ask the user to start one.
-> Currently serving: {'dgx1': ['GLM-5.3-Flash-EXL3']}
+## Backends
 
-Start whatever you like, however you normally do, say "it's up", and Claude retries.
-Which model that is, is your call; the config never names one. The flip side: anything
-you leave running is fair game. Claude is told to name the model it's about to use and
-to check with you if the id looks unfamiliar, and `list_models` flags windows under
-128k, but the real gate is what you choose to start.
+An endpoint is anything that serves Anthropic's `/v1/messages` and lists its models
+at `/v1/models`. Beyond that, what localagents can see depends on the backend and
+on how you start it. The `backend:` key in `models.yaml` picks the probe.
 
-### Tools
+| localagents reads | llama.cpp | Strata | vLLM |
+|---|---|---|---|
+| served model ids | `/v1/models` | `/v1/models` | `/v1/models` |
+| context window per request | `/props` → `n_ctx`, always on | `/props` → `n_ctx`, always on | `max_model_len` in `/v1/models`, always on |
+| slot or request occupancy (`list_models`, the status line, the monitor) | `/slots`, on by default (`--no-slots` turns it off) | `/slots`, always on | `/metrics`, always on |
+| server counters (per-job cache hit and throughput, the monitor's speed tiles) | `/metrics`, **needs `--metrics`** | `/metrics`, always on (JSON) | `/metrics`, always on |
+| cache fields in each response's `usage` (the request tables' reused and prefill columns) | always | always | **needs `--enable-prompt-tokens-details`** |
+| GPU, VRAM, temperature, power | — | `/metrics` | — |
 
-| tool | what it does |
-|---|---|
-| `list_models` | endpoints with live health (`host` up/down separately from the endpoint), served ids, context window, slot occupancy |
-| `run_agent` | start a job: `task`, `model`, `cwd`, `isolation` (`none`/`worktree`), `wait_s`, `max_turns`, `permission_mode`, `resume_job`, … |
-| `wait_job` / `wait_jobs` / `job_status` / `job_log` / `list_jobs` / `cancel_job` | follow and control jobs; the waits report progress while they block, `wait_jobs` takes several ids (`mode` all/any) |
-| `register_endpoint` | add a server from inside a session (written to `models.local.yaml`) |
-| `local_complete` | one-shot generation with no tools — summaries, drafts, classification |
+Nothing here is required for a job to run; a figure the server doesn't expose is left
+out of `list_models` and shows as a dash in the status line and the monitor. The two
+flags in bold are the ones that get forgotten.
 
-### The `local-agent` subagent
-
-Auto-backgrounding needs Claude Code 2.1.212 or later and is off inside subagents and
-in non-interactive runs unless `CLAUDE_AUTO_BACKGROUND_TASKS=1`. Without it a
-`run_agent` job is an MCP tool call plus a job id Claude has to remember to poll:
-Claude Code doesn't know it's an agent, nothing tells Claude when it finishes, and a
-job can be forgotten if Claude ends its turn before it's done.
-
-[`agents/local-agent.md`](agents/local-agent.md) covers those cases by making each job
-a real background subagent. It's only a relay. It runs on Haiku, can use only the job
-tools (`run_agent`, `wait_job`, `job_status`, `job_log`, `cancel_job`), passes the
-brief through verbatim, waits, and returns the final job record unchanged. Picking the
-model stays with the main session, which still has all of the server's tools,
-`list_models` included. Claude passes its choice to the relay in a short header:
-
-```
-model: unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL
-isolation: worktree
----
-Add a --json flag to the CLI and cover it in the tests. ...
-```
-
-`model:` is required and should be the exact served id from `list_models`. Which
-model runs matters, and the main session is the one with the live context windows
-and slot occupancy, the conversation, and your instructions. The relay doesn't have
-any of that, so it won't fill in a model, fall back to a default, or swap one. With
-no `model:` it refuses to start, and if the model isn't up it returns the
-`model_unavailable` error so Claude asks you as usual. Other header keys: `endpoint`,
-`cwd`, `max_turns`, `timeout_s`, `permission_mode`, `resume_job`. A resume header is
-the one case where `model:` can be left out: a resumed job continues on the model that
-ran the original session.
-
-While it runs, Claude can still check on it directly with `list_jobs` / `job_status` / `job_log`.
-Messages sent to the relay let Claude cancel the job or, after it finishes, continue
-the same local session (`resume_job`). A follow-up runs on the same model, in the same
-directory and isolation: a worktree job continues in its tree, and if the tree was
-removed because the job changed nothing, it is recreated at the same path from the
-same base commit. Jobs live in the server's memory, so a follow-up is only possible
-while that server process is up. Stopping the relay from `/tasks` does **not**
-stop the local job; use `cancel_job`. The overhead is a few small Haiku turns per job,
-one per 25 minutes of job time (each `wait_job` blocks for 1500 s with progress
-notifications in between; v0.1.5 waited 100 s at a time, which with the relay's turn
-cap ended jobs longer than about 2.7 hours).
-
-### Status line
-
-Jobs started this way are MCP tasks, not subagents, so they don't appear in the agent
-panel. `/tasks` shows the latest progress line the server reported (status, elapsed,
-turns, tool calls, last activity). For an always-visible view, the server publishes
-each job's state to `~/.local/state/localagents/status/<pid>.json` on every change,
-and `localagents statusline` prints them as one line:
-
-```
-local: ⟳ Qwen3.8-Flash-Next 1m18s 4 calls ctx 31% 82 t/s · llamacpp 1/1 slots · +1 other
-```
-
-Per running job: elapsed time, tool calls, files touched, how full the local model's
-context window is (`ctx`, from the token usage the shim sees on every backend
-response, so it tells you how close the agent is to compaction) and its recent
-generation speed. Then the load of each endpoint your jobs run on, probed every ten
-seconds while jobs run: slots busy for llama.cpp, requests running and queued and KV
-cache fill for vLLM. Finished jobs stay on the line for two minutes with a check mark
-(or a cross, clock or null sign for failed, timed out and cancelled).
-
-The line is scoped to the Claude Code session asking: each server records the Claude
-Code process that spawned it, and the renderer finds its own by walking up from the
-status line script. Jobs of other sessions on the same machine fold into `+N other`,
-because the boxes are shared and knowing one is busy matters even when the job isn't
-yours. Files of servers that have exited are ignored and removed.
-
-The renderer imports nothing heavy and runs in well under 100 ms. Append it to your
-status line script and set `refreshInterval` in the `statusLine` settings block so
-the elapsed times tick while the session is idle:
+### llama.cpp
 
 ```bash
-local_jobs=$(timeout 2 localagents statusline 2>/dev/null)
-[ -n "$local_jobs" ] && line+="  $local_jobs"
+llama-server -hf <repo>:<quant> -c 131072 --metrics
 ```
 
-### Job records
+The flag defaults below are quoted from `llama-server --help` as of build b11913
+(November 2026); check yours, the defaults have moved before.
 
-Job records live in `~/.local/state/localagents/jobs/<job>/`: `task.txt` (the brief),
-`transcript.txt` (what the agent said and did), and `requests.jsonl` (every backend
-request with timing, size and usage). Together they come to about 100 KB per job.
+- `--jinja` — "whether to use jinja template engine for chat (default: enabled)".
+  Tool calling needs it; leave it on.
+- `--slots` / `--no-slots` — "expose slots monitoring endpoint (default: enabled)".
+  With `/slots` on, `list_models` shows `{total, busy, free}` so Claude knows whether
+  a second agent will run now or queue.
+- `--metrics` — "enable prometheus compatible metrics endpoint (default: disabled)".
+  With it on, each job records prompt tokens processed vs. cached, the cache hit
+  ratio and prompt and generation tok/s, and the monitor's speed and cache tiles
+  have data. The counters are server-wide, so overlapping jobs share the delta.
+- `-c N` / `--ctx-size N` and `-np N` / `--parallel N` — the window localagents
+  reports is the **per-slot** window `n_ctx` from `/props`. Without unified KV
+  (`--kv-unified`, "default: enabled if number of slots is auto") that is `-c`
+  divided by the slot count. Give each slot 128k or more.
+- `--reasoning on` for thinking models; the default, `auto`, detects it from the
+  template.
+- `--api-key KEY` — put the same key in the endpoint's `api_key:`; see
+  [Config](#config-modelsyaml).
 
-Two debugging files are off by default: `events.jsonl` (every SDK message, tool results
-included; it was 98% of a 6 GB state directory before it became opt-in) with
-`defaults.log_events: true` or `LOCALAGENTS_LOG_EVENTS=1`, and `requests_full.jsonl`
-(every request body) with `defaults.dump_requests: true` or `LOCALAGENTS_DUMP_REQUESTS=1`.
+### Strata
 
-**Retention.** Job directories older than `defaults.job_retention_days` (default 7, `0`
-disables) are deleted when a server starts and after every job finishes. The date in the
-directory name decides, and nothing that is not named like a job id is touched. The same
-pass is available by hand, which is also how you clean up a state directory that predates
-this rule:
+A llama.cpp-compatible server; mark it `backend: strata`. Its `/slots` and `/metrics`
+are always on and `/metrics` is JSON (cumulative totals, queue depth and the GPU
+figures), so no flags are needed: `list_models` shows `{total, busy, free}` plus
+`requests_waiting`, jobs get the same cache and throughput record as on llama.cpp, and
+the monitor draws its hardware tiles. Marked `llama.cpp` it still works, but without
+occupancy or per-job metrics, and `list_models` says so in a `hint`. Strata counts
+`max_tokens` against the window instead of clamping it, so it refuses a request
+earlier than llama-server would; the shim translates that refusal, or set
+`"fit_max_tokens": true` in its `strata-<model>.json` to clamp.
+
+### vLLM
 
 ```bash
-localagents prune --dry-run   # list what would go
-localagents prune             # delete it; --days N overrides the default
+vllm serve <model> --served-model-name <alias> \
+    --enable-auto-tool-choice --tool-call-parser <parser> \
+    --enable-prompt-tokens-details
 ```
+
+From the vLLM CLI reference:
+
+- `--enable-auto-tool-choice` — "Enable auto tool choice for supported models. Use
+  `--tool-call-parser` to specify which parser to use." Default `False`. Both are
+  required for tool calling; the parser depends on the model.
+- `--enable-prompt-tokens-details` — "If set to True, enable prompt_tokens_details in
+  usage." Default `False`. Without it vLLM's Anthropic-shaped responses carry no cache
+  fields: the request tables' reused column is blank and the prefill rate is an upper
+  bound (the cell's title says so).
+- `--served-model-name` — the id `list_models` shows and `run_agent(model=...)`
+  matches; `--max-model-len` is the window localagents reports.
+
+The Anthropic `/v1/messages` endpoint and the Prometheus `/metrics` endpoint need no
+flag. Sessions are started with `CLAUDE_CODE_ATTRIBUTION_HEADER=0` on every backend,
+because on vLLM the per-request attribution hash defeats prefix caching.
+
+### Other
+
+`backend: other` probes `/v1/models` and, if it answers, `/props` for a window.
+Without a window the session is told nothing and Claude Code assumes 200k, so only
+use it for a server whose window really is that large.
+
+Whatever the backend, the first turn of any job costs about 20k tokens of prompt on a
+cold slot (system prompt plus tool schemas), ~10 s on a 27B. Everything after that is
+a cache hit plus the delta.
+
+## Monitor
+
+```bash
+localagents monitor                 # http://127.0.0.1:8765/, opens in your browser
+localagents monitor --port 9000 --config ~/.config/localagents/models.yaml
+```
+
+One process probes every endpoint in `models.yaml` into the shared database and serves
+a page of them and the jobs running on them: a card per host, a table of recent jobs,
+a timeline, and a page per endpoint and per job. Flags: `--port`, `--host` (default
+`127.0.0.1`; the page has no authentication), `--db`, `--config`, `--no-collect` (serve
+the database without probing) and `--no-open`. It stops on Ctrl-C. `tools/monitor.sh
+start|status|log|stop` keeps it running in the background from a checkout.
+
+Its settings are an optional `monitor:` section in `models.yaml`:
+
+```yaml
+monitor:
+  port: 8765
+  attention_hours: 24     # an endpoint seen up within this window and down now is an alert; older is dormant
+  retention_days: 7       # probe rows older than this are deleted (job rows never are)
+  refresh_s: 5            # at most one snapshot push per this many seconds (max 3600)
+  # db: /path/to/localagents.db
+```
+
+The flags in detail, what the page shows, the smoke test and the JSON routes are in
+[docs/monitor.md](docs/monitor.md).
 
 ## Config: `models.yaml`
 
 Start from `models.example.yaml`. It's re-read on every call, so edits take effect
 immediately, and the server never rewrites it — `register_endpoint` writes to a
-sidecar `models.local.yaml` that is merged on top.
+sidecar `models.local.yaml` that is merged on top. Both the MCP server and the monitor
+find it the same way: `--config`, else `LOCALAGENTS_CONFIG`, else `./models.yaml` in the
+current directory (so a project can carry its own), else
+`~/.config/localagents/models.yaml`.
 
 ```yaml
 endpoints:
@@ -259,121 +256,36 @@ endpoints:
     host: gpu-server
 ```
 
-- **endpoints** are places that serve `/v1/messages`. That's the whole config:
-  what each one is serving is probed, never written down. Order is priority —
-  with no model named, the first endpoint that is up and serving something wins.
-  `backend` (`llama.cpp`, `vllm`, `strata`, `other`) selects how the window and occupancy
-  are probed; `host` and `notes` are informational and shown in `list_models`; `env` adds
-  environment variables to sessions that run against that endpoint. `api_key` is sent on
-  every call to that endpoint (as both `x-api-key` and `Authorization: Bearer`, so
-  llama.cpp's and vLLM's `--api-key` and Anthropic-shaped servers all accept it). It stays
-  in the MCP server: the delegated session is given the placeholder `local` and the shim
-  swaps the real key in, so an agent's `env` or Bash never sees it. Without a key the
-  placeholder is what goes out, which open servers ignore.
-- **Picking a model** is done per call. `run_agent(model=...)` takes a served id,
-  a glob, or a fuzzy name (`qwen3.8-27b` finds `unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL`);
-  `endpoint=` pins a server. Both are only needed when more than one thing is up.
-  `defaults.model` is an optional standing preference in the same syntax.
-- **defaults** also cover `permission_mode` (`acceptEdits`), allowed and disallowed
-  tools (subagents can't spawn subagents), which Claude settings to load,
-  `max_turns`, `timeout_s`, and a system-prompt suffix telling the agent it's a
-  delegate and how to report back.
+`endpoints` are places that serve `/v1/messages`, and that is all the file holds; which
+model a server is serving is found by probing it. Order is priority: with no model
+named, the first endpoint that is up and serving something wins. `backend`
+(`llama.cpp`, `vllm`, `strata`, `other`) selects the probe; `host` groups endpoints
+under one card in the monitor; `env` adds environment variables to sessions that run
+against that endpoint. `api_key` is sent on every call to that endpoint (as both
+`x-api-key` and `Authorization: Bearer`). It stays in the MCP server: the delegated
+session is given the placeholder `local` and the shim swaps the real key in, so an
+agent's `env` or Bash never sees it.
 
-A `models:` section from an older config is ignored.
+`run_agent(model=...)` takes a served id, a glob, or a fuzzy name (`qwen3.8-27b` finds
+`unsloth/Qwen3.8-27B-GGUF:UD-Q4_K_XL`); `endpoint=` pins a server. Both are only needed
+when more than one thing is up. An optional `defaults:` section holds `model` (a
+standing preference in the same syntax), `permission_mode` (`acceptEdits`),
+`allowed_tools` and `disallowed_tools`, `setting_sources`, `max_turns` (60),
+`timeout_s` (1800), `probe_timeout_s` (2.5), `job_retention_days` (7), the debugging
+switches `log_events` and `dump_requests`, and `system_prompt_append`, a suffix telling
+the agent it's a delegate and how to report back. `monitor:` is the monitor's own
+section, above.
 
-## What the shim does
+## Further reading
 
-Both llama.cpp and vLLM speak `/v1/messages` natively, so pointing
-`ANTHROPIC_BASE_URL` at them almost works. The shim closes the gaps:
-
-**System messages mid-conversation.** Claude Code puts `role: system` entries
-inside `messages` — the skills listing, a token-budget marker, and one more per
-turn. Qwen's chat template refuses: *"System message must be at the beginning"*.
-The shim folds each one into the adjacent user message as a `<system>…</system>`
-text block, **in place**. Hoisting them into the top-level `system` field instead
-changes the start of the prompt every turn, which invalidates the server's
-KV-cache prefix and re-evaluates the whole ~35k-token prompt each time (21–47 s
-per turn on a 27B). Folding in place keeps the prompt append-only: `f_sim_best`
-0.88–0.99 in llama-server's log, 2.5–14 s per turn.
-
-**Text next to tool results.** Claude Code appends a `<system-reminder>` text
-block to the user turn that carries tool results (and the fold above adds a
-`<system>` block there too). Gemma 4's chat template renders a tool response
-only when it sits directly after the assistant's tool call; behind llama.cpp's
-`/v1/messages` converter that mixed turn breaks the adjacency and the model
-sees *none* of its tool output — it then invents file contents, every Edit
-misses, and it reports success anyway. The shim moves such text blocks inside
-the last `tool_result`'s content, which every template renders. Measured on
-gemma-4-31B-it-qat (llama.cpp b11515): prompt growth after three file reads went
-from 256 tokens (blind) to ~3.1k (sees them); Qwen3.6 and Muse-Glimmer were
-unaffected either way.
-
-**Context overflow.** Claude Code assumes a 200k window for any model it doesn't
-recognise; with a smaller slot it runs into llama.cpp's
-`exceed_context_size_error`, which it doesn't understand, and the job dies. See
-the next section.
-
-Everything the shim does is a no-op when it isn't needed, and every request is
-logged with its timing, message count, byte size and reported usage.
-
-## Context windows
-
-Two layers keep a session inside the real window:
-
-1. The probe reads it — llama.cpp `/props` `n_ctx` (per slot: `-c` divided by
-   `--parallel` when unified KV is off), vLLM `max_model_len` — and the session
-   gets `CLAUDE_CODE_MAX_CONTEXT_TOKENS`. Claude Code's own auto-compact then fires
-   at the right point. Below 128k the output budget is also shrunk to `n_ctx/8`,
-   because the compact threshold is `window − max_output` and would otherwise sit at zero.
-2. If a request still overflows, the shim rewrites the backend's error into
-   Anthropic's `prompt is too long: N tokens > M maximum`, which Claude Code
-   answers by compacting and retrying.
-
-At 64k this works but thrashes: Claude Code's ~20k of fixed prompt and tool
-schemas, plus a ~7k-token compaction summary (~55 s on a 27B) and the files it
-re-attaches, refill the window within a few turns and its thrash guard ends the
-job. Give each slot 128k or more.
-
-## Backend notes
-
-- **llama.cpp**: `llama-server -hf <gguf> --jinja -fa on --slots --metrics`, plus
-  `--reasoning on` for thinking models and `--parallel N` for concurrent jobs. With
-  `/slots` on, `list_models` shows `{total, busy, free}` so Claude knows whether a
-  second agent will run now or queue. With `/metrics` on, each job records prompt
-  tokens processed vs. cached, cache hit ratio, prompt and generation tok/s, and
-  speculative-decode acceptance — the counters are server-wide, so overlapping jobs
-  share the delta.
-- **strata**: a llama.cpp-compatible server; mark it `backend: strata`. Its `/props`,
-  `/slots` and `/v1/messages` have llama-server's shapes but `/slots` and `/metrics` are
-  always on and never advertised in `/props`, and `/metrics` is JSON (cumulative `totals`
-  plus a live queue depth) rather than Prometheus text, so the strata backend reads them
-  unconditionally: `list_models` shows `{total, busy, free}` plus `requests_waiting`, and
-  jobs get the same cache/throughput record as on llama.cpp. Marked `llama.cpp` it still
-  works (window from `/props`) but without occupancy or per-job metrics, and the probe
-  says so in a `hint`. strata counts `max_tokens` against the window instead of clamping
-  it, so it refuses a request earlier than llama-server would; the shim translates that
-  refusal, or set `"fit_max_tokens": true` in its `strata-<model>.json` to clamp.
-- **vLLM**: `vllm serve <model> --served-model-name <alias> --enable-auto-tool-choice
-  --tool-call-parser <parser>`. The context window comes from `max_model_len` in
-  `/v1/models`; occupancy (`requests_running`/`waiting`, `kv_cache_usage`) and the per-job
-  cache stats come from its always-on `/metrics`. vLLM reports context overflow on the
-  Anthropic endpoint as HTTP 500 `internal_error`; the shim translates that too. The session
-  is started with `CLAUDE_CODE_ATTRIBUTION_HEADER=0` because the per-request attribution
-  hash defeats prefix caching. Verified with DeepSeek-V4-Flash: thinking blocks replay with
-  their signatures, prefix cache hits on every turn after the first.
-- The first turn of a job costs about 20k tokens of prompt on a cold slot (system
-  prompt plus tool schemas), ~10 s on a 27B. Everything after that is a cache hit
-  plus the delta.
-
-## Development
-
-```bash
-uv sync --dev
-uv run pytest -q
-```
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the layout and how to test changes
-against a real server.
+- [docs/using.md](docs/using.md) — the tools, the `local-agent` relay, the status
+  line, job records and the database.
+- [docs/monitor.md](docs/monitor.md) — the monitor's flags, the page, the smoke test
+  and the routes.
+- [docs/shim.md](docs/shim.md) — what the shim rewrites and why, and how a session is
+  kept inside the real context window.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — running from a checkout, the tests, and a
+  seeded database for looking at the monitor without servers.
 
 ## License
 

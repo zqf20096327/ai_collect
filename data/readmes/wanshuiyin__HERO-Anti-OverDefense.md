@@ -31,9 +31,12 @@ This repository is a short block you paste into your agent's config, plus a
 catalogue of the behaviours it is meant to stop. It works with **Claude Code**,
 **Codex**, **Antigravity**, **Cursor**, **GitHub Copilot**, **Windsurf** and
 **Gemini CLI** — anything that loads a config file without being asked. There is
-nothing to install for those rules. For long-running Codex Goals, the optional
+nothing to install for those rules. For long goals in Codex or Claude Code, the optional
 [Goal Pulse skill](skills/goal-pulse/README.md) enables execution reminders by
 default when you start or resume a Goal after installing it.
+For a fresh conversation, [Session Handoff](skills/session-handoff/README.md)
+preserves the task in project files and gives the next session a concrete place
+to continue.
 
 > 🧬 *Generalised out of [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) (~13.7k★), whose cross-model reviewer is genuinely good — and also spent a measurable share of its output proposing hashes nobody reads. HERO keeps the value and drops the tax.*
 
@@ -41,12 +44,22 @@ default when you start or resume a Goal after installing it.
 
 ## 🧭 What's inside
 
+![HERO: over-defense addressed by persistent rules for focus, Goal drift addressed by a 30-minute Python reminder for momentum, and context loss addressed by a Markdown session handoff for continuity.](assets/hero-three-paths.png)
+
+Three complementary paths: **HERO Rules** keep work focused, **Goal Pulse** keeps
+an active goal moving, and **Session Handoff** carries useful state into a
+fresh conversation. The last is a file-based workflow: prepare the handoff, open
+a new session, and continue from the recorded evidence and next action.
+The diagram shows the Codex Python timer; Claude Code uses native `/loop` for
+the same Goal Pulse role.
+
 | | |
 |---|---|
 | **[`RULES.md`](RULES.md)** | The contract, in English and Chinese, plus the three places the line is genuinely hard to draw. |
 | **[`cases/`](cases/README.md)** | Observed behaviours: what was asked, what the agent did, why it is disproportionate, what proportionate looks like. **You do not paste this in** — it is what you quote back when the agent argues. |
 | **[`hosts/`](hosts/README.md)** | Where to paste it — Claude Code, Codex, Antigravity, Copilot, Cursor, Windsurf, Gemini CLI. |
-| **[`Goal Pulse`](skills/goal-pulse/README.md)** | Codex skill and timer: once installed, enabled by default for Goal starts and resumes; collect finished work and tackle recurring blockers every 30 minutes. |
+| **[`Goal Pulse`](skills/goal-pulse/README.md)** | Codex timer or Claude Code native cron: once installed, enabled by default for long-goal starts and resumes; collect finished work and tackle recurring blockers every 30 minutes. |
+| **[`Session Handoff`](skills/session-handoff/README.md)** | A detailed Markdown skill for Codex and Claude Code: prepare an evidence-backed handoff, then continue in a fresh session without repeating completed work. |
 | **[`examples/`](examples/)** | Optional, and not part of HERO. Real `AGENTS.md` / `CLAUDE.md` files contributors wrote for **their own projects** and shared so you can see how they adapted the ideas. Not HERO variants, and not the [short version](RULES.md#the-short-version) — their thresholds are theirs. Borrow the approach, not the file. |
 
 ---
@@ -55,6 +68,8 @@ default when you start or resume a Goal after installing it.
 
 Only things that change what you should do. Not rewording, not layout — a
 changelog of everything buries the one line that mattered.
+
+- **2026-11-02** — **Session Handoff — the third HERO path.** The [Markdown skill for Codex and Claude Code](skills/session-handoff/README.md) saves the objective, evidence, decisions, active work, and next action, then guides a fresh session to continue from those files. It reuses existing recovery notes and needs no Python. Together with HERO Rules and Goal Pulse: **focus, momentum, continuity**.
 
 - **2026-11-01** — **Goal Pulse for Codex.** Once installed, the [skill and local timer](skills/goal-pulse/README.md) activates by default when you start or resume a Goal, reminding the main agent to collect finished work and tackle recurring blockers. Bilingual reminders run every 30 minutes; paused Goals stay silent. The core HERO block is unchanged.
 
@@ -70,6 +85,9 @@ changelog of everything buries the one line that mattered.
   >
   > 不得降低原目标、难度和验收标准，不得越过授权和预算；直接行动，无需专门回复本提醒。
 
+<details>
+<summary>Earlier updates (August–September 2026)</summary>
+
 - **2026-09-03** — ![BLOCK](https://img.shields.io/badge/BLOCK-2E7D32?style=flat-square) 📣 **Rule 7 gains the press-release principle — re-paste it.** A paper is a launch, not a progress report: lead with the strongest result; an unfavorable number that is a tradeoff is explained as one, one that is not is stated plainly, and either way it stays in the table — never narrated as a defeat. Adopted from [anti-defensive-writing-Skill](https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill) by [@Adkid-Zephyr](https://github.com/Adkid-Zephyr), which works the principle out in full for papers.
 - **2026-09-02** — ![BLOCK](https://img.shields.io/badge/BLOCK-2E7D32?style=flat-square) 🏃 **The block changed — re-paste it.** Rule 8: momentum is part of the deliverable — when several options are reasonable, pick one and note the tradeoff instead of handing back a menu. Rule 7 now also bans process traces: intermediate errors, abandoned approaches and AI-assistance markers are not content; rule 9 spells that out in full. Both distilled from a working ML researcher's config — the [original](examples/ml-research-daily-driver.zh-CN.md) is in `examples/`. New sibling named: stalling.
 - **2026-08-26** — ![BLOCK](https://img.shields.io/badge/BLOCK-2E7D32?style=flat-square) ✍️ **Rule 7, plus two new siblings: defensive prose.** Caveats scattered through every paragraph until the work reads as an apology (`SIB-003`); instructions confessed into the product — told "do not mention X", it writes "we do not address X" (`SIB-004`). Rule 7: deliverable text is not a defense transcript. Distilled from repairing a writing pipeline whose papers had turned into confessions.
@@ -81,6 +99,8 @@ changelog of everything buries the one line that mattered.
 > ⚠️ **Pasted the block before any of the above? Yours is stale.** The install
 > command won't fix it — the guard that stops it appending twice also stops it
 > replacing. Delete your old `=== SCOPE LIMITS ... ===` section and run it again.
+
+</details>
 
 ---
 
@@ -344,6 +364,20 @@ community) to compare notes on where your agent over-defends:
 
 - **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** — overnight autonomous ML research via cross-model adversarial review. A version of this contract ships inside its reviewer prompts.
 - **[Anti-Autoresearch](https://github.com/wanshuiyin/Anti-Autoresearch)** — the same method pointed at research integrity: observe real failures, name them as families, ship a contract.
+
+---
+
+## ⭐ Star History
+
+![GitHub stars](https://img.shields.io/github/stars/wanshuiyin/HERO-Anti-OverDefense?style=social)
+
+<a href="https://www.star-history.com/?repos=wanshuiyin%2FHERO-Anti-OverDefense&type=date&legend=top-left">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=wanshuiyin/HERO-Anti-OverDefense&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=wanshuiyin/HERO-Anti-OverDefense&type=date&legend=top-left" />
+    <img alt="HERO Star History Chart" src="https://api.star-history.com/chart?repos=wanshuiyin/HERO-Anti-OverDefense&type=date&legend=top-left" />
+  </picture>
+</a>
 
 ---
 

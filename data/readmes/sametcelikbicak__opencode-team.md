@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/opencode-team.svg" alt="OpenCode Team">
+  <img src="https://raw.githubusercontent.com/sametcelikbicak/opencode-team/main/assets/opencode-team.svg" alt="OpenCode Team">
 </p>
 
 <h1 align="center">OpenCode Team</h1>
@@ -10,6 +10,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT"></a>
   <a href="https://github.com/sametcelikbicak/opencode-team/stargazers"><img src="https://img.shields.io/github/stars/sametcelikbicak/opencode-team?style=social" alt="Stars"></a>
   <a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-1.x-blue?logo=opencode" alt="OpenCode 1.x"></a>
+  <a href="https://www.npmjs.com/package/@opencodeteam/cli"><img src="https://img.shields.io/npm/v/@opencodeteam/cli?logo=npm&label=&color=cb3837" alt="npm"></a>
 </p>
 
 A team of AI agents that takes an idea from research to launch — built on [opencode](https://opencode.ai), with no framework and no extra dependencies.
@@ -18,40 +19,9 @@ A team of AI agents that takes an idea from research to launch — built on [ope
   <em>Turkish: <a href="./README.tr.md">README.tr.md</a></em>
 </p>
 
-```mermaid
-flowchart LR
-  classDef start fill:#0969da,stroke:#0969da,color:#ffffff
-  classDef disc fill:#e8f1fb,stroke:#4a9fd8,color:#1f2328
-  classDef design fill:#f3edff,stroke:#7c5cff,color:#1f2328
-  classDef build fill:#e9f9f1,stroke:#2f9e6e,color:#1f2328
-  classDef ship fill:#fff4e5,stroke:#e08a2e,color:#1f2328
-
-  idea([idea]):::start --> discover
-
-  subgraph discover[Discover]
-    direction TB
-    research:::disc --> prd:::disc --> backlog:::disc
-  end
-  subgraph design[Design]
-    direction TB
-    ux:::design --> brand:::design --> architecture:::design
-  end
-  subgraph build[Build]
-    direction TB
-    buildstage[build]:::build --> qa:::build --> security:::build
-  end
-  subgraph ship[Ship]
-    direction TB
-    docs:::ship --> release:::ship --> launch:::ship
-  end
-
-  discover --> design --> build --> ship
-
-  style discover fill:transparent,stroke:#d0d7de,stroke-width:1px
-  style design fill:transparent,stroke:#d0d7de,stroke-width:1px
-  style build fill:transparent,stroke:#d0d7de,stroke-width:1px
-  style ship fill:transparent,stroke:#d0d7de,stroke-width:1px
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sametcelikbicak/opencode-team/main/assets/pipeline.svg" alt="OpenCode Team pipeline" width="960">
+</p>
 
 <sub>Each arrow is a gate: the next stage starts after your approval.</sub>
 
@@ -72,13 +42,27 @@ Requires OpenCode 1.x (tested on 1.19.0). OpenCode 2 support is planned as a sep
 
 Supported on macOS, Linux, and native Windows (Windows PowerShell 5.1 or PowerShell 7; verified with OpenCode 1.19.4). WSL is untested.
 
-On macOS or Linux:
+### Method 1: Git clone (symlink) — macOS and Linux
+
+Clone the repository and run the installer:
 
 ```bash
 git clone https://github.com/sametcelikbicak/opencode-team.git
 cd opencode-team
 ./install.sh
 ```
+
+If OpenCode is not on your PATH, install it first:
+
+```bash
+./install.sh --install-opencode
+```
+
+`--install-opencode` runs `curl -fsSL https://opencode.ai/install | bash`. OpenCode 1 and 2 cannot coexist: an existing OpenCode 2 binary is replaced. Without the flag, the installer never installs OpenCode and leaves an existing binary untouched.
+
+Restart opencode. That's it — the setup is global, so it works in every project directory.
+
+### Method 1: Git clone (symlink) — Windows
 
 On Windows, clone the repository and run the PowerShell installer from an **Administrator PowerShell**:
 
@@ -90,15 +74,61 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 
 PowerShell 7 with Windows Developer Mode enabled can create the symlinks without elevation. The process-scoped `-ExecutionPolicy Bypass` does not change your machine policy. See the [Windows installation guide](docs/install.md#windows) for checks, optional OpenCode installation, and troubleshooting.
 
-If OpenCode is not on your PATH, install it first, or let the installer run the official OpenCode 1.x installer:
+### Method 2: npm package (copy) — all platforms
+
+Install the published npm package globally:
 
 ```bash
-./install.sh --install-opencode
+npm install --global @opencodeteam/cli
 ```
 
-`--install-opencode` runs `curl -fsSL https://opencode.ai/install | bash`. OpenCode 1 and 2 cannot coexist: an existing OpenCode 2 binary is replaced. Without the flag, the installer never installs OpenCode and leaves an existing binary untouched.
+Then run the install command:
 
-Restart opencode. That's it — the setup is global, so it works in every project directory.
+```bash
+opencode-team install
+```
+
+This copies `agents/`, `commands/`, `team.yaml`, `team/AGENTS.md`, and `skills/team-*` into your OpenCode config directory (`~/.config/opencode` on macOS/Linux, `%USERPROFILE%\.config\opencode` on Windows).
+
+To use a different config directory:
+
+```bash
+opencode-team install --config-dir /path/to/your/opencode/config
+```
+
+Or set `OPENCODE_CONFIG_DIR` before running:
+
+```bash
+export OPENCODE_CONFIG_DIR=/path/to/your/opencode/config
+opencode-team install
+```
+
+#### Copy vs symlink
+
+By default, `opencode-team install` creates symbolic links (same behavior as `install.sh`). Use `--copy` to copy files instead, which avoids Windows symlink privilege requirements:
+
+```bash
+opencode-team install --copy
+```
+
+#### Verify
+
+```bash
+opencode-team check
+```
+
+#### Uninstall
+
+```bash
+opencode-team uninstall
+```
+
+#### Update
+
+```bash
+npm install --global @opencodeteam/cli@latest
+opencode-team install
+```
 
 `install.sh` symlinks the repo into your opencode config:
 
@@ -195,22 +225,22 @@ Pipeline control:
 
 ## The team
 
-| Role         | Agent file               | Writes                     |
-| ------------ | ------------------------ | -------------------------- |
+| Role         | Agent file               | Writes                            |
+| ------------ | ------------------------ | --------------------------------- |
 | Orchestrator | `agents/orchestrator.md` | `.team/07-build.md` (aggregation) |
-| Analyst      | `agents/analyst.md`      | `.team/01-research.md`     |
-| PM           | `agents/pm.md`           | `.team/02-prd.md`          |
-| PO           | `agents/po.md`           | `.team/03-backlog.md`      |
-| UX Designer  | `agents/ux.md`           | `.team/04-ux.md`           |
-| Brand        | `agents/brand.md`        | `.team/05-brand.md`        |
-| Architect    | `agents/architect.md`    | `.team/06-architecture.md` |
-| Frontend     | `agents/fe.md`           | `.team/07-build-fe.md`     |
-| Backend      | `agents/be.md`           | `.team/07-build-be.md`     |
-| QA           | `agents/qa.md`           | `.team/08-qa.md`           |
-| Security     | `agents/security.md`     | `.team/09-security.md`     |
-| Docs         | `agents/docs.md`         | `.team/10-docs.md`         |
-| DevOps       | `agents/devops.md`       | `.team/11-release.md`      |
-| Marketing    | `agents/marketing.md`    | `.team/12-launch.md`       |
+| Analyst      | `agents/analyst.md`      | `.team/01-research.md`            |
+| PM           | `agents/pm.md`           | `.team/02-prd.md`                 |
+| PO           | `agents/po.md`           | `.team/03-backlog.md`             |
+| UX Designer  | `agents/ux.md`           | `.team/04-ux.md`                  |
+| Brand        | `agents/brand.md`        | `.team/05-brand.md`               |
+| Architect    | `agents/architect.md`    | `.team/06-architecture.md`        |
+| Frontend     | `agents/fe.md`           | `.team/07-build-fe.md`            |
+| Backend      | `agents/be.md`           | `.team/07-build-be.md`            |
+| QA           | `agents/qa.md`           | `.team/08-qa.md`                  |
+| Security     | `agents/security.md`     | `.team/09-security.md`            |
+| Docs         | `agents/docs.md`         | `.team/10-docs.md`                |
+| DevOps       | `agents/devops.md`       | `.team/11-release.md`             |
+| Marketing    | `agents/marketing.md`    | `.team/12-launch.md`              |
 
 All agents are `mode: all`, so each one is reachable three ways: **Tab / Shift+Tab** to cycle, **`@agent-name`** to mention, and the orchestrator can launch it as a subagent via the `task` tool.
 

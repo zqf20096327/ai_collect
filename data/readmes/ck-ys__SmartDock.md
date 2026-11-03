@@ -1,58 +1,82 @@
 # SmartDock
 
 <p align="center">
-  <img src="docs/images/banner.svg" alt="SmartDock：通用智能体引擎 × 用户画像引擎" width="100%">
+  <img src="docs/images/banner.svg" alt="SmartDock：通用智能体引擎（附带用户画像引擎）" width="100%">
 </p>
 
 <p align="center">
   <img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square">
+  <img alt="Java" src="https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk&logoColor=white">
   <img alt="Spring Boot" src="https://img.shields.io/badge/Spring_Boot-3.5.14-6DB33F?style=flat-square&logo=springboot&logoColor=white">
-  <img alt="AgentScope" src="https://img.shields.io/badge/AgentScope-2.0.3-0F766E?style=flat-square">
+  <img alt="AgentScope" src="https://img.shields.io/badge/AgentScope-2.0.4-0F766E?style=flat-square">
   <img alt="Vue" src="https://img.shields.io/badge/Vue-3.5-42B883?style=flat-square&logo=vuedotjs&logoColor=white">
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-14%2B-4169E1?style=flat-square&logo=postgresql&logoColor=white">
 </p>
 
-SmartDock 是一套**通用智能体引擎**与**用户画像引擎**的参考实现：两条引擎在同一个 Spring Boot 进程里各管一摊，靠「业务事件」与「工具 SPI」两条缝对接；多租户、权限、计费、审计这些平台能力由底座提供，不重复造。
+<p align="center">
+  <b>让 AI 真的能查数据、走流程；让每一次业务动作都沉淀成可追溯的用户画像。</b><br>
+  <sub>Java 21 · Spring Boot 3.5 · Vue 3.5 · PostgreSQL · 多租户 · Apache-2.0</sub>
+</p>
 
-> **它是参考实现，不是装上就能用的成品。** 两条引擎可以拆开单独复用（画像引擎不依赖智能体，智能体也不依赖画像），平台基线可以直接当脚手架改。上线前需要接入自己的模型 Key、替换默认口令，并完成所在组织要求的安全与合规评估。
+SmartDock 是一套**开源通用智能体引擎**，附带一条可独立使用的**用户画像引擎**。智能体侧按 `agentId` 注册路由，走 ReAct 工具循环，能查真实业务数据、写操作前先确认，全程流式输出；画像侧把业务动作沉淀成事件，自动算出维度分、分群与行为分析。两条引擎在同一个 Spring Boot 进程里各管一摊，靠「工具 SPI」与「业务事件」两条缝对接；多租户、权限、计费、审计、文件安全由成熟底座提供——**整套能跑，也能只拆走智能体引擎**。
 
-**不适合谁**（先说清楚，省得白折腾）：
+## 30 秒了解
 
-- 想要开箱即用的 SaaS 成品、不愿碰 Java/Spring 的团队；
-- 只要一个聊天框套壳、不需要工具调用、权限与审计留痕的场景；
-- 需要多智能体自主协商编排的复杂流程——本项目按 `agentId` 注册与路由，不做多 agent 自主协同。
+<table>
+<tr><th align="left">你想要</th><th align="left">SmartDock 给你</th></tr>
+<tr><td><b>让 AI 真正干活</b></td><td>ReAct 工具循环、工具 SPI 扩业务、HITL 写操作确认、AGUI/SSE 流式输出（28 类事件）</td></tr>
+<tr><td><b>看懂用户</b></td><td>事件源画像：维度配置 → 评分 → 分群 → 低分复核；快照可回放、可对账</td></tr>
+<tr><td><b>不用从零搭后台</b></td><td>RuoYi-Vue-Plus 5.6.1 底座：多租户、权限、字典、OSS、风控、调度、监控</td></tr>
+</table>
 
 ## 界面速览
 
+界面全部来自真实运行的演示环境（合成数据，非设计稿）：
+
 <table>
 <tr>
-<td width="33%"><img src="docs/images/screenshots/01-overview.png" alt="首页总览"><br><sub>首页总览：两条引擎的运行态与近 7 天使用次数</sub></td>
-<td width="33%"><img src="docs/images/screenshots/02-analytics.png" alt="数据分析中心"><br><sub>数据分析中心：使用次数 / 人数 / 会话 / 单页离开率</sub></td>
-<td width="33%"><img src="docs/images/screenshots/06-assistant.png" alt="AI 助手"><br><sub>AI 助手：工具调用链，查不到就说查不到</sub></td>
+<td width="50%"><img src="docs/images/screenshots/13-assistant-session.png" alt="AI 助手会话页"><br><sub>全屏会话页：多会话历史、按当前页面推荐问题、模型与思考档位随手切</sub></td>
+<td width="50%"><img src="docs/images/screenshots/06-assistant.png" alt="AI 助手抽屉"><br><sub>业务页面内的助手抽屉：工具调用链、耗时与来源数都摊开给你看</sub></td>
 </tr>
 </table>
 
+<p align="center"><img src="docs/images/screenshots/06a-assistant-demo.gif" width="420" alt="AI 助手：一次完整问答"><br><sub>一次完整问答（录屏）：思考 → 调工具 → 引用来源 → 给结论；工具面之外就直说查不到</sub></p>
+
+<sub>截图来自真实运行的演示环境，数据由 `backend/script/demo/seed-internal-ops-demo.js` 生成（合成数据，不含真实个人信息）；部分截图拍摄于 v3.42.2，界面细节可能与当前版本略有差异。</sub>
+
 <p align="center">
-  <a href="#快速开始"><b>本地 10 分钟跑起来</b></a> ｜
+  <a href="#快速开始"><b>10 分钟跑起来</b></a> ｜
+  <a href="#核心能力"><b>核心能力</b></a> ｜
   <a href="docs/architecture.md"><b>分层与判定序</b></a> ｜
   <a href="docs/agent-engine.md">智能体引擎</a> ｜
   <a href="docs/profile-engine.md">画像引擎</a> ｜
   <a href="docs/profile-integration.md"><b>业务接入指南</b></a>
 </p>
 
-<sub>截图更新于 v3.42.2（2026-11-01 重拍 9 张：01/02/03/04/07/08/09/10/12）；05 模型与钥匙是 2026-10-28 的图（外部余额接口不可用，未再重拍）、06 AI 助手与 11 写操作确认是 2026-10-27 的旧图——本机模型与外网余额接口不可用，没法重拍，其中 06 背景首页的指标还是旧口径、11 的会话列表也偏旧；06a 演示动图同样未重录。界面数据由 `backend/script/demo/seed-internal-ops-demo.js` 生成的合成演示数据，不含真实个人信息。</sub>
+## 为什么值得一看
+
+1. **智能体是真能干活的那种**——ReAct 工具循环自主决策、工具 SPI 接业务、AGUI/SSE 28 类事件全程流式；不是只会聊天的套壳。
+2. **AI 不直接动生产数据**——写操作先出确认卡写明将改什么，点确认才落库；待确认期间输入暂停、草稿保留。
+3. **多智能体、多租户开箱可用**——按 `agentId` 注册与路由，工具/权限/记忆/技能/计费共用一套底座。
+4. **画像给智能体补上「懂用户」**——业务动作自动变成画像事件，助手用同一套权限查画像与任务数据；这是内置联动，不是两个拼在一起的 demo。
+5. **安全是默认项**——PII 出网脱敏、工具结果注入打标、16K 输入闸、导出审计、敏感字段打码。
+6. **有测试兜底**——后端 JUnit **437** 用例（其中 8 个红队集成用例需完整 PostgreSQL/Redis 环境）+ 前端 Vitest **241** 用例，覆盖权限矩阵、状态机、PII 脱敏、HITL、AGUI 协议与计费。
 
 ## 目录
 
+- [30 秒了解](#30-秒了解)
 - [界面速览](#界面速览)
+- [为什么值得一看](#为什么值得一看)
 - [技术架构](#技术架构)
 - [核心能力](#核心能力)
 - [快速开始](#快速开始)
+- [把自己的业务接进来](#把自己的业务接进来)
 - [核心模块](#核心模块)
 - [使用说明](#使用说明)
 - [更多界面](#更多界面)
 - [扩展指南](#扩展指南)
 - [技术栈](#技术栈)
+- [使用边界与适合谁](#使用边界与适合谁)
 - [安全与上线前检查](#安全与上线前检查)
 - [测试与质量](#测试与质量)
 - [内置账号](#内置账号)
@@ -66,7 +90,7 @@ SmartDock 是一套**通用智能体引擎**与**用户画像引擎**的参考�
   <img src="docs/images/architecture-overview.svg" alt="SmartDock 技术架构" width="100%">
 </p>
 
-客户端只调 REST/SSE；两个引擎同进程、互不依赖，靠「业务事件 → 画像」和「工具 SPI → 智能体」两条缝对接；平台能力（多租户、权限、计费、文件安全、风控、调度、监控、对象存储）全部来自底座。分层细节、模块边界与判定顺序见 [docs/architecture.md](docs/architecture.md)。
+客户端只调 REST/SSE；智能体引擎与画像引擎同进程、互不依赖——智能体通过「工具 SPI」接业务能力，画像通过「业务事件」收业务动作；平台能力（多租户、权限、计费、文件安全、风控、调度、监控、对象存储）全部来自底座。分层细节、模块边界与判定顺序见 [docs/architecture.md](docs/architecture.md)。
 
 ## 核心能力
 
@@ -76,9 +100,45 @@ SmartDock 是一套**通用智能体引擎**与**用户画像引擎**的参考�
 - **ReAct 工具循环**：模型自主决策调用工具，全程流式输出（AGUI/SSE，28 类事件）
 - **工具 SPI 机制**：业务能力通过 `BizToolProvider` 扩展，无需修改引擎核心
 - **安全防护**：PII 出网脱敏、工具结果注入打标、16K 输入闸、HITL 写操作确认
-- **计费系统**：钱包/积分双轨、13 家预置供应商 + 自定义、多 Key 池
+- **计费系统**：钱包/积分双轨、19 家预置供应商 + 自定义、多 Key 池
 
-### 📊 用户画像引擎
+<p align="center">
+  <img src="docs/images/ai-flow.svg" alt="智能体运行时：一次请求的完整链路" width="100%">
+</p>
+
+#### 技能：把业务 SOP 变成智能体的操作手册
+
+工具解决「能做什么」，技能解决「怎么做才对」。技能就是一个 Markdown 文件（官方 SKILL.md 格式，YAML frontmatter + 正文），业务和运维同学可以直接在管理台改，不用发版：
+
+```markdown
+---
+name: urge-wording
+description: 用户说「帮我写催办/怎么催比较好/写个催办」时，写不伤人的催办提醒（有依据、给出路、不施压过度）
+displayName: 催办话术
+minRole: publisher
+---
+你正在使用「催办话术」技能。目标：帮用户起草一条得体的催办留言。
+1. 说事不说人：「办公区安全检查还有 3 天截止」而不是「你怎么还没交」。
+2. 给依据给出路：附截止时间、入口（任务详情页）、卡住可联系谁。
+3. 语气分级：第一次催=提醒式；第二次=说明影响；逾期后=协助式。
+发送仍走催办确认卡，你只负责写话术。
+```
+
+- **渐进披露**：只有 `description` 常驻技能目录（模型靠它判断何时调用），正文默认不占上下文、用到才读——单技能正文上限 20000 字符
+- **三层装载**：内置 classpath → `config/skills/` 部署期覆写 → 管理台在线编辑（优先级最高，下一轮会话生效）
+- **权限双重闸**：`minRole` 控制谁能用，租户工具开关矩阵控制是否启用（停用后对所有角色整技能遮罩，超管也看不见）
+- **可度量**：每个技能的使用次数与最近使用时间都落在管理台
+
+内置 4 个示例技能（创建任务 / 创建模板 / 催办话术 / 数据解读），可直接改或新增：
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/screenshots/15-assistant-skill.png" alt="技能库"><br><sub>技能库：左侧目录只放一句话说明，右侧编辑正文；保存立即生效</sub></td>
+<td width="50%"><img src="docs/images/screenshots/14-assistant-toolgate.png" alt="工具与技能开关矩阵"><br><sub>工具开关矩阵：平台工具、MCP 外部工具、技能统一按角色与租户分档</sub></td>
+</tr>
+</table>
+
+### 📊 用户画像引擎（配套）
 
 - **事件源评分**：业务动作 → 事件 → 规则 → 版本化快照，可回放、可对账
 - **配置化维度**：六种算子 + 时间窗 + 打分映射 + 缺失策略，80% 维度零代码
@@ -90,10 +150,10 @@ SmartDock 是一套**通用智能体引擎**与**用户画像引擎**的参考�
 
 ## 快速开始
 
-> **只想最快看到第一张图？** 按下面「方式一」起好后端与前端（约 3 分钟），
-> 跑一次造数脚本、点一次「重建汇总」，然后直达
-> **「画像与分析 → 数据分析」**——使用概览、漏斗、留存、明细等主要报表全部有数
-> （约 292 事件 / 81 会话 / 4 位同事的内部协作演示口径；实时看板只统计最近 5 分钟，演示种子是历史数据、显示为空属正常）。Java 接入 10 分钟指南见
+> **只想最快看到效果？** 按「方式一」起好后端与前端（约 3 分钟），用内置演示账号登录，进「AI 助手」——
+> 先在「AI 模型配置」录入一个供应商 Key，就能在助手抽屉或全屏会话页里对话、看工具调用链。
+> 画像侧想看满数据，再跑一次造数脚本、点一次「重建汇总」（约 292 事件 / 81 会话 / 4 位同事的合成演示口径；
+> 实时看板只统计最近 5 分钟，演示种子是历史数据、显示为空属正常）。画像 Java 接入 10 分钟指南见
 > [docs/profile-integration.md](docs/profile-integration.md)，协议字段表见
 > [docs/profile-engine.md](docs/profile-engine.md#2-通用接入协议)。
 
@@ -219,15 +279,96 @@ docker compose ps        # 五个服务应为 running / healthy
 - **HTTPS**：compose 只监听 80，生产建议在前面加 Nginx/Caddy 终止 TLS，再反代到 `HTTP_PORT`。
 - 裸机部署、健康检查与更多细节见 [docs/deploy.md](docs/deploy.md)。
 
+## 把自己的业务接进来
+
+### 智能体：一个 Bean 就是一套工具
+
+把业务能力暴露给助手，实现 `BizToolProvider` 即可；工具注册、权限校验、审计留痕、计费与 HITL 确认由引擎自动完成，不改引擎核心。
+
+```java
+@Component
+public class OrderToolProvider implements BizToolProvider {
+
+    @Override
+    public String namespace() { return "order"; }
+
+    @Override
+    public List<BizToolSpec> tools() {
+        BizToolSpec query = BizToolSpec.readOnly("order_query", "查询订单", "按手机号或订单号查最近订单");
+        query.getParams().add(BizParamSpec.string("keyword", "手机号或订单号", true));
+        BizToolSpec refund = BizToolSpec.write("order_refund", "订单退款", "对指定订单发起退款", "确认要发起退款吗");
+        refund.getParams().add(BizParamSpec.string("orderNo", "订单号", true));
+        return List.of(query, refund);
+    }
+
+    @Override
+    public BizToolResult execute(BizToolCall call) {
+        if ("order_query".equals(call.getToolName())) {
+            return BizToolResult.ok(orderService.query(call.getArgs().get("keyword")));
+        }
+        return BizToolResult.fail("该操作未实现");
+    }
+}
+```
+
+只读工具直接执行；写工具在真正落库前会停下来出确认卡，确认后才执行。工具名全局唯一（建议加 `namespace` 前缀），权限门槛写在 `BizToolSpec` 里，模型看不到越权工具。
+
+### 画像：三步，不改评分链路（配套）
+
+画像引擎只认一种东西：**事件**。业务动作 → 事件 → 指标 → 快照，接入只需三步。
+
+<p align="center">
+  <img src="docs/images/profile-flow.svg" alt="画像事件流水线：业务动作 → 事件 → 指标 → 快照" width="100%">
+</p>
+
+**第 1 步：在业务代码里发一条事件**
+
+```java
+@RequiredArgsConstructor
+@Service
+public class BizEventReporter {
+
+    private final ProfileEventPublisher eventPublisher;   // 唯一入口
+
+    public void onOrderPaid(String orderNo, Long userId, int amountFen, String channel) {
+        ProfileEventBo e = new ProfileEventBo();
+        e.setEventName("order.paid");                    // 点分小写：实体.动作
+        e.setEventUid(ProfileUids.uid("myapp.order", "paid", orderNo)); // 幂等键，第一段带模块名
+        e.setSubjectType("member");                      // 主体类型，缺省 user
+        e.setSubjectId(String.valueOf(userId));
+        e.getProps().put("amountFen", amountFen);         // 数值放数字类型，不能放字符串
+        e.getProps().put("payChannel", channel);
+        eventPublisher.publish(e);                        // false = 重复被幂等跳过，不是错误
+    }
+}
+```
+
+**第 2 步：配一个维度**（管理台「画像工作室 → 新建维度」，或插入一条 JSON）
+
+```json
+{
+  "metric": { "operator": "SUM", "target": { "eventName": "order.paid", "prop": "amountFen" } },
+  "window": { "type": "all" },
+  "score": { "type": "linear", "direction": "higher", "lo": 0, "hi": 100000 },
+  "missing": "neutral"
+}
+```
+
+**第 3 步：触发重算，看画像**——主体详情、分群、漏斗与行为分析自动出数；每次计算进快照，历史可回放、可对账。
+
+> 三条接入红线（踩了会静默丢数/错算）：事件编号第 1 段必须带模块名（防跨模块撞车）；异步/定时/MQ 线程必须用 `TenantHelper.dynamic` 包住租户上下文；`props` 数值放 JSON number、布尔放 1/0。
+>
+> 完整字段表、编号规则、HTTP 接入方式见 [业务接入指南（10 分钟）](docs/profile-integration.md)。
+
 ## 核心模块
 
 | 模块 | 职责 |
 |------|------|
 | `ruoyi-admin` | 启动模块，聚合全部运行时 |
-| `ruoyi-profile-engine` | 画像引擎：事件源、维度计算、快照版本化 |
 | `ruoyi-assistant` | 智能体运行时：ReActAgent、工具注册、AGUI 事件 |
 | `ruoyi-assistant-spi` | 业务工具 SPI 契约 |
 | `ruoyi-ai-billing` | AI 计费：供应商配置、钱包、积分、价格 |
+| `ruoyi-profile-engine` | 画像引擎（配套）：事件源、维度计算、快照版本化 |
 | `ruoyi-dcs` | 内置 Demo：任务/提交/审核/通知/画像事件 |
 | `ruoyi-system` | 平台基座：用户/租户/部门/角色/菜单/字典 |
 | `ruoyi-file-security` / `ruoyi-risk` / `ruoyi-job` | 文件安全、风控、调度 |
@@ -235,8 +376,6 @@ docker compose ps        # 五个服务应为 running / healthy
 ## 使用说明
 
 ### AI 助手
-
-<p align="center"><img src="docs/images/screenshots/06a-assistant-demo.gif" width="384" alt="AI 助手：一次完整问答"></p>
 
 1. 登录后进入「AI 模型配置」，配置模型供应商与 API Key；
 2. 为模型维护 **CNY 价格行**（价格目录维护或自动探测）——无人民币价格行的模型不会进入可选列表；
@@ -250,6 +389,8 @@ docker compose ps        # 五个服务应为 running / healthy
 - 思考档位切换（快 / 平衡 / 深）
 - 工具调用可视化（含耗时与来源数）
 - HITL 写操作确认
+- 计划卡：多步任务先列计划，可以「开始执行 / 改一下 / 取消」，选择都在输入框位置完成
+- 技能库（助手的操作手册）与 MCP 外部工具，按角色与租户分档开关
 
 <table>
 <tr>
@@ -259,24 +400,15 @@ docker compose ps        # 五个服务应为 running / healthy
 </table>
 
 > 基线不包含任何 AI Key；没有可用模型配置时，助手会明确提示未配置，不会静默降级到其他租户或平台配置。
-> 工具面之外的问题它会直说「查不到」，不编数字——这一点在上面动图里能看到。
+> 工具面之外的问题它会直说「查不到」，不编数字。
 
-### 用户画像
+### 用户画像（配套）
 
-1. 业务系统通过 `ProfileEventPublisher` 发送事件（[Java 接入示例与协议字段表](docs/profile-engine.md#2-通用接入协议)）；
+1. 业务系统通过 `ProfileEventPublisher` 发送事件（见 [把自己的业务接进来](#把自己的业务接进来)）；
 2. 在「画像工作室」配置维度、权重与覆盖度；
 3. 触发重算，查看主体画像与历史快照。
 
-<p align="center"><img src="docs/images/screenshots/03-profile-detail.png" alt="画像详情：维度雷达、总分趋势与逐维证据" width="100%"></p>
-
-### 配置与运营
-
-<table>
-<tr>
-<td width="50%"><img src="docs/images/screenshots/04-profile-studio.png" alt="画像工作室"><br><sub>画像工作室：7 套场景模板一键预填，维度/权重/分群/漏斗可完全自建</sub></td>
-<td width="50%"><img src="docs/images/screenshots/05-model-config.png" alt="AI 模型与钥匙"><br><sub>AI 模型与钥匙：按厂商管模型、价格、钥匙与巡检</sub></td>
-</tr>
-</table>
+画像的界面与运营细节见 [画像引擎文档](docs/profile-engine.md)，这里不再展开。
 
 ### 内置 Demo
 
@@ -286,60 +418,59 @@ docker compose ps        # 五个服务应为 running / healthy
 - 每次状态迁移产生画像事件
 - 助手可查询任务、待办、提交，甚至创建草稿任务
 
+<p align="center">
+  <img src="docs/images/business-flow.svg" alt="内置 demo：任务与提交状态机" width="100%">
+</p>
+
 执行基线 `05_demo_data.optional.sql` 后可直接看到一条演示任务；跳过时 Demo 页为空，可自行创建任务体验。
 任务与提交的状态机见 [docs/architecture.md](docs/architecture.md)。
 
 ## 更多界面
 
-四张图分别证明分析深度、画像运营与企业合规：
+智能体治理的四个面——租户级管控、能力门槛、MCP 外部服务、用量与额度：
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/screenshots/07-analytics-funnel.png" alt="转化漏斗"><br><sub>转化漏斗：内置 demo 的真实任务链路——任务发布 → 数据提交 → 审核通过，每一步的流失去向都写在下方</sub></td>
-<td width="50%"><img src="docs/images/screenshots/08-profile-segments.png" alt="标签分群"><br><sub>标签分群：规则只写一次，成员按最新快照实时求值，运行记录可追溯</sub></td>
+<td width="50%"><img src="docs/images/screenshots/16-assistant-tenant.png" alt="租户设置"><br><sub>租户设置：助手开关、每日回合上限、联网次数、日预算、自动压缩阈值，一屏管住</sub></td>
+<td width="50%"><img src="docs/images/screenshots/17-assistant-panorama.png" alt="能力全景"><br><sub>能力全景：助手会用哪些工具、怎么执行、什么门槛、本租户是否生效，逐项列清</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/images/screenshots/09-profile-review.png" alt="低分复核"><br><sub>低分复核：低于阈值自动入队；确认或驳回后，分数没有继续下降就不再重复打扰</sub></td>
-<td width="50%"><img src="docs/images/screenshots/10-compliance.png" alt="合规中心"><br><sub>合规中心：敏感字段打码规则、主体级删除、导出审计，一页管齐并全部留痕</sub></td>
+<td width="50%"><img src="docs/images/screenshots/18-assistant-mcp.png" alt="外部工具 MCP"><br><sub>外部工具：MCP 服务挂载与调用审计——每次挂载、每次调用都落账，按租户限频</sub></td>
+<td width="50%"><img src="docs/images/screenshots/19-assistant-quota.png" alt="用户额度"><br><sub>用户额度：每人每日回合与联网次数、本月费用、超额状态，按人可调</sub></td>
 </tr>
 </table>
 
 ## 扩展指南
 
-### 新增画像维度
+### 新增业务工具
+
+实现 `BizToolProvider` 的 `namespace()` / `tools()` / `execute()` 三个方法，注册成 Spring Bean 即可，完整可粘贴示例见 [把自己的业务接进来](#把自己的业务接进来)。工具声明里 `readOnly=false` 会自动走 HITL 确认卡。
+
+### 新增智能体
+
+注册惰性工厂到 AGUI 注册表（工厂按登录身份建租户 agent）：
+
+```java
+@Bean
+public AguiAgentRegistryCustomizer myAgentCustomizer() {
+    return registry -> registry.registerFactory("my-agent", loginUser -> myAgentFactory.create(loginUser));
+}
+```
+
+### 新增技能
+
+在管理台「AI 助手管理 → 技能库」新建，或往 `config/skills/<技能名>/SKILL.md` 放一个文件：YAML frontmatter 写 `name/description/displayName/minRole`，正文写操作步骤。`description` 决定模型何时调用它，正文只在用到时进上下文。
+
+### 新增画像维度（配套）
 
 向 `profile_score_dimension` 插入配置（`prop` / `dedupKey` 键名需匹配 `^[A-Za-z][A-Za-z0-9_]{0,62}$`）：
 
 ```json
 {
-  "metric": { "operator": "COUNT", "target": { "eventType": "task.published" } },
+  "metric": { "operator": "COUNT", "target": { "eventName": "task.published" } },
   "window": { "type": "all" },
   "score": { "type": "linear", "direction": "higher", "lo": 0, "hi": 100 },
   "missing": "neutral"
-}
-```
-
-### 新增业务工具
-
-实现 `BizToolProvider` 接口，返回工具列表：
-
-```java
-@Bean
-public BizToolProvider taskToolProvider() {
-    return () -> List.of(
-        BizToolSpec.readOnly("query_tasks", "查询任务列表", "按标题模糊查询与我相关的任务")
-    );
-}
-```
-
-### 新增智能体
-
-注册工厂到 AGUI 注册表：
-
-```java
-@Bean
-public AguiAgentRegistryCustomizer myAgentCustomizer() {
-    return registry -> registry.registerFactory("my-agent", factory);
 }
 ```
 
@@ -347,11 +478,23 @@ public AguiAgentRegistryCustomizer myAgentCustomizer() {
 
 | 类别 | 组件 |
 |------|------|
-| 后端 | Java 21、Spring Boot 3.5.14、Spring AI 1.1.5、AgentScope 2.0.3 |
+| 后端 | Java 21、Spring Boot 3.5.14、Spring AI 1.1.5、AgentScope 2.0.4 |
 | 框架 | Sa-Token、MyBatis-Plus、Redisson、Hutool、SnailJob |
 | 前端 | Vue 3.5、TypeScript、Element Plus、Vite、Pinia、ECharts |
 | 数据库 | PostgreSQL 14+、Redis 7、MinIO |
 | 基础 | RuoYi-Vue-Plus 5.6.1 (MIT) |
+
+## 使用边界与适合谁
+
+**适合**：想给业务系统接一个能查数据、能执行操作的 AI 助手的团队；需要多智能体注册、工具接入、权限与计费底座的平台项目；顺带想要用户画像与行为分析的团队。
+
+**不适合**（先说清楚，省得白折腾）：
+
+- 想要开箱即用的 SaaS 成品、不愿碰 Java/Spring 的团队；
+- 只要一个聊天框套壳、不需要工具调用、权限与审计留痕的场景；
+- 需要多智能体自主协商编排的复杂流程——本项目按 `agentId` 注册与路由，不做多 agent 自主协同。
+
+**它是参考实现，不是装上就能用的成品。** 两条引擎可以拆开单独复用（画像引擎不依赖智能体，智能体也不依赖画像），平台基线可以直接当脚手架改。上线前需要接入自己的模型 Key、替换默认口令，并完成所在组织要求的安全与合规评估。
 
 ## 安全与上线前检查
 
@@ -363,11 +506,11 @@ public AguiAgentRegistryCustomizer myAgentCustomizer() {
 
 ## 测试与质量
 
-后端 JUnit **447** 用例 + 前端 Vitest **200** 用例，覆盖权限矩阵、状态机、PII 脱敏、注入打标、HITL、AGUI 协议与计费。
+后端 JUnit **437** 用例 + 前端 Vitest **241** 用例，覆盖权限矩阵、状态机、PII 脱敏、注入打标、HITL、AGUI 协议与计费。其中 8 个红队集成用例（`RedteamCore8Test`）需要完整的 PostgreSQL/Redis 才能启动 Spring 上下文；纯本地环境跑会报 8 个 context 加载错误，属预期（其余 429 个全部通过）。
 
 ```bash
-# 后端（根 pom 默认 skipTests=true，必须显式覆盖）
-cd backend && mvn test -DskipTests=false
+# 后端（根 pom 默认 skipTests=true，且默认 dev profile；跑 local 组需显式指定）
+cd backend && mvn test -DskipTests=false -P local
 
 # 前端
 cd frontend && npm test && npm run build:prod
@@ -402,7 +545,7 @@ README 里的界面截图由 `frontend/scripts/readme-screenshots.mjs` 生成（
 
 本项目使用 Apache License 2.0，详见 [LICENSE](LICENSE)。
 
-基础框架来自 [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) 5.6.1 (MIT)，AI 运行时基于 [AgentScope (Java)](https://github.com/agentscope-ai/agentscope-java) 2.0.3，模型访问基于 [Spring AI](https://spring.io/projects/spring-ai) 1.1.5。
+基础框架来自 [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) 5.6.1 (MIT)，AI 运行时基于 [AgentScope (Java)](https://github.com/agentscope-ai/agentscope-java) 2.0.4，模型访问基于 [Spring AI](https://spring.io/projects/spring-ai) 1.1.5。
 
 ## 🙏 特别鸣谢
 

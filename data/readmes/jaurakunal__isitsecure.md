@@ -396,8 +396,8 @@ isitsecure verify https://your-app.com --report before.json --fingerprint de0e57
 ```
 
 - **DAST** findings are re-probed against the target — the exact endpoint is re-run through the scanner that raised it. To avoid ever *falsely* claiming a fix, a `fixed`/`still-present` verdict is only given when a single-endpoint re-probe can faithfully reproduce the finding (endpoint-level checks like security headers / CORS / CSRF, and parameter-level injection where the tested parameter is recoverable). Findings that depend on crawl-derived state or multi-request flows (e.g. stored XSS) are reported `unverifiable` — re-verify those with a full scan.
-- **SAST** findings are re-checked against a local `--repo` via a code-only re-scan.
-- Omit `--fingerprint` to re-verify every finding in the report. Exit codes make it a CI gate: **`0`** all clear (everything fixed), **`1`** at least one finding still present, **`2`** inconclusive — something couldn't be verified (`unverifiable`/error/`could_not_verify` — e.g. the target was unreachable or the re-scan couldn't read the repo; these are never reported as fixed) or a requested fingerprint wasn't in the report. LLM-review findings (which need a model to reproduce) are always `unverifiable`.
+- **SAST** findings are re-checked against a local `--repo` via a code-only re-scan. A finding counts as fixed only when no remaining finding matches any of its fingerprints (current or legacy), so editing the flagged line without removing the bug stays `still-present`. If the scanner that raised a finding did not run in the re-scan (for example the optional `semgrep` is not installed, it timed out, or OSV was unreachable), the verdict is `could_not_verify`, never `fixed`.
+- Omit `--fingerprint` to re-verify every finding in the report. Exit codes make it a CI gate: **`0`** all clear (everything fixed), **`1`** at least one finding still present, **`2`** inconclusive — something couldn't be verified (`unverifiable`/error/`could_not_verify` — e.g. the target was unreachable or the re-scan couldn't read the repo; these are never reported as fixed) a requested fingerprint wasn't in the report, or the report file is malformed; a finding that disappeared from a file that no longer parses, or whose code now appears in another file, is `unverifiable` too, since it may have moved rather than been fixed. LLM-review findings (which need a model to reproduce) are always `unverifiable`.
 - `--output json` includes a `could_not_verify` count.
 
 (This is the per-finding CLI counterpart to the MCP `verify(scan_id)` tool, which instead re-scans everything and reports grade movement.)
@@ -410,7 +410,7 @@ isitsecure verify https://your-app.com --report before.json --fingerprint de0e57
   backup and a re-scan to confirm each finding is actually resolved.
 - **Remote GitHub URL** (with a token) → the repo is cloned, fixed, and the
   changes are opened as **per-category pull requests** — nothing is pushed to
-  your default branch.
+  the branch you scanned (the PR base).
 
 ```bash
 # Local: scan your code and apply AI-generated fixes in place
@@ -437,15 +437,65 @@ isitsecure fix --repo <github-url> --pr-strategy per-file --max-prs 5
 ```
 
 Each PR groups related fixes (by category, by default), one commit per finding,
-onto a feature branch — never your default branch. `--max-prs` caps the number
+onto a feature branch — never the base branch. `--max-prs` caps the number
 of PRs (default 8); excess low-severity categories are batched into a single PR
-so nothing is silently dropped. The token is used only for the push + PR and is
-never stored or logged (env var `GITHUB_TOKEN` also works).
+so nothing is silently dropped. The token is used only for the clone, push and
+PR; it is never stored or logged, and it is not put in the clone URL, a command
+line or the clone's `.git/config` (it reaches git through the process
+environment, and the clone lives in a `0700` temp directory that is removed
+afterwards, including on Ctrl-C). Env var `GITHUB_TOKEN` also works.
+
+How the remote flow behaves:
+
+- **Branch it fixes**: the branch that was scanned (the report's branch) is
+  cloned and every PR is opened against it. When none is known, the repo's
+  default branch is looked up; a bad token, missing permission, renamed repo or
+  network failure is reported as such rather than silently assuming `main`.
+- **Branch names** are `isitsecure/fix-<slug>`; per-file and per-finding
+  branches add a short stable hash (of the path, or of category + path + line +
+  title) so two paths like `a_b.py` and `a-b.py` never collide and the same
+  finding gets the same name on every re-run. A `-fixes` suffix is added if the
+  name would equal the base branch.
+- **Re-runs are never blocked, and never overwrite**: before any LLM call the
+  remote is checked (`git ls-remote`) for `isitsecure/fix-<slug>`, `-2`, `-3`
+  and so on. If one of them has an OPEN pull request, that group is skipped
+  (noted, no duplicate PR). A name that exists with no open PR (its PR was
+  merged and GitHub kept the branch, or an earlier run pushed it but failed to
+  open the PR) is left untouched and never reused; the next free `-2`, `-3` ...
+  name (up to `-9`) gets the freshly generated fixes. There is no force-push.
+  If a branch is pushed but opening its PR fails, the error and the
+  `orphaned_branches` result field name it. `--dry-run` does not contact the
+  remote beyond the scan, so leftover branches are only detected on a real run.
+- **Push failures** show git's real message (hook, protected branch, push
+  protection, token scope); only git's own non-fast-forward / fetch-first
+  rejection is reported as "branch already exists".
+- **Git isolation**: every git command runs with your global and system git
+  config ignored (`GIT_CONFIG_GLOBAL` = null device, `GIT_CONFIG_NOSYSTEM=1`),
+  so a `url.<x>.insteadOf` rewrite cannot send the clone or push elsewhere (for
+  example over ssh, around the token). Proxies must be set with `HTTPS_PROXY` /
+  `NO_PROXY`, not in `~/.gitconfig`.
+- **Commits** use an `isitsecure[bot]` identity with hooks and gpg signing
+  disabled; finding titles and paths are flattened to one line, secret-looking
+  values (URL credentials, bearer tokens, key/password assignments, common
+  token shapes) are redacted, and `@mentions`, images, links, `#123`/`GH-123`
+  references, backticks and bidi overrides are neutralised in PR text. A fix
+  that fails to commit, makes no change, or targets a symlink is skipped and
+  never leaks into another finding's commit.
+- Each git command has a timeout (120 s; 300 s for the clone) and is killed,
+  with its child processes, if it hangs or the run is cancelled (process group
+  on Linux/macOS, `taskkill /T` on Windows).
+- **Exit status** is `1` if any error was reported or no PR was opened
+  (including a leftover branch with no open PR), else `0`.
+- **Result JSON** (server `fix-all` and the MCP/API): `mode`, `repo`,
+  `base_branch`, `fixed_count`, `skipped[]`, `errors[]`, `orphaned_branches[]`,
+  `summary`, and `pull_requests[]` (`category`, `title`, `branch`, `url`,
+  `finding_count`, `is_low_batch`).
 
 `--repo` accepts `https://github.com/owner/repo[.git]`, `git@github.com:owner/repo.git`,
 `ssh://git@github.com/owner/repo` or `github.com/owner/repo`. URLs with credentials, a
 query string, a fragment, `http://`, or extra path segments (such as `/tree/main`) are
-rejected.
+rejected. The ssh and scp forms are accepted for parsing, but the clone and
+push always go over https with the token; your ssh keys are never used.
 
 What the local flow does:
 1. Scans your repo with all SAST scanners
@@ -458,8 +508,28 @@ What the local flow does:
 4. Prints a plain-language summary of what was fixed, needs review, or couldn't
    be fixed (pass `--technical` for the git diff / backup-restore details)
 
-Your original files are backed up before anything is written; the summary tells
-you how to review and restore them.
+Your original files are backed up before anything is written (a git ref, or a
+file copy under `~/.isitsecure/backups/` — outside your repo, so it is never
+re-scanned or committed; set `ISITSECURE_BACKUP_DIR` to move it); the summary
+tells you how to review and restore them.
+
+Applying never loses your work:
+
+- Each file is written once, atomically (permissions and line endings kept).
+- A file you edited after it was read is **not** overwritten; it is reported.
+- If a write fails, the files already written in that run are put back, and the
+  command says exactly what was restored. Nothing is described as "fixed"
+  unless its fix is on disk.
+- Counts are per finding, never per file.
+
+**Exit codes** (usable as a CI gate): `0` when every selected finding was fixed
+(or there was nothing to fix, or a local `--dry-run` found nothing unfixable); `1`
+when any write failed or was refused, any finding could not be fixed, the re-check
+did not run, or a remote run hit an error or opened no pull requests; `2` for
+invalid options. Findings that may have moved to another file after the fix are
+listed under "Worth a look" and counted as needing review, never as fixed. An
+unknown `--severity` (valid: `critical,high,medium,low,info`), `--pr-strategy`
+or `--max-prs` is rejected before any paid scan or clone.
 
 ## Security Badge
 
@@ -646,7 +716,7 @@ isitsecure fix [OPTIONS]
   --llm TEXT             LLM provider: anthropic|google [default: anthropic]
   --api-key TEXT         API key for the selected --llm provider (default: that provider's env var / config)
   --dry-run              Show fixes without applying them
-  --severity TEXT        Severities to fix: critical,high,medium [default: critical,high]
+  --severity TEXT        Severities to fix: critical,high,medium,low,info (unknown values are an error) [default: critical,high]
   --technical            Show git/backup details instead of the plain-language summary
   --github-token TEXT    GitHub token for remote-repo pull requests (env GITHUB_TOKEN; never stored)
   --pr-strategy TEXT     Group PRs by: per-category|per-file|per-finding|single [default: per-category]
@@ -689,10 +759,11 @@ The UI provides:
 - **Finding browser** — filter by severity or scanner, plus full-text search, with each finding expandable for evidence, technical detail, and remediation
 - **Plain-language risk summary** — an A–F grade, key risks, and a phased remediation plan
 - **One-click AI fixes** — a "Generate Fix" button on any finding produces a unified diff inline (one finding at a time)
+- **Fix all** — for a scan of a local git repo, generates fixes for the critical/high findings and commits them to a **new `isitsecure/fixes` branch** (`-2`, `-3`… if taken), then switches you back, so your working tree never changes. It needs a clean tree, re-checks that right before creating the branch, and never force-checks-out: if you edited or committed anything while fixes were generating, nothing is written and you get a markdown fix plan instead. Gitignored, untracked and skip-worktree files are never written. A dirty tree, a non-git folder or a remote/URL scan also gives the markdown plan (built from the real file contents; findings whose source isn't on this machine are listed as skipped, not guessed). One apply runs at a time per repo, a second click on the same scan attaches to the running job, and each job has an LLM call budget
 - **Report export** — download JSON, or open the self-contained HTML report in a new tab
 - **Scan history** — recent scans are remembered locally in your browser
 
-The web server resolves your LLM API key the same way the CLI does (`ANTHROPIC_API_KEY`, a `.env` file, or `isitsecure setup`), so scans and fixes work without pasting a key into the browser. You can still enter one in the scan form to override it; "Fix all" reuses the key entered with the original scan.
+The web server resolves your LLM API key the same way the CLI does (`ANTHROPIC_API_KEY`, a `.env` file, or `isitsecure setup`), so scans and fixes work without pasting a key into the browser. You can still enter one in the scan form to override it; "Fix all" reuses the key entered with the original scan; that key is discarded once a fix-all from the scan finishes (a failed or cancelled job keeps it so a retry works), and a later fix-all then answers with a clear "key was discarded" message unless a server-side key is configured. Fix-all jobs live in memory only (the 50 most recent finished ones are kept, at most 3 run at once, `DELETE /api/fix-all/{job_id}` cancels one, and a job whose browser tab is gone is cancelled after a minute); they are lost on restart. API keys and GitHub tokens are scrubbed from logs, stored errors and git output.
 
 A scan that errors or finishes without a report is shown as `failed` with its error (the report and export endpoints return `500` "Scan failed: ...") instead of staying "in progress".
 

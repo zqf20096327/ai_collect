@@ -4,8 +4,10 @@
 gives the agent your mail, your calendar, your meetings and a shell it can undo.
 Your own API key, or a local model through Ollama and no key at all.
 
-**[Download Grux for Mac](https://github.com/dotcomjack/grux/releases/latest/download/Grux.dmg)** (Grux.dmg, 27 MB, Apple silicon, macOS 14 or later).
+**[Download Grux for Mac](https://github.com/dotcomjack/grux/releases/latest/download/Grux.dmg)** (Grux.dmg, 28 MB, Apple silicon, macOS 14 or later).
 Open it, drag Grux into Applications, and open it from there.
+
+![Grux first run: the Connect a model step offers Grux Local 9B (7.2 GB), the download starts, a local model replies in the Chat pane, and a shell command waits for your OK in Approvals](docs/media/first-run.gif)
 
 [![CI](https://github.com/dotcomjack/grux/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dotcomjack/grux/actions/workflows/ci.yml)
 [![Download](https://img.shields.io/github/v/release/dotcomjack/grux?label=download&color=7C5CFF)](https://github.com/dotcomjack/grux/releases/latest/download/Grux.dmg)
@@ -33,14 +35,20 @@ machine, your data.
 
 Star the repository on GitHub, and watch its releases to hear about new versions.
 
-> **New: Grux Local, a model trained for Grux.** No key, no account, and chat that no
-> model provider sees: a local model built for exactly the jobs Grux hands it.
-> On a 16 GB Mac mini the 4B got **454 of 464** held-out Grux tasks right, against 396
-> for the same model before training, and ignored instructions hidden in pasted text
+> **Grux Local, the model trained for Grux, is one click at first run in 3.2.** No key,
+> no account, and chat that no model provider sees: a local model built for exactly the
+> jobs Grux hands it. With Ollama on the Mac, first run offers the Grux Local made for
+> this Mac's memory (2B on 8 GB, 4B on 16 GB, 9B on 24 GB and up), and one press
+> downloads it from gruxai.com and points chat at it; nothing downloads before the
+> press. On a 16 GB Mac mini the 4B got **454 of 464** held-out Grux tasks right, against
+> 396 for the same model before training, and ignored instructions hidden in pasted text
 > in 65 of 70 held-out cases, against 55. The 2B, made for 8 GB Macs, went from 295 to
 > **435** of 464 on the same Mac mini. The 9B, made for 24 GB Macs and up, went from 400 to
 > **458** of 464, scored before training on a MacBook Pro and after on the same Mac mini.
-> Needs Apple silicon and Ollama 0.40.8 or later.
+> Needs Apple silicon and Ollama 0.40.8 or later; Grux links you to ollama.com and does
+> not install it.
+>
+> Already running Ollama, or still on Grux 3.1? The manual path is the same as before:
 >
 > ```
 > ollama pull gruxai.com/grux/grux-local:4b
@@ -49,10 +57,10 @@ Star the repository on GitHub, and watch its releases to hear about new versions
 > Then **Settings, Models, Offline mode (local model)**: turn on **Route chat to a local
 > model** and enter `gruxai.com/grux/grux-local:4b` in **Model**
 > (`gruxai.com/grux/grux-local:2b` on an 8 GB Mac, `gruxai.com/grux/grux-local:9b` on a
-> Mac with 24 GB or more). Works in Grux 3.1 today.
+> Mac with 24 GB or more).
 > [How it was trained and measured](#grux-local).
 
-**Status: shipping, currently 3.1.** 37 features ship in 14 surfaces, and a command line drives all of them. 25 are
+**Status: shipping, currently 3.2.** 37 features ship in 14 surfaces, and a command line drives all of them. 25 are
 core and 12 are labs: real, but rough at the edges, and labelled so. Those are
 two different counts on purpose. A feature is a capability the app has; a surface
 is a place to open. 3.0 folded nine things into where they belonged, so the list
@@ -76,8 +84,10 @@ Optimize Grux is where you make it yours. Say what you want different and Grux
 writes a work order your coding agent builds. Nothing about Grux changes without
 your yes.
 
-Grux reads your hardware and tells you which local models actually fit it, so you
-can run the whole thing without sending a token to anyone. Credentials go to your
+Grux reads your hardware and tells you which local models actually fit it; with a
+local model, chat, file naming and the background jobs run on this Mac and what you
+type goes to no model provider, while mail and calendar still come from your own
+accounts and Research still searches the web with your own key. Credentials go to your
 Keychain and services are called directly from your machine. There is no server
 in the middle because there is no server.
 
@@ -194,7 +204,7 @@ so a web search opens Google in Chrome.
 
 ## Install
 
-**[Download Grux AI 3.1 for Apple silicon](https://github.com/dotcomjack/grux/releases/latest/download/Grux.dmg)** (Grux.dmg, 27 MB, macOS 14 or later)
+**[Download Grux AI 3.2 for Apple silicon](https://github.com/dotcomjack/grux/releases/latest/download/Grux.dmg)** (Grux.dmg, 28 MB, macOS 14 or later)
 
 1. Open `Grux.dmg`.
 2. Drag Grux into Applications.
@@ -202,8 +212,9 @@ so a web search opens Google in Chrome.
 
 The disk image and the app are signed with a Developer ID, notarized by Apple and
 stapled, so Grux opens on a Mac that has never seen it, with no right click and no trip
-through System Settings. There is no installer and no updater phoning home. To check
-what you got before you run it:
+through System Settings. There is no installer. Grux checks GitHub's public release page
+once a day to tell you about new versions. It sends nothing about you, never installs
+anything by itself, and you can turn it off. To check what you got before you run it:
 
 ```sh
 shasum -a 256 ~/Downloads/Grux.dmg     # compare against the checksum in the release notes
@@ -298,8 +309,9 @@ The short version: one Command Panel that opens each surface as a pane beside it
 and an assistant that can reach the things a Mac assistant should be able to reach.
 
 - **Chat** with tool use, against Anthropic or a local model.
-- **Local models** through Ollama, so you can run the whole thing without sending
-  a token to anyone.
+- **Local models** through Ollama: chat, file naming and the background jobs run on
+  this Mac and what you type goes to no model provider; mail and calendar still come
+  from your own accounts, and Research still searches the web with your own key.
 - **Mailbox, Calendar, Contacts, Notes, Documents** against your real accounts,
   not a hosted copy of them.
 - **Meetings** that record both the microphone and system audio, transcribe on
@@ -439,7 +451,9 @@ skipped and come back to later.
    with, and the next screen shows the pick before asking for anything, so you can
    change it. Would rather choose yourself? "I would rather pick from a list" asks how
    much to set up now instead.
-2. **Your name and a model**, then a short look at how Grux works.
+2. **Your name and a model**, then a short look at how Grux works. With Ollama running
+   and no model yet, the model step offers the Grux Local made for this Mac's memory;
+   one press downloads it and points chat at it, and nothing downloads before the press.
 3. **Setup, one thing at a time:** only what the picked features need. Every macOS
    permission gets its own screen that says what it is for before macOS asks.
 
@@ -447,8 +461,9 @@ skipped and come back to later.
 Ollama with no key at all.
 
 If you would rather not send anything to a hosted model at all, install
-[Ollama](https://ollama.com), pull a model, and Grux will use it. The Local Models
-tab picks it up automatically.
+[Ollama](https://ollama.com), pull a model, and turn on Offline mode in
+Settings, Models: Grux then uses it with no key. Ask Grux to open Local Models
+to see the models you have and the ones that fit your Mac.
 
 Credentials go to the macOS Keychain under the service `com.gruxai.grux`. They are
 never written to disk in plaintext and never leave the machine except to the
@@ -568,7 +583,7 @@ catches already happened here:
 
 ```sh
 cd Grux-Mac
-swift test                          # 4038 tests
+swift test                          # 4902 tests
 python3 scripts/check-contract.py   # the setup contract is frozen
 ```
 

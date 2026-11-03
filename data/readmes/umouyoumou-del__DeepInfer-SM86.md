@@ -45,6 +45,72 @@ engine。当前重点是：
 
 ---
 
+## 安装与使用（和 llama.cpp 一样：一行装好，几个命令）
+
+装好后有四个命令，对应 llama.cpp 的 `llama-cli` / `llama-server` / `llama-bench`：
+
+| 命令 | 作用 | 对应 |
+|---|---|---|
+| `deepinfer-cli` | 终端里对话；`-p` 回答一个问题就退出 | `llama-cli` |
+| `deepinfer-server` | 网页 + API，上下文可到几百万 token，边读边问 | `llama-server` |
+| `deepinfer-bench` | prompt 处理（pp）和生成（tg）速度表 | `llama-bench` |
+| `deepinfer` | 总入口：`deepinfer cli / server / bench / pull / info` | |
+
+**一行安装**（NVIDIA GPU、CUDA 12 驱动；装进独立环境，不动系统里的 Python）：
+
+```bash
+# Linux / WSL
+curl -fsSL https://raw.githubusercontent.com/umouyoumou-del/DeepInfer-SM86/main/install.sh | sh
+```
+
+```powershell
+# Windows（PowerShell）
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/umouyoumou-del/DeepInfer-SM86/main/install.ps1 | iex"
+```
+
+脚本做的事：找 Python 3.10+ → 在 `~/.deepinfer`（Windows 为 `%LOCALAPPDATA%\deepinfer`）建虚拟环境 →
+按驱动支持的 CUDA 版本装 PyTorch（cu121 / cu124 / cu126 / cu128；所用 Python 本身已有 CUDA 版 PyTorch 时直接共用，
+AutoDL 之类的镜像就是这样，省掉 3 GB 下载）→ 装本包和 CuPy（`[cuda]`）→ 把命令放进 `~/.local/bin`
+（Windows 为 `%LOCALAPPDATA%\deepinfer\bin`）并加进 PATH。再跑一次就是更新。可选环境变量写在脚本开头：
+`DEEPINFER_REF`（分支、标签或提交）、`DEEPINFER_SOURCE`（本地 checkout 或压缩包，GitHub 访问慢时用）、
+`TORCH_INDEX_URL`、`PYTHON` 等。已经有 CUDA 版 PyTorch 的环境也可以直接 pip：
+
+```bash
+pip install "deepinfer-sm86[cuda] @ git+https://github.com/umouyoumou-del/DeepInfer-SM86.git"
+pip install -e ".[cuda]"          # 或者在 clone 下来的仓库里
+```
+
+**用法**——模型用 `-m` 给本地 GGUF，或用 `-hf` 从 Hugging Face 拉（huggingface.co 连不上时自动改走 hf-mirror.com）：
+
+```bash
+deepinfer-cli -hf coder                              # 终端对话；第一次会下载 DeepSeek-Coder-V2-Lite-Instruct Q4_K_M（10 GB）
+deepinfer-cli -m DeepSeek-V2-Lite-Chat-Q4_K_M.gguf -p "法国的首都是哪里？"
+deepinfer-server -hf coder                           # 打开 http://127.0.0.1:8080/ ，上下文默认取显存放得下的长度
+deepinfer-server -hf coder -c 3407872 --host 0.0.0.0 --port 6006   # 3M 上下文（约 41 GiB 锁页内存）；对外监听时自动生成访问密钥
+deepinfer-bench -hf coder -p 512,4096 -n 128
+deepinfer pull -hf chat                              # 只下载
+deepinfer info                                       # GPU、CUDA、Triton、CuPy 是否就绪
+```
+
+`-hf` 接受预设 `coder`（DeepSeek-Coder-V2-Lite-Instruct，训练长度 128K）和 `chat`（DeepSeek-V2-Lite-Chat，32K），
+也接受 `组织/仓库[:量化]`（默认 `Q4_K_M`）。运行还需要原模型的 config 和 tokenizer：预设会自动从原仓库下载
+（几 MB）；其它 GGUF 用 `--meta 目录` 或 `--meta-hf 组织/仓库` 指定，`-m` 的文件名能认出预设时也会自动下载。
+下载缓存在 `~/.cache/deepinfer`（`DEEPINFER_CACHE` 可改）。目前支持 DeepSeek-V2-Lite 系列（MLA + MoE）的 GGUF。
+
+用安装脚本装出来的命令实测（2026-11-02，Windows、RTX 3050 Laptop 4 GB，专家放不下显存，从内存流式读入）：
+
+| 命令 | 结果 |
+|---|---|
+| `deepinfer-cli -m DeepSeek-V2-Lite-Chat-Q4_K_M.gguf -p "What is the capital of France? ..."` | "The capital of France is Paris."，约 2 token/s |
+| `deepinfer-cli`（交互，两轮后 `/reset`） | 第二轮记得第一轮给的名字；`/reset` 之后答 "unknown" |
+| `deepinfer-bench -p 128,512 -n 16 -r 2` | pp128 49.1 ± 0.7、pp512 168.9 ± 1.6、tg16 2.5 token/s |
+| `deepinfer-server`（65,536 token 上下文，KV 全在主机内存） | 42 s 启动；读入 1,321 token 后提问，答对并引出依据行 |
+
+Windows 版 PyTorch 不带 FlashAttention：长上下文的分块注意力在那里自动改用 memory-efficient kernel（结果一致，
+见 `tests/moe/test_latent_mla.py`）；Triton 缺席时定位走 PyTorch 实现。
+
+---
+
 ## 结果速览
 
 测试环境：Windows、RTX 3050 Laptop 4 GB、Python 3.10.3、torch 2.5.1+cu121、CUDA 12.1、CuPy 14.2。
@@ -79,6 +145,72 @@ engine。当前重点是：
 > 不能把它们写成“完整 DeepInfer engine 已支持 Qwen2.5”。当前新增的是
 > engine-core 原型，不是官方 engine 接入。上表是旧有单请求 / 固定槽位路径的
 > 实测。
+
+### 2M 上下文、全量召回（2026-11-01，RTX 4080 SUPER 32 GB）
+
+DeepSeek-Coder-V2-Lite-Instruct Q4_K_M（训练到 128K，未做任何训练）：
+
+| 上下文 | KV（MLA latent fp8） | 编码 | 9 根真实文本里的针 |
+|---:|---|---:|---:|
+| 1,048,576 | 17.3 GiB，全在显存 | 8.9 min | **9/9** |
+| 2,097,152 | 34.6 GiB，1.51M 显存 + 0.58M 主机内存 | 20.2 min | **9/9** |
+
+缓存 MLA 的共享 latent（每 token 17.3 KiB，而不是展开后的 324 KiB）、DCA 位置映射、
+有界编码（每 token 只看前 96K，prefill 线性），提问时用模型自己的注意力在整个库上定位、
+再把定位到的原文放进短上下文作答；KV 库可存盘，1M 重新加载 13.8 s。
+更难的版本（RULER 式）：同一份 2M 文档里同时放 39 根针——16 个相似键、一键多值、一问多键、
+5 环变量链（带干扰链）、两跳——一次运行 21 题、31 个条目全部答对；变量链那题各轮回答还不稳。
+这 21 题的问答从 51 分钟降到 8.6 分钟（一遍读完缓存的 Triton 定位、专家不再从主机重传、作答用
+CUDA graph 生成），结果不变；缓存可分到两块盘存下，同一份文档再次使用加载 51 秒、不必 prefill；
+编码窗口缩到 16K 时新文档的 prefill 16.8 → 6.8 分钟。
+**3M（3,145,728 token）**：同样 39 根针、21 题，两次运行（其中一次从头 prefill）都是 21/21、31/31，33 处针全部定位到——KV 51.9 GiB（93 万 token 在显存、221 万在锁页主机
+内存），prefill 25 分钟，21 题约 15 分钟。
+问题直接对 1M 个 key 做全量注意力只有 1–2/9——细节、更正与边界见
+[`docs/LONG_CONTEXT_1M.md`](docs/LONG_CONTEXT_1M.md)。
+
+### 3M 上下文对话：边读边问（2026-11-03）
+
+```
+deepinfer-server -hf coder -c 3407872 --host 0.0.0.0 --port 6006
+python apps/longctx_chat.py --port 6006 --capacity 3407872   # 仓库里的旧写法，仍可用（默认 AutoDL 上的模型路径）
+```
+
+启动后打印一个带访问密钥的地址；在 AutoDL 控制台点「自定义服务」（6006 端口），或用 SSH 端口转发打开。
+页面上方是当前上下文的 token 数（容量 340 万）、读入速度和剩余时间；下面一条「位置图」是整条上下文，
+每次回答时标出定位读回的块和答案依据的行。左边粘贴或上传任意长的文本（分段流式上传、后台边读边编码，
+约 2,000 token/s），或一键加载 3M 演示文档（Python 标准库草堆 + 39 根针）；右边提问，回答逐字流出，
+附依据所在的 token 位置和深度。**读入过程中也能问**——问题插在两段读入之间，问的是已经读进去的部分；
+每轮问答也写回上下文。命令行：`scripts/longctx_client.py`。实测（4080 SUPER）：
+
+| 时机 | 当时的上下文 | 问题 | 首字 | 全程 | 结果 |
+|---|---:|---|---:|---:|---|
+| 读入中 | 229,380 | jade panther 的号码（针在第 221,775 个 token） | 2.8 s | 10.0 s | ✓ 6090228 |
+| 读入中 | 2,752,545 | ivory mantis 的号码（针在 94.7% 深处） | 8.4 s | 39.6 s | ✓ 4123476 |
+| 读入中 | 3,113,022 | 持 Orrin 天文台钥匙的人的工牌号（两跳：依据分别在 2.0% 和 91.4% 处，相距 278 万 token） | 9.5 s | 31.6 s | ✓ 1877827 |
+| 读完 | 3,145,728 | 变量链（演示题，按评测方式：专用指令、最多 8 轮、三种问法取并集） | 11.1 s | 274.6 s | ✓ 5 个名字，没有干扰链 |
+| 读完 | 3,145,792 | 换个说法问 onyx badger 的号码（用户自己的问法：通用指令、最多 4 轮；针在 52.5% 处） | 9.8 s | 36.5 s | ✓ 7646461 |
+| 读完 | 3,145,826 | 我问的第一个问题是什么、你怎么答的 | 9.6 s | 49.9 s | ✓ 变量链那题和它的 5 个名字 |
+
+多轮模式下回答的第 1 轮几秒内开始逐字流出，确认轮要再 20 秒左右（3M 时每次定位要把 315 万个位置读一遍）。坦白：用户直接问变量链（不带评测时的逐行模拟指令）时只找到链头 GHTAY——这一步是模型的推理，演示题为此带上了评测指令；一个服务一次只答一个问题（单卡、单工作线程）；读入 3M 要 25 分钟（96K 窗口，可换 16K 窗口更快）。细节见 [`docs/LONG_CONTEXT_1M.md`](docs/LONG_CONTEXT_1M.md) §4.10。
+
+### 和 llama.cpp、vLLM 比：同一张卡、同一份文档（2026-11-03）
+
+同一台 RTX 4080 SUPER（32 GB 改装版）、同一个模型、每个长度逐 token 相同的文档、同样 21 题和评分。
+llama.cpp b12024 用它在这份文件上最快的 GPU 配置，并把同一份权重改写成它最省显存的 MLA 布局再测一次
+（`scripts/gguf_mla_layout.py`）；vLLM 0.7.3 用同一模型的 AWQ 版（最新版已不能加载 GGUF，它要的 PyTorch 也装不进机器剩余的磁盘）。
+
+| | 3M | 这台机器上最长 | 98K | 1M |
+|---|---|---:|---:|---:|
+| **本系统**（定位 + 重读） | **21/21** | 3.41M（服务容量） | 20/21 | **21/21** |
+| 本系统整段直接回答（对照） | — | — | 0/21 | — |
+| llama.cpp，同一个 GGUF | 装不下（KV 要 810 GiB） | 98K | 3/21 | 装不下 |
+| llama.cpp，MLA 布局 | 装不下（KV 要 48.4 GiB） | 1M | — | 0/21，输出成乱码 |
+| vLLM 0.7.3，AWQ | 装不下 | 163,840（位置表上限） | 3/21 | 装不下 |
+
+读入 1M：llama.cpp 99.3 分钟，本系统 8.7 分钟。整段直接回答随长度变差，各引擎一致（llama.cpp 16K 15/21、
+64K 7/21、98K 3/21；vLLM 98K 3/21；本系统同样的答法 16、6、0 题）；差距来自"定位 + 重读"的方法，而它需要一个能放下全部 KV 的缓存——这正是 3M 上别的引擎做不到的。
+论文 [`docs/PAPER_LONG_CONTEXT.md`](docs/PAPER_LONG_CONTEXT.md)，细节 [`docs/LONG_CONTEXT_1M.md`](docs/LONG_CONTEXT_1M.md) §4.11，
+结果与日志 `docs/results/longctx/baselines/`。
 
 ### DeepSeek-V2-Lite Q4_K_M 原生 MoE（2026-10-28）
 
@@ -477,6 +609,10 @@ buffer 地址和 chunk 数，当前不是可安全 capture 的静态图。代码
 
 ### 6.2 PyPI 独立库打包
 
+> 0.3.0 起，仓库根目录的 `pyproject.toml` 把整个 `deepinfer` 包（含长上下文和
+> `deepinfer-cli` / `deepinfer-server` / `deepinfer-bench` 命令）打成 `deepinfer-sm86`，
+> 安装见上文「安装与使用」。下面的 `pypi/deepinfer-sm86/` 是 0.1 / 0.2 的库子集打包，留作记录。
+
 仓库主体是应用/benchmark workspace；可复用库已单独放在
 `pypi/deepinfer-sm86/`，包名 `deepinfer-sm86`，import 名仍为 `deepinfer`。
 
@@ -528,10 +664,8 @@ git clone https://github.com/umouyoumou-del/DeepInfer-SM86.git
 pip install -e .\DeepInfer-SM86\pypi\deepinfer-sm86
 ```
 
-注意：仓库根目录仍是 application/benchmark workspace，没有根级
-`pyproject.toml`，因此 `pip install git+https://.../DeepInfer-SM86.git`
-（不带 `subdirectory`）**不是**库安装方式；必须使用上面的
-`#subdirectory=pypi/deepinfer-sm86`，或者直接安装 PyPI 包。
+注意：不带 `subdirectory` 的 `pip install git+https://.../DeepInfer-SM86.git`
+装的是仓库根目录的 0.3.0 完整包（带命令行工具），不是这里的 0.2.0 库子集。
 
 Wheel 已在隔离 target 中验证：
 
@@ -1227,7 +1361,13 @@ lm_head           : 3-bit, group 128
 ## 目录
 
 ```text
+pyproject.toml                          deepinfer-sm86 包与四个命令
+install.sh / install.ps1                一行安装（Linux、WSL / Windows）
 deepinfer/
+  cli/                                  deepinfer-cli / -server / -bench、-m / -hf 模型解析、网页
+  longctx_suite.py                      长上下文评测题库（needle 脚本与 server 演示共用）
+  moe/deepseek_longctx.py               长上下文会话：latent MLA 缓存、DCA、有界编码
+  moe/longctx_service.py                边读边问的对话服务
   hugging_face/qwen2_config.py          Qwen2 HF config -> DeepInfer AttrDict
   hugging_face/config.py                配置分派修改
   model_config_loader.py                允许纯文本 Qwen2/Llama/Mistral/Gemma

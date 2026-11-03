@@ -2,6 +2,8 @@
 
 **English** | [فارسی](README.fa.md)
 
+[![CI](https://github.com/mjmajlesi/Persian-Technical-RAG/actions/workflows/ci.yml/badge.svg)](https://github.com/mjmajlesi/Persian-Technical-RAG/actions/workflows/ci.yml)
+
 <p align="center">
   <strong>Persian questions. Defined sources. Verifiable evidence.</strong><br>
   An open-book technical learning assistant and a research workflow for evaluating retrieval quality.
@@ -160,6 +162,13 @@ These are **stored experimental results**, not a promise of identical output on
 future runs. Read each number together with its dataset version, threshold, and
 execution mode.
 
+### Result versions
+
+| Evidence | Status |
+|---|---|
+| v2.0 historical research results | Primary source for the recorded comparison. The C prompt remains unchanged, so its prompt-related validity is preserved; this does not remove other limitations. |
+| [Prompt sensitivity follow-up](docs/prompt-sensitivity.md) | In the two examined non-C slices (Python and C++ with e5-large), an effect on response type was not detectable under the recorded rule; this does not establish no effect elsewhere. |
+
 ### Operational v1 — October 22, 2026
 
 Each pack has 30 questions: 20 in-corpus, 5 mixed Persian/English, and 5
@@ -250,148 +259,27 @@ limitations, reference-answer provenance, and links to all 12 report pairs.
 <a id="quickstart"></a>
 ## Quick start: run the C pack first
 
-This is the shortest setup path to a dashboard with **one prepared pack**, not a
-guarantee of short download or processing times. Commands target **Windows,
-PowerShell, and Python 3.11** and run from the repository root. Virtual-environment
-activation is unnecessary: commands invoke its Python directly.
-
-### Prerequisites
-
-- Git, Python **3.11**, and a browser.
-- Internet access for packages and initial embedding-model downloads, plus several GB of free disk space for weights and caches.
-- An API key and model name for an OpenAI-compatible Chat service to **generate answers**.
-- A GPU was not required for the recorded workflow. Research builds used a CPU-only laptop with about 15.6 GiB RAM; this is not a guaranteed minimum-memory specification.
-
-> [!WARNING]
-> Ingest and build commands **write files**. Ingest fails on a missing or empty
-> source and atomically publishes its completed output, but rebuilding an index
-> can still replace artifacts. Check sources and dataset versions first.
-
-### 1. Clone and install
-
-Skip the clone step if you already have the repository:
+Clone the repository, then run setup for C. Omit the pack option to prepare all
+four packs; setup installs Python dependencies and may download an embedding model.
 
 ```powershell
 git clone https://github.com/mjmajlesi/Persian-Technical-RAG.git
 cd Persian-Technical-RAG
-
-python --version
-python -m venv .venv
-.\.venv\Scripts\python -m pip install -r requirements.txt
-if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
+.\scripts\setup.ps1 -Packs c
 ```
 
-Direct dependencies are pinned; transitive dependencies such as Torch and NumPy
-are not fully locked. Check an existing installation with:
-
-```powershell
-.\.venv\Scripts\python -m pip check
+```bash
+git clone https://github.com/mjmajlesi/Persian-Technical-RAG.git
+cd Persian-Technical-RAG
+./scripts/setup.sh --packs c
 ```
 
-### 2. Configure the answer-generating LLM
-
-Create a local `.env` file at the repository root using an editor. If it already
-exists, preserve your settings and update only what is needed. The values below
-are **placeholders, not working credentials**:
-
-```dotenv
-LLM_API_KEY=<YOUR_API_KEY>
-LLM_BASE_URL=https://api.openai.com/v1
-LLM_MODEL=<YOUR_CHAT_MODEL>
-```
-
-| Variable | Purpose |
-|---|---|
-| `LLM_API_KEY` | Service API key; never commit it |
-| `LLM_BASE_URL` | Service base URL; the provider appends `/chat/completions` |
-| `LLM_MODEL` | Answer model name accepted by that service, not the embedding model |
-| `LLM_EXPECTED_RESPONSE_MODEL` | Research E2E only: independently verified model ID returned by the API |
-
-For another service, use its valid base URL and model name. Existing process
-environment variables take precedence over `.env`. Restart the server after
-changing answer-provider settings. The versioned `.env.example` contains only
-placeholders; copy it to a local `.env`, supply your own settings, and never
-commit `.env`.
-
-Without an LLM, you can still prepare sources, build indices, and run
-retrieval-only evaluation. Generating answers requires an active service;
-requests reaching the LLM may incur charges.
-
-### 3. Check source files before building
-
-This read-only check inspects sources referenced by all four manifests; it does
-not load a model or access the network:
-
-```powershell
-@'
-import json
-from pathlib import Path
-
-for lang in ("c", "cpp", "python", "java"):
-    path = Path(f"data/corpus/manifest.{lang}.json")
-    manifest = json.loads(path.read_text(encoding="utf-8"))
-    missing = []
-    for source in manifest["sources"]:
-        origin = Path(source["origin"])
-        if not origin.is_file() or not origin.read_text(encoding="utf-8").strip():
-            missing.append(source["source_id"])
-    if missing:
-        raise SystemExit(f"Missing or empty sources for {lang}: {missing}")
-    print(lang, "sources:", len(manifest["sources"]), "OK")
-'@ | .\.venv\Scripts\python -B -
-if ($LASTEXITCODE -ne 0) { throw 'Source preflight failed; do not ingest' }
-```
-
-Expected source counts: C **52**, C++ **13**, Python **9**, and Java **16**, each
-marked `OK`. This check does not establish scientific correctness or redistribution rights.
-
-### 4. Build C and start the web app
-
-```powershell
-.\.venv\Scripts\python -m src.ingest --lang c
-if ($LASTEXITCODE -ne 0) { throw 'C ingest failed' }
-if (@(Get-Content -Encoding UTF8 'data/index/c/chunks.jsonl').Count -ne 503) {
-    throw 'Unexpected C chunk count; stop before building the index'
-}
-
-.\.venv\Scripts\python -m src.index build --lang c
-if ($LASTEXITCODE -ne 0) { throw 'C index build failed' }
-
-.\.venv\Scripts\python -m uvicorn src.web.app:app --host 127.0.0.1 --port 8000
-```
-
-The first build downloads the embedding model if needed. C should have **503
-chunks with 1,024-dimensional embeddings**. A matching count alone does not prove
-content or index integrity; research reproduction also requires matching baseline hashes.
-
-Dashboard: **http://127.0.0.1:8000** · API docs: **http://127.0.0.1:8000/docs**
-
-Select C and ask **«تفاوت malloc و calloc چیست؟»** (“What is the difference between
-malloc and calloc?”). Click a citation to inspect its evidence. Clicking a
-**sample question** submits it automatically and may trigger a paid request;
-clicking a **suggested topic after abstention** only fills the question field.
-Stop the server with `Ctrl+C`. If you built only C, the other packs being
-unavailable is expected.
-
-### 5. Prepare the remaining packs
-
-After the source check succeeds, use another PowerShell window or stop the server:
-
-```powershell
-$expectedCounts = @{ cpp = 201; python = 253; java = 73 }
-foreach ($lang in 'cpp', 'python', 'java') {
-    .\.venv\Scripts\python -m src.ingest --lang $lang
-    if ($LASTEXITCODE -ne 0) { throw "Ingest failed: $lang" }
-    $count = @(Get-Content -Encoding UTF8 "data/index/$lang/chunks.jsonl").Count
-    if ($count -ne $expectedCounts[$lang]) { throw "Unexpected chunk count: $lang" }
-
-    .\.venv\Scripts\python -m src.index build --lang $lang
-    if ($LASTEXITCODE -ne 0) { throw "Index build failed: $lang" }
-}
-```
-
-Restart the server afterward. Pack IDs are `c`, `cpp`, `python`, and `java`;
-use `cpp`, not `c++`, on the command line.
+Edit the generated `.env` and set `LLM_API_KEY`, `LLM_BASE_URL`, and `LLM_MODEL`
+before generating answers; requests to the service may incur charges. Run the
+server with `.\.venv\Scripts\python -m uvicorn src.web.app:app --host 127.0.0.1 --port 8000`
+on Windows, or `./.venv/bin/python -m uvicorn src.web.app:app --host 127.0.0.1 --port 8000`
+on Linux/macOS, then open http://127.0.0.1:8000. See the
+[step-by-step manual reproduction](docs/REPRODUCTION.md) for the original manual steps.
 
 <a id="api"></a>
 ## API usage
@@ -524,6 +412,14 @@ reasons; their metrics are N/A and must not be mixed with complete runs.
 <a id="testing"></a>
 ## Tests and operational evaluation
 
+CI installs from `requirements-lock.txt`, ingests all four packs and checks their
+chunk counts, runs selected `tests/unit` tests, and executes the Node checks.
+Contract and integration tests are excluded because their live flows require
+Windows-specific server paths, prepared indexes/models or an LLM. Ten unit cases
+that require real FAISS indexes also run locally rather than in CI. Install from
+`requirements-lock.txt` to reproduce the locked package versions; the lock was
+generated on Windows, so platform-specific dependencies may differ on Linux.
+
 For a lightweight start, these two files test basic package imports and scoring
 without a model or service. `-B` disables bytecode writes, and disabling pytest's
 cache provider avoids its cache output:
@@ -548,6 +444,48 @@ Once the environment is ready and you accept those prerequisites:
 The historical final validation of feature 003 on **October 25, 2026** recorded
 **182 passed, 3 skipped**. See its [evidence and execution boundaries](specs/003-compare-embedding-models/VALIDATION.md).
 This is not a fresh result for your installation; skipped tests are not passes.
+
+### Running all the tests
+
+The automated tests live in two layers: the Python `pytest` suite and four
+standalone Node checks that exercise the dashboard script's pure logic without a
+browser, server or model.
+
+Requirements:
+
+- the Python environment described above (for `pytest`);
+- **Node.js 18 or newer** for the Node checks — verified on `v22.23.4`. They use
+  only Node's standard library (`node:assert`, `node:fs`, `node:path`, `node:vm`),
+  so there is **no `npm install` step** and the checks do not need a `package.json`.
+
+Run both layers, stopping at the first failure:
+
+```powershell
+# 1) Python suite (prerequisites and caveats above)
+.\.venv\Scripts\python -B -m pytest tests/ -q
+if ($LASTEXITCODE -ne 0) { throw 'Python suite failed' }
+
+# 2) Node checks against the real src/web/static files
+Get-ChildItem tests/browser/*.js | ForEach-Object {
+    node $_.FullName
+    if ($LASTEXITCODE -ne 0) { throw "Node check failed: $($_.Name)" }
+}
+```
+
+The four Node files, each of which ends with a `PASS ...` line and exits
+non-zero on failure:
+
+| File | What it checks |
+|---|---|
+| `tests/browser/test_request_race.js` | A stale answer never replaces the answer of the pack selected last (language round-trip A→B→A) |
+| `tests/browser/test_entity_markup.js` | `escapeHtml`'s full entity map, entity-safe Latin/code runs, and that `<script>`/`<img>` payloads stay text |
+| `tests/browser/test_contrast.js` | WCAG AA contrast for every text/background pair declared in `dashboard.css` |
+| `tests/browser/test_language_state.js` | `/api/languages` payload classification and the Persian failure messages |
+
+The Node checks read `src/web/static/app.js` and `src/web/static/dashboard.css`
+directly, so a failing Node check points at the shipped files, not at a copy.
+Interactive browser verification of the running dashboard is a separate manual
+step and is not part of this command.
 
 For operational evaluation of one pack with a configured answer provider—this
 command may trigger paid calls:
@@ -583,27 +521,46 @@ This version has **known defects**. Important boundaries for use and interpretat
 
 - **Citation limits:** empty or uncited non-abstention answers are rejected, but
   valid citation IDs do not establish semantic support for a claim.
-- **Multi-pack prompt:** the shared prompt still names C; separate indices do not
-  automatically fix this instruction weakness for other packs.
+- **Multi-pack prompt:** the role names the selected language, but the unchanged
+  citation-format example still uses a C-pack chunk ID. Historical v2 reports used
+  the previous C-only role and must not be treated as results from the new prompt.
+- **Prompt sensitivity:** a limited Python and C++ follow-up with a C control
+  found no detectable response-type effect under its recorded rule. The rule was
+  not blind to earlier observations, and the result does not establish that other
+  combinations are unaffected; see the [analysis](docs/prompt-sensitivity.md).
 - **Ingest and chunking:** missing or empty sources fail before publication; chunk
   size uses words, not actual token limits. Long code blocks can be split, and
   model inputs can be truncated.
 - **Operational model identity:** research checks revisions/hashes more strictly
   than the normal path; the operational model has no explicit research-style revision pin.
-- **Web interface:** stale requests are ignored after language changes, but
-  HTML-entity rendering and accessibility of clickable controls need improvement.
-  Error-free behavior across all browsers is not claimed.
+- **Web interface:** stale answers are ignored after a language change, and the
+  language list has an explicit failure state with a retry, but an in-flight
+  request is **not cancelled**. Entity rendering in answers, contrast, real
+  labels, and keyboard-operable language items and citation chips are covered by
+  automated checks and manual browser tests; screen-reader usability (NVDA, JAWS,
+  VoiceOver) was **not** tested. Error-free behavior across all browsers is not claimed.
 - **Validation boundaries:** v2 validation rejects normalized duplicate questions;
   the official comparison builder checks shared recorded generator identity and
   per-row citation scope. Neither check proves immutable model weights or semantic
   support; independently review fresh evidence.
+- **Known corpus inaccuracy (deferred):** the owner-authored study notes behind
+  chunk `fa-vars-types-operators#s03-c01` call `printf`, `scanf`, `main` and
+  `size_t` "library functions". Only `printf` and `scanf` are library functions;
+  `size_t` is an unsigned integer type and `main` is the program entry point. No
+  v1 or v2 question cites that chunk, and the correction is deferred to the next
+  corpus version so that current hashes, indices and historical reports stay
+  reproducible.
 - **Research generalization:** the dataset is small and authored, E5 has prior
   exposure through v1 experimentation, input-length limits differ, and the answer
   service can change. Results do not establish intrinsic or universal superiority.
 
-Development priorities include pack-aware prompts, UI fixes, and additional
-edge-case tests. Larger evaluation sets, token-aware chunking, and other retrieval methods
-are subsequent experiments—**future work, not implemented features**.
+Development priorities include broader independent measurement of prompt effects,
+cancelling in-flight requests and screen-reader testing,
+token-aware chunking and a corrected corpus version, and larger evaluation sets
+and weighted fusion tuned on a development set—**future work, not implemented features**.
+Pre-registered [BM25 + dense RRF evaluation on v2](docs/HYBRID-RETRIEVAL.md)
+found no significant improvement: six significant regressions and two
+inconclusive results across eight comparisons. It was not adopted operationally.
 
 Authentication, multi-user deployment, production scaling, live web crawling,
 and training models from scratch are outside the current scope. See the
@@ -621,19 +578,16 @@ and training models from scratch are outside the current scope. See the
 | [Final 003 validation](specs/003-compare-embedding-models/VALIDATION.md) | What the historical validation actually checked |
 | [Source and license inventory](docs/SOURCE-INVENTORY.md) | Manifest origin/license labels and metadata requiring review |
 | [C migration report](docs/MIGRATION-RESULTS.md) | What remained stable and what changed after adding packs |
-| [Specifications and tasks](specs/) | Decisions and evolution of features 001, 002, and 003 |
+| [Hybrid retrieval experiment](docs/HYBRID-RETRIEVAL.md) | Pre-registered BM25+dense RRF evaluation on v2; not adopted |
+| [Specifications and tasks](specs/) | Decisions and evolution of features 001–004 |
 
 ### Sources and licenses
 
-Sources are attributed to the note owner, cppreference, Python documentation,
-GNU C Library, and Oracle. License labels and dates are recorded in manifests and
-question provenance. The research models' MIT licenses **do not license the entire
-corpus**. In particular, review Oracle's terms separately before redistributing
-substantial text. Attribution or inclusion in this repository is not a blanket
-redistribution grant; this collection is not presented under one unified license.
-The [source inventory](docs/SOURCE-INVENTORY.md) lists every manifest entry and
-flags missing or ambiguous redistribution metadata for review without making a
-legal determination.
+Project code is licensed under the [MIT License](LICENSE); the owner's study
+notes, evaluation questions, and project documentation are licensed under CC BY
+4.0. Third-party corpus content retains its original terms and is not covered by
+either project license; see [LICENSES.md](LICENSES.md) for details and the
+[source inventory](docs/SOURCE-INVENTORY.md) for recorded per-source labels.
 
 ### Changes and issue reports
 

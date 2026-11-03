@@ -190,7 +190,9 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - Explain TPE hyperparameter optimization. 
 - Explain Bayesian Optimization.
 - Explain Adam Optimizer.
+    - Answer: [What are Optimizers in Deep Learning? SGD, Momentum, RMSProp, and Adam Explained](https://outcomeschool.com/blog/optimizers-in-deep-learning)
 - Explain the RMSprop Optimizer.
+    - Answer: [What are Optimizers in Deep Learning? SGD, Momentum, RMSProp, and Adam Explained](https://outcomeschool.com/blog/optimizers-in-deep-learning)
 - What is Adagrad Optimizer?
 
 ### Deep Learning
@@ -205,6 +207,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Math Behind Backpropagation](https://outcomeschool.com/blog/math-behind-backpropagation)
 - What is backpropagation?
     - Answer: [Math Behind Backpropagation](https://outcomeschool.com/blog/math-behind-backpropagation)
+- Why do we initialize weights randomly in a neural network? What happens if we initialize all the weights to zero?
+    - Answer: [Why Do We Initialize Weights Randomly in Neural Networks?](https://outcomeschool.com/blog/random-weight-initialization)
 - Can you name and explain a few hyperparameters used for training a neural network?
 - What is the advantage of deep learning over traditional machine learning?
 - What are activation functions, and why are they used?
@@ -312,6 +316,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is OCR, and what are its main applications?
 - How does CNN differ from traditional neural networks in computer vision?
 - What is data augmentation, and what techniques are commonly used?
+    - Answer: [How does Data Augmentation work?](https://outcomeschool.com/blog/data-augmentation)
 - What are some popular deep learning frameworks for computer vision?
 - How can Transformers be used for computer vision tasks?
 

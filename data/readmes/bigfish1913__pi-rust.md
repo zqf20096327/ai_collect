@@ -346,8 +346,17 @@ renderers and discovered resources.
 ```bash
 rpi install rpi-todo                    # prebuilt extension; no Rust toolchain needed
 rpi install my-ext --path ../my-ext     # local, for development
+rpi extension update [name]             # all eligible extensions, or one by name
 rpi dev                                 # build + watch + live reload
 ```
+
+Use `rpi extension update` to update all project-linked extensions and globally
+installed registry/prebuilt extensions, or `rpi extension update <name>` to select
+one by name. Updates preserve the original Cargo build backend or explicit GitHub
+source. Global development installs made with `--path` are excluded. The old
+`rpi package update [name]` remains compatible; prefer `extension update` for
+extension updates. Project linking commands remain `rpi package link`,
+`rpi package list`, and `rpi package unlink`.
 
 The host loads project `.rpi/extensions`, then global
 `~/.rpi/agent/extensions`, then any `--extensions-dir`.
@@ -454,6 +463,7 @@ Start with the [documentation index](docs/README.md), grouped by feature.
 - [Building an agent project](docs/agent/project-structure.md) — recommended structure
 - [Extension authoring](docs/extensions/authoring.md) — plugin templates and ABI rules
 - [Subagents](docs/extensions/subagents.md) — configuration inheritance, permissions and lifecycle
+- [Native RPC resource selection](docs/resource-selection-rpc.md) — exact startup Packages, Skills, extensions, instructions and tools (stage A)
 - [Remote mode](docs/remote/user-guide.md) — protocol, tokens, limitations
 - [Roadmap](ROADMAP.md) · [Changelog](CHANGELOG.md)
 - [docs.rs](https://docs.rs/rpi-cli) for per-crate API docs

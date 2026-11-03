@@ -98,7 +98,9 @@ npm run setup
 ```
 
 Ignite opens when setup finishes, and lives in `~/Applications` on macOS, your
-app menu on Linux, or the Start Menu on Windows. It updates itself.
+app menu on Linux, or the Start Menu on Windows. It updates itself. On Linux,
+setup offers to install what the window and the sandbox need from your package
+manager (WebKitGTK, bubblewrap and socat), which asks for your password.
 
 `npm run uninstall` removes
 Ignite and keeps your conversations.

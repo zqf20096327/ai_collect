@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/github/actions/workflow/status/AKKO-p/akko-mcp-trino/ci.yml?branch=main&label=ci" alt="CI">
-  <img src="https://img.shields.io/badge/tests-621%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-717%20passed-success" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Coverage">
   <img src="https://img.shields.io/badge/version-0.7.0-blue" alt="Version">
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-blue" alt="Python">
@@ -20,7 +20,8 @@
 **Give your AI agents read-only access to Trino, and nothing more.**
 
 akko-mcp-trino is an [MCP](https://modelcontextprotocol.io) server for Trino.
-It lets an agent list catalogs, schemas and tables, describe a table, explain a
+It lets an agent find the tables and columns that hold what it is looking for,
+describe a schema or a table, list catalogs, schemas and tables, explain a
 query and run it, and it refuses every write it is sent: each statement is
 parsed, and a write anywhere in it is refused before Trino. By default every
 query runs as the user the agent acts for. The server verifies the user's
@@ -30,9 +31,82 @@ leaves the server. Trino's access control (OPA, Ranger, or Trino's own rules)
 then decides what that user may read. Results are bounded in rows and in time,
 and every call leaves one audit line.
 
-> **Upgrading from 0.5?** 0.6.0 changes the defaults: a verified caller is
-> required, and the `jwt` mode exchanges the caller's token instead of passing
-> it on. See [MIGRATING.md](MIGRATING.md).
+> **Upgrading from 0.6?** 0.7.0 removes and renames nothing: it adds
+> `search_columns` and `describe_schema`, pages the listings, and gives every
+> error a `kind`. Let the engine's policy read `system.jdbc` and
+> `system.metadata`, which the two new tools read (0.6 advised refusing all of
+> `system`). Keep `MCP_CALL_TIMEOUT_SECONDS` at 0 or above
+> `MCP_SEARCH_RESERVE_SECONDS` (2 by default), or the server refuses to start.
+> A `truncated` listing is no longer the end: read on with `next_offset`.
+> Extension authors: one helper changes its signature, and in `oauth2` mode the
+> guards run on every request that is not discovery, no longer once at start.
+>
+> **From 0.5?** 0.6.0 changed the defaults: a verified caller is required, and
+> the `jwt` mode exchanges the caller's token instead of passing it on. See
+> [MIGRATING.md](MIGRATING.md) for both.
+
+## Understand in five steps
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-1-problem-dark.svg">
+  <img src="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-1-problem-light.svg" alt="Carol, an analyst, asks for the list of customers. In an illustrative setup with a service account with broad rights, Trino sees mcp-svc and returns 10 customers with e-mails in clear. With akko-mcp-trino in its default jwt mode, Trino sees carol_analyst and returns 5 European customers with e-mails masked, as in the sandbox.">
+</picture>
+
+An agent connected through one service account with broad rights reaches Trino under that
+account, so the rules written for Carol no longer apply. The left panel is an illustration: the
+sandbox's policy would refuse such an account. akko-mcp-trino brings Carol's own identity to Trino,
+and the rules Trino already has do the rest.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-2-who-sees-what-dark.svg">
+  <img src="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-2-who-sees-what-light.svg" alt="The same query by three sandbox users, through the same MCP client. alice_admin gets the 10 customers in clear. carol_analyst gets the 5 European customers with masked e-mails. dave_viewer is refused by Trino: Access Denied: Cannot select from columns [country, full_name, id, email] in table or view demo.crm.customers.">
+</picture>
+
+The same query from the three users of the sandbox, through the same MCP client and the same
+server. Trino answers each of them with the sandbox's OPA policy; the server copies no rule.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-3-step-by-step-dark.svg">
+  <img src="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-3-step-by-step-light.svg" alt="A real trial of Mistral on 0.7.0, in six steps. It asks which customer segment holds the largest total account balance, searches with four words and gets matches word by word, joins on a column that does not exist, reads the server's hint, reads the columns of customers with describe_table, fixes the join and gets business, 17620.75.">
+</picture>
+
+A real trial, tool call by tool call: Mistral on 0.7.0 looks for the segment with the largest
+balance. The search matches word by word, the error on a wrong join names the table to read, and
+the agent fixes its join. Every tool answer shown is the server's, replayed in the sandbox.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-4-identity-modes-dark.svg">
+  <img src="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-4-identity-modes-light.svg" alt="Three questions pick an identity mode: token exchange gives jwt, a Trino impersonation rule gives impersonation, a server on one person's machine with Trino's OAuth2 login gives oauth2, otherwise service. The four modes are drawn on the same grid of MCP host, server and Trino; service, one account for everyone, is marked in amber.">
+</picture>
+
+Four identity modes, from the safest to the simplest. `jwt` is the default; `service` gives
+every caller the same account and is used only when you name it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-5-measurements-dark.svg">
+  <img src="https://raw.githubusercontent.com/AKKO-p/akko-mcp-trino/v0.7.0/docs/images/understand-5-measurements-light.svg" alt="Mistral answers right 62.5% of the time on 0.6.1 and 70% on 0.7.0, Claude 93.3% on both. Mistral goes from 5.8 to 3.0 tool calls per question, Claude from 8.5 to 4.9. Mistral varies more between runs than the gap between versions, and input tokens rise by about 41%.">
+</picture>
+
+The same five business questions asked to Mistral and to Claude, on 0.6.1 and on 0.7.0. Mistral
+varies more from one run to the next than the gap between the versions, and 0.7.0 sends about 41%
+more input tokens per question, because its tool descriptions are longer. The harness and its
+reports are in [akko-sandbox](https://github.com/AKKO-p/akko-sandbox/tree/main/agent/reports).
+
+The interactive version of these five steps is on
+[akko-ai.com/en/docs/understand](https://akko-ai.com/en/docs/understand/) (also
+[en français](https://akko-ai.com/docs/comprendre/)).
+
+### Try it in five minutes
+
+The sandbox starts Keycloak, Trino, OPA and the server on your machine, with the three users
+above:
+
+```bash
+git clone https://github.com/AKKO-p/akko-sandbox.git
+cd akko-sandbox
+docker compose up -d --wait
+./demo.sh
+```
 
 ## Why
 
@@ -55,12 +129,13 @@ access: Trino decides for each user with the rules it already has, or, in
 - **A guarded door.** Bearer tokens verified against any OIDC provider's JWKS (issuer, audience bound to this server, expiry, clock tolerance), a token issued for Trino refused, protected resource metadata (RFC 9728), a Host header filter.
 - **Built to be extended without being forked.** Tool plugins and extensions are Python packages named at start: identity modes, guards at the door, audit fields, routes, tools. An extension can only refuse what the core allows, never widen it.
 - **Any MCP host, any model.** Cursor, Claude Desktop, VS Code, the Python SDK… Mistral, or any OpenAI-compatible model through the example agent.
-- **Small and proven.** 621 tests at 100 % line and branch coverage, including in-process suites on the real SDK for all three transports, a live run against Keycloak and Trino in CI ([`integration/`](integration/)), and a product-neutral guard.
+- **Small and proven.** 717 tests at 100 % line and branch coverage, including in-process suites on the real SDK for all three transports, a live run against Keycloak and Trino in CI ([`integration/`](integration/)), and a product-neutral guard.
 
 ## Documentation
 
 - **How it works, end to end:** [akko-ai.com/en/docs/how-it-works](https://akko-ai.com/en/docs/how-it-works/) (also [en français](https://akko-ai.com/docs/comment-ca-marche/)).
-- **Guide, prerequisites, configuration, examples:** [akko-ai.com/docs/akko-mcp-trino](https://akko-ai.com/docs/akko-mcp-trino/) (also [in English](https://akko-ai.com/en/docs/akko-mcp-trino/)) and [akko-ai.com/docs/exemples](https://akko-ai.com/docs/exemples/).
+- **Guide, prerequisites, configuration, examples:** [akko-ai.com/en/docs/open-source-core](https://akko-ai.com/en/docs/open-source-core/) (also [en français](https://akko-ai.com/docs/coeur-open-source/)) and [akko-ai.com/en/docs/examples](https://akko-ai.com/en/docs/examples/).
+- **Claude Desktop and Cursor, step by step:** [docs/guides/connect-claude-desktop-cursor.md](docs/guides/connect-claude-desktop-cursor.md).
 - **Reference, in this repository:** this README, [`examples/`](examples/), [`CHANGELOG.md`](CHANGELOG.md), [`MIGRATING.md`](MIGRATING.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md).
 
 ## Contents
@@ -130,7 +205,7 @@ refuse to start unless the door requires a valid token. An extension (see
 | | Supported | Tested |
 |---|---|---|
 | Python | 3.12, 3.13 | 3.12, 3.13 (CI) |
-| Trino | 351 and later; https with the JWT authenticator for `jwt`, with a password or certificate authenticator and impersonation rules for `impersonation`; http (local) or https for `service` | a recent release with the JWT and certificate authenticators, behind OPA and behind file-based rules, with row filters and column masks |
+| Trino | 351 and later; https with the JWT authenticator for `jwt`, with a password or certificate authenticator and impersonation rules for `impersonation`, with OAuth2 for `oauth2` (stdio); http (local) or https for `service` | a recent release with the JWT and certificate authenticators, behind OPA and behind file-based rules, with row filters and column masks |
 | Policy engines | OPA (`trino-opa`), Ranger (Trino plugin), Trino file-based access control | OPA and file-based rules, with row filters and column masks |
 | Identity providers | any OIDC provider publishing a JWKS (the door); OAuth 2.0 Token Exchange, RFC 8693 (`jwt` mode) | Keycloak 26 (standard token exchange) |
 | MCP | protocol negotiated by the official `mcp` SDK 2.2 (initialize handshake revisions 2024-11-05 to 2025-11-25, and the stateless 2026-07-28 revision); transports `streamable-http`, `sse` and `stdio` | all three transports, official SDK client at its default revision, in CI |
@@ -310,8 +385,13 @@ with memory caching or optional `keyring`. `--check` does not log in.
 ### Container
 
 A [Dockerfile](Dockerfile) ships with the repository (non-root, health check,
-OCI labels). Run it with the same environment variables, publishing ports
-`3000` (MCP) and `3001` (health).
+OCI labels). The image is published for `linux/amd64` and `linux/arm64` as
+`akkoai/akko-mcp-trino` and `ghcr.io/akko-p/akko-mcp-trino`. Run it with the
+same environment variables, publishing ports `3000` (MCP) and `3001` (health):
+
+```bash
+docker run --rm akkoai/akko-mcp-trino:0.7 akko-mcp-trino --version
+```
 
 ## Connect an MCP host
 
@@ -320,7 +400,12 @@ this server; the server verifies it and names the caller in the audit line. A
 host that supports MCP authorization finds the provider through the protected
 resource metadata the server publishes when `MCP_RESOURCE_URL` is set.
 
-Cursor, Claude Desktop, VS Code (`mcp.json`):
+**Claude Desktop and Cursor, step by step:** the sandbox in five minutes, your own Trino
+over stdio with Trino's browser login, and a shared server with a token per user, each
+configuration checked with an MCP client: [docs/guides/connect-claude-desktop-cursor.md](docs/guides/connect-claude-desktop-cursor.md).
+
+Cursor reads this block in `~/.cursor/mcp.json`, as do the hosts that read the same
+`mcpServers` format:
 
 ```json
 {
@@ -354,6 +439,9 @@ async def main(token: str):
 anyio.run(main, "<token>")
 ```
 
+Claude Desktop's configuration file starts local servers only: it reaches an HTTP server
+through a local bridge, as [the guide](docs/guides/connect-claude-desktop-cursor.md) shows.
+
 `streamable-http` (`/mcp`) is the default and what current hosts expect. Set
 `MCP_TRANSPORT=sse` for older hosts (`/sse`); the guard is the same on both.
 
@@ -372,7 +460,7 @@ for one for Trino, as over http) and in `impersonation` mode, and as
   "mcpServers": {
     "trino": {
       "command": "uvx",
-      "args": ["akko-mcp-trino"],
+      "args": ["akko-mcp-trino==0.7.0"],
       "env": {
         "MCP_TRANSPORT": "stdio",
         "TRINO_HOST": "trino.example.internal", "TRINO_PORT": "8443", "TRINO_HTTP_SCHEME": "https",
@@ -413,7 +501,7 @@ The [examples](examples/README.md) folder has the details.
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `search_columns` | `text`, `catalog`, `schema`, `cursor` (all but `text` optional) | `{"matches": [{"catalog", "schema", "table", "column", "type", "comment"}], "schemas_searched": n, "not_searched": [{"catalog", "schema", "reason"}], "complete": bool, "next_cursor": token or null}`: the columns whose name or comment contains the text |
+| `search_columns` | `text`, `catalog`, `schema`, `cursor` (all but `text` optional) | `{"tables": [{"catalog", "schema", "table", "comment"}], "matches": [{"catalog", "schema", "table", "column", "type", "comment"}], "schemas_searched": n, "not_searched": [{"catalog", "schema", "reason"}], "complete": bool, "next_cursor": token or null}`: the tables and columns that hold every word of the text. When nothing holds every word, a page of the per-word pass adds `"partial": true` and gives each row its `"words"`. `"hint"`, a fixed sentence for the agent, comes on such a page (follow `next_cursor` while there is one) and on a complete search that found nothing |
 | `list_catalogs` | `offset` (optional, 0 by default) | `{"catalogs": [...], "next_offset": n or null, "truncated": bool}`: one page of the catalogs Trino shows |
 | `list_schemas` | `catalog`, `offset` (optional) | `{"schemas": [...], "next_offset": n or null, "truncated": bool}`: one page of the schemas in that catalog |
 | `list_tables` | `catalog`, `schema`, `offset` (optional) | `{"tables": [...], "next_offset": n or null, "truncated": bool}`: one page of the tables and views in that schema |
@@ -442,7 +530,9 @@ is not a table), and only `SHOW CATALOGS` and a `SHOW SCHEMAS`, `SHOW TABLES`
 or `SHOW COLUMNS` whose `FROM` gives the full name, catalog included, get
 through. The metadata tools refuse `system` as a catalog name too, and
 `list_catalogs` does not list it. So set `TRINO_CATALOG` to a data catalog;
-the engine's policy must refuse `system` too, the guard being a second line.
+the engine's policy must refuse `system` too, except reading `system.jdbc` and
+`system.metadata` (see [What read-only covers](#what-read-only-covers)), the
+guard being a second line.
 
 Results are capped at `TRINO_MAX_ROWS` (100 by default, 1 at least): one row
 more is read, so `truncated` says whether the answer was cut, and the rest of
@@ -506,43 +596,82 @@ instructions, and the server never places them in its own MCP instructions.
 `describe_table` stays the tool for sample rows and what extensions add.
 
 `search_columns` is where an agent starts when it does not know which table holds
-what it needs: it finds the columns whose name or comment contains a text,
-ignoring case, in every catalog the caller sees (`system` never), in one catalog,
-or in one schema. A named schema is checked first: one that does not exist and one
-the caller may not see answer the same error, `kind` `schema`, never an empty search
-said to be complete; a catalog Trino does not know or refuses answers Trino's error.
-The text is one escaped `LIKE` literal: its quotes cannot end the
-statement, and its `%`, `_` and `!` are plain characters. A text shorter than
-`MCP_SEARCH_MIN_LENGTH` (3 by default) is refused, so a letter or two does not read
-every column. The search reads `system.jdbc.columns`, which Trino filters for each
-user, one schema at a time in a stable order (catalogs, then their schemas, sorted),
-so a catalog of many thousand tables answers schema by schema. It stays within the
-call's budget (`MCP_CALL_TIMEOUT_SECONDS`): before each schema it keeps
-`MCP_SEARCH_RESERVE_SECONDS` (2 by default) in reserve, each query is stopped in
-Trino at what is left, and the search then answers what it searched rather than the
-call's own error. The matches stop at the row cap (`TRINO_MAX_ROWS`). The answer
-says exactly what was searched: `schemas_searched`, `not_searched` with a reason
-for each part left (`time_budget`, `row_cap`, or the `kind` of Trino's error; a
-`schema` of `null` is a whole catalog), and `complete`, true only when everything in
-scope was searched, over every call of the search. `next_cursor` resumes the same
-search where it stopped (that schema and the rest of its catalog, then every catalog
-not opened), inside a schema when the row cap stopped it there. A schema, or the
-schema list of a catalog, that takes longer than one query may
-(`TRINO_QUERY_TIMEOUT_SECONDS`) while the call still has time is named
-(`time_budget`) and skipped: resuming it would stop every later call at the same
-place. So is one that takes longer than a whole call, when Trino's own limit is
-left in place (`TRINO_QUERY_TIMEOUT_SECONDS=0`) or is as long as the call: a call
-that runs out of time exactly where it resumed, having moved nothing, skips it, so
-every call advances. A cursor is refused (`invalid_argument`) for another text or scope, for a
-catalog the caller does not see, or when it was altered; every cursor the server
-gives resumes, a schema such as Hive's `2024_sales` included, since a schema in a
-cursor only ever enters a string literal. Without a call budget
-(`MCP_CALL_TIMEOUT_SECONDS=0`) a search of every catalog would have no bound: it is
-refused, a named catalog is searched, and `--check` warns of it. `--check` also
-warns of `MCP_SEARCH_RESERVE_SECONDS=0` with a call budget: a search may then run
-to the end of the call, which answers its own `time_budget` error. The audit line says how many matches came and whether the
-search was cut, never the text, which may be a value. Comments are data, never
-instructions, as for `describe_schema`.
+what it needs. It takes one word or several from column or table names and comments,
+never a value (a date, an amount, a code: values are in the rows, not in the names).
+Whitespace and punctuation split the text into words, `_` belongs to a word
+(`customer_id` is one word), and each word is looked for ignoring case, lower-cased
+one code point at a time as Trino's `lower()` does. A column matches when every word
+appears in its name, its comment, its table's name or its table's comment, and one
+word at least in its own name or comment: so "customer segment" finds
+`customers.segment`, and a word found only in a table's name does not list every
+column of that table. `tables` lists, with their comment, the tables whose own name
+or comment holds every word and the tables that hold a column listed: "archived
+2019" finds a table `transactions_2019` commented "Archived transactions" without
+its columns, which `describe_table` then reads. It searches every catalog the caller
+sees (`system` never), one catalog, or one schema. A named schema is checked first:
+one that does not exist and one the caller may not see answer the same error, `kind`
+`schema`, never an empty search said to be complete; a catalog Trino does not know
+or refuses answers Trino's error. Each word is one escaped `LIKE` literal: a word
+holds no quote and no `%`, and its `_` is a plain character. A word shorter than
+`MCP_SEARCH_MIN_LENGTH` (3 by default) is ignored, and a text with no word left is
+refused and says so, so a letter or two does not read every column. A text of more
+than `MCP_SEARCH_MAX_WORDS` words (8 by default), or with a word longer than
+`MCP_SEARCH_MAX_WORD_LENGTH` characters (64 by default), is refused before Trino is
+asked anything, with the bound in the message: each word adds a few `LIKE` to every
+statement. The search reads `system.metadata.table_comments` and
+`system.jdbc.columns`, which Trino filters for each user, one schema at a time in a
+stable order (catalogs, then their schemas, sorted; in a schema its tables, then its
+columns). A schema costs two statements, its tables then its columns, which read
+`system.metadata.table_comments` three times and `system.jdbc.columns` twice in all:
+the tables' statement reads the comments for the tables' own text and again for the
+columns a table holds, joined to their table's comment, and the columns' statement
+reads both views once. On Hive the comment view is the expensive one, a metastore
+call per table. Every read filters on the catalog and the schema by equality, which
+Trino pushes down to the views, so a catalog of many thousand tables answers schema
+by schema. It stays within the call's budget (`MCP_CALL_TIMEOUT_SECONDS`): before
+each schema it keeps `MCP_SEARCH_RESERVE_SECONDS` (2 by default) in reserve, each
+query is stopped in Trino at what is left, and the search then answers what it
+searched rather than the call's own error. `tables` and `matches` together stop at
+the row cap (`TRINO_MAX_ROWS`). The answer says exactly what was searched:
+`schemas_searched`, `not_searched` with a reason for each part left (`time_budget`,
+`row_cap`, or the `kind` of Trino's error; a `schema` of `null` is a whole catalog),
+and `complete`, true only when everything in scope was searched, over every call of
+the search. `next_cursor` resumes the same search where it stopped (that schema and
+the rest of its catalog, then every catalog not opened), inside a schema's tables or
+columns when the row cap stopped it there. When a search of several words is
+complete and nothing holds every word on any page of its chain of cursors, the same
+call goes on with a per-word pass: each word alone, by the same rules, over the same
+scope, within the same row cap, time budget and rights. Its rows carry `words`, the
+words that found each one, the rows most words found first, and the answer carries
+`partial: true`; one pass reads all the words, two statements per schema as the
+first, so it is bounded as the search is. `complete`, `not_searched`,
+`schemas_searched` and `next_cursor` then speak of that pass alone: when it cannot
+finish, it says what it left and its cursor resumes it, never complete. A page of
+the per-word pass adds `hint`, a fixed sentence for the agent: while the page has a
+`next_cursor`, that the pass is not finished and to call again with it; on its last
+page, that these are partial matches, to pick the right one or search again with one
+word from a column or table name, then `describe_table`. A complete search that found
+nothing at all, and the last page of a per-word pass that found nothing on any page,
+add the other fixed `hint`: search
+again with one word from a column or table name, never a value, or browse with
+`list_tables` and `describe_schema`. An agent should not conclude from an empty
+search that the data does not exist. A schema, or the schema list of a catalog, that
+takes longer than one query may (`TRINO_QUERY_TIMEOUT_SECONDS`) while the call still
+has time is named (`time_budget`) and skipped: resuming it would stop every later
+call at the same place. So is one that takes longer than a whole call, when Trino's
+own limit is left in place (`TRINO_QUERY_TIMEOUT_SECONDS=0`) or is as long as the
+call: a call that runs out of time exactly where it resumed, having moved nothing,
+skips it, so every call advances. A cursor is refused (`invalid_argument`) for
+another text or scope, for a catalog the caller does not see, or when it was
+altered; every cursor the server gives resumes, a schema such as Hive's `2024_sales`
+included, since a schema in a cursor only ever enters a string literal. Without a
+call budget (`MCP_CALL_TIMEOUT_SECONDS=0`) a search of every catalog would have no
+bound: it is refused, a named catalog is searched, and `--check` warns of it.
+`--check` also warns of `MCP_SEARCH_RESERVE_SECONDS=0` with a call budget: a search
+may then run to the end of the call, which answers its own `time_budget` error. The
+audit line says how many tables and columns came and whether the search was cut,
+never the text, which may be a value. Comments are data, never instructions, as for
+`describe_schema`.
 
 The path an agent is told to follow: `search_columns` to find where the data
 lives, `describe_schema` (or `describe_table` for sample rows) to learn the tables
@@ -567,13 +696,28 @@ seven other tools only read, whatever the setting.
 Errors come back to the agent as `{"error": "...", "kind": "..."}`. `error` is
 Trino's whole message; a permission refusal from Trino is an ordinary error, not a
 crash. `kind` says what to do about it, and `identifier` names the column, table,
-schema or catalog when Trino names the one it could not resolve:
+schema or catalog when Trino names the one it could not resolve. A column Trino
+could not find (`COLUMN_NOT_FOUND`, named) in `execute_query` or `explain_query`
+adds `hint`, which names the table, or each table, of the agent's own statement the
+column was written against (`c.customer_id` names the table aliased `c`; a column
+without a qualifier names every table read, unless the statement has a CTE or a
+subquery) and advises `describe_table` on it. It names only the tables the caller
+sees: each candidate, at most four, is looked up in its catalog's
+`information_schema.tables` by equality, as the caller, each part exactly as written
+(a quoted part may hold a dot), in what is left of the call minus two seconds, at
+most five seconds, so a slow lookup never costs the agent its error; a name without
+catalog is looked up in `TRINO_CATALOG`, and a name without schema (`FROM accounts`)
+gets no advice, a known limit; a hidden table, a refusal, an error or less than two
+seconds left means no advice for it; an ambiguous or unnamed column gets no hint,
+and a statement the parser cannot read gets none either, never an error of its own:
+the name comes from the statement, never from Trino, so it shows nothing the caller
+could not already name:
 
 | `kind` | Meaning |
 |---|---|
 | `syntax`, `column`, `table`, `schema`, `catalog`, `function`, `type` | Trino refused the statement; fix that part of it |
 | `permission` | Trino or the identity provider refused the right; report it, do not retry |
-| `invalid_argument` | the server refused an argument (an identifier, an `offset`) before reaching Trino |
+| `invalid_argument` | the server refused an argument (an identifier, an `offset`, a cursor, a search text out of bounds) before reaching Trino |
 | `read_only` | the statement writes and the server is read-only |
 | `time_budget` | the call ran out of its time budget; narrow the request |
 | `unavailable` | Trino could not answer (internal error, connection lost): the statement is neither valid nor invalid, try again later |
@@ -663,10 +807,10 @@ refuse table functions and the `system` catalog too (see
 `system.metadata`, which Trino filters for each user, as it does
 `information_schema`: a user sees there only the tables and columns they may see
 elsewhere. `describe_schema` reads `system.jdbc.columns` and
-`system.metadata.table_comments`, and `search_columns` reads `system.jdbc.columns`,
-by statements the server builds; a policy that refuses them makes them answer an
-error that says so, with no other way tried. The
-agent's own SQL stays refused on all of `system`, these views included.
+`system.metadata.table_comments`, and so does `search_columns`, by statements the
+server builds; a policy that refuses them makes them answer an error that says so,
+with no other way tried. The agent's own SQL stays refused on all of `system`, these
+views included.
 
 Set `hide-inaccessible-columns=true` in Trino's `config.properties` too. Without it, a
 `SELECT *` over a table with a column the policy hides is refused, and the refusal
@@ -803,7 +947,9 @@ reads its own variables from the same environment.
 | `MCP_MAX_CATALOGS` | the most catalogs `list_catalogs` reads before it pages them, `system` aside, 1 at least; above it the tool answers an error, never a cut list | `10000` |
 | `MCP_DESCRIBE_SCHEMA_TABLES` | the most tables in one page of `describe_schema`, from 1 to 100: a page reads each of its tables by its own branch, so its cost grows with the page | `20` |
 | `MCP_DESCRIBE_SCHEMA_COLUMNS` | the most columns one page of `describe_schema` holds in all, 1 at least; the first table of a page comes whole however wide, and a page shortened for this budget says so | `1000` |
-| `MCP_SEARCH_MIN_LENGTH` | the shortest text `search_columns` searches, spaces at the ends aside, 1 at least | `3` |
+| `MCP_SEARCH_MIN_LENGTH` | the shortest word `search_columns` searches, 1 at least; shorter words are ignored, and a text with none left is refused | `3` |
+| `MCP_SEARCH_MAX_WORDS` | the most words a text of `search_columns` may hold, 1 at least; above it the search is refused before Trino | `8` |
+| `MCP_SEARCH_MAX_WORD_LENGTH` | the longest word `search_columns` takes, not below `MCP_SEARCH_MIN_LENGTH`; a longer word is refused before Trino | `64` |
 | `MCP_SEARCH_RESERVE_SECONDS` | the seconds of the call's budget `search_columns` keeps in reserve, so that it answers what it searched before the call runs out; 0 or more, below `MCP_CALL_TIMEOUT_SECONDS` when that is set; 0 is warned of | `2` |
 | `TRINO_QUERY_TIMEOUT_SECONDS` | time budget of one query: past it, the server cancels the query in Trino; `0` leaves the limit to Trino | `60` |
 | `MCP_CALL_TIMEOUT_SECONDS` | time budget of one tool call, every query of the call included: past it, no query starts, the one running is cancelled and the agent gets an error; `0` sets none | `120` |
@@ -923,7 +1069,7 @@ ruff check akko_mcp_trino --select D100,D101,D102,D103,D105,D107   # every publi
 mypy akko_mcp_trino           # the package ships py.typed and type-checks clean
 pip-audit                     # no known vulnerability in the dependency tree
 bash lint-vendor-neutral.sh   # fails if the package imports anything product-specific
-pytest                        # 621 tests; line or branch coverage below 100 % fails the run
+pytest                        # 717 tests; line or branch coverage below 100 % fails the run
 integration/run.sh            # live: Keycloak, Trino and three servers in Docker, then removed
 python -m build && twine check dist/*
 akko-mcp-trino --check        # effective configuration, no secrets; exit 2 if it would not start

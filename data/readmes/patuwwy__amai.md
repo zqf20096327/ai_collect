@@ -1,0 +1,263 @@
+# AMAI - Amiga AI Shell (CLI Agent for Commodore Amiga)
+
+![AMAI Shell in Action](docs/screenshots/start.png)
+
+An interactive AI coding assistant in the command-line interface (CLI / Shell) for Commodore Amiga (in the style of **Claude Code / Gemini CLI / Aider**), running directly on the Amiga within the **NodeAmiga** JavaScript runtime and communicating with a local **Ollama** instance on a host PC via a lightweight dedicated Node.js bridge.
+
+Enables interactive pair programming directly on AmigaOS (C, Motorola 680x0 Assembler, ARexx, Amiga E, AmigaDOS batch scripts):
+
+- 📖 **File Reading** from any Amiga volume or device (`RAM:`, `DH0:`, `SYS:`, `DEV:`)
+- ✍️ **File Creation & Editing** (full write or surgical search-and-replace `patch`)
+- ⚡ **AmigaDOS Command Execution** (SAS/C, VBCC, GCC compilers, scripts, diagnostic commands)
+- 🤖 **Agentic Loop** – AI inspects files, plans multi-step fixes, and executes tools with safety approval (`[Y/n]` prompts, SMART risk assessment, or unrestricted AUTO mode)
+- 🧠 **Reasoning & Thinking Models** – Full support for thinking models (DeepSeek-R1, Qwen 2.5/3.x) with an in-place compact Amiga console spinner
+- 💾 **Persistent Configuration** – Runtime setting changes (`/host`, `/model`, `/mode`, `/encoding`, etc.) automatically save to `amai.config.json`
+- 🖥️ **WinUAE Automation & Vision** – Dedicated Python controller (`pc/winuae.py`) for AI agents with pixel-accurate screenshots, keystroke injection, and mouse automation
+- 📦 **Standalone Executable Compilation** – bundle into a single self-contained Amiga binary (`NodeAmiga -compile amai amai.js`) that runs independently without NodeAmiga or external libraries.
+
+> [!NOTE]
+> **Early Development Preview**: AMAI is currently in early, active development. While core features and tool calling are functional, you may encounter occasional quirks, connection hiccups, or edge-case bugs. Please report issues and feedback on the [GitHub Issue Tracker](https://github.com/patuwwy/amai/issues).
+
+---
+
+### Project Structure
+
+```text
+amai/
+├── CHANGELOG.md             # Project version changelog (Keep a Changelog standard)
+├── pc/                      # Host PC Bridge & Automation Tools
+│   ├── server.js            # HTTP/TCP streaming server connecting to Ollama & Cloud providers
+│   ├── .env.example         # Example configuration for API keys (Gemini, OpenAI, OpenRouter)
+│   ├── providers/           # Universal LLM provider adapters:
+│   │   ├── index.js         # Unified provider dispatcher
+│   │   ├── models.js        # Dynamic model discovery & noise filtering
+│   │   ├── ollama.js        # Native Ollama streaming client
+│   │   └── openai.js        # OpenAI-compatible streaming client (Gemini, OpenAI, OpenRouter)
+│   ├── local_vision.py      # Local vision agent (Qwen 3.8 via Ollama) for WinUAE OCR & error check
+│   ├── winuae.py            # WinUAE emulator automation CLI (screenshots, vision, keyboard, mouse)
+│   ├── requirements.txt     # Python dependencies for WinUAE automation (Pillow)
+│   └── package.json         # Node.js project manifest
+├── amiga/                   # Amiga Client
+│   ├── bin/                 # Pre-compiled NodeAmiga runtime binaries & compiled AMAI:
+│   │   ├── amai             # Standalone native Amiga executable (Universal 68000/68010)
+│   │   └── amai.config.json # Configuration file
+│   ├── amai.readme          # Aminet-compliant package readme
+│   └── src/                 # AMAI Source Code for NodeAmiga:
+│       ├── amai.js          # Main CLI entry point script
+│       ├── amai.config.json # Configuration file (host, port, model, safety mode, encoding, timeout)
+│       └── lib/             # Client modules:
+│           ├── ansi.js      # ANSI console color & line control for Amiga Shell
+│           ├── config.js    # Configuration loader & persistent saver
+│           ├── network.js   # TCP socket streaming client with thinking & token events
+│           ├── repl.js      # Interactive REPL prompt, compact spinner, and agent loop
+│           ├── tools.js     # Tool execution engine (read, write, patch, dir, cwd, shell)
+│           └── version.js   # Dynamic release version string
+├── tools/
+│   └── build_amiga.py       # Standalone cross-compiler & .lha release packager
+├── .agents/skills/          # Agent skills (release, winuae, local-vision)
+├── start_bridge.bat         # Single-click launcher for the PC bridge on Windows
+└── start_bridge.sh          # Launcher for Linux and macOS
+```
+
+---
+
+## 1. Starting the Host PC Bridge
+
+AMAI communicates with local or cloud AI models via a lightweight Node.js bridge server:
+
+### A. Local Models (Ollama)
+Install [Ollama](https://ollama.com) and pull your preferred model:
+```bash
+ollama run qwen3.8:latest
+```
+
+### B. Cloud Models (Google Gemini, OpenAI, OpenRouter)
+Configure your API keys in `pc/.env`:
+```bash
+cp pc/.env.example pc/.env
+```
+Edit `pc/.env` and set your credentials:
+```env
+DEFAULT_MODEL=gemini-flash-latest
+GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
+### C. Launching the Bridge Server
+- **Windows:**
+  ```cmd
+  start_bridge.bat
+  ```
+- **Linux / macOS:**
+  ```bash
+  chmod +x start_bridge.sh
+  ./start_bridge.sh
+  ```
+- **Any OS (command line):**
+  ```bash
+  node pc/server.js
+  ```
+
+The bridge listens on port `11435` across all network interfaces (`0.0.0.0`):
+- For WinUAE: connects via `127.0.0.1:11435`
+- For real Amiga hardware: connects to your PC's LAN IP address (e.g. `192.168.1.16:11435`)
+
+The bridge automatically logs loaded configuration, active providers, and available models on startup. It transparently handles:
+- NDJSON event streaming with keepalive heartbeats
+- Thinking/reasoning tag filtering (`<think>...</think>` and `msg.thinking`)
+- Google Gemini `thought_signature` preservation across multi-turn tool calling
+- Model grouping, provider filtering, and Topaz-safe noise reduction
+- Transparent character transliteration (ASCII, AmigaPL, ISO-8859-2)
+- Session cancellation (`/abort`) and error propagation
+
+---
+
+## 2. Running in WinUAE (Development & Emulation)
+
+1. **WinUAE Configuration:**
+   - **Hardware -> Expansions / Network**: enable **`bsdsocket.library`** emulation (`bsdsocket_emu=true`).
+   - **Hardware -> Memory**: recommended **8 MB Fast RAM** (`fastmem_size=8`).
+   - **Host -> Hard drives**: mount the repository directory as a hard drive directory (e.g. Device: `DEV:`, Volume: `amai`).
+   - **Host -> Game ports** _(Recommended for mouse automation)_: in _Mouse extra settings_, set **Mouse untrap mode** to **Magic mouse** (or enable **Install virtual mouse driver**).
+2. Boot your Amiga workbench in WinUAE and open a Shell window.
+3. Start AMAI:
+   ```amiga
+   cd DEV:amiga/bin
+   amai
+   ```
+   or directly with options:
+   ```amiga
+   DEV:amiga/bin/amai -h 127.0.0.1 -m gemini-flash-latest
+   ```
+
+---
+
+## 3. Running on Real Amiga Hardware
+
+1. Verify that your Amiga has an active TCP/IP stack (**Roadshow**, **AmiTCP**, **Miami**, **ImpBox**) with working `bsdsocket.library`.
+2. Copy the `amiga/bin` contents to your Amiga storage (e.g. `DH0:Tools/amai/`).
+3. Set your PC's local IP address in `amai.config.json` (e.g. `"host": "192.168.1.16"`), or pass it via CLI argument:
+   ```amiga
+   bin/amai -h 192.168.1.16 -m qwen2.5:latest
+   ```
+
+---
+
+## Compiling from sources
+
+1. Download NodeAmiga from https://juen.in/ or https://aminet.net/package/dev/lang/NodeAmiga. Unpack and get binaries in PATH
+2. Compile directly on Amiga:
+   ```amiga
+   cd amai
+   NodeAmiga -compile amiga/bin/amai amiga/src/amai.js
+   ```
+3. Or build standalone binaries (68000, 68020, 68040, 68060) and `.lha` archive using the cross-builder:
+   ```bash
+   python tools/build_amiga.py --version v1.0.0
+   ```
+   _(This script automatically fetches NodeAmiga from Aminet if not present and packages standalone Amiga executables and `.lha` for GitHub Releases)_.
+
+## 4. Built-in Slash Commands & Persistent Config
+
+During an interactive session at the `[SMART] DEV:amiga > ` prompt, the following commands are available:
+
+| Command                       | Description                                                                  | Auto-Saved? |
+| :---------------------------- | :--------------------------------------------------------------------------- | :---------: |
+| `/help`                       | Display list of available commands and usage guide                           |      -      |
+| `/status`                     | Check connection to PC bridge; auto-discovers PC LAN IP if 127.0.0.1 fails   |     Yes     |
+| `/host [ip[:port]]`           | Set bridge IP address and optional port (e.g. `/host 192.168.1.16:11435`)    |     Yes     |
+| `/port [number]`              | Change bridge port (e.g. `/port 11435`)                                      |     Yes     |
+| `/model [name\|prov]`         | Show/switch model, or filter by provider (`local`, `google`, `openai`, `openrouter`) |     Yes     |
+| `/mode [smart\|manual\|auto]` | Set safety approval mode: `smart` (default), `manual`, or `auto`             |     Yes     |
+| `/auto [on\|off]`             | Quick toggle between AUTO mode and SMART mode                                |     Yes     |
+| `/encoding [mode]`            | Set character encoding: `ascii`, `amigapl`, `iso-8859-2`, `raw`              |     Yes     |
+| `/timeout [seconds]`          | Set connection timeout in seconds (e.g. `/timeout 120`)                      |     Yes     |
+| `/debug [on\|off]`            | Toggle verbose diagnostic logging                                            |     Yes     |
+| `/save [file]`                | Explicitly write current runtime configuration to file                       |      -      |
+| `/read <path>`                | Read Amiga file directly into conversation context (e.g. `/read RAM:main.c`) |      -      |
+| `/run <command>`              | Run AmigaDOS command directly (e.g. `/run dir RAM:`)                         |      -      |
+| `/cd [dir]`                   | Inspect or print current working directory                                   |      -      |
+| `/clear`                      | Clear conversation history and reset context                                 |      -      |
+| `/exit` or `/quit`            | Exit AMAI Shell                                                              |      -      |
+
+> [!TIP]
+> **Configuration Auto-Persistence**: Any modification made via slash commands during the session is immediately written to `src/amai.config.json` (or `PROGDIR:amai.config.json` / `ENV:`), ensuring settings persist across restarts and reboots.
+
+---
+
+## 5. WinUAE Automation & Vision Controller (`pc/winuae.py`)
+
+AMAI includes a dedicated automation CLI tool for Windows to control and inspect a running WinUAE emulator session directly from scripts or AI agents:
+
+```powershell
+# 0. Install Python dependencies (Pillow for screenshot capture)
+pip install -r pc/requirements.txt
+
+# 1. Take a screenshot for vision analysis
+python pc/winuae.py screenshot current_screen.png
+
+# 2. Type text into the active Shell / editor (with CIA-safe timings)
+python pc/winuae.py type "dir RAM:" --enter
+
+# 3. Send special keys
+python pc/winuae.py key enter
+python pc/winuae.py key esc
+python pc/winuae.py key f12           # Open WinUAE Settings GUI
+python pc/winuae.py key ctrl+c        # Interrupt running program
+python pc/winuae.py key execute       # Open Workbench 'Execute Command' (Right Amiga + E)
+python pc/winuae.py key reset         # Hard reset Amiga (Ctrl + L-Amiga + R-Amiga)
+
+# 4. Pixel-accurate mouse clicks (aligned 1:1 with screenshot coordinates)
+python pc/winuae.py click 215 310
+python pc/winuae.py click 215 310 --double
+python pc/winuae.py click 400 200 --button right
+
+# 5. Drag & Drop / Amiga Intuition pull-down menus
+python pc/winuae.py drag 50 10 50 80 --button right
+
+# 6. Relative mouse movement (hardware mickeys)
+python pc/winuae.py move 50 -20
+
+# 7. Window management
+python pc/winuae.py status
+python pc/winuae.py focus
+```
+
+**Key Features of the Controller:**
+
+- **Per-Monitor DPI Aware**: Guarantees that coordinates measured on screenshots match physical desktop clicks 1:1, regardless of Windows display scaling (125%, 150%, 200%).
+- **Window Identification**: Accurately targets the emulator window (`PCsuxRox` / `AmigaPowah` window class) and prevents accidental input to code editors (e.g. VS Code).
+- **DirectInput / SendInput**: Uses native Windows `SendInput` structures for reliable input delivery to retro emulators.
+
+---
+
+## 6. Agent Tools & Safety System
+
+AMAI equips the LLM with a suite of tools tailored for AmigaOS development:
+
+1. **`read_file(path)`** – Read files from any Amiga path (includes a 16 KB memory protection cap).
+2. **`write_file(path, content)`** – Create or overwrite files on Amiga storage.
+3. **`patch_file(path, search, replace)`** – Precise block replacement for surgical code editing.
+4. **`list_dir(path)`** – Inspect directories and volume contents.
+5. **`get_cwd()`** – Retrieve current working directory path.
+6. **`run_command(command)`** – Execute arbitrary AmigaDOS shell commands via `child_process.execSync` (e.g. `vc -c file.c`).
+7. **`launch_workbench_app(app_path, [args])`** – Launch GUI/Workbench applications in the background using `WBRun` (e.g. `SYS:Tools/Clock`, `SYS:Utilities/Calculator`). Requires [WBRun](https://aminet.net/util/cli/WBRun.readme) installed in `C:`.
+8. **`cpu([args])`** – Query Amiga CPU, FPU, MMU, and cache configuration via AmigaDOS `cpu` command (e.g. 68000, 68020, 68030, 68040, 68060).
+
+### Safety Approval Modes:
+
+- **`smart` (Default)**: Automatically approves safe read-only operations (`read_file`, `list_dir`, `get_cwd`, `cpu`, safe GUI launches), but prompts the user for confirmation `[Y/n]` before modifying files or executing shell commands.
+- **`manual`**: Prompts the user before every single tool invocation.
+- **`auto`**: Fully autonomous mode; executes all tool actions without prompting (recommended for trusted scripts).
+
+---
+
+## 7. Character Encoding & Amiga Topaz Font
+
+Classic Amiga screens (PAL/NTSC Topaz 8 font) do not support UTF-8 characters natively. The PC bridge handles transparent transliteration according to the selected encoding mode:
+
+- **`ascii` (Default)**: Converts Polish diacritics and special Unicode typography (curly quotes, dashes, bullets) to clean standard 7-bit ASCII equivalents.
+- **`amigapl`**: Encodes characters according to the classic AmigaPL standard (Commodore Polish localized fonts).
+- **`iso-8859-2`**: Standard Latin-2 encoding.
+- **`raw`**: Passthrough without modification.

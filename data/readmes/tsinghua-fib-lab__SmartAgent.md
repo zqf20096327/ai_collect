@@ -23,7 +23,7 @@ We formulate COUT to achieve embodied personalized agent training in terms of th
 # SmartSpot Benchmark
 
 ## Download Link
-- Google Drive: [image data](https://drive.google.com/file/d/1LCXAxkhVRnHLh1e5TK3L_nzDym3qZa2b/view?usp=drive_link), [annotation data (zh)](https://drive.google.com/file/d/16Q7pa5ifgkmiLJ6x6qN0CuF1aLyNP72l/view?usp=drive_link), [annotation data (en)](https://drive.google.com/file/d/1tmVyjdjKPFJt3bPMqpcvCL4iwmZ5G3J4/view?usp=drive_link).
+- <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" width="18" height="18"/> Google Drive: [image data](https://drive.google.com/file/d/1LCXAxkhVRnHLh1e5TK3L_nzDym3qZa2b/view?usp=drive_link), [annotation data (zh)](https://drive.google.com/file/d/1jupUur2-DNpAPJFTYGfgRHtlEDHkpcV1/view?usp=sharing), [annotation data (en)](https://drive.google.com/file/d/1wZT58Gx189rG2OPdLNDIzs4_IHlVl8WS/view?usp=sharing).
 ## Datasets Statistics
 <p align="center" width="100%">
   <img src='assets/Datasets_statistics.png' width="100%">

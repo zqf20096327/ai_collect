@@ -68,8 +68,20 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 
 ## 界面预览
 
+### 客户端设备
+
+网页「我的设备」可配对多台电脑并查看授权和执行记录。安装 [本机助手](desktop/README.md) 后，在电脑上选择目录并打开开关，聊天中选择设备即可使用本机文件和命令工具。本机可选择「请求批准」或「完全访问权限」：前者对修改与命令逐次询问，后者自动执行已开启能力；退出或断线后自动关闭访问。桌面端使用 Electron + TypeScript，服务端沿用现有 Python。部署和权限边界见 [客户端设备执行](docs/local-devices.md)。
+
+**网页设备管理**：查看在线设备、授权范围与执行记录。
+
+![网页设备管理](assets/img/devices-web.png)
+
+**本机助手**：在电脑上开启访问，选择「请求批准」或「完全访问权限」；助手每小时检查新版本，点击后才下载安装。
+
+![本机助手访问开关、两档授权与版本更新](assets/img/devices-desktop.png)
+
 以下界面覆盖项目的主要工作流：聊天与流式工具调用、人工确认、知识库、技能管理、MCP 管理、
-渠道绑定中心与用户管理。截图位于 `assets/img/`，更新界面后可自行替换。
+渠道绑定中心与用户管理。截图基于 2026-11-02 的当前界面，使用隔离演示数据；图片位于 `assets/img/`。
 
 ### 聊天主界面
 
@@ -106,6 +118,7 @@ checkpoint 统一持久化，前端构建产物由同一个进程静态托管。
 ![渠道管理](assets/img/channels_management.png)
 
 统一的渠道绑定中心：同一用户可维护多条飞书 / 微信绑定，每条绑定独立二维码、独立状态、独立删除。
+渠道页同时展示待处理和异常消息，支持补发已有结果、人工核对后结束异常任务；详见 [渠道消息可靠性与恢复](docs/channel-reliability.md)。
 
 ### 用户管理
 
@@ -440,6 +453,8 @@ pnpm build
 | `GET` | `/api/channels/weixin-clawbot/bindings/{binding_id}/qrcode/status` | REST | 查询微信 ClawBot 绑定二维码状态 |
 | `DELETE` | `/api/channels/weixin-clawbot/bindings/{binding_id}` | REST | 删除微信 ClawBot 绑定 |
 | `POST` | `/api/channels/weixin-clawbot/poll` | REST | 拉取微信 ClawBot 待处理消息 |
+| `GET` | `/api/channels/jobs` | REST | 查询待处理与异常消息（`scope=my\|all`） |
+| `POST` | `/api/channels/jobs/{job_id}/actions` | REST | 补发已有结果或人工结束异常任务 |
 | `GET` | `/api/channels/sessions` | REST | 列出渠道会话 |
 | `PATCH` | `/api/channels/sessions/{session_id}` | REST | 更新会话回复模式 |
 
@@ -619,6 +634,9 @@ curl http://localhost:7869/api/agui/threads/demo-thread/state -H "Authorization:
 | `CHART_PUBLIC_URL` | 图表对外访问前缀，留空则返回相对路径 `/charts/xxx.png` |
 | `CHART_RETENTION_HOURS` / `CHART_MAX_FILES` | 图表文件保留时长与数量上限 |
 | `CHANNEL_AGENT_API_URL` | 渠道网关调用 Agent 的完整地址；留空时自动使用当前服务的 `/api/agui/runs` |
+| `CHANNEL_AGENT_CONNECT_TIMEOUT_SECONDS` | 渠道调用 Agent 的连接超时，默认 10 秒 |
+| `CHANNEL_AGENT_READ_TIMEOUT_SECONDS` | SSE 单次读取等待超时，默认 90 秒 |
+| `CHANNEL_AGENT_STREAM_RETRIES` | SSE 断流重连次数，默认 3，恢复同一 Run |
 | `WEIXIN_CLAWBOT_*` | 微信 ClawBot 相关配置 |
 
 ## 沙箱模式（多用户工作隔离）

@@ -23,7 +23,15 @@ green left arrow everywhere else), sends
 school buses round to let children off, signs 30 km/h zones past schools and playgrounds, closes a lane
 for a road crew now and then, with a flagger at each end taking turns to wave each direction through
 the one lane left, cuts the power to a signal now and then, so everyone takes turns at its dark lights as
-at an all-way stop, parks tow trucks and police cars at the curb with their lights flashing for everyone to slow down and move over for, and now and then sends an ambulance or fire truck answering a call that everyone must pull over for. Then
+at an all-way stop, double-parks delivery vans in the lane, so drivers wait for the oncoming lane to clear
+before going round them, sends a snow plow down the main streets while it snows, which everyone stays
+30 m behind and never passes on the right, closes a lane for a road crew on two-lane streets, where
+everyone uses both lanes to the merge point and then takes turns, has everyone pass a cyclist riding out
+in the lane of a street with one lane each way only once the oncoming lane is clear, leaving at least
+1 m (1.5 m above 50 km/h), parks tow trucks and police cars at the curb with their lights flashing for everyone to slow down and move over for, and now and then sends an ambulance or fire truck answering a call that everyone must pull over for. At the
+end of a drive the AI driver parallel parks in a space near the destination, and pulls out of it again
+to start the next one. Cars parked at the kerb hide the sidewalk behind them, now and then someone steps
+out from between two of them, and the AI driver keeps to a speed it can stop from beside them. Then
 it lets you drive them yourself, or watch an AI driver do it. Every decision the AI makes is
 recorded. You can pause the drive, scrub back to the moment a car door swung open, and see what the
 driver could see, what it considered, and why it rejected each alternative.
@@ -61,7 +69,7 @@ on at dusk.
 
 ### 🏁 Take on the challenges
 
-Twenty-three hand-built scenarios test the situations real drivers get wrong:
+Thirty hand-built scenarios test the situations real drivers get wrong:
 
 | Challenge | Where | What it tests |
 |---|---|---|
@@ -88,10 +96,18 @@ Twenty-three hand-built scenarios test the situations real drivers get wrong:
 | **Not your arrow** | Winnipeg, afternoon | Going straight on Isabel Street at a red light, as a green left arrow comes on for the cars waiting to turn beside you: the arrow is for them, so wait for your own green |
 | **Follow the flagger** | Ottawa, afternoon | A road crew has closed your lane on Queen Street, and the flagger at your end shows STOP while cars come the other way through the one lane left: wait at the line until the paddle turns to SLOW, then go round the work at 30 km/h |
 | **Lights out** | Halifax, afternoon | A storm has knocked out the power, and the lights where Barrington Street meets Morris Street are dark: treat the junction as an all-way stop, and let the car from the right and an oncoming left turn, both there first, go before you |
+| **Round the van** | Toronto, afternoon | A delivery van is double-parked in your lane on Brunswick Avenue, hazards flashing, and the only way past is the oncoming lane, where two cars are coming that you can't see yet: stop a car length back, let them by, then go round |
+| **Squeeze in** | Vancouver, afternoon | One space is left on a block of West 10th Avenue lined with parked cars, 6.8 m long, and a car comes up behind as you slow for it: signal, pull up alongside the car in front, wait until it's clear behind, then reverse in and park within 30 cm of the kerb |
+| **Between the cars** | Vancouver, afternoon | A quiet 50 km/h street in Kitsilano, lined with parked cars on your side, and a child hidden between two of them steps out when you're 15 m away: at about 30 km/h you stop short of them, at 50 you can't |
+| **Blind left** | Vancouver, afternoon | A left turn on a green on West 4th Avenue, with a delivery van waiting in the junction opposite to turn left: the lane beside it is hidden behind it, and a car is coming straight through in it. Wait at the edge of the cross street until you can see that lane is clear |
+| **Behind the plow** | Winnipeg, afternoon, snow | A city plow is clearing the left lane of William Avenue at 18 km/h, blue and amber lamps flashing, and the right lane beside it is wide open: stay 30 m behind it all the way, and never go by it on the right |
+| **Take turns** | Calgary, afternoon | The right lane of 14 Avenue SW is closed for a road crew, the left lane is backed up to the cones, and two cars wait at the merge ahead of you: stay in your lane to the merge point, then take your turn, one car from each lane |
+| **Give them room** | Vancouver, afternoon | A cyclist rides out in your lane on the West 10th Avenue bikeway, the kerbs lined with parked cars, one lane each way, and two cars are coming the other way: stay behind until they are by, then pass with at least 1 m and move back in well ahead |
 
 Drive them yourself, or set Rules, a decision model, an LLM or your own agent loose on the same
 seed and compare results. A pass means you arrived with no collision, no red light or stop sign
-run, no failure to yield, and less than a second off the road. A good coaching score on its own doesn't count.
+run, no failure to yield, and less than a second off the road (and, in Squeeze in, parked within 30 cm
+of the kerb). A good coaching score on its own doesn't count.
 
 ### 🧠 See through the AI's eyes
 

@@ -2,7 +2,7 @@
   <img src="frontend/public/logo.png" alt="MinusPod" width="400" />
 </p>
 
-MinusPod is a self-hosted server that removes ads from podcasts before you ever hit play. It transcribes episodes locally with faster-whisper or Parakeet (or through a remote API), uses an LLM to detect and cut ad segments, and builds cross-episode ad patterns from your corrections so repeat sponsors get caught without re-asking the LLM. Bring your own LLM: Claude, Ollama, OpenRouter, OpenAI-compatible providers, or System One.
+MinusPod is a self-hosted server that strips ads from podcasts and YouTube shows before you hit play. Point it at an RSS feed, playlist or channel and subscribe to the feed it serves. Podcasts are transcribed locally (faster-whisper, Parakeet or a remote API) and an LLM cuts the ads. Your corrections become patterns that catch repeat sponsors without another LLM call. YouTube audio comes through yt-dlp and SponsorBlock marks decide the cuts. Bring your own LLM: Claude, Ollama, OpenRouter, OpenAI-compatible providers or System One.
 
 <p align="center">
   <img src="docs/screenshots/dashboard-desktop-hulu.png" alt="MinusPod dashboard on desktop" width="600" />
@@ -108,7 +108,7 @@ The [full docs index](docs/README.md) covers the rest: audio cues, community pat
 
 ## Contributing
 
-Bug reports, feature requests, and pull requests are welcome. Open an issue first for larger changes so we can agree on the approach. Ad patterns go through [Community Patterns](patterns/README.md) and benchmark results through [Benchmark Contributing](benchmarks/llm/CONTRIBUTING.md). Fork-derived features and community bug reports are credited in the CHANGELOG entry that ships them.
+Bug reports, feature requests, and pull requests are welcome. Open an issue first for larger changes so we can agree on the approach. See the [contributor guide](docs/CONTRIBUTING.md) for development setup, build instructions, and tests. Ad patterns go through [Community Patterns](patterns/README.md) and benchmark results through [Benchmark Contributing](benchmarks/llm/CONTRIBUTING.md). Fork-derived features and community bug reports are credited in the CHANGELOG entry that ships them.
 
 ## Disclaimer
 

@@ -39,17 +39,22 @@
 
 ---
 
-## 🎥 Video — The console, page by page
+## 🎥 Video — From Spark to Foundation: two questions, one series
 
-A 30-minute tour of the CorvinOS operator console: chat, dashboard, learnings, tasks and every other page, one at a time. The preview below plays right here on GitHub; click it to watch the full video on YouTube.
+The series opens with two questions:
+
+1. **How can decision-making be improved compared with native frontier models?**
+2. **Is it even still necessary to increase the model's intelligence?**
+
+Both are answered in episode 7. The preview plays right here on GitHub; click it to open the full series on YouTube.
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=TYdzwz6MX70" target="_blank" rel="noopener">
-    <img src="docs/media/corvinos-console-tour-teaser.gif" alt="Video: CorvinOS console tour (animated preview, plays inline; click to watch on YouTube)" width="720"/>
+  <a href="https://www.youtube.com/watch?v=yQKzlhtRmbs&amp;list=PLYmWZTfJDs5M" target="_blank" rel="noopener">
+    <img src="docs/media/corvintv-e1s1-preview.en.gif" alt="Preview: From Spark to Foundation, episode 1 with the series' two guiding questions, answered in episode 7 (click to open the series on YouTube)" width="720"/>
   </a><br/>
 </p>
 
-Further video on YouTube: <a href="https://www.youtube.com/watch?v=TYdzwz6MX70" target="_blank" rel="noopener">watch here</a>
+All episodes on YouTube: <a href="https://www.youtube.com/watch?v=yQKzlhtRmbs&amp;list=PLYmWZTfJDs5M" target="_blank" rel="noopener">watch the series</a>
 
 ---
 

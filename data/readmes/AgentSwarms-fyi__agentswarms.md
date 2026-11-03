@@ -212,7 +212,10 @@ counted by hand and re-checked when the feature changes.
   per table or per tag, deny-by-default model access, SAML SSO with SCIM 2.0
   provisioning from Okta or Entra (a superadmin can never be deactivated by
   the IdP), stored credentials envelope-encrypted under a key that can live
-  in Vault Transit, and a hash-chained audit log that survives user deletion
+  in Vault Transit, AWS KMS, Azure Key Vault, Google Cloud KMS or OCI Vault,
+  each user's under their own key and each customer's under a customer key
+  it can hold in its own KMS and revoke, and a hash-chained audit log that
+  survives user deletion
   ([IAM.md](./docs/IAM.md), [LAKEHOUSE.md](./docs/LAKEHOUSE.md#policies-by-tag),
   [KEY_MANAGEMENT.md](./docs/KEY_MANAGEMENT.md)).
 - **One graph from ingest to model** — a pipeline's success builds the SQL
@@ -386,7 +389,8 @@ One focused guide per topic in [`docs/`](./docs):
   [ETL pipelines](./docs/ETL_PIPELINES.md) · [Workflows](./docs/WORKFLOWS.md) ·
   [Lakehouse](./docs/LAKEHOUSE.md) ·
   [SQL models](./docs/SQL_MODELS.md) ·
-  [Semantic layer](./docs/SEMANTIC_LAYER.md) · [Enterprise Ontology](./docs/ENTERPRISE_ONTOLOGY.md) ·
+  [Semantic layer](./docs/SEMANTIC_LAYER.md) · [Enterprise Ontology](./docs/ENTERPRISE_ONTOLOGY.md)
+  ([guide](./docs/ONTOLOGY_GUIDE.md)) ·
   [Business intelligence](./docs/BUSINESS_INTELLIGENCE.md) ·
   [Machine learning](./docs/ML.md) · [Data monitors](./docs/DATA_MONITORS.md) · [AI in SQL](./docs/AI_SQL.md) · [Sheets](./docs/SHEETS.md) ·
   [End to end: data and AI](./docs/END_TO_END_DATA_AND_AI.md), a worked

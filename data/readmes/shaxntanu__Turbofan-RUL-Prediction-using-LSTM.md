@@ -47,7 +47,7 @@ docker build -t turbofan-rul .
 docker run --rm -p 8501:8501 turbofan-rul
 ```
 
-Open [http://localhost:8501](http://localhost:8501). The image uses Python 3.12; `.dockerignore` keeps local environments, generated outputs, and model files out of the build context. GitHub Actions builds the image and checks that Streamlit responds on both its health endpoint and dashboard route. The workflow does not publish the image.
+Open [http://localhost:8501](http://localhost:8501). The image uses Python 3.12; `.dockerignore` keeps local environments, generated outputs, and model files out of the build context. It includes TensorFlow for the LSTM training path, so the first build downloads a large wheel and takes time; this machine's built image is 4.04 GB. Later builds reuse cached layers. GitHub Actions builds the image and checks that Streamlit responds on both its health endpoint and dashboard route. The workflow does not publish the image.
 
 ## Run Experiments
 
@@ -168,7 +168,7 @@ Python, TensorFlow/Keras, scikit-learn, pandas, NumPy, Matplotlib, Seaborn, Stre
 
 ## Documentation
 
-Start with the [documentation guide](docs/README.md). The current [project scope](docs/PROJECT_OVERVIEW.md), [architecture](docs/architecture.md), [methodology](docs/methodology.md), [measured results](docs/RESULTS.md), [limitations](docs/limitations.md), and [traceability matrix](docs/traceability.md) describe the implementation and evidence. See the [repository audit](docs/REPOSITORY_AUDIT.md) for verification status and remaining gaps.
+Start with the [documentation guide](docs/README.md). The current [project scope](docs/PROJECT_OVERVIEW.md), [architecture](docs/architecture.md), [methodology](docs/methodology.md), [measured results](docs/RESULTS.md), [limitations](docs/limitations.md), and [traceability matrix](docs/traceability.md) describe the implementation and evidence. The guide also indexes the [research sources](docs/research-sources.md), [runtime compatibility](docs/compatibility.md), [generated artifact provenance](docs/generated-artifacts.md), and [AI skills registry](docs/AI_SKILLS_REFERENCE.md). See the [repository audit](docs/REPOSITORY_AUDIT.md) for verification status and remaining gaps.
 
 ## Development checks
 

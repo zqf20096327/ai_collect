@@ -92,7 +92,7 @@ They take free-text arguments (`/sota-close focus on the migration branch`). Ful
 
 - [Standards & practices baked in](#standards--practices-baked-in) · [What the audit hunts that a scanner can't](#what-the-audit-hunts-that-a-scanner-cant) · [How the numbers are kept honest](#how-the-numbers-are-kept-honest)
 - [Skills](#skills) · [Coverage & non-goals](#coverage--non-goals)
-- [Installation](#installation) · [Always-on routing](#always-on-routing-recommended) · [Updating](#updating)
+- [Installation](#installation) · [From the Claude directory](#install-from-the-claude-directory) · [Always-on routing](#always-on-routing-recommended) · [Updating](#updating)
 - [Using it](#using-it) — [slash commands](#slash-commands) (`/sota-resume` · `/sota-audit` · `/sota-deep-audit` · `/sota-close` · `/sota-report`)
 - [Optional setup & integrations](#optional-setup--integrations) — [badge](#badge), [gates](#enforcing-the-gates), [other agents](#other-ai-agents-codex-copilot-gemini-), [status line](#status-line-optional), [plugin extras](#optional-extras-for-plugin-users)
 - [Structure](#structure) · [How it works](#how-it-works) · [Conventions](#conventions)
@@ -788,10 +788,27 @@ read, hack on, or pin). A few details on the clone path:
   the update-reminder hook, the routing-hook, code-rules-hook, zsh EQUALS hook and listing-budget offers, and the
   reach check.
 
-The plugin (or `--copy`) installs the skills; a few extras (routing reminder,
-status line, pre-commit gates, AGENTS.md) aren't auto-enabled — see
-[Optional extras for plugin users](#optional-extras-for-plugin-users). On first
-run the plugin shows a one-time notice pointing there.
+The plugin (or `--copy`) installs the skills, and the plugin also registers its hooks (the
+routing reminder among them); a few extras (status line, pre-commit gates, AGENTS.md) aren't
+auto-enabled — see [Optional extras for plugin users](#optional-extras-for-plugin-users). On
+first run the plugin shows a one-time notice pointing there.
+
+### Install from the Claude directory
+
+**Pending listing**: not yet in Anthropic's plugin directory. Once listed, find
+**SOTA Engineering Skills** under Customize → Plugins → Discover in claude.ai or the desktop
+app, or in `/plugin` in Claude Code. The listing is built from a generated branch,
+`plugin-dist`, which holds only what the plugin loads (skills, slash commands, hooks and the
+scripts they run) and is published by CI on each release tag
+([RELEASING.md §4b](RELEASING.md#4b-the-claude-plugin-directory-plugin-dist--automatic-on-the-tag)).
+
+What you get depends on where you use it (Anthropic's
+[plugin support table](https://claude.com/docs/plugins/platform-support), read 2026-11-01):
+**in claude.ai chat the skills and slash commands load but hooks are ignored**, so there is no
+per-prompt routing reminder and the skills are used only when something names them. In Cowork
+and Claude Code the hooks run. A plugin installed on your claude.ai account also appears in
+Claude Code as a synced plugin. Every hook, what it reads and writes, and how to turn it off is
+listed in the listing's own README, [`plugin/README.md`](plugin/README.md).
 
 ### An install is personal, not repo-resident
 
@@ -1206,18 +1223,4 @@ commands map the boundaries before rating anything. `/sota-audit` builds the lig
 entry points, the authn/authz checkpoint on each, the asset it reaches, and the assumptions that
 implies, each checked against the code. `/sota-deep-audit` reconstructs the whole model. That is a pass of its own, and it goes **before** the lenses rather than inside the security one,
 because a finding rated without trust boundaries is rated in a vacuum. It extracts entry points,
-stores, actors and the boundaries the system *actually* has from the code rather than the docs,
-then writes down the assumptions that implies — *services trust the gateway's headers*, *that
-bucket is private* — and **tests each against the code that makes it true**. No evidence is not
-"probably fine"; it is a broken assumption, and those are usually the Criticals. What comes out is
-a **control-presence matrix**: Present · Partial · Absent · N/A · Unverifiable, each carrying the
-evidence its state demands — `file:line` for Present, both sides for Partial, and **the searches
-you ran** for Absent, so a reviewer can re-run them. **Partial is the most important state.** One
-authorization-checked endpoint proves the team knows the pattern; the seventeen unchecked ones are
-the finding, and they tell you the remediation is adoption rather than invention. The pass also
-reads the **negative space** — exclusion lists, skip-auth decorators, `count = 0`, disabled tests
-with *security* in the name — because a control someone switched off is a stronger finding than one
-never built. Full procedure: [`sota-threat-modeling`](skills/sota-threat-modeling/) rules/06.
-
-**Why `/sota-close` is a command rather than a habit.** The end of a session is when the
-context has usually been compacted at least once, so "what happened" is r
+stores, actors and the boundaries the system *actually

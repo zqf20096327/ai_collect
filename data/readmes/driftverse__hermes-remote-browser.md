@@ -1,21 +1,51 @@
 # Hermes Remote Browser
 
+**Your agent lives on a server. Your logged-in browser doesn't.**
+
+Let a [Hermes Agent](https://github.com/NousResearch/hermes-agent) on a home server or VPS use
+Chrome on your own computer, across networks, with the sessions you're already logged into.
+Your computer needs only a browser extension: no companion app, VPN client or inbound ports.
+
+## See it in action
+
+[![26-second demo: Hermes controls a logged-in GitHub session in Chrome on a separate laptop](docs/demo.gif)](docs/demo.mp4)
+
+[Download the MP4](docs/demo.mp4?raw=1): a server-hosted Hermes agent uses Chrome on a separate laptop
+to find an existing GitHub issue, avoid creating a duplicate, and reopen it when asked.
+Playback is accelerated, pauses are cut, and audio is removed. Browser toolbar and desktop
+status details are covered. The recording uses the original **Penny Bridge** branding;
+this repo packages the bridge as **Hermes Remote Browser**.
+
 ![Hermes Remote Browser: your agent runs on a server, it uses the Chrome on your laptop](docs/preview.png)
 
-Let a [Hermes Agent](https://github.com/NousResearch/hermes-agent) running on a **home server or
-VPS** use the Chrome on **your own computer**, with your logged-in sites, across networks, with
-nothing installed on that computer except a browser extension.
+- Share tabs by moving them into the purple **Hermes** group. Other tabs stay out of reach.
+- Switch access on yourself. It automatically switches off after your chosen interval and at browser start.
+- Keep using your own browser sessions. You don't need to copy cookies to the server.
+
+The server needs a public HTTPS hostname with websocket support. The extension currently installs
+through Chrome's **Load unpacked** flow. Page text and screenshots enter your Hermes conversation
+and may reach your model provider; read the [security model](#security-model) before sharing sensitive tabs.
+
+[Quick start](#quick-start) · [Cloudflare setup](docs/cloudflare-setup.md) ·
+[Troubleshooting](docs/troubleshooting.md) · [First-run test](docs/first-run-test.md)
+
+## Try it and tell us what breaks
+
+We're looking for the first five community testers running Hermes on a server and Chrome on a
+separate computer. Follow the [first-run checklist](docs/first-run-test.md), then
+[report your result](https://github.com/driftverse/hermes-remote-browser/issues/new?template=first-run.yml).
+A failed setup report is useful too. Please leave out tokens, private page contents and pairing codes.
 
 ## Quick start
 
 **1. Install the plugin.** Tell your Hermes agent:
 
-> Install the Hermes plugin https://github.com/bunny2030/hermes-remote-browser and set it up.
+> Install the Hermes plugin https://github.com/driftverse/hermes-remote-browser and set it up.
 
 Or run it yourself on the server:
 
 ```bash
-hermes plugins install bunny2030/hermes-remote-browser --enable
+hermes plugins install driftverse/hermes-remote-browser --enable
 ```
 
 Then restart Hermes. If you use the web dashboard / Hermes Desktop, restart that too. The relay
@@ -27,7 +57,7 @@ server. With Cloudflare Tunnel, add a public hostname with service type **HTTP**
 `localhost:9178`. Any HTTPS reverse proxy with websocket support works.
 
 **3. Add the extension to Chrome.** Download `hermes-remote-browser-extension-*.zip` from the
-[latest release](https://github.com/bunny2030/hermes-remote-browser/releases/latest), unzip it,
+[latest release](https://github.com/driftverse/hermes-remote-browser/releases/latest), unzip it,
 open `chrome://extensions`, switch on **Developer mode**, click **Load unpacked**, and pick the
 unzipped `hermes-remote-browser-extension` folder. (The same files are in `extension/` in this repo.)
 
@@ -61,7 +91,9 @@ Done. Ask your agent to do something in your browser.
 - **Pairing without secrets.** The extension shows a short code that you approve on the server.
   The browser then holds a random device token; the server stores only its hash.
 - **Password fields are off-limits.** The extension refuses to read or type into them.
-- **No `debugger` permission.** Pages are driven with `chrome.scripting` and `chrome.tabs`.
+- **Real mouse input.** Version 1.1 adds Chrome's `debugger` permission for scoped mouse input.
+  Chrome shows a debugging notice while attached; it detaches after each action. Tab-group
+  restrictions are enforced in extension code, not by Chrome's broad permission scope.
 - **The relay runs itself.** The plugin starts `relay.py` in the background when Hermes loads it,
   using Hermes's own Python (it needs `aiohttp`, which Hermes already has). Only one relay runs
   per machine, and it keeps running across Hermes restarts. Paired browsers are kept in
@@ -76,10 +108,12 @@ One tool, `remote_browser`, with these actions:
 | `setup` | First-time checklist: relay status, port, extension folder, pairing |
 | `status` | Is a browser connected? |
 | `tabs` | List the tabs in the Hermes group |
-| `open` | Open a URL in a new Hermes-group tab (or reuse one: `new_tab: false` / `tab_id`) |
+| `focus` | Select an existing shared tab, expand its group and focus its window without navigating |
+| `open` | Open a URL (or reuse a shared tab); `foreground: true` brings it into view, default stays in background |
 | `snapshot` | Page title, URL, visible text and a numbered list of clickable/typeable elements |
 | `click` / `type` / `select` | Act on an element by its number from the latest snapshot |
-| `scroll` | `up` / `down` / `top` / `bottom` |
+| `scroll` | `up` / `down` / `top` / `bottom`; optional `ref` targets an inner panel, reports whether it moved |
+| `mouse` | Real `click` / `move` / `drag` / `wheel` at viewport CSS coordinates, with a visible purple pointer |
 | `key` | Press a key (Enter, Escape, Tab…) on the focused element |
 | `back` | Go back |
 | `screenshot` | Capture the tab (brings it to the front of its window) |
@@ -147,8 +181,9 @@ enter.
   (`devices.json`, mode 600).
 - Don't put an interactive login page (like Cloudflare Access) in front of the relay's hostname.
   The extension can't complete it. Pairing is the access control.
-- **Events are synthetic.** Clicks and typing come from page scripts, so pages see them as
-  scripted, not as real input. That's also why a few sites ignore them.
+- **Two input paths.** Ref-based clicks/typing are scripted and some sites ignore them. The
+  `mouse` action uses browser-level input through Chrome's debugger API. It does not move the
+  operating-system cursor; a click-through page overlay shows where the agent is acting.
 
 ## Limitations
 
@@ -156,6 +191,62 @@ enter.
 - Some sites ignore scripted clicks/typing, and rich editors may not accept `type`.
 - `screenshot` brings the agent's tab to the front of its window.
 - Pages Chrome protects (`chrome://`, the Web Store) can't be scripted.
+
+## Foreground when useful (1.1.1)
+
+Tab focus is a per-action choice, not a site-name heuristic. Use `foreground: true` when opening
+chats, demonstrating something, or showing the user a result. Leave it false/omitted for quiet
+background research. Existing active tabs are not forcibly hidden by a background open.
+
+```json
+{"action":"open","url":"https://example.com/","foreground":true}
+{"action":"open","url":"https://example.com/","foreground":false}
+{"action":"focus","tab_id":123}
+```
+
+Foreground mode expands the shared tab group, activates the tab, restores a minimized window
+and requests window focus. It preserves normal/maximized state otherwise. `focus` only accepts
+shared tabs and never navigates. OS focus-stealing restrictions may still apply. Reload the
+extension and refresh the Hermes process/tool schema to use these options.
+
+## Visible pointer and panel scrolling (1.1)
+
+The purple **Hermes** pointer marks mouse movement, dragging, clicks and scrolling. Clicks
+show a ring; scrolls show a direction arrow. It cannot intercept clicks or focus, stays out of
+snapshot text, and disappears after 2.2 seconds of inactivity. It is a visual indicator, not
+your desktop mouse. Fullscreen/top-layer elements or protected pages may hide it.
+
+```json
+{"action":"scroll","ref":42,"direction":"up","pixels":600}
+{"action":"mouse","kind":"wheel","x":700,"y":400,"delta_y":-600}
+{"action":"mouse","kind":"move","x":700,"y":400}
+{"action":"mouse","kind":"click","x":700,"y":400}
+{"action":"mouse","kind":"drag","x":300,"y":250,"to_x":600,"to_y":400}
+```
+
+Mouse x/y are **viewport CSS pixels**, not desktop coordinates or raw screenshot pixels.
+Screenshots include viewport width/height: scale image coordinates to those dimensions if the
+image is resized or HiDPI. Take a fresh snapshot after scrolling; refs can change and chat apps
+may load older messages lazily. `moved:false` means scrolling did not move; mouse wheel success
+means input was dispatched, so verify the resulting snapshot. No-ref scroll remains document-only.
+
+**Upgrade both sides.** Update the plugin and reload/re-enable the unpacked extension in
+`chrome://extensions`. Chrome may require approving the added debugger permission. Old Hermes
+processes may retain the old tool schema; start a fresh process/chat. No relay change is required.
+The source in `extension/` has this update; release downloads may lag until a new release is published.
+
+### Tests
+
+```bash
+node --test tests/input.test.cjs
+# Optional real isolated Chrome fixture; requires Chrome and Python websockets:
+python -m pip install websockets
+python tests/browser_test.py
+```
+
+Set `CHROME_BIN` if Chrome isn't on PATH. The fixture creates a disposable profile and never uses
+your personal Chrome. Command-level debugger mocks plus real Chrome protocol tests do not alone
+prove every site's behaviour; test the installed extension after reloading.
 
 ## Related projects
 

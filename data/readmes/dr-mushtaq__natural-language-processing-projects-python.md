@@ -412,6 +412,10 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[Large Language Models and Chatbots](https://www.youtube.com/playlist?list=PLOspHqNVtKAAsiohuZj1Bt4XpA3_bkS3c)** - FREE
 -  **[Top Free Courses on Large Language Models](https://www.kdnuggets.com/2023/03/top-free-courses-large-language-models.html)** - FREE
 -  **[LLM Optimization & Evaluation Specialization](https://www.coursera.org/organizations/pakistan/specializations/llm-optimization-evaluation)** - FREE
+-  **[Generative AI for NLP with PyTorch Specialization](https://www.coursera.org/specializations/generative-ai-for-nlp-with-pytorch?irclickid=QYkUq2VTvxyZTNuSKWR-2VepUkr373QWGQ0TTk0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=3401872&utm_content=b2c&utm_campaignid=thecleverprogrammer&utm_term=14726_CR_1164545_#courses)** - FREE
+- **[Generative AI Engineering and Fine-Tuning Transformers](https://www.coursera.org/learn/generative-ai-engineering-and-fine-tuning-transformers?irclickid=QYkUq2VTvxyZTNuSKWR-2VepUkr37yXWGQ0TTk0&irgwc=1&afsrc=1&utm_medium=partners&utm_source=impact&utm_campaign=3401872&utm_content=b2c&utm_campaignid=thecleverprogrammer&utm_term=14726_CR_1164545_)** - FREE
+- **[Hugging Face PEFT documentation](https://huggingface.co/docs/peft/index)** - FREE
+- **[Hugging Face TRL documentation](https://huggingface.co/docs/trl/index)** - FREE
 
 #### Tutorial 
 - **[Natural Language Processing (NLP) with PyTorch](https://www.dataquest.io/blog/natural-language-processing-nlp-with-pytorch/)** - FREE
@@ -430,6 +434,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[LLM Fine-Tuning Cheat Sheet](https://amanxai.com/2026/10/25/llm-fine-tuning-cheat-sheet/?fbclid=IwY2xjawVK7FJleHRuA2FlbQIxMQBwZG9mAXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR58HbiicWLKpIKegxKMl0h6IysBMYd2pZUk18spaHiCB5xUFVpWgaY4InbGNA_aem_exmMvDg4RR5LLRuUUIbG-w)** - FREE
 - **[LLM Fine-Tuning Cheat Sheet](https://github.com/dr-mushtaq/natural-language-processing-projects-python/blob/main/Understanding%20Large%20Language%20Model/LLM%20Fine-Tuning%20Cheat%20Sheet.md)** - FREE
 - **[LLM Fine-Tuning Cheat Sheet](https://amanxai.com/2026/10/25/llm-fine-tuning-cheat-sheet/?fbclid=IwY2xjawVLzVpleHRuA2FlbQIxMQBwZG9mAWJyaWQRMTRnVVBWVjRnelhwNDQ1b29zcnRjBmFwcF9pZBAyMjIwMzkxNzg4MjAwODkyAAEeR-5O-vWIJzK9JOes0Ln_csQ6BHPG2O32Z_-aSikp3J0Oa_NNbHjZkXtIj7U_aem_Uz5CwQHJCft2jo0yAbt4mg)** - FREE
+- **[Small Language Model Engineering Roadmap for 2027](https://amanxai.com/2026/11/02/small-language-model-engineering-roadmap-for-2027/?fbclid=IwY2xjawVVOgJleHRuA2FlbQIxMQBwZG9mAXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR-zLam67LH9NknQLJrY3NwtYho4JC9CtkthGI0vFTyKjnhx6R9yyh5g7QzD0g_aem_Dn52KWgE2AhePHalys5uaA)** - FREE
   
 
 #### Code
@@ -504,9 +509,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |**🌐1-Multi Head Attention**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-Positional Encoding**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-LayerNorm**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Residual Connections**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐Feed Forward Layers**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Decoder Masking**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Cross Attention**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Llama**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-Mistral**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/m
+ |**🌐1-Residual Connections**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://g

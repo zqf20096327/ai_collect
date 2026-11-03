@@ -52,7 +52,7 @@ Hive degrades gracefully — every recommended or optional dependency reveals mo
 
 - **Required**
   - Python **3.12+** (works on 3.13).
-  - A directory of markdown files. The vault structure used by `00_meta` / `10_projects` / `50_work` / `80_agents` is optional — without it, vault tools still operate but the scope routing is flat.
+  - A directory of markdown files. The vault structure used by `00_meta` / `10_projects` / `50_work` / `80_agents` / `05_research` is optional — without it, vault tools still operate but the scope routing is flat.
 
 - **Recommended**
   - `git` initialised inside the vault. Without it, `vault_write` / `vault_patch` still write to disk; they just skip the per-write commit (and `vault_commit` reports the working tree as untracked).
@@ -148,7 +148,7 @@ version, exits `75`, and the supervisor restarts it into the new code. See the
 | `capture_lesson` | Capture lessons inline / batch-extract from text / look up existing lessons by keyword (`find=`) |
 | `session_briefing` | Tasks + lessons + git log + health in one call |
 | `delegate_task` | Route tasks to cheaper models or summarize vault files |
-| `worker_status` | Budget, connectivity, available models |
+| `worker_status` | Whether the worker is configured and reachable, its model, and usage |
 
 Plus 5 [resources](https://mlorentedev.github.io/hive/reference/resources/) and 4 [prompts](https://mlorentedev.github.io/hive/guides/prompts/) for guided workflows.
 

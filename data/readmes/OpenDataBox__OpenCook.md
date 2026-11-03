@@ -39,8 +39,10 @@
 
 ## 🗞️ News
 
+
+> - **\[06 / 2026\]** Our demo paper "*DBCooker: A Database Kernel-Specialized Coding Agent Harness*" has been accepted by [VLDB 2026](https://www.vldb.org/pvldb/vol19/p4842-zhou.pdf)! 🎉 📚
 > - **\[04 / 2026\]**  **OpenCook v1.0** is live, the first project-specific personalization layer purpose-built for coding agents. The demo video can be found on [YouTube](https://www.youtube.com/watch?v=JmgN2mUS2Qk). We are currently working to prepare reusable coding recipes. Community contributions are welcome! 🔔 👫
-> - **\[02 / 2026\]:** Our paper "*Automating Database-Native Function Code Synthesis with LLMs*" has been accepted by [SIGMOD 2026](https://arxiv.org/abs/2604.06231)! 🎉 🎉 🎉
+> - **\[02 / 2026\]** Our paper "*Automating Database-Native Function Code Synthesis with LLMs*" has been accepted by [SIGMOD 2026](https://arxiv.org/abs/2604.06231)! 🎉 🎉 🎉
 
 
 ## ✨ Introduction

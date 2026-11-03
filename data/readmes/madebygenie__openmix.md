@@ -8,14 +8,16 @@
 
 **RDKit is for molecules. OpenMix is for mixtures.**
 
+Created by [Vijay Krishnan](https://github.com/vijayvkrishnan) · Developed at [Made By Genie](https://www.madebygenie.com)
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![CI](https://github.com/vijayvkrishnan/openmix/actions/workflows/ci.yml/badge.svg)](https://github.com/vijayvkrishnan/openmix/actions)
-[![Tests](https://img.shields.io/badge/Tests-197%20passed-brightgreen.svg)](tests/)
+[![CI](https://github.com/madebygenie/openmix/actions/workflows/ci.yml/badge.svg)](https://github.com/madebygenie/openmix/actions)
+[![Tests](https://img.shields.io/badge/Tests-424%20passed-brightgreen.svg)](tests/)
 [![Rules](https://img.shields.io/badge/Knowledge-273%20rules%2C%206%20domains-orange.svg)](src/openmix/knowledge/data/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vijayvkrishnan/openmix/blob/main/notebooks/tutorial.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/madebygenie/openmix/blob/main/notebooks/tutorial.ipynb)
 
-[Discourse](#discourse) · [Observe](#observe-a-formulation) · [Two Modes](#two-modes) · [Autonomous Experiments](#autonomous-experiments) · [Architecture](#architecture) · [Knowledge Base](#contributing-knowledge) · [Roadmap](#roadmap) · [Citation](#citation)
+[Discourse](#discourse) · [Observe](#observe-a-formulation) · [Mixture pH](#mixture-ph) · [Dose Basis](#dose-basis) · [Two Modes](#two-modes) · [Autonomous Experiments](#autonomous-experiments) · [Architecture](#architecture) · [Knowledge Base](#contributing-knowledge) · [Roadmap](#roadmap) · [Citation](#citation)
 
 </div>
 
@@ -97,10 +99,118 @@ PHASE:
   [?] formula: Hydrophobic phase: 22.0% — Retinol (2.0%), Squalane (15.0%),
       Cetyl Alcohol (5.0%)
 
-Concern count: 3.2 (lower = better, 0 = no concerns)
+PH:
+  [ ] Niacinamide: Niacinamide at pH 5.5: 99% deprotonated (pKa 3.35).
+  [!] Ascorbic Acid: Ascorbic Acid at pH 5.5: 96% ionized (pKa 4.17).
+      Expected: Optimal pH 2.5-3.5 for Ascorbic Acid
+  [!] formula: Composition solves to pH 3.88 (ionic strength 0.19 mol/kg)
+      Expected: Declared pH 5.5
+      Computed upper bound pH 3.88, more than the 0.5 tolerance below the
+      declared value; free acids the solver does not model could only lower it
+      further. Sodium Hydroxide 1.08% w/w (displacing water) would reach it.
+      Caveat: cosolvents present (Glycerin 8%); pKa values are for pure water
+      and organic cosolvents raise carboxylic-acid pKa, so the true pH may sit
+      above the computed one.
+
+Concern count: 5.2 (lower = better, 0 = no concerns)
 ```
 
-The engine caught: two ingredient interactions with confidence scores and literature context, a hydrophobic solubility concern from molecular LogP, a missing preservative system, and a 22% oil phase needing emulsification. Each observation reports what was seen, what was expected, and whether they agree.
+The engine caught: two ingredient interactions with confidence scores and literature context, a hydrophobic solubility concern from molecular LogP, a missing preservative system, a 22% oil phase needing emulsification, ascorbic acid outside its working pH, and a declared pH of 5.5 that the composition, as modelled, cannot reach: solved by charge balance it sits at 3.88 even with niacinamide buffering the acid, with the caveat that glycerin can raise the true value. Each observation reports what was seen, what was expected, and whether they agree.
+
+<a id="mixture-ph"></a>
+
+### Mixture pH by charge balance
+
+A target pH on a formula is a claim. `check_declared_ph` solves the water phase by charge balance (polyprotic acids, their salts, amines and strong bases at the stated mass fractions, Davies activity) and says whether the composition can reach it. "Unreachable" means the declared pH sits more than a tolerance above the computed upper bound; the default, 0.5 pH, is a policy margin for what the model does not represent, not a measured error, and `tolerance=` (CLI `--tolerance`) changes it. A base listed at 0% or q.s. means the pH is adjusted, and the check says so instead of judging it.
+
+```python
+from openmix import Formula
+from openmix.mixture_ph import check_declared_ph
+
+toner = Formula(
+    name="Glycolic Toner",
+    ingredients=[
+        ("Water", 85.0), ("Glycolic Acid", 8.0), ("Propanediol", 5.0),
+        ("Xanthan Gum", 0.5), ("Phenoxyethanol", 1.0), ("Sodium Benzoate", 0.5),
+    ],
+    target_ph=3.8,
+)
+
+print(check_declared_ph(toner))
+```
+
+```
+Declared pH 3.8: cannot check.
+Mixture pH: not solved (unmodelled base in the water phase)
+  Blocked by: Xanthan Gum
+  An unmodelled base could raise the pH, so no bound can be given. Add the
+  species, or pass it in assume_inert if you know it is not a base.
+```
+
+Xanthan gum is a sodium and potassium carboxylate salt, so it could raise the pH, and the solver refuses rather than guess. If you know it does not matter at this dose, say so, and the assumption is reported back:
+
+```python
+print(check_declared_ph(toner, assume_inert=["Xanthan Gum"]))
+```
+
+```
+Declared pH 3.8: UNREACHABLE. The composition's upper bound is pH 2.33, more
+than the 0.5 tolerance below it; free acids the solver does not model could
+only lower it further.
+  Sodium Hydroxide to reach it: 2.24% w/w (displacing water).
+Mixture pH (charge balance, Davies activity): 2.33
+  Ionic strength: 0.046 mol/kg
+  Species: Glycolic Acid, Sodium Benzoate
+  Assumed inert by the caller: Xanthan Gum
+  Warning: cosolvents present (Propanediol 5%); pKa values are for pure water
+  and organic cosolvents raise carboxylic-acid pKa, so the true pH may sit
+  above the computed one
+```
+
+**Why one direction can be trusted.** A *free* acid (dosed fully protonated, like citric or glycolic acid) that the solver does not recognise can only lower the true pH. Anything else it does not recognise could raise it: a base, but also a salt of an acid, an acid salt (a bitartrate, a hydrogen citrate) or a zwitterion (an amino acid, betaine, taurine), because each takes up protons. So free acids may be missing, but everything else in the water phase must be modelled, or shown by a worst-case bound unable to move the pH by more than 0.05; an unmodelled ingredient whose name marks it as one of these blocks the answer. With that ledger closed, the computed pH is an upper bound: "declared pH unreachable" holds even when free acids are missing from the list, while a declared pH below the computed one is never flagged, because acid can always be added. The guard works on ingredient names, so the bound is only as good as the names. The species table ([`acid_base_species.yaml`](src/openmix/knowledge/data/acid_base_species.yaml), every pKa and solubility cited) follows the same rule: the highest published pKa, the lowest solubility, and free acids left out rather than guessed. Sparingly soluble acids (salicylic, benzoic, sorbic) dissolve only to their intrinsic solubility, one limit per acid shared with its salts.
+
+**Validation** ([`tests/test_mixture_ph.py`](tests/test_mixture_ph.py)):
+
+| Reference | Result |
+|---|---|
+| NBS/NIST standard buffers: potassium dihydrogen citrate, two phosphates, carbonate ([Staples & Bates 1969](https://doi.org/10.6028/jres.073A.004)) | within 0.024 pH (tolerance 0.05) |
+| McIlvaine citrate-phosphate table, pH 2.2 to 8.0 (McIlvaine 1921) | reads high on every row, by 0.03 to 0.20 |
+| Saturated salicylic acid, reference pH 2.4 (Merck Index) | 2.44 |
+| Saturated benzoic acid, reference pH 2.8 at 25 °C (Merck Index) | 2.88, reads 0.08 high (not explained) |
+
+**Limits.** Davies activity is valid to an ionic strength of about 0.5 mol/kg; above it the result is flagged and the verdict uses the higher of the Davies and ideal values. That fallback adds no margin for amine (cationic-acid) buffers such as tromethamine or triethanolamine, where the ideal value reads below the Davies one. Salts the solver does not recognise and that carry no basic marker (sea salt, quaternary ammonium chlorides) are not counted toward ionic strength; in an amine buffer added ionic strength raises the pH, so the computed value can read low (by 0.03 to 0.05 for 3% sodium chloride in a triethanolamine or tromethamine buffer). `activity="ideal"` is available and reads 0.17 to 0.35 pH high on the standards. Constants are for 25 °C in pure water; cosolvents are flagged, not corrected. No metal complexation, no cation hydrolysis, no CO2 exchange with air. Doses are read on an active, anhydrous basis. Botanical waters (hydrosols) and juices count as water; the acids, salts or alcohol they carry are not modelled. The base guard is a name heuristic and cannot see a base sold under a name with no basic marker in it.
+
+<a id="dose-basis"></a>
+
+### Dose basis
+
+Labels declare elemental minerals and vitamin activity, not the weight of the salt or ester dosed. `convert_dose` converts one to the other, and names the ambiguity when a name covers more than one compound:
+
+```python
+from openmix.dose_basis import convert_dose
+
+print(convert_dose("Zinc Gluconate", 50))
+```
+
+```
+Zinc Gluconate: ambiguous. Name the form; candidates:
+  Zinc Gluconate Anhydrous -> zinc: factor 0.1435 (7.174)
+  Zinc Gluconate Trihydrate -> zinc: factor 0.1283 (6.413)
+  Sold as a mixture of hydrates up to the trihydrate (FCC-ZN); name the form or
+  use the assay on the anhydrous basis.
+  [FCC-ZN] Food Chemicals Codex, Zinc Gluconate monograph: a mixture of
+  hydration states up to the trihydrate, assayed on the anhydrous basis.
+```
+
+```python
+convert_dose("Zinc Gluconate Anhydrous", 50).converted     # 7.17 mg zinc
+convert_dose("dl-alpha-Tocopheryl Acetate", 30).converted  # 13.7 mg alpha-tocopherol
+convert_dose("Retinyl Palmitate", 1000).converted          # 546 mcg RAE
+convert_dose("Folic Acid", 400).converted                  # 680 mcg DFE (with food)
+convert_dose("L-Methylfolate", 400).status                 # "unknown": no established factor
+```
+
+Factors come from molecular formulas and the CIAAW atomic weights, or from a cited convention (IOM Dietary Reference Intakes, NIH Office of Dietary Supplements, FDA labeling, EU Annex II), and every result prints its references. A form outside the table, or with no established conversion, returns `"unknown"` with the reason. These are composition and labeling conversions, not absorption.
 
 <a id="discourse"></a>
 
@@ -191,6 +301,8 @@ openmix discourse formula.yaml --protocol p.yaml  # With manufacturing protocol
 openmix observe formula.yaml                   # Physics observations
 openmix observe formula.yaml --mode discovery  # Discovery mode
 openmix validate formula.yaml                  # Rule-based validation
+openmix ph formula.yaml                        # Mixture pH; is the target pH reachable?
+openmix dose "Zinc Gluconate Anhydrous" 50     # Dose to elemental or vitamin basis
 openmix run "Design a stable vitamin C serum"  # Autonomous experiment (needs API key)
 openmix memory                                 # Inspect experiment memory
 openmix memory --discoveries                   # List accumulated findings
@@ -697,11 +809,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
 |-----------|--------|------------|
 | **v0.1** | March 2026 | Formula schema, 258 rules, heuristic scoring, autonomous experiment loop, 3 validation modes, FormulaBench baselines, CLI |
 | **v0.2** | March 2026 | Physics observation engine, ingredient resolver (INCI->SMILES), dual modes, molecular scorer, MCP server |
-| **v0.3** | Q2 2026 | **Multi-perspective discourse engine, experiment memory, manufacturing protocol schema, protocol generation in experiment runner, 8 MCP tools** |
-| **v0.5** | Q3 2026 | Trained stability models, surfactant physics, deeper domain coverage, pre-trained models on HuggingFace |
-| **v1.0** | Q4 2026 | Mixture property prediction (stability, phase, shelf life), cloud lab integration, published paper |
+| **v0.3** | Q2 2026 | Multi-perspective discourse engine, experiment memory, manufacturing protocol schema, protocol generation in experiment runner, 8 MCP tools |
+| **v0.4** | Q4 2026 | **Mixture pH by charge balance, dose-basis conversion, pH reachability in `observe()`, 10 MCP tools** |
+| **v0.5** | Next | Water budget and pH-dependent solubility |
+| **v0.6** | Next | Open benchmark: stated versus computed physical properties |
+| **v1.0** | TBD | Trained stability models, mixture property prediction (stability, phase, shelf life), cloud lab integration, published paper |
 | **v2.0** | 2027 | Multi-objective optimization, ingredient substitution, Bayesian search |
 | **v3.0** | 2028+ | Autonomous formulation agent with cloud lab integration and active learning |
+
+The near-term plan, including the outline of a second paper, is in [docs/roadmap-q4-2026.md](docs/roadmap-q4-2026.md).
 
 ---
 
@@ -718,13 +834,15 @@ openmix/
     experiment.py           # Autonomous experiment runner (formula + protocol + discourse)
     schema.py               # Formula, Ingredient, ValidationReport
     score.py                # Heuristic stability scoring (5 sub-scores)
+    mixture_ph.py           # Mixture pH by charge balance; declared-pH reachability
+    dose_basis.py           # Salt/ester dose to elemental or vitamin-activity basis
     discover.py             # Hypothesis-driven rule discovery from data
     analysis.py             # Post-experiment insight extraction
     constraints.py          # Programmatic constraint enforcement
     llm.py                  # Multi-provider LLM abstraction
     matching.py             # Ingredient name matching
     molecular.py            # RDKit integration (optional)
-    mcp_server.py           # MCP server (8 tools for AI agent integration)
+    mcp_server.py           # MCP server (10 tools for AI agent integration)
     resolver/               # INCI -> SMILES -> molecular properties
       resolve.py            #   Three-tier resolution (seed -> cache -> PubChem)
       cache.py              #   Local cache management
@@ -736,11 +854,12 @@ openmix/
       lab.py                #   Lab feedback (cloud lab, manual entry)
       base.py               #   Scorer interface, composite
     benchmarks/             # FormulaBench datasets + features
-    knowledge/data/         # YAML rules (273 interactions, 42 HLB values)
-    cli/                    # CLI: discourse, observe, validate, run, memory, demo
+    knowledge/data/         # YAML: 273 interaction rules, 42 HLB values,
+                            #   42 acid-base species, 46 dose conversions
+    cli/                    # CLI: discourse, observe, validate, ph, dose, run, memory, demo
   experiments/              # YAML experiment definitions
-  tests/                    # 197 tests
-  docs/                     # FormulaBench spec
+  tests/                    # 424 tests
+  docs/                     # FormulaBench spec, roadmap
 ```
 
 ---
@@ -756,8 +875,8 @@ If you use OpenMix in research, please cite:
   author = {Krishnan, Vijay},
   title = {OpenMix: An Open-Source Framework for Computational Formulation Science},
   year = {2026},
-  url = {https://github.com/vijayvkrishnan/openmix},
-  version = {0.3.0},
+  url = {https://github.com/madebygenie/openmix},
+  version = {0.4.0},
   license = {Apache-2.0}
 }
 ```

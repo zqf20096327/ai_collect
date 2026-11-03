@@ -50,7 +50,7 @@ or self-host it from this repo.
   Teams, a deployment serves one Microsoft 365 organisation.
 
 Everything is done in conversation. Slash commands (`/here`, `/agent-setup`,
-`/github`, `/routines`, `/billing`, `/privacy`, `/help`) exist for people who
+`/github`, `/routines`, `/model`, `/billing`, `/privacy`, `/help`) exist for people who
 prefer them; on Teams they are plain words (`setup`, `routines`, `help`) sent in a
 1:1 chat with the bot.
 
@@ -87,8 +87,9 @@ OpenAI key instead, no Anthropic account at all? Skip to
 
 2. Create a Discord bot in the
    [Developer Portal](https://discord.com/developers/applications), enable
-   the **Message Content Intent**, put its token in `.env` as
-   `DAIMON_DISCORD__BOT_TOKEN`, and invite it to a server you control.
+   the **Message Content Intent** and **Server Members Intent**, put its
+   token in `.env` as `DAIMON_DISCORD__BOT_TOKEN`, and invite it to a server
+   you control.
 
 3. Start the stack.
 
@@ -173,6 +174,7 @@ goes idle.
 | `packages/adapters/discord/` | Discord bot adapter |
 | `packages/adapters/slack/` | Slack adapter (optional, early) |
 | `packages/adapters/teams/` | Microsoft Teams adapter (optional, early) |
+| `packages/adapters/web/` | Web app adapter (optional, early) |
 | `packages/adapters/mcp/` | MCP server adapter and agent tools |
 | `packages/adapters/scheduler/` | Routines scheduler |
 | `packages/adapters/cli/` | `daimon` admin CLI |

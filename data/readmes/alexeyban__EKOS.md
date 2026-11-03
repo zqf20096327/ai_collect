@@ -138,7 +138,7 @@ database's own object counts, behind the `oracle` build feature — RFC 0211), p
 proof-of-concept clients for Salesforce, SAP,
 Microsoft Fabric, and Snowflake (real API shapes, mock-tested — none yet exercised against a live
 account). SQL in the PostgreSQL, SQL Server (T-SQL), MySQL, Snowflake, Databricks and ClickHouse dialects is
-parsed from files (RFC 0031); live PostgreSQL / SQL Server database connectors and a Jira connector remain planned.
+parsed from files (RFC 0031); live Oracle, PostgreSQL and ClickHouse catalogs are read through `[[databases]]` (RFC 0211, RFC 0235); a live SQL Server connector and a Jira connector remain planned.
 
 ## Installation
 
@@ -829,6 +829,20 @@ test <name>` connects read-only, checks a write is refused, and puts the census 
 to what was compiled. In the web console, a project's **Sources** tab does the same: add directories and databases (the
 password goes to the server's keychain, never to `ekos.toml`), test, and analyse with Init & compile. On iDempiere,
 from an empty project in a browser: census and compiled counts equal for every kind.
+
+PostgreSQL and ClickHouse databases are declared the same way (RFC 0235): `kind = "postgres"` with
+`connect = "host[:port]/database"` and `owners` the schemas, or `kind = "clickhouse"` with
+`connect = "http[s]://host[:port]"` and `owners` the ClickHouse databases. PostgreSQL is read through
+`pg-live`'s read-only session (`default_transaction_read_only`, timeouts) and reconciled against the
+server's own counts; every ClickHouse catalog query carries `readonly=1`. Both probe a write that
+must be refused and compile to the same `origin: live` objects as Oracle — tables with keys and
+foreign keys, views, PL/pgSQL routines and triggers through the readers files use — and a dropped
+object leaves the model. Profiles and the application dictionary stay Oracle-only.
+
+```bash
+ekos database add shop --kind postgres --connect db.local:5432/shop --user shop_ro --password-env SHOP_PW --owner public
+ekos database add wh --kind clickhouse --connect https://ch.local:8443 --user ro --password-env WH_PW --owner analytics
+```
 ### Write behaviour: how each table is updated and deleted (RFC 0212)
 
 Before copying a table incrementally you need to know whether every change moves its timestamp
@@ -1592,23 +1606,4 @@ What search reads and how it ranks (RFC 0177):
 - An object is indexed by its name, kind, excerpt, and for a symbol its doc comment, signature and
   fields. An index built by an older version is rebuilt on the next command that writes to the
   ledger; `ekos ledger repair` does it at once.
-- A hit that holds every word of the query ranks first. Hits that hold some of the words follow,
-  ordered by BM25 rank fused with how many words each holds.
-- A file is found by its name without directory or extension (`0043-secrets-and-pii-redaction`).
-- The excerpt shown with a hit is the passage that matched the query.
-- A question that asserts something the evidence does not support is answered
-  `Premise not supported.`, followed by what the evidence does show. A question whose answer is
-  not in the evidence is answered `Insufficient evidence.`, with what the evidence does show.
-
-### The vector arm — semantic search (RFC 0125, opt-in)
-
-A question phrased with none of the target object's words ("the thing that sends welcome emails" →
-a function called `dispatch_signup_notification`) has no lexical hook. `[embeddings]` in
-`ekos.toml` adds a vector retrieval arm: `ekos commit` embeds every compiled object (its name,
-kind, and `ai_overview` prose if present) into a derived `<ledger-dir>/vectors/` index, and
-retrieval fuses cosine-nearest hits with the BM25 + exact-name arms (Reciprocal Rank Fusion, the
-same fuser as RFC 0120).
-
-```toml
-[embeddings]
-en
+- A hit that holds every word of the query ranks first. Hits that h

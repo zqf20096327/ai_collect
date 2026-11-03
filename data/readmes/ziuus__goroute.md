@@ -13,12 +13,17 @@
 
 <p align="center">
   <a href="https://golang.org"><img src="https://img.shields.io/badge/Go-1.24%2B-00ADD8?style=flat-square&logo=go" alt="Go Version" /></a>
+  <a href="https://aur.archlinux.org/packages/goroute-bin"><img src="https://img.shields.io/aur/version/goroute-bin?color=1793d1&logo=arch-linux&logoColor=white&style=flat-square" alt="AUR Version" /></a>
   <a href="crates/goroute-fast"><img src="https://img.shields.io/badge/Engine-Go%20%2B%20Rust%20Fast-dea584?style=flat-square&logo=rust" alt="Engine" /></a>
   <a href="https://goroute-website.vercel.app"><img src="https://img.shields.io/badge/Website-Live%20on%20Vercel-e24b38?style=flat-square" alt="Website" /></a>
   <a href="https://www.npmjs.com/package/goroute"><img src="https://img.shields.io/npm/v/goroute?style=flat-square&logo=npm&color=CB3837" alt="NPM Version" /></a>
   <a href="#benchmarks"><img src="https://img.shields.io/badge/Memory-4.7MB%20RAM-00C853?style=flat-square" alt="Memory Footprint" /></a>
   <a href="#benchmarks"><img src="https://img.shields.io/badge/Latency-0.86ms-6366f1?style=flat-square" alt="Latency" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639?style=flat-square" alt="License" /></a>
+</p>
+
+<p align="center">
+  <a href="https://www.producthunt.com/posts/goroute?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-goroute" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1301394&theme=light" alt="GoRoute - Sub-millisecond AI gateway for coding agents | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
 <p align="center">
@@ -120,12 +125,21 @@ curl -fsSL https://raw.githubusercontent.com/ziuus/goroute/main/install.sh | bas
 
 ### Option C: Homebrew (macOS & Linux)
 ```bash
-brew install ziuus/goroute/goroute
+brew install ziuus/tap/goroute
 ```
 
 ### Option D: Go Toolchain
 ```bash
 go install github.com/ziuus/goroute/cmd/goroute@latest
+```
+
+### Option E: Arch Linux (AUR)
+```bash
+# Using yay:
+yay -S goroute-bin
+
+# Or using paru:
+paru -S goroute-bin
 ```
 
 ---

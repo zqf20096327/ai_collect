@@ -10,7 +10,7 @@ two front ends on it: an **MCP server**, so Claude Code (or any MCP client)
 can author, run and inspect generations; and a **web UI** for doing the same
 by hand. A CLI sits underneath for when you want neither.
 
-**Python 3.10-3.14 | CUDA (NVIDIA) | MPS (Apple Silicon) | CPU**
+**Python 3.12-3.14 | CUDA (NVIDIA) | MPS (Apple Silicon) | CPU**
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/ui-workflows-dark.png">
@@ -34,6 +34,21 @@ source ./activate
 
 `python -m dw.test` runs a small built-in workflow end to end - it downloads
 SD 1.5 (a few GB) and generates one image on whichever accelerator was found.
+
+**Or run it in Docker** (Linux with an NVIDIA GPU). The image
+[`dkackman/diffusers-workflow`](https://hub.docker.com/r/dkackman/diffusers-workflow)
+has torch, the engine and the web UI built in, and it shares the model cache
+and workspace with a native install on the same box. diffusers itself lives
+on a volume, so it can follow GitHub main. That makes step 2 a container:
+
+```bash
+bash docker/init-env.sh
+docker compose -f docker/compose.yaml up -d --build
+docker compose -f docker/compose.yaml logs -f    # wait for the server to start
+docker compose -f docker/compose.yaml exec dw python /opt/dw/entrypoint.py login-url   # the login link
+```
+
+Setup, data sharing and updates are in [docs/DOCKER.md](docs/DOCKER.md).
 
 **2. Start the engine.** Leave it running; everything else talks to it.
 
@@ -226,6 +241,7 @@ frame interpolation and more.
 - [MCP Server](docs/MCP.md) — The agent tool surface (Claude Code, Claude Desktop)
 - [Server & Web UI](docs/SERVER.md) — The web UI, jobs API, and introspection service
 - [Remote GPU server](docs/REMOTE.md) — Using the server, UI and MCP from another machine
+- [Docker](docs/DOCKER.md) — The server in a container on a Linux NVIDIA box, sharing data with a native install
 - [Workspaces](docs/WORKSPACES.md) — Where your content lives, run directories, and several workspaces on one server
 - [Workflow Guide](docs/WORKFLOW_GUIDE.md) — JSON structure, variables, steps, data flow
 - [Quantization](docs/QUANTIZATION.md) — BitsAndBytes, TorchAO, GGUF, SDNQ
@@ -245,3 +261,4 @@ frame interpolation and more.
 - [Testing](docs/TESTING.md) — Running the test suite
 - [Releasing](docs/RELEASING.md) — Cutting a release from a version tag
 - [Agent Loop](docs/AGENT_LOOP.md) — What the automated implementer/tester ticket labels mean, for anyone joining an Issue
+- [Attributions](docs/ATTRIBUTIONS.md) — Code included from other projects, and the projects whose ideas dw reimplemented

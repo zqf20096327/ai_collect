@@ -9,7 +9,7 @@
 [![installs (incl. mirrors)](https://img.shields.io/pypi/dm/sunglasses?label=installs%20%28incl.%20mirrors%29)](https://pypistats.org/packages/sunglasses)
 [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/sunglasses-dev/sunglasses)
 
-**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,512 patterns that carry a matcher (1,583 are listed) across 117 listed categories and reports findings and incomplete scans. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
+**Open source input firewall for AI agents, beta.** A local scanner checks text, code, PDFs, images, QR codes, audio and video with 1,513 patterns that carry a matcher (1,584 are listed) across 117 listed categories and reports findings and incomplete scans. A Claude Code hook blocks secret material in tool calls and the paths and hosts your policy lists, before a tool runs, best effort under its 10 second timeout.
 
 **What works today**
 - Scan text, files, PDFs, images and QR codes from the CLI or from Python
@@ -82,13 +82,14 @@ And the same archive as JSON. Selected fields from the scan document, not the wh
   "inspection_complete": false,
   "is_clean": false,
   "extraction_warnings": [
-    "ZIP archive not inspected — SUNGLASSES does not extract this format, so no content from attachments.zip was scanned. This is not a clean result."
+    "ZIP archive not inspected — SUNGLASSES does not extract this format, so no content from attachments.zip was scanned. This is not a clean result. It lists 2 members, 33 bytes declared by the archive (brief.txt, notes/summary.txt); the member names were scanned."
   ]
 }
 ```
 
-`decision: not_inspected` with **`is_clean: false`**. Nothing matched because nothing was read, and
-the decision now says so itself (before 0.6.17 it said `allow` beside `is_clean: false`).
+`decision: not_inspected` with **`is_clean: false`**. The archive's table of contents was read and its
+member names were scanned; the members themselves were not, and when no member name matches a pattern
+the decision says so itself (before 0.6.17 it said `allow` beside `is_clean: false`).
 **A caller that tests `decision == "allow"` stops here; one that tests `decision != "allow"`
 should read `threat_found` before treating this as a threat.** The document exposes the
 distinction; acting on it is the caller's job.
@@ -755,7 +756,7 @@ result = scanner.scan_auto("any_file.ext")
 | Scan latency, typical attack string (median of 38) | ~4.2 ms |
 | Scan latency, real README (median of 76, ~8.1 KB) | ~311 ms |
 | Sustained throughput | ~26 KB/sec, single-threaded |
-| Patterns | 1,512 carry a matcher (1,583 listed) |
+| Patterns | 1,513 carry a matcher (1,584 listed) |
 | Keywords | 6,964 unique declared (7,864 entries across all patterns); the pre-screen index holds 6,675 (289 generic keywords are deliberately excluded from it). `engine.info()` reports all three (`keywords_declared`, `keyword_entries`, `keywords`) |
 | Languages | English-first: full ruleset in English · 2 dedicated patterns each in 13 languages · keyword-level only in 7 · none in Persian/Bengali. [Measured breakdown](#language-coverage-measured) |
 | Attack categories | 117 listed |
@@ -767,7 +768,7 @@ result = scanner.scan_auto("any_file.ext")
 | Core dependencies | Zero for text scan; optional deps for media |
 | Platforms | macOS and Linux supported (CI runs on Linux; macOS is tested by hand). Windows is not supported yet: signed receipts and the config transactions use `fcntl` and the proxy supervisor uses process groups, and neither exists there. The text scanner and the CLI import without `fcntl` (checked by hiding it, not on a Windows machine) but are untested there. Each of `proxy`, `doctor`, `receipts`, `install`, `uninstall` and `init` needs at least one of them. When the interpreter reports Windows or `fcntl` cannot be imported (a Python built without `fcntl` counts; process groups are not probed separately), those six stop with one plain line and exit 2 instead of a traceback, before they open, list, create, remove or rename anything under the config, home or temp directories (checked with an audit hook in a modeled interpreter, not on Windows: it sees those calls, `os.stat`, `os.lstat` and `os.access`, and descriptor-relative open, remove, mkdir, rmdir, rename, link, symlink and chmod; it does not see imports or a read through a descriptor opened before the check). For `proxy` the line also replaces `--help` and argument errors; for the other five, help and argument errors answer as usual. The bundled `python -m sunglasses.proxy.echo_server --proc FILE` refuses before it opens FILE when `os.getpgid` is missing. Windows reports are welcome. |
 
-The Patterns count is the rules that carry a regex or a keyword matcher. The ruleset lists 1,583; the other 71 carry neither. Carrying a matcher is not proof that a rule fires. `engine.info()` reports both numbers (`patterns_with_matcher` and `listed_patterns`), and `sunglasses info` prints the difference.
+The Patterns count is the rules that carry a regex or a keyword matcher. The ruleset lists 1,584; the other 71 carry neither. Carrying a matcher is not proof that a rule fires. `engine.info()` reports both numbers (`patterns_with_matcher` and `listed_patterns`), and `sunglasses info` prints the difference.
 
 _Performance numbers are regenerated by `tools/gen_perf_stats.py` against a public in-repo corpus (no network, no randomness) and written to `stats/current.json` with the machine and timestamp they were measured on. Reproduce with `python3 tools/gen_perf_stats.py`. Last measured 2026-08-30. Your hardware will differ._
 
@@ -791,7 +792,7 @@ Both runs print which engine they measured. `--installed` refuses to run when th
 
 Labeled dataset shipped in this repo: 38 real agent-input attacks (positives) + 77 famous open-source READMEs (react, kubernetes, numpy, ollama…) that must stay clean (negatives). No randomness, no network, no LLM judge (same clone + same command → byte-identical results, sealed by a SHA-256 of the metrics block).
 
-| Metric (v0.6.17) | Value |
+| Metric (v0.6.18) | Value |
 |--------|-------|
 | Precision | 86.1% |
 | Recall | 97.4% (37/38) |
@@ -824,9 +825,9 @@ language contributions welcome; see `KNOWN_VERSION_GAPS.md` for the measured det
 
 ## What Works Today
 
-- ✅ Text scanning: 1,512 patterns that carry a matcher (1,583 listed), 6,675 indexed keywords (6,964 declared), 117 listed categories (English-first, see [Language coverage](#language-coverage-measured))
+- ✅ Text scanning: 1,513 patterns that carry a matcher (1,584 listed), 6,675 indexed keywords (6,964 declared), 117 listed categories (English-first, see [Language coverage](#language-coverage-measured))
 - ✅ Mechanism layer: 11 shape-based rules that match an attack's *structure* rather than its wording (e.g. *something sensitive + somewhere to send it*), how well that generalises to unseen paraphrases is measured, not asserted: see [Benchmark](#benchmark-the-receipts)
-- ✅ Structural validators: a rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter-native fetches, array-form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read. `GLS-STRUCT-005` reads Python (a whole Python text, or each fenced python block of a document) and reports, for review, code that prints, logs, writes or sends every environment variable with its value; one named variable, names only, a filtered loop, and shell or Node text are not reported
+- ✅ Structural validators: a rule that needs a parse instead of a pattern runs as a validator (`sunglasses/validators.py`), counted apart from the pattern count. The first, `GLS-STRUCT-001`, reads a JSON hooks block and the words of each hook command, and flags a command that reads as downloading code and handing it to a shell or interpreter, judged from its words (it is not run). It does not model code that never runs (functions, conditions), other downloaders, interpreter-native fetches, array-form commands, or hook formats that are not JSON. `GLS-STRUCT-004` reads a Claude Code settings file as one JSON document and reports, as a notice only, the permission prompts switched off, an allow list that lets every shell command run, or an API base URL at a public IP address or a tunnel host; the host is judged by the address parser, and a settings object inside prose, a schema or another object is not read. `GLS-STRUCT-005` reads Python (a whole Python text, or each fenced python block of a document) and reports, for review, code that prints, logs, writes or sends every environment variable with its value; one named variable, names only, a filtered loop, and shell or Node text are not reported. `GLS-STRUCT-006` reads the words of a shell script (a whole text, or each fenced shell block) and reports, for review, a `config set` command or a write to a package manager's own config file (`.npmrc`, `.yarnrc`, `pip.conf`, `.pypirc`) that points npm, pnpm, yarn or pip at a registry that is not a public one; the host is parsed from the URL, and a mirror a team really uses is reported the same way as a redirect, since a script cannot be told apart from its documentation. The `--registry` flag of one install, environment variables, config files shown alone, and Python or Node code that writes the file are not read
 - ✅ Browser demo at <https://sunglasses.dev/scan>: text, GitHub repos, and images (client-side OCR)
 - ✅ Negation handling. "Do NOT run rm -rf / --no-preserve-root" is flagged as review. "now run rm -rf / --no-preserve-root" is blocked as critical.
 - ✅ Multi-stage pipeline: normalization (16 techniques) → pattern match → decision
@@ -1164,31 +1165,41 @@ sunglasses doctor --config ~/some/other.json
 sunglasses doctor --json
 ```
 
-**`doctor` tells you what is wired. It does not yet prove that a wrapped route
-mediates anything, and it says so on every run.** It reads your config,
-classifies each entry `WRAPPED` / `DIRECT` / `UNVERIFIED` against the recorded
-entry point and its digest, and names every source it could not open instead of
-omitting it. What it cannot do in this release is the live self-test (spawning
-the proxy against the bundled echo server), so it reports its five self-test
-checks as `NOT RUN` and **exits `1` on every machine**:
+**`doctor` tells you what is wired and runs a live self-test of the proxy. It does
+not yet prove that one of your wrapped routes mediates anything, and it says so on
+every run.** It reads your config, classifies each entry `WRAPPED` / `DIRECT` /
+`UNVERIFIED` against the recorded entry point and its digest, and names every
+source it could not open instead of omitting it. It then starts the proxy in
+front of the bundled echo server, in a private temporary folder, and checks five
+things: the proxy answers `initialize`; the request bytes reach the server
+unchanged; a withheld reply has the documented shape; replies come back inside
+the bound; and closing the connection leaves no process in the proxy's or the
+echo server's process group. It does not start
+your own servers, it runs before any approval exists and writes none, and so it
+does not exercise the content scan. With nothing else wrong it **exits `3` (not
+verifiable)**, because no route of yours has been verified:
 
 ```
-  Self-test NOT RUN — this build has no live self-test, so nothing below is
-  proof that a wrapped route mediates traffic.
-    initialized: NOT RUN
-    s1_forward_byte_equal: NOT RUN
-    ...
+  Self-test PASSED deadline 20 ms measured against a 2250 ms bound
+    self-test passed; no route to verify
 
   Servers
-    DIRECT     github  (config)
+    DIRECT     notes  (config)
 
-  ROUTE_UNVERIFIED  exit 1
+  ROUTE_UNVERIFIED  exit 3
 ```
 
-That exit `1` means *"I could not prove it"*, not *"your routes failed"*, and the
+That exit `3` means *"I could not prove it"*, not *"your routes failed"*, and the
 report distinguishes the two in words. The alternative, reporting `0` because
 the config looked tidy, is the one sentence this tool must never say. A doctor
-that cannot demonstrate mediation must never imply it.
+that cannot demonstrate mediation must never imply it. If the proxy it starts
+does not answer `initialize`, the system will not make its private folder or
+start a process (the proxy, or one of the three rigged controls it is checked
+against), or this Python has no process groups, the
+self-test is reported as `NOT RUN` with the reason, and the exit is `3` as well.
+When it is one of the three controls that could not be started, the report names
+it, and each check keeps the state it really had (a check that passed shows as
+passed and one that failed shows as failed) while the exit stays `3`.
 
 Point `--config` at a file that does not exist and `doctor` refuses and names
 it, exactly as `install` does, rather than reporting "no server entries found"
@@ -1206,7 +1217,7 @@ code.
 | code | meaning |
 |---|---|
 | `0` | every route it knows about is wrapped and every one passed a live check |
-| `1` | something it ran FAILED in front of it, or its own self-test did not pass |
+| `1` | something it ran FAILED in front of it, or its own self-test ran and did not pass |
 | `2` | it could not open a config or a record. It names the file. |
 | `3` | **not installed, or not verifiable.** A fact, not a failure. |
 
@@ -1216,15 +1227,17 @@ different facts from "everything is fine", and a tool that collapses them into
 `0` is telling you that you are safe because it did not check. `0` and `3` never
 mean the same thing here.
 
-**In this release you will not see `3` from `doctor`.** The live self-test is
-not built, `1` outranks everything, and so `1` is what every machine gets. The
-table is the ladder `doctor` applies, not a menu of codes this build can
-currently reach, and an unavailable self-test is reported as `NOT RUN` with no
-check marked failed, because "this wheel has no self-test" and "your self-test
-failed" are different facts too.
+**In this release `3` is what `doctor` returns when nothing else is wrong.** The
+per-route check is not built, so it can never say `0`. A self-test that did not
+run (the proxy never answered, or no process groups) is reported as `NOT RUN`
+with no check marked failed, because "the instrument did not come up" and "your
+self-test failed" are different facts. A failure it saw (`1`) or a file it could
+not open (`2`) still outranks the `3`. A script that tested for `== 1` on a
+machine with nothing wired now sees `3`.
 
-A failed self-test is always `1`, whatever the rest of the report says, because
-an instrument that failed has no standing to report on anything else.
+A self-test that ran and did not pass is always `1`, whatever the rest of the
+report says, because an instrument that failed has no standing to report on
+anything else.
 
 `install` keeps a copy of your original config and a record of what it changed,
 under `~/.sunglasses/proxy/installs/`. `uninstall` reads that record, checks the

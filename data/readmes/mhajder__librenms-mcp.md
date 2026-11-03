@@ -182,6 +182,11 @@ LIBRENMS_TIMEOUT=30
 # Set READ_ONLY_MODE true to disable all write operations (put, post, delete)
 READ_ONLY_MODE=false
 
+# SNMP Credential Redaction
+# Replaces SNMP community and SNMPv3 credentials in API responses with <redacted>;
+# set REDACT_SNMP_CREDENTIALS false to return them as LibreNMS sends them
+REDACT_SNMP_CREDENTIALS=true
+
 # Disabled Tags
 # Comma-separated list of tags to disable tools for (empty by default)
 # Example: DISABLED_TAGS=alert,alert-rules,alert-templates,bills
@@ -203,6 +208,12 @@ TOOL_SEARCH_ENABLED=false
 TOOL_SEARCH_STRATEGY=bm25
 # Maximum number of tools returned by search_tools
 TOOL_SEARCH_MAX_RESULTS=5
+
+# Short Device Names (Optional)
+# Set RESOLVE_SHORT_HOSTNAMES true to accept a device's short name ("rtr1") where
+# a hostname is expected, resolving it to the one device whose hostname, up to the
+# first dot, or whose sysName equals it (ignoring case)
+RESOLVE_SHORT_HOSTNAMES=false
 
 # Sentry Error Tracking (Optional)
 # Set SENTRY_DSN to enable error tracking and performance monitoring
@@ -426,6 +437,35 @@ Check `status == "error"`. Up to 1.11.3, exceptions were returned as
 
 ## 🔒 Security & Safety Features
 
+### SNMP Credential Redaction
+
+LibreNMS returns the full device record from its device endpoints (get, list
+and search), including the SNMP community and the SNMPv3 username and
+passphrases in plain text. No tool needs them, and anything a tool returns
+ends up in an AI client's context, chat history and traces, so the server
+replaces them with `<redacted>` as soon as a response is decoded:
+
+- the `community`, `authname`, `authpass` and `cryptopass` values of device
+  records (objects with a `device_id` and a `hostname` or `snmpver`);
+- the community and SNMPv3 username and passphrase arguments (`-C`, `-U`,
+  `-A`, `-X` and their long forms) in the `service_param` of `snmp`
+  (check_snmp) services;
+- the same device values in raw response text quoted in an error message.
+
+Unset values stay as they are, so you can still see whether a credential is
+configured; the SNMP version and algorithms are left visible for
+troubleshooting. A `community` field outside a device record (a BGP
+community, for instance) is not a credential and is left as is. Credentials
+in other services' parameters (such as a check_mysql password) are not
+redacted, and credentials sent with `device_add` are unaffected.
+
+Redaction is on by default. A deployment whose clients need the credentials,
+such as a trusted automation, can turn it off:
+
+```env
+REDACT_SNMP_CREDENTIALS=false
+```
+
 ### Read-Only Mode
 
 The server supports a read-only mode that disables all write operations for safe monitoring:
@@ -475,6 +515,27 @@ TOOL_SEARCH_MAX_RESULTS=5    # optional, default is 5
 `bm25` supports natural language queries, while `regex` uses a regex `pattern` input for deterministic matching.
 
 Tool search respects existing visibility controls (read-only mode and disabled tags).
+
+### Short Device Names
+
+LibreNMS matches devices by their full hostname or ID, so a call naming a
+device by its short name (`rtr1` for `rtr1.dc1.example.net`) answers
+"Device rtr1 does not exist". With
+
+```env
+RESOLVE_SHORT_HOSTNAMES=true
+```
+
+a bare short name in a tool's `hostname` or `device` argument is replaced by
+the stored hostname of the one device whose hostname, up to the first dot, or
+whose sysName equals it (ignoring case), so a device added by IP is found by
+its sysName. A device whose stored hostname is the name itself always wins,
+so calls that already worked keep working. Surrounding whitespace is ignored.
+This costs two devices searches (hostname and sysName) per call that uses a
+short name. Names containing a dot or a colon (FQDNs, IP addresses) and
+device IDs are sent as given, a name that matches no device is left for the
+tool to report, and a name that matches several devices is refused with a
+tool error listing the candidates.
 
 ### Rate Limiting
 

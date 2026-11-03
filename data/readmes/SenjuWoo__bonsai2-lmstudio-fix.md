@@ -1,4 +1,18 @@
+<p align="center">
+  <img src="assets/mark.svg" width="72" height="72" alt="Bonsai 2 runtime for LM Studio">
+</p>
+
+<div align="center">
+
 # Bonsai 2 runtime for LM Studio
+
+<p>
+  <a href="https://github.com/SenjuWoo/bonsai2-lmstudio-fix/actions/workflows/test.yml"><img src="https://github.com/SenjuWoo/bonsai2-lmstudio-fix/actions/workflows/test.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2E6B52?labelColor=0d1117" alt="MIT License"></a>
+  <a href="https://github.com/SenjuWoo/bonsai2-lmstudio-fix/releases/latest"><img src="https://img.shields.io/github/v/release/SenjuWoo/bonsai2-lmstudio-fix?label=release&color=2E6B52&labelColor=0d1117" alt="latest release"></a>
+</p>
+
+</div>
 
 Windows x64 installer for running PrismML Bonsai 2 GGUF models through LM Studio's llama-server runtime. It installs PrismML's fork beside LM Studio's native libraries and changes the selected runtime's server manifests, with backups and rollback on failure.
 

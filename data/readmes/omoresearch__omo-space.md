@@ -44,6 +44,11 @@
 > the team becomes a glance down the hallway. It is a Minecraft mod and a small local service. Walking away, or
 > quitting the game, stops nothing, because the sessions belong to a background session server, not to the game.
 
+<p align="center">
+  <a href="https://omoresearch.github.io/omo-space-demo/"><img src="docs/media/trailer.webp" alt="One minute of Omo Space from the live stream: agent rooms, terminal walls with Hermes working, the glass building and the world around it" width="100%"></a>
+  <br><sub><code>▶ LIVE ON STREAM</code> One minute of highlights, playing right here. <a href="https://omoresearch.github.io/omo-space-demo/"><b>Watch the full 15 minutes</b></a> in your browser, no download.</sub>
+</p>
+
 <br>
 
 <sub>01</sub>
@@ -71,9 +76,17 @@ Everything is an ordinary-looking game block. These are the whole kit:
 
 | Block | What it does |
 | --- | --- |
-| **Hermes Computer** | One named workspace with a Hermes conversation in the profile you choose. Different agents, different desks. |
-| **Terminal** | A persistent shell. Its "+" menu opens Shell, Hermes, Claude Code or Codex tabs. |
-| **Omo Monitor / Slim Screen** | A bigger view of a terminal, or a real Chromium page: up to 6 tabs, its own sound, WASD for web games. |
+| **Omo Computer** | One named workspace: a Hermes conversation in the profile you choose, or a plain persistent shell (set it in its setup, Shift+right-click). Its "+" menu opens Shell, Hermes, Claude Code or Codex tabs. Different agents, different desks. |
+| **Omo Monitor** | A bigger view of a terminal, or a real Chromium page: up to 6 tabs, its own sound, WASD for web games. |
+
+These two are all the creative menu shows. CC: Tweaked's own blocks are hidden and their recipes are off,
+and so are the builder extras below. Blocks already in your worlds keep working. `-Domo.showAllBlocks=true` (or
+`showAllBlocks=true` in `config/omolife.properties`) brings them all back:
+
+| Extra | What it does |
+| --- | --- |
+| **Terminal** | The Omo Computer preset to a plain shell. |
+| **Slim Screen** | The monitor as a flat wall-mounted screen, in six frame finishes. |
 | **Omo Linker** | Mirrors a station onto walls across the room, with no wiring. |
 | **Omo Pocket** | A Hermes or Terminal workspace you carry as an item. |
 | **Name Plate / Status Lamp** | A name, and a live working / idle / interrupted light that also drives redstone. |
@@ -150,8 +163,8 @@ once, across 22 separate Hermes profiles.
 <p><img src="docs/media/s-agent-player.webp" alt="An AI agent joins the world as a player and follows you around" width="100%"><br>
 <sub><code>FROM OUR STREAM</code> An AI agent joins the world as a player and follows you around</sub></p>
 
-Since v1.2.0, agents running on the same computer can also join the world as players, over a LAN port that refuses
-offline logins from other machines ([how](docs/AGENTS-AND-TERMINALS.md#8-agent-bodies-in-your-world-lan-join)). Our robots and the Omo agent player are built
+Since v1.2.0, agents running on the same computer can also join the world as players, over a loopback-only port that
+other machines can't reach (the Omo Space launcher turns this on; it is off in a plain mod install) ([how](docs/AGENTS-AND-TERMINALS.md#8-agent-bodies-in-your-world-lan-join)). Our robots and the Omo agent player are built
 on that: [Omo, brought to life](https://github.com/omoresearch/omo-brought-to-life) and [Omo Microduck](https://github.com/omoresearch/omo-microduck).
 
 ## Quick start with your agent
@@ -163,7 +176,7 @@ everything from this repository, stops whenever you need to sign in or decide so
 Set up Omo Space for me from https://github.com/omoresearch/omo-space
 
 1. Read README.md. Install the latest release for my computer exactly as its Install section says: download, check SHA256SUMS, run the installer. Stop when I need to sign in with my own Minecraft account. Never sign in for me.
-2. Read docs/MAPS.md and docs/MAP-BUILD-PROCEDURE.md, and follow them to build my first world.
+2. Read docs/MAPS.md, docs/MAP-BUILD-PROCEDURE.md and the skills in skills/, and follow them to build my first world.
 3. My world: Ask me first what I want it to be (for example an office, a cosy home or a spaceship) and how many agents should work there. Wait for my answer before you build.
    Give each room a desk for an agent (a Hermes Computer with its own name), a terminal wall and a status lamp.
 4. Test the build on a copy of my save. Then give me the in-game commands to build it and to undo it.
@@ -185,6 +198,14 @@ There is also a version with buttons to pick from on [omo.sh](https://www.omo.sh
 
 **You need:** a Minecraft Java account, Python 3.11 or newer, and about 2 GB of free space.
 Omo Space brings its own copy of Minecraft, so your normal Minecraft stays untouched.
+
+There are two ways in:
+
+- **Set everything up for me** (below): the Omo Space app installs its own Minecraft, Fabric, the mods,
+  the bridge and its services.
+- **I use CurseForge, the Modrinth App or Prism:** add *Omo Space*, *CC: Tweaked* and (for web walls)
+  *MCEF Modern* to an instance in your launcher, then install only the bridge, see
+  [From CurseForge or Modrinth](#from-curseforge-or-modrinth).
 
 > **Tested on:** Linux, end to end. macOS and Windows are new and only tested offline so far,
 > and a fresh-machine Microsoft sign-in hasn't been tested yet.
@@ -212,7 +233,7 @@ bash install.sh omo-research-1.2.0-linux-x64.tar.gz
 ```
 
 **4. Play.** Open **Omo Space** from your app menu, click **Sign in with Microsoft**, then **Play**.
-In the game, find the Omo Space tab in the creative inventory and place a **Hermes Computer** or a **Terminal**.
+In the game, find the Omo Space tab in the creative inventory and place an **Omo Computer**.
 
 ### macOS
 
@@ -231,6 +252,32 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 omo-research-1.2.0-window
 ```
 
 Then open **Omo Space** from the Start menu.
+
+### From CurseForge or Modrinth
+
+The mod from a store is the in-game half. Terminals also need the **Omo Space bridge**, a small program on your
+computer that listens on 127.0.0.1 only. Install it without a second copy of the game (Linux and macOS), with
+`install.sh` and the bundle for your system from the [latest release](https://github.com/omoresearch/omo-space/releases/latest)
+(`--bridge-only` is new after v1.2.0):
+
+```bash
+sha256sum -c --ignore-missing SHA256SUMS
+bash install.sh --bridge-only <bundle>.tar.gz
+```
+
+`--bridge-only` installs the bridge and its session server, skips Minecraft, Java and Prism, and then
+**links** every CurseForge, Modrinth App or Prism instance that has the Omo Space mod. Linking writes two
+files into the instance's `config/` folder: CC: Tweaked's rule that lets computers reach 127.0.0.1 on the
+bridge port (CC: Tweaked blocks local addresses by default, so without it terminals stay on "connecting"),
+and `omolife.properties` with the bridge port. The bridge token never leaves your data folder.
+For an instance you add later, or one in an unusual place:
+
+```bash
+omo-space-link --game-dir "<instance folder>"
+```
+
+Then restart the game. If a station can't reach the bridge, its setup screen says why and has a
+**Setup guide** button that brings you back here. Windows: use the full install for now.
 
 <details>
 <summary><b>Requirements, downloads and troubleshooting</b></summary>
@@ -285,8 +332,11 @@ not a sandbox. Details: [SECURITY.md](SECURITY.md).
 The repo holds the Fabric mod, the Python bridge, the tmux session server, the launcher, room kits, tests and the
 release bundle builder. CI tests the bridge, launcher and platforms on Linux, macOS and Windows.
 
+Letting an agent build your world? Give it the [building skills](skills/README.md): what about twenty real builds taught
+about safe datapacks, screens, web-page limits, doors and lifts. One `cp` installs them for Hermes or Claude Code.
+
 [Guide](docs/GUIDE.md) · [Agents and terminals](docs/AGENTS-AND-TERMINALS.md) · [Building](docs/builders/README.md) ·
-[Maps](docs/MAPS.md) · [Platforms](docs/PLATFORMS.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) ·
+[Maps](docs/MAPS.md) · [Agent skills](skills/README.md) · [Platforms](docs/PLATFORMS.md) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) ·
 [Changelog](CHANGELOG.md)
 
 <br>

@@ -191,6 +191,50 @@ docker build -t coro:gpu \
   --build-arg EXTRA=cuda .
 ```
 
+## Run several replicas (Kubernetes and others)
+
+A coro process loads its models once and serves requests synchronously: the
+response, SSE stream or WebSocket stays on the connection that sent the audio.
+To serve more load, run more replicas behind a load balancer.
+[coro-k8s](https://github.com/collectiveai-team/coro-k8s) has a Helm chart that
+does what this section describes, and a Prefect flow for offline batches with
+callbacks. What each replica needs:
+
+- One server process per container. Do not add uvicorn workers: each worker
+  loads the models again. On GPU, one replica per GPU.
+- A CPU limit. With `CORO_ASR_MAX_CONCURRENCY=0` (the default) the permit count
+  is sized from the cores the process may use, its CPU affinity capped by the
+  container CPU limit, so a pod with `limits.cpu: 4` on a 64-core node sizes
+  for 4 cores, not 64. Set the value explicitly to override it.
+- A startup probe on `GET /health`. The port opens only after the models are
+  loaded and Server Warmup has run (ADR 0003), which can take minutes on a cold
+  model cache, so give the probe a long `failureThreshold`. `ready` in the body
+  is `true` once the port is open.
+- A model cache that outlives the pod. Mount a volume at
+  `/root/.cache/huggingface` (or set `HF_HOME`), shared or pre-filled, so a new
+  replica does not download the weights again.
+- Disk for the spill directory. The `streaming` pipeline and the live socket
+  write to `CORO_TRANSCRIPT_SPILL_DIR`; use a disk-backed volume (an
+  `emptyDir` without `medium: Memory`) with a size limit.
+- Rate limits at the edge. The per-client limits are counted per process
+  (ADR 0024), so with N replicas a client gets N budgets. Enforce a global
+  limit in the ingress or gateway, and set `FORWARDED_ALLOW_IPS` to the proxy
+  address so coro sees the real client IP.
+- Timeouts for long requests. A long upload holds its connection for the whole
+  transcription: raise the proxy read timeout and body size limit, and enable
+  WebSocket upgrades if the live socket is used. A batch client inside the
+  cluster can call the Service directly and skip the ingress.
+- A grace period on shutdown. On `SIGTERM` uvicorn stops accepting connections
+  and waits for the requests in flight; set `terminationGracePeriodSeconds`
+  above the longest transcription you expect, or scale-downs cut them.
+- Autoscaling on queued work. `GET /metrics` publishes the ASR admission state
+  in the Prometheus format (ADR 0025). Scaling on `coro_asr_inferences_queued`,
+  or on `(coro_asr_inferences_in_flight + coro_asr_inferences_queued) /
+  coro_asr_inference_permits`, adds replicas when work waits rather than only
+  when CPU is busy. Requests rejected at capacity get `Retry-After`; a client
+  that retries on a new connection can land on another replica.
+- An authenticating proxy. coro has no authentication of its own.
+
 ## Command-line interface
 
 `coro` takes a subcommand. There is no bare invocation — see
@@ -324,6 +368,7 @@ ASR-only server, or swap `nemo` → `pyannote` (`--pipeline full-memory`, needs
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET`  | `/health` | Readiness / capability status. |
+| `GET`  | `/metrics` | Prometheus metrics: readiness, ASR admission (permits, in flight, queued, rejected) and process metrics; OpenMetrics on request. See ADR 0025. |
 | `POST` | `/v1/audio/transcriptions` | OpenAI-compatible transcription (multipart). |
 | `POST` | `/v1/listen` | Deepgram-compatible transcription (raw body); per-word speakers. |
 | `WS`   | `/v1/listen` | Deepgram-compatible live transcription; `Results` frames as windows complete. |
@@ -707,7 +752,7 @@ flag (CLI flags take precedence). Source of truth: `coro/settings/server.py`.
 | `CORO_ASR_FALLBACK_LANGUAGE` | `--asr-fallback-language` | `en` | Language used when a request gives none and detection (where available) never yields one. |
 | `CORO_ASR_ONNX_VAD` | `--asr-onnx-vad` | `disabled` | Silero VAD segmentation for `onnx-asr` (`enabled` \| `disabled`). |
 | `CORO_ASR_ONNX_VAD_THRESHOLD` | `--asr-onnx-vad-threshold` | _(unset)_ | Silero VAD speech-probability threshold; only when VAD enabled. |
-| `CORO_ASR_MAX_CONCURRENCY` | `--asr-max-concurrency` | `0` _(auto)_ | Max ASR inference calls running at once; `0` auto-sizes from the host core count. Ignored by `onnx-genai`, which always serialises. |
+| `CORO_ASR_MAX_CONCURRENCY` | `--asr-max-concurrency` | `0` _(auto)_ | Max ASR inference calls running at once; `0` auto-sizes from the cores the process may use: its CPU affinity, capped by a container CPU limit. Ignored by `onnx-genai`, which always serialises. |
 | `CORO_ASR_MAX_QUEUE_DEPTH` | `--asr-max-queue-depth` | `32` | Max ASR calls allowed to queue for a slot; beyond this the request gets HTTP 429 + `Retry-After` instead of waiting indefinitely. |
 | `CORO_RATE_LIMIT_REQUESTS_PER_MINUTE` | `--rate-limit-requests-per-minute` | `60` | Transcription requests one client IP may start per minute (REST, SSE, WebSocket connects); beyond it HTTP 429 + `Retry-After`. `0` disables. See [Client rate limits](#client-rate-limits). |
 | `CORO_RATE_LIMIT_AUDIO_MINUTES_PER_HOUR` | `--rate-limit-audio-minutes-per-hour` | `0` _(off)_ | Minutes of audio one client IP may submit per hour, measured with `ffprobe` before processing; WebSocket streams are charged as audio arrives. Requires `ffprobe` when enabled. |

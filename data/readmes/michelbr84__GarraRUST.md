@@ -341,7 +341,7 @@ with per-claim evidence in `results/`:
 | | **GarraIA** | **OpenClaw** | **ZeroClaw** |
 |---|---|---|---|
 | Chat channels | 11 wired in the default build (Telegram, Discord, Slack, WhatsApp, iMessage·macOS, Google Chat, Teams, LINE, Matrix, IRC, Signal) + web chat + OpenAI-compatible API; the first 5 also have gateway integration tests | 27 bundled channel plugins | ~40 adapters (default build bundles 6) |
-| LLM providers | 15 built-in (Anthropic, OpenAI, Ollama native + 12 OpenAI-compatible presets); 100+ models via OpenRouter; any endpoint via `base_url` | plugin providers | multiple, feature-gated |
+| LLM providers | 16 built-in (Anthropic, OpenAI, Ollama and your ChatGPT plan via Sign in with ChatGPT native + 12 OpenAI-compatible presets); 100+ models via OpenRouter; any endpoint via `base_url` | plugin providers | multiple, feature-gated |
 | MCP | client: stdio (default build) + Streamable HTTP (`mcp-http` feature); also serves MCP over stdio (`garra mcp-server`, one `garra_ask` tool) | client: stdio/SSE/Streamable HTTP; also serves MCP | client: stdio/http/sse, per-agent fail-closed scoping |
 | Memory | SQLite + local vector search (sqlite-vec) + LLM fact extraction, auto-injected into context | Markdown files + SQLite FTS5/vector | sqlite/postgres/qdrant backends |
 | Config hot reload | file watch — most settings apply live (channels/providers wire at boot) | file watch (hybrid mode) | explicit reload endpoint only |
@@ -363,9 +363,11 @@ with the scenario ID and we will fix the table, not the finding.
 
 ### LLM providers
 
-3 native providers — **Anthropic Claude** (SSE streaming, tool use),
+4 native providers — **Anthropic Claude** (SSE streaming, tool use),
 **OpenAI** (GPT-4o, Azure, any compatible endpoint via `base_url`),
-**Ollama** (local models + local embeddings) — plus 12 OpenAI-compatible
+**Ollama** (local models + local embeddings), **ChatGPT plan**
+(`openai-codex`: Sign in with ChatGPT, no API key, GPT-6.1 Sol with
+selectable reasoning and speed) — plus 12 OpenAI-compatible
 presets: OpenRouter (100+ models), DeepSeek, Mistral, Gemini, Qwen, Yi,
 Cohere, MiniMax, Moonshot, Falcon, Jais, Sansa. Automatic provider
 fallback on 429/5xx with exponential backoff and a circuit breaker.
@@ -699,6 +701,34 @@ default and fail-closed. Alongside: 24 RUSTSEC advisories closed in one pass,
 verifiable provenance attestation on every release asset, and the request path
 now rejects `unwrap()`/`expect()`.
 See [What's New in v0.4.9](https://github.com/michelbr84/GarraRUST/wiki/Whats-New-v0.4.9).
+
+**v0.5.0** (Nov 2026) puts the chat turn back under the user's control.
+`garra chat` no longer stops at 120 seconds by default (`--timeout-secs` is
+opt-in, `0` = unlimited, and the CLI now inherits `config.timeouts` for its
+providers), `/model` accepts OpenRouter presets and routing variants
+(`@preset/<slug>`, `:floor`, `:nitro`, `:online`, `:exacto`), and an empty
+200 from a provider joins the retry/fallback circuit instead of ending the
+turn. On the platform side: wasmtime 50 with MSRV 1.97, the API response
+declares which provider/model answered, and `/api/health` no longer shows
+green with a rejected key. Alongside: first-class Windows fixes, honest
+diagnostics for redirects (3xx) and `garra memory stats`, and a safety-gate
+sweep that removes a PowerShell false positive while closing fail-open
+aliases.
+See [What's New in v0.5.0](https://github.com/michelbr84/GarraRUST/wiki/Whats-New-v0.5.0).
+
+**v0.5.1** (Nov 2026) lets GarraIA run on your ChatGPT plan, with no API key:
+the new `openai-codex` provider uses OpenAI's official Sign in with ChatGPT
+flow for open-source apps (OAuth + PKCE, tokens kept at `0600` and revoked on
+sign-out), from the **Continuar com ChatGPT** (Continue with ChatGPT) card on
+the Providers page or `garra chatgpt login`. GPT-6.1 Sol with High reasoning
+is the default; reasoning levels and Thinking/Fast/Ultrafast speeds are
+offered only when your account supports them, and when the plan's usage limit
+runs out the turn moves straight to your configured fallback (e.g.
+OpenRouter). Alongside: concurrent voice synthesis no longer swaps audio
+between users, the safety gate recognises Windows executables (`curl.exe`,
+`C:\...\git.exe`) and asks before `kubectl exec`, and the Android APK ships
+with the project's permanent signing key (uninstall v0.5.0 once).
+See [What's New in v0.5.1](https://github.com/michelbr84/GarraRUST/wiki/Whats-New-v0.5.1).
 
 ## Contributing
 

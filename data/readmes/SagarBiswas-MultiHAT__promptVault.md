@@ -49,6 +49,14 @@
   <strong><a href="#-encrypt-your-vault">🔒 Zero-Knowledge Security</a></strong>
 </p>
 
+<br>
+
+> [!IMPORTANT]
+> **[Community Edition]**
+> This public repository contains the open-source community core of PromptVault.
+>
+> The live cloud platform ([promptvault.multihat.dev](https://promptvault.multihat.dev)), browser extension builds, and advanced Pro features (GitHub-style Version Control, Visual Diffs, and Multi-Tier Cloud Sync) are powered by the **PromptVault MAX Engine**.
+
 ---
 
 ## 📋 Table of Contents

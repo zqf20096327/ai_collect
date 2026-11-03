@@ -48,9 +48,9 @@
 
 Modern video models make 5–15 s clips: one scene, one prompt. A film of a minute or more is a lot of manual work around them. You have to write a prompt per scene, keep the hero's face and clothes the same, start each scene from the last frame of the previous one, re-shoot the bad takes, glue it all together with the sound, and upscale the result. Remiqora Video does that work:
 
-- **A writer instead of a blank page.** A local language model (llama.cpp) splits your idea into scenes in the chosen model's own prompt format. It keeps the hero's description word for word in every scene and writes the camera, the action second by second and the spoken lines. You can edit, reorder, pin or rewrite any scene.
+- **A writer instead of a blank page.** A local language model (llama.cpp) splits your idea into scenes in the chosen model's own prompt format. It keeps the hero's description word for word in every scene and writes the camera, the action second by second and the spoken lines. On H3 it can put hard cuts inside a scene. You can edit, reorder, pin or rewrite any scene, and «Update the story from this scene» rewrites only the scenes that your edit now contradicts.
 - **Chains, not separate clips.** A continuation starts from the last decoded frame of the previous scene, so the picture flows on without a cut. A new location starts a new chain.
-- **One worker for every model.** H3, LTX, WAN and Krea 2 all run in one process: ComfyUI's core used as a library, with no ComfyUI server and no browser UI. Switching models unloads the old one, and the writer and the video model take turns on the GPU.
+- **One worker for every model.** H3, LTX, WAN, Krea 2 and FLUX.2 Klein all run in one process: ComfyUI's core used as a library, with no ComfyUI server and no browser UI. Switching models unloads the old one, and the writer and the video model take turns on the GPU.
 - **Nothing is shot twice.** Every scene is cached under a key of everything that defines it. Changing the music, the montage or the output format takes seconds; only the edited scene and its continuations are re-shot.
 - **Checks after every scene.** Black frames, frozen video, a jump inside a scene, a drifting face. A serious problem is re-shot once with another seed, and the better take goes into the film.
 - **Everything stays on your machine.** No cloud, no accounts; projects are plain folders.
@@ -61,11 +61,11 @@ Modern video models make 5–15 s clips: one scene, one prompt. A film of a minu
 
 | Screen | What it does |
 |---|---|
-| **Idea** | A couple of sentences in your own words, optionally a photo (as the first frame or only as the hero's look). You choose the model, the length (15 s – 10 min), the frame (16:9, 9:16, 1:1), the mood and who is in the frame (one hero, several, nobody). Four ways to start: the writer, a music video, your own prompts, or a graph. |
-| **Storyboard** | Scene cards on a timeline: chains, the hero's card (photo, look, clothes, voice), per-scene model, length, start and end frame, LoRA. «Translate to Russian» shows every scene in Russian while the model still gets English. |
+| **Idea** | A couple of sentences in your own words, optionally a photo (as the first frame or only as the hero's look). You choose the model, the length (15 s – 10 min), the frame (16:9, 9:16, 1:1), the mood and who is in the frame (one hero, several, nobody). Four ways to start, as tiles at the top of the home page: the writer, a music video, your own prompts, or a graph. |
+| **Storyboard** | A contact sheet: every episode (a chain of scenes shot as one piece) is a row with its number in the margin, its scenes are cards. «Show» switches between Grid, Frame, Script and Graph. Big tabs on top (Scenes, Heroes, Places, Song, Video) each say what is inside. The scene panel has tabs (Frame, Shooting, Lines, Takes): a scene keeps its own model, length, start and end frame, LoRA. «Scene in detail» opens a scene on the whole page with its takes side by side, and a map strip of the video runs along the bottom. **Heroes** is a casting: Krea 2 draws 4 tries at once and keeps them all, you approve one as the portrait, a try with two people or no face is flagged, quick tweaks (younger, shorter hair, smiling…) redraw on the same seed, and «In the scenes» shows how close the face in each shot scene is to the portrait. **Places**: one picture per location, drawn empty by Krea 2; the scenes' start frames are drawn in it, so the place stays the same from scene to scene. «Fix far faces» sharpens small far faces after the shot (LTX 2.3 and Krea 2). «Branch» copies the video to try another take, model or montage without losing this one. «Translate to Russian» shows every scene in Russian while the model still gets English. |
 | **Film** | Shoots the scenes in a chain with a live progress line, then assembles the film with sound. Your own track can play on top, and «shoot to the track» is available on LTX 2.3. The output can stay as shot or go to 1080p / 4K (NVIDIA RTX Video), HDR10 (RTX TrueHDR) or 48 fps (RIFE). |
-| **Montage** | A timeline over the shot scenes: trim, split, duplicate, speed 0.5–2×, takes, cuts with a flash / dissolve / dip to black, sound tracks, a beat magnet, one color for the whole film or your own LUT. Exports to **DaVinci Resolve** (FCPXML with its files). |
-| **Graph** | A canvas of nodes: idea, hero, writer, prompt, photo, picture (Krea 2), scene, video → video, frame, scene sound, LoRA, join, montage, track, music, output. Useful for two endings, short and long cuts, branches. 16 templates. |
+| **Montage** | A timeline over the shot scenes: trim, split, duplicate, speed 0.5–2×, takes, cuts with a flash / dissolve / dip to black, sound tracks, a beat magnet, an «Over» lane for cutaways, one color for the whole film or your own LUT with its strength, a vignette, film grain. One main button (Build video, then Open video), the panel in tabs: Clip, Color, Sound, Output. Exports to **DaVinci Resolve** (FCPXML with its files). |
+| **Graph** | A canvas of nodes: idea, hero, writer, prompt, photo, picture (Krea 2 from a prompt, or FLUX.2 Klein from reference pictures), scene, faces, video → video, frame, scene sound, LoRA, join, montage, track, music, output. Useful for two endings, short and long cuts, branches. 16 templates. |
 | **Lab** | One scene by hand: a prompt by fields or as text, a start frame, LoRA, any model. «Shoot on all models to compare» runs them on the same prompt and seed. |
 | **Models** | The weights by role, where each file lies, downloads from Hugging Face (one at a time, resumable), LoRA folders, the writer's GGUF models, tool paths. |
 | **Help** | Built into the app (a button in the header and a «?» by every field): a full reference in both languages — every screen, every graph node, the prompt format, the models, the settings — and 15 step-by-step scenarios: first launch, a film from an idea, your own hero, a music video, montage and Resolve, the finish, fixing one scene, your own LoRA and more. |
@@ -83,7 +83,8 @@ The interface is fully bilingual (English / Russian): it starts in your system l
 | **LTX 2.3** | music videos: shoots to your track, heroes sing; the hero's voice from a sample (ID-LoRA) | its own sound, lines | 10 s | 1024×576 / 1280×704 | ≈ 32 s |
 | **WAN 2.2 5B** | picture only; Apache-2.0 | none | 5 s | 960×544 / 1280×704 | ≈ 120 s |
 | **WAN 2.2 5B · FastWan** | the same, 8 steps instead of 20 | none | 5 s | 960×544 / 1280×704 | ≈ 40 s |
-| **Krea 2** (pictures) | the graph's «Picture» node, a singer for a music video, a hero drawn from a description | — | — | frame size | ≈ 3.5 s |
+| **Krea 2** (pictures) | the hero's casting, places, the graph's «Picture» node | — | — | frame size | ≈ 3.5 s |
+| **FLUX.2 Klein** (pictures by reference) | a scene's start frame from the hero's photo in the scene's place (drawn into the place's picture); «Picture» by reference pictures | — | — | frame size | ≈ 5 s |
 
 \* Measured on an RTX 4080 16 GB with the model already in memory. The Models page shows this machine's own measurements.
 
@@ -131,6 +132,14 @@ Only the official weights, from the model authors or their official ComfyUI repa
 | [`qwen3vl_4b_fp8_scaled.safetensors`](https://huggingface.co/Comfy-Org/Krea-2/blob/main/text_encoders/qwen3vl_4b_fp8_scaled.safetensors) | `text_encoders` | 5.2 |
 | [`qwen_image_vae.safetensors`](https://huggingface.co/Comfy-Org/Krea-2/blob/main/vae/qwen_image_vae.safetensors) | `vae` | 0.3 |
 
+**FLUX.2 Klein 4B**, pictures by reference ([Comfy-Org/Flux-2-Klein-4B](https://huggingface.co/Comfy-Org/Flux-2-Klein-4B), Apache-2.0; the text encoder comes from [Comfy-Org/z_image_turbo](https://huggingface.co/Comfy-Org/z_image_turbo)) — 13.7 GB
+
+| File | Folder | GB |
+|---|---|---|
+| [`flux-2-klein-4b.safetensors`](https://huggingface.co/Comfy-Org/Flux-2-Klein-4B/blob/main/split_files/diffusion_models/flux-2-klein-4b.safetensors) | `diffusion_models` | 7.8 |
+| [`qwen_3_4b_fp8_mixed.safetensors`](https://huggingface.co/Comfy-Org/z_image_turbo/blob/main/split_files/text_encoders/qwen_3_4b_fp8_mixed.safetensors) (Comfy-Org/z_image_turbo) | `text_encoders` | 5.6 |
+| [`flux2-vae.safetensors`](https://huggingface.co/Comfy-Org/Flux-2-Klein-4B/blob/main/split_files/vae/flux2-vae.safetensors) | `vae` | 0.3 |
+
 **LTX 2.5** ([Lightricks/LTX-2.5](https://huggingface.co/Lightricks/LTX-2.5); gated: accept the license on the model page, then add a Hugging Face token on the Models page) — 39.7 GB
 
 | File | Folder | GB |
@@ -168,7 +177,7 @@ Only the official weights, from the model authors or their official ComfyUI repa
 | WeSpeaker ResNet34 (is the voice the same) | [Wespeaker/wespeaker-voxceleb-resnet34-LM](https://huggingface.co/Wespeaker/wespeaker-voxceleb-resnet34-LM) | 25 MB |
 | YuNet, SFace (faces and lips) | [opencv/opencv_zoo](https://github.com/opencv/opencv_zoo) | ~40 MB |
 
-The minimum to shoot is **H3 and the writer**, about 53 GB. Everything above is about 196 GB. Style LoRA are never downloaded by the app: put your own into the model's LoRA folder.
+The minimum to shoot is **H3 and the writer**, about 53 GB. Everything above is about 210 GB. Style LoRA are never downloaded by the app: put your own into the model's LoRA folder.
 
 ---
 
@@ -177,7 +186,7 @@ The minimum to shoot is **H3 and the writer**, about 53 GB. Everything above is 
 ![The idea screen: the writer, the length, the frame and the videos made so far](docs/screenshots/en/01-idea.png)
 
 1. **Idea.** «A girl in a red coat walks along the night embankment in the rain, stops at a lamp and smiles into the camera.» The more concrete the place, light, clothes and ending, the more coherent the scenes. A 30 s film is 6 scenes of 5 s, or 3 scenes of 10 s on LTX.
-2. **Storyboard.** It takes the writer 20–30 s. Every edit is saved at once. You can rewrite a scene, ask for another variant, pin the ones you like, add a scene, or switch to your own prompts.
+2. **Storyboard.** It takes the writer 20–30 s. The scenes are laid out as a contact sheet, one row per episode. Every edit is saved at once. You can rewrite a scene, ask for another variant, pin the ones you like, add a scene, or switch to your own prompts. Under «Heroes», Krea 2 draws four tries of the hero and you approve one as the portrait; under «Places», each location gets one picture, so the place stays the same across scenes.
 3. **Film.** «Shoot film». A 30 s draft takes about 10 minutes on H3 and 3.5–4 on LTX. You can stop after the current scene and continue later: the shot scenes stay in the cache. «Shoot final» re-shoots the same scenes with the same seeds at the final size.
 4. **Montage** (optional). Trim, reorder, transitions, a track, one color, then «Build video». Nothing is re-shot.
 5. **Finish.** As shot, 1080p, 4K, HDR10 or 48 fps. Changing the output only re-processes; it never re-shoots.
@@ -194,7 +203,7 @@ The minimum to shoot is **H3 and the writer**, about 53 GB. Everything above is 
 
 The «Clip» switch on the main screen. The song is analyzed in about a second: tempo, bars, quiet and loud parts, the chorus. The words are recognized with their timing: the voice is separated by Demucs, the words come from Whisper large-v3, about 40 s on the GPU. Scenes are cut to whole bars, about 3 s in loud parts and twice that in quiet ones. There are three kinds: **singing** (the face in close-up, only where the voice is), **performance** and **insert** (a detail without a face). The writer first writes a treatment (format, palette, a motif that grows towards the chorus), then the scenes.
 
-LTX 2.3 hears its piece of the track and moves the lips to the voice, so it shoots music videos by default. Without a singer's photo, Krea 2 draws the singer from the writer's description, and the singing scenes start from that face.
+LTX 2.3 hears its piece of the track and moves the lips to the voice, so it shoots music videos by default. Without a singer's photo, Krea 2 draws the singer from the writer's description, and the singing scenes start from that face. FLUX.2 Klein draws each new scene's start frame with that face, in the scene's place.
 
 ---
 
@@ -202,12 +211,14 @@ LTX 2.3 hears its piece of the track and moves the lips to the voice, so it shoo
 
 ![Montage: the player, the timeline with transitions and sound, the film's color](docs/screenshots/en/05-montage.png)
 
+- One main button: «Build video», then «Open video». The panel is in tabs: Clip, Color, Sound, Output.
 - Drag the clip edges to trim. **S** splits at the playhead, **Ctrl+D** duplicates, speed is set per clip (0.5–2×, the sound keeps its pitch).
 - A chain moves as one block, and the icon above each cut says whether it is seamless, a jump or a new scene.
 - Transitions: cut, white flash (4 frames, the default into a loud part of a music video), dissolve, through black.
 - Takes: if a scene has several, a clip can use any of them without changing the storyboard.
-- Sound: the scene's own sound with its volume per clip, your music track (volume, start, fades, «scene sound under it»), a «Sounds» lane for your files. The **beat magnet** snaps trims and sounds to the track's beats, and «Cuts on beats» moves every cut onto a beat.
-- Color: «As shot», «Film», «Warm», «Cold», «Teal and orange», «Black and white» or your own `.cube` LUT; «Match scenes' color» evens out color and contrast across the film.
+- **Over**, a lane for cutaways: a piece of another scene or take covers the picture on its stretch, while the sound and the length stay as they were.
+- Sound: the scene's own sound with its volume per clip, your music track (volume, start, fades, «scene sound under it»), a «Sounds» lane for your files. The **beat magnet** snaps trims and sounds to the track's beats, and «Cuts on beats» moves every cut onto a beat. If the found beats are off, play the video and press **B** on the real beats: the found beats move and stretch onto your taps.
+- Color: «As shot», «Film», «Warm», «Cold», «Teal and orange», «Black and white» or your own `.cube` LUT, with its strength, a vignette and film grain; «Before / after» shows the picture with and without the color. «Match scenes' color» evens out color and contrast across the film.
 - **Ctrl+Z / Ctrl+Y** for any edit. The player plays the montage in the browser with the transitions and the sound.
 - **For DaVinci Resolve:** an FCPXML timeline with the files it plays, in a folder you choose. Scenes not shot yet become named gaps of their length.
 
@@ -225,9 +236,10 @@ A storyboard is one chain of scenes. The graph is a canvas where scenes, picture
 |---|---|
 | **Idea**, **Hero**, **Writer** | The idea and the heroes' looks go to the Writer: it writes the scenes, and «Expand into scenes» builds prompts, scenes, a join and an output from them |
 | **Prompt** | The text for the model, whole or by fields as in the Lab; «Lines» is who says what |
-| **Photo**, **Picture** | Your own picture, or a frame Krea 2 draws from a prompt: a scene's first frame or a face for Ref2VA |
+| **Photo**, **Picture** | Your own picture, or a frame drawn by Krea 2 from a prompt or by FLUX.2 Klein from reference pictures (each with its own LoRA folder): a scene's first frame or a face for Ref2VA |
 | **Scene** | Shoots the prompt with the chosen model; starts from a frame, ends at a frame (LTX), takes with different seeds |
 | **Frame**, **Scene sound** | A frame from any moment of a shot scene; its sound, so the hero speaks with the same voice elsewhere |
+| **Faces** | Sharpens small far faces in a shot scene and keeps them the same from frame to frame (LTX 2.3 and Krea 2) |
 | **Video → video** | Reshoots a clip through LoRA that read the clip itself: another angle, a 3D render, no background |
 | **LoRA** | One LoRA set over several scenes; any scene can be disconnected |
 | **Join**, **Montage** | Scenes in order, or a timeline with trims and transitions |
@@ -295,11 +307,12 @@ Remiqora Video is the UI, the writer's prompts, the storyboard, the render pipel
 
 | Project | What's used | License |
 |---|---|---|
-| [ComfyUI](https://github.com/comfyanonymous/ComfyUI) (core only) | The engine for every video model and Krea 2, imported as a library by our own worker at a pinned commit (`engine/core.txt`); no ComfyUI server, frontend or custom nodes | GPL-3.0 |
+| [ComfyUI](https://github.com/comfyanonymous/ComfyUI) (core only) | The engine for every video model, Krea 2 and FLUX.2 Klein, imported as a library by our own worker at a pinned commit (`engine/core.txt`); no ComfyUI server, frontend or custom nodes | GPL-3.0 |
 | [MiniMax H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) (ComfyUI repack: [Comfy-Org/MiniMax-H3](https://huggingface.co/Comfy-Org/MiniMax-H3)) | Video with sound, Ref2VA | MiniMax H3 Community License |
 | [LTX 2.5](https://huggingface.co/Lightricks/LTX-2.5) / [LTX 2.3](https://huggingface.co/Lightricks/LTX-2.3) | Video with sound, music videos, ID-LoRA, IC-LoRA | LTX-2 Community License |
 | [WAN 2.2 5B](https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged), [FastWan](https://huggingface.co/Kijai/WanVideo_comfy) | Video without sound | Apache-2.0 |
 | [Krea 2](https://huggingface.co/Comfy-Org/Krea-2) | Pictures | Krea 2 Community License |
+| [FLUX.2 Klein 4B](https://huggingface.co/Comfy-Org/Flux-2-Klein-4B) | Pictures by reference: scene start frames, places | Apache-2.0 |
 | [llama.cpp](https://github.com/ggml-org/llama.cpp) (or [LM Studio](https://lmstudio.ai)'s signed engine) | The writer's local server | MIT |
 | [Gemma 4 E4B](https://huggingface.co/ggml-org/gemma-4-E4B-it-GGUF) | The default writer (any GGUF works) | Apache-2.0 |
 | [Demucs](https://github.com/adefossez/demucs), [faster-whisper](https://github.com/SYSTRAN/faster-whisper) | A song's voice and words, a scene's voice | MIT |
@@ -323,6 +336,7 @@ Remiqora Video's own code (this repository) is licensed under [GPL-3.0](LICENSE)
   - **LTX 2.5 / 2.3**: the LTX-2 Community License, free for companies with under US $10M annual revenue.
   - **WAN 2.2 5B**: Apache-2.0, commercial use allowed.
   - **Krea 2**: the Krea 2 Community License.
+  - **FLUX.2 Klein 4B**: Apache-2.0, commercial use allowed.
   - **The writer** writes only text; check the license of the GGUF model you use.
 - Before publishing or monetizing a video, **check the current terms on the model's page**: they belong to the model's rights holder and can change independently of this repository.
 - The NVIDIA RTX Video SDK files are NVIDIA's property under NVIDIA's license, not this repository's. They are never committed here.
@@ -333,7 +347,7 @@ Remiqora Video's own code (this repository) is licensed under [GPL-3.0](LICENSE)
 
 ## 📦 Installation
 
-Requirements: **Windows 11**, an **NVIDIA RTX GPU with 16 GB** of video memory (tested on an RTX 4080 16 GB, 62 GB RAM, driver 617), and room for the weights. The minimum set (H3 and the writer) is about 53 GB, everything about 196 GB ([Models to download](#models-to-download)).
+Requirements: **Windows 11**, an **NVIDIA RTX GPU with 16 GB** of video memory (tested on an RTX 4080 16 GB, 62 GB RAM, driver 617), and room for the weights. The minimum set (H3 and the writer) is about 53 GB, everything about 210 GB ([Models to download](#models-to-download)).
 
 There are two ways to install, as in Remiqora: the `.exe` installer or the scripts from source. Both download **only the official weights** of the model authors (or Comfy-Org's official ComfyUI repacks) from one list, [`install/manifest.json`](install/manifest.json). Your own files (other quants, fine-tunes) go into the models folder and are picked on the **Models** page.
 
@@ -343,13 +357,14 @@ Model sets:
 |---|---|---|
 | H3 | The main video model (official, with its 8-step turbo LoRA) | 44 GB |
 | Writer | Gemma 4 E4B and llama.cpp: prompts, lines, storyboards | 9 GB |
-| Krea 2 | Pictures | 19 GB |
+| Krea 2 | Pictures: the heroes' casting, places, «Picture» from a prompt | 19 GB |
+| FLUX.2 Klein | Scene start frames from the hero's and the place's pictures; «Picture» by reference | 14 GB |
 | Ref2VA | Heroes' faces from a photo (with H3) | 23 GB |
 | LTX 2.5 | The second video model; needs a Hugging Face token and its license accepted | 40 GB |
 | LTX 2.3 | Music videos to a finished track | 42 GB |
 | WAN 2.2 5B | A fast model without sound | 19 GB |
 
-Profiles: **Minimum** (H3 and the writer, ~53 GB), **Pictures and faces** (+ Krea 2 and Ref2VA, ~95 GB), **Everything** (~196 GB). The installer always adds the engine (~6 GB), Whisper and Demucs for song words, the clip checks' models, RIFE and RTX Video; the scripts install the engine and leave the rest to the first use.
+Profiles: **Minimum** (H3 and the writer, ~53 GB), **Pictures and faces** (+ Krea 2, FLUX.2 Klein and Ref2VA, ~109 GB), **Everything** (~210 GB). The installer always adds the engine (~6 GB), Whisper and Demucs for song words, the clip checks' models, RIFE and RTX Video; the scripts install the engine and leave the rest to the first use.
 
 ### Way 1: the installer
 
@@ -357,7 +372,7 @@ Profiles: **Minimum** (H3 and the writer, ~53 GB), **Pictures and faces** (+ Kre
 
 ![The installer: downloading the engine and the sets, with pause and resume](docs/screenshots/en/10-installer-download.png)
 
-**Download:** [Remiqora-Video-Setup-0.1.0.exe](https://github.com/inikolax/remiqora-video/releases/download/v0.1.0/Remiqora-Video-Setup-0.1.0.exe) (v0.1.0, pre-release; SHA-256 sums on the [Releases](https://github.com/inikolax/remiqora-video/releases) page).
+**Download:** [Remiqora-Video-Setup-0.2.1.exe](https://github.com/inikolax/remiqora-video/releases/download/v0.2.1/Remiqora-Video-Setup-0.2.1.exe) (v0.2.1, pre-release; SHA-256 sums on the [Releases](https://github.com/inikolax/remiqora-video/releases) page).
 
 `Remiqora-Video-Setup-<version>.exe` installs per user, without administrator rights. On the first start the wizard:
 
@@ -378,7 +393,7 @@ On a new machine it first runs `setup_prereqs.bat`, which checks for Git, uv, Py
 
 `setup_models.bat` then asks for the models folder (a path, `B` for a folder picker, Enter for the default). An existing ComfyUI or Comfy Desktop folder works: the files stay in place and the path goes into `.env`. The script pins the ComfyUI core, creates the environments from the lock files, checks PyTorch/CUDA and finally offers a model profile. Switches:
 
-- `-Profile minimum|faces|all` or `-Sets h3,writer,krea,ref2va,ltx25,ltx23,wan` — no questions asked;
+- `-Profile minimum|faces|all` or `-Sets h3,writer,krea,flux2,ref2va,ltx25,ltx23,wan` — no questions asked;
 - `-Find "D:\ComfyUI\models"` — more folders with downloaded weights;
 - `-SkipWeights` — no models; `-DryRun -ModelsDir <folder>` — only check the folder choice.
 
@@ -441,5 +456,6 @@ The full list with comments is in [`.env.example`](.env.example) and in the app'
 - Every scene composes its own music. For one melody across the film, put your own track on top and switch on «No music in the scenes, only sounds».
 - Only H3 keeps faces from photos (Ref2VA). LTX and WAN keep a face through the description and the start frame.
 - With people in the frame, chains are kept short (the face drifts over long continuations).
-- 1080p / 4K / HDR10 need `rtx_vsr` with NVIDIA's RTX Video SDK files. They are not in git: the installer carries them, from source `tools\rtxvsr\build.ps1` builds them.
+- 1080p / 4K through RTX Video and HDR10 need `rtx_vsr` with NVIDIA's RTX Video SDK files. They are not in git: the installer carries them, from source `tools\rtxvsr\build.ps1` builds them.
+- Without NVIDIA RTX Video (another GPU, or a build without its files) 1080p / 4K are scaled by ffmpeg (lanczos) instead, and there is no HDR10.
 - The installer is not signed yet: Windows shows a SmartScreen warning, and Smart App Control may block unsigned files (see above).

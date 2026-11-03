@@ -13,7 +13,7 @@
 Self-contained **agent skills**, **rules** and **hooks** for coding agents. Skills and rules are
 **agent-independent**: a skill is a Markdown contract (`SKILL.md`) plus plain scripts, a rule is
 a plain Markdown file, so any agent that reads Markdown and runs shell commands can use them.
-Hooks depend on each agent's hook protocol; the one here speaks three. Every folder under
+Hooks depend on each agent's hook protocol; the ones here speak three. Every folder under
 `skills/` works on its own: no shared code, no external config, nothing installed outside the
 folder.
 
@@ -47,11 +47,7 @@ They reference each other and the `prompt-expansion` skill, so copy them togethe
 | Hook | What it does | Agents |
 |---|---|---|
 | [`pii-guard.js`](hooks/pii-guard.js) | Replaces e-mails, phone numbers, IBANs and public IPs in tool output with `[PII:…]` placeholders, blocks prompts that contain them, denies reads of `.env` files and credentials without asking, optionally asks before reads of dumps, databases, uploads or logs | Claude Code (full), Antigravity and Qwen Code (partial) |
-
-```powershell
-node --test hooks/tests/pii-guard.test.js   # unit tests, no network
-node hooks/tests/pii-guard.bench.js         # recall, precision, throughput; ~8 s, no network
-```
+| [`quota-guard.js`](hooks/quota-guard.js) | Reads context size and cumulative session tokens from the transcript before the model runs and blocks prompts that exceed the model class threshold at 0 token cost until unlocked via `!unlock` or `allow` | Antigravity, Claude Code, Qwen Code |
 
 ## Quick start
 

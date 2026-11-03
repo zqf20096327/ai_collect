@@ -1,3 +1,5 @@
+# turbo-flow
+
 <p align="center"><img src="assets/banner.svg" alt="turbo-flow — animated banner" width="100%"></p>
 
 <p align="center"><img src="assets/hero-pipeline.svg" alt="turbo-flow — a developer tool: the live pipeline where a builder's change travels past free deterministic checks, a reviewer from a different model family gates it, the verdict flips REVISE → APPROVED, and only a human merges" width="100%"></p>
@@ -6,6 +8,8 @@
 
 > **⚡ TURBO FLOW — A DEVELOPER TOOL FOR THE AGE OF AI-WRITTEN CODE.**
 > The rules layer, packaged as a kit you drop into any repo: [`rig-lite/`](rig-lite/) — a portable governance kit. It ships no harness, installs nothing, and depends only on bash. Your coding agent gets laws with teeth; you keep your editor, your harness, your repo.
+
+> Reviewing what your agents write is becoming a job in itself. rig-lite gives that job to a different model family: deterministic checks first, then a fail-closed cross-model verdict — it never merges, and it always explains itself. **Agents forget; git doesn't** — every verdict lands in a log your whole team can read, and every REVISE comes with reasons on real code: the verdict is the lesson.
 
 **Turbo Flow is an open-source project by [Adventure Wave Labs](https://www.adventurewavelabs.space/) (Marcus Patman).** Versions 1–4 (2025–2026) packaged an agentic development environment around Claude Code and Ruflo — at its peak, 215+ MCP tools and 60+ agents. In September 2026 the project pivoted to a thinner, governed approach, and by v5.2 (October 2026) the orchestration stack was fully removed: Turbo Flow is now the rules layer (rig-lite), and the integrated successor, **Turbo Rig**, runs in private beta. Site: [turboflow.online](https://www.turboflow.online/) · full story: [why Turbo Flow became Turbo Rig](https://www.turboflow.online/why-turbo-flow-became-turbo-rig/) · [version history](https://www.turboflow.online/versions/).
 
@@ -64,7 +68,7 @@ Recorded on the same Codespace: `tf help` shows every subcommand, `tf status` gi
 
 ```bash
 # one-liner (stages ./rig-lite from a pinned, checksum-verified release):
-curl -fsSL https://github.com/marcuspat/turbo-flow/raw/main/rig-lite/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/marcuspat/turbo-flow/main/rig-lite/install.sh | bash
 
 # or from npm — same kit, no clone (pin the version; same posture as the sha-pinned tarball):
 npx turbo-flow@5.4.0 help

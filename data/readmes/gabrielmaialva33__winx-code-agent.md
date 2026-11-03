@@ -2,9 +2,9 @@
   <img src=".github/assets/fairy.png" alt="Winx Logo" width="150" />
 
   # 🪄 Winx
-  ### *The High-Performance, Remote-First MCP Runtime for AI Coding Agents*
+  ### *Your environment. Any agent.*
 
-  **Durable PTY Sessions • Streamable HTTP • Guarded File Operations • Blazing Fast Rust 🦀**
+  **Persistent execution • Efficient context • Safe file operations • Session control & recovery**
 
   <p align="center">
     <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/language-Rust_2021-orange?style=flat&logo=rust" alt="Rust 2021" /></a>
@@ -16,11 +16,12 @@
   </p>
 
   <p align="center">
-    <em>"Give remote and local LLMs durable, authenticated hands on your development machine."</em>
+    <em>An MCP runtime that connects remote AI agents to the development environments they cannot reach on their own.</em>
   </p>
 
   <p align="center">
     <a href="#remote-mcp-in-60-seconds">⚡ <b>Quickstart</b></a> &nbsp;•&nbsp;
+    <a href="#where-winx-fits">🧭 <b>Where it fits</b></a> &nbsp;•&nbsp;
     <a href="#what-you-get">✨ <b>Features</b></a> &nbsp;•&nbsp;
     <a href="#remote-architecture">🏗️ <b>Architecture</b></a> &nbsp;•&nbsp;
     <a href="docs/streamable-http.md">🌐 <b>HTTP Guide</b></a> &nbsp;•&nbsp;
@@ -32,10 +33,15 @@
   </p>
 </div>
 
-Winx is a **remote-first MCP runtime** for agents that need a real shell, guarded file-editing primitives, repository-aware
-code navigation, and sessions that survive dropped connections. Its primary deployment path is a hardened
-**Streamable HTTP** endpoint for ChatGPT and other cloud or networked MCP clients; stdio remains fully supported for
-Claude Code, Codex CLI, Cursor, VS Code, and other local clients.
+Winx is an **MCP runtime that connects remote AI agents** (ChatGPT and other MCP clients) to local or remote
+development environments they cannot reach directly. It gives them persistent execution, context-efficient reads and
+command output, guarded file operations, and sessions that survive dropped connections. The primary deployment path is
+a hardened **Streamable HTTP** endpoint; stdio remains fully supported for local MCP clients.
+
+**Who it is for.** Winx is for the agent that is *not* already on your machine. If you work with Claude Code or Codex in
+your own terminal, keep using them directly: Winx does not replace them. It lets a remote agent work in that same
+environment, coordinate the agents running there, and use optional local tools, as described in
+[where Winx fits](#where-winx-fits).
 
 On Linux, macOS, and native Windows, Winx separates the MCP adapter from the processes that own each PTY. `winxd`
 manages the control plane and one `winx-guardian` per logical session keeps the shell alive across HTTP disconnects,
@@ -78,27 +84,58 @@ an OpenAI-hosted MCP endpoint.
 **Next:** [complete Streamable HTTP deployment guide](docs/streamable-http.md) ·
 [security model](SECURITY.md) · [local stdio setup](#install)
 
-## Why Winx for remote agents
+## Where Winx fits
+
+Winx integrates with the tools you already use instead of competing with them.
+
+| Tool | How it relates to Winx |
+|------|------------------------|
+| **Claude Code, Codex, and other terminal agents** | Local agents with their own tools. Use them directly in your terminal. Winx exposes the environment to agents that cannot run there, and can serve one environment to several MCP clients. |
+| **Herdr** | Terminal workspace manager for coding agents. The `Agent` tool's optional Herdr backend talks to Herdr's socket API, so a remote agent can list, read, wait for, and prompt the agents running in its workspace. Operator-configured. |
+| **[Eulix](https://github.com/Nurysso/eulix)** | Local code-intelligence engine. Optional backend for `CodeMap` `callers`, `callees`, and `impact` when the operator sets `WINX_EULIX_PARSER`. |
+| **[WCGW](https://github.com/rusiaaman/wcgw)** | Where Winx started: a Rust port of WCGW. Its modes and line-range syntax live on. |
+
+## What Winx gives remote agents
+
+### Persistent execution
 
 - **Durable sessions:** HTTP is stateless from the client's point of view, but PTYs live in per-session guardians and
   can be resumed with the same `thread_id`.
-- **Identity-aware isolation:** one token per principal; thread IDs and MCP Task IDs are scoped internally and translated
-  back before the response leaves the server. Workspace affinity absorbs unstable model-generated thread IDs.
-- **Right-sized tool catalogs:** `full`, `coding`, `read-only`, and `terminal` profiles—or an exact per-principal
-  allowlist—reduce discovery/schema payloads and reject calls without equivalent effective authority.
-- **One mutation tool:** `EditFiles` creates, edits, batches, patches, verifies, and undoes through one typed
-  plan/commit engine, removing overlapping choices while preserving read evidence, canonical path binding, atomic writes,
-  receipts, and recovery.
-- **Fail-closed network defaults:** loopback-only binding, 32-byte minimum tokens, chmod-600 token files, DNS-rebinding
-  host checks, body/time/concurrency limits, auth-first admission with per-IP failed-auth limiting, and delayed
-  invalid-auth responses.
 - **Agent-native terminal semantics:** foreground and background commands, status polling, interactive input, stable TUI
   snapshots, turn detection, real exit codes, and bounded output.
 - **Execution and agent workflows:** durable scoped history, non-consuming output pages, state explanations, wait-any,
-  and receipt-bound native prompts; an optional Herdr socket-API adapter binds explicitly configured targets. See the
-  [workflow guide](docs/agent-workflows.md).
+  and receipt-bound native prompts; an optional Herdr socket-API backend reaches operator-configured targets or
+  discovers the agents running inside the session's workspace. See the [workflow guide](docs/agent-workflows.md).
+
+### Efficient context
+
+- **Right-sized tool catalogs:** `full`, `coding`, `read-only`, and `terminal` profiles—or an exact per-principal
+  allowlist—reduce discovery/schema payloads and reject calls without equivalent effective authority.
+- **Bounded reads and output:** line ranges and `path#symbol` definition reads, rendered and losslessly collapsed
+  terminal output, and per-call read budgets with exact continuations. For ChatGPT and Codex clients, a finished command
+  whose output cites a few `path:line` locations (search hits, compiler errors, tracebacks) also carries those lines
+  with edit-ready revisions, saving a read round trip.
 - **Repository tools, not just a shell:** one guarded edit protocol, multi-file planning, undo, token-budgeted reads,
   image input, context handoff, and tree-sitter symbol navigation.
+
+### Safe file operations
+
+- **One mutation tool:** `EditFiles` creates, edits, batches, patches, verifies, and undoes through one typed
+  plan/commit engine, removing overlapping choices while preserving read evidence, canonical path binding, atomic writes,
+  receipts, and recovery.
+- **Guarded by default:** secret redaction on all tool output, `architect` (read-only) and `code_writer` (allowlisted)
+  modes, path policy enforced on every file tool, and an opt-in Landlock sandbox on Linux.
+
+### Session control and recovery
+
+- **Identity-aware isolation:** one token per principal; thread IDs and MCP Task IDs are scoped internally and translated
+  back before the response leaves the server. Workspace affinity absorbs unstable model-generated thread IDs.
+- **Fail-closed network defaults:** loopback-only binding, 32-byte minimum tokens, chmod-600 token files, DNS-rebinding
+  host checks, body/time/concurrency limits, auth-first admission with per-IP failed-auth limiting, and delayed
+  invalid-auth responses.
+- **Recoverable by design:** every result carries an authoritative `status` and, when Winx can infer one safely, a
+  concrete `nextAction`; persisted sessions are recovered after daemon or adapter restarts, and a shell that stops
+  answering is reset in place at the same working directory and mode.
 
 ## Choose your transport
 
@@ -160,6 +197,8 @@ Secure MCP Tunnel / VPN / authenticated reverse proxy
 - Tree-sitter code navigation via `CodeMap`: a token-budgeted symbol map of a file or the whole repo, or a
   definition/reference lookup by symbol name across 13 languages. It is syntax-aware name matching, not resolved
   symbol identity: two types with the same method name both match, so treat it as a fast map, not a rename oracle.
+  Optional Eulix-backed `callers`, `callees`, and bounded `impact` add resolved static call edges on Linux.
+  They report index freshness and fall back to `references` when unavailable; see [call graph navigation](docs/architecture.md#optional-eulix-call-graph-navigation).
 - `ContextSave` for handing a task summary plus its files to the next session - including workspace context, active
   files, git status/diff, and terminal sharing for proper resumption. Resuming reopens the saved project root and
   token-caps the restored memory so it never overflows the context window.
@@ -234,7 +273,7 @@ weaken or strengthen the shell/file authority granted by the initialized Winx mo
 | `EditFiles`       | Creates, changes, or undoes one or many files. One edit call may contain up to 100 unique targets and validates the full batch before writing. Each entry selects an explicit mode: revision-bound `line_patch` is the default after `ReadFiles`, `search_replace` is reserved for intentional exact text anchoring, `replace` handles new files or deliberate whole-file rewrites, and `undo` uses the exact returned `undo_id`. Optional `verify_command` runs once after commit; a failed check never repeats the edit. |
 | `ContextSave`     | Dumps task description + file globs into a single text file with workspace context, active files, and git status/diff for clean handoff and task resumption.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `ReadImage`       | Returns validated JPEG, PNG, GIF, or WebP as a native MCP image content block (not base64 text), so multimodal models actually see it. Sources are capped at 50 MiB and bounded by decoded dimensions/allocation; delivery is at most 2 MiB and 2560 px on the long edge, with oversized inputs converted to JPEG. A 32-entry per-session content cache returns compact metadata for unchanged repeats; use `force=true` only for an intentional resend. Path policy matches the other file tools. |
-| `CodeMap`         | Tree-sitter code navigation, in one tool with two `operation`s. `outline`: a symbol map (functions, types, methods, ...) - a file returns its definitions, a directory (or empty) a relevance-ranked, token-budgeted repo symbol map, in 13 languages including Python and Elixir. `references`: where a `name` is defined and used (called) across the repo, counting only real identifier occurrences (never inside strings/comments, unlike grep), definitions first. Unsupported single files return a structured `ReadFiles` fallback; for plain-text/regex search and file discovery, use `rg`/`fd`/`grep` via `BashCommand`.                                                                                                                                                              |
+| `CodeMap`         | Code navigation with syntax operations and optional Eulix call graphs. `outline`: a symbol map (functions, types, methods, ...) - a file returns its definitions, a directory (or empty) a relevance-ranked, token-budgeted repo symbol map, in 13 languages including Python and Elixir. `references`: where a `name` is defined and used (called) across the repo, counting only real identifier occurrences (never inside strings/comments, unlike grep), definitions first. Unsupported single files return a structured `ReadFiles` fallback; for plain-text/regex search and file discovery, use `rg`/`fd`/`grep` via `BashCommand`. Optional `callers` / `callees` / `impact` use Eulix by name or ID; check `index_status`. [Setup and security](docs/architecture.md#optional-eulix-call-graph-navigation). |
 
 `EditFiles` mode selection is deliberately mechanical:
 
@@ -904,6 +943,21 @@ Robustness is also fuzzed and model-checked:
   ```bash
   cargo test --features loom --lib loom_
   ```
+
+## Scope and principles
+
+Winx is an enthusiast project built around problems observed in real use, not a feature checklist.
+
+- **Integrate, don't replace.** Winx complements terminal agents, Herdr, and Eulix instead of reimplementing them.
+  Integrations are optional and configured by the operator.
+- **Evidence before features.** Changes come from friction measured in real sessions (privacy-safe usage telemetry and
+  `winx-code-agent report`) and land with regression tests.
+- **A small, stable surface.** Nine tools, profiles to trim them, and hidden compatibility aliases instead of breaking
+  renames.
+- **Safe by default.** Loopback binding, strong tokens, redaction, and guarded edits are defaults; widening access is an
+  explicit operator choice.
+
+Winx is not an agent, an IDE, a terminal multiplexer, or a code indexer.
 
 ## A note on security
 

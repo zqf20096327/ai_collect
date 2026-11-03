@@ -26,10 +26,9 @@ curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/relea
 ```
 
 These two commands install the latest release on Linux x86-64 with an NVIDIA GPU (or on Windows inside WSL2) and
-serve Qwen3-30B-A3B on port 8080; [Use](#use) sends it a first request. A DGX Spark or another GB10 installs its own
-archive or Docker image once a release carries them ([DGX Spark](#dgx-spark-and-other-gb10-machines)), and an Apple
-Silicon Mac runs `bloomery-serve-metal` ([Apple Silicon](#apple-silicon)). Homebrew, Docker and the plain tarball are
-under [Install](#install).
+serve Qwen3-30B-A3B on port 8080; [Use](#use) sends it a first request. The same installer takes the GB10 archive on a
+DGX Spark ([DGX Spark](#dgx-spark-and-other-gb10-machines)), and an Apple Silicon Mac runs `bloomery-serve-metal`
+([Apple Silicon](#apple-silicon)). Homebrew, Docker and the plain tarball are under [Install](#install).
 
 **From an agent.** Hand Claude Code, Codex or a script [`docs/agents.md`](docs/agents.md). The agent asks the machine
 what fits, then starts the model by its name. stdout carries JSON, and every refusal ends with a named exit code and
@@ -43,7 +42,7 @@ bloomery-serve --model qwen3.8-flash-next --port 0          # start it: one JSON
 
 On a Mac the server is `bloomery-serve-metal`, and the agent follows the "On a Mac" steps in the same page. To run a
 coding agent on the model you just started — pi on a Mac, dsh on DeepSeek-V4.1-Flash, Claude Code or OpenCode on a
-fast card set — see [Which coding agent](docs/agents.md#which-coding-agent).
+fast card set, see [Which coding agent](docs/agents.md#which-coding-agent).
 
 ## What it does
 
@@ -79,13 +78,10 @@ and Homebrew all take the latest release. To build from source instead: [`docs/B
 
 ### DGX Spark and other GB10 machines
 
-0.3.11's GB10 archive (`linux-aarch64-cuda-sm121a`, built for the GB10's FP4 tensor cores) is built on a GB10 from the
-tag and added to the release when it is ready, with a linux/arm64 variant of the Docker image `ghcr.io/midagedev/bloomery`
-made from it. On a GB10, Docker then pulls that variant by itself and the installer picks that archive. Until the
-archive is on the release, a GB10 builds from source: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#21-build),
-section 2.1.
-
-The machine needs DGX OS 7 (Ubuntu 24.04, glibc 2.39) and an NVIDIA driver of R580 or newer (CUDA 13).
+The release carries a GB10 archive (`linux-aarch64-cuda-sm121a`, built for the GB10's FP4 tensor cores, its GPU code
+compiled ahead) and a linux/arm64 variant of the Docker image `ghcr.io/midagedev/bloomery` made from it. On a GB10
+the installer picks that archive and Docker pulls that variant by itself. The machine needs DGX OS 7 (Ubuntu 24.04,
+glibc 2.39) and an NVIDIA driver of R580 or newer (CUDA 13).
 
 ```sh
 # Docker (needs the host's NVIDIA Container Toolkit; model downloads live in the bloomery-cache volume)
@@ -97,12 +93,11 @@ curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/relea
 ~/.local/bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
 
-A 128 GB GB10 holds every routed expert of Qwen3.8-Flash-Next on the GPU. NVIDIA's FP4-Local and NVFP4 checkpoint
-folders serve as downloaded, with no conversion: `bloomery-serve -m <folder>`, or `--hf nvidia/Qwen3.8-Flash-Next-NVFP4`.
-In Docker, mount the folder and name it inside the container, for example
-`-v /path/to/models:/models ... ghcr.io/midagedev/bloomery -m /models/Qwen3.8-Flash-Next-FP4-Local`. The slots, the
-context each gets, the MTP draft and the memory each folder takes on a GB10 are in
-[`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md#23-qwen38-on-one-spark-slots-mtp-and-memory), section 2.3.
+A 128 GB GB10 holds every routed expert of Qwen3.8-Flash-Next on the GPU, and NVIDIA's FP4-Local and NVFP4 checkpoint
+folders serve as downloaded: `bloomery-serve -m <folder>`. In Docker, mount the folder and name it inside the
+container, for example `-v /path/to/models:/models ... ghcr.io/midagedev/bloomery -m
+/models/Qwen3.8-Flash-Next-FP4-Local`. Which folder to pick, the slots, the context, the MTP draft and the memory each
+start takes: [`docs/dgx-spark.md`](docs/dgx-spark.md).
 
 ### Linux x86-64
 
@@ -163,7 +158,8 @@ the flags and the limits: [`docs/mac.md`](docs/mac.md).
 ## Use
 
 Start the server with a model, then send it a request from another shell. After the installer, run it as
-`~/.local/bin/bloomery-serve` unless `~/.local/bin` is on your `PATH`.
+`~/.local/bin/bloomery-serve` unless `~/.local/bin` is on your `PATH`. Every flag has a default, so a model is all a
+start needs.
 
 ```sh
 bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
@@ -173,16 +169,11 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
 ```
 
 The server listens on `127.0.0.1:8080` and is ready when `GET /health` answers 200. The first start downloads the
-model into `~/.cache/bloomery/hf` (`BLOOMERY_CACHE` moves it) and compiles the GPU code for the card once, which takes
-tens of seconds; the GB10 archive carries that code compiled already. `-m PATH` serves a file or folder you already
-have. OpenAI clients take the base URL
-`http://localhost:8080/v1`, and Claude Code runs with `ANTHROPIC_BASE_URL=http://localhost:8080`. In Docker, the
-arguments after the image name go to `bloomery-serve`.
+model into `~/.cache/bloomery/hf` and compiles the GPU code for the card once. `-m PATH` serves a file or folder you
+already have. OpenAI clients take the base URL `http://localhost:8080/v1`, and Claude Code runs with
+`ANTHROPIC_BASE_URL=http://localhost:8080`. In Docker, the arguments after the image name go to `bloomery-serve`.
 
-An agent or a script starts the server by a model's name: [`docs/agents.md`](docs/agents.md) has the exact commands,
-the events to wait on and every exit code.
-
-Start with `--place` and the `BLOOMERY_*` variables unset: the load picks the cards and the split onto the CPU itself, and
+Leave `--place` and the `BLOOMERY_*` variables unset at first: the load picks the cards and the split onto the CPU, and
 its plan line names what it picked. The file's architecture picks the seat (the model family's engine):
 
 | Seat | Serves | One command |
@@ -205,19 +196,18 @@ These seats serve a file or a checkpoint folder on disk (`-m PATH`):
 | `solar2` | Solar-Open2-250B, two cards | the GGUF, with `--place bp` |
 | `raon1` | Raon-1-mini-preview | `raon-1-mini-preview-Q4_K_M.gguf`, its DFlash2 draft file beside it |
 
-The server has one slot unless `--parallel N` asks for N, so a second request waits for the first. Unset,
-`--ctx-size` gives each slot the largest context its plan holds; a set `--ctx-size` is the total the slots share,
-and one slot takes it whole. `--slot-ctx S` names one request's context instead, so `--parallel 4 --slot-ctx 32768`
-gives each of four slots 32,768 positions. On Qwen3.8, `--parallel auto` serves the most slots, up to 8, that memory
-holds at that context. `--config FILE` reads the flags from one JSON file. A flag on the command line wins over
-the file's, and both win over the flag's `LLAMA_ARG_*` variable and the `BLOOMERY_*` lever it stands for. A request
-field the server does not know is ignored, as in llama-server, so a misspelled sampling field runs at its default. Which flags each seat takes, which setting wins and what a request's fields do:
-[`docs/serving.md`](docs/serving.md#settings).
+The server has one slot, so a second request waits for the first. `--parallel 4 --slot-ctx 32768` serves four
+requests at once with 32,768 positions each; unset, a slot takes the largest context its plan holds. `--parallel auto`
+serves the most slots, up to 8, that memory holds at one request's context. A request field the server does not know is ignored, as in llama-server, so a misspelled sampling field runs at its default.
+[`docs/serving.md`](docs/serving.md) is the serving guide: slots and context, drafts, placement, the settings file,
+API keys and every route.
+
+An agent or a script starts the server by a model's name: [`docs/agents.md`](docs/agents.md) has the exact commands,
+the events to wait on and every exit code.
 
 What each model needs in GPU memory, RAM and disk is in [`docs/models.md`](docs/models.md). In short: Qwen3-30B and
-Qwen3.6 run on a 24 GB card (or 12–16 GB, split onto the CPU by itself); Qwen3.8 wants 128 GB of RAM, GLM-5.3 and
-V4.1 256 GB, and less RAM runs with the overflow paged from NVMe. The API, every flag, concurrent requests, drafts and
-adaptive residency: [`docs/serving.md`](docs/serving.md).
+Qwen3.6 run on a 24 GB card (or 12 to 16 GB, split onto the CPU by itself); Qwen3.8 wants 128 GB of RAM, GLM-5.3 and
+V4.1 256 GB, and less RAM runs with the overflow paged from NVMe.
 
 ## Hardware
 
@@ -226,7 +216,7 @@ What each platform needs is under [Install](#install), and what each model needs
 
 | What runs | Run here | Run by users |
 |---|---|---|
-| NVIDIA cards | RTX 3090, RTX A6000, RTX 3060 (WSL2) | RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: [`docs/contrib/dgx-spark.md`](docs/contrib/dgx-spark.md)), one model across several Sparks |
+| NVIDIA cards | RTX 3090, RTX A6000, RTX 3060 (WSL2) | RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: [`docs/dgx-spark.md`](docs/dgx-spark.md)), one model across several Sparks |
 | Apple Silicon | M1 Pro, M4 Pro 48 GB | M3 Ultra, M5 Ultra ([#593](https://github.com/midagedev/bloomery/issues/593)) |
 
 Ada cards (sm_89) have no report yet, and AMD GPUs are not supported yet. On an M5 the device picks the neural
@@ -236,8 +226,8 @@ accelerators for the prompt's GEMMs. What each part of the machine costs in a de
 ## Status (0.3.11)
 
 Four common machines, one table each, tok/s. Every other record (two cards, older releases, other cards and Macs, the
-reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions. The rows below were
-measured on 0.3.10; 0.3.11's own rows, Qwen3.8-27B's among them, are in its
+reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions. Each table names the
+release or commit it was measured on; 0.3.11's own rows, Qwen3.8-27B's among them, are in its
 [release notes](https://github.com/midagedev/bloomery/releases/tag/v0.3.11).
 
 **One RTX 3090 24 GB**, on our workstation (32-core AVX2 host, 256 GB of RAM, the 3090 at its 250 W cap): the tagged
@@ -254,38 +244,56 @@ measured on 0.3.10; 0.3.11's own rows, Qwen3.8-27B's among them, are in its
 | Qwen3.8-Flash-Next `UD-Q4_K_XL` | card + CPU | 736.66 | 1,662.72 ² | 83.36 | 74.34 |
 | Qwen3.6-35B-A3B `Q4_K_M` | the whole model on the card | 5,123.05 | 6,652.24 | 188.31 | 180.68 |
 
-¹ rounds from 31.90 to 40.67 · ² the first round after a load read 1,440.33, the next three 1,735 to 1,739.
+¹ rounds from 31.90 to 40.67.
 
-**DGX Spark (GB10, 128 GB)**, measured by [@juliankang4](https://github.com/juliankang4) on their own machine, one
-request at a time, greedy, 128 tokens, median of three rounds. The Qwen3.8-Flash-Next rows are the 0.3.10 release on
-NVIDIA's FP4-Local and NVFP4 folders as downloaded and on `UD-Q4_K_XL`, with the MTP draft from Unsloth's
-`mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf`; the Qwen3.6 row is 0.3.0's
-([#46](https://github.com/midagedev/bloomery/issues/46#issuecomment-6116080838)).
+² the first round after a load read 1,440.33, the next three 1,735 to 1,739.
 
-| Model (release) | ~4,096-token prompt: first token | Decode after it | Short prompt decode |
-|---|---|---|---|
-| Qwen3.8-Flash-Next, FP4-Local folder, MTP on (0.3.10) | 2.05 s code, 2.08 s prose | 54.2 code, 39.9 prose | — |
-| Qwen3.8-Flash-Next, FP4-Local folder, draft off (0.3.10) | 1.98 s code, 2.08 s prose | 30.8 code, 29.8 prose | — |
-| Qwen3.8-Flash-Next, NVFP4 folder, MTP on (0.3.10) | 2.22 s code, 2.19 s prose | 47.9 code, 33.4 prose | — |
-| Qwen3.8-Flash-Next, NVFP4 folder, draft off (0.3.10) | 2.11 s code, 2.07 s prose | 22.7 code, 22.7 prose | — |
-| Qwen3.8-Flash-Next `UD-Q4_K_XL`, MTP on (0.3.10) | 2.80 s code, 2.75 s prose | 50.0 code, 35.2 prose | — |
-| Qwen3.6-35B-A3B `Q4_K_M` (0.3.0) | 0.90 s | 89.8 | 93.5 |
+The DGX Spark and RTX 5090 tables were measured by [@juliankang4](https://github.com/juliankang4) at main
+`e7180ea9`, on the same four models with the MTP draft on: NVIDIA's FP4-Local and NVFP4 folders as downloaded (their
+own MTP layer), Unsloth's Qwen3.8 `UD-Q4_K_XL` with its shared Q8_0 draft file, and Unsloth's Qwen3.6 `UD-Q4_K_M` with
+its in-file MTP layer. Each server ran one slot of 16,896 positions (`--parallel 1 --ctx-size 16896`) with
+`BLOOMERY_HOST_ROOM=96G`. A row is one request of a 512 or 4,096-id prompt from a code, an English prose or a Korean
+prose corpus, sent as token ids to `/completion` with streaming, `cache_prompt` false, `temperature` 0, `top_k` 1 and
+128 tokens. Prefill and decode are the server's timings, and first token is the client's time from sending the request
+to the first streamed token. Each value is the median of three rounds; each round started a new server and sent two
+warm-up requests first.
 
-**RTX 5090 32 GB**, measured by [@juliankang4](https://github.com/juliankang4) at 0.3.10 on native Linux with 126 GB of
-RAM, one request at a time at the serving defaults, greedy, 128 tokens, median of three rounds.
+**DGX Spark (GB10, 128 GB)**, every model wholly on the GB10. Earlier Spark rows are in
+[`docs/numbers.md`](docs/numbers.md#dgx-spark-qwen38-flash-next-on-the-fp4-local-and-nvfp4-folders-0310).
 
-| Model | ~4K prompt: prefill tok/s, first token | Decode after it | Short prompt decode |
-|---|---|---|---|
-| Qwen3.6-35B-A3B `Q4_K_M`, whole on the card | 14,249, 287 ms code; 14,298, 286 ms prose | 344.1 code, 344.2 prose | — |
+| Model | Prompt | Prefill tok/s, 512 ids | Prefill tok/s, 4,096 ids | Decode tok/s, 512 ids | Decode tok/s, 4,096 ids | First token ms, 512 ids | First token ms, 4,096 ids |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-Flash-Next, FP4-Local folder | Code | 1,317 | 2,840 | 59.1 | 69.6 | 393 | 1,448 |
+|  | English prose | 1,651 | 2,894 | 54.8 | 39.4 | 314 | 1,421 |
+|  | Korean prose | 1,447 | 2,850 | 49.4 | 49.5 | 359 | 1,443 |
+| Qwen3.8-Flash-Next, NVFP4 folder | Code | 1,225 | 2,544 | 45.3 | 54.8 | 423 | 1,615 |
+|  | English prose | 1,526 | 2,596 | 38.4 | 29.5 | 340 | 1,583 |
+|  | Korean prose | 1,334 | 2,558 | 36.0 | 33.8 | 388 | 1,607 |
+| Qwen3.8-Flash-Next `UD-Q4_K_XL` | Code | 824 | 1,708 | 46.4 | 48.8 | 626 | 2,403 |
+|  | English prose | 1,086 | 1,747 | 45.1 | 38.6 | 476 | 2,351 |
+|  | Korean prose | 929 | 1,718 | 47.3 | 41.6 | 556 | 2,390 |
+| Qwen3.6-35B-A3B `UD-Q4_K_M` | Code | 1,860 | 2,848 | 78.0 | 83.8 | 279 | 1,444 |
+|  | English prose | 2,189 | 2,828 | 84.4 | 68.0 | 238 | 1,454 |
+|  | Korean prose | 2,090 | 2,826 | 81.6 | 75.3 | 249 | 1,454 |
 
-With its MTP draft, on the same card at a power limit of 400 W (default 600 W), at `3ebdff767`: unsloth's
-`UD-Q4_K_M`, which carries the next-token layer, `BLOOMERY_DRAFT=mtp`, 4,096-id prompts, 128 greedy tokens, one request
-at a time, median of three rounds
-([`docs/numbers.md`](docs/numbers.md#rtx-5090-qwen36-35b-a3b-with-its-mtp-draft-by-juliankang4)).
+**RTX 5090 32 GB**, on native Linux. The Qwen3.8 models do not fit the card: it holds part of the routed experts and
+reads the rest from host RAM ("card + host RAM"). Qwen3.6 runs wholly on the card. Earlier RTX 5090 rows are in
+[`docs/numbers.md`](docs/numbers.md#rtx-5090-qwen36-35b-a3b-with-its-mtp-draft-by-juliankang4).
 
-| Model | Prefill tok/s | Decode tok/s | First token |
-|---|---|---|---|
-| Qwen3.6-35B-A3B `UD-Q4_K_M`, MTP draft on | 8,747 | 268.2 | 470 ms |
+| Model | Prompt | Prefill tok/s, 512 ids | Prefill tok/s, 4,096 ids | Decode tok/s, 512 ids | Decode tok/s, 4,096 ids | First token ms, 512 ids | First token ms, 4,096 ids |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen3.8-Flash-Next, FP4-Local folder, card + host RAM | Code | 558 | 1,382 | 73.7 | 82.9 | 920 | 2,966 |
+|  | English prose | 659 | 1,522 | 53.7 | 52.3 | 780 | 2,694 |
+|  | Korean prose | 528 | 1,602 | 49.1 | 55.7 | 973 | 2,560 |
+| Qwen3.8-Flash-Next, NVFP4 folder, card + host RAM | Code | 554 | 1,187 | 59.5 | 63.9 | 927 | 3,454 |
+|  | English prose | 644 | 1,378 | 48.1 | 46.7 | 798 | 2,975 |
+|  | Korean prose | 523 | 1,476 | 46.0 | 46.4 | 981 | 2,779 |
+| Qwen3.8-Flash-Next `UD-Q4_K_XL`, card + host RAM | Code | 517 | 1,124 | 67.6 | 64.8 | 992 | 3,647 |
+|  | English prose | 616 | 1,284 | 49.1 | 44.9 | 833 | 3,193 |
+|  | Korean prose | 509 | 1,385 | 52.0 | 50.6 | 1,008 | 2,961 |
+| Qwen3.6-35B-A3B `UD-Q4_K_M` | Code | 7,922 | 11,223 | 273.8 | 294.3 | 67 | 368 |
+|  | English prose | 8,326 | 11,238 | 296.0 | 244.5 | 64 | 367 |
+|  | Korean prose | 8,182 | 11,245 | 274.9 | 275.0 | 65 | 367 |
 
 **M5 Ultra**, measured by [@avlp12](https://github.com/avlp12) at 0.3.9's Metal code
 ([#593](https://github.com/midagedev/bloomery/issues/593); conditions in [`docs/mac.md`](docs/mac.md#numbers)).
@@ -332,7 +340,7 @@ every gate is shown to fail on its defect before the fix lands ([how](docs/perfo
   IQ1_M, IQ2_XXS and IQ2_XS) run on the host tier.
 - GLM-5.3 holds at most 16,384 positions a slot; a `--ctx-size` whose slot share is larger is refused at the start.
 
-Every limit, by seat: [`docs/serving.md`](docs/serving.md#limits).
+Every limit, by seat: [`docs/serving.md`](docs/serving.md#12-limits).
 
 ## Contributing
 
@@ -354,7 +362,7 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 | Page | What it covers |
 |---|---|
 | [`docs/evaluating.md`](docs/evaluating.md) | A checklist to run it and compare it fairly; hardware reports |
-| [`docs/serving.md`](docs/serving.md) | llama-server compatibility, flags, seats, concurrent requests, limits |
+| [`docs/serving.md`](docs/serving.md) | The serving guide: start, slots and context, drafts, placement, settings, API keys, every route, limits |
 | [`docs/agents.md`](docs/agents.md) | Starting the server from an agent or a script: the picks, the events, the exit codes |
 | [`docs/claude-code.md`](docs/claude-code.md) | Claude Code on a local model, on an NVIDIA card or a Mac, with measured first-turn times |
 | [`docs/pi.md`](docs/pi.md) | pi on a local model: the smallest first request of the surveyed agents, on an NVIDIA card or a Mac |
@@ -362,6 +370,7 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 | [`docs/models.md`](docs/models.md) | Recommended files and what each model needs |
 | [`docs/numbers.md`](docs/numbers.md) | Every measured table beyond the Status tables: two cards, older releases, other cards and Macs |
 | [`docs/performance.md`](docs/performance.md) | Number conditions, why it is fast, verification, recorded sessions |
+| [`docs/dgx-spark.md`](docs/dgx-spark.md) | DGX Spark (GB10): install, Qwen3.8's checkpoint folders, slots, context and memory, speed |
 | [`docs/mac.md`](docs/mac.md) | Apple Silicon: build, open an MLX folder, serve, limits |
 | [`docs/BUILD.md`](docs/BUILD.md), [`docs/cuda-oxide.md`](docs/cuda-oxide.md) | Building from source; the kernels in Rust |
 | [`docs/upstream/`](docs/upstream/) | The toolchain-defect ledger; our upstream pull-request drafts are in [rig-log](https://github.com/midagedev/rig-log/tree/main/docs/bloomery/upstream) |

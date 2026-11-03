@@ -16,7 +16,7 @@
 </div>
 
 <p align="center">
-<img src="docs/assets/building-apps-loader.svg" alt="Flisk is building your app: an API, a website, a worker, an AI agent, MCP tools and Postgres" width="722" />
+<img src="docs/assets/ecosystem.svg" alt="The Flisk ecosystem: bring an app in any language (Rust, Go, Python, TypeScript, JVM, Ruby, PHP) from a Compose file, a Tiltfile, a Dockerfile or any image; flisk up runs 77 building blocks: 5 languages, 10 web frameworks, 10 API frameworks, 10 resource types, 8 data and AI services, 23 MCP tools and 11 starter projects; export writes render.yaml or wrangler.toml; a radar watches every running part" width="100%" />
 </p>
 
 ## What is Flisk?
@@ -29,7 +29,7 @@ Try it first. One command, nothing to install except Node.js 22.12+, and no Dock
 npx @flisk-sh/flisk demo
 ```
 
-With Docker running and Tilt installed, that starts the full restaurant demo: six services, Postgres, one gateway and live reload. Without them (or on native Windows), it starts a small menu app as two local processes in about a second and opens it in your browser. `flisk down` in the demo folder stops either one.
+With Docker running and Tilt installed, that starts the full restaurant demo: six services, Postgres, one gateway and live reload. Without them (or on native Windows), it starts a small menu app as two local processes in about a second and opens it in your browser. You should see the menu at `http://localhost:3000`, with its API answering at `http://localhost:4000/api/menu`. `flisk down` in the demo folder stops either one.
 
 Install Flisk with `npm install -g @flisk-sh/flisk`, then, in a new folder:
 
@@ -87,7 +87,7 @@ flisk up
 - **Hot reload while you code.** Tilt live-updates a container when you save its files; there is no rebuild step.
 - **Wired for you.** `DATABASE_URL`, the API URL your frontend calls, and missing secrets such as `JWT_SECRET` are generated and injected, never copied by hand.
 - **Generated files you can check.** Flisk records what it wrote, refuses to start when a generated file was edited by hand, and `flisk config verify` reports drift ([generated files and drift checks](docs/generated-files.md)).
-- **Built for AI helpers.** `flisk mcp` gives Claude Code, Codex, Cursor and other agents 22 tools, and `flisk project` adds the Flisk skills and an `AGENTS.md`.
+- **Built for AI helpers.** `flisk mcp` gives Claude Code, Codex, Cursor and other agents 23 tools, and `flisk project` adds the Flisk skills and an `AGENTS.md`.
 - **Runs AI agents too.** Agent services get durable checkpoints, sticky `x-session-id` routing, and `/health` and `/ready` checks ([below](#run-your-ai-agents-next-to-your-services)).
 - **No Kubernetes; no Docker for small apps.** Docker and Tilt run the stack without a local cluster such as kind or minikube, and services that each declare a `command` run as plain local processes.
 - **Quick to start.** With warm image layers, a one-backend stack is healthy in 12.8 to 13.8 seconds ([timing notes](docs/benchmarks/quickstart-timing.md)). An 8-service stack settles in 32 to 42 seconds warm and about 4.5 minutes on its first cold build ([benchmark](docs/benchmarks/results/tdk-up-warm-start-2026-10-11/summary.md)).
@@ -112,7 +112,7 @@ Three quick questions; click the answer closest to your team. Not technical? Pic
 ## Trusted by
 
 <table align="center">
-  <tr><td align="center" valign="middle"><a href="https://www.linkedin.com/company/lekast/"><img src="docs/assets/trusted-by/lekast.png" alt="Lekast" height="64"></a></td><td align="center" valign="middle"><a href="https://medium.com/@mfin.services"><img src="docs/assets/trusted-by/mfin-services.png" alt="MFin Services" height="64"></a></td><td align="center" valign="middle"><a href="https://www.linkedin.com/company/makeofferio"><img src="docs/assets/trusted-by/makeoffer.png" alt="MakeOffer" height="64"></a></td><td align="center" valign="middle"><a href="https://redmoon.digital/"><img src="docs/assets/trusted-by/redmoon-digital.png" alt="RedMoon.Digital" height="64"></a></td></tr>
+  <tr><td align="center" valign="middle"><a href="https://github.com/biolend83/tubehaus"><img src="docs/assets/trusted-by/tubehaus.png" alt="TubeHaus" height="64"></a></td><td align="center" valign="middle"><a href="https://www.linkedin.com/company/lekast/"><img src="docs/assets/trusted-by/lekast.png" alt="Lekast" height="64"></a></td><td align="center" valign="middle"><a href="https://medium.com/@mfin.services"><img src="docs/assets/trusted-by/mfin-services.png" alt="MFin Services" height="64"></a></td><td align="center" valign="middle"><a href="https://www.linkedin.com/company/makeofferio"><img src="docs/assets/trusted-by/makeoffer.png" alt="MakeOffer" height="64"></a></td><td align="center" valign="middle"><a href="https://redmoon.digital/"><img src="docs/assets/trusted-by/redmoon-digital.png" alt="RedMoon.Digital" height="64"></a></td></tr>
 </table>
 
 <p align="center"><sub>Teams that run <code>flisk up</code> on their own code, listed with their consent. <a href="docs/project/ADOPTERS.md">See all adopters</a> or <a href="https://github.com/flisk-sh/flisk/issues/new?template=we-use-flisk.yml">add yours</a>.</sub></p>
@@ -178,7 +178,7 @@ Stop my Flisk stack with flisk down and confirm nothing is left running.
 
 ### Pick your agent
 
-Each helper installs a little differently; pick yours for the exact steps. Already have a project? `flisk connect claude` (or `cursor`, `codex`) adds the `flisk mcp` server (22 tools) and the Flisk skills where that agent reads them; add `--dry-run` to see the files first. What the agent can then do: [Flisk for AI agents](docs/agents/flisk-for-agents.md).
+Each helper installs a little differently; pick yours for the exact steps. Already have a project? `flisk connect claude` (or `cursor`, `codex`) adds the `flisk mcp` server (23 tools) and the Flisk skills where that agent reads them; add `--dry-run` to see the files first. What the agent can then do: [Flisk for AI agents](docs/agents/flisk-for-agents.md).
 
 <!-- tabs:agents claude-code · generated by scripts/docs/tabs.mjs from docs/tabs.json; edit the panel below, not the bar -->
 <table>
@@ -262,11 +262,11 @@ flisk doctor
 
 ## Installation
 
-Install the CLI with npm, with Bun, or as a prebuilt binary that needs no Node.js or Bun:
+Install the CLI with npm, with Bun, as a prebuilt binary that needs no Node.js or Bun, or run it from its container image:
 
 <!-- tabs:install npm · generated by scripts/docs/tabs.mjs from docs/tabs.json; edit the panel below, not the bar -->
 <table>
-<tr><td><a href="docs/install/npm.md"><img src="docs/assets/tabs/install/npm-selected.7e6ed338.svg" alt="npm (selected)" width="86" height="48" align="top"></a><a href="docs/install/bun.md"><img src="docs/assets/tabs/install/bun.ade4a64c.svg" alt="Bun" width="84" height="48" align="top"></a><a href="docs/install/binary.md"><img src="docs/assets/tabs/install/binary.d45225e1.svg" alt="Prebuilt binary" width="155" height="48" align="top"></a><a href="docs/install/npm.md"><img src="docs/assets/tabs/install/count.dd332b8b.svg" alt="3 ways to install" width="125" height="48" align="top"></a></td></tr>
+<tr><td><a href="docs/install/npm.md"><img src="docs/assets/tabs/install/npm-selected.7e6ed338.svg" alt="npm (selected)" width="86" height="48" align="top"></a><a href="docs/install/bun.md"><img src="docs/assets/tabs/install/bun.ade4a64c.svg" alt="Bun" width="84" height="48" align="top"></a><a href="docs/install/binary.md"><img src="docs/assets/tabs/install/binary.d45225e1.svg" alt="Prebuilt binary" width="155" height="48" align="top"></a><a href="docs/install/container.md"><img src="docs/assets/tabs/install/container.9b5db54c.svg" alt="Container image" width="166" height="48" align="top"></a><a href="docs/install/npm.md"><img src="docs/assets/tabs/install/count.d94f98f0.svg" alt="4 ways to install" width="125" height="48" align="top"></a></td></tr>
 <tr><td>
 
 ```bash
@@ -769,7 +769,7 @@ Contributions are welcome. **First step: [say hello on Discord](https://discord.
     <img src="https://www.bestpractices.dev/assets/openssf_bestpracticesbadge-a908f4124737f3d6b2c5abc82756bd2a435cff474b45615ce469746c31a4288c.svg" alt="OpenSSF Best Practices" height="80" align="middle" style="vertical-align: middle" />
   </a>
   <a href="https://www.bestpractices.dev/projects/15310">
-    <img src="https://img.shields.io/badge/OpenSSF%20Silver-95%25-yellow" alt="OpenSSF Silver: 95%" height="40" align="middle" style="vertical-align: middle" />
+    <img src="https://www.bestpractices.dev/projects/15310/badge" alt="OpenSSF Best Practices: Silver (100%)" height="40" align="middle" style="vertical-align: middle" />
   </a>
 </p>
 

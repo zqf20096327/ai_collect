@@ -7,11 +7,15 @@
 Read, search, edit, and patch files in the folders you choose.<br>
 Secret files stay hidden, and risky changes wait for your OK.
 
-[![npm version](https://img.shields.io/npm/v/%40j0hanz%2Ffilesystem-mcp?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/@j0hanz/filesystem-mcp) [![CI](https://img.shields.io/github/actions/workflow/status/j0hanz/filesystem-mcp/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/j0hanz/filesystem-mcp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/github/license/j0hanz/filesystem-mcp?style=flat-square)](LICENSE) [![GitHub stars](https://img.shields.io/github/stars/j0hanz/filesystem-mcp?style=flat-square&logo=github)](https://github.com/j0hanz/filesystem-mcp/stargazers) [![HOL Trust](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dj0hanz%252Ffilesystem-mcp%26metric%3Dtrust%26style%3Dflat-square)](https://hol.org/registry/plugins/j0hanz%2Ffilesystem-mcp)
+[![npm version](https://img.shields.io/npm/v/%40j0hanz%2Ffilesystem-mcp?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/@j0hanz/filesystem-mcp) [![CI](https://img.shields.io/github/actions/workflow/status/j0hanz/filesystem-mcp/ci.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white&label=CI)](https://github.com/j0hanz/filesystem-mcp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/github/license/j0hanz/filesystem-mcp?style=flat-square)](LICENSE) [![GitHub stars](https://img.shields.io/github/stars/j0hanz/filesystem-mcp?style=flat-square&logo=github)](https://github.com/j0hanz/filesystem-mcp/stargazers)
+[![HOL Trust](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dj0hanz%252Ffilesystem-mcp%26metric%3Dtrust%26style%3Dflat-square)](https://hol.org/registry/plugins/j0hanz%2Ffilesystem-mcp) [![Filesystem MCP security badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dj0hanz%252Ffilesystem-mcp%26metric%3Dsecurity%26style%3Dflat)](https://hol.org/registry/plugins/j0hanz%2Ffilesystem-mcp) [![Filesystem MCP status badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fhol.org%2Fapi%2Fregistry%2Fbadges%2Fplugin%3Fslug%3Dj0hanz%252Ffilesystem-mcp%26metric%3Dstatus%26style%3Dflat)](https://hol.org/registry/plugins/j0hanz%2Ffilesystem-mcp)
 
-[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=filesystem&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=filesystem&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D&quality=insiders) [![Install in Visual Studio](https://img.shields.io/badge/Visual_Studio-Install-C16FDE?style=flat-square&logo=visualstudio&logoColor=white)](https://vs-open.link/mcp-install?%7B%22filesystem-mcp%22%3A%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D%7D) [![Install in Cursor](https://img.shields.io/badge/Cursor-Install-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com/en/install-mcp?name=filesystem&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBqMGhhbnovZmlsZXN5c3RlbS1tY3BAbGF0ZXN0Il19) [![Install in Claude Desktop](https://img.shields.io/badge/Claude_Desktop-Install-D97757?style=flat-square&logo=claude&logoColor=white)](https://github.com/j0hanz/filesystem-mcp/releases/latest/download/filesystem-mcp.mcpb)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=filesystem&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D) [![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=filesystem&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D&quality=insiders) [![Install in Visual Studio](https://img.shields.io/badge/Visual_Studio-Install-C16FDE?style=flat-square&logo=visualstudio&logoColor=white)](https://vs-open.link/mcp-install?%7B%22filesystem-mcp%22%3A%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40j0hanz%2Ffilesystem-mcp%40latest%22%5D%7D%7D)
+[![Install in Cursor](https://img.shields.io/badge/Cursor-Install-000000?style=flat-square&logo=cursor&logoColor=white)](https://cursor.com/en/install-mcp?name=filesystem&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIkBqMGhhbnovZmlsZXN5c3RlbS1tY3BAbGF0ZXN0Il19) [![Install in Claude Desktop](https://img.shields.io/badge/Claude_Desktop-Install-D97757?style=flat-square&logo=claude&logoColor=white)](https://github.com/j0hanz/filesystem-mcp/releases/latest/download/filesystem-mcp.mcpb)
 
 [![filesystem-mcp MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/j0hanz/filesystem-mcp/badges/card.svg)](https://glama.ai/mcp/servers/j0hanz/filesystem-mcp)
+
+![The example web client lists a folder with .env hidden, the server refuses to open .env, then asks before overwriting README.md and keeps the file when told to skip](assets/demo.gif)
 
 ## What is this?
 
@@ -57,7 +61,7 @@ Once it is connected, you can ask things like:
 
 How this server differs from the official
 [`@modelcontextprotocol/server-filesystem`](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem),
-checked against its README on 2026-10-11:
+checked against its README on 2026-11-02:
 
 | Capability                | Filesystem MCP                                     | Reference server                        |
 | :------------------------ | :------------------------------------------------- | :-------------------------------------- |
@@ -67,6 +71,7 @@ checked against its README on 2026-10-11:
 | Delete files              | `delete`; asks before deleting a non-empty folder  | None                                    |
 | `.gitignore`              | Respected by listing and search tools              | Not supported                           |
 | Read-only mode            | `--read-only` removes every tool that writes       | Docker `ro` mounts only                 |
+| Per-folder read-only      | `--read-only-root` guards chosen folders           | Docker `ro` mounts only                 |
 | Apply a unified diff      | `patch`                                            | None                                    |
 | Compare two files         | `diff`                                             | None                                    |
 | Replace across many files | `replace_text` over a folder or glob               | None                                    |
@@ -256,24 +261,28 @@ npm install -g @j0hanz/filesystem-mcp
 
 ## Tools
 
-| Tool             | What it does                                                                                                  |
-| :--------------- | :------------------------------------------------------------------------------------------------------------ |
-| `list_roots`     | Shows the folders the server may use.                                                                         |
-| `list`           | Lists a folder as a tree, like `ls` or `tree`.                                                                |
-| `find_files`     | Finds files by name or glob, such as `**/*.test.ts`.                                                          |
-| `search_text`    | Searches inside files for text or a regex, like `grep`, with optional context lines.                          |
-| `stat`           | Gets size, dates, type, permissions, and a token estimate without reading the file.                           |
-| `read`           | Reads text files whole or by lines, head, or tail. Images and audio come back as media; others with `binary`. |
-| `diff`           | Compares two files and returns a unified diff.                                                                |
-| `create` ✎       | Writes new files, appends, or makes empty folders. Asks before replacing a file, unless `overwrite: true`.    |
-| `edit` ✎         | Replaces exact text in files. All edits to a file apply, or none do. `dryRun` shows the diff first.           |
-| `patch` ✎        | Applies a unified diff to a file. All hunks apply, or none do.                                                |
-| `replace_text` ✎ | Finds and replaces text or a regex across many files. `dryRun` shows what would change.                       |
-| `move` ✎         | Moves, renames, or copies files and folders. Asks before overwriting, unless a copy passes `overwrite: true`. |
-| `delete` ✎       | Deletes files and folders. Asks before deleting a non-empty folder.                                           |
-| `undo` ✎         | Reverts earlier changes by undo id or the last N calls, while the server runs. Skips files changed since.     |
+| Tool             | What it does                                                                                                            |
+| :--------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| `list_roots`     | Shows the folders the server may use.                                                                                   |
+| `list`           | Lists a folder as a tree, like `ls` or `tree`.                                                                          |
+| `find_files`     | Finds files by name or glob, such as `**/*.test.ts`.                                                                    |
+| `search_text`    | Searches inside files for text or a regex, like `grep`, with optional context lines.                                    |
+| `stat`           | Gets size, dates, type, permissions, and a token estimate without reading the file.                                     |
+| `read`           | Reads text files whole or by lines, head, or tail. Images and audio come back as media; others with `binary`.           |
+| `diff`           | Compares two files and returns a unified diff.                                                                          |
+| `create` ✎       | Writes new files, appends, or makes empty folders. Asks before replacing a file, unless `overwrite: true`.              |
+| `edit` ✎         | Replaces exact text in files. All edits to a file apply, or none do. `dryRun` shows the diff first.                     |
+| `patch` ✎        | Applies a unified diff to a file. All hunks apply, or none do.                                                          |
+| `replace_text` ✎ | Finds and replaces text or a regex across many files. `dryRun` shows what would change.                                 |
+| `move` ✎         | Moves, renames, or copies files and folders. Asks before overwriting, unless a copy passes `overwrite: true`.           |
+| `delete` ✎       | Deletes files and folders. Asks before deleting a non-empty folder.                                                     |
+| `undo` ✎         | Reverts recent changes by undo id or the last N calls, for 30 minutes while the server runs. Skips files changed since. |
 
-✎ changes files. `--read-only` removes these tools.
+✎ changes files. `--read-only` removes these tools. To refuse changes under
+one folder while the rest stay writable, pass `--read-only-root <dir>`
+(repeatable, or `FS_READ_ONLY_DIRS`): those tools still exist, but a call
+that writes, moves, or deletes under the folder fails with
+`Read-only root: ...`, while listing, searching, and reading keep working.
 
 Search and listing tools skip hidden files, `.gitignore`d files, and folders
 like `node_modules`, `dist`, and `.git` unless the AI asks for them.
@@ -283,15 +292,16 @@ like `node_modules`, `dist`, and `.git` unless the AI asks for them.
 Most people only need the folder argument. These options cover the common
 cases:
 
-| Option                | What it does                                                                 |
-| :-------------------- | :--------------------------------------------------------------------------- |
-| `--read-only`         | Removes every tool that changes files.                                       |
-| `--deny '<pattern>'`  | Blocks more files, for example `--deny 'private/**'` or `--deny '*.sqlite'`. |
-| `--allow '<pattern>'` | Unblocks one built-in secret pattern, for example `--allow '.env.example'`.  |
-| `--allow-cwd`         | Also allows the folder the server was started from.                          |
-| `--max-file-size <n>` | Largest file `read` will load, in bytes. Default 10 MiB.                     |
-| `--port <n>`          | Serves over HTTP at `http://127.0.0.1:<n>/mcp` instead of stdio.             |
-| `--print-config`      | Prints the settings the server would use, then exits.                        |
+| Option                   | What it does                                                                            |
+| :----------------------- | :-------------------------------------------------------------------------------------- |
+| `--read-only`            | Removes every tool that changes files.                                                  |
+| `--read-only-root <dir>` | Refuses writes, moves, and deletes under this folder, which stays readable. Repeatable. |
+| `--deny '<pattern>'`     | Blocks more files, for example `--deny 'private/**'` or `--deny '*.sqlite'`.            |
+| `--allow '<pattern>'`    | Unblocks one built-in secret pattern, for example `--allow '.env.example'`.             |
+| `--allow-cwd`            | Also allows the folder the server was started from.                                     |
+| `--max-file-size <n>`    | Largest file `read` will load, in bytes. Default 10 MiB.                                |
+| `--port <n>`             | Serves over HTTP at `http://127.0.0.1:<n>/mcp` instead of stdio.                        |
+| `--print-config`         | Prints the settings the server would use, then exits.                                   |
 
 Flags go in `args` after the package name, for example
 `["-y", "@j0hanz/filesystem-mcp@latest", "--read-only", "/path/to/project"]`.

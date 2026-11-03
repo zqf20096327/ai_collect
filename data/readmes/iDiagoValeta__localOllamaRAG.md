@@ -46,19 +46,15 @@ web interface, and nothing leaves the machine.
 - **Multimodal** — [MinerU](https://github.com/opendatalab/MinerU) preserves document structure, while [embeddinggemma-2](https://huggingface.co/google/embeddinggemma-2) makes text and images searchable in the same semantic space.
 - **Two interfaces** — [Flask](https://flask.palletsprojects.com/) + [React](https://react.dev/) web app, and a packaged Windows desktop app.
 
-<details>
-<summary><strong>See it in action</strong></summary>
-<br/>
+### See it in action
 
-**Web interface**
+**Web interface**: four questions in RAG mode over the English store, each answered from a different document, then a citation opened in the PDF viewer. Waits play at 4x; the chip under each answer shows the real time, 16 to 25 s on an 8 GB laptop GPU.
 
-https://github.com/user-attachments/assets/f5f8fa1d-b193-4f94-85c2-8f903afa2348
+<img width="100%" alt="MonkeyGrab answering questions over four documents and opening a cited PDF" src="assets/demo.webp" />
 
 **LaTeX rendering** (formulas via [KaTeX](https://katex.org/) in the web UI):
 
-<img width="918" height="563" alt="LaTeX rendering in the web UI" src="assets/latexRender.png" />
-
-</details>
+<img width="1100" height="700" alt="LaTeX rendering in the web UI" src="assets/latexRender.png" />
 
 ---
 

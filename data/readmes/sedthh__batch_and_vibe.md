@@ -1,17 +1,13 @@
 # Black & White LLM Creature Mod
 
-A fan mod created with GPT-6 Astra that adds generative AI to your creature in
-Lionhead's **Black & White**. Chat by **text or voice**, give your creature
-instructions, and let an LLM think about its needs and surroundings. It builds on
-the original creature AI, which keeps running and learning between LLM commands.
+Bond with your creature in Lionhead's **Black & White**: talk and teach it,
+on desktop or with [experimental VR support](docs/vr.md).
+LLM conversations and decisions build on the original creature AI, which keeps
+learning as you play. Supports text and voice chat, plus Winamp with the original
+[MP3 add-on](https://www.bwgame.net/downloads/mp3-addon.137/).
 
-This is an experimental, unofficial project, not affiliated with or endorsed by
-Lionhead Studios or the game's rights holders. **You need your own original game.**
-This repository does not include the game, saves or patches.
-
-New to the game? Watch [Black & White: Playing God With a Giant Cow](https://www.youtube.com/watch?v=qelivOEUZfY).
-For the story behind the game and why it's hard to find today, see Noclip's
-[Why has Black & White Been Abandoned?](https://www.youtube.com/watch?v=GtNvEna6bxc).
+An experimental, unofficial fan mod created with GPT-6 Astra.
+**You need your own original game.** No game files, saves or patches are included.
 
 ![The monkey chatting with its god near the village](docs/assets/creature-chat.png)
 
@@ -34,7 +30,7 @@ For a Windows 11 setup in 2026:
    Follow the patch author's instructions and **skip 1.30**. The patch also lets
    you skip the tutorials on a fresh installation.
 3. Launch `runblack.exe` as administrator and confirm the game runs and saves
-   correctly. **Exclusive fullscreen is not supported:** creature chat cannot
+   correctly. **Desktop overlay chat does not support exclusive fullscreen:** it cannot
    reliably appear there, so new LLM calls pause. Use windowed mode or the mod's
    **Run B&W borderless fullscreen** button, which fills the screen while keeping
    creature chat working.
@@ -85,6 +81,21 @@ speech-to-text API, then hold **F11** to speak and release to send. You can
 change the shortcut, review the words before sending, and set separate voice API
 limits for requests and audio minutes. Leave the limits blank for unlimited use.
 See [voice setup](docs/usage.md#voice-input) for the extra local-model installation.
+
+### Music and VR
+
+Use Winamp with the original [Black & White MP3 add-on](https://www.bwgame.net/downloads/mp3-addon.137/),
+then enable **Music → Connect to Winamp** in settings. The add-on handles playback
+and native dancing; this mod lets the creature recognize the current song, your
+listening habits and short lyric excerpts. Lyric context can help it respond when
+you sing through voice input, though it may comment on or repeat your words
+rather than continue the song. Optional **Look up missing lyrics online (LRCLIB)**
+needs no API key; plain lyrics can supply a repeated refrain. Creature replies
+are text, including lyric responses. See [music setup and compatibility](docs/usage.md#winamp-music).
+
+[BW1-VR](https://github.com/BW-VR/BW1-VR) has **experimental support** with voice
+input and the game's native subtitles. Use **Run B&W VR** in the launcher;
+see [VR setup and compatibility](docs/vr.md).
 
 ### Settings
 
@@ -153,6 +164,9 @@ Starting an action doesn't guarantee it worked; the mod also tracks game feedbac
 
 Want to help build or test it? See [contributing](docs/contributing.md).
 
+- [ ] Validate [experimental BW1-VR mode](docs/vr.md) on a real headset. It uses
+  native subtitles and optional voice activation; headset comfort and input remain unverified.
+
 - [ ] Separate AI memory and conversation by game profile and save. They currently
   survive restarts but are shared between saves/profiles for the same local user.
 - [ ] Give the creature summaries of relevant story events. Cutscene interference
@@ -174,4 +188,11 @@ Want to help build or test it? See [contributing](docs/contributing.md).
 - [ ] Add Roko's Basilisk as a selectable creature.
 - [ ] Give an Xbox 360 Kinect some generative AI and finally bring Milo to life.
 
+New to the game? Watch [Black & White: Playing God With a Giant Cow](https://www.youtube.com/watch?v=qelivOEUZfY).
+For its history, see Noclip's [Why has Black & White Been Abandoned?](https://www.youtube.com/watch?v=GtNvEna6bxc).
+Special thanks to raffclar for the [Creature Mind AI write-up](https://blog.zanidrak.com/ai/games/black-and-white/2026/10/27/creature-mind-part-1.html),
+and to the [openblack](https://github.com/openblack/openblack) and
+[bw1-decomp](https://github.com/openblack/bw1-decomp) contributors for their research.
+
 The [MIT license](LICENSE) covers the original mod code, not Black & White.
+This project is not affiliated with or endorsed by Lionhead Studios or the game's rights holders.

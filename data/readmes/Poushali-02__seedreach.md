@@ -10,7 +10,7 @@ personalised cold email to your **Gmail Drafts**. You review it and press Send. 
 
 [Watch the full 80-second demo with sound (MP4)](https://github.com/Poushali-02/seedreach/releases/download/v0.1.0/seedreach-demo.mp4)
 
-> **Status:** early (v0.1). Built for my own internship search and maintained in my spare time.
+> **Status:** early (v0.3). Built for my own internship search and maintained in my spare time.
 > Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 A CLI that finds early-stage startups, reads their website with an LLM, finds a founder's email, and
@@ -141,7 +141,7 @@ python main.py add-target site1.com site2.io
 # One specific startup, start to finish
 python main.py target https://example-startup.com
 
-# Totals, recent companies and the event log
+# Totals, recent companies, recent runs (tokens, cost, time) and the event log
 python main.py status
 ```
 
@@ -171,6 +171,45 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
 - **Dedupe**: one row per registrable domain, plus a unique index on drafted emails. Drafted and skipped
   companies are never processed again (use `target <url> --force` to retry a skipped one). LLM or Gmail
   outages are not recorded as skips, so those companies are retried next time.
+
+## How well it works
+
+Measured on 30 real startups that seedreach found, each checked by hand against its website (company
+name, domain, every founder the site names, and whether every claim in the opening line is true).
+Model: `gemini-flash-lite-latest`, 3 runs, 2026-11-01.
+
+| Metric | Score | What it means |
+|---|---|---|
+| Company name | 96% | Right name for the company |
+| Domain | 85–89% | Right category, so the right project of yours gets pitched |
+| Founder correct | 93–100% | One of the site's founders, or correctly none when the site names no founder |
+| Invented founder | 0–4% | Named someone the site doesn't call a founder (the worst mistake: a wrong name in the greeting) |
+| Opening line follows the rules | 93–96% | One sentence, no flattery, no markdown |
+| Same answers on every run | 83% | Same domain and founder each time on the same page |
+| Ready to send | 63–70% | Everything above right at once, on the right website |
+
+The opening lines in this run haven't been checked by hand yet (the last check found every claim true in
+93% of them), so "ready to send" counts only the rule checks and is a little high.
+
+How it got here, on the same 30 startups:
+
+| Change | Founder correct | Invented founder | Ready to send |
+|---|---|---|---|
+| Baseline | 63% | 11% | 43% |
+| Count only people the site calls a founder | 74% | 0% | 53–57% |
+| Scraper reads team and leadership pages first | 93–100% | 0–4% | 63–70% |
+
+Known gaps, each the subject of a follow-up:
+
+- **Board members**: one site lists a real co-founder only under "Board of Directors", and the model
+  sometimes names him anyway.
+- **Wrong websites**: 3 of the 30 leads pointed at a news article or a job board, and seedreach drafted
+  for them anyway.
+- **Domains**: reading more pages made the domain slightly less accurate and less stable; consumer and
+  health companies are sometimes filed as B2B SaaS or AI Agents.
+
+To run the evals on your own set of startups, see [evals/README.md](evals/README.md). The dataset itself
+isn't in the repo, because it holds real founder names.
 
 ## Run it on a schedule (free, GitHub Actions)
 
@@ -246,7 +285,8 @@ main.py                      Typer CLI
 profile.example.json         template for your personal details
 src/config.py                Pydantic settings (.env)
 src/profile.py               loads and validates profile.json
-src/db.py                    SQLite dedupe + status + event log
+src/db.py                    SQLite dedupe + status + event log + run traces
+src/trace.py                 per-company record of each step: time, tokens, what it saw
 src/pipeline.py              orchestration
 src/sourcing/                hacker_news.py, product_hunt.py (BaseSourcingProvider)
 src/intelligence/            scraper.py, extractor.py

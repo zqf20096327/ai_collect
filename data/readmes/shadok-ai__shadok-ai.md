@@ -177,7 +177,10 @@ Enter to skip; you can add it later from the web UI).
   message can force through).
 - **Notifications** — favicon, title badge and an optional sound when an agent
   needs you. It only blinks when the tab is hidden *and* an unmuted channel is
-  actually waiting.
+  actually waiting. Mute a single agent from its menu, or **mute the whole
+  instance** from the version menu (*Mute this instance*): the favicon never
+  changes, no badge, no blink, no sound — for every agent and every tab, saved
+  per instance like the cockpit's name and palette.
 - **Engine room** — the raw TUI screen, live, with clickable keys, for anything
   the chat can't express. With tmux there is also an **experimental real
   terminal** (xterm.js over the pane's byte stream) when a snapshot isn't enough.
@@ -191,6 +194,13 @@ Enter to skip; you can add it later from the web UI).
   `SHADOK_WHISPER_MODEL` picks a bigger one if your recordings need it.
   Set `SHADOK_WHISPER_DIR` to a directory shared between containers and one copy
   serves them all.
+- **Dictate a prompt on the web** — a 🎙 button beside *Send* records your
+  microphone and transcribes it with the **same local whisper.cpp** the voice
+  notes use (nothing leaves the machine). The text drops into the composer
+  **editable**, never auto-sent, so a misheard word is fixed before it goes —
+  click to start, click to stop, a red timer runs while recording. Needs a
+  secure context (localhost or HTTPS) for the browser to grant the mic; the
+  first use pays the same one-time whisper install as the voice notes above.
 - **Videos on Telegram** — share a video (or a GIF, or a round video note) and
   the agent actually sees it: shadok pulls a handful of stills out of the clip
   for it to look at, and transcribes the sound when there is speech. Both run
@@ -228,7 +238,9 @@ Enter to skip; you can add it later from the web UI).
   remove it. On send, an image shows **inline in your own message bubble**;
   under the hood the agent still receives it as an `[Attached …: path]` line,
   the same format Telegram uses, so nothing about how the agent reads it
-  changes. A message can be attachments alone, with no words. The files are
+  changes. If the agent is mirrored into Telegram, the file is **posted into its
+  topic too** — a photo as a photo, anything else as a document — so whoever is
+  reading there sees what you sent instead of a path. A message can be attachments alone, with no words. The files are
   served back to the browser by `GET /media/<name>` from the same directory
   Telegram attachments land in.
 - **Files an agent hands you** — when an agent's result IS a file (a report, an
@@ -240,6 +252,13 @@ Enter to skip; you can add it later from the web UI).
   otherwise just print a local path you cannot open. **Artifacts are denied**
   cockpit-wide for the same reason — a page on claude.ai is not the file you
   asked for (`SHADOK_ALLOW_ARTIFACTS=1` lifts it).
+- **Photos and videos, viewable** — an image or a **video** (mp4/webm/mov…) in
+  the chat renders inline (a video gets a real player), and clicking a photo
+  opens it full-size in a lightbox. The 🖼 button in an agent's bar opens a
+  **media gallery**: a grid of every photo and video in that conversation —
+  click a thumbnail to view or play it full-size, then back to the grid. Videos
+  are served with HTTP range requests so they seek and stream instead of
+  downloading whole.
 - **Compaction summaries, folded away** — when Claude Code runs out of context
   it compacts the conversation and writes a long "This session is being
   continued…" summary as the first message of what follows. Shown in full it
@@ -518,9 +537,19 @@ location / {
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
     proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # see below
     client_max_body_size 50m;   # match the server's paste limit
 }
 ```
+
+**Forward the client address.** An agent authenticates to its own server with a
+session key that never expires, so the server accepts that key **only from this
+machine, directly** — never from the network, where a key leaked by a
+prompt-injected agent would otherwise be permanent admin. A proxy on the same
+host connects from `127.0.0.1` too; the `X-Forwarded-For` line is what tells the
+server the request was relayed. Without it, requests through a same-host proxy
+look local. (A proxy on another host, or nginx in front of a Docker container,
+is already seen as the network.)
 
 The client picks `wss://` on its own when the page is HTTPS, so there is nothing
 to configure on that side.
@@ -894,7 +923,7 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 
 | Message | Purpose |
 |---|---|
-| `{type:"start", cwd?, resume?, continue?, worktree?, branch?, repo?, profile?, parent?, origin?}` | starts or attaches to the session (once per connection). `origin` (`"web"`, `"cron"`, `"telegram"`, `"cli"`…) travels with `prompt-echo` so other clients can say who spoke. `parent` records who launched this agent — a refused link is dropped and logged, never fatal to the spawn |
+| `{type:"start", cwd?, resume?, continue?, worktree?, branch?, repo?, profile?, parent?, origin?}` | starts or attaches to the session (once per connection). `origin` (`"web"`, `"cron"`, `"telegram"`, `"agent"`, `"cli"`) travels with `prompt-echo` so other clients can say who spoke — and a prompt from someone (web/telegram/cli/agent) also reaches the TUI under a `⟦platform · time · sender⟧` header, so the agent knows whether the human or a sibling agent is talking to it. An `agent` header ends with the sender's short session id — its reply address, since a tab name is not unique — and that id is stripped back out of the name before display, so it never appears in the chat. `parent` records who launched this agent — a refused link is dropped and logged, never fatal to the spawn |
 | `{type:"prompt", text, force?}` | sends a prompt (`force` bypasses the pace guard) |
 | `{type:"choose", n}` | single-select dialog: picks and validates option n |
 | `{type:"toggle", n}` / `{type:"confirm"}` | multi-select: toggles option n / submits |
@@ -917,7 +946,7 @@ client, or immediately on an explicit `stop` (which ends it for everyone).
 | `{type:"stream-tool", id, name, summary}` / `{type:"stream-result", …}` | tool call / tool result |
 | `{type:"tokens", tokens}` / `{type:"context", pct}` | token usage / context fill |
 | `{type:"parent", parent}` | the channel's parent changed (broadcast, so every tab follows) |
-| `{type:"prompt-echo", text}` | prompt sent by another client of the session |
+| `{type:"prompt-echo", text, origin?, from?}` | prompt sent by another client of the session. `from` is resolved SERVER-side for a web or agent prompt (the signed-in account / the calling agent's tab name) and never taken from the frame |
 | `{type:"dialog", question, options:[{n,label,hint,checked?}], multi}` | choice pending |
 | `{type:"history", turns:[…]}` | transcript replayed when resuming/attaching |
 | `{type:"screen", text, working}` | rendered TUI screen (whenever it changes) |

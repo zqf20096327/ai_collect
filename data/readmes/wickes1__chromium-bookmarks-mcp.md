@@ -1,0 +1,293 @@
+<p align="center">
+  <img src="apps/extension/public/icon.svg" width="128" height="128" alt="Chromium Bookmarks MCP">
+</p>
+
+<h1 align="center">Chromium Bookmarks MCP</h1>
+
+<p align="center">
+  <strong>Give AI agents real-time read/write access to your browser bookmarks via <a href="https://modelcontextprotocol.io/">Model Context Protocol</a>.</strong>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/chromium-bookmarks-mcp"><img src="https://img.shields.io/npm/v/chromium-bookmarks-mcp" alt="npm version"></a>
+  <a href="https://chromewebstore.google.com/detail/chromium-bookmarks-mcp/ipcgfbbojaphhaoanjalmjmooeobjein"><img src="https://img.shields.io/badge/Chrome_Web_Store-published-4285F4?logo=googlechrome&logoColor=white" alt="Chrome Web Store"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-compatible-blue" alt="MCP Compatible"></a>
+</p>
+
+<p align="center">
+  Works with <strong>Claude Code</strong> &middot; <strong>Claude Desktop</strong> &middot; <strong>Cursor</strong> &middot; <strong>Windsurf</strong> &middot; <strong>VS Code Copilot</strong> &middot; and any MCP client<br>
+  Supports <strong>Chrome</strong> &middot; <strong>Brave</strong> &middot; <strong>Edge</strong> &middot; <strong>Arc</strong> &middot; and any Chromium-based browser
+</p>
+
+---
+
+## Prerequisites
+
+- **[Bun](https://bun.sh) 1.2+** — the MCP server and native host run on Bun. Install with `curl -fsSL https://bun.sh/install | bash` (macOS / Linux) or `powershell -c "irm bun.sh/install.ps1 | iex"` (Windows).
+- A Chromium-based browser (Chrome, Brave, Edge, Arc, or Chromium itself).
+
+## Quick Start
+
+### 1. Install the Chrome extension
+
+<a href="https://chromewebstore.google.com/detail/chromium-bookmarks-mcp/ipcgfbbojaphhaoanjalmjmooeobjein">
+  <img src="https://img.shields.io/badge/Install_from-Chrome_Web_Store-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Install from Chrome Web Store" height="48">
+</a>
+
+### 2. Add to your AI client
+
+**Claude Code:**
+```bash
+claude mcp add bookmarks -- npx chromium-bookmarks-mcp
+```
+
+**Claude Desktop** (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "bookmarks": {
+      "command": "npx",
+      "args": ["chromium-bookmarks-mcp"]
+    }
+  }
+}
+```
+
+> Registration runs when your MCP client first starts the stdio proxy (not at install time) — it registers itself as a native host for every detected Chromium browser, including writing the required HKCU registry keys on Windows. The step is idempotent and re-runs on every startup, so no manual `register` is needed.
+
+**Cursor / Windsurf / other MCP clients** — use the same command: `npx chromium-bookmarks-mcp`
+
+### 3. Activate the connection
+
+Open your browser and click the extension icon. **This activates the connection** between the extension and the MCP server — you should see a green dot and **Connected** status. If you don't, click the **Refresh status** button in the popup.
+
+Then ask your AI agent:
+```
+Use the ping tool to check if bookmarks MCP is connected
+```
+
+> **Note:** Your browser must be open for the MCP tools to work. The extension only attempts a connection on browser launch, popup open, or Refresh — there is no background polling. No data leaves your machine.
+
+### 4. Back up before any cleanup
+
+Bookmark deletes are **permanent — Chrome has no undo for them**. Before running any destructive tool (`bookmark_batch_delete`, `bookmark_deduplicate`, `bookmark_merge_folders` with `delete_source`, or `bookmark_delete_folder`), take a full snapshot:
+
+```
+Use bookmark_export_html to export all my bookmarks, then save the HTML to a file
+```
+
+`bookmark_export_html` returns the complete bookmark tree as standard Netscape Bookmark HTML — the same format the browser's own "Export bookmarks" produces. If a cleanup goes wrong, `bookmark_import_html` restores that snapshot back into your browser. Keep the export until you have verified the result.
+
+## Features
+
+**19 MCP tools** for complete bookmark management:
+
+| Category | Tools |
+|----------|-------|
+| **Read** | `ping`, `bookmark_get_tree`, `bookmark_list`, `bookmark_search`, `bookmark_get`, `bookmark_count`, `bookmark_find_duplicates` |
+| **Write** | `bookmark_create`, `bookmark_update`, `bookmark_move`, `bookmark_delete`, `bookmark_delete_folder` |
+| **Batch** | `bookmark_batch_move`, `bookmark_merge_folders`, `bookmark_deduplicate`, `bookmark_batch_delete` |
+| **Export/Import** | `bookmark_export_html`, `bookmark_import_html` |
+| **Analysis** | `bookmark_check_dead_links` |
+
+**Key capabilities:**
+- Real-time operations while browser is open (no file manipulation)
+- Folder path resolution (`"Bookmarks Bar > Tech > AI"`)
+- Auto-create nested folders with `create_parents`
+- Smart deduplication by URL
+- Folder merge with optional dedup
+- Dead link detection with HEAD/GET fallback
+- Safety gates on destructive operations (`dry_run: true` to preview, `confirm: true` to execute)
+- HTML export as a one-call backup before cleanup (`bookmark_export_html` / `bookmark_import_html`)
+
+## Architecture
+
+Three-process design with HTTP bridge:
+
+```
+Claude Code / AI Agent
+    | (MCP stdio JSON-RPC)
+    v
+MCP Stdio Proxy (Process C)        <- spawned by AI client
+    | (HTTP to localhost:19420)
+    v
+Native Host + HTTP Server (Process A) <- spawned by browser extension
+    | (Chrome Native Messaging)
+    v
+Browser Extension (Service Worker)
+    | (chrome.bookmarks API)
+    v
+Browser Bookmarks
+```
+
+## Tool Reference
+
+### Read Tools
+
+**`ping`** — Check if the extension is connected and responsive.
+
+**`bookmark_get_tree`** — Get the bookmark tree structure.
+- `folder_id` (optional) — Get subtree of a specific folder
+- `depth` (optional, default: 2) — Max depth to return. Use `0` for unlimited.
+
+**`bookmark_list`** — List bookmarks in a folder (non-recursive).
+- `folder_id` (optional) — Folder to list. Default: root.
+- `limit` / `offset` — Pagination.
+
+**`bookmark_search`** — Full-text search across titles and URLs.
+- `query` — Search text
+- `folder_id` or `folder_path` — Scope search (e.g., `"Bookmarks Bar > Tech"`)
+- `limit` (optional, default: 50)
+
+**`bookmark_get`** — Get a single bookmark/folder by ID with folder path.
+
+**`bookmark_count`** — Count bookmarks and folders, optionally scoped.
+
+**`bookmark_find_duplicates`** — Find bookmarks with duplicate URLs.
+
+### Write Tools
+
+**`bookmark_create`** — Create a bookmark or folder.
+- `title` — Required
+- `url` — Omit to create a folder
+- `parent_id` or `parent_path` + `create_parents: true` — Auto-create nested folders
+
+**`bookmark_update`** — Update title or URL.
+
+**`bookmark_move`** — Move to a different parent folder.
+
+**`bookmark_delete`** — Delete a single bookmark. Root folders protected.
+
+**`bookmark_delete_folder`** — Delete a folder and all contents. Requires `confirm: true`.
+
+### Batch Tools
+
+**`bookmark_batch_move`** — Move multiple bookmarks at once.
+
+**`bookmark_merge_folders`** — Merge source folder into target.
+- `deduplicate` — Skip bookmarks that already exist in target (by URL)
+- `delete_source` — Remove source folder after merge. When `true`, this is destructive: pass `dry_run: true` first to preview, then `confirm: true` to execute. No undo.
+
+**`bookmark_deduplicate`** — Remove duplicate bookmarks (same URL). Destructive, no undo.
+- `folder_id` or `scope: 'global'` — **Required.** Scopes which bookmarks are considered; omitting both is rejected so an unscoped call can't sweep the whole tree.
+- `keep` — `'first'` or `'last'`
+- `dry_run: true` — Preview the exact items that would be removed. Run `bookmark_find_duplicates` or a `dry_run` first, then `confirm: true` to execute.
+
+**`bookmark_batch_delete`** — Delete multiple bookmarks by IDs. Destructive, no undo: `dry_run: true` to preview, `confirm: true` to execute.
+
+> Back up first with `bookmark_export_html`; `bookmark_import_html` restores it. See [Quick Start step 4](#4-back-up-before-any-cleanup).
+
+### Export/Import
+
+**`bookmark_export_html`** — Export as Netscape Bookmark HTML format. Use this as your backup/safety net before any destructive cleanup.
+
+**`bookmark_import_html`** — Import from Netscape Bookmark HTML. Restores a snapshot produced by `bookmark_export_html`.
+
+### Analysis
+
+**`bookmark_check_dead_links`** — Check URLs for broken links (HTTP HEAD with GET fallback).
+- `limit` (default: 50) — Max bookmarks to check
+- `timeout_ms` (default: 5000) — Request timeout
+
+## CLI Commands
+
+```bash
+npx chromium-bookmarks-mcp              # Start MCP stdio proxy (default)
+npx chromium-bookmarks-mcp register     # Register native host for detected browsers
+npx chromium-bookmarks-mcp register ID  # Register with specific extension ID (local dev)
+npx chromium-bookmarks-mcp unregister   # Remove native host registration
+npx chromium-bookmarks-mcp doctor       # Diagnose connection issues
+```
+
+> `register` is **automatic** on first proxy startup. Run it manually only when changing extension IDs (local dev), or after manually deleting native-host manifests.
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Extension shows "Disconnected" | Click **Refresh status** in the popup. If still disconnected, run `npx chromium-bookmarks-mcp doctor` to diagnose. |
+| `register` doesn't detect browser | Pass the extension ID manually: `npx chromium-bookmarks-mcp register <ID>` |
+| MCP tools timeout | Ensure your browser is open and the extension is enabled |
+| Port 19420 conflict | Another instance may be running. Check with `lsof -i :19420` |
+| Tools work but return empty | Your browser may need bookmarks — try creating one manually first |
+
+For deeper diagnostics, run:
+```bash
+npx chromium-bookmarks-mcp doctor
+```
+
+## Supported Browsers
+
+| Browser | macOS | Linux | Windows |
+|---------|-------|-------|---------|
+| Chrome | Yes | Yes | Yes |
+| Brave | Yes | Yes | Yes |
+| Edge | Yes | Yes | Yes |
+| Arc | Yes | — | — |
+| Chromium | Yes | Yes | — |
+
+On Windows, `register` writes both the manifest JSON and the corresponding `HKCU\Software\<vendor>\<browser>\NativeMessagingHosts` registry key, which is how Chromium discovers native messaging hosts on Windows.
+
+## Development
+
+### Prerequisites
+
+- [Bun](https://bun.sh/) 1.2+
+- A Chromium browser
+
+### Project Structure
+
+```
+chromium-bookmarks-mcp/
+├── packages/shared/          # Shared types and constants
+├── apps/extension/           # Browser extension (WXT + TypeScript)
+│   └── entrypoints/
+│       ├── background/       # Service worker + tool handlers
+│       ├── offscreen/        # Keepalive for MV3
+│       └── popup/            # Connection status UI
+└── apps/mcp-server/          # MCP server + native host
+    ├── src/
+    │   ├── index.ts          # CLI entry point
+    │   ├── native-host.ts    # Process A: native messaging + HTTP
+    │   ├── stdio-proxy.ts    # Process C: MCP stdio proxy
+    │   ├── native-protocol.ts # Chrome binary protocol
+    │   ├── browsers.ts       # Browser detection
+    │   └── register.ts       # Native host registration
+    └── bin/run_host.sh       # Shell wrapper for native host
+```
+
+### Commands
+
+```bash
+bun install                    # Install all dependencies
+bun test                       # Run tests
+cd apps/extension && bun run wxt dev    # Dev mode (hot reload)
+cd apps/extension && bun run wxt build  # Production build
+```
+
+### Working with a local unpacked extension
+
+The native-host manifest's `allowed_origins` defaults to the published Chrome Web Store extension ID. When developing against an unpacked extension you have two options:
+
+1. **Pin the dev ID via `manifest.key`** — copy the public key from the Web Store Developer Dashboard ("More info" → "Public key") into `apps/extension/wxt.config.ts` as `manifest.key`. Chrome derives the unpacked extension's ID from this key, matching the published one. Do **not** commit the key — keep it in a local `.env`-style override or a private branch.
+2. **Pass the dev ID to register** — load your unpacked extension, copy the ID from `chrome://extensions`, then run:
+   ```bash
+   npx chromium-bookmarks-mcp register <your-dev-extension-id>
+   ```
+   This rewrites `allowed_origins` to your dev ID for local testing.
+
+## Security & Privacy
+
+- Only 3 permissions: `bookmarks`, `nativeMessaging`, `offscreen`
+- All communication is localhost only (`127.0.0.1`)
+- No analytics, no telemetry, no external network calls
+- No data leaves your machine
+- Root folder deletion protected
+- Destructive batch operations gated by `dry_run` preview and explicit `confirm: true`
+- Back up first with `bookmark_export_html`; deletes are permanent and have no undo
+- Full [Privacy Policy](privacy-policy.md)
+
+## License
+
+[MIT](LICENSE)

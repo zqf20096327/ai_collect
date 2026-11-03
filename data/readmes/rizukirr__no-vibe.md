@@ -7,14 +7,14 @@ Works with Claude Code, Codex, opencode, Pi and Antigravity.
 ## A lesson
 
 ```
-/no-vibe add a linear layer to my model
+/no-vibe i wanna learn about matrix multiplication using assembly
 ```
 
 1. If you are in a project, the agent reads it first, so the lesson fits your stack and never breaks what already works.
 2. It finds your level with a few multiple-choice questions.
 3. It agrees a one-sentence goal with you.
 4. It plans chapters you approve, each building on the last.
-5. Each chapter is taught one section at a time: why it is needed, a structured explanation with a text diagram when it helps, then at least 3 exercises with the full code shown for you to type and run.
+5. Each chapter is taught one section at a time: why it is needed, a structured explanation with a visual when it helps, then at least 3 exercises with the full code shown for you to type and run.
 6. Each chapter ends with a check, such as finding a bug or predicting output, and the agent re-explains what you miss.
 7. For a goal in your project, the last chapters guide you to type the real feature into your own code.
 

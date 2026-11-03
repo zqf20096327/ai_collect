@@ -118,7 +118,7 @@ installed. Keep the files together and put the folder on your PATH (copying
 `mudroom.exe` alone won't run without Swift installed). In PowerShell:
 
 ```powershell
-$v = '0.5.0'; $arch = 'x86_64'          # or 'arm64'
+$v = '0.7.0'; $arch = 'x86_64'          # or 'arm64'
 $name = "mudroom-$v-windows-$arch"
 Invoke-WebRequest "https://github.com/Kernel-Hunter/mudroom/releases/download/v$v/$name.zip" -OutFile "$env:TEMP\$name.zip"
 Get-FileHash "$env:TEMP\$name.zip"     # compare with $name.zip.sha256 on the release page
@@ -130,8 +130,8 @@ Copy-Item "$env:TEMP\$name\*" $dir -Force
 [Environment]::SetEnvironmentVariable('Path', [Environment]::GetEnvironmentVariable('Path', 'User') + ";$dir", 'User')
 ```
 
-To upgrade, run the same lines with the new version, without the PATH
-line. `mudroom.exe` isn't code-signed; if Windows blocks it after you unzip
+To upgrade, run `mudroom update`, or the same lines with the new version
+without the PATH line. `mudroom.exe` isn't code-signed; if Windows blocks it after you unzip
 with Explorer, run `Get-ChildItem $dir | Unblock-File`.
 
 The Scoop and winget manifests are in [packaging/scoop](packaging/scoop)
@@ -159,6 +159,71 @@ cp .build/release/mudroom /usr/local/bin/   # or anywhere on your PATH
 mudroom image build --backend docker        # or --backend podman, once
 mudroom network check --backend docker      # see what the sandbox can reach
 ```
+
+</details>
+
+### Updating
+
+**Mac app.** Mudroom.app updates itself with
+[Sparkle](https://sparkle-project.org): Mudroom > Check for Updates, or
+let it check once a day (it asks the second time you open it). Nothing is
+installed until you click Install, and Mudroom only installs an update that
+is signed with its own key. The `mudroom` command inside the app updates
+with it. Mudroom 0.5.0 and older don't have the updater yet, so update
+those once by hand: `brew upgrade --cask mudroom`, or run the install script
+again.
+
+**Command line.** `mudroom update` checks for a new release and updates
+the way Mudroom was installed:
+
+| Installed with | `mudroom update` |
+|---|---|
+| Homebrew | runs `brew upgrade --cask mudroom` |
+| The install script or the zip | opens Mudroom.app's updater |
+| A Windows release zip | downloads the new zip, checks its SHA-256 against the release, and swaps the files in |
+| Scoop, winget | prints `scoop update mudroom` or `winget upgrade --id KernelHunter.Mudroom --exact` to run (neither can replace `mudroom.exe` while it runs) |
+| Built from source | tells you to `git pull` and rebuild |
+
+It asks before changing anything; `--yes` skips the question and `--check`
+only checks. In a terminal, Mudroom also prints one line after a command
+when a newer release is out, at most once a day:
+
+```text
+Mudroom 0.6.0 is available (you have 0.5.0). Run `mudroom update` to get it.
+```
+
+<details>
+<summary><b>What the update check sends, and how to turn it off</b></summary>
+
+<br>
+
+The CLI makes one request, once a day (an hour later if GitHub couldn't be
+reached): `GET
+https://api.github.com/repos/Kernel-Hunter/mudroom/releases/latest`, over
+HTTPS, with no cookies or credentials. GitHub sees your IP address and a
+`User-Agent: mudroom/<version>` header, which its API requires. Nothing
+else is sent: no ID, no system details, nothing about your projects or
+sessions. The answer is cached in Mudroom's data folder
+(`update-check.json`). The check runs on your machine only, never in the
+sandbox, and never during `run`, `start` or `agent`, in JSON output, under
+CI, or when standard output or standard error isn't a terminal. A slow or
+failed check never delays a command by more than a second and never
+changes its result.
+
+The Mac app reads its feed, `https://kernel-hunter.github.io/mudroom/appcast.xml`,
+once a day if you said yes to automatic checks. Sparkle sends the app's
+name and version in its User-Agent and no system profile. The feed and
+each update are signed with Mudroom's EdDSA key; an update or feed that
+doesn't match the key is refused.
+
+To turn the checks off:
+
+- the CLI: `mudroom update --auto-check off` (saved in Mudroom's
+  `settings.json`), or `MUDROOM_NO_UPDATE_CHECK=1` in your environment;
+- the app: Mudroom > Settings > Check for updates automatically. The
+  `mudroom` command inside the app follows this setting too.
+
+`mudroom update` itself always checks, since you asked it to.
 
 </details>
 
@@ -521,8 +586,10 @@ claude`.
   project's allowlist for the next session.
 - **Timeline**: if the session has snapshots, a slider picks a point in time
   and the file list shows only what changed after it (read-only).
-- **Conflicts**: files you changed yourself since the session started are
-  flagged in the list and above the diff, and are never overwritten.
+- **Conflicts and merges**: files you changed yourself since the session
+  started are flagged in the list and above the diff, and are never
+  overwritten. When your changes and the agent's are in different lines of a
+  text file, the file is marked as a merge instead and applying keeps both.
 - **Apply Selected** (⌘↩), **Apply All** (⇧⌘↩), **Undo** (⌥⌘Z) and
   **Discard** (⌘⌫). Each apply can be undone in one step. Space toggles the
   selected file.
@@ -1211,9 +1278,30 @@ point Mudroom at a file outside the session.
 ### How apply stays safe
 
 For each path, Mudroom checks that the real project still has exactly what the
-session started from. If you edited `README.md` while the agent was working,
-`apply` reports a conflict for that file and leaves it alone; the rest still
-applies. Other rules:
+session started from. If you edited `README.md` while the agent was working
+(or another session's apply changed it), Mudroom tries a three-way merge of
+the session's base, your current file and the agent's copy:
+
+- If the two sets of changes are in different lines, the merged file is
+  applied like any other change. `apply` prints it as `merged`, the review
+  marks it before you apply, and `undo` puts back your file exactly as it was
+  before the apply. A later apply of the same session merges again instead of
+  writing the agent's copy over it.
+- If they change the same lines, or lines right next to each other, it's a
+  conflict: nothing is written to that file and the rest still applies. The
+  same goes for permissions changed on both sides.
+- Only regular text files are merged. A binary file, a symlink, a mode-only
+  change, a change of type, a file one side deleted and the other edited, a
+  file both sides added, files over 4 MB and anything inside `.git` stay
+  conflicts.
+- Line endings are part of each line, so CRLF files stay CRLF and a missing
+  final newline stays missing. Converting a whole file between CRLF and LF on
+  one side touches every line, so it conflicts with any edit on the other.
+- Selected hunks merge the same way: the base plus the hunks you picked is
+  merged into your current file, so a hunk still goes in when you changed a
+  different part of the file.
+
+Other rules:
 
 - Files are written to a temp name and renamed into place.
 - Directories are removed with `rmdir`, so a directory that gained a file on
@@ -1494,6 +1582,19 @@ macOS, Linux and Windows.
 ## FAQ
 
 <details>
+<summary><b>Does Mudroom connect to anything on its own?</b></summary>
+
+<br>
+
+Only to check for updates: the CLI asks GitHub for the latest release at
+most once a day, and the Mac app reads its update feed once a day if you
+allow it. Neither sends anything about you or your projects. See [What the
+update check sends, and how to turn it off](#updating). Everything else
+Mudroom connects to is what you or the agent ask for.
+
+</details>
+
+<details>
 <summary><b>Does the agent ever touch my real project folder?</b></summary>
 
 <br>
@@ -1511,8 +1612,10 @@ safe](#how-apply-stays-safe).
 <br>
 
 Apply checks each file in your project against the session's starting copy.
-A file you changed is reported as a conflict and left alone; the rest still
-applies.
+If you changed a text file in different lines from the agent, apply merges
+the two and keeps both. If you changed the same or neighbouring lines, the file is reported
+as a conflict and left alone; the rest still applies. The same happens when
+two sessions on one project edit the same file and you apply both.
 
 </details>
 
@@ -1608,6 +1711,7 @@ swift test                 # diff, hunks, apply, undo, allowlist, proxy, snapsho
 scripts/make-demo.sh       # demo sessions in build/demo (no VM)
 scripts/screenshots.sh     # regenerates docs/screenshots from the demo
 scripts/release.sh 0.4.0   # dist/Mudroom-0.4.0.zip and its SHA-256
+scripts/appcast.sh 0.4.0   # adds a published release to the app's update feed
 scripts/windows-package.ps1 .build/release/mudroom.exe 0.4.0 x86_64   # on Windows: dist/mudroom-0.4.0-windows-x86_64.zip with its DLLs
 mudroom network check      # verifies isolation in a real sandbox (any backend)
 ```
@@ -1629,6 +1733,26 @@ The proxy tests run it against a loopback test server. The app target is
 `MudroomApp` (SwiftUI, macOS 26+, left out of the package on other
 platforms). `MudroomCore` has no UI code; the app and the CLI both sit on
 top of it.
+
+### Releasing
+
+1. Set the version in `Sources/mudroom/Version.swift`, commit, and push a
+   tag: `git tag v0.6.0 && git push origin v0.6.0`. The release workflow
+   builds `Mudroom-0.6.0.zip` and the Windows zips, with a `.sha256` for
+   each, and attaches them to the GitHub release.
+2. `scripts/appcast.sh 0.6.0`: downloads the Mac zip, checks it against
+   its `.sha256`, signs it with Sparkle's `sign_update` (the EdDSA key in the
+   login Keychain), adds it to `docs/appcast.xml` with the release notes and
+   signs the feed. Commit `docs/appcast.xml` and push it to main; GitHub
+   Pages serves it to the app.
+3. `scripts/update-cask.sh 0.6.0 --remote`, then copy the cask to the
+   Kernel-Hunter/homebrew-tap repo.
+4. `scripts/update-windows-manifests.sh 0.6.0`, then copy the Scoop manifest
+   to Kernel-Hunter/scoop-bucket and the winget folder to a winget-pkgs fork.
+5. In the README, set `$v = '0.6.0'` in the Windows zip install lines.
+
+The CLI's update notice reads GitHub's latest release, so it shows up as
+soon as the release is published; the app's comes with step 2.
 
 ## Contributing
 

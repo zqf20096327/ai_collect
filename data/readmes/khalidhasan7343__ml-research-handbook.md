@@ -28,7 +28,7 @@ The handbook progresses from beginner vocabulary to algorithms, evaluation, expe
 
 Use it as a study sequence or return to individual sections while reading a paper. The references in Section 34 provide starting points for further study.
 
-## Who Is This For? / কাদের জন্য
+## Intended Audience / কাদের জন্য
 
 - Students learning machine learning and deep learning foundations.
 - Readers approaching academic ML papers for the first time.
@@ -36,7 +36,7 @@ Use it as a study sequence or return to individual sections while reading a pape
 - Students developing a thesis direction or a defensible research question.
 - Bangla-speaking learners who benefit from explanations in both languages.
 
-## What You Will Learn / যা শিখবেন
+## Topics Covered / আলোচিত বিষয়
 
 - Follow an ML project from dataset inspection to evaluation and experimental design.
 - Read a paper systematically and organize notes about its problem, method, and evidence.
@@ -91,7 +91,7 @@ The groupings below are reading aids; the manuscript retains its original sectio
 | 33 | Final Cheat Sheet — How to Read Any ML Research Paper |
 | 34 | References & Further Reading |
 
-## Recommended Learning Path / পড়ার পরামর্শ
+## Suggested Learning Path / পড়ার পরামর্শ
 
 | Your starting point | Suggested sections |
 |---|---|
@@ -101,17 +101,26 @@ The groupings below are reading aids; the manuscript retains its original sectio
 | Want a complete case study | Read 26 alongside the frameworks in 8–17. |
 | Planning experiments or a submission | Return to 5–6, 22–23, and 30–31. |
 
-## Paper Analysis & Research Gap Workflow / পেপার বিশ্লেষণ ও রিসার্চ গ্যাপের ধাপ
+## Research Paper Analysis Workflow / গবেষণাপত্র বিশ্লেষণের ধাপ
 
 1. **Orient yourself.** Use the three-pass method in Section 8 to understand the problem, contribution, and paper structure.
 2. **Map the argument.** Apply the abstract and introduction guides in Sections 9–10; compare related work using Section 11.
 3. **Examine the evidence.** Review methods, datasets, baselines, metrics, and experiments using Sections 5–6 and 16–17.
 4. **Record what matters.** Use the note-taking and one-page summary templates in Sections 18 and 24.
-5. **Develop a research direction.** Check reproducibility with Section 22, verify a possible gap using Sections 12–15 and 25, then develop a topic and testable question using Sections 19–21.
+5. **Check reproducibility.** Use Section 22 to assess whether the reported experiment can be reproduced; use Section 26 as a complete case study.
+
+প্রথম পাঠে সামগ্রিক ধারণা নিন, পরের পাঠে পদ্ধতি ও প্রমাণ যাচাই করুন, তারপর নিজের নোটে পেপারের অবদান, সীমাবদ্ধতা ও পুনরুৎপাদনযোগ্যতা লিখুন। Section 26-এ এই কাঠামোগুলোর প্রয়োগ দেখানো হয়েছে।
+
+## Research Gap Identification / রিসার্চ গ্যাপ শনাক্তকরণ
+
+1. **Compare related studies.** Use the literature matrix in Section 11 to organize problems, methods, datasets, and findings.
+2. **Describe a possible gap.** Consult the gap types and detection framework in Sections 12–13; distinguish gaps from limitations and novelty claims using Section 14.
+3. **Verify the evidence.** Use Sections 15 and 25 to check the proposed gap against related literature.
+4. **Form a research question.** Develop a topic, a testable question, and a novelty assessment with Sections 19–21.
 
 A limitation in one paper is a starting point for investigation. Compare related studies and verify the evidence before treating it as a research gap. Section 26 shows the frameworks applied to a complete case study.
 
-প্রথম পাঠে সামগ্রিক ধারণা নিন, পরের পাঠে পদ্ধতি ও প্রমাণ যাচাই করুন, তারপর নিজের নোটে সীমাবদ্ধতা ও সম্ভাব্য গবেষণা প্রশ্ন লিখুন। একটি পেপারের সীমাবদ্ধতা দেখেই সেটিকে রিসার্চ গ্যাপ ধরে নেবেন না; সংশ্লিষ্ট গবেষণার সঙ্গে তুলনা করে প্রশ্নটি নির্দিষ্ট ও পরীক্ষাযোগ্য করুন। Section 26-এ এই কাঠামোগুলোর প্রয়োগ দেখানো হয়েছে।
+একটি পেপারের সীমাবদ্ধতা দেখেই সেটিকে রিসার্চ গ্যাপ ধরে নেবেন না; সংশ্লিষ্ট গবেষণার সঙ্গে তুলনা করে প্রমাণ যাচাই করুন, তারপর প্রশ্নটি নির্দিষ্ট ও পরীক্ষাযোগ্য করুন।
 
 ## Repository Structure / রিপোজিটরির বিন্যাস
 
@@ -120,6 +129,7 @@ ml-research-handbook/
 ├── README.md
 ├── HANDBOOK.md
 ├── LICENSE
+├── LICENSE-MIT
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── CITATION.cff
@@ -134,7 +144,7 @@ ml-research-handbook/
         └── correction-report.yml
 ```
 
-[SHA256SUMS.txt](SHA256SUMS.txt) records SHA-256 checksums for the public files other than the manifest itself. Checksums verify file integrity; they do not establish academic correctness.
+[SHA256SUMS.txt](SHA256SUMS.txt) records SHA-256 checksums for `HANDBOOK.md` and the PDF and DOCX editions. Checksums verify file integrity; they do not establish academic correctness.
 
 ## Errors, Corrections & Feedback / ভুল, সংশোধন ও মতামত
 
@@ -172,13 +182,26 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidance on reporting corrections in 
 
 The supplied handbook identifies itself as **Version 4.0**. These repository preparation changes do not assign a new content version or publication date. See [CHANGELOG.md](CHANGELOG.md) for preparation notes and future updates.
 
-## License / লাইসেন্স
+## Licensing / লাইসেন্স
 
-This handbook is licensed under [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+| Component | License |
+|---|---|
+| Handbook content | [CC BY-NC-ND 4.0](LICENSE) |
+| PDF edition | [CC BY-NC-ND 4.0](LICENSE) |
+| DOCX edition | [CC BY-NC-ND 4.0](LICENSE) |
+| Explicitly designated standalone software/code | [MIT](LICENSE-MIT) |
+
+The original handbook text, written explanations, academic materials, and embedded examples remain under [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/), as recorded in [LICENSE](LICENSE).
 
 You may share the material for noncommercial purposes with appropriate credit and a link to the license, subject to its terms. The license does not grant permission to distribute adapted versions. Exceptions and limitations under applicable law still apply. See [LICENSE](LICENSE) and the [full legal code](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.en).
 
 লাইসেন্সের শর্ত মেনে যথাযথ কৃতিত্ব ও লাইসেন্সের লিংকসহ অবাণিজ্যিকভাবে শেয়ার করা যাবে। এই লাইসেন্স পরিবর্তিত সংস্করণ বিতরণের অনুমতি দেয় না।
+
+[LICENSE-MIT](LICENSE-MIT) applies only to separately identified original standalone software that MD Khalid Hasan explicitly designates as MIT-licensed. No such standalone software currently exists in the public repository; MIT is included for future explicitly designated software. It does not apply to the handbook, PDF or DOCX editions, research explanations, academic prose, embedded examples, or third-party content.
+
+MIT লাইসেন্স কেবল লেখক কর্তৃক স্পষ্টভাবে MIT-লাইসেন্সকৃত হিসেবে চিহ্নিত স্বতন্ত্র মৌলিক সফটওয়্যারের জন্য প্রযোজ্য। হ্যান্ডবুক, এর উদাহরণ এবং PDF ও DOCX সংস্করণের লাইসেন্স অপরিবর্তিত রয়েছে।
+
+Third-party works remain subject to their own rights and licenses. The preserved `LICENSE` notice refers to “Section 33 (References)”; the handbook's References & Further Reading is **Section 34**.
 
 ## Acknowledgements / কৃতজ্ঞতা
 

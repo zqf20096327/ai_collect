@@ -1,6 +1,6 @@
 # health-export-mcp
 
-**An MCP server for your own Apple Health data.** 194 metrics, 18 tools (16 read-only, plus two that log events to their own file) and 22 prompts over local stdio, with zero dependencies, no account and no server of ours in the path. Your agent gets JSON with units, date ranges and coverage, and answers from your numbers.
+**An MCP server for your own Apple Health data.** 194 metrics, 22 tools (20 read-only, plus two that log events to their own file) and 23 prompts over local stdio, with zero dependencies, no account and no server of ours in the path. Your agent gets JSON with units, date ranges and coverage, and answers from your numbers.
 
 <p align="center">
   <a href="https://www.npmjs.com/package/health-export-mcp"><img alt="npm" src="https://img.shields.io/npm/v/health-export-mcp?color=cb3837" /></a>
@@ -38,7 +38,7 @@ Then ask *"Use health-export: how did my HRV this week compare with last week?"*
 3. **Check it arrived.** `npx -y health-export-mcp --doctor` prints the folder it chose and why, each file's age, and freshness. iCloud can take a few minutes to bring a new export to the Mac.
 
 <p align="center">
-  <img src="assets/architecture.svg" alt="Apple Health exports to iCloud, a folder, or your LAN; health-export-mcp reads it and serves 18 tools to your AI agent" width="100%" />
+  <img src="assets/architecture.svg" alt="Apple Health exports to iCloud, a folder, or your LAN; health-export-mcp reads it and serves 22 tools to your AI agent" width="100%" />
 </p>
 
 ---
@@ -73,7 +73,7 @@ The companion iOS app **[MetricBridge](https://www.healthexport.dev)** exports y
 |---|---|
 | **iCloud Drive** (default) | Your Mac reads the synced folder automatically |
 | **Local folder** | Any folder that syncs to your Mac (Dropbox, Google Drive, OneDrive, …) |
-| **LAN** (HTTP / WebSocket) | Direct push to the server, great over Tailscale |
+| **LAN** (HTTP / WebSocket) | Direct push to the server, great over Tailscale. Carries the daily summary and, when you switch on Settings > Local network > Strength log, the strength log (written to `health-strength.json`) |
 
 > Using a non-MCP tool (ChatGPT, n8n, Home Assistant)? The app can also POST to a **webhook** those tools read directly, see [Works with](#works-with-claude-cursor-chatgpt-openclaw-hermes).
 
@@ -142,7 +142,7 @@ Restart the client and try:
 
 ---
 
-## The 18 MCP tools
+## The 22 MCP tools
 
 Full reference with request/response examples: **[healthexport.dev/mcp](https://www.healthexport.dev/mcp/#tools)**.
 
@@ -163,7 +163,11 @@ Full reference with request/response examples: **[healthexport.dev/mcp](https://
 | `get_profile` | Opted-in context fields (conditions, medications, goals, allergies, notes) plus `presentFields`. Absent fields were withheld, never "none". |
 | `get_workouts` | Workouts by activity/date with pagination; includes heart rate, running dynamics, cycling power, intervals and `hasRoute` when exported. |
 | `get_sleep_sessions` | Clustered sleep sessions attributed to the waking day; split nights returned as separate sessions, duplicate copies of one night collapsed (`collapsedDuplicates`). |
+| `get_strength_log` | The strength log typed into the iOS app (`health-strength.json`, opt-in, off by default, from the iCloud or folder export or from the LAN push): each session with every set as entered, `volumeKg`, `workingSets`, an Epley `bestEstimateKg` per exercise, all-time records, and the user's saved routines. Filter by `exercise`, `start`, `end`. Missing file → `available:false`. |
+| `get_lab_results` | Lab results from Apple Health Records (`health-labs.json`; opt-in, off by default, folder export only, never iCloud Drive): each test with its results oldest first, value, date, institution and the lab's own reference range, exactly as reported. Nothing is flagged or interpreted, and units are never converted. Filter by `test`, `loinc`, `start`, `end`. Missing file → `available:false`. |
+| `get_check_ins` | Morning check-ins the user chose to share (`health-check-ins.json`, off by default in the app): self-rated feeling 1 to 5, note, intention and whether it happened, plus a summary. A self-rating, not a measurement. |
 | `get_cycle_context` | Day-in-cycle and coarse phase derived from logged period starts. Never predictive. |
+| `list_tags` | Tags logged in the app (`health-tags.json`, opt-in there and off by default): lifestyle tags and supplements by name, never an amount. `{kind: all, supplement or lifestyle, start, end}`; one row per tag plus the names per day. |
 | `correlate_metrics` | Pearson correlation between two metrics with a 0..3 day lag. Association, not causation, always stated. |
 | `resolve_metric` | Canonical name and unit for any spelling (`steps`, `StepCount`, `Body Weight`, `hrv`), unit variants with exact formulas, an optional `{value, unit}` conversion, and whether the export holds it. Ambiguous words come back with candidates, never guessed. The data tools accept the same aliases and report `resolvedFrom`. When the export carries per-source attribution (app builds that write `src`/`by` on daily points and a `health-sources.json`, cache schema minor 2), the answer adds a `sources` block naming the devices that fed the export, which one won each metric and the priority rules, and `sourceMerge` reports disagreement as visible; older exports report it as not available. |
 
@@ -171,17 +175,17 @@ Full reference with request/response examples: **[healthexport.dev/mcp](https://
 
 ### Data files
 
-The daily cache (`.health-cache.json`) and workouts cache are joined by optional context files, all optional: `health-events.json` (the logging surface), `health-profile.json` (opt-in context), `health-sessions.json` (sleep sessions), `health-cycles.json` (observed cycle starts), `health-days.json` (timezone change log), `health-readings.json` (individual blood pressure readings) and `.health-manifest.json` (what the phone last wrote, for the stale-copy check). The server reads all of them and writes only `health-events-agent.json` (events logged with `add_event`). An absent file is reported as `available:false` with a note, never as "no data". Formats: [docs/SCHEMA-CONTRACTS.md](docs/SCHEMA-CONTRACTS.md).
+The daily cache (`.health-cache.json`) and workouts cache are joined by optional context files, all optional: `health-events.json` (the logging surface), `health-profile.json` (opt-in context), `health-sessions.json` (sleep sessions), `health-cycles.json` (observed cycle starts), `health-days.json` (timezone change log), `health-readings.json` (individual blood pressure readings), `health-check-ins.json` (morning check-ins, opt-in), `health-strength.json` (the strength log, when its export is switched on, or pushed by the app over LAN when Local network > Strength log is on), `health-labs.json` (lab results from Apple Health Records, opt-in, folder export only, never iCloud Drive), `health-tags.json` (logged tags with supplements marked, opt-in in the app) and `.health-manifest.json` (what the phone last wrote, for the stale-copy check). The server reads all of them and writes only `health-events-agent.json` (events logged with `add_event`). An absent file is reported as `available:false` with a note, never as "no data". Formats: [docs/SCHEMA-CONTRACTS.md](docs/SCHEMA-CONTRACTS.md).
 
 Two patterns worth knowing: [query a parent's Apple Health from your own AI](docs/caregiver-setup.md) (consent-first, the parent's phone is the authority) and [logging data into Apple Health via Shortcuts](docs/shortcuts-write-bridge.md) (the server never writes to Apple Health).
 
 ### MCP prompts
 
-The server ships 22 prompts over `prompts/list` / `prompts/get`: daily brief, weekly review, doctor visit prep, what changed since my last visit, sleep quality and regularity, HRV trend, training and race week reviews, zone minutes, n-of-1 experiment, medication before/after, GLP-1 dose-step compare, sobriety milestone, shift block compare, travel-honest monthly review, cycle-aware trend read, caregiver check-in, glucose day summary, long-term activity narrative, data coverage audit, and a profile-aware context bootstrap. Every prompt leads with coverage honesty and never turns data into diagnosis.
+The server ships 23 prompts over `prompts/list` / `prompts/get`: daily brief, weekly review, doctor visit prep, what changed since my last visit, sleep quality and regularity, HRV trend, training and race week reviews, zone minutes, n-of-1 experiment, medication before/after, GLP-1 dose-step compare, sobriety milestone, shift block compare, travel-honest monthly review, cycle-aware trend read, caregiver check-in, glucose day summary, long-term activity narrative, data coverage audit, a nutrition week summary, and a profile-aware context bootstrap. Every prompt leads with coverage honesty and never turns data into diagnosis.
 
 ### Demo mode
 
-`node server.mjs --demo` (or `HEALTH_DEMO=1`) serves a deterministic synthetic dataset: ~15 metrics over 400 days, 30 workouts with intervals, 8 events, a profile, 60 sleep sessions, cycle starts and a timezone change, anchored to a fixed date with a seeded PRNG. Every answer carries `demo: true` and a `[SYNTHETIC DEMO DATA]` text prefix, so demo output can never pass for a real export.
+`node server.mjs --demo` (or `HEALTH_DEMO=1`) serves a deterministic synthetic dataset: ~15 metrics over 400 days, 30 workouts with intervals, 8 events, a profile, 60 sleep sessions, cycle starts, a timezone change and 30 days of tags, anchored to a fixed date with a seeded PRNG. Every answer carries `demo: true` and a `[SYNTHETIC DEMO DATA]` text prefix, so demo output can never pass for a real export.
 
 ### CLI
 
@@ -279,6 +283,8 @@ exports keep working either way. A missing or wrong passphrase, or a file that f
 check, is reported as such (`get_mcp_status` says `encrypted: true` plus the reason, `--doctor` prints
 an `encryption:` line), never as "no data". The passphrase is never logged or echoed.
 
+**LAN receiver and the strength log.** `POST /health-cache` (and the single text frame of `/health-cache-ws`) takes two bodies. The daily summary is merged into `.health-cache.json` as before. A document with `"type": "strength.log"` (the app's opt-in, off-by-default Local network > Strength log switch; same body as the webhook's `strength.log`, see [docs/SCHEMA-CONTRACTS.md](docs/SCHEMA-CONTRACTS.md) sections 10 and 14) is validated, rebuilt from an allowlist and written whole to `health-strength.json` in `HEALTH_DATA_DIR`, which `get_strength_log` already reads. It is a replace, never a merge, so a session deleted in the app disappears on the next push. The reply is `200 {"ok":true,"type":"strength.log","sessions":N}`, or `400` for a document with no `data.strengthLog.sessions`. Tokens, the Host/Origin checks, `HEALTH_EXPORT_PASSPHRASE` and `HEALTH_REQUIRE_ENCRYPTED=1` apply exactly as for the summary. No new tool and no new endpoint; an older receiver ignores the document.
+
 The LAN receiver (`HEALTH_LISTEN=1`) decrypts encrypted pushes with the same variable and answers
 `422` with a machine `reason` (`passphrase_missing`, `passphrase_mismatch`, `tampered`, `malformed`,
 `unsupported_version`, `passphrase_file_unreadable`, `encryption_required`). The pairing token rides
@@ -373,7 +379,7 @@ stdio transport (newline-delimited JSON-RPC 2.0), the universal MCP transport. O
 
 ## How it works
 
-The iOS app reads Apple Health (read-only) and writes a compact `.health-cache.json` (plus optional context files) to the destination you choose. This server reads those files and exposes the 18 tools above over MCP. No bridge, no Docker, no database: just files and stdio.
+The iOS app reads Apple Health (read-only) and writes a compact `.health-cache.json` (plus optional context files) to the destination you choose. This server reads those files and exposes the 22 tools above over MCP. No bridge, no Docker, no database: just files and stdio.
 
 ```
 Apple Health → MetricBridge (iOS) → .health-cache.json → health-export-mcp → MCP client → you

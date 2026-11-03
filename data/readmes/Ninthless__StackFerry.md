@@ -33,6 +33,7 @@ StackFerry does not replace those CLIs. It sits beside them: official login or a
 ## Contents
 
 - [CLIs](#clis)
+- [Integrations / Supported Providers](#integrations--supported-providers)
 - [What it does](#what-it-does)
 - [Install](#install)
 - [Usage](#usage)
@@ -49,6 +50,10 @@ StackFerry does not replace those CLIs. It sits beside them: official login or a
 | Today | Codex, Claude Code, Grok, Pi |
 | Later | More coding CLIs. Each one gets the same provider, routing, Skills, and MCP flow. |
 
+## Integrations / Supported Providers
+
+- [A2Agent](https://a2agent.me/) — an API gateway with tested model discovery and basic Messages, Responses, and Chat Completions requests; see [configuration and verification scope](docs/a2agent-compatibility.md).
+
 ## What it does
 
 - **Providers.** Official login or a custom gateway, per CLI. Enable one and StackFerry backs up, then writes that CLI's live config. A gateway can hand the user a `stackferry://` import link; fields are in [docs/provider-import.md](docs/provider-import.md).
@@ -58,7 +63,7 @@ StackFerry does not replace those CLIs. It sits beside them: official login or a
 - **CLI binaries.** Detect, install, update, or uninstall the local Codex, Claude Code, Grok Build, and Pi binaries. Uninstalling a CLI does not delete StackFerry's provider data.
 - **Desktop.** English and 简体中文, theme, Windows 11 Mica, a first-launch tour, and a tray. Closing the window hides the app. Quit restores routing-written configs to direct.
 
-Windows and Linux packages check [GitHub Releases](https://github.com/Ninthless/StackFerry/releases) for updates. macOS builds are ad-hoc signed, so in-app update is unavailable. Download a new DMG.
+Windows and Linux packages check [GitHub Releases](https://github.com/Ninthless/StackFerry/releases) and can install updates. macOS prompts when a newer release is published and opens the download page.
 
 ## Install
 
@@ -68,7 +73,7 @@ Download the latest build from **[Releases](https://github.com/Ninthless/StackFe
 | --- | --- | --- |
 | Windows | NSIS `*-Setup.exe` (`x64` / `arm64`) | Yes. SmartScreen may warn on an unsigned installer; choose **Run anyway**. |
 | Linux | AppImage and deb (`x64` / `arm64`) | Yes. `chmod +x` the AppImage first. AppImageUpdate can update the AppImage from GitHub Releases. deb updates may ask for a system password. |
-| macOS | ad-hoc signed DMG (`arm64` / `x64`) | No. Follow [macOS](#macos). |
+| macOS | ad-hoc signed DMG (`arm64` / `x64`) | Prompts for a new release and opens the download page. Follow [macOS](#macos) to install the DMG. |
 
 ## Usage
 

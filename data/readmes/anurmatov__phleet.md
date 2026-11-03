@@ -143,19 +143,32 @@ verified memory and broker control/completion to a non-root Codex daemon/native-
 It is a bounded, experimental profile, not automatic provisioning or a general rollout.
 Each deployment needs explicit operator enrollment and its own exact-build runtime qualification;
 CI and source fixtures do not establish that qualification.
+Managed API-key agents use epoch-specific native profiles and a child-only `CODEX_HOME`; see the
+[native profile and upgrade rules](docs/openshell-stock.md#managed-api-key-native-profiles-516).
 The managed Codex **subscription** branch (#502) is experimental and compatibility-only: an outside-owned
 provider binding plus one native memory route, with no tested account isolation, no automatic enrollment or
 login, and no new environment key or tool. API-key and manual paths are unchanged. See the
 [subscription runbook](docs/openshell-stock.md#managed-codex-subscription-branch-502-unqualified-compatibility-only).
+Since #510 that branch can keep an agent's existing bot, journal and first-party MCP routes through scoped stock
+service providers, with the same account, billing basis and grants. Any grant the saved policy cannot carry blocks the
+migration instead of being dropped. It is still **UNQUALIFIED** source support; see
+[ordinary services](docs/openshell-stock.md#ordinary-services-510).
 Managed apply (#503) needs a saved policy that binds the fixed `stock-memory` signer to exactly the agent's
 first-party receiving hosts. It is one restricted subset, with no arbitrary middleware, and the saved bytes and
 hash stay the effective policy. Registering that signer in the gateway makes it a startup dependency of every
 sandbox on that gateway. This adds no runtime qualification; see the
 [signer binding runbook](docs/openshell-stock.md#managed-signer-policy-binding-503).
+Managed workloads (#507) keep their user tree in HOME's `workspace` child, inside the stock CLI's copy root; older
+`/workspace` bindings are carried there only after proof, through a filtered in-sandbox snapshot, and never rewritten in
+place. See the [workspace layout runbook](docs/openshell-stock.md#managed-workspace-layout-507).
+Managed agents (#512) keep exactly the memory reads (`memory_get`, `memory_search`, `memory_list`) they are granted
+and their saved policy lists explicitly, in both auth modes. Existing get-only selections are unchanged. An API-key
+agent whose get-only policy does not list its extra read grants now refuses Apply until an explicit version is
+selected; see [explicit memory reads](docs/openshell-stock.md#explicit-memory-reads-512).
 
 | OpenShell capability | Status |
 |---|---|
-| Isolated Codex subscriptions | **UNQUALIFIED** at stock 0.1.5 / Codex 0.164.0; [separate docs/profile qualification](docs/openshell-subscription-auth.md), no migration; the managed subscription branch (#502) is compatibility-only and unqualified |
+| Isolated Codex subscriptions | **UNQUALIFIED** at stock 0.1.5 / Codex 0.164.0; [separate docs/profile qualification](docs/openshell-subscription-auth.md), no migration; the managed subscription branch (#502) and its ordinary-service routes (#510) are compatibility-only and unqualified |
 
 ## Platform support
 

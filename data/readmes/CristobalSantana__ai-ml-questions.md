@@ -8,10 +8,10 @@ Free multiple-choice questions for learning artificial intelligence and machine 
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/question-en-dark.png">
-  <img src="docs/images/question-en-light.png" width="600" alt="A medium question of the Apply type on sampling temperature, answered in study mode. The chosen option, 0.73, is marked wrong and 0.98 right; under each option a line explains why, followed by the explanation and the source.">
+  <img src="docs/images/question-en-light.png" width="600" alt="A medium question of the Apply type on sampling temperature, answered. The chosen option, 0.73, is marked wrong and 0.98 right; under each option a line explains why, followed by the explanation and the source.">
 </picture>
 
-- **103 questions in English and Spanish**, in 8 topics and three levels. Study mode shows the explanation after each answer; exam mode, the results at the end.
+- **103 questions in English and Spanish**, in 8 topics and three levels. Each answer shows its explanation right away.
 - **The answer does not show in the wording.** The questions follow Haladyna's item-writing rules, and a validator checks them: for example, it warns when the correct option is noticeably longer than the others.
 - **Measured with real answers.** Answers are recorded anonymously, with no cookies; once a question has enough of them, they show its real difficulty and which distractors nobody falls for ([details](docs/statistics.md)).
 - **Open questions.** They are JSON files with a schema, under CC BY-SA 4.0, so you can reuse them in a course, in flashcards or in your own app.

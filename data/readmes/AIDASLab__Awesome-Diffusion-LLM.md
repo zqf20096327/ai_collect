@@ -655,6 +655,7 @@ A comprehensive and structured list of research papers about **Large-Language-Di
 | [BiMoGen: Bidirectional Motion-Text Generation via Unified Masked Discrete Diffusion](https://arxiv.org/abs/2609.35407) | 2026.09 | NeurIPS | Bidirectional motion-text generation |
 | [GroundAnything: Reconciling Parallel Decoding with Precise Visual Grounding at Flash Speed](https://arxiv.org/abs/2609.39600) | 2026.09 | Arxiv | Text and grounding generation |
 | [Gestalt: Large Multimodal Interplay Model](https://arxiv.org/abs/2610.00576) | 2026.09 | Arxiv | Unified multimodal model |
+| [Look Only When Needed: Certificate-Guided Visual Routing for Efficient Diffusion VLMs](https://arxiv.org/abs/2610.36671) | 2026.10 | Arxiv | Training-free efficient decoding |
 
 
 ### 6.2 Vision-Language-Action (VLA)
@@ -765,5 +766,4 @@ A comprehensive and structured list of research papers about **Large-Language-Di
 | [What Does a Discrete Diffusion Model Learn?](https://arxiv.org/abs/2607.05381) | 2026.07 | Arxiv | Backfill, Discrete diffusion theory |
 | [Answer First, Reason Later: When Commitment Order Costs Accuracy in Diffusion Language Models](https://arxiv.org/abs/2608.05687) | 2026.08 | Arxiv | When Commitment Order Costs Accuracy in |
 | [Lost in Interpolation: Why Predictive Feedback Fails in Diffusion Language Models](https://arxiv.org/abs/2608.06529) | 2026.08 | Arxiv | Why Predictive Feedback Fails in Diffusion |
-| [Scaling Inherently Interpretable Language Models](https://arxiv.org/abs/2608.07594) | 2026.08 | Arxiv | - |
-| [Unsure but Certain: Uncovering the Representation-Confidence Gap in Diffusion Langua
+| [Scaling Inherent

@@ -51,6 +51,9 @@ model files.
   MTP, and diagnostics.
 - Detects supported DwarfStar GGUF model families and validates related files
   before starting the server.
+- On M4 Macs, turns on the Qwen3.8 Flash Next Metal kernel choices that
+  DwarfStar makes by default on M3 Ultra and M5, when the selected
+  `ds4-server` does not already make them on M4.
 - Captures server output in a rotating log that can be opened in Console.
 - Can optionally record a request trace for diagnostics.
 - Can keep the Mac awake while the server runs, when it is connected to a
@@ -73,12 +76,12 @@ instructions and model-format information. DS Menu Bar does not include
 ### ds4-server version compatibility
 
 > [!IMPORTANT]
-> At the time of the DS Menu Bar v0.0.14 release, DwarfStar does not publish
+> At the time of the DS Menu Bar v0.0.15 release, DwarfStar does not publish
 > versioned releases. Compatibility is therefore tracked against specific
 > commits on its `main` branch, and DS Menu Bar is updated as upstream changes
 > are reviewed. The latest known compatible commit is
-> [`c97964b`](https://github.com/antirez/ds4/commit/c97964b8aa77034a8e17afb10ca7a686c40ab511)
-> (October 30, 2026). Newer versions of `ds4-server` may also work, but
+> [`890898c`](https://github.com/antirez/ds4/commit/890898cfb437ed256be58ebcf7c58a6dfa8f2f53)
+> (November 2, 2026). Newer versions of `ds4-server` may also work, but
 > compatibility is not guaranteed.
 
 ## Supported models

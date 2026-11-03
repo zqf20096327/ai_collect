@@ -174,6 +174,7 @@ Verification gates, all mandatory:
 ```bash
 bun run lint                                                  # tsc --noEmit
 bunx tsc --noEmit --noUnusedLocals --noUnusedParameters        # no dead code
+bun run typecheck:consumer                                    # published .ts, no ambient types
 bun run build                                                 # production bundle
 bun test                                                      # unit + route suites
 bun run typecheck:e2e                                         # the Playwright specs
@@ -184,8 +185,8 @@ bun run typecheck:e2e                                         # the Playwright s
 interchangeable with `tsc`'s.
 
 The browser layer is Playwright (`tests/e2e/`, `*.e2e.ts`) and boots a real server subprocess against
-an isolated temp root per spec; `bun run test:e2e` runs it, and CI runs it on every push to `main`
-plus label-gated pull requests. The screenshots and GIFs in [`docs/assets`](docs/assets) are generated
+an isolated temp root per spec; `bun run test:e2e` runs it, and CI runs it nightly on `main`, on
+label-gated pull requests, and as a gate of every release. The screenshots and GIFs in [`docs/assets`](docs/assets) are generated
 by `bun run readme:media` against an isolated `MOCK=true` server, so they contain demo data only.
 
 ## Contributing

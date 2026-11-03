@@ -1,329 +1,270 @@
-<h1 align="center">Hearth</h1>
+<h1 align="center">Inglen</h1>
 
 <p align="center">
-  <strong>A local JARVIS that actually runs your computer.</strong>
+  <strong>Your own assistant, running on your own PC.</strong>
 </p>
 
 <p align="center">
-  It talks. It listens. It opens your apps, reads and writes your files, drives a real browser you can watch, and remembers you, all on your own machine.<br>
-  No account. No cloud required. No telemetry.
+  It talks, listens and remembers you. It opens your apps, works in your files, drives a browser you can watch and clicks through the desktop for you. It thinks with a model on your machine, a cloud model, or the Claude Code, Codex or Cursor plan you already pay for. When a job is big, it hands parts to helpers and you watch them work in a little pixel cabin.
 </p>
 
 <p align="center">
-  <a href="https://github.com/0pen-sourcer/hearth/releases"><img src="https://img.shields.io/github/v/release/0pen-Sourcer/Hearth?include_prereleases&style=flat-square&color=8b5cf6&label=release" alt="Latest release"></a>
-  <a href="https://github.com/0pen-sourcer/hearth/releases"><img src="https://img.shields.io/github/downloads/0pen-Sourcer/Hearth/total?style=flat-square&color=8b5cf6&label=downloads" alt="Total downloads"></a>
-  <a href="https://get-hearth.vercel.app"><img src="https://img.shields.io/badge/website-8b5cf6?style=flat-square" alt="Website"></a>
+  <a href="https://github.com/0pen-Sourcer/Hearth/releases"><img src="https://img.shields.io/github/v/release/0pen-Sourcer/Hearth?include_prereleases&style=flat-square&color=cf7089&label=release" alt="Latest release"></a>
+  <a href="https://github.com/0pen-Sourcer/Hearth/releases"><img src="https://img.shields.io/github/downloads/0pen-Sourcer/Hearth/total?style=flat-square&color=cf7089&label=downloads" alt="Total downloads"></a>
+  <a href="https://inglen.app"><img src="https://img.shields.io/badge/website-cf7089?style=flat-square" alt="Website"></a>
   <a href="docs/USER_GUIDE.md"><img src="https://img.shields.io/badge/docs-6b6b76?style=flat-square" alt="Docs"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-6b6b76?style=flat-square" alt="MIT License"></a>
 </p>
 
 <p align="center">
-  <em>Built solo, at 17. The framework is <strong>Hearth</strong>; the assistant it ships with is <strong>JARVIS</strong>, rename it to anything. The resident, and the house.</em>
+  Free and MIT licensed. Windows, with macOS and Linux from source. No account, and no telemetry unless you opt in to an install count.
 </p>
 
 <p align="center">
-  <img src="docs/media/hero.gif" alt="Hearth creating a folder, writing a file, and opening it in Notepad from a single request" width="820">
+  <img src="docs/media/team-room.gif" alt="Helpers arriving at their desks in the Team room" width="900">
 </p>
 
 ---
 
-## What it is
+I built Inglen at 17 because I wanted the assistant from the films, the one that knows you and actually does things, on my own PC and on my terms.
 
-Run a model locally and you get one of three things. A chat UI that can't touch your machine (LibreChat, Open WebUI). A coding agent boxed into a code folder (Aider, Cline, Open Interpreter). Or a cloud assistant that forgets you when the tab closes and never stops charging (ChatGPT, Claude, Gemini).
+The idea underneath it is that the agent shouldn't own your computer. The model doing the thinking can be a local one, a cloud one, or Claude Code and Codex on your own plan, and you can swap it mid-conversation. What stays the same is the environment around it, and that is yours. One approval switch decides what may run without asking, and it holds for every brain, because Claude Code's, Codex's and the other agents' permission requests come back to Inglen to answer. In Auto, a reviewer that reads only your own words decides whether a risky step is one you actually asked for, and anything it isn't sure of waits for you. A file is copied before one of Inglen's own tools changes it, so `/undo` puts it back. A coding agent sent as a helper into a git repository works on its own copy, and its changes wait until you bring them in, discard them or undo them. What it remembers is a folder of small files you can read and edit, and with Plus your phone shows each step and lets you allow or deny the risky ones while you're away.
 
-**Hearth is the fourth.** A local-first operator that runs on the model you already have and controls your actual Windows PC. Files, shell, apps, a browser you can watch, the desktop itself (it clicks and types), screenshots, voice that talks and listens, and a memory that persists across sessions. Nothing leaves your machine except a web search, and only when you ask.
+Inglen is the app, and on a new install it is the assistant's name too; you can rename it to anything. It was called Hearth until v0.7.6, and the files and settings still use that name. An older install keeps the name and the folder it already had.
 
-And it keeps growing: **skills are shareable.** A skill is a folder that teaches Hearth a workflow ("clean up my Downloads", "turn this folder of photos into a contact sheet"). Installing one someone else wrote is a single line, `/skill install someone/their-repo`, and writing your own is one command.
+## Get started in three steps
 
-Reach it however you work: a terminal **CLI**, a desktop/web **app**, a headless **bridge**, or an **MCP server**.
+1. **Download** [Inglen for Windows](https://github.com/0pen-Sourcer/Hearth/releases/latest). Full (1.7 GB) brings its own model server; Lite (646 MB) is for when you already run LM Studio, Ollama, a cloud key or an agent like Claude Code. Both install to your user folder without admin rights.
+2. **Pick a brain.** Setup finds what you already have, an agent like Claude Code or Codex, a model file on your disk, or a running LM Studio or Ollama, and offers it. You can also download a model from inside the app, or paste a cloud key.
+3. **Talk to it.** Type, or press the mic and speak. Ask it to find a file, tidy your Downloads, read a PDF, fix a test, or start a team on something bigger.
 
-> **v0.7.5-preview**, the CLI and desktop app are the daily drivers. Voice and the bundled llama.cpp server work but are preview-quality (see notes below). Windows is the supported platform; macOS/Linux run from source, with desktop control being Windows only for now.
+> **Windows may warn about the installer.** Inglen isn't code-signed yet, so SmartScreen shows a blue box: choose More info, then Run anyway. Defender's machine-learning check can also flag unsigned Python apps (`Program:Win32/Contebrew.A!ml`). That is a false positive, and the app's whole source is in this repo. If it happens, restore the file from Windows Security, Protection history. Code signing is on the [roadmap](ROADMAP.md).
 
-Where it's headed, grounded computer-use (it watches the screen, points, and acts), a guided "walk me through this" mode, and Mac/Linux, is in the **[Roadmap](ROADMAP.md)**.
-
----
-
-## See it work
+## See it
 
 <table>
 <tr>
-<td width="33%" align="center"><strong>Disposable facts get archived, what matters builds a wall of memory</strong><br><img src="docs/media/memory.gif" alt="Hearth's memory browser" width="280"></td>
-<td width="33%" align="center"><strong>Find, download and run a model without leaving the app</strong><br><img src="docs/media/discover.gif" alt="Downloading and running a model directly inside Hearth" width="280"></td>
-<td width="33%" align="center"><strong>Skills, reminders, your workspace</strong><br><img src="docs/media/skills.gif" alt="Skills, reminders, and workspace tour" width="280"></td>
+<td width="50%" align="center"><strong>Approve a command before it runs</strong><br><img src="docs/media/approval.gif" alt="Inglen asking before removing an old installer" width="420"></td>
+<td width="50%" align="center"><strong>Switch brains from one menu</strong><br><img src="docs/media/brains.gif" alt="The model menu with a local model, Claude Code, Codex and Cursor" width="420"></td>
+</tr>
+<tr>
+<td width="50%" align="center"><strong>Talk and interrupt a reply</strong><br><img src="docs/media/voice.gif" alt="Voice mode listening, speaking and stopping when interrupted" width="420"></td>
+<td width="50%" align="center"><strong>Watch helpers in the Team room</strong><br><img src="docs/media/team-room.gif" alt="Helpers arriving at their desks in the Team room" width="420"></td>
+</tr>
+<tr>
+<td width="50%" align="center"><strong>Message it from your phone</strong><br><img src="docs/media/phone.gif" alt="Phone messages through Telegram, Discord and WhatsApp" width="420"></td>
+<td width="50%" align="center"><strong>Pick a look</strong><br><img src="docs/media/looks.gif" alt="Appearance changing from Rose to Ocean, Sage and Classic" width="420"></td>
 </tr>
 </table>
 
 ---
 
-## Install
+## What's in it
 
-### Download the installer (easiest, Windows)
+### Your PC
 
-Grab the [latest release](https://github.com/0pen-sourcer/Hearth/releases/latest), no Python, no git, no setup. Two editions:
+Inglen reads and writes files, including PDF, Word, Excel, PowerPoint, EPUB and archives, and it can work through a PDF hundreds of pages long. It runs PowerShell commands, opens any app, file, folder or link, and drives a real Chrome, Edge or Brave window you can watch while it clicks and types. Beyond the browser it reads a window's buttons and fields by name and operates the desktop itself, with the real cursor moving, a soft edge in your accent colour round the screen while it works, and your own window handed back when it's done. It takes screenshots and, with a model that can see, tells you what is on them. It searches the web without an API key, sets reminders in plain words ("every weekday at 9am"), sends email if you set it up, and runs long jobs like a whole-drive search in the background while you keep talking. It makes pictures and short videos on your own graphics card with an engine it installs itself, reading a ComfyUI or WebUI models folder in place, or with a cloud key.
 
-- **Hearth Full (~1 GB)** bundles a GPU model server (CUDA llama.cpp). It downloads and runs models for you, so there is nothing else to install.
-- **Hearth Lite (~500 MB)** skips the bundled server, for when you already run LM Studio, Ollama, or another OpenAI-compatible endpoint.
+### Brains
 
-Both install to your user folder, no admin needed. Started on Lite and want the built-in server later? Run the Full installer over it, your settings, memory, and chats stay exactly where they are.
+A model on this PC through the built-in llama.cpp server, LM Studio, Ollama, vLLM or anything OpenAI-compatible. A cloud model with your own key from Anthropic, OpenAI, Google Gemini, OpenRouter, xAI or Groq. Or **Claude Code, Codex or Cursor**, on the plan you already pay for and with no API key. Other agents that speak the Agent Client Protocol can be the brain once installed, such as OpenCode, Copilot CLI, Goose and Grok Build; OpenCode has been run this way, the others follow the protocol. The assistant thinks with the agent and still uses Inglen's tools, memory and voice. You switch between all of them from one menu at the top of the window, mid-conversation, without restarting. A model on this PC can stay loaded under a cloud brain, so helpers keep working for free.
 
-### Install from source (Windows, macOS, Linux)
+### Helpers and the Team room
 
-Needs **Python 3.11+**. Windows has a one-line installer:
+Bigger jobs go to helpers. One sentence starts a mixed team, like "three on Codex for the frontend, two on Claude Haiku for the tests, one on this PC for the docs". Each helper walks into the Team room, sits at a desk and works, and clicking anyone shows who asked, the task and every step so far. You can tell a working helper something or stop it, helpers message each other and the assistant as they go, and each report comes back to it. An agent program working in a git repository gets its own copy, and its changes wait for you to bring them in, discard them or undo them. Past eight helpers the next room opens, and there is a winter cabin, a library and an ocean room besides the first. Helpers can also be other agent programs, each on your own install and account. Claude Code, Codex, Cursor and OpenCode have been run from Inglen; it has adapters for 19 more, among them Gemini CLI, Copilot CLI, Aider and Goose, written from each one's documented headless mode and not yet run here. Starting a helper by hand shows the ones on your PC and how to get the rest.
 
-```powershell
-git clone https://github.com/0pen-sourcer/Hearth.git
-cd Hearth
-.\install.ps1                      # bring your own server (LM Studio / Ollama / vLLM / llama.cpp / a cloud key)
-.\install.ps1 -BuiltinLLM cuda     # NVIDIA GPU: Hearth installs + runs its own llama.cpp server
-.\install.ps1 -BuiltinLLM cpu      # no GPU: same server, on CPU
-.\hearth.bat                       # launch
-```
+### Voice
 
-The installer is idempotent (safe to re-run) and has switches to skip optional pieces, voice, STT, MCP SDK, file readers, desktop window, browser control. Run `Get-Help .\install.ps1 -Detailed` for the full list. On macOS and Linux you clone and run with Python (`pip install -r requirements.txt`, then `python hearth_cli.py`), steps in the macOS / Linux section below.
+Press the mic and talk. Speech-to-text (faster-whisper) and text-to-speech (Kokoro) both run on your machine. Talk over a reply and it stops on your first word and answers what you said instead. The window cancels the echo of its own voice the way a video call does, so this works on speakers as well as a headset. A step that needs your OK is asked out loud; a spoken yes is enough for what Auto mode would run anyway, and anything riskier waits for a click.
 
-On first launch, a short onboarding flow asks which model brain to use, lets you pick a voice and rename the assistant to anything you want, and sets its tone.
+### Memory and skills
 
-### Pointing it at a model
+Every fact Inglen learns is a small markdown file in your workspace that you can read, edit or delete. It keeps an index of them in view and looks up the ones a message needs. It notes lasting facts on its own unless you turn that off, ones that are never used are archived rather than deleted, and a new fact that overlaps an old one updates it. Each chat keeps a short card of where it stands (the goal, what's done and what's still open), so a new chat that starts with "guess what" gets a real guess, and each reply can show what it had in mind. Every past chat is searchable, by words or by time ("what did we do last Tuesday"), and one switch shares your memory with Claude Code, Codex, Cursor or OpenCode so they know you too. A skill is a folder that teaches a workflow, like making a PDF, a slide deck or a spreadsheet, and it uses the Agent Skills format Claude and Codex read too, so most skills on GitHub install here in one line, `/skill install owner/repo`, and each can be switched off without removing it. See [docs/SKILLS.md](docs/SKILLS.md) and [awesome-hearth-skills](https://github.com/0pen-Sourcer/awesome-hearth-skills).
 
-If you installed **Full** (or ran `install.ps1 -BuiltinLLM`), Hearth has its own bundled llama.cpp server, open the Models tab, pick a model, and it downloads and runs it for you, no other app needed. Otherwise Hearth auto-detects a running **LM Studio** (port 1234), **Ollama** (11434), or **llama.cpp** server (8080) at boot, no configuration needed. To use something else, set `LOCAL_API_BASE` to any OpenAI-compatible endpoint.
+### Everywhere else
 
-A cloud key is optional. In the desktop app's Settings (or via env vars), you can point the chat brain at Gemini, OpenAI, Grok, or OpenRouter and switch back to local at any time without restarting. Files, voice, and memory stay local regardless; only the prompt goes to the provider you choose.
+The terminal app (`inglen.bat`) has the same brains, tools, memory and helpers as the window, with slash commands and voice, and the two share one set of chats: start one in the terminal and carry it on in the window. Message it from your phone through a Telegram or Discord bot you set up in a minute, or an experimental WhatsApp link ([docs/PHONE.md](docs/PHONE.md)), with voice notes, photos and files going both ways, and reminders can go to your phone too. Anyone new needs a pairing code you approve, and you can write a connector for another app in one Python file ([docs/CONNECTORS.md](docs/CONNECTORS.md)). Inglen Plus, a paid add-on, adds a phone app that reaches your PC from anywhere through an end-to-end encrypted relay, with your chats and every step, approvals from the notification, files from the PC, the Team room, your coding agents' sessions, and voice calls with your assistant. If you allow it, Inglen can call you about a reminder, finished work or a question it is waiting on, never in your quiet hours or while you are at the PC. It is an MCP server, so LM Studio, Claude Desktop or Cursor can use its tools, and an MCP client, so other servers' tools appear beside its own. A headless mode drives it from scripts. It can also write a new tool for itself when it hits a gap.
 
-### Model recommendation
+### Safety
 
-Any ~7B-or-larger model with OpenAI-style tool-calling works. On ~8GB VRAM, tool adherence is best on recent tool-trained models. Small local models handle everyday tasks well (open this, read that, remember this) but can fumble long multi-step chains; a built-in loop guard catches and breaks those spirals. For heavier reasoning (deep web research, multi-page browser sessions) a larger or cloud model helps.
-
-Hearth ships a tool-call parser that recognizes the formats emitted by Gemma, Hermes, Qwen 2.5/3, Llama 3.x, Mistral, Phi, Granite, and Cohere Command-R, plus a generic `<function=NAME>` form, so models whose tool calls aren't natively parsed by the server still work.
-
-### macOS / Linux
-
-Hearth runs from source on macOS and Linux. The CLI and web UI work, and most tools (shell, files, screenshots, app launching, window focus, clipboard, web search, reminders, notifications) have native POSIX paths. Linux is verified (tested on Mint 22 / Ubuntu 24.04); macOS shares the same POSIX paths but has had less testing. The desktop-control layer, the one-click installer, and the packaged build are Windows-only for now; everywhere else you clone and run with Python. See **[docs/INSTALL_LINUX_MAC.md](docs/INSTALL_LINUX_MAC.md)** for the exact steps, and [CONTRIBUTING.md](CONTRIBUTING.md) if you want to help port the rest.
+A switch beside the send box decides what runs without asking. **Ask** checks before anything acts on your machine. **Auto-edit** lets edits inside the workspace through. **Auto** runs routine work on its own and stops before deleting, moving, sending email or phone messages, uploading from the shell, pushing, publishing or installing, unless a reviewer that reads only your own words finds you asked for exactly that step. Something Inglen made itself in the last week it may delete or move without asking, since a copy is kept to undo it. Shutting down, disks, accounts, security settings and hidden commands always ask. Once a chat has read something from outside, like a web page, an email or a downloaded file, any request to an address you didn't give asks first in every mode, so a page can't quietly get your data sent somewhere ([SECURITY.md](SECURITY.md) has the details and the limits). The same switch holds when Claude Code, Codex, Cursor or another agent is the brain, since their permission requests are answered by Inglen, and with Plus the phone gets Allow and Deny for each one. What Inglen's own file tools change is copied first and kept for a week, so `/undo` puts it back. That copy doesn't cover a shell command, an agent program's own edits or anything over 200 MB. Writes are confined to the workspace folder unless you allow another one, and Inglen never runs elevated.
 
 ---
 
-## Interfaces
+## Which model to use
 
-| Interface | Launch | Notes |
-|---|---|---|
-| **CLI** | `.\hearth.bat` | Terminal app with voice loop, command history, slash-command autocomplete, model control, and a context-usage footer. |
-| **Desktop app / Web UI** | `python -m hearth.tray --open` (or `Hearth.exe` from a release build) | Native window with multi-chat sidebar, a Models tab for downloading and loading GGUFs, voice mode, file drop, inline permission prompts, and a settings panel. Same backend as the CLI. |
-| **Bridge** | `python -m hearth.headless --prompt "..."` | Non-interactive. Emits JSONL events to stdout so you can drive Hearth from scripts, CI, or another agent. `--format text` for human-readable output. |
-| **MCP server** | `python -m hearth.mcp_server` | Exposes Hearth's tools to any MCP-aware chat host (LM Studio, Cline, Claude Desktop, Cursor). |
+On this PC, any model of about 7B or larger that was trained for tool calling works. The Models tab marks each file by whether it fits your graphics card and points at the right size for it. Small local models handle everyday work well (open this, read that, remember this) and can lose the thread on long multi-step jobs; a loop guard catches them when they start repeating. For deep research or long coding work, a cloud model or an agent brain is the better pick, and you can switch for one task and back.
 
----
+Inglen reads the tool-call formats of Gemma, Hermes, Qwen, Llama, Mistral, Phi, Granite and Command-R, so a model whose server doesn't parse its tool calls still works.
 
-## What it can do
+## How it compares
 
-**Files.** Read, write, edit, list, move, delete. `read_file` extracts clean text from PDF, DOCX, XLSX, PPTX, EPUB, IPYNB, CSV, JSON, HTML, RTF, and single-stream `.gz`/`.bz2`/`.xz`. It peeks into and pulls files out of zip/tar archives without unpacking them, and can summarize very large PDFs, hundreds of pages that don't fit in context, by working through them in chunks.
+None of the pieces is new on its own. OpenClaw and Hermes Agent are broad personal agents that reach you across many chat apps, keep memory between sessions and take any model. Munder Difflin runs Claude Code, Codex and other coding agents as a team on one machine. ChatGPT and Claude remember you across chats, and LM Studio and Open WebUI run local models with tools.
 
-**Shell.** Real PowerShell or cmd commands, with output captured and sanitized.
-
-**Apps and URLs.** Open any installed app, file, folder, Start Menu shortcut, or URL with one tool. Media opens in your default player, archives in your archive tool, folders in Explorer.
-
-**Browser.** Drive a real Chrome / Brave / Edge session you can watch: `browse` opens a page and lists its clickable elements, `browse_click` scrolls the target into view and clicks it, `browse_type` fills fields. The session persists across calls for multi-step flows.
-
-**Desktop control.** Beyond the browser, Hearth can operate the actual desktop. `desktop_snapshot` reads a window's real buttons, fields and menu items as a list (an accessibility snapshot, precise, not pixel-guessing), then `desktop_click` / `desktop_type` act on them by name. It can also move the mouse, click, type, and press key combos directly, you watch the real cursor move. Every action that changes something asks first. Windows for now (cross-platform in progress).
-
-**Screen and vision.** Take a screenshot, or attach an image, and have a vision-capable model describe it.
-
-**Web.** Search and fetch pages via DuckDuckGo. No API key.
-
-**Memory.** Per-fact markdown files that persist across sessions. The index is always loaded and the facts most relevant to your message are folded into context automatically. Memory self-curates: each fact tracks how often it's recalled, cold facts archive automatically (never deleted) when a category grows too large, and an archived fact warms back to active storage once it's recalled enough. When you save something that overlaps an existing fact, Hearth notices and decides whether to update or add.
-
-**Reminders.** One-shot or recurring, set in natural language ("in 25 minutes", "every weekday at 9am"). A reminder can also fire a tool when it pops (for example, run a web search and include the result in the toast). Reminders that came due while Hearth was closed surface on next launch, in the CLI they print into the chat, since Windows often suppresses the toast. Set an [ntfy](https://ntfy.sh) topic and reminders also push to your phone, so they reach you even when the PC is asleep.
-
-**Phone.** Reach Hearth from your phone through a **Telegram** or **Discord** bot, bot token only, no OAuth, no public server to host. Message the bot and it runs the same agent loop as the CLI, replies (long answers chunked), and sends back any file it produced. An allowlist (your chat/user id) is the only gate. Configure it in the desktop app under **Settings → Reach from phone** (or hand-edit the config); reminders can also push to your phone via [ntfy](https://ntfy.sh). An experimental WhatsApp bridge exists too (unofficial, see the caveats). Opt-in; full setup in [docs/PHONE.md](docs/PHONE.md).
-
-**Skills, and you can share them.** A skill is a folder with a `SKILL.md` that teaches Hearth a repeatable workflow; the model sees a one-line summary of each and loads the full steps only when it uses one, so dozens can be installed without bloating context. Built-in skills cover PDFs, slide decks (PPTX), spreadsheets (XLSX), diagrams (SVG/HTML), and ASCII art (plus PDF split/merge). The part that compounds: **install a skill someone else wrote with one line**, `/skill install owner/repo` (or paste a GitHub link in chat), and publish your own by pushing a folder to GitHub. Install discloses what a skill can do and asks before it lands; its scripts only ever run through the same permission prompt as any command. Write once, share with a link, see [docs/SKILLS.md](docs/SKILLS.md) and the community index, [awesome-hearth-skills](https://github.com/0pen-sourcer/awesome-hearth-skills).
-
-**Sub-agents.** Fork focused workers that run with a tightened system prompt and a restricted tool allowlist. Six personas ship: researcher, coder, archivist, librarian, summarizer, and a PDF coordinator that fans out summarizer workers over a document and reduces their results. Workers run synchronously or in the background; background results arrive in your next chat turn rather than blocking. Fork depth is bounded to prevent runaway spawning.
-
-**Watch a team build.** Ask for a team, "one frontend, one backend, one architect", and Hearth spawns each as a sub-agent and opens a live terminal pane per agent (Windows Terminal split-panes, or tmux on Linux/macOS), so you watch them think, call tools, and finish side by side. Opt-in; the agents act on their own once you ask, so it only runs when you do.
-
-**Background jobs.** Long-running operations (whole-drive scans, big searches) return a job ID immediately and run in a background thread while you keep working. List jobs and collect results when they finish.
-
-**MCP, both directions.** Hearth exposes its own tools as an MCP server, and it also consumes other MCP servers: drop an `mcp.json` in the workspace and their tools appear alongside the built-ins.
-
-**Voice.** Text-to-speech (Kokoro) streams sentence by sentence; speech-to-text (faster-whisper) supports a continuous-listen mode with mid-sentence barge-in, talk over a reply and it cuts on your first word, then answers what you interrupted with. Both auto-detect your hardware, text-to-speech on CUDA or DirectML, speech-to-text on CUDA, either falling back to CPU. Solid on a headset; still sharpening for speaker setups.
-
-**Self-extending tools.** When Hearth hits a capability gap, it can write a new tool for itself with `create_plugin`, validated, saved to the workspace, and usable the same turn. You can also hand-write plugins (a `TOOL` dict plus a `run(args)` function); any `*.py` in the plugins folder auto-loads at startup.
-
-**Identity.** A `soul.md` file rides at the top of every system prompt. The assistant can write its own durable identity instructions there, and you can rename the whole agent, the chat avatar, persona, and workspace folder all follow.
-
-**Image and video generation.** Optional tools for cloud image/video generation, plus integration with a local Stable Diffusion (Forge) install for fully local image generation.
-
-**A long tool list isn't context bloat.** Hearth has ~100 tools, but the model never sees all of them at once. A core set loads by default; the rest stay behind a `load_tools` meta-tool the model calls on demand and then uses inline, so the per-turn prompt stays small no matter how many tools exist. The model only ever loads what it needs. Set `HEARTH_ALL_TOOLS=1` to load everything up front.
-
----
-
-## How it works
-
-```
-   you (mic) ──▶ faster-whisper ──┐
-   you (kbd) ───────── text ──────┤
-                                   ▼
-                            Hearth core (CLI / app / bridge)
-                                   │  messages + tools (OpenAI format)
-                                   ▼
-                  local server (LM Studio / Ollama / built-in llama.cpp)
-                  or an OpenAI-compatible cloud endpoint
-                                   │  reply + tool calls
-                                   ▼
-                            tool executor
-                  files · shell · web · apps · browser · memory
-                  + your plugins + remote MCP servers + sub-agents
-                                   │
-                                   ▼  (loops until done; a loop guard stops spirals)
-   you (ears) ◀── Kokoro TTS ◀── streamed reply
-```
-
-The same tool executor is exposed through `hearth/mcp_server.py`, so any MCP-aware chat host sees the same tools, memory, and workspace as the Hearth CLI or desktop app.
-
----
-
-<details>
-<summary><strong>Workspace layout, where your chats, memory and models live on disk</strong></summary>
-
-
-```
-~/Jarvis/                  ← the agent's home (override with $env:JARVIS_WORKSPACE)
-├── soul.md                ← self-written identity, loaded into every prompt
-├── rules.md               ← plain-text house rules, re-read every turn
-├── memory/
-│   ├── MEMORY.md          ← always-loaded index
-│   ├── <fact>.md          ← per-fact files
-│   └── _archive/          ← cold facts (recalled back automatically)
-├── logs/                  ← activity log (JSONL) + history
-├── voices/                ← Kokoro / Whisper model files
-├── screenshots/
-├── plugins/               ← auto-loaded custom tools
-├── PDFs/ · PPTX/ · XLSX/  ← generated documents, by type
-└── subagents/             ← per-worker transcripts
-```
-
-Reads default to your whole disk (the assistant needs to know your machine). Writes, deletes, and moves are confined to the workspace unless you grant access to a folder. Set `JARVIS_LOCKDOWN=1` to confine reads to the workspace too.
-
-</details>
-
----
-
-<details>
-<summary><strong>Configuration, every environment variable</strong></summary>
-
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `LOCAL_API_BASE` | auto-detected | OpenAI-compatible endpoint |
-| `LOCAL_API_KEY` | (none) | API key for the endpoint, if it needs one |
-| `LOCAL_MODEL` | auto-detected | Override the served model id |
-| `JARVIS_WORKSPACE` | `~/Jarvis` | Where memory/logs/voices live |
-| `JARVIS_LOCKDOWN` | `0` | `1` = confine reads to the workspace too |
-| `JARVIS_AUTO_APPROVE` | `0` | `1` = skip risky-tool permission prompts |
-| `JARVIS_EXTRA_WORKSPACES` | (none) | Extra paths writes are allowed in |
-| `JARVIS_VOICE` | `am_michael` | Kokoro voice id |
-| `JARVIS_VOICE_SPEED` | `1.0` | TTS playback rate |
-| `JARVIS_STT_DEVICE` | auto | force `cpu` or `cuda` for speech-to-text (auto-detects GPU when unset) |
-| `JARVIS_WAKE_WORD` | (none) | If set, continuous listen only triggers on this prefix |
-| `JARVIS_BUILTIN_PORT` | `1234` | Port for the bundled llama.cpp server |
-| `JARVIS_COMPACT_AT` | `0.75` | Auto-compact context past this fraction |
-| `JARVIS_NO_ONBOARDING` | `0` | `1` = skip the first-run setup |
-| `HEARTH_PERSONA_NAME` | `JARVIS` | Assistant name |
-| `HEARTH_PERSONA` | (none) | Tone overlay: `bro` / `chill` / `professional` / `formal` |
-| `HEARTH_ALL_TOOLS` | `0` | `1` = load every tool up front instead of on demand |
-| `HEARTH_NTFY_TOPIC` | (none) | [ntfy](https://ntfy.sh) topic to push reminders to your phone |
-
-`HEARTH_*` and `JARVIS_*` prefixes are interchangeable.
-
-</details>
-
----
-
-<details>
-<summary><strong>CLI commands, the full slash-command reference</strong></summary>
-
-
-```
-/help                 full list
-/brain <provider>     switch brain: local, grok, gemini, openai, openrouter, custom (keys persist)
-/models, /model <n>   list / download / switch model (built-in server)
-/tools                list available tools
-/voice [on|off]       text-to-speech toggle; /stt <model> sets the whisper size
-/listen [on|off]      continuous voice input (/listen alone = one-shot)
-/think [on|off]       show/hide model reasoning
-/mem                  memory index; /curate merges duplicates
-/import-memory        pull your memory in from ChatGPT / Claude
-/context <n|auto>     set / auto-detect the context window; /tokens shows usage
-/compact              summarize old turns + extract facts to memory
-/agent <slug> "..."   dispatch a sub-agent; /jobs manages background ones
-/skill install <src>  install a skill from a GitHub repo
-/mcp                  MCP status / config
-/phone                Telegram / Discord / ntfy bridge status
-/migrate <hermes|openclaw>   import memory + skills from another agent
-/name <new>           rename the assistant; /learn re-scans your machine
-/allow <path>         grant write access to a folder; /lockdown confines reads
-/perms                show / reset cached tool permissions
-/update               check for and install the latest release
-/clear                wipe history (keep system prompt); /exit to quit
-```
-
-Plus `@<path>` to attach a file (text spliced inline, images sent to vision), arrow-key history, reverse search, and a multi-line input mode.
-
-</details>
-
----
-
-## Voice setup
-
-**Text-to-speech (Kokoro):** ~80 MB ONNX model. Runs on CPU in real time, or offloads to your GPU via CUDA (NVIDIA) or DirectML (any GPU). The installer offers to download the model; pick a voice with `JARVIS_VOICE`.
-
-**Speech-to-text (faster-whisper):** the `base.en` model (~150 MB) auto-downloads on first `/listen on`. It auto-detects CUDA and uses the GPU when available, otherwise CPU. Use `/listen` for one-shot or `/listen on` for continuous mode with barge-in.
-
----
+Inglen puts them together around one Windows PC. A local model it runs itself, a cloud model or an agent program can be the brain, and each one works the same desktop, files, voice, memory and helpers. The approval switch, the undo copies, the review of a helper's changes and the phone's Allow and Deny sit outside whichever brain is thinking, so changing the brain doesn't change the rules. **The worker can change. It should not own the computer. You should.**
 
 ## FAQ
 
-**Does it need LM Studio?** No. Anything OpenAI-compatible works, Ollama, vLLM, llama.cpp, LocalAI, or the bundled llama.cpp server (`-BuiltinLLM`).
+**Is it free, and does it work offline?** The app is free, and Plus, the phone add-on, is the paid part. With a local model it works offline. It needs the internet only for web search, which runs when the model looks something up, and for its own update and catalog checks.
 
-**Can it use a cloud model?** Optionally. Set a cloud endpoint in Settings or via env vars. Local is the default; your files, voice, and memory stay local either way.
+**Will it mess with my files?** Writes, moves and deletes stay inside the workspace folder (`~/Inglen`, or `~/Jarvis` on an older install) unless you allow another folder, and the approval switch decides what asks first. Set `HEARTH_LOCKDOWN=1` to keep reads inside the workspace too.
 
-**Is anything sent to the cloud?** Only web search/fetch (DuckDuckGo), and only when the model invokes them. No telemetry.
+**What do I need?** Windows 10 or 11. For local models, a graphics card with 8 GB of memory runs a 7B to 9B model well, NVIDIA through CUDA and AMD or Intel through Vulkan; less works on the CPU, slowly. With a cloud key or an agent brain, any PC that runs a browser is enough.
 
-**Will it touch my files unexpectedly?** Writes are confined to the workspace by default and risky tools prompt for permission the first time per session. `JARVIS_AUTO_APPROVE=1` removes the prompts.
+**Can it replace ChatGPT?** For talking, looking things up and working on your own files and apps, on a good brain, yes. On a small local model it is quicker to set up than it is clever, so pick the brain to match the job.
 
-**Does it work offline?** Yes, except web search/fetch.
+**What leaves my PC?** Only what you turn on. That means your messages to the cloud model or agent you pick, web searches, and the phone bridges or email you set up. Nothing comes to us. With Plus on, the phone app's messages pass through the Plus relay sealed with keys only your PC and phone hold, so the relay can't read them, and the licence key is checked with the payment provider ([SECURITY.md](SECURITY.md) has the details). There is no telemetry unless you say yes to the install count (below). Inglen also asks GitHub for its own updates, its announcement feed and the model and image engines when you install them, the npm registry for updates to agents you have installed, and once a day the public models.dev catalog for the model details in the model menu, and it fetches small site icons the window shows. None of these carry your chats, memory or files.
 
-**Why "Hearth"?** It's the framework, the warm center of the machine. The default character is JARVIS, but personas, voices, and models are all swappable.
+**Why "Inglen"?** An ingle is the fire in a hearth, the warm center of the house. Your assistant lives there. It was called Hearth before, and an update from Hearth keeps your settings, memory and chats.
+
+---
+
+<details>
+<summary><strong>Install from source (Windows, macOS, Linux)</strong></summary>
+
+Needs Python 3.11 or newer.
+
+```powershell
+git clone https://github.com/0pen-Sourcer/Hearth.git
+cd Hearth
+.\install.ps1                      # bring your own server (LM Studio, Ollama, vLLM, llama.cpp or a cloud key)
+.\install.ps1 -BuiltinLLM cuda     # NVIDIA card: Inglen installs and runs its own llama.cpp server
+.\install.ps1 -BuiltinLLM cpu      # no card: the same server on the CPU
+.\inglen.bat                       # start the terminal app
+.\inglen.bat window                # start the window
+```
+
+In the window, Models, Engine downloads the official llama.cpp build for your card at any time, the same engine the Full installer brings.
+
+The installer is safe to run again and can skip optional parts (voice, speech-to-text, the MCP SDK, file readers, the window, browser control); `Get-Help .\install.ps1 -Detailed` lists them. Started on Lite and want the built-in server later? Run the Full installer over it and your settings, memory and chats stay where they are.
+
+On macOS and Linux the terminal app and the web window work, and most tools (shell, files, screenshots, apps, windows, clipboard, web, reminders, notifications) have native paths there. Linux is tested on Mint 22 and Ubuntu 24.04, where Inglen also downloads its model and image engines for itself; macOS runs the same code but hasn't been tried on a real Mac yet. Desktop control and the installer are Windows only for now. Steps are in [docs/INSTALL_LINUX_MAC.md](docs/INSTALL_LINUX_MAC.md).
+
+Inglen finds a running LM Studio (port 1234), Ollama (11434) or llama.cpp server (8080) on its own. For anything else, set `LOCAL_API_BASE` to an OpenAI-compatible address.
+
+</details>
+
+<details>
+<summary><strong>Ways to run it</strong></summary>
+
+| | Start it with | |
+|---|---|---|
+| **Window** | the Inglen shortcut, or `.\inglen.bat window` | Chats, Team room, memory, models, settings, voice |
+| **Terminal** | the Inglen CLI shortcut, or `.\inglen.bat` | The same brains, tools, memory and helpers, with slash commands and voice |
+| **Headless** | `python -m hearth.headless --prompt "..."` | JSON lines out, for scripts, CI or another agent; `--format text` for people |
+| **MCP server** | `python -m hearth.mcp_server` | Inglen's tools inside LM Studio, Claude Desktop, Cursor or Cline |
+
+</details>
+
+<details>
+<summary><strong>How it works</strong></summary>
+
+```
+   you (mic) ──▶ faster-whisper ──┐
+   you (keys) ──────── text ──────┤
+                                   ▼
+                     Inglen (window / terminal / bridge)
+                                   │  messages + tools
+                                   ▼
+          a model on this PC, a cloud model, or Claude Code / Codex / Cursor
+                                   │  reply + tool calls
+                                   ▼
+                              tool executor
+            files · shell · apps · browser · desktop · web · memory
+           + skills + plugins + other MCP servers + helpers (Team room)
+                                   │
+                                   ▼  (loops until done; a loop guard stops spirals)
+   you (ears) ◀── Kokoro ◀── streamed reply
+```
+
+Inglen has over a hundred tools, but only a core set goes to the model in full each turn. It sees the names of the rest and loads one when it needs it, so the prompt stays small. `HEARTH_ALL_TOOLS=1` loads everything up front. The full list is in [docs/TOOLS.md](docs/TOOLS.md).
+
+</details>
+
+<details>
+<summary><strong>Where things live on disk</strong></summary>
+
+```
+~/Inglen/                  the assistant's home (~/Jarvis on an older install; HEARTH_WORKSPACE moves it)
+├── profile.md             who you are and how you like replies, read every turn
+├── rules.md               your house rules, read every turn
+├── memory/                one markdown file per fact, MEMORY.md as the index, _archive/ for cold ones
+├── logs/                  what it did, by day
+├── voices/                Kokoro and Whisper model files
+├── plugins/               tools it wrote, or you did
+├── subagents/             each helper's transcript
+└── PDFs/ · PPTX/ · XLSX/  documents it made
+```
+
+</details>
+
+<details>
+<summary><strong>Settings you can set from the environment</strong></summary>
+
+| Variable | Default | |
+|---|---|---|
+| `LOCAL_API_BASE` | found on its own | An OpenAI-compatible address |
+| `LOCAL_API_KEY` | none | The key for it, if it needs one |
+| `LOCAL_MODEL` | found on its own | The model name to use |
+| `HEARTH_WORKSPACE` | `~/Inglen` (`~/Jarvis` on an older install) | Where memory, logs and voices live |
+| `HEARTH_LOCKDOWN` | `0` | `1` keeps reads inside the workspace too |
+| `HEARTH_AUTO_APPROVE` | `0` | `1` skips approval prompts |
+| `HEARTH_EXTRA_WORKSPACES` | none | More folders it may write in |
+| `HEARTH_VOICE` | `am_michael` | Kokoro voice |
+| `HEARTH_VOICE_SPEED` | `1.0` | How fast it speaks |
+| `HEARTH_STT_DEVICE` | found on its own | `cpu` or `cuda` for speech-to-text |
+| `HEARTH_WAKE_WORD` | none | Listen only after this word |
+| `HEARTH_BUILTIN_PORT` | `8790` | Port for the built-in server |
+| `HEARTH_COMPACT_AT` | `0.75` | Sum up old turns past this much of the context |
+| `HEARTH_NO_ONBOARDING` | `0` | `1` skips setup |
+| `HEARTH_PERSONA_NAME` | `Inglen` | The assistant's name |
+| `HEARTH_PERSONA` | none | Tone: `bro`, `chill`, `professional` or `formal` |
+| `HEARTH_ALL_TOOLS` | `0` | `1` loads every tool up front |
+
+The older `JARVIS_*` names work too.
+
+</details>
+
+<details>
+<summary><strong>Terminal commands</strong></summary>
+
+```
+/help        every command                     /team       helpers working for me
+/status      what's thinking, context, limits  /agents     agent programs on this PC
+/brain       switch what thinks                /mem        what I remember
+/model       pick a model on the current brain /skill      skills
+/models      models on disk and downloads      /voice      speaking: on, off, speed, mic
+/mode        ask, edits or auto                /listen     talk instead of typing
+/allow       let me write under a folder       /think      reasoning on, off, or how hard
+/compact     sum up old turns now              /phone      reach me from your phone
+/context     set the context window            /update     get a newer version
+/chats       chats from here and the window    /clear      start a new chat
+/import-memory   bring memory from ChatGPT or Claude
+```
+`@path` attaches a file. The full list, with every command, is in the [user guide](docs/USER_GUIDE.md#the-terminal).
+
+</details>
 
 ---
 
 ## Contributing
 
-Good first PRs: POSIX ports of the Windows-specific tools in [`hearth/tools.py`](hearth/tools.py), more voice presets in [`hearth/voice.py`](hearth/voice.py), and new tools (one function plus a definition in `TOOL_DEFINITIONS`). See [CONTRIBUTING.md](CONTRIBUTING.md).
+Good first pull requests are macOS and Linux versions of the Windows-only tools in [`hearth/tools.py`](hearth/tools.py), more voices in [`hearth/voice.py`](hearth/voice.py), and new tools (a function plus its entry in `TOOL_DEFINITIONS`). See [CONTRIBUTING.md](CONTRIBUTING.md), the [Roadmap](ROADMAP.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Privacy
 
-Hearth runs on your machine and **collects nothing**, no account, no telemetry, no analytics, no server the author operates. Your files, prompts, and memory stay local.
+Your chats, memory and files stay on your machine. There is no account and no analytics, and no server of ours is in the loop except the Plus relay if you choose Plus, which only carries messages it can't read, and the install count below if you say yes to it. What leaves your computer is only what you turn on, and it goes to the service you chose, whether that is a cloud model or agent, web search (DuckDuckGo), the phone apps or email. With a local model and none of those set up, the only thing Inglen fetches is its own update and catalog data (see the FAQ), and it keeps working with no connection at all.
 
-The only things that ever leave your computer are ones **you** turn on, and they go to the service *you* chose, not to us:
-
-- a **cloud model**, if you point the brain at one (Gemini/OpenAI/Grok/OpenRouter/Anthropic/Custom), then your prompt goes to that provider;
-- **web search / fetch** (DuckDuckGo), when the model looks something up;
-- **ntfy** push and the **Telegram** bridge, if you configure them;
-- **email**, if you set up the optional IMAP/SMTP tool.
-
-All of those are off by default. Run against a local model with none of them configured and Hearth is fully offline. Because it's a local, no-data-collection tool, there's no privacy policy or terms to agree to, and the [MIT license](LICENSE) is the warranty/liability disclaimer.
+**Install count (opt-in, off by default).** If you say yes in setup or turn on Settings, Behavior, "Count this install", Inglen sends this once a day to the relay: a random id made for your install, the version, the OS and whether the brain is local, cloud or an agent. Setup shows the exact payload before you choose. No names, no messages, no file paths; the relay keeps one row per install per day and does not store your IP address. Turn it off in Settings any time. The [MIT license](LICENSE) is the whole agreement.
 
 ## Support
 
-Hearth is free and MIT-licensed, built by one developer. If it's useful to you, a ⭐ is the biggest help, it's how other people find the project. If you'd like to go further, sponsorship options are in [docs/SUPPORT.md](docs/SUPPORT.md).
+Help with installing or using Inglen, bug reports and Plus questions are all covered in [docs/SUPPORT.md](docs/SUPPORT.md), or write to [hello@inglen.app](mailto:hello@inglen.app). [SECURITY.md](SECURITY.md) has how to report a vulnerability.
 
 ## License
 
 [MIT](LICENSE) © [@0pen-sourcer](https://github.com/0pen-sourcer).
 
-## Acknowledgements
+## Thanks
 
-- [Kokoro TTS](https://github.com/thewh1teagle/kokoro-onnx), text-to-speech
-- [faster-whisper](https://github.com/SYSTRAN/faster-whisper), speech-to-text
-- [LM Studio](https://lmstudio.ai), local LLM runner
-- [Model Context Protocol](https://modelcontextprotocol.io), tool interop
+[llama.cpp](https://github.com/ggml-org/llama.cpp) for the built-in server, [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) for the voice, [faster-whisper](https://github.com/SYSTRAN/faster-whisper) for listening, and the [Model Context Protocol](https://modelcontextprotocol.io) for tool interop.

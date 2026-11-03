@@ -117,18 +117,22 @@
 | 小米 | REDMI K80 Pro（24122RKC7C） | HyperOS OS3.0.304.0.WOMCNXM / Android 16 | ✅ 10-29 九段实测，首轮关 20 项，复跑 172 秒；[实测记录](docs/15-红米K80Pro实测.md) | ✅ | ✅ 48 个渠道（54 候选） |
 | 小米 | Redmi Note 14 Pro（24090RA29C） | HyperOS 3.0.309.0 / Android 16 | ✅ 10-26 八段实测通过，整轮约 5 分钟 | ✅ | ✅ 11 个渠道 |
 | 小米 | Redmi Note 14 5G（24094RAD4C） | HyperOS OS3.0.306.0.WOQCNXM / Android 16 | ✅ 10-30 八段实测：20 项新关闭（记账修复前统计，不含普通点击关掉的 4 项），复跑 291 秒、21 项回读、调整 0 项 | ✅ | ✅ 3 个渠道，全部关闭 |
+| 小米 | Redmi Note 13 海外版 / 俄区（23124RA7EO） | HyperOS OS2.0.213.0.VNHRUXM / Android 15 | — 无专用脚本（界面是俄语，引擎按中文找不到入口） | ✅ 见[清单](docs/清单/小米-HyperOS.md#海外版-hyperosredmi-note-1323124ra7eo的差异)（11-01 社区实测，adb + 手动） | —（未跑） |
 | Redmi | Note 12 Turbo（23049RAD8C） | HyperOS OS3.0.5.0 | ✅ 实测通过，九段 3.5 分钟 | ✅ | ✅ |
 | Redmi | K70（23113RKC6C） | HyperOS 3.0.307.0 / Android 16 | ⚠️ 9 段专用脚本，目标 20 项；[实测记录](docs/13-红米K70实测.md) | ✅ | —（未测通知） |
 | Redmi | K70 Pro（23117RK66C） | HyperOS OS3.0.306.0.WNMCNXM / Android 16 | ✅ 10-30 九段整轮 235 秒，25 项回读、0 调整、0 异常；[实测记录](docs/14-红米K70Pro实测.md) | ✅ | ✅ 17 个渠道，其他已有渠道和总开关不变 |
 | vivo | X300 Ultra（V2547DA） | OriginOS 6 | ✅ 2026-10-28 实测通过，七段全通（124 秒） | ✅ | ✅ |
+| vivo | X300 Ultra（V2547DA） | Android 17（PD2547D_A_17.1.10.2.W10） | ⚠️ 2026-10-28 报告者实测：商店入口与「个性化推荐」页失效；已按系统版本新增变体脚本，本仓库无该机型、未复测（[#220](https://github.com/rddmwmddr/android-ad-cleaner/issues/220)） | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
 | vivo | X Fold6（V2545A） | OriginOS 6 Fold / Android 16 | ✅ 实测通过，7 段 121 秒（合上外屏） | 部分（负一屏、i 管家需手动） | ⚠️ 仅 1 条候选，应用级开关已跳过 |
 | vivo（iQOO） | V2324HA | 原系统 Android 16（PD2324J_A_16.2.13.1.W10） | ✅ 2026-10-27 实测，七段全通，重跑 2.5 分钟 | ✅ | 5 个渠道，关 3 个、跳过 1 个 |
 | vivo | V2361A | OriginOS 16（PD2361B_A_16.2.12.2.W10） | ⚠️ 2026-10-26 路径逐页实测、开关已实际关闭；引擎整段待验证 | ✅ | — |
 | vivo（iQOO） | V1986A | Funtouch OS 13.0 / Android 12（PD1986_A_8.21.29） | ✅ 2026-10-30 三段实测通过，重跑 55 秒 | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | ⚠️ 11 个营销渠道人工关 8 个；本机 `chan-off` 认不出通知页（[#336](https://github.com/rddmwmddr/android-ad-cleaner/issues/336)），源码已按同一判据放宽认页、待报告者复测 |
-| vivo | V2417A | OriginOS 6 / Android 16（PD2417D_A_16.2.14.1.W10） | ✅ 2026-10-30 八段整段实测通过，回读核对 32 项，幂等复跑 179 秒；[适配说明](recipes/vivo-V2417A/README.md) | ✅ | ✅ 通用流程关闭 5 个明确营销渠道 |
+| vivo | V2417A | OriginOS 6 / Android 16（PD2417D_A_16.2.14.1.W10） | ✅ 社区实测：10-30 八段整段跑通、回读核对 32 项、幂等复跑 179 秒；11-02 浏览器升到 31.3.0.0 后入口变了，改走「我的 → 设置」，八段仍通过；维护方未在本机复跑；[适配说明](recipes/vivo-V2417A/README.md) | ✅ | ✅ 通用流程关闭 5 个明确营销渠道 |
 | vivo | X300 Ultra（V2547A） | OriginOS 7 | ✅ 2026-10-25 实测通过，重跑 126 秒 | ✅ | ⚠️ 只有应用级总开关 |
+| vivo（iQOO） | Z11 Turbo（V2536A） | OriginOS 6 / Android 16（PD2536B_A_16.0.12.8.W10） | — 无专用脚本；`--ref` 安全模式实测 | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
 | 一加 | Ace 2（PHK110） | ColorOS 16.0.5 / Android 16 | ✅ 2026-10-25 路径实测、整段重跑约 85 秒 | ✅ | 11 个关闭，1 个受限 |
 | 一加 | Ace 2（PHK110） | ColorOS 15.0.0.601 / Android 15 | 2026-10-29 手动路径实测；自动脚本尚未整段真机验证 | 部分路径 | 渠道按独立流程处理 |
+| realme | GT Neo5 SE（RMX3700） | ColorOS 16.0.5.1300(CN01) / Android 16 | ✅ 2026-11-02 六段真机实测通过（广告跟踪、软件商店、浏览器、下拉搜索、小布建议、应用建议）；下拉搜索重跑 83 秒、幂等 | ✅ | —（未跑） |
 
 表格反映当前脚本和验证范围。小米 10、荣耀 Magic7 Pro 等反馈已修复可定位的通用缺陷，但仍需对应真机复测；同品牌参考脚本不等于专用适配，详细记录见 [归档记录](docs/归档/CHANGELOG-0.3.0及更早.md)。
 

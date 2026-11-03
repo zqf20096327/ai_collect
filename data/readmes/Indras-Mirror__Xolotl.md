@@ -19,42 +19,28 @@ Built on <a href="https://github.com/Niko1221/Strata">Strata</a> and heavily ext
 > runs it; the 27B looks dense, so it's going into `strata-dense` with the hyper-connections and QSA attention added.
 > What's known so far and the plan: [docs/QWEN4.md](docs/QWEN4.md).
 
-> **DeepSeek-V4.1 V4 is up (25 Oct)** on [Hugging Face](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)
-> (`v4/`, same size as V3). It's the best build so far: on held-out text it agrees with the full-precision model 86.9%
-> of the time on the top-1 token vs V3's 82.9% (KL 0.306 vs 0.405, through the real engine), and its perplexity is
-> within 0.4% of the full model's. The 1,056 hottest experts are kept exactly as DeepSeek trained them (native FP4). On
-> the full Gauntlet v2 it solved 6/7 (score 6.50), against the DeepSeek API's 5/7 (6.41) and our September build's 4/7
-> (6.20), one run each.
->
-> **Downloaded V4 already? Grab the new rank file.** V4 first shipped pointing at V3's expert ranking. On 25 Oct I
-> added `v4/rank-1017-v4.bin`, V4's own one: faster, and no worse on quality. It's 123 KB, no need to touch the model:
-> `hf download IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored v4/rank-1017-v4.bin --local-dir V41-XQ-1017`, then
-> point `--rank` at it and pull the latest Xolotl.
->
-> **V4 speed update (25 Oct, late): it's caught up, and prefill is way up.** On the coding tasks below (21 HumanEval, 10
-> tool calls, 3 agentic loops) V4 solved **21/21, 10/10, 3/3** and decoded at **25.7 tok/s** (29.0 with the newer
-> conversation-seeded VRAM cache). On the **full HumanEval (all 164)** it got **162/164** (98.8%, greedy, 32K thinking budget,
-> decoding at 40 tok/s across the run). Prefill on a fresh prompt is **289-297 tok/s at 8K and 395-409 at 20K** (dense half at
-> Q8_0), up from 192 / 271 this morning, and decode is 21.7-21.8 / 22.6-24.5 tok/s after 8K / 20K prompts. Short follow-up messages got a lot quicker too: a 32-token
-> message now takes ~3.9 s instead of ~7.4. With the default Q6_K re-quant prefill is 298-300 / 385-388 and decode
-> 23.5-23.9 / 25.3-25.6. It's all engine work, none of it costs quality: the route bias refreshing as you go, zero-copy NVMe reads,
-> read-ahead per layer, MMQ for the experts staged from RAM, DSpark staying loaded when the prompt fits anyway, and short
-> turns going through the prompt batch, and the VRAM cache reloading with this conversation's experts after each
-> prompt. Pull the latest Xolotl (25 Oct or newer) and use
-> `--rank v4/rank-1017-v4.bin --tier-batch-pcie 0.25`.
+> **Qwen3.8-Flash-Next XQ 45 GB is up (31 Oct)** on [Hugging Face](https://huggingface.co/IndrasMirror/Qwen3.8-Flash-Next-Swift-1.5-XQ-Uncensored).
+> It's Swift 1.5 (UkisAI's reasoning-efficient fine-tune) with the refusal direction removed, quantised with our XQ
+> pipeline: 44.9 GB of model plus the 28.8 GB n-gram (PLE) table, which is read from disk. On the 4090 it does
+> **199 tok/s decode and 3,204 tok/s prefill at a 16K prompt** (160 / 2,819 at 8K). On Gauntlet v2 it solved 5/7, score
+> 6.68 (our previous 55.8 GB build 6/7, 6.50; Qwen's own API 5/7, 5.50; one run each), and it
+> refused 0 of 100 held-out harmful prompts and 0 of 30 safe ones. Serve it with
+> `./scripts/xol-qfn.sh --model <shard 1 .gguf> --pack <pack-qfn45>`.
 
-> **ISTA-DASLab's GGUFs work too.** Xolotl loads [ISTA-DASLab](https://huggingface.co/ISTA-DASLab)'s
-> [GSQ-RCO GGUFs](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) of DeepSeek-V4.1-Flash-1017
-> (the unedited model, IQ2_XXS and IQ2_XS), thanks heaps to ISTA for putting those out. I've now run IQ2_XS on my 4090
-> and it works: perplexity 3.93 on a 256-token test (our V3 3.60, same flags) and sane chat answers. To use it, set `-m`
-> in the DeepSeek config to their first shard (`...-00001-of-00004.gguf`, the other shards get picked up automatically)
-> and keep `--engram` pointing at our Engram tables (steps on our HF card). The hash tables are identical so ours work
-> with their weights. They're text only in Xolotl (their files don't carry the router's image bias), so leave the
-> `vision` section out of the config for them.
+> **DeepSeek-V4.1 V4 (25 Oct)** on [Hugging Face](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)
+> (`v4/`, 152 GiB) is the best DeepSeek build so far. Through the real engine it agrees with the full-precision model
+> on the top-1 token 86.9% of the time vs V3's 82.9% (KL 0.306 vs 0.405; 85.7% vs 81.5% on the Python reference path),
+> its perplexity is within 0.4% of the full model's, and the 1,056 hottest experts stay in DeepSeek's native FP4. It
+> solved 21/21, 10/10 and 3/3 on the coding tasks below, 162/164 on the full HumanEval, and 6/7 (6.50) on Gauntlet v2
+> against the DeepSeek API's 5/7 (6.41). Run it with V4's own rank file, `--rank v4/rank-1017-v4.bin`, and
+> `--tier-batch-pcie 0.25`. If you downloaded V4 before 25 Oct, grab the rank file (123 KB):
+> `hf download IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored v4/rank-1017-v4.bin --local-dir V41-XQ-1017`.
+> Speeds in detail: [docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md#deepseek-v41-flash-1017-v4-25-oct).
 
 ## What one PC can do
 
-**One RTX 4090 (24 GB) · Ryzen 7 5700X · 90 GB DDR4 · one NVMe drive.** Every number is measured on that machine,
+**One RTX 4090 (24 GB) · Ryzen 7 5700X · 90 GB DDR4 · one NVMe drive** (128 GB RAM since 1 Nov; the numbers below
+are from the 90 GB runs unless marked). Every number is measured on that machine,
 through the real server, while it solved real tasks (21 HumanEval problems, 10 tool-call tasks, 3 agentic bug-fix
 loops), greedy, thinking on with a 32K-token thinking budget.
 
@@ -65,6 +51,7 @@ loops), greedy, thinking on with a 32K-token thinking budget.
 | **GLM-5.3-Flash** | 320B MoE | **290-375 tok/s** | **25.3 tok/s** | 19/21 | 10/10 | 3/3 | 512K |
 | **Qwen3.8-Flash-Next** | 125B MoE | **3,000-3,430 tok/s** | **127.8 tok/s** | 21/21 | 10/10 | 3/3 | 200K |
 | **Qwen3.8-27B** (dense) | 27B | **1,240-1,390 tok/s** | **98.5 tok/s** | 21/21 | 10/10 | 3/3 | 200K |
+| **[LFM3-Omni-2B](https://huggingface.co/IndrasMirror/LFM3-Omni-2B-XQ-Uncensored)** (XQ-6.0, omni) | 2B | **26,000-32,800 tok/s** | **~300 tok/s** | 13/21 | 9/10 | 0/3 | 32K |
 
 <sub>Decode = generation speed during those tasks. Prefill = a fresh 6K-17K-token prompt through the server
 (`tools/throughput.py`; Qwen3.8-Flash-Next: 3,430 / 3,005 tok/s at 6.5K / 16.7K, Qwen3.8-27B: 1,385 / 1,244 tok/s,
@@ -75,7 +62,10 @@ DeepSeek-V4.1 with the speculative-decode draft off the card during long prompts
 (`tools/glm/serve/strata-glm-maya-abl-512k-bias.json`), prefill 301 / 374 tok/s at 6.1K / 15.6K and 368-376 on fresh
 30K / 44K prompts. DeepSeek-V4.1-Flash-1017 V4 (25 Oct): dense half Q8_0, `rank-1017-v4.bin` + `--tier-batch-pcie 0.25`,
 prefill 289-297 / 395-409 tok/s at 6.1K / 16.5K; full HumanEval (164) 162/164. How close the DeepSeek quant gets to DeepSeek's own API on the same tasks:
-[docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md#deepseek-v41-quant-vs-the-deepseek-api).</sub>
+[docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md#deepseek-v41-quant-vs-the-deepseek-api).
+LFM3-Omni-2B (2 Nov, `xolotl-lfm3`, alone on the card): a non-reasoning model, so thinking off; prefill 32,796 / 26,049
+tok/s at 5.3K / 14K, decode 292-310 tok/s; it also hears, sees and speaks (speech out at 12x real time) - see
+[docs/LFM3.md](docs/LFM3.md). Its agentic 0/3 is the 2B model calling a tool the agent does not have.</sub>
 
 **What that means in practice:**
 
@@ -83,11 +73,37 @@ prefill 289-297 / 395-409 tok/s at 6.1K / 16.5K; full HumanEval (164) 162/164. H
   calls, streaming, prefix reuse across agent turns, a thinking budget.
 - **No server farm.** The weights (152 GiB for DeepSeek-V4.1) live across VRAM, pinned RAM and NVMe; the engine
   carries up the experts each token needs.
-- **Fast where it counts.** The Qwen models run at 100-130 tok/s; an agent's small follow-up turn on DeepSeek-V4.1
+- **Fast where it counts.** The Qwen models run at 100-200 tok/s; an agent's small follow-up turn on DeepSeek-V4.1
   costs ~8 s on a 6K-16K context, and the engine learns the conversation's experts between turns.
 
 ## Recently added
 
+- **LFM3-Omni-2B, natively** (`xolotl-lfm3`, [docs/LFM3.md](docs/LFM3.md)): Liquid AI's omni model (text, pictures,
+  audio and video in; text and speech out) in its own engine behind the usual server - ~300 tok/s decode, 26-33K tok/s
+  prefill, `/v1/audio/speech` and `/v1/audio/transcriptions` from the model itself, and park/unpark in ~50 ms so it can
+  sit beside a big model as its ears, eyes and voice. Logits match llama.cpp's (KL 1.3e-7 on an exact-layout run).
+- **LFM3 as the ears and voice of a bigger model** (`scripts/xol-qfn-voice.sh`): QFN 45 GB and LFM3-Omni on one 4090,
+  then QuetzaCodetl in voice mode. QFN's elastic expert cache has to hand ~4.5 GB back (`POST /v1/vram`) or LFM3's
+  encoder cannot load; after that both are resident at 22.8 GB, and LFM3 transcribes and speaks while QFN keeps its
+  speed - 0.75 s for a 96-token answer while 3.5 s of speech streamed.
+- **More community fixes** (#96, #101, #102, #104, NektoDron): MiniMax M3.1 serving works with the current frontend again
+  (#96), Qwen picture numbering (`chat_template_kwargs: {"add_vision_id": true}`) reaches the template (#101) and can be
+  a server default (`"add_vision_id": true` in the run config, #104), and new
+  Qwen3.6 setups keep the official 64-token image minimum (#102). Layer split no longer aborts on the first request at
+  boundaries other than 20 (#98, diagnosed by ghino18, confirmed by tragicwinds), and a request beyond the batch slots
+  waits for one again instead of a 503 (#100, reported by tragicwinds).
+- **Nine community pull requests** (#86-#95): IQ1_S routed experts for Unsloth's DeepSeek-V4.1 UD-IQ1_M (#86) and
+  opt-in fused router ops and batched state copies in the DeepSeek-V4.1 engine (#87, Xiaomi2008); opt-in request-owned
+  batch cancellation (#95), learned checkpoints for edited prompt suffixes (#90), shared immutable checkpoint payloads
+  (#89), a bounded tokenizer span cache (#91) and Qwen3.6 snapshot ownership (#92), cancelled requests no longer
+  waiting for a slot (#88) and the Metal fallback signatures synced (#93, NektoDron). The Windows DeepSeek-V4.1 build
+  compiles again (#94, kelheor). Every new option is off by default.
+- **ISTA-DASLab's GGUFs work too.** Xolotl loads [ISTA-DASLab](https://huggingface.co/ISTA-DASLab)'s
+  [GSQ-RCO GGUFs](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) of DeepSeek-V4.1-Flash-1017
+  (the unedited model, IQ2_XXS and IQ2_XS), thanks heaps to ISTA for putting those out. IQ2_XS on the 4090: perplexity
+  3.93 on a 256-token test (our V3 3.60, same flags) and sane chat answers. Set `-m` to their first shard
+  (`...-00001-of-00004.gguf`), keep `--engram` on our Engram tables (identical hash tables), and leave the `vision`
+  section out of the config (their files don't carry the router's image bias).
 - **Upstream llama.cpp and Unsloth DeepSeek-V4.1 GGUFs** (#82, #85 AlexeyMatskevich; #84 NektoDron): `ds41_generate`
   reads the `deepseek41` layout upstream's converter writes (ISTA-DASLab's GSQ-RCO files since Oct 27, Unsloth's), the
   combined Engram table straight from its GGUF shard, the upstream DSpark sidecar, and IQ3_S routed-expert downs
@@ -111,6 +127,8 @@ prefill 289-297 / 395-409 tok/s at 6.1K / 16.5K; full HumanEval (164) 162/164. H
 - **GLM-5.3-Flash long conversations no longer crash** (#46, vthomasino): when the graph pool fills and gets rebuilt,
   every cached graph (predict and rows included) and the CUDA backend's captured graphs are dropped too, so nothing
   replays against freed memory. Regression tool: `tools/xolotl-glm-manylengths.py`.
+<details><summary>Earlier (October)</summary>
+
 - **Batch slots** for the DeepSeek-V4.1 engine (#22, NektoDron): `"parallel": N` in a ds41 config runs several
   requests in one pass over the model, one token each, on the server's existing slot scheduler. How it works, what a
   slot costs and the limits: [docs/BATCHING.md](docs/BATCHING.md).
@@ -135,12 +153,14 @@ prefill 289-297 / 395-409 tok/s at 6.1K / 16.5K; full HumanEval (164) 162/164. H
 - **DeepSeek-V4.1-Flash-1017 builds** of the October checkpoint:
   [IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)
   (V2 142 GiB; V3 152 GiB, recalibrated on a code + agentic heavy mix; **V4** 152 GiB, out 25 Oct, with our XQ
-  refinement on every expert and the hottest experts kept in native FP4: 85.7% top-1 agreement with the full model vs V3's 81.5%).
+  refinement on every expert and the hottest experts kept in native FP4: 85.7% top-1 agreement with the full model vs V3's 81.5% on the Python reference path).
 - **Native Windows** for the DeepSeek-V4.1 engine (MSVC + CUDA, RTX 50 notes from #14): [docs/WINDOWS.md](docs/WINDOWS.md).
 - **Vision** input for DeepSeek-V4.1 (#8), per-request routing options (#11), a 16-row tier call (#9) and a uniform
   VRAM expert cache under the auto slot budget (#15).
 - Engine: a VRAM breakdown in the decode trace (dense weights, DSpark draft, free memory) and per-GPU one-time setup
   in the dense kernels.
+
+</details>
 
 ## Quick start
 
@@ -155,15 +175,21 @@ cmake -S . -B build-xolotl -G Ninja -DCMAKE_BUILD_TYPE=Release -DSTRATA_ENABLE_C
 ninja -C build-xolotl      # strata, strata-dense, glm_generate, ds41_generate, ds4_generate
 ```
 
-Get a model: DeepSeek-V4.1-Flash is **[IndrasMirror/DeepSeek-V4.1-Flash-GSQ-Uncensored](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-GSQ-Uncensored)**
-(152 GiB, our GSQ mixed ternary / 2-bit / 3-bit quant - the card has the download and Engram steps), or the newer
-**[1017 builds](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)** (V4 recommended) of the October checkpoint. Then serve it
-(edit the model paths in its config first):
+Get a model:
+
+- **DeepSeek-V4.1-Flash:** the **[1017 builds](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-1017-XQ-Uncensored)**
+  of the October checkpoint (V4 recommended, with `v4/rank-1017-v4.bin`), or the earlier
+  [GSQ build](https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-GSQ-Uncensored) (152 GiB, mixed ternary /
+  2-bit / 3-bit). Both cards have the download and Engram steps.
+- **Qwen3.8-Flash-Next:** **[XQ 45 GB](https://huggingface.co/IndrasMirror/Qwen3.8-Flash-Next-Swift-1.5-XQ-Uncensored)**
+  (the two `.gguf` shards plus `pack-qfn45/`).
+
+Then serve it (edit the model paths in the DeepSeek and GLM configs first):
 
 ```bash
 python3 tools/v41/serve/serve_ds41.py --engine strata --config tools/v41/serve/strata-ds41.json --port 8150           # DeepSeek-V4.1-Flash
 python3 tools/glm/serve/serve_glm.py  --engine strata --config tools/glm/serve/strata-glm-maya-abl-512k.json --port 8144  # GLM-5.3-Flash
-python3 -m serve.server --engine strata --config <your-qwen-flash.json> --port 8130                                    # Qwen3.8-Flash-Next
+./scripts/xol-qfn.sh --serve-only --model <shard 1 .gguf> --pack <pack-qfn45>                                       # Qwen3.8-Flash-Next (port 8099)
 python3 -m serve.server --engine strata --config <your-27b.json> --port 8090                                          # Qwen3.8-27B (exe: build-xolotl/strata-dense)
 ```
 
@@ -205,6 +231,7 @@ pruning; the Qwen models get MTP speculative decoding. **[Read the full write-up
 | [DeepSeek-V4.1-Flash engine](docs/DEEPSEEK_V41.md) | GSQ quantisation, DSpark, the fp4 KV cache, Engram |
 | [DeepSeek-V4.1 on Windows](docs/WINDOWS.md) | native MSVC + CUDA build, configs, RTX 50 notes |
 | [GLM-5.3-Flash engine](docs/glm) | KDA + MLA attention, the LoRA on routed experts, soft pruning |
+| [LFM3-Omni engine](docs/LFM3.md) | pictures, audio, video and speech on a 2B model, park/unpark beside a big one |
 | [Qwen3.8 / upstream Strata](README.strata.md) | the Strata engine this grew from |
 | [Brand kit](docs/brand/XOLOTL_BRAND.md) | logo, banner, palette |
 
@@ -216,17 +243,19 @@ Built on **[Strata](https://github.com/Niko1221/Strata)** by Niko1221 (its engin
 0.1.44.1) and [ggml / llama.cpp](https://github.com/ggml-org/llama.cpp); the Qwen3.8-27B dense port is
 [perronemirko](https://github.com/perronemirko/Strata)'s. The DeepSeek-V4.1 and GLM-5.3-Flash engines, the GSQ quant
 and the unification are Indras Mirror's. Model weights: DeepSeek, Zhipu AI, Qwen, with quants and fine-tunes by
-peasantsmith, ukisai, d0xin and gcsa-abliterix.
+peasantsmith, ukisai, d0xin and gcsa-abliterix; LFM3-Omni by [Liquid AI](https://huggingface.co/LiquidAI), its engine
+following llama.cpp's LFM3 and libmtmd work.
 
 Contributors, with thanks: [NektoDron](https://github.com/NektoDron) (MMQ id slack, forced tool calls, the arena pipe
 and indexer WMMA opt-ins, #48-#52; checked #55; the Q3_K + GPTQ Q2_0 lite calibration and allocation tooling, #58;
 the ggml 6050b467 pool-hook link fix, #72; the control-queue wakeup fix, #79; Qwen3.6 vision, prefix cache and
-batched MTP, #76; deep sleep, #75; resident prefix reuse, #80; complete Unsloth GGUF and DSpark support, #84),
+batched MTP, #76; deep sleep, #75; resident prefix reuse, #80; complete Unsloth GGUF and DSpark support, #84; cancelled-request slot wakeups, #88; shared host checkpoint payloads, #89; learned suffix-edit checkpoints, #90; the bounded tokenizer span cache, #91; Qwen3.6 snapshot ownership, #92; the Metal fallback signature sync, #93; request-owned Flash batch cancellation, #95),
+[Xiaomi2008](https://github.com/Xiaomi2008) (IQ1_S routed experts for Unsloth's DeepSeek-V4.1 UD-IQ1_M, #86; ds41 fused router ops and batched state copies, #87),
 [AlexeyMatskevich](https://github.com/AlexeyMatskevich) (the upstream deepseek41 GGUF layout, #82; OpenZFS ARC
 accounting, #83; IQ3_S expert downs for Unsloth's UD-Q2_K_XL, #85),
 [paul123637-lab](https://github.com/paul123637-lab) (the DSpark seed fixes, #54 and #56; RTX 5080 and 5060 Ti helper
-numbers), [kelheor](https://github.com/kelheor) (the vision `pread` fix, #51), [exye137](https://github.com/exye137)
-(the thread-local CUDA stream leak, #57) [penink-WH](https://github.com/penink-WH) (AC922 rig) and [cpacsm75](https://github.com/cpacsm75) (192 GB
+numbers), [kelheor](https://github.com/kelheor) (the vision `pread` fix, #51; the Windows ds41 build fix, #94), [exye137](https://github.com/exye137)
+(the thread-local CUDA stream leak, #57), [penink-WH](https://github.com/penink-WH) (AC922 rig) and [cpacsm75](https://github.com/cpacsm75) (192 GB
 arena tuning on Windows, #77).
 
 *Xolotl* is Quetzalcoatl's dark twin, who carries the dead up from the underworld - as the engine carries experts up

@@ -10,7 +10,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/TharunKumarReddyPolu/The-AI-Handbook?style=social)](https://github.com/TharunKumarReddyPolu/The-AI-Handbook/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/TharunKumarReddyPolu/The-AI-Handbook)](https://github.com/TharunKumarReddyPolu/The-AI-Handbook/issues)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![AI Tools](https://img.shields.io/badge/AI%20Tools-320%2B-orange)
+![AI Tools](https://img.shields.io/badge/AI%20Tools-435%2B-orange)
 ![Sections](https://img.shields.io/badge/Sections-18%2B-brightgreen)
 [![Last Updated](https://img.shields.io/badge/last%20updated-October%202026-blue)](https://github.com/TharunKumarReddyPolu/The-AI-Handbook)
 
@@ -36,7 +36,7 @@
 
 This handbook is a **curated knowledge base of AI tools, platforms, and learning resources** designed for **developers, AI enthusiasts, and professionals** who want a single reference they can rely on. Each topic is presented in a rich, standalone format covering:
 
-- 🛠️ **Tool & Platform Tables** — 320+ handpicked tools across every category
+- 🛠️ **Tool & Platform Tables** — 435+ handpicked tools across every category
 - 🔑 **Key Concepts** — Core terminology and concepts explained clearly
 - 💡 **Pro Tips** — Practical advice on when and how to use each tool
 - 🎯 **Decision Guides** — "When to Use What" tables for quick choices
@@ -51,7 +51,7 @@ This handbook is a **curated knowledge base of AI tools, platforms, and learning
 
 | Feature | Description |
 |---------|-------------|
-| 🛠️ **320+ AI Tools** | Handpicked tools across 18 categories with descriptions and links |
+| 🛠️ **435+ AI Tools** | Handpicked tools across 18 categories with descriptions and links |
 | 💡 **Pro Tips & Decision Guides** | Practical advice and "When to Use What" tables in every topic |
 | 🔑 **Key Concepts** | Core terminology explained clearly in every topic guide |
 | 🔌 **MCP Ecosystem** | Complete guide to Model Context Protocol servers, clients, and registries |
@@ -66,7 +66,7 @@ This handbook is a **curated knowledge base of AI tools, platforms, and learning
 
 ## 🏆 Top Picks — The 2026 AI Starter Stack
 
-Don't want to browse 320+ tools right now? Start with the highest-signal tools in each category:
+Don't want to browse 435+ tools right now? Start with the highest-signal tools in each category:
 
 | Category | Top Picks |
 |---|---|

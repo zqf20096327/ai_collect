@@ -1,5 +1,7 @@
 # HarnMem
 
+![HarnMem logo](https://raw.githubusercontent.com/ys118/harnmem/master/packages/pi-harnmem/logo.png)
+
 **Cross-harness agent memory that lives in plain files.**
 
 > HarnMem = *harness* + *memory* (`harn` is also a Scots word for "brains").
@@ -75,7 +77,7 @@ the local process, and lifecycle decisions are explainable and reversible.**
 
 - **Cross-harness by construction.** The store and data model are
   harness-agnostic; adapters are thin. The same store is shared by the pi,
-  DeepSeek Harness, Claude Code, Codex, opencode, Grok, Cursor and Hermes
+  DeepSeek Harness, Claude Code, Codex, opencode, Grok, Cursor, Hermes and omp
   adapters and by the CLI
   without any harness.
 - **File-native SSOT.** One memory per Markdown file with YAML frontmatter.
@@ -186,8 +188,10 @@ pi install ./packages/pi-harnmem
 ```
 
 The extension injects the hot index before each turn, registers the memory
-tools (`memory_write`, `memory_search`, `memory_read`, `memory_forget`,
-`memory_status`), adds `/memory`, and runs a bounded extraction at session end.
+tools (`harnmem_write`, `harnmem_search`, `harnmem_read`, `harnmem_forget`,
+`harnmem_status` — names follow the `toolPrefix` setting, and the `harnmem_`
+default lets pi-memory, which owns the bare `memory_*` names, load alongside),
+adds `/memory`, and runs a bounded extraction at session end.
 Configuration lives in `~/.harnmem/config.json` (or `$HARNMEM_HOME/config.json`).
 
 ### DSH adapter
@@ -220,8 +224,8 @@ verified against 2.1.310). The plugin:
   turns, an empty store injects zero bytes, and output is deterministically
   truncated under Claude's 10,000-character `additionalContext` cap;
 - exposes the five memory tools through a bundled, zero-dependency stdio MCP
-  server (`memory_search`, `memory_read`, `memory_write`, `memory_forget`,
-  `memory_status`; tool outputs are clipped well under the client's 25k-token
+  server (`harnmem_search`, `harnmem_read`, `harnmem_write`, `harnmem_forget`,
+  `harnmem_status`; tool outputs are clipped well under the client's 25k-token
   cap);
 - adds a `/harnmem:memory` slash command for manual search/read/write/forget/
   status;

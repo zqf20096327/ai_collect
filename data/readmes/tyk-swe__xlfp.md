@@ -1,0 +1,279 @@
+# xlfp — xo llm fingerprinter
+
+**Fingerprint the model family behind an LLM API — and check a provider's claim.**
+
+When a model name is hidden or a provider's claim needs a second look,
+`xlfp` gives you independent tokenizer evidence. It sends small test
+messages, compares the reported token counts with known model families,
+and explains the result. Use it to investigate an unfamiliar endpoint,
+check a provider's claimed family, or add a diagnostic to an agent workflow.
+
+- **Two ways to investigate:** `uncover` identifies a likely family;
+  `audit` compares the evidence with a claim, optionally using an official baseline.
+- **Built for real endpoints:** OpenAI-compatible, Anthropic, and Gemini
+  API shapes; a configurable request cap; human-readable and JSON output.
+- **OpenCode stealth testing:** `opencode` runs probes through the installed
+  OpenCode client, using its login and structured token usage.
+- **Evidence with limits:** verified candidates include DeepSeek, Qwen,
+  OpenAI, Mistral, GLM, MiMo, and Kimi. Ambiguous or unreliable evidence can
+  produce `INCONCLUSIVE` rather than a guess.
+
+[Get started](#your-first-check-2-minutes) · [Check a claim](#check-a-providers-claim-audit) · [How it works](./docs/how-it-works.md) · [What's new in 0.1.6](./CHANGELOG.md)
+
+What it can tell you:
+
+- Which model **family** an endpoint most likely is, with evidence.
+- Whether a provider's endpoint matches the family it claims.
+
+What it can't:
+
+- The exact model version. Token counts can't prove that.
+- Separate Qwen2.5, MiMo-7B, and Kimi-Dev, which share a tokenizer.
+- Whether a same-family model was secretly shrunk or degraded.
+- Authenticate provider-reported token counts. Missing or implausible
+  counts can be rejected, but deliberately forged counts that match a
+  known tokenizer can fool the fingerprint, including its confidence.
+
+## Install
+
+One line (Linux/macOS):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tyk-swe/xlfp/main/install.sh | sh
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://raw.githubusercontent.com/tyk-swe/xlfp/main/install.ps1 | iex
+```
+
+This downloads the right binary for your machine from the latest
+GitHub Release, verifies its SHA-256 checksum, and installs it to
+`~/.local/bin` (Windows: `%LOCALAPPDATA%\xlfp`). Set `XLFP_VERSION`
+to pin a release (e.g. `v0.1.8`) or `XLFP_INSTALL_DIR` to change the
+destination.
+
+With Go 1.23+ you can also install or build from source:
+
+```bash
+go install github.com/tyk-swe/xlfp@latest
+# or, in a clone:
+go build -o xlfp .
+```
+
+Check it works:
+
+```bash
+xlfp version
+xlfp families        # the families this build can recognize
+xlfp explain         # two-minute plain-words guide
+```
+
+Hostnames such as `provider.example` below are placeholders — replace
+them with real endpoints you are authorized to probe.
+
+## Your first check (2 minutes)
+
+**1. Give xlfp your API key — via the environment, never a flag.**
+
+```bash
+export XLFP_API_KEY='the key for that endpoint'
+```
+
+`XLFP_API_KEY` is your explicit "yes, probe this endpoint" key. Keys
+like `OPENAI_API_KEY` are only ever sent to that provider's official
+address, so checking a stranger's endpoint can never leak them.
+
+**2. Run it.** In a terminal, run `xlfp` (or `xlfp tui`) to open the
+dashboard. Choose Uncover or Audit, fill in the form, and review the
+request limit and endpoint before confirming. Use Tab or the arrow keys
+to move between fields, Ctrl+S to review, and Esc or Ctrl+C to cancel a
+running check. The dashboard also includes families, explanations, and
+results from the current session. Press `v` on a result to switch between
+plain, technical, and JSON views.
+
+The dashboard requires a terminal at least 40 columns by 10 rows. Run
+`xlfp wizard` for the line-by-line guide; it is also used automatically
+when the dashboard is unavailable on an interactive input. Results are
+kept in memory until you quit. For scripts or saved reports, use the
+direct commands and `--json` instead:
+
+```bash
+xlfp uncover --endpoint https://provider.example --model stealth-model-x
+```
+
+**3. Read the answer.** Sample output (values vary by endpoint):
+
+```text
+Endpoint: https://provider.example  Model: stealth-model-x  Transport: openai
+Sent 8 tiny test requests and compared how the endpoint counts tokens.
+
+Result: IDENTIFIED — this endpoint behaves like the DeepSeek (deepseek) family.
+Confidence: very high (98%)
+
+What this means: the way this endpoint splits text into tokens matches that
+family. That is strong evidence about the model family, but token counts
+cannot prove an exact model version or checkpoint.
+```
+
+If the evidence isn't trustworthy enough, you get `INCONCLUSIVE` plus
+a plain-English reason and concrete things to try. Add `--verbose`
+for the technical evidence, or `--json` for scripts and agents.
+
+### Test an OpenCode stealth model
+
+OpenCode free-tier chat models require the OpenCode client. Install
+[OpenCode](https://opencode.ai/docs), then authenticate and choose a model:
+
+```bash
+opencode auth login
+opencode models opencode
+xlfp opencode --model opencode/big-pickle --json
+```
+
+Model availability changes; replace `big-pickle` with a current model ID.
+You can also choose **OpenCode stealth test** in the dashboard or option 3
+in `xlfp wizard`. Both review the model and probe limit before running.
+
+This command requires OpenCode v1 JSON events (reference version v1.19.4).
+It launches a fresh OpenCode session per probe, passes the exact test string
+through stdin, and uses private configuration with tools, plugins, and
+project instructions disabled. It uses your existing OpenCode login;
+`XLFP_API_KEY`, xlfp endpoint profiles, and HTTP transport flags do not apply.
+Use `--opencode-bin PATH` if OpenCode is not on PATH.
+
+The runner verifies `opencode debug config` before probing and before each
+subsequent probe. It refuses to proceed if managed or organization settings
+change the isolated probe configuration, or if inspection fails. Resolved
+configuration values are never printed.
+
+`--max-probes` defaults to 12 and `--timeout` to 60 seconds per probe.
+OpenCode controls internal provider calls and retries, so the probe cap
+cannot guarantee a provider-request cap. `--min-confidence`, `--verbose`,
+and the family-level evidence limits apply as usual. There is no OpenCode
+audit/baseline mode in this version.
+
+JSON includes `command: "opencode"`, `model`, `opencode_version`, and
+`probes_spent`, alongside the usual status, rankings, and observations.
+It omits `requests_spent`, since provider-request counts are unknown.
+Missing, invalid, or multi-step usage is rejected as evidence.
+
+Direct HTTP commands reject `opencode.ai` and its subdomains for all models,
+including paid models. Use `xlfp opencode`; there is no HTTP fallback or
+client-header impersonation.
+
+### Check a provider's claim (audit)
+
+```bash
+# "You say this is DeepSeek. Is it?"
+xlfp audit --target-url https://provider.example --model deepseek-chat --claim deepseek
+
+# Stronger: probe the official API in the same run as a live baseline.
+export XLFP_TARGET_API_KEY='provider key'
+export XLFP_OFFICIAL_API_KEY='official key'
+xlfp audit \
+  --target-url https://provider.example \
+  --official-url https://api.deepseek.com \
+  --model deepseek-chat --claim deepseek
+```
+
+Verdicts are `MATCH`, `MISMATCH`, or `INCONCLUSIVE`. `--claim` is
+guessed from the model name when possible (`deepseek-chat` →
+`deepseek`). A `MISMATCH` is strong evidence of a different family —
+not, on its own, proof of fraud. Claims for not-yet-verifiable
+families (`google`, `claude`) return inconclusive immediately,
+without spending requests; use `uncover` to see their scored hints.
+
+In v0.1.5, an official baseline that fails after returning some usable
+counts can still contribute to a verdict. Inspect the official result
+with `--json` or `--verbose` and rerun if probing stopped early; do not
+treat a failed baseline as corroboration. A fix is pending in
+[PR #3](https://github.com/tyk-swe/xlfp/pull/3).
+
+### Two more detectors: `tokprobe` and `numbers`
+
+`xlfp tokprobe` identifies the upstream tokenizer a second way:
+wrapped probes minus a wrapper-only baseline (hidden template
+tokens cancel exactly), a Bayesian open-set verdict
+(`exact` / `related` / `unknown` for unlisted tokenizers), and a
+claim check against the model name. `xlfp numbers` adds a
+behavioral signal that needs no token counts: the model writes a
+few hundred first-instinct integers, and its value preferences are
+ranked against a reference bank you collect yourself with
+`xlfp sample` → `xlfp enroll` → `xlfp retrain` from official
+endpoints (the embedded bank ships empty, so expect
+`insufficient_bank` until then). `xlfp numbers --input FILE`
+re-scores saved or pasted replies offline. Both are reported
+separately from the classic fingerprint and never merged into one
+confidence; details and limits are in
+[How it works](./docs/how-it-works.md). The implementations are
+clean-room, from published concepts only — see
+[docs/clean-room.md](./docs/clean-room.md).
+
+### Exit codes
+
+| Code | Meaning |
+|---|---|
+| 0 | `uncover` / `opencode`: identified · `audit`: match |
+| 1 | operational or usage error |
+| 2 | inconclusive |
+| 3 | `audit`: mismatch |
+
+A normal dashboard exit returns 0; the table applies to direct checks.
+
+## Use xlfp from your AI agent
+
+This repo ships an agent skill ([skills/xlfp/SKILL.md](./skills/xlfp/SKILL.md))
+that teaches coding agents to run `xlfp` correctly: when to use
+`uncover`, `opencode`, and `audit`, always `--json`, exit-code meanings, key safety
+(never paste keys into chat), and the honesty rules above.
+
+From a clone, install it into your agent's skill directory:
+
+```bash
+scripts/install-skill.sh                 # every detected harness
+scripts/install-skill.sh --target hermes # or codex / Muse / muse
+scripts/install-skill.sh --dry-run       # show what would happen
+```
+
+Hermes can also install straight from the URL:
+`hermes skills install https://raw.githubusercontent.com/tyk-swe/xlfp/main/skills/xlfp/SKILL.md`.
+For Muse Code the script prints the `muse skills install …`
+command instead of copying files, because that store owns its writes.
+When run outside a checkout, downloaded Muse skill sources are kept in
+`${XDG_CACHE_HOME:-~/.cache}/xlfp/skills/xlfp` for that command to use.
+
+## Documentation
+
+- [How it works](./docs/how-it-works.md) — probing, ranking,
+  verified vs unverified families, and inherent limits.
+- [Configuration](./docs/configuration.md) — transports, endpoint
+  forms, API-key rules, environment variables, config profiles.
+- [Development](./docs/development.md) — build/test commands,
+  release process, database regeneration, package layout.
+
+## Responsible use
+
+Only probe endpoints you own or are authorized to test. Every run
+sends real, potentially billable API requests (HTTP commands cap these
+with `--max-requests`; OpenCode caps CLI runs with `--max-probes` and
+controls its own internal requests), including literal special-token strings, which
+some providers may log or prohibit. A `MISMATCH` verdict is
+diagnostic tokenizer evidence about the model family — it is not, on
+its own, proof of fraud, quantization, or quality degradation.
+Verify before publishing claims about a provider.
+
+## Contact
+
+- Twitter/X: [@xodud_rkd](https://x.com/xodud_rkd)
+- Discord: `@xodud`
+
+## License and attribution
+
+GPL-3.0-only — Copyright (C) 2026 tyk-swe. See
+[LICENSE](./LICENSE). Tokenizer-data provenance and third-party
+notices are in [NOTICE.md](./NOTICE.md). This is an independent
+project, not affiliated with or endorsed by OpenAI, Anthropic,
+Google, Alibaba, DeepSeek, Mistral AI, Zhipu AI, Xiaomi, or Moonshot AI;
+their names identify the tokenizers and endpoints being measured.

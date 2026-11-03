@@ -53,36 +53,36 @@ genai is _intentional_. Curious why it was created? See the release announcement
 
 ## Scoreboard
 
-| Provider                                   | 🌐   | Mode                            | ➛In        | Out➛    | Tool     | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ------------------------------------------ | ---- | ------------------------------- | ---------- | ------- | -------- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠                   | 💬📄📸     | 💬      | ✅🕸️🪨   | 📐[]  | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| [antigravity](docs/antigravity.md)         | 🇺🇸   | Sync, Stream🧠                   | 💬         | 💬      | ❌       | 📐    | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🪨🔀   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync                            | 💬         | 📸      | ❌       | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
-| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📄📸     | 💬      | 🕸️       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream, SystemOne🧠        | 💬📸       | 🎯💬     | 💨       | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                   | 💬         | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠                   | 💬         | 💬      | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠, Embed            | 🎤🎥💬📄📸 | 💬🧬     | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
-| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream, SystemOne, Embed🧠 | 🎤💬📸     | 🎯💬🧬    | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream🧠                   | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠, Embed, SystemOne | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
-| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠, Embed            | 💬📄📸     | 💬📸🧬   | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
-| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬      | 🕸️       | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
-| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                   | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
-| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                   | 💬📄📸     | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                   | 💬📸       | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [typesafe](docs/typesafe.md)               | 🇺🇸   | SystemOne                       | 💬         | 🎯       | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
-| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠                   | 🎤🎥💬📸   | 🎤💬    | ✅🪨🔀   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| openaicompatible                           | N/A  | Sync, Stream                    | 💬         | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| Provider                                   | 🌐   | Mode                                      | ➛In        | Out➛    | Tool     | JSON   | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------------------ | ---- | ----------------------------------------- | ---------- | ------- | -------- | ------ | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️     | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | ✅🕸️     | 📐[]    | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| [antigravity](docs/antigravity.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬         | 💬      | ❌       | 📐      | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ☁️     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync                                      | 💬         | 📸      | ❌       | ❌     | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
+| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨     | ✅     | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | 🕸️       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠, SystemOne                  | 💬📸       | 🎯💬     | 💨       | ✅[]   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
+| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ✅     | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ☁️     | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[]   | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ✅[]   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream🧠, Realtime, SystemOne, Embed | 🎤💬📸     | 🎤🎯💬🧬  | ✅🪨🔀   | ✅[][] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream🧠                             | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[]   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠, Embed, SystemOne           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[]   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅     | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
+| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅     | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
+| [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🔀🪨   | ☁️[]   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | 🕸️       | 📐      | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
+| [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
+| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                             | 💬📄📸     | 💬📸    | ✅🪨     | ☁️     | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬📸    | ✅🪨     | ☁️     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [typesafe](docs/typesafe.md)               | 🇺🇸   | SystemOne                                 | 💬         | 🎯       | ❌       | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ❌     |
+| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠                             | 🎤🎥💬📸   | 🎤💬    | ✅🪨🔀   | ☁️     | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| openaicompatible                           | N/A  | Sync, Stream                              | 💬         | 💬      | ❌       | ❌     | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -99,6 +99,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - 💬: Text
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
+- Realtime: Bidirectional audio and text session through ConnectRealtime
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -563,6 +564,44 @@ Snippet:
 	msgs = append(msgs, msg)
 	// Follow up so the LLM can interpret the tool call response.
 	res, _ = c.GenSync(ctx, msgs, &opts)
+```
+
+
+### Realtime Tools 🎤🧰
+
+[adapters/example\_test.go](adapters/example_test.go): `RealtimeWithToolCallLoop` executes tool calls from a
+realtime session and sends the results back. It follows tool changes sent with `RealtimeUpdate`.
+
+Snippet:
+
+```go
+	tools := []genai.ToolDef{{
+		Name:        "get_today_clock_time",
+		Description: "Get the current clock time and today's date.",
+		Callback: func(context.Context, *struct{}) (string, error) {
+			return time.Now().Format("Monday 2006-01-02 15:04:05"), nil
+		},
+	}}
+	s, err := c.ConnectRealtime(ctx, &genai.RealtimeOptionTools{Tools: tools}, genai.RealtimeTurnManual)
+	if err != nil {
+		log.Fatal(err)
+	}
+	s = adapters.RealtimeWithToolCallLoop(s, tools)
+	defer s.Close()
+	if err := s.Send(ctx, genai.RealtimeInputContent{Text: "What time is it?", Generate: true}); err != nil {
+		log.Fatal(err)
+	}
+	for e, err := range s.Receive(ctx) {
+		if err != nil {
+			log.Fatal(err)
+		}
+		switch e.Kind {
+		case genai.RealtimeEventContentText:
+			fmt.Print(e.Content.Text)
+		case genai.RealtimeEventTurnDone:
+			return
+		}
+	}
 ```
 
 
@@ -1086,9 +1125,8 @@ PRs are appreciated for any of the following. No need to ask! Just send a PR and
 - [ ] Server-side MCP Client: [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
   - [x] [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector) raw API is implemented
     and smoke tested but there's no abstraction layer yet
-- [ ] Real-time / Live: [Gemini](https://ai.google.dev/api/live),
-  [OpenAI](https://platform.openai.com/docs/guides/realtime),
-  [TogetherAI](https://docs.together.ai/docs/text-to-speech), ...
+- [x] Stateful [realtime audio sessions](realtime.go) with Gemini Live, OpenAI Realtime,
+  and local llama.cpp audio models, including tool calling
 - [ ] More comprehensive file/cache abstraction
 - [ ] Tokens counting: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
   [Cohere](https://docs.cohere.com/reference/tokenize), [Gemini](https://ai.google.dev/api/tokens), ...

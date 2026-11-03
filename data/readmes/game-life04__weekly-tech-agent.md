@@ -12,48 +12,52 @@
 
 <!-- wta:latest:start -->
 
-## 每日快讯 · 10.31（周六）
+## 每日快讯 · 11.02（周一）
 
 > 今日 AI 与开源要闻 **11** 条，3 分钟速读。<br>
-> [单独打开](daily/2026/2026-10-31-kuaixun.md) · [公众号排版版](daily/2026/2026-10-31-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-10-31.md) · [往期日报](daily/README.md)
+> [单独打开](daily/2026/2026-11-02-kuaixun.md) · [公众号排版版](daily/2026/2026-11-02-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-11-02.md) · [往期日报](daily/README.md)
 
 <details>
 <summary>群消息文字版（点开后，点代码框右上角的按钮整段复制）</summary>
 
 ```text
-【每日科技快讯】10月31日 周六
+【每日科技快讯】11月2日 周一
 今日 AI 与开源要闻 11 条，3 分钟速读
 
 【俱乐部动态】
-1. 开放原子开源俱乐部合并 0 个 PR、提交 0 次
-2. AtomGit-mobile4Harmony 新增 1 个 PR
+1. 开放原子开源俱乐部合并 1 个 PR、提交 1 次
+
+【国内动态】
+2. 工信部：我国AI推理数据量首超训练数据量
+→ 四大AI公司联合推行新标准，允许网站通过robots.txt统一声明拒绝AI抓取训练内容。
 
 【开源项目】
-3. OpenBot：拥有独立环境的AI同事
-→ OpenBot是开源的AI同事，每个AI都拥有自己的浏览器、文件和工具，所有操作在发生前决定，发生后被记录。
-4. harvey：自主AI销售代理
-→ harvey是自主AI销售代理，支持Claude Code或Codex，能寻找潜在客户、撰写冷邮件并安排会议。
-5. Mika：手机上的私人AI助理
-→ Mika是运行在Android上的本地AI代理，能操作App和上网，帮助用户完成各种任务。
-6. dsh-Go：DeepSeek Harness 装进口袋
-→ dsh-go是DeepSeek Harness的移动端版本，可在手机本机运行，也能遥控电脑。
-7. Unlimited-OCR-2：图文理解模型
-→ Unlimited-OCR-2是图文理解模型，许可证为MIT。
+3. Jev开源精准筛选候选人工具
+→ TypeSafe AI开源Jev工具，比Clay便宜85%，能帮Agent精准筛选并补齐候选人信息。
+4. pixelfx：244个像素艺术效果代码片段
+→ pixelfx 包含244个像素艺术效果的小代码片段，并提供 Claude Code 技能。
+5. ai-engineering-hub：LLM与RAG深度教程
+→ ai-engineering-hub 提供关于 LLMs、RAGs 和真实世界 AI 智能体应用的深度教程。
+6. anthropics/skills：Agent技能公共仓库
+→ anthropics/skills 是 Agent Skills 的公共仓库。
+7. paperclip：开源Agent管理应用
+→ paperclip 是开源的 Agent 管理应用。
 
 【学术前沿】
-8. 内在分布匹配：一步生成图像
-→ Intrinsic Distribution Matching针对一步和少步文本生成图像细节不足的问题，通过匹配特征均值和标准差来提升生成质量。
-9. 微控制器上的流式语音识别
-→ Kroko在ESP32-P4上运行，将65.7M参数的Zipformer2流式语音识别模型压缩为26.65MB的int8权重文件。
-10. Claude 模型自主完成小鼠脑部手术
-→ Claude 模型自主选择基因疗法并给小鼠做手术，是首个自主选择治疗并施用于哺乳动物的 AI 代理。
-11. A-RSI：零数据多模态自改进
-→ A-RSI通过监控训练日志中的奖励变化和准确率来动态刷新任务池，在11个基准测试中将平均性能从57.77提升至61.05。
+8. 清华姚期智团队提出代数世界模型
+→ 清华姚期智团队提出代数世界模型，旨在解决AI训练数据污染问题，让AI从观察实验中理解世界。
+9. ThinkWorld：世界想象强化动态推理
+→ ThinkWorld 框架将动作推理建立在世界动力学上，通过强化学习进行强化，实现了有效的人机迁移。
+10. JEPAs 证明柏拉图表示假设
+→ 研究将柏拉图表示假设转化为定理，证明联合嵌入预测架构能学习到相同的世界表示。
+11. DeFT-RAG 分解多跳问题
+→ DeFT-RAG 框架通过生成自包含子问题并缓存答案，提升了检索增强生成处理多跳问题的准确率。
 
 【活动预告】
 · 11月5日 RECOMB 2027 论文截稿
 
-完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-10-31-kuaixun.md
+上周快讯（10.26–11.01）已出：https://github.com/game-life04/weekly-tech-agent/blob/main/weekly/2026-W44.md
+完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-11-02-kuaixun.md
 标题和要点由 AI 整理，可能有误，请以原文为准。
 ```
 
@@ -63,84 +67,85 @@
 
 #### 俱乐部动态
 
-**开放原子开源俱乐部合并 0 个 PR、提交 0 次**<br>10月30日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 1 个有人参与开发，共新增 PR 1 个、合并 0 个，提交 0 次，新增代码 0 行、删除 0 行，1 位贡献者参与。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
+**开放原子开源俱乐部合并 1 个 PR、提交 1 次**<br>11月1日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 0 个有人参与开发，共新增 PR 1 个、合并 1 个，提交 1 次，新增代码 2 行、删除 2 行。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
 
-**AtomGit-mobile4Harmony 新增 1 个 PR**<br>10月30日，Agent SIG的 AtomGit-mobile4Harmony 仓库新增 PR 1 个，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-mobile4Harmony)）</sub>
+#### 国内动态
+
+**工信部：我国AI推理数据量首超训练数据量**<br>11月1日，四大AI公司联合推行新标准，允许网站通过robots.txt统一声明拒绝AI抓取训练内容。<br><sub>（来源：[IT之家](https://www.ithome.com/1/020/837.htm)）</sub>
 
 #### 开源项目
 
-**OpenBot：拥有独立环境的AI同事**<br>10月31日消息，OpenBot是开源的AI同事，每个AI都拥有自己的浏览器、文件和工具，所有操作在发生前决定，发生后被记录。<br><sub>（来源：[GitHub Trending](https://github.com/CopilotKit/OpenBot)）</sub>
+**Jev开源精准筛选候选人工具**<br>11月1日，TypeSafe AI开源Jev工具，比Clay便宜85%，能帮Agent精准筛选并补齐候选人信息。<br><sub>（来源：[量子位](https://www.qbitai.com/2026/11/506922.html)）</sub>
 
-**harvey：自主AI销售代理**<br>10月31日消息，harvey是自主AI销售代理，支持Claude Code或Codex，能寻找潜在客户、撰写冷邮件并安排会议。<br><sub>（来源：[GitHub Trending](https://github.com/ethanplusai/harvey)）</sub>
+**pixelfx：244个像素艺术效果代码片段**<br>11月2日消息，pixelfx 包含244个像素艺术效果的小代码片段，并提供 Claude Code 技能。<br><sub>（来源：[GitHub 新项目](https://github.com/patch-gg/pixelfx)）</sub>
 
-**Mika：手机上的私人AI助理**<br>10月31日消息，Mika是运行在Android上的本地AI代理，能操作App和上网，帮助用户完成各种任务。<br><sub>（来源：[GitHub 新项目](https://github.com/wangzan101/Mika)）</sub>
+**ai-engineering-hub：LLM与RAG深度教程**<br>11月2日消息，ai-engineering-hub 提供关于 LLMs、RAGs 和真实世界 AI 智能体应用的深度教程。<br><sub>（来源：[GitHub Trending](https://github.com/patchy631/ai-engineering-hub)）</sub>
 
-**dsh-Go：DeepSeek Harness 装进口袋**<br>10月31日消息，dsh-go是DeepSeek Harness的移动端版本，可在手机本机运行，也能遥控电脑。<br><sub>（来源：[GitHub 新项目](https://github.com/ccch1mneyyy/dsh-Go)）</sub>
+**anthropics/skills：Agent技能公共仓库**<br>11月2日消息，anthropics/skills 是 Agent Skills 的公共仓库。<br><sub>（来源：[GitHub Trending](https://github.com/anthropics/skills)）</sub>
 
-**Unlimited-OCR-2：图文理解模型**<br>10月31日消息，Unlimited-OCR-2是图文理解模型，许可证为MIT。<br><sub>（来源：[Hugging Face 热门模型](https://huggingface.co/baidu/Unlimited-OCR-2)）</sub>
+**paperclip：开源Agent管理应用**<br>11月2日消息，paperclip 是开源的 Agent 管理应用。<br><sub>（来源：[GitHub Trending](https://github.com/paperclipai/paperclip)）</sub>
 
 #### 学术前沿
 
-**内在分布匹配：一步生成图像**<br>10月29日，Intrinsic Distribution Matching针对一步和少步文本生成图像细节不足的问题，通过匹配特征均值和标准差来提升生成质量。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.39633)）</sub>
+**清华姚期智团队提出代数世界模型**<br>11月1日，清华姚期智团队提出代数世界模型，旨在解决AI训练数据污染问题，让AI从观察实验中理解世界。<br><sub>（来源：[量子位](https://www.qbitai.com/2026/11/507031.html)）</sub>
 
-**微控制器上的流式语音识别**<br>10月29日，Kroko在ESP32-P4上运行，将65.7M参数的Zipformer2流式语音识别模型压缩为26.65MB的int8权重文件。<br><sub>（来源：[arXiv · 语音](https://arxiv.org/abs/2610.38739)）</sub>
+**ThinkWorld：世界想象强化动态推理**<br>11月2日消息，ThinkWorld 框架将动作推理建立在世界动力学上，通过强化学习进行强化，实现了有效的人机迁移。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.37666)）</sub>
 
-**Claude 模型自主完成小鼠脑部手术**<br>10月31日，Claude 模型自主选择基因疗法并给小鼠做手术，是首个自主选择治疗并施用于哺乳动物的 AI 代理。<br><sub>（来源：[The Decoder](https://the-decoder.com/a-claude-model-autonomously-chose-a-gene-therapy-and-operated-on-a-mouse-brain-with-no-human-decision-making/)）</sub>
+**JEPAs 证明柏拉图表示假设**<br>11月2日消息，研究将柏拉图表示假设转化为定理，证明联合嵌入预测架构能学习到相同的世界表示。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.39302)）</sub>
 
-**A-RSI：零数据多模态自改进**<br>10月31日消息，A-RSI通过监控训练日志中的奖励变化和准确率来动态刷新任务池，在11个基准测试中将平均性能从57.77提升至61.05。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.38568)）</sub>
+**DeFT-RAG 分解多跳问题**<br>11月2日消息，DeFT-RAG 框架通过生成自包含子问题并缓存答案，提升了检索增强生成处理多跳问题的准确率。<br><sub>（来源：[arXiv · 长上下文与检索](https://arxiv.org/abs/2610.37826)）</sub>
 
 ### 活动预告
 
 **RECOMB 2027 论文截稿**<br>11月5日，International Conference on Research inComputational Molecular Biology（RECOMB 2027，CCF-B 类，交叉/综合/新兴）论文提交截止时间为北京时间11月5日 19:59，摘要截止时间为10月29日 19:59。会议将于 May 17-20, 2027 在 Toronto, Canada 举行。<br><sub>（来源：[会议官网](https://recomb.org/recomb2027/)）</sub>
 
-<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为10月30日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-10-31 09:09（北京时间）自动生成。</sub>
+<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为11月1日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-11-02 09:03（北京时间）自动生成。</sub>
 
-## 每周快讯 第 2 期 · 10.19–10.25
+## 每周快讯 第 3 期 · 10.26–11.01
 
-> 本期头条：Claude 在 123 个开源库中形式化证明安全属性<br>
-> 上周 AI 与开源要闻 **27** 条，5 分钟速读。<br>
-> [阅读全文](weekly/2026-W43.md) · [公众号排版版](weekly/2026-W43.html) · [往期快讯](weekly/README.md)
+> 本期头条：Gemini 4 Carbon：下一代前沿模型<br>
+> 上周 AI 与开源要闻 **26** 条，5 分钟速读。<br>
+> [阅读全文](weekly/2026-W44.md) · [公众号排版版](weekly/2026-W44.html) · [往期快讯](weekly/README.md)
 
 **俱乐部动态**<br>
-✨ [开放原子开源俱乐部一周合并 31 个 PR、提交 35 次](https://osd.openatom.club/)<br>
-✨ [新仓库 hust-mail-cli 一周合并 18 个 PR](https://github.com/hust-open-atom-club/hust-mail-cli)<br>
-✨ [pwn.hust.college 一周合并 4 个 PR](https://github.com/hust-open-atom-club/pwn.hust.college)<br>
-✨ [AtomGit-Mobile4Android 一周合并 3 个 PR](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)
+✨ [开放原子开源俱乐部一周合并 15 个 PR、提交 45 次](https://osd.openatom.club/)<br>
+✨ [AtomGit-Mobile4Android 一周合并 3 个 PR](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)<br>
+✨ [hustsync.rs 一周合并 3 个 PR](https://github.com/hust-open-atom-club/hustsync.rs)<br>
+✨ [AtomGit-mobile4Harmony 一周合并 2 个 PR](https://github.com/hust-open-atom-club/AtomGit-mobile4Harmony)
 
 **国内动态**<br>
-✨ [VAST 开源实时世界模型 EdenLive](https://www.qbitai.com/2026/10/504136.html)<br>
-✨ [DeepSeek 发布 V4.1-Flash-1017 模型](https://www.qbitai.com/2026/10/504067.html)<br>
-✨ [MiniMax发布M3.1 Flash模型](https://zhidx.com/p/602354.html)<br>
-✨ [多智能体协同重构医疗AI](https://www.qbitai.com/2026/10/504734.html)<br>
-✨ [Kimi 发布 K3.1 Pro 3T级开源模型](https://www.kimi.ai/blog/kimi-k3-1-pro)<br>
-✨ [月之暗面发布3万亿参数Kimi K3.1 Pro](https://zhidx.com/p/604320.html)
+✨ [DeepSeek开源推理框架DeepInfer](https://www.leiphone.com/category/industrynews/IaMw7vRrTCadlbCY.html)<br>
+✨ [影溯想建成具身仿真数采中心](https://www.leiphone.com/category/academic/xPVWQgBN3Foj7fo5.html)<br>
+✨ [DeepSeek 开源 Super-agent 架构](https://www.qbitai.com/2026/10/506904.html)<br>
+✨ [阿里千问集成至Apple智能](https://www.leiphone.com/category/industrynews/es0ZV9LsDEsG7QLE.html)
 
 **海外动态**<br>
-✨ [Mistral 发布 Timestral 时间序列模型](https://mistral.ai/news/timestral/)<br>
-✨ [OpenAI 提升低资源编程语言代码能力](https://openai.com/index/low-resource-programming-languages)<br>
-✨ [Voxtral 3：Mistral 的语音智能体 SDK](https://mistral.ai/news/voxtral-3/)<br>
-✨ [Patch the Planet：AI 协助全球漏洞响应](https://openai.com/index/coordinated-disclosure-of-critical-vulnerabilities/)<br>
-✨ [Mistral 发布 ML4 1万亿参数多模态模型](https://mistral.ai/news/mistral-large-4/)<br>
-✨ [解决KLS猜想：高维计算难题](https://www.microsoft.com/en-us/research/blog/solving-a-31-year-old-grand-challenge-in-mathematics-the-kls-conjecture/)
+✨ [英国设立AI生物安全实验室](https://36kr.com/newsflashes/4040790852719490?f=rss)<br>
+✨ [Google DeepMind 发布 Genie 4 世界模型](https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/)<br>
+✨ [Gemini 4 Carbon：下一代前沿模型](https://deepmind.google/blog/gemini-4-carbon-our-next-frontier-model/)<br>
+✨ [Mistral Large 4 权重开源](https://mistral.ai/news/mistral-large-4-oss/)<br>
+✨ [苹果宣布接入阿里千问](http://www.geekpark.net/news/373220)
 
 **开源项目**<br>
-✨ [Sphinx：在代码发布前测试你的 AI](https://sphinx-six-theta.vercel.app/)<br>
-✨ [DeepInfer：DeepSeek 模型高性能推理框架](https://github.com/deepseek-ai/DeepInfer)<br>
-✨ [OpenShell：自主 AI 智能体安全运行时](https://github.com/NVIDIA/OpenShell)<br>
-✨ [claude-howto：Claude Code 可视化指南](https://github.com/luongnv89/claude-howto)
+✨ [claude-seo：Claude Code 通用 SEO 技能库](https://github.com/AgriciDaniel/claude-seo)<br>
+✨ [cindy：开源开箱即用的 AI Agent](https://github.com/makecindy/cindy)<br>
+✨ [huggingface/transformers 发布 v5.22.0](https://github.com/huggingface/transformers/releases/tag/v5.22.0)<br>
+✨ [vectorize-io/hindsight](https://github.com/vectorize-io/hindsight)
 
 **学术前沿**<br>
-✨ [HybridAgents 在潜在空间思考](https://arxiv.org/abs/2610.18861)<br>
-✨ [Claude 设计抗蝎毒蛋白结合剂](https://www.anthropic.com/research/claude-scorpion-toxin-binder-design)<br>
-✨ [Claude 在 123 个开源库中形式化证明安全属性](https://www.anthropic.com/research/formal-verification)
+✨ [OpenAI 分享 Kakeya 猜想等模型结果](https://openai.com/index/building-scientific-understanding-with-academic-communities)<br>
+✨ [10岁CNN在皮肤癌诊断上超越前沿大模型](https://lynchlab.net/llm-skin-cancer)<br>
+✨ [三体：多模态智能体递归自进化](https://arxiv.org/abs/2610.36077)
 
 **产业纵横**<br>
-✨ [OpenAI 模型登陆 Google Cloud](https://openai.com/index/openai-models-google-cloud/)
+✨ [OpenAI 和 Anthropic 大幅降低 LLM 价格](https://minimaxir.com/2026/10/cheap-llms/)<br>
+✨ [Cerebras 部署万亿参数 AI 模型](https://www.cerebras.ai/blog/how-we-deploy-trillion-parameter-frontier-models-on-cerebras)<br>
+✨ [Momenta 集成世界模型指导芯片设计](https://www.qbitai.com/2026/10/506866.html)
 
 **活动预告**<br>
-✨ [WWW 2027 论文截稿](https://www2027.thewebconf.org/)<br>
 ✨ [RECOMB 2027 论文截稿](https://recomb.org/recomb2027/)<br>
-✨ [CVPR 2027 论文截稿](https://cvpr.thecvf.com/Conferences/2027)
+✨ [CVPR 2027 论文截稿](https://cvpr.thecvf.com/Conferences/2027)<br>
+✨ [ICAPS 2027 论文截稿](https://icaps27.icaps-conference.org/)
 
 <!-- wta:latest:end -->
 

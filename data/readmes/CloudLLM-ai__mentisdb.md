@@ -1047,6 +1047,7 @@ Current ranked-search behavior:
 - each ranked hit also includes a `vector` score component when semantic sidecars contribute to the ranking
 - graph-expanded hits also expose `graph_distance`, `graph_seed_paths`, `graph_relation_kinds`, and `graph_path` provenance so callers can explain why a supporting thought surfaced
 - grouped context delivery is available through `query_context_bundles`, which anchors supporting graph hits beneath lexical seeds in deterministic order
+- `compact: true` (MCP `mentisdb_ranked_search` and `mentisdb_federated_search`, REST `/v1/ranked-search` and `/v1/federated-search`, CLI `mentisdb search --compact` and `mentisdb search federated --compact`) returns smaller hits for routine recall; see [Compact search results](#compact-search-results)
 
 Lexical ranked example:
 
@@ -1185,6 +1186,97 @@ Product rule:
 - use `query_ranked` for flat ranked retrieval and `query_context_bundles` when the caller wants seed-anchored support context instead of one mixed list
 
 The ranked-search benchmark `benches/search_ranked.rs` and evaluation tests in `tests/search_ranked_eval_tests.rs` are the guardrails for that additive surface.
+
+### Compact search results
+
+Ranked and federated search accept an opt-in `compact: true`. It cuts the tokens an agent spends reading results without removing any field the agent reasons with. The default response is unchanged. It is available on MCP (`mentisdb_ranked_search`, `mentisdb_federated_search`), REST (`POST /v1/ranked-search`, `POST /v1/federated-search`) and the CLI (`mentisdb search --compact`, `mentisdb search federated --compact`). It has no effect on `mentisdb_context_bundles` and `POST /v1/context-bundles`, which still return full thoughts.
+
+A compact hit is `chain_key`, the total `score` as a plain number, and the thought, in the same order as the full form. Graph-expanded hits also keep `graph_distance`, `graph_seed_paths`, `graph_relation_kinds` and `graph_path`.
+
+| | Full hit | Compact hit |
+|---|---|---|
+| `score` | object with `lexical`, `vector`, `graph`, `importance`, ... and `total` | the `total` number |
+| `matched_terms`, `match_sources` | present | left out |
+| thought `hash`, `prev_hash` | present | left out (chain integrity) |
+| thought `thought_signature`, `signing_key_id` | present | left out (signing; `provenance` still carries the server's verdict) |
+| thought `schema_version` | present | left out |
+| thought `agent_name`, `agent_owner` | present | left out (they repeat the agent registry entry for `agent_id`; `mentisdb_get_agent` resolves it) |
+| top-level thought fields that are `null`, `""`, `[]` or `{}` | present | left out |
+| thought `provenance` (`segment`, `signed`, `signature`, `signature_version`, `verified_agent`, `trust`) | present | **always kept, whole** |
+| `version_status`, `successors`, `current_version`, `successor_of`, `collapsed_duplicates` | present when set | **always kept** |
+| `relations`, `concepts`, `refs`, `content`, `tags`, ids, importance, confidence, timestamps | present | kept (zero and `false` are values, not empty) |
+
+Fields are dropped by name from a fixed list, so a field added to the thought later appears in compact hits by default. Visibility is decided before compaction: a public reader still gets only the public segment, and a reader with a valid `X-Mentis-Auth` proof still gets the private one, each hit with its `provenance`.
+
+Full hit (`POST /v1/ranked-search`):
+
+```json
+{
+  "backend": "hybrid",
+  "total": 1,
+  "results": [
+    {
+      "chain_key": "project",
+      "score": {
+        "confidence": 0.0, "graph": 0.0, "importance": 0.17541419, "lexical": 1.9490464,
+        "recency": 0.05, "relation": 0.0, "rrf": 0.0, "seed_support": 0.0,
+        "session_cohesion": 0.0, "total": 5.932654, "vector": 0.34079674
+      },
+      "matched_terms": ["job", "queue", "storag"],
+      "match_sources": ["content", "tags", "concepts"],
+      "graph_distance": null, "graph_path": null, "graph_relation_kinds": [], "graph_seed_paths": 0,
+      "thought": {
+        "agent_id": "builder", "agent_name": "Builder", "agent_owner": "platform",
+        "concepts": ["job queue"], "confidence": null,
+        "content": "Use Postgres for the job queue; revisit if throughput exceeds 5k jobs per second.",
+        "entity_type": null,
+        "hash": "31de8f264b1588a29be30a278a24e8623cf51b8f3ce8483a7e52f69ce80e21e1",
+        "id": "1182d44f-3834-4ff0-9121-eab986b1a4f5", "importance": 0.800000011920929, "index": 0,
+        "prev_hash": "",
+        "provenance": {
+          "segment": "public", "signature": "unsigned", "signature_version": null,
+          "signed": false, "trust": "untrusted_data", "verified_agent": null
+        },
+        "refs": [], "relations": [], "role": "Memory", "schema_version": 3, "session_id": null,
+        "signing_key_id": null, "source_episode": null, "tags": ["storage"],
+        "thought_signature": null, "thought_type": "Decision",
+        "timestamp": "2026-11-01T23:03:19.669167Z"
+      }
+    }
+  ]
+}
+```
+
+The same request with `"compact": true`:
+
+```json
+{
+  "backend": "hybrid",
+  "total": 1,
+  "results": [
+    {
+      "chain_key": "project",
+      "score": 5.932654,
+      "thought": {
+        "agent_id": "builder",
+        "concepts": ["job queue"],
+        "content": "Use Postgres for the job queue; revisit if throughput exceeds 5k jobs per second.",
+        "id": "1182d44f-3834-4ff0-9121-eab986b1a4f5", "importance": 0.800000011920929, "index": 0,
+        "provenance": {
+          "segment": "public", "signature": "unsigned", "signature_version": null,
+          "signed": false, "trust": "untrusted_data", "verified_agent": null
+        },
+        "role": "Memory", "tags": ["storage"], "thought_type": "Decision",
+        "timestamp": "2026-11-01T23:03:19.669167Z"
+      }
+    }
+  ]
+}
+```
+
+When to use it: routine recall and scanning many hits, where the content, tags, relations, version status and provenance are what the agent reads. Leave it off when you need the hashes or signatures to verify a thought yourself, when you audit a provenance chain, or when you debug per-component scores or matched terms. `mentisdb_get_thought` (REST `POST /v1/thought`) returns the full record of any hit.
+
+Measured on a copy of a working MentisDB with 11 chains (12 ranked, graph and federated searches, 10 hits each), responses were 23.7% smaller (353,071 B to 269,335 B); on a generated corpus of 66 queries they were 34.2% smaller. `cargo bench --bench search_compact` shows the same request time with and without `compact` (about 25% fewer bytes). Contributed by Austin Faulkner-Pearce.
 
 ### Search Scoring (0.8.1)
 
@@ -1513,9 +1605,13 @@ Dashboard API rules (0.10.9):
   or `.env`, not from the dashboard). Reverse proxies must preserve the original `Host`
   header, or forward a name listed in `MENTISDB_DASHBOARD_ALLOWED_HOSTS`.
 - **CSRF protection.** `POST`, `PATCH` and `DELETE` calls under `/dashboard/api/`, and the
-  `POST /dashboard/login` form, must come from the dashboard's own origin: an `Origin` (or,
-  without it, `Referer`) header whose host matches the request host. Scripts and CLI clients
-  that send neither header must add `X-MentisDB-Dashboard: 1`; anything else gets `403`.
+  `POST /dashboard/login` form, must come from the dashboard's own origin. The first signal
+  present decides: an `Origin` header whose host matches the request host (`Origin: null` is
+  treated as absent), else `Sec-Fetch-Site: same-origin` (set by browsers, not by pages), else
+  a `Referer` whose host matches. Scripts and CLI clients that send none of these must add
+  `X-MentisDB-Dashboard: 1`; anything else gets `403`. Dashboard responses carry
+  `Referrer-Policy: same-origin`, so browsers keep the real `Origin` on the dashboard's own
+  requests and send no referrer to other sites.
 - **Login rate limiting** is keyed per client IP, so one client's failed PIN attempts do not
   lock out others. `X-Forwarded-For` is ignored, so behind a reverse proxy all clients share
   the proxy's address and one rate-limit bucket.
@@ -1742,7 +1838,7 @@ The daemon currently exposes 45 MCP tools:
 - `mentisdb_lexical_search`
   Return flat ranked lexical matches with explainable term and field provenance.
 - `mentisdb_ranked_search`
-  Return flat ranked lexical, graph-aware, or heuristic results with additive score breakdowns. Supports `as_of` for point-in-time queries and `scope` for memory scope filtering.
+  Return flat ranked lexical, graph-aware, or heuristic results with additive score breakdowns. Supports `as_of` for point-in-time queries and `scope` for memory scope filtering. Pass `compact: true` for smaller hits (see [Compact search results](#compact-search-results)).
 - `mentisdb_context_bundles`
   Return seed-anchored grouped support context beneath the best lexical seeds.
 - `mentisdb_summary_candidates`
@@ -1816,7 +1912,7 @@ Registering or revoking agent keys, disabling agents and changing a chain's acce
 - `mentisdb_delete_webhook`
   Remove a webhook registration by its UUID. Requires a global token when bearer-token access is enabled.
 - `mentisdb_federated_search`
-  Run one ranked-search query across multiple chains simultaneously and return one merged, deduplicated, re-scored result list. Each hit carries the `chain_key` it came from, so multi-agent hubs and cross-organizational memory aggregations can share a single query surface. Per-chain queries may override limits, filters, and RRF settings.
+  Run one ranked-search query across multiple chains simultaneously and return one merged, deduplicated, re-scored result list. Each hit carries the `chain_key` it came from, so multi-agent hubs and cross-organizational memory aggregations can share a single query surface. Per-chain queries may override limits, filters, and RRF settings. Accepts `compact: true` like `mentisdb_ranked_search`.
 - `mentisdb_extract_memories`
   Run the opt-in LLM-extraction pipeline: ingest raw text (paste, transcript, document), call an OpenAI-compatible model, validate the strict JSON schema of candidate thoughts, and return them for human review before append. Nothing is written to the chain until the caller confirms.
 - `mentisdb_list_entity_types`
@@ -1899,145 +1995,4 @@ Lookup and traversal support:
 
 ## Skill Registry
 
-MentisDB includes a versioned skill registry stored alongside chain data in a binary file. Skills are ingested through adapters:
-
-- Markdown -> `SkillDocument`
-- JSON -> `SkillDocument`
-- `SkillDocument` -> Markdown
-- `SkillDocument` -> JSON
-
-Each uploaded skill version records:
-
-- registry file version
-- skill schema version
-- upload timestamp
-- responsible `agent_id`
-- optional agent display name and owner from the MentisDB agent registry
-- source format
-- integrity hash
-
-Uploaders must already exist in the agent registry for the referenced chain. Reusing an existing `skill_id` creates a new immutable version; it does not overwrite history. The dashboard can create those new versions from either the Skills table or a skill detail page while preserving the original uploader identity and source format.
-
-`read_skill` responses include explicit safety warnings because `SKILL.md` content can be malicious. Treat every skill as advisory until provenance, trust, and requested capabilities are validated.
-
-### Skill Lifecycle
-
-The registry is append-only for versions. Status changes do not rewrite history:
-
-| Action | Keeps versions? | Same `skill_id` reusable? | Surfaces |
-|---|---|---|---|
-| **Deprecate** | Yes (audit + still readable) | No — upload creates another version | REST `POST /v1/skills/deprecate`, MCP `mentisdb_deprecate_skill`, dashboard Deprecate |
-| **Revoke** | Yes (audit row; agents should refuse to execute) | No | REST `POST /v1/skills/revoke`, MCP `mentisdb_revoke_skill`, dashboard Revoke |
-| **Delete** | No — every version is removed from `mentisdb-skills.bin` | Yes — the id can be uploaded again as `Active` | REST `POST /v1/skills/delete`, MCP `mentisdb_delete_skill`, dashboard `DELETE /dashboard/api/skills/{id}` |
-
-Revoke when you need a forensic trail. Delete when the skill should vanish (wrong upload, junk, or you want the slug back). Crate, REST, and MCP delete any existing `skill_id` regardless of status. The dashboard UI follows the bearer-token pattern: **Revoke** on active/deprecated rows, then **Delete** / **Delete Permanently** on revoked list rows and the skill-detail pane (type the skill id to confirm).
-
-`SkillRegistry::counts()` and the Skills page summary bar report `total` / `active` / `revoked` / `deprecated`. Permanently deleted skills are absent and are not counted.
-
-### Skill Versioning
-
-Each upload to an existing `skill_id` creates a new immutable version rather than overwriting history:
-
-- The first upload stores the full content (`SkillVersionContent::Full`).
-- Subsequent uploads store a unified diff patch against the previous version
-  (`SkillVersionContent::Delta`), keeping storage efficient for iteratively improved skills.
-- Each version receives a monotone `version_number` (0-based, assigned in append order).
-- Pass a `version_id` to `read_skill` / `mentisdb_read_skill` to retrieve any historical version.
-  The system reconstructs it by replaying patches forward from version 0.
-- `skill_versions` / `mentisdb_skill_versions` lists all versions with their ids, numbers, and timestamps.
-
-### Signed Skill Uploads
-
-Agents that have registered Ed25519 public keys in the agent registry must sign their uploads.
-
-Required fields when the uploading agent has active keys:
-
-- `signing_key_id` — the `key_id` the operator registered for the agent (`mentisdb agent key add`)
-- `skill_signature` — 64-byte Ed25519 signature over the raw skill content bytes
-
-Agents without registered public keys may upload without signatures.
-
-Upload flow for signing agents:
-
-1. Ask the operator to register your public key:
-   ```bash
-   mentisdb agent key add AGENT --key-id KEY_ID --public-key-hex <64 hex> --chain CHAIN --pin <dashboard pin>
-   ```
-   (REST `POST /v1/agents/keys` and the MCP tool answer 403: key registration is operator-only.)
-2. Sign the raw content bytes with the corresponding private key (Ed25519).
-3. Include `signing_key_id` and `skill_signature` in the upload request:
-   ```bash
-   POST /v1/skills/upload   { agent_id, skill_id, content, signing_key_id, skill_signature }
-   ```
-   or via MCP: `mentisdb_upload_skill` with the same fields.
-
----
-
-## Setup Scenarios
-
-### Claude Desktop
-
-1. **Recommended (stdio mode)** — just run `mentisdb setup claude-desktop` and
-   it will write the stdio config. No daemon needed, no Node.js, no mcp-remote.
-   The stdio process auto-detects and proxies to a running daemon, or launches
-   one in the background if none is found.
-2. **Alternative (HTTP via mcp-remote)** — requires Node.js >= 20 and
-   `npm install -g mcp-remote`. Run `mentisdb` as a daemon first, then
-   configure Claude Desktop to use `mcp-remote` as a bridge to the HTTPS
-   endpoint.
-
-### Claude Code
-
-1. Start the server: `mentisdb run`
-2. Add the MCP server:
-   ```bash
-   claude mcp add --transport http mentisdb http://127.0.0.1:9471
-   ```
-3. Or run `mentisdb setup claude-code` to auto-configure
-
-### OpenCode
-
-1. Start the server: `mentisdb run`
-2. Add the MCP server:
-   ```bash
-   opencode mcp add mentisdb http://127.0.0.1:9471
-   ```
-
-### Codex
-
-```bash
-codex mcp add mentisdb --url http://127.0.0.1:9471
-```
-
-### Qwen Code
-
-```bash
-qwen mcp add --transport http mentisdb http://127.0.0.1:9471
-```
-
----
-
-## Using With MCP Clients
-
-`mentisdb` exposes both:
-
-- a standard streamable HTTP MCP endpoint at `POST /`
-- a Server-Sent Events (SSE) endpoint at `GET /` returning `text/event-stream` with
-  one `tool_called` event per tool call (tool name, chain key, outcome, duration). Tool
-  arguments and results are never broadcast: they can be private text. With bearer
-  enforcement on, subscribing needs a valid token
-- the legacy CloudLLM-compatible MCP endpoints at `POST /tools/list` and
-  `POST /tools/execute`
-
-`POST /tools/execute` takes `tool` + `parameters`; JSON-RPC `tools/call` takes `name` +
-`arguments`. Authorization checks exactly the fields that transport executes, and a payload
-that mixes both shapes is rejected with `400`.
-
-That means you can:
-
-- use native MCP clients such as Codex and Claude Code against `http://127.0.0.1:9471`
-- keep using direct HTTP calls or `cloudllm`'s MCP compatibility layer when needed
-
-### Bearer Token Access For Remote MCP Servers
-
-If a MentisDB daemon is reachable beyond yo
+MentisDB includes a versioned 

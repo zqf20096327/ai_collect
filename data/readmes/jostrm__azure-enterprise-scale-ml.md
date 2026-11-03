@@ -4,7 +4,7 @@
 > [!NOTE]
 > **Deploy to Azure - meant for a quick test:** Private networking, dedicated hub, Dev, project 001. It doesn't expose all of the roughly 35 Azure resources you can choose from, or all SKU settings. Use it if you want to quickly build an agent with Foundry and AI Search, train an ML model with Azure Machine Learning or Databricks, build a front end with Container Apps, or run DataOps with Data Factory, it's a simple way to get that running with private networking. Read <a href="https://github.com/jostrm/azure-enterprise-scale-ml/blob/portal-125/portal/README.md">portal/README.md</a> before you press it</sub>
 >
-> But, it doesn't create dashboards automatically, and it leaves out other AI Factory features. For a governed factory, use the app, the CLI or the Factory API described below.<a href="./documentation/v2/20-29/24-end-2-end-setup.md"><b>Full set up</b></a>
+> But, it doesn't create dashboards automatically, and it leaves out other features. For a governed factory, use the app, the CLI or the Factory API described below.<a href="./documentation/v2/20-29/24-end-2-end-setup.md"><b>Full set up</b></a>
 
 ![Header](documentation/v2/10-19/images/header.png)
 
@@ -12,15 +12,16 @@
 
 <p align="center">
 <b>Private, WAF-aligned full stack landing zones with AI on Azure, used since 2019.</b><br>
-Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources for full-stack development for every team, isolated across Dev, Stage and Prod environment. Reusable "Use Case Templates via "agent-factory" and "ml-factory" compatible with the already automated setup of the landingzones by the Azure factory.
-<br>A template way of working & Project way of working - plug and play.
+Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources for full-stack development for every team, isolated across Dev, Stage and Prod environments.
+<a href="usecase_code/readme.md">147 reusable usecase templates</a> via "agent-factory" and "ml-factory", compatible with the automated setup of the landing zones by the Azure factory.
+<br>A template way of working &amp; Project way of working - plug and play.
 </p>
 
 <table>
 <tr>
 <td width="50%" rowspan="2" valign="top">
-<div align="center"><a href="./documentation/v2/10-19/10-factory-onion-architecture.md"><img src="./documentation/v2/10-19/images/10-factory-onion-architecture.gif" width="72%" alt="AI Factory onion architecture: five layers from the SDK to Azure Resource Manager, with the time spent in each layer"></a></div>
-<sub><b>Architecture</b> · five layers, one direction, time per layer</sub><br><br>
+<div align="center"><a href="./documentation/v2/10-19/10-factory-onion-architecture-v2.md"><img src="./documentation/v2/10-19/images/10-factory-onion-architecture-v2.gif" width="72%" alt="AI Factory onion architecture: five layers from the SDK to Azure Resource Manager, with the time spent in each layer"></a></div>
+<sub><b>Architecture</b> · Onion layers: five ways to deploy: Choose either Azure portal, Factory API/SDK/Pipelines/Bicep. See time spent per layer</sub><br><br>
 <a href="./documentation/v2/10-19/11-architecture-diagrams.md"><img src="./documentation/v2/10-19/images/10-two-architectures-v2-small.png" width="100%" alt="AI Factory architectures: each team gets its own private floor with architecture 01 or 02"></a><br>
 <sub><b>Project architectures</b> · a private floor per team, services on or off</sub>
 </td>
@@ -39,7 +40,7 @@ Governed Microsoft Foundry, Azure Machine Learning and +35 other Azure resources
 
 - **One governed lifecycle.** Create a factory, add scale sets and projects, update or delete them through one reviewed API: CLI, Python SDK, wizards or an Azure Function.
 - **Private by design.** Hub-spoke or Virtual WAN, private endpoints and DNS, isolation per team, Bicep through GitHub Actions or Azure DevOps.
-- **Operating models included.** DataOps, MLOps and GenAIOps templates that run on the secure infrastructure.
+- **Operating models included.** DataOps, MLOps and GenAIOps templates that run on the secure infrastructure, with [+147 usecase templates to choose from](usecase_code/readme.md).
 - **Subscription vending (auto).**: Choose 1 team per Subscription/LZ or Multiple teams (e.g.Hackathons,Sandbox)
 
 <p align="center">

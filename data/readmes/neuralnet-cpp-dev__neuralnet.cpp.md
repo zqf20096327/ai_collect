@@ -8,7 +8,7 @@
 # neuralnet.cpp
 
 **从零实现的 C++26 神经网络库**——不依赖 PyTorch/CUDA，CPU 与 Vulkan GPU 双后端，
-覆盖 MLP 到 GPT 的训练与推理全流程，header-only，可两行嵌进你自己的工程。
+覆盖 MLP 到 GPT 的训练与推理全流程；消费面 = **抽象层 header-only + 双引擎 .so**（CPU / Vulkan），可嵌进你自己的工程。
 
 [![CMake (Clang, C++26)](https://github.com/neuralnet-cpp-dev/neuralnet.cpp/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/neuralnet-cpp-dev/neuralnet.cpp/actions/workflows/cmake-single-platform.yml)
 [![C++26](https://img.shields.io/badge/C%2B%2B-26-00599C?logo=c%2B%2B&logoColor=white)](https://en.cppreference.com/w/cpp/26)
@@ -24,7 +24,7 @@
 ## 🚀 快速开始
 
 ```bash
-git clone --recurse-submodules git@github.com:neuralnet-cpp-dev/neuralnet.cpp.git
+git clone git@github.com:neuralnet-cpp-dev/neuralnet.cpp.git
 cd neuralnet.cpp
 cmake --preset dev && cmake --build --preset dev        # 需要 CMake ≥3.30 + Ninja + C++26 编译器
 ```
@@ -64,25 +64,13 @@ auto pred = model.forward(input);                       // engine 在 Model 内�
 
 </details>
 
-<details>
-<summary>克隆后 extern/ 为空？</summary>
-
-v1.13.0 起 core / threadpool / kvrecord / dataset / tokenizer 是 `extern/` 下的嵌套 submodule。
-已 clone 但漏了子仓时补救：
-
-```bash
-git submodule update --init --recursive
-```
-
-</details>
-
 ## 为什么选它
 
 | 亮点 | 说明 |
 |------|------|
-| **从零实现，全程可读** | 计算引擎、表达式 DSL、AOT kernel 融合、Vulkan 后端、BPE 分词器、训练循环全部自研——想搞懂"框架底层发生了什么"，每一层都有源码与文档 |
-| **CPU / Vulkan GPU 双后端** | 同一套模型代码切换后端；GPU 侧表达式录制 → AOT 融合单 kernel；f16 混合精度 |
-| **C++26 header-only** | 单一聚合头 `nn.hpp`；`FetchContent` / `add_subdirectory` 两行接入；零手动内存管理 |
+| **从零实现，全程可读** | 计算引擎、表达式 DSL、AOT kernel 融合 + 运行期 JIT 兜底、Vulkan 后端、BPE 分词器、训练循环全部自研——想搞懂"框架底层发生了什么"，每一层都有源码与文档 |
+| **CPU / Vulkan GPU 双后端** | 同一套模型代码切换后端；GPU 侧表达式录制 → AOT 融合单 kernel（未命中走运行期 JIT 现编）；f16 混合精度 |
+| **C++26 抽象层 header-only + 双引擎 .so** | 消费侧只 include 抽象层头 + 工厂 + 链 `libnn-cpu.so` / `libnn-gpu.so`；`FetchContent` / `add_subdirectory` 接入；零手动内存管理 |
 | **训练 + 推理闭环** | MLP / CNN / ViT / Transformer / GPT；SGD/Adam/AdamW/Muon；`.nnpkg` 训练包跨设备复现；GUI 图形界面 |
 | **RL 与可组合训练** | GAE、REINFORCE/PPO/GRPO、具名多输出、多模型 Session 与可替换 rollout pipeline |
 | **严谨的工程口径** | 数值梯度自检、CPU/GPU 位级一致门禁、可引用的研究档案（每个结论带证据 + 重跑命令 + 边界，见 [`research/`](research/README.md)） |
@@ -124,13 +112,12 @@ git submodule update --init --recursive
 
 ```
 neuralnet.cpp/
-├── include/neuralnet.cpp/   ← header-only 库（nn.hpp 统一聚合入口；backend/ = Vulkan 后端）
+├── include/neuralnet.cpp/   ← 消费侧头（nn.hpp 统一聚合入口）+ engine/ 子模块（抽象层 + 双引擎 .so 源）
 ├── src/                     ← 可执行入口：mnist/text 训练与推理、tokenizer、数据集工具
 ├── shaders/                 ← GPU compute shader（AOT 融合产物 + 手写原语）
 ├── docs/                    ← 文档总索引（docs/README.md）：usage / development / contributors / internal / history
 ├── research/                ← 可引用的研究档案（定义基线 / 实测结论 / 明确标注的 TODO）
 ├── gui.py                   ← 图形化操作界面（CustomTkinter）
-├── extern/                  ← 子仓：core / threadpool / kvrecord / dataset / tokenizer
 ├── datasets/ · pretrained/  ← 训练数据 · 预训练模型
 ├── scripts/ · bench/ · compare_with_torch/  ← 数据脚本 · 基准测试 · torch 对拍
 └── CMakePresets.json        ← 预设构建（dev / portable / cpu / probes ...）

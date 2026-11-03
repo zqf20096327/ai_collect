@@ -1,30 +1,22 @@
 # GenAI development techniques
 
-A comparison of techniques, methodologies, and frameworks for organizing and directing AI coding agents. It focuses on development practices, not the models or tools themselves.
-
-## What this site covers
-
-AI-assisted development is shifting from standalone frameworks toward models, runtimes, reusable skills, and governance controls that work together. This site compares those layers using dated research findings. It is not a ranking or an adoption survey.
-
----
+A comparison of ways to organize and direct AI coding agents, for developers, tech leads, and engineering managers choosing an approach.
 
 ## Start here
 
 **[Choosing Your Approach](techniques/choosing-your-approach.md)** — Match a technique to your team size, project type, industry, and development activity.
 
-**[Overview and comparison matrix](overview.md)** — Executive summary, full comparison table, and category analysis.
+**[Overview and comparison matrix](overview.md)** — How the approaches differ, with a comparison table and category summaries.
+
+## What this site covers
+
+Compare workflows, reusable skills, and governance controls using dated research findings. Models and runtimes appear only where they help explain a technique. This is not a ranking or an adoption survey.
 
 ---
 
 ## Detailed guides
 
-### Guide
-
-| Document | Description |
-|----------|-------------|
-| [Overview](overview.md) | Executive summary, three-layer model, comparison matrix, and category analysis |
-| [Choosing Your Approach](techniques/choosing-your-approach.md) | Which technique for which situation — by team size, project type, industry, methodology, and task type |
-| [Research Methodology](methodology.md) | How this comparison is researched, inclusion criteria, evidence labels, and update policy |
+See [Research Methodology](methodology.md) for sources, inclusion criteria, evidence labels, and update policy.
 
 ### Spec-driven development
 
@@ -82,8 +74,6 @@ These pages cover the infrastructure and libraries that support the techniques a
 | [Choosing a Skills Approach](techniques/skills-choosing.md) | Decision guide across libraries, orchestrating modes, methodologies, and native runtimes |
 
 ---
-
-**Audience:** Developers, tech leads, and engineering managers evaluating structured approaches to AI-assisted development.
 
 The [Decision Guide](overview.md#4-decision-guide) provides a short selection table.
 

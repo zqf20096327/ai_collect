@@ -73,11 +73,34 @@ npx --yes github:panda-z519/agent-session-titles --dsh --lang zh
 
 安装器会把 `dsh-session-titles` 复制到 `~/.dsh/plugins/`，在目标 profile 的 `cordis.patch.yml`
 用户层写入受管块：禁用内置 `session-title-llm` 与 `optional-session-title-all-prompts`，并用相对
-路径插入插件。桌面端的 `desktop` profile 由 Electron 独占，CLI 拒绝管理；这种方式不需要
-`dsh plugin`，也不改 profile 的 `package.json`，重启 DeepSeek Harness 后生效。
+路径插入插件。这种方式不需要 `dsh plugin`，也不改 profile 的 `package.json`，重启 DeepSeek
+Harness 后生效。桌面端的 `desktop` profile 由 Electron 独占，CLI 拒绝对它执行 `--dump-config`；
+`dsh plugin` 的 pnpm 转发仍然可用，见下一节的组合包安装。
 
 如果已经在插件页把 `dsh-session-titles` 作为 bundle 安装，安装器会检测到，只写禁用行，不会再
 重复插入插件行；卸载时先在插件页移除 bundle，再运行 `--remove-dsh`。
+
+#### 作为组合包安装（出现在插件页）
+
+同一份插件带 `dsh.bundle.patch`，也可以装成 profile 的组合包。这样它会出现在 **插件 → 已安装插件**
+里，能开关插件行、改 `language` / `maxTitleBytes`、直接在页面上卸载；受管块方式不会出现在插件页，
+因为它不是 profile 的依赖记录。两种方式**只能二选一**：
+
+1. 先删掉安装器写入的受管块（`cordis.patch.yml` 里 `session-title-llm`、
+   `optional-session-title-all-prompts` 和 `insert: agent-session-titles` 那一段），否则
+   `agent-session-titles` 行会被插入两次；
+2. 在插件页用 **添加插件 → 安装第三方插件** 填本地目录绝对路径
+   `~/.dsh/plugins/dsh-session-titles`；等价命令是
+   `dsh plugin --profile <profile> add "link:$HOME/.dsh/plugins/dsh-session-titles"`；
+3. 确认 profile 的 `package.json` 里 `dsh.profile.bundles` 的**末尾**是 `dsh-session-titles`
+   ——它的 patch 要最后应用，才能压住实验性 titles bundle 重新插入的内置 provider；插件页安装会
+   自动写入，纯命令方式若缺这一项就手动补上；
+4. 重启 DeepSeek Harness。
+
+已在 DSH `0.2.1-rc.5` 的 `desktop` 和 `web` profile 上验证：组合后的配置里 `session-title-llm`、
+`optional-session-title-all-prompts` 都是 `disabled: true`，`agent-session-titles` 恰好一行。
+`web` profile 不含实验性 titles bundle，重启时 loader 会为 `optional-session-title-all-prompts`
+打一条 "entry not found" 提示，不影响使用。
 
 - 只装某个 profile：`--dsh-profile web`（可重复）；三端一起：`--all`；
 - 卸载：`--remove-dsh`（删除受管块和插件副本，不删除已有会话标题）；
@@ -111,7 +134,7 @@ npx --yes github:panda-z519/agent-session-titles --remove-rules
 | --- | --- |
 | Codex | 注册并安装 `codex-session-titles` 插件；把 `~/.codex/session-titles/` 加入窄范围可写目录；更新前检查状态库结构并创建 SQLite 一致性备份。 |
 | Claude Code | 注册并安装 `claude-session-titles` 插件；在 `~/.claude/settings.json` 中加入 `Edit(~/.cc-session-titles/**)`；改动前备份已有设置。 |
-| DeepSeek Harness | 复制 `dsh-session-titles` 到 `~/.dsh/plugins/`；在目标 profile 的 `cordis.patch.yml` 用户层写入受管块，禁用内置标题 provider，并用相对路径加载插件；若已作为 bundle 安装则只写禁用行；修改前备份。 |
+| DeepSeek Harness | 复制 `dsh-session-titles` 到 `~/.dsh/plugins/`；在目标 profile 的 `cordis.patch.yml` 用户层写入受管块，禁用内置标题 provider，并用相对路径加载插件；若已作为 bundle 安装则只写禁用行；修改前备份。想让插件出现在插件页时，可改用组合包方式（`dsh plugin … add link:…` + `dsh.profile.bundles`），此时需先删受管块。 |
 
 已安装旧版用户级 `session-title.sh` 的客户端需要明确传入 `--migrate`；安装器会备份后移除匹配的旧钩子注册，再安装插件。`CODEX_HOME`、`CLAUDE_CONFIG_DIR` 和 `DSH_HOME` 分别支持自定义配置目录。
 
@@ -121,7 +144,7 @@ npx --yes github:panda-z519/agent-session-titles --remove-rules
 2. 分别手动修改一段标题，再让助手进入下一阶段；手动改过的段应保持原样，其他段继续更新。若把整条标题改为无法拆分的格式，插件应保留整条名称；再改回合法的三段格式后，插件恢复自动更新（中间段锁定）。
 3. Codex 在标题文件写入后的工具事件尽早同步，即使 Codex 此时还没给会话起名；若 Codex 首轮结束后自动生成的名字覆盖了插件标题，下一次发消息时会恢复一次。`Stop` 和下一次发消息仍负责补偿。可检查 `~/.codex/session-titles/<会话ID>.state.json` 的 `phase`、`last_result` 和分段锁定信息。Codex CLI 使用后台守护进程（app-server daemon）时，插件经它的控制套接字调用 `thread/name/set`，已打开的 CLI 窗口会立即刷新状态栏标题；守护进程不可用（例如 `--no-daemon`）时退回直接写 SQLite，此时已打开的窗口要到重新打开或 `/rename` 后才显示新标题。侧边栏即时刷新仍取决于桌面端。
 4. Claude Code 首条提示词通过官方 `sessionTitle` 钩子输出形成初始标题。**桌面端**在 Agent 写入标题文件后由 `PostToolUse` 钩子调用桌面端改名工具**立即**生效；**命令行**没有该工具，后续进展在下一次提交消息时应用（`PostToolUse` 钩子会报一条不影响流程的错误）。可检查 `~/.cc-session-titles/<会话ID>.txt`。[Claude 钩子说明](https://code.claude.com/docs/en/hooks)
-5. DeepSeek Harness 重启后新建本地会话，侧边栏应出现三段式标题；Agent 进入下一阶段时标题应即时更新。可检查会话日志中的 `session/title` 事件，`source.provider` 应为 `agent-session-titles`。手动改名后，下一次消息应保留手改段并恢复其余段；把标题改成自由格式后应整体保留，改回三段式后恢复更新。
+5. DeepSeek Harness 重启后新建本地会话，侧边栏应出现三段式标题；Agent 进入下一阶段时标题应即时更新。可检查会话日志中的 `session/title` 事件，`source.provider` 应为 `agent-session-titles`。手动改名后，下一次消息应保留手改段并恢复其余段；把标题改成自由格式后应整体保留，改回三段式后恢复更新。若按组合包方式安装，重启后 **插件 → 已安装插件** 里应出现「会话标题」卡片，行内开关、配置（`language`、`maxTitleBytes`）和卸载都在该页面完成。
 
 历史会话在收到新消息后才重新纳入 Codex 标题管理。若钩子提示“来源未确认”，会保留已有名称。无项目会话使用需求摘要，不把当前目录冒充项目名。
 
@@ -147,7 +170,7 @@ npx --yes github:panda-z519/agent-session-titles --remove-dsh
 - 插件只能从与上次应用标题的差异推断“外部修改”，无法证明修改者一定是用户。首次接管且没有基线的历史标题仍需保守处理。
 - DeepSeek Harness 的标题由宿主 `sessionTitle` 服务管理，服务只允许一个 provider；安装器会在用户 patch 层禁用内置 provider，如果另有第三方标题插件抢占，本插件会降级为不启用并记录警告。
 - DSH 默认标题上限为 80 字节，超长时先裁“当前进展”，再裁“会话摘要”；需要更长标题时同时调整 `session-title` 服务和插件配置。
-- DSH 桌面端的 `desktop` profile 由 Electron 独占，CLI 不能 `--dump-config` 或 `dsh plugin`；安装器只写用户 patch 层并跳过桌面端校验，重启应用后由宿主加载。
+- DSH 桌面端的 `desktop` profile 由 Electron 独占，CLI 只有 `--dump-config` 被拒绝（`dsh plugin` 仍可转发 pnpm）；安装器只写用户 patch 层并跳过桌面端校验，重启应用后由宿主加载。想验证 desktop 的组合结果，可把 profile 复制到临时 `DSH_HOME` 下改名后 `--dump-config`。
 - 本仓库的生命周期钩子面向本地桌面端，不能作为带钩子的插件提交到 OpenAI 公共插件目录。[插件打包说明](https://developers.openai.com/plugins/build/plugins)
 
 ## 社区

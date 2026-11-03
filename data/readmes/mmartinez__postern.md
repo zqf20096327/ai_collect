@@ -121,7 +121,7 @@ example.
 From an installed binary (or `./dist/postern` when building from source):
 
 ```sh
-postern ca install        # generate a local CA and register it (Linux: user trust anchor; macOS: login keychain)
+postern ca install        # generate a local CA (macOS: and trust it in the login keychain)
 postern config init       # write a starter ~/.postern/config.yaml
 postern token set --stdin # store your 1Password service-account token (legacy single-vendor form)
 
@@ -132,9 +132,17 @@ postern server            # run the proxy
 eval "$(postern bootstrap)"
 ```
 
+Node-based agents need two more variables, `NODE_USE_ENV_PROXY=1` and
+`NODE_EXTRA_CA_CERTS`; see [Node-based agents](docs/security.md#key-and-token-handling).
+
 On macOS, `postern ca install` triggers an authorization prompt and trusts the
 CA in your user login keychain — no `sudo`. `postern ca uninstall` revokes the
 trust settings (the certificate entry stays in the keychain, untrusted).
+
+On Linux, `postern ca install` does not make the CA trusted system-wide.
+`postern bootstrap` sets `SSL_CERT_FILE` for the agent's shell; for clients
+that ignore it, see the per-distribution steps in
+[Local CA](docs/security.md#key-and-token-handling).
 
 `postern config validate` checks a config with line-numbered errors, and
 `postern rules list` shows rule-level fields — host and `secret_ref` — never a
@@ -214,7 +222,8 @@ proxy, and have them trust the CA:
 
 ```sh
 export HTTPS_PROXY=http://localhost:1701
-export SSL_CERT_FILE=/path/to/ca.pem                   # NODE_EXTRA_CA_CERTS for Node-based agents
+export SSL_CERT_FILE=/path/to/ca.pem
+export NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/path/to/ca.pem   # Node-based agents
 ```
 
 Rotating the CA (at its ~10-year expiry, or on key compromise) means deleting

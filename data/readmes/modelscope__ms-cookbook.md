@@ -76,8 +76,8 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 <!-- events-preview:start -->
 - **11.04 · 线上共学营**　[魔搭紫皮书共学营 Vol 4：小模型也能搞科研？4B参数也玩起了科学发现～用Qwen3搭建Mini AIScientist全流程，从提出假设到验证结论](content/events/README.md#aiscientist-20261104)
+- **11.01 · 线下工作坊**　[工作坊：LoRA定制校园主题图：让同一个创作对象，走进不同场景](content/events/README.md#shandong-lora-20261101)
 - **10.28 · 线上共学营**　[魔搭紫皮书共学营·AIGC 专场：从出图、改图到做漫剧：魔搭紫皮书 AIGC 解读与实战](content/events/README.md#aigc-20261028)
-- **10.21 · 线上共学营**　[魔搭紫皮书共学营·进阶实践：模型跑通了，怎么变好用？  选型、评测、微调与企业知识问答实战](content/events/README.md#advanced-20261021)
 
 [查看丰富的共学共建活动](content/events/README.md)
 <!-- events-preview:end -->
@@ -92,6 +92,7 @@ python3 -m http.server 4173 --bind 127.0.0.1
 - [21 · 用 MiniCPM-V 搭建手机巡检助手：拍照生成现场记录](content/chapters/chapter-21.md)
 - [25 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-25.md)
 - [26 · 想要教学海报？要不试试让 AI 帮忙画一张](content/chapters/chapter-26.md)
+- [35 · 产线巡检 Agent：用 Penguin Harness 快速开发与优化](content/chapters/chapter-35.md)
 <!-- practice-cases:end -->
 
 <a id="contents"></a>

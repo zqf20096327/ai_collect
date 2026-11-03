@@ -13,11 +13,12 @@
 
 <p align="center">
   <a href="https://github.com/mcplama/mcplama/stargazers"><img src="https://img.shields.io/github/stars/mcplama/mcplama?style=social" alt="GitHub stars"></a>
+  <a href="https://github.com/mcplama/mcplama/releases/latest"><img src="https://img.shields.io/github/v/release/mcplama/mcplama?label=latest%20release" alt="Latest release"></a>
   <a href="https://github.com/mcplama/mcplama/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcplama/mcplama" alt="License"></a>
   <a href="https://hub.docker.com/r/mcplama/mcplama"><img src="https://img.shields.io/docker/pulls/mcplama/mcplama" alt="Docker pulls"></a>
 </p>
 
-MCPlama is a self-hosted MCP gateway and control plane for developers and teams who want to run multiple MCP servers without scattered credentials, duplicated client configuration, or unclear access.
+MCPlama is a self-hosted MCP gateway and control plane for administrators and organizations operating AI agent infrastructure. It centralizes MCP server management, credentials, access policies, client connectivity, and audit visibility.
 
 Use it to centralize MCP server lifecycle, credentials, access policies, connections, and audit events while your AI clients connect through controlled MCP endpoints.
 
@@ -43,13 +44,15 @@ MCPlama gives you one control point:
 - 🌐 Controlled MCP connection URLs for your AI clients
 - 🔐 Centralized OAuth and API credentials
 - 👥 User and server access policies
-- 📋 Separate MCP activity and administrative change audit logs
+- 👥 Group membership and MCP server grants, alongside direct user provisioning
+- 🗺️ Permission Map for exploring users, connections, servers, and registered tools
+- 📋 MCP activity logs and administrative audit logs for configuration and access changes
 - 📦 MCP server catalog and lifecycle management
 - 🛡️ Separate broker boundary for MCP container execution
 
 Start locally with Docker. Move to shared team infrastructure when you need it.
 
-![MCPlama registry showing available MCP servers.](docs/static/img/mcplama_registry.png)
+![MCPlama registry showing available MCP servers.](docs/static/img/mcplama-registry-v2.png)
 
 ## Documentation
 
@@ -128,11 +131,15 @@ See [Registry documentation](docs/REGISTRY.md#remote-mcp-and-oauth) for remote c
 
 The **Activity** page records MCP calls. **Audit Logs** is a separate admin view for server configuration and credential changes, invitations, user access changes, policies, and access grants or revocations. Entries show who made the change, when, the affected resource, and a safe summary of fields or scopes. Secret values are never recorded.
 
+### Users, groups, and the MCP map
+
+In **Users**, administrators can invite a teammate by email or link, or choose **Add user** to provision an account directly with an initial password. In **Groups**, administrators can organize users and grant MCP server access to a group. The group list is paginated in the same 20-item pages as the Users list. A member's group grant is checked when they connect; existing direct access requests remain supported. The **Permission Map** page provides a visual overview of configured users, connections, servers, and discovered tools. It distinguishes configured relationships from active connection state and only shows access relationships supported by MCPlama's authorization data.
+
 ## Member portal
 
 Team members can see and connect to the MCP servers available to them without receiving the underlying service credentials.
 
-![MCPlama member portal showing available MCP servers and connection status.](docs/static/img/mcplama-member-redacted.png)
+![MCPlama member portal showing available MCP servers and connection status.](docs/static/img/mcplama-member-v2.png)
 
 ## How it works
 

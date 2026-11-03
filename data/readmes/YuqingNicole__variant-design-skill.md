@@ -2,9 +2,9 @@
 
 English | **[中文](./README_CN.md)**
 
-> Solve the blank canvas problem. Prompt → 3 fully-formed distinct designs → vary → export.
+> Open-source agent skill for Codex and Claude Code that turns one design brief into three complete, comparable directions (A/B/C) inside your own project, with scoped edits, snapshot undo and an integration step you can roll back.
 
-A Claude Code skill inspired by the [Variant](https://variant.com) design community, powered by the **Impeccable design system**. Give it a prompt, get three divergent design directions — each from a different studio's aesthetic — then iterate with one-word actions.
+The three directions share the same task, data and functions, and each states what it optimizes and what it gives up. Edits are snapshotted first and never overwrite changes you have not seen. Inspired by the [Variant](https://variant.com) design community.
 
 ---
 
@@ -124,11 +124,20 @@ npx skills add YuqingNicole/variant-design-skill -a claude-code -a codex
 
 The skills CLI reports installs to skills.sh unless `DISABLE_TELEMETRY=1` is set.
 
+For Claude Code, you can also install it as a plugin from this repository's marketplace (checked with Claude Code 2.1.316). Inside a session, `/plugin marketplace add YuqingNicole/variant-design-skill` does the same as the first line:
+
+```bash
+claude plugin marketplace add YuqingNicole/variant-design-skill
+claude plugin install variant-design@variant-design
+```
+
+The plugin loads the complete directory as one skill, `variant-design:variant-design`.
+
 For Claude Code or another local agent, install the same complete folder in that agent's skills location, or clone it into your workspace and point the agent to the absolute `SKILL.md` path. For Hermes/OpenClaw `AGENTS.md`, add a pointer to this installed entrypoint rather than pasting its text. The agent needs file access and Node.js for the bundled helpers.
 
 For web projects or API integrations, make the referenced directories available through the environment's file retrieval/execution tools as well as the entrypoint. Prompt text alone cannot provide preview servers or snapshot commands.
 
-The optional release check runs at most once per 24 hours, reports an available release, and never updates automatically. To update, run `git -C <install path> pull --ff-only` for a Git clone, or `npx skills update variant-design` for an `npx skills` install. Projects keep their `variant-output/` history across updates.
+The optional release check runs at most once per 24 hours, reports an available release, and never updates automatically. To update, run `git -C <install path> pull --ff-only` for a Git clone, `npx skills update variant-design` for an `npx skills` install, or `claude plugin marketplace update variant-design` followed by `claude plugin update variant-design@variant-design` for the Claude Code plugin. Projects keep their `variant-output/` history across updates.
 
 ## Generate → compare → choose → refine → export
 
@@ -218,6 +227,7 @@ After seeing the initial 3 variations, iterate with:
 | **Dramatize** | Push interactions to cinematic maximum (parallax, 3D tilt, curtain reveal) |
 | **Make interactive** | Add functional patterns: filtering, charts, drag-and-drop, form validation |
 | **Polish** | Refine against design system: typography, spacing, interactions, motion, copy |
+| **Refine premium** | Make it more premium by restraint: converge type sizes, radii, shadows and colors, measured before and after with `scripts/style-budget.mjs` |
 | **Critique** | Systematic audit against all 8 design system dimensions |
 | **Extract tokens** | Export design tokens as CSS / JSON / Tailwind config |
 | **See other views** | Mobile / dark mode / empty state / onboarding / hover states |
@@ -320,8 +330,8 @@ Scenario-specific materials (starter prompts, palettes, typography, layouts, sig
 | `references/ux/design-critique.md` | Feedback frameworks · taste trap · HiPPO problem · async review · critique vs review · self-critique checklist |
 | `references/ux/conversion-patterns.md` | Trust signals · landing page anatomy · CTA copy · pricing page patterns · form conversion · dark pattern identification |
 
-### Design system references (Impeccable)
-Foundational design principles loaded for every generation:
+### Design system references
+Design principles the routes load when a step needs them. Seven of these files are unchanged copies of [Impeccable](https://github.com/pbakaus/impeccable)'s reference files, under the Apache License 2.0; [NOTICE](NOTICE) lists them.
 
 | File | Covers |
 |---|---|
@@ -360,7 +370,7 @@ PRs welcome. Each domain reference file follows a consistent 5-section schema:
 
 Worked examples belong in the [direction library](https://variant-design-skill.vercel.app/), not in references: only our own runs or work its authors have licensed, never transcribed copy from other people's designs. `node --test scripts/skill-links.test.mjs` checks that every file the skill names exists and that every reference is reachable from `SKILL.md`.
 
-Design system references follow the Impeccable style structure with principles, code examples, and anti-patterns.
+Design system references give principles, code examples and anti-patterns.
 
 ---
 
@@ -376,7 +386,7 @@ Open any example directly in your browser to see the interactions in action.
 
 ---
 
-Built with [Claude Code Skills](https://claude.ai/code). Design system powered by [Impeccable](https://github.com/pbakaus/impeccable). Component handoff and implementation checks adapt Vercel's [Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines), Anthropic's [knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) design-handoff skill and [Owl-Listener/designer-skills](https://github.com/Owl-Listener/designer-skills).
+Built with [Claude Code Skills](https://claude.ai/code). Seven design-system reference files come unchanged from [Impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0, Copyright 2025 Paul Bakaus; see [NOTICE](NOTICE)). Component handoff and implementation checks adapt Vercel's [Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines), Anthropic's [knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) design-handoff skill and [Owl-Listener/designer-skills](https://github.com/Owl-Listener/designer-skills).
 
 ## Local MCP server
 

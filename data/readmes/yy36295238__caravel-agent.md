@@ -2,7 +2,6 @@
 
 [English](README.en.md) · **简体中文**
 
-<a href="https://caravel-site.pages.dev/"><img src="https://caravel-site.pages.dev/assets/og-zh-CN.png?v=2" width="100%" alt="Caravel"></a>
 
 # Caravel
 
@@ -21,14 +20,14 @@
   &nbsp; · &nbsp;
   <a href="https://caravel-site.pages.dev/#film"><strong>观看短片</strong></a>
   &nbsp; · &nbsp;
-  <a href="https://github.com/yy36295238/caravel-releases/releases/latest"><strong>下载 Caravel</strong></a>
+  <a href="https://github.com/yy36295238/caravel-agent/releases/latest"><strong>下载 Caravel</strong></a>
 </p>
 
-[![Latest Release](https://img.shields.io/github/v/release/yy36295238/caravel-releases?display_name=tag&style=flat-square&label=release&color=416fae)](https://github.com/yy36295238/caravel-releases/releases/latest)
+[![Latest Release](https://img.shields.io/github/v/release/yy36295238/caravel-agent?display_name=tag&style=flat-square&label=release&color=416fae)](https://github.com/yy36295238/caravel-agent/releases/latest)
 
 macOS（Apple Silicon / Intel）与 Windows x64 · 使用你自己的 Agent 和模型账号<br>TRAE 需要 CLI 2.0 与企业版旗舰版账号。
 
-[![Caravel 工作台：全部任务、Agent 会话与代码验收](https://caravel-site.pages.dev/assets/workbench-zh-CN.png?v=ad7f5950761d)](https://caravel-site.pages.dev/)
+[![Caravel 工作台（素白主题）：项目任务列表、Agent 会话与代码验收](docs/assets/workbench-plain-zh-CN.png)](https://caravel-site.pages.dev/)
 
 **点击截图，访问官网并体验完整工作台。**<br>
 <sub>演示使用产品原版界面与示例数据，无需安装。</sub>
@@ -43,34 +42,21 @@ macOS（Apple Silicon / Intel）与 Windows x64 · 使用你自己的 Agent 和�
 
 我的应用、定时器、工作流和更多功能，前往 [官网查看](https://caravel-site.pages.dev/#possibilities) 或 [在线操作体验](https://caravel-site.pages.dev/demo/?lang=zh-CN)。
 
-## 架构：Caravel 如何调用 Agent
+## 工作方式的变化
 
-Caravel 在本机启动 Agent CLI 或协议适配器，由 Rust 后端管理每轮任务、工作目录、模型、权限和会话。Agent 使用自己的账号与模型服务通信，Caravel 将不同协议的输出整理为统一的会话、工具过程和用量展示。
+过去每个 Agent CLI 各开一个终端，授权、进度和 Diff 都要逐个窗口去找；在 Caravel 里，任务在一个工作台并行推进，需要你处理的事集中出现。
 
-![Caravel 架构：Rust 编排通过 CLI JSON、Codex App Server 与 ACP 启动本机 Agent，统一事件落库并回传界面](docs/diagrams/agent-execution-zh-CN.png)
+![过去与现在：多个终端分别运行 Agent CLI，对比 Caravel 一个工作台并行推进任务并集中处理授权与验收](docs/diagrams/caravel-workflow-zh-CN.svg)
 
-| Agent | 默认任务通路 | 本机进程 / 可选通路 |
-| --- | --- | --- |
-| Claude Code | CLI JSON 流 | `claude -p --output-format stream-json`；可选 Claude ACP 适配器（实验性） |
-| Codex | 原生 App Server | `codex app-server`；可选 `codex exec --json` 或 Codex ACP 适配器 |
-| OpenCode | ACP | `opencode acp` |
-| pi | CLI JSON 流 | `pi -p --mode json` |
-| Grok | ACP | `grok agent stdio` |
-| TRAE | ACP | `traex acp serve` / `traecli acp serve` |
-| Antigravity | 官方 ACP Server | `agy_acp_server`，与 `agy` CLI 分开发行 |
+## 技术架构
 
-命令仅展示通信入口；工作目录、会话 ID、模型和权限参数由 Caravel 按本轮配置补齐。
+下图逐步演示一次任务如何从界面进入 Rust 任务核心，经 ACP、Codex App Server 或 CLI/JSONL 驱动本机 Agent，再统一落库并推送回界面；也展示了日程、飞书和手机端等其他入口。
 
-- **统一编排**：每轮保存运行配置，选择原工作区或隔离副本；不同任务可以并行，同一任务的启动、续接和停止按顺序处理。
-- **三类驱动**：CLI 驱动读取 JSONL；App Server 和 ACP 通过标准输入/输出进行双向协议通信。实时授权、追问、运行中补充和分叉按 Agent 与传输能力开放。
-- **统一回流**：各驱动把消息、思考、工具调用和用量归一为 `AgentEvent`，交给 `RunSink` 保存到本地 SQLite，并推送界面事件。
-- **会话与退出**：续聊按原生会话 ID 恢复上下文。交互式驱动优先发送协议取消，必要时回收进程组；不会把关闭面板视为停止任务。
-
-图中聚焦普通任务执行；任务顾问复用同一套驱动。标题生成、Git 辅助和数据库分析等一次性能力另有 headless 调用入口，并非全部经过 ACP。本地优先不等于模型离线：发给模型的内容由 Agent 和所选服务处理。
+![Caravel 技术架构动态图：入口经 Tauri 命令层进入任务核心，AgentDriver 通过三类通路驱动 Agent，事件经 RunSink 落库并推送界面](docs/diagrams/caravel-architecture-zh-CN.svg)
 
 ## 开始使用
 
-1. [下载安装包](https://github.com/yy36295238/caravel-releases/releases/latest)：macOS 打开 `.dmg`，将 **Caravel** 拖入「应用程序」；Windows x64 下载并运行 `Caravel_*_x64-setup.exe`。
+1. [下载安装包](https://github.com/yy36295238/caravel-agent/releases/latest)：macOS 打开 `.dmg`，将 **Caravel** 拖入「应用程序」；Windows x64 下载并运行 `Caravel_*_x64-setup.exe`。
 2. 准备 Git 和至少一个已安装、完成登录或配置的受支持 Agent CLI。
 3. 添加本地项目，创建任务，选择 Agent 并开始运行。
 
@@ -111,4 +97,4 @@ Caravel 安装包以 [Apache License 2.0](LICENSE) 授权，个人和商业用�
 
 本仓库提供 **macOS / Windows 安装包与版本记录**。产品介绍、交互演示与常见问题请以 [官网](https://caravel-site.pages.dev/) 为主。
 
-[版本记录](https://github.com/yy36295238/caravel-releases/releases) · [完整功能说明](docs/product-overview.md) · [常见问题](https://caravel-site.pages.dev/#faq)
+[版本记录](https://github.com/yy36295238/caravel-agent/releases) · [完整功能说明](docs/product-overview.md) · [常见问题](https://caravel-site.pages.dev/#faq)

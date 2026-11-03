@@ -25,7 +25,7 @@ claude > ludra new slime-valley
          Done. Run `ludra dev` to play it.
 ```
 
-> **Status:** early (v0.92). 3D games with Three.js and Rapier 3D, including any glTF model with skeletal animation on the simulation clock and colliders of any shape (from a model, or procedural terrain), and 2D games in several genres (platformers, top-down adventures, breakout, physics games) on arcade or real Rapier physics, with tilemaps, camera zones, tweens, multiple levels, lives, checkpoints and prefabs, `ludra review` to catch unfinished work, art drawn in code with lighting, custom interfaces and GLSL post-processing, a library of ready-made gameplay blocks, custom TypeScript scripts, enemies, hazards, moving platforms, goals, animated SVG sprites, particles, each game's own synthesized sounds and music, plus the full agent toolchain including real rendered screenshots and `ludra inspect` to read any model, image or sound as text, work today. Proof at scale (`ludra solve` and `ludra fuzz`) is next on the [roadmap](#roadmap).
+> **Status:** early (v0.94). 3D games with Three.js and Rapier 3D, including any glTF model with skeletal animation on the simulation clock and colliders of any shape (from a model, or procedural terrain), and 2D games in several genres (platformers, top-down adventures, breakout, physics games) on arcade or real Rapier physics, with tilemaps, camera zones, tweens, multiple levels, lives, checkpoints and prefabs, `ludra review` to catch unfinished and unfair work, `ludra solve` to prove a level can be won and how tight each jump is, `ludra fuzz` to find crashes and softlocks by random play, contact sheets, visual diffs and a `game.md` that holds the art to a decided look, art drawn in code with lighting, custom interfaces and GLSL post-processing, a library of ready-made gameplay blocks, custom TypeScript scripts, enemies, hazards, moving platforms, goals, animated SVG sprites, particles, each game's own synthesized sounds and music, plus the full agent toolchain including real rendered screenshots and `ludra inspect` to read any model, image or sound as text, work today. Humans in the loop (recording a person's session and turning it into a test) are next on the [roadmap](#roadmap).
 
 ## The idea
 
@@ -212,7 +212,101 @@ Looks: does it have a style of its own?
 4 issue(s), 1 idea(s). Fix the issues before calling the game done.
 ```
 
+It also asks whether the game is **fair**:
+- It replays the test that wins and times every jump: a press that only works on one or two exact frames is an issue (`R_FRAME_PERFECT`), and one inside 0.1 s is worth a look (`R_TIGHT_TIMING`).
+- It plays a few seconds of random sessions per scene. Any script crash (`R_CRASH`) or softlock (`R_SOFTLOCK`) is an issue.
+
+And it asks whether the game is **readable**, from real frames: it draws moments along the winning route with and without the player, the hazards, the goal and the collectibles, so the difference shows exactly where each one is and what is behind it. A player or hazard that blends in at half the moments it's on screen or more is an issue (`R_LOW_CONTRAST`), so is a player that can't be seen at all (`R_PLAYER_NOT_DRAWN`); a goal or collectible that blends in, or a tiny player (`R_TINY_PLAYER`), is an idea. This needs Chrome, Edge or Chromium; without one, review says it didn't look (`R_NOT_LOOKED`). A thing another entity's hook draws can't be left out on its own, so it isn't measured. `--fast` skips this too.
+- `--fast` skips the random play.
+
+And it asks whether the game has **decided how to look**. No tool can tell a good look from a dull one, and a game that passes every check can still look like every other, so a game writes down what it means to be, before its first asset, in `game.md`:
+
+```markdown
+# Last Lantern
+
+## Promise
+
+The dark closes in, and the lantern is all you have.
+
+## Look
+
+- style: 16-color pixel art at 480x270, a theme per level
+- type: hard pixel capitals, nothing smooth
+- palette: #120c0a, #4a3529, #ffcf70, #58907c, #d8a8ff
+```
+
+Without it, or with a part undecided, review has an issue (`R_NO_DIRECTION`, `R_THIN_DIRECTION`). What can be measured is held to it: art that has left the palette is an idea (`R_OFF_PALETTE`), one tile image filling thick blocks is an issue (`R_REPEATED_TILES`, fixed with `"variants"`), and levels whose frames share their colors are an idea (`R_ALIKE_LEVELS`). A clean review says the game isn't broken, not that it's good: it ends by sending you back to the frames.
+
+For a tighter look, three small pieces go together:
+
+- `"window": { "width": 480, "height": 270, "pixelated": true }` in `ludra.json` draws at low resolution and shows it at a whole multiple, with hard pixels.
+- `ctx.pixelText("Bölüm 1", x, y, { scale: 2, color: "#ffcf70", align: "center", locale: "tr" })` in a draw hook writes sharp 5×7 capitals, with Turkish and Latin marks.
+- `"variants": ["assets/rock2.svg", "assets/rock3.svg"]` on a tiled sprite or a tilemap legend entry mixes in more cells of the same size, so the grid doesn't show.
+
 The skill treats issues like failing tests, and every template reviews clean (`--strict` makes issues fail CI).
+
+### `ludra solve` and `ludra fuzz`: proof at scale
+
+A test proves the route its author thought of. Whether a level can be won at all, how much room each jump leaves, and what a careless player breaks are search problems. Here the engine searches, not the agent.
+
+`ludra solve` looks for inputs that win. It finds the route, proves it by replaying it from a fresh world, and measures each press: how many frames earlier or later it can come and still land in the same place.
+
+```
+$ ludra solve
+✓ SOLVED: a win at 2.95s (frame 177)
+  ludra play . --inputs "right:1.4s, right+jump:93f"
+
+Timing
+  jump    at 1.40s (frame 84)     window 6 frames (0.10s): 0 early, 5 late      tight
+
+As a test (add it to a tests/*.test.json file's "tests" list)
+  {"name":"the solver's route reaches the goal","inputs":"right:1.4s, right+jump:93f","assert":["won == true"]}
+
+explored 122,381 frames, 410 cells, method save, 0.4s
+```
+
+When there is no way, it says so, and shows where a player gets closest:
+
+```
+$ ludra solve
+✗ UNSOLVED: no way to reach a win found.
+  Every reachable place was tried without dying: as far as the search can tell, it can't be done.
+  If the route is meant to cost a life, try --allow-deaths.
+
+Closest approach 522.46 from the goal, at (398, 482) at 2.30s:
+  ludra play . --inputs "wait:0.1s, left:0.3s, right:0.5s, wait:0.1s, right:0.2s, wait:0.2s, right+jump:0.1s, right:0.2s, right+jump:0.6s" --screenshot end
+```
+
+`ludra fuzz` plays hundreds of random sessions, the way a careless player would, and reports:
+- crashes;
+- softlocks: places a player can get into but never win from, without dying;
+- where players die.
+
+Every finding comes with inputs that reproduce it:
+
+```
+$ ludra fuzz
+Played 200 random sessions: 711,902 frames in 2.1s, 397 distinct places, 4 lucky wins.
+
+✗ SOFTLOCK at (386, 702): the player can get here (after 5.38s) but can never win from here, and doesn't die.
+  ludra play . --inputs "jump:33f, left+jump:10f, jump:23f, left:46f, wait:14f, right:7f, left:28f, right:8f, wait:14f, jump:25f, right:8f, jump:0.3s, right+jump:53f, right:0.4s, wait:0.2s" --screenshot end
+  fix: give the player a way out (a ladder, a spring, a ledge low enough to jump) or make falling there cost a life (a hazard or world.fallLimit).
+```
+
+```
+$ ludra fuzz
+Played 200 random sessions: 721,958 frames in 2.0s, 420 distinct places, 0 lucky wins.
+
+✗ UNWINNABLE: the level can't be won from the start, so softlocks weren't looked for.
+  Run `ludra solve .` to see the closest a player gets.
+
+Where players die (deaths are difficulty, not bugs)
+  fall ×659: most at (512, 672) ×76, (448, 672) ×41, (464, 656) ×38
+```
+
+Both are fast because a world can be saved and restored. `World.save()` copies every entity, counter and the physics engine's own state, and `restore` brings it back bit for bit. So a search tries thousands of futures from one moment instead of replaying the past each time.
+
+The levels above are among the [fixtures](packages/cli/test/fixtures/solve) whose answers were measured by hand first. Both commands exit 1 when they find a problem, so CI can run them.
 
 ### Lives, checkpoints, prefabs and levels
 
@@ -422,7 +516,7 @@ No audio files are needed, and sound has no ceiling. A scene designs its own `"s
 
 For everything else, a script's `sound` hook gets the real Web Audio API, the way draw hooks get the real canvas: Crate & Chasm's wind grows as you climb, the spiked ball hisses as fast as it swings and the bridge creaks under your feet. Every template ships with its own sounds and music, and `ludra review` flags stock beeps and silent games. Presentation never touches the simulation, so polishing a game can't break its tests, and `ludra check` reports any missing image or audio file along with the files that do exist.
 
-## Components (v0.92)
+## Components (v0.94)
 
 | Component | What it does |
 | --- | --- |
@@ -480,8 +574,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for how it fits together.
 - ~~**v0.9: physics, sound and worlds.** Rapier as one physics engine for 2D now and 3D later, a game's own synthesized sounds and music with the full Web Audio API in scripts, tilemaps, camera zones, tweened animation. See [`examples/clockwork-keep`](examples/clockwork-keep).~~ Done.
 - ~~**v0.91: 3D foundations.** 3D transforms and bodies on Rapier 3D, a Three.js renderer with lights and shadows, cameras, a character controller, scripts with the raw Three.js and Rapier APIs, and a first 3D template, all through the same check/play/test/review loop and real screenshots.~~ Done.
 - ~~**v0.92: 3D content.** Any glTF model from anywhere (made by hand, generated, downloaded), `ludra inspect` to read a model, image or sound as text before using it, skeletal animation on the simulation clock, physics colliders from any geometry (exact triangles or a convex hull, from a model or from generated points), so procedural geometry and terrain are just code. See [`examples/moonlit-shrine`](examples/moonlit-shrine).~~ Done.
-- **v0.93: proof at scale.** `ludra solve` searches inputs for a way to win (is the level beatable, what is the shortest route, how wide is each timing window), `ludra fuzz` runs thousands of random sessions to find softlocks, falls through the floor and crashes, and `review` reports difficulty from both.
-- **v0.94: sharper eyes and taste.** Contact sheets (many frames in one image), visual diffs between versions, a free debug camera and a top-down map in 3D, readability checks on frames, and a `game.md` of design intent that `review` measures the game against.
+- ~~**v0.93: proof at scale.** `World.save()`/`restore()` bit for bit on every physics engine. `ludra solve` searches inputs for a way to win (is the level beatable, a fast route as a ready test, how wide each press's timing window is). `ludra fuzz` plays hundreds of random sessions to find crashes, softlocks and where players die. `review` asks whether a game is fair from both.~~ Done.
+- ~~**v0.94: sharper eyes and taste.** Contact sheets (many frames in one image), visual diffs between versions, a free debug camera and a top-down map in 3D, readability checks on frames, and a `game.md` of design intent that `review` measures the game against.~~ Done.
 - **v0.95: humans in the loop.** Record a person's session in `ludra dev`, let them mark moments ("too hard", "boring here"), and turn any recording into a test with one command, so the agent sees exactly what the player felt.
 - **v0.96: shipping.** A single-file web build ready for itch.io, touch and gamepad controls, performance budgets in `review`.
 - **v1.0.** Any genre in 2D or 3D, as far as the agent wants to take it, with a `make-games` skill and complete docs: an engine where an AI makes games people want to play.

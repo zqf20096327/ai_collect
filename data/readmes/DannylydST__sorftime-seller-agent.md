@@ -9,7 +9,7 @@
   <img src="assets/platform-logos.png" alt="Amazon · Walmart · TikTok Shop · Shopee · TEMU · 1688" width="100%">
 </p>
 
-> **AI-powered product research, competitor analysis, and keyword intelligence for Amazon, Walmart, TikTok Shop, Shopee, TEMU, and 1688 sellers.**
+> **AI-powered product research, competitor analysis, and keyword intelligence for Amazon, Walmart, TikTok Shop, Shopee, TEMU, 1688, Mercado Libre sellers — plus overseas social listening (Reddit/Quora).**
 >
 > Open source. Free trial. Works with any MCP-compatible AI agent — Claude Code, Codex, Cursor, OpenClaw, and more.
 >
@@ -18,13 +18,55 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)]()
-[![MCP](https://img.shields.io/badge/MCP-97%20tools-orange)]()
+[![MCP](https://img.shields.io/badge/MCP-118%20tools%20%C2%B7%208%20endpoints-orange)]()
 [![Free Trial](https://img.shields.io/badge/Trial-Free-brightgreen)]()
 [![Agent-Agnostic](https://img.shields.io/badge/Agent-Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20OpenClaw-purple)]()
 
 <p align="center">
   <img src="assets/company-intro.png" alt="Sorftime — The most comprehensive overseas e-commerce data company globally. 97% market segment coverage across global platforms. Real-time consumer trend insights from social media. Core philosophy: marketplace data reflects transactions that already happened, social media reveals demand that is brewing." width="100%">
 </p>
+
+---
+
+## 🆕 What's New (October 27, 2026) — v5.0–v5.2: Patent Suite, Dual-Site Registration & Dual-Channel Access
+
+- **⚖️ Amazon patent suite (v5.2.0)**: 3 live-verified tools — `patent_search_from_image` (design-patent image search, up to 100 hits with similarity scoring; `query_mode` effectively required), `patent_search_from_keyword` (keyword / company / inventor / publication-number search, filterable by patent type, legal status, country, applicant, classification), and `patent_request` (full detail by publication number — LOC/IPC/CPC classes, legal status, dates, patent figures). Data via Zhihuiya.
+- **📦 Richer product & keyword data (v5.2.0)**: `walmart_product_content` and `shopee_product_content` (complete image sets, attributes, variant details; Shopee adds shop coupons & location); `product_trend` gains `DailySalesVolume`; `keyword_search_results` gains `position_type` (all / organic / ads only). Root endpoint: 113 → **118 tools**.
+- **🌏 Official dual-site registration (v5.1)**: mainland [open.sorftime.com](https://open.sorftime.com) (phone/WeChat, CNY) and international [open-intl.sorftime.com](https://open-intl.sorftime.com) (email/Google, PayPal/Stripe). Register on whichever site suits you — its Account-SK works across ALL platform endpoints with a shared quota; each site's pricing is shown on its own page.
+- **🔌 Dual-channel data access (v5.0.0)**: Channel A — one-key configure the official `sorftime-<platform>` native MCP services from the site's MCP 服务 page; this skill auto-detects them and serves as the knowledge layer (data queries need no local key; batch scripts still want a one-time key via install.py). Channel B — the built-in bridge via `install.py` (default). Auto-routed; no config juggling.
+- **🧱 Same-source platform packages**: all 8 platform editions rebuild from this single repo (fix once, rebuild all); each ships a user README with a 3-step quickstart.
+- **[Full changelog →](CHANGELOG.md)**
+
+---
+
+## 🆕 What's New (October 10, 2026) — v4.0.0: Platform-Split Endpoints & Modular Packages
+
+- **🌐 MCP split by platform (8 endpoints)**: Sorftime MCP now ships one endpoint per platform — `mcp.sorftime.com/{amazon|walmart|shopee|tiktok|temu|1688|mercado|social}` — with the root endpoint kept as the all-platform compatible default (118 tools = exact union of the 8 endpoints, verified 2026-10-27). One Account-SK works across all endpoints with a shared quota. Endpoint resolution: `SORFTIME_MCP_URL` env > per-package `config/platform.json` > root.
+- **📦 Platform packages via a single-source builder**: `build/build_packages.py` generates 8 self-contained skill packages (`sorftime-amazon`, `sorftime-walmart`, `sorftime-shopee`, `sorftime-tiktok`, `sorftime-temu`, `sorftime-ali1688`, `sorftime-mercado`, `sorftime-social`) from this repo — each with a platform-tailored hot layer, its own platform knowledge page, and a pre-wired endpoint. Fix once, rebuild all.
+- **🧠 Knowledge restructured for progressive disclosure**: SKILL.md shrinks 58KB → 7KB; onboarding scripts, per-platform tool tables, gotchas, content QA and script guides move into `references/` (8 new `references/platforms/*.md` pages). The model reads what it needs, when it needs it.
+- **🎵 TikTok suite fully renamed server-side (breaking)**: the old 7 tools are retired; 18 new tools ship under the `*_request` / `*_search_from_name` convention — now with product search (30+ filters) plus five new search families: **shops, authors, brands, videos, hashtags**. Same-args renames are auto-remapped; behavior-changed tools fail cleanly instead of mis-calling.
+- **✨ New Amazon capabilities (verified live)**: `common_usage_query` (quota balance, zero-arg, every endpoint; briefly named `usage_query` early on), `category_low_price_search` (Amazon Haul low-price-mall category intelligence), `product_content` (listing bullets/A+ content/buyer-focus teardown), `seller_search` + `seller_search_from_name` (40+ seller filters), and the Quora intel trio. `seller_search`/`quora_*` are live but still backfilling data coverage (verified no-data across 3 valid param sets each — reported honestly).
+- **🔧 New ops tooling**: `scripts/probe_endpoints.py` — one-command health check across all 9 endpoints with tool counts and credit balance, `--matrix` regenerates the tool matrix grouped by endpoint. `healthcheck.py` is now endpoint-aware (works on any platform endpoint, detects rotated keys via pseudo-tools, shows remaining credits).
+- **[Full changelog →](CHANGELOG.md)**
+
+## 📦 Install (3 steps)
+
+**1. Put the skill folder into your AI tool's skills directory** (keep the folder intact):
+
+| Tool | Directory |
+|---|---|
+| Claude Code | `~/.claude/skills/` (Windows: `C:\Users\<you>\.claude\skills\`) |
+| ZCode | `~/.zcode/skills/` |
+| OpenClaw | your active workspace's skills directory |
+| Other Agent-Skills-compatible tools | that tool's skills directory |
+
+**2. Get your Account-SK** — sign up / log in at the entrance convenient for you: mainland China [open.sorftime.com](https://open.sorftime.com) (phone/WeChat, CNY) or international [open-intl.sorftime.com](https://open-intl.sorftime.com) (email/Google, PayPal/Stripe); both grant free trial credits → open the **MCP 服务** page → subscribe → copy the Account-SK. One subscription covers all platforms; quota is metered per call.
+
+**3. Tell your AI**: *"Configure Sorftime for me, my key is <paste Account-SK>"* — it installs, verifies, and runs your first query. Manual alternative: `python scripts/install.py --key <KEY>` (Windows: use `python`, not `python3`).
+
+Prefer the official one-click path? The **MCP 服务** page generates a copy-paste instruction for your AI (single- or multi-platform), configuring native MCP servers named `sorftime-<platform>` — this skill then automatically serves as the knowledge layer for data queries (no extra key setup needed; batch scripts still want a one-time local key via install.py).
+
+**Skill family**: this repo is the **all-platform master skill**; the official download slot `oss.sorftime.com/download/skill/sorftime-mcp.zip` is being updated to this build (it currently serves an older v3.x). Platform-specific editions (`sorftime-amazon`, `sorftime-walmart`, `sorftime-shopee`, `sorftime-tiktok`, `sorftime-temu`, `sorftime-ali1688`, `sorftime-mercado`, `sorftime-social`) are built from the same source — same Account-SK works everywhere.
 
 ---
 
@@ -67,7 +109,7 @@
 ## ⚡ Quick Start
 
 ### 1. Create a free account
-[open-intl.sorftime.com](https://open-intl.sorftime.com) — sign up with **Google**, free trial credits included. PayPal for additional credits.
+**注册/Registration**: 大陆 [open.sorftime.com](https://open.sorftime.com)（手机号/微信，人民币）· International [open-intl.sorftime.com](https://open-intl.sorftime.com)（email/Google, PayPal/Stripe）。新账号均有免费体验。
 
 ### 2. Install
 ```bash
@@ -235,7 +277,7 @@ After:  "Find blue ocean yoga mat products on Amazon US" → results in 20 secon
 
 ## 📦 Installation
 
-**Prerequisites**: Python 3.10+ · [Free Sorftime account](https://open-intl.sorftime.com) · Any MCP-compatible AI agent
+**Prerequisites**: Python 3.10+ · [Free Sorftime account](https://open.sorftime.com) (mainland) / [open-intl.sorftime.com](https://open-intl.sorftime.com) (international) · Any MCP-compatible AI agent
 
 ```bash
 git clone https://github.com/DannylydST/sorftime-seller-agent.git
@@ -251,16 +293,16 @@ python3 scripts/healthcheck.py # Verify
 ## 🙋 FAQ
 
 **Q: Is this official Sorftime?**
-Yes. Built by [@DannylydST](https://github.com/DannylydST) at Sorftime Data Technology. Connects to Sorftime's official MCP API at [open-intl.sorftime.com](https://open-intl.sorftime.com).
+Yes. Built by [@DannylydST](https://github.com/DannylydST) at Sorftime Data Technology. Connects to Sorftime's official MCP API at [open.sorftime.com](https://open.sorftime.com).
 
 **Q: Is it really free?**
-New accounts get **free trial credits** — no credit card required. Paid usage-based tiers available via PayPal for higher-volume sellers and agencies.
+新账号可**免费体验** — 无需信用卡。高用量卖家/机构可通过人民币购买更高档位。
 
 **Q: Which AI agents can I use?**
 Any MCP-compatible agent: **Claude Code, Codex (OpenAI), Cursor, OpenClaw, Hermes, Pi**, and more. `install.py` auto-detects your environment.
 
 **Q: Where do I get my MCP Key?**
-[open-intl.sorftime.com](https://open-intl.sorftime.com) → sign up with Google → MCP page → copy your Key.
+https://open.sorftime.com（大陆）或 https://open-intl.sorftime.com（国际）注册 → MCP 服务页 → 购买开通 → 复制 Account-SK。
 
 **Q: Can I use this without an AI?**
 Yes — all scripts work standalone: `python3 scripts/picker.py --keyword "yoga mat"`. But AI-driven analysis with the 20 methodology cards unlocks the full value.
@@ -276,6 +318,7 @@ Yes — all 14 Amazon sites: US, GB, DE, FR, IT, ES, JP, CA, MX, AU, IN, AE, SA,
 ## 📖 Documentation
 
 - **[Wiki](https://github.com/DannylydST/sorftime-seller-agent/wiki)** — Platform guides, methodology cards, troubleshooting, glossary
+- **[📚 Product Selection Methodology (Multi-Platform)](https://github.com/DannylydST/sorftime-seller-agent/wiki/Product-Selection-Methodology)** — The unified seller framework: shelf vs. interest-based e-commerce, resource screen → full-set ranking → validation → 3-scenario ROI → build → monitor & exit. Includes live Nov 2026 cases (iPhone 17 case CPC 2.2× in 19 months, Covers 10× seasonality, TikTok cleaning-brush creator matrices)
 - **[⚡ Loop & Goal Templates](https://github.com/DannylydST/sorftime-seller-agent/wiki/Loop-Goal-Command-Templates)** — 58 automation recipes: daily monitoring, weekly refresh, monthly Hidden Profit Index scans
 - **[SKILL.md](SKILL.md)** — Full skill reference: tools, parameters, gotchas
 - **[CHANGELOG.md](CHANGELOG.md)** — Version history

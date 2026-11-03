@@ -8,7 +8,7 @@
 **Give your AI agent a C# compiler instead of grep.**
 ([first battle-test results: 38-69% token savings, bugs found, lessons learned](docs/battle-test-results.md) · [shared workspace architecture](docs/plans/multi-instance-architecture.md) · [help wanted](#help-wanted))
 
-RoslynMcp is a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding agents real Roslyn compiler semantics: type resolution, cross-file references, semantic rename, diagnostics, and 45 MCP tools (43 public + 2 debug-only). Not string matching. Not regex. Actual compiler-level understanding of your C# code.
+RoslynMcp is a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding agents real Roslyn compiler semantics: type resolution, cross-file references, semantic rename, diagnostics, and 46 MCP tools (44 public + 2 debug-only). Not string matching. Not regex. Actual compiler-level understanding of your C# code.
 
 ```
 Agent: "Rename OrderStatus.Pending to OrderStatus.AwaitingApproval"
@@ -140,7 +140,7 @@ AI agents working on C# through file reads and regex have a structural problem: 
 
 ## Tool Catalog
 
-45 total MCP tools: 43 public tools organized by what you need to do below, plus 2 debug-only tools: `roslyn_respawn` and `roslyn_debug_attach`. All tools work in-process using Roslyn APIs unless noted.
+46 total MCP tools: 44 public tools organized by what you need to do below, plus 2 debug-only tools: `roslyn_respawn` and `roslyn_debug_attach`. All tools work in-process using Roslyn APIs unless noted.
 
 ### Discovery
 
@@ -160,8 +160,9 @@ AI agents working on C# through file reads and regex have a structural problem: 
 | `roslyn_find_unused` | Private/internal source symbols with zero direct static references |
 | `roslyn_find_callers` | All methods that call a named symbol (direct or via interface dispatch) |
 | `roslyn_get_call_graph` | All methods invoked within a method body (IOperation tree walk) |
+| `roslyn_analyze_region` | Data flow and control flow for a line range: extract-method inputs and outputs, captures, reachability, exits |
 | `roslyn_find_implementations` | All types implementing an interface or overriding a member |
-| `roslyn_get_symbol_info` | What a name at a location actually resolves to |
+| `roslyn_get_symbol_info` | What a name at a location resolves to, with its flow-adjusted type, nullable state, conversions and overloads |
 | `roslyn_get_symbol_definition` | Jump to where a symbol is declared |
 | `roslyn_get_symbols_in_scope` | All symbols accessible at a file location |
 | `roslyn_get_type_hierarchy` | Base types, interfaces, and derived types |
@@ -188,7 +189,7 @@ AI agents working on C# through file reads and regex have a structural problem: 
 | Tool | What it does |
 |------|--------------|
 | `roslyn_check_syntax` | Validate a C# snippet for syntax (and optionally semantic) errors without writing to disk |
-| `roslyn_replace_in_code` | Semantic C# editing -- replaces syntax nodes, validates syntax |
+| `roslyn_replace_in_code` | Semantic C# editing -- replaces syntax nodes by kind, name or position, validates syntax |
 | `roslyn_replace_in_file` | Text-level find-and-replace with regex (any file type) |
 | `roslyn_insert_lines` | Insert lines at a position or anchor pattern |
 | `roslyn_write_file` | Atomically write or create a file; returns a backup token for undo |

@@ -12,7 +12,7 @@ files for every tool._
 [![CI](https://github.com/mrwogu/promptscript/actions/workflows/ci.yml/badge.svg)](https://github.com/mrwogu/promptscript/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/mrwogu/promptscript/graph/badge.svg?token=MPUCPQLVWR)](https://codecov.io/github/mrwogu/promptscript)
 [![npm version](https://img.shields.io/npm/v/@promptscript/cli.svg)](https://www.npmjs.com/package/@promptscript/cli)
-[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://getpromptscript.dev/getting-started/#installation)
+[![Node.js 22.22+](https://img.shields.io/badge/Node.js-22.22%2B-5FA04E?logo=nodedotjs&logoColor=white)](https://getpromptscript.dev/getting-started/#installation)
 [![Deno 2.9+](https://img.shields.io/badge/Deno-2.9%2B-70FFAF?logo=deno&logoColor=000000)](https://getpromptscript.dev/reference/cli/#running-under-deno)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/mrwogu/promptscript/pkgs/container/promptscript)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -283,6 +283,7 @@ Build organization, team, and project layers with deterministic merge rules:
 - Typed parameters turn shared stacks into reusable templates.
 - Sealed properties, reference negation, and overlay drift warnings keep extension layers safe.
 - `prs inspect <skill>` shows property and layer provenance.
+- Composed skill comments name each source by its path relative to the project root (file name only outside the root), never an absolute path.
 - `prs explain <path>` shows source locations and composition history for any resolved path.
   Text and JSON paths are project-relative by default; use `--absolute-paths` to opt in to
   absolute paths. JSON includes `version`, `path`, `entries`, and `diagnostics`. The command exits

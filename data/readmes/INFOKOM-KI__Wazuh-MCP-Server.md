@@ -7,7 +7,7 @@
 [![Wazuh-MCP-Server MCP server](https://glama.ai/mcp/servers/INFOKOM-KI/Wazuh-MCP-Server/badges/score.svg)](https://glama.ai/mcp/servers/INFOKOM-KI/Wazuh-MCP-Server)
 
 A defensive MCP server for Claude Desktop / any MCP client, the blue-team counterpart to
-offensive tooling. **160 tools + 4 resources** (134 when `WAZUH_READ_ONLY=true`) across Wazuh SIEM, multi-provider threat
+offensive tooling. **164 tools + 4 resources** (138 when `WAZUH_READ_ONLY=true`) across Wazuh SIEM, multi-provider threat
 intelligence, MITRE-driven 3-Sum APT correlation, attack graphing, LangGraph investigation
 workflows, local case RAG, host forensics, and opt-in HDBSCAN clustering + ATT&CK incident
 labeling. The inbound API key defaults to the read-only `wazuh:read` scope.
@@ -23,9 +23,9 @@ main.py -> mcp_server/  (package)
                  ├─ core/          HTTP client, redaction, audit, config, attack graph, IOC store
                  ├─ wazuh/         Indexer (OpenSearch) + Manager API (JWT auth)
                  ├─ correlation/   3-Sum engine (pure computation, MITRE-driven)
-                 ├─ threat_intel/  CrowdSec, ThreatFox, OTX, URLhaus, GreyNoise + shared cache
+                 ├─ threat_intel/  CrowdSec, ThreatFox, OTX, URLhaus, GreyNoise, cve.now + shared cache
                  ├─ agents/        LangGraph investigation + playbook workflows
-                 └─ tools/         64 tool modules
+                 └─ tools/         69 tool modules
 ```
 
 Every tool call flows through a single pipeline in the `@blueteam_tool` decorator, whose three
@@ -121,7 +121,7 @@ optional; tools degrade gracefully without them.
 | Alert clustering | `BLUETEAM_CLUSTER_ENABLED`, `BLUETEAM_CLUSTER_STORE`, `BLUETEAM_CLUSTER_STORE_MAX`, `BLUETEAM_CLUSTER_TTL`, `BLUETEAM_CLUSTER_MIN_SIZE`, `BLUETEAM_CLUSTER_MIN_SAMPLES`, `BLUETEAM_CLUSTER_ASSIGN_FACTOR` | HDBSCAN over srcip entities. Off by default; needs scikit-learn (`setup.sh BLUETEAM_INSTALL_CLUSTER=1`). `ENABLED=true` requires an absolute `STORE` path or startup raises. Store is SQLite, written `0600`, and a fit written under a different feature version is refused rather than read |
 | Incident labeling | `BLUETEAM_LAYA_ENABLED`, `BLUETEAM_LAYA_BACKEND`, `BLUETEAM_LAYA_MODEL_PATH`, `BLUETEAM_LAYA_MODEL_SHA256`, `BLUETEAM_LAYA_ALLOW_DOWNLOAD`, `BLUETEAM_LAYA_CONFIDENCE_FLOOR`, `BLUETEAM_LAYA_TEMPERATURE`, `BLUETEAM_LAYA_MAX_LEN`, `BLUETEAM_LAYA_MAX_CONCURRENCY` | `BACKEND=onnx` (default) reuses the RAG embedder: no torch, no second model resident. `BACKEND=laya` and `BACKEND=setfit` each require `MODEL_PATH` **and** `MODEL_SHA256` or startup raises (fail-closed; `setup.sh` generates the pin, and the SetFit pin is verified before its pickled head is loaded). `FLOOR` defaults `0.6`; below it the answer is `uncertain`. `TEMPERATURE` defaults to `1.0` for `laya`/`setfit` (already-softmaxed distributions) and `0.05` for `onnx` (cosine similarities need sharpening); refit it with the floor via `scripts/calibrate_labeler.py --backend <onnx\|laya\|setfit>`. `MAX_LEN` defaults `1024` tokens and is passed through to Laya, whose encoder accepts up to `8192`; SetFit uses its trained truncation. `MAX_CONCURRENCY` defaults `1` |
 | CPU hardening | `USE_TF`, `USE_FLAX`, `TOKENIZERS_PARALLELISM`, `HF_HUB_OFFLINE`, `TRANSFORMERS_OFFLINE`, `OMP_NUM_THREADS`, `MKL_NUM_THREADS`, `OPENBLAS_NUM_THREADS`, `NUMEXPR_NUM_THREADS` | written unconditionally by `setup.sh` into `config.env` and `.env`. Thread caps bound the resident model pools (reranker, RAG embedder, Laya). `HF_HUB_OFFLINE` follows `BLUETEAM_RAG_ALLOW_DOWNLOAD` / `BLUETEAM_LAYA_ALLOW_DOWNLOAD`, so a hard offline switch cannot silently defeat them |
-| Gating | `WAZUH_READ_ONLY`, `WAZUH_DISABLED_CATEGORIES`, `WAZUH_DISABLED_TOOLS` | skip destructive tools / tool categories. **The registered tool count changes with these.** `WAZUH_READ_ONLY=true` skips the `host_forensics` (23 tools) and `fail2ban` (3 tools) modules at import, so the startup line reads **134 tools registered** instead of 160: `160 - 23 - 3 = 134`. Disabling a category via `WAZUH_DISABLED_CATEGORIES` subtracts that category's tools the same way. Each skip is logged at INFO with the category name, immediately before the count line. Nothing is hardcoded: the count comes from the live FastMCP registry after import |
+| Gating | `WAZUH_READ_ONLY`, `WAZUH_DISABLED_CATEGORIES`, `WAZUH_DISABLED_TOOLS` | skip destructive tools / tool categories. **The registered tool count changes with these.** `WAZUH_READ_ONLY=true` skips the `host_forensics` (23 tools) and `fail2ban` (3 tools) modules at import, so the startup line reads **138 tools registered** instead of 164: `164 - 23 - 3 = 138`. Disabling a category via `WAZUH_DISABLED_CATEGORIES` subtracts that category's tools the same way. Each skip is logged at INFO with the category name, immediately before the count line. Nothing is hardcoded: the count comes from the live FastMCP registry after import |
 
 ---
 
@@ -262,6 +262,20 @@ bands (`blueteam_cve_ssvc`), dependency-manifest scanning against OSV
 (`blueteam_dependency_scan`), and vendor patch guidance (`blueteam_cve_advisory`: MSRC /
 Red Hat / Ubuntu). The LangGraph workflow runs this chain in its `vuln` step and folds
 vendor advisories into exported reports.
+
+The `blueteam_cve_now_*` tools add the cve.now catalog: one call returns the record the
+four NVD-backed tools return separately (`blueteam_cve_now_lookup`), newest entries per
+technology or ecosystem (`blueteam_cve_now_feed`), and alert-to-CVE correlation
+(`blueteam_cve_now_attack_correlate`). cve.now needs no key. It is a free service with
+no published quota or SLA, so every call degrades to `cve_context.status: "unavailable"`
+instead of failing the analysis. The correlation tool classifies the observed behaviour
+first, then tests each candidate CVE against it, the asset's installed versions, and the
+CVE's own product and class. `relationship` is one of `confirmed_cve_reference`,
+`attack_specific_match`, `vulnerability_exposure`, `contextual_candidate` or
+`no_supported_match`; a technology match alone cannot leave `contextual_candidate`, and
+`successful_exploitation_established` stays `no` unless host evidence says otherwise.
+Version checks use `packages` passed to the call, or `use_inventory=true` to read the
+agent's package inventory from the local Indexer. Package versions are never uploaded.
 
 ### Investigation, Graphs & Workflows
 `blueteam_investigate_ip`, `blueteam_attack_graph` (networkx clusters + PageRank),
@@ -626,6 +640,9 @@ enrich it with exploitation data the Indexer does not carry:
 | CVE → ATT&CK techniques + groups | `blueteam_cve_attack_mapping(cve_id)` |
 | Vendor remediation (MSRC/RedHat/Ubuntu) | `blueteam_cve_advisory(cve_id)` |
 | Scan a dependency manifest for CVEs | `blueteam_dependency_scan(raw_text="<requirements.txt / package.json / pom.xml>")` |
+| One-call catalog record (CVSS + KEV + EPSS + PoC + fix + SSVC) | `blueteam_cve_now_lookup(vulnerability_id)` |
+| Newest entries for a technology or ecosystem | `blueteam_cve_now_feed(tech=[...], ecosystem=[...], filter_name="critical")` |
+| Alert → candidate CVEs, direct vs technology-based | `blueteam_cve_now_attack_correlate(alert=<alert object>)` |
 
 `blueteam_cve_score` fans out NVD + EPSS + KEV + PoC in one call and returns a
 0-100 score with a severity label. KEV membership forces CRITICAL.
@@ -635,6 +652,119 @@ with an explainable rationale: `Act` means patch now, `Track` means schedule.
 (RHSA / USN IDs). `blueteam_dependency_scan` parses a manifest and maps every
 package to live CVEs via OSV; feed the returned `cve_ids` to the tools above.
 No API key required (optional `NVD_API_KEY` / `GITHUB_TOKEN` raise rate limits).
+
+The three cve.now tools above read cve.now, a free catalog that needs no key and
+publishes no quota. `blueteam_cve_now_lookup` returns in one call what the NVD +
+EPSS + KEV + PoC chain returns in four; keep the NVD-backed tools when NVD itself
+has to be the authority. `blueteam_cve_now_feed` lists the newest entries for a
+technology or ecosystem, and takes no time window, so it cannot answer "what was
+published during this incident".
+
+`blueteam_cve_now_attack_correlate` assesses one alert. It classifies the observed
+behaviour first, then tests every candidate CVE against that behaviour, the asset's
+installed versions, and the CVE's own product and class. Read two fields.
+
+`match_basis` says where the candidates came from: `alert_cve` (the alert named a
+CVE in a structured field), `tech_feed` (technology match), `unmapped` (neither;
+the groups appear in `unmapped_groups`).
+
+`relationship` on each candidate says how strong the link is, and the levels are
+not interchangeable:
+
+| relationship | meaning |
+|---|---|
+| `confirmed_cve_reference` | the alert carries the CVE id; a reference, not proof of exploitation |
+| `attack_specific_match` | the request names the exact plugin **and** targets a file the CVE text documents |
+| `vulnerability_exposure` | the asset runs an affected version, with no attack evidence |
+| `contextual_candidate` | product or class overlap only |
+| `no_supported_match` | nothing connects the CVE to the activity |
+
+`product_identity` on each candidate shows the evidence level: `exact_component`,
+`exact_product`, `product_family`, `platform`, `none`. A WordPress-level match is not
+a match for a specific plugin: an upload to `/wp-content/plugins/wp-scraper/import.php`
+names `wp-scraper`, while `/wp-content/plugins/x/upload.php` names nothing.
+
+Identity alone still does not promote. `attack_specific_match` also needs the request
+to target a file the CVE text names (`endpoint_evidence.matched`). CVE-2025-69129
+documents no endpoint, so even a request to the `wp-scraper` directory stays
+`contextual_candidate`. Hyphen and underscore are not folded: `wp-scraper` equals
+`wp_scraper` only because `PLUGIN_SLUG_ALIASES` declares it, and the alias is recorded
+as evidence.
+
+A technology match alone cannot leave `contextual_candidate`. KEV status and public
+exploit code never raise a relationship on their own; they are context. The
+`assessment` block answers the rest: `vulnerable_software_confirmed` is `unknown`
+unless a version check ran, and `successful_exploitation_established` is `false`.
+It stays false: an alert records an attempt or an observation, never a confirmed
+compromise. Post-exploitation signals are reported separately in
+`post_exploitation_indicators` (`observed`, `linked_candidate`, `correlation_scope:
+same_alert`) and are still indicators. `evidence_attributes` keeps the three apart:
+`observed_target_product` comes from the request path, `installed_product` only from
+package inventory, `affected_version` only from the range comparison. A URL never
+proves installation. Package inventory covers OS packages only, so an application
+component missing from it leaves `installed_product` null and exposure `unknown`,
+never `false`. Report what the assessment states, never a stronger claim.
+
+Version checks use `packages` passed to the tool, or `use_inventory=true` to read
+`wazuh-states-inventory-packages-*` locally. Package versions stay on the server.
+That index covers OS packages only; a WordPress plugin or npm dependency missing from
+it leaves exposure `unknown`, never `false`.
+
+`technology_evidence` lists every technology the alert actually names, with the field
+that named it (`rule.description`, `rule.groups`, `data.url`, `decoder.name`,
+`location`) and its classification. `ambiguous_technologies` holds platforms named in a
+list ("Joomla, Drupal or WordPress"); those never seed discovery. A technology with no
+cve.now slug appears under `unmapped_technology_mentions` with `status:
+identified_no_slug`, `identity: unresolved` and cve_lookup `no_slug`; it was identified, it
+is not forced onto a nearby slug, and it is not reported as unidentified.
+
+Discovery is attack-pattern first. The class classified from the alert maps to a fixed
+phrase ("arbitrary file upload", "sql injection", "server-side template injection", ...)
+that is combined with the technology filter and the plugin slug when one exists. An alert
+with a pattern and no mapped technology still searches; `discovery_sources` says which
+inputs were used, and `query_terms` lists the phrase. `evidence_availability` reports attack,
+technology, asset, vulnerability and application evidence independently: missing inventory
+never blocks discovery, and exposure stays `unknown`.
+
+`product_compatibility` compares the platform the alert identifies with the platform the CVE
+names: `incompatible` means the candidate is `no_supported_match` and appears under
+`rejected_candidates`, not as a lead. `display_priority` orders candidates by relationship,
+then compatibility, then version, then evidence; CVSS breaks ties only.
+
+The pattern query runs without a technology restriction: a `.php` path is only a
+`runtime_hint` and never narrows it. A verified technology adds a `/feed?tech=` source and a
+component slug adds a targeted search; each candidate keeps `discovery_sources`, and
+`coverage.sources` reports every source's status separately. The feed is not an exhaustive
+catalog, and it is skipped only when *specific* candidates (direct reference, attack-specific,
+exposure, or exact product identity) fill the display; class-only leads do not suppress it. Feed
+records keep `cvss` and `kev` null (`metadata_missing`); that affects display order, never
+relationship. `discovery.technology_roles` marks a log source as `log_source`; identity for
+promotion uses target roles only. Servers also carry `target_relationship`: only
+`explicit_vulnerability_target` and `explicit_exploitation_target` count as targets, so
+"server returned" or "access log" stays context.
+
+`coverage` reports `total_matches`, `retrieved_count`, `displayed_count`, `has_more`,
+`truncated`, `pagination_complete`, `pages_fetched` and `discovery_mode`. `fast` fetches one
+page plus one component query; `extended` fetches up to four pages for historical discovery. A candidate that did not fit the
+display limit was not evaluated, so never read `displayed_count < total_matches` as a
+negative result.
+
+`analyst_assessments` holds associations an analyst supplied. They carry
+`assessment_source: analyst`, a rationale and a `validation_status`, and never enter
+`candidates`. `assessment.exploitation_status` is `not_established`; only an analyst
+assessment may set `evidence_of_non_exploitation`, and
+`successful_exploitation_established` stays `false` either way.
+
+`blueteam_wazuh_vulnerability_health` separates findings from readiness: `findings_state`
+is `findings_present` or `observed_no_findings`, and `state` is `operational`, `unverified`,
+`degraded`, `unavailable` or `not_configured`. Zero findings with VD `enabled`,
+`index-status`, a populated package inventory and full agent coverage is an observation.
+Zero findings without Manager access is `unverified`, not degraded and not clean.
+Attack classification is keyword-based over `rule.description`, `rule.groups` and
+the allowlisted `data.*` fields, so an uninformative rule yields no class. cve.now
+publishes no CWE field; `cwe` is always null rather than guessed. If cve.now is
+unreachable the tool answers with an `unavailable` envelope: the alert analysis
+stands, and a missing answer is not a negative finding.
 
 The investigation workflow auto-extracts CVEs from alert text (and, when given
 `dependency_manifest`, discovers more via `blueteam_dependency_scan`), enriches
@@ -940,7 +1070,7 @@ Group by domain → `group_by="domain"`, per IP → `"srcip"` (default), per age
 | Want | Tool |
 |---|---|
 | Geo distribution / heatmap / concentration | `blueteam_wazuh_geo_distribution`, `blueteam_wazuh_geo_heatmap`, `blueteam_wazuh_geo_concentration` |
-| FIM / compliance / vulns | `blueteam_wazuh_syscheck` (add `syscheck_field` + `syscheck_value` to filter any template FIM leaf, `changed_attribute` for a specific hash or permission change, `by_field` to group by a leaf, `include_diff` for sampled diffs), `blueteam_wazuh_compliance`, `blueteam_wazuh_vulnerabilities` |
+| FIM / compliance / vulns | `blueteam_wazuh_syscheck` (add `syscheck_field` + `syscheck_value` to filter any template FIM leaf, `changed_attribute` for a specific hash or permission change, `by_field` to group by a leaf, `include_diff` for sampled diffs), `blueteam_wazuh_compliance`, `blueteam_wazuh_vulnerabilities`, `blueteam_wazuh_vulnerability_health` (is the VD pipeline writing at all: `operational` / `degraded` / `unavailable` / `not_configured`) |
 | Webshell scan | `blueteam_check_webshell(url)` |
 | Fail2ban state | `blueteam_fail2ban_status`, `blueteam_fail2ban_jail_status`, `blueteam_fail2ban_unban` |
 | Process / connection / user inventory | `blueteam_list_processes`, `blueteam_list_connections`, `blueteam_list_listening_ports`, `blueteam_list_users`, `blueteam_list_cron_jobs`, `blueteam_who_is_logged_in`, `blueteam_last_logins` |
@@ -1071,6 +1201,16 @@ not a server outage.
 2. blueteam_cve_score(cve_id="<top CVE>")          # or blueteam_cve_ssvc for an action band
 3. blueteam_cve_attack_mapping(cve_id="<top CVE>") # MITRE techniques → 3-Sum Engine A
 4. blueteam_cve_advisory(cve_id="<top CVE>")       # vendor patch guidance (RHSA / USN)
+5. blueteam_cve_now_attack_correlate(alert=<the alert>)   # no manifest? start here
+   # read match_basis: alert_cve = the alert's CVE, tech_feed = candidates only
+```
+
+### Workflow E2: alert → CVE assessment (no manifest)
+```
+1. blueteam_alert_summarize(<alert>)                       # what happened
+2. blueteam_cve_now_attack_correlate(alert=<the alert>, use_inventory=true)
+   # read relationship + assessment; inventory is local, versions are not uploaded
+3. blueteam_cve_now_lookup(vulnerability_id="<top candidate>", response_format="json")
 ```
 
 ### Workflow F: detection engineering (webshell / sample → YARA)
@@ -1166,164 +1306,4 @@ rejected.
 5. Read `dropped[...]` and the written `path`; hand the file to the operator.
 ```
 
-`blueteam_stix_export` is the only egress tool in this server. It writes a STIX 2.1 bundle
-(producer `identity`, TLP `marking-definition`, `report`, `indicator` objects, and optional
-`indicates` relationships to ATT&CK techniques resolved from the loaded bundle) under
-`BLUETEAM_EXPORT_DIR/stix/`. The file is the shareable artifact: no TAXII, no network push.
-Importing it into the peer's MISP or OpenCTI is the operator's step.
-
-Three settings decide whether it runs:
-
-- `BLUETEAM_STIX_EGRESS_ENABLED=true`: otherwise the tool is disabled.
-- `BLUETEAM_STIX_IDENTITY_NAME`: a bundle with no producer Identity is not shareable.
-- `BLUETEAM_OWNED_DOMAINS` non-empty: without it, victim domains cannot be told apart from
-  attacker domains, so the tool refuses instead of guessing.
-
-What it never shares: RFC1918 / loopback / link-local / CGNAT / reserved addresses (including
-IPv4-mapped IPv6 such as `::ffff:10.0.0.5`), owned domains and their subdomains, internal TLDs,
-single-label hostnames (asset names), emails, non-http URLs, and URLs carrying credentials.
-Excluded values are itemised in `dropped` with a reason. **A dropped value is out of the bundle,
-not masked**. Do not paste one back in, and never describe one as "anonymised". A second gate
-re-runs the serialized bundle through the `protect_victim` pipeline; if it still changes, the
-export is refused, so an internal path or hostname inside `description` blocks the write instead
-of leaking. Pass `include_bundle=true` only for a small bundle you are handing straight to a MISP
-API; larger bundles are written to disk and summarised, never truncated inline.
-
-Deterministic ids (`UUIDv5` over the indicator pattern) mean re-exporting the same indicator
-yields the same `indicator--` id, so the peer deduplicates instead of accumulating copies.
-
-### Workflow J: window shape, then phase label (opt-in)
-```
-1. blueteam_alert_cluster(mode="fit", time_window_minutes=1440, response_format="json")
-   # read entity_count, noise_ratio, and each cluster's medoid + top_tactics
-2. blueteam_alert_cluster(mode="status", response_format="json")   # the stored fit + pending novelty
-3. blueteam_incident_label(mode="alert", alert={...}, response_format="json")
-   # label + category + confidence + floor; status ok | uncertain | unavailable
-4. blueteam_alert_cluster_assign(srcip="X")     # is this entity inside a stored cluster?
-5. three_sum_correlation(time_window_minutes=1440)  # the scores the cluster vector is built from
-6. blueteam_rag_query(query="<label> + the alert description")   # have we closed something like this before
-7. blueteam_tactic_forecast(mode="predict", srcip="X", top_k=3)   # optional; needs the forecast corpus
-   # top next tactics + escalation probability; uniform_fallback/low_support = the corpus does not back it
-8. blueteam_volume_forecast(mode="predict", horizon_buckets=24)     # optional; needs the forecast corpus
-   # expected volume + peak_probability; posterior_fallback = the prior was used, not a fitted posterior
-9. blueteam_cluster_lineage(mode="behavior")   # optional; needs at least two stored cluster fits
-   # size trend + signals + behavior_risk; insufficient_history = too few fits, not stability
-```
-
-Use this when the question is "what kinds of activity are in this window" (step 1) and "what
-phase does this alert look like" (step 3). Step 3 needs one alert, not a window; pass the alert
-you are actually investigating, not a sample of the window.
-
-Two orderings matter. Clustering first: the fit is over the same scores step 5 returns, so a
-label read before the window shape has no context to sit in. RAG last: it answers "seen this
-before", which is only a useful question once you can name what you are looking at.
-
-If either flag is off, skip the workflow instead of substituting another tool; there is no
-lexical fallback for a cluster or a label.
-
-## 3. Redaction & the forensic token (read before touching PII)
-
-The server masks PII/credentials in layers (credentials, emails, private IPs,
-domains, paths, identities) plus a `protect_victim` extension (bare
-hostname/agent-name masking). Layer 1 (credentials) is **never
-bypassable**. No field is length-truncated by the output layer. The forensic
-payload fields (`full_log`, `data.url`, `data.user_agent`) also skip the path
-layer, so an attacker-supplied value keeps its complete original content:
-deep URL paths, query parameters, encoded content, filesystem paths and command
-strings. Security redaction still applies inside them: credentials, private
-IPs, domains, emails and identities are masked under the active policy,
-including the `[h:...]` marker the email mask adds. Only shortening markers are
-excluded from these fields. Policies:
-
-- `full` (default): mask emails, private IPs, all domains, paths, identities.
-- `protect_victim`: mask **only** victim-owned indicators (owned domains), keep
-  attacker IOCs/payload intact. **Requires `BLUETEAM_OWNED_DOMAINS` set**;
-  otherwise the server silently falls back to `full`.
-- `raw`: Layer-1 strip only. **Hard-gated** behind `BLUETEAM_ALLOW_FORENSIC_BYPASS`
-  AND `BLUETEAM_FORENSIC_TOKEN`.
-
-The runtime owned-domains set (used by `protect_victim`) is viewable/settable
-at runtime via `blueteam_owned_domains` / `blueteam_set_owned_domains`; the
-env var `BLUETEAM_OWNED_DOMAINS` only sets the initial value.
-
-**Forensic token rule**: the token lives in the *server's* env
-(`BLUETEAM_FORENSIC_TOKEN`); you cannot read it. To use `raw` or full unmask,
-the operator must pass it as a parameter:
-
-```json
-{"redaction_policy": "raw", "forensic_token": "<token>", "reveal_owned": true}
-```
-
-If the operator set a token but you don't know its value, the call returns
-`"raw/forensic bypass requires the operator forensic token"`. That is **correct
-behavior**; ask the operator for the token value, or have them pass it in the
-prompt. Do NOT claim the env var is broken.
-
-To partially unmask owned domains without `raw`, use `reveal_owned=true` +
-`redaction_policy="protect_victim"` (no token needed).
-
-`reveal_owned` reaches the email and domain layers only. Identity-layer values
-(identity-path usernames, `agents[]` / `top_agents[]` names, hostname-shaped
-aggregation keys) stay masked, and under `protect_victim` a tool that reads the
-Indexer masks those names the same way canonical `agent.name` is masked. To expose
-them for one call, pass `reveal_identities=true` plus `forensic_token=<token>`; the
-server must also run with `BLUETEAM_ALLOW_IDENTITY_REVEAL=true` (default false).
-Without both, the call is refused with `reveal_identities requires the operator
-forensic token`. The refusal means the gate is working.
-
-A response larger than `BLUETEAM_CHARACTER_LIMIT` (default 100,000) is paged by
-whole document: the tool returns as many complete documents as fit, plus
-`truncated: true`, `documents_omitted` and a `next_cursor` that resumes exactly
-after the last returned document. A returned document is never split and a
-forensic field inside it is never shortened. When one field alone is too large
-for any page, the response lists the document's `_id` under
-`oversized_documents`; retrieve it with
-`blueteam_wazuh_forensic_window(doc_id, field, offset, max_chars)`, which returns
-the post-redaction window plus `has_more` and `next_offset`. The approved fields
-are `full_log`, `user_agent` and `data.url`; security redaction still applies
-inside the window. `forensic_full_output=true` with `forensic_token=<token>`
-remains an optional one-shot convenience, gated behind
-`BLUETEAM_ALLOW_UNTRUNCATED=true` and audited.
-
-An over-cap aggregate (`blueteam_wazuh_alert_summarize`, `blueteam_threat_card`) is not
-paged: re-query the same `srcip` and window with `blueteam_wazuh_indexer_search`, whose
-results carry `_id`, then window any oversized field with
-`blueteam_wazuh_forensic_window`. A Markdown body that exceeds the cap is replaced by a
-complete size notice naming the recovery path for that tool; it is never sliced mid-string.
-JSON and TOON keep the `truncated: true` envelope.
-
-**One deliberate exception: `blueteam_subnet_calc`.** It returns its output unmasked, because
-Layer 3 would rewrite the network and broadcast addresses the analyst asked for (`10.0.0.0/24` →
-`10.***.***.0/24`). It reads nothing (no Indexer, Manager, filesystem or store), so it can only
-return addresses you supplied; a rejected value is never echoed back, only its position and a
-reason; and the audit log still records through the full pipeline. Do not read its unmasked output
-as a policy change for any other tool.
-
-## 4. Reading 3-Sum correlation results
-
-`three_sum_correlation` has two engines:
-
-- **Engine A**: per-IP weighted risk across MITRE categories:
-  - A = recon/resource-dev/discovery (weakest)
-  - B = initial-access/exec/priv-esc/defense-evasion/credential-access/lateral-move (mid)
-  - C = persistence/collection/C2/exfiltration/impact (strongest)
-  - An IP triggers only when **≥2 categories** AND weighted score ≥ threshold.
-- **Engine B**: volumetric Z-score across all 3 sources simultaneously
-  (default Z ≥ 2.5; the 7-day window runs at 2.0).
-
-Final severity is **volume-based**, not the per-IP score:
-`unified_score = engine_a_triggers + engine_b_anomalies + overlap_bonus` (capped 10).
-
-| unified_score | severity | action |
-|---|---|---|
-| 0 | NONE | none |
-| 1–2 | LOW | watch |
-| 3–5 | MEDIUM | investigate |
-| 6–8 | HIGH | active IR |
-| 9–10 | CRITICAL | full incident declaration |
-
-Key reads from the `stats` block:
-- `multi_category_count` = IPs in ≥2 categories (this gates triggering).
-- `intersection_count` = IPs in **all 3** (A∩B∩C): rarest, highest confidence,
-  triage immediately **regardless of score**.
-- `trigg
+`blueteam_stix_export` is the only 

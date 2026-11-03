@@ -1,6 +1,6 @@
 # skein-js
 
-[![npm](https://img.shields.io/npm/v/skein-js?logo=npm&color=cb3837&label=skein-js)](https://www.npmjs.com/package/skein-js)&nbsp;[![downloads](https://img.shields.io/npm/dm/skein-js?color=blue)](https://www.npmjs.com/package/skein-js)&nbsp;[![license](https://img.shields.io/npm/l/skein-js?color=green)](./LICENSE)&nbsp;[![CI](https://github.com/skein-js/skein-js/actions/workflows/ci.yml/badge.svg)](https://github.com/skein-js/skein-js/actions/workflows/ci.yml)&nbsp;[![docs](https://img.shields.io/badge/docs-skein--js.github.io-3b82f6)](https://skein-js.github.io/skein-js/)
+[![npm](https://img.shields.io/npm/v/skein-js?logo=npm&color=cb3837&label=skein-js)](https://www.npmjs.com/package/skein-js)&nbsp;[![downloads](https://img.shields.io/npm/dm/skein-js?color=blue)](https://www.npmjs.com/package/skein-js)&nbsp;[![license](https://img.shields.io/npm/l/skein-js?color=green)](./LICENSE)&nbsp;[![CI](https://github.com/skein-js/skein-js/actions/workflows/ci.yml/badge.svg)](https://github.com/skein-js/skein-js/actions/workflows/ci.yml)&nbsp;[![docs](https://img.shields.io/badge/docs-skein.js.org-3b82f6)](https://skein.js.org/)
 
 **Run LangGraph.js agents on your own infrastructure.**
 
@@ -102,16 +102,19 @@ path.
 The console is served by your own process at `/console`. Send a message in the playground, follow
 live runs, review pending approvals, and browse saved memory and schedules.
 
-![The skein console showing threads awaiting approval and recent activity](./docs/public/images/console/overview-light.png)
+![Testing a graph in the skein console Playground](./docs/public/images/console/playground-light.png)
 
 It is enabled during development and **off by default in production**. The
-[console guide](./docs/console.md) covers access, configuration, and the full tour.
+[console guide](./docs/console.md) walks through testing your graph and diagnosing a result.
+Use the [setup reference](./docs/console-reference.md) for authentication and mounting, then turn
+important cases into [automated project tests](./docs/testing-your-project.md).
 
 ## Documentation
 
-[Read the docs](https://skein-js.github.io/skein-js/) for the complete guides and reference.
+[Read the docs](https://skein.js.org/) for the complete guides and reference.
 
 - [Getting started](./docs/getting-started.md) — adopt Skein with a new project or an existing graph.
+- [Testing your project](./docs/testing-your-project.md) — graph assertions and a server smoke test.
 - [Features](./docs/features.md) — find a capability and its guide.
 - [Agent Protocol](./docs/agent-protocol.md) — API resources and authentication.
 - [Recipes](./docs/recipes/index.md) — practical patterns for serving and running agents.

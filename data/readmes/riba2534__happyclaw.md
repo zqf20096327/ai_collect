@@ -80,8 +80,7 @@ HappyClaw 使用统一的 `智能体 → Workspace → Runtime Session` 层级�
 智能体（身份、提示词、Skills、MCP）
 └── Workspace（项目目录、执行模式、环境变量、渠道挂载）
     ├── Workspace Memory（跨 Session 的事实、决策、经验、待跟进）
-    ├── Main Session（工作区主会话）
-    ├── Runtime Session（独立对话或渠道原生话题）
+    ├── Runtime Session（独立对话或渠道原生话题，彼此平等，没有主会话）
     └── Automation（自动化，每次运行都是某个会话里的一轮）
 ```
 
@@ -93,7 +92,7 @@ HappyClaw 使用统一的 `智能体 → Workspace → Runtime Session` 层级�
   onboarding lease，后续新 Session 或服务重启不会重复表演。清空称呼也不会重置
   onboarding。
 - **智能体** 保存长期身份和能力策略。主 HappyClaw 智能体始终存在，也可以创建代码审查、研究、运维等自定义智能体。
-- **对话式智能体构建器** 在主 HappyClaw 名下的所有 Workspace 主会话与普通 Runtime Session 中生效，允许用户多轮讨论需求、保存并预览智能体草稿，并在后续人类消息逐字回复一次性确认口令后创建或更新智能体；自动化运行与 Sub-Agent 不能代替用户发布。
+- **对话式智能体构建器** 在主 HappyClaw 名下所有 Workspace 的 Runtime Session 中生效，允许用户多轮讨论需求、保存并预览智能体草稿，并在后续人类消息逐字回复一次性确认口令后创建或更新智能体；自动化运行与 Sub-Agent 不能代替用户发布。
 - **Home Workspace** 是不可删除的系统工作区，并永久归属内置 HappyClaw。
 - **自定义 Agent** 创建后没有隐式 Workspace、Session 或 Memory；用户需要显式
   新建 Workspace 或迁移一个非 Home Workspace，避免继承 HappyClaw 上下文。
@@ -172,7 +171,7 @@ URL 与 Headers、选择作用域，并在指定智能体的最终生效能力�
 
 渠道账号的凭据和扫码会话按用户、账号隔离。绑定规则为：
 
-1. 私聊和普通群绑定到工作区内的指定 Session，也可以选择主会话。
+1. 私聊和普通群绑定到工作区内的指定 Session；IM 里 `/bind <工作区>` 会新建一个 Session 并绑定。
 2. 飞书话题群、Telegram Forum 绑定到 Workspace，每个原生话题映射独立 Session。
 3. 未绑定或已经解绑的渠道保持静默；默认工作区和历史话题记录不会恢复绑定。
 
@@ -336,6 +335,7 @@ HappyClaw 优先通过 Web 设置管理配置，不要求用户维护一组庞�
 | `STUCK_RUNNER_FORCE_RESTART_MINUTES` | `10`                              | IPC 债务强制恢复上限（整数分钟，范围 4–120；非法值回退默认）                       |
 | `ADMIN_HOST_ONLY_MODE`               | `false`                           | 管理员工作区与任务强制使用宿主机                                                   |
 | `MAX_CONCURRENT_CONTAINERS`          | `20`                              | 最大并发容器数                                                                     |
+| `CONTAINER_MEMORY_LIMIT`             | 不限制                            | 单个 Agent 容器内存上限，须带单位，如 `3g`；仅 Container 模式，见下文              |
 | `MAX_FILE_SIZE_MB`                   | `50`                              | Web 和 IM 入站文件大小上限                                                         |
 | `CORS_ALLOWED_ORIGINS`               | 仅 localhost                      | 公网部署的 WebSocket Origin 白名单                                                 |
 | `TRUST_PROXY`                        | `false`                           | 位于可信反向代理后时设为 `true`                                                    |
@@ -348,6 +348,8 @@ Provider 与渠道凭据建议只在 Web 设置中填写。它们使用 AES-256-
 
 容器代理值（包括 URL 中的用户名和密码）通过权限为 `0600` 的每容器运行时环境文件注入，不会出现在 `docker run` 参数或容器参数调试日志中。macOS 的 Docker Desktop/OrbStack 与 Windows Docker Desktop 会把代理 URL 中的 `localhost`、`127.0.0.1`、`::1` 改写为 `host.docker.internal`。Linux bridge 容器无法访问宿主机仅绑定在回环地址的代理；请将代理绑定到 Docker bridge 可达接口，并在代理变量中使用该接口的 IP 或 DNS 名称，否则容器会在启动前给出错误。
 
+`CONTAINER_MEMORY_LIMIT` 只对 Container 模式生效，Host 模式的 Runner 不受限。写法同 `docker run --memory`，必须带单位（如 `512m`、`1.5g`、`3GiB`），建议不低于 `256m`；纯数字或无法识别的值在启动时告警并按不限制处理。同一个值也设为 `--memory-swap`，容器不额外使用 swap；所有容器合计最多约 `MAX_CONCURRENT_CONTAINERS` × 该值。运行超过上限会被终止并照常重试，同一会话连续两次超限时提示用户本轮超过了内存上限，不会像未设上限时那样自动清空会话上下文。
+
 ### 运行数据
 
 所有持久化运行数据默认位于 `data/`：
@@ -358,7 +360,7 @@ data/
 ├── config/            # 加密配置、密钥与系统设置
 ├── groups/            # 工作区目录和项目文件
 ├── memory/            # 旧版文件记忆，仅供离线迁移/归档
-├── sessions/          # 主会话与 Runtime Session 的 Claude 数据
+├── sessions/          # 每个 Runtime Session 的 Claude 数据
 ├── ipc/               # Runner 输入、工具请求和回执
 ├── skills/            # 用户 Skills
 ├── builtin-skills/    # 固定版本内置 Skills 清单
@@ -556,26 +558,6 @@ Claude Code，并把实际版本写入
 <summary><strong>如何修改服务端口？</strong></summary>
 
 生产模式运行 `WEB_PORT=8080 make start`。开发模式需要同时设置后端端口和 Vite 的 API/WebSocket 代理目标。
-
-</details>
-
-<details>
-<summary><strong>如何检查旧版本遗留的私聊挂载？</strong></summary>
-
-两类旧安装可能需要此工具：一是 #666 之前的受支持版本曾把 WhatsApp `@c.us`
-及 device `@c.us` 私聊留在 workspace main；二是曾在 #659 的 WhatsApp LID 分类
-修复之前单独部署或 cherry-pick #655/schema v73 的非正式安装。升级到当前版本后运行
-`make leftover-direct-mounts`。诊断严格只读，并且只接受当前 schema；发现残留或
-存在无法自动判定的 WhatsApp alias 路由冲突时以退出码 2 返回。为保证读取完整且绝不
-创建 SQLite sidecar，诊断前也必须先干净停止 HappyClaw。
-
-修复前还必须停止 launchd/systemd 等进程守护，然后运行
-`make leftover-direct-mounts APPLY=1`。修复会把可判定私聊迁到独立
-`channel_direct` session，并永久清除受污染 workspace main 的模型恢复资格和
-SDK/runtime session；不会创建备份，也不能安全撤销。工具若无法确认数据库无人占用，
-会拒绝执行。如果同一 WhatsApp canonical 用户的多个 alias 指向不同 owner、workspace
-或 session，工具会 fail closed；请按诊断输出人工解绑冲突 alias 后重试，不会自动猜测
-应保留哪条路由。
 
 </details>
 

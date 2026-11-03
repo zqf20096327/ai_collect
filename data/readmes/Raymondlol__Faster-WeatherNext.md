@@ -42,7 +42,7 @@ Same model · same checkpoints · same results · **6.4 GiB instead of 34 GiB** 
 ## Quick start
 
 ```bash
-pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.1.1"
+pip install "faster-weathernext[cuda12,weathernext] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.2.0"
 ```
 <sub>Python 3.12. Use `[cuda13]` with a CUDA 13 driver. The `[weathernext]` extra installs the official code at the validated commit; leave it out if `weathernext` is already installed (e.g. with earth2studio). Weights (~735 MB per checkpoint) come from Google's public bucket, initial conditions from ECMWF open data (AWS, falling back to the Google Cloud and ECMWF mirrors); both are cached in `~/.cache/faster-weathernext`.</sub>
 
@@ -136,6 +136,27 @@ flowchart LR
 
 Details and measurements: [docs/how-it-works.md](docs/how-it-works.md).
 
+## Fine-tuning (experimental)
+
+The same patch makes WeatherNext 2 trainable on one GPU. The fused attention kernel has a backward pass, and the blocked graph networks recompute their blocks instead of storing them, so gradients fit where the official code needs ~100 GiB even for the 1° Mini model.
+
+| what is trained | parameters | memory (0.25°, one step, 2 ensemble members) | time per step (RTX 5090) |
+|---|---|---|---|
+| head: mesh→grid GNN + decoder | 5.6M | 14.1 GiB (within a 24 GB card's pool ¹) | 4.0 s |
+| everything | 184M | 28.6 GiB (32 GB card, `XLA_PYTHON_CLIENT_MEM_FRACTION=0.95`) | 8.5 s |
+
+<sub>¹ Measured by capping the JAX pool on an RTX 5090 at what a 24 GB card gets at `XLA_PYTHON_CLIENT_MEM_FRACTION=0.9`; no real 24 GB card tried yet.</sub>
+
+```bash
+pip install "faster-weathernext[cuda12,weathernext,train] @ git+https://github.com/Raymondlol/Faster-WeatherNext.git@v0.2.0"
+python scripts/finetune.py --train 2026101912 2026101918 2026102000 --eval 2026103012 \
+    --steps 30 --mask sea_surface_temperature --out head.npz
+```
+
+The loss is the official training loss (fair CRPS over two ensemble members); examples come from ECMWF open data. Gradients match the official implementation as closely as two official attention implementations match each other (checked end to end on an H200, where the official backward fits). The saved checkpoint loads with the official code.
+
+This is a prototype: one-step (6 h) training only, one example per step, no rollout evaluation. A fine-tuned model is a different model — the "same model" claims above cover inference with the official checkpoints, not the skill of a fine-tuned one. Details: [docs/validation.md](docs/validation.md#8-head-only-fine-tuning-prototype).
+
 ## FAQ
 
 <details>
@@ -147,7 +168,9 @@ No. Weights are the official fp32 checkpoints, attention is exact, and every lay
 <details>
 <summary><b>Why aren't results bit-identical between runs?</b></summary>
 
-XLA picks GPU kernels by timing them, so kernel choices — and the last bits of the result — vary between runs, with or without this project. Use `fwn forecast --autotune-cache kernels.txt` to save the choices on the first run and reuse them. For strict fp32, use `--precision highest --no-autotune`.
+XLA picks GPU kernels by timing them, so kernel choices — and the last bits of the result — vary between runs, with or without this project. Use `fwn forecast --autotune-cache kernels.txt` to save the choices on the first run and reuse them (`--no-autotune` also fixes them; neither is needed for fp32-level results, which `--precision highest` gives).
+
+Between machines, results can differ by more than that: the official code builds its grid↔mesh graph on the CPU with NumPy, and CPUs with and without AVX-512 get a few different edges. In one fp32 step that is up to 1.3 × 10⁻² relative RMS in the most sensitive field (median 6 × 10⁻⁴), around those edges ([details](docs/validation.md#4-other-gpus-modal-vastai)).
 </details>
 
 <details>
@@ -177,7 +200,7 @@ Yes. Install `faster-weathernext` (without the `[weathernext]` extra) into the e
 <details>
 <summary><b>Can I train or fine-tune with this?</b></summary>
 
-Not yet — the fused kernel and blocked graph networks implement the forward pass only.
+Yes, experimentally — see [Fine-tuning](#fine-tuning-experimental). The head (5.6M parameters) fits a 24 GB card's memory pool, the whole model (184M) a 32 GB card. Training from scratch is out of reach of a single GPU (the paper reports ~490 TPU-days per model).
 </details>
 
 ## Citation and licenses

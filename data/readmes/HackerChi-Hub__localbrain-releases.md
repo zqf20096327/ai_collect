@@ -16,12 +16,108 @@
 <!-- recent-features:start -->
 ## 近期新增与改进（最近 5 项）
 
-- **2.2.4** · Mac 新增 Pika H3 Flex 专用文字与单张首帧有声视频，固定六步、约5.17秒；原件和转换受管，已有文件复用，使用独立环境。
-- **2.2.4** · 内部工具包跟随宿主版本更新，任务占用时延后切换；修正旧包同版号跳过升级与非默认媒体模型被过滤的问题。
-- **2.2.3** · Mac 模型启动保留本次退出原因；Sushi 预算和上下文缓存超限显示真实数值，不再误报后端被移除，保留模型与参数。
-- **2.2.2** · Mac 运行环境的相同操作统一名称、按钮与顺序；版本和回滚目标单列，安装、卸载与缓存操作按真实状态出现。
-- **2.2.2** · Mac 独立引擎可显式检查官方更新，校验后切换并保留上一环境；相关任务运行时保护原环境，启动模型不自动升级。
+- **2.2.8** · Mac 视频统一常用分辨率预设与自定义，按模型即时显示合法尺寸和内存提示，不自动降画质。
+- **2.2.8** · Mac 同步归档安全修复，拒绝跨平台越界路径、链接与特殊文件，已有模型和环境保留。
+- **2.2.8** · Windows/Linux同步2.2.8内部工具与应用资源，源码归档同时拒绝POSIX/Windows绝对路径与目录穿越，保留既有环境。
+- **2.2.7** · Mac 发现页按原模型管理 H3 四步、八步加速及 LTX Transition、Layout；可选安装和关闭，不替换普通生成。
+- **2.2.7** · 视频统一先选模型、再选生成方式和参数；发现页、主页与对话共用目录和实际可用状态。
 <!-- recent-features:end -->
+
+## Mac 2.2.8：视频尺寸提前校验，同步归档安全修复
+
+Mac 正式包补齐后续安全修复，并公开此前候选中的分辨率设置。视频工作台先选模型，再从常用分辨率预设或自定义输入中选择画幅；立即显示该模型的合法尺寸、对齐要求、边长与面积限制。非法值保持原输入并提示可选值，用户主动选择后才更改，不自动缩图、截短或降低画质。
+
+![视频自定义尺寸即时提示，11月2日安装版验收](screenshots/2.2.8-mac/resolution-validation.png)
+
+内存提示区分引擎预算和当前可用内存。未知峰值作提示，实际执行保留原参数并受引擎预算约束；像素与帧数的相对规模不冒充精确内存预测。
+
+![LTX分辨率预设与内存提示，11月2日安装版验收](screenshots/2.2.8-mac/ltx-resolution-memory.png)
+
+安全修复在源码包解压前同时检查两套系统路径规则，拒绝绝对路径、盘符、目录穿越、符号链接、硬链接和特殊文件。合法源码正常解压，已有源码直接复用。升级保留用户模型、运行环境、正式配置和录制素材，无需清空模型后重装。
+
+11月3日新包已安装：15,653项文件、权限与链接一致，应用、更新包与可信签注验签通过，DMG校验通过；本地签名、未Apple公证。安装包实际解包实现8项回归、系统MCP文件写入与读取通过；前端主测试1668、Rust474、Python395条单元用例及两项脚本、DSH53项通过，另有明确跳过项。原生辅助功能读回2.2.8、已有模型卡和0个服务运行中；原生操作工具服务不可用，本轮未重做全部点选或生成新视频。11月2日六段视频和原生尺寸验收作为此前独立记录保留。
+
+[下载 Mac 2.2.8（Apple Silicon DMG）](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8/LocalBrain_2.2.8_aarch64.dmg) · [正式发行与更新](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.8) · [本轮验收](VERIFICATION-2.2.8-MAC.md)
+
+DMG为75,294,743字节，SHA-256：`4b66333e2778a637291e069fd2bd7cd7836b3e07f3877cf4bd3795e3ca2e2481`。Windows/Linux保留独立发布的2.2.8原包、签名及清单。以下各版说明保留当时状态，当前下载以本节和下载表为准。
+
+## Windows / Linux 2.2.8：同步最新资源，补齐跨平台解包校验
+
+Windows和Linux本批同步到2.2.8，内部工具包随宿主升级。源码归档解包同时核对POSIX与Windows路径，拒绝绝对路径、盘符、上级目录穿越和链接，已有源码与运行环境继续保留。
+
+Windows安装版核对五个适用模块从2.2.4迁移并保留回退、已有Qwen3.8 2B请求、文档读写与维护状态；Linux分别验收Debian和AppImage的资源、宿主初始化及WSL2/Xvfb启动。模型请求与文档工具是独立检查，不能当作自主完成复杂任务的成绩。
+
+H3、LTX、Pika及视频增强仍只适配Apple Silicon Mac，本批不启用Windows/Linux视频后端。近期调查的Bonsai、LFM3及低显存图片方案尚未接入，不列为已可用模型。Mac正式下载保持2.2.7，2.2.8的Mac六段视频是独立候选验收，不借用为两平台成绩。用户模型、驱动、特殊引擎和既有配置保留。
+
+[Windows](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_x64-setup.exe) · [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_amd64.AppImage) · [Verification](VERIFICATION-2.2.8-WIN-LINUX.md)
+
+## Mac 2.2.7：选好模型，再选视频功能
+
+这次把此前分散的视频增强收回同一条使用流程：在发现页准备模型及可选功能，进入对话后先选模型，再选生成方式、增强和参数，最后点“生成视频”。H3四步、八步加速放在MiniMax H3八位模型下面；Transition首尾帧过渡、Layout预演转成片放在LTX-2.5下面。普通生成继续保留，H3加速默认关闭。
+
+![发现页 H3 加速](screenshots/2.2.7-mac/discover-h3.jpg)
+
+![发现页 LTX 功能](screenshots/2.2.7-mac/discover-ltx.jpg)
+
+它们复用两个基础模型，不需要为了四个功能安装四份基模。已有完整H3八位转换文件时跳过约41.4GB原始骨干。先点“选择模型目录／使用已有文件”，连接已经准备好的目录；新用户则先看安装清单，确认实际缺少的共享文件、适配器和环境。模型、转换、缓存与成片随所选目录保存，可以直接放外置磁盘。下载安装支持暂停、断点续传和固定摘要校验，安装不会自动开始生成。
+
+使用顺序是：
+
+1. 在发现页找到MiniMax H3八位或LTX-2.5，连接已有目录，安装或启用需要的功能。
+2. 点“去使用”，进入统一视频工作台，先选择模型。H3选择普通采样、四步或八步；LTX选择普通文字、首尾帧过渡或预演转成片。
+3. Transition提供首尾两张图；Layout提供24帧/秒、与请求等长的预演视频及同构图外观图，再设置画幅、帧数和种子。
+4. 点击生成，完成后预览、定位文件或引用到对话；回执可核对真实参数、用时和日志。
+
+Layout需要先在官方模型页获得访问权限，并在本机提供Hugging Face令牌。软件不会替用户接受账号信息共享条款。导入的模型只建立引用，关闭增强保留文件；卸载仅处理本软件下载并登记的适配器，保留共享基模、环境、输入和成片。已有任务运行时，新生成会提示占用，不自动停止其他模型。没有重新下载Pika，也不会暗自缩小画面或降低解码精度。
+
+### 四项安装版小样，分别确认成功调用
+
+这一轮使用M5 Pro、64GB，从已安装的2.2.7原生界面逐项选择并生成。四项使用同一句玩具小车提示词、固定种子22704和24帧/秒。为确认调用而选择约一秒小样，耗时不能直接当成五秒720P速度；峰值为MLX活动分配，不是整机内存。
+
+|功能|真实输出|生成用时|MLX活动峰值|
+|---|---|---:|---:|
+|H3四步|256×256，22帧，约0.92秒|21.56秒|25.63 GiB|
+|H3八步|256×256，22帧，约0.92秒|25.96秒|25.63 GiB|
+|Transition|384×256，25帧，约1.04秒|27.61秒|21.81 GiB|
+|Layout|384×256，25帧，约1.04秒|33.28秒|24.57 GiB|
+
+![H3 四步实测抽帧](screenshots/2.2.7-mac/h3-4-contact.jpg)
+
+![H3 八步实测抽帧](screenshots/2.2.7-mac/h3-8-contact.jpg)
+
+H3回执分别记录四次、八次真实前向计算，208层适配匹配，视频完整32位解码。采样步数变少可以缩短计算，但不保证每种内容的细节都等同普通采样。
+
+![Transition 实测抽帧](screenshots/2.2.7-mac/transition-contact.jpg)
+
+Transition使用2.3适配器与2.5八位蒸馏基模的兼容配方，本轮576对适配层匹配；这不等同原生2.3全功能验收。
+
+![Layout 实测抽帧](screenshots/2.2.7-mac/layout-contact.jpg)
+
+Layout使用明确准备的25帧预演，原81帧素材另行保留；480对适配层匹配，两阶段完成。软件要求输入与请求等长，不自动截短或变速。四个输出均完成视频和音频解码、画幅与帧数核对；原音轨保留，但有音轨不等于声音响度、台词或音画同步已完成听感评测。高分辨率、长片与复杂构图仍需分别验证。
+
+### 下载与安装核对
+
+Mac2.2.7安装包为Apple Silicon DMG，92,790,171字节，约92.8MB。构建、镜像和安装应用共15,652项文件、权限与链接一致，应用签名、更新归档验签与镜像校验通过；本地签名，未做Apple公证。Rust474项、前端1660项通过，另有明确忽略或跳过的项目；Python49个文件通过。新机器从零下载全部大型基模、Windows/Linux视频推理不在本轮范围。
+
+[下载 Mac 2.2.7 安装包（Apple Silicon DMG）](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.7/LocalBrain_2.2.7_aarch64.dmg) · [完整下载与更新](https://github.com/HackerChi-Hub/localbrain-releases/releases/latest) · [本轮验收记录](https://github.com/HackerChi-Hub/localbrain-releases/blob/main/VERIFICATION-2.2.7-MAC.md)
+
+SHA-256：`a0eea9853c6f5c8f8ff142749257c6ae4e5b426bb1a75f0646c21a9f3523c89f`。
+
+本轮只更新Mac，Windows/Linux保持2.2.4。下文保留各版发布时的说明与旧图，历史参数、平台范围和当时的限制不作为本轮新成绩。
+
+## Windows / Linux 2.2.4：保留启动错误原因，修复内部工具升级
+
+模型启动失败时保留真正的错误原因，进程回收后仍可诊断。内部工具包跟随宿主版本升级，避免固定1.0.0让已有环境跳过工具更新；不开放自定义插件安装。
+
+Windows隔离安装验收从2.2.2应用的1.0.0模块迁移到2.2.4，保留旧模块用于回退；原生粘贴副本、维护回执、已有2B请求和真实文档读写单独核对。
+
+当前Pika H3 Flex运行时仅支持Apple Silicon/MLX；Windows/Linux明确显示不适用，不借用Mac视频成绩，也不下载Pika权重。
+
+两平台各53项DSH通过；Windows Rust454通过/37忽略，前端1650通过/2跳过、适配器14、维护队列7通过，Python46文件（44个单元文件375条用例及两个脚本）和额外安全7项通过。后台任务测试首轮固定400毫秒等待失败，已改为有界就绪轮询并在断言前清理，完整重跑通过。Linux仅Ubuntu22.04 WSL2/Xvfb资源与启动验收，不冒称裸机GPU或媒体推理通过。源码CI账户限制及本批发布状态见验收。
+
+[Verification](VERIFICATION-2.2.4-WIN-LINUX.md) · [Downloads](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.4-win-linux)
+
+以下Mac段落保留首次发布时的独立验收范围，Windows/Linux当前批次以上文为准。
 
 ## Mac 2.2.4：Pika H3 Flex 文字与首帧有声视频
 
@@ -242,7 +338,7 @@ Windows/Linux 2.1.3 已公开发布：Windows 修复版及 WSL2 Debian 已安装
 视频演示的是拍摄时的版本；安装包与当前功能以本页正式发行信息为准。视频为中文讲解。
 <!-- evergreen:demos:end -->
 
-## 最新下载：Windows 2.2.2 · Mac 2.2.4 · Linux 2.2.2
+## 最新下载：Windows 2.2.8 · Mac 2.2.8 · Linux 2.2.8
 
 以下 2.1.3 为历史工具接入验收记录。
 
@@ -268,11 +364,11 @@ Windows/Linux 2.1.2 已补齐只读资源注册修复和本版界面改进。Win
 
 | 平台 | 安装包与状态 |
 | --- | --- |
-| Apple Silicon Mac 2.2.4 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.4/LocalBrain_2.2.4_aarch64.dmg) · 已安装；统一维护、引擎升级和粘贴附件验收通过；本地签名、未 Apple 公证 |
-| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.2-win-linux/LocalBrain_2.2.2_x64-setup.exe) · 2.2.2; 已安装，本批平台验收及限制见上文|
-| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.2-win-linux/LocalBrain_2.2.2_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.2-win-linux/LocalBrain_2.2.2_amd64.AppImage) · 2.2.2; 已安装，本批平台验收及限制见上文|
+| Apple Silicon Mac 2.2.8 | [DMG](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8/LocalBrain_2.2.8_aarch64.dmg) · 已安装；归档安全与真实文件工具调用通过；本地签名、未 Apple 公证 |
+| Windows x64 | [安装程序](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_x64-setup.exe) · 2.2.8; 已安装，本批平台验收及限制见上文|
+| Linux x64 | [Debian](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_amd64.deb) · [AppImage](https://github.com/HackerChi-Hub/localbrain-releases/releases/download/v2.2.8-win-linux/LocalBrain_2.2.8_amd64.AppImage) · 2.2.8; 已安装，本批平台验收及限制见上文|
 
-[Mac 2.2.3 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.3) · [Mac 校验值](SHA256SUMS-2.2.3-MAC.txt) · [Windows/Linux 2.2.1 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.1)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.2.1_amd64.deb`。旧发行保留。
+[Mac 2.2.8 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.8) · [Mac 校验值](SHA256SUMS-2.2.8-MAC.txt) · [Windows/Linux 2.2.8 发行说明](https://github.com/HackerChi-Hub/localbrain-releases/releases/tag/v2.2.8-win-linux)。Mac 拖入应用程序；Debian/Ubuntu 执行 `sudo apt install ./LocalBrain_2.2.8_amd64.deb`。旧发行保留。
 
 以下Windows 2.0.1及更早段落保留其发布时的历史状态；当前平台版本以上方下载表为准。
 
@@ -349,10 +445,10 @@ Mac支持已集成MLX、Metal llama.cpp、Splash与Prism；Windows使用适配ll
 
 | 文件 | 散列 |
 | --- | --- |
-| Mac DMG | `63f040f7ea65df5afe4a28b8e7d9b64c4686db0ed2772ee81b6b70dd3a8495a0` |
-| Windows安装程序 | `4e0f83afe07278f7c7d4d18c308acb858bc5c78c01bce2164dae5708591c62b2` |
-| Linux AppImage | `79444db1a25d39e679e2813616fa2a5fd05cfcf58c7f47fa0a48431b8c94db1b` |
-| Linux Debian包 | `a2b0fceabcdad6488ccc2377041e8945a77e226776c0f8d817d8f6d6eea5370d` |
+| Mac DMG | `4b66333e2778a637291e069fd2bd7cd7836b3e07f3877cf4bd3795e3ca2e2481` |
+| Windows安装程序 | `f41ff80df1bf92dbb1228602b597b13c64a1348fbb5d63401df9c6cd9d1fba59` |
+| Linux AppImage | `b2954b1c95c7285530b6ff6da0e2cf02ec65ec512aa0a89df5a4516fa1a8a6d0` |
+| Linux Debian包 | `4090c82ca7c75e41780163a17d46a9b829db502c032942657ea9de41c533ff37` |
 
 本仓提供安装包与说明，不是开发源码目录。专有软件，© HyphenTech · 黑粉科技。
 

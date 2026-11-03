@@ -161,8 +161,8 @@ Catalog entries come in two tiers:
 <a href="agent-importers/"><img src="assets/agent-importers.jpg" alt="Agent Importers plugin"></a>
 <h3><a href="agent-importers/">Agent Importers</a></h3>
 <code>hermes plugins install agent-importers</code>
-<p><code>hermes import-agent</code> brings an OpenClaw, Claude Code, Codex CLI or Cursor setup into Hermes in one command: instructions, Cursor rules and memories become memory entries, Bash permission rules become allow/deny lists, MCP servers land in <code>config.yaml</code> and skills are copied. Always previews first and never imports API keys (OpenClaw's allowlisted secrets only with <code>--migrate-secrets</code>); <code>--sync</code> re-imports sources that changed. The old <code>hermes claw migrate</code> / <code>hermes claw cleanup</code> spelling and the openclaw-migration skill come along. Formerly built into Hermes core.</p>
-<p>CLI command · <code>hermes import-agent [openclaw|claude-code|codex|cursor]</code></p>
+<p><code>hermes import-agent</code> brings an OpenClaw, Claude Code, Codex CLI, Cursor, Grok Bot or OpenBot setup into Hermes in one command (Grok Bot and OpenBot routines become Hermes cron jobs): instructions, Cursor rules and memories become memory entries, Bash permission rules become allow/deny lists, MCP servers land in <code>config.yaml</code> and skills are copied. Always previews first and never imports API keys (OpenClaw's allowlisted secrets only with <code>--migrate-secrets</code>); <code>--sync</code> re-imports sources that changed. The old <code>hermes claw migrate</code> / <code>hermes claw cleanup</code> spelling and the openclaw-migration skill come along. Formerly built into Hermes core.</p>
+<p>CLI command · <code>hermes import-agent [openclaw|claude-code|codex|cursor|grok-bot|openbot]</code></p>
 </td>
 <td width="50%" valign="top">
 <a href="mcp-serve/"><img src="assets/mcp-serve.jpg" alt="MCP Serve plugin"></a>
@@ -177,7 +177,7 @@ Catalog entries come in two tiers:
 <a href="bubblewrap/"><img src="assets/bubblewrap.jpg" alt="Bubblewrap plugin"></a>
 <h3><a href="bubblewrap/">Bubblewrap</a></h3>
 <code>hermes plugins install bubblewrap</code>
-<p>A terminal backend that runs every <code>terminal</code> and <code>execute_code</code> command in its own bwrap sandbox on this machine, at the same paths: read-only root, writable working directory, SSH keys, cloud credentials and the Hermes home hidden, private <code>/tmp</code> and <code>/proc</code>, agent sockets masked, memory, CPU and process limits. No image, no daemon. The file tools (<code>read_file</code>, <code>write_file</code>, <code>patch</code>, <code>search_files</code>) run on the host, outside the sandbox.</p>
+<p>A terminal backend that runs every <code>terminal</code> and <code>execute_code</code> command in its own bwrap sandbox on this machine, at the same paths: read-only root, writable working directory, SSH keys, cloud credentials and the Hermes home hidden, private <code>/tmp</code> and <code>/proc</code>, agent sockets masked, memory, CPU and process limits. No image, no daemon. The file tools (<code>read_file</code>, <code>write_file</code>, <code>patch</code>, <code>search_files</code>) run in the sandbox too.</p>
 <p>Terminal backend <code>terminal.backend: bubblewrap</code> · Linux</p>
 </td>
 <td width="50%" valign="top">

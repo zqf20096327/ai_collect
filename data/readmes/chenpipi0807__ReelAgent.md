@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/36b49224-227f-4453-bbc8-a0ef5994a612
 - **智能摄取**：解析剧本 → 分集 + 角色注册表 + 场景表
 - **角色/场景生图**：多风格底图 + 服装变体 + 场景图
 - **逐镜分镜**：每集 shot 级视频 prompt，一次请求闭环
-- **AI 视频生成**：Seedance 2.0 图生视频
+- **AI 视频生成**：Seedance 2.0 系列图生视频，可选新增 Seedance 2.5
 - **BGM 生成**：MiniMax 音乐按情绪分组
 - **ffmpeg 拼装**：视频 + BGM 混音输出 mp4
 - **AI 审核**：成片自动挑硬伤，支持 shot 级重生修复
@@ -176,7 +176,7 @@ python pipeline.py --scene <任务ID> [选项]
 | `--style` | | styleconfig 默认 | 画风名，如 `韩漫` `赛博朋克` `吉卜力` |
 | `--stages` | | `1,2,3,4,5,6` | 阶段，逗号分隔。7=AI 审核 |
 | `--llm-provider` | | `.env` | `claude` / `deepseek` / `kimi` / `agnes` |
-| `--image-provider` | | `.env` | `gemini` / `gpt-image-2` |
+| `--image-provider` | | `.env` | `gemini` / `openai` / `seedream`（兼容 `gpt-image-2`） |
 | `--image-model` | | styleconfig | 覆盖生图模型 |
 | `--video-model` | | styleconfig | 覆盖视频模型 |
 | `--workers` | | `200` | 生图/视频并发上限 |
@@ -204,7 +204,7 @@ reel
 | `--script` | | — | 剧本文件 |
 | `--style` | | `韩漫` / 偏好记忆 | 画风名 |
 | `--llm-provider` | | `.env` | `claude` / `deepseek` / `kimi` / `agnes` |
-| `--image-provider` | | `.env` | `gemini` / `gpt-image-2` |
+| `--image-provider` | | `.env` | `gemini` / `openai` / `seedream`（兼容 `gpt-image-2`） |
 | `--stages` | | `1,2,3,4,5,6` | 阶段范围 |
 | `--workers` | | `50` / 偏好记忆 | 并发数 |
 | `--force` | | 关 | 强制重做所选阶段 |
@@ -302,12 +302,34 @@ python agent.py --task my --script story.docx --llm-provider agnes
 | | **DeepSeek** V4 | 纯文本高性价比，需 AGNES 识图桥 |
 | | **Kimi** K2.6 | 原生多模态，OpenAI 兼容 |
 | | **AGNES** 2.0 Flash | 内置免费 key，零配置启动 |
-| 生图 | **Gemini** 3.1 Flash | Google 官方 |
-| | **GPT-image-2** | OpenAI 生图/编辑 |
-| 视频 | **Seedance** 2.0 | 火山引擎 Ark |
+| 生图 | **Gemini** Nano Banana 2.1 / 2 Lite / Pro / 2 | Google 官方，最多 14 张参考图 |
+| | **GPT Image 2.5** Sunburst / Flare | OpenAI 生图/编辑，最多 16 张参考图；保留 2 / 1.5 |
+| | **Seedream 5.0** Pro / Flash | 火山引擎 Ark，最多 10 张参考图 |
+| 视频 | **Seedance** 2.5 / 2.0 / 2.0 Mini / 2.0 Fast | 火山引擎 Ark，按模型选择参考图与时长上限 |
 | BGM | **MiniMax** Music 2.6 | 按情绪分组生成 |
 
 `*_BASE_URL` / `*_MODEL` 均可从 `.env` 覆盖，支持三方代理。
+
+### 图片与视频模型（2026-11-02 核对）
+
+新模型为新增选项，不替换旧模型或默认配置。新建任务和任务详情中的模型设置均可选择图片/视频模型；任务选择保存到 `control.json`，重新打开或继续生成时沿用。设置页管理全局模型与 API Key。旧任务不会因为升级代码自动切换模型。
+
+| 模型 ID | 参考图上限 | 输出能力 |
+|---|---:|---|
+| `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare` | 16 | 自定义尺寸至 4K；`auto/low/medium/high/xhigh/max` 质量 |
+| `gemini-nano-banana-2.1` / `gemini-3-pro-image` | 14 | 1K / 2K / 4K |
+| `gemini-3.1-flash-lite-image` | 14 | 仅 1K；多图和连续编辑建议选 2.1 / Pro |
+| `doubao-seedream-5-0-pro-260628` / `doubao-seedream-5-0-flash-260915` | 10 | 1K / 1.5K / 2K |
+| `doubao-seedance-2-5-260628` | 30 | 4–30 秒或自动；480p / 720p / 1080p |
+| Seedance 2.0 系列 | 9 | 4–15 秒或自动；分辨率按具体版本校验 |
+
+GPT Image 2.5 的参考图上限仍为 16 张，不应按版本号推断容量。OpenAI 编辑会按顺序发送全部参考图；各客户端在请求前拒绝超限输入，不静默截断。图片原始产物保留生成分辨率，Seedance 提交时另行压缩参考图副本，不改写原图。
+
+系统提示词按当前模型和任务时长注入镜头预算、参考图预算；参考图绑定顺序保持一致。Seedance 2.5 的接入覆盖现有图片参考视频流程，音视频参考、视频编辑/延长与 MOV 输出未在本次新增。Seedream 接入单图生成/多图参考编辑，未开放图层拆分；其宽高比按官网档位模式写入提示词，由模型确定最终像素。
+
+使用 OpenAI 时配置 `OPENAI_API_KEY` 与 `GPT_IMAGE_MODEL`，提供商选择 `openai`（旧 `gpt-image-2` 名称兼容）；使用 Seedream 时配置 `SEEDREAM_API_KEY` / `SEEDREAM_MODEL`。Seedance 使用 `SEEDANCE_API_KEY`。各账户仍需具备所选模型的访问权限。自定义代理模型 ID 不代表已验证能力；需要按供应商实际契约配置。
+
+官方依据：[OpenAI 图片接口](https://developers.openai.com/api/reference/resources/images/methods/edit)、[图片提示词与参数](https://developers.openai.com/api/docs/guides/image-prompting)、[Gemini 图片生成](https://ai.google.dev/gemini-api/docs/image-generation)、[Seedream 5.0](https://docs.volcengine.com/docs/ark/seedream-5-0-pro)、[Seedance API](https://docs.volcengine.com/docs/ark/create-video-generation-task-api)、[Seedance 2.5 提示词](https://docs.volcengine.com/docs/ark/seedance-2-5-prompt-guide)。
 
 ---
 

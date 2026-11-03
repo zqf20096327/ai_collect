@@ -61,7 +61,16 @@ export TMUX_TMPDIR="/tmp/tmux-$(id -u)/${PWD##*/}"
 python3 -m coordination.launcher --engine-command 'codex'
 ```
 
-No Python package install is required. The launcher prints the actual session
+No Python package install is required for the runtime itself, but one small
+third-party package must already be importable by the interpreter that runs the
+launcher: `wcwidth`. It renders the terminal dashboard, and planting refuses to
+start panes that would die at import. Install it once if the check below fails:
+
+```bash
+python3 -c "import wcwidth" || python3 -m pip install "wcwidth>=0.9,<1"
+```
+
+The launcher prints the actual session
 and service result. Fresh defaults are site `.mishe-seed/` and tmux session
 `mishe-seed`; existing plants can have different names. Attach to the **reported**
 session from the same terminal, retaining that socket setting—for the fresh default:
@@ -85,7 +94,9 @@ the worktree containing local state. A **mind** is a resident agent process.
 Each resident's tmux window has **checks above and the agent below**. The upper
 pane shows observations and the resident's current wall; the lower pane shows
 its work. A moving timestamp proves the display is alive, not that the work is
-correct.
+correct. The `idle <N>s` figure in the upper pane is **plant-wide** — the time
+since any resident last acted — and the same number appears on every pane, so
+read it as *the plant is busy*, not as that mind's own idleness.
 
 The residents share:
 
@@ -144,6 +155,16 @@ idle rotation. On the next wake, check that the fresh context can continue from
 its wall. [The first-task walkthrough](docs/getting-started.md#4-give-it-one-real-bounded-task)
 has the commands and acceptance checks.
 
+To investigate host capacity, `mishe discover show` presents the last scan and
+its timestamp. Where available, the plant and lifeline slice throttle readings
+show the share of scheduler periods throttled by each slice's CPU quota; this
+is not the fraction of CPU time lost. Compare them with host CPU and memory
+pressure and, when the producer includes it, `sense.proc.unit-psi` for sampled
+per-cgroup memory pressure. These have different scopes and do not prove a cause
+on their own. Missing, stale or UNKNOWN readings are not evidence of calm.
+Prefer the existing scan: repeated sampling costs resources and can make the
+throttle baseline too recent to interpret.
+
 A launcher exit, an agent saying “done,” or a settled wake is not proof of a
 useful result. Missing CI access must stay `UNKNOWN`; a live renderer must not
 turn a stale reading green. A repair needs a causal explanation, a checked live
@@ -189,13 +210,17 @@ the same.
 | Change a resident's model | [Changing mind models](docs/model-changes.md) |
 | Set up the optional analysis advisor | [Observable analysis advice](docs/analysis-advisor.md) |
 | Use an external judge provider | [Completion judge adapter](docs/completions-judge.md) |
+| Preflight a draft before publishing it | [Publication checks](docs/publication-checks.md) |
+| Know what the research-methods resident is for | [Research methods resident](docs/research-methods.md) |
+| Read what Mishe thinks a sense is | [New senses](docs/new-senses.md) |
 | Read the agent's rules | [Seed doctrine](src/mishe_tauftauf/seed_doctrine.md) |
 
 For development: `src/mishe_tauftauf/` contains the runtime and CLI;
 `coordination/` contains checkout-only planting and linked-release commands;
 `tests/` contains behavioral checks. Instructions and workflows live in
-`instructions/`, `skills/`, and `.agents/skills/`. With a local test environment,
-run `PYTHONPATH=src .venv/bin/pytest -q`; tests complement, not replace, observing
-the changed path in use.
+`instructions/`, `skills/`, and `.agents/skills/`. Run the checks with
+`env PYTHONPATH=src python3 -m pytest -q`; they need `pytest` on the
+interpreter, and they complement, not replace, observing the changed path in
+use.
 
 **[CC0 1.0](LICENSE)** — take it, fork it, grow your own. Keep the checks honest.

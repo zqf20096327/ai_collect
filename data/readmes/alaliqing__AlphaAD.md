@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--01-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1417-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--02-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1418-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1417 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 222 | 2026-10-29 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 108 | 2026-10-26 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 99 | 2026-10-28 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 57 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 221 | 2026-10-30 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 109 | 2026-10-29 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 99 | 2026-10-30 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 56 | 2026-10-26 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 159 | 2026-10-27 | [View papers](#category-end-to-end-vla) |
+| End-to-End & VLA | 160 | 2026-10-29 | [View papers](#category-end-to-end-vla) |
 | Safety, Security & Verification | 220 | 2026-10-29 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 159 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
+| Systems, Deployment & Connectivity | 158 | 2026-10-27 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 28 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 311 | 2026-10-29 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 313 | 2026-10-30 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,14 +45,14 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 192 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 104 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 97 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 193 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 140 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 139 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
@@ -63,7 +63,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 222 papers
+## Perception & Sensor Fusion · 221 papers
+
+<a id="paper-2610-41834"></a>
+
+### ObjectGuidedMap: An Object-Aware Model for Robust Bird's Eye View Map Prediction in High-Occlusion Scenarios ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Christian Bohn, Harsh Yadav, Klaus Friedrichs, Hasan Tercan, Tobias Meisen<br>
+**Published:** 2026-10-30<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2610.41834) | [PDF](https://arxiv.org/pdf/2610.41834.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Accurate BEV map prediction is a critical component of autonomous driving systems, enabling downstream planning and control. Recent approaches such as Mask2Map achieve strong performance by...
 
 <a id="paper-2610-39848"></a>
 
@@ -455,7 +465,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-04187"></a>
 
-### Autoware in Construction: Gap Analysis and LiDAR Perception Toward Off-Road Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### Autoware in Construction: Gap Analysis and LiDAR Perception Toward Off-Road Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Yu Otsuki, Teja Emmey, Sena Matsushita, Akiro Harada, Takeshi Miura<br>
 **Published:** 2026-10-02<br>
@@ -1119,7 +1129,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-02449"></a>
 
-### MoRAL: Sensor-Grounded BEV Reasoning for Compact VLMs toward Edge-Oriented Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### MoRAL: Sensor-Grounded BEV Reasoning for Compact VLMs toward Edge-Oriented Autonomous Driving
 
 **Authors:** Ambarish Govindarajulu Kaliamurthi, Kaikai Liu<br>
 **Published:** 2026-08-03<br>
@@ -1658,13 +1668,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 ### A Vendor-Agnostic LiDAR Data Conversion System with Multi-Signal Detection and Multi-Format Output
 
 **Authors:** Param Patel, Jay Dave, Pratyush Chakraborty<br>
-**Published:** 2026-06-22<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.22881) | [PDF](https://arxiv.org/pdf/2606.22881.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** LiDAR (Light Detection and Ranging) sensors capture the surrounding environment as dense 3D point clouds by measuring the time-of-flight of emitted laser pulses, making them foundational across...
-
-<a id="paper-2606-20189"></a>
-
-### HilDA: Hierarchical Distillation with Diffusion for Advancing Self-Supervised LiDAR Pre-training
-
-**Authors:** Maciej Wozniak, Jesper Ericsson, Hariprasath Govindarajan, Truls Nyberg, Thomas Gustafsson, et al.<b
+**Published:** 2026-06

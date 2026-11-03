@@ -27,6 +27,19 @@ Grade an agent's answer against what its tools actually returned.
 
 <br>
 
+attest is an open-source Python library and CLI for **AI agent evaluation**. It checks a
+tool-using agent's run against the evidence it recorded: every claim in the answer against the
+tool outputs, every tool call against the allowed tools and its errors, the content the agent
+read for prompt injection, and the agent's behaviour against its system prompt. Each finding
+maps to a pass, review or block verdict, and every command prints JSON.
+
+Full documentation: **[peace-orefejo.github.io/attest](https://peace-orefejo.github.io/attest/)**,
+including [how to evaluate AI agents](https://peace-orefejo.github.io/attest/guides/evaluate-ai-agents/)
+and a [comparison with other agent evaluation tools](https://peace-orefejo.github.io/attest/compare/)
+such as DeepEval, Ragas, LangSmith and Arize Phoenix.
+
+<br>
+
 ## Quick start
 
 attest grades a **run**: a JSON record of one task, with the question, each tool call and what
@@ -64,6 +77,11 @@ judge's false-positive rate by up to 90%
 attest checks each claim against the real tool outputs instead. Its grading model sees only the
 claim and the evidence, never the agent's reasoning.
 
+attest is an evaluation toolkit, not a guarantee: it trusts that the recorded run is authentic
+and complete, and its accuracy hasn't been measured on a labelled benchmark yet. See
+[Limitations](https://peace-orefejo.github.io/attest/limitations/). The benchmark that will
+measure it, per check, is being built in [`benchmarks/`](benchmarks/).
+
 <br>
 
 ## What it checks
@@ -100,11 +118,12 @@ from attest import Attest
 grader = Attest()                      # or Attest(provider="openai" | "gemini")
 report = grader.evaluate(run)
 
-print(report.passed, report.overall_score)
+print(report.verdict)                 # pass, review or block
 ```
 
 In Python a run is a `Trajectory`. [`examples/quickstart.py`](examples/quickstart.py) builds
-one by hand, and `from_langgraph_messages` converts a LangGraph run.
+one by hand, and `from_langgraph_messages` and
+`from_haystack_messages` convert LangGraph and Haystack runs.
 
 **Code review**
 
@@ -142,4 +161,4 @@ Tests run offline with no API key. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Copyright © 2026 Adepeju Orefejo. Licensed under the [GNU AGPL v3.0](LICENSE): you can use,
 modify and share attest, but any version you distribute or run as a network service must be
-released under the same license, with its source. Versions 0.7.0 and earlier were MIT.
+released under the same license, with its source. Versions 0.6.0 and earlier were MIT.

@@ -648,7 +648,5 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Truncate or Not? A Scaling Study of Looped Transformers with Truncated Backpropagation](https://arxiv.org/abs/2610.26030)
 - [Training Foundation Models with a Single Algorithm](https://arxiv.org/abs/2610.40564)
 - [Your Policy Is Secretly a Harness: The Decision Geometry of Agent Interfaces](https://arxiv.org/abs/2610.37255)
-
-#### Topic - Audio Reasoning
-
-- [Reinforcement Learning with Evolving Rubrics as Rewards for Audio Reasoning](https://arxiv.or
+- [Harness-Model Collaboration for Long-Horizon Continual Learning](https://arxiv.org/abs/2610.34724)
+- [SciGame: Let Agents Pl

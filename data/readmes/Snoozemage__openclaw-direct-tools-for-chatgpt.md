@@ -14,9 +14,9 @@
 
 **Platform status:** Windows is the currently tested setup. Linux and macOS support has not yet been validated. Contributions and testing reports for additional platforms are welcome. See [Contributing](CONTRIBUTING.md).
 
-Use ChatGPT to work on a local codebase: search files, inspect implementations, edit code, run commands and tests, and review diffs. The bridge also exposes browser, desktop, and other eligible OpenClaw tools through direct wrappers and dynamic tool discovery.
+Use ChatGPT to work with your local environment: search files, understand and edit code, run commands and tests, automate Chrome, and interact with your Windows desktop. The bridge exposes these capabilities as MCP tools and can also discover other eligible tools in your current OpenClaw runtime.
 
-Unlike a fixed list of bridge-specific tools, the bridge can discover eligible tools in your current OpenClaw runtime, inspect their actual schemas, and dispatch them through the Gateway. OpenClaw permissions, approvals, and policies remain authoritative.
+Rather than routing every operation through the OpenClaw Main Agent, ChatGPT can call the bridge's tools directly. Native actions are forwarded through supported OpenClaw interfaces, so OpenClaw permissions, approvals, and policies remain authoritative.
 
 <p><img src="https://raw.githubusercontent.com/Snoozemage/openclaw-direct-tools-for-chatgpt/main/docs/images/browser_use.gif" alt="Browser automation demo" width="100%"></p>
 
@@ -24,18 +24,18 @@ Unlike a fixed list of bridge-specific tools, the bridge can discover eligible t
 
 ## Capabilities
 
-| Area | Public tools | What they provide |
+| Capability | Public tools | What ChatGPT can do |
 |---|---|---|
-| Session setup | `start_here` | Must be called once before other bridge tools in each ChatGPT conversation; loads tool-routing and safety instructions. |
-| Browser automation | `openclaw_browser` | Chrome status and lifecycle, tabs, navigation, snapshots, screenshots, page interaction, text, console/network diagnostics, downloads, uploads, dialogs, PDF, and supported emulation. |
-| Desktop automation | `openclaw_computer` | Windows screen snapshots, mouse and keyboard input, window/app operations, accessibility queries, and bounded action batches. |
-| File operations | `openclaw_ls`, `openclaw_read`, `openclaw_edit`, `openclaw_write`, `openclaw_apply_patch` | List, read, edit, create/replace, and patch files through OpenClaw's native file tools. Listing and reading support batches. |
-| Local project search | `openclaw_glob`, `openclaw_grep` | Discover paths and search file contents using Node.js glob and ripgrep, without a shell for the search itself. |
+| Conversation setup | `start_here` | Load tool-routing and safety instructions once at the start of a ChatGPT conversation. |
+| Browser automation | `openclaw_browser` | Work with Chrome tabs and pages, take screenshots, interact with page elements, manage downloads/uploads and inspect browser diagnostics. |
+| Desktop automation | `openclaw_computer` | Inspect the Windows screen, use the mouse and keyboard, operate windows/apps, and run bounded action batches. |
+| File operations | `openclaw_ls`, `openclaw_read`, `openclaw_edit`, `openclaw_write`, `openclaw_apply_patch` | List, read, edit, create/replace, and patch local files through OpenClaw's native file tools. Listing and reading support batches. |
+| Local project search | `openclaw_glob`, `openclaw_grep` | Find project paths and search file contents without using a shell for the search itself. |
 | Runtime operations | `openclaw_exec`, `openclaw_process` | Run commands and inspect or control processes started through the runtime wrapper. |
-| Screenshot presentation | `openclaw_image_render` | Display a recent desktop screenshot in the ChatGPT UI using a short-lived reference. |
-| Native tool discovery | `openclaw_tool_search`, `openclaw_tool_describe`, `openclaw_dispatch_action` | Find eligible tools in the current OpenClaw runtime, inspect their actual schemas, and invoke tools that do not already have a direct bridge wrapper. |
+| Screenshot presentation | `openclaw_image_render` | Display a recent desktop screenshot directly in the ChatGPT conversation using a short-lived reference. |
+| Dynamic tool discovery | `openclaw_tool_search`, `openclaw_tool_describe`, `openclaw_dispatch_action` | Find other eligible tools in the current OpenClaw runtime, inspect their actual schemas, and invoke them when no dedicated bridge wrapper exists. |
 
-This catalog describes the bridge's public interface, not a guarantee that every native OpenClaw capability is available in every installation. Runtime version, installed plugins, node hardware, pairing approvals, Gateway policy, and operating-system permissions all affect availability.
+This is the bridge's public interface, not a promise that every native OpenClaw capability is available in every installation. Availability depends on the runtime version, installed plugins, node hardware, pairing approvals, Gateway policy, and operating-system permissions.
 
 ## Quick Start
 
@@ -109,7 +109,7 @@ For implementation guidance, see [Tool Exposure Guide](docs/TOOL_EXPOSURE_GUIDE.
 
 1. Open [OpenAI Platform Tunnels settings](https://platform.openai.com/settings/organization/tunnels) and create a Secure MCP Tunnel. Note its `tunnel_id` and associate the tunnel with the ChatGPT workspace where the connector will be created. A tunnel attached only to a Platform organization may not appear in a separate ChatGPT workspace.
 2. Create or select an **OpenAI Platform API key** for the tunnel client. This key authenticates `tunnel-client` to OpenAI's tunnel control plane; it is required even though the MCP bridge itself runs locally. Grant it **Tunnels Read + Use** so it can run the tunnel and select it for the ChatGPT connection. Creating or editing the tunnel requires **Tunnels Read + Manage** for the account performing that operation.
-3. The API key for `tunnel-client` is separate from your ChatGPT sign-in and from the authentication setting on the ChatGPT custom MCP plugin. The setup wizard prompts for the key using hidden input and stores it in a user-restricted local file. Do not paste it into ChatGPT, put it in the repository, or commit it to Git.
+3. The API key for `tunnel-client` is separate from your ChatGPT sign-in and from the authentication setting on the ChatGPT custom MCP plugin. The setup wizard prompts for the key using hidden input and stores it in **Windows Credential Manager**. It is not saved as a plaintext key file. Do not paste it into ChatGPT, put it in the repository, or commit it to Git.
 
 See the official [Secure MCP Tunnel guide](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels) for organization/workspace associations and permissions.
 
@@ -141,9 +141,17 @@ npm run status
 npm stop
 ```
 
-The Windows scripts manage the bridge, tunnel client, and Gateway startup as configured. The stop script only stops a Gateway process when the project launcher started it and the recorded PID still matches the expected command; it leaves a pre-existing Gateway process running.
+`npm start` starts the Gateway, MCP bridge, Secure MCP Tunnel, and tray. `npm run status` reports component health; `npm stop` stops the complete stack. The bridge normally listens on `http://127.0.0.1:19002`, with the local Monitor at `http://127.0.0.1:19002/monitor`; the Gateway defaults to port `19001`. Configured ports may differ.
 
-The bridge normally listens on `http://127.0.0.1:19002` and the Gateway on port `19001`; configured values may differ. Open the local call monitor at `http://127.0.0.1:19002/monitor`. Keep the tunnel client running while ChatGPT discovers or calls tools; use `npm run status` to inspect the local stack.
+**Automatic startup is opt-in:** Run `npm run autostart:install` to add one **OpenClaw Direct Tools** entry to Windows Startup apps. Enable or disable it in **Task Manager → Startup apps**. Run `npm run autostart:uninstall` to remove it; add `-- -StopService` to stop the running stack as part of uninstall.
+
+### Windows lifecycle
+
+A per-user `service-supervisor.ps1` manages the Gateway, bridge, tunnel, and tray in the interactive Windows session; it is not a system-wide Windows Service. `service-start.ps1` enforces a single supervisor instance, while `service-stop.ps1` requests coordinated shutdown through `stop.ps1`. The supervisor runs `gateway-task.ps1` for Gateway recovery and invokes `start.ps1` to wait for RPC readiness before reconciling the bridge and tunnel. `bridge-supervisor.ps1` independently restarts the bridge process.
+
+The tray companion reports Gateway, bridge, and tunnel health (green when ready, yellow during startup or partial availability, red when offline or misconfigured). Its menu can open the Monitor, restart the bridge, stop the full stack, or exit only the tray. Status refreshes every 3.5 seconds. See the OpenClaw [Gateway health checks](https://docs.openclaw.ai/gateway/health) for the endpoint contracts.
+
+The autostart installer creates one Startup-folder shortcut named **OpenClaw Direct Tools**, using the purple potion icon and a native launcher that starts PowerShell without a console window. The repository includes the prebuilt executable; the installer rebuilds it from `startup-launcher.cs` when a .NET Framework C# compiler is available and otherwise uses the bundled copy. It also removes legacy Registry Run and Scheduled Task entries. The separate OpenClaw Node task/runtime is not modified.
 
 ### Add the bridge in ChatGPT
 
@@ -153,8 +161,6 @@ The bridge normally listens on `http://127.0.0.1:19002` and the Gateway on port 
 4. Review the discovered tool list and metadata. Install the resulting plugin, start a new conversation, type `@`, select the plugin, and test a low-risk operation.
 
 Adding the plugin is separate from running the local bridge and tunnel client. If the tunnel is not listed, verify that it is associated with the target ChatGPT workspace and that your Platform account has Tunnels Read + Use. The project maintainer has successfully connected this bridge using ChatGPT Free. See the [ChatGPT custom MCP server guide](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) for details.
-
-For Windows sign-in startup, `scripts/windows/start-on-logon.ps1` is the scheduled-task entry point. `scripts/windows/bridge-supervisor.ps1` supervises bridge restarts. `scripts/windows/start-monitor.ps1` is retained as a compatibility alias for the combined launcher.
 
 ## Tool behavior and boundaries
 
@@ -242,6 +248,7 @@ openclaw-direct-tools-for-chatgpt/
 │   ├── tools/               # Browser, Computer, Files, Runtime, and discovery
 │   ├── openclaw-client.mjs
 │   └── server.mjs
+├── assets/                  # Branded Windows Startup launcher and icon
 ├── scripts/windows/         # Setup and lifecycle scripts
 ├── tests/                   # Unit and integration tests
 ├── docs/                    # Technical guides and screenshots
@@ -293,13 +300,7 @@ These projects overlap with this bridge's ecosystem, but they are not dependenci
 
 ## About Me
 
-I'm currently looking for opportunities in IT and trying to turn what I've learned into real-world experience.
-
-My main interests are Backend Development, Data Analysis, and Machine Learning. I've also had some experience in an AI lab, and I enjoy learning new things by building projects like this one.
-
-Like many people looking for work today, I'm navigating a challenging job market. I'm open to different kinds of IT roles, including areas I haven't worked in before. I may not know everything yet, but I'm willing to learn, put in the effort, and take on new challenges.
-
-If you know of any job opportunities, have advice to share, or think I could contribute to your team, feel free to reach out. I'd genuinely appreciate it.
+I'm curious about how things work under the hood. I tend to follow a bug, an API call, or an unfamiliar tool further than I initially planned - reading the source, tracing how the pieces connect, and experimenting until the behavior makes sense. My interests sit around Backend Development, Data Analysis, and Machine Learning; I've also had some experience in an AI lab. I usually learn best by building, which is how side experiments like this project happen.
 
 - **Email:** [via.haidang@gmail.com](mailto:via.haidang@gmail.com)
 - **LinkedIn:** [linkedin.com/in/haidang-nguyen-cs](https://www.linkedin.com/in/haidang-nguyen-cs/)

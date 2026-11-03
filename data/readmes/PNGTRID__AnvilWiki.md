@@ -48,6 +48,7 @@
 | 看看做出来长什么样 | 🎮 [在线 Demo](https://anvil.wiki/demo/)——虚构游戏「Anvil Quest」的完整 wiki |
 | 对比 Fandom / Wiki.js / 其他方案 | ⚖️ [完整对比页](https://anvil.wiki/zh/landing/comparison)——三种物种、Fandom 用户搬家指南、自托管引擎数据表、什么时候不该选 AnvilWiki |
 | 看「游戏 wiki 页面模板」长什么样 | 🧩 [模板展示页](https://anvil.wiki/zh/landing/templates)——Boss 攻略/兑换码/强度榜/物品页/文档中心,每型挂 demo 真实页面 |
+| 学「怎么做出各种内容站」 | 🎓 [建站教程线](https://anvil.wiki/zh/landing/tutorials)——兑换码站/优惠码站/教程知识库/AI 一天建站/收录/变现,每篇带对应模板指引 |
 
 ## 📖 中文文档
 
@@ -55,7 +56,7 @@
 
 **跑完这一节你会得到**:一个跑在 Cloudflare 免费版上、属于你自己的 wiki 站(先以 demo 内容上线,换成你的游戏、清掉 demo,随时可以做)。
 
-**开始前需要**:[Node.js 22.13+](https://nodejs.org)(pnpm 11 的版本门槛) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册「装好 6 样工具」一课](https://anvil.wiki/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
+**开始前需要**:[Node.js 22.23.4+](https://nodejs.org)(Astro 7.4 的版本门槛) 和 pnpm(没装 pnpm?终端跑 `npm install -g pnpm`;或跟着[学习手册「装好 6 样工具」一课](https://anvil.wiki/zh/landing/docs/install-tools)把 6 样工具一次装齐)。
 
 ```bash
 # 1. Fork 本仓库(仓库右上角 Fork 按钮),然后克隆你的 fork(换成你的 GitHub 用户名)
@@ -194,12 +195,13 @@ fork 后用 ZCode / Claude Code / Codex / Cursor 打开仓库,直接对话即可
 | See what it looks like | 🎮 [Live demo](https://anvil.wiki/demo/) — a complete wiki for the fictional game "Anvil Quest" |
 | Compare Fandom / Wiki.js / alternatives | ⚖️ [Full comparison](https://anvil.wiki/landing/comparison) |
 | See what the wiki page templates look like | 🧩 [Templates showcase](https://anvil.wiki/landing/templates) — boss guide, codes, tier list, item pages, docs center, each linked to a real demo page |
+| Learn how to build these kinds of sites | 🎓 [Tutorials](https://anvil.wiki/landing/tutorials) — game codes sites, SaaS coupon hubs, tutorial knowledge bases, AI-in-a-day builds, indexing, monetization — each mapped to a template preset |
 
 ### Quick Start (5 min)
 
 **What you'll have when this section is done**: your own wiki live on Cloudflare's free tier (it ships with demo content first — rebranding and demo removal come whenever you're ready).
 
-**Prerequisites**: [Node.js 22.13+](https://nodejs.org) (the pnpm 11 floor) and pnpm (no pnpm? run `npm install -g pnpm` — or let [the "Install the 6 Tools" lesson](https://anvil.wiki/landing/docs/install-tools) walk you through all six tools).
+**Prerequisites**: [Node.js 22.23.4+](https://nodejs.org) (the Astro 7.4 floor) and pnpm (no pnpm? run `npm install -g pnpm` — or let [the "Install the 6 Tools" lesson](https://anvil.wiki/landing/docs/install-tools) walk you through all six tools).
 
 ```bash
 # 1. Fork this repo (Fork button, top right), then clone YOUR fork (replace the username)

@@ -379,6 +379,10 @@ START-HERE.bat
   `Qwen3.8-Flash-Next-GSQ-RCO-abliterated-IQ3_S-00001-of-00002.gguf` → `Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf`.
 - Health check: `http://127.0.0.1:8080/health` → `"service": "strata"`. OpenAI-compatible endpoint: `http://127.0.0.1:8080/v1`.
 - OpenClaw: use the `strata/qwen3.8-flash-next` provider (see `openclaw.example.json`). Full manual: `skills/strata/SKILL.md`.
+- **Measured on this host (2026-10-31 & 11-02 sessions, RTX 5090 Laptop 24 GB, IQ3_S, `--max-context 131072 --kv int8 --spec 4 --mtp`):**
+  decode **p50 ~100–110 tok/s** (p10 77 / p90 127; MTP draft acceptance ~55–58%), prefill **p50 ~2600 tok/s**
+  (cold ~2750–2880 / warm ~2500–2560), prompt-cache reuse 62–71%, context peak 110k.
+  VRAM stays nearly saturated (~0.4–0.6 GiB free) — hand the card over before running ComfyUI etc.
 
 ### Ternary-Bonsai-2-27B PTQ1_0 — fits fully in 8 GB VRAM 🔥
 
@@ -944,6 +948,9 @@ schtasks /create /tn "cleanup-orphans" `
 | CCR | Extracts facts every 8 turns → Qdrant |
 | SmartCrusher | 24 msg/40K char hard cap |
 | mem0_sync_cron | Every 30min: Qdrant → _mem0_auto.md |
+| mem0_selfcheck.py | One-shot stack check: embedding → Qdrant ANN → write/read → SmartCrusher+CCR |
+| qdrant_store_inspect.py | Read-only store dump: points, user_id scopes, payload keys |
+| qdrant_rescope.py | Batch-normalise `payload.user_id` to the lowercase scope (dry run by default, `--apply` to write) |
 | headroom_routes.json | sidecar: model_id → real backend baseUrl mapping |
 
 </td>
@@ -966,6 +973,8 @@ OpenClaw Gateway (18789)
          ├─ llama-local → llama-server:9931
          └─ Cloud models    → sidecar finds real baseUrl
 ```
+
+> **Memory self-check** — `python skills/shared/mem0_selfcheck.py` (read-only pass: `--skip-write`) walks the whole chain: embedding server :9999 → Qdrant ANN → bridge search/add/delete → SmartCrusher + CCR round-trip. `python skills/shared/qdrant_store_inspect.py --character <name>` dumps the store without touching it. Both derive their paths from the repo layout (`Path(__file__)`), so they work from any checkout. Three traps they will flag for you: **the Qdrant isolation scope `payload.user_id` is lowercase** (`sakura`, `shiki_natsume`, `enola`, `atori`) — the pet derives it from the character card id (`skills/sakura/characters/<dir>/character.json`) but `app/agent/memory.py:_normalize_scope_id` lowercases it, matching `DEFAULT_MEMORY_SCOPE`, `CHARACTER_MEM0_ID` in `artemis_headroom_proxy.py` and `CHARACTER_MAP` in `mem0_behavior_integration.py`, so a mapping spelled any other way silently yields 0 hits forever (`mem0_bridge.scope_ids()` still filters with `MatchAny` over the legacy variants, and `python skills/shared/qdrant_rescope.py --apply` migrates a store written under the old spelling); **embedded Qdrant is single-writer** (the pet process holds `skills/sakura/data/memory/qdrant`; concurrent scripts get "already accessed by another instance"); and **qdrant_client ≥ 1.20 dropped `client.search()`** (use `query_points`).
 
 **Add-only, no-change principle:** `start.ps1` auto-scans `~/.openclaw/openclaw.json` on startup, adds `local-llama` provider (copies existing cloud model), original providers left as-is. Original baseUrl stored in `~/.openclaw/headroom_routes.json` sidecar file. Zero-config after clone.
 

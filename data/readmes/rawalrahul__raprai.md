@@ -58,6 +58,7 @@ An assistant from one AI company sees that company's connectors, runs that compa
 | 🧪 **Bake-off** | Give the same task to several AIs. Each works in its own copy of your project; compare the diffs, test results and time, then merge the winner. Share the result as a card, or publish it to the public [RAPR Arena](https://www.raprai.com/arena) leaderboard. |
 | 🔌 **RAPR inside your editor** | RAPR is an MCP server: from Claude Code, Codex, Antigravity, Grok, Cursor or Windsurf, ask another AI to review your changes, answer a question or join a bake-off, run a **relay** (one AI plans, another builds, another reviews and gets it fixed), or ask "what needs me today?" for your brief. Runs on your computer, with or without the app installed; your files stay untouched until you allow edits or merge. [Set it up](#use-rapr-inside-your-coding-agent-mcp) |
 | 🐧 **Monthly recap** | Your month as a shareable card: your AI crew and its MVP, streaks, bake-offs, and what running AIs locally saved you. Worked out on your computer. |
+| 📊 **Usage ribbon** | Each AI's 5-hour and weekly plan usage as the AI itself reports it (the numbers on its own usage page), or the money spent on an API key. Above the message box in the app and above the Claude Code prompt. [See it](#usage-ribbon) |
 | 🧭 **Smart routing** | Choose "Auto" and RAPR picks the AI for each task: free local models for easy work, the strongest coding agent for hard work, skipping any AI that's over budget. |
 | 📱 **Phone control** | Telegram bot, WhatsApp (scan a QR code, no Business API), Discord and Slack. Start sessions, send tasks, approve actions, get your brief and hand items off with `/do`, get files back. |
 | 🖥️ **Parallel sessions** | Many sessions at once, each with its own AI, folder and history. Resume any past conversation. |
@@ -128,7 +129,7 @@ claude mcp add --scope user rapr -- rapr mcp     # Claude Code
 codex mcp add rapr -- rapr mcp                   # Codex
 ```
 
-On Windows, end both with `-- cmd /c rapr mcp`. For Codex, also add `tool_timeout_sec = 600` under `[mcp_servers.rapr]` in `~/.codex/config.toml`: Codex gives up on a tool after 60 seconds, and a review usually takes a few minutes. Grok: `grok mcp add rapr -- rapr mcp`. Antigravity, Cursor, Windsurf and other clients: add a server with the command `rapr` and the argument `mcp` ([how, for each](docs/guide.md#use-rapr-from-your-coding-agent-mcp)).
+On Windows, end both with `-- cmd /c rapr mcp`. Codex gives up on a tool after 60 seconds, so RAPR's tools answer within 50: a longer review comes back with an id that Codex follows with `agent_status`. Grok: `grok mcp add rapr -- rapr mcp`. Antigravity, Cursor, Windsurf and other clients: add a server with the command `rapr` and the argument `mcp` ([how, for each](docs/guide.md#use-rapr-from-your-coding-agent-mcp)).
 
 **Just the MCP server, without the app:** if you have [uv](https://docs.astral.sh/uv/), use `uvx --from git+https://github.com/rawalrahul/raprai rapr-mcp` in place of `rapr mcp` (other ways, and how to update each: [Update, reset or remove](#update-reset-or-remove-the-mcp-server)):
 
@@ -142,19 +143,51 @@ Then ask in plain words: *"get a second opinion from Codex on my changes"*, *"pl
 |---|---|
 | `second_opinion` | Another AI reviews your uncommitted changes (or the last commit, or changes since a branch you name) and reports bugs, most serious first. |
 | `ask_agent` | Puts any question or task to another AI and returns its reply. |
+| `agent_status`, `cancel_agent` | Wait for, or stop, a `second_opinion` or `ask_agent` still running after its first 50 seconds. |
 | `start_relay`, `relay_status`, `merge_relay`, `discard_relay` | Plan, build, review, fix: pick any AI for each role (say Claude plans, Codex builds, Claude reviews and Codex fixes what it found), all in a copy of the project until you merge. |
 | `start_team`, `team_status`, `merge_team`, `discard_team` | Split a plan into parts: say Claude does the API and Codex the UI at the same time, each in its own copy, while you do your own part; then merge them all into the project. |
 | `start_bakeoff`, `bakeoff_status`, `merge_bakeoff`, `discard_bakeoff` | A bake-off from your editor: 2 to 4 AIs, each in its own copy of the project; merge the one you like. |
 | `list_agents` | The AIs installed and signed in on this computer. |
+| `connect_vscode_copilot` | Lets RAPR use GitHub Copilot from VS Code with your VS Code sign-in (installs the small RAPR Bridge extension). Copilot then takes any role in every tool above. |
 | `latest_brief` | What needs you, from your latest brief in the RAPR app (needs the app). |
+| `usage` | Each AI's plan usage as it reports it (Claude's and Codex's 5-hour and weekly windows), and what the AIs RAPR ran for you did today: calls, time, tokens, cost. |
 
 The other AI works in a temporary copy of your project, so your files only change if you allow edits or merge a relay or bake-off. Nothing is hosted, and the RAPR app doesn't need to be open, or even installed. More in the [full guide](docs/guide.md#use-rapr-from-your-coding-agent-mcp).
 
 RAPR only offers the AIs you can actually use: their command-line tool is installed (or came with their VS Code, Cursor or Windsurf extension), you're signed in where RAPR can check (Claude Code, Codex, Grok, Kiro), and a local model server like Ollama or LM Studio is running. Ask for `list_agents` to see them; it also says which installed AI still needs signing in, and how.
 
+### Usage ribbon
+
+<img src="docs/assets/usage-ribbon-open.png" width="620" alt="RAPR's usage ribbon above the message box: Claude 5h 66%, week 89% of the plan; Codex 5h 12%, week 41%; opened, a row for each AI, including the ones run from your editors through MCP">
+
+A slim ribbon shows how much of each AI's plan you've used, **asked live of the AI's own service**, so it matches the AI's own usage page. Nothing is estimated, and no tokens are spent to ask:
+
+| AI | What the ribbon shows | Where RAPR reads it |
+|---|---|---|
+| Claude | 5-hour and weekly plan usage (and weekly Opus/Sonnet where your plan has them), as on claude.ai's usage page; on an API key, money spent instead | claude.ai's usage service, with Claude Code's own sign-in (what its `/usage` shows) |
+| Codex | 5-hour and weekly plan usage, as Codex's `/status` shows; on an API key, money spent instead | `codex app-server` (what the Codex IDE extension uses), which reads Codex's own sign-in |
+| Gemini | each model's daily quota, with a Google sign-in; on an API key, money spent instead | Google's Code Assist quota service, with Gemini CLI's sign-in (what its `/stats` shows) |
+| Local models | no limit | (they run on your computer) |
+| Others | no usage service to ask: RAPR's own counters (tasks, time, tokens) | RAPR |
+
+5-hour and weekly windows belong to subscriptions (Claude Pro/Max, ChatGPT plans). An AI used with an **API key** has none, so the ribbon never shows them for it: it shows an **API key** tag and the money spent instead. RAPR tells them apart from what each AI says about its sign-in (Claude's `apiKeySource`, Codex's `~/.codex/auth.json`). On a plan, the dollar figure Claude reports is a list price you aren't billed, so it isn't shown as spending.
+
+In the app it sits above the message box once you're in a session; click it to ask every AI set up here for its usage, × hides it, and the **Usage** panel brings it back. In Claude Code it sits above the prompt, with Claude's numbers taken straight from Claude Code (as [ponytail](https://github.com/DietrichGebert/ponytail) does: plan windows on a subscription, this session's cost on an API key) and what RAPR ran for you today. Add it once (needs Claude Code 2.1.290 or later, in the terminal or the desktop app):
+
+```
+/plugin marketplace add rawalrahul/raprai
+/plugin install rapr-usage@raprai
+```
+
+**In VS Code**, Claude Code's panel has no room for a band, so type `/rapr-usage` instead: it asks every AI for its usage right then, prints it in the chat and opens a **RAPR usage** pane beside it that keeps itself current (it works the same in the terminal and the desktop app). Install the plugin the same way, from the Claude Code panel's prompt or a terminal, and keep RAPR's MCP server added (`claude mcp add --scope user rapr -- rapr mcp`): the plugin asks it for the numbers.
+
+`/rapr-usage band` hides or shows the band, `/rapr-usage details` adds reset times and a row per AI to it. Other MCP clients (Codex, Cursor, Antigravity...) can ask for the `usage` tool. Everything stays on your computer, in `~/.config/rapr/mcp-usage.json`.
+
 ### GitHub Copilot
 
-In **VS Code**, run **MCP: Open User Configuration** from the Command Palette and add:
+**Copilot from VS Code, with your VS Code sign-in:** ask your AI to *"connect Copilot from VS Code"*. RAPR installs its small RAPR Bridge extension into VS Code; in VS Code run **RAPR: Connect Copilot** and press **Allow**. Copilot then works through RAPR as `copilot_vscode` in every tool: second opinions, questions, bake-offs, relays (any role) and teams, reading, editing and testing code. Works in WSL windows too. [How it works](docs/guide.md#copilot-from-vs-code).
+
+**RAPR inside Copilot:** In **VS Code**, run **MCP: Open User Configuration** from the Command Palette and add:
 
 ```json
 {

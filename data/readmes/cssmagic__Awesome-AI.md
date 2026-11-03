@@ -333,6 +333,7 @@
 
 * [vocal-separate](https://github.com/jianchang512/vocal-separate)：一个极简的人声和背景音乐分离工具，本地化网页操作，无需连接外网。已开源。
 * [pyVideoTrans](https://pyvideotrans.com/)：开源视频翻译软件，一键字幕生成 + 字幕翻译 + 创建配音 + 合成 = 带字幕和配音的新视频。
+* [声之帆 VoxSail](https://voxsail.com/zh/)：在线音视频本地化工作台，处理已有音视频，将语音转录、字幕翻译、AI 配音与在线审校放在同一流程中，可按项目类型导出视频、音频、文稿及 SRT/ASS 字幕。提供一次性体验积分，持续使用需付费订阅，可在订阅有效期内加购积分。
 * [GVS 硬字幕提取](https://pyvideotrans.com/aiocr)：智能识别视频硬字幕，快速提取，支持中英文。
 
 ### 其他创作工具
@@ -389,6 +390,7 @@
 * [RespawnStack](https://respawnstack.com/)：面向游戏开发者的精选 AI 工具目录。
 * [通往 AGI 之路 / WayToAGI](https://www.waytoagi.com/)：AI 工具（包含网站和 GPTs）分类导航目录，也可搜索。
 * [CodeTrendy](https://codetrendy.com/)：包含 AI 工具的产品与 SaaS 导航目录，支持分类浏览、热门榜和替代品查找。提供免费只读 MCP 接口，供 AI 助手搜索条目，无需账号或 API 密钥。可免费提交产品，另有付费推广，付费 Verified 条目在 MCP 搜索中优先展示。
+* [forkalt](https://forkalt.com/)：付费 AI 与专业软件的开源/免费替代品目录，附模型横向对比。
 * [Creati.ai](https://creati.ai/)：AI 工具与智能体分类导航目录，收录 28,000+ 款，支持 9 种语言，提供每日 AI 资讯和月度排行。主动提交产品需付费。
 * [Tool Use Cases](https://tools.lalipublications.com/)：按具体任务（Vibe Coding、AI 编程智能体、代码调试、音视频等 30 个场景）分类的 AI 工具导航目录，可免费浏览。每款工具附一句话简介与官方定价说明。
 * [ChandlerAi](https://chandler.bet/)：国内可用的 AI 助手，可调用 GPT-4、Claude 3 Opus、Gemini、DALL·E 等先进模型。需要付费。
@@ -397,6 +399,7 @@
 
 * [Vectorizer.AI](https://vectorizer.ai/)：基于 AI 的位图转矢量图的在线工具，比如 PNG → SVG。已经不可免费使用，需要订阅（$10 / 月）。
 * [Galileo](https://www.usegalileo.ai/)：通过提示词生成 UI 设计稿，可导出到 Figma。
+* [CoverNice](https://covernice.com/)：面向亚马逊 KDP 的 AI 封面设计工具，根据书名和简介生成多个可编辑的封面方向，按开本、页数和纸张自动计算书脊宽度，可导出 300 dpi 全包平装封面 PDF（含出血与安全区）与 1600×2560 电子书封面。只做封面，不做内页与 EPUB；书脊计算器免注册。AI 生成消耗积分，未充值账号导出 AI 底图会带水印。
 * [Magnific AI](https://magnific.ai/)：图片放大，增强细节。
 * [igly.ai](https://igly.ai)：在线 AI 图片编辑平台，支持去背景、局部重绘、高清放大、生成式填充等功能，适合快速处理商品图、设计素材和社媒图片。
 * [Photoroom](https://www.photoroom.com/zh)：在线 AI 图片处理工具。免费用户可使用抠图、擦除、照片优化功能。

@@ -16,6 +16,7 @@ Retro PCs, game consoles, handhelds, microcontrollers. If it has a CPU and someo
 - [Consoles and handhelds](#consoles-and-handhelds)
 - [Microcontrollers](#microcontrollers)
 - [Wearables](#wearables)
+- [FPGAs](#fpgas)
 - [Emulator only](#emulator-only)
 - [Thin clients](#thin-clients)
 - [Extremes](#extremes)
@@ -25,11 +26,12 @@ Retro PCs, game consoles, handhelds, microcontrollers. If it has a CPU and someo
 
 ## Retro computers
 
-| Device                             | Model                    | Reported speed                       | Project                                                                                                          |
-| ---------------------------------- | ------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| Commodore 64 with 2MB REU          | stories260K              | ~1 token per 8 min (author estimate) | [llama2.c64](https://github.com/ytmytm/llama2.c64)                                                               |
-| 486 DX2 66 MHz, 32MB RAM, DOS 6.22 | stories260K              | 2.08 tok/s                           | [dosllam2](https://github.com/yeokm1/dosllam2) · [write-up](https://yeokhengmeng.com/2025/04/llama2-llm-on-dos/) |
-| Pentium II, 128MB RAM, Windows 98  | stories260K / stories15M | 39.31 / 1.03 tok/s                   | [llama98.c](https://github.com/exo-explore/llama98.c) · [write-up](https://blog.exolabs.net/day-4/)              |
+| Device                                                                      | Model                           | Reported speed                                 | Project                                                                                                                  |
+| --------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Commodore 64 with 2MB REU                                                   | stories260K                     | ~1 token per 8 min (author estimate)           | [llama2.c64](https://github.com/ytmytm/llama2.c64)                                                                       |
+| 486 DX2 66 MHz, 32MB RAM, DOS 6.22                                          | stories260K                     | 2.08 tok/s                                     | [dosllam2](https://github.com/yeokm1/dosllam2) · [write-up](https://yeokhengmeng.com/2025/04/llama2-llm-on-dos/)         |
+| Pentium II, 128MB RAM, Windows 98                                           | stories260K / stories15M        | 39.31 / 1.03 tok/s                             | [llama98.c](https://github.com/exo-explore/llama98.c) · [write-up](https://blog.exolabs.net/day-4/)                      |
+| PowerBook G4 Titanium (2002), 1 GHz, 1GB RAM, OS 9.2.2, flash IDE drive     | GPT-2 124M / TinyLlama 1.1B, Q8 | 1.45 / 0.10 tok/s (TinyLlama uses disk paging) | [MacinAI Local](https://github.com/alexhoopes/MacinAI-Local) · [write-up](https://oldapplestuff.com/blog/MacinAI-Local/) |
 
 ## Consoles and handhelds
 
@@ -49,18 +51,27 @@ Nintendo 64: the author reports running on real hardware, but the linked source 
 
 ## Microcontrollers
 
-| Device                                                                         | Model              | Reported speed      | Project                                                                                 |
-| ------------------------------------------------------------------------------ | ------------------ | ------------------- | --------------------------------------------------------------------------------------- |
-| ESP32-S3 with 2MB PSRAM                                                        | stories260K        | 19.13 tok/s         | [esp32-llm](https://github.com/DaveBben/esp32-llm)                                      |
-| Four ESP32 boards, with and without PSRAM                                      | 260K, FP32         | 2.32 to 22.00 tok/s | [ESP32-Tiny-LLM](https://github.com/Circuit-Digest/ESP32-Tiny-LLM)                      |
-| Raspberry Pi Pico (RP2040)                                                     | stories260K        | ?                   | [picollama260k](https://github.com/tarelerulz/pico-experiments/tree/main/picollama260k) |
-| RP2350 board with 16MB flash and 8MB PSRAM (standard Pico 2 boards won't work) | bundled 14MB model | ~850 ms per token   | [PicoLlama](https://github.com/earlephilhower/PicoLlama)                                |
+| Device                                                                         | Model              | Reported speed                         | Project                                                                                 |
+| ------------------------------------------------------------------------------ | ------------------ | -------------------------------------- | --------------------------------------------------------------------------------------- |
+| NUCLEO-H7A3ZI-Q, STM32H7A3 at 280 MHz, ~1.4MB RAM, 2MB internal flash          | stories260K, FP32  | up to ~87 tok/s, including UART output | [EmbedLlama](https://github.com/schuhandreas/embedllama-stm32h7a3#performance)          |
+| ESP32-S3 with 2MB PSRAM                                                        | stories260K        | 19.13 tok/s                            | [esp32-llm](https://github.com/DaveBben/esp32-llm)                                      |
+| Four ESP32 boards, with and without PSRAM                                      | 260K, FP32         | 2.32 to 22.00 tok/s                    | [ESP32-Tiny-LLM](https://github.com/Circuit-Digest/ESP32-Tiny-LLM)                      |
+| Raspberry Pi Pico (RP2040)                                                     | stories260K        | ?                                      | [picollama260k](https://github.com/tarelerulz/pico-experiments/tree/main/picollama260k) |
+| RP2350 board with 16MB flash and 8MB PSRAM (standard Pico 2 boards won't work) | bundled 14MB model | ~850 ms per token                      | [PicoLlama](https://github.com/earlephilhower/PicoLlama)                                |
 
 ## Wearables
 
 | Device                                                       | Model                         | Reported speed | Project                                            |
 | ------------------------------------------------------------ | ----------------------------- | -------------- | -------------------------------------------------- |
 | Google Pixel Watch 3, Wear OS 5, 32 bit ARM, ~0.5GB free RAM | SmolLM2-360M-Instruct, Q4_K_M | ~1 to 4 tok/s  | [wear-llm](https://github.com/mkornreich/wear-llm) |
+
+## FPGAs
+
+| Device                               | Model                   | Reported speed       | Project                                                                                                                                |
+| ------------------------------------ | ----------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Xilinx KV260, 4GB PS RAM for weights | LLaMA2-7B, AWQ 4-bit    | ~5 tok/s decoding    | [llama-fpga](https://github.com/adamgallas/llama-fpga) · [performance and demos](https://github.com/adamgallas/llama-fpga#performance) |
+
+The author reports decoding speed only. Prompt processing reuses the decode accelerator token by token; the reported speed is not an end-to-end measurement.
 
 ## Emulator only
 

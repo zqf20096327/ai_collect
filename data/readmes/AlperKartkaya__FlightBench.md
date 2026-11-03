@@ -75,8 +75,9 @@ For Jev and Codex authentication, [see the setup guide](docs/controller-setup/RE
 
 ## Benchmark results — landing score and API cost
 
-![FlightBench benchmark results (dark theme)](docs/evaluations/2026-10-22-scoring-v2/benchmark-dark.svg#gh-dark-mode-only)
-![FlightBench benchmark results (light theme)](docs/evaluations/2026-10-22-scoring-v2/benchmark-light.svg#gh-light-mode-only)
+![FlightBench benchmark results (dark theme)](docs/evaluations/2026-10-22-scoring-v2/benchmark-dark.png#gh-dark-mode-only)
+
+![FlightBench benchmark results (light theme)](docs/evaluations/2026-10-22-scoring-v2/benchmark-light.png#gh-light-mode-only)
 
 **In our evaluation, all the Codex/LLM controllers failed to achieve a successful realtime landing;
 their results above are lockstep runs.**
@@ -85,15 +86,21 @@ their results above are lockstep runs.**
 
 ## Landing Score vs. Estimated API Cost
 
-![Landing score versus API-equivalent cost](docs/evaluations/2026-10-22-scoring-v2/landing-score-vs-api-cost.svg)
+[![Landing score versus API-equivalent cost](docs/evaluations/2026-10-22-scoring-v2/landing-score-vs-api-cost.png)](docs/evaluations/2026-10-22-scoring-v2/landing-score-vs-api-cost.png)
 
 ## Landing score calculation
 
 ![Landing score: formula, variables and default constants](docs/scoring/scoring-v2.png)
 
+### Effects on the score
+
+- Staying near the centerline, keeping pitch stable, following the glidepath, and touching down gently near the target improve the score.
+- A successful landing needs both safe touchdown and a completed rollout. Failed landings score zero.
+- API cost, response time, and request count are not part of the score.
+
 ## How is Jev's API used?
 
-![How Jev steers FlightBench: an aircraft-state snapshot leads to four textual Choice answers, fixed commands, and a JSBSim physics step](docs/jev-control-loop.svg)
+[![How Jev steers FlightBench: an aircraft-state snapshot leads to four textual Choice answers, fixed commands, and a JSBSim physics step](docs/jev-control-loop.png)](docs/jev-control-loop.png)
 
 *Illustrative choices from the mock request and response below.*
 
