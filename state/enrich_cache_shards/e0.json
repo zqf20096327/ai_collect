@@ -4122,5 +4122,25 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "benisalla/tiny-llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 53,
+   "Jupyter Notebook": 47
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

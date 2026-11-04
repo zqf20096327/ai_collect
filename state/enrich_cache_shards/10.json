@@ -4077,5 +4077,82 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "cjh-solver/MathModeling-Skills-Arsenal": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 71,
+   "JavaScript": 23,
+   "HTML": 3,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "hotic/acpira": {
+  "rel_ver": "v2.0.7",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 45,
+   "TypeScript": 33,
+   "Swift": 14,
+   "Kotlin": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "GetActionSpace/mcp-context-server": {
+  "rel_ver": "v2.2.2",
+  "rel_pub": "2026-03-28",
+  "rel_days": 221,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100,
+   "PLpgSQL": 0,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

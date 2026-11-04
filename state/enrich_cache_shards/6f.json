@@ -1781,13 +1781,16 @@
    "CSS": 3,
    "HTML": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261104"
+  },
+  "commit_90d": 16,
+  "commit_7d": 0
  },
  "tinqiao-oss/PocketClaw": {
   "rel_ver": "v1.3.4",

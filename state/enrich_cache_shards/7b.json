@@ -4518,5 +4518,50 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "weiykong/ChatArchive": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 67,
+   "TypeScript": 21,
+   "HTML": 11,
+   "Python": 2
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "BaronCyrus/ShipMyGame": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 49,
+   "Python": 27,
+   "JavaScript": 12,
+   "Shell": 9,
+   "HTML": 3
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

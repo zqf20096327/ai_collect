@@ -5595,5 +5595,55 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "ValentinAvramko/editorial-skill-for-natural-russian-business-writing": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-07-10",
+  "rel_days": 117,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "enestanerr/Amber": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 96,
+   "HTML": 2,
+   "CSS": 1,
+   "Jinja": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

@@ -284,8 +284,8 @@
   }
  },
  "zhihongz/awesome-low-light-image-enhancement": {
-  "commit_7d": 1,
-  "commit_90d": 4,
+  "commit_7d": 2,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -296,10 +296,10 @@
   "lang": {
    "MATLAB": 100
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

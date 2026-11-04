@@ -2575,8 +2575,8 @@
   }
  },
  "deepseek-ai/DeepInfer": {
-  "commit_90d": 5,
-  "commit_7d": 2,
+  "commit_90d": 6,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2590,10 +2590,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4931,6 +4931,27 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "KCFindstr/RSI-Bench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "HTML": 25,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

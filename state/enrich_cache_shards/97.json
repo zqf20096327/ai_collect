@@ -179,10 +179,10 @@
   }
  },
  "JerryZLiu/Dayflow": {
-  "commit_90d": 677,
-  "commit_7d": 68,
-  "rel_ver": "v2.7.5",
-  "rel_pub": "2026-10-22",
+  "commit_90d": 722,
+  "commit_7d": 30,
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-11-03",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -196,10 +196,10 @@
    "Swift": 99,
    "Shell": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2270,11 +2270,11 @@
   }
  },
  "kuberay-project/kuberay": {
-  "commit_90d": 115,
-  "commit_7d": 5,
+  "commit_90d": 105,
+  "commit_7d": 7,
   "rel_ver": "v1.7.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 37,
+  "rel_days": 44,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -2290,10 +2290,10 @@
    "Makefile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4517,13 +4517,16 @@
    "XSLT": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261104"
+  },
+  "commit_90d": 122,
+  "commit_7d": 61
  },
  "alphaparkinc/openclaw-genpark-voice-shop": {
   "rel_ver": null,
@@ -4630,6 +4633,33 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "murtaza-nasir/mailr": {
+  "rel_ver": "v0.40.36",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 44,
+   "TypeScript": 28,
+   "Kotlin": 25,
+   "CSS": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

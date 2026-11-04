@@ -3982,5 +3982,32 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "geboai/Gebo.ai": {
+  "rel_ver": "v1.0.5.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 15,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 67,
+   "JavaScript": 16,
+   "TypeScript": 15,
+   "HTML": 2,
+   "SCSS": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

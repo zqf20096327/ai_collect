@@ -290,11 +290,11 @@
   }
  },
  "papersgpt/papersgpt-for-zotero": {
-  "commit_90d": 35,
-  "commit_7d": 5,
-  "rel_ver": "papersgpt-v2.1.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 4,
+  "commit_90d": 31,
+  "commit_7d": 1,
+  "rel_ver": "papersgpt-v2.2.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -308,10 +308,10 @@
    "TypeScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4462,6 +4462,55 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "Sigmanih/SigmaStudio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 63,
+   "JavaScript": 33,
+   "CSS": 4,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "yzhg1983/pi-aside": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 76,
+   "JavaScript": 20,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

@@ -256,11 +256,11 @@
   }
  },
  "roncoo/roncoo-education": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 4,
+  "commit_90d": 4,
   "rel_ver": "v25.0.0-RELEASE",
   "rel_pub": "2025-09-01",
-  "rel_days": 411,
+  "rel_days": 429,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -273,10 +273,10 @@
    "Java": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4332,6 +4332,33 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "retospect/precis-mcp": {
+  "rel_ver": "v8.35.1",
+  "rel_pub": "2026-09-20",
+  "rel_days": 45,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 90,
+   "JavaScript": 4,
+   "PLpgSQL": 2,
+   "Jinja": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

@@ -96,8 +96,8 @@
   }
  },
  "vercel/chatbot": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 5,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -110,10 +110,10 @@
    "JavaScript": 2,
    "CSS": 2
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2029,13 +2029,16 @@
    "Shell": 17,
    "JavaScript": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261104"
+  },
+  "commit_90d": 46,
+  "commit_7d": 0
  },
  "Acly/vision.cpp": {
   "rel_ver": "v0.3.0",

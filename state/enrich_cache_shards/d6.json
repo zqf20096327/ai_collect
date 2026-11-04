@@ -3485,13 +3485,16 @@
    "Python": 95,
    "Shell": 5
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261104"
+  },
+  "commit_90d": 16,
+  "commit_7d": 11
  },
  "roy-reshef/socratic-ai-prompt-skill": {
   "rel_ver": null,

@@ -4222,5 +4222,99 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "AgaMiko/data-augmentation-review": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": "v1.0",
+  "rel_pub": "2021-09-01",
+  "rel_days": 1890,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {},
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "commit": "20261104",
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "vixhal-baraiya/qwenFS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Just": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "akustikrausch/amigent": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 63,
+   "C": 24,
+   "JavaScript": 7,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "kamao6757-crypto/designcenter-local-copilot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 49,
+   "JavaScript": 33,
+   "C#": 6,
+   "CSS": 4,
+   "HTML": 3
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

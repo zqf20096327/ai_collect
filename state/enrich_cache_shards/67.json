@@ -4215,5 +4215,73 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "Yomguithereal/talisman": {
+  "commit_90d": 4,
+  "commit_7d": 4,
+  "rel_ver": "v1.1.4",
+  "rel_pub": "2021-01-21",
+  "rel_days": 2113,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "JavaScript": 97,
+   "TeX": 3
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "commit": "20261104",
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "rickconci/GENESIS": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "zhameersheraz/trash-sorter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 48,
+   "CSS": 33,
+   "HTML": 20
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

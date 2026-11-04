@@ -1450,13 +1450,16 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261104"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Remi-Coulom/gogui": {
   "rel_ver": "v1.6.0",
@@ -4549,6 +4552,30 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "CompleteTech-Security/business-plan": {
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 85,
+   "Python": 15
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

@@ -211,11 +211,11 @@
   }
  },
  "dsphper/lanhu-mcp": {
-  "commit_7d": 0,
-  "commit_90d": 253,
+  "commit_7d": 1,
+  "commit_90d": 211,
   "rel_ver": "v1.8.7",
   "rel_pub": "2026-10-13",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -230,10 +230,10 @@
    "Shell": 4,
    "Dockerfile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1811,13 +1811,16 @@
    "CSS": 6,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261104"
+  },
+  "commit_90d": 88,
+  "commit_7d": 11
  },
  "MaxDevv/Un-LOCC": {
   "rel_ver": null,
@@ -4405,6 +4408,33 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "umuryavuz96/server-os": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-10-28",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 49,
+   "Vue": 32,
+   "Python": 7,
+   "CSS": 6,
+   "Go": 4
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

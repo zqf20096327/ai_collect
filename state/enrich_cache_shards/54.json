@@ -4963,5 +4963,27 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "hodulabs/kurumi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 95,
+   "C": 3,
+   "RenderScript": 2,
+   "Just": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

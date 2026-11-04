@@ -3921,5 +3921,52 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "Deveshu04/roleflow": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "HTML": 8,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "Needy1100/d2l-pytorch-crash-course": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

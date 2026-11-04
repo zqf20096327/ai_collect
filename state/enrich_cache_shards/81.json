@@ -99,11 +99,11 @@
   }
  },
  "huggingface/text-embeddings-inference": {
-  "commit_7d": 1,
-  "commit_90d": 9,
+  "commit_7d": 5,
+  "commit_90d": 13,
   "rel_ver": "v1.9.4",
   "rel_pub": "2026-09-15",
-  "rel_days": 31,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -119,10 +119,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4322,6 +4322,84 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "Hive-Academy/PtahCode": {
+  "rel_ver": "electron-v0.1.70",
+  "rel_pub": "2026-09-04",
+  "rel_days": 61,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 97,
+   "HTML": 1,
+   "JavaScript": 1,
+   "CSS": 0,
+   "MDX": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "shibing624/memhub": {
+  "rel_ver": "v0.2.3",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "HTML": 2
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "octavebahoun/o-jarvis-shell": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "JavaScript": 6,
+   "CSS": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

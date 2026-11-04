@@ -4775,5 +4775,32 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "alron/llama-swap-mac-launcher": {
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 78,
+   "Objective-C": 18,
+   "Shell": 2,
+   "Makefile": 1,
+   "C": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

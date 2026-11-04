@@ -3799,5 +3799,62 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "ycl-2004/Wisp": {
+  "commit_90d": 85,
+  "commit_7d": 61,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-11",
+  "rel_days": 54,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 96,
+   "Python": 2,
+   "Shell": 1,
+   "JavaScript": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "commit": "20261104",
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "migalsp/costdeck": {
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Go": 66,
+   "TypeScript": 27,
+   "Shell": 4,
+   "HTML": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

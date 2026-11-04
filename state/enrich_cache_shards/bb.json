@@ -813,7 +813,7 @@
  },
  "Fractal-Compute-Orchestrations/FractalWorkspace": {
   "commit_7d": 1,
-  "commit_90d": 23,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -824,10 +824,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261025",
-   "release": "20261025",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4616,13 +4616,16 @@
    "Python": 0,
    "C++": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261027",
    "security": "20261027",
    "contrib": "20261027",
-   "lang": "20261027"
-  }
+   "lang": "20261027",
+   "commit": "20261104"
+  },
+  "commit_90d": 343,
+  "commit_7d": 13
  },
  "Nikhil-creat/cloudpuls": {
   "rel_ver": null,
@@ -4915,6 +4918,58 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "Blaizzy/nativ": {
+  "commit_90d": 1056,
+  "commit_7d": 46,
+  "rel_ver": "v0.4.4",
+  "rel_pub": "2026-10-28",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Swift": 93,
+   "Python": 4,
+   "HTML": 1,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "commit": "20261104",
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "topmindspace/awesome-ai-recreations": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 91,
+   "JavaScript": 8,
+   "Python": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

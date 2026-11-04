@@ -2451,9 +2451,9 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "release": "20261028",
+   "release": "20261104",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
@@ -2462,7 +2462,7 @@
   "commit_90d": 108,
   "commit_7d": 107,
   "rel_pub": "2026-10-27",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 1,
   "rel_pre": false
  },

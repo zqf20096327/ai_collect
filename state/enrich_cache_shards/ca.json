@@ -490,8 +490,8 @@
   }
  },
  "jae-jae/fetcher-mcp": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 8,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -504,10 +504,10 @@
    "JavaScript": 3,
    "Dockerfile": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4748,6 +4748,67 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "krishty21/LinkedIn-Zip-Game": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "gladia-research-group/perseus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 54,
+   "Python": 40,
+   "Cuda": 4,
+   "Shell": 1,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "saratbanik/Food-Recognition-and-Calorie-Estimation": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

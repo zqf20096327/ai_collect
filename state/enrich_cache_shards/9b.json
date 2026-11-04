@@ -332,11 +332,11 @@
   }
  },
  "i365dev/free4chat": {
-  "commit_7d": 4,
-  "commit_90d": 853,
+  "commit_7d": 1,
+  "commit_90d": 854,
   "rel_ver": "agent-v0.5.62",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -352,10 +352,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4390,6 +4390,25 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "un4ssociated/comfyui-impact-pack-cycledenoise": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

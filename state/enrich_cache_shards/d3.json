@@ -414,11 +414,11 @@
   }
  },
  "sophgo/tpu-mlir": {
-  "commit_7d": 5,
-  "commit_90d": 110,
+  "commit_7d": 4,
+  "commit_90d": 69,
   "rel_ver": "v1.30.2",
   "rel_pub": "2026-08-31",
-  "rel_days": 47,
+  "rel_days": 65,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "HTML": 2,
    "Jupyter Notebook": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1338,13 +1338,16 @@
    "Shell": 2,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261104"
+  },
+  "commit_90d": 33,
+  "commit_7d": 0
  },
  "Jovancoding/Network-AI": {
   "rel_ver": "v5.16.0",
@@ -4025,6 +4028,26 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "lingdongbudong/Comfyui-Anima-Wardrobe-V5": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 74,
+   "JavaScript": 26
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

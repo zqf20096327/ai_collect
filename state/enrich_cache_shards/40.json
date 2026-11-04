@@ -1329,11 +1329,11 @@
   }
  },
  "AienTech/dossier": {
-  "commit_7d": 5,
-  "commit_90d": 22,
-  "rel_ver": "v1.9.2",
-  "rel_pub": "2026-10-27",
-  "rel_days": 1,
+  "commit_7d": 4,
+  "commit_90d": 26,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1349,10 +1349,10 @@
    "PLpgSQL": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -1461,13 +1461,16 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261104"
+  },
+  "commit_90d": 23,
+  "commit_7d": 0
  },
  "sleepinginsummer/agent-browser-cli": {
   "commit_7d": 2,
@@ -4116,6 +4119,68 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "csinva/weight-space-programming-autoresearch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 92,
+   "HTML": 8,
+   "Shell": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "purinzan/gx3-cli-mcp": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 59,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "Future-Proof-DS/interactive-ai-ml-tools": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }

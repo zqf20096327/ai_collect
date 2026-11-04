@@ -4268,5 +4268,52 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "md2docx/md2docx": {
+  "rel_ver": "1.6.0",
+  "rel_pub": "2025-09-26",
+  "rel_days": 404,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "MDX": 75,
+   "TypeScript": 24,
+   "Handlebars": 1,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "hodulabs/hodu": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100,
+   "Just": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

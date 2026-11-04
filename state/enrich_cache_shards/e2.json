@@ -484,11 +484,11 @@
   }
  },
  "microsoft/Tutel": {
-  "commit_90d": 9,
-  "commit_7d": 2,
+  "commit_90d": 10,
+  "commit_7d": 1,
   "rel_ver": "v0.4.1",
   "rel_pub": "2025-03-20",
-  "rel_days": 583,
+  "rel_days": 594,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -503,10 +503,10 @@
    "C++": 4,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

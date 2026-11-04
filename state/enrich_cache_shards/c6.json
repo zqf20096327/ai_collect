@@ -141,11 +141,11 @@
   }
  },
  "jnMetaCode/agency-orchestrator": {
-  "commit_90d": 435,
-  "commit_7d": 40,
+  "commit_90d": 433,
+  "commit_7d": 1,
   "rel_ver": "desktop-v0.4.14",
   "rel_pub": "2026-10-21",
-  "rel_days": 3,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Shell": 2,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

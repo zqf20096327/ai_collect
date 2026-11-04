@@ -4200,5 +4200,27 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "sagarmainkar/hermes-genui": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 44,
+   "Python": 31,
+   "JavaScript": 21,
+   "CSS": 4
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

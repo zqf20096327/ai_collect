@@ -4803,5 +4803,51 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "openreachtech/hora-core": {
+  "rel_ver": "0.16.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 22,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "zjunlp/HarnessGrad": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

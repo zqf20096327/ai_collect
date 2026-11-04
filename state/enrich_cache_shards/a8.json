@@ -4903,5 +4903,32 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "dragsoshuvo/Direct": {
+  "rel_ver": "v10.4.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 98,
+   "C++": 1,
+   "Starlark": 1,
+   "Meson": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

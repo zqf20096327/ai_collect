@@ -4384,5 +4384,30 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "SAP-archive/ai-core-samples": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "commit": "20261104",
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

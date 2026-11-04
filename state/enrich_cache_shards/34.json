@@ -4477,5 +4477,32 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "microsoft/DataHub": {
+  "rel_ver": "installer-v0.6.9",
+  "rel_pub": "2026-11-03",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "JavaScript": 35,
+   "TypeScript": 31,
+   "Python": 21,
+   "Jupyter Notebook": 10,
+   "CSS": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

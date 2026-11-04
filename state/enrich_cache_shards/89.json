@@ -435,7 +435,7 @@
   }
  },
  "pytorch/cpuinfo": {
-  "commit_7d": 2,
+  "commit_7d": 3,
   "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
@@ -451,10 +451,10 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4764,7 +4764,7 @@
  },
  "udacity/deep-learning-v2-pytorch": {
   "commit_90d": 2,
-  "commit_7d": 2,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4776,10 +4776,10 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

@@ -31,7 +31,7 @@
  },
  "openai/math": {
   "commit_7d": 2,
-  "commit_90d": 7,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "C++": 0,
    "Mermaid": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

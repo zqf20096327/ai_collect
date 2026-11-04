@@ -554,11 +554,11 @@
   }
  },
  "ys-ll/uniterm": {
-  "commit_7d": 74,
-  "commit_90d": 1337,
-  "rel_ver": "v1.10.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 127,
+  "commit_90d": 1207,
+  "rel_ver": "v1.11.2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 9,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -574,10 +574,10 @@
    "Java": 2,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1400,13 +1400,16 @@
    "HTML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261104",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261104"
+  },
+  "commit_90d": 770,
+  "commit_7d": 66
  },
  "sanscript-tech/hacking-tools-scripts": {
   "rel_ver": null,

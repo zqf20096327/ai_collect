@@ -4126,5 +4126,28 @@
    "contrib": "20261029",
    "lang": "20261029"
   }
+ },
+ "Ne0bliviscaris/SQL-Detective-RAG-Game": {
+  "rel_ver": "iteration",
+  "rel_pub": "2025-02-11",
+  "rel_days": 631,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

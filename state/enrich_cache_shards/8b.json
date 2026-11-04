@@ -5041,9 +5041,9 @@
    "CSS": 3,
    "Batchfile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "release": "20261028",
+   "release": "20261104",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028",

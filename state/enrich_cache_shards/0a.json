@@ -4491,5 +4491,32 @@
    "contrib": "20261031",
    "lang": "20261031"
   }
+ },
+ "Yupcha/hr-tools": {
+  "rel_ver": "v2.1.3",
+  "rel_pub": "2026-07-02",
+  "rel_days": 125,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 96,
+   "Rust": 2,
+   "CSS": 2,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

@@ -4765,5 +4765,52 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "andyhtran/deepwiki-by-cc": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 84,
+   "Svelte": 15,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "ALDamico/TombLauncher": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-06-07",
+  "rel_days": 150,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C#": 100,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

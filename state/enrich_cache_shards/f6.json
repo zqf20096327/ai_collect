@@ -4208,5 +4208,55 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "MHJoy99/CCUsageX": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 83,
+   "CSS": 11,
+   "HTML": 3,
+   "PowerShell": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "affinidi-ai/agent-stream": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 64,
+   "TypeScript": 31,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Gherkin": 1
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
  }
 }

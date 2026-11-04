@@ -530,11 +530,11 @@
   }
  },
  "process-intelligence-solutions/pm4py": {
-  "commit_90d": 70,
-  "commit_7d": 3,
+  "commit_90d": 60,
+  "commit_7d": 2,
   "rel_ver": "2.7.22",
   "rel_pub": "2026-03-20",
-  "rel_days": 218,
+  "rel_days": 229,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -548,10 +548,10 @@
    "Jupyter Notebook": 32,
    "HTML": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4784,13 +4784,13 @@
   }
  },
  "ooboqoo/shiping": {
-  "commit_90d": 95,
-  "commit_7d": 2,
-  "rel_ver": "v3.4.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 11,
-  "rel_n90": 10,
-  "rel_pre": false,
+  "commit_90d": 112,
+  "commit_7d": 17,
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 4,
+  "rel_n90": 11,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -4804,10 +4804,10 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"

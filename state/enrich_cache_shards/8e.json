@@ -109,11 +109,11 @@
   }
  },
  "twinnydotdev/twinny": {
-  "commit_90d": 118,
-  "commit_7d": 1,
+  "commit_90d": 120,
+  "commit_7d": 2,
   "rel_ver": "v4.0.20",
   "rel_pub": "2026-09-22",
-  "rel_days": 31,
+  "rel_days": 43,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -129,10 +129,10 @@
    "Dockerfile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4234,10 +4234,10 @@
   }
  },
  "najafdev/secscan_ai": {
-  "commit_90d": 288,
-  "commit_7d": 18,
+  "commit_90d": 295,
+  "commit_7d": 7,
   "rel_ver": "v2026.10.23",
-  "rel_pub": "2026-10-27",
+  "rel_pub": "2026-11-03",
   "rel_days": 1,
   "rel_n90": 1,
   "rel_pre": false,
@@ -4254,10 +4254,10 @@
    "CSS": 3,
    "Shell": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261104",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261104",
+   "release": "20261104",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
@@ -4421,6 +4421,44 @@
    "security": "20261102",
    "contrib": "20261102",
    "lang": "20261102"
+  }
+ },
+ "Cesium1377/ai-financial-intelligence-platform": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
+  }
+ },
+ "john-walks-slow/dsh-wait-subagent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261104",
+  "dim_ts": {
+   "release": "20261104",
+   "security": "20261104",
+   "contrib": "20261104",
+   "lang": "20261104"
   }
  }
 }
