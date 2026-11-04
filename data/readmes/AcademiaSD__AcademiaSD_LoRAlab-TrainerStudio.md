@@ -8,6 +8,10 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-04**
+
+- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **FLUX.1 Dev, image LoRAs** — LoRA and LoKr on the transformer and T5-XXL in NF4, downloaded ready from `diffusers/FLUX.1-dev-bnb-4bit` with no token. 800 steps at 512² take about 16 minutes and peak at ~10 GB of VRAM on an RTX 5080 ([details](#flux1-dev--image-loras)) [`21965bb`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/21965bb)
+
 **2026-11-03**
 
 - **Wan 2.2 on 12 GB of VRAM**: the Pre-Cache has 448 x 448 and 480 x 480. At 448 x 448 (rank 8, both experts) training peaks at 10.4 GB, and 1-frame previews stay below that ([details](#wan-22-t2v-a14b--video-and-image-loras-high--low-noise)) [`e95a6ef`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/e95a6ef)
@@ -194,6 +198,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **Ming-Image** *(experimental)* | Image LoRAs for transparent designs and edit LoRAs (before → after) on inclusionAI's Ming-Image 0.1 Design | 7 GB (512²) / 13 GB (1024²) |
 | **Anima** | Anime and illustration LoRAs (characters, styles) | **4 GB** (NF4) / 6 GB (BF16) |
 | **ERNIE-Image** | Image LoRAs (characters, objects, styles); supports rsLoRA, LoRA+ and LoKr | **Under 8 GB** (NF4; verified during training) |
+| **FLUX.1 Dev** | Image LoRAs (characters, objects, styles) | 12 GB (~10 GB measured at 512², ~11 GB at 768²) |
 | **FLUX.2 Klein 9B** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 12 GB |
 | **FLUX.3 Image Klein** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 8 GB |
 | **MOSS-Image** | Image LoRAs (characters, objects, styles) on MOSS-Image Base or SFT **and edit LoRAs** (before → after, on top of armV5, armV4 or Moss-Image-Edit); supports rsLoRA, LoRA+ and LoKr | **6 GB** (512²) / 8 GB |
@@ -222,6 +227,8 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 **Cola de trabajos:** con un entrenamiento en marcha, *Iniciar / Reanudar* o *Iniciar Pre-Caché* en cualquier entrenador pregunta si añadirlo a la cola, con una copia de los ajustes de ese momento. Los trabajos se ejecutan uno tras otro en la GPU. El botón **Cola** del lanzador y de cada entrenador abre la página de la cola: lo que entrena ahora (progreso, tiempo restante y curva de loss) y lo que espera, que puedes reordenar arrastrando, pausar, continuar o quitar. Pausar guarda un checkpoint y deja el trabajo pausado en la cola; continuar sigue desde ese paso. Mientras un entrenador entrena, **➕ Nuevo entrenamiento en cola** abre un borrador del mismo entrenador en otro puerto para preparar el siguiente sin tocar el que entrena (ponle otro nombre de proyecto). Si un trabajo falla, se queda en la lista en rojo diciendo por qué (no se encuentra la pre-caché o el dataset, falta VRAM…); corrígelo y pulsa **↻** para reintentarlo. **✎** en un trabajo de la cola abre su entrenador con sus ajustes para cambiarlos: el botón de empezar pasa a ser **💾 Guardar cambios en la cola**. Mientras se hace la pre-caché, *Iniciar / Reanudar* sigue disponible y manda el entrenamiento a la cola. **⏻ Pausar todo y salir**, abajo en el lanzador, pausa el entrenamiento en curso guardando su checkpoint y cierra todo desde el navegador; al volver a abrir el lanzador la cola sigue sola donde estaba, empezando por ese entrenamiento. En RunPod y otras nubes el lanzador sigue abierto, con la cola pausada.
 
 **Linux:** ya tiene soporte para Linux. Cada `.bat` tiene su `.sh` equivalente; la instalación y el uso están en [docs/Linux.md](docs/Linux.md). Gracias a **[Jonathan Hecl (@jonathanhecl)](https://github.com/jonathanhecl)** por aportarlo.
+
+**FLUX.1 Dev:** nuevo entrenador de LoRAs de imagen para **FLUX.1 [dev]** de Black Forest Labs (FLUX.1 [dev] Non-Commercial License). Se descarga ya en **NF4** (13,5 GB, sin token) y los dos text encoders solo se usan en el pre-caché. Detalles en la sección *FLUX.1 Dev*.
 
 **FLUX.3 Image Klein:** nuevo entrenador de LoRAs normales y de edición (antes → después) para FLUX.3 Image Klein Base, desde 8 GB de VRAM. El captioner escribe en los formatos propios de FLUX.3 (prosa detallada, y opcionalmente con tabla de cajas `<id>`; en edición, la instrucción con `<ref_image_0>`). Necesita la versión nueva de diffusers: ejecuta **`Update_LoRAlab-TrainerStudio.bat`** antes de abrirlo. Detalles en la sección *FLUX.3 Image Klein*.
 
@@ -259,6 +266,7 @@ Each trainer downloads **only what it uses**, already quantized. The table compa
 | **Anima** | 5.6 | — | **5.6** | New trainer: the official diffusers version of Anima-Base. The 2B model trains in BF16, or in NF4 quantized when loading (nothing extra to download). |
 | **SDXL** | ~7 per model | — | **~7 per model** | New trainer: only the preset you pick is downloaded (one `.safetensors` file); your own checkpoint downloads nothing. |
 | **Ideogram 4** | 16.1 (NF4) | — | **16.1** | New trainer: the official NF4 release, which includes the unconditional transformer used only by the previews. It is downloaded from Unsloth's ungated mirror (same weights, no license gate or token needed); the Ideogram license still applies. |
+| **FLUX.1 Dev** | 33.7 | — | **13.5** | New trainer: the 12B transformer (23.8 GB) and the T5-XXL text encoder (9.5 GB) in NF4 (6.7 GB + 6.3 GB), from `diffusers/FLUX.1-dev-bnb-4bit`. |
 | **FLUX.2 Klein 9B** | 34.7 | — | **8.8** | New trainer: the 9B transformer (18.2 GB) and the Qwen3-8B text encoder (16.4 GB) in NF4 (4.9 GB + 3.8 GB; only the 28 text encoder layers Klein reads). |
 | **Qwen-Image 2512 / Edit 2511** | 57.8 each | — | **26.8 / 18.6 / 15.7** | New trainer: the 20B transformer of 2512 or Edit-2511 in NF4 (9.9 GB each; only the one you train on is downloaded) and the Qwen2.5-VL-7B text encoder you pick: BF16 (exact, default) / INT8 / NF4. The optional Lightning turbo LoRA adds 0.85 GB. |
 | **MOSS-Image** | 27.2 | — | **20.2 / 13.2 / 9.9** | New trainer: the 5B transformer of Base or SFT in NF4 (3.1 GB each; only the one you train on is downloaded) and the Qwen3.5-9B text encoder you pick: BF16 (exact, default) / INT8 / NF4. The optional turbo preview adapter adds 1.2 GB. |
@@ -637,6 +645,19 @@ The official image-edit task works at 1024: 512 and 768 are out of its distribut
 | Learning rate | 2e-5 |
 | Speed | ~0.65 s/step at 512² in BF16, ~0.8 s/step in NF4 (under 4 GB of VRAM); ~1.6 s/step at 1024² in BF16 |
 
+### FLUX.1 Dev — image LoRAs
+
+- Trains on **FLUX.1 [dev]** (11.9B) in **NF4**. The first run downloads `diffusers/FLUX.1-dev-bnb-4bit`, which is not gated and needs no token; the FLUX.1 [dev] license still applies.
+- **Pre-cache:** the same caption goes to T5-XXL (NF4, the 512-token sequence) and to CLIP-L (the pooled vector). Training does not load either of them.
+- **Train Guidance:** FLUX.1 dev takes guidance as an input. Training uses 1 by default; the setting is read when training starts.
+- **Timesteps:** the resolution-dependent shift of the official pipeline.
+- **Previews:** 28 steps / **Preview Guidance** 3.5 (the same input as ComfyUI's FluxGuidance node, with no negative pass). There is no turbo option.
+- **Captioner:** Qwen3-VL-8B NF4, shared with Z-Image and FLUX.2 Klein 9B.
+- **Defaults:** 512², 800 steps, rank / alpha 8 / 8, previews off (**Preview Every** 0).
+- **Speed and VRAM** (RTX 5080, with previews): ~1.2 s/step and ~10 GB at 512², ~2.6 s/step and ~11 GB at 768² · pre-cache ~5 GB.
+- **LoRA Targets:** *Blocks* (attention + MLP of the 19 double and 38 single blocks, default) or *All*. The LoRA is exported in diffusers format, which ComfyUI maps to FLUX.1's layers.
+- `tools/flux1/5_conversor_Flux1_NF4.py` is optional: it builds your own NF4 cache from the gated official repo (accept the license on Hugging Face first).
+
 ### FLUX.2 Klein 9B — image and edit LoRAs
 
 - Trains on **FLUX.2 [klein] Base 9B** (the undistilled model, the one meant for fine-tuning). The LoRA also loads on the distilled **FLUX.2 [klein] 9B**; it is not compatible with the 4B models.
@@ -825,12 +846,4 @@ Rank 16 matters for characters: with rank 8 the likeness is just as good, but th
 > **This trainer is experimental and in beta.** The settings below — defaults, "verified starting point", steps, rank and learning rates — are **not final** and should not be taken too seriously: they come from a handful of runs on one dataset. **Check every result by ear and keep adjusting it**; expect the recipe to change.
 
 > [!IMPORTANT]
-> **Real tests: the AR LoRA clones the singer's voice; the NAR LoRA does not.** To get an artist's voice, train the **`ar`** stage (or `both`) and load the AR LoRA in ComfyUI. A NAR LoRA alone changes how the codes are rendered, but the voice stays the base model's.
-
-YuE2-3B (m-a-p) is a **Mixture-of-Transformers**: every one of its 28 blocks carries two complete routes — an **AR** causal route that generates the semantic codec tokens, and a **NAR** route that does flow matching on the 64-dim audio latent. This trainer keeps them apart: choose **`ar` (default), `nar`, or `both`** in Training Settings. Each stage exports its own LoRA and only touches its own branch; `both` runs NAR first, reloads the base model from disk, then runs AR.
-
-- **Datasets:** songs (`.wav`, `.mp3`, `.flac`, …) with their lyrics in a `.txt` of the same name. The prepare pass re-encodes to **48 kHz stereo** and slices by silence into ≤30 s clips (`__cNN.wav`); a global `Style prompt` (and the optional `[Tags]`/`[Lyrics]` protocol) shapes every request.
-- **Real-audio codes:** m-a-p has not released YuE2's audio-to-code tokenizer, so Pre-Cache uses the community one: MERT-v2-FullSong layer 20 → Mothersuperior's tokenizer head (`v5_30k`) → one semantic code per 40 ms latent frame (`<cache>/_realcodes_<clip>.pt`, ~2.8 GB VRAM, ~1.4 GB downloaded once). It gets about 1 code in 5 exactly right, but rendering those codes with the base NAR keeps the song's voice timbre, harmony and structure.
-- **Stage = `nar`** — lyrics and phrasing: it renders the codes into audio. **In real tests it does not clone the voice**: the voice comes from the codes, which the AR writes. It learns the VAE-latent velocity seeing the text prefix **plus the clip's real codes**, the same context ComfyUI gives it, so the LoRA acts where ComfyUI generates. It is exported in ComfyUI's native layout (`diffusion_model.model.layers.N.self_attn.qkv_proj`, `mlp.gate_up_proj`…, q/k/v and gate/up fused losslessly): load it with **Load LoRA (model only)**.
-- **Stage = `ar`** (default) — voice identity, vocal timbre, instruments and the sound of the artist. **This is the stage that clones the voice in real tests**: the AR writes the semantic codes, and the voice lives in those codes (cross-entropy on the clips' real codes). This is the stage of the community's artist LoRAs, mixed 50 % with the minted regularizer pack so a small dataset cannot collapse YuE2's token grammar. It memorizes the training songs past ~1500 steps.
-- **Stage = `both`** — NAR first, then a fresh base model from disk for AR: two exports, `YuE2_FINAL_NAR_LoRA.safetensors` (ComfyUI layout) + `YuE2_FINAL_AR_LoRA.safetensor
+> **Real tests: the AR LoRA clones the singer's voice; the NAR LoRA does not.** To get an artist's voice, train the **`ar`** stage (or `both`) and load the AR LoRA in ComfyUI. A NAR LoRA alone changes how the codes are rendered, but the voice 

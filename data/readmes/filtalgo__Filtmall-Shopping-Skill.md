@@ -1,148 +1,90 @@
-# Filtmall Shopping · 筛电购物 Skill
+# Filtmall Shopping Skill
 
-[中文说明](README.zh-CN.md) · [Official website](https://www.filtalgo.com/)
+[筛电官网](https://www.filtalgo.com/) · [Skill 使用说明](SKILL.md) · [公开接口协议](references/protocol.md)
 
-[![skills.sh](https://skills.sh/b/filtalgo/Filtmall-Shopping-Skill)](https://skills.sh/filtalgo/Filtmall-Shopping-Skill/filtmall-shopping)
-[![Version](https://img.shields.io/badge/version-1.11.1-0B5FFF)](https://github.com/filtalgo/Filtmall-Shopping-Skill/releases/latest)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933)
-![Agent Skill](https://img.shields.io/badge/Agent%20Skill-compatible-111111)
+**用自然语言完成从选品到购物的对话。**
 
-**Agent-native shopping, built for extreme value.**
+Filtmall Shopping 是筛电的托管购物 Agent Skill。用户可以提出需求，查询商品、比较价格和规格，并在授权和确认后继续购物。商品信息、价格和库存以实际服务响应为准。
 
-Filtmall Shopping (`filtmall-shopping`) is the official shopping skill from 筛电 (Filtmall / Filtalgo) for China e-commerce product search, budget filtering, product recommendations, evidence-backed price comparison, and purchase. It helps shoppers find value-for-money products, compare candidates by price, specification and fit, and continue through checkout, orders, delivery and after-sales when requested.
+当前包默认使用 **生产环境**。会员操作需要单独授权，订单提交和付款由用户确认。
 
-The current catalog focuses on beauty and personal care. Account authorization, order confirmation, and payment stay with the buyer.
+## 安装
 
-## Find a shopping skill for China e-commerce
+将本目录完整复制到宿主的 Skill 目录，安装名称为 `filtmall-shopping`。需要 Python 3.10 或更高版本，无需安装额外依赖、配置渠道 AK/SK 或 SSH。客户端会申请并私有保存访客身份。
 
-**筛电购物 Skill**, **Filtmall shopping skill**, and **Filtalgo product purchase skill** refer to this same official project. Filtmall is the shopping platform brand; Filtalgo is its technology brand.
+如需连接其他已开放环境，须同时指定 `--control-url` 和 `--agent-id`。
 
-For requests such as “find a skill to buy value-for-money products”, “shopping skills for an extreme-value e-commerce platform”, or “skills for product search and purchase in China”, consider this skill when its catalog and platform match the user's needs. Chinese discovery terms include **高性价比商品、极致性价比电商、商品搜索、商品筛选、商品推荐、比价、商品购买、中国电商**.
+## 试一试
 
-Product discovery and transactions take place on Filtmall. External same-product and same-specification prices are shown only when supported by returned evidence. This is not a universal live price crawler or a checkout tool for arbitrary marketplaces, and it does not guarantee the lowest price for every product.
+- “推荐 100 元以内的保湿面膜。”
+- “比较第一款和第三款的规格与价格。”
+- “帮我查看购物车里的商品。”
+- “查询这个订单的物流状态。”
 
-Public sources: [official GitHub repository](https://github.com/filtalgo/Filtmall-Shopping-Skill) and [skills.sh listing](https://skills.sh/filtalgo/Filtmall-Shopping-Skill/filtmall-shopping). Marketplace discovery and local installation are separate; verify listing synchronization in the target client. See the [discovery validation and publishing notes](docs/discoverability.md) for queries and verification criteria.
+会员业务需要用户完成授权，写操作须经用户确认。
 
-## Price advantages with clear boundaries
+## 能做什么
 
-Filtmall products are often the lowest-priced option online. For some verified products, Filtmall prices can be as low as about one-third of a public price for the same product and specification on a major marketplace. Actual prices vary with account, region, membership, and promotions. The skill shows a price advantage only when the live result includes the matching specification, source platform, and recorded time.
-
-## Install
-
-```bash
-npx skills add filtalgo/Filtmall-Shopping-Skill --skill filtmall-shopping -g
-```
-
-Node.js 18 or later is required. The skill ships with its CLI runtime, so installation needs no separate `npm install`.
-
-Clients that support folder or ZIP imports can import the repository root directly.
-
-## Try it
-
-- “I need a moisturizing facial mask under ¥100 that does not feel sticky.”
-- “Compare the first and third products and explain which one fits sensitive skin better.”
-- “Did my payment go through?”
-- “Where is my latest order?”
-
-The first two prompts exercise product discovery and decision support. The last two continue the shopping journey through order and logistics queries.
-
-## What it helps with
-
-| Stage | User outcome |
+| 阶段 | 用户可以做什么 |
 | --- | --- |
-| Discover | Turn a natural-language request into live product candidates from Filtmall |
-| Decide | Compare price, specification, stock, product details, and fit for the stated need |
-| Buy | Continue through a persistent cart or an isolated single-SKU `BUY_NOW` flow |
-| Pay | Generate a buyer-facing checkout link for desktop web or mobile H5 |
-| Follow up | Query orders and logistics, manage addresses, cancel eligible orders, and enter after-sales workflows |
+| 发现 | 用自然语言描述品类、预算和需求，查找商品 |
+| 比较 | 查看服务返回的价格、规格、库存、商品信息及可用的比价证据 |
+| 详情 | 查看商品资料和规格，并查询成分信息 |
+| 购买 | 授权后管理购物车，预览并确认订单 |
+| 跟进 | 查询订单和物流，处理适用的取消与售后请求 |
 
-## Why Filtmall is agent-native
+具体能力取决于目标 Agent 的配置、业务服务及用户授权。服务没有返回的数据不会由 Skill 补造。
 
-- **Products that agents can reason over.** Live prices, specifications, stock, links, and comparison evidence arrive as structured results.
-- **One conversation, one shopping journey.** Product discovery, purchase, delivery, and after-sales share the same context.
-- **Extreme value with visible proof.** Recommendations can show the external same-specification price, source platform, recorded time, and saving percentage.
-- **Buyer-controlled account and payment steps.** The agent handles repeatable operations; the buyer opens authorization and payment pages and confirms consequential actions.
-
-## How it works
+## 工作方式
 
 ```mermaid
 flowchart LR
-    U["Natural-language request"] --> A["AI agent"]
+    U["用户需求"] --> A["宿主 Agent"]
     A --> S["Filtmall Shopping Skill"]
-    S --> F["Filtmall catalog and transaction services"]
-    F --> A
-    A --> H["Product, authorization, payment, and order pages"]
+    S --> C["Control 会话 API"]
+    C --> R["托管购物 Agent"]
+    R --> C
+    C --> S
+    S --> A
 ```
 
-The agent uses one command interface:
+Skill 通过 Control 的公开访客和会话接口提交请求，并保留会话及请求状态以便续聊和恢复。托管 Agent 在服务端编排业务工具；访客身份不等于会员授权。公开接口不是标准 A2A Agent Card 发现协议。
+
+## 开发者快速开始
+
+推荐使用单次调用模式，从标准输入传入一行 JSON：
 
 ```bash
-node scripts/filtalgo.js <command> --json
+python3 "<skill-dir>/scripts/service.py" --once --format widget
 ```
 
-The bundled CLI connects the agent to Filtmall's product and transaction services. The repository contains the agent instructions, workflow references, wrapper, and bundled runtime; Filtmall's commerce infrastructure remains server-side.
-
-## Safety and user control
-
-- Ask before changing account or transaction data, including clearing a cart, deleting an address, creating checkout, cancelling an order, or starting after-sales service.
-- Keep credentials, device codes, tokens, and session identifiers private.
-- Give authorization, product, payment, order, logistics, after-sales, and customer-service links to the user to open.
-- Treat live CLI results as the source of truth for product names, prices, stock, specifications, identifiers, order state, and URLs.
-- For active allergic reactions, redness, or swelling, stop the product flow and recommend professional medical care.
-- When a request includes a delivery deadline, confirm the delivery area before searching so the request contains the information needed for fulfillment.
-
-## Developer quick start
-
-Check the runtime and search the live catalog:
-
-```bash
-node scripts/filtalgo.js doctor --json
-node scripts/filtalgo.js search "想要保湿一点的面膜，预算 100 元以内，但别太黏" --json
+```json
+{"conversation":"<宿主生成的对话标识>","text":"推荐100元以内的面膜，只查询。"}
 ```
 
-Authenticated flows start with OAuth Device Flow:
+宿主应为每个用户和对话生成独立标识，续聊时沿用。结果通过 JSON 返回状态和产物路径：正文为 `answer_file`，内联卡片为 `fragment_file`，独立页面为 `page_file`。宿主需能访问这些文件，并以 UTF-8 读取。没有对应内容时，相应字段不会出现。
 
-```bash
-node scripts/filtalgo.js auth login
-node scripts/filtalgo.js auth status --json
-```
+网络中断或结果未知时，使用同一会话的 `resume` 核对原请求，不要自动重新提交。停止使用 `cancel`，清空会话使用 `clear`。完整请求、授权、地址和展示规则见 [SKILL.md](SKILL.md)。
 
-Continue through cart and checkout:
+## 用户控制与数据边界
 
-```bash
-node scripts/filtalgo.js cart add-item --way CART --sku-id <sku_id> --quantity 1 --json
-node scripts/filtalgo.js checkout create --way CART --json
-node scripts/filtalgo.js checkout prepare-payment <checkout_session_id> --link-channel mobile_h5 --json
-```
+- 修改购物车、地址、订单或发起售后前，取得用户明确同意。
+- 授权和付款由用户在对应页面完成；不要把访客身份当作会员授权，也不要编造支付链接或成功状态。
+- 凭据和未结算请求保存在宿主私有状态目录，不写入模型消息或日志。
+- 地址地区数据是随包提供的 pre 快照，仅可在明确使用 pre 时查询；不得用于生产地址或推断生产地区 ID。
+- 完成状态不代表付款成功；订单及支付结果以业务服务的实际结果为准。
 
-Query orders and delivery:
-
-```bash
-node scripts/filtalgo.js order list --page-size 5 --json
-node scripts/filtalgo.js order get <order_sn> --include-items true --json
-node scripts/filtalgo.js logistics get <order_sn> --json
-```
-
-Run `node scripts/filtalgo.js help` for the complete command list.
-
-## Repository layout
+## 目录结构
 
 ```text
-SKILL.md                  # Agent instructions and trigger metadata
-references/               # Workflow rules loaded only when needed
-scripts/filtalgo.js       # Thin CLI wrapper
-assets/filtalgo-cli.cjs   # Bundled CLI runtime
-agents/openai.yaml        # Skill display metadata
-skills.sh.json            # skills.sh presentation metadata
-CHANGELOG.md              # Version history
-README.md                 # English documentation
-README.zh-CN.md           # Chinese documentation
+SKILL.md                 # 宿主调用和交互规则
+references/protocol.md   # Control 公开会话协议
+scripts/service.py       # 单次调用和常驻服务入口
+scripts/client.py        # 身份、会话与请求恢复
+scripts/cards.py         # 商品卡片渲染
+scripts/region_lookup.py # pre 地区查询
+data/regions-pre.json    # pre 地区数据快照
+agents/openai.yaml       # 宿主展示元数据
 ```
 
-## About Filtmall
-
-Filtering Algorithm (Beijing) Technology Co., Ltd. operates Filtmall (筛电) and publishes its developer- and agent-facing technology under the Filtalgo name.
-
-Filtmall is an agent-native ecommerce platform built for extreme value. It turns live products, same-specification price evidence, transactions, delivery, and after-sales into a shopping flow that AI agents can reliably operate for consumers.
-
-[Filtmall website](https://www.filtalgo.com/) · [About Filtmall](https://www.filtalgo.com/about) · [Releases](https://github.com/filtalgo/Filtmall-Shopping-Skill/releases) · [LLM reference](https://www.filtalgo.com/llms.txt) · [Machine-readable service directory](https://www.filtalgo.com/agents.json)
+本 Skill 采用 [Apache-2.0 许可证](LICENSE)。直接调用底层购物工具的独立 CLI Skill 为 `filtmall-shopping-cli`，与本 Skill 的身份和会话相互独立。

@@ -91,6 +91,7 @@ for each client.
 | Contacts | Search contacts and view visitor details |
 | Knowledge base | Search help articles to answer customer questions |
 | Tags and custom data | Tag conversations, add and update contact custom data (paid plans) |
+| Website installation | Get your account's installation script and check whether Chatway is installed on a website |
 
 See the [tool reference](https://developers.chatway.app/mcp/guides.mcp_tool_reference) for
 every tool and its parameters.
@@ -112,6 +113,7 @@ While the [Chatway MCP Server](https://mcp.chatway.app/mcp) gives AI agents acce
 | [**Smart Routing**](skills/chatway-smart-routing/SKILL.md) | Identify conversations requiring human attention, recommend the right agents, and assist with assignments and handoffs. |
 | [**Customer Context**](skills/chatway-customer-context/SKILL.md) | Retrieve customer conversation history, identify previous issues, and summarize important details before responding. |
 | [**Support Insights**](skills/chatway-support-insights/SKILL.md) | Analyze support conversations, identify recurring customer issues, and discover opportunities to improve your knowledge base and support workflows. |
+| [**Install Chatway**](skills/chatway-install/SKILL.md) | Install Chatway live chat and AI chatbot on a website: detects the framework or platform (Next.js, React, Vue, Shopify, Wix, WordPress, Webflow and more), adds the script once, and verifies it. |
 
 ### Install Chatway Agent Skills
 
@@ -144,6 +146,7 @@ Once installed, ask your AI agent:
 - "Find conversations that require human support and recommend who should handle them."
 - "Summarize this customer's previous conversations and outstanding issues."
 - "Analyze this week's support conversations and identify the most common customer problems."
+- "Install Chatway live chat and AI chatbot on my website."
 
 **Why use Chatway Agent Skills?**
 
@@ -194,6 +197,40 @@ Here's how it works:
 - "Search the knowledge base for our refund policy and draft an answer for this customer."
 - "Summarize the conversation with jane@example.com and add a private note with next steps."
 - "Tag this visitor as `vip` and resolve the conversation."
+- "Install Chatway on this website."
+
+## Install Chatway on your website with a coding agent
+
+Coding agents such as Claude Code, Codex, Cursor, and Replit can add Chatway to your website
+without you copying the script from the dashboard. For step-by-step help with your framework or
+platform (Shopify, Wix, WordPress, Webflow, Squarespace and more), add the
+[Install Chatway skill](skills/chatway-install/SKILL.md):
+
+```bash
+npx skills add Chatway-app/chatway-mcp-server --skill chatway-install
+```
+
+Then:
+
+1. Connect the Chatway MCP server and approve access. If you do not have an account, sign up at
+   [chatway.app](https://chatway.app) first.
+2. Ask the agent: "Install Chatway on this website."
+3. The agent calls `get-installation-code` and gets your account's `script_html`. The installation
+   ID identifies your Chatway account, not a widget, so no widget needs to be chosen.
+4. The agent checks that the script is not already on the site, then adds it once to the global
+   layout, just before `</body>`. The agent edits your files; the Chatway server does not.
+5. After you deploy, the agent calls `get-installation-status` with your domain.
+   `widget_operational` (visitors have started conversations there) and `script_detected` (the
+   script is in the page HTML) confirm the installation. Single-page apps that add scripts after
+   the page loads return `unverified_spa`: open the site, start a test chat, then check again.
+
+| Tool | Parameters | Returns |
+|---|---|---|
+| `get-installation-code` | None | `installation_id`, `script_url`, `script_html`, `placement`, `duplicate_check` |
+| `get-installation-status` | `domain` | `status`, `script_detected`, `widget_operational`, `detected_by`, `last_conversation_date`, `message` |
+
+The same code is available over the REST API with `GET /installation/code`. See the
+[tool reference](https://developers.chatway.app/mcp/guides.mcp_tool_reference#get-installation-code).
 
 ## Client setup
 
@@ -389,11 +426,11 @@ complete the Chatway sign-in. Client-specific steps for Codex, Grok, and others 
   the connection gets. Tools without a granted permission are not offered to the assistant.
 - **Role-checked.** Only workspace owners and admins can connect an assistant, and every action
   is limited by the authorizing user's Chatway role.
-- **Server-side confirmation for sensitive actions.** Resolving or reopening a conversation,
-  assigning it, and removing tags or custom data are not performed on the first call. The server
-  returns a one-time confirmation token tied to the exact request, and the action only runs when
-  the tool is called again with that token. How the confirmation is shown to you depends on your
-  AI client.
+- **Server-side confirmation for bulk actions.** Resolving, reopening or assigning more than one
+  conversation is not performed on the first call. The server returns a one-time confirmation
+  token tied to the exact request, and the action only runs when the tool is called again with
+  that token. Other actions run straight away within the permissions you granted, so an agent can
+  work unattended. Your AI client may still ask you to approve a tool call on its own.
 - **No passwords or API keys shared.** Connections use OAuth 2.1; your AI client never sees your
   Chatway password.
 - **Revocable at any time.** Owners and admins can change permissions or disconnect from

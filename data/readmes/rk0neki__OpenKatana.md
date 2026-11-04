@@ -10,6 +10,7 @@ OpenKatana is an independent, open-source **editing engine your AI agent drives:
 [![Release v0.1.3](https://img.shields.io/badge/release-v0.1.3-blue)](https://github.com/rk0neki/OpenKatana/releases/tag/v0.1.3)
 [![75 tools](https://img.shields.io/badge/tools-75-6f42c1)](docs/TOOLS.md)
 [![CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
+[![Tested on Windows, macOS and Linux](https://img.shields.io/badge/tested_on-Windows_%7C_macOS_%7C_Linux-blue)](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml)
 [![Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](docs/SETUP.md)
 [![Demo](https://img.shields.io/badge/%E2%96%B6-Demo-red)](https://youtu.be/sZys4qLAprw)
@@ -40,17 +41,19 @@ A 24-second product film with procedural 3D objects, choreographed cameras, anim
   checks, so you and your agent can take turns on the same edit.
 - **Match a reference edit.** `analyze_reference` measures a reference at 60 fps (cuts versus flashes, picture cadence,
   the look of each shot, texture speed and the shape of each transition) and turns it into timeline settings.
-- **After Effects-grade effects, written as code.** Turbulent Displace, Displacement Map and six effect packs
-  (Distort, Light, Time, Blur & Sharpen, Stylize and Generate: Wave Warp, Twirl, Deep Glow, Lens Flare, Echo, Time
-  Displacement, RGB split, Fractal Noise, Advanced Lightning and more) take keyframes, eases and antialiasing, each as
-  a few lines of [timeline JSON](docs/TIMELINE.md).
+- **Compositing effects, written as code.** Displacement (turbulent noise warps and map-driven heat haze, glass and
+  water), distortion (wave warps, ripples, shockwaves, twirls, bulges, polar wraps, kaleidoscopes and mirrors), light
+  (glows, lens flares, light rays and sweeps), time (echo trails, slit-scan time displacement, stepped frame rates and
+  frame blending), blur and sharpen, stylize (RGB split, tiling, edge detection, emboss, mosaic and scatter) and
+  generators (fractal noise, lightning, radio waves, cell patterns, gradients and grids). Every effect takes keyframes,
+  eases and antialiasing, each as a few lines of [timeline JSON](docs/TIMELINE.md).
 - **Open and local.** Apache-2.0, runs on your machine, no account. Models are optional and installed separately.
 
-## New in 0.1.3: six After Effects effect packs
+## New in 0.1.3: six effect packs for distortion, light, time, blur, stylize and generators
 
-[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/ae-packs.gif)](docs/assets/ae-packs.mp4)
+[![Twirl, Polar Coordinates, Kaleidoscope, Lens Flare, Light Rays, Echo, RGB Split and Advanced Lightning, rendered by OpenKatana](docs/assets/effect-packs.gif)](docs/assets/effect-packs.mp4)
 
-**[Watch all 37 effects](docs/assets/ae-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
+**[Watch all 37 effects](docs/assets/effect-packs.mp4)** or browse the **[effects gallery](docs/EFFECTS-GALLERY.md)**:
 Distort (Wave Warp, Ripple, Shockwave, Twirl, Bulge, Polar Coordinates, Kaleidoscope, Mirror), Light (Deep Glow, Lens
 Flare, Light Rays, Light Sweep), Time (Echo, Time Displacement, Posterize Time, frame blending), Blur & Sharpen
 (Gaussian, Directional, Radial and Camera Lens Blur, Unsharp Mask, Channel Blur, Tilt-Shift), Stylize (RGB Split,
@@ -101,8 +104,9 @@ cd OpenKatana
 python scripts/setup.py
 ```
 
-Python 3.11+ and Git are required. Setup prepares the Python environment, first
-project and agent skill. FFmpeg and a supported browser are separate installations;
+OpenKatana runs on Windows, macOS and Linux. Python 3.11+ and Git are required. Setup
+prepares the Python environment, first project and agent skill. FFmpeg and a supported
+browser are separate installations ([one command per platform](docs/SETUP.md#install-ffmpeg-and-a-browser));
 Blender and generative models are optional. Use `python3` if that is your Python
 3.11+ command and follow the next commands printed by setup. There is no OpenKatana
 login. [Full setup guide](docs/SETUP.md) · [Optional MCP setup](docs/AGENT_INTERFACE.md).
@@ -186,7 +190,7 @@ flowchart LR
 
 Every entry point calls the same AgentAPI, so an agent, a ComfyUI App and Studio edit one project with revision
 checks. A timeline is plain JSON, validated against strict contracts (unknown fields are rejected). The engine draws
-each frame in headless Chrome, where effects such as the After Effects packs register from `web/fx_*.js`, and FFmpeg
+each frame in headless Chrome, where the effect packs (distortion, light, time, blur, stylize and generators) register from `web/fx_*.js`, and FFmpeg
 encodes the result. The ComfyUI integration is built on the official Comfy SDK; model jobs run through ComfyUI.
 
 ## Documentation and compatibility
@@ -198,10 +202,13 @@ encodes the result. The ComfyUI integration is built on the official Comfy SDK; 
 - [Capabilities](docs/CAPABILITY-MATRIX.md) · [Limits](docs/CAPABILITY-GAPS.md) · [Validation](docs/VALIDATION.md)
 - [Contributing](CONTRIBUTING.md) · [Skill](skills/openkatana-video/SKILL.md) · [Release notes](docs/RELEASE-NOTES.md)
 
-CI covers Windows and Linux on Python 3.11 and 3.12; check the completed runs for
-the commit you install. **macOS is untested.** FFmpeg, Chromium, optional Blender
-and generative weights are separate installations. Studio is not a full graphical
-3D scene editor. There is no hosting bill for the local app.
+[CI](https://github.com/rk0neki/OpenKatana/actions/workflows/ci.yml) runs on every push and pull request, on Windows, macOS (Apple
+silicon) and Linux with Python 3.11 and 3.12: the regression suite, the bundled photo/video
+edit, an edit of the bundled LTX-2.5 clip (no ComfyUI or model run), the Studio browser
+workflow and a wheel installed outside the checkout. Check the completed runs for the
+commit you install. FFmpeg, Chromium, optional Blender and generative weights are
+separate installations. Studio is not a full graphical 3D scene editor. There is no
+hosting bill for the local app.
 
 <details>
 <summary>Experimental hosting and remote MCP</summary>

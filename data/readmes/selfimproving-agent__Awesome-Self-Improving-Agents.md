@@ -207,6 +207,7 @@ depending on **which component is improved** during learning and adaptation.
   | 2026 | SAGE: Multi-Agent Self-Evolution for LLM Reasoning | arXiv | [paper](https://arxiv.org/abs/2603.15255) | N/A |
   | 2026 | ANDES: Agent Native Data Evolving Synthesis Tool for Autonomous Instruction Alignment | arXiv | [paper](https://arxiv.org/abs/2606.01279) | [code](https://github.com/zzy1127/ANDES) |
   | 2026 | EvoGround: Self-Evolving Video Agents for Video Temporal Grounding | arXiv | [paper](https://arxiv.org/abs/2605.13803) | [code](https://github.com/minjoong507/EvoGround) |
+  | 2026 | SIMIT: Self-Improving Vision-Language Models via Imagination at Test-Time | arXiv | [paper](https://arxiv.org/abs/2611.00053) | [code](https://github.com/monurcan/simit_paper) |
 
 </details>
 
@@ -409,6 +410,7 @@ depending on **which component is improved** during learning and adaptation.
   | 2026 | Thought-Retriever: Don't Just Retrieve Raw Data, Retrieve Thoughts for Memory-Augmented Agentic Systems | arXiv | [paper](https://arxiv.org/abs/2604.12231) | N/A |
   | 2026 | Better with Experience: Self-Evolving LLM Agents for Evidence-Grounded Health Community Notes | arXiv | [paper](https://arxiv.org/abs/2606.02215) | N/A |
   | 2026 | Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy | arXiv | [paper](https://arxiv.org/abs/2606.24177) | [code](https://github.com/AutoResearch-Factory/Agon) |
+  | 2026 | Spotter: Let the Embodied Model Lead, and the VLM Reflect for It | arXiv | [paper](https://arxiv.org/abs/2609.36808) | [code](https://github.com/zqc3117/Spotter) |
 
   </details>
 

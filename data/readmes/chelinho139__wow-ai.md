@@ -23,6 +23,9 @@ Nothing here injects code, reads game memory, or generates input. The addon uses
 
 WoW addons are sandboxed: no network, no file reads at runtime. Two doors remain. **Out:** the addon draws your message as a strip of colored 4-pixel squares in the top-left corner of the screen; the bridge screen-captures that corner four times a second, decodes it, and runs the chat's agent headless in the chat's folder. **In:** a load-on-demand addon reads its files from disk at the moment it is loaded, so the bridge writes the reply into a pool of 200 pre-made slot addons and the game loads a fresh one from a timer. Cheap "is it ready yet" checks ride on a third trick: an empty `.wav` won't play and a valid one will. Map layers travel the same way: the agent's tools hand them to the bridge, which keeps them versioned and ships them inside the slot files. Details in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/MAP.md](docs/MAP.md).
 
+## Curseforge
+Official curseforge addon page: https://www.curseforge.com/wow/addons/ai-agents-chat
+
 ## Agents
 
 The bridge drives whichever of these you have installed; each chat can use a different one.
@@ -88,6 +91,19 @@ The bridge captures the game window through X11 (`bridge/capture_x11.py`, no pac
 ### macOS (native client)
 
 Same commands as Linux: `node setup.js --project <dir>` (it looks for the client under `/Applications/World of Warcraft` and `~/Applications/World of Warcraft`; pass `--wow "<client folder>"` otherwise), then `npm start`. The bridge captures the game window with `bridge/capture_mac.py`, which needs only python3: it finds the window through System Events and grabs its top-left corner with the built-in `screencapture`. The first run asks for two permissions in System Settings, **Automation** (System Events) and **Screen Recording**, for the terminal the bridge runs in. `npm run probe:mac` saves what the capture sees to `bridge/probe.png` and says whether it decoded the strip.
+
+### Moving from the beta to the Forever release
+
+The release client lives in `_forever_` and its exe is `Wow.exe` (the beta's were `_classic_beta_` and `WowB.exe`). An install from the beta needs one step:
+
+```
+git pull
+node setup.js
+```
+
+It moves `bridge/config.json` to `_forever_` (the paths and the process name; your other settings stay) and installs the addon and its slots there. It works before your first login, so you can do it ahead of launch. The beta folder is left alone.
+
+Then fully quit and relaunch the game, and enable "WoW AI" at the character select AddOns screen. Your chats come back from the bridge's `transcripts.json` the first time the addon talks to it.
 
 ### Upgrading from wow-claude
 
@@ -201,7 +217,7 @@ The keys you are most likely to touch. Every key, flag and environment variable 
 | `maxParallel` | how many chats may run an agent at once (default 3) |
 | `gameContext` | `false` never tells the agent about your character, whatever the addon sends (default `true`) |
 | `primerFile` | the addon/macro primer appended with the context (default `docs/WOW-ADDON-PRIMER.md`; `""` = none) |
-| `capture.processName` | the game exe without `.exe` (`WowB` for Forever); set by `setup.js` |
+| `capture.processName` | the game exe without `.exe` (`Wow` for Forever); set by `setup.js` |
 | `capture.keepComposited`, `capture.windowName` | Linux: keep the compositor drawing the game window (if the probe sees black), or find the window by title |
 | `slots`, `actMax`, `presenceMax` | pool sizes; must match the constants at the top of `WoWAI.lua` if you change them |
 | `timeoutMs` | kill a run that takes longer than this (default 30 min) |
@@ -209,7 +225,7 @@ The keys you are most likely to touch. Every key, flag and environment variable 
 ## Troubleshooting
 
 - **Connect says "No answer from the bridge" / light stays red** — is the bridge running? Is the game window on screen and not minimized? Exclusive fullscreen blocks capture. `bridge.log` shows `strip #N` when a message is decoded and `strip seen but rejected: ...` when one is misread.
-- **Linux: `bridge.log` keeps saying `waiting for WowB window`** — the game isn't running or its window has another name: set `capture.processName` to the exe name, or `capture.windowName` to part of the window title. On Wayland the capture can't see other windows; use an X11 session.
+- **Linux: `bridge.log` keeps saying `waiting for Wow window`** — the game isn't running or its window has another name: set `capture.processName` to the exe name, or `capture.windowName` to part of the window title. On Wayland the capture can't see other windows; use an X11 session.
 - **Linux: `npm run probe` shows a black or stale picture** — the compositor is letting the game present on its own. Try `"keepComposited": true` under `capture`, then windowed mode, then `nvidia-settings -a AllowFlipping=0` on NVIDIA; `/wow-ai mode reload` works without any capture.
 - **No herb/ore pins after `/wow-ai map ore`** — `/wow-ai map` says whether the `WoWAI_Nodes` data addon is installed; pins show on zone maps only, and with `filter skill` only what your skill can gather.
 - **The reply says "X is not installed on the bridge PC"** — the bridge's banner shows where it looked for each agent. Install the CLI, or put the full path of its executable in `agents.<id>.path` in `bridge/config.json` and restart the bridge.

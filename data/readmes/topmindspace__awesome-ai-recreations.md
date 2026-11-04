@@ -1,7 +1,11 @@
 # awesome-ai-recreations
 
-> 用 AI 把真实作品复刻成**能跑起来**的东西。方法、源码、成品、可跟做的步骤，都在这。
-> 同一批原作由不同模型分别复刻，成品并列对照：**DeepSeek 版（00/01，主推）** 与 **GLM 5.3-Flash 版（9 台）**。
+> 这个仓库收集 AI 的爆款、经典场景与案例，然后把它们拆开、重做一遍。
+>
+> 我们在意的不是案例本身多好看，而是**它究竟怎么实现**：结构怎么分解、参数怎么定、哪里必须手算和断言、工程上怎么取舍；以及换一个 agent 工具、换一个模型，还能不能成、能做到几成、差在哪。
+>
+> 同一个原作，我们会让不同模型各做一版并排对照（例如机械复刻系列：9 台由 GLM 5.3-Flash 完成，00/01 又由 DeepSeek 独立重做）。成品是证据，不是目的——这里更像一份公开的**复刻实验笔记**：方法、思路、讨论与分享为主，案例只是载体。
+>
 > 在线预览：<https://topmindspace.github.io/awesome-ai-recreations/>（GitHub Pages，随 main 自动部署）。
 
 ## 系列
@@ -14,26 +18,22 @@
 
 ---
 
-## DeepSeek 版（主推）
+## 两个实现
 
-[![00 机械章鱼 OC-8 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/00-机械章鱼OC-8-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) [![01 V8 发动机 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/01-V8发动机-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html)
+同一批原作，两个模型分别复刻，成品并列对照、互不覆盖：
 
-同一原作、另一次独立实现：**全中文界面 + 宝石紫 `#7c3aed` 强调色**，3D 模型与 HUD 按原作版式重新编写。
-含互动页 + 影片页（单文件离线）+ 完整源码 + 参考图 + 4:3 封面 + 逐拍验收截图。
+| 版本 | 复刻模型 | 范围 | 强调色 | 入口 |
+|---|---|---|---|---|
+| **DeepSeek 版（主推）** | DeepSeek | 00 机械章鱼 OC-8 / 01 V8 发动机 | 宝石紫 `#7c3aed` | [`deepseek复刻/`](series/机械复刻系列/deepseek复刻/README.md) |
+| **GLM 5.3-Flash 版** | GLM 5.3-Flash | 00–08 共 9 台 | 钴蓝 `#1e5fd6` | [`glm5.3-flash复刻/`](series/机械复刻系列/glm5.3-flash复刻/README.md) |
 
-| # | 机器 | 巡览 | 互动页 | 影片页 | 说明 |
-|---|---|---|---|---|---|
-| 00 | 机械章鱼 OC-8（Pelagos OC-8） | 25 s / 10 拍 | [互动页](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [影片页](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-影片页.html) | [源码与验收](series/机械复刻系列/deepseek复刻/README.md) |
-| 01 | V8 发动机（90° 十字曲轴 · 四冲程） | 26 s / 9 拍 | [互动页](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) | [影片页](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-影片页.html) | [源码与验收](series/机械复刻系列/deepseek复刻/README.md) |
+### DeepSeek 版（主推）
 
-- 实现版本说明、与 GLM 版的逐项对照、验收记录：[`series/机械复刻系列/deepseek复刻/`](series/机械复刻系列/deepseek复刻/README.md)
-- 复现：`cd series/机械复刻系列/deepseek复刻/src/kit && node build.mjs all`
+| | | |
+|---|---|---|
+| [![00 机械章鱼 OC-8 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/00-机械章鱼OC-8-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [![01 V8 发动机 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/01-V8发动机-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) | **00/01 两台 · 中文 + 宝石紫**<br>25 s / 10 拍 与 26 s / 9 拍巡览；互动页 + 影片页 + 完整源码 + 参考 + 验收截图。<br>[实现说明](series/机械复刻系列/deepseek复刻/README.md) · [00 互动页](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) · [01 互动页](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) |
 
----
-
-## GLM 5.3-Flash 版（9 台）
-
-> 复刻模型：**GLM 5.3-Flash**（Z Code 会话内完成）。全中文界面、钴蓝 `#1e5fd6` 强调色。
+### GLM 5.3-Flash 版（9 台）
 
 | | | |
 |---|---|---|
@@ -109,6 +109,7 @@ awesome-ai-recreations/
 - **来源如实**：原作者、链接、数据口径写清，每个数字标 frame / ref / guess；复刻模型写清
 - **实现版本单独存放**：同一原作的另一次实现放 `series/<系列>/<模型名>复刻/`，自包含、不覆盖其他版本；通用约定不变，复刻模型与强调色在版本与通用文档中登记
 - **不写密钥**，**不拷贝别人的源码**，引用别人的提示词必留来源与署名
+- **不记录私人信息**：本地路径、机器配置、个人对话与内部协作记录不进入仓库
 
 完整版见 [`docs/通用基础与约定.md`](docs/通用基础与约定.md)。
 

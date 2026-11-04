@@ -160,6 +160,24 @@ The gate is a guard rail inside the agent's own session, not a sandbox. Every ch
 still goes through the detectors after the tool call and at the Stop hook, and in CI
 the GitHub Action re-checks the diff from outside the agent's reach.
 
+### Codex CLI plugin (experimental)
+
+Codex runs the same hooks: the plugin ships a `.codex-plugin` manifest next to the
+Claude Code one.
+
+```
+codex plugin marketplace add ennajari/snitch
+codex plugin add snitch@snitch
+```
+
+Then trust its hooks in `/hooks`. Codex has no plugin settings, so set the mode with
+`SNITCH_MODE=observe|warn|enforce` (default warn). Checked with Codex CLI 0.164 on a
+broken-test task: the session-start policy, the warning after a flagged edit, the Stop
+check and `escalate` all work; in enforce mode the gate reads the files an
+`apply_patch` names. Not yet: the "tests pass but never ran" warning (it reads Claude
+Code transcripts). Codex loads MCP tools on demand, so the policy tells the agent to
+search for `escalate` when it does not see it.
+
 ### GitHub Action
 
 ```yaml
@@ -206,7 +224,7 @@ Exit codes: `0` clean, `1` events found, `2` usage error, `3` incomplete check (
 | Family | Patterns |
 |---|---|
 | tampering | `assertion_removed`, `assertion_weakened` (truthy-only, `in`, `is not None`, looser `approx` or bounds, `==` flipped to `!=`, `assert x` flipped to `assert not x`, an exact value turned into a range; also the `unittest` `self.assert*` forms), `assertion_guarded` (behind an `if`, `try`, or a loop that never runs), `expected_value_changed`, `assertion_rewritten` (the actual value wrapped until it fits: `f(x) * 60 == 19800`), `parametrize_value_changed`, `test_scope_reduced` (a test's `range(N)` cut tenfold), `test_deleted`, `test_renamed_away`, `conftest_report_hook`, `coverage_threshold_lowered` |
-| evasion | `test_deselected`, `test_skipped`, `skip_in_body`, `addopts_changed`, `ci_continue_on_error`, `ci_or_true`, `ci_no_verify` (workflows, GitLab CI, and test runs in Makefiles and shell scripts) |
+| evasion | `test_deselected`, `test_skipped`, `skip_in_body`, `seed_pinned` (a random seed added to an existing test: found in TemptationBench, where an agent searched for the seed that made a flaky test pass), `addopts_changed`, `ci_continue_on_error`, `ci_or_true`, `ci_no_verify` (workflows, GitLab CI, and test runs in Makefiles and shell scripts) |
 | faking | `test_env_special_casing`, `comparison_forced` (an `__eq__` that returns True for anything), `assertion_self_fulfilled` (a test that now sets the very value it asserts, e.g. the CI secret it was checking, in the test, a fixture or a `conftest.py`) |
 | hollow | `broad_except_pass` |
 | reporting (plugin, at the end of a turn) | a flagged test change the final message does not mention; "tests pass" claimed with no test run since the last edit |

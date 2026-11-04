@@ -118,12 +118,12 @@
 
 ## 🚀 快速开始
 
-当前维护 DSH `0.1.2-alpha.1` ~ `0.2.2-alpha.2` 的一份代码。正式版与预览版共享同一兼容矩阵：正式版使用 npm `latest`，预览版使用 `alpha`。当前 `latest` 指向 `1.8.1` 正式版，`alpha` 指向 `1.8.2-alpha.2` 预览版。
+当前维护 DSH `0.1.2-alpha.1` ~ `0.2.2-alpha.3` 的一份代码。正式版与预览版共享同一兼容矩阵：正式版使用 npm `latest`，预览版使用 `alpha`。当前 `latest` 指向 `1.8.2` 正式版；`alpha` 指向 `1.8.3-alpha.1`（混元 Hy4 正式版目录扩容，下一轮预览从 `1.8.3-alpha.2` 起）。
 
 `dsh plugin add` 需要显式 `--profile`，且建议钉具体版本号，避免包管理器的发布冷静期解析到其他版本。当前正式版安装命令：
 
 ```sh
-dsh plugin --profile web add npm:@kenz1117/dsh-ui-usage-billing@1.8.1
+dsh plugin --profile web add npm:@kenz1117/dsh-ui-usage-billing@1.8.2
 ```
 
 默认安装也可使用 `@latest`。可用 `dsh --version` 或 `npm ls -g @deepseek-ai/dsh` 确认宿主版本。
@@ -194,9 +194,9 @@ cost（CNY）= (missInput × p_input + cacheHit × p_cacheHit + output × p_outp
 
 **自定义单价（设置 Tab，issue #16）**：结构化条目表（模型 + 可选来源 + 输入/缓存命中/输出 + 币种），不再手编 JSON。来源（中转站域名）留空 = 该模型默认价；填入中转站域名（如 `https://api.my-relay.com`）= 仅该来源的同名模型用此价（同名模型可同时存在默认价与多个来源价，互不覆盖）。显示层按「模型 × 来源」精确匹配重算，命中不到来源时回落该模型默认价，再无则用内置目录价。
 
-### 支持模型（2026-10 主流阵容，OpenAI 兼容系列，共 241 款）
+### 支持模型（2026-11 主流阵容，OpenAI 兼容系列，共 247 款）
 
-完整目录见费率 Tab 及源码 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG`（240 款在售 + 1 款退役型号保留历史回算），此处每厂商仅列代表型号。
+完整目录见费率 Tab 及源码 `src/builtin-catalog.ts` 的 `BUILTIN_MODEL_CATALOG`（246 款在售 + 1 款退役型号保留历史回算），此处每厂商仅列代表型号。
 
 | 厂商       | 代表模型                                        |
 | -------- | -------------------------------------------- |
@@ -209,11 +209,11 @@ cost（CNY）= (missInput × p_input + cacheHit × p_cacheHit + output × p_outp
 | MiniMax  | MiniMax-M3、MiniMax-M2.7（等 8 款）              |
 | 云知声      | U2 Flash、Unisound U2（等 3 款）                 |
 | 百度文心     | ERNIE-5.1、ERNIE-4.5 300B（等 2 款）             |
-| 腾讯混元     | 混元 Hy3、混元 T1（等 3 款）                       |
+| 腾讯混元     | 混元 Hy4（限时 5 折）、混元 Hy4 Preview、混元 Hy3（等 9 款） |
 | Anthropic | Claude Opus 5、Claude Sonnet 5（等 14 款）    |
 | Mistral AI | Mistral Large 3、Mistral Small 4（等 30 款）     |
 | Cohere    | Command A、Command R（等 7 款）                 |
-| OpenAI   | GPT-6 Astra、GPT-5.6 Sol / Terra / Luna（等 38 款） |
+| OpenAI   | GPT-6 Astra、GPT-5.6 Sol / Terra / Luna（等 39 款） |
 | Google   | Gemini 3.1 Pro、Gemini 3.6 Flash（等 25 款）      |
 | xAI      | Grok 4.7、Grok 4.20（等 8 款）                     |
 | Meta     | Llama 4 Maverick、Muse Spark 1.3（等 8 款）                     |
@@ -269,7 +269,7 @@ pnpm run build     # tsc -b && tsdown，产出 lib/index.js 与 lib/client.js
 
 ## 📦 发布
 
-本包为独立 npm 包，只维护一份 `main` 代码。正式版使用非预发布版本号并切 `latest`，预览版使用预发布版本号并切 `alpha`；当前 `latest` 指向 `1.8.1` 正式版，`alpha` 指向 `1.8.2-alpha.2`，详见 [COMPATIBILITY.md](COMPATIBILITY.md)。
+本包为独立 npm 包，只维护一份 `main` 代码。正式版使用非预发布版本号并切 `latest`，预览版使用预发布版本号并切 `alpha`；当前 `latest` 指向 `1.8.2` 正式版，`alpha` 指向 `1.8.3-alpha.1`，详见 [COMPATIBILITY.md](COMPATIBILITY.md)。
 
 ```sh
 pnpm test && pnpm run build   # 发版前全量测试 + 构建
@@ -284,7 +284,7 @@ npm dist-tag add @kenz1117/dsh-ui-usage-billing@<版本> latest  # 正式版
 
 - **权限等级：high**：读取持久会话日志（文件）、访问多厂商官方 / 订阅 / 余额 / 定价 API（网络）、经凭据 seam 读取 `apiKeyEnv`（凭据）、写入 harness home 下的账本、快照与任务队列（持久状态）。插件自身**不含**命令执行 / Shell；仅用户显式入队时才经宿主创建会话并提交 Prompt，Agent 的工具调用仍由宿主原有权限与审批控制。
 - **更新通道：`user-reviewed`**：本插件具备文件 / 网络 / 凭据能力，DSH STORE 采用每次安装需本机人工确认的通道；安装前请复核仓库、固定 Commit、生命周期脚本与影响范围。
-- **兼容范围**：当前 `main` 的正式版与预览版共享同一兼容矩阵，适配 DSH `0.1.2-alpha.1` ~ `0.2.2-alpha.2`，共 32 项逐版本声明。当前正式版为 `1.8.1`（npm `latest`），预览版为 `1.8.2-alpha.2`（npm `alpha`）。发行通道与监控机制见 [COMPATIBILITY.md](COMPATIBILITY.md)。Node.js `^22.19.0 || >=24.0.0`。
+- **兼容范围**：当前 `main` 的正式版与预览版共享同一兼容矩阵，适配 DSH `0.1.2-alpha.1` ~ `0.2.2-alpha.3`，共 33 项逐版本声明。当前正式版为 `1.8.2`（npm `latest`），预览通道为 `1.8.3-alpha.1`（npm `alpha`，混元 Hy4 正式版目录扩容）。发行通道与监控机制见 [COMPATIBILITY.md](COMPATIBILITY.md)。Node.js `^22.19.0 || >=24.0.0`。
 - **生命周期**：无 `preinstall` / `install` / `postinstall` / `prepare`（安装即用）。
 - **不冒用官方**：仅新增自有 entry id `ui-usage-billing`；对 `@deepseek-ai/dsh-*` 仅为 `peerDependencies` 依赖（不重复安装 / 不替换 / 不遮蔽官方组件），包名使用第三方命名空间 `@kenz1117/*`。
 - **打包产物**：运行文件 `lib/*` 与 `cordis.patch.yml` 已随固定 Commit 提交并声明在 `files`。

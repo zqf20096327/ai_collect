@@ -36,7 +36,7 @@ binary. For that, Go is a better fit: one static binary to deploy, low and
 predictable memory, fast startup, and real concurrency for many simultaneous
 sessions without a GIL. The heavy numerics stay where they belong (the ONNX
 Runtime, the remote services), so giving up Python costs little here. See the
-[benchmarks](https://github.com/gojargo/jargo-benchmarks) for the honest performance picture.
+[benchmarks](#benchmarks) for the honest performance picture.
 
 ## Features
 
@@ -84,8 +84,9 @@ task := pipeline.NewWorker(pipeline.New(
 task.Run(ctx)
 ```
 
-[`examples/voice/openai`](examples/voice/openai) is that pipeline as a complete
-server (WebRTC signaling, VAD/turn-taking, barge-in).
+[`examples/getting-started/06-voice-agent`](examples/getting-started/06-voice-agent)
+is a complete voice agent on the dev runner (WebRTC signaling, a browser client,
+VAD and turn-taking, barge-in).
 
 **Run it in Docker**: build on the `gojargo/jargo-build` base and ship on the
 distroless `gojargo/jargo` runtime (it bundles the ONNX Runtime), then:
@@ -99,16 +100,25 @@ the **[Quickstart](docs/getting-started/quickstart.md)** for the full setup.
 
 ## Examples
 
-Runnable bots live in [`examples/`](examples):
+Runnable bots live in [`examples/`](examples). Start with the
+[getting-started](examples/getting-started) series, which builds up from one
+spoken sentence to a voice agent with tools, each step a short `bot` function on
+the [development runner](docs/guides/runner.md):
+
+```sh
+CARTESIA_API_KEY=... go run ./examples/getting-started/01-say-one-thing
+# then open http://localhost:7860
+```
+
+The others:
 
 - **echo**: hear yourself back, no API keys.
 - **voicebot**: the full voice agent (STT → LLM → TTS over WebRTC) with
   turn-taking, long-term memory, and tracing.
-- **voice/**: one headless backend per provider, each wiring its STT/LLM/TTS
-  explicitly and exposing the WebRTC `/offer` endpoint (no web UI). Run with
-  `go run ./examples/voice/<provider>` (e.g. `deepgram`, `cartesia`, `openai`)
-  and drive it from a browser client, the `nextjs-voicebot` in
-  [jargo-client-react](https://github.com/gojargo/jargo-client-react).
+- **voice/**: the voice agent on each provider's STT, LLM and TTS, wired
+  explicitly on the dev runner. Run with `go run ./examples/voice/voice-<provider>`
+  (e.g. `voice-deepgram-flux`, `voice-cartesia`, `voice-openai`) and open
+  <http://localhost:7860>.
 - **twiliobot**: a phone agent over Twilio Media Streams, with the idle watchdog.
 
 The fastest way to try them (locally or with Docker) is the
@@ -146,6 +156,22 @@ Both libraries are loaded at run time through
 time. Point jargo at them with `JARGO_ONNXRUNTIME_LIB` and `JARGO_RNNOISE_LIB`, or
 leave them on the loader's default search path. The
 [base images](docs/deploy/docker.md) bundle all of them.
+
+## Benchmarks
+
+1,000 concurrent sessions served on 3 CPUs: one jargo process, against one
+Pipecat 1.15 process per CPU (the GIL holds each to one core).
+
+| | jargo | Pipecat |
+|---|---|---|
+| Memory, idle | 8.6 MiB | 162 MiB |
+| Memory, 1,000 sessions | 124 MiB | 357 MiB |
+| Throughput | 96k frames/s | 10.8k frames/s |
+| Startup per session | 0.12 ms | 1.08 ms |
+
+Medians of 6 runs on a GitHub-hosted runner (AMD EPYC 7763), every difference
+significant. This is framework overhead only: provider round trips dominate what
+a caller hears, and cost the same on both. [Method](docs/benchmarks.md).
 
 ## License & attribution
 

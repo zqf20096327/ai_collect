@@ -33,7 +33,7 @@
 
 ## 💡 Why Nexus
 
-- **It works while you're away.** Turn on autopilot with a dollar budget, walk off, and your phone buzzes when the chat finishes or needs you. Or schedule it: `/schedule 0 9 * * 1-5 /review` reviews the project every weekday morning.
+- **It works while you're away.** Turn on autopilot with a dollar budget, walk off, and your phone buzzes when the chat finishes or needs you. Or schedule it: `/schedule 0 9 * * 1-5 /review branch` reviews the branch every weekday morning.
 - **It's yours.** It runs on your computer, with your files, your shell and your keys, and your chats are stored there too, not in someone else's cloud.
 - **Any model, with the cost in plain sight.** Claude, GPT, Gemini, Groq, DeepSeek, Mistral, xAI, hundreds more through OpenRouter, or a free local model in Ollama or LM Studio. Each chat shows its cost in dollars, estimated from list prices.
 - **Several agents at once without collisions.** Agents can work in their own git worktrees and hand back a branch each, so you merge the one you like.
@@ -45,6 +45,7 @@
 | | |
 | --- | --- |
 | 🤖 **A real coding agent** | Reads, searches and edits your code, runs shell commands and tests, spins up subagents for side quests, and keeps a task list. Plan mode researches first and proposes a plan before touching anything. |
+| 🏅 **Official coding agent** | Pick **nexus-coder** in the Agent button. It sizes each task, then runs bigger ones through its own five-stage workflow (Understand, Plan, Build, Verify, Report) shown as the task list. It checks that every API and flag it uses really exists, keeps secrets out of output and commits, asks before destructive commands, keeps token use low, and proves its work with test output before calling it done. Its partner **nexus-verifier** rechecks large or risky changes with fresh eyes. Run the workflow with any agent as `/nexus-workflow <task>`. |
 | 🛒 **Agent marketplace** | 120+ hand-picked agents ship with Nexus, from security reviewers and vulnerability patchers to test writers, DevOps and frontend specialists. You can also browse [aiagentslist.com](https://aiagentslist.com/agents) and [Hugging Face](https://huggingface.co/datasets/tiny-agents/tiny-agents). Install any of them in one click. |
 | 🧰 **Skills** | The marketplace's **Skills** tab installs Agent Skills, the `SKILL.md` folders Claude Code, Codex and VS Code use, from [Anthropic's collection](https://github.com/anthropics/skills), popular collections such as Superpowers, Vercel, OpenAI, Hugging Face and Trail of Bits, [skills.sh](https://skills.sh), or any GitHub link you paste. Read, update, turn off or remove what you have from **Installed**, and `/create-skill` has the AI write a new one. Skills you already set up for those tools (`.claude/skills`, `.agents/skills`, `.github/skills`) work as they are. Nexus reads a skill when a task fits, and every skill is also a `/command`. |
 | 🔌 **MCP marketplace** | One-click [MCP](https://modelcontextprotocol.io) servers: Hugging Face, GitHub, Playwright, Context7, Brave Search and more, plus hundreds of community servers and Hugging Face Spaces. Both local (stdio) and remote (streamable HTTP) servers work. |
@@ -60,7 +61,7 @@
 | ⏰ **Schedules** | `/schedule <cron> <prompt>` runs a prompt on a timer in that chat: a morning review, a nightly dependency audit, a weekly cleanup. |
 | 🔔 **Push notifications** | Your phone hears when a chat finishes or waits for an approval, even with Nexus closed. This is standard Web Push, sent straight from your server. |
 | 🙋 **Questions and alerts** | The agent asks when a decision is yours, with options to tap, instead of guessing. When another chat finishes or needs an answer, you get a toast that opens it, a mark in the sidebar and a count in the tab title, or a system notification while Nexus is in the background. The computer Nexus runs on notifies you too, even with no browser open: a Windows toast you can click to open the chat, macOS Notification Center, or notify-send on a Linux desktop. Your phone gets Web Push. |
-| 🐙 **GitHub flow** | `/review` reviews your branch or a pull request, `/issue 42` fixes an issue with a test, and `/pr` commits, pushes and opens the pull request. All three use the GitHub CLI. |
+| 🐙 **GitHub flow** | `/review branch [base]` reviews your branch, `/review 42` reviews a pull request, `/issue 42` fixes an issue with a test, and `/pr` commits, pushes and opens the pull request. GitHub tasks use the GitHub CLI. |
 | 👀 **It can see** | A Screenshot tool lets the agent look at the page it just built in headless Edge or Chrome, at desktop or phone width. |
 | 🗂️ **Workspace viewer** | The Files tab shows every folder in the chat, and opens code with syntax colors and line numbers for the usual languages, big files included. You can still edit and save it there. It follows changes the AI or another app makes, and asks before replacing edits you haven't saved. |
 | 📎 **Point at code** | Type `@` to pick a file from any folder in the chat, or select lines in the Files tab and press **Ask Nexus**. |
@@ -70,6 +71,9 @@
 | 🧑‍🦰 **Ponytail mode** | The [ponytail](https://github.com/DietrichGebert) "lazy senior dev" agents ship in the catalog: the smallest change that fully solves the task, plus review, audit and debt ledger agents. |
 | 📱 **Phone app and voice** | Install it from the browser's **Add to Home Screen** for a full-screen app. It has a layout built for small screens, a keyboard-aware composer, 44pt touch targets, and a mic button that turns speech into your message. |
 | ⏪ **Safe by default** | Permission modes, approval prompts, a checkpoint before every prompt so you can rewind files and conversation, an **Undo file** button for each file in the Changes tab, and a server that listens on localhost only. |
+| 🔁 **Reliability** | All off until you turn them on in Settings → Reliability. **Requests per minute** paces each provider so its rate limit is never hit. **Auto retry** waits out rate limits (as long as the provider asks), overloaded servers and dropped connections, showing each wait in the chat. **Error notifications** tell you when a chat stops on an error and why. **Fallback models** take over, in the order you choose, when a key runs out of credit or quota. |
+| 🔐 **Permissions** | Like VS Code's approvals, in Settings → Permissions: set each tool (commands, edits, web, subagents, every MCP server) to ask, allow or off, and add command rules by prefix or /regex/ to allow, always ask or block. Every part of a chained command needs an allow rule, and a block holds even in bypass. **Import from VS Code** brings over your `chat.tools.terminal.autoApprove` rules from VS Code, Cursor, Windsurf or VSCodium. |
+| 🧩 **Works with VS Code** | MCP servers you set up in VS Code, Cursor or Windsurf (and a project's `.vscode/mcp.json`) appear under **Marketplace → MCP servers → VS Code & Cursor**, ready to install with their inputs as fields. **Open in VS Code** in a project's menu opens the same folder there, so your VS Code extensions work on it next to Nexus. (Extensions themselves need VS Code's extension host, so they run in VS Code, not inside Nexus.) |
 | 🛡️ **Risk check** | Before a risky command or edit runs (deleting folders, force-pushing, git resets, admin rights, deploys, database deletes, secrets or CI files), the chat's model rates its risk. If it is high, the agent stops to look for a safer way first. If there isn't one, you're asked; on autopilot or in bypass it goes ahead. Turn it off in Settings. |
 | ✅ **Keep or undo each edit** | After a turn, the files it changed wait above the message box, like in VS Code: open a file to see its diff, then **Keep** or **Undo** it, or **Keep all** and **Undo all** at once. |
 | 🔁 **Self-improving** | Ask the built-in self-improvement bot for a feature and it edits Nexus itself and runs the tests. As a Linux service it also restarts, and rolls back if the server doesn't come back. |
@@ -152,7 +156,7 @@ flowchart LR
   prompts["Your prompts: global, project, chat, plus injection"] --> nexus
 ```
 
-- **Agent button** (next to the model): switch this chat to any agent type, go back to the default **Nexus**, create a new one with AI, or open the marketplace.
+- **Agent button** (next to the model): switch this chat to any agent type, go back to the default **Nexus**, create a new one with AI, or open the marketplace. The official agents, **nexus-coder** and **nexus-verifier**, come with Nexus and are marked **Official**. **Edit** saves your own copy (in `.nexus/agents/` or `~/.nexus/agents/`), which replaces the official one until you delete it.
 - **Prompts button** (the sliders): three tabs.
   - **This chat** adds to the system prompt for this conversation only.
   - **Project** adds to it for every chat in this folder.
@@ -166,19 +170,27 @@ flowchart LR
 | --- | --- |
 | `/create-agent <task>` | Have the AI write a new agent type |
 | `/create-skill <task>` | Have the AI write a new skill |
+| `/design <request>` | Build or improve interfaces, branding and visual assets |
+| `/debug [fix\|explain] <problem>` | Trace a bug and fix it, or investigate without edits |
+| `/test [write\|run] <target>` | Add focused tests or run existing checks |
+| `/review <target>` | Read-only review with prioritized findings and file locations |
+| `/refactor <target and goal>` | Simplify code while preserving behavior |
 | `/agent` · `/prompts` · `/marketplace` | Open the agent picker, the prompts editor, or the marketplace |
-| `/plan` · `/mode <mode>` | Research-only plan mode, or `default`, `acceptEdits`, `plan` or `bypass` |
+| `/plan` · `/mode <mode>` | Research-only plan mode, or `default`, `acceptEdits`, `plan`, `readonly` or `bypass` |
 | `/model <id>` · `/effort <level>` | Change the model or the reasoning effort |
 | `/compact` · `/autocompact` | Summarize the chat to free context, now or automatically |
 | `/autopilot [on\|off]` | Keep working without stopping to ask |
 | `/cost` · `/budget <dollars>\|off` | Show tokens and cost, or stop once the chat has cost that much |
-| `/review [PR]` · `/issue <n>` · `/pr [notes]` | Review a branch or pull request, fix a GitHub issue, open a pull request |
+| `/review branch [base]` · `/review <PR number\|URL>` | Review a branch or GitHub pull request; `/review` alone shows help |
+| `/issue <n>` · `/pr [notes]` | Fix a GitHub issue or open a pull request |
 | `/schedule <cron> <prompt>` | Run a prompt on a timer; `/schedule` lists them and `/schedule remove <id>` drops one |
 | `/check <command>\|off` | Run a command after each change and have the agent fix failures |
 | `/watch [on\|off]` | Act on `AI!` comments you save in any editor |
 | `/export` | Download the chat as Markdown |
 | `/init` · `#note` | Write a `NEXUS.md` for the project, or save a note to it |
 | `!cmd` · `@path` | Run a shell command yourself, or mention a file |
+
+Run a skill without arguments, or with `help`, to see its usage and examples. Bundled skills work in every project; user and project skills can override them.
 
 Custom commands live in `.nexus/commands/*.md` or `~/.nexus/commands/*.md`: the file is the prompt, `$ARGUMENTS` is replaced by what you type after the command, and a `description:` line in the frontmatter shows in the `/` menu. Claude Code's `.claude/commands/` and VS Code's prompt files (`.github/prompts/*.prompt.md`, where `${input:…}` takes the arguments) work too. Agent types live in `.nexus/agents/` or `~/.nexus/agents/`.
 

@@ -1,8 +1,8 @@
 <p align="center">
   <img src="https://img.shields.io/github/actions/workflow/status/AKKO-p/akko-mcp-trino/ci.yml?branch=main&label=ci" alt="CI">
-  <img src="https://img.shields.io/badge/tests-717%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-826%20passed-success" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Coverage">
-  <img src="https://img.shields.io/badge/version-0.7.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.7.2-blue" alt="Version">
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-blue" alt="Python">
   <img src="https://img.shields.io/badge/trino-%E2%89%A5%20351-blue" alt="Trino">
   <img src="https://img.shields.io/badge/MCP-2024--11--05%20to%202026--07--28%20%C2%B7%20streamable--http%20%7C%20sse%20%7C%20stdio-blue" alt="MCP">
@@ -30,6 +30,12 @@ separate token for Trino (OAuth 2.0 Token Exchange): the user's own token never
 leaves the server. Trino's access control (OPA, Ranger, or Trino's own rules)
 then decides what that user may read. Results are bounded in rows and in time,
 and every call leaves one audit line.
+
+> **Upgrading from 0.7.0?** 0.7.1 and 0.7.2 are a security release. `execute_query`
+> refuses `SHOW STATS`, `EXPLAIN`, `SHOW CREATE` and the other reads that can
+> show facts beyond a row filter or a column mask, and the user is read from `sub`.
+> With Keycloak, set `MCP_JWT_USER_CLAIM=preferred_username` before upgrading.
+> See [MIGRATING.md](MIGRATING.md).
 
 > **Upgrading from 0.6?** 0.7.0 removes and renames nothing: it adds
 > `search_columns` and `describe_schema`, pages the listings, and gives every
@@ -129,7 +135,7 @@ access: Trino decides for each user with the rules it already has, or, in
 - **A guarded door.** Bearer tokens verified against any OIDC provider's JWKS (issuer, audience bound to this server, expiry, clock tolerance), a token issued for Trino refused, protected resource metadata (RFC 9728), a Host header filter.
 - **Built to be extended without being forked.** Tool plugins and extensions are Python packages named at start: identity modes, guards at the door, audit fields, routes, tools. An extension can only refuse what the core allows, never widen it.
 - **Any MCP host, any model.** Cursor, Claude Desktop, VS Code, the Python SDK… Mistral, or any OpenAI-compatible model through the example agent.
-- **Small and proven.** 717 tests at 100 % line and branch coverage, including in-process suites on the real SDK for all three transports, a live run against Keycloak and Trino in CI ([`integration/`](integration/)), and a product-neutral guard.
+- **Small and proven.** 826 tests at 100 % line and branch coverage, including in-process suites on the real SDK for all three transports, a live run against Keycloak and Trino in CI ([`integration/`](integration/)), and a product-neutral guard.
 
 ## Documentation
 
@@ -218,7 +224,7 @@ refuse to start unless the door requires a valid token. An extension (see
 |---|---|---|
 | Python 3.12 or later | runtime | `pip` and a virtual environment |
 | A reachable Trino coordinator | the engine | any recent version; https for `jwt` and `impersonation`, and whenever a secret is sent |
-| An OIDC provider with a JWKS endpoint | the door | Keycloak, Entra ID, Okta, Dex… Tokens must carry `iss`, an `aud` naming this server, `exp`, and a subject (`preferred_username` or `sub`) |
+| An OIDC provider with a JWKS endpoint | the door | Keycloak, Entra ID, Okta, Dex… Tokens must carry `iss`, an `aud` naming this server, `exp`, and the claim that names the user (`sub` by default, `MCP_JWT_USER_CLAIM`) |
 | `jwt`: token exchange at the provider, and Trino's JWT authenticator | each user reads with their own rights | a confidential client for this server, allowed to exchange a token issued for it for one whose audience is Trino; `http-server.authentication.type=JWT` with the provider's JWKS and `required-audience` set to that audience |
 | Or `impersonation`: an account for this server, and an impersonation rule | each user reads with their own rights, without token exchange | `TRINO_USER` with `TRINO_PASSWORD` or a client certificate; a Trino rule letting that account, and only it, impersonate users |
 | Or `service`: one Trino identity | the rights of every caller | `TRINO_USER`, and `TRINO_PASSWORD` or a client certificate; give it read rights only on what every caller may read |
@@ -301,14 +307,18 @@ On the provider, give this server a confidential client allowed to exchange
 tokens, and make Trino's audience available to it. With Keycloak 26: enable
 *Standard token exchange* on the server's client, add an audience mapper for the
 Trino client to it, and have the clients of your MCP hosts put the server's
-client in the audience of the tokens they get (an audience mapper too). The
+client in the audience of the tokens they get (an audience mapper too). Keycloak's
+`sub` is a UUID that Trino's rules do not know: set
+`MCP_JWT_USER_CLAIM=preferred_username` on the server, and point Trino's
+`principal-field` at the same claim. Entra ID, Okta and Dex give `sub` an opaque value
+too; name the claim your access rules know (`upn`, `preferred_username`, `uid`...). The
 [`integration/`](integration/) folder holds such a realm, tested on every pull
 request.
 
 On the Trino side, `http-server.authentication.type=JWT`,
 `http-server.authentication.jwt.key-file` set to the provider's JWKS URL,
 `http-server.authentication.jwt.principal-field` naming the same claim the
-server reads (`preferred_username` or `sub`), and `required-issuer` and
+server reads (`MCP_JWT_USER_CLAIM`, `sub` by default), and `required-issuer` and
 `required-audience` pinning the token to your provider and to Trino's audience.
 Two users asking the same question then get the answers their own rights allow.
 `/ready` asks Trino's public `/v1/info`, since there is no identity of the
@@ -507,7 +517,7 @@ The [examples](examples/README.md) folder has the details.
 | `list_tables` | `catalog`, `schema`, `offset` (optional) | `{"tables": [...], "next_offset": n or null, "truncated": bool}`: one page of the tables and views in that schema |
 | `describe_schema` | `catalog`, `schema`, `offset` (optional) | `{"catalog", "schema", "tables": [{"table", "type", "comment", "columns": [{"column", "type", "comment"}]}], "next_offset": n or null, "shortened": bool}`: one page of whole tables, with their comments and columns |
 | `describe_table` | `catalog`, `schema`, `table`, `sample_rows` (0 to 20) | columns, types, comments, `truncated`; a governed sample when asked; what an extension's describers add |
-| `explain_query` | `sql` | `{"plan": "..."}`: how Trino would run a read-only statement, without running it |
+| `explain_query` | `sql` | `{"valid": true}`: Trino analyzed a read-only statement as the caller, without running it; `{"plan": "..."}` only once `EXPLAIN` is in `MCP_EXTRA_READ_COMMANDS` |
 | `execute_query` | `sql`, `max_rows` (optional, lower than the server cap) | `{"columns": [...], "rows": [...], "row_count": n, "truncated": bool}` |
 
 Every tool runs in Trino through the identity mode, the listing tools
@@ -518,8 +528,15 @@ value or a missing row is the access policy, not an error to retry.
 
 Every identifier is validated (`[A-Za-z_][A-Za-z0-9_-]*`) before it is placed
 in SQL. `execute_query` accepts any SQL Trino accepts, **as long as it is a
-read**: the statement is parsed into an AST and refused if it is more than one
-statement, or if an `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE`, `DROP`,
+read**. Commands go by an allow-list: `SELECT`, `DESCRIBE` of a table, and
+`SHOW CATALOGS`, `SHOW SCHEMAS`, `SHOW TABLES`, `SHOW COLUMNS` and
+`SHOW FUNCTIONS`. Any other command is refused, including one a later Trino
+adds. Some reads, such as `SHOW STATS` or `EXPLAIN`, can show facts
+beyond a row filter or a column mask; they are refused unless the administrator
+names them in `MCP_EXTRA_READ_COMMANDS` (`EXPLAIN`, `SHOW STATS`, `SHOW CREATE`,
+`SHOW GRANTS`, `SHOW ROLES`, `SHOW SESSION`). An answer carries only columns and
+rows, never Trino's statistics of the query. The statement is parsed into
+an AST and refused if it is more than one statement, or if an `INSERT`, `UPDATE`, `DELETE`, `MERGE`, `CREATE`, `DROP`,
 `ALTER`, `GRANT`, `CALL` or `SET` appears anywhere in the tree, including
 inside a CTE, a subquery, or the statement an `EXPLAIN` explains. `EXPLAIN
 ANALYZE` is refused: it executes what it explains. Table functions and the
@@ -943,6 +960,7 @@ reads its own variables from the same environment.
 | `TRINO_CLIENT_CERT`, `TRINO_CLIENT_KEY` | a client certificate and its key (PEM paths) the account authenticates with instead (mTLS); https only | none |
 | `TRINO_CATALOG` | session catalog, where a name without a catalog is read; set it to a data catalog (with `system`, such names are refused) | `system` |
 | `TRINO_READ_ONLY` | refuse writes in `execute_query` | `true` |
+| `MCP_EXTRA_READ_COMMANDS` | read commands the allow-list refuses, opened one by one, comma-separated: `EXPLAIN` (and the plan in `explain_query`), `SHOW STATS`, `SHOW CREATE`, `SHOW GRANTS`, `SHOW ROLES` (with `SHOW CURRENT ROLES` and `SHOW ROLE GRANTS`), `SHOW SESSION`. Trino answers them past a row filter or a column mask: open one only where no row filter or mask needs to hold; said at every start and to every host; an unknown name refuses to start | none |
 | `TRINO_MAX_ROWS` | result cap, 1 at least; one more row is read to say whether the answer was `truncated`; also the size of one page of a listing | `100` |
 | `MCP_MAX_CATALOGS` | the most catalogs `list_catalogs` reads before it pages them, `system` aside, 1 at least; above it the tool answers an error, never a cut list | `10000` |
 | `MCP_DESCRIBE_SCHEMA_TABLES` | the most tables in one page of `describe_schema`, from 1 to 100: a page reads each of its tables by its own branch, so its cost grows with the page | `20` |
@@ -975,6 +993,8 @@ reads its own variables from the same environment.
 | `MCP_OIDC_AUDIENCE` | the audience a token must carry: the one the provider gives tokens issued for this server (RFC 8707); never Trino's | none (this or `MCP_RESOURCE_URL` is required when auth is enabled) |
 | `MCP_RESOURCE_URL` | this server's canonical URL, such as `https://mcp.example.com/mcp`: accepted as an audience, named in the protected resource metadata the server then publishes (RFC 9728) and in the challenge of a `401` | none |
 | `MCP_JWT_LEEWAY_SECONDS` | tolerance on `exp`/`nbf`/`iat` for clock drift between the issuer and this server | `30` |
+| `MCP_JWT_USER_CLAIM` | the claim of a caller's token that names the user, as the access rules know them. `sub` is the OpenID Connect standard: the stable, unique identifier the issuer gives the user. An issuer whose `sub` is an opaque id the rules do not know (Keycloak gives a UUID; Entra ID, Okta and Dex an opaque id too) names another claim: `preferred_username`, `upn`, `uid`... A token without it is refused, never read from another claim | `sub` |
+| `MCP_JWT_ALGORITHMS` | the signature algorithms a caller's token may use, comma-separated, among `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `ES256`, `ES384`, `ES512` (for example `RS256,RS512` for an identity provider that signs with either); a shared-secret algorithm (`HS256`...) or `none` refuses to start | `RS256` |
 | `MCP_ALLOWED_HOSTS` | Host header filter (the SDK's DNS rebinding protection): `host` or `host:port` entries, comma-separated, `host:*` for any port (the only wildcard); once the filter is on, a request that carries an `Origin` header is refused (403); empty serves any Host | none (off) |
 
 Auth enabled without a JWKS URL, or without an audience of this server's own,
@@ -1069,7 +1089,7 @@ ruff check akko_mcp_trino --select D100,D101,D102,D103,D105,D107   # every publi
 mypy akko_mcp_trino           # the package ships py.typed and type-checks clean
 pip-audit                     # no known vulnerability in the dependency tree
 bash lint-vendor-neutral.sh   # fails if the package imports anything product-specific
-pytest                        # 717 tests; line or branch coverage below 100 % fails the run
+pytest                        # 826 tests; line or branch coverage below 100 % fails the run
 integration/run.sh            # live: Keycloak, Trino and three servers in Docker, then removed
 python -m build && twine check dist/*
 akko-mcp-trino --check        # effective configuration, no secrets; exit 2 if it would not start

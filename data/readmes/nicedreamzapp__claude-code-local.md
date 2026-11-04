@@ -4,7 +4,7 @@
 
 <a href="https://www.youtube.com/watch?v=a9vtBSl_j_o"><img src="https://img.youtube.com/vi/a9vtBSl_j_o/hqdefault.jpg" width="640" alt="Watch the demo: hit your Claude Code limit, type exit, keep going on a local model"></a>
 
-# Hit your limit? Keep going.
+# Claude Code Local: hit your limit? Keep going.
 
 **Claude Code, running on your own computer when your Claude usage runs out. Same tools, same project, no API key.**
 
@@ -511,6 +511,7 @@ ones on 8 or 16 GB do best with one clear step at a time. It keeps you moving un
 
 | | |
 |---|---|
+| 🧭 **Step by step guides** | [Offline on a Mac](https://nicedreamzapp.github.io/claude-code-local/claude-code-offline-mac/) · [Apple Silicon and MLX](https://nicedreamzapp.github.io/claude-code-local/claude-code-apple-silicon-mlx/) · [No API key](https://nicedreamzapp.github.io/claude-code-local/claude-code-without-api-key/) · [8 GB and 16 GB Macs](https://nicedreamzapp.github.io/claude-code-local/best-local-model-small-mac/) · [Windows](https://nicedreamzapp.github.io/claude-code-local/claude-code-windows-local-model/) · [Linux](https://nicedreamzapp.github.io/claude-code-local/claude-code-linux-local-model/) · [Which local model](https://nicedreamzapp.github.io/claude-code-local/which-local-model-claude-code/) · [FAQ](https://nicedreamzapp.github.io/claude-code-local/faq/) |
 | 📖 **[Full technical guide](docs/FULL-GUIDE.md)** | Every model table, benchmark, tuning setting and design note |
 | 📊 [Benchmarks](docs/BENCHMARKS.md) · 🔧 [Tool-call reliability](docs/TOOL-CALL-RELIABILITY.md) | The numbers and how they were measured |
 | ⚖️ [Claude Code Local vs Ollama](docs/vs-ollama.md) | The same 10 coding tasks on both, 30 runs each: same pass rate, 2.8x faster on Qwen 3.5 2B |

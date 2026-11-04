@@ -51,11 +51,13 @@ export COMMAND_CODE_API_KEY="user_..."
 
 ### Auth file
 
-The provider also reads existing credentials from:
+The provider also reads existing credentials from, in this order:
 
 - `~/.commandcode/auth.json`
-- `~/.pi/agent/auth.json`
+- `~/.pi/agent/auth.json` (or `$PI_CODING_AGENT_DIR/auth.json` when pi runs with that variable)
 - `~/.omp/agent/auth.json`
+
+Both transports and the quota commands use the same ambient lookup, after any credentials supplied by the host. `PI_CODING_AGENT_DIR` redirects only the pi auth-file slot; the `.commandcode` and `.omp` paths still use `HOME`. Isolate `HOME` as well when a sandbox must not read those credentials.
 
 Supported examples:
 
@@ -132,8 +134,9 @@ When a valid cache exists, the provider registers the cached catalog immediately
 
 While pi is running, use these provider commands without restarting:
 
-- `/commandcode-refresh` fetches and re-registers the current model catalog. Overlapping refreshes are coalesced, and a failed refresh keeps the last valid catalog active.
-- `/commandcode-status` shows redacted discovery diagnostics, including the source, model count, timestamps, cache path, endpoint, and warning. If a Responses reasoning event has an unsupported shape, a separate stream warning remains visible until the extension is reloaded or the host restarts. The event is preserved unchanged; no reasoning text is included in the warning.
+- `/commandcode-refresh` fetches and re-registers the current model catalog, and forgets the probed transport so the next request tries the Provider API again (for example after upgrading a Go account). Overlapping refreshes are coalesced, and a failed refresh keeps the last valid catalog active.
+- `/commandcode-status` shows redacted discovery diagnostics, including the source, model count, timestamps, cache path, endpoint, and warning. If a Responses reasoning event has an unsupported shape, a separate stream warning is cleared when the next Responses HTTP request starts, before its outcome is known. Requests on Chat Completions, Messages, or generate do not clear it. The slot is shared by concurrent Responses requests, so a late warning from an older in-flight response can still replace it. The event is preserved unchanged; no reasoning text is included in the warning.
+- `/commandcode-diagnostics` shows a shareable support report: plugin/host version, CLI snapshot, selected transport and wire, capability provenance, price status, and the latest request's HTTP status, attempts, outcome, first body-chunk latency and longest gap. It keeps only one request summary in memory. It never collects prompts, tool content, credentials, raw errors, account data or configured local paths. Model identifiers come from the host; recognized path-/credential-shaped values are redacted, but custom names can still identify your setup. Request IDs are included only when they match a bounded hexadecimal/UUID format. Timing is measured between body chunks, not tokens; first-chunk latency may include an error response. A request started most recently owns the report even if another request finishes later. Retry counts are scoped to that stream call, not host-level retries. Review the report before sharing it.
 - `/commandcode-quota` shows your Command Code account usage and quota in a dashboard-style layout: credits remaining and used with a percentage, monthly/purchased/free sources, the current plan, available usage totals, the API key name, and the 5-hour and weekly usage windows.
 
 The `commandcode-quota` command reads from the Command Code alpha usage endpoints (the same ones the `cmd` CLI `/usage` command uses): `whoami`, `billing/credits`, `billing/subscriptions`, and `usage/summary`. It authenticates with the same API key the provider already uses. If the command cannot reach those endpoints or an endpoint schema changes, unavailable sections are reported explicitly instead of being displayed as zero usage. Output is plain text (via `ui.notify`) so it works across pi and compatible hosts such as OMP.
@@ -142,9 +145,19 @@ On Oh My Pi the provider also registers an OMP usage provider through the `usage
 
 Set `CMD_ZDR=1` to send Command Code's documented `x-cmd-zdr: 1` zero-data-retention header. The legacy `COMMANDCODE_ZDR=1` alias remains supported.
 
+### Request metadata on the generate transport
+
+The legacy `/alpha/generate` fallback used by Go accounts mirrors the official CLI's request shape, which includes metadata the Provider API path does not send:
+
+- the absolute working directory (`config.workingDir`) and a slug derived from it (`x-project-slug`);
+- the host session id (`x-session-id`) and, when it is a UUID, the same value as `threadId`;
+- `x-taste-learning`, the CLI's opt-in for Command Code's server-side taste learning. The CLI sends its `tasteLearning` setting (default on); this extension never reads the learned profile back, so it sends `false` unless `COMMANDCODE_TASTE_LEARNING=1` is set, and always `false` under `CMD_ZDR=1` or `COMMANDCODE_ZDR=1`. Caller headers cannot override this policy.
+
+The dedicated local-files, git-state, memory, and skills request fields stay empty. Conversation messages, tool results, system prompts, and tool definitions are still sent as required for inference.
+
 The following environment variables are intended for tests, local mocks, and compatible API endpoints:
 
-- `COMMANDCODE_API_BASE`
+- `COMMANDCODE_API_BASE` (Provider API base; the alpha endpoints used by `/login` key validation and `/commandcode-quota` are derived from it without the `/provider/v1` suffix; an explicitly empty value does not fall back to production)
 - `COMMANDCODE_MODELS_URL`
 - `COMMANDCODE_MODELS_CACHE`
 - `COMMANDCODE_MODELS_TIMEOUT_MS` (defaults to 10 seconds; invalid or non-positive values use the default)
@@ -161,7 +174,7 @@ The legacy generate transport resolves image support from the host's `model.inpu
 
 The Command Code Provider API does not currently include prices in its model catalog. This extension therefore keeps a static table for models with known prices so pi and OMP can display estimated request costs. DeepSeek V4 uses time-dependent rates: the extension applies the documented 2x peak rates on weekdays from 01:00-04:00 and 06:00-10:00 UTC, and off-peak rates at all other times, including the entire weekend. The same request-time selection is used by the native Provider API path and the legacy generate fallback.
 
-Models missing from that table display zero cost in pi. This does **not** mean that Command Code will bill the request at zero. The Command Code Usage page remains authoritative for each request. Check the current [Command Code pricing](https://commandcode.ai/docs/resources/pricing-limits) before relying on the displayed value.
+Models missing from that table display zero cost in pi. The provider warns once per selected unpriced model per load, and diagnostics distinguishes an unknown price from an explicitly free model. An expired tracked promotion is marked `review-required`; the snapshot verification date is always shown. This does **not** mean that Command Code will bill the request at zero. The Command Code Usage page remains authoritative for each request. Check the current [Command Code pricing](https://commandcode.ai/docs/resources/pricing-limits) before relying on the displayed value.
 
 A read-only companion check, `npm run check:commandcode-pricing`, compares the live Provider API catalog and the official pricing page with the static table. It never writes prices: exit code `0` means every compared rate matches, `1` means drift or an expired promotion needs manual review, and `2` means the price could not be checked. The daily catalog workflow and applicable pull requests publish the Markdown report to the GitHub Actions summary. The pricing page has no public pricing API, so the check parses its private Next.js Flight payload; if that format changes the check fails loudly instead of reporting a false pass, and prices stay manually reviewed.
 

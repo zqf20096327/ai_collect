@@ -17,7 +17,7 @@ action is read from that equilibrium, and every synapse learns from the differen
 settles, with no backward pass and no training/inference switch.
 
 ```sh
-python -m pip install cadence-net==0.93.0
+python -m pip install cadence-net==0.93.1
 ```
 
 ```python
@@ -55,7 +55,7 @@ episodic memory, the recall memory, a learned code, images.
 The [documentation index](https://github.com/muellerberndt/cadence/blob/main/docs/README.md)
 lists the rest: wide inputs, growing and grafting, evaluation, your own anatomy, how the
 brain settles, backends; the
-[released documentation](https://github.com/muellerberndt/cadence/blob/v0.93.0/docs/README.md)
+[released documentation](https://github.com/muellerberndt/cadence/blob/v0.93.1/docs/README.md)
 describes the APIs of the installed package. Integrated learned world prediction, repair
 localized to what failed and cheap stable operation are work in progress; Cadence is alpha
 research software.
@@ -89,7 +89,7 @@ witnessed facts at once. The options can be used together.
 starts with these common cases before giving the complete reference.
 A brain trained without one of them gets it later: `brain.grow(recall=True)`, or new output
 slots with `brain.grow(slots=...)`, returns a new brain, the trained one with the part added,
-settling as before until learning gives the part weight. `brain.graft(donor, ...)` puts trained
+settling as the trained one did until learning gives the part weight. `brain.graft(donor, ...)` puts trained
 regions of another brain into a larger one, such as a trained visual system, or a whole
 connectome as one region of a larger anatomy
 ([grow and combine brains](https://github.com/muellerberndt/cadence/blob/main/docs/grow.md)).
@@ -139,8 +139,8 @@ regions whose activity settles together, so later regions shape earlier ones
 while an answer forms, and the action comes from the qualified neural state.
 The learner compares local activities in a free and a nudged phase, without a
 backward differentiation pass. The relevant comparison with a recurrent
-backprop network is acquired behavior and total work on the same task, which
-[the orientation page](https://github.com/muellerberndt/cadence/blob/main/README.md#compared-with-a-backprop-network)
+backprop network is acquired behavior and total work on the same task, as
+[the comparison below](https://github.com/muellerberndt/cadence/blob/main/README.md#compared-with-a-backprop-network)
 sets out; other model families have
 [their own learning contracts](https://github.com/muellerberndt/cadence/blob/main/docs/contracts.md).
 

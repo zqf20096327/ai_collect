@@ -178,7 +178,7 @@ Pull requests for new features are welcome. Bug fixes too — if you find an iss
 
 A huge thank you to every developer who took the time to improve this extension with pull requests. Your features, fixes and ideas made it better for everyone!
 
-- [@Gh61](https://github.com/Gh61) — 21 PRs
+- [@Gh61](https://github.com/Gh61) — 22 PRs
 - [@ClaudioCas](https://github.com/ClaudioCas) — 13 PRs
 - [@rbuss93](https://github.com/rbuss93) — 13 PRs
 - [@MartinWooChina](https://github.com/MartinWooChina) — 6 PRs
@@ -197,6 +197,10 @@ A huge thank you to every developer who took the time to improve this extension 
 - [@wluisdev](https://github.com/wluisdev) — 1 PR
 
 ## Version History
+
+### Version 304.0
+- The ◀ ▶ scroll arrows in the panel toolbar and the chat composer now disappear as soon as the buttons fit without them, so you no longer have to drag the window wider and back again, and they no longer stay after Visual Studio starts or a new chat tab opens.
+- Thanks to [@Gh61](https://github.com/Gh61) for this release (#261).
 
 ### Version 303.0
 - *Switch Account* in Claude Usage now fully resets the embedded browser before the login screen, so "Continue with Google" is no longer greyed out (you sign in to Google again there).
@@ -1655,21 +1659,4 @@ Native mode now in beta phase
 - **Claude Model Selection** dropdown (Opus / Sonnet / Haiku).
 
 ### Version 3.1
-- Fixed instructions and about screens.
-
-### Version 3.0
-- **Qwen Code** support.
-
-### Version 2.8
-- Fix terminal hiding on tab switching.
-
-### Version 2.7
-- **Native Claude Code** support for Windows.
-
-### Version 2.6
-- Clickable image chips to open attached images.
-- **VS 2026** support.
-- Prompt history with Ctrl+Up / Ctrl+Down.
-
-### Version 2.5
-- Updated install instruction
+- Fixed instructions and about

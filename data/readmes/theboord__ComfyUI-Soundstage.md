@@ -79,6 +79,35 @@ Scan a QR code and your phone becomes the shot camera on the live 3D set. Walk i
 <p align="center"><img src="docs/media/readme_v4/card_phone.gif" width="880" alt="Your phone is the viewfinder, step by step: scan the QR, the live stage on the phone, aim and zoom, pick a prime, tap to focus, T1.4 with live depth of field, pull focus between A and B marks, roll, and keep the take on the shot."></p>
 <p align="center"><sub><a href="https://github.com/user-attachments/assets/9cf05272-476e-446f-b067-99361772ee13">▶ Watch the phone and the desktop side by side, in real time</a></sub></p>
 
+### 🎭 Swap a character in real footage (Recast)
+
+Bring in a real clip and recast one person with a character photo. Everyone and everything else stays the real plate, and the original audio is kept. Recast tracks the subject with SAM 3.1, re-performs them with the new look, and composites them back (or hands you the layer and matte for your compositor).
+
+- **Default, open weights:** LTX-2.5 union control (pose + face), on your own GPU.
+- **Optional engine: Openjutsu,** Comfy's own character-swap app (MiniMax H3), built in as a Recast engine: through the MiniMax H3 API (a partner model, off by default), or on local H3 weights with the separately installed Akatz Labs node pack (check the H3 licence for your region).
+
+So it's one place for the whole job: script, blocking, shooting, phone camera, character swaps, Ripple edits and the cut. See [docs/recast.md](docs/recast.md).
+
+### 🎙️ Record yourself: webcam or phone
+
+Your own performance drives the shot. No mocap suit, no app to install.
+
+- **Lip sync and acting (Real performance):** press **● Record** and act it out on your webcam and mic (3-2-1 count-in, up to 10 s). Your face, body and voice drive the character; voice conversion can turn your voice into theirs.
+- **Pose control (Capture motion):** act it out on the webcam, or bring any clip of one person. Body, hands, fingers, the path and the jumps go onto a person on the stage, and the render follows that pose.
+- **From your phone:** scan the QR, tap **Film**, and send it as **Capture motion**, **Real performance**, or **Footage** (keep the real clip for **Recast** character swaps or **Ripple** edits).
+
+See [docs/performance.md](docs/performance.md).
+
+### 🎛️ Full control, presets optional
+
+Presets are a starting point, never a cage. Every setting stays open:
+
+- **⑤ Motion → Advanced (LTX):** steps for each stage, shift and scheduler, the stage-2 start, your own sigma schedule, sampler, CFG and seed, a stack of LoRAs (several at once, each with its own strength), how literally to follow the clay (layout IC-LoRA, clay blur, frame reference), resolution, two-stage, frame rate, temporal x2, decode tiles and the codec. **Reset to preset** puts it back.
+- **④ Frame:** steps, CFG, a negative prompt, and a style or character LoRA with its strength.
+- **Open in ComfyUI** on any take opens its exact node graph, every node and wire, to change anything else.
+
+The video and image models here are distilled (few-step) versions, so speed is built in: no separate step-reduction LoRA needed.
+
 <p align="center"><img src="docs/media/readme_v4/card_drive.gif" width="880" alt="Drive anything, a live stage capture: select a car, person, horse or boat and press D. REC keys the take; Drive takes over from keys."></p>
 
 <p align="center"><img src="docs/media/readme_v4/card_drive_horse.gif" width="880" alt="Drive anything, a live stage capture: walk up to a horse, swing into the saddle and ride it from a canter to a gallop with the keyboard."></p>
@@ -98,7 +127,7 @@ Scan a QR code and your phone becomes the shot camera on the live 3D set. Walk i
 
 <p align="center"><img src="docs/media/readme_v4/card_quality.png" width="880" alt="Draft it low, then go high-res: Draft (lower quality, quick look) to Final (clean motion and detail) to high-res (up to 2624 x 1408). Every ComfyUI setting for your favourite models is still there: steps, CFG, sampler, seeds, LoRAs, resolution."></p>
 
-<p align="center"><b>Also on main:</b> the Activity bar shows which node your render is on, with an ETA · right-click a clip in the Cut to edit it at the step that made it · kept Drive takes are auto-corrected · the try-it demo loads your script.</p>
+<p align="center"><b>Also on main:</b> a live timer with percent, steps and time left, and a soft done-chime · the Activity bar shows which node your render is on, with an ETA · right-click a clip in the Cut to edit it at the step that made it · kept Drive takes are auto-corrected · the try-it demo loads your script.</p>
 
 <p align="center"><sub>Built in 3 days for Comfy Org's <i>Open Source Higgsfield</i> challenge, and shipping daily since. &#11088; Star the repo to follow along.</sub></p>
 
@@ -129,7 +158,7 @@ Import your screenplay. Cast it. Block every scene in 3D clay with real camera r
 - **Actors you direct, not prompt.** Pose them to the fingertips with IK, or mocap them from any clip or your webcam into the set you already built. Horses and riders, cars with seated cast.
 - **Live physics and movie stunts.** Drag people onto crates and horses, knock stacks over, crash cars through crates; reverse J-turns, donuts and handbrake 180s that roll on their springs.
 - **Real camera rigs and true coverage.** Dolly, jib, Steadicam, handheld, drone, hood mounts, real lenses and solar-accurate light; several setups from one blocking, consistent by construction. Your **phone is the viewfinder**.
-- **Hollywood-grade finals that check themselves.** Draft · Final · Hollywood (2624×1408) on LTX-2.5; every take is checked for freezes, jumps, face drift and cars driving backwards, and scored on how well it **follows your blocking**.
+- **Finals that check themselves.** Draft · Final · Advanced (every LTX knob yours: steps, shift, scheduler, CFG, resolution up to 2624×1408) on LTX-2.5; every take is checked for freezes, jumps, face drift and cars driving backwards, and scored on how well it **follows your blocking**.
 - **A real NLE timeline, delivered at source spec.** Dissolves, dips, wipes, sound generated in place, loudness to broadcast targets; export to Avid, Premiere, Resolve and FCP (EDL, XML, FCPXML, OTIO, AAF) with the camera original's timecode, plus VFX Layer Packs.
 - **Round trip with Blender, Unreal, Maya and Nuke.** Import a whole world as the set; send the shot back with builder scripts (measured IoU 0.99+ in Blender).
 - **An AI Director plus MCP.** Talk or type to the set; Claude Desktop or Code can drive the open App over MCP. Every change is proposed first and undoable.
@@ -137,7 +166,7 @@ Import your screenplay. Cast it. Block every scene in 3D clay with real camera r
 </details>
 
 <details>
-<summary><b>Everything new since the contest (Director, Presets, Timeline, Hollywood, take checks, live physics, stunts, sets, interop, phone)</b></summary>
+<summary><b>Everything new since the contest (Director, Presets, Timeline, quality presets, take checks, live physics, stunts, sets, interop, phone)</b></summary>
 
 Every section links to its tutorial chapter. All pictures are real App screens and real renders from the milestone evidence.
 
@@ -159,9 +188,9 @@ The **Edit** tab (the Cut) is now a real editing timeline: V2 titles, V3 motion 
 
 <p align="center"><img src="docs/media/timeline.jpg" width="900" alt="The Cut timeline: transitions palette, Keys, Assemble scene, Title, Subtitles, Generate sound, Auto-duck, Beats, loudness target, Render MP4 / ProRes / 9:16, with dips and dissolves drawn on V1 and a title on V2"></p>
 
-#### Hollywood quality presets
+#### Quality presets: Draft · Final · Advanced
 
-⑤ Motion's Quality is **Draft · Final · Hollywood**, saved per shot, Final by default. Hollywood renders stage 1 at 704p, upscales in latent space and refines at **2624×1408**: real detail in skin, rain and panel lines, and a spinning car that stays one coherent car. **Advanced (LTX)** opens the full LTX controls (resolution, steps, sigmas, sampler, CFG, seed, IC-LoRA strength, an extra LoRA) and a **ProRes 422 HQ** master. → [Tutorial](docs/TUTORIAL.md#quality-draft-final-hollywood) · [quality.md](docs/quality.md)
+⑤ Motion's Quality is **Draft · Final · Advanced**, saved per shot, Final by default. Draft and Final are fixed recipes (8 + 3 and 12 + 6 steps at 1080p class). **Advanced** starts from Final and opens every LTX knob: steps for each stage (down to 1 for rough drafts), **shift**, **scheduler**, sampler, CFG, seed, resolution (up to 2624×1408 for hero shots: real detail in skin, rain and panel lines, and a spinning car that stays one coherent car), two-stage, frame rate, temporal x2, decode tiles, codec / CRF and a **ProRes 422 HQ** master, plus a stack of LoRAs. Change any of those on Draft or Final and the shot becomes Advanced; **Reset to Draft / Final** takes it back. → [Tutorial](docs/TUTORIAL.md#quality-draft-final-advanced) · [quality.md](docs/quality.md)
 
 
 #### Takes that check themselves
@@ -283,7 +312,7 @@ FLUX 3 Klein (or Krea 2 locked to the stage's depth) paints the first frame of e
 
 #### &#9316; Motion: animate it with sound
 
-LTX-2.5 Layout-to-Render animates each shot from its frame, following your clay: positions, camera, timing. **Draft** (quick look), **Final** (the default) or **Hollywood** (2624×1408, hero shots), saved per shot, with an **Advanced (LTX)** pop-over; one shot or every shot. Sound effects and music are generated with the final, and typing a **dialogue line** turns on audio-driven lip sync, so the mouth follows the words. MiniMax H3 is an optional second engine. Every take then checks itself (freezes, jumps, face drift, cars driving backwards) and gets a **Follows your blocking %** score. *Why it matters:* the motion is directed, not hoped for. → [Tutorial: ⑤ Motion](docs/TUTORIAL.md#step-5-motion)
+LTX-2.5 Layout-to-Render animates each shot from its frame, following your clay: positions, camera, timing. **Draft** (quick look), **Final** (the default) or **Advanced** (your own steps, shift, scheduler, CFG, resolution up to 2624×1408 for hero shots), saved per shot; one shot or every shot. Sound effects and music are generated with the final, and typing a **dialogue line** turns on audio-driven lip sync, so the mouth follows the words. MiniMax H3 is an optional second engine. Every take then checks itself (freezes, jumps, face drift, cars driving backwards) and gets a **Follows your blocking %** score. *Why it matters:* the motion is directed, not hoped for. → [Tutorial: ⑤ Motion](docs/TUTORIAL.md#step-5-motion)
 
 <p align="center"><img src="docs/media/step4_ladder.jpg" width="960" alt="Review on the Ladder"></p>
 
@@ -313,6 +342,12 @@ A real timeline over your coverage with J/K/L, splits, ripple, match action, dis
 **What goes in goes out the same:** imported footage keeps its own spec. NLE exports link the camera original with its own timecode, frame rate and reel, and Layer Packs render at the source size, frame rate and timecode. RED, BRAW and ARRIRAW work through a proxy that relinks to the original, and anything that can't match is written into the export. → [Source fidelity](docs/source_fidelity.md)
 
 <p align="center"><img src="docs/media/exports.jpg" width="960" alt="Exports: Avid EDL, Premiere XML, FCPXML, OTIO, Layer Pack with ProRes 4444 and alpha, depth EXR, camera, AE/Nuke/Blender builders, GLB"></p>
+
+#### Save, autosave and Collect project
+
+The pill at the top of the App shows the project's name and `Saved 12 s ago · Autosave on`. Click it to **Save**, **Save As**, **Open**, **Open recent**, start a **New project** from a clean App template, or **Restore autosave**. Save writes `workflows/<name>.json` through ComfyUI's userdata API, the same file Workflow → Save writes. Autosave writes `projects/<name>/autosave/` 4 s after a change and at least once a minute while you work, and keeps the last 20. An unnamed project autosaves as `Untitled <date>`, and closing the tab with unsaved changes asks first. **Collect project** (the pill or ⑦ Deliver) copies every file the project uses into one folder, like Avid Consolidate: `scenes/S01/shots/S01_010/takes/final/…`, `cast/<character>/`, `locations/`, `cut/` with the NLE exports, a `project.json` and a `MISSING.txt`. It downloads as a zip. **Open collected project** opens that zip on another machine and relinks every file. → [Projects](docs/projects.md)
+
+A blank App opens on a **start screen**, like a project window in an editing suite. It shows your projects newest first, with a picture, "Saved 2 h ago" and their scenes, shots and takes. From there you can open, duplicate, rename, collect or restore an autosave, and delete moves a project to a trash folder instead of erasing it. You can also start a new project, try the demo or import a script. **Home** in the top row brings it back.
 
 <p align="center"><img src="docs/media/app_mode.jpg" width="760" alt="Soundstage in ComfyUI App mode"><br><em>All of it runs inside ComfyUI's App mode, on open models on your own GPU.</em></p>
 
@@ -400,6 +435,7 @@ ComfyUI's cache means each Run only does the new work.
 - **Audio department.** DX/FX/MX tracks; TTS, voice clone and voice change (Chatterbox, open weights). Audio can drive the video. See [docs/audio.md](docs/audio.md).
 - **Footage and Recast.** Bring in real footage and recast one person; the plate and its audio stay real. See [docs/recast.md](docs/recast.md).
 - **Model router.** Stage-aware model pickers with license badges. See [docs/router.md](docs/router.md).
+- **✦ Ask acts.** Fixes, recipes and requests ("a gunshot wound on Cole in shot 3") become a plan of real App actions you lock in, run step by step with a self-check and one Undo. See [docs/assistant.md](docs/assistant.md).
 - **Director and MCP.** Chat or voice to the set (local Qwen3.5 4B, offline Whisper); an MCP server lets Claude drive the open App. See [docs/director.md](docs/director.md) and [docs/mcp.md](docs/mcp.md).
 - **Presets.** Camera moves, lighting, looks, action, edit styles and recipes, one click and one undo each (`V`).
 - **Take checks.** Automatic QC chips, Re-roll and a Follows-your-blocking score on every draft and final.
@@ -414,6 +450,7 @@ ComfyUI's cache means each Run only does the new work.
 
 | When | Update |
 |---|---|
+| Nov 3 | **Floating panels:** drag any panel by its header, fold it to a chip, or pop Properties, Presets or ✦ Ask out to a second screen; Drive mode clears the HUD. |
 | Nov 2, 11:10 PST | **Try-it demo at phone width:** long chooser chips and the frame-generate row wrap, and the Coach pill steps below the **Identical?** bar. |
 | Nov 2, 10:45 PST | **Try it in your browser:** a first screen that shows clay becoming the shot, a 10-stop tour of what's new, and a real Video → 3D run replayed through the App. Video → 3D seats a car's driver and builds a city street; the rebuild is still the basic version. |
 | Nov 2, 10:13 PST | **Docs checked against the code:** README, Quickstart, Tutorial, MCP and Video → 3D pages match the App today, including what the Video → 3D server doesn't do yet. |
@@ -562,7 +599,10 @@ Use the same Python environment that runs ComfyUI. Then download the models list
 ```bash
 bash ComfyUI/custom_nodes/ComfyUI-Soundstage/tools/install_runpod.sh /path/to/ComfyUI
 # SKIP_MODELS=1 to install the node packs only; SKIP_LLM=1 to skip the optional Qwen3.5 file
+# SKIP_OLLAMA=1 to skip ✦ Ask's assistant; SOUNDSTAGE_ASSISTANT_MODEL=qwen3:8b for a smaller one
 ```
+
+**✦ Ask's brain:** the script also installs [Ollama](https://ollama.com) (MIT) and pulls Qwen3-30B-A3B (Apache-2.0, ~19 GB). It runs on the GPU when it has 24 GB of VRAM or more (it steps aside before every render), otherwise on the CPU with about 20 GB of RAM, so renders keep the GPU. With less RAM, Ask says so and uses the built-in Qwen3.5 4B. On RunPod the model lives on the network volume (`/workspace/ollama/models`); add `bash /workspace/ComfyUI/custom_nodes/ComfyUI-Soundstage/tools/start_ollama.sh` to the pod's start command (Soundstage also starts an installed Ollama when ComfyUI loads). Everything stays on your machine. See [MODELS.md](MODELS.md).
 
 ### Run it locally
 
@@ -652,7 +692,7 @@ Vendored components and their licenses are listed in [THIRD_PARTY_NOTICES.md](TH
 ### Docs
 
 - [decisions.md](docs/decisions.md): the development log, with every design decision and its reason.
-- Components: [director](docs/director.md), [mcp](docs/mcp.md), [quality](docs/quality.md), [look](docs/look.md), [agent](docs/agent.md), [advisor](docs/advisor.md), [coach](docs/coach.md), [layerpack](docs/layerpack.md), [cut](docs/cut.md), [audio](docs/audio.md), [recast](docs/recast.md), [vcam](docs/vcam.md), [router](docs/router.md), [assets3d](docs/assets3d.md), [interop](docs/interop.md), [oneclick](docs/oneclick.md), [swim](docs/swim.md), [performance](docs/performance.md), [ripple](docs/ripple.md), [touchup](docs/touchup.md), [video2stage](docs/video2stage.md), [floorplan](docs/floorplan.md), [canvas](docs/canvas.md), [source_fidelity](docs/source_fidelity.md).
+- Components: [director](docs/director.md), [mcp](docs/mcp.md), [quality](docs/quality.md), [look](docs/look.md), [agent](docs/agent.md), [advisor](docs/advisor.md), [coach](docs/coach.md), [layerpack](docs/layerpack.md), [cut](docs/cut.md), [audio](docs/audio.md), [recast](docs/recast.md), [vcam](docs/vcam.md), [router](docs/router.md), [assets3d](docs/assets3d.md), [interop](docs/interop.md), [oneclick](docs/oneclick.md), [swim](docs/swim.md), [performance](docs/performance.md), [ripple](docs/ripple.md), [touchup](docs/touchup.md), [video2stage](docs/video2stage.md), [floorplan](docs/floorplan.md), [canvas](docs/canvas.md), [source_fidelity](docs/source_fidelity.md), [projects](docs/projects.md).
 - [QUICKSTART.md](docs/QUICKSTART.md): a first shot, then a one-page scene.
 
 </details>

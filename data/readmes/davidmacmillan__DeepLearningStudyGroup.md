@@ -16,6 +16,14 @@ https://www.meetup.com/handsonprogrammingevents/
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
    
+### Paper (actually a blog) for November 10, 2026:   
+LLMs can natively read & write neural network weights   
+https://rikiyat.github.io/blog/weight-space-programming/   
+Related YouTube:   
+https://www.youtube.com/watch?v=r8sZgPx4jYA   
+Also interesting:   
+https://github.com/eomcaleb/weight-space-bench   
+   
 ### Paper for November 3, 2026:   
 Retriever-Free Retrieval: Navigating Documents with Decision Models    
 https://arxiv.org/pdf/2610.35868   
@@ -2297,9 +2305,3 @@ https://arxiv.org/pdf/1701.06547.pdf - adversarial learning for neural dialog ge
 
 ### February 27, 2017 - Hacker Dojo   
 https://arxiv.org/pdf/1612.02699.pdf - Deep Supervision with Shape Concepts for Occlusion-Aware 3D Object Parsing  
-Zeeshan's slides are in the folder with his name on it.  Along with his descriptions of his own ground-breaking work, he gives an excellent history of efforts to identify 3d objects from 2d images.  
-
-
-### February 20, 2017 - Hacker Dojo
-https://arxiv.org/pdf/1506.07285.pdf  - Ask me anything - Socher  
-https:/

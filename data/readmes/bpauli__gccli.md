@@ -22,7 +22,7 @@ Fast, script-friendly CLI for Garmin Connect. Access activities, health data, bo
 - **Gear** — list gear, usage stats, linked activities, defaults per activity type and set or unset them, link/unlink to activities, gear types, search gear brands and models, add, update, retire, unretire and delete gear, list, create, rename and delete gear collections, add gear to a collection and remove it
 - **Goals & Badges** - list, add, update and delete activity goals, set daily goals for steps, floors, intensity minutes and hydration, set and delete the weight goal, earned/available/in-progress badges, badge details, challenges (show, join and leave badge and virtual challenges; create, view, answer, leave and delete ad-hoc challenges and invite people to them), personal records and record candidates (accept or dismiss a candidate), hide or show a record type, delete a personal record
 - **Training** - browse, search (also by category, such as Garmin Coach or strength) and view training plans, show Garmin Coach, phased and strength plans, show a plan's schedule, join and leave a plan, start a Garmin Coach plan, move and delete its workouts, show your active plans, list adaptive coaching workout types
-- **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport
+- **Profile** - user profile and settings, view and change privacy settings, list, add and delete privacy zones, heart rate zones, power zones for all sports or one sport, set the FTP and power zones of a sport
 - **Hydration** — view and log daily water intake
 - **Nutrition** - view daily food logs, meals, and nutrition settings, search the Garmin food database, list recent and favorite foods, log foods and quick entries in a meal, delete log entries, and add and remove favorite foods (all but the first three need Garmin Connect+)
 - **Events** — list, list upcoming, add, and delete calendar events (races, group rides, etc.) with goals and training priority support
@@ -803,6 +803,8 @@ gccli profile privacy-zones delete <id>          # Delete a privacy zone (with c
 gccli profile hr-zones
 gccli profile power-zones                 # All sports
 gccli profile power-zones sport cycling   # One sport: cycling, running, rowing or cross-country-skiing
+gccli profile power-zones set cycling --ftp 280   # Floors at 0, 55, 75, 90, 105, 120 and 150 % of FTP
+gccli profile power-zones set running --ftp 180 --floors 116,144,163,180,207   # Running has no default floors: give all 5
 ```
 
 ### Hydration
@@ -1718,8 +1720,4 @@ Completions cover all commands, subcommands, flags, and enum flag values (e.g. `
   - `<id>`: Candidate ID, as records candidates prints it.
   - `-f, --force`: Skip confirmation prompt.
 - `gccli records hide <type-id>`: Hide a personal record type on the records page.
-  - `<type-id>`: Record type ID, as records types prints it.
-- `gccli records unhide <type-id>`: Show a hidden personal record type on the records page again.
-  - `<type-id>`: Record type ID, as records types prints it.
-- `gccli records delete <id> [flags]`: Delete a personal record. This cannot be undone.
-  - `<id>
+  - `<type-id>`: Record type ID, as records types p

@@ -16,10 +16,10 @@
 This homepage lists some representative papers/codes/datasets all about bone suppression. We aim to constantly update the latest relevant papers and help the community track this topic. We also share with you a comprehensive understanding of diffusion models in detail. Please feel free to join us and contribute to the project. If you have any questions, please feel free to contact **Zhanghao Benny Chan** and **Yifei Sun**.
 
 
-Zhanghao Chen's email address is: <czh345068@gmail.com> or <bennychan@hdu.edu.cn>
+Zhanghao Chen's email address is: <czh345068@gmail.com>
 
 
-Yifei Sun's email address is: <diaoquesang@gmail.com> or <szhsxhsyf@hdu.edu.com>
+Yifei Sun's email address is: <diaoquesang@gmail.com> or <diaoquesang@zju.edu.cn>
 
 
 ## 🐈 Bone Suppression Papers
@@ -401,7 +401,7 @@ For 240 paired JSRT original and bone suppressed images, you can also visit this
 |:---------:|:-----------:|:---:|:---------------------------------------------------------------------------------------:|
 | JSRT Mask | 2048 × 2048 | 240 | https://www.kaggle.com/datasets/yoctoman/jsrt-original-and-bone-masks?resource=download |
 
-## Acknowledges
+## Acknowledgements
 Thanks to [Junjie Wang](<zayn_wang@163.com>) for providing us with more public CXR datasets!
 
 ## Some Additional Resources
@@ -422,6 +422,16 @@ Thanks to [Junjie Wang](<zayn_wang@163.com>) for providing us with more public C
 [[录制: HIT Webinar ICLR'25 Spotlight 张瀚韬 密码：F2DN]](https://meeting.tencent.com/crm/NgdZ7eoJ08)
 
 ## Citation
+
+### arXiv 2026 - DeBoneDiT: Depth-Driven Conditional Bridge Diffusion Transformers for Bone Suppression in Chest X-Ray Images
+```
+@article{sun2026debonedit,
+  title={DeBoneDiT: Depth-Driven Conditional Bridge Diffusion Transformers for Bone Suppression in Chest X-Ray Images},
+  author={Sun, Yifei and Fan, Fenglei and Jia, Junhao and Deng, Wenming and Xu, Hongxia and Wang, Changmiao and Ge, Ruiquan},
+  journal={arXiv preprint arXiv:2610.19466},
+  year={2026}
+}
+```
 
 ### MICCAI 2025 - GL-LCM: Global-Local Latent Consistency Models for Fast High-Resolution Bone Suppression in Chest X-Ray Images
 ```

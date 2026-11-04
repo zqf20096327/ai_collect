@@ -72,7 +72,8 @@ Runnable projects and architecture references. Signals below summarize repositor
 | Project | Status |
 |---|---|
 | [DeepEval](https://github.com/confident-ai/deepeval) | Two open PRs awaiting review/merge: [#3390](https://github.com/confident-ai/deepeval/pull/3390) — five LLM-free production metrics; [#3411](https://github.com/confident-ai/deepeval/pull/3411) — retrieval, streaming, security, agent and text evaluation metrics. Tests and documentation included; neither PR merged yet. |
-| [MLflow](https://github.com/mlflow/mlflow) | Contribution ongoing — [fork created](https://github.com/MrKyaw/mlflow); continuing upstream PR or commit |
+| [promptfoo](https://github.com/promptfoo/promptfoo) | Contribution ongoing — [fork created](https://github.com/MrKyaw/promptfoo); continuing upstream PR or commit |
+| [vLLM](https://github.com/vllm-project/vllm) | Contribution ongoing — [fork created](https://github.com/MrKyaw/vllm); continuing upstream PR or commit |
 | [REA](https://github.com/morluto/rea) | In Progress |
 
 ---

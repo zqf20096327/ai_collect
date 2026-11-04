@@ -61,6 +61,10 @@ desktop, with or without the device.
 - [Desktop Agent Buddy](#desktop-agent-buddy)
 - [Develop and customize](#develop-and-customize)
 
+**Contributors:** an optional [`aspire run` development loop](docs/development.md#optional-one-command-contributor-loop)
+starts isolated Settings and Character Lab without hardware. Desktop and firmware
+actions are explicit dashboard/CLI commands; normal installation is unchanged.
+
 ## Features
 
 - **Agent-aware states:** Working, Needs attention, and Complete animations driven
@@ -1019,6 +1023,7 @@ device.
 | Desktop app | **Start** opens the desktop app and **Stop** closes it. |
 | Show the character on the desktop | Turn it off to keep the character on the device only. |
 | Show the device around the character | On (default): a small copy of the device (screen, case, and buttons), so it looks as it does on your desk. Off: only the character and its effects, straight on the desktop. |
+| Character size | Small, Medium (default), Large, or Extra large. The whole window changes size, so the character, its effects, and the device stay together. The character stays where it stands. |
 | Play sounds | Off (default). On: the desktop app plays the device's sound cues. The lower button on the case does the same. |
 | Sound volume | 30% (default), from 0% to 100%. A tick plays when you change it. |
 

@@ -62,22 +62,21 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync                                      | 💬         | 📸      | ❌       | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
 | [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📄📸     | 💬      | 🕸️       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠, SystemOne                  | 💬📸       | 🎯💬     | 💨       | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | SystemOne, Sync, Stream🧠                  | 💬📸       | 🎯💬     | 💨       | ✅[] | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠                             | 💬         | 💬      | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 | [dsh](docs/dsh.md)                         | 🇨🇳   | Sync, Stream🧠                             | 💬📄       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ❌    | ✅     |
-| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
+| [gemini](docs/gemini.md)                   | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤🎥💬📄📸 | 🎤💬🧬   | ✅🪨🕸️🔀 | ✅[] | ❌    | ✅   | ❌   | 🌱🛑  | ❌    | ❌     | ✅    | ✅     |
 | [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀🕸️ | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream🧠, Realtime, SystemOne, Embed | 🎤🎥💬📸   | 🎤🎯💬🧬  | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [llamacpp](docs/llamacpp.md)               | 🏠   | Embed, SystemOne, Realtime, Sync, Stream🧠 | 🎤🎥💬📸   | 🎤🎯💬🧬  | ✅🪨🔀   | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream🧠                             | 🎤💬📄📸   | 💬      | ✅🪨     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠, Embed, SystemOne           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
-| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠, Realtime, Embed            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Embed, SystemOne, Sync, Stream🧠           | 💬📸       | 🎯💬🧬    | ✅🔀     | ✅[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨     | ✅   | ✅    | ✅   | ❌   | 🌱📏  | ✅    | ✅     | ✅    | ✅     |
+| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Embed, Realtime, Sync, Stream🧠            | 🎤💬📄📸   | 🎤💬📸🧬 | ✅🪨🕸️   | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | [opencode](docs/opencode.md)               | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [openrouter](docs/openrouter.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | ✅🔀🪨   | ☁️[] | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬      | 🕸️       | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠                             | 💬📸       | 💬      | ❌       | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream🧠                             | 💬📄📸     | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠                             | 💬📸       | 💬📸    | ✅🪨     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
@@ -101,6 +100,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - 🎯: Decision: typed answers returned by SystemOne
 - 🧬: Embedding: text vectors with qualified input order and semantic retrieval
 - Realtime: Bidirectional audio and text session through ConnectRealtime
+- WS: Measured over the WebSocket wire instead of HTTP.
 - 📄: PDF: process a PDF as input, possibly with OCR
 - 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
@@ -326,12 +326,12 @@ Darwin_ passed in as a document, this may print:
 
 [examples/txt\_to\_txt\_websearch-sync/main.go](examples/txt_to_txt_websearch-sync/main.go): Searches the web
 to answer your question.
-💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 Snippet:
 
 ```go
-	c, err := perplexity.New(ctx, genai.ModelCheap)
+	c, err := gemini.New(ctx, genai.ModelCheap)
 	if c != nil {
 		defer func() {
 			if err := c.Close(); err != nil {
@@ -349,8 +349,6 @@ Snippet:
 		},
 	}}
 
-	// perplexity has websearch enabled by default so this is a no-op.
-	//  It is needed to enable websearch for anthropic, gemini and openai.
 	opts := genai.GenOptionWeb{Search: true, Fetch: true}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
@@ -399,7 +397,7 @@ When asked _Who holds ultimate power of Canada?_, this may print:
 
 [examples/txt\_to\_txt\_websearch-stream/main.go](examples/txt_to_txt_websearch-stream/main.go): Searches the web
 to answer your question and streams the output to the console.
-💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_websearch-stream@latest

@@ -6,7 +6,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/korean-tax-mcp)](https://pypi.org/project/korean-tax-mcp/) [![MCP Registry](https://img.shields.io/badge/MCP%20Registry-korean--tax--mcp-blue)](https://registry.modelcontextprotocol.io/v0/servers?search=korean-tax-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE) [![Built with Upstage Solar Pro 4](https://img.shields.io/badge/Built%20with-Upstage%20Solar%20Pro%204-7A3FF2)](https://www.upstage.ai/) · [English](README-EN.md)
 
-> **작성 주체(정확한 고지):** 0.7.0~0.11.1(2026-10-13~10-19)은 **Solar Pro 4**(Solar Work CLI)가 코드를 쓰고 CodeSolar가 리뷰, Claude가 테스트로 교차 검증했습니다(0.10.0은 목차만 Solar, 나머지는 Claude 작성). **0.12.0(2026-10-28)부터는 기존 세법 MCP 뼈대는 Solar Pro 4 그대로이고, 점검·버그 수정·보완은 Claude(Anthropic)가 작성**하며 CodeSolar가 리뷰합니다. 버전별 작성 주체는 [CHANGELOG](CHANGELOG.md) 각 절 머리에 적혀 있습니다. 도구 24개.
+> **작성 주체(정확한 고지):** 0.7.0~0.11.1(2026-10-13~10-19)은 **Solar Pro 4**(Solar Work CLI)가 코드를 쓰고 CodeSolar가 리뷰, Claude가 테스트로 교차 검증했습니다(0.10.0은 목차만 Solar, 나머지는 Claude 작성). **0.12.0(2026-10-28)부터는 기존 세법 MCP 뼈대는 Solar Pro 4 그대로이고, 점검·버그 수정·보완은 Claude(Anthropic)가 작성**하며 CodeSolar가 리뷰합니다. 버전별 작성 주체는 [CHANGELOG](CHANGELOG.md) 각 절 머리에 적혀 있습니다. 도구 25개.
 
 **Korea tax law for AI agents** — statutes as in force on any date, NTS rulings and court decisions, basic rules, treaties. [English](README-EN.md)
 
@@ -21,20 +21,24 @@ flowchart LR
   Q["AI의 요청<br/>법령·조문·기준일·키워드"] --> V["시행본 고르기<br/>기준일에 시행 중인 판"]
   V --> P["조문 정리<br/>항·호 분리, 단서 표시"]
   P --> L["위임 연결<br/>법→시행령→시행규칙"]
-  Q --> S["해석·판례 검색<br/>문서번호·요지"]
+  Q --> S["해석·판례 검색<br/>쟁점별로 나눠 찾기·문서번호·요지"]
+  Q --> Y["그 해 기준 묶음<br/>조문·통칙·해석, 현행과 바뀐 점"]
   Q --> C["대조·판정<br/>원문과 글자 비교"]
   V -.-> A1[("법제처 Open API")]
   L -.-> A1
   S -.-> A2[("국세법령정보시스템")]
+  Y -.-> A1
+  Y -.-> A2
   P --> R["결과<br/>원문·시행일·문서번호·링크"]
   L --> R
   S --> R
+  Y --> R
   C --> R
 ```
 
 1. **조문** — 법제처에서 기준일에 시행 중이던 판을 골라 원문을 주고, 단서 구절과 위임 조문(법→시행령→시행규칙)을 함께 붙입니다. 기준일을 안 주면 오늘 기준입니다.
-2. **해석·판례** — 국세법령정보시스템에서 질의회신·판례·심판례·통칙·집행기준을 문서번호·링크로 찾습니다.
-3. **그 해 기준** — 세목별 기준일(사업연도 말일, 양도일 등)의 조문·해석을 모으고 현행과 바뀐 점을 표시합니다.
+2. **해석·판례** — 국세법령정보시스템에서 질의회신·판례·심판례·통칙·집행기준을 문서번호·링크로 찾습니다. 쟁점이 여러 개인 질문은 쟁점마다 따로 검색합니다(`search_rulings_by_issue`).
+3. **그 해 기준** — 세목별 기준일(사업연도 말일, 양도일 등)의 조문·해석을 모으고 현행과 바뀐 점을 표시합니다. 손익 귀속·공급시기 같은 시기 규칙은 `timing_rules` 표로 먼저 봅니다.
 4. **대조** — 진술·보기를 원문과 글자 단위로 비교해 다른 숫자·단서를 표시합니다.
 
 판단과 결론은 사용자의 AI와 전문가 몫입니다. 이 서버는 근거를 가져옵니다.
@@ -44,6 +48,7 @@ flowchart LR
 - "2023년 12월 31일 기준 법인세법 시행규칙 제43조 원문"
 - "법인세법 제52조를 인용한 최근 질의회신·판례 보여줘"
 - "2019 사업연도 기준으로 법인세법 제52조 관련 조문·통칙·해석 정리해줘"
+- "가지급금 인정이자와 업무무관 지급이자 손금불산입, 두 쟁점 해석·판례를 각각 찾아줘"
 - "'경조금은 건당 10만원까지 증빙 없이 손금'이라는 말, 2026 시행령 제41조 원문과 맞아?"
 - "미국 시민권자 대표이사, 작년 국내 체류 200일, 가족은 미국 — 거주자야?"
 
@@ -66,7 +71,7 @@ claude mcp add korean-tax -- uvx korean-tax-mcp
 }
 ```
 
-두 번째 줄의 [korean-tax-calc-mcp](https://github.com/UpstageAI/korean-tax-calc-mcp)는 짝 서버입니다 — 여기서 찾은 조문·해석을 근거로 세액·한도·판정을 코드로 계산하고(85개 도구), 법정서식 엑셀까지 만듭니다. 같이 두면 **근거 찾기 → 계산 → 서식**이 한 대화에서 이어집니다. 조문·판례만 쓰려면 첫 줄만 넣어도 됩니다.
+두 번째 줄의 [korean-tax-calc-mcp](https://github.com/UpstageAI/korean-tax-calc-mcp)는 짝 서버입니다 — 여기서 찾은 조문·해석을 근거로 세액·한도·판정을 코드로 계산하고(95개 도구), 법정서식 엑셀까지 만듭니다. 같이 두면 **근거 찾기 → 계산 → 서식**이 한 대화에서 이어집니다. 조문·판례만 쓰려면 첫 줄만 넣어도 됩니다.
 
 | 키 | 쓰는 곳 |
 |---|---|
@@ -90,7 +95,7 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 5. 답이 두 개 나오면(안분 전후, 전체와 과세분 등) 질문이 묻는 하나만 답한다.
 ```
 
-## 도구 (24개)
+## 도구 (25개)
 
 | 묶음 | 도구 | 하는 일 |
 |---|---|---|
@@ -99,6 +104,7 @@ AI가 도구를 언제 부르고, 도구의 답을 언제 믿을지 정해 주�
 | | `article_history` | 언제 바뀌었는지, 시행 예정 개정 |
 | | `article_addenda` | 부칙 — 개정 조문이 언제·어느 소득분부터 적용되는지(시행일·적용례·경과조치) |
 | 해석·판례 | `search_tax_rulings` | 질의회신·판례·심판례 검색 |
+| | `search_rulings_by_issue` | 쟁점이 여러 개인 질문을 쟁점별로 나눠 검색, 쟁점마다 정확도순 + 최근 문서 |
 | | `get_tax_ruling` | 문서 본문 전문 |
 | | `rulings_by_article` | 특정 조문을 인용한 해석·판례 |
 | | `basic_rules` | 국세 기본통칙 전문 |

@@ -31,6 +31,12 @@ The [CPU-only editing sessions](examples/weight_evolution/qwen_sessions/README.m
 The [adaptive editing fixtures](examples/weight_evolution/qwen_adaptive/README.md) add feedback-conditioned proposals, equal search caps, practice-based selection, and a separate confirmation gate before the final fixture audit.
 The [checkpoint-backed editing fixtures](examples/weight_evolution/qwen_checkpoints/README.md) apply typed edits to tiny CPU safetensors and carry independently verified input/program/output hashes through selection and confirmation. Model and GPU inference remain deferred.
 The [CPU inference study](examples/weight_evolution/cpu_inference/README.md) runs a pinned tiny classifier on verified checkpoint bytes and measures baseline, context, weight, combined, and decoding conditions. Its constructed tasks establish execution correctness; Qwen reproduction and GPU execution remain deferred.
+The [adaptive CPU search](examples/weight_evolution/cpu_adaptive/README.md) uses those measured practice scores to choose bounded context, tensor, and decoding edits, restore an earlier winner, and freeze selection before confirmation. Linux acceptance covers real memory/CPU limit failures and cleanup; GPU execution remains deferred.
+The [generated CPU campaign](examples/weight_evolution/cpu_campaign/README.md) compares adaptive, fixed-order, and seeded-random search at equal capacity across pinned task instances. Complete schedule accounting, read-only replay, and paired task-level reports retain failures and vetoes without treating repeated seeds as independent tasks.
+
+The [CPU search diagnostics](examples/weight_evolution/cpu_diagnostics/README.md) freeze completed selections before probing every declared single-surface option on practice cases. Separate reference costs and descriptive reports distinguish unavailable improvements, missed options, duplicate outputs, and confirmation vetoes. GPU execution remains deferred.
+
+The [controlled CPU transfer experiments](examples/weight_evolution/cpu_controls/README.md) add deterministic weight-repair, already-correct and practice-shortcut controls. A separate pinned contract preserves earlier evidence while family-specific reports test transfer under the unchanged confirmation gate. These constructed controls do not establish benchmark gains; GPU execution remains deferred.
 
 ## Install
 

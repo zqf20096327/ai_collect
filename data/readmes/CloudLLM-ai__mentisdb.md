@@ -114,7 +114,7 @@ chmod +x mentisdb && ./mentisdb --help
 
 Release images are published to GitHub Container Registry for `linux/amd64` and
 `linux/arm64` (first published with 0.10.10.55). Tags: the release tag (for example
-`0.11.0.56`), the crate version (`0.11.0`, moves with each release of that version)
+`0.12.0.57`), the crate version (`0.12.0`, moves with each release of that version)
 and `latest`. This is also the way to get full features, including local embeddings,
 on Linux distros older than glibc 2.39 (see [Prebuilt binaries](#prebuilt-binaries)).
 
@@ -549,6 +549,22 @@ and `cert` work on the data directory directly and do not need the daemon.
   blocked; an invalid value or an entry broader than `/8` (IPv4 or IPv6) stops the daemon
   from starting. Set it in the
   environment or a `.env` file (`./.env` or `<MENTISDB_DIR>/.env`). See "Webhook targets" below.
+- `MENTISDB_MAX_BODY_BYTES`
+  Largest body, in bytes, the import routes (`/v1/import-markdown`, `/v1/skills/upload`,
+  `/v1/extract-memories`) accept from an authenticated caller. Default: `67108864` (64 MiB); must be
+  `1048576` to `1073741824` (1 MiB to 1 GiB), otherwise the daemon refuses to start. Every other route
+  takes at most 2 MiB; over the limit the answer is `413`. See [Large request bodies](#large-request-bodies).
+- `MENTISDB_MAX_INFLIGHT_BODY_BYTES`
+  Body bytes all *import* requests in flight may hold together. Default: four times `MENTISDB_MAX_BODY_BYTES`
+  (one peer may hold twice the cap and four bodies); a smaller value is raised to one cap. Beyond it the answer is
+  `503` with `Retry-After`. Ordinary requests have their own fixed 64 MiB pool and are never starved by imports.
+- `MENTISDB_BODY_IDLE_TIMEOUT_SECS`
+  A request body that delivers no data for this long fails. Default: `30`; `1` to `3600`.
+- `MENTISDB_MIN_BODY_BYTES_PER_SEC`
+  Slowest rate a request body may sustain, measured over each window of one idle timeout once a grace
+  period (twice the idle timeout) is over; a slower body fails with `408`. Default: `65536` (64 KiB/s);
+  `0` switches the rule off (the idle timeout and deadlines still apply). Lower it for imports over a
+  slow link, or on a busy server that reads bodies late; `0` to `1073741824`.
 - `MENTISDB_BEARER_TOKEN_ACCESS`
   Require bearer tokens for MCP requests. Default: `false`. Set `true` for remote
   or multi-user MCP servers. This can also be toggled live from the dashboard Settings screen.
@@ -933,6 +949,37 @@ REST endpoints:
 - `POST /v1/migrations/retry` (global token)
 - `POST /v1/migrations/skip` (global token)
 
+#### Chain listing and derived-state backlog
+
+`GET /v1/chains` (global token; MCP `mentisdb_list_chains`) lists every chain with
+`derived_backlog`, the work still pending on its derived state (0.12):
+
+```json
+{
+  "chain_key": "project", "version": 3, "storage_adapter": "binary",
+  "thought_count": 100000, "agent_count": 4, "storage_location": "...",
+  "derived_backlog": {
+    "embeddings_in_flight": 0, "embeddings_parked": 0,
+    "embeddings_missing": 0, "implicit_edges": 312
+  }
+}
+```
+
+- `embeddings_in_flight`: thoughts whose embedding has been requested but not committed.
+- `embeddings_parked`: vectors that are ready but wait for an earlier thought's vector, so
+  they are applied in chain order.
+- `embeddings_missing`: thoughts waiting to be embedded again after a failure.
+- `implicit_edges`: applied vectors whose implicit `RelatedTo` edges have not reached the
+  overlay yet.
+
+All four are zero on a healthy, idle chain. A steadily growing `embeddings_missing` or
+`embeddings_in_flight` points at a stalling embedding provider. A growing `implicit_edges`
+means appends are outrunning the background edge scan: about 155 appends per second at
+100,000 thoughts and 720 at 20,000 (4 threads, 384 dimensions). The backlog never blocks an
+append or drops an edge. It only delays edges for recent thoughts, and it drains when
+appends slow down. A chain that is not open, or whose private segments are hidden from the
+caller, reports zeros. Library: `MentisDb::derived_backlog`.
+
 #### Chain resolution and error statuses
 
 Only operations that write a chain create it when its `chain_key` does not exist yet:
@@ -958,11 +1005,41 @@ REST and MCP errors map to HTTP statuses as follows:
 | `401` | Missing/invalid bearer token, or a token whose scope does not cover the operation |
 | `403` | Permission denied: missing or invalid signature on a signed skill upload, inactive agent, a write the chain's access policy refused, a `Host` outside the allowlist, or an operator-only route (`/v1/agents/keys`, `/v1/agents/keys/revoke`, `/v1/agents/disable`, `/v1/access/policy/set`) |
 | `404` | Unknown chain (see above) or another missing resource |
+| `408` | A request body stopped arriving for `MENTISDB_BODY_IDLE_TIMEOUT_SECS`, a small or anonymous body missed its total deadline (twice that), or any body fell below `MENTISDB_MIN_BODY_BYTES_PER_SEC` (64 KiB/s by default) in a window after its grace period (twice the idle timeout); on every route |
 | `409` | Conflict, e.g. `POST /v1/chains/branch` into a chain key that already exists |
-| `413` | Request body over 1 MiB, for requests carrying a read proof (`X-Mentis-Auth`) and for REST while bearer-token access is enabled. A large `mentisdb memory import` with a read key hits this: import in batches |
+| `413` | Request body over the route's limit: 2 MiB, or `MENTISDB_MAX_BODY_BYTES` (default 64 MiB) on the import routes for an authenticated caller; over 1 MiB for a read proof (`X-Mentis-Auth`) that does not also send `X-Mentis-Content-Sha256` (see [Large request bodies](#large-request-bodies)). The `mentisdb` CLI and `pymentisdb` send it, so a large `memory import` works |
 | `500` | Server fault; the body says only `"internal server error"` and details go to the daemon log |
 | `501` | `POST /v1/extract-memories` on a build without the `llm-extraction` feature |
-| `503` | The chain is being migrated or is quarantined; the body names the state, and a migrating chain adds `Retry-After` and `retry_after_secs` (see [Upgrading and chain migrations](#upgrading-and-chain-migrations)) |
+| `503` | The chain is being migrated or is quarantined; the body names the state, and a migrating chain adds `Retry-After` and `retry_after_secs` (see [Upgrading and chain migrations](#upgrading-and-chain-migrations)). Also, with `Retry-After`, when the in-flight body budget is exhausted (see [Large request bodies](#large-request-bodies)) |
+
+### Large request bodies
+
+Request bodies are limited per route. Ordinary routes take at most **2 MiB**. The import family
+(`/v1/import-markdown`, `/v1/skills/upload`, `/v1/extract-memories`) takes up to
+`MENTISDB_MAX_BODY_BYTES` (default 64 MiB), and with bearer-token access on only from a caller whose token
+is valid: the token is checked from the headers before any of the body is read, so a request without one is
+refused (`401`, or `413` for a declared length over 2 MiB) without the daemon pulling its body. Large
+imports draw on their own budget (`MENTISDB_MAX_INFLIGHT_BODY_BYTES`, reserved from the declared length; beyond it
+`503` with `Retry-After`); every other request is charged only for the bytes that actually arrive, from a separate
+pool (64 MiB, at most 32 MiB per peer), so imports never starve appends and searches. A body that
+stops arriving fails with `408` after `MENTISDB_BODY_IDLE_TIMEOUT_SECS`, small or anonymous bodies also get a
+total deadline of twice that, and every body must sustain `MENTISDB_MIN_BODY_BYTES_PER_SEC` (64 KiB/s by default) in each window of one idle
+timeout once its grace period (twice the idle timeout) is over. Anonymous bodies have a 16 MiB pool of their own (8 MiB per peer). MCP request bodies (including the `mentisdb_import_memory_markdown` tool) are always
+limited to 2 MiB: send a large import to the REST route, or use the CLI. Two paths decide who is asking, and
+they treat a large body differently:
+
+- **Bearer token.** The daemon reads the body (up to the route's limit) to find the `chain_key` the token
+  must cover, then hands it to the handler.
+- **Read proof (`X-Mentis-Auth`).** The signature covers `SHA-256(body)`, so by itself the daemon must
+  read the whole body to check it, which it only does up to **1 MiB**. A client that also sends
+  `X-Mentis-Content-Sha256: <64 lowercase hex>` (the same digest the proof signed) lets the daemon verify
+  the proof **before** reading the body and then hash the body as it streams. The signed body goes through;
+  any other body fails at its end with `400` and no handler has run, so nothing is imported or changed. The
+  proof format is unchanged: older clients (and a daemon that predates the header) work as before.
+
+`mentisdb` (CLI) and `pymentisdb` send the digest header with every proof. If you sign requests yourself, add
+the header and keep the body bytes you hash identical to the ones you send. Code on the daemon side that
+streams a body must not act on it before the end: the digest is only confirmed there.
 
 ### Append Thought — `POST /v1/thoughts`
 
@@ -1472,6 +1549,20 @@ public APIs and hybrid/ranked search results stay the same:
 End users see lower latency transparently. The HNSW backend is always compiled
 in since 0.10.4.49.
 
+#### How vectors are stored (0.12)
+
+Every vector of a managed sidecar lives once, in a flat store of 128-row chunks:
+one 64-byte-aligned allocation per chunk, rows padded to whole 64-byte lines. The
+sidecar entries, the exact index, the HNSW graph and the implicit-edge scanner all
+hold handles to those rows, so there is no second copy of the corpus (about 150 MB
+saved at 100,000 vectors of 384 dimensions per consumer). Exact search scores a
+row with a 16-lane dot product written so the compiler emits NEON (aarch64) or
+SSE2 (x86_64) instructions without `unsafe` intrinsics, a nightly toolchain or
+runtime CPU probing; every platform computes the same bits. Scores equal a
+sequential cosine within 1e-5. One limit: an HNSW graph loaded from disk keeps
+its own copy of the vectors in the graph (the `hnsw` crate owns them); a graph
+built in this process shares fully.
+
 ### REST Lexical Search
 
 The daemon also exposes the Phase 1 ranked lexical surface over REST at `POST /v1/lexical-search`.
@@ -1805,146 +1896,4 @@ existing cert so the in-flight HTTPS fingerprint stays stable across restarts.
 Cross-check the new cert from any machine with:
 
 ```bash
-openssl s_client -connect <host>:9473 -showcerts </dev/null 2>/dev/null \
-    | openssl x509 -fingerprint -sha256 -noout
-```
-
-…then compare against the `SHA-256 fingerprint:` line that `mentisdb cert`
-prints. If they match, the running daemon is serving the cert you just minted.
-
-### When the auto-generated SAN set is not enough
-
-The default SAN set covers local and most remote setups. The `mentisdb cert`
-subcommand is the right tool when:
-
-- You connect to the daemon over a remote / VPS IP (`https://<vps-ip>:9473`) and
-  the IP is not in the SAN set.
-- You use a custom hostname (`vps.example.com`) and want the cert to be valid
-  for that name.
-- You added a new network interface or new IP to the host and need the cert
-  to cover the new IP.
-- You rotated the private key for security reasons and want a new cert + key
-  pair.
-- You migrated the daemon to a new machine and the old cert (still on the old
-  box) needs to be regenerated locally.
-
-For all other situations the auto-generated cert is fine. It is valid from one day
-before it was generated until two years (730 days) after, never until a fixed calendar
-date, and the daemon reuses it across restarts unless you delete it or pass `--force`.
-At startup the daemon checks it: a certificate that expires within 30 days is reported
-with a warning (log, terminal UI) naming `mentisdb cert --force`; one that has already
-**expired** is regenerated automatically when MentisDB made it (Common Name
-`MentisDB Local`), keeping its names (SANs) and a new key pair, with a warning that
-clients must trust the new certificate; an expired certificate you supplied yourself
-through `MENTISDB_TLS_CERT` / `MENTISDB_TLS_KEY` is only warned about.
-
----
-
-## Backup and Restore
-
-MentisDB includes built-in backup and restore commands in the `mentisdb` CLI.
-
-### Create a backup
-
-```bash
-# Default: platform MENTISDB_DIR → ./mentisdb-YYYY-MM-DD-HH-MM-SS.mentis
-mentisdb backup
-
-# Custom output path
-mentisdb backup -o /backups/mentisdb-2026-04-14.mentis
-
-# Include TLS certificates
-mentisdb backup --include-tls
-
-# Full example
-mentisdb backup --dir ~/.cloudllm/mentisdb -o /backups/mentisdb-2026-04-14.mentis --include-tls
-```
-
-When the daemon is running, `backup` calls `POST /v1/admin/flush` before reading files to ensure a consistent snapshot even with `MENTISDB_AUTO_FLUSH=false`. If the daemon is not running, files are captured as-is.
-
-With `MENTISDB_BEARER_TOKEN_ACCESS=true`, `/v1/admin/flush` requires a **global** token.
-Set `MENTISDB_BEARER_TOKEN` to one and `backup` (and `restore`'s running-daemon probe) send
-it as `Authorization: Bearer <token>`:
-
-```bash
-MENTISDB_BEARER_TOKEN=mentisdb_global_token mentisdb backup
-```
-
-Without it the flush is rejected, so `backup` prints a "could not flush daemon" warning and
-captures the files as they are on disk.
-
-**Permissions and the operator key.** A backup archive holds plaintext thoughts (including
-the private segments of private chains) and, with `--include-tls`, the TLS private key, so
-`mentisdb backup` creates the `.mentis` file owner-only (`0600`) with every entry recorded as
-`0600` (Unix; elsewhere the parent directory's ACL applies). Backups intentionally **do not
-contain `operator/operator.key`**, the key that governs private chains, so one stolen archive
-cannot also change who may read or write them. Back that file up separately, owner-only and
-apart from the archive; without it a restored instance cannot change the access policy of its
-private chains. `backup` and `restore` print this reminder.
-
-### Restore a backup
-
-The daemon must be stopped before restoring. If `mentisdb` is detected running, the restore aborts with a message to stop the daemon first. Any HTTP answer from the flush probe, including `401` from a token-protected daemon, counts as running.
-
-```bash
-# Idempotent restore (preserves existing files)
-mentisdb restore /backups/mentisdb-2026-04-14.mentis
-
-# Restore to a specific directory
-mentisdb restore /backups/mentisdb-2026-04-14.mentis --dir ~/.cloudllm/mentisdb
-
-# Allow same-path chain files to be replaced when a safe suffix merge is not possible
-mentisdb restore /backups/mentisdb-2026-04-14.mentis --overwrite
-
-# Skip interactive confirmation prompts while keeping the default preserve/merge behavior
-mentisdb restore /backups/mentisdb-2026-04-14.mentis --yes
-```
-
-Restore is **idempotent by default**. When the target directory is empty,
-MentisDB imports the full instance, including registry, chains, skills,
-webhooks, and optional TLS files. When the target already contains a MentisDB
-instance, restore preserves the local `mentisdb-registry.json` and treats the
-backup registry as a hint: new chains are appended to the local registry with
-local storage paths, compatible same-key chains append only the verified missing
-suffix, older backups are ignored, and same-name chains with different genesis
-are imported under a non-conflicting `-imported` chain key. Existing global files
-such as skills and webhooks are preserved unless they are absent locally.
-
-`--overwrite` no longer means "replace the whole instance." It only allows
-same-path chain files to be replaced when the chain cannot be safely merged and
-the operator explicitly requested overwrite. The local registry is still merged
-and preserved.
-
-### Archive format
-
-A backup is a `.mentis` ZIP archive containing:
-- `mentisdb.manifest.json` — SHA-256 checksums and metadata
-- `*.tcbin` — binary chain storage
-- `*.agents.json` — per-chain agent registries
-- `*.entity-types.json` — per-chain entity type definitions
-- `*.vectors.*.json` — vector search sidecars
-- `mentisdb-registry.json` — global chain registry
-- `mentisdb-skills.bin` — skill registry (if present)
-- `mentisdb-webhooks.json` — webhook registrations (if present)
-- `tls/` — TLS certificates and keys (opt-in via `--include-tls`)
-
-Every file is verified by SHA-256 before restore writes anything to disk. A corrupted archive aborts with an error and leaves the target directory untouched.
-
-Restore safety limits (0.10.9):
-
-- archives that declare any entry larger than 64 GiB, or more than 256 GiB in total, are rejected before extraction
-- the manifest itself may be at most 8 MiB and list at most 100,000 files
-- every size the manifest declares must equal the entry's uncompressed size in the ZIP, otherwise the archive is rejected
-- on Unix, restore checks free disk space on the target filesystem against the manifest's total size before extracting anything
-- restore refuses to write through a symlink anywhere under the target directory
-- files are staged in a `.mentisdb-restore-<uuid>` directory created beside the target (same filesystem) and moved into place from there
-
-### REST flush endpoint
-
-The flush operation is also available as a standalone REST endpoint:
-
-```bash
-POST http://127.0.0.1:9472/v1/admin/flush
-```
-
-Returns `{"status": "flushed"}` on success. Iterates all open chains and c
+openssl s_client -connect <host>:9473 -showcerts </dev/null 2>/dev/n

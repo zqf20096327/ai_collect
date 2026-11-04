@@ -78,6 +78,7 @@
 - [GMS](https://aquaveo.com/software/gms/introduction) - Groundwater modeling interface for MODFLOW and related models.
 - [MIKE+](https://www.dhigroup.com/technologies/mikepoweredbydhi/mikeplus) - Integrated modeling of water distribution, sewer, and river networks.
 - [HEC-ResSim](https://www.hec.usace.army.mil/software/hec-ressim/) - USACE reservoir operations simulation.
+- [OpenFLUME](https://github.com/OpenFLUME/OpenFLUME) - Open-source pipe network solver for steady and transient hydraulics with pumps, valves, and tanks, usable in the browser or from Python.
 
 ## Structural Analysis & Design Software
 
@@ -333,6 +334,8 @@
 - [YardCalc](https://getyardcalc.com/) - Concrete, asphalt, gravel and sand quantity and cost calculators.
 - [ProjectCalcs](https://projectcalcs.com/) - Material quantity calculators for concrete, brick, rebar, flooring and roofing.
 - [Modern CFO Cost Segregation Calculator](https://freecostseg.com/calculator/) - Cost segregation calculator estimating accelerated depreciation tax savings.
+- [Site Docs Pack Calculators](https://sitedocs.bongshai.com/calculators/) - Concrete, footing, rebar, steel weight, stair and roof calculators, US/metric.
+- [Construclytic](https://construclytic.com/) - Free construction calculators with visible formulas; no sign-up.
 
 ### Structure Analysis
 

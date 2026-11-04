@@ -35,13 +35,17 @@
 - **Nothing leaves your computer.** ComfyUI runs on your own machine, on your own models.
 - **Results arrive as real layers in Photoshop** — named, positioned, and editable. Not a flattened PNG
   you paste in and hope for.
-- **Fourteen generation tools**, from text-to-image and editing by instruction through inpainting and background removal to
+- **Sixteen tools**, from text-to-image and editing by instruction through inpainting and background removal to
   multi-image composition and depth/line-art/normal passes, plus an experimental one that splits a
   flat picture back into layers.
-- **New in v0.39: one button to a working setup.** On a fresh ComfyUI, the **Start here** card in
-  Setup downloads FLUX.2 Klein 4B (Apache-2.0, 12.5 GB) into the right folders, and Text to Image
-  opens on it at 1024 × 1024: seven clicks from an empty ComfyUI to your first layer, plus choosing
-  ComfyUI's models folder once.
+- **New in v0.40: remove, select, re-shoot.** Remove object takes a selected object out (LaMa for
+  small things, LaMa + FLUX.2 Klein for a whole person), Select by Text turns a word into a live
+  selection with SAM 3.1, and the experimental Camera Angle shows a layer from another camera
+  position. Upscale gains SeedVR2, a 2x generative restorer, and results now land at the right size
+  in documents that are not 72 ppi.
+- **One button to a working setup.** On a fresh ComfyUI, the **Start here** card in Setup downloads
+  FLUX.2 Klein 4B (Apache-2.0, 12.5 GB) into the right folders, and Text to Image opens on it at
+  1024 × 1024.
 - **Also with Qwen-Image 2.1** — transparent cut-out layers straight from the model, lettering that
   comes out spelled right at native 2K, and instruction editing. Its weights are for research and
   evaluation only, so the 2.1 presets are opt-in, never a default, and labelled "(research licence)".
@@ -53,7 +57,7 @@ a GPU with 8 GB VRAM or more (12 GB is what this project targets).
 OpenLayer is the panel inside Photoshop that talks to it — you work in Photoshop, ComfyUI does the
 generating in the background, and every result comes back as a layer.
 
-> **Alpha.** `v0.39.0-alpha` is a public testing checkpoint, not production software. It is stable
+> **Alpha.** `v0.40.0-alpha` is a public testing checkpoint, not production software. It is stable
 > enough to work with, and honest about where it stops — see [what works and what does
 > not](docs/known-limitations.md).
 
@@ -67,6 +71,7 @@ live selection. Nothing is uploaded anywhere; ComfyUI runs on your own machine.
 | **Text to Image** | Generate a new layer from a prompt — or a transparent cut-out |
 | **Image to Image** | Use the active layer as visual input |
 | **Edit Image** | Change a layer or a selection by describing it — "make the jacket red", or bring in a second layer: "put the teapot from `<image2>` here" |
+| **Camera Angle** ✦ | See a layer from another viewpoint: pick a direction, a height and a distance (Qwen-Image-Edit 2511) |
 | **Sketch to Image** | Guide generation with your line art |
 | **Inpaint** | Repaint a selection in place, or remove the object in it — LaMa for small things, LaMa + Klein for a whole person |
 | **Outpaint** | Extend canvas content beyond the edges |
@@ -232,6 +237,7 @@ python main.py --listen 127.0.0.1 --port 8188 --preview-method auto
 
 **You do not have to move your server.** If ComfyUI is already running somewhere else, open
 **Settings › Find ComfyUI Active Port** — OpenLayer scans for it, connects, and reports `Ready`.
+Comfy Desktop's port, `8000`, is part of the scan.
 
 > **Upgrading from v0.20 or earlier? The default port changed from `8190` to `8188`.**
 > OpenLayer used `8190` for twenty releases; it now uses the port ComfyUI itself starts on.
@@ -469,9 +475,32 @@ loaded. The selection has hard edges; feather it or use Select and Mask for a so
 </details>
 
 <details>
-<summary><b>Unflatten</b> — 30 GB, and shares nothing</summary>
+<summary><b>Camera Angle</b> ✦ — 31 GB, no add-on</summary>
 
-The one stack that reuses nothing else. Every node it needs is core ComfyUI, so there is no add-on.
+Re-shoots a layer from one of 96 camera positions (8 directions, 4 heights, 3 distances) with
+Qwen-Image-Edit 2511 and fal's multiple-angles LoRA. Core ComfyUI nodes only (ComfyUI 0.37+). All
+files are Apache-2.0.
+
+| File | Folder | Size |
+| :--- | :--- | ---: |
+| `qwen_image_edit_2511_int8_convrot.safetensors` | `models/diffusion_models/` | 20.5 GB |
+| `qwen_2.5_vl_7b_fp8_scaled.safetensors` | `models/text_encoders/` | 9.38 GB |
+| `qwen_image_vae.safetensors` | `models/vae/` | 254 MB |
+| `Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors` | `models/loras/` | 850 MB |
+| `qwen-image-edit-2511-multiple-angles-lora.safetensors` | `models/loras/` | 295 MB |
+
+The text encoder is the one Unflatten uses and the VAE is Krea-2's, so either one already installed
+saves that download. Measured on a 12 GB card with 32 GB of system RAM: about 34 seconds for the
+first run, 20 to 22 seconds after it. The whole picture is redrawn from the new position, background
+included, and a face will not match the original exactly.
+
+</details>
+
+<details>
+<summary><b>Unflatten</b> — 30 GB, shares only its text encoder</summary>
+
+Its text encoder is the one Camera Angle uses; the other two files are its own. Every node it needs
+is core ComfyUI, so there is no add-on.
 
 | File | Folder | Size |
 | :--- | :--- | ---: |
@@ -553,7 +582,8 @@ same document binding, the same transactional import, the same one-run-at-a-time
 second generation mid-run and it is refused with "OpenLayer is busy", exactly as a second click would
 be.
 
-**Thirteen** generation tools are reachable — every one except Live Painting:
+**Thirteen** generation tools are reachable — every one except Live Painting, Select by Text and
+Camera Angle:
 
 `text_to_image` · `image_to_image` · `edit_image` · `sketch_to_image` · `inpaint` · `outpaint` · `upscale` ·
 `prompt_from_layer` · `style_reference` · `multi_reference` · `unflatten` · `remove_background` ·

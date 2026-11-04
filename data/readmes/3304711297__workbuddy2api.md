@@ -27,8 +27,7 @@
   <a href="#-界面与交互亮点-ui-preview"><b>🖥️ 界面预览</b></a> •
   <a href="#-核心特性矩阵"><b>✨ 核心特性</b></a> •
   <a href="#-安全隐私与信任声明-security--privacy"><b>🛡️ 安全与信任</b></a> •
-  <a href="#-核心接口与协议速查"><b>🌐 接口速查</b></a> •
-  <a href="#-english-overview"><b>📖 English</b></a>
+  <a href="#-核心接口与协议速查"><b>🌐 接口速查</b></a>
 </p>
 
 </div>
@@ -324,31 +323,6 @@ curl -X POST http://127.0.0.1:8787/v1/chat/completions \
 
 ---
 
-## 📖 English Overview
-
-**WorkBuddy2API** is a high-craft local API gateway and desktop console (powered by Tauri v2) that converts Tencent WorkBuddy / CodeBuddy subscriptions into standard AI interfaces.
-
-### Key Highlights
-- **Tri-Protocol Support**: Seamlessly translates upstream endpoints into standard **OpenAI Chat** (`/v1/chat/completions`), **Anthropic Messages** (`/v1/messages`), and **OpenAI Responses** (`/v1/responses`).
-- **Direct Agent Integration**: Natively drives **Claude Code CLI**, **Codex CLI**, **Hermes Agent**, **Cline**, **Roo Code**, and other coding assistants with streaming SSE, reasoning tokens, and tool-call auto-healing.
-- **Zero Official Client Dependency**: Standalone browser OAuth polling flow allows logging in without having the official desktop client installed.
-- **Intelligent Multi-Account Scheduler**: Tiered scheduling prioritizing earliest-expiring tokens, automatic failover on 429/6004 limits, and round-robin load distribution.
-- **Strict Local Security**: 100% offline local credential storage (`%LOCALAPPDATA%/workbuddy2api`), Origin & Host CSRF/DNS-rebinding guards, and CSPRNG-generated Bearer key support.
-- **Zero-Dependency Observability**: Native SVG usage charts, token rate-limit countdown monitors, and built-in interactive API replay console.
-
-### Quick Start
-```bash
-# Claude Code CLI
-export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
-export ANTHROPIC_API_KEY="local"
-claude
-
-# OpenAI Compatible (Base URL)
-http://127.0.0.1:8787/v1
-```
-
----
-
 ## 🤝 致谢与生态溯源 (Credits & Inspirations)
 
 本项目基于 [HanHan666666/codebuddy2openai](https://github.com/HanHan666666/codebuddy2openai) 进行深度二次开发与架构重构，架构设计深度借鉴了优秀开源项目 [EasyCLIProxyAPI](https://github.com/router-for-me/EasyCLIProxyAPI) 的桌面端实践思路。
@@ -356,6 +330,7 @@ http://127.0.0.1:8787/v1
 同时，以下特性吸收了社区核心开源成果的智慧：
 * **设备风控头注入与空 delta 清洗**：借鉴 [xiaofan6ya/workbuddy2api](https://github.com/xiaofan6ya/workbuddy2api) 与 [DistPub/workbuddy2api](https://github.com/DistPub/workbuddy2api)（MIT）。
 * **Claude 指纹精准改写与多账号轮换**：借鉴 [IceeAn/codebuddy2api](https://github.com/IceeAn/codebuddy2api)（MIT）。
+* **桌面端加密凭据（`$wbEncrypted` 信封）解密**：格式与取密钥思路借鉴 [ardeyouxipianyi/workbuddy2api-hub](https://github.com/ardeyouxipianyi/workbuddy2api-hub) 与 [jlcodes99/cockpit-tools](https://github.com/jlcodes99/cockpit-tools)（MIT），实现为本仓库独立的 `wb_atrest.py`。
 
 <details>
 <summary><b>📋 点击展开社区开源生态借鉴与技术溯源清单（10+ 衍生项目明细）</b></summary>

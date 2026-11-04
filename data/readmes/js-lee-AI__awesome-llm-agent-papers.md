@@ -106,7 +106,7 @@ Fresh 2026 work that is already drawing attention.
   - [🌐 Interactive Environments (60)](#environments)
   - [🚀 Applications (60)](#applications)
 - **⚖️ Part III: Cross-Cutting Concerns**
-  - [📊 Evaluation & Benchmarks (58)](#evaluation)
+  - [📊 Evaluation & Benchmarks (59)](#evaluation)
   - [🛡️ Safety & Alignment (62)](#safety)
 
 ## 🧭 Background

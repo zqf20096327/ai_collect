@@ -104,6 +104,111 @@ PID token-velocity governor, and Langevin diffusion refinement — built &amp; t
 
 ---
 
+## ⚡ Quickstart: The Quillan Curl & Sovereign Command Center
+
+Quillan-Ronin v5.4.0 runs locally as a native OpenAI-compatible inference server and interactive Command Center. Query the model with a single `curl` command, run it in Ollama, or launch the interactive TUI.
+
+### 1. ⚡ The Quillan Curl (Drop-In OpenAI API)
+
+Start the local server (`quillan.bat --serve` or `python quillan_server.py --port 8080`) and query directly from any terminal:
+
+```bash
+curl http://localhost:8080/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "quillan-1b-sovereign-q4",
+    "messages": [
+      {"role": "system", "content": "You are Quillan-Ronin: an autonomous Sovereign Intelligence governed by Bushido."},
+      {"role": "user", "content": "What is the core principle of Weight-Space Programming?"}
+    ],
+    "temperature": 0.3
+  }'
+```
+
+### 2. 🖥️ Sovereign Agent CLI & Command Center (OpenCode Alternative)
+
+Quillan-Ronin operates as an independent, fully autonomous developer CLI and coding agent platform. It possesses native tools to read, edit, and write files, execute shell commands, inspect git repositories, and automate desktop GUIs:
+
+```bash
+# 1. Install 'quillan' globally onto system PATH (~/.local/bin):
+quillan.bat --install
+
+# 2. Launch the interactive TUI Command Center (Kabuto Hero Banner):
+quillan
+
+# 3. Execute autonomous coding tasks directly in any terminal / workspace:
+quillan "Inspect the repository architecture and verify system health"
+
+# 4. Boot background OpenAI-compatible API server:
+quillan --serve
+
+# 5. Execute Google AI Studio Computer Use GUI action:
+quillan --cu click 500 500
+```
+
+### 3. 🌐 Browser Command Gateway (`http://localhost:8080`)
+
+Open your web browser to `http://localhost:8080` for the interactive Web Command Portal featuring:
+- **1-Click Quillan Curl generator** with copy-to-clipboard
+- **Live streaming token playground** with real-time speedometer
+- **Hardware telemetry monitor** (770 MB VRAM footprint on GTX 1050)
+- **34-Council consensus node board** (C0 Throne through C34 Predator)
+
+### 4. 🦙 Run via Ollama (Hugging Face GGUF)
+
+Run the sovereign model directly via Ollama without any compilation:
+
+```bash
+ollama run hf.co/CrashOverrideX/Quillan-Ronin:quillan-1b-sovereign-q4_k_m.gguf
+```
+
+### 5. 🐍 Drop-in Python SDK (OpenAI Compatible)
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8080/v1", api_key="quillan-sovereign")
+
+response = client.chat.completions.create(
+    model="quillan-1b-sovereign-q4",
+    messages=[
+        {"role": "system", "content": "You are Quillan-Ronin: an autonomous Sovereign Intelligence governed by Bushido."},
+        {"role": "user", "content": "Analyze our system architecture for alignment and security."}
+    ]
+)
+print(response.choices[0].message.content)
+```
+
+### 6. 📄 Formal Research Paper (PDF)
+
+Download the complete academic research paper detailing the Weight-Space Programming (WSP) methodology, mathematical proofs, and empirical benchmarks:
+- **Title:** *Building Foundation Models via Weight-Space Programming: Pure Analytical Parameter Synthesis Without Backpropagation*
+- **Master Paper (PDF):** [`10 - Formal Papers/Building_Foundation_Models_via_Weight_Space_Programming.pdf`](10%20-%20Formal%20Papers/Building_Foundation_Models_via_Weight_Space_Programming.pdf)
+- **Publication Figures (300 DPI):** [`10 - Formal Papers/figures`](10%20-%20Formal%20Papers/figures)
+
+### 7. 🖥️ Google AI Studio & Sovereign Computer Use Tool
+
+Quillan-Ronin natively implements the official [Google AI Studio Computer Use specification](https://aistudio.google.com/docs/computer-use) (`google-genai` / Gemini API), enabling visual UI agents to operate desktop applications:
+
+- **0–999 Normalized Coordinate Grid**: Automatically translated to physical display pixels via `CoordinateTransformer`.
+- **Zero-Dependency Win32 Dispatch**: Native Windows GUI events (`click`, `double_click`, `right_click`, `move`, `type`, `scroll`, `drag`, `hotkey`, `wait`) dispatched directly via Win32 `ctypes`.
+- **In-Graph CCRL Bayesian Safety Guard**: Every action requires an explicit natural language `intent` audited against destructive OS instructions and visual prompt injection ($\Phi_{\text{CCRL}} \ge 0.85$).
+
+```bash
+# Execute a GUI action via Quillan's Google AI Studio Computer Use Bridge
+curl http://localhost:8080/v1/computer-use \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "click",
+    "x": 500,
+    "y": 500,
+    "intent": "Focus center workspace window"
+  }'
+```
+
+
+---
+
 ## ⚡ Hardware Kernel Ablation: 100 tok/s on Consumer Pascal GPU
 
 > **Ablation Invariant:** Same Physical Hardware. Same Untrained Base Checkpoint. Same Matrix Multiplications. Pure Kernel Efficiency.
@@ -967,110 +1072,4 @@ def _weight_quant(w: torch.Tensor, eps: float = 1e-5) -> torch.Tensor:
     w_q = torch.round(torch.clamp(w_scaled, -1.0, 1.0))
     return w + (w_q / scale - w).detach()
 
-class BitLinear(nn.Linear):
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x_q = _activation_quant(x)
-        w_q = _weight_quant(self.weight)
-        return F.linear(x_q, w_q, self.bias)
-
-class BitConv1d(nn.Conv1d):
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x_q = _activation_quant(x.transpose(1, 2)).transpose(1, 2)
-        w_q = _weight_quant(self.weight)
-        return F.conv1d(x_q, w_q, self.bias, self.stride, self.padding, self.dilation, self.groups)
-
-def _generate_low_rank_perturbation(shape: Tuple, seed: int, rank: int, std: float, device: torch.device) -> torch.Tensor:
-    gen = torch.Generator(device=device)
-    gen.manual_seed(seed)
-    U = torch.randn(shape[0], shape[1], rank, generator=gen, device=device)
-    V = torch.randn(shape[0], rank, shape[2], generator=gen, device=device)
-    pert = torch.bmm(U, V) * std
-    return torch.clamp(pert, -0.1, 0.1)
-
-# ─── HARDWARE GOVERNANCE ─────────────────────────────────────────────────────
-
-def apply_phoenix_affinity():
-    if not PSUTIL_AVAILABLE: return
-    try:
-        p = psutil.Process(os.getpid())
-        p.cpu_affinity([2, 3]) 
-        print("📍 PHOENIX AFFINITY: Orchestration pinned to Cores 2-3.")
-    except Exception as e:
-        print(f"⚠️ Affinity Warning: {e}")
-
-class LeeMach6Governor:
-    def __init__(self, target_latency_ms: int = 100):
-        self.target_ms = target_latency_ms
-        self.current_scale = 1.0
-
-    def adjust(self, latency_ms: float):
-        if latency_ms > self.target_ms:
-            self.current_scale = max(0.1, self.current_scale * 0.8)
-        elif latency_ms < (self.target_ms * 0.5):
-            self.current_scale = min(1.0, self.current_scale * 1.1)
-        return self.current_scale
-
-# ─── CONFIGURATION ───────────────────────────────────────────────────────────
-
-@dataclass(frozen=True)
-class QuillanArchConfig:
-    text_only: bool = False
-    scale_mode: str = "Dynamic"
-    
-    @property
-    def hidden_dim(self) -> int: return 2560 if self.scale_mode == "Dynamic" else 1024
-    @property
-    def ffn_dim(self) -> int: return 6912 if self.scale_mode == "Dynamic" else 3072
-    @property
-    def vocab_size(self) -> int: return 50257 if self.scale_mode == "Dynamic" else 32000
-    @property
-    def num_diff_layers(self) -> int: return 32 if self.scale_mode == "Dynamic" else 4
-
-    num_experts: int = 34
-    capacity_factor: float = 2.0
-    min_expert_capacity: int = 64
-    num_micro_subagents: int = 9_000_000_000
-    eggroll_rank: int = 16
-    patch_size: int = 16
-    aux_loss_coef: float = 0.01
-    capacity_loss_coef: float = 0.1
-    compaction_threshold: int = 4096
-    use_causal_mask: bool = True
-    e_ice_limit_ms: int = 100
-    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-# ─── POSITIONAL TOPOLOGY & REGISTRY ──────────────────────────────────────────
-
-class ContinuousModalityRoPE(nn.Module):
-    def __init__(self, dim: int, max_mods: int = 4, base: float = 10000.0, head_dim: int = 128):
-        super().__init__()
-        self.mod_freq_shifts = nn.Parameter(torch.randn(max_mods, head_dim // 2) * 0.02)
-        inv_freq = 1.0 / (base ** (torch.arange(0, head_dim, 2).float() / head_dim))
-        self.register_buffer("inv_freq", inv_freq, persistent=False)
-
-    def apply_to_heads(self, x: torch.Tensor, mod_indices: torch.Tensor) -> torch.Tensor:
-        B, H, L, d = x.shape
-        shifts = self.mod_freq_shifts[mod_indices][..., : d // 2]
-        freqs = self.inv_freq[: d // 2].view(1, 1, -1) * torch.exp(torch.clamp(shifts, -4.0, 4.0))
-        t = torch.arange(L, device=x.device).float().view(1, -1, 1)
-        theta = t * freqs
-        cos, sin = torch.cos(theta).repeat_interleave(2, dim=-1).unsqueeze(1), torch.sin(theta).repeat_interleave(2, dim=-1).unsqueeze(1)
-        x_r = x.view(B, H, L, d // 2, 2)
-        x_rot = torch.cat([-x_r[..., 1:2], x_r[..., 0:1]], dim=-1).view(B, H, L, d)
-        return x * cos + x_rot * sin
-
-class LearnedModalityCompactor(nn.Module):
-    def __init__(self, dim: int):
-        super().__init__()
-        self.conv = BitConv1d(dim, dim * 2, kernel_size=2, stride=2)
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x_t = x.transpose(1, 2)
-        val, gate = self.conv(x_t).chunk(2, dim=1)
-        return (val * torch.sigmoid(gate)).transpose(1, 2)
-
-class ModalityRegistry:
-    def __init__(self):
-        self.tensors, self.slices, self.original_shapes, self.modality_ids = [], {}, {}, []
-        self.current_offset = 0
-    def register(self, name, tensor, original_shape=None, mod_id=0):
-        i
+class BitLine

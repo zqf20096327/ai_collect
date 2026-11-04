@@ -2,17 +2,17 @@
 
 <img src="assets/readme/logo.png" alt="Solar" width="112" />
 
-# Solar 0.15.3
+# Solar 0.16.0
 
 **Votre équipe d’agents IA, sur macOS et Windows.**
 
 Des conversations courtes, des agents personnalisables et le modèle de votre choix.
 
-[![Télécharger pour macOS Apple Silicon](https://img.shields.io/badge/Télécharger_macOS-Apple_Silicon-007AFF?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/j4mesbst/Solar/releases/download/v0.15.3/Solar-0.15.3-macOS-arm64.dmg)
+[![Télécharger pour macOS Apple Silicon](https://img.shields.io/badge/Télécharger_macOS-Apple_Silicon-007AFF?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/j4mesbst/Solar/releases/download/v0.16.0/Solar-0.16.0-macOS-arm64.dmg)
 
-[![Download for Windows x64](https://img.shields.io/badge/Download_for_Windows-x64-0078D4?style=for-the-badge)](https://github.com/j4mesbst/Solar/releases/download/v0.15.3/Solar-0.15.3-Windows-x64-setup.exe)
+[![Download for Windows x64](https://img.shields.io/badge/Download_for_Windows-x64-0078D4?style=for-the-badge)](https://github.com/j4mesbst/Solar/releases/download/v0.16.0/Solar-0.16.0-Windows-x64-setup.exe)
 
-[Notes de version](https://github.com/j4mesbst/Solar/releases/tag/v0.15.3) · [Signaler un problème](https://github.com/j4mesbst/Solar/issues) · [Licence MIT](LICENSE)
+[Notes de version](https://github.com/j4mesbst/Solar/releases/tag/v0.16.0) · [Signaler un problème](https://github.com/j4mesbst/Solar/issues) · [Licence MIT](LICENSE)
 
 </div>
 
@@ -30,23 +30,21 @@ Solar est une application open source construite avec Tauri, React et TypeScript
 
 ![Créer et personnaliser Jerry](assets/readme/screenshots/solar-create-jerry.png)
 
-- **Une équipe à votre image.** Cinq formes animées, couleur personnalisable et messages assortis. Déplacez un agent en haut de la barre latérale pour en faire un manager, ou réordonnez-le par glisser-déposer. Le clic droit permet de le supprimer de l’équipe ; Annuler le restaure. Son historique est conservé et ses routines restent désactivées après restauration.
+- **Une équipe à votre image.** Cinq formes animées, couleur personnalisable et messages assortis. Déplacez un agent en haut de la barre latérale pour en faire un manager, ou réordonnez-le par glisser-déposer. La suppression demande une confirmation et est définitive.
 - **Une conversation à la fois.** Réponses en bulles successives, choix multiples quand ils sont utiles, brouillons et pièces jointes. Le statut d’un connecteur apparaît uniquement pendant une opération réelle. Après une absence prolongée, Solar peut proposer de reprendre une demande existante, sans lancer de requête avant votre choix.
 - **Des autorisations explicites.** Lecture seule, accès standard ou accès complet, choisis pour chaque agent. Le rôle d’un agent ne lui accorde pas de permissions supplémentaires. Les accès dépendent aussi du compte connecté et de ses autorisations.
 - **Une bibliothèque simple.** Ajoutez un dossier pour retrouver son nom et sa liste de fichiers dans la bibliothèque de l’agent. L’ajout n’envoie pas automatiquement son contenu à un modèle et ne lui accorde pas de droit d’écriture.
 - **Votre apparence.** Modes clair, sombre et personnalisé, typographie native et respect du mouvement réduit.
 
-## Trois façons de choisir un modèle
-
-![Choix du modèle](assets/readme/screenshots/solar-0132-models.png)
+## Choisir un fournisseur et un modèle
 
 | Choix | Fonctionnement |
 | --- | --- |
-| **Modèle local** | Lancez [Ollama](https://ollama.com), installez un modèle, puis cliquez sur **Détecter**. Solar sélectionne un modèle installé. Aucun abonnement cloud n’est nécessaire pour l’inférence locale. |
-| **Clé OpenAI** | Entrez votre clé personnelle dans Solar. Elle reste dans le coffre sécurisé local (chiffré sur macOS, Gestionnaire d’identifiants sur Windows) ; les requêtes sont facturées par OpenAI selon votre compte. Solar vérifie le catalogue accessible avant de sélectionner un modèle compatible. |
-| **Solar Cloud** | Option gratuite lorsque le service est configuré sur votre compte. Cette version open source ne distribue aucune clé privée ni accès cloud universel ; la disponibilité dépend du fournisseur et de ses limites. |
+| **Modèle local** | Lancez [Ollama](https://ollama.com), installez un modèle et laissez Solar le détecter. Aucun crédit API n’est nécessaire pour l’inférence locale. |
+| **OpenCode** | Solar intègre le runtime OpenCode et ne propose que les modèles de son catalogue dont tous les tarifs annoncés sont nuls. Leur disponibilité dépend d’OpenCode et du compte connecté ; Solar ne bascule jamais vers un modèle payant. |
+| **Autres fournisseurs** | Connectez un fournisseur compatible dans **Fournisseurs**. Les clés personnelles éventuelles sont stockées localement ; les coûts dépendent de votre compte et du modèle choisi. |
 
-Solar utilise le modèle sélectionné, sans basculer silencieusement vers un autre fournisseur. Un modèle local peut avoir moins de capacités d’outils ou de vision qu’un modèle cloud.
+Solar utilise le modèle sélectionné, sans basculer silencieusement vers un autre fournisseur.
 
 ## Applications connectées
 
@@ -56,30 +54,32 @@ Solar utilise le modèle sélectionné, sans basculer silencieusement vers un au
 
 La galerie permet de connecter les services dont les adaptateurs sont implémentés, notamment Gmail, Google Agenda et GitHub selon la configuration de l’application et de votre compte. Les icônes et états de connexion reflètent les services réels. Certaines entrées nécessitent votre propre configuration OAuth, une clé ou un serveur MCP ; leur présence dans la galerie ne signifie pas qu’elles sont déjà utilisables.
 
-Sur macOS, les clés et jetons sont dans un coffre local chiffré AES-256-GCM, protégé par une clé aléatoire conservée dans le Trousseau. Solar ne lit cette clé qu’une fois par session ; les lectures et écritures des connecteurs ne redemandent pas chacune l’accès au Trousseau. Les anciennes entrées sont migrées à leur première utilisation, sans être supprimées, pour préserver la récupération ; macOS peut encore demander leur autorisation pendant cette migration. Après migration, seule la clé du coffre peut demander une autorisation, notamment après une nouvelle signature de l’app. Un refus ne déclenche pas de tentatives répétées pendant la session. Windows conserve le Gestionnaire d’identifiants. Aucun secret n’est enregistré en clair sur disque.
+Sur macOS, les clés et jetons sont chiffrés dans un coffre local AES-256-GCM. Sa clé est conservée dans un fichier privé accessible au même compte système, sans demande automatique au Trousseau. Les anciennes données restent conservées et peuvent nécessiter une restauration volontaire. Sur Windows, Solar utilise le stockage d’identifiants du système. Protégez votre session utilisateur et votre ordinateur.
 
 ## Télécharger et installer
 
-**[Télécharger Solar 0.15.3 pour macOS — Apple Silicon (.dmg)](https://github.com/j4mesbst/Solar/releases/download/v0.15.3/Solar-0.15.3-macOS-arm64.dmg)**
+**[Télécharger Solar 0.16.0 pour macOS — Apple Silicon (.dmg)](https://github.com/j4mesbst/Solar/releases/download/v0.16.0/Solar-0.16.0-macOS-arm64.dmg)**
 
-**[Download Solar 0.15.3 for Windows — x64 (.exe)](https://github.com/j4mesbst/Solar/releases/download/v0.15.3/Solar-0.15.3-Windows-x64-setup.exe)**
+**[Download Solar 0.16.0 for Windows — x64 (.exe)](https://github.com/j4mesbst/Solar/releases/download/v0.16.0/Solar-0.16.0-Windows-x64-setup.exe)**
 
 1. Sur Mac, ouvrez le DMG et glissez **Solar.app** dans **Applications**. Sur Windows, lancez le programme **setup.exe** et suivez l’installation pour votre compte.
-2. Lancez Solar et choisissez un modèle dans **Modèles**.
+2. Lancez Solar et choisissez un modèle dans **Fournisseurs**.
 3. Créez votre premier agent. Les connexions de services sont facultatives.
 
-Le DMG est destiné aux Mac **Apple Silicon (arm64)** sous **macOS 11 ou version ultérieure**. Il est signé localement (ad hoc), sans notarisation Apple : macOS peut afficher un avertissement de provenance. Une version Intel précompilée n’est pas fournie. Les sommes SHA-256 sont jointes à la release.
+Le DMG est destiné aux Mac **Apple Silicon (arm64)** sous **macOS 14 ou version ultérieure**. Il est signé localement (ad hoc), sans notarisation Apple : macOS peut afficher un avertissement de provenance. Une version Intel précompilée n’est pas fournie. Les sommes SHA-256 sont jointes à la release.
 
 Le programme Windows est destiné à **Windows 10/11 x64**. Il installe WebView2 si nécessaire, ce qui demande une connexion Internet. Il n’est pas signé avec un certificat éditeur Windows ; SmartScreen peut afficher un avertissement de provenance. Une compilation ARM64 Windows native n’est pas fournie. La dictée utilise le micro autorisé par Windows et un modèle Whisper local téléchargé explicitement ; son confort dépend du matériel. Les connecteurs demandent leurs propres autorisations et une configuration disponible.
 
-## Nouveautés de la 0.15.3
+## Nouveautés de la 0.16.0
 
-- macOS : coffre chiffré local avec une seule clé dans le Trousseau, lue une fois par session.
-- Migration progressive des anciens secrets ; arrêt des tentatives répétées après un refus.
-- Écriture atomique, verrou entre processus et contrôle d’intégrité du coffre.
-- Windows : stockage système existant conservé.
+- Marketplace de dix agents prêts à personnaliser et à ajouter à l’équipe.
+- OpenCode V2 et découverte des modèles gratuits, sans remplacement automatique par un modèle payant.
+- Recherche des agents, réglages du modèle par agent et statistiques d’utilisation.
+- Affichage et déplacement de la barre latérale corrigés ; suppression définitive après confirmation.
+- Événements d’un même jour regroupés dans la présentation de Google Agenda.
+- Sur macOS, coffre local chiffré sans demande automatique au Trousseau.
 
-Depuis Solar 0.15.1 ou 0.15.2, reviens sur la fenêtre : le nuage bleu permet de télécharger et installer cette mise à jour.
+Depuis Solar 0.15 ou une version ultérieure, le nuage bleu permet de télécharger et installer cette mise à jour une fois les deux installateurs publiés.
 
 ## Fonctions introduites en 0.15.0
 

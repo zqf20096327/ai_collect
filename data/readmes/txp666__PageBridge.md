@@ -10,15 +10,15 @@
 
 ## 下载
 
-当前版本 **0.6.1 / build 17**：
+当前版本 **0.7.0 / build 18**：
 
 | 平台 | 安装包 | 安装方式 |
 |---|---|---|
-| Mac（Apple Silicon） | [macOS arm64 ZIP](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-macOS-arm64.zip)（约 60 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-macOS-arm64.zip.sha256) | 解压，将 `PageBridge.app` 放入“应用程序” |
-| Windows x64（推荐） | [Windows 安装器](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-windows-x64-setup.exe)（约 90 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-windows-x64-setup.exe.sha256) | 按向导安装，默认装到当前用户目录，无需管理员权限 |
-| Windows x64（便携） | [Windows 便携 ZIP](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-windows-x64.zip)（约 130 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.6.1/PageBridge-0.6.1-windows-x64.zip.sha256) | 完整解压，运行 `PageBridge.Windows.exe` |
+| Mac（Apple Silicon） | [macOS arm64 ZIP](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-macOS-arm64.zip)（约 60 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-macOS-arm64.zip.sha256) | 解压，将 `PageBridge.app` 放入“应用程序” |
+| Windows x64（推荐） | [Windows 安装器](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-windows-x64-setup.exe)（约 90 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-windows-x64-setup.exe.sha256) | 按向导安装，默认装到当前用户目录，无需管理员权限 |
+| Windows x64（便携） | [Windows 便携 ZIP](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-windows-x64.zip)（约 130 MB）· [SHA-256](https://github.com/txp666/PageBridge/releases/download/v0.7.0/PageBridge-0.7.0-windows-x64.zip.sha256) | 完整解压，运行 `PageBridge.Windows.exe` |
 
-同一 [Release 页面](https://github.com/txp666/PageBridge/releases/tag/v0.6.1)还提供项目源码和第三方对应源码。
+同一 [Release 页面](https://github.com/txp666/PageBridge/releases/tag/v0.7.0)还提供项目源码和第三方对应源码。
 
 Mac 包为 ad-hoc 签名，**没有 Developer ID 签名或 Apple 公证**；Windows 安装器和程序 **没有 Authenticode 签名**。首次打开时系统可能提示风险，请核对下载来源和 SHA-256 后再确认。
 
@@ -44,8 +44,9 @@ Mac 包为 ad-hoc 签名，**没有 Developer ID 签名或 Apple 公证**；Wind
 
 ## 主要功能
 
-- **文档库：** 文件夹、名称搜索、排序、收藏、最近阅读、回收站和首页预览。
-- **原页版式阅读：** 整篇或指定页生成阅读稿，保持原页数、分栏、照片、色块、细边框和表格数字；正文与表格标签在原位置显示译文，行内公式随正文排列，放不下的段落点击查看全文。扫描页由 MinerU 本机识别。
+- **文档库：** 文件夹、名称搜索、排序、收藏、最近阅读、回收站和首页预览；全库搜索所有文档的原文和译文，点击结果打开到对应页。
+- **原页版式阅读：** 整篇或指定页生成阅读稿，之后可追加尚未翻译的页，保持原页数、分栏、照片、色块、细边框和表格数字；正文与表格标签在原位置显示译文，行内公式随正文排列，放不下的段落点击查看全文。扫描页由 MinerU 本机识别。
+- **术语表：** 内置九个英文→简体中文领域术语表（工业自动化、电子与嵌入式、机械、通信、汽车电子、机器学习、统计、医学、学术论文），可新建、复制、修改、导入导出（TXT／CSV），按语言对筛选，翻译时可同时选用多个；阅读时可把词加入术语表并只重译含该词的段落，也可从文档提取候选术语。助手用术语表把中文问题里的术语换成原文词检索。
 - **对照与重试：** 原文／对照／译文三种视图，左右页双向连续同步滚动、统一缩放；失败段落保留原文，可单独重试。
 - **导出 PDF：** 阅读稿导出为译文 PDF 或双语 PDF，译文是可选择、可搜索的文字。
 - **PDF 阅读与批注：** 搜索、缩略图、目录、书签；高亮、下划线、页笔记，导出批注 PDF 和 Markdown。

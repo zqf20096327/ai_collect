@@ -7,7 +7,7 @@
 
 # Awesome AI Workflows
 
-[![Awesome](https://awesome.re/badge.svg)](https://awesome.re) [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/) ![Recipes](https://img.shields.io/badge/recipes-145-8a5a44) ![CI-verified](https://img.shields.io/badge/CI--verified-134-2f855a) [![FlowStacks](https://img.shields.io/badge/browse-flowstacks.xyz-8a5a44)](https://flowstacks.xyz) [![r/WebAfterAI](https://img.shields.io/badge/r%2FWebAfterAI-11K%20online-FF4500?logo=reddit&logoColor=white)](https://reddit.com/r/WebAfterAI)
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re) [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey.svg)](https://creativecommons.org/publicdomain/zero/1.0/) ![Recipes](https://img.shields.io/badge/recipes-148-8a5a44) ![CI-verified](https://img.shields.io/badge/CI--verified-136-2f855a) [![FlowStacks](https://img.shields.io/badge/browse-flowstacks.xyz-8a5a44)](https://flowstacks.xyz) [![r/WebAfterAI](https://img.shields.io/badge/r%2FWebAfterAI-11K%20online-FF4500?logo=reddit&logoColor=white)](https://reddit.com/r/WebAfterAI)
 
 <img src="assets/verify-demo.gif" alt="A recipe breaks upstream and the CI-verified badge drops automatically" width="82%" />
 
@@ -19,7 +19,7 @@ Like it? **Star the repo** so other builders can find workflows that actually st
 
 </div>
 
-A curated index of AI workflows that real builders actually run: agent harnesses, local-inference setups, RAG pipelines, coding-agent recipes, and automations. Most lists hand you code that worked _once_; every recipe here links to a page that shows whether it still works, and 134 of them are checked by CI on every change, not by hand.
+A curated index of AI workflows that real builders actually run: agent harnesses, local-inference setups, RAG pipelines, coding-agent recipes, and automations. Most lists hand you code that worked _once_; every recipe here links to a page that shows whether it still works, and 136 of them are checked by CI on every change, not by hand.
 
 Why "verified" is the whole point: AI recipes rot fast. Models change, flags break, packages move. A recipe that ran six months ago is a coin flip today. So we wire the deterministic parts of each recipe into CI, and when a step breaks, the badge drops.
 
@@ -149,6 +149,8 @@ Why "verified" is the whole point: AI recipes rot fast. Models change, flags bre
 
 ## Automation
 
+- [Invoice Chaser: calculate late fees and choose a reminder stage](https://flowstacks.xyz/workflows/kitwise-invoice-chaser-calculation-and-reminder-stage) - Check invoice age, contract-specified simple-interest fees and reminder history using Kitwise Studio's pinned free sample, with repeatable calculations kept separate from Claude and email drafting. `✓ CI-verified`. Stack: Invoice Chaser free sample, Claude.ai.
+- [Yoya + Claude Code: inspect booking tools before confirming a meeting](https://flowstacks.xyz/workflows/yoya-mcp-booking-discovery-and-confirmation) - Check Yoya's public MCP connection and advertised confirmation fields, then review availability and a booking preview before any separately approved real meeting. `✓ CI-verified`. Stack: Yoya, Claude Code.
 - [Dedupe and Rank a Keyword List with Coreutils](https://flowstacks.xyz/workflows/dedupe-and-rank-a-keyword-list) - Turn a messy keyword dump into a clean, frequency-ranked list using only shell builtins. `✓ CI-verified`. Stack: GNU Coreutils.
 - [Morning Synthesis: a Start-of-Day Note Before Coffee](https://flowstacks.xyz/workflows/obsidian-claude-morning-synthesis) - Schedule Claude Code to read your recent notes and write a daily start-of-day briefing. `✓ CI-verified`. Stack: Obsidian, Claude Code.
 - [Weekly Review: a Finished Review Instead of a Blank Page](https://flowstacks.xyz/workflows/obsidian-claude-weekly-review) - Every Friday, have Claude Code turn your week's note activity into a written review. `✓ CI-verified`. Stack: Obsidian, Claude Code.
@@ -197,6 +199,7 @@ Why "verified" is the whole point: AI recipes rot fast. Models change, flags bre
 - [n8n as an MCP server: prove each exposed workflow is one narrow tool behind its own token](https://flowstacks.xyz/workflows/n8n-mcp-least-privilege-exposure) - Expose n8n workflows to an agent through MCP Server Triggers without handing it your whole toolbox, by proving each agent-callable trigger is one narrow workflow behind its own bearer token with no wildcard-HTTP or delete-capable node, so a leaked token or a prompt injection is bounded. `✓ CI-verified`.
 - [Shepherd: prove an agent task is retained and least-privilege before it runs](https://flowstacks.xyz/workflows/shepherd-least-privilege-grants) - Declare an agent task's per-repo read/write grants and hold its output to one side (retained, not applied), then validate that nothing auto-applies and every write grant is explicit, before you run it. `✓ CI-verified`. Stack: Shepherd.
 - [STACK: allow GitHub issue reads and block issue creation](https://flowstacks.xyz/workflows/stack-read-only-github-issue-boundary) - Prepare a narrowly scoped STACK GitHub Passport that permits one issue-list read while denying issue creation, with the submitted runner contract verified offline and live provider enforcement kept as a separate credentialed check. `✓ CI-verified`. Stack: STACK.
+- [Review Seeded Security Findings with ShipCheck](https://flowstacks.xyz/workflows/shipcheck-public-demo-security-findings-review) - Manually scan a synthetic public repository and review secret, environment-file and dependency findings. `author-tested`. Stack: ShipCheck.
 
 ## Content
 
@@ -211,7 +214,7 @@ The tools these workflows are built on. Maintainers: if your tool is listed and 
 
 - [Hermes Agent](https://hermes-agent.nousresearch.com) - Used in 16 workflows.
 - [Obsidian](https://obsidian.md) - Used in 15 workflows.
-- [Claude Code](https://claude.com/claude-code) - Used in 13 workflows.
+- [Claude Code](https://claude.com/claude-code) - Used in 14 workflows.
 - [Ollama](https://ollama.com) - Used in 8 workflows.
 - [Claude Desktop](https://claude.ai/download) - Used in 7 workflows.
 - [MCPVault](https://github.com/bitbonsai/mcpvault) - Used in 7 workflows.
@@ -243,6 +246,7 @@ The tools these workflows are built on. Maintainers: if your tool is listed and 
 - [anti-slop](https://github.com/miqdadbadjuber/anti-slop) - Used in 1 workflow.
 - [Apple Core AI Models](https://github.com/apple/coreai-models) - Used in 1 workflow.
 - [Arcmira](https://arcmira.com) - Used in 1 workflow.
+- [Claude.ai](https://claude.ai) - Used in 1 workflow.
 - [Cline](https://cline.bot) - Used in 1 workflow.
 - [code-review-skill](https://github.com/amirbena/code-review-skill) - Used in 1 workflow.
 - [codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp) - Used in 1 workflow.
@@ -261,6 +265,7 @@ The tools these workflows are built on. Maintainers: if your tool is listed and 
 - [GNU Coreutils](https://www.gnu.org/software/coreutils/) - Used in 1 workflow.
 - [Graphiti](https://github.com/getzep/graphiti) - Used in 1 workflow.
 - [Hetzner VPS](https://hetzner.com) - Used in 1 workflow.
+- [Invoice Chaser free sample](https://kitwisestudio.com/free/invoice-chaser/) - Used in 1 workflow.
 - [Khoj](https://khoj.dev) - Used in 1 workflow.
 - [LibreChat](https://www.librechat.ai) - Used in 1 workflow.
 - [LlamaIndex](https://www.llamaindex.ai) - Used in 1 workflow.
@@ -290,6 +295,7 @@ The tools these workflows are built on. Maintainers: if your tool is listed and 
 - [Sakana Fugu](https://sakana.ai/fugu/) - Used in 1 workflow.
 - [Scrapy](https://scrapy.org) - Used in 1 workflow.
 - [Shepherd](https://shepherd-agents.ai) - Used in 1 workflow.
+- [ShipCheck](https://vibeshipcheck.com) - Used in 1 workflow.
 - [smolagents](https://huggingface.co/docs/smolagents) - Used in 1 workflow.
 - [STACK](https://getstack.run) - Used in 1 workflow.
 - [stem-notes](https://github.com/Shass27/stem-notes) - Used in 1 workflow.
@@ -303,6 +309,7 @@ The tools these workflows are built on. Maintainers: if your tool is listed and 
 - [Wan (Alibaba)](https://wan.video) - Used in 1 workflow.
 - [WebMCP](https://developer.chrome.com/docs/ai/webmcp) - Used in 1 workflow.
 - [whisper.cpp](https://github.com/ggerganov/whisper.cpp) - Used in 1 workflow.
+- [Yoya](https://yoya.ai) - Used in 1 workflow.
 - [zvec](https://zvec.org) - Used in 1 workflow.
 
 ## How verification works

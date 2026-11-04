@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-white.png">
+    <img alt="TYSA logo" src="docs/assets/logo-dark.png" width="96">
+  </picture>
+</p>
+
 <h1 align="center">TYSA</h1>
 
 <p align="center"><em>Teach Yourself Anything</em></p>
@@ -8,6 +15,18 @@
   <a href="https://github.com/Akas333/TYSA/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/Akas333/TYSA?label=download"></a>
   <a href="https://github.com/Akas333/TYSA/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Akas333/TYSA/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>
+</p>
+
+<p align="center">
+  <a href="#download"><img alt="macOS: supported" src="https://img.shields.io/badge/macOS-supported-brightgreen?logo=apple&logoColor=white"></a>
+  <a href="#download"><img alt="Windows: supported" src="https://img.shields.io/badge/Windows-supported-brightgreen?logo=windows&logoColor=white"></a>
+  <a href="#download"><img alt="Linux: supported" src="https://img.shields.io/badge/Linux-supported-brightgreen?logo=linux&logoColor=white"></a>
+</p>
+
+<p align="center">
+  <a href="https://doi.org/10.1073/pnas.2422633122"><img alt="PNAS: 10.1073/pnas.2422633122" src="https://img.shields.io/badge/PNAS-10.1073%2Fpnas.2422633122-b31b1b"></a>
+  <a href="https://arxiv.org/abs/2305.14536"><img alt="arXiv: 2305.14536" src="https://img.shields.io/badge/arXiv-2305.14536-b31b1b?logo=arxiv&logoColor=white"></a>
+  <a href="https://arxiv.org/abs/2510.00844"><img alt="arXiv: 2510.00844" src="https://img.shields.io/badge/arXiv-2510.00844-b31b1b?logo=arxiv&logoColor=white"></a>
 </p>
 
 <p align="center">
@@ -22,6 +41,14 @@
 Most AI learning tools just explain. TYSA is an engineered learning harness: it first measures what *you* already understand, plans a path from there to your goal, and teaches one reasoning step at a time, changing the plan as soon as your answers show it was wrong about you. Two people asking the same question get two different lessons, and the app shows why.
 
 Built on Meta's Muse models for the **Meta Global AI Developer Hackathon** (Indie Developer track).
+
+### Demo
+
+<p align="center">
+  <a href="https://akas333.github.io/TYSA/assets/tysa-demo.mp4"><img alt="Watch the 3-minute TYSA demo" src="docs/assets/demo-poster.jpg" width="820"></a>
+  <br>
+  <a href="https://akas333.github.io/TYSA/assets/tysa-demo.mp4"><strong>▶ Watch the demo (3 min)</strong></a>
+</p>
 
 ![The lesson plan: a dependency map from what the learner already knows to the goal, waiting for them to confirm it](docs/assets/screenshot-plan.png)
 
@@ -139,6 +166,12 @@ npm run lint
 ```
 
 More detail: [architecture](docs/architecture.md), [teaching method](docs/teaching-methodology.md), [development guide](docs/development.md), [keyboard shortcuts](docs/keyboard.md).
+
+## Research
+
+- **Bastani et al., *Generative AI without guardrails can harm learning: Evidence from high school mathematics*, PNAS 2025** ([doi:10.1073/pnas.2422633122](https://doi.org/10.1073/pnas.2422633122)). The study behind the problem TYSA addresses: students who practised with an unrestricted AI tutor did worse on the exam without it.
+- **Macina et al., *MathDial: A Dialogue Tutoring Dataset with Rich Pedagogical Properties Grounded in Math Reasoning Problems*, EMNLP 2023** ([arXiv:2305.14536](https://arxiv.org/abs/2305.14536)). Evidence that LLM tutors tend to give away answers instead of scaffolding, which is why TYSA probes before it teaches.
+- **Chen et al., *Learning Compact Representations of LLM Abilities via Item Response Theory*, 2025** ([arXiv:2510.00844](https://arxiv.org/abs/2510.00844)). The item response theory groundwork for the graded-answer log, read with the learner as the respondent and each question as an item.
 
 ## License
 

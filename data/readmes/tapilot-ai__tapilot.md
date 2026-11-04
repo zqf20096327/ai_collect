@@ -6,6 +6,8 @@
 
 **English** · [简体中文](README.zh.md)
 
+[![E2E by Midscene.js](https://badge.midscenejs.com/by-midscene)](https://midscenejs.com)
+
 Ask Tapilot to open an app, find information on screen or work through a task
 across apps. You can add instructions while it runs, stop it, and review the
 screenshots and actions afterward.
@@ -61,8 +63,8 @@ Tasks stopped by opening the floating conversation panel also show the handoff c
 
 ## Try it
 
-Requires an **arm64 Android 11+** phone and a supported vision model. There is no
-verified public release pipeline yet; build a development APK using the steps below.
+Requires an **arm64 Android 11+** phone and a supported vision model. Download the [Beta APK](https://www.feishu.cn/file/Ig0KbUKlJoADozxRbOocm5iqnXf)
+or use the [GitHub release fallback](https://github.com/tapilot-ai/tapilot/releases).
 
 1. Install the APK, open Tapilot and enable **Tapilot device control** in Android
    Accessibility settings.
@@ -193,22 +195,19 @@ for the native UI, and the [Model Context Protocol](https://github.com/modelcont
 for the computer plugin. See [CREDITS.md](CREDITS.md) for more upstream projects,
 license identifiers and redistribution work still required before release.
 
-## Optional background-display experiment
+## Optional background screen (Experimental)
 
-Debug builds offer **Settings → Developer experiments → Background screen (Experimental)**.
-It requires [explicit shell-helper authorization and connection](docs/experiments/shell-assisted-display.md),
-offers guided notification pairing, automatic local connection and optional restart recovery without a computer,
-is off by default, and checks isolated rendering, captured frames, targeted
-gestures and test-app launches. A separate opt-in Agent trial can increment and verify the built-in test counter using the configured model; arbitrary background tasks are not supported.
-See the [experiment protocol and limits](docs/experiments/background-display.md).
-Beta and Release builds do not include the probe.
+Starting with 0.1.9, builds offer **Settings → Background screen (Experimental) → Use for chat tasks**, off by default.
+After [shell authorization, phone-side pairing and overlay permission](docs/experiments/shell-assisted-display.md),
+normal chat requests can open and operate installed apps on a separate screen while the main screen remains available.
+The borderless floating preview shows the actual captured screen. Use the task's **Take over** action before manual input,
+then explicitly continue with a fresh observation. Closing the preview or disabling the setting stops the task and releases the display.
+Connection failures never redirect an ongoing task to the main screen.
 
-## Floating virtual-screen preview (Experimental)
-
-**Experimental · Debug only · off by default.** The probe offers a movable
-preview over other apps. The bounded Agent trial supports pause, manual takeover and explicit continuation with a fresh screenshot; normal conversation tasks still use the primary screen.
-Tap and swipe requests target only the virtual display; Android may reject them.
-See [setup, permissions and limitations](docs/experiments/floating-virtual-display.md).
+Connection status and optional recovery remain visible in settings. Compatibility trials and manual connection methods
+are under **Advanced**. Display dimensions and density follow the current phone screen within a bounded capture budget.
+App compatibility, Unicode input without display-scoped accessibility, protected pages and screen-off use remain limited.
+The feature remains experimental and requires explicit shell authorization before use. See [setup and limits](docs/experiments/shell-assisted-display.md).
 
 ## License
 

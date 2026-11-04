@@ -1,0 +1,158 @@
+# GalleryFlow: ComfyUI Image Gallery & Metadata Viewer
+
+A self-hosted ComfyUI image gallery and metadata viewer for browsing, sorting and managing your [ComfyUI](https://github.com/Comfy-Org/ComfyUI)-generated AI images, with prompt, model, LoRA and workflow extraction from image metadata.
+
+Connect GalleryFlow to your ComfyUI output folder to instantly sort and filter your images, read prompts, seeds, models and LoRAs from PNG metadata, and visualize the complete ComfyUI workflow nodes and their connections.
+
+## What's new in 2.0
+
+GalleryFlow 2.0 is a full redesign of the interface. Your images are now the focus:
+
+- **A gallery that keeps every image's shape.** Portrait, square and landscape images sit together in neat rows, without cropping.
+- **A calmer interface.** Warm neutral colours, a single slim toolbar, and a refined light and dark mode.
+- **A new details panel.** A large image next to the prompt, model, settings and LoRAs, with one-click copy for prompts.
+- **A distraction-free full-screen viewer**, with arrow-key navigation.
+- **A cleaner workflow view**, with soft, colour-coded nodes.
+- **Instant results when you add a folder.** The folder opens right away and images appear while it's being scanned.
+- **Reads more images.** Prompts and workflows are now found in PNGs that earlier versions skipped, such as images saved from websites or the ComfyUI docs. Click **Rescan** on a folder once to pick them up.
+- **Better on phones and tablets.**
+
+## Features
+
+- 📁 Browse your ComfyUI-generated images, including every subfolder
+- 🖼️ Justified gallery that keeps each image's real shape, with adjustable size
+- 🎨 Full-screen image viewer with keyboard navigation
+- 📋 Generation details for each image: prompt, negative prompt, model, seed, steps, CFG, sampler, scheduler, LoRAs
+- 🧩 Workflow visualization for each image, and copy the workflow JSON to the clipboard
+- 🔄 Sort by subfolder, filename or date, and filter by file type
+- 🌓 Light and dark mode
+
+[![ComfyUI image gallery with a justified layout that keeps every image's shape](frontend/docs/images/gallery.png)](frontend/docs/images/gallery.png)
+
+[![Full-screen ComfyUI image preview with prompt, model and LoRA details](frontend/docs/images/preview.png)](frontend/docs/images/preview.png)
+
+[![ComfyUI image metadata viewer showing prompt, seed, steps, CFG and sampler](frontend/docs/images/metadata.png)](frontend/docs/images/metadata.png)
+
+[![ComfyUI workflow viewer with colour-coded nodes and their connections](frontend/docs/images/workflow.png)](frontend/docs/images/workflow.png)
+
+## Tech Stack
+
+- **Frontend:** React 18, TypeScript, Material UI, Vite
+- **Backend:** FastAPI, SQLAlchemy, Python 3.11+
+- **Other:** React Flow, light/dark mode, responsive design
+
+* * *
+
+## Quick Start
+
+### Prerequisites
+
+- **Git** (or download the zip from the [latest release](https://github.com/zeitmaschinen/GalleryFlow/releases/latest) instead of cloning)
+- **Python 3.11 or newer** (3.13 recommended)
+- **Node.js 18.18 or newer** (the current LTS version is recommended), which includes **npm**
+
+* * *
+
+### 1. Clone the Repository
+
+```
+git clone git@github.com:zeitmaschinen/GalleryFlow.git
+cd galleryflow
+```
+
+* * *
+
+### 2. Install Backend Dependencies
+
+```
+cd backend
+python3 -m venv venv         # or python -m venv venv on Windows
+source venv/bin/activate     # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+cd ..  # Return to project root for next steps
+```
+
+* * *
+
+### 3. Install Frontend (Node.js)
+
+```
+cd frontend
+npm install
+cd ..  # Return to project root
+```
+
+* * *
+
+### 4. Start the Application (Every time you want to run the app)
+
+On a terminal/command window **in the project root**, run:
+
+```
+source backend/venv/bin/activate     # or backend\venv\Scripts\activate on Windows
+python3 run_galleryflow.py
+```
+
+- This will launch both the backend and frontend.
+- The backend will be available at [http://localhost:8000](http://localhost:8000).
+- The frontend will be available at [http://localhost:5173](http://localhost:5173).
+
+* * *
+
+### Troubleshooting
+
+If you're getting an error when installing npm, you likely need to install nodejs first. Close your current terminal/command window, download and install Node.js from [nodejs.org](https://nodejs.org/), then open a new terminal and run `npm install` again.
+
+* * *
+
+### 5. To Open GalleryFlow
+
+- Visit [http://localhost:5173](http://localhost:5173) in your browser.
+- Add folder path from your ComfyUI images output.
+- Enjoy! 🎉
+
+* * *
+
+### 6. Additional Notes
+
+- Both the backend and frontend are started automatically by a python script for full functionality.
+- To stop GalleryFlow, press **Ctrl + C** in the terminal window where it's running.
+
+* * *
+
+### Updating from an earlier version
+
+First stop GalleryFlow if it's running (**Ctrl + C** in its terminal window).
+
+**If you installed with git**, run these from the project root:
+
+```
+git pull
+source backend/venv/bin/activate     # or backend\venv\Scripts\activate on Windows
+pip install -r backend/requirements.txt
+cd frontend
+npm install
+cd ..
+```
+
+**If you installed from a zip download:** unzip the new version into a new folder and follow the Quick Start steps 2 and 3 there. Then copy the file `galleryflow.db` from your old GalleryFlow folder into the new one (same place, next to `run_galleryflow.py`). That file is your library: without it you'd have to add your folders again.
+
+Either way, your library is kept. If you're coming from 1.2 or older, also run `python3 migrate_db.py` from the project root once. After updating to 2.0 or newer, click **Rescan** on your folders once so GalleryFlow can read images that older versions skipped.
+
+* * *
+
+## Configuration
+
+- See `.env.example` for available configuration options.
+
+## Contributing
+
+- For advanced usage, troubleshooting, SSH setup, and contributing, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+If this project is useful to you, please don't forget to give it a star! 🌟 🤗
+
+## License
+
+GalleryFlow is licensed under [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/). You're free to use, share and adapt it for non-commercial purposes, as long as you give credit. See the [LICENSE](LICENSE) file for the full text.
+
+Before 2.0, GalleryFlow was released under the MIT License. Copies obtained under those earlier versions keep the MIT terms.

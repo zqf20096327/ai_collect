@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v80.145, 2026-11-03), the supported distribution.
+Use **current `main`** (v80.161, 2026-11-04), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -82,7 +82,7 @@ Distinct signals:
 - **Billed:** actual monetary spend with reported or explicit subscription/zero-billing evidence; otherwise `N/A`.
 - **Quotas / limits:** independent account-native windows, credits, budgets and availability.
 
-Reference costs—including Watch **Today**—are **CCost**, unless labeled otherwise, not native **Used** or actual **Billed**. Included work can have CCost with Billed $0. Quota bars show **Used / Total**; **Remaining** pace describes capacity left. Quota credentials do not prove historical attribution.
+Reference costs—including Watch **Today**—are **CCost**, unless labeled otherwise, not native **Used** or actual **Billed**. Included work can have CCost with Billed $0. Quota bars default to **Used / Total**; Web Settings can instead show finite native **Remaining / Total**. **Remaining** pace describes capacity left independently. Quota credentials do not prove historical attribution.
 
 ### Symbols and token categories
 
@@ -324,7 +324,7 @@ Useful settings include:
 - `pricingMaxAgeHours`: pricing/model metadata cache age.
 - `thresholds`: running-cost, context, percentile and quota warning thresholds.
 - `colorScheme`, `colorSchemes`, `colors`: terminal palette selection and per-role overrides.
-- `webSettings`: saved Web-only `theme` (`classic` default / `web`) and `ccostDisplayUnit` (`credits` default / `usd`). Legacy `webTheme` is fallback; other keys stay shared.
+- `webSettings`: Web-only `theme`, `ccostDisplayUnit`, `miniWatchPlacement` and `quotaDisplayMode` (`used` default / `remaining`). Each supports symbolic `default` inheritance or an explicit pinned choice. Legacy `webTheme` is fallback; other keys stay shared.
 
 `modelComparisonNew` colors new names/dates; `modelComparisonPromotion` colors active rates/Relative CCost. Superseded colors fade; plain output is unchanged.
 
@@ -361,7 +361,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.145 (2026-11-03):** Mini Watch opens smaller (native geometry verified at 150% Windows scaling), centers prompt headings and shows the same global Total Today as full Watch in a separate right-aligned header. Accounting, live units and manual resizing are unchanged.
+**v80.161 (2026-11-04):** Full Web Watch uses one **Session Context / CCost** summary per card and one canonical price-threshold explanation. Approaching uses an amber triangle/context value; exceeded uses a distinct red stop icon and red context/multiplier, keeping session cost and other text neutral. See [Web Watch](docs/web-beta.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

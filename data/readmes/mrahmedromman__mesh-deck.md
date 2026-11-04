@@ -23,17 +23,17 @@
   <a href="https://github.com/mrahmedromman/mesh-deck/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
 
-`mesh` plans and starts a stack of local AI services on shared GPUs, in the right order, with one log file per
+`mesh` plans and starts a stack of local AI services on your NVIDIA GPUs, in the right order, with one log file per
 service. A service is any command that listens on a port: a chat model, speech-to-text, embeddings, text-to-speech,
 or anything else that uses GPU memory.
 
 <p align="center">
-  <img alt="mesh status showing four services: llm and stt running, tts starting, embed pending" src="https://raw.githubusercontent.com/mrahmedromman/mesh-deck/main/docs/assets/social-preview.png" width="720">
+  <img alt="mesh-deck, a CLI to plan, order and run multiple local AI services on NVIDIA GPUs. mesh status shows four services: llm and stt running, tts starting, embed pending" src="https://raw.githubusercontent.com/mrahmedromman/mesh-deck/main/docs/assets/social-preview.png" width="720">
 </p>
 
-> **Early release.** Built and checked on one machine with two RTX 4090s, running vLLM services. It reads
-> `nvidia-smi`, so it needs an NVIDIA GPU and a Unix-like system (tested on Linux). Reports from other GPUs and
-> other engines are very welcome.
+> **Early release.** Built and checked on one Linux machine with two RTX 4090s: vLLM (a source build and Docker), a
+> Docker speech-to-text server and a FastAPI service. It reads `nvidia-smi`, so it needs an NVIDIA GPU and a
+> Unix-like system. Other engines are not tested yet; reports from other GPUs and engines are very welcome.
 
 ## Why
 
@@ -64,13 +64,14 @@ starting things in the right order, and finding which log holds the error is ted
 
 ## Other engines
 
-The start order, health checks, logs, `mesh gpu` and shutdown work for any command. The memory check is built
+The start order, health checks, logs, `mesh gpu` and shutdown work for any command that serves HTTP on a port. The memory check is built
 around vLLM's `gpu_memory_utilization` fraction. For another engine (llama.cpp, Ollama, TGI, ComfyUI or your own
 script), leave out the fraction and give the service `measured_mib` instead: run `mesh up` once, copy the
 printed "memory it added" numbers, and the planner uses them. Set `health` to a path your engine answers on, since
 the default is `/v1/models`. An answer of 500 or more (for example `503` while it loads) counts as not ready yet.
 The [config reference](https://github.com/mrahmedromman/mesh-deck/blob/main/docs/config.md#health-paths-for-common-engines)
-lists the paths of common engines. This has not been tested with engines other than vLLM yet; if you try one, please
+lists the paths of common engines and says which were tested. Tested so far: vLLM, a Docker speech-to-text server and
+a FastAPI app. Not tested: llama.cpp, Ollama, TGI, SGLang, ComfyUI and Triton. If you try one, please
 [open an issue](https://github.com/mrahmedromman/mesh-deck/issues) with what worked.
 
 ## Install
@@ -216,7 +217,7 @@ All options, `mesh logs` examples, exit codes and where files go: [docs/commands
 The driver keeps back some GPU memory, and vLLM (the engine this was built around) measures free memory when each service starts. `mesh` subtracts
 the reserved memory and anything other programs are using, then checks each service in order, reducing what is
 free as services start. On two RTX 4090s the planned free memory matched the real `nvidia-smi` numbers to within
-about 20 MiB once real footprints were entered. Details and limits: [docs/how-it-works.md](https://github.com/mrahmedromman/mesh-deck/blob/main/docs/how-it-works.md).
+about 20 MiB once real footprints were entered. That is measured right after startup; a service can use more memory while it handles requests. Details and limits: [docs/how-it-works.md](https://github.com/mrahmedromman/mesh-deck/blob/main/docs/how-it-works.md).
 
 ## Compared with
 
@@ -236,12 +237,12 @@ configs you trust. `mesh` itself sends nothing anywhere: it runs `nvidia-smi`, s
 
 ## Limitations
 
-- NVIDIA GPUs and Unix-like systems only. Not tested on Windows, AMD or Intel GPUs.
+- NVIDIA GPUs and Unix-like systems only. Tested on one Linux machine; not tested on Windows, AMD or Intel GPUs.
 - No request proxy or single endpoint; each service keeps its own port.
 - It does not restart a service that crashes after startup; it prints a warning.
 - `mesh gpu` needs Linux and reports a snapshot only: no live view, no per-process utilization, no killing of
   processes. It recognises Docker containers but not Podman or Kubernetes.
-- Estimates for services nobody has measured are rough.
+- Estimates for services nobody has measured are rough, and no estimate guarantees that a service will fit.
 - Logs are overwritten on each `mesh up`, with no rotation.
 
 ## Contributing

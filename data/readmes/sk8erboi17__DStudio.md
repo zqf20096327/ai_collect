@@ -58,7 +58,7 @@ and most models are integrated without being fully qualified.
 - [Development and tests](#development-and-tests)
 - [Network access](#network-lan) · [How it works](#how-it-works) · [Security](#security)
 - [Contributing](#contributing)
-- [WIP checklist](#wip-checklist--october-27-2026)
+- [WIP checklist](#wip-checklist--november-4-2026)
 - [Project layout](docs/PROJECT_LAYOUT.md)
 
 ## What DStudio can do
@@ -137,14 +137,28 @@ downloadable build; to use it today, [build from source](#build-from-source).
 
 **Recent changes**
 
+- **Learn activity feedback (November 4).** The loading panel shows actual
+  research steps, URLs being read, synthesis/audit activity, elapsed time and
+  quiet intervals. Stop stays in the composer. Chromium/WebKit checks use
+  simulated model replies; final roadmap quality remains unqualified.
+  [Scope](docs/changes/2026-11-04.md#learn-generation-feedback-and-local-relaunch).
+- **Matching vision downloads (November 4).** DeepSeek V4 Vision-Exp, V4.1 and
+  GLM model downloads continue with their missing native encoder after the model
+  download succeeds. Stop cancels the remaining chain; existing encoder files
+  stay in place. [Scope](docs/changes/2026-11-04.md#matching-vision-encoder-downloads).
+- **V4.1 HTTP resume (November 4).** The pinned Q2 and 1017 vision downloader
+  resumes existing digest-matched partials over HTTP, with connection retries
+  and exact size/SHA-256 verification. Fourteen small-file HTTP checks pass;
+  one full 1017 Q2 transfer also completed and verified. This is download
+  evidence, not model-quality qualification. [Scope](docs/changes/2026-11-04.md).
 - **ds4 main moved to `890898c` (November 3).** The bundled main engine follows
   upstream's November 2 revision; DStudio's patches were rebased and the native
-  runtimes rebuilt on it (no real-model runs yet). An installed `ds4/` at
+  runtimes rebuilt on it (complete real-model qualification remains open). An installed `ds4/` at
   `0aaea5a` must be reinstalled; move it aside rather than deleting it, because
   its `gguf/` folder holds your models. [Steps](docs/BUNDLED_ENGINES.md#main-refresh-to-890898c-november-3-2026).
 - **Breaking for existing source installs (October 27).** Older installations
   are not upgraded: reinstall the bundled engines and restart unfinished Qwen
-  downloads. [Details](#wip-checklist--october-27-2026).
+  downloads. [Details](#wip-checklist--november-4-2026).
 - **Qwen moved to bundled engines.** Qwen3.6-35B-A3B and Qwen3.8-27B run on
   llama.cpp `b11836`; Qwen3.6 also runs on MLX on Apple Silicon. The former
   Qwen side engines (vagrillo/ds4 and Ninnix/q36) are retired. Qwen3.8-Flash-Next
@@ -217,7 +231,7 @@ These are focused development checks, not a quality score or a ranking.
   is started. See [the list](PLAN.MD#proposals).
 - Learn/Tutor, PDF/vision, long tasks, the native desktop matrix, generated
   Design projects and final release admission. See the
-  [WIP checklist](#wip-checklist--october-27-2026),
+  [WIP checklist](#wip-checklist--november-4-2026),
   [remaining work](docs/WORK_IN_PROGRESS.md) and [PLAN.MD](PLAN.MD).
 
 ## Install
@@ -734,7 +748,7 @@ calls) and on remote endpoints.
   distorted media; a missing renderer is reported, not counted as a pass.
 - **Reliable delivery.** Incomplete writes are rejected with recovery guidance;
   unfinished answers are not marked complete.
-  [Before/after experiment](docs/DESIGN_AGENT_EXPERIMENT.md): individual
+  [Before/after experiment](docs/history/design-agent-experiment-2026-09-06.md): individual
   improvements, no overall quality win established.
 - **Reasoning control.** Thinking effort and context are independent; Design
   honors your context (32k minimum) even at Max.
@@ -899,7 +913,7 @@ the GGUF there.
 The October 3 real run passed **6/6**. Three earlier failed runs are kept with
 their fixes (a folder not recognized as a model, an HTTP/1.0 readiness reply,
 and a 512-token default reply limit plus a renamed reasoning field) in
-[tests/README.md](tests/README.md#qwen36-on-mlx-apple-silicon).
+[the MLX verification guide](tests/docs/engines-and-harnesses.md#qwen36-on-mlx-apple-silicon).
 
 ### Every Qwen3.6 and Qwen3.8-27B quantization
 
@@ -984,7 +998,7 @@ From the project root:
 ./download-model.sh --help
 ./download-model.sh ds4f-q2        # DeepSeek V4 Flash
 ./download-model.sh ds4f-vision-q2 # DeepSeek V4 Flash Vision-Exp + encoder
-./download-model.sh ds41f-q2       # DeepSeek V4.1 Flash 1017 Q2 (needs hf with Xet)
+./download-model.sh ds41f-q2       # DeepSeek V4.1 Flash 1017 Q2 (Python 3 + curl, HTTP resume)
 ./download-model.sh ds41f-1017-vision # its 1017 vision encoder
 ./download-model.sh glm53-q2       # GLM 5.3 Flash (glm53-vision for its encoder)
 ./download-model.sh laguna-q4      # Laguna S 2.1
@@ -999,8 +1013,13 @@ From the project root:
 
 DeepSeek V4, GLM and Laguna show a visible `<model>.gguf.part` while a transfer
 is incomplete. The pinned Qwen downloads verify size and SHA-256 per file before
-the model becomes selectable. Hugging Face/Xet transfers (Qwen3.8, V4.1) keep
-partial data in the Hugging Face cache until they are verified in full.
+the model becomes selectable. The pinned V4.1 Q2 and 1017 vision downloads use
+HTTP range resume, continuing the largest matching Hugging Face cache partial
+in place. A stalled connection is retried from the bytes actually saved; Stop
+preserves those bytes. Exact size and SHA-256 must pass before publication, and
+existing weights are never overwritten. These targets need Python 3 and curl,
+without depending on the installed Hugging Face/Xet version. Other Hugging
+Face/Xet transfers (Qwen3.8, V4.1 Q4/original vision) retain their own downloader.
 
 ### Linux and Windows (prepared, not tested)
 
@@ -1216,7 +1235,7 @@ shared-host run. All 36 measured answers pass, but four auxiliary checks fail:
 
 ![Real engine comparison: short-prompt reading and generation rates before and after the update, with observed ranges.](assets/README%20images/benchmarks/main-update-prefill-decode.png)
 
-[Settings, limitations and measurements](docs/DS4_MAIN_UPDATE_2026-09-05.md).
+[Settings, limitations and measurements](docs/history/ds4-main-update-2026-09-05.md).
 
 ### PDF library: can it find the right source?
 
@@ -1236,7 +1255,7 @@ functional checks are not an aesthetic score.
 
 ![Initial Design comparison: two of three delivered and one of three fully checked in both versions.](assets/README%20images/benchmarks/design-development-comparison.png)
 
-[Failures, review and later targeted checks](docs/DESIGN_AGENT_EXPERIMENT.md).
+[Failures, review and later targeted checks](docs/history/design-agent-experiment-2026-09-06.md).
 
 Regenerate these charts without running a model:
 
@@ -1345,10 +1364,10 @@ Earlier receipts, measured on September 5, 2026 (M2 Max / 96 GB):
 | Checked answers and protocol behavior | 11/12 | 10/12 | 12/12 |
 
 DeepSeek missed one strict output-format check; Laguna missed that check and
-returned one wrong value. [Results and limits](docs/ENGINE_ACCEPTANCE.md). The
+returned one wrong value. [Results and limits](docs/history/engine-acceptance-2026-09-05.md). The
 headless first-launch check also loaded every chat model installed on the test
 Mac at 8k context and checked exact answers and a rendered Chat reply;
-[results and model list](docs/HEADLESS_E2E.md).
+[results and model list](docs/history/headless-e2e-2026-09-05.md).
 
 ## Network (LAN)
 
@@ -1509,159 +1528,61 @@ right testers.
 [BSD 3-Clause](LICENSE) © 2026 Giuseppe Perrotta. Bundled third-party sources
 keep their own licenses: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## WIP checklist — October 27, 2026
+## WIP checklist — November 4, 2026
 
-The macOS/Apple Silicon campaign is **incomplete**. Checked items mean the
-stated implementation or scoped verification is complete; they do not qualify
-every model or a release. Exact acceptance criteria and retained failures are in
-[the remaining WIP](docs/WORK_IN_PROGRESS.md) and [PLAN.MD](PLAN.MD).
+The macOS/Apple Silicon campaign is **incomplete and paused**. Implemented
+features and scoped checks do not qualify every model or a release. Detailed
+unfinished requirements live in [PLAN.MD](PLAN.MD); the [short WIP](docs/WORK_IN_PROGRESS.md)
+is the navigation page. Historical results keep their original runtime revisions.
 
 ### Completed implementation and scoped checks
 
-- [x] Bundle pinned engine sources with provenance and versioned adaptations;
-  build/install from an empty offline profile without fetching sources.
-  [Sources and verification](docs/BUNDLED_ENGINES.md).
-- [x] Replace the Qwen side engines with bundled llama.cpp for Qwen3.6 and
-  Qwen3.8-27B, with a guarded resident owner; real 6/6 on each model,
-  including Design. [Retirement record](docs/BUNDLED_ENGINES.md#retired-qwen-side-engines).
-- [x] Add MLX for Qwen3.6 on Apple Silicon: offline wheels, pinned weight
-  download, readiness check; real 6/6 with retained earlier failures.
-- [x] Run Design on llama.cpp/MLX models with structured tool calls.
-- [x] Add pi and OpenCode as Agent harnesses with pi-ds4 for DeepSeek, versioned
-  patches, workspace confinement and a Settings pane; real 24/24 across four
-  models. [Harness results](docs/HARNESSES.md).
-- [x] Stream files being written (live tool-call previews) in Agent, Cowork,
-  Design, pi and OpenCode on llama.cpp, MLX and ds4; real write-streaming checks
-  pass on every path. [Results](tests/README.md#streaming-and-live-tool-previews).
-- [x] Fix llama.cpp/MLX starts in the desktop app (the server guard was not
-  dispatched by the app binary); the bundle smoke now runs the guard test on it.
-- [x] Prepare Linux/Windows llama.cpp builds (dynamic backends, Job Object,
-  parent-death signal); cross-compiled, and the dynamic layout built and run on
-  macOS.
-- [x] Move Qwen Next onto unified main and record the Q4 baseline: 75/100 corpus
-  answers and 8/8 long-context cases. [Qwen evidence](docs/QWEN_CHECKPOINT.md).
-- [x] Remove automatic elapsed-work cutoffs from model preparation, inference,
-  PDF planning and Research, keeping Stop, count/byte/concurrency bounds and
-  explicit Task Graph budgets.
-- [x] Correct Research progress, streamed writer output and visible incomplete
-  outcomes. [Remaining real-answer checks](docs/SEARCH_AGENT_QUALITY_PLAN.md).
-- [x] Share transcript selection/scroll handling across modes and fix image,
-  native-window and Learn/Tutor regressions; the simulated UI matrix passes
-  54/54. [Coverage](tests/README.md#complete-simulated-ui-matrix).
-- [x] Ship 25 offline Design systems with guides and recipes; 402/402 authored
-  preview checks pass in Chromium/WebKit (no model ran).
-  [Catalog](docs/DESIGN_SYSTEMS.md).
-- [x] Offer DeepSeek V4.1 Flash 1017 Q2 (the official file) with its vision
-  sidecar; each V4.1 checkpoint opens only with its own sidecar, and the
-  original Q2 stays resumable. `make test-v41-vision-pairing-live` checks the
-  real engine on published headers (no weights read, no inference).
-- [x] Offer only the publishers' official weights; modified derivatives are
-  refused and left untouched on disk.
-- [x] Offer every published standard quantization of Qwen3.6-35B-A3B and
-  Qwen3.8-27B on llama.cpp and MLX (63 variants) from one pinned catalog, with
-  per-file size/SHA-256 verification; 27B on MLX is text only. Fixture-based
-  checks only (`make test-qwen-variants`); no variant other than the defaults
-  has run on real weights.
-- [x] Update the bundled MLX to mlx 0.32.4 and mlx-lm 0.32.2: real offline
-  install reaching Metal, and real Qwen3.6 MXFP8 tool-call streaming in Agent,
-  Cowork and Design. Two earlier Design attempts failed on the test client's
-  start limit; their receipts are kept.
-- [x] Download every Qwen variant, the three original ones included, through
-  one verified downloader (`scripts/download-qwen-variant.py`). Remove host
-  routes and UI code that nothing called.
-- [x] Keep patches only for the bundled engine revisions (ds4 main `0aaea5a`,
-  Laguna `448d569`): the variants for earlier main revisions and the retired
-  Qwen Next fork, with its fixtures and tests, are deleted (about 19,000 lines).
-  The patch stack applies and restores byte for byte on the bundled sources.
-  [Patch notes](patch/README.md).
-- [x] **Breaking (October 27, 2026):** no backward compatibility with older
-  installations. An engine at another revision, an older DStudio patch state
-  (the former M2 Max batch-limit upgrade and Design label normalization), a
-  leftover `ds4-qwen38`/`ds4-glm5.3` folder without a DStudio receipt or the old
-  Qwen Next base + PLE files get no special handling or upgrade: they fail as
-  drift or are treated like any other folder or file. Half-finished Qwen
-  downloads from before this change do not resume (their staging folder is now
-  `.dstudio-qwen-downloads`); partial files are left on disk. Reinstall the
-  bundled engines and restart those downloads.
+Current implementation and evidence scope are documented with their owners:
+[bundled engines](docs/BUNDLED_ENGINES.md), [harnesses](docs/HARNESSES.md),
+[Design systems](docs/DESIGN_SYSTEMS.md), [PDF/OCR](docs/PDF_READING.md),
+[Qwen](docs/QWEN_CHECKPOINT.md) and [V4.1/GLM](docs/DS41_UPDATE_CHECKPOINT.md).
+The November 4 downloader and Learn changes are recorded in [the change note](docs/changes/2026-11-04.md).
+The former complete checkbox list is preserved as a [dated snapshot](docs/history/readme-checklist-2026-11-04.md).
 
 ### Still required
 
-- [x] Restore Agent, Cowork and Design sessions on llama.cpp/MLX (and a LAN
-  host) after a restart: the transcript is saved after every turn and `/switch`
-  rebuilds it; old tool calls can never run again. Real runtimes across a
-  restart with simulated model frames: `make test-remote-session`.
-- [ ] KV snapshots for llama.cpp/MLX sessions (a restored session is prefilled
-  again), and saved sessions for pi/OpenCode on these models.
-- [x] Refuse SSRF to the host's loopback from LAN devices, DNS rebinding and
-  cross-site CORS; bound and protect LAN chat mirrors.
-  `make test-http-lan` (real host, requests from the LAN address).
-- [x] Read scanned PDF pages with local OCR on macOS; labelled pages, bounded
-  work per read, cached readings, OCR line evidence. `make test-pdf-ocr`.
-  Linux/Windows OCR: not implemented.
-- [x] Raise Cowork comparison-table limits (5,000 rows, 128 columns, 100,000
-  cells, 512 sources) with a content-addressed extraction cache.
-  `make test-document-table-scale`.
-- [x] Fix Cowork text-copy fidelity (a lost final newline); real A/B on
-  DeepSeek V4 Flash Vision-Exp. [Results](extension/prompt-lookup/bench/README.md#follow-up-the-lost-final-newline-3-october-2026).
-- [x] Cowork from a LAN browser through an explicitly shared, paired session.
-  `make test-http-lan`, `tests/browser/ui_lan_cowork_playwright_test.mjs`.
-- [ ] Run the five representative real-weight checks of the newly downloadable
-  Qwen variants (Qwen3.6 UD-Q4_K_M, UD-IQ4_XS and MXFP4_MOE GGUFs, Qwen3.6 MLX
-  NVFP4, Qwen3.8-27B MLX 4-bit; about 98 GB) with the production-host gate,
-  one at a time. **NOT RUN** yet (no weights downloaded for them).
-  [Plan](docs/WORK_IN_PROGRESS.md).
-- [ ] Rerun the 100-task corpus and the long requests on llama.cpp and MLX
-  (published Qwen scores come from retired engines); qualify Next Q2
-  independently.
-- [ ] Run Linux, Windows, CUDA, ROCm and Vulkan for real; make pi/OpenCode
-  available on Windows.
-- [ ] Run pi/OpenCode with GLM, Laguna, Qwen3.8-Flash-Next, DeepSeek V4.1 and a
-  cloud endpoint, and qualify Plan/GSA/RSA with them.
-- [ ] Complete Agent/Cowork dependency signatures, crash-safe runtime-pair
-  publication and verified legacy-source recovery.
-- [ ] Complete Learn/Tutor, including on the llama.cpp/MLX models, and the
-  retained Next reasoning-setting incident.
-- [ ] Complete selected-model Agent/Goals/Cowork long tasks, steering,
-  pause/resume, durable recovery, exactly-once effects and reopened exports.
-- [ ] Independently qualify native PDF/vision inputs (at least 30 PDFs and 20
-  images per vision checkpoint, negative text-model cases) across all modes.
-- [ ] Complete the native-model desktop workflows (each model × Chat, Agent,
-  Learn, Cowork, Design), switching, cancellation and final-build regressions.
-- [ ] Qualify the remaining Design domain auditors and generate, operate and
-  review the frozen projects; add generated-project qualification for the
-  sixteen newer Design systems.
-- [ ] Complete installation/upgrade/failure/recovery coverage and final engine
-  admission with qualifying receipts for every required gate.
-- [ ] Complete held-out Search/Research evaluation and native-vision webpage
-  checks.
-- [ ] Qualify DeepSeek V4.1 1017 Q2, V4.1 Q4 and GLM 5.3 across modes, vision,
-  memory and SSD settings. The original Q2's retained format failure does not
-  transfer to the 1017 file. **Contributor hardware wanted:** on the maintainer's
-  M2 Max (96 GB) they run only with SSD streaming and their complete
-  qualification is left to contributors; they stay BLOCKED, not passed.
-  [How to help](PLAN.MD#contributors).
-- [ ] Complete the six-agent/two-lane comparison with held-out cases, phase
-  profiling, matched baselines and reviewed Matplotlib publication.
-- [ ] Validate the two-photo MiniMax H3 path end to end.
+- [Engine admission and recovery](PLAN.MD#p2--complete-engine-alignment-and-admission),
+  [adapters and session reuse](PLAN.MD#p3--finish-adapters-and-per-model-mode-parity) and
+  [installation/failure coverage](PLAN.MD#p5--extend-installation-upgrade-and-recovery-coverage).
+- [PDF/vision isolation](PLAN.MD#p4--complete-pdf-vision-and-text-model-isolation),
+  [real answer quality, Learn and long tasks](PLAN.MD#p6--complete-numerical-answer-and-product-quality) and
+  [native desktop workflows](PLAN.MD#p7--complete-the-real-desktop-matrix).
+- [Generated Design projects](PLAN.MD#p8--finish-the-design-auditor-and-generated-project-matrix),
+  [matched agent comparisons](PLAN.MD#p9--complete-six-agent-comparisons),
+  [profiling](PLAN.MD#p10--profile-and-retain-justified-optimizations) and
+  [final publication](PLAN.MD#p11--qualify-the-final-build-and-reviewed-publication).
+
+The [representative Qwen variant checks](PLAN.MD#qwen-variants) remain NOT RUN.
+V4.1 and GLM keep their open contributor gates and BLOCKED status; see
+[the hardware/evidence contract](PLAN.MD#contributors). No unchecked requirement
+was closed by shortening this overview.
 
 ### Proposed modules and improvements (not started)
 
-Candidates added October 25, outside the campaign; what exists today and what
-is missing for each is in [PLAN.MD](PLAN.MD#proposals).
+The proposals are [listed once in PLAN.MD](PLAN.MD#proposals). They are outside
+the completion campaign and have not been started by this documentation update.
 
-- [ ] Guards for the pi/OpenCode harnesses: duplicate-call breaker, read-only
-  Plan mode and mid-turn steering.
-- [ ] Disk KV slots for llama.cpp and an MLX prefix cache.
-- [ ] A pre-action reasoning budget that pauses with a clarifying question.
-- [ ] Constrained JSON for structured internal steps, per engine.
-- [ ] A read-only local state audit in Doctor.
-- [ ] Independent edit receipts and restore for Office files in Cowork.
-- [ ] A stream integrity check, report-only first.
-- [ ] A mastery ledger with graded assessments in Learn.
-- [ ] An import/include index and JSON Canvas export for Open Blueprint.
-- [ ] A PDF ↔ web claim agreement matrix in Search.
-- [ ] Conversation branches instead of a destructive Regenerate.
-- [ ] An opt-in watched drop folder for Cowork.
+### Separate product/platform roadmap (outside this campaign)
 
-Private prompts, documents, transcripts, weights and raw receipts remain
-ignored. Publishing this checkpoint does not qualify any unchecked requirement.
+Linux/Windows, CUDA/ROCm/Vulkan, Windows harnesses, non-macOS OCR and the
+remaining media work are tracked as [separate roadmap scope](docs/WORK_IN_PROGRESS.md#scope-and-separate-product-roadmap).
+Their status is not an inferred macOS pass.
+
+Private prompts, documents, transcripts, weights and raw receipts remain ignored.
+
+<a id="-completed-implementation-and-scoped-checks"></a>
+See [the current WIP](docs/WORK_IN_PROGRESS.md) and the [dated checklist](docs/history/readme-checklist-2026-11-04.md).
+
+<a id="-still-required"></a>
+See [the current WIP](docs/WORK_IN_PROGRESS.md) and the [dated checklist](docs/history/readme-checklist-2026-11-04.md).
+
+<a id="-separate-platform-and-media-roadmap"></a>
+See [the current WIP](docs/WORK_IN_PROGRESS.md) and the [dated checklist](docs/history/readme-checklist-2026-11-04.md).
+
+<a id="-proposed-modules-and-improvements-not-started"></a>
+See [the current WIP](docs/WORK_IN_PROGRESS.md) and the [dated checklist](docs/history/readme-checklist-2026-11-04.md).

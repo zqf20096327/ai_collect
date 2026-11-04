@@ -7,6 +7,7 @@
 <p align="center">
   <a href="docs/ARCHITECTURE.md">Architecture</a> |
   <a href="docs/ROADMAP.md">Roadmap</a> |
+  <a href="https://github.com/theaisocietyasu/sparky/issues/79">v1.0 issues</a> |
   <a href="deploy/README.md">Setup</a>
 </p>
 
@@ -19,7 +20,7 @@ SparkyAI is an assistant for Arizona State University students in Discord: a Rus
 
 ## Architecture
 
-The engine runs its own agent loop and calls its tools itself. Conversations, memories, the profile graph, confirmations, knowledge search, live ASU queries, Canvas, the Sun Devil Central clubs and events, and account linking come from [Platform](https://github.com/asusoda/platform), a separate service, over its HTTP API and its MCP tools. Platform crawls ASU pages and runs web search. The engine opens no database.
+The engine runs its own agent loop and calls its tools itself. Knowledge search, live ASU queries, the Sun Devil Central clubs and events, and account linking come from [Platform](https://github.com/asusoda/platform), a separate service, over its HTTP API and its MCP tools. Platform crawls ASU pages and runs web search. The engine keeps conversations, memories, confirmations and each student's sealed Canvas calendar feed link in its own SQLite file, and reads Canvas due dates from that feed.
 
 ```mermaid
 flowchart LR
@@ -57,7 +58,7 @@ just discord
 | `apps/discord/` | Rust: the Discord bot, an HTTP client of the engine |
 | `apps/cli/` | Rust: a terminal console that runs and tails every unit |
 | `apps/evals/` | Python: golden cases, scorers, and the baseline gate |
-| `apps/web/` | Vite and React: the static site and admin UI |
+| `apps/web/` | Vite and React: the static site, web chat and memories pages |
 | `deploy/` | Compose files, Dockerfiles, and model server config |
 | `docs/` | `ARCHITECTURE.md` and `ROADMAP.md` |
 
@@ -92,7 +93,8 @@ Platform fetches the public ASU pages SparkyAI answers from, and SparkyAI cites 
 ## Docs
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): crate boundaries, traits, Platform stores, and invariants
-- [docs/ROADMAP.md](docs/ROADMAP.md): what is built next, and what is out of scope
+- [docs/ROADMAP.md](docs/ROADMAP.md): the direction, and what is out of scope
+- [#79 SparkyAI v1.0](https://github.com/theaisocietyasu/sparky/issues/79): what is built next, in order
 - [AGENTS.md](AGENTS.md): commands and rules for contributors and coding agents
 
 The 2024 to 2025 prototype is on [`archive/v1`](https://github.com/theaisocietyasu/sparky/tree/archive/v1), with a write-up in [docs/blog/sparkyai-v1.md](docs/blog/sparkyai-v1.md).

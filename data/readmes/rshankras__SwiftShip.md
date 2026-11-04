@@ -37,7 +37,7 @@ Building an app is like building a house:
 
 ## Highlights
 
-- **53 commands** covering the whole lifecycle: idea validation, planning, building, testing, App Store metadata, screenshots, TestFlight, submission, and post‑launch.
+- **55 commands** covering the whole lifecycle: idea validation, planning, building, testing, App Store metadata, screenshots, TestFlight, submission, and post‑launch.
 - **Works for brand‑new apps *and* existing apps** — one command maps your existing code, and another turns it into a phased feature‑plus‑bug‑fix release plan.
 - **Run & screenshot your app** — quality commands can actually launch your app (iOS Simulator *or* a real Mac app) and look at it, instead of just asking you "does it work?"
 - **Optional App Store Connect automation** — with the right tool connected, commands can *push* your metadata, release notes, and TestFlight setup straight to App Store Connect — always after showing you a preview and asking first. (The final "Submit for Review" always stays your decision.)
@@ -194,9 +194,9 @@ Or let Claude Code set this up for you automatically with the `/fewer-permission
 /apple:new-app HydrationBuddy                             # define the app
 /apple:roadmap                                            # break it into phases
 /apple:plan 1                                             # detail phase 1
-/apple:build                                              # build phase 1
-/apple:review                                             # quality gate
-# ...repeat plan → build → review per phase...
+/apple:build                                              # build phase 1 (ends with a review gate)
+/apple:verify 1                                           # confirm it actually works
+# ...repeat plan → build → verify per phase...
 /apple:testflight                                         # beta test
 /apple:submit                                             # ship it
 /apple:help                                               # see everything, any time
@@ -227,7 +227,7 @@ This is the main, end‑to‑end flow. Each step writes a file into `.planning/`
    Breaks a phase into concrete tasks, each tagged `auto` (Claude does it with a specialist), `generator` (uses a ready‑made code recipe), or `manual` (you do it, e.g. create the Xcode project). → `.planning/PLAN.md`
 
 7. **Build the phase — `/apple:build`**
-   Works through the task list: brings in the right specialist agent, writes the code, runs checks, commits after each task, and updates the project's memory. At the end it runs a quality gate automatically.
+   Works through the task list: brings in the right specialist agent, writes the code, runs checks, commits after each task (only that task's files — anything else in your working tree is shown to you, never swept in), and updates the project's memory. At the end it runs a quality gate automatically, marks the phase **built**, and asks whether to verify it now.
 
 8. **Verify it works — `/apple:verify`**
    Confirms the features actually work (builds, tests, and — if a supported tool is connected — it can **launch and screenshot the running app** and look at it). → `.planning/VERIFICATION.md`
@@ -261,7 +261,7 @@ Already have an app — maybe half‑built, inherited, or shipped years ago? Swi
 ### Option A — Adopt the full workflow
 
 1. **Map the codebase — `/apple:map`**
-   Read‑only. Claude scans your project and writes a clear summary: architecture (SwiftUI vs UIKit, SwiftData vs Core Data, navigation style), the key files (views, models, services), dependencies, and tech debt (TODOs, force‑unwraps, missing tests, rough test coverage). → `.planning/CODEBASE.md`
+   Read‑only. Claude scans your project and writes a clear summary: architecture (SwiftUI vs UIKit, SwiftData vs Core Data, navigation style), the key files (views, models, services), dependencies, and tech debt (TODOs, force‑unwraps, missing tests, rough test coverage). It also scores your **design debt**: how much styling bypasses your design tokens, area by area, plus custom fonts your app declares but never bundled. That's the first number to know before any redesign. It also lists the helpers your app already has (formatters, networking client, design tokens) so build agents reuse them instead of writing duplicates, and the sensitive areas (payments, sync, migrations, user data) where build stops to show you the diff. → `.planning/CODEBASE.md`, `.planning/UTILITIES.md`, `.planning/CRITICAL.md`
    *(This only describes your code — it never changes it.)*
 
 2. **Plan the release — `/apple:release "add Search, fix the settings crash"`**
@@ -296,7 +296,7 @@ This is what's special about SwiftShip beyond planning: where a supported tool i
 
 | Capability | What it does | Commands |
 |---|---|---|
-| **Run & screenshot your app** | Builds, launches, and screenshots the running app — iOS Simulator *or* a real macOS app (menu‑bar apps included) — and looks at the result. | `/apple:verify`, `/apple:visual-qa` |
+| **Run & screenshot your app** | Builds, launches, and screenshots the running app — iOS Simulator *or* a real macOS app (menu‑bar apps included) — and looks at the result. With [AXe](https://github.com/cameroncooke/AXe) installed, it also **taps through to the changed screen** by reading the app's accessibility labels (exact, cheap) instead of guessing from screenshots; screenshots are read as small thumbnails. | `/apple:verify`, `/apple:visual-qa` |
 | **Push to App Store Connect** | Pushes generated name / subtitle / keywords / description / promo text / "What's New" straight to your listing, each field previewed and confirmed — including per‑market translations. | `/apple:metadata`, `/apple:release-notes`, `/apple:localize` |
 | **Manage TestFlight** | Lists/creates beta groups, adds testers (with a clear "this emails a real person" confirmation), and pulls crash feedback into your notes. | `/apple:testflight` |
 | **Pre‑fill a submission** | Creates the App Store version record and pushes final metadata — then stops. `ship` also uploads media + build and drives the last mile (submission stays gated). | `/apple:submit`, `/apple:ship` |
@@ -312,7 +312,7 @@ This is what's special about SwiftShip beyond planning: where a supported tool i
 - **The "Submit for Review" button is never automated.** It's reviewer‑facing and hard to undo, so it always stays a manual click in App Store Connect.
 - **Least privilege.** Each command can only touch the specific tools it needs.
 
-These rely on optional, *separately‑installed* tools (an App Store Connect connector, a "run in Simulator" helper, sales/health reporters). They are **not** required to use SwiftShip — they're bonuses that activate only when present.
+These rely on optional, *separately‑installed* tools (an App Store Connect connector, a "run in Simulator" helper, [AXe](https://github.com/cameroncooke/AXe) for Simulator navigation — `brew install cameroncooke/axe/axe` — sales/health reporters). Bonus: the accessibility labels VoiceOver needs are the same ones the agent navigates by, so good labels help both. They are **not** required to use SwiftShip — they're bonuses that activate only when present.
 
 ---
 
@@ -363,6 +363,7 @@ These rely on optional, *separately‑installed* tools (an App Store Connect con
 | `/apple:walkthrough [flow]` | Drive user flows in the Simulator; audit the nav graph for dead-ends |
 | `/apple:differentiate [app\|idea]` | Originality / 4.3‑spam guardrail — function + metadata distinctness; protects the account |
 | `/apple:modernize [path]` | Sweep deprecations + adopt new‑OS APIs (Liquid Glass, toolbars) each cycle |
+| `/apple:debt [area\|rule-set]` | Measure the app against SwiftShip's rules, rank debt by churn, and pay it down one area at a time (tests first, baseline only shrinks) |
 
 ### Release
 | Command | What it does |
@@ -403,7 +404,7 @@ These rely on optional, *separately‑installed* tools (an App Store Connect con
 | `/apple:progress` | Show current status and next steps |
 | `/apple:pause` | Write a handoff doc when you stop |
 | `/apple:resume` | Restore context from a previous session |
-| `/apple:learn [lesson]` | Capture a mistake/pattern so it never recurs |
+| `/apple:learn [lesson]` | Capture a mistake/pattern so it never recurs — as a lint rule/test, a project or library skill, or a CLAUDE.md line |
 | `/apple:usage [--since 30d]` | Report the local usage ledger — command mix, outcomes, model‑tier adherence |
 | `/apple:help` | Show all commands |
 
@@ -419,10 +420,12 @@ SwiftShip's "memory" lives in a `.planning/` folder inside *your* project. You c
 ├── VALIDATION.md     # Idea validation (market, competitors)
 ├── APP.md            # App specification
 ├── CODEBASE.md       # Existing-code analysis (from /apple:map)
+├── UTILITIES.md      # Existing helpers agents must reuse (map, grown by build)
+├── CRITICAL.md       # Paths that always pause build for your review (new-app, map)
 ├── PROTOTYPE.md      # UI direction exploration (from /apple:prototype)
 ├── ROADMAP.md        # Development phases
 ├── RELEASE.md        # Release scope: features + bug fixes (from /apple:release)
-├── STATE.md          # Where you are right now
+├── STATE.md          # Where you are right now (+ which phases are built vs verified)
 ├── PREFERENCES.md    # Your implementation choices
 ├── PLAN.md           # Tasks for the current phase
 ├── spikes/           # API validation findings
@@ -483,7 +486,7 @@ SwiftShip is the *manager*; the **[claude-code-apple-skills](https://github.com/
 
 ```
 SwiftShip/
-├── commands/              # 53 workflow commands (the /apple:* you type — the plugin name "apple" supplies the prefix)
+├── commands/              # 55 workflow commands (the /apple:* you type — the plugin name "apple" supplies the prefix)
 ├── agents/                # 6 specialist agents
 ├── templates/             # planning-file templates copied into your project
 │   └── _conventions/      # shared rules (tool-handoff, usage-log, model-tiers, agent-vendoring)

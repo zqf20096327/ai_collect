@@ -1,0 +1,95 @@
+# Agent Campus
+
+**A pixel-art mission control for your Claude Code agents.** Every project is an office, every agent is a character you can watch work — and you orchestrate all of them from one campus.
+
+![Agent Campus demo — agents working in an office, then wandering to the café, game room and garden](docs/assets/demo.gif)
+
+## What it does
+
+- 🏢 **Campus view** — register your project folders as offices on one pannable pixel-art map. See at a glance who's working, who's waiting for you, and what each project is costing today.
+- 💬 **Rich chat agents** — powered by the official Claude Agent SDK: streamed markdown, tool cards with real diffs, permission prompts as Allow/Deny (with an "Always" that says how far the rule reaches), permission modes (Ask / Accept Edits / Plan / Bypass), slash commands and `@`-file mentions, a context-window gauge, image paste & file drag-and-drop, session resume.
+- ✅ **Task orchestration** — per-workspace task lists shared between you and your agents. Assign a task with one click and an agent spawns to do it; agents can read the backlog, log discovered work, and check tasks off when they truly finish. Their live internal plans are mirrored in real time.
+- 🌿 **A checkout per agent** — opt-in git worktrees, so two agents in one repo stop overwriting each other. A manager shows what deleting one would cost (uncommitted work, unmerged commits, agents still in it) and refuses to remove a checkout someone is working in.
+- 🔍 **See what changed, then ship it** — every file an agent touched, with diffs, readable *while it is still working*. Commit, push and open a PR without leaving the app; or rewind a prompt and the files it changed, with a preview of exactly what will move.
+- 🤖 **The Assistant** — a campus-wide orchestrator with tools to read project status, backlogs and spending, dispatch agents to any office by natural language, and reach the ones already running: message, interrupt, or close out a task.
+- 💸 **Spend dashboard** — every turn priced at API list rates, per day and per project, live on each office's label. On a Claude subscription none of it is billed (that usage comes out of your plan's limits), so it measures how much work you set in motion rather than what you owe. Per-agent budget caps stop a runaway unattended run.
+- 🏆 **Achievements** — milestones for shipped tasks, parallel agents and streaks (never for spend).
+- 🔔 **Notifications** — an agent left waiting on you for two minutes sends a desktop notification (click it to land on that agent), and the Dock icon counts everyone who needs you.
+- 📱 **Check in from your phone** — an optional read-only page on your local network listing who needs you, longest wait first. Off by default; nothing can be approved or changed from it.
+- 🧰 **It keeps working when the window doesn't** — closing the window puts the app in the tray instead of killing your agents, so scheduled runs still fire. Launch at login if you want it there already.
+- 🎨 **Layout editor** — design each office: 19 floors, 7 wall styles, 270+ pieces of furniture (steam rises, servers blink, fish swim), or stamp a ready-made room — café, game room, lab, library, garden. Per-workspace layouts.
+- ☕ **A campus that lives** — idle agents wander off to the espresso bar, the arcade or the koi pond; logged out, a demo fills the office with pretend agents so you can see it move.
+
+Sessions are **real Claude Code sessions** — same login, same config, same transcripts in `~/.claude/projects`. Start in the app, resume in your terminal, or vice versa. Nothing is locked in.
+
+## Requirements
+
+- A Claude subscription or an `ANTHROPIC_API_KEY`. The packaged app ships the Claude Code CLI, so there is nothing to install first — it checks on launch and walks you through signing in. (A `claude` already on your PATH is used instead, if you have one.)
+- macOS / Linux / Windows. Building from source additionally needs Node.js 22+.
+
+## Quick start
+
+```sh
+npm install
+cd webview-ui && npm install && cd ..
+npm run dev        # Vite + Electron, hot reload
+```
+
+`npm start` builds and runs the production bundle; `npm run package` creates installers (dmg/AppImage/nsis).
+
+> **Art assets:** all sprites in this repo (characters, furniture, floors, walls) are original work, MIT licensed like the code — most of them drawn by the agents themselves through a render-and-self-critique pipeline (`scripts/asset-gen/`).
+
+## Installing the packaged app
+
+Grab the installer for your platform from [Releases](../../releases/latest).
+
+**macOS:** the app is not code-signed yet (no Apple Developer subscription), so Gatekeeper will warn that it "cannot verify" the app. This is expected — to open it:
+
+1. Click **Done** (not "Move to Trash")
+2. Open **System Settings → Privacy & Security**, scroll down, and click **"Open Anyway"**
+3. Or from a terminal: `xattr -dr com.apple.quarantine "/Applications/Agent Campus.app"`
+
+**Windows:** SmartScreen may show "Windows protected your PC" — click **More info → Run anyway**.
+
+You can always audit the code and build from source instead (below).
+
+<details>
+<summary>Maintainers: turning signing on</summary>
+
+The build is already configured for it — hardened runtime, entitlements
+(`build/entitlements.mac.plist`) and a Gatekeeper check in `release.yml`. All
+of it is gated on repository secrets being present, so a release still builds
+(unsigned) without them. Adding the secrets is the whole switch:
+
+| secret | what it enables |
+| --- | --- |
+| `CSC_LINK`, `CSC_KEY_PASSWORD` | macOS signing (base64 Developer ID `.p12`) |
+| `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD`, `APPLE_TEAM_ID` | macOS notarization |
+| `WIN_CSC_LINK`, `WIN_CSC_KEY_PASSWORD` | Windows signing |
+
+Notarization turns on only when a certificate *and* notary credentials are both
+present, because asking for it with one of them missing fails the build rather
+than falling back.
+
+</details>
+
+## Architecture (short version)
+
+```
+shared/protocol.ts   typed message protocol (host ↔ UI, discriminated unions)
+src/core/            host-agnostic engine: transcript parsing, watchers, timers
+electron/            main process: Agent SDK sessions, PTYs, workspaces, tasks, usage
+webview-ui/          React + canvas: campus renderer, chat UI, layout editor
+```
+
+See [CLAUDE.md](CLAUDE.md) for the full map — it doubles as context if you contribute using Claude Code.
+
+Gates: `npm run check` (types + lint), `npm test`. CI runs both plus builds.
+
+## Contributing
+
+Issues and PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Good first issues are labeled; the roadmap lives in the issue tracker (checkpoint/rewind buttons, slash-command palette, `@`-file autocomplete, achievement furniture unlocks, free asset pack…).
+
+## Credits & license
+
+MIT. Agent Campus started as a fork of [pablodelucca/pixel-agents](https://github.com/pablodelucca/pixel-agents) (the VS Code extension) — the office/character concept and pixel engine grew from that work; the desktop app, Agent SDK integration, campus, tasks and orchestration were built on top.

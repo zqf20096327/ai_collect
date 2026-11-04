@@ -1525,7 +1525,7 @@ To learn RAG, Vector Databases, embeddings, and retrieval pipelines end to end w
 
 ## Context Window Management
 
-Every LLM has a maximum context window. GPT-5.5 has up to 400k tokens. Claude Sonnet 4.6 and Opus 4.8 have up to 1 million tokens. Some models go even further. But all of them are finite.
+Every LLM has a maximum [context window](https://outcomeschool.com/blog/context-window). GPT-5.5 has up to 400k tokens. Claude Sonnet 4.6 and Opus 4.8 have up to 1 million tokens. Some models go even further. But all of them are finite.
 
 In production, we hit context limits all the time:
 
@@ -1541,4 +1541,4 @@ As we fill the context with more tokens, three things happen, and they all hurt 
 
 **1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised context does not mean an equally large effective context.
 
-**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to send less but send the right thing (use a reranker 
+**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to se

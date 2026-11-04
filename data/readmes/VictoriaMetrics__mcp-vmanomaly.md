@@ -30,7 +30,8 @@ The MCP server contains embedded up-to-date `vmanomaly` documentation and is abl
   - version [1.28.3](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1283)+ for the core MCP toolset
   - version [1.30.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1300)+ for time-series characteristics and task-based shared autotune
   - version [1.30.5](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1305)+ for named-query shared autotune and query-policy suggestions in VMUI
-  - version [1.31.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1310)+ for experimental peer-group tuning and deployment sizing
+  - version [1.31.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1310)+ for schedule replay in shared autotune, experimental peer-group tuning and deployment sizing
+  - version [1.32.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1320)+ for metric discovery and dynamic preset artifacts, including Compose, Helm and VM Operator deployment files
 - Go 1.26.10 or higher (if building from source)
 
 ## Installation
@@ -140,6 +141,11 @@ MCP Server for vmanomaly is configured via environment variables:
 | `VMANOMALY_BEARER_TOKEN_FILE` | Path to a bearer-token file, suitable for mounted container/orchestrator secrets                  | No       | -                | -                      |
 | `VMANOMALY_HEADERS`      | Custom HTTP headers for requests (comma-separated key=value pairs, e.g., X-Custom=value1,X-Auth=value2) | No       | -                | -                      |
 | `VMANOMALY_REQUEST_TIMEOUT` | HTTP timeout for calls from MCP to vmanomaly, e.g. `60s`                                             | No       | `30s`            | -                      |
+| `VMANOMALY_TLS_CA_FILE`  | PEM CA bundle added to the system trust store to verify the vmanomaly server certificate                | No       | -                | -                      |
+| `VMANOMALY_TLS_CA_CERT`  | Same as `VMANOMALY_TLS_CA_FILE`, but the PEM content itself, for runtimes without file mounts; mutually exclusive with `VMANOMALY_TLS_CA_FILE`           | No       | -                | -                      |
+| `VMANOMALY_TLS_CERT_FILE` | PEM client certificate for vmanomaly servers that require mutual TLS; set together with the key file   | No       | -                | -                      |
+| `VMANOMALY_TLS_KEY_FILE` | PEM private key for `VMANOMALY_TLS_CERT_FILE`                                                           | No       | -                | -                      |
+| `VMANOMALY_TLS_INSECURE_SKIP_VERIFY` | Skip server certificate verification. **Insecure, for development and testing only**        | No       | `false`          | `false`, `true`        |
 | `MCP_SERVER_MODE`        | Server operation mode. See [Modes](#modes) for details.                                                 | No       | `stdio`          | `stdio`, `http`, `sse` |
 | `MCP_LISTEN_ADDR`        | Address for HTTP server to listen on                                                                    | No       | `localhost:8080` | -                      |
 | `MCP_ENABLED_TOOLS`      | Positive comma-separated tool allowlist; empty enables all registered tools                            | No       | -                | -                      |
@@ -148,6 +154,10 @@ MCP Server for vmanomaly is configured via environment variables:
 | `MCP_HEARTBEAT_INTERVAL` | Heartbeat interval for streamable-http protocol (keeps connection alive through network infrastructure) | No       | `30s`            | -                      |
 | `MCP_LOG_LEVEL`          | Log level: `debug` (verbose), `info` (default), `warn`, or `error`                                      | No       | `info`           | -                      |
 | `MCP_LOG_FILE`           | Log file path (empty = stderr)                                                                          | No       | `stderr`         | -                      |
+
+### Connecting to vmanomaly over HTTPS
+
+Use an `https://` URL in `VMANOMALY_ENDPOINT`. Server certificates are verified against the system trust store. For a private CA, set `VMANOMALY_TLS_CA_FILE`, or `VMANOMALY_TLS_CA_CERT` with the PEM content when the runtime cannot mount files; the CA is added to the system roots. When vmanomaly requires client certificates (mutual TLS), also set `VMANOMALY_TLS_CERT_FILE` and `VMANOMALY_TLS_KEY_FILE`. `VMANOMALY_TLS_INSECURE_SKIP_VERIFY=true` disables server certificate verification and cannot be combined with a custom CA; use it only for development or testing. Certificates are read at startup, so restart the server after rotating them.
 
 ### Modes
 
@@ -447,11 +457,14 @@ MCP vmanomaly provides tools organized into categories:
 
 #### Bounded metric discovery
 
-`vmanomaly_discover_metrics` calls the additive `POST /api/v1/discovery` API. It is not part of the vmanomaly 1.31.0 baseline: check the installed endpoint, and treat 404 as unsupported. Supply a datasource, optional explicit tenant, selectors and a fixed window. Tenant scope may be numeric (`accountID` or `accountID:projectID`) or explicitly `multitenant`, including a `/select/multitenant/prometheus` datasource URL; conflicting URL/request tenants are rejected by the discovery API. Multitenant metadata reads require VictoriaMetrics v1.104.0 or newer and a discovery API version that accepts this scope. Preserve `vm_account_id`/`vm_project_id` selectors and returned series labels; never automatically broaden a numeric tenant scope. Metric/label inventories across tenants do not establish per-tenant coverage. Each call performs one metadata request; no historical samples, retries or tenant enumeration. Defaults are 100 results and 10 seconds; maxima are 1,000 results, 10 selectors, 31 days and 30 seconds. The MCP client caps response bytes but does not limit concurrent discovery calls; server-side admission limits depend on the deployed backend. These caps do not bound the TSDB index scan. Preserve upstream warnings and `completeness`; returned counts are neither total cardinality nor exact historical coverage.
+`vmanomaly_discover_metrics` calls the additive `POST /api/v1/discovery` API. Requires vmanomaly 1.32.0+; treat 404 as unsupported. Supply a datasource, optional explicit tenant, selectors and a fixed window. Tenant scope may be numeric (`accountID` or `accountID:projectID`) or explicitly `multitenant`, including a `/select/multitenant/prometheus` datasource URL; conflicting URL/request tenants are rejected by the discovery API. Multitenant metadata reads require VictoriaMetrics v1.104.0 or newer and a discovery API version that accepts this scope. Preserve `vm_account_id`/`vm_project_id` selectors and returned series labels; never automatically broaden a numeric tenant scope. Metric/label inventories across tenants do not establish per-tenant coverage. Each call performs one metadata request; no historical samples, retries or tenant enumeration. Defaults are 100 results and 10 seconds; maxima are 1,000 results, 10 selectors, 31 days and 30 seconds. The MCP client caps response bytes but does not limit concurrent discovery calls; server-side admission limits depend on the deployed backend. These caps do not bound the TSDB index scan. Preserve upstream warnings and `completeness`; returned counts are neither total cardinality nor exact historical coverage.
 
 #### Preset configuration and alert artifacts
 
-`vmanomaly_generate_preset_artifacts` calls the additive `POST /api/v1/preset/artifacts` API. It is not part of the vmanomaly 1.31.0 baseline: check endpoint support and treat 404 as unsupported. Supply a complete configuration with explicit reader and VictoriaMetrics writer destinations, models and schedulers. Optional alert policy controls threshold, evaluation interval, persistence and the externally reachable incident base URL. `entity_labels` contains only known source labels; omit it for query-group links. Results retain structured configuration/rules, equivalent YAML, schema version and warnings. The request is limited to 1 MiB and the response to 8 MiB.
+`vmanomaly_generate_preset_artifacts` calls the additive `POST /api/v1/preset/artifacts` API. Requires vmanomaly 1.32.0+; treat 404 as unsupported. Supply a complete configuration with explicit reader and VictoriaMetrics writer destinations, models and schedulers. Optional alert policy controls threshold, evaluation interval, persistence and the externally reachable incident base URL. `entity_labels` contains only known source labels; omit it for query-group links. Results retain structured configuration/rules, equivalent YAML, schema version and warnings. The request is limited to 1 MiB and the response to 8 MiB.
+
+With vmanomaly v1.32.0+, optional `deployment` selects `targets` (`compose`, `helm`, `operator`), `storage` (`memory` or `persistent`) and an explicit released `image` tag. Include known choices in the first generation call to receive the complete bundle once. The backend owns validation and rendering; MCP preserves the returned files, per-file requirements and warnings without rewriting them. Helm uses pinned chart 1.12.19; Operator uses v0.75.2 and supports persistent storage only. Missing license or volume details use backend-generated draft requirements; request-level `required_inputs` remains restricted to the two writer fields. Generation does not install anything or verify a live deployment.
+
 
 Generation is read-only. `schema-valid` does not establish data coverage, sizing, connectivity, alert delivery or deployment readiness. The existing configuration and example-rule tools remain available; a successful validation response describes schema validation only. Use separate rendering and live checks before deployment.
 
@@ -533,6 +546,10 @@ Forward sizing resolves omitted scored points from explicit sampling and cadence
 | `vmanomaly_create_autotune_task`       | Start tuning one requested model class on sampled series                    |
 | `vmanomaly_get_autotune_task`          | Poll autotune progress and retrieve a completed recommendation              |
 | `vmanomaly_cancel_autotune_task`       | Request cooperative cancellation of an autotune task                        |
+
+For schedule-aware tuning, optionally pass `replay: {"fit_window":"3d", "fit_every":"1000w", "infer_every":"5m"}` together with fixed `start`/`end` Unix timestamps and the production sampling `step`. The backend fetches preceding training history and evaluates that inference range with the requested schedule. For causal online updates, also set `optimization_params.exact: true`. Omitting `replay` preserves fold-based tuning. The backend owns duration parsing and schedule validation.
+
+Replay requires vmanomaly [1.31.0](https://docs.victoriametrics.com/anomaly-detection/changelog/#v1310)+. Check that the completed `result_data.data.optimization.replay` matches the requested schedule; older backends may ignore unknown fields. Missing/mismatched replay metadata is not schedule validation. Preserve errors rather than retrying without replay. This evaluated range was used for tuning: validate the selected configuration on a separate later holdout before claiming generalization or reduced false positives.
 
 `vmanomaly_create_autotune_task` accepts `optimization_n_trials`, `optimization_timeout`, and advanced
 `optimization_params` to bound Optuna work. The MCP tool uses interactive defaults of 32 trials and
@@ -628,6 +645,23 @@ AI services and agents along with MCP servers like this cannot guarantee the acc
 You should double check the results obtained with AI.
 
 The quality of the MCP Server and its responses depends very much on the capabilities of your client and the quality of the model you are using.
+
+## Preset workflow guide
+For preset requests, retrieve `vmanomaly_get_preset_guide` before choosing tools. MCP initialization advertises this routing instruction. The read-only, no-argument tool returns the complete guide and version/source/SHA-256 metadata without network or backend access. Clients with resource support can read `vmanomaly://guides/preset/v1`; resources do not execute automatically.
+
+The canonical source is `plugins/vmanomaly/skills/vmanomaly-preset/references/copilot-preset-guide-v1.md` in VictoriaMetrics/skills. Do not edit the embedded copy. Run `python3 scripts/sync-preset-guide.py /path/to/skills` from a fetched canonical checkout after the skills changes merge into `origin/main`; `--check` verifies the committed snapshot and provenance. For a dependent PR only, `--allow-unmerged` explicitly marks review provenance; rerun without that flag from the merged skills revision before merging the MCP follow-up. The origin URL check prevents accidental misattribution, not malicious local Git metadata.
+
+The guide lives in `internal/resources/guides/`, separately from release documentation search. Its tool remains available when documentation resources are disabled. It requires the discovery/artifact capabilities for that workflow, but retrieving it works offline. Instructions establish workflow budgets, not runtime enforcement. Successful artifact results become download cards only in clients implementing that renderer. Unknown writer settings default to draft generation using a `.invalid` URL and `required_inputs` (writer URL and/or tenant). Never probe placeholders. Deployment-ready requests require resolving those inputs first. Responses retain the checklist and `deployment_ready: false`; schema validation alone never proves readiness. No deployment is performed.
+
+The [model-selection guide](https://docs.victoriametrics.com/anomaly-detection/guides/model-selection/) is an external reference, not bundled content. Search installed documentation for related model details; do not assume this page is available offline. Live schemas take precedence over static guidance.
+
+### Refreshing embedded resources
+
+Run `make update-docs` for selected manuals, or `bash scripts/update-docs.sh --revision <tag>` for a source release tag. The resolved source commit is recorded in `internal/resources/docs/snapshot.json`. Refresh the preset guide separately with `python3 scripts/sync-preset-guide.py /path/to/skills`; its committed source revision and content hash are recorded alongside it. The model-selection page remains link-only during refreshes.
+
+Both refreshes stage complete snapshots in repository-local `tmp/resource-sync`, serialize writers with a nonblocking lock, and restore the previous snapshot if publication fails. Run them before builds: directory replacement has a short absence window, and this is not a crash-atomic transaction. A failed rollback preserves the previous snapshot under that scratch directory for recovery. These maintainer scripts require Python 3.10+ on Linux/macOS; their offline regression tests run with `python3 -m unittest discover -s scripts/tests -v`.
+
+The guide links to the Helm chart and VM Operator documentation. A chart's `Chart.yaml` identifies a version but cannot define values or render manifests by itself. Use matching release values/templates/schema or Operator CRDs when preparing those deployment formats; these links are not bundled deployment generators.
 
 ## Contributing
 

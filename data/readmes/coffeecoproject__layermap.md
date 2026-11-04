@@ -9,7 +9,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/layermap)](https://www.npmjs.com/package/layermap)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/coffeecoproject/layermap/blob/main/LICENSE)
 
-**LayerMap tells your coding agent what calls a function and what changing it affects, up to the HTTP routes, in one call.** With at most 15 requests, agents found **97.9%** of affected endpoints with LayerMap vs 58.8% without; with no limit, Claude Code cost **33% less** in the 0.1.5 re-run ([benchmark](https://github.com/coffeecoproject/layermap/blob/main/docs/benchmark.md)).
+**LayerMap tells your coding agent what calls a function and what changing it affects, up to the HTTP routes, in one call.** With at most 15 requests, Claude Code on Opus 5.5 found **99.9%** of affected endpoints with LayerMap vs 76.0% without; with no limit, it found about the same and cost **48% less**, or 27% less without the task that gained most ([benchmark](https://github.com/coffeecoproject/layermap/blob/main/docs/benchmark.md)).
 
 **Resolved by each language's compiler or type checker, not guessed from names by tree-sitter:** calls through interfaces, base classes, templates and decorators link as the compiler links them, for TypeScript, JavaScript, Go, Python and Java.
 
@@ -65,23 +65,30 @@ projects, graded blind against truth sets cross-checked with each language's own
 
 | | With LayerMap | Without |
 |---|---|---|
+| Endpoints found, at most 15 requests (Claude Code on Opus 5.5, 6 tasks × 3 runs) | **99.9%** | 76.0% |
+| Cost / time at that limit (Opus 5.5) | +12% / +4% | |
+| Endpoints found, no request limit (Opus 5.5, 6 tasks × 2 runs) | 100% | 99.7% |
+| Cost / time, no request limit (Opus 5.5, maps built ahead) | **−48% / −33%**; −27% / −21% without the task that gained most | |
+| Ripple tasks: runs leaving other features' tests passing (Opus 5.5, 4 tasks × 3 runs) | 12 of 12 | 12 of 12 |
 | Endpoints found, at most 15 requests (`gpt-5.5`, 6 tasks × 3 runs) | **97.9%** | 58.8% |
 | Used unprompted by Claude Code / Codex (plugin installed, two rounds) | **12 of 12 / 12 of 12** | — |
 | Endpoints found, no request limit (Claude Code / Codex, 0.1.5) | 100% / 100% | 99.0% / 100% |
 | Claude Code cost, no request limit (0.1.5 re-run; first round −32%) | **−33%** | |
 | Codex input tokens, no request limit (current defaults) | +14% | |
-| Time, no request limit (Claude Code / Codex) | +25% / +20% | |
+| Time, no request limit (Claude Code on `claude-opus-5` / Codex, 0.1.5) | +25% / +20% | |
 | Failing tests the change check lists (Go / Python, functions made to fail) | **100% / 94–98%** | — |
 | Ripple tasks: runs leaving other features' tests passing (Codex / Claude Code, 4 tasks × 6 runs with, × 3 without) | **23 of 24** / 11 of 24 | 3 of 12 / 4 of 12 |
 | Everyday tasks, no impact analysis needed: done right / time (Claude Code and Codex, 8 tasks × 2 runs) | 32 of 32 / +12–31% | 32 of 32 |
 
-With a tight budget, the map finds far more of the affected code, at about 24% more tokens. With
-no limit, both agents find nearly everything either way. Claude Code costs a third less with the
-map. Codex's current defaults already search lean, so the map no longer saves it tokens; at
-reasoning effort max, in the first round, it saved 55%. Agents with the map explore more widely,
+With a tight budget, the map finds far more of the affected code, at 12–24% more cost or tokens. With
+no limit, both agents find nearly everything either way. Claude Code costs a third to a half less
+with the map. On Opus 5.5 it was also a third faster, though one task accounts for much of that gap
+and the maps were built ahead; on `claude-opus-5` it was a quarter slower. Codex's current defaults already search lean, so the map no longer saves it tokens; at
+reasoning effort max, in the first round, it saved 55%. Codex with the map explores more widely,
 which takes longer. On requests whose obvious change breaks another feature, the change check
 helped Codex keep to the requested feature. Claude Code saw which tests of other features it had
-changed but often kept the broader change on purpose, so it showed no clear difference. On small
+changed but often kept the broader change on purpose, so it showed no clear difference; on Opus 5.5
+it broke nothing with or without the map, and the check cost 17% more. On small
 local tasks the map changed nothing but cost about a fifth more time and money. These are small samples on tasks written by LayerMap's authors.
 The [report](https://github.com/coffeecoproject/layermap/blob/main/docs/benchmark.md) has the
 setup, the published tasks and the limitations.
@@ -166,7 +173,9 @@ depend on each other; whether that direction suits the project's layers is for t
 declaration the change adds reads almost the same as code the project already has, it names both, so
 the agent can use the existing code instead of a copy. When the change takes away the last call to a
 declaration, as when new code replaces old, it names that declaration, so the agent can delete what
-the change left behind. It never writes or runs tests. In Claude Code and
+the change left behind. The map does not link a field or type to the code reading it, so for one the
+change touches, the check searches for its references and follows that code up to the entry points
+and tests, as possibly affected. It never writes or runs tests. In Claude Code and
 CodeBuddy Code the plugin asks the agent once, before it finishes, to run this check for each repository it edited code in
 and has not checked since, whether through its edit tools or shell commands, which count for the code files they name
 (changes another session makes in the same work tree do not count); the Pi extension does the same after the agent's own
@@ -228,7 +237,9 @@ npx layermap check test/billing.test.ts   # also: what of the change this test d
 
 **What can't it see?** Calls the compiler cannot resolve statically: dependency injection, unknown
 framework routing, reflection and computed names. The tools say where a trace stops, and a missing
-relationship does not prove absence.
+relationship does not prove absence. TypeScript and JavaScript types come from the packages installed
+in the project's `node_modules` (never mapped themselves); where they are not installed, as in a
+fresh worktree, values typed by them have no type to follow, and the tools name those packages.
 
 **Windows?** Experimental. LayerMap's tests pass on Windows, but it has not yet been tried with
 Claude Code or Codex on a real Windows machine, so please test it on your own projects first and

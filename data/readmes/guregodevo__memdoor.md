@@ -97,7 +97,7 @@ applied): [memdoor.ai/workflows](https://memdoor.ai/workflows).
 |---|---|
 | `/model` | The agent's ladder, cheapest rung first. Pin any model of your providers. List prices |
 | `/connect` | Add a provider: OpenRouter, Anthropic, OpenAI, Gemini, DeepSeek, Baseten, Groq, xAI, any OpenAI-compatible endpoint, a company AI gateway. `/connect local`: janis on this machine or the box, or Ollama, llama.cpp, LM Studio, vLLM; no key. `/connect chatgpt`: a ChatGPT Plus/Pro plan, no key |
-| `/workflow` | The project's workflows and runs. Enter opens a run's graph, `a` approves a gate, `/workflow:<name>` runs one |
+| `/workflow` | The project's workflows and runs. Enter opens a run's graph, `a` approves a gate, `/workflow:<name> [the task]` runs one |
 | `/usage` | This month on your key, per model, and what the decision model kept out of the bill |
 | `/remote` | This conversation on your phone: a link and a QR code, the terminal itself, end-to-end encrypted |
 | `/remote view` | A watch-only link: live, no typing, no account, up to 200 viewers. `?live=1` is the terminal alone, for a stream or OBS |
@@ -170,6 +170,7 @@ Built in:
 - **`issue-triage`**: labels, kind, summary, duplicates.
 - **`fix-tests`**: finds the test command, fixes the code until the tests pass, leaves the fix in the working tree.
 - **`release-notes`**: commits since the last tag as Added / Changed / Fixed.
+- **`team-solve`**: the task a prompt defines (`memdoor workflow run team-solve "<the task>"`), done by a team of fresh contexts, GVS5H's method on any task and any model: changes across a repository checked by its own tests, a program by its samples, a document by a fresh judge. Its prompts differ from the published steps', so the 9.8 above is theirs, not the built-in's.
 
 `local-model: Qwen3-8B-4bit` in place of the key: the model runs inside the
 runner ([janis](https://github.com/guregodevo/janis), one file, cached), one

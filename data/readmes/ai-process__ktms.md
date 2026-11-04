@@ -48,6 +48,7 @@ vendor is down, enforces rate and spend limits, and records usage.
 - [OpenAI-compatible HTTP API](#openai-compatible-http-api)
 - [Anthropic Messages API](#anthropic-messages-api)
 - [MCP gateway](#mcp-gateway)
+  - [Agents](#agents)
 - [Concepts](#concepts)
 - [Error contract](#error-contract)
 - [API stability](#api-stability)
@@ -540,6 +541,16 @@ Everything is an environment variable; see [`env.example`](env.example).
 | `HTTP_ADDR` | `:8080` | HTTP listen address (health probes and the OpenAI-compatible API). |
 | `HTTP_API_ENABLED` | `true` | Serve the `/v1` API on `HTTP_ADDR`; `false` leaves only the health probes. |
 | `MCP_GATEWAY_ENABLED` | `true` | Serve the [MCP gateway](#mcp-gateway) (`/mcp`, `/mcp/{server}`) on `HTTP_ADDR`. |
+| `AGENTS_ENABLED` | `true` | Serve the [agents' inbox](#agents), the gateway's built-in server `agents`. |
+| `AGENTS_MAX_DEPTH` | `5` | How deep a chain of tasks in one conversation may go. |
+| `AGENTS_MAX_MESSAGES_PER_CONTEXT` | `200` | Messages in one conversation. |
+| `AGENTS_MAX_MESSAGE_BYTES` | `65536` | Size of one message. |
+| `AGENTS_TOOL_RPM` | `60` | Calls of each agents tool per key and minute; `0` is unlimited. Needs Redis. |
+| `AGENTS_RETENTION` | `720h` | Tasks unchanged this long are deleted; `0` keeps them. |
+| `AGENTS_RECORDING` | `metadata` | What the journal keeps by default: `off`, `metadata` or `full`. |
+| `AGENTS_JOURNAL_MAXLEN` | `100000` | Events the journal's Redis stream keeps; the oldest go first. |
+| `AGENTS_JOURNAL_MAX_EVENT_BYTES` | `16384` | Text of one `full` event; longer text is cut and hashed. |
+| `AGENTS_JOURNAL_REDIS_URL` | – | A separate Redis for the journal (`redis://...`); empty uses `REDIS_ADDR`. |
 | `HTTP_API_TIMEOUT` | `5m` | Read/write timeout for one HTTP API call (it waits on an upstream model). |
 | `METRICS_ADDR` | `:9091` | Internal HTTP listen address for Prometheus `/metrics` and `/healthz`. Empty disables the metrics server. |
 | `LOG_LEVEL` | `info` | zerolog level. |
@@ -1571,9 +1582,4 @@ print(reply.content[0].text, reply.model)   # `model` is the one that answered
 | `messages` | `user` and `assistant` turns with `text`, `image` and `document` blocks (`base64` or `https` `url` sources; `text` and `content` documents become text), `tool_use` and `tool_result` (text and images). `thinking`, `redacted_thinking` and server-tool blocks in assistant turns are dropped: another model cannot continue them. |
 | `tools`, `tool_choice` | Client tools with `input_schema` (the same JSON Schema subset as `response_format`); `tool_choice` `auto`, `any`, `tool` and `none`. Server tools such as `web_search` are rejected with `400`. |
 | `max_tokens` | Required, the output ceiling. |
-| `stream` | SSE events `message_start`, `ping`, `content_block_start`, `content_block_delta` (`text_delta`, `input_json_delta`), `content_block_stop`, `message_delta` and `message_stop`. `message_start` carries an input token estimate; `message_delta` carries the vendor's counts. |
-| `metadata.user_id` | `attributes["user_id"]`, as `user` on chat completions; other `metadata` keys are attributes, and `action_id` is the usage action label. Claude Code's `user_id` names a session: Keystone keeps its account (or, without one, its device) as the user and puts the session in `attributes["session_id"]`, so per-user limits and reports span sessions. |
-| `enable_cache`, `placement` | Extensions, as on chat completions; so are the `X-KTMS-Cache` and `X-KTMS-Placement` request headers (set them in Claude Code with `ANTHROPIC_CUSTOM_HEADERS`). |
-| `temperature`, `top_p`, `stop_sequences` | Passed to the model as on chat completions (see [Sampling](#sampling)). A stop sequence ends the answer with `stop_reason` `end_turn`. |
-| `top_k` | Accepted, sent to no model, and named in `X-KTMS-Ignored-Params`. |
-| `thinking`, `service_tier` | A
+| `stream` | SSE events `message_start`, `ping`, `content_block_start`, `content_block_delta` (`text_delta`, `input_json_delta`), `content_block_stop`, `message_delt

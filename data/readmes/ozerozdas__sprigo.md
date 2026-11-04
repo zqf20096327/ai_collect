@@ -16,6 +16,8 @@
 
 <p align="center"><a href="https://www.opensourcealternatives.to"><img src="https://www.opensourcealternatives.to/badge-osa.svg" alt="Listed on Open Source Alternatives"></a></p>
 
+<p align="center"><a href="https://buymeacoffee.com/ozerozdas"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-ffdd00?logo=buymeacoffee&logoColor=black" alt="Buy me a coffee"></a></p>
+
 ![Learning path](docs/screenshots/learn.jpg)
 
 | Live lesson | Practice together |

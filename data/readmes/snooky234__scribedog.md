@@ -12,6 +12,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Platform: Windows | Linux](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-0078d4)
 
+<a href="https://sourceforge.net/projects/scribedog/"><img src="docs/images/sourceforge-rising-star.svg" alt="SourceForge Rising Star" width="100"></a>
+
 💻 [Download](https://github.com/snooky234/scribedog/releases/latest) · 📖 [Documentation](docs/README.md) · 🖥️ [Server Edition](server/docs/README.md) · 🐳 [Docker Hub](https://hub.docker.com/r/snooky234/scribedog-server) · 📦 [GHCR](https://github.com/snooky234/scribedog/pkgs/container/scribedog-server)
 
 <img src="src/assets/scribedog-demo.gif" alt="ScribeDog demo" width="700">
@@ -126,8 +128,10 @@ whisper.cpp, so no audio ever leaves your device.
 Light, dark, Sepia, Fjord, Fireside and a true-black Midnight, plus a theme
 builder where you pick a few colours and the rest follows, down to how the
 note you are working on is marked in the sidebar. Export and share your
-themes as JSON. The interface speaks 10 languages, and every keyboard
-shortcut can be remapped.
+themes as JSON. Import your own TTF or WOFF fonts, icon fonts such as
+[Nerd Fonts](https://www.nerdfonts.com/) included, and they are embedded in
+PDFs too. The interface speaks 10 languages, and every keyboard shortcut can be
+remapped.
 
 <img src="docs/images/scribe-dog-custom-theme.png" alt="ScribeDog with a custom theme: warm amber accent and a paper-coloured page" width="700">
 

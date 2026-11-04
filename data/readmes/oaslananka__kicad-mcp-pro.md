@@ -12,7 +12,8 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="docs/tools-reference.generated.md">Tool Reference</a> ·
   <a href="https://oaslananka.github.io/kicad-mcp-pro/agents/">AI Agent Setup</a> ·
-  <a href="docs/llms.txt">AI discovery</a>
+  <a href="docs/llms.txt">AI discovery</a> ·
+  <a href="https://deepwiki.com/oaslananka/kicad-mcp-pro">Ask DeepWiki</a>
 </p>
 
 <p>
@@ -21,6 +22,7 @@
   <a href="https://pypi.org/project/kicad-mcp-pro/"><img src="https://img.shields.io/pypi/pyversions/kicad-mcp-pro?label=python" alt="Python Version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="MIT License" /></a>
   <a href="https://doi.org/10.5281/zenodo.21283791"><img src="https://zenodo.org/badge/1255527274.svg" alt="DOI" /></a>
+  <a href="https://gitgem.org/github/oaslananka/kicad-mcp-pro"><img src="https://gitgem.org/api/badge/github/oaslananka/kicad-mcp-pro.svg" alt="GitGem" /></a>
 </p>
 
 <p>
@@ -83,7 +85,7 @@ separate until the qualification work in #730 is complete.
 | PyPI package | [`kicad-mcp-pro`](https://pypi.org/project/kicad-mcp-pro/) |
 | npm wrapper | [`kicad-mcp-pro`](https://www.npmjs.com/package/kicad-mcp-pro) |
 | MCP Registry name | `io.github.oaslananka/kicad-mcp-pro` |
-| Version | `4.6.1` | <!-- x-release-please-version -->
+| Version | `4.7.0` | <!-- x-release-please-version -->
 | OSS maturity report | [`docs/repo-maturity-report.md`](docs/repo-maturity-report.md) |
 | OpenSSF evidence | [`docs/openssf-evidence.md`](docs/openssf-evidence.md) |
 

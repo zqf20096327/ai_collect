@@ -1,6 +1,26 @@
 # chat_rescue：微信聊天记录误删恢复工具（Mac / Windows 离线实验支持）
 
-**Windows 0.3.6 实验版：** [下载安装包 / 便携包](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.3.6)，内置 Python 和 SQLCipher，按 **先 A → 核验并退出 → 再 B** 操作。首次部署、依赖配置与多电脑使用见 [安装部署说明](docs/windows-deployment.md)，界面步骤见 [五步向导](docs/windows-desktop.md)。4.2.0.12 已验证两个账号的取钥、四库导出和文本方向；三条合成文本的副本恢复、源账号本地写入验证通过，目标账号仅生成预览。完全空白库初始化、真实双账号 GUI 应用、微信显示及手机迁移尚未验收；名片/文件方向尚未核验。下文下载与 Mac 取钥教程适用于已发布的 Mac 版。
+0.5.4 修正当前 Windows 单聊的 packed 字段含义：字段 1 为发送者、字段 2 为接收者，均按各消息分片的 Name2Id 校验并映射到目标分片，不能当固定 3/2 方向值。4.2.0.13 回执导出使用独立 participant-ids 配置；本版 B→A 模式可复用已验证的旧 Windows 回执，逐条执行发送/接收双方身份检查，不改旧报告或伪造版本。已有的 0.5.3 失败任务保留，重新生成预览。真实证据为所提供账号对的文本元数据配对，不能外推客户端、手机或所有非文本已验收。
+
+## 版本与下载（2026-11-04）
+
+**Windows 0.5.4：只用 B 重建 A 中与 B 的单聊。** 预览会列出 A 将移除、从 B 导入及暂不导入的条数；确认后才替换。A 其他会话与原件保留，B 不写入。系统类型 10000/10002 暂不导入，其他方向或结构异常仍拒绝。详见 [0.5.4 说明](docs/releases/v0.5.4.md)。
+
+**Mac 当前下载 0.5.0；Windows 当前下载 0.5.4。两平台分别发布，版本号不要求一致。现有下载均为实验预发布，尚无正式稳定版。**
+
+| 平台 | 当前下载版 | 主要功能 | 安装文件 |
+| --- | --- | --- | --- |
+| Mac · Apple Silicon | [0.5.0 媒体实验版](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.5.0) | 五步向导；可选原语音、图片、视频和文件附件恢复；可检查全部消息分片，恢复写入仍限单个 `message_0.db` | `Chat-Rescue-0.5.0-macOS-arm64.zip` |
+| Windows · x64 | [0.5.4 单会话替换实验版](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.5.4) | 五步向导；现有多消息分片恢复、明确结构的消息方向转换、B 读取前导入确认；不搬运附件本体 | `Chat-Rescue-0.5.4-Windows-x64-Setup.exe` 或 `Chat-Rescue-0.5.4-Windows-x64-Portable.zip` |
+
+Mac 当前适配微信 **4.1.13**；Windows 实验取钥面向 **4.2.0.x x64**，已有实机证据为 **4.2.0.12**。微信版本号与本工具版本号是两套编号。真实客户端显示、媒体播放/打开及手机迁移仍须分别验收，不能仅凭版本号或测试通过认定支持。
+
+[完整版本对照与历史版本](docs/releases/README.md) · [Mac 安装教程](docs/macos-deployment.md) · [Windows 安装教程](docs/windows-deployment.md)
+
+
+**Mac 0.5.0 媒体实验版：** [下载安装包](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.5.0)。可选恢复原语音、图片、视频和文件附件，补齐已有消息缺失的本地内容，附件参与备份、应用、失败回撤和撤回。图片DAT在有可验证来源时转换目标账号加密，原始图片载荷不变。见[附件实验说明](docs/attachment-recovery.md)与[语音说明](docs/voice-recovery.md)。Mac可检查全部消息分片，实际恢复写入仍限单分片；微信内查看/播放/打开及手机迁移尚未验收。媒体功能需在读取页显式开启。
+
+**Windows 0.5.4 实验版：** [下载安装包 / 便携包](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.5.4)，内置 Python 和 SQLCipher，按 **先 A → 核验并退出 → 再 B** 操作。本版新增多分片恢复、各类型明确方向结构转换及 B 读取前的手机导入提醒与确认；附件本体不搬运，真实客户端仍待验收。首次部署、依赖配置与多电脑使用见 [安装部署说明](docs/windows-deployment.md)，界面步骤见 [五步向导](docs/windows-desktop.md)。4.2.0.12 已验证两个账号的取钥、四库导出和文本方向；三条合成文本的副本恢复、源账号本地写入验证通过，目标账号仅生成预览。完全空白库初始化、真实双账号 GUI 应用、微信显示及手机迁移尚未验收；名片/文件方向尚未核验。下文下载与 Mac 取钥教程适用于已发布的 Mac 版。
 
 **这个工具的作用，是帮助你恢复与重要的人的微信聊天记录。**
 
@@ -10,17 +30,17 @@
 
 适用场景：A 是误删方，B 是保留方。B 在自己的 Mac 上导出双方会话，A 核对恢复预览后，把受支持的消息写入自己的本地数据库。需要双方授权、B 仍有源记录，并满足下方版本与消息范围。
 
-**English:** Open-source WeChat chat history recovery for macOS. Restore supported one-to-one messages from the other participant's retained copy, with perspective conversion, backups, preview, and agent-assisted steps. Experimental; both participants must consent. Attachment content and automatic phone synchronization are not supported.
+**English:** Open-source WeChat chat history recovery for macOS. Restore supported one-to-one messages from the other participant's retained copy, with perspective conversion, backups, preview, and agent-assisted steps. Experimental; both participants must consent. Optional voice and attachment recovery is experimental on Mac; client playback and phone migration remain unverified. Automatic phone synchronization is not supported.
 
-## 已发布 Mac 版：0.3.7 · 本机实验版
+## 已发布 Mac 版：0.5.0 · 本机实验版
 
 桌面版把双方聊天互相补齐收进五步向导：**准备软件 → 依次登录 A、B → 读取双方聊天 → 确认补齐预览 → 检查恢复结果**。原有 CLI 保留，支持在不同 Mac 之间通过授权单聊 bundle 完成 B → A 恢复。
 
-[下载与发布说明](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.3.7) · [更新记录](CHANGELOG.md)
+[下载与发布说明](https://github.com/Bccccccs/chat_rescue/releases/tag/v0.5.0) · [更新记录](CHANGELOG.md)
 
 **第一次使用 Mac 版？请看 [Mac 零基础手把手教程](docs/beginner-guide.md)**：从下载安装、四项权限授权，到分别登录、确认旧聊天、核对补齐预览和检查结果，按实际按钮一步一步操作。Windows 使用上方安装包入口和 Windows 五步说明。
 
-当前源码已改为顺序登录：**打开 A → 登录并确认 A → 打开 B → 登录并检查 B 的旧聊天 → 读取并预览**。0.3.7 下载包已包含此流程；原版微信运行时会先提示退出，避免与 A 副本争用账号目录。
+当前源码已改为顺序登录：**打开 A → 登录并确认 A → 打开 B → 登录并检查 B 的旧聊天 → 读取并预览**。0.5.0 下载包已包含此流程；原版微信运行时会先提示退出，避免与 A 副本争用账号目录。
 
 ### 五步图示
 
@@ -31,7 +51,7 @@
 | 步骤 | 你需要做什么 | 软件负责什么 |
 | --- | --- | --- |
 | 1. 准备软件 | 首次退出所有微信，按系统提示授权 | 检查环境，准备固定 A/B 副本；提供软件、Terminal 和两个副本的路径复制与访达定位 |
-| 2. 依次登录 A、B | 先登录并确认 A，再登录 B 并勾选旧聊天检查 | 先只打开 A，确认后才打开 B；完成检查后可读取，昵称在读取后核验 |
+| 2. 依次登录 A、B | 先确认 A，再登录 B；此时把手机 B 中与 A 的聊天导入电脑微信 B，完成后检查旧消息和媒体 | 先只打开 A，确认后才打开 B；完成检查后可读取，昵称在读取后核验 |
 | 3. 读取双方聊天 | 确认正常退出；首次读取时在终端启动的副本里登录；有歧义时选择已核验昵称 | 依次取钥、验证四个必要数据库、识别本人昵称、读取双方会话、备份并生成预览 |
 | 4. 确认补齐预览 | 核对双方昵称、各侧新增和重复数量，再确认补齐 | 确认前不写入聊天库；保留已有消息、跳过重复，冲突或不支持内容停止处理 |
 | 5. 检查恢复结果 | 打开两个微信核对时间、内容、头像和收发方向；需要手机记录时自行迁移并验收 | 提供备份与回执入口；数据库验证不能代替实际客户端检查 |
@@ -44,15 +64,15 @@
 - 应用前核对双方原库、DB/WAL/SHM 和候选哈希；双向应用是两次协调写入，部分失败会报告已完成侧，不能视作双方全部成功。
 - 历史任务可选择含 `sync-plan.json` 的目录续接。只有完整应用且双方库未变化的任务允许撤回；产生新记录时拒绝撤回以保护新消息。
 - 账号设置、密钥、备份与任务留在 `~/Library/Application Support/Chat Rescue`。终端可能显示或短暂弹出，用户无需手输命令；登录、手机确认与授权仍由本人操作。
-- 当前仅支持单个 `message_0.db` 的授权单聊文本、名片和文件消息条目；不恢复附件本体，不自动同步到微信服务器或手机。
+- 默认模式仅支持单个 `message_0.db` 的授权单聊文本、名片和文件消息条目；开启媒体实验模式后可处理原语音、图片、视频与文件附件，需满足各模式规则；不自动同步到微信服务器或手机。
 
-**验证状态：** 本次 macOS 本机 118 项测试中 105 项通过、13 项平台限制跳过，覆盖双向补齐、去重、身份与方向映射、变化拒绝、部分失败回执和撤回保护。截图展示了读取与预览界面；不据此宣称真实双账号数据库应用、微信显示或手机迁移已验收。
+**验证状态：** 本次 macOS 本机 183 项测试中 170 项通过、13 项平台限制跳过，覆盖双向补齐、去重、身份与方向映射、变化拒绝、部分失败回执和撤回保护。截图展示了读取与预览界面；不据此宣称真实双账号数据库应用、微信显示或手机迁移已验收。
 
 ### 下载与运行
 
 换到另一台 Mac 安装，按 [Mac 安装与跨电脑使用](docs/macos-deployment.md) 操作；应用包不包含本机账号、密钥或聊天资料。
 
-在 Releases 下载 `Chat-Rescue-0.3.7-macOS-arm64.zip`，解压并打开 `Chat Rescue.app`。仅面向 Apple Silicon；打包目标为 macOS 14+，当前实测环境与微信版本见“开始前”，最低打包版本不等于完整兼容性验证。应用内置 Python 与 SQLCipher，取钥仍需 Apple LLDB / Xcode Command Line Tools。应用使用本地临时签名，尚未完成 Apple 开发者公证。
+在 Releases 下载 `Chat-Rescue-0.5.0-macOS-arm64.zip`，解压并打开 `Chat Rescue.app`。仅面向 Apple Silicon；打包目标为 macOS 14+，当前实测环境与微信版本见“开始前”，最低打包版本不等于完整兼容性验证。应用内置 Python 与 SQLCipher，取钥仍需 Apple LLDB / Xcode Command Line Tools。应用使用本地临时签名，尚未完成 Apple 开发者公证。
 
 源码构建（在仓库根目录执行）：
 
@@ -60,7 +80,7 @@
 ./desktop/build.sh
 ```
 
-产物：`dist/Chat Rescue.app` 与 `dist/Chat-Rescue-<源码版本>-macOS-arm64.zip`。构建需 Python 3.14、SQLCipher 和 Xcode Command Line Tools。当前 Mac 发布包为 0.3.7。首次使用按准备页完成权限授权；不要使用 sudo 或关闭 SIP。
+产物：`dist/Chat Rescue.app` 与 `dist/Chat-Rescue-<源码版本>-macOS-arm64.zip`。构建需 Python 3.14、SQLCipher 和 Xcode Command Line Tools。当前 Mac 发布包为 0.5.0。首次使用按准备页完成权限授权；不要使用 sudo 或关闭 SIP。
 
 ## 让 agent 帮你运行
 
@@ -84,7 +104,7 @@ agent 的详细执行提示词在 [AGENTS.md](AGENTS.md)：从 B 保存单聊，
 - 当前实测环境：微信 4.1.13、macOS 27.0、Apple Silicon。取钥命令只接受 4.1.13；其他版本需先适配并重新验证。
 - Python 3.14、Homebrew SQLCipher、Xcode Command Line Tools。
 - 需要双方确认真实账号身份，保留原始记录和备份。不要为了恢复再次删除消息。
-- 首版只接受单个 `message_0.db` 分片；单聊只支持文本（1）、名片（42）和文件消息（49 的子类型 6）。出现其他分片或会话内其他消息类型时拒绝，不会自动跳过；附件内容不恢复。
+- 首版只接受单个 `message_0.db` 分片；单聊只支持文本（1）、名片（42）和文件消息（49 的子类型 6）。基础恢复不接受其他分片或不支持类型，不会自动跳过；语音与附件需显式开启实验模式，详见上方说明。
 - 支持范围与实测结论见 [证据与边界](docs/evidence-and-support.md)。本地数据库修改不能保证手机同步。
 
 ## 安装与环境检查

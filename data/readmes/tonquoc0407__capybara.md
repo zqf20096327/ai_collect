@@ -17,14 +17,17 @@
 </p>
 
 <p align="center">
-  <img src="demo/demo.gif" alt="capybara demo" width="720">
+  <img src="demo/pupu-workspace.png" alt="pupu TUI workspace showing six spans, two findings and the run inspector" width="720">
 </p>
+
+<p align="center"><a href="demo/pupu-tour.gif">Watch GIF</a> · <a href="demo/pupu-tour.mp4">Watch MP4</a> · <a href="demo/local-api.tape">Recording script</a></p>
 
 Capybara runs locally and stores traces in SQLite. Capture them with OTLP, HTTP JSON events, an SDK, a Claude Code session, or a file. Inspect failures in the TUI or read-only Web view; compare runs, export regression fixtures, and review cost provenance. The optional hub adds project tokens and a shared Web workspace.
 
 ## Contents
 
 - [Install](#install)
+- [Product tour](#product-tour)
 - [Getting a trace in](#getting-a-trace-in)
 - [Reading a trace](#reading-a-trace)
 - [What it looks for](#what-it-looks-for)
@@ -40,7 +43,63 @@ brew install tonquoc0407/tap/capybara
 
 Or `go install github.com/tonquoc0407/capybara/cmd/capybara@latest`, or grab a binary from the [releases page](https://github.com/tonquoc0407/capybara/releases). One file, no CGo, no runtime dependencies.
 
-This README describes `main`. The latest published release, `v0.6.0`, predates the local HTTP events, Connect menu and hub features below. To try those features before the next release, install the current source with `go install github.com/tonquoc0407/capybara/cmd/capybara@main`.
+For a local tour, run `capybara sample && capybara`. Press `i` to see connection methods. The [beta test guide](docs/beta-test.md) covers the first trace, three application paths, and feedback.
+
+This README describes `main`. Homebrew, `@latest` and release binaries use the latest published tag, which may lag the features below. To try the current source, use `go install github.com/tonquoc0407/capybara/cmd/capybara@main`.
+
+## Product tour
+
+| Interface | What you can do |
+| --- | --- |
+| TUI | Connect an app with `i`, search runs and spans, inspect findings and content, compare runs, view context, cost and resources, and export or replay a trace. |
+| Local Web | Browse Overview, Explore, Trace, Datasets, Prompts and Usage from the same database. This view is read-only. |
+| Hub Web | Use project tokens to share the workspace; editors can manage dataset cases, scores, experiments and prompt versions. |
+| CLI and CI | Inspect incidents, compare runs, run scenarios and experiments, and gate regressions with findings or golden fixtures. |
+
+### TUI
+
+The opening recording sends a synthetic agent run through the local HTTP API, then inspects its trace, findings and estimated cost.
+
+<p align="center">
+  <img src="demo/pupu-tour.gif" alt="pupu TUI showing the Connect screen, trace inspector and cost waterfall" width="720">
+</p>
+
+The next recording follows a LangGraph agent whose tool fails and whose model answers anyway. The model replies come from a local stub; the framework and tracing are real. [Run the agent](demo/frameworks/).
+
+<p align="center">
+  <img src="demo/frameworks.gif" alt="LangGraph failure arriving live in the TUI" width="720">
+</p>
+
+The resource monitor keeps CPU and memory samples when a step dies before its span completes.
+
+<p align="center">
+  <img src="demo/monitor.gif" alt="TUI resource monitor while a pipeline stops mid-step" width="720">
+</p>
+
+The [LangChain chess agent example](demo/knightvision_run.py) can instrument an external project. Its old recording needed a separate checkout and model key, so it is no longer part of the current UI tour.
+
+### Web
+
+This hub overview uses a labelled synthetic run. The existing [browser check](scripts/browser_check.mjs) captures it and checks editing, trace evidence and mobile layout. [See the mobile Trace view](demo/web-trace-mobile.png).
+
+<p align="center">
+  <img src="demo/web-overview.png" alt="hub Web overview with run, error, latency, cost and incident panels" width="960">
+</p>
+
+To open the local read-only Web UI on the same sample, run `capybara sample`, then `capybara serve`, and visit `http://127.0.0.1:7654`.
+
+### Reproducible checks
+
+These short command recordings show the evidence behind two specific behaviors. Their source files are included so the checks can be rerun.
+
+| Case | What it checks | Recording and source |
+| --- | --- | --- |
+| OpenAI Agents SDK issue #4070 | Import a pinned public trace, compare the first status divergence, and run a golden check. | [Recording](demo/external/agents_issue_4070/showcase.gif) · [Reproducer](demo/external/agents_issue_4070/) |
+| Node SDK error span | Record a failed call with error status through the Node SDK. | [Recording](demo/sdk-error.gif) · [Example](sdk-js/examples/error-span.mjs) |
+
+The [file import walkthrough](demo/demo.gif) shows the same workspace with a saved trace.
+
+To refresh the recordings from a source checkout, run `demo/record.sh`. It records each tape in order so their local listeners do not compete for the same port.
 
 ## Getting a trace in
 
@@ -50,9 +109,9 @@ Run it with no arguments. It opens the TUI, listens for OTLP on `127.0.0.1:4318`
 capybara
 ```
 
-Traces land in `capybara.db` in the working directory. Point somewhere else with `-db`. Use `-no-content` to omit prompt, completion and tool bodies and to keep only selected numeric and status attributes from raw telemetry. Names, IDs and other structured metadata can still contain sensitive text if your instrumentor puts it there. The flag does not erase existing runs; use a new database or remove old data separately. Use `-no-claude` to disable the automatic Claude Code watcher in the TUI. With an empty database, the middle pane shows what it's listening on and how to send it something.
+Traces land in `capybara.db` in the working directory. Set `CAPYBARA_DB=~/traces/capybara.db` once in your shell profile to share that location across `capybara`, `import`, `runs`, and other commands. `-db` overrides it for one command. `CAPYBARA_OTLP_ADDR` sets the HTTP receiver address; `CAPYBARA_NO_CLAUDE=1` disables the automatic Claude Code watcher in the TUI. Use `-no-content` to omit prompt, completion and tool bodies and to keep only selected numeric and status attributes from raw telemetry. Names, IDs and other structured metadata can still contain sensitive text if your instrumentor puts it there. The flag does not erase existing runs; use a new database or remove old data separately. With an empty database, the middle pane shows what it's listening on and how to send it something.
 
-To inspect a labelled synthetic failure immediately, run `capybara sample` against the same database, then reopen the TUI or Web view. The sample is idempotent and its `demo` environment distinguishes it from live traffic.
+To inspect a labelled synthetic failure immediately, run `capybara sample` against the same database, then reopen the TUI or Web view. The sample is idempotent, includes token usage and an estimated cost, and its `demo` environment distinguishes it from live traffic.
 
 If something else already holds 4317 or 4318 — a collector, Jaeger, another tracing UI — capybara keeps the transport that did bind, reports which one it lost, and carries on. `-otlp 127.0.0.1:4319` moves the HTTP listener somewhere free.
 
@@ -70,21 +129,7 @@ Four attribute conventions are read — OpenTelemetry's own `gen_ai.*`, OpenInfe
 
 If LiteLLM is already your gateway, use the [LiteLLM OTLP setup](docs/integrations/litellm.md) to feed its traces into capybara without placing capybara in the request path.
 
-[`demo/frameworks/`](demo/frameworks) has two runnable agents that end in the same failure — a LangGraph one traced by OpenLLMetry and a plain OpenAI tool loop traced by OpenInference. Both point at a local stub of the OpenAI API, so they need no key.
-
-Below, the LangGraph one runs while the TUI is open: the quote tool raises, LangGraph hands the failure back to the model, and the model answers with a price anyway.
-
-<p align="center">
-  <img src="demo/frameworks.gif" alt="a real LangGraph agent traced into capybara" width="720">
-</p>
-
-The next recording uses a separate LangChain chess agent. The demo script adds tracing outside that agent and shows token costs estimated from Gemini's reported usage.
-
-<p align="center">
-  <img src="demo/knightvision.gif" alt="a third-party LangChain agent traced without modification" width="720">
-</p>
-
-[OpenAI Agents SDK issue #4070](demo/external/agents_issue_4070/) has a pinned reproducer, three captured runs, and a GIF of capybara's status diff and golden check.
+[`demo/frameworks/`](demo/frameworks) has two runnable agents that end in the same failure — a LangGraph one traced by OpenLLMetry and a plain OpenAI tool loop traced by OpenInference. Both use a local model stub and need no API key. The TUI recordings and public Agents SDK regression are in the [product tour](#product-tour).
 
 ### A session file
 
@@ -106,13 +151,13 @@ Takes span-per-line JSONL, or agent-replay JSON when the name ends in `.json`. U
 
 For a local app without an SDK, press `i` in the TUI and select **HTTP JSON events**. The listener accepts `POST /api/v1/events` on the same local HTTP address as OTLP (normally `http://127.0.0.1:4318`). Run [`examples/local_events.py`](examples/local_events.py) or [`examples/local_events.mjs`](examples/local_events.mjs) for a live start, update and end. Set `CAPYBARA_EVENTS_URL` if the listener was moved with `-otlp`.
 
-[Watch the local API demo](demo/local-api.gif), or follow the [event format and response codes](docs/local-events.md).
+[Watch the local API demo](demo/pupu-tour.gif), or follow the [event format and response codes](docs/local-events.md).
 
 For a long-running local service without a terminal UI, run `capybara listen`. It prints the bound HTTP events and OTLP endpoints, stores incoming spans, and runs the same analyzer. `capybara -otlp 127.0.0.1:4319 listen` moves its HTTP port.
 
 Each request needs a unique `event_id`, `type`, `run_id`, `span_id` and RFC3339 `time`. `span.start` needs `kind` and `name`; `span.end` needs `status` (`ok` or `error`). `span.complete` can send a finished span in one request, with optional `start_time`. Retries with the same event ID and body are safe. An update or end before start returns HTTP 409. The receiver stores `model`, `provider`, `tool_name`, `tokens_in`, `tokens_out`, `cost_usd`, `attrs` and `contents` when provided. `-no-content` drops content bodies and untrusted attributes. The endpoint accepts requests from the same machine only; it has no API key.
 
-The TUI also lists OTLP, both SDKs, the Claude watcher and file import under `i`.
+The TUI also lists OTLP, both SDKs, the Claude watcher and file import under `i`. Press `v` to read the full setup on a narrow terminal; a newly received run appears in Connect and `o` opens it.
 
 Install the Python SDK:
 
@@ -148,6 +193,8 @@ The tree marks `x` for a failed span, `!` for one carrying a finding, and `?` fo
 | `tab` | change pane | `b` | blame the output |
 | `f` | filter by kind | `r` | re-run from a span |
 | `a` | raw attributes | `t` | export a pytest case |
+| `space` in detail | full-width inspector | `l` in detail | linked logs |
+| `[` / `]` in detail | previous/next payload page | `n` / `p` in logs | next/previous log |
 | `e` | edit a tool output | `y` / `Y` | copy content / curl |
 | `q` | quit | `?` | full help |
 | `m` | resource monitor | | |
@@ -157,13 +204,7 @@ The TUI uses three panes on wide terminals, two on medium ones, and one on narro
 
 The waterfall sorts spans by cost, so the turn that spent the money is the first line rather than something to scroll for. The context view shows what filled each turn's window — system text, tool output, history — and marks the turns where it dropped, which is where a compaction ate something.
 
-The monitor graphs process CPU and memory, plus GPU where `nvidia-smi` finds a card, against the node that was running. It reads the sampler rather than the span tree, so it draws while a step is still going — a span only arrives once it ends, which is too late to watch. The strip under the graphs names the nodes in order, so a spike points at a step instead of a moment.
-
-<p align="center">
-  <img src="demo/monitor.gif" alt="the monitor drawing a pipeline that is killed mid-step" width="720">
-</p>
-
-The recording above ends on a kill: the graphs keep the readings, the tree never receives a span for the node that died, and the run picks up an `orphaned_span` finding naming where it stopped responding.
+The monitor graphs process CPU and memory, plus GPU where `nvidia-smi` finds a card, against the node that was running. It reads the sampler rather than the span tree, so it draws while a step is still going — a span only arrives once it ends, which is too late to watch. The strip under the graphs names the nodes in order, so a spike points at a step instead of a moment. In the [monitor recording](demo/monitor.gif), the graphs keep their readings after a kill, and the run picks up an `orphaned_span` finding naming where it stopped responding.
 
 ## What it looks for
 
@@ -192,7 +233,7 @@ Cover output that won't parse, or that arrived empty — and only for tools whos
 
 ### `malformed_arguments`
 
-Marks a tool call whose input arguments could not be parsed as valid JSON — unclosed braces, bad escapes, or markdown backticks wrapping the payload. Only inputs opening with a JSON delimiter (`{`, `[`, or markdown block) are checked, so a tool that takes a plain shell command is never flagged.
+Marks a tool call whose input arguments could not be parsed as valid JSON — unclosed braces, bad escapes, or markdown backticks wrapping the payload. It checks inputs marked as JSON and plain text that starts with a JSON-looking object or array. Plain shell commands and Python dictionary representations are left alone.
 
 ### `rate_limited`
 
@@ -286,7 +327,7 @@ The labelled [`corpus/`](corpus) has 34 curated runs: positives and near misses 
 | `capybara relevance` | grade answer relevance with an opt-in llm judge |
 | `capybara eval` | score detectors against a labelled corpus (precision, recall) |
 | `capybara coverage` | report typed-span coverage and unmapped namespaces |
-| `capybara doctor` | check the database and count missing usage, cost, and mapping data |
+| `capybara doctor [-bundle diagnostics.json]` | check the database; optionally write aggregate counts and build info for feedback |
 | `capybara incidents` | group recent error runs and detector findings by a deterministic signature |
 | `capybara dataset` | capture a case from a recorded run |
 | `capybara dataset export promptfoo <id> cases.json` | export cases in Promptfoo's JSON test-case format |
@@ -350,10 +391,10 @@ Overview reports errors, running runs, completed-run p95 latency, known costs, h
 `~/.config/capybara/config.toml`:
 
 ```toml
-theme = "bara"
+theme = "pupu"
 ```
 
-`bara` is the default warm dark. `mono` drops the accent to grey; `paper` is for a light terminal. Red and amber mean the same thing in all three.
+`pupu` is the default theme. Its run rail, trace, and inspector share a status strip; amber marks model work, teal marks tools, purple marks retrieval, and coral marks errors. `bara` keeps the earlier compact layout; `mono` uses grey; `paper` is for a light terminal. Status text and markers remain visible when `NO_COLOR=1` disables ANSI color.
 
 Model rates live in a table built into the binary, covering the current Claude, OpenAI, and Gemini families. Extend or override it with `~/.config/capybara/pricing.json`, which is merged over the built-in one. A model with no entry stays unpriced rather than being guessed at, and a rate that varies by context length or by date is recorded at its standard tier — the table has no conditions in it.
 

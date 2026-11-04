@@ -71,9 +71,9 @@ flowchart LR
     V -->|yes| O([SVG · DXF · PDF · PNG])
 ```
 
-## New in 1.44 to 1.53
+## Recently added
 
-Each links to a short section with an example, on [archlang.uk/whats-new](https://archlang.uk/whats-new).
+Each links to a short section with an example, on [archlang.uk/whats-new](https://archlang.uk/whats-new), which also lists the version that brought it.
 
 - [Quantities and takeoff](https://archlang.uk/whats-new#quantities-and-takeoff): `archlang takeoff plan.arch --format csv`
 - [Locked elements](https://archlang.uk/whats-new#locked-elements): `archlang impact new.arch --against old.arch --lock shell,front`
@@ -96,6 +96,8 @@ Each links to a short section with an example, on [archlang.uk/whats-new](https:
 - [Hidden sheet marks](https://archlang.uk/whats-new#hidden-sheet-marks): `north hidden`, `scale hidden`, `title hidden`
 - [One mirrored piece](https://archlang.uk/whats-new#one-mirrored-piece): `furniture … mirror`
 - [Room floors](https://archlang.uk/whats-new#room-floors): `room … floor tile|paving|deck|concrete`
+- [More furniture](https://archlang.uk/whats-new#more-furniture): twenty new catalogued families
+- [The rendered theme](https://archlang.uk/whats-new#the-rendered-theme): `theme rendered` fills furniture symbols in a tint of their material
 
 ## For your agent
 
@@ -107,4 +109,4 @@ npx -y @chanmeng666/archlang context
 
 <sub>[Full overview](docs/overview.md) · [Language reference](docs/language-reference.md) · [Release notes](https://github.com/ChanMeng666/archlang/blob/main/CHANGELOG.md) (installed: `node_modules/@chanmeng666/archlang/CHANGELOG.md`) · [Contributing](CONTRIBUTING.md) · [MIT](LICENSE)</sub>
 
-<sub>ArchLang is the engine behind [ArchCanvas](https://github.com/archcanvas/archcanvas). Built by [Chan Meng](https://github.com/ChanMeng666).</sub>
+<sub>[ArchCanvas](https://github.com/archcanvas/archcanvas) is a hosted app built on ArchLang. Built by [Chan Meng](https://github.com/ChanMeng666).</sub>

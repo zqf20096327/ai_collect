@@ -169,7 +169,7 @@ Both headline results use a per-category reader router (`gpt-4o` answers tempora
 | **GMI Runtime** | Per-session persona, mood and reasoning trace * sentiment-triggered metaprompts (opt-in per persona) * mood-weighted memory bridge * bounded `adapt_personality` trait changes (opt-in) |
 | **RAG Pipeline** | 7 vector backends * 4 retrieval strategies * GraphRAG * HyDE * Cohere rerank-v3.5 |
 | **Multi-Agent Teams** | 7 coordination strategies * manager delegation and specialist spawning * model pools with seating policies and strict per-seat credentials * a panel strategy with a provider and vendor quorum * HITL approval gates |
-| **Orchestration** | `workflow()` DAGs * `AgentGraph` router, personality and discovery edges * `mission()` graphs from plan templates * checkpointing |
+| **Orchestration** | `workflow()` DAGs * `AgentGraph` router, personality and discovery edges * `mission()` graphs from plan templates * checkpointing in memory or in SQLite and Postgres (`SqlCheckpointStore`) |
 | **Guardrails** | 6 packs (PII, ML classifiers, topicality, code safety, grounding, content policy) |
 | **Emergent Capabilities** | Runtime tool forging * 4 self-improvement tools * tiered promotion * skill export |
 | **Voice & Telephony** | ElevenLabs, Deepgram, Whisper * Twilio, Telnyx, Plivo |
@@ -219,7 +219,7 @@ Extensions load from the manifest a host passes to `AgentOS.create({ extensionMa
 
 ## Configure API Keys
 
-Three layers, highest priority first: inline `apiKey` on the call, a module-level `setDefaultProvider()` at boot, or environment-variable auto-detection (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and the rest, resolved in priority order and reorderable with `setProviderPriority([...])`). A comma-separated list of keys gives a provider a key pool: round-robin by default, or `AGENTOS_KEY_POOL_STRATEGY_<PROVIDER>=ordered` (`AGENTOS_KEY_POOL_STRATEGY_ANTHROPIC=ordered` for Anthropic's keys alone; `AGENTOS_KEY_POOL_STRATEGY=ordered` for every provider's) to use the keys in order and fail over to the next when one is revoked, unpaid or throttled ([Key rotation](https://github.com/framerslab/agentos/blob/master/docs/KEY_ROTATION.md)).
+Three layers, highest priority first: inline `apiKey` on the call, a module-level `setDefaultProvider()` at boot, or environment-variable auto-detection (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and the rest, resolved in priority order and reorderable with `setProviderPriority([...])`). A comma-separated list of keys gives a provider a key pool: round-robin by default, or `AGENTOS_KEY_POOL_STRATEGY_<PROVIDER>=ordered` (`AGENTOS_KEY_POOL_STRATEGY_ANTHROPIC=ordered` for Anthropic's keys alone; `AGENTOS_KEY_POOL_STRATEGY=ordered` for every provider's) to use the keys in order and fail over to the next when one is revoked, unpaid or throttled ([Key rotation](https://github.com/framerslab/agentos/blob/master/docs/KEY_ROTATION.md)). `probeProviderKey({ provider, apiKey })` says whether one key is live, out of credit, rejected or throttled, by the same billing probe the pool sends.
 
 [Full credential resolution + default models per provider ->](https://docs.agentos.sh/architecture/llm-providers)
 

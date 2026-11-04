@@ -1,7 +1,8 @@
 [![GitHub issues](https://badgen.net/github/issues/jhljx/RecSys-Industrial-Book)](https://github.com/jhljx/RecSys-Industrial-Book/issues)
 [![GitHub stars](https://img.shields.io/github/stars/jhljx/RecSys-Industrial-Book?style=flat-square)](https://github.com/jhljx/RecSys-Industrial-Book/stargazers)
 [![GitHub forks](https://badgen.net/github/forks/jhljx/RecSys-Industrial-Book)](https://github.com/jhljx/RecSys-Industrial-Book/network/members)
-[![PDF downloads](https://img.shields.io/badge/PDF-downloads-blue)](https://jhljx.github.io/RecSys-Industrial-Book/)
+[![Clones](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjhljx%2FRecSys-Industrial-Book%2Ftraffic-stats%2Fclones-badge.json&style=flat-square)](https://github.com/jhljx/RecSys-Industrial-Book/actions/workflows/traffic-stats.yml)
+[![PDF downloads](https://img.shields.io/github/downloads/jhljx/RecSys-Industrial-Book/total?style=flat-square&label=PDF%20downloads)](https://github.com/jhljx/RecSys-Industrial-Book/releases)
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey" /></a>
 
 # RecSys-Industrial-Book
@@ -14,7 +15,7 @@
 
 **English:** An industrial recommender-systems e-book paired with a local-first AI Agent learning toolkit for PDF-grounded Q&A, cited retrieval, adaptive courses, review, and hands-on engineering practice.
 
-📖 [站内 PDF 阅读器](knowledge-map/reader.html) · 🗺️ [全书知识地图](knowledge-map/) · 🤖 [Agent 五分钟开始](knowledge-map/agent.html#start) · 🎓 [12 周课程](learning-paths/new-engineer.md) · 🧭 [章节地图](knowledge/chapters/README.md) · 🧪 [可运行项目](templates/)
+📖 [站内 PDF 阅读器](knowledge-map/reader.html) · 🗺️ [全书知识地图](knowledge-map/) · 💻 [章节代码讲解](knowledge-map/code.html) · 🤖 [Agent 五分钟开始](knowledge-map/agent.html#start) · 🎓 [12 周课程](learning-paths/new-engineer.md) · 🧭 [章节地图](knowledge/chapters/README.md) · 🧪 [可运行项目](templates/)
 
 **书稿**：持续更新的上下册电子书稿，聚焦工业推荐系统的全链路架构、算法、工程实践与业务权衡；只发布已审阅的章节 PDF，不公开 LaTeX 或正文等价 Markdown。
 
@@ -31,12 +32,15 @@
 
 | 能力 | 读者获得什么 | 入口 |
 |---|---|---|
+| 直接问书与继续追问 | 针对发布 PDF 生成简明回答、页码依据和适用边界；会话保存在本机 | `ask --session`、`navigate` |
+| 学习陪练 | 对单元提交物给出具体追问、实践建议与下一步任务，不冒充自动评分 | `coach` |
 | 查书与可靠引用 | 检索 20 章发布 PDF，读取命中页并引用 PDF 页码 | `search`、`page`、`eval` |
 | 12 周学习课程 | 新人全链路或研究生可信实验路线，按反馈和时间预算生成今日任务 | `course start/today/feedback/status` |
 | 证据化掌握 | 用提交物、实际命令输出、主路径、失败路径和测验分数验收；不接受口头“学会了” | `course submit`、`complete` |
 | 自适应复习 | 前置满足后推荐下一主题，低分补救，七天后安排回忆、纠错和迁移 | `next`、`course review` |
 | 知识图谱与自测 | 输出课程 Mermaid 依赖图，检查检索、引用、学习和复习状态 | `graph`、`self-eval` |
 | 工程工作台 | 生成设计契约，评审推荐代码，按证据树排查故障 | `design`、`review`、`debug` |
+| 章节代码知识库 | 从各章 `code/README.md` 和真实源码定位方法示例，用于概念讲解或新代码参考；不把代码当 PDF 证据 | `code`、`navigate` |
 | 可运行项目 | 演练多路召回、双塔 ANN、特征时序一致性、过载与降级 | `templates/` |
 | 多客户端 Skills | 安装标准 Agent Skills 到 Claude Code 或其他兼容 Agent | `tools/install_skills.py` |
 
@@ -47,6 +51,15 @@
 python3 tools/recsys_agent.py index
 python3 tools/recsys_agent.py doctor
 python3 tools/recsys_agent.py search "Embedding Server 版本一致性"
+
+# 直接问书，续问同一主题，并查看相关概念、代码和代表论文
+python3 tools/recsys_agent.py ask "双塔召回的负采样为什么有偏差，书中如何修正？" --session two-tower
+python3 tools/recsys_agent.py ask "这种修正有什么适用边界？" --session two-tower
+python3 tools/recsys_agent.py navigate --session two-tower
+# 定位任意已发布章节 code/ 的示例，供 Agent 读取、讲解或作为新代码参考
+python3 tools/recsys_agent.py code "负采样偏差" --chapter 10
+python3 tools/recsys_agent.py code "HNSW"
+# 若本机 Claude CLI 默认模型不可用，ask 可加 --model <可用模型ID>
 
 # 启动一条会根据时间与反馈调整的完整课程
 python3 tools/recsys_agent.py course list
@@ -72,11 +85,17 @@ python3 tools/install_skills.py --client claude
 
 ### 可视化知识地图
 
-[`knowledge-map/index.html`](knowledge-map/index.html) 是可直接本地打开的静态知识蓝图：五个知识板块汇总 20 章、56 张概念卡及前置依赖，并连接两条 12 周课程路线。页面只使用仓库公开导航元数据，不发布 PDF 提取文本或个人学习记录。GitHub Pages 当前从 `main` 根目录发布，合并到 `main` 后可访问 [`/RecSys-Industrial-Book/knowledge-map/`](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/)；未合并前请使用本地文件入口。
+[`knowledge-map/index.html`](knowledge-map/index.html) 是可直接本地打开的静态知识蓝图：五个知识板块汇总 20 章、97 张概念卡、104 条前置依赖，并以独立图谱展示 90 个代表论文方法，连接两条 12 周课程路线。页面只使用仓库公开导航元数据，不发布 PDF 提取文本或个人学习记录。GitHub Pages 当前从 `main` 根目录发布，合并到 `main` 后可访问 [`/RecSys-Industrial-Book/knowledge-map/`](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/)；未合并前请使用本地文件入口。
 
-[`knowledge-map/reader.html`](knowledge-map/reader.html) 是无需构建工具的站内章节 PDF 阅读器，可本地以 `file://` 打开，也可通过 [GitHub Pages](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html) 使用；左侧选择已发布章节、上一章/下一章和 PDF 页码跳转均保持在阅读器内。链接如 `reader.html#ch10&page=60` 可直达第 10 章 PDF 第 60 页。PDF 在浏览器内嵌显示，若浏览器禁用内嵌 PDF 或本地文件预览，可使用页面底部的直接打开/下载链接；PDF 页码片段的具体展示由浏览器 PDF 查看器决定。
+[`knowledge-map/reader.html`](knowledge-map/reader.html) 是无需构建工具的站内章节 PDF 阅读器，可本地以 `file://` 打开，也可通过 [GitHub Pages](https://jhljx.github.io/RecSys-Industrial-Book/knowledge-map/reader.html) 使用；左侧选择已发布章节、上一章/下一章和 PDF 页码跳转均保持在阅读器内。链接如 `reader.html#ch10&page=60` 可直达第 10 章 PDF 第 60 页。阅读器会向浏览器 PDF 查看器请求默认“适应宽度”（`view=FitH`），并让阅读区域铺满可用列；查看器是否采纳缩放参数取决于浏览器。若浏览器禁用内嵌 PDF 或本地文件预览，可使用页面底部的直接打开/下载链接。
 
-知识内容更新后运行 `python3 tools/build_knowledge_map.py` 重建 `knowledge-map/data.js`，再运行 `python3 -m unittest discover -s tools/tests -v` 检查章节、概念、依赖、课程及 PDF 链接。网页没有服务端、账号或在线 Agent；全文检索和个人进度仍通过本地 CLI。
+网页中的概念目录可直接使用[知识地图的概念筛选](knowledge-map/#catalog)，完整[本地 Agent 指南](docs/agent-guide.md)在 Pages 上采用与知识地图一致的文档页样式；目录型 README 在 Pages 上使用目录 URL（例如 `/knowledge/`），不要链接不存在的 `README.html`。
+
+知识内容更新后运行 `python3 tools/build_knowledge_map.py` 重建 `knowledge-map/data.js`；新增或修改章节 `code/` 后运行 `python3 tools/build_code_pages.py`，重建 `knowledge-map/code-data.js` 和共用模板渲染的源码 HTML。两者都要运行 `python3 -m unittest discover -s tools/tests -v`，并检查公开边界。网页没有服务端、账号或在线 Agent；全文检索和个人进度仍通过本地 CLI。
+
+## 章节源码也是 Agent 的知识来源（但不是正文证据）
+
+四个 `templates/` 提供跨章节端到端项目；已发布章节的 `code/` 提供算法、策略和工程细节的独立示例。Agent 可用 `python3 tools/recsys_agent.py code "<主题>" [--chapter N]` 找到章节 README 与实际源码，再结合 `navigate` 的概念卡和 PDF 页做教学或参考实现；结果的 `page` 是[站内代码讲解页](knowledge-map/code.html)相对地址，页面包括章节说明、源码结构入口和完整源码。`explain` 和 `learn` 也返回相关代码候选。匹配不到时会返回 `not_found`，不会臆造示例。检索仅定位文件、不运行脚本；先检查 README 的依赖与成本，再读实际代码。代码演示、书中 PDF 论断和工程扩展应分别标注。完整流程见 [章节代码 Agent 用法](docs/agent-guide.md#6-让章节-code-成为-agent-的教学与代码参考)。
 
 ## Star 趋势
 
@@ -84,7 +103,7 @@ python3 tools/install_skills.py --client claude
 
 ### 内容更新不会漏掉课程
 
-新章节在私有写作仓库完成 LaTeX 和审阅 PDF 后，发布工作流要求同时提交章节地图、1–3 张概念卡以及新人/研究生两条课程的单元更新。发布器会拒绝缺失课程更新、未知 concept、未覆盖新章节或仍有待定 PDF 页码的发布，再确定性重建知识目录与图谱。因此 `knowledge/`、`concepts` 和 `learning-paths/courses.json` 与新章节一同演进，而不是靠事后手工补齐。
+新章节在私有写作仓库完成 LaTeX 和审阅 PDF 后，发布工作流要求同时提交章节地图、经策划的概念卡以及新人/研究生两条课程的单元更新；深入讲解论文方法的章节还应提供论文方法索引。发布器会拒绝缺失课程更新、未知 concept、未覆盖新章节或仍有待定 PDF 页码的发布，再确定性重建知识目录与图谱。因此 `knowledge/`、`knowledge/paper-map.json` 和 `learning-paths/courses.json` 与新章节一同演进，而不是靠事后手工补齐。
 
 
 ## 📚 已完成章节阅读入口

@@ -28,22 +28,29 @@
 
 ## Latest plugin update
 
-Reddit 1.0.1 reads without a login. With only a Reddit app saved, the plugin asks for an app-only token and reads public subreddits, search, threads and user history; logging in adds private subreddits, saved items, moderation queues, the inbox and every write. Thread reads keep each comment's reply depth and fetch the comments Reddit hides behind "more", `reddit_user` reads one user's posts and comments, and a rate-limited call waits out Reddit's window instead of failing. The settings page under Settings, Plugins still saves and verifies the app, runs the login, checks the account and reports the scopes.
+Voice Gate 1.3.3 corrects what the plugin says about itself. Two manifest descriptions and two tool rows still called it a Markdown checker three releases after it learned to read plain text, reStructuredText, AsciiDoc, Org, LaTeX, HTML and PDF; the manifest description is what Capabilities, the settings form and the catalog card show, so it now names those formats. Nothing about the rules, the hooks or the tools changed.
 
 Restart Hermes Desktop after updating; the Python and desktop halves do not reload in place.
 
 The pack is at 1.24.0. See the [changelog](CHANGELOG.md) for plugin-level updates and the distinction between personal and public builds.
 
-## Settings pages
+## In the app
 
-Each plugin that has a settings page shows it under Settings, Plugins in Hermes Desktop. The screenshots below are captured from the running app.
+These are captures from the running app of the parts that only make sense in place: the providers dialog, the reader, the memory review queue, skills presets, the session list and the turn meter. Six plugins carry one; the settings for every plugin that has a settings page live under Settings, Plugins, and each plugin README shows its own.
 
 <div align="center">
-  <a href="personal/provider-status"><img src="docs/screenshots/provider-status-settings.png" width="240" alt="Provider Status settings" /></a>
-  <a href="personal/better-capabilities"><img src="docs/screenshots/better-capabilities-settings.png" width="240" alt="Better Capabilities settings" /></a>
-  <a href="personal/better-session-appearance"><img src="docs/screenshots/better-session-appearance-settings.png" width="240" alt="Better Session Appearance settings" /></a>
-  <a href="personal/hermes-jev-routing"><img src="docs/screenshots/hermes-jev-routing-settings.png" width="240" alt="Jev Routing settings" /></a>
-  <a href="personal/hermes-agent-desktop"><img src="docs/screenshots/hermes-agent-desktop-settings.png" width="240" alt="Agent Desktop settings" /></a>
+<table>
+  <tr>
+    <td align="center" valign="top" width="33%"><a href="personal/provider-status"><img src="personal/provider-status/docs/screenshot.png" width="260" alt="Provider Status providers dialog with quota dots, extra keys and key rotation" /></a><br /><sub><a href="personal/provider-status"><strong>Provider Status</strong></a><br />The providers dialog: quota dots, extra keys, rotation</sub></td>
+    <td align="center" valign="top" width="33%"><a href="personal/rss-reader"><img src="personal/rss-reader/docs/screenshot.png" width="260" alt="RSS Reader three-column layout with folders, article list and reader pane" /></a><br /><sub><a href="personal/rss-reader"><strong>RSS Reader</strong></a><br />Three columns: folders, article list, reader pane</sub></td>
+    <td align="center" valign="top" width="33%"><a href="personal/memory-review"><img src="personal/memory-review/docs/screenshot.png" width="260" alt="Memory Review dialog with staged writes, All selected, Reject and Approve" /></a><br /><sub><a href="personal/memory-review"><strong>Memory Review</strong></a><br />Staged memory writes waiting for Approve or Reject</sub></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%"><a href="personal/better-capabilities"><img src="personal/better-capabilities/docs/screenshot-presets.png" width="260" alt="Skills presets dialog listing a saved All On preset above the capabilities list" /></a><br /><sub><a href="personal/better-capabilities"><strong>Better Capabilities</strong></a><br />Skills presets saved from the current on/off set</sub></td>
+    <td align="center" valign="top" width="33%"><a href="personal/better-session-appearance"><img src="personal/better-session-appearance/docs/screenshot.png" width="260" alt="Better Session Appearance color picker, Bold Session, icon grid and Auto Rules" /></a><br /><sub><a href="personal/better-session-appearance"><strong>Better Session Appearance</strong></a><br />Color picker, icon grid and Auto Rules</sub></td>
+    <td align="center" valign="top" width="33%"><a href="personal/iteration-budget-meter"><img src="personal/iteration-budget-meter/docs/iteration-budget-meter.png" width="260" alt="Iteration Budget Meter showing per-turn usage and request statistics" /></a><br /><sub><a href="personal/iteration-budget-meter"><strong>Iteration Budget Meter</strong></a><br />Per-turn usage and request statistics</sub></td>
+  </tr>
+</table>
 </div>
 
 ## Personal and public
@@ -52,7 +59,7 @@ This repository keeps two trees.
 
 **[personal/](personal/README.md)** is the full-featured edition I run. These builds may reach into Hermes Desktop internals: app DOM, persisted app keys, raw bridge calls. A Desktop update can break them. They sit outside the plugin SDK contract, so install them only if you accept that risk. The pack pins this tree.
 
-**[public/](public/README.md)** is the catalog edition. These builds stay inside the Hermes plugin SDK (`ctx.register*`, `host.state` / `host.request`, `ctx.storage`, `ctx.rest`) so they can be listed. When Desktop has no hook yet, the public copy drops that surface. All eighteen active plugins have one.
+**[public/](public/README.md)** is the catalog edition. These builds stay inside the Hermes plugin SDK (`ctx.register*`, `host.state` / `host.request`, `ctx.storage`, `ctx.rest`) so they can be listed. When Desktop has no hook yet, the public copy drops that surface. All nineteen active plugins have one.
 
 ```bash
 hermes plugins install apoapostolov/hermes-agent-awesome-plugins/personal/<id>
@@ -73,45 +80,51 @@ Fourteen plugins are pinned in `hermes-pack.yaml` (pack version 1.24.0). **reaso
 
 | Plugin | What you get |
 | --- | --- |
-| [provider-status](personal/provider-status/README.md) · [public](public/provider-status/README.md) | Status-bar quota used/remaining. DeepSeek and GLM peak/off-peak gauges with countdowns. Multi-account. Rotate on low quota or reset day. Grok/Codex OAuth. Providers: Tavily, OpenCode Go, DeepSeek, GLM (z.ai), OpenRouter, Grok (xAI), Codex (OpenAI), OpenAI, Anthropic, Groq, Cerebras, Moonshot Kimi, MiniMax, Google Gemini, Hugging Face, Mistral, Qwen. |
-| [iteration-budget-meter](personal/iteration-budget-meter/README.md) · [public](public/iteration-budget-meter/README.md) | Per-turn N/budget while work runs. Hover and click for request stats. |
-| [reasoning-switch](personal/reasoning-switch/README.md) · [public](public/reasoning-switch/README.md) | Cycle reasoning effort from the status bar, with colors and per-level prompt demote. **Not in the pack; enable separately.** |
+| [Provider Status](personal/provider-status/README.md) · [public](public/provider-status/README.md) | Status-bar quota used/remaining. DeepSeek and GLM peak/off-peak gauges with countdowns. Multi-account. Rotate on low quota or reset day. Grok/Codex OAuth. Providers: Tavily, OpenCode Go, DeepSeek, GLM (z.ai), OpenRouter, Grok (xAI), Codex (OpenAI), OpenAI, Anthropic, Groq, Cerebras, Moonshot Kimi, MiniMax, Google Gemini, Hugging Face, Mistral, Qwen. |
+| [Iteration Budget Meter](personal/iteration-budget-meter/README.md) · [public](public/iteration-budget-meter/README.md) | Per-turn N/budget while work runs. Hover and click for request stats. |
+| [Reasoning Switch](personal/reasoning-switch/README.md) · [public](public/reasoning-switch/README.md) | Cycle reasoning effort from the status bar, with colors and per-level prompt demote. **Not in the pack; enable separately.** |
 
 ### Tools and Memory
 
 | Plugin | What you get |
 | --- | --- |
-| [intelligent-tool-break](personal/intelligent-tool-break/README.md) · [public](public/intelligent-tool-break/README.md) | `/break`, `/break {msg}`, and `/again`. Desktop strip. Turn stays alive. |
-| [hermes-agent-desktop](personal/hermes-agent-desktop/README.md) · [public](public/hermes-agent-desktop/README.md) | Operate Windows apps through the accessibility tree: click, fill, select, toggle, scroll, key combos, windows, clipboard. Headless by default, so it never takes focus or the cursor. **Windows only.** |
-| [memory-review](personal/memory-review/README.md) · [public](public/memory-review/README.md) | Checkbox staged memory writes. Approve or reject from a dialog. |
-| [cdp-manager](personal/cdp-manager/README.md) · [public](public/cdp-manager/README.md) | Launch, stop, and recheck local Chrome CDP ports from the status bar, with a profile per port and one port a backend supervisor keeps alive. The `cdp` tool does the same from chat and repairs a Chrome profile-picker launch. |
-| [hermes-jev-routing](personal/hermes-jev-routing/README.md) · [public](public/hermes-jev-routing/README.md) | Per-turn model routing from TypeSafe Jev. The listed edition rewrites the model and the reasoning level on the request the turn is already bound to, and reports a pick on another provider rather than sending it; the personal edition moves the live session and also reads the provider catalogue, Codex quota and private pricing. **Not in the pack; enable separately.** |
+| [Intelligent Tool Break](personal/intelligent-tool-break/README.md) · [public](public/intelligent-tool-break/README.md) | `/break`, `/break {msg}`, and `/again`. Desktop strip. Turn stays alive. |
+| [Vercel Agent Desktop Support](personal/vercel-agent-desktop-support/README.md) · [public](public/vercel-agent-desktop-support/README.md) | Operate Windows apps through the accessibility tree: click, fill, select, toggle, scroll, key combos, windows, clipboard. Headless by default, so it never takes focus or the cursor. **Windows only.** |
+| [Memory Review](personal/memory-review/README.md) · [public](public/memory-review/README.md) | Checkbox staged memory writes. Approve or reject from a dialog. |
+| [CDP Manager](personal/cdp-manager/README.md) · [public](public/cdp-manager/README.md) | Launch, stop, and recheck local Chrome CDP ports from the status bar, with a profile per port and one port a backend supervisor keeps alive. The `cdp` tool does the same from chat and repairs a Chrome profile-picker launch. |
+| [Jev Routing](personal/hermes-jev-routing/README.md) · [public](public/hermes-jev-routing/README.md) | Per-turn model routing from TypeSafe Jev. The listed edition rewrites the model and the reasoning level on the request the turn is already bound to, and reports a pick on another provider rather than sending it; the personal edition moves the live session and also reads the provider catalogue, Codex quota and private pricing. **Not in the pack; enable separately.** |
 
 ### Sessions and Sidebar
 
 | Plugin | What you get |
 | --- | --- |
-| [better-session-appearance](personal/better-session-appearance/README.md) · [public](public/better-session-appearance/README.md) | Idle color, bold, and icons: one for the idle dot, or one for each of the six status dots. A settings switch lets the in-progress dots wear the session color. Auto Rules by title keywords. |
-| [sidebar-manager](personal/sidebar-manager/README.md) · [public](public/sidebar-manager/README.md) | Hide and reorder nav rows and session sections. |
-| [drag-to-pin-session](personal/drag-to-pin-session/README.md) · [public](public/drag-to-pin-session/README.md) | Drag pin/unpin with lasting order. |
-| [sessionretitler](personal/sessionretitler/README.md) · [public](public/sessionretitler/README.md) | Retitles the session every N titleable user messages, from the latest exchanges. A title you set yourself is never touched. |
-| [scroll-on-switch](personal/scroll-on-switch/README.md) · [public](public/scroll-on-switch/README.md) | Snap to bottom on session switch. Does not fight streaming. |
+| [Better Session Appearance](personal/better-session-appearance/README.md) · [public](public/better-session-appearance/README.md) | Idle color, bold, and icons: one for the idle dot, or one for each of the six status dots. A settings switch lets the in-progress dots wear the session color. Auto Rules by title keywords. |
+| [Sidebar Manager](personal/sidebar-manager/README.md) · [public](public/sidebar-manager/README.md) | Hide and reorder nav rows and session sections. |
+| [Drag to Pin Session](personal/drag-to-pin-session/README.md) · [public](public/drag-to-pin-session/README.md) | Drag pin/unpin with lasting order. |
+| [Session Retitler](personal/sessionretitler/README.md) · [public](public/sessionretitler/README.md) | Retitles the session every N titleable user messages, from the latest exchanges. A title you set yourself is never touched. |
+| [Scroll on Switch](personal/scroll-on-switch/README.md) · [public](public/scroll-on-switch/README.md) | Snap to bottom on session switch. Does not fight streaming. |
 
 ### Composer
 
 | Plugin | What you get |
 | --- | --- |
-| [opaque-composer](personal/opaque-composer/README.md) · [public](public/opaque-composer/README.md) | Solid composer while the transcript scrolls behind it. |
-| [prompt-enhance](personal/prompt-enhance/README.md) · [public](public/prompt-enhance/README.md) | Rewrite a composer draft from a saved prompt library and put the finished prompt back in the field. **Not in the pack; enable separately.** |
+| [Opaque Composer](personal/opaque-composer/README.md) · [public](public/opaque-composer/README.md) | Solid composer while the transcript scrolls behind it. |
+| [Prompt Enhance](personal/prompt-enhance/README.md) · [public](public/prompt-enhance/README.md) | Rewrite a composer draft from a saved prompt library and put the finished prompt back in the field. **Not in the pack; enable separately.** |
+
+### Writing
+
+| Plugin | What you get |
+| --- | --- |
+| [Voice Gate](personal/voice-gate/README.md) · [public](public/voice-gate/README.md) | Reads the prose a turn changed, in Markdown, plain text, reStructuredText, AsciiDoc, Org, LaTeX, HTML and PDF, and reports the AI tells in seventeen families: verdict openers, closing offers, cliché openers, significance inflation, buzzword runs, promotional adjectives, hedge stacks, signposting, wordy constructions and the structural shapes around bold text and negation. Exceptions silence a family for the files a glob names. Modes `warn`, `improve` or `skip`, a word floor, and a switch per bot. Ships a Vale style pack and an optional second opinion in the turn, and the personal edition loads a writing profile with four tools to check, inspect and build one. **Not in the pack; install separately.** |
 
 ### Reading and posting
 
 | Plugin | What you get |
 | --- | --- |
-| [rss-reader](personal/rss-reader/README.md) · [public](public/rss-reader/README.md) | Three-column reader. Folders, mute/search, capture. Optional Hermes tools and ticker. |
-| [reddit](personal/reddit/README.md) · [public](public/reddit/README.md) | Your own Reddit app and account: OAuth login, reads of public subreddits, search, user history and threads that keep their reply tree before any login, then private subreddits, saved items, the inbox, posts, comments, votes and subscriptions as the account, plus `reddit_api` for any other endpoint. |
+| [RSS Reader](personal/rss-reader/README.md) · [public](public/rss-reader/README.md) | Three-column reader. Folders, mute/search, capture. Optional Hermes tools and ticker. |
+| [Reddit](personal/reddit/README.md) · [public](public/reddit/README.md) | Your own Reddit app and account: OAuth login, reads of public subreddits, search, user history and threads that keep their reply tree before any login, then private subreddits, saved items, the inbox, posts, comments, votes and subscriptions as the account, plus `reddit_api` for any other endpoint. |
 
-Three plugins in this repo are not in the pack and are installed separately: **reasoning-switch** (Status Bar table), **prompt-enhance** (Composer table), and **hermes-jev-routing** (Tools and Memory table). Every other plugin above is pinned by the pack.
+Four plugins in this repo are not in the pack and are installed separately: **reasoning-switch** (Status Bar table), **prompt-enhance** (Composer table), **hermes-jev-routing** (Tools and Memory table), and **voice-gate** (Writing table). Every other plugin above is pinned by the pack.
 
 Retired and on-hold plugins live in [RETIRED.md](RETIRED.md).
 
@@ -154,20 +167,20 @@ This is an independent community project. It does not change Hermes Agent core, 
 - [Personal editions](personal/README.md)
 - [Public editions](public/README.md)
 - [AGENTS.md](AGENTS.md): personal/public backport and version rules
-- [provider-status](personal/provider-status/README.md)
-- [intelligent-tool-break](personal/intelligent-tool-break/README.md)
-- [iteration-budget-meter](personal/iteration-budget-meter/README.md)
-- [reasoning-switch](personal/reasoning-switch/README.md) (not in the pack)
-- [better-session-appearance](personal/better-session-appearance/README.md)
-- [sidebar-manager](personal/sidebar-manager/README.md)
-- [drag-to-pin-session](personal/drag-to-pin-session/README.md)
-- [scroll-on-switch](personal/scroll-on-switch/README.md)
-- [opaque-composer](personal/opaque-composer/README.md)
-- [prompt-enhance](personal/prompt-enhance/README.md) (not in the pack)
-- [memory-review](personal/memory-review/README.md)
-- [cdp-manager](personal/cdp-manager/README.md)
-- [rss-reader](personal/rss-reader/README.md)
-- [sessionretitler](personal/sessionretitler/README.md)
+- [Provider Status](personal/provider-status/README.md)
+- [Intelligent Tool Break](personal/intelligent-tool-break/README.md)
+- [Iteration Budget Meter](personal/iteration-budget-meter/README.md)
+- [Reasoning Switch](personal/reasoning-switch/README.md) (not in the pack)
+- [Better Session Appearance](personal/better-session-appearance/README.md)
+- [Sidebar Manager](personal/sidebar-manager/README.md)
+- [Drag to Pin Session](personal/drag-to-pin-session/README.md)
+- [Scroll on Switch](personal/scroll-on-switch/README.md)
+- [Opaque Composer](personal/opaque-composer/README.md)
+- [Prompt Enhance](personal/prompt-enhance/README.md) (not in the pack)
+- [Memory Review](personal/memory-review/README.md)
+- [CDP Manager](personal/cdp-manager/README.md)
+- [RSS Reader](personal/rss-reader/README.md)
+- [Session Retitler](personal/sessionretitler/README.md)
 
 ## Support
 

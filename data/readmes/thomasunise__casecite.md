@@ -13,7 +13,7 @@ Nine tools behind one login, all reading from the same document corpus.
 | | |
 |---|---|
 | **Research** (`/research`) | Chat over your firm's documents — hybrid retrieval (vector search and a full-corpus keyword index, merged by rank fusion) over clause-aware chunks that know their section and page, and inline citations back to the source, each claim checked against the passage it cites. **Deep research** for bigger questions: a plan of sub-questions you edit before anything runs, each researched over your documents and CourtListener, every quote verified against the text it came from, and a step log of what was searched. |
-| **Documents** (`/documents`) | Upload, index, and organize your corpus. Import from Google Drive, OneDrive, Box, Dropbox, Filevine, or Clio — OAuth sync, or a file picker where OAuth verification isn't needed. iManage and NetDocuments connectors exist but are experimental (untested against a live tenant) and off unless `EXPERIMENTAL_CONNECTORS=true`. |
+| **Documents** (`/documents`) | Upload, index, and organize your corpus. Scanned (image-only) PDFs are OCR'd by default. Import from Google Drive, OneDrive, Box, Dropbox, Filevine, or Clio — OAuth sync, or a file picker where OAuth verification isn't needed. iManage and NetDocuments connectors exist but are experimental (untested against a live tenant) and off unless `EXPERIMENTAL_CONNECTORS=true`. |
 | **Contracts** (`/contracts`) | Full contract review pipeline: analyze an indexed contract or pasted text, chat with a single contract, compare 2–4 contracts clause-by-clause against a baseline, and export a redline, a draft, or the analysis itself. |
 | **Tabular review** (`/review-tables`) | Review hundreds of contracts at once: start from a built-in or saved field template, point the table at a set of documents, and get one row per document with every value tied to the exact passage that supports it. Open any cell to see the quote highlighted in the document, override the value, approve or flag it with a note; a re-run never undoes a reviewer's work. Filter by status, sort typed columns, bulk-approve or re-run a selection, add documents later, see the run history and what changed. Export to Excel (Results, Citations, Review and Summary sheets), CSV or JSON, narrowed to the columns and cells you choose. |
 | **Workflows** (`/workflows`) | Save a review, research or drafting process as an ordered list of steps (extract fields, analyse contracts, compare against a baseline, draft a document, deep research, check citations, wait for an approval) and run it over any set of documents as one background job. Steps can run on a condition over an earlier output; an approval step pauses the run until a named approver decides; every step's output is rendered in full (extracted rows, issues, clause differences, the draft with Word export, the research answer, citation treatment); a failed run resumes, retries or skips a step; every change to the steps is a version a run records; and the runner is emailed when a run ends or needs them. Three starter templates (NDA intake, lease review, due-diligence pass) show the shape. See [docs/workflows.md](docs/workflows.md). |
@@ -56,6 +56,11 @@ you choose:
 - **Asking a question, analysing or drafting** sends the question and the
   relevant document text to the LLM provider (OpenAI, Anthropic or Gemini).
 - **Case-law tools** send search queries and citations to CourtListener.
+- **Request tracing, only if you turn it on** (`OTEL_EXPORTER_OTLP_ENDPOINT`)
+  sends traces to the OpenTelemetry collector at that address, which you run.
+  Traces carry counts, names and identifiers, never a question, a prompt or
+  document text. Off by default, and never to the CaseCite maintainers: this
+  is your observability, not telemetry.
 
 To keep document text entirely on your network, run both models yourself: set
 `OPENAI_BASE_URL` (chat) **and** `EMBEDDING_BASE_URL` (embeddings) to
@@ -294,23 +299,17 @@ docker-compose.yml       Behind an existing proxy (Coolify/Traefik); external Po
 docker-compose.dev.yml   Local development
 ```
 
-## API-only (no UI yet)
+## What has a UI
 
-These are implemented and reachable over the API, but the frontend does not
-expose them yet. Treat them as preview:
+Everything in the feature table above has one, including Matters
+(`/matters`), strategy briefs (the Matter Strategy workspace under Research;
+each proposition is searched on CourtListener and a citation is kept only
+when a verbatim quote is found in the real opinion text), Microsoft sign-in
+(a button on the login dialog when Azure AD is configured), user
+administration and the audit log (Settings, admins only). Every feature is
+also reachable over the API (`/docs` on a running instance).
 
-- **Matters** (`/api/v1/matters`) — matter records, membership, and sharing of
-  documents and chats between members. Creating matters and changing
-  membership requires the `matters.manage` permission.
-- **Strategy briefs** (`/api/v1/strategy`) — each proposition is searched on
-  CourtListener, candidate opinions are read, and a citation is kept only when
-  a verbatim quote can be located in the real opinion text. Unsupported
-  citations are dropped rather than shown.
-- **Azure AD SSO** — backend token exchange only; there is no sign-in button.
-  SAML, generic OIDC and SCIM are not supported.
-
-Everything else in the feature table above, plus user administration and the
-audit log (Settings, admins only), has a UI.
+Not supported: SAML, generic OIDC and SCIM.
 
 ## Security
 

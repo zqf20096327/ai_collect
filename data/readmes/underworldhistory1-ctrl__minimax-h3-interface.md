@@ -2,7 +2,7 @@
 
 **MiniMax H3 video with native audio. Qwen Image 2.1 creation and editing. One browser workspace on your own NVIDIA machine or GPU server.**
 
-Current software: **2.9.1** · [Install](docs/INSTALL.md) · [Launcher](docs/LAUNCHER.md) · [Compatibility](docs/COMPATIBILITY_MATRIX.md) · [Changelog](CHANGELOG.md)
+Current software: **2.15.0** · [Install](docs/INSTALL.md) · [Launcher](docs/LAUNCHER.md) · [Compatibility](docs/COMPATIBILITY_MATRIX.md) · [Changelog](CHANGELOG.md)
 
 [![Superman above Earth — watch with audio](docs/demo/superman/video-poster.jpg)](docs/demo/superman/superman-excerpt.mp4)
 
@@ -33,7 +33,7 @@ Start directly in Production, write a prompt, attach inputs and generate. **Save
 | Text to video | Original FL2VA generation with native audio |
 | Animate opening/closing images | Frames mode with independent input fit settings |
 | Direct from references | Named images, video and audio; roles, @mentions and connected native tags |
-| Guide with a storyboard | Storyboard image role for composition/shot order, with separate character references |
+| Guide with a storyboard | One sheet or an ordered group of separate storyboard images, with separate character/style references |
 | Set timed images | Temporal guides at selected frames, when native capability is present |
 | Guide structure or motion | Optional Fun-ControlNet 2.0 and installed pose/depth/outline/lighting extractors |
 | Continue or refine | Saved AV context, optional latent refinement and generated-audio enhancement under compatibility checks |
@@ -50,7 +50,7 @@ Studio compiles the current setup into a connected ComfyUI graph. Shared fronten
 | Selection | Automatic behavior |
 | --- | --- |
 | Original | FL2VA for Text/Frames, Ref2VA for References |
-| Pika Flex Turbo | Matching installed 4/8-step FL2VA/Ref2VA adapter, Original/native path, required strength/sampler/shifts and compatible single pass |
+| Pika Flex Turbo | Matching installed 2-step Draft, 4-step/Lite or 8-step HD adapter, Original or supported Singularity v2 References/native path, required strength/sampler/shifts and compatible single pass |
 | Turbo | Text/Frames Turbo v4 or References LightX2V 8-step; matching mode/availability and required sampling contract |
 | LoRAs and Dials | Selected order/strengths reach the model chain and saved setup; refinement uses its declared strengths |
 | Control, Refine, audio and continuation | Capability checks, supported pass ordering and explicit rejection of conflicting combinations |
@@ -63,7 +63,7 @@ This is deterministic configuration coordination. It does not infer the training
 | Choice | Scope |
 | --- | --- |
 | Original quality | Default H3 INT8 ConvRot; 20 steps, res_multistep/simple, CFG 1, native audio |
-| Singularity v1.3 INT8 | Optional independent checkpoint; historical output evidence is limited to tested setups |
+| Singularity v1.3 / v2 INT8 | Explicit optional checkpoints; v2 has no new GPU evidence here; v1.3 historical evidence is limited to tested setups |
 | Hybrid conditioning / Hybrid loader | Two distinct experimental routes; completed GPU output quality remains unverified here |
 | Spectrum / MotionCache | Separate optional approximation methods, selected one at a time |
 | Qwen Image 2.1 | INT8 installed by default; BF16 optional, separate image workspace |
@@ -74,14 +74,22 @@ Attention, model precision and render acceleration are separate. A historical ma
 
 Native detail **1344×768** is the recommended upper starting canvas. Larger direct-generation choices are experimental and can change the shot even with the same seed. For an approved take, use **Upscale same take**; it preserves frames/audio but does not invent detail. [Resolution behavior](docs/RESOLUTION_AND_SAME_TAKE.md).
 
+See the [upstream audit and orchestration assessment](docs/UPSTREAM_AND_ORCHESTRATION.md) for current additions, practical motion tools and local-agent boundaries.
+
 ## Optional Matlow tools
 
-Run Linux `./launcher.sh --matlow` or Windows `./launcher.ps1 -Matlow` once, with normal ComfyUI path options. The launcher installs reviewed pinned sources and small Dial files; recognized installs remain managed during later updates.
+The normal launcher prepares MAINodes, Dials and the publisher Dial library by default. It installs reviewed pinned sources and small Dial files; recognized installs remain managed during later updates. Advanced Linux installations can explicitly opt out with `--no-matlow`.
 
 - **ComfyUI-Dials:** motion/mood steering connected to Studio, project persistence and applicable model passes.
 - **ComfyUI-MAINodes:** installed as an independent optional backend pack. MotionLab and Contact Sheet are not integrated Studio controls. MotionLab adds a guided rerender and computation; it is not a general speed boost.
 
 The packs retain their external licenses and notices. [Versions, installation and supported scope](docs/MATLOW_AND_SELECTIONS.md).
+
+## Arrange your workspace
+
+Use **Customize layout** to hide/show sections, reorder stages, move sections between stages or reset your layout. Drag the grip beside a section title or reference; arrows and Alt + arrow keys provide alternatives. Video and image layouts are stored separately in this browser. Hiding a section keeps its settings active; changing mode still controls which features are available.
+
+For storyboards, choose **Storyboard sheet** for one image or **Storyboard sequence** for separate ordered images. Sequence images share a group, with per-image instructions and a shared sequence structure. They guide staging and action; they do not become timed keyframes. [Reference and storyboard guidance](docs/STORYBOARD_AND_SPATIAL_PLANS.md).
 
 ## Projects, tabs and media
 
@@ -95,7 +103,7 @@ Generations/Favorites use the selected scope, offer direct downloads and search 
 
 The launcher follows official main by default, verifies provenance/ancestry, preserves local edits and waits for accepted work, preparation and exports before replacing runtime. Supported code-only updates are available through **Updates**; environment changes need the full launcher. Restart when idle after installing code. Never interrupt an active render. [Upgrade/rollback](docs/V2_UPGRADE.md) · [Safe uninstall](docs/UNINSTALL.md).
 
-Source tests, local API/browser checks and GPU rendering are reported separately. Current verification: 589 Python tests (one platform skip), 286 JavaScript tests, the 528-combination persisted graph matrix and real-API browser journeys. [Current evidence and boundaries](docs/RELEASE_2_9_1.md). Windows/Linux CI reports the status of each exact commit. This does not establish every possible setting combination. Current changes have **no new GPU render**; earlier decoded Original/Singularity outputs are [historical evidence](docs/PRODUCTION_READINESS_2026_10_15.md). Check [Actions](https://github.com/underworldhistory1-ctrl/minimax-h3-interface/actions/workflows/verify.yml) for the exact current commit and [release notes](CHANGELOG.md) for subsequent checks.
+Source tests, local API/browser checks and GPU rendering are reported separately. Current verification: 609 Python tests (one platform skip), 327 JavaScript tests, the 528-case persisted and 2,096-case expanded graph matrices and real-API browser journeys. [Current evidence and boundaries](docs/RELEASE_2_15.md). Windows/Linux CI reports the status of each exact commit. This does not establish every possible setting combination. Current changes have **no new GPU render**; earlier decoded Original/Singularity outputs are [historical evidence](docs/PRODUCTION_READINESS_2026_10_15.md). Check [Actions](https://github.com/underworldhistory1-ctrl/minimax-h3-interface/actions/workflows/verify.yml) for the exact current commit and [release notes](CHANGELOG.md) for subsequent checks.
 
 Read-only server validation: `python deploy/verify_h3_server.py --url COMFY_URL`. Readiness is not a visual-quality certificate. Models need substantial disk and host RAM as well as VRAM. Completed sampler latents support tracked decode recovery, not mid-sampling resume. Optional AI prompt preparation requires a configured provider; otherwise Automatic formats locally.
 

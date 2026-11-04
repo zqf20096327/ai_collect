@@ -14,7 +14,7 @@ Author: LofiSu. Co-written with Grokbot (CoderBot).
 
 [Docs](docs/index.md) · [Inspiration](#inspiration) · [Features](#features) · [Architecture](#architecture) · [Quick start](#quick-start) · [Demo](#demo) · [Models](#models) · [Credits](#credits) · [License](#license)
 
-Shorter pages, same facts: [install](docs/install.md), [architecture](docs/architecture.md), [safety](docs/safety.md). [中文](docs/zh/index.md).
+Shorter pages, same facts: [install](docs/install.md), [architecture](docs/architecture.md), [safety](docs/safety.md), [skills](docs/SKILLS.md), [routines](docs/ROUTINES.md). [中文](docs/zh/index.md).
 
 ## What this is
 
@@ -38,6 +38,8 @@ Checked against [Super-agent 设计探索](https://mp.weixin.qq.com/s/zoS7GlReWP
 
 `[x]` done and covered. `[~]` partial. `[ ]` not done. Extension domains are always-wired Runtime services, not an opt-in gate: router shards, Worker mesh, long-term memory, lifecycle events, and A2A are assembled on every run. See [docs/MODULES.md](./docs/MODULES.md).
 
+Where this stands against Instinct, Muse, and Grok Bot, including the gaps we have not closed: [docs/COMPETITIVE_GAP.md](./docs/COMPETITIVE_GAP.md).
+
 ### §1 Four traits
 
 - [x] **Continuous.** IM and GitHub-style channels share one domain state. Sessions stay inside the runtime. (Harness Session + Engine Thread/Ticket)
@@ -54,16 +56,20 @@ Checked against [Super-agent 设计探索](https://mp.weixin.qq.com/s/zoS7GlReWP
 - [x] **Trigger batching.** A positive `batchWindowMs` folds same-Thread Triggers into one Eval. Covered by `test/batching-bench.test.ts`; the real-channel demo uses the default window (0), so it does not exercise folding.
 - [~] **Router sharding / multi-layer filter.** `RouterShardRegistry` is always wired into the Runtime (PLAN T09/T46). Configure with `DS_AGENT_SHARDS` or `RuntimeOptions.routerShards`; the default shard always exists.
 - [x] **Isolated Worker context.** Each Worker has its own Session and the full tool set.
+- [x] **Layered prompt stack.** Identity, owner voice, standing instructions, owner context, team, skills, reach, rules, memory guidance, style, and the role contract are assembled in dependency order. `PERSONA.md`, `AGENTS.md`, and `USER.md` in the agent home refine the owner-editable layers; the team layer names configured local specialists; `ds-agent prompt --layers` shows every layer and its source. See [docs/PROMPTS.md](docs/PROMPTS.md).
 - [x] **Workers report upward.** `report` goes to the Router. The Router sends the reply. A worker session holds `WorkerPorts`, not the Engine, and cannot `reply` or `decide`.
 - [x] **Worker ↔ Thread subscriptions.** Many-to-many, via `subscribe` and fan-out.
 - [x] **Subagent / Team inside a Worker.** Async jobs + `spawn_team`/`team_status`/`complete_team` → member jobs → `TEAM_MEMBER_DONE` → aggregate report. Team rows persist in SQLite and `ds-agent team`/`teams` inspect them offline. Router only sees the parent Assignment report (T14; unit + harness + live e2e).
-- [~] **One UI, many topics.** Several Tickets can exist at once. `LifecycleBus` is always wired as a read model; there is no default UI yet (T15/T49).
+- [x] **Local specialist agents inside a Worker.** When the owner configures them, a Worker can call `delegate_agent` to run a local CLI agent (Claude Code, Codex, OpenCode, Hermes, or a custom one) on one self-contained task. No shell, workspace cwd, bounded timeout/output, allowlisted environment. `ds-agent agents` lists the configuration; see [docs/LOCAL_AGENTS.md](docs/LOCAL_AGENTS.md).
+- [x] **Owner-authored skills.** A directory under `skills/<id>/SKILL.md` in the agent home adds a playbook without a code change. The prompt carries an id/description index capped at 2000 characters; `read_skill` loads a body on demand. A skill cannot grant a tool or widen a role. `ds-agent skills` lists the index; see [docs/SKILLS.md](docs/SKILLS.md).
+- [x] **Owner-defined routines.** `routines.json` schedules a prompt every N minutes on a chosen channel and thread. The daemon checks due routines on its normal tick, fires once after a gap instead of replaying missed slots, and persists last-run in SQLite. Routines enter through the normal ingress filter and rules; the model cannot create or change one. `ds-agent routines` lists them; see [docs/ROUTINES.md](docs/ROUTINES.md).
+- [x] **One UI, many topics.** Several Tickets can exist at once. `LifecycleBus` is always wired as a read model, and `ds-agent ui` serves a read-only, token-gated loopback dashboard with tickets, threads, outbox metadata, health, metrics, and sanitized lifecycle events (T15/T49).
 
 ### §3 Event-driven
 
 - [x] **Triggers.** Semi-structured events from IM / GitHub-style sources.
 - [x] **Fast Path.** Deterministic source and noise rules (`ingress/filter`).
-- [x] **Slow Path.** Semantic or policy filter. The shipped classifier is deterministic (`ruleClassify`) for both `MockModel` and `HttpOpenAI`; a model-backed policy classifier is not wired, so rules stand in. `test/slow-path-policy.test.ts` pins this and proves classification never calls the network.
+- [x] **Slow Path.** Fast Path first, then an opt-in model policy (`DS_AGENT_SLOW_PATH=model`) with a deterministic rule fallback on timeout, error, or invalid output (`ingress/policy.ts`). The default is rules-only (`ruleClassify`); `Runtime.ingestAsync` is used by the real channel loops, while synchronous `ingest` and A2A inbound stay rules-only. Offline tests pin the fallback and prove the default path never calls the network.
 - [x] **Thread.** One topic or PR. One event stream. Thread key.
 - [x] **Already subscribed.** Straight to the Worker. Log line `bypass=subscription` plus `ticketId`.
 - [x] **Not subscribed.** Cold start: Intake → Eval → Ticket.
@@ -72,7 +78,7 @@ Checked against [Super-agent 设计探索](https://mp.weixin.qq.com/s/zoS7GlReWP
 - [x] **Inline.** Short summaries stay in context (`memory/recall`).
 - [x] **Spill.** Long content is stored out of band, with an id (`store/spill`).
 - [x] **Locality.** IDs and summaries first. Expand on demand (`read_object`).
-- [x] **Chain of Recall.** Pull a spill id or object ref when needed (minimal T25).
+- [x] **Chain of Recall.** Typed `kind:id` handles; `read_object` returns the next hop (`memory/graph`).
 - [x] **Speculative work.** A background Assignment can run first.
 - [x] **Deliver gate.** `deliver=true`, or the result is dropped. The demo checks this.
 
@@ -113,13 +119,13 @@ Article evals. They do not block the release.
 
 Kept out of M11.
 
-- [~] Router scale-out / Worker-direct topology (§8.1) — always-wired `RouterShardRegistry` + `WorkerMeshRegistry` (placement is logical; a remote transport is external)
-- [~] Memory that spans tickets (§8.1) — always-wired `SpillBackedLongTermMemory` (not month-scale yet)
-- [~] A product shell that is not a Session (§8.2) — always-wired `LifecycleBus` read model; no default UI yet
+- [~] Router scale-out / Worker-direct topology (§8.1) — always-wired `RouterShardRegistry` + `WorkerMeshRegistry`; `RemoteMeshRegistry`/`MeshInbox` add authenticated A2A registration/heartbeat/dispatch, but no listener starts by default and remote dispatch is not connected to the local queue yet.
+- [~] Memory that spans tickets and months (§8.1) — always-wired `SpillBackedLongTermMemory`: hot tickets/decisions (1000 / 90 days) plus cold Thread digests (200 / 3650 days); calendar-month behavior is bounded, not measured across real months
+- [x] A product shell that is not a Session (§8.2) — always-wired `LifecycleBus` read model plus `ds-agent ui`, a read-only, required-token loopback dashboard with sanitized lifecycle events and no message bodies.
 - [x] Mid-task collaboration with a person (§8.2) — CLI `pause` / `intervene` / `resume` / `collab` + durable `Ticket.collaboration`; harness/watchdog honor pause
 - [x] Panel · Execution — `ds-agent panel` derives Open/Pending/Working/Waiting/Blocked/Awaiting from Ticket facts, with Mandate, Executor Session, directory, report, and Outbox delivery counts (`src/core/panel.ts`)
-- [~] A2A across instances (§8.3) — always-wired `A2ARouter` (in-process; `runtime.sendA2A`)
-- [~] **Credentials stay out of tool output.** LocalEnv allowlist + `[redacted]` for secret-named env values of at least 8 characters (shorter values and other names are left as-is) + FileVault `describe()` (names only). Every worker bash is wrapped: `sandbox-exec` on macOS, `bwrap` on Linux; a missing wrapper is a hard error with no plain-bash fallback, and network is denied unless the policy allows it. The wrapper confines writes and network, not reads: both platforms still allow broad reads, so process-level read isolation, including the SQLite DB, remains an external/container boundary (§8.4, T51). Host vault/seccomp policy still external.
+- [~] A2A across instances (§8.3) — always-wired `A2ARouter` plus an HMAC-SHA256 HTTP transport (`a2a-auth.ts`/`a2a-http.ts`); no listener starts by default, so cross-host exposure and remote dispatch remain operator-gated.
+- [~] **Credentials stay out of tool output.** LocalEnv allowlist + `[redacted]` for secret-named env values of at least 8 characters (shorter values and other names are left as-is) + FileVault `describe()` (names only). Every worker bash is wrapped: `sandbox-exec` on macOS, `bwrap` on Linux; a missing wrapper is a hard error with no plain-bash fallback, and network is denied unless the policy allows it. By default the wrapper confines writes and network but allows broad host reads; `DS_AGENT_SANDBOX_READ_ISOLATION=1|true|strict` opts into strict read confinement (§8.4, T51, #117). Host vault/seccomp/container policy remains external.
 
 ### Modules M0–M11
 
@@ -273,8 +279,17 @@ pnpm ds-agent panel
 pnpm ds-agent retry <ticketId>
 pnpm ds-agent status
 pnpm ds-agent metrics
+pnpm ds-agent serve [--imessage] [--feishu]  # daemon/watchdog timer; one or both inbound poll loops
+pnpm ds-agent channels check [--imessage] [--feishu] [--network]  # no-send preflight, no model
+pnpm ds-agent health
+pnpm ds-agent memory --limit 10
 pnpm ds-agent emit im --thread bug-login --text "login still 500"
 pnpm ds-agent emit github --pr 42 --text "CI failed on auth test"
+pnpm ds-agent ui [--host 127.0.0.1] [--port <n>] [--token <token>]
+                                              # read-only loopback dashboard; needs DS_AGENT_UI_TOKEN
+                                              # or --token (at least 16 characters)
+pnpm ds-agent backup --out <file.db>          # WAL-safe snapshot of the SQLite store
+pnpm ds-agent restore <file.db> [--force]     # replace the store; --force is required when one exists
 ```
 
 ## Demo (real channels)
@@ -307,8 +322,8 @@ DS_AGENT_GH_KEEP=1 pnpm demo           # keep the real issues open
 The functional domains keep the T45–T51 ids: evaluation and metrics, extensions, long-term memory, product layer, interop, and security and privacy. The extension services are no longer behind a feature flag; `Runtime.create` always constructs them:
 
 - `runtime.routerShards` — `src/ingress/shards.ts`; configure with `DS_AGENT_SHARDS` (JSON) or `RuntimeOptions.routerShards`. The default shard always exists.
-- `runtime.workerMesh` — `src/harness/mesh.ts`; `DS_AGENT_MESH_CAPACITY` or `RuntimeOptions.meshCapacity`.
-- `runtime.longTermMemory` — `src/memory/long-term.ts`; one entry per finished ticket.
+- `runtime.workerMesh` — `src/harness/mesh.ts`; `DS_AGENT_MESH_CAPACITY` or `RuntimeOptions.meshCapacity`; waiting launches use a bounded FIFO queue (`DS_AGENT_MESH_QUEUE`, default 100), and a failed non-queued start releases the reserved node and pumps the queue.
+- `runtime.longTermMemory` — `src/memory/long-term.ts`; one entry per finished ticket and per Router Decision, with a cold Thread-digest tier for month-scale recall.
 - `runtime.lifecycle` — `src/core/lifecycle.ts`; read-model events for panels and CLI views.
 - `runtime.a2aRouter` / `runtime.sendA2A` — `src/channels/a2a.ts`; the Runtime registers its instance as the local recipient.
 
@@ -350,11 +365,38 @@ Use a small model for the Router and Watchdog. Use a stronger one for the Worker
 
 ## Local gateway and iMessage
 
-`ds-agent gateway` is a local OpenAI-compatible proxy in front of the providers you already configure. It speaks `POST /v1/chat/completions` (JSON and SSE), `/v1/messages` (Anthropic), `/v1/responses`, `/v1/embeddings`, and Gemini `generateContent`, and routes by model, priority, or a `provider/model` prefix with failover and per-provider metering. It mints a local bearer token at `<stateDir>/gateway.token` (0600), and the CLI reuses it when `DS_AGENT_GATEWAY_URL` is set. With a `gateway.config.json` present, `chat` and `imessage` start it in-process. See [docs/GATEWAY.md](./docs/GATEWAY.md).
+`ds-agent gateway` is a local OpenAI-compatible proxy in front of the providers you already configure. It speaks `POST /v1/chat/completions` (JSON and SSE), `/v1/messages` (Anthropic), `/v1/responses`, `/v1/embeddings`, and Gemini `generateContent`, and routes by model, priority, or a `provider/model` prefix with failover and per-provider metering. It mints a local bearer token at `<stateDir>/gateway.token` (0600), and the CLI reuses it when `DS_AGENT_GATEWAY_URL` is set. With a `gateway.config.json` present, `chat` and `imessage` start it in-process. A zero-length or whitespace-only `gateway.token` fails closed with an explicit error, and recovery is an explicit operator action per ADR-009 (remove or replace only after verifying the file is stale), never automatic. See [docs/GATEWAY.md](./docs/GATEWAY.md).
 
 `ds-agent setup --write` discovers local OpenAI-compatible products (Magpie, Ollama, LM Studio, llama.cpp, vLLM) and scaffolds `gateway.config.json`. Fill `apiKey` for any provider that needs auth; the gateway never reads a product's stored credentials.
 
-`ds-agent imessage` is a two-way iMessage channel for a dedicated Apple ID: inbound from `~/Library/Messages/chat.db` (read-only, `is_from_me = 0` only), outbound through Messages.app via `osascript` with the text passed in the environment. It needs macOS Full Disk Access plus Automation permission. See [docs/IMESSAGE.md](./docs/IMESSAGE.md).
+`ds-agent imessage` is a two-way iMessage channel for a dedicated Apple ID: inbound from `~/Library/Messages/chat.db` (read-only, `is_from_me = 0` only), outbound through Messages.app via `osascript` with the text passed in the environment. It needs macOS Full Disk Access for the terminal/app that launches `node` (System Settings → Privacy & Security → Full Disk Access, then quit and reopen the app) plus Automation permission for Messages (System Settings → Privacy & Security → Automation). A TCC denial is reported with that exact guidance and is not retried forever. `serve --imessage` runs the same inbound poll loop alongside the daemon (default `serve` has no inbound loop); it uses the same default-deny sender admission, cursor, and outbox. See [docs/IMESSAGE.md](./docs/IMESSAGE.md).
+
+Thread keys are separate for groups and 1:1: group precedence is `chat:<guid>` > `group:<identifier>` > `group-rowid:<rowid>` > `group-unknown:<handle>`, while a 1:1 thread is always `handle:<handle>`. `group-rowid` is a per-database SQLite identity used only for thread identity and never for outbound.
+
+`serve --feishu` polls exactly one Feishu chat with `FEISHU_APP_ID`/`FEISHU_APP_SECRET` and `FEISHU_CHAT_ID` or `--chat <id>`, stores its cursor in SQLite, and never sends from preflight. Create a Feishu custom app with the bot capability, add `im:message`, `im:message:send_as_bot`, `im:message:readonly`, and `im:message.group_msg` (for group history), publish the app version, then add the bot to the target chat and copy its `oc_...` chat id. Inbound CLI delivery is polling only: one chat per process. Inbound webhooks and Feishu long-connection/WebSocket delivery are not implemented. Full setup is in [docs/REAL_CHANNELS.md](./docs/REAL_CHANNELS.md).
+
+`--imessage` and `--feishu` may run together. `serve --imessage --feishu` resolves and validates both configurations before `Runtime.create`, then runs both inbound loops over one Runtime/SQLite store with independent abort controllers, cursors, and outboxes. If either configuration is missing or invalid, it fails before opening SQLite, `chat.db`, or the Feishu network and lists every missing item. A loop failure is logged without stopping the other loop or the daemon.
+
+Run the preflight first; it needs no model, opens no SQLite, and sends no message:
+
+```bash
+pnpm ds-agent channels check                  # both, offline
+pnpm ds-agent channels check --imessage       # iMessage only
+pnpm ds-agent channels check --feishu         # Feishu config only
+pnpm ds-agent channels check --feishu --network  # one real tenant_access_token call
+```
+
+iMessage preflight opens `chat.db` read-only, checks the required schema, prints count/latest ROWID (never message text), admission, and whether `osascript` exists. It prints the manual Automation command (`osascript -e 'tell application "Messages" to get name'`) but does not run it, so the default check cannot prompt or send. Feishu preflight prints paired-credential presence, chat presence, base URL, and required scopes with values hidden. Exit 0 means every selected channel is ready.
+
+Safe no-send smoke: run `channels check` (and optionally `--network`), then confirm the manual iMessage Automation command in docs/IMESSAGE.md. Do not start `serve` to test send permissions; the first real reply is the first send.
+
+```bash
+# one process, both primary channels (requires both configurations)
+DS_AGENT_IMESSAGE_HANDLE="+8613800000000" \
+FEISHU_APP_ID=cli_xxx FEISHU_APP_SECRET=xxx FEISHU_CHAT_ID=oc_xxx \
+pnpm ds-agent serve --imessage --feishu
+```
+
 
 ## Credits
 
@@ -374,6 +416,8 @@ gh auth login
 pnpm test
 pnpm demo          # real GitHub issues/comments + live model
 ```
+
+Last recorded live run (2026-11-03, local Magpie): `pnpm test:live` 22 passed, 3 files (195.34 s); `pnpm test` 384 passed, 3 skipped, 55 files (622.33 s). It predates the current suite growth and was not re-run for this README update.
 
 `pnpm test` fills any missing `DS_AGENT_API_*` with those Magpie defaults before Vitest starts. `test/setup-live.ts` does the same only when the variables are still unset, and it skips that fill on CI. A provider key alone does not replace the three. Transcripts from the E2E cases land under `/tmp/ds-agent-live-e2e-logs/`; real-channel demo logs and proofs land in `/tmp/ds-agent-live-e2e-logs/demos/`. Update the pass/fail counts in this section after each live run.
 

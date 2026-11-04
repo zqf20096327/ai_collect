@@ -13,7 +13,7 @@ students, doctors, lawyers, economists.
 
 ## At a glance
 
-- **Answers you can check.** Every answer cites `[code, printed page, PDF page]`; a quote is verified word for word
+- **Answers you can check.** Every answer cites `[code, cl. N, table N, p. N, PDF N]`; a quote is verified word for word
   against the page, and the assistant can show you the image of the original page.
 - **Takes in a whole library.** PDF and scans (OCR with a quality score per page), Word, PowerPoint, Excel, EPUB,
   FB2, DjVu, images, HTML, archives (ZIP, 7z, RAR) and e-mails with attachments. Duplicates and new editions are
@@ -24,8 +24,9 @@ students, doctors, lawyers, economists.
   question after a start waits about 20 s for the models; meanwhile the search answers by words.
 - **One library for all your AI apps.** A single local service loads the models once (an NVIDIA, AMD or Intel video
   card, or the processor) and serves every connected app at the same time.
-- **Private by design.** Documents, texts and the search stay on your PC; a model sees only the pages it reads to
-  answer, and with a local model in LM Studio nothing leaves the PC.
+- **Private by design.** Documents, texts and the search stay on your PC; a model in the cloud sees what the tools
+  give it for a question (the search hits, the pages it reads, cards), and with a local model in LM Studio nothing
+  leaves the PC.
 - **Share a library.** Export it as a base package and install it in another workspace, merged with the documents
   already there.
 - **English and Russian** documents out of the box; one card schema and one set of shelves for any field, with domain
@@ -33,17 +34,24 @@ students, doctors, lawyers, economists.
 - **Easy to install.** Ask your agent to install it, double-click [`Setup.bat`](Setup.bat), or use an offline medium;
   no administrator rights needed.
 
-Version 0.5.11 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the data folders also CC-BY-4.0 (see
+Version 0.6 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the data folders also CC-BY-4.0 (see
 [License](#license)) · Author: Alexandr Yalovoy. What comes next: [`ROADMAP.md`](ROADMAP.md).
 
 ## Features in detail
 
 ### Answers you can check
 
-- Every answer names the document and the page: `[code, p. printed, PDF N]`, with a code such as `N00012` that stays
+- Every answer names the document and the place: `[code, cl. N, table N, p. N, PDF N]` (clause, table, printed page; a part not known is left out), with a code such as `N00012` that stays
   with the document for its whole life.
 - A verbatim quote is checked against the text of its page (`verify_quote`); a quote that does not match is caught.
-- The image of the original page (`page_image`): look at a table, a diagram or a formula with your own eyes.
+- The image of the original page (`page_image`): look at a table, a diagram or a formula with your own eyes; the
+  page of a reference comes with its quote marked in yellow ("show [N-00001, PDF 36]"; "without the mark" when you
+  want it clean).
+- The references of an answer gathered into a folder (`export_references`): "copy the references to D:\Project" puts
+  there the files of the documents cited and one PDF of the pages cited, a page a sheet, each with its reference on
+  top and its quote marked. Only words the text layer of a page has are marked: on a scan the sheet says the quote is
+  not marked, never a mark at a guessed place; the originals are never changed, a file there already is replaced
+  only when you agree.
 - The map of a book (`book_map`): its contents with page numbers, so the assistant reads the right section instead of
   guessing.
 - A "Source quality" warning when an answer rests on a weak scan.
@@ -82,11 +90,11 @@ Version 0.5.11 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the da
 
 ### One service for all your apps
 
-- One command connects them: `assistant-x connect auto` finds Claude Desktop, Claude Code, Codex, DeepSeek Harness
-  and LM Studio and writes the library into each.
+- One command connects them: `assistant-x connect auto` finds Claude Desktop, Claude Code, Codex, DeepSeek Harness,
+  LM Studio, Gemini CLI, Antigravity, Cursor, Cline and Kimi and writes the library into each.
 - One local service per PC: the models are loaded once and serve every app at the same time.
 - An NVIDIA video card (CUDA), an AMD or Intel one (DirectML), or the processor.
-- A mode for small local models (`--compact`) and a read-only set of tools (`--tools reader`).
+- A mode for small local models (`--compact`) and a reading set of tools (`--tools reader`: it changes nothing in the library).
 - MCP over HTTP for other clients, with an access token.
 - The skill of every app is written by the program and refreshed with a new version.
 
@@ -99,7 +107,7 @@ Version 0.5.11 (prototype) · Windows and Linux · GNU AGPL-3.0-or-later, the da
 
 ### Privacy and security
 
-- Documents, texts, the base and the search stay on your PC; a model gets only the pages it reads to answer.
+- Documents, texts, the base and the search stay on your PC; a model gets what the tools give it for a question.
 - With a local model in LM Studio nothing leaves the computer.
 - The library changes only through a plan and its confirmation token.
 - Documents are treated as untrusted: hidden instructions in a text are found and marked.
@@ -152,7 +160,7 @@ also take the plugin of this repository: `codex plugin marketplace add AlexandrY
 | [`INSTALL_FOR_AI.md`](INSTALL_FOR_AI.md), [`AGENTS.md`](AGENTS.md), [`plugins/`](plugins) | the instructions for an agent that installs Assistant X, the notes for agents, the plugin of Codex and Claude Code (with [`.agents/plugins`](.agents/plugins) and [`.claude-plugin`](.claude-plugin)): made by `assistant-x gen-docs` from [`assistant_x/templates/docs/`](assistant_x/templates/docs) |
 | [`assistant_x/schemas/`](assistant_x/schemas) | the JSON Schema of the document cards (`card-1.json`) |
 | [`tests/`](tests) | the tests ([`tests/base`](tests/base), [`tests/search`](tests/search), [`tests/intake`](tests/intake), [`tests/corpus`](tests/corpus), and the top of `tests`: see Tests) |
-| [`docs/`](docs) | the guides: the search ([`SEARCH.md`](docs/SEARCH.md)), the intake ([`INTAKE.md`](docs/INTAKE.md)), base packages ([`PACKAGES.md`](docs/PACKAGES.md)), the apps ([`CLIENTS.md`](docs/CLIENTS.md)), the glossary ([`GLOSSARY.md`](docs/GLOSSARY.md)) |
+| [`docs/`](docs) | the guides: the search ([`SEARCH.md`](docs/SEARCH.md)), the intake ([`INTAKE.md`](docs/INTAKE.md)), base packages ([`PACKAGES.md`](docs/PACKAGES.md)), the apps ([`CLIENTS.md`](docs/CLIENTS.md)), the library from a program of your own ([`API.md`](docs/API.md)), the glossary ([`GLOSSARY.md`](docs/GLOSSARY.md)) |
 | [`ROADMAP.md`](ROADMAP.md), [`CHANGELOG.md`](CHANGELOG.md) | what comes next, what changed |
 | [`LICENSE`](LICENSE), [`LICENSES/`](LICENSES), [`NOTICE`](NOTICE), [`CLA.md`](CLA.md), [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) | the licenses, the notices of the author and of the third-party components, the contributor agreement, how to contribute, the code of conduct |
 | [`SECURITY.md`](SECURITY.md) | how to report a vulnerability privately, and what the product guarantees about untrusted documents and packages |
@@ -169,6 +177,41 @@ papers, X Other ([`assistant_x/schemas/shelves.json`](assistant_x/schemas/shelve
 (`assistant_x/profiles/<name>`) adds only the knowledge of one field: `general` (the default) has none, `oil-gas-ru`
 brings Russian oil-and-gas synonyms and the role of a process engineer in the skill (`assistant-x init --profile
 oil-gas-ru`).
+
+### Document hierarchy (default)
+
+Answers list the requirements level by level, the highest first, and on a conflict the higher level wins; the search
+lifts a higher level a little among close results. A document gets its level from its designation.
+
+| Level | Documents |
+|---|---|
+| 1 | Constitution |
+| 2 | Codes and laws, decrees, government resolutions |
+| 3 | Technical regulations |
+| 4 | International standards and register rules (ISO, IEC, DNV…) |
+| 5 | National standards (GOST, API, ASME, ASTM…); then the company's own documents |
+| 6 | Sets of rules and safety rules |
+| 7 | Industry documents |
+| 8 | Organization standards |
+| 9 | Methodical documents |
+| 10 | Handbooks, books and articles |
+
+The levels and their designation patterns are data (`hierarchy.json` of the profile). To set your own, tell the
+assistant "my hierarchy is: …": it shows the levels and, on your yes, writes `hierarchy.json` into the workspace
+(the tool `library_hierarchy`), which is then used instead of the profile's.
+
+### LM Studio: the reference mode
+
+A local model in LM Studio answers as a reference desk: up to 15 verbatim quotes of the library, each with its
+reference `[code, cl. N, table N, p. N, PDF N]`, grouped by the level of the documents, then the sources; no analysis of its own. The number
+is a setting: `reference_quotes = 15` under `[search]` in `assistant_x.toml`. The model needs a context of 32768
+tokens: the number under the field of the message reads `0/32768` (the installer sets it as the default of every
+model; with `0/8192` the answers lose their quotes, see [docs/LMSTUDIO.md](docs/LMSTUDIO.md)).
+
+Every reference, in every app and mode, has one form: the code, the clause, the table, the printed page and the PDF
+page that are known, e.g. `[N-00001, cl. 6.2.1.9, table 1, PDF 36]` (in Russian `[N-00001, п. 6.2.1.9, табл. 1,
+PDF 36]`); a part that is not known is left out, never made up. The full engineering answer (initial data,
+requirements by level, calculation, checks) comes from Claude or ChatGPT (Codex).
 
 ## Your workspace (not in the repository)
 
@@ -191,14 +234,17 @@ the PC, in `%USERPROFILE%\.assistant_x\models`). Keep your own copy of `library`
 - **An app with MCP:** Claude Desktop or Claude Code; Codex (CLI, IDE) or the ChatGPT desktop app; DeepSeek
   Harness; LM Studio with a model that can call tools; or any MCP client (stdio, or streamable HTTP with
   `assistant-x serve --http`). The library also works from the command line alone ("Without an app" below).
-- **Where your text goes:** the search runs on your PC, but the pages the model reads to answer go to the provider of
-  that model (Anthropic, OpenAI, DeepSeek). For confidential documents use a local model in LM Studio.
+- **Where your text goes:** the search runs on your PC, but what the tools give the model goes to the provider of
+  that model (Anthropic, OpenAI, DeepSeek, Google, Moonshot AI for Kimi, the provider set in Cursor or Cline): your
+  question, the search hits (fragments, quotes, codes and titles of documents), the pages it reads, cards and the
+  list of documents, page images, and during "AX: sort my documents" the drafts of the cards with the headings and the
+  start of the text of the new files and their names. For confidential documents use a local model in LM Studio.
 
 ## Getting started (Windows)
 
 1. [`Setup.bat`](Setup.bat) — finds or installs Python, installs the packages and the program, makes the workspace
    `Documents\Assistant X` with the profile `general`, connects the library to every app it finds (Claude Desktop,
-   Claude Code, Codex, DeepSeek Harness, LM Studio, Gemini CLI, Antigravity, Cursor, Cline:
+   Claude Code, Codex, DeepSeek Harness, LM Studio, Gemini CLI, Antigravity, Cursor, Cline, Kimi:
    `assistant-x connect auto`), writes the skills and runs a
    self-test. From a medium (`assistant-x prepare-media --out E:\` on a PC with internet:
    [`Setup.bat`](Setup.bat), `app\`, `packages\`, `models\` with `MODELS.json`, `programs\`) everything of the program goes to
@@ -217,10 +263,12 @@ the PC, in `%USERPROFILE%\.assistant_x\models`). Keep your own copy of `library`
 3. Claude Desktop only: zip the folder `skill` of the workspace (it holds `SKILL.md`) and upload it in Claude →
    Settings → Capabilities → Skills, then restart Claude Desktop (the icon by the clock → Quit, then open it again).
    Codex, Claude Code and DeepSeek Harness got their skill from `connect`; in LM Studio any model learns the rules from
-   the tool `library_guide`.
+   the tool `library_guide`. Questions before a tool call: none in the Code tab of Claude Desktop, in Claude Code and in
+   LM Studio (`connect` allows the tools of the library there); the chat of Claude Desktop keeps its permissions to
+   itself: at the first call of a tool press "Always allow", it does not ask again.
 4. Put documents into `inbox` of the workspace and write to your assistant "AX: sort my documents" (or double-click
    [`intake.bat`](intake.bat) and let the assistant write the cards afterwards).
-5. Ask, starting the message with "AX:" (or "connect to the library"). The answers cite `[code, p. printed, PDF N]`.
+5. Ask, starting the message with "AX:" (or "connect to the library"). The answers cite `[code, cl. N, table N, p. N, PDF N]`.
    `assistant-x.bat doctor` shows where everything is and what is missing, `assistant-x connect --check` whether every
    app reaches the library.
 
@@ -264,6 +312,11 @@ The intake runs from the command line too: `assistant-x intake run` makes the te
   entry of every app and says which part fails; `assistant-x connect APP` writes the entry again.
 - **The intake apply was interrupted**: `assistant-x intake apply --resume`.
 - **"the machine lock is busy"**: another heavy task runs (`assistant-x lock` says which); wait, or add `--wait`.
+- **Setup.bat stops on the packages with SSL, CERTIFICATE_VERIFY_FAILED or a connection error**: an antivirus that
+  scans HTTPS (Kaspersky and others) may hold pypi.org, files.pythonhosted.org and download.pytorch.org (and
+  huggingface.co when the models are downloaded). When it asks about one of these sites ("the site may be shown
+  incorrectly"), choose to allow it (Kaspersky: "Add to exclusions"), then run Setup.bat once more; or install from
+  the medium, without internet.
 - **Anything else**: `assistant-x debug-report` makes a file to pass on to whoever helps you (read it first: it
   names the folders and the last questions).
 
@@ -297,7 +350,7 @@ paths into `assistant_x.local.toml`. The tests (all but the slow ones) run in CI
 ### Connect your apps
 
 `assistant-x connect auto` (Setup.bat runs it) writes the entry of the library into every app it finds; `assistant-x
-connect APP` one app (`claude_desktop`, `claude_code`, `codex`, `dsh`, `lmstudio`), `--full` gives an app every tool,
+connect APP` one app (`claude_desktop`, `claude_code`, `codex`, `dsh`, `lmstudio`, `gemini`, `antigravity`, `cursor`, `cline`, `kimi`), `--full` gives an app every tool,
 `assistant-x disconnect APP` takes it out. A copy of the settings file is kept beside it, the entries of others stay.
 Every entry starts the same light bridge, `<python> -m assistant_x.server.bridge`, which talks to one library service
 on 127.0.0.1: the models are loaded once for all the apps. By hand (any MCP client that starts a program):
@@ -324,8 +377,8 @@ After a new version, `assistant-x update` writes the entries again; the skills o
 service at its first start (a skill edited by hand is kept), and Claude Desktop says once that its uploaded skill is
 outdated.
 
-`--tools reader` gives the 8 reading tools (search, pages, contents, page image, quote check, card, list, the guide);
-without it every tool (the intake, base packages). `--compact` shortens the descriptions and the answers for small local
+`--tools reader` gives the 8 reading tools (search, pages, contents, page image, quote check, card, list, the guide)
+and `export_references`, which writes copies of the references only into a folder the user names; without it every tool (the intake, base packages). `--compact` shortens the descriptions and the answers for small local
 models. The apps and their files: [docs/CLIENTS.md](docs/CLIENTS.md). Clients that speak MCP over HTTP only:
 `assistant-x serve --http [--port 8765]` (every request needs the bearer token of `mcp_http_token.txt` in the PC folder:
 [SECURITY.md](SECURITY.md)).

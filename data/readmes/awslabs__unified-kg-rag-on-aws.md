@@ -11,16 +11,18 @@
 
 An AWS-native knowledge graph RAG (Retrieval-Augmented Generation) framework that turns large, multilingual document corpora into a knowledge graph on Amazon Neptune and Amazon OpenSearch Service and answers questions over it with Amazon Bedrock, using multi-hop graph traversal to reason across document boundaries. It reimplements Microsoft GraphRAG and LightRAG on one shared stack, so you choose the retrieval methodology per query rather than per deployment. Running both methodologies on one stack, triple-hybrid search, incremental indexing, and multilingual processing are deliberate enhancements over the source papers.
 
+What each of them adds over GraphRAG and LightRAG, and where the framework deliberately departs from them: [Beyond the papers](./docs/concepts/overview.md#beyond-the-papers).
+
 Read the [AWS Open Source Blog introduction](https://aws.amazon.com/blogs/opensource/unified-knowledge-graph-rag-on-aws-graphrag-and-lightrag-on-one-stack/) for an overview of the architecture, both retrieval methodologies, and benchmark results.
 
 ## Why this framework
 
 - **Two methodologies on one AWS stack.** GraphRAG (community summaries) and LightRAG (dual-level keywords) share ingestion, indexing, caching and search; only the retrieval algorithm differs, chosen per query. Every answer returns the sources that were actually in the model's context.
 - **Triple-hybrid search.** BM25, vector search and Neptune graph traversal, fused with Reciprocal Rank Fusion and reranked with a Bedrock rerank model.
-- **Incremental indexing.** With the doc-status registry on (`providers.doc_status.enabled`), only new and changed documents are re-indexed and merged into the live graph; deleting a document removes only what no other document states.
-- **Bring your own knowledge graph.** Seed graphs (JSONL, CSV or an RDF A-Box) merge a graph you already have into the extracted one as virtual documents: documents stay canonical, and the seed adds descriptions, properties, IRIs and edges ([User Guide §9 D](./docs/user-guide.md#d-seed-graphs-bring-your-own-knowledge-graph)).
+- **Incremental indexing.** With the doc-status registry on (`providers.doc_status.enabled`), only new and changed documents are re-indexed and merged into the live graph; deleting a document removes only what no other document states ([Incremental indexing](./docs/guides/incremental.md)).
+- **Bring your own knowledge graph.** Seed graphs (JSONL, CSV or an RDF A-Box) merge a graph you already have into the extracted one as virtual documents: documents stay canonical, and the seed adds descriptions, properties, IRIs and edges ([Seed graphs](./docs/guides/seed-graphs.md)).
 - **Multilingual.** Optional translation at indexing and query time, per-language analyzers (for example `nori` for Korean) and multilingual keyword extraction.
-- **Prompt tuning, evaluation and visualization.** `run-prompt-tuning` writes domain-adapted prompts from a corpus sample; `run-eval` adds LLM-free coverage, retrieval and answer-match metrics to LangChain and RAGAS judges; `run-visualization` renders an exported graph.
+- **Prompt tuning, evaluation and visualization.** `run-prompt-tuning` writes domain-adapted prompts from a corpus sample ([Domain adaptation](./docs/guides/domain-adaptation.md)); `run-eval` adds LLM-free coverage, retrieval and answer-match metrics to LangChain and RAGAS judges ([Evaluation](./docs/guides/evaluate.md)); `run-visualization` renders an exported graph ([Visualization](./docs/guides/visualize.md)).
 - **Pluggable.** Storage and model backends sit behind ports, and strategies, renderers, parsers and providers register through registries ([extension guide](./docs/design.md#15-extension-guide)).
 
 ## Architecture
@@ -42,7 +44,7 @@ Every strategy runs through the same hybrid scorer and token budget. Pick one wi
 | `hybrid` | LightRAG | Keyword-driven graph questions, without the extra chunk retrieval |
 | `naive` | LightRAG | A fast chunk-only baseline (BM25 + vector, no graph) and comparison runs |
 
-See the [User Guide §4](./docs/user-guide.md#4-querying-run-rag) for per-strategy behavior and the [Design Doc](./docs/design.md) for the layer map, algorithms, data model and the detailed [ingestion](./docs/design.md#4-ingestion-pipeline), [incremental](./docs/design.md#5-incremental-indexing) and [retrieval](./docs/design.md#6-retrieval-two-methodologies) diagrams.
+See [Retrieval](./docs/concepts/retrieval.md) for per-strategy behavior and the [Design Doc](./docs/design.md) for the layer map, algorithms, data model and the detailed [ingestion](./docs/design.md#4-ingestion-pipeline), [incremental](./docs/design.md#5-incremental-indexing) and [retrieval](./docs/design.md#6-retrieval-two-methodologies) diagrams.
 
 ## Quickstart
 
@@ -50,12 +52,12 @@ See the [User Guide §4](./docs/user-guide.md#4-querying-run-rag) for per-strate
 
 | Path | Graph and vector stores | Models | Start here |
 |---|---|---|---|
-| **Local mode** (development, no AWS) | Embedded SQLite graph and vector stores and registry, no server; or Gremlin Server and OpenSearch in containers ([`docker/compose.local.yaml`](./docker/compose.local.yaml)) | Ollama (or any OpenAI-compatible server), or Amazon Bedrock | Follow [Local mode](./docs/user-guide.md#local-mode-no-aws): pull the two Ollama models, then pass `--backend local` |
-| **Existing AWS resources** | Your Neptune cluster and OpenSearch domain (plus DynamoDB for incremental indexing, and an S3 bucket only to sync the stage cache) | Amazon Bedrock | Copy `config-template.yaml` to `config.yaml` and set the endpoints |
+| **Local mode** (development, no AWS) | Embedded SQLite graph and vector stores and registry, no server; or Gremlin Server and OpenSearch in containers ([`docker/compose.local.yaml`](./docker/compose.local.yaml)) | Ollama (or any OpenAI-compatible server), or Amazon Bedrock | Follow [Getting started locally](./docs/getting-started/local.md): pull the two Ollama models, then pass `--backend local` |
+| **Existing AWS resources** | Your Neptune cluster and OpenSearch domain (plus DynamoDB for incremental indexing, and an S3 bucket only to sync the stage cache) | Amazon Bedrock | Follow [Getting started on AWS](./docs/getting-started/aws.md): copy `config-template.yaml` to `config.yaml` and set the endpoints |
 | **Bundled CDK stack** | Created by [`iac/`](./iac/README.md), with a Fargate data plane and a Step Functions ingestion pipeline | Amazon Bedrock | [Deploy on AWS](#deploy-on-aws-optional), then [`iac/README.md` After deploy](./iac/README.md#after-deploy) |
 
 The AWS paths call Amazon Bedrock, so enable the
-[required models](./docs/user-guide.md#required-models) first. Local mode is
+[required models](./docs/getting-started/aws.md#required-models) first. Local mode is
 for development and evaluation only: the embedded stores serve one host and
 about 100,000 documents per index, the containers have no authentication or TLS, and small
 local models extract weaker graphs.
@@ -73,7 +75,7 @@ uv sync --extra eval --extra viz        # or: pip install -e '.[eval,viz]'
 cp config-template.yaml config.yaml     # then set your Bedrock region and service endpoints
 ```
 
-If OpenSearch uses username/password instead of IAM (`aws.opensearch.use_iam: false`), copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. `uv sync` alone installs ingestion and queries; `run-eval`'s LangChain and RAGAS judges need the `eval` extra and `run-visualization` the `viz` extra. Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`); PDF, TXT, CSV, and JSON work out of the box.
+If OpenSearch uses username/password instead of IAM (`aws.opensearch.use_iam: false`), copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. `uv sync` alone installs ingestion and queries; `run-eval`'s LangChain and RAGAS judges need the `eval` extra and `run-visualization` the `viz` extra. Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`), which downloads a spaCy model (`en_core_web_sm`) from GitHub at the first such file; without network access, install it beforehand (the deployed image does at build time, [iac/README.md](iac/README.md)). PDF, TXT, CSV, and JSON work out of the box.
 
 ### Ingest, query, evaluate
 
@@ -96,7 +98,7 @@ uv run run-visualization --data-path visualization_data.json --output-directory 
 uv run run-prompt-tuning --source-directory ./source --output-path tuned_prompts.yaml --config-path config.yaml
 ```
 
-The [User Guide](./docs/user-guide.md) covers every CLI, the evaluation data format and the evaluators, the [CLI Reference](./docs/cli.md) every flag, and the [Configuration Reference](./docs/configuration.md) every configuration key.
+The [documentation hub](./docs/index.md) has a guide per CLI ([Evaluation](./docs/guides/evaluate.md) covers the evaluation data format and the evaluators), the [CLI Reference](./docs/reference/cli.md) every flag, and the [Configuration Reference](./docs/reference/configuration.md) every configuration key.
 
 ## Deploy on AWS (optional)
 
@@ -108,18 +110,18 @@ The [`iac/`](./iac/README.md) AWS CDK app provisions the whole stack: a VPC with
 
 ## Documentation
 
-| Document | Covers |
+Start at the [documentation hub](./docs/index.md) ([한국어](./docs/index.ko.md)): reading paths by role, a page map and an "I want to" index.
+
+| You are | Start with |
 |---|---|
-| [User Guide](./docs/user-guide.md) ([한국어](./docs/user-guide.ko.md)) | Configuration, CLI flags, incremental indexing, evaluation, library usage, [limitations](./docs/user-guide.md#12-limitations) |
-| [CLI Reference](./docs/cli.md) | Every flag of every CLI: default and description (generated from the parsers) |
-| [Configuration Reference](./docs/configuration.md) | Every configuration key: type, default, description (generated from the code) |
-| [Model Catalog](./docs/models.md) | Supported Bedrock models and per-provider request differences |
-| [Operator Runbook](./docs/operations.md) | Re-ingestion, incremental runs, failed documents, caches, common errors |
-| [Design Doc](./docs/design.md) | Hexagonal architecture, algorithms, data model, extension guide, further reading |
-| [`iac/README.md`](./iac/README.md) | CDK stacks, topology, cost drivers, `-c key=value` options, Guardrail deployment, after-deploy commands |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Development setup, tests, quality gate, branch and commit rules |
-| [CHANGELOG.md](./CHANGELOG.md) | Release notes |
-| [SECURITY.md](./SECURITY.md) | Reporting security issues |
+| **First-time evaluator** (no AWS) | [Getting started locally](./docs/getting-started/local.md), then the [Overview](./docs/concepts/overview.md) |
+| **Builder on AWS** | [Getting started on AWS](./docs/getting-started/aws.md), then [Configuration](./docs/guides/configure.md), [Ingestion](./docs/guides/ingest.md) and [Querying](./docs/guides/query.md), or [`iac/README.md`](./iac/README.md) for the CDK stack |
+| **Operator** | The [Operator Runbook](./docs/operations.md) and [`iac/README.md`](./iac/README.md) |
+| **Evaluator or researcher** | [Evaluation](./docs/guides/evaluate.md), [Defaults and evidence](./docs/concepts/defaults-and-evidence.md) and [Beyond the papers](./docs/concepts/overview.md#beyond-the-papers) |
+| **Extender** | The [Design Doc](./docs/design.md) and its [Extension Guide](./docs/design.md#15-extension-guide) |
+| **Contributor** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+
+Every flag is in the [CLI Reference](./docs/reference/cli.md), every configuration key in the [Configuration Reference](./docs/reference/configuration.md), and the supported models in the [Model Catalog](./docs/reference/models.md). Release notes: [CHANGELOG.md](./CHANGELOG.md); security reports: [SECURITY.md](./SECURITY.md).
 
 ## Security & Disclaimer
 

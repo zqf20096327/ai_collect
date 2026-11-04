@@ -4,6 +4,8 @@
 [![npm downloads](https://img.shields.io/npm/dm/opencode-mem.svg)](https://www.npmjs.com/package/opencode-mem)
 [![license](https://img.shields.io/npm/l/opencode-mem.svg)](https://www.npmjs.com/package/opencode-mem)
 [![GitHub stars](https://img.shields.io/github/stars/tickernelz/opencode-mem.svg)](https://github.com/tickernelz/opencode-mem)
+[![Website](https://img.shields.io/badge/website-opencode--mem.zhafron.my.id-blue)](https://opencode-mem.zhafron.my.id)
+[![Docs](https://img.shields.io/badge/docs-opencode--mem.zhafron.my.id%2Fdocs-blue)](https://opencode-mem.zhafron.my.id/docs/)
 
 ![OpenCode Memory Banner](.github/pics/banner.png)
 
@@ -13,7 +15,16 @@ A persistent memory system for AI coding agents that enables long-term context r
 
 ## Core Features
 
-Local Turso/libSQL database with native vector search, persistent project memories, automatic user profile learning, unified memory-prompt timeline, full-featured web UI, intelligent prompt-based memory extraction, multi-provider AI support (OpenAI, Anthropic), 12+ local embedding models, smart deduplication, and built-in privacy protection.
+- **Local database:** embedded Turso/libSQL with native vector search, stored under `storagePath`. No separate vector database.
+- **Intelligent prompt-based memory extraction (auto-capture):** when a session goes idle, a background AI request turns the technical work into persistent project memories.
+- **Automatic recall:** relevant memories and the user profile are injected into the model's context (`chatMessage`).
+- **User profile learning:** a cross-project summary of your preferences, patterns and workflows.
+- **Memory hygiene:** smart deduplication, optional update-on-capture, and optional dreaming consolidation with recoverable trash.
+- **Multi-provider AI support:** any provider configured in OpenCode (`opencodeProvider` / `opencodeModel`), or a manual API: OpenAI Chat Completions, OpenAI Responses, Anthropic, MiniMax, OrcaRouter, Atlas Cloud, Cheaper Inference, API Route, Runcrate, CloudGPU.
+- **Embeddings:** 12+ local embedding models on CPU (no GPU needed) or any OpenAI-compatible embeddings API.
+- **Full-featured web UI:** unified memory–prompt timeline, user profile, skill library, Markdown vault and health stats, with optional HTTP Basic Auth.
+- **Privacy:** `<private>` tags, credential redaction before capture, and optional encryption at rest.
+- **Portability:** optional Markdown vault backend, and `memory` tool `export` / `import` / `migrate` for moved or copied projects.
 
 ## Memory credential redaction
 
@@ -169,7 +180,7 @@ Enable AES-256-GCM encryption for local Turso shards in `~/.config/opencode/open
 }
 ```
 
-On first start the plugin creates `~/.config/opencode/opencode-mem-db.key` (32-byte hex key, `chmod 600`) and migrates existing plaintext shards. Override with `"databaseEncryptionKey": "env://OPENCODE_MEM_DB_KEY"` or `"file://~/path/to.key"` if you manage the key yourself. Losing the key means the encrypted databases cannot be opened.
+On first start the plugin creates `~/.config/opencode/opencode-mem-db.key` (32-byte hex key, `chmod 600`) and migrates existing plaintext shards. Override with `"databaseEncryptionKey": "env://OPENCODE_MEM_DB_KEY"` or `"file://~/path/to.key"` if you manage the key yourself. Losing the key means the encrypted databases cannot be opened. `databaseEncryptionCipher` selects the cipher: `aes256gcm` (default), `aes128gcm`, `aegis256`, `aegis256x2`, `aegis128l`, `aegis128x2` or `aegis128x4`.
 
 **Windows:** use `%USERPROFILE%\.config\opencode\opencode.json` (for example `C:\Users\<you>\.config\opencode\opencode.json`). This plugin does **not** read `%APPDATA%` or `%LOCALAPPDATA%` for its OpenCode plugin entry — put the file under `.config\opencode` in your user profile, then restart OpenCode. If the plugin does not appear, confirm that path and restart again.
 
@@ -189,10 +200,10 @@ You do **not** need to ask OpenCode to “remember” things for the plugin to w
 
 ### Automatic vs manual memory
 
-| Approach                                               | When it runs                                        | What you do                                                                                |
-| ------------------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Auto-capture** (`autoCaptureEnabled: true`, default) | After conversation turns when the session goes idle | Nothing — extraction is automatic                                                          |
-| **Manual** `memory` tool / commands                    | On demand                                           | `add`, `search`, `list`, `profile`, `forget`, `list-shards`, `migrate`, `export`, `import` |
+| Approach                                               | When it runs                                        | What you do                                                                                        |
+| ------------------------------------------------------ | --------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Auto-capture** (`autoCaptureEnabled: true`, default) | After conversation turns when the session goes idle | Nothing — extraction is automatic                                                                  |
+| **Manual** `memory` tool / commands                    | On demand                                           | `add`, `search`, `list`, `profile`, `forget`, `list-shards`, `migrate`, `export`, `import`, `help` |
 
 Manual search/add/list still work even if auto-capture has no provider configured. Auto-capture and user profile learning need a provider that can return structured/tool-call output.
 
@@ -222,6 +233,29 @@ The web UI's **Stats** tab (at `/stats`) shows memory-system health at a glance:
 
 That phrase in the feature list is **auto-capture**: after a conversation, a background AI request summarizes technical work and saves it as memory. No special prompt from you is required. It uses `opencodeProvider` / `opencodeModel` when set, otherwise the manual `memoryProvider` fallback.
 
+Auto-capture uses bounded textual tool outcomes alongside assistant text. Invocation status is
+not proof that a command, test, or task succeeded: summaries must distinguish plans, attempts,
+failures, observed results and unverified claims. Useful failure/recovery lessons can be
+remembered; routine command failures need not produce memories.
+
+Tool results are privacy-filtered before truncation, limited to 2 KiB per result and 16 KiB
+for the whole tool-evidence block (or less under a small context budget). Up to 32 calls are
+retained, preserving early and recent attempts and explicitly marking omissions. File
+attachments, arbitrary metadata and full logs are not imported. This adds no new evidence
+store; existing deleted-session recovery bounds/expiry remain unchanged. These excerpts
+are partial evidence, not a verifier, and model summaries can still be wrong.
+
+Generated capture summaries are limited to 8 KiB UTF-8, with at most eight 64-byte tags.
+Oversized responses use the existing fallback/retry path rather than silently chopping away
+an outcome caveat; oversized update-on-capture rewrites fall back to adding the bounded draft.
+These limits apply before memory embedding/storage, not to all provider response traffic.
+External providers retain requests and raw responses in their existing session history
+(seven-day default expiry), before capture validation. Tool evidence in requests is bounded,
+but this does not bound raw provider responses; retries retain separate copies and cleanup
+must run.
+This is not a global database-size cap, and deleting rows need not immediately shrink DB/WAL
+files. No historical memories or provider-history settings are changed.
+
 ### User profile
 
 The **User Profile** is a separate, cross-project summary of how you like to work (preferences, habits). It is updated on an interval (`userProfileAnalysisInterval`, default every 10 analyzed prompts), shown in the web UI’s profile view, and readable via `memory({ mode: "profile" })`. You do not populate it by hand for normal use — profile learning fills it when a provider is ready. Output language follows `autoCaptureLanguage` (default `"auto"`, mirroring the language of your prompts), the same setting used for auto-captured memories.
@@ -236,7 +270,7 @@ If you have chatted for a while and still see the message, check that auto-captu
 
 ### Web UI
 
-Open `http://127.0.0.1:4747` to browse the memory–prompt timeline, inspect captures, and manage the user profile. If you bind the server beyond loopback, see [Web UI HTTP Basic Auth](#web-ui-http-basic-auth).
+Open `http://127.0.0.1:4747` to browse the memory–prompt timeline, inspect captures, and manage the user profile. The UI has five views: **Project memories** (`/project-memories`), **User profile** (`/user-profile`), **Skill library** (`/skill-library`), **Markdown vault** (`/markdown-vault`) and **Stats** (`/stats`). Change the port with `webServerPort`, or set `webServerEnabled: false` to run without the web UI. If you bind the server beyond loopback, see [Web UI HTTP Basic Auth](#web-ui-http-basic-auth).
 
 ## Usage Examples
 
@@ -265,6 +299,20 @@ Configure at `~/.config/opencode/opencode-mem.jsonc`:
 **Windows:** `%USERPROFILE%\.config\opencode\opencode-mem.jsonc` (same `.config\opencode` directory as above — not AppData). Default storage resolves to `%USERPROFILE%\.opencode-mem\data` (the `~` form expands to your user home on Windows as well).
 
 The plugin creates a full commented template at this path on first startup. For every setting and comment, see [`opencode-mem.example.jsonc`](opencode-mem.example.jsonc).
+
+Commonly tuned top-level options:
+
+| Option                                                                | Default                         | What it does                                                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `storagePath`                                                         | `"~/.opencode-mem/data"`        | Where the memory databases live.                                                                                                |
+| `webServerEnabled` / `webServerPort` / `webServerHost`                | `true` / `4747` / `"127.0.0.1"` | Web UI server switch, port and bind address.                                                                                    |
+| `autoCaptureEnabled`                                                  | `true`                          | Summarize idle sessions into memories (needs a provider, see [Auto-Capture AI Provider](#auto-capture-ai-provider)).            |
+| `similarityThreshold` / `maxMemories`                                 | `0.6` / `10`                    | Minimum similarity score and maximum number of results for memory search.                                                       |
+| `injectProfile`                                                       | `true`                          | Inject the user profile (preferences, patterns, workflows) into the AI context.                                                 |
+| `deduplicationEnabled` / `deduplicationSimilarityThreshold`           | `true` / `0.9`                  | Detect and remove duplicate memories.                                                                                           |
+| `autoCleanupEnabled` / `autoCleanupRetentionDays`                     | `true` / `30`                   | At most once a day, delete prompts older than, and memories not updated within, the retention window. Pinned memories are kept. |
+| `showAutoCaptureToasts` / `showUserProfileToasts` / `showErrorToasts` | `true`                          | Toasts for auto-capture, profile updates and errors.                                                                            |
+| `autoUpdate`                                                          | `true`                          | Clear OpenCode's cached install when a newer npm release is available.                                                          |
 
 ### Markdown vault backend (`memoryBackend`)
 
@@ -355,9 +403,6 @@ are never touched. Set `dreaming.crossProject: true` (or `memory.defaultScope:
 `dreaming` in `opencode-mem.jsonc` (`enabled` default `false`). The web UI exposes
 **Trash** (restore) and **Dream** (manual run). Soft-deleted rows are hard-purged after
 `dreaming.trashRetentionDays` during normal cleanup.
-
-Deeper related-threshold dreaming (update/supersede/flag, cross-project) lands in the
-follow-up PR for #464.
 
 ### Choosing / configuring embeddings
 
@@ -727,9 +772,13 @@ Build and test locally:
 ```bash
 bun install
 bun run build
-bun run typecheck
-bun run format
+bun test
+bun run check
 ```
+
+`bun run check` runs `format:check`, `lint` and `typecheck`; `bun run format` rewrites formatting.
+
+The [docs](https://opencode-mem.zhafron.my.id/docs/) are generated from this README and the translations under `.github/i18n/`; the [landing page](https://opencode-mem.zhafron.my.id) lives in `github-site/src/`. Every README heading must be mapped to a docs page in `github-site/docs-map.json`, otherwise the site build fails. Build the site locally with `cd github-site && bun install && bun run build`.
 
 This project is actively seeking contributions to become the definitive memory plugin for AI coding agents. Whether you are fixing bugs, adding features, improving documentation, or expanding embedding model support, your contributions are critical. The codebase is well-structured and ready for enhancement. Please open issues with the Issue or Feature request templates, and fill out the pull request template when you submit a PR — we review and merge contributions quickly.
 
@@ -739,8 +788,11 @@ This project is actively seeking contributions to become the definitive memory p
 
 MIT License - see LICENSE file
 
+- **Website**: https://opencode-mem.zhafron.my.id
+- **Docs**: https://opencode-mem.zhafron.my.id/docs/
 - **Repository**: https://github.com/tickernelz/opencode-mem
 - **Issues**: https://github.com/tickernelz/opencode-mem/issues
+- **npm**: https://www.npmjs.com/package/opencode-mem
 - **OpenCode Platform**: https://opencode.ai
 
 Inspired by [opencode-supermemory](https://github.com/supermemoryai/opencode-supermemory)

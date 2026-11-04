@@ -12,6 +12,12 @@ A curated guide to perturbation-response models, analysis methods, benchmarks, a
 
 [Response prediction](#genetic-and-chemical-response-prediction) · [Spatial context and dynamics](#spatial-context-and-cellular-dynamics) · [Target discovery](#target-discovery-and-experimental-design) · [Analysis and applications](#perturbation-analysis-and-related-applications) · [Benchmarks](#benchmarks-and-challenges) · [Datasets](#perturbation-datasets) · [Single-cell foundation models](scFM/README.md)
 
+## Interactive model architecture graph
+
+**[Open the interactive graph →](https://xianglin226.github.io/Benchmarking-Single-Cell-Perturbation/architecture_graph/architecture_network.html)**
+
+Explore 77 perturbation methods by shared architecture, select a method to inspect its neighbors, and filter edges by similarity. Edges reflect curated architecture tags, not measured predictive performance; dashed edges share modules only.
+
 ## Genetic and chemical response prediction
 
 | Model | Year | Publication / status | Features and scope | model structure | Code |

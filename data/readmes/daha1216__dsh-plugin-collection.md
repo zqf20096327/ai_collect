@@ -34,7 +34,7 @@
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-retrace` | 0.4.81 | 消息撤回、编辑重发与重新生成，同步回退修改过的文件，收敛并锁定已弃用同步事件读取路径 | [daha1216/dsh-retrace](https://github.com/daha1216/dsh-retrace) |
+| `dsh-retrace` | 0.4.82 | 消息撤回、编辑重发与重新生成，同步回退修改过的文件；0.4.82 请求级配置隔离、fold 原始端点校验、快照 fail-closed 与存储原子写 | [daha1216/dsh-retrace](https://github.com/daha1216/dsh-retrace) |
 | `@anysearch/anysearch-dsh` | 0.1.8 | 为 Agent 提供网页实时搜索与正文抓取能力 | [anysearch-team/anysearch-dsh](https://github.com/anysearch-team/anysearch-dsh) |
 | `dsh-update-checker` | 0.7.3 | 一键检查已装插件的上游更新，点「一键更新」原生创建对话并预填更新提示词，适配多插件紧凑弹性侧栏 | [daha1216/dsh-update-checker](https://github.com/daha1216/dsh-update-checker) |
 | `@local/skills-manager` | 0.3.4 | 在设置页新增「技能」管理页：双根隔离、无损 frontmatter 读写、列出 / 查看 / 编辑 / 删除技能并切换调用策略 | [daha1216/dsh-skills-manager](https://github.com/daha1216/dsh-skills-manager) |
@@ -46,7 +46,7 @@
 
 | 插件名称 | 版本 | 用途 | 来源 |
 |---|---:|---|---|
-| `dsh-pocket` | 3.0.9 | 手机扫码同步电脑端 DSH，支持移动端操作；具备完整会话与工具代理、安全限流及 Cloudflare Named Tunnel 支持 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
+| `dsh-pocket` | 3.0.10 | 手机扫码同步电脑端 DSH，支持移动端操作；具备完整会话与工具代理、安全限流及 Cloudflare Named Tunnel 支持 | [daha1216/dsh-pocket](https://github.com/daha1216/dsh-pocket) |
 | `dsh-desktop-notify-win` | 0.4.0 | Windows 桌面通知：会话空闲、待审批、提问与出错时弹系统通知，带设置页、实时预览与预设 | [xiaotie3088/dsh-desktop-notify-win](https://github.com/xiaotie3088/dsh-desktop-notify-win) |
 
 ---

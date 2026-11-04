@@ -34,15 +34,20 @@ A curated list of models, text encoders, and tools for the LTX-2 video generatio
     * [Stubelius Remix (Stuubs)](#finetune-stubelius)
     * [EllaPriest45 (model mirror)](#finetune-ellapriest45)
   * [GGUF Quantized Models](#gguf)
+  * [MLX (Apple Silicon)](#mlx)
 * [Text Encoders](#text-encoder)
   * [Comfy-Org Optimized Encoders](#text-encoder)
   * [Gemma-3-12b-it GGUF (stock encoder)](#enc-gemma3-gguf)
+  * [Gemma-3-12b-it QAT (Lightricks)](#enc-gemma3-qat)
   * [Gemma-3-12b Abliterated](#enc-abliterated)
   * [Gemma-3-12b IT Heretic](#enc-heretic)
+  * [Gemma-4-12b (LTX-2.5 Text Encoders)](#enc-gemma4)
 * [Separated Components](#split)
   * [Diffusion Models (Transformer Only)](#split)
   * [VAE (Video & Audio)](#components-vae)
   * [Embedding Connectors & Text Projection](#components-embed)
+  * [LTX-2.5 Diffusers Layout (Lightricks)](#components-diffusers)
+  * [LTX-2.5 Diffusers Layout (Rin247 MECHA Forge quants)](#components-diffusers-quants)
 * [LoRA](#lora)
   * [Enchancer, special](#lora)
   * [Styles](#lora-styles)
@@ -60,6 +65,8 @@ A curated list of models, text encoders, and tools for the LTX-2 video generatio
   * [Lightricks](#wf-lightricks)
   * [vrgamedevgirl84](#wf-vrgamedevgirl84)
   * [TenStrip](#wf-tenstrip)
+  * [CQdesign](#wf)
+  * [Ydudjsb](#wf-ydudjsb)
   * [ComfyUI](#wf-comfyui)
 
 </details>
@@ -120,6 +127,21 @@ The complete set of **LTX-2 / 2.3 / 2.5 weights used by [WanGP](https://github.c
 **Downloads & Resources:**
 - [WanGP (GitHub)](https://github.com/deepbeepmeep/Wan2GP) | [Model pack (HF)](https://huggingface.co/DeepBeepMeep/LTX-2)
 
+### LTX-2 Marking (VideoSeal / PixelSeal / AudioSeal)
+
+The **weights and configs** for the opt-in, post-hoc invisible marking used by [LTX-2](https://github.com/Lightricks/LTX-2): **PixelSeal** (VideoSeal family) for video frames and **AudioSeal** for stereo PCM. MIT licensed, `pytorch` library. This is **not** a generator model - there is nothing to run or train against it, only to download.
+
+| File | Purpose | Size | Download |
+| :--- | :--- | :---: | :---: |
+| `pixelseal.pth` | PixelSeal embedder + extractor weights (256-bit payload, 256 px processing size) | 308.95 MB | [![][gh-Lightricks]](https://huggingface.co/Lightricks/LTX-2-Marking/resolve/main/pixelseal.pth) |
+| `audioseal_generator.pth` | AudioSeal 16-bit generator (embed) | 58.81 MB | [![][gh-Lightricks]](https://huggingface.co/Lightricks/LTX-2-Marking/resolve/main/audioseal_generator.pth) |
+| `audioseal_detector.pth` | AudioSeal 16-bit detector | 34.67 MB | [![][gh-Lightricks]](https://huggingface.co/Lightricks/LTX-2-Marking/resolve/main/audioseal_detector.pth) |
+
+**How it fits together** - the LTX-2 loader (`create_markers`) requires **all five model files** (the three above plus `pixelseal.yaml`, the PixelSeal model card describing the architecture, and `videoseal_attenuation.yaml`, the JND attenuation channel map) in one directory; the code that embeds and detects lives in `packages/ltx-pipelines/src/ltx_pipelines/marking` in the [LTX-2 repo](https://github.com/Lightricks/LTX-2). The `.pth` files are PyTorch pickles - verify the SHA-256 sums printed on the model card after download.
+
+**Enable it** with `--marker-root-path path/to/marking` on the generation, editing and text-to-audio CLIs; omit the flag to leave pixels and PCM unchanged. Video generation and the HDR paths mark video while the text-to-audio path marks only audio, and detection returns `MarkDetectResult(detected, bit_accuracy, p_value, payload)` - video marks are judged on every 8th decoded frame at `log10(p_value) < -6`, audio over the full stereo track.
+
+◦ The marks are a **robust invisible signal**, not a cryptographic signature: a detected mark means the clip came from an LTX-2 pipeline with marking enabled, while the absence of a mark does **not** prove a clip was not generated.
 
 <a id="models"></a>
 
@@ -231,6 +253,7 @@ Image-only **LTX-2.3** checkpoints by [elismasilva](https://huggingface.co/elism
 
 | Ver | Rank | Precision | Size | Download |
 | :--- | :--- | :---: | :---: | :---: |
+| **2.5** | `450` | ![bf16][badge-bf16] | 8.90 GB | [![][gh-Lightricks]](https://huggingface.co/Lightricks/LTX-2.5/resolve/main/loras/ltx-2.5-22b-distilled-lora-450-bf16.safetensors) |
 | **2.5** | `450` | ![int8](https://img.shields.io/badge/int8-17a2b8?style=flat-square) | 5.06 GB | [![][gh-DmitryDB]](https://huggingface.co/DmitryDB/LTX-2.5-ComfyUI-Quants/resolve/main/loras/ltx-2.5-22b-distilled-lora-450-int8.safetensors) |
 | **2.5** | `450` | ![nvfp4][badge-nvfp4] | 2.66 GB | [![][gh-DmitryDB]](https://huggingface.co/DmitryDB/LTX-2.5-ComfyUI-Quants/resolve/main/loras/ltx-2.5-22b-distilled-lora-450-nvfp4.safetensors) |
 | **2.5** | `450` | ![bf16][badge-bf16] | 8.90 GB | [![][gh-rzgar]](https://huggingface.co/rzgar/ltx-2.5-22b-distilled-lora-450-enhanced-n4w/resolve/main/ltx-2.5-22b-distilled-lora-450-rank_450_n4w.safetensors) |
@@ -241,6 +264,9 @@ Image-only **LTX-2.3** checkpoints by [elismasilva](https://huggingface.co/elism
 | **2.5** | `64` | ![bf16][badge-bf16] | 1.32 GB | [![][gh-TheDivergentAI]](https://huggingface.co/TheDivergentAI/ltx25-distill-lora/resolve/main/ltx25_turbo_distill_8step_r64.safetensors) |
 | **2.5** | `128` | ![bf16][badge-bf16] | 2.31 GB | [![][gh-pyros-vault]](https://huggingface.co/pyros-vault/ltx-2.5-distilled-lora-450-reduced/resolve/main/ltx-2.5-22b-distilled-lora-450-bf16_fro90_ceil128.safetensors) |
 | **2.5** | `72` | ![bf16][badge-bf16] | 1.38 GB | [![][gh-pyros-vault]](https://huggingface.co/pyros-vault/ltx-2.5-distilled-lora-450-reduced/resolve/main/ltx-2.5-22b-distilled-lora-450-bf16_fro90_ceil72.safetensors) |
+| **2.5** | `256` | ![bf16][badge-bf16] | 4.01 GB | [![][gh-ibyteohdear]](https://huggingface.co/ibyteohdear/ltx-2.5-distilled-lora-450-reduced-ceil256/resolve/main/ltx-2.5-22b-distilled-lora-450-bf16_fro90_ceil256.safetensors) |
+| **2.5** | `96` | ![bf16][badge-bf16] | 1.80 GB | [![][gh-ibyteohdear]](https://huggingface.co/ibyteohdear/ltx-2.5-distilled-lora-450-reduced-ceil96/resolve/main/ltx-2.5-22b-distilled-lora-450-bf16_fro90_ceil96.safetensors) |
+| **2.5** | `32` | ![bf16][badge-bf16] | 0.66 GB | [![][gh-ibyteohdear]](https://huggingface.co/ibyteohdear/ltx-2.5-distilled-lora-450-reduced-ceil32/resolve/main/ltx-2.5-22b-distilled-lora-450-bf16_fro90_ceil32.safetensors) |
 | | | | | |
 | **2.3** | `384` | ![bf16][badge-bf16] | 7.61 GB | [![](https://img.shields.io/badge/Lightricks_v1-lightgrey?style=flat-square&logo=huggingface&logoColor=white)](https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384.safetensors) ┊ [![](https://img.shields.io/badge/Lightricks_v1.1-lightgrey?style=flat-square&logo=huggingface&logoColor=white)](https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384-1.1.safetensors) |
 | **2.3** | `208` | ![bf16][badge-bf16] | 4.97 GB | [![][gh-drbaph]](https://huggingface.co/drbaph/LTX-2.3-FP8/resolve/main/LoRA/ltx-2.3-22b-distilled-lora-resized_dynamic_rank_208_fro095_bf16.safetensors) |
@@ -252,6 +278,8 @@ Image-only **LTX-2.3** checkpoints by [elismasilva](https://huggingface.co/elism
 | **2** | `242` | ![bf16][badge-bf16] | 4.88 GB | [![][gh-Kijai]](https://huggingface.co/Kijai/LTXV2_comfy/resolve/main/loras/ltx-2-19b-distilled-lora-resized_dynamic_fro095_avg_rank_242_bf16.safetensors) |
 | **2** | `175` | ![bf16][badge-bf16] | 3.58 GB | [![][gh-Kijai]](https://huggingface.co/Kijai/LTXV2_comfy/resolve/main/loras/ltx-2-19b-distilled-lora_resized_dynamic_fro09_avg_rank_175_bf16.safetensors) |
 | **2** | `175` | ![fp8][badge-fp8] | 1.79 GB | [![][gh-Kijai]](https://huggingface.co/Kijai/LTXV2_comfy/resolve/main/loras/ltx-2-19b-distilled-lora_resized_dynamic_fro09_avg_rank_175_fp8.safetensors) |
+
+◦ **Rank-reduced 2.5 builds** - the canonical source is the official `Lightricks/LTX-2.5/loras/ltx-2.5-22b-distilled-lora-450-bf16.safetensors` (8.90 GB, rank 450). The `ibyteohdear` **reduced** variants rerank that file with a factored SVD (`rerank_method: factored_svd`, source `lora_rank: 450`) and then cap the result at 32 / 96 / 256 - the `ceil` suffix is that ceiling and `fro90` the singular-value floor (same scheme as `pyros-vault`).
 
 
 <p id="ckpt-tenstrip-distilled-lora" align="center">· · · · · · · · · · · · · ·</p>
@@ -768,36 +796,4 @@ Surgical finetune based on [jdopensource/JoyAI-Echo](https://huggingface.co/jdop
 
 | Ver | Build | Name | Precision | Size | Download |
 | :--- | :--- | :--- | :---: | :---: | :---: |
-| **2.3** | unsplit (full DiT) | `echoVid-ltxAud surgical` | ![bf16][badge-bf16] | 46.14 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical/resolve/main/ltx23_echoVid-ltxAud_surgical_bf16.safetensors) |
-| **2.3** | unsplit (full DiT) | `echoVid-ltxAud surgical` | ![fp8][badge-fp8] | 25.13 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical/resolve/main/ltx23_echoVid-ltxAud_surgical_fp8.safetensors) |
-| **2.3** | unsplit (full DiT) | `echoVid-ltxAud surgical` | ![int8tensormixed][badge-int8tensormixed] | 29.16 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-int8/resolve/main/ltx23_echoVid-ltxAud_surgical_int8_convrot.safetensors) |
-| **2.3** | transformer-only | `echoVid-ltxAud surgical` | ![int8tensormixed][badge-int8tensormixed] | 27.34 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-int8/resolve/main/ltx23_echoVid-ltxAud_surgical_int8_convrot_transformer_only.safetensors) |
-
-◦ **JoyAI-Echo Surgical — GGUF (low-VRAM quants)**
-
-<details>
-  <summary>joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-gguf</summary>
-
-[`joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-gguf`](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-gguf) — Surgical DiT GGUF quants by joeygambino.
-
-| Ver | Build | Name | Precision | Size | Download |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| **2.3** | GGUF | `echoVid-ltxAud surgical` | ![Q5_0][badge-Q5_0] | 16.69 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-gguf/resolve/main/LTX23-echoVid-ltxAud-Surgical-DiT-Q5_0.gguf) |
-| **2.3** | GGUF | `echoVid-ltxAud surgical` | ![Q8_0][badge-Q8_0] | 24.83 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx23-echoVid-ltxAud-surgical-gguf/resolve/main/LTX23-echoVid-ltxAud-Surgical-DiT-Q8_0.gguf) |
-
-</details>
-
-<p id="finetune-joyai-echo-ltx25" align="center">· · · · · · · · · · · · · ·</p>
-
-#### ❖ JoyAI-Echo (LTX-2.5)
-
-Surgical merge of [jdopensource/JoyAI-Echo](https://huggingface.co/jdopensource/JoyAI-Echo) into the **LTX-2.5** `dev` transformer by joeygambino — JoyAI-Echo's video attention / feed-forward delta transplanted in, with nothing distilled baked on top. Three builds: `dev` (bring-your-own distill LoRA), `comfy-native` (few-step, distill baked at 0.5 — RTX 50), and GGUF (few-step — RTX 30/40). Two doses per build: `070T30` (0.7× delta / 0.3× modulation) and `100T50` (1.0× / 0.5×). Workflows: [ComfyUI-JoyLTX25](https://github.com/jlucasmcrell/ComfyUI-JoyLTX25).
-
-| Ver | Build | Name | Precision | Size | Download |
-| :--- | :--- | :--- | :---: | :---: | :---: |
-| **2.5** | dev | `echoVid 070T30` | ![bf16][badge-bf16] | 42.02 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx25-echoVid-dev/resolve/main/LTX25dev-echoVid-070T30-DiT-bf16.safetensors) |
-| **2.5** | dev | `echoVid 070T30` | ![fp8][badge-fp8] | 21.48 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx25-echoVid-dev/resolve/main/LTX25dev-echoVid-070T30-DiT-comfy-fp8.safetensors) |
-| **2.5** | dev | `echoVid 070T30` | ![int8tensormixed][badge-int8tensormixed] | 21.50 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx25-echoVid-dev/resolve/main/LTX25dev-echoVid-070T30-DiT-comfy-int8.safetensors) |
-| **2.5** | dev | `echoVid 100T50` | ![bf16][badge-bf16] | 42.02 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx25-echoVid-dev/resolve/main/LTX25dev-echoVid-100T50-DiT-bf16.safetensors) |
-| **2.5** | dev | `echoVid 100T50` | ![fp8][badge-fp8] | 21.48 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joeygambino/joyai-echo-ltx25-echoVid-dev/resolve/main/LTX25dev-echoVid-100T50-DiT-comfy-fp8.safetensors) |
-| **2.5** | dev | 
+| **2.3** | unsplit (full DiT) | `echoVid-ltxAud surgical` | ![bf16][badge-bf16] | 46.14 GB | [![joeygambino][gh-joeygambino]](https://huggingface.co/joe

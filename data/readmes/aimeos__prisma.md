@@ -153,7 +153,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Azure**             | -       | -     | -       | -        |        | -       | beta  | -          | beta       |
 | **Deepgram**          | -       | -     | -       | -        |        | -       | yes   | -          | yes        |
 | **ElevenLabs**        | -       | -     | -       | -        |        | yes     | yes   | -          | yes        |
-| **fal**               | beta    | beta  | beta    | -        | beta   | beta    | beta  | beta       | -          |
+| **fal**               | beta    | beta  | beta    | beta     | beta   | beta    | beta  | beta       | beta       |
 | **Google Gemini**     | -       | -     | -       | yes      |        | -       | -     | -          | -          |
 | **Groq**              | -       | -     | -       | yes      |        | -       | yes   | -          | yes        |
 | **Hydracept**         | yes     | -     | -       | -        | yes    | -       | yes   | yes        | -          |
@@ -171,7 +171,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Adobe Firefly**     | beta       | beta   | -        | -      | -     | beta    | beta    | -       | -         | beta     | beta    | beta   | beta   | beta    | -         |
 | **Alibaba**           | -          |        | -        | -      | -     | yes     | -       | -       | -         | -        | -       |        | -      | -       | yes       |
 | **Azure**             | -          |        | -        | -      | -     | -       | -       | -       | beta      | -        | -       |        | -      | -       | -         |
-| **Bedrock Titan**     | -          |        | -        | -      | -     | yes     | yes     | yes     | -         | -        | -       |        | -      | -       | yes       |
+| **Bedrock**           | -          |        | -        | -      | -     | yes     | yes     | yes     | -         | -        | -       |        | -      | -       | yes       |
 | **Black Forest Labs** | -          | -      | -        | -      | -     | beta    | beta    | -       | -         | -        | beta    | beta   | beta   | -       | -         |
 | **Clipdrop**          | yes        |        | -        | yes    | yes   | yes     | -       | yes     | -         | -        | -       |        | yes    | yes     | -         |
 | **Cohere**            | -          |        | -        | -      | -     | -       | -       | -       | -         | -        | -       |        | -      | -       | yes       |
@@ -204,7 +204,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Bedrock**           | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | yes             |
 | **Cohere**            | -     |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | -               |
 | **Deepseek**          | yes   |        | yes        |           | -         | yes   | -         | yes          |                | yes           | yes             |
-| **fal**               | beta  |        | beta       |           | beta      | beta  | -         | yes          |                | yes           | yes             |
+| **fal**               | beta  |        | beta       | beta      | beta      | beta  | -         | yes          |                | yes           | yes             |
 | **DeepL**             |       |        |            | yes       |           |       |           |              |                |               |                 |
 | **Google Gemini**     | yes   |        | yes        |           | yes       | yes   | yes       | yes          | yes            | yes           | yes             |
 | **Google**            |       |        |            | yes       |           |       |           |              |                |               |                 |
@@ -215,7 +215,7 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 | **Ollama**            | beta  |        | beta       |           | beta      | beta  | -         | yes          |                | yes           | yes             |
 | **OpenAI**            | yes   |        | yes        |           | yes       | yes   | yes       | yes          | yes            | yes           | yes             |
 | **Openrouter**        | yes   |        | yes        |           | -         | yes   | -         | yes          | yes            | yes           | yes             |
-| **Perplexity**        | beta  |        | beta       |           | -         | beta  | yes       | yes          |                | yes           | yes             |
+| **Perplexity**        | beta  |        | beta       |           | -         | beta  | beta      | beta         | beta           | beta          | beta            |
 | **Requesty**          | yes   |        | yes        |           | yes       | yes   | -         | yes          |                | yes           | yes             |
 | **TypeSafe**          |       | beta   |            |           |           |       |           |              |                |               |                 |
 | **Vertexai**          | beta  |        | beta       |           | beta      | beta  | yes       | yes          | yes            | yes           | yes             |
@@ -230,9 +230,9 @@ must accept the mapped token budget or effort level; see [withThinkingBudget](#w
 |                       | cancel | describe | extend | imagine | repaint | resume | uncrop | upscale |
 | :---                  | :---:  | :---:    | :---:  | :---:   | :---:   | :---:  | :---:  | :---:   |
 | **Alibaba**           | beta   | yes      | beta   | beta    | beta    | beta   | beta   | -       |
-| **Bedrock Nova**      | -      | beta     | -      | beta    | -       | beta   | -      | -       |
+| **Bedrock**           | -      | beta     | -      | beta    | -       | beta   | -      | -       |
 | **BytePlus**          | beta   | beta     | beta   | beta    | beta    | beta   | -      | -       |
-| **fal**               | beta   | -        | beta   | beta    | beta    | beta   | beta   | beta    |
+| **fal**               | beta   | beta     | beta   | beta    | beta    | beta   | beta   | beta    |
 | **Google Gemini**     |        | yes      | -      | -       | -       |        | -      | -       |
 | **Google Omni**       |        | -        | -      | beta    | beta    |        | -      | -       |
 | **Google Veo**        | -      | -        | -      | beta    | -       | beta   | -      | -       |
@@ -692,7 +692,7 @@ foreach( $citations as $citation ) {
 
 The `text` field contains the snippet from the model's **output** that cites the source
 (populated by OpenAI, xAI, Google Gemini). The `source` field contains a verbatim quote from the
-**input/source document** (populated by Anthropic). For Perplexity, only `url` is available.
+**input/source document** (populated by Anthropic). For Perplexity, only `title` and `url` are available.
 
 Anthropic requires opting in via options:
 
@@ -997,7 +997,7 @@ $response = Prisma::text()
 
 | Tool name | Providers |
 | :--- | :--- |
-| `web_search` | Anthropic, OpenAI, Google Gemini, Vertexai, Meta, Mistral, xAI, OpenRouter, Alibaba, Z.AI |
+| `web_search` | Anthropic, OpenAI, Google Gemini, Vertexai, Meta, Mistral, xAI, OpenRouter, Perplexity, Alibaba, Z.AI |
 | `web_search_premium` | Mistral |
 | `code_execution` | Anthropic, OpenAI, Google Gemini, Vertexai, Mistral, xAI |
 | `web_fetch` | Anthropic, Google Gemini, Vertexai |
@@ -1005,9 +1005,11 @@ $response = Prisma::text()
 | `image_generation` | Mistral |
 | `document_library` | Mistral |
 
-Provider tool names not supported by the chosen provider are silently ignored. Providers without any provider tool support (e.g. Bedrock, Cohere, Deepseek, Perplexity) ignore all provider tools.
+Provider tool names not supported by the chosen provider are silently ignored. Providers without any provider tool support (e.g. Bedrock, Cohere, Deepseek) ignore all provider tools.
 
 OpenAI omits `web_search` for `structure()` in both native and JSON modes.
+
+Perplexity uses the `fast` effort level by default, which already searches the web. Pass `Tools::provider( 'web_search' )->with( [...] )` only to configure the search (`filters`, `max_results`, `search_type`, `user_location`) or pick another level with the `effort` option.
 
 Custom and provider tools can be mixed in a single `withTools()` call:
 
@@ -1269,12 +1271,19 @@ public function describe( Audio $audio, ?string $lang = null, array $options = [
 
 **Supported options:**
 
+* [fal](https://fal.ai/models/openrouter/router/audio/api) (any OpenRouter audio model via the `model` option)
 * Google Gemini
 * Groq
 * Meta
 * Mistral
 * OpenAI
 * Openrouter
+
+Google Gemini uploads audio files larger than 14 MiB to its Files API first (deleted by Gemini
+after 48 hours) and returns the description when Gemini has processed the audio. The provider
+object uploads each file object only once, so keep it to describe the same audio several times.
+Waiting for the processing stops after the `poll_timeout` of the provider configuration (900 seconds
+by default, `0` disables the deadline).
 
 ### resume
 
@@ -1290,7 +1299,7 @@ public function resume( string $jobId ) : FileResponse|TextResponse
 **Supported providers:**
 
 * AudioPod: Only for `demix()`, `denoise()`, `revoice()`, `speak()` and `transcribe()`; the job ID is the status path
-* fal: The job ID is the response URL of the `queue.fal.run` HTTPS host or the configured API host
+* fal: Not for `describe()` and `transcribe()`, which return text; the job ID is the response URL of the `queue.fal.run` HTTPS host or the configured API host
 * Hydracept: Only for `compose()`, `speak()` and `synthesize()`; the job ID is the Hydracept job ID
 
 **Example:**
@@ -1419,6 +1428,7 @@ public function transcribe( Audio $audio, ?string $lang = null, array $options =
 * [Azure](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/fast-transcription-create)
 * Deepgram
 * [ElevenLabs](https://elevenlabs.io/docs/api-reference/speech-to-text/convert)
+* [fal](https://fal.ai/models/fal-ai/elevenlabs/speech-to-text/scribe-v2/api) (any fal endpoint via `model()`)
 * Groq
 * [Meta Muse Voice Transcribe](https://dev.meta.ai/docs/api-reference/voice/transcribe)
 * [Mistral](https://docs.mistral.ai/api/endpoint/audio/transcriptions)
@@ -1554,7 +1564,7 @@ public function describe( Image $image, ?string $lang = null, array $options = [
 
 **Supported options:**
 
-* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via `model()`)
+* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via the `model` option)
 * Google Gemini
 * Groq
 * [Ideogram V4](https://developer.ideogram.ai/api-reference/describe-prompts/describe-v4)
@@ -1667,7 +1677,7 @@ public function imagine( string $prompt, array $images = [], array $options = []
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/firefly_image_v5_generate_async_v4) ([Image3/4](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/generateImagesV3Async))
 * [Alibaba Qwen/Wan/Z-Image](https://www.alibabacloud.com/help/en/model-studio/qwen-image-api)
-* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-diffusion-3-5-large.html)
 * [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-or-edit-an-image-with-flux2-[pro])
 * Clipdrop
 * [fal FLUX.2](https://fal.ai/models/fal-ai/flux-2/api) ([Editing](https://fal.ai/models/fal-ai/flux-2/edit/api), any fal endpoint via `model()`)
@@ -1694,7 +1704,11 @@ fal hosts hundreds of models, so each method uses a default endpoint and `model(
 any other compatible fal endpoint. Prisma maps the prompt and images only and passes all
 options to the endpoint unchanged, so use the input fields documented on the model page.
 fal returns images on its `fal.media` CDN; pass `download_hosts` in the configuration if
-your requests are routed differently:
+your requests are routed differently. Files without URL larger than 5 MiB are uploaded to the
+fal storage first instead of being sent as data URI. The provider object uploads each file object
+only once, so keep it to process the same large file several times. Behind an API gateway, `url` replaces the
+queue host (`https://queue.fal.run`), `rest_url` the storage host (`https://rest.fal.ai`) and
+`run_url` the host of the text models (`https://fal.run`):
 
 ```php
 Prisma::image()
@@ -1703,9 +1717,15 @@ Prisma::image()
     ->imagine( 'A watercolor lighthouse at dusk', [], ['aspect_ratio' => '16:9'] );
 ```
 
-The fal `describe()` and `recognize()` methods call the OpenRouter vision endpoint of fal
-synchronously, so `model()` selects the LLM (default: `google/gemini-3.8-flash`) and the
-response can't be resumed.
+The fal `describe()` and `recognize()` methods queue a request at the OpenRouter vision endpoint
+of fal and poll its result, but the text response can't be resumed. As `model()` selects the fal endpoint, the
+`model` option selects the LLM (default: `google/gemini-3.8-flash`):
+
+```php
+Prisma::image()
+    ->using( 'fal', ['api_key' => 'xxx'] )
+    ->describe( Image::fromUrl( 'https://example.com/image.png' ), 'en', ['model' => 'anthropic/claude-sonnet-5'] );
+```
 
 Hydracept jobs belong to the `project_id` passed in the configuration and are polled for up to
 900 seconds by default; set `poll_timeout` to another number of seconds or `0` to disable the
@@ -1718,6 +1738,8 @@ Prisma::image()->using( 'hydracept', [
     'poll_timeout' => 300,
 ] );
 ```
+
+*Note: Bedrock uses Stable Diffusion 3.5 Large in `us-west-2` by default, the only region offering Stability text to image models. A `url` in the configuration replaces it, also for the other Bedrock image methods, which use `us-east-1` otherwise.*
 
 *Note: The Hydracept `billingMode`, `credentialSource`, `executionPreference` and `maximumCharge` options control billing and execution of a job, so don't pass end-user input to them unfiltered.*
 
@@ -1806,7 +1828,7 @@ to edit.
 **Supported options:**
 
 * [Adobe Firefly](https://developer.adobe.com/firefly-services/docs/firefly-api/api/#operation/fillImagesV3Async)
-* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/stable-image-services.html#stable-image-services-8)
 * [Black Forest Labs](https://docs.bfl.ai/api-reference/models/generate-an-image-with-flux1-fill-[pro]-using-an-input-image-and-mask)
 * [fal](https://fal.ai/models/fal-ai/flux-pro/v1/fill/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/api-reference/edit-v3#request)
@@ -1847,7 +1869,7 @@ public function isolate( Image $image, array $options = [] ) : FileResponse
 
 **Supported options:**
 
-* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-image.html)
+* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/stable-image-services.html)
 * [Clipdrop](https://clipdrop.co/apis/docs/remove-background)
 * [fal](https://fal.ai/models/fal-ai/birefnet/v2/api) (any fal endpoint via `model()`)
 * [Ideogram](https://developer.ideogram.ai/api-reference/tools/remove-background#request)
@@ -1886,7 +1908,7 @@ public function recognize( Image $image, array $options = [] ) : TextResponse;
 **Supported options:**
 
 * [Azure](https://learn.microsoft.com/en-us/rest/api/computervision/image-analysis/analyze-image)
-* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via `model()`)
+* [fal](https://fal.ai/models/openrouter/router/vision/api) (any OpenRouter vision model via the `model` option)
 * [Mistral](https://docs.mistral.ai/api/endpoint/ocr#operation-ocr_v1_ocr_post)
 * Openrouter
 
@@ -2247,7 +2269,7 @@ Iterating `$response->stream()` yields:
 * [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
 * [OpenAI](https://platform.openai.com/docs/api-reference/responses-streaming)
 * [Openrouter](https://openrouter.ai/docs/api-reference/streaming)
-* [Perplexity](https://docs.perplexity.ai/api-reference/chat-completions)
+* [Perplexity](https://docs.perplexity.ai/docs/agent-api/output-control)
 * [Requesty](https://docs.requesty.ai/features/streaming)
 * [xAI](https://docs.x.ai/api/endpoints#chat-completions)
 * Vertexai
@@ -2362,47 +2384,4 @@ public function structure( string $prompt, Schema $schema, array $files = [], ar
 
 * [Alibaba](https://www.alibabacloud.com/help/en/model-studio/developer-reference/api-details)
 * [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/structured-output)
-* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest#create-chat-completion)
-* [Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html)
-* [Cohere](https://docs.cohere.com/reference/chat)
-* [Deepseek](https://api-docs.deepseek.com/api/create-chat-completion)
-* [fal](https://fal.ai/models/openrouter/router/openai/v1/chat/completions/api)
-* [Google Gemini](https://ai.google.dev/gemini-api/docs/structured-output)
-* [Groq](https://console.groq.com/docs/api-reference#chat-create)
-* [Kimi](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart#structured-output)
-* [Meta](https://dev.meta.ai/docs/structured-output)
-* [Mistral](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
-* [Ollama](https://github.com/ollama/ollama/blob/main/docs/openai.md)
-* [OpenAI](https://platform.openai.com/docs/api-reference/chat/create)
-* [Openrouter](https://openrouter.ai/docs/api-reference/chat-completions)
-* [Perplexity](https://docs.perplexity.ai/api-reference/chat-completions)
-* [Requesty](https://docs.requesty.ai/features/structured-outputs)
-* Vertexai
-* [xAI](https://docs.x.ai/api/endpoints#chat-completions)
-
-**Example:**
-
-```php
-use Aimeos\Prisma\Prisma;
-use Aimeos\Prisma\Schema\Schema;
-
-$schema = Schema::for( 'person', [
-    'name' => Schema::string(),
-    'age' => Schema::integer(),
-] );
-
-$textResponse = Prisma::text()
-    ->using( 'openai', ['api_key' => 'xxx'] )
-    ->ensure( 'structure' )
-    ->structure( 'Extract the person from: John is 30 years old', $schema );
-
-$data = $textResponse->structured(); // ['name' => 'John', 'age' => 30]
-$json = $textResponse->text(); // '{"name":"John","age":30}'
-```
-
-**Output mode:**
-
-Providers with mode selection default to sending the schema through their native
-structured-output API. Pass `['mode' => 'json']` to embed the schema in the prompt
-and parse the JSON response instead; `['mode' => 'structured']` selects native
-mode explicitly. Other values throw `BadRequestException` on th
+* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest

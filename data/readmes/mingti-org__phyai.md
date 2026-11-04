@@ -35,7 +35,7 @@ https://github.com/user-attachments/assets/bcfe5c0f-1984-4410-a6a9-be20c7895e6f
 - [2026/10] Support [MolmoAct2](https://phyai.mintlify.app/models/molmoact2/inference).
 - [2026/10] Support [PhyAI gateway](https://phyai.mintlify.app/deployment/server-gateway) for multi-host serving and LeRobot clients.
 - [2026/09] 🚀 Support Qwen-Image 2.1! [doc](https://phyai.mintlify.app/models/qwen-image/generation).
-- [2026/09] 🤗 Support PI0.5 RL rollout for PPO. RLinf integration is in progress via [RLinf PR #1587](https://github.com/RLinf/RLinf/pull/1587).
+- [2026/09] 🤗 Support PI0.5 RL rollout for PPO ([RLinf PR #1587](https://github.com/RLinf/RLinf/pull/1587)).
 - [2026/07] 🚀 Day 0 support for MiniCPM-Robotic [blog](https://mingti-org.github.io/phyai-blog/blogs/260719-day-0-minicpm-robotic/).
 - [2026/07] 👏 Introducing PhyAI, a latency-first serving engine for Physical AI. [Read the Blog](https://mingti-org.github.io/phyai-blog/blogs/260718-phyai/).
 - [2026/07] Support [PI0](https://phyai.mintlify.app/models/pi0/ws1).
@@ -182,18 +182,21 @@ We thank the contributors below and welcome more developers to join us in buildi
 
 ## Sponsors & Adoption
 
-PhyAI is a latency-first, open-source serving engine for Physical AI. It is being adopted by companies working across AI infrastructure and robotics, including Mingti and ModelBest.
+PhyAI is a latency-first, open-source serving engine for Physical AI. It is being adopted by companies working across AI infrastructure and robotics, including Mingti, ModelBest and RLInf.
 
 We are actively seeking partnerships with compute providers, chip vendors, and robotics companies. If you are interested in working with us, please [contact us](#contact).
 
 <table align="center" width="80%">
   <tbody>
     <tr>
-      <td align="center" width="50%">
+      <td align="center" width="30%">
         <img src="assets/mingti-new.png" alt="Mingti" width="240">
       </td>
-      <td align="center" width="50%">
+      <td align="center" width="30%">
         <img src="assets/modelbest.svg" alt="ModelBest" width="240">
+      </td>
+      <td align="center" width="30%">
+        <img src="assets/logo_white.svg" alt="RLInf" width="240">
       </td>
     </tr>
   </tbody>

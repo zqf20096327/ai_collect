@@ -1,7 +1,7 @@
 # RISE Humanities Data Benchmark
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16941752.svg)](https://doi.org/10.5281/zenodo.16941752)
-[![Dataset DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23821532.svg)](https://doi.org/10.5281/zenodo.23821532)
+[![Project DOI](https://img.shields.io/badge/project_DOI-10.5281%2Fzenodo.16941752-blue)](https://doi.org/10.5281/zenodo.16941752)
+[![Dataset DOI](https://img.shields.io/badge/dataset_DOI-10.5281%2Fzenodo.23821532-teal)](https://doi.org/10.5281/zenodo.23821532)
 
 This repository contains benchmark datasets (images and text files), prompts, ground truths, and evaluation
 scripts for assessing the performance of large language models (LLMs) on humanities-related tasks. The suite is
@@ -206,13 +206,16 @@ python scripts/generate_test_report.py results/YYYY-MM-DD/T0001
 ```
 
 The report is written to `reports/<test_id>_report.html` by default; use `-o` to choose another path, `--include-raw`
-to embed the raw API responses, `--no-images` to omit the input images, and `--open` to open the result in a browser.
+to embed the raw API responses, and `--open` to open the result in a browser.
 
 To render all test runs of a given day into one overview report:
 
 ```
 python scripts/generate_date_report.py --date YYYY-MM-DD
 ```
+
+Each test ID in the overview links to that run's test report, written to `reports/<date>/<test_id>_report.html`;
+`--no-test-reports` skips them.
 
 </details>
 
@@ -412,7 +415,7 @@ This benchmark suite currently tests models from the following providers:
 The RISE Humanities Data Benchmark is designed to be modular and extensible. Each test applies a model configuration to a benchmark dataset, scores the responses against the ground truths, and stores the results.
 The framework, datasets, and recorded results are included in this repository.
 
-<img width="2279" height="1206" alt="how-it-works" src="https://github.com/user-attachments/assets/ae3197f1-2ea8-4d5f-bb47-94f0cb0e3a69" />
+<img width="880" alt="How it works: benchmarks define sources, prompts, schema, ground truth and scorer; tests configure provider, model and prompt; the runner asks the model, scores each answer and stores it under results; stored results feed the website, the dataset and date reports; a new major benchmark version re-scores the stored answers." src="docs/how-it-works.svg" />
 
 ### Ground truths
 

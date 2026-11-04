@@ -69,6 +69,39 @@ It is not just a chat UI. The repository is organized around a runtime that can:
 7. Logs, traces, metrics, and session state are written through the observability layer.
 8. The final response is sent back through the originating channel.
 
+### Worker tool
+
+The main agent and the built-in Coder can delegate an engineering task with `worker`,
+for example `{"type":"codex","instruction":"Review the changes and run the relevant tests"}`.
+The first `run` starts a local Codex app-server. Workers in the same ZeRo runtime share its stdio
+connection and can run concurrently on separate Codex threads. Each thread supports one active
+Worker. Each run has its own session and channel context and accepts `workingDirectory` (defaulting
+to the project root), `model`, and `additionalDirectories`. Workers unsubscribe when finished.
+ZeRo closes the process on shutdown. If it exits unexpectedly, check the affected threads and
+workspaces before retrying. The next call starts a new server. The `dsh` type is reserved.
+
+To adjust an active run, call the same tool with
+`{"type":"codex","action":"steer","targetToolUseId":"<original tool_use_id>","instruction":"Focus on the failing test first."}`.
+Use the original Worker call ID from the same ZeRo session. The background task notice includes it as
+`tool_use_id`. In Session Detail, you can also expand the running Worker and send an adjustment
+through its **Worker instruction** field.
+Acceptance means Codex received the instruction for its current turn. A finished run can be continued
+by passing its thread ID as `resumeThreadId`.
+
+ZeRo records the tokens Codex reports for each Worker turn in the calling session's usage ledger
+under `codex_worker`. A `steer` belongs to the active turn. Resuming a thread adds only the new
+turn's tokens. Session totals use uncached input plus output. Cache reads, cache writes, and the
+reasoning portion of output are tracked separately. If ZeRo can verify only part of a turn's
+reported usage, it records that amount as `partial`. If it can verify none, the turn is marked
+`unreported`. Worker usage is token-only. The ledger marks the cost as `token_only` and stores
+zero in the amount field.
+
+Use the Codex login or provider configuration of the user running ZeRo. For an
+environment-supplied API key, set `env_key` on a custom Codex provider. Setting
+`CODEX_API_KEY` alone does not authenticate the built-in provider in app-server mode.
+The worker uses `workspace-write` and an approval policy of `never`. Custom roles
+that delegate coding tasks should include `worker` in their tool list.
+
 ## Runtime State
 
 ZeRo OS keeps local operational state under `.zero/`. This directory is runtime data, not
@@ -216,6 +249,8 @@ The operator UI is a React app hosted by the Bun server. It covers:
 - tool registry visibility
 - logs and metrics
 - config and provider status
+- an event inbox for GitHub webhooks or polling, independently signed CI failures, and selected WeChat conversations through the local WXARC long-poll stream. [Webhook setup](docs/trigger-webhooks.md)
+- a Router workspace for per-task conversations, interactive A2UI cards, GitHub build investigation and notification history. Separate mandates on the same source can archive to a Feishu document and route reminders by schedule, presence and audience. [Router guide](docs/proactive-triggers.md)
 - realtime updates over WebSocket
 
 The front end uses Vite, React 19, TanStack Router, TanStack Query, Zustand, Hono, and

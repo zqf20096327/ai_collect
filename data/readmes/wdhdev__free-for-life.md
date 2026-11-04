@@ -78,7 +78,7 @@ A huge list of great stuff you can get for free!
 | [JSONing](https://jsoning.com/api) | Create a mock API from a JSON file for testing and prototyping. |
 | [Live Tennis API](https://livetennisapi.com) | Live tennis scores, fixtures, and player data (including each player's current ranking) covering ATP, WTA, Challenger, and ITF. Free tier includes 30 requests/minute and 100 requests/day. |
 | [localscreenshot](https://localscreenshot.com) | Screenshot and PDF rendering API for any public page, from 227 countries. Free plan with 50 credits every month, no card required. |
-| [logoapi.sh](https://logoapi.sh) | Company logo API: SVG logo by domain, with white, black, grey and dark variants. Free for 1M requests a month per site, no key or signup. |
+| [logoapi.sh](https://logoapi.sh) | Company logo API: SVG logo by domain, with white, black, grey and dark variants. Free for 2M requests a month per site, no key or signup. |
 | [Mockae](https://mockae.com) | Fake REST API powered by Lua. |
 | [Noms](https://noms.sh) | Nutrition data API for 3.7M foods and 298K brands across 230 countries, with barcode lookup and up to 177 nutrients per food. Free tier: 250 requests/day, no credit card. |
 | [OntarioNet CN Test](https://cntest.ontarionet.ca) | Check if a website is blocked in China by the Great Firewall. It identifies DNS pollution by comparing DNS results and ASN information detected by servers in China versus servers in the United States. |
@@ -116,6 +116,7 @@ A huge list of great stuff you can get for free!
 | [Perplexity.ai](https://perplexity.ai) | OpenAI GPT-model powered AI chatbot that's connected to the web. Find articles or ask for current info. |
 | [Phind](https://phind.com) | AI chatbot built for developers in a chat-like form. |
 | [Poe](https://poe.com) | Poe is chat-based AI. Uses GPT-3.5. |
+| [Yap Voice Typing](https://yapapp.cc/voice-typing-extension) | Free Chrome and Firefox extension for voice typing in any text box. OpenAI's Whisper runs inside the browser, so audio never leaves your computer. No account needed, 99 languages. |
 | [YYLO](https://yylo.dev) | YYLO is an open-source command-line orchestrator for AI coding agents, repeatable workflows and receipt-backed repository changes. It works with agents such as Claude Code, Codex and Pi, running task boards, worktrees and typed merge flows in your Git repositories. Free and open source under the MIT license. |
 
 <!-- BaaS.md -->
@@ -180,9 +181,11 @@ A huge list of great stuff you can get for free!
 | [Cursor](https://cursor.com) | Cursor is a specialized AI-powered code editor, built as a fork of Visual Studio Code. |
 | [Eclipse](https://www.eclipse.org) | A popular open-source IDE that supports multiple programming languages, with a strong focus on Java development. It offers a wide range of plugins and extensions for various development tasks. |
 | [GitHub Codespaces](https://github.com/features/codespaces) | Spin up fully configured dev environments in the cloud that start in seconds with up to 60 hours a month free. |
+| [Glim](https://github.com/NeoPanic/Glim) | Free, MIT-licensed macOS file viewer with basic UTF-8 code/text editing, automatic saving and Markdown previews. |
 | [GNU Emacs](https://www.gnu.org/software/emacs) | An extensible, customizable, free/libre text editor - and more. |
 | [Google Antigravity](https://antigravity.google) | An AI-powered, agentic development environment (ADE) designed for autonomous software creation. |
 | [Helix](https://helix-editor.com) | A post-modern terminal-based text editor. |
+| [Koddo Python Playground](https://koddo.ru/playground/python) | Free browser-based Python editor and runner with a Russian interface, no registration required. Optional AI features are paid. |
 | [Komodo Edit](https://www.activestate.com/products/komodo-edit) | A simple yet powerful code editor, for Windows, macOS and Linux. |
 | [Nano](https://www.nano-editor.org) | A terminal-based text editor. |
 | [Neovim](https://neovim.io) | Modern, open-source fork of the Vim text editor, designed to maximize extensibility, usability, and performance. |
@@ -223,6 +226,7 @@ A huge list of great stuff you can get for free!
 | [PY4E - Python for Everybody](https://www.py4e.com) | This web site is building a set of free materials, lectures, book and assignments to help students learn how to program in Python. |
 | [The Odin Project](https://www.theodinproject.com) | The Odin Project provides a free open source coding curriculum that can be taken entirely online. |
 | [W3Schools](https://www.w3schools.com) | Offers free tutorials on web development technologies like HTML, CSS, JavaScript, and more. |
+| [WebCheatSheet](https://webcheatsheet.com) | Free web-development tutorials and references covering HTML, CSS, JavaScript, PHP and SQL. |
 
 <!-- DNS.md -->
 ## DNS
@@ -284,11 +288,14 @@ A huge list of great stuff you can get for free!
 | [ArtboardLab](https://artboardlab.com) | Free browser-based design tools including an Adobe Illustrator `.ai` viewer and `.ai` to SVG, PNG and PDF converters, plus image compression and format conversion. Files are processed in the browser and never uploaded, and no account is needed. |
 | [BatchSet](https://batchset.com) | Bulk image converter that runs in the browser, so files are never uploaded. Converts JPG, PNG, WebP, AVIF, GIF, HEIC and TIFF to WebP, JPG or PNG, compresses to a target size in KB, resizes, crops and strips EXIF. No account for the first 1,000 conversions, unlimited with a free account. |
 | [BeginThings](https://beginthings.com) | 96+ free browser-based tools for developers and freelancers — JSON formatter, Base64 encoder, image compressor, QR code generator, regex tester, and more. No login required. |
-| [Calculora](https://calculora.net) | 259+ free calculator tools, no signup required. |
+| [Calculora](https://calculora.net) | 405 free calculators and unit converters, no signup required. |
 | [Canva](https://canva.com) | Free online design tool to create visual content. |
 | [CodeMyUI](https://codemyui.com) | Handpicked collection of Web Design & UI Inspiration with Code Snippets. |
+| [Color by Tej SolPro](https://tejsolpro.github.io/color?utm_source=free-for-life&utm_medium=directory&utm_campaign=early_distribution) | Free, open-source (MPL-2.0) tool that turns one brand color into accessible semantic UI color tokens, checks each intended pair against WCAG 2.2, and exports CSS or JSON. Runs in the browser, no account needed. |
 | [Color Hunt](https://colorhunt.co) | Discover the newest hand-picked color palettes of Color Hunt. Get color inspiration for your design and art projects. |
 | [ColorKit](https://colorkit.co) | Create color palettes online or get inspiration from top palettes. |
+| [Colour Blindness Simulator](https://alltoolsverse.com/tools/color-blindness-simulator) | Simulate how a selected color appears across eight color vision deficiencies, with adjustable severity and downloadable results. |
+| [CoverNice KDP Cover Calculator](https://covernice.com/kdp-cover-calculator) | Free KDP cover calculator and full-wrap builder: enter trim size, page count and paper stock to get spine width, full wrap size and 300 dpi pixel dimensions, then export a print-ready PDF template with bleed, safe area and barcode guides. Runs in the browser, no account needed. |
 | [CSS Gradient Generator](https://www.css-gradient.com) | Free tool to easily generate custom cross-browser CSS gradients. In RGB and HEX format. |
 | [Design Details](https://designdetails.io) | A free curated library of live websites with great motion, sorted by sections like hero, navigation and footer, and filterable by type and color. |
 | [Dribbble](https://dribbble.com) | A designer community for showcasing work and gaining inspiration. |
@@ -444,6 +451,7 @@ A huge list of great stuff you can get for free!
 | [Hyperforms.app](https://hyperforms.app) | Create form to email and more in seconds and without backend code. The Personal account gives you up to 50 form submissions per month for free. |
 | [Jotform](https://jotform.com) | An easy, but feature-rich website to create forms. |
 | [Kwes.io](https://kwes.io) | Feature-rich form endpoint. Works great with static sites. Free plan includes up 1 website with up to 50 submissions per month. |
+| [Nisuform](https://nisuform.com) | Form backend for static sites and site builders. Free plan includes 3 forms, 100 submissions per month, email notifications, spam protection, full submission history and CSV export. |
 | [Pageclip](https://pageclip.co) | Free plan allows one site, anti-spam, auto-response, but allows unlimited envelopes + signatures. |
 | [Qualtrics Survey](https://qualtrics.com/free-account) | Create professional forms & survey using this first-class tool. 50+ expert-designed survey templates. Free Account has a limit of 1 active survey, 1 form, 10 elements per survey. |
 | [SimplePDF.eu](https://simplepdf.eu/embed) | Embed a PDF editor on your website and turn any PDF into a fillable form. Free plan allows unlimited PDFs with 3 submissions per PDF., Zapier, Zapier integration, Zapier integration. No libraries or dependencies required. |
@@ -455,6 +463,7 @@ A huge list of great stuff you can get for free!
 | [WaiverStevie.com](https://waiverstevie.com) | Electronic Signature platform with a REST API. Receive notifications with webhooks. Free plan watermarks signed documents, 50 submissions, 100 responses/survey & 8 response types. |
 | [Web3Forms](https://web3forms.com) | Contact forms for Static & JAMStack Websites without writing backend code. Free plan allows unlimited Forms, collect payments, CSV/JSON export, customizable reply-to email address. |
 | [WebAsk](https://webask.io) | Survey and Form Builder. Free plan has 3 surveys per account, unlimited Form to Email service. Setup custom redirect, unlimited single-page forms/month, unlimited submissions, up to 3 steps per form, webhooks, webhooks, etc for free. |
+| [WishKit](https://www.wishkit.io) | In-app feature request and feedback board for iOS and web apps where users submit and vote on features. Free plan has 1 project, iOS and web SDKs, unlimited users, and shows the first 5 feature requests. |
 | [Wufoo](https://www.wufoo.com) | Quick forms to use on websites. Free plan has a limit of 100 submissions each month. |
 
 <!-- Linux_Distributions.md -->

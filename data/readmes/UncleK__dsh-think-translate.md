@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/hero.en.png?v=1.2.18" alt="dsh-think-translate — AI thinking, in your language" width="100%" />
+  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/hero.en.png?v=1.2.20" alt="dsh-think-translate — AI thinking, in your language" width="100%" />
 </p>
 
 <p align="center">
@@ -8,9 +8,9 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-mit.en.svg?v=1.2.18" alt="MIT License" />
-  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-local.en.svg?v=1.2.18" alt="Local Ollama" />
-  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-original.en.svg?v=1.2.18" alt="Originals preserved" />
+  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-mit.en.svg?v=1.2.20" alt="MIT License" />
+  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-local.en.svg?v=1.2.20" alt="Local Ollama" />
+  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/badge-original.en.svg?v=1.2.20" alt="Originals preserved" />
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#quick-start"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-quick-start.en.svg?v=1.2.18" alt="Quick install" height="24" /></a> &nbsp;·&nbsp; <a href="#demo"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-demo.en.svg?v=1.2.18" alt="Live demos" height="24" /></a> &nbsp;·&nbsp; <a href="#features"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-features.en.svg?v=1.2.18" alt="Features" height="24" /></a> &nbsp;·&nbsp; <a href="#comparison"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-comparison.en.svg?v=1.2.18" alt="Official comparison" height="24" /></a> &nbsp;·&nbsp; <a href="#faq"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-faq.en.svg?v=1.2.18" alt="FAQ" height="24" /></a>
+  <a href="#quick-start"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-quick-start.en.svg?v=1.2.20" alt="Quick install" height="24" /></a> &nbsp;·&nbsp; <a href="#demo"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-demo.en.svg?v=1.2.20" alt="Live demos" height="24" /></a> &nbsp;·&nbsp; <a href="#features"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-features.en.svg?v=1.2.20" alt="Features" height="24" /></a> &nbsp;·&nbsp; <a href="#comparison"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-comparison.en.svg?v=1.2.20" alt="Official comparison" height="24" /></a> &nbsp;·&nbsp; <a href="#faq"><img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/nav-faq.en.svg?v=1.2.20" alt="FAQ" height="24" /></a>
 </p>
 
 ---
@@ -29,10 +29,10 @@
 <table>
 <tr>
 <td width="50%" align="center" valign="bottom">
-<img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/demo/demo.gif?v=1.2.18" alt="Demo 1 · Reasoning and answers" width="100%" />
+<img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/demo/demo.gif?v=1.2.20" alt="Demo 1 · Reasoning and answers" width="100%" />
 </td>
 <td width="50%" align="center" valign="bottom">
-<img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/demo/demo2.gif?v=1.2.18" alt="Demo 2 · More live operations" width="100%" />
+<img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/demo/demo2.gif?v=1.2.20" alt="Demo 2 · More live operations" width="100%" />
 </td>
 </tr>
 <tr>
@@ -45,10 +45,10 @@
 ## Comparison with the official translation plugin
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/translation-comparison.en.png?v=1.2.18" alt="Comparison with the official translation plugin" width="100%" />
+  <img src="https://raw.githubusercontent.com/UncleK/dsh-think-translate/main/docs/assets/translation-comparison.en.png?v=1.2.20" alt="Comparison with the official translation plugin" width="100%" />
 </p>
 
-Enable either this plugin or the official reasoning translator. Both take over the reasoning interface.
+Enable either this plugin or the official reasoning translator. Both take over the reasoning interface. While the official plugin is enabled, this plugin yields its translation views and displays a conflict notice. It resumes when the official plugin is disabled, without changing the official plugin's configuration.
 
 <a id="quick-start"></a>
 ## One command to get started
@@ -130,10 +130,27 @@ Your first choice → next enabled provider → … → originals if all fail
 - Custom endpoints support OpenAI-compatible `/v1/chat/completions` and the native Anthropic Messages API.
 - Discovery reads the current DSH profile and overrides. Rescan and add discovered providers to the translation chain.
 - An `apiKeyEnv` key is resolved at request time; resolved credentials are never written back to plugin configuration.
+- Manually entered keys are saved through DSH credentials; plugin configuration stores references only. Legacy literal keys migrate when that service is available. Unavailable storage rejects new literal-key saves; a failed migration retains the previous configuration.
+- Configuration responses never contain saved key values. Leave an edited key field blank to retain it; explicitly select “Remove saved key” to delete it. DSH owns credential-file access protection; this is not OS-keychain encryption.
+- Successful translations persist in the current browser, separated by provider, model and translation configuration. Configuration changes invalidate old results, including requests already in flight. Cache-version upgrades retain preferences.
 - Failures cool down in host memory for 30 seconds, then subsequent translation requests can retry. Clearly wrong-language results try the next provider.
 - Language detection skips text already recognized as the target language; explicit provider tests still make a real request.
 
 </details>
+
+### Glossary: consistent terms
+
+The built-in glossary and custom entries have separate checkboxes in their own sections. Both apply immediately and independently; disabling either keeps your entries. The opt-in preset contains 60 common English AI/programming terms and product names for all nine target languages. Enabled custom terms override matching built-ins and retain 128 extra slots. Unsaved edits highlight Save and show reminders, including drafts in other languages. Wide pages use side-by-side preset/custom panes and horizontal status; narrow pages and dialogs stack them.
+
+Each target language has its own glossary in settings and the sidebar translation page. Enter one source => translation pair per line and save. Using the same text on both sides preserves a product name.
+
+```text
+DeepSeek => DeepSeek
+智能体 => AI agent
+思考过程 => reasoning
+```
+
+English matches whole words without case sensitivity; longer terms take precedence. Code, paths and commands remain intact. Up to 128 entries per language. Saving invalidates old translations; disabling the glossary keeps your entries. Terms apply to prose actually submitted for translation, without rewriting the original.
 
 ### Local translation models: load and release on demand
 
@@ -188,6 +205,10 @@ When all enabled providers fail, the original remains. Test individual providers
 <details>
 <summary><b>Recent changes and compatibility</b></summary>
 
+**1.2.20** adds an opt-in, one-click technical glossary with 60 terms and product names for all nine target languages. Custom entries override built-ins and retain their own allowance; preview and disable the preset without removing custom entries.
+
+**1.2.19** adds per-language glossaries, DSH-managed credentials, configuration-aware caches, official-plugin mutual exclusion, stronger technical-text protection and Windows/Linux CI.
+
 **1.2.18** adds a persistent sidebar entry for the translation controls (toggle in settings or the translation page, saved per browser) and redesigns the translation page and settings dialog into card-based sections with a responsive single-column layout in narrow windows.
 
 **1.2.17** fixes idle-policy changes for already loaded Ollama models, allows up to 120 seconds for local inference, and displays the server idle countdown. Addresses reproducible parts of issue #17; long-term memory growth remains under investigation.
@@ -208,6 +229,8 @@ Earlier versions and details: [GitHub Releases](https://github.com/UncleK/dsh-th
 - `lib/config.json`: runtime configuration, excluded from Git and npm.
 - No extra build step: source files are the deliverable. Restart DSH after changing host code.
 - Run checks with `npm test`. Discovery and credential handling are documented in the [maintenance notes](https://github.com/UncleK/dsh-think-translate/blob/main/docs/maintenance-notes.md).
+- Push/PR CI runs `npm ci --ignore-scripts` and `npm test` on Windows/Linux with Node 20/22/24/26. Node 20 checks the declared compatibility floor; required merge checks need separate repository settings.
+- Protection covers Markdown code, recognizable paths, URLs, filenames and common command fragments. Quote paths containing spaces; use backticks or fenced blocks for complex commands and ambiguous technical text.
 
 </details>
 

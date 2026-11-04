@@ -13,6 +13,7 @@ A list of awesome AI Model API providers, platforms, projects
   - [OpenAI](#openai)
   - [Stability.ai](#stabilityai)
 - [API Platform](#api-platform)
+  - [Code By AI](#code-by-ai)
   - [Deepinfra](#deepinfra)
   - [Heabsy](#heabsy)
   - [Hugging Face](#hugging-face)
@@ -88,6 +89,13 @@ AIWave is a hosted OpenAI-compatible API gateway focused on Chinese model routes
 [Models](https://aiwave.live/models/) |
 [Pricing](https://aiwave.live/pricing)
 
+### Code By AI
+Code By AI is a pay-per-token API gateway for AI coding agents: one API key and one prepaid balance for Claude, GPT/Codex and Gemini models, with OpenAI-compatible, Anthropic Messages and Gemini endpoints.
+
+[Home](https://www.codebyai.net/) |
+[Models](https://www.codebyai.net/models) |
+[Pricing](https://www.codebyai.net/pricing)
+
 ### Deepinfra
 DeepInfra is a powerful machine learning platform that offers fast and scalable inference for top AI models.
 
@@ -115,6 +123,13 @@ NLP Cloud offers high performance NLP API based on top-tier ML models.
 [Home](https://nlpcloud.io/) |
 [Models](https://nlpcloud.io/models) |
 [Pricing](https://nlpcloud.io/pricing)
+
+### MuAPI
+MuAPI provides a unified API for image, video, and audio generation with a live model catalog, model-specific endpoints, and asynchronous job results.
+
+[Home](https://muapi.ai) |
+[Models](https://muapi.ai/docs/models) |
+[Pricing](https://muapi.ai/pricing)
 
 ### RunAPI
 RunAPI is an OpenAI-compatible API platform for model APIs, media generation, and usage tracking.

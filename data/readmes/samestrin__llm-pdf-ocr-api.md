@@ -27,7 +27,7 @@ docker build -t llm-pdf-ocr-api .
 docker run -d --name api -p 5000:5000 llm-pdf-ocr-api
 ```
 
-Then send it a PDF:
+Then open <http://localhost:5000/> to drop in a PDF from the browser, or send it one:
 
 ```bash
 curl -F file=@document.pdf localhost:5000/v1/extract
@@ -58,6 +58,7 @@ Everything is an environment variable; none is required.
 | `OCR_PAGE_TIMEOUT_SECONDS` | 120 | Time allowed per page. |
 | `OCR_JOB_TTL_SECONDS` | 3600 | How long a finished job's result is kept. |
 | `OCR_MAX_JOBS` | 20 | Jobs held at once. |
+| `OCR_WEB_PAGE` | true | Serve the web page at `/`. Set `false` for an API-only deployment: `/` and its files answer 404. |
 
 Vision setup, with vLLM, Ollama and cloud examples, is in [Vision model backend](docs/vision-backend.md).
 
@@ -118,9 +119,26 @@ For a long PDF that takes minutes to read. `POST /v1/jobs` takes the same fields
 ```bash
 curl -F file=@long.pdf -F format=json localhost:5000/v1/jobs
 curl localhost:5000/v1/jobs/<id>
+curl -o page1.png localhost:5000/v1/jobs/<id>/pages/1.png
 ```
 
-Jobs are held in the service's memory and run one at a time. The PDF is dropped when its job ends, and the result `OCR_JOB_TTL_SECONDS` (default 3600) after that; then the job answers 404 `job_not_found`. At most `OCR_MAX_JOBS` (default 20) jobs are held at once, finished ones included until they expire; over that, `POST` answers 429 `too_many_jobs`. Because jobs live in memory, run a single uvicorn worker, as the Docker image does, and expect jobs to be lost on a restart.
+While a job runs it renders each page it reads as a PNG (100 DPI, longer side at most 1600 px), served at `GET /v1/jobs/{id}/pages/{n}.png`. A page the job does not read, or has not rendered yet, answers 404 `page_not_found`.
+
+Jobs are held in the service's memory and run one at a time. The PDF is dropped when its job ends, and the result and page images `OCR_JOB_TTL_SECONDS` (default 3600) after that; then the job answers 404 `job_not_found`. At most `OCR_MAX_JOBS` (default 20) jobs are held at once, finished ones included until they expire; over that, `POST` answers 429 `too_many_jobs`. Because jobs live in memory, run a single uvicorn worker, as the Docker image does, and expect jobs to be lost on a restart.
+
+### Web page
+
+**Endpoint:** `/` **Method:** GET
+
+![The web page after reading a PDF: each page's image beside its text, and the full Markdown below with copy and download buttons](docs/screenshot-web-page.png)
+
+A page to use the service from a browser: drop or pick a PDF, choose Markdown or JSON and a method, and follow the job's progress. The result shows each page's image beside its text, the method that read it, and why it failed if it did; the full Markdown or JSON follows. The Markdown can be copied to the clipboard (which the browser allows on `localhost` or HTTPS), and the result downloaded as `result.md` or `result.json`. The page follows the browser's light or dark theme and fits a phone-width screen. Page text is shown as text, never as HTML, and a job that has expired is reported as an error. It is plain HTML, CSS and JavaScript shipped inside the package (no build step), served with `Content-Security-Policy: default-src 'self'`, and loads nothing from any other origin, so it works with no network. For an API-only deployment, set `OCR_WEB_PAGE=false`: `/` and the page's files then answer 404, and every API endpoint works as before.
+
+### Capabilities
+
+**Endpoint:** `/v1/capabilities` **Method:** GET
+
+Returns the methods a request may use and the vision models it may pick, for example `{"methods": ["auto", "text_layer", "tesseract"], "models": []}`. `vision` and the `OCR_LLM_ALLOWED_MODELS` names appear only when a vision model is configured. The endpoint URL and key are never returned.
 
 ### OCR (deprecated)
 

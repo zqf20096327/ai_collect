@@ -1,13 +1,15 @@
 # MorrowCache
 
 [![npm](https://img.shields.io/npm/v/@kushalicious/jevcache.svg)](https://www.npmjs.com/package/@kushalicious/jevcache)
-[![npm downloads](https://img.shields.io/npm/dm/@kushalicious/jevcache.svg)](https://www.npmjs.com/package/@kushalicious/jevcache)
+[![npm downloads](https://img.shields.io/npm/dt/@kushalicious/jevcache.svg?label=downloads%20%28all%20time%29)](https://www.npmjs.com/package/@kushalicious/jevcache)
 [![Docker](https://img.shields.io/badge/ghcr.io-kushals256%2Fjevcache-blue)](https://github.com/kushals256/jevcache/pkgs/container/jevcache)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 **MorrowCache** — routers pick a model. This proxy decides whether to call one.
 
-npm package and CLI stay `@kushalicious/jevcache` / `jevcache` (download history unchanged). Site: [morrowcache.vercel.app](https://morrowcache.vercel.app).
+An open-source **semantic cache for OpenAI-compatible LLM APIs**: run it locally, change your client's `baseURL`, and repeated or rephrased questions (and AI agent retries) are answered from cache instead of calling the model again.
+
+npm package and CLI stay `@kushalicious/jevcache` / `jevcache` (download history unchanged). Site: [morrowcache.vercel.app](https://morrowcache.vercel.app). Agent summary: https://morrowcache.vercel.app/llms.txt
 
 A local OpenAI-compatible **chat response cache**. **2.0 (Agent Turn Cache)** skips the model in two cases: the same question in different words, and an agent retrying the **same job** (same prior conversation, same-intent latest ask). It stores **final assistant text** only. A later stream of that answer can HIT. A response that contains `tool_calls` is returned and **never stored**.
 
@@ -27,6 +29,8 @@ call 2  "Please explain mutexes simply"     →  HIT    ~0.4s   (same intent · 
 
 **Verified on a real app:** MISS `3244ms` → HIT (`jev`, intent `0.93`) `394ms`, same cached reply, est. saved `$0.000137`.
 
+**Docs:** [integrations](https://morrowcache.vercel.app/integrations) (OpenAI SDK, Vercel AI SDK, LangChain, Ollama) · [benchmark](https://morrowcache.vercel.app/benchmark) · [vs GPTCache](https://morrowcache.vercel.app/compare/gptcache) · [vs LiteLLM caching](https://morrowcache.vercel.app/compare/litellm-cache) · [vs gateway caches](https://morrowcache.vercel.app/compare/gateway-caches) · [semantic caching guide](https://morrowcache.vercel.app/guides/semantic-caching)
+
 **Want to try it in your project?** → [paste the agent prompt](#easiest-path-paste-into-cursor-or-any-coding-agent) into a new Cursor chat (or run `npx` below).
 
 Works with one script, one agent, or many — anything that speaks `/v1/chat/completions`.  
@@ -43,6 +47,7 @@ Works with one script, one agent, or many — anything that speaks `/v1/chat/com
 | **Laya** (local) | `ADJUDICATOR=laya` | No — default `http://127.0.0.1:8000` |
 | **Laya MLX** | `ADJUDICATOR=laya-mlx` | No |
 | **Any System One** | `ADJUDICATOR=systemone` + URL + model | No (unless your server requires a key) |
+| **None** (exact-only) | `ADJUDICATOR=none` | No — only identical requests hit |
 
 ```bash
 # Local Kev — semantic hits without OpenRouter
@@ -93,6 +98,15 @@ See [`results/eval.json`](./results/eval.json). **Published honest number:** on 
 - Treating a stream miss as a hit (the first stream is MISS; the next identical final-text request can HIT)
 
 ---
+
+## Claude Code plugin
+
+```
+/plugin marketplace add kushals256/jevcache
+/plugin install morrowcache@morrowcache
+```
+
+Then run `/morrowcache:setup` in your project: Claude inspects how your app calls a model, starts the proxy, wires the base URL with the smallest change and runs `jevcache verify` to show MISS then HIT. `/morrowcache:stats` explains hit rate and savings. It caches your app's model calls, not Claude Code's own. Source: [`plugins/morrowcache`](./plugins/morrowcache).
 
 ## Easiest path: paste into Cursor (or any coding agent)
 
@@ -237,6 +251,7 @@ npx @kushalicious/jevcache doctor --live     # + /healthz, Jev, upstream
 npx @kushalicious/jevcache start             # run proxy
 npx @kushalicious/jevcache start --demo      # live MISS → HIT
 npx @kushalicious/jevcache status            # running? hit rate / $ saved
+npx @kushalicious/jevcache verify --model=openai/gpt-4o-mini   # MISS → reworded → exact HIT, key stays hidden
 npx @kushalicious/jevcache open              # open /stats
 npx @kushalicious/jevcache help
 ```

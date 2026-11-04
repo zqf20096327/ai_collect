@@ -1,17 +1,22 @@
+<h1 align="center">Focus</h1>
 
-# Focus
+<p align="center">A roleplaying thingy, kinda like SillyTavern, but opinionated and personal (and sloppy).</p>
 
-A roleplaying thingy, kinda like SillyTavern, but opinionated and personal (and sloppy).
-
-![Alt text](screenshots/screenshot.png)
+<p align="center"><img src="screenshots/screenshot.png" alt="Alt text"></p>
 
 <details>
 <summary>More screenshots</summary>
+<br>
 
-![Tool calls](screenshots/toolcalls.png)
-![Samplers (light)](screenshots/samplers-light.png)
-![Prompt arranger (light)](screenshots/prmpt-arr-light.png)
-![Providers (OLED)](screenshots/providers-oled.png)
+<p align="center">
+  <img src="screenshots/prompt-arr.png" alt="Prompt arranger (light)" height="340">
+  <img src="screenshots/samplers.png" alt="Samplers (light)" height="340">
+</p>
+
+<p align="center">
+  <img src="screenshots/tools.png" alt="Tool calls" height="340">
+  <img src="screenshots/providers.png" alt="Providers (OLED)" height="340">
+</p>
 
 </details>
 
@@ -22,7 +27,8 @@ A roleplaying thingy, kinda like SillyTavern, but opinionated and personal (and 
   - node.js (optional, for tests)
 
 ## How to use
-```
+
+```bash
 git clone https://github.com/ganon3264/focus
 cd focus
 ./start.sh          # Linux / macOS
@@ -37,15 +43,15 @@ start.bat           # Windows
 
 ## Supported APIs
 
-| Provider | Toolcalls | Reasoning effort | Preserve reasoning| Prefill reasoning | Other |
-|---|:---:|:---:|:---:|:---:|---|
-| Generic OAI-compatible | ✓ | ✓\* | ✓\*| ✓\* | *If the backend supports it |
-| OpenRouter             | ✓ | ✓| ✓\*| ✓\* | Quantization & provider routing, sticky routing by session ID, Claude caching, (*Model dependent) |
-| Deepseek               | ✓ | ✓ | ✓ |✓ | |
-| Moonshot               | ✓ | ✓ | ✓ | ✓ | `prompt_cache_key` support |
-| Xiaomi MiMo            | ✓ |   | ✓ | ✓ | OpenAI-compatible, `thinking` toggle, `max_completion_tokens` |
-| Google AI Studio         | ✓ | ✓ | ✓ | | |
-| Google Vertex AI         | ✓ | ✓ | ✓ | | |
+| Provider | Toolcalls | Reasoning effort | Preserve reasoning | Prefill reasoning | Other |
+|:---|:---:|:---:|:---:|:---:|:---|
+| Generic OAI-compatible | ✓ | ✓\* | ✓\* | ✓\* | \*If the backend supports it |
+| OpenRouter             | ✓ | ✓  | ✓\* | ✓\* | Quantization & provider routing, sticky routing by session ID, Claude caching, (\*Model dependent) |
+| Deepseek               | ✓ | ✓  | ✓   | ✓   | |
+| Moonshot               | ✓ | ✓  | ✓   | ✓   | `prompt_cache_key` support |
+| Xiaomi MiMo            | ✓ |    | ✓   |     | |
+| Google AI Studio       | ✓ | ✓  | ✓   |     | |
+| Google Vertex AI       | ✓ | ✓  | ✓   |     | |
 
 ## Features
 

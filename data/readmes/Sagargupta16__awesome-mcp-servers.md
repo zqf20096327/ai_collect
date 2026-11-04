@@ -384,6 +384,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [MuAPI MCP](https://github.com/SamurAIGPT/muapi-mcp-server)                     | Image, video and audio generation across 100+ generative AI models    | Python     |
 | [OrkasVideoStudio](https://github.com/Orkas-AI/Orkas-VideoStudio)               | Compose, edit, analyze, and render video from coding agents           | TypeScript |
 | [Photoshop MCP](https://github.com/loonghao/photoshop-python-api-mcp-server)    | Adobe Photoshop automation                                            | Python     |
+| [UberLLM](https://uberllm.dev/docs/mcp) | Make images and videos, list models with prices and check balance -- needs key | Remote |
 | [UpRes MCP](https://github.com/auroracapital/upres-cli)                         | Upscale images and videos up to 8K across 14 specialist models        | TypeScript |
 | [VideoGen MCP](https://videogen.io/videogen-mcp)                                | Create and edit videos, images, voiceovers, music, and avatars        | TypeScript |
 | [Webflow MCP](https://github.com/webflow/mcp-server)                            | Official Webflow server for sites, pages, CMS, and components         | TypeScript |
@@ -443,7 +444,9 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Ableton MCP](https://github.com/ahujasid/ableton-mcp)                                  | Control Ableton Live sessions, tracks, clips, and MIDI from an agent | Python     |
 | [Arr MCP](https://github.com/aplaceforallmystuff/mcp-arr)                               | Manage Sonarr, Radarr, and other arr media library services          | TypeScript |
 | [MiniMax MCP](https://github.com/MiniMax-AI/MiniMax-MCP)                                | Generate speech, music, images, and video with MiniMax models        | Python     |
+| [Sports Betting Stats MCP](https://github.com/GeminiGeorge22/sports-betting-stats-mcp) | Sportsbook odds, player props, scores, xG, closing lines and horse racing | Python |
 | [Sports Odds MCP](https://github.com/GeminiGeorge22/sports-odds-mcp)                    | Live odds from Kambi sportsbooks with every book's price per outcome | JavaScript |
+| [Spotify Play Count MCP](https://github.com/GeminiGeorge22/spotify-play-count-mcp)      | Spotify play counts per track, plus artist monthly listeners         | Python     |
 | [TMDB MCP](https://github.com/Laksh-star/mcp-server-tmdb)                               | The Movie Database (TMDB)                                            | TypeScript |
 | [YouTube MCP](https://github.com/ZubeidHendricks/youtube-mcp-server)                    | YouTube API videos and analytics                                     | TypeScript |
 | [YouTube Transcript MCP](https://github.com/kimtaeyoon83/mcp-server-youtube-transcript) | Download YouTube video transcripts                                   | TypeScript |
@@ -476,6 +479,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [brianbooms-mcp](https://github.com/brianbooms/brianbooms-mcp)                  | Buy digital products with USDC micropayments on Base, via x402                   | Python     |
 | [BuyWhere MCP](https://github.com/BuyWhere/buywhere-mcp)                        | Hosted shopping MCP for product search and price comparison across 80+ countries | Remote     |
 | [commercetools MCP Essentials](https://github.com/commercetools/mcp-essentials) | Official commercetools server for products, carts, orders and customers          | TypeScript |
+| [E-commerce Sales MCP](https://github.com/GeminiGeorge22/ecommerce-sales-mcp) | Amazon bestsellers and reviews, eBay sold prices, TikTok Shop and Etsy sales | Python |
 | [eBay MCP](https://github.com/YosefHayim/ebay-mcp)                              | 325 tools for eBay Sell APIs                                                     | TypeScript |
 | [Etsy Sales MCP](https://github.com/GeminiGeorge22/etsy-sales-mcp)              | Etsy search results plus daily sales counts and growth for Etsy shops            | JavaScript |
 | [Packrift MCP](https://github.com/Packrift/packrift-mcp)                        | Packaging catalog search, pricing, inventory, and cart URLs                      | TypeScript |
@@ -517,10 +521,12 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Ahel](https://github.com/ahel-technologies/ahel) | Company, people, SEO, social and EU register data for agents, pay per call | Remote |
 | [AltoRank](https://github.com/AltoRank/altorank)                                    | SEO audits, Search Console, keyword research and drafts into a review queue      | TypeScript |
 | [BulkPublish MCP](https://github.com/azeemkafridi/bulkpublish-api)                  | AI-agent API and MCP server for multi-platform social publishing and analytics   | TypeScript |
+| [Company Social MCP](https://github.com/GeminiGeorge22/company-social-mcp)          | Company domain or name to LinkedIn, X, YouTube, Instagram and Facebook links     | Python     |
 | [CorpusIQ](https://docs.corpusiq.io/mcp) | Read-only queries across 40+ business platforms through one OAuth | Remote |
 | [DataForSEO MCP](https://github.com/dataforseo/mcp-server-typescript)               | Official DataForSEO server for SERP, keyword and backlink data                   | TypeScript |
 | [FalcoScan MCP](https://github.com/nyachisn/falcoscan-mcp)                          | Look up AI products, markets, rivals and shutdowns (FalcoScan API key)           | JavaScript |
 | [Fictura](https://github.com/Apex-Byte-Technologies/fictura-mcp)                    | App growth data for AI coding agents: funnels, paywalls, revenue and errors      | Remote     |
+| [Google Ads Transparency MCP](https://github.com/GeminiGeorge22/google-ads-transparency-mcp) | Competitor Google ads from the Ads Transparency Center: new, running, stopped | Python |
 | [Google Analytics MCP](https://github.com/surendranb/google-analytics-mcp)          | GA4 data for AI agents                                                           | Python     |
 | [Google Search Console MCP](https://github.com/AminForou/mcp-gsc)                   | Query Google Search Console search analytics, sitemaps and indexing              | Python     |
 | [Google Tag Manager MCP](https://github.com/stape-io/google-tag-manager-mcp-server) | Manage GTM containers, tags, triggers and variables                              | TypeScript |
@@ -693,34 +699,4 @@ Other ways to help, no pull request needed: report rot (a dead link, an archived
 Two shapes cover the list. A **stdio** server is one your client starts itself and talks to over stdin and stdout. A **remote** server is hosted by the vendor, so the client needs only the endpoint; those rows carry `Remote` in the Language column.
 
 Two stdio servers, run straight from their published packages:
-
-```json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/dir"]
-    },
-    "fetch": {
-      "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    }
-  }
-}
-```
-
-A remote server. `type` is not optional here: an entry with a `url` and no `type` is read as a stdio server and [skipped by Claude Code](https://code.claude.com/docs/en/mcp), which reports that the server has a `url` but no `type`.
-
-```json
-{
-  "mcpServers": {
-    "example": {
-      "type": "http",
-      "url": "https://mcp.example.com/mcp"
-    }
-  }
-}
-```
-
-Where that JSON lives, and which extra keys it takes, differs per client -- check your own client's docs. The protocol's [guide to connecting a local server](https://modelcontextprotocol.io/docs/develop/connect-local-servers) walks through the stdio case, and each server's README lists the arguments, tokens and environment variables it expects.
 

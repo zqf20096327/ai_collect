@@ -39,6 +39,10 @@ pixelmon "a knight" --palette PICO-8 --size 32 --transparent
   game's sprites can be remade at exactly the same size and ground line (`--cutout`, `--fit-to`).
 - **Seamless tiles** (`--tile`, either or both axes), **fill frame** for tiny sprites, `--fast` LCM
   previews, locked seeds, steps / CFG / sampler / scheduler / checkpoint.
+- **🧱 Textures** (`--surface`): material swatches for 3D models — the surface square on, evenly lit, on a
+  photographic checkpoint; `--flatten` evens out the light, `--maps` (or `--maps-from` for pictures you
+  have) adds **height, normal, roughness and AO** maps that tile with the picture.
+- **🗂 Contact sheets** (`--sheet`): every picture of a run on one page, seed under each.
 - **🔍 JPEG repair and upscaling** (`--upscale`, `--repair`): any picture or folder through
   [OpenModelDB](https://openmodeldb.info/?t=jpeg) models — remove JPEG blocks and ringing, enlarge 2x / 4x,
   or restore a big scan at its own size. `--fix-jpeg sprites.jpg --pixel-art` turns a JPEG of pixel art
@@ -53,6 +57,9 @@ pixelmon "a knight" --palette PICO-8 --size 32 --transparent
   or rough in colours, select / move / transform, layered `.draw` / `.ora` / `.psd` input.
 - **🧬 Evolve** variations of any result; **sweeps** of one setting side by side at the same seed;
   a **combo sweep** that renders once and applies every grid × dither × amount.
+- **🏃 Sprite animation** (`--moves`, `--effect`): walk, run, idle, attack, hurt, death and jump cycles of
+  one character, posed by stick-figure skeletons, in 1, 4 or 8 directions, side-on or top-down; turnarounds
+  (`--moves stand --directions 8`); looping fire, explosions, sparkles and smoke. Strip PNGs + GIFs.
 - **Animation** (experimental): looping portrait-gesture GIFs, Wasteland style — only a masked part
   (found by words: "the cigar") moves.
 
@@ -74,7 +81,11 @@ pixelmon "a knight" --palette PICO-8 --size 32 --transparent
   under RENDER (COPY CLI), a **setup check** that catches settings that fight each other, hover help
   from `--help`, and the [settings atlas](docs/settings-atlas.html) and [3D guide](docs/3d-guide.html).
 - **Presets** in folders, each with a sample picture: 65 factory ones (scenes, sprites, CGA, Tandy,
-  C64, ZX, Game Boy, Apple II, a demo of every style), import/export as `.zip`.
+  C64, ZX, Game Boy, Apple II, a demo of every style), plus game assets: **GAME TEXTURES** (64 px
+  walls, floors, ceilings that tile; doors, paintings, posters, banners, stained glass),
+  **GAME TEXTURES HD** (512 px tiling materials with height / normal / rough / AO maps) and
+  **GAME ANIMATION** (🎞 Animate presets: platformer heroes and enemies, 4-way RPG walkers, an 8-way
+  turnaround, fire / explosion / smoke / sparkle effects, portrait loops); import/export as `.zip`.
 - **Gallery** with search, filter chips, ★ ratings, **Load** / **Again**, and backups;
   **Queue** with live progress, logs and real cancelling on the GPU.
 - **🎚 Sets**: N takes per sprite beside the one the game has now — pick, flag, re-roll, then
@@ -724,6 +735,77 @@ pixelmon "a laser pistol held in a right hand, plain solid magenta backdrop" --a
 
 **Setup:** the `comfyui_controlnet_aux` node pack (cloned by `install.sh`) + `./download-models.sh --depth`.
 
+### Sprite animation (`--moves`, `--effect`)
+
+Game-ready animation strips. `--size` is one frame (default 64).
+
+```bash
+pixelmon "a knight in blue armour with a red cape" --moves walk,attack           # side-on, facing right
+pixelmon "a green goblin with a club" --moves walk,idle --directions 8 --view topdown   # an RPG's 8 ways
+pixelmon "a robot" --moves stand --directions 8                                   # a turnaround
+pixelmon "green magic fire" --effect fire --size 48                               # a looping effect
+```
+
+How a character stays one character:
+
+1. **The character is painted once, standing** (`NAME_ref.png`), at full size on a grey backdrop.
+2. **Each frame is painted beside it**: a two-cell picture with the full-size reference on the left and
+   the new pose on the right, only the room round the new pose drawn (inpainting) - the rest of the cell
+   stays backdrop, so nothing else turns up in it. The model copies the character it can see; each frame's
+   prompt says what that moment is ("knees buckling", "lying flat on the ground", "leaping up").
+3. **Pixels are made here, not by the server**: each sprite pixel takes the main colour of its block of
+   the full-size render, and BiRefNet's mask (shrunk the same way) cuts the backdrop away. Shrinking on
+   the server averaged thin legs and arms out of existence.
+4. **Poses come from a 3D stick figure** (`poses.py`) moved through the move and drawn as an OpenPose
+   skeleton for the union ControlNet — the same figure turned 45° at a time gives the 8 directions, and
+   tilted 30° gives the top-down view. Every move uses one scale and one floor line, so a character is the
+   same size in all its strips and the walk's bob is kept.
+5. **Checked**: a frame with hardly any character in it (once, a reference came out as just the club) or
+   painted past the frame's bottom edge is painted again with another seed, up to three tries.
+6. **One palette**: every frame is snapped to the reference's colours (`--no-lock-palette` to skip).
+
+With `--directions 4` / `8` the character is first painted standing in each direction, each beside the
+nearest one already made (front, then round both sides), saved as `NAME_turnaround.png` / `.gif`; every
+direction's frames then copy their own side's picture, so a back view has no face. `--moves stand
+--directions 8` makes just the turnaround.
+
+Each move saves `NAME_MOVE[_DIR].png` (a strip, true size), `.gif` and `_x4.gif` (a bigger, crisp
+preview). Moves: `walk run idle attack hurt death jump stand`; directions are named `s se e ne n nw w sw`.
+Speeds are per move (walk 8 fps, run 12…) unless `--anim-fps`; `--anim-frames` changes the frame count.
+A frame takes about 20 s on an RTX 3070, so a 6-frame walk is ~2 minutes and an 8-way walk ~19
+(48 frames plus 7 turnaround pictures).
+
+Effects (`fire`, `explosion` — plays once —, `sparkle`, `smoke`) are drawn as one sheet steered by depth
+shapes that loop (rising flame tongues, a growing fireball, twinkling stars, a rising puff), each frame
+with its own prompt for its moment (`--cell-strength`); bright parts stay, black goes see-through
+(pixel art: each pixel solid or gone, so the GIF matches the PNG). Saves `NAME_EFFECT.png` / `.gif` /
+`_x4.gif`.
+
+Knobs: `--pose-strength` (0.9; too high and the skeleton's colours leak into the art), `--pose-end`,
+`--fill` (how tall a standing character is in its frame), `--sprite-bg` (the backdrop that gets cut away).
+
+### Textures (`--surface`, `--flatten`, `--maps`)
+
+Material pictures for 3D models (bu1ld0r's props) and tiles.
+
+```bash
+pixelmon "worn red painted wood, grain running up and down" --surface --out 512x1024
+pixelmon "chipped white enamel over rusty metal" --surface --tile --maps        # repeats, + 4 maps
+pixelmon --maps-from crate.png --tile                                           # maps for a picture you have
+```
+
+- `--surface` is an `--art` render with a surface prompt ("seen straight on, even soft diffuse light, no
+  shadows, fills the frame…"), a negative against perspective / objects / shadows, the photographic
+  **juggernautXL** checkpoint with **heun + karras** and CFG 5.5 — each still overridable.
+- `--flatten F` divides out the picture's broad light-to-dark sweep (0.6 by default with `--surface`).
+- `--maps` writes `_height`, `_normal` (OpenGL, +y up), `_rough` and `_ao` beside each picture; with
+  `--tile` they wrap too. `--maps-strength` (normal steepness), `--maps-detail` (broad shapes vs. grain),
+  `--maps-invert` (light seams).
+- Non-square art (and `--tile` strips) is painted at about one megapixel in its own shape and resized —
+  a 1024×256 strip is painted at 2048×512. (It used to be painted at 1024×256, far under SDXL's size,
+  which made burnt, blobby textures.) A tiling picture is resized with its edges wrapped, so the seam
+  survives, and its 3×3 check is made after.
+
 ### Animation (experimental)
 
 `--animate` makes a **looping portrait-gesture GIF**, the way the original Wasteland
@@ -930,8 +1012,9 @@ local copy at `/docs/3d-guide.html`).
   USER… create/rename/delete your own). Drag cards to reorder them or onto a folder to move
   them; drag folders to reorder. Right-click a card to **rename** it, edit its note, or move it
   to the top / bottom / another folder; hover its picture for the zoomed preview. 65 factory presets ship: scenes, sprites, hardware looks
-  (CGA, Tandy, C64, ZX, Game Boy, Apple II) and a **demo for every `--style`**. A preset or a
-  whole folder exports/imports as a `.zip`.
+  (CGA, Tandy, C64, ZX, Game Boy, Apple II) and a **demo for every `--style`**; the GAME TEXTURES,
+  GAME TEXTURES HD and GAME ANIMATION folders hold game assets (▶ on an animation preset runs it on
+  the 🎞 Animate tab). A preset or a whole folder exports/imports as a `.zip`.
 - **⚗ Lab:** convert any picture into pixel art with ControlNet (shape or layout+colors),
   adjust the source first (brightness, contrast, sharpen, posterize, crop…) — the whole picture, only your 🎨 strokes, or just
   a selected part — then **✓ apply now** to stack adjustments (with undo / redo), and **edit** part of an
@@ -974,6 +1057,17 @@ local copy at `/docs/3d-guide.html`).
   A set is a frozen copy of the list, its theme and your picks, kept in
   `~/pixelmon-gallery/sets/<set>/set.json`. Its takes are ordinary gallery renders tagged with the
   set and sprite (`gui/sets.py`).
+- **🎞 Animate:** game sprite animation in its own tab. Pick a mode:
+  - **🏃 Character:** describe the character (or **↓ from the prompt**), tick the moves (walk, run,
+    idle, attack, hurt, death, jump, stand), and choose directions (1 / 4 / 8), facing, camera (side or
+    top-down) and frame size. It shows how many pictures that is and about how long it takes.
+  - **💥 Effect:** fire, explosion, sparkle or smoke, with an optional look ("green magic fire").
+  - **🙂 Portrait loop:** the picture in the prompt box with one part moving (blink, talk, glow,
+    smoke, breathe), the old `--animate`.
+
+  **Fine tuning** holds frames, speed, character height, backdrop, colour lock and pose strength.
+  Character and effect jobs use the form's LoRA and palette and nothing else (tiles, steering and
+  cut-outs don't go with them). Press **🎞 Animate**; the strips and GIFs land in the Queue and Gallery.
 - **Gallery / Queue:** every render with its settings and CLI command; hover for a
   blown-up preview, 🧬 to **evolve** variations of any result, reload or re-run a seed.
 - **⚙ Advanced:** every remaining pixelmon setting (sampler, scheduler, checkpoint,
@@ -1010,7 +1104,8 @@ LoRA presets (trigger tags, default strength and palette) live in `gui/presets.j
 The factory presets are built by `~/ComfyUI/.venv/bin/python gui/make_starter_presets.py`
 into `~/pixelmon-gallery/gui-presets/FACTORY/`; hand-tuned preset folders ship in [`presets/`](presets/README.md)
 (copied in by `install.sh`) (`--try 4 NAME` renders candidate seeds to pick from;
-presets you save yourself are never touched).
+presets you save yourself are never touched). The game-asset folders are built by
+`~/ComfyUI/.venv/bin/python gui/make_game_presets.py` (only the missing ones; `--force NAME` redoes one).
 
 ---
 
@@ -1282,6 +1377,10 @@ pixelmon/
 ├── download-models.sh         fetch SDXL + Pixel Art XL + LCM + EGA-style LoRA (HF + Civitai)
 ├── pixelmon.py                the CLI brains (talks to ComfyUI's API); `pixelmon --version`
 ├── animate.py                 experimental --animate engine (region inpaint + CLIPSeg auto-mask → GIF)
+├── sprites.py                 --moves / --effect: sprite animation (reference, per-frame inpaint, strips + GIFs)
+├── poses.py                   the 3D stick figure: moves, directions, OpenPose drawing
+├── textures.py                --surface / --flatten / --maps: seam-safe resize, even light, material maps
+├── sheet.py                   --sheet: contact sheets
 ├── colors.py                  a picture's colours (--palette-from, and the GUI's palette pick / .gpl export)
 ├── manifest.py                sprite lists (--batch-file, and the GUI's Sets tab)
 ├── tools/selfcheck.py         offline invariants (no server): run after touching pixelmon.py / animate.py / bin/
@@ -1364,34 +1463,4 @@ the regenerate scripts: [`examples/`](examples/README.md).
 | **pixelartredmond** — PixelArtRedmond LoRA | |
 | ![pixelartredmond](examples/styles/pixelartredmond.png) | |
 
-### Prompt-driven (default Pixel Art XL LoRA)
-
-| | |
-|---|---|
-| **clean** — crisp, flat shading | **detailed** — intricate shading, rich color |
-| ![clean](examples/styles/clean.png) | ![detailed](examples/styles/detailed.png) |
-| **minimal** — few colors, open space | **16bit** — vibrant SNES-era sprite |
-| ![minimal](examples/styles/minimal.png) | ![16bit](examples/styles/16bit.png) |
-| **geometric** — sharp angular forms | **outline** — bold outline, strong silhouette |
-| ![geometric](examples/styles/geometric.png) | ![outline](examples/styles/outline.png) |
-| **cute** — chibi mascot | **dark** — gritty, muted, ominous |
-| ![cute](examples/styles/cute.png) | ![dark](examples/styles/dark.png) |
-| **horror** — creepy, grotesque | **hyperlight** — Hyper Light Drifter neon |
-| ![horror](examples/styles/horror.png) | ![hyperlight](examples/styles/hyperlight.png) |
-| **deadcells** — fluid, glowing rim light | **blasphemous** — gothic, ornate, dark |
-| ![deadcells](examples/styles/deadcells.png) | ![blasphemous](examples/styles/blasphemous.png) |
-| **owlboy** — polished hi-bit, colorful | **stardew** — cozy farm-RPG |
-| ![owlboy](examples/styles/owlboy.png) | ![stardew](examples/styles/stardew.png) |
-| **dosrpg** — MS-DOS CRPG portrait, VGA | **darkest** — Darkest Dungeon ink gothic |
-| ![dosrpg](examples/styles/dosrpg.png) | ![darkest](examples/styles/darkest.png) |
-| **undertale** — simple, white-outline | **mario** — bright Nintendo platformer |
-| ![undertale](examples/styles/undertale.png) | ![mario](examples/styles/mario.png) |
-| **zelda** — SNES top-down action-RPG | **hollowknight** — inky monochrome gothic |
-| ![zelda](examples/styles/zelda.png) | ![hollowknight](examples/styles/hollowknight.png) |
-| **metroid** — moody sci-fi, armored | **finalfantasy** — 16-bit JRPG sprite |
-| ![metroid](examples/styles/metroid.png) | ![finalfantasy](examples/styles/finalfantasy.png) |
-| **pokemon** — cute creature, bold outline | |
-| ![pokemon](examples/styles/pokemon.png) | |
-
-*Combine styles with modifiers like `solo` (one centered subject), `item` (object icon),
-or `portrait` (head-and-shoulders) — e.g. `--style "dark,solo"`. Full list: `pixelmon --list-styles`.*
+### Prompt-driven (

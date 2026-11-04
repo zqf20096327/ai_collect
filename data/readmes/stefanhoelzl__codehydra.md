@@ -115,6 +115,7 @@ extensions.
 - Node.js 24+
 - pnpm 10
 - Git
+- Rust via [rustup](https://rustup.rs) (builds the native addon; `native/rust-toolchain.toml` pins the version, which rustup installs on first use)
 
 ### Commands
 

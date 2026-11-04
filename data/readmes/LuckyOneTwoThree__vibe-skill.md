@@ -8,7 +8,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f?style=flat-square)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
-[![Skill Count](https://img.shields.io/badge/Skills-127-orange?style=flat-square)](#-四大领域总览)
+[![Skill Count](https://img.shields.io/badge/Skills-131-orange?style=flat-square)](#-四大领域总览)
 
 </div>
 
@@ -16,7 +16,7 @@
 
 <div align="center">
 
-**[🌌 All-Skill Galaxy 交互式可视化](https://luckyonetwothree.github.io/all-skill-html/)** — 力导向图谱呈现 127 个 Skill 编排关系，12 条跨域数据契约流一目了然
+**[🌌 All-Skill Galaxy 交互式可视化](https://luckyonetwothree.github.io/all-skill-html/)** — 力导向图谱呈现 131 个 Skill 编排关系，12 条跨域数据契约流一目了然
 
 </div>
 
@@ -38,11 +38,11 @@
 
 ## 📌 这是什么
 
-将软件产品从 **0 到 1 的全生命周期方法论**，提取为 **127 个源 AI Agent Skill**，覆盖四大领域：
+将软件产品从 **0 到 1 的全生命周期方法论**，提取为 **131 个源 AI Agent Skill**，覆盖四大领域：
 
 | 领域 | 定位 | 数量 |
 |:-----|:-----|:----:|
-| 🎯 **PM** 产品方法论 | 做正确的事 | 106 |
+| 🎯 **PM** 产品方法论 | 做正确的事 | 110 |
 | 🎨 **UI** 设计与前端 | 正确地呈现 | 9 |
 | ⚙️ **Backend** 后端架构 | 正确地构建 | 10 |
 | 🔗 **Cross-Domain** 跨领域协调 | 全局编排 | 2 |
@@ -68,7 +68,7 @@
 ├── insight-analysis/SKILL.md
 ├── api-design-spec/SKILL.md
 ├── project-init/SKILL.md
-├── ...（127个源Skill扁平平铺）
+├── ...（131个源Skill扁平平铺）
 └── production-ready/SKILL.md
 ```
 
@@ -121,13 +121,32 @@
 
 > 💡 **提示**：编排器会在每个阶段卡口暂停，等待人类审批后才进入下一阶段。这是人机协作的关键设计，不要跳过。
 
+### 可执行编排（推荐）
+
+编排协议不再只是一段提示词。阶段顺序、依赖与卡口由 [runtime/pipelines/](runtime/pipelines/) 中的 JSON 定义，脚本执行文件检查、JSON Schema 实例校验与人类审批：
+
+```bash
+npm ci
+node scripts/orchestrate.js init <pipeline> --mode full
+node scripts/orchestrate.js next <pipeline>
+node scripts/orchestrate.js gate <pipeline> --stage <id>
+node scripts/orchestrate.js approve <pipeline> --stage <id> --by <name>
+node scripts/orchestrate.js finalize <pipeline>
+```
+
+全部校验（manifest、契约、lint、eval、运行时自测）：
+
+```bash
+npm run verify
+```
+
 ---
 
 ## 🗺️ 四大领域总览
 
 | 领域 | 模块数 | 编排器 | Pipeline | Extension | 导航 | 核心定位 |
 |:-----|:------:|:------:|:--------:|:---------:|:----:|:---------|
-| **pm-skill** 🎯 | 8 | 27 | 78 | — | 1 | 做正确的事：从探索发现到增长运营 |
+| **pm-skill** 🎯 | 9 | 28 | 81 | — | 1 | 做正确的事：从探索发现到增长运营 |
 | **ui-skill** 🎨 | 3 | 1 | 4 | 4 | — | 正确地呈现：设计即实现，令牌驱动 |
 | **backend-skill** ⚙️ | 3 | 4 | 6 | — | — | 正确地构建：先全量设计，审查后实现 |
 | **cross-domain** 🔗 | — | 2 | — | — | — | 全局编排：产品迭代与产品启动 |
@@ -204,10 +223,21 @@ All-Skill/
 │   ├── workflows/                        PR 自动校验
 │   └── config.yml                        Issue 配置
 ├── scripts/                          ← 项目基础设施（非 Skill）
-│   └── validate-skill.js                 SKILL.md 校验脚本
+│   ├── validate-skill.js                 SKILL.md 校验脚本
+│   ├── orchestrate.js                    可执行编排运行时（next/gate/approve/finalize）
+│   ├── run-evals.js                      eval 运行器（static / router）
+│   ├── lint-skills.js                    技能体量与协议重复 lint
+│   ├── check-evidence.js                 证据契约校验
+│   └── skill-lint-baseline.json          存量技能债基线
+├── runtime/pipelines/                ← 机器可读 Pipeline 定义（非 Skill）
+├── evals/                            ← eval 用例与 fixtures（非 Skill）
+├── connectors/mcp/                   ← MCP 连接器配置样例（非 Skill）
+├── schemas/                          ← 机器可消费契约（非 Skill）
+├── package.json                      ← npm verify / eval / runtime 脚本
 ├── templates/                        ← 项目基础设施（非 Skill）
 │   ├── orchestrator-protocol.md          Orchestrator 协议模板
-│   └── pipeline-skill-template.md        Pipeline Skill 编写模板
+│   ├── orchestrator-skill-template/      Orchestrator Skill 编写模板
+│   └── pipeline-skill-template/          Pipeline Skill 编写模板
 ├── CONTRIBUTING.md                   ← 项目基础设施（非 Skill）
 ├── LICENSE                           ← 项目基础设施（非 Skill）
 ├── ROADMAP.md                        ← 项目基础设施（非 Skill）
@@ -235,9 +265,12 @@ All-Skill/
 │   ├── pm-07-monitoring/                  模块7：产品监控与迭代
 │   │   ├── orchestrators/                     monitoring / diagnosis / iteration / release
 │   │   └── skills/                            13个Pipeline Skill
-│   └── pm-08-project/                     模块8：项目管理与执行
-│       ├── orchestrators/                     agile / project-planning / risk
-│       └── skills/                            10个Pipeline Skill
+│   ├── pm-08-project/                     模块8：项目管理与执行
+│   │   ├── orchestrators/                     agile / project-planning / risk
+│   │   └── skills/                            10个Pipeline Skill
+│   └── pm-10-ai-product/                  模块9：AI 原生产品
+│       ├── orchestrators/                     ai-product-orchestrator
+│       └── skills/                            ai-eval-design / ai-guardrail-design / ai-agent-ux
 │
 ├── ui-skill/                         ✅ Skill 文件 —— UI设计与前端开发
 │   ├── ui-01-design-system/               模块1：设计系统（项目初始化+视觉风格）
@@ -282,7 +315,7 @@ All-Skill/
 
 ## 📚 各领域模块详解
 
-### 🎯 PM 产品方法论（106个Skill）
+### 🎯 PM 产品方法论（110个Skill）
 
 #### 模块1：产品探索与发现
 
@@ -368,6 +401,14 @@ All-Skill/
 | 项目规划 | project-planning-orchestrator | planning-project-charter / planning-resource / planning-kickoff | 项目宪章+资源计划 |
 | 敏捷执行 | agile-orchestrator | agile-sprint-planning / agile-daily-sync / agile-sprint-review / agile-retrospective / agile-launch-review | Sprint规划+每日同步+Sprint评审+迭代复盘+上线复盘 |
 | 风险管理 | risk-orchestrator | risk-identification / risk-management | 风险登记册+监控+升级 |
+
+#### 模块9：AI 原生产品
+
+先定义成功标准，再定义风险边界，最后定义交互体验。
+
+| 子模块 | 编排器 | Pipeline Skill | 核心产出 |
+|:-------|:-------|:---------------|:---------|
+| AI 产品全流程 | ai-product-orchestrator | ai-eval-design / ai-guardrail-design / ai-agent-ux | 评测计划+护栏规范+Agent UX 规范 |
 
 ---
 
@@ -459,7 +500,7 @@ All-Skill/
 
 ## 📄 核心产出文档
 
-PM 领域的 78 个 Pipeline Skill 中，18 个产出包含 Markdown 可交付文档，其余 60 个产出 JSON 数据片段供下游 Skill 消费。UI/Backend 以代码和配置为交付物。全局共 127 个源 Skill（含 34 个编排器 + 78 个 PM Pipeline + 4 个 UI Pipeline + 6 个 Backend Pipeline + 4 个 UI 外部扩展 + 1 个导航）。
+PM 领域的 81 个 Pipeline Skill 中，21 个产出包含 Markdown 可交付文档，其余 60 个产出 JSON 数据片段供下游 Skill 消费。UI/Backend 以代码和配置为交付物。全局共 131 个源 Skill（含 35 个编排器 + 81 个 PM Pipeline + 4 个 UI Pipeline + 6 个 Backend Pipeline + 4 个 UI 外部扩展 + 1 个导航）。
 
 ### PM 核心产出文档一览
 
@@ -541,6 +582,7 @@ Skill 执行结果写入**用户项目根目录**的 `output/` 下：
     ├── pm-growth/                  ← PM增长运营
     ├── pm-monitoring/              ← PM监控迭代
     ├── pm-project/                 ← PM项目管理
+    ├── pm-ai-product/              ← AI原生产品
     ├── ui/                           ← UI设计与前端（统一输出）
     ├── backend-api-design/         ← 后端API设计
     ├── backend-data-architecture/  ← 后端数据架构
@@ -553,22 +595,22 @@ output 跟着用户项目走，不跟着 Skill 定义目录走。多项目时各
 
 ---
 
-## 🤖 AI 能力边界
+## 🤖 AI 能力边界（2026）
 
-| 能力 | 状态 |
-|:-----|:----:|
-| 读取本地文件 | ✅ |
-| 分析粘贴文本 | ✅ |
-| 处理上传文件 | ✅ |
-| 生成结构化报告 | ✅ |
-| 逻辑推导 | ✅ |
-| 访问外部数据库 | ❌ |
-| 调用业务 API | ❌ |
-| 获取实时数据 | ❌ |
-| 操作外部系统 | ❌ |
-| 执行代码 | ❌ |
+| 能力 | 状态 | 说明 |
+|:-----|:----:|:-----|
+| 读取本地文件 | ✅ | 原生支持 |
+| 分析粘贴文本 | ✅ | 原生支持 |
+| 处理上传文件 | ✅ | 原生支持 |
+| 生成结构化报告 | ✅ | 受 Schema 与证据契约约束 |
+| 逻辑推导 | ✅ | 结论需标注推断来源 |
+| 访问外部数据库 | ✅ | 通过 MCP 连接器，需配置与授权 |
+| 调用业务 API | ✅ | 通过 MCP / 工具，默认只读 |
+| 获取实时数据 | ✅ | 通过 MCP / browser，需配置 |
+| 操作外部系统 | ✅ | 只读默认；写操作需人类审批 |
+| 执行代码 | ✅ | 通过宿主沙箱 / 工具执行 |
 
-需要外部数据时，用户需通过**粘贴 / 上传 / 提供路径**三种方式提供。
+连接器配置见 [connectors/mcp/README.md](connectors/mcp/README.md)。发现与分析类产出必须包含 `evidence[]`，并通过 `node scripts/check-evidence.js <artifact>` 校验；无外部证据时标注 `source_type=model_inference` 且 `needs_human_validation=true`，不得写成事实。
 
 ---
 

@@ -9,6 +9,7 @@ Built for humans, CI, and AI coding agents (Claude Code, Codex, any MCP client).
 
 [![CI](https://github.com/Evalogical-Inc/devReady/actions/workflows/ci.yml/badge.svg)](https://github.com/Evalogical-Inc/devReady/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/devready-cli)](https://pypi.org/project/devready-cli/)
+[![npm](https://img.shields.io/npm/v/devready-cli)](https://www.npmjs.com/package/devready-cli)
 [![DevReady](https://img.shields.io/badge/DevReady-%E2%9C%93%20ready-2ea44f)](https://github.com/Evalogical-Inc/devReady)
 [![Website](https://img.shields.io/badge/website-devready--ten.vercel.app-ff6a35)](https://devready-ten.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -89,10 +90,21 @@ pipx install devready-cli
 uvx devready-cli check
 ```
 
-From npm (runs the same PyPI release through `uvx` or `pipx`, so one of them must be installed):
+From [npm](https://www.npmjs.com/package/devready-cli) (runs the same PyPI release through `uvx` or `pipx`, so one of them must be installed):
 
 ```bash
 npx devready-cli check
+```
+
+No Python tooling yet (for example a JavaScript-only machine)? `uv` installs without Python, and `uvx` then runs DevReady with no further setup:
+
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+uvx devready-cli check
 ```
 
 From a clone (for development):
@@ -158,7 +170,7 @@ devready --version
 ## Use it in CI (GitHub Actions)
 
 ```yaml
-- uses: Evalogical-Inc/devReady@main   # pin a release tag once published
+- uses: Evalogical-Inc/devReady@v1.3.0
   with:
     skip: project.ports                  # optional; also: only, format, project, version
 ```
@@ -166,7 +178,7 @@ devready --version
 To show findings in GitHub code scanning, save a SARIF report and upload it. Pin findings point at the file that declares the pin (`package.json`, `.nvmrc`, `go.mod`, ...); tool-only findings have no file.
 
 ```yaml
-- uses: Evalogical-Inc/devReady@main
+- uses: Evalogical-Inc/devReady@v1.3.0
   with:
     format: sarif
     output: devready.sarif
@@ -225,7 +237,7 @@ See [docs/security.md](docs/security.md) for the model, [docs/versioning.md](doc
 
 - Checks today: Python, Git (+ identity set), Node.js, npm, project pins (`.nvmrc`, `.node-version`, `.python-version`, `.tool-versions`, `package.json` engines, `pyproject.toml` requires-python), `.env.example` vs `.env` key names, Docker CLI + daemon, compose file validity and image platform (arm64 vs amd64) mismatch (only when the project has a Dockerfile/compose file), free disk space, Windows long paths, PowerShell policy, line endings, WSL version and Docker Desktop engine, macOS/Linux build tools, and (only when the project declares them) Go, Ruby, Java, Rust, .NET, pnpm, Yarn and Bun pins, `.env` not git-ignored, `node_modules` vs lockfile, and declared ports already in use.
 - The version-range matcher covers common npm/PEP 440 syntax; pre-releases and exotic ranges report `skip` rather than guess.
-- The Python version compared is the interpreter running DevReady, not necessarily your project's virtualenv.
+- The Python version compared is the project's (`.venv`/`venv`, else the first `python` on PATH), and the result names the interpreter checked. DevReady does not look at other virtualenv locations (poetry, conda, pyenv shims).
 
 ## Roadmap
 

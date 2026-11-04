@@ -1,0 +1,286 @@
+# MOSS Prompt Studio（ComfyUI 插件）
+
+当前版本：**v1.10.0-beta2**
+
+> **本次更新（v1.10.0-beta2）**：在 v1.10.0-beta（AI 定向改稿）基础上新增**多格分镜**：模板一键建格，一句话逐格填内容——检查器新增 canvas 画布模式下拉（`multi_panel`），📐模板 新增「条漫 1×3 / 角色三视图 / 四格分镜」；⤢改稿 在多格草稿上照常工作、可批量填格；⚡拆解/⚡反推 回退提示；多格下 📥姿势/📥服装 自动分配禁用（选中注入与「🔄 对调」不受影响）。另修复：改稿 LLM 偶发漏 reason 字段导致空提案卡（自动补全，不再拒收）。用法见「Editor 使用要点 · 多格分镜」，AI 定向改稿见「可选功能」。
+
+把上游 agent 产出的**中文 MOSS-Image 提示词草稿或散文式提示词**，在 ComfyUI 里可视化编辑、翻译成英文、按官方口径编译，直接接原生 MOSS-Image 节点生图。
+
+```
+LoadImage ──> ImageReverse（可选）──> Editor ──> Translator ──> Compiler ──> 原生 MOSS-Image 节点
+                                         ▲                                        │
+                                         └────────── 生成图回接 Editor 当底图对比迭代 ──────────┘
+```
+
+上游 agent（可在其他设备运行 MOSS 官方 skill）产出的中文草稿，复制粘贴到 Editor 的 `source` 即可；也可以先用 ImageReverse 从图片反推出中文草稿。
+
+## 核心功能
+
+- **Editor：可视化画布**——拖拽/四角缩放/撤销重做、图层、重叠检测、比例与像素预设、16 倍数吸附、底图对比、实时校验；内置 📐 版式模板与文字容量提示；⤓提交 一键把当前画布冲进 edits 并体检（元素数/尺寸/归属签名，Queue 前也会自动做同样检查）。
+- **Translator：中→英**——OpenAI 兼容 LLM；`reuse_translation` 复用上次成功译文，反复出图不重复计费；粘贴已编译 JSON 时用 `canvas_width`/`canvas_height` 反解真实画布坐标。
+- **Compiler：官方口径**——按 OpenMOSS/MOSS-Image 官方 skill 编译与严格校验；caption 输出纯文本，layout/已编译输出单行 JSON。
+- **ImageReverse（可选）**——图片 → 中文散文 / 中文草稿 / 画布 JSON；四档模式，默认关闭。
+- **AI 定向改稿（可选）**——一句话修改要求 → LLM 只产操作清单 → 审批卡逐条采纳；**未被提及的元素逐字节不动**（详见「可选功能 · AI 定向改稿」）。
+- **姿势参考（可选）**——接 comfyui-pose-gallery 的 `description`，或手填/🎯 点选；支持 ⚡拆解展开与 📥本地短语注入。
+- **服装参考（可选）**——接 comfyui-costume-gallery 的 `description`，或手填；支持 ⚡拆解展开与 📥服装本地短语注入；与姿势段共存。
+
+Editor 的界面布局（LLM/姿势/服装双列面板、固定两行工具栏等）见「Editor 使用要点 · 布局与尺寸」。
+
+## 快速开始
+
+1. **安装**：把本目录放进 `ComfyUI/custom_nodes/`，重启 ComfyUI。插件不新增第三方依赖：HTTP/图像处理使用 ComfyUI 自带的 aiohttp / Pillow / numpy。
+2. **配置模型**：复制 `config.example.json` 为 `config.json`，按 provider 填 `base_url`/`model`/`api_key`；也可直接在节点 widget 填（节点值优先）。
+3. **主链接线**：`Editor.draft → Translator.draft → Compiler.draft → CLIPTextEncode/采样器`。caption 形态把 Editor 的 `width`/`height` 接 Compiler 的 `canvas_width`/`canvas_height`（推荐工作流已接好）。
+4. **文字输入**：把中文散文或 layout 草稿贴进 **Editor** 的 `source`；散文点 **⚡拆解** 生成画布，layout 草稿会直接识别。
+5. **接生成节点**：Compiler 的 `prompt`/`clip_text` 接正向 CLIPTextEncode，`negative` 接负向，`width`/`height` 接空 Latent；**不要再送 MOSS-Image Layout Prompt**。
+6. **可选入口**：图片反推接 `LoadImage → ImageReverse → Editor.reverse_in`；姿势接 `Pose Gallery.description → Editor.pose_in(_2)`；服装接 `Costume Gallery.description → Editor.costume_in(_2)`；改稿在 Editor 节点内完成（见「AI 定向改稿」）。都不影响主链。
+
+推荐工作流：[`examples/MOSS-Image-生图.json`](examples/MOSS-Image-生图.json)（Editor → Translator → Compiler → 采样的完整文生图流；升级注意事项见「升级与兼容」）。
+
+### 推荐工作流依赖
+
+缺节点用 ComfyUI Manager 安装；模型可换官方 MOSS-Image 权重，但 CLIP/VAE 必须匹配。
+
+| 类型 | 工作流中的文件/版本 | 放置/说明 |
+|---|---|---|
+| ComfyUI | 0.43+（工作流 core 节点记录 0.41–0.42） | 需要支持 `CLIPLoader` 的 `moss_image` 类型 |
+| 本插件 | MOSS Prompt Studio v1.8.0+ | Editor / Translator / Compiler / ImageReverse |
+| UNet | `rayMossArtshoot_sftTurboV1.safetensors` | `ComfyUI/models/unet/`；可替换为官方 MOSS-Image-Base/SFT，采样参数按模型卡调整 |
+| CLIP | `moss/qwen3.5_9b_int8_convrot.safetensors` | `ComfyUI/models/clip/`，`CLIPLoader` 类型选 `moss_image` |
+| VAE | `moss/flux2-vae.safetensors` | `ComfyUI/models/vae/` |
+| rgthree-comfy | `8ff50e4…`（Seed；另含 Label / Fast Groups Bypasser） | Manager 安装，版本以工作流节点记录为准 |
+| ComfyUI-Easy-Use | `b0b47ca…` / `005c578…`（easy cleanGpuUsed / easy showAnything） | Manager 安装 |
+| TESpeedMoss | 工作流节点 218 | 按该节点包来源安装 |
+
+### 目录结构
+
+```
+custom_nodes/comfyui-moss-prompt-studio/
+├── nodes/ + py/        # 四个节点与后端核心
+├── web/                # 画布/反推前端
+├── agents/             # 可下拉选择的追加注入指令
+├── AGENT.example.md    # 根目录注入文件模板
+├── config.example.json # LLM 连接配置模板
+├── examples/           # 推荐工作流 + 示例草稿
+├── tests/              # 离线测试
+└── LICENSE             # MIT
+```
+
+## 节点概览
+
+| 节点 | 作用 |
+|---|---|
+| **Editor** | 中文草稿/反推结果的可视化画布编辑，输出 `draft` + `width`/`height` |
+| **Translator** | 中文草稿 → 英文草稿（LLM；可开启译文缓存复用；已编译 JSON 需设置 `canvas_width`/`canvas_height`） |
+| **Compiler** | 官方口径编译 + 严格校验 |
+| **ImageReverse** | 图片 → 中文散文 / 中文草稿 / 画布 JSON（可选入口，`enabled` 默认关闭） |
+
+> 最小主链只需 Editor → Translator → Compiler；ImageReverse、姿势/服装图库与 AI 改稿都是可选入口。
+
+## Editor 使用要点
+
+### 画布、模板与文字
+
+- `source` 粘贴中文散文或 layout 草稿；`edits` 是自动生成、也可手改的布局 JSON。散文点 **⚡拆解** 生成画布，layout 草稿直接识别；普通 Queue 按输入哈希缓存，**⚡拆解** 每次强制重拆。
+- **canvas 画布模式**（检查器 summary 区下拉）：`multi_panel` 多格分镜——用法见下方「多格分镜（multi_panel）」。
+- **📐模板**：内置竖版海报 / 方形社媒 / 电商主图 / 杂志封面 / 人物介绍卡 / 四格分镜 / 条漫 1×3 / 角色三视图，载入后可 ↶撤销。
+- 文字框过小或过长会在状态行给出 ⚠ 容量提示（启发式估算，仅提示、不拦截提交）。
+- 图层行默认**折行显示完整 caption**，方便直接阅读简单的 JSON 画布；上移/下移/删除按钮保持右上角。
+- 画布支持拖拽、四角缩放、方向键微调、滚轮缩放、重叠检测；比例/像素预设会保持当前面积并自动对齐 16 倍数。
+
+### 多格分镜（multi_panel）
+
+`canvas: "multi_panel"` 是官方 layout 草稿的画布模式：**一条 prompt 生成一张含多个分格的图**（四格漫画/条漫/角色三视图）。分格由元素框在画面中的区域决定，分隔线由模型自行绘制（官方对该字段未提供语义文档，实测 bbox 布局是主要驱动力；该字段随草稿全程透传，未来模型强化其语义时零成本受益）。
+
+#### 路线一：从零开始（模板路线，推荐）
+
+前提：画布里有一个 Editor 节点即可，**不需要先 ⚡拆解**。
+
+**Step 1 载入分镜骨架**：点工具栏 **📐模板** → 选一个分镜版式 → 「使用」：
+
+| 模板 | 画布尺寸 | 自带元素 |
+|---|---|---|
+| 四格分镜 | 1024×1024 | 4 个格框（场景）+ 4 条台词条 |
+| 条漫 1×3 | 1024×1536 | 3 个横格 + 3 条台词条 |
+| 角色三视图 | 1536×1024 | 3 个角色框（正面/侧面/背面）+ 3 个视图标签 |
+
+载入后画布直接出现全部元素，检查器 summary 区的「canvas 画布模式」下拉自动显示 `multi_panel`，操作可 ↶撤销。
+
+**Step 2 认识画布元素**：图层列表的每一行对应画布上一个框——大框（label=object/character）是**该格的场景描述**（给模型看的），text 框是**该格台词**（会逐字渲染到画面上）。格与格之间靠框的位置区分：左上角的框就是第一格。
+
+**Step 3 填内容**，两条路任选（可混用）：
+
+- **路线 A · ⤢改稿批量填格（推荐）**：
+  1. 在「AI 改稿」输入框写一句话，按格列出内容，例：
+     `把四格分别改为：①清晨窗台伸懒腰 ②中午碗边大快朵颐 ③傍晚追毛线球 ④夜里蜷在窝里，每格配一句简短台词`
+  2. 点 **⤢改稿** → 审批卡逐行核对（每行标了 `#索引` 与改后内容，词级红绿 diff；单次最多 8 条操作，四格正好够用）
+  3. 勾选要的 → 「采纳所选」或「全部采纳」→ 画布更新，可 ↶撤销。改台词时若 🔒锁定画面文字 开着，改文字的行会被排除。
+- **路线 B · 手工逐项**：图层列表点选元素 → 检查器改 caption（该格场景）与 text（该格台词逐字）→ 在画布拖框调整格内布局。
+
+**Step 4（可选）姿势/服装**：**先在画布选中那一格的角色**，再点 📥姿势/📥服装——姿势短语只写进选中角色的描述（`；姿势：` 分段）。注意：
+
+- 未选中时点注入会**被拒绝**（多格下自动分配按左右/面积假设单场景，跨格分配语义错误）。
+- **同格双人 + 双人姿势**：把检查器 canvas 切回 `single` → 点注入（双人姿势整体生效）→ 再切回 `multi_panel`。模式切换只改 summary 字段，已注入的姿势分段无损。
+
+**Step 5 Queue 出图**：直接 Queue（走翻译 → 编译 → 采样）。canvas 字段随草稿直通模型；三个模板的画布尺寸已按格数配好，改尺寸用工具栏比例/像素选择器（会等比缩放所有框）。
+
+#### 路线二：从已有散文进 multi_panel
+
+先 ⚡拆解 把散文拆成单画布 → 检查器 canvas 下拉切 `multi_panel` → 把元素框拖进各格区域（或直接再载一个分镜模板覆盖重摆）→ 按路线一 Step 3 填内容。注意 ⚡拆解/⚡反推 的产物**固定是单画布**（触发时状态行会提示），多格模式需要手动切回或重载模板。
+
+#### 已知行为与边界
+
+- ⚡拆解 / ⚡反推 的产物固定为单画布（触发时状态行会提示），多格模式需重新选择或重新载入模板。
+- 模板载入会覆盖当前 canvas 模式（模板自带该字段）。
+- 多格草稿上 📥姿势/📥服装 的**自动分配被禁用**（左右/面积分配假设单场景，跨格分配语义错误）——选中角色后注入（逐 item 语义正确）或切回 `single`；「🔄 对调」仍可用。
+- 同格双人 + 双人姿势：切 `single` 注入后再切回 `multi_panel`，姿势分段无损。
+- 改稿（⤢）对多格草稿照常工作（操作是 item 级的），改 summary 的 canvas 字段也会出现在审批卡中。
+- 实测参考：四格/条漫/三视图均已真机出图验证（分格结构、格序、台词条逐字渲染）；模板自带的占位文案（如"第一格：场景开场"）需替换成具体内容，过于抽象的格描述可能得到空格。
+
+### 布局与尺寸### 布局与尺寸
+
+- **LLM/AI 选项双列**：左列 `ai_draft`/`provider`/`base_url`/`model`/`api_key`，右列 `temperature`/`thinking`/`timeout`/`agent_md`；`ai_prompt` 横跨两列。
+- **姿势参考双列**：`pose_in`/`pose_in_2` 并排；**服装参考双列**：`costume_in`/`costume_in_2` 紧随其后。两个面板的框都可拖右下角调整高度，节点会自动重新分配空间；有连线时输入框自动禁用（连线优先）。
+- `ai_prompt` 也可拖拽拉伸；面板随内容重新布局。新控件均尾追在既有控件之后，旧工作流 `widgets_values` 不错位。
+- **工具栏固定两行**：第一行 编辑工具 + 右端 `⇄同步`/`⧉复制`；第二行 注入/模板按钮 + 右端 **⚡拆解**（主色按钮，位于 同步/复制 正下方）。
+- 原标准 widget 被隐藏但仍参与工作流序列化，后端参数与 API 提交不变。
+
+### 归属、撤销与反推写回
+
+- `edits` 只对写入时的那份 `source` 生效（隐藏 `edits_source_sig` 记录归属）；换 `source` 后旧画布自动失效，以新 source 为准。
+- 撤销/重做保留完整画布历史；📐模板载入会保留撤销点。
+- 反推结果在执行结束后写回 Editor（prose/draft → source，canvas → edits），**随后再 Queue 一次**才会用新数据生成；同结果不覆盖手改。
+
+## LLM 配置
+
+| Provider | 默认地址 / 模型 | 说明 |
+|---|---|---|
+| `mimo` | 套餐地址 / `mimo-v2.6-flash` | MiMo Token Plan key |
+| `deepseek` | `https://api.deepseek.com/v1` / `deepseek-chat`（官方别名，当前映射 flash） | 支持图片 |
+| `minimax` | `https://api.minimax.cn/v1` / `MiniMax-M3.1-Flash` | M Plan/按量 key 不可混用；思考关不掉，off→low |
+| `custom` | 任意 OpenAI 兼容 URL | LM Studio / Ollama / 网关；本地 `api_key=EMPTY` |
+
+**配置与优先级**
+
+- 复制 `config.example.json` → `config.json`；**widget 值优先于 config**。
+- 三个 LLM 节点（Editor / Translator / ImageReverse）的连接配置各自独立；任一节点的 **⇄同步** 会把 `provider/base_url/model/temperature/thinking/timeout` 复制到另外两个节点，**`api_key` 不参与同步**。
+- Translator 的 `reuse_translation` 开启后，相同翻译输入（中文草稿/模型/思考/提示注入）复用上次成功译文，适合反复出图找最优图；关闭时强制重译并刷新缓存。
+- `max_tokens=0` 表示"插件默认"（按 provider 由请求体组装逻辑决定），不是服务商默认值。
+
+**key 安全**
+
+- 建议 key 放 `config.json`，节点 `api_key` 保持 `EMPTY`，避免分享工作流时泄露。**widget 里的 `api_key` 会明文保存进工作流 JSON 和 ComfyUI 执行历史（`/history` 的 `prompt.inputs.api_key`）**；保存/分享工作流、导出历史前务必确认节点里没有真实 key。
+- 只有目标 `base_url` 等于该 provider 的 config/官方默认地址时才回退配置 key；把 `base_url` 改成别的地址（含内网/攻击者地址）时必须显式填 key，否则不发 `Authorization`。`custom` 如需使用 config 里的 key，请同时在 config 的 `custom.base_url` 写入与节点一致的地址。
+
+**连接测试**
+
+- 连接测试路由要求 ComfyUI 页面同源，跨源请求直接拒绝；连接测试与主 LLM 通道共用跨主机重定向防护：服务端 3xx 指向其他 host/port 时直接报错，`Authorization` 不会被转发。
+- 连接测试默认拒绝 `localhost`/内网目标（即使请求来自同源页面）；需要测本地 Ollama / LM Studio 时在 `config.json` 顶层加 `"probe_allow_private": true`。
+
+**本地模型**
+
+- 本地 Ollama 用 `provider=custom` + `http://127.0.0.1:11434/v1`，并设置 `OLLAMA_CONTEXT_LENGTH=32768`。反推的 custom 非 manual 模式输出预算自动压到 16384，避免 65536 超过本地 32K 上下文；manual 模式尊重手填值。
+
+**Translator 的已编译输入**：`canvas_width`/`canvas_height`（默认 1024）只在粘贴已编译 JSON（`abs_centralized/yxyx`）时用于反解坐标；按原图尺寸填写，caption/草稿形态不影响译文。
+
+## 可选功能
+
+### AI 定向改稿（⤢改稿）
+
+对**已拆解的画布**做一句话修改：在「AI 改稿」框（`edit_request`）写要求（如「把标题改成『秋日』」「右侧加一只猫」），点工具栏 **⤢改稿**。
+
+- **LLM 只产出操作清单**（改描述/改文字/移动缩放/增删条目），不重写整稿；操作带目标指纹校验，指错条目会被拒收并在卡片中列出原因。
+- **审批卡逐条采纳**：词级 diff 预览、逐条勾选、全部采纳/采纳所选/全部拒绝；🔒锁定画面文字开关可排除改动可见文字的操作；采纳前实时显示文字容量与 token 提示。采纳写入画布后可 ↶撤销，拒绝零副作用。
+- **未被提及的元素逐字节不动**；选中某条目时自动限定只改该条目。
+- 等待期间手改画布 → 提案自动作废（不会覆盖手改）；反推写回画布后可直接 ⤢改稿 迭代。
+- headless/API：无需前端，`edit_request` 填要求 + `apply_edit=-2`，节点输出即改稿结果（自动应用）。
+- 改稿指令可通过 `agent_md` 下拉追加（自带示例 [`agents/revision-example.md`](agents/revision-example.md)：写要求的具体化建议）。
+
+### 图像反推（ImageReverse）
+
+随插件安装，最小接法 `LoadImage → MOSS ImageReverse.image`。`enabled` 默认关闭；要用时接好 Editor 后勾选并 Queue，或点 **⚡反推** 单次执行。
+
+`provider`/`base_url`/`model`/`api_key` 与 Editor/Translator 相同（留空读 `config.json`；本地 Ollama/LM Studio 用 `custom` + 准确模型 tag + `EMPTY`）。`reverse_mode` 提供 `concise`/`standard`/`detailed`/`manual` 四档：非 manual 使用预设，manual 才启用 temperature/thinking/max_items/max_tokens/image_detail/image_max_side 等细节控件。模式取值、预算与写回细节以节点 tooltip 为准；结果写回 Editor 后需再 Queue 一次。生图前建议关闭/旁路 `enabled` 的反推，避免完整 Queue 重跑并覆盖画布。
+
+### 姿势参考（comfyui-pose-gallery）
+
+**不接时 Editor / Translator / Compiler 与旧版行为完全一致**。需要姿势控制时：
+
+1. 用 ComfyUI Manager 或按其 README 安装 [comfyui-pose-gallery](https://github.com/wangweihong/comfyui-pose-gallery) 到 `custom_nodes/`，重启 ComfyUI（本地中文姿势图库）；本插件只消费其 `description` 文本输出，不分发其图片/索引。
+2. 接法：`Pose Gallery.description → Editor.pose_in`；双人时再接 `pose_in_2`。`pose_in`/`pose_in_2` 也支持手填和 🎯 点选（连线优先）。`pose_mode` 默认 `自动`。注意：**📥姿势 只替换 caption 末尾的姿势分段，不清理正文里的旧动作词**（反推画布常见"她双手叉腰站在…"式内联描写）——出现矛盾措辞时请用 ⚡拆解 彻底替换。
+3. 两种注入：**⚡拆解**（LLM 展开姿势，一次 LLM 调用）与 **📥姿势**（本地短语版，拆解后免费秒注入）；`pose_mode` 控制自动/强制双人/关闭；检查器可「🔄 对调两人姿势」。
+4. 文字姿势约束弱于深度图，效果受模型影响；复杂姿势建议 ⚡拆解 + `thinking=low`，骨骼级控制请走 pose-gallery 的深度链路。具体控件与注入规则以节点 tooltip 为准。
+
+> **pose-gallery 许可与免责**：其节点代码/画廊页面为 MIT；姿势图片、缩略图与原始数据不适用 MIT，权利归原作者 ギア（@giaaibusi），中文数据由 Anhao 整理（上游：wangweihong/ai-pose-gallery-zh、anhao/ai-pose-gallery-zh）。本插件不分发这些素材，仅运行时读取本地索引/缩略图；请阅读其 LICENSE/NOTICE 并保留署名。其 README 亦提示仅验证部分姿势组，手脚细节与精确关节角度可能偏离参考，请自行评估生成结果。
+
+### 服装参考（comfyui-costume-gallery）
+
+**不接时 Editor / Translator / Compiler 与旧版行为完全一致**。需要服装控制时：
+
+1. 按 [comfyui-costume-gallery](https://github.com/wangweihong/comfyui-costume-gallery) 的 README 安装到 `custom_nodes/`，重启 ComfyUI。**该节点没有输出级惰性：即使只接 `description`，每次执行也会解码 PNG，`VALIDATE_INPUTS` 还要求原图存在**，因此必须安装完整图库（约 **1.42 GiB**，其中 `library/png/` 约 1.33 GiB）；不能只装索引。
+2. 接法：`Costume Gallery.description → Editor.costume_in`；双人时再接第二个 Costume Gallery 的 `description → costume_in_2`。`costume_in`/`costume_in_2` 也支持手填（连线优先）。`costume_mode` 默认 `自动`，可选 `关闭` 做 A/B 对照。也可在「服装参考」面板手填：在 Costume Gallery 自带图库选中服装后复制 `description` 文本粘贴过来。
+3. 两种注入：**⚡拆解**（LLM 把关键词展开成完整服装描述，一次 LLM 调用）与 **📥服装**（本地短语版：`分类 / 关键词…` → `身穿…`，拆解后免费秒注入）；检查器可「🔄 对调两人服装」，与「对调两人姿势」互不影响。
+   - **📥服装会移除与目标角色重叠的旧服装 `object` 条目**（反推草稿常把旧连衣裙/网袜单独拆成 object，不移除会被画回去）；不重叠的场景服装（橱窗里的裙子）与背景/配饰不受影响。
+   - **注意混合**：📥服装只追加「；服装：」段；若画布 `summary`/角色描述里已写有旧衣服（反推草稿尤其常见），模型可能新旧混穿。检测到旧服装措辞时状态行会给出 ⚠；要彻底替换请用 ⚡拆解（LLM 会改写 summary 与角色服装）。
+4. 分配规则：单参考给最突出角色；双参考按 bbox 左右分配（左→`costume_in`，右→`costume_in_2`）；也可在画布选中角色后只注入它。服装没有"双人整体"语义。
+5. **不要**把 `Costume Gallery.image` 接到 `Editor.underlay`：underlay 是铺满画布的背景底图，不是 bbox 参考，而且会让 Editor 每次 Queue 都重跑。服装图只用于图库选择，不进主链路。
+6. 敏感分类：「内衣 / 性感 / 泳装」共 393 条（27.9%）。⚠ 提示是尽力而为：手填或常量节点连线时可读到服装文本，⚡拆解/📥服装 状态行会提示；**直接连 `Costume Gallery.description`（计算输出）时前端读不到文本、可能不提示**（📥服装 的后端控制台仍会记录）。均不拦截，走云端 LLM/翻译前请自行确认内容合规。具体控件与注入规则以节点 tooltip 为准。
+
+> costume-gallery 的许可与免责条款统一见文末「使用须知与免责声明」。
+
+## 输入格式（上游契约）
+
+上游 agent 的产物：中文 layout 草稿（`abs`/`xyxy`、宽高 16 倍数）或中文散文；画面可见文字在 `text` 字段原样保留。整段粘贴即可，不需要英文版或备注文件。
+
+## 提示词注入
+
+四个注入口可叠加：`AGENT.md`/`agent_md`（追加持久指令）、`system_prompt`（整体改写契约）、`extra_instructions`（连线逐次指令）、`extra_body`（最后合并请求体）。节点内可直接编辑，具体规则见 tooltip。
+
+## 升级与兼容
+
+- **旧 Editor 节点（≤v1.7.x 布局）**：删除后重新添加并重新连线；旧节点/旧连线的布局兼容不在保证范围内。示例工作流基于 v1.7.1 布局，同此处理。
+- **旧工作流 `widgets_values` 错位**：≤v1.7.2 的控件错位曾导致「运行成功但不出图」（v1.8.0 起 `canvas_width` 等已归一）；v1.10.0-beta 新增控件的错位（如 `apply_edit` 被解成空串致 400）由**前端加载归一 + 后端兜底**双保险处理，旧工作流直接 Queue 不再报错。
+- **v1.8.0 参考输入口缺失**（[issue #1](https://github.com/rabbitANDtank/comfyui-moss-prompt-studio/issues/1)，v1.9.0 已修复）：原因是参考输入框被整合进节点内双列面板后 ComfyUI 不再渲染输入口。v1.8.x 的绕过方法：在「姿势参考/服装参考」面板手填（或从图库复制 `description` 粘贴），🎯姿势①② 点选不受影响；**v1.9.0+ 已恢复输入口**，可直接连线。
+
+## 测试
+
+```bash
+python tests/run_tests.py     # 147 用例
+node --test tests/*.test.mjs  # 140 用例（glob 自动包含所有前端测试）
+```
+
+覆盖编译/识别/翻译/反推/连接测试/姿势注入/服装注入，以及前端纯逻辑、生命周期、写回和模式预设。控制台会打印 `[MOSS Studio] LLM ...` 日志，可用于排查耗时、重试和截断。真实 LLM 的姿势注入对照实验：`python tests/bench_ai_draft.py --variants pose_solo,pose_dual,pose_pair`（需 config.json）。
+
+## 版本与更新
+
+- **v1.10.0-beta2** **多格分镜**：检查器 summary 区 canvas 下拉（single/multi_panel，始终可见；collage 未实验不提供）；📐模板 新增「条漫 1×3」（1024×1536）与「角色三视图」（1536×1024），「四格分镜」本就是 multi_panel；⚡拆解/⚡反推 产物固定 single——多格模式回退时状态行提示；multi_panel 下 📥姿势/📥服装 **自动分配禁用**（跨格左右/面积分配语义错误；选中注入、🔄对调、⤢改稿 不受影响，同格双人可切 single 注入后切回、姿势分段无损）；README 新增多格分镜 step-by-step。**修复**：改稿 LLM 偶发漏 reason 字段导致空提案卡（自动补全，不再整卡拒收；指纹/scope/未知字段严格拒收不变）。官方 multi_panel 字段经三条件对照实验（multi_panel vs [PANEL n] vs 纯空间措辞）与真机出图验证。测试 Python **148** / Node **141**。
+- **v1.10.0-beta** **AI 定向改稿**（P1a 全量）：Editor 新增 ⤢改稿 + 审批卡（词级 diff/🔒锁定画面文字/lint/采纳带回滚/撤销）；LLM 只产 ops（7 种操作 + target 指纹核验 + scope），未被 op 引用的条目逐字节不动；`ui.mps_ops` 独立通道防版本偏斜；双 sig 锚定防在飞手改碾压；headless 自动应用（`edit_request`+`apply_edit=-2`）；agents/revision-example.md 示例指令；反推 canvas 写回后引导直接改稿。**契约加固**：官方编译器 vendor 差分（`tests/vendor/compile_prompt_official.py` + 300 例固定种子 fuzz 逐字节一致）+ 编译 item 键序对齐官方；拆解提示词补 3 条官方写作规则（一段文字一个 item/知识图实内容/海报层级）；text_fit 补官方处置口径。**修复**：旧工作流 apply_edit 错位 400（前端归一+后端兜底）、锁文字被全部采纳绕过（B1）、mps_ops 双投递重复开卡（B2）。示例工作流清除失效 base_url/model（401 陷阱）。测试 Python **145** / Node **140**；六轮验证（单测→双 ponytail 审查→真机交互→嵌入缝隙→全链路出图+视觉确认→终审 GAP 闭环）。
+- **v1.9.2**：修复画布手调在防抖窗口内 Queue 被静默回滚的问题（翻译节点因此拿不到最新 JSON 的根因；注入前会先采纳防抖窗口内的手改）；新增工具栏 **⤓提交** 按钮——一键把当前画布冲进 edits 并体检（元素盘点/全局描述字数/尺寸/官方校验/文字容量与 token/归属签名）。Python **120** / Node **131**。
+- **v1.9.1** **数据安全**：粘贴非法 source 不再清空画布与撤销栈（保留原画布并提示冲突）；Queue 前手改 edits 解析失败直接否决提交并提示，不再等后端报错中止整条队列；LLM 输出中途截断（content_filter/网关截断，`finish_reason` 异常）改为报错重试，绝不静默补全成半截稿。**行为回归**：layout 出图尺寸恢复跟草稿走（与 v1.8.x 一致；改尺寸用工具栏比例/像素选择器，前端确认后等比缩放所有框）。**交互**：换图自动启用反推仅在已接 `reverse_in` 时生效并同步勾选框 UI（未接线不再弹假提示）；注入/服装/提交在飞时改 source 不再重置画布、丢弃结果。**健壮性**：MiniMax 限流类业务码可重试（仅鉴权/参数/模型不存在判永久）；base_url 显式 `:443`/`:80` 与省略写法归一（config key 安全回退不再误拒）；`snap16` .5 边界恒定向上取近；tags/palette 数组只收非空字符串（垃圾元素不再混进编译 prompt）；底图保存失败输出日志不再静默。**链路审计补漏**：直接在 widget 数字框改画布尺寸不再把已拆解布局静默打回散文（守卫提示改用工具栏选择器或 ⚡拆解）；换 source 后 700ms 内的手改 edits 不再被错误归属到新 source（拒绝接管并提示，防旧画布冒充新稿）；手改 JSON 删掉 `summary` 不再崩掉检查器；`finish_reason` 的 `end_turn`/`eos`/`stop_sequence` 合法变体放行（custom provider 常见）；外部 API 传 bool 的 `apply_pose/costume` 回落为不注入。**可维护性**：官方字段集归一 `compile_prompt` 单一来源；新增前后端常量对拍测试与 FNV 黄金值（marker/反推预设/词表任一侧漂移即红）；两处 ComfyUI 前端内部结构 hack 加降级提示（issue #1 复发路径可感知）。
+- **v1.9.0**：反推三输出（散文/草稿/画布）接入 `reverse_in` 后自动写回（prose/draft 写入 source、canvas 写入 edits，写回后需手动 ⚡拆解），**更换上传图片自动启用反推**（仅在已接 reverse_in 时生效并同步勾选框）；**恢复 `pose_in`/`costume_in` 的左侧输入口**（[issue #1](https://github.com/rabbitANDtank/comfyui-moss-prompt-studio/issues/1)），可直接连线 Costume/Pose Gallery；修复注入结果卡死（队列空自愈 + 超时兜底随 LLM timeout 放宽）与翻译顶层 meta 容错；后端/前端/测试按职责模块化重构，行为兼容 v1.8.x。服装注入不再误删画面文字条目；layout 出图尺寸跟草稿走（与 v1.8.x 一致），改尺寸用工具栏比例/像素选择器（前端确认后等比缩放所有框并写回画布）。Python **106** / Node **130**。
+- **v1.9.0-beta0**：纯架构重构版，**用户可见行为零变化**（节点名/输入输出/工作流兼容性不变）。`py/translate.py`（1402 行）拆为 llm_client/agent_md/caption_segments/inject_pose/inject_costume/draft_repair 六个职责模块，原文件保留为门面 re-export；`web/js/editor_canvas.js`（2705 行）拆为 11 个 `editor/` 模块（styles/dom_shell/canvas_render/items/inspector/edits_sync/template_panel/pose_panel/inject_flows/run_status/translator_panel），主文件仅剩组装骨架（441 行）；`tests/run_tests.py`（3237 行）拆为 `tests/py/` 11 个用例文件 + 自动收集 runner（新增测试不再需要注册列表）。拆分经逐字节一致校验与行为冒烟轨迹对比验证；Python **102** / Node **128** 与拆分前完全一致。测试 runner 勿并发运行（见文件头注释）。
+- **v1.8.0**：新增可选服装注入（comfyui-costume-gallery `description → costume_in(_2)`、`costume_mode`、📥服装、🔄 对调两人服装）；caption 改为通用分段解析，姿势/服装/遮挡后缀可共存且互不删除；修复连续快速注入的结果误判（submit token）与反推草稿旧服装 object 残留；新增敏感分类/旧服装混合提示；⚡拆解 改为主色大按钮；Editor/Translator 画布宽高控件类型归一（旧工作流错位导致的「运行成功但不出图」）。Python **102** / Node **128**。
+- **v1.7.2**：Editor 布局更新（LLM/AI 选项双列、姿势框双列可调高、`ai_prompt` 可拉伸、图层全文折行）；Translator 译文缓存与非 1024 已编译输入（`canvas_width`/`canvas_height`）；P0 官方契约修正（caption 纯文本、空 `meta/tags/palette`、非 text `text`、bbox 精度）；修复 Python/JS 验证器分叉、队列结果归属/重复卡死/事务写回、SSRF 100.64/10、探测错误体限长、`agent_md` 删除锁死、检查器焦点、画布高度与指针清理。Python **90** / Node **112**。
+- **v1.7.1**：新增可选姿势注入节点并加固连接测试、缓存与资源生命周期。
+
+## 设计依据与致谢
+
+- 编译器与校验规则移植自 [OpenMOSS/MOSS-Image](https://github.com/OpenMOSS/MOSS-Image) 官方 skill（`skills/moss-image-prompt-enhancer`），保证与官方口径一致；`tests/vendor/compile_prompt_official.py` 为原样引入的官方编译脚本（Apache-2.0，仅测试差分对拍用，不参与运行时），`tests/py/test_golden_official.py` 用它对每个边界语料与 300 例固定种子 fuzz 做逐字节差分。
+- 画布交互改编自 [swan7-py/json-prompt-visualizer](https://github.com/swan7-py/json-prompt-visualizer) 的 canvas.py（拖拽/缩放/撤销/重叠闸门/坐标换算思路），适配为 ComfyUI 前端扩展。
+- 指令文件的追加注入语义参考了 [Codex-X](https://github.com/yynxxxxx/Codex-X) 的 Append 托管块设计。
+- 姿势图库集成与中文姿势数据来自 [wangweihong/comfyui-pose-gallery](https://github.com/wangweihong/comfyui-pose-gallery)；感谢开发者 wangweihong，以及原始姿势画作者 ギア（@giaaibusi）与中文数据整理 Anhao。
+- 服装图库集成与中文服装数据来自 [wangweihong/comfyui-costume-gallery](https://github.com/wangweihong/comfyui-costume-gallery)；感谢 wangweihong、Deeyu 与原始素材作者 ギア（@giaaibusi）。
+
+## 使用须知与免责声明
+
+本项目只提供提示词编辑、翻译和格式转换，本身不生成、不托管、不审核图像内容。请仅用于合法目的，并自行确保输入、生成内容和发布行为符合适用法律法规、目标平台条款及第三方模型/API 政策；API key 由你自行保管。
+
+本项目可选集成 comfyui-pose-gallery 与 comfyui-costume-gallery：两者节点代码均为 MIT（costume-gallery 的 `LICENSE` 含仅覆盖代码/脚本的 Scope 条款，GitHub 因此把该仓库识别为 `NOASSERTION`）；姿势/服装图片、缩略图与原始数据均不适用 MIT——权利归原作者 ギア（@giaaibusi），中文数据分别由 Anhao（姿势）与 Deeyu（服装）整理，节点与中文版由 wangweihong 维护。本插件不分发这些素材：姿势侧仅运行时读取本地索引/缩略图，服装侧仅消费本地已安装节点输出的 `description` 文本；请阅读各仓库的 `LICENSE`/`NOTICE.md`/`THIRD_PARTY_NOTICES.md` 并保留署名。
+
+严禁用于制作或传播违法内容（包括 CSAM、非自愿色情、暴力、仇恨、骚扰、恐怖主义、诈骗、虚假信息，以及侵犯他人合法权益的内容），严禁绕过平台安全机制或冒充他人。AI 输出可能不准确或不合适，请自行审核并对使用结果负责；在适用法律允许的范围内，作者与贡献者不对任何直接或间接损失、法律责任或第三方索赔负责。本项目按 MIT 许可"按原样"提供，不附带任何担保；本声明不构成法律建议。
+
+> For lawful prompt engineering only. Users are solely responsible for their inputs, outputs, and compliance with applicable laws and third-party terms. No warranty; no liability for misuse.
+
+## 许可
+
+MIT（见 [LICENSE](LICENSE)）。

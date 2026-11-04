@@ -8,6 +8,7 @@
 
 - [Attention](#attention)
   - [Attention Architecture](#attention-architecture)
+  - [Retrieval Heads](#retrieval-heads)
 - [LLMs](#llms)
   - [Foundation Models](#foundation-models)
   - [Inference](#inference)
@@ -98,6 +99,12 @@
 - **Fast Transformer Decoding: One Write-Head is All You Need** (2019.11) \
   **Description**: This paper introduces multi-query attention, sharing keys and values across attention heads to reduce the memory-bandwidth cost of incremental Transformer decoding. The variant speeds up decoding substantially while incurring only minor quality degradation relative to multi-head attention baselines. \
   <a href="https://arxiv.org/abs/1911.02150"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+
+## Retrieval Heads
+
+- **A Broader Look into MLLM's Retrieval Heads** (2026.10) \
+  **Description**: Across 18 language, vision-language, and omni-modal checkpoints, this paper finds that a sparse set of retrieval attention heads is largely shared across modalities and retained during modality adaptation; ablating these heads sharply impairs audio-visual retrieval. Training their attention with a ranking objective improves Qwen3-VL-8B's page Recall@1 on MMDocIR by 6.03 points. \
+  <a href="https://arxiv.org/abs/2610.32411"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
 
 # LLMs
 
@@ -541,6 +548,12 @@
 
 ## Optimization
 
+- **Think Less, Locally: Local Preference Learning for Reasoning Compression** (2026.11) \
+  **Description**: LoCo identifies overthinking states in self-generated reasoning traces, regenerates shorter verified continuations from the same prefixes, and uses DPO on these local preference pairs to teach when to conclude. Trained only on mathematics, it cuts completion length by 41.7–45.4% on math and 23.4–36.3% on code while maintaining or improving accuracy. \
+  <a href="https://arxiv.org/abs/2611.04814"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/MuyaoYuan/LoCo"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/MuyaoYuan/LoCo-7B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **PowLU: An Activation Function for Stable Pre-Training of LLMs** (2026.05) \
   **Description**: This paper identifies SwiGLU's near-quadratic amplification on large positive inputs as a source of outliers and numerical instability in low-precision large-scale LLM pre-training. It proposes Power Linear Unit (PowLU), a rational-power activation that preserves adaptive nonlinearity while stabilizing spike regions, with scaling-law and Ling-model experiments showing competitive performance and improved training scalability. \
   <a href="https://arxiv.org/abs/2605.25704"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -829,17 +842,4 @@
   <a href="https://github.com/bigai-nlco/LatentSeek"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
 
 - **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning** (2025.01) \
-  **Description**: This paper shows that pure reinforcement learning can directly elicit advanced reasoning behaviors in LLMs without human-labeled reasoning traces. The proposed framework induces self-reflection, verification, and adaptive strategy use, leading to strong gains on math, coding, and STEM reasoning tasks. \
-  <a href="https://arxiv.org/abs/2501.12948"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://huggingface.co/deepseek-ai/DeepSeek-R1"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models** (2024.02) \
-  **Description**: This paper introduces DeepSeekMath 7B, combining a carefully engineered web-scale math data selection pipeline with Group Relative Policy Optimization (GRPO), a PPO variant. The approach improves mathematical reasoning while reducing PPO's memory usage, reaching strong competition-level MATH performance without external tools or voting. \
-  <a href="https://arxiv.org/abs/2402.03300"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/deepseek-ai/deepseek-math"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/deepseek-ai/deepseek-math-7b-rl"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-## Agentic RL
-
-- **Sharpening Tax in Post-Training** (2026.10) \
-  **Description**: This paper finds that RL post-training often raises agents' sing
+  **Description**: This paper shows that pure reinforcement learning can directly elicit advanced reasoni

@@ -12,7 +12,7 @@ hermes plugins install --enable https://github.com/SouthpawIN/turbofit.git
 
 ---
 
-## Start here: TurboSouth
+## TurboSouth
 
 **TurboSouth is TurboFit's support profile — an agent that installs TurboFit for you.** It inventories your hardware, compares it against the current catalog, installs the model that fits, proves it with a real completion, and fixes what breaks. When it finds a reusable bug it opens a tested PR against TurboFit.
 
@@ -27,7 +27,7 @@ Configure auto for this machine with no cloud fallback.
 Auto keeps picking the wrong model for my card — fix it.
 ```
 
-TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` works too — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first** (or just use `scripts/install`, which does both and verifies it).
+TurboSouth installs TurboFit when it is missing, then verifies it with a real completion. **Install TurboSouth** with `scripts/install` (it installs the plugin first and proves it with a real completion) or with `hermes profile install`. TurboSouth is a *profile*, not a second product: one TurboFit implementation, one support surface, and the sovthpaw pet arrives with it. `hermes profile install https://github.com/SouthpawIN/turbosouth.git --name turbosouth --yes` works too — but Hermes does not act on a distribution's `dependencies:`, so run the plugin install **first** (or just use `scripts/install`, which does both and verifies it).
 
 ## Install
 
@@ -55,6 +55,8 @@ hermes config set providers.turbofit.api http://127.0.0.1:8091/v1
 git clone https://github.com/SouthpawIN/turbofit.git
 cd turbofit && scripts/install.sh
 ```
+
+Hermes scans a plugin's files the first time it installs it, so expect a couple of minutes with no output before `✓ Plugin turbofit enabled.` A script that gives up after 60 s will look like a hang; it is not.
 
 **Verify — any path.** A refused `http://127.0.0.1:8091/v1/models` means the *TurboFit* gateway is down, not the Hermes messaging gateway. Then:
 
@@ -103,6 +105,8 @@ Two ladders, never one. Dense on dedicated VRAM; Mixture-of-Experts on unified/C
 | 16–63 GB | Cyber-Tiel Coder 35B-A3B (UD-IQ3_XXS → Q6_K_XL by band) | 262k |
 | 64 GB+ | Qwen 3.8 Flash Next (Strata) | 262k |
 
+**Auxiliary slots** — same catalog, same evidence rules: **MiniMax Music 3** (music), **NVIDIA Parakeet TDT 0.6B v3** (transcription), **Soprano TTS** (speech), with **Ornith 1.5 35A3B** and Maple Preview 20B-A1B eligible for the light text slots.
+
 Rules that hold at every rung: MTP on wherever the model supports it; **IQ3_S is lossless**, so 32 GB and 48 GB both stay on it rather than paying for a heavier quant; DFlash2 drafters belong to Qwen only, Bonsai keeps its own Prism DSpark sidecar.
 
 **Chain options** — `references/fallback-chain.json`, swappable per slot, all `candidate` until measured on the box in question:
@@ -111,24 +115,6 @@ Rules that hold at every rung: MTP on wherever the model supports it; **IQ3_S is
 - **DeepSeek V4.1 Flash** — GSQ-RCO **and** a Strata build; 763B/16B MoE, so a 96 GB+ rung, not a 48 GB default.
 - **Muse Glimmer 30B (Hermes-Agentic)** — agentic-tuned 30B, head-to-head candidate against GSQ-RCO.
 - **LFM 24A2B** — 24B total / 2B active MoE candidate. **GROOT** — candidate, artifacts not yet pinned.
-
-## Benchmarks
-
-Measured, not estimated: real `/completion` calls. A rung with no number here is **unmeasured**, and the UI labels it that way.
-
-**2× RTX 3090 (24 GB each), 2026-08-22 — 8k context, 128 generated tokens**
-
-| Model | Decode | Prefill | Source |
-|---|---|---|---|
-| Bonsai 27B Q1_0 | **63.8 tok/s** | 65.9 tok/s | `references/results/hardware-tier-tps-2x24-20260822.json` |
-| Qwen 3.8 27B Q4_K_M | **37.7 tok/s** | 58.7 tok/s | same |
-| Carwin MoE Nano (aux) | **132.5 tok/s** | 137.3 tok/s | same |
-
-**Long-context sweep, same box:** Bonsai 27B holds 58.5 tok/s at short context and 9.4 tok/s at the far end; Ornith 1.5 35A3B 31.2 → 10.8 tok/s; Carwin MoE Nano 24.6 → 11.6 tok/s. Context is not free — that is why the chain sheds it first.
-
-**Cross-device, 2026-11-03:** a GPU-less node asked `auto`, the MacBook served `cyber-tiel-coder-35b-a3b` — 124.9 tok/s prefill, 27.5 tok/s decode, 237 s wall clock of which ~235 s was cold load, not inference.
-
-**Not yet measured:** every IQ3_S rung, Flash Next, DeepSeek V4.1 Flash, Glimmer 30B, LFM 24A2B, GROOT, and every Apple Silicon tier. `scripts/turbofit-catalog-campaign` (fit + TPS) and `scripts/turbofit-intelligence-campaign` (pinned DeepSWE plus the agentic main/aux pair) are how a number gets here; `scripts/turbofit-promote-list-winner` refuses to promote without exact-tier evidence.
 
 ## Tailscale: use any model from any of your devices
 
@@ -141,10 +127,24 @@ tailscale serve --bg --https=443 http://127.0.0.1:8091
 provider: custom:turbofit   base_url: https://<node>.your-tailnet.ts.net/v1   model: auto
 ```
 
+Start the local endpoint with `/turbofit serve` (background: `scripts/turbofit-gateway.py`), prove it from the other device with `/turbofit smoke`, and point clients at the tailnet address. TurboFit never uses Funnel — nothing here needs public ingress, and a peer is only ever reachable across your own tailnet.
+
 - `auto` on a node with no GPU delegates to a healthy peer instead of failing.
 - A peer's model is addressable as `peer.ts.net/model-name`; a bare `model-name` resolves to whichever peer serves it.
 - A model you name explicitly is **never** silently answered by a hosted API — you get a retryable `503` naming it. Substitution is legal only for `auto`/`active`, and only when `TURBOFIT_ALLOW_API=true`.
 - Plain HTTP is honoured only on loopback and Tailscale addresses; anything else needs HTTPS.
+
+## Built on Hermes' own runtime
+
+TurboFit is a plugin *on top of* Hermes, not a parallel stack. Hermes already ships a managed llama.cpp runtime — PM-pinned engines, one supervised router-mode server, a context ladder with growth, a hardware budget with physics checks, MTP launch flags, idle unload. Those are adopted rather than re-implemented:
+
+```bash
+scripts/turbofit-hermes-bridge        # 10 of 10 primitives adopted from Hermes
+```
+
+What TurboFit adds, because Hermes has no equivalent: external pressure sensing, residency yield and restore, the two evidence-gated ladders, the federated gateway, and the benchmark campaigns. Hermes keeps deciding *how* a server lives; TurboFit decides *what* runs and *when it steps aside*.
+
+Strata gets the same treatment — `scripts/turbofit-strata` prints the plan the engine will be launched with, from the 0.2.10 rules (8 GB cards start at 128K, DFlash2 by default, the all-cards split engine when two sm 8.6 cards have the RAM).
 
 ## Keeping it current
 
@@ -154,6 +154,14 @@ scripts/install-self-update --dry-run  # print the units first
 ```
 
 Engine binaries are PM-pinned and never downloaded at boot. TurboFit tracks upstream llama.cpp (stock and atomic forks), Strata, MLX, Prism/DSpark and DFlash2 by version; `references/binary-selection.md` decides stock-vs-fork per model, not per machine.
+
+## Troubleshooting
+
+- **`WinError 10061` on Windows** — connection refused on `127.0.0.1:8091`: nothing is listening there. That port belongs to the TurboFit gateway, not the Hermes messaging gateway. Start it (`/turbofit setup`, or `scripts/turbofit-gateway.py`) and confirm with `curl http://127.0.0.1:8091/health`.
+- **"no evidence-backed configuration fits"** — your topology has no measured rung yet. Run `scripts/turbofit-catalog-campaign`, or pick from `compatible_lanes` in the `/turbofit` report.
+- **A model answers from the cloud** — only `auto`/`active` may cross to an API backend, and only with `TURBOFIT_ALLOW_API=true`. Naming a local model returns a retryable `503` instead of a substituted answer.
+- **Windows specifics** — [`docs/windows-native-install.md`](docs/windows-native-install.md) covers the native install, the 8091 port check and the WinError 10061 path.
+- **Strata feels slower after an update** — run `scripts/turbofit-strata`: the app (0.2.10) and its engine packages (0.1.56) version independently, and so do its drafters.
 
 ## Docs
 

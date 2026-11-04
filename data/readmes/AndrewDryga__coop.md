@@ -32,7 +32,7 @@ The [website](https://coop.dryga.com) shows how it works, and the
 Agents do what they read in code, docs and issues, even when an attacker wrote it. A comment hidden
 in a README can tell your agent to post your SSH key in an issue. In the box there is no key to
 post. A package the agent installs can try to send your `.env` to a stranger's server. In the box
-`.env` cannot be read, and with filtered networking that server can't be reached.
+`.env` cannot be read, and with filtered networking, the default, that server can't be reached.
 
 Sometimes the agent just gets it wrong. An agent cleaning up can run `rm -rf tests/ plan/ ~/`. In
 the box, that `~/` isn't your home folder, and your files aren't there.
@@ -53,16 +53,17 @@ coop build --egress open && coop doctor
 
 co:op runs on macOS and Linux with Docker. Online provider runs use Docker's private network
 namespace to keep credentials outside the box. Apple's
-[`container`](https://github.com/apple/container) remains available for raw open-network workloads,
-not provider-brokered or filtered runs. co:op prefers Docker when both are present. The `coop` binary is static.
+[`container`](https://github.com/apple/container) remains available for raw workloads run with
+`--egress open` or `--egress offline`, not provider-brokered or filtered runs. co:op prefers Docker
+when both are present. The `coop` binary is static.
 
 `coop update` updates the binary, then uses the installed version to prepare the image for this
-project's network mode. Filtered projects build on the pinned client base; open and offline
-images refresh their base components. If a filtered project needs a build later, an interactive
-provider launch can offer Build and continue. Review the saved snapshot before approving;
-unattended runs still require an explicit host build. Each release carries pinned agent CLIs and
-ACP adapters. To build
-from source, run `git clone https://github.com/AndrewDryga/coop && cd coop && make install`.
+project's network mode. Filtered projects rebuild the files you approved with `coop build` on the
+pinned client base; open and offline images refresh their base components. If a filtered project's
+build files are new or changed, an interactive provider launch can offer Build and continue.
+Review the saved snapshot before approving; unattended runs wait for `coop build` on the host, and
+an editor connects and holds your messages until it finishes. Each release carries pinned agent
+CLIs and ACP adapters. To build from source, run `git clone https://github.com/AndrewDryga/coop && cd coop && make install`.
 
 <a name="verifying-a-download"></a>
 <details><summary>Verifying a download</summary>
@@ -114,9 +115,13 @@ in to, so sign in first.
 Each agent starts with its own "don't stop to ask" flag on (`--dangerously-skip-permissions`,
 `--dangerously-bypass-approvals-and-sandbox`, `--yolo`, `--permission-mode bypassPermissions`).
 An agent that goes off the rails works on the repo you gave it, which you can restore from Git,
-and the rest of your computer stays out of reach. Anything after the agent's name goes to the agent, so `coop claude --continue` resumes
-Claude's last session in the box. Codex is the exception: its `-p` picks a profile, so run a
-one-shot prompt with `coop codex exec "…"`.
+and the rest of your computer stays out of reach. Arguments after the agent's name go to the
+agent, so `coop claude --continue` resumes Claude's last session in the box. Codex is the
+exception: its `-p` picks a profile, so run a one-shot prompt with `coop codex exec "…"`.
+
+co:op answers `--help`, `-h` and a leading `help` or `login` itself, and takes its own options
+such as `--peer` and `--egress`. Put `--` before them to pass them to the agent, as in
+`coop claude -- --help`.
 
 Other ways in:
 
@@ -133,14 +138,16 @@ coop run -- npm test                          # any command in the box
   aren't in it.
 - Secret files like `.env` stay on your computer, and the box cannot read their contents.
   `coop check-secrets` finds secrets inside your other files, and `.coopignore` hides more paths.
-- With filtered networking, the box reaches your AI provider and the domains you approve. Everything
-  else is blocked, so your code can't go anywhere you haven't approved.
+- Networking is filtered by default: the box reaches your AI provider and the domains you approve.
+  Everything else is blocked, so your code can't go anywhere you haven't approved.
 - Native history and settings belong to the current repository; other projects' conversations stay
   outside its provider homes. Provider credentials stay in host-only storage and a run-local broker.
 - There are no Git credentials inside. The agent commits in your name, and you decide what leaves
   your computer.
 
-`coop doctor` checks all of this against the real box on your computer. Read more in
+`coop doctor` checks secret hiding, host access, credential isolation and offline networking
+against the real box on your computer. `coop net setup` checks that this computer can enforce
+filtered networking, and the first filtered run does that check for you. Read more in
 [the guide](https://coop.dryga.com/docs.html#sandbox), [the box](docs/box.md) and
 [networking](docs/networking.md).
 
@@ -193,10 +200,11 @@ this computer. Optional [provider reports](docs/usage-reports.md) show API spend
 
 ## Your project's tools and services
 
-If your repo pins versions in `.tool-versions`, `coop init` builds them into the box's image. For
-anything more, describe the image in `.agent/Dockerfile`. Postgres, Redis and anything else in your
-Compose file run beside the box, each in its own container. With filtered networking they share a
-private network with no direct internet. `coop up` starts them, `coop down` stops them and keeps their data, and
+If your repo pins versions in `.tool-versions`, `coop init` writes an `.agent/Dockerfile` that
+installs them, and `coop build` builds it into the box's image. For anything more, edit or write
+`.agent/Dockerfile` yourself. Postgres, Redis and anything else in your Compose file run beside
+the box, each in its own container. With filtered networking they share a private network with
+no direct internet. `coop up` starts them, `coop down` stops them and keeps their data, and
 `coop down --delete-volumes` also deletes their data.
 
 See [the box](docs/box.md).
@@ -239,8 +247,8 @@ See [evaluations](docs/evals.md).
 ## Build and test
 
 co:op is one static Go binary. `make install` builds it into `~/.local/bin`, and `make check` runs
-the gate CI runs, less the plain unit pass whose tests its race tests repeat, but not its minimal
-PATH. [CONTRIBUTING.md](CONTRIBUTING.md) covers the source layout and the test layers.
+nearly every check CI runs. [CONTRIBUTING.md](CONTRIBUTING.md) covers the source layout, the test
+layers and the one CI pass that `make check` leaves out.
 
 ## License
 

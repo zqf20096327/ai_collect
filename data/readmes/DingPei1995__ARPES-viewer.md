@@ -5,7 +5,7 @@
 [![User Guide](https://img.shields.io/badge/📖_User_Guide-English-blue?style=flat-square)](https://github.com/DingPei1995/ARPES-viewer/blob/main/docs/USER_GUIDE_en.md)
 [![Local Agent Settings](https://img.shields.io/badge/🤖_Local_Agent_Settings-blue?style=flat-square)](https://github.com/DingPei1995/ARPES-viewer/blob/main/docs/AGENTIC_WORKFLOW_en.md)
 
-**Version 1.3.1** (last modified 3 November 2026) -- what changed is in
+**Version 1.3.2** (last modified 4 November 2026) -- what changed is in
 [CHANGELOG.md](CHANGELOG.md). For non-commercial use only; see the
 [terms of use](#terms-of-use-citation-and-licence).
 
@@ -13,6 +13,26 @@ A Python/PyQt5 program for ARPES data: browse the measurements of a
 beamtime, open them in their own windows, convert to momentum, cut, fit,
 process, compare with a band-structure calculation, and lay the results out
 as a publication figure.
+
+> **A note from the author on AI agents.** Talking with beamline users, I
+> heard two concerns again and again: running an AI agent on local data
+> is unfamiliar, and the data might end up with an AI company and be used
+> for training. The **AI assistant** panel (top of the tool panel) is my
+> answer to the first. Choose the data folder and the results folder,
+> tick a few options, and it writes the prompt to paste into your AI app.
+> No configuration and no manual to read first. Every step the agent runs
+> is listed with its code and output, a status light shows its state, and
+> **Pause** hands the controls back to you at any time
+> ([how it works](#starting-and-watching-an-agent-from-the-ai-assistant-panel)).
+> On the second concern: the raw data files stay on your computer and are
+> processed there. What the agent *reads* is sent to the AI provider as
+> part of the conversation: printed results, fitted values, and the
+> pictures it inspects to judge a step. Whether that is used for training
+> depends on your provider and your account settings, so check them.
+> Keep private code out of any folder the agent can reach. In my view, AI
+> in ARPES experiments and analysis is here to stay. An experiment update
+> prepared by the agent, which you check step by step, is a low-risk way
+> to get familiar with it.
 
 ---
 
@@ -142,35 +162,82 @@ In the step 3 fit it recovers what was built into the demo calculation
 
 ## An AI agent can drive it
 
-The computations live in `arpes_viewer/tools/`, free of any user interface;
-the windows can run off-screen (`QT_QPA_PLATFORM=offscreen`) and be driven
-call by call as a user drives them; each step is documented in the
-[user guide](docs/USER_GUIDE_en.md) and in the technical references beside
-the code; and a saved figure records the data and the original files behind
-every panel. So a coding agent given this repository and a folder of data
-can be asked in plain words -- *"convert the Γ-plane map to momentum,
-compare it with the Wannier calculation in `calc/`, and make a figure like
-example figure 1, with constant-energy maps at E_F, −0.3, −0.6 and
-−0.9 eV"* -- write and run the script, look at the PNG it made, and refine
-it, through to a figure ready for a manuscript. The user guide's
-[worked example](docs/USER_GUIDE_en.md#30-worked-example-two-figures-in-the-figure-composer)
-does the same by hand.
+Talk to your AI app (the Claude desktop app, Claude Code, any agent that can
+read and write files) in plain words -- *"today I process the kz maps in
+this folder: align the Fermi levels, convert to momentum with Γ at 80 eV,
+draw the zone, and make a slice-series figure"* -- and it drives the program
+on your screen, step by step, while you watch and can take over. Data stay
+on your computer.
 
-**The MCP server.** The program is also an MCP server, so an agent of any
-model (Claude, GPT, Gemini, a local model in an MCP-capable client) can call
-it: open and describe data files, read EDCs, MDCs and pictures out of them,
-fit the Fermi edge, convert to momentum, save -- and, with the program
-started as `arpes-viewer --agent-bridge`, drive the window on screen (run
-any tool, take screenshots). Add to the client's MCP configuration:
+- **Start**: press **AI assistant...** (top of the tool panel), choose the
+  data and results folders, tick what you want (step by step, a usage log,
+  a report, slides, hiding the sample's identity ...), and press **Copy the
+  prompt and start**; paste the prompt into your AI app. The window then
+  lists each step the agent runs, and **Pause** hands you the controls. The
+  agent reads `arpes_viewer/agent/API.md`, the program's ~50 documented operations
+  (`L.fermi_edge`, `L.kz_to_k`, `L.bz_overlay`, `L.slice_series`,
+  `L.figure_render` ...), instead of the source.
+- **Other routes**: an MCP app (`arpes-viewer-mcp`; with the program
+  started as `arpes-viewer --agent-bridge` it calls the same operations), or
+  a coding agent writing a script to keep, on the headless workspace and the
+  Qt-free computations in `arpes_viewer/tools/`.
 
-```json
-{"mcpServers": {"arpes-viewer": {"command": "arpes-viewer-mcp"}}}
-```
+### Starting and watching an agent from the AI assistant panel
 
-(from a checkout: `"command": "python", "args": ["-m", "arpes_viewer.agent"]`).
-Data stay on the machine; see
-[the user guide, §33](docs/USER_GUIDE_en.md#33-driving-the-program-from-an-ai-agent-mcp). New to agents? The step-by-step guide is
-[`agentic/README.md`](agentic/README.md).
+<p align="center">
+  <img src="docs/images/assistant_button.png" width="80%"
+       alt="The AI assistant button at the top of the tool panel, lit green while an agent works">
+</p>
+
+1. **Open it.** Press **AI assistant...** at the top of the main panel's
+   tool column (above). The button is also the agent's **status light**,
+   whether the window is open or not: grey not running, green running,
+   yellow paused (you work by hand), red a failed step.
+
+<p align="center">
+  <img src="docs/images/assistant_setup.png" width="96%"
+       alt="The AI assistant window before starting: the folders, the options, the request in one's own words">
+</p>
+
+2. **Set it up** (left column):
+   - **1. Folders**: the **data** folder (read only for the agent) and a
+     **results** folder (everything it writes goes there; its commands go
+     in `<results>/_agent`).
+   - **2. What you want**: ask before each physical parameter (Γ, an
+     energy window, V0 ...), step by step with your go-ahead, a usage log,
+     a report, slides, hiding the sample's identity, a tidy list -- and
+     your request in your own words.
+   - **3. Your AI app**: *works in folders* (the Claude desktop app, Claude
+     Code, any agent that reads and writes files -- nothing to install) or
+     *uses MCP tools*.
+3. **Start.** Press **Copy the prompt and start** and paste the prompt
+   into your AI app. The prompt tells the agent where the folders are,
+   where the program's reference (`arpes_viewer/agent/API.md`) is, and the
+   working rules (fit E_F on raw data per row, report files left out,
+   ask before going around an operation, keep the list tidy ...);
+   **Show the prompt** shows it in full.
+
+<p align="center">
+  <img src="docs/images/assistant_running.png" width="96%"
+       alt="The AI assistant window while the agent works: its steps, each with what it printed">
+</p>
+
+4. **Watch and step in** (right column). Each step the agent runs appears
+   in the list with ✓ or ✗ (red); click one to see what it printed -- here
+   the Fermi-edge search and fit of a map. Its results appear as new rows
+   in the main list (never overwriting anything), its pictures and figures
+   in the results folder. **Pause the agent** holds its next commands while
+   you work by hand (the light turns yellow); **Resume** lets them through.
+   Closing the window does not stop the agent.
+5. **Your screens stay yours.** Windows the agent opens only to drive them
+   (a conversion dialog, a temporary slice series) never appear; the ones
+   it leaves open -- a finished figure, a viewer, a tool waiting for your
+   input -- open on the screen of the main panel, not on the screen you
+   are working on.
+
+The step-by-step guide is [`agentic/README.md`](agentic/README.md), with
+requests to copy in [`agentic/PROMPTS.md`](agentic/PROMPTS.md); a real session
+by Sonnet 5.5 is in [`Reports/`](Reports).
 
 As with any analysis, check what an agent produced before you publish it.
 

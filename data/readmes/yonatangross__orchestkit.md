@@ -212,7 +212,8 @@ globally.
 |---|---|---|
 | Lifecycle events (session end, PR merged, goal converged, chain phase) | `~/.local/state/orchestkit/events.jsonl` | Written unconditionally, rotated at 10 MB. `ORK_EVENTS_LOG` redirects the path (used by the test suite) |
 | Hook metrics: event name, tool name, payload size, duration | same local file | Size-capped metrics only |
-| Prompt text and file contents | **Never recorded** | Hooks read them to make an allow/deny decision, then discard |
+| Hook telemetry log: event, tool name, session id, branch, timestamp, and tool inputs and outputs | `telemetry/events.jsonl` in the plugin data folder (or `.claude/telemetry/` in the project) | Secrets redacted, every string cut to 500 characters. Rotated at 10 MB at session end; rotated files deleted after 7 days |
+| Prompt text | **Not recorded** in either log | Hooks read it to make an allow/deny decision, then discard it |
 | Remote sync | **Off** | No endpoint is compiled in; see below |
 
 There is deliberately **no global kill switch** for the local write, because the
@@ -222,14 +223,33 @@ have their own opt-outs: `ORK_DISABLE_DEBT_TRACKER`, `ORK_DISABLE_WORKTREE_VERIF
 `ORK_DISABLE_COORDINATION_METRICS`, `ORK_NO_NOTIFY`, `ORK_NO_STALE_SWEEP`, and
 `ORCHESTKIT_SKIP_SLOW_HOOKS` among others.
 
-**Network access is opt-in and unset by default.** There is no hardcoded remote
-host anywhere in the shipped hook bundles (`grep -o 'https\?://' plugins/ork/hooks/dist/*.mjs`
-returns nothing). An outbound call happens only if you configure a destination
-yourself, via one of:
+**Network access from the hooks themselves is opt-in and unset by default.** The
+only remote host compiled into the shipped hook bundles is `api.typesafe.ai`,
+used solely by the two opt-in TypeSafe settings below (`grep -o 'https\?://[A-Za-z0-9.-]*' plugins/ork/hooks/dist/*.mjs`
+also lists `github.com`, which appears only in printed links). By default some
+hooks run CLIs you already have, which use your own credentials and network:
 
-- `ORCHESTKIT_HOOK_URL` + `ORCHESTKIT_HOOK_TOKEN`, which enable the manual
-  `hooks/bin/telemetry-sync.mjs` CLI. It POSTs your local JSONL to *your own*
-  endpoint. No hook ever invokes it; you run it by hand.
+- `claude -p --model haiku` on the first prompt of a session, to title and color
+  it. It sends the git branch name and the first 600 characters of that prompt
+  to Anthropic through your own Claude Code login, with no tools, MCP servers or
+  hooks in the child. `ORK_SESSION_IDENTITY=0` turns it off.
+- `gh issue view <n>` when a subagent starts on a branch named like
+  `issue/<n>-...` or `fix/<n>-...`, to add the issue title and body as context.
+- `gh pr view` and `gh pr list` when a Bash command runs `gh pr merge` with
+  `--delete-branch`, to warn before deleting a branch that open PRs are based on.
+
+Any other outbound call happens only if you configure a destination yourself,
+via one of:
+
+- `ORCHESTKIT_HOOK_URL` + `ORCHESTKIT_HOOK_TOKEN` (or the plugin's `webhookUrl` and
+  `hookToken` options), which enable `hooks/bin/telemetry-sync.mjs`. It POSTs
+  your local JSONL to *your own* endpoint. A `SessionEnd` hook runs it in the
+  background; without a URL and token it exits at once and sends nothing. The
+  same two settings enable the webhook forwarder, which streams hook events,
+  HMAC signed, to that endpoint.
+- `telemetry.sinks` entries in `~/.claude/settings.local.json` or in the plugin
+  data folder's `settings.local.json` (user scope only, never read from a
+  project), each an `https:` URL you choose.
 - `ORK_HQ_TELEMETRY_URL`, which points the telemetry HTTP sink at *your own* collector.
 - `ORK_HQ_TELEMETRY_USE_HQ_API=1` together with `HQ_API_URL`, the same sink aimed
   at a self-hosted HQ API.
@@ -644,6 +664,33 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.8.5](https://github.com/yonatangross/orchestkit/compare/v10.8.4...v10.8.5)** · 2026-11-04
+
+- **plugin:** pass validate --strict, add icon, disclose outbound calls (#5057)
+
+**[v10.8.4](https://github.com/yonatangross/orchestkit/compare/v10.8.3...v10.8.4)** · 2026-11-04
+
+- **hooks:** cc-version-check keeps its flag unset on an env-only pass (#5061)
+- **release:** retry the CHANGELOG refresh push and fail loudly (#5059), closes [#5054](https://github.com/yonatangross/orchestkit/issues/5054)
+
+**[v10.8.3](https://github.com/yonatangross/orchestkit/compare/v10.8.2...v10.8.3)** · 2026-11-04
+
+- **site:** keep acronyms upper case in sidebar and category labels (#5053)
+
+**[v10.8.2](https://github.com/yonatangross/orchestkit/compare/v10.8.1...v10.8.2)** · 2026-11-04
+
+- **skills:** parse frontmatter in the description gate, add fixtures (#5049)
+
+**[v10.8.1](https://github.com/yonatangross/orchestkit/compare/v10.8.0...v10.8.1)** · 2026-11-04
+
+- **expect:** gate the act-mode Jev pick on agreement or a confirm (#5011)
+- **lab:** drop internal seat name from the Tower page footer (#5047)
+
+**[v10.8.0](https://github.com/yonatangross/orchestkit/compare/v10.7.4...v10.8.0)** · 2026-11-04
+
+- **skills:** trim listed descriptions and gate them per skill (#5043)
+- add Tower to the OrchestKit family (#5041)
+
 **[v10.7.4](https://github.com/yonatangross/orchestkit/compare/v10.7.3...v10.7.4)** · 2026-11-03
 
 - **hooks:** no CC floor warning from an unconfirmed env version (#5037)
@@ -654,39 +701,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 - **ci:** scope ci-sentinel claude -p to its gh reads (#5014)
 - **secrets-veil:** stop masking hq-ops tool names (shaped SA prefix) (#5027)
-
-**[v10.7.2](https://github.com/yonatangross/orchestkit/compare/v10.7.1...v10.7.2)** · 2026-11-03
-
-- **agents:** require concerns[] for DONE_WITH_CONCERNS (#5030)
-- **hooks:** fail the hooks.json generator when it writes nothing; time-box the SDLC nudge (#5022)
-
-**[v10.7.1](https://github.com/yonatangross/orchestkit/compare/v10.7.0...v10.7.1)** · 2026-11-03
-
-- **models:** move Claude defaults to the 5.5 family (#5020)
-
-**[v10.7.0](https://github.com/yonatangross/orchestkit/compare/v10.6.0...v10.7.0)** · 2026-11-03
-
-- **hooks:** ship the tool dispatchers as the default hooks.json (#5003)
-- **ci:** sign skill-autoheal commits by creating them through the API (#5016)
-
-**[v10.6.0](https://github.com/yonatangross/orchestkit/compare/v10.5.4...v10.6.0)** · 2026-11-03
-
-- **hooks:** nudge to the repo's own PR skill on gh pr create (#5006)
-- **skills:** route setup and swarm-migrate through ork:auto (#5008)
-- **agents:** report a blocked commit as BLOCKED, not an empty sha (#5007)
-- **ci:** make test-claude-health-tool-scope.sh executable (#5002)
-- **hooks:** label outputWithContext with the firing event; expire the veil copy question (#5005)
-- …and 2 more (see [CHANGELOG.md](CHANGELOG.md))
-
-**[v10.5.4](https://github.com/yonatangross/orchestkit/compare/v10.5.3...v10.5.4)** · 2026-11-02
-
-- **ci:** let claude-health finish within its tool allowlist (#4994)
-- **hooks:** verdict telemetry test uses a private project dir (#4989) (#4997)
-- harden claude-health tool scope (#4996)
-
-**[v10.5.3](https://github.com/yonatangross/orchestkit/compare/v10.5.2...v10.5.3)** · 2026-11-02
-
-- **traffic:** snapshot week of 2026-10-26 (#4988)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->
@@ -705,6 +719,12 @@ Join the **Building with AI** community for AI dev tips, OrchestKit support, and
 | **AI for Business** | For people leading AI adoption | [Join](https://yonyon.ai/go/business?utm_campaign=readme) |
 
 Names and audiences match what [yonyon.ai](https://yonyon.ai/en) renders, so the two surfaces cannot drift. Every link resolves through `yonyon.ai/go/*`, so a rotated invite never needs a README change and no raw invite is published here.
+
+---
+
+## OrchestKit family
+
+- **[Tower](https://github.com/yonatangross/tower)**: a macOS menu bar app for people who run several AI coding subscriptions: usage per account, room left, when to switch. Also an MCP server (`tower mcp`).
 
 ---
 

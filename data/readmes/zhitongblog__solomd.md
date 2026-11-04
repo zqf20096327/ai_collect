@@ -6,11 +6,12 @@
 [![License: MIT](https://img.shields.io/github/license/zhitongblog/solomd?color=orange)](LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/zhitongblog/solomd/total)](https://github.com/zhitongblog/solomd/releases)
 [![GitHub stars](https://img.shields.io/github/stars/zhitongblog/solomd?style=flat&logo=github&color=yellow)](https://github.com/zhitongblog/solomd/stargazers)
+[![AtomGit](https://atomgit.com/zhitongblog/solomd/star/badge.svg)](https://atomgit.com/zhitongblog/solomd)
 [![Website](https://img.shields.io/badge/website-solomd.app-ff9f40.svg)](https://solomd.app)
 
-🌐 **[中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Türkçe](README.tr.md) · [Svenska](README.sv.md) · [Українська](README.uk.md)** · 🪞 **[Gitee mirror →](https://gitee.com/zhitong45/solomd)** (faster downloads from China)
+🌐 **[中文](README.zh.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md) · [Português](README.pt.md) · [Italiano](README.it.md) · [Polski](README.pl.md) · [Nederlands](README.nl.md) · [Türkçe](README.tr.md) · [Svenska](README.sv.md) · [Українська](README.uk.md)** · 🪞 **[AtomGit mirror →](https://atomgit.com/zhitongblog/solomd)** · **[Gitee mirror →](https://gitee.com/zhitong45/solomd)** (faster downloads from China)
 
-[**Download the latest release**](https://github.com/zhitongblog/solomd/releases/latest) · [**Launch post**](https://solomd.app/blog/v4-0-0-agent-native-author/) · [**How we built it**](https://solomd.app/blog/v4-0-0-how-we-built-it/) · [**Website**](https://solomd.app) · [**Security**](https://solomd.app/security)
+[**Download the latest release**](https://github.com/zhitongblog/solomd/releases/latest) · [**AtomGit Releases**](https://atomgit.com/zhitongblog/solomd/releases) · [**Launch post**](https://solomd.app/blog/v4-0-0-agent-native-author/) · [**How we built it**](https://solomd.app/blog/v4-0-0-how-we-built-it/) · [**Website**](https://solomd.app) · [**Security**](https://solomd.app/security)
 
 ⭐ **If SoloMD earns a place on your machine, [star it on GitHub](https://github.com/zhitongblog/solomd)** — it's free, made by one developer, and stars are how other people find it.
 
@@ -26,6 +27,8 @@
 > We are telling you this for two reasons. You should know what you are trusting with your
 > notes: read the code, it is MIT and all of it is public. And when a reply is confidently
 > wrong — it happens — say so in the thread. That correction is the mechanism.
+>
+> **💼 For Teams & Founders (100% Async Contracts):** Using this exact human-architect + Claude Code pipeline, the maintainer also built **[Unterm](https://unterm.app)** — a self-developed Rust + wgpu terminal kernel exposing 152 MCP methods with an Action Gateway. Available for **100% asynchronous remote contracts** (custom MCP servers, Rust/Tauri agentic desktop apps, and AI workflows — written specs, Loom demos & clean PRs, zero meetings). [**Work with the architect →**](https://doaipm.com/en/about/?utm_source=solomd_readme#work-with-me)
 
 Your notes live in a folder. **SoloMD is the editor on top — with a first-class agent surface inside the editor, and the MCP endpoint Claude Code / Cursor can drive from outside.** Same `.md` files. Chat with your vault. Schedule recipes that run when you're not at the keyboard. Hand the same vault to any MCP client.
 
@@ -301,3 +304,16 @@ Thank you to everyone who helps make SoloMD better — sponsors 💵, testers �
 ## License & credits
 
 [MIT](LICENSE) © 2026 xiangdong li. SoloMD stands on Tauri 2, Vue 3, CodeMirror 6, markdown-it, KaTeX, Mermaid, libgit2, Pandoc, Hunspell, `keyring-rs`, and `rmcp`. Sponsor on [GitHub Sponsors](https://github.com/sponsors/zhitongblog) or via [solomd.app/#sponsor](https://solomd.app/#sponsor).
+
+### Open-source hosting & G-Star Program
+
+<p>
+  <a href="https://atomgit.com/zhitongblog/solomd" target="_blank" rel="noopener">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://docs.atomgit.com/img/logo-AtomGit-dark.svg" />
+      <img src="https://docs.atomgit.com/img/logo-AtomGit-light.svg" alt="AtomGit" height="28" />
+    </picture>
+  </a>
+</p>
+
+Special thanks to **[AtomGit (G-Star Program)](https://atomgit.com/zhitongblog/solomd)** for hosting SoloMD's official mirror and release packages in mainland China.

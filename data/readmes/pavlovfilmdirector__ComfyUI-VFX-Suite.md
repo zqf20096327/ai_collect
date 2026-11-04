@@ -1,0 +1,183 @@
+# KESHIKI (景色) VFX Studio — Technology Preview v0.1
+
+**A local VFX studio inside ComfyUI. Footage in, finished shot out. It runs on open-weights models only.**
+
+> **Release Status:** `v0.1.0-preview` (Technology Preview v0.1)
+
+You load your footage and get masks, depth, pose and the camera track. From there you block the scene in 3D, generate new backgrounds and characters with **LTX-2.5 + IC-LoRAs**, design first frames with **FLUX.3 Klein**, then composite, relight, refine and dub. All of this happens in one browser studio. An AI director answers "how do I…?" and runs the steps for you.
+
+No cloud APIs are used. Every model runs on your own GPU and is tuned for 24 GB of VRAM.
+
+---
+
+## What it does
+
+| Area | What you get |
+|---|---|
+| **Video & Layers** | Text masks with SAM 3.1 (`person`, `red car`), click-and-track SAM2, YOLO, CorridorKey, LTX Alpha · **Cutout Alpha (`video_cutout`)** to extract RGBA video/sequences · depth (Depth Anything V2 / 3, Apple Depth Pro) · normals (MoGe-2) · DWPose · Canny · lens undistortion · camera tracking (COLMAP + GLOMAP) · keyframe timeline with brush auto-key and **Ghost / Onion-skinning** |
+| **Generation** | LTX-2.5 22B with IC-LoRAs: union-control (pose / depth / edges), layout-to-render, clean-plate, refine-details, restore, upscaler and more. Supports a first-frame guide, two stacked IC-LoRAs, one pass up to 97 frames, and longer clips in overlapping chunks with a smooth cross-fade |
+| **Image** | FLUX.3 Klein: text-to-image, editing with masks and references, pose transfer ("scene + skeleton + character" recipe), non-destructive layer & selection transforms. Optional Qwen-Image-Edit-2511 |
+| **3D Scene & Camera** | Structured 3-tier 3D toolbar: Primitives · Cameras, Sun/Point Lights, 3-Point Ground Plane & toggleable 3D Cursor · Skeleton mannequin & FBX/Mixamo animation (with Root Motion & Root-to-Pivot baking), **3D Pose (OpenPose) to 2D**, **3D Character Render Pass to 2D**, manual **Actor Cutout Plane** (custom video/image + BiRefNet background removal), and **Monitor Camera Render (`🎬 Render Camera`)** straight to the Gallery |
+| **Composite** | A subject from one source over another background, with edge erode / feather, colour harmonization and light wrap, then an optional LTX refine pass |
+| **Voice & Music** | Video dubbing: Whisper → local LLM translation (Ollama) → F5-TTS voice clone → timing and mix. Voice board (lip-sync with LTX-2.5 / DubIt), long-text voice-over with stress marks, and ACE-Step 1.5 music generation |
+| **3D Assets** | TRELLIS.2 image → textured GLB, and texturing an existing mesh with live progress in both viewport and top header chip, auto-synced to Gallery & 3D Library |
+| **Asset Gallery** | Unified right-aligned Top Gallery with color-coded category borders (Images, Videos, 3D Scenes/Meshes, Audio/Music) and uniform `200×42 px` cards |
+| **Agent & My Tools** | A local LLM through Ollama (Qwen, Gemma) with stage confirmation & action visualization, plus custom ComfyUI API/UI workflow import (**My Tools**) |
+| **AI agents (MCP)** | Any MCP agent can run the studio from a plain task ([docs/MCP.md](docs/MCP.md)) |
+| **LoRA training** | CLI configs and notes for LTX-2 LoRAs and IC-LoRAs on 24 GB ([docs/LORA_TRAINING.md](docs/LORA_TRAINING.md)) |
+
+## Tested recipes
+
+All three recipes were run on real footage (1920×1088) with an RTX 3090 Ti (24 GB):
+
+- **New background, same person.** SAM 3.1 mask → depth → a FLUX.3 Klein first frame of the new place → LTX union-control on depth (97 frames in one pass, about 2 min) → composite with harmonize and light wrap → refine-details.
+  - 🎬 Example output: [`projects/sandbox_playground/exports/bg_swap_winter_onepass.mp4`](projects/sandbox_playground/exports/bg_swap_winter_onepass.mp4)
+- **New character, same background.** LTX clean-plate → DWPose → a Klein first frame (scene + skeleton + character reference) → LTX union-control on pose → SAM 3.1 mask of the new character → composite over the clean plate.
+- **Character driven by 3D animation.** A Mixamo animation on the mannequin, a set blocked out with primitives and an orbit camera → pose and environment renders → LTX layout-to-render plus union-control on pose.
+  - 🎬 Example output: [`projects/sandbox_playground/exports/capoeira_park_dual_lora.mp4`](projects/sandbox_playground/exports/capoeira_park_dual_lora.mp4)
+
+Lessons learned are written into the guide. For example, depth control does not hold a face, so use pose only when the character must stay recognisable. Two stacked IC-LoRAs fit 49 frames per run on 24 GB.
+
+## Demo shot: sci-fi bridge, 3D-driven robot, real actor
+
+🎬 [`projects/sandbox_playground/exports/scifi_bridge_robot_corridorkey.mp4`](projects/sandbox_playground/exports/scifi_bridge_robot_corridorkey.mp4) · 97 frames, 960×540, 25 fps, made fully on local open-weights models.
+
+A real live-action plate becomes a sci-fi scene. A plain room turns into a futuristic bridge, a box on the table turns into a holographic command console, and a 3D skeleton becomes a dancing robot. The actor stays real: he is keyed out and put back between the robot and the console, and at the end of the shot he puts his hand on the generated console.
+
+1. **3D blocking.** The set is blocked out with primitives (one box for the console, one for the floor and walls) and a mannequin with a Mixamo `Capoeira.fbx` animation. From this scene the studio renders two control passes per frame: an OpenPose skeleton and an RGB layout.
+2. **Control-pass cleanup.** The Mixamo root bone (hips to world origin) showed up in the pose pass as an extra limb, and the model drew a second character because of it. Removing that line and taking the actor and skeleton out of the layout pass gave one clean character.
+3. **First frame.** FLUX.3 Klein Edit makes a styled frame 0 (bridge, console, robot). A skeleton overlay checks that the robot sits exactly on the 3D pose.
+4. **Video.** LTX-2.5 22B with two stacked IC-LoRAs, layout-to-render plus union-control on pose, generates all 97 frames in one pass. The robot follows the 3D choreography and the set follows the 3D layout.
+5. **Actor composite.** CorridorKey (neural keying: despilled RGB + alpha) pulls the actor from the original plate. He is composited over the robot and under the console, with light wrap on the edges.
+
+Lesson: clean control passes matter more than the prompt. One stray bone was enough to create an extra person.
+
+## My Pipelines: one-button shots
+
+**My Pipelines** chains several workflows into one run. The outputs of one stage become the inputs of the next, so a whole shot starts with one button. Pipelines are stored as `user_pipelines/<id>/pipeline.json`. You can open, edit and run them from the My Pipelines panel, or call `POST /vfx/pipelines/run`.
+
+Each stage has a `stage_type`, such as `flux_edit`, `vl_layout_cleanup`, `vl_pose_cleanup`, `vl_ltx_ic_lora`, `vl_composite` or `vl_layer_to_video`, and a set of `inputs`. An input can be a fixed value, `${variable}` from the pipeline's `variables`, or a link to an earlier stage written as `{"from_stage": "stage_id", "output_key": "layer" | "image" | "image_url" | "video"}`.
+
+Two demo shots ship as pipelines:
+
+| Pipeline | Shot |
+|---|---|
+| `demo_capoeira_park_dual_lora` | An anime girl dances capoeira in a park, in front of a bench, a tree and a street lamp, while the camera orbits around her (`capoeira_park_dual_lora.mp4`) |
+| `demo_scifi_robot_corridorkey` | The sci-fi bridge with a 3D-driven robot and a real actor (`scifi_bridge_robot_corridorkey.mp4`) |
+
+### Park capoeira, step by step (`demo_capoeira_park_dual_lora`)
+
+The input is a 3D scene. The park is blocked out with primitives (lawn, bench, tree, street lamp), a mannequin plays the Mixamo `Capoeira` animation, and an orbit camera circles it (81 frames, 576×1024, 24 fps). From the 3D tab the studio renders two layers on the video `capoeira_orbit`: the **park layout without the character** and the **OpenPose skeleton** of the mannequin. The pipeline does the rest:
+
+1. **First-frame guide** (`vl_layout_cleanup`). The skeleton is drawn over frame 0 of the layout.
+2. **First frame** (`flux_edit`, FLUX.3 Klein Edit, seed 21, 16 steps, 1 MP). The skeleton becomes the anime girl in exactly the same pose. The grey shapes become a wooden bench, an oak, a street lamp, a lawn and the sky, at the same positions and camera angle.
+3. **Video** (`vl_ltx_ic_lora`, LTX-2.5 22B distilled, seed 42). Two IC-LoRAs are stacked: **layout-to-render** on the layout and **union-control** on the pose (attention 0.8), with the frame from step 2 as the first-frame guide. With two IC-LoRAs on 24 GB, the clip is generated in 49-frame passes that overlap and cross-fade.
+4. **Export** (`vl_layer_to_video`). The new layer is saved as an MP4.
+
+The prompts, seeds and LoRA settings are the ones that made the example clip. A rerun gives the same first frame pixel for pixel. The video is close to the example but not identical, because the 49-frame passes are now split differently. On an RTX 3090 Ti the whole pipeline takes about 7.5 minutes, of which the LTX stage takes 6.
+
+**Running it.** The repository ships only the finished clip, not the 3D renders this pipeline starts from. To run it on your own shot:
+
+1. Block out a set in the 3D tab and render two layers onto a video: a layout render without the character, and a pose render (OpenPose skeleton).
+2. In `pipeline.json`, set `video_id` in `variables` to that video, and put the two new layer ids in stages 1 and 3 (`layout_source` / `source_layer` for the layout, `pose_layer` / `source_layer2` for the pose).
+3. Rewrite the two prompts for your character and set, then press Run in **My Pipelines**.
+
+## Talking to the agent
+
+The studio agent (bottom dock, local model through Ollama) takes whole tasks in plain words, in Russian or English:
+
+> *"Shot AICinematicStudio_00007: track the camera, replace the background with a gritty ghetto street, add two skeletons dancing capoeira behind her, and give me three variants: new background, new character, both."*
+
+1. **It reads the task.** Which shot (by name, or the one that is open), what you want at the end, and what the shot already has. Masks, poses, depth and a solved camera are reused, not made again.
+2. **It shows the plan and runs it.** A task of two or more steps runs on the server as one job, and the result of each step feeds the next one. For example, mask → camera track → pose → first frame (FLUX) → video (LTX). New layers appear on the clip in the Video view.
+3. **It asks you when a step needs your hands.** Example: placing skeletons in 3D. It says exactly what to click (*Pose to Gen*), waits, and picks up the new layer by itself.
+
+In the chat:
+
+| You type | The agent |
+|---|---|
+| `status` / `статус` | lists the steps: ✅ done · ⏳ running · 🙋 waiting for you |
+| `skip the skeletons` / `пропусти скелеты` | goes on without the 3D step |
+| `stop the task` / `стоп задачу` | stops the job |
+| `how do I …?` | answers from the user guide and offers to run it |
+
+**What it knows** is plain Markdown in `core_agent/knowledge_studio/`:
+
+- `role.md`: how to think about a request;
+- `studio.md`: every process with its real parameters;
+- `pipelines.md`: tested recipes.
+
+Add your own recipes there and the agent uses them on the next message, with no restart.
+
+**Model.** Thinking is on. A bigger model plans better: a Qwen 27–32B class model is recommended, while 7–9B handles single commands. Before FLUX / LTX steps the chat model is unloaded from VRAM.
+
+The same tasks can come from any external AI agent over MCP (the `shot_task` video job), see [docs/MCP.md](docs/MCP.md). Ready-made phrasings are in [docs/AGENT_PROMPTS_CHEAT_SHEET.md](docs/AGENT_PROMPTS_CHEAT_SHEET.md).
+
+## Models
+
+| Role | Model | Notes |
+|---|---|---|
+| Video (core) | **LTX-2.5 22B** + Lightricks IC-LoRAs (LTX-2.5 and LTX-2.3 union-control) | open weights, Lightricks license |
+| Images (core) | **FLUX.3 Klein** + Qwen3-VL-4B encoder | FLUX Kommunity License |
+| Optional | Qwen-Image-Edit-2511, SAM 3.1, SAM2, Depth Anything V2 / 3, Depth Pro, DWPose, YOLO, CorridorKey, TRELLIS.2, F5-TTS, Whisper | see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
+
+Weights are not stored in this repository. The installer and the Settings tab show where to download each model, or you can point the studio at a folder you already have.
+
+## Install
+
+Requirements: Windows 10/11, a working ComfyUI, Git, and an NVIDIA GPU (developed on an RTX 3090 Ti, 24 GB; 16 GB is the practical minimum for LTX-2.5). The core model set is about 40 GB. Ollama is optional, for the agent.
+
+Supports two installation approaches:
+1. **Existing ComfyUI Integration**: run `install.bat` targeting your current ComfyUI Python.
+2. **Clean Dedicated Environment (`keshiki_vfx`)**: run in an isolated Python 3.12 + PyTorch 2.6.0+cu124 environment to guarantee zero dependency conflicts with older custom nodes.
+
+See [INSTALL.md](INSTALL.md) for full step-by-step instructions and dependency specifications.
+
+```bash
+cd ComfyUI\custom_nodes
+git clone https://github.com/pavlovfilmdirector/ComfyUI-VFX-Suite.git
+cd ComfyUI-VFX-Suite
+.\install.bat
+.\install.bat --download-models core
+.\run_keshiki_studio.bat
+```
+
+`install.bat` adds the node packs, Python packages and COLMAP + GLOMAP; `--download-models core` fetches the core models (~40 GB), or point ComfyUI at folders you already have. Works in cmd and PowerShell.
+
+The studio opens at `http://127.0.0.1:8188/vfx/studio/`. Full instructions, optional modules (dubbing, TRELLIS.2, Depth Pro) and `keshiki_local.json` are in [INSTALL.md](INSTALL.md).
+
+## Documentation
+
+- [User guide (EN)](docs/USER_GUIDE.md) · [Инструкция (RU)](docs/USER_GUIDE_RU.md): views, every video process, step-by-step recipes, talking to the agent, troubleshooting
+- [INSTALL.md](INSTALL.md): setup and optional modules
+- [docs/LORA_TRAINING.md](docs/LORA_TRAINING.md): training your own LTX LoRAs (Linux / WSL2, 24 GB configs)
+- [docs/MCP.md](docs/MCP.md): drive the studio from any AI agent (Claude, Cursor, Antigravity...) over MCP
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md): licenses of bundled libraries, tools and models
+
+## Tests
+
+```
+pip install pytest
+python -m pytest tests
+```
+
+No GPU, ComfyUI or models needed: ComfyUI and the dubbing engines are replaced by fakes. The suite checks every
+API workflow in `workflows/api` against ComfyUI's node registry (node classes, inputs, links, enum values), the
+services (music, voice-over, voice board, image generation with drawings, video layers, montage, image layers),
+the agent's actions and help, every `/vfx/...` URL the UI calls, the install manifest, doc links and JS syntax.
+After updating ComfyUI or node packs run `python tools/refresh_object_info.py` with ComfyUI running; it also
+enables a local check that every model the workflows name is installed on this machine.
+
+## Open weights only
+
+KESHIKI uses no partner nodes and no closed APIs. Code paths for cloud services stay switched off unless you opt in with `KESHIKI_ALLOW_CLOUD=1`, and the studio never enables them by itself.
+
+## Credits
+
+Built with the help of AI coding assistants: Claude (Anthropic) and Google Antigravity.
+
+## License
+
+Copyright (C) 2026 Alexey Pavlov.
+
+GPL-3.0 (same as ComfyUI), see [LICENSE](LICENSE). Bundled web libraries and every model keep their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

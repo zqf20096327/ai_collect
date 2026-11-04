@@ -13,16 +13,18 @@
   <img alt="Platforms" src="https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey">
   <img alt="Status" src="https://img.shields.io/badge/status-in%20development-orange">
   <a href="https://didascalie.readthedocs.io/"><img alt="Documentation" src="https://img.shields.io/readthedocs/didascalie?label=docs"></a>
+  <a href="https://joss.theoj.org/papers/670f32788d6c54fef4e7993d74aa0161"><img src="https://joss.theoj.org/papers/670f32788d6c54fef4e7993d74aa0161/status.svg"></a>
 </p>
 
 <p align="center">
   <b><a href="https://didascalie.readthedocs.io/">Documentation</a></b>
   ·
-  <a href="https://didascalie.readthedocs.io/install/">Installing</a>
+  <a href="https://didascalie.readthedocs.io/en/latest/install/">Installing</a>
   ·
-  <a href="https://didascalie.readthedocs.io/quickstart/">Quickstart</a>
+  <a href="https://didascalie.readthedocs.io/en/latest/quickstart/">Quickstart</a>
   ·
   <a href="https://github.com/ClementPla/Didascalie/releases">Releases</a>
+  
 </p>
 
 ---
@@ -59,7 +61,7 @@ A *didascalie* (*di-da-ska-LEE*) is the French word for a stage direction, one o
     <td width="50%"><img alt="The gallery" src="docs/assets/screenshots/gallery.jpg"><br><sub>The gallery: filter sequences and track review status.</sub></td>
   </tr>
   <tr>
-    <td><a href="https://didascalie.readthedocs.io/guide/inspect/"><img alt="The inspector" src="docs/assets/screenshots/inspect_poster.jpg"></a><br><sub>The inspector: play a sequence back with its labels (<a href="https://didascalie.readthedocs.io/guide/inspect/">video</a>).</sub></td>
+    <td><a href="https://didascalie.readthedocs.io/en/latest/guide/inspect/"><img alt="The inspector" src="docs/assets/screenshots/inspect_poster.jpg"></a><br><sub>The inspector: play a sequence back with its labels (<a href="https://didascalie.readthedocs.io/en/latest/guide/inspect/">video</a>).</sub></td>
     <td><img alt="Frame registration" src="docs/assets/screenshots/registration.png"><br><sub>Frame registration from keypoint correspondences.</sub></td>
   </tr>
   <tr>
@@ -82,7 +84,7 @@ There are several good open-source annotation tools already. Reasons this one mi
 - **Large medical images stay responsive.** Decoding, mask encoding and file I/O run in a compiled Rust backend.
 - **Masks and vector shapes in one tool**, convertible in both directions.
 - **A project is one file.** Sending an annotation task to a collaborator, or getting it back, means sending that file.
-- **Native installers** for Windows, macOS (Intel and Apple Silicon) and Linux. An Android tablet build is on the way.
+- **Native installers** for Windows, macOS (Intel and Apple Silicon) and Linux, and an APK for Android tablets.
 - **It has been used for real work.** Annotations made with it have gone into published research (the [DNAi study](https://academic.oup.com/nar/article/54/7/gkag335/8657744?searchresult=1)).
 - **It was built with the people who annotate.** Clinicians and researchers from several medical fields have used it on real data throughout development.
 - **It is easy to influence.** A young solo project with no fixed roadmap. See [Contributing](#contributing).
@@ -95,7 +97,7 @@ These are hidden until you switch on **Experimental features** in the toolbar. T
 - **Superpixel selection** and **MedSAM refinement**, two more ways to refine a stroke.
 - **Python bridge.** Python functions of yours propose keypoint pairs for registration, or segment a frame or a whole sequence from the editor, over ZeroMQ.
 
-Details are in the [documentation](https://didascalie.readthedocs.io/experimental/).
+Details are in the [documentation](https://didascalie.readthedocs.io/en/latest/experimental/).
 
 ## Try it
 
@@ -173,11 +175,11 @@ Download the installer for your platform from the [Releases page](https://github
 >
 > or try to open the app once, then go to **System Settings → Privacy & Security** and click **Open Anyway**.
 
-Training works on the CPU. Using an NVIDIA GPU needs the CUDA Toolkit: see [Installing](https://didascalie.readthedocs.io/install/).
+Training works on the CPU. Using an NVIDIA GPU needs the CUDA Toolkit: see [Installing](https://didascalie.readthedocs.io/en/latest/install/).
 
 ### Android tablets
 
-Didascalie also runs on Android tablets, with finger and pen input: open a `.dida` file sent to the tablet, annotate, and save a copy back. It works, but no APK is published yet, so for now it has to be [built from source](https://didascalie.readthedocs.io/android/). Model-assisted labelling, video projects and the Python bridge are not part of the tablet build.
+Didascalie also runs on Android tablets, with finger and pen input: open a `.dida` file sent to the tablet, annotate, and save a copy back. It is recent but works: each release has an APK, see [Android tablets](https://didascalie.readthedocs.io/en/latest/android/). Model-assisted labelling, video projects and the Python bridge are not part of the tablet build.
 
 ### Building from source
 

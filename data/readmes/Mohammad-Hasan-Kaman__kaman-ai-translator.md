@@ -3,6 +3,7 @@
 ### 🌐 Telegram: [@mohaka_programmer](https://t.me/mohaka_programmer)
 
 [![Telegram](https://img.shields.io/badge/Telegram-%40mohaka__programmer-2CA5E0?logo=telegram&logoColor=white)](https://t.me/mohaka_programmer)
+### 🔗 Website: [mhkaman.com](https://mhkaman.com) · 📖 Docs: [Project Wiki](https://github.com/Mohammad-Hasan-Kaman/kaman-ai-translator/wiki)
 
 ---
 
@@ -102,6 +103,8 @@ Translating a 300-page book with a chat window does not work: context windows ar
 - **Per-engine memory:** each engine keeps its own base URL, API key and model — switching engines never leaks one engine's values into the other, and switching back restores yours.
 - Built-in **Test connection** with a clear success/failure report; for OpenAI-compatible servers it also verifies structured (JSON) output and warns about small local context windows.
 - Automatic **retry** on transient failures and quota detection with a safe pause.
+
+> **A note on output quality.** This app sends your text to the provider and model **you** configure, and returns what that model produces. Translation quality, completeness and accuracy therefore depend on the provider and model you choose, on their current load, and on your plan's limits: an overloaded, rate-limited or entry-level model can produce weaker, incomplete or occasionally incorrect output, and when the selected model is unavailable a fallback model may answer in its place - the **Test connection** report tells you which model actually responded. If a translation looks off, check the provider and model first, or switch to a stronger model, and always review important translations before relying on them. This is a property of the AI service you connect to, not of the app itself.
 
 ### Local servers (Ollama / LM Studio)
 
@@ -209,6 +212,16 @@ python translator_app_v3.py
    - decide **continue** or **re-translate from scratch** when saved pages exist.
 4. While it runs: **⏸ Pause** pauses (Settings becomes editable), **■ Cancel** cancels safely, and the current page follows along automatically.
 5. When a page finishes: read it → tick **✓ Reviewed** if approved → **📋 Copy** or export the whole book.
+
+### Getting a Gemini API key
+
+The Gemini engine needs a free Google AI Studio key - no card required:
+
+1. Open [aistudio.google.com](https://aistudio.google.com) and sign in with a Google account.
+2. Choose **Get API key** -> **Create API key**, and copy the key.
+3. In the app: **Settings -> Gemini**, paste the key, keep the default model (or set your own), and press **Test connection**.
+
+Google AI Studio is available only in supported regions. If the page does not open or reports that the service is unavailable in your region, connect from a supported region first - the app needs the same route every time it calls the Gemini API.
 
 ---
 

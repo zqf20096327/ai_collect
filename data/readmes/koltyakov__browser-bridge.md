@@ -10,7 +10,7 @@ See [Quickstart](https://github.com/koltyakov/browser-bridge/blob/main/docs/quic
 
 ## Supported Agents
 
-Managed installs support OpenAI Codex, Claude Code, Cursor, GitHub Copilot, OpenCode, Antigravity, Windsurf, and generic `.agents` layouts for both MCP and CLI skill setup.
+Managed installs support Codex (OpenAI), Claude Code, OpenCode, GitHub Copilot, Cursor, Devin Desktop (formerly Windsurf), Antigravity, Gemini CLI, Cline, Zed, Amp, Factory Droid, Pi, Kilo Code, Qwen Code, Goose, OpenHands, Muse Code, Grok Build, and generic `.agents` layouts for MCP and CLI skills. Devin Desktop keeps the `windsurf` setup target for compatibility. Cline, Goose, OpenHands, and Muse MCP setup is user-scope only; their CLI skills also support projects. Zed support targets its native agent; external agents keep their own configuration.
 
 <table align="center">
   <tr>
@@ -108,12 +108,14 @@ Browser Bridge is optimized for the opposite starting point: **inspect the state
 ## Setup
 
 1. Install [Browser Bridge from the Chrome Web Store](https://chromewebstore.google.com/detail/browser-bridge/jjjkmmcdkpcgamlopogicbnnhdgebhie) in Chrome or another Chromium-based browser
-2. `npm install -g @browserbridge/bbx` - installs the CLI and native host
-3. Run `bbx install` (Chromium on Linux, Chrome elsewhere), or target a specific browser with `bbx install --browser chrome`, `bbx install --browser edge`, `bbx install --browser brave`, `bbx install --browser chromium`, or `bbx install --browser arc`
-4. Optionally run `bbx config set auto-update compatible` to keep the global CLI on the highest stable npm release supported by the connected extension
-5. In the extension side panel, install MCP or CLI (skill) for your agent of choice
-6. Enable Browser Bridge for the browser window you want to inspect/control with the AI agent
-7. Ask your agent to use Browser Bridge via MCP (`BB MCP` or `Browser Bridge MCP`), or invoke the installed Browser Bridge skill in CLI mode (`/browser-bridge`, `browser-bridge`, or the client-specific skill trigger)
+2. With Node.js 20 or later installed, run `npm install -g @browserbridge/bbx`. The npm launcher downloads the matching Go executable, verifies its pinned SHA-256 digest, and registers the native messaging host.
+3. Return to the extension and choose your agent under **Connect your agent**. Start with MCP.
+4. Enable access for the browser window you want the agent to use.
+5. Ask your agent to use Browser Bridge.
+
+The npm package is a bootstrap and launcher with zero runtime npm dependencies. It downloads the exact package version for macOS arm64/x64, Linux arm64/x64, or Windows x64 from GitHub Releases. The Go executable runs the CLI, daemon, native host, and MCP server. Local dependency installs do not register a browser; if install scripts were skipped, the first command downloads the executable, then run `bbx install` to register it. See the [native CLI guide](https://github.com/koltyakov/browser-bridge/blob/main/docs/native-cli.md).
+
+If the extension does not connect, run `bbx install`. Register a specific browser with `bbx install --browser chrome|edge|brave|chromium|arc`.
 
 On Ubuntu, Chromium is commonly installed as a strict snap, and Flatpak Chromium is similarly sandboxed. If native messaging stays disconnected there, use a non-sandboxed Chromium-based browser such as Google Chrome, Brave, or Edge.
 
@@ -151,6 +153,7 @@ MCP mode is self-contained: the dual-era stdio server supports legacy MCP client
 - [Troubleshooting](https://github.com/koltyakov/browser-bridge/blob/main/docs/troubleshooting.md)
 - [BridgeClient API](https://github.com/koltyakov/browser-bridge/blob/main/docs/api-reference.md)
 - [WebMCP website tools](https://github.com/koltyakov/browser-bridge/blob/main/docs/webmcp.md)
+- [Development and Make tasks](https://github.com/koltyakov/browser-bridge/blob/main/docs/development.md)
 
 ## Privacy
 

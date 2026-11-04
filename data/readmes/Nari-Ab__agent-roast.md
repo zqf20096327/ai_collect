@@ -1,0 +1,152 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+  <img src="docs/assets/logo.svg" alt="agent-roast" width="380">
+</picture>
+
+<h2>Your AI agent made the tests pass.<br>Did it fix the code, or the tests?</h2>
+
+<p>
+  <a href="https://github.com/Nari-Ab/agent-roast/actions/workflows/test.yml"><img src="https://github.com/Nari-Ab/agent-roast/actions/workflows/test.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.npmjs.com/package/agent-roast"><img src="https://img.shields.io/npm/v/agent-roast?color=cb3837&logo=npm&logoColor=white" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/agent-roast"><img src="https://img.shields.io/npm/dm/agent-roast?label=downloads&color=0969da" alt="downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0969da" alt="license"></a>
+  <img src="https://img.shields.io/badge/runs-offline%20·%20no%20tokens-1f9d55" alt="offline, no tokens">
+</p>
+
+</div>
+
+**agent-roast** catches the changes that turn a red build green by weakening the *checks* instead of fixing the *code*: a
+loosened assertion, a skipped or deleted test, a lowered coverage threshold, a CI step allowed to fail. A linter cannot see
+these, because every new line looks fine on its own. agent-roast compares the **before and after** of each change, as an
+agent hook, a Git hook and a pull request check. It is deterministic and offline: no model, no tokens, no network.
+
+<p align="center">
+  <img src="docs/assets/demo-terminal.svg" alt="Terminal: npx agent-roast demo reports a skipped test, a trivial assertion, a weakened assertion, a CI step allowed to fail and two lowered coverage thresholds, and blocks the change" width="820">
+  <br><sub>Real output of <code>npx agent-roast demo</code>, shortened. The scenario is scripted; the review is not.</sub>
+</p>
+
+## Try it
+
+```bash
+npx agent-roast demo     # ten seconds: a scripted example in a temporary repository, nothing of yours is read
+npx agent-roast          # review what you have not committed yet (on a clean tree: replay your last commits)
+```
+
+## Stop your coding agent from doing it
+
+```bash
+npx agent-roast hook install          # Claude Code, Codex and Cursor
+```
+
+For Claude Code there is also a plugin: `/plugin install agent-roast --marketplace Nari-Ab/agent-roast`.
+
+When the agent is about to finish, agent-roast reviews everything it changed. If a check got weaker, the agent is **sent back
+once**, with the file, the line and the before and after, and told to fix the code instead. If it tries again, you get a
+warning rather than an endless loop. Anything agent-roast cannot check lets the agent finish: it never breaks a session. An
+intended change is accepted by committing it. Setup for each agent, what it does not do, and how to pause it:
+[docs/integrations.md](docs/integrations.md).
+
+> The agent hooks follow each agent's documented hook protocol and are tested with simulated hook input, not yet in long live
+> sessions with every agent. Reports of what you see are welcome.
+
+## Check every pull request
+
+```yaml
+# .github/workflows/agent-roast.yml
+name: Agent Roast
+on: pull_request
+permissions: { contents: read, pull-requests: write }
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: Nari-Ab/agent-roast@v1
+        with: { comment: true }      # one comment, updated on every push; add `advisory: true` to try it without failing PRs
+```
+
+Also: `npx agent-roast review --base origin/main` in any CI, `npx agent-roast init --hook` or the
+[pre-commit framework](docs/integrations.md#the-pre-commit-framework) for the next commit, and SARIF output for code scanning.
+Policy is read from the **base** branch, so a pull request cannot switch off the rules that review it. Before you decide,
+`npx agent-roast replay` shows what it would have said about your last 50 commits.
+
+## What it catches
+
+| Rule | Fires when | By default |
+| --- | --- | :-: |
+| `assertion-weakened` | an exact check is replaced by a weaker one: `toBe(42)` → `toBeDefined()`, `assert x == 1` → `assert x` | blocks |
+| `guard-weakened` | a coverage threshold is lowered, `strict` is switched off, a lint rule is downgraded, a CI step may fail, a workflow stops running tests | blocks |
+| `test-skip` | a test is switched off: `it.skip`, `@pytest.mark.skip`, `t.Skip`, `#[ignore]`, `@Disabled`, `[Ignore]`, `xit`, ... | blocks |
+| `test-focus`, `trivial-assert` | `.only` / `fit`; `expect(true).toBe(true)` and its relatives in ten languages | blocks |
+| `assertion-removed`, `test-removed`, `expectation-rewritten` | a test loses assertions, disappears, or its expected value is edited next to production code | warns |
+| `swallowed-error`, `type-escape`, `stub-abandonment` | `catch {}` / `except: pass`, `as any` / `# type: ignore`, `throw new Error("Not implemented")` | warns |
+
+Renames, moved tests, parametrization, moved assertions and reformatting are recognized and not reported, and neither is a skip
+that depends on the environment (`if testing.Short() { t.Skip() }`, `test.skip(isMobile, ...)`). JavaScript/TypeScript, Python
+and Go get the full before/after comparison; skips and placeholder assertions also cover Rust, Java, Kotlin, C#, Ruby, PHP and
+Swift; CI and config files are checked whatever the language. Each rule with examples and limits: [docs/rules.md](docs/rules.md).
+
+## Configure
+
+Rules, severities and paths live in `.agentroastrc.json` at the repository root (`npx agent-roast init` writes a starting file):
+
+```json
+{
+  "failOn": ["assertion-weakened", "guard-weakened", "test-skip", "test-focus", "trivial-assert"],
+  "rules": { "type-escape": "off" },
+  "ignorePaths": ["**/generated/**"]
+}
+```
+
+A change cannot edit this file to relax its own review, because it is read from `HEAD` or the base branch. To accept one
+intentional finding, add an expiring exception instead of turning a rule off, and adopt an existing project without blocking on
+old debt with a baseline: [docs/reference.md](docs/reference.md#configuration).
+
+## Does it work?
+
+Measured, with the denominators and the caveats in [docs/benchmarks.md](docs/benchmarks.md). **Weakened checks are rare, mostly
+deliberate, and not specific to AI. agent-roast is a tripwire that stays silent until a check gets weaker.**
+
+- **64 of 64** hand-labeled cheating edits are caught and **44 of 44** harmless look-alikes (reformats, moves, raised
+  thresholds, environment-gated skips) stay silent. The cases were written with the detector, so they guard against regressions;
+  they do not prove accuracy. Three gaps are documented and still open.
+- **12,645 commits** that touch tests or CI/config in 166 public repositories: blocking rules fired on 0.3% of AI-signed commits
+  (Claude, Copilot, Cursor, Codex, Devin, aider) and on 0.3% of the others. Inside the same repositories the odds for an
+  AI-signed commit were 0.81 times those of another commit (95% CI 0.40–1.67). There is no sign that AI-signed commits weaken
+  checks more often.
+- **About one finding in five was a false alarm**, and most of the rest were deliberate, explained changes a reviewer should
+  see rather than mistakes. The labels come from one reader (an AI assistant), so treat them as a first estimate.
+- `replay` ran on 179 public repositories that use coding agents: no commit would have been blocked in 149 of them.
+
+## How it compares
+
+TDD Guard and Probity enforce a *process* (tests first) through agent hooks; aislop scans for broad "AI slop" across 11
+languages; hallucinot, fakegreen and SlopGate look at diffs for the same shortcuts; linters and coverage gates see the current
+code but not that a check got weaker. agent-roast narrows to one question, reads the full before and after, and says how it was
+measured. Most of these tools are complementary. [docs/comparison.md](docs/comparison.md) has the details.
+
+## Safe to run on code you do not trust
+
+- **Offline.** No network request, no model call, no telemetry; a test inspects the bundle for network modules.
+- **Reads, never runs.** It reads Git objects (or regular files inside the repository for `--worktree`) and never executes
+  project code, hooks, diff programs or package scripts. Reports escape control characters.
+- **Policy from the trusted side.** The rules come from `HEAD` or the base branch, not from the change under review.
+- **Honest about gaps.** An incomplete scan exits 2, never "clean". [SECURITY.md](SECURITY.md) says how to report a problem.
+
+It is a review aid. It cannot prove who wrote a change or that code is correct, and it reads text, not program meaning.
+
+## Documentation
+
+[Rules](docs/rules.md) · [Integrations](docs/integrations.md) · [Reference](docs/reference.md) (commands, exit codes,
+configuration, exceptions, baselines, limits) · [Comparison](docs/comparison.md) · [Measurements](docs/benchmarks.md) ·
+[Try it on your repository](docs/pilot.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+
+Found a finding that was wrong, or a shortcut it missed? That is the most useful report there is:
+[open an issue](https://github.com/Nari-Ab/agent-roast/issues/new/choose).
+
+## License
+
+[MIT](LICENSE). Created by Nariman Abdukarimov.

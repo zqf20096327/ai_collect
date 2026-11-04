@@ -22,7 +22,7 @@ skill-name/
 | `bilibili-video-download` | [`bilibili-video-download/SKILL.md`](bilibili-video-download/SKILL.md) | 下载哔哩哔哩普通 BV 投稿视频为 MP4，选择画质和分 P，或导出 MP3；附完整 Python 标准库脚本、ffmpeg 安装、私有 Cookie 文件调用与结果验证。 |
 | `browser-render-visualization` | [`browser-render-visualization/SKILL.md`](browser-render-visualization/SKILL.md) | 使用 Playwright 渲染网页前端并保存桌面/移动端截图，检查 GitHub Pages、本地静态页面、Canvas/Three.js 空白渲染、布局溢出和浏览器报错。 |
 | `cloudflare-flux-image-generation` | [`cloudflare-flux-image-generation/SKILL.md`](cloudflare-flux-image-generation/SKILL.md) | 注册并调用 Cloudflare Workers AI 的 FLUX.1 schnell 文生图；附完整 Python 标准库脚本、临时凭据配置、免费额度核算和排错。 |
-| `codex-app-troubleshooting` | [`codex-app-troubleshooting/SKILL.md`](codex-app-troubleshooting/SKILL.md) | 排查 Codex App 登录、代理、CLI/WSL 后端、项目迁移与 MCP 故障，收录 CC Switch、Claude/Gemini 和 IDE 相关经验，保护认证、活动对话与历史。 |
+| `codex-app-troubleshooting` | [`codex-app-troubleshooting/SKILL.md`](codex-app-troubleshooting/SKILL.md) | 排查 Codex App 登录、更新中断、代理、CLI/WSL 后端、项目迁移与 MCP 故障，收录 CC Switch、Claude/Gemini 和 IDE 相关经验，保护认证、活动对话与历史。 |
 | `codex-history-sync` | [`codex-history-sync/SKILL.md`](codex-history-sync/SKILL.md) | 使用保守的一向同步脚本，把一个 `.codex` 的 Codex 会话记录、`history.jsonl`、`sessions/` 和 thread title 元数据同步到另一个用户或目录，默认排除敏感配置并要求先 dry-run。 |
 | `context-overlay` | [`context-overlay/SKILL.md`](context-overlay/SKILL.md) | 配置和验证 OpenAI-compatible context overlay proxy，覆盖 rule matching、prompt/context 注入、prompt patch、routing、reject、skill_dir 检索和转发安全。 |
 | `docx-splitting` | [`docx-splitting/SKILL.md`](docx-splitting/SKILL.md) | 在 Windows + Microsoft Word 环境中，通过 [`scripts/split_docx.py`](docx-splitting/scripts/split_docx.py) 按页无损拆分 `.docx` 文档。 |
@@ -48,6 +48,7 @@ skill-name/
 | `pdf-to-images` | [`pdf-to-images/SKILL.md`](pdf-to-images/SKILL.md) | 使用系统级 Ghostscript (`gs`) 或 Poppler `pdftoppm` 将 PDF 页面导出为 PNG/JPEG 图片，支持单页、页码范围、整篇导出和论文排版可视化检查。 |
 | `rebuttal-writing` | [`rebuttal-writing/SKILL.md`](rebuttal-writing/SKILL.md) | 撰写、重构和压缩 AI/ML conference rebuttal、reviewer response 或 AC response，覆盖匿名性、开头感谢、问题弱化改写、Markdown Q&A、强证据回答、小表格、引用和礼貌结尾。 |
 | `researchharness` | [`researchharness/SKILL.md`](researchharness/SKILL.md) | 使用 InternScience ResearchHarness 作为轻量 tool-using LLM agent runtime，覆盖安装配置、CLI、本地前端、OpenAI-compatible API、Python API、工具选择、workspace、trace 和测试。 |
+| `screen-demo-video-editing` | [`screen-demo-video-editing/SKILL.md`](screen-demo-video-editing/SKILL.md) | 将 GUI、科研软件或 agent 录屏剪成演示视频，覆盖静止与周期去重、分屏悬浮、缩放跟随、日志对话、中文字幕、背景音乐和现成旁白；附可配置脚本与合成素材验收。 |
 | `ssh-remote-troubleshooting` | [`ssh-remote-troubleshooting/SKILL.md`](ssh-remote-troubleshooting/SKILL.md) | 排查终端能 SSH 但 VS Code 失败、Windows 临时目录权限、Profile 与服务安装、系统盘缓存及挂载遮蔽，支持保留任务的迁移与连接验收。 |
 | `structai` | [`structai/SKILL.md`](structai/SKILL.md) | 使用 StructAI Python 工具箱搭建 LLM workflow，覆盖 `LLMAgent`、结构化输出、Judge、并发、文件/PDF 工具、文本解析、私网 no_proxy 和 timeout。 |
 | `wave-mosaic-web-theme` | [`wave-mosaic-web-theme/SKILL.md`](wave-mosaic-web-theme/SKILL.md) | 复刻 black-yt 风格前端主题，覆盖 canvas wave-mosaic 动态方块背景、4 种背景颜色切换、Space Grotesk 字体、顶部圆角导航栏、论文筛选滑块和高级卡片/表格视觉。 |

@@ -14,7 +14,7 @@
 Algen Agent Runtime is a typed, provider-neutral Python runtime for building governed AI agents. It provides deterministic execution state, model routing, tool controls, human approvals, retrieval, verification, durable stores, streaming events, and OpenTelemetry instrumentation without binding applications to one model vendor or agent framework.
 
 > [!IMPORTANT]
-> `0.1.0a21` is a pre-release, single-node foundation. The repository is suitable for evaluation and contribution, but it is not yet presented as a production distributed control plane. Review the [known production gaps](docs/production-readiness.md), [threat model](docs/threat-model.md), and [security policy](SECURITY.md) before deployment.
+> `0.1.0a23` is a pre-release, single-node foundation. The repository is suitable for evaluation and contribution, but it is not yet presented as a production distributed control plane. Review the [known production gaps](docs/production-readiness.md), [threat model](docs/threat-model.md), and [security policy](SECURITY.md) before deployment.
 
 **[Documentation](https://algenai.github.io/algen-agent-runtime/)** · [Why use it](docs/why-algen-agent-runtime.md) · [Examples](#importable-examples) · [Changelog](CHANGELOG.md)
 
@@ -86,7 +86,7 @@ preserves correlation, lineage, checkpoints, pause/approval propagation, and rec
 | Area | Status |
 | --- | --- |
 | Python | 3.12 and 3.13 |
-| Package maturity | Pre-alpha (`0.1.0a21`) |
+| Package maturity | Pre-alpha (`0.1.0a23`) |
 | Core execution | Available and covered by deterministic tests |
 | HTTP API | Available; secure deployment configuration is operator-owned |
 | Persistence | In-memory, PostgreSQL, and Redis adapters |
@@ -121,7 +121,7 @@ python -m pip install --pre 'algen-agent-runtime[langgraph]'
 To install a release from its GitHub tag instead of PyPI:
 
 ```bash
-python -m pip install git+https://github.com/AlgenAI/algen-agent-runtime.git@v0.1.0a21
+python -m pip install git+https://github.com/AlgenAI/algen-agent-runtime.git@v0.1.0a23
 ```
 
 For development from a checkout:
@@ -406,7 +406,7 @@ See the full [architecture guide](docs/architecture.md) for the state machine, c
 | Analytics | Typed analytical DAGs, application-registered nodes, secret-safe query sources, semantic layers, governance and evaluation gates |
 | Multi-agent workflows | Validated manifests, dependency scheduling, dynamic fan-out, bounded repair, exact-version child composition, durable clarification and approval pause/resume, explicit crash recovery, typed resources, correlation, and lifecycle events |
 | Observability | Structured logs, OpenTelemetry, optional Traccia integration |
-| Frameworks | Optional LangGraph, OpenAI Agents, AutoGen, and CrewAI adapters |
+| Frameworks | Optional LangGraph, OpenAI Agents, AutoGen, and CrewAI adapters. The Runtime governs the adapter call (tenancy, timeout, cancellation, tracing); model and tool calls inside the framework stay framework-owned unless they use Runtime tools. See the [governance matrix](docs/framework-adapters.md#honest-capability--governance-matrix) |
 
 Provider and integration dependencies remain optional. See the [provider compatibility matrix](docs/provider-compatibility.md), [MCP guide](docs/mcp.md), and [framework adapter guide](docs/framework-adapters.md).
 

@@ -114,7 +114,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is Generative AI?
   - Answer: [What is Generative AI?](https://outcomeschool.com/blog/what-is-generative-ai)
 - What is the context window in LLMs, and why does it matter?
-  - Answer: [Context Window in LLMs](https://www.linkedin.com/posts/amit-shekhar-iitbhu_the-context-window-is-the-llms-working-memory-activity-7437754426175672320-MH9c)
+  - Answer: [Context Window in LLMs](https://www.linkedin.com/posts/amit-shekhar-iitbhu_the-context-window-is-the-llms-working-memory-activity-7437754426175672320-MH9c) and [How does the Context Window work?](https://outcomeschool.com/blog/context-window)
 - Why is the context window limited in LLMs?
   - Answer: [Why is the context window limited in LLMs?](https://www.youtube.com/watch?v=CGIhxIaOg3M&lc)
 - What is temperature in the context of LLMs, and how does it affect output?
@@ -154,6 +154,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [Decoding Flash Attention in LLMs](https://outcomeschool.com/blog/decoding-flash-attention)
 - What is Cross-Entropy Loss?
   - Answer: [Math Behind Cross-Entropy Loss](https://outcomeschool.com/blog/math-behind-cross-entropy-loss)
+- What is KL Divergence?
+  - Answer: [What is KL Divergence? The Math Explained Step by Step](https://outcomeschool.com/blog/kl-divergence)
 - What is Grouped-Query Attention (GQA), and how does it differ from Multi-Head Attention (MHA)?
   - Answer: [Grouped Query Attention](https://outcomeschool.com/blog/grouped-query-attention)
 - How does Sliding Window Attention work?

@@ -15,6 +15,16 @@
 
 <p align="center"><a href="#start-in-three-steps">Start here</a> · <a href="#the-fluid-motion-voice-engine">See the motion</a> · <a href="#voice-and-microphone-setup">Voice setup</a> · <a href="docs/VISUALIZER.md">Integration guide</a> · <a href="docs/GUIDE.md">Full guide</a></p>
 
+<p align="center">
+  <a href="https://quasynvo.github.io/Quasnooze/demo/"><strong>▶ Open the live preview</strong></a>
+  — the conversation surface, scripted, in your browser.<br>
+  <sub>No install. No model. No tools. No microphone. <a href="https://quasynvo.github.io/Quasnooze/demo/visualizer.html">Try the five motion states ↗</a></sub>
+</p>
+
+<p align="center">
+  <sub>Already have a checkout? <code>npm run demo</code> boots the real panel with a canned brain in about two seconds — no keys, no Ollama, no network.</sub>
+</p>
+
 > **Preview provenance:** the header is a silent, scripted walkthrough—not live AI, recorded microphone input or a performance benchmark. Prefer less motion? Use the [static SVG](assets/banner.svg) or open the interface with your OS reduced-motion preference enabled.
 >
 > **Existing installations:** the product name, saved data, configuration aliases and `pinch` CLI remain supported. This identity refresh does not move data or enable a microphone. [Compatibility details →](docs/REBRANDING.md)
@@ -42,7 +52,7 @@ Quasnooze runs on **your own computer**. Ask a question, plan your day, find a d
 | **Speaking / output** | High-contrast radial spectrum with luminous trails | Bright cyan / magenta | Native speech state, or a clearly labelled silent preview. Output-frequency reactivity requires an output analyser. |
 | **Error / interrupted** | One brief, damped shake; warm glow that settles | Crimson / amber | A failed request, denied permission or interrupted stream. Read the accompanying explanation. |
 
-**Approval is separate from these five audio states:** it uses a calm amber presentation plus explicit **Allow once / Deny** controls. A spoken “yes” or an animation cannot approve a sensitive action.
+**Approval is separate from these five audio states:** it uses a calm amber presentation plus explicit **Allow once / Deny** controls. A spoken “yes” or an animation cannot approve a sensitive action. [Structured approval previews](docs/ACTION-PREVIEWS.md) show bounded targets, risks, expected effects and redaction notices without changing the approval gate.
 
 ### Signal honesty
 
@@ -204,6 +214,8 @@ The [integration guide](docs/VISUALIZER.md) includes the complete capture exampl
 | Work with documents | Workspace search, supported attachments and source/citation handling | Bounded access; citations do not guarantee correctness. |
 | Use engineering tools | File operations, command tools, calculations and optional MCP/custom tools | Workspace policy and approvals apply; plugins are not OS-sandboxed. |
 | Remember and schedule | Reminders, schedules, local history and personal-data export | Delivery needs a running, awake host; validated restore is separate work. |
+| Know whether it actually happened | Every file write, calculation, task, reminder and remembered fact is read back from the world and marked verified, contradicted or unverified — never a bare "done" | Read-backs exist for five tools; everything else is reported as unverified, and verification does not prevent an action. |
+| Ask the clock, a sum, or a reminder | Deterministic turns answer without a model: time, arithmetic, remembered facts, tasks and reminders | Five closed sentence shapes only; anything ambiguous goes to the model, and `QUASNOOZE_FAST_PATH=off` restores the previous behaviour. |
 | Use your chat apps | Telegram, Discord, Slack, WhatsApp and web | Optional setup; external services receive messages sent through them. |
 
 Read-only shell commands such as `ls`, `cat`, `grep`, `git status` and friends
@@ -274,6 +286,37 @@ This also synchronizes the shared renderer into the static website. The [validat
 
 Motion changes must preserve signal honesty, keyboard access and reduced-motion behavior. See [CONTRIBUTING.md](CONTRIBUTING.md), the [visualizer contract](docs/VISUALIZER.md) and the [product roadmap](docs/ROADMAP-PROPOSED.md).
 
-[User guide](docs/GUIDE.md) · [Voice boundaries](docs/VOICE.md) · [Channels](docs/CHANNELS.md) · [Conversation behavior](docs/CONVERSATION.md) · [Runtime support](docs/SUPPORT.md)
+[User guide](docs/GUIDE.md) · [Voice boundaries](docs/VOICE.md) · [Voice control roadmap](docs/VOICE-CONTROL-ROADMAP.md) · [Competitive frontier](docs/COMPETITIVE-FRONTIER.md) · [Fast-path evaluation](docs/FAST-PATH-EVAL.md) · [Verified execution](docs/VERIFIED-EXECUTION.md) · [Channels](docs/CHANNELS.md) · [Conversation behavior](docs/CONVERSATION.md) · [Runtime support](docs/SUPPORT.md)
 
 Maintained by **[Ranjith Rosan](https://github.com/RANJITHROSAN17)** and the [open-source contributors](https://github.com/Quasynvo/Quasnooze/graphs/contributors), under **[Quasynvo](https://github.com/Quasynvo)**. Previous attribution is preserved. [MIT license](LICENSE).
+
+### Durable configuration for packaged installs
+
+Packaged installs keep `.env` and personal data in a stable per-user location,
+not in the npm installation or npx cache. Git checkouts retain their existing
+local paths; explicit `PINCH_DATA` / `QUASNOOZE_DATA` overrides are preserved.
+Use `quasnooze migrate-state` to preview copying legacy package state, then
+`quasnooze migrate-state --apply` for interactive confirmation. See
+[storage locations, migration and uninstall guidance](docs/USER-STATE.md).
+
+### Retention preview (no deletion)
+
+Run `quasnooze retention-plan --json` for a bounded, metadata-only inventory of
+sessions, memory, reminders, schedules and telemetry. Policies default off;
+optional age thresholds are preview-only and are never saved or applied. See
+[retention categories, safety and platform limitations](docs/RETENTION.md).
+
+### Synthetic retrieval evaluation
+
+Run `node scripts/evaluate-retrieval.js` from a source checkout to reproduce the
+[labelled offline retrieval baseline](docs/RETRIEVAL-EVALUATION.md). It reports
+recall/rank metrics, cold/warm index counters, stale-update checks and known
+no-answer failures. Citation provenance is tested separately; model-answer
+faithfulness is explicitly not run. No private corpus, model or network is used.
+
+### Local support diagnostics
+
+`quasnooze support-bundle` previews a separate, allowlisted diagnostic artifact.
+Saving requires `--out FILE --write` and interactive confirmation; there is no
+upload or automatic personal-data export. See
+[support-bundle fields, limits and privacy caveats](docs/SUPPORT-BUNDLE.md).

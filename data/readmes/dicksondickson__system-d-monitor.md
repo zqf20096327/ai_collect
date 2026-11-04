@@ -32,6 +32,14 @@ are btop's. See [Credits](#credits).
 
 ---
 
+## Changelog
+
+v0.1.1 - 2026-11-03 - Support for the later TensorFold build; PP counts only computed prompt tokens
+
+All releases: [`CHANGELOG.md`](CHANGELOG.md)
+
+---
+
 ## What you need
 
 | | |
@@ -41,7 +49,7 @@ are btop's. See [Credits](#credits).
 | **Power** | 5 V USB, about **210 mA (≈ 1 W)** measured while running this firmware on Wi-Fi. Any USB port or phone charger will do; Wi-Fi bursts briefly draw more, so avoid weak hubs |
 | **Computer** | macOS, Linux or Windows, with Python 3.9+ for PlatformIO |
 | **Wi-Fi** | a **2.4 GHz** network (the ESP32-S3 has no 5 GHz radio) on the same LAN as your servers |
-| **Servers** | vLLM (V1 metrics; tested with 0.33) or TensorFold (tested with 1.1.8), reachable over plain HTTP with no auth on `/metrics` |
+| **Servers** | vLLM (V1 metrics; tested with 0.33) or TensorFold (tested with 1.1.8 and a later build that exports `tensorfold_health:*`), reachable over plain HTTP with no auth on `/metrics` |
 
 ![The board running SYSTEM-D Monitor, powered through a USB meter reading 5.1 V, 0.21 A, 1.07 W](docs/images/photo.jpg)
 
@@ -166,7 +174,7 @@ just have to be reachable on the LAN without auth.
 | | vLLM | TensorFold |
 |---|---|---|
 | metrics | `GET /metrics` (`vllm:*`, V1 names) | `GET /metrics` (`tensorfold:*`, vLLM-style names) |
-| identity | `GET /version` | `Server: TensorFold` header, `GET /health` |
+| identity | `GET /version` | `Server: TensorFold` header, `GET /health` (`version`, or `backend: "tensorfold"`) |
 | model | `GET /v1/models` | `GET /v1/models` |
 
 The engine is identified by its metric prefix. A server that is neither

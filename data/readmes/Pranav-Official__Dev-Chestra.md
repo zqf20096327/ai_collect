@@ -1,0 +1,173 @@
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/images/logo-lockup-light.svg">
+    <img alt="DevChestra" src="assets/images/logo-lockup.svg" width="300">
+  </picture>
+</h1>
+
+Conduct your coding agents like an orchestra.
+
+DevChestra is a local workflow builder for headless coding agents. Draw a workflow on the canvas or have your coding agent create one through the CLI, then watch Claude, Codex, OpenCode, or Pi do the work — with branches, loops, and human check-ins where you want them.
+
+It's not another agent to babysit. It's the stage your agents play on.
+
+![DevChestra workflow editor](assets/images/workflow-router.png)
+
+Above: a real DevChestra workflow that routes a PR review by risk, with a separate follow-up path. Runs, transcripts, and replay live in the same window.
+
+## Why it's nice
+
+Pasting the same instructions into chat every time or using 100 diffrent SKILL.md and hoping the agent does it the same way? That's the problem. Chat is vibes: same prompt, different tools, diffrent model, different order, different day.
+
+DevChestra makes the boring parts deterministic. You build the process once — who runs, what tools and MCPs they get, what they're allowed to touch, what they must hand back, what happens next — and it runs that way every time. The agents still improvise inside their box (they're LLMs, after all), but the orchestration around them doesn't.
+
+Research, then rank. Draft, then review. Write code, run tests, fix what broke. No babysitting prompts, no pasting output from one chat into the next.
+
+## What can you build?
+
+We built a PR review workflow that routes changes by risk and sends follow-up work down its own path. That's one way to put the pieces together. A few others:
+
+- **Bug triage to PR** — reproduce the issue, investigate, implement a fix, run tests, and ask for a review before opening a PR.
+- **Ticket to PR** — turn a Linear or GitHub ticket into a plan, implementation, tests, and a PR, with a human check-in along the way.
+- **User flow testing** — walk through a product flow, check the UI, capture what broke, and send failures back for a fix and another test.
+- **Lead research** — find potential leads, check them against your criteria, and hand a structured list to a person for review.
+- **Content pipeline** — research a topic, draft, edit, check against a brief, and get approval before publishing.
+
+The workflow decides the order, handoffs, branches, and review points. The agents do the work inside each step, using the tools and access you give them.
+
+## A starter workflow: Fix failing tests
+
+Every new project is seeded with a small workflow you can run right away, "Fix failing tests":
+
+![Fix failing tests starter workflow](assets/images/workflow-starter.svg)
+
+1. **Run tests** with your project's test command (detected from `package.json`, `Cargo.toml`, `go.mod` or `pyproject.toml`).
+2. **Tests green?** If they already pass, the run ends as "Already green".
+3. Otherwise a **loop** hands the failing output to an agent, which makes the smallest fix it can, then reruns the tests. It repeats until they pass, for up to 3 rounds. If they still fail, the run ends as "Still failing" and keeps the last test output.
+4. **Keep these changes?** A person reviews the result. Approve and the run ends as "Fixed". Reject and it ends as "Declined".
+
+It's a good one to open first: it uses a shell step, an agent, a gate, a loop and an approval, so you can see how the pieces connect. It's best run in a fresh worktree so a rejected fix is easy to throw away.
+
+## Beyond code: an AI UGC video pipeline
+
+Workflows aren't limited to code. This one turns product images into a finished UGC-style short and posts it:
+
+![AI UGC video workflow](assets/images/workflow-ugc-video.svg)
+
+1. **Start** with the product images as a parameter.
+2. **Write the script.** An agent drafts the UGC script, broken into shots.
+3. **Cast influencers.** An agent proposes a few influencer options that fit the script, and **Pick best influencer** chooses one.
+4. **Generate shots.** A for-each step goes through the script's shots one at a time. Each round runs an agent connected to the Higgsfield MCP to generate that shot's video.
+5. **Edit with HyperFrames.** An agent assembles the shots, adds subtitles and finishes the cut.
+6. **Review video.** A reviewer agent checks the result against the script. If it finds defects, a **Fix pass** agent repairs them. If it finds none, the video moves straight on.
+7. **Post to social.** A join merges the "fixed" and "clean" paths, and a shell step posts the video.
+
+The agents do the creative work. The workflow decides the order, which tools each one gets, and when a defect sends the video back for another pass.
+
+## What you build with
+
+The canvas and CLI use the same workflow vocabulary:
+
+![Available nodes](assets/images/nodes.png)
+
+Agent — run an agent step. Pick your CLI and model, write the prompt, done.
+
+Shell — run a command. Tests, linters, scripts, whatever you'd run yourself.
+
+Gate — route by condition. First matching branch wins, otherwise falls through.
+
+Join — merge branches back together. Wait for the first one, or all of them.
+
+Approval — pause for a person. Nothing moves until someone says go.
+
+Decision — ask a decision model when you need a judgment call, not just code.
+
+Loop — repeat until a condition is met. Each round keeps its own history.
+
+For each — process every item in a list, one at a time.
+
+Run workflow — call a reusable workflow and wait for it to finish.
+
+End — finish the run.
+
+## How a run feels
+
+1. Register your project once by pointing DevChestra at a folder. A new project comes with two starter workflows, "Tour this project" (read-only survey) and "Fix failing tests" (test, fix, retest, ask for approval), using the first coding CLI it finds. Pass `--no-starters` to `devchestra project add` to skip them.
+2. Build a workflow on the canvas, or ask your coding agent to create and validate one through the CLI.
+3. Start a run in the editor or from the CLI. Pick where it runs — your project folder as-is, an existing worktree, or a fresh worktree per run.
+4. Follow events and transcripts in the editor, or let your agent watch the run, inspect errors and usage, and bring human review gates back to you through the CLI.
+
+The CLI speaks JSON, so an agent can start a run, check its status, and reconnect to watch it without keeping the editor open. If two people edit the same workflow, DevChestra catches the conflict instead of silently overwriting.
+
+Agents automatically receive what came before them, so a plain prompt like "sort by total stars, descending" just works. No template syntax required unless you want it.
+
+
+## Get going
+
+The easiest what to get set up is ask your codling agent to set it up for you
+```
+set up https://github.com/Pranav-Official/Dev-Chestra globaly
+# if you are working on a project then...
+Also register this project as well.
+```
+
+You need Node 22 or newer and one of pnpm, npm or bun. Every command below works the same with any of them.
+
+```sh
+pnpm setup:global   # or: npm run setup:global / bun run setup:global
+devchestra start
+```
+
+That installs everything, links the `devchestra` command, and starts the editor in the background (it opens in your browser and the shell comes back right away; `devchestra stop` shuts it down, `devchestra start --foreground` keeps it attached). Run it again any time something looks off, it's safe to repeat.
+
+In an interactive terminal, setup also offers to configure the decision providers: **Jev** (`TYPESAFE_API_KEY`) and **Clef** (`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_AUTH_TOKEN`). Answer `y` for the ones you use and paste the values (they are not echoed). Keys are saved to `~/.config/devchestra/.env` with mode 600, never overwriting a value that is already there. If you already filled in a `.env` copied from `.env.example` in the repo, setup copies those keys over instead of asking. Skip the step with `--no-env`, or preview everything with `--dry-run`.
+
+Prefer the manual route?
+
+```sh
+pnpm install        # or: npm install / bun install
+pnpm build          # or: npm run build / bun run build
+pnpm devchestra start   # or: npm run devchestra start / bun run devchestra start
+```
+
+Prefer to work through your coding agent? Start DevChestra without the browser:
+
+```sh
+devchestra start --headless
+```
+
+Agents can also refer skills by using 
+```
+devchestra skill
+```
+
+Agents can use it to create, validate, run, and monitor workflows. Then ask it something like "build a workflow that runs the linter, then asks me before fixing anything." It can use the CLI to manage the workflow and follow a run when you ask it to start one.
+
+You can use the same commands yourself. Here, `workflow.json` contains a workflow with the ID `my-workflow`:
+
+```sh
+devchestra project add /path/to/project
+devchestra workflow create --project /path/to/project --file workflow.json
+devchestra run start my-workflow --project /path/to/project
+devchestra run watch <run-id> --jsonl
+```
+
+See the [CLI guide](packages/cli/README.md) for validation, approvals, recovery, and the rest of the commands.
+
+Works with the CLIs you already signed in to: Claude Code, Codex, OpenCode, and Pi. DevChestra never asks for their keys, it just uses what's there.
+
+Decision nodes are the one exception — they need their own keys. `setup:global` can set them up for you (see above), or copy `.env.example` to `.env` and fill in only the provider you use.
+
+## It lives where you already work
+
+Use the canvas when you want to see the whole process. Use the CLI when you're working with an agent in your terminal or IDE. Either way, workflows live in your project, ready to rerun, share, and version like code.
+
+Local-first, single user, your files stay yours. No cloud account, no queue, no sandbox magic — steps run with your normal permissions in the workspace you chose.
+
+## Third-party icons
+
+The monochrome provider icons are vendored from [LobeHub Icons](https://github.com/lobehub/lobe-icons) (MIT, Copyright (c) 2023 LobeHub) and the official Pi mark from pi.dev. The marks belong to their respective owners and are used only to identify the matching CLI.
+
+## License
+
+[MIT](LICENSE)

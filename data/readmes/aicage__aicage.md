@@ -31,23 +31,44 @@ Use one of these builtin CLI agents or
 <!-- markdownlint-disable line-length -->
 <table>
   <tr>
-    <td><img src="assets/agent-logos/amp.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://ampcode.com/docs/cli">Amp CLI</a> · <code>amp</code></td>
+    <td>
+      <a href="https://ampcode.com/docs/cli" aria-label="Amp CLI"><img src="assets/agent-logos/amp.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://ampcode.com/docs/cli">Amp CLI</a> · <code>amp</code>
+    </td>
     <td><a href="https://docs.augmentcode.com/cli">Auggie CLI</a> · <code>auggie</code></td>
-    <td><img src="assets/agent-logos/claude.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://claude.com/product/claude-code">Claude Code</a> · <code>claude</code></td>
+    <td>
+      <a href="https://claude.com/product/claude-code" aria-label="Claude Code"><img src="assets/agent-logos/claude.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://claude.com/product/claude-code">Claude Code</a> · <code>claude</code>
+    </td>
   </tr>
   <tr>
-    <td><img src="assets/agent-logos/codex.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://developers.openai.com/codex/cli">Codex CLI</a> · <code>codex</code></td>
+    <td>
+      <a href="https://developers.openai.com/codex/cli" aria-label="Codex CLI"><img src="assets/agent-logos/codex.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://developers.openai.com/codex/cli">Codex CLI</a> · <code>codex</code>
+    </td>
     <td><a href="https://github.com/features/copilot/cli">GitHub Copilot CLI</a> · <code>copilot</code></td>
     <td><a href="https://factory.ai/product/cli">Factory CLI</a> · <code>droid</code></td>
   </tr>
   <tr>
-    <td><img src="assets/agent-logos/goose.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://goose-docs.ai">Goose CLI</a> · <code>goose</code></td>
+    <td>
+      <a href="https://goose-docs.ai" aria-label="Goose CLI"><img src="assets/agent-logos/goose.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://goose-docs.ai">Goose CLI</a> · <code>goose</code>
+    </td>
     <td><a href="https://kiro.dev/cli/">Kiro CLI</a> · <code>kiro-cli</code></td>
-    <td><img src="assets/agent-logos/opencode.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://opencode.ai">OpenCode</a> · <code>opencode</code></td>
+    <td>
+      <a href="https://opencode.ai" aria-label="OpenCode"><img src="assets/agent-logos/opencode.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://opencode.ai">OpenCode</a> · <code>opencode</code>
+    </td>
   </tr>
   <tr>
-    <td><img src="assets/agent-logos/qwen.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://qwenlm.github.io/qwen-code-docs">Qwen Code</a> · <code>qwen</code></td>
-    <td><img src="assets/agent-logos/mistral.svg" alt="" height="20" style="vertical-align: middle;"> <a href="https://docs.mistral.ai/vibe/code/">Mistral Vibe CLI</a> · <code>vibe</code></td>
+    <td width="190">
+      <a href="https://qwenlm.github.io/qwen-code-docs" aria-label="Qwen Code"><img src="assets/agent-logos/qwen.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://qwenlm.github.io/qwen-code-docs">Qwen Code</a> · <code>qwen</code>
+    </td>
+    <td>
+      <a href="https://docs.mistral.ai/vibe/code/" aria-label="Mistral Vibe CLI"><img src="assets/agent-logos/mistral.svg" alt="" height="20" style="vertical-align: middle;"></a>
+      <a href="https://docs.mistral.ai/vibe/code/">Mistral Vibe CLI</a> · <code>vibe</code>
+    </td>
     <td></td>
   </tr>
 </table>
@@ -77,21 +98,27 @@ Accept the setup choices, then sign in or confirm that the agent is already sign
 
 ### Use aicage in your IDE
 
-Use your agent in your IDE while aicage runs it in a Docker container.
+Use your agent in your IDE while Aicage runs it in a Docker container.
 
-#### Visual Studio Code
+#### IDE Configuration examples
 
-1. Install [ACP Client](https://marketplace.visualstudio.com/items?itemName=formulahendry.acp-client).
-2. In the plugin settings, add your agent’s config from the
-   [Visual Studio Code configuration](config/ide-plugins/VScode/settings.json) into the `settings.json`.
+Add the configuration for your IDE, plugin and agent from these example configuration files:
 
-#### JetBrains
+<!-- pyml disable line-length,no-inline-html -->
+<!-- markdownlint-disable line-length -->
+| IDE       | Plugin                                                                                     | Linux / macOS                                                                | Windows                                                                              |
+|-----------|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| VS Code   | [ACP Client](https://marketplace.visualstudio.com/items?itemName=formulahendry.acp-client) | [~/.config/Code/User/settings.json](config/ide-plugins/VScode/settings.json) | [%APPDATA%\Code\User\settings.json](config/ide-plugins/VScode/settings.windows.json) |
+| JetBrains | [AI Assistant](https://www.jetbrains.com/help/ai-assistant/activate-agents.html)           | [~/.jetbrains/acp.json](config/ide-plugins/JetBrains/acp.json)               | [%USERPROFILE%\.jetbrains\acp.json](config/ide-plugins/JetBrains/acp.windows.json)   |
+<!-- markdownlint-enable line-length -->
+<!-- pyml enable line-length,no-inline-html -->
 
-1. Install [AI Assistant](https://www.jetbrains.com/help/ai-assistant/activate-agents.html).
-2. In the plugin’s settings, add your agent’s config from the
-   [JetBrains configuration](config/ide-plugins/JetBrains/acp.json) as a
-   [custom ACP agent](https://www.jetbrains.com/help/ai-assistant/activate-agents.html#add-acp-agents).  
-   Replace `/path/to/aicage` with the full path to `aicage`.
+1. Install the IDE plugin
+2. Configuration
+   - Visual Studio Code: In the plugin settings, add your agent’s config into the `settings.json`.
+   - JetBrains IDE: In the plugin’s settings add your agent as a
+     [custom ACP agent](https://www.jetbrains.com/help/ai-assistant/activate-agents.html#add-acp-agents). Replace
+     `/path/to/aicage` with the full path to `aicage`.
 
 #### ACP Bridge for Amp, Claude, and Codex
 
@@ -104,7 +131,7 @@ npm install -g @agentclientprotocol/claude-agent-acp
 npm install -g @agentclientprotocol/codex-acp
 ```
 
-In JetBrains, replace the bridge's `/path/to/...` in the config above with its full path.
+For JetBrains IDEs, replace the bridge's `/path/to/...` in the plugin settings with its full path.
 
 ## Change a project's setup
 

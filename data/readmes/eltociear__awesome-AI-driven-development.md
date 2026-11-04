@@ -4,7 +4,7 @@
 
 <a href="https://github.com/sindresorhus/awesome"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" height="18"></a>
 
-A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **601 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
+A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **602 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
 
 ## Contents
 
@@ -112,6 +112,7 @@ AI coding assistants and agents that work directly in your terminal or command l
 - [Grok Build (`grok`)](https://github.com/xai-org/grok-build) - SpaceXAI's coding agent harness and TUI. Fullscreen, mouse interactive, extensible.
 - [Atomic Agent](https://github.com/AtomicBot-ai/atomic-agent) - Local-first CLI and TUI coding agent that runs open-weight models entirely on your machine through a llama.cpp fork, with no account or API key required. Ships 56 built-in tools (browser, filesystem, git, memory, vision), MCP support, and a five-layer local memory system. Runs on macOS, Linux, and Windows.
 - [OB-1](https://github.com/Overbrilliant/ob-1) - Terminal coding agent that runs with no account, no API key and no card: an embedded router inside the CLI process answers the first message through keyless free providers using a signed bundled free-model catalog, with failover to your own keys (OpenRouter, OpenAI, Gemini, Groq) or local runtimes (Ollama, LM Studio, llama.cpp, vLLM, any OpenAI-compatible endpoint). Persistent SQLite project memory with an inspectable fact/relationship graph, repo map, MCP, and OS sandboxing (Seatbelt/bubblewrap). The keyless tier is a bootstrap path with variable model quality and shared limits. Apache-2.0, npm `@overbrilliant/ob1`.
+- [Borg](https://github.com/adelphidata/borg) - Security-first personal AI assistant and coding agent in Rust with a terminal UI, read-only Plan mode, goal loops gated on your checks, git worktrees, long-term memory, and a self-healing daemon
 
 ## IDE Extensions
 
@@ -136,6 +137,7 @@ Plugins and extensions for popular IDEs and text editors.
 - [Antigravity Quota Watcher](https://github.com/Henrik-3/AntigravityQuota) - A lightweight VS Code extension that monitors your Antigravity AI model usage quota and displays it in the status bar.
 - [Antigravity Pulse](https://github.com/codavidgarcia/antigravity-pulse) - 100% local & private. Super lightweight. A 120 KB status bar extension for Antigravity Pro & Ultra users who want to monitor their AI model quota at a glance
 - [Pixel Agents](https://github.com/pablodelucca/pixel-agents) - A VS Code extension that turns your AI coding agents into animated pixel art characters in a virtual office.
+- [Lookout for VS Code](https://github.com/nimrod-teich/lookout) - A VS Code extension that shows every Claude Code, Codex and Copilot CLI session on one board in the side bar: what each waiting session asks, a one-key jump to its tab or terminal, and search across every conversation.
 
 ### Neovim/Vim
 - [avante.nvim](https://github.com/yetone/avante.nvim) - A Neovim plugin designed to emulate the behaviour of the Cursor AI IDE
@@ -328,6 +330,7 @@ Model Context Protocol servers and integrations for enhanced AI capabilities.
 - [Unified MCP Client Library](https://github.com/pietrozullo/mcp-use) - The easiest way to interact with mcp servers with custom agents
 - [Multi Database MCP Server](https://github.com/FreePeak/db-mcp-server) - A powerful multi-database server implementing the Model Context Protocol (MCP) to provide AI assistants with structured access to databases
 - [Supabase MCP Server](https://github.com/supabase-community/supabase-mcp) - Connect your Supabase projects to Cursor, Claude, Windsurf, and other AI assistants
+- [Nhost MCP Server](https://github.com/nhost/nhost/tree/main/cli) - Official MCP server for Nhost, a managed backend for agentic apps. Lets AI agents read the GraphQL schema, run the queries you allow and manage permissions and migrations
 - [claude-context](https://github.com/zilliztech/claude-context) - Code search MCP for Claude Code. Make entire codebase the context for any coding agent.
 - [Kodit](https://github.com/helixml/kodit) - MCP server to index external repositories
 - [PageSpeed Insights MCP Server](https://github.com/ruslanlap/pagespeed-insights-mcp) - MCP server for Google PageSpeed Insights API that enables web page performance analysis directly through Claude.
@@ -670,6 +673,4 @@ Frameworks, libraries, and configurations for building and enhancing AI coding a
 - [Deliberate Agentic Development](https://github.com/Matt-Hulme/deliberate-agentic-development) - A structured workflow system for AI coding agents like Claude Code, Cursor, and Codex
 - [Pluqqy](https://github.com/pluqqy/pluqqy-terminal) - Build and manage minimal viable context for your AI coding assistant from your terminal
 - [cmux](https://github.com/coder/cmux) - a cross-platform desktop application for AI-assisted development with git worktree integration.
-- [GroundZero Package Manager](https://github.com/groundzero-ai/gpm) - The package manager for AI coding. Sync and reuse rules, slash commands, agents, and more.
-- [CC Marketplace for Claude Code](https://github.com/setouchi-h/cc-marketplace) - This repository provides a Claude Code marketplace bundle (cc-marketplace).
-- [Cursor Agentic Development Pipeline](https://github.com/ChrisThompsonTLDR/agentic-programming/tree/feature/epic-master) - A comprehensive, AI-powered software development workflow that orchestrates multip
+- [Grou

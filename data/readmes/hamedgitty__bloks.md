@@ -244,6 +244,14 @@ closed set of shapes before it reaches a screen, and nothing in an answer
 fetches anything. With its update, the iPhone draws the same answers
 natively. [docs/GENERATIVE_UI.md](docs/GENERATIVE_UI.md) is the contract.
 
+Copy any part of a conversation and paste it into Mail, Docs or Word: it
+arrives as its headings, lists, tables, links and code, in the
+document's own style, without the app's colours, buttons or timestamps.
+A file an agent saves opens in the app as a page, a picture, a table or
+text, and an open one follows the file: when the agent, or anything
+else, writes it again, the preview updates where you are reading and
+says Updated, and a file that is deleted says so.
+
 <p align="center">
   <img alt="An answer drawn as a card: three headline numbers, a bar chart of signups by channel, a table, and two follow-up questions to click" src="docs/screenshots/answer.png" width="560">
 </p>
@@ -297,7 +305,11 @@ and **Take over** whenever you like; the agent's next step waits until
 you **Give back**. Sign in yourself and hand an agent the page you are
 on; tabs, pages and sign-ins stay put through every handoff. Each
 workspace browses in a session of its own, so its sign-ins stay its own
-and never the app's.
+and never the app's. When a page pops up an alert, a confirm, a prompt
+or a "leave this page?", the agent's step comes back with the question
+and the agent answers it; while you have the browser, it shows as a
+small bar over the page with OK and Cancel (or Leave and Stay). One
+nobody answers is dismissed after 30 seconds, never accepted.
 
 It is careful in the same way the rest of Bloks is. In Ask first, a site
 not on your list asks on a card the first time an agent goes there;
@@ -345,6 +357,12 @@ file or a `bloks://install?url=` link through the same review, and use
   several agents try the same task and keep the best attempt.
 - **Rewind to here.** Take a conversation back to a message you sent, and
   the files with it.
+- **Branch from here.** Try another direction from a good answer without
+  losing the conversation you have: Branch from here, in an answer's ⋯
+  menu, opens a new conversation with the same agent holding everything
+  up to that answer. The agent picks it up in a new session that has
+  heard only that much, and the original stays exactly as it was. Files
+  in the workspace are shared, not copied.
 - **Work somewhere else.** An agent on Claude Code, Codex or another engine
   that runs a program can work in a Docker container or on another
   machine over SSH: a throwaway container that can break nothing here,
@@ -359,7 +377,10 @@ file or a `bloks://install?url=` link through the same review, and use
   What you add while it is still getting ready joins the request it is
   starting. One press changes its mind. When other agents' messages waited
   too, yours go in last and marked as yours, so the answer sits right
-  under them.
+  under them. Waiting words go in the order they are listed above the
+  box, and yours can be moved: drag one by its handle, pick Move up or
+  Move down from the handle's menu, or press Option (Alt) and an arrow.
+  Rooms work the same way.
 - **Questions that do not hold the turn.** A Codex agent can ask you
   something and carry on. When you settle it some other way, the agent
   takes its own question back (`bloks questions`, `bloks unask`) and the
@@ -423,6 +444,11 @@ over.
   on disk so quitting the app never loses a run. **Webhooks** turn any
   outside event into a task, and a scheduler on your own computer can
   wake one exact conversation, labelled as a local service, not as you.
+  Give a webhook a signing secret, generated or the sender's own, and
+  only requests signed the Standard Webhooks way (Svix, Clerk, Resend,
+  Composio and others) get in: fresh, once each, the URL alone no longer
+  enough. A refused one never reaches the agent, and the webhook's
+  recent deliveries say why.
 - **Goals.** Type `/goal`, say what done looks like, and an agent keeps
   going until it is done, stuck or out of turns.
 - **A morning brief** on Overview: what every agent did, what waits on
@@ -465,7 +491,10 @@ over.
   can call it, or call a room. Voices come from ElevenLabs, OpenAI, Fish
   Audio or xAI with a key of yours (xAI's uses your Grok key if you have
   one), from a Chatterbox server you run on your own machine or network,
-  or from the Mac's own voices with no key at all. What you say on a call
+  or from the Mac's own voices with no key at all. Play them at 0.75x to
+  2x, at their natural pitch: Speed in the agent's Voice settings, or the
+  chip on a call, which changes the reply playing now. The speed is kept
+  on each device, for every agent. What you say on a call
   or in meeting notes is written down by a Whisper server of your own,
   ElevenLabs or OpenAI, or the Mac's own recognizer in the Mac app:
   Settings, Voices, Hearing says which, and calls and meeting notes then
@@ -510,7 +539,10 @@ over.
   of your own that stays on, and moves your agents over when you sign up
   at [bloks.dev/pricing](https://bloks.dev/pricing). On Windows, the
   desktop app can keep running in the system tray when you close its
-  window: Settings, General, Window.
+  window: Settings, General, Window. On a Mac, one stray ⌘Q no longer
+  stops your agents: hold it for a moment or press it twice. Quit from
+  the menu or the Dock still quits at once, and Settings, General,
+  Window turns the guard off.
 - **Scripts, CI and a terminal.** `bloks-server run Ada "Review the open
   pull requests"` hands an agent a job, waits until it and every teammate
   it handed work to are done, and prints the answer, or one JSON document
@@ -658,6 +690,28 @@ has no browser or screen rather than promised one, and its turns never
 hold the Local VM from agents that could use it. On a Linux server with
 no display, the agent's browser runs headless.
 
+An MCP server you add as a command is looked for on this computer, never
+run to check it. If the program is not there, Settings, Plugins says
+**Command not found** and how to fix it, and a turn leaves that server
+out instead of starting without its tools in silence: the agent is told,
+and the conversation gets one notice.
+
+OpenCode reads your own setup by default: the plugins, MCP servers and
+instructions in `~/.config/opencode`, and the providers and sessions in
+`~/.local/share/opencode`, shared with OpenCode in your terminal. To keep
+them apart, turn on **Own setup for this workspace** under OpenCode in
+Settings, Engines and keys. OpenCode turns in that workspace then use
+folders of its own, in the workspace's `opencode/` folder: settings,
+plugins and sessions start empty, and the providers you already
+connected are copied in once, when you first switch it on (OpenCode's own
+`auth export` and `auth import`, or a copy of its `auth.json`, private to
+you). Anything you connect in your own OpenCode later stays there; use
+**Connect a provider** under the switch to sign in to the workspace's.
+Commands the agent runs see the same folders, so a tool that keeps its
+settings under `~/.config` (`gh`, for one) is not signed in during those
+turns. It applies to turns on this computer; an agent working in a
+container or over SSH uses the OpenCode set up there.
+
 Give an agent a **backup engine** and a turn that hits a usage limit, a
 rate limit or an outage is picked up by the backup, with the conversation
 so far.
@@ -752,6 +806,7 @@ Inside each workspace's folder:
 | `people.json`, `joining.json` | The people in the workspace, and its invites |
 | `usage.json` | What each agent and engine used, by day, and on which account |
 | `engine-accounts.json`, `engine-accounts/` | The names of an engine's added accounts and which one is in use, and each one's own config folder with the sign-in the engine wrote there (left out of backups) |
+| `opencode/` | OpenCode's own settings, sign-ins and sessions for this workspace, when it has its own setup; `0700` (left out of backups) |
 | `reads.json` | How far each person has read each conversation |
 | `skills/` | Installed skills, one markdown file each |
 | `skill-history/` | Every version of each of your skills, with who changed it and why |

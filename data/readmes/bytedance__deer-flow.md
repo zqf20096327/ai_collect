@@ -250,6 +250,8 @@ fences, including unclosed fences, in complete and streamed replies.
 
    Brave web search preserves valid entries in mixed result lists. Malformed response containers or lists containing no usable entries return a structured format error; missing, null, or empty results keep the existing "No results found" response. Format errors also log the malformed container's path and type, or the absence of usable result objects, without including search queries, credentials, or payload values.
 
+   You.com, GroundRoute and Webz initialize HTTPX clients in a worker thread so synchronous TLS trust loading does not block the agent event loop; requests and session cleanup remain asynchronous.
+
    GroundRoute web search and fetch contain malformed HTTP-success payloads the same way: a non-object payload, a `results` container that is not a list, or a non-empty list with no object entries returns the provider's format error, while non-object entries in an otherwise valid list are skipped in order. Missing, null, or empty results keep the existing "No results found" response.
 
    DuckDuckGo web search distinguishes execution failures from empty results: rate limits, timeouts, blocked requests, client-setup failures, SDK errors, and a missing `ddgs` dependency return a structured `DuckDuckGo search failed: ...` error instead of "No results found", while a genuinely empty result set keeps the existing "No results found" response. The structured error text lets the harness classify an outage as transient or a configuration problem instead of a query that matched nothing.
@@ -1087,6 +1089,10 @@ URLs. The default local provider never enables the socket overlay.
 Local AIO sandbox port allocation stops at TCP port 65535. If the remaining
 ports from the configured starting port are occupied, allocation reports
 that no port is available instead of attempting an out-of-range bind.
+In open network mode, a missing Docker/Apple Container CLI or a permission-denied
+CLI startup returns the reserved port while reporting the original error, so
+repeated attempts do not exhaust the port range. Restricted network mode
+retains its existing cleanup rules because a proxy may already hold the port.
 
 AIO teardown failures retain a generation-bound cleanup record. Partial shutdown
 reports failure and can be retried; retries verify the runtime identity and absence
@@ -1201,8 +1207,4 @@ plugins. Administrators supply robot credentials or a HubSpot private app token;
 Agents can then send requested group notifications, list companies, or create
 contacts. Saving configuration performs no external write. These plugins reuse
 the existing MCP lifecycle and require no separate plugin service. See the
-integration contract above for required fields, scopes, and feature boundaries.
-
-Plugin brand icons are bundled locally. When adding or editing one personal MCP plugin, users can upload a PNG, JPG, or WebP image (up to 2 MB), preview it, or restore the default icon. Changes take effect only after Save; custom icons persist across browsers as a normalized 128px PNG in the server entry's display-only `presentation.icon` metadata. They are not sent to the MCP transport.
-
-Capability Center > Plugins adds, replaces, and deletes one MCP s
+integration contract above for

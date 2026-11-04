@@ -112,6 +112,7 @@ Model weights keep the license of their original release, which is separate from
 | **personaplex** | Dialogue, S2S | en | PersonaPlex 7B v1 speech-to-speech conversational model with packaged voice/persona prompts | GGUF Q4/Q8, Stream |
 | **plapre** | TTS, Clone, Ctrl, Edit | da | Plapre 3, five preset voices | GGUF F32/BF16, Stream |
 | **pocket_tts** | TTS, Clone | en, fr, de, it, pt, es | PocketTTS-100M English/French/German/Italian/Portuguese/Spanish | GGUF 16/Q8, Stream |
+| **pocket_tts_small** | TTS, Clone | en | PocketTTS Small 18M/7M/2M, base and ReFL | GGUF F32, Stream |
 | **qwen3_tts** | TTS, Clone, Design, Ctrl | zh, en, fr, de, it, ja, ko, pt, ru, es | Qwen3-TTS-12Hz-0.6B-Base<br>Qwen3-TTS-12Hz-1.7B-Base<br>Qwen3-TTS-12Hz-1.7B-CustomVoice<br>Qwen3-TTS-12Hz-1.7B-VoiceDesign | GGUF 16/Q8, Stream, LoRA |
 | **supertonic** | TTS | en, ko, ja, ar, bg, cs, da, de, el, es, et, fi, fr, hi, hr, hu, id, it, lt, lv, nl, pl, pt, ro, ru, sk, sl, sv, tr, uk, vi, na | Supertonic 3 | GGUF F32, Stream |
 | **vibevoice** | TTS, Dialogue | en, zh | VibeVoice-1.5B<br>VibeVoice-7B | GGUF 16/Q8, Stream, LoRA |
@@ -135,6 +136,7 @@ Model weights keep the license of their original release, which is separate from
 | **hviske_asr** | ASR | da | Hviske v5.3 | GGUF Q8 |
 | **hviske_asr_v6** | ASR | da | Hviske v6 | GGUF BF16 / Q8 |
 | **index_echo** | ASR, Translate | zh → en, es, ja | Index-Echo-S2TT 2B<br>Index-Echo-S2TT 9B | GGUF original/Q8_0/Q4_K |
+| **lfm_d1_omni** | Classify | multilingual | [d1-Omni-2B](docs/models/lfm_d1_omni.md) calibrated audio decisions with named yes/no, choice, score, and numeric-estimate questions | GGUF Q8_0/F16/BF16 |
 | **marblenet_vad** | VAD | lang agnostic | MarbleNet VAD | Bundled |
 | **micro_wake_word** | Wake | model dependent | microWakeWord MixedNet TFLite models converted to GGUF | GGUF F32, Stream |
 | **ming3_audio** | ASR, Understanding, TTS, Clone, S2S | zh, en | Ming 3.0 Audio Tiny | GGUF BF16/Q8_0/Q4_K |
@@ -173,7 +175,7 @@ Model weights keep the license of their original release, which is separate from
 | **mel_band_roformer** | Sep | lang agnostic | Mel-Band RoFormer MLX vocal separation variants | GGUF 16/Q8 |
 | **miocodec** | Codec, VC | lang agnostic | MioCodec v2, 25 Hz, 44.1 kHz | GGUF 16/Q8 |
 | **mossformer2** | Sep | lang agnostic | MossFormer2 SS 16K two-speaker separation | GGUF F32 |
-| **muscriptor** | MIDI | music | MuScriptor Small audio-to-symbolic transcription | GGUF F32, Stream |
+| **muscriptor** | MIDI | music | [MuScriptor Small/Medium/Large](docs/models/muscriptor.md) audio-to-symbolic transcription | GGUF F32, Stream |
 | **rvc** | VC | lang agnostic | RVC F16 GGUF with packaged v1/v2 voices and optional retrieval blending | GGUF 16 |
 | **sam_audio** | S2S | lang agnostic | SAM Audio Small<br>SAM Audio Base<br>SAM Audio Large | GGUF F32/BF16/Q8 |
 | **seed_vc** | VC | lang agnostic | SeedVC XLS-R + HiFT<br>SeedVC Whisper-small + BigVGAN | GGUF 16/Q8 |

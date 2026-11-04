@@ -1,4 +1,4 @@
-<div align="center"><img src="./assets/head.jpg"></div>
+﻿<div align="center"><img src="./assets/head.jpg"></div>
 
 # AWESOME DATA SCIENCE
 
@@ -702,6 +702,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 
 
 
+* [PredictorLab](https://github.com/MarkIvor/predictorlab) - Self-hosted tabular ML: leakage guard, conformal intervals, profit-optimized thresholds, counterfactuals, drift monitoring. Docker, REST API, MCP server. MIT.
 ## Literature and Media
 **[`^        back to top        ^`](#awesome-data-science)**
 
@@ -1026,6 +1027,4 @@ Below are some Social Media links. Connect with other data scientists!
 | [Hilary Mason](https://x.com/hmason) | Data Scientist in Residence at @accel. |
 | [Jeff Hammerbacher](https://x.com/hackingdata)  | ReTweeting about data science |
 | [John Myles White](https://x.com/johnmyleswhite)  | Scientist at Facebook and Julia developer. Author of Machine Learning for Hackers and Bandit Algorithms for Website Optimization. Tweets reflect my views only. |
-| [Juan Miguel Lavista](https://x.com/BDataScientist) | Principal Data Scientist @ Microsoft Data Science Team |
-| [Julia Evans](https://x.com/b0rk) | Hacker - Pandas - Data Analyze |
-| [Kenneth Cukier](https://x.com/kncukier) | The Economist's Data Editor and co-author of Big Data (https://www.big
+| [Juan Miguel Lavista](https://x.com/BDataScientist) | Principal Data Scienti

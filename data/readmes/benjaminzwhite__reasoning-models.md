@@ -139,6 +139,7 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [MiMo-V2.6: Scaling Reinforcement Learning Towards Self-Improvement](https://arxiv.org/abs/2610.11959)
 - [A team of Gemini 4 Argon agents beats Minecraft](https://arxiv.org/abs/2610.22319)
 - [h1: A Taste of the Bitter Lesson in Automated Theorem Proving](https://arxiv.org/abs/2610.35962)
+- [Axion 1.0: Open Agent Foundation Models, Simplified](https://arxiv.org/abs/2611.03233)
 
 #### Topic - General or unsorted
 
@@ -648,5 +649,4 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [Truncate or Not? A Scaling Study of Looped Transformers with Truncated Backpropagation](https://arxiv.org/abs/2610.26030)
 - [Training Foundation Models with a Single Algorithm](https://arxiv.org/abs/2610.40564)
 - [Your Policy Is Secretly a Harness: The Decision Geometry of Agent Interfaces](https://arxiv.org/abs/2610.37255)
-- [Harness-Model Collaboration for Long-Horizon Continual Learning](https://arxiv.org/abs/2610.34724)
-- [SciGame: Let Agents Pl
+- [Harness-Model Collaboration for Lo

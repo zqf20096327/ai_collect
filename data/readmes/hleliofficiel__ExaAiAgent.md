@@ -11,97 +11,60 @@
 [![Python](https://img.shields.io/pypi/pyversions/exaai-agent?color=3776AB)](https://pypi.org/project/exaai-agent/)
 [![PyPI](https://img.shields.io/pypi/v/exaai-agent?color=10b981)](https://pypi.org/project/exaai-agent/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.2.6-00d4ff.svg)]()
+[![Version](https://img.shields.io/badge/version-3.0.1-00d4ff.svg)]()
 
 </div>
 
 <br>
 
 > [!TIP]
-> **🚀 v2.3.2 Released!** Focused on formatting Released standards, K8s scanner tooling execution enhancements, telemetry data persistence checks, and more accurate agent operation documentation.
+> **v3.0.1 Released!** Evidence-grounded findings, pinned CVE intelligence, independent verification, scoped execution, token budgets, and reproducible reporting.
 >
-> 🤖 **Connect Your Agent:** You can onboard another AI agent by pointing it to the repository skill:
+>  **Connect Your Agent:** You can onboard another AI agent by pointing it to the repository skill:
 > ```
 > Read https://raw.githubusercontent.com/hleliofficiel/ExaAiAgent/main/SKILL.md and follow the instructions to operate ExaAiAgent
 > ```
 
 ---
 
-## 🔥 What's New in v2.3.2
+## What's New in v3.0.1
 
-- **K8s Scanner Tool Registration**: Fixed proper tool invocation flow for Kubernetes scanners (ensuring sandbox execution bypass requirements are strictly met).
-- **Data Persistence**: Accurately saves `chat_messages.json`, `run_metadata.json`, `agents.json`, and `tool_executions.json` inside the `exaai_runs/<run-name>` directory.
-- **Improved Code Quality**: Consistent formatting and rigorous linting across the codebase, eliminating missing/mutable-default variables and improving logging.
-- **SKILL.md Revisions**: Extensively updated onboarding procedures to accurately convey configuration overrides for LiteLLM dependencies.
+- Target scope enforced before tool execution when `EXAAI_TARGETS` is set.
+- Agents have token, tool-call, and spawn budgets to prevent unbounded consumption.
+- CVE intelligence joins EPSS, CISA KEV, and OSV with provenance; findings require independent verification.
+- Unified reports and the deterministic benchmark harness are included.
+- New prompt modules: OWASP LLM Top 10 2025, supply-chain/SBOM triage, exceptional-conditions fail-open, grounded CVE verification.
+- Node pinned to 22 LTS, CI lint/test/type-check/smoke all green.
 
-## 🔥 What's New in v2.2.5
+### Previous versions (brief history)
 
-### 🧱 Runtime Reliability & Developer Workflow
+| Version | Summary |
+|---|---|
+| v3.0.0 | Anti-hallucination grounding (`evidence_id` + EvidenceStore), pinned CVE KB, sandbox hardening (127.0.0.1, no ~/.kube mount, no-new-privileges), attack graph planning, conf-v1 validation, reporting v3 (SARIF/CSV/HTML), single-sourced version. |
+| v2.3.2 | K8s scanner tool registration fix, run persistence (`exaai_runs/<run>/`), code-quality/lint pass, SKILL.md expansion. |
+| v2.2.5 | CI on PRs, import-safe tool server, multi-tool LLM responses, prompt-module merging, TUI target queue, smarter prompt resolution. |
+| v2.2.2 - v2.0 | Recon modules (subdomain/port/fingerprint), K8s/Azure/GCP prompt injection, React2Shell CVE detection, auto-discovery, install.sh. |
 
-This release focuses on making ExaAiAgent much more predictable to operate and easier to integrate into agent-driven workflows:
-
-- **CI on Pull Requests**: lint, type-check, unit tests, and smoke tests now run automatically
-- **Legacy Cleanup**: removed stale `ExaAiAgnet` references that broke tests and dev tooling
-- **Import-Safe Tool Server**: sandbox tool server no longer parses CLI arguments at import time
-- **Dependency Compatibility Fixes**: resolved `websockets` compatibility issues affecting installs
-
-### 🧠 Better Agent Orchestration
-
-- **Improved Agent Messaging**: fixed agent resume/waiting behavior and sandbox readiness issues
-- **Normalized Agent Statuses**: cleaner status flow across graph, tracer, and UI
-- **Multi-Tool LLM Responses**: no longer truncates model output to the first tool call only
-- **Prompt Module Merging**: role defaults and user-selected modules now combine correctly
-
-### 💻 Better CLI/TUI Behavior
-
-- **Interactive Target Submission**: TUI can now queue a target and start scanning more cleanly
-- **Improved Error Surfacing**: clearer runtime errors in CLI/TUI instead of silent failures
-- **Smarter Prompt Resolution**: auto-detected prompt modules now wire into execution more reliably
-- **Docker Requirement Made Explicit**: first-run/runtime expectations are clearer during startup
-
-### 🤖 AI Agent Integration
-
-- **Repository Skill Updated**: `SKILL.md` now cleanly onboards other AI agents to use and operate ExaAiAgent
-- **OpenClaw-Friendly Operation**: better fit for external AI agents controlling scans or maintaining the tool
-
-### 🛡️ Smart Security Tools
-
-| Tool | Capability |
-|------|------------|
-| **Smart Fuzzer** | Thread-safe, context-aware fuzzing with rate limiting |
-| **Response Analyzer** | SQL errors, stack traces, sensitive data detection |
-| **Vuln Validator** | PoC generation with false positive reduction |
-| **WAF Bypass** | Multi-layer bypass for Cloudflare, Akamai, AWS WAF |
-
-### ⚡ CLI & Stability
-
-- **Thread-Safety**: Fixed race conditions in async scans
-- **Resource Management**: Auto-shutdown and cleanup of background processes
-- **Installation**: Robust `install.sh` for Linux/macOS (bash/zsh/fish)
-
-```bash
-# New install script
-curl -sSL https://raw.githubusercontent.com/hleliofficiel/ExaAiAgent/main/install.sh | bash
-```
+Details: see CHANGELOG.md, MIGRATION-v3.md, docs/.
 
 ---
 
-## 🔥 ExaAiAgent Overview
+##  ExaAiAgent Overview
 
 ExaAiAgent is an elite AI-powered cybersecurity agent that acts like a real penetration tester - running your code dynamically, finding vulnerabilities, and validating them through actual proof-of-concepts. Built for developers and security teams who need fast, accurate security testing.
 
 **Key Capabilities:**
 
-- 🔧 **Full hacker toolkit** out of the box
-- 🤝 **Teams of agents** that collaborate and scale
-- ✅ **Real validation** with PoCs, not false positives
-- 💻 **Developer‑first** CLI with actionable reports
-- 🔄 **Auto‑fix & reporting** to accelerate remediation
-- 🧠 **Multi-LLM Support** - OpenAI, Anthropic, Gemini, local models
-- 🌐 **Cloud & Container Security** testing capabilities
-- 🚀 **Smart Module Loading** - Auto-detects and loads relevant modules
+-  **Full hacker toolkit** out of the box
+-  **Teams of agents** that collaborate and scale
+-  **Real validation** with PoCs, not false positives
+-  **Developer‑first** CLI with actionable reports
+-  **Auto‑fix & reporting** to accelerate remediation
+-  **Multi-LLM Support** - OpenAI, Anthropic, Gemini, local models
+-  **Cloud & Container Security** testing capabilities
+-  **Smart Module Loading** - Auto-detects and loads relevant modules
 
-## 🎯 Use Cases
+##  Use Cases
 
 - **Application Security Testing** - Detect and validate critical vulnerabilities
 - **Rapid Penetration Testing** - Get pentests done in hours, not weeks
@@ -112,7 +75,7 @@ ExaAiAgent is an elite AI-powered cybersecurity agent that acts like a real pene
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 **Prerequisites:**
 
@@ -141,7 +104,7 @@ export EXAAI_LLM="anthropic/claude-sonnet-4-5"
 export LLM_API_KEY="your-anthropic-key"
 
 # Option 3: OpenRouter (access multiple models)
-export EXAAI_LLM="openIntelligence
+export EXAAI_LLM="openrouter/openai/gpt-5"
 export LLM_API_KEY="your-openrouter-key"
 export LLM_API_BASE="https://openrouter.ai/api/v1"
 
@@ -158,21 +121,27 @@ exaai --target https://your-app.com
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🛠️ Agentic Security Tools
+###  Agentic Security Tools
 
 ExaAiAgent agents come equipped with a comprehensive security testing toolkit:
 
-- **Full HTTP Proxy** - Request/response manipulation and analysis
+- **Full HTTP Proxy** - Request/response manipulation and analysis; captured traffic exports to HAR (`exaaiagnt/tools/har_io.py`: `import_har`/`export_har`) and records evidence for the grounding gate
+- **Proxy linkage** - Tools declare `proxy_required`/`allowed_prompt_modules`/`blocked` in the registry manifest; the executor enforces scope, blocklist, and proxy requirements before execution (`exaaiagnt/tools/registry.py`, `exaaiagnt/tools/proxy_env.py`, `exaaiagnt/tools/executor.py`)
+- **Blocklist enforcement** - Blocked paths, modules, and URL segments are denied with `ScopeDecision` evidence from the executor, command guard, and proxy manager (`exaaiagnt/safety/blocklist.py`)
+- **Tool manifest** - `get_tool_manifest` / `tools_for_prompt_module` expose per-tool manifest fields for prompt scoping and auditing
 - **Browser Automation** - Multi-tab browser for XSS, CSRF, auth flows
+- **Browser JS analysis** - Offline DOM XSS, postMessage origin, Service Worker, and JS bundle endpoint/secret extraction (`exaaiagnt/tools/browser_js_analysis.py`: `analyze_browser_js`, `analyze_js_bundle`)
 - **Terminal Environments** - Interactive shells for command execution
 - **Python Runtime** - Custom exploit development and validation
 - **Reconnaissance** - Automated OSINT and attack surface mapping
 - **Code Analysis** - Static and dynamic analysis capabilities
 - **API Fuzzing** - Advanced REST/GraphQL API testing
+- **Coordination** - Persistent `RunState` save/load/resume, task queue with bounded depth, token/cost budgets, and heartbeat-vs-activity stuck detection, exposed as `coordination_*` tools (`exaaiagnt/coordination/state.py`, `exaaiagnt/tools/coordination/`)
+- **LLM/MCP/RAG tests** - Offline OWASP LLM Top 10 (2025) checkers: prompt-injection detection, system-prompt/secret leak detection, MCP server manifest audit, RAG provenance and cross-tenant checks, exposed as `audit_mcp_manifest_tool`, `detect_prompt_injection_tool`, `evaluate_rag_corpus_tool`, `harden_finding_text_tool` (`exaaiagnt/llm_tests/mcp_rag.py`, `exaaiagnt/tools/llm_tests/`)
 
-### 🎯 Comprehensive Vulnerability Detection
+###  Comprehensive Vulnerability Detection
 
 ExaAiAgent identifies and validates a wide range of security vulnerabilities:
 
@@ -188,17 +157,20 @@ ExaAiAgent identifies and validates a wide range of security vulnerabilities:
 | **Infrastructure** | Subdomain takeover, misconfigurations |
 | **WAF Bypass** | Encoding, smuggling, header manipulation |
 
-### 🕸️ Graph of Agents
+###  Graph of Agents
 
 Advanced multi-agent orchestration for comprehensive security testing:
 
 - **Distributed Workflows** - Specialized agents for different attacks
 - **Scalable Testing** - Parallel execution for fast coverage
 - **Dynamic Coordination** - Agents collaborate and share discoveries
+- **Persistent coordination state** - `RunState` save/load/resume, bounded task queue, budget guard, and stuck detection via `coordination_*` tools (`exaaiagnt/coordination/state.py`)
+- **Verification hardening** - `verify_finding` downgrades a would-be `confirmed` finding to `suspected` on high-severity injection, secret leak, or cross-tenant RAG evidence; reports carry additive `hardening` metadata
+- **MCP manifest audit** - `audit_mcp_manifest_tool` audits an MCP server manifest for broad permissions, dangerous tools, injection, and missing auth/timeout
 
 ---
 
-## 💻 Usage Examples
+##  Usage Examples
 
 ### Basic Usage
 
@@ -246,7 +218,7 @@ export EXAAI_LIGHTWEIGHT_MODE=true
 exaai --target https://example.com --instruction "quick security scan"
 ```
 
-### 🤖 Headless Mode
+###  Headless Mode
 
 Run ExaAiAgent programmatically without interactive UI:
 
@@ -254,7 +226,7 @@ Run ExaAiAgent programmatically without interactive UI:
 exaai -n --target https://your-app.com
 ```
 
-### 🔄 CI/CD (GitHub Actions)
+###  CI/CD (GitHub Actions)
 
 ```yaml
 name: exaai-security-test
@@ -278,7 +250,7 @@ jobs:
         run: exaai -n -t ./
 ```
 
-### ⚙️ Configuration
+###  Configuration
 
 ```bash
 # Required
@@ -300,7 +272,7 @@ export PERPLEXITY_API_KEY="key"       # For search capabilities
 
 ---
 
-## 📦 Available Security Modules
+##  Available Security Modules
 
 ### Vulnerability Modules
 
@@ -329,143 +301,15 @@ export PERPLEXITY_API_KEY="key"       # For search capabilities
 
 ---
 
-## 🆕 Changelog
+## Changelog
 
-#  v2.3.2
-
-## Release Overview
-
-Version **v2.3.2** is a production-ready maintenance and improvement release focused on stability, reliability, code quality, documentation, and developer experience. Existing functionality has been preserved while introducing meaningful improvements across the project.
+Full history is in CHANGELOG.md. Latest release: v3.0.1 (see "What's New in v3.0.1" above).
 
 ---
 
-# ✨ What's New
+##  Troubleshooting
 
-## 🤖 Agent Improvements
-
-- Improved agent coordination and internal workflow.
-- Enhanced reliability during agent execution.
-- Better error handling and recovery mechanisms.
-- Performance optimizations for smoother execution.
-- Internal architecture refactoring to improve maintainability.
-
----
-
-## ☸️ Kubernetes Scanner Improvements
-
-- Fixed Kubernetes tool registration.
-- Corrected `@register_tool` decorators by enabling proper registration with:
-  - `sandbox_execution=False`
-- Fixed missing tool argument schemas that previously appeared as `None`.
-- Improved compatibility with the ExaAiAgent tool system.
-
----
-
-## 🖥️ CLI Improvements
-
-- Updated CLI version to **v2.3.2**.
-- Restored headless (non-TTY) output behavior after review.
-- Preserved compatibility with:
-  - CI pipelines
-  - Automation scripts
-  - Remote execution
-  - Existing command-line workflows
-
----
-
-## 📚 Documentation
-
-### SKILL.md
-
-The documentation has been significantly expanded with:
-
-- Installation guide
-- Project architecture overview
-- Agent workflow explanation
-- Usage examples
-- Configuration details
-- Diagnostic and troubleshooting guide
-- Testing instructions using Poetry
-- Kubernetes Scanner documentation
-- Best practices
-- New v2.3.2 capabilities
-
----
-
-## 🔧 Refactoring
-
-- Improved overall code readability.
-- Simplified internal implementation where appropriate.
-- Removed unnecessary complexity.
-- Improved maintainability while keeping backward compatibility.
-
----
-
-## 🐞 Bug Fixes
-
-- Fixed Kubernetes tool registration issues.
-- Fixed missing tool argument metadata.
-- Restored CLI output for non-interactive environments.
-- Fixed minor inconsistencies discovered during review.
-
----
-
-## ✅ Quality Assurance
-
-Before release:
-
-- All tests executed successfully.
-- Build verification completed.
-- No linting issues remaining.
-- Regression review completed.
-- Existing functionality verified.
-- New features capabilities.
-- Codebase reviewed for unintended side effects.
-
-**Result:** **89/89 tests passed successfully.**
-
----
-
-# Backward Compatibility
-
-This release maintains backward compatibility wherever possible.
-
-No breaking API or workflow changes were intentionally introduced.
-
-Existing automation, scripts, and CI environments continue to work as expected.
-
----
-
-# Release Summary
-
-**ExaAiAgent v2.3.2** focuses on delivering a stable production release with improved agent reliability, Kubernetes scanning enhancements, restored CLI compatibility, expanded documentation, codebase refactoring, and comprehensive testing, while maintaining full backward compatibility.
-### v2.2.5 (Latest)
-- **Runtime Reliability**: fixed interactive scan flow, tool-server import safety, sandbox readiness, and agent messaging issues
-- **Developer Workflow**: CI now runs lint, type-check, tests, and smoke checks on pull requests
-- **Prompt Intelligence**: smarter prompt resolution, merged default/user modules, and new specialist prompt modules for planning, validation, reporting, and runtime recovery
-- **Agent Coordination**: normalized statuses and improved multi-tool execution behavior
-- **Agent Onboarding**: refreshed `SKILL.md` so external AI agents can operate and maintain ExaAiAgent more reliably
-
-### v2.2.2
-- **Reconnaissance Engine**: New modules for subdomain enumeration, port scanning, and tech fingerprinting
-- **AI Agent Integration**: OpenClaw/Agent compatibility
-- **Stability Fixes**: ToolManager thread-safety, Resource cleanup
-- **DevEx**: New `install.sh` script, improved logging
-
-### v2.1.2
-- **Bugfix**: Fixed k8s scanner import issue
-- **Banner**: Updated banner version string
-
-### v2.1.0
-- **New Modules**: K8s, Azure, GCP, Prompt Injection
-- **React2Shell**: CVE-2025-55182 detection
-- **Auto-Discovery**: Improved target detection
-
----
-
-## 🛠️ Troubleshooting
-
-### 🔧 Troubleshooting
+###  Troubleshooting
 
 #### Problem: "LLM Connection Failed" or Model Not Found
 Modern models (like `gemini-3-pro-preview`) require the latest version of `litellm` to be recognized correctly.
@@ -490,15 +334,15 @@ pip install -U litellm --user --break-system-packages
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Check out our [Contributing Guide](CONTRIBUTING.md).
 
-## 🌟 Support the Project
+##  Support the Project
 
-**Love ExaAiAgent?** Give us a ⭐ on GitHub!
+**Love ExaAiAgent?** Give us a  on GitHub!
 
-## 🙏 Acknowledgements
+##  Acknowledgements
 
 ExaAiAgent builds on incredible open-source projects like [LiteLLM](https://github.com/BerriAI/litellm), [Caido](https://github.com/caido/caido), [ProjectDiscovery](https://github.com/projectdiscovery), [Playwright](https://github.com/microsoft/playwright), and [Textual](https://github.com/Textualize/textual).
 

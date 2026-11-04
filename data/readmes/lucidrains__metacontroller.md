@@ -215,6 +215,18 @@ $ uv run pytest
 ```
 
 ```bibtex
+@misc{gladstone2026explorativemodelingunlockingpretraining,
+    title   = {Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation},
+    author  = {Alexi Gladstone and Heng Ji and Yilun Du},
+    year    = {2026},
+    eprint  = {2607.27372},
+    archivePrefix = {arXiv},
+    primaryClass = {cs.LG},
+    url     = {https://arxiv.org/abs/2607.27372},
+}
+```
+
+```bibtex
 @misc{teoh2026nextlatentpredictiontransformerslearn,
     title   = {Next-Latent Prediction Transformers Learn Compact World Models},
     author  = {Jayden Teoh and Manan Tomar and Kwangjun Ahn and Edward S. Hu and Tim Pearce and Pratyusha Sharma and Akshay Krishnamurthy and Riashat Islam and Alex Lamb and John Langford},

@@ -245,6 +245,8 @@ Snapshots are content-addressed with SHA-256 and blobs are deduplicated.
 
 | Command | Description |
 | --- | --- |
+| `hyperfide install --job-context PATH` | Prepare the admitted sandbox environment from its package, source and dependency configuration. See the [fleet guide](docs/hyperfide/fleet.md). |
+| `hyperfide source invoke --request-file FILE [--config ABSOLUTE_PATH]` | Send a signed native source API request using `HF_SOURCE_CONFIG`, without a local repository. See the [native source guide](docs/hyperfide/source-control.md) for worker configuration and operation recovery. |
 | `hyperfide commit -m <msg>` | Snapshot the working tree, synced first and auto-tagged with the in-progress task; `--task <id>` names the task, `--amend` replaces the last snapshot, `--git` also makes a real git commit with the same spec tag |
 | `hyperfide log [-n N]` / `hyperfide status` | Snapshot history (default 20), and worktree versus HEAD with branch-scoped index coverage and pending reconciliation |
 | `hyperfide diff [A] [B]` | LCS line diff between snapshots or the worktree |
@@ -794,4 +796,4 @@ vim.lsp.start({ name = "hyperfide", cmd = { "hyperfide", "lsp" },
 - **Live over one connection.** With a binary that has `serve`, the extension keeps one `hyperfide serve` child for every call and every event, patches the views from pushed events, and turns its polls off. `codify.serve: false`, or an older binary, falls back to shelling out and polling.
 - **One Actions menu** covering brief, review, test-impact, why, check, guard, snapshot, spec authoring, and hook installation. Reports open as rendered markdown.
 - **kvx editing.** Go-to-definition on a `requires` entry jumps to that task; completion offers the keys a task actually understands; the outline lists every requirement and task.
-- **One refresh scheduler.** Every trigger — a pushed event, a spec file changing, a turn ending, a command finishing, a poll — funnels through a single chain of `hyperfide` calls: bursts debounce into one run, a two-second floor sits between runs, and at most one trailing run queues behind a chain in flight. Each chain syncs once inside a three-second freshness window at background priority and never waits on another process's pass. The extension does **not** watch `graph.db` — its own sync writes it, and that watcher used to
+- **One refresh scheduler.** Every trigger — a pushed event

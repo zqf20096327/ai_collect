@@ -215,10 +215,9 @@ osam run sam3 --image examples/_images/dogs.jpg \
 osam run sam3 --image examples/_images/dogs.jpg \
   --text dog --negative-box 1200,400,1700,1400 > sam3_negative_box.png
 
-# Or give the whole prompt as JSON (point labels: background=0, foreground=1,
-# box=2,3, negative box=4,5)
+# Or give the whole prompt as JSON, in client.segment's keyword arguments
 osam run sam2 --image examples/_images/dogs.jpg \
-  --prompt '{"points": [[1233, 376], [1649, 691]], "point_labels": [2, 3]}'
+  --prompt '{"box": [1233, 376, 1649, 691]}'
 # from a file (@prompt.json) or stdin (-), with a threshold on top
 osam run sam3 --image examples/_images/dogs.jpg --prompt @prompt.json \
   --score-threshold 0.5
@@ -255,14 +254,9 @@ import osam
 
 image = np.asarray(Image.open("examples/_images/dogs.jpg"))
 with osam.Client() as client:
-    response = client.generate(
-        "efficientsam",
-        image=image,
-        prompt=osam.types.Prompt(
-            points=np.array([[1439, 504], [1439, 1289]]), point_labels=np.array([1, 1])
-        ),
+    annotation, = client.segment(
+        "efficientsam", image, points=[[1439, 504], [1439, 1289]], point_labels=[1, 1]
     )
-annotation = response.annotations[0]
 mask = np.zeros(image.shape[:2], dtype=np.bool_)
 bbox = annotation.bounding_box
 mask[bbox.ymin:bbox.ymax + 1, bbox.xmin:bbox.xmax + 1] = annotation.mask
@@ -272,6 +266,21 @@ Image.fromarray(mask).save("mask.png")
 <img src="examples/_images/dogs.jpg" width="35%"> <img src="assets/dogs_efficientsam_mask.png" width="35%">\
 <i>Input and output images ('dogs.jpg', 'mask.png').</i>
 
+`client.segment` takes one object, as `points` with `point_labels` (1 for
+foreground, 0 for background) and at most one `box` as xmin, ymin, xmax,
+ymax, or finds every match of `texts`, `example_boxes`, or both, such as
+`client.segment("sam3", image, texts=["dog"])`. `example_box_labels` marks an
+example box 0 to exclude what it covers. Coordinates are in pixels. Each
+annotation's `mask` covers its `bounding_box`, and is `None` from YOLO-World.
+`client.load(model, keep_alive=-1)` loads a model ahead of time, and
+`keep_alive=0` unloads it.
+
+`osam.segment(model, image, ...)` takes the same arguments as `client.segment`
+but runs the model in your own process, with no server. It keeps the model
+loaded until a call asks for another one, and further prompts on the same image
+skip the image encoder. `osam.non_maximum_suppression` keeps the best of
+overlapping boxes, given as (N, 4) boxes and (N, C) per-class scores, on CPU.
+
 `osam.Client()` starts a server process of its own and stops it on `close()` or
 when your program exits, so each program keeps its model and image embeddings
 loaded between calls. Further prompts on the same image skip the image encoder.
@@ -279,6 +288,10 @@ A frozen application, such as a PyInstaller bundle, must call
 `multiprocessing.freeze_support()` first. `osam.Client(host="gpu-box:11368")`, or
 `OSAM_HOST`, uses a running `osam serve` instead; it checks that both run the
 same minor version of osam. Errors from the server raise `osam.ResponseError`.
+`timeout=600` raises `TimeoutError` when a response takes longer, and restarts
+a private server, so a hung model stops.
+`client.pull(model, progress=...)` calls `progress` with each line; raising
+from it, such as when the user cancels, stops the download.
 
 ### HTTP
 
@@ -289,18 +302,22 @@ osam serve
 # POST request
 base64 < examples/_images/dogs.jpg \
   | jq -Rs '{model: "efficientsam", image: gsub("\n"; "")}' \
-  | curl 127.0.0.1:11368/api/generate -X POST --json @- \
+  | curl 127.0.0.1:11368/api/segment -X POST --json @- \
   | jq -r '.annotations[0].mask' | base64 --decode > mask.png
 ```
 
-`/api/generate` takes the fields of `osam.types.GenerateRequest`, with the image
-base64-encoded. `osam serve --device` picks the execution device for every
+`/api/segment` takes the model, the image base64-encoded, and the keyword
+arguments of `client.segment`. `/api/load` takes `model` and `keep_alive`.
+`osam serve --device` picks the execution device for every
 request. The server keeps one model loaded. An application using two passes
 `--max-loaded-models 2`, or `osam.Client(max_loaded_models=2)` for its private
 server, so they don't reload in turn; a full server unloads the least recently
 used model first. It also keeps the
 embeddings of recent images, so further prompts on the same image skip the
-image encoder. A model unloads 5 minutes after its last request; `keep_alive` changes that,
+image encoder. A response to a request with an image includes its
+`image_hash`, which further requests can send in place of the image; the
+server answers 412 when it no longer has
+that image, and `osam.Client` then sends the image. A model unloads 5 minutes after its last request; `keep_alive` changes that,
 in seconds or as a duration such as `"10m"`, with `-1` to keep it loaded and `0`
 to unload it now. `/api/ps` lists the loaded models and `/api/version` the
 server's version. Errors come back as `{"error": "..."}`. `/api/models`,

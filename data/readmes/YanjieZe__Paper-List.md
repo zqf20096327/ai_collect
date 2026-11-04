@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.03815), AIRoA-0: Long-Horizon, Precise, Cross-Embodiment Manipulation from Handheld Data
+- [arXiv 2026.11](https://arxiv.org/abs/2611.04870), PrimeSim: A Generalist World Model Simulator from Large-Scale Cross-Embodiment Demonstrations
+- [arXiv 2026.11](https://arxiv.org/abs/2611.04492), Hybrid Particle-Voxel Dynamics for Multimodal 3D World Simulation
 - [arXiv 2026.11](https://arxiv.org/abs/2611.03648), Pixel: A Co-Designed Full-Stack Robot System for Learning General-Purpose Mobile Manipulation
 - [arXiv 2026.11](https://arxiv.org/abs/2611.02497), RoboColosseum: Evaluating Physical Intelligence at Scale In-The-Wild
 - [arXiv 2026.10](https://arxiv.org/abs/2610.41877), Movens-Zero: Scaling Humanoid Motion Foundation Models with Large-Scale Human Videos
@@ -755,7 +758,4 @@ Papers:
 - arXiv 2023.04, **DINOv2**: Learning Robust Visual Features without Supervision, [arXiv](https://arxiv.org/abs/2304.07193) / [Github](https://github.com/facebookresearch/dinov2)
 - arXiv 2023.04, Zip-NeRF: Anti-Aliased Grid-Based Neural Radiance Fields, [Website](https://jonbarron.info/zipnerf/)
 - arXiv 2023.04, SEEM: Segment Everything Everywhere All at Once, [arXiv](https://arxiv.org/abs/2304.06718) / [code](https://github.com/UX-Decoder/Segment-Everything-Everywhere-All-At-Once)
-- arXiv 2023.04, Internet Explorer: Targeted Representation Learning on the Open Web, [page](https://internet-explorer-ssl.github.io/) / [code](https://github.com/internet-explorer-ssl/internet-explorer)
-- arXiv 2023.03, Consistency Models, [code](https://github.com/openai/consistency_models) / [arXiv](https://arxiv.org/abs/2303.01469)
-- arXiv 2023.02, SceneDreamer: Unbounded 3D Scene Generation from 2D Image Collections, [code](https://github.com/FrozenBurning/SceneDreamer) / [page](https://scene-dreamer.github.io/)
-- arXiv 2023.04, Generative Agents: Interac
+- arXiv 2023.04, Internet Explorer: Targeted Representation Learning on the Open Web, [page](https://internet-explorer-ssl.github.io/) / [code](https://github.com/int

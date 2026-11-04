@@ -34,7 +34,7 @@ personagent
 
 With [uv](https://docs.astral.sh/uv/), `uvx personagent` runs it without a separate install step.
 
-The browser opens on a local page with three views: **Chat**, **Connect apps** and **Character & settings**. Paste your model API key and click **Verify & start chatting**; one small request checks it. There are 10 model service presets plus any other OpenAI-compatible one, and name and personality presets for the character. The **Persona** box holds `persona.txt`; saving it restarts the agent and keeps what it learned. **More features** turns on web search, image understanding and speaking first. Running `personagent` again reuses a page that is already open. The menu at the top right shows the page in English, Chinese or eight more languages. The character answers in the language the chat uses; its built-in prompts and data are English and Chinese.
+The browser opens on a local page with three views: **Chat**, **Connect apps** and **Character & settings**. Paste your model API key and click **Verify & start chatting**; one small request checks it. The preselected service is OpenRouter's free models: the key costs nothing, the limit is 50 requests a day, and the model can change from one request to the next. There are 10 model service presets plus any other OpenAI-compatible one, and name and personality presets for the character. The **Persona** box holds `persona.txt`; saving it restarts the agent and keeps what it learned. **More features** turns on web search, image understanding and speaking first. Running `personagent` again reuses a page that is already open. The menu at the top right shows the page in English, Chinese or eight more languages. The character answers in the language the chat uses; its built-in prompts and data are English and Chinese.
 
 On Windows you can also download the source ZIP and double-click `start.bat`. Python 3.10–3.14. See the [short getting-started guide](https://github.com/wangkant/personagent/blob/main/docs/start.md); terminal commands and connectors are in the [full guide](https://github.com/wangkant/personagent/blob/main/docs/guide.md).
 
@@ -47,6 +47,20 @@ Read https://raw.githubusercontent.com/wangkant/personagent/main/docs/setup-for-
 ```
 
 It asks for the character's language, name and personality, your model service and the chat apps you want, then installs personagent, creates the home folder and starts the local page. You paste your model key into that page yourself, so the key never passes through the agent. The agent follows [these instructions](https://github.com/wangkant/personagent/blob/main/docs/setup-for-agents.md).
+
+## Bring it into your coding agent
+
+Codex, Claude Code and DeepSeek Harness (`dsh`) can talk to your character while you work. Set up your model key first, then:
+
+```bash
+personagent connect claude-code
+personagent connect codex
+personagent connect dsh
+```
+
+Start a new session there (restart DeepSeek Harness first) and ask it to say something to your character. It is the same one-to-one chat and memory as the local page, and each reply costs one call to your model service. Claude Code and Codex ask your permission the first time they use the tool. If neither the page nor `personagent up` is running, the page starts in the background for that session and ends with it, along with any chat apps you connected.
+
+With Claude Code or Codex, add `--react` and the character may say a line when a turn ends. That sends the folder's name and the start of the coding agent's last message to your model service, at most once every 30 minutes. `--remove` takes everything out again. Any other tool that speaks MCP can start `personagent mcp` itself. The [user guide](https://github.com/wangkant/personagent/blob/main/docs/guide.md#coding-agents) has the details.
 
 ## Why personagent
 
@@ -79,7 +93,7 @@ It joins QQ, WeChat, Telegram and Discord by itself and a dozen more apps from t
 </tr>
 </table>
 
-- Each chat has its own memory.
+- Each chat has its own memory. What a group noted about someone also follows them into their DM with it, and never the other way.
 - Editing the character keeps what it learned.
 - It is measured: `personagent eval` scores when it speaks, whether it stays in character, and whether corrections stick ([results](https://github.com/wangkant/personagent#measured)).
 

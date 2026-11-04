@@ -36,6 +36,7 @@ A Survey on Industrial Anomalies Synthesis [[paper]](https://arxiv.org/abs/2502.
 - [SOTA methods with code](#sota-methods-with-code)
 - [Recommended Benchmarks](#recommended-benchmarks)
 - [Recent research \[survey\]](#recent-research-survey)
+  - [NeurIPS 2026](#neurips-2026)
   - [ECCV 2026](#eccv-2026)
   - [ICML 2026](#icml-2026)
   - [CVPR 2026](#cvpr-2026)
@@ -141,6 +142,13 @@ A Survey on Industrial Anomalies Synthesis [[paper]](https://arxiv.org/abs/2502.
 <!-- Recent advances in industrial anomaly detection are organized below by five sources of generalization, highlighting emerging research trends and representative methods.  -->
 
 [![Figure 2: Representative industrial anomaly detection methods organized by five sources of generalization and the evaluation frontier](assets/fig2_taxonomy.png)](assets/fig2_taxonomy.pdf)
+
+## NeurIPS 2026
+
++ UniDG: Unified Defect Generation via Defect-Context Editing [[NeurIPS 2026]](https://arxiv.org/abs/2604.08915)[[code]](https://github.com/RetoFan233/UniDG)
++ Towards Generalizable 3D Anomaly Detection via Relational Inconsistency Modeling [[NeurIPS 2026]](https://arxiv.org/abs/2609.35059)[[code]](https://github.com/VisualScienceLab-KHU/GRIM)
++ Beyond Normal References: Discriminative Few-Shot Anomaly Detection [[NeurIPS 2026]](https://arxiv.org/abs/2605.23231)[[code]](https://github.com/mala-lab/IDEAL)
++ TED: Text-Axis Evidence Decomposition for Prompted Anomaly Localization [[NeurIPS 2026 Poster]](https://arxiv.org/abs/2609.39033)[[code]](https://github.com/barraki72268-sketch/TED-Text-Axis-Evidence-Decomposition-for-Prompted-Anomaly-Localization)
 
 ## ECCV 2026
 + CMDS-AD: Cross-Modal Dual-Stream Decoupling for Few-Shot Anomaly Detection [[ECCV 2026]](https://arxiv.org/abs/2606.20300)[[code]](https://github.com/Junhaocai27/CMDS-AD)
@@ -693,9 +701,4 @@ Recent developments in industrial anomaly detection have reshaped method categor
  + Towards total recall in industrial anomaly detection[[CVPR 2022]](http://arxiv.org/pdf/2106.08265)[[code]](https://github.com/amazon-science/patchcore-inspection)
  + CFA: Coupled-Hypersphere-Based Feature Adaptation for Target-Oriented Anomaly Localization[[2022]](https://arxiv.org/pdf/2206.04325.pdf)[[code]](https://github.com/sungwool/CFA_for_anomaly_localization)
  + FAPM: Fast Adaptive Patch Memory for Real-time Industrial Anomaly Detection[[2022]](https://arxiv.org/pdf/2211.07381.pdf)
- + N-pad: Neighboring Pixel-based Industrial Anomaly Detection [[2022]](https://arxiv.org/pdf/2210.08768.pdf)
- + Multi-scale patch-based representation learning for image anomaly detection and segmentation [[2022]](https://openaccess.thecvf.com/content/WACV2022/papers/Tsai_Multi-Scale_Patch-Based_Representation_Learning_for_Image_Anomaly_Detection_and_Segmentation_WACV_2022_paper.pdf)
- + SPot-the-Difference Self-supervised Pre-training for Anomaly Detection and Segmentation [[ECCV 2022]](https://arxiv.org/pdf/2207.14315.pdf)
- + Diversity-Measurable Anomaly Detection [[CVPR 2023]](https://arxiv.org/abs/2303.05047)
- + Self-supervised Context Learning for Visual Inspection of Industrial Defects [[2023]](https://arxiv.org/abs/2311.06504)[[code]](https://github.com/wangpeng000/VisualInspection)
- + SelFormaly: Towards Task-Agnostic Unified Anomaly Dete
+ + N-pad: Neighboring Pixel-based Industrial 

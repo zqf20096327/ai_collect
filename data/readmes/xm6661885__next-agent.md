@@ -1,25 +1,30 @@
 # next-agent
 
-A self-hosted web console and PWA for persistent Claude Code agents. Each agent runs through the Python Claude Agent SDK on your server, and you can reach every agent from a phone or a desktop browser.
+A self-hosted web console and PWA for AI agents. It has four bottom tabs: **Chat**, **Agents**, **Workflow** and **More**. Everything runs on your server, and you can use it from a phone or a desktop browser.
 
-- Backend: FastAPI + `claude-agent-sdk` (`server/`). Frontend: Preact + Vite (`web/`)
-- Data: `data/`, which is gitignored. It holds the config, session index, uploads, avatars and the cookie secret.
+- Backend: FastAPI + `claude-agent-sdk` (`server/`). Frontend: Preact + Vite (`web/`). See `docs/architecture.md`.
+- Data: `data/`, which is gitignored. It holds the config, sessions, uploads, the workflow database and the cookie secret.
 
 ## Features
 
-- **Agents:** the home page lists agents. Each one has a name, an avatar (pixel crab or uploaded photo), a working directory, a model, effort, thinking, a permission mode, tool rules, CLAUDE.md, system prompt, MCP servers, subagents, env and extra CLI args.
-- **Sessions:** each agent page lets you create, rename, fork, delete, search and import Claude Code CLI sessions from the agent's folder.
-- **Chat:**
-  - Streaming text and thinking, with CLI-style tool cards (Bash, diffs, todos, subagents).
-  - Image and file uploads. Images are sent as image blocks and every file path is passed to Claude.
-  - Slash command suggestions, and live switching of mode, model and effort.
-  - Context and cost display, background task list, fork or rewind files from a message.
-  - Edit and resend an earlier user message to continue from that point. Claude can share generated files with inline image previews or download links.
-- **Steering:** sending while Claude works writes the message into the running turn. The CLI picks it up at the next tool boundary. The steer button interrupts first, then sends.
-- **Approvals:** in "Ask before acting" mode, tool permission requests, AskUserQuestion and plan approval show up as cards in the chat. Requests never time out.
-- **Runs independently of the browser:** closing the page or losing network does not stop a turn. Clients resume from the last event sequence number when they reconnect.
-- **Resource limits:** at most `max_concurrent` CLI processes run at once (about 200 MB each). Extra sessions queue. An idle CLI is closed after `idle_timeout_min` and resumes on the next message.
-- **Settings:** the form API edits defaults, custom model IDs and per-model token prices while preserving config comments. Price rules drive the displayed cost when model usage is available.
+- **Chat:** plain LLM chat against your own OpenAI- or Anthropic-format providers.
+  - Assistant cards set the system prompt, model, effort and image uploads.
+  - A "Temporary chat" card uses the defaults.
+  - MCP servers can be set globally or per assistant, and switched on or off per chat.
+- **Agents (Claude):** persistent Claude Code agents through the Agent SDK.
+  - Agent settings: working directory, model, permissions, tools, CLAUDE.md, MCP servers and subagents.
+  - Sessions with streaming tool cards, steering, approval cards, fork and rewind.
+  - Turns keep running when the browser closes.
+- **Agents (ACP):** external agents that speak the Agent Client Protocol over TCP. A Claude/ACP switch sits at the top of the tab. ACP sessions stream and survive disconnects.
+- **Built-in MCP** (`next` server, for Claude agents only):
+  - Schedules: cron or one-shot jobs that run an agent.
+  - History: search an agent's own earlier sessions.
+  - Collab: delegate to agents marked "available as a subagent" and watch them in a small live window.
+  - Switches: a master switch, one per category and per-agent overrides.
+- **Workflow:** a card-based workflow editor with runs, a console and plugins.
+  - Agent cards (temporary task, existing agent, ACP agent) run as normal Agents sessions through `core.bridge`.
+  - Each card links to its chat page.
+- **More:** settings by category, and About.
 
 ## Requirements
 
@@ -33,7 +38,7 @@ git clone https://github.com/xm6661885/next-agent.git
 cd next-agent
 uv sync                          # backend dependencies
 cd web && npm ci && npm run build && cd ..   # frontend, served from web/dist
-uv run python -m server          # first start uses the default password 100200 (or set NEXT_AGENT_PASSWORD) and writes data/config.toml
+uv run python -m server          # first start uses password 100200 (or NEXT_AGENT_PASSWORD) and writes data/config/
 ```
 
 Open `http://<host>:18793`, log in, and create agents from the home page.
@@ -57,22 +62,12 @@ cd web && npm run build                   # rebuild the frontend after changes (
 
 ## Configuration
 
-Everything lives in `data/config.toml`. The settings pages in the UI write to it. You can also edit it by hand or in Settings > config.toml; changes are reloaded within 2 seconds. Running sessions keep their current options until their CLI restarts.
+Settings live in `data/config/`. `core.toml` holds `[server]`: login, the external API and shared Claude CLI settings.
+`agents.toml` holds defaults (including idle settings), agents, temporary-agent settings, groups, pricing, built-in MCP
+and extensions. ACP, Chat and Workflow own `acp.toml`, `chat.toml` and `workflow.toml`.
 
-```toml
-[server]
-max_concurrent = 3      # simultaneous CLI processes
-idle_timeout_min = 10   # close idle CLIs after this many minutes
-cli_path = ""           # empty = CLI bundled with the SDK
-
-[defaults]              # used when an agent field is empty
-permission_mode = "bypassPermissions"
-
-[[agents]]
-id = "claude"
-name = "Claude"
-cwd = "/home/you"  # defaults to the home of the user running the server
-# model, effort, thinking, permission_mode, claude_md, system_prompt, tools, mcp_servers, agents, env, ...
-```
+Edit these files through Settings or by hand; changes reload within 2 seconds and comments are preserved. Running
+turns finish before changed launch options restart their CLI. Existing `data/config.toml` is split automatically and
+kept as `config.toml.v1.bak`. `NEXT_AGENT_DATA` moves the whole data directory.
 
 Credentials come from `~/.claude/settings.json` (the `env` block), so keep `"user"` in `setting_sources`.

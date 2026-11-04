@@ -507,6 +507,7 @@ Enjoy 🤩
 - [Stremio Lite](https://apps.apple.com/us/app/stremio-lite/id6741710156) (iOS)官方或第三方插件来访问 YouTube、Netflix、公共领域内容等
 - [Popcorn Time](https://github.com/popcorntime/popcorntime) 其他平台如JustWatch或Reelgood充当目录，Popcorn Time可以播放自己的文件
 
+
 - [Trakt](https://trakt.tv) 剧集管理 ⭐
   - ![GitHub Repo stars](https://img.shields.io/github/stars/michaldrabik/Showly-2.0) [Showly](https://github.com/michaldrabik/Showly-2.0) (Android) Trakt的第三方客户端
   - [FilmNoir TV Tracker for Trakt](https://apps.apple.com/us/app/filmnoir-tv-tracker-for-trakt/id1528417240) (iOS)
@@ -800,6 +801,7 @@ Enjoy 🤩
 - [Nike Run Club](https://apps.apple.com/us/app/nike-run-club-running-coach/id387771637)
 - [Cardiograph Heart Rate](https://apps.apple.com/us/app/cardiograph-heart-rate/id1369890321)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/DuarteSantos8/openGym) [openGym](https://github.com/DuarteSantos8/openGym) (iOS, Android)
+- ![GitHub Repo stars](https://img.shields.io/github/stars/InlitX/GymMane) [GymMane](https://github.com/InlitX/GymMane) (Android) Offline gym log
 
 ### 💊Medicine 药
 
@@ -1281,5 +1283,4 @@ Enjoy 🤩
 
 - ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Linux) 使用Rust和Flutter构建
 - ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industries/zed) [Zed](https://github.com/zed-industries/zed) (Windows, macOS, Linux) code editor
-- ![GitHub Repo stars](https://img.shields.io/github/stars/marktext/marktext) [Marktext](https://github.com/marktext/marktext) 搜索效率太慢
-- ![GitHub Repo stars](https://img.shields.io/github/stars/laurent22/joplin) [Joplin](https://joplinapp.org) (iOS, Windows, A
+- ![GitHub Repo stars](https://img.shields.io/github/stars/marktext/marktext) [Marktext](https://github.com/mark

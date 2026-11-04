@@ -112,6 +112,23 @@ follow-up messages with `POST /v1/sessions/$SID/messages`, and the log above is 
 `POST /v1/tasks/:id/cancel` cancels its session's run. `POST /v1/sessions` still creates a
 bare session for experiments, but the console starts work only as tasks.
 
+### Usage
+
+`GET /v1/sessions/$SID/usage/summary` answers what a session has used so far:
+
+```
+{"tokens":{"input":50320,"output":2262,"cacheRead":38000,"cacheWrite":4000},"runtimeSeconds":41.7}
+```
+
+`tokens` sums the usage the provider reported on each assistant message; `input` includes
+the cache reads and writes. An errored or aborted message carries none, so it adds nothing.
+`GET /v1/sessions/$SID/usage` lists the same counts per message. `runtimeSeconds` is how
+long the session's runs have taken, each from its first message to its end. Idle time
+between runs isn't counted, and a run still going counts up to now. It measures Funky
+working on the session, not what the sandbox provider bills: an E2B sandbox keeps running
+after a run ends, until its idle timeout (`FUNKY_SANDBOX_TIMEOUT_MS`, 30 minutes by
+default). The console shows a session's token total beside its log.
+
 ### Model providers
 
 A config's `inference.provider` picks the vendor that serves it. At boot the worker wires
@@ -128,6 +145,15 @@ the session's config names, so one stack runs sessions on different vendors side
 
 Inference goes through the [Vercel AI SDK](https://ai-sdk.dev) behind a vendor-neutral
 port.
+
+Every Anthropic call opts into prompt caching (Anthropic's automatic caching, 5-minute
+lifetime). A run resends its conversation on each step, so when steps follow within five
+minutes, most of a step's input is a cache read, which Anthropic bills at a small fraction
+of the input price. Writing the cache costs more than plain input (1.25x), so a single-step
+run, or a step after a gap of more than five minutes, pays a little more, not less. Prompts
+under the model's minimum cacheable length (512 tokens on the 5.5 models) are not cached.
+The usage counts above show it as `cacheRead` and `cacheWrite`. OpenAI and Gemini cache
+repeated prefixes on their own.
 
 ### Packages
 

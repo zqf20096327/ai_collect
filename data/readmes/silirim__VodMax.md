@@ -72,6 +72,17 @@ decoder with the remote.
 | **LG webOS** | TV app (webOS 22+ recommended) |
 | **Linux server** | x86-64, ARM64 (Raspberry Pi 4/5), ARMv7; one binary, SQLite |
 
+## Status
+
+VodMax is young: the first commit is from 29 October 2026, and one person
+works on it. It runs every day at the author's home — a Linux server with an
+Xtream Codes playlist behind a VPN, watched from the browser, an Android
+phone and an LG webOS TV — and every release passes the automated tests.
+
+Not tried on real devices yet: Android TV and Fire TV boxes, Raspberry Pi
+and other ARM servers, the Unraid template. They are built and should work;
+reports are very welcome (open an issue with the device and the version).
+
 ## Screenshots
 
 | | |
@@ -122,7 +133,8 @@ docker run -d --name vodmax --restart unless-stopped -p 8095:8095 -v vodmax-data
 ```
 
 (the data stays in the `vodmax-data` volume; a
-[compose file](packaging/docker-compose.yml) is ready).
+[compose file](packaging/docker-compose.yml) is ready). The admin token to
+sign in the first time: `docker exec vodmax cat /var/lib/vodmax/admin.token`.
 
 **Android / Android TV / Fire TV** — install `VodMax-<version>.apk`, then enter
 the server address or choose *Use this device on its own* (standalone).
@@ -138,7 +150,8 @@ Build from source: [docs/sviluppo.md](docs/sviluppo.md) and
 ## Quick start
 
 1. Open `http://<server>:8095` and paste the admin token from
-   `/var/lib/vodmax/admin.token`. The language (Italian or English) follows
+   `/var/lib/vodmax/admin.token` (with Docker:
+   `docker exec vodmax cat /var/lib/vodmax/admin.token`). The language (Italian or English) follows
    the device and can be changed in **Settings → Language**.
 2. **Settings → VPN**: import your WireGuard `.conf`, or declare a VPN you
    already run on the router. Without a VPN, switch off *Contact providers
@@ -147,6 +160,24 @@ Build from source: [docs/sviluppo.md](docs/sviluppo.md) and
    *Sync now*.
 4. **Settings → Collections**: add a folder of movies or series.
 5. **Settings → Devices**: pair TVs and phones with the code they show.
+
+## How VodMax is built
+
+VodMax is written with an AI coding assistant, Claude Code by Anthropic.
+Every commit says so (`Co-Authored-By: Claude`), and [AGENTS.md](AGENTS.md)
+holds the rules it works by. A person decides what VodMax does and how it
+behaves — each choice is a written [decision record](docs/decisioni/README.md)
+approved by the author — tries it at home and decides what gets released.
+
+What keeps the code in check:
+
+- about 7,500 lines of Go tests, run with the race detector on every change,
+  with `gofmt`, `go vet` and a secret scan (gitleaks) in CI;
+- interface changes checked in a real browser at TV and phone sizes, with
+  the remote's keys;
+- provider traffic only through one client (and the VPN when required),
+  credentials encrypted at rest, no real data in the repository;
+- vulnerabilities reported privately ([SECURITY.md](SECURITY.md)).
 
 ## Documentation
 

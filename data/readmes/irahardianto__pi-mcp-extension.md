@@ -27,7 +27,7 @@
 - **Stable tool names** — Sanitized, collision-avoiding names (`<prefix>_<server>_<tool>`, max 64 chars) that stay constant across reconnects
 - **No tool churn** — Activate/deactivate pattern ensures tools don't flicker during reconnection
 - **Layered config & trust boundary** — Global `<agent dir>/mcp.json`, project `.pi/mcp.json` (loaded only in trusted projects, including Pi 1.3.0 partial overrides), and Pi 1.x extension-registered servers (`pi.registerMcpServer()`)
-- **Rich tool results & annotations** — MCP `text`, `image` (`ImageContent`), `structuredContent`, embedded `resource` text/blobs, and `audio` fallback descriptions, plus `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` surfaced in tool descriptions
+- **Rich tool results & annotations** — MCP `text`, `image` (`ImageContent`), `structuredContent`, embedded `resource` text/images/binary blobs, `resource_link` hints, and `audio` fallback descriptions, plus `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` surfaced in tool descriptions
 - **On-demand agent tools & commands** — `mcp_status`, `mcp_connect`, `mcp_list_resources`, and `mcp_read_resource` agent tools plus `/mcp`, `/mcp <name>` (with config provenance and failure hints), `/mcp:start`, `/mcp:stop`, `/mcp:auth`, and `/mcp:resources` slash commands with server-name autocomplete
 - **Structured error handling** — Distinct error codes (`config`, `connection`, `auth`, `timeout`, `protocol`, `tool`) and actionable failure hints
 - **Redacted debug logging** — Opt-in `PI_MCP_DEBUG=1` JSON Lines log (`<agent dir>/logs/pi-mcp.log`, `0600`, ~2 MB rotation) with automatic secret masking and zero TUI `stderr` noise
@@ -229,7 +229,7 @@ Server-name arguments provide autocomplete suggestions from the configured MCP s
 | Slash Command | Description |
 |---|---|
 | `/mcp` | Show status summary of all configured servers |
-| `/mcp <name>` | Show detailed status for one server: config source, transport/lifecycle, tool activation, OAuth credential status, failure hint, and stderr log |
+| `/mcp <name>` | Show detailed status for one server: config source, transport/lifecycle, tool activation, handshake instructions, OAuth credential status, failure hint, and stderr log |
 | `/mcp:start <name>` | Connect a server and wait for tool discovery |
 | `/mcp:stop <name>` | Cancel a pending connection, startup prompt, or authorization, or stop a running server and deactivate its tools |
 | `/mcp:auth <name>` | Connect (or force a fresh reconnect if already `ready`) using stored OAuth credentials and client registration; request browser authorization only if needed |
@@ -242,12 +242,19 @@ In addition to user slash commands, built-in **agent tools** let the LLM inspect
 
 | Agent Tool | Parameters | Description |
 |---|---|---|
-| `mcp_status` | `{}` | List configured servers with `lifecycle`, `state`, `tools` (`discovered` / `active`), `auth` credential summary, `source` (`"global"` / `"project"` / `"extension"` / `"unknown"`), and safe `error` action hints (never returns tokens, headers, or authorization URLs) |
-| `mcp_connect` | `{ name: string }` | Connect one named server, run interactive OAuth if needed, and verify that discovered tools are active before returning success (returns fixed actionable categories on failure instead of raw server response text) |
+| `mcp_status` | `{}` | List configured servers with `lifecycle`, `state`, `tools` (`discovered` / `active`), `auth` credential summary, `source` (`"global"` / `"project"` / `"extension"` / `"unknown"`), optional `instructions` (when connected), and safe `error` action hints (never returns tokens, headers, or authorization URLs) |
+| `mcp_connect` | `{ name: string }` | Connect one named server, run interactive OAuth if needed, and verify that discovered tools are active before returning success (includes sanitized server `instructions` when provided; returns fixed actionable categories on failure instead of raw server response text) |
 | `mcp_list_resources` | `{ server?: string }` | List `resources/list` entries (`uri`, `name`, `description`, `mimeType`) and `resources/templates/list` URI templates for connected servers, naming configured servers that are stopped (`stoppedServers`), servers that do not advertise the `resources` capability (`resourcesUnsupported`), and servers whose listing failed (`error`) without dropping the healthy servers' rows (read-only) |
 | `mcp_read_resource` | `{ server: string, uri: string }` | Read one resource with `resources/read`: text resources return their text (including empty text), `image/*` blobs return an image block, and other binary blobs return a `[Binary resource: uri (mimeType, N bytes)]` summary instead of filling the context window; a server without the `resources` capability is reported as such rather than as a protocol error (read-only) |
 
 `mcp_status` returns a JSON array of [`ServerStatusRow`](./src/server-status.ts) objects:
+
+Connected servers that provide MCP handshake instructions also include an optional
+`instructions` string. `/mcp <name>` displays the same guidance as `Instructions:`,
+and `mcp_connect` includes it after a successful connection. Instructions are
+secret-redacted, stripped of terminal controls, collapsed to one line, and capped
+at 500 UTF-16 code units. Blank instructions and stopped servers omit the field.
+These are server-provided usage hints, not trusted local policy.
 
 ```json
 [
@@ -366,7 +373,7 @@ flowchart TD
 2. **Eager servers connect** at `session_start` via `ConnectionCoordinator` (offering a sequential `Authorize now` / `Not now` prompt when an eager OAuth server needs authorization in an interactive session); lazy servers wait for `mcp_connect`, `/mcp:start`, or `/mcp:auth`
 3. **Tools are discovered** via paginated `tools/list` calls (cursor-based, up to 100 pages) before a server enters `ready`
 4. **JSON Schema → TypeBox** conversion registers tools with Pi-compatible parameter schemas (preserving nullable union ordering, resolving `$ref`s cycle-safely, and inferring/flattening `allOf` object schemas)
-5. **Pi tools are registered** as `<prefix>_<server>_<tool>` (sanitized `[a-zA-Z0-9_]`, max 64 chars with an 8-char SHA-256 suffix on truncation or collision) and convert MCP `text`, `image` (`ImageContent`), `structuredContent`, `resource`, and `audio` results
+5. **Pi tools are registered** as `<prefix>_<server>_<tool>` (sanitized `[a-zA-Z0-9_]`, max 64 chars with an 8-char SHA-256 suffix on truncation or collision) and convert MCP `text`, `image` (`ImageContent`), `structuredContent`, `resource`, `resource_link`, and `audio` results. Embedded image resources become image blocks, binary resources include MIME type and byte count, and resource links include a `mcp_read_resource` hint.
 6. **Tools activate/deactivate** automatically as servers connect/disconnect
 7. **AbortSignal** is wired through to `notifications/cancelled` for clean cancellation
 8. **Reconnection & recovery** uses a fixed delay schedule with configurable max retries on initial failure, health check failure, or unexpected transport close/error (`client.onclose` / `client.onerror`), while mid-session HTTP `401` / `403 insufficient_scope` invalidates stale tokens and surfaces a re-authorization hint
@@ -388,15 +395,13 @@ Implements the **MCP 2025-03-26** specification for tool and resource clients:
 | Cursor-based `resources/list` and `resources/templates/list` pagination | ✅ |
 | `resources/read` with text, image blobs, and binary size summaries | ✅ |
 | `notifications/resources/list_changed` (catalog invalidation) | ✅ |
-| `tools/call` with parameters, `image` (`ImageContent`), `structuredContent`, and `resource` conversion | ✅ |
+| `tools/call` with parameters, `image` (`ImageContent`), `structuredContent`, `resource`, and `resource_link` conversion | ✅ |
 | `roots/list` capability (workspace root) | ✅ |
 | `notifications/tools/list_changed` (live refresh) | ✅ |
 | `notifications/cancelled` (AbortSignal) | ✅ |
 | `notifications/message` (structured logging) | ✅ |
 | `isError: true` distinction (protocol vs tool errors, non-text filtered on error) | ✅ |
 | Tool annotations (`readOnlyHint`, `destructiveHint`, etc.) | ✅ |
-| Prompts bridge | ⏳ v2 |
-| Sampling | ⏳ v2 |
 
 ## Contributing / Architecture
 

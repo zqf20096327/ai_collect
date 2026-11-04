@@ -4,7 +4,7 @@
 
 ---
 
-[![Demo Video](https://img.shields.io/badge/Visit-Our%20Demo-red)](https://youtu.be/tt0oTIrY260)
+
 [![Live App](https://img.shields.io/badge/Live-App-brightgreen)](https://db-agent-pg42.onrender.com/)
 [![Live Webinar Series](https://img.shields.io/badge/Live-Webinar%20Series-1276c0)](https://becloudready.com/webinar/db-agent?utm_source=github&utm_medium=referral&utm_content=badge)
 
@@ -65,12 +65,24 @@ Open `http://localhost:3001`. Any OpenAI-compatible endpoint works instead of Ol
 
 **Databricks Apps:**
 
-```bash
-cd app
-databricks apps create db-agent-node --description "DB Agent"
-databricks sync . /Workspace/Users/<you>/db-agent-node \
-  --exclude "node_modules/**" --exclude "web/node_modules/**" --exclude "web/dist/**"
-databricks apps deploy db-agent-node --source-code-path /Workspace/Users/<you>/db-agent-node
+## Deploy db-agent in Databricks with labagent on Windows
+
+```powershell
+# 1. Install prerequisites & labagent
+winget install Python.Python.3.14
+Invoke-WebRequest -Uri https://bootstrap.pypa.io/get-pip.py -OutFile get-pip.py
+python get-pip.py
+pip install labagent
+
+# 2. Install Databricks CLI
+winget install Databricks.DatabricksCLI
+
+# 3. Authenticate Databricks
+$env:DATABRICKS_AUTH_STORAGE="plaintext"
+databricks auth login
+
+# 4. Launch DB Agent
+labagent launch db-agent --name demo-1 --param profile=DEFAULT
 ```
 
 **More:** [ontology and scan](./app/docs/ontology.md) · [MCP gateway](./app/docs/mcp-gateway.md) · [full configuration](./app/README.md)

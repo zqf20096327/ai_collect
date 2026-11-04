@@ -58,10 +58,15 @@ From crates.io, as a Rust tool:
 cargo install rgx-search   # installs the `rgx` binary
 ```
 
-Linux tarballs (glibc, static musl, znver4) and `.deb` / `.rpm` / `.apk` /
-`.pkg.tar.zst` packages are on the
+Linux tarballs (glibc, static musl, znver4), a FreeBSD tarball, and the
+`.deb` / `.rpm` / `.apk` / `.pkg.tar.zst` packages are on the
 [release page](https://github.com/danalec/rgx/releases/latest). Winget
-manifests are in `.winget/`.
+manifests are in `.winget/`. On FreeBSD, `install.sh` picks its channel from
+`uname -s` by itself:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/danalec/rgx/main/install.sh | bash
+```
 
 On macOS, from Homebrew — the formula is in `Formula/rgx.rb`, and
 `scripts/publish-homebrew.sh` opens the pull request to homebrew-core:

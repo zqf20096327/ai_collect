@@ -6,111 +6,105 @@
   <img src="assets/natural-talk.png" alt="Natural Talk" width="100%">
 </p>
 
-让模型的表达回到具体、直接、有依据的状态：清掉机械套路，留足创作自由。
+---
+
+- 中文去 AI 腔、恢复自然表达。适用于小说创作（人物、对白、场景、叙事节奏）、日常对话、代码沟通、论述成文清理与小说成稿清理。
 
 ---
 
 ## 核心规则
 
-**对话**：
+完整规则与判定边界见 [SKILL.md](SKILL.md) 与 [references/](references/)。
 
-1. 首句直给：删机械开场，第一句就是结论。
-2. 问 A 答 A：给明确倾向，收尾停在事实或具体下一步。
-3. 数量词严格：要 3 条就是恰好 3 条。
-4. 字数照办：给了区间就照办，超出或低于 20% 即压回或补足，写完数字数。
-5. 翻案腔：没人主张过 A 就禁“不是A，而是B”（含“没有A，只有B”等同类句式）。
-6. 删宏观开场：“在当今/随着……的发展”不带具体背景就删。
-7. 破折号只保留话被打断的中断。
-8. 多轮与体量：一句话的问题给短回答；不复述上轮原话，不重复已给结论。
-
-**论述**：
-
-9. 起手式与提示语壳：“说白了/先说结论”与“一句话总结：/核心是：”删掉，第一句进实质。
-10. 顿号过密与序数词小标题：一个分句内 ≥3 项顿号并列即过密（技术专名串、法规条目不算）；“一、二、三”编号小标题连发 ≥3 个是模板感。
-11. 段首零回指与概括盖具体：“值得注意的是”起段而句内无“这/那”回指；同段已有具体数字还断言“显著提升”。
-12. 翻译腔只认五种：过长前置定语、“当……时”前置从句、“对于……来说”话题壳、“然而/此外”句首路标、“这意味着”复述前句。
-
-**叙事**：
-
-13. 抽象词对举的翻案禁用；具体动作、感官事实的放行。
-14. 占位符不得进正文：“{{char}}/某某/XXX”原样出现即吃设，落成具体姓名或可指认的称谓。
-15. “微微/轻轻/缓缓”修饰动作的删，动词自带分量；光色声音温度的客观状态豁免。
-16. “猛地一僵/瞳孔骤缩/低吼一声”改写定住与呼吸停顿，紧张靠人物当下正在做的动作带出。
-17. 连续 ≥5 行独行对白、行间无叙述即判问答乒乓（四行以内放行）；引号外只挂四个字以内标签的行也算对白行，叙述成句则打断。
-18. 装饰标签（“命令道/沉声道/低吼道”）清零。
-19. 喻体要带感官增量；句尾比喻成片出现即过度（全文至少五处且超全文句数 8% 就改掉大半）。
-20. 计数癖：作者不数拍子（“一下，两下，三下”“隔三息”）；角色在数是情节，放行。
-
-对白边界：连续短句往返才按病灶处理；改法是插入叙述或压成转述，不是给角色加话。整场都改成转述链是同一个毛病换衣服，间接转述只压程序性拉锯那几轮。
-
-清理模式：句内手术、信息守恒、逐条引用编号。防误杀原则保护问句、排比与重复技术名词，拿不准视为不命中。
-
-机械兜底：`scripts/scan-mechanical.py` 扫描草稿（生成模式用 `--mode gen`，覆盖全部文体），`audit-cleanup.py` 审计清理稿。
-
----
+| 场景 | 规则要点 |
+| --- | --- |
+| 对话 | 首句直给；问 A 答 A，结尾不升华；字数与数量照办；删"好问题/希望这对你有帮助"式开场收尾与"先说结论"提示语；跨轮用对方的说法，一句话的问题给短回答。 |
+| 论述 | 删提示语壳与宏观开场；没人主张过 A 不写翻案句；翻译腔只认五式，"这意味着"生成不写、清理不动；顿号罗列不过密；序数小标题有内容就可以编号，清理不改已有编号；只用来引出列表的冒号句不改；破折号右侧承担解释、列举、同位、因果、补充、揭晓的不用；模糊归因与概括词在清理模式原样保留。 |
+| 叙事 | 视点在场、动作与道具落地；装饰副词、生理套话、计数癖与装饰性对白标签先作候选，承载信息则保留；比喻要带感官增量；不写连续 ≥4 行独行对白。 |
+| 清理 | 句内改写为主，删除限规则明示项；信息守恒，每处改动须能指认规则编号；拿不准不动；整句删除需用户同意。B5/B6/B7 的纯套话经确认无其他信息者、B8 问答乒乓里第 4 行起删掉不改变局势与可观察事实的轮次，不在此限。 |
 
 ## 效果
 
-9 个模型 × 3 种场景（小说创作 / 论述清理 / 日常对话），各配不挂 skill 的对照组，
-共 216 次生成。AI 腔密度（每千字机械层命中数）变化：
+同一条小说提示词、16 个模型，各写两篇：一篇不启用规则，一篇启用 `SKILL.md` 与 `references/fiction.md`。AI 腔密度（每千字命中数）变化：
 
 | 模型 | 对照组 | 挂 skill | 降幅 |
-| --- | --- | --- | --- |
-| deepseek-v4-flash-0731 | 5.33 | 2.35 | -56% |
-| deepseek-v4-pro-0813 | 4.97 | 3.01 | -39% |
-| deepseek-v4.1-flash-1017 | 4.19 | 1.07 | -74% |
-| gemini-3.8-flash-high | 5.29 | 2.18 | -59% |
-| kimi-k2.6 | 5.35 | 2.04 | -62% |
-| kimi-k3 | 6.08 | 0.66 | -89% |
-| mimo-v2.6-pro | 5.47 | 2.23 | -59% |
-| qwen3.8-flash | 5.91 | 2.00 | -66% |
-| step-5-preview | 5.34 | 2.33 | -56% |
-| **均值** | **5.33** | **1.99** | **-63%** |
+| --- | ---: | ---: | ---: |
+| deepseek-v4-flash-0731 | 4.6 | 3.3 | -28% |
+| deepseek-v4-pro-0813 | 7.5 | 2.4 | -68% |
+| deepseek-v4.1-flash | 4.8 | 1.6 | -67% |
+| gemini-3.8-flash | 6.9 | 2.3 | -67% |
+| gemini-4-argon | 6.5 | 0.0 | -100% |
+| glm-5.3 | 3.4 | 1.0 | -71% |
+| glm-5.3-flash | 7.1 | 1.5 | -79% |
+| gpt-6.1-sol | 8.0 | 1.4 | -82% |
+| grok-4.7 | 3.8 | 1.1 | -71% |
+| kimi-k2.6 | 8.3 | 3.5 | -58% |
+| kimi-k3 | 4.7 | 0.0 | -100% |
+| mimo-v2.6-pro | 5.0 | 4.5 | -10% |
+| minimax-m3 | 6.3 | 2.8 | -56% |
+| minimax-m3.1-flash | 7.3 | 5.9 | -19% |
+| qwen3.8-flash | 4.5 | 1.0 | -78% |
+| step-5-preview | 11.1 | 7.3 | -34% |
+| **均值** | **6.24** | **2.48** | **-60%** |
 
-9 个模型全部下降，区间 -39% 到 -89%，无一失效。
-
-GLM 系补充测量（单列不并入上表）：
-
-| 模型 | 对照组 | 挂 skill | 降幅 |
-| --- | --- | --- | --- |
-| glm-5.3 | 6.23 | 0.44 | -93% |
-| glm-5.3-flash | 5.50 | 0.56 | -90% |
+非严谨测试，命中数随提示与样本变动，不用于评价模型能力。启用规则组的 16 篇中有 7 篇低于提示要求的两千字；对照组均不低于两千字，其中 6 篇超过三千字上限，启用规则组另有 1 篇超过。
 
 <details>
 <summary>测量条件</summary>
 
-测量条件：thinking 开启且 reasoning_effort = max（所有模型）；temperature = 1.0
-（client 在 reasoning 开启时对 None 取 1.0，即全部模型均为 1.0）；max_tokens = 20000，
-超时 2400s。每模型 12 篇（小说创作 4 题 / 论述清理 4 例 / 日常对话 4 问），
-skill 臂与 none 臂同题对照，每个格子仅 1 次生成，无重复采样，无方差。
-局限：单样本对比，绝对值应视为量级参考而非稳定估计；降幅区间会随题目变化。
+| 项 | 值 |
+| --- | --- |
+| 提示词 | 一条小说创作提示（高架桥下的二十四小时药店，2000–3000 字），全文见 [examples/README.md](examples/README.md) |
+| 样本 | 每个模型每个条件一篇，共 32 篇 |
+| 不启用规则 | 系统提示一句：你是一个中文写作与代码沟通助手。直接完成用户的要求。 |
+| 启用规则 | `SKILL.md` 全文与 `references/fiction.md` 全文 |
+| 采样 | temperature 1.0、reasoning_effort high、max_tokens 32000 |
+| 计数 | 每千字 = 命中合计（B1–B9 ＋ 视点）÷ 汉字数 × 1000，保留一位小数；均值 = 16 个模型每千字率的算术平均，降幅 = 每千字率的变化 |
 
 </details>
 
-误报控制：9 位作者 8.8 万字人类作品（鲁迅、周作人、梁实秋、汪曾祺、王小波、
-余秋雨、朱自清、林语堂、沈从文）经扫描器全量扫描，零 FIX 命中；REVIEW 级候选逐条人工判读，非自动判定。
-
----
+分项命中、逐篇字数与 32 篇原文见 [examples/README.md](examples/README.md)。命中只统计规则表内列名的形态，不评价文本质量。
 
 ## 使用
 
-```bash
-# 一键安装
-npx skills add chengzhi-c/natural-talk
+**一键安装：**
 
-# 或 clone 至 Claude Code / Cursor / Codex / Antigravity 技能目录
+```bash
+npx skills add chengzhi-c/natural-talk
+```
+
+**clone 至技能目录（以 Claude Code 为例）：**
+
+```bash
 git clone https://github.com/chengzhi-c/natural-talk.git ~/.claude/skills/natural-talk
 ```
 
-**API 调用**：读 `SKILL.md` 作 system prompt，按场景拼接 references：
+**RikkaHub：** 设置 → 扩展 → Skills → `+`，选择 [Releases](https://github.com/chengzhi-c/natural-talk/releases) 里的 `natural-talk.zip`；安装后启用。主包：`SKILL.md`、`references/`、`LICENSE`。
 
-```python
-system = Path("SKILL.md").read_text(encoding="utf-8")
-# 小说创作拼接 fiction.md；成文清理拼接 rules-full.md（改动须逐条引用编号）
-# system += "\n\n" + Path("references/fiction.md").read_text(encoding="utf-8")
-```
+**SillyTavern：** 把 `SKILL.md` 作为 system prompt 使用；小说或清理场景再按下表追加对应 references。
 
-RikkaHub / SillyTavern：导入 [Release](https://github.com/chengzhi-c/natural-talk/releases) 的 `natural-talk.zip`。
+**自行打包：** 发行包里只有 `SKILL.md`、`references/fiction.md`、`references/rules-full.md` 与 `LICENSE` 四个文件，压成 zip 即为 `natural-talk.zip`；Releases 未挂包时按这个方式自取。
+
+**卸载：** 删除 `~/.claude/skills/natural-talk`；RikkaHub 在 Skills 列表停用或删除；SillyTavern 从 system prompt 里移除对应段落。
+
+---
+
+## API / 规则使用：
+
+- 读 `SKILL.md` 作 system prompt，按场景追加 references：
+
+| 场景 | 追加 |
+| --- | --- |
+| 日常对话 / 一般生成 / 一般代码讨论 | `SKILL.md`（D 层作用于对话与一般生成。） |
+| 代码评审 / PR 描述 / commit message / 技术长文 | `SKILL.md`；成稿后按 `references/rules-full.md`（R1–R10）过一遍 |
+| 小说创作、续写、故事与扮演、同人、角色卡 | `SKILL.md` + `references/fiction.md` |
+| 翻译 | `SKILL.md`（忠实原文优先，翻译腔 R6 不用于译文） |
+| 论述类成文清理 | `SKILL.md` + `references/rules-full.md` |
+| 小说成稿清理 | `SKILL.md` + `references/rules-full.md` 的带入 R 条与"清理边界"一节；`references/fiction.md` 取基本原则与 B1–B9 |
+| 只要求指出问题、不要求改写（文章/文稿，明确只要诊断） | 按清理模式读取对应文体页，交付"命中处＋编号＋一句理由"；诊断用清理口径（只报不改，连续对白按 ≥4 行计）；代码调试/评审不按本条 |
+| 清理后要求逐条说明改动 | 清理场景加 `references/rules-full.md` 全量 |
+
+system 同时含用户设定时，规则放前部，设定放后部。
 
 ---
 
@@ -119,21 +113,37 @@ RikkaHub / SillyTavern：导入 [Release](https://github.com/chengzhi-c/natural-
 ```
 natural-talk/
 ├── SKILL.md            # 核心规则（Agent 入口）
+├── README.md           # 中文说明
+├── README.en.md        # 英文说明
 ├── CONTRIBUTING.md     # 贡献指南
 ├── LICENSE             # MIT
-├── references/         # fiction.md 小说工法 / rules-full.md 全量规范
-├── scripts/            # 扫描器、审计与体检套件
-├── evals/              # 评测基准与判分
+├── references/         # 规则全文
+├── tests/              # 仓库结构与契约自检
+├── examples/           # 小说生成对照与正文
 └── assets/
 ```
 
+## 验证
+
+`python -B tests/check_repo.py` 检查结构、链接、frontmatter、换行与规则编号引用，并复算 `examples/` 的字数与每千字折算、校验合计与分项自洽。扫描器、清理审计和模型评测不在本仓库。
+
+## 叙事工法范例来源
+
+`references/fiction.md` 的三段工法范例节选自：
+
+| 工法 | 出处 |
+| --- | --- |
+| 动作与身体重力推进 | 朱自清《背影》 |
+| 具象实物作比 | 郁达夫《春风沉醉的晚上》 |
+| 人动景才出 | 鲁迅《社戏》 |
+
 ## 不适用
 
-学术论文、公文、法律文书、营销文案、演讲稿等需要相反风格的特定体制文书，本规则自动让位。
+非用户要求，学术论文、公文、法律文书、营销文案、演讲稿等需要相反风格的文体默认不适用。
 
 ## 局限
 
-模型写作中的“AI 味”多半来自预训练形成的表达缺陷。现阶段，skill 与 prompt 主要只能通过提醒和警示，让模型尽量避免这些问题；实际效果仍取决于模型自身的解读能力。
+AI 味多数来自预训练形成的表达缺陷，本 skill 只能提醒模型规避，实际效果仍取决于模型自身的解读能力。
 
 ## 贡献
 
@@ -141,12 +151,12 @@ natural-talk/
 
 ## 致谢
 
-- [shuorenhua](https://github.com/MrGeDiao/shuorenhua)：中文优先的去 AI 味改写 skill，感谢其在信息守恒、编辑边界与工程化评测上的探索与启发。
-- [lieflat-less-ai-tone](https://github.com/larashero3-dotcom/lieflat-less-ai-tone)：中文去 AI 腔提示词研究，感谢其在文本层反清单与实证对照研究中提供的判定依据。
+- [shuorenhua](https://github.com/MrGeDiao/shuorenhua)：中文优先的去 AI 味改写 skill。
+- [lieflat-less-ai-tone](https://github.com/larashero3-dotcom/lieflat-less-ai-tone)：中文去 AI 腔提示词研究。
 
 ## 社区
 
-欢迎加入 [LINUX DO](https://linux.do) 社区，一个「新的理想型社区」。
+[LINUX DO](https://linux.do)。
 
 ## License
 

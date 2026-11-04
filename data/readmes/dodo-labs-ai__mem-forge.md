@@ -26,33 +26,34 @@ up to date. Built from your docs, tickets and chat.
 
 ## Why MemForge
 
-**On day one, your agent knows what your team knows.** A new hire picks up a
-ticket, and their agent reads the code and guesses. The answer the team
-settled months ago sits in a Notion page nobody linked. With MemForge, the
-agent checks team memory before it acts and finds the convention, decision or
-known issue that applies, from Confluence, Jira, Notion, GitHub and Teams in
-one `search` call.
-
-**When a doc changes, memory follows.** The team changed a rule last week, and
-agents still repeat the old one. With MemForge, the next sync rechecks every
-memory built on the changed page: each is kept, replaced or retired, and the
-earlier version stays as history. Memories that repeat, update or contradict
-each other are linked, so the agent sees which one replaced another and where
-two disagree.
-
-**Every answer shows where it came from.** A confident answer you cannot check
-is a liability. With MemForge, each memory comes with its supporting text and
-a link to the page, ticket or file. Where the source allows it, the citation
-is pinned to the revision and passage that was read, and the agent can open
-the original. The supporting text can be the model's focused wording, not
-always a verbatim quote.
-
-**It runs on your machine.** Apache-2.0, with local storage (SQLite, FTS5 and
-Chroma). You bring your own model keys, and those providers receive only what
-is sent for inference. The plugins send no session transcripts.
-
-See [how MemForge compares](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/comparison.md) with Mem0, Zep, claude-mem and
-Unblocked.
+- **Turns your team's wiki, tickets and chat into memory your coding agents can
+  search.** On its own, a coding agent sees only the local checkout. MemForge syncs
+  sources such as Confluence, Jira and Teams ahead of time and builds one memory
+  from them, so agents search that memory instead of querying each tool. New sources
+  plug into the same
+  [connector interface](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/architecture.md#adding-a-source),
+  so the list can keep growing.
+- **Continuously detects stale facts and conflicts as your docs change.** Each sync,
+  on demand or on a schedule, rechecks the facts taken from changed docs and keeps, replaces
+  or retires each one. New facts are also compared with what's already in memory.
+  When it finds two docs that disagree, the agent gets both, with a note saying they
+  conflict or which is newer.
+- **Gives agents precise facts, not documents that blow up their context.** At sync,
+  a model turns your sources into memories: precise facts and decisions that keep
+  their conditions and exceptions. Agents search them over MCP by keyword, and by
+  meaning if you add an embedding model. Search results carry no document text, so a
+  full document enters the context only when the agent asks for it.
+- **Always justifies each fact with its real source.** Every fact from a source cites
+  the passage behind it and, where one exists, links to the original page, ticket or
+  file. If no source supports a fact any more, it is retired. The citation can be a
+  paraphrase, so MemForge also keeps the source text it read, and you or the agent
+  can open it to confirm.
+- **Runs on your machine, with team sharing on the way.** The open-source edition
+  is Apache-2.0 and single-user, with local storage and your own model keys. Source
+  text goes to the model providers you choose, and the agent plugins don't record
+  your sessions. The hosted
+  [Team Cloud Edition](https://github.com/dodo-labs-ai/mem-forge/discussions/13)
+  will give the whole team one shared memory.
 
 ## Quick start
 
@@ -74,7 +75,8 @@ The agent starts MemForge and installs its plugin, then hands you the admin UI
 to enter your model key and connect a source, so your keys never pass through
 the agent.
 
-**Or set it up yourself:**
+<details>
+<summary><b>Or set it up yourself</b> with Docker Compose, in 5 steps</summary>
 
 1. **Start MemForge.**
 
@@ -90,8 +92,8 @@ the agent.
    the memories, and optionally an embedding model for semantic search. After
    **Save and validate**, each one shows **Ready**.
 
-3. **Connect a source.** In **Sources**, add Notion pages, a Confluence
-   space, a Jira project or a GitHub repository, and run a sync. Turn on
+3. **Connect a source.** In **Sources**, add a source, such as a Confluence
+   space or a GitHub repository, and run a sync. Turn on
    **Sync automatically** to keep it current. The source shows the memories it
    made as the sync runs.
 
@@ -118,6 +120,8 @@ the agent.
 
    The agent answers with the memories that apply and names the source of each.
 
+</details>
+
 The [quickstart](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/quickstart.md) covers every model provider,
 local folders, the host CLI and network details.
 
@@ -133,7 +137,7 @@ flowchart LR
     Recheck["Recheck when a source changes,<br/>link related memories"]
     Store[("Local storage")]
   end
-  Docs["Confluence, Jira, Notion,<br/>GitHub, Teams, local files"]
+  Docs["Your team's wikis, tickets,<br/>repositories and chat"]
 
   CC --> Plugin
   Docs -- "sync" --> API
@@ -213,6 +217,8 @@ how to scope it. Need one that is missing?
 - [Quickstart](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/quickstart.md): setup, models, plugins, sources, CLI,
   development from source
 - [Docs index](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/README.md): quickstart, architecture, API and release guides
+- [How MemForge compares](https://github.com/dodo-labs-ai/mem-forge/blob/main/docs/comparison.md): when to choose MemForge and when
+  another tool fits better
 - [Contributing](https://github.com/dodo-labs-ai/mem-forge/blob/main/CONTRIBUTING.md)
 
 ## License

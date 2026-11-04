@@ -86,7 +86,7 @@ cd ~/.dsh/profiles/web
 npm install dsh-opencode-patch
 ```
 
-The package is `dsh-opencode-patch` under every name it is used by: the dependency you install, the bundle entry in your profile, and the row the host resolves.
+The package is `dsh-opencode-patch` under every name it is used by: the dependency you install, the bundle entry in your profile, and the row the host resolves. It is also published as [`@viztor/dsh-opencode-patch`](https://www.npmjs.com/package/@viztor/dsh-opencode-patch), and the older name [`@viztor/dsh-opencode`](https://www.npmjs.com/package/@viztor/dsh-opencode) keeps publishing as a deprecated thin wrapper that re-exports it — an install still on that name keeps working, and moving to either of the other two is a rename rather than a fix.
 
 **2. Enable the bundle** — add the package to the profile's `dsh.profile.bundles` array:
 
@@ -94,7 +94,7 @@ The package is `dsh-opencode-patch` under every name it is used by: the dependen
 // ~/.dsh/profiles/web/package.json
 {
   "dependencies": {
-    "dsh-opencode-patch": "^0.14.0",
+    "dsh-opencode-patch": "^1.8.0",
   },
   "dsh": {
     "profile": {
@@ -161,13 +161,13 @@ Zen's provider-level SDK is `@ai-sdk/openai-compatible`. models.dev names a **di
 
 | models.dev `provider.npm` | models | protocol | served from |
 | :-- | --: | :-- | :-- |
-| _(absent)_ | 23 | OpenAI Chat Completions | the route you configured |
+| _(absent)_ | 25 | OpenAI Chat Completions | the route you configured |
 | `@ai-sdk/openai` | 31 | OpenAI Responses | `opencode-responses` |
 | `@ai-sdk/anthropic` | 17 | Anthropic Messages | `opencode-anthropic` |
 | `@ai-sdk/google` | 8 | Google Generative AI | `opencode-google` |
 | `@ai-sdk/mistral` | 1 | _(a dialect this plugin does not serve)_ | **not offered** |
 
-Counts are the **80** active `opencode` models in `models.opencode.ai` as of 2026-10-23 — everything else the vendor lists is deprecated or retired, and the patch ships only what the gateway still serves. The same 80 are bundled offline in `src/catalog-data.ts`, so every one of them routes correctly before the first catalog refresh; regenerate that file with `pnpm run catalog:shim`.
+Counts are the **82** active `opencode` models in `models.opencode.ai` as of 2026-11-04 — everything else the vendor lists is deprecated or retired, and the patch ships only what the gateway still serves. The same 82 are bundled offline in `src/catalog-data.ts`, so every one of them routes correctly before the first catalog refresh; regenerate that file with `pnpm run catalog:shim -- --write` (without `--write` it only checks).
 
 The patch **keeps those two routes out of both the model picker and _Settings → Models_**. Three properties hold today, and one does not yet:
 
@@ -223,7 +223,7 @@ Merging is **additive**: adapter rows are kept, canonical rows are appended when
 
 Two things follow that you will notice in use. **Cold start is never empty** — the bundled shim answers before the first refresh, so the picker has models immediately. And **a model the catalog has no row for still appears**, with `—` where its rate would be: never a guess, and never the previous model's name.
 
-Both generated files are checked in CI (`catalog:shim`, `limits:shim`); they exit non-zero when the vendor's data moved, which is the only way to notice the vendor's registry changing under you.
+Both generated files are checked in CI (`catalog:shim`, `limits:shim`); they exit non-zero when the vendor's data moved, which is the only way to notice the vendor's registry changing under you. A pull request fails on that only when it changes the code that generates the file; otherwise CI warns, and a nightly run proposes the refresh as a pull request of its own.
 
 → Protocol routing, the merge and the UI in technical detail: [`docs/protocol-routing-and-merge.md`](./docs/protocol-routing-and-merge.md) · [中文](./docs/protocol-routing-and-merge.md)
 
@@ -251,7 +251,7 @@ Nine controls in four sections — the decisions a user actually makes. Everythi
 | **Models & Free Tier** | Enrich model metadata from the OpenCode catalog | `on` | Fills catalog context limits, modalities and thinking levels into model info, and lets the gateway `/models` listing carry the full catalog. Does **not** add models to the picker — the picker shows declared models only; use the card's **Check catalog** row to declare more |
 | **Models & Free Tier** | Inject Core Tools | `on` | Adds the `read` + `bash` schemas free-tier `/responses` bodies require |
 | **Quota Meter** | Enable Composer Usage Meter | `on` | Mounts the live meter in the composer dock — the Go quota ring, or the Zen session spend |
-| **Account & Endpoint** | API Endpoint | `auto` | Which endpoint family requests go to: **Automatic** (follow the catalog) · **Legacy** (`zen/v1`) · **Modern** (`inference/…`) |
+| **Account & Endpoint** | API Endpoint | `auto` | Which endpoint family requests go to: **Automatic** (same as Modern) · **Legacy** (`zen/v1`, `zen/go/v1`) · **Modern** (per-protocol `inference/{openai,anthropic,google}/…`, `inference/go/…` on Go) |
 | **Account & Endpoint** | Credential Source | `auto` | Which key wins when several are known: **Automatic** · **Live request first** · **Declared key first** |
 | **Account & Endpoint** | Read the OpenCode installation's key | `off` | Lets the plugin read the credential OpenCode itself stored, as the LAST resort — off by default |
 
@@ -259,7 +259,7 @@ Nine controls in four sections — the decisions a user actually makes. Everythi
 
 Two questions decide where a request goes, and the **Account & Endpoint** section is where you answer them.
 
-**Which endpoint family.** The gateway answers on two families — the older `/zen/v1` and the newer `inference` family, whose base is per protocol (`…/inference/openai/v1`, `…/inference/anthropic/v1`, `…/inference/google/v1beta`) — and they are entitled **separately**: an account that works on one is not guaranteed to work on the other. `auto` follows the gateway's own catalog, which today names the newer family, so a catalog move carries you along; `legacy` and `modern` pin one, which is what you want when your account only works on the older one, or when you are checking that the newer one does.
+**Which endpoint family.** The gateway answers on two families — the older `/zen/v1` (`/zen/go/v1` on Go), one base for every protocol, and the newer per-protocol `inference` family (`/inference/openai/v1`, `/inference/anthropic/v1`, `/inference/google/v1beta`, with `/inference/go/…` on Go) — and they are entitled **separately**: an account that works on one is not guaranteed to work on the other. `modern` sends each protocol to its own inference path; `auto`, the default, is an alias of `modern`; `legacy` pins the older family, which is what you want when your account only works there.
 
 **Which credential wins.** `keySource` orders the sources the plugin can see — `auto` prefers a key you declared, then one captured from a live request, then the declared reference; `request` promotes a captured key first; `configured` does the reverse. Below it, `readOpencodeStore` lets the plugin read the credential OpenCode itself stored, as the **last** resort only. Both are `off`/`auto` by default, so nothing changes until you say so.
 
@@ -274,7 +274,7 @@ Go usage                                           Healthy
 ● 5 hours    0% used · resets in 4h 58m           100% left
 ● Weekly    28% used · resets in 3d 2h             72% left
 ● Monthly   14% used · resets Nov 7, 8:55 AM       86% left
-Monthly allowance  mimo-v2.6-pro · Go $60 · Plus $120         ⓘ
+Monthly allowance  mimo-v2.6-flash · Go $60 · Plus $120       ⓘ
 ```
 
 **This build carries the API key path only.** There is no sign-in row and no device flow: a credential comes from the deployment's configuration, from a key captured on a live request, or — when `readOpencodeStore` is on — from the OpenCode installation's own store. The Console login (device flow, session store, credential pool) lives on the `v2` line and is deliberately not in `main`, so nothing here depends on a service the host may not mount.
@@ -371,7 +371,7 @@ These exist in the schema but render no control — each is a literal, a marker,
 | `userAgent` | empty (= canonical CLI UA) | Literal override; the default is what the gateway expects |
 | `originClient` | `cli` | Literal `x-opencode-client` value |
 | `sessionIdEnv` | `OPENCODE_SESSION_ID` | Names an env var only a caller-supplied session id uses |
-| `freeModelMarker` | `free` | Model-id substring; `*` forces the fallback, `''` disables it |
+| `freeModelMarker` | `free` | Model-id substring; `*` forces the fallback; a blank value inherits the default; catalog-free models always qualify |
 | `usageBaseURL` | `https://opencode.ai/zen/go/v1` | Endpoint override; auto-discovered from the composition |
 | `credentialOrg` | — | The org id an account credential belongs to, when the deployment supplies one out of band |
 | `debug` / `debugFile` | `false` / — | Diagnostic JSONL logging, not a behaviour anyone tunes in the UI |
@@ -389,7 +389,6 @@ These exist in the schema but render no control — each is a literal, a marker,
           - opencode-anthropic
         gatewayUrls:
           - opencode.ai/zen
-        hiddenModels: [] # ids withheld from every listing
         sessionIdEnv: "OPENCODE_SESSION_ID"
         freeModelMarker: "free"
         usageBaseURL: "https://opencode.ai/zen/go/v1"
@@ -425,28 +424,42 @@ These exist in the schema but render no control — each is a literal, a marker,
 
 ---
 
+## Changed in 1.x
+
+- **A smaller public API.** The package's entry exports `apply`, `Config`, `inject` and `name` — the names the host reads — and the config types (`PluginConfig`, `ResolvedPluginConfig`, `ModelOverrideConfig`, `ModelRouteConfig`, `EndpointFamily`, `KeySourcePolicy`). Everything else it used to re-export is internal now.
+- **`./src/*` is no longer an export.** `src/` was never in the published files, so the subpath resolved in the repository and nowhere else.
+- **`internalRoutes` was removed.** The per-protocol routes always mount. A profile row that still carries `internalRoutes` validates and the key is ignored.
+- **`@viztor/dsh-opencode` is deprecated, and still published.** It is a thin wrapper that re-exports `dsh-opencode-patch`, so an install on the old name keeps resolving; the registry marks it deprecated and points at the canonical name. New installs should use `dsh-opencode-patch` or `@viztor/dsh-opencode-patch`.
+
 ## 📜 Compatibility & Verification
 
 **Verified on DeepSeek Harness `0.2.1` — both the `alpha` and `rc` channels (Node 24+)**
 
-The harness publishes two **channels**, `alpha` and `rc`, and they are parallel tracks rather than a version ordering: semver sorts `0.2.1-rc.2` _above_ `0.2.1-alpha.5`. Both channels' latest is **`0.2.1`**, and that line is this plugin's target — it is tested against every published `0.2.1` build in both channels, and the `@deepseek-ai/dsh-typert-protocol` peer range says so exactly:
+The harness publishes two **channels**, `alpha` and `rc`, and they are parallel tracks rather than a version ordering: semver sorts `0.2.1-rc.2` _above_ `0.2.1-alpha.5`. The plugin targets two lines on both channels: **`0.2.1`**, whose `rc` builds `dsh@latest` still carries, and the **`0.2.2`** prereleases on both channels: `alpha` is at `0.2.2-alpha.3`, and `rc` opened the line with `0.2.2-rc.1` (published under the `next` dist-tag; the test install runs `0.2.2-alpha.2`). The `@deepseek-ai/dsh-typert-protocol` peer range says so exactly:
 
 ```
->=0.2.1-alpha.1 <0.2.2
+>=0.2.1-alpha.1 <0.3.0 || >=0.2.2-0 <0.3.0
 ```
 
-One range covers the whole line on both channels: its lower bound (`alpha.1`) sorts below every `rc` of the same line, so rc needs no separate entry. A plain `<0.2.2` would **not** work — semver excludes prereleases unless a comparator in the same `major.minor.patch` tuple carries one, which is how a range written against one channel silently excludes the other.
+The first clause covers the `0.2.1` line on both channels: its lower bound (`alpha.1`) sorts below every `rc` of the same line, so rc needs no separate entry. The second is **not** redundant — semver excludes prereleases unless a comparator in the same `major.minor.patch` tuple carries one, so `<0.3.0` alone would silently drop every `0.2.2-*` build, alpha and rc alike. Both clauses stop at `0.3.0`, which leaves the next line a separate decision rather than a silent widening.
+
+The optional `@deepseek-ai/cordis` peer follows the typert range. Each line moved the host core: the `0.2.1` builds peer `~4.0.5` (or a `4.0.5` prerelease), the `0.2.2` alphas a `4.0.6` prerelease, and `0.2.2-rc.1` `~4.1.0`. A fresh install takes the cordis the **newest** admitted typert build peers on, so a cordis peer that misses it fails with `ERESOLVE`; one that misses an older line's cordis fails beside a host already installed on that line. The peer therefore admits every one of them and stops at the next tuple:
+
+```
+~4.0.4 || >=4.0.5-0 <4.1.0 || >=4.0.6-0 <4.1.0 || ~4.1.0
+```
 
 | Surface | Target |
 | :-- | :-- |
-| **Harness line** | **`0.2.1`**, `alpha` and `rc` channels alike (peer: `>=0.2.1-alpha.1 <0.2.2`) |
+| **Harness line** | **`0.2.1`** and the **`0.2.2`** prereleases, `alpha` and `rc` channels alike (peer: the range above) |
+| **Host core** | `@deepseek-ai/cordis` `4.0.4` up to `4.1.x`, including the `4.0.5` and `4.0.6` prereleases (optional peer: the range above) |
 | **Plugin package** | [`dsh-opencode-patch`](https://www.npmjs.com/package/dsh-opencode-patch) |
 | **Host profile** | DSH Web profile (`patchReload: live`) |
 | **Routes claimed** | `opencode`, `opencode-go`, `opencode-responses`, `opencode-anthropic` |
 | **Gateways** | `opencode.ai/zen/v1` (`/responses`, `/chat/completions`, `/messages`, `:streamGenerateContent`), `zen/go/v1` (`/chat/completions`) |
 | **Catalog** | Generated from `models.opencode.ai/api.json`; retirement follows the registry's own `status: "deprecated"` flag, with no hand-maintained id list |
 | **Upstream pi** | **Not bundled.** The bridge loads whatever `@earendil-works/pi-ai` the harness installed, so a harness bump never skews a pinned copy |
-| **Verification gate** | `vp check` clean, **961** deterministic tests green (unit + offline gateway mock), full schema validation, consumer install + load ([`scripts/check.ts`](./scripts/check.ts)) |
+| **Verification gate** | `vp check` clean, the deterministic unit and offline gateway-mock suites green, full schema validation, consumer install + load ([`scripts/check.ts`](./scripts/check.ts)) |
 
 ---
 

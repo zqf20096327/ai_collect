@@ -313,6 +313,7 @@ Point these at a different datasource/cluster than the default by setting `LAST9
 - **`get_change_events`** — Deployments, config changes, rollbacks. Correlate incidents with what changed
 - **`analyze_change_impact`** — Did a change break anything? Compares a service and its direct callers before and after a change: golden signals, APM and trace-attribute deviations, new firing alerts, and a verdict (`regression likely` / `no significant change` / `insufficient data`)
 - **`get_alert_groups`** — Configured Compass alert groups with metadata labels, team, tier, and rule counts — including groups with zero rules and groups that are not firing
+- **`get_alert_operations_summary`** — On-call health over a window: alerts raised vs acknowledged, backlog, deliveries and, with `include_rules`, the noisiest, flapping and unrouted rules. Every count carries its `status` (`available` / `partial` / `unavailable`)
 - **`get_alert_coverage`** — What you are not alerting on: uncovered golden signals, fully disabled or unrouted alert groups, and rules muted too long, each with a suggested fix tool. Read-only.
 - **`get_alert_config`** — Alert rule configurations — searchable by name, severity, type, tags
 - **`get_entity_kpis`** — Every KPI (id, name, PromQL, unit) on one alert group, including KPIs no rule uses yet — the ids `create_alert` and `validate_alert_expression` need
@@ -808,6 +809,15 @@ Configured Compass alert-group inventory for changeboard / label-coverage audits
 
 Returns compact JSON `{"count":N,"groups":[...]}` with `id`, `name`, `type`, `entity_class`, `team`, `tier`, `metadata.labels`, and rule counts. Empty `team` / `labels` means unset.
 
+### get_alert_operations_summary
+
+- `start_time_iso` / `end_time_iso` (string, required): RFC3339 window, at most 31 days.
+- `timezone` (string, optional): IANA name for day boundaries. Default: `UTC`.
+- `severities` / `services` (array, optional): Narrow the summary.
+- `include_rules` (boolean, optional): Also return per-rule hygiene (top 20 by `fire_count`, flapping and unrouted rules, with `truncated` when the API capped its rule list). Default: `false`.
+
+Returns JSON with `alerts_raised`, `acknowledged`, `unacknowledged`, `current_backlog`, `delivered`, `notification_outcomes`, `top_rules`, `needs_attention` and `coverage`. Each metric is `{status, count?, reason?}`; a `partial` count covers only part of the window and is not a lower bound.
+
 ### get_alert_coverage
 
 Answers "what am I not alerting on?" for a service, an environment, one alert group, or the whole organization when no scope is given. Read-only: it never creates, changes, or unmutes anything. Also served in the `investigate` toolset.
@@ -1052,11 +1062,11 @@ To alert on a panel, see `last9://reference/alerting`.
 Read-only. Never creates or updates dashboards. Accept exactly one of `dashboard_id` or `dashboard_definition`.
 
 - `dashboard_id` (string, optional): Saved dashboard UUID to validate.
-- `dashboard_definition` (object, optional): Inline unsaved dashboard body (true dry run).
+- `dashboard_definition` (object, optional): Inline unsaved dashboard body (true dry run). A `{dashboard, metadata}` create envelope is unwrapped to its `dashboard` object.
 - `start_time_iso` / `end_time_iso` (string, optional): Validation window (RFC3339). Must be ≤ 24h.
 - `region` (string, optional): Region for panel query execution.
 
-Returns `dashboard_validation/v1`: per-panel lint + execute classification (`data` / `no_data` / `invalid` / `error`). Day-1 empty results classify as `valid_no_data` without diagnose probes.
+Returns `dashboard_validation/v1`: per-panel lint + execute classification (`data` / `no_data` / `invalid` / `error`). Day-1 empty results classify as `valid_no_data` without diagnose probes. A dashboard with no panels returns `success: false` with `error: "no_panels"`. Panel fields from other formats (Grafana `gridPos`, `title`, `type`, and `targets` on panels that need queries) and mistyped fields are listed per panel in `shape_problems`, counted in `summary.panels_invalid_shape`, and make `overall` `fail`.
 
 ### preview_dashboard
 

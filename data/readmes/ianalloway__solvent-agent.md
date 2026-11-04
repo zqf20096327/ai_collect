@@ -11,9 +11,10 @@
 [![Zero dependencies](https://img.shields.io/badge/core%20deps-0-brightgreen)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Hackathon](https://img.shields.io/badge/Hermes%20Agent%20Business%20Hackathon-June%202026-76b900?logo=nvidia&logoColor=white)](https://www.linkedin.com/posts/nousresearch_the-hermes-agent-accelerated-business-hackathon-activity-7472690765933072384-MW7G)
+[![Research: SpendAudit](https://img.shields.io/badge/research-SpendAudit%20benchmark-8a2be2)](https://github.com/ianalloway/spendaudit)
 [![Stars](https://img.shields.io/github/stars/ianalloway/solvent-agent?style=social)](https://github.com/ianalloway/solvent-agent/stargazers)
 
-[**Quick Start**](#-quick-start) · [**How It Works**](#-how-it-works) · [**Live Demo**](#-the-demo) · [**Make It Real**](#-make-it-real)
+[**Quick Start**](#-quick-start) · [**How It Works**](#-how-it-works) · [**Live Demo**](#-the-demo) · [**Make It Real**](#-make-it-real) · [**Research**](#-research-use)
 
 ![SOLVENT in a terminal: the margin gate declines an $8 job with a counter-offer, then the offline demo runs five jobs end to end](docs/demo.gif)
 
@@ -586,7 +587,7 @@ shop's own p95 — and only until then by the fixed hours.
 Fifteen commands' worth of reporting lived in the CLI, which is where the
 operator is not. The gateway's slash commands now cover the business too —
 `/funnel`, `/customers`, `/capacity`, `/alerts`, `/products`, `/quality`,
-`/review`, `/costs` — each a short read over local state, no model call, no
+`/review`, `/costs`, `/status` — each a short read over local state, no model call, no
 spend.
 
 The catch is who is asking. Any *paired* Telegram user reaches that handler,
@@ -595,9 +596,13 @@ these are operator-only:
 
 - the **dashboard** channel is the operator by construction — it sits behind
   `SOLVENT_DASHBOARD_TOKEN`;
-- a Telegram id in `SOLVENT_OPERATOR_IDS` is the operator;
+- a Telegram user id in `SOLVENT_OPERATOR_IDS` is the operator in a private chat;
 - anyone else gets "That command is operator-only", and `/help` does not list
   commands they cannot run.
+
+The `treasury_status` model tool uses the same operator boundary. Pairing QR
+tokens also require an operator; pairing a customer does not grant permission
+to mint new tokens, and Telegram groups cannot mint them.
 
 ### The deliverable
 
@@ -893,6 +898,8 @@ docs/              screenshots and supporting docs
 ## 🔬 Research Use
 
 SOLVENT's spend policy is the label source for [SpendAudit](https://github.com/ianalloway/spendaudit), a benchmark that asks whether an LLM auditor reaches the same verdict as the policy, and whether a prompt injection in a payment memo changes that verdict. The benchmark pins v0.2.2 (`bdc896a`), and its generator rebuilds the dataset byte for byte from that commit. The working paper, every model response, and a one-command recount of the results are in that repository.
+
+Headline result from the [working paper](https://github.com/ianalloway/spendaudit/blob/main/paper/spendaudit.pdf): requiring rule-by-rule evidence cut LLM auditors' false approvals sharply (for example 34 → 6 on clean traces for Gemini 3.1 Flash-Lite), but an injected payment memo still got violating payments approved for every model tested. Results, data and citation details are in the [SpendAudit README](https://github.com/ianalloway/spendaudit#results-at-a-glance).
 
 ---
 

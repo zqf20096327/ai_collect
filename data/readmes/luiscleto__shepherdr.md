@@ -3,18 +3,21 @@
 <table>
   <tr>
     <td rowspan="2" width="33%" align="center" valign="top">
-      <a href="docs/images/home.png"><strong>Home</strong><br><img src="docs/images/home.png" width="270" alt="Home with grouped terminals, agent statuses, and the working count"></a>
+      <a href="docs/images/home.png"><strong>Home</strong><br><img src="docs/images/home.png" width="270" alt="Home in the Herdr Core view with spaces, their tabs, agent statuses, pins, and the working and pinned counts"></a>
     </td>
     <td width="33%" height="1" align="center" valign="top">
       <a href="docs/images/send-files.png"><strong>Reader and files</strong><br><img src="docs/images/send-files.png" width="270" alt="Reader with terminal output, a message, selected screenshots, and terminal controls"></a>
     </td>
-    <td rowspan="2" width="33%" align="center" valign="top">
-      <a href="docs/images/send-keys.png"><strong>Send keys</strong><br><img src="docs/images/send-keys.png" width="270" alt="Terminal header and Reader output above Send keys with modifiers, common keys, and a shortcut preview"></a>
+    <td width="33%" height="1" align="center" valign="top">
+      <a href="docs/images/send-keys.png"><strong>Send keys</strong><br><img src="docs/images/send-keys.png" width="270" alt="Send keys with modifiers, common keys, and a shortcut preview, over the terminal"></a>
     </td>
   </tr>
   <tr>
     <td align="center" valign="top">
       <a href="docs/images/notifications.png"><strong>Notifications</strong><br><img src="docs/images/notifications.png" width="270" alt="Shepherdr notifications in the phone's notification panel"></a>
+    </td>
+    <td align="center" valign="top">
+      <a href="docs/images/shared-files.png"><strong>Shared files</strong><br><img src="docs/images/shared-files.png" width="270" alt="Shared files from an agent, grouped by agent"></a>
     </td>
   </tr>
 </table>
@@ -24,6 +27,7 @@
 - **never hunt for the stuck one** — every terminal is marked working, blocked, idle, done, or unknown. when an agent needs you, shepherdr says so.
 - **open the exact terminal** — read it, send text or shortcuts, and attach files while an agent is there. shepherdr never substitutes another pane.
 - **herdr tui or the herdr app** — works with both. when both run, a switch on home picks one. with the app, spaces are the rows and their tabs nest underneath.
+- **files from your agents** — an agent runs `shepherdr share` and the file shows up on your phone to preview, download, or delete. a number marks what's new.
 - **workspaces from the phone** — create a workspace, add a worktree, close what's done, delete a clean checkout. herdr still does the work.
 - **notifications that mean something** — blocked, done, or a trusted sign-in change. tap through to that terminal, or home if it's gone.
 - **passkeys, not accounts** — trust this phone once. later visits are sign in with a passkey. no email, no password. a new browser cannot trust itself.
@@ -33,24 +37,24 @@
 
 ## Install
 
-Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later, or the Herdr desktop app, running locally under the same OS account, with `herdr` (or `herdr-app`) on `PATH`. Herdr 0.9.0–0.9.5, and the Herdr app 0.1.10–0.1.12 with herdr-core 0.1.15–0.1.17, are validated; newer versions run best effort with a warning.
+Shepherdr needs [Herdr](https://github.com/herdrdev/herdr) 0.9.0 or later, or the Herdr desktop app, running locally under the same OS account, with `herdr` (or `herdr-app`) on `PATH`. Herdr 0.9.0–0.9.5, and the Herdr app 0.1.10–0.1.13 with herdr-core 0.1.15–0.1.18, are validated; newer versions run best effort with a warning.
 
 Use matching Herdr CLI and server versions for terminal reads and control.
 
-Download the archive for this machine from the [latest release](https://github.com/luiscleto/shepherdr/releases/latest), plus its matching checksum file. The examples below use v0.6.1.
+Download the archive for this machine from the [latest release](https://github.com/luiscleto/shepherdr/releases/latest), plus its matching checksum file. The examples below use v0.7.0.
 
 | System | Archive |
 | --- | --- |
-| Linux x86-64 | `shepherdr_0.6.1_linux_amd64.tar.gz` |
-| Linux ARM64 | `shepherdr_0.6.1_linux_arm64.tar.gz` |
-| macOS Intel | `shepherdr_0.6.1_darwin_amd64.tar.gz` |
-| macOS Apple silicon | `shepherdr_0.6.1_darwin_arm64.tar.gz` |
+| Linux x86-64 | `shepherdr_0.7.0_linux_amd64.tar.gz` |
+| Linux ARM64 | `shepherdr_0.7.0_linux_arm64.tar.gz` |
+| macOS Intel | `shepherdr_0.7.0_darwin_amd64.tar.gz` |
+| macOS Apple silicon | `shepherdr_0.7.0_darwin_arm64.tar.gz` |
 
 macOS builds are unsigned. Expect a system warning on first run.
 
 ```sh
-archive=shepherdr_0.6.1_linux_amd64.tar.gz
-grep "  ${archive}$" shepherdr_0.6.1_checksums.txt | sha256sum -c -
+archive=shepherdr_0.7.0_linux_amd64.tar.gz
+grep "  ${archive}$" shepherdr_0.7.0_checksums.txt | sha256sum -c -
 tar -xzf "$archive"
 mkdir -p "$HOME/.local/bin"
 install -m 0755 "${archive%.tar.gz}/shepherdr" "$HOME/.local/bin/shepherdr"
@@ -65,7 +69,7 @@ To check that Shepherdr's release workflow built the archive, run `gh attestatio
 
 ```sh
 go install github.com/luiscleto/shepherdr@latest
-# or pin a version: go install github.com/luiscleto/shepherdr@v0.6.1
+# or pin a version: go install github.com/luiscleto/shepherdr@v0.7.0
 ```
 
 **From source** — Go 1.27+, Node.js 26+, npm:
@@ -151,7 +155,7 @@ An HTTPS website is also accepted.
 
 | On by default | Off by default |
 | --- | --- |
-| `blocked`, `error` (Herdr app), `done`, trusted sign-in added/removed | `working`, `idle`, `unknown`, workspace opened/closed |
+| `blocked`, `error` (Herdr app), `done`, trusted sign-in added/removed | `working`, `idle`, `unknown`, workspace opened/closed, file shared |
 
 iPhone or iPad: add Shepherdr to the Home Screen and open it there before enabling. Android Chrome does not need that.
 
@@ -169,6 +173,14 @@ While an agent is in a terminal, you can attach photos and files. Shepherdr save
 
 After the workspace is closed, Shepherdr deletes that folder. Cleanup is best effort.
 
+Agents share files back with `shepherdr share FILE...`; Shepherdr keeps a copy in `-share-dir` until someone deletes it in **Shared files**. Keep `shepherdr` on `PATH` for agents, for example in `~/.local/bin`. An agent in a sandbox that blocks local sockets must run `shepherdr share` outside it. Paste this into your agents' global instructions, such as `~/.claude/CLAUDE.md` (the full note is in **Settings → For your agents** and `shepherdr --skill`):
+
+```text
+When I ask to see a file you made, share it with me in Shepherdr:
+run `shepherdr share FILE...` (details: `shepherdr share --help`).
+Share only what I asked to see.
+```
+
 ## Flags
 
 | Flag | Default | Notes |
@@ -183,5 +195,9 @@ After the workspace is closed, Shepherdr deletes that folder. Cleanup is best ef
 | `-upload-min-rate` | `8KiB` | Per second, after a send's first 30 seconds. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
 | `-request-body-time` | `30s` | For every other request body. At least `1s`. |
 | `-herdr-reply-limit` | `64MiB` | Largest reply read from Herdr. At least `1MiB`. |
+| `-share-dir` | `$XDG_DATA_HOME/shepherdr/shared` | Shared files, kept until deleted. Else `~/.local/share/shepherdr/shared`; on macOS without `XDG_DATA_HOME`, the user config folder. |
+| `-share-limit` | `1GiB` | Largest shared file. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
+| `-share-total` | `10GiB` | Most kept in all; new shares are refused past it. Bytes, `KiB`/`MiB`/`GiB`, or `none`. |
+| `-share-socket` | `$XDG_RUNTIME_DIR/shepherdr/share.sock` | Owner-only socket `shepherdr share` uses (`share -socket` to match). Without `XDG_RUNTIME_DIR`, beside Shepherdr's state. |
 
 Apache License 2.0.

@@ -26,6 +26,16 @@
 
 ## Latest News 🗞️🚀
 
+* **7.9.0**:
+  * **Correctness:** Fixed packing/inference overflow, underflow, FP32 reductions, BF16 bias cancellation, 8-bit BitBLAS zero points, and stale fused Torch metadata after checkpoint loads or tensor changes.
+  * **MoE:** Fixed skipped routed experts in MiniMax M2, Granite MoE/Hybrid, Bailing Hybrid, and AfMoE; added warnings for unresolved module paths.
+  * **Memory:** Removed retained FP8 weight expansion from the experimental NVFP4 path and dense-weight scratch from ExLlamaV2.
+  * **Kernels:** Added measured RTX 4090 (Ada, SM 8.9) and RDNA4 (gfx1200/gfx1201/gfx1250) launch tables to every tuned Triton pipeline — GPTQ GEMV/GEMM/dequant, ParoQuant GEMM, AWQ GEMM/GEMV, GGUF Triton, and bitsandbytes 4-bit — enforced by a hardware-free parity contract; the fused bitsandbytes 4-bit GEMM measured 1.4x-6.3x faster than the vendor HIP kernel on RDNA4 for `M >= 16`, while Ada keeps the vendor kernels. Added opt-in AllSpark W8A16 for compatible per-channel 8-bit GPTQ/AWQ on CUDA and RDNA4 (gfx1200/gfx1201). EXL3 2-bit quantization now fits RDNA4's 64 KiB shared memory.
+  * **MLX:** Accelerated GPTQ/RTN quantization, GPTQ/AWQ group-16 decode and short prefill, and GGUF K-quant/ternary packing.
+  * **GSQ/RCO:** Added teacher-KL optimization, per-projection bit allocation, and native MLX search for dense Llama/Qwen3, with token-based batching and device/disk teacher caches.
+  * **Models:** Added LFM3, LFM3-VL, and LFM3-Omni text-decoder quantization, OLMo/Helium support, and Qwen2 quantization resume.
+  * **Compat:** Added native Transformers/Optimum load hooks preserving dynamic settings, fused/MoE structure, rotation, and W4A policies. Replaced method-specific Marlin/Machete/Swordfish enums with `BACKEND.MARLIN`, `BACKEND.MACHETE`, and `BACKEND.SWORDFISH`; legacy string aliases remain supported by the `hf_` APIs.
+
 * **7.8.0**:
   * **GSQ:** Added staged GSQ training with public method adapters, distributed staged training that reuses captured activations, and per-block bit allocation driven by an RCO search verified bit-identical against the IST-DASLab reference (measured results on Llama 3.2 1B). Added a paper-reproduction harness, best-epoch restore, HIPRTC-compiled fused scalar relaxation on ROCm, and segment-sum scale gradients.
   * **ROCm:** Added RDNA4 (gfx1200/gfx1201/gfx1250) kernel and quantization support with per-architecture kernel tuning. MI350/gfx950 behavior is unchanged.
@@ -54,11 +64,6 @@
   * **Runtime and integration:** Added stable [`hf_` kernel selection, packing, and repacking APIs](docs/hf_packing_api.md), improved AWQ Triton scheduling, and added opt-in [Marlin scratch-buffer reuse](docs/marlin_scratch.md). Improved SGLang format validation, dtype handling, and generation parameter compatibility.
   * **Reliability:** Fixed model-tree isolation and dynamic-rule caching/serialization, offloaded tensor device/dtype restoration, fused DeepSeek expert loading, Qwen3.5-MoE multimodal calibration, Gemma4 calibration KV memory retention, ParoQuant positional replay, GLM NoPE configuration handling, and GPTQ damping recovery after inverse-factor failures.
 
-* 09/15/2026 [7.5.0](https://github.com/ModelCloud/GPTQModel/releases/tag/v7.5.0): ✨ Added K2 Horizon, Qwen-Drive, Nanbeige, and Diffusion Gemma quantization support. Improved GPTQ/AWQ/ParoQuant reliability with device-aware kernel selection, safer CUDA dispatch and empty-input handling, partial packing-word support, correct calibration masks, model-specific Paro layer replay, and hardened Machete runtime caching. Loading and saving now validate GPTQ `qweight` and offload metadata, while InternVL image preprocessing keeps `torchvision` optional. Quantization finalization is faster and startup version reporting is more accurate.
-* 09/07/2026 [7.4.0](https://github.com/ModelCloud/GPTQModel/releases/tag/v7.4.0): 🎉 Added resumable quantization checkpoints, shared-input Hessian deduplication, `lm_head` and embedding requantization, and updated native GGUF support. Added GLM-5.3-Flash, Apertus 1.5, and XHToken `ouro` / `spark2_5` quantization support, plus quantization, JIT cache, and Triton compatibility fixes.
-* 08/31/2026 [7.3.6](https://github.com/ModelCloud/GPTQModel/releases/tag/v7.3.6): ✨ Added HunyuanOCR, NVIDIA LocateAnything-3B, and Qwen3.8-Flash-Next quantization support. Added tile-misaligned GPTQ/AWQ Marlin support, reduced QQQ packing memory, and improved JIT extension cache reuse.
-* 08/25/2026 [7.3.5](https://github.com/ModelCloud/GPTQModel/releases/tag/v7.3.5): ✨ Added `lm_head` and embedding quantization lifecycle support; Unlimited-OCR, DeepSeek V3.2, Mage-VL, Muse Glimmer, OLMo 3, and SmolLM3 model support.
-* 08/19/2026 [7.3.4](https://github.com/ModelCloud/GPTQModel/releases/tag/v7.3.4): 🚀🔥⚡ Added the `Swordfish` Blackwell GPTQ/AWQ kernel, planar GPTQ checkpoint formats, native MPS quantization, and Cohere Compass / A.X-K2 model support, with quantization performance and reliability improvements.
 Older releases and development notes: [changelog archive](docs/changelog/archive.md).
 
 ## A unified quantization platform
@@ -249,6 +254,7 @@ The table mirrors every explicit registration in `gptqmodel.models.auto.MODEL_MA
 | GPT-J | `gptj` |
 | Granite / Granite MoE / Granite MoE Hybrid | `granite`, `granitemoe`, `granitemoehybrid` |
 | GRIN-MoE | `grinmoe` |
+| Helium | `helium` |
 | HRM | `hrm_text` |
 | Hunyuan V1 / VL / OCR | `hunyuan_v1_dense`, `hunyuan_v1_moe`, `hunyuan_vl` |
 | HY-V3 | `hy_v3` |
@@ -286,7 +292,7 @@ The table mirrors every explicit registration in `gptqmodel.models.auto.MODEL_MA
 | Muse Glimmer | `muse_glimmer` |
 | Nanbeige 4.2 | `nanbeige` |
 | Nemotron NAS / H / H Puzzle / Omni / Labs Diffusion | `nemotron-nas`, `nemotron_h`, `nemotron_h_puzzle`, `nemotronh_nano_omni_reasoning_v3`, `nemotron_labs_diffusion` |
-| OLMo 2 / 3 / OLMoE | `olmo2`, `olmo3`, `olmoe` |
+| OLMo / OLMo 2 / 3 / OLMoE | `olmo`, `olmo2`, `olmo3`, `olmoe` |
 | OpenVLA | `openvla` |
 | OPT | `opt` |
 | Ouro | `ouro` |
@@ -341,7 +347,7 @@ GPT-QModel is validated on Linux, macOS, and Windows 11:
 | Platform | Device |  | Optimized Arch | Kernels |
 |---|---|---|---|---|
 | 🐧 Linux | NVIDIA GPU | ✅ | `Turing+` (`sm_75+`) | Machete, Marlin, Exllama V3 / EXL3, Exllama V2, AWQ GEMM/GEMV, ParoQuant CUDA/Triton, GGUF CUDA/Triton, QQQ, VPTQ, BitBLAS, Triton, BitsAndBytes, Torch |
-| 🐧 Linux | AMD GPU | ✅ | `7900XT+`, `ROCm 10.1+`, `gfx950` (CDNA4), `gfx1200/1201/1250` (RDNA4) | Exllama V2, AWQ Triton GEMM, QQQ, FP8 Torch, Torch (fused GPTQ GEMV on gfx950 and gfx120*/gfx125*) |
+| 🐧 Linux | AMD GPU | ✅ | `7900XT+`, `ROCm 10.1+`, `gfx950` (CDNA4), `gfx1200/1201/1250` (RDNA4) | Exllama V2, AWQ Triton GEMM/GEMV, ParoQuant Triton, GGUF Triton, BitsAndBytes 4-bit Triton, QQQ, FP8 Torch, Torch (fused GPTQ GEMV/GEMM on gfx950 and gfx120*/gfx125*) |
 | 🐧 Linux | Huawei Ascend NPU | ✅ | `Ascend 910B`, `torch-npu` / `CANN` | Native Torch kernels for GPTQ, AWQ, ParoQuant, GGUF, QQQ, and EXL3 |
 | 🐧 Linux | Intel XPU | ✅ | `Arc`, `Datacenter Max` | TorchFused, TorchFusedAWQ, FP8 Torch, Torch |
 | 🐧 Linux | Intel/AMD CPU | ✅ | `avx`, `amx` | TorchFused, TorchFusedAWQ, TorchAten int4, TorchInt8, GGUF C++, BitsAndBytes, VPTQ, Torch |
@@ -373,6 +379,14 @@ FP16-only on RDNA4: BF16 measured 0.43x-1.42x of the split path there (median 0.
 falls back to dequantize+matmul (GEMV keeps both dtypes). Set
 `GPTQ_TORCH_ROCM_GEMV=0` / `GPTQ_TORCH_ROCM_GEMM=0` to disable the fused paths. See [`docs/rocm-rdna4.md`](docs/rocm-rdna4.md) for the per-backend RDNA4
 matrix and known limitations.
+
+bitsandbytes 4-bit (NF4/FP4) inference on ROCm routes `M >= 16` through a fused
+Triton GEMM that dequantizes the packed codes inside the matmul, because the
+vendor HIP kernel switches to a much slower path at that row count. Measured on
+gfx1201 (R9700, FP16) it is 1.4x-6.3x faster than `bnb.matmul_4bit`; below
+`M = 16` bitsandbytes' own GEMV is faster and is kept. CUDA/Ada keeps the
+vendor kernels, which are faster there; set `GPTQMODEL_BNB_TRITON=1` to force
+the Triton path for A/B runs.
 
 `Marlin` and JIT CUDA kernels now support NVIDIA `Turing+` (`sm_75+`) GPUs.
 Huawei Ascend NPU support uses native Torch kernels through `torch-npu` / `CANN`.

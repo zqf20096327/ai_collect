@@ -4,8 +4,6 @@
 
 Built by **Nick Mermiges, Esq.**, founder of [PLI Labs](https://proprietarylegal.ai/labs.html) · [proprietarylegal.ai](https://proprietarylegal.ai)
 
-> **Sister build: [Volta sPLIt](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4), ~118 tok/s decode and ~121 tok/s thinking on, single stream, on eight 2018 V100s.** [See below](#sister-build-volta-split-on-8x-v100).
-
 DGX sPLIce (the PLI is Proprietary Legal Intelligence) is our name for this build: DeepSeek V4.1 Flash served across two DGX Sparks, spliced with an x86 box that drafts tokens for them.
 
 DeepSeek-V4.1-Flash-1017 (EXL3, 2.75 bpw) served by vLLM across two NVIDIA DGX Spark / GB10 nodes in tensor parallel. A third,
@@ -81,34 +79,6 @@ either). Issues, measurements on your own hardware and pull requests are welcome
 
 <!-- pli:blurb:end -->
 
-## Sister build: Volta sPLIt on 8x V100
-
-[![decode: ~118 tok/s](https://img.shields.io/badge/decode-~118%20tok%2Fs-2EA043?style=for-the-badge)](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4) [![thinking on: ~121 tok/s](https://img.shields.io/badge/thinking%20on-~121%20tok%2Fs-1F6FEB?style=for-the-badge)](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4)
-
-**[Volta sPLIt](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4)** serves the same DeepSeek-V4.1-Flash-1017 on eight V100-SXM2-32GB cards from 2018: ISTA-DASLab's
-GSQ-RCO GGUF (IQ2_XXS experts, IQ4_NL Engram), every expert resident in GPU memory, split pipeline-parallel 2 x
-tensor-parallel 4 across two NVLink boards, on our port of 1Cat-vLLM #1277. Several Volta sPLIt levers reuse code from our own
-Sparks research lane (plan fusion, router floor, coupled-draft sharding); coupled sampled drafts come from
-[TensorFold #25](https://github.com/Elevatormusic/TensorFold/pull/25). Its long-prompt numbers were taken with the same tools ([dsv41-longctx-bench-tools](https://github.com/ProprietaryLegal/dsv41-longctx-bench-tools)).
-
-| one request at a time | Volta sPLIt (8x V100) | DGX sPLIce (2x DGX Spark) |
-| --- | ---: | ---: |
-| decode, thinking off, A/B harness (T=0) | ~118 tok/s ESTIMATED; ~114 MEASURED before its last kernel change | – |
-| decode, thinking on, A/B harness (T=1) | ~121 tok/s ESTIMATED; ~117 MEASURED | – |
-| decode, thinking high, 124-token legal prompt (`bench2.py`) | 84.6-84.7 tok/s | 49.7-53.1 tok/s |
-| the same at 32K / 150K | 86.8-87.3 / 79.8-80.3 tok/s | 58.7-66.2 / 53.0-54.9 tok/s |
-| first token at 32K / 150K | 22.3-22.5 s / 111.1-111.7 s | 14.5 s / 68.6 s |
-| streams | 1 | up to 4 |
-
-<sub>Volta sPLIt: MEASURED 2026-11-03 on its host, before its last kernel change; DGX sPLIce: MEASURED 2026-10-23, before PP4,
-the 2,300 MHz clock cap and TCFIX, with the same tools and conditions (temperature 1, thinking high, 1,500 tokens, cold prompts). Different quantizations of the same
-model. The Sparks read prompts faster and serve several streams; the V100s decode one stream faster.</sub>
-
-### Head-to-head benchmarks: in progress
-
-A same-day, same-tools comparison of the two builds (decode by text type, long prompts, prefill, and a legal benchmark if
-one runs on both) starts when Volta sPLIt's current test queue finishes. Results will replace this paragraph.
-
 ## Quality
 
 How closely the quantized weights follow the original DeepSeek-V4.1-Flash-1017, measured with sudoingX's `p4_kld.py`
@@ -136,6 +106,25 @@ vocabulary. A same-test run of bertholomus's and MiaAI's weights on our panels i
 [same-test table](docs/measurements.md#quality-kl-divergence-against-the-original-model) says "pending". These numbers
 measure the weights. Speculative decoding does not change them at temperature 0 as far as the engine's identity tests
 show, and we claim nothing beyond those tests.
+
+## Legal agent task: Legora BAR public tax case
+
+[Legora's BAR](https://legora.com/bar) public case ([legora-oss/legora-bar-tax-case](https://github.com/legora-oss/legora-bar-tax-case))
+asks for a full transfer pricing Master File for the Freshworks Group, FY2023, from a 72-file matter folder of about 1.33 M
+tokens, graded on 175 expert-written criteria. One run on this build (2026-11-04, thinking on at effort 50, our open
+agent harness, a Claude Opus 5.5 judge using the rubric's own grading guidance):
+
+| | Passed | Score |
+|-|-|-|
+| All 175 criteria, unweighted | **129 / 175** | **73.7 %** |
+| Importance-weighted (high 3, medium 2, low 1) | 315 / 421 | 74.8 % |
+| High-importance criteria | 60 / 74 | 81.1 % |
+
+The run took 112 turns and 27.7 minutes, with 87,596 output tokens and no tool errors. The one independent public
+table for this case ([Overfitting Dicta](https://overfittingdicta.com/)) has the frontier models at 48.0-71.4 % unweighted
+(Opus 5.5 Xhigh at 125 / 175). It uses a different, unnamed harness and judge, so read that as "in the same range", not as a ranking.
+Per-theme scores, the misses, the comparison table and its caveats, the harness, every verdict, the model's Master File
+and the full transcript are in [docs/legora-bar.md](docs/legora-bar.md) and [`legora-bar/`](legora-bar/).
 
 ## Head-to-head
 
@@ -607,8 +596,9 @@ store token counts and timings, never generated text.
 | `tools/` | `sparkbench.py` (sparkDash protocol), `bench.py` (our cells and a MiaAI-conditions profile), `node_watch.py`, `fake_server.py` and tests |
 | `offload/` | every production component, each with a README: Engram, transport, drafter, async proxy, KV packing, upstream patches; the prefix tier's launcher glue |
 | `bench.py`, `quality.py`, `functest.py`, `verify_hashes.py` | the older single-stream bench, output checks, function tests, model hash checks |
-| `docs/` | [install](docs/install.md), [measurements](docs/measurements.md), [comparison](docs/comparison.md), [architecture](docs/architecture.md), [operations](docs/operations.md), [publication](docs/publication.md) |
+| `docs/` | [install](docs/install.md), [measurements](docs/measurements.md), [comparison](docs/comparison.md), [architecture](docs/architecture.md), [operations](docs/operations.md), [publication](docs/publication.md), [Legora BAR](docs/legora-bar.md) |
 | `runs/` | raw benchmark JSON files, one per run, with their conditions |
+| `legora-bar/` | the Legora BAR public-case harness, grading pack, verdicts, output and transcript ([docs/legora-bar.md](docs/legora-bar.md)) |
 | `.publication/SOURCE.json` | what this tree was exported from and what was removed or rewritten for publication |
 
 ## Tests
@@ -636,7 +626,7 @@ history and their own tests; their code is included here as it runs in productio
 | [dsv41-native-1017-drafter-sm86](https://github.com/ProprietaryLegal/dsv41-native-1017-drafter-sm86), [dsv41-exact-acceptance-ceiling](https://github.com/ProprietaryLegal/dsv41-exact-acceptance-ceiling) | research only, not serving |
 | [dsv41-longctx-bench-tools](https://github.com/ProprietaryLegal/dsv41-longctx-bench-tools), [dsv41-window-harness](https://github.com/ProprietaryLegal/dsv41-window-harness) | earlier measurement tools |
 | [deepseek-v41-1017-dgx-spark](https://github.com/ProprietaryLegal/deepseek-v41-1017-dgx-spark), [dgx-spark-deepseek-v41](https://github.com/ProprietaryLegal/dgx-spark-deepseek-v41) | our forks of the HeNryous image and the sudoingX launcher |
-| [Volta sPLIt](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4) | the sister build: the same model on 8x V100-SXM2-32GB, PP2 x TP4, ~118 tok/s decode |
+| [Volta sPLIt](https://github.com/ProprietaryLegal/Volta-sPLIt-DeepSeek-V4.1-Flash-1017-8xV100-SXM2-PP2xTP4) | a separate build of the same model on 8x V100-SXM2-32GB (PP2 x TP4); its numbers are on its own page |
 
 ## Credits and licence
 

@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/trafficflowhq/ohmail/stargazers"><img src="https://img.shields.io/github/stars/trafficflowhq/ohmail?style=flat&amp;label=%E2%98%85&amp;color=a3461c" alt="GitHub stars" /></a>
   <a href="https://github.com/trafficflowhq/ohmail/releases"><img src="https://img.shields.io/github/downloads/trafficflowhq/ohmail/total?style=flat&amp;color=a3461c" alt="Total downloads across all releases" /></a>
-  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.32-a3461c" alt="Latest release" /></a>
+  <a href="https://github.com/trafficflowhq/ohmail/releases/latest"><img src="https://img.shields.io/badge/download-v0.30.36-a3461c" alt="Latest release" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-a3461c?style=flat" alt="License: AGPL-3.0" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Android-a3461c?style=flat" alt="Platforms: macOS, Windows, Linux and Android" />
 </p>
@@ -208,7 +208,7 @@ ohmail/
 └── _meta                a small bookkeeping folder; some mail apps show it
 ```
 
-There is no folder called "Spam": "Spam" is only a label the app shows. The desktop app, ohmail Cloud and a server you run share no database, so what travels between them is the mailbox: your mail in these folders, and your settings (the senders you've screened in, your rules, notification choices, away reply, signature and tag names) as one small versioned-JSON message in `ohmail/_meta`, in a [published format](docs/organizer-profile.md). Connect the same mailbox from another of them and ohmail finds those settings and asks before using them. Triage piles, Resurface timers, learned patterns, notes and snippets stay where they were made. [How it works →](docs/how-it-works.md)
+There is no folder called "Spam": "Spam" is only a label the app shows. The desktop app, ohmail Cloud and a server you run share no database, so what travels between them is the mailbox: your mail in these folders, and your settings (the senders you've screened in, your rules and which ones you removed, notification choices, away reply, signature and tag names) as one small versioned-JSON message in `ohmail/_meta`, in a [published format](docs/organizer-profile.md). Connect the same mailbox from another of them and ohmail finds those settings and asks before using them. Triage piles, Resurface timers, learned patterns, notes and snippets stay where they were made. [How it works →](docs/how-it-works.md)
 
 ## Privacy
 

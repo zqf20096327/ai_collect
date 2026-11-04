@@ -25,7 +25,7 @@ Free text to 3D and rigged avatars from inside your editor. No key, no account. 
 /plugin install three-ws-3d@three-ws
 ```
 
-**Any MCP client:** add `https://three.ws/api/mcp-studio` (Streamable HTTP, keyless, 16 tools: text to 3D, image to 3D, rigged avatars, talking personas). Then ask your agent for *"a low-poly treasure chest as a GLB"*.
+**Any MCP client:** add `https://three.ws/api/mcp-studio` (Streamable HTTP, keyless, <!-- mcp-count:mcp-studio.tools -->16<!-- /mcp-count --> tools: text to 3D, image to 3D, rigged avatars, talking personas). Then ask your agent for *"a low-poly treasure chest as a GLB"*.
 
 <details>
 <summary>Copy-paste config for each client</summary>
@@ -4704,5 +4704,3 @@ solid threews_avatar
  facet normal 0.07 0.58 0.81
   outer loop
    vertex 18.22 5.83 86.97
-   vertex 19.64 4.31 87.94
-   vertex 19.60 7.11 85.93

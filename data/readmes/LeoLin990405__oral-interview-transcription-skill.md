@@ -1,183 +1,299 @@
-# 口述访谈文字处理工具
+<div align="center">
 
-### Oral Interview Transcription Toolkit — 一套面向口述史 / 播客「去口语化—书面化」的方法论驱动型 AI 流水线
+<img src="docs/assets/banner.svg" alt="Oral History Toolkit banner" width="100%">
 
-[![tests](https://github.com/LeoLin990405/oral-interview-transcription-skill/actions/workflows/test.yml/badge.svg)](https://github.com/LeoLin990405/oral-interview-transcription-skill/actions/workflows/test.yml)
+# Oral History Toolkit
 
----
+**A methodology-grounded pipeline that turns verbatim interview transcripts into faithful, reviewable editorial drafts.**
 
-## 摘要
+Pass 1 de-oralization · machine-readable `term_lock` contract · chunked long-text editing · consistency and fidelity gates · word-level review bundle
 
-口述史研究中，访谈逐字稿的整理是最耗时、且最易引入失真的环节。同一套去口语化问题也出现在播客与通用访谈的逐字稿上。本工具面向**已完成语音转写的逐字稿**（非录音转写本身），提供一条以方法论为约束、以"存真"为最高原则的处理流水线：将口语转写稿整理为忠实、可读的**整理稿**（Pass 1 去口语化），并支持在确认稿基础上进一步形成发表级**书面稿**（Pass 2 书面化）。口述史默认须受访人审阅签字；播客 / 通用访谈改为发布前由主持 / 嘉宾核对。交付时附**逐段字级审阅包**（Markdown 对照、浏览器审阅、Word 修订）。
+[**简体中文**](README.zh-CN.md) · **English**
 
-与"将整段文本一次性交付大模型润色"的朴素做法不同，本工具以**多角色串行流水线 + 机读执行契约 + 范例驱动 + 双重质量门 + 对抗式忠实度审计**为机制，重点解决长文本处理中的两类系统性风险：**漂移**（长文中人名、机构、术语前后不一致）与**越界**（添加受访人未陈述的信息、将不确定改写为确定、为通顺而消解矛盾、以书面化之名抹除方言与个性）。
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT"></a>
+<a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+"></a>
+<a href="https://github.com/LeoLin990405/oral-interview-transcription-skill/actions/workflows/test.yml"><img src="https://github.com/LeoLin990405/oral-interview-transcription-skill/actions/workflows/test.yml/badge.svg" alt="CI: tests"></a>
+<a href="docs/reference.md"><img src="https://img.shields.io/badge/deps-stdlib_only-0EA5E9?style=flat-square" alt="Standard library only"></a>
+<a href="oral-history-master/requirements.txt"><img src="https://img.shields.io/badge/optional-docx_%2F_xlsx-8B5CF6?style=flat-square" alt="Optional docx and xlsx imports"></a>
 
-> **Abstract.** A methodology-grounded pipeline for processing oral-history interview transcripts. It de-oralizes verbatim transcripts into faithful, reviewable editorial drafts (Pass 1) and optionally produces publication-ready prose (Pass 2), while guarding against the two systematic failure modes of LLM-assisted editing on long texts: *drift* (cross-passage inconsistency of names/terms) and *overreach* (fabrication, false certainty, reconciling contradictions, erasing dialect/voice). Fidelity to the recording is the governing principle.
+</div>
 
----
+> [!NOTE]
+> **Current state.** The repository ships two Agent Skills — `oral-history-master` (the Pass 1
+> pipeline) and `oral-history-quality-guard` (the delivery audit) — plus 13 Python scripts, 24
+> `unittest` cases, and a synthetic end-to-end demo. Pass 2 bookification is documented as a
+> separate post-signature workflow. Licensed MIT.
 
-## 一、定位与范围
+## ✨ Features
 
-依据"生／熟"加工光谱与"双本制"（陈墨）对处理阶段的界定：
+- **Fidelity before readability.** The conflict order is fixed: protect > convert > context >
+  remove. Contradictions are retained and flagged; hedges such as "probably" are preserved rather
+  than resolved.
+- **Two separate passes.** Pass 1 de-oralization is this repository; Pass 2 publication editing is a
+  distinct workflow that may start only after the interviewee signs the Pass 1 draft.
+- **Machine-readable contract.** `term_lock.md` stores the term table, interviewee voice profile,
+  and editing switches; the editor re-reads it before every chunk to resist context drift.
+- **Chunked long-text processing.** The chunker splits on boundaries with overlap and progress
+  anchors; cross-chunk term consistency is checked by script rather than by memory.
+- **Dual deterministic gates.** `consistency_checker` flags leftover term variants;
+  `fidelity_checker` flags length anomalies, new numbers or proper nouns, and deleted uncertainty.
+- **Word-level review bundle.** Markdown diff, browser review, and Word tracked changes are
+  generated from the same diff — not from the model's self-reported edit count.
+- **Adversarial audit.** The companion quality-guard skill checks seven violation classes per
+  speaker turn and returns `PASS` or `NEEDS FIX` for every chunk.
+- **Local-only, stdlib-only.** The core pipeline requires Python 3.9+ and no third-party package;
+  `python-docx` and `openpyxl` are optional and only needed for `.docx` / `.xlsx` imports.
+- **Three genres, one scale.** Oral history, podcast, and general-interview modes share the same
+  red lines and differ in default filler strength and delivery reminder.
 
-```
-原始录音（最"生"）→ 逐字转写稿 → Pass 1 整理稿 → Pass 2 书面稿 → 出版访谈录（最"熟"）
-                                  └──────── 本工具处理范围 ────────┘
-```
-
-| | 档案本（原始抄本） | 传播本（编辑抄本） |
-|---|---|---|
-| 定位 | 录音的另存，服务研究与存档 | 公开面世形式 |
-| 对应 | 逐字转写 → **Pass 1（去口语化）** | Pass 1 → **Pass 2（书面化）** |
-
-**本工具不进行语音识别（ASR）**，输入应为已转写的逐字稿。Pass 2 须在受访人审阅签字后另行进行（见 [`workflows/pass2-bookify.md`](oral-history-master/workflows/pass2-bookify.md)）。
-
----
-
-## 二、方法论基础
-
-### 2.1 核心原则：存真优先
-
-录音是史料，整理稿是对录音的"最小干预转写"。整理者的介入应尽可能轻，且全程可回溯至原始录音／逐字稿（可逆性原则）。处理操作的冲突优先级为：**保护 ＞ 转换 ＞ 语境 ＞ 清除**。
-
-### 2.2 文献谱系（P0／P1／P2 分级）
-
-规则系统提炼自下列口述史方法论文献，规则冲突时按级别取舍，同级取更保守方案。文献谱系由本项目方法论合作者 **Kelvin（中国科学技术大学 科技史，[@InsightHist](https://github.com/InsightHist)）** 梳理；完整对照见 [`references/methodology.md`](oral-history-master/references/methodology.md)。
-
-| 级别 | 文献 | 主要约束 |
-|---|---|---|
-| P0 | 张藜《如何进行口述史访谈》 | 五步整理流程；记录稿与整理稿之别；受访人审阅签字 |
-| P0 | 《中华口述历史工作实务规范（试用版）》(2023) | 六阶段流程；逐句对应；改动可追溯；三方签字 |
-| P1 | Ritchie《大家来做口述历史》 | 抄本与录音互补；"错误话头"处理；方言不以变形拼写标记 |
-| P1 | 陈墨《口述历史门径》(2013) | 双本制；唐德刚式改写之戒；三项核心保留 |
-| P1 | 《牛津口述史手册》 | "生／熟"光谱；停顿与犹豫的方法论价值 |
-| P2 | 熊卫民《对于历史，科学家有话说》(2017) | 去口语化而不失口语感；脚注五功能体系 |
-| — | Portelli《Luigi Trastulli 之死》 | 口误、矛盾、不确定本身即史料，不可"修正"抹平 |
-
-### 2.3 处理体系（A／B／C／D 四类）
-
-- **A 保护（绝不动）**：叙事逻辑与因果判断、功能性情感表达、方言与行话、前后矛盾（保留并标注，不充当裁判）、个性化措辞、科技体制术语、不确定表述。
-- **B 清除（口语噪音，静默删除）**：无语义填充词、无修辞重复、采访人倾听性反馈、流程寒暄。
-- **C 转换（保守，照范例尺度）**：口误自纠取最终值并标注、口语连接词、口语语法规范、仅补语法成分（不补信息）、时间线不自动重排。
-- **D 语境（由开关决定）**：采访人话语去留、方言处理方式、补全力度。
-
-### 2.4 范例驱动
-
-冗长的规则清单会令模型在长文本中漂移；本工具以少量高质量的"原始—整理"对照范例（[`references/examples.md`](oral-history-master/references/examples.md)）确定处理尺度，规则提供"为何如此"，范例提供"改至何种程度"。**整理质量的天花板取决于范例质量，而非规则数量。**
-
----
-
-## 三、系统设计
-
-**图 1　处理流水线**（黄：AI 角色；红：强制质量门；其余为确定性脚本环节）
+## 🧠 Architecture
 
 ```mermaid
-flowchart TD
-    A([逐字转写稿]) --> B[transcript_ingest<br/>清洗 · 说话人分离 · 时间戳归一]
-    B --> C[glossary_extractor<br/>专名候选预扫 + 变体聚类]
-    C --> D{{方针师 Surveyor<br/>通读全篇 · 定整理方针 · 建术语表}}
-    D -->|用户确认| E[chunker<br/>分块 + 重叠 + 进度锚]
-    E --> F{{整理者 Editor<br/>逐块去口语化 · 每块重读 term_lock}}
-    F --> G[consistency_checker + fidelity_checker<br/>术语一致 / 忠实度 双门]
-    G -->|error 返工| F
-    G --> H[diff_reporter + filler_scan + package_review + report<br/>整理稿 · 逐段审阅包 · 待核对清单 · 质检总览]
-    H --> I{{质量门 Quality Guard<br/>对照原文逐段审忠实度}}
-    I -->|NEEDS FIX 返工| F
-    I --> J([交付 · 口述史签字 / 播客核对])
-
-    style D fill:#fff3cd,stroke:#d39e00
-    style F fill:#fff3cd,stroke:#d39e00
-    style I fill:#f8d7da,stroke:#dc3545
-    style J fill:#d4edda,stroke:#28a745
+flowchart LR
+    T[Verbatim transcript] --> I[transcript_ingest]
+    I --> G[glossary_extractor]
+    G --> S{{"Surveyor: edit_spec + term_lock"}}
+    S -->|"user confirms"| C[chunker]
+    C --> E{{"Editor: de-oralize each chunk"}}
+    E --> D[consistency_checker + fidelity_checker]
+    D -->|"error: rework chunk"| E
+    D --> R[diff_reporter + package_review]
+    R --> Q{{"Quality Guard: adversarial audit"}}
+    Q -->|"NEEDS FIX"| E
+    Q --> O[Review bundle + signed draft]
 ```
 
-四项关键机制：
+The pipeline is strictly serial: each step consumes the previous step's artifacts, and only the
+surveyor's editorial-plan confirmation is a hard stop for the user. Implementation layout:
+[`oral-history-master/scripts/`](oral-history-master/scripts/) holds the deterministic tools,
+[`references/`](oral-history-master/references/) holds the role definitions and editing standards,
+[`templates/`](oral-history-master/templates/) holds the two contracts, and
+[`workflows/`](oral-history-master/workflows/) holds resume and Pass 2 procedures. The methodology
+behind the A/B/C/D classes is in
+[`references/methodology.md`](oral-history-master/references/methodology.md); the editing scale is
+set by the paired examples in
+[`references/examples.md`](oral-history-master/references/examples.md).
 
-1. **机读执行契约 `term_lock`**：将术语对照表、受访人语气画像、处理开关固化为机读文件，整理者在处理**每一分块前重读**，以抵抗长文上下文压缩导致的漂移。
-2. **分块 + 全局术语锚定**：长访谈分块处理，跨块一致性由脚本校验；`glossary_extractor` 预扫并聚类转写稿中已不一致的专名写法。
-3. **双重质量门**：`consistency_checker`（术语变体残留）与 `fidelity_checker`（字数比异常、新增数字／专名疑似捏造、不确定表述疑似删除）。
-4. **对抗式忠实度审计**：配套技能 `oral-history-quality-guard` 对照原文逐句核查捏造、伪造确定性、矛盾消解、方言抹除等，通过后方可交付。
+## 🚀 Quick start
 
-**真·可追溯**：以逐段字级修订（`对照稿.md` / `审阅稿.html` / `审阅稿.docx`）替代不可靠的"改动数量统计"。删除线与插入来自 diff，不是模型自报。
+**Requirements:** Python 3.9+ (macOS, Linux, or Windows). No package installation for the core
+pipeline. Optional: `python-docx>=1.1.0` and `openpyxl>=3.1.0` only when the transcript is `.docx`
+or `.xlsx`.
 
----
-
-## 四、使用
-
-核心流水线仅依赖 Python 3.9+ 标准库（`.docx/.xlsx` 输入需可选依赖）。完整步骤见 [QUICKSTART.md](QUICKSTART.md)。
-
-- **作为 Claude / Agent Skill**：将 `oral-history-master/` 与 `oral-history-quality-guard/` 置入 skills 目录，由 Agent 编排执行（推荐，可发挥流程与质量门的完整价值）。
-- **手动运行脚本**：见 [`oral-history-master/scripts/README.md`](oral-history-master/scripts/README.md) 与 `run_pipeline.py`（`prep` / `check` 两段编排）。
-
----
-
-## 五、目录结构
-
-```
-oral-interview-transcription-skill/
-├── README.md · QUICKSTART.md · CONTRIBUTING-methodology.md
-├── oral-history-master/              主流程
-│   ├── SKILL.md                      串行门控流水线编排与执行纪律
-│   ├── references/                   methodology / surveyor / editor / examples / shared-standards
-│   ├── templates/                    edit_spec（整理方针）/ term_lock（执行契约）
-│   ├── scripts/                      确定性脚本 + 单元测试 tests/
-│   ├── workflows/                    resume-execute（续跑）/ pass2-bookify（书面化）
-│   └── projects/demo/                可复核的合成样例
-└── oral-history-quality-guard/       配套忠实度审计门
+```sh
+git clone https://github.com/LeoLin990405/oral-interview-transcription-skill.git
+cd oral-interview-transcription-skill
+python3 --version          # 3.9 or newer
 ```
 
----
+Run the unit tests and the deterministic half of the pipeline against the bundled synthetic demo:
 
-## 六、局限与有效性边界
+```sh
+cd oral-history-master
+python3 -m unittest discover tests -v
 
-本工具仍处于早期阶段，使用者须知悉以下边界：
-
-1. **机械检测为启发式信号，非定论。** 字数比、新增数字／专名、不确定表述删除等检查用于"标记可疑、提交人工复核"，存在误报与漏报；最终忠实度判断须由人（或审计角色对照原文）作出。
-2. **整理质量受范例约束。** 当前仓库内置范例为**合成示例**；在真实材料上的逐段整理质量，取决于是否以真实的"原始—整理"对照范例校准（见 [CONTRIBUTING-methodology.md](CONTRIBUTING-methodology.md)）。
-3. **有效性验证有限。** 流程的严谨性与可操作性已在真实访谈稿上获得初步验证；对最疑难文本段落的输出质量、以及十万字级规模的长程一致性，尚待系统评测。
-4. **不替代人工审定。** 口述史整理稿须经受访人审阅签字方可使用；播客稿须主持 / 嘉宾核专名与事实。本工具是整理者的辅助，而非替代。
-
----
-
-## 七、研究伦理
-
-1. 不捏造：受访人未陈述的信息不得添加，补全仅限语法成分。
-2. 不伪造确定性：不将"大概／记不清"改为肯定表述。
-3. 不消解矛盾：前后矛盾予以保留并标注。
-4. 不抹除个性：方言、行话、特有措辞属保护项。
-5. 授权与署名：口述史整理稿须经受访人审阅签字，署名遵循"某某口述，某某访谈整理"；播客 / 通用访谈按节目惯例署名，发布前核对专名。
-6. 录音留存：无录音／原始材料对照的转写稿，关键处保留待核对标记。
-7. 本地与保密：流水线本地运行、不外传数据；涉密内容由使用者把关。
-
----
-
-## 八、参考文献
-
-1. 张藜.《如何进行口述史访谈》.
-2. 中国口述历史专业委员会.《中华口述历史工作实务规范（试用版）》. 2023.
-3. Ritchie, Donald A. *Doing Oral History*（中译《大家来做口述历史》，第 3 版）.
-4. 陈墨.《口述历史门径：实务手册》. 2013.
-5. 李向平, 魏扬波.《口述史研究方法》. 2010.
-6. *The Oxford Handbook of Oral History*（中译《牛津口述史手册》）.
-7. 熊卫民.《对于历史，科学家有话说》. 2017.
-8. Portelli, Alessandro. "The Death of Luigi Trastulli, and Other Stories."
-
----
-
-## 九、引用方式
-
-如在研究或工作中使用本工具，建议引用：
-
+cd scripts
+python3 run_pipeline.py check demo
+cat ../projects/demo/review/质检总览.md
 ```
+
+The demo is fictional. It already contains ingested sources, three edited chunks, and a review
+bundle, so no model or API key is needed to inspect the outputs:
+
+| Look at | Contents |
+|---|---|
+| [`projects/demo/sources/raw.txt`](oral-history-master/projects/demo/sources/raw.txt) | Input: spoken transcript with fillers, slips, dialect, and a contradiction |
+| [`projects/demo/output/整理稿.md`](oral-history-master/projects/demo/output/整理稿.md) | Output: de-oralized Pass 1 draft |
+| [`projects/demo/review/对照稿.md`](oral-history-master/projects/demo/review/对照稿.md) | Paragraph-level word diff plus full original and edited text |
+| [`projects/demo/review/审阅稿.html`](oral-history-master/projects/demo/review/审阅稿.html) | Browser review with red deletions and green insertions |
+| [`projects/demo/review/待核对清单.md`](oral-history-master/projects/demo/review/待核对清单.md) | Every `⚠` item (names and proper nouns) |
+
+To process your own transcript manually:
+
+```sh
+cd oral-history-master/scripts
+python3 project_manager.py init my_interview
+python3 project_manager.py import my_interview ~/transcripts/interview.txt --move
+python3 transcript_ingest.py my_interview
+python3 glossary_extractor.py my_interview
+
+# Surveyor: read sources/ingested.md, fill edit_spec.md and term_lock.md, then confirm the plan.
+python3 chunker.py my_interview
+
+# Editor: edit work/chunks/chunk_NNN.md → work/edited/chunk_NNN.edited.md, one chunk at a time.
+python3 consistency_checker.py my_interview
+python3 fidelity_checker.py my_interview
+python3 diff_reporter.py my_interview
+python3 package_review.py my_interview
+```
+
+> [!TIP]
+> Rules explain *why* to change a passage; the paired before/after examples set *how far* to go.
+> Calibrate the editor against [`references/examples.md`](oral-history-master/references/examples.md)
+> first — the repository states that example quality, not rule count, bounds output quality.
+
+## 🧩 Using it as an agent skill
+
+Both directories are Agent Skills with `SKILL.md` frontmatter. Copy them into the skills directory
+of a compatible agent (for example `~/.claude/skills/`) and let the agent orchestrate the pipeline:
+
+```text
+oral-history-master/
+oral-history-quality-guard/
+```
+
+Then hand over a transcript and ask, for example, "use oral-history-master on this transcript" or
+"用 oral-history-master 整理这篇转写稿".
+
+| Mode | What runs | Best for |
+|---|---|---|
+| Agent skill (recommended) | The agent performs surveyor and editor judgments, calls the scripts between steps, and runs the QA gate at Step 7 | Full pipeline with role discipline and audit |
+| Manual scripts | You run the deterministic scripts and make every editorial decision yourself | Full control, or inspecting each artifact |
+| Deterministic only | `run_pipeline.py prep` / `check` and `make smoke` | Reproducing the demo or debugging the tooling |
+
+The agent stops once, at the editorial-plan confirmation: genre, intended use, fidelity level,
+switches, term table, fidelity red lines, and scale estimate are presented for approval. After that
+the steps advance automatically. Delivery requires the quality-guard audit — the responsible
+statement is that the draft was checked turn by turn for fabrication, false certainty, reconciled
+contradictions, and erased dialect.
+
+## 🗂️ Pipeline & scripts
+
+The scripts only perform deterministic mechanical work; the de-oralization judgment stays with the
+agent role. The full reference is in
+[`oral-history-master/scripts/README.md`](oral-history-master/scripts/README.md) and
+[`docs/reference.md`](docs/reference.md).
+
+| Script | Role |
+|---|---|
+| `project_manager.py` | `init` / `import` / `validate` / `status` for one interview project |
+| `transcript_ingest.py` | Clean, separate speakers, normalize timestamps; never changes wording |
+| `glossary_extractor.py` | Pre-scan proper nouns and cluster variants already present in the transcript |
+| `chunker.py` | Split into chunks on boundaries, with overlap and progress anchors |
+| `consistency_checker.py` | Cross-chunk term, label, and marker consistency |
+| `fidelity_checker.py` | Length-ratio error gate; new numbers or proper nouns; deleted uncertainty |
+| `diff_reporter.py` | Word-level review bundle: Markdown, HTML, and Word tracked changes |
+| `filler_scan.py` | Flag leftover fillers and repetitions without rewriting |
+| `package_review.py` | Assemble `output/整理稿.md` and the `⚠` checklist |
+| `run_pipeline.py` | Orchestrate `prep` and `check` |
+| `report.py` | One-page QA dashboard |
+
+The two contracts are filled by the surveyor and re-read by the editor: `edit_spec.md`
+(human-readable plan, sections I–VIII) and `term_lock.md` (voice profile, switches, canonical term
+table, fidelity red lines). Marker conventions — `〔…〕` for meaning-level changes, `⚠` for items
+needing verification, `【问】` for substantive interviewer questions — are defined once in
+[`shared-standards.md`](oral-history-master/references/shared-standards.md).
+
+## 📦 Review bundle
+
+| Artifact | Contents |
+|---|---|
+| `output/整理稿.md` | Clean reading copy: `〔…〕` notes stripped, `⚠` kept, genre-specific delivery reminder |
+| `review/对照稿.md` | Paragraph-level word diff with full original and edited text |
+| `review/审阅稿.html` | Browser review with Word-style red deletions and green insertions, plus original/edited toggles |
+| `review/审阅稿.docx` | Word / WPS tracked changes that can be accepted or rejected |
+| `review/待核对清单.md` | Every `⚠` with chunk number and context |
+| `review/一致性报告.md` | Leftover term variants, speaker labels, marker counts |
+| `review/忠实度报告.md` | Per-chunk length ratio and suspected invention or false-certainty signals |
+| `review/语气词残留.md` | Suspected leftover fillers and repetitions (advisory, not a hard gate) |
+| `review/质检总览.md` | One-page dashboard combining progress, consistency, fidelity, `⚠`, and delivery verdict |
+
+The reports are heuristics: they flag material for human review and do not replace it. The HTML and
+Word files contain real tracked changes generated from the diff, so a reviewer can accept or reject
+each edit.
+
+## 📁 Repository layout
+
+| Path | Contents |
+|---|---|
+| `oral-history-master/` | Pass 1 skill: `SKILL.md`, roles, scripts, templates, workflows, demo |
+| `oral-history-master/scripts/` | 13 Python modules: 11 CLI tools plus `config.py` and `review_diff.py` |
+| `oral-history-master/references/` | Methodology, surveyor, editor, examples, shared standards |
+| `oral-history-master/templates/` | `edit_spec_reference.md`, `term_lock_reference.md` |
+| `oral-history-master/workflows/` | `resume-execute.md` (long interviews), `pass2-bookify.md` (Pass 2) |
+| `oral-history-master/projects/demo/` | Synthetic end-to-end sample with outputs and review reports |
+| `oral-history-quality-guard/` | Seven-dimension adversarial fidelity audit |
+| `docs/reference.md` | Pipeline, contract, A/B/C/D, literature, QA, and troubleshooting reference |
+| `QUICKSTART.md`, `CONTRIBUTING-methodology.md`, `FEEDBACK.md` | Onboarding, methodology contribution guide, feedback channels |
+| `.github/workflows/test.yml` | CI: `py_compile`, unittest, demo smoke on Python 3.9 and 3.12 |
+
+## 🛠️ Development
+
+```sh
+make test     # cd oral-history-master && python3 -m unittest discover tests -v
+make lint     # py_compile over scripts and tests
+make smoke    # run the deterministic check on projects/demo and assert the review bundle
+```
+
+The suite has 24 `unittest` cases covering `term_lock` parsing, number normalization and chunk
+boundaries, speaker detection, fidelity heuristics, word-level diffing, filler scanning, and
+genre-specific delivery banners. GitHub Actions runs the same checks on Python 3.9 and 3.12, then
+asserts that the demo HTML contains `<del>` / `<ins>` and the Word document contains `<w:del` /
+`<w:ins`. Changes to scripts should keep `make test` and `make smoke` green.
+
+## 🧭 Scope, limits & open work
+
+The project provides a Pass 1 editing pipeline and deterministic checks. It does not claim
+publication quality or measured accuracy. Known boundaries:
+
+| Boundary | Behavior |
+|---|---|
+| Mechanical checks are heuristics | Length ratio, new numbers or proper nouns, and deleted uncertainty flag suspicion; false positives and false negatives exist, and a human or the audit role makes the final fidelity call |
+| Example-bound quality | Committed examples are synthetic; quality on real material depends on calibrating with real before/after pairs |
+| Limited validation | The repository states that the hardest passages and 100k-character long-range consistency still need systematic evaluation |
+| No ASR | Input must already be a transcript; the toolkit never processes audio |
+| Pass 1 only | Publication-level bookification is Pass 2, run separately after signature |
+| Not a replacement for review | Oral-history drafts require interviewee review and signature; podcast drafts require host or guest fact-checking |
+
+Open work named in the repository:
+
+- [ ] Validate the pipeline on held-out published interviews, comparing output with the scholar's
+      published version (the procedure in
+      [`CONTRIBUTING-methodology.md`](CONTRIBUTING-methodology.md) Phase 4)
+- [ ] Replace the synthetic examples with real, de-identified before/after pairs
+- [ ] Systematically evaluate the hardest passages and long-range consistency at 100k+ characters
+
+## 🤝 Contributing
+
+Methodology contributions and engineering fixes are both welcome. Before opening a pull request:
+
+1. run `make test`, `make lint`, and `make smoke`;
+2. keep one fact per rule, and add paired before/after examples rather than more prose;
+3. follow the three output targets in
+   [`CONTRIBUTING-methodology.md`](CONTRIBUTING-methodology.md): rules to `methodology.md`, examples
+   to `examples.md`, bookification rules to `pass2-bookify.md`.
+
+> [!WARNING]
+> This is a public repository. Never paste real interview content into an issue or pull request —
+> use fabricated or de-identified excerpts, or describe the symptom only. See
+> [`FEEDBACK.md`](FEEDBACK.md) for the issue templates and what to include.
+
+If the toolkit is useful to you, consider leaving a ⭐ — it helps others find the project.
+
+## 📄 License & attribution
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 Zhongyue Lin. No `NOTICE` file or
+third-party license text is included in this repository.
+
+The toolkit is a collaboration: the methodology and literature genealogy were compiled by oral
+history researcher [**Kelvin (USTC, history of science) · @InsightHist**](https://github.com/InsightHist),
+with field feedback; the multi-role pipeline, consistency and fidelity mechanisms, and engineering
+were built by [**LeoLin990405**](https://github.com/LeoLin990405).
+
+If you use the toolkit in research or production, cite it as:
+
+```text
 口述访谈文字处理工具（oral-interview-transcription-skill）.
-方法论：Kelvin（@InsightHist，中国科学技术大学 科技史）；工程实现：LeoLin990405. 2026.
+Methodology: Kelvin (@InsightHist, USTC history of science); engineering: LeoLin990405. 2026.
 https://github.com/LeoLin990405/oral-interview-transcription-skill
 ```
 
----
+## ⭐ Star history
 
-## 作者与致谢
+<div align="center">
 
-本工具系**共创**成果：方法论梳理与文献谱系由口述史研究者 [**Kelvin（中国科学技术大学 科技史）· @InsightHist**](https://github.com/InsightHist) 完成并提供实测反馈；多角色流水线、一致性与忠实度机制、工程实现由 [**LeoLin990405**](https://github.com/LeoLin990405) 完成。欢迎以自身语料持续改进（见 [CONTRIBUTING-methodology.md](CONTRIBUTING-methodology.md)）；反馈见 [FEEDBACK.md](FEEDBACK.md)。
+<a href="https://star-history.com/#LeoLin990405/oral-interview-transcription-skill&Date">
+  <img src="https://api.star-history.com/svg?repos=LeoLin990405/oral-interview-transcription-skill&type=Date" alt="Star history" width="640">
+</a>
 
-> 公开仓库——请勿在 issue 中粘贴任何真实访谈内容，举例请用脱敏或合成片段。
+</div>

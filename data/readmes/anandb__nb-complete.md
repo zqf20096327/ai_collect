@@ -8,8 +8,6 @@
 
 > **An AI pair programmer that lives inside your NetBeans editor — ask, explain, generate, and refactor code without leaving the IDE.**
 
-> **Versioning:** every `0.x` build is a test build. Only `1.x.x` versions are released; `0.x` numbers are deliberately below the published `1.x` line so a test build is never mistaken for a release. Install a `0.x` build manually — NetBeans refuses it as a downgrade of an installed `1.x`.
-
 BeanBot is a NetBeans IDE plugin designed to provide integrated AI capabilities through the Agent Client Protocol (ACP). It offers a structured chat interface for technical assistance, including code generation, project analysis, and automated task execution.
 
 | | | |
@@ -20,7 +18,7 @@ BeanBot is a NetBeans IDE plugin designed to provide integrated AI capabilities 
 
 ## Getting Started
 
-Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cursor, Copilot, Claude, Hermes, Gemini, Devin, Kilo Code, Cline** — pick one during onboarding or later from the help menu.
+Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cursor, Copilot, Claude, Hermes, Gemini, Devin, Kilo Code, Cline, Jcode** — pick one during onboarding or later from the help menu.
 
 **Token and cost statistics** are captured from the ACP traffic itself, not from an external process: the usage updates and per-turn token figures a harness already sends are recorded into an embedded H2 database under the NetBeans user directory (`beanbot/usage-stats.mv.db`), so they survive restarts and are readable without a harness running. The currency button in the toolbar opens the panel, which breaks the figures down by model and by agent; they are approximate for harnesses that report incomplete usage.
 
@@ -135,7 +133,7 @@ For a guided walkthrough mapped to the plugin's execution flow, read files in th
 3. [`src/main/resources/github/anandb/netbeans/ui/layer.xml`](src/main/resources/github/anandb/netbeans/ui/layer.xml) — NetBeans registration (window menu/shortcuts, editor popup, Git toolbar); the Options panel is registered by annotation in `ui/ACPOptionsPanelController.java`
 
 ### Phase 2: Server Process
-4. [`manager/ProcessManager.java`](src/main/java/github/anandb/netbeans/manager/ProcessManager.java) — Owns the ACP server subprocess and acts as the central request-dispatch hub; spawn itself is in `manager/ServerProcessLifecycle.startServer()`, launching the harness binary the user selected (14 supported)
+4. [`manager/ProcessManager.java`](src/main/java/github/anandb/netbeans/manager/ProcessManager.java) — Owns the ACP server subprocess and acts as the central request-dispatch hub; spawn itself is in `manager/ServerProcessLifecycle.startServer()`, launching the harness binary the user selected (15 supported)
 5. [`support/BinaryResolver.java`](src/main/java/github/anandb/netbeans/support/BinaryResolver.java) — Locates the binary on PATH
 6. [`manager/AcpProtocolClient.java`](src/main/java/github/anandb/netbeans/manager/AcpProtocolClient.java) — JSON-RPC over stdin/stdout, SSE read loop, pending request tracking
 
@@ -176,12 +174,11 @@ The plugin reads the following system properties and environment variables:
 | `java.io.tmpdir` | System | Temp directory for pasted images (`ImagePasteTransferHandler`) |
 | `os.name` | System | Detect Windows for binary resolution and platform-specific launching (`BinaryResolver`, `ProcessTerminator`, `ACPOptionsPanel`) |
 | `beanbot.roundedPanels` | System (`true`) | Toggle rounded panel corners (`RoundedPanel`) |
-| `beanbot.fs.write.enabled` | System (`true`) | ACP-only: gates the `fs/writeTextFile` / `fs/write_text_file` ACP tools (`FsWriteSettings`). MCP write tools (`write_to_file`, `replace_lines`, `insert_in_file`) are always confined to open projects and unaffected by this property. Set `-Dbeanbot.fs.write.enabled=false` to stop advertising the ACP write capability and reject every ACP write |
 | `beanbot.color.*` | System (varies) | Override any UI color. Read by `model/ColorRegistry` (resolution order: system property → `UIManager` key → built-in light/dark fallback), not by `ColorTheme`, which only loads `colors.json` |
 | `beanbot.update.url` | System | Override the update metadata URL fetched by the update checker (`support/AppLinks`); defaults to `https://repo1.maven.org/maven2/io/github/anandb/beanbot/maven-metadata.xml` — lets a fork or self-hosted deployment serve its own `maven-metadata.xml` |
 | `beanbot.nbm.base` | System | Base for the "Download Now" link, default `https://repo1.maven.org/maven2/io/github/anandb/beanbot`; the checker appends `/<version>/beanbot-<version>.nbm`, so it does not guess release-asset URLs |
 | `beanbot.changelog.url` | System | Target of the "View Release Notes" link, default `https://github.com/anandb/nb-complete/blob/main/CHANGELOG.md` — points at the changelog so the link works before a release is tagged |
-| `beanbot.user.guide.url` | System | Override the user-guide URL opened from the help menu (`support/AppLinks`); defaults to `https://anandb.github.io/beanbot_user_guide.html` |
+| `beanbot.user.guide.url` | System | Override the user-guide URL opened from the help menu when the bundled guide cannot be served (`support/AppLinks`); unset means no remote fallback |
 | `nb.dark.theme` | UIManager | Detect dark theme for icon resolution (`IconResourceManager`) |
 | `ACP_WIRE_LOG` | Env | Path template for the ACP wire-protocol log (`WireLogger`). The file written is `<template-without-extension>_<YYYYMMDD>-<harness>.log` in the template's directory, so successive days and harnesses do not share one file. Every entry is one line: `<local time, no time zone> <json message>` |
 | `PATH` | Env | Search path for the harness binary; every catalogued harness binary name is probed (`BinaryResolver`) |
@@ -192,36 +189,9 @@ The color properties are declared in [`colors.json`](src/main/resources/github/a
 
 ## Tasks File Format
 
-BeanBot's **Tasks** repositories are stored as plain [todo.txt](https://github.com/todotxt/todo.txt) files, so they are readable and editable with any standard todo.txt tool. Each task is one line; the format builds on the todo.txt spec and adds a small set of BeanBot-specific extensions.
+BeanBot's **Tasks** repositories are plain [todo.txt](https://github.com/todotxt/todo.txt) files — one task per line, readable and editable with any standard todo.txt tool. BeanBot adds `id:`, `estimate:`, `consumed:` and `upd:` tokens to the standard `@tag` / `+project` / `due:` syntax. The full grammar, priority letters, round-trip guarantees and external-tool compatibility are documented in the bundled user guide — open the help icon in the toolbar and choose **Open User Guide**, then *Todo.txt Format*.
 
-### Line layout
-
-```
-x (B) 2026-08-02 2026-08-01 Fix the bug @urgent @bug +myproject due:2026-09-01 id:t-1a2b3c4d estimate:5 consumed:2 upd:2026-08-02T10:00:00Z
-```
-
-| Position / token | Meaning |
-| --- | --- |
-| `x ` (optional) | Marks the task **closed**. Its absence means **open** (open is the implicit default — there is no `status:` token). |
-| `(A)`–`(Z)` | Priority letter, immediately after `x ` or as the first token when open. Native todo.txt syntax; only one letter. |
-| `YYYY-MM-DD` | Up to two positional dates **before the summary**: a completion date (only when `x ` is present) followed by the creation date. Date-only. |
-| *summary* | Free text, preserved verbatim on save. |
-| `@word` | A **tag** (e.g. `@urgent`). |
-| `+word` | A **project** (e.g. `+myproject`). |
-| `due:YYYY-MM-DD` | Due date (standard todo.txt `due:` extension). |
-| `id:t-XXXXXXXX` | Stable task id. If a line has no `id:`, BeanBot assigns one in NetBeans format (`t-` + 8 hex chars), unique within the file. |
-| `estimate:<int>` | Estimated effort in arbitrary user-inferred units. |
-| `consumed:<int>` | Consumed effort in the same units. |
-| `upd:<iso>` | Last-modified timestamp (full ISO-8601), preserving edit time across saves. |
-
-### Notes & conventions
-
-- Tags and projects are stored **only** as `@`/`+` tokens — there is no redundant `tags:`/`projects:` mirror, so a load→save round-trip never duplicates them.
-- `estimate`/`consumed` are integers representing **arbitrary, user-defined units** (BeanBot does not assign them meaning); they are for personal tracking only.
-- Unknown tokens are tolerated on read: a token that is neither `@`/`+` nor a recognised `key:value` is absorbed back into the free-text summary, so files edited by other todo.txt tools remain readable.
-- Lines with no parseable content (blank lines) are skipped. A line without an `id:` token is still parsed — a fresh id is generated for it.
-
-### Troubleshooting
+## Troubleshooting
 
 | Problem | Solution |
 | --- | --- |
@@ -237,7 +207,7 @@ x (B) 2026-08-02 2026-08-01 Fix the bug @urgent @bug +myproject due:2026-09-01 i
 | LLM modified files unexpectedly | Keep your project under version control so you can revert changes you don't want. You can also set OpenCode to 'ask' before editing, and review changes with the **Allow Once/Always Allow/Reject** permission prompts. |
 | Panel goes blank during docking or resizing | Close and reopen the docked panel from `Window > Assistant`. NetBeans may not repaint correctly after a drag-dock or undock operation. |
 
-### Known Issues/Limitations
+## Known Issues/Limitations
 
 - Opencode sometimes doesn't respond when using nested agents.
 - The plugin supports only one active session at a time, switching sessions or reloading the conversation while awaiting a response will cancel the current request.

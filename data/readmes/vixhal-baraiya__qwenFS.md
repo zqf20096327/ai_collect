@@ -20,27 +20,37 @@ assistant turn, and Qwen answers.
 | Tool | What it does | The circuit's response |
 |---|---|---|
 | `write_file(name, text)` | save a file (replaces it) | `saved` and the path |
+| `append_file(name, text)` | add text to a file, on a new line | `saved` and the path |
 | `read_file(name)` | read a file, token for token | the stored text, or `not found` |
 | `list_files()` | every file | one path per line, or `empty` |
 | `link_files(name, target)` | link a file to another | `linked` and both paths |
 | `unlink_files(name, target)` | remove that link | `removed` and both paths |
 | `list_links(file)` | files a file links to | one path per line, or `empty` |
 | `list_backlinks(path)` | files that link to a file | one path per line, or `empty` |
+| `search_files(query)` | files whose text has a word | one path per line, or `empty` |
 
 Paths make folders (`people/alice.txt`, `projects/cafe.txt`); links and backlinks make a graph.
 
 **Where the filesystem lives.** Every part of the model has a job:
 
 - **Attention** holds the files. A write's text stays in the copy layer's attention log, keyed by
-  (file index, version, offset); a read is an exact copy, token by token. A second attention head
-  looks paths up: a path finds its file's index, or falls back to "not found".
-- **Gated DeltaNet state** holds the tables and registers: the version table, the path table
-  (for listings), the file count, the call's state, and the links. A link is a row of state per
-  (source, target) pair: `link_files` writes it, `unlink_files` empties it, so links never
-  duplicate. Rows store their bit in the target's column and in the source's, and a multi-hot
-  query over a file's rows reads all its links, or all its backlinks, at once.
+  (file index, version, offset); a read is an exact copy, token by token. Each write or append
+  is a segment, a version of its own: a file is its segments since its last write, and a read
+  copies them in order, printing the next segment's read ack at the end of each one. The ack
+  restarts the offset count, so a file can be far longer than one write. A second attention
+  layer looks paths up: a path finds its file's index, or falls back to "not found". A third,
+  the seek layer, holds a row per word and per link. Every word of a written text is a row,
+  keyed by (file index, base, the word's tokens); a search checks one file per response token
+  against that file's current base, so a word only an old version had is not found. A link or
+  unlink that changes a pair adds a row, +1 or -1; one that changes nothing prints a no-op
+  variant of "linked" / "removed" and adds none, so a pair's rows alternate and it is linked
+  when they average above 0. A link listing checks one file per token the same way.
+- **Gated DeltaNet state** holds the tables and registers: the version, base and path tables
+  (128 rows each, one per file, which is what sets the file limit), the file count and the
+  call's state.
 - **MLPs** parse the tool calls and pick every forced token: acks, the response frame, echoed
-  paths, the next link to list.
+  paths, each file's marker or skip in a search or link listing. A file a listing passes over
+  gets a skip token, which Qwen reads as a newline.
 - **Offsets** come from a decaying DeltaNet counter, read in the head norm's eps regime and
   decoded exactly to 600 tokens.
 
@@ -49,16 +59,17 @@ Registers pad their state rows to 2, 8, 32 or 128 set rails, so reads come back 
 or ±1. A key that is off sits far below zero, since a DeltaNet key's l2-norm would rescale any
 small value to full strength. `qfs/circuit.py` describes each layer.
 
-**The merge.** `qfs.merge` widens Qwen's residual from 2048 to 3072, zero-pads its matrices,
-scales its norm gains by √(2048/3072), puts the FS layers in front of Qwen's and appends the FS
+**The merge.** `qfs.merge` widens Qwen's residual from 2048 to 4096, zero-pads its matrices,
+scales its norm gains by √(2048/4096), puts the FS layers in front of Qwen's and appends the FS
 tokens to the vocabulary. The FS layers clear their dims before Qwen's layers run, except a small
 output code that the tied lm_head reads at the end, so a forced token wins and Qwen's logits are
 untouched everywhere else.
 
-**Disk.** A filesystem saves to a compact image: the paths, the latest text of each file as
-3-byte token ids, and the links (about 3.3–3.8 bytes per stored token). A fresh session mounts
-the image (the tables and lookup rows) and pages a file's text in only when the model emits that
-file's read ack. Paging rebuilds the copy rows from the token ids with the model's own
+**Disk.** A filesystem saves to a compact image: the paths, each file's current segments as
+3-byte token ids (with their lengths), and the links (about 3.3–3.8 bytes per stored token). A
+fresh session mounts the image (the tables, the lookup rows and the search rows, one per
+distinct word of each file) and pages a segment's text in only when the model emits that
+segment's read ack. Paging rebuilds the copy rows from the token ids with the model's own
 projections. See `qfs/disk.py`.
 
 ## What runs where
@@ -78,33 +89,46 @@ projections. See `qfs/disk.py`.
 `docs/fs-agent.md` is Qwen's system prompt by default: a reference for the tools, their
 responses and conventions, with worked examples. Every example response in it was printed by the
 merged model (`qfs/gen_doc.py`). In a scenario eval (save and recall, updating a list,
-organizing, links and backlinks, unlinking one file, a missing file; 3 seeds, 48 turns):
+organizing, searching, links and backlinks, unlinking one file, a missing file; 3 seeds, 57
+turns):
 
 | | Turns passed | Scenarios passed | Unneeded calls |
 |---|---|---|---|
-| No doc | 46/48 | 17/18 | 6 |
-| With the doc | 48/48 | 18/18 | 0 |
+| No doc | 49/57 | 17/21 | 40 |
+| With the doc | 57/57 | 21/21 | 0 |
 
-The sample is small; the drop in unneeded calls is the clearer effect.
+Without the doc, the misses are Qwen's calls, not the filesystem's answers: it saved Bob into
+`people/alice.txt` (a search for Tokyo then rightly found that file), or repeated a call until
+the turn ran out of tokens. The sample is small.
 
 ## Results
 
-On Qwen3.5-2B, on Apple silicon (MPS, bf16):
+On Qwen3.5-2B, on Apple silicon (MPS, bf16), every forced token is checked against the
+circuit's reference, in one prefill and token by token from each response's start:
 
-- **Scripted sessions** of writes, overwrites, deletes, missing names, links, repeated links,
-  unlinks and listings (16 files): every forced token exact, 74/74 calls per session.
-- **A dense graph**: one file linked to and from all 31 others, a duplicate and a self-link, then
-  unlinks at the start, middle and end: exact.
-- **From disk**, in a fresh session with an empty context: exact.
-- **Merged into Qwen3.5-2B**, in context and from disk: exact.
-- **Qwen's text**: the top-1 prediction is unchanged at all 139 positions checked; KL about 2e-3
-  (from rounding the rescaled norm gains to bf16).
+- **Scripted sessions** (10 files: writes, rewrites, empty files, appends and long files of up
+  to 8 segments, links with repeats and no-ops, unlinks, listings, reads, searches): 6308/6308
+  and 6372/6372 forced tokens, 70/70 responses each (two seeds).
+- **All 128 files**: a listing of every file, reads, links at the last index and a self-link,
+  link listings and searches across all of them, a rewrite and an append: 5355/5355.
+- **From disk**, in a fresh session with an empty context, appending to a stored file and
+  reading it across its stored and new segments: 5989/5989, 47/47; saving over the mounted
+  image twice leaves it unchanged.
+- **Merged into Qwen3.5-2B**: exact on a 9,484-token session and a 6-file session with
+  appends, links and searches (prefill and token by token), and on the 128-file session in one
+  prefill.
+- **Qwen's text**: the top-1 prediction is unchanged at all 139 positions checked; KL about
+  2.5e-3 (from rounding the rescaled norm gains to bf16).
 
 ## Limits
 
-- 32 files, paths of up to 8 tokens, about 590 tokens per write, 63 versions per file; a text
-  cannot contain `</`.
-- No search inside files and no partial edits: changing a file means writing it again.
+- 128 files, paths of up to 8 tokens, about 590 tokens per write or append, 63 writes and
+  appends per file (so a file can hold about 37,000 tokens); a text cannot contain `</`.
+- A search or a link listing prints a token per file (a skip for each that does not match), so
+  with many files its response is long.
+- Search finds one whole word, exactly and case-sensitively (`Paris`, not `paris`), of up to 3
+  tokens as Qwen writes the word alone; longer words are not found.
+- No partial edits: changing a file means writing it again.
 - Qwen's judgment is the weak part, not the filesystem: it sometimes answers from the
   conversation instead of reading a file, or makes calls it wasn't asked for.
 - About 20 tokens/s on MPS (PyTorch fallback kernels for Gated DeltaNet).
@@ -126,8 +150,10 @@ just chat
 chat app: each tool call shows as one line with the circuit's response under it, and the panel
 on the right is the filesystem as the model holds it, decoded from its DeltaNet state after
 every response: the files and folders, the links, the FS layers lighting up as they act, and
-the disk. `/save` stores the filesystem (in `fs/` by default) and `/mount` starts a new chat on
-a stored one, whose files page in when Qwen reads them; `/help` lists the rest.
+the disk. The filesystem persists in `fs/`: the app starts on it, and saves to it after every
+turn that changes it, so your files are there in the next chat. A stored file pages in only when
+Qwen reads it. `/new` starts a new chat on your files, `/format` erases them, `--disk DIR` keeps
+them elsewhere and `--no-disk` keeps them in memory only; `/help` lists the rest.
 
 `just ask "Save notes/todo.txt: call the dentist" "What's on my todo list?"` sends messages
 without the app. `just` lists every recipe: `test` (the circuit alone, no Qwen needed),

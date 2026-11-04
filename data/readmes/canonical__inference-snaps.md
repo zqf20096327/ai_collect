@@ -77,3 +77,4 @@ We welcome pull requests!
 Please see [contribution guide](https://documentation.ubuntu.com/inference-snaps/contributing/) for tooling, build instructions, and model submission guidelines.
 
 Join the discussion in our [GitHub Discussions](https://github.com/canonical/inference-snaps/discussions), or [report issues](https://github.com/canonical/inference-snaps/issues/new/choose).
+

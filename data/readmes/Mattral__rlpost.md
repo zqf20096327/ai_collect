@@ -30,7 +30,8 @@ There is no coverage number in this README. A green coverage run has not been re
 | Path | What it is |
 | --- | --- |
 | `src/rlpost/config.py` | Pydantic configs. `TrainingConfig.toy_mode()` and `from_yaml`. Tested in `tests/test_config.py`. |
-| `src/rlpost/ppo_engine.py` | The only PPO implementation: `PPOTrainer`. GAE, a clipped policy loss, an unclipped value loss, entropy, and a KL term. `train_step` still gathers log-probabilities on the wrong axis. See S0.6. |
+| `src/rlpost/ops.py` | `gather_logprobs`: logits at position `t` score token `t+1`. Shape `[B, T, V]` in, `[B, T-1]` out. |
+| `src/rlpost/ppo_engine.py` | The only PPO implementation: `PPOTrainer`. GAE, a clipped policy loss, a value loss (unclipped unless `value_clip` is set), entropy, and a KL term. `train_step` uses `gather_logprobs`. |
 | `src/rlpost/dpo_engine.py` | `DPOTrainer`. The CLI does not call it. |
 | `src/rlpost/sft_engine.py` | LoRA SFT through the Hugging Face `Trainer`. |
 | `src/rlpost/reward_engine.py` | Preference reward-model trainer. |
@@ -45,22 +46,27 @@ Work still open is tracked in [ROADMAP.md](ROADMAP.md).
 
 DPO trains on preference pairs and does not train a reward model. The loss uses a frozen reference policy.
 
-`DPOTrainer.compute_dpo_loss` takes sequence scores named `policy_logits_*` and `ref_logits_*` in the signature. The body treats them as log-probabilities:
+`log π(y|x)` is the sum of completion-token log-probabilities. `compute_log_probs` calls `gather_logprobs` (position `t` scores token `t+1`) and multiplies by `completion_mask[:, 1:]`. Prompt tokens and padding contribute 0. The reduction is a sum, not a mean.
+
+The sigmoid loss, label smoothing 0:
 
 ```
-logits = beta * ((policy_chosen - policy_rejected) - (ref_chosen - ref_rejected))
-loss = -logsigmoid(logits).mean()
+chosen_reward   = beta * (logp_policy_chosen - logp_ref_chosen)
+rejected_reward = beta * (logp_policy_rejected - logp_ref_rejected)
+loss            = -logsigmoid(chosen_reward - rejected_reward).mean()
 ```
 
-That is the DPO objective at sequence level. Parity with TRL, including the log-probability shift and the mask, is item S0.6. It is not done.
+`beta` is `AlignmentConfig.dpo_beta` (default 0.1, must be > 0). It is not the PPO `kl_coefficient`. The margin is the mean of `chosen_reward - rejected_reward`. Accuracy is the fraction of rows with `chosen_reward > rejected_reward`.
+
+Parity is against TRL 1.17.1 `DPOTrainer._compute_loss` (`loss_type` sigmoid, `label_smoothing` 0). That method sums completion-token log-probs the same way. On CPU, torch 2.15, the tiny Llama, the loss matched within `1e-6`. The logged mean of the sums matched within `1e-5`. The measured gap on that mean was `1.907e-6`.
 
 `python -m rlpost.cli run-dpo` prints a placeholder and exits 0. It does not construct `DPOTrainer`.
 
 ## PPO
 
-`PPOTrainer` in `ppo_engine.py` is the only PPO implementation. The step is GAE, then a clipped probability ratio, an unclipped value loss, an entropy bonus, and a KL penalty. `compute_kl_divergence(policy_logits, ref_logits)` evaluates the full-vocabulary KL(reference || policy), `sum_a p_ref(a) (log p_ref(a) - log p_policy(a))`. The sampled-token estimators usually called k1, k2, and k3 are not implemented. Naming that estimator is S0.6e.
+`PPOTrainer` in `ppo_engine.py` is the only PPO implementation. The step is GAE, then a clipped probability ratio, a value loss, an entropy bonus, and a KL penalty. With `value_clip` unset, the value term is `value_loss_coefficient * mean(0.5 * (V - R)^2)`. With `value_clip = c` (`c >= 0`), it is `value_loss_coefficient * mean(0.5 * max((V - R)^2, (V_clip - R)^2))`, where `V_clip = V_old + clip(V - V_old, -c, c)`. A radius that never binds matches the unset loss. `c` is not `ppo_epsilon`. `compute_kl_divergence(policy_logits, ref_logits)` evaluates the full-vocabulary KL(reference || policy), `sum_a p_ref(a) (log p_ref(a) - log p_policy(a))`. The sampled-token estimators usually called k1, k2, and k3 are not implemented. Naming that estimator is S0.6e.
 
-`train_step` gathers log-probabilities with `gather` on dimension 1 and does not shift for the causal offset, so the step test raises. That bug is S0.6a. It lives in this one function.
+`train_step` calls `gather_logprobs`. Logits at position `t` score token `t+1`, and the policy ratio uses those log-probabilities, shape `[B, T-1]`. The two step tests run on a tiny causal LM. The clipped surrogate, both value losses, and the entropy term are tested. The entropy scalar is the mean of TRL 1.17.1 `entropy_from_logits`.
 
 ## Command line
 
@@ -81,9 +87,15 @@ python -m rlpost.cli run-dpo --toy
 
 ## Install
 
-`pyproject.toml` pins an old stack, including `transformers==4.32.0`, `trl==0.5.0`, `bitsandbytes==0.41.1`, and `triton==3.7.0`. `pip install -e .` was not run for the check in Measured scope.
+Required packages are the ones the code imports: torch, transformers, datasets, pydantic, PyYAML, typer, and rich. Lower bounds are in `pyproject.toml`. They accept the versions in `requirements-cpu.txt`.
 
-That check used a virtualenv with the CPU wheel of torch 2.15.0 and current `pydantic`, `pytest`, `pyyaml`, `transformers`, and `datasets`, imported via `PYTHONPATH=src`.
+```bash
+pip install -e ".[test]"
+```
+
+`[test]` pins pytest 9.2.0, ruff 0.17.3, and TRL 1.17.1. `[lora]` adds peft for the SFT and reward trainers. The CPU job installs `.[test]` under `requirements-cpu.txt` and the CPU torch index. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+
+The measured-scope check above used a virtualenv with the CPU wheel of torch 2.15.0 and `PYTHONPATH=src`. It did not run `pip install -e .`.
 
 ## Layout
 

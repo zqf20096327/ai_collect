@@ -12,6 +12,22 @@
 [![GitHub stars](https://img.shields.io/github/stars/AKzar1el/mcp-geo?style=social)](https://github.com/AKzar1el/mcp-geo/stargazers)
 [![EUR 99 AI Visibility Audit](https://img.shields.io/badge/AI_Visibility_Audit-EUR_99-2ea44f)](https://geo-mcp.digestseo.com/audit)
 
+## See your first result
+
+**mcp-geo** is a free, self-hostable MCP server for measuring brand mentions and, where providers return them, source citations across supported AI answer surfaces. It helps SEO practitioners and agencies compare observations by engine and inspect the underlying evidence. A scan is a point-in-time sample, not a guaranteed ranking or citation outcome.
+
+[![Example AI visibility report](https://raw.githubusercontent.com/AKzar1el/mcp-geo/main/docs/demo-report-hero.png)](https://github.com/AKzar1el/mcp-geo/blob/main/docs/demo-report-full.png)
+
+*[Open the full example report](https://github.com/AKzar1el/mcp-geo/blob/main/docs/demo-report-full.png) · [How the methodology works](https://github.com/AKzar1el/mcp-geo/blob/main/docs/ai-visibility-audit-methodology.md)*. This is an example report generated through the MCP tools, not a customer testimonial or a promised result.
+
+**Your first local scan, after connecting the stdio MCP server:**
+
+1. **Track:** ask your MCP client to run `track_brand` with your own `brand_id`, name, domain, and ideally a precise `category`. By default it creates three provider-free category-anchored starter questions, not a validated measurement sample. Without a category, its brand-name placeholders can bias scores: replace those prompts before scanning.
+2. **Measure:** after reviewing and, when needed, replacing the starter questions with representative independent buyer prompts, run `refresh_brand` with that `brand_id`. **Live scans use your provider API keys and may incur charges.** Engines without keys are skipped; Google AI Mode requires a separate explicit opt-in.
+3. **Inspect:** run `check_visibility` with the same `brand_id` to view available per-engine scores and evidence. Use `get_citations` to inspect citation records where providers supply sources.
+
+**Choose your setup:** [Quick Install and client-specific instructions](#quick-install) for local MCP hosts · [Getting Started](#getting-started) for provider keys and optional Cloudflare hosting · [What the report contains](#what-it-produces) · [Privacy](#privacy-policy). Hosted remote MCP deployments manage brands through their protected admin routes rather than local `track_brand`.
+
 
 ## Quick Install
 
@@ -40,11 +56,11 @@ Runs locally over stdio with your own API keys. Brands, scan history, and cached
 
 **ChatGPT (remote MCP):** ChatGPT does not connect directly to local STDIO MCP servers. For ChatGPT, use the [self-hosted remote MCP setup](#chatgpt-remote-mcp) below, or the [OpenAI Secure MCP Tunnel setup](#chatgpt-localprivate-via-openai-secure-mcp-tunnel) for a server running on a local/private machine. The public `geo-mcp.digestseo.com/mcp` endpoint is not a turnkey no-key fresh-scan service.
 
-**Perplexity Computer (remote MCP):** Perplexity Computer supports custom remote MCP connectors on eligible plans. After self-hosting mcp-geo, open **Account settings > Connectors > + Custom connector**, choose **Remote**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Use the connector's OAuth option for the Worker flow; if you configured `CONNECT_SECRET`, complete that browser gate during connection. Do not use the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey no-key scan service. See Perplexity's current [Computer connector guidance](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026).
+**Perplexity Computer (remote MCP):** Perplexity Computer supports custom remote MCP connectors on eligible plans. After self-hosting mcp-geo, open **Account settings > Connectors > + Custom connector**, choose **Remote**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Use the connector's OAuth option for the Worker flow; configure the required `CONNECT_SECRET` in your Worker and enter it in the browser gate during connection. Do not use the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey no-key scan service. See Perplexity's current [Computer connector guidance](https://www.perplexity.ai/changelog/what-we-shipped---march-13-2026).
 
 **Perplexity Portable Computer (local STDIO):** On supported hardware with a Perplexity Pro/Max local model, open **Settings > MCP servers > Add server > Local (stdio)** and name the server `digestseo`. Portable requires an **absolute Command path**: on Windows use `C:\Windows\System32\cmd.exe` with arguments `/d`, `/s`, `/c`, and `npx -y @digestseo/mcp-geo` (each on its own line); on Linux use the absolute `npx` path with `-y` and `@digestseo/mcp-geo` as separate arguments. Select **Test**, then **Add**. Node.js 22.13+ is required. No provider keys are needed for tool discovery; engine-backed scans can incur provider charges. Portable's local tools are distinct from cloud Computer's Remote/OAuth connector. See the [local Portable setup guide](llms-install.md#perplexity-portable-computer-local-stdio) and [Perplexity's official instructions](https://www.perplexity.ai/help-center/en/articles/20260915-what-is-portable-computer).
 
-**Replit Agent (remote MCP):** after self-hosting mcp-geo, open **Integrations -> MCP Servers for Replit Agent -> Add MCP server**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Choose the OAuth flow when prompted: Replit supports OAuth dynamic client registration (DCR), which the self-hosted Worker exposes through its standard discovery and registration endpoints. Select **Test & Save**, then complete the browser authorization step; if you configured `CONNECT_SECRET`, enter it in that gate. Replit supports remote HTTPS MCP servers rather than this package's local stdio process, so use your configured Worker URL and do not treat the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey provider-key service. See Replit's current [MCP guide](https://docs.replit.com/features/mcp/overview).
+**Replit Agent (remote MCP):** after self-hosting mcp-geo, open **Integrations -> MCP Servers for Replit Agent -> Add MCP server**, name it `digestseo`, and enter your own deployment's `https://<worker-host>/mcp` URL. Choose the OAuth flow when prompted: Replit supports OAuth dynamic client registration (DCR), which the self-hosted Worker exposes through its standard discovery and registration endpoints. Select **Test & Save**, then complete the browser authorization step with the required `CONNECT_SECRET`. Replit supports remote HTTPS MCP servers rather than this package's local stdio process, so use your configured Worker URL and do not treat the public `geo-mcp.digestseo.com/mcp` endpoint as a turnkey provider-key service. See Replit's current [MCP guide](https://docs.replit.com/features/mcp/overview).
 
 **Claude Code:**
 
@@ -480,7 +496,11 @@ Kiro supports local STDIO MCP servers across its current surfaces. The zero-key 
 
 **Claude Desktop extension (one-click):** download the `.mcpb` bundle from the [latest release](https://github.com/AKzar1el/mcp-geo/releases/latest) and double-click it — Claude Desktop prompts for the API keys.
 
-**First run:** ask your client to *"track acme.com as brand `acme`, then refresh it"* — `track_brand` creates the brand with generated prompts, `refresh_brand` runs the first scan, `check_visibility` shows the scores.
+**First run:** ask your client to *"track acme.com as brand `acme` in the project management software category, then review its prompts"* — `track_brand` creates three provider-free starter prompts. Review `list_prompts` and customize with `set_prompts` for representative buyer queries before `refresh_brand` runs the first scan; `check_visibility` then shows scores. To opt in to token-billed Claude prompt generation, specify `prompt_generation='anthropic'`.
+
+**Reading combined scores:** `check_visibility` reports each engine's observation time and a `freshness` range for the combined score. `mixed_age_warning=true` means at least one engine was measured 24 hours or more before the newest engine; `older_engines` identifies which. The overall score still averages available engine scores, not a synchronized new scan. Use `refresh_brand` to update old measurements before comparisons; this may incur configured provider API costs.
+
+**Search evidence vs. model-only answers:** `check_visibility.measurement_scope` separates the mean visibility score from engines whose live request uses search/SERP (`search_requested`) from engines without live search (`model_only`). The Claude and Gemini adapters currently use model-only generation; ChatGPT batch runs are also model-only. Each `per_engine` record carries its `measurement_mode`. `mixed_modes=true` means the legacy `overall_score` blends these unlike observations. Even `search_requested` does **not** prove that a response returned verifiable citations: inspect the actual evidence through `get_citations`, and never present model-generated links as independently observed AI-search citations. No additional provider calls are made to calculate this disclosure.
 
 AI agents installing this server: follow [llms-install.md](https://github.com/AKzar1el/mcp-geo/blob/main/llms-install.md). Prefer a remote server with cron auto-refresh? Self-host on Cloudflare Workers below.
 
@@ -510,9 +530,7 @@ Engineering case study: [DigestSEO MCP Suite — AI visibility, Search Console, 
 
 ## What it produces
 
-Connect via MCP, ask Claude *"Run an AI visibility analysis on [my brand]"*, and within 90 seconds you get a strategist-quality memo grounded in real per-engine data:
-
-[![Example AI visibility report](https://raw.githubusercontent.com/AKzar1el/mcp-geo/main/docs/demo-report-hero.png)](https://github.com/AKzar1el/mcp-geo/blob/main/docs/demo-report-full.png)
+Connect via MCP and ask an assistant to *"Run an AI visibility analysis on [my brand]"* to synthesize a memo from the per-engine measurements actually available. Results depend on configured providers and successful scans; there is no fixed completion-time or citation guarantee. [Preview the example report above](#see-your-first-result).
 
 *[View the full report including content gaps, engine recommendations, and synthesis →](https://github.com/AKzar1el/mcp-geo/blob/main/docs/demo-report-full.png)*
 
@@ -593,6 +611,7 @@ The report above was generated by Claude through the digestseo-mcp MCP server. T
 ### [0.3.19] - September 22, 2026
 
 - **Google AI Mode:** opt in with `SERPAPI_AI_MODE_ENABLED=true` to measure Google AI Mode separately through SerpAPI, including citation/source evidence when returned.
+- **Google sampling scope:** Google AI Overviews and AI Mode searches currently use `gl=us` and `hl=en` (US location, English interface). `check_visibility.google_search_sampling` explicitly identifies this scope when those engines have stored results. Do not interpret these samples as worldwide or multilingual visibility measurements.
 - **Safe tracked-brand corrections:** local MCP users can call `update_brand` to change identity, competitors, aliases, exclusions, or refresh cadence without replacing prompts or historical runs.
 - **Manual scheduling:** set `refresh_frequency` to `manual` to pause self-hosted scheduled scans while keeping explicit `refresh_brand` available.
 
@@ -689,7 +708,7 @@ The report above was generated by Claude through the digestseo-mcp MCP server. T
 
 ### [0.2.1] — June 2026
 
-- **Optional `CONNECT_SECRET` gate on the OAuth flow.** By default the OSS build auto-completes `/authorize` for any MCP client that knows your worker URL — anyone who finds the URL can connect and call `visibility.refresh`, spending your engine API credits. Set `CONNECT_SECRET` and the browser step of the connect flow now asks for it before issuing a token. See [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md).
+- **Historical 0.2.1 behavior:** `CONNECT_SECRET` was optional, and `/authorize` could auto-complete for any client that knew the Worker URL. Current source requires `CONNECT_SECRET` and fails closed without it. See [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md).
 - **Accurate citation matching.** Brand/competitor mentions now require word boundaries (`acme` no longer matches "acmeshop"), and linked-citation checks require the exact domain or a subdomain (`notacme.com` no longer counts as a link to `acme.com`).
 - **Per-brand `aliases` and `exclude_terms`.** Aliases always count as a mention; exclude terms suppress the bare-word match on the brand name and domain root — so "Monday" the brand stops matching "monday" the weekday, while `monday.com` still counts. Apply `migrations/0005_brand_alias_exclude.sql`; existing brands behave exactly as before.
 - **`visibility.history` consistency.** Partially-finished runs now count toward history (matching `visibility.check`'s 0.2.0 behavior), and fully-failed runs no longer show up as fake zero scores.
@@ -726,8 +745,9 @@ The report above was generated by Claude through the digestseo-mcp MCP server. T
 
 - **See which AI tools cite your brand and which don't** — get a per-engine breakdown of who's citing you for buyer-intent queries.
 - **Track AI visibility weekly, automatically** — the built-in Cron Trigger re-runs scans on the cadence you configure per brand.
+- **Incomplete scheduled scans** — one successful prompt does not make an entire engine fresh. Failed or missing prompt coverage is eligible for another attempt after at least 24 hours; weekly brands are capped at two attempts per rolling seven days. A retry currently reruns that engine's full active prompt set, not just failed prompts, and can consume provider quota or paid API credits. Set `refresh_frequency='manual'` to avoid automatic provider calls.
 - **Compare your AI visibility to competitors** — share-of-voice percentages, prompts you win, prompts they win.
-- **Find content gaps** — Claude-Haiku-synthesized recommendations grounded in your actual losing prompts.
+- **Find content gaps** — provider-free recommendations grounded in your actual losing prompts, with optional explicitly requested Claude Haiku analysis.
 - **Use it inside Claude.ai conversations** — add the deployed Worker URL as a custom MCP connector and ask in natural language.
 - **Self-hosted on your own Cloudflare account** — your API keys, your data, your cost ceiling. The free Workers + D1 tiers cover a single brand with daily refreshes.
 
@@ -742,17 +762,21 @@ The six analysis capabilities are shared across both transports, but the exposed
 | Hosted / Worker | Local stdio | What it does | What you provide |
 |---|---|---|---|
 | `visibility.check` | `check_visibility` | Latest AI visibility snapshot across all configured engines for a tracked brand, with per-engine scores, winning prompts, and losing prompts. | `brand_id`, optional `engines[]` filter |
-| `visibility.history` | `get_visibility_history` | Time-series history of overall and per-engine visibility, bucketed daily or weekly. | `brand_id`, optional `days` (default 30), optional `granularity` (`daily`/`weekly`) |
-| `visibility.compare` | `compare_competitors` | Share-of-voice comparison against competitor domains, with prompts you win and prompts they win. | `brand_id`, optional `competitor_domains[]`, optional `days` |
-| `visibility.citations` | `get_citations` | The actual citation events — prompt, engine, response excerpt, citation type, brand URL when present. | `brand_id`, optional `days`, optional `engine` filter |
-| `visibility.content_gaps` | `get_content_gaps` | Prioritized Claude-Haiku-generated content recommendations targeting your losing prompts. | `brand_id`, optional `max_recommendations` (1-10) |
+| `visibility.history` | `get_visibility_history` | Daily/weekly visibility history, with a `prompt_set_comparability` warning when complete observed prompt-ID rosters differ across runs for an engine; incomplete evidence is called out rather than treated as stability. | `brand_id`, optional `days` (default 30), optional `granularity` (`daily`/`weekly`) |
+| `visibility.compare` | `compare_competitors` | Recorded share-of-voice with brand-only, co-mentioned and competitor-only evidence; `outside_current_tracking` and `historical_coverage_note` warn when historical competitor coverage cannot be verified (new domains are not retroactively scored). | `brand_id`, optional `competitor_domains[]`, optional `days` |
+| `visibility.citations` | `get_citations` | Paginated citation events — prompt, engine, excerpt, citation type and brand URL when present. | `brand_id`, optional `days`, `engine`, `limit` (1-100), `cursor` |
+| `visibility.content_gaps` | `get_content_gaps` | Evidence-grounded content recommendations by default; optional Claude Haiku analysis when explicitly requested. | `brand_id`, optional `max_recommendations` (1-10), `ai_analysis` (default `false`; `true` incurs Anthropic token charges and may retry once) |
 | `visibility.refresh` | `refresh_brand` | Manually trigger a fresh scan across every engine whose API key is set. | `brand_id`, optional `engines[]` filter |
+
+Citation pages default to 50 rows; when `has_more=true`, send the returned `next_cursor` with the same `brand_id`, `days`, and `engine`. Pagination uses the observation timestamp plus stable run/prompt identifiers, not shifting offsets, and holds the first page's time window fixed. `top_sources` summarizes that whole window, not only the current page. No extra AI provider requests are made to page stored evidence.
+
+Competitor comparisons retain the legacy `prompts_you_win` field for compatibility; it means **any brand mention**, including responses also mentioning competitors. Use `prompts_brand_only` for brand mentions without tracked competitors and `prompts_co_mentioned` for brand-plus-competitor responses. The cohorts are classified per engine response, so the same prompt can appear in both across different engines. Competitor `prompts_won_against_you` records competitor mentions when the brand is absent; neither field proves an exclusive ranking or recommendation.
 
 The local stdio CLI (npx, desktop extension, Docker) additionally provides brand management — on a Workers deployment the same operations live behind the `X-Seed-Secret`-gated `/admin/*` routes instead:
 
 | Tool (local CLI only) | What it does | What you provide |
 |---|---|---|
-| `track_brand` | Start tracking a brand: creates it locally and generates its buyer-intent prompt set (Claude Haiku when `ANTHROPIC_API_KEY` is set, three starter prompts otherwise). | `brand_id`, `name`, `domain`, optional `category`, `competitors[]`, `aliases[]`, `exclude_terms[]`, `prompt_count`, `refresh_frequency` (`daily`/`weekly`/`manual`, default `weekly`) |
+| `track_brand` | Start tracking a brand with three provider-free category-anchored prompts by default. Returns `starter_prompt_limitations`: an absent category uses brand-name placeholders that may bias visibility scores; even category-specific starters need review. `prompt_generation='anthropic'` explicitly opts in to token-billed Claude generation (at most two attempts). | `brand_id`, `name`, `domain`, optional `category`, `competitors[]`, `aliases[]`, `exclude_terms[]`, `prompt_generation` (`fallback` default or `anthropic`), `prompt_count` (Anthropic only), `refresh_frequency` (`daily`/`weekly`/`manual`, default `weekly`) |
 | `update_brand` | Correct an existing brand's domain, name, category, competitors, aliases, exclusions, or refresh cadence without replacing active prompts or historical runs. Set cadence to `manual` to pause scheduled Worker scans while keeping manual refresh available. | `brand_id` plus any fields to change |
 | `list_brands` | List tracked brands with domains, competitors, aliases, exclusions, and active prompt counts. | — |
 | `list_prompts` | Inspect the exact active buyer-intent prompts for a tracked brand without changing them. | `brand_id` |
@@ -768,7 +792,7 @@ The local stdio CLI (npx, desktop extension, Docker) additionally provides brand
 Engines are opt-in. Pick the ones you want; the rest skip silently.
 
 - **OpenAI** — ChatGPT engine (`gpt-5-search-api`) with web search. OpenAI currently bills web search at $10 per 1,000 calls plus model token charges; see [API pricing](https://developers.openai.com/api/docs/pricing) and [API keys](https://platform.openai.com/api-keys).
-- **Anthropic** — Claude engine, plus prompt generation and content-gap analysis (both call Claude Haiku 4.5). Anthropic prices Haiku 4.5 by input/output tokens, so per-prompt cost depends on workload; review current [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing) before estimating scan cost. [console.anthropic.com](https://console.anthropic.com/)
+- **Anthropic** — Claude engine, plus prompt generation and opt-in content-gap analysis (Claude Haiku 4.5). `get_content_gaps` is provider-free unless `ai_analysis=true`; that explicit option can make up to two token-billed API calls. Anthropic prices Haiku 4.5 by input/output tokens; review current [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing) before estimating scan cost. [console.anthropic.com](https://console.anthropic.com/)
 - **Google AI Studio (Gemini)** — Gemini engine (`gemini-3.1-flash-lite`). Google currently offers free-tier token usage for this model, while paid usage is token-priced. Rate limits vary by model, project, and usage tier, and Google says actual capacity can vary; check your project's active limits in AI Studio rather than relying on a fixed RPM/RPD assumption. See [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) and [rate limits](https://ai.google.dev/gemini-api/docs/rate-limits).
 - **Perplexity** — Agent API `fast` preset for grounded web-search visibility. Paid API usage; pricing depends on the preset workload, so check current Agent API pricing before estimating scan cost. [Perplexity Agent API](https://docs.perplexity.ai/docs/agent-api/quickstart) · [pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
 - **xAI** — Grok engine (`grok-4.7`) with required Web Search grounding. xAI currently prices Web Search at $5 per 1,000 calls plus model tokens. [console.x.ai](https://console.x.ai/) · [pricing](https://docs.x.ai/developers/pricing)
@@ -797,7 +821,7 @@ npx wrangler d1 create mcp-geo-db
 # 5. Set the required secret + at least one engine API key
 #    Recommended starting pair — OpenAI uses web search plus model tokens; check current pricing:
 npx wrangler secret put SEED_SECRET
-npx wrangler secret put CONNECT_SECRET      # recommended — gates who can connect (see SECURITY.md)
+npx wrangler secret put CONNECT_SECRET      # required for hosted OAuth authorization (see SECURITY.md)
 npx wrangler secret put OPENAI_API_KEY      # ChatGPT engine
 npx wrangler secret put ANTHROPIC_API_KEY   # Claude engine + prompt generation
 
@@ -940,14 +964,14 @@ args = [
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `OPENAI_API_KEY` | opt-in | unset | Enables the ChatGPT engine. Without it, ChatGPT is skipped. |
-| `ANTHROPIC_API_KEY` | opt-in | unset | Enables the Claude engine *and* the Claude-Haiku-powered prompt generator + content-gap analyzer. |
+| `ANTHROPIC_API_KEY` | opt-in | unset | Enables the Claude engine and permits explicitly requested prompt generation (`prompt_generation='anthropic'`) and content-gap analysis (`ai_analysis=true`). Merely configuring a key does not opt in to these helper calls. |
 | `GEMINI_API_KEY` | opt-in | unset | Enables the Gemini engine. Rate limits vary by model, project, and usage tier; check the project's active limits in Google AI Studio (see Troubleshooting). |
 | `PERPLEXITY_API_KEY` | opt-in | unset | Enables the Perplexity Agent API `fast` preset. Paid API usage; check current Agent API pricing. |
 | `XAI_API_KEY` | opt-in | unset | Enables the Grok engine (`grok-4.7`) with required Web Search grounding. |
 | `SERPAPI_API_KEY` | opt-in | unset | Enables Google AI Overviews via SerpAPI. Also provides the credential for Google AI Mode when the explicit flag below is enabled. |
 | `SERPAPI_AI_MODE_ENABLED` | no | `false` | Set to `true` to add Google AI Mode as a separate visibility engine. It stays off by default to avoid unexpected extra SerpAPI calls/cost. |
 | `SEED_SECRET` | **yes** | unset | Shared secret that gates every `/admin/*` route. Pick a high-entropy string. |
-| `CONNECT_SECRET` | recommended | unset | When set, the OAuth connect flow asks for this secret in the browser before issuing a token. Without it, anyone who knows your worker URL can connect an MCP client. See [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md). |
+| `CONNECT_SECRET` | **yes (hosted OAuth)** | unset | The OAuth authorization endpoint returns HTTP 503 until this secret is configured. The browser flow then requires it before issuing a token. Existing OAuth tokens are not automatically revoked. See [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md). |
 | `TURNSTILE_SITE_KEY` | no | unset | Reserved for forks that add a public `/check` form. Unused by the OSS build. |
 | `TURNSTILE_SECRET_KEY` | no | unset | Same — reserved for forks. |
 
@@ -982,7 +1006,7 @@ Each engine runs in its own Worker invocation with its own free-plan 50-subreque
 ## Security
 
 - `/admin/*` is gated by `SEED_SECRET` (constant-time compared).
-- `/mcp` requires OAuth; set `CONNECT_SECRET` so only people with the secret can complete the connect flow — strongly recommended whenever your worker URL is shared anywhere, since connected clients can call `visibility.refresh` and spend your engine API credits.
+- `/mcp` requires OAuth; `CONNECT_SECRET` is required for new authorization grants. Without it, `/authorize` fails closed with HTTP 503. Connected clients can call `visibility.refresh` and spend your engine API credits, so protect and rotate the secret if compromised. Existing OAuth tokens are not revoked automatically.
 - Engine keys live in Cloudflare's encrypted secret store, and brands, scan history, and cached responses are stored in your own D1 database. Scan prompts are sent to the AI providers you configure; see the [Privacy Policy](#privacy-policy).
 
 Full details and vulnerability reporting: [SECURITY.md](https://github.com/AKzar1el/mcp-geo/blob/main/SECURITY.md).
@@ -1018,7 +1042,7 @@ If you'd rather not run your own Cloudflare account, manage API keys, or pay ind
 - **Worker deploys but tools return empty data** — at least one engine API key is missing. Check `wrangler secret list` and add the keys you intend to use. Engines without keys are silently skipped, which can leave `visibility.check` with no data.
 - **`no engines available` error in logs** — no engine API keys are set at all. Set at least one of `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `PERPLEXITY_API_KEY`, `XAI_API_KEY`, `SERPAPI_API_KEY`.
 - **D1 migration fails** — make sure you've run `npx wrangler d1 migrations apply mcp-geo-db --remote` (and also `--local` for `wrangler dev`). For ad-hoc fixes, `npx wrangler d1 execute mcp-geo-db --remote --file=migrations/0001_initial.sql`.
-- **Custom MCP connector in Claude.ai not connecting** — the URL must end in `/mcp`. The OAuth handshake auto-completes in the OSS build (single dev user); if you set `CONNECT_SECRET`, the browser step shows a one-field form — enter the secret you set during deploy. If it loops, clear the connector and re-add it. Double-check the Worker is publicly reachable (`curl https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/healthz` should return `ok`).
+- **Custom MCP connector in Claude.ai not connecting** — the URL must end in `/mcp`. The hosted OAuth step requires `CONNECT_SECRET`: if `/authorize` returns HTTP 503, configure it with `npx wrangler secret put CONNECT_SECRET`; then enter it in the browser form. If the flow loops, clear the connector and re-add it. Double-check the Worker is publicly reachable (`curl https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/healthz` should return `ok`).
 - **Cron not firing** — check the Cloudflare dashboard at **Workers & Pages → digestseo-mcp → Settings → Triggers**. The "Cron Triggers" section should list `0 */6 * * *`. If it's missing, run `npx wrangler deploy` again — the trigger is registered on deploy. The handler also only dispatches engines for brands whose `refresh_frequency` cadence has elapsed, so a freshly-seeded brand might not fire on the next 6h boundary.
 - **`401 unauthorized` from `/admin/*`** — `X-Seed-Secret` header is missing or doesn't match the deployed `SEED_SECRET`. Re-run `npx wrangler secret put SEED_SECRET` and update your `.env.test`.
 - **Worker returns 404 on self-fetch / error code 1042** — the `services` binding in `wrangler.jsonc` is missing or the `service` name doesn't match the worker's `name` field. `/admin/run-live` self-fetches `/admin/run-engine` via `env.SELF` (a Cloudflare service binding) precisely because a public-URL fetch back to your own `workers.dev` hostname is blocked by Cloudflare's "Worker called itself" guard. Confirm the `wrangler.jsonc` you deployed contains `"services": [{ "binding": "SELF", "service": "<your-worker-name>" }]` with the same name you set in the top-level `"name"` field. After fixing, `npx wrangler deploy` and re-run.
@@ -1042,7 +1066,7 @@ When you run `digestseo-mcp` locally (npx, the desktop extension, or Docker), al
 
 **Data use and storage:** Local brand configuration, prompts, scan runs, responses, and cached responses are used only to provide the MCP server features you invoke. They remain in the local SQLite database described above; this project does not operate an account service or collect telemetry.
 
-**Third-party processing:** Prompt and scan traffic is sent only to the AI providers you explicitly configure. Those providers process and retain that traffic under their own privacy policies; the project author does not receive copies of it.
+**Third-party processing:** Prompt and scan traffic is sent only to the AI providers you explicitly configure. Those providers process and retain that traffic under their own privacy policies; the project author does not receive copies of it. Independent Grok and Perplexity Agent API scans use `store:false` to avoid later response retrieval. This is **not** Zero Data Retention: Perplexity may still persist response state, and xAI separately documents default 30-day abuse-audit retention.
 
 **Retention and deletion:** Local data remains on your machine until you delete the SQLite database (or the custom `DIGESTSEO_DB_PATH` you configured). Removing that local database removes mcp-geo's stored local history and cache. Provider-side retention is controlled by each configured provider.
 

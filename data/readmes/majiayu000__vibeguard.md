@@ -1,12 +1,10 @@
 # VibeGuard
 
-A Rust CLI for coding-agent rules, native hooks, and installation diagnostics.
+A Rust CLI for native coding-agent hooks and installation diagnostics.
 
-[Website](https://majiayu000.github.io/vibeguard/) · [中文](docs/README_CN.md) · [Runtime contract](docs/runtime-contract.md) · [Rule reference](docs/rule-reference.md) · [Contributing](CONTRIBUTING.md)
+[Website](https://majiayu000.github.io/vibeguard/) · [中文](docs/README_CN.md) · [Runtime contract](docs/runtime-contract.md) · [Contributing](CONTRIBUTING.md)
 
-V2 embeds 75 scoped review topics for explicit lookup. Installation does not inject rules or lookup instructions into the host's prompt. The library covers scope, facts, errors, security, workflow, Rust, Python, Go, and TypeScript.
-
-Native Bash hooks reject a small set of destructive command spellings and record the latest observed outcome. An optional Git pre-push hook checks actual commit ancestry. The host owns permissions, sandboxing, tool execution, and the agent loop.
+VibeGuard does two jobs. Native Bash hooks reject a small set of destructive command spellings and record the latest observed outcome. [The 800-line limit](#the-800-line-limit) keeps source files from growing past 800 lines: new files stay under it, and existing large files can shrink but not grow. An optional Git pre-push hook checks actual commit ancestry. The host owns permissions, sandboxing, tool execution, and the agent loop.
 
 DeepSeek Harness users can load the [DSH Bash adapter](plugins/dsh/README.md). It calls this Rust runtime, routes policy blocks through DSH's native approval, and fails closed when the pre-call runtime fails.
 
@@ -19,7 +17,7 @@ curl -fsSL https://raw.githubusercontent.com/majiayu000/vibeguard/main/install.s
 curl -fsSL https://raw.githubusercontent.com/majiayu000/vibeguard/main/install.sh | bash -s -- claude
 ```
 
-Replace `claude` with `codex` or `grok`. Set `VIBEGUARD_VERSION=v2.1.0` before `bash` to pin a release. To do the same steps by hand:
+Replace `claude` with `codex` or `grok`. Set `VIBEGUARD_VERSION=v2.3.0` before `bash` to pin a release. To do the same steps by hand:
 
 Download the archive for your OS and CPU from [Releases](https://github.com/majiayu000/vibeguard/releases), extract it, and open a terminal in the extracted directory. macOS, Linux and WSL are supported; choose a Linux archive for WSL. No Rust toolchain or source checkout is required for this path. Run:
 
@@ -37,8 +35,7 @@ Download the archive for your OS and CPU from [Releases](https://github.com/maji
 Use Windows x64, Git Bash, and Claude Code **2.1.139 or later**. Exec-form
 hooks were introduced in [Claude Code 2.1.139](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21139).
 Download `vibeguard-x86_64-pc-windows-msvc.tar.gz` from Releases, extract it,
-and run in PowerShell. The Windows archive will first be available in a tagged
-release containing this change:
+and run in PowerShell:
 
 ```powershell
 .\install.ps1 -DryRun
@@ -79,7 +76,7 @@ Use `claude` or `grok` instead of `codex` for those hosts. Uninstall retains the
 
 ## Build and install from source
 
-Source builds require Git and the Rust toolchain pinned in `rust-toolchain.toml`. Native installation supports macOS, Linux, and WSL. Native Windows installation supports Claude Code with Git Bash experimentally; native Windows Codex/Grok/Git installation remains unsupported. Windows CI tests the portable CLI, JSON protocol and Claude installation.
+Source builds require Git and the Rust toolchain pinned in `rust-toolchain.toml`. Native installation supports macOS, Linux, and WSL. Native Windows installation supports Claude Code with Git Bash experimentally; native Windows Codex, Grok and Git hook installation remains unsupported. Windows CI tests the portable CLI, JSON protocol and Claude installation.
 
 ```bash
 git clone https://github.com/majiayu000/vibeguard.git
@@ -96,23 +93,56 @@ bash setup.sh install grok
 `setup.sh` builds the checked-out source and forwards arguments. Without `cargo` it stops and points to `install.sh`, which installs the prebuilt release from the checkout. Without arguments it prints help; it does not install automatically. Install copies the binary to `~/.vibeguard/bin/vibeguard-runtime` and registers the selected integration. Installation removes an existing owned `vibeguard-core` block while preserving surrounding user instructions; it does not create an instruction file. Restart the host and review its native hook trust settings.
 
 ```bash
-~/.vibeguard/bin/vibeguard-runtime rules
-~/.vibeguard/bin/vibeguard-runtime rules RS-01
-~/.vibeguard/bin/vibeguard-runtime rules typescript
-~/.vibeguard/bin/vibeguard-runtime rules --search 'Promise'
 ~/.vibeguard/bin/vibeguard-runtime status codex
 ~/.vibeguard/bin/vibeguard-runtime uninstall codex
 ```
 
-Categories: `common`, `rust`, `python`, `golang`, `typescript`. `rules --json` exports the catalog; `rules --core` prints the compact reference. Rule lookup is optional and is not a task-start requirement.
-
-Keep shared engineering guidance in the rule library, personal preferences in native host instructions, and project facts in repository instructions. Reuse relevant guidance already in the current context or handoff summary; consult its source again when details are missing, the source has changed, or inspection is requested. A separate contract file need not be read at every follow-up. VibeGuard does not rewrite surrounding user-owned guidance.
+Keep personal preferences in native host instructions, and project facts in repository instructions. Reuse relevant guidance already in the current context or handoff summary; consult its source again when details are missing, the source has changed, or inspection is requested. A separate contract file need not be read at every follow-up. VibeGuard does not rewrite surrounding user-owned guidance.
 
 Grok installation writes `$GROK_HOME/hooks/vibeguard.json` (default `~/.grok`). It supports native shell pre-use, result and failure events without creating default instruction files. Grok's imported Claude hooks also work with the updated shared binary; observations go to `grok.json`, not `claude.json`. No Python adapter or change to `compat.claude.hooks` is required. Both registrations may evaluate a Grok event when installed together; each uses the same policy and latest observation. Status checks the native registration, not imported hooks or effective managed policy. See the [protocol contract](docs/runtime-contract.md).
 
-`rules --search 'cancellation errors'` finds rules containing every whitespace-separated term in their ID, title, source or body, ignoring case. It returns up to ten IDs, sources and titles, preferring title matches. Read a selected rule with `rules ID`. Empty queries and searches with no matches report an error; search does not change hook policy or inject instructions.
-
 Git protection is explicit: `~/.vibeguard/bin/vibeguard-runtime install git --repo /absolute/path/to/repository`. It refuses to replace a user-managed pre-push hook. Use `status git` or `uninstall git` with the same `--repo`.
+
+## The 800-line limit
+
+A source file (`.rs`, `.py`, `.ts`, `.go`, `.swift` and similar) may not end above 800 lines and longer than it was. Docs, data and markup are not counted. Agents write files in several ways, so the rule is applied at three points:
+
+| When | What it sees | Hosts | What happens | How to get it |
+|---|---|---|---|---|
+| Before an edit | `Write`, `Edit`, `MultiEdit` | Claude Code | The edit is refused | `install claude` |
+| After a Bash call | Files the repository shows as changed | Claude Code, Codex | The Agent is told; nothing is blocked | `install claude`, `install codex` |
+| At commit | Staged content, however it was written | Anything that commits | The commit is refused | `install git-size`, once for the whole machine |
+
+Only the commit hook covers every way of writing a file. Install it once and it applies to every repository on the machine, including ones created later:
+
+```bash
+~/.vibeguard/bin/vibeguard-runtime install git-size --dry-run
+~/.vibeguard/bin/vibeguard-runtime install git-size
+~/.vibeguard/bin/vibeguard-runtime status git-size
+~/.vibeguard/bin/vibeguard-runtime uninstall git-size
+```
+
+Nothing is added to your repositories. To turn it off in one, such as someone else's project with large files:
+
+```bash
+git -C /absolute/path/to/repository config vibeguard.sizeLimit false
+```
+
+It compares staged content with `HEAD`, so no list of known large files is needed. It is separate from `install git`, so it brings no push rules. How it installs depends on the global `core.hooksPath`:
+
+- **Not set:** Git is pointed at `~/.vibeguard/git-hooks`, whose hooks also run each repository's own hooks, so those keep working. Uninstall unsets it again.
+- **Set by another tool:** a marked block goes at the top of that tool's pre-commit script, and uninstall restores its exact text. If that tool rewrites the script, `status git-size` shows the block is gone; run install again. A hook that isn't a shell script is left alone and install fails with a message.
+
+If the binary is missing, or the check itself fails, the commit goes through with a warning at most: a problem here must not stop every commit on the machine.
+
+Known gaps:
+
+- `git commit --no-verify` skips the commit hook. Rebases and fast-forward merges don't run it.
+- A repository that sets its own `core.hooksPath`, as Husky does, doesn't run it.
+- The Bash notice reads the whole repository, so it can also report another session's uncommitted growth. It misses a directory held in a shell variable.
+- Grok and DSH receive no notice, and Codex `apply_patch` is seen only at commit.
+
+Upgrading from 2.1: run `install claude` again to add the edit check. Files that are already over the limit stay as they are until someone splits them.
 
 ## What is enforced
 
@@ -121,18 +151,20 @@ Git protection is explicit: `~/.vibeguard/bin/vibeguard-runtime install git --re
 | Bash PreToolUse | Recognizes bulk `git checkout/restore .`, forced `git clean` without specific paths (dry runs excepted), and selected recursive forced deletion of root, home, or system paths. |
 | Bash results | Records only the latest reported outcome, optional exit code, timestamp, cwd, and tool-use ID. No raw command or output. |
 | Git pre-push | Rejects remote ref deletion and existing tag replacement. Branches require direct commit targets and fast-forward updates; other existing refs require commit ancestry after peeling tags. Missing required objects are an explicit error. See the [runtime contract](docs/runtime-contract.md). |
-| Rule library | Advice with scope and exceptions. Severity is not an automatic blocking level. |
+| Write/Edit/MultiEdit PreToolUse (Claude Code) | Refuses an edit that would leave a source file above 800 lines and longer than before. Edits whose result cannot be predicted (missing file, unmatched text) are left to the host tool. |
+| Bash PostToolUse (Claude Code, Codex) and PostToolUseFailure (Claude Code) | Tells the Agent which source files grew past 800 lines, once per file and line count. It never changes a decision. |
+| Git pre-commit (`install git-size`) | Refuses a commit that leaves a source file above 800 lines and longer than before. See [the 800-line limit](#the-800-line-limit). |
 
 The Bash classifier is not a complete shell parser or a sandbox. Alternate commands, scripts, substitutions, other tools, and disabled or untrusted hooks can bypass it. Git hooks are also bypassable. Use host permissions and repository protection for access control.
 
 `status` reports registration, required executable mode bits, local host hook settings, and the last observation. Prompt text is not an installation-health requirement. It cannot prove host trust, ACL access, mount execution policy, or complete coverage. A reported zero exit code does not certify that tests ran or that the current tree is verified.
 
-For a worked rule lookup, incomplete host status, and version-specific command
+For incomplete host status, and version-specific command
 questions, see the [website task guide and FAQ](https://majiayu000.github.io/vibeguard/#faq).
 
 ## Breaking v2 changes
 
-Removed the app-server proxy, package-manager rewriting, semantic grep scanners, Stop/test-keyword gates, profiles, learning/scoring systems, workflow routing, and duplicate scripts. The Rust runtime remains: each hook invocation starts, processes one event, and exits.
+Removed the app-server proxy, package-manager rewriting, semantic grep scanners, Stop/test-keyword gates, profiles, learning/scoring systems, workflow routing, and duplicate scripts; 2.2.0 also removed the rule library and `rules` command. The Rust runtime remains: each hook invocation starts, processes one event, and exits.
 
 There are no old command aliases, rule-ID aliases, data migration, or general automatic v1 cleanup. For an existing v1 installation, follow that version's uninstall instructions first. V2 normally owns only its exact hook command and existing `vibeguard-core` Markdown block. Install and uninstall remove that block without adding replacement guidance. Status no longer reports `core_present`. Uninstall removes the selected integration and observation, but leaves the shared binary for other integrations and direct use.
 

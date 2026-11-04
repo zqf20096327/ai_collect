@@ -8,9 +8,9 @@
 
 A curated collection of **reverse-engineering projects, experiments, and ideas**: revive old devices, rebuild apps, preserve games, and understand hidden behavior.
 
-# 1609 cases & projects
+# 1689 cases & projects
 
-**Latest case update:** November 4, 2026, 04:18 · **Last maintained:** November 4, 2026, 04:18 · Beijing time (UTC+8). Counts as of this maintenance.
+**Latest case update:** November 5, 2026, 04:20 · **Last maintained:** November 5, 2026, 04:20 · Beijing time (UTC+8). Counts as of this maintenance; the continuous evidence cutoff is recorded below.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,7 +22,7 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading** for device interoperability, useful replacements, game preservation and binary analysis. Public implementations and documented limits make these useful starting points; author tests are not independent validation. Dates below are source or author-update dates, not collection dates.
+**10 worth reading** for device interoperability, useful replacements, game preservation and evidence-led binary analysis. Public implementations sit alongside an honest subscription-replacement experiment: a working prototype is not the same as a dependable replacement. Dates below are source or author-update dates, not collection dates.
 
 1. **[tolpo: a live 3D view of your Tapo home](cases/en/tolpo-tapo-claude-lan-3d-home-report.md)** · `2026-10-29` — A Claude-assisted protocol-research report leads to **public LAN/MCP control and a human-corrected floor plan**. Reuses python-kasa; earlier project tests cover nine rooms and 18 devices, not every write or model. Local device traffic does not mean local AI. `In progress`
 2. **[hexgrab: learn from PowerToys, then build a smaller picker](cases/en/hexgrab-powertoys-colorpicker-rea-study.md)** · `2026-10-29` report; `2026-10-12` investigation — Claude/REA studies shipped binaries; the author's source scorecard gives **8 of 9 claims fully correct, one partial**. Public .NET 10 implementation; hotkey registration in an unexamined runner exposed a blind spot. One monitor tested, not independently rerun. `Analysis test`
@@ -31,9 +31,9 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 5. **[Pokémon Bank: keep transfers local on a 3DS](cases/en/wokann-pokemon-bank-mover-codex-offline-patch.md)** · `2026-11-01` report and project record — Wokann explicitly credits Codex for decompilation analysis and patch work. A **public local-server patch preserves Bank/Mover workflows**, not the official backend; **no HOME transfer**. Requires your own supported titles and save backups; not run here. `In progress`
 6. **[DX-Ball: from one audio function to a Windows rebuild](cases/en/dx-ball-sound-pan.md)** · `2026-11-01` report; `2026-10-31` project record — Codex/REA/Ghidra reconstruction reports **270 matching game functions and 84,968 bytes**, plus a native VC4 build. Timestamp-only image differences are against an earlier rebuild, not the retail EXE. Original 50-board campaign and full native audio remain unverified; bring your own files. Not rebuilt here. `Project-tested reconstruction`
 7. **[MechWarrior 3: bring the 1999 mech game to modern PCs](cases/en/mechwarrior3-rea-ghidra-modern-cpp-rebuild.md)** · `2026-11-04` report and pinned project record — Owen Morgan credits **REA/Ghidra research and function-by-function C++ reconstruction**, with reported Unicorn comparisons. Public native backends, widescreen and eight-player UDP networking; Linux was not play-tested in the report, Pirate's Moon is unsupported. Bring your own game; not built here. `In progress`
-8. **[HookLab: a self-hosted YouTube research desk](cases/en/hooklab-rea-youtube-outlier-tool-rebuild.md)** · `2026-11-03` report; `2026-10-19` project record — Samin Yasar credits **REA browser/bundle research and Claude Code rebuilding** of Creator Hooks. Public title chat, outlier library, CLI and API; the library starts empty, AI/data services remain online, and full equivalence is untested here. `In progress`
-9. **[OKOK Libre: keep your scale, replace the ad-heavy app](cases/en/okok-libre-rea-glm-scale-android.md)** · `2026-10-31` — JYunth credits REA/GLM with APK research and Opus with UI work; **public Android code covers three OKOK Bluetooth protocols**. The pinned main manifest has no internet permission, not a final-APK audit. Some scale families remain unsupported; formula equivalence and health estimates are unverified. `In progress`
-10. **[MacBook9,1: get the built-in speakers working under Ubuntu](cases/en/jyz002-macbook91-cs4208-claude-ubuntu-speakers.md)** · `2026-11-04` author report; `2026-11-02` upstream record — jyz002 credits Claude Code and **adapts an existing digital-path driver**, rather than inventing one. Cold boot and software volume limiting matter; unsigned modules can damage speakers. Upstream distinguishes hardware-tested history from unrun releases. Not installed here. `In progress`
+8. **[VerifiedIDA: keep the evidence with the IDA database](cases/en/verifiedida-evidence-led-llm-reversing-harness.md)** · `2026-11-04` project reports; pinned code predates them — SentinelLabs' public harness records **evidence-linked edits, receipts and resumable investigations**. A static ComRAT example checks a recovered type after reopening the database. Persistence is not semantic correctness; needs licensed IDA/Hex-Rays and sends context to a model provider. Not run here. `Related project`
+9. **[BeanScribe: choose your recorder's transcription service](cases/en/gengdaj-feishu-recorder-custom-transcription-app.md)** · `2026-11-04` author updates and project record — Yichen credits REA; **public H5/Python code connects a D3200 to Feishu**, reusing tacshi's protocol research. Single-user deployment; the first 2–4 seconds may be lost, and official quotas/firmware are unchanged. Source-available, not OSI open source; not run here. `In progress`
+10. **[Granola: cheap to build, harder to keep working](cases/en/darragh-granola-rea-claude-rebuild-maintenance-test.md)** · `2026-11-04` — Darragh Lucey reports **61 minutes and $22.30** with REA/Claude Code, then a day of faults and transcription errors. He **kept the subscription**; the claimed 80% completion is subjective, not measured equivalence. No code or independent rerun here. `Analysis test`
 
 ## Classic cases
 
@@ -49,10 +49,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **337** |
-| [Hardware & interoperability](categories/en/hardware.md) | **429** |
-| [Applications & clients](categories/en/apps.md) | **668** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **175** |
+| [Games & preservation](categories/en/games.md) | **347** |
+| [Hardware & interoperability](categories/en/hardware.md) | **459** |
+| [Applications & clients](categories/en/apps.md) | **699** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **184** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

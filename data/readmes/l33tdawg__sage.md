@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.0`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.1`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,21 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.0 and earlier)</summary>
+<summary>Recent release notes (v11.25.1 and earlier)</summary>
+
+## What's New in v11.25.1
+
+**AMID can approve a distinct local agent.** Operators can opt into `--local-agent-key-dir` (`SAGE_LOCAL_AGENT_KEY_DIR`) to supply identity-bound target consent keys to the existing access-policy route and Python SDK methods. Root authorization, same-machine checks, and consensus validation remain required. Unregistered targets are refused before signing or broadcast, and malformed Ed25519 private-key encodings fail closed.
+
+**Hybrid recall sizes reranking work from the requested results.** The authorization scan retains its full candidate coverage while the cross-encoder scores the smaller requested pool. `SAGE_RERANK_MAX_CANDIDATES` adds an optional cap. Rate-limited fallback warnings expose operational failures without logging upstream error text or submitted content.
+
+**Explicit federation settings survive config saves.** Disabled P2P, an empty relay list, and disabled force-private mode no longer disappear during serialization and revert to defaults on reload.
+
+**Force-quitting the macOS tray no longer leaves its daemon orphaned after startup.** The tray identifies itself to its child; once graceful shutdown is ready, the daemon monitors that parent and stops if it disappears. Standalone and externally supervised daemons remain independent unless explicitly configured with the parent relationship.
+
+No consensus version change or chain migration. `latest` and automatic upgrade voting remain app29; app30 remains explicit. Existing reply catch-up and v11.24.4 fixes are already included through release history.
+
+Container: `ghcr.io/l33tdawg/sage:11.25.1`. SDK 11.25.1.
 
 ## What's New in v11.25.0
 
@@ -949,42 +963,4 @@ alongside it. CodeQL workflow actions are pinned to the verified v4.37.9 commit.
 This patch introduces no consensus-rule, AppHash-input, key-encoding, fork-target,
 or application-version changes. App-v27 remains the supported ceiling.
 
-Container: `ghcr.io/l33tdawg/sage:11.19.14`. SDK 11.19.14.
-
-## What's New in v11.19.13
-
-**The stdio MCP bridge no longer self-installs project hooks into the user’s
-home directory.** When `sage-gui mcp` starts with `$HOME` as its working
-directory, automatic project repair now returns without writing `.claude`
-hooks or project-relative hook registrations into user-global configuration.
-
-Explicit `sage-gui mcp install` and `sage-gui codex install` commands keep their
-existing home-directory refusal. Normal project-directory self-healing also
-remains unchanged, including when `CLAUDE_CONFIG_DIR` points elsewhere.
-
-This patch changes no consensus rule, AppHash input, key encoding, fork target,
-or application version. Existing app-v27 chains replay byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.13`. SDK 11.19.13.
-
-</details>
-
-## Release History
-
-The latest release notes are above. Earlier entries below describe behavior at
-their release dates; use the current reference for present-day contracts.
-
-<details>
-<summary>Earlier releases — preserved changelog</summary>
-
-## What's New in v11.19.12
-
-**Project-scoped MCP and Codex installs can no longer corrupt user-global host
-configuration.** `sage-gui mcp install` and `sage-gui codex install` now refuse
-to run when the working directory resolves to the user's home directory. Run
-the command from the intended project instead; ordinary project installs are
-unchanged.
-
-The native-shell build also refreshes its fail-closed checksum for the official
-September `linuxdeploy-plugin-appimage` rebuild. The replacement was produced
-by the upstream project's successful scheduled workflow fro
+Container: `ghcr.io/l33tdawg/sage:1

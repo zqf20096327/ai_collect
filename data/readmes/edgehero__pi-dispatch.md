@@ -1,39 +1,73 @@
 <p align="center">
-  <img src="docs/images/banner.png?v=2026-11-03" alt="pi-dispatch: hand software work to an AI coding agent, and decide how closely you watch it" width="880">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/banner-still.png?v=2026-11-04b">
+    <img src="docs/images/banner.png?v=2026-11-04b" alt="An animation of the pi-dispatch banner: go from sitting next to one AI coding agent to running many in the background. In the loop, near the loop, out of the loop, dark engineering. On a lit floor you stand beside one agent. As the lights go off, more agents start, and you walk away to the one page that stays lit, whose counts follow the floor. Spending limits that hold, a sealed box for every job, and you decide what ships." width="880">
+  </picture>
 </p>
 
 # pi-dispatch
 
-**Hand routine software work to an AI coding agent, and decide for yourself how closely you watch it.**
+**Go from sitting next to one AI coding agent to running many in the background.**
 
-pi-dispatch runs the [pi](https://github.com/earendil-works/pi) coding agent for you in the background, on your own
-computer or server. You say what it should work on and when. Each job happens in a sealed box that is thrown away
-afterwards, stops at the spending limit you set, and shows up live on one web page. When it works on a project on GitHub
-or GitLab, you get back a proposed change to review. pi-dispatch never merges anything, so what ships stays a person's
-decision.
+Working with a coding agent usually means sitting next to it. You type, it works, you check, you type again. That is the
+right way to start, but one person can only watch so much. pi-dispatch lets you step back at your own pace, one kind of work
+at a time, from in the loop, to near the loop, to out of the loop, until you are looking after a swarm of agents rather than
+one.
+
+A dark factory runs with the lights off, because nobody needs to stand on the floor. pi-dispatch brings that idea to software
+work: **dark engineering**. It runs the [pi](https://github.com/earendil-works/pi) coding agent for you in the background, on
+your own computer or server. Agents start on their own and do the work, and a second agent can review it. Each job happens in
+a sealed box that is thrown away afterwards, stops at the spending limit you set, and shows up live on one web page. On a project
+on GitHub or GitLab, the work stops today at a proposed change: pi-dispatch never merges it into your project, so what ships
+stays a person's decision.
 
 It is free and open source. You pay your AI provider for what the agent uses, or use a subscription you already have.
 
+**[Install](#install-in-four-steps)** · **[Open the web page](#open-the-web-page)** · **[How to use it](#how-to-use-it-from-in-the-loop-to-out-of-the-loop)** · **[Manage a swarm](#manage-a-swarm-of-agents)** · **[Common worries](#common-worries)** · **[Words used here](#words-used-here)** · **[For engineers](#for-engineers)**
+
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-dark.png?v=2026-11-03">
-  <img src="docs/images/console/console-overview.png?v=2026-11-03" alt="The console's overview page: one question and two jobs that need you, five jobs waiting and why, four running, 15 dollars spent of a 25 dollar daily limit, and a timeline of every project's runs with the jobs in line after the now line">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/how-close-you-stay-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/how-close-you-stay-still.png?v=2026-11-04">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/how-close-you-stay-dark.png?v=2026-11-04">
+  <img src="docs/images/explain/how-close-you-stay.png?v=2026-11-04" alt="An animation of one loop of work drawn three times, one above the other, under the headline: decide how closely you watch. In the loop, you are on the track: you watch it work and step in, and a message from you crosses to the agent. Near the loop, you stand just beside it: it works alone and stops to ask when it needs you, and it waits until you answer. Out of the loop, you are far away: it starts without you, a second agent reviews it, and only the change, reviewed by AI, travels to you, and then you decide. At every stage: a spending limit, a sealed box, and the final say stays yours.">
 </picture>
 
-<sub>The overview: what needs you, what is waiting, what is running and what today has cost. Every screen on this page shows sample data.</sub>
+<sub>You choose this per kind of work, not once for everything.</sub>
 
 ## Install in four steps
 
+> **The web page is not on npm yet.** The console and the browser setup on this page are built, and come with the next
+> release. The version on npm today, 4.3.1, does not have them. Step 2 says what to do until then.
+
 **1. Have these ready.** A computer or server that stays on (on a Mac or Windows machine, jobs run only while you are logged in),
 [Docker](https://www.docker.com/products/docker-desktop/) and [Node.js](https://nodejs.org) 22.19 or newer, and a key from an AI
-provider or a [subscription](docs/subscription-auth.md). Steps 1 and 2 are for someone comfortable in a terminal.
+provider or a [subscription](docs/subscription-auth.md).
 
-**2. Install it.** If you already use pi, run this, type `/dispatch` inside pi, and choose **Finish setup in browser**:
+**2. Install it.** If you already use a coding agent, let it do the terminal work with you.
+
+**With Claude Code**, or another coding agent, paste this:
+
+```text
+Install pi-dispatch for me: https://github.com/edgehero/pi-dispatch
+
+Use the npm install steps under "By hand" in its README, in a new folder called my-dispatch
+in my home folder. First check that Docker is running and Node.js is 22.19 or newer, and tell me
+how to fix anything missing. Do not run `pi-dispatch up` yourself, and do not ask me for any key
+or password. When you are done, tell me how to run that last command in my own terminal, and
+what to expect.
+```
+
+That last command is yours to run because it asks before it starts anything on your machine, and it prints your sign in link,
+which should stay out of the chat. Claude Code only does the installing: your jobs run on pi, with your own AI provider key or
+subscription.
+
+**With pi**, run this, type `/dispatch` inside pi, and choose **Finish setup in browser**:
 
 ```bash
 pi install npm:@edgehero/pi-dispatch-admin
 ```
 
-Without pi, install into a folder that will stay there:
+**By hand**, install into a folder that will stay there:
 
 ```bash
 mkdir my-dispatch && cd my-dispatch
@@ -41,11 +75,18 @@ npm install --save-exact @edgehero/pi-dispatch@4.3.1 @edgehero/pi-dispatch-admin
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
-It asks before it starts anything, then prints a sign in link that works for 60 seconds.
+It asks before it starts anything, then prints a sign in link that works for 60 seconds. Setup in the browser needs a Mac or
+Linux. On Windows, run `pi-dispatch up` without `--console`, or choose **Guided setup** in pi, and sign in to the console with a
+token.
+
+**Until the next release,** `--console` does nothing and no sign in link appears, and in pi `/dispatch` offers **Guided setup**
+only, so skip step 3 for now. Put your provider key in the `.env` file in the folder you installed into (a failed key check before
+that is normal), run `./node_modules/.bin/pi-dispatch service install` to keep the worker running, and follow it in the
+[pi panel](#the-pi-panel).
 
 **3. Finish the checklist in your browser.** The link opens a live list of what is ready and what is not: the queue, a worker, the
-network rules, your provider key and a first trigger. It offers recipes: fix an issue when it gets a label, tidy every night, or
-answer a comment.
+network rules, your provider key and a first trigger. Your key goes in here, never in a chat. It offers recipes: fix an issue when
+it gets a label, tidy every night, or answer a comment.
 
 ![The setup page: each step of a new deployment marked ready, starting, not yet or to do, with a button for the next action and recipes for a first trigger](docs/images/console/console-setup.png?v=2026-11-03)
 
@@ -56,20 +97,60 @@ answer a comment.
 
 </details>
 
-**4. Bring your own pi setup, if you have one** ([below](#bring-your-own-pi-setup)), and [run a first job](#how-to-use-it). Running it on a
+**4. Bring your own pi setup, if you have one** ([below](#bring-your-own-pi-setup)), and [run a first job](#how-to-use-it-from-in-the-loop-to-out-of-the-loop). Running it on a
 server for good has [its own steps](#set-up-a-host).
 
-## Why: from in the loop to out of the loop
+## Open the web page
 
-Working with a coding agent usually means sitting next to it. You type, it works, you check, you type again. That is
-the right way to start, but one person can only watch so much. pi-dispatch lets you step back at your own pace, one kind
-of work at a time, and it never asks you to trust more than you have seen.
+The web page, which the rest of this README calls the console, runs on your own machine at `http://127.0.0.1:4790`. Bookmark it.
+A sign in lasts up to 12 hours, and an hour with nothing happening ends it sooner. To sign in again:
+
+| Where you are | What to do |
+|---|---|
+| In pi | `/dispatch console` opens the page, and `/dispatch console --link` signs you in as well |
+| In a terminal, in the folder you installed into | `./node_modules/.bin/pi-dispatch-console link --name operator`, then open the link it prints within 60 seconds. If you gave another name during setup, `./node_modules/.bin/pi-dispatch-console token list` shows it |
+| On a server | Forward a port, and make the link on the server ([how](#set-up-a-host)) |
+| On Windows | One time links do not work there, so paste a token ([how](docs/console.md#create-the-first-token)) |
+
+**Rather not use a terminal each time?** Setup keeps no password you could paste. Run this once, keep what it prints in your
+password manager, and paste it into the sign in page from then on. It ends the sign in you have now.
+
+```bash
+./node_modules/.bin/pi-dispatch-console token rotate --name operator
+```
+
+**The page does not load?** The console may have stopped. `./node_modules/.bin/pi-dispatch service status --console` says whether
+it runs, and `./node_modules/.bin/pi-dispatch service start --console` starts it ([everything about the console](docs/console.md)).
+
+## How to use it: from in the loop to out of the loop
+
+Every job takes the same path. What changes, stage by stage, is how much of it needs you, and pi-dispatch never asks you to trust
+more than you have seen. Every screen on this page shows sample data.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/one-job-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/one-job-still.png?v=2026-11-04">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/one-job-dark.png?v=2026-11-04">
+  <img src="docs/images/explain/one-job.png?v=2026-11-04" alt="An animation of one job in five steps, under the headline: you pay for AI only while the agent works. Something starts it: a schedule, an issue, or you. It waits in line, and nothing runs yet. It is checked: over a limit, it is refused. The agent works in a sealed box, and if it needs you it stops to ask. You decide on a proposed change: you accept it, not pi-dispatch. A strip under the steps shows no AI cost in the first three and the last, and AI cost only where the agent works. A job crosses the strip and it fills only there. A second job is refused at the check.">
+</picture>
+
+<sub>On a folder on your own machine there is no proposed change: the job edits that folder directly.</sub>
 
 ### 1. In the loop: watch it work and step in
 
 You start a job and follow it live: what it is doing, which step of its plan it is on, what it said. If it heads the
 wrong way you tell it, and it reads your message before its next step. You do not have to start over and pay for the
 same work twice. ([Steering](docs/steering.md), [chat](docs/chat.md))
+
+**To get here:** start the worker from the checklist. Give it a folder that is a git repository, with your work committed, because
+a job on a folder edits it directly. Then open **Runs** in the console and read along.
+
+```bash
+./node_modules/.bin/pi-dispatch run ./my-project --task "add type hints" --flow tidy
+```
+
+A flow is a short text file of instructions in your project, such as `.pi/skills/tidy/SKILL.md`. The
+[`examples/`](examples/) folder has one to copy.
 
 ![A running job in the console: its progress through the phases of its plan, the agent's note that three of ten tables are migrated, a box for sending it a message, the message it already received, and its live transcript](docs/images/console/console-run-live.png?v=2026-11-03)
 
@@ -82,19 +163,70 @@ question is the agent's own words, so your instructions decide how it asks: what
 ([Parked questions](docs/sessions.md#parked-jobs-the-agent-asks-then-waits), [approval gates](docs/approval-gates.md),
 [answer rules](docs/answer-rules.md))
 
+**To get here:** on **Triggers**, add a rule: every night at three, or whenever an issue gets the label `pi:fix`. Turn on **steer**
+in the form, so you can also tell its jobs what to do while they work. To let a job stop and ask you, add `resume` and `awaitInput`
+to the rule in `triggers.json`, which is a job for your technical person.
+
 ![A run that stopped to ask: what it found, three options with what each costs, what it recommends, and a box for your answer](docs/images/console/console-question.png?v=2026-11-03)
 
 ### 3. Out of the loop: you review what comes back
 
 Now the work starts without you: on a schedule, when someone labels an issue or comments on it, or (as a read only
-investigation) when an alert comes in. You read the results when it suits you. **Zero touch** tells you how far you have
+investigation) when an alert comes in. A second job can review a proposed change, and the first can answer what it finds, so
+what reaches you has already been read by an AI. That is a review, not an approval: the decision stays yours. You read the
+results when it suits you. **Zero touch** tells you how far you have
 come: how often runs needed a person, per project, over the last 7, 30 or 90 days.
 ([Triggers](docs/triggers.md), [watching alerts](docs/watch.md), [Zero touch](docs/zero-touch.md))
+
+**To get here:** read **Zero touch** under Runs. It counts per project and repository, not per kind of work, with a goal of zero
+and a marker at 5%. When a project rarely needs you, add a job that reviews each proposed change, let it run, and read what comes
+back. You are out of the loop for that work, and still in charge of what ships.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/when-to-step-back-dark-still.png?v=2026-11-04b">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/when-to-step-back-still.png?v=2026-11-04b">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/when-to-step-back-dark.png?v=2026-11-04b">
+  <img src="docs/images/explain/when-to-step-back.png?v=2026-11-04b" alt="An animation of three projects under the headline: step back when the numbers say you can. Zero touch shows how often runs needed a person, per project, over the last 8 weeks, with a dashed line at 5 percent. This is sample data. The rate for ops falls to 3 percent, which reads under goal. Nothing happens by itself: after a pause the words say your choice, and only then do you step from near the loop to out of the loop. The rate for web falls to 16 percent, above goal, and you stay near the loop. The rate for billing rises to 32 percent, which reads high, and you stay in the loop. Aim for zero. The dashed line at 5 percent is a guide, not permission: you decide.">
+</picture>
+
+<sub>Sample data. Nothing moves a project for you: the number tells you, and you decide.</sub>
 
 ![The Zero touch page: how often runs needed a person, what the cause was, and which projects run without help](docs/images/console/console-zero-touch.png?v=2026-11-03)
 
 Out of the loop does not mean out of control. The spending limits hold with nobody watching, every job stays in its
 box, and a person still merges.
+
+## Manage a swarm of agents
+
+Once one kind of work runs without you, you can run many at once, across your projects and machines. That is dark engineering in
+practice, and your job changes: you stop watching an agent and start looking after a floor of them.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/many-at-once-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/many-at-once-still.png?v=2026-11-04">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/many-at-once-dark.png?v=2026-11-04">
+  <img src="docs/images/explain/many-at-once.png?v=2026-11-04" alt="An animation of many agents at once, under the headline: many agents, one place to run them. New work comes from a schedule, an issue or a comment, and waits in line. Two machines hold eight boxes, each with one agent that works, asks or reviews, or open for the next job, under one budget. One page tells you how many need you and how many are running. One switch stops new work: new work waits in line, running jobs finish, and when it is switched back on the line moves again.">
+</picture>
+
+- **One line.** Every job from every project waits its turn, and starts only when a machine has room for it.
+- **One budget.** Your limits hold across all of them, however many run, with a share per project if you want one
+  ([budget split](docs/allocation.md)).
+- **One page.** What needs you, what is waiting and why, what is running and what today has cost.
+- **One switch** that stops new work everywhere. Jobs already running finish, and what is waiting stays in line.
+- **One number.** **Zero touch** says how often runs needed a person, per project, so you can see how far the lights have really
+  gone out.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-dark.png?v=2026-11-03">
+  <img src="docs/images/console/console-overview.png?v=2026-11-03" alt="The console's overview page: one question and two jobs that need you, five jobs waiting and why, four running, 15 dollars spent of a 25 dollar daily limit, and a timeline of every project's runs with the jobs in line after the now line">
+</picture>
+
+<sub>The overview: what needs you, what is waiting, what is running and what today has cost.</sub>
+
+**It looks after the swarm, and does not direct it.** pi-dispatch adds no agent of its own, does not plan the work, and does not
+have agents talk to each other: each job works alone, in its own box. They work together in the ways you set up: a second job
+reviews the first, two jobs race on one issue for you to compare ([replicas](docs/replicas.md)), or a flow plans how one budget is
+split across projects ([portfolio manager](docs/portfolio-manager.md)).
 
 ## Is this for you?
 
@@ -111,14 +243,21 @@ For a one off task on your own machine, plain pi is enough.
 ## Common worries
 
 **Do I need to be a developer?** To use it day to day, mostly not: the web page is where you read what happened, answer
-questions, approve, add a schedule and change limits, and you describe a recurring job in plain sentences. To set it up
-you need someone comfortable in a terminal, and now and then for a setting the page does not offer. And what it hands you
+questions, approve, add a schedule, change limits and choose what each kind of job may use, and you describe a recurring job in plain sentences. To set it up
+you need a terminal, and a coding agent or someone comfortable with one can do most of that for you. Now and then a setting the page does not offer needs one too. And what it hands you
 is code, so someone should be able to judge it before it ships.
 
 **Can it run up a bill?** You set limits in dollars and in jobs, per day, week and month, for everything or per project. A
 job over a limit is refused before it starts, and a job with its own cap is stopped before any model call that could
 take it past that cap. Also set a spending limit at your AI provider, as a last line
 ([costs](docs/costs.md), [limits](docs/scoped-limits.md)).
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/limits-inside-limits-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/limits-inside-limits-still.png?v=2026-11-04">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/limits-inside-limits-dark.png?v=2026-11-04">
+  <img src="docs/images/explain/limits-inside-limits.png?v=2026-11-04" alt="An animation of limits drawn inside one another, under the headline: a job has to fit inside every limit. Innermost, one job with its own limit, which stops before an AI call that could pass that limit. Around it one project with its own limits, around that all your jobs per day, week and month, and outermost, dashed because you set it with them, your AI provider's limit, your last line of defence. Two jobs go in and the meters rise. A job that does not fit is refused before it starts, at no AI cost.">
+</picture>
 
 **Can it break my project?** On GitHub, GitLab, Forgejo or Azure DevOps a job works on a fresh copy and comes back with a
 pull request for you to review, and on GitHub pi-dispatch refuses a repository whose default branch is not protected. A job
@@ -129,6 +268,13 @@ changes unless you force it.
 internet addresses you allow. Two secrets do go in, and the agent can read them: your AI provider key and your GitHub or
 GitLab token. That is why the provider limit above matters, and why a narrow token beats your whole login
 ([`SECURITY.md`](SECURITY.md) says plainly what is and is not defended).
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/in-and-out-of-the-box-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/in-and-out-of-the-box-still.png?v=2026-11-04">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/in-and-out-of-the-box-dark.png?v=2026-11-04">
+  <img src="docs/images/explain/in-and-out-of-the-box.png?v=2026-11-04" alt="An animation of a sealed box with the agent inside, thrown away afterwards, a fresh one for every job. Going in: your project, and instructions that are read only. Two keys go in too, and it can read them: your AI provider key and a GitHub or GitLab key. Coming out: a proposed change, and what it did and cost. It can reach only addresses you allow, and nothing else. Your other files and your other passwords stay out. The agent can read both keys, so limit what each key can do, so a leak does less harm.">
+</picture>
 
 **What if the machine restarts or a job dies?** The queue is kept on disk, so waiting jobs are still there. A job that
 was running is lost or started over, unless its trigger opts into continuing from its last checkpoint
@@ -185,27 +331,28 @@ you send it ([answer rules](docs/answer-rules.md)).
 **Picking up where it stopped:** if a machine restarts or a job's box dies, a job that opted in continues from its last checkpoint
 instead of paying for everything again ([durable runs](docs/durable-runs.md)).
 
-![A run that lost its first attempt and continues as a recovery job, with what it had done and what carries over](docs/images/console/console-recovery.png?v=2026-11-03)
+![A run that lost its first attempt and continues as a recovery job: the attempt that failed, the checkpoints it had written and the recovery job that goes on from them](docs/images/console/console-recovery.png?v=2026-11-04-800)
 
 **Trying it yourself:** reopen a finished job's workspace in a fresh box with no keys, or prepare one from scratch, and open it in your
-own terminal or your browser ([sandboxes](docs/sandbox.md), [browser terminal](docs/sandbox-gateway.md)).
+own terminal or your browser. The page says what pi can load there, which is only what the project holds
+([sandboxes](docs/sandbox.md), [browser terminal](docs/sandbox-gateway.md)).
 
-![The Sandboxes page: choose a kept workspace or start from a repository, see what opens and what it holds, and open it in your terminal](docs/images/console/console-sandboxes.png?v=2026-11-03)
+![The Sandboxes page: choose a kept workspace, see what opens and what pi can load there, and open it in your terminal, with a button for a new one](docs/images/console/console-sandboxes.png?v=2026-11-03-800)
 
 **Updates:** which version of pi and which extensions your jobs run, what is newer, a capped trial on a real job, and Adopt. Nothing
 updates by itself ([updates](docs/console.md#updates)).
 
 ![The Updates page: what jobs run now, what is newer, a button to run a canary, and which version each host holds](docs/images/console/console-updates.png?v=2026-11-03)
 
-**Projects:** group your repositories into a project, with its own limits, share of the budget and history
-([projects](docs/projects.md), [budget split](docs/allocation.md)).
+**Projects:** group your repositories into a project, with its own limits, share of the budget and history, and see
+[what its runs loaded](#what-a-job-gets) on each machine ([projects](docs/projects.md), [budget split](docs/allocation.md)).
 
-![One project: its members, its limits, what it has spent and its recent runs](docs/images/console/console-project.png?v=2026-11-03)
+![One project: what it has spent, its runs of the last day, what its runs loaded on each machine and where they differ, its members and its limits](docs/images/console/console-project.png?v=2026-11-04-800c)
 
-**A trigger:** what starts it, what it runs and what it has cost. A schedule also gets a button that fires it now
-([triggers](docs/triggers.md)).
+**A trigger:** what starts it, what it has cost and [what its jobs get](#what-a-job-gets) on each machine, which you can change right there.
+A schedule also gets a button that fires it now ([triggers](docs/triggers.md)).
 
-![One trigger's page: what starts it, the flow it runs, its limits and what it has cost so far](docs/images/console/console-trigger.png?v=2026-11-03)
+![What its jobs get, on one trigger's page, with two changes not written yet: a pill per machine saying what differs or that it is unknown, then the model and its job cap, the flow, the staged packages, the outside systems with linear switched on, pi's own tools with bash off, the image and secrets, what the last run had under each, and a bar with Preview the change and Discard](docs/images/console/console-trigger.png?v=2026-11-04-800c)
 
 **Your phone:** every page fits, for answering a question from wherever you are. The console listens only on its own machine
 unless you set it up otherwise, so reaching it from a phone takes a private tunnel
@@ -234,50 +381,85 @@ PI_GLOBAL_PI_DIR=/absolute/path/to/my-dispatch/pi-global
 | Your MCP servers, with credentials as references only | Secrets of any kind: the copy is read by jobs, so it holds none |
 
 **Read the list it prints.** An extension is code, and it runs in every job, beside work that may come from a stranger's issue text. Skip
-extensions with `--no-extensions`, or keep one trigger's jobs out of your packages with `"packages": false`.
+extensions with `--no-extensions`, or keep one trigger's jobs out of your packages with the switch on its page (`"packages": false` in the triggers file).
 
 Your projects still win. A job layers your setup under the project's own `.pi/` folder, so a project's skill replaces yours of the same
 name, and a small safety floor sits under both, which neither can remove. To add a language or a system tool rather than a pi setting, build
-your own [job image](docs/job-image.md). The details are in [`docs/global-pi-overlay.md`](docs/global-pi-overlay.md).
+your own [job image](docs/job-image.md). The details are in [`docs/global-pi-overlay.md`](docs/global-pi-overlay.md), and each run says what it
+really got ([What a job gets](#what-a-job-gets)).
 
-## How to use it
+## What a job gets
 
-Once it is installed, this is the path through the three stages.
+A job starts with four things: your setup on the machine it runs on, what the repository holds, what its trigger says, and
+the box it runs in. Each changes on its own: one machine misses an update, or someone removes a skill from the repository. So
+two jobs of one trigger can start differently.
 
-**1. Run a first job and watch it.** Start the worker from the checklist. Give it a folder that is a git repository, with your
-work committed, because a job on a folder edits it directly. Then open **Runs** in the console and read along. You are in
-the loop.
+**A job that starts keeps a list of what it had:** the version of pi, the model, its skills, its extensions, the outside systems
+(MCP servers) it connected to, and its tools. The run's page shows that list and says plainly when something is missing, so you
+can check a job you did not watch before you accept its work.
 
-```bash
-./node_modules/.bin/pi-dispatch run ./my-project --task "add type hints" --flow tidy
-```
+![The Loaded card of a finished run that had no flow: it says so at the top, with buttons to where it is fixed, then pi, the model, extensions, skills, outside systems and tools, one line each](docs/images/console/console-run-loaded.png?v=2026-11-04-800)
 
-A flow is a short text file of instructions in your project, such as `.pi/skills/tidy/SKILL.md`. The
-[`examples/`](examples/) folder has one to copy.
+**A clean finish can still be missing something:** a job that finishes without its instructions reads **Completed, without
+its flow**, and one with an extension that failed to load reads **Completed, with a failed extension**. The Runs list says the
+same, so it does not read as fine. A project's page says when its runs differ from machine to machine.
 
-**2. Give it a schedule or a label.** On **Triggers**, add a rule: every night at three, or whenever an issue gets the label
-`pi:fix`. Turn on **steer** in the form, so you can also tell its jobs what to do while they work. To let a job stop and ask you,
-add `resume` and `awaitInput` to the rule in `triggers.json`, which is a job for your technical person. You are near the loop.
+**What the list holds:** the names of what you set up, the tools those brought, and how many of everything else. It keeps no text from an issue, which a
+stranger may have written, and a repository's own skills and extensions are only counted: to see them, open the repository. A run that
+ended before it could report, or one from an older release, says its list was not recorded ([what the card can say, and what to do](docs/console.md#what-a-run-loaded)).
 
-**3. Step back when the numbers say you can.** Read **Zero touch** under Runs. When a kind of work rarely needs you, let
-it run and review what comes back. You are out of the loop for that work, and still in charge of what ships.
+**You can change what a trigger's jobs get from its page.** The further out of the loop you go, the more this matters, because it is how you
+decide what a job may use without watching it. Its **What its jobs get** card has a line for each thing: the model and the most
+one job may spend (its job cap), the flow, your packages, the outside systems, the tools. Each machine gets a label saying whether its jobs would
+start with the same things as on your other machines, and one that has not told the console what it has is marked unknown, so silence never passes for a
+match. Under each line is what a recent run really had, so a setting and what it did sit together. Nothing is saved while you click: your changes collect
+at the foot of the card, and you can discard them.
 
-To open the console again later, type `/dispatch console` in pi. A sign in lasts up to 12 hours, and an hour with nothing
-happening ends it sooner. After that, you need your token or a new link, which `/dispatch console --link` or
-`pi-dispatch-console link --name <you>` makes ([everything about the console](docs/console.md)).
+**You see it in words first, and confirm once.** **Preview the change** says each change in a sentence, and says so when it gives
+jobs more than they had. It says when the change takes effect and which jobs already in line would be refused, warns about what would stop these jobs on the
+machine the console runs on, and says how to undo it. One
+**Confirm** saves it, the console records who did, and **Undo** puts it back, or says what to edit by hand where it cannot.
+
+![The preview of that change, in words: linear on and where its jobs would now connect, bash off, when the change takes effect, a waiting job that would now be refused, that a job on a machine without linear is refused and which machines have it, who it is recorded under, the lines of the file as they would change, the way to undo it, and one Confirm button](docs/images/console/console-trigger-change.png?v=2026-11-04-800d)
+
+**It stops what would only fail later, before it costs you anything.** A job cap can only lower the limit you set for all jobs. If a trigger's model is too
+expensive for even one request under its cap, the page refuses the change and names the amount a short task needs, rather than letting a job start and fail.
+If the page is out of date, it asks you to reload rather than write over someone else's change.
+
+**Some of this only a person sets.** The commands pi-dispatch gives an AI cannot set a trigger's job cap, the list of models its jobs may use, its fallback models,
+its outside systems, which tools its jobs lose or whether they load your packages: one that tries is refused before you are asked. You set those on the page,
+or your technical person sets them in the triggers file ([what the card can say, and what it refuses](docs/console.md#what-a-triggers-jobs-get)).
+They can still move a trigger's flow, provider and model, and only after you confirm.
 
 ## Words used here
 
 | Word | What it means |
 |---|---|
 | **Agent** | A program that uses an AI model to read code, change it and run it |
+| **Swarm** | Many agents working at the same time, each on its own job |
+| **Token** | A password-like key: one signs you in to the console, and another lets a job reach your code |
+| **`.env`** | A small settings file in the folder you installed into |
+| **Dark engineering** | Software work that runs with nobody watching it, the way a dark factory runs with the lights off |
 | **pi** | The open source coding agent that does the work here. pi-dispatch runs it, and adds no agent of its own |
 | **Job**, or **run** | One piece of work, from start to finish |
 | **Trigger** | A rule for what starts a job: a schedule, a label, a comment |
+| **Triggers file** | `triggers.json`, the file on a machine that holds your triggers. The console edits it for you |
 | **Flow** | A short text file in your project with the standing instructions for a kind of job |
+| **Skill** | A short text file that teaches the agent one kind of task. A job's flow is one of them |
+| **Extension** | An add-on for pi, which can give the agent new tools |
+| **Overlay** | The console's word for your setup on one machine, which jobs there start with |
+| **Host** | The console's word for a machine that runs jobs |
+| **MCP server** | An outside system a job can connect to |
+| **Package** | An add-on you installed with `pi install`, which can bring extensions, skills and tools |
+| **Tool** | One thing the agent can do, such as read a file |
 | **Container** | The sealed box a job runs in, thrown away afterwards |
 | **Forge** | The place your code lives: GitHub, GitLab, Forgejo or Azure DevOps |
 | **Repository** | A project's code and its history, on a forge or in a folder (a "git repository") |
+| **Base commit** | The version of a repository a job started from |
+| **Staged** | Set up on a machine, ready for its jobs to load |
+| **Job cap** | The most one job may spend, in dollars. A trigger can only lower the limit you set for all jobs |
+| **Fallback model** | The model a job tries on its next attempt when the one before it is rate limited or out of quota |
+| **Doctor** | pi-dispatch's own check of a machine's setup, which also says what that machine's jobs can load |
 | **Pull request** | A proposed change to a repository, for a person to review |
 | **Merge** | Accepting a pull request into the project. pi-dispatch never does this |
 | **Issue**, **label** | A note about work to do on a forge, and a tag you can put on it |
@@ -366,8 +548,8 @@ have a [setup page each](#other-forges).
 **Add a second machine.** Point it at the same Valkey and give every worker a name with `PI_WORKER_NAME`. Each host keeps its own logs, jobs and
 sandbox folders ([several machines](docs/multi-host.md)). Run one worker per container daemon.
 
-**Keep it working.** `pi-dispatch service restart --drain` restarts after running jobs finish, and `/config/updates` in the console shows what is
-newer ([service](docs/service.md)).
+**Keep it working.** `pi-dispatch service restart --drain` restarts after this host's running jobs finish, and `/config/updates` in the console shows
+what is newer ([service](docs/service.md)).
 
 ## Providers and models
 
@@ -418,6 +600,9 @@ model is one reviewed edit ([`docs/model-roles.md`](docs/model-roles.md)).
            "fallbackModels": ["openai/gpt-4o"] } }
 ```
 
+On a trigger's page in the console, a person can change its `model`, `models` and `fallbackModels` with one preview and one Confirm. No `dispatch_*` tool
+can set the list or the fallbacks ([what a trigger's jobs get](docs/console.md#what-a-triggers-jobs-get)).
+
 **Fallbacks** are tried in order on the job's next attempt when a provider is rate limited, out of quota or overloaded. Each is chosen at pickup,
 before a credential is minted, a repository cloned or budget reserved, and must pass the same checks as the primary: on `run.models`, in the pinned
 catalog with a cost bound and a credential, allowed by egress, with endpoint room. A failed model cools down for a while. An attempt may call only
@@ -430,7 +615,7 @@ under one cap, and the Models page shows the comparison. A person adopts it, and
 ## Triggers
 
 **A trigger is what starts a job.** All standing triggers live in one `triggers.json`, which the worker and the receiver read
-live, and which the console and the panel can edit. Each entry is an `{ on, run }` pair: **`on` says what fires it**, and
+live, and which the console and the panel can edit, or you by hand. Each entry is an `{ on, run }` pair: **`on` says what fires it**, and
 **`run` says what it runs**.
 
 ```jsonc
@@ -464,10 +649,15 @@ live, and which the console and the panel can edit. Each entry is an `{ on, run 
 - `mcp`, `forge`: MCP servers for its jobs ([MCP](docs/mcp.md)).
 - `excludeTools`: removes named built in tools ([excluded tools](docs/exclude-tools.md)).
 - `packages`: opts out of the staged pi packages ([workflows](docs/workflows.md)).
-- `models`, `maxCostUsd`: the models a job may call, and its own dollar cap ([triggers](docs/triggers.md#optional-run-fields)).
+- `provider`, `model`: the model its jobs run on ([choosing the model](docs/triggers.md#choosing-the-model-and-the-turn-limit)).
+- `models`, `fallbackModels`, `maxCostUsd`: the models a job may call, the ones to try when one is rate limited, and its own dollar cap ([limiting models](docs/triggers.md#limiting-which-models-a-job-may-call), [fallback models](docs/model-failover.md), [a dollar cap](docs/triggers.md#a-dollar-cap-per-job)).
 - `replicas`: races independent sandboxes on one event ([replicas](docs/replicas.md)).
 - `waitFor`: holds a job, unstarted and unbilled, until a time or your own check ([waiting](docs/wait-for.md)).
 - `instructions`, `skillsDir`, `github`, `portfolio`: the rest are in [`docs/triggers.md`](docs/triggers.md#optional-run-fields).
+
+On a trigger's page in the console, a person changes `flow`, `provider`, `model`, `maxCostUsd`, `models`, `fallbackModels`, `mcp`, `packages` and
+`excludeTools` with one preview and one Confirm ([what a trigger's jobs get](docs/console.md#what-a-triggers-jobs-get)). The page writes this host's file,
+so on a fleet where each host keeps its own, a host keeps what it has until its copy changes. A few others have the page's Edit form. The rest change in the file, and editing the file works as it always has.
 
 A whole project can get one environment from your secrets manager, granted once and read fresh at each job start. Quiet
 hours pause a repo or folder by weekday and timezone ([`docs/pause-windows.md`](docs/pause-windows.md)). The
@@ -533,9 +723,12 @@ Every trigger takes this path: spend is checked before the container starts, and
 ## Costs, projects and capacity
 
 **Costs.** A turn limit per job, job and token caps for the whole deployment, dollar caps per day, week and month, and a dollar
-cap per job. Caps can apply per repo, folder, model or project. Every job writes a durable record with ids only, never issue or
-comment text, with a usage ledger per model that the insights page prices ([`docs/costs.md`](docs/costs.md),
-[`docs/insights.md`](docs/insights.md)). A zero rate run with no declared plan reads `$0 (unrated)`, never "free".
+cap per job. Caps can apply per repo, folder, model or project. Every job writes a durable record of ids and the names you configured,
+never issue or comment text, with a usage ledger per model that the insights page prices ([`docs/costs.md`](docs/costs.md),
+[`docs/insights.md`](docs/insights.md)). What the job loaded is on that record: the names and versions of what you staged and configured,
+the tools those brought, and counts for what the repo holds. A repo's own extension runs in the process that reports this, so the
+worker checks each name against what it knows and holds a tool's name to one narrow shape
+([what a run loaded](docs/console.md#what-a-run-loaded)). A zero rate run with no declared plan reads `$0 (unrated)`, never "free".
 
 **Projects and split.** Group repos and folders into projects and cap each as one. Set a dollar total with a floor per project, and a
 flow can move money between projects inside it, never above the total or below a floor. Every move is logged and can be reverted
@@ -572,9 +765,10 @@ instructions ([`docs/global-pi-overlay.md`](docs/global-pi-overlay.md)).
 
 - **Nothing installs at job time.** Every job runs with `PI_OFFLINE=1`, so pi's resolver cannot shell out to npm. A package is staged on the host, at an
   exact version, always with `--ignore-scripts` ([`docs/workflows.md`](docs/workflows.md)).
-- **A repo's own `.pi/extensions` do run**, because the checkout is the default branch and merging is the gate. Nothing installs packages because a repo asks.
-- **MCP servers are yours, not the repo's.** A repo's `.pi/mcp.json` is never read for a job, and a trigger names the servers its jobs connect
-  ([`docs/mcp.md`](docs/mcp.md)).
+- **A repo's own `.pi/extensions` do run**, because the checkout is the default branch and merging is the gate. Nothing installs packages because a repo asks. On a run's
+  record they are counts, and a failed one's button opens the commit that ran ([what a run loaded](docs/console.md#what-a-run-loaded)).
+- **MCP servers are yours, not the repo's.** A repo's `.pi/mcp.json` is never read for a job, and a trigger names the servers its jobs connect:
+  in the file, or by a person on its page in the console, never by a `dispatch_*` tool ([`docs/mcp.md`](docs/mcp.md)).
 - **Sessions save the full transcript to disk**, which is a real disclosure: read [`docs/sessions.md`](docs/sessions.md) before you turn them on.
 
 ## Run as a service
@@ -583,7 +777,7 @@ instructions ([`docs/global-pi-overlay.md`](docs/global-pi-overlay.md)).
 pi-dispatch service render    # show the unit it would install, with the real paths
 pi-dispatch service install   # LaunchAgent (macOS), systemctl --user (Linux), nssm (Windows, a machine service)
 pi-dispatch service status    # which unit exists, where, and whether it runs
-pi-dispatch service restart --drain   # pause, wait for running jobs, restart, resume
+pi-dispatch service restart --drain   # pause this host's queues, wait for their running jobs, restart, resume
 ```
 
 `install` renders the [`deploy/`](deploy/) templates without sudo (`--system` on Linux prints the sudo commands instead, for a manual

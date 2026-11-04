@@ -10,6 +10,7 @@ with setup instructions, saved outputs and honest limits.
 
 | Guide | What you build | Start / watch |
 | --- | --- | --- |
+| InferSSD / DeepSeek 748B | Inspect a model-written Blender project, its repairs and measured waiting time on one DGX Spark | [Code, results and setup](inferssd/README.md) |
 | xLLM-Loop | Compare full and shared attention caches, inspect exact outputs, and recompute saved memory and timing results | [Code, measurements and setup](xllm-loop/README.md) |
 | Ornith 1.5 9B vs Qwen | Replay three saved coding tasks, inspect browser failures and distinguish working code from unfinished runs | [Tasks, artifacts and local-run notes](ornith15/README.md) |
 | MiniCPM5 1B vs 2B | Recompute twelve saved text checks and inspect an executed native-tool workflow | [Results, sources and local-run notes](minicpm5/README.md) |

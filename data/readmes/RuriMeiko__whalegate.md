@@ -10,6 +10,8 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-lightgrey">
 </p>
 
+<p align="center"><b>English</b> · <a href="README.vi.md">Tiếng Việt</a> · <a href="README.zh-CN.md">简体中文</a></p>
+
 **whalegate** turns your own `chat.deepseek.com` web sessions into a standard OpenAI-style `/v1/chat/completions` endpoint. It pools several accounts, fails over between them, streams over SSE, reads images, and translates OpenAI `tools` to and from DeepSeek's DSML format. Agents like Cline, Continue, LiteLLM, the OpenAI SDKs and `dsh` can use it as if it were the real API.
 
 > [!WARNING]
@@ -197,26 +199,33 @@ systemctl --user daemon-reload && systemctl --user enable --now whalegate
 
 Accounts are stored in `~/.whalegate/accounts.json`, which you can override with `DS_ACCOUNTS_PATH`. Upgrading from ds-harness moves `~/.ds-harness` there automatically. That file holds **live session tokens**: never commit or share it.
 
-Every account is one "machine" to DeepSeek: a TLS/HTTP2 fingerprint (a real Chrome/Edge build emulated by wreq), a user agent, a device id, cookies, a timezone and languages. All of these stay fixed for the life of the account, because a live session suddenly showing up on a different machine is exactly what gets flagged. There are four ways to add an account (tabs in **+ Thêm**), and they differ in *which* machine the account lives on.
+Every account is one "machine" to DeepSeek: a TLS/HTTP2 fingerprint (a real Chrome/Edge build emulated by wreq), a user agent, a device id, cookies, a timezone and languages. All of these stay fixed for the life of the account, because a live session suddenly showing up on a different machine is exactly what gets flagged. There are four ways to add an account (the tabs in **+ Thêm**, in this order), and they differ in *which* machine the account lives on.
 
 | | Machine the account uses | Cookie refresh |
 |---|---|---|
-| **Extension** | Your own browser, with every cookie including HttpOnly ones | Click the extension again on a DeepSeek tab |
+| **Dedicated Chrome** | A new dedicated Chrome with its own generated fingerprint and profile | Automatic, every `DS_DEVICE_REFRESH_HOURS` (default 6h) |
 | **Bookmarklet** | Your own browser; `ds_session_id` is whalegate's own, not the browser's | Click the bookmarklet again on a DeepSeek tab |
-| **Chrome login** | A new dedicated Chrome with its own generated fingerprint and profile | Automatic, every `DS_DEVICE_REFRESH_HOURS` (default 6h) |
-| **Paste a token** | Derived from the token (fixed, but not a real browser) | None |
+| **Extension** | Your own browser, with every cookie including HttpOnly ones | Click the extension again on a DeepSeek tab |
+| **Paste a token** (legacy) | Derived from the token (fixed, but not a real browser) | None |
 
-### Option 1: browser extension (recommended)
+### Option 1: dedicated Chrome (recommended)
 
-The extension does what the bookmarklet does, and also reads HttpOnly cookies such as `ds_session_id`. A page's own JavaScript can never read those, but an extension with the `cookies` permission can, just as CDP does for Chrome login.
+```mermaid
+flowchart LR
+    A["Dashboard → Chrome riêng:<br/>Mở cửa sổ riêng để đăng nhập / đăng ký"] --> B["New seed → new fingerprint<br/>+ profile ~/.whalegate/profiles/&lt;seed&gt;"]
+    B --> C["Dedicated Chrome on a random<br/>CDP port, fingerprint applied to every tab"]
+    C --> D["You sign in<br/>(Google / email / passkey)"]
+    D --> E["Gateway watches the tab (up to 10 min)<br/>→ token + device id + cookies"]
+    E --> F["Save, close Chrome<br/>(profile is kept)"]
+    F --> G["Every DS_DEVICE_REFRESH_HOURS:<br/>reopen that Chrome headless → fresh cookies"]
+```
 
-> **About `ds_session_id`.** It is `HttpOnly; Secure; SameSite=Strict` with no expiry. DeepSeek's web server sets it on the first response outside `/api` (the favicon or a page) when the request does not carry one; `/api/v0/*` never sets it. Signing in with Google issues a new one, because the strict cookie is not sent when Google redirects back. Accounts added by bookmarklet or pasted token cannot read the browser's value, so whalegate gets its own the same way a browser does: one `GET /favicon.ico` through the account's client when the account is added, and once at startup for older accounts that lack it.
-
-1. In **+ Thêm → Tiện ích**, click **Tải tiện ích** and unzip it. The download already points at the dashboard you opened it from.
-2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the unzipped `whalegate-extension` folder.
-3. On a logged-in `chat.deepseek.com` tab, click the whalegate icon. The account is added (or refreshed, if it is already in the pool), and the result shows on the DeepSeek tab.
-
-The extension can read cookies only on `chat.deepseek.com` and talk only to the dashboard's host. It sends the token, device id, cookies and browser profile straight to `/api/accounts`, the same request the bookmarklet makes.
+- Log in **or sign up** right in that window. A brand-new DeepSeek account works too: the gateway only waits for the tab to get a token. This is the recommended way to log in with a password, because nothing is typed into the dashboard. The dashboard also has a collapsed **Tự điền email + mật khẩu** option that fills the form for you; it is less reliable because DeepSeek's login page changes.
+- Closing the window before you sign in cancels the login. Only one login window can be open at a time.
+- Under systemd the gateway picks up `DISPLAY` / `WAYLAND_DISPLAY` from the user session so the window can open.
+- If the same DeepSeek user logs in again, the existing account's token is replaced rather than duplicated. The account moves to the new Chrome device, and any bookmarklet profile it had is dropped.
+- The **thiết bị** button on an account refreshes its device cookies right away.
+- **Quét Chrome chính** (in the Chrome riêng tab) captures every logged-in `chat.deepseek.com` tab from a Chrome started with `--remote-debugging-port=9333`. Since Chrome 136 that flag is ignored for the default profile, so it only works with a separate `--user-data-dir`; for your everyday Chrome, use the extension instead.
 
 ### Option 2: bookmarklet
 
@@ -245,25 +254,19 @@ The bundle never touches the URL, browser history or the network: it goes tab-to
 
 If the bookmarklet can't run, the same collector is available under **Dán token**: copy the console command, run it in the DevTools console of the DeepSeek tab, and paste the result.
 
-### Option 3: Chrome login
+### Option 3: browser extension
 
-```mermaid
-flowchart LR
-    A["Dashboard:<br/>Đăng nhập qua Chrome"] --> B["New seed → new fingerprint<br/>+ profile ~/.whalegate/profiles/&lt;seed&gt;"]
-    B --> C["Dedicated Chrome on a random<br/>CDP port, fingerprint applied to every tab"]
-    C --> D["You sign in<br/>(Google / email / passkey)"]
-    D --> E["Gateway watches the tab (up to 10 min)<br/>→ token + device id + cookies"]
-    E --> F["Save, close Chrome<br/>(profile is kept)"]
-    F --> G["Every DS_DEVICE_REFRESH_HOURS:<br/>reopen that Chrome headless → fresh cookies"]
-```
+The extension does what the bookmarklet does, and also reads HttpOnly cookies such as `ds_session_id`. A page's own JavaScript can never read those, but an extension with the `cookies` permission can, just as CDP does for Chrome login.
 
-- Closing the window before you sign in cancels the login. Only one login window can be open at a time.
-- Under systemd the gateway picks up `DISPLAY` / `WAYLAND_DISPLAY` from the user session so the window can open.
-- If the same DeepSeek user logs in again, the existing account's token is replaced rather than duplicated. The account moves to the new Chrome device, and any bookmarklet profile it had is dropped.
-- The **thiết bị** button on an account refreshes its device cookies right away.
-- **Quét Chrome chính** (in the Chrome riêng tab) captures every logged-in `chat.deepseek.com` tab from a Chrome started with `--remote-debugging-port=9333`. Since Chrome 136 that flag is ignored for the default profile, so it only works with a separate `--user-data-dir`; for your everyday Chrome, use the extension instead.
+> **About `ds_session_id`.** It is `HttpOnly; Secure; SameSite=Strict` with no expiry. DeepSeek's web server sets it on the first response outside `/api` (the favicon or a page) when the request does not carry one; `/api/v0/*` never sets it. Signing in with Google issues a new one, because the strict cookie is not sent when Google redirects back. Accounts added by bookmarklet or pasted token cannot read the browser's value, so whalegate gets its own the same way a browser does: one `GET /favicon.ico` through the account's client when the account is added, and once at startup for older accounts that lack it.
 
-### Option 4: paste a token
+1. In **+ Thêm → Tiện ích**, click **Tải tiện ích** and unzip it. The download already points at the dashboard you opened it from.
+2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and pick the unzipped `whalegate-extension` folder.
+3. On a logged-in `chat.deepseek.com` tab, click the whalegate icon. The account is added (or refreshed, if it is already in the pool), and the result shows on the DeepSeek tab.
+
+The extension can read cookies only on `chat.deepseek.com` and talk only to the dashboard's host. It sends the token, device id, cookies and browser profile straight to `/api/accounts`, the same request the bookmarklet makes.
+
+### Option 4: paste a token (legacy)
 
 On a logged-in `chat.deepseek.com` tab, open DevTools → Console and run:
 
@@ -500,7 +503,8 @@ stateDiagram-v2
 
 - Each request gets up to **3 attempts**. Upstream failures move to another account. Model mistakes (a bad tool call) retry with a correction note and don't penalize the account.
 - When no account is free, the request waits up to `DS_QUEUE_WAIT_SECS`, then returns `429` with `Retry-After`.
-- A stream that stalls for 90s or breaks mid-way counts as truncated and is retried, not returned as complete.
+- A stream that stalls for 90s or breaks mid-way (some text received, no `close` event) is first **resumed on the same account**, exactly as the web does: `POST /chat/resume_stream` for up to 5s (3s wait per try, 1s pause between tries), then the *Continue* button's `POST /chat/continue` with `fallback_to_resume` after a short random pause. Only the part the client has not seen yet is forwarded. If that fails too, the answer counts as truncated and the request fails over to another account.
+- When DeepSeek asks for a captcha (`CHALLENGE_REQUIRED`), the account rests and the gateway waits 2–5s at random before trying another account, instead of replaying the same payload at once.
 - The in-flight lease lives for the whole stream, even if the client disconnects, so the concurrency cap really holds.
 
 ---
@@ -517,7 +521,7 @@ DS_PROXY_LIST='socks5h://user:pass@203.0.113.7:1080
 http://198.51.100.4:8080'
 ```
 
-Or put the same lines in `~/.whalegate/proxies.txt`, or paste them into **Settings → Proxy** on the dashboard (the list is validated line by line; one bad line rejects the whole save, so you never end up with half your accounts silently going direct).
+Or put the same lines in `~/.whalegate/proxies.txt`, or paste them into **Settings → IP đầu ra** on the dashboard (the list is validated line by line; one bad line rejects the whole save, so you never end up with half your accounts silently going direct).
 
 How a proxy is assigned:
 
@@ -531,16 +535,27 @@ Use `socks5h` rather than `socks5` when you can: it lets the proxy resolve DNS, 
 
 `GET /api/proxy` shows the current pool and every binding; `POST /api/proxy` replaces the list; `POST /api/proxy/unbind` with `{"fingerprint":"…"}` releases one binding so that account gets a different IP next time.
 
+### Cloudflare Worker as an egress route
+
+Besides proxies, an account can leave through a **Cloudflare Worker**: `worker/egress.js` opens a TCP tunnel (TLS stays end-to-end, so the Worker only sees encrypted bytes) and DeepSeek sees a Cloudflare IP instead of yours. Click **Cloudflare** at the top of the dashboard: whalegate finds or downloads Node.js (checksum verified), runs `wrangler login` (you only press *Allow*), registers a `workers.dev` address if the account has none, deploys the Worker and measures its IP. Every account Chrome window (login, sign-up, open Chrome, device refresh) uses the same tunnel.
+
+You can add Workers on **several Cloudflare accounts** (*+ Add a Worker with another Cloudflare account*, up to 8). Each DeepSeek account is pinned to one Worker by its fingerprint seed, so its IP does not jump around. The popup shows IP, colo and quota per Worker.
+
+Each account takes the first route that applies: **① own proxy** (mode not `off` and a proxy is available) → **② Cloudflare Worker** (switched on and at least one Worker) → **③ direct** from your IP. All three can be in use at once. Targets that sit on Cloudflare itself (hCaptcha) always go direct, because a Worker cannot connect to Cloudflare addresses. An account's Chrome window currently uses ② or ③, not the own proxy ①. Cloudflare's terms apply to how you use Workers; check them for your use.
+
+Settings (**Settings → IP đầu ra**): `DS_EGRESS_ON`, `DS_EGRESS_WORKERS` (one `address key` per line, written by the button), `DS_EGRESS_DAILY_LIMIT` (the quota shown in the popup, per Worker; Free is 100,000/day).
+
 ## Dashboard
 
 Open `http://127.0.0.1:8790/`. It is loopback-only.
 
 - **Accounts:** add, verify, reset, edit label or token, enable/disable in the pool, bulk verify/reset, and duplicate-user detection. **Verify** is not just an auth check: it sends one minimal real completion on a throwaway session, because a throttled account still passes the auth endpoint. The result is alive, throttled, auth_dead or unknown, and only alive clears a throttle label.
-- **Usage:** tokens per hour (cache miss / cache hit / output), and what the same traffic would cost on the official API. Prices are fetched live every 6h from DeepSeek's pricing page, peak hours are included, and there is a monthly projection. Data lives in `usage.json` next to `accounts.json`.
+- **Usage:** tokens per hour (cache miss / cache hit / output), and what the same traffic would cost on the official API, shown in $ (English), ¥ (Chinese) or ₫ (Vietnamese) using the rates in **Settings → Display**. Prices are fetched live every 6h from DeepSeek's pricing page, peak hours are included, and there is a monthly projection. Click the **Tokens**, **Saved** or chart label to switch between today / 7 days / 30 days / all time (the choice is remembered). Data lives in `usage.json` next to `accounts.json`.
 - **Latency:** p50/p90 over the last hour, plus the error count.
-- **Live logs:** SSE stream with filters and search. Useful tags include `[toolcall-invalid]`, `[toolcall-unparsed]`, `[conv]`, `[ds-stall]` and `[ds-fail]`.
+- **Live logs:** SSE stream with filters and search. Useful tags include `[toolcall-invalid]`, `[toolcall-unparsed]`, `[conv]`, `[ds-stall]` and `[ds-fail]`. Every line is also saved to `~/.whalegate/logs/whalegate-YYYYMMDD.log` (kept 7 days, 64 MB per file), and detailed events go to `debug-YYYYMMDD.jsonl`: each resume / continue attempt, the last SSE lines of a stream that broke, account errors such as `CHALLENGE_REQUIRED`. The **export** button in the log window downloads one debug bundle (version, settings, a per-account summary, both logs for the last 24 hours to 7 days). Nothing in it contains tokens, cookies or account labels.
 - **Settings:** verified knobs only. Saving waits until no request is in flight, then the process re-execs itself (same PID, picks up a new build) and the page reloads. **Hard reset** restarts immediately.
 - **Export / import:** move the whole account pool to another machine as a JSON file or straight through the clipboard. Import merges by DeepSeek user id, so running it twice is safe; it never deletes accounts you already have.
+- **Language:** Tiếng Việt / English / 简体中文 from the globe switch (VI / EN / 中) at the right end of the header. It follows your browser language the first time and remembers the choice. See [docs/i18n.md](docs/i18n.md).
 - **Updates:** the dashboard checks GitHub Releases on load and every 30 minutes. When a newer tag exists a banner appears; one click downloads the prebuilt binary, verifies its SHA-256, swaps it in place and re-execs, and the page reloads by itself once the new process is up.
 
 ---
@@ -552,6 +567,8 @@ The pool lives in `~/.whalegate/accounts.json`, which holds session tokens — t
 - **Export → Copy clipboard** puts the same JSON on the clipboard (falling back to a hidden textarea when the browser blocks the async clipboard API); paste it into the Import dialog on the target machine.
 
 Import merges instead of replacing. Accounts are matched by DeepSeek user id first, then by token, so importing the same bundle twice adds nothing the second time. Without *overwrite*, accounts that already exist are skipped; with it, their token and cookies are replaced (and their stale web sessions cleared). Nothing is ever deleted.
+
+**Full backup (the whole machine).** The **Sao lưu đầy đủ** button of the Export dialog downloads one `whalegate-backup-<time>.tar.gz` with everything above plus the dashboard settings, the proxy list and the fingerprint→proxy bindings, the usage history, and the identity part of every dedicated Chrome profile (localStorage with the login and the device ids, IndexedDB, cookies, preferences: a few hundred KB each, no caches). Pick the same file in **Import** and you get a preview (accounts, profiles, settings, proxies, usage) before anything is written. Import merges: accounts by DeepSeek user id, and whatever already exists on the machine (settings, proxy list, bindings, usage hours, a profile folder) is kept unless you tick *overwrite*. Profiles are never touched while a login window is open. Chrome encrypts its cookie database with a key tied to the operating system, so on a machine with another OS (or user) the cookies inside a profile may not decrypt; the login and device ids (localStorage) and the account's own cookies saved in `accounts.json` still arrive, and the next device refresh renews the rest. The archive is checked while it is read: paths outside the data directory, links and oversized contents are rejected. Over HTTP: `GET /api/backup/export` and `POST /api/backup/import?dry_run=1&overwrite=1` with the file as the body.
 
 > [!WARNING]
 > An exported bundle contains every account's token and cookies. Anyone holding it can use those sessions. Move it over a channel you trust, delete the file afterwards, and never commit it — `accounts.json` and `*.session` are already in `.gitignore`.
@@ -594,12 +611,17 @@ Precedence: value saved on the dashboard → `DS_*` environment variable → def
 | ⚙️ `DS_STATEFUL` | `1` | Continue web conversations and send deltas only |
 | ⚙️ `DS_POW_PREFETCH` | `1` | Fetch and solve the next PoW ahead of time |
 | ⚙️ `DS_DEFAULT_EFFORT` | `none` | Effort when the client doesn't specify one |
-| ⚙️ `DS_CONTEXT_TOKENS` | `512000` | `context_length` advertised in `/v1/models`. The web app accepts ≥512K, while ~1.1M returns an empty stream |
-| ⚙️ `DS_PROMPT_MAX_CHARS` | `1822000` | Over budget: trim old tool results first, then drop the oldest turns |
+| ⚙️ `DS_CONTEXT_TOKENS` | `256000` | `context_length` advertised in `/v1/models`. The web app accepts ≥512K (and ~1.1M returns an empty stream), but 256K keeps prompts smaller and less conspicuous |
+| ⚙️ `DS_PROMPT_MAX_CHARS` | `912000` | Over budget: trim old tool results first, then drop the oldest turns |
 | ⚙️ `DS_MAX_CONC_PER_ACC` | `2` | In-flight requests per account. More than 2 tends to get rate-limited |
 | ⚙️ `DS_TZ_OFFSET` | `25200` | Timezone offset in seconds sent to the web app and used for daily stats |
+| ⚙️ `DS_FX_CNY` | `720` | Exchange rate for the dashboard in Chinese, in units of 0.01 ¥ per USD (`720` = 7.20 ¥). Costs are computed in USD and converted for display |
+| ⚙️ `DS_FX_VND` | `26000` | Exchange rate for the dashboard in Vietnamese: dong per USD |
 | ⚙️ `DS_PROXY_MODE` | `off` | Egress IP per account: `off` direct · `auto` use proxies when available, fall back to direct · `strict` fail instead of leaking the real IP |
 | ⚙️ `DS_PROXY_LIST` | – | Proxy list, one per line: `scheme://[user:pass@]host:port` with `http`, `https`, `socks5` or `socks5h` |
+| ⚙️ `DS_EGRESS_ON` | `1` | Use the Cloudflare Workers in `DS_EGRESS_WORKERS` (off keeps the list but does not use it) |
+| ⚙️ `DS_EGRESS_WORKERS` | – | Cloudflare Workers, one `address key` per line (max 8), written by the dashboard button; each account is pinned to one |
+| ⚙️ `DS_EGRESS_DAILY_LIMIT` | `100000` | Daily request quota shown per Worker in the Cloudflare popup (Free = 100,000) |
 | `DS_PROXY_FILE` | `~/.whalegate/proxies.txt` | Proxy list file (same format, `#` comments allowed) |
 | `DS_CONV_TTL` | `1800` | Delete idle web conversations after this many seconds |
 | `DS_CONV_MAX_CHARS` | `1200000` | Maximum size of one stateful conversation |
@@ -638,6 +660,7 @@ Precedence: value saved on the dashboard → `DS_*` environment variable → def
 | `GET` / `POST` | `/api/restart` | Status / `{"mode": "idle" \| "now" \| "cancel"}` |
 | `GET` | `/api/accounts/export` | Download the whole pool as a JSON bundle (contains tokens — treat as a secret) |
 | `POST` | `/api/accounts/import` | Merge a bundle or `{accounts: [...]}`. `dry_run` previews, `overwrite` replaces tokens of known users |
+| `GET` / `POST` | `/api/backup/export` · `/api/backup/import` | Full backup as one `.tar.gz` (accounts, settings, proxies, bindings, usage, Chrome profiles) / merge it back (`?dry_run=1` previews, `?overwrite=1` replaces what exists; body = the file) |
 | `GET` / `POST` | `/api/update` | Check the latest GitHub release / download, verify and install it, then restart |
 
 > [!IMPORTANT]
@@ -667,7 +690,7 @@ Either way the config is idempotent, backs up `cordis.patch.yml` to `.bak.<times
         compat: { supportsDeveloperRole: false, supportsReasoningEffort: true, supportsUsageInStreaming: true }
         models:
           - id: deepseek-web
-            contextWindow: 512000        # derived, see below
+            contextWindow: 256000        # derived, see below
             maxTokens: 32768
             input: [text, image]
             reasoningEfforts: { off: none, low: auto, max: max }
@@ -678,7 +701,7 @@ Either way the config is idempotent, backs up `cordis.patch.yml` to `.bak.<times
 ```
 
 - **The key goes straight into `headers`.** dsh's OpenAI transport refuses to send a request without a credential, even to a keyless local server. Writing it inline means there's no `apiKeyEnv` or `.env` to set, which also fixes `no credential for provider route`.
-- **`contextWindow` is chosen so history never overflows.** dsh compacts at 80% of the window, while whalegate has to trim history itself once a prompt passes `DS_PROMPT_MAX_CHARS` (1.822M characters). Assuming a worst case of ~4 characters per token plus 10% headroom for the tool spec, the window is `DS_PROMPT_MAX_CHARS × 0.9 ÷ 4 ÷ 0.8`, capped by `DS_CONTEXT_TOKENS`. That gives ≈512K by default, so dsh always summarizes before the gateway would cut anything. Change *Prompt cap* on the dashboard and run the setup again to follow it.
+- **`contextWindow` is chosen so history never overflows.** dsh compacts at 80% of the window, while whalegate has to trim history itself once a prompt passes `DS_PROMPT_MAX_CHARS` (912K characters). Assuming a worst case of ~4 characters per token plus 10% headroom for the tool spec, the window is `DS_PROMPT_MAX_CHARS × 0.9 ÷ 4 ÷ 0.8`, capped by `DS_CONTEXT_TOKENS`. That gives ≈256K by default, so dsh always summarizes before the gateway would cut anything. Change *Prompt cap* on the dashboard and run the setup again to follow it.
 
 ```mermaid
 flowchart LR
@@ -764,7 +787,8 @@ src/
 ├── setup_dsh.rs       `whalegate setup-dsh` + dashboard dsh button (cross-platform config writer)
 ├── usage.rs           token accounting, live API pricing, latency
 ├── logbuf.rs          in-memory log ring for the live log view
-└── ui.html            dashboard (embedded in the binary)
+├── ui.html            dashboard (embedded in the binary)
+└── i18n.js            dashboard translations vi/en/zh (inlined into ui.html at startup)
 deploy/                systemd unit for source checkouts, dsh setup wrapper
 install.sh, install.ps1 one-line installers (Linux/macOS, Windows)
 .github/workflows/     release pipeline: static musl, macOS, Windows builds → GitHub release
@@ -777,6 +801,8 @@ Malformed tool-call outputs are saved to `~/.whalegate/samples.jsonl`. Replay th
 ```bash
 cargo test --release replay_samples -- --ignored --nocapture
 ```
+
+The Chinese dashboard translation grew out of a userscript contributed by [wang1048920402](https://github.com/wang1048920402) in [issue #3](https://github.com/RuriMeiko/whalegate/issues/3).
 
 The `DeepSeekHashV1` PoW is SHA3-256 without round 0 of keccak-f, ported 1:1 from [CJackHwang/ds2api](https://github.com/CJackHwang/ds2api).
 

@@ -27,6 +27,27 @@ The following open-source libraries are used in this project:
 - [CsvHelper](https://github.com/JoshClose/CsvHelper)
 - [OneOf](https://github.com/mcintyre321/OneOf/)
 
+## Installation
+
+From your application's project directory, install the NuGet package:
+
+```sh
+dotnet package add FuzzySharper --prerelease
+```
+
+`FuzzySharper` is the main package and provides tools for building inference engines.
+It also installs the following component packages:
+
+| Package                  | Contents                                                           |
+|--------------------------|--------------------------------------------------------------------|
+| `FuzzySharper.Kernel`    | Membership functions, fuzzy numbers, and logical operators.        |
+| `FuzzySharper.Knowledge` | Linguistic variables, linguistic bases, facts, and working memory. |
+| `FuzzySharper.Reasoning` | Propositions, rules, rule bases, and adaptation components.        |
+| `FuzzySharper.Shared`    | Shared types and utilities used across the library.                |
+| `FuzzySharper.Utils`     | Geometry helpers and other supporting utilities.                   |
+
+These packages can also be referenced individually when only specific parts of the library are needed.
+
 ## Folder structure
 
 The project is organized with each major subsystem isolated into its own top-level directory.

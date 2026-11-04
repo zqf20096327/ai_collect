@@ -542,6 +542,60 @@ These are capability results, not measured coding improvement. See the
 [journey 63](journey/63-earlier-behavior-needs-current-evidence.md) and
 [published observations](results/milestone-verification/README.md).
 
+**Rule groups: one rule kept in several files.** This is borrowed from
+NVIDIA Auto-Ontology's discover, certify and ground loop.
+
+```bash
+python plugin/bin/ep_milestones.py --project PATH --propose
+```
+
+1. **Discover.** `--propose` lists pairs of files whose functions share rare
+   words, each with its reason and a milestone entry ready to edit. It
+   writes nothing.
+2. **Certify.** You copy the pairs that really keep the same rule into
+   `elevenpowers.milestones.json`, and describe the rule in each entry.
+3. **Ground.** Before an agent first edits one of those files, its brief
+   names the rule and the other files. An agent that writes the file
+   through a shell command gets the same note right after that command. The
+   end report names a declared rule the task changed in only some of its
+   files. Neither blocks.
+
+Proposals never reach the agent; only what you declared does. This version
+reads Python only and counts other source files as not examined.
+
+On the multi-stage v3 cases, 50 proposals per project covered 20 of 51
+dependents the method was never designed on. The control covered 11, and
+random 3.9. Replayed on a real loss, the brief and the end report named the
+file the agent had left behind.
+
+**Agents act on the note.** In 100 one-stage runs (Sonnet 5.5, with
+superpowers and ElevenPowers in both arms), the dependent was left behind
+in 35 of 50 runs without declared rules and 4 of 50 with them. The
+pre-registered exact test gives p = 8.6 × 10⁻¹³. No other behaviour was
+lost, and the cost was 8.5% higher. On the 53 other stages where the rules
+were declared but not the point, run once per arm, they did no measurable
+harm. Nothing beyond a declared dependent was lost in either arm, and no
+declared file was edited that the stage did not need.
+
+That run simulated a perfect certification. A blind model reviewer,
+reading each project's 50 proposals with no tools and no sight of any
+change, kept 16 of the 27 pairs that matter. Rerun with exactly its kept
+pairs declared, the dependent was lost in 31 of 50 runs without rules and
+15 of 50 with them (p = 7.3 × 10⁻⁵). Ten of those fifteen were on the one
+stage whose pair it dropped, where no note was sent.
+
+That is bounded:
+
+- the reviewer was a model, not a person who knows the project;
+- the five stages were chosen for their known losses;
+- the result says nothing where no declared rule covers the broken pair.
+
+See [the spike and replay](results/multistage-v3/discover/README.md), the
+[design](docs/superpowers/specs/2026-11-04-rule-groups-design.md),
+[the experiment](results/rule-groups-acted-on/README.md),
+[the reviewer](results/rule-groups-reviewed/README.md) and
+[the rerun](results/rule-groups-acted-on-reviewed/README.md).
+
 ### Optional test strength
 
 **Changed-region test strength** asks whether passing tests notice small changes to

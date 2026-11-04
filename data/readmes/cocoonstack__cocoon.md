@@ -9,6 +9,7 @@ Lightweight MicroVM engine with dual hypervisor backends: [Cloud Hypervisor](htt
 - **OCI VM images** — pull container-registry images with kernel + rootfs layers, content-addressed EROFS blob cache; **cloud images** from HTTP(S) URLs with automatic qcow2 conversion; local file/stdin import
 - **Docker-like CLI** — `create`, `run`, `start`, `stop`, `list`, `inspect`, `console`, `exec`, `rm`, `clone`, `status`
 - **Snapshot & clone** — capture a running VM (memory, disks, config) and clone it into new VMs with fresh network identity; clones restore memory copy-on-write by default (page cache shared across sibling clones) and hold shared source leases so parallel clone bursts survive concurrent source removal; restore and atomic hibernate in place; portable export/import between hosts
+- **Live migration** — move a running VM to another node (CH, run dir on XFS): round-based memory and disk deltas, the guest stops only for the last round; the caller owns transfer and round policy
 - **CNI networking** — multi-queue virtio-net TAPs wired via TC redirect (no bridge in the data path), multi-NIC, bridge mode, NIC hot-resize
 - **Data disks & runtime attach** — extra virtio-blk disks at create/clone time; hot-plug vhost-user-fs shares and VFIO PCI devices (CH); external raw disks and NIC resize on CH or Firecracker `--pci` VMs; a private copy of a snapshot's COW disk on CH
 - **Windows guests** — UEFI + Hyper-V enlightenments via the cocoonstack CH/firmware forks
@@ -19,12 +20,12 @@ Lightweight MicroVM engine with dual hypervisor backends: [Cloud Hypervisor](htt
 ## Quick Start
 
 ```bash
-# Install the binary (Linux amd64; arm64: cocoon_0.7.2_Linux_arm64.tar.gz)
-curl -fsSL -o cocoon.tar.gz https://github.com/cocoonstack/cocoon/releases/download/v0.7.2/cocoon_0.7.2_Linux_x86_64.tar.gz
+# Install the binary (Linux amd64; arm64: cocoon_0.7.6_Linux_arm64.tar.gz)
+curl -fsSL -o cocoon.tar.gz https://github.com/cocoonstack/cocoon/releases/download/v0.7.6/cocoon_0.7.6_Linux_x86_64.tar.gz
 tar -xzf cocoon.tar.gz && install -m 0755 cocoon /usr/local/bin/
 
 # One-time environment setup (installs CH, firmware, CNI plugins)
-curl -fsSL -o cocoon-check https://raw.githubusercontent.com/cocoonstack/cocoon/refs/tags/v0.7.2/doctor/check.sh
+curl -fsSL -o cocoon-check https://raw.githubusercontent.com/cocoonstack/cocoon/refs/tags/v0.7.6/doctor/check.sh
 install -m 0755 cocoon-check /usr/local/bin/ && sudo cocoon-check --upgrade
 
 # Pull an image and run a VM

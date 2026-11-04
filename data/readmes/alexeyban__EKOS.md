@@ -12,6 +12,8 @@ site and documentation: **[ekos.dev](https://ekos.dev)**. Install: **[ekos.dev/d
 
 Unlike traditional enterprise systems that manage data, documents or metadata independently, EKOS treats the entire enterprise as a living knowledge system — a permanently evolving semantic model that can be trusted by both humans and AI.
 
+**Text-to-SQL benchmark:** on [BIRD Mini-Dev](https://bird-bench.github.io/) (release 1024, 302 hold-out questions over 11 databases), the same model, Claude Haiku 5.5, scores **53.3%** execution accuracy on raw DDL and **63.9–66.9%** on the knowledge EKOS compiles from each database (+10.6 to +13.6 points, significant on paired questions), for about a tenth of a cent per question. Every question, the SQL it produced, tokens, cost and the scorer's parity with BIRD's official evaluator: [BIRD Mini-Dev on EKOS](https://alexeyban.github.io/EKOS/presentations/bird-mini-dev-benchmark.html).
+
 **First benchmark:** on a real 2,022-file open-source repo ([plausible/analytics](https://github.com/plausible/analytics)), cold ingestion takes 34 seconds, and answering real questions from the compiled ledger costs **67-93% fewer tokens** than raw grep-based search over the source — measured with a standard tokenizer (`tiktoken`), not a hand-rolled estimate, with the one case grep wins included rather than hidden. Full methodology, every command, and every raw output: [The First Benchmark Number](https://alexeyban.github.io/EKOS/presentations/token-benchmark.html).
 
 ## About
@@ -1029,6 +1031,17 @@ measure's total in the mart next to the same aggregate over silver. The page sho
 which terms were compiled exactly and which a model drafted, the tests, and the lineage. On iDempiere four marts went
 from approved to reconciled, every total equal.
 
+### External benchmarks: BIRD (RFC 0240 / 0241)
+
+`ekos eval bench` runs external Text-to-SQL benchmarks against EKOS projects built from the
+benchmark's own databases: `prepare` downloads and verifies the data, builds one project per
+database and scans every ledger for leaked questions, gold SQL and evidence; `run` answers one
+experiment cell over a split; `compare` gives the paired difference with a bootstrap interval;
+`export` writes BIRD's prediction format. On BIRD Mini-Dev 1024's full hold-out split (302
+questions, Claude Haiku 5.5), the EKOS cell (pack + column profiles + value lookup + result checks)
+scored 63.9% execution accuracy against 53.3% for the same model with raw DDL: +10.6 points, 95%
+CI +4.3 to +16.9, for $0.30 a run. See `evals/README.md`.
+
 ### iDempiere eval (RFC 0222)
 
 `evals/idempiere/` holds 25 checked questions about iDempiere (code, schema, history, docs, write behaviour, and six
@@ -1587,23 +1600,4 @@ three operations, built as RFCs 0119–0126 (`devlog_143`–`devlog_149`):
   weigh 40 production call sites differently from 40 mostly-test ones instead of returning an
   undifferentiated list. For the top few entities in each answer's evidence set, `ekos ask` also
   reads the entity's real, on-demand source text straight from the artifact store — never the live
-  filesystem, so it never bypasses redaction (RFC 0140 §3) — giving the model the actual code
-  behind a claim, not just a name and a short excerpt. When the artifact store holds no file text
-  for the entity, the source recorded with the symbol at recover time (up to 40 lines) is shown
-  instead (RFC 0177). An opt-in `[retrieval] rerank = "llm"`
-  (off by default) asks the model to reorder the top candidate evidence items by real relevance
-  before it answers (RFC 0140 §4) — never on the deterministic retrieval-ranking path RFC 0126's
-  CI gate checks, only inside the REASON answer pipeline itself.
-
-EKL gains `FIND Object SEMANTIC 'text' [LIMIT k]` — the retriever as a candidate-set strategy.
-Retrieval quality is CI-gated: `ekos_runtime::retrieval_eval` holds a checked-in graded query set
-and a reference estate, and a workspace test fails the build if Recall@10 / MRR / nDCG@10 or
-intent-classification accuracy drops more than 2% below the recorded baseline;
-`cargo bench --bench retrieval_eval` prints the current scoreboard (RFC 0126).
-
-What search reads and how it ranks (RFC 0177):
-
-- An object is indexed by its name, kind, excerpt, and for a symbol its doc comment, signature and
-  fields. An index built by an older version is rebuilt on the next command that writes to the
-  ledger; `ekos ledger repair` does it at once.
-- A hit that holds every word of the query ranks first. Hits that h
+  filesystem, so it never bypasses redaction 

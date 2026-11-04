@@ -162,12 +162,12 @@ two identities and one sealed message, all on your own machine.
 install script; `npx` runs it without installing anything globally. Name the version and the program every time:
 
 ```sh
-c() { npx --yes --package=@usebag/bag@0.1.0 bag "$@"; }
-c --version                       # prints: bag 0.1.0 <the commit it was built from>
+c() { npx --yes --package=@usebag/bag@0.1.2 bag "$@"; }
+c --version                       # prints: bag 0.1.2 <the commit it was built from>
 ```
 
 The package is published from a commit of this repository by a workflow with npm provenance, and
-`npm view @usebag/bag@0.1.0 gitHead` names that commit. To run from source instead, see [From source](#from-source).
+`npm view @usebag/bag@0.1.2 gitHead` names that commit. To run from source instead, see [From source](#from-source).
 
 **2. Get a relay.** The relay is Rust and is not in the package: build it from source (`cargo build --release --locked
 -p ac-relay`, as [From source](#from-source) says) or run its container image (`docs/self-host.md`, "Run it with
@@ -282,7 +282,7 @@ MCP host that runs a server over stdio, an address and a mailbox. `c host instal
 The package's command line is the bin `bag`; the guides wrap it in a shell function, `c`:
 
 ```sh
-c() { npx --yes --package=@usebag/bag@0.1.0 bag "$@"; }
+c() { npx --yes --package=@usebag/bag@0.1.2 bag "$@"; }
 c help          # prints every command
 ```
 
@@ -453,6 +453,7 @@ operations guide, notes). Read those references as notes; nothing here needs the
 | [`docs/audit/threat-model.md`](docs/audit/threat-model.md) | the threat model and its residual risks |
 | [`docs/audit/stream-10-review.md`](docs/audit/stream-10-review.md) | the two adversarial review rounds, their findings, and what was built and what deferred |
 | [`CHANGELOG.md`](CHANGELOG.md) | what changed in each published cut |
+| [`docs/release.md`](docs/release.md) | how a release is made: version numbers, cadence, the steps and who approves each, checking a release, undoing one |
 
 ## The checks
 

@@ -1,137 +1,63 @@
 <div align="center">
 
-# ⚡ The VibeCode Bible
+# The VibeCode Bible
 
-<a href="https://instagram.com/web.dev.george" target="_blank">
-  <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram @web.dev.george" />
-</a>
+**You built it with AI and it works. This is how you make it hold up, survive real users, and get them in the first place.**
 
-<br/>
-
-<a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=F7F7F7&center=true&vCenter=true&width=500&lines=Everything+I+know+about+AI.;Clone+it.+Run+it.+Read+it.;Built+with+Next.js+14+%2B+Tailwind;Powered+by+Agentic+Workflows" alt="Typing SVG" />
-</a>
-
-_This repository is the personal knowledge base of **[@web.dev.george](https://instagram.com/web.dev.george)**. It contains everything I know about building SaaS applications using AI, structured agent skills, and "vibe coding". No fluff._
+By [@web.dev.george](https://instagram.com/web.dev.george). Free, and it runs on your machine.
 
 </div>
 
 ---
 
-## 🚀 Quick Start
+## Quick start
 
-1. **Clone the repository**
 ```bash
 git clone https://github.com/WebDevPeterGriffin/The-VibeCode-Bible.git
 cd The-VibeCode-Bible
-```
-
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Run the local server**
-```bash
+npm run setup
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to explore the bible.
+Open http://localhost:3000. The app only listens on your own machine.
 
----
+`npm run setup` installs the packages and downloads the two small models Local Chat uses (about 3.5 GB). It needs [Ollama](https://ollama.com/download) installed and tells you if it's missing. You can also skip it and press the download button in Local Chat. If you only want to read, run `npm install` instead. The lessons, Security Scan and read aloud don't need a model.
 
-## 🧠 What's Inside?
+## Who it's for
 
-### 📚 40+ Lessons across 4 Topic Areas
+Developers who can already build a working demo with AI agents, and who want real users or are nervous about what happens when they arrive. It isn't a beginner course.
 
-**Foundation**
-- **My Exact Setup** — the stack, extensions, folder structure, and settings I use daily
-- **The AGENTS.md System** — how I give AI agents permanent context so they stop making dumb mistakes
-- **Antigravity vs Claude Code** — when to use which one and why, from someone who uses both daily
-- **The Vibe Coding Workflow** — the full 7-step process from brain dump to production deploy
+## What's inside
 
-**Building & Shipping**
-- **Real Project Walkthrough** — how I built the first version of Mentorship Boss (then called Siteo) in 3 days using this exact workflow
-- **Supabase RLS Patterns** — Row Level Security done right, with AI generating every migration
-- **Beating the Generic AI Look** — skill files and design tokens that stop AI-generated aesthetics
+Every lesson ends with something to run on your own project. Stories either happened to me or link to a public write-up.
 
-**Local AI & Agentic**
-- **Setting Up Local AI** — installing Ollama, pulling models, and running local AI with zero API costs
-- **Vibe Coding Is Dead** — why pure vibe coding failed at scale and what replaced it
-- **Agentic Engineering** — you are the governor, the AI is the workforce
-- **Agent Harness Engineering** — the layer that controls what the model sees, what tools it uses, and when it stops. Covers the anatomy of a harness, building your first one from scratch, and running harnesses in production with observability and cost control
-- **Fine-Tuning & LoRAs** — a full 8-lesson deep dive on teaching local models new behaviour. Starts dead simple (what a LoRA even is, and how it differs from a skill file) and builds to training your own with Unsloth and running it in Ollama with your agent
+| Part | What it covers |
+|---|---|
+| **Start Here** | The one idea: prove each safety net by triggering it |
+| **Make It Hold Up** | Proving code works, tests, access control, payments, database changes and backups, undoing mistakes, deploys |
+| **Real Users Arrive** | Changing a live app, actions that run twice, monitoring, bots and abuse, surprise bills |
+| **Get Real Users** | Finding your first users, and showing what you built |
+| **Working With the Agent** | Planning, context, debugging, made-up APIs, when to write it yourself, not looking AI-made |
+| **Running Agents** | Several agents at once, how agents work, prompt injection |
+| **Local AI** | The honest limits, setup, skill files or a LoRA |
+| **Tool Notes** | Dated notes on tools and models, kept apart from the lessons because they age quickly |
+| **LoRA Deep Dive** | An optional track on training your own |
 
-**Advanced & Scale**
-- **Claude Opus 4.7 Updates** — extended thinking, new tokenizer, effort parameter, /ultrareview
-- **Hermes Agent** — the open-source self-improving agent with 156k GitHub stars. Runs 24/7 on a $5 VPS
-- **Defending Against Prompt Injections** — practical hardening techniques for local LLMs
+## Tools built in
 
-### 🖥️ Built-in Local Chat
-An interactive chat interface to safely test your prompts and skill files entirely locally. The assistant knows the full content map of the bible and links directly to lessons.
-- **Auto-Model Discovery** — Automatically detects your installed Ollama models (`http://localhost:11434/api/tags`)
-- **Zero Cost, Total Privacy** — Iterate on skill files totally offline and completely free
-- **Prompt Injection Hardened** — Built-in defenses via strict prompt boundaries and temperature lockdown
-- **Multi-session** — Full chat history with named sessions, persisted in localStorage
+- **Local Chat** answers from these lessons using a model on your machine, tells you which lesson it used, and says so when the lessons don't cover something.
+- **Security Scan** checks a folder on your computer for leaked secrets and committed `.env` files. It works on private projects, needs no model, and masks everything it finds.
+- **The Playbook Test** scores a startup idea against [Sam Altman's startup playbook](https://playbook.samaltman.com/), using your local model by default.
+- **Read aloud** on every lesson, using your browser's built-in speech.
+- **About 1,350 agent skill files and 10 workflows** in `.agent/`, mostly Awesome CursorRules, from the open-source projects below. These are other people's work, so read a skill before you trust it.
 
-### 🌐 Extra Pages
-- **MCP Servers** (`/mcp-servers`) — Reference guide to Model Context Protocol servers and how to use them with AI agents
-- **GEO + SEO** (`/geo-seo`) — Generative Engine Optimization reference for AI-powered search visibility (ChatGPT, Perplexity, Google AI Overviews)
+| Skill pack | Original creator |
+|---|---|
+| Awesome CursorRules | [@PatrickJS](https://github.com/PatrickJS/awesome-cursorrules) |
+| Claude SEO | [@AgriciDaniel](https://github.com/AgriciDaniel/claude-seo) |
+| UI/UX Design Agent | [@nextlevelbuilder](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
+| Honnibal Claude Skills | [@honnibal](https://github.com/honnibal/claude-skills) |
 
-### 🛡️ Quick Security Audit
-A dedicated sidebar panel that scans public GitHub repositories for hardcoded secrets, API keys, and database credentials using localized LLM analysis.
-- **Secure by Default** — runs completely locally via Ollama, ensuring code analysis doesn't leak sensitive config
-- **Terminal UI** — authentic audit reports with categorized severity (CRITICAL/HIGH/MEDIUM) levels
+## Support
 
-### 🎯 The Playbook Test
-An idea evaluator (`/playbook-test`) that scores your startup idea against [Sam Altman's startup playbook](https://playbook.samaltman.com/) — a blunt, anti-sycophantic pre-mortem that names the specific ways your idea dies before you waste a year on it.
-- **Source-Based** — every category score links to the exact playbook principle behind it, and every question explains *why* it's asked
-- **Judgment, Not Fake Facts** — the AI reasons about your idea but never invents competitors, market sizes, or stats; those become a "verify yourself" checklist
-- **Honest About Stage** — at idea stage it won't fake traction scores; it sends you to go talk to real users instead
-- **Runs Locally** — same Ollama path as the rest of the bible, with the Anthropic API as an optional higher-quality backend
-
-### 🤖 1,316 Bundled AI Agent Skills
-Pre-loaded and ready to use the second you clone. No extra installs needed.
-
-| Skill Pack | Files | Original Creator | What It Does |
-|---|---|---|---|
-| **Awesome CursorRules** | 1,242 | [@PatrickJS](https://github.com/PatrickJS/awesome-cursorrules) | Hundreds of framework-specific `.cursorrules` for Next.js, React, Vue, Python, and more |
-| **Claude SEO** | 68 | [@AgriciDaniel](https://github.com/AgriciDaniel/claude-seo) | 13 sub-skills and 7 subagents for full technical SEO automation |
-| **GSAP Skills** | 33 | [@greensock](https://github.com/greensock/gsap-skills) | GSAP/ScrollTrigger animation patterns, React/Next.js integration, and cinematic scroll effects |
-| **UI/UX Design Agent** | 31 | [@nextlevelbuilder](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Deep design intelligence — 50 styles, 21 palettes, 50 font pairings |
-| **Honnibal Claude Skills** | 10 | [@honnibal](https://github.com/honnibal/claude-skills) | Mutation testing, type tightening, hypothesis tests, contract docstrings |
-
-### ⚡ 10 Executable Agent Workflows
-Slash-command automation scripts your AI agent can run directly. The system automatically discovers new workflows added to `.agent/workflows/`.
-
-| Workflow | Command | Steps |
-|---|---|---|
-| Auth & Authorization | `/authentication-&-authorization` | 11 |
-| Code Quality Review | `/code-review` | 7 |
-| Debug Session | `/Debug-session` | 10 |
-| Deploy Checklist | `/deploy-checklist` | 8 |
-| Landing Page Generator | `/landing-page` | 7 |
-| New Feature Scaffold | `/new-feature` | 6 |
-| Performance Audit | `/Performance-audit` | 10 |
-| Project Cleanup | `/project-cleanup` | 8 |
-| Security Audit | `/security-audit` | 10 |
-| SEO Audit | `/seo-audit` | 7 |
-
-### 🏗️ Production-Grade AGENTS.md
-A battle-tested system prompt that enforces Next.js 14, TypeScript strict mode, Tailwind v4, dark-mode-first aesthetics, semantic HTML, and conventional commits across every AI interaction.
-
----
-
-## ☕ Support
-
-I built this and made it completely free. If it saved you time, helped you ship faster, or taught you something — consider leaving a donation. No pressure. Just vibes.
-
-<a href="https://webdevpeter.net/pages/the-vibecode-bible" target="_blank">
-  <img src="https://img.shields.io/badge/Support%20the%20project-%E2%98%95%20Donate-black?style=for-the-badge" alt="Donate" />
-</a>
-
----
-
-<div align="center">
-  <sub>Built by <a href="https://instagram.com/web.dev.george">@web.dev.george</a> · Clone it. Run it. Read it.</sub>
-</div>
+It's free. If it saved you time, you can [buy me a coffee](https://webdevpeter.net/pages/the-vibecode-bible). No pressure.

@@ -1,6 +1,6 @@
 # 🌳 Smart Tree - The Smart Treehouse: Cyber-Botanical Dashboard & Agent-Agnostic Hooks! 🌐
 
-[![Version](https://img.shields.io/badge/version-11.0.0-blue)](https://github.com/8b-is/smart-tree)
+[![Version](https://img.shields.io/badge/version-11.3.0-blue)](https://github.com/8b-is/smart-tree)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Performance](https://img.shields.io/badge/speed-10--24x%20faster-brightgreen)](TERMINAL_EXAMPLES.md)
 [![LOUDS Capsule](https://img.shields.io/badge/MEM8-64B_LOUDS_SMTR-00d4ff)](docs/ARCHITECTURE_REVIEW_V10_8.md)
@@ -77,6 +77,13 @@ The cache lives in `<project>/.st/symbols/`; standalone CrabCC databases are lef
 alone. Queries refresh this cache incrementally, and `index` rebuilds it. CrabCC
 is pinned to commit `12e7763f2f30fd995608b2ea4cd91e82a3be88fe` for reproducible
 source builds. No models, cloud service, or message delivery is involved.
+
+### Opt-in Rink quantities and wave math
+
+The `rink` MCP tool provides bounded offline external-Rink quantity conversions,
+classical period/wavelength/beat calculations, and explicitly opted-in durable
+MEM8 provenance. No Rink binary or unit database is bundled. See the
+[operator setup, license boundary, and limitations](docs/RINK_INTEGRATION.md).
 
 ### Remember a forge into MEM8
 
@@ -1017,11 +1024,11 @@ available when a validated, platform-compatible release is promoted to i1.
 
 ---
 
-## 📐 Smart Tree v10.10.0 — "Straight from The Book" (Paul Erdős & Many-Body Wave Engine)
+## 📐 Smart Tree v11.3.0 — "Straight from The Book" & `ULTRA-OMNI-ZENO-BEERUS` (`upz`/`wupz` + `8b-is-[engines]` + Speculative Tree-Attention, N-Gram Drafter, PID Controller & SSE MCP)
 
 <div align="center">
 
-![Smart Tree v10.10.0 — Straight from The Book](assets/smart-tree-v10-10-hero.jpg)
+![Smart Tree v11.3.0 — Straight from The Book](assets/smart-tree-v10-10-hero.jpg)
 
 > *"Another roof, another proof. In God's Book are the most elegant proofs — and the cleanest architectures."*  
 > — **Paul Erdős (1913–1996), The Magician from Budapest**
@@ -1059,6 +1066,7 @@ flowchart LR
 | **IX. Sovereign `p/q` Mode (`pq_engine.rs`)** | Exact coprime rationals via Stein's Binary GCD (`felix_binary_gcd_u64`), 128-bit cross-multiplication (`felix_pq_cross_cmp`), Hölder $(L_{3/2} \to L_3)$ dual spectral norm, Kővári–Sós–Turán $z(n; p, q)$, and Störmer–Verlet symplectic $(p, q)$ leapfrog | `st --mode pq .` |
 | **X. Sovereign Ultra-Backyard Loop (`ultrabackyard.rs`)** | Measured A/B Backyard Ultra laps (`DO = reflect → improve → wire → polish → push → readme`) cycling $\varepsilon$ & $C$, auditing SpherePOP / `mem\|8` / Phoenix / Vaked / `g8t.is` wiring (`zero_orphan_surfaces = true`), and binding only verified branches ([`docs/ULTRABACKYARDLOOP.md`](docs/ULTRABACKYARDLOOP.md), [`docs/lap-ledger.jsonl`](docs/lap-ledger.jsonl)) | `st --ultrabackyard 12 .` |
 | **XI. Sovereign `ULTRA-OMNI-ZENO` v11 (`zeno_engine.rs`)** | `upz`/`wupz-core` `64B@0x62` `LitanyWireFrame`, `BFP-64` Kleene bitplanes (`qt:55`), `.rodata.gaia.b158` `1.585 bits/trit` SPQT `base-243` packing, 18-stage branchless integer CORDIC (`felix_cordic_atan2_u32`), `8b-is-[engines]` (`world-core`, `ternary` `1.58-bit` integer GEMM, `spherepop`, `admissibility` `CT-000`/`CT-016` + `Seed 001`, `auroralib`, `omniZenCooker`), and OS/Agent-agnostic matrix | `st --zeno .` / `st --mode zeno .` |
+| **XII. `ULTRA-OMNI-ZENO-BEERUS` MCP Combinatorics & Local LLM Runtime (`src/mcp/combinatorics_llm.rs`)** | Unified JSON-RPC 2.0 + Axum SSE (`text/event-stream`) MCP runtime with cooperative client-disconnect cancellation (`McpProgressEmitter`, C-FFI `ffi_progress_trampoline` in `libmlx_quant.dylib`), 5 Rayon-parallel bitboard solvers (`szemeredi_compression`, `erdos_steiner_pruning`, `moser_tardos_splitting`, `erdos_renyi_scanning`, `ramsey_clique_analysis` with `StackBitSet<N>`), Apple Silicon `mlx_quant` (`affine`, `mxfp4`, `mxfp8`, `nvfp4`), and `llama_rust` with **Tree-Attention Speculative Decoding** (`SpeculativeDraftTree`, `TOTAL_KV_SEQS = 32`, Leviathan–Chen rejection + residual bonus sampler), **Zero-Weight N-Gram Prompt-Lookup Drafter (`PromptLookupDrafter`)**, and **EWMA + Anti-Windup PID Adaptive Speculative Controller (`AdaptiveSpeculativeController`)** | `st --mcp` |
 
 ### 🤖 First-Class Model & Harness Support (`st --mcp-install`)
 

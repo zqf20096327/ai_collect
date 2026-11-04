@@ -96,13 +96,13 @@ Pinecone stores vectors. We understand context.
 | **Recall** | 82.5% | 55.3% |
 | **Latency** | 2.7ms | 10-50ms |
 | **Monthly cost** | $0 | $70+ |
-| **Your data** | Stays on your machine | Sent to cloud |
+| **Your data** | Stored locally. Cloud embeddings send text to the provider | Sent to cloud |
 | **Recency awareness** | Yes (multiplicative) | No |
 | **Associative retrieval** | Yes (spreading activation) | No |
 
 Pinecone is a great vector database. But vector search isn't memory.
 
-Lucid Memory retrieves **50% more relevant context** (82.5% vs 55.3% recall), runs **10-20x faster** (local vs cloud), costs **nothing**, and keeps your code **private**—all while understanding that what you accessed yesterday matters more than what you accessed last year.
+Lucid Memory retrieves **50% more relevant context** (82.5% vs 55.3% recall), runs **10-20x faster** (local vs cloud), uses local storage and has no service fee with local embeddings—all while understanding that what you accessed yesterday matters more than what you accessed last year.
 
 ---
 
@@ -161,7 +161,7 @@ Spreading activation (depth 3) adds <0.1ms overhead.
 2. **Cognitive ranking** — MINERVA 2 cubing (`sim³`) suppresses weak matches before budgeting.
 3. **Multiplicative recency** — Relevance × recency, not relevance + recency. Irrelevant stays irrelevant.
 4. **Spreading activation** — Related memories activate each other. Co-edited files surface together.
-5. **No network** — Everything local. 2.7ms, not 200ms.
+5. **Local retrieval** — The benchmark used local embeddings and measured 2.7ms retrieval.
 6. **Rust core** — 743,000 memories/second throughput
 
 ---
@@ -219,12 +219,55 @@ That's it. Your AI coding assistant now remembers across sessions.
 4. Lets you choose which clients to configure (Claude Code, Codex, OpenCode — any combination)
 5. Optionally configures database isolation (shared, per-client, or custom profiles)
 6. Configures MCP settings for your chosen clients
-7. Installs hooks and plugins for automatic memory capture
+7. Sets up prompt and reply capture for each selected client
 8. Restarts Claude Code to activate (if selected)
 
 **Requirements:** 5GB free disk space, at least one supported client installed (Claude Code, Codex, or OpenCode)
 
 </details>
+
+### Use a local embedding endpoint
+
+To use a model served by Ollama or another OpenAI-compatible server, set the following variables in the environment that launches the Lucid MCP server and CLI. For example, with Ollama serving `bge-m3`:
+
+```sh
+export LUCID_EMBEDDING_URL=http://127.0.0.1:11434/v1
+export LUCID_EMBEDDING_MODEL=bge-m3
+lucid status
+```
+
+Use the server’s API base URL. Lucid appends `/embeddings` and tests the selected model with a short text. If the request fails, Lucid tries native BGE, then OpenAI if `OPENAI_API_KEY` is set, then legacy Ollama. With no usable provider, retrieval uses recency. If you omit `LUCID_EMBEDDING_MODEL`, the endpoint must serve `text-embedding-3-small`. The custom endpoint does not receive your environment’s OpenAI API key.
+
+Lucid caches each endpoint, model identity, and vector width separately. Clients sharing a database can reuse compatible vectors, including after an outage or a switch back to an earlier model. Editing a memory invalidates its cached vectors across all models. On first use, Lucid upgrades existing text and visual indexes together and preserves their vectors. Update clients sharing that database together.
+
+Restart Lucid after changing a serving model. When the endpoint reports a different model behind an alias, Lucid rejects the change until restart. If the endpoint serves different weights under the same reported name and width, use a new model name so Lucid can distinguish them.
+
+<details>
+<summary><b>Automatic capture for selected clients</b></summary>
+
+Selecting **Claude Code** registers Lucid's MCP server, `UserPromptSubmit`, and `Stop`. Selecting **Codex** registers Lucid's MCP server and turn-completion notifier. Select **both** (`1 2`) to configure both clients in the same installation. Start new client sessions after installation. The database choice determines whether they share memories. If Codex already runs a notification command, Lucid passes it the original event as well.
+
+For existing installations, follow **Updating an existing installation** below. The upgrade keeps the previously selected clients and database profiles and registers their capture hooks automatically.
+
+For Claude Code, Lucid saves up to 2,000 Unicode characters from each nonempty final reply in the active Claude database and project. Replies are tagged as assistant conversations and can be retrieved in later sessions. Lucid's configured embedding provider may process this text. Repeated delivery of the same reply for the same prompt is ignored. A Stop hook can ask Claude to continue, so a single user prompt can produce several replies. Capture requires a Stop payload with a session ID, prompt or turn ID, working directory, and final message. Use Claude Code 2.1.258 or later for the tested hook fields. Configless installations use the shared default. For named profiles, specify an absolute or home-relative database path.
+
+</details>
+
+### Updating an existing installation
+
+Close other Lucid sessions before upgrading. On macOS or Linux with a standard home path, run `lucid update`, then restart your clients. The updater installs the latest **published GitHub release**, keeps your current clients and database profiles, and refreshes their hooks. Hosts that share a database should upgrade together. A stock or capture-only v0.6.5 host can remove another model's cached vectors when sharing a database with newer versions.
+
+**Moving from v0.6.5 on Windows, or from a home path containing spaces or shell metacharacters:** use the following one-time route instead of invoking the v0.6.5 updater. Its original executable uses unquoted Unix shell commands before it can load replacement code. From a directory of your choice:
+
+```shell
+git clone --depth 1 --branch v0.6.6 https://github.com/JasonDocton/lucid-memory.git lucid-v0.6.6
+cd lucid-v0.6.6
+bun run --no-env-file --no-install ./packages/lucid-server/src/upgrade.ts --from-checkout
+```
+
+This route verifies the tagged checkout and installs into the existing Lucid directory. From v0.6.6 onward, `lucid update` supports paths with spaces and uses the same staged update on Windows, macOS, and Linux. Keep old sessions closed until the update finishes. If an upgrade is interrupted and the installed command cannot start, the same tagged-checkout command recovers the saved packages before retrying. Enabled automatic updates also check published releases.
+
+For maintainers: v0.6.5 background updaters poll the private server manifest on `main`. Its source `version` stays pinned to `0.6.5` so they cannot launch the unsafe legacy update unattended. `lucidRelease` carries the actual release version, which is written to the installed manifest. Keep it aligned with the workspace and Cargo versions.
 
 <details>
 <summary><b>Multi-client configuration</b></summary>
@@ -643,10 +686,10 @@ When memory 0 activates, memory 1 receives proportional activation.
 
 ## Privacy & Data
 
-Lucid Memory runs entirely on your machine. Your memories never leave your computer.
+Lucid stores memories on your machine. If you enable a cloud embedding provider, Lucid sends memory text to that provider for indexing.
 
 - **Database location:** `~/.lucid/memory.db` (or `memory-<client>.db` / `memory-<profile>.db` if using isolation)
-- **What's stored:** Text summaries of learnings, decisions, and context—not your source code
+- **Stored content** can include prompts, decisions, and, for selected clients, excerpts from assistant replies. These may contain source code or secrets.
 - **Removing sensitive data:** Use `memory_forget` tool to delete specific memories
 - **Auto-updates:** Opt-in during installation; can be disabled in `~/.lucid/config.json`
 - **Configuration:** Client and database settings stored in `~/.lucid/config.json`

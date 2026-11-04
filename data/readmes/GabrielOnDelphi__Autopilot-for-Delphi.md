@@ -26,8 +26,8 @@ Full description: **[GabrielMoraru.com/autopilot](https://gabrielmoraru.com/my-d
 ## How to use it
 
 **Demos:**  
-Ask the AI to run `DemoVCL\Autopilot.Demo.dproj`.
-Then ask it: *"List the controls of the Demo app, then click btnIncrement five times and confirm lblCounter shows the correct answer (5)."*
+Ask the AI to run `DemoVCL\Push buttons\Autopilot.PushBtnsDemo.dproj`.
+Then ask it: *"List the controls of the Demo app, then click btnIncrement five times and confirm lblIncrement shows the correct answer (5)."*
 
 **Your own app:**   
 Ask the AI to wire Autopilot into your project.
@@ -38,7 +38,7 @@ Then talk to the AI about your app in plain words:
 **Repeatable GUI tests, with no AI:**   
 Your DUnitX tests start the app, click, type, read the labels and check the result with `Assert`.
 No AI/no tokens required.
-Sample: `DemoVCL\UnitTesting\Autopilot.DemoTests.dproj`.
+Sample: `DemoVCL\Push buttons\UnitTesting\Autopilot.DemoTests.dproj`.
 See [Automated GUI testing in Delphi](https://gabrielmoraru.com/my-delphi-code/automated-gui-testing-delphi/).
 
 
@@ -69,3 +69,5 @@ Did Autopilot change your life? (I know, you are not the first one to say that ð
 Give it a star on GitHub.
 
 ![Even the AI knows which button to click: give Autopilot for Delphi a star](Resources/Star%20bringer.jpg)
+
+!.(Resources/Star bringer - contributions.png)

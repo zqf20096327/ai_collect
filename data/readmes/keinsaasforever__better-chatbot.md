@@ -94,20 +94,71 @@ Prefer running it directly? See [docs/self-hosting.md](docs/self-hosting.md).
 
 ## See it in action
 
-<table>
-<tr>
-<td width="50%" valign="top"><img src="docs/assets/demo-web-search.webp" alt="A chat that searches the web and answers with sources" width="100%" /><br /><sub><b>Web search</b> with sources, right in the chat (with the optional Exa key).</sub></td>
-<td width="50%" valign="top"><img src="docs/assets/demo-chart.webp" alt="A chat that answers with a bar chart" width="100%" /><br /><sub><b>Charts and tables</b> from a single sentence.</sub></td>
-</tr>
-<tr>
-<td width="50%" valign="top"><img src="docs/assets/demo-code.webp" alt="A chat that runs Python and shows the result as a table" width="100%" /><br /><sub><b>Code execution</b> in a sandbox (optional E2B key), results as an interactive table.</sub></td>
-<td width="50%" valign="top"><img src="docs/assets/demo-agent.webp" alt="Mentioning an agent with @ and getting a researched answer" width="100%" /><br /><sub><b>Agents</b>: mention one with <code>@</code> and it takes over.</sub></td>
-</tr>
-<tr>
-<td width="50%" valign="top"><img src="docs/assets/demo-image.webp" alt="A chat that generates a watercolor image" width="100%" /><br /><sub><b>Image generation</b> inside the conversation.</sub></td>
-<td width="50%" valign="top"><img src="docs/assets/demo-mcp.webp" alt="Connected apps and the catalog of tools to connect" width="100%" /><br /><sub><b>Tools and MCP servers</b>: connect your apps (catalog via the optional Composio integration).</sub></td>
-</tr>
-</table>
+### Web search
+
+Ask about anything current and get an answer with its sources. Needs the optional `EXA_API_KEY`.
+
+<img src="docs/assets/demo-web-search.webp" alt="A chat that searches the web and answers with sources" width="100%" />
+
+### Charts and tables
+
+One sentence in, a chart or an interactive table out.
+
+<img src="docs/assets/demo-chart.webp" alt="A chat that answers with a bar chart" width="100%" />
+
+### Code execution
+
+Python and JavaScript run in a sandbox; results come back as tables and charts. Needs the optional `E2B_API_KEY`.
+
+<img src="docs/assets/demo-code.webp" alt="A chat that runs Python and shows the result as a table" width="100%" />
+
+### Agents
+
+Mention an agent with `@` and it takes over the conversation with its own instructions and tools.
+
+<img src="docs/assets/demo-agent.webp" alt="Mentioning an agent with @ and getting a researched answer" width="100%" />
+
+### Legal document review
+
+An example from the agent library: paste a clause or attach a contract, and the Legal Document Reviewer flags the risks and suggests changes.
+
+<img src="docs/assets/demo-legal.webp" alt="The Legal Document Reviewer agent analysing the risks of an NDA clause" width="100%" />
+
+### Image generation
+
+Generate images right inside the conversation.
+
+<img src="docs/assets/demo-image.webp" alt="A chat that generates a watercolor image" width="100%" />
+
+### Tools and MCP servers
+
+Connect your apps and any MCP server. The catalog of 250+ apps comes with the optional Composio integration.
+
+<img src="docs/assets/demo-mcp.webp" alt="Connected apps and the catalog of tools to connect" width="100%" />
+
+### TensorX: EU-hosted, zero data retention
+
+Pick a model under **TensorX (0 Data Retention)** and your prompts go straight to EU infrastructure that keeps nothing. Needs the optional `TENSORX_API_KEY`; see [Partners](#partners).
+
+<img src="docs/assets/demo-tensorx.webp" alt="Choosing a TensorX model marked 0 Data Retention and chatting with it" width="100%" />
+
+### Local models
+
+At the end of the model menu, **Add local Model** connects Ollama, LM Studio or any OpenAI-compatible server. Your data stays on your hardware.
+
+<img src="docs/assets/demo-local-models.webp" alt="Opening Add local Model at the end of the model menu and entering a server address" width="100%" />
+
+### Voice input
+
+Click the microphone, speak, and your words are transcribed into the message box by AssemblyAI. Needs the optional `ASSEMBLYAI_API_KEY`.
+
+<img src="docs/assets/demo-voice.webp" alt="Clicking the microphone button, which turns red while recording" width="100%" />
+
+### Desktop app (beta)
+
+The keinsaas Navigator desktop app for Windows and macOS, with local (stdio) MCP servers and native notifications. It connects to the cloud or to your own instance; see [What you get](#what-you-get).
+
+<img src="docs/assets/desktop-app.webp" alt="The keinsaas Navigator desktop app on Windows, showing the sign-in screen" width="100%" />
 
 ---
 
@@ -215,17 +266,19 @@ Useful commands:
 
 ## Optional integrations
 
-Everything below is off until you configure it. The server prints which
+Everything below is off until you configure it, except file uploads on Vercel,
+which the Supabase integration sets up for you. The server prints which
 features are disabled at startup, so you always know why something is missing.
 
 | Feature | Set | Without it |
 | --- | --- | --- |
-| File uploads | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_URL` | Attachments, avatars and generated images are disabled |
+| File uploads | Nothing on Vercel: the Supabase integration sets it. Docker and local: `SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` ([details](docs/self-hosting.md#storage)) | Attachments, avatars and generated images are disabled |
 | Knowledge bases | `AGENTSET_API_KEY` | Knowledge bases unavailable; project documents still search locally with pgvector |
-| Background jobs | `INNGEST_SIGNING_KEY`, `INNGEST_EVENT_KEY` | Scheduled tasks and the project brain need your own cron — see below |
+| Background jobs | `INNGEST_SIGNING_KEY`, `INNGEST_EVENT_KEY` | Scheduled tasks need your own cron (see below); the project brain runs right after each change instead of in the background |
 | Resumable streams | `REDIS_URL` | A stream ends when the viewer navigates away |
 | Code sandbox | `E2B_API_KEY` | Generated code runs in the in-browser worker only |
 | Web search | `EXA_API_KEY` | The web search tool is unavailable |
+| EU-hosted models | `TENSORX_API_KEY` | TensorX models (zero data retention) do not appear in the model picker |
 | Voice transcription | `ASSEMBLYAI_API_KEY` | Realtime voice still works; transcription does not |
 | Browser notifications | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | No notifications while the app is closed |
 | Connected apps | `COMPOSIO_API_KEY` | Users cannot connect Gmail, Slack, GitHub and other apps |

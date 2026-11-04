@@ -52,6 +52,7 @@ OpenClaw 会引导你注册 ClawCall、创建 API Key，并完成只读自检。
 - 通话记录：查询状态、费用、转写和实时对话
 - 声音配置：选择模型、音色、语速、音量和情绪
 - 智能体管理：通过网页或 CLI 创建智能体、查看 ID，并按 ID 发起呼入/外呼
+- 号码白名单：查询可拨打号码，通过短信验证码把新号码加入白名单
 - 安全控制：每次只拨一个号码，必须逐次确认后才会真实呼叫
 
 本 Skill 处理中国大陆手机号码，支持 11 位和 `+86` 格式。国际号码请使用
@@ -82,6 +83,7 @@ export STEPONEAI_CAMPAIGN="github-readme-v1014"
 ./stepone.sh engines
 ./stepone.sh voices
 ./stepone.sh agents
+./stepone.sh whitelist
 ./stepone.sh agent-create \
   --name "会议提醒" \
   --prompt-file ./agent-prompt.txt \
@@ -94,6 +96,31 @@ export STEPONEAI_CAMPAIGN="github-readme-v1014"
 
 完整能力说明见 [`SKILL.md`](SKILL.md)，接口约定见
 [`references/api.md`](references/api.md)。
+
+## 添加可拨打号码（白名单）
+
+个人账号只能拨打注册手机号和已验证的白名单号码（最多 20 个）。拨打其它号码前，先用命令行
+完成添加，不需要再打开网页：
+
+```bash
+# 查看已加入白名单的号码
+./stepone.sh whitelist
+
+# 给要添加的号码发送验证码（真实短信，必须加 --confirm）
+./stepone.sh whitelist-send 13800138000 --confirm
+
+# 号码主人转告验证码后提交，通过即加入白名单
+./stepone.sh whitelist-verify 13800138000 123456
+```
+
+在 OpenClaw 里也可以直接说“把 13800138000 加到白名单”，Skill 会先确认再发短信。
+
+- 只支持中国大陆手机号；注册手机号本身无需添加。
+- 验证码必须由号码主人提供，不得猜测；错误 5 次后需重新发送。
+- 每个 API Key 每天最多发送 50 次验证码，同一号码 60 秒内不可重复发送。
+
+对应接口见 [`references/api.md`](references/api.md)；MCP 客户端可使用 `list_whitelist`、
+`whitelist_send_code`、`whitelist_verify_code` 三个工具。
 
 ## 呼入接待
 

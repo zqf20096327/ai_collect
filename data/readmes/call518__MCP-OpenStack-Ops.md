@@ -74,8 +74,8 @@ dependencies = [
 
 **Step 3: Rebuild Docker Image**
 ```bash
-docker-compose build --no-cache mcp-server
-docker-compose up -d
+docker compose build --no-cache mcp-server
+docker compose up -d
 ```
 
 **OpenStackSDK Version Reference:**
@@ -172,7 +172,10 @@ Service availability, permissions, and asynchronous completion affect results.
 See [API prerequisites and result semantics](#api-prerequisites-and-result-semantics)
 and the [multi-user setup guide](docs/multi-user-guide.md).
 
-**Validation snapshot (2026-11-04; working tree based on `a57b165`):**
+**Validation evidence:**
+- **Live snapshot (2026-11-04; working tree based on `a57b165`):** This live
+  snapshot predates the current working-tree changes. Its live
+  classifications remain historical evidence and were not rerun for this change.
 - **Live tool checks:** 105/105 registered tools exercised. At least one live
   path passed for 76 tools; 28 tools were unavailable because the test cloud
   lacks Octavia, Aodh, Neutron QoS, or floating-IP port-forwarding APIs; one
@@ -188,7 +191,17 @@ and the [multi-user setup guide](docs/multi-user-guide.md).
   seven direct requests could not run because their cloud service or extension
   is absent; seven read-like requests were limited by the non-interactive
   Claude permission policy.
-- **Local unit tests:** 249/249 (100%); no failures or skipped tests.
+- **Follow-up targeted checks:** `/mcp/.well-known/openid-configuration`
+  returned 404 without authentication. A real Nova action list explicitly
+  reported that the list has no finish time; optional event-detail lookup
+  returned an event result and derived its latest finish time. The new
+  HTTP-only multi-user test override is **Live unverified**; only its fail-closed
+  default, explicit opt-in, endpoint generation, and startup warning were tested
+  locally.
+- **Local unit tests (current working tree, 2026-11-05):** 274/274 (100%); no
+  failures or skipped tests. These tests include MCP action-description and
+  advanced-parameter forwarding regressions plus the insecure-HTTP opt-in
+  regressions; they do not replace live service validation.
 
 **Detailed Mapping by Category**
 
@@ -199,19 +212,19 @@ and the [multi-user setup guide](docs/multi-user-guide.md).
 | `openstack server list` | `get_instance` | ✅ | Separate reader projects each returned exactly ten owned VMs; bounded lab validation only |
 | `openstack server show` | `get_instance` | ✅ | Own fixture queries completed; foreign private ID returned no details; no 16-owned-ID batch claim |
 | `openstack server create` | `set_instance` (action="create") | ✅ | **ENHANCED** - Bulk creation support |
-| `openstack server start/stop/reboot` | `set_instance` | ✅ | Bulk stop/start final states verified for two test VMs per project; reboot not retested in this round |
-| `openstack server delete` | `set_instance` (action="delete") | ✅ | **ENHANCED** - Bulk deletion with name_contains filtering |
+| `openstack server start/stop/reboot` | `set_instance` | ✅ | Tool schema exposes all actions and `reboot_type`; bulk stop/start final states verified for two test VMs per project, but reboot was not retested in this round |
+| `openstack server delete` | `set_instance` (action="delete") | ✅ | Tool schema exposes delete and optional force deletion; bulk deletion with `name_contains` filtering |
 | `openstack server backup create` | `set_server_backup` | ✅ | Nova backup action with rotation; asynchronous, no custom metadata |
-| `openstack server image create` | `set_instance` (action="snapshot") | ✅ | Image/snapshot creation |
-| `openstack server shelve/unshelve` | `set_instance` | ✅ | Instance shelving |
+| `openstack server image create` | `set_instance` (action="snapshot") | ✅ | Accepts optional `snapshot_name` and JSON `metadata`; parameter forwarding is locally tested, not live-retested in this change |
+| `openstack server shelve/unshelve` | `set_instance` | ✅ | Actions are exposed in the tool schema; instance shelving was not live-retested in this change |
 | `openstack server lock/unlock` | `set_instance` | ✅ | Instance locking |
 | `openstack server pause/unpause` | `set_instance` | ✅ | Instance pausing |
 | `openstack server suspend/resume` | `set_instance` | ✅ | Instance suspension |
-| `openstack server resize` | `set_instance` (action="resize") | ✅ | Instance resizing |
+| `openstack server resize` | `set_instance` (action="resize") | ✅ | Uses the existing `flavor` parameter as the target flavor; action exposure is locally tested |
 | `openstack server resize confirm` | `set_instance` (action="confirm_resize") | ✅ | Resize confirmation |
 | `openstack server resize revert` | `set_instance` (action="revert_resize") | ✅ | Resize revert |
-| `openstack server rebuild` | `set_instance` (action="rebuild") | ✅ | Instance rebuilding |
-| `openstack server rescue/unrescue` | `set_instance` | ✅ | Recovery mode |
+| `openstack server rebuild` | `set_instance` (action="rebuild") | ✅ | Uses `image` and supports optional `new_name`, JSON `metadata`, and `preserve_ephemeral`; not live-retested in this change |
+| `openstack server rescue/unrescue` | `set_instance` | ✅ | Tool schema exposes both actions and optional `rescue_image_id`; not live-retested in this change |
 | `openstack server migrate` | `set_server_migration` (action="migrate") | ✅ | Live migration |
 | `openstack server evacuate` | `set_server_migration` (action="evacuate") | ✅ | Server evacuation |
 | `openstack server migration list` | `set_server_migration` (action="list") | ✅ | Migration listing |
@@ -234,7 +247,7 @@ and the [multi-user setup guide](docs/multi-user-guide.md).
 | `openstack server set` | `set_server_properties` (action="set") | ✅ | Server property setting |
 | `openstack server unset` | `set_server_properties` (action="unset") | ✅ | Server property unsetting |
 | `openstack server dump create` | `set_server_dump` | ❌ Unsupported | Returns an explicit unsupported result; no dump is created |
-| `openstack server event list` | `get_server_events` | ✅ | Pass the server name or UUID via `instance_name`, not `server_id`; event visibility follows Nova policy |
+| `openstack server event list` | `get_server_events` | ✅ | Pass the server name or UUID via `instance_name`, not `server_id`. The action list has no completion time; set `include_event_details=true` to fetch per-action event results and derive the latest finish time. Detailed lookup is capped at 10 actions. Event visibility follows Nova policy |
 | `openstack server group list` | `get_server_groups` | ✅ | Server group listing |
 | `openstack server group create/delete` | `set_server_group` | ✅ | Server group management |
 | `openstack flavor list` | `set_flavor` (action="list") | ✅ | Requires modification tools to be enabled for registration |
@@ -488,149 +501,250 @@ The feature table marks implemented API paths, not verification against every Op
 
 ## Quick Start
 
-> 💡 **Need an OpenStack Cluster for Testing?**  
-> Check out this comprehensive guide: [Tutorial: Install OpenStack Multinode Cluster /w Kolla-Ansible (Epoxy/Dalmatian)](https://medium.com/@call518/tutorial-install-openstack-multinode-cluster-w-kolla-ansible-flamingo-epoxy-dalmatian-19c000cc1645)  
-> Perfect for setting up a test environment to explore MCP-OpenStack-Ops capabilities.
+This starts the complete local evaluation stack:
 
-![Flow Diagram of Quickstart/Tutorial](img/MCP-Workflow-of-Quickstart-Tutorial.png)
+```text
+Browser → OpenWebUI → MCPO (OpenAPI) → MCP-OpenStack-Ops → OpenStack
+```
 
-### 1. Environment Setup
+Prerequisites are Git, Docker with the Compose plugin, a reachable OpenStack
+environment, and a model provider supported by OpenWebUI. The model should
+support reliable native tool calling.
+
+This default path supports an OpenStack deployment whose Identity, Compute,
+Network, Block Storage, Image, Placement, and Orchestration APIs are reachable
+from the Docker host at one hostname with the configured service ports. If your
+cloud uses different hostnames or URL paths per service, check
+[OpenStack endpoint topology](#openstack-endpoint-topology) before starting.
+
+| Quick Start default | Value |
+| --- | --- |
+| OpenStack identity | One account from `.env` |
+| Available tools | Read-only; modification tools are hidden |
+| HTTP authentication | Disabled |
+| Published network | Localhost only |
+| MCPO configuration | `mcp-config.json.http.local` |
+
+### 1. Clone and configure
 
 ```bash
-# Clone and navigate to project
+git clone https://github.com/call518/MCP-OpenStack-Ops.git
 cd MCP-OpenStack-Ops
-
-# Install dependencies
-uv sync
-
-# Configure environment
 cp .env.example .env
-# Edit .env with your OpenStack credentials
+cp mcp-config.json.http mcp-config.json.http.local
+chmod 600 mcp-config.json.http.local
+openssl rand -hex 32
+vi .env
 ```
 
-**Environment Configuration**
+In `.env`:
 
-Configure your `.env` file with OpenStack credentials:
+1. Replace `WEBUI_SECRET_KEY` with the generated value.
+2. Set the `OS_*` authentication, domain, region, protocol, and service-port
+   values for the target OpenStack environment.
+3. Keep these local Quick Start defaults:
 
-```bash
-# OpenStack Authentication (required)
-OS_AUTH_HOST=your-openstack-host
-OS_AUTH_PORT=5000
-OS_AUTH_PROTOCOL=http  # Use 'https' for production with SSL/TLS
-# OS_CACERT=/etc/ssl/certs/openstack-ca.pem  # Required for HTTPS (optional for HTTP)
-OS_IDENTITY_API_VERSION=3
-OS_USERNAME=your-username
-OS_PASSWORD=your-password
-OS_PROJECT_NAME=your-project
-OS_PROJECT_DOMAIN_NAME=default
-OS_USER_DOMAIN_NAME=default
-OS_REGION_NAME=RegionOne
-
-# OpenStack Service Ports (customizable)
-OS_COMPUTE_PORT=8774
-OS_NETWORK_PORT=9696
-OS_VOLUME_PORT=8776
-OS_IMAGE_PORT=9292
-OS_PLACEMENT_PORT=8780
-OS_HEAT_STACK_PORT=8004
-OS_HEAT_STACK_CFN_PORT=8000
-
-# MCP Server Configuration (optional)
-MCP_LOG_LEVEL=INFO
+```dotenv
 ALLOW_MODIFY_OPERATIONS=false
-FASTMCP_TYPE=stdio
-FASTMCP_HOST=127.0.0.1
-FASTMCP_PORT=8080
+MCP_MULTI_USER=false
+REMOTE_AUTH_ENABLE=false
+REMOTE_SECRET_KEY=
+DOCKER_BIND_ADDRESS=127.0.0.1
+MCPO_CONFIG_FILE=mcp-config.json.http.local
 ```
 
-**HTTPS Configuration for Production Environments**
+The local MCPO copy contains no credentials in this mode and connects to the MCP
+container through the private Compose network. It is ignored by Git, so later
+authentication changes do not modify the tracked reference template.
+The placeholder Authorization header is ignored while `REMOTE_AUTH_ENABLE=false`.
+When enabling Bearer authentication, replace `<REMOTE_SECRET_KEY>` in the local
+MCPO copy with the same value configured in `.env`.
 
-For secure OpenStack deployments with SSL/TLS:
+### 2. Start the stack
 
 ```bash
-# Enable HTTPS protocol
-OS_AUTH_PROTOCOL=https
-OS_AUTH_HOST=your-secure-openstack-host
-OS_AUTH_PORT=13000  # Your HTTPS Keystone port
-
-# SSL Certificate Configuration
-# Option 1: Use custom CA certificate (recommended for production)
-OS_CACERT=/etc/ssl/certs/openstack-ca.pem
-
-# Option 2: Skip CA certificate (SSL verification disabled - insecure)
-# Just omit OS_CACERT - the server will warn you about insecure connection
-
-# Docker: Mount CA certificate into container
-# Add to docker-compose.yml volumes:
-#   - /path/to/your/ca-cert.pem:/etc/ssl/certs/openstack-ca.pem:ro
+docker compose up -d
+docker compose ps
 ```
 
-**Protocol Configuration Notes:**
-- `OS_AUTH_PROTOCOL=http`: Use for local development or HTTP-only OpenStack deployments
-- `OS_AUTH_PROTOCOL=https`: Use for production environments with SSL/TLS enabled
-- When `https` is set without `OS_CACERT`, SSL verification is disabled (insecure but functional)
-- For secure production deployments, always provide `OS_CACERT` with your CA certificate path
+Wait until `mcp-server` is healthy and `mcpo-proxy` and `open-webui` are running.
 
-### 2. Run Server
+| Service | Local URL | Purpose |
+| --- | --- | --- |
+| OpenWebUI | `http://localhost:3000` | Chat interface |
+| MCP server | `http://localhost:8000/mcp` | Direct MCP endpoint |
+| MCPO docs | `http://localhost:8080/mcp-openstack-ops/docs` | Generated OpenAPI schema and test UI |
+
+If `mcp-server` is unhealthy, inspect its log before continuing:
 
 ```bash
-# Start all services
-docker-compose up -d
-
-# Check logs
-docker-compose logs mcp-server
-docker-compose logs mcpo-proxy
+docker compose logs mcp-server
 ```
 
-**Container Architecture**:
-- **mcp-server**: OpenStack MCP server with tools
-- **mcpo-proxy**: OpenAPI (REST-API)
-- **open-webui**: Web interface for testing and interaction
+### 3. Configure OpenWebUI 0.13
 
-> 📌 **Note**: Web-UI configuration instructions are based on OpenWebUI **v0.6.22**. Menu locations and settings may differ in newer versions.
+Open `http://localhost:3000`, create the first administrator account, and add a
+model provider. Use a model with reliable native function calling.
 
-**Service URLs - Docker Internal**:
-- MCP Server: `localhost:8080` (HTTP transport)
-- MCPO Proxy: `localhost:8000` (OpenStack API proxy)
-- Open WebUI: `localhost:3000` (Web interface)
+For the shortest first run, choose one provider:
 
-**Service URLs - Docker External**:
-- MCP Server: `host.docker.internal:18005` (HTTP transport)
-- MCPO Proxy: `host.docker.internal:8005` (OpenStack API proxy)
-- Open WebUI: `host.docker.internal:3005` (Web interface)
+- **OpenAI:** open **Settings → Admin → Connections**, add an OpenAI API
+  connection, use `https://api.openai.com/v1`, enter the API key, and save it.
+  See the [OpenWebUI OpenAI guide](https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai/).
+- **Ollama on the Docker host:** the Compose configuration already points
+  OpenWebUI to `http://host.docker.internal:11434`. Ensure Ollama listens where
+  Docker can reach it and select a tool-capable model. See the
+  [OpenWebUI Ollama guide](https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-ollama/).
+- **Another OpenAI-compatible provider or local server:** add its base URL and
+  API key under **Settings → Admin → Connections**. When the provider does not
+  expose a model list, enter the model ID manually. See the
+  [OpenAI-compatible provider guide](https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-openai-compatible/).
 
-#### For Claude Desktop Integration
-Add to your Claude Desktop configuration:
-```json
-{
-  "mcpServers": {
-    "mcp-openstack-ops": {
-      "command": "uvx",
-      "args": ["--python", "3.12", "mcp-openstack-ops"],
-      "env": {
-        "OS_AUTH_HOST": "your-openstack-host",
-        "OS_AUTH_PORT": "5000",
-        "OS_PROJECT_NAME": "your-project",
-        "OS_USERNAME": "your-username",
-        "OS_PASSWORD": "your-password",
-        "OS_USER_DOMAIN_NAME": "Default",
-        "OS_PROJECT_DOMAIN_NAME": "Default",
-        "OS_REGION_NAME": "RegionOne",
-        "OS_IDENTITY_API_VERSION": "3",
-        "OS_INTERFACE": "internal",
-        "OS_COMPUTE_PORT": "8774",
-        "OS_NETWORK_PORT": "9696",
-        "OS_VOLUME_PORT": "8776",
-        "OS_IMAGE_PORT": "9292",
-        "OS_PLACEMENT_PORT": "8780",
-        "OS_HEAT_STACK_PORT": "8004",
-        "OS_HEAT_STACK_CFN_PORT": "18888",
-        "ALLOW_MODIFY_OPERATIONS": "false",
-        "MCP_LOG_LEVEL": "INFO"
-      }
-    }
-  }
-}
+Confirm that the selected model appears in a new chat before configuring the
+MCP integration.
+
+#### 3.1 Add the MCPO OpenAPI connection
+
+Open **Settings → Admin → Tools → Integrations**, find **External Tool
+Servers**, and add this connection:
+
+| Field | Value |
+| --- | --- |
+| Type | `OpenAPI` |
+| Name | `MCP OpenStack Ops` |
+| ID | `mcp-openstack-ops` or the generated value |
+| URL | `http://mcpo-proxy:8000/mcp-openstack-ops` |
+| Authentication | `None` |
+| Function name filter list | Empty |
+| Enabled | On |
+
+This is an administrator-managed connection, so OpenWebUI fetches the schema
+from its own container. Use the Compose service address above, not
+`http://localhost:8080`; inside the OpenWebUI container, `localhost` refers to
+OpenWebUI itself. The UI automatically fetches `openapi.json` from the supplied
+base URL. Save the connection and confirm that the connection check succeeds.
+
+#### 3.2 Enable Tool Search for the full tool inventory
+
+The OpenStack server plus OpenWebUI's built-in tools can exceed a model
+provider's maximum number of function definitions per request. Open
+**Settings → Admin → System → Interface**. This is the administrator
+**Interface** entry below **Authentication**, not the personal Interface entry
+near the top of the settings menu. In the **Chat** section, set:
+
+| Setting | Value |
+| --- | --- |
+| Tool Search | On |
+| Defer Built-in Tools | On |
+| Deferral Threshold (characters) | `0` |
+| Always Loaded Tools | Empty |
+
+Save the settings. Tool Search keeps the complete MCPO inventory available but
+sends only `search_tools`, `call_tool`, and any explicitly always-loaded tools
+to the model until a matching tool is needed. See the
+[OpenWebUI tools documentation](https://docs.openwebui.com/features/extensibility/plugin/tools/).
+
+#### 3.3 Configure OpenAI reasoning models
+
+This step applies only to an OpenAI reasoning model that needs both non-default
+reasoning effort and function tools. In **Settings → Admin → AI → Connections**,
+edit its OpenAI connection and select API type **Responses**. Chat Completions
+does not support function tools together with a non-`none` reasoning effort on
+newer reasoning models.
+
+With OpenWebUI 0.13.0, leave the chat's **Model controls → Advanced Params →
+Reasoning Effort** at **Default**. Selecting **Custom** initializes the field to
+`medium` and sends the Chat Completions parameter `reasoning_effort`, which is
+not valid in a Responses request. Default omits that override and lets the model
+apply its own default effort. To force an explicit Responses value, add this
+custom parameter instead:
+
+```text
+Name: reasoning
+Value: {"effort":"medium"}
+```
+
+See the [OpenAI Responses migration guide](https://developers.openai.com/api/docs/guides/migrate-to-responses)
+and the [OpenWebUI Open Responses guide](https://docs.openwebui.com/getting-started/quick-start/connect-a-provider/starting-with-open-responses/).
+
+Models and providers without this constraint may keep their normal API type and
+reasoning settings.
+
+#### 3.4 Enable the connection in a chat
+
+Open a new chat, select the model, click the **Integrations** icon beside the
+message input, and enable `MCP OpenStack Ops` under **Tools**. Global tool-server
+connections are not automatically enabled in every chat.
+
+### 4. Verify
+
+Ask the model:
+
+```text
+Use mcp-openstack-ops to list the instances in my OpenStack project.
+```
+
+A successful response confirms the OpenWebUI → MCPO → MCP server →
+OpenStack path. The MCPO documentation URL above should also list the generated
+tool endpoints. For connection failures, inspect all three services:
+
+```bash
+docker compose logs mcp-server mcpo-proxy open-webui
+```
+
+Common OpenWebUI 0.13 errors:
+
+| Error | Cause | Fix |
+| --- | --- | --- |
+| `Cannot connect to host localhost` | An administrator connection used a browser/host URL from inside the OpenWebUI container | Use `http://mcpo-proxy:8000/mcp-openstack-ops` |
+| `tools: array too long` | External and built-in tool definitions exceeded the model provider's request limit | Enable Tool Search with threshold `0` |
+| `Function tools with reasoning_effort are not supported ... /v1/chat/completions` | Chat Completions received function tools and a non-`none` reasoning effort | Use Responses, or set reasoning effort to `none` if reasoning is not needed |
+| `Unsupported parameter: reasoning_effort ... moved to reasoning.effort` | OpenWebUI 0.13.0 sent a custom Reasoning Effort through a Responses connection | Set Reasoning Effort to Default; use custom `reasoning={"effort":"medium"}` only when an explicit value is required |
+
+### 5. Enable modifications only when needed
+
+Create, update, and delete tools are intentionally absent by default. To enable
+them, set `ALLOW_MODIFY_OPERATIONS=true` in `.env` and recreate the MCP path:
+
+```bash
+docker compose up -d --force-recreate mcp-server mcpo-proxy
+```
+
+OpenStack policy still controls what the configured account may change. For
+Bearer authentication, non-local exposure, and custom configuration files, see
+[Server Configuration](#server-configuration). For request-scoped user accounts,
+see the [multi-user guide](docs/multi-user-guide.md).
+
+Stop the stack without deleting the OpenWebUI data volume with:
+
+```bash
+docker compose down
+```
+
+### 6. Installation variants and detailed guides
+
+The steps above are the local, single-account evaluation path. Use the matching
+guide when your environment differs:
+
+| Environment or requirement | Follow-up guide |
+| --- | --- |
+| OpenStack APIs use HTTPS with a public or private CA | [HTTPS and private CA setup](#https-and-private-ca-setup) |
+| OpenStack services use different hosts or URL paths | [OpenStack endpoint topology](#openstack-endpoint-topology) |
+| Host ports `3000`, `8000`, or `8080` are occupied | [Docker Compose environment variables](#environment-variables) |
+| MCP is exposed beyond localhost | [Bearer authentication and remote-access precautions](#bearer-token-authentication) |
+| Each user supplies a separate OpenStack identity | [Multi-user setup and usage guide](docs/multi-user-guide.md) |
+| Separate fixed accounts or projects need separate MCP entries | [Multi-project configuration](#multi-project-configuration) |
+| Claude Desktop or Claude Code is the client | [Claude Desktop](#claude-desktop-integration) or [Claude Code](#claude-code-integration) |
+| OpenAI reasoning models need explicit reasoning effort | [OpenAI reasoning-model settings](#33-configure-openai-reasoning-models) |
+
+## Claude Desktop Integration
+
+Use `mcp-config.json.stdio` as a reference. Copy it to the ignored local file,
+update the local copy, and merge it into Claude Desktop's private configuration:
+
+```bash
+cp mcp-config.json.stdio mcp-config.json.stdio.local
+chmod 600 mcp-config.json.stdio.local
 ```
 
 ---
@@ -639,7 +753,7 @@ Add to your Claude Desktop configuration:
 
 Install Claude Code and start the MCP server in `streamable-http` mode first.
 Register the MCP server's `/mcp` URL, not the MCPO/OpenAPI proxy URL. The example
-below uses the Docker host port `18005`; replace the host/port for your deployment
+below uses the Docker host port `8000`; replace the host/port for your deployment
 and use HTTPS for remote connections. Registration does not start the server.
 
 For the existing single-account mode with `REMOTE_AUTH_ENABLE=true`, enter the
@@ -650,7 +764,7 @@ read -rsp 'MCP Bearer token: ' OPENSTACK_MCP_TOKEN
 echo
 export OPENSTACK_MCP_TOKEN
 
-claude mcp add-json --scope user openstack-ops '{"type":"http","url":"http://127.0.0.1:18005/mcp","headers":{"Authorization":"Bearer ${OPENSTACK_MCP_TOKEN}"}}'
+claude mcp add-json --scope user openstack-ops '{"type":"http","url":"http://127.0.0.1:8000/mcp","headers":{"Authorization":"Bearer ${OPENSTACK_MCP_TOKEN}"}}'
 claude mcp list
 claude
 ```
@@ -660,7 +774,7 @@ Keep `OPENSTACK_MCP_TOKEN` exported in the terminal that launches Claude Code.
 authentication is disabled, use this registration command instead:
 
 ```bash
-claude mcp add --transport http --scope user openstack-ops http://127.0.0.1:18005/mcp
+claude mcp add --transport http --scope user openstack-ops http://127.0.0.1:8000/mcp
 ```
 
 In Claude Code, check `/mcp` and ask, for example:
@@ -696,6 +810,7 @@ Options:
   --port PORT          Port number for HTTP transport (default: 8080)
   --auth-enable        Enable Bearer token authentication for streamable-http mode
   --secret-key SECRET  Secret key for Bearer token authentication
+  --multi-user         Use request-local Application Credentials (streamable-http only)
 ```
 
 ### Environment Variables
@@ -707,9 +822,9 @@ Options:
 | `OS_AUTH_PORT` | OpenStack Identity service port | Required | Authentication port |
 | `OS_AUTH_PROTOCOL` | Connection protocol (http or https) | `http` | Use `https` for production with SSL/TLS |
 | `OS_CACERT` | SSL CA certificate path for HTTPS | Optional | Required for secure HTTPS connections (e.g., `/etc/ssl/certs/ca.pem`). If not set with HTTPS, SSL verification is disabled (insecure) |
-| `OS_USERNAME` | OpenStack username | Required | User credentials |
-| `OS_PASSWORD` | OpenStack password | Required | User credentials |
-| `OS_PROJECT_NAME` | OpenStack project name | Required | Project scope |
+| `OS_USERNAME` | OpenStack username | Required in single-account mode | Unused for multi-user request authentication |
+| `OS_PASSWORD` | OpenStack password | Required in single-account mode | Unused for multi-user request authentication |
+| `OS_PROJECT_NAME` | OpenStack project name | Required in single-account mode | Multi-user scope comes from each Application Credential |
 | `OS_IDENTITY_API_VERSION` | Identity API version | `3` | API version |
 | `OS_PROJECT_DOMAIN_NAME` | Project domain name | `default` | Domain scope |
 | `OS_USER_DOMAIN_NAME` | User domain name | `default` | Domain scope |
@@ -729,8 +844,88 @@ Options:
 | `FASTMCP_HOST` | HTTP host address | `127.0.0.1` | For HTTP mode only |
 | `FASTMCP_PORT` | HTTP port number | `8080` | For HTTP mode only |
 | **Authentication (Optional)** |
+| `MCP_MULTI_USER` | Enable request-scoped per-user Application Credential authentication | `false` | Streamable HTTP only; requires HTTPS OpenStack endpoints by default and can be combined with shared Bearer authentication |
+| `MCP_MULTI_USER_ALLOW_INSECURE_HTTP` | Allow multi-user OpenStack API requests over HTTP | `false` | Development/testing only; requires `MCP_MULTI_USER=true` and transmits credentials and tokens in plaintext |
 | `REMOTE_AUTH_ENABLE` | Enable Bearer token authentication for streamable-http mode | `false` | Production security |
-| `REMOTE_SECRET_KEY` | Secret key for Bearer token authentication | Required when auth enabled | Production security |
+| `REMOTE_SECRET_KEY` | Shared secret for Bearer token authentication | Required when auth enabled | Checked before per-user authentication when both modes are enabled |
+| **Docker Compose** |
+| `DOCKER_BIND_ADDRESS` | Published-port bind address | `127.0.0.1` | Keep local when HTTP authentication is disabled |
+| `DOCKER_EXTERNAL_PORT_OPENWEBUI` | OpenWebUI host port | `3000` | Browser access |
+| `DOCKER_EXTERNAL_PORT_MCP_SERVER` | MCP server host port | `8000` | Direct MCP clients |
+| `DOCKER_EXTERNAL_PORT_MCPO_PROXY` | MCPO host port | `8080` | OpenAPI proxy and docs |
+| `MCPO_CONFIG_FILE` | MCPO configuration mounted by Compose | `mcp-config.json.http.local` | Copy the tracked HTTP template to this ignored local file before starting Compose |
+
+### OpenStack endpoint topology
+
+Single-account and multi-user connections currently construct service URLs from
+one `OS_AUTH_HOST`, `OS_AUTH_PROTOCOL`, and the `OS_*_PORT` values. This works
+for compact deployments, API gateways, and virtual IPs that expose every listed
+service on one host. The server does not currently discover different service
+hosts or custom URL paths from the Keystone service catalog.
+
+Before starting, confirm that these URLs are reachable from inside the
+`mcp-server` container. If the cloud publishes different service hosts or paths,
+place a gateway or reverse proxy at `OS_AUTH_HOST` that maps the configured ports
+to those endpoints. Do not proceed by entering only the Keystone hostname; the
+MCP server may authenticate successfully and then fail on the first service tool.
+
+`OS_INTERFACE` does not change these explicit endpoint URLs. The current
+single-host configuration uses the internal interface convention.
+
+### HTTPS and private CA setup
+
+For HTTPS OpenStack endpoints signed by a public CA, use the system CA bundle
+already present in the container:
+
+```dotenv
+OS_AUTH_PROTOCOL=https
+OS_CACERT=/etc/pki/tls/certs/ca-bundle.crt
+```
+
+For a private CA, the certificate must exist inside the `mcp-server` container;
+a host path in `.env` alone is not enough.
+
+Uncomment and replace the CA volume example under `mcp-server` in
+`docker-compose.yml`:
+
+```yaml
+volumes:
+  - /absolute/host/path/openstack-ca.pem:/etc/ssl/certs/openstack-ca.pem:ro
+```
+
+Then configure the container path, recreate the MCP path, and check its logs:
+
+```dotenv
+OS_AUTH_PROTOCOL=https
+OS_CACERT=/etc/ssl/certs/openstack-ca.pem
+```
+
+```bash
+docker compose up -d --force-recreate mcp-server mcpo-proxy
+docker compose logs mcp-server
+```
+
+Without `OS_CACERT`, single-account HTTPS disables certificate verification and
+is not a secure production configuration. Multi-user mode fails closed unless
+HTTPS is enabled, and its full requirements are documented in the
+[multi-user guide](docs/multi-user-guide.md).
+
+The tracked `mcp-config.json.*` files are reference templates. Before adding
+credentials, copy only the template you need; all matching `.local` files are
+ignored by Git:
+
+```bash
+cp mcp-config.json.http mcp-config.json.http.local
+cp mcp-config.json.multi-user mcp-config.json.multi-user.local
+cp mcp-config.json.multi-project mcp-config.json.multi-project.local
+cp mcp-config.json.stdio mcp-config.json.stdio.local
+chmod 600 mcp-config.json.*.local
+```
+
+For MCPO, select the copy in `.env`, for example
+`MCPO_CONFIG_FILE=mcp-config.json.multi-user.local`. Point non-Compose clients
+to their local copy separately. Never put real credentials in a tracked
+template.
 
 ---
 
@@ -816,6 +1011,8 @@ python test_project_isolation.py
 - ✅ Secure resource lookup with cross-project protection
 - ✅ Prevention of accidental operations on other projects' resources
 
+### Multi-project configuration
+
 For managing multiple OpenStack projects, deploy multiple MCP server instances with different `OS_PROJECT_NAME` values:
 
 **Example: Managing 3 Projects**
@@ -878,7 +1075,7 @@ python -m mcp_openstack_ops --type streamable-http --port 8002
 
 This allows Claude to access each project independently with complete isolation between environments.
 
-**📁 Ready-to-use Configuration File:**
+**📁 Reference Configuration File:**
 
 A complete multi-project configuration example is available at `mcp-config.json.multi-project`:
 - **Production**: Read-only operations for safety (`ALLOW_MODIFY_OPERATIONS=false`)
@@ -886,9 +1083,11 @@ A complete multi-project configuration example is available at `mcp-config.json.
 - **Testing**: Debug logging enabled (`MCP_LOG_LEVEL=DEBUG`)
 
 ```bash
-# Copy and customize the multi-project configuration
-cp mcp-config.json.multi-project ~/.config/claude-desktop/mcp_servers.json
-# Edit with your OpenStack credentials
+# Preserve the tracked template and customize only the ignored local copy
+cp mcp-config.json.multi-project mcp-config.json.multi-project.local
+chmod 600 mcp-config.json.multi-project.local
+# Point the client to this file, or merge its contents into the client's
+# existing private configuration. Do not overwrite an existing client config.
 ```
 
 ---
@@ -1106,8 +1305,10 @@ uv run python -m mcp_openstack_ops --type streamable-http --auth-enable --secret
 1. **stdio mode** (Default): Local-only access, no authentication needed
 2. **streamable-http + REMOTE_AUTH_ENABLE=false/undefined**: Remote access without authentication ⚠️ **NOT RECOMMENDED for production**
 3. **streamable-http + REMOTE_AUTH_ENABLE=true**: Remote access with Bearer token authentication ✅ **RECOMMENDED for production**
+4. **streamable-http + MCP_MULTI_USER=true**: Each request authenticates with the caller's project-scoped Keystone Application Credential and requires HTTPS OpenStack endpoints by default. HTTP is available only for isolated development/testing with `MCP_MULTI_USER_ALLOW_INSECURE_HTTP=true`.
+5. **streamable-http + MCP_MULTI_USER=true + REMOTE_AUTH_ENABLE=true**: Each request must pass shared Bearer authentication first and per-user Application Credential authentication second. See the [multi-user guide](docs/multi-user-guide.md).
 
-> **🔒 Default Policy**: `REMOTE_AUTH_ENABLE` defaults to `false` if undefined, empty, or null. This ensures the server starts even without explicit authentication configuration.
+> **🔒 Default Policy**: `REMOTE_AUTH_ENABLE` and `MCP_MULTI_USER` both default to `false`. A configured `REMOTE_SECRET_KEY` is used only when `REMOTE_AUTH_ENABLE=true`; enabling both modes requires both forms of authentication.
 
 #### Client Configuration
 
@@ -1188,7 +1389,7 @@ When authentication fails, the server returns:
 **Comprehensive Project Scoping Documentation:**
 - ✅ **Multi-Project Management Guide**: Complete setup instructions for managing multiple OpenStack projects
 - ✅ **Security & Isolation Details**: Detailed explanation of tenant isolation features
-- ✅ **Ready-to-Use Configuration**: Pre-configured `mcp-config.json.multi-project` for quick setup
+- ✅ **Reference Configuration**: Copy `mcp-config.json.multi-project` to an ignored `.local` file before adding credentials
 - ✅ **Updated Environment Variables**: Enhanced `.env.example` with project scoping guidance
 
 ---
@@ -1364,8 +1565,8 @@ Add your tool description to `src/mcp_openstack_ops/prompt_template.md` for bett
 ./scripts/run-mcp-inspector-local.sh
 
 # Or with Docker
-docker-compose up -d
-docker-compose logs -f mcp-server
+docker compose up -d
+docker compose logs -f mcp-server
 
 # Test with natural language:
 # "Show me your custom analysis"

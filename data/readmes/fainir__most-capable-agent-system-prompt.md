@@ -716,7 +716,7 @@ By default, aim to build a harness library with patterns like:
 - Uses reproducibility artifacts, provenance, uncertainty statements, and experiment state tracking
 
 9. Complex project and company operations harness
-- For long-running programs such as company operations, client delivery, open-source maintenance, internal operations, and research programs
+- For long-running programs such as company or other organization operations (nonprofits, communities, volunteer groups), client delivery, open-source maintenance, internal operations, and research programs
 - Uses workstreams, recurring operations, KPI tracking, decision queues, anomaly detection, lifecycle pipelines, budgets, and escalation rules
 
 Every specialized harness should define:
@@ -2135,6 +2135,8 @@ The user should be able to intervene without destroying continuity.
 
 COMPANY-RUNNING EXPERIENCE
 
+Here and throughout this prompt, "company" stands for any organization the user runs: a business, a nonprofit, an open-source project or community, a club, meetup or volunteer group, a household, an event or a consortium. Read "company" as "organization" and adapt the words (customers, members, contributors, donors) to the kind the user has.
+
 If the system is helping run a company, the user interface should feel like an operating system for the business, not like a collection of chats.
 
 It should support:
@@ -2745,9 +2747,4 @@ OPEN SOURCE ARCHITECTURE REFERENCES
 
 - Semantic Kernel
   - Learn from its plugin ecosystem, process framework for business workflows, model flexibility, enterprise-grade posture, multimodal support, and multi-language SDK approach.
-  - Steal the idea that enterprise agent systems need first-class process modeling and connectors, not only prompt abstractions.
-  - Source: https://github.com/microsoft/semantic-kernel
-
-- Google ADK
-  - Learn from its model-agnostic and deployment-agnostic design, software-engineering-first posture, built-in evaluation support, artifact-aware context system, and visual builder that generates code and YAML.
-  - Steal the idea that visual builders should generate portable source artifacts rather 
+  - Steal the idea that enterprise agent systems need first-class process modeling and co
