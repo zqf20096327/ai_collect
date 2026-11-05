@@ -2,6 +2,8 @@
 
 # WeWorker
 
+[中文](README.md) | [English](README_EN.md)
+
 **让 AI 真正操作网站的开源桌面 Agent**
 
 自然语言任务 → Adapter → 真实浏览器执行。内置 33 个网站 Adapter，支持 Windows 与 macOS。
@@ -14,9 +16,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/WeWorker/WeWorker)](https://github.com/WeWorker/WeWorker/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/WeWorker/WeWorker)](https://github.com/WeWorker/WeWorker/issues)
 
-[官网](https://www.weworker.cc) · [下载](https://www.weworker.cc/download) · [快速开始](https://www.weworker.cc/docs/quick-start) · [33 个 Adapter](docs/ADAPTERS.md) · [社区讨论](https://github.com/WeWorker/WeWorker/discussions)
+[官网](https://www.weworker.cc) · [下载](https://www.weworker.cc/download) · [快速开始](https://www.weworker.cc/docs/quick-start) · [安装 FAQ](https://github.com/WeWorker/WeWorker/discussions/224) · [33 个 Adapter](docs/ADAPTERS.md) · [社区讨论](https://github.com/WeWorker/WeWorker/discussions)
 
-![WeWorker：让 AI 真正操作网站](officialWeb/public/social-preview.png)
+![WeWorker 调用 GitHub 与 Hacker News Adapter 并整理公开结果](docs/assets/weworker-public-demo.gif)
 
 </div>
 
@@ -31,8 +33,6 @@ WeWorker 将自然语言任务交给 AI Agent，通过浏览器扩展或内置 T
 ```
 
 WeWorker 会选择对应 Adapter、读取网站信息并返回整理结果，而不是只给出操作建议。[在官网查看跨站任务演示](https://www.weworker.cc/#demo)。
-
-![WeWorker 调用 GitHub 与 Hacker News Adapter 并整理公开结果](docs/assets/weworker-public-demo.gif)
 
 适合这些场景：
 
@@ -49,6 +49,20 @@ WeWorker 会选择对应 Adapter、读取网站信息并返回整理结果，而
 - **站点记忆**：在本地保存与网站相关的操作上下文。
 - **消息通知**：支持将任务结果发送到已配置的通知渠道。
 - **多模型配置**：支持 Anthropic、智谱、DeepSeek 和兼容接口的自定义模型配置。
+
+## 命令行与 AI Agent
+
+不安装桌面应用，也可以通过 WebCLI 把网站 Adapter 接入 Claude Code、Codex、Cursor 等 AI Agent，或直接在终端调用。独立 CLI 使用自己的本地 Bridge 和浏览器 Profile，不会复用 WeWorker 桌面端的浏览器登录态。
+
+下面的示例读取公开的 GitHub Trending，不需要 GitHub 登录：
+
+```bash
+npm install -g weworker-webcli@latest
+webcli browser start
+webcli call github.com.repos --since=daily --language=python --limit=5
+```
+
+更多命令、浏览器模式和首次使用说明见 [WebCLI 文档](webcli/README.md)。
 
 ## Adapter 支持
 
@@ -80,6 +94,8 @@ WeWorker 当前内置 33 个常用网站 Adapter。部分示例：
 - macOS Apple 芯片：arm64 `.dmg`
 
 正式发布地址和签名状态以具体 Release 说明为准。
+
+首次安装、macOS 未公证构建的打开方式、扩展连接与 Adapter 排查见 [安装与首次使用 FAQ](https://github.com/WeWorker/WeWorker/discussions/224)。
 
 ### 从源码启动
 
@@ -226,6 +242,12 @@ npm run build:win
 
 欢迎提交 Bug、文档、测试、新功能和新网站 Adapter。请先阅读 [贡献指南](CONTRIBUTING.md)、[社区行为准则](CODE_OF_CONDUCT.md)、[支持说明](SUPPORT.md) 和 [Git 工作流](docs/GIT_WORKFLOW.md)。新增或完成 Adapter 时，需要在同一个 PR 中更新 [Adapter 清单](docs/ADAPTERS.md)。
 
+### Adapter 贡献挑战
+
+你常用的网站还不在支持列表中？欢迎提交一个公开网站 Adapter PR。合并后，我们会在社区和版本更新中展示并感谢贡献者。
+
+[查看 Adapter 清单](docs/ADAPTERS.md) · [阅读贡献指南](CONTRIBUTING.md) · [提出 Adapter 建议](https://github.com/WeWorker/WeWorker/issues/new/choose)
+
 ## 版本
 
 当前版本为 `1.0.1`。公开版本变化见 [CHANGELOG.md](CHANGELOG.md)。
@@ -255,6 +277,10 @@ git push origin v1.0.1
 注意：`webcli/` 走 npm 独立发布节奏，版本与桌面端解耦，不随分支号更新。
 
 桌面端打包（electron-builder）与安装后显示的版本均取自 `weworker/package.json`；若分支号与版本号不对应，打包产物名称和安装后的版本显示都会与预期不符。WebCLI 版本一致性由 `webcli/version.json`、`webcli/.claude-plugin/plugin.json` 和 `webcli/skills/webcli/SKILL.md` 的独立账本约束。
+
+---
+
+如果 WeWorker 帮到了你，点个 Star 是对独立开发最大的支持 ⭐
 
 ## 许可证
 

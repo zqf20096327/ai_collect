@@ -40,6 +40,7 @@ curl -fsSL https://get.motherduck.com | bash -s dbt-ingestion-s3
 
 ### dbt and transformation
 
+- [query-optimization](query-optimization) - Optimize SQL queries and dbt projects with generated profiles, isolated experiments, and resumable evidence.
 - [dbt-ingestion-s3](dbt-ingestion-s3) - Build Hacker News models from Parquet in S3 with dbt, run locally or on MotherDuck.
 - [dbt-churn-prediction](dbt-churn-prediction) - Build churn feature and label tables with dbt, plus a Python model trained on top.
 - [dbt-ducklake](dbt-ducklake) - Run TPC-DS dbt models on a DuckLake-backed database (`features: ducklake`).
@@ -134,6 +135,8 @@ published_date: 2024-12-11      # publish date (YYYY-MM-DD); downstream orders b
   recipe's docs URL (`https://motherduck.com/docs/cookbook/<id>`).
 - `published_date` is the publish date as `YYYY-MM-DD`, so downstream surfaces
   can order recipes by recency.
+- `featured` (optional) is `true` for recipes the MotherDuck product highlights.
+  Omit it otherwise; the catalog emits `featured: false` by default.
 
 The body follows a consistent, skimmable structure:
 
@@ -166,7 +169,11 @@ The body follows a consistent, skimmable structure:
   ```
 
   The catalog shape is defined by [`catalog.schema.json`](catalog.schema.json).
-- On pushes to `main`, CI publishes `catalog.json` as a GitHub Release asset.
+  Besides the front matter, each item carries a generated `files` manifest
+  (path and size of every file in the folder, minus `.gitkeep`), so a consumer
+  can fetch any file of a recipe at the catalog's `source.ref` without listing
+  the repository.
+- On every push to `main`, CI publishes `catalog.json` as a GitHub Release asset.
   Download the latest catalog from
   `https://github.com/motherduckdb/motherduck-cookbook/releases/latest/download/catalog.json`;
   earlier versions remain available on earlier catalog releases.

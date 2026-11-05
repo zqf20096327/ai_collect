@@ -106,7 +106,7 @@ However, DeepXDE is multi-backend, is better for 3D+ problem, and tested since 2
 
 ## What's Included
 
-- **`solve_pde()`**: one-line API for common PDEs (Heat, Burgers, Wave)
+- **`solve_pde()`**: one-line API for common PDEs (Heat and Burgers, wave is on the list)
 - **`AutoPINN`**: configurable solver with auto-selected hyperparameters
 - **`PINN`**: the underlying neural network module
 - **`SymbolicPDE`**: define custom PDEs using SymPy math notation
@@ -121,24 +121,33 @@ For problems not in the built-in registry, define them symbolically:
 import sympy as sp
 from pinnforge import AutoPINN
 
-x, t, u = sp.symbols('x t u')
+x, t = sp.symbols('x t')
+u = sp.Function('u')(x, t)
 equation = sp.diff(u, t) + u * sp.diff(u, x) - 0.01 * sp.diff(u, x, 2)
 
 solver = AutoPINN.from_symbolic(equation, [x, t], u)
 result = solver.solve()
-print(result['metrics'])
 ```
 
-## Known Limitations (v0.1.0)
+`u` has to be a `sp.Function` of x and t. A plain symbol has no derivatives, so `sp.diff` would quietly return 0. Only `u_t`, `u_x` and `u_xx` can show up in the equation, and the initial condition defaults to `sin(pi x)` with zero boundaries unless you pass your own to `SymbolicPDE`.
 
-This is an early release. Some limitations are:
+Metrics only come back when there is something to compare against, so custom PDEs return an empty dict.
 
-- **Fourier feature embeddings are implemented but disabled by default.** They currently cause training collapse on test problems (error jumps from 1e-2 to 1.2). Help wanted: see [#1](https://github.com/ved-rl/pinnforge/issues/1).
-- **Adaptive loss weighting is implemented but disabled by default.** Same reason as Fourier.
-- **Adaptive activation (SA-PINN) is disabled by default.** Interacts badly with Fourier features.
-- **Burgers equation validation returns `{}`.** The analytical solution currently in the code is the Heat equation's solution, not Burgers'. Burgers has no simple solution for this initial condition. See [#2](https://github.com/ved-rl/pinnforge/issues/2).
-- **Only 1D problems are supported.** Multi-dimensional PDEs are planned for v0.2.0.
+## Validation
+
+`solve_pde` checks the result on a grid after training. Heat is compared to its exact solution. Burgers has no closed form for this setup, so it is compared to a finite difference reference (implicit, on a fine grid). Custom symbolic PDEs skip validation.
+
+## Known Limitations (v0.2.1)
+
+- **Wave equation does not run.** The residual needs `u_tt` and `PINN.loss_pde` only computes first derivatives in time, so `WaveEquation.residual` raises `NotImplementedError` for now.
+- **Fourier features were rewritten in v0.2.1 but are still off by default.** The old version only used 2 random frequencies for a 2D input and threw away the raw coordinates, which is the likely reason training collapsed in [#1](https://github.com/ved-rl/pinnforge/issues/1). It now uses 64 by default and keeps x and t. I have not benchmarked it against the plain network yet, so it stays opt-in.
+- **Adaptive loss weighting is off by default.** The weights are now balanced from gradient sizes and no longer trained by the optimizer (they were before, which defeated the point). Needs benchmarking too.
+- **Adaptive activation (SA-PINN) is off by default.**
+- **`precision` in `AutoConfig` is not applied yet.** Everything runs in float32.
+- **Only 1D problems are supported.** Multi-dimensional PDEs are planned.
 - **No CLI yet.** Everything is Python-only.
+
+See `CHANGELOG.md` for what changed in each version.
 
 ## Contributing
 
@@ -148,8 +157,7 @@ This is a new project and there are several tasks that would help a lot. If you'
 
 | Task | Difficulty | Description |
 |------|------------|-------------|
-| **Fix Burgers analytical solution** | Easy | The `BurgersEquation.analytical_solution` method returns the Heat solution. Replace with `NotImplementedError` and fall back to the numerical solver. See [#2](https://github.com/ved-rl/pinnforge/issues/2). |
-| **Add tests for Wave equation** | Easy | `WaveEquation` exists in `pdes.py` but has no test coverage. Add a basic smoke test to `tests/test_pdes.py`. |
+| **Wave equation** | Medium | Compute `u_tt` in `PINN.loss_pde` (or pass it to the residual) and write a real `WaveEquation.residual` with a test against the d'Alembert solution. |
 | **Add a quickstart notebook** | Easy | Create `examples/quickstart.ipynb` that walks through the 3-line API and shows results inline. |
 | **Improve error messages** | Easy | Several places raise generic errors. Add context-specific messages for common failure modes. |
 
@@ -157,7 +165,7 @@ This is a new project and there are several tasks that would help a lot. If you'
 
 | Task | Difficulty | Description |
 |------|------------|-------------|
-| **Fix Fourier feature implementation** | Medium | Features collapse to a constant output. Current implementation uses only `output_dim // 2` random projections, while standard RFF uses 128+. See [#1](https://github.com/ved-rl/pinnforge/issues/1). |
+| **Benchmark Fourier features** | Medium | The mapping was rewritten in v0.2.1. Run Burgers and Heat with and without it over a few seeds and scales and post the errors on [#1](https://github.com/ved-rl/pinnforge/issues/1). |
 | **L-BFGS fine-tuning** | Medium | Adding L-BFGS as a second-stage optimizer like DeepXDE does would improve final accuracy by 10x. |
 | **2D PDE support** | Hard | Currently limited to 1D spatial domains. Requires changes to `pdes.py`, `data.py`, and the `PINN` class. |
 | **JAX backend** | Hard | Optional JAX backend for 5-10x faster training. See `jinns` for reference. |

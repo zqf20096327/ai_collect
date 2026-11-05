@@ -2,7 +2,7 @@
 
 <img src="docs/hero.svg" alt="Give AI a budget, fill it cheaply, you pay and they deliver, unpack the week, enjoy dinner" width="800">
 
-# 🧺 handle-mcp
+# handle-mcp
 
 <a href="https://modelcontextprotocol.io"><img src="docs/badges/mcp.svg" alt="made for MCP" height="26"></a>
 <img src="docs/badges/stores.svg" alt="stores: nemlig, BilkaToGo" height="26">
@@ -10,6 +10,8 @@
 <a href="LICENSE"><img src="docs/badges/license.svg" alt="license MIT" height="26"></a>
 
 **Your AI agent plans the week's meals on a budget, prices them at nemlig.com and BilkaToGo and fills the cheapest cart. You approve and pay.**
+
+[handlemcp.dk](https://handlemcp.dk)
 
 </div>
 
@@ -26,11 +28,18 @@ Danish grocery stores with home delivery, as an MCP server: [nemlig.com](https:/
 
 Taste, budget and meal rules live in your own prompt or skill. The server finds and counts. [Build your own skill](docs/skills.md).
 
+## Requirements
+
+- macOS, Linux or Windows (x64). Windows on ARM is not supported yet: a dependency (`cryptography`) has no ready-made build for it.
+- [uv](https://docs.astral.sh/uv/). It fetches Python 3.12+ if you do not have it.
+- An MCP client, Grok, Claude Code, Claude Desktop or Codex etc.
+- An account at nemlig.com or BilkaToGo with home delivery to your address.
+
 ## Try it
 
 ```sh
-uvx --from git+https://github.com/NJohansen/handle-mcp handle-mcp login nemlig
-claude mcp add handle -- uvx --from git+https://github.com/NJohansen/handle-mcp handle-mcp
+uvx --from git+https://github.com/NJohansen/handle-mcp@v1.2.1 handle-mcp login nemlig
+claude mcp add handle -- uvx --from git+https://github.com/NJohansen/handle-mcp@v1.2.1 handle-mcp
 ```
 
 Then ask:

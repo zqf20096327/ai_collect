@@ -422,9 +422,10 @@ added benign query stream.
 <!-- RESPONSIBLE-USE:BEGIN -->
 ## Responsible Use
 
-**Read this before downloading, installing or using any part of this project.** By doing any of
-those things — with the code, the model weights or anything they generate — you confirm that you
-have read this section and the No Liability section below, and that you accept them.
+**Please read this before using any part of this project.** This section is guidance: it says how
+the authors intend the project to be used. It is **not an additional license term**. The code and
+the model weights are licensed under the Apache License, Version 2.0 (`LICENSE`), and nothing here
+adds conditions to that license or restricts the rights it grants.
 
 Limnex UIE generates realistic URLs, including **phishing-style URLs**. It exists for one purpose:
 **defensive security research and education** — testing, training and evaluating phishing
@@ -437,7 +438,7 @@ for anything else.
 - Measuring where detectors fail, and research on how URLs are structured.
 - Teaching and coursework.
 
-**Prohibited uses — the authors do not authorize, support or condone, and you must not:**
+**Uses the authors do not support or condone — please do not:**
 - use the code, the model or any output for phishing, fraud, impersonation, social engineering,
   spam, malware delivery or any other deception of real people or organizations;
 - register, buy, host, resolve, visit, publish as working links, or send to anyone any URL or
@@ -476,19 +477,16 @@ INCIDENTAL, SPECIAL, CONSEQUENTIAL OR EXEMPLARY — WHETHER IN CONTRACT, TORT (I
 OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THIS PROJECT, ANYTHING IT PRODUCES, OR THE
 USE OR MISUSE OF EITHER BY YOU OR BY ANYONE ELSE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-- **You use this project entirely at your own risk.** You alone are responsible for your use, for
-  anything you create with it, and for complying with every law that applies to you — including
-  laws on computer misuse, fraud, privacy, data protection, trademarks and export.
-- **Indemnity.** To the fullest extent permitted by law, you agree to indemnify and hold harmless
-  the authors, contributors and copyright holders against any claim, loss or expense arising from
-  your use or misuse of the project.
+- **You use this project at your own risk.** You are responsible for your use, for anything you
+  create with it, and for complying with every law that applies to you — including laws on
+  computer misuse, fraud, privacy, data protection, trademarks and export.
 - **Not a security product.** Its outputs and scores can be wrong; it is not a phishing detector;
   nothing in this repository is legal, security or professional advice.
-- **Relation to the license.** The license is the Apache License, Version 2.0 (`LICENSE`). Its
-  Section 7 (Disclaimer of Warranty) and Section 8 (Limitation of Liability) apply in full; this
-  section adds to them and does not limit them. The Responsible Use section states the uses the
-  authors intend and those they prohibit.
-- **Severability.** If any part of this section is held unenforceable, the rest remains in effect.
+- **Relation to the license.** The Apache License, Version 2.0 (`LICENSE`) is the only license for
+  the code and the model weights. This section repeats, in plain words, the disclaimer of its
+  Section 7 (Disclaimer of Warranty) and Section 8 (Limitation of Liability), which apply in full.
+  The Responsible Use section above is advisory guidance: it states the uses the authors intend
+  and those they ask you not to make, and it adds no conditions to the license.
 <!-- RESPONSIBLE-USE:END -->
 
 ## Relationship to other projects
@@ -511,4 +509,5 @@ Limnex UIE was built with the help of AI coding tools, including Anthropic's Cla
 
 The code and the model weights are licensed under the **Apache License, Version 2.0**
 ([LICENSE](LICENSE)); attribution and notices are in [NOTICE](NOTICE). The training data is not
-redistributed. Read [Responsible Use](#responsible-use) and [No Liability](#no-liability) above.
+redistributed. [Responsible Use](#responsible-use) above is advisory guidance, not an additional
+license term; read it and [No Liability](#no-liability) before using the project.

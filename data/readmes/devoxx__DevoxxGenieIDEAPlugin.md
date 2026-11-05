@@ -7,7 +7,7 @@
 ![JetBrains Plugin Rating](https://img.shields.io/jetbrains/plugin/r/stars/24169-devoxxgenie)
 [![Documentation](https://img.shields.io/badge/docs-genie.devoxx.com-blue)](https://genie.devoxx.com)
 
-Devoxx Genie is a fully Java-based LLM Code Assistant plugin for IntelliJ IDEA, designed to integrate with local LLM providers such as [Ollama](https://ollama.com/), [LMStudio](https://lmstudio.ai/), [GPT4All](https://gpt4all.io/index.html), [Llama.cpp](https://github.com/ggerganov/llama.cpp), [Nativ](https://blaizzy.github.io/nativ/) and [Exo](https://github.com/exo-explore/exo) but also cloud based LLM's such as [OpenAI](https://openai.com), [Anthropic](https://www.anthropic.com/), [Mistral](https://mistral.ai/), [Groq](https://groq.com/), [Gemini](https://aistudio.google.com/app/apikey), [DeepInfra](https://deepinfra.com/dash/deployments), [DeepSeek](https://www.deepseek.com/), [Kimi](https://platform.moonshot.ai/), [GLM](https://open.bigmodel.cn/), [OpenRouter](https://www.openrouter.ai/), [Cloudflare AI Gateway](https://www.cloudflare.com/products/ai-gateway/), [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service), [Amazon Bedrock](https://aws.amazon.com/bedrock) and [NVIDIA](https://build.nvidia.com/)
+Devoxx Genie is a fully Java-based LLM Code Assistant plugin for IntelliJ IDEA, designed to integrate with local LLM providers such as [Ollama](https://ollama.com/), [LMStudio](https://lmstudio.ai/), [GPT4All](https://gpt4all.io/index.html), [Llama.cpp](https://github.com/ggerganov/llama.cpp), [Nativ](https://neywa-labs.github.io/nativ/) and [Exo](https://github.com/exo-explore/exo) but also cloud based LLM's such as [OpenAI](https://openai.com), [Anthropic](https://www.anthropic.com/), [Mistral](https://mistral.ai/), [Groq](https://groq.com/), [Gemini](https://aistudio.google.com/app/apikey), [DeepInfra](https://deepinfra.com/dash/deployments), [DeepSeek](https://www.deepseek.com/), [Kimi](https://platform.moonshot.ai/), [GLM](https://open.bigmodel.cn/), [OpenRouter](https://www.openrouter.ai/), [OrcaRouter](https://www.orcarouter.ai/), [Requesty](https://requesty.ai/), [DemonRoute](https://demonroute.com), [Cloudflare AI Gateway](https://www.cloudflare.com/products/ai-gateway/), [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service), [Amazon Bedrock](https://aws.amazon.com/bedrock) and [NVIDIA](https://build.nvidia.com/)
 
 **🆕 [Skills](https://genie.devoxx.com/blog/commands-and-skills)** — Drop portable `SKILL.md` files into `~/.devoxxgenie/skills/`, `<project>/.devoxxgenie/skills/`, `.claude/skills/` or `.agents/skills/` and the LLM activates them mid-conversation when relevant. The same files work in Claude Code, Codex and Gemini — and Custom Prompts have been renamed to **Commands** to make the distinction clear.
 
@@ -132,7 +132,7 @@ Select multiple tasks (or click "Run All To Do") and the **Agent Loop** executes
 - **✨ [Inline Code Completion](https://genie.devoxx.com/docs/features/inline-completion)**: (v0.9.6+) AI-powered code suggestions as you type using Fill-in-the-Middle (FIM) models. Supports both Ollama and LM Studio with models like StarCoder2, Qwen2.5-Coder, and DeepSeek-Coder.
 - **🤖 [Agent Mode](https://genie.devoxx.com/docs/features/agent-mode)** *(v0.9.4+)*: Autonomous code exploration and modification with built-in tools (read, write, edit, search files). Parallel sub-agents investigate multiple areas of your codebase concurrently, each with configurable provider/model. Enable in Agent Settings!
 - **🛡️ [Command Blacklist](https://genie.devoxx.com/docs/features/agent-mode#command-blacklist)** *(v1.10.0+)*: Tell the agent which shell commands it may never run unsupervised. Destructive commands like `git reset --hard` or `rm -rf` are caught even inside compound commands (`cd x && git reset --hard`) and with reordered flags (`-rf` also matches `-fr`), and either force the approval dialog or are blocked outright — even when write approvals are auto-approved.
-- **🍎 [Nativ](https://blaizzy.github.io/nativ/)**: Run MLX models locally on Apple Silicon through Nativ's OpenAI-compatible server. Enable it under Settings → LLM Providers → Local and DevoxxGenie discovers every MLX model you have downloaded. Note that Nativ listens on port `8080` by default — the same port as Llama.c++ — so change one of the two if you want both enabled.
+- **🍎 [Nativ](https://neywa-labs.github.io/nativ/)**: Run MLX models locally on Apple Silicon through Nativ's OpenAI-compatible server. Enable it under Settings → LLM Providers → Local and DevoxxGenie discovers every MLX model you have downloaded. Note that Nativ listens on port `8080` by default — the same port as Llama.c++ — so change one of the two if you want both enabled.
 - **🖥️ [Local AI Cluster](https://genie.devoxx.com/docs/llm-providers/exo)**: Pool multiple Apple Silicon devices into a single LLM inference cluster with [Exo](https://github.com/exo-explore/exo). Run models like Llama 3.1 405B across your machines with automatic device discovery, zero cloud costs, and full data privacy.
 - **☁️ [Cloudflare AI Gateway](https://genie.devoxx.com/docs/llm-providers/cloud-models#cloudflare-ai-gateway)** *(v1.10.0+)*: Point DevoxxGenie at your Cloudflare AI Gateway and use every model behind it with a single Cloudflare token (BYOK) — your provider keys stay in Cloudflare, and you get caching, rate limiting, spend controls and per-request analytics for free.
 - **🔥️ [MCP Support with Marketplace](https://genie.devoxx.com/docs/features/mcp_expanded)**: Browse and install MCP servers from the integrated marketplace. Add MCP servers and use them in your conversations!
@@ -164,8 +164,8 @@ Select multiple tasks (or click "Run All To Do") and the **Agent Loop** executes
 
 - Start your IDEA and go to plugins > Marketplace and enter "Devoxx"
 - Select "DevoxxGenie" and install plugin
-- Click on DevoxxGenie cog (settings) icon and click on Cloud Provider link icon to create API KEY
-- Paste API Key in Settings panel
+- Click on DevoxxGenie cog (settings) icon, open the **Cloud Direct** tab (or **Routers** for a router) and click on the provider link icon to create API KEY
+- Paste API Key in Settings panel. On the **Routers** tab, also tick the router's checkbox
 - In the DevoxxGenie window select your cloud provider and model
 - Start prompting
 
@@ -250,9 +250,18 @@ Expecting to add also [GraphRAG](https://github.com/devoxx/DevoxxGenieIDEAPlugin
 ### LLM Settings
 In the IDEA settings you can modify the REST endpoints and the LLM parameters.  Make sure to press enter and apply to save your changes.
 
-We now also support Cloud based LLMs, you can paste the API keys on the Settings page. 
+We now also support Cloud based LLMs, you can paste the API keys on the Settings page. The LLM providers are grouped in four tabs:
 
-<img width="1072" alt="Settings" src="https://github.com/user-attachments/assets/a88f1ae8-55dc-4c6b-b5eb-ec0c3d70b28f">
+- **Local**: providers running on your machine, such as Ollama and LM Studio.
+- **Cloud Direct**: cloud providers you have your own account with, such as OpenAI, Anthropic and Google. Prompts go straight to that provider.
+- **Routers**: gateways that reach many models through one API key: OpenRouter, Cloudflare AI Gateway, OrcaRouter, Requesty and DemonRoute. A router only appears in the chat's provider list once you tick its checkbox.
+- **Custom OpenAI**: any other OpenAI-compatible endpoint.
+
+Routers forward your prompts and code to other providers, each with its own logging, retention and training policies. Check a router's terms before enabling it, and see the [Routers documentation](https://genie.devoxx.com/docs/llm-providers/cloud-models#routers).
+
+<img width="1072" alt="The Cloud Direct tab in the LLM settings" src="docusaurus/static/img/settings-cloud-direct.png">
+
+<img width="1072" alt="The Routers tab in the LLM settings, with its privacy warning and a checkbox per router" src="docusaurus/static/img/settings-routers.png">
 
 ### Smart Model Selection and Cost Estimation
 The language model dropdown is not just a list anymore, it's your compass for smart model selection.

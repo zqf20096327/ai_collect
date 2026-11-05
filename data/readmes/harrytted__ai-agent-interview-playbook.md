@@ -25,7 +25,7 @@
 
 ## 从组成看懂协作
 
-[![模型负责理解与决策，工具提供外部能力，记忆保留可用信息，规划组织步骤；四类能力围绕目标协作](website/assets/diagrams/concepts/C1-capability-map.png)](website/assets/diagrams/concepts/C1-capability-map.png)
+四类能力的组成图与完整解释集中在[基础01：用一张图认识四类能力](learning/01-system-map.md#用一张图认识四类能力)。
 
 小明问：“2026年11月12日去海岚出差，住宿每晚650元，超过标准吗？”本例的普通员工类别由可信档案提供。模型要读懂问题，工具负责取得适用制度，任务记录保留日期与已查资料，规划决定先查什么、还缺什么。运行时把这些能力组织成连续的过程。[进入章节完整讲解](learning/01-system-map.md)
 
@@ -120,7 +120,15 @@ python3 examples/foundations/math_lab.py --section all
 
 # 验证多次尝试指标、共享预算、关键路径与崩溃恢复
 python3 examples/advanced/runtime_lab.py --scenario all
+
+# 同题配对：修复与退步、精确检验及重采样区间
+python3 examples/advanced/evaluation_lab.py
+
+# 动作掩码、裁剪策略目标与教学小策略的一次参数更新
+python3 examples/advanced/training_objectives.py --section all
 ```
+
+新增的[配对评测](examples/advanced/README.md#配对改进与不确定性)使用手写结果标签解释统计边界；[训练目标实验](examples/advanced/training-objectives.md)复算损失与梯度并更新小型二值策略。它们不调用模型，也不提供真实LLM的质量或训练收益证明。
 
 六组新实验的命令与验证边界见 [模型协议](examples/model_protocol_lab/README.md)、[知识摄取](examples/knowledge_pipeline_lab/README.md)、[SQL分析](examples/sql_agent_lab/README.md)、[任务服务](examples/service_lab/README.md)、[事件订阅](examples/event_agent_lab/README.md)及 [媒体播放](examples/multimodal_lab/README.md)。默认离线检查可重复运行，真实模型入口需要自行配置凭据。
 

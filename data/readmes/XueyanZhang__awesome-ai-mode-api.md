@@ -14,6 +14,7 @@ A list of awesome AI Model API providers, platforms, projects
   - [Stability.ai](#stabilityai)
 - [API Platform](#api-platform)
   - [Code By AI](#code-by-ai)
+  - [CodeI Lab](#codeilab)
   - [Deepinfra](#deepinfra)
   - [Heabsy](#heabsy)
   - [Hugging Face](#hugging-face)
@@ -22,6 +23,7 @@ A list of awesome AI Model API providers, platforms, projects
   - [RunAPI](#runapi)
   - [Teapot Router](#teapot-router)
   - [Together.ai](#togetherai)
+  - [UberLLM](#uberllm)
   - [XiuRouter](#xiurouter)
 - [Open Source Projects](#open-source-projects)
   - [Llama 2 Chat](#llama-2-chat)
@@ -96,6 +98,11 @@ Code By AI is a pay-per-token API gateway for AI coding agents: one API key and 
 [Models](https://www.codebyai.net/models) |
 [Pricing](https://www.codebyai.net/pricing)
 
+### CodeI Lab
+CodeI Lab is a third-party GPT API gateway for coding agents that bills discounted credit for GPT-6 Astra/Sol, GPT-6.1 Sol/Terra and GPT-5.6 Sol/Terra over OpenAI or Claude protocols, configured for Claude Code, Codex CLI or OpenCode with one command.
+
+[Home](https://www.codeilab.com/)
+
 ### Deepinfra
 DeepInfra is a powerful machine learning platform that offers fast and scalable inference for top AI models.
 
@@ -151,6 +158,13 @@ Together AI provides a platform for collaborative AI development.
 [Home](https://together.ai/) |
 [Models](https://together.ai/models) |
 [Pricing](https://together.ai/pricing)
+
+### UberLLM
+UberLLM is a prepaid API with OpenAI-compatible (Chat Completions, Responses) and Anthropic Messages endpoints on one key for GPT, Claude, Gemini, DeepSeek, Qwen and uncensored text models, plus image, video, music and speech models; each request is billed at what its provider charged.
+
+[Home](https://uberllm.dev/) |
+[Models](https://uberllm.dev/models) |
+[Pricing](https://uberllm.dev/docs/pricing)
 
 ### XiuRouter
 XiuRouter provides one API for leading models through OpenAI, Anthropic, and Gemini protocol routes, with scoped API keys and per-request usage and cost records.

@@ -30,7 +30,7 @@ bundle, so Bun is not optional.
 ```sh
 npm install -g @ringko-ai/rkh
 ringko          # terminal UI (default)
-ringko serve    # browser UI, prints its URL (port 8787)
+ringko serve    # browser UI, prints its per-workspace URL
 ```
 
 `ringko help` lists all commands. `npx @ringko-ai/rkh` runs the terminal UI
@@ -116,6 +116,7 @@ stay in the session JSONL.
 | Config | `~/.ringko/provider.json`, `~/.ringko/settings.local.json` |
 | Skills | `~/.ringko/skills`, `~/.agents/skills` |
 | MCP servers | `~/.ringko/.mcp.json`, `~/.agents/.mcp.json` |
+| Plugins | `~/.ringko/plugins`, `~/.agents/plugins` (trusted names in `settings.local.json`) |
 | Sessions | `~/.ringko/sessions/` |
 
 `RINGKO_HOME` and `AGENTS_HOME` override the home directories. Inspect them with
@@ -160,7 +161,9 @@ terminal uses `node-pty`. See [unreleased changes](CHANGELOG/unreleased.md).
 
 - [Configuration](docs/configuration.md)
 - [MCP servers](docs/mcp.md)
+- [Plugins](docs/plugins.md)
 - [Providers](docs/providers.md)
+- [Skills](docs/skills.md)
 - [Sandbox](SANDBOX.md)
 - [Usage statistics](docs/usage-statistics.md)
 

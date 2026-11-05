@@ -278,12 +278,16 @@ openyida data query form APP_XXX FORM_XXX --dynamic-order '{"dateField_xxx":"-"}
 openyida data query process APP_XXX FORM_XXX --current-approver USER_ID --count
 openyida data create form APP_XXX FORM_XXX --expect-form-name 客户 --expect-form-type receipt --data-file .cache/openyida/data-import/record.json
 openyida data seed form APP_XXX FORM_XXX --expect-form-name 客户 --records-file .cache/openyida/data-import/customers.json --timezone +08:00 --json
+openyida data seed process APP_XXX FORM_XXX --process-code TPROC_XXX --expect-form-name 申请 --records-file .cache/openyida/data-import/applications.json --json
 openyida get-permission APP_XXX FORM_XXX
 ```
 
 `--current-approver` takes an exact userId, not a display name. It scans running instances and their current TODO records, counts each matching instance once, and respects the current login's server-authorized data scope. Omit `--count` to include matching instance data. An incomplete scan or permission failure is reported as an error; the result does not claim application-wide visibility.
 
 `data seed form` accepts one JSON array of 1–30 business records using real field IDs (or configured aliases with `--resolve-aliases`). It checks the whole batch against the live schema, then creates and reads back each record, returning `formInstIds`. Use `--check` to preview converted records without writing. `DateField` and date-range endpoints accept millisecond numbers, `YYYY-MM-DD`, or ISO date-times; date-times without an offset use `--timezone` (a fixed UTC offset, default `+08:00`). Subform dates are converted recursively. Invalid dates, reversed ranges and unknown fields/options fail before any write. Business values and real member/department/file/association IDs come from the caller; this command does not invent them or start workflows.
+
+`data seed process` shares the schema, date conversion, receipt and readback behavior. It requires `--process-code`, starts real workflow instances and returns `processInstanceIds`. For application samples, create a temporary originator-only approval flow, seed and verify, then edit and publish the final flow on the same form. Existing samples retain their original workflow version.
+
 
 Seed supports the 18 writable business components created by default with `create-form`, including associations, subforms, countries, domestic addresses, attachments and images. Serial numbers are server-generated. Addresses support the default domestic `ADDRESS` mode; location/international modes and unknown components follow the CLI's actual diagnostics. Unsupported fields proven optional with no validation are omitted and listed in `skippedFields`, with `requestedFieldsVerified=false`; all-omitted input returns `skipped=true` without creating empty records. Server defaults may still apply. Required or uncertain unsupported fields and invalid supported values fail before writes. Recover pending/unknown writes from the receipt. See [support and recovery](yida-skills/skills/yida-data-management/SKILL.md#组件支持与未适配配置).
 
@@ -539,7 +543,7 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 | `openyida list-forms <appType> [--keyword <text>]` | List forms/pages in an app |
 | `openyida aggregate-table <list\|create-empty\|inspect\|preview\|save\|publish\|status> <appType> ...` | Manage aggregate tables (virtualView) |
 | `openyida print-template <list\|inspect\|fields\|build\|create\|copy\|save\|restore\|settings\|status\|order\|render\|files> <appType> <formUuid> [templateId] [--config <file>] [--scene <order\|quotation\|delivery\|receipt\|approval\|codes>] [--bindings <file>] [--name <title>] [--expected-hash <hash>] [--backup <file>] [--out <file>] [--status START\|STOP] [--instance <id>] [--page <n>] [--size <n>] [--allow-permission-change] [--json] \| print-template <list\|render> --detail-url <url> [--template-id <id>] [--json]` | Manage native YiDA print templates, generate document layouts, back up, restore and request PDFs |
-| `openyida form-view <list\|inspect\|save\|create\|order> <appType> <formUuid> [viewUuid] [--config <file>] [--name <title>] [--with-config] [--expected-hash <hash>] [--backup <file>] [--replace] [--json]` | Native form views: list, inspect and configure columns, widths, frozen columns and filters |
+| `openyida form-view <list\|inspect\|save\|create\|order\|rename\|add-button> <appType> <formUuid> [viewUuid] [--config <file>] [--name <title>] [--button <buttonUuid>] [--with-config] [--expected-hash <hash>] [--backup <file>] [--replace] [--json]` | Native form views: list, inspect and configure columns, widths, frozen columns and filters |
 | `openyida custom-button <list\|inspect\|options\|create\|update\|delete> <appType> <formUuid> [buttonUuid] [--config <file>] [--expected-hash <hash>] [--backup <file>] [--yes] [--json]` | Native custom buttons: inspect and configure form edits, automation flows and page links |
 | `openyida form-message <list\|inspect\|options\|create\|update\|delete> <appType> <formUuid> [messageId] [--config <file>] [--expected-hash <hash>] [--backup <file>] [--yes] [--json]` | Native form notifications: inspect triggers, recipients and templates, then safely maintain bindings |
 | `openyida get-schema <appType> <formUuid\|--all> [--summary-json\|--field-map-json\|--analysis-json]` | Get one form Schema or all form Schemas |
@@ -574,8 +578,8 @@ When preparing a PR that needs a personal Fork, or when you ask how to support t
 
 | Command | Description |
 |---------|-------------|
-| `openyida configure-process <appType> <formUuid> <definition> [processCode] [--replace]` | Configure and publish process rules; Supports append/forward via JSON nodes[].actions.normalActions/appendActions |
-| `openyida create-process <appType> <formTitle> <fieldsJsonFile> <processDefinitionFile> [--replace] \| create-process <appType> --formUuid <formUuid> <processDefinitionFile> [--replace]` | Create process form (all-in-one); Supports append/forward via JSON nodes[].actions.normalActions/appendActions |
+| `openyida configure-process <appType> <formUuid> <definition> [processCode] [--replace] [--json]` | Configure and publish process rules; Supports append/forward via JSON nodes[].actions.normalActions/appendActions |
+| `openyida create-process <appType> <formTitle> <fieldsJsonFile> <processDefinitionFile> [--replace] [--json] \| create-process <appType> --formUuid <formUuid> <processDefinitionFile> [--replace] [--json]` | Create process form (all-in-one); Supports append/forward via JSON nodes[].actions.normalActions/appendActions |
 | `openyida ai-form-setting <get\|fields\|models\|enable\|disable\|save> <appType> ...` | Manage process form AI approval prompts |
 | `openyida process preview <appType> ...` | Preview process instance (visual flowchart) |
 | `openyida process fields <appType> <formUuid> [--json]` | Check process designer field loading and subtable field paths |

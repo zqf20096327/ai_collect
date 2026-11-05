@@ -354,6 +354,14 @@ moving off the old names changes both `uses:` lines and pins in one commit; its
 next main push stages a build that `package-promote.yml` can promote, since builds
 signed by the old stage workflow can't be.
 
+**Set up release environments before the first promotion.** With `gh`, `jq` and a repository administrator's `gh auth login`, run this once per repository without cloning BuildSpace:
+
+```bash
+script=$(gh api -H 'Accept: application/vnd.github.raw+json' 'repos/photon-hq/buildspace/contents/scripts/setup-release-environments.sh?ref=main') && bash -s -- photon-hq/your-repo <<<"$script"
+```
+
+The [setup script](scripts/setup-release-environments.sh) creates `production` and `staging`, both restricted to the `main` branch. Production requires a reviewer from the first CODEOWNERS file on `main` (`.github/`, root, then `docs/`); append `@username @org/team` to choose up to six instead. Reviewers must have at least read access to the repository. Private repositories need [GitHub Enterprise for required reviewers](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/review-deployments). Add `--dry-run` to preview API writes without changing GitHub. Each run replaces production's reviewer list with those arguments or CODEOWNERS. Reruns reuse existing `main` policies and keep wait timers, self-review and administrator-bypass settings; other custom branch/tag or protected-branch policies stop the script for manual review. If adding the `main` policy fails, a new environment keeps its empty custom branch policy, allowing no deployments; for an existing environment, the script attempts to restore its saved branch policy, including unrestricted access if that was its previous setting. Either failure exits with an error; the environment and its other applied settings remain. Environment setup needs administration access and cannot use a workflow's `GITHUB_TOKEN`.
+
 To promote, run the promote workflow from `main` (Actions, or
 `gh workflow run promote.yml -f staging-version=1.4.0-staging.123456789.1`). Its
 first job shows what will be published, its version and the changes that version
@@ -432,10 +440,13 @@ source commit, and moves `latest`.
   for the environment's reviewers as before. Set it only where that actor's dispatches are already
   gated by people, and keep its token scoped to the repository.
 - **A public package on npmjs** sets `registry: https://registry.npmjs.org` and
-  `package`, its scoped name such as `@acme/app`, in both callers, and grants
-  `id-token: write` to both calls. The staging build and the promoted candidates
-  are published through npm trusted publishing, with provenance and no token,
-  by npm 11.21.1: trusted publishing manages dist-tags from npm 11.21.0. On npmjs, give
+  `package`, its scoped name such as `@acme/app` or its unscoped name such as
+  `app`, in both callers, and grants `id-token: write` to both calls. A scoped
+  name releases every package its `pack` script writes under that scope; an
+  unscoped name releases only that package, so its `pack` script must write no
+  other tarball, or the build fails. The staging build and the promoted
+  candidates are published through npm trusted publishing, with provenance and
+  no token, by npm 11.21.1: trusted publishing manages dist-tags from npm 11.21.0. On npmjs, give
   the package a trusted publisher for each caller workflow file, for example
   `publish.yml` with environment `staging` and `promote.yml` with environment
   `production`, and allow both `npm publish` and `npm dist-tag` on each. Leave the
@@ -868,6 +879,8 @@ jobs:
 
 ### Swift Stage and Promote
 
+Run the [release environment setup](#package-stage-and-promote) once per repository before the first promotion; Swift promotion also requires the `production` environment's reviewers.
+
 `.github/workflows/swift-stage.yml` and `.github/workflows/swift-promote.yml` release
 Swift macOS `.pkg` packages, and SwiftPM libraries, the way
 [Package Stage and Promote](#package-stage-and-promote) releases npm packages.
@@ -1190,7 +1203,10 @@ Builds a macOS `.pkg` on every PR commit and reports status directly in the PR a
 | `resource-bundles` | string | No | `""` | Space-separated list of SPM resource bundle names to include in the `.pkg` |
 | `entitlements` | string | No | `""` | Path to entitlements plist for ad-hoc codesigning the built binary |
 | `private-deps` | boolean | No | `false` | Mint a GitHub App token so SwiftPM can clone private/internal org dependencies |
+| `build-flags` | string | No | `""` | Extra `swift build` arguments for the PR build only, split on whitespace. `-Xswiftc -Onone` skips optimisation (about a third less compile time) yet, unlike a debug build, still compiles code under `#if !DEBUG`; the PR `.pkg` is then unoptimised |
 | `use-blacksmith` | boolean | No | `false` | Use Blacksmith Linux runners for notification jobs; the macOS Swift/package build stays on `macos-26` |
+
+The build installs the Swift toolchain that a committed `.swift-version` names, or the latest Swift release if the package has no `.swift-version`. If the runner image already has the pinned version, the build installs nothing, which saves the minute that an install takes: pin the image's Swift to opt in. If the pin and the image's Swift are different, the run shows a notice that names the two versions. [Swift Release](#swift-release) uses the same build.
 
 #### Secrets
 
@@ -2104,76 +2120,4 @@ Uses [Claude Code](https://github.com/anthropics/claude-code) to analyze release
 | `version` | string | Yes | — | The released version (e.g., `1.2.3`) |
 | `release-tag` | string | Yes | — | The raw release tag (e.g., `v1.2.3`). Used for linking back to the release. |
 | `release-notes` | string | Yes | — | Release notes markdown from the release |
-| `changes-diff` | string | Yes | — | Git diff of changes in this release |
-| `skills-path` | string | Yes | — | Path within the skills repo this service maps to (e.g., `skills/buildspace-ci-cd` or `skills/imessage`) |
-| `skills-repo` | string | No | `photon-hq/skills` | Target skills repository (`owner/repo`) |
-| `skills-branch` | string | No | `main` | Base branch of the skills repo |
-| `anthropic-api-key` | secret | Yes | — | Anthropic API key for Claude Code |
-| `github-token` | secret | Yes | — | GitHub token with write access to the skills repo |
-
-#### Outputs
-
-| Output | Type | Description |
-|--------|------|-------------|
-| `pr-url` | string | URL of the created PR (empty if no changes needed) |
-| `has-changes` | string | `'true'` or `'false'` whether skills updates were generated |
-
-#### Usage
-
-```yaml
-- uses: photon-hq/buildspace/.github/blocks/update-skills@main
-  with:
-    version: '1.2.3'
-    release-tag: 'v1.2.3'
-    release-notes: 'Added new feature X'
-    changes-diff: ${{ steps.diff.outputs.diff }}
-    skills-path: skills/my-service
-    anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-    github-token: ${{ steps.app-token.outputs.token }}
-```
-
-</details>
-
----
-
-## Primitives
-
-The [primitive catalog](.github/primitives/README.md) documents each action's inputs, outputs, prerequisites, and side effects. These actions do not check out source, install toolchains or dependencies, choose release channels, mint tokens, or approve a release.
-
-| Primitive | One responsibility |
-|-----------|--------------------|
-| `cargo-build` | Compile one Rust binary |
-| `go-build` | Compile one Go binary |
-| `swift-build` | Compile one Swift executable product |
-| `stage-file` | Copy one file to an explicit destination |
-| `pkgbuild` | Build one unsigned macOS installer from a prepared root |
-| `npm-package-info` | Read a package's name and version |
-| `npm-publish` | Run one npm-compatible publication |
-| `wait-npm-version` | Wait for an exact package version to be visible |
-| `cargo-publish` | Run one Cargo publication |
-| `git-stage` | Stage explicit Git pathspecs |
-| `git-commit` | Commit the existing Git index |
-| `git-push` | Push without staging, committing, fetching, or rebasing |
-
-For example, compilation does not require packaging or publishing:
-
-```yaml
-- uses: actions/checkout@v4
-- uses: actions/setup-go@v5
-  with:
-    go-version: stable
-- id: compile
-  uses: photon-hq/buildspace/.github/primitives/go-build@<buildspace-commit-sha>
-  with:
-    output: bin/worker
-    goos: linux
-    goarch: amd64
-- id: artifact
-  uses: photon-hq/buildspace/.github/primitives/stage-file@<buildspace-commit-sha>
-  with:
-    source: ${{ steps.compile.outputs.binary-path }}
-    destination: artifacts/worker-linux-amd64
-    executable: 'true'
-```
-
-Replace both placeholders with the same full Buildspace commit SHA. Uploading the file is a separate step, using `steps.artifact.outputs.path` with `actions/upload-
+| `changes-diff` | string | Yes | — | Git diff of changes in this relea

@@ -917,6 +917,7 @@ ai --verbose "Explain quantum computing"
 - `/context|/ctx` - Context usage and file context (list, add, remove, clear)
 - `/compact [keep_rounds]` - Compress the conversation, keeping the last N turns
 - `/permissions` - List/revoke tool approval rules
+- `/show-output` - Open the full-screen tool-output viewer for this turn
 
 **Keyboard Shortcuts**
 
@@ -924,6 +925,9 @@ ai --verbose "Explain quantum computing"
 - `Ctrl+C` - Clear the current input (during generation: cancel the turn); press twice quickly to exit
 - `Ctrl+D` - Exit
 - `Ctrl+R` - Search history
+- `Ctrl+O` - Open the full-screen tool-output viewer (all outputs of this turn; also works while the
+  assistant is generating — generation continues in the background and closing the viewer redraws
+  the accumulated answer)
 - `↑/↓` - Navigate through history
 
 </td>

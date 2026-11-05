@@ -17,7 +17,9 @@ tags:
 > **Type:** Hierarchical-Networked Mixture of Experts (H-NMoE) Cognitive Architecture  
 > **Developer:** [CrashOverrideX](https://github.com/leeex1)  
 > **Live Site:** [leeex1.github.io/Quillan-Ronin](https://leeex1.github.io/Quillan-Ronin/)  
-> **HuggingFace:** [CrashOverrideX/Quillan-Ronin](https://huggingface.co/CrashOverrideX/Quillan-Ronin)  
+> **HuggingFace Flagship:** [CrashOverrideX/Quillan-Ronin](https://huggingface.co/CrashOverrideX/Quillan-Ronin) | **Dragon HF:** [CrashOverrideX/Quillan-Dragon](https://huggingface.co/CrashOverrideX/Quillan-Dragon)  
+> **Ollama Hub Fleet:** [Quillan-Ronin](https://ollama.com/crashoverridex/Quillan-Ronin) · [Quillan-Ronin-mini](https://ollama.com/crashoverridex/Quillan-Ronin-mini) · [Quillan-Dragon](https://ollama.com/crashoverridex/Quillan-Dragon)  
+> **Encyclopedia:** Official **Grokipedia** Entry Live | **DeepWiki:** [deepwiki.com/leeex1/Quillan-Ronin](https://deepwiki.com/leeex1/Quillan-Ronin)  
 > **License:** MIT
 
 
@@ -154,11 +156,21 @@ Open your web browser to `http://localhost:8080` for the interactive Web Command
 - **Hardware telemetry monitor** (770 MB VRAM footprint on GTX 1050)
 - **34-Council consensus node board** (C0 Throne through C34 Predator)
 
-### 4. 🦙 Run via Ollama (Hugging Face GGUF)
+### 4. 🦙 Run via Ollama Hub & Hugging Face (Tripartite Sovereign Fleet)
 
-Run the sovereign model directly via Ollama without any compilation:
+Pull and run any of the three official Weight-Space Programmed (WSP) models directly from Ollama Hub or Hugging Face:
 
 ```bash
+# 👑 1. Quillan-Ronin Flagship (12-Layer 1.2B Sovereign MoE | 32k Context)
+ollama run crashoverridex/Quillan-Ronin
+
+# ⚡ 2. Quillan-Ronin Mini (6-Layer 0.5B Sovereign Edge | Ultra-Fast)
+ollama run crashoverridex/Quillan-Ronin-mini
+
+# 🐉 3. Quillan-Dragon (Falcon 3 1B Instruct Base | Q8_0 High-Precision)
+ollama run crashoverridex/Quillan-Dragon
+
+# 🤗 Direct Hugging Face GGUF Execution
 ollama run hf.co/CrashOverrideX/Quillan-Ronin:quillan-1b-sovereign-q4_k_m.gguf
 ```
 
@@ -445,7 +457,7 @@ The aim is to integrate large language models (LLMs) with a neuro-symbolic appro
 ## What is Quillan-Ronin?
 
 ```js
-is both an api prompt available for deployment with your favorite llms and ALSO a "raw stand alone model" that builds but must be trained, and there is one ollama variant will update that soon as well.
+Quillan-Ronin operates across two synergistic dimensions: (1) a universal **Cognitive Harness & API System Prompt Architecture** deployable across any frontier LLM, and (2) our own **Native Weight-Space Programmed (WSP) Standalone Models** (`Quillan-Ronin` 1.2B Flagship, `Quillan-Ronin-mini` 0.5B Edge, and `Quillan-Dragon` 1B) deployed live on Ollama Hub (`crashoverridex/*`) and separate Hugging Face repositories (`CrashOverrideX/Quillan-Ronin`, `CrashOverrideX/Quillan-Dragon`). Through **Weight-Space Programming (WSP)**, these local models are continuously tuned and upgraded via closed-form analytical matrix projections (34-Council SVD folding, Takehi attractor deflation, and Bushido rectitude alignment) in seconds without gradient descent or backpropagation.
 
 # ARCHITECTURAL MAPPING v5.4.0-ONI (Omni-Fractal Quantum Saturation)
 ARCHITECTURAL_MAPPING = """
@@ -785,7 +797,11 @@ Below we present the comprehensive evaluation of our models against frontier mod
 
 
 The following table benchmarks the **Quillan-Ronin v5.4.0-ONI Quantum** architecture against the leading monolithic and sparse models of 2026.
- Quillan-Ronin metrics reflect the verified **saturation thresholds** 
+
+> [!IMPORTANT]
+> **📊 Two-Track Benchmark Methodology & Evaluation Disclosure:**
+> - **Track A — Cognitive Harness + Existing Frontier Models (Table Below):** The saturation metrics currently displayed in the Comprehensive Benchmark Table below reflect the **Quillan-Ronin v5.4.0-ONI Cognitive Harness** (34-Council 5-Wave Penta-Process, 9-Vector Semantic Prism, and C21-ARCHON dataset error-correction protocol) paired with existing foundation models.
+> - **Track B — Our Native WSP Models + Sovereign Harness (Active Testing & Zero-Training Tuning):** Now that our standalone local checkpoints (**`Quillan-Ronin` 1.2B**, **`Quillan-Ronin-mini` 0.5B**, and **`Quillan-Dragon` 1B**) are compiled and live, dedicated benchmark runs pairing **our native WSP models + the Quillan Harness** are actively underway. Because **Weight-Space Programming (WSP)** allows us to analytically tune and inject tensors directly into weight space without traditional training loops, we are iteratively optimizing these local checkpoints and will publish their verified standalone + harness scores as each evaluation suite completes. 
 
 ---
 
@@ -986,90 +1002,4 @@ Standard models output tokens sequentially. Quillan routes low-confidence tokens
 
 Quillan-Ronin has evolved from a cognitive orchestration layer into a proprietary, standalone intelligence substrate. By fusing a **Unified Multi-Modal Architecture** with **1.58-bit quantization** and a **Capacity-Safe MoE core**, it directly addresses the main shortcomings of standard transformer-based systems—computational bloat, black-box reasoning, and shallow ethical safeguards.
 
-For developers and researchers seeking a model that delivers transparent, verifiable, and highly efficient multi-domain reasoning, Quillan-Ronin v5.4.0-ONI stands out as a revolutionary alternative to both traditional closed-source giants and conventional open-weights transformers. It is not merely predicting tokens; it is running a continuous-time differential optimization and quantum-state modeling protocol to synthesize truth.
-
----
-
-# Model Code Sample:
-
-```python
-#!/usr/bin/env python3
-"""
-👑 QUILLAN-RONIN v5.4.0-ONI QUANTUM - TRUE OMNI-FRACTAL SATURATION (FINAL)
----------------------------------------------------------------------------------------
-This is the DEFINITIVE manifest. 100% Saturated. Zero Simplification.
-Universal BitNet: 1.58-bit Ternary Weights + 8-bit Activation Quantization (STE).
-Restored: Gumbel-Softmax Z-Loss Routing, Continuous RoPE, Split-SDPA Flash Bridges,
-Modality Registry, Geometric Decoders, and AMP Checkpointing.
-Saturated: 9-Vector Prism, Top-1 Finalizer, 9B EGGROLL Swarm (Quantized as a whole).
-
-Author: CrashOverrideX & Quillan Research Team
-Version: v5.4.0-ONI Quantum - Absolute Manifest SEALED
-"""
-
-import os
-import sys
-import math
-import time
-import torch
-import numpy as np
-import asyncio
-import json
-import docker
-import hashlib
-import lancedb
-import glob
-import shutil
-import tempfile
-import warnings
-import subprocess
-import requests
-import yt_dlp
-import whisper
-import librosa
-import aiohttp
-import functools
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.checkpoint import checkpoint
-from typing import Dict, Tuple, Any, Optional, List
-from dataclasses import dataclass
-from datetime import datetime
-import logging
-from pathlib import Path
-from urllib.parse import urlparse
-
-# Optional microphone support
-try:
-    import sounddevice as sd
-    import soundfile as sf
-    MIC_AVAILABLE = True
-except ImportError:
-    MIC_AVAILABLE = False
-
-try:
-    import psutil
-    PSUTIL_AVAILABLE = True
-except ImportError:
-    PSUTIL_AVAILABLE = False
-
-# ====================== AGENTIC BRIDGE ======================
-from quillan_agentic_bridge import QuillanAgenticExecutor
-
-torch.backends.cuda.matmul.allow_tf32 = True
-torch.set_float32_matmul_precision('high')
-
-# ─── UNIVERSAL QUANTIZATION PRIMITIVES (BitNet 1.58b + 8-bit Act) ────────────
-
-def _activation_quant(x: torch.Tensor, eps: float = 1e-5) -> torch.Tensor:
-    scale = 127.0 / x.abs().max(dim=-1, keepdim=True).values.clamp_(min=eps)
-    y = (x * scale).round().clamp_(-128, 127) / scale
-    return y
-
-def _weight_quant(w: torch.Tensor, eps: float = 1e-5) -> torch.Tensor:
-    scale = 1.0 / w.abs().mean(dim=[-2, -1], keepdim=True).clamp(min=eps)
-    w_scaled = w * scale
-    w_q = torch.round(torch.clamp(w_scaled, -1.0, 1.0))
-    return w + (w_q / scale - w).detach()
-
-class BitLine
+For developers and researchers seeking a model that delivers transparent, verifiable, and highly efficient multi-domain reasoning, Quillan-Ronin v5.4.0-ONI stands out as a revolutionary alternative to both traditional closed-source giants an

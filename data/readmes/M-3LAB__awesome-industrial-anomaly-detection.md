@@ -96,6 +96,7 @@ A Survey on Industrial Anomalies Synthesis [[paper]](https://arxiv.org/abs/2502.
 
 |  Title  |   Venue  |   Date   |   Code   |   topic   |
 |:--------|:--------:|:--------:|:--------:|:--------:|
+| ![Star](https://img.shields.io/github/stars/sgstq0811/VerdictAD-Jev-AD.svg?style=social&label=Star) <br> [**VerdictAD: Few-Shot Anomaly Detection via Decision-Guided Refinement**](https://arxiv.org/abs/2611.02654) <br> | arXiv | 2026 | [Github](https://github.com/sgstq0811/VerdictAD-Jev-AD) | Few-Shot, Typed Decision |
 | ![Star](https://img.shields.io/github/stars/hq-deng/RD4AD.svg?style=social&label=Star) <br> [**Anomaly Detection via Reverse Distillation from One-Class Embedding**](https://openaccess.thecvf.com/content/CVPR2022/html/Deng_Anomaly_Detection_via_Reverse_Distillation_From_One-Class_Embedding_CVPR_2022_paper.html) <br> | CVPR | 2022 | [Github](https://github.com/hq-deng/RD4AD) | Teacher-Student |
 | ![Star](https://img.shields.io/github/stars/guojiajeremy/Dinomaly.svg?style=social&label=Star) <br> [**Dinomaly: The Less Is More Philosophy in Multi-Class Unsupervised Anomaly Detection**](https://openaccess.thecvf.com/content/CVPR2025/html/Guo_Dinomaly_The_Less_Is_More_Philosophy_in_Multi-Class_Unsupervised_Anomaly_CVPR_2025_paper.html) <br> | CVPR | 2025 | [Github](https://github.com/guojiajeremy/Dinomaly) | Multi-Class Unified |
 | ![Star](https://img.shields.io/github/stars/guojiajeremy/Dinomaly2.svg?style=social&label=Star) <br> [**One Dinomaly2 Detect Them All: A Unified Framework for Full-Spectrum Unsupervised Anomaly Detection**](https://arxiv.org/abs/2510.17611) <br> | Arxiv | 2025 | [Github](https://github.com/guojiajeremy/Dinomaly2) | Multi-Class, Multi-View, Multi-Modal, Few-shot |
@@ -699,6 +700,4 @@ Recent developments in industrial anomaly detection have reshaped method categor
  + PaDiM: A Patch Distribution Modeling Framework for Anomaly Detection and Localization [[ICPR 2021]](https://link.springer.com/chapter/10.1007/978-3-030-68799-1_35)[[unofficial code]](https://github.com/xiahaifeng1995/PaDiM-Anomaly-Detection-Localization-master)
  + Industrial Image Anomaly Localization Based on Gaussian Clustering of Pretrained Feature [[2021]](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9479740)
  + Towards total recall in industrial anomaly detection[[CVPR 2022]](http://arxiv.org/pdf/2106.08265)[[code]](https://github.com/amazon-science/patchcore-inspection)
- + CFA: Coupled-Hypersphere-Based Feature Adaptation for Target-Oriented Anomaly Localization[[2022]](https://arxiv.org/pdf/2206.04325.pdf)[[code]](https://github.com/sungwool/CFA_for_anomaly_localization)
- + FAPM: Fast Adaptive Patch Memory for Real-time Industrial Anomaly Detection[[2022]](https://arxiv.org/pdf/2211.07381.pdf)
- + N-pad: Neighboring Pixel-based Industrial 
+ + CFA: Coupled-Hypersphere-Based Feature Adaptation 

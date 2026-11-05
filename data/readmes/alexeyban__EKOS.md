@@ -5,6 +5,8 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alexeyban_EKOS&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=alexeyban_EKOS)
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=alexeyban_EKOS)](https://sonarcloud.io/summary/new_code?id=alexeyban_EKOS)
 
+<a href="https://www.producthunt.com/products/ekos-2/reviews/new?utm_source=badge-product_review&utm_medium=badge&utm_source=badge-ekos&#0045;2" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1288395&theme=dark" alt="EKOS - Turn&#0032;GitHub&#0032;repos&#0032;into&#0032;MCP&#0032;servers | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 EKOS is the open-source knowledge layer for AI agents: a compiler that turns source code, SQL,
 documentation and Git history into evidence-backed knowledge that agents query over MCP. Project
 site and documentation: **[ekos.dev](https://ekos.dev)**. Install: **[ekos.dev/docs/getting-started/installation](https://ekos.dev/docs/getting-started/installation.html)**
@@ -12,7 +14,7 @@ site and documentation: **[ekos.dev](https://ekos.dev)**. Install: **[ekos.dev/d
 
 Unlike traditional enterprise systems that manage data, documents or metadata independently, EKOS treats the entire enterprise as a living knowledge system — a permanently evolving semantic model that can be trusted by both humans and AI.
 
-**Text-to-SQL benchmark:** on [BIRD Mini-Dev](https://bird-bench.github.io/) (release 1024, 302 hold-out questions over 11 databases), the same model, Claude Haiku 5.5, scores **53.3%** execution accuracy on raw DDL and **63.9–66.9%** on the knowledge EKOS compiles from each database (+10.6 to +13.6 points, significant on paired questions), for about a tenth of a cent per question. Every question, the SQL it produced, tokens, cost and the scorer's parity with BIRD's official evaluator: [BIRD Mini-Dev on EKOS](https://alexeyban.github.io/EKOS/presentations/bird-mini-dev-benchmark.html).
+**Text-to-SQL benchmark:** on [BIRD Mini-Dev](https://bird-bench.github.io/) (release 1024, 302 hold-out questions over 11 databases), the same model, Claude Haiku 5.5, scores **53.3%** execution accuracy on raw DDL, **71.5%** on the knowledge EKOS compiles from each database, and **76.2%** when it also checks its SQL against the data with EKOS's tools (+22.9 points, significant on paired questions), for about a quarter of a cent per question. On the full BIRD dev set (New Dev, 1,534 questions, with evidence) the same EKOS agent on Haiku 5.5 scores **65.84%**; the BIRD-Test submission code is public: [ekos-text2sql-bird](https://github.com/alexeyban/ekos-text2sql-bird). Every question, the SQL it produced, tokens, cost and the scorer's parity with BIRD's official evaluator: [BIRD Mini-Dev on EKOS](https://alexeyban.github.io/EKOS/presentations/bird-mini-dev-benchmark.html).
 
 **First benchmark:** on a real 2,022-file open-source repo ([plausible/analytics](https://github.com/plausible/analytics)), cold ingestion takes 34 seconds, and answering real questions from the compiled ledger costs **67-93% fewer tokens** than raw grep-based search over the source — measured with a standard tokenizer (`tiktoken`), not a hand-rolled estimate, with the one case grep wins included rather than hidden. Full methodology, every command, and every raw output: [The First Benchmark Number](https://alexeyban.github.io/EKOS/presentations/token-benchmark.html).
 
@@ -1042,6 +1044,50 @@ questions, Claude Haiku 5.5), the EKOS cell (pack + column profiles + value look
 scored 63.9% execution accuracy against 53.3% for the same model with raw DDL: +10.6 points, 95%
 CI +4.3 to +16.9, for $0.30 a run. See `evals/README.md`.
 
+RFC 0242 added cells that *check* each answer:
+
+- `strategy = "loop"` sends gold-free findings back;
+- `strategy = "agent"` lets the model call schema, value and read-only SQL tools, and `verify`
+  shows it its own result once.
+
+`ekos eval bench checks <report>` replays the checks over an old report for free. The agent cell
+K2 scored **76.2%** on the same hold-out split. That is +4.6 over the same pack without the agent
+(71.5%; CI 0.0 to +9.3, so not shown at 5%; +7.1 with p = 0.007 on the tune split), and **+22.9
+points over raw DDL** with the same model, for $0.78 a run.
+
+### Checking and writing SQL for a database (RFC 0242 / 0243)
+
+`ekos sql check q.sql` lints a query against the ledger's tables, columns, keys and foreign keys,
+and against the dialect's rules:
+
+| Check | Example |
+|---|---|
+| Unknown names | with the nearest real ones |
+| Row-limit form | `LIMIT` on Oracle |
+| `ILIKE` | where the engine has none |
+| Identifier quoting | wrong quote character for the dialect |
+| Integer division | truncates a ratio |
+| `=` on a list column | needs `LIKE` |
+| NULLs first under `ORDER BY … LIMIT` | — |
+| Date literals | in another format |
+
+Every SQL dialect plugin (sqlite, postgres, mysql, mssql, snowflake, databricks, clickhouse,
+trino, oracle) states these rules and its own notes for writing SQL.
+
+With `--database <name>` (a `[[databases]]` entry) or `--sqlite <file>`, it also runs read-only
+probes on the database: the result, value spellings (`'Germany'` vs `'Berlin, Germany'`), rows
+repeated by joins, ties at the top. Each live probe is protected:
+
+- **PostgreSQL:** a read-only session, and a role that cannot write (`--allow-writable-role`
+  overrides).
+- **ClickHouse:** `readonly=1`.
+- **Oracle:** a read-only transaction.
+- **All of them:** a guard refuses anything but one SELECT before it is sent.
+
+`ekos sql generate "<question>" --database <name>` runs RFC 0242's agent over the same schema and
+probes, through the `nl-sql` model route; `--allow-metered` is needed unless it is Ollama. The
+`text-to-sql` skill (`.claude/skills/`) gives Claude Code the same procedure over MCP.
+
 ### iDempiere eval (RFC 0222)
 
 `evals/idempiere/` holds 25 checked questions about iDempiere (code, schema, history, docs, write behaviour, and six
@@ -1566,38 +1612,4 @@ ekos commit --yes    # skip the confirmation prompt
 
 Opt-in and cost-gated like `[architecture-reasoning]` — a real, potentially large spend (~900 real
 LLM calls at the default `scope = "modules"` against a real mid-size codebase, ~5x that at
-`scope = "all"`), never defaulting to the more expensive tier just because it was turned on.
-
-### Compiled-knowledge query engine (RFC 0118 — SEARCH → QUERY → REASON)
-
-Traditional RAG searches documents; EKOS queries **compiled knowledge**. The retrieval stack is
-three operations, built as RFCs 0119–0126 (`devlog_143`–`devlog_149`):
-
-- **SEARCH** — one `KnowledgeStore::retrieve` seam behind every consumer, fusing a BM25 arm, an
-  exact-name arm, and (opt-in) a vector arm with Reciprocal Rank Fusion (Cormack RRF, `k=60`). BM25
-  indexes object names and content with English stemming, so a singular mention ("the customer
-  table") resolves the same object a plural exact mention ("the Customers table") already did.
-  `ekos query find "<text>" --mode lexical|vector|hybrid`; `--explain` prints the compiled plan
-  and per-arm timings (populated on partitioned and distributed stores too, not just a single
-  `FactLedger`). The same fused path runs on the single `FactLedger`, the partitioned
-  store, and the distributed gateway.
-- **QUERY** — direct, zero-LLM answers over the compiled graph: `fact(entity, attr)` for one
-  attribute of one object, named ops (`dependents`, `callers`, `path`, …) for the graph. Exposed
-  as MCP `ekos_query` (a typed list of source-cited claims) and `ekos_retrieve` ("show your
-  work": the plan + evidence set + how the question was understood).
-- **REASON** — `ekos ask "<question>"` now *compiles* the question: a rules planner routes it to
-  fact lookups and graph traversals, executes them into a typed `EvidenceSet` where every item
-  carries its provenance, and the model's job shrinks to "explain this evidence, cite each item."
-  `--explain` prints the plan and evidence; `--classic` selects the pre-0123 retrieve-and-dump
-  path. A citation not backed by a source id in the evidence set is a reported finding, not a
-  formatting detail. Claims cite **a place in a file, not just a file** (RFC 0140): every
-  Rust/Python/Elixir symbol with a `source_span` carries real evidence naming its path, its line,
-  and the source text itself, rendered as `path:start-end` — so asking what a function does shows
-  the model the function body, not only its name. Each Rust/Python/Elixir function or method also
-  carries a real `signature` (RFC 0141) — the discriminating term for "what builds an
-  `Arc<dyn LlmProvider>`" often lives in a return type, not the function's own name — and a Rust
-  `Calls` edge carries `call_count`, `call_site_line`, and `caller_is_test`, so impact analysis can
-  weigh 40 production call sites differently from 40 mostly-test ones instead of returning an
-  undifferentiated list. For the top few entities in each answer's evidence set, `ekos ask` also
-  reads the entity's real, on-demand source text straight from the artifact store — never the live
-  filesystem, so it never bypasses redaction 
+`scope = "all"`), neve

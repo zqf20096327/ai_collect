@@ -22,6 +22,7 @@
 
 <p align="center">
   <a href="https://github.com/Jasonsu22/Nomi/releases/latest/download/Nomi-arm64.dmg"><img src="Design/README/download-en.svg" height="54" alt="Download for Mac"></a>
+  <a href="https://nomi.software/#video"><img src="Design/README/watch-en.svg" height="54" alt="Watch the video"></a>
 </p>
 
 <p align="center">

@@ -598,6 +598,8 @@ On VS Code's 2.45M‑line codebase, SocratiCode answers architectural questions 
 | [Docker](https://www.docker.com/products/docker-desktop/) | Runs Qdrant (vector DB) and by default Ollama (embeddings) | [docker.com](https://www.docker.com/products/docker-desktop/) |
 | Node.js 18.17+ with `npx` on `PATH` | Runs the MCP server | [nodejs.org](https://nodejs.org/) |
 
+On Alpine Linux ARM64, run `apk add --no-cache gcompat` so the bundled Swift parser can load.
+
 Docker must be **running** when you use the server in the default `managed` mode. 
 
 The Qdrant container is managed automatically. If you set `QDRANT_MODE=external` and point `QDRANT_URL` at a remote or cloud Qdrant instance, Docker is only needed for Ollama (embeddings) in that case.
@@ -1364,4 +1366,4 @@ Create a `.socraticodecontextartifacts.json` file in your project root (see [`.s
 
 Each artifact has:
 - **`name`** — Unique identifier (used to filter searches)
-- **`path`** — Path to a file or directory (relative to project root, or absolute). Directories are read recursively, excluding: dot-files and dot-directories (`.pytest_cache/`, `.tox/`); anything matched by the [ignore rules](#ignore-rules) resolved against the artifact directory; and binary files, detected by a NUL byte in the first 8 KiB. Excluded files are logged with a per-directory summary count. A path pointing at a **single file** is read verbatim — no exclusions apply, so a declared binary file is sti
+- **`path`** — Path to a file or directory (relative to project root, or absolute). Directories are read recursively, excluding: dot-files and dot-directories (`.pytest_cache/`, `.tox/`); anything matched by the [ignore rules](#ignore-rules) resolved against the artifact directory; and binary files, detected by a NUL byte in the first 8 KiB. Excluded files are logged with a per-directory summary count. A path pointin

@@ -5,14 +5,14 @@
 </p>
 
 <h1 align="center">OASIS</h1>
-<p align="center"><strong>The open-source coding agent whose safety and reliability live in the runtime, not the prompt.</strong><br/>Any model, from a 4B model on your laptop to the frontier.</p>
+<p align="center"><strong>One open-source coding agent for your phone, your browser, your desktop and your terminal.</strong><br/>Paste a key and start. Any model, from a 4B model on your laptop to the frontier. Safety and reliability live in the runtime, not the prompt.</p>
 
 <p align="center">
   <a href="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml"><img src="https://github.com/FAHTHIZ/oasis/actions/workflows/quality.yml/badge.svg?branch=main" alt="Quality checks" /></a>
   <a href="https://github.com/FAHTHIZ/oasis/releases/latest"><img src="https://img.shields.io/github/v/release/FAHTHIZ/oasis?style=flat&color=8A7CFF&label=release" alt="Latest release" /></a>
   <img src="https://img.shields.io/badge/stage-stable-2EA44F.svg?style=flat" alt="Stable" />
   <img src="https://img.shields.io/badge/node-%E2%89%A522-339933.svg?style=flat&logo=node.js&logoColor=white" alt="Node.js 22 or newer" />
-  <img src="https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-555.svg?style=flat" alt="macOS, Linux and Windows" />
+  <img src="https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows%20%C2%B7%20Android%20%C2%B7%20iOS-555.svg?style=flat" alt="macOS, Linux, Windows, Android and iOS" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache-2.0 license" /></a>
   <a href="https://fahthiz.github.io/oasis/"><img src="https://img.shields.io/badge/website-fahthiz.github.io%2Foasis-7CFF5E.svg?style=flat" alt="Website" /></a>
 </p>
@@ -20,19 +20,40 @@
 <p align="center">
   <a href="https://github.com/FAHTHIZ/oasis/releases/latest"><strong>Download</strong></a> ·
   <a href="https://fahthiz.github.io/oasis/"><strong>Website</strong></a> ·
+  <a href="https://fahthiz.github.io/oasis/app/"><strong>Open the app</strong></a> ·
   <a href="#install"><strong>Install</strong></a> ·
-  <a href="#terminal-or-browser">Web UI</a> ·
+  <a href="#start-in-a-minute">Start</a> ·
   <a href="#measured-not-claimed">Benchmarks</a> ·
-  <a href="#a-one-minute-tour">Tour</a> ·
+  <a href="#terminal">Terminal</a> ·
   <a href="docs/USER_GUIDE_MAP.md">User guide</a> ·
   <a href="docs/INSTALL.md">Install guide</a> ·
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
+## Start in a minute
+
+| Where | Do this |
+| --- | --- |
+| **Phone, tablet or any browser** | [Open the app](https://fahthiz.github.io/oasis/app/), paste an API key (or a local model address) into the message box, and ask. Add it to your home screen to install it. |
+| **Your computer, in a terminal** | Install (below), run `oasis` in your project and paste a key when it asks. |
+| **Your computer, in a window** | Run `oasis web --open` in your project, or [download the desktop app](https://github.com/FAHTHIZ/oasis/releases/latest). |
+
+That paste is the whole setup. OASIS works out the provider from the key or address, picks the best model for coding, checks that it can call tools, and keeps the next models as backups that take over if the first one runs out of credit or hits a rate limit. It works with OpenAI, Anthropic, OpenRouter, Gemini, Groq, DeepSeek, Mistral, xAI, Hugging Face and others, any OpenAI-compatible server, and Ollama, LM Studio or llama.cpp on your own machine.
+
+## One app on every device
+
 <p align="center">
-  <a href="assets/demo/oasis-terminal-demo.mp4"><img src="assets/demo/oasis-terminal-demo.gif" alt="OASIS in a terminal: it finds a time-zone bug, fixes it with a one-line change, adds a regression test, runs the tests after approval, reviews its diff, then refuses a destructive git clean" width="100%" /></a>
-  <br/><sub>Real OASIS 1.0 runtime, tools, approval prompt and safety policy; the model's replies are scripted so anyone can reproduce it with <a href="scripts/demo/">scripts/demo/</a>. <a href="assets/demo/oasis-terminal-demo.mp4">MP4</a> · <a href="assets/demo/oasis-terminal-demo.cast">asciicast</a></sub>
+  <img src="assets/screens/app-computer-approval.png" alt="The OASIS app on a computer: the agent wrote three files and asks before running a command, showing the exact command and a Risky badge" width="68%" />
+  <img src="assets/screens/app-phone.png" alt="The OASIS app on a phone: a pasted screenshot sent to the agent, with the chat and tool steps above" width="25%" />
+  <br/><sub>The real app and runtime from <code>test/app-runtime-e2e.test.mjs</code>; the model's replies are scripted.</sub>
 </p>
+
+The app is the same on a phone, in a browser and in the desktop app. Where it runs decides what it can touch:
+
+- **Opened from your computer** (`oasis web` or the desktop app), it drives the full agent on that computer: your real files, shell, git and MCP tools, with every command shown before it runs and every edit checkpointed so it can be undone.
+- **Opened on its own** (a phone, or the web link), the agent runs inside the app. It works on projects from GitHub, a ZIP or a folder, edits with diffs, runs JavaScript in a sandbox, and pushes to a branch or opens a pull request after you approve. It cannot run shell commands; for that, [connect your phone to your computer](docs/MOBILE.md#browser-workspace-from-your-phone) (**File → Connect a phone…** in the desktop app).
+
+Everything else is the same everywhere: type while it works to steer it, paste or drop screenshots, keep several chats per project, pick a built-in plugin with one tap (Debugger, Test writer, Code reviewer, Security audit, Web app studio, API builder, Mobile apps, Docs writer, GitHub), and switch to lite mode on old phones and low-end computers. The installed app works offline, has no OASIS account and no OASIS server, and only talks to the model provider you chose.
 
 ## Why OASIS
 
@@ -44,7 +65,7 @@ OASIS fixes each of those in the runtime, so the fix holds whichever model you c
 <tr>
 <td width="50%" valign="top">
 
-**Any model, really.** Claude, GPT, Gemini, DeepSeek, OpenRouter, Bedrock, Vertex, Azure Foundry, or a local Ollama, LM Studio, llama.cpp or vLLM server. Small models get a compact prompt, a 13-tool profile and tool-call repair, so even a 4B local model drives the tools; whether its code is right is still up to the model. In our live runs on a 2-CPU cloud machine with no GPU, Qwen3-4B passed two of four hidden-test tasks (`parse-boolean-flag` and `dedupe-names`). `clamp-integer` failed in all three tries. `safe-task-id` passed once in two tries, but that code fails the stricter verifier added afterwards ([field runs](docs/BENCHMARKS.md#small-local-model-field-runs-2026-11-01)).
+**Any model, really.** Claude, GPT, Gemini, DeepSeek, OpenRouter, Bedrock, Vertex, Azure Foundry, or a local Ollama, LM Studio, llama.cpp or vLLM server. Small models get a compact prompt, a 12-tool profile and tool-call repair, so even a 4B local model drives the tools; whether its code is right is still up to the model. In our live runs on a 2-CPU cloud machine with no GPU, Qwen3-4B passed two of four hidden-test tasks (`parse-boolean-flag` and `dedupe-names`). `clamp-integer` failed in all three tries. `safe-task-id` passed once in two tries, but that code fails the stricter verifier added afterwards ([field runs](docs/BENCHMARKS.md#small-local-model-field-runs-2026-11-01)).
 
 </td>
 <td width="50%" valign="top">
@@ -56,82 +77,92 @@ OASIS fixes each of those in the runtime, so the fix holds whichever model you c
 <tr>
 <td valign="top">
 
-**"Done" means verified.** The agent can't finish until it has reviewed its own diff and run a relevant check. It is told when it claims a file it never wrote, weakens a test to make it pass, or repeats the same failing fix.
+**"Done" means verified.** The agent can't finish until a relevant check has passed after its last edit, and it must review the diff of any existing file it rewrote wholesale. It is told when it claims a file it never wrote, weakens a test to make it pass, or repeats the same failing fix.
 
 </td>
 <td valign="top">
 
-**Your workflow, kept.** Accepts Claude Code's CLI flags (`-p`, `--output-format stream-json`, `--allowedTools`, `--mcp-config`) and Codex and Gemini CLI ones (`exec`, `--full-auto`, `--sandbox`, `--yolo`, `--output-schema`) and Aider's (`--message`, `--test-cmd --auto-test`, `--auto-commits`), reads `AGENTS.md`, `CLAUDE.md` and the rule folders of Cursor, Windsurf, Antigravity, Copilot, Kiro, Cline and Roo as they are, loads Claude Code plugins, and imports MCP servers, instructions, commands, rules, skills and memories from Codex, Gemini CLI, Cursor, Hermes Agent, OpenCode, Antigravity, Windsurf, Cline and Claude Code auto memory (`oasis import`).
+**Your setup moves in with you.** OASIS understands the common agent CLI flags (`-p`, `--output-format stream-json`, `exec`, `--full-auto`, `--sandbox`, `--allowedTools`, `--mcp-config`, `--test-cmd --auto-test` and more), reads `OASIS.md`, `AGENTS.md`, `CLAUDE.md` and the rule folders editors already keep in your repository, and loads existing plugins and skills as they are. `oasis import` brings MCP servers, instructions, commands, rules, skills and memories from the tools you used before, in one command.
 
 </td>
 </tr>
 </table>
 
-## Terminal or browser
+## Terminal
 
-Same agent, same safety policy, two front ends. `oasis web` opens a local browser workspace: chat on the left, live activity grouped by step, approval cards that show the exact command or diff, and a Changes panel to review everything before you keep it. Type while it works and the agent reads your message at its next step (shown here: "Keep the CLI output format unchanged").
+The terminal (`oasis`) is the same agent with the same safety rules, for people who live in a shell, for SSH and for scripts and CI.
 
 <p align="center">
-  <a href="assets/demo/oasis-web-demo.mp4"><img src="assets/demo/oasis-web-demo.gif" alt="OASIS web workspace: the user asks for a bug fix, sends a steering message while the agent works, approves two edits and a test run, then reviews the diff in the Changes panel" width="100%" /></a>
-  <br/><sub>Real OASIS web server, browser UI and tools; scripted model replies, reproducible with <a href="scripts/demo/record-web-demo.mjs">scripts/demo/record-web-demo.mjs</a>. <a href="assets/demo/oasis-web-demo.mp4">MP4</a></sub>
+  <a href="assets/demo/oasis-terminal-demo.mp4"><img src="assets/demo/oasis-terminal-demo.gif" alt="OASIS in a terminal: it finds a time-zone bug, fixes it with a one-line change, adds a regression test, runs the tests after approval, reviews its diff, then refuses a destructive git clean" width="100%" /></a>
+  <br/><sub>The real CLI in a pseudo-terminal from <code>scripts/demo/record-demo.mjs</code>; the model's replies are scripted so the recording is reproducible.</sub>
 </p>
 
-| | Terminal (`oasis`) | Browser (`oasis web`) | Editor |
+<p align="center">
+  <a href="assets/demo/oasis-real-model-demo.mp4"><img src="assets/demo/oasis-real-model-demo.gif" alt="OASIS with gpt-oss-20b: it reads add.mjs, fixes a minus sign, adds a negative-number test, runs node test.mjs after approval, is sent back by the verification gate to review both diffs, then finishes Checked" width="100%" /></a>
+  <br/><sub>Not scripted: gpt-oss-20b on a free endpoint (2026-11-05), recorded with <code>OASIS_REDUCED_MOTION=1</code>. The endpoint allows about one request every 47 s, so those waits are shortened; the real turn took 6 m 19 s, 7 tool calls and 50.9k tokens. The model's first answer skipped the diff review, and the gate sent it back. It also appended its new assertion after <code>console.log('tests pass')</code> and said "build and tests are green" in a project with no build: small-model habits, shown as they happened. Raw recording: <a href="assets/demo/oasis-real-model-demo.cast"><code>oasis-real-model-demo.cast</code></a>.</sub>
+</p>
+
+| | Terminal (`oasis`) | App (phone, browser, desktop) | Editor |
 | --- | --- | --- | --- |
-| Steer while it works | Enter (Tab queues) | Enter (Alt+Enter queues) | VS Code chat panel |
-| Review changes | `/diff`, inline diffs | Changes panel, per-file diffs | Native diff view, accept or reject |
-| Approvals | Inline prompt | Approval card with the exact command or diff | Inline in the panel |
-| Images | Ctrl+V pastes a screenshot, or `@screenshot.png` | Paste, drag and drop, or attach | Attach button or `@screenshot.png` in the chat panel |
-| Low-power devices | Lite or no animation on 2-CPU, SSH, Linux console, CI, screen readers | Respects reduced-motion, works as an offline-capable PWA | Editor theme |
+| Connect a model | Paste a key at the first run, or `oasis connect` | Paste a key into the message box | Uses the OASIS config |
+| Steer while it works | Enter (Tab queues) | Type and send while it works | VS Code chat panel |
+| Review changes | `/diff`, inline diffs | Changes tab with per-file diffs | Native diff view, accept or reject |
+| Approvals | Inline prompt | A sheet with the exact command or diff | Inline in the panel |
+| Images | Ctrl+V pastes a screenshot, or `@screenshot.png` | Paste, drop or attach | Attach button or `@screenshot.png` |
+| Undo | `/undo`, `Esc Esc` to rewind | Per-file revert on the device; `/undo` on a computer | Reject in the diff view |
+| Low-power devices | Lite or no animation on 2-CPU, SSH, Linux console, CI, screen readers | Lite mode, reduced motion, works offline | Editor theme |
 
 ## Install
 
 **Requirements:** Node.js 22 or newer and Git. Or skip both with the [desktop app](https://github.com/FAHTHIZ/oasis/releases/latest).
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/v1.0.0/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/FAHTHIZ/oasis/v1.1.0/scripts/install.sh | sh
 cd ~/your-project && oasis
 ```
 
-The script comes from the immutable `v1.0.0` tag. It installs the latest stable release at its exact commit, asks before changing anything, runs `oasis doctor` and opens provider setup. To check its SHA-256 before running it, or to install on Windows, see the [install guide](docs/INSTALL.md#command-line-installation).
+The script comes from the immutable `v1.1.0` tag. It installs the latest stable release at its exact commit, asks before changing anything, runs `oasis doctor` and opens provider setup. To check its SHA-256 before running it, or to install on Windows, see the [install guide](docs/INSTALL.md#command-line-installation).
+
+With Homebrew, run `brew tap fahthiz/oasis https://github.com/FAHTHIZ/oasis`, then `brew install fahthiz/oasis/oasis-cli` for the CLI (macOS and Linux) or `brew install --cask fahthiz/oasis/oasis` for the Mac desktop app ([details](docs/INSTALL.md#homebrew-macos-and-linux)).
 
 Want the current `main` instead?
 
 ```bash
 git clone https://github.com/FAHTHIZ/oasis.git && cd oasis && npm install && npm install -g .
-oasis setup                 # pick a provider, or point it at a local model
+oasis connect               # paste an API key, model link or local server address
 ```
 
 Other ways in:
 
 | Option | How |
 | --- | --- |
-| **Pinned stable CLI** | The [checksum-verified installer](docs/INSTALL.md#command-line-installation) resolves the latest stable release (`v1.0.0`) to an immutable commit, runs `oasis doctor` and opens setup. |
-| **Desktop app** | [Download v1.0.0](https://github.com/FAHTHIZ/oasis/releases/latest): Windows x64 `.exe`, macOS arm64 `.dmg`, Linux x86_64 `.AppImage` or `.deb`, with `SHA256SUMS`. They are not code-signed, so SmartScreen and Gatekeeper warn on first launch; [verify the checksum](docs/INSTALL.md) first. |
+| **Pinned stable CLI** | The [checksum-verified installer](docs/INSTALL.md#command-line-installation) resolves the latest stable release (`v1.1.0`) to an immutable commit, runs `oasis doctor` and opens setup. |
+| **Desktop app** | [Download the latest release](https://github.com/FAHTHIZ/oasis/releases/latest): Windows x64 `.exe`; macOS `.dmg` for Apple silicon and Intel; Linux `.AppImage` or `.deb` for x86_64 and arm64; with `SHA256SUMS`. They are not code-signed, so SmartScreen and Gatekeeper warn on first launch; [verify the checksum](docs/INSTALL.md) first. From v1.1.0 the app tells you when a new stable version is out and installs it after checking its SHA-256 ([updates](docs/INSTALL.md#updates)). |
 | **Local model, no API key** | `llama-server -m qwen3-4b-instruct-q4_k_m.gguf --jinja -c 16384 --port 8080`, then `OASIS_BASE_URL=http://127.0.0.1:8080/v1 OASIS_MODEL=qwen3-4b oasis`. OASIS reads the loaded context window and picks the right profile. Ollama and LM Studio work the same way. |
-| **Coming from another agent** | `oasis import claude`, `codex`, `gemini`, `cursor`, `hermes`, `opencode`, `antigravity`, `windsurf` or `cline` (add `--dry-run` to preview). Existing `CLAUDE.md` / `AGENTS.md` files are picked up as they are. |
-| **Android** | The CLI runs in Termux; see the [Termux guide](docs/TERMUX.md) for what is and isn't supported. |
+| **Coming from another agent** | `oasis import <tool>` with `codex`, `gemini`, `cursor`, `claude`, `hermes`, `opencode`, `antigravity`, `windsurf` or `cline` (add `--dry-run` to preview). Existing `AGENTS.md` / `CLAUDE.md` files are picked up as they are. |
+| **Phone or tablet** | [Open the universal app](https://fahthiz.github.io/oasis/app/) and add it to the home screen: no computer needed. To drive OASIS on your computer from the phone instead, choose **File → Connect a phone…** in the desktop app (or `oasis web --host 0.0.0.0` with a TLS certificate) and scan the QR code. A Telegram/Discord/Slack bot and Termux on Android also work. See [MOBILE.md](docs/MOBILE.md). |
+| **Set up for this computer** | `oasis setup --auto` detects CPU, memory, GPU and any running Ollama / LM Studio / llama.cpp server, then saves the best model route that passes a live test. |
 
 ## Measured, not claimed
 
-The [model-free harness benchmark](docs/BENCHMARKS.md#model-free-harness-benchmark-2026-11-01) feeds the runtime outputs that real models actually produce and scores what happens. It needs no model or API key and runs in seconds: `npm run bench:harness`.
+The [model-free harness benchmark](docs/BENCHMARKS.md#model-free-harness-benchmark-2026-11-05) feeds the runtime outputs that real models actually produce and scores what happens. It needs no model or API key and runs in seconds: `npm run bench:harness`.
 
 | What the model sends | No harness layer | OASIS, on held-out cases it was never tuned on |
 | --- | --- | --- |
-| Malformed or text-only tool calls (fences, comments, Python literals, Hermes/Qwen tags) | 1 of 20 run | **18 of 20 run**, 0 false runs |
-| Edits whose `old_string` drifted (indentation, spacing, quotes, CRLF, BOM) | 2 of 12 apply | **11 of 12 apply**, 0 wrong writes |
-| Destructive shell commands with approvals switched off | 0 of 31 stopped | **22 of 31 stopped** (23 with a scorer fix), every everyday command still runs |
-| Placeholder rewrites, weakened tests, leaked secrets | 0 of 23 caught | **16 of 23 caught**, 0 false alarms |
+| Malformed or text-only tool calls (fences, comments, Python literals, Hermes, Qwen3-Coder, GLM, Mistral, DeepSeek, gpt-oss formats) | 1 of 33 run | **23 of 33 run**, 0 false runs |
+| Edits whose `old_string` drifted (indentation, spacing, quotes, CRLF, BOM, copied line numbers) | 2 of 17 apply | **14 of 17 apply** (15 with a case fix), 0 wrong writes |
+| Destructive shell commands with approvals switched off (incl. cloud, cluster, registry, database, PowerShell) | 0 of 85 stopped | **71 of 85 stopped** (72 with a scorer fix), every everyday command still runs |
+| Placeholder rewrites, weakened tests, leaked secrets | 0 of 44 caught | **32 of 44 caught**, 0 false alarms |
 
-Every miss above was then fixed and turned into a regression test, so the current runtime scores 100% on all three case sets except one deliberate secret-scanner miss. Those post-fix numbers measure tuning, not generalization, which is why the table shows the untuned ones.
+Every miss above was then fixed and turned into a regression test, so the current runtime scores 100% on all four case sets except one deliberate secret-scanner miss. Those post-fix numbers measure tuning, not generalization, which is why the table shows the untuned ones.
 
-The agent evaluator has **50 tasks**: 33 focused fixtures plus 17 repository-level bug reports and multi-file features, scored by hidden assertions the agent never sees (`oasis eval`). Head-to-head runs against Claude Code, Codex CLI, Gemini CLI, OpenCode and Aider on the same tasks and the same model take one command, [`npm run bench:live`](docs/BENCHMARKS.md#head-to-head-in-one-command). No results have been published yet, so OASIS does not claim to beat them. Live runs with small local models, including the failures, are in [Benchmarks](docs/BENCHMARKS.md).
+The agent evaluator has **52 tasks**: 33 focused fixtures plus 19 repository-level bug reports and multi-file features, scored by hidden assertions the agent never sees (`oasis eval`). Head-to-head runs against Claude Code, Codex CLI, Gemini CLI, OpenCode and Aider on the same tasks and the same model take one command, [`npm run bench:live`](docs/BENCHMARKS.md#head-to-head-in-one-command). The first live smoke run (2026-11-05, one free-tier Gemini Flash-Lite model for every agent, 3 tasks × 1 trial) is [published with its caveats](docs/research/LIVE_COMPARISON_2026-11-05.md): OASIS 3/3, Aider 2/3, OpenCode 0/3 (that OpenCode score is not valid: a harness bug, since fixed, ran it in the wrong folder), and Gemini CLI's run hit the key's daily quota. A [second set](docs/research/LIVE_COMPARISON_2026-11-05b.md) on gpt-oss-20b and Nemotron 3 Ultra found OASIS's evening run matching Aider's morning 2/3 on gpt-oss-20b (the two ran at different times) and both passing the one Nemotron task, but OASIS used 34 to 71 times as many tokens on the same passed task. That is too small to rank anyone, and Claude Code and Codex could not run on those models, so OASIS does not claim to beat them. Live runs with small local models, including the failures, are in [Benchmarks](docs/BENCHMARKS.md).
 
 ## What it fixes
 
 | Common frustration with coding agents | What OASIS does |
 |---|---|
-| "It said it was done, but never ran the tests." | A post-edit verification gate: the agent must review its diff and run a relevant check before it can finish, and any later edit resets that. |
+| "It said it was done, but never ran the tests." | A post-edit verification gate. A reply that ends the turn before a relevant check has passed (and before the diff of any rewritten file was reviewed) is sent back once, naming the files and the command to rerun; any later edit resets it. If the model still stops short, the turn ends marked "Not fully checked" with what is missing, rather than reported as done. |
 | "Ten patches, and the same error every time." | Fix-thrash detection. On the 3rd identical failure after edits the agent is told to step back and diagnose; on the 5th, to change approach or ask you. |
 | "It changed the test to match the broken code." | Weakened-test detection (skips, `.only`, deleted tests, removed assertions, an exact check swapped for `toBeDefined()`). |
 | "It replaced my function with `// ... rest unchanged`." | A change guard blocks placeholder edits and flags large, unexplained deletions. |
@@ -146,7 +177,7 @@ The agent evaluator has **50 tasks**: 33 focused fixtures plus 17 repository-lev
 | "I have to wait for it to finish before I can correct it." | Type while it works and press Enter: the agent reads the message at its next step, adjusts and keeps going. Nothing you send is dropped. |
 | "My local model times out on long prompts." | Requests to llama.cpp, Ollama, LM Studio or vLLM on your machine skip Node's hidden 300-second header timeout, and wait up to 15 minutes for the first token by default. The context window is read from Ollama, LM Studio and llama-server on their default ports, and a request that overflows the window is resized from the server's error instead of failing. |
 | "I switched tabs and missed that it was waiting on me." | When a turn that ran 15 s or more finishes or needs approval, OASIS notifies you: a desktop notification in iTerm2, WezTerm, Ghostty, Windows Terminal and kitty, the bell elsewhere, and a tab badge plus optional notification in the browser. `OASIS_NOTIFY=off` turns it off. |
-| "I want every change in Git history, like Aider." | `/auto-commit on` (or `OASIS_AUTO_COMMIT=1`) commits each turn's changed files as `oasis: <your request>`, and only those files; your own staged work stays out. |
+| "I want every change in Git history." | `/auto-commit on` (or `OASIS_AUTO_COMMIT=1`) commits each turn's changed files as `oasis: <your request>`, and only those files; your own staged work stays out. |
 | "It forgot my rules after compacting." | Compaction only summarizes the conversation. The system prompt, including `AGENTS.md` / `CLAUDE.md`, stays word for word. `/compact` shows a preview before changing anything, `/compact preserve rule: …` pins other text verbatim into every summary, and `/compact undo` brings the full history back. |
 | "I want to undo what it just did." | `/undo` reverts the last turn's file and conversation changes; `Esc Esc` or `/rewind` jumps to any checkpoint. |
 | "Animations stutter over SSH and on my old laptop." | Motion adapts: smooth on capable machines, a light pulse on low-power hardware, SSH and the Linux console, none in CI, for screen readers or with `OASIS_REDUCED_MOTION=1`. |
@@ -185,7 +216,7 @@ Full reference: [keyboard shortcuts](docs/KEYS.md) and the [user guide](docs/USE
 OASIS assumes the model might be small, quantized, or running on your laptop:
 
 - **Real context windows.** OASIS reads the window actually loaded in Ollama, LM Studio and llama.cpp, and the provider's `/models` listing for hosted and self-hosted models (DeepSeek, OpenRouter, vLLM). If the first request still overflows, it reads the size (and, for llama-server, the server itself) from the error, switches to the compact prompt and small tool set, and retries; that costs one rejected request, not a prompt read.
-- **Small-context profile.** At 16K or less: a compact system prompt (about 1.3K tokens), 13 essential tools (about 3.7K tokens for the whole first request, versus about 15K by default, counted with the Qwen3 tokenizer in an empty repository), earlier compaction and trimmed tool results. Everything else stays reachable through `tool_search`.
+- **Small-context profile.** At 16K or less: a compact system prompt (about 1.4K tokens), 12 essential tools (about 3.5K tokens for the whole first request, versus about 6.6K by default, counted with the Qwen3 tokenizer in an empty repository), earlier compaction and trimmed tool results. Everything else stays reachable through `tool_search`.
 - **Tool-call repair.** Almost-valid JSON (code fences, comments, unquoted keys, trailing commas, Python literals, missing braces) is repaired, and tool calls written as text (Hermes, Qwen, Llama and XML formats) are executed. Unrepairable calls get an error that explains how to resend them.
 - **Forgiving edits.** Matching tolerates indentation, spacing and quote drift while preserving CRLF, BOMs and your formatting. Ambiguous matches are refused, never guessed.
 - **Coaching.** When a model describes a change instead of making it, claims a file it never wrote, quits after one error or stops without checking its work, OASIS tells it so and, on small models, runs the review step itself.
@@ -209,15 +240,16 @@ Project proposals stay with one workspace; user-scope proposals are reserved for
 
 | Area | Included |
 |---|---|
-| **Agent runtime** | Multi-step tool loop, planning, codebase map, edits, verification gate, completion reports, fallback model, budget limits, programmatic tool calling (`execute_code`), API key pools that rotate on rate limits. |
+| **Agent runtime** | Multi-step tool loop, planning, codebase map, edits, verification gate, completion reports, a fallback chain that can cross providers when a model runs out of credit or goes down, budget limits, programmatic tool calling (`execute_code`), API key pools that rotate on rate limits. |
 | **Workspace** | File search, read, write and edit; Git tools; snapshots, backups, diffs, checkpoints and rewind; isolated worktrees. |
 | **Safety** | Permission modes and rules, shell-risk analysis, protected paths, secret shield, bounded output, process cleanup, optional OS sandbox on Linux and macOS, a Docker/Podman container sandbox on any OS, or remote execution over SSH. |
 | **Verification** | Project checks, diagnostics and language servers, diff review, weakened-test and placeholder detection, auto-test, claim checks. |
-| **Context** | Saved and resumable sessions, `OASIS.md` / `AGENTS.md` / `CLAUDE.md` instructions, other agents' rule folders with their always/glob/on-request triggers, memory with optional write approval, compaction with must-keep context, rule refresh, cross-session search (`/recall`, `session_search`), separate agent profiles (`--profile`). |
+| **Context** | Saved and resumable sessions, `OASIS.md` / `AGENTS.md` / `CLAUDE.md` instructions, other agents' rule folders with their always/glob/on-request triggers, memory with optional write approval, compaction with must-keep context (also while you are away, with `/compact undo`), rule refresh, cross-session search (`/recall`, `session_search`), separate agent profiles (`--profile`). |
 | **Learning** | Verified-work skill proposals, user/project scope, review-before-promotion, secret screening, and collision-safe portable skill creation. |
 | **Teams of agents** | Bounded subagents, specialist reviewers, shared task boards, background sessions, tmux teammate panes, workflows, `oasis batch` runs with ShareGPT/OpenAI trajectory export, and `oasis plugin eval` for scoring plugins and skills against a baseline. |
-| **Integrations** | MCP (client over stdio, Streamable HTTP and SSE; server mode; OAuth), hooks, Agent Skills and skills.sh, plugins (including Claude Code plugins), web search, Chrome browser tool, image generation (`generate_image`), text to speech (`text_to_speech`), GitHub Action, VS Code / Cursor / Windsurf bridge, [Telegram, Discord and Slack gateways](docs/USER_GUIDE.md#telegram-gateway-your-agent-from-your-phone) (`oasis gateway telegram`, `discord`, `slack`) that take text, photos, files and voice notes, and an [Agent Client Protocol](docs/USER_GUIDE.md#zed-jetbrains-neovim-and-other-acp-editors) server (`oasis acp`) for Zed, JetBrains, Neovim and Emacs with inline diffs and editor-buffer reads and writes. |
-| **Surfaces** | Terminal CLI with Markdown, syntax highlighting and Mermaid flowcharts and sequence diagrams drawn in the terminal, headless mode with JSON and stream-JSON, local browser workspace (image paste, dictation, `!` shell commands, steering, live diffs), Electron desktop app, SDK. |
+| **Add-ons** | `oasis add LINK`, `/add LINK`, or just "install this": one command takes a GitHub link, `owner/repo#name`, `plugin@marketplace`, an MCP server URL, an npm MCP package or an MCP Registry name, or an install command pasted from a README (`npx …`, `claude mcp add …`, `/plugin install …`, `gemini extensions install …`, `npx skills add …`). It detects Claude Code, Codex and Gemini CLI plugins and marketplaces, Agent Skills, MCP servers and Markdown agents, asks once and sets it up. [How it works](docs/USER_GUIDE.md#add-anything-with-one-command). |
+| **Integrations** | MCP (client over stdio, Streamable HTTP and SSE; server mode; OAuth), hooks, Agent Skills with a built-in installer for skills from any Git repository, plugins (existing plugin formats load unchanged), web search, Chrome browser tool, image generation (`generate_image`), text to speech (`text_to_speech`), GitHub Action, VS Code / Cursor / Windsurf bridge, [Telegram, Discord and Slack gateways](docs/USER_GUIDE.md#telegram-gateway-your-agent-from-your-phone) (`oasis gateway telegram`, `discord`, `slack`) that take text, photos, files and voice notes, and an [Agent Client Protocol](docs/USER_GUIDE.md#zed-jetbrains-neovim-and-other-acp-editors) server (`oasis acp`) for Zed, JetBrains, Neovim and Emacs with inline diffs and editor-buffer reads and writes. |
+| **Surfaces** | Universal app for phones, tablets and computers (offline, on-device, sandboxed JavaScript, GitHub push), terminal CLI with Markdown, syntax highlighting and Mermaid flowcharts and sequence diagrams drawn in the terminal, headless mode with JSON and stream-JSON, local browser workspace (image paste, dictation, `!` shell commands, steering, live diffs), Electron desktop app, SDK. Soft, optional sound effects for finished turns, approvals, errors and completed steps (`/sounds`). |
 | **Accessibility** | Screen-reader mode (`--ax-screen-reader`), reduced motion, `NO_COLOR`, colorblind-friendly and light themes, `--calm` output. |
 
 Capabilities are shared across surfaces but not identical on every OS, provider or editor; check the [support matrix](docs/PROJECT_PLAN.md#support-and-qualification-matrix) before relying on a platform-specific path.
@@ -227,6 +259,8 @@ Capabilities are shared across surfaces but not identical on every OS, provider 
 ```mermaid
 flowchart TD
     User["Developer and project"] --> Surfaces["CLI · Browser · Desktop · Editor · SDK · GitHub Action"]
+    User --> App["Universal app (on-device agent)"]
+    App <--> Model
     Surfaces --> Runtime["Shared OASIS runtime"]
     Runtime <--> Model["Chosen hosted or local model"]
     Runtime --> Context["Instructions · Sessions · Memory · Checkpoints"]
@@ -241,7 +275,7 @@ The model reasons and requests tools. OASIS owns the tool contracts, workspace c
 
 ## Status and boundaries
 
-> **Current lifecycle — OASIS 1.0, stable, released.** [`v1.0.0`](https://github.com/FAHTHIZ/oasis/releases/tag/v1.0.0) was published on November 4, 2026 from a `main` commit that passed every 1.0 gate in the [project plan](docs/PROJECT_PLAN.md) on that same commit: Quality Checks (Node 22/24/26 on Windows, macOS and Linux, browser E2E with accessibility checks), installer checks, desktop packaging and public-site validation. The release carries Windows, macOS and Linux installers with `SHA256SUMS`.
+> **Current lifecycle — OASIS 1.1, stable, released.** [`v1.1.0`](https://github.com/FAHTHIZ/oasis/releases/tag/v1.1.0) was published automatically on November 5, 2026 from `main` commit `900c76f`, after Quality Checks (Node 22/24/26 on Windows, macOS and Linux, browser E2E with accessibility checks), installer checks, desktop packaging and public-site validation passed on that same commit. It adds update notifications with checksum-verified installs, hardware-aware setup, phone links with a QR code, and installers for Intel Macs and arm64 Linux ([notes](docs/releases/v1.1.0.md)). [`v1.0.0`](https://github.com/FAHTHIZ/oasis/releases/tag/v1.0.0) was published on November 4, 2026 through the same gates.
 
 What 1.0 does not claim: the desktop installers are unsigned (SHA-256 checksums are provided), clean-machine install, update and uninstall are verified on CI runners rather than by hand on physical machines, and the 50-task evaluator runs on small projects, so it is a regression suite rather than a broad benchmark.
 
@@ -250,13 +284,14 @@ What 1.0 does not claim: the desktop installers are unsigned (SHA-256 checksums 
 
 | Surface | Position |
 |---|---|
-| **CLI** | Primary workflow; Node.js 22+. |
-| **Browser workspace** | Local, authenticated, backed by the shared runtime; not a hosted service. Some browser-side project, task and note state is separate from CLI state. |
-| **Desktop** | Windows x64, macOS arm64 and Linux x86_64, built and packaged in CI from the release commit. Unsigned, with SHA-256 checksums. |
+| **CLI** | Primary workflow for repositories and automation; Node.js 22+. |
+| **App on a computer** (`oasis web`, desktop) | Local and authenticated with a one-time link token, backed by the shared runtime; not a hosted service. The earlier all-in-one browser workspace is still at `/classic` (terminal pane, run monitor, extensions) while those panels move into the app. |
+| **Desktop** | Windows x64; macOS arm64 and Intel; Linux x86_64 and arm64; built and packaged in CI from the release commit. Unsigned, with SHA-256 checksums. |
 | **VS Code-family editors** | Supported integration; not every editor extension ecosystem is covered. |
 | **ACP editors (Zed, JetBrains, Neovim, Emacs)** | `oasis acp` implements the core Agent Client Protocol, inline edit diffs and editor `fs/*` (unsaved buffers are read, open buffers are updated). With `oasis acp --editor-terminal`, approved commands run in the editor's terminal panel (`terminal/*`); by default they run in OASIS's own process and sandbox. |
 | **SDK and GitHub Action** | Programmatic and repository automation; unattended use still needs deliberate permissions and isolation. |
-| **Android / Termux** | The CLI can be tried in Termux; Android is not a fully qualified platform and there is no native APK. |
+| **Universal app** | Installable web app for Android, iOS, iPadOS, ChromeOS and desktop browsers, one codebase for every platform; runs on the device with no server. No shell commands. Tested in desktop and mobile-emulated Chromium; real-device testing on iOS Safari and older Android browsers is in progress. It is not in an app store; install it from the browser. |
+| **Android / Termux** | The full CLI runs in Termux; Android is not a fully qualified CLI platform. |
 
 </details>
 
@@ -280,7 +315,7 @@ Read [SECURITY.md](SECURITY.md), [Privacy](docs/PRIVACY.md) and the dated [secur
 
 | Need | Reference |
 |---|---|
-| Install, update, uninstall | [Installation](docs/INSTALL.md) · [Termux](docs/TERMUX.md) |
+| Install, update, uninstall | [Installation](docs/INSTALL.md) · [Phone and tablet](docs/MOBILE.md) · [Termux](docs/TERMUX.md) |
 | Learn by task | [User-guide map](docs/USER_GUIDE_MAP.md) |
 | Every command, setting, tool and integration | [Complete user guide](docs/USER_GUIDE.md) · [Keys](docs/KEYS.md) |
 | Workflows, skills and plugins | [Workflows and skills](docs/WORKFLOWS_AND_SKILLS.md) |
@@ -289,7 +324,7 @@ Read [SECURITY.md](SECURITY.md), [Privacy](docs/PRIVACY.md) and the dated [secur
 | How it works inside | [Architecture](docs/ARCHITECTURE.md) · [Source map](src/README.md) · [Test map](test/README.md) |
 | Security and privacy | [Security policy](SECURITY.md) · [Privacy](docs/PRIVACY.md) |
 | Maintaining the repository | [Maintenance guide](docs/REPOSITORY_MAINTENANCE.md) |
-| Release history | [Changelog](CHANGELOG.md) · [1.0.0 release notes](docs/releases/v1.0.0.md) |
+| Release history | [Changelog](CHANGELOG.md) · [1.1.0 release notes](docs/releases/v1.1.0.md) · [1.0.0 release notes](docs/releases/v1.0.0.md) |
 
 ## Contributing
 

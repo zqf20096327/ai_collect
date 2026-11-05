@@ -48,6 +48,20 @@ Hold **⌃ control + ⌥ option** and ask about anything on screen, tap **⌃ tw
 
 [![Watch the OpenClicky demo](https://img.youtube.com/vi/bWsjCIrmoKA/maxresdefault.jpg)](https://youtu.be/bWsjCIrmoKA)
 
+### Draw to explain (new)
+
+<p align="center"><img src="docs/media/draw-to-explain.gif" width="600" alt="Clicky drawing a jet engine cut open, part by part, as it explains: fan, compressor, combustion, turbine"></p>
+
+Ask "how does a jet engine work?", "what's inside this?" or "why is the sky blue?" and Clicky draws on
+your screen while it talks: a hand-drawn diagram, or a turning 3D model built part by part, each part
+drawn as its sentence is spoken. Ask again while the drawing is up and the answer builds on it; when it
+is done it shrinks into a bubble beside the island. Only questions a picture really explains are drawn.
+It works on the ask lane and on fast voice, on the Mac and on Windows, with whichever answer model you
+use. The drawing stage, the see-through page both apps draw on, was written by
+[darkworks](https://github.com/darkworks), who also brought the Windows app its 3D figures, own-model
+answers (Ollama, LM Studio, any OpenAI-compatible server), voice control of keys and windows, and more.
+Design notes: [docs/draw-stage.md](docs/draw-stage.md).
+
 ### Dictation that stays on your Mac
 
 Nothing leaves your Mac until you choose an engine that needs the network (Settings → engine):
@@ -69,8 +83,11 @@ Hyprland) and X11. `sh linux/install.sh` from a clone (or with the `.whl` from t
 
 ### On Windows too (new)
 
-A native Windows port, contributed by [Tan Wei Jie (Justin)](https://github.com/weijietan97): dictation,
-ask out loud with the pointer, the agent lane, skills, the island and every settings page, in C# and WPF.
+A native Windows port, written and maintained by [Tan Wei Jie (Justin)](https://github.com/weijietan97):
+dictation, ask out loud with the pointer, the agent lane, skills, the island and every settings page, in C#
+and WPF. Questions about the Windows app go to him: open an issue and mention `@weijietan97`. Its
+drawing stage, 3D figures, own-model answers and voice control of keys and windows are by
+[darkworks](https://github.com/darkworks).
 Hold Ctrl + Win to talk and right Ctrl to dictate; private offline dictation is Parakeet. x64 and ARM64,
 Windows 10 (2004 or later) and 11. [Download it for Windows](https://openclicky.org/download/windows/)
 (the Setup.exe on the [latest release](https://github.com/prasanthsasikumar/openclicky/releases/latest); not
@@ -80,21 +97,27 @@ code-signed yet, so SmartScreen may warn), or build it from [`windows/`](windows
 
 <table>
   <tr>
-    <td width="50%" valign="top"><img src="docs/media/dictation-record.png" width="420" alt="The record page: a greeting, the engine banner, the take box, recent takes, words this week"><br><b>record.</b> The engine banner says where your voice goes; takes land in the box when this window is in front.</td>
-    <td width="50%" valign="top"><img src="docs/media/dictation-history.png" width="420" alt="History: takes grouped by day, searchable, with a question box"><br><b>history.</b> Every take with what you said and what was written; type a question and press enter to ask across them.</td>
+    <td width="50%" valign="top"><img src="docs/media/settings-dictation.png" width="420" alt="Settings, the Dictation page: the dictation key, who hears you (this Mac, Parakeet, OpenAI, AssemblyAI), language and clean-up"><br><b>dictation.</b> Pick who hears you: Apple's recogniser or Parakeet on this Mac, or a cloud engine; the language, and whether a model tidies your words.</td>
+    <td width="50%" valign="top"><img src="docs/media/settings-clicky.png" width="420" alt="Settings, the Clicky page: the talk shortcut, the voice, language, where answers come from, draw to explain"><br><b>clicky.</b> The talk shortcut, the voice it answers in, where answers come from, and the switch for drawing to explain.</td>
   </tr>
   <tr>
-    <td width="50%" valign="top"><img src="docs/media/dictation-styles.png" width="420" alt="Styles: language and script, then one style per group of apps"><br><b>styles.</b> Auto-detect or pin a language, native or roman script, and the apps written in each style.</td>
-    <td width="50%" valign="top"><img src="docs/media/dictation-settings.png" width="420" alt="Settings: the General page inside the same window, below the word pages in the sidebar"><br><b>settings.</b> In the same window: General, Dictation, Keyboard, Clicky, The Orb, Privacy &amp; Security, Account, About, with a search over every setting.</td>
+    <td width="50%" valign="top"><img src="docs/media/your-words.png" width="420" alt="Your words: try dictation here, this week's count, every take grouped by day with a question box"><br><b>your words.</b> Every take with what you said and where it went; type a question and press Return to ask across them.</td>
+    <td width="50%" valign="top"><img src="docs/media/settings-island.png" width="420" alt="Settings, the Island page: where it lives, what it shows first, the tiles and tools you can switch on"><br><b>island.</b> Where it lives, what the open island shows first, and the tiles and tools: now playing, calendar, weather, system, shelf, clipboard, notes, timer, mirror.</td>
   </tr>
 </table>
 
-<p align="center"><img src="docs/media/dictation-orb.png" width="120" alt="The orb: a small dark pill with two dashes"></p>
+The island hangs from the notch. Hover to peek, click to open: your week and today's events, what's
+playing, and a button per tool.
+
+<p align="center"><img src="docs/media/island-home.png" width="542" alt="The open island: the calendar week strip and today's events, with the tool buttons on the band"></p>
+<p align="center"><img src="docs/media/island-now-playing.png" width="542" alt="The open island showing the track playing, with artwork, a scrubber and transport buttons"></p>
+
+<p align="center"><img src="docs/media/dictation-orb.png" width="100" alt="The orb: a small dark pill with two dashes"></p>
 
 The orb rests at the bottom of the screen and shows each take: bars while listening, "moving your
 words", "moved to text box". The first run happens on the island under the notch: one card per permission, then a short tour that waits for you to try each thing (dictate, ask, hand over a task):
 
-<p align="center"><img src="docs/media/dictation-onboarding.png" width="560" alt="The first-run tour on the island: your turn, ask me something, with the control and option keycaps"></p>
+<p align="center"><img src="docs/media/dictation-onboarding.png" width="542" alt="The first-run tour on the island: you can ask me things too, with the control and option keycaps"></p>
 
 ### What dictation gives you
 
@@ -190,8 +213,9 @@ Notion / Sheets / Slack, and Wispr Flow import.
 
 ## Code signing policy
 
-Windows releases are signed. Free code signing is provided by [SignPath.io](https://about.signpath.io),
-with a certificate from the [SignPath Foundation](https://signpath.org). Only binaries built by this
+Windows releases are not code-signed yet, so SmartScreen may warn on first run; the policy below is what
+the signing will follow once the [SignPath Foundation](https://signpath.org) accepts the project into its
+free open-source program (free code signing provided by [SignPath.io](https://about.signpath.io)). Only binaries built by this
 repository's GitHub Actions workflow (`.github/workflows/windows-release.yml`) from its public source are
 signed, and only OpenClicky's own files: the third-party libraries it ships keep their publishers'
 signatures.
@@ -208,11 +232,13 @@ signatures.
   repository's GitHub Releases.
 
 Dictation with the offline engine, your history, dictionary and settings stay on your computer.
-Analytics are off unless a build is given a PostHog key.
+The apps send no analytics: the official builds carry no PostHog key, so the analytics code in them
+never sends anything. The website openclicky.org uses PostHog for page analytics.
 
 ## License and contributing
 
-MIT, see `LICENSE` (the Mac app is derived from Farza's MIT-licensed Clicky; HeyClicky is a separate
-product). Everything here runs on your own machine with your own keys; the hosted backend is only a
+MIT, see `LICENSE`. The Mac app under `macos/OpenClicky` is derived from Farza's MIT-licensed Clicky (its
+licence is at `macos/OpenClicky/LICENSE`); HeyClicky is a separate, proprietary product not affiliated with
+this project. Everything here runs on your own machine with your own keys; the hosted backend is only a
 convenience, free while the grant lasts. `CONTRIBUTING.md` has the setup, the test commands, and where help is
 welcome. Pull requests run the TypeScript and Swift test suites in CI.

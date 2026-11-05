@@ -64,6 +64,7 @@ Up: [github.com/travisjneuman](https://github.com/travisjneuman) · Not here: pe
 | marketplace, community skills | `index/marketplace-catalog.json`, [`docs/MARKETPLACE-GUIDE.md`](./docs/MARKETPLACE-GUIDE.md) | Catalog exists once marketplaces are pulled |
 | setup, new machine, configuration, troubleshooting | [`docs/README.md`](./docs/README.md) | Docs front door |
 | private rules, host settings, `local/` | [`local.example/README.md`](./local.example/README.md) | `local/` is gitignored |
+| durable project knowledge, documentation ownership | [`CLAUDE.md` → Memory and documentation](./CLAUDE.md#memory-and-documentation) | Owning subject note first; local layer supplies private routing |
 | image, logo, icon, illustration, visual asset create/edit/find | [`image-studio`](./skills/image-studio/SKILL.md) | Automatic reuse-first workflow; private runtime descriptor required |
 | scripts, counts, regenerate index | [`scripts/README.md`](./scripts/README.md), [`docs/COUNT-PIPELINE.md`](./docs/COUNT-PIPELINE.md) | Counts and index refresh are explicit, never automatic |
 | project or task templates | [`templates/README.md`](./templates/README.md) | |
@@ -329,7 +330,7 @@ No MCP servers are configured by default, which keeps every session's context le
 
 The toolkit maintains context between sessions automatically:
 
-1. **Resume** — `claude --continue` / `--resume` reopen a previous conversation; auto memory carries preferences and project facts across sessions; `/handoff` writes an explicit handoff note when you want one
+1. **Resume** — `claude --continue` / `--resume` reopen a previous conversation (auto memory is disabled in `settings.json`; durable preferences live in `CLAUDE.md`/`AGENTS.md`); `/handoff` writes an explicit handoff note when you want one
 2. **Repo health** — `session-start-repo-health.sh` flags repos that need a pull, push, or reconciliation before you edit them
 3. **Repo sync** — `session-start-pull.sh` fast-forward pulls in the background, at most once a day
 

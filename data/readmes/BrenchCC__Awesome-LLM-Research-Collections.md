@@ -785,6 +785,12 @@
 
 ## Multimodal RL
 
+- **Turns Matter: Advancing Streaming Video RL via Turn-Level Credit** (2026.11) \
+  **Description**: TurnWise adapts GRPO to streaming video understanding by scoring silence-completed prefixes to assign each respond-or-wait decision its own group-relative advantage. It averages token losses within turns and then across turns so short waiting decisions receive equal weight, improving streaming performance without a learned critic or extra rollouts. \
+  <a href="https://arxiv.org/abs/2611.06728"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://github.com/XD111ds/turn-wise-rl"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+  <a href="https://huggingface.co/shuai22/turns-matter-rl-ckpt"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
+
 - **Adaptive Reward Routing: Dynamic Multi-Reward Optimization for Joint Audio-Video Diffusion via Forward-Process RL** (2026.09) \
   **Description**: Adaptive Reward Routing improves reinforcement learning for joint audio-video diffusion by using cross-attention responses to direct reward-driven updates and reward-gradient interactions to adjust competing objectives. It improves modality quality, semantic alignment, and audio-video synchronization over RL baselines. \
   <a href="https://arxiv.org/abs/2609.37200"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -836,10 +842,4 @@
   <a href="https://arxiv.org/abs/2505.22617"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
 
 - **Seek in the Dark: Reasoning via Test-Time Instance-Level Policy Gradient in Latent Space** (2025.05) \
-  **Description**: This paper introduces LatentSeek, a test-time instance-level adaptation framework that uses policy gradients and self-generated rewards to iteratively optimize an LLM's latent representations without updating model parameters. It improves reasoning across GSM8K, MATH-500, and AIME2024 while typically converging within only a few iterations. \
-  <a href="https://arxiv.org/abs/2505.13308"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://bigai-nlco.github.io/LatentSeek/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
-  <a href="https://github.com/bigai-nlco/LatentSeek"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-
-- **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning** (2025.01) \
-  **Description**: This paper shows that pure reinforcement learning can directly elicit advanced reasoni
+  **Description**: This paper introduces LatentSeek, a test-time instance-level adaptation frame

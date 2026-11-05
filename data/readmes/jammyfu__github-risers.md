@@ -8,7 +8,7 @@
 
 Trending GitHub repos ranked by star growth (stars gained per day), not total stars: AI first, then developer tools, security, web, infrastructure, design and data.
 
-Data from 2026-11-04 21:42 UTC. Twice a day: 00:00 Beijing (UTC+8) and 00:00 Los Angeles (America/Los_Angeles).
+Data from 2026-11-04 21:42 UTC. Updated daily.
 
 [Website](https://jammyfu.github.io/github-risers/) · [How it works](docs/HOW_IT_WORKS.md) · [Facts](docs/FACTS.md) · [History](rankings/README.md) · [Latest](latest/rankings.md)
 
@@ -40,7 +40,7 @@ GitHub Trending is GitHub's own page. GitHub Risers is an independent open-sourc
 
 ### How often is it updated?
 
-Twice a day, at 00:00 Beijing time and 00:00 Los Angeles time. Every run is archived. [Read more](docs/FAQ.md#how-often-is-it-updated)
+Updated daily. Every run is archived. [Read more](docs/FAQ.md#how-often-is-it-updated)
 
 ### How is the data computed?
 
@@ -501,4 +501,4 @@ No new repo met the criteria in this run.
 | 3 | [apache/superset](https://github.com/apache/superset)<br>Can't make sense of the data? Turn it into charts<br>`Data` | +7,431 | 20.4 | 75,409 | <a href="https://www.star-history.com/#apache/superset&Date"><img src="https://api.star-history.com/svg?repos=apache/superset&type=Date" width="260" alt="star history apache/superset"></a> |
 | 4 | [pola-rs/polars](https://github.com/pola-rs/polars)<br>Table data handled fast, no more waiting<br>`Data` | +4,847 | 13.3 | 40,258 | <a href="https://www.star-history.com/#pola-rs/polars&Date"><img src="https://api.star-history.com/svg?repos=pola-rs/polars&type=Date" width="260" alt="star history pola-rs/polars"></a> |
 | 5 | [apache/kafka](https://github.com/apache/kafka)<br>Stream events between systems on one distributed platform<br>`Data` | +3,293 | 9.0 | 34,128 | <a href="https://www.star-history.com/#apache/kafka&Date"><img src="https://api.star-history.com/svg?repos=apache/kafka&type=Date" width="260" alt="star history apache/kafka"></a> |
-| 6 | [dbt-labs/dbt-core](https://github.com/dbt-labs/dbt-core)<br>Transform data the way software engineers build apps<br>`Data` | +2,470 | 6.8 | 14,119 | <a href="https://www.star-history.com/#dbt
+| 6 | [dbt-labs/dbt-core](https://github.com/dbt-labs/dbt-core)<br>Transform data the way software engineers build apps<br>`Data` | +2,470 | 6.8 | 14,119 | <a href="https://www.star-history.com/#dbt-labs/dbt-core&Date"><img src="https://api.star-history.com/svg?repos=dbt-labs/dbt-core&type=Date" width="260" al

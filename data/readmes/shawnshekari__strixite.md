@@ -26,9 +26,11 @@ Speed by release as the context grows:
 ![v0.3.0](https://img.shields.io/badge/v0.3.0-1abc9c)
 ![v0.4.0](https://img.shields.io/badge/v0.4.0-3fe8d0)
 ![v0.5.0](https://img.shields.io/badge/v0.5.0-ffe083)
+![v0.6.0](https://img.shields.io/badge/v0.6.0-ff7b72)
+![v0.7.0](https://img.shields.io/badge/v0.7.0-58a6ff)
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0, #ffe083"}}}}%%
+%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0, #ffe083, #ff7b72, #58a6ff"}}}}%%
 xychart-beta
     title "Prefill (tokens/s)"
     x-axis ["32k", "120k", "250k", "350k", "481k"]
@@ -38,10 +40,12 @@ xychart-beta
     line [1638, 1583]
     line [1693, 1630, 1570, 1533, 1484]
     line [1900, 1817, 1716, 1685, 1633]
+    line [1843, 1808, 1731, 1665, 1632]
+    line [1845, 1783, 1692, 1672, 1618]
 ```
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0, #ffe083"}}}}%%
+%%{init: {"theme": "base", "themeVariables": {"xyChart": {"backgroundColor": "#0b0f14", "titleColor": "#e6edf3", "xAxisLabelColor": "#c9d1d9", "yAxisLabelColor": "#c9d1d9", "xAxisTitleColor": "#c9d1d9", "yAxisTitleColor": "#c9d1d9", "xAxisLineColor": "#3b4552", "yAxisLineColor": "#3b4552", "xAxisTickColor": "#3b4552", "yAxisTickColor": "#3b4552", "plotColorPalette": "#6f42c1, #9b87e8, #1abc9c, #3fe8d0, #ffe083, #ff7b72, #58a6ff"}}}}%%
 xychart-beta
     title "Decode (tokens/s)"
     x-axis ["32k", "120k", "250k", "350k", "481k"]
@@ -51,11 +55,13 @@ xychart-beta
     line [59.0, 56.7]
     line [57.7, 58.7, 56.4, 55.7, 52.8]
     line [60.3, 58.7, 63.8, 56.3, 54.3]
+    line [63.8, 58.3, 58.8, 56.5, 56.1]
+    line [59.5, 59.9, 57.7, 58.6, 55.9]
 ```
 
 Each release measured the same way: one request at a time through the server, a fresh prompt at each length. Releases
-before v0.4.0 were measured at 32k and 120k only; v0.4.0's 250k-481k points are single runs, v0.5.0's are medians of
-two. The axes start near the data so the differences are visible.
+before v0.4.0 were measured at 32k and 120k only; v0.4.0's 250k-481k points are single runs, v0.5.0's to v0.7.0's are
+medians of two. The axes start near the data so the differences are visible.
 
 > [!TIP]
 > **Curious how a mini PC runs a 180B-parameter model this fast?** No background needed:
@@ -76,14 +82,15 @@ reference derived from the model's spec.
 
 ## Features
 
-- **OpenAI-compatible server** - chat completions with streaming, tool calls, reasoning and structured output
-  ([what it accepts](docs/server.md))
+- **OpenAI-compatible server** - chat completions with streaming, tool calls, reasoning, structured output and
+  `logit_bias` ([what it accepts](docs/server.md))
 - **Images** - PNG, JPEG, WebP, GIF, BMP and TGA in chat requests, from a separate ~0.9 GB file in the weights repo
   ([images](docs/images.md))
 - **Multi-token prediction** - the model's own draft head, up to 7 tokens checked per step
 - **Thinking that ends** - a request can cap its reasoning with its own budget, and a nudge steps in when the
   model's thinking goes in circles ([thinking](docs/server.md#thinking))
-- **Prompt cache in RAM and on disk** - long agent conversations resume instead of being re-read every turn
+- **Prompt cache in RAM and on disk** - long agent conversations resume instead of being re-read every turn, and
+  an edited old message costs only what comes after it ([resume points](docs/server.md#editing-old-messages-resume-points))
 - **Conversations at once** - two by default, more for shallower contexts; their decode steps share one forward,
   and a slot's memory grows with its conversation
   ([memory](docs/memory.md#slots-conversations-at-once))

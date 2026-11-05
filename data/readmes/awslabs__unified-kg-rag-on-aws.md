@@ -23,7 +23,7 @@ Read the [AWS Open Source Blog introduction](https://aws.amazon.com/blogs/openso
 - **Bring your own knowledge graph.** Seed graphs (JSONL, CSV or an RDF A-Box) merge a graph you already have into the extracted one as virtual documents: documents stay canonical, and the seed adds descriptions, properties, IRIs and edges ([Seed graphs](./docs/guides/seed-graphs.md)).
 - **Multilingual.** Optional translation at indexing and query time, per-language analyzers (for example `nori` for Korean) and multilingual keyword extraction.
 - **Prompt tuning, evaluation and visualization.** `run-prompt-tuning` writes domain-adapted prompts from a corpus sample ([Domain adaptation](./docs/guides/domain-adaptation.md)); `run-eval` adds LLM-free coverage, retrieval and answer-match metrics to LangChain and RAGAS judges ([Evaluation](./docs/guides/evaluate.md)); `run-visualization` renders an exported graph ([Visualization](./docs/guides/visualize.md)).
-- **Pluggable.** Storage and model backends sit behind ports, and strategies, renderers, parsers and providers register through registries ([extension guide](./docs/design.md#15-extension-guide)).
+- **Pluggable.** Storage and model backends sit behind ports, and renderers, parsers, schema and seed sources and providers register from your own package through registries. A new search strategy or evaluator is an in-tree change (a fork or a contribution): strategies are keyed by the closed `SearchStrategy` enum ([extension guide](./docs/design.md#15-extension-guide)).
 
 ## Architecture
 
@@ -75,7 +75,7 @@ uv sync --extra eval --extra viz        # or: pip install -e '.[eval,viz]'
 cp config-template.yaml config.yaml     # then set your Bedrock region and service endpoints
 ```
 
-If OpenSearch uses username/password instead of IAM (`aws.opensearch.use_iam: false`), copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. `uv sync` alone installs ingestion and queries; `run-eval`'s LangChain and RAGAS judges need the `eval` extra and `run-visualization` the `viz` extra. Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`), which downloads a spaCy model (`en_core_web_sm`) from GitHub at the first such file; without network access, install it beforehand (the deployed image does at build time, [iac/README.md](iac/README.md)). PDF, TXT, CSV, and JSON work out of the box.
+OpenSearch authenticates with a username and password by default (`aws.opensearch.use_iam: false`): copy `.env-template` to `.env` in the directory you run the CLIs from and fill in the credentials. For a domain that authorizes IAM (SigV4) requests, set `aws.opensearch.use_iam: true` instead. `uv sync` alone installs ingestion and queries; `run-eval`'s LangChain and RAGAS judges need the `eval` extra and `run-visualization`'s interactive graph the `viz` extra (its static charts need none). Parsing Markdown and HTML needs the optional `unstructured` extra (`uv sync --extra unstructured`), which downloads a spaCy model (`en_core_web_sm`) from GitHub at the first such file; without network access, install it beforehand. The deployed image leaves the extra out; built with `--build-arg UV_EXTRAS="--extra unstructured"`, it also installs the model at build time ([iac/README.md](iac/README.md)). PDF, TXT, CSV, and JSON work out of the box.
 
 ### Ingest, query, evaluate
 
@@ -90,11 +90,11 @@ uv run run-rag --query "What are the main themes?" --search-strategy global --co
 uv run run-rag --query "How are Alice and Acme related?" --search-strategy mix --config-path config.yaml
 uv run run-rag --interactive --use-memory --conversation-id my-session --config-path config.yaml
 
-# Evaluate (LangChain + RAGAS + graph-aware coverage, retrieval and answer-match metrics)
+# Evaluate (RAGAS judge + graph-aware coverage, retrieval and answer-match metrics)
 uv run run-eval --data-path eval_data.json --config-path config.yaml
 
-# Optional: render an exported graph, or tune prompts to your domain
-uv run run-visualization --data-path visualization_data.json --output-directory ./viz --config-path config.yaml
+# Optional: render the graph ingestion exported (it logs the file's path), or tune prompts to your domain
+uv run run-visualization --data-path ./cache/<pipeline-id>/visualization/visualization_data.json --output-directory ./viz --config-path config.yaml
 uv run run-prompt-tuning --source-directory ./source --output-path tuned_prompts.yaml --config-path config.yaml
 ```
 

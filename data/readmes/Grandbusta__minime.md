@@ -49,23 +49,30 @@ tipped it.
 
 ## 🌱 Quick start
 
-You need Go, a Telegram bot token from [@BotFather](https://t.me/BotFather), an OpenAI API
-key, and Postgres (or Docker, and it starts one for you).
+You need a Telegram bot token from [@BotFather](https://t.me/BotFather), an OpenAI API key,
+and Postgres (or Docker, and it starts one for you). Download minime for your system from
+the [latest release](https://github.com/Grandbusta/minime/releases/latest), or with Go:
 
 ```bash
-git clone https://github.com/Grandbusta/minime.git
-cd minime
-go run ./cmd/minime new
+go install github.com/Grandbusta/minime/cmd/minime@latest
+```
+
+Then, in a folder for them (their `.env` is written there):
+
+```bash
+minime new
 ```
 
 Pick a life, paste your token and key, message your bot once so it knows it's you, and say
-who you are to them. It writes `.env` and `self/` and starts them. After that:
+who you are to them. It puts them in their own database (`.env` only says where, and holds
+the key to their secrets) and starts them. After that:
 
 ```bash
-go run ./cmd/minime
+minime
 ```
 
-Every setting, Docker, and setting things up by hand: [docs/SETUP.md](docs/SETUP.md).
+If something's wrong, `minime doctor` says what; `minime backup` keeps everything about
+them in one file. Every setting, Docker, and setting things up by hand: [docs/SETUP.md](docs/SETUP.md).
 
 **What it costs:** only your OpenAI usage. Their own day is capped by `budget_usd` in
 `living.yaml` ($0.05 a day at a person's pace), and a message to them costs a fraction of

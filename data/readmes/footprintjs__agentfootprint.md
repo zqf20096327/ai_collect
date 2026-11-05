@@ -1,12 +1,12 @@
 <h1 align="center">Agentfootprint</h1>
 
 <p align="center">
-  <strong>Build agents whose answers can be checked.</strong>
+  <strong>Build agents you can hold to the record.</strong>
 </p>
 
 <p align="center">
-  A TypeScript agent framework for connecting answers to recorded evidence, making uncertainty explicit,
-  and checking outputs before delivery. Configure what an answer must support and when to withhold it.
+  An agent framework that compares the model's claims with what actually ran, during the run.
+  You choose the checks and what happens next. It holds claims to the record, not to the world.
 </p>
 
 <p align="center">
@@ -109,6 +109,10 @@ exclusive capabilities or measured superiority in answer accuracy.
 ```bash
 npm install agentfootprint footprintjs
 ```
+
+Agentfootprint 14 requires FootprintJS 11 (`^11.0.0`) and Foottrace
+`^1.11.1`. FootprintJS is a peer dependency, so install it explicitly as shown
+above. These are stable release ranges.
 
 ```typescript
 import { Agent, defineTool } from 'agentfootprint';

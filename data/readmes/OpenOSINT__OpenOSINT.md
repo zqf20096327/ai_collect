@@ -46,6 +46,14 @@ claude mcp add openosint -- uvx --from openosint openosint-mcp
 pip install openosint && openosint exposure example.com
 ```
 
+## OpenOSINT Cloud
+
+The same engine as a hosted chat: ask about a domain, an IP address or a company. Every answer shows which public sources were checked, when, and a source on every claim. No install, no API keys.
+
+<a href="https://chat.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=cloud_demo"><img src="docs/assets/cloud-demo.gif" width="960" alt="OpenOSINT Cloud answering a question about a company: three lookups with their times, then an answer with source chips"></a>
+
+[Try it: 10 free messages](https://chat.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=cloud_demo)
+
 ## What you can do
 
 Real output, captured 2026-11-04 on v2.37.0 and trimmed. None of these commands needs an API key or an AI provider.
@@ -120,15 +128,17 @@ Level is the noise label: `passive` tools are on by default; anything else needs
 | [`search_censys`](https://openosint.tech/tools/#search_censys) | Censys API | passive | Required |
 | [`search_virustotal`](https://openosint.tech/tools/#search_virustotal) | VirusTotal API | passive | Required |
 | [`search_abuseipdb`](https://openosint.tech/tools/#search_abuseipdb) | AbuseIPDB v2 API | passive | Required |
-| [`search_dorks_live`](https://openosint.tech/tools/#search_dorks_live) | [Bright Data SERP API](https://get.brightdata.com/984ni58s2oad?utm_source=github&utm_medium=readme)¹ | passive | Required |
-| [`search_footprint`](https://openosint.tech/tools/#search_footprint) | [Bright Data SERP API](https://get.brightdata.com/984ni58s2oad?utm_source=github&utm_medium=readme)¹ | passive | Required |
-| [`scrape_url`](https://openosint.tech/tools/#scrape_url) | [Bright Data Web Unlocker](https://get.brightdata.com/984ni58s2oad?utm_source=github&utm_medium=readme)¹ | touches target | Required |
+| [`search_dorks_live`](https://openosint.tech/tools/#search_dorks_live) | [Bright Data SERP API](https://get.brightdata.com/jx2wfi?sid1=readme&sid2=setup&sid3=search_dorks_live&utm_source=openosint&utm_medium=readme&utm_campaign=setup&utm_content=search_dorks_live)¹ | passive | Required |
+| [`search_footprint`](https://openosint.tech/tools/#search_footprint) | [Bright Data SERP API](https://get.brightdata.com/jx2wfi?sid1=readme&sid2=setup&sid3=search_footprint&utm_source=openosint&utm_medium=readme&utm_campaign=setup&utm_content=search_footprint)¹ | passive | Required |
+| [`scrape_url`](https://openosint.tech/tools/#scrape_url) | [Bright Data Web Unlocker](https://get.brightdata.com/openosint-unlocker?sid1=readme&sid2=setup&sid3=scrape_url&utm_source=openosint&utm_medium=readme&utm_campaign=setup&utm_content=scrape_url)¹ | touches target | Required |
 | [`search_username`](https://openosint.tech/tools/#search_username) | sherlock | noisy | No |
 | [`search_email`](https://openosint.tech/tools/#search_email) | holehe | noisy | No |
 | [`search_domain`](https://openosint.tech/tools/#search_domain) | sublist3r | noisy | No |
 | [`search_phone`](https://openosint.tech/tools/#search_phone) | phoneinfoga | unverified | No |
 
 Sherlock, holehe, sublist3r and phoneinfoga are wrapped as local binaries; install them yourself and enable active tools to use them.
+
+Setting up the three Bright Data tools: [Using OpenOSINT with Bright Data](https://openosint.tech/docs/bright-data/).
 
 ## Passive by default
 
@@ -184,9 +194,10 @@ Keys go in the web UI Settings, `~/.openosint/config.env` or the environment; th
 
 Built on this engine. The open-source project stays free and MIT-licensed.
 
-- **[Monitor](https://app.openosint.tech/monitor?utm_source=github&utm_medium=readme&utm_campaign=monitor)**: scheduled external checks of your domain, with an email when something gets worse. Free for one domain.
-- **[Diligence](https://app.openosint.tech/diligence?utm_source=github&utm_medium=readme&utm_campaign=diligence)**: due-diligence signals for UK companies and LEI holders, from official registries, each with its source.
-- **[Cloud](https://app.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=cloud)**: hosted REST and MCP API for IP and domain infrastructure intelligence (invite-only).
+- **[Cloud](https://chat.openosint.tech/?utm_source=github&utm_medium=readme&utm_campaign=hosted_versions)**: chat about a domain, an IP address or a company, with sourced answers. [Details above](#openosint-cloud).
+- **[Monitor](https://app.openosint.tech/monitor?utm_source=github&utm_medium=readme&utm_campaign=hosted_versions)**: domain security monitoring (SPF, DKIM, DMARC, TLS). Free for one domain.
+- **[Diligence](https://app.openosint.tech/diligence?utm_source=github&utm_medium=readme&utm_campaign=hosted_versions)**: UK and LEI company checks against registries and sanctions lists.
+- **API access (by request)**: hosted REST and MCP API. Email [commercial@openosint.tech](mailto:commercial@openosint.tech).
 
 ## Sponsors
 
@@ -222,7 +233,7 @@ MIT. See [LICENSE](./LICENSE). For authorized security research only; see [DISCL
 
 ¹ Bright Data links in this README are affiliate/referral links: OpenOSINT earns a commission if you sign up through them, at no extra cost to you.
 
-*OpenOSINT v2.37.0 — November 2026*
+*OpenOSINT v2.38.0 — November 2026*
 
 ## Star History
 

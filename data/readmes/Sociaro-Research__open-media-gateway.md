@@ -38,7 +38,7 @@ Included adapters: [OpenAI](docs/openai-provider.md),
 [direct Kling AI](docs/kling-provider.md),
 [direct MiniMax image/video](docs/minimax-provider.md), plus `mock`.
 Media types and controls depend on the selected provider and model. Administrators
-can upload or remove [transparent PNG provider logos](docs/provider-modules.md#provider-logos)
+can upload or remove [PNG provider logos](docs/provider-modules.md#provider-logos)
 from provider settings; logos follow the active light/dark display mode.
 The Playground highlights [supported prompt references](docs/prompt-reference-syntax.md)
 and previews their selected files without rewriting submitted text. Real generation
@@ -86,6 +86,8 @@ docker compose exec -T gateway /gateway admin setup-code
 Open [http://localhost:8088](http://localhost:8088), enter the private setup code in
 **Create owner account**, and choose your name, email, and password. You are
 signed in as Administrator; email delivery and Google sign-in are optional.
+Google sign-in can later reuse that account when Google proves ownership of the
+same Gmail or Workspace address; see [account linking](docs/email-authentication.md#identity-and-verification).
 
 ### 3. Try a free generation
 

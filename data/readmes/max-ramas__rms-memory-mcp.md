@@ -17,9 +17,28 @@ Stop re-explaining your architecture to Cursor, Zed, and Claude Code and other I
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)]()
 [![MCP](https://img.shields.io/badge/protocol-MCP-blueviolet)](https://modelcontextprotocol.io)
 
-[Features](#-key-features) • [Download](https://github.com/max-ramas/rms-memory-mcp/releases/latest) • [Install](#-installation) • [Quick Start](#-quick-start) • [CLI](#-cli-commands) • [MCP Tools](#-mcp-tools-exposed) • [Architecture](#-architecture-highlights)
+[Features](#-key-features) • [Download](#-download) • [Install](#-installation) • [Quick Start](#-quick-start) • [CLI](#-cli-commands) • [MCP Tools](#-mcp-tools-exposed) • [Architecture](#-architecture-highlights)
 
 </div>
+
+---
+
+> ### 🔒 Privacy promise
+> RMS does **not** collect your data or usage statistics. RMS Memory MCP has no accounts, license
+> checks or analytics, and your notes, code, queries and settings stay on your machine (local-first).
+> The only requests that reach RMS carry no content and no personal identifier:
+> - **Update check:** `rms-memory doctor` (and the `rms_doctor` tool) asks `update.rms-ds.com` for the
+>   newest version, at most once a day: your OS, CPU architecture and the version, no ID. If that
+>   server is unreachable it falls back to GitHub\*. Turn it off with `RMS_MEMORY_NO_UPDATE_CHECK=1`.
+> - **Downloads you ask for:** `rms-memory update`, `rms-memory gui` and the install scripts fetch
+>   signed files from `update.rms-ds.com`, which counts downloads per release and source; its
+>   analytics store no IP addresses or user agents.
+> - **Embedding model:** on first use it is downloaded once from Hugging Face\*.
+>
+> Embeddings are computed on your machine (the bundled model, or a local Ollama), so your notes never
+> leave your computer for any AI service.
+>
+> If an online service is ever introduced, we will tell you clearly beforehand.
 
 ---
 
@@ -58,7 +77,7 @@ You're developing a single project but switching between different agents — Cu
 | 📓 **Obsidian vaults (v1.3.0)** | `rms-memory projects attach-obsidian <PATH>` indexes an existing Obsidian vault in place, strictly read-only (RMS Memory never creates, edits or deletes files in it); `rms-memory import --obsidian <DIR>` copies one into a project vault instead. `[[wikilinks]]`, aliases, headings and embeds resolve the way Obsidian does in the graph, index and doctor. |
 | 🌍 **Local HTTP transport (v1.3.0)** | `rms-memory serve --http` serves MCP Streamable HTTP on `127.0.0.1:7337/mcp` with a bearer token from `~/.rms-memory/http-token`, loopback Host/Origin checks and per-session state — for clients that cannot spawn a stdio process. See [SECURITY.md](SECURITY.md#local-http-transport). |
 | 🔐 **Credential refusal (v1.3.0)** | `rms_write` and checkpoint tools refuse text containing well-known token formats (AWS `AKIA…`, GitHub `ghp_…`/`github_pat_…`, OpenAI/Anthropic `sk-…`, Slack, Stripe live, Google, npm, GitLab) or a PEM private key, naming the kind and line but never the value. Doctor check 8 reports such notes already in the vault (report only). Not a guarantee — see [SECURITY.md](SECURITY.md#credential-refusal-limits). |
-| ⬆️ **Update notices (v1.3.0)** | `doctor` checks GitHub for a newer release at most once a day (`RMS_MEMORY_NO_UPDATE_CHECK=1` disables it) and warns when the running MCP server binary was replaced on disk; MCP `initialize` repeats the cached notice without network access. Upgrade with the tool that installed it (brew, cargo, package, archive). |
+| ⬆️ **Updates (v1.4)** | `rms-memory update` installs the newest release from the RMS update server: the signed manifest, size and sha256 are verified, the new binary is smoke-tested, swapped in atomically and the previous one is kept for `rms-memory update --rollback`. Binaries installed by brew, cargo or a package are left to that tool (`--force` overrides). `doctor` also checks for a newer version at most once a day (update server first, GitHub as fallback; `RMS_MEMORY_NO_UPDATE_CHECK=1` disables it) and warns when the running server binary was replaced on disk; MCP `initialize` repeats the cached notice without network access. |
 | 🔄 **Session Continuity (v1.0.7)** | Vault-backed checkpoints (`rms_checkpoint_save/done/load/query`), `rms_overview` project orientation (since 1.3.0 with index lag and git branch / changed files), MCP resources `rms://<project>/…` and prompts (`session_start`, `save_progress`, `record_decision`), `rms_hygiene` consolidation report, `rms_system_instructions` self-bootstrap, editor-agnostic `rms-memory hook` CLI, installer L3 thin adapters, and `pinned` notes that bypass temporal/`min_confidence` recall gates. |
 | 🧭 **Multi-project MCP routing (v1.0.8+)** | Explicit `project` always rebinds the active vault; empty Cursor `roots/list` falls back to process cwd; injected rules require `project: "<key>"` on every memory tool call; `rms-memory inject-rules [--all]` refreshes keys. |
 | 🔗 **Cross-project federated search (v1.0.9)** | Pass `projects: [key, …]` to `rms_search` / `rms_code_search` for read-only RRF federation. Vault/all across multiple projects requires `cross_project_vault=true` on every listed key (hard fail otherwise). |
@@ -75,7 +94,53 @@ You're developing a single project but switching between different agents — Cu
 | 🔒 **Security Hardened** | Panic-free database layer, symlink traversal blocked, JSON-RPC error responses, request size limits. See [SECURITY.md](./SECURITY.md) and [NOTICE](./NOTICE). |
 | 🧠 **Audit Metadata** | Every record auto-receives `last_modified_by`, `timestamp`, `confidence`, `source` — agents can filter by reliability. |
 | 🔀 **Multi-Scope** | `--scope` flag supports arbitrary identifiers beyond filesystem paths (thread IDs, lead IDs, etc.). |
-| 🖥️ **Optional Companion GUI** | Paid Tauri desktop app: visual Markdown/graph editor, Git & Vault sync, Doctor dashboard, AI-assisted organizer/Wiki (BYOK), and cross-tool spend tracking — layered on top of the same vault, never required. See [GUI-README.md](./GUI-README.md). |
+| 🖥️ **Optional Companion GUI** | Paid Tauri desktop app: visual Markdown/graph editor, Git & Vault sync, Doctor dashboard, AI-assisted organizer/Wiki (BYOK), and cross-tool spend tracking — layered on top of the same vault, never required. See [GUI-README.md](./GUI-README.md). Install and open it from the terminal with `rms-memory gui`. |
+
+## 📥 Download
+
+<div align="center">
+
+**RMS Memory MCP** (command-line server, free)
+
+[![macOS Apple Silicon · .pkg](https://img.shields.io/badge/macOS-Apple%20Silicon%20%C2%B7%20.pkg-2ea44f?style=for-the-badge&logo=apple&logoColor=white)](https://update.rms-ds.com/get/rms-memory-mcp/pkg?platform=darwin&arch=arm64&src=readme)
+[![Windows x64 · .msi](https://img.shields.io/badge/Windows-x64%20%C2%B7%20.msi-2ea44f?style=for-the-badge&logo=windows&logoColor=white)](https://update.rms-ds.com/get/rms-memory-mcp/msi?platform=windows&arch=amd64&src=readme)
+[![Linux x64 · .deb](https://img.shields.io/badge/Linux-x64%20%C2%B7%20.deb-2ea44f?style=for-the-badge&logo=debian&logoColor=white)](https://update.rms-ds.com/get/rms-memory-mcp/deb?platform=linux&arch=amd64&src=readme)
+[![Linux ARM64 · .deb](https://img.shields.io/badge/Linux-ARM64%20%C2%B7%20.deb-2ea44f?style=for-the-badge&logo=debian&logoColor=white)](https://update.rms-ds.com/get/rms-memory-mcp/deb?platform=linux&arch=arm64&src=readme)
+
+Also as: [macOS .tar.gz](https://update.rms-ds.com/get/rms-memory-mcp/tar.gz?platform=darwin&arch=arm64&src=readme) · [Windows .zip](https://update.rms-ds.com/get/rms-memory-mcp/zip?platform=windows&arch=amd64&src=readme) · Linux x64 [.tar.gz](https://update.rms-ds.com/get/rms-memory-mcp/tar.gz?platform=linux&arch=amd64&src=readme) / [.rpm](https://update.rms-ds.com/get/rms-memory-mcp/rpm?platform=linux&arch=amd64&src=readme) · Linux ARM64 [.tar.gz](https://update.rms-ds.com/get/rms-memory-mcp/tar.gz?platform=linux&arch=arm64&src=readme) / [.rpm](https://update.rms-ds.com/get/rms-memory-mcp/rpm?platform=linux&arch=arm64&src=readme)
+
+The installers put `rms-memory` on your `PATH` (`/usr/local/bin` on macOS, `Program Files\RMS Memory MCP` on Windows). Always the newest stable release. The macOS and Windows installers are not code-signed yet: macOS asks to confirm a browser-downloaded `.pkg` once (right-click, Open), and Windows SmartScreen may warn before the `.msi` runs.
+
+</div>
+
+**Prefer a one-line installer?** It picks the right build, verifies the signature and puts the binary on your `PATH`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/max-ramas/rms-memory-mcp/master/scripts/install.sh | bash
+```
+
+```powershell
+irm https://raw.githubusercontent.com/max-ramas/rms-memory-mcp/master/scripts/install.ps1 | iex
+```
+
+With an archive: unpack, put `rms-memory` (`rms-memory.exe` on Windows) on your `PATH` and run `rms-memory install` to register it in your IDEs. Already installed? `rms-memory update` fetches the release from the same server, verifies its signature and checksum, and keeps the previous binary for `rms-memory update --rollback`. The signed manifest of the latest release is at [`/v1/rms-memory-mcp/latest`](https://update.rms-ds.com/v1/rms-memory-mcp/latest). Downloads through this server are counted per release; no IP addresses or user agents are stored.
+
+<div align="center">
+
+**RMS Memory GUI** (optional desktop app, trial included)
+
+[![GUI macOS .dmg](https://img.shields.io/badge/macOS-.dmg-0969da?style=for-the-badge&logo=apple&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/dmg?platform=darwin&arch=arm64&src=readme)
+[![GUI Windows .exe setup](https://img.shields.io/badge/Windows-.exe%20setup-0969da?style=for-the-badge&logo=windows&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/exe?platform=windows&arch=amd64&src=readme)
+[![GUI Windows .msi](https://img.shields.io/badge/Windows-.msi-0969da?style=for-the-badge&logo=windows&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/msi?platform=windows&arch=amd64&src=readme)
+[![GUI Linux .AppImage](https://img.shields.io/badge/Linux-.AppImage-0969da?style=for-the-badge&logo=linux&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/appimage?platform=linux&arch=amd64&src=readme)
+[![GUI Linux .deb](https://img.shields.io/badge/Linux-.deb-0969da?style=for-the-badge&logo=debian&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/deb?platform=linux&arch=amd64&src=readme)
+[![GUI Linux .rpm](https://img.shields.io/badge/Linux-.rpm-0969da?style=for-the-badge&logo=redhat&logoColor=white)](https://update.rms-ds.com/get/rms-memory-gui/rpm?platform=linux&arch=amd64&src=readme)
+
+The MCP server never needs the GUI. From a terminal, `rms-memory gui` installs it for your OS (signature and checksum verified) and opens it.
+
+</div>
+
+Homebrew, `.deb`/`.rpm` packages of the MCP and older versions: [GitHub Releases](https://github.com/max-ramas/rms-memory-mcp/releases).
 
 ## 📦 Installation
 
@@ -281,13 +346,17 @@ rms-memory embedding use bge-m3              # or: ollama:nomic-embed-text (loca
 | `rms-memory import` | Scans for existing docs (`README.md`, `docs/`, `ADR/`) and imports them — interactively or via `--auto-import`. `--obsidian <DIR> [--into obsidian] [--dry-run]` copies an Obsidian vault (notes, attachments, folders) into the project vault without touching the source or overwriting files. |
 | `rms-memory install` | Hooks the server into supported IDEs. `--dry-run` supported. |
 | `rms-memory uninstall` | Removes the server from all discovered IDE configurations. |
-| `rms-memory doctor` | Runs 8-point vault health diagnostics (the 8th reports credentials stored in notes, never changing them) and prints update / restart notices. `--repair-frontmatter` safely repairs duplicate, missing, and known attached frontmatter IDs with backups; arbitrary invalid YAML is reported but never rewritten automatically. |
+| `rms-memory doctor` | Runs 8-point vault health diagnostics (the 8th reports credentials stored in notes, never changing them; a 9th checks `patterns/` notes against the code when the vault has them), shows the code-index state and prints update / restart notices. `--repair-frontmatter` safely repairs duplicate, missing, and known attached frontmatter IDs with backups; arbitrary invalid YAML is reported but never rewritten automatically. |
 | `rms-memory config` | Without flags: prints global + current-project settings, then offers interactive global editing. Any flag runs non-interactively. Global: `--vault-path`, `--auto-add`, `--inject-rules`, `--auto-import skip\|link\|import_organize\|import`, `--max-backups N`. Project (cwd or `--scope <path>`): `--code-index-mode off\|manual\|watch`, `--code-languages auto\|<comma-list>`, `--include <globs>`, `--exclude <globs>`, `--cross-project-vault true\|false`. |
 | `rms-memory reindex [--vault\|--code\|--all]` | Refreshes Markdown memory (default), derived semantic code memory, or both. |
 | `rms-memory sync` | Incremental LanceDB delete-then-insert sync (also runs automatically during `serve`). |
 | `rms-memory gc` | Prunes orphaned LanceDB indices belonging to deleted vaults. |
 | `rms-memory prune [--older-than-days N] [--apply]` | Archives superseded notes older than N days (default 30) under `artifacts/pruned/YYYY-MM-DD/`. Dry-run by default; never deletes. Distinct from `gc` (orphan DBs) and from supersession (lifecycle marking). |
 | `rms-memory file-history catch-up\|reindex\|query` | Derived `code_path` git file→commit cache (Lance). `reindex` requires `--project`. Prefer MCP `rms_file_history` for agents. |
+| `rms-memory update [--check\|--yes\|--rollback\|--force\|--json]` | Checks the RMS update server and installs a newer binary (signature, size and sha256 verified, atomic swap, `--rollback` restores the previous one). |
+| `rms-memory gui [--download-only\|--no-open\|--yes\|--json]` | Installs the optional desktop GUI (14-day trial) from the update server and opens it; opens it when it is already installed. |
+| `rms-memory stats [--days N] [--json] [--reset]` | Local, content-free statistics: how many characters each tool returned to agents (see `docs/token-usage.md`). Never sent anywhere. |
+| `rms-memory wiki ...` | Generates wiki context packs from the vault and the code index (same data as `rms_wiki_pack`). |
 | `rms-memory features` | Live GUI/AI status banner + capability catalog (`GUI`/`AI` tags; soft yellow when GUI absent, gray when installed). Informational only — MCP core is never paywalled. |
 | `rms-memory graph status\|ensure\|neighbors\|path\|snapshot\|export-dot\|…` | Durable knowledge graph (same actions as MCP `rms_graph`). Mutations require `--project`. |
 | `rms-memory log` | Tails the telemetry log (`~/.rms-memory/rms.log`; moved to `rms.log.1` when a process starts and it exceeds 20 MB). |
@@ -311,17 +380,17 @@ Tool descriptions are written to be **action-oriented**, so agents use the vault
 <tr>
 <td><code>rms-memory_rms_search</code></td>
 <td>Searches Markdown memory by default. Set <code>corpus</code> to <code>code</code> or <code>all</code>; <code>all</code> uses Reciprocal Rank Fusion. Pass <code>projects: [key, …]</code> for read-only cross-project federation (when both <code>project</code> and <code>projects</code> are set, <code>projects</code> wins); vault/all with <code>len&gt;1</code> requires <code>cross_project_vault=true</code> on every listed key (hard fail — no silent degrade). Returns an inject/abstain decision envelope (<code>decision</code>, <code>reason</code>, <code>injected_ids</code>, optional <code>retrieval_mode</code>). Optional <code>include_file_history</code> / <code>include_graph_neighbors</code> enrich hits (not with federated <code>projects</code>). Agents are instructed to call this <em>first</em>.</td>
-<td><code>{ query, project?, projects?, corpus: vault|code|all, limit, include_content, min_confidence, max_chars?, min_score?, include_file_history?, include_graph_neighbors? }</code></td>
+<td><code>{ query, project?, projects?, corpus: vault|code|all, limit, include_content, snippet_chars?, pattern_status?, min_confidence, max_chars?, min_score?, include_file_history?, include_graph_neighbors?, include_notes? }</code></td>
 </tr>
 <tr>
 <td><code>rms-memory_rms_code_search</code></td>
-<td>Convenience endpoint for the derived semantic code index. Results include file, symbol, kind, line range, and segment index. Same optional <code>projects: […]</code> federation as <code>rms_search</code> (code-only; does not change the active bind). Optional <code>include_graph_neighbors</code>.</td>
-<td><code>{ query, project?, projects?, limit, include_content, include_file_history?, include_graph_neighbors? }</code></td>
+<td>Convenience endpoint for the derived semantic code index. Results include file, symbol, kind, line range, and segment index, plus <code>code_index</code> (fresh / stale / not indexed) and <code>related_notes</code> (decisions and patterns that mention the file or symbol). Same optional <code>projects: […]</code> federation as <code>rms_search</code> (code-only; does not change the active bind). Optional <code>include_graph_neighbors</code>.</td>
+<td><code>{ query, project?, projects?, limit, include_content, include_file_history?, include_graph_neighbors?, include_notes? }</code></td>
 </tr>
 <tr>
 <td><code>rms-memory_rms_read</code></td>
-<td>Reads the full contents of a document found via <code>rms_search</code>.</td>
-<td><code>{ path, project? }</code></td>
+<td>Reads a document found via <code>rms_search</code>: the whole note by default, or just an <code>outline</code>, one <code>heading</code>, a character window (<code>max_chars</code>/<code>offset</code>), or a short "unchanged" stub when <code>if_hash</code> still matches. Returns a <code>content_hash</code>.</td>
+<td><code>{ path, project?, outline?, heading?, max_chars?, offset?, if_hash? }</code></td>
 </tr>
 <tr>
 <td><code>rms-memory_rms_write</code></td>
@@ -357,6 +426,11 @@ Tool descriptions are written to be **action-oriented**, so agents use the vault
 <td><code>rms-memory_rms_projects</code></td>
 <td>Lists registered project keys even when the MCP client did not supply workspace roots.</td>
 <td><code>{}</code></td>
+</tr>
+<tr>
+<td><code>rms-memory_rms_remind</code></td>
+<td>Reminders for the user: add (<code>due_at</code> with a UTC offset, or <code>in_minutes</code>), list, snooze, done, cancel. Due reminders are appended to tool responses as a <code>[RMS reminder]</code> block (windows 30/20/10/5 minutes). Free in the MCP; the management page is part of the GUI.</td>
+<td><code>{ action, text?, due_at?, in_minutes?, id? }</code></td>
 </tr>
 <tr>
 <td><code>rms-memory_rms_overview</code></td>
@@ -510,3 +584,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 <div align="center">
 <sub>Built by <a href="https://ramzaeff.com">Maksim Ramzaev</a> · <a href="https://rms-ds.com">RMS Digital Services</a></sub>
 </div>
+
+---
+
+\* Contacted directly by the tool for your convenience (a fallback update lookup on GitHub, the one-time embedding model download from Hugging Face). RMS does not take part in that exchange.

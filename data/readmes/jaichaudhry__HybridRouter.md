@@ -90,7 +90,7 @@ All three models implement Apple's `LanguageModel` protocol, so one `LanguageMod
 ## Use HybridRouterKit in your app
 
 ```swift
-.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.10.1")
+.package(url: "https://github.com/jaichaudhry/HybridRouter", from: "0.11.0")
 ```
 
 ```swift
@@ -107,6 +107,8 @@ print(reply.decision?.reason ?? "", reply.text)   // "Multi-step planning", the 
 Privacy checks are on by default. Rate limits and dropped connections are retried, then fall back to a smaller model. For streaming, your own providers or custom rules, use `send(_:)` or build a `RoutedSession` and `TurnCoordinator` directly.
 
 **Voice input:** `HybridRouterKitVoice` adds on-device speech-to-text. The audio never leaves the phone, and the transcript is routed and privacy-checked like typing.
+
+**Siri (developer preview):** `HybridRouterKitSiri` lets Siri ask your app and show the answer in your card, without opening the app, with the same routing and privacy rules. Private answers are never given to Siri. It needs iOS 27.3; see [Answering Siri](docs/hybridrouterkit.md#answering-siri).
 
 iOS 27 and macOS 27. `HybridRouterKitTesting` adds fake models, so routing and privacy rules can be unit-tested on a Mac without a device or network.
 

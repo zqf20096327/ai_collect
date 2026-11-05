@@ -94,9 +94,16 @@ Attach these specialist nodes to a branch from the plugin picker:
 | Conversation Node | Branch Foundations | A self-contained linear chat inside a single node. |
 | Web Research | Reasoning & Research | Web retrieval, summarization, and source capture for real-time information. |
 | Gitlink | Build & Execution | Loads a GitHub repo into structured context, previews file-level changes, and writes only after approval. |
+| Review Lens | Reasoning & Research | Fetches a GitHub pull-request diff, reviews added-line evidence, and surfaces source-linked findings and provisional suggestions. |
 | Virtual Environment Runner | Build & Execution | Runs Python in a per-node virtualenv with declared dependencies (isolates installed packages, not the OS or filesystem/network access). |
 | HTML Renderer | Build & Execution | Renders HTML from a parent branch directly inside the app. |
 | Artifact / Drafter | Workflow & Drafting | A split-pane surface for drafting and refining long-form Markdown. |
+
+Use the search field at the top of the plugin picker to find plugins across all categories by name or task. Use the Up/Down arrows to move between results, Enter to launch a result, or Escape to close the picker. Plugin permissions are still checked by the backend.
+
+**Review Lens:** Paste a pull-request URL, **Fetch Diff**, then **Run Review**. Findings anchored to visible added lines include actual source excerpts. Claims without a matching added-line anchor are explicitly marked as provisional **Needs Verification** suggestions, not treated as confirmed high-severity errors. The **Inspect diff** action opens the matching file and hunk in the Walkthrough tab (with a full-diff fallback when the location is unavailable). Truncated diffs or file listings never receive an overall quality score/verdict. A line anchor verifies that the location exists in the diff, **not** that a model's diagnosis is correct; review the source before acting.
+
+**HTML Renderer:** Edit the **Source** pane, then press **Render** or **Ctrl+Enter** (**Cmd+Enter** on macOS) inside the editor. An **out-of-date** indicator distinguishes the saved preview from unsent edits; clicking Render again also restarts interactive HTML/JavaScript previews without creating an extra source edit. Resize Source and Preview using the divider with the mouse or focus it and use Arrow keys (5% steps), PageUp/PageDown (20% steps), or Home/End. The iframe remains isolated with its existing strict Content Security Policy: inline scripts can run inside the preview but cannot access Graphlink's origin or make network requests through the document's restricted resource policies. Do not use the preview for trusted browsing or unrestricted website testing.
 
 ## Getting Started
 
@@ -186,6 +193,8 @@ The app reads these as fallbacks when no key is saved in Settings, or for model 
 - **Ingest** documents into the local knowledge base, then search it from a node — or search across every workspace at once with Global Search.
 - **Undo** anything, including a whole agent run in one action.
 - **Export** the whole canvas as a PNG, or export individual nodes — Chat as `.md`, Code as a source file (extension inferred from language, falling back to `.txt`), Image as `.png`.
+
+Gitlink's **Proposal** tab offers **All files / individual file** diff review and **per-file approval checkboxes**. All files start selected. Uncheck individual files (or use **Select all / Select none**), then **Apply selected** to write only the chosen files. The confirmation names the exact selection; **unchecked changes are discarded after a successful Apply** so regenerate the proposal to apply them later. The backend verifies the fingerprint of the full, server-held proposal, freezes only the selected rows, and never accepts replacement file content from the UI. When a local checkout is configured during generation, Gitlink records byte-exact original-file baselines and rechecks every selected target before writing. If a selected file has changed, appeared, or disappeared since review, Apply stops without overwriting it. Older saved proposals without baselines must also be regenerated before applying.
 
 ## Headless automation (MCP)
 

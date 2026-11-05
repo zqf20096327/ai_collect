@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/sinapsai"><img src="https://img.shields.io/npm/dm/sinapsai.svg" alt="npm downloads" /></a>
   <a href="https://www.npmjs.com/package/sinapsai"><img src="https://img.shields.io/badge/Dependencies-0-brightgreen.svg" alt="Zero Dependencies" /></a>
   <a href="https://github.com/roedyrustam/sinapsai/actions/workflows/ci.yml"><img src="https://github.com/roedyrustam/sinapsai/actions/workflows/ci.yml/badge.svg" alt="CI Status" /></a>
-  <img src="https://img.shields.io/badge/Tests-461%20Passed-brightgreen.svg" alt="Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-542%20Passed-brightgreen.svg" alt="Tests Passed" />
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-Strict-blue.svg" alt="TypeScript Strict" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
   <a href="./CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg" alt="PRs Welcome" /></a>
@@ -94,6 +94,10 @@ Most AI gateways (LiteLLM, Portkey, Helicone) require deploying separate Docker 
   - [34. Gemini Explicit Context Caching & Massively Parallel Tool Execution](#34-gemini-explicit-context-caching--massively-parallel-tool-execution)
   - [35. In-Process Multi-Agent Swarm & Agent-to-Agent (A2A) Handoff Protocol](#35-in-process-multi-agent-swarm--agent-to-agent-a2a-handoff-protocol)
   - [36. Universal LLM Optimization Engine (LLMO)](#36-universal-llm-optimization-engine-llmo)
+  - [37. Active Canary Health Probing (Zero Tail-Latency Outage Evasion)](#37-active-canary-health-probing-zero-tail-latency-outage-evasion)
+  - [38. Standard Schema v1 & Zod Direct Resolver (createStructured)](#38-standard-schema-v1--zod-direct-resolver-createstructured)
+  - [39. Embedded Local Web UI & Telemetry Dashboard (sinapsai dashboard)](#39-embedded-local-web-ui--telemetry-dashboard-sinapsai-dashboard)
+  - [40. Hallucination & Faithfulness Sentinel (createGroundingVerified)](#40-hallucination--faithfulness-sentinel-creategroundingverified)
 - [🤖 AI & LLM Code Generation Guidelines](#-ai--llm-code-generation-guidelines)
 - [Supported Providers](#-supported-providers)
   - [Creating a Custom Provider (e.g. Ollama)](#creating-a-custom-provider-eg-ollama)
@@ -521,31 +525,37 @@ console.log(embeddings.usage?.totalTokens); // Token count
 
 ### 12. OpenRouter Free Tier & Zero-Cost Routing
 
-Leverage [OpenRouter's Free Models catalog](https://openrouter.ai/models?variant=free) without paying for inference tokens. SinapsAI provides pre-configured zero-cost accounting, `openrouter/free` meta-routing, attribution headers, dynamic model discovery, and native fallback model chains:
+Leverage [OpenRouter's Free Models catalog](https://openrouter.ai/models?variant=free) without paying for inference tokens. SinapsAI provides pre-configured zero-cost accounting, `openrouter/free` meta-routing, attribution headers, dynamic model discovery, native fallback model chains, and `strictFree` accidental billing protection:
+
+- **Verified Free Models Catalog**: Access `OPENROUTER_FREE_MODEL_CATALOG` with context windows up to 1,000,000 tokens (e.g. `nvidia/nemotron-3.5-super-vl:free`, `google/gemma-4-31b-it:free`, `cohere/north-mini-code:free`, `deepseek/deepseek-r1:free`).
+- **Strict Free Billing Protection (`strictFree: true`)**: Automatically purges any non-free fallback models from failover arrays. Guarantees that if a free model hits capacity limits (HTTP 429/503), requests will only failover to other free models or return an error—preventing accidental pay-per-token credit card charges.
+- **Provider Routing Preferences**: Fine-tune backend hosts with `providerPreferences` (`order`, `allow_fallbacks`, `quantizations`, `sort: 'price' | 'throughput' | 'latency'`).
+- **Prompt Transforms**: Support native OpenRouter context compression with `transforms: ['middle-out']`.
 
 ```typescript
 import { 
   SinapsClient, 
   OpenRouterProvider, 
   createOpenRouterFreeProvider,
-  OpenAiProvider 
+  OpenAiProvider,
+  OPENROUTER_FREE_MODEL_CATALOG,
 } from 'sinapsai';
 
 // 1. Inspect live free models dynamically from OpenRouter API
 const freeModels = await OpenRouterProvider.fetchFreeModels();
 console.log(`Live Free Models: ${freeModels.length}`);
 
-// 2. Instantiate pre-configured Free Provider ($0 cost per 1k tokens)
+// 2. Instantiate pre-configured Free Provider ($0 cost per 1k tokens, strictFree enabled)
 const openRouterFree = createOpenRouterFreeProvider({
   apiKey: process.env.OPENROUTER_API_KEY,
   siteUrl: 'https://myapp.com', // Sent as HTTP-Referer for OpenRouter leaderboard ranking
   siteName: 'My App',           // Sent as X-Title
   model: 'openrouter/free',      // Meta-router selecting active free models
-  fallbackModels: [
-    'openrouter/free',
-    'google/gemma-4-31b-it:free',
-    'nvidia/nemotron-3.5-lightning:free',
-  ],
+  strictFree: true,             // Strips any paid fallbacks to guarantee $0 cost
+  providerPreferences: {
+    sort: 'throughput',
+    allow_fallbacks: true,
+  },
 });
 
 // 3. Combine with paid backup provider under 'lowest-cost' strategy
@@ -570,10 +580,12 @@ console.log(response.choices[0].message.content);
 
 ### 13. Groq LPU Ultra-Fast Inference & Reasoning Integration
 
-Harness the raw inference speed of [GroqCloud LPUs](https://console.groq.com/docs/overview) (~500+ tokens/sec) with built-in reasoning support, JSON schema structured outputs, and automatic duration rate-limit header tracking:
+Harness the raw inference speed of [GroqCloud LPUs](https://console.groq.com/docs/overview) (~500+ tokens/sec) with built-in reasoning support, JSON schema structured outputs, Whisper audio speech-to-text endpoints, and automatic duration rate-limit header tracking:
 
-- **Ultra-Fast Production Models**: `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.8-27b`.
-- **Reasoning Tokens Extraction**: Automatically sets `reasoning_format: 'parsed'` and surfaces the thought chain in `choice.message.reasoning_content` (and streaming `delta.reasoning_content`). Supports raw `<think>...</think>` fallback parsing.
+- **Ultra-Fast Production Models**: `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, `openai/gpt-oss-120b`, `openai/gpt-oss-20b`, `qwen/qwen3.8-27b`, and metadata catalog `GROQ_MODELS`.
+- **Reasoning Tokens Extraction**: Automatically sets `reasoning_format: 'parsed'` and surfaces the thought chain in `choice.message.reasoning_content` (and streaming `delta.reasoning_content`). Supports raw `<think>...</think>` fallback parsing. Auto-enforces parsed reasoning when tools or JSON structured outputs are used to prevent Groq 400 errors.
+- **Audio Transcription & Translation**: Native zero-dependency Whisper endpoints (`transcribeAudio` and `translateAudio`) powered by `whisper-large-v3-turbo` and `whisper-large-v3`.
+- **Dynamic Model Discovery**: Fetch live models directly from GroqCloud via `groqProvider.listModels()`.
 - **Groq Duration Rate Limit Parsing**: Handles Groq's distinctive duration headers (`x-ratelimit-reset-tokens: 7.66s`, `x-ratelimit-reset-requests: 2m59.56s`) to give exact millisecond precision for proactive throttling and `onRateLimitWarning` hooks.
 - **Strict Compatibility**: Automatically strips unsupported fields (`messages[].name`) that cause Groq 400 errors and safely clamps `temperature: 0` to `1e-8` per Groq documentation.
 
@@ -1466,6 +1478,113 @@ console.log('Optimized Text:', optimized.messages[0].content); // 'clean this pr
 ```
 
 > 📁 See **[Example 31 (`examples/31-llm-optimization-llmo.ts`)](./examples/31-llm-optimization-llmo.ts)** for the complete runnable implementation.
+
+---
+
+### 37. Active Canary Health Probing (Zero Tail-Latency Outage Evasion)
+
+Proactively detects provider degradation or regional internet outages before user traffic hits, automatically tripping the Circuit Breaker:
+
+```typescript
+import { SinapsClient, GroqProvider, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new GroqProvider(), new OpenAiProvider()],
+  canary: {
+    intervalMs: 30_000,          // Probe every 30s in background
+    failureThreshold: 2,         // Trip circuit breaker after 2 consecutive failures
+    timeoutMs: 3_000,            // Fast 3s probe timeout
+    mode: 'always',              // 'always' or 'on_degraded'
+  },
+});
+
+// Inspect real-time health across all providers
+const health = client.canary?.getAllHealth();
+// { 'groq': { status: 'HEALTHY', latencyMs: 142, consecutiveFailures: 0 } }
+```
+
+### 38. Standard Schema v1 & Zod Direct Resolver (`createStructured`)
+
+Define structured output schemas with [Standard Schema](https://standardschema.dev/) or Zod directly with zero runtime dependencies:
+
+```typescript
+import { SinapsClient, OpenAiProvider } from 'sinapsai';
+import { z } from 'zod';
+
+const client = new SinapsClient({ providers: [new OpenAiProvider()] });
+
+const UserSchema = z.object({
+  name: z.string(),
+  age: z.number(),
+  role: z.enum(['admin', 'user']),
+});
+
+// SinapsAI converts Zod/StandardSchema directly to OpenAI/Gemini JSON Schema format
+const { data, response } = await client.chat.completions.createStructured({
+  model: 'gpt-4o-mini',
+  messages: [{ role: 'user', content: 'Generate user profile for Alice' }],
+  schema: UserSchema,
+  strict: true,
+});
+
+console.log(data.name); // Type-safe: Alice
+```
+
+### 39. Embedded Local Web UI & Telemetry Dashboard (`sinapsai dashboard`)
+
+Serve an in-process, zero-dependency real-time telemetry dashboard on `http://localhost:3140`:
+
+```bash
+# Start standalone dashboard via CLI
+npx sinapsai dashboard --port 3140
+```
+
+Or start programmatically from your Node.js application:
+
+```typescript
+import { SinapsClient, GeminiProvider, OpenAiProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new GeminiProvider(), new OpenAiProvider()],
+  dashboard: {
+    port: 3140,                  // default: 3140
+    authKey: 'optional-secret',  // optional auth protection
+  },
+});
+
+// Access metrics UI at http://localhost:3140
+// Direct REST endpoints: /api/summary, /api/metrics, /api/health, /api/prometheus
+```
+
+### 40. Hallucination & Faithfulness Sentinel (`createGroundingVerified`)
+
+Verifies RAG outputs against context references with in-process atomic claim extraction, scoring, and automatic escalation:
+
+```typescript
+import { SinapsClient, OpenAiProvider, AnthropicProvider } from 'sinapsai';
+
+const client = new SinapsClient({
+  providers: [new OpenAiProvider(), new AnthropicProvider()],
+});
+
+const context = [
+  'SinapsAI is a zero-dependency in-process AI gateway and control plane built in TypeScript.',
+  'It eliminates downtime via automatic failover and proactive canary health probing.',
+];
+
+const { response, grounding } = await client.chat.completions.createGroundingVerified({
+  model: 'gpt-4o-mini',
+  messages: [{ role: 'user', content: 'What is SinapsAI?' }],
+  context,
+  minFaithfulness: 0.8,
+  autoRetryOnHallucination: true,
+  escalationModel: 'claude-3-7-sonnet', // Automatically escalates if first model hallucinates
+});
+
+console.log('Faithfulness score:', grounding.score);      // e.g. 0.95
+console.log('Grounding passed:', grounding.passed);        // true
+console.log('Escalated:', grounding.escalated);            // false if passed on first try
+```
 
 ---
 

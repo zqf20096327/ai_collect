@@ -7,6 +7,8 @@
  
 > **42 production-ready AI agent definitions for DeFi, portfolio management, trading, and Web3 workflows. RESTful JSON API with 18-language support.**
 
+**Live API:** [sperax.click/index.json](https://sperax.click/index.json) · **Docs:** [sperax.click/docs](https://sperax.click/docs/) · **Use the agents:** [chat.sperax.io](https://chat.sperax.io)
+
 A comprehensive, discoverable API hosting specialized AI agent schemas with universal compatibility. Works with any AI platform, LLM, or chatbot that supports agent indexes - no vendor lock-in, no platform restrictions. Perfect for developers, LLMs, and AI systems building Web3 applications.
 
 ---
@@ -21,7 +23,7 @@ A comprehensive, discoverable API hosting specialized AI agent schemas with univ
 - ✅ **No Vendor Lock-in** - Switch platforms without losing work
 - ✅ **Fully Transparent** - Every agent definition is readable JSON, no hidden behaviour
 - ✅ **SEO & AI Friendly** - robots.txt, structured data, semantic indexing
-- ✅ **CDN Hosted** - GitHub Pages for fast global access
+- ✅ **CDN Hosted** - Cloudflare Pages at [sperax.click](https://sperax.click) for fast global access
 - ✅ **Custom Domain Ready** - Easy white-labeling
 
 ---
@@ -85,7 +87,7 @@ bun run build
 
 ⚠️ **Current Status:** Read-only portfolio tracking and analytics available now. Automated trading, bots, and DeFi interactions coming soon in SperaxOS roadmap.
 
-[View Agent →](https://sperax.click/sperax-portfolio.json) | [Try Now →](https://sperax.fun/discover/assistant/sperax-portfolio)
+[View Agent →](https://sperax.click/sperax-portfolio-tracker.json) | [Try Now →](https://chat.sperax.io/community/assistant/sperax-portfolio-tracker)
 
 ---
 
@@ -110,7 +112,7 @@ bun run build
 - Arbitrage Bot, Pump Screener, DeFi Center, DeFi Protocols
 - Strategies Marketplace, Bot Templates, Settings Manager, Help Center
 
-> **Note:** SperaxOS portfolio agents currently use `sperax.fun` for testing. The domain may change to `sperax.io` or similar once SperaxOS launches in production. [See FAQ](./docs/FAQ.md#sperax-portfolio-agents) for details.
+> **Note:** SperaxOS portfolio agents run in production at [chat.sperax.io](https://chat.sperax.io). [See FAQ](./docs/FAQ.md#sperax-portfolio-agents) for details.
 
 **General DeFi (34 Agents) + Crypto News:**
 
@@ -126,7 +128,7 @@ bun run build
 - Protocol Treasury Analyst, Stablecoin Comparator, Staking Rewards Calculator
 - Wallet Security Advisor, Yield Dashboard Builder, Yield Sustainability Analyst
 
-[View Full Agent List →](https://nirholas.github.io/AI-Agents-Library/)
+[View Full Agent List →](https://sperax.click/index.json)
 
 ---
 
@@ -163,27 +165,27 @@ All agents automatically available in 18 languages:
 
 ```bash
 # Main index (all agents)
-GET https://nirholas.github.io/AI-Agents-Library/index.json
+GET https://sperax.click/index.json
 
 # Individual agent (English)
-GET https://nirholas.github.io/AI-Agents-Library/{agent-id}.json
+GET https://sperax.click/{agent-id}.json
 
 # Localized agent
-GET https://nirholas.github.io/AI-Agents-Library/{agent-id}.zh-CN.json
+GET https://sperax.click/{agent-id}.zh-CN.json
 
 # Language-specific index
-GET https://nirholas.github.io/AI-Agents-Library/index.zh-CN.json
+GET https://sperax.click/index.zh-CN.json
 ```
 
 ### Quick Integration
 
 ```javascript
 // Load all agents
-const response = await fetch('https://nirholas.github.io/AI-Agents-Library/index.json');
+const response = await fetch('https://sperax.click/index.json');
 const { agents } = await response.json();
 
 // Load specific agent
-const agent = await fetch(`https://nirholas.github.io/AI-Agents-Library/defi-yield-optimizer.json`);
+const agent = await fetch(`https://sperax.click/defi-yield-farmer.json`);
 const agentConfig = await agent.json();
 ```
 
@@ -248,6 +250,7 @@ Our automated workflow will translate your agent to 18 languages and deploy it g
 - [Agent Creation Guide](./docs/AGENT_GUIDE.md) - Design effective agents
 - [18 Languages i18n Workflow](./docs/I18N_WORKFLOW.md) - Automated translation system
 - [Deployment Guide](./docs/DEPLOYMENT.md) - Domain setup and CI/CD
+- [Cloudflare Pages](./docs/deploy-cloudflare.md) - How sperax.click is deployed
 - [Prompt Engineering](./docs/PROMPTS.md) - Writing better prompts
 - [Model Parameters](./docs/MODELS.md) - Temperature, top_p explained
 - [Troubleshooting](./docs/TROUBLESHOOTING.md) - Common issues
@@ -256,28 +259,18 @@ Our automated workflow will translate your agent to 18 languages and deploy it g
 
 ## 🚀 Deployment
 
-### GitHub Pages (Automatic)
+### Production: Cloudflare Pages
 
-1. **Fork/Clone this repository**
-2. **Choose your domain option:**
-   - **Default GitHub Pages:** Delete the `CNAME` file
-   - **Custom Domain:** Update `CNAME` with your domain
-3. **Enable GitHub Pages:**
-   - Settings → Pages → Source: `gh-pages` branch
-4. **Push to main** - GitHub Actions automatically builds and deploys
+[sperax.click](https://sperax.click) is served by the Cloudflare Pages project `sperax-click`. The `/` path redirects to the docs at [sperax.click/docs/](https://sperax.click/docs/).
 
-Your agents will be at:
+```bash
+bun install
+bun scripts/commands/build.ts     # writes agent JSON for every locale to ./public
+bash scripts/build-site.sh        # assembles ./_site (agents, docs, schema, llms.txt, _headers)
+npx wrangler pages deploy _site --project-name sperax-click --branch main
+```
 
-- Default: `https://[username].github.io/[repository]/index.json`
-- Custom: `https://yourdomain.com/index.json`
-
-### Custom Domain Setup
-
-1. **Update CNAME file:** `echo "yourdomain.com" > CNAME`
-2. **Configure DNS:** Add CNAME record → `[username].github.io`
-3. **Enable HTTPS** in repository settings after DNS propagates
-
-**Note:** The build process automatically copies your CNAME to the deployment, so your custom domain persists across all deployments. Forks can simply update or delete the CNAME file.
+`.github/workflows/cloudflare-pages.yml` runs the same steps on every push to `main`. It needs the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets. Hosting a fork on your own domain is covered in [docs/deploy-cloudflare.md](./docs/deploy-cloudflare.md).
 
 [Full Deployment Guide →](./docs/DEPLOYMENT.md)
 
@@ -309,7 +302,7 @@ Converts emoji URLs to native Unicode.
 
 ```javascript
 // Fetch agents
-const agents = await fetch('https://nirholas.github.io/AI-Agents-Library/index.json').then((r) =>
+const agents = await fetch('https://sperax.click/index.json').then((r) =>
   r.json(),
 );
 
@@ -323,7 +316,7 @@ const systemPrompt = agents.agents[0].config.systemRole;
 import requests
 
 # Load agents
-response = requests.get('https://nirholas.github.io/AI-Agents-Library/index.json')
+response = requests.get('https://sperax.click/index.json')
 agents = response.json()['agents']
 
 # Filter by tag
@@ -941,4 +934,4 @@ blockchain agent, distributed ledger agent, consensus mechanism agent, proof of 
 
 ## AI & Machine Learning Extended Keywords
 
-machine learning agent, deep learning agent, reinforcement learning agent, supervised learning agent, unsupervised learning agent, semi-supervised learning agent, self-supervised learning agent, contrastive learning agent, transfer learning agent, meta-learning agent, few-shot learning agent, zero-shot learning agent, one-shot learning agent, multi-task learning agent, curriculum learning agent, active learning agent, online learning agent, offline learning agent, batch learning agent, incremental learning agent, continual learning agent, lifelong learning agent, federated learning agent, distributed learning agent, parallel learning agent, gradient descent agent, stochastic gradient descent agent, SGD agent, Adam agent, AdamW agent, LAMB agent, LARS agent, RMSprop agent, Adagrad agent, Adadelta agent, momentum agent, Nesterov agent, learning rate agent, learning rate scheduler agent, warmup agent, cosine annealing agent, step decay agent, exponential decay agent, polynomial decay agent, cyclic learning rate agent, one cycle agent, weight decay agent, L1 regularization agent, L2 regularization agent, dropout agent, batch normalization agent, layer normalization agent, group normalization agent, instance normalization agent, spectral normalization agent, weight normalization agent, gradient clipping agent, gradient accumulation agent, mixed precision agent, FP16 agent, BF16 agent, FP8 agent, INT8 agent, INT4 agent, quantization agent, post-training quantization agent, quantization-aware training agent, pruning agent, structured pruning agent, unstructured pruning agent, magnitude pruning agent, movement pruning agent, knowledge distillation agent, teacher-student agent, model compression agent, neural architecture search agent, NAS agent, AutoML agent, hyperparameter optimization agent, Bayesian optimization agent, random search agent, grid search agent, population-based training agent, evolutionary algorithm agent, genetic algorithm agent, particle swarm agent, ant colony agent, simulated annealing agent, neural network agent, feedforward network agent, recurrent network agent, RNN agent, LSTM agent, GRU agent, bidirectional RNN agent, seq2seq agent, encoder-decoder agent, attention mechanism agent, self-attention agent, cross-attention agent, multi-head attention agent, scaled dot-product attention agent, transformer agent, BERT agent, GPT agent, T5 agent, BART agent, XLNet agent, RoBERTa agent, ALBERT agent, DistilBERT agent, ELECTRA agent, DeBERTa agent, Longformer agent, BigBird agent, Performer agent, Linformer agent, Reformer agent, Sparse Transformer agent, Flash Attention agent, Multi-Query Attention agent, Grouped Query Attention agent, Sliding Window Attention agent, Local Attention agent, Global Attention agent, Relative Position agent, Rotary Position Embedding agent, RoPE agent, ALiBi agent, context length agent, context window agent, long context agent, retrieval augmented generation agent, RAG agent, vector database agent, embedding agent, sentence embedding agent, document embedding agent, image embedding agent, multimodal embedding agent, CLIP agent, BLIP agent, Flamingo agent, LLaVA agent, GPT-4V agent, Gemini Vision agent, vision language model agent, VLM agent, image captioning agent, visual question answering agent, VQA agent, image generation agent, text-to-image agent, image-to-image agent, inpainting agent, outpainting agent, super resolution agent, upscaling agent, style transfer agent, neural style agent, diffusion model agent, DDPM agent, DDIM agent, score matching agent, noise schedule agent, classifier-free guidance agent, CFG agent, ControlNet agent, LoRA agent, low-rank adaptation agent, QLoRA agent, PEFT agent, parameter-efficient fine-tuning agent, adapter agent, prefix tuning agent, prompt tuning agent, instruction tuning agent, RLHF agent, reinforcement learning from human feedback agent, DPO agent, direct preference optimization agent, PPO agent, proximal policy optimization agent, reward model agent, preference model agent, constitutional AI agent, red teaming agent, adversarial training agent, safety training agent, alignment agent, AI alignment agent, value alignment agent, goal alignment agent, reward hacking agent, reward gaming agent, specification gaming agent, goodhart agent, mesa-optimization agent, inner alignment agent, outer alignment agent, corrigibility agent, interpretability agent, explainability agent, XAI agent, SHAP agent, LIME agent, attention visualization agent, feature attribution agent, concept activation agent, probing agent, mechanistic interpretability agent, circuit analysis agent, polysemanticity agent, superposition agent, sparse autoencoder agent, dictionary learning agent, activation patching agent, causal tracing agent, logit lens agent, tuned lens agent, model editing agent, ROME agent, MEMIT agent, knowledge editing agent, fact editing agent, belief editing agent, steering vector agent, activation steering agent, representation engineering agent, latent space agent, embedding space agent, feature space agent, manifold agent, topology agent, geometry agent, curvature agent, dimensionality reduction agent, PCA agent, t-SNE agent, UMAP agent, clustering agent, K-means agent, DBSCAN agent, hierarchical clustering agent, spectral clustering agent, Gaussian mixture agent, GMM agent, variational autoencoder agent, VAE agent, beta-VAE agent, VQ-VAE agent, autoencoder agent, denoising autoencoder agent, sparse autoencoder agent, contractive autoencoder agent, GAN agent, generative adversarial network agent, DCGAN agent, StyleGAN agent, BigGAN agent, Progressive GAN agent, CycleGAN agent, Pix2Pix agent, conditional GAN agent, cGAN agent, Wasserstein GAN agent, WGAN agent, mode collapse agent,
+machine learning agent, deep learning agent, reinforcement learning agent, supervised learning agent, unsupervised learning agent, semi-supervised learning agent, self-supervised learning agent, contrastive learning agent, transfer learning agent, meta-learning agent, few-shot learning agent, zero-shot learning agent, one-shot learning agent, multi-task learning agent, curriculum learning agent, active learning agent, online learning agent, offline learning agent, batch learning agent, incremental learning agent, continual learning agent, lifelong learning agent, federated learning agent, distributed learning agent, parallel learning agent, gradient descent agent, stochastic gradient descent agent, SGD agent, Adam agent, AdamW agent, LAMB agent, LARS agent, RMSprop agent, Adagrad agent, Adadelta agent, momentum agent, Nesterov agent, learning rate agent, learning rate scheduler agent, warmup agent, cosine annealing agent, step decay agent, exponential decay agent, polynomial decay agent, cyclic learning rate agent, one cycle agent, weight decay agent, L1 regularization agent, L2 regularization agent, dropout agent, batch normalization agent, layer normalization agent, group normalization agent, instance normalization agent, spectral normalization agent, weight normalization agent, gradient clipping agent, gradient accumulation agent, mixed precision agent, FP16 agent, BF16 agent, FP8 agent, INT8 agent, INT4 agent, quantization agent, post-training quantization agent, quantization-aware training agent, pruning agent, structured pruning agent, unstructured pruning agent, magnitude pruning agent, movement pruning agent, knowledge distillation agent, teacher-student agent, model compression agent, neural architecture search agent, NAS agent, AutoML agent, hyperparameter optimization agent, Bayesian optimization agent, random search agent, grid search agent, population-based training agent, evolutionary algorithm agent, genetic algorithm agent, particle swarm agent, ant colony agent, simulated annealing agent, neural network agent, feedforward network agent, recurrent network agent, RNN agent, LSTM agent, GRU agent, bidirectional RNN agent, seq2seq agent, encoder-decoder agent, attention mechanism agent, self-attention agent, cross-attention agent, multi-head attention agent, scaled dot-product attention agent, transformer agent, BERT agent, GPT agent, T5 agent, BART agent, XLNet agent, RoBERTa agent, ALBERT agent, DistilBERT agent, ELECTRA agent, DeBERTa agent, Longformer agent, BigBird agent, Performer agent, Linformer agent, Reformer agent, Sparse Transformer agent, Flash Attention agent, Multi-Query Attention agent, Grouped Query Attention agent, Sliding Window Attention agent, Local Attention agent, Global Attention agent, Relative Position agent, Rotary Position Embedding agent, RoPE agent, ALiBi agent, context length agent, context window agent, long context agent, retrieval augmented generation agent, RAG agent, vector database agent, embedding agent, sentence embedding agent, document embedding agent, image embedding agent, multimodal embedding agent, CLIP agent, BLIP agent, Flamingo agent, LLaVA agent, GPT-4V agent, Gemini Vision agent, vision language model agent, VLM agent, image captioning agent, visual question answering agent, VQA agent, image generation agent, text-to-image agent, image-to-image agent, inpainting agent, outpainting agent, super resolution agent, upscaling agent, style transfer agent, neural style agent, diffusion model agent, DDPM agent, DDIM agent, score matching agent, noise schedule agent, classifier-free guidance agent, CFG agent, ControlNet agent, LoRA agent, low-rank adaptation agent, QLoRA agent, PEFT agent, parameter-efficient fine-tuning agent, adapter agent, prefix tuning agent, prompt tuning agent, instruction tuning agent, RLHF agent, reinforcement learning from human feedback agent, DPO agent, direct preference optimization agent, PPO agent, proximal policy optimization agent, reward model agent, preference model agent, constitutional AI agent, red teaming agent, adversarial training agent, safety training agent, alignment agent, AI alignment agent, value alignment agent, goal alignment agent, reward hacking agent, reward gaming agent, specification gaming agent, goodhart agent, mesa-optimization agent, inner alignment agent, outer alignment agent, corrigibility agent, interpretability agent, explainability agent, XAI agent, SHAP agent, LIME agent, attention visualization agent, feature attribution agent, concept activation agent, probing agent, mechanistic interpretability agent, circuit analysis agent, polysemanticity agent, superposition agent, sparse autoencoder agent, dictionary learning agent, activation patching agent, causal tracing agent, logit lens agent, tuned lens agent, model editing agent, ROME agent, MEMIT agent, knowledge editing agent, fact editing agent, belief editing agent, steering vector agent, activation steering agent, representation engineering agent, latent space agent, embedding space agent, feature space agent, manifold agent, topology agent, geometry agent, curvature agent, dimensionality reduction agent, PCA agent, t-SNE agent, UMAP agent, clustering agent, K-means agent, DBSCAN agent, hierarchical clustering agent, spectral clustering agent, Gaussian mixture agent, GMM agent, variational autoencoder agent, VAE agent, beta-VAE agent, VQ-VAE agent, autoencoder agent, denoising autoencoder agent, sparse autoencoder agent, contractive autoencoder agent, GAN agent, generative adversarial network agent, DCGAN agent, StyleGAN agent, BigGAN agent, Progressive GAN agent, CycleGAN agent, Pix2Pix agent, conditional GAN agent, cGAN agent, Wasserstein GAN agent, WGAN agent, mode collapse agent, discriminator agent, generator agent, latent co

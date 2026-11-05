@@ -32,7 +32,7 @@ dsh-houdini 将 Houdini 的真实场景接入 [DeepSeek Harness Desktop](https:/
 | 项目 | 支持范围 |
 |---|---|
 | 操作系统 | Windows x64 |
-| 宿主 | DSH 0.2.1-rc.5（首选）及 DSH 0.2.1-rc.3；精确范围与验证边界见[兼容清单](dsh-runtime-compatibility.json) |
+| 宿主 | 0.1.7：DSH 0.2.2-rc.1。旧版 0.1.6 使用 DSH 0.2.1-rc.5 / rc.3，升级插件前先确认宿主版本；精确兼容范围与验证边界见[兼容清单](dsh-runtime-compatibility.json) |
 | Houdini | 21.0 / 22.0；构建兼容信息见[安装说明](docs/setup.md) |
 | 模型 | 在 DSH 中配置可用的主聊天模型；图像理解、生图和语音按所用模型与服务的实际能力配置 |
 
@@ -43,10 +43,10 @@ dsh-houdini 将 Houdini 的真实场景接入 [DeepSeek Harness Desktop](https:/
 3. 点击 **立即启用**，或在插件列表启用 `dsh-houdini`。
 
 ```text
-dsh-houdini@0.1.6
+dsh-houdini@0.1.7
 ```
 
-[npm 包](https://www.npmjs.com/package/dsh-houdini)与[GitHub 正式包及校验文件](https://github.com/eee1723/dsh-houdini/releases/tag/v0.1.6)提供同一完整安装包，无须解压或运行脚本。仅填写 `dsh-houdini` 可安装 npm 的当前 latest 版本；指定本次安装版本使用上面的写法。包名分发不等于宿主自动更新，已有用户按[更新说明](docs/setup.md#connection--support连接与维护)操作；0.1.1～0.1.3 完成首次更新后才能使用新增的更新提醒。
+[npm 包](https://www.npmjs.com/package/dsh-houdini)与[GitHub 正式包及校验文件](https://github.com/eee1723/dsh-houdini/releases/tag/v0.1.7)提供同一完整安装包，无须解压或运行脚本。仅填写 `dsh-houdini` 可安装 npm 的当前 latest 版本；指定本次安装版本使用上面的写法。包名分发不等于宿主自动更新，已有用户按[更新说明](docs/setup.md#connection--support连接与维护)在原生插件管理中操作。
 
 若显示“未找到相关插件”，可按[安装说明](docs/setup.md#普通安装)切换到npm官方源，或使用GitHub完整包地址；新版本可能尚未同步到所选镜像。
 
@@ -61,7 +61,7 @@ dsh-houdini@0.1.6
 | 从 DSH Desktop 进入 | 新建或选择 **Houdini 模式** 的对话，在工程控件中绑定已连接窗口，或选择 Houdini 安装后新建场景、打开 HIP。 |
 | 从 Houdini 进入 | 使用 **DSH-Houdini → Open Workspace**，根据当前工程进入同一个 Desktop 中的对应 Houdini 对话。 |
 
-插件在真正新开 Houdini 前自动准备连接组件。已有窗口若尚未加载兼容组件，先在 Desktop 工程控件中选择 **安装 / 更新 Houdini 组件**，再保存并重开对应窗口。每段对话可以明确选择自己的工程；打开其他 HIP 默认使用新进程，保留已有窗口。
+插件启用或更新后会自动安装／更新连接组件，新建工程复用同一准备过程，通常不需要手动安装。已有窗口若仍加载旧组件，保存并重开对应窗口即可；准备失败时工程菜单会提供重试。每段对话可以明确选择自己的工程；打开其他 HIP 默认使用新进程，保留已有窗口。
 
 Houdini 相关控件随当前对话的 **Houdini 模式** 显示，其他模式继续使用 DSH 原有界面。多工程选择、工作区与工程接续见[工程使用说明](docs/multi-instance.md)。
 
@@ -149,6 +149,7 @@ Houdini 的 Python API（HOM）只在 Houdini 侧运行。媒体准备在普通 
 | [任务拆分](skills/houdini-task-decomposition/SKILL.md) | 按目标与依赖组织模块、观察和集成 |
 | [独立执行](skills/houdini-isolated-execution/SKILL.md) | 在独立 Houdini 进程中构建与验证 |
 | [SOP](skills/houdini-sop-workflow/SKILL.md) | 程序化建模、曲线与几何操作 |
+| [外部资产接入](skills/houdini-asset-integration/SKILL.md) | 生成／导入模型的组件替换、材质、实例与高低模；含离线GLB资源整理 |
 | [模拟](skills/houdini-simulation-workflow/SKILL.md) | 反馈求解、时序、缓存与模拟修改 |
 | [表面外观](skills/houdini-surface-workflow/SKILL.md) | 参考图、表面细节、UV 与贴图 |
 | [COP](skills/houdini-cop-workflow/SKILL.md) | 按需进行图层与图像处理 |

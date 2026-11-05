@@ -66,7 +66,7 @@ User Input (Voice / HUD / Telegram / API)
                        └──────────────────────┘
           │
     ┌─────▼──────────────────────────┐
-    │  Stark HUD  :3000  (Next.js)   │
+    │  Stark HUD  :3023  (Next.js)   │
     │  ├ Lattice face (Three.js)      │  amplitude-driven mouth
     │  ├ Codex UI + plan picker       │  approve/reject staging
     │  ├ GPU monitor, system log      │
@@ -272,7 +272,7 @@ bash jarvis.sh start
 
 # Start HUD (separate terminal)
 cd app && npm run dev
-# Open http://localhost:3000
+# Open http://localhost:3023
 
 # Optional: TTS server (Kokoro)
 python3 tts/server.py   # :5100
@@ -370,7 +370,7 @@ python3 scripts/voice_capture.py --wake   # Wake word mode ("Hey JARVIS")
 
 | Interface | URL | Description |
 |-----------|-----|-------------|
-| **Stark HUD** | http://localhost:3000 | Next.js holographic dashboard |
+| **Stark HUD** | http://localhost:3023 | Next.js holographic dashboard |
 | **ReAct API** | http://localhost:7900 | Main agent server |
 | **Plan API** | http://localhost:8766 | Plan status + `/rerun/{plan_id}` |
 | **Kokoro TTS** | http://localhost:5100 | Local TTS (Kokoro/Orpheus) |

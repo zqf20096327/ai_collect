@@ -5,8 +5,10 @@
 One dependency:
 
 ```swift
-.package(url: "https://github.com/john-rocky/swift-litert-lm", from: "0.2.0")   // product: LiteRTFoundation
+.package(url: "https://github.com/john-rocky/swift-litert-lm", from: "0.3.0")   // product: LiteRTFoundation
 ```
+
+This runs LiteRT-LM v0.19.0 (C API 1.0.0). Tag 0.2.0 runs LiteRT-LM v0.15.0. What v0.19.0 changes for an app is in [LiteRT-LM v0.19.0](#litert-lm-v0190).
 
 Five lines to a streaming Gemma 4 chat:
 
@@ -25,7 +27,7 @@ Check that it resolves and builds on your Mac before you open Xcode:
 git clone https://github.com/john-rocky/swift-litert-lm && cd swift-litert-lm && swift build
 ```
 
-Measured on an iPhone 17 Pro: ~50 tok/s decode, ~530 MB text footprint ([full table](#verified-on-device-g0)).
+Measured on an iPhone 18 Pro (iOS 27.2) with LiteRT-LM v0.19.0: ~88 tok/s decode (warm), ~507 MB footprint for `LiteRTChat(.gemma4_E2B)` ([full table](#verified-on-device-g0)).
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/91567f7d-6916-4cca-a399-3c385c82ab51" alt="LiteRTDemo on iPhone 17 Pro" width="280">
@@ -141,8 +143,11 @@ xcodegen generate               # re-adds them to the project
 
 The same target also hosts headless self-tests for device verification (set an
 env var on launch): `LITERT_G0_TEST` (text+image+audio), `LITERT_MMCHAT`
-(one `.all` chat), `LITERT_BENCH` (decode speed), `LITERT_FM` (FM guided + audio
-+ video + tools), `LITERT_DEMO` (auto-runs a couple of chat turns).
+(one `.all` chat), `LITERT_BENCH` (decode speed), `LITERT_FM` (FM images + guided
++ tools), `LITERT_DEMO` (auto-runs a couple of chat turns),
+`LITERT_FAILURES` (missing or broken model file, RAM check, over-long input, cancel;
+no fixtures needed), `LITERT_CHAT_CHECK` (a two-turn chat; no fixtures needed),
+`LITERT_UI_CHECK` (an over-long input, then a short turn, on the chat screen; no fixtures needed).
 
 ### One-take showcase (the demo-video mode)
 
@@ -254,37 +259,107 @@ the bundled Gemma 4 E2B, any Hugging Face repo, or a local file.
 
 The native runtime ships as prebuilt `xcframework`s attached to the official LiteRT-LM GitHub releases; we depend on those binary artifacts directly (they download cleanly over HTTPS). We deliberately **do not** add `google-ai-edge/litert-lm` as a SwiftPM git dependency: that repo LFS-tracks Android/Linux/Windows prebuilt libraries (`prebuilt/*/*.so`, `.dylib`, …) which are irrelevant to Apple platforms but make `swift package resolve` fragile (upstream issue #2407). Vendoring the small Apache-2.0 Swift wrapper under `Sources/LiteRTLM` keeps the on-ramp bulletproof. See `NOTICE`.
 
+Xcode 27.0 stops with `Git LFS is not installed` when it fetches LiteRT-LM as a SwiftPM git dependency and `git-lfs` is not on Xcode's PATH. This package fetches the release assets instead, so it builds without `git-lfs`.
+
 ## Requirements
 
 - iOS 16+ / macOS 13+ for Easy mode. (FM mode requires the iOS 27 SDK.)
 - A physical device for Metal GPU inference.
 
+## LiteRT-LM v0.19.0
+
+On a Mac, Gemma 4 E2B on v0.19.0 answered in Easy mode with text, with two images in one chat, and
+with audio. In FM mode it answered a two-turn session, a `@Generable` request, a tool call and image
+attachments.
+
+On an iPhone 18 Pro (iOS 27.2) it answered in Easy mode a two-turn chat and one chat with text, an
+image and audio. A missing model file, three broken files, the RAM check and an over-long input each
+threw an error with a message, and a new chat answered afterwards. In FM mode a
+`LanguageModelSession` answered a `@Generable` request, a tool call, image attachments, and a second
+turn after an image (6 of 6 runs) and after text (3 of 3), in Debug and Release builds. A new session
+answered after a cancelled stream (2 of 2).
+
+These second turns, and the new session after a cancelled stream, depend on a patch to the vendored
+wrapper (listed in `NOTICE`). Without it, the same runs had not returned when they were stopped, one
+to seven minutes in. On a Mac, with a delay added to reproduce it, the turn came back after the
+runtime's 10-minute timeout. Tag 0.3.0 carries the patch. Tag 0.2.0 does not carry the patch: on v0.15.0 the one iPhone run
+returned, and the same delay on a Mac stopped it.
+
+**After a turn throws, make a new chat.** Once a turn has thrown, or after `cancel()`, later turns
+on that `LiteRTChat` throw too. Release it, then create a new `LiteRTChat`: each one holds its own
+engine. The sample app does this in `send()`. On a Mac with LiteRT-LM v0.15.0 and v0.19.0, three more
+turns threw in each case. On an iPhone 18 Pro (iOS 27.2) with v0.19.0, the next turn threw in each
+case and a new chat answered.
+
+**A string-only chat template can lose the prompt, with no error.** On v0.19.0,
+`qwen3_0_6b_mixed_int4.litertlm` from
+[litert-community/Qwen3-0.6B](https://huggingface.co/litert-community/Qwen3-0.6B) renders an empty
+user turn, and the model answers something unrelated. Its template sets the content to an empty
+string unless `message.content is string`, and v0.19.0 passes the content as typed parts. v0.15.0
+renders the prompt from the same file. `Qwen3-0.6B.litertlm` and
+`Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm` from that repo answered correctly on v0.19.0. All
+measured on a Mac. If a bundle answers something unrelated, read its embedded template first.
+
+**Two names need a module prefix.** In a file with `import FoundationModels` and
+`import LiteRTFoundation`, write `FoundationModels.Tool`: plain `Tool` is ambiguous with
+`LiteRTLM.Tool`. The v0.19.0 wrapper adds a `Modality` enum of its own, so a file that also has
+`import LiteRTLM` must write `LiteRTFoundation.Modality`. With `import LiteRTFoundation` alone, plain
+`Modality` works.
+
 ## Verified on device (G0)
 
-Gemma 4 E2B running on a physical **iPhone 17 Pro (iOS 27)** via the `LiteRTDemo`
-self-test — text + image + audio, all working:
+Gemma 4 E2B (`gemma-4-E2B-it.litertlm`) on a physical **iPhone 18 Pro (iOS 27.2)** with LiteRT-LM
+v0.19.0, measured on 2026-11-05 with the `LiteRTDemo` self-tests in Debug builds. The tok/s and TTFT
+values are LiteRT-LM's own counters.
 
-| Modality | Output | Decode | Prefill | TTFT | Footprint |
-|---|---|---|---|---|---|
-| Text (GPU) | correct one-sentence answer | **~50 tok/s** (warm; ~44 cold) | ~300–1000 tok/s | ~0.1 s (warm) | ~530 MB |
-| Image (CPU encoder) | "Apple" for `apple.png` ✓ | — ¹ | ~780 tok/s | 0.6 s | ~1.57 GB |
-| Audio (CPU encoder) | "Have a wonderful day." ✓ | ~53 tok/s | ~1090 tok/s | 0.1 s | ~400 MB |
+One generation on a new `LiteRTChat` per modality, with the default prewarm and sampler
+(`LITERT_G0_TEST`, two runs). Each chat was ready in 0.6 s. Wall is the time around `respond`.
 
-¹ image decode tok/s is statistically meaningless here (one-word answer). Peak
-footprint stayed at ~1.57 GB — far under the iPhone jetsam ceiling.
+| Modality | Output | Decode | Prefill | TTFT | Wall | Footprint |
+|---|---|---|---|---|---|---|
+| Text (GPU) | one-sentence answer | ~80 tok/s | 475–496 tok/s | 0.04–0.05 s | 0.4 s | 468–469 MB |
+| Image (CPU encoder) | "Apples" for `apple.png` | — ¹ | 3226–3470 tok/s | 0.09–0.10 s | 1.2–1.4 s | 1214–1384 MB |
+| Audio (CPU encoder) | "Have a wonderful day." | 85–88 tok/s | 1836–2052 tok/s | 0.05 s | 0.3 s | 264–269 MB |
 
-**On decode speed.** Decode is warm-up- and context-dependent. The *first*
-generation after load is cold (~44 tok/s) while the GPU decode kernels compile;
-from the second turn it settles at **~50 tok/s** on iPhone 17 Pro (peak ~53) —
-in line with independent benchmarks and Google's 56.5 tok/s model-card figure.
-`LiteRTChat` runs a small **prewarm** during setup (`prewarm: true`) so your
-*first* message is already warm. Decode is weight-bandwidth-bound and tapers slightly as the KV
-cache grows. The bundled MTP speculative-decoding drafter is **not** a useful
-lever here — enabling it (`speculativeDecoding: true`) is flaky on this runtime
-build ("Failed to create engine") with no measured speedup — so it's off by
+¹ image decode tok/s is statistically meaningless here (one-word answer).
+
+Text on one engine, without `LiteRTChat` (`LITERT_BENCH`, two runs): GPU, `maxNumTokens` 2048,
+temperature 0, the same prompt and a 587-token answer each turn, a new conversation per turn.
+
+| Run | Engine init | Decode, turn 1 | Decode, turns 2–4 | Prefill, turns 2–4 | TTFT | Footprint |
+|---|---|---|---|---|---|---|
+| 1 | 0.5 s | 84.9 tok/s | 88.4, 88.4, 88.5 tok/s | 818, 823, 817 tok/s | 0.04 s | 455 MB |
+| 2 | 0.4 s | 88.4 tok/s | 87.0, 88.5, 88.4 tok/s | 815, 826, 822 tok/s | 0.04 s | 455 MB |
+
+`LiteRTChat(.gemma4_E2B)`, which loads text and image, held 506–508 MB in a two-turn chat
+(`LITERT_CHAT_CHECK`, three runs). Its answers had 2 and 6 tokens, too few for a decode number. One
+`.all` chat with text, image and audio in turn reached 1532–1533 MB (`LITERT_MMCHAT`, two runs).
+
+The ready and init times above had the GPU cache from earlier runs in place; the first load after
+install was not timed. The bench ran before the wrapper patch in
+[LiteRT-LM v0.19.0](#litert-lm-v0190). The text row of the first table ran on both sides of it, at
+80.4 and 79.9 tok/s.
+
+**On decode speed.** On v0.19.0 the first turn on an engine ran about as fast as later turns.
+`LiteRTChat` runs a small **prewarm** during setup (`prewarm: true`); on v0.13.1 it made the first
+message warm. On v0.19.0, in the same bench runs, the first message decoded at 62.6 and 68.7 tok/s
+with the prewarm, and at 86.9 and 87.8 tok/s without it. The run without it came first both times
+and the order was not swapped, so the cause is not settled. The bundled MTP speculative-decoding
+drafter was **not** a useful lever on v0.13.1 — enabling it (`speculativeDecoding: true`) was flaky
+("Failed to create engine") with no measured speedup — so it's off by
 default. (Probe it yourself: `LITERT_BENCH=1`.)
 
-Three device findings, now baked into the catalog so the API "just works":
+Logs, in the maintainer's `lane/` directory and not in this repository: `lane/device/g0.log` and
+`lane/device/r3/obs_fix_g0.log` (first table); `lane/device/bench_v019.log` and
+`lane/device/bench_v019_2.log` (second table, prewarm); `lane/device/r3/final/chat.log`,
+`lane/device/r3/chat.log` and `lane/device/r3/obs_fix_rel_chat.log` (the two-turn chat, the last a
+Release build); `lane/device/mmchat_v019.log` and `lane/device/r3/obs_fix_mmchat.log` (the `.all`
+chat).
+
+The iPhone 17 Pro numbers on v0.13.1 are in the
+[README of tag 0.2.0](https://github.com/john-rocky/swift-litert-lm/tree/0.2.0#verified-on-device-g0).
+
+Three device findings on v0.13.1, baked into the catalog so the API "just works":
 
 - **Audio encoder must run on CPU.** The `.litertlm` marks the audio sections
   `section_backend_constraint: cpu`; passing a GPU audio backend makes the engine
@@ -297,7 +372,7 @@ Three device findings, now baked into the catalog so the API "just works":
   (`std::bad_alloc`). Each tower in isolation is small (≤ ~1.6 GB), so Easy mode
   brings up only what you ask for.
 
-**FM mode, also verified on device** (`LITERT_FM=1`, iPhone 17 Pro): `respond` /
+**FM mode, also verified on device** (`LITERT_FM=1`, iPhone 17 Pro, LiteRT-LM v0.13.1): `respond` /
 `streamResponse`, guided generation (`respond(generating:)` → a structured
 `@Generable` result), tool calling (the model calls your `Tool`, FM runs it, the
 result feeds back into the answer), and audio / video understanding through the

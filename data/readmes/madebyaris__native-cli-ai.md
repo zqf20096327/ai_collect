@@ -1,17 +1,17 @@
 # nca
 
 <p align="center">
-  <img src="docs/images/nca-readme-run.svg" alt="nca: a terminal runner jumps five monsters, one per issue on the next-release list" width="720" />
+  <img src="docs/images/nca-readme-run.svg" alt="nca v0.66.0: a terminal runner jumps five monsters, one per shipped change: regex search, DashScope, installer, word shortcuts, Keenable" width="720" />
 </p>
 
 <p align="center">
   <strong>Rust-native coding agent. Single binary. Terminal-first.</strong><br />
-  <sub>v0.6.0 — cost that matches your provider, compaction that keeps the conversation, search with fallback</sub>
+  <sub>v0.66.0 — regex picker search, Alibaba DashScope, dynamic installer, prompt word shortcuts</sub>
 </p>
 
 <p align="center">
   <a href="#installation">Install</a> &middot;
-  <a href="#whats-new-in-060">What's New</a> &middot;
+  <a href="#whats-new-in-066">What's New</a> &middot;
   <a href="#quick-start">Quick Start</a> &middot;
   <a href="#core-commands">Commands</a> &middot;
   <a href="#interactive-ux">Interactive UX</a> &middot;
@@ -27,13 +27,22 @@ It is meant for people who like their AI tooling close to the terminal: fast to 
 
 The product surface is the CLI. No desktop wrapper, no Electron, no browser in the default path.
 
+## What's New in 0.66.0
+
+- **Regex search in pickers** — the model, session, branch, command palette, and `/connect` pickers filter with case-insensitive regex and fall back to plain substring search when the pattern is invalid.
+- **Alibaba DashScope (Qwen) provider** — set `DASHSCOPE_API_KEY` or `ALIBABA_API_KEY`; the default model is `qwen2.5-coder-32b-instruct`. Qwen VL models accept images. Available from `/connect`. See [Providers](docs/documentation/providers.md).
+- **Dynamic installer** — `curl -fsSL https://nca-cli.com/install | bash` installs the latest release. Set `NCA_VERSION` to pin one.
+- **Prompt word shortcuts** — `Ctrl+Left`/`Ctrl+Right` move by word, and `Ctrl+Backspace`/`Ctrl+Delete` delete by word.
+- **`nca --version`** — prints the installed version.
+- **Fixed** — empty or whitespace-only provider environment variables are ignored, and CLI integration tests no longer pick up your shell credentials.
+
 ## What's New in 0.6.0
 
 - **Cost that matches your provider** — each model is priced with its own list price, so the cost line reflects the provider you configured. A model with no built-in price shows `cost n/a`. Add a `[pricing]` entry to price it. See [Configuration](docs/documentation/configuration.md).
 - **Cache hit share in the TUI** — the sidebar and status bar show how much of the prompt the provider served from its cache (`cached N%`). Anthropic cache writes are billed at their own rate.
 - **Compaction keeps the conversation** — the first compaction used to summarise an empty prompt and then delete the history it was meant to condense. The summary now receives the real messages, with their roles, and keeps constraints and preferences verbatim.
 - **Stable prompt prefix** — instructions, `AGENTS.md`, and tool guidance come first in the system prompt, and environment, todos, and memory come last. The static part stays cached when those change. Changing todos still re-prefills the conversation history.
-- **Search with fallback** — `web_search` tries a configurable chain of backends and reports every failure. Keyed backends (Exa, Tavily, Serper, Brave API) are skipped with the config line to add when no key is set. Keyless ones (DuckDuckGo, Brave, Bing, Mojeek) need no key.
+- **Search with fallback** — `web_search` tries Keenable's keyless API first, then configured keyed APIs (Exa, Tavily, Serper, Brave API) and keyless search engines (Brave, DuckDuckGo, Bing, Mojeek). Keenable also accepts an optional `KEENABLE_API_KEY`.
 - **ACP editors can supply MCP servers** — MCP servers passed in `session/new` become nca tools for that session. Stdio and streamable HTTP are supported. Workspace config wins on a name clash.
 - **New default models** — MiniMax-M3.1-Flash for MiniMax, `gpt-6-luna` for OpenAI and OpenRouter, and `claude-sonnet-5-5` for Anthropic. GPT-6 Luna and Terra send `reasoning_effort: none` with tool calls.
 - **Fixed** — sub-cent session costs printed as `$0.0000`.
@@ -74,7 +83,7 @@ The product surface is the CLI. No desktop wrapper, no Electron, no browser in t
 - Persists session state and event logs in the product home, one folder per workspace.
 - Exposes machine-readable JSON and NDJSON for automation.
 - Spawns child agents with explicit parent/child lineage and optional git worktrees.
-- Uses MiniMax by default, with OpenAI, Anthropic, OpenRouter, and custom endpoint support.
+- Uses MiniMax by default, with OpenAI, Anthropic, OpenRouter, Alibaba DashScope, and custom endpoint support.
 - Loads built-in tools plus optional MCP tools from config, over stdio or HTTP.
 - Sends **native multimodal** (text + image) messages to MiniMax and other vision-capable models.
 - Auto-summarizes long conversations to prevent token overflow.
@@ -345,7 +354,7 @@ The default is `on`: every provider request is fitted to the model window, so a 
 
 ## Providers
 
-MiniMax is the default provider path. The codebase also supports OpenAI, Anthropic, and OpenRouter, so the project can stay MiniMax-first without boxing itself into one provider forever.
+MiniMax is the default provider path. The codebase also supports OpenAI, Anthropic, OpenRouter, and Alibaba DashScope, so the project can stay MiniMax-first without boxing itself into one provider forever.
 
 Typical environment variables:
 
@@ -353,8 +362,8 @@ Typical environment variables:
 - `OPENAI_API_KEY`
 - `ANTHROPIC_API_KEY`
 - `OPENROUTER_API_KEY`
+- `DASHSCOPE_API_KEY` (or `ALIBABA_API_KEY`)
 - `CUSTOM_PROVIDER_API_KEY` (for custom endpoints)
-
 ### Custom Endpoints
 
 Use `/connect` in the TUI (or the command palette) to pick a provider, enter an API key, and optionally add a custom OpenAI-compatible or Anthropic-compatible endpoint. Legacy aliases `/provider`, `/apikey`, and `/custom` still resolve to the same flow.

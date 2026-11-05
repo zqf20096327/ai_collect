@@ -21,7 +21,7 @@ listens on the managed host.
 [![Docker](https://img.shields.io/badge/ghcr.io-remotepower-blue.svg)](docs/install.md#docker-one-liner-alternative)
 [![Nginx](https://img.shields.io/badge/server-Nginx-green.svg)](https://nginx.org)
 [![Python](https://img.shields.io/badge/python-3.10+-yellow.svg)](https://python.org)
-[![Version](https://img.shields.io/badge/version-7.4.0-blue.svg)](https://github.com/tyxak/remotepower/releases)
+[![Version](https://img.shields.io/badge/version-7.5.0-blue.svg)](https://github.com/tyxak/remotepower/releases)
 [![Wiki](https://img.shields.io/badge/docs-wiki-blue.svg)](https://github.com/tyxak/remotepower/wiki)
 [![Discussions](https://img.shields.io/badge/community-discussions-blueviolet.svg)](https://github.com/tyxak/remotepower/discussions)
 
@@ -184,7 +184,7 @@ hours.
 - **Stay compliant** — OpenSCAP CIS/STIG/PCI scans, with control mapping for
   PCI DSS v4.0, the HIPAA Security Rule, SOC 2, the ACSC Essential Eight and
   SMB1001.
-- **Integrate** — 48 connectors (homelab apps, hypervisors, and EDR — Wazuh,
+- **Integrate** — 50 connectors (homelab apps, hypervisors, and EDR — Wazuh,
   CrowdStrike, SentinelOne — cross-referenced to find hosts with no EDR at all),
   a custom HTTP probe that needs no code, Prometheus and Grafana endpoints,
   webhooks, syslog, and an MCP server.
@@ -199,60 +199,53 @@ recipes → [docs/cookbook.md](docs/cookbook.md).
 
 ### Recent releases
 
-- **v7.4.0 "F1nishMatters"** — a release about finish. What is already there
-  reads, looks and behaves better in every theme and every language, and each fix
-  comes with a check that keeps it fixed. One thing is new: threat intel can read
-  the syslog of an OPNsense, pfSense or MikroTik firewall and report the addresses
-  behind what it finds. Long pages show one group of cards under a tab bar, and
-  there are two public guides to building the honeypot Worker that RemotePower
-  reads.
-- **v7.3.0 "Edg3Matters"** — threat intel reads the edge. RemotePower can read
-  Cloudflare's firewall events and your honeypot Worker's log with a read-only
-  token and report what they show, with the evidence: only refusals that mean an
-  attack count, and an address your honeypot banned is reported at once. Linux
-  agents can also read UFW's log. Reading blocks nothing, so banning stays with
-  what you already use. RemotePower can also keep a Cloudflare IP list up to date
-  from AbuseIPDB, SniffCat and what it found itself, with a token of its own, for
-  your rules to use. Off until you turn it on. An address the WAF on a host
-  refused is reported at once, with a setting to ask for more, and a feed that
-  stops reading or a list sync that waits for you raises an alert. You can tell it
-  which addresses and kinds of attack not to report, and clear what it has
-  recorded. The release is also a security pass over the whole product with the
-  scanners listed below:
-  twenty-three issues, all fixed before release, and the review is public.
-- **v7.2.0 "Ev1denceMatters"** — threat intel reads what your hosts' own logs
-  say. A Linux agent can read nginx and Apache logs, ModSecurity's audit log,
-  fail2ban's log and CrowdSec's alerts, and a report to AbuseIPDB and SniffCat
-  now says what the address actually did instead of "brute force": SQL
-  injection, path traversal, scanning, with the time it happened, once per
-  address however many hosts or logs saw it. An address qualifies when fail2ban
-  or CrowdSec already banned it, the WAF refused it enough times, or it reached
-  your threshold. Only counts and fixed labels leave the host. The page shows
-  the evidence, what was sent, and any log the agent could not read; Cloudflare
-  addresses are never reported. Off until you turn it on.
-- **v7.1.0 "G4tewayMatters"** — the front door. Reach any opted-in Linux host
-  with your own `ssh` client through one gateway, over a tunnel the host opens
-  outward, so no inbound port is open on the host; every connection is checked
-  against your permission, scope and tenant, and every session is recorded.
-  Addresses that brute-force a host are looked up against AbuseIPDB and
-  SniffCat, reported back if you choose, and blocked for a while on the
-  attacked host if they are known to be abusive — never your own addresses or
-  anywhere someone recently signed in from. Both reach the Security Advisory,
-  the risk score, the Data Explorer, the fleet report and the AI assistant. One
-  body size and one heading size across the interface, and dashboard edits
-  saved with PUT work on a standard nginx install again.
-- **v7.0.3 "C4useMatters"** — three failures that named the wrong cause. A
-  monitor reported a host as down when a bot filter at the edge had turned the
-  probe away; the probe was identifying itself as Python and putting an older
-  TLS version back on the wire. That second half was a whole class: of eleven
-  places that pin a minimum TLS version, ten set it where they meant to raise
-  it, so a server hardened to TLS 1.3 was quietly handed a context that would
-  still speak 1.2. Eight are fixed across the server, all three agents, the
-  satellite, the scanner and the key server; the two left are appliances whose
-  firmware negotiates nothing newer, each with its reason recorded. The web
-  terminal also verifies a host's SSH key before sending your password, and the
-  Data Explorer, risk score, compliance checklist and Prometheus exporter now
-  use signals the agents were already sending.
+- **v7.5.0 "Wh0leMatters"** — finishing what was started, with everything from 7.4.1 to 7.4.9 on top of
+  7.4.0. A second read of the whole product found fifteen Medium issues, twenty-one Low or hardening
+  items and three informational ones, and fixed every one; one of the Medium issues is High on a Mac that
+  asks for signed commands. Four-eyes approval now holds a command in
+  every place that puts one on a host: library scripts, package actions, file writes, the compose
+  action, a smart plug's power-off, a schedule when it comes due and the start of a rollout. Restoring a
+  backup or a configuration revision asks you to sign in again, and so does narrowing which commands
+  need approval. Monitors assigned to a satellite are probed by it, Provisioning works on a fresh
+  install, and the playbook list no longer hands a viewer the YAML. What the agents already send now
+  reaches compliance, the risk score, the advisory, alerts, the AI, Fleet Query, the Data Explorer and
+  the fleet report. Update the agents.
+- **v7.4.9 "Ch0iceMatters"** — choices on a host, and a review of the whole project. A host runs
+  its upgrades in a Standard or an Extended mode, and Extended also installs the new packages an
+  update needs, such as a new kernel image that apt keeps back. A hard disk and a SATA SSD behind
+  the same controllers keep their own temperature lines, and an update Ubuntu is still phasing in
+  is no longer counted as pending. The review covered everything, not only the new code. It found
+  five High, seventeen Medium and twelve Low or hardening issues and fixed every one of them:
+  a viewer could rewrite a host's watched services, Sign out did not end the session on the
+  server, a tenant's users could read the operator's tickets and invoices, and the Docker image
+  ran its app as root. After the review it also gained a Business services page (hosts, monitors,
+  units, containers and scripts grouped under a name with a rule), an alert for a container that
+  fails its own health check, Nagios-plugin results for custom scripts, assigning an alert to a
+  person, Mattermost, Rocket.Chat, Google Chat and Gotify destinations, and enrolment tokens limited
+  to a network. Later it gained a preview of what an upgrade would change, an inventory of each
+  host's package repositories, ZFS cache and dataset tables, a hardening audit of how containers
+  were started, checks run from a host's own agent, a backup copy to an S3-compatible bucket that a
+  server can be restored from, the CPU time split into I/O wait, steal and the rest, drawn over two days, and named time periods that quiet hours,
+  after-hours detection, the ticket SLA clock and maintenance windows share. Update the agents.
+- **v7.4.8 "Hon3stMatters"** — three screens that said something untrue. A Problems row
+  that read "never" under Updated shows when its host last reported. A sensor limit that is
+  not a temperature (an NVMe drive with no threshold reported 65,261.8 °C) is no limit. A
+  Debian or Ubuntu host with a package apt keeps back, a new kernel image for one, reads as
+  having updates pending and not as fully patched.
+- **v7.4.7 "0nceMatters"** — each problem once: Monitoring → Problems joins an alert, a Needs
+  attention item and a failing check for the same trouble on a host into one row, with its state
+  (an alert you resolved while the host still reports the problem reads "resolved, still failing"),
+  its history and the actions that apply, and Alerts, Needs attention and Checks show the same
+  state. A switch counts only the CVE findings an update can fix, the Thermal page charts any
+  sensor, a btrfs volume is one disk and not seven, and the page no longer sits under the
+  sidebar while alerts are open.
+- **v7.4.6 "F1xableMatters"** — more requests from the same Docker install: a
+  host behind a NAT firewall can be marked internal, so a service that listens on
+  every address is graded as reachable from the local network, not from the world,
+  a server no longer shows up as the client of its own clients in the suggested
+  dependencies, a CVE finding says whether a fix exists for the host's own release, and
+  an alert resolved by hand makes its host report at once, and the Thermal page and the
+  risk score hold a drive to its own temperature lines.
 
 ## Security
 

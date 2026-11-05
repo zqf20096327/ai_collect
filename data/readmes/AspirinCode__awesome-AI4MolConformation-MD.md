@@ -827,6 +827,12 @@ Kevin V. Bigting, Shubhadeep Nag, Yaxin An.
 
 
 
+
+
+* **DIME: Dynamics Inferred from Monte Carlo Ensembles via Continuous-Time Markov Chains** [2026]  
+Krishna Praneet Mulukutla, Marimuthu Krishnan.  
+[J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c01396)  
+
 * **MD-LLM-2: A Transferable Language Model of Molecular Dynamics with Physical Conditioning and Explicit Path Probabilities** [2026]  
 Mhd Hussein Murtada, Z. Faidon Brotzakis, Michele Vendruscolo.  
 [arXiv:2610.10879(2026)](https://doi.org/10.48550/arXiv.2610.10879)  
@@ -1058,6 +1064,16 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+
+* **Fine-Tuning Universal Machine Learning Potentials Enables Efficient Computation of Li Electrode Potentials in Battery Electrolytes** [2026]  
+Feng Wang, Yu-Hang Tang, Yi-Min Wei, Jun Cheng.  
+  [Journal American Chemical Society(2026)](https://doi.org/10.1021/jacs.6c12519)  
+
+* **MLIPDiff: Guiding Denoising Diffusion Models for Structure-Based Drug Design via Machine-Learned Interatomic Potentials** [2026]  
+Yiyan Liao, Amin Tavakoli, Yu Zhang, Anima Anandkumar.  
+  [arXiv:2610.33315(2026)](https://doi.org/10.48550/arXiv.2610.33315)  
 
 * **High-quality, high-information datasets for universal atomistic machine learning** [2026]  
 Cesare Malosso, Filippo Bigi, Paolo Pegolo, Joseph W. Abbott, Philip Loche, Mariana Rossi, Tiago J. Goncalves, Sandip De, Michele Ceriotti, Arslan Mazitov.  
@@ -1505,12 +1521,4 @@ Gardner, John LA, Daniel F. Toit, Chiheb Ben Mahmoud, Zoé Faure Beaulieu, Veron
 
 * **Spin-informed universal graph neural networks for simulating magnetic ordering** [2025]  
 W. Xu,R.Y. Sanspeur,A. Kolluru,B. Deng,P. Harrington,S. Farrell,K. Reuter,& J.R. Kitchin.  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2422973122) | [code](https://github.com/Wenbintum/ocp_mag)  
-
-* **UMA: A Family of Universal Models for Atoms** [2025]  
-Brandon M. Wood, Misko Dzamba, Xiang Fu, Meng Gao, Muhammed Shuaibi, Luis Barroso-Luque, Kareem Abdelmaqsoud, Vahe Gharakhanyan, John R. Kitchin, Daniel S. Levine, Kyle Michel, Anuroop Sriram, Taco Cohen, Abhishek Das, Ammar Rizvi, Sushree Jagriti Sahoo, Zachary W. Ulissi, C. Lawrence Zitnick.  
-[arXiv:2506.23971(2025)](https://doi.org/10.48550/arXiv.2506.23971) | [code](https://huggingface.co/facebook/UMA)  
-
-* **Application-specific Machine-Learned Interatomic Potentials: Exploring the Trade-off Between Precision and Computational Cost** [2025]  
-Baghishov, Ilgar, Jan Janssen, Graeme Henkelman, and Danny Perez.  
-[arXiv:2506.05646 (2025)](https://arxiv.org/a
+[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2422973122) | [c

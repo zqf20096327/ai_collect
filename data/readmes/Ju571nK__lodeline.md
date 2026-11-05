@@ -89,7 +89,7 @@ That's the **fleet** side: a client agent on every machine, hash-anchored events
 over mTLS to a central server, signed policy pushed back down, read-only MCP for
 operators. It's there when you need it and invisible when you don't.
 
-→ [Fleet setup](docs/install-server.md) · [lodeline-manager dashboard](https://github.com/Ju571nK/lodeline-manager) · [architecture](#how-it-works)
+→ [Fleet setup](docs/install-server.md) · [lodeline-manager dashboard](apps/manager/README.md) · [architecture](#how-it-works)
 
 ---
 
@@ -103,7 +103,7 @@ curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Ju571nK/
 curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Ju571nK/lodeline/main/install.sh | LODELINE_PROFILE=fleet sh
 ```
 
-Linux `.deb`/`.rpm` and Windows `.zip` are on the [releases page](https://github.com/Ju571nK/lodeline/releases/latest).
+Linux `.deb`/`.rpm`, Windows `.zip` and the `lodeline-manager` web console archives are on the [releases page](https://github.com/Ju571nK/lodeline/releases/latest).
 Every release ships a `SHA256SUMS` (the installer verifies it) and a build-provenance attestation.
 Full guide: [docs/install-personal.md](docs/install-personal.md).
 
@@ -126,7 +126,8 @@ No vendor plugin, no write path by construction.
 A small Rust agent watches the config and posture files on each machine, hashes
 them, and emits JSONL posture events. Locally that's all you need. For a fleet,
 `lodeline-sender` ships those events over mTLS to `lodeline-server`, which feeds your
-SIEM and the optional `lodeline-manager` dashboard and pushes signed policy back.
+SIEM and the optional `lodeline-manager` dashboard ([`apps/manager`](apps/manager/README.md)) and
+pushes signed policy back.
 
 The workspace has twelve crates with clear roles (`lodeline-agent`, `lodeline-sender`,
 `lodeline-server`, `lodeline-mcp`, `lodeline-hook`, `lodeline-signer`, `lodeline-core`,

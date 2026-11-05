@@ -374,11 +374,12 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.86
+## What's new in 0.12.88
 
-- Reconnecting is fast again under load: the MCP server answers its tool list from a schema cache, and the startup cleanup sweep waits until the client has its tools instead of competing with the handshake.
-- Source Graph incremental builds no longer run for hours: cross-file import matching is cached, and the pass stops with a recorded reason if it stalls or runs past its wall-clock cap.
-- Less background CPU: the reconciler and review drain verify a review chain only when its rows change, and the dashboard cost ledger no longer re-parses every live Claude Code transcript on each snapshot.
+- Long accepts are no longer cut off: the MCP server sends progress heartbeats while a long tool such as accept review runs, so the client's idle timeout does not abort it.
+- Faster accepts: finalization and accept reuse validation and neighbour tests that already passed, and one load-sensitive test failure is retried instead of costing a full accept cycle.
+- Faster dashboard: snapshots cache provider probes, skip a per-read database integrity check and read tasks in one batch.
+- Fewer manager steps: a verified manager's NeedFix converts in one call, and finding reproduction skips the base run when the candidate side already passes.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)

@@ -8,6 +8,9 @@ Ally Native 是一款使用 Go 与 MyGo 绘制界面的桌面 AI 编程助手，
   <a href="https://github.com/Bronya0/ally-agent/releases">
     <img alt="下载 Ally" src="https://img.shields.io/badge/下载_Ally-GitHub_Releases-2ea44f?style=for-the-badge&logo=github">
   </a>
+  <a href="https://awesomemygo.dev/apps/ally">
+    <img alt="Listed on Awesome MyGo" src="https://awesomemygo.dev/badge.svg" height="28">
+  </a>
 </p>
 
 前往 [Releases 页面](https://github.com/Bronya0/ally-agent/releases)下载 Windows、macOS 或 Linux 安装包。
@@ -32,7 +35,7 @@ Ally Native 是一款使用 Go 与 MyGo 绘制界面的桌面 AI 编程助手，
 - 支持配置多个 API Key，自动优先级故障转移与冷却恢复，保障可用性
 - 内置服务商/模型预设目录，添加模型时自动填充 API 格式、地址与上下文窗口
 - 支持在聊天中安全渲染沙箱 HTML，用于小工具、交互预览和组件展示
-- 聊天中内联渲染 Mermaid 图表（滚轮缩放、拖拽平移、双击复位）、KaTeX 数学公式与高亮代码块
+- 聊天中内联渲染 Mermaid 图表（滚轮缩放、拖拽平移、双击复位）与高亮代码块
 - 可为支持视觉能力的模型附带图片输入，模型生成的图片直接在聊天中预览
 - 可将复杂任务委派给并行子代理，实时查看步骤、工具活动、Token 用量和最终摘要
 - 插件系统：一个 zip 包即可在侧栏新增一个整页，页面用纯 JS/TS 编写，HTTP、存储与工作区访问由清单声明

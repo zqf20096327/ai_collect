@@ -6,8 +6,21 @@ optimization (DPO, ORPO), SFT, distillation and embedding fine-tuning on
 
 ## Quick Start
 
+Use Python 3.11 or newer. Install the released recipes and utilities from PyPI:
+
 ```bash
-git clone https://github.com/fw-ai/cookbook.git
+python -m pip install --upgrade fireworks-training-cookbook
+```
+
+Python imports remain `training.*`. The cookbook uses calendar versions and is
+released separately from the `fireworks-ai` SDK. See the
+[installation and migration guide](https://docs.fireworks.ai/fine-tuning/training-api/cookbook/overview#installation)
+for pinned releases and updating an existing checkout.
+
+To edit recipes or run examples from a source checkout:
+
+```bash
+git clone https://github.com/fw-ai-external/cookbook.git
 cd cookbook/training
 uv venv --python 3.12 && source .venv/bin/activate
 uv pip install -e .
@@ -32,21 +45,21 @@ task-specific skills: **research**, **configure**, and **debug**.
 ### Claude Code
 
 ```bash
-claude plugin marketplace add fw-ai/cookbook
+claude plugin marketplace add fw-ai-external/cookbook
 claude plugin install fireworks-training@fw-ai-cookbook
 ```
 
 ### Cursor
 
 ```bash
-npx --yes skills add fw-ai/cookbook -g \
+npx --yes skills add fw-ai-external/cookbook -g \
   -s fireworks-training -s research -s configure -s debug -a cursor -y
 ```
 
 ### Codex
 
 ```bash
-npx --yes skills add fw-ai/cookbook -g \
+npx --yes skills add fw-ai-external/cookbook -g \
   -s fireworks-training -s research -s configure -s debug -a codex -y
 ```
 
@@ -67,8 +80,16 @@ training/           Training API cookbook (primary surface)
   case-studies/     End-to-end notebooks
 eval/               Reproducible evaluation packages and benchmark adapters
 skills/             Research, configure and debug agent workflows
-archived/           Legacy integrations and earlier cookbook content
+case-studies/       Inference, retrieval and coding-agent applications
 ```
+
+## Application case studies
+
+Inference and agent applications live under [`case-studies/`](./case-studies/README.md):
+[Advisor](./case-studies/advisor/README.md) adds a second-opinion code reviewer,
+and [Voyage AI retrieval](./case-studies/voyage-ai/README.md) combines embeddings
+with vector search and reranking. These applications have their own setup and
+are separate from the training package installed from PyPI.
 
 ## Evaluations
 
@@ -85,4 +106,4 @@ See the [Contribution Guide](./Contribution.md).
 
 - [Documentation](https://fireworks.ai/docs)
 - [Discord](https://discord.gg/9nKGzdCk)
-- [Open an issue](https://github.com/fw-ai/cookbook/issues/new)
+- [Open an issue](https://github.com/fw-ai-external/cookbook/issues/new)

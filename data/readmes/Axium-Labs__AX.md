@@ -1,0 +1,249 @@
+# AX
+
+A fast, lightweight AI agent for the terminal, built in Rust.
+
+One source workspace builds for Windows, Linux and macOS. See
+[platform support](docs/platforms.md) for native build targets, shell settings,
+installation and capability limits; new platform archives require a release
+containing those assets before they can be downloaded.
+
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](Cargo.toml)
+[![Rust 1.92+](https://img.shields.io/badge/rust-1.92+-orange)](https://www.rust-lang.org)
+
+**English** | [简体中文](README.zh-CN.md)
+
+AX is a small, native terminal agent. It starts fast, streams responses, and
+keeps sessions, memory, credentials and model config on your machine — no
+service to sign up for, no remote telemetry.
+
+AX is the agent; [AX Crew](https://github.com/Axium-Labs/AXCrew) is the control
+plane built alongside it — it orchestrates and controls AX across multiple
+machines and keeps their work running when a machine goes offline. See
+[ACP and Crew integration](docs/acp-crew.md).
+
+- **Rust native** — one binary for the terminal agent; no Node or Docker needed for core use. Optional Browser Use needs Node and Playwright.
+- **Independent UI permissions** — app/site access and action approval are separate from the file/terminal sandbox. Computer Use defaults on and preserves explicit disable settings; Windows UIA, Linux AT-SPI and macOS Accessibility adapters have platform prerequisites and limits. See [Computer Use](docs/computer-use.md) and [host access](docs/host-permissions.md).
+- **Fast startup** — providers, skills, MCP servers and memory load on demand.
+- **Local system resources** — `/system` shows measured CPU/memory usage and
+  supported NVIDIA GPU usage/VRAM; collection runs only when requested.
+- **Standard skills and focused tools** — Agent Skills `SKILL.md` packages with lazy instructions and optional resources, read-only web search/fetch that batches concurrent queries and page fetches and deduplicates their results, LSP through configurable MCP servers, and native image input on supported vision models.
+- **Small binary** — a compact workspace of focused crates, not a framework.
+- **Simple workflow** — type, get an answer, switch models, move on.
+- **Local-first** — sessions, memory and settings live in `.ax` beside the AX executable.
+
+No benchmarks are published yet; "fast" here means the startup path does as
+little as possible by design.
+
+By default, AX stores persistent data under `<install-dir>/.ax`, with separate
+project stores in `projects/<project-key>/`. Opening another working directory
+does not move data there; deleting a workspace does not delete its history.
+On first launch, legacy `~/.ax` and known project `.ax` stores are copied without
+deleting the originals. `AX_HOME` and `--data-dir` remain explicit overrides.
+
+Portable backups: `ax export backup.axpack` saves sessions and memory; use
+`--memory` or `--sessions` to select one type. Run
+`ax import backup.axpack --dry-run` to inspect conflicts, then
+`ax import backup.axpack` to merge.
+Credentials and caches are excluded. See [backup details](docs/backup.md).
+
+## Quick Start
+
+### Installing and running AX
+
+Mac or Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Axium-Labs/AX/main/scripts/install.sh | sh
+```
+
+Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "iex ((iwr 'https://raw.githubusercontent.com/Axium-Labs/AX/main/scripts/install.ps1' -UseBasicParsing).Content)"
+```
+
+Then simply run:
+
+```text
+ax
+```
+
+Your first session:
+
+```text
+/login      # sign in with a provider (Codex OAuth or an API key)
+/model      # pick a model
+hello       # just start typing
+```
+
+That's it. Your session is saved automatically, and the model you pick is
+remembered for next time.
+
+## Installation
+
+The installer fetches the latest release from GitHub, verifies the archive
+against the release's `SHA256SUMS`, and installs a single `ax` / `ax.exe`
+binary:
+
+- **macOS / Linux** — installs to `~/.local/bin` by default and prints a
+  PATH hint if that directory is not already on your PATH.
+- **Windows** — installs to `%LOCALAPPDATA%\Programs\AX\bin` by default and
+  adds it to your user PATH (only if it is not there already).
+
+Both installers accept two environment variables:
+
+| Variable | Purpose |
+|---|---|
+| `AX_VERSION` | Install a specific release tag instead of the latest (default: latest) |
+| `AX_INSTALL_DIR` | Override the install directory |
+
+To update the executable you are currently running to the latest GitHub
+Release, run `ax --update`. AX checks the release version, verifies the
+download against `SHA256SUMS`, and replaces that executable; it also refreshes
+the bundled payload from the same archive, installing any missing skill package
+into `<install-dir>/.ax/skills` and writing `<install-dir>/.ax/mcp.toml` only when no config exists
+yet (existing skills and configs are left alone). The bundled payload is
+refreshed on every `ax --update`, even when the binary is already up to date,
+so newly added skill packages are picked up without a version bump. On Windows,
+the verified update is scheduled for replacement after the command exits;
+restart AX before using the new version. The command does not otherwise change your
+`<install-dir>/.ax` user data or
+any project's `.ax` directory. If you installed a separate copy using
+`AX_INSTALL_DIR`, run that copy's `ax --update` to update it. A push to `main`
+alone is not a release; the release workflow runs for `v*` tags.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Axium-Labs/AX/main/scripts/install.sh | sh
+AX_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/Axium-Labs/AX/main/scripts/install.sh | sh
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -c "iex ((iwr 'https://raw.githubusercontent.com/Axium-Labs/AX/main/scripts/install.ps1' -UseBasicParsing).Content)"
+```
+
+### Uninstall
+
+Removing AX is just deleting the binary (and, on Windows, the PATH entry the
+installer added). AX keeps its data separately in `<install-dir>/.ax`, which you can delete
+too if you want a clean slate.
+
+**macOS / Linux**
+
+```bash
+rm -f ~/.local/bin/ax        # or wherever AX_INSTALL_DIR pointed
+rm -rf ~/.local/bin/.ax                 # config, sessions, memory, model catalog (optional)
+```
+
+**Windows**
+
+```powershell
+Remove-Item -Force "$env:LOCALAPPDATA\Programs\AX\bin\ax.exe"
+# remove the installer's PATH entry (optional but tidy)
+$p = [Environment]::GetEnvironmentVariable('Path', 'User')
+[Environment]::SetEnvironmentVariable('Path', ($p -split ';' | Where-Object { $_ -notlike '*Programs\AX\bin*' }) -join ';', 'User')
+Remove-Item -Recurse -Force "$env:LOCALAPPDATA\Programs\AX"   # deletes stored sessions and memory too (optional)
+```
+
+## Development
+
+### Build from source
+
+Requires Rust 1.92+.
+
+```bash
+git clone https://github.com/Axium-Labs/AX.git
+cd AX
+cargo build --release
+# binary at target/release/ax.exe (Windows) or target/release/ax (Unix)
+```
+
+## Providers & Models
+
+AX discovers providers from what is already on your machine — credentials in
+`<install-dir>/.ax/auth.json` and standard environment variables like `DEEPSEEK_API_KEY`.
+No network call happens during startup.
+
+| Provider | Credential | How to use |
+|---|---|---|
+| OpenAI Codex | OAuth login | `/login` → Codex OAuth |
+| WorkBuddy International | Browser OAuth + token polling | `ax auth login workbuddy --region intl`, or `/login` → WorkBuddy International |
+| WorkBuddy China | Browser OAuth + token polling | `ax auth login workbuddy --region cn`, or `/login` → WorkBuddy China |
+| DeepSeek | API key | `/login` → API key, or `DEEPSEEK_API_KEY` |
+| OpenAI | API key | `/login` → API key, or `OPENAI_API_KEY` |
+| OpenAI-compatible vendors (Groq, Mistral, OpenRouter, etc.) | Provider API key | `/login` → provider, or its API-key environment variable |
+
+Models are discovered dynamically into `<install-dir>/.ax/models/` (a bundled catalog plus
+a per-provider refresh cache). Switch anytime with `/model`; the last
+selection — provider, model and reasoning effort — is persisted to
+`<install-dir>/.ax/config.json` and restored on the next launch.
+
+To pick a provider explicitly from the command line:
+
+```bash
+ax --provider deepseek
+ax --provider openai-codex --model <model-id>
+ax run "explain this repo" --provider deepseek
+```
+
+`--provider` takes a provider id from the catalog, not only the `deepseek` /
+`openai` / `codex` / `compatible` aliases. Name the id whenever a vendor is
+listed more than once — Xiaomi's plain entry and its CN/SGP/AMS token-plan
+regions share model ids but not endpoints:
+
+```bash
+ax run "explain this repo" --provider xiaomi-token-plan-cn --model mimo-v2.5
+```
+
+## Usage
+
+Start the UI (default):
+
+```bash
+ax
+```
+
+Run one task and exit (non-interactive):
+
+```bash
+ax run "summarize the TODOs in ./src"
+```
+
+Run independent tasks with bounded concurrency:
+
+```bash
+ax agents "review pr #12" "write changelog" --concurrency 2
+```
+
+To expose AX's existing runtime to an ACP client, run `ax acp`. To connect this
+machine to an AX Crew backend, run `ax crew pair <code> --gateway <https-url>`
+once, then `ax crew connect <https-url>`. See [ACP and Crew integration](docs/acp-crew.md).
+
+## Design
+
+**Fast. Lightweight. Simple.**
+
+AX deliberately does not load everything up front. Skills, MCP servers,
+providers and memory are all activated only when the task actually needs them —
+so the things that make an agent powerful never get in the way of starting it
+or of a normal conversation. The trade-off is intentional: capability is loaded
+on demand, not at startup.
+
+## Documentation
+
+The internal architecture — agent loop, context management, multi-agent
+scheduling, SQLite schema, module layout — is documented in
+[docs/README.md](docs/README.md). Start with
+[docs/architecture.md](docs/architecture.md).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for reporting issues, developing changes,
+submitting PRs and the review process.
+
+## Acknowledgments
+
+- [AtomGit / GitCode](https://gitcode.com/axlab/AX): Thank you for hosting AX in China, helping users in mainland China access the project and download releases faster.
+
+## License
+
+[Apache-2.0](LICENSE-APACHE).

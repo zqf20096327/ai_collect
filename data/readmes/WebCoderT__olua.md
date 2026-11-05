@@ -8,6 +8,16 @@
 一个基于 Cocos Creator 3.8.7 的 2D 角色成长与装备玩法原型，配套 NestJS 服务端与 React 管理后台：
 三端跑通登录、建号、成长、装备、地图探索与战斗。
 
+**免费、开源，任何人都能自己部署一套**。线上有可访问的实例：
+
+| 地址 | 是什么 |
+| --- | --- |
+| <http://yimw.cn> | 官网（项目概览 / 数据流 / 工程管理 / 设计思路 / 部署） |
+| <http://game.yimw.cn> | 游戏客户端（Web 版，打开即玩） |
+| <http://admin.yimw.cn> | 运营后台 |
+
+想要自己的服务器上跑一套，看 [`docs/deploy.md`](docs/deploy.md) 与 [官网部署页](http://yimw.cn/deploy.html)。
+
 主仓在 **GitHub**（`github.com/WebCoderT/olua`），Gitee 上的 [putiwan/olua](https://gitee.com/putiwan/olua) 是只读同步镜像：
 代码、issue、PR、CI 都只在 GitHub 上进行（镜像定期同步，有延迟，以 GitHub 为准）。
 
@@ -38,13 +48,30 @@ admin（React）   ─┘       ↑ 唯一手写接口的地方
 
 ## 游戏截图
 
-![登录](website/assets/img/login.jpg)
+<p align="center">
+  <img src="website/assets/img/login.jpg" width="49%" alt="登录：账号 / 密码 / 区服" />
+  <img src="website/assets/img/role-select.jpg" width="49%" alt="角色选择与创建" />
+</p>
+<p align="center">
+  <img src="website/assets/img/game.jpg" width="49%" alt="游戏主界面：战斗、背包与地面掉落光柱" />
+  <img src="website/assets/img/combat.jpg" width="49%" alt="多人同屏战斗与技能特效" />
+</p>
+<p align="center">
+  <img src="website/assets/img/equip-detail.jpg" width="49%" alt="装备详情：品质边框与属性面板" />
+  <img src="website/assets/img/mall.jpg" width="49%" alt="商城：全部装备自动上架" />
+</p>
 
-![角色选择与创建](website/assets/img/role_selector.jpg)
+**管理端**（运营后台，浏览器打开）：
 
-![游戏主界面](website/assets/img/game.jpg)
+<p align="center">
+  <img src="website/assets/img/admin-dashboard.jpg" width="49%" alt="管理端概览：账号 / 角色 / 在线与增长趋势" />
+  <img src="website/assets/img/admin-align.jpg" width="49%" alt="管理端装备对齐：8 方向动作帧对位" />
+</p>
 
-> 截图覆盖登录 / 选角 / 单人战斗画面。多人同屏（同图玩家互见外观血量、击杀与动作同步）、不同装备外观组合、以及管理端运营界面暂未配图，欢迎自行下载运行查看实际效果。
+> 截图覆盖登录 / 选角 / 战斗 / 装备 / 商城与管理端。更多界面见
+> [官网](website/index.html) 的「跑起来是这样」，或自行下载运行查看。
+> 官网还有三块偏工程的内容：**架构与数据流**（五条主链路 + 契约管线 + 数据四层）、
+> **工程管理**（研发流程 / CI 门禁 / 38 套 e2e / 15 项审计）、**设计思路**（十二条决策及其代价）。
 
 ## 快速开始
 
@@ -271,7 +298,7 @@ olua/
 ├── server/                 # 服务端：NestJS
 ├── admin/                  # 管理端：React
 ├── tools/                  # 项目级脚本（跨端）
-├── website/                # 项目官网（纯静态单页）
+├── website/                # 项目官网（纯静态多页：概览 / 架构 / 工程 / 设计）
 ├── docs/                   # 部署说明
 └── resources_dist/         # 素材清单（发布用）
 ```
@@ -291,6 +318,7 @@ olua/
 | 文档 | 内容 |
 | --- | --- |
 | [README.md](README.md) | 本文件：三端索引、快速开始、功能清单 |
+| [website/](website/index.html) | 项目官网：概览、架构与数据流、工程管理、设计思路、玩法细节、部署 |
 | [FAQ.md](FAQ.md) | 跨端：地址唯一来源、契约管线、环境坑、回归怎么跑 |
 | [client/README.md](client/README.md) · [client/FAQ.md](client/FAQ.md) | 客户端：工程怎么打开、架构与约定、预览报错 |
 | [server/README.md](server/README.md) · [server/FAQ.md](server/FAQ.md) | 服务端：启动与环境变量、数据模型、认证与权限 |

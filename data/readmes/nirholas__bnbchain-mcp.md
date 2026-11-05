@@ -45,7 +45,7 @@
 
 <br/>
 
-[📖 Documentation](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app) • [🚀 Quick Start](#-quick-start) • [🛠️ Features](#-features-overview) • [📊 Roadmap](#️-roadmap) • [🤝 Contributing](#-contributing)
+[📖 Documentation](https://bnbchain-mcp.modelcontextprotocol.name) • [🚀 Quick Start](#-quick-start) • [🛠️ Features](#-features-overview) • [📊 Roadmap](#️-roadmap) • [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -228,7 +228,7 @@ Add to your MCP settings:
 4. Enter your server URL: `http://localhost:3001/mcp`
 5. Select the app in conversations via **Developer mode** menu
 
-📖 [Full ChatGPT Setup Guide](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/mcp-server/chatgpt-setup/)
+📖 [Full ChatGPT Setup Guide](https://bnbchain-mcp.modelcontextprotocol.name/mcp-server/chatgpt-setup/)
 
 ### Option 4: npx Instant Start
 
@@ -285,7 +285,7 @@ npx @nirholas/bnbchain-mcp@latest --sse
 | `estimate_gas` | Estimate gas for transaction |
 | `get_balance` | Get native/token balance |
 | `call_contract` | Call view/pure contract functions |
-| ... | [See full list →](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/tools/blockchain) |
+| ... | [See full list →](https://bnbchain-mcp.modelcontextprotocol.name/api/tools/network-tools/) |
 
 </details>
 
@@ -300,7 +300,7 @@ npx @nirholas/bnbchain-mcp@latest --sse
 | `approve_token` | Approve spending allowance |
 | `get_nft_metadata` | Get NFT metadata and traits |
 | `transfer_nft` | Transfer ERC-721 NFT |
-| ... | [See full list →](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/tools/tokens) |
+| ... | [See full list →](https://bnbchain-mcp.modelcontextprotocol.name/api/tools/tokens-tools/) |
 
 </details>
 
@@ -315,7 +315,7 @@ npx @nirholas/bnbchain-mcp@latest --sse
 | `get_lending_rates` | Get Aave/Compound rates |
 | `supply_to_lending` | Supply assets to lending protocol |
 | `get_farming_apy` | Get yield farming APY |
-| ... | [See full list →](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/tools/defi) |
+| ... | [See full list →](https://bnbchain-mcp.modelcontextprotocol.name/api/tools/swap-tools/) |
 
 </details>
 
@@ -330,7 +330,7 @@ npx @nirholas/bnbchain-mcp@latest --sse
 | `get_holder_distribution` | Get top holder breakdown |
 | `check_contract_verified` | Verify contract source |
 | `screen_address` | Check address risk score |
-| ... | [See full list →](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/tools/security) |
+| ... | [See full list →](https://bnbchain-mcp.modelcontextprotocol.name/api/tools/security-tools/) |
 
 </details>
 
@@ -345,7 +345,7 @@ npx @nirholas/bnbchain-mcp@latest --sse
 | `get_tvl` | Get protocol TVL from DefiLlama |
 | `get_dex_pools` | Get DEX pool data |
 | `get_social_metrics` | Get LunarCrush sentiment |
-| ... | [See full list →](https://bnbchain-mcp-docs-lp642k3kpa-uc.a.run.app/tools/market-data) |
+| ... | [See full list →](https://bnbchain-mcp.modelcontextprotocol.name/api/tools/market-data-tools/) |
 
 </details>
 
@@ -1780,4 +1780,4 @@ JavaScript agent, TypeScript agent, Python agent, Go agent, Rust agent, Java age
 
 ## Emerging Technology Keywords
 
-quantum computing agent, quantum machine learning agent, quantum optimization agent, quantum simulation agent, quantum cryptography agent, post-quantum agent, lattice-based agent, hash-based agent, code-based agent, isogeny-based agent, multivariate agent, neuromorphic agent, spiking neural network agent, memristor agent, photonic agent, optical computing agent, DNA computing agent, molecular computing agent, biological computing agent, wetware agent, biocomputing agent, synthetic biology agent, gene editing agent, CRISPR agent, mRNA agent, protein folding agent, AlphaFold agent, drug discovery agent, virtual screening agent, molecular dynamics agent, computational chemistry agent, materials science agent, nanotechnology agent, metamaterials agent, 2D materials agent, graphene agent, quantum dots agent, nanoparticles agent, nanorobots agent, nanomedicine agent, targeted delivery agent, biosensors agent, wearables agent, implantables agent, brain-computer interface agent, neural interface agent, Neuralink agent, EEG agent, fMRI agent, PET agent, MEG agent, TMS agent, tDCS agent, optogenetics agent, chemogenetics agent, connectomics agent, brain mapping agent, cognitive computing agent, affective computing agent, emotion AI agent, sentiment analysis agent, opinion mining agent, social listening agent, brand monitoring agent, reputation management agent, crisis communication agent, public relations agent, media monitoring agent, press agent, journalist agent, editor agent, writer agent, author agent, content creator agent, influencer agent, streamer agent, YouTuber agent, TikToker agent, podcaster agent, blogger agent, vlogger agent, photographer agent, videographer agent, animator agent, illustrator agent, graphic designer agent, UI designer agent, UX designer agent, product designer agent, industrial designer agent, fashion designer agent, interior designer agent, architect agent, landscape architect agent, urban planner agent, city planner agent, transportation planner agent, traffic agent, autonomous vehicle agent, self-driving agent, ADAS agent, V2X agent, connected vehicle agent, smart transportation agent, smart city agent, smart grid agent, smart meter agent, smart home agent, smart building agent, smart factory agent, Industry 4.0 agent, IoT agent, IIoT agent, edge computing agent, fog computing agent, mist computing agent, cloudlet agent, mobile edge agent, MEC agent, NOMA agent, massive MIMO agent, beamforming agent, millimeter wave agent, terahertz agent, 6G agent, 5G agent, LTE agent, NB-IoT agent, LoRa agent, Sigfox agent, Zigbee agent, Z-Wave agent, Thread agent, Matter agent, HomeKit agent, Alexa agent, Google Home agent, SmartThings agent, Home Assistant agent, OpenHAB agent, Domoticz agent, Hubitat agent, Homey agent, Tuya agent, eWeLink agent, Sonoff agent, Shelly agent, Tasmota agent, ESPHome agent, WLED agent, Zigbee2MQTT agent, deCONZ agent, ZHA agent, Philips Hue agent, IKEA Tradfri agent, Aqara agent, Xiaomi agent, Yeelight agent, Nanoleaf agent, LIFX agent, TP-Link Kasa agent, Wyze agent, Ring agent, Nest agent, Ecobee agent, Honeywell agent, Emerson agent, Carrier agent, Trane agent, Lennox agent, Daikin agent, Mitsubishi Electric agent, LG agent, Samsung agent, Bosch agent, Siemens agent, ABB agent, Schneider Electric agent, Rockwell agent, Emerson agent, Honeywell agent, Yokogawa agent, Endress+Hauser agent, SICK agent, Pepperl+Fuchs agent, Balluff agent, ifm agent, Banner agent, Turck agent, Omron agent, Keyence agent, Cognex agent, Basler agent, FLIR agent, Teledyne agent, Allied Vision agent, JAI agent, IDS agent, Baumer agent, Stemmer agent, MVTec agent, Matrox agent, National Instruments agent, Beckhoff agent, Phoenix Contact agent, Wago agent, Weidmuller agent, Murrelektronik agent, Pilz agent, 
+quantum computing agent, quantum machine learning agent, quantum optimization agent, quantum simulation agent, quantum cryptography agent, post-quantum agent, lattice-based agent, hash-based agent, code-based agent, isogeny-based agent, multivariate agent, neuromorphic agent, spiking neural network agent, memristor agent, photonic agent, optical computing agent, DNA computing agent, molecular computing agent, biological computing agent, wetware agent, biocomputing agent, synthetic biology agent, gene editing agent, CRISPR agent, mRNA agent, protein folding agent, AlphaFold agent, drug discovery agent, virtual screening agent, molecular dynamics agent, computational chemistry agent, materials science agent, nanotechnology agent, metamaterials agent, 2D materials agent, graphene agent, quantum dots agent, nanoparticles agent, nanorobots agent, nanomedicine agent, targeted delivery agent, biosensors agent, wearables agent, implantables agent, brain-computer interface agent, neural interface agent, Neuralink agent, EEG agent, fMRI agent, PET agent, MEG agent, TMS agent, tDCS agent, optogenetics agent, chemogenetics agent, connectomics agent, brain mapping agent, cognitive computing agent, affective computing agent, emotion AI agent, sentiment analysis agent, opinion mining agent, social listening agent, brand monitoring agent, reputation management agent, crisis communication agent, public relations agent, media monitoring agent, press agent, journalist agent, editor agent, writer agent, author agent, content creator agent, influencer agent, streamer agent, YouTuber agent, TikToker agent, podcaster agent, blogger agent, vlogger agent, photographer agent, videographer agent, animator agent, illustrator agent, graphic designer agent, UI designer agent, UX designer agent, product designer agent, industrial designer agent, fashion designer agent, interior designer agent, architect agent, landscape architect agent, urban planner agent, city planner agent, transportation planner agent, traffic agent, autonomous vehicle agent, self-driving agent, ADAS agent, V2X agent, connected vehicle agent, smart transportation agent, smart city agent, smart grid agent, smart meter agent, smart home agent, smart building agent, smart factory agent, Industry 4.0 agent, IoT agent, IIoT agent, edge computing agent, fog computing agent, mist computing agent, cloudlet agent, mobile edge agent, MEC agent, NOMA agent, massive MIMO agent, beamforming agent, millimeter wave agent, terahertz agent, 6G agent, 5G agent, LTE agent, NB-IoT agent, LoRa agent, Sigfox agent, Zigbee agent, Z-Wave agent, Thread agent, Matter agent, HomeKit agent, Alexa agent, Google Home agent, SmartThings agent, Home Assistant agent, OpenHAB agent, Domoticz agent, Hubitat agent, Homey agent, Tuya agent, eWeLink agent, Sonoff agent, Shelly agent, Tasmota agent, ESPHome agent, WLED agent, Zigbee2MQTT agent, deCONZ agent, ZHA agent, Philips Hue agent, IKEA Tradfri agent, Aqara agent, Xiaomi agent, Yeelight agent, Nanoleaf agent, LIFX agent, TP-Link Kasa agent, Wyze agent, Ring agent, Nest agent, Ecobee agent, Honeywell agent, Emerson agent, Carrier agent, Trane agent, Lennox agent, Daikin agent, Mitsubishi Electric agent, LG agent, Samsung agent, Bosch agent, Siemens agent, ABB agent, Schneider Electric agent, Rockwell agent, Emerson agent, Honeywell agent, Yokogawa agent, Endress+Hauser agent, SICK agent, Pepperl+Fuchs agent, Balluff agent, ifm agent, Banner agent, Turck agent, Omron agent, Keyence agent, Cognex agent, Basler agent, FLIR agent, Teledyne agent, Allied Vision agent, JAI agent, IDS agent, Baumer agent, Stemmer agent, MVTec agent, Matrox agent, National Instruments agent, Beckhoff agent, Phoenix Contact agent, Wago agent, Weidmuller agent, Mur

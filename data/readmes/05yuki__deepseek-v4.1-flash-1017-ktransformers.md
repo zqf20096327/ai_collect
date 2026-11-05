@@ -1,24 +1,32 @@
 # DeepSeek-V4.1-Flash-1017 on SGLang + KTransformers (CPU/GPU hybrid inference)
 
-Run [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017)
-on one machine with a lot of RAM and ordinary GPUs, or on one socket with 256 GB
-([One socket, 256 GB](docs/results.md#one-socket-256-gb)). The 384 routed experts per layer
-run on the CPU in MXFP4 through [KTransformers](https://github.com/kvcache-ai/ktransformers)'
-kt-kernel. Attention, the hottest experts and the prefill run on the GPUs through
-[SGLang](https://github.com/sgl-project/sglang). The engram tables (about 200 GB) are
-read straight from the checkpoint on disk, with no extracted copy. The context is up
-to 1M tokens.
+Run [deepseek-ai/DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) on one machine.
 
-This repository is everything needed: patches against two public upstream commits, a
-setup script that builds them, a launcher that reads the machine it runs on, and tests.
+- 512 GB of RAM and one or two ordinary GPUs ([Results](#results)).
+- One socket with 256 GB ([One socket, 256 GB](docs/results.md#one-socket-256-gb)).
+- 64 GB of RAM and one 16 GB GPU, with a GGUF pack of the model ([GGUF packs](#gguf-packs)).
+- A context of up to 1M tokens.
+- The reference's accuracy: on 24 public-domain texts the served model scores within the standard
+  error of DeepSeek's own `inference/model.py`. A patch stays only while that holds.
+
+How it runs: the 384 routed experts a layer run on the CPU in MXFP4 through
+[KTransformers](https://github.com/kvcache-ai/ktransformers)' kt-kernel.
+Attention, the hottest experts and the prefill run on the GPUs through
+[SGLang](https://github.com/sgl-project/sglang).
+The engram tables (about 200 GB) are read from the checkpoint on disk, with no extracted copy.
+
+This repository is everything needed: patches against two public upstream commits, a setup
+script that builds them, a launcher that reads the machine it runs on, and tests.
 Each tag pins those commits: SGLang main at `58484246` and KTransformers `95009ea` today, with
 torch 2.14.1 on CUDA 13 wheels, FlashInfer 0.7.2 and CUDA toolkit 13.1.
-The recipe follows SGLang main.
-Every few weeks the patches move to a newer commit, are measured again, and go out under a new tag.
+The recipe follows SGLang main: every few weeks the patches move to a newer commit, are measured
+again, and go out under a new tag.
 The SGLang patches are the commits of branch `dsv41-1017-main` of
-[05yuki/sglang-upstream](https://github.com/05yuki/sglang-upstream/tree/dsv41-1017-main), exported
-one file a commit ([docs/patches.md](docs/patches.md)).
+[05yuki/sglang-upstream](https://github.com/05yuki/sglang-upstream/tree/dsv41-1017-main), one file
+a commit ([docs/patches.md](docs/patches.md)).
 A patch that SGLang merges is dropped at the next move.
+
+## Quick start
 
 ```
 hf download deepseek-ai/DeepSeek-V4.1-Flash-1017 --local-dir /models/dsv41-1017
@@ -32,42 +40,55 @@ Or all of it in one command:
 ./run.sh
 ```
 
-`run.sh` runs `setup.sh`, downloads the checkpoint into `./models/` when it is not there, and starts `serve.sh`.
-`MODEL=<dir>` uses a checkpoint already downloaded.
-It remembers the directory in `state/run.env`, so the next `./run.sh` only starts the server.
-
-`MODEL=/models/dsv41-1017 tools/check.sh` starts the server once, sends one short request,
-checks that an answer comes back, and stops the server: the one command that says a setup works.
-
-`MODEL=<dir> tools/qualify.sh` checks a machine end to end and writes one Markdown report.
-It takes about 15 minutes after the server is up ([docs/qualification.md](docs/qualification.md)).
-Reports are filed by tag in [reports/](reports/README.md), and one from another GPU or CPU is welcome.
+- `run.sh` runs `setup.sh`, downloads the checkpoint into `./models/` when it is not there, and starts `serve.sh`.
+  `MODEL=<dir>` uses a checkpoint already downloaded.
+  The directory is remembered in `state/run.env`, so the next `./run.sh` only starts the server.
+- `MODEL=<dir> tools/check.sh` starts the server once, sends one short request, checks the answer and stops the server.
+  It is the one command that says a setup works.
+- `MODEL=<dir> tools/qualify.sh` checks a machine end to end and writes one Markdown report, in about 15 minutes
+  ([docs/qualification.md](docs/qualification.md)).
+  Reports are filed by tag in [reports/](reports/README.md); one from another GPU or CPU is welcome.
+- A prebuilt archive for each tag skips every build: `PREBUILT=<archive> ./setup.sh` ([docs/setup.md](docs/setup.md#prebuilt-pieces)).
 
 The server speaks SGLang's OpenAI-compatible API on `127.0.0.1:8080`.
-It returns tool calls and the model's thinking in their own fields, and keeps a prefix cache with a copy in host memory.
-Serving more than one request at a time and other machines: [docs/serving.md](docs/serving.md).
+Tool calls and the model's thinking come back in their own fields.
+A prefix cache keeps a copy in host memory.
+More than one request at a time, and other machines: [docs/serving.md](docs/serving.md).
 
 ## What it needs
 
 In short, from [docs/requirements.md](docs/requirements.md):
 
-- **RAM:** a 512 GB class machine, or one socket with 256 GB. The server uses about 420 GiB, most of it the CPU experts.
+- **RAM:** a 512 GB class machine, or one socket with 256 GB, or 64 GB with a GGUF pack.
+  The MXFP4 checkpoint takes about 420 GiB, most of it the CPU experts.
 - **GPU:** NVIDIA SM89 (RTX 40) or newer, 16 GB a card, one or two cards.
-- **Disk:** about 500 GB on NVMe. The checkpoint is 476 GiB, and its engram rows are read from it while serving.
-- **Software:** Linux, gcc/g++, the libnuma and hwloc headers, and a CUDA 13 toolkit; without one, setup.sh fetches NVIDIA's toolkit wheels.
+- **Disk:** about 500 GB on NVMe.
+  The checkpoint is 476 GiB, and its engram rows are read from it while serving.
+- **Software:** Linux, gcc/g++, the libnuma and hwloc headers, and a CUDA 13 toolkit.
+  Without a toolkit, `setup.sh` fetches NVIDIA's toolkit wheels.
 - **Host settings,** as root: `transparent_hugepage/shmem_enabled` set to `advise`, `vm.min_free_kbytes = 8388608`, and swap off.
-
-A prebuilt archive for each tag skips every build at setup: `PREBUILT=<archive> ./setup.sh` ([docs/setup.md](docs/setup.md#prebuilt-pieces)).
 
 ## GGUF packs
 
 The same tree serves [ISTA-DASLab's GSQ-RCO GGUF](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) of the model.
-One 16 GB GPU and 64 GB of RAM are enough for it.
-`BUILD=IQ2_XXS ./run.sh` downloads the IQ2_XXS build and serves it.
-`GGUF=<dir> ./setup.sh` and `GGUF=<dir> ./serve.sh` take a build already downloaded.
-On the two-GPU machine below, the IQ2_XXS build decodes Japanese prose at 62.6 tok/s.
-Its NLL is 0.327 above the reference, from the pack's quantization.
-What it needs, how it runs and its results: [docs/gguf.md](docs/gguf.md).
+
+- One 16 GB GPU and 64 GB of RAM are enough.
+- `BUILD=IQ2_XXS ./run.sh` downloads the IQ2_XXS build and serves it.
+  `GGUF=<dir> ./setup.sh` and `GGUF=<dir> ./serve.sh` take a build already downloaded.
+- Its NLL is 0.327 above the reference, from the pack's quantization.
+
+The IQ2_XXS build on the machine of [Results](#results); decode is Japanese prose, the median of four prompts.
+The 64 GB and 128 GB rows are one socket under a memory limit.
+
+| setup | decode | 35K prompt |
+|---|---|---|
+| two GPUs, two sockets, 512 GB | 62.6 tok/s | 34 s, 18 s the second time |
+| one GPU, one socket, 251 GiB | 43.5 tok/s | 17 s |
+| one GPU, 128 GB | 33.4 tok/s | 19 s |
+| one GPU, 64 GB | 25.7 tok/s | 28 s |
+
+An RTX 2070 8 GB with a Core i5-9600K and 64 GB decodes at 1.8 tok/s.
+Other kinds of text, the expert cache at each RAM size, and how each row was run: [docs/gguf.md](docs/gguf.md).
 
 ## Results
 
@@ -103,25 +124,24 @@ Its mean NLL is 0.7192 on two GPUs and 0.7224 on one, against 0.7185 for the ref
 
 ## Fixes from dsv41-flash-dual-epyc
 
-Two fixes by f-wunderlich, from the earlier release's repo: `--kt-num-gpu-experts 0` starts
-with Marlin (#2, tier 0 for the MoE call and tier 1's `loading` for the loader). The SM120
-padding-page fix (#3) is no longer carried: SGLang main's sparse attention with FlashInfer
-0.7.2 runs a 48K-token prefill without it, with the same NLL.
+Two fixes by f-wunderlich came from the earlier release's repo.
+
+- `--kt-num-gpu-experts 0` starts with Marlin (#2): tier 0 for the MoE call, tier 1's `loading` for the loader.
+- The SM120 padding-page fix (#3) is no longer carried.
+  SGLang main's sparse attention with FlashInfer 0.7.2 runs a 48K-token prefill without it, with the same NLL.
 
 ## Not done
 
-- Results are on 2 × RTX 5070 Ti (SM120) with Zen 2 CPUs; SM89 was checked by a
-  contributor on one card ([docs/sm89.md](docs/sm89.md)).
-- CPUs with AVX-512 should work: the experts run on the AVX2 kernels, which those CPUs
-  also have.
-- More than two GPUs: `serve.sh` sets tensor parallelism from the GPUs it sees; not
-  tested.
-- Older NVIDIA GPUs: RTX 30 and A100 do not run; DeepSeek-V4's attention here needs SM89
-  or newer. With `SGLANG_MXFP4_MOE_FP32=0`, the MXFP4 Marlin path also needs SM90 or SM120.
+- Results are on 2 × RTX 5070 Ti (SM120) with Zen 2 CPUs.
+  SM89 was checked by a contributor on one card ([docs/sm89.md](docs/sm89.md)).
+- CPUs with AVX-512 should work: the experts run on the AVX2 kernels, which those CPUs also have.
+- More than two GPUs: `serve.sh` sets tensor parallelism from the GPUs it sees; not tested.
+- Older NVIDIA GPUs: RTX 30 and A100 do not run; DeepSeek-V4's attention here needs SM89 or newer.
+  With `SGLANG_MXFP4_MOE_FP32=0`, the MXFP4 Marlin path also needs SM90 or SM120.
 - AMD GPUs: not supported (kv-vmm and kt-kernel use CUDA).
 
 ## License
 
-Apache-2.0 (see `LICENSE`), except `engram-adapter/`, which is derived from 0xSero's
-engram adapter under the MIT License (see the headers of its files). The model weights
-are under DeepSeek's license (see the model card).
+Apache-2.0 (see `LICENSE`).
+`engram-adapter/` is derived from 0xSero's engram adapter under the MIT License (see the headers of its files).
+The model weights are under DeepSeek's license (see the model card).

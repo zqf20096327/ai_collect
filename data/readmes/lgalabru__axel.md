@@ -29,11 +29,11 @@
 
 ```sh
 # Two agents: one builds, one reviews with another model
-axel agent new atlas --harness claude
-axel agent new nova --harness codex --skills review
+axel agent new terra codex
+axel agent new opus claude/opus
 
-# A thread: atlas does the work, then hands the diff to nova
-axel thread new --agent atlas "add retries to the webhook sender, then ask @nova to review it"
+# A thread: terra does the work, then hands the diff to opus
+axel thread new --agent terra "add retries to the webhook sender, then ask @opus for a review"
 ```
 
 Or run `axel` in Rex and type the same thing into the launcher that floats over your window.
@@ -49,13 +49,13 @@ change is a signed event, so copies on other machines merge.
 
 ### 🪪 Named agents
 
-A team of specialists instead of one assistant that knows everything. `atlas` builds with a
-few skills for your stack; `nova` reviews with another model. Each has its own Ed25519 key,
+A team of specialists instead of one assistant that knows everything. `terra` builds with a
+few skills for your stack; `opus` reviews with another model. Each has its own Ed25519 key,
 permissions, budget and inbox, and loads only its own skills.
 
 ```sh
-axel agent new nova --harness codex --skills review
-axel send "@nova please review the diff"
+axel agent new opus claude/opus --skills review
+axel send "@opus please review the diff"
 ```
 
 ### 🖥️ The terminal, fixed by Rex
@@ -65,10 +65,13 @@ you, reach your other machines, or even scroll. Rex fixes all of that, so Axel i
 program in a pane: threads stream as plain output and scroll like anything else, and status
 shows up in Rex's tabs. [Why Rex →](https://axel.md/docs/why-rex)
 
-### 🤖 Claude Code, Codex and OpenCode
+### 🤖 Claude Code, Codex, OpenCode, Goose, Cursor and more
 
-Bring the harness you already use. Axel drives Claude Code and Codex over the Agent Client
-Protocol with built-in adapters (no Node), or runs any harness in its own pane. Status comes
+Bring the harness you already use, and pick its model in the same word: `claude/opus`,
+`codex`, `goose`, `cursor/sonnet`. Axel drives Claude Code and Codex over the Agent Client
+Protocol with built-in adapters (no Node), and OpenCode, Goose, Cursor, Pi, Oh My Pi, Devin,
+Grok Build, Kimi Code, Amp, Hermes Agent and OpenClaw through their own ACP modes. Any other
+harness runs in its own pane. Status comes
 from hooks and the protocol, never from scraping a screen.
 
 ### 🌐 Your other machines
@@ -107,7 +110,7 @@ curl -fsSL https://axel.md/install | sh
 or with Homebrew:
 
 ```sh
-brew install scarce/axel/axel
+brew install scarce/taps/axel
 ```
 
 Then run `axel` in a Rex terminal. The first run checks your machine and helps you create
@@ -115,8 +118,9 @@ your first agent. Every commit on `main` that passes CI is a release, so run the
 again or `brew upgrade` to update.
 
 You'll need [Rex](https://www.superlogical.com/rex) and a harness:
-[Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex) or
-[OpenCode](https://opencode.ai). Details in the [installation guide](https://axel.md/docs/installation).
+[Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex),
+[OpenCode](https://opencode.ai), [Goose](https://goose-docs.ai), [Cursor](https://cursor.com/cli) or
+[another](https://axel.md/docs/installation#harnesses). Details in the [installation guide](https://axel.md/docs/installation).
 
 ## Documentation
 
@@ -124,6 +128,9 @@ You'll need [Rex](https://www.superlogical.com/rex) and a harness:
 - [Threads](https://axel.md/docs/threads) and [agents](https://axel.md/docs/agents)
 - [Agents working together](https://axel.md/docs/messaging)
 - [Keyboard](https://axel.md/docs/keys) and [command line](https://axel.md/docs/cli)
+- For agents and LLMs: [llms.txt](https://axel.md/llms.txt), every page in
+  [llms-full.txt](https://axel.md/llms-full.txt), and an Agent Skill that installs and runs
+  Axel for you: `npx skills add https://axel.md`
 
 ## Development
 

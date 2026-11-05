@@ -65,6 +65,16 @@
 | 👀 **It can see** | A Screenshot tool lets the agent look at the page it just built in headless Edge or Chrome, at desktop or phone width. |
 | 🗂️ **Workspace viewer** | The Files tab shows every folder in the chat, and opens code with syntax colors and line numbers for the usual languages, big files included. You can still edit and save it there. It follows changes the AI or another app makes, and asks before replacing edits you haven't saved. |
 | 📎 **Point at code** | Type `@` to pick a file from any folder in the chat, or select lines in the Files tab and press **Ask Nexus**. |
+| 🖱️ **The agent uses a browser** | The Browser tool gives the agent a real headless Edge or Chrome that stays open between calls: it opens your dev server or an HTML file, clicks buttons by their text, types, presses keys, scrolls, reads the page and its controls, and sees console errors, so it can test its own UI changes from start to finish. |
+| 🐙 **@nexus on GitHub** | Turn it on in Settings → GitHub, then write `@nexus fix this` in a comment on an issue or pull request. Within two minutes a chat starts in the project with that repository, and the agent's summary is posted back as a reply. It uses the `gh` CLI, so no webhook or public address is needed, and only your own comments count. |
+| 🧠 **Project memory** | The agent saves what later chats need to know about a project, such as how to run its tests or what you prefer, and every chat in that folder sees those notes, flagged when a file they name is gone. Notes live in `~/.nexus/memory`, outside the project, and keys or passwords are refused. Read, add or forget them from a project's menu → Memory. |
+| 🩺 **Code checks** | A JavaScript, JSON or Python file the agent breaks is reported in the same step as the edit. In a TypeScript project, Nexus runs `tsc` after a turn that changed code and hands any errors the change caused back to the agent, twice at most. Turn it off in Settings → Code checks. |
+| 🌿 **Source control** | **Source control** in the Changes tab shows the branch and changed files, commits them all with a message the AI can write for you, makes and switches branches, pulls and pushes, and opens any commit in the history to its diff. Nexus's own `.nexus` files never go into a commit. |
+| 🌐 **Live preview** | The globe button in a project's header shows the app its dev server is serving (Nexus finds the ports your dev servers listen on), right in Nexus or in its own tab, so you can watch it change from your phone. The preview runs on its own port, so the app can't reach Nexus or its login. |
+| 🩻 **Doctor** | `/doctor`, or **Check setup** in Settings → Version, checks what Nexus needs (Node.js, Git, ripgrep, a shell, a model, a browser, the GitHub CLI, settings.json, MCP servers, the sandbox, the preview port and the way to updates) and says how to fix anything missing. |
+| ✨ **Better prompts, faster replies** | The sparkle button by the message box rewrites a rough request into a clear, specific prompt you can check before sending (Undo is one tap). Turn on Settings → Composer to get two or three suggested replies after each answer, to tap instead of typing on a phone. |
+| 📝 **Recap** | Come back to a chat that finished or stopped while you were elsewhere and Nexus offers a **Recap**: a few bullets on what was done, which files changed and what needs you. `/recap` asks for one any time. It stays out of the conversation. |
+| 💬 **Several chats per project** | **New chat** in a project's menu starts another conversation in the same folder, listed under the project and titled by its first message. The fork button on any of your messages starts a new chat from just before it, with that message ready to edit, so you can try another way without losing this one. `/btw <question>` asks something on the side, even while the agent works, and the answer stays out of the conversation. |
 | 🎭 **Swap agents per chat** | The **Agent** button next to the model turns a chat into any agent type, with its own instructions, tools and model. |
 | ✍️ **Create agents with AI** | Type `/create-agent reviews my PRs for security holes` and the AI writes a new agent type for you, tailored to your project. |
 | 🧠 **Your own prompts** | Edit the system prompt for everywhere, one project or one chat. Prompt injection adds standing instructions to every message you send, where models weigh them most. |
@@ -74,6 +84,8 @@
 | 🔁 **Reliability** | All off until you turn them on in Settings → Reliability. **Requests per minute** paces each provider so its rate limit is never hit. **Auto retry** waits out rate limits (as long as the provider asks), overloaded servers and dropped connections, showing each wait in the chat. **Error notifications** tell you when a chat stops on an error and why. **Fallback models** take over, in the order you choose, when a key runs out of credit or quota. |
 | 🔐 **Permissions** | Like VS Code's approvals, in Settings → Permissions: set each tool (commands, edits, web, subagents, every MCP server) to ask, allow or off, and add command rules by prefix or /regex/ to allow, always ask or block. Every part of a chained command needs an allow rule, and a block holds even in bypass. **Import from VS Code** brings over your `chat.tools.terminal.autoApprove` rules from VS Code, Cursor, Windsurf or VSCodium. |
 | 🧩 **Works with VS Code** | MCP servers you set up in VS Code, Cursor or Windsurf (and a project's `.vscode/mcp.json`) appear under **Marketplace → MCP servers → VS Code & Cursor**, ready to install with their inputs as fields. **Open in VS Code** in a project's menu opens the same folder there, so your VS Code extensions work on it next to Nexus. (Extensions themselves need VS Code's extension host, so they run in VS Code, not inside Nexus.) |
+| 🔑 **Secrets stay out of chats** | Paste an API key or token into a message and Nexus takes it out before anything keeps it. A model provider's key is saved in Settings → Models. Anything else, like a GitHub token or a private key, becomes `$NEXUS_SECRET_1`, which that chat's shell commands get as an environment variable, so "use this token" still works while the transcript and the model never see the value. |
+| 📦 **Sandbox** | On Linux (bubblewrap) and macOS (sandbox-exec), Settings → Sandbox runs the agent's shell commands where they can only write inside the chat's folders, the temp folder and package caches, with the network optionally cut too, so bypass and autopilot can't harm the rest of the computer. Your own commands aren't sandboxed. Not available on Windows yet. |
 | 🛡️ **Risk check** | Before a risky command or edit runs (deleting folders, force-pushing, git resets, admin rights, deploys, database deletes, secrets or CI files), the chat's model rates its risk. If it is high, the agent stops to look for a safer way first. If there isn't one, you're asked; on autopilot or in bypass it goes ahead. Turn it off in Settings. |
 | ✅ **Keep or undo each edit** | After a turn, the files it changed wait above the message box, like in VS Code: open a file to see its diff, then **Keep** or **Undo** it, or **Keep all** and **Undo all** at once. |
 | 🔁 **Self-improving** | Ask the built-in self-improvement bot for a feature and it edits Nexus itself and runs the tests. As a Linux service it also restarts, and rolls back if the server doesn't come back. |
@@ -88,7 +100,23 @@
 
 ## 🚀 Quick start
 
-You need **Node.js 24+**, **Git** and **ripgrep**, plus `make`, `g++` and `python3` in case `node-pty` has to compile for your platform. You also need a model: an API key for **OpenAI, Anthropic, OpenRouter, Gemini, Groq, DeepSeek, Mistral or xAI**, or a local model in **Ollama** or **LM Studio**.
+**One line.** On macOS or Linux (needs Node.js 24+ and Git):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/glsoo/nexus/main/scripts/get-nexus.sh | sh
+```
+
+It clones Nexus into `~/nexus`, installs it, makes a login and prints it. Then `cd ~/nexus && npm start`.
+
+On Windows, in PowerShell (installs Git, Node.js and ripgrep with winget if they're missing):
+
+```powershell
+irm https://raw.githubusercontent.com/glsoo/nexus/main/scripts/get-nexus.ps1 | iex
+```
+
+It clones Nexus into `~\nexus`, builds the launcher, adds a desktop shortcut and opens it. Run either line again to update. Set `NEXUS_DIR` first to install somewhere else.
+
+**By hand.** You need **Node.js 24+**, **Git** and **ripgrep**, plus `make`, `g++` and `python3` in case `node-pty` has to compile for your platform. You also need a model: an API key for **OpenAI, Anthropic, OpenRouter, Gemini, Groq, DeepSeek, Mistral or xAI**, or a local model in **Ollama** or **LM Studio**.
 
 ```sh
 git clone https://github.com/glsoo/nexus.git
@@ -204,7 +232,7 @@ cd nexus
 powershell -ExecutionPolicy Bypass -File windows\install.ps1 -Launch
 ```
 
-This builds `windows\Nexus.exe` and adds a **Nexus** shortcut to your desktop. The launcher's Settings set the login, API keys and port. To update, run `git pull`, then rerun `install.ps1` while the launcher is closed.
+This builds `windows\Nexus.exe` and adds a **Nexus** shortcut to your desktop. The launcher's Settings set the login, API keys and port. To update, open **Settings → Version** in Nexus and click **Install update**: Nexus merges it, runs the tests, then rebuilds and reopens the launcher by itself.
 
 ## 🔧 Configuration
 
@@ -218,15 +246,21 @@ Optional settings, in `.env` (or `windows\.env` on Windows):
 | `NEXUS_MODEL` | `gpt-6.1-sol` | Default model for new chats |
 | `NEXUS_URL` | `http://127.0.0.1:<port>` | Public address used in `present` links |
 | `NEXUS_AUTO_UPDATE` | on | Set to `0` to turn off automatic updates |
+| `NEXUS_PREVIEW_PORT` | port + 1 | Port of the live preview, which shows a project's dev server apart from Nexus itself |
+| `NEXUS_PREVIEW_URL` | | Public address of the preview port, for opening previews through a tunnel or proxy |
 | `NEXUS_COMPAT` | unset | Name of another tool whose `.name/` folders and `NAME.md` should also be read |
 
 Hooks, MCP servers, providers and the auto-compact size live in `~/.nexus/settings.json`, which you can edit on the Settings page. Hooks run on `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, `SubagentStop`, `PreCompact` and `Notification`, and a hook that exits with 2 blocks the tool call or prompt. The global system prompt lives in `~/.nexus/prompts.json`.
 
 ## 🔄 Updates
 
-Every 6 hours, when nothing is running, Nexus fetches `origin/main` and merges it into your local branch, so your own commits stay. It then runs the tests and restarts. If the merge conflicts or the tests fail, your code stays as it was, and that update is skipped until a newer one appears. Settings shows the version, your local change count and the last result, and has an **Update now** button.
+Nexus updates straight from this GitHub repo, no releases needed. **Settings → Version** shows when updates are waiting (Settings also gets a dot) and lists what's new; **Install update** does the rest. Nexus merges `origin/main` into your local branch, so your own commits stay, runs the tests, and restarts. If the merge conflicts or the tests fail, your code stays as it was, and that update is skipped until a newer one appears.
 
-Automatic restarts need the systemd service below. Automatic updates are Linux-only.
+- **Windows:** the launcher restarts itself after an update, rebuilding `Nexus.exe` first, and the open page reconnects. Nexus looks for updates every 6 hours and installs them when you click.
+- **Linux:** run as the systemd service below, Nexus also installs updates by itself every 6 hours when nothing is running, and restarts.
+- **macOS, or Linux without the service:** updates install the same way; restart Nexus afterwards, as Settings says.
+
+Set `NEXUS_AUTO_UPDATE=0` to turn off the automatic checks and installs.
 
 ## 🧪 Test
 

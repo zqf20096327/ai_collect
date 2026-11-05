@@ -29,13 +29,13 @@ k8s-aibom recognizes workload kinds across the AI lifecycle and applies category
 
 **Inference services.** Deployments, StatefulSets, DaemonSets, KServe `InferenceService`, NVIDIA Dynamo `DynamoGraphDeployment` (and standalone `DynamoComponentDeployment`), NVIDIA NIM Operator `NIMService`, `LeaderWorkerSet` and llm-d's `DisaggregatedSet` resources serving model inference. One workload, one AIBOM: workloads an operator materializes under one of these (a Dynamo graph's component Deployments, an LWS's StatefulSets, a DisaggregatedSet's LeaderWorkerSets, a CronJob's Jobs) are rolled up into the owner's document rather than reported twice. The controller detects the serving runtime (vLLM, Hugging Face TGI, NVIDIA Triton, Ollama, Ray Serve, llm-d, SGLang, LMDeploy, HuggingFace TEI), the container image and resolved digest, and the claimed model identity from container args, environment variables, mounted volume sources, or workload annotations.
 
-**Agent stacks.** Workloads running agent frameworks (LangChain / LangGraph, AutoGen, CrewAI, Langflow, Flowise, Chainlit). The controller extracts the framework version, the external LLM API dependencies declared via environment variables (OpenAI, Anthropic, Google, Cohere), and telemetry signatures that indicate observability integration (LangSmith, LangChain tracing).
+**Agent stacks.** Workloads running agent frameworks, recognized by image (Langflow, Flowise, Chainlit, Haystack, LlamaIndex) or by environment variable (LangChain from the LangSmith tracing variables `LANGCHAIN_TRACING_V2` and `LANGCHAIN_API_KEY`, AutoGen, CrewAI, Haystack, DSPy, LlamaIndex). The controller records each framework by name, and the external LLM APIs the workload calls, from their API-key variables (OpenAI, Anthropic, Google Gemini, Cohere, Azure OpenAI); key values are never recorded. Framework versions are not extracted; the container components carry the image tags.
 
-**Vector databases and RAG infrastructure.** Workloads running Milvus, Qdrant, Weaviate, Chroma, pgvector, or Vespa. The controller extracts the vector store identity, configured collections where determinable, and the workload's relationship to RAG-related dependencies.
+**Vector databases and RAG infrastructure.** Workloads running Milvus, Qdrant, Weaviate, Chroma, pgvector, or Vespa. The controller records the vector store, identified from the container image, along with the workload's container images and, once resolved, their digests. Collections and other configuration inside the database are not read.
 
-**Training and fine-tuning jobs.** Kubernetes Jobs and CronJobs running PyTorch, KubeRay, JAX, or Hugging Face Accelerate workloads. The controller extracts mounted training datasets via volume specifications, telemetry integrations (Weights & Biases, Hugging Face Hub), and runtime/framework version information.
+**Training and fine-tuning jobs.** Kubernetes Jobs and CronJobs running PyTorch, KubeRay, JAX, or Hugging Face Accelerate images, or reporting to Weights & Biases (`WANDB_API_KEY`). The controller records the framework (and W&B) by name, without a version, and the dataset volume mounts: those named `dataset` or `training-data`, or mounted at `/data`.
 
-**Evaluation harnesses.** Workloads running `lm-evaluation-harness`, Ragas, or Trulens. The controller extracts evaluation framework identity and configured benchmark suites where determinable.
+**Evaluation harnesses.** Jobs and CronJobs running `lm-evaluation-harness`, Ragas, or Trulens images. The controller records the evaluation framework and, as for training jobs, the dataset volume mounts. Benchmark suites and other harness arguments are not read.
 
 ## How it works
 
@@ -145,7 +145,7 @@ kubectl aibom view <aibom-name> -n prod-jobs        # decoded, pretty-printed BO
 kubectl aibom verify <aibom-name> -n prod-jobs      # recompute sha256 vs the published digest; non-zero exit on mismatch
 ```
 
-`find` is the incident command — "where is this runtime / model / image / digest serving right now?" — with filters that AND together; zero matches prints `0 matches` and exits 0 so scripts can tell "none found" from "plugin broke". Zero matches is never proof of absence: namespaces that are not opted in, images not on the detection allowlist, and unresolved digests are invisible by design, and rows whose document lives in an external sink are shown (not excluded) under image/digest filters, with a warning. `summary` includes per-model signature state, and `verify` prints signature facts (since v1.5.0, Design 002). The plugin is distributed via [krew](https://krew.sigs.k8s.io/) as `aibom`, with attested binaries on each release.
+`find` is the incident command — "where is this runtime / model / image / digest serving right now?" — with filters that AND together; zero matches prints `0 matches` and exits 0 so scripts can tell "none found" from "plugin broke". Zero matches is never proof of absence: namespaces that are not opted in, images not on the detection allowlist, and unresolved digests are invisible by design, and rows whose document lives in an external sink are shown (not excluded) under image/digest filters, with a warning. `--runtime` matches every runtime in a workload's document; for a row whose document is not inline it can only check the summary runtime, and says so on stderr. `summary` includes per-model signature state, and `verify` prints signature facts (since v1.5.0, Design 002). The plugin is distributed via [krew](https://krew.sigs.k8s.io/) as `aibom`, with attested binaries on each release.
 
 ### Verify the supply chain (optional)
 
@@ -252,7 +252,7 @@ By default, BOMs are stored only in the AIBOM CR's status — no data leaves the
 > Sinks that read credential Secrets (webhook auth, GCS service-account keys) require installing the chart with `--set rbac.sinkSecretAccess=true`. It is **off by default**: with no sinks configured, the controller holds no Secret permissions at all.
 
 ```yaml
-apiVersion: aibom.k8saibom.dev/v1alpha1
+apiVersion: aibom.k8saibom.dev/v1beta1
 kind: AIBOMControllerConfig
 metadata:
   name: default
@@ -280,7 +280,7 @@ spec:
 
 Configuration changes take effect on the next reconcile, without restarting the controller. Invalid configuration is rejected; the previous good configuration remains in effect, and the failure is surfaced as a condition on the `AIBOMControllerConfig` CR. This is the *last-known-good* property: an operator mistake in the configuration does not break the pipeline.
 
-**Workload-kind allowlist:** `spec.discovery.workloadKinds` lists the kinds the controller inventories, as `Group/Kind` strings (`apps/Deployment`, `nvidia.com/DynamoGraphDeployment`, `leaderworkerset.x-k8s.io/LeaderWorkerSet`, `disaggregatedset.x-k8s.io/DisaggregatedSet`, ...). Absent or empty means every known kind. An entry that is not a known kind is a configuration error (last-known-good retained, the entry named in the condition), never a silent no-op. A kind not in the list gets no documents and its existing ones are deleted; for the third-party kinds the controller also stops watching it. A kind that is switched off stops absorbing the workloads it owns, which are reported on their own again. Changes apply without a restart.
+**Workload-kind allowlist:** `spec.discovery.workloadKinds` lists the kinds the controller inventories, as `Group/Kind` strings (`apps/Deployment`, `nvidia.com/DynamoGraphDeployment`, `leaderworkerset.x-k8s.io/LeaderWorkerSet`, `disaggregatedset.x-k8s.io/DisaggregatedSet`, ...). Absent or empty means every known kind. An entry that is not a known kind is a configuration error (last-known-good retained, the entry named in the condition), never a silent no-op. A kind not in the list gets no documents and its existing ones are deleted; for the third-party kinds the controller also stops watching it. A kind that is switched off stops absorbing the workloads it owns, which are reported on their own again. Changes apply without a restart. The field exists only in `v1beta1`, so write the config through `aibom.k8saibom.dev/v1beta1` as in the example above. `v1alpha1` is still served, but its schema has no `workloadKinds`: a `v1alpha1` manifest that sets it fails `kubectl`'s strict field validation, or loses the field with only a warning in clients that don't validate strictly, and an apply or patch through `v1alpha1` removes an allowlist the config already has, with no warning.
 
 ## Security model
 
@@ -391,6 +391,7 @@ k8s-aibom complements, rather than replaces, the broader AI supply-chain transpa
 - **[OpenSSF GUAC][guac]** aggregates and graphs supply-chain metadata. The webhook sink can be pointed at a GUAC blob-storage collector today; a native GUAC sink sits in the demand-gated backlog ([roadmap](docs/roadmap.md)).
 - **[Sigstore][sigstore]** provides the signing and verification infrastructure behind the `verified` confidence tier (shipped in v1.5.0).
 - **Build-time AIBOM tools** (AIBoMGen, OWASP AIBOM Generator, vendor tools) describe what was built. k8s-aibom describes what is running. Both are needed for full supply-chain visibility.
+- **[Project AIBOM](https://gavinsan33.github.io/project-aibom/)** (Red Hat Research / Mass Open Cloud) records each training or inference run's hardware, software, and performance metrics in one signed place, for reproducing and comparing runs. It is the training-side record to k8s-aibom's serving-side inventory; a CycloneDX export and cross-links between the two are being worked out together (its short name is moving to `aibomrun` so both can run on one cluster).
 
 ## Contributing
 

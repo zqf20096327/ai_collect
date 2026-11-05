@@ -5,10 +5,15 @@
 <p align="center">
   <a href="https://github.com/sametcelikbicak/opencode-team/actions/workflows/checks.yml"><img src="https://img.shields.io/github/actions/workflow/status/sametcelikbicak/opencode-team/checks.yml?label=checks&branch=main" alt="CI checks"></a>
   <a href="https://github.com/sametcelikbicak/opencode-team/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/sametcelikbicak/opencode-team/docs.yml?label=docs&branch=main" alt="Docs"></a>
+  <a href="https://www.npmjs.com/package/@opencodeteam/cli"><img src="https://img.shields.io/npm/v/@opencodeteam/cli?logo=npm&label=&color=cb3837" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@opencodeteam/cli"><img src="https://img.shields.io/npm/dm/@opencodeteam/cli?logo=npm&label=&color=cb3837" alt="npm downloads"></a>
+  <a href="https://img.shields.io/node/v/@opencodeteam/cli?logo=nodedotjs&label=&logoColor=white&color=339933"><img src="https://img.shields.io/node/v/@opencodeteam/cli?logo=nodedotjs&label=&logoColor=white&color=339933" alt="Node version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT"></a>
   <a href="https://github.com/sametcelikbicak/opencode-team/stargazers"><img src="https://img.shields.io/github/stars/sametcelikbicak/opencode-team?style=social" alt="Stars"></a>
-  <a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-1.x-blue?logo=opencode" alt="OpenCode 1.x"></a>
-  <a href="https://www.npmjs.com/package/@opencodeteam/cli"><img src="https://img.shields.io/npm/v/@opencodeteam/cli?logo=npm&label=&color=cb3837" alt="npm"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/📜-Changelog-blue" alt="Changelog"></a>
+  <a href="SUPPORT.md"><img src="https://img.shields.io/badge/💬-Support-blue" alt="Support"></a>
+  <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/📖-Code%20of%20Conduct-orange" alt="Code of Conduct"></a>
+  <a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-2.x-blue?logo=opencode" alt="OpenCode 2.x"></a>
 </p>
 
 A team of AI agents that takes an idea from research to launch — built on [opencode](https://opencode.ai), with no framework and no extra dependencies.
@@ -32,9 +37,9 @@ The orchestrator is the **default agent**. Open `opencode` anywhere, describe an
 
 ## Install
 
-Requires OpenCode 1.x (tested on 1.19.0). OpenCode 2 support is planned as a separate release. Latest release: v0.0.4; `main` is the development branch.
+Requires OpenCode 2.x (tested on 2.2.5). This release targets OpenCode 2.x only. OpenCode 1 and 2 cannot coexist; OpenCode 1.x users: use Release v1.0.0 (@opencodeteam/cli@1.0.0).
 
-Supported on macOS, Linux, and native Windows (Windows PowerShell 5.1 or PowerShell 7; verified with OpenCode 1.19.4). WSL is untested.
+Supported on macOS, Linux, and native Windows (Windows PowerShell 5.1 or PowerShell 7; verified with OpenCode 2.2.5). WSL is untested.
 
 Full install instructions — both install methods, copy vs symlink, verify/uninstall/update, and Windows steps: [docs/install.md](./docs/install.md).
 
@@ -67,7 +72,7 @@ Full usage guide, single-stage commands and pipeline control: [docs/usage.md](./
 
 14 agent roles, each owning a pipeline stage and writing a `.team/` artifact. Full role → agent file → artifact mapping: [docs/reference/agents.md](./docs/reference/agents.md).
 
-All agents are `mode: all`, reachable three ways: **Tab / Shift+Tab** to cycle, **`@agent-name`** to mention, and the orchestrator can launch it as a subagent via the `task` tool.
+All agents are `mode: all`, reachable three ways: **Tab / Shift+Tab** to cycle, **`@agent-name`** to mention, and the orchestrator can launch it as a subagent via the `subagent` tool.
 
 Models are free-tier OpenCode Zen models. Agent frontmatter no longer pins a model — each agent uses the session's active model. To assign a specific model to a single agent, add a `model:` field to that agent's frontmatter:
 
@@ -110,7 +115,7 @@ The team's working language follows you. Agent instructions, code, code comments
 
 ## Requirements
 
-- [opencode](https://opencode.ai) 1.x (tested on 1.19.0)
+- [opencode](https://opencode.ai) 2.x (tested on 2.2.5)
 - An OpenCode Zen account or any provider configured in opencode — the defaults use free-tier models
 
 ## Disclaimer

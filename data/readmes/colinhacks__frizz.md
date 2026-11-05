@@ -99,6 +99,8 @@ When the answer isn't one thing, the same card takes several: check any combinat
 
 Browse the repo's issues and pull requests from the composer, select any number of them, and each becomes its own thread.
 
+Sign Frizz in once from Settings → GitHub, with a device code. The sign-in is read-only with one exception GitHub builds in: it can read code, issues, pull requests and checks on the accounts where you install [the Frizz GitHub App](https://github.com/apps/frizz-agent-console), plus public repos, and the only thing it can do beyond reading is comment on a commit. It's what watches pull requests and issues for your workers, overnight included, and it's separate from any `gh` sign-in of your own. It's stored encrypted, with a key unique to your machine: in the keychain on a Mac, and in a separate private file elsewhere. That keeps it from token scanners and copied files, but not from a program running as you that goes after Frizz on purpose.
+
 <p align="center">
   <img src="assets/github.png" alt="The GitHub picker open over the composer, listing real open issues from colinhacks/zod with numbers, authors, and reaction counts; three are checked and a Start investigations button is enabled." width="100%">
 </p>
@@ -121,6 +123,12 @@ Give a thread a standing goal. Frizz sends it as a prompt every time the agent c
   <img src="assets/goal.png" alt="The goal panel open above a queue card's prompt box: a goal saying to keep going until the test suite is green, sent at every rest and every 30 minutes." width="100%">
 </p>
 
+### Launch prefix
+
+Start every worker through a command of your own: a secret injector, a token proxy, a sandbox. Set it per project under the gear beside **Claude Code** or **Codex** in the model picker. With `op run --env-file .env --` there, a new Claude worker starts as `op run --env-file .env -- claude …`, so the variables 1Password injects are in the worker's environment and nowhere on disk.
+
+The command gets the worker's environment, and must run the command after it with stdin and stdout passed through and stay running until it exits (`exec` does both). Frizz splits the prefix into words like a shell would but never runs it in one, so for variables or pipes, write the shell in: `sh -c 'export ANTHROPIC_BASE_URL="$(my-proxy url)"; exec "$@"' sh`. Claude picks up a change on the next thread you dispatch. Codex's prefix wraps the app-server a project's Codex threads share, and Frizz restarts it once no Codex turn is running. With a prefix set, Frizz no longer refuses to dispatch when it finds no local sign-in, since the prefix may be what supplies the credentials.
+
 <br/>
 
 <h2 align="center">CLI</h2>
@@ -142,18 +150,18 @@ Options:
   --no-app               print the URL without opening a browser
   --port <port>          request a fixed port for a new workspace server
   --sandbox              a disposable Frizz to try things in: throwaway home and project, its
-                         own port, deleted when this terminal closes; credentials (gh,
-                         cloudflared, Claude, Codex, the machine's frizz.sh key) are shared
+                         own port, deleted when this terminal closes; credentials (Frizz's
+                         GitHub sign-in, cloudflared, Claude, Codex, the machine's frizz.sh
+                         key) are shared
   --link                 print a fresh single-use access link for the running board
   --debug                stream the full event feed to the terminal instead of the compact readout
   -h, --help             show this help
 
 
 To reach the board from a phone or another machine, press R in the terminal running it: a short
-walkthrough sets up a private frizz.sh name (no account needed), a Cloudflare
-Tunnel, Tailscale, or a proxy of your own, and
-remembers the choice, so a plain launch serves it from then on. The board stays on loopback and
-shows a single-use sign-in link as a QR; press L for a fresh one, or run --link from another shell.
+walkthrough sets up a private frizz.sh subdomain (no account needed), a Cloudflare Tunnel,
+Tailscale, or a proxy of your own, and remembers the choice, so a plain launch serves it from then
+on. The board stays on loopback and shows a single-use sign-in link as a QR; press L for a fresh one, or run --link from another shell.
 ```
 
 <br/>
@@ -170,7 +178,7 @@ shows a single-use sign-in link as a QR; press L for a fresh one, or run --link 
 <details>
 <summary><b>Does anything leave my machine?</b></summary>
 
-> Nothing from Frizz. There's no account, no telemetry, and the server binds to `127.0.0.1`; reaching it from another device is something you switch on yourself (press R in its terminal). The agents themselves talk to their providers, and `gh` talks to GitHub, but Frizz is a local process looking at local files.
+> Nothing from Frizz. There's no account, no telemetry, and the server binds to `127.0.0.1`; reaching it from another device is something you switch on yourself (press R in its terminal). The agents themselves talk to their providers, and Frizz reads GitHub directly with the read-only sign-in you give it, but Frizz is a local process looking at local files.
 
 </details>
 
@@ -205,7 +213,7 @@ shows a single-use sign-in link as a QR; press L for a fresh one, or run --link 
 <details>
 <summary><b>Can I reach it from another machine?</b></summary>
 
-> Yes. Press **R** in the terminal running Frizz. A short walkthrough sets up one of four ways to reach the board — a name on frizz.sh, a Cloudflare Tunnel you own, Tailscale, or any proxy you run — checks what each needs, prints the commands, and remembers your choice. From then on a plain `npx frizz` serves it; pick **Off** in the same place to go back to loopback only.
+> Yes. Press **R** in the terminal running Frizz. A short walkthrough sets up one of four ways to reach the board — a frizz.sh subdomain, a Cloudflare Tunnel you own, Tailscale, or any proxy you run — checks what each needs, prints the commands, and remembers your choice. From then on a plain `npx frizz` serves it; pick **Off** in the same place to go back to loopback only.
 >
 > To try any of this without touching the board you run, launch a second one with `npx frizz --sandbox` — a throwaway home and project on its own port, deleted on ctrl-c.
 >
@@ -216,7 +224,7 @@ shows a single-use sign-in link as a QR; press L for a fresh one, or run --link 
 <details>
 <summary><b>Can I reach it from anywhere, not just my LAN?</b></summary>
 
-> Same answer: press **R** and pick a private frizz.sh name (unguessable, no account), a Cloudflare Tunnel, or Tailscale. (Custom frizz.sh names are paused for now; a board that already holds one keeps it.) Each is reachable from anywhere the transport is — a frizz.sh name and a Cloudflare Tunnel from the open internet, Tailscale from your own devices.
+> Same answer: press **R** and pick a private frizz.sh subdomain (unguessable, no account), a Cloudflare Tunnel, or Tailscale. (Custom frizz.sh subdomains are paused for now; a board that already holds one keeps it.) Each is reachable from anywhere the transport is — a frizz.sh subdomain and a Cloudflare Tunnel from the open internet, Tailscale from your own devices.
 >
 > Frizz has no accounts, so the single-use sign-in link **is** the door: a phone that scans it gets a session; nobody else gets in. Sessions are per device and can be listed and revoked with `npx frizz --sessions` and `npx frizz --sign-out`. Every project added or removed, thread started, message sent and question answered is recorded in `logs/audit.jsonl` under Frizz's data folder, with the session id of the device that did it and whether it came through that public address.
 

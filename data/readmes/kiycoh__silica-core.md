@@ -84,8 +84,8 @@ the passage; the page beside it is the check.
 
 | Tool | Shell | Returns |
 |---|---|---|
-| `silica_files` | `silica-core files` | the inventory and what the index did with each file: `indexed`, `changed`, `excluded`, `failed`, `unconverted` |
-| `silica_search` | `silica-core search` | ranked passages: path, section, line, BM25, matched terms, `coverage`, and the query terms absent from the corpus |
+| `silica_files` | `silica-core files` | the inventory and what the index did with each file: `indexed`, `changed`, `excluded`, `failed`, `unconverted`; with `since`, only what changed after a time |
+| `silica_search` | `silica-core search` | ranked passages: path, section, line, BM25, matched terms, `coverage`, the query terms absent from the corpus and the corpus's closest spellings of them, what the search could not read, how many as strong matches it did not show (pass the read ones as `exclude` for the next), and on a converted note whether its original changed since |
 | `silica_read` | `silica-core read` | a slice by lines or by heading (a page, in a PDF), the outline, and a `version` to carry forward |
 | `silica_code_pack` | `silica-core code-pack` | an AST context pack for one source file inside a character budget |
 | `silica_write_note` | `silica-core write-note` | one atomic write, linted for structure and unresolved wikilinks |
@@ -116,6 +116,18 @@ fields say how much the result is worth:
 is about data replication. On 254 papers the top hit of an answered question
 carries 0.69 to 1.00; a question the corpus does not cover, 0.44. Silica
 exposes the signals; the harness decides whether to stop, read or rephrase.
+
+## What a reply also says (0.12)
+
+Asked in November 2026, nine models named what they need from a knowledge
+layer; each of these was kept only where a probe on a production model
+showed the failure it fixes ([TOOLS.md](TOOLS.md) has the numbers):
+
+- `scope` counts every file the search could not read, an office file with no extracted `.md` beside it included, so a folder of `.docx` no longer reads as silent.
+- A hit from a converted note carries `source_state`: `stale` when its PDF was replaced after the conversion, before the passage is quoted.
+- `terms_near` offers the corpus's closest spelling of an absent word (`quitanllu` → `quitanlu`) instead of leaving a misspelt name to read as absent.
+- `unseen` counts the ranked documents as strong as the weakest shown that were not shown; `exclude` takes the paths already read and serves the next ones, so a long list is paged instead of re-fetched.
+- `silica_files(since=…)` lists only what changed after a time, dated: what changed since the last session.
 
 ## Benchmarks
 

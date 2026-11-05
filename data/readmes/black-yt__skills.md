@@ -29,6 +29,7 @@ skill-name/
 | `feishu-bot` | [`feishu-bot/SKILL.md`](feishu-bot/SKILL.md) | 创建、配置、调用和排查飞书/Lark 机器人，区分自定义机器人 webhook 单向群通知、Markdown 表格卡片渲染与应用机器人收发消息、事件订阅、卡片交互和资源上传。 |
 | `frontend-markdown-rendering` | [`frontend-markdown-rendering/SKILL.md`](frontend-markdown-rendering/SKILL.md) | 在前端只渲染最终 assistant Markdown，保留工具过程为纯文本/JSON，并支持表格、代码块、图片、KaTeX 公式、Mermaid 和 workspace 图片安全访问。 |
 | `github-readme-writing` | [`github-readme-writing/SKILL.md`](github-readme-writing/SKILL.md) | 创建或优化 GitHub 项目 README，包含居中标题、badge、teaser、highlights、news、Mermaid、GitHub 公式渲染、目录结构、quick start、联系方式、citation 和 star history。 |
+| `headless-gui-desktop` | [`headless-gui-desktop/SKILL.md`](headless-gui-desktop/SKILL.md) | 为 CUA（Computer Use Agent）部署通用无头 GUI 桌面，覆盖 Python 环境、PyAutoGUI 操控、CPU 渲染、低存储缓存、文件隔离、干净重建、产物导出及按需接入现有 agent 的真实验收。 |
 | `huggingface-dataset-publishing` | [`huggingface-dataset-publishing/SKILL.md`](huggingface-dataset-publishing/SKILL.md) | 创建、上传、验证和维护 Hugging Face Dataset，尤其是图片/多图字段、JSON metadata、`push_to_hub`、回读验证和 dataset card。 |
 | `lab-cluster-1` | [`lab-cluster-1/SKILL.md`](lab-cluster-1/SKILL.md) | 在 lab cluster 1 / PJLAB 上处理开发机登录、路径和环境、网络代理、模型权重、`rlaunch`/`rjob`、服务部署和排错等集群工作流。 |
 | `lab-cluster-1-web-portal` | [`lab-cluster-1-web-portal/SKILL.md`](lab-cluster-1-web-portal/SKILL.md) | 访问、登录和只读查询 lab-cluster-1 的 `h.pjlab.org.cn` 集群管理网站，覆盖 OIDC 会话、token 安全、Prometheus/DCGM 监控、pod/rjob 映射和报告数据分层。 |
@@ -48,7 +49,7 @@ skill-name/
 | `pdf-to-images` | [`pdf-to-images/SKILL.md`](pdf-to-images/SKILL.md) | 使用系统级 Ghostscript (`gs`) 或 Poppler `pdftoppm` 将 PDF 页面导出为 PNG/JPEG 图片，支持单页、页码范围、整篇导出和论文排版可视化检查。 |
 | `rebuttal-writing` | [`rebuttal-writing/SKILL.md`](rebuttal-writing/SKILL.md) | 撰写、重构和压缩 AI/ML conference rebuttal、reviewer response 或 AC response，覆盖匿名性、开头感谢、问题弱化改写、Markdown Q&A、强证据回答、小表格、引用和礼貌结尾。 |
 | `researchharness` | [`researchharness/SKILL.md`](researchharness/SKILL.md) | 使用 InternScience ResearchHarness 作为轻量 tool-using LLM agent runtime，覆盖安装配置、CLI、本地前端、OpenAI-compatible API、Python API、工具选择、workspace、trace 和测试。 |
-| `screen-demo-video-editing` | [`screen-demo-video-editing/SKILL.md`](screen-demo-video-editing/SKILL.md) | 将 GUI、科研软件或 agent 录屏剪成演示视频，覆盖静止与周期去重、分屏悬浮、缩放跟随、日志对话、中文字幕、背景音乐和现成旁白；附可配置脚本与合成素材验收。 |
+| `screen-demo-video-editing` | [`screen-demo-video-editing/SKILL.md`](screen-demo-video-editing/SKILL.md) | 将 GUI、科研软件或 agent 录屏剪成演示视频，覆盖静止/周期去重、悬浮与跟随、逐张展开与拉远揭示、虚线信息流、截图/工具对话卡片、中文字幕及音频；附精确帧预算、无损母版与合成素材验收。 |
 | `ssh-remote-troubleshooting` | [`ssh-remote-troubleshooting/SKILL.md`](ssh-remote-troubleshooting/SKILL.md) | 排查终端能 SSH 但 VS Code 失败、Windows 临时目录权限、Profile 与服务安装、系统盘缓存及挂载遮蔽，支持保留任务的迁移与连接验收。 |
 | `structai` | [`structai/SKILL.md`](structai/SKILL.md) | 使用 StructAI Python 工具箱搭建 LLM workflow，覆盖 `LLMAgent`、结构化输出、Judge、并发、文件/PDF 工具、文本解析、私网 no_proxy 和 timeout。 |
 | `wave-mosaic-web-theme` | [`wave-mosaic-web-theme/SKILL.md`](wave-mosaic-web-theme/SKILL.md) | 复刻 black-yt 风格前端主题，覆盖 canvas wave-mosaic 动态方块背景、4 种背景颜色切换、Space Grotesk 字体、顶部圆角导航栏、论文筛选滑块和高级卡片/表格视觉。 |

@@ -417,8 +417,10 @@ gets reposted or screen-recorded still carries your name.
 
 Running more than one channel? **Settings → Channel profile**: each profile
 has its own YouTube sign-in, logo (or none) and corner, views data and edit
-choices. Switch, and uploads go to that channel. The API keys and the clips
-are shared, and everything set up before profiles is the **Main** profile.
+choices. Switch, and uploads go to that channel. With more than one, the
+profile you're on is named in the top bar, next to **Create**; click it to
+switch. The API keys and the clips are shared, and everything set up before
+profiles is the **Main** profile.
 
 <img src="assets/screenshots/14-logo-and-broll.png" alt="Settings: Your logo with its thumbnail, Upload a logo and Remove and the corner picker, then B-roll with the Pexels key saved" width="880">
 
@@ -1390,6 +1392,7 @@ of render time. These short phrases work instantly, even with no AI key:
 | Type this | You get |
 |---|---|
 | `30 second clips` | the length every clip is cut to — enforced in code, not requested of the model |
+| `5 clips, 30s-60s` / `1-2 minutes` | a range of lengths. `5 clips of 0:30-1:00` reads as a length too, since one span can't be five clips |
 | `no hook repeat` | turn off the cold open that puts the payoff first |
 | `webcam at the top` | the stacked layout |
 | `my webcam is bottom right` | which corner to hunt for your overlay. Left out, all four are searched |
@@ -1419,6 +1422,8 @@ While you type, the preview uses a keyword pass that runs in about 70ms and cost
 ### Naming an exact span
 
 Give it a timecode and it **skips transcription and ranking entirely** and cuts exactly what you asked for. `14:45 to 15:30`, `1:30-2:45`, `00:14:45 - 00:15:28`, `885s to 928s`, or several at once with `14:45-15:30 and 24:55-25:40`.
+
+One span beside a count of two or more (`5 clips of 0:30-1:00`) is a clip length, not a cut: one span can only ever be one clip. Say `from` (`2 clips from 1:00 to 1:30`) to mean the place in the video. The preview says which it read: an exact cut shows an *Exact cuts — no AI ranking* box.
 
 This is the fast path: no Whisper, no LLM, straight to ffmpeg. Seconds instead of minutes, and it costs nothing. Use it when you already know where the moment is — which, after you've watched your own stream, is most of the time.
 
@@ -1675,14 +1680,4 @@ Techland's game.
 
 [YouTube](https://www.youtube.com/@ParthBhadana799) &middot; [GitHub](https://github.com/kleZ799) &middot; [LinkedIn](https://www.linkedin.com/in/parth-bhadana-530014202/) &middot; [Discord](https://discord.gg/jnMrGbBz3m) &middot; [Buy me a coffee](https://buymeacoffee.com/parthbhadana)
 
-ClipMint is free, and stays free. If it saves you time,
-[buy me a coffee](https://buymeacoffee.com/parthbhadana) — it pays for the hours that keep it working.
-
-Built and maintained by me. If you use it, fork it, or ship anything based on
-it, the MIT licence asks one thing in return: keep the copyright notice.
-
-How it's built, what was hard and what I'd change is in the
-[engineering case study](docs/case-study.md). I'm open to software engineering
-roles and collaborations: [parthbhadana57@gmail.com](mailto:parthbhadana57@gmail.com).
-
-Repository: <https:/
+ClipMint is free, a

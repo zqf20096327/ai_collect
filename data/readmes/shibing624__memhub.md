@@ -18,6 +18,8 @@
 
 <p align="center">简体中文 | <a href="https://github.com/shibing624/memhub/blob/main/README_EN.md">English</a> | <a href="https://shibing624.github.io/memhub">在线文档</a></p>
 
+https://github.com/user-attachments/assets/1fba5e03-219d-414e-8c96-8e63a11200fd
+
 ## 为什么选 memhub
 
 在 Cursor 里交代过的代码规范，Codex 并不知道；你已经告诉 AI 三次「我现在不吃辣了」，它还在推荐川菜馆；聊了几十轮，它背得出每一句原话，却说不出你做事的稳定习惯。

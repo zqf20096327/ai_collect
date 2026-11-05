@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--04-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1418-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--05-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1421-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1421 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 225 | 2026-11-03 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 109 | 2026-11-01 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 97 | 2026-11-01 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 57 | 2026-11-02 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 223 | 2026-11-04 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 110 | 2026-11-03 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 98 | 2026-11-04 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 58 | 2026-11-04 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 53 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 160 | 2026-11-03 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 218 | 2026-11-01 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 159 | 2026-11-03 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 27 | 2026-10-17 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 313 | 2026-11-03 | [View papers](#category-cross-cutting-other) |
+| Safety, Security & Verification | 217 | 2026-11-01 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 160 | 2026-11-04 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 28 | 2026-11-04 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 314 | 2026-11-04 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,36 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 93 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 95 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 88 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 16 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 225 papers
+## Perception & Sensor Fusion · 223 papers
+
+<a id="paper-2611-06007"></a>
+
+### MotoVerse: A Benchmark for Predictive Perception of Motorized Two-Wheelers in Dense Unstructured Traffic ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Varun A. Paturkar, Shankar Gangisetty, C. V. Jawahar<br>
+**Published:** 2026-11-04<br>
+**Research tags:** Benchmark · VLA<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.06007) | [PDF](https://arxiv.org/pdf/2611.06007.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Motorized Two-Wheelers (MTWs) dominate personal transport across much of the Global South, yet remain largely overlooked in predictive perception research for autonomous driving and ADAS. We...
 
 <a id="paper-2611-05291"></a>
 
@@ -167,7 +178,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-38320"></a>
 
-### SSQA: Sibling-Selective Quadtree Attention for Hierarchical Modeling in Perception Tasks ![New](https://img.shields.io/badge/New-red)
+### SSQA: Sibling-Selective Quadtree Attention for Hierarchical Modeling in Perception Tasks ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Yufan Chen, Arnav Bali, Angela Liu, Laura Zheng, Ming C. Lin<br>
 **Published:** 2026-10-28<br>
@@ -535,7 +546,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-06596"></a>
 
-### Analysis of SWIR Imaging Detection Performance Under Adverse Environmental Conditions for Autonomous Driving Systems ![Recent](https://img.shields.io/badge/Recent-orange)
+### Analysis of SWIR Imaging Detection Performance Under Adverse Environmental Conditions for Autonomous Driving Systems ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Rohan Mehra, Alexandre Riffard, Yannis Loumouamou, Mathieu Labussière<br>
 **Published:** 2026-10-05<br>
@@ -1652,15 +1663,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 ### DrivingDepth: Sparse-Prompted Pixel-wise Scale Correction for Driving Depth Estimation
 
 **Authors:** Chi Huang, Wenhao Zhang, Hang Yin, YuAn Wang, Hao Li, et al.<br>
-**Published:** 2026-06-30<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.31488) | [PDF](https://arxiv.org/pdf/2606.31488.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Dense depth estimation for autonomous driving faces a geometry-scale conflict: depth foundation models deliver pixel-aligned dense visual geometry without reliable metric scale, while projected LiDAR...
-
-<a id="paper-2606-31172"></a>
-
-### HSDF-Lane: Height-Aligned Signed Distance Field with Semantic Lane Prior for 3D Lane Detection
-
-**Authors:** Jiyong Boo, Byeongin Joung, Hyemin Yang, Kuk-Jin Yoon<br>
-**Published:** 2026-06-30<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.31172) | [PDF](https://arx
+**Published:** 2026-

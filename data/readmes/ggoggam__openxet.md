@@ -1,0 +1,377 @@
+# OpenXet
+
+A Rust implementation of a [Xet Protocol](https://huggingface.co/docs/xet/en/index)-compatible Content Addressable Storage (CAS) server with a browser upload pipeline and web UI. OpenXet provides content-addressed data storage with chunk-level deduplication, following the Xet Protocol Specification v1.0.0. It speaks the same `/v1` wire protocol as HuggingFace's `xet-core` / `hf_xet`, so those clients work against it unmodified.
+
+The binary formats, hashing, and chunking come directly from HuggingFace's own [`xet-core`](https://github.com/huggingface/xet-core) crates (`xet-core-structures`, `xet-data`) — the same code real `hf_xet` clients run — so wire compatibility holds by construction. The crates are pinned exactly (they are published as packaging for `hf_xet`, without a semver promise); upgrades are validated by the reference-file and client-compat test suites.
+
+## Overview
+
+OpenXet breaks files into content-defined chunks using a Gearhash CDC algorithm, hashes them with Blake3, and stores them in deduplicated xorb archives. Files are reconstructed by looking up chunk references stored in shard metadata. This enables efficient storage and transfer of large files with automatic deduplication at the chunk level.
+
+### Key Features
+
+- **Content-Defined Chunking** -- Gearhash-based CDC (64 KiB target) via xet-core's own chunker, for stable chunk boundaries across file revisions
+- **Content-Addressed Storage** -- Blake3 keyed hashing with aggregated merkle trees for xorb and file identification
+- **Chunk-Level Deduplication** -- Global dedup via blake3-keyed-HMAC chunk hash queries, matching real xet-core clients
+- **Binary Formats** -- Xorb (chunk archive) and Shard (file metadata) serialization straight from `xet-core-structures`
+- **Web UI** -- React dashboard for browsing files, inspecting xorbs, uploading data, and querying tabular files with DuckDB WASM
+- **Docker Support** -- Multi-stage Dockerfile and Docker Compose for single-command deployment
+
+## Getting Started
+
+### Prerequisites
+
+- [Rust](https://www.rust-lang.org/tools/install) (latest stable)
+- [mise](https://mise.jdx.dev/) (recommended for toolchain management)
+- [bun](https://bun.sh/) (for frontend)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/) + the `wasm32-unknown-unknown` target (for the frontend's upload pipeline)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/ggoggam/openxet.git
+cd openxet
+
+# Install toolchain via mise (optional but recommended)
+mise trust
+mise install
+
+# Build server and frontend (fe:build also compiles the wasm upload pipeline)
+cargo build
+mise run fe:build
+```
+
+### Running the dev server
+
+The server runs on the host in both flavors and serves the API + static
+frontend at `http://localhost:8080`. Pick a backend based on what you're doing:
+
+```bash
+mise run dev       # local:  filesystem storage — single-node local dev
+mise run dev:s3    # rustfs: S3 storage — for distributed / multi-replica setups
+```
+
+**`dev` (local, filesystem)** — the default for everyday local work. Chunks and
+metadata are written under `OPENXET_DATA_DIR` on the local filesystem, and
+reconstruction serves xorb bytes directly from the server. No external services;
+nothing to bring up or tear down. State lives on your disk between runs.
+
+**`dev:s3` (rustfs, distributed)** — mirrors a production-shaped deployment.
+Xorbs live in an S3-compatible object store (RustFS) and reconstruction returns
+**presigned S3 URLs** so clients fetch bytes straight from object storage
+instead of through the server. Because the object store (and the Postgres index
+in the Docker variant) is shared, this is the layout that scales to multiple
+server replicas. The task auto-manages the storage services for you:
+
+- `depends = ["rustfs:up"]` brings up RustFS + Postgres via Docker before the
+  server starts.
+- `depends_post = ["rustfs:down"]` tears them back down when the server exits.
+
+> The S3 endpoint is `localhost:9000`, **not** `rustfs:9000`: the server runs on
+> the host, so the presigned URLs it mints must resolve from the host too. The
+> port-mapped RustFS makes `localhost:9000` reachable from both server and
+> client.
+
+Configuration is entirely env-driven. `mise run dev:s3` sets these for you; the
+same variables apply if you run the binary directly:
+
+| Variable | `dev` (local) | `dev:s3` (rustfs) |
+|----------|---------------|-------------------|
+| `OPENXET_STORAGE_BACKEND` | *(filesystem, default)* | `s3` |
+| `OPENXET_DATA_DIR` | local data dir | local data dir (shards/index) |
+| `OPENXET_S3_BUCKET` | — | `openxet` |
+| `OPENXET_S3_REGION` | — | `us-east-1` |
+| `OPENXET_S3_ENDPOINT` | — | `http://localhost:9000` |
+| `OPENXET_S3_PUBLIC_ENDPOINT` | — | endpoint for signing presigned URLs when clients can't reach `OPENXET_S3_ENDPOINT` (e.g. internal docker host); defaults to `OPENXET_S3_ENDPOINT` |
+| `OPENXET_S3_ACCESS_KEY_ID` | — | `rustfsadmin` |
+| `OPENXET_S3_SECRET_ACCESS_KEY` | — | `rustfsadmin` |
+| `OPENXET_S3_ALLOW_HTTP` | — | `true` |
+
+For authentication, configure OIDC issuers (`OPENXET_OIDC_ISSUERS`); clients then
+present bearer tokens from that provider. A token needs one of the roles or
+scopes `openxet:read`, `openxet:write`, or `openxet:admin` (as an OAuth scope,
+a `roles` entry, or a Keycloak realm/client role; rename them with
+`OPENXET_OIDC_{READ,WRITE,ADMIN}_ROLE`). Tokens with none of them get 403. Set
+`OPENXET_OIDC_DEFAULT_SCOPE=write` to restore the old behavior where any token
+the issuer hands out can write. On the filesystem backend,
+reconstruction responses carry HMAC-signed, expiring xorb fetch URLs; set
+`OPENXET_XORB_URL_SECRET` to the same value on every replica so a URL signed by
+one verifies on another. Leave `OPENXET_AUTH_ENABLED=false`
+(the mise default) for local/dev use.
+
+### Running with Docker
+
+The Docker Compose stacks run the server *inside* a container. The RustFS stack
+additionally wires in a Postgres index (`OPENXET_INDEX_BACKEND=postgres`) so the
+server can scale to multiple replicas behind a shared object store.
+
+```bash
+# Local filesystem backend
+docker compose -f docker/compose.local.yaml up -d --build
+
+# S3-compatible backend via RustFS (S3 API on :9000, console on :9001) + Postgres index
+docker compose -f docker/compose.rustfs.yaml up -d --build   # or: mise run up
+```
+
+### Testing
+
+```bash
+cargo test         # Run all tests
+cargo test --lib   # Unit tests only
+cargo clippy       # Lint
+cargo fmt --check  # Check formatting
+```
+
+## Architecture
+
+OpenXet is organized as a Cargo workspace with three crates on top of the
+pinned HuggingFace `xet-core` crates:
+
+```
+openxet/
+├── crates/
+│   ├── cas_types/     # /v1 HTTP wire types (reconstruction JSON)
+│   ├── server/        # HTTP server (axum) with auth and storage — the /v1 CAS protocol
+│   └── wasm/          # openxet-wasm: chunk/hash/pack pipeline compiled to WebAssembly
+├── web/               # React frontend (TypeScript, Vite, TailwindCSS)
+├── examples/          # git / Gitea / hf_xet integration demos
+├── docker/            # Dockerfile and Docker Compose
+└── docs/              # Protocol specification
+```
+
+### Crate Dependency Graph
+
+```
+server ── cas_types
+   │
+   ├── xet-core-structures   (hashing, xorb + shard formats; pinned upstream)
+wasm ┤
+   └── xet-data              (Gearhash CDC chunker; pinned upstream)
+```
+
+### API
+
+#### CAS Protocol Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/v1/reconstructions/{file_id}` | File reconstruction (supports Range header) |
+| `GET` | `/v2/reconstructions/{file_id}` | V2 file reconstruction — per-xorb fetch entries; preferred by current xet-core clients |
+| `GET` | `/v1/chunks/default/{hash}` | Global chunk deduplication query (`default-merkledb` is accepted as an alias) |
+| `GET` | `/v1/xorbs/default/{hash}` | Download a xorb (filesystem backend only; needs a signed fetch URL from a reconstruction response, or a bearer token) |
+| `POST` | `/v1/xorbs/default/{hash}` | Upload a serialized xorb |
+| `POST` | `/v1/shards` | Upload shard metadata (registers files) |
+| `POST` | `/v2/shards` | Same as `/v1/shards`, answered as the NDJSON progress stream hf_xet >= 1.6 uses |
+
+These are the same wire protocol endpoints HuggingFace's `xet-core` / `hf_xet`
+clients speak. All uploads and downloads, including the web UI's and the
+examples', go through them.
+
+#### Lifecycle Endpoints
+
+Not part of the Xet wire protocol — these manage the data's lifecycle:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/v1/files` | List files (cursor-paginated): the caller's own files, or any owner's for an admin |
+| `GET` | `/v1/files/{file_id}` | File detail: shard, logical size, ownership claims, and referenced xorbs (owners and admins only) |
+| `DELETE` | `/v1/files/{file_id}` | Release the caller's ownership claim on a file; the file is removed once its last claim is released |
+| `GET` | `/v1/xorbs` | List indexed xorbs (cursor-paginated) with stored size and chunk count (admin) |
+| `POST` | `/v1/gc` | Run one mark-and-sweep GC pass (admin; optional `?grace_seconds=` override, no lower than `gc.min_grace_seconds`); returns a report of what was deleted |
+| `GET` | `/v1/accounting` | Per-owner logical usage plus global physical storage stats and dedup ratio (admin) |
+
+**Cursor pagination.** List endpoints (`/v1/files`, `/v1/xorbs`) take `?limit=`
+(default 100, max 1000) and return `{ "items": [...], "next_cursor": "..." }`.
+Pass the returned `next_cursor` back as `?cursor=` to fetch the next page;
+its absence means the last page. Cursors are opaque and use keyset pagination
+over the ordered index (by content hash), so each page is an indexed range scan
+regardless of depth, and concurrent inserts or deletes never shift rows across
+page boundaries. `/v1/files` also accepts `?owner=` to list only one owner's
+files (admins only, for anyone but the caller).
+
+Every file registered via a shard upload records an **ownership claim** for the
+uploading identity (the token's `sub` claim; `"default"` when auth is
+disabled). Claims are the accounting unit: each owner is charged the full
+logical size of the files they claim, and a file only becomes garbage when
+every claim on it is released. Claims are also the read boundary: a caller can
+reconstruct, inspect, or list only files it holds a claim on (uploading the
+same content again records one), and any other file answers 404 as if it did
+not exist. Admin tokens read everything. A file with no claims (uploaded before
+accounting existed) is visible to and deletable by admins only.
+
+**Garbage collection** is mark-and-sweep: files in the index are the roots,
+their shards are parsed to mark reachable xorbs, and everything unmarked is
+deleted — including its dedup index entries. Unreferenced objects younger than
+`gc.grace_seconds` (default 24h) are never collected, because clients upload
+xorbs *before* registering them in a shard; keep the grace period comfortably
+above your longest plausible upload session. GC runs on demand via `POST
+/v1/gc` (admin scope), or periodically when `gc.interval_seconds`
+(`OPENXET_GC_INTERVAL_SECONDS`) is set. `gc.min_grace_seconds`
+(`OPENXET_GC_MIN_GRACE_SECONDS`, default 1h) is a floor: a `?grace_seconds=`
+override below it is rejected with 400, and the server refuses to start with a
+configured `gc.grace_seconds` below it.
+
+### Storage Layout
+
+```
+{data_dir}/
+├── xorbs/default/{hash}    # Chunk archives
+├── shards/{hash}           # File metadata
+├── index/
+│   └── index.sqlite        # Node-local index: file→shard, ownership claims,
+│                           # chunk dedup, xorb layouts
+```
+
+The node-local index is SQLite (`OPENXET_INDEX_BACKEND=sqlite`, the default);
+set `postgres` to share one index across replicas. Both backends manage their
+schema with embedded [sqlx migrations](crates/server/migrations/) that run at
+startup.
+
+> **Breaking change:** the node-local index was previously RocksDB. Old
+> `{data_dir}/index/*.rocksdb` directories are not read or migrated — the
+> server refuses to start with `index_backend = rocksdb` and explains why.
+> Since the indexes are materialized views of uploaded shards, re-uploading
+> content rebuilds them; xorb and shard blobs are untouched.
+
+## Frontend
+
+The web UI is a React SPA built with TypeScript, Vite, and TailwindCSS. It
+speaks only the Xet wire protocol, like any other client:
+
+- **Upload** -- files are chunked, hashed, and packed into xorbs *in the
+  browser* by `openxet-wasm` (HuggingFace's xet-core crates compiled to
+  WebAssembly), then POSTed to `/v1/xorbs` + `/v1/shards`
+- **Files** -- a local catalog (browser localStorage) of files uploaded from
+  this browser, plus "open by hash" for anything else; the CAS itself is
+  content-addressed and has no listing endpoint by design
+- **File detail** -- reconstruction terms from `/v1/reconstructions`; content
+  preview/download reassembles the file in-browser from ranged xorb fetches
+  (text, images, PDF, hex dump, and CSV/Parquet querying with DuckDB WASM)
+- **Auth** -- for an auth-enabled server, paste an OIDC bearer token in the
+  header field and the UI sends it verbatim; against a dev server with auth
+  disabled, leave it blank
+
+### Frontend Stack
+
+React 19, TypeScript, Vite 7, TailwindCSS 4, TanStack Router + Query, Radix UI / shadcn, DuckDB WASM, CodeMirror (SQL editor)
+
+### Development
+
+```bash
+cd web
+bun install        # Install dependencies
+bun run dev        # Dev server with HMR
+bun run build      # Production build (output: web/dist/)
+bun run lint       # ESLint
+```
+
+## Examples
+
+An example lives in [`examples/`](examples/README.md):
+
+- **`hf-xet-client/`** — the stock [`hf_xet`](https://pypi.org/project/hf-xet/)
+  Python client uploading/downloading against OpenXet unmodified (wire-compatibility proof)
+
+## Protocol Details
+
+OpenXet implements several non-trivial aspects of the Xet protocol:
+
+- **Hash encoding** -- 32-byte hashes are hex-encoded with LE octet reversal per 8-byte segment
+- **Merkle tree** -- Variable-branching aggregated tree (mean branching factor 4), not a flat hash
+- **Chunk compression** -- Per-chunk LZ4 frame compression (not raw blocks)
+- **Shard format** -- Magic tag `"HFRepoMetaData\0"` + sentinel bytes; upload shards omit the footer
+
+See [`docs/SPECIFICATION.md`](docs/SPECIFICATION.md) for the full protocol specification.
+
+## Development
+
+### Mise Tasks
+
+The project uses [mise](https://mise.jdx.dev/) for both toolchain management
+and task automation. `mise install` provisions everything except Rust itself
+(bun, uv, prek, wasm-pack, cargo-nextest — Rust comes from rustup). Run any task
+with `mise run <task>`; list them all with `mise tasks`. Tasks declaring
+`sources`/`outputs` are cached and skip re-running when inputs are unchanged.
+
+**Run**
+
+| Task (alias) | What it does |
+|------|--------------|
+| `dev` | Build server + frontend, run the server with the **filesystem** backend (local dev). |
+| `dev:s3` | Build server + frontend, bring up RustFS + Postgres, run the server against **S3** (presigned URLs); tears the services down on exit. |
+
+**Build**
+
+| Task | What it does |
+|------|--------------|
+| `build` | Build all crates (debug). |
+| `build:release` | Build all crates (release). |
+| `clean` | `cargo clean` — remove build artifacts. |
+
+**Test**
+
+| Task | What it does |
+|------|--------------|
+| `test` | Run all tests via `cargo nextest` (`RUST_BACKTRACE=1`). |
+| `test:unit` | Unit tests only (`--lib`). |
+| `test:integration` | Integration tests only (`--test '*'`). |
+
+**Lint & Format**
+
+| Task | What it does |
+|------|--------------|
+| `lint` | `cargo clippy -- -D warnings`. |
+| `fmt` | Format all Rust code (`cargo fmt --all`). |
+| `fmt:check` | Check formatting without writing. |
+| `check` | Aggregate gate: depends on `fmt:check`, `lint`, `test`. |
+| `pre-commit` | Run all pre-commit hooks via `prek` against every file. |
+
+**Frontend** (all run in `web/`)
+
+| Task | What it does |
+|------|--------------|
+| `fe:install` | Install frontend deps (`bun install`). |
+| `fe:wasm` | Build the `openxet-wasm` package used by the upload page (adds the `wasm32-unknown-unknown` target, runs `wasm-pack`). |
+| `fe:build` | Production frontend build (depends on `fe:install`, `fe:wasm`). |
+| `fe:dev` | Frontend dev server with HMR, proxies `/v1` to `localhost:8080` (depends on `fe:install`, `fe:wasm`). |
+| `fe:lint` | Lint frontend code (ESLint). |
+
+**Docker**
+
+| Task (alias) | What it does |
+|------|--------------|
+| `docker:up` (`up`) | Bring up the full Docker Compose stack (RustFS backend + Postgres + dockerized server). |
+| `docker:down` (`down`) | Bring the stack down. |
+| `docker:log` (`log`) | Tail the last 100 lines of compose logs. |
+| `rustfs:up` (`rustfs`) | Bring up **only** the storage services (RustFS + Postgres), for a host-run server — used as a dependency of `dev:s3`. |
+| `rustfs:down` | Bring the storage services down. |
+
+Typical loops:
+
+```bash
+mise run dev                       # backend on :8080 (filesystem)
+mise run fe:dev                    # frontend HMR, proxying /v1 → :8080
+mise run check                     # fmt + clippy + tests before pushing
+mise run dev:s3                    # exercise the S3 / presigned-URL path
+```
+
+### Code Conventions
+
+- Error types via `thiserror`; application errors via `anyhow`
+- Async runtime: `tokio`; HTTP framework: `axum`
+- All binary formats use little-endian byte order
+- Shard entries are fixed at 48 bytes (FileInfo and CASInfo)
+
+### Reference Test Data
+
+Integration tests validate against official reference files from the [xet-spec-reference-files](https://huggingface.co/datasets/xet-team/xet-spec-reference-files) dataset on HuggingFace. The files are downloaded on first run into a temp directory (override with `OPENXET_TEST_DATA_DIR`) and cover chunk hashing, file hashing, merkle tree construction, and xorb/shard deserialization.
+
+## Security
+
+Report vulnerabilities privately, as [SECURITY.md](SECURITY.md) describes, not in a public
+issue.
+
+## License
+
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).

@@ -43,38 +43,17 @@ It is designed around the things that actually matter on mobile.
      playsinline
      preload="none"
      min-height="720"
-     poster="https://github.com/user-attachments/assets/32c7526a-9b7f-4590-96eb-a0105003840d"
-     src="https://github.com/user-attachments/assets/ea4a03dd-10b2-48f6-8fca-2e4cd76877e7"
+     src="https://github.com/user-attachments/assets/6da73ca0-d491-45c6-8aee-1f7e494cf602"
    />
 
 ## What you can do
 
-- **Start and continue coding sessions**  
-  Pick an agent and model, send instructions, and keep working with the same OpenCode sessions from your phone.
-
-- **Watch agent progress**  
-  See what OpenCode is doing instead of waiting for a generic completion notification.
-
-- **Review and approve actions**  
-  Respond to permission requests and inspect the work before accepting changes.
-
-- **Manage workspaces and sessions**  
-  Switch between multiple OpenCode servers, projects, sessions, and models.
-
-- **Use the terminal when needed**  
-  Run focused commands without reopening your laptop.
-
-- **Browse and patch files**  
-  Inspect project files and make targeted changes from mobile.
-
-- **Use voice input**  
-  Dictate prompts or continue a conversation when typing is inconvenient.
-
-- **Understand model usage**  
-  Inspect context utilization, token activity, model usage, steps, and estimated cost.
-
-- **Stay connected to multiple servers**  
-  Save OpenCode connections with their own sessions and model selection.
+- **Run sessions from your phone** — pick a project, worktree, agent, and model, then send, fork, or revert prompts.
+- **Follow progress live** — reasoning, tool calls, shell output, patches, and todos, with notifications when you're needed.
+- **Approve, review, and edit** — answer permission requests, inspect diffs, browse files, and open terminals.
+- **Talk to it** — dictate prompts, read replies aloud, or use hands-free conversation mode.
+- **Shape your setup** — providers, models, MCP servers, agents, commands, plugins, and visualizations like [Flowgraph](https://github.com/alvarolorentedev/opencode-flowgraph).
+- **Manage and personalize** — multiple servers, projects, and sessions; themes, languages, text size, and widgets.
 
 ## How it works
 

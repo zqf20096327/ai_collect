@@ -94,6 +94,17 @@ Native GitLab integration via their Duo platform.
 | [oschina/gitee](https://github.com/oschina/gitee) | Gitee API integration. |
 | [modelcontextprotocol/server-git](https://github.com/modelcontextprotocol/servers/tree/main/server-git) | Reference local Git server implementation. |
 
+### Carbon Forge
+
+Source control for agents working in parallel, reached over MCP.
+
+| | |
+|---|---|
+| **Docs** | [carbonforge.dev/docs](https://carbonforge.dev/docs/p/guides/mcp-anonymous-access) |
+| **Maintainer** | 🏷️ 100monkeys.ai (Official) |
+| **What it does** | Agents open a lane, a set of patches over the trunk, instead of cloning, and land each change as one all-or-nothing changeset. Blame, grep, diff and history run on the server, and git is a projection pushed to GitHub fast-forward only. |
+| **Endpoint** | `https://carbonforge.dev/api/mcp` (Streamable HTTP; public workspaces read without a token, a bearer token to write) |
+
 ## 🏗️ Infrastructure as Code
 
 ### Terraform
@@ -307,6 +318,8 @@ Tools for executing commands or interacting with local environments safely.
 | [maxim-saplin/mcp_safe_local_python_executor](https://github.com/maxim-saplin/mcp_safe_local_python_executor) | Safe local Python execution. |
 | [wonderwhy-er/DesktopCommanderMCP](https://github.com/wonderwhy-er/DesktopCommanderMCP) | Local file/process control. |
 | [automateyournetwork/pyATS_MCP](https://github.com/automateyournetwork/pyATS_MCP) | Cisco pyATS network automation. |
+| [getremcp/remcp](https://github.com/getremcp/remcp) | OAuth-protected remote MCP for computers explicitly paired by their owner. Supports file operations, terminal commands, process diagnostics, Chromium and native desktop automation; tools can change device state. Hosted endpoint `https://remcp.site/mcp`, public npm client `@remcp/remcp`. |
+| [Nova Terminal Command (CIVAI)](https://github.com/civai-technologies/terminal-command-agent-mcp-by-nova-civai) | Hosted remote MCP (Streamable HTTP) to run shell commands; Nova account required. |
 
 ## 🌐 Browser Automation
 
@@ -327,6 +340,7 @@ Tools for executing commands or interacting with local environments safely.
 | [getrupt/ashra-mcp](https://github.com/getrupt/ashra-mcp) | Browser automation server. |
 | [autonomous-testing/wopee-mcp](https://www.npmjs.com/package/wopee-mcp) | AI testing agents for web apps — dispatch test runs, analysis crawls, and AI agent tests, fetch artifacts and project status. |
 | [vostride/agent-qa](https://github.com/vostride/agent-qa) | Natural-language web and mobile regression testing through MCP with persistent memory and self-healing execution. |
+| [SergiuPogor/CurlShot](https://github.com/SergiuPogor/CurlShot) | Hosted remote MCP server for CurlShot: agents screenshot any URL as PNG, JPEG, WebP or PDF on desktop or mobile devices, e.g. to check a deploy. |
 
 ## ⚙️ Code Execution
 
@@ -336,6 +350,7 @@ Tools for executing commands or interacting with local environments safely.
 | [yepcode/mcp-server-js](https://github.com/yepcode/mcp-server-js) | Secure JS/Python sandbox. |
 | [alfonsograziano/node-code-sandbox-mcp](https://github.com/alfonsograziano/node-code-sandbox-mcp) | Node.js Docker sandbox. |
 | [ckanthony/openapi-mcp](https://github.com/ckanthony/openapi-mcp) | Access APIs from OpenAPI specs. |
+| [Nova Code Interpreter (CIVAI)](https://github.com/civai-technologies/code-interpreter-agent-mcp-by-nova-civai) | Hosted remote MCP (Streamable HTTP) sandbox for code execution; Nova account required. |
 
 ## 🤖 Coding Agents
 
@@ -362,6 +377,7 @@ Tools for executing commands or interacting with local environments safely.
 
 | Repo | Notes |
 |------|-------|
+| [API.market MCP](https://api.market/mcp) | Official hosted API discovery and execution gateway for agent workflows: `https://api.market/api/mcp/gateway` (Streamable HTTP, OAuth or API key). Proprietary service; API-specific free and paid plans. |
 | [askbudi/roundtable](https://github.com/askbudi/roundtable) | Multi-assistant MCP hub. |
 | [composiohq/rube](https://github.com/composiohq/rube) | 500+ app integrations. |
 | [julien040/anyquery](https://github.com/julien040/anyquery) | SQL over 40+ apps. |
@@ -370,6 +386,7 @@ Tools for executing commands or interacting with local environments safely.
 | [glenngillen/mcpmcp-server](https://github.com/glenngillen/mcpmcp-server) | MCP server registry. |
 | [wegotdocs/open-mcp](https://github.com/wegotdocs/open-mcp) | Turn web APIs into MCP. |
 | [PipedreamHQ/pipedream](https://github.com/PipedreamHQ/pipedream/tree/master/packages/mcp-server) | 2,500+ API integrations. |
+| [scalekit-inc/scalekit-mcp-server](https://github.com/scalekit-inc/scalekit-mcp-server) | 600+ app connectors and 35,000+ tools with per-user OAuth; hosted at `https://mcp.scalekit.com/`. |
 | [Aident-AI/aident-skill](https://github.com/Aident-AI/aident-skill) | Aident Loadout — 1,000+ apps for any MCP agent via one remote server (`https://loadout.aident.ai/mcp`). |
 | [VeriTeknik/pluggedin-mcp-proxy](https://github.com/VeriTeknik/pluggedin-mcp-proxy) | Proxy + discovery layer. |
 | [tigranbs/mcgravity](https://github.com/tigranbs/mcgravity) | MCP load balancing. |
@@ -495,6 +512,7 @@ AWS provides a collection of MCP servers for their services.
 | Repo | Notes |
 |------|-------|
 | [alexei-led/aws-mcp-server](https://github.com/alexei-led/aws-mcp-server) | AWS CLI-based MCP server. |
+| [Dynobase](https://dynobase.dev/dynamodb-mcp-server/) | DynamoDB: local MCP server built into the Dynobase desktop app (paid, 7-day trial). Lists tables, describes schemas and runs Scan, Query and PartiQL SELECT through your AWS profiles; read-only unless writes are enabled. |
 
 ### Azure
 
@@ -537,14 +555,30 @@ cohesivity.ai offers free agent native backend services. Anonymous account (no-s
 | **Docs** | [Installation and client packages](https://github.com/cohesivity-org/cohesivity-plugin#readme) |
 | **Requires** | Node.js for the local MCP; OAuth sign-in for the remote management MCP at `https://cohesivity.ai/mcp/manage`. |
 
+### RowSafe
+
+Database protection and managed database operations for DevOps teams through local and remote MCP.
+
+| | |
+|---|---|
+| **Repo** | [rowsafe/rowsafe](https://github.com/rowsafe/rowsafe) |
+| **Maintainer** | RowSafe (Official) |
+| **What it does** | Inspect database health, manage backups and recovery workflows across supported engines, and provision RowSafe Cloud servers. |
+| **Docs** | [MCP reference](https://rowsafe.sh/docs/reference/mcp) |
+| **Requires** | CLI login or `ROWSAFE_API_KEY` for local `rowsafe mcp` (stdio), or OAuth/API-key authentication for `https://api.rowsafe.sh/mcp` (Streamable HTTP). |
+| **Note** | The agent, CLI and MCP server are Apache-2.0; the hosted RowSafe service is separate. Available actions depend on credentials, permissions and transport configuration. |
+
 ### Other Platforms
 
 | Repo | Notes |
 |------|-------|
+| [mrhy7176/cloudgpu-mcp](https://github.com/mrhy7176/cloudgpu-mcp) | CloudGPU (official). Lets an AI agent rent a GPU by the minute, run commands and background jobs, download results and destroy the instance. The same API key works with CloudGPU's OpenAI-compatible model API. Local stdio: `npx -y cloudgpu-mcp`. |
 | [bright8192/esxi-mcp-server](https://github.com/bright8192/esxi-mcp-server) | VMware ESXi/vCenter management. |
 | [thunderboltsid/mcp-nutanix](https://github.com/thunderboltsid/mcp-nutanix) | Nutanix Prism Central integration. |
 | [Shipvela](https://github.com/stefanautomateed/shipvela-codex) | Hosted OAuth MCP for creating website projects, deploying supported GitHub repositories, and inspecting deployment status and build logs. Remote endpoint: `https://shipvela.com/mcp`. |
 | [azmartone67/dchub-mcp-server](https://github.com/azmartone67/dchub-mcp-server) | DC Hub — live data-center, power, grid, fiber and deal data for agents and site selection (DCPI across 300+ markets). Remote MCP: `https://dchub.cloud/mcp` (94 tools). |
+| [deed.page](https://deed.page/docs) | Static hosting for agents: publish an HTML file or static folder (docs, reports, previews) to a permanent public URL and update it in place with an owner token. No account on the free plan; REST API, [skill](https://github.com/f-o-x11/deed-page-skill). Remote MCP: `https://deed.page/mcp` (24 tools). |
+| [gpunz/gpunz-mcp](https://github.com/gpunz/gpunz-mcp) | gpu.nz GPU cloud: find GPU servers with live prices, estimate VRAM, launch, monitor and stop ComfyUI, Ollama or vLLM servers billed by the minute. Remote MCP: `https://gpu.nz/mcp` (browsing needs no key, renting needs an API key). |
 
 ## 📊 Observability
 
@@ -652,6 +686,18 @@ Email-authentication security and remediation for domains.
 | **What it does** | 🛡️ Manage DMARC, SPF, DKIM, BIMI, MTA-STS, DNS records, domain verification, and remediation tasks. |
 | **Access** | 💻 `npx -y @palisadeemail/mcp` with `PALISADE_API_KEY`; remote Streamable HTTP endpoint at `https://api.palisade.email/mcp` with Bearer authentication. |
 
+### NPMScan
+
+npm supply-chain checks before an agent installs or upgrades a dependency.
+
+| | |
+|---|---|
+| **Repo** | [salemalem/npmscan-mcp-plugin](https://github.com/salemalem/npmscan-mcp-plugin) |
+| **Docs** | [NPMScan MCP Docs](https://npmscan.com/docs/mcp) |
+| **Maintainer** | 🏷️ NPMScan (Official) |
+| **What it does** | 🔍 Malware, known-vulnerability (OSV, GitHub advisories, NVD with CISA KEV and EPSS), typosquat, maintainer-takeover and install-script checks; audits package.json, lockfiles, SBOMs, GitHub repos and PR dependency diffs; CI-ready PASS/WARN/FAIL gate. |
+| **Remote** | 🌐 `https://npmscan.com/api/mcp` (Streamable HTTP, no auth required, read-only). |
+
 ### Community Security Servers
 
 | Repo | Notes |
@@ -668,6 +714,7 @@ Email-authentication security and remediation for domains.
 | [roadwy/cve-search_mcp](https://github.com/roadwy/cve-search_mcp) | CVE-Search API. |
 | [operantlabs/operant-mcp](https://github.com/operantlabs/operant-mcp) | 51 security testing tools for pentesting, vulnerability scanning, and security auditing. |
 | [securityfortech/secops-mcp](https://github.com/securityfortech/secops-mcp) | Security testing toolbox. |
+| [hashgraph-online/hol-guard](https://github.com/hashgraph-online/hol-guard) | Local MCP server exposes Guard status and evidence queries; supported agent integrations apply policy checks to selected MCP tool calls, not all MCP activity. |
 | [HostDeFi Token Risk API](https://hostdefi.com) | Hosted token-safety MCP — grades tokens A+–F from on-chain checks (mint/freeze authority, liquidity, holder concentration) across Solana + 7 EVM chains; remote endpoint `https://hostdefi.com/api/v1/mcp`, no auth. |
 | [slouchd/cyberchef-api-mcp-server](https://github.com/slouchd/cyberchef-api-mcp-server) | CyberChef API access. |
 | [nickpending/mcp-recon](https://github.com/nickpending/mcp-recon) | Recon + domain analysis. |
@@ -676,6 +723,8 @@ Email-authentication security and remediation for domains.
 | [sunglasses-dev/sunglasses](https://github.com/sunglasses-dev/sunglasses) | Local scanner whose `scan_text` and `scan_file` tools check text and files for prompt injection, credential leaks and data exfiltration. |
 | [AffixIO/affixio-mcp](https://github.com/AffixIO/affixio-mcp) | Local stdio ACTION attestation MCP (`npx -y @affixio/mcp@0.1.0`). Tools: `attest_action`, `verify_action`, `gate_tool_call`. PII stays on the host; not KYC. |
 | [sky-cloak/skycloak-mcp](https://github.com/sky-cloak/skycloak-mcp) | Managed IDaaS / Keycloak MCP for AI agents (OIDC/OAuth realms, users, clients, SSO). Remote endpoint `https://mcp.skycloak.io` with OAuth; [docs](https://skycloak.io/mcp); registry `io.skycloak/skycloak-mcp`. |
+| [bernik-bot/ichi-mcp](https://github.com/bernik-bot/ichi-mcp) | Internet-wide cyber-health index MCP — query the current ICHI threat score/band (NORMAL→CRITICAL), recent critical-vulnerability advisories, and source health. Free, keyless, no auth. Run: `uvx --from git+https://github.com/bernik-bot/ichi-mcp ichi-mcp`. Maintained for ICHI's creator. |
+| [Safeguard](https://safeguard.sh/mcp) | Hosted remote MCP server (OAuth) for software supply chain security: look up projects, SBOMs, findings and vulnerabilities with EPSS and KEV; remote endpoint `https://mcp.safeguard.sh/mcp`. |
 
 ## 📝 Collaboration
 
@@ -754,6 +803,18 @@ Open messaging stream for agents and humans, with threaded discussions and proof
 | **Maintainer** | 🏷️ Notion (Official) |
 | **What it does** | 📄 Page/database queries, content creation, workspace navigation. |
 | **Options** | 🌐 Hosted server or 🏠 self-host via npm/Docker. |
+
+### /call-me
+
+Rings the engineer's own iPhone when an infra, CI or incident agent needs a decision, and returns the spoken answer as text.
+
+| | |
+|---|---|
+| **Repo** | [radres/call-me](https://github.com/radres/call-me) |
+| **Maintainer** | 👥 Community |
+| **What it does** | An agent running a deploy, migration or incident job calls or texts the on-call engineer's iPhone (with the /call-me app installed), reads its question aloud on a real incoming-call screen, and gets the spoken reply back as text; it can also text and wait for a reply. It rings the person running the agent, not third parties, and has no PagerDuty or Opsgenie integration. |
+| **Endpoint** | `https://callmemcp.com/mcp` (Streamable HTTP, no credentials at the endpoint; the 10-digit number from the app is a tool argument) |
+| **Requires** | The /call-me iPhone app, a paid subscription (weekly or yearly, no free tier) |
 
 ## ⚡ Getting Started
 

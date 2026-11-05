@@ -18,7 +18,6 @@
 <p align="center">
   <a href="https://github.com/grainulation/papers/actions/workflows/papers.yml"><img src="https://github.com/grainulation/papers/actions/workflows/papers.yml/badge.svg?branch=main" alt="Paper and catalogue checks"></a>
   <a href="https://github.com/grainulation/papers/actions/workflows/verify-then-vote.yml"><img src="https://github.com/grainulation/papers/actions/workflows/verify-then-vote.yml/badge.svg?branch=main" alt="Artifact verification"></a>
-  <a href="https://deepwiki.com/grainulation/papers"><img src="https://img.shields.io/badge/Documentation-DeepWiki-1f6feb" alt="Documentation on DeepWiki"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/code-Apache_2.0-blue" alt="Code license: Apache 2.0"></a>
   <a href="LICENSE-CC-BY-4.0"><img src="https://img.shields.io/badge/papers-CC_BY_4.0-476b46" alt="Manuscript and figure license: CC BY 4.0"></a>
 </p>

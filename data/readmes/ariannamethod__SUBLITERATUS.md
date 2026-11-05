@@ -273,7 +273,7 @@ preserve the full record.
 
 A small C CLI on [notorch](https://github.com/ariannamethod/notorch). Runtime dependencies are libc, libm, pthreads, and the pinned notorch sources. The CLI has no Python dependency. Offline tests and experiment runners use Python's standard library.
 
-Seven operations:
+Eight operations:
 
 - `extract`: run matched question/response pairs and save one contrastive direction per layer, using endpoints or response means.
 - `probe`: measure, per layer, how often held-out pairs separate along a bank's direction, with explicit endpoint or response pooling.
@@ -282,15 +282,16 @@ Seven operations:
 - `generate`: apply a selected direction during inference, or run the original model.
 - `evaluate`: produce paired baseline/steered answers as JSONL, using separate KV caches. `SUBLITERATUS_BASELINE=skip` writes `"baseline": null` and leaves the steered answer unchanged, so a design with several arms generates the unsteered answer once. `SUBLITERATUS_BATCH=N` decodes N rows together through notorch's multi-sequence decode, with the same answers and output. `SUBLITERATUS_RECEIPT=1` adds a `receipt` object to every line — the direction bank's whole-file FNV-1a, the `NT_NO_I8` numerical mode, the phase and the device — so each answer names what produced it; unset or `0` leaves the output byte-identical. `SUBLITERATUS_DEVICE=cuda` runs every command on notorch's CUDA decoder, with its KV caches in device memory; it needs a `make CUDA=1` build and `NT_NO_I8=1`, the decoder's one numerical mode.
 - `export`: save the same additive intervention into a new Qwen, Qwen3 or SmolLM2 GGUF's FFN-down bias.
+- `serve`: put the [browser workbench](web/README.md) on `127.0.0.1` and run `evaluate` from it, one paired answer at a time.
 
 `SUBLITERATUS_PHASE=all|prompt|generation|answer` chooses which positions receive the live offset: every processed token (the default), only the prompt, only generated tokens, or the terminal prompt position plus generated tokens. `answer` reaches the first answer-token prediction while leaving earlier history positions untouched. `generation` keeps its original timing: the first answer token is at baseline because prefill produces its logits. Expert statistics count the terminal prompt position under prompt. Export always writes the all-positions offset and rejects restricted phases. Any other value is refused by every operation, including `extract`, `probe`, `project` and `calibrate`, which do not read the phase.
 
 | Body | Template | Operations |
 | --- | --- | --- |
-| Qwen2/Qwen2.5 instruction-tuned GGUF (`qwen2`) | ChatML with Qwen2.5's standard system message | All seven |
-| Qwen3 GGUF (`qwen3`) | ChatML without a system message; the assistant turn opens with an empty `<think>` block, as its template does with thinking disabled | All seven |
+| Qwen2/Qwen2.5 instruction-tuned GGUF (`qwen2`) | ChatML with Qwen2.5's standard system message | All eight |
+| Qwen3 GGUF (`qwen3`) | ChatML without a system message; the assistant turn opens with an empty `<think>` block, as its template does with thinking disabled | All eight |
 | Gemma 3 instruction-tuned GGUF (`gemma3`) | BOS and user/model turns, no system message | All except export |
-| SmolLM2 instruction-tuned GGUF (`llama`, basename `smollm2`, pre-tokenizer `smollm`) | ChatML with SmolLM's own system message, no extra BOS | All seven |
+| SmolLM2 instruction-tuned GGUF (`llama`, basename `smollm2`, pre-tokenizer `smollm`) | ChatML with SmolLM's own system message, no extra BOS | All eight |
 
 Each body selects its matching notorch decoder and explicit template token IDs. SmolLM2, Qwen and Qwen3 use the existing Llama-family decoder with their own model parameters and chat templates. Gemma's post-FFN normalization places its FFN-down bias before the intervention site, so this version rejects Gemma export. The live intervention still occurs after the complete decoder block, matching the extraction site.
 
@@ -365,12 +366,16 @@ pin `c7b1d2e` also retries non-finite SIMD rows with scalar accumulation; its
 both Smol bodies and Gemma 270M. The quoted speed measurements belong to
 `0c7cc72`; the supplement does not repeat timing.
 
-The dependency now pins **`014403f`**. It includes the Qwen mixed-whitespace
-tokenizer correction, CUDA width checks, and the SIMD training-tail update.
-The native CPU build here does not enable the changed training SGEMM backend;
-its inference arithmetic is unchanged from `7a4b97d`. Historical measurements
-retain their recorded pins. The continuation checks are recorded in
-[SUBLOG.md](SUBLOG.md).
+The dependency now pins **`501baec`**, which adds notorch's native
+EmbeddingGemma 2 text encoder with its C converter, tokenizer and retrieval
+scorer for the EG2 relaunch. At this pin the Gemma 3 270M bank and the three
+development answers recorded on polygon on 2026-09-27 replay there byte for
+byte. The previous pin `014403f` brought the Qwen mixed-whitespace tokenizer
+correction, CUDA width checks, and the SIMD training-tail update; its native
+CPU build did not enable the changed training SGEMM backend, and its inference
+arithmetic was unchanged from `7a4b97d`. Historical measurements retain their
+recorded pins. The continuation checks are recorded
+in [SUBLOG.md](SUBLOG.md).
 
 Output model and direction-bank paths must be new. The source model is read-only. Direction banks are bound to the exact source GGUF by a whole-file FNV-1a fingerprint and checked dimensions; retain the source file with its bank.
 

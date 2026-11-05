@@ -284,7 +284,7 @@ Goal-driven mode. Reach the user's win condition in the fewest moves.
 4. DECIDE. Pick one approach. If a tradeoff matters, state it in one line. Never present a menu unless asked.
 5. ASK RARELY. Ask only when blocked and no safe assumption exists. One question max. Otherwise state the assumption in one line and proceed.
 6. FINISH. Partial work is not done. Continue until the goal is met or a real blocker exists. Do not stop to ask permission for obvious next steps (except outward-facing or irreversible actions).
-7. VERIFY. Before declaring done, check the result against the goal (run it, test it, re-read the requirement), not how it looks. Show command and exit status; skipped tests are not passes; check exit status, not output tails. Verify actual behavioral logic and state transitions—never write superficial assertions that merely check prompt text, log strings, or mock return values.
+7. VERIFY. Before declaring done, check the result against the goal (run it, test it, re-read the requirement), not how it looks. Show command and exit status; skipped tests are not passes; check exit status, not output tails. Verify actual behavioral logic and state transitions—never assert only that text exists when the behavior itself can be tested.
 8. EARN COMPLEXITY. Add complexity only when a concrete failure or requirement forces it. Say which.
 9. CLOSE. Last line: `done`, `done, unverified: <what>`, `not done: <why>`, or `blocked: <what's needed>`.
 
@@ -380,6 +380,16 @@ checkmate is rigorously evaluated across a 48-task benchmark suite spanning 5 di
 **Failing Task IDs:** `feature-07-deep-merge`, `qa-04-css-specificity`, `qa-06-dockerfile-instruction`, `qa-09-linux-signal`, `qa-10-complexity-class`, `refactor-04-simplify-boolean`, `refactor-09-magic-numbers`
 
 <!-- results:end -->
+
+---
+
+## Real session cost telemetry
+
+`/checkmate-gain` includes observational session metrics and estimated USD token costs alongside output tokens. Use `node skills/checkmate-gain/gain.mjs --sessions` for sessions only, or `--bench` for the benchmark scoreboard only. Transcripts stay local and are read without modification.
+
+Costs include uncached input, cache reads, cache writes, and output, priced per message model. The bundled [rate table](skills/checkmate-gain/pricing.mjs) uses [Anthropic standard global API pricing](https://platform.claude.com/docs/en/about-claude/pricing), checked November 5, 2026. Cache writes use the recorded 5-minute/1-hour breakdown; records without it assume 5-minute writes. These are API-equivalent estimates, not subscription invoices; tools, fast-mode pricing, regional premiums, and legacy long-context premiums are excluded.
+
+Unknown models and missing usage remain unpriced, with coverage shown explicitly. Partial coverage suppresses cost comparisons. Fully priced groups show cost per turn and cache-read cost per turn deltas. Groups may differ in task and model mix, so these observational deltas do not establish savings caused by Checkmate.
 
 ---
 

@@ -9,7 +9,7 @@
 
 **Type legend:** 🟢 public source / open-source · 🔬 research (paper / benchmark / dataset / framework) · 🟠 commercial with open components · ⚠️ restrictive, non-commercial, or unclear/no license — check before use.
 
-GitHub-hosted entries show static **★ stars** and **last-commit** snapshots; refresh them with `python3 scripts/update_github_metrics.py` before release. Most recently refreshed entry: 2026-11-01. Hugging Face model entries show license, access, and artifact metadata. Ordering within a section favors flagship and actively maintained projects.
+GitHub-hosted entries show static **★ stars** and **last-commit** snapshots; refresh them with `python3 scripts/update_github_metrics.py` before release. Most recently refreshed entry: 2026-11-05. Hugging Face model entries show license, access, and artifact metadata. Ordering within a section favors flagship and actively maintained projects.
 
 ---
 
@@ -281,6 +281,10 @@ Securing the AI agents themselves — auditing coding agents (Claude Code, Codex
   - **Related:** [node9](https://github.com/node9-ai/node9-proxy) · [Agentmetry](https://github.com/blitzcrieg1/agentmetry)
 - **[AEGIS](https://github.com/antropos17/Aegis)** 🟢 — Windows-first desktop monitor for local AI-agent processes, configured file activity, TCP endpoints and audit records, with opt-in selected-action policies and MCP gateways. **Caveat:** Windows beta; macOS/Linux remain experimental. Default monitoring observes activity, not automatic blocking or agent containment; process actions are explicit, and policy/gateway controls cover only separately configured routes. Sensor gaps and incomplete attribution remain possible. Logs and exports can contain sensitive paths and endpoints. Optional Anthropic analysis sends activity metadata on request using the operator's API key; DNS lookups and update checks are separate network activity. *(★ 160 · updated 2026-10-27)*
   - **Sources:** [Capabilities and limits](https://github.com/antropos17/Aegis/blob/003ef1723a0afd97c6647ffd8c1a6641cf94c848/README.md) · [Security and privacy](https://github.com/antropos17/Aegis/blob/003ef1723a0afd97c6647ffd8c1a6641cf94c848/SECURITY.md) · [Published Windows beta](https://github.com/antropos17/Aegis/releases/tag/aegis-v0.21.0-beta)
+- **[Cognipeer Console](https://github.com/Cognipeer/console)** 🟢🟠⚠️ — Self-hosted AI gateway and control plane with LLM routing, rule-based PII checks, model-based guardrails, MCP tool policies, red-team probes and agent tracing. *(Cognipeer)* **Caveat:** AGPL community edition; Realtime and Sandbox are commercial features. Only routed traffic is covered. Model-based checks can send evaluated content to configured providers and default to fail-open on errors. Monitor mode does not block, and unresolved tenant/default-policy paths can run tools unenforced; review enforcement and failure settings before deployment. *(★ 27 · updated 2026-11-04)*
+  - **Sources:** [Community and commercial features](https://github.com/Cognipeer/console/blob/7783c48b013ca42db1d1ae2b71cbd1611dfbbd6a/COMMERCIAL.md) · [Model-check failure modes](https://github.com/Cognipeer/console/blob/7783c48b013ca42db1d1ae2b71cbd1611dfbbd6a/src/lib/services/guardrail/llmEvaluator.ts) · [Tool enforcement paths](https://github.com/Cognipeer/console/blob/7783c48b013ca42db1d1ae2b71cbd1611dfbbd6a/src/lib/services/guardrail/hooks/enforce.ts)
+- **[mu](https://github.com/qybaihe/mu)** 🟢 — CLI and desktop coding agent with judge-assisted tool permissions and prompt-injection screening of selected web, search and MCP results. **Caveat:** guards cover mu's own calls, not a standalone security boundary. Full access bypasses ordinary permission prompts; write-sandbox exits retain separate checks. Model verdicts are probabilistic, and injection screening has heuristic fallback and fail-open error paths. The default judge is externally hosted; redaction is best-effort. `--local-only` applies to the judge, not the main coding-model provider. AionUi-derived desktop files retain Apache-2.0. *(★ 576 · updated 2026-11-05)*
+  - **Sources:** [Permission modes](https://github.com/qybaihe/mu/blob/097039bcaa36666fe1eefb5c3edddf705c076e10/packages/kyrn-judge/src/extension/features/permissions.ts) · [Injection screening and fallback](https://github.com/qybaihe/mu/blob/097039bcaa36666fe1eefb5c3edddf705c076e10/packages/kyrn-judge/src/extension/features/injection.ts) · [Security and data boundaries](https://github.com/qybaihe/mu/blob/097039bcaa36666fe1eefb5c3edddf705c076e10/SECURITY.md)
 
 ---
 
@@ -410,17 +414,4 @@ Hyper-specific AI/ML tools for a single offensive-security, recon, or detection 
 ### Password / Credential ML
 
 - **[PassGPT](https://huggingface.co/javirandor/passgpt-10characters)** 🔬⚠️ — 🅐 GPT-style password model trained on leaked passwords for research on password generation and strength estimation. *(Rando et al.)* *license: CC BY-NC-4.0 · access: open 10-char model; 16-char variant gated · artifacts: PyTorch/Safetensors.* Research-only / non-commercial use; related code: [javirandor/passgpt](https://github.com/javirandor/passgpt).
-- **[PassGAN](https://github.com/brannondorsey/PassGAN)** 🔬 — 🅐 WGAN that learns password distributions from leaks to generate guesses; historical reference implementation of the PassGAN paper (MIT). — **note:** historical research reference; not an actively maintained password-auditing product. *(★ 2,013 · updated 2018-09-30)*
-- **[neural_network_cracking](https://github.com/cupslab/neural_network_cracking)** 🔬 — 🅐 RNN password-guessing model from *Fast, Lean, and Accurate: Modeling Password Guessability Using Neural Networks* (USENIX Security 2016); Apache-2.0 licensed. *(CMU CUPS Lab)* — **note:** historical USENIX research implementation, not a maintained password-auditing product. *(★ 243 · updated 2018-11-30)*
-  - **Related:** [PassGPT](https://huggingface.co/javirandor/passgpt-10characters) · [PassGAN](https://github.com/brannondorsey/PassGAN)
-
-### Phishing Detection (Visual / URL)
-
-- **[phishing-url-detection](https://huggingface.co/pirocheto/phishing-url-detection)** 🟢 — 🅐 Packaged URL phishing classifier with ONNX and pickle artifacts. *license: MIT · access: open · artifacts: ONNX, pickle.* Model card recommends ONNX over pickle for safer inference.
-- **[Phishing Email Detection DistilBERT v2.4.1](https://huggingface.co/cybersectony/phishing-email-detection-distilbert_v2.4.1)** 🟢 — DistilBERT text-classification model for email and URL phishing detection, trained on a public Hugging Face phishing-email dataset. *license: Apache-2.0 · access: open · artifacts: Safetensors.* — **note:** strong download signal, but independently verify the very high published metrics before production use.
-- **[PhishIntention](https://github.com/lindsey98/PhishIntention)** 🔬 — 🅐 Deep-vision phishing detector that infers both brand intention and credential-taking intention from webpage appearance and dynamics (USENIX Security 2022). — **note:** CC0-1.0 licensed. *(★ 263 · updated 2026-06-04)*
-- **[VisualPhishNet](https://github.com/S-Abdelnabi/VisualPhishNet)** 🔬⚠️ — 🅐 Triplet CNN for zero-day phishing detection by visual similarity to trusted websites (ACM CCS 2020). *(CISPA)* — **note:** no LICENSE file found; dataset access is research-request based. *(★ 30 · updated 2022-02-09)*
-
-### AI/ML-Assisted Detection Rules & Engines
-
-- **[SYARA](https://github.com/nabeelxy/syara)** 🟢🔬 — 🅐 Semantic YARA-like rule engine for text and multimodal signals, adding embedding similarity, classifier-bac
+- **[PassGAN](https://github.com/brannondorsey/PassGAN)** 🔬 — 🅐 WGAN that learns password distributions from leaks to generate guesses; historical reference implem

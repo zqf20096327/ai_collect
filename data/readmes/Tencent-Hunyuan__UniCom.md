@@ -1,5 +1,13 @@
 # UniCom: Unified Multimodal Modeling via Compressed Continuous Semantic Representations
 
+Yaqi Zhao<sup>1,2,4,&ast;</sup>, Wang Lin<sup>3,4,&ast;</sup>, Zijian Zhang<sup>4</sup>, Miles Yang<sup>4</sup>, Zhao Zhong<sup>4</sup>, Liefeng Bo<sup>4</sup>, Jingyuan Chen<sup>3,&dagger;</sup>, Wentao Zhang<sup>1,&dagger;</sup>
+
+<sup>1</sup>Peking University &nbsp;
+<sup>2</sup>The Hong Kong University of Science and Technology &nbsp;
+<sup>3</sup>Zhejiang University &nbsp;
+<sup>4</sup>Tencent Hunyuan<br>
+<sup>&ast;</sup>Equal contribution. Work done during internships at Tencent Hunyuan. &nbsp; <sup>&dagger;</sup>Corresponding authors<br>
+
 Official code for the paper [UniCom: Unified Multimodal Modeling via Compressed Continuous Semantic Representations](https://arxiv.org/abs/2603.10702).
 
 [![Hugging Face](https://img.shields.io/badge/🤗_Hugging_Face-UniCom-yellow)](https://huggingface.co/tencent/Unicom-Unified-Multimodal-Modeling-via-Compressed-Continuous-Semantic-Representations)
@@ -9,9 +17,15 @@ Official code for the paper [UniCom: Unified Multimodal Modeling via Compressed 
 
 UniCom is a unified large-scale multimodal model that performs generation directly over compressed visual embeddings. This repository includes the inference pipeline for text-to-image generation, image editing, and image reconstruction.
 
-![UniCom Framework](./UniCom/assets/framework.png)
+## News
 
-*Figure: We compare different unified modeling choices in terms of convergence speed and consistency on editing tasks, and ultimately build UniCom with the Path I transfusion-style formulation rather than the Path II query-guided design.*
+- **[2026-10]** 🎉 UniCom is accepted by **NeurIPS 2026**!
+- **[2026-04]** 🔥 Model weights released on [Hugging Face](https://huggingface.co/tencent/Unicom-Unified-Multimodal-Modeling-via-Compressed-Continuous-Semantic-Representations), including UniCom and its reconstruction decoder.
+- **[2026-04]** 🔥 Inference and image reconstruction code released.
+
+[![Overview of UniCom](./UniCom/assets/unicom_v3_method.svg)](./UniCom/assets/unicom_v3_method.pdf)
+
+*Overview of UniCom. UniCom compresses high-dimensional semantic features into a compact continuous latent space that preserves visual semantics while making generation tractable. This shared space serves as the unified interface where a Transfusion-style transformer predicts compressed visual latents and a diffusion decoder maps them back to images.*
 
 ## 🔥 Key Contributions
 

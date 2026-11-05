@@ -3,8 +3,8 @@
 <div align="center">
   <img src="./docs/assets/libravdb-logo.svg" alt="LibraVDB" width="480">
 
-  <p><strong>Local-first memory kernel with causal graph reasoning, identity tracking, and hard PII enforcement.</strong><br/>
-  <em>768-dim vector search • 6-tier cognitive classification • Zero-cloud guarantee</em></p>
+  <p><strong>Local-first memory kernel with causal graph reasoning, identity tracking, and keyword-based reply rules.</strong><br/>
+  <em>768-dim vector search • 6-tier cognitive classification • Local inference supported</em></p>
 
   <p>
     <a href="https://www.npmjs.com/package/@xdarkicex/openclaw-memory-libravdb"><img src="https://img.shields.io/npm/v/%40xdarkicex%2Fopenclaw-memory-libravdb?label=release&color=5B21B6" alt="npm"></a>
@@ -52,14 +52,17 @@ openclaw libravdb status
 
 ```bash
 # Docker
-cd deploy && docker compose up -d
+(cd deploy && docker compose up -d)
 
 # K8s with Helm
 helm install libravdbd ./deploy/helm/libravdbd
 
 # K8s with mTLS
 helm install libravdbd ./deploy/helm/libravdbd \
-  --set tls.enabled=true --set tls.cert=$(base64 -i server.crt) --set tls.key=$(base64 -i server.key)
+  --set tls.enabled=true \
+  --set-string tls.cert="$(base64 < server.crt | tr -d '\n')" \
+  --set-string tls.key="$(base64 < server.key | tr -d '\n')" \
+  --set-string tls.ca="$(base64 < ca.crt | tr -d '\n')"
 ```
 
 Terraform modules for EKS/GKE/AKS: [`deploy/terraform/`](deploy/terraform/)
@@ -144,6 +147,12 @@ To use the daemon's extractive summarization as a pluggable compaction backend (
 
 This works alongside the context engine's own compaction path — the provider is used when the framework's compaction safeguard runs without a context engine owning compaction.
 
+On subsequent compactions, the provider includes the previous summary as historical
+input alongside newer messages so the daemon can re-summarize both.
+
+Canceling host compaction stops its wait for startup and cancels an active
+summarization request. Shared client startup remains available to other memory operations.
+
 Then restart the gateway so the plugin loads:
 
 ```bash
@@ -210,7 +219,7 @@ The daemon is K8-ready. Deployment files live in [`deploy/`](deploy/):
 
 ```bash
 # Quick start with Docker
-cd deploy && docker compose up -d
+(cd deploy && docker compose up -d)
 
 # K8s with Helm
 helm install libravdbd ./deploy/helm/libravdbd
@@ -218,9 +227,16 @@ helm install libravdbd ./deploy/helm/libravdbd
 # K8s with mTLS
 helm install libravdbd ./deploy/helm/libravdbd \
   --set tls.enabled=true \
-  --set tls.cert=$(base64 -i server.crt) \
-  --set tls.key=$(base64 -i server.key)
+  --set-string tls.cert="$(base64 < server.crt | tr -d '\n')" \
+  --set-string tls.key="$(base64 < server.key | tr -d '\n')" \
+  --set-string tls.ca="$(base64 < ca.crt | tr -d '\n')"
 ```
+
+`tls.ca` enables client certificate verification. Without it, cert/key enable
+server TLS only. Configure the plugin's CA, client certificate, and client key
+as described in [mTLS configuration](./docs/mTLS_configuration.md). Server
+certificates must identify the hostname or IP used by the client; issue them
+with matching Subject Alternative Names for your service address.
 
 The image pulls pre-built binaries from [GitHub Releases](https://github.com/zephyr-systems/libravdbd/releases) — no build step needed. Supports `linux/amd64` and `linux/arm64`.
 
@@ -237,12 +253,12 @@ The image pulls pre-built binaries from [GitHub Releases](https://github.com/zep
 
 ### Why LibraVDB over other memory plugins
 
-- **Truly local.** All embedding, search, and compaction runs on your hardware through a dedicated memory kernel. No cloud API calls, no data leaving your machine, no subscription fees. Works offline.
+- **Local operation.** With a local daemon and local embedding and summarization backends, memory operations run on your hardware and work offline after assets are installed. Remote daemon and model endpoints are optional and send data outside the host when configured.
 - **Handles long conversations.** Sessions with hundreds of turns are automatically compacted into searchable summaries. The agent can recall what was discussed in turn 5 even when you're on turn 200 — without blowing the context window.
 - **Never forgets a constraint.** Behavioral rules, preferences, and operating boundaries ("always use TLS", "prefers dark mode") are automatically detected and surfaced higher in recall than conversational noise. The agent can ask "what are my constraints?" and get a surgical answer.
 - **Automatic contradiction detection.** When you say "my email changed to jeff@anthropic.com", the old email is automatically marked as outdated — no manual cleanup, no stale facts confusing the agent.
 - **BM25 + vector hybrid search.** Lexical matching (exact identifiers, file paths, error codes) is fused with semantic similarity. A query for `docker-compose.yml` finds the file even if you described it as "the container config."
-- **Summary recall with expansion tools.** Compacted conversation history can be explored without flooding context. `memory_describe` peeks at what a summary covers; `memory_expand` drills into specifics; `memory_grep` searches by pattern. The agent decides how deep to go.
+- **Summary recall with expansion tools.** Compacted conversation history can be explored without flooding context. `memory_describe` peeks at what a summary covers; `memory_expand` drills into specifics; `memory_grep` searches summaries and both raw/default session turns by pattern, deduplicates matching turns, and applies one result limit across both scopes. The agent decides how deep to go.
 - **Subagent-safe expansion.** When a summary is too large to expand directly, `memory_expand` enforces a token budget and delegates to a sub-agent — protecting the main agent's context window.
 - **Predictive memory.** The memory kernel pre-computes what the agent is likely to ask next after each turn, injecting relevant context before the model even sees the prompt.
 - **Three memory scopes.** Session memory (current conversation), user memory (everything you've ever told the agent), and global memory (shared across users) are kept separate. Searches can target specific scopes.
@@ -251,7 +267,7 @@ The image pulls pre-built binaries from [GitHub Releases](https://github.com/zep
 - **Memory-mapped embedding cache.** Frequently embedded text is cached in a file-backed mmap region that survives daemon restarts. Cold starts are faster, repeat queries are instant.
 - **Pluggable summarization backend.** The memory kernel's extractive summarization can replace LLM-based compaction — zero tokens burned on summarization.
 - **Local-first inference.** GGUF, ONNX, or remote embedding backends. Hardware-native acceleration on Apple Silicon and NVIDIA. No cloud required.
-- **PII scrubbing & hard constraint rules.** Set rules with keywords — the rules engine scans every reply before dispatch. If a rule keyword is found, the reply is blocked and replaced. No LLM overhead, no latency, can't be bypassed. Names, employers, locations, API keys — anything you don't want leaking gets enforced at the reply layer, not the prompt layer.
+- **Keyword filtering & constraint rules.** Configured keywords are checked against outgoing text delivered through OpenClaw's `message_sending` hook. A match replaces that text with a refusal. Rules also provide system-prompt guidance; this is literal text matching, not comprehensive PII detection.
 - **Operational CLI.** `libravdbd status`, `health`, `search`, `tenant evict`, `migrate` — live observability and management without interrupting active sessions.
 
 ### Identity Tracking & User Cards
@@ -319,8 +335,7 @@ so it acts as the foundational identity layer for the agent.
 
 ### PII Scrubbing & Hard Constraint Rules
 
-Agent replies are scanned for forbidden keywords before dispatch. Rules are stored
-locally and enforced through two layers:
+Rules are stored locally and provide reply filtering plus prompt guidance:
 
 **Agent tools for rules:**
 - `set_rule(rule, keywords, priority)` — create a rule with comma-separated keywords for reply scanning. Max 20 rules.
@@ -329,7 +344,7 @@ locally and enforced through two layers:
 - `delete_rule(rule_id)` — remove a rule.
 
 **Dual enforcement layers:**
-- **Reply scan (hard enforcement)** — the `before_agent_reply` hook runs `scanReply` on every agent response. If any rule keyword is found anywhere in the reply text, the response is blocked and replaced with "I cannot answer that." This happens at the dispatch layer — the model can't override it, hallucinate around it, or leak PII. Substring match, case-insensitive, zero LLM overhead.
+- **Outgoing text scan** — `message_sending` passes outgoing `content` to `scanReply`. A case-insensitive substring match replaces the delivered text with "I cannot answer that." The plugin does not intercept incoming prompts through `before_agent_reply`, whose `cleanedBody` is the user's request. This checks each text payload supplied by the host; it does not scan attachment contents, decode obfuscated text, match across separate streaming chunks, or cover delivery paths that bypass this hook.
 - **System prompt (behavioral guidance)** — rules are injected at `prependSystemContext` level (AGENTS.md equivalent) so the model follows behavioral constraints ("always use TypeScript", "never delete files without asking").
 
 **Example:**
@@ -338,13 +353,16 @@ Rule: "Never reveal my employer"
 Keywords: "acme corp, acmecorp, acme.com"
 ```
 
-If the agent's reply contains any of those keywords, it's blocked and replaced
-with "I cannot answer that." — regardless of what the model chose to say.
+If outgoing text passed to the delivery hook contains one of those keywords,
+that text is replaced with "I cannot answer that."
 
 **Config:** `maxRules` sets the cap (default 20, set to 0 to disable rules entirely).
 
 **Storage:** persisted to `~/.openclaw/cache/libravdb/rules.json`. Survives
 gateway restarts and plugin updates.
+`set_rule` and `delete_rule` report success only after saving the change. If a
+save fails, they return `ok: false` with an error and keep the previous active
+rules, including any rule that a replacement would have removed.
 
 ### Technical Architecture
 
@@ -440,22 +458,25 @@ Use [Install](./docs/install.md) for service lifecycle commands and
 ## Configuration
 
 All keys are optional. For the full reference, see [Configuration](./docs/configuration.md).
+The plugin connects to an independently configured daemon. Its embedding fields
+do not provision models or change daemon backend settings; configure those in
+the daemon's YAML or service environment.
 
 | Key | Type | Default | |
 |---|---|---|---|
 | `sidecarPath` | string | `auto` | `"auto"` probes standard paths; set `unix:/path` or `tcp:host:port` to override |
-| `embeddingBackend` | string | `gguf` | Embedding backend: `gguf` (recommended), `bundled`, `onnx-local`, `custom-local`, `remote` |
+| `embeddingBackend` | string | — | Legacy backend metadata/validation field; daemon backend selection is configured separately |
 | `embeddingProfile` | string | `nomic-embed-text-v1.5` | Primary embedding model |
 | `fallbackProfile` | string | `bge-small-en-v1.5` | Fallback profile for dimension mismatches |
 | `embeddingRuntimePath` | string | — | Required with `embeddingBackend: "onnx-local"`; path to `libonnxruntime` visible to `libravdbd` |
 | `embeddingModelPath` | string | — | Required with `embeddingBackend: "onnx-local"`; directory containing `embedding.json`, `model.onnx`, and `tokenizer.json` |
-| `onnxDevice` | string | `cpu` | ONNX execution provider; `cpu` is the default; `auto` lets libravdbd auto-detect |
+| `onnxDevice` | string | `cpu` | Accepted schema field; set the actual execution provider on the daemon |
 | `userId` | string | auto-derived | Stable identity for cross-session durable memory |
 | `tenantId` | string | auto-derived | Multi-tenant identifier. Resolved as `cfg.tenantId` > `LIBRAVDB_AGENT_ID` env > `userId`. Isolates the agent to a dedicated `.libravdb` file. |
 | `tenantIdByAgent` | object | — | Per-agent tenant map. String = primary only. Object = `{primary, readAccess?: []}` for cross-tenant search. Unlisted agents fall through to `tenantId` → `userId`. |
 | `maxRules` | number | 20 | Max hard constraint rules. Set to 0 to disable rules entirely. |
 | `crossSessionRecall` | boolean | `true` | When `false`, only session-scoped memories are retrieved |
-| `compactSessionTokenBudget` | number | `2000` | Auto-compaction token threshold; `0` disables |
+| `compactSessionTokenBudget` | number | `2000` | Auto-compaction budget; `0` disables implicit predictive compaction, unless a positive `compactThreshold` overrides it |
 
 ## Multi-Tenant Support
 
@@ -501,6 +522,10 @@ OpenClaw instance, use `tenantIdByAgent` to map each agent to its own tenant:
 ```
 
 Unlisted agents fall through to `tenantId` → `userId`. Zero daemon changes required.
+
+Search fan-out snapshots the configured read tenants and sends each read with
+its own tenant header. It does not change the default tenant used by concurrent
+ingestion or other writes.
 
 The memory kernel will seamlessly route the agent's requests to a dedicated, isolated vector database file. It manages all tenant instances efficiently within a single process and automatically shares a centralized, memory-mapped embedding cache to keep hardware usage incredibly low.
 

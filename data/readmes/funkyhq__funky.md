@@ -39,15 +39,16 @@ export TOKEN=<your FUNKY_AUTH_TOKEN>
 export H="Authorization: Bearer $TOKEN"
 export J="content-type: application/json"
 
-# 1. an agent config: the model, the system prompt, and its sandbox's network, packages, keys
-#    and setup commands
+# 1. an agent config: the model, the system prompt, and its sandbox's network, packages, keys,
+#    setup commands and size
 AID=$(curl -s localhost:3000/v1/agent-configs -H "$H" -H "$J" -d '{
   "inference": { "provider": "anthropic", "model": "claude-sonnet-5", "maxTokens": 2048 },
   "systemPrompt": "You are an autonomous agent in a fresh Linux sandbox.",
   "network": { "type": "unrestricted" },
   "packages": {},
   "credentials": [],
-  "setupCommands": []
+  "setupCommands": [],
+  "resources": {}
 }' | jq -r .id)
 
 # 2. a task: the work, handed to the agent config. It starts a session running it, and the
@@ -125,9 +126,10 @@ the cache reads and writes. An errored or aborted message carries none, so it ad
 `GET /v1/sessions/$SID/usage` lists the same counts per message. `runtimeSeconds` is how
 long the session's runs have taken, each from its first message to its end. Idle time
 between runs isn't counted, and a run still going counts up to now. It measures Funky
-working on the session, not what the sandbox provider bills: an E2B sandbox keeps running
-after a run ends, until its idle timeout (`FUNKY_SANDBOX_TIMEOUT_MS`, 30 minutes by
-default). The console shows a session's token total beside its log.
+working on the session, not what the sandbox provider bills: an E2B sandbox runs from the
+run's first tool call until the worker pauses it at the run's end (or, should that pause
+never happen, until its timeout, `FUNKY_SANDBOX_TIMEOUT_MS`, 30 minutes by default). The
+console shows a session's token total beside its log.
 
 ### Model providers
 
@@ -181,6 +183,22 @@ and shared by every session that uses it, so packages work under any `network` p
 - Each runs in its own shell, in order, as the sandbox's user.
 - They run once per build, not per session, so they see no credentials.
 - A command that fails ends the run as `"error"`, naming it. Give downloads their own retries.
+
+### Resources
+
+`resources` sizes the sandbox: `cpuCount` vCPUs and `memoryMB` MiB of memory. A field left
+out is the default, **2 vCPUs and 1024 MiB**, so `{}` is 2 and 1024:
+
+```json
+"resources": { "cpuCount": 4, "memoryMB": 4096 }
+```
+
+- On E2B the size is built into the template, like packages, so changing it means one new
+  build before the next session starts.
+- A Deno or Node build, or a large `git` checkout, can outgrow the default. When memory runs
+  out, commands hang until they time out (exit code 124).
+- E2B wants memory in even MiB and vCPUs as 1 or an even number, and caps both by plan
+  (8192 MiB on the plan tested). A size it refuses ends the run as `"error"` with its reason.
 
 ### Secrets
 

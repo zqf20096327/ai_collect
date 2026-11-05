@@ -261,7 +261,10 @@ Codex Minibar also runs on Linux desktops under Wayland and X11. Download from t
 
 - **Debian/Ubuntu:** `sudo apt install ./codex-minibar_<version>_amd64.deb`
 - **Any distribution, no install:** make `codex-minibar-<version>-linux-x64.AppImage` executable
-  and run it.
+  and run it. If FUSE mounting is unavailable, add `--appimage-extract-and-run`;
+  generated launchers and autostart entries preserve that mode, as does updating.
+  Managed launches use separate temporary extraction directories, so opening the
+  app again cannot remove files used by the running instance.
 - **Fedora/openSUSE:** `sudo dnf install ./codex-minibar-<version>-1.x86_64.rpm`
   (or `sudo zypper install ...`).
 - **Arch Linux:** build the `PKGBUILD` attached to each release with `makepkg -si`
@@ -269,14 +272,27 @@ Codex Minibar also runs on Linux desktops under Wayland and X11. Download from t
 - **Other distributions:** extract `codex-minibar-<version>-linux-x64.tar.gz` and run
   `./install.sh` to install into `~/.local`, or run `bin/codex-minibar` in place.
 
+Portable AppImage and tarball installs also need `xdg-utils` for opening links
+and files in the default browser or file manager, and the distribution’s
+`ca-certificates` package for HTTPS requests using the system trust store.
+
 The tray icon uses the StatusNotifierItem protocol. KDE Plasma, Xfce, Cinnamon, Budgie and
 most panels show it out of the box. On GNOME, enable the **AppIndicator and KStatusNotifierItem
-Support** extension (Ubuntu ships it enabled). Without a tray, launch `codex-minibar` again
-to open the popup.
+Support** extension (Ubuntu ships it enabled). The application launcher opens the popup
+even without a tray and on the first launch. From a terminal, use `codex-minibar --show`;
+launching `codex-minibar` again also brings an already running instance forward.
 
 Click the tray icon to toggle the popup. On panels that open a menu instead (such as
 GNOME AppIndicator), choose **Show** to open the popup or **Settings** to open Settings.
 Closing the popup or Settings leaves the app running in the tray.
+
+Provider discovery also checks installed NVM versions when the desktop session's
+`PATH` omits them. Explicit CLI selections and executables already on `PATH` keep
+priority over these fallback locations.
+
+Troubleshooting uses the executable named by `$TERMINAL` when available, then the
+desktop's `xdg-terminal-exec` selection. Distribution alternatives and common
+terminal emulators remain fallbacks when neither is available.
 
 Differences from Windows:
 
@@ -284,7 +300,7 @@ Differences from Windows:
   Popup position** picks one of six spots on the screen. Wayland does not let apps place their
   windows, so the desktop positions it there and that option is disabled. The popup closes when it loses focus or
   you press Esc, unless it is pinned.
-- **Global shortcut.** On GNOME-based desktops (GNOME, Ubuntu, Pop!_OS, Budgie), **Settings →
+- **Global shortcut.** In GNOME sessions (including Ubuntu's GNOME session), **Settings →
   General → Popup shortcut** opens a dialog: press the combination you want and choose
   **Save**. Minibar writes it into the desktop's own keyboard settings as a custom shortcut
   running `codex-minibar --toggle`, so it appears in the desktop's shortcut list and the
@@ -308,6 +324,8 @@ Differences from Windows:
 - **Panel widgets instead of taskbar widgets.** The packages install a GNOME Shell extension
   and a Plasma 6 widget that show your quotas in the panel. See
   [Panel widgets](#panel-widgets).
+
+For release testing across desktops, see the [Linux validation matrix](docs/linux-validation.md).
 - **Windows-only features:** taskbar widgets, the Command Palette and Stream Deck integrations,
   Acrylic/Mica backgrounds and reading the Claude desktop app's token cache.
 
@@ -326,8 +344,10 @@ provider in their menus to open the popup on its tab.
 - **KDE Plasma 6:** right-click the panel, choose **Add or Manage Widgets** and add
   **Codex Minibar**. From a source checkout, run
   `kpackagetool6 --type Plasma/Applet --install integrations/kde-plasma/io.github.vertopolkalf.codexminibar`.
-  The widget runs `codex-minibar status --json` every 30 seconds; for an AppImage, set its
-  path under **Configure Codex Minibar**. Middle-click the widget to toggle the popup.
+  The widget reads the running app's status over D-Bus every 30 seconds, including
+  when using an AppImage without FUSE. If D-Bus status is unavailable, it falls back
+  to `codex-minibar status --json`; configure an explicit fallback executable path
+  under **Configure Codex Minibar** if needed. Middle-click the widget to toggle the popup.
 
 Other clients can use the app's session D-Bus service `io.github.vertopolkalf.CodexMinibar`
 (object `/io/github/vertopolkalf/CodexMinibar`, interface

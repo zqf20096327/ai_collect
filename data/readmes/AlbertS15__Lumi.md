@@ -25,6 +25,7 @@ Interface in five languages: English, Русский, Deutsch, Español, França
 ## Features
 
 - **Search** apps and files: the Spotlight index on Mac, the Start menu and Windows Search on Windows. Lumi tells a search from a question by itself.
+- **Ask my files** (experimental, Windows and Linux): pick folders and ask questions about your own .txt, .md, .pdf and .docx files. Everything stays on your computer, answered by the local Ollama only. See [docs/ASK-MY-FILES.md](docs/ASK-MY-FILES.md).
 - **Answers right in the bar**, streamed as they are written; follow-up questions continue the conversation.
 - **Subscriptions without API keys**, through each service's official tool:
   - Claude — [Claude Code](https://claude.com/claude-code) (`claude`): Haiku, Sonnet, Opus, Fable;
@@ -76,6 +77,8 @@ sudo apt install ./Lumi-*-amd64.deb
 sudo dnf install ./Lumi-*-x86_64.rpm
 ```
 
+**ARM (aarch64): Linux on Apple Silicon Macs in UTM, ARM laptops.** The same files are built for ARM: `Lumi-*-arm64.deb`, `Lumi-*-aarch64.rpm` and `Lumi-aarch64.AppImage`.
+
 **Any other distribution.** Download `Lumi-x86_64.AppImage` from [Releases](https://github.com/AlbertS15/Lumi/releases/latest), then:
 
 ```bash
@@ -89,7 +92,7 @@ If it complains about FUSE, run it with `--appimage-extract-and-run` or install 
 
 **Offline models.** “Install Lumi” unpacks Ollama into `~/.local/share/lumi` (no sudo) after checking its SHA-256, then sets up the model.
 
-**Build from source.** Needs the .NET 8 SDK: `./linux/package.sh` builds `dist/Lumi-x86_64.AppImage`. Code: `linux/Lumi/` (Avalonia, .NET 8), sharing the AI runners, settings and strings with `windows/Lumi/`.
+**Build from source.** Needs the .NET 8 SDK: `./linux/package.sh` builds `dist/Lumi-x86_64.AppImage` (on an ARM machine, or with `LUMI_ARCH=arm64`, `dist/Lumi-aarch64.AppImage`). Code: `linux/Lumi/` (Avalonia, .NET 8), sharing the AI runners, settings and strings with `windows/Lumi/`.
 
 ## Keys
 

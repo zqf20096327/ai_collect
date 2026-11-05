@@ -9,25 +9,31 @@
 
 Use system-provided models in Expo apps: Apple Foundation Models on iOS 26+ and Gemini Nano on Android. Generate text, stream it into a component, extract typed objects and call tools, with no API key.
 
-The full JavaScript API measures approximately **12.6 kB minified / 4.4 kB gzipped**, excluding external dependencies and native code.[^js-size]
+The full JavaScript API measures approximately **17.7 kB minified / 6.0 kB gzipped**, excluding external dependencies and native code.[^js-size]
 
 Inference stays on the device, with no cloud fallback. Once the model is ready, generation works offline; initial model provisioning or downloads may require network access and device storage. Tool handlers you write may also access the network.
 
-[^js-size]: Measured for v0.8.1 from the built package entry point with Bun 1.4.4: a minified browser-target ESM bundle, all public exports retained, packages external, and default `node:zlib` gzip compression. Sizes use decimal kB. This standalone JS measurement excludes Expo, React, React Native, native SDKs (including Android ML Kit), and model assets; it is not a Metro/Hermes or installed-app size measurement. Reproduce with `bun run build && bun run check:size`. CI enforces budgets of 13,000 minified bytes and 4,500 gzip bytes.
+[^js-size]: Measured from the built package entry point with Bun 1.4.4: a minified browser-target ESM bundle, all public exports retained, packages external, and default `node:zlib` gzip compression. Sizes use decimal kB. This standalone JS measurement excludes Expo, React, React Native, native SDKs (including Android ML Kit), and model assets; it is not a Metro/Hermes or installed-app size measurement. Reproduce with `bun run build && bun run check:size`. CI enforces budgets of 18,000 minified bytes and 6,200 gzip bytes.
+
+[Setup](#quick-start) · [Usage](#usage) · [API reference](docs/api.md) · [Troubleshooting](docs/troubleshooting.md) · [Changelog](CHANGELOG.md)
 
 ## At a glance
 
 | | iOS 26+ (Foundation Models) | Android (Gemini Nano) |
 |---|---|---|
 | Text generation and streaming | ✅ Verified on device | ⚠️ Experimental: builds and reports eligibility; generation not yet validated on Gemini Nano hardware |
-| Structured output (typed, schema-constrained) | ✅ Constrained decoding, validated in JS | ❌ Rejected explicitly |
-| Tool calling (schema-constrained arguments) | ✅ | ❌ Rejected explicitly |
+| Image prompts | iOS 27+, Xcode 27+, and a ready vision-capable system model | ⚠️ Experimental: up to eight local images per request; not yet validated on Gemini Nano hardware |
+| Native structured output (schema-constrained) | ✅ Constrained decoding, validated in JS | ❌ Rejected explicitly |
+| Explicit validated output (one-shot) | Text generation + JS schema validation; device check pending | ⚠️ Experimental text generation + JS schema validation; device check pending |
+| Tool calling (validated primitive arguments) | ✅ Schema-constrained | Experimental; selected model must advertise function calling |
 | Stable error codes | ✅ | ✅ |
 | Model download | Managed by the OS | `downloadModel()` with progress |
 
-Unsupported features fail with a clear error instead of degrading silently. `getCapabilities()` reports all of this at runtime, including `experimental: true` on Android. See [how this library is verified](#how-this-library-is-verified).
+Unsupported features fail with a clear error instead of degrading silently. `getCapabilities()` reports integration support, including `experimental: true` on Android; `getModelReadiness()` reports selected-model readiness and tool support. For explicit validated output, check the `text` capability; `structuredOutput` describes native constrained output only. See [how this library is verified](#how-this-library-is-verified).
 
 ## Quick start
+
+Use an existing Expo app and a native development build; **Expo Go is not supported**. Generation needs Apple Intelligence on iOS 26+ or an eligible Gemini Nano device on Android. A successful build does not establish device eligibility. Check the [requirements](#requirements) before choosing a test device.
 
 ```bash
 npx expo install expo-local-llm expo-dev-client expo-build-properties
@@ -43,7 +49,7 @@ Set the deployment targets the module needs in `app.json`:
         "expo-build-properties",
         {
           "ios": { "deploymentTarget": "16.4" },
-          "android": { "minSdkVersion": 26 }
+          "android": { "minSdkVersion": 26, "kotlinVersion": "2.3.0" }
         }
       ]
     ]
@@ -55,6 +61,8 @@ Build a development app, since stock Expo Go cannot load native modules:
 
 ```bash
 npx expo run:ios --device
+# Or, for Android:
+# npx expo run:android --device
 ```
 
 Then stream a response:
@@ -64,28 +72,49 @@ import { Button, Text } from 'react-native';
 import { useLocalLLM } from 'expo-local-llm';
 
 export function Summary({ notes }: { notes: string }) {
-  const { availability, streamResponse, streamedText, error } = useLocalLLM({
+  const { availability, streamResponse, streamedText, isGenerating, error } = useLocalLLM({
     instructions: 'Summarise the text in two sentences.',
   });
 
-  if (!streamResponse) return <Text>{error ?? `On-device AI: ${availability}`}</Text>;
+  async function summarise() {
+    if (!streamResponse || isGenerating) return;
+    try {
+      await streamResponse(notes);
+    } catch {
+      // The hook exposes the rejection through `error`, rendered below.
+    }
+  }
+
   return (
     <>
-      <Button title="Summarise" onPress={() => streamResponse(notes)} />
-      <Text>{streamedText}</Text>
+      <Text>Model: {availability}</Text>
+      <Button
+        title={isGenerating ? 'Summarising…' : 'Summarise'}
+        disabled={!streamResponse || isGenerating}
+        onPress={summarise}
+      />
+      <Text>{error ?? streamedText}</Text>
     </>
   );
 }
 ```
 
-`streamResponse` is `undefined` until the model is ready, so the component shows why when it isn't: Apple Intelligence switched off, the model still downloading, or an ineligible device.
+`streamResponse` is `undefined` until the model is ready. `availability` distinguishes an ineligible device, disabled Apple Intelligence, a pending download, and other states. Android apps can expose the hook's `downloadModel()` when availability is `downloadRequired`; see [readiness and downloads](docs/troubleshooting.md#model-not-ready).
+
+The hook retains conversation history between requests. Use `reset()` for a new conversation or [`generate()`](#one-shot-generation) for independent tasks.
+
+### Upgrading to 0.9.0
+
+All Android apps now require **Kotlin 2.3.0+**, including text-only apps; set `kotlinVersion` as shown above or update your native Kotlin Gradle plugin. Rebuild your iOS or Android app to include the new native image and tool APIs. An EAS Update alone cannot install them.
+
+Existing string prompts and default iOS constrained output retain their behavior. Android structured extraction requires explicit `mode: 'validated'`; hook/session `responseFormat: 'json'` remains iOS-only. See the [0.9.0 changelog](CHANGELOG.md#090--2026-11-05) for the full release.
 
 ## Requirements
 
 | | Requirement |
 |---|---|
 | iOS | iOS 26+ with Apple Intelligence enabled to generate. The module loads on iOS 16.4+ and reports `notEligible` below 26. The host project must target iOS 16.4+, and building needs Xcode 26.4 or newer. |
-| Android | `minSdkVersion` 26+. Generation needs a Gemini Nano–capable device; most Android phones, including most mid-range ones, report `notEligible`. |
+| Android | `minSdkVersion` 26+ and Kotlin 2.3.0+ to compile ML Kit beta5. Generation needs an eligible Gemini Nano device; query readiness on the target device before offering generation. |
 | Expo SDK | 52+ peer range. The example app targets SDK 58 / React Native 0.88; the peer range is not a tested compatibility matrix. |
 
 A native development build is required, built locally or with EAS Build. Installing or upgrading the package needs a new binary; EAS Update cannot add native code. An iPhone simulator can run Foundation Models when the host Mac has Apple Intelligence enabled; latency and thermals still need real hardware.
@@ -115,54 +144,15 @@ Then regenerate and rebuild the native app. This is an app-level build setting, 
 
 ## Usage
 
-### Stream text in a component
+| Task | API | Session ownership |
+|---|---|---|
+| Stream into a React component or keep a conversation | `useLocalLLM()` | The hook creates and releases its session |
+| Generate one independent response | `generate()` | Released after the request |
+| Extract a typed object | `generateObject()` | Released after each attempt |
+| Invoke your app's tools | `useLocalLLM({ tools })` | The hook dispatches handlers |
+| Manage events and conversation lifetime yourself | `createLLMSession()` | You must call `release()` |
 
-```tsx
-import { Text, View } from 'react-native';
-import { useLocalLLM } from 'expo-local-llm';
-
-function Chat() {
-  const {
-    availability,
-    isGenerating,
-    streamedText,
-    error,
-    respond,
-    streamResponse,
-    cancelStream,
-    downloadModel,
-    downloadProgress,
-  } = useLocalLLM({
-    instructions: 'You are a helpful assistant.',
-  });
-
-  // Methods become available after session creation and model readiness.
-  if (!streamResponse) {
-    return (
-      <Text>
-        {error ?? (availability === 'available'
-          ? 'Preparing on-device AI...'
-          : `On-device AI: ${availability}`)}
-      </Text>
-    );
-  }
-
-  const handleSend = async (prompt: string) => {
-    // Streaming — updates streamedText live, resolves with the final text
-    const text = await streamResponse(prompt);
-
-    // Or non-streaming:
-    // const response = await respond(prompt);
-  };
-
-  return (
-    <View>
-      <Text>Status: {availability}</Text>
-      {isGenerating && <Text>{streamedText}</Text>}
-    </View>
-  );
-}
-```
+The [quick start](#quick-start) shows streaming with the hook. For all options and return types, see the [API reference](docs/api.md).
 
 ### One-shot generation
 
@@ -176,9 +166,42 @@ const title = await generate('Suggest a short title for this note: ...', {
 });
 ```
 
+<a id="describe-an-image"></a>
+
+### Describe or compare images
+
+Pass a prompt object to `generate()`, `session.respond()`, `session.streamResponse()`, or the hook's `respond` / `streamResponse`:
+
+```ts
+import { generate } from 'expo-local-llm';
+
+// photoUri is a local file:// URI, for example from your app's cache.
+const description = await generate({
+  text: 'Describe the photo in one sentence.',
+  images: [{ uri: photoUri, label: 'photo' }],
+});
+```
+
+Attach up to **eight local images** with unique labels. For a comparison:
+
+```ts
+// Both URIs point to local files already available to your app.
+const comparison = await generate({
+  text: 'What changed between the before and after photos?',
+  images: [
+    { uri: beforePhotoUri, label: 'before' },
+    { uri: afterPhotoUri, label: 'after' },
+  ],
+});
+```
+
+iOS images require **iOS 27+, Xcode 27+, and a ready vision-capable model**. Android image inference is experimental and model support is unknown. Use `getCapabilities().images` to inspect support; a ready text model does not guarantee vision support.
+
+Images must use local `file://` URIs; download remote images first. iOS retains completed image turns in session history. Android retains images during the current request and its tool turns, but you must attach them again on a later request. See [image requirements, capabilities, and errors](docs/images.md) for URI rules, limits, and cancellation behavior.
+
 ### Extract typed data (iOS)
 
-`generateObject()` infers the result type from the schema, constrains the model's decoding to it, and validates the JSON before returning it:
+`generateObject()` defaults to native constrained output: it infers the result type from the schema, constrains the model's decoding to it, and validates the JSON before returning it:
 
 ```ts
 import { generateObject, getCapabilities } from 'expo-local-llm';
@@ -194,7 +217,7 @@ if (getCapabilities().structuredOutputMode === 'constrained') {
 }
 ```
 
-A supported capability does not mean the model is ready, so handle rejected calls. A mismatch rejects with `StructuredOutputValidationError`; output is never repaired silently.
+A supported capability does not mean the model is ready, so handle rejected calls. A mismatch in this default mode rejects with `StructuredOutputValidationError`; it never falls back to text generation or repair.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/GijungKim/expo-local-llm/main/docs/structured-output.png" alt="Structured output demo — recipe JSON with constrained 'difficulty' enum on iPhone" width="320" />
@@ -202,9 +225,37 @@ A supported capability does not mean the model is ready, so handle rejected call
 
 *Real device output: the model fills in a recipe schema with `difficulty` constrained to `easy | medium | hard`. The streaming demo lives at `example/App.tsx`.*
 
+### Extract validated data (Android and iOS)
+
+Request `mode: 'validated'` explicitly to generate ordinary text and validate the complete JSON against a runtime TypeScript schema. This does **not** constrain decoding. Check `getCapabilities().text` for integration support and `getModelReadiness()` for the selected model's readiness. The existing `structuredOutput` and `structuredOutputMode` capabilities continue to describe native constrained output only.
+
+```ts
+import { generateObject, getCapabilities, getModelReadiness } from 'expo-local-llm';
+
+const controller = new AbortController();
+if (getCapabilities().text && (await getModelReadiness('default')).availability === 'available') {
+  const result = await generateObject('Classify: "Can we meet on Friday?"', {
+    mode: 'validated',
+    repairAttempts: 1, // default; choose 0 to disable repair
+    signal: controller.signal,
+    androidModel: 'default',
+    schema: {
+      intent: { type: 'string', enum: ['scheduling', 'question', 'other'] },
+      dates: { type: 'array', items: { type: 'string' } },
+    },
+  });
+  // result.intent: 'scheduling' | 'question' | 'other'; result.dates: string[]
+}
+// Call controller.abort() from your cancel action while the call is pending.
+```
+
+Only JSON parse or schema failures permit one additional request. Each attempt uses a fresh session with the original task, schema, instructions, generation options, selected model, and image attachment records. Native errors, refusals, guardrails, cancellation, context limits, and availability failures propagate without repair. Exhausted or disabled repair rejects with `StructuredOutputValidationError`; the helper never extracts JSON from prose, coerces values, inserts fields, or removes extra fields. Validation checks structure, not factual correctness. Both platforms still need device testing of this explicit mode; Android remains experimental.
+
+This mode is available only in one-shot `generateObject()`. It does not change sessions, hooks, JSON streaming, or Android's rejection of native `responseFormat: 'json'`.
+
 ### Structured output in the hook
 
-In JSON mode the hook streams a partial object, then publishes the validated result:
+On iOS, JSON mode in the hook streams a partial object, then publishes the validated result. Android callers should use the one-shot [validated extraction helper](#extract-validated-data-android-and-ios); the hook does not accept `mode: 'validated'`.
 
 ```tsx
 const { streamResponse, streamedObject, completedObject } = useLocalLLM({
@@ -225,66 +276,61 @@ await streamResponse?.('Give me a pasta recipe');
 
 Schemas are validated before they reach native code; a malformed one throws `SchemaInvalidError` with per-field paths. Call `validateSchema()` yourself when building schemas at runtime.
 
-### Tool calling (iOS)
+### Tool calling
+
+Use `defineTool()` to type a handler from its parameters and `useLocalLLM()` to dispatch calls. This example looks up local sample data; replace the handler with your app's data access:
 
 ```tsx
-import { Text, View } from 'react-native';
+import { Button, Text } from 'react-native';
 import { defineTool, useLocalLLM } from 'expo-local-llm';
 
-const getWeather = defineTool({
-  name: 'getWeather',
-  description: 'Get the current weather for a city',
+const stock = new Map([['trail-shoes', 12], ['rain-jacket', 0]]);
+const lookupStock = defineTool({
+  name: 'lookupStock',
+  description: 'Look up the available quantity for a product SKU',
   parameters: {
-    city: { type: 'string', description: 'The city name' },
-    unit: { type: 'string', description: 'Temperature unit', enum: ['celsius', 'fahrenheit'] },
+    sku: { type: 'string', description: 'Product SKU, such as trail-shoes' },
   },
-  // Typed from `parameters`: city is a string, unit is 'celsius' | 'fahrenheit'.
-  handler: async ({ city, unit }) => {
-    const res = await fetch(
-      `https://api.example.com/weather?city=${encodeURIComponent(city)}&unit=${unit}`
-    );
-    return JSON.stringify(await res.json());
-  },
+  handler: async ({ sku }) => JSON.stringify({ sku, quantity: stock.get(sku) ?? null }),
 });
 
-function WeatherChat() {
-  const { streamResponse, streamedText, activeToolCalls, error } = useLocalLLM({
-    instructions: 'You are a helpful weather assistant.',
-    tools: [getWeather],
+export function InventoryAssistant() {
+  const { streamResponse, streamedText, isGenerating, activeToolCalls, error } = useLocalLLM({
+    instructions: 'Use lookupStock to answer inventory questions.',
+    androidModel: 'previewFast', // Explicit Android preview selection; ignored on iOS.
+    tools: [lookupStock],
   });
 
+  async function checkStock() {
+    if (!streamResponse || isGenerating) return;
+    try {
+      await streamResponse('How many trail-shoes are available?');
+    } catch {
+      // The hook exposes failures through `error`.
+    }
+  }
+
   return (
-    <View>
-      {activeToolCalls.length > 0 && (
-        <Text>Using {activeToolCalls.map((c) => c.toolName).join(', ')}...</Text>
-      )}
-      <Text>{streamedText}</Text>
-    </View>
+    <>
+      <Button title="Check stock" onPress={checkStock} disabled={!streamResponse || isGenerating} />
+      {activeToolCalls.length > 0 && <Text>Checking inventory…</Text>}
+      <Text>{error ?? streamedText}</Text>
+    </>
   );
 }
 ```
 
-`defineTool()` infers the handler's argument types from `parameters`; it returns the tool unchanged. Tools written inline in `tools` still work, with arguments typed as `Record<string, string | number | boolean>`.
+Android tool calling is experimental and requires a selected model that advertises function calling. Check `await getModelReadiness('previewFast')`; both `availability === 'available'` and `tools === 'available'` are needed. Preview access requires eligible hardware and AICore Developer Preview enrollment. There is no automatic fallback to another model.
 
-Tool arguments use the same constrained decoding as structured output: the model fills in a schema built from `parameters`, so every declared parameter arrives with its declared type and any `enum` is respected. Validate values whose meaning matters (ranges, formats) as you would any input. If a handler throws or times out, the turn rejects with `ERR_TOOL_FAILED`.
+The model chooses whether to call a tool. Handlers must validate application-specific values and permissions; valid arguments alone do not authorize an action. Return strings, using `JSON.stringify()` for structured results. See [tool requirements, execution limits, and cancellation](docs/tool-calling.md).
 
 ### Handle errors
 
-Generation failures and the library's own checks carry a stable `code` (see [Error codes](#error-codes)), so you can respond to *why* generation failed rather than parsing OS messages. The hook exposes it as `errorCode`; for a caught error, use `getLocalLLMErrorCode()`.
+Generation failures and the library's own checks carry a stable `code` (see [Error codes](docs/api.md#error-codes)), so you can respond to *why* generation failed rather than parsing OS messages. The hook exposes it as `errorCode`; for a caught error, use `getLocalLLMErrorCode()`.
 
-Foundation Models has a small context window, so a long conversation eventually fails with `ERR_CONTEXT_WINDOW_EXCEEDED`. On iOS the library never drops turns to make room (Android replays only the last 10 exchanges); decide what your app should do:
+Cancellation through validated mode's `AbortSignal` instead rejects with `error.name === 'AbortError'`, without a library error code. Handle it separately from generation failures.
 
-```tsx
-const { errorCode, reset } = useLocalLLM({ instructions: 'You are a helpful assistant.' });
-
-if (errorCode === 'ERR_CONTEXT_WINDOW_EXCEEDED') {
-  // Start over, or create a new session seeded with a summary of the chat.
-  reset?.();
-}
-if (errorCode === 'ERR_GUARDRAIL_VIOLATION' || errorCode === 'ERR_REFUSAL') {
-  // The model declined; ask the person to rephrase.
-}
-```
+A conversation can fail with `ERR_CONTEXT_WINDOW_EXCEEDED`. Offer a user-triggered `reset()` action for the hook, or start a new session with a summary. Reset clears conversation history; it is not an automatic retry.
 
 ```ts
 import { generate, getLocalLLMErrorCode } from 'expo-local-llm';
@@ -293,177 +339,31 @@ try {
   await generate('Summarise my notes');
 } catch (error) {
   if (error instanceof Error && getLocalLLMErrorCode(error) === 'ERR_RATE_LIMITED') {
-    // The system is throttling on-device generation; retry later.
+    // Show a retry-later message in your app.
+  } else {
+    throw error;
   }
 }
 ```
 
-#### Using with Effect
-
-The library has no additional npm runtime dependencies, so it does not ship [Effect](https://effect.website) bindings. The error codes map directly onto a tagged error, so a wrapper takes a few lines:
-
-```ts
-import { Data, Effect } from 'effect';
-import { generate, getLocalLLMErrorCode, type LocalLLMErrorCode } from 'expo-local-llm';
-
-class LocalLLMFailure extends Data.TaggedError('LocalLLMFailure')<{
-  code: LocalLLMErrorCode | null;
-  message: string;
-}> {}
-
-const generateEffect = (prompt: string) =>
-  Effect.tryPromise({
-    try: () => generate(prompt),
-    catch: (error) =>
-      new LocalLLMFailure({
-        code: error instanceof Error ? getLocalLLMErrorCode(error) : null,
-        message: error instanceof Error ? error.message : 'Generation failed',
-      }),
-  });
-
-// Recover from one failure by its code.
-const answer = generateEffect('Summarise my notes').pipe(
-  Effect.catchIf(
-    (failure) => failure.code === 'ERR_RATE_LIMITED',
-    () => Effect.succeed('Try again in a moment.'),
-  ),
-);
-```
+For an Effect wrapper, see [Using with Effect](docs/effect.md).
 
 ## API reference
 
-### `getCapabilities()`
+The [complete API reference](docs/api.md) covers configuration, return types, events, errors, and session ownership.
 
-Reports which features the loaded platform integration implements. Use this to decide whether to offer text, streaming, tools, or structured output. Check model availability separately before starting generation. A supported capability does not mean the OS model is currently ready.
-
-The function does not download models, start inference, or opt the app into a cloud service.
-
-Returns `platform`, `backend`, `status`, boolean `text`/`streaming`/`tools`/`structuredOutput` flags, `structuredOutputMode` (`'constrained'` or `'unsupported'`), and `experimental`. `experimental` is `true` on Android until Gemini Nano generation has been validated on real hardware; gate production features on it if you need verified behavior.
-
-Capability `status` is `'available'`, `'moduleUnavailable'`, `'unsupportedOS'`, or `'unsupportedPlatform'`. Here `'available'` means the integration is supported; use the hook's `availability` for current model readiness.
-
-### `getModuleDiagnostics()`
-
-Reports whether native code loaded, with `available`, `reason`, `message`, and `setupInstructions`. A missing module is a build/setup problem, distinct from a device that cannot run the model.
-
-```ts
-import { getModuleDiagnostics } from 'expo-local-llm';
-
-const diagnostics = getModuleDiagnostics();
-if (!diagnostics.available) {
-  console.warn(diagnostics.message);
-}
-```
-
-### `useLocalLLM(options?)`
-
-#### Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `instructions` | `string` | System instructions for the session |
-| `options.temperature` | `number` | Sampling temperature |
-| `options.maxTokens` | `number` | Max output tokens (`maxOutputTokens` on Android; `maximumResponseTokens` on iOS). Native SDK/model limits apply. |
-| `options.topK` | `number` | Top-K sampling (maps to `.random(top:)` on iOS) |
-| `tools` | `ToolDefinition[]` | Tools the model can invoke (iOS 26+ only) |
-| `toolTimeout` | `number` | Seconds before an unresolved tool call times out (default 30) |
-| `responseFormat` | `"text" \| "json"` | Set to `"json"` for structured JSON output; requires `schema` |
-| `schema` | `Schema` | Schema for structured output (used with `responseFormat: "json"`); see [Structured output in the hook](#structured-output-in-the-hook) |
-| `includeSchemaInPrompt` | `boolean` | iOS 26+: include the schema definition in the prompt. Default `true`. Set `false` when you've front-loaded few-shot examples. |
-
-#### Returns
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `availability` | `ModelAvailability` | Current model status |
-| `isGenerating` | `boolean` | Whether a generation is in progress |
-| `streamedText` | `string` | Accumulated text from current text stream |
-| `streamedJSON` | `string` | Current partial JSON from a schema-driven stream |
-| `streamedObject` | `DeepPartial<InferSchema<schema>> \| null` | Parsed value of `streamedJSON` (or `null` before any partial). Fields may be missing until generated. |
-| `completedObject` | `InferSchema<schema> \| null` | The finished JSON-mode response, validated against the schema. `null` while generating and after a cancel. |
-| `downloadProgress` | `number \| null` | Download progress 0-1 (Android only) |
-| `error` | `string \| null` | Last error message |
-| `errorCode` | `LocalLLMErrorCode \| null` | Code of the last error (see [Error codes](#error-codes)); `null` when there is none or it came from your own code |
-| `activeToolCalls` | `ActiveToolCall[]` | In-flight tool calls (`{ callId, toolName }`) |
-| `respond` | `(prompt: string) => Promise<string>` | Non-streaming generation. `undefined` when unavailable. |
-| `session` | `LLMSession \| null` | The native session object. `null` before creation or when unavailable. Use the hook's generation methods for hook-managed state and tool dispatch. |
-| `streamResponse` | `(prompt: string) => Promise<string>` | Streaming generation (updates `streamedText`). Resolves with the final text at stream end, or the partial text if cancelled; rejects on stream failure. `undefined` when model not `available`. |
-| `cancelStream` | `() => Promise<void>` | Cancel the active stream; the pending `streamResponse` promise resolves with the partial text. Available whenever a session exists, even if model readiness changes. |
-| `reset` | `() => void` | Clear the conversation transcript, keeping instructions/tools/schema/options. Also cancels any in-flight stream. `undefined` only when there is no session. |
-| `downloadModel` | `() => Promise<void>` | Trigger model download (Android). `undefined` when unavailable. |
-
-### `generate(prompt, config?)`
-
-One-shot stateless generation — creates a session, responds once, and releases it. Takes the
-same generation config as `useLocalLLM`/`createLLMSession`, except tool handlers are not supported. Use it for classification or extraction
-calls where conversation history between calls is unwanted. Throws when the module or model
-is unavailable (check `ExpoLocalLlmModule.getAvailability()` first if you need to gate).
-
-Use `useLocalLLM()` for automatic tool dispatch. Low-level `createLLMSession()` consumers must subscribe to `toolCall` and resolve or reject each call themselves; passing handlers in its configuration does not install those listeners.
-
-### `generateObject(prompt, config)`
-
-One-shot structured generation with a required `schema`. Returns an object whose type is inferred from the schema, after validating every required field, primitive type, enum, array item, and nested object. Unexpected properties are rejected. Use inline schema literals or `as const satisfies Schema` to preserve enum literal types.
-
-This helper requires constrained structured output support (currently iOS 26+). It releases its session on success and failure. Generation errors and model refusals still reject the call; schema validation establishes structure, not factual accuracy.
-
-`validateStructuredOutput(value, schema)` is also available for checking an already-parsed value against a valid schema. It returns `{ ok: true }` or `{ ok: false, errors }` with field paths.
-
-### `createLLMSession(config?)`
-
-Creates a manually owned conversation. Release it when finished:
-
-```ts
-import { createLLMSession } from 'expo-local-llm';
-
-const session = createLLMSession({ instructions: 'Keep answers concise.' });
-try {
-  const text = await session.respond('Suggest a short title for a gardening journal.');
-} finally {
-  session.release();
-}
-```
-
-Low-level `respond(prompt, requestId?)` and `streamResponse(prompt, requestId?)` accept an optional request identifier. Generation events carry `requestId` so consumers can discard queued events from cancelled or reset requests. Omit it to let native code generate an identifier; `useLocalLLM()` manages identifiers and filtering automatically. Use a distinct identifier for each invocation.
-
-### Error codes
-
-Errors thrown or rejected by the library, and `streamError` events, carry one of these codes. Messages come from the OS and may change; codes do not.
-
-On iOS 27, Foundation Models reports some failures with error types that only the iOS 27 SDK can name. Build with Xcode 27 to classify all of them. An app built with Xcode 26.4 still gets codes for the iOS 26 error types, but reports the newer ones as `ERR_GENERATION_FAILED`.
-
-| Code | Meaning |
-|------|---------|
-| `ERR_CONTEXT_WINDOW_EXCEEDED` | The conversation no longer fits the model's context window. Reset or start a new session. |
-| `ERR_GUARDRAIL_VIOLATION` | Safety guardrails blocked the prompt or response. |
-| `ERR_REFUSAL` | The model declined to answer. |
-| `ERR_UNSUPPORTED_LANGUAGE` | The prompt language or device locale is not supported. |
-| `ERR_UNSUPPORTED_REQUEST` | The request uses a capability the model or helper cannot honour. |
-| `ERR_RATE_LIMITED` | The system is throttling generation (quota, background use, load). Retry later. |
-| `ERR_MODEL_UNAVAILABLE` | Model assets are missing or the device cannot run the model right now. |
-| `ERR_DECODING_FAILED` | Output could not be decoded into the requested structure. |
-| `ERR_TIMEOUT` | Generation exceeded the system's time limit (iOS 27+). |
-| `ERR_TOOL_FAILED` | A tool handler threw or timed out, or the hook had no handler for the tool. |
-| `ERR_GENERATION_FAILED` | Any other generation failure. |
-| `ERR_SESSION_BUSY` | The session already has a generation in progress. |
-| `ERR_SESSION_INVALID` | The session was released or is not ready. |
-| `ERR_NOT_SUPPORTED` | On-device generation is not available on this OS version. |
-| `ERR_RESPONSE_FORMAT_NOT_SUPPORTED` | Structured output is not supported on this platform. |
-| `ERR_TOOL_NOT_SUPPORTED` | Tool calling is not supported on this platform. |
-| `ERR_MODEL_DOWNLOAD_FAILED` | Android: downloading Gemini Nano failed. |
-| `ERR_SCHEMA_INVALID` | A schema is malformed (`SchemaInvalidError`). |
-| `ERR_STRUCTURED_OUTPUT_INVALID` | Generated JSON did not match the schema (`StructuredOutputValidationError`). |
-| `ERR_UNAVAILABLE` | The native module is missing from this build. |
-
-### `ModelAvailability`
-
-`'available' | 'notEnabled' | 'notReady' | 'notEligible' | 'downloadRequired' | 'downloading' | 'unknown' | 'moduleUnavailable'`
-
-Android readiness is checked asynchronously and may initially be `unknown`. Prefer `useLocalLLM()` for reactive readiness; low-level consumers should listen for the module's `availabilityChange` event instead of treating the first synchronous status read as final.
-
-### `validateSchema(schema)` and `validateStructuredOutput(value, schema)`
-
-`validateSchema` checks a schema and returns `{ ok: true }` or `{ ok: false, errors }` with field paths (missing `items`, `enum` on the wrong type, unknown `type`). `validateStructuredOutput` checks an already-parsed value against a valid schema the same way.
+| API | Reference |
+|---|---|
+| <a id="getcapabilities"></a>`getCapabilities()` | [Integration and image capabilities](docs/api.md#getcapabilities) |
+| <a id="getmodelreadinessandroidmodel-androidmodel"></a>`getModelReadiness()` | [Selected-model readiness](docs/api.md#getmodelreadinessandroidmodel-androidmodel) |
+| <a id="getmodulediagnostics"></a>`getModuleDiagnostics()` | [Native module diagnostics](docs/api.md#getmodulediagnostics) |
+| <a id="uselocalllmoptions"></a>`useLocalLLM()` | [Options and return values](docs/api.md#uselocalllmoptions) |
+| <a id="generateprompt-config"></a>`generate()` | [Independent text generation](docs/api.md#generateprompt-config) |
+| <a id="generateobjectprompt-config"></a>`generateObject()` | [Constrained and validated modes](docs/api.md#generateobjectprompt-config) |
+| <a id="createllmsessionconfig"></a>`createLLMSession()` | [Manual session ownership](docs/api.md#createllmsessionconfig) |
+| <a id="error-codes"></a>Error codes | [Generation and validation failures](docs/api.md#error-codes) |
+| <a id="modelavailability"></a>`ModelAvailability` | [Readiness states](docs/api.md#modelavailability) |
+| <a id="validateschemaschema-and-validatestructuredoutputvalue-schema"></a>Schema validators | [Validate schemas and objects](docs/api.md#validateschemaschema-and-validatestructuredoutputvalue-schema) |
 
 ## Platform differences and limitations
 
@@ -473,18 +373,19 @@ Android readiness is checked asynchronously and may initially be `unknown`. Pref
 | Conversation history | Kept by the native session | Replayed in the prompt: the last 10 exchanges, with role markers in conversation text neutralised |
 | Model availability | Built into the OS | May need `downloadModel()` |
 | Token limits | OS and model dependent | SDK and model dependent |
+| Image prompts | Up to eight local images per request on iOS 27+ with a ready vision-capable model and an Xcode 27+ build; retained in native history | Up to eight local images per request; device model support is unknown |
 
 - **Context window.** Neither platform trims history to fit the model's context; Android only caps it at 10 exchanges. iOS rejects with `ERR_CONTEXT_WINDOW_EXCEEDED`; call `reset()` or start a new session.
 - **One generation per session.** Overlapping requests reject with `ERR_SESSION_BUSY`. After cancelling, await the original promise before starting another request. Use separate sessions for independent conversations; events belong to their session.
 - **Guardrails.** Apple's model refuses some categories of prompt, such as interpreting personal health data. A refusal arrives as `ERR_GUARDRAIL_VIOLATION` or `ERR_REFUSAL`.
-- **Android is experimental.** The Gemini Nano SDK is in beta and its API may change. Structured output and tools are rejected at session creation.
+- **Android is experimental.** The Gemini Nano SDK is in beta and its API may change. Tools require selected-model feature support. Native `responseFormat: 'json'` and default/constrained `generateObject()` remain unsupported: the SDK only accepts compiled Kotlin types for constrained output, with no public runtime-schema entrypoint for arbitrary JS schemas. Explicit `generateObject(..., { mode: 'validated', schema })` uses text generation plus JS validation and bounded repair; it does not use native constrained decoding or tools.
 - **Readiness gates generation.** `respond` and `streamResponse` need a session and `availability === 'available'`; cancelling and resetting work whenever a session exists.
 
 ## How this library is verified
 
-- **Every pull request:** lint, unit tests, type-level tests, and a compile of a freshly generated Expo SDK 58 app on both platforms, with the iOS build using Xcode 26.4, the oldest supported toolchain. Android also runs JVM tests of the prompt assembly and error mapping.
+- **Code changes:** lint, unit tests, type-level tests, and a compile of a freshly generated Expo SDK 58 app on both platforms, with the iOS build using Xcode 26.4, the oldest supported toolchain. Android also runs JVM tests of the prompt assembly and error mapping.
 - **Against the real model:** [`tools/model-check`](tools/model-check/README.md) runs the library's Foundation Models code on a Mac with Apple Intelligence: constrained tool arguments, error-code mapping and schema-constrained output. The release checklist runs it before each release.
-- **On devices:** the [release verification record](docs/release-verification.md) lists what has been checked on an iPhone 15 Pro, a simulator and a Galaxy A17, and leaves untested scenarios marked as pending rather than assumed.
+- **On devices:** the [release verification record](docs/release-verification.md) lists the device/OS, package revision, and results for each recorded run, and leaves untested scenarios marked as pending rather than assumed.
 
 ## Choosing this library
 
@@ -501,7 +402,7 @@ The [Expo Modules API](https://docs.expo.dev/modules/overview/) fits OS-provided
 - **Swift and Kotlin** — both implementations use a consistent module definition style, without adding a separate inference engine.
 - **Expo build workflows** — autolinking integrates with prebuild, local development builds, and EAS Build.
 
-Expo does not improve model quality or remove device eligibility requirements. Its native-call performance is comparable to React Native Turbo Modules; autolinking is not unique to Expo. The benefit is a cohesive integration and maintenance experience.
+Expo supplies the native integration and build workflow. Model behavior and device eligibility still come from the platform backend.
 
 Existing React Native apps can use this library after [installing Expo Modules support](https://docs.expo.dev/bare/installing-expo-modules/). Expo-first does not mean Expo-only.
 

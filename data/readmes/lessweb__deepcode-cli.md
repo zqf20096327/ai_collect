@@ -77,6 +77,7 @@ Skills 会按以下优先级扫描：
 | `/fork`     | 从当前对话创建独立的新会话                    |
 | `/continue` | 继续当前对话，或选择历史对话恢复                 |
 | `/compact`  | 手动压缩当前对话上下文                       |
+| `/copy`     | 将最近一条助手回复的文本复制到剪贴板               |
 | `/model`    | 切换模型、思考模式和推理强度                   |
 | `/permissions` | 配置工具权限                          |
 | `/raw`      | 切换显示模式（Normal / Lite / Raw 滚动回溯） |
@@ -90,7 +91,8 @@ Skills 会按以下优先级扫描：
 |---------------|--------------------|
 | `Enter`       | 发送消息               |
 | `Shift+Enter` | 插入换行（也可用 `Ctrl+J`） |
-| `Ctrl+V`      | 从剪贴板粘贴图片           |
+| `Ctrl+V`      | 从剪贴板粘贴图片（Windows系统是`Alt+V`）           |
+| `Ctrl+Y`      | 将输入框中的文本复制到剪贴板 |
 | `Ctrl+R`      | 搜索当前及历史会话中的用户输入    |
 | `Esc`         | 中断当前模型回复           |
 | 连续 `Ctrl+D`   | 退出                 |
@@ -119,7 +121,7 @@ Deep Code 的收益来自于工具约束、上下文管理、Agent Skills 和权
 
 ### Deep Code 是否支持理解图片？
 
-支持。`deepseek-flash` 模型支持直接读取本地图片或使用`ctrl+v`从剪贴板粘贴图片，让模型直接看到图片内容。
+支持。`deepseek-flash` 模型支持直接读取本地图片或使用`ctrl+v`（Windows系统是`alt+v`）从剪贴板粘贴图片，让模型直接看到图片内容。
 
 `deepseek-v4-pro`、`deepseek-v4-flash` 等非多模态模型仍会使用 `UnderstandImage` 识图工具。Deep Code 会自动判断模型能力，也可通过 `multimodal` 配置项手动覆盖。
 

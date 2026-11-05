@@ -94,11 +94,10 @@ shux operator install -p .
 ```
 
 `shux operator install` installs the Guardian and a 5-minute watchdog for this project.
-Its cleanup step is machine-wide: it removes every loaded `com.superharness.inbox.*` and
-`com.superharness.watcher.*` launchd service and plist, for all projects, including the
-inbox jobs created by `shux watcher-worker`. Run it on a machine where you are ready to
-replace those jobs with Guardians, and re-run it per project. `shux doctor` checks for the
-Guardian job, not the inbox job.
+It replaces this project's own `shux watcher-worker` inbox job (the Guardian covers it) and
+removes legacy `com.superharness.inbox.*` and `com.superharness.watcher.*` jobs that carry
+no project marker. Inbox jobs that `shux watcher-worker` created for other projects are kept.
+`shux doctor` checks for the Guardian job, not the inbox job.
 
 ### 4. Dashboard UI
 ```bash
@@ -396,6 +395,8 @@ bash tests/doctrine/doctrine-guard.sh
 
 This repository is public by design, declared by the `.public-repo` marker; the guard skips its private-by-default visibility check when that marker exists.
 
+The Tests workflow skips its full pytest layers when a pull request, merge group, or main push changes only root Markdown files or `.md`, `.rst`, and `.txt` files under `docs/`. Shell and changelog guards and QA Gate still run. Code, configuration, mixed changes, and unknown diffs retain the full test suite. Changes to the workflow itself also run the full suite. Other security and platform workflows remain active.
+
 ---
 
 ## Security Note
@@ -426,7 +427,7 @@ CONFIRM_NON_INTERACTIVE=yes bash src/superharness/scripts/install-systemd-inbox-
 
 superharness draws on ideas from several open agent harnesses and patterns. Each link points to the specific extraction or comparison doc.
 
-- [Nous Research / hermes-agent](https://github.com/nousresearch/hermes-agent) — agent lifecycle and tool-use shape. See [docs/archive/COMPARISON-superharness-vs-pi-hermes.md](docs/archive/COMPARISON-superharness-vs-pi-hermes.md)
+- [Nous Research / hermes-agent](https://github.com/nousresearch/hermes-agent) — inspiration for the interactive onboarding wizard, as well as agent lifecycle and tool-use shape. See [docs/archive/COMPARISON-superharness-vs-pi-hermes.md](docs/archive/COMPARISON-superharness-vs-pi-hermes.md)
 - [earendil-works/pi](https://github.com/earendil-works/pi) — multi-agent coordination patterns
 - [obra/superpowers](https://github.com/obra/superpowers) — composable `SKILL.md` files, two-stage review (spec compliance, then code quality), TDD enforcement.
 - [paperclipai/paperclip](https://github.com/paperclipai/paperclip) — adapter breadth, plugin SDK shape, dashboard control plane.

@@ -5,7 +5,7 @@
 > hunk-by-hunk reviewable diff editing.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![VSIX](https://img.shields.io/badge/VSIX-1.3.1-success.svg)](source.extension.vsixmanifest)
+[![VSIX](https://img.shields.io/badge/VSIX-1.3.2-success.svg)](source.extension.vsixmanifest)
 [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2022%20%7C%202026-5C2D91.svg)](https://visualstudio.microsoft.com/)
 [![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.7.2-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Stars](https://img.shields.io/github/stars/zmy15/DeepSeek-for-VisualStudio?style=flat&logo=github&label=Stars)](https://github.com/zmy15/DeepSeek-for-VisualStudio/stargazers)
@@ -52,7 +52,7 @@ and tests, operate Git, and drive a browser, all under an approval model you con
 
 | | |
 |---|---|
-| **Version** | 1.3.1 |
+| **Version** | 1.3.2 |
 | **Target** | Visual Studio 2022 / 2026, `amd64`, `[17.14, )` |
 | **Runtime** | .NET Framework 4.7.2, C# 14 |
 | **License** | MIT |
@@ -156,7 +156,7 @@ a custom OpenAI-compatible endpoint can be configured instead.
    [Releases](https://github.com/zmy15/DeepSeek-for-VisualStudio/releases).
 2. **Close Visual Studio.**
 3. Double-click the `.vsix` and follow the VSIX Installer prompts.
-4. Launch Visual Studio and press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> to open the chat window.
+4. Launch Visual Studio and press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Y</kbd> to open the chat window.
 
 > [!TIP]
 > A **No-Local-OCR** variant is published for environments where the bundled PaddleOCR/OpenCV native libraries
@@ -179,7 +179,7 @@ a custom OpenAI-compatible endpoint can be configured instead.
 
    Use `04. Test Connection` to verify whichever endpoint, model, and key are currently active.
    Both keys are stored in **Visual Studio Credential Storage**, not in plain text in the settings store.
-2. **Open the chat window.** Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>, or use
+2. **Open the chat window.** Press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Y</kbd>, or use
    `View → Other Windows → DeepSeek Chat`, or the toolbar button.
 3. **Pick a model** from the dropdown at the bottom of the chat window — official models, or custom
    endpoint models suffixed with **(Custom)**.
@@ -420,7 +420,7 @@ sub-agent watchdog timeout, and so on).
 
 | Shortcut | Scope | Action |
 |---|---|---|
-| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | Global | Open / focus the DeepSeek Chat window |
+| <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Y</kbd> | Global | Open / focus the DeepSeek Chat window |
 | <kbd>Ctrl</kbd>+<kbd>I</kbd> | Text editor | Inline AI Edit |
 | <kbd>Tab</kbd> / <kbd>Esc</kbd> | Text editor (with suggestion) | Accept / dismiss ghost-text completion |
 | <kbd>Enter</kbd> / <kbd>Esc</kbd> | Inline edit bar | Apply / cancel the edit |

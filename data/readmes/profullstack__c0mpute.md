@@ -124,6 +124,26 @@ Pass `--roles` to choose an explicit role set. For example,
 `c0mpute worker start --roles storage` skips speech setup. Speech inference
 limits its CPU threads to the node's container quota when one is available.
 
+Kokoro — an int8 ONNX export of
+[hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), ~115 MB of
+model plus voices — is the engine every node is expected to carry, so a worker
+keeps provisioning it in the background until it succeeds and advertises
+`c0mpute:role:tts` as soon as it is ready, without a restart. A failed install
+never blocks the worker: storage, gateway and verifier work carry on, the node
+simply does not offer TTS, and provisioning is retried after 6 hours. Opt out
+with `c0mpute tts auto off`, `C0MPUTE_TTS_AUTO=0`, or `[speech] auto_install =
+false`; opting out removes nothing already installed.
+
+Kokoro needs a Python between 3.10 and 3.13. A node whose only interpreter is
+3.14+ gets Kokoro its own virtualenv, built from an older interpreter when the
+box has one and otherwise by [uv](https://docs.astral.sh/uv/), which fetches a
+managed CPython itself; Piper, Pocket and Whisper keep the shared venv. With
+neither available the worker logs what to install (`python3.13-venv`, or uv)
+and runs on without TTS. The `kokoro-onnx` pin is tied to the model build:
+releases old enough to install on 3.14 feed the `model-files-v1.1` graph int32
+where it wants float, and synthesis fails with `INVALID_ARGUMENT`, so matching
+the runtime to the model wins over matching it to the newest Python.
+
 The Kokoro model files are Apache-2.0. Pocket TTS model weights are CC-BY-4.0;
 the selected Pocket preset voices are CC0, except Alba and Anna, which are
 CC-BY-4.0. Piper's runtime is GPL-3.0 and its
@@ -138,6 +158,32 @@ private network or HTTPS reverse proxy, then configure the app server with
 `C0MPUTE_SPEECH_URL` and the same `C0MPUTE_SPEECH_TOKEN`. The bridge defaults
 to a $0 maximum bid so speech stays free; set `C0MPUTE_SPEECH_MAX_PRICE_USD`
 above zero only when you explicitly want to pay workers that charge for jobs.
+
+#### Warm sessions, for anything that has to talk back
+
+`POST /v1/tts` auctions a job per request, and the auction's bid window alone
+is 4 seconds — fine for a readback, hopeless for a conversation. A **session**
+pins a warm Kokoro on the node running the bridge and pays the model load once:
+
+```sh
+curl -XPOST $URL/v1/sessions -H "authorization: Bearer $TOKEN" \
+  -d '{"voice":"am_michael"}'                     # -> {"session": "...", "load_ms": 1219}
+curl -XPOST $URL/v1/sessions/$ID/say -H "authorization: Bearer $TOKEN" \
+  -d '{"text":"Yes, I can hear you fine."}' -o turn.wav
+curl -XDELETE $URL/v1/sessions/$ID -H "authorization: Bearer $TOKEN"
+```
+
+Each `say` answers with a WAV plus `x-c0mpute-synth-ms` and
+`x-c0mpute-audio-seconds`, so a caller can watch its realtime factor. Measured
+on a Ryzen 9 7950X3D: open 1.27 s once, then 433 ms for a short line and
+1,187 ms for four seconds of audio — roughly a third of realtime. The same
+request on a loaded 6-core box takes 11-40 s, so put sessions on nodes that
+can hold them.
+
+Send **one sentence per `say`** and start playing it while the next renders;
+`GET /v1/sessions` shows what a node is holding. A session idle for five
+minutes is reaped, a node holds at most four, and a worker that dies takes its
+session with it — the next call just opens a new one.
 
 ### Webhook workflow steps (`workflow.step`, for meshhook)
 

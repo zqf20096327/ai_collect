@@ -168,7 +168,7 @@ try (TornadoExecutionPlan plan = new TornadoExecutionPlan(tg.snapshot())) {
 }
 ```
 
-Library bindings are discovered via Java `ServiceLoader`, bind the calls through `java.lang.foreign` (a JNI module only if the library genuinely needs compiled C/C++), and any native library joins the graph with no core runtime changes. TornadoVM is a member of the **NVIDIA Inception Program** and has presented this work at **NVIDIA GTC**. [Hybrid API guide →](https://tornadovm.readthedocs.io/en/latest/)
+Library bindings are discovered via Java `ServiceLoader`, bind the calls through `java.lang.foreign` (a JNI module only if the library genuinely needs compiled C/C++), and any native library joins the graph with no core runtime changes. All library modules (cuBLAS, cuFFT, cuDNN, cuSPARSE, cuRAND, cuDF, CUTLASS, cuVS, NCCL, CLBlast, Apple MLX) live in [`tornado-native-libs/`](tornado-native-libs/README.md), with the [hybrid API guide](tornado-native-libs/HYBRID_API_GUIDE.md). TornadoVM is a member of the **NVIDIA Inception Program** and has presented this work at **NVIDIA GTC**. [Hybrid API guide →](https://tornadovm.readthedocs.io/en/latest/)
 
 
 ---
@@ -211,7 +211,7 @@ TornadoVM is used to accelerate machine learning and deep learning, computer vis
 
 - min **JDK 21** — `JAVA_HOME` must point to it
 - GCC/G++ ≥ 13, plus the driver for your target (OpenCL runtime, CUDA Toolkit, or macOS for Metal)
-- For the NVIDIA library tasks (cuBLAS / cuFFT / cuDNN): the **CUDA Toolkit** with the corresponding libraries; for cuDF, RAPIDS libcudf (see `tornado-cudf/README.md`); on systems with multiple toolkits, `/usr/local/cuda` (or `$CUDA_PATH`) is preferred
+- For the NVIDIA library tasks (cuBLAS / cuFFT / cuDNN): the **CUDA Toolkit** with the corresponding libraries; for cuDF, RAPIDS libcudf (see `tornado-native-libs/tornado-cudf/README.md`); on systems with multiple toolkits, `/usr/local/cuda` (or `$CUDA_PATH`) is preferred
 
 ### Install via SDKMAN!
 
@@ -270,8 +270,33 @@ Maven Central coordinates are per-JDK — pin the `-jdk21` / `-jdk22plus` versio
     <artifactId>tornado-runtime</artifactId>
     <version>8.0.0-jdk21</version>
   </dependency>
+  <!-- One or more backends: tornado-drivers-opencl, tornado-drivers-metal, tornado-drivers-cuda -->
+  <dependency>
+    <groupId>io.github.beehive-lab</groupId>
+    <artifactId>tornado-drivers-opencl</artifactId>
+    <version>8.0.0-jdk21</version>
+  </dependency>
 </dependencies>
 ```
+
+**No SDK needed.** Every backend binds its native library (OpenCL, Metal, CUDA driver) through `java.lang.foreign`, so these jars are a complete runtime on the plain classpath. `tornado-drivers-opencl` and `tornado-drivers-metal` are on Maven Central from the release after 8.0.0. The JVM flags:
+
+- `--enable-native-access=ALL-UNNAMED`: silences the restricted-method warning.
+- `--enable-preview`: `-jdk21` artifacts only.
+- `-Dtornado.enabled.backends=opencl|metal|cuda`: picks a backend when several are on the classpath.
+
+Settings and code-cache dumps go to `$TORNADOVM_HOME` if set, otherwise `~/.tornadovm` (override with `-Dtornado.home=...`).
+
+The same with [JBang](https://www.jbang.dev):
+
+```java
+//JAVA 25
+//DEPS io.github.beehive-lab:tornado-runtime:8.0.0-jdk22plus
+//DEPS io.github.beehive-lab:tornado-drivers-opencl:8.0.0-jdk22plus
+//RUNTIME_OPTIONS --enable-native-access=ALL-UNNAMED
+```
+
+For `-jdk21` artifacts use `//JAVA 21` and add `//PREVIEW`.
 
 ---
 

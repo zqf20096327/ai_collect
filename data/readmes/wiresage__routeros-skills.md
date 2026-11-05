@@ -53,7 +53,8 @@ Read `routeros-fundamentals` first; it explains the console conventions and maps
 | Skill | Covers |
 | --- | --- |
 | [routeros-ethernet](skills/routeros-ethernet/SKILL.md) | Ethernet and SFP ports, auto-negotiation, forced mode, FEC, MTU and L2MTU, interface lists, PWR-Line |
-| [routeros-bridging-switching](skills/routeros-bridging-switching/SKILL.md) | Bridges, VLAN filtering, STP/RSTP/MSTP, hardware offloading, IGMP snooping, DHCP snooping, VXLAN, MACsec, SwOS, CRS switch chips |
+| [routeros-bridging-switching](skills/routeros-bridging-switching/SKILL.md) | Bridges, VLAN filtering, STP/RSTP/MSTP, bridge hardware offloading, IGMP snooping, DHCP snooping, VXLAN, MACsec, SwOS |
+| [routeros-switch-chip](skills/routeros-switch-chip/SKILL.md) | Switch chip features per model, mirroring, rate limits, storm control, port isolation, switch ACL rules, Marvell Prestera QoS, L3 hardware offloading, CRS1xx/CRS2xx tables |
 | [routeros-ip-addressing](skills/routeros-ip-addressing/SKILL.md) | IPv4 and IPv6 addresses, pools, ARP, neighbor discovery and RAs, SLAAC, kernel IP settings |
 | [routeros-dhcp](skills/routeros-dhcp/SKILL.md) | DHCP server, client, relay, leases, options, DHCPv6 server/client and prefix delegation |
 | [routeros-dns](skills/routeros-dns/SKILL.md) | DNS resolver and cache, static entries and forwarders, adlists, DNS over HTTPS, mDNS repeater, DNS update |
@@ -155,7 +156,9 @@ Codex `.agents/skills/`, GitHub Copilot `.github/skills/`. Use `--link` (`-Link`
 
 The snapshot date and the page counts are in [docs-snapshot.json](docs-snapshot.json). The crawl, the conversion to
 Markdown and the checks that every page arrived complete are part of this repository (see [CONTRIBUTING.md](CONTRIBUTING.md)),
-so the snapshot can be refreshed when MikroTik updates the manual.
+so the snapshot can be refreshed when MikroTik updates the manual. [docs/skill-coverage.md](docs/skill-coverage.md) shows how
+much of each skill's references its `SKILL.md` leads an agent to, and `docs/manual.lock.json` records which manual version the
+snapshot was last compared with.
 
 Not included: the manual's blog and its documentation change log (they are not RouterOS documentation), tag listing pages
 (they only repeat links), pictures (each reference has a `Source:` link to the page with the figures), the translations in

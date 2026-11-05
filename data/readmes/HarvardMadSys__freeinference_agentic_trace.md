@@ -7,6 +7,8 @@
 </p>
 
 <p align="center">
+  <a href="https://data.freeinference.org/pdf/paper/from-requests-to-sessions">Paper</a>
+  .
   <a href="#dataset">Dataset</a>
   ·
   <a href="#reproducing-the-paper">Reproduction</a>

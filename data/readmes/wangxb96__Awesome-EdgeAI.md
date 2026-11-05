@@ -790,4 +790,5 @@ Key works & projects:
 - [ReAct + Toolformer edge variants](https://arxiv.org/abs/2210.03629).
 - [Edge Agent benchmarks](https://arxiv.org/abs/2405.XXXX) (emerging 2024-2025).
 - [Local Agent frameworks](https://github.com/abi/screenshot-to-code) style on-device demos.
-- [Beyond Self-Talk: A Communication-Ce
+- [Beyond Self-Talk: A Communication-Centric Survey of LLM-based Multi-Agent Systems](https://arxiv.org/abs/2502.14321) (arXiv 2025) — communication cost & topology for edge feasibility.
+- [Small Language Models are the Future of Agentic AI](htt

@@ -90,7 +90,7 @@ What it adds is the measurement apparatus: a paired sign-flip test with t
 intervals, Holm-Bonferroni correction across a sweep (with adjusted p-values),
 a 2x2 interaction test with a t interval, per-sample scores joined by sample
 identity, comparability keys that record what was held fixed, a check from
-what actually ran that two arms differ only in the stages they name, and
+what actually ran that two arms differ only in the settings they name, and
 integrity-checked result bundles. Significance testing itself is not new
 (PyTerrier and ranx have it for IR runs, UltraRAG has a paired permutation
 test); what we did not find elsewhere is the combination inside a RAG pipeline
@@ -469,11 +469,14 @@ nowhere else. Lasagna checks that rather than assuming it.
 - **A stage manifest per task.** Each run records what reached each of the eight
   stages: every setting, from the configuration the search actually resolved,
   and the component in the slot.
-- **A check across arms.** If two arms differ at a stage neither of them names,
-  the run says so, the bundle is marked `UNDECLARED_STAGE_CHANGE`, and
+- **A check across arms.** If two arms differ in a setting neither of them
+  names, even inside a stage one of them changes for another reason, the run
+  says so, the bundle is marked `UNDECLARED_STAGE_CHANGE`, and
   `lasagna results validate` refuses it, naming the stage and the settings that
   moved. An arm whose named change never reached its stage is flagged as inert,
-  since its number is the control's under another name.
+  since its number is the control's under another name; a change the retrieval
+  track forces off for every arm is inert there and live on generation, and
+  the run says which.
 
 ### Do two techniques compose, or do they overlap?
 
@@ -794,6 +797,12 @@ everyone whose work is merged:
 - [@juliasadler](https://github.com/juliasadler): the fix for two services
   racing to create a collection, measured against the stack's own Qdrant
   ([#23](https://github.com/dolev31/lasagna/pull/23)).
+- [@segevshlomovIBM](https://github.com/segevshlomovIBM): the stage isolation
+  check's move to judging each setting an arm names, on each track that ran
+  ([#25](https://github.com/dolev31/lasagna/pull/25)), and the evidence runs on
+  Milvus Lite and in the Compose stack that found seven harness bugs, filed as
+  [#46](https://github.com/dolev31/lasagna/issues/46) to
+  [#52](https://github.com/dolev31/lasagna/issues/52).
 - [@tnalbant](https://github.com/tnalbant): a CLI reference that no longer
   changes with the installed Typer version
   ([#37](https://github.com/dolev31/lasagna/pull/37)).

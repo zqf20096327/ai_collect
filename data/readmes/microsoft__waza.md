@@ -28,6 +28,8 @@ Platform, explicit opt-in, evidence, and paid-call restrictions still apply. See
 **v0.40.0 adds** bounded
 runner/text execution, selected AgentV assertion conversion, task-level MCP
 mocks, program-grader context, host lifecycle evidence, and Lab conversations.
+Read [Waza v0.40.0: run exactly the work you declared](https://microsoft.github.io/waza/releases/v0-40-0/)
+for the release story and known limits.
 These additions are not in an installed v0.39.1 binary. The separately versioned
 azd extension/registry and native runner image have independent publication and
 acceptance gates; see the
@@ -1865,14 +1867,4 @@ mcp_mocks:
 
 ### Command Mocks
 
-Use top-level `command_mocks` when the agent must invoke a CLI such as `az`, `gh`, or `kubectl`. Waza creates temporary executable shims for each task and prepends their directory to the Copilot runtime's existing `PATH`; the host `PATH` remains available. This requires `schemaVersion: "1.3"` or newer and `executor: copilot-sdk`.
-
-```yaml
-schemaVersion: "1.3"
-config:
-  executor: copilot-sdk
-  model: claude-sonnet-4.6
-
-command_mocks:
-  - name: az
-    
+Use top-level `command_mocks` when the agent must invoke a CLI such as `az`, `gh`, or `kubectl`. Waza creates temporary executable shims for each task and prepends their directory to the Copilot runtime's existing `PATH`; the host `PATH` remains available. This requires `schemaVersion: "1.3"` or newer and 

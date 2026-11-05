@@ -1,0 +1,207 @@
+# bitGen Studio
+
+**A local, self-hosted AI film and design studio.** Write a screenplay with a local LLM, render scenes with MiniMax H3, LTX and Wan through **ComfyUI**, cut them on a full **timeline**, paint and compose in a layered **image editor**, sketch and model in **CAD** (constrained sketches and parametric 3D bodies), build rooms and sets in the 3D **Sketcher**, and bring in scenes from **Blender**, **Daz Studio** and **Unreal Engine 5.8**. All of it runs on your own GPU, with no accounts and no cloud, and nothing leaves your machine.
+
+> [!WARNING]
+> **Public beta — still in testing.** bitGen Studio is a beta and is still being tested. Expect rough edges and the odd
+> bug. **Bug reports and improvements are very welcome**: open an issue (the *Bug report* and *Feature request*
+> templates are there to help), or send a pull request. See **[docs/BETA.md](docs/BETA.md)** for how to report a
+> problem and **[CONTRIBUTING.md](misc/CONTRIBUTING.md)** for how to help.
+
+### Where testing is up to
+
+| Area | Status |
+|---|---|
+| 🧩 **Model manager** | ✅ Tested by the developer on real hardware - works |
+| 🖼️ **Image generation** (every built-in style) | ✅ Tested on real hardware - works |
+| 🎬 **Video generation** | ✅ Tested on real hardware - works |
+| 🎵 **Music** | ✅ Tested on real hardware - works |
+| 💬 **Local LLM** (chat, screenplays, ✨ Enhance) | ✅ Tested on real hardware - works |
+| 📦 **Installing from this repository** (Windows, the setup wizard: ComfyUI, PyTorch, the node packs) | ✅ Tested on a fresh install - works |
+| 🖌️ **The editors** (image editor, timeline, CAD sketches and 3D bodies) | ⚠️ Built and covered by the automated tests, but **not yet tested enough with real projects** |
+| 📏 **Sketcher** (3D modelling, rooms, profiles, cameras) | ⚠️ Built and covered by the automated tests, but **not yet tested enough with real projects** |
+| 🎮 **Unreal Engine and Daz Studio bridges** | 🧪 Experimental - tested only against stand-in servers, not inside the real programs |
+
+If you try one of the ⚠️ or 🧪 areas, your reports are especially useful.
+
+![bitGen Studio — the main window](docs/images/overview.png)
+
+<p align="center">
+  <a href="docs/INSTALL.md"><b>Install</b></a> ·
+  <a href="docs/USAGE.md"><b>User guide</b></a> ·
+  <a href="docs/bitGen-Studio-Features.pdf"><b>Feature reference (PDF)</b></a> ·
+  <a href="docs/bitGen-Studio-Guide.pdf">Guide + shortcut keys (PDF)</a> ·
+  <a href="misc/CHANGELOG.md">Changelog</a> ·
+  <a href="docs/REFERENCE.md">Technical reference</a> ·
+  <a href="LICENSE">MIT licence</a>
+</p>
+
+---
+
+## What it does
+
+The **[Feature Reference](docs/bitGen-Studio-Features.pdf)** lists every feature (900+), what it does, where to find it and the version it arrived in. In short:
+
+| | |
+|---|---|
+| 🎬 **Films and music videos** | A local LLM writes a screenplay, either a film whose characters speak in their own cloned voices or a music video cut to a song's segments. The scene board renders each scene with MiniMax H3 (video *and* sound), LTX 2.3 / 2.5 or Wan 2.1 / 2.2. You keep, redo, upscale and produce one film from the kept takes. |
+| 🧑‍🎤 **Characters and swaps** | Character sheets, voices, clothing and identity models that follow a character through every scene. Character swap replaces the person in any video, VR footage included, and keeps the performance and the sound. |
+| 🎞️ **Timeline** | A preview canvas with layers, keyframes, effects and adjustment layers. Also: colour grading, masks and tracking, multicam, nesting, proxies, captions, a track mixer, transitions, motion-graphics templates and real-time playback with a render bar. AI tools work inside the timeline, and you can export to FCP7 XML, FCPXML and AAF. |
+| 🖌️ **Image editor** | Layers, masks, smart objects with smart filters, and adjustment and fill layers. Selections, painting and retouching, warps (puppet, liquify, perspective) and type with OpenType features. It also has paths and vector shapes, drawing tools, frames, artboards, dimensions, channels, actions (.atn too), documents, PSD and PDF, and ✨ AI generate / fill / edit. |
+| 📐 **CAD** | Sketch layers with real constraints and dimensions: trim, extend, fillet, offset, patterns, DXF / SVG in and out, and measure. A **parametric 3D body** layer supports extrude, revolve, fillet, chamfer, shell and split body, with named parameters. It is built by **OpenCascade** in the browser or by **Blender**, and exports STL, glTF and STEP. A CAD ribbon runs along the top of the image editor and the timeline. |
+| 🎮 **Unreal Engine 5.8** | A plugin links the Unreal Editor. You get Unreal layers and **MetaHuman** layers in the image editor, and Unreal, MetaHuman and **Unreal camera** layers on the timeline (rendered by the Movie Render Queue). You can move the camera (orbit, look, pan, dolly, roll) and set its lens, f-stop, focus and exposure. You can add **lights, volumetric lights and volumetric fog**, all from inside bitGen. |
+| 📏 **Sketcher** | 3D modelling the quick way (draw, push / pull, offset, groups) and whole rooms and houses: shared walls, doors and windows, roofs, stairs, lights, an outline of every part with its own properties, skirting / cornice / door and window frame / sill profiles you can draw, furniture, people and materials, wall types built up layer by layer (brick, air gap, frame, insulation, plasterboard - their thickness), walls taken out one at a time or set interior / exterior, ⛰ terrain (a sculpt brush, contour lines the ground follows, a heightmap picture, cut / fill pads), 🏊 pools and 🛣 driveways on Bézier curves. Cameras you move and turn with on-screen widgets give shots with depth and normal maps, 360° locations for the video renders and a ✨ real photo of the model. |
+| 🧊 **3D, Blender and Daz** | 3D layers on the timeline (models, 3D text, materials, lights, bakes), a Blender add-on and render bake, Daz Studio scenes as 3D layers with a live camera and pose link, and image-to-3D. |
+| 🖼️ **Images** | Named image styles (FLUX.2, SDXL, Z-Image, Qwen-Image…), LoRA stacks, ControlNet, face fix and SeedVR2 upscaling. |
+| 🎵 **Music and sound** | Songs (MiniMax Music3, YuE2), stems, voice cloning and TTS, speech-to-text, karaoke with a bouncing ball, and SFX. |
+| 🖥️ **Yours** | A frameless desktop app (or any browser), a job queue, a gallery, a live console, dockable panels and themes. Projects stay on your disk. |
+
+## Screenshots
+
+*The pictures, video and music in these screenshots are placeholders made for the page. The app was running without
+models, so nothing in them was generated.*
+
+<table>
+  <tr>
+    <td colspan="2"><img src="docs/images/overview.png" alt="The main window"><br><sub><b>The main window (Basic workspace).</b> The References docker holds the pictures a prompt can use, each with a short description (<i>a red sports coupe</i>, <i>a green velvet chesterfield</i>). The prompt refers to them as &lt;Picture 1&gt;, &lt;Picture 2&gt; and so on. The preview plays the selected take, and the gallery keeps every render. The Workspace menu at the top switches between layouts: Basic, Image editing, Video editing, Music video and Expert.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/model-manager.png" alt="The model manager"><br><sub><b>🧩 Model manager.</b> Every model and LoRA in your ComfyUI folders is shown as a card with its family (FLUX.2, SDXL, LTX, Wan, Qwen, Z-Image…) and kind. Search and filter them, make a new image style from a model, or download from Civitai into the right folder. <i>Tested on real hardware.</i></sub></td>
+    <td width="50%"><img src="docs/images/image-styles.png" alt="Image styles"><br><sub><b>🖼️ Image styles</b> (Settings ▸ Image). A style is a model, its ComfyUI workflow, a sampler and a LoRA stack saved under one name. It ships with built-in styles for FLUX.2 / FLUX 3 Klein, SDXL, Pony, Illustrious, Qwen Image Edit, Krea 2, Anima, FLUX Kontext and more. Pick one beside the prompt. <i>All built-in styles tested on real hardware.</i></sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/timeline.png" alt="The timeline"><br><sub><b>🎞️ Timeline</b> (Video editing workspace). Video, audio and image tracks, its own preview canvas, a tools and properties panel and a layers list. Clips can be trimmed, keyed, graded and given effects, then compiled to one film. <i>Beta: needs more real-world testing.</i></sub></td>
+    <td width="50%"><img src="docs/images/music.png" alt="Music and stems"><br><sub><b>🎵 Music and stems.</b> Write lyrics and a style caption, pick an engine (MiniMax Music3, YuE2) and generate songs. Stems splits a song into voice, drums, bass and the rest. <i>Tested on real hardware.</i></sub></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/images/image-editor.png" alt="The image editor"><br><sub><b>🖌️ Image editor</b> (Image editing workspace, full screen). Layers, masks, adjustments, selections, paint and retouch tools, type, paths, CAD sketches and 3D layers, plus ✨ AI generate / fill / edit. Here a picture has a cut-out layer on top of it. <i>Beta: needs more real-world testing.</i></sub></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/images/sketcher.png" alt="The Sketcher"><br><sub><b>📏 Sketcher</b> (maximized). A room drawn with the Build tools, its parts listed in the 🗂 outline, the skirting picked with its own properties and its profile chosen from pictures. Cameras placed here give shots, depth maps and 360° locations the video renders can use. <i>Beta: needs more real-world testing.</i></sub></td>
+  </tr>
+</table>
+
+## Install with one file (Windows, Linux, macOS)
+
+Download **one** file from this repository into the folder you want bitGen Studio in (a big, fast drive - ComfyUI and
+the models need about 100 GB) and run it. It installs Git and Node.js when they are missing (Windows: Python too),
+clones this repository next to it into `Bitgen-Studio`, and starts the studio - the first start installs everything
+else and opens the setup window. Run the same file any time later to open the studio.
+
+| System | File | How to run it |
+|---|---|---|
+| Windows 10 / 11 | [`install_all.bat`](install_all.bat) | double-click (say Yes when Windows asks to install Git / Node.js) |
+| Linux | [`install_all.sh`](install_all.sh) | `sh install_all.sh` (asks for your password once if Git has to be installed) |
+| macOS | [`install_all.command`](install_all.command) | `sh install_all.command` in Terminal (or `chmod +x` it once, then double-click) |
+
+## Install from GitHub (Windows)
+
+1. **Install Git** - [git-scm.com](https://git-scm.com/download/win) (or `winget install Git.Git`).
+2. **Install Node.js** - [nodejs.org](https://nodejs.org), the LTS version (18 or newer).
+3. **Get bitGen Studio** - open a terminal in the folder you want it in (a big, fast drive is best: ComfyUI and the
+   models need about 100 GB) and run:
+   ```
+   git clone https://github.com/Tim-byte-dev/Bitgen-Studio
+   ```
+4. **Run `start.bat`** in the new `Bitgen-Studio` folder. Start installs bitGen Studio if it is not installed yet and
+   runs it if it is - so from now on, `start.bat` is also how you open the studio. The first time it:
+   - checks for **Python** (3.10 or newer). If it is not found, start says so: install it from
+     [python.org](https://www.python.org/downloads/) with **Add python.exe to PATH** ticked, then run `start.bat` again;
+   - installs the Node and Python packages and the app window (about 150 MB, once), then opens the **setup window**.
+5. **Choose the version you want installed** - the setup window shows what your computer can run and recommends one:
+   **Editor** (no AI), **Editor + small AI** (6-12 GB graphics card), **Editor + mid-size AI** (12-20 GB) or
+   **Everything** (20 GB+).
+6. **ComfyUI** - if you already have ComfyUI, pick **Use a ComfyUI I already have** and select its folder; if you do
+   not, the setup window installs ComfyUI for you. Either way it adds the node packs and downloads the models for the
+   version you chose, then opens the studio.
+
+Keep the black console window open while you use bitGen Studio - closing it stops the studio.
+
+![bitGen Studio - the Expert workspace](docs/images/expert-workspace.png)
+<sub><b>The Expert workspace.</b> Basic Settings on the left, the References docker with a picture as &lt;Picture 1&gt;, the
+prompt chat turning "horse in picture 1 trotting" into a full shot, the prompt ready to Generate, and the queue and
+gallery with the finished renders on the right.</sub>
+
+[docs/INSTALL.md](docs/INSTALL.md) has every step in detail, the one-file installers, the local LLM set-up and
+troubleshooting.
+
+## Quick start
+
+1. **Install**: use a **[one-file installer](#install-with-one-file-windows-linux-macos)** or follow **[Install from GitHub](#install-from-github-windows)** above: **clone** this repository and run `start.bat` (Windows) or `misc/bitgen-studio.sh` (Linux / macOS). Later, Settings ▸ General ▸ **⟳ Updates** ▸ ⤓ Update now (or `git pull`) brings the newest version. Either way you need Node.js 18+, Python 3.10+ and Git. On first start it installs its Node packages and Python environment; Settings ▸ ComfyUI and the setup wizard bring in ComfyUI, its node packs and the models. To build the one-file installers yourself (they bring their own Node.js, Python, git and ffmpeg), use `scripts/build-installers.sh`. [docs/INSTALL.md](docs/INSTALL.md) has every step, the LLM set-up and troubleshooting.
+2. **Make something**: type a prompt and press **Generate**, or ask the assistant to *create a screenplay* and render the scenes on the board. The **[user guide](docs/USAGE.md)** (also as a [PDF](docs/bitGen-Studio-Guide.pdf)) walks through every docker.
+3. **Found a bug or have an idea?** Please open an issue. This is a beta, and every report helps.
+4. **UI dragged off the screen, or a black window?** Close bitGen Studio and run `misc\reset-layout.bat` (in the app folder). It puts back the default layout and theme, and clears the desktop app's caches. Your projects, settings and models are kept, and everything it resets is copied to `backups\layout-<time>\` first.
+
+**Optional bridges** (each in its own folder):
+- `blender/bitgen_bridge`: the Blender add-on.
+- `daz/bitgen_bridge`: the Daz Studio scripts.
+- `ue/bitGenBridge`: the Unreal Engine 5.8 plugin. Copy it to `<YourProject>/Plugins/`.
+
+## Requirements
+
+| | Minimum / notes |
+|---|---|
+| OS | Windows 10/11 (developed on Windows 11) or Linux. macOS runs the studio, but MiniMax H3 video is built for NVIDIA CUDA. |
+| GPU | NVIDIA with CUDA. Developed on an RTX 5090 (32 GB). 24 GB+ is the realistic floor for MiniMax H3 video; the image editor, CAD and timeline editing run on any GPU. |
+| RAM / disk | 32 GB RAM or more; ~100 GB free disk for ComfyUI, the models and your projects. |
+| Software | Node.js 18+, Python 3.10+, Git and ffmpeg on the PATH. Optional: Blender 4.x (the Blender engine, bakes, add-on), Daz Studio, Unreal Engine 5.8. |
+
+## How it fits together
+
+```
+bitGen Studio window (Electron, or http://127.0.0.1:8311 in a browser)
+   │
+   start.bat → misc/server.js ── routes/ + lib/   Node: the API, projects, the job queue (server.js stays minimal)
+   │
+   ├─ ext/<id>/          the dockers (timeline, image editor, video, music…) - each an extension
+   ├─ static/            the page, shared modules, vendored libraries (three.js, pdf.js, OpenCascade…)
+   ├─ misc/              server.js, the Python workers (*_worker.py - one per kind of job, each driving ComfyUI over
+   │                     its API), default.settings, the setup scripts (get-*.ps1, reset-layout.bat …) and the notes
+   ├─ llama.cpp          the local LLM: screenplay writer, chat, ✨ Enhance
+   └─ bridges            Blender (blender/), Daz Studio (daz/), Unreal Engine 5.8 (ue/)
+```
+
+## Tests
+
+`bash scripts/e2e-stub-test.sh` runs the whole suite: 1,700+ legs of unit and real-browser tests. It runs against stub ComfyUI, LLM and Unreal servers, so no GPU or models are needed. GitHub Actions runs a quick subset on every push (`scripts/ci-units.sh`). See [CONTRIBUTING.md](misc/CONTRIBUTING.md).
+
+## Licence
+
+**MIT**: see [LICENSE](LICENSE) and [NOTICE.md](misc/NOTICE.md). Generation software (ComfyUI, llama.cpp, the audio engines) runs as separate programs that the app downloads from their own projects.
+
+The browser libraries in `static/vendor/` keep their own licences, which sit beside them. One of them, OpenCascade (`static/vendor/replicad/`), is LGPL-2.1. NOTICE.md explains how it is shipped.
+
+**✨ Generate in the 📐 SolidCraft docker uses [cadrille](https://github.com/col14m/cadrille)** (Kolodiazhnyi et al.,
+ICLR 2026 - [paper](https://huggingface.co/papers/2505.22914), [weights](https://huggingface.co/maksimko123/cadrille)): an
+open 2B model that writes [CadQuery](https://github.com/CadQuery/cadquery) code for a part from a description or a
+picture; bitGen Studio runs that code and rebuilds the part as SolidCraft's own editable sketches and extrudes.
+cadrille's **code is Apache-2.0**, but its **weights are CC BY-NC 4.0 - non-commercial use only**. They are not part of
+this repository: Settings ▸ Add-ons ▸ CAD generate downloads them from Hugging Face to your machine, and you accept their
+licence when you do. Without cadrille, the app's own local LLM writes the code instead. See [NOTICE.md](misc/NOTICE.md).
+
+**Model weights have their own licences.** MiniMax H3, FLUX.2, SDXL, the voice models and others each come with their own terms, and several are non-commercial. Read the licence of the model that rendered your output.
+
+## Links: the software bitGen Studio bridges to
+
+| Software | Link | What bitGen Studio does with it |
+|---|---|---|
+| ComfyUI | [github.com/Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) | The generation engine: every image, video and music style runs as a ComfyUI graph. The app starts it, installs its node packs, reads its model folders and edits its extra_model_paths.yaml. |
+| llama.cpp | [github.com/ggml-org/llama.cpp](https://github.com/ggml-org/llama.cpp) | The local LLM (`llama-server`) behind ✨ Enhance, the prompt chat, screenplays and ✨ Generate's code. |
+| Blender | [blender.org](https://www.blender.org) | The bitGen Blender add-on: scenes and renders both ways, a .blend opened in the preview canvas, ✨ Build a scene with AI, and Send to Blender from SolidCraft. |
+| Unreal Engine | [unrealengine.com](https://www.unrealengine.com) | The bitGen Bridge plugin: Unreal / MetaHuman layers in the image editor and timeline, renders from a camera, and SolidCraft parts imported as Static Meshes. |
+| Daz Studio | [daz3d.com](https://www.daz3d.com) | The bitGen Daz bridge: renders, pictures, scenes (open / merge) and figures. |
+| SolidCraft | [solidcraft.io](https://solidcraft.io) ([source](https://github.com/tangency-labs/solidcraft)) | Open-source parametric CAD in its own 📐 docker: designs in the project, pictures to the image editor, 3D layers to the timeline, parts to the Sketcher, Blender and Unreal. |
+| cadrille + CadQuery | [cadrille](https://github.com/col14m/cadrille) · [CadQuery](https://github.com/CadQuery/cadquery) | ✨ Generate in SolidCraft: a description or a picture becomes CadQuery code, rebuilt as editable SolidCraft features. cadrille's weights are CC BY-NC 4.0 (non-commercial). |
+| Civitai | [civitai.com](https://civitai.com) | The 🧩 Model manager: details, trigger words, thumbnails, example pictures and videos for your models, plus search and download. |
+| Hugging Face | [huggingface.co](https://huggingface.co) | Where the model files come from (Settings ▸ Models, Add-ons, the Model manager's downloads). |
+| Final Cut Pro, DaVinci Resolve and other editors | [OpenTimelineIO](https://opentimeline.io) · [DaVinci Resolve](https://www.blackmagicdesign.com/products/davinciresolve) · [Final Cut Pro](https://www.apple.com/final-cut-pro/) | The timeline out and in as FCP 7 XML, FCPXML, EDL and OTIO. |
+| Krita AI Diffusion | [github.com/Acly/krita-ai-diffusion](https://github.com/Acly/krita-ai-diffusion) | The image editor's selection Generate / Fill / Remove follows its technique per model family. |
+| RunPod (or any remote GPU) | [runpod.io](https://www.runpod.io) | Settings ▸ Remote GPU: render on a ComfyUI on another machine or a cloud GPU. |
+| FFmpeg | [ffmpeg.org](https://ffmpeg.org) | Compiles, exports, proxies and the audio / video conversions. |
+
+## Acknowledgements
+
+**Produced and Developed by Tim Paul** · **Programmer - Claude Opus 5.5** - the full credits are in Settings ▸ About and at
+the end of the Guide ([lib/credits.json](lib/credits.json)).
+
+[ComfyUI](https://github.com/Comfy-Org/ComfyUI) · [cadrille](https://github.com/col14m/cadrille) + [CadQuery](https://github.com/CadQuery/cadquery) · [SolidCraft](https://solidcraft.io) · [MiniMax H3](https://huggingface.co/Comfy-Org/MiniMax-H3) · [LTX-Video](https://github.com/Lightricks/LTX-Video) · [Wan](https://github.com/Wan-Video) · [llama.cpp](https://github.com/ggml-org/llama.cpp) · [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) · [three.js](https://threejs.org) · [replicad](https://replicad.xyz) + [OpenCascade](https://dev.opencascade.org) · [pdf.js](https://mozilla.github.io/pdf.js/) · [pdf-lib](https://pdf-lib.js.org) · [ag-psd](https://github.com/Agamnentzar/ag-psd) · [fontkit](https://github.com/foliojs/fontkit) · and the ComfyUI node packs listed in [NOTICE.md](misc/NOTICE.md).

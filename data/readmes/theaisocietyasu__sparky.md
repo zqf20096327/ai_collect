@@ -16,18 +16,18 @@
   <a href="https://github.com/theaisocietyasu/sparky/forks"><img src="https://img.shields.io/github/forks/theaisocietyasu/sparky?style=social" alt="GitHub forks"></a>
 </p>
 
-SparkyAI is an assistant for Arizona State University students in Discord: a Rust agent engine, a Discord bot, a developer console, and evals. It is an unofficial, open-source student project and is not affiliated with the university.
+SparkyAI is an assistant for Arizona State University students in Discord and on the web: a Rust agent engine, a Discord bot, a web app, a developer console, and evals. It answers from ASU knowledge, remembers what a student tells it, searches their earlier chats, and nudges them ahead of deadlines and events. It is an unofficial, open-source student project and is not affiliated with the university.
 
 ## Architecture
 
-The engine runs its own agent loop and calls its tools itself. Knowledge search, live ASU queries, the Sun Devil Central clubs and events, and account linking come from [Platform](https://github.com/asusoda/platform), a separate service, over its HTTP API and its MCP tools. Platform crawls ASU pages and runs web search. The engine keeps conversations, memories, confirmations and each student's sealed Canvas calendar feed link in its own SQLite file, and reads Canvas due dates from that feed.
+The engine runs its own agent loop and calls its tools itself. Knowledge search, live ASU queries, the Sun Devil Central clubs and events, and account linking come from [Platform](https://github.com/asusoda/platform), a separate service, over its HTTP API and its MCP tools. Platform crawls ASU pages and runs web search. The engine keeps conversations (with a full-text index for `search_chats`), memories, confirmations, reminders, nudges and each student's sealed Canvas calendar feed link in its own SQLite file, and reads Canvas due dates from that feed. A background loop turns those into nudges the bot DMs and that land in the student's home chat on the web.
 
 ```mermaid
 flowchart LR
     U["Student"] --> DC["Discord"]
     DC --> BOT["discord bot"]
     BOT -->|"HTTP and SSE"| ENG["engine"]
-    ENG -->|"chat and embeddings"| LLM["llama-server or another OpenAI-compatible API"]
+    ENG -->|"chat"| LLM["llama-server or another OpenAI-compatible API"]
     ENG --> API["Platform HTTP API"]
     ENG -.-> PMCP["Platform MCP tools"]
     API --> ASU["ASU sites and APIs"]

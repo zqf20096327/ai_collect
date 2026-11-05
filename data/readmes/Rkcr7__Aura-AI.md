@@ -23,7 +23,17 @@
 
 ---
 
-## 🆕 What's New in v1.1.0
+## 🆕 What's New in v1.1.1
+
+| | |
+|--------|--------|
+| ⚡ **Opens in about 2 seconds** | The window shows up right away with an Aura AI splash, and the app is ready in ~1.9s instead of 5 to 9s |
+| 📴 **No internet needed to load** | Fonts, syntax highlighting and math ship with Aura now, so the UI loads the same offline or on a network that blocks Google Fonts or cdnjs |
+| 🧮 **Math renders properly** | LaTeX in answers shows up as real equations instead of raw `$...$` |
+| 🩺 **Blank window explained** | If WebView2 can't start, the terminal says why and how to fix it instead of leaving an empty window |
+| 🔌 **Starts without internet** | `run.bat` only runs pip when `requirements.txt` changes, so it launches in ~2s and no longer stalls for minutes offline |
+
+### Also new in v1.1.0
 
 | | |
 |--------|--------|
@@ -411,6 +421,7 @@ Never leave the interview window. Control everything instantly with our ergonomi
 |------------|---------|
 | **Operating System** | **Windows 10 or 11** — fully supported on `master` (stealth features use Win32 APIs). <br>**macOS** — work-in-progress port on the [`macos`](https://github.com/Rkcr7/Aura-AI/tree/macos) branch (AppKit/pyobjc, some features still being ported). |
 | **Python** | 3.8 or newer ([download here](https://www.python.org/downloads/)) — check **"Add Python to PATH"** during install |
+| **WebView2 Runtime** | The Edge engine the Aura window runs on. Already on Windows 11 and most updated Windows 10 PCs, otherwise [get it here](https://developer.microsoft.com/microsoft-edge/webview2/) |
 | **Microphone** | Any mic — built-in laptop mic, headset, or USB mic all work |
 | **Internet** | Required for API calls to Deepgram (STT) and LLM providers |
 | **API Keys** | Deepgram + at least one LLM provider (all free — see below) |
@@ -711,6 +722,21 @@ Created from `ai_providers.example.json`. **Not committed to git** — your keys
 </details>
 
 <details>
+<summary><b>⬜ Window opens but stays blank</b></summary>
+
+The Aura window runs on Microsoft Edge WebView2. If it stays empty (a plain dark or white window, no Aura AI logo) while the terminal looks fine, WebView2 either didn't start or isn't drawing the page:
+
+1. Give it ~20 seconds and check the terminal (`silent_run.vbs` hides it, so launch with `run.bat` for this). If Aura prints a `⚠️` warning about the window, the lines under it say what went wrong. Usually the fix is to install or repair the [WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), then restart Aura
+2. No warning but still blank? The page loaded but isn't being drawn, which is often a graphics driver issue. Start Aura with GPU acceleration off:
+   ```bat
+   set WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--disable-gpu
+   run.bat
+   ```
+3. Aura keeps running either way, so you can open `http://127.0.0.1:8002` (or the port shown in the terminal) in a browser meanwhile. ⚠️ A browser tab is **not** hidden from screen sharing
+4. Stuck on the AURA AI loading screen, or it says Aura couldn't start? The window is fine but the local server is slow or didn't start, look for a `⏳` note or a `❌` error in the terminal
+</details>
+
+<details>
 <summary><b>📜 Scrolling too fast or slow</b></summary>
 
 Adjust in `.env` and restart:
@@ -727,6 +753,7 @@ SCROLL_INTERVAL_MS=70    # Higher = less frequent
 2. Verify Python 3.8+ is installed and in PATH
 3. Recreate venv: `rmdir /s venv` then `python -m venv venv`
 4. Run `pip install -r requirements.txt` manually
+5. A package got broken? Delete `venv\requirements.installed.txt` and run `run.bat`. It only runs pip when `requirements.txt` changes (that's what lets it start offline), so this forces a fresh install
 </details>
 
 ---

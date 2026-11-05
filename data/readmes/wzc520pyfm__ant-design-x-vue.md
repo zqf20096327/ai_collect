@@ -105,7 +105,7 @@ $ pnpm lint
 
 | 微信公众号                                                      | QQ 交流群                                                               |
 | ------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| <img src="./docs/public/images//wechat_public_account.jpg" /> | <img src="./docs/public/images/QQ_group_1.jpg" style="width: 260px" /> |
+| <img src="./docs/public/images/wechat_public_account.jpg" /> | <img src="./docs/public/images/QQ_group_1.jpg" style="width: 260px" /> |
 
 ## 📄 LICENSE
 
@@ -122,7 +122,7 @@ $ pnpm lint
 [vue-version-src]: https://img.shields.io/badge/vue-%20%3E%3D%203.5-47c219
 [github-actions-src]: https://img.shields.io/github/actions/workflow/status/wzc520pyfm/ant-design-x-vue/ci.yml?branch=main&style=flat
 [github-actions-href]: https://github.com/wzc520pyfm/ant-design-x-vue/actions?query=workflow%3Aci
-[netlify-build-src]: https://img.shields.io/netlify/cb006e4e-afce-4c3e-9652-6f8a065b5b6e
+[netlify-build-src]: https://img.shields.io/netlify/fa0d6f03-f6b0-4342-8fe9-83ca3a6e063e
 [license-src]: https://img.shields.io/github/license/wzc520pyfm/ant-design-x-vue?style=flat
 [license-href]: https://github.com/wzc520pyfm/ant-design-x-vue/blob/main/LICENSE
 [jsdelivr-src]: https://data.jsdelivr.com/v1/package/npm/ant-design-x-vue/badge

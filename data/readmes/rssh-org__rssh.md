@@ -40,14 +40,22 @@ Not another chat box. Nothing to install on your servers — it works like a hum
 </td>
 <td width="50%" valign="top">
 
+### MCP for your local agent
+Let Codex or Claude Code use already connected RSSH terminals over MCP, alongside your local code. Review commands and execution history in RSSH.
+
+<img src="https://rssh.ofcoder.com/welcome-mcp.gif" alt="MCP: Codex investigates a login failure using local code and an existing RSSH session" width="400">
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
 ### 🎨 Color-coded command blocks
 Every command and its output become a block with a color-coded left edge — spot the last command's output at a glance. **Rendered fully locally**, zero remote dependency.
 
 <img src="https://rssh.ofcoder.com/welcome-blocks.gif" alt="Color-coded command blocks" width="400">
 
 </td>
-</tr>
-<tr>
 <td width="50%" valign="top">
 
 ### 🐳 Dynamic discovery
@@ -56,12 +64,22 @@ Containers and pods change by the minute — connecting to servers by static IP 
 <img src="https://rssh.ofcoder.com/welcome-discovery.gif" alt="Dynamic discovery: containers appear live in Home" width="400">
 
 </td>
+</tr>
+<tr>
 <td width="50%" valign="top">
 
 ### 🔐 Multi-platform data sync
 Keys stay in your local OS keyserver; connection configs are encrypted into your own private GitHub repo — nothing sits on a third-party server.
 
 <img src="https://rssh.ofcoder.com/welcome-sync.gif" alt="Security and sync: keys in keychain, profiles encrypted to GitHub" width="400">
+
+</td>
+<td width="50%" valign="top">
+
+### Terminal plugins
+Add monitoring, custom tools or a terminal pet in a side panel or status strip. Install plugins or build your own with HTML and JavaScript.
+
+<img src="https://rssh.ofcoder.com/welcome-plugins.gif" alt="Terminal plugins: a monitoring panel, status strip and terminal pet" width="400">
 
 </td>
 </tr>
@@ -109,8 +127,6 @@ Download macOS, Windows, Linux and Android installers from [Releases](https://gi
 | HarmonyOS phone     | [Huawei AppGallery](https://appgallery.huawei.com/app/detail?id=com.rssh.app&channelId=SHARE&source=appshare) | Search **RSSH** on your phone |
 | HarmonyOS PC        | [Huawei AppGallery](https://appgallery.huawei.com/app/detail?id=com.rssh.app&channelId=SHARE&source=appshare) | Search **RSSH** on your PC    |
 
-The HarmonyOS phone and PC editions require HarmonyOS 5 or later and have separate installation packages. AppGallery delivers the package for your device; install and update directly from the store.
-
 ### IntelliJ / JetBrains plugin
 
 Run the full RSSH UI inside a JetBrains IDE tool window — same hosts, keys and
@@ -128,68 +144,9 @@ Install: **Settings → Plugins → ⚙ → Install Plugin from Disk…**, pick 
 your OS and restart. Open the **RSSH** tool window (bottom) to start; the ✕ in its
 title bar stops the embedded server.
 
-## Codex subscription
-
-In **Settings → AI**, add a **Codex subscription** provider, enter a name, and
-choose **Save and sign in**. Open the authorization page, enter the displayed
-device code, then select a model and save. RSSH connects directly to the Codex
-cloud service; installing Codex is unnecessary. Terminal tools use RSSH's
-existing approval controls.
-
-Each device signs in separately. RSSH encrypts its tokens locally and refreshes
-them automatically. Provider and model settings can sync through GitHub or
-WebDAV, but subscription credentials are excluded from sync and configuration
-exports. An expired or revoked authorization requires signing in again.
-
-## Local coding agents (MCP)
-
-In **Settings → AI → Local agent (MCP)**, manually start the service. Copy the connection details into your
-agent's **Streamable HTTP** MCP configuration: the URL and the
-`Authorization: Bearer …` header. The loopback endpoint and token belong to
-this RSSH window and expire when the service stops or the window closes.
-
-RSSH exposes four tools:
-
-- `list_sessions` lists connected terminals in this window with their existing
-  shell metadata. Listing a terminal does not authorize control.
-- After selecting a connected terminal, `open_session(session_id, title)` requests control. Accept or reject the request
-  below the AI panel's toolbar. Accepting opens an MCP conversation in the same
-  chat view, without a message input or send button.
-- `run_command` uses the accepted conversation's existing AI command pipeline:
-  command validation, approval cards, terminal execution, output collection,
-  redaction and audit. Its response includes sanitized output and execution status.
-- `download_file(session_id, remote_path, max_mb)` uses the accepted SSH session's
-  existing SFTP download, approval card and audit. `max_mb` must be 1–100; inspect
-  the remote file size first and transfer larger files manually. The response
-  reports success or failure, downloaded bytes and `local_path` under RSSH's data
-  directory. It returns no file contents. This path is on the **RSSH host**, which
-  may differ from the agent's machine in Headless/JetBrains. Local shell, serial
-  and Telnet sessions cannot provide SFTP downloads.
-
-MCP conversations share the AI panel's danger mode and per-tool auto-approval
-settings, audit and conversation history. Viewing saved MCP history does not
-restore agent control. The agent uses its own access to your code; no RSSH AI
-provider or model is required.
-
-Commands use the terminal's existing shell and working directory. Docker and
-Kubernetes terminals use their configured container shell and keep conversation
-history separate from the host and other containers. Confirm the
-terminal is at a shell prompt before approving; full-screen programs and
-concurrent agent commands are blocked. A timeout ends output collection and
-does **not** guarantee the process stopped. Check the terminal before retrying.
-Shell metadata follows RSSH's existing configuration/detection and may be stale
-after switching shells; no shell version is advertised. Do not automatically
-repeat a command after a timeout or lost response; check the terminal first.
-
-Available in the desktop GUI and Headless/JetBrains while the corresponding
-frontend remains open. Closing the conversation, reconnecting the terminal or
-stopping the service revokes control. Serial/Telnet keep the AI panel's existing
-manual approval and output-submission behavior. Mobile hosts and standalone CLI
-sessions do not provide this MCP endpoint.
-
 ## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). For HarmonyOS builds and signing, see [CONTRIBUTING.md — HarmonyOS](CONTRIBUTING.md#harmonyos-packaging).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

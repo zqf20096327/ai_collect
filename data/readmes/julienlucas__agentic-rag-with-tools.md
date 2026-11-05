@@ -48,20 +48,21 @@ Cinq opérations façon système de fichiers, données au modèle de réponse, d
 
 ### Le système inclut un retriever hybride pour maximiser la pertinence
 - **Algo BM25 + Embeddings, côté Qdrant** : chaque chunk porte un vecteur sparse BM25 (précision lexicale) et un vecteur dense (sens contextuel) ; les deux recherches sont fusionnées par RRF dans une seule requête Qdrant. Métrique explicite (`VECTOR_SPACE = "cosine"`).
-- **Un espace par compte** : le tenant Qdrant est le workspace du compte connecté (`ws-<uuid>`), tiré de la session côté serveur, jamais du client ; la démo publique vit sous `demo-<session>`. Une collection Qdrant partagée, chaque point porte un `tenant_id` (index `is_tenant`), HNSW désactivé globalement (`m=0`) et construit par tenant (`payload_m`). Toutes les lectures passent par `backend/vectorstore/qdrant_store.py`, qui impose le filtre `tenant_id`. Les documents sont persistés : un fichier déjà indexé n'est ni ré-OCRisé ni ré-embeddé. L'index d'évaluation (FinanceBench) a ses propres collections, `eval_chunks` / `eval_pages` : il ne côtoie jamais les documents des utilisateurs (`chunks` / `pages`).
+- **Un espace par utilisateur** : une collection Qdrant partagée, chaque point porte un `tenant_id` (index `is_tenant`), HNSW désactivé globalement (`m=0`) et construit par tenant (`payload_m`). Toutes les lectures passent par `backend/vectorstore/qdrant_store.py`, qui impose le filtre `tenant_id`. Les documents sont persistés : un fichier déjà indexé n'est ni ré-OCRisé ni ré-embeddé. L'index d'évaluation (FinanceBench) a ses propres collections, `eval_chunks` / `eval_pages` : il ne côtoie jamais les documents des utilisateurs (`chunks` / `pages`).
 - **Routage par document** : avant de chercher, le système cible le(s) document(s) que la question désigne (nom d'entreprise ou de fichier) — indispensable quand plusieurs documents longs sont indexés ensemble.
 - **Reranking Cohere + parent-child + multi-query** : petits chunks pour matcher, gros chunks pour répondre.
 
 ## Stack de modèles
-Claude, les embeddings et le rerank passent, au choix (`MODEL_PROVIDER`), directement par les
-**API Anthropic et Cohere** (par défaut) ou par **Amazon Bedrock** (région `eu-west-3`) :
+Claude et les embeddings passent, au choix (`MODEL_PROVIDER`), par **Amazon Bedrock** (région
+`eu-west-3`, par défaut) ou directement par les **API Anthropic et Cohere**. Les mêmes modèles
+dans les deux cas :
 - 💎 Claude Sonnet 4.6 (recherche à outils + génération) + Claude Haiku 4.5 (sous-agents : pertinence, routage, multi-query)
+- ⚖️ Évaluation, toujours sur Bedrock : Qwen3 235B (juge LLM, à Francfort, calibré sur annotation humaine) et Ministral 3 14B (answer relevancy, en eu-west-1). Hors famille Claude : le juge ne note pas sa propre famille
 - 🧠 Cohere Embed v4 (embeddings, 1024 dimensions) — identique des deux côtés : changer de fournisseur ne demande pas de réindexer
-- 🧠 Cohere Rerank 4 Pro par l'API Cohere. En mode `bedrock` : Cohere Rerank 3.5 (absent de Paris : appelé à Francfort, données en UE)
-- ⚖️ Évaluation, hors famille Claude (le juge ne note pas sa propre famille) : Mistral Large 4 (juge LLM, par l'API Mistral) et Ministral 3 14B (answer relevancy, toujours sur Bedrock, en eu-west-1)
+- 🧠 Cohere Rerank 3.5 (absent de Paris : appelé à Francfort, données en UE). En mode `direct` : Cohere Rerank 4 Pro par l'API Cohere
 
 Toujours par leur propre API :
-- ⚡ Mistral OCR (absent de Bedrock) et juge Mistral Large 4
+- ⚡ Mistral OCR (absent de Bedrock)
 - 🗄️ Qdrant Cloud (base vectorielle, un espace et un HNSW par utilisateur)
 
 ## Installation
@@ -80,35 +81,36 @@ uv sync
 
 Choisissez d'abord le fournisseur des modèles Claude et des embeddings :
 
-| `MODEL_PROVIDER` | Claude (Sonnet 4.6, Haiku 4.5) | Embeddings et rerank (Cohere) | Prérequis |
+| `MODEL_PROVIDER` | Claude (Sonnet 4.6, Haiku 4.5) | Embeddings (Cohere Embed v4) | Prérequis |
 |---|---|---|---|
-| `direct` (défaut) | API Anthropic | API Cohere | Clés [platform.claude.com](https://platform.claude.com) et [dashboard.cohere.com](https://dashboard.cohere.com) |
-| `bedrock` | Amazon Bedrock | Amazon Bedrock | Compte AWS avec `bedrock:InvokeModel`, accès activé dans la console Bedrock à Claude Sonnet 4.6, Claude Haiku 4.5, Cohere Embed v4 et Rerank 3.5 |
+| `bedrock` (défaut) | Amazon Bedrock | Amazon Bedrock | Compte AWS avec `bedrock:InvokeModel`, accès activé dans la console Bedrock à Claude Sonnet 4.6, Claude Haiku 4.5 et Cohere Embed v4 |
+| `direct` | API Anthropic | API Cohere | Clé [platform.claude.com](https://platform.claude.com) |
 
 Dans tous les cas :
-- **Mistral** : une clé sur [console.mistral.ai](https://console.mistral.ai), pour l'OCR et le juge d'évaluation.
+- **Mistral** : une clé sur [console.mistral.ai](https://console.mistral.ai), pour l'OCR.
+- **Cohere** : une clé sur [dashboard.cohere.com](https://dashboard.cohere.com), pour le reranker (et les embeddings en mode `direct`).
 - **Qdrant** : un cluster sur [cloud.qdrant.io](https://cloud.qdrant.io) (AWS, région proche d'eu-west-3). Sans `QDRANT_URL`, Qdrant tourne en mémoire (données perdues au redémarrage).
 
 Fichier `.env` :
 ```bash
-# --- Fournisseur des modèles : direct (défaut) ou bedrock ---
-MODEL_PROVIDER=direct
+# --- Fournisseur des modèles : bedrock (défaut) ou direct ---
+MODEL_PROVIDER=bedrock
 
 # --- Toujours requis ---
-MISTRALAI_API_KEY=votre_clé_api_mistral_ici      # OCR et juge d'évaluation
+MISTRALAI_API_KEY=votre_clé_api_mistral_ici      # OCR
 QDRANT_URL=https://xxxx.eu-central-1-0.aws.cloud.qdrant.io:6333
 QDRANT_API_KEY=votre_clé_qdrant_ici
 
-# --- MODEL_PROVIDER=direct ---
-ANTHROPIC_API_KEY=votre_clé_api_anthropic_ici
-COHERE_API_KEY=votre_clé_api_cohere_ici          # embeddings et reranker
-
-# --- MODEL_PROVIDER=bedrock, ou métrique answer relevancy de l'évaluation ---
+# --- MODEL_PROVIDER=bedrock ---
 # Facultatif si ~/.aws/credentials ou un rôle IAM suffit. Présentes ici, ces clés passent
 # AVANT les variables AWS du shell (un AWS_SESSION_TOKEN expiré dans le terminal ne gêne plus).
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=eu-west-3
+
+# --- MODEL_PROVIDER=direct ---
+ANTHROPIC_API_KEY=votre_clé_api_anthropic_ici
+COHERE_API_KEY=votre_clé_api_cohere_ici          # embeddings et reranker
 ```
 
 Réglages facultatifs (valeurs par défaut) :
@@ -121,7 +123,6 @@ REASONING_MODEL_ID=
 MODEL_SMALL_ID=
 MODEL_ID=
 EMBEDDING_MODEL_ID=
-EVAL_JUDGE_MODEL_ID=mistral-large-4  # juge d'évaluation, par l'API Mistral
 REASONING_EFFORT=medium          # low | medium | high | max
 RERANK_MODEL=
 RERANK_REGION=eu-central-1       # Bedrock : Rerank 3.5 n'existe pas à Paris
@@ -139,9 +140,9 @@ Un clic sur une citation `[n]` ou sur un passage cité ouvre le document à la p
 passage surligné (pdf.js, `frontend/src/components/rag/DocumentViewer.tsx`).
 
 - **Originaux.** Un fichier déposé est gardé dans `DOCUMENT_STORAGE_DIR`, rangé par hash de
-  contenu (plus sa conversion `<hash>.pdf` pour un DOCX, PPTX…), et servi par
-  `GET /api/app/documents/<id>/file`, seulement au compte qui l'a déposé. Il est effacé quand
-  plus aucun espace ne l'indexe. Les exemples de la démo sont servis par le frontend (`/static/`).
+  contenu, et servi par `GET /api/documents/<hash>/file`, seulement à l'espace qui l'indexe.
+  Il est effacé quand plus aucun espace ne l'indexe. Chaque chunk porte `file_hash` et
+  `pdf_url` dans ses métadonnées Qdrant. Les exemples sont servis par le frontend (`/static/`).
 - **Repli.** Sans original (document déposé avant ce stockage), le panneau affiche le texte OCR
   de la page (`GET /api/documents/page`), passage surligné.
 - **Exemples.** AMD et Boeing (10-K 2022, FinanceBench) sont livrés avec leurs pages déjà OCRisées
@@ -150,48 +151,6 @@ passage surligné (pdf.js, `frontend/src/components/rag/DocumentViewer.tsx`).
 - **En production (Railway)** : attacher un volume au service backend (par exemple monté sur
   `/data`), puis définir `DOCUMENT_STORAGE_DIR=/data/documents`. Sans volume, les originaux sont
   perdus à chaque redéploiement et les citations retombent sur le texte OCR.
-
-## Le produit : comptes, documents, crédits
-
-Le RAG est servi en libre-service, payé au crédit (plan : `docs/plan-produit.md`, contrat d'API :
-`docs/api-produit.md`). Code : `backend/saas/` (Django) et `frontend/src/components/{app,auth}`.
-
-- **Comptes** : django-allauth en mode headless (e-mail + mot de passe, code de vérification par
-  e-mail, mot de passe oublié, Google). Session par cookie, CSRF sur toutes les écritures.
-- **Base** : Postgres (`DATABASE_URL`, SQLite en développement) : workspaces, documents,
-  registre des crédits (en ajout seul, le solde en est la somme), conversations, achats.
-- **Formats** (`backend/document_processor/formats.py`) : PDF, DOCX, PPTX, ODT, ODP, RTF, DOC, PPT
-  (convertis en PDF par LibreOffice, pour ouvrir les citations à la page), PNG, JPG, WEBP (OCR),
-  TXT, MD, HTML (lus sans OCR), XLSX, CSV (tableaux markdown de 50 lignes). Le contenu doit
-  confirmer l'extension.
-- **Ingestion** : la file est la table des documents ; une boucle de fond du service web la
-  dépile (`backend/saas/ingestion.py`), et reprend après un redémarrage les documents interrompus.
-- **Crédits** (`backend/saas/pricing.py`, seule source des prix) : 1 crédit = 0,01 €, une question
-  = 20 crédits, une page indexée = 1 crédit. Gratuit : 20 documents, 1 000 pages, indexation
-  offerte, 300 crédits de bienvenue. Packs de 10 à 100 € par Stripe Checkout ; seul le webhook
-  crédite. Une question ou une indexation qui échoue est remboursée.
-
-### Déploiement
-
-**Railway (API).** Un service, construit par le `Dockerfile` (LibreOffice inclus), qui lance
-les migrations puis gunicorn. À ajouter :
-- un **volume** monté sur `/data`, avec `DOCUMENT_STORAGE_DIR=/data/documents`, et
-  `RAILWAY_RUN_UID=0` (le volume appartient à root). Pas de worker séparé : un volume ne
-  s'attache qu'à un service, et l'ingestion lit les originaux ;
-- une base **Postgres** Railway (fournit `DATABASE_URL`) ;
-- `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY`, `FRONTEND_URL=https://<domaine du frontend>`,
-  `PRODUCT_NAME` ;
-- e-mails : `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` (Resend,
-  Amazon SES…) ;
-- Google (facultatif) : `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, URI de redirection
-  `https://<frontend>/accounts/google/login/callback/` ;
-- Stripe : `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (webhook sur
-  `https://<frontend>/api/stripe/webhook`, événements `checkout.session.completed` et
-  `checkout.session.async_payment_succeeded`), `STRIPE_AUTOMATIC_TAX=true` pour la TVA.
-
-**Vercel (frontend).** `vercel.json` relaie `/api`, `/_allauth` et `/accounts` vers Railway :
-remplacer `RAILWAY_API_HOST` par l'hôte du service. Un seul domaine pour le navigateur, donc
-des cookies de première partie.
 
 Pour surveiller votre application avec LangSmith (si vous le souhaitez) :
 
@@ -203,7 +162,7 @@ Pour surveiller votre application avec LangSmith (si vous le souhaitez) :
 ```bash
 # Configuration LangSmith pour le monitoring
 LANGSMITH_API_KEY=votre_cle_api_langsmith_ici
-LANGSMITH_PROJECT=agentic-rag
+LANGSMITH_PROJECT=agentic-search
 ```
 
 4. **Lancer l'application** :
@@ -214,17 +173,17 @@ uv run python manage.py runserver
 ## Votes des utilisateurs : de 👎 au test de non-régression
 
 Sous chaque réponse, un 👍 / 👎 (le 👎 ouvre un commentaire facultatif). Actifs seulement avec
-`LANGSMITH_API_KEY` : chaque question est tracée dans le projet `agentic-rag` sous un run racine
+`LANGSMITH_API_KEY` : chaque question est tracée dans le projet `agentic-search` sous un run racine
 `question`, et le vote devient un feedback `user_score` (1 / 0) sur cette trace. Le navigateur ne voit
 qu'un jeton signé qui lie la trace à son espace : en production, définir `DJANGO_SECRET_KEY`.
 
 1. **Récolter** : chaque vote est rangé automatiquement, en arrière-plan, dans le dataset LangSmith
-   « agentic-rag · Retours utilisateurs » (`backend/evals/feedback/votes_dataset.py`), quelques secondes après le clic, le temps
+   « agentic-search · Retours utilisateurs » (`backend/evals/feedback/votes_dataset.py`), quelques secondes après le clic, le temps
    que la trace arrive. Un 👍 y entre avec sa réponse comme référence. Un 👎 y entre avec sa réponse
    rejetée et le commentaire en métadonnées. `uv run python backend/evals/feedback/collect.py` rattrape les
    votes manqués (redémarrage du serveur, LangSmith indisponible), sans doublon.
    `FEEDBACK_AUTO_COLLECT=false` coupe le rangement automatique.
-2. **Analyser** : chaque 👎 reçoit une cause d'échec proposée par le juge (Mistral Large 4, pas Claude) :
+2. **Analyser** : chaque 👎 reçoit une cause d'échec proposée par le juge (Qwen3 235B, pas Claude) :
    `mauvais_document`, `passage_manquant`, `erreur_lecture`, `erreur_calcul`, `refus_a_tort`,
    `hors_corpus`, `forme` ou `autre`. Elle est aussi posée en feedback `failure_category` sur la trace,
    et `collect.py` affiche la répartition de ce qu'il rattrape. La cause dit où corriger : routage, retrieval, prompt ou outils.
@@ -241,17 +200,17 @@ d'un utilisateur et fuiraient vers les autres espaces. Elles servent de référe
 
 **1. Les vraies questions** — *tout seul, à chaque question*
 
-4 juges (Mistral Large 4) relisent chaque question posée en production et disent oui
+4 juges (Claude Sonnet 4.6 sur Bedrock) relisent chaque question posée en production et disent oui
 ou non : l'agent a-t-il bien choisi entre chercher et répondre (`tool_selection`) ? le
 vérificateur de pertinence a-t-il donné le bon label (`relevance_check_correct`) ? la réponse
 ne dit-elle que ce qu'il y a dans les passages (`faithfulness`) ? répond-elle à la question
-posée (`answer_relevance`) ? Les règles se créent une fois avec
-`backend/evals/online_evaluators.py`, après avoir ajouté `MISTRAL_API_KEY` dans
-LangSmith (Settings → Secrets) : ce nom exact, sans le « AI » de `MISTRALAI_API_KEY`. Le juge est hors
-famille Claude (Claude Sonnet 4.6 sur Bedrock jusqu'au 1er nov. 2026 : verdicts non comparables). `backend/evals/judge_calibration.py` mesure ensuite l'accord de ces juges
+posée (`answer_relevance`) ? ~0,01 à 0,04 $ par question. Les règles se créent une fois avec
+`backend/evals/online_evaluators.py`, après avoir ajouté `AWS_ACCESS_KEY_ID` et
+`AWS_SECRET_ACCESS_KEY` dans LangSmith (Settings → Secrets). Le juge est de la même famille que
+l'agent : choix assumé de tout passer par Bedrock (avant le 11 oct. 2026 : Mistral Large). `backend/evals/judge_calibration.py` mesure ensuite l'accord de ces juges
 avec les 👍/👎 (lecture seule, gratuit).
 
-Un seul projet LangSmith, `agentic-rag` : les vraies questions, et tout ce que produisent les
+Un seul projet LangSmith, `agentic-search` : les vraies questions, et tout ce que produisent les
 évaluations, filtrable par tag (`eval` pour les résumés de runs, `evaluator` pour les évaluateurs
 des expériences). Les juges en ligne ne laissent pas de trace à part : leur verdict et leur
 raisonnement sont sur la trace notée.
@@ -288,7 +247,7 @@ Rien n'est livré dans le dépôt : ni PDF, ni questions, ni index. Une seule co
 | `LANGSMITH_API_KEY` | écrire le dataset de questions dans LangSmith |
 | `MISTRALAI_API_KEY` | l'OCR des documents listés dans `FULL_OCR_DOCS` (Mistral OCR) |
 | `QDRANT_URL`, `QDRANT_API_KEY` | l'index persistant (sans `QDRANT_URL`, Qdrant tourne en mémoire et l'index serait perdu) |
-| `COHERE_API_KEY` (`direct`) ou AWS (`MODEL_PROVIDER=bedrock`) | les embeddings Cohere Embed v4 des chunks |
+| AWS (`MODEL_PROVIDER=bedrock`) ou `COHERE_API_KEY` (`direct`) | les embeddings Cohere Embed v4 des chunks |
 
 **2. Lancer la préparation** :
 ```bash
@@ -304,7 +263,7 @@ uv run python backend/evals/financebench/prepare.py --docs pilot   # 20 rapports
    [`shhdwi/financebench-markdown`](https://huggingface.co/datasets/shhdwi/financebench-markdown), recalé sur
    les pages du PDF (`markdown_corpus.py`). Un document dont les tableaux y sont corrompus est OCRisé en
    entier par Mistral OCR (`FULL_OCR_DOCS` dans `prepare.py` : aujourd'hui le 10-Q T2 2023 de 3M).
-3. **Dataset LangSmith** (« agentic-rag · FinanceBench (84 docs) » ou « (pilot 20) ») : questions,
+3. **Dataset LangSmith** (« agentic-search · FinanceBench (84 docs) » ou « (pilot 20) ») : questions,
    réponses de référence, pages et passages de preuve. Les questions dont la preuve tombe sur une page
    absente du texte sont retirées (11 sur 150). Deux références FinanceBench fausses, vérifiées dans le
    document, sont corrigées (`REFERENCE_CORRECTIONS`, Pfizer / Upjohn).
@@ -317,8 +276,8 @@ Relancer le script ne repaie rien : un rapport déjà présent dans l'index est 
 
 **Lancer l'évaluation** :
 ```bash
-uv run python backend/evals/experiment.py --mode agentic --dataset "agentic-rag · FinanceBench (84 docs)" --time-budget 0
-uv run python backend/evals/experiment.py --mode both --dataset "agentic-rag · FinanceBench (pilot 20)" --time-budget 0
+uv run python backend/evals/experiment.py --mode agentic --dataset "agentic-search · FinanceBench (84 docs)" --time-budget 0
+uv run python backend/evals/experiment.py --mode both --dataset "agentic-search · FinanceBench (pilot 20)" --time-budget 0
 ```
 
 ### Résultats (12 octobre 2026)

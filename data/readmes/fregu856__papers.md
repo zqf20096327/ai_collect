@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-05] [paper612]
+- Implementing Trust in Non-Small Cell Lung Cancer Diagnosis With a Conformalized Uncertainty-Aware AI Framework
+ [[pdf]](https://www.nature.com/articles/s41551-026-01694-8) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Implementing%20Trust%20in%20Non-Small%20Cell%20Lung%20Cancer%20Diagnosis%20With%20a%20Conformalized%20Uncertainty-Aware%20AI%20Framework.pdf)
+- `Nature Biomedical Engineering, 2026`
+- [Computational Pathology]
+```
+Somewhat interesting paper, but this felt less relevant than what I had expected/hoped. Not the most straightforward approach, combining multiple things (SNGP, conformal predicton, tile-elimination). I also feel like they oversell their contributions a bit too much overall (for example this from the Discussion: "TRUECAM represents a transformative step towards making AI a trusted partner in clinical decision-making"). Figure 6.k is quite interesting/surprising though, that you only need to use 0.1% of the tiles in each WSI to do this binary subtype classification.
+```
+
+##### [26-11-05] [paper611]
+- TISSUE: Uncertainty-Calibrated Prediction of Single-Cell Spatial Transcriptomics Improves Downstream Analyses
+ [[pdf]](https://www.nature.com/articles/s41592-024-02184-y) [_unfortunately not open access, thus no annotated pdf_]
+- `Nature Methods, 2024`
+- [Computational Pathology]
+```
+Quite interesting paper. Conformal prediction to output prediction intervals, and using a local/adaptive method that incorporates the spatial neighbourhood variability as weights (basically, if the predictions for a certain gene vary a lot among neighbouring cells, the uncertainty should be higher). A couple of pretty neat examples of downstream use-cases of the prediction uncertainty as well (hypthesis testing, filtering of cells with uncertain predictions in supervised learning and cell clustering).
+```
+
 ##### [26-11-01] [paper610]
 - Interpretable Deep Learning Maps Spatial Morphological Phenotypes to HCC and LUAD Survival
  [[pdf]](https://www.cell.com/cell-reports-medicine/fulltext/S2666-3791(26)00543-4) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Interpretable%20Deep%20Learning%20Maps%20Spatial%20Morphological%20Phenotypes%20to%20HCC%20and%20LUAD%20Survival.pdf)
@@ -1057,27 +1075,4 @@ Well written and quite interesting paper, gives a pretty good introduction to pr
 - `ICLR 2023`
 - [Language Models], [Uncertainty Estimation] 
 ```
-Well written and interesting paper. Yes, I should have read this before "Semantic Volume: Quantifying and Detecting both External and Internal Uncertainty in LLMs", this provided more background. The method here makes sense overall I think, but seems somewhat inconvenient having to "manually" classify each par of sentences, whether they ~mean~ the same thing or not. So yes, my initial impression is that the Semantic Volume method actually might be more neat, that you there sort of do this automatically by embedding sentences in a semantic space and measuring the volume. But yes, interesting stuff.
-```
-
-##### [25-08-01] [paper495]
-- Deep Learning-based Prediction of Clinical Trial Enrollment with Uncertainty Estimates
- [[pdf]](https://arxiv.org/abs/2507.23607) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Deep%20Learning-based%20Prediction%20of%20Clinical%20Trial%20Enrollment%20with%20Uncertainty%20Estimates.pdf)
-- `arxiv, 2025-07`
-- [ML for Medicine/Healthcare]
-```
-Fairly interesting paper. Kind of neat to get some background info about this type of problem, clinical trials etc, but perhaps not exactly the type of paper I had expected. The method overall makes some sense though I think.
-```
-
-##### [25-07-31] [paper494]
-- Semantic Volume: Quantifying and Detecting both External and Internal Uncertainty in LLMs
- [[pdf]](https://arxiv.org/abs/2502.21239) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Semantic%20Volume%20Quantifying%20and%20Detecting%20both%20External%20and%20Internal%20Uncertainty%20in%20LLMs.pdf)
-- `arxiv, 2025-02`
-- [Language Models], [Uncertainty Estimation]
-```
-Interesting paper, made me think quite a lot, in a good way. Would probably have been better to read some of the eariler papers first (especially "Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation"), but this is still a good starting point I think. There are probably aspects of all this which I'm unable to properly evaluate/appreciate atm, but the method overall mostly makes sense to me, and the results do seem promising. Seems like it performs well compared to good baselines.
-```
-
-##### [25-07-31] [paper493]
-- TabLLM: Few-shot Classification of Tabular Data with Large Language Models
- [[pdf]](h
+Well written and interesting paper. Yes, I should have read this before "Semantic Volume: Quantifying and Detecting both External and Internal Uncertainty in LLMs", this provided more background. The method here makes sense overall I think, but seems somewhat inconvenient having to "manually" classify each par of sentences, whether they ~mean~ the same thing or not. So yes, my initial impression is that the Semantic Volume me

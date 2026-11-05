@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.06905), Reinforcement Learning Enables Scaling Generalist Robot Policy Improvement
+- [arXiv 2026.11](https://arxiv.org/abs/2611.06908), Perceptive Humanoid Motion from Simulation
+- [arXiv 2026.11](https://arxiv.org/abs/2611.06817), Open-HumanScale: An Open Recipe for Scaling Human and Robot Experience for Embodied Foundation Models
 - [arXiv 2026.11](https://arxiv.org/abs/2611.03815), AIRoA-0: Long-Horizon, Precise, Cross-Embodiment Manipulation from Handheld Data
 - [arXiv 2026.11](https://arxiv.org/abs/2611.04870), PrimeSim: A Generalist World Model Simulator from Large-Scale Cross-Embodiment Demonstrations
 - [arXiv 2026.11](https://arxiv.org/abs/2611.04492), Hybrid Particle-Voxel Dynamics for Multimodal 3D World Simulation
@@ -756,6 +759,4 @@ Papers:
 - CVPR 2023, **PartSLIP**: Low-Shot Part Segmentation for 3D Point Clouds via Pretrained Image-Language Models, [arXiv](https://arxiv.org/abs/2212.01558)
 - CVPR 2023, Mask-Free Video Instance Segmentation, [Website](https://www.vis.xyz/pub/maskfreevis/) / [Github](https://github.com/SysCV/maskfreevis)
 - arXiv 2023.04, **DINOv2**: Learning Robust Visual Features without Supervision, [arXiv](https://arxiv.org/abs/2304.07193) / [Github](https://github.com/facebookresearch/dinov2)
-- arXiv 2023.04, Zip-NeRF: Anti-Aliased Grid-Based Neural Radiance Fields, [Website](https://jonbarron.info/zipnerf/)
-- arXiv 2023.04, SEEM: Segment Everything Everywhere All at Once, [arXiv](https://arxiv.org/abs/2304.06718) / [code](https://github.com/UX-Decoder/Segment-Everything-Everywhere-All-At-Once)
-- arXiv 2023.04, Internet Explorer: Targeted Representation Learning on the Open Web, [page](https://internet-explorer-ssl.github.io/) / [code](https://github.com/int
+- arXiv 2023.04, Zip-NeRF: Anti-Aliased Grid-Based Neural Radiance Fields, [Website](https://jo

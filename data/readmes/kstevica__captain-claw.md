@@ -4,7 +4,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENCE)
-[![Version](https://img.shields.io/badge/version-0.8.9-purple)](release-notes/RELEASE_NOTES_0.8.9.md)
+[![Version](https://img.shields.io/badge/version-0.8.11-purple)](release-notes/RELEASE_NOTES_0.8.11.md)
 [![Interface](https://img.shields.io/badge/interface-terminal%20%7C%20web%20UI%20%7C%20desktop-black)](docs/guide/getting-started.md)
 [![Models](https://img.shields.io/badge/models-OpenAI%20%7C%20Claude%20%7C%20Gemini%20%7C%20DeepSeek%20%7C%20Ollama%20%7C%20OpenRouter-orange)](docs/guide/agents.md#multi-model-support)
 
@@ -16,9 +16,9 @@
 
 **[🌐 Website](https://captain-claw.com)** · **[🚀 Live Demo](https://cohort001.captain-claw.com/)** · **[📖 Docs](https://captain-claw.com/docs)** · **[📦 PyPI](https://pypi.org/project/captain-claw/)** · **[🧭 Guides](docs/guide/README.md)** · **[📝 What's new](docs/guide/whats-new.md)**
 
-**New in 0.8.8 — Spyglass:** Captain for Chrome sends the page you're on to one of your agents, Captain for Mac sends what's on your screen from any app (hold fn, or click), and a round of fixes from watching real users. **[Release notes](release-notes/RELEASE_NOTES_0.8.8.md)** · **0.8.9** makes agents work in the Windows desktop app, and a downloaded Mac app no longer "damaged": **[notes](release-notes/RELEASE_NOTES_0.8.9.md)** · Earlier: **[0.8.7](release-notes/RELEASE_NOTES_0.8.7.md)** · **[0.8.6 — Ship's Log](release-notes/RELEASE_NOTES_0.8.6.md)**
+**New in 0.8.11 — Hold:** a message written while the agent is busy waits and goes when it's free, a reply that came while your phone was locked arrives when you're back, and a clearer agent column in the kiosk. **[Release notes](release-notes/RELEASE_NOTES_0.8.11.md)** · **0.8.10 — Provisions:** pick a provider, paste its key, and every model tier is set; scans read by a local OCR engine with no model; a working turn no longer stops at 40 steps. **[Release notes](release-notes/RELEASE_NOTES_0.8.10.md)** · **0.8.8 — Spyglass:** Captain for Chrome sends the page you're on to one of your agents, Captain for Mac sends what's on your screen from any app (hold fn, or click), and a round of fixes from watching real users. **[Release notes](release-notes/RELEASE_NOTES_0.8.8.md)** · **0.8.9** makes agents work in the Windows desktop app, and a downloaded Mac app no longer "damaged": **[notes](release-notes/RELEASE_NOTES_0.8.9.md)** · Earlier: **[0.8.7](release-notes/RELEASE_NOTES_0.8.7.md)** · **[0.8.6 — Ship's Log](release-notes/RELEASE_NOTES_0.8.6.md)**
 
-<p align="center"><strong>Flight Decks that work together</strong> &nbsp;·&nbsp; <strong>Captain for Chrome and for Mac</strong> &nbsp;·&nbsp; <strong>7 orchestration modes</strong> &nbsp;·&nbsp; <strong>70 built-in tools</strong> per agent &nbsp;·&nbsp; <strong>6 shared memory layers</strong> &nbsp;·&nbsp; <strong>131 ready-made archetypes</strong> &nbsp;·&nbsp; <strong>a full coding pipeline</strong> &nbsp;·&nbsp; <strong>Claude Code, Codex, OpenCode, Crush and Pi as your crew</strong> &nbsp;·&nbsp; <strong>a team-safe deck and kiosk</strong> &nbsp;·&nbsp; <strong>voice devices from M5Stack and Waveshare</strong> &nbsp;·&nbsp; <strong>living beings you raise</strong> &nbsp;·&nbsp; <strong>small models that do real work</strong></p>
+<p align="center"><strong>Flight Decks that work together</strong> &nbsp;·&nbsp; <strong>Captain for Chrome and for Mac</strong> &nbsp;·&nbsp; <strong>7 orchestration modes</strong> &nbsp;·&nbsp; <strong>72 built-in tools</strong> per agent &nbsp;·&nbsp; <strong>6 shared memory layers</strong> &nbsp;·&nbsp; <strong>131 ready-made archetypes</strong> &nbsp;·&nbsp; <strong>a full coding pipeline</strong> &nbsp;·&nbsp; <strong>Claude Code, Codex, OpenCode, Crush and Pi as your crew</strong> &nbsp;·&nbsp; <strong>a team-safe deck and kiosk</strong> &nbsp;·&nbsp; <strong>voice devices from M5Stack and Waveshare</strong> &nbsp;·&nbsp; <strong>living beings you raise</strong> &nbsp;·&nbsp; <strong>small models that do real work</strong></p>
 
 ## Why Captain Claw
 
@@ -61,7 +61,7 @@ First run starts onboarding. For a single agent in the terminal or the browser, 
   <img src="docs/screenshots/captain-for-mac-0.8.8.webp" width="100%" alt="Captain for Mac's panel beside Mail: the selection, the screen text and what's under the pointer as chips, a typed task, then the drafted reply with Copy and Paste into Mail">
 </p>
 
-Both land in a shared folder (**web-clips**, **screen-clips**) and in the agent's own chat, as your words. Get them from **Flight Deck → Connections → Browser**; Captain for Mac is also on [GitHub](https://github.com/kstevica/captain-claw/releases/tag/mac-v0.1.0).
+Both land in a shared folder (**web-clips**, **screen-clips**) and in the agent's own chat, as your words. Get them from **Flight Deck → Connections → Browser**; Captain for Mac is also on [GitHub](https://github.com/kstevica/captain-claw/releases/tag/mac-v0.1.1).
 
 - **Fixes from real users:**
   - Agents run the script they just fixed, and read past a long report's first section.
@@ -224,7 +224,7 @@ The fifth mode is **💻 Code** (above). The sixth is **Flight Deck** itself —
 | **[BotPort, MCP and agent links](docs/guide/botport-and-mcp.md)** | Flight Decks that work together, Flight Deck as an MCP server for Claude, MCP servers for your agents, connecting your own systems |
 | **[Devices and channels](docs/guide/devices-and-channels.md)** | StopWatch, PaperColor, StickS3 and Waveshare, the smart-glasses HUD, WhatsApp (and your own WhatsApp), Telegram, notifications, agents in your inbox |
 | **[Memory and cognition](docs/guide/memory.md)** | Six memory layers, the context engine, dreaming, the Brain Graph |
-| **[Inside an agent](docs/guide/agents.md)** | Every supported model, the 70 built-in tools, safety guards, the agent web UI |
+| **[Inside an agent](docs/guide/agents.md)** | Every supported model, the 72 built-in tools, safety guards, the agent web UI |
 | **[Architecture](docs/guide/architecture.md)** | Where each component lives in the code |
 | **[What's new](docs/guide/whats-new.md)** | Every release, newest first |
 

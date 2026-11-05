@@ -1,9 +1,15 @@
 <p align="center">
   <picture>
+    <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:light)" srcset="docs/images/banner-light-still.png?v=2026-11-05">
     <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/banner-still.png?v=2026-11-04b">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/banner-light.png?v=2026-11-05">
     <img src="docs/images/banner.png?v=2026-11-04b" alt="An animation of the pi-dispatch banner: go from sitting next to one AI coding agent to running many in the background. In the loop, near the loop, out of the loop, dark engineering. On a lit floor you stand beside one agent. As the lights go off, more agents start, and you walk away to the one page that stays lit, whose counts follow the floor. Spending limits that hold, a sealed box for every job, and you decide what ships." width="880">
   </picture>
 </p>
+
+https://github.com/user-attachments/assets/129a774b-1dea-4dee-bb4f-3478eff409bc
+
+<sub>One minute, with sound, on what is new in 5.0. The screens show sample data.</sub>
 
 # pi-dispatch
 
@@ -26,7 +32,7 @@ It is free and open source. You pay your AI provider for what the agent uses, or
 **[Install](#install-in-four-steps)** · **[Open the web page](#open-the-web-page)** · **[How to use it](#how-to-use-it-from-in-the-loop-to-out-of-the-loop)** · **[Manage a swarm](#manage-a-swarm-of-agents)** · **[Common worries](#common-worries)** · **[Words used here](#words-used-here)** · **[For engineers](#for-engineers)**
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/how-close-you-stay-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/how-close-you-stay-dark-still.png?v=2026-11-04">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/how-close-you-stay-still.png?v=2026-11-04">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/how-close-you-stay-dark.png?v=2026-11-04">
   <img src="docs/images/explain/how-close-you-stay.png?v=2026-11-04" alt="An animation of one loop of work drawn three times, one above the other, under the headline: decide how closely you watch. In the loop, you are on the track: you watch it work and step in, and a message from you crosses to the agent. Near the loop, you stand just beside it: it works alone and stops to ask when it needs you, and it waits until you answer. Out of the loop, you are far away: it starts without you, a second agent reviews it, and only the change, reviewed by AI, travels to you, and then you decide. At every stage: a spending limit, a sealed box, and the final say stays yours.">
@@ -35,9 +41,6 @@ It is free and open source. You pay your AI provider for what the agent uses, or
 <sub>You choose this per kind of work, not once for everything.</sub>
 
 ## Install in four steps
-
-> **The web page is not on npm yet.** The console and the browser setup on this page are built, and come with the next
-> release. The version on npm today, 4.3.1, does not have them. Step 2 says what to do until then.
 
 **1. Have these ready.** A computer or server that stays on (on a Mac or Windows machine, jobs run only while you are logged in),
 [Docker](https://www.docker.com/products/docker-desktop/) and [Node.js](https://nodejs.org) 22.19 or newer, and a key from an AI
@@ -70,8 +73,8 @@ pi install npm:@edgehero/pi-dispatch-admin
 **By hand**, install into a folder that will stay there:
 
 ```bash
-mkdir my-dispatch && cd my-dispatch
-npm install --save-exact @edgehero/pi-dispatch@4.3.1 @edgehero/pi-dispatch-admin@4.3.1 @earendil-works/pi-coding-agent@1.5.0 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+mkdir my-dispatch && cd my-dispatch && npm init -y
+npm install --save-exact @edgehero/pi-dispatch@5.0.0 @edgehero/pi-dispatch-admin@5.0.0 @earendil-works/pi-coding-agent@1.5.0 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
@@ -79,21 +82,22 @@ It asks before it starts anything, then prints a sign in link that works for 60 
 Linux. On Windows, run `pi-dispatch up` without `--console`, or choose **Guided setup** in pi, and sign in to the console with a
 token.
 
-**Until the next release,** `--console` does nothing and no sign in link appears, and in pi `/dispatch` offers **Guided setup**
-only, so skip step 3 for now. Put your provider key in the `.env` file in the folder you installed into (a failed key check before
-that is normal), run `./node_modules/.bin/pi-dispatch service install` to keep the worker running, and follow it in the
-[pi panel](#the-pi-panel).
-
 **3. Finish the checklist in your browser.** The link opens a live list of what is ready and what is not: the queue, a worker, the
 network rules, your provider key and a first trigger. Your key goes in here, never in a chat. It offers recipes: fix an issue when
 it gets a label, tidy every night, or answer a comment.
 
-![The setup page: each step of a new deployment marked ready, starting, not yet or to do, with a button for the next action and recipes for a first trigger](docs/images/console/console-setup.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-setup-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-setup.png?v=2026-11-03" alt="The setup page: each step of a new deployment marked ready, starting, not yet or to do, with a button for the next action and recipes for a first trigger">
+</picture>
 
 <details>
 <summary>Prefer the terminal? What <code>pi-dispatch doctor</code> checks</summary>
 
-![pi-dispatch doctor: one line per check, two warnings with their fixes, and the ready verdict](docs/images/cli-doctor.svg?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/cli-doctor-light.svg?v=2026-11-05">
+  <img src="docs/images/cli-doctor.svg?v=2026-11-05" alt="pi-dispatch doctor: one line per check, three warnings with their fixes, and the ready verdict">
+</picture>
 
 </details>
 
@@ -128,10 +132,10 @@ Every job takes the same path. What changes, stage by stage, is how much of it n
 more than you have seen. Every screen on this page shows sample data.
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/one-job-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/one-job-dark-still.png?v=2026-11-04">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/one-job-still.png?v=2026-11-04">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/one-job-dark.png?v=2026-11-04">
-  <img src="docs/images/explain/one-job.png?v=2026-11-04" alt="An animation of one job in five steps, under the headline: you pay for AI only while the agent works. Something starts it: a schedule, an issue, or you. It waits in line, and nothing runs yet. It is checked: over a limit, it is refused. The agent works in a sealed box, and if it needs you it stops to ask. You decide on a proposed change: you accept it, not pi-dispatch. A strip under the steps shows no AI cost in the first three and the last, and AI cost only where the agent works. A job crosses the strip and it fills only there. A second job is refused at the check.">
+  <img src="docs/images/explain/one-job.png?v=2026-11-05" alt="An animation of one job in five steps, under the headline: you pay for AI only while the agent works. Something starts it: a schedule, an issue, or you. It waits in line, and nothing runs yet. It is checked: over a limit, it is refused. The agent works in a sealed box, and if it needs you it stops to ask. You decide on a proposed change: you accept it, not pi-dispatch. A strip under the steps shows no AI cost in the first three and the last, and AI cost only where the agent works. A job crosses the strip and it fills only there. A second job is refused at the check.">
 </picture>
 
 <sub>On a folder on your own machine there is no proposed change: the job edits that folder directly.</sub>
@@ -152,7 +156,10 @@ a job on a folder edits it directly. Then open **Runs** in the console and read 
 A flow is a short text file of instructions in your project, such as `.pi/skills/tidy/SKILL.md`. The
 [`examples/`](examples/) folder has one to copy.
 
-![A running job in the console: its progress through the phases of its plan, the agent's note that three of ten tables are migrated, a box for sending it a message, the message it already received, and its live transcript](docs/images/console/console-run-live.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-run-live-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-run-live.png?v=2026-11-03" alt="A running job in the console: its progress through the phases of its plan, the agent's note that three of ten tables are migrated, a box for sending it a message, the message it already received, and its live transcript">
+</picture>
 
 ### 2. Near the loop: it comes to you when it needs you
 
@@ -167,7 +174,10 @@ question is the agent's own words, so your instructions decide how it asks: what
 in the form, so you can also tell its jobs what to do while they work. To let a job stop and ask you, add `resume` and `awaitInput`
 to the rule in `triggers.json`, which is a job for your technical person.
 
-![A run that stopped to ask: what it found, three options with what each costs, what it recommends, and a box for your answer](docs/images/console/console-question.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-question-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-question.png?v=2026-11-03" alt="A run that stopped to ask: what it found, three options with what each costs, what it recommends, and a box for your answer">
+</picture>
 
 ### 3. Out of the loop: you review what comes back
 
@@ -183,7 +193,7 @@ and a marker at 5%. When a project rarely needs you, add a job that reviews each
 back. You are out of the loop for that work, and still in charge of what ships.
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/when-to-step-back-dark-still.png?v=2026-11-04b">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/when-to-step-back-dark-still.png?v=2026-11-04b">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/when-to-step-back-still.png?v=2026-11-04b">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/when-to-step-back-dark.png?v=2026-11-04b">
   <img src="docs/images/explain/when-to-step-back.png?v=2026-11-04b" alt="An animation of three projects under the headline: step back when the numbers say you can. Zero touch shows how often runs needed a person, per project, over the last 8 weeks, with a dashed line at 5 percent. This is sample data. The rate for ops falls to 3 percent, which reads under goal. Nothing happens by itself: after a pause the words say your choice, and only then do you step from near the loop to out of the loop. The rate for web falls to 16 percent, above goal, and you stay near the loop. The rate for billing rises to 32 percent, which reads high, and you stay in the loop. Aim for zero. The dashed line at 5 percent is a guide, not permission: you decide.">
@@ -191,7 +201,10 @@ back. You are out of the loop for that work, and still in charge of what ships.
 
 <sub>Sample data. Nothing moves a project for you: the number tells you, and you decide.</sub>
 
-![The Zero touch page: how often runs needed a person, what the cause was, and which projects run without help](docs/images/console/console-zero-touch.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-zero-touch-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-zero-touch.png?v=2026-11-03" alt="The Zero touch page: how often runs needed a person, what the cause was, and which projects run without help">
+</picture>
 
 Out of the loop does not mean out of control. The spending limits hold with nobody watching, every job stays in its
 box, and a person still merges.
@@ -202,7 +215,7 @@ Once one kind of work runs without you, you can run many at once, across your pr
 practice, and your job changes: you stop watching an agent and start looking after a floor of them.
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/many-at-once-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/many-at-once-dark-still.png?v=2026-11-04">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/many-at-once-still.png?v=2026-11-04">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/many-at-once-dark.png?v=2026-11-04">
   <img src="docs/images/explain/many-at-once.png?v=2026-11-04" alt="An animation of many agents at once, under the headline: many agents, one place to run them. New work comes from a schedule, an issue or a comment, and waits in line. Two machines hold eight boxes, each with one agent that works, asks or reviews, or open for the next job, under one budget. One page tells you how many need you and how many are running. One switch stops new work: new work waits in line, running jobs finish, and when it is switched back on the line moves again.">
@@ -253,7 +266,7 @@ take it past that cap. Also set a spending limit at your AI provider, as a last 
 ([costs](docs/costs.md), [limits](docs/scoped-limits.md)).
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/limits-inside-limits-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/limits-inside-limits-dark-still.png?v=2026-11-04">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/limits-inside-limits-still.png?v=2026-11-04">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/limits-inside-limits-dark.png?v=2026-11-04">
   <img src="docs/images/explain/limits-inside-limits.png?v=2026-11-04" alt="An animation of limits drawn inside one another, under the headline: a job has to fit inside every limit. Innermost, one job with its own limit, which stops before an AI call that could pass that limit. Around it one project with its own limits, around that all your jobs per day, week and month, and outermost, dashed because you set it with them, your AI provider's limit, your last line of defence. Two jobs go in and the meters rise. A job that does not fit is refused before it starts, at no AI cost.">
@@ -270,7 +283,7 @@ GitLab token. That is why the provider limit above matters, and why a narrow tok
 ([`SECURITY.md`](SECURITY.md) says plainly what is and is not defended).
 
 <picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/explain/in-and-out-of-the-box-dark-still.png?v=2026-11-04">
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme:dark)" srcset="docs/images/explain/in-and-out-of-the-box-dark-still.png?v=2026-11-04">
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/explain/in-and-out-of-the-box-still.png?v=2026-11-04">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/explain/in-and-out-of-the-box-dark.png?v=2026-11-04">
   <img src="docs/images/explain/in-and-out-of-the-box.png?v=2026-11-04" alt="An animation of a sealed box with the agent inside, thrown away afterwards, a fresh one for every job. Going in: your project, and instructions that are read only. Two keys go in too, and it can read them: your AI provider key and a GitHub or GitLab key. Coming out: a proposed change, and what it did and cost. It can reach only addresses you allow, and nothing else. Your other files and your other passwords stay out. The agent can read both keys, so limit what each key can do, so a leak does less harm.">
@@ -300,65 +313,101 @@ fails with a reason you can read, and nothing is spent on it in the meantime.
 **Spend:** today, this week and this month against your limits, and where the money went
 ([insights](docs/insights.md)).
 
-![The Spend page: spend against the daily, weekly and monthly limits, a chart of daily spend, and what each flow, model and project cost](docs/images/console/console-spend.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-spend-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-spend.png?v=2026-11-03" alt="The Spend page: spend against the daily, weekly and monthly limits, a chart of daily spend, and what each flow, model and project cost">
+</picture>
 
 **Fleet:** every machine and what it is doing, with one switch that stops new work everywhere
 ([several machines](docs/multi-host.md)).
 
-![The Fleet page: the switch that pauses everything, each queue, what is running, what failed and what is waiting](docs/images/console/console-fleet.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-fleet-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-fleet.png?v=2026-11-03" alt="The Fleet page: the switch that pauses everything, each queue, what is running, what failed and what is waiting">
+</picture>
 
 **Models and fallbacks:** name a job for what it needs (a planner, an editor) and choose the model per project, with fallbacks in
 order. The page shows which model is resting and why, and suggests a cheaper model with the numbers to compare
 ([model roles](docs/model-roles.md), [fallback models](docs/model-failover.md), [canaries](docs/canary.md)).
 
-![The Models page: each role with its model and its fallbacks in order, a model cooling down after a rate limit, which models are in use, and proposals with their comparisons](docs/images/console/console-models.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-models-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-models.png?v=2026-11-03" alt="The Models page: each role with its model and its fallbacks in order, a model cooling down after a rate limit, which models are in use, and proposals with their comparisons">
+</picture>
 
 **Your subscription's limits:** how much of its five hour and seven day windows is used, and when each resets
 ([subscriptions](docs/subscription-auth.md)).
 
-![A subscription on the Models page: the account windows, how much of each is used and when it resets, and that jobs wait rather than spend beyond it](docs/images/console/console-subscription.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-subscription-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-subscription.png?v=2026-11-03" alt="A subscription on the Models page: the account windows, how much of each is used and when it resets, and that jobs wait rather than spend beyond it">
+</picture>
 
 **Approvals:** a job can ask permission before a named action, such as spending more. It stops and costs nothing until you decide
 ([approval gates](docs/approval-gates.md)).
 
-![An approval on the Parked page: what the job asks to do, with buttons to approve or decline with a reason, and a box to ask a question back](docs/images/console/console-approval.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-approval-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-approval.png?v=2026-11-03" alt="An approval on the Parked page: what the job asks to do, with buttons to approve or decline with a reason, and a box to ask a question back">
+</picture>
 
 **Drafted answers:** a rule you write can have the agent draft an answer to a question from sources it read. You read it, and only
 you send it ([answer rules](docs/answer-rules.md)).
 
-![A drafted answer on the Parked page, with the sources it cites and why it was allowed to draft, beside the rule that started it](docs/images/console/console-draft.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-draft-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-draft.png?v=2026-11-03" alt="A drafted answer on the Parked page, with the sources it cites and why it was allowed to draft, beside the rule that started it">
+</picture>
 
 **Picking up where it stopped:** if a machine restarts or a job's box dies, a job that opted in continues from its last checkpoint
 instead of paying for everything again ([durable runs](docs/durable-runs.md)).
 
-![A run that lost its first attempt and continues as a recovery job: the attempt that failed, the checkpoints it had written and the recovery job that goes on from them](docs/images/console/console-recovery.png?v=2026-11-04-800)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-recovery-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-recovery.png?v=2026-11-04-800" alt="A run that lost its first attempt and continues as a recovery job: the attempt that failed, the checkpoints it had written and the recovery job that goes on from them">
+</picture>
 
 **Trying it yourself:** reopen a finished job's workspace in a fresh box with no keys, or prepare one from scratch, and open it in your
 own terminal or your browser. The page says what pi can load there, which is only what the project holds
 ([sandboxes](docs/sandbox.md), [browser terminal](docs/sandbox-gateway.md)).
 
-![The Sandboxes page: choose a kept workspace, see what opens and what pi can load there, and open it in your terminal, with a button for a new one](docs/images/console/console-sandboxes.png?v=2026-11-03-800)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-sandboxes-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-sandboxes.png?v=2026-11-03-800" alt="The Sandboxes page: choose a kept workspace, see what opens and what pi can load there, and open it in your terminal, with a button for a new one">
+</picture>
 
 **Updates:** which version of pi and which extensions your jobs run, what is newer, a capped trial on a real job, and Adopt. Nothing
 updates by itself ([updates](docs/console.md#updates)).
 
-![The Updates page: what jobs run now, what is newer, a button to run a canary, and which version each host holds](docs/images/console/console-updates.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-updates-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-updates.png?v=2026-11-03" alt="The Updates page: what jobs run now, what is newer, a button to run a canary, and which version each host holds">
+</picture>
 
 **Projects:** group your repositories into a project, with its own limits, share of the budget and history, and see
 [what its runs loaded](#what-a-job-gets) on each machine ([projects](docs/projects.md), [budget split](docs/allocation.md)).
 
-![One project: what it has spent, its runs of the last day, what its runs loaded on each machine and where they differ, its members and its limits](docs/images/console/console-project.png?v=2026-11-04-800c)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-project-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-project.png?v=2026-11-04-800c" alt="One project: what it has spent, its runs of the last day, what its runs loaded on each machine and where they differ, its members and its limits">
+</picture>
 
 **A trigger:** what starts it, what it has cost and [what its jobs get](#what-a-job-gets) on each machine, which you can change right there.
 A schedule also gets a button that fires it now ([triggers](docs/triggers.md)).
 
-![What its jobs get, on one trigger's page, with two changes not written yet: a pill per machine saying what differs or that it is unknown, then the model and its job cap, the flow, the staged packages, the outside systems with linear switched on, pi's own tools with bash off, the image and secrets, what the last run had under each, and a bar with Preview the change and Discard](docs/images/console/console-trigger.png?v=2026-11-04-800c)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-dark.png?v=2026-11-05-800e">
+  <img src="docs/images/console/console-trigger.png?v=2026-11-04-800e" alt="What its jobs get, on one trigger's page, with two changes not written yet: a pill per machine saying what differs or that it is unknown, then the model and its job cap, the flow, a switch for the staged packages and one for each of your extensions, the outside systems with linear switched on, pi's own tools with bash off and a switch for each tool the newest run that says what it loaded lists, the image and secrets, what the last run had under each, and a bar with Preview the change and Discard">
+</picture>
 
 **Your phone:** every page fits, for answering a question from wherever you are. The console listens only on its own machine
 unless you set it up otherwise, so reaching it from a phone takes a private tunnel
 ([from another machine](docs/console.md#from-another-machine)).
 
-<img src="docs/images/console/console-overview-phone.png?v=2026-11-03" alt="The overview page on a phone, one column, with the questions that need you at the top" width="320">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-phone-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-overview-phone.png?v=2026-11-03" alt="The overview page on a phone, one column, with the questions that need you at the top" width="320">
+</picture>
 
 ## Bring your own pi setup
 
@@ -381,7 +430,8 @@ PI_GLOBAL_PI_DIR=/absolute/path/to/my-dispatch/pi-global
 | Your MCP servers, with credentials as references only | Secrets of any kind: the copy is read by jobs, so it holds none |
 
 **Read the list it prints.** An extension is code, and it runs in every job, beside work that may come from a stranger's issue text. Skip
-extensions with `--no-extensions`, or keep one trigger's jobs out of your packages with the switch on its page (`"packages": false` in the triggers file).
+extensions with `--no-extensions`. To keep all your packages, or one package or extension, out of one trigger's jobs, use the switches on that trigger's page
+(`"packages": false` and `"excludeExtensions"` in the triggers file).
 
 Your projects still win. A job layers your setup under the project's own `.pi/` folder, so a project's skill replaces yours of the same
 name, and a small safety floor sits under both, which neither can remove. To add a language or a system tool rather than a pi setting, build
@@ -398,7 +448,10 @@ two jobs of one trigger can start differently.
 (MCP servers) it connected to, and its tools. The run's page shows that list and says plainly when something is missing, so you
 can check a job you did not watch before you accept its work.
 
-![The Loaded card of a finished run that had no flow: it says so at the top, with buttons to where it is fixed, then pi, the model, extensions, skills, outside systems and tools, one line each](docs/images/console/console-run-loaded.png?v=2026-11-04-800)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-run-loaded-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-run-loaded.png?v=2026-11-04-800" alt="The Loaded card of a finished run that had no flow: it says so at the top, with buttons to where it is fixed, then pi, the model, extensions, skills, outside systems and tools, one line each">
+</picture>
 
 **A clean finish can still be missing something:** a job that finishes without its instructions reads **Completed, without
 its flow**, and one with an extension that failed to load reads **Completed, with a failed extension**. The Runs list says the
@@ -415,21 +468,36 @@ start with the same things as on your other machines, and one that has not told 
 match. Under each line is what a recent run really had, so a setting and what it did sit together. Nothing is saved while you click: your changes collect
 at the foot of the card, and you can discard them.
 
+**You can turn off one thing and keep the rest.** On a trigger's page you can turn off one of your packages or extensions for that trigger's jobs alone, and those
+jobs no longer load it. You can also turn off a tool one of them adds: the tool is gone, and the rest of that extension still runs. A tool has a switch while the newest run that says what it
+loaded lists it, or while your triggers file names it.
+
+This limits what a job starts with, not what its agent can do next. An agent that can run commands, write files or edit files can bring back what you turned off. If code must not run
+in a trigger's jobs, also turn off the tools that do those things: `bash` and `powershell` run commands, `write` writes files and `edit` edits them
+([what this does not stop](docs/exclude-tools.md#what-exclusion-does-not-stop)).
+
+Every running machine must run a release that can read these settings. The [upgrade notes](docs/upgrading.md#what-a-fleet-needs-before-a-trigger-leaves-something-out)
+say which release, and what to do until then.
+
 **You see it in words first, and confirm once.** **Preview the change** says each change in a sentence, and says so when it gives
 jobs more than they had. It says when the change takes effect and which jobs already in line would be refused, warns about what would stop these jobs on the
 machine the console runs on, and says how to undo it. One
 **Confirm** saves it, the console records who did, and **Undo** puts it back, or says what to edit by hand where it cannot.
 
-![The preview of that change, in words: linear on and where its jobs would now connect, bash off, when the change takes effect, a waiting job that would now be refused, that a job on a machine without linear is refused and which machines have it, who it is recorded under, the lines of the file as they would change, the way to undo it, and one Confirm button](docs/images/console/console-trigger-change.png?v=2026-11-04-800d)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-change-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-trigger-change.png?v=2026-11-04-800d" alt="The preview of that change, in words: linear on and where its jobs would now connect, bash off, when the change takes effect, a waiting job that would now be refused, that a job on a machine without linear is refused and which machines have it, who it is recorded under, the lines of the file as they would change, the way to undo it, and one Confirm button">
+</picture>
 
-**It stops what would only fail later, before it costs you anything.** A job cap can only lower the limit you set for all jobs. If a trigger's model is too
+**Some changes that would only fail later are refused before they cost you anything.** A job cap can only lower the limit you set for all jobs. If a trigger's model is too
 expensive for even one request under its cap, the page refuses the change and names the amount a short task needs, rather than letting a job start and fail.
 If the page is out of date, it asks you to reload rather than write over someone else's change.
 
 **Some of this only a person sets.** The commands pi-dispatch gives an AI cannot set a trigger's job cap, the list of models its jobs may use, its fallback models,
-its outside systems, which tools its jobs lose or whether they load your packages: one that tries is refused before you are asked. You set those on the page,
+its outside systems, which tools its jobs lose (pi's own or those your extensions add), whether they load your packages, or which of your packages and extensions
+they leave out. A command that tries is refused, and you are never asked to confirm it. You set those on the page,
 or your technical person sets them in the triggers file ([what the card can say, and what it refuses](docs/console.md#what-a-triggers-jobs-get)).
-They can still move a trigger's flow, provider and model, and only after you confirm.
+Those commands can still move a trigger's flow, provider and model, and only after you confirm.
 
 ## Words used here
 
@@ -529,7 +597,7 @@ the host ([more](docs/console.md#from-another-machine)):
 
 ```bash
 ssh -L 4790:127.0.0.1:4790 yourhost              # on your own machine; then, on the host:
-./node_modules/.bin/pi-dispatch-console link --name you --port 4790
+./node_modules/.bin/pi-dispatch-console link --name operator --port 4790
 ```
 
 **Connect a forge.** `pi-dispatch setup github --webhook-url '<receiver URL>'` creates a GitHub App in one browser click, or `--no-webhook`
@@ -647,17 +715,24 @@ live, and which the console and the panel can edit, or you by hand. Each entry i
 - `image`: this trigger's own job image ([job image](docs/job-image.md)).
 - `secrets`, `secretsProfile`, `secretBundle`: vault references, and a project's one shared environment ([secrets](docs/secrets.md#recipe-d-one-environment-for-a-whole-project)).
 - `mcp`, `forge`: MCP servers for its jobs ([MCP](docs/mcp.md)).
-- `excludeTools`: removes named built in tools ([excluded tools](docs/exclude-tools.md)).
 - `packages`: opts out of the staged pi packages ([workflows](docs/workflows.md)).
+- `excludeTools`: removes named tools of pi's own or an MCP server's ([excluded tools](docs/exclude-tools.md)).
+- `excludeExtensions`: leaves named staged packages and overlay extensions out of its jobs ([leaving one out](docs/exclude-tools.md#leaving-an-extension-out-runexcludeextensions)).
+- `excludeExtensionTools`: removes named tools an extension adds. If no staged package or overlay extension brought a name, the job can stop before its agent starts ([an extension's tools](docs/exclude-tools.md#an-extensions-tools-runexcludeextensiontools)).
 - `provider`, `model`: the model its jobs run on ([choosing the model](docs/triggers.md#choosing-the-model-and-the-turn-limit)).
 - `models`, `fallbackModels`, `maxCostUsd`: the models a job may call, the ones to try when one is rate limited, and its own dollar cap ([limiting models](docs/triggers.md#limiting-which-models-a-job-may-call), [fallback models](docs/model-failover.md), [a dollar cap](docs/triggers.md#a-dollar-cap-per-job)).
 - `replicas`: races independent sandboxes on one event ([replicas](docs/replicas.md)).
 - `waitFor`: holds a job, unstarted and unbilled, until a time or your own check ([waiting](docs/wait-for.md)).
 - `instructions`, `skillsDir`, `github`, `portfolio`: the rest are in [`docs/triggers.md`](docs/triggers.md#optional-run-fields).
 
-On a trigger's page in the console, a person changes `flow`, `provider`, `model`, `maxCostUsd`, `models`, `fallbackModels`, `mcp`, `packages` and
-`excludeTools` with one preview and one Confirm ([what a trigger's jobs get](docs/console.md#what-a-triggers-jobs-get)). The page writes this host's file,
+On a trigger's page in the console, a person changes `flow`, `provider`, `model`, `maxCostUsd`, `models`, `fallbackModels`, `mcp`, `packages`, `excludeTools`, `excludeExtensions` and
+`excludeExtensionTools` with one preview and one Confirm ([what a trigger's jobs get](docs/console.md#what-a-triggers-jobs-get)). The page writes this host's file,
 so on a fleet where each host keeps its own, a host keeps what it has until its copy changes. A few others have the page's Edit form. The rest change in the file, and editing the file works as it always has.
+
+`excludeExtensions` keeps an extension's code from loading in a job, though its files stay readable. `excludeExtensionTools` removes only the tool, so the rest of that extension still runs. Neither stops what an
+agent that can run commands, write files or edit files can reach ([what exclusion does not stop](docs/exclude-tools.md#what-exclusion-does-not-stop)). A file that uses either needs
+`"version": 2`, so every worker, receiver and console must run a release that can read both. A release that cannot ignores them and runs the job with what the file turned off. The [upgrade notes](docs/upgrading.md#what-a-fleet-needs-before-a-trigger-leaves-something-out) say which release, and what to do until then. While a running
+worker cannot read them, the page refuses the change and names it.
 
 A whole project can get one environment from your secrets manager, granted once and read fresh at each job start. Quiet
 hours pause a repo or folder by weekday and timezone ([`docs/pause-windows.md`](docs/pause-windows.md)). The
@@ -734,28 +809,49 @@ worker checks each name against what it knows and holds a tool's name to one nar
 flow can move money between projects inside it, never above the total or below a floor. Every move is logged and can be reverted
 ([`docs/projects.md`](docs/projects.md), [`docs/allocation.md`](docs/allocation.md)).
 
-![The budget split page: the weekly total, each project's floor, weight, share and spend, and the history of moves](docs/images/console/console-budget-split.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-budget-split-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-budget-split.png?v=2026-11-03" alt="The budget split page: the weekly total, each project's floor, weight, share and spend, and the history of moves">
+</picture>
 
 **Capacity.** Each machine keeps its own memory and CPU budget, and room is kept for a waiting big job so small ones cannot starve it.
 The console, `pi-dispatch capacity` and `doctor` report how busy each host was. They count jobs only: a machine busy with other work
 reads as idle ([`docs/sizing.md`](docs/sizing.md), [`docs/insights.md`](docs/insights.md)).
 
-![The Capacity page: each host's busy share, jobs at once against its slots, waits and the projects that used it most](docs/images/console/console-capacity.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-capacity-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-capacity.png?v=2026-11-03" alt="The Capacity page: each host's busy share, jobs at once against its slots, waits and the projects that used it most">
+</picture>
 
 **Flows map.** Which triggers start which flows, what chained to what, and what each cost ([`docs/graph.md`](docs/graph.md)).
 
-![The flows map: triggers wired to the flows they start, grouped by repository, with how often each ran](docs/images/console/console-flows.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-flows-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-flows.png?v=2026-11-03" alt="The flows map: triggers wired to the flows they start, grouped by repository, with how often each ran">
+</picture>
 
 The console also has [Models](docs/console.md#the-screens), [Watch](docs/watch.md), an [audit log](docs/console.md#the-audit-log)
 of every write, and Configuration. Each write is a preview and a confirm, and paid and destructive ones look different.
 
-![The two step preview of a steer: what will be sent, what it costs, how to undo it, and Confirm](docs/images/console/console-steer-confirm.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-steer-confirm-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-steer-confirm.png?v=2026-11-03" alt="The two step preview of a steer: what will be sent, what it costs, how to undo it, and Confirm">
+</picture>
 
-![The Watch page: sources, rules and findings with their outcomes](docs/images/console/console-watch.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-watch-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-watch.png?v=2026-11-03" alt="The Watch page: sources, rules and findings with their outcomes">
+</picture>
 
-![The audit log: every write, who made it and how far its hash chain is verified](docs/images/console/console-audit.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-audit-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-audit.png?v=2026-11-05" alt="The audit log: every write, who made it and how far its hash chain is verified">
+</picture>
 
-![The Configuration page: triggers, settings, pause windows, scoped limits and projects, each edited through a preview](docs/images/console/console-config.png?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-config-dark.png?v=2026-11-05">
+  <img src="docs/images/console/console-config.png?v=2026-11-03" alt="The Configuration page: triggers, settings, pause windows, scoped limits and projects, each edited through a preview">
+</picture>
 
 ## Reuse your existing pi setup
 
@@ -802,7 +898,10 @@ what it stores and how to roll back.
 `pi install npm:@edgehero/pi-dispatch-admin`. It writes a small pointer file, paths only and never credentials, so the panel finds
 your deployment from any directory.
 
-![The /dispatch panel: live queue state, job meters, the dollar windows, triggers, pause windows, scoped limits, and the runs list, in one framed terminal view](docs/images/dispatch-dashboard.svg?v=2026-11-03)
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/dispatch-dashboard-light.svg?v=2026-11-05">
+  <img src="docs/images/dispatch-dashboard.svg?v=2026-11-03" alt="The /dispatch panel: live queue state, job meters, the dollar windows, triggers, pause windows, scoped limits, and the runs list, in one framed terminal view">
+</picture>
 
 Its keys, its plain commands and the `operate-pi-dispatch` skill, which lets you ask your assistant in plain words with every change
 confirmed by you in a prompt the model cannot answer, are in [`docs/panel.md`](docs/panel.md).
@@ -848,7 +947,7 @@ These forges have one auth source each, a token you create, so setting theirs to
 
 **Triggers and flows:** [triggers](docs/triggers.md), [workflows](docs/workflows.md), [wait for](docs/wait-for.md),
 [pause windows](docs/pause-windows.md), [replicas](docs/replicas.md), [canary](docs/canary.md),
-[excluded tools](docs/exclude-tools.md), [MCP](docs/mcp.md), [global pi overlay](docs/global-pi-overlay.md).
+[excluded tools and extensions](docs/exclude-tools.md), [MCP](docs/mcp.md), [global pi overlay](docs/global-pi-overlay.md).
 
 **Money and machines:** [costs](docs/costs.md), [insights](docs/insights.md), [graph](docs/graph.md),
 [scoped limits](docs/scoped-limits.md), [projects](docs/projects.md), [allocation](docs/allocation.md),
@@ -928,5 +1027,6 @@ MIT. See [LICENSE](LICENSE). Built on [pi](https://github.com/earendil-works/pi)
 > **Not affiliated with** the unrelated npm package `pi-dispatch`, a pi extension for rotating ChatGPT Codex OAuth accounts. Same name,
 > different thing. This project publishes scoped packages only:
 > [`@edgehero/pi-dispatch`](https://www.npmjs.com/package/@edgehero/pi-dispatch) (worker and CLI),
-> [`@edgehero/pi-dispatch-receiver`](https://www.npmjs.com/package/@edgehero/pi-dispatch-receiver), and
-> [`@edgehero/pi-dispatch-admin`](https://www.npmjs.com/package/@edgehero/pi-dispatch-admin) (the console and the panel). The bare name is theirs.
+> [`@edgehero/pi-dispatch-receiver`](https://www.npmjs.com/package/@edgehero/pi-dispatch-receiver),
+> [`@edgehero/pi-dispatch-admin`](https://www.npmjs.com/package/@edgehero/pi-dispatch-admin) (the console and the panel), and the optional
+> [`@edgehero/pi-dispatch-sandbox-gateway`](https://www.npmjs.com/package/@edgehero/pi-dispatch-sandbox-gateway). The bare name is theirs.

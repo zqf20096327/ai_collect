@@ -1,0 +1,320 @@
+# Spec-Driven Development Skill
+
+[![skills.sh](https://img.shields.io/badge/skills.sh-spec--driven--development-blue?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIvPjwvc3ZnPg==)](https://skills.sh)
+[![npm](https://img.shields.io/badge/npx_skills_add-mariano--aguero%2Fspec--driven--development--skill-brightgreen)](https://github.com/mariano-aguero/spec-driven-development-skill)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/mariano-aguero/spec-driven-development-skill?label=release&color=orange)](https://github.com/mariano-aguero/spec-driven-development-skill/releases/latest)
+[![Last commit](https://img.shields.io/github/last-commit/mariano-aguero/spec-driven-development-skill?color=informational)](https://github.com/mariano-aguero/spec-driven-development-skill/commits/main)
+[![GitHub stars](https://img.shields.io/github/stars/mariano-aguero/spec-driven-development-skill?style=social)](https://github.com/mariano-aguero/spec-driven-development-skill/stargazers)
+
+[![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-purple)](https://claude.ai/code)
+[![Cursor](https://img.shields.io/badge/Cursor-compatible-purple)](https://cursor.sh)
+[![GitHub Copilot](https://img.shields.io/badge/GitHub_Copilot-compatible-purple)](https://github.com/features/copilot)
+[![JetBrains Junie](https://img.shields.io/badge/JetBrains_Junie-compatible-purple)](https://www.jetbrains.com/junie/)
+[![Windsurf](https://img.shields.io/badge/Windsurf-compatible-purple)](https://codeium.com/windsurf)
+
+> **Stop vibe-coding. Specify, then implement.**
+> An **Agent Skill** that turns informal prompts into structured, traceable, drift-resistant
+> specifications, so AI coding agents build what you actually asked for.
+
+Compatible with Claude Code, Cursor, GitHub Copilot, JetBrains Junie, Windsurf, and similar tools.
+
+---
+
+## Why Spec-Driven Development?
+
+Without a spec, AI agents make thousands of micro-decisions silently. Each one is a
+potential divergence from intent, and the divergences compound.
+
+| Without SDD | With SDD |
+|---|---|
+| "Add user auth" → AI picks a stack, invents schema, guesses error behavior | Constitution + spec + contracts define every decision upfront |
+| Same prompt, three sessions, three different implementations | Specs are the source of truth, so regeneration is deterministic |
+| Drift discovered in code review (or production) | Drift detected in Phase 5 against the locked contracts |
+| Pivots = manual rewrites | Pivots = systematic re-specification |
+| Implicit assumptions baked into acceptance criteria | Assumptions surfaced and corrected *before* the spec is written |
+| Specs written against an imagined codebase | Phase 0.5 research maps the real one first, with `file:line` citations |
+| Code ships faster than anyone can read it | Comprehension gate: the team reviews ~400 dense lines instead of a 2000-line diff |
+| Changing one rule means respecifying a subsystem | Delta specs declare a baseline and list only what moves |
+| Hotfixes quietly turn the spec into fiction | `/sdd-change` classifies each difference with evidence, and a human decides each one |
+| "Locked" contracts are locked by politeness | A pre-write hook makes the freeze real; the agent gets told why and what to run instead |
+| Your rules live in a file no tool reads | `AGENTS.md` derived from `constitution.md`, read natively by most agents |
+| "Tests pass" is the only evidence | Each `[MUST]` AC names its proof, and the proof is seen failing before the change and killing a mutant after it |
+| The agent that wrote the code also approves it | Evidence gates are passed by a checker that did not write the work; a human approves intent |
+| Review findings are opinions | A finding counts only with a command, its output and the output the spec requires; the rest go to a Dropped list |
+| A background agent needs a conversation to finish | The spec's `## Handoff` block states the goal, checkable done-when items, isolation, permissions and when to stop |
+| Spec rules are checked by reading | `scripts/sdd-check.mjs` validates status, ACs, proof lines, handoff, delta baseline and the task graph, with `file:line` output |
+
+## What is Spec-Driven Development?
+
+SDD makes **specifications the source of truth**. The workflow:
+
+0. **Constitution.** Project-level immutable constraints, written once per project.
+0.5. **Research** *(conditional)*. How the existing system actually works, cited `file:line`.
+1. **Specify.** Requirements, MoSCoW acceptance criteria, boundaries.
+2. **Plan.** Architecture, data model, locked API contracts.
+3. **Tasks.** Atomic, dependency-mapped, test-first.
+4. **Implement.** AI runs with fresh context per task, constrained by all artifacts above.
+5. **Validate.** Drift detection, a traceability matrix, and a linear walkthrough.
+
+```mermaid
+flowchart LR
+    P0["Phase 0<br/><b>/sdd-init</b><br/>constitution.md"]:::once --> PR
+    PR["Phase 0.5<br/><b>/sdd-research</b><br/>research.md"]:::cond --> GR{Gate R}
+    GR -->|citations verified| P1
+    P1["Phase 1<br/><b>/sdd-specify</b><br/>spec.md"] --> CL["Clarify<br/>resolve [NEEDS CLARIFICATION]"]
+    CL --> G1{Gate 1}
+    G1 -->|approved| P2["Phase 2<br/><b>/sdd-plan</b><br/>plan + data-model + contracts"]
+    P2 --> G2{Gate 2}
+    G2 -->|approved & contracts LOCKED| P3["Phase 3<br/><b>/sdd-tasks</b><br/>tasks.md"]
+    P3 --> G3{Gate 3}
+    G3 -->|approved| P4["Phase 4<br/>Implement<br/>fresh context per task"]
+    P4 --> P5["Phase 5<br/><b>/sdd-validate</b><br/>drift + walkthrough"]
+
+    classDef once fill:#f0e6ff,stroke:#7c3aed,stroke-width:2px
+    classDef cond fill:#e6f4ff,stroke:#0369a1,stroke-width:2px,stroke-dasharray: 4 3
+```
+
+Every arrow is a **compaction boundary**: each phase reads the previous artifact, never the
+raw material behind it. That is what keeps agents inside a productive context window instead
+of drowning in their own search results.
+
+## Pick the Level That Fits the Change
+
+The most common reason spec-driven development gets abandoned is running one intensity for
+everything. Choose per change:
+
+| | **S: Light** | **M: Standard** | **L: Full** |
+|---|---|---|---|
+| Use when | 1 session, ≤3 files, no schema/contract/auth change, revertible | New endpoint, table, or user-visible behavior | Auth, payments, migrations, regulated domains, unfamiliar code |
+| Artifacts | ACs in the PR body | `spec.md`, `plan.md`, `contracts/`, `tasks.md` | + `research.md`, `decision_log.md`, `walkthrough.md` |
+
+Gates per level: [quality-gates.md](skills/spec-driven-development/references/quality-gates.md#which-gates-apply-at-which-ceremony-level).
+
+Start at M. Drop to S only if every S condition holds; move to L if any L condition holds.
+The tiebreaker is reversibility. A one-line change to a permission check outranks a large
+change to a report layout.
+
+And for brownfield work, a **delta spec** respecifies nothing: it declares a baseline and
+lists only what moves, with ACs labelled `[ADDED]` / `[MODIFIED]` / `[REMOVED]` /
+`[UNCHANGED]`. A delta spec's length tracks the size of the change, so the savings grow
+with how much behavior already exists.
+
+## How Long a Spec Stays Alive
+
+| Level | What it means | Best for |
+|-------|--------------|---------|
+| **Spec-first** | Write the spec upfront, implement immediately | Most features |
+| **Spec-anchored** | Maintain the spec alongside the code as it evolves | Long-lived features |
+| **Spec-as-source** | Spec is primary; code is generated, never hand-edited | Experimental, high-compliance |
+
+Start with spec-first; move to spec-anchored once the feature stabilizes. Spec-anchored is
+where `/sdd-change` earns its place. It is the sanctioned path back to a trustworthy spec
+after a hotfix or an upstream change moved the code without touching the spec.
+
+## Installation
+
+```bash
+npx skills add mariano-aguero/spec-driven-development-skill
+```
+
+This installs the skill and its commands as sub-skills: `/sdd-init`, `/sdd-research`,
+`/sdd-specify`, `/sdd-plan`, `/sdd-tasks`, `/sdd-validate`, `/sdd-change` and `/sdd-status`.
+Each one points at the matching sections of the main skill, so they stay in sync with it.
+The commands are manual only (`disable-model-invocation`), so they add nothing to the
+context until you type one. Harnesses without slash commands can ask for the same prompts by
+name from `SKILL.md`.
+
+In Claude Code you can install from the plugin marketplace instead. Both routes read the same
+`skills/` folders:
+
+```text
+/plugin marketplace add mariano-aguero/spec-driven-development-skill
+/plugin install spec-driven-development@spec-driven-development
+```
+
+The skill activates automatically when you reference spec-driven development, spec authoring,
+SDD, requirements planning, or AI implementation guidance.
+
+## Workflow at a Glance
+
+```text
+/sdd-init                                 # once per project
+  → creates constitution.md
+
+/sdd-research "add user authentication"   # skip on greenfield
+  → specs/user-auth/research.md           (how the code works today, file:line cited)
+
+/sdd-specify "add user authentication"
+  → creates specs/user-auth/spec.md       (MoSCoW ACs + Boundaries + open questions)
+
+/sdd-specify                              # run again to clarify
+  → resolves [NEEDS CLARIFICATION] before Plan
+
+/sdd-plan
+  → specs/user-auth/plan.md               (architecture, risks)
+  → specs/user-auth/data-model.md         (entities + migrations)
+  → specs/user-auth/contracts/auth-api.md (LOCKED after Gate 2 approval)
+
+/sdd-tasks
+  → specs/user-auth/tasks.md              (ordered, test-first, [P] for parallel)
+
+# implement each task with fresh AI context; commit after each
+# if a task outgrows its context window → progress.md → fresh session
+
+/sdd-validate
+  → traceability matrix + drift report
+  → linear walkthrough for the humans who will maintain it
+```
+
+Other commands: `/sdd-status` (where am I?), `/sdd-validate` (also generates checklists and
+checks a spec for contradictions), `/sdd-change` (amend a requirement, or reconcile code that
+changed outside the workflow).
+
+## What It Costs
+
+Being explicit, since nobody else is:
+
+| | |
+|---|---|
+| Loaded on every conversation (skill metadata) | ~120 tokens |
+| Loaded when the skill activates (`skills/spec-driven-development/SKILL.md`) | ~4,200 tokens |
+| A full feature, all reference files loaded | ~37,000 tokens of skill |
+
+Token figures are characters divided by four, not a tokenizer count.
+
+That last figure excludes your code and the artifacts the workflow generates. Industry
+reports put spec-driven workflows at roughly 20 to 40% higher token spend than unstructured
+prompting. Fewer discarded implementation cycles make up the difference; each turn costs
+more.
+
+Reference files load on demand, so a feature that skips research or stops at Phase 3 costs
+proportionally less. If you only want the cheat sheet, `skills/spec-driven-development/references/quick-reference.md` is
+~1,700 tokens on its own. The `/sdd-*` commands cost nothing until you type one.
+
+## What's Included
+
+| File | Contents |
+|------|---------|
+| `skills/spec-driven-development/SKILL.md` | Entry point: full workflow, spec levels, context model, comprehension debt, reference index |
+| `skills/spec-driven-development/references/artifact-templates.md` | Templates for `constitution.md`, `research.md`, `spec.md`, `plan.md`, `data-model.md`, `contracts/`, `tasks.md`, `progress.md`, `decision_log.md` |
+| `skills/spec-driven-development/references/prompt-patterns.md` | Prompts for every phase + Codebase Research, Assumptions Surface, Clarify, Critics, Context Handover, Linear Walkthrough, `/sdd-validate`, `/sdd-change` |
+| `skills/spec-driven-development/references/workflow-phases.md` | Step-by-step instructions for Phases 0, 0.5, and 1 to 5 |
+| `skills/spec-driven-development/references/quality-gates.md` | Gate 0, R, 1 to 5 and C checklists + CI/CD integration (AC coverage, drift detection) |
+| `skills/spec-driven-development/references/output-formats.md` | Formats and line budgets for everything the user reads: gate verdicts, checklists, traceability matrix, drift report, status, walkthrough |
+| `skills/spec-driven-development/references/enforcement.md` | Making rules bind: the ask/check/block ladder, a pre-write hook that really locks `contracts/`, worktrees for parallel tasks, and deriving `AGENTS.md` from `constitution.md` |
+| `skills/spec-driven-development/references/ai-agent-patterns.md` | Context engineering (compaction, budget, progressive disclosure), multi-agent orchestration, critic subagents, capability profiles |
+| `skills/spec-driven-development/references/anti-patterns.md` | 28 common failure modes with wrong/correct examples and fixes |
+| `skills/spec-driven-development/references/quick-reference.md` | One-page cheat sheet |
+| `skills/spec-driven-development/references/INDEX.md` | Topic navigation across all references |
+| `skills/spec-driven-development/scripts/sdd-check.mjs` | Spec validator, Node 20+ with no dependencies: `node skills/spec-driven-development/scripts/sdd-check.mjs specs`. Exit 1 on error, `--json` for CI |
+| `skills/sdd-*/SKILL.md` | One sub-skill per command. Each names the sections of the main skill to read, what to produce and which gate follows |
+| `.claude-plugin/marketplace.json` | Plugin marketplace listing of the skill and its sub-skills |
+| `evals/` | 12 behavioral scenarios, each graded with and without the skill over several trials by `.github/scripts/run-evals.mjs`. Dev only, not installed |
+
+## Complete Example
+
+See [`skills/spec-driven-development/examples/`](skills/spec-driven-development/examples/) for a full end-to-end demonstration of every SDD artifact:
+a magic-link login feature with `constitution.md`, `spec.md`, `plan.md`, `data-model.md`,
+locked `contracts/`, a dependency-mapped `tasks.md`, a delta spec that shortens the link TTL,
+and the merged current-state spec in `specs/_current/`. Use it as a reference or as a
+starter you can clone into a new project.
+
+## When to Use SDD
+
+**Use it when:**
+
+- AI generates code that ignores your constraints
+- The same prompt produces different implementations across sessions
+- Requirements are complex or have multiple stakeholders
+- The feature touches auth, database schema, or public APIs
+- Your team needs shared technical understanding before writing code
+
+**Skip it for:**
+
+- Bug fixes under 30 minutes
+- Refactors with no behavior change
+- Throwaway prototypes
+
+## Key Principles
+
+**Specifications are not suggestions.** API contracts define the exact shape. Code that
+deviates from the contract is drift. Fix the code and leave the spec alone.
+
+**Research before you specify.** A spec written against an imagined codebase drifts by
+construction. Map the real one first, with every claim cited `file:line`, then write
+requirements that fit the system you actually have.
+
+**Front-load the review.** Reviewing ~200 lines of research prevents thousands of wrong
+lines of code; reviewing the code itself prevents one wrong line at a time. Human attention
+is worth the most at the front of the workflow, not the end.
+
+**Surface assumptions before specifying.** Ask the AI to list its implicit assumptions
+about roles, permissions, error behavior, and scope *before* writing the spec. Correcting
+a wrong assumption takes seconds; correcting a wrong AC takes a full `/sdd-change` cycle.
+
+**Reframe vague requirements.** "Make it faster" is not a spec. "LCP < 2.5s on a 4G
+connection" is. Every AC must be independently testable. If you cannot write a failing
+test for it, it is not concrete enough.
+
+**Fresh context per task.** Each task gets its own AI session. Accumulated context from
+prior sessions introduces wrong assumptions.
+
+**Compact on purpose, not on overflow.** Every artifact is a compaction checkpoint. Work in
+the 40 to 60% context band and hand over via `progress.md` before quality degrades. Never let
+automatic compaction decide which details survive.
+
+**Ship only what someone understands.** Green tests prove correctness, not maintainability.
+Run a linear walkthrough before merge and delete any structure that traces to no decision
+in `plan.md`.
+
+**Write artifacts, show verdicts.** The workflow generates a lot of markdown, and most of it
+is for the next phase to read. Artifacts go to files; the response gets the decision
+you have to make and the evidence for it. Every user-facing output has a line budget, and
+confidence is binary: `[CONFIRMED]` or `[VERIFY]`, never a percentage.
+
+**Commit after each task.** Not at the end of Phase 4. After each individual task.
+Clean history enables precise rollback when drift is discovered.
+
+**Commit specs with code.** Spec files belong in the same PR as the implementation they
+drive. Treat them as first-class source artifacts, not throwaway documents.
+
+**The author never passes its own gate.** A human approves the intent gates: research,
+spec, comprehension, and merge. Evidence gates (plan completeness, tasks, each task, final
+validation) are passed by an agent that did not write the artifact, with the evidence
+attached for the human to audit.
+
+## AI Tool Compatibility
+
+| Tool | Status | Notes |
+|------|--------|-------|
+| Claude Code | ✅ Native | Skill loaded via `skills.sh`; Format A prompts (filesystem access) |
+| Cursor | ✅ Supported | Reference files loaded via `@` mentions |
+| GitHub Copilot Chat | ✅ Supported | Format B prompts (stateless) for web/chat interfaces |
+| JetBrains Junie | ✅ Supported | Reference files loaded as context |
+| Windsurf | ✅ Supported | Skill activates on SDD keyword triggers |
+| Any LLM (ChatGPT, Gemini, etc.) | ✅ Manual | Copy reference files into context; use Format B prompts |
+
+## Prior Art
+
+- [pstack](https://github.com/cursor/plugins/tree/main/pstack) by Lauren Tan: proofs that must be seen failing, review findings that count only when a rerun reproduces them, the overnight handoff contract, and the evidence ladder for facts.
+- [OpenSpec](https://github.com/Fission-AI/OpenSpec): merging validated change specs into a current-state spec per capability.
+- [Kiro](https://kiro.dev): EARS requirement statements and property-based tests derived from requirements.
+- [Spec Kit](https://github.com/github/spec-kit): parallel task markers and checklists that gate a spec before planning.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a full history of changes per version.
+
+The latest version and its notes are in [CHANGELOG.md](CHANGELOG.md).
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines on
+adding anti-patterns, prompts, templates, and workflow improvements.
+
+Please follow our [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE)

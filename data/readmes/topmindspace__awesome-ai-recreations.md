@@ -1,119 +1,54 @@
 # awesome-ai-recreations
 
-> 这个仓库收集 AI 的爆款、经典场景与案例，然后把它们拆开、重做一遍。
->
-> 我们在意的不是案例本身多好看，而是**它究竟怎么实现**：结构怎么分解、参数怎么定、哪里必须手算和断言、工程上怎么取舍；以及换一个 agent 工具、换一个模型，还能不能成、能做到几成、差在哪。
->
-> 同一个原作，我们会让不同模型各做一版并排对照（例如机械复刻系列：9 台由 GLM 5.3-Flash 完成，00/01 又由 DeepSeek 独立重做）。成品是证据，不是目的——这里更像一份公开的**复刻实验笔记**：方法、思路、讨论与分享为主，案例只是载体。
->
-> 在线预览：<https://topmindspace.github.io/awesome-ai-recreations/>（GitHub Pages，随 main 自动部署）。
+![awesome-ai-recreations 横版封面](assets/covers/awesome-ai-recreations-cover.jpg)
 
-## 系列
+AI 案例复刻集：在线作品、完整源码、复刻提示词与使用方法。
 
-| # | 系列 | 内容 | 状态 |
+**仓库文档：** [全部案例与版本](series/机械复刻系列/README.md) · [快速开始](docs/快速开始.md) · [复刻方法](docs/精细复刻流程.md) · [文档导航](docs/README.md) · [Agent 入口](AGENTS.md)
+
+## 作品展示
+
+| 机械章鱼 · GPT-6.1 Sol | 机械章鱼 · DeepSeek | 机械章鱼 · HY4 |
+|---|---|---|
+| [![GPT-6.1 Sol 实际渲染](series/机械复刻系列/gpt-6.1-sol复刻/00-机械章鱼OC-8/stills/光影-整机.jpg)](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/gpt-6.1-sol复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [![DeepSeek 实际渲染](series/机械复刻系列/deepseek复刻/covers/00-机械章鱼OC-8-封面-4x3.jpg)](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [![HY4 实际渲染](series/机械复刻系列/hunyuan直出版/covers/封面-HY4独立直出版.jpg)](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/hunyuan直出版/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) |
+| 64 秒动作演示，开壳、游动、拆解与复位 | 宝石紫界面，机械章鱼与 V8 | 宝石蓝界面，腕足细节与拆解 |
+
+**点击作品图片可在线体验。** 互动页支持操作；自动巡览页按时间线播放，是网页演示。
+
+## 案例索引
+
+当前收录机械系列 **9 个案例、14 个实现、5 个版本**。下表每个案例选一个版本，更多版本见[完整索引](series/机械复刻系列/README.md)。
+
+| 案例 | 展示版本 | 在线演示 ↗ | 仓库文档 |
 |---|---|---|---|
-| 01 | [机械复刻系列](series/机械复刻系列/) | 两个模型的复刻：**DeepSeek 版**（00/01，4 页）· **GLM 5.3-Flash 版**（9 台，18 页 + 25 s 成片），均附完整源码 | ✅ 两版可用 |
+| 机械章鱼OC-8 | GPT-6.1 Sol | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/gpt-6.1-sol复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/gpt-6.1-sol复刻/00-机械章鱼OC-8/机械章鱼OC-8-影片页.html) | [源码与使用](series/机械复刻系列/gpt-6.1-sol复刻/README.md) |
+| V8发动机 | DeepSeek | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-影片页.html) | [源码与使用](series/机械复刻系列/deepseek复刻/README.md) |
+| 塞斯纳337起落架 | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/02-塞斯纳337起落架/塞斯纳337起落架-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/02-塞斯纳337起落架/塞斯纳337起落架-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 海滩兽Strandbeest | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/03-海滩兽Strandbeest/海滩兽Strandbeest-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/03-海滩兽Strandbeest/海滩兽Strandbeest-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 仿生沙虫MK-X | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/04-仿生沙虫MK-X/仿生沙虫MK-X-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/04-仿生沙虫MK-X/仿生沙虫MK-X-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 机械水母MJ-9 | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/05-机械水母MJ-9/机械水母MJ-9-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/05-机械水母MJ-9/机械水母MJ-9-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 六足机器人HX-18 | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/06-六足机器人HX-18/六足机器人HX-18-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/06-六足机器人HX-18/六足机器人HX-18-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 机械蜜蜂HB-7 | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/07-机械蜜蜂HB-7/机械蜜蜂HB-7-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/07-机械蜜蜂HB-7/机械蜜蜂HB-7-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
+| 机械蝎子SC-8 | GLM 5.3-Flash | [互动](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/08-机械蝎子SC-8/机械蝎子SC-8-互动页.html) · [自动巡览](https://topmindspace.github.io/awesome-ai-recreations/series/机械复刻系列/glm5.3-flash复刻/pages/08-机械蝎子SC-8/机械蝎子SC-8-影片页.html) | [源码与使用](series/机械复刻系列/glm5.3-flash复刻/README.md) |
 
-新系列从这张表往下加；同一系列的实现版本（模型版本）登记在系列 README 与下方对应小节，约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+## 如何使用与复刻
 
----
+- **直接体验：** 点击上方「在线演示」；下载仓库后也可双击 `*-互动页.html` 离线使用。
+- **修改或重建：** 按[快速开始](docs/快速开始.md)安装依赖，再进入对应版本的「源码与使用」。重建已有代码无需模型账号。
+- **让 Agent 复刻：** 把仓库地址发给 Agent，告诉它复刻哪个案例即可，例如下方任务。
+- **添加案例或系列：** 见[贡献指南](CONTRIBUTING.md)与[案例模板](templates/case.md)。
 
-## 两个实现
+复制给 Agent，替换案例名即可：
 
-同一批原作，两个模型分别复刻，成品并列对照、互不覆盖：
-
-| 版本 | 复刻模型 | 范围 | 强调色 | 入口 |
-|---|---|---|---|---|
-| **DeepSeek 版（主推）** | DeepSeek | 00 机械章鱼 OC-8 / 01 V8 发动机 | 宝石紫 `#7c3aed` | [`deepseek复刻/`](series/机械复刻系列/deepseek复刻/README.md) |
-| **GLM 5.3-Flash 版** | GLM 5.3-Flash | 00–08 共 9 台 | 钴蓝 `#1e5fd6` | [`glm5.3-flash复刻/`](series/机械复刻系列/glm5.3-flash复刻/README.md) |
-
-### DeepSeek 版（主推）
-
-| | | |
-|---|---|---|
-| [![00 机械章鱼 OC-8 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/00-机械章鱼OC-8-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [![01 V8 发动机 · DeepSeek 版](series/机械复刻系列/deepseek复刻/covers/01-V8发动机-封面-4x3.jpg)](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) | **00/01 两台 · 中文 + 宝石紫**<br>25 s / 10 拍 与 26 s / 9 拍巡览；互动页 + 影片页 + 完整源码 + 参考 + 验收截图。<br>[实现说明](series/机械复刻系列/deepseek复刻/README.md) · [00 互动页](series/机械复刻系列/deepseek复刻/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) · [01 互动页](series/机械复刻系列/deepseek复刻/01-V8发动机/V8发动机-互动页.html) |
-
-### GLM 5.3-Flash 版（9 台）
-
-| | | |
-|---|---|---|
-| [![00 机械章鱼 OC-8](series/机械复刻系列/glm5.3-flash复刻/covers/00-机械章鱼OC-8-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/00-机械章鱼OC-8/机械章鱼OC-8-互动页.html) | [![01 V8 发动机](series/机械复刻系列/glm5.3-flash复刻/covers/01-V8发动机-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/01-V8发动机/V8发动机-互动页.html) | [![02 塞斯纳 337 起落架](series/机械复刻系列/glm5.3-flash复刻/covers/02-塞斯纳337起落架-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/02-塞斯纳337起落架/塞斯纳337起落架-互动页.html) |
-| [![03 海滩兽 Strandbeest](series/机械复刻系列/glm5.3-flash复刻/covers/03-海滩兽Strandbeest-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/03-海滩兽Strandbeest/海滩兽Strandbeest-互动页.html) | [![04 仿生沙虫 MK-X](series/机械复刻系列/glm5.3-flash复刻/covers/04-仿生沙虫MK-X-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/04-仿生沙虫MK-X/仿生沙虫MK-X-互动页.html) | [![05 机械水母 MJ-9](series/机械复刻系列/glm5.3-flash复刻/covers/05-机械水母MJ-9-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/05-机械水母MJ-9/机械水母MJ-9-互动页.html) |
-| [![06 六足机器人 HX-18](series/机械复刻系列/glm5.3-flash复刻/covers/06-六足机器人HX-18-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/06-六足机器人HX-18/六足机器人HX-18-互动页.html) | [![07 机械蜜蜂 HB-7](series/机械复刻系列/glm5.3-flash复刻/covers/07-机械蜜蜂HB-7-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/07-机械蜜蜂HB-7/机械蜜蜂HB-7-互动页.html) | [![08 机械蝎子 SC-8](series/机械复刻系列/glm5.3-flash复刻/covers/08-机械蝎子SC-8-封面A-4x3.png)](series/机械复刻系列/glm5.3-flash复刻/pages/08-机械蝎子SC-8/机械蝎子SC-8-互动页.html) |
-
-- 9 台真实机器 → 18 个离线 3D 页面（互动页 + 影片页）+ 25 s 成片，附完整源码
-- 入口与目录索引：[`series/机械复刻系列/glm5.3-flash复刻/`](series/机械复刻系列/glm5.3-flash复刻/README.md)
-
-> 在线玩：**[topmindspace.github.io/awesome-ai-recreations](https://topmindspace.github.io/awesome-ai-recreations/)** —— 点封面直达互动页；也可克隆或下载本仓库后双击打开（单文件、断网可跑）。
-
----
-
-## 怎么用
-
-### 我只想看
-
-**在线版**：<https://topmindspace.github.io/awesome-ai-recreations/>（点封面或表格链接直达）。
-
-本地打开对应目录下的 HTML 即可：
-
-- DeepSeek 版：`series/机械复刻系列/deepseek复刻/<机器>/<机器>-互动页.html`（另有影片页）
-- GLM 5.3-Flash 版：`series/机械复刻系列/glm5.3-flash复刻/pages/<机器>/<机器>-互动页.html`（另有影片页）
-
-单个 HTML 文件，three.js、字体、贴图全部内联 —— **双击即开，断网也能跑**，不用装任何东西。
-
-### 我想自己复刻一台
-
-把仓库克隆下来，交给 agent 工具（Claude Code / Cursor / Codex / Gemini CLI 都行），然后说：
-
-> 按 `series/机械复刻系列/docs/01` 的十步流程，复刻一台 <机器名>。
-
-agent 需要的东西仓库里都备好了：
-
-| 要什么 | 在哪 |
-|---|---|
-| 完整流程与踩坑 | `series/机械复刻系列/docs/01-机械章鱼OC-8-teardown机器模拟器.md` |
-| 可直接用的建模提示词 | `series/机械复刻系列/docs/提示词原文/` |
-| 公共库、构建脚本、配乐合成器 | `series/机械复刻系列/glm5.3-flash复刻/src/kit/` |
-| 9 台已完成范例（参数、行数、耗时、问题与改法） | `series/机械复刻系列/glm5.3-flash复刻/records/` |
-| 另一模型的独立实现范例 | `series/机械复刻系列/deepseek复刻/` |
-
-人工照着做很费劲；**交给 agent 按流程做，才是这套仓库设计的主要用法**。
-
----
-
-## 目录结构
-
-```
-awesome-ai-recreations/
-├── README.md          总索引（本文件）
-├── CONTRIBUTING.md    怎么加一个新系列 / 一个案例 / 一个实现版本
-├── NOTICE.md          署名与来源总表
-├── docs/              跨系列文档：通用基础与约定
-└── series/
-    └── 机械复刻系列/
-        ├── README.md          系列主 page：两个实现、方法、复现
-        ├── docs/              方法论文档与提示词原文（两版共用）
-        ├── deepseek复刻/      DeepSeek 版（主推，00/01，自包含）
-        └── glm5.3-flash复刻/  GLM 5.3-Flash 版（9 台）
-            ├── pages/         18 个离线 HTML（互动页 + 影片页）
-            ├── src/           完整源码（kit/ + upstream-teardown/ 快照）
-            ├── covers/        9 台封面
-            ├── references/    参考图与规格
-            └── records/       复刻记录
+```text
+https://github.com/topmindspace/awesome-ai-recreations
+请复刻其中的机械章鱼案例。
 ```
 
-## 通用约定
+Agent 按 [AGENTS.md](AGENTS.md) 自行找到任务书、原作参考与验收要求，在新目录完成实现。无需指定版本或手动查找提示词；[更多用法](docs/快速开始.md#让-agent-复刻特定案例)。
 
-- **逐帧渲染**：画面只由帧号或时间决定，不读真实时钟；配乐读同一份时间线，音画不错位
-- **数字同源**：屏上没有一个写死的读数，姿态、曲线、面板值全部由源码算出
-- **来源如实**：原作者、链接、数据口径写清，每个数字标 frame / ref / guess；复刻模型写清
-- **实现版本单独存放**：同一原作的另一次实现放 `series/<系列>/<模型名>复刻/`，自包含、不覆盖其他版本；通用约定不变，复刻模型与强调色在版本与通用文档中登记
-- **不写密钥**，**不拷贝别人的源码**，引用别人的提示词必留来源与署名
-- **不记录私人信息**：本地路径、机器配置、个人对话与内部协作记录不进入仓库
+## 文档与许可
 
-完整版见 [`docs/通用基础与约定.md`](docs/通用基础与约定.md)。
+[文档导航](docs/README.md) · [发布与忽略规则](docs/发布与清理.md) · [结构化索引](catalog.json)
 
-## 许可
-
-本仓库内容以 **MIT** 许可发布，见 [LICENSE](LICENSE)；
-各版本的复刻模型、第三方素材、上游仓库快照与参考图来源，见 [NOTICE.md](NOTICE.md)。
+新增代码与文档使用 [MIT](LICENSE)；上游代码及参考素材的归属见 [NOTICE](NOTICE.md)。各版本的改编、复用关系和验证记录见版本文档，作品对比仅供参考。

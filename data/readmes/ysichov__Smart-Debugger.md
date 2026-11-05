@@ -1,5 +1,7 @@
 # Smart Debugger
 
+> **Smart Debugger has moved to [VERTEX](https://github.com/ysichov/VERTEX)** — it now lives on as VERTEX Smart Debugger for VS Code and Eclipse ADT: debugging in SAP through ADT, the ABAP transpiler and code flow analysis. This repository is kept as it is and is no longer developed.
+
 **Project ARIADNA** — *Advanced Reverse Engineering ABAP Debugger with New Analytics*
 Version: beta 0.9.600 · SAP GUI debugger script · no modification of the inspected code
 
@@ -40,7 +42,7 @@ Time is money.
 - [Requirements](#requirements)
 - [Installation](#installation)
   - [Option A — copy & paste (nothing to install)](#option-a--copy--paste-nothing-to-install)
-  - [Option B — abapGit (modular classes)](#option-b--abapgit-modular-classes)
+  - [Option B — abapGit](#option-b--abapgit)
 - [Quick start](#quick-start)
 - [Window layout](#window-layout)
 - [Toolbar reference](#toolbar-reference)
@@ -64,7 +66,7 @@ Time is money.
 | | |
 |---|---|
 | **SAP GUI** | Required. Smart Debugger is built on `CL_GUI_*` controls and runs inside the New Debugger, not in ADT/Eclipse |
-| **Release** | ABAP 7.40+ (inline declarations, `VALUE`/`COND`, string templates). The generated standalone file is additionally patched for 7.50 |
+| **Release** | ABAP 7.40+ (inline declarations, `VALUE`/`COND`, string templates) |
 | **Authorization** | Standard debugging authorization (`S_DEVELOP` with activity `DEBUG`) |
 | **abapMermaid** | *Optional.* Needed only for the diagram buttons. Use the scroll-enabled fork: [ysichov/abapMermaid](https://github.com/ysichov/abapMermaid) (original: [WegnerDan/abapMermaid](https://github.com/WegnerDan/abapMermaid)). Without it the `Diagram` / `Live Debug` buttons are simply not shown |
 
@@ -74,22 +76,15 @@ Time is money.
 
 ### Option A — copy & paste (nothing to install)
 
-Take **[`src/z_smart_debugger_standalone.prog.abap`](src/z_smart_debugger_standalone.prog.abap)** —
-one self-contained file (~9 000 lines) with every class merged in — and paste it into the debugger
-`Script` tab. Nothing is created in the system, nothing is transported.
+Paste **[`src/z_smart_debugger_standalone.prog.abap`](src/z_smart_debugger_standalone.prog.abap)** —
+a single self-contained file — into the debugger `Script` tab. Nothing is created in the system,
+nothing is transported.
 
-> The AI panel is **not** part of the standalone build (it depends on a separate repository).
-> Everything else is identical to the modular version.
+### Option B — abapGit
 
-### Option B — abapGit (modular classes)
-
-Clone this repository with [abapGit](https://abapgit.org) into any package. You get the
-`ZCL_SMD_*` classes plus two programs:
-
-| Object | Purpose |
-|---|---|
-| `Z_SMART_DEBUGGER` | The thin debugger script that instantiates the classes — paste **this** one in the `Script` tab |
-| `Z_SMART_DEBUGGER_STANDALONE` | The merged single-file variant (generated, do not edit) |
+Clone this repository with [abapGit](https://abapgit.org) into any package, then paste
+**[`src/z_smart_debugger.prog.abap`](src/z_smart_debugger.prog.abap)** — the thin script that
+instantiates the installed `ZCL_SMD_*` classes — into the `Script` tab.
 
 Use this option if you want the AI panel, or if several developers should share one installed version.
 
@@ -290,7 +285,6 @@ drive the debugger, and every call and action is written to a log (`AI Log`).
   and writes the provider/model/API-key configuration that Smart Debugger reads at start-up.
 - Without that configuration the `AI` button is **not displayed** at all.
 - The tool contract used by the agent is documented in [`TOOLS/set_breakpoint.md`](TOOLS/set_breakpoint.md).
-- The generated standalone file contains **no** AI support.
 
 This part is the youngest and least finished piece of the project.
 
@@ -314,7 +308,7 @@ Recording everything on every step costs time. When a run feels slow:
 ```
 src/
   z_smart_debugger.prog.abap             thin debugger script (entry point)
-  z_smart_debugger_standalone.prog.abap  generated single-file build - do not edit
+  z_smart_debugger_standalone.prog.abap  single-file variant (see Installation)
   zcl_smd_debugger_base.clas.abap        step engine, history, watchpoints
   zcl_smd_window.clas.abap               main window, toolbar, source viewer
   zcl_smd_rtti_tree.clas.abap            variable trees (RTTI based)
@@ -323,20 +317,18 @@ src/
   zcl_smd_source_parser.clas.abap        statement/keyword scanner
   zcl_smd_code_scheme.clas.abap          control-structure scheme (Calculations Flow)
   zcl_smd_mermaid.clas.abap              diagram windows
-  zcl_smd_ai_agent.clas.abap             AI agent (modular install only)
+  zcl_smd_ai_agent.clas.abap             AI agent
   zcl_smd_*.clas.abap                    text viewer, popups, RTTI, HTML, helpers
 TOOLS/                                   AI tool contracts
 docs/                                    code review and analysis documents
-generate_standalone.sh / .bat            standalone build
 ```
 
 ## For developers
 
 - [`DEVELOPMENT.md`](DEVELOPMENT.md) — architecture invariants, coding conventions, common patterns
-- [`STANDALONE.md`](STANDALONE.md) — how the single-file build is generated
 - [`docs/CODE_REVIEW_2026-07-15.md`](docs/CODE_REVIEW_2026-07-15.md) — full audit with verification scenarios
 
-Edit the `ZCL_SMD_*` classes only; `z_smart_debugger_standalone.prog.abap` is regenerated from them.
+All fixes and features go into the `ZCL_SMD_*` classes.
 
 ## Links and credits
 

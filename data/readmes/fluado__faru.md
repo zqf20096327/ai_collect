@@ -51,7 +51,7 @@ faru is a git-native kanban board that renders markdown files as cards.
 - backlogDir: path to the backlog directory (relative to project root)
 - port: local server port
 - cardCategories: the card types available in the UI (lowercase)
-- autoSync: if true, faru starts enmetu, which commits, pushes and pulls changes via git (needs Node 24+ or Bun 1.3.6+, git 2.38+ and a branch with an upstream)
+- autoSync: if true, faru starts enmetu, which commits, pushes and pulls changes via git (needs Node 24+ or Bun 1.4.4+, git 2.38+ and a branch with an upstream)
 - archiveDoneAfterDays: cards marked "done" are auto-archived after N days
 
 Adjust cardCategories to match this project (e.g. "feature", "bug", "infra", "docs").
@@ -462,7 +462,7 @@ With `"autoSync": true`, faru starts [enmetu](https://www.npmjs.com/package/@flu
 
 Requirements:
 
-- Node 24+ or Bun 1.3.6+
+- Node 24+ or Bun 1.4.4+
 - git 2.38+
 - a checked-out branch with an upstream, at least one commit, and a committer identity
 
@@ -470,7 +470,18 @@ If one is missing, faru logs one line saying which and runs without sync.
 
 **Configuration.** enmetu reads `enmetu.config.json` at the repository root; faru passes it nothing. The keys and their defaults are in the Configuration table of [enmetu's README](https://www.npmjs.com/package/@fluado/enmetu). An invalid file turns sync off with a line saying why. To switch sync off on one machine only, set `"autoSync": false` in that machine's `.faru.local.json`.
 
-**Commit messages.** Every commit carries one fixed subject, `enmetu: local changes` unless you set `commitSubject`. A subject never names a card, a file or a directory.
+**Commit messages.** faru writes each subject from what changed, by the title of the card or document:
+
+| Change | Subject |
+|---|---|
+| a card's `status` | `Move <title> to <status>` |
+| a card's `assigned` | `Assign <title> to <name>` |
+| cards moved to the archive | `Archive <title>` |
+| only new files | `Add <title>` |
+| only deleted files | `Remove <title>` |
+| an edit | your `commitMessageCommand`, else `Update <title>` |
+
+Several cards or documents read `<title> and 2 more`. A title is a card's or document's frontmatter `title`, a markdown file's first heading, an HTML file's `<title>`, else the file or folder name. For your own subjects on edits, set enmetu's `commitMessageCommand` in your git config; see [enmetu's README](https://www.npmjs.com/package/@fluado/enmetu). A ready command that adds what changed from a local model through llm, such as Apple's on-device model: [enmetu's commit message example](https://codefloe.com/fluado/enmetu/src/branch/main/examples/commit-message). The fixed `commitSubject` is used only when git cannot say what changed, or with an enmetu older than the option.
 
 **Halt and resume.** When enmetu cannot verify the repository, for example after the upstream was rewritten, it halts and faru logs the two commands to run, with this machine's paths:
 
@@ -551,7 +562,7 @@ On your machine. Faru is a local dev server: you run `npx github:fluado/faru` in
 <details>
 <summary>Will faru pollute my git history?</summary>
 
-When `autoSync` is `true`, enmetu commits every change after 5 seconds of quiet, with one fixed subject: `enmetu: local changes`, or your own `commitSubject` in `enmetu.config.json`. These are real commits on whatever branch is checked out.
+When `autoSync` is `true`, enmetu commits every change after 5 seconds of quiet, with a subject such as `Move Launch plan to done` (see Commit messages above). These are real commits on whatever branch is checked out.
 
 If you want to keep your source repo's history clean, **run faru in a separate repo**. Create a dedicated repo for your backlog and config, point your agents at it for card management, and run faru there. Board commits stay completely isolated from your code history. This is what we do.
 

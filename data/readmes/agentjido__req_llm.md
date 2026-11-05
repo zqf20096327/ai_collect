@@ -30,7 +30,7 @@ request through one of two integration paths:
   authentication, routes, wire format, and special behavior.
 - **Shared catalog gateway**: The provider has no dedicated ReqLLM module.
   LLMDB supplies an execution contract, and ReqLLM sends the request through
-  its shared OpenAI Chat Completions adapter.
+  its shared OpenAI Chat Completions or Cohere-compatible rerank adapter.
 
 These paths describe request routing. They do not describe support quality. A
 model can be in LLMDB before ReqLLM has verified its API behavior. Support tiers
@@ -56,7 +56,7 @@ show the module's broad scope. The selected model can support fewer operations.
 | [Azure OpenAI](https://llmcatalog.dev/?providers=azure) | `azure` | text, embedding, image | [Guide](guides/azure.md) |
 | [Cerebras](https://llmcatalog.dev/?providers=cerebras) | `cerebras` | text | [Guide](guides/cerebras.md) |
 | [Cheaper Inference](https://api.cheaperinference.com/docs) | `cheaperinference` | text | — |
-| [Cohere](https://llmcatalog.dev/?providers=cohere) | `cohere` | text, rerank | — |
+| [Cohere](https://llmcatalog.dev/?providers=cohere) | `cohere` | text, rerank | [Guide](guides/rerank.md) |
 | [DeepSeek](https://llmcatalog.dev/?providers=deepseek) | `deepseek` | text | [Guide](guides/deepseek.md) |
 | [ElevenLabs](https://llmcatalog.dev/?providers=elevenlabs) | `elevenlabs` | speech | — |
 | [Fireworks AI](https://llmcatalog.dev/?providers=fireworks_ai) | `fireworks_ai` | text | [Guide](guides/fireworks_ai.md) |
@@ -76,6 +76,7 @@ show the module's broad scope. The selected model can support fewer operations.
 | Reflection AI | `reflection` | text | [Guide](guides/reflection.md) |
 | [StepFun China](https://llmcatalog.dev/?providers=stepfun) | `stepfun` | text, speech, transcription | [Guide](guides/stepfun.md) |
 | [StepFun Global](https://llmcatalog.dev/?providers=stepfun_ai) | `stepfun_ai` | text, speech, transcription | [Guide](guides/stepfun.md) |
+| [Superlinked Inference Engine](https://console.superlinked.com/console) | `superlinked` | text, streaming, tools, embedding, rerank | [Guide](guides/superlinked.md) |
 | [TypeSafe](https://llmcatalog.dev/?providers=typesafe) | `typesafe` | evaluation | [Example](#evaluation-models) |
 | [Venice](https://llmcatalog.dev/?providers=venice) | `venice` | text | — |
 | [xAI](https://llmcatalog.dev/?providers=xai) | `xai` | text, image | [Guide](guides/xai.md) |
@@ -86,13 +87,15 @@ show the module's broad scope. The selected model can support fewer operations.
 
 #### Shared Catalog Gateway: No Dedicated Module
 
-This path is for hosted APIs that use plain OpenAI Chat Completions with bearer
-authentication. LLMDB must supply the base URL, route, wire protocol, and
-authentication contract. ReqLLM then uses `ReqLLM.Providers.CatalogGateway`.
-A dedicated provider module always takes priority when one is registered.
+This path is for hosted APIs that use plain OpenAI Chat Completions or
+Cohere-compatible reranking with bearer authentication. LLMDB must supply the
+base URL, route, wire protocol, and authentication contract. ReqLLM then uses
+`ReqLLM.Providers.CatalogGateway`. A dedicated provider module always takes
+priority when one is registered.
 
 | Provider | ID | Main operations | Evidence |
 |---|---|---|---|
+| [Albert API](https://guides.ia.numerique.gouv.fr/albert-api) | `albert` | rerank | [Guide](guides/rerank.md) |
 | [LLM API](https://app.llmapi.ai/?utm_source=ff0a247d-c8ab-4f19-a982-c4ff915da268) | `llmapi` | text, structured output, streaming | [Recorded fixtures](guides/model-support.md#llmapi) |
 
 Support on this path is limited to the LLMDB execution contract and the recorded
@@ -735,7 +738,7 @@ This approach gives you full control over the Req pipeline, allowing you to add 
 - [Mix Tasks](guides/mix-tasks.md) – model sync, compatibility testing, code generation
 - [Fixture Testing](guides/fixture-testing.md) – model validation and supported models
 - [Adding a Provider](guides/adding_a_provider.md) – extend with new providers
-- Provider Guides: [Amazon Bedrock](guides/amazon_bedrock.md), [Anthropic](guides/anthropic.md), [Azure](guides/azure.md), [Cerebras](guides/cerebras.md), [DeepSeek](guides/deepseek.md), [Fireworks AI](guides/fireworks_ai.md), [GitHub Copilot](guides/github_copilot.md), [Google](guides/google.md), [Google Vertex](guides/google_vertex.md), [Groq](guides/groq.md), [Inference.net](guides/inference.md), [LM Studio](guides/lmstudio.md), [Meta](guides/meta.md), [Moonshot AI](guides/moonshot_ai.md), [NEAR AI](guides/nearai.md), [Ollama](guides/ollama.md), [OpenAI](guides/openai.md), [OpenRouter](guides/openrouter.md), [Reflection AI](guides/reflection.md), [StepFun](guides/stepfun.md), [xAI](guides/xai.md), [Z.AI](guides/zai.md), [Z.AI Coder](guides/zai_coder.md), [Zenmux](guides/zenmux.md)
+- Provider Guides: [Amazon Bedrock](guides/amazon_bedrock.md), [Anthropic](guides/anthropic.md), [Azure](guides/azure.md), [Cerebras](guides/cerebras.md), [DeepSeek](guides/deepseek.md), [Fireworks AI](guides/fireworks_ai.md), [GitHub Copilot](guides/github_copilot.md), [Google](guides/google.md), [Google Vertex](guides/google_vertex.md), [Groq](guides/groq.md), [Inference.net](guides/inference.md), [LM Studio](guides/lmstudio.md), [Meta](guides/meta.md), [Moonshot AI](guides/moonshot_ai.md), [NEAR AI](guides/nearai.md), [Ollama](guides/ollama.md), [OpenAI](guides/openai.md), [OpenRouter](guides/openrouter.md), [Reflection AI](guides/reflection.md), [StepFun](guides/stepfun.md), [Superlinked](guides/superlinked.md), [xAI](guides/xai.md), [Z.AI](guides/zai.md), [Z.AI Coder](guides/zai_coder.md), [Zenmux](guides/zenmux.md)
 
 ## Roadmap & Status
 

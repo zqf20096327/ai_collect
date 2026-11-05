@@ -113,6 +113,11 @@ genuinely agentic, and usable with any LLM — including fully local models.**
 - **MCP tool servers** — connect remote [Model Context Protocol](https://modelcontextprotocol.io)
   servers (GitHub, Linear, your own) so the agent can use their tools alongside
   the browser — extending it well beyond the page.
+- **Use it from your coding agent** — Claude Code, Codex, Cursor or any MCP
+  client can drive your real browser (your logins, your cookies) through a small
+  local bridge. Off by default; you approve each connection, each new site and
+  risky actions in the side panel, and it never sees your own tabs. See
+  [Connect a local agent](#connect-a-local-agent-claude-code-codex-cursor).
 - **Context menu**: right-click a selection to ask about it, or summarize a page.
 - **Streaming responses** and a live view of every action the agent takes.
 - **Local-first & private**: keys, settings and chat history live in `chrome.storage.local`;
@@ -221,6 +226,53 @@ answer. Everything is off by default; if a check is off, fails, or times out,
 the built-in checks apply unchanged. [PRIVACY.md](PRIVACY.md) lists what each
 check sends.
 
+### Connect a local agent (Claude Code, Codex, Cursor)
+
+OpenSidekick can serve its browser tools over [MCP](https://modelcontextprotocol.io)
+to agents running on your machine. Needs Node 18+ and a clone of this repo.
+
+1. Register the bridge with Chrome (the id is on `chrome://extensions`):
+   ```bash
+   node native/install.mjs <extension-id>
+   ```
+   This copies the bridge into a private folder (`~/.opensidekick`, or
+   `%LOCALAPPDATA%\OpenSidekick` on Windows), so updating your clone doesn't
+   change what Chrome runs. Run it again to update; `--uninstall` removes it.
+2. In OpenSidekick Settings, turn on **Let local agents use this browser**.
+   Chrome asks once for permission to talk to the bridge program.
+3. Add the MCP server to your agent. The installer prints the exact line; for
+   Claude Code it is:
+   ```bash
+   claude mcp add opensidekick -- node ~/.opensidekick/opensidekick-bridge.mjs --mcp
+   ```
+   Other clients take the same command in their MCP config.
+4. Keep the side panel open (**Ctrl+E**): that's where you approve the agent.
+
+Commands from outside are trusted less than your own chat:
+
+- **Pairing.** Each time an agent connects, the panel asks you to allow it.
+  The agent and the bridge also prove to each other that they hold a secret
+  from the private folder, so other users of the computer can't connect or
+  pose as the bridge.
+- **Its own tabs only.** The agent works in tabs it opens, in a window of its
+  own that doesn't take focus from you. It can't read or switch to your tabs
+  or a chat's tabs. JavaScript and the console/network readers aren't offered.
+- **Sites ask first.** The first read of a site asks (*Allow reading this
+  site*), and so does the first action on it (*Allow actions on this site*).
+  Those last until the agent disconnects; nothing is saved. Sensitive sites
+  (banks, payments) ask every time. A site you decline stays declined, and
+  after three declines the connection gets no more cards.
+- **Risky actions always ask:** clicks on a form's submit button or on a
+  Buy/Pay/Delete/Send-like label, typing with submit, any key press, drags and
+  file uploads. The card says why, and shows the whole text or file.
+- **You see every call.** Each one is logged in the side panel. With the panel
+  closed, nothing runs.
+- **One call at a time**, on the tab and element you approved: if the page or
+  the element changed meanwhile, the call doesn't run. Blocked sites stay blocked.
+
+Chrome only for now: the installer registers Google Chrome (on macOS/Linux, not
+Chromium, Brave or Edge).
+
 ## How it works
 
 ```
@@ -305,10 +357,11 @@ Shipped since the first cut:
 - [x] Workflow recording & replay
 - [x] Connect to MCP tool servers (extend beyond the browser)
 - [x] Prompt-injection classifier on untrusted content (optional Smart check, Jev)
+- [x] Upload text files into file inputs
+- [x] Serve the browser tools to local agents over MCP (Claude Code, Codex, Cursor)
 
 Planned, to reach and exceed feature parity with vendor-locked assistants:
 
-- [ ] Upload files into file inputs (via the debugger)
 - [ ] CDP-based trusted input for tougher sites
 - [ ] Firefox (WebExtensions) build
 

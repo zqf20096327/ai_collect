@@ -118,7 +118,7 @@ git tag v1.3.3 && git push origin v1.3.3
 
 限制：
 
-- 扩展只读取浏览器里 `xiaomimimo.com` / `xiaomi.com` 的 Cookie，只把结果 POST 到你填的本机地址（仅允许 `localhost` / `127.0.0.1`），没有任何第三方外联
+- 扩展只读取浏览器里 `xiaomimimo.com` / `xiaomi.com` / `mi.com` 的 Cookie（登录态分散在这几个域），只把结果 POST 到你填的本机地址（仅允许 `localhost` / `127.0.0.1`），没有任何第三方外联
 - 未上商店、未签名，加载后 Chrome 会常驻「请停用以开发者模式运行的扩展程序」提示；扩展也不会自动更新，新版需要重新下载解压（账号不会丢，凭据在 `config.json` 里）
 
 ### 方式二：手动从 DevTools 取
@@ -160,7 +160,7 @@ git tag v1.3.3 && git push origin v1.3.3
 
 | 客户端 | Base URL | API Key | 说明 |
 |---|---|---|---|
-| Cherry Studio / ChatBox / LobeChat / NextChat | `http://localhost:8080/v1` | `sk-mimo` | OpenAI 兼容 |
+| Cherry Studio / ChatBox / LobeChat / NextChat | `http://localhost:8080/v1` | `sk-mimo` | OpenAI 兼容（`chat/completions` 或 `responses`） |
 | Claude Code / Anthropic SDK | `http://localhost:8080` | `sk-mimo` | Anthropic 格式，`/v1/messages` |
 | Cline / Roo Code | `http://localhost:8080/v1` | `sk-mimo` | OpenAI 兼容，支持 tools |
 | DSH（DeepSeek Harness） | `http://localhost:8080` | `sk-mimo` | `api: openai-completions`，**不带 `/v1`** |
@@ -205,6 +205,8 @@ curl http://localhost:8080/v1/messages \
 | `mimo-v2.6-flash` | v2.6 日常（300B，1M 上下文） |
 | `mimo-v2.6-pro` | v2.6 深度推理（1T，1M 上下文） |
 | `mimo-v2.6-pro-ultraspeed-studio` | v2.6 极速版 |
+
+模型列表通过上游公开配置 `/open-apis/bot/config` 动态发现（缓存 10 分钟），拉取失败时回退到内置列表；`POST /admin/api/models/refresh` 可强制刷新。
 | `mimo-v2.5` / `mimo-v2.5-pro` | 上一代（兼容保留） |
 
 三个 v2.6 模型**都能识图**（实测同一张纯色图分别识别为红/蓝），所以不按内容类型切模型：
@@ -218,14 +220,18 @@ curl http://localhost:8080/v1/messages \
 ## 特性
 
 - 🔧 **工具调用** — OpenAI / Anthropic 双格式 tools，注入格式说明 + DSML/XML 解析，三模型实测可用
-- 🖼️ **图片输入** — 按上游资源接口上传并绑定对话，三模型均可识图；相同图片走缓存
-- 🔥 **双格式兼容** — `/v1/chat/completions` 与 `/v1/messages`（含流式）
+- 🖼️ **图片与文本文件输入** — 按上游资源接口上传并绑定对话，三模型均可识图；相同内容走缓存
+- 🔥 **多协议兼容** — `/v1/chat/completions`、`/v1/responses`、`/v1/messages`（均含流式）
+- ⚡ **真流式** — 上游 SSE 出一段就转发一段，首字延迟等于上游首字延迟，而不是整段生成时间；思考链与正文按各自协议增量下发，工具标记跨 chunk 也不会漏进正文
+- 🩺 **账号自愈** — 登录态失效（401/403/451）即时摘除、其它错误连续 3 次摘除；冷却 2 分钟后半开试探，成功后自动回到轮转
+- 🧾 **结构化日志** — 每行一条 JSONL，落到 `data/logs/YYYY-MM-DD.log`；响应头带 `X-Request-ID`，**超过 7 天自动删除**，凭据永不落盘
 - 🔁 **会话复用（增量发送）** — 首轮发完整上下文，后续轮次只发新消息，依赖上游服务端上下文。与网页端行为一致：实测 12 轮 agent 会话平均 query 仅 240 字符（全量重放需 70K+），长任务不再撞长度限制
-- 🧠 **思考内容自动过滤** — thinking 段不会漏进正文
+- 🧠 **思考模式** — OpenAI 侧 `reasoning_effort`（low/medium/high）、Anthropic 侧 `thinking.budget_tokens` 都能开启并映射到上游档位；思考内容以 `reasoning_content` / `thinking` 块透传，不混进正文
+- 📉 **上下文压缩** — query 接近上游长度上限时，先把历史压成摘要再拼最近原文，避免纯截断丢掉关键约束
 - 👥 **多账号轮转** — 配多个账号自动分担负载
 - 🧩 **浏览器扩展** — 一键把浏览器里的登录态同步进账号池；同 `user_id` 重复同步只更新，不新增
 - 📊 **管理面板** — 用量统计、模型分布、账号管理、健康检查
-- 🔒 **无第三方遥测** — 面板与扩展零外联，凭证只存本机 `config.json`
+- 🔒 **无第三方遥测** — 面板与扩展零外联，凭证加密后只存本机 `config.json`
 - ⚡ **单二进制** — Go 编译，前端内嵌，双击即用
 
 ## 会话与上下文
@@ -249,11 +255,34 @@ curl http://localhost:8080/v1/messages \
 | 字段 | 说明 | 默认 |
 |------|------|------|
 | `port` | 监听端口 | `8080` |
-| `api_key` | API/管理接口认证密钥 | `sk-mimo` |
+| `api_key` | API/管理接口认证密钥（单 Key，兼容字段） | `sk-mimo` |
+| `api_keys` | 多 Key 认证；非空时与 `api_key` 同时生效 | `[]` |
 | `default_model` | 默认模型 | `mimo-v2.6-pro` |
-| `accounts` | 账号池（多账号自动轮转） | `[]` |
+| `accounts` | 账号池（多账号自动轮转）；凭据字段落盘时自动加密 | `[]` |
+
+> 首次启动会在 `config.json` 同目录生成 `secret.key`（32 字节）。旧版本的明文配置会被自动读取并立即加密重写。
 
 环境变量（可选）：`PORT`、`API_KEY`、`CONFIG_PATH`、`NO_BROWSER_OPEN=1`（禁止启动时自动开浏览器）。
+
+日志相关（可选）：
+
+| 变量 | 说明 | 默认 |
+|---|---|---|
+| `LOG_LEVEL` | `debug` / `info` / `warn` / `error` | `info` |
+| `LOG_RETENTION_DAYS` | 日志保留天数，超期文件自动删除 | `7` |
+| `LOG_CONSOLE` | 设为 `0` 时只写文件、不输出到控制台 | 输出 |
+
+## 日志
+
+日志写在 `<程序目录>/data/logs/YYYY-MM-DD.log`（macOS `.app` 下是 `~/Library/Application Support/mimo-web2api/data/logs`），按天切分，每行一条 JSONL：
+
+```json
+{"ts":"2026-11-05T10:12:33.412+08:00","level":"info","msg":"http_request","req_id":"9f3c1a2b4d5e","method":"POST","path":"/v1/chat/completions","status":200,"dur_ms":1834,"bytes":812,"model":"mimo-v2.6-pro","stream":true,"account":"acc-1","prompt_tokens":1200,"completion_tokens":340}
+```
+
+- 每次响应都带 `X-Request-ID`，出问题时拿它 `grep` 同一个 `req_id` 就能串起整条链路。
+- 保留期外的文件在启动时和运行中每 6 小时各清理一次，中途不重启也不会堆积。
+- `serviceToken`、`ph`、`user_id` 一律脱敏（`***`），也不记录 prompt 正文，只记长度与 token 数。
 
 ## 管理接口
 
@@ -263,8 +292,10 @@ curl http://localhost:8080/v1/messages \
 | `POST /admin/api/config` | 更新默认模型 |
 | `POST /admin/api/accounts` | 新增或更新账号（四项必填；同 `user_id` 覆盖，返回 `{status: added\|updated, id}`） |
 | `DELETE /admin/api/accounts` | 按 `id` 删除账号 |
-| `GET /admin/api/health` | 账号健康检查 |
+| `GET /admin/api/health` | 账号健康检查（会真的打上游，较慢） |
+| `GET /admin/api/accounts/status` | 账号池实时状态（健康/试探中/失败次数/最后错误），只读不打上游 |
 | `GET /admin/api/stats` | 用量统计 |
+| `GET /admin/api/logs?lines=200` | 当天日志尾部（JSONL 字符串数组），排查用 |
 
 面板首次使用时在设置里填一次 API Key（存于浏览器 localStorage，只在你本机）。
 
@@ -313,7 +344,7 @@ npm run extension     # 浏览器扩展与管理接口的契约（幂等覆盖�
 ## 安全说明
 
 - 管理接口与 API 接口共用同一 API Key 鉴权，**请改掉默认 `sk-mimo`**
-- Cookie 凭证以明文存于 `config.json`（`.gitignore` 已排除），**不要把该文件发给别人**
+- Cookie 凭证在 `config.json` 里以 AES-256-GCM 加密保存（`enc:v1:` 前缀），密钥是同目录的 `secret.key`（首次启动生成，0600）。**`secret.key` 丢了凭证就解不回来**，备份/迁移时请把两个文件一起带走；也不要把它们发给别人
 - 本项目不引入任何第三方遥测；管理面板与浏览器扩展不向外部发送数据
 - 上游可能随时改协议或加风控，本项目不保证长期可用
 
@@ -325,7 +356,7 @@ npm run extension     # 浏览器扩展与管理接口的契约（幂等覆盖�
 
 **Q: 和官方 API 的区别？** 官方 API 有付费额度限制；本代理走网页端免费额度，但无 SLA。
 
-**Q: 支持流式吗？** 支持，`"stream": true` 即可。
+**Q: 支持流式吗？** 支持，`"stream": true` 即可，而且是真的边收边发：上游每吐一段，客户端立刻收到一段（首字延迟 ≈ 上游首字延迟）。15 秒没有新内容时会发 SSE 注释帧保活，避免中间层或客户端 idle 超时。
 
 **Q: 工具调用一直不触发？** 上游网页端没有原生 tools 参数，网关靠注入提示词约定调用格式。模型偶尔会选择直接回答而不调工具（尤其是问题看起来能凭记忆回答时）。客户端 system prompt 里明确要求使用工具会显著提高触发率。
 

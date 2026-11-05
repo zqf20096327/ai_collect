@@ -46,7 +46,7 @@ guide, configuration reference, architecture, comparison, and the hosted
 - Follow-up reviews track whether earlier findings were fixed, declined or are still open, and re-check a maintainer's decline against the code
 - One summary comment per pull request, edited in place every round, with a risk breakdown, a changed-files walkthrough and every finding still open
 - Comment commands (`/review`, `/summary`, `/describe`, `/changelog`, `/add-docs`, `/improve`, `/generate-tests`, `/resolve`, `/pause`, `/resume`, `/help`, and with learnings on `/learnings`, `/remember`, `/forget`) and conversational replies to `@thrillhousebot`
-- Auto-review triggers: skip drafts, gate on labels, filter by base branch, and optionally space out reviews of one PR (`AUTO_REVIEW_MIN_INTERVAL`)
+- Auto-review triggers: skip drafts, gate on labels or authors, filter by base branch, and optionally space out reviews of one PR (`AUTO_REVIEW_MIN_INTERVAL`)
 - Maintainer 👍/👎 reactions and "not useful" replies are recorded as [finding feedback](https://devops-thiago.github.io/ThrillhouseBot/feedback/)
 - Optional review context, each off by default: the issues a PR links and their acceptance criteria, failing CI checks and test names, patch coverage from your own coverage report, and review learnings (maintainer declines and `/remember` conventions from earlier reviews of the same repository)
 - Optional deterministic scan of added lines for leaked credentials and risky Terraform, Kubernetes, CloudFormation and Dockerfile settings, with no model call and every matched secret redacted
@@ -273,7 +273,8 @@ Create the GitHub App before starting the bot; its credentials go in `.env`.
 | Webhook URL | `https://<your-host>/api/webhook` |
 | Webhook secret | Random string |
 | Repository permissions | Pull requests: R/W, Checks: R/W, Contents: Read, Issues: R/W, Actions: Read, Commit statuses: Read |
-| Subscribe to events | Pull request, Issue comment, Pull request review comment, Check suite, Status |
+| Organization permissions | Members: Read (shows installation-wide dashboard counters to organization members) |
+| Subscribe to events | Pull request, Issue comment, Pull request review comment, Check suite, Status, Repository |
 | Identifying and authorizing users | Enabled (for dashboard login) |
 | Callback URL | `https://<your-host>/api/auth/callback` |
 
@@ -396,6 +397,49 @@ or API code fits more diff per call. Every routed prompt opens with the same
 ~7,000-token core, so a provider's prompt cache still matches across batches and
 reviews. With routing off, the prompts are unchanged from earlier releases.
 
+### Model routing and fallback
+
+Every review call goes to `AI_MODEL` unless one of two optional models is set.
+
+- `AI_ROUTING_LOW_RISK_MODEL` reviews low-risk pull requests with a cheaper
+  model. A pull request touching an `AI_ROUTING_HIGH_RISK_PATHS` file
+  (workflows, SQL, migrations, `auth/`, `security/` and Dockerfiles by default)
+  is never low risk, even when that file also matches a low-risk glob. Otherwise
+  it is low risk when every reviewable file matches `AI_ROUTING_LOW_RISK_PATHS`
+  (docs, text and lockfiles by default), or when it changes at most
+  `AI_ROUTING_LOW_RISK_MAX_CHANGED_LINES` lines (default `100`; `0` routes by
+  paths alone).
+  The decision is made once per review and logged at INFO; only the review calls
+  are routed, while the summary call, the verifier and the commands keep their
+  models.
+- `AI_FALLBACK_MODEL` takes over a review or summary call after an attempt fails
+  with a provider error (HTTP 5xx, an unknown model) or a rate limit. The
+  call's remaining retries go to the fallback model, with no 30-second throttle
+  wait before the first one.
+
+Both models are sent on the same provider (`AI_BASE_URL`, `AI_API_KEY`) by
+overriding the request's model name, and cost is recorded under the model that
+answered, so add a pricing entry for each. They run under `AI_MODEL`'s token
+budget and generation settings: the bot refuses to start when either names
+`AI_MODEL` itself, or declares a per-model `max-input-tokens` below the
+review's effective per-call budget. A routed model with neither a per-model nor
+a pricing entry is logged as a startup warning, so a typo in its name shows at
+boot rather than as failed reviews.
+
+### File triage
+
+A pull request too large for one call is split into batches, and
+`REVIEW_MAX_AI_CALLS` caps how many there are. By default, build manifests are
+packed first and then the largest changes, so the cap leaves out the smallest
+files, whatever they are. With `REVIEW_TRIAGE_ENABLED=true`, files are packed by
+review priority instead: build manifests, then files matching
+`AI_ROUTING_HIGH_RISK_PATHS` (under the new or the old name), then the rest,
+then files matching `AI_ROUTING_LOW_RISK_PATHS`, the larger change first within
+each. A high-risk glob wins over a low-risk one, as for model routing. When the
+cap leaves files out, the low-risk ones go first, and they are named in the
+summary as before. The globs are the same ones model routing reads, and
+triage works whether or not a low-risk model is set. No model call is made.
+
 ### Per-model AI settings
 
 Model-specific settings live under `thrillhousebot.ai.models.<model>.*`, keyed by
@@ -466,12 +510,20 @@ thrillhousebot.ai.models.some-separate-budget-model.separate-output-budget=true
   `AI_REASONING_EFFORT_CONCISE` low and spend effort on `AI_REASONING_EFFORT`.
 - **Reading a cut response.** When a review, summary, verifier, summary-check
   or repair call spends its whole cap reasoning and returns no answer, it is
-  repeated once at a lower effort, and the summary's scope note says so. With
-  `AI_REASONING_ENABLED=true` the repeat sends `none`. With it off, nothing was
-  sent and the provider's default effort applied, so the repeat sends the lane's
-  effort (`low` unless set). A model that reasons by default, such as
+  repeated once at a lower effort, and the summary's scope note says so. A
+  command such as `/describe` or a reply to a maintainer gets the same one
+  repeat, skipped once that command or reply has spent
+  `REVIEW_MAX_TOKENS_PER_REVIEW`. With
+  `AI_REASONING_ENABLED=true` the repeat sends `low`, and a lane already at
+  `low` or `none` is not repeated. With it off, nothing was sent and the
+  provider's default effort applied, so the repeat sends the lane's effort
+  (`low` unless set). `AI_REASONING_REPEAT_EFFORT` sets the repeat's effort in
+  both cases; set it to `none` for a provider that honors `none`. A model that reasons by default, such as
   `glm-5.3-flash`, can hit this on most concise calls and bill the cap each
-  time; enable reasoning for such a model. If a `none` repeat writes its
+  time, so set `AI_REASONING_ENABLED=true` for such a model. Measured on
+  `glm-5.3-flash`, 9 of 12 summary and summary-check calls were cut at the
+  8192-token cap with it off (94,533 output tokens in all) and none with it on
+  (6,982). A line logged for a cut call with reasoning off says the same. If a `none` repeat writes its
   deliberation into the response instead, it is stopped once 8,000 characters
   arrive with no JSON object opened, so the cap is not billed twice. On any
   `finish_reason=length` stop, the log line, the failed check run and the PR
@@ -1141,7 +1193,7 @@ again. Commands such as `/describe` or `/improve` send nothing.
   "schema_version": 1,
   "event": "review.completed",
   "timestamp": "2026-09-29T12:00:00Z",
-  "bot": { "name": "thrillhousebot", "version": "0.8.0" },
+  "bot": { "name": "thrillhousebot", "version": "0.9.0" },
   "repository": "octo/repo",
   "pull_request": { "number": 42, "head_sha": "0123abc…", "url": "https://github.com/octo/repo/pull/42" },
   "session_url": "https://bot.example/session/…",
@@ -1226,19 +1278,28 @@ After you sign in with GitHub, the dashboard shows an overview with summary
 cards and a live activity feed, plus cost charts by model, input and output token
 breakdowns, and a paginated session history with PR links.
 
-Access is limited to the GitHub App owner and to collaborators on at least one
-repository where the app is installed under that owner. Everyone else sees an
-access-denied screen. The owner is read from the app registration; set
-`thrillhousebot.dashboard.github.account-owner` when that fails, because the
-dashboard otherwise denies everyone.
+The dashboard asks GitHub, with your own sign-in, which installations of the
+app you can access and which of their repositories you can read: as a
+collaborator of any role, through a team, or through your organization's base
+permission. You see exactly those repositories, across every installation, and
+anyone who can read none of them sees an access-denied screen. An outside
+contributor, or an organization member whose base permission is none, does not
+see a private repository GitHub would not show them. With several installations,
+the overview and the session history offer an installation filter. Set
+`thrillhousebot.dashboard.github.account-owner` to serve only one account's
+installation.
 
-Everything the dashboard shows is scoped per repository. The owner sees every
-repository where the app is installed; any other login sees only the installed
-repositories they collaborate on. This covers the session list and its totals,
-session details, costs, tokens, the overview, feedback, learnings and the live
-feed. A `?repository=` you cannot access returns 403, and a session id from such
-a repository returns 404. The overview's installation-wide skip counts are shown
-to the owner only.
+Everything the dashboard shows is scoped this way: the session list and its
+totals, session details, costs, tokens, the overview, feedback, learnings and
+the live feed. Repository permissions are cached for five minutes, and live
+connections refresh them in the background; uninstalling or suspending the App,
+or removing a repository from it, applies at once. A `?repository=` you cannot
+access returns 403, and a session id from such a repository returns 404. The overview's skip counts span a whole installation, so
+they are shown for a personal account to that account, and for an organization
+to its members. Checking membership needs the app's Organization → Members: read
+permission; without it the counts stay hidden. Viewing never grants acting:
+`/review` and anything else the bot does on request needs write, maintain or
+admin on the repository.
 
 A review cut off by a restart or crash would stay marked as running, so on
 startup every session still in progress is marked failed with the reason
@@ -1257,6 +1318,21 @@ progress (batch X/Y) instead:
 <p align="center">
   <img src="docs/assets/live-streaming.png" alt="Dashboard Overview with summary cards, live model-output panel, and recent activity" width="800" />
 </p>
+
+The **Live** page follows one review at a time, from the moment it starts until
+it ends. It shows the step the review is on (reading the pull request,
+reviewing, checking the findings, summarizing, publishing), the tokens and cost
+spent so far across every model call, the model's output, and, when enabled, its
+reasoning. A review in batches shows its batch count instead of the output. The
+page keeps the last ten reviews that ended, and a link from the Overview's live
+panel opens a review on it.
+
+The reasoning panel is off by default. Set `DASHBOARD_REASONING_STREAM_ENABLED=true`
+to stream the review call's reasoning there. Only a provider that sends its
+reasoning as `reasoning_content` on the OpenAI-compatible stream has any to
+show; the flag reads what the provider already sends and changes nothing in the
+request. The reasoning can quote the reviewed code, and every dashboard user who
+can read the repository sees it.
 
 ## Repository instructions
 
@@ -1391,18 +1467,21 @@ lets the bot create it. `REVIEW_LABELS_APPLY` decides what happens next:
   review for a maintainer to apply.
 - `true`: the labels are added to the PR.
 
-`REVIEW_LABELS_MAX` caps the number of labels (default `3`). Labelling never
-blocks or fails a review.
+`REVIEW_LABELS_MAX` caps the number of labels (default `3`).
+`REVIEW_LABELS_BLOCKED` lists labels the bot never suggests, applies or creates
+(comma-separated, case-insensitive), such as a label your team sets by hand to
+ask for a review. Labelling never blocks or fails a review.
 <!-- docs:pr-labels:end -->
 
 ## Observability
 
-Telemetry is exported over OTLP to `OTEL_EXPORTER_ENDPOINT` (default
-`http://localhost:4317`):
+Traces and metrics are exported over OTLP (gRPC) to `OTEL_EXPORTER_ENDPOINT`
+(default `http://localhost:4317`). A Quarkus per-signal variable such as
+`QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` sends that one signal elsewhere.
 
 | Signal | Metric |
 |---|---|
-| Traces | One span per LLM call with request and response events |
+| Traces | One trace per review: a `review` span, linked to the webhook deliveries it serves (the first 32; `thrillhouse.review.requests` counts all of them), with a span per LLM call (request and response events) inside it |
 | `gen_ai.client.token.usage` | Histogram: input and output tokens |
 | `gen_ai.client.operation.duration` | Histogram: latency in seconds |
 | `thrillhouse.ai.cost.total` | Counter: USD cost by model |
@@ -1413,6 +1492,25 @@ Spans and metrics carry `gen_ai.provider.name`, derived from `AI_BASE_URL`
 (`deepseek`, `openai`, `groq`, `openrouter`, …). Loopback and unrecognized
 endpoints report `unknown`; set `AI_PROVIDER` to name them (a local `ollama` or
 `vllm` server, a proxy, a gateway).
+
+Quarkus also records JVM metrics (`jvm.*`) and HTTP server metrics
+(`http.server.request.duration`). They are exported over OTLP and, with the
+Prometheus endpoint on, served on `/metrics` too. Turn them off with
+`OTEL_JVM_METRICS_ENABLED=false` and
+`OTEL_HTTP_SERVER_METRICS_ENABLED=false`.
+
+Log records stay on the console. Set `OTEL_LOGS_ENABLED=true` to export them
+over OTLP to the same endpoint as well.
+
+OTLP export is at-least-once: when an export fails after the collector has
+received it, Quarkus sends the batch again (up to three attempts, not logged),
+so a span or metric point can reach the backend twice. Quarkus also uses the
+export timeout as the connection's idle timeout, and below the collector's
+60-second HTTP/2 keep-alive that closes a connection right after an export
+written after a quiet spell, which duplicates it
+([quarkusio/quarkus#57107](https://github.com/quarkusio/quarkus/issues/57107)).
+`OTEL_EXPORTER_TIMEOUT` therefore defaults to `65s` for traces, metrics and
+logs; keep it above 60 seconds.
 
 ### Prometheus
 
@@ -1515,8 +1613,9 @@ and counts skips per reason in the dashboard summary
 2. **Draft** (`reason=DRAFT`): with `WEBHOOK_SKIP_DRAFTS=true`, drafts wait until
    marked ready.
 3. **Paused** (`reason=PAUSED`): someone commented `/pause`; comment `/resume`.
-4. **Label gates** (`reason=MISSING_REQUIRED_LABEL` / `EXCLUDED_LABEL`): check
-   `WEBHOOK_REQUIRED_LABELS` and `WEBHOOK_EXCLUDED_LABELS`.
+4. **Label and author gates** (`reason=MISSING_REQUIRED_LABEL` /
+   `EXCLUDED_LABEL` / `EXCLUDED_AUTHOR`): check `WEBHOOK_REQUIRED_LABELS`,
+   `WEBHOOK_EXCLUDED_LABELS` and `WEBHOOK_EXCLUDED_AUTHORS`.
 5. **Base-branch filters** (`reason=BASE_BRANCH_NOT_ALLOWED` /
    `IGNORED_BASE_BRANCH`): check `WEBHOOK_BASE_BRANCHES` and
    `WEBHOOK_IGNORED_BASE_BRANCHES`.
@@ -1564,8 +1663,12 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
   kept in memory: lost on restart and not shared between replicas. Review
   history and cost totals are stored in PostgreSQL. Multiple replicas are not
   supported.
-- **Dashboard access.** GitHub OAuth only, for the app owner and collaborators on
-  installed repositories; no admin UI or guest mode.
+- **Dashboard access.** GitHub OAuth only, for users who can read a repository
+  where the app is installed; no admin UI or guest mode. Access is checked
+  against GitHub's repository permissions and cached for five minutes; an
+  uninstall, a suspension or a removed repository applies at once. GitHub lets
+  only the owner of a private app sign in with it, so anyone else needs the app to be public; set
+  `GITHUB_ALLOWED_ACCOUNTS` then, because anyone can install a public app.
 - **Production database.** Container and native builds use PostgreSQL. H2 is for
   `quarkus:dev` and the tests only, and its driver is not packaged in the image.
 - **OpenAI-compatible APIs only.** The endpoint must implement the
@@ -1600,14 +1703,14 @@ Sigstore) and carry build-provenance attestations. To check a release:
 cosign verify \
   --certificate-identity-regexp='https://github.com/devops-thiago/ThrillhouseBot.*' \
   --certificate-oidc-issuer='https://token.actions.githubusercontent.com' \
-  ghcr.io/devops-thiago/thrillhousebot:v0.8.0
+  ghcr.io/devops-thiago/thrillhousebot:v0.9.0
 
 # Provenance (image)
-gh attestation verify oci://ghcr.io/devops-thiago/thrillhousebot:v0.8.0 \
+gh attestation verify oci://ghcr.io/devops-thiago/thrillhousebot:v0.9.0 \
   --repo devops-thiago/ThrillhouseBot
 
 # Provenance (a downloaded binary)
-gh attestation verify thrillhousebot-v0.8.0-linux-amd64.tar.gz \
+gh attestation verify thrillhousebot-v0.9.0-linux-amd64.tar.gz \
   --repo devops-thiago/ThrillhouseBot
 ```
 
@@ -1629,10 +1732,12 @@ docker compose pull && docker compose up -d
 ```
 
 Each release's notes start with what changes for an existing installation:
-new or renamed settings, changed defaults and database changes. There are no
-migration scripts. On startup the production profile lets Hibernate update the
-PostgreSQL schema in place (`schema-management.strategy=update`), and new
-settings default to the previous behaviour unless the notes say otherwise. If
+new or renamed settings, changed defaults and database changes. Database
+changes are Flyway migrations that run on startup; back up the database first.
+Flyway arrived in v0.9.0: a database created before it is recorded as version 1
+(the v0.8.0 schema) on its first v0.9.0 start, so upgrade to v0.9.0 from v0.8.x
+(see [docs/OPERATIONS.md](docs/OPERATIONS.md#upgrades-and-database-changes)).
+New settings default to the previous behaviour unless the notes say otherwise. If
 you pin a version with `IMAGE_TAG` in `.env`, set it to the new tag before
 pulling.
 
@@ -1642,114 +1747,4 @@ and which releases get fixes.
 
 ## Development
 
-Local development without Docker needs Java 25+, Node.js 22+ (dashboard) and a
-[Smee.io](https://smee.io/) channel to forward webhooks. Use the included Maven
-wrapper, `./mvnw`.
-
-### Dev mode
-
-Dev mode reads a `.env` file in the project root, and the bot will not boot until
-`GITHUB_APP_ID`, `GITHUB_PRIVATE_KEY`, `GITHUB_WEBHOOK_SECRET` and `AI_API_KEY`
-are set. Create it first:
-
-```bash
-cp .env.example .env
-```
-
-Fill it in from your GitHub App (see [GitHub App setup](#github-app-setup)).
-`GITHUB_PRIVATE_KEY` must be a real PEM RSA key; placeholder text fails at boot.
-Use the `.pem` GitHub gives you, or generate a throwaway key for local work:
-
-```bash
-openssl genrsa -traditional 2048 | awk '{printf "%s\\n", $0}'
-```
-
-`-traditional` writes the PKCS#1 format (`BEGIN RSA PRIVATE KEY`) that GitHub's
-keys use and the bot parses; OpenSSL 3 otherwise writes PKCS#8. The `awk` step
-puts the key on one line with literal `\n` escapes, as `.env` needs. Paste it
-unquoted, since quotes are read as part of the key:
-
-```dotenv
-GITHUB_PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----\nMIIEow...\n-----END RSA PRIVATE KEY-----
-```
-
-`GITHUB_WEBHOOK_SECRET` and `AI_API_KEY` only need to be non-empty to boot, but
-webhooks and reviews need the real values. Dashboard OAuth is optional. Then:
-
-```bash
-# Terminal 1: Smee proxy
-smee -u https://smee.io/YOUR_CHANNEL -t http://localhost:8080/api/webhook
-
-# Terminal 2: Quarkus dev mode
-./mvnw quarkus:dev
-```
-
-### Build the dashboard
-
-```bash
-cd frontend
-npm ci
-npm run build
-cp -r out/* ../src/main/resources/META-INF/resources/dashboard/
-```
-
-### Build the native image
-
-```bash
-./mvnw package -Pnative -DskipTests -Dquarkus.native.container-build=true
-```
-
-### Run tests and checks
-
-```bash
-./mvnw verify
-./mvnw spotless:check
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
-
-## Community
-
-Ask questions and get setup help in [GitHub Discussions](https://github.com/devops-thiago/ThrillhouseBot/discussions) (see the pinned welcome post). Use [Issues](https://github.com/devops-thiago/ThrillhouseBot/issues/new/choose) for bugs and feature requests.
-
-[GOVERNANCE.md](GOVERNANCE.md) explains how decisions are made, who holds
-which role, and how the project continues if the maintainer cannot.
-
-## Architecture
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Tech stack
-
-| Layer | Choice |
-|---|---|
-| Framework | Quarkus 3.40 (REST) |
-| LLM | Quarkus LangChain4j 1.14 (OpenAI-compatible API) |
-| Frontend | Next.js 16 + React 19 (static export) |
-| Database | H2 (dev) / PostgreSQL (prod) + Panache |
-| Observability | OpenTelemetry |
-| Native | GraalVM / Mandrel |
-| Container | UBI9-micro (default) / distroless (`-distroless`) |
-
-## Container images
-
-Both images are built from the same native binary and published to GHCR:
-
-- `ghcr.io/devops-thiago/thrillhousebot:latest`: UBI9-micro (default).
-- `ghcr.io/devops-thiago/thrillhousebot:latest-distroless`: distroless base
-  (`:v0.8.0-distroless`, and so on).
-- Snapshot tags: `:snapshot`, `:v<version>-<short-sha>-snapshot` and
-  `:<full-sha>`, each with a `-distroless` variant.
-  A weekly job keeps the 10 newest snapshot builds of each variant and
-  deletes the older ones; pin a release tag, not a snapshot, for anything
-  that must keep pulling. `test-*` images are deleted after 30 days.
-  The counts and ages are repository variables (`GHCR_KEEP_SNAPSHOTS`,
-  `GHCR_TEST_MAX_AGE_DAYS`, `GHCR_MIN_AGE_HOURS`, plus `GHCR_KEEP_TAGS` for
-  tags to always keep), listed in `.github/workflows/ghcr-prune.yml`.
-
-Both are multi-arch (linux/amd64, linux/arm64), signed with cosign, and carry
-build-provenance attestations (see [Verifying a release](#verifying-a-release)).
-
-## License
-
-Licensed under the [Apache License 2.0](LICENSE) (SPDX: `Apache-2.0`).
+Local dev

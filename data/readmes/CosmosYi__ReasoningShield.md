@@ -4,13 +4,24 @@
 <!-- markdownlint-disable html -->
 <!-- markdownlint-disable no-duplicate-header -->
 <p align="center">
+  <a href="https://www.sii.edu.cn/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="images/sii-logo-dark.png">
+      <img src="images/sii-logo.png" alt="Shanghai Innovation Institute" height="48">
+    </picture>
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.fudan.edu.cn/">
+    <img src="images/fudan-logo-dark.png" alt="Fudan University" height="48">
+  </a>
+</p>
+<p align="center">
   <a href="https://arxiv.org/abs/2505.17244">Paper</a> ·
   <a href="https://cosmosyi.github.io/ReasoningShield/">Project Page</a> ·
   <a href="https://huggingface.co/ReasoningShield/models">Models</a> ·
   <a href="https://huggingface.co/datasets/ReasoningShield/ReasoningShield-Dataset">Dataset</a> ·
   <a href="#citation">Citation</a>
 </p>
-<p align="center">A 9.2K dataset and lightweight 1B/3B models for detecting safety risks in reasoning traces.</p>
 <div align="center">
   <img src="images/ReasoningShield.svg" alt="ReasoningShield logo" height="200">
 </div>

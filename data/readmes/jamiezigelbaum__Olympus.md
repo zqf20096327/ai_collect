@@ -6,7 +6,7 @@
 
 *A private second brain on your own computer, for ChatGPT, Claude, Grok and any AI app that speaks MCP. On a Mac, and on [Omarchy](https://omarchy.org) and Ubuntu 24.04 LTS Linux. Free and open source.*
 
-[![version](https://img.shields.io/badge/version-1.3.3-534AB7)](https://github.com/jamiezigelbaum/Olympus/blob/main/CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-0F6E56)](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) [![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](https://github.com/jamiezigelbaum/Olympus/blob/main/CONTRIBUTING.md) [![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai) [![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
+[![version](https://img.shields.io/badge/version-1.3.4-534AB7)](https://github.com/jamiezigelbaum/Olympus/blob/main/CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-0F6E56)](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) [![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](https://github.com/jamiezigelbaum/Olympus/blob/main/CONTRIBUTING.md) [![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai) [![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
 
 [olympusplugin.ai](https://olympusplugin.ai) · [Get started](#get-started) · [Olympus in ChatGPT](#olympus-for-chatgpt) · [Claude, Grok and other apps](#claude-grok-and-other-apps) · [How it works](#how-it-works) · [Sources](#supported-sources) · [Security model](#the-security-model) · [OpenClaw quickstart](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/QUICKSTART.md) · [Commands](#command-reference)
 
@@ -440,7 +440,7 @@ starting with the automatic download and existing-install checks. Its install
 command for a clean machine is:
 
 ```bash
-openclaw plugins install npm-pack:/absolute/path/to/olympus-1.3.3.tgz --force --accept-capabilities
+openclaw plugins install npm-pack:/absolute/path/to/olympus-1.3.4.tgz --force --accept-capabilities
 # On OpenClaw 2026.7.1, omit both flags for a clean install.
 # On newer hosts, --force also overwrites an existing plugin: check first.
 openclaw plugins enable olympus

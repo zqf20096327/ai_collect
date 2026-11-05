@@ -1064,7 +1064,7 @@ def cascade(query: str) -> str:
     return frontier_llm(query)
 ```
 
-Here, each step either returns the answer or escalates to the next LLM. The `is_confident` check can be a self-rating from the LLM, a verifier model, or a simple heuristic like the presence of "I do not know". Most queries get solved by the cheapest LLM. The hard queries pay for two or three calls.
+Here, each step either returns the answer or escalates to the next LLM. The `is_confident` check can be a self-rating from the LLM, a verifier model, or a simple heuristic like the presence of "I do not know". Another option is the average logprob of the answer tokens, which tells us how sure the LLM was. We have a detailed blog on [What are Log Probabilities (Logprobs) in LLMs?](https://outcomeschool.com/blog/logprobs-in-llms) that explains this. Most queries get solved by the cheapest LLM. The hard queries pay for two or three calls.
 
 Let me tabulate the differences between the routing strategies for your better understanding so that you can decide which one to use based on your use case.
 
@@ -1541,4 +1541,4 @@ As we fill the context with more tokens, three things happen, and they all hurt 
 
 **1. Context Rot.** As the number of tokens in the context grows, the model's ability to recall information from anywhere in that context drops. Long-context evaluations (such as **Needle-in-a-Haystack** style tests and the more recent RULER and LongBench benchmarks) show that even models that advertise very long context windows start losing accuracy well before they hit that limit. So a large advertised context does not mean an equally large effective context.
 
-**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we get a U-shaped curve. So a critical fact placed in the middle of a long context is more likely to be ignored than the same fact placed at the top or bottom. This silently breaks RAG systems that dump 50 chunks into the prompt. The fix is to se
+**2. [Lost in the Middle](https://outcomeschool.com/blog/lost-in-the-middle-problem-in-llms).** Research by Liu et al. (2023) showed that models pay the most attention to the start and the end of the context, and the least attention to the middle. If we plot accuracy against the position of the fact, we g

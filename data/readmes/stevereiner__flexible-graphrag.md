@@ -711,8 +711,10 @@ OPENAI_MODEL=gpt-4o-mini
 ```bash
 LLM_PROVIDER=ollama
 OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.2:latest
+OLLAMA_MODEL=gpt-oss:20b
 ```
+
+After the first AI query or graph ingest (once the LLM is loaded, not just the embedding model), `ollama ps` should show the LLM at `100% GPU` with context 8192; see [Ollama Configuration](docs/LLM/OLLAMA-CONFIGURATION.md).
 
 **Azure OpenAI**:
 ```bash
@@ -1590,6 +1592,4 @@ See [docs/DEVELOPER/OBSERVABILITY/OBSERVABILITY.md](docs/DEVELOPER/OBSERVABILITY
   - `uv.toml`: UV package manager configuration
   - `start.py`: Startup script (`flexible-graphrag` console entry point)
 
-- `/flows`: Bundled Langflow flow JSONs the app uploads in flow mode — `fg_ingestion_flow.json`, `fg_search_flow.json`, `fg_aiquery_flow.json`, `fg_query_flow.json` (see `README.md` there)
-
-- `/flexible-graphrag-mcp`: Standalone MCP ser
+- `/flows`: Bun

@@ -188,7 +188,7 @@ gh attestation verify inkdoc-setup.exe --repo AbdoslamB/inkdoc
       <br />
       <b>Single Source of Truth Interface</b>
       <br />
-      The native desktop executable (Edge WebView2 on Windows, WebKit on macOS/Linux) and the local web workbench (<code>http://127.0.0.1:13118/InkDoc</code>) run the <b>exact same user interface</b> without code divergence. On large screens, <b>Settings → General → Layout width</b> (Standard, Wide or Full) gives tables, code and images more room, and <b>A− / A+</b> set the preview's text size. LaTeX formulas from Docling and GLM-OCR are drawn as real math (bundled KaTeX, works offline; switch it off in <b>Settings → Add-ons</b>). Engines you don't use can be hidden from the main screen (<b>Settings → Engines → Show on main screen</b>) without uninstalling them or changing Auto, your theme, engine and other preferences are remembered between launches, and <b>Settings → General → Restore defaults</b> puts them back without touching engines, add-ons or files. MarkItDown runs in a background process that starts when you're about to convert and closes when idle, so InkDoc stays light while you aren't converting.
+      The native desktop executable (Edge WebView2 on Windows, WebKit on macOS/Linux) and the local web workbench (<code>http://127.0.0.1:13118/InkDoc</code>) run the <b>exact same user interface</b> without code divergence. On large screens, <b>Settings → General → Layout width</b> (Standard, Wide or Full) gives tables, code and images more room, and <b>A− / A+</b> set the preview's text size. The <b>Original</b> switch next to Rendered and Raw shows a PDF's pages or an image beside its Markdown, to check tables and numbers against the source. LaTeX formulas from Docling and GLM-OCR are drawn as real math (bundled KaTeX, works offline; switch it off in <b>Settings → Add-ons</b>). Engines you don't use can be hidden from the main screen (<b>Settings → Engines → Show on main screen</b>) without uninstalling them or changing Auto, your theme, engine and other preferences are remembered between launches, and <b>Settings → General → Restore defaults</b> puts them back without touching engines, add-ons or files. MarkItDown runs in a background process that starts when you're about to convert and closes when idle, so InkDoc stays light while you aren't converting.
     </td>
   </tr>
   <tr>
@@ -426,6 +426,8 @@ inkdoc/
 ├── scripts/                   # Build, release & calibration tooling
 ├── examples/                  # Developer client scripts & cURL examples
 ├── docs/                      # GitHub Pages landing page website
+├── guides/                    # Developer guides, one per area of the code
+├── AGENTS.md                  # What every change needs, and which guide to read
 ├── API.md                     # Dedicated REST API reference manual
 ├── CONTRIBUTING.md            # Contribution guidelines & security policy
 ├── main.py                    # Unified entry point (Desktop GUI or --headless)
@@ -446,24 +448,8 @@ python -m compileall -q main.py app tests examples scripts
 # 2. Run the whole test suite, exactly as CI does
 python -m pytest tests/
 
-# 3. UI logic tests (need Node.js; CI runs them on Linux)
-node tests/auto_engine_ui.test.js
-node tests/docs_release_selector.test.js
-node tests/enrichment_addon_ui.test.js
-node tests/glm_ocr_ui.test.js
-node tests/preview_word_count.test.js
-node tests/desktop_download_ui.test.js
-node tests/save_folder_ui.test.js
-node tests/preview_links_ui.test.js
-node tests/theme_toggle_ui.test.js
-node tests/settings_drawer_ui.test.js
-node tests/layout_width_ui.test.js
-node tests/text_size_ui.test.js
-node tests/math_render_ui.test.js
-node tests/preferences_ui.test.js
-node tests/engine_visibility_ui.test.js
-node tests/reset_defaults_ui.test.js
-node tests/support_link_ui.test.js
+# 3. UI logic tests (need Node.js; CI runs every tests/*.test.js on Linux)
+(for t in tests/*.test.js; do node "$t" || exit 1; done)
 
 # 4. Verify code style and formatting with Ruff
 ruff check .
@@ -478,7 +464,8 @@ ruff check .
 Contributions, bug reports, and feature proposals are welcome.
 
 - Review **[`CONTRIBUTING.md`](CONTRIBUTING.md)** for architecture guidelines, pull request protocols, and test requirements.
-- Report security vulnerabilities confidentially via the **[Security Policy](CONTRIBUTING.md#6-security-policy)**.
+- Using AI tools to contribute? They're welcome; read the **[AI Policy](AI_POLICY.md)** first.
+- Report security vulnerabilities confidentially via the **[Security Policy](SECURITY.md)**.
 - Built with love by one independent developer. If InkDoc saves you time, you can **[buy me a coffee](https://buymeacoffee.com/abdoslamb)**.
 
 <br />

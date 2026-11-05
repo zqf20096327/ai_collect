@@ -83,7 +83,13 @@ Images are published for `linux/amd64` and `linux/arm64` (Raspberry Pi, Apple Si
 
 Plugins are single JavaScript (or TypeScript) files that extend Genkan with wallpaper sources, widgets on the board, search providers (a calculator in the search box, say) and scheduled jobs. They run on the server in a sandbox (memory and time limits, no filesystem, network access only to the hosts the plugin declares and you approve) and only return declarative JSON, so the browser never executes plugin code.
 
-Install the built-in examples (calculator, world clock, countdown, weather, RSS, Pi-hole and more) from Settings → Plugins, paste your own source or a URL, or ask your AI assistant to write one with the Skill / MCP tools. The plugin contract is documented in [`docs/PLUGINS.md`](docs/PLUGINS.md) (Chinese).
+Install the built-in examples (to-do list, sticky note, calculator, world clock, countdown, weather, RSS, Pi-hole and more) from Settings → Plugins, or paste your own source or a URL. The to-do list and the note are installed automatically on first start, and widgets can be interactive (inputs, checkboxes, in-place editing, drag sorting, Markdown notes).
+
+**Develop plugins with AI:** the [Agent Skill](skills/genkan) now covers plugin development. Once it is installed (Settings → AI), just tell your assistant "Use the Genkan Skill to develop a Genkan plugin for me: …" and describe what you want. The Skill carries the complete plugin guide ([`skills/genkan/plugin-dev.md`](skills/genkan/plugin-dev.md)) and the write, test and install workflow, so no long prompt is needed; Settings → Plugins → Develop with AI has the one-line prompt ready to copy. The plugin contract is documented in [`docs/PLUGINS.md`](docs/PLUGINS.md) (Chinese).
+
+## Updates
+
+Every merge to `main` publishes a release (`vX.Y.Z`) with a new image and signed binaries. Genkan checks GitHub for new releases every 6 hours (Settings → About, on by default) and shows an update button in the top bar for admins. The changelog panel can update **in place**: the new binary is downloaded into the data directory, its ed25519 signature and checksum are verified, your data is backed up, and Genkan restarts into it, rolling back automatically if the new version fails to start. Pulling a newer image always wins over an in-place update. Details: [`docs/UPDATES.md`](docs/UPDATES.md).
 
 ## Configuration
 
@@ -92,6 +98,9 @@ Install the built-in examples (calculator, world clock, countdown, weather, RSS,
 | `GENKAN_ADDR` | `:8080` | Listen address |
 | `GENKAN_DATA` | `./data` (`/data` in Docker) | Data directory: `genkan.json` and `uploads/` |
 | `GENKAN_PASSWORD` | empty | Sets the admin password on first start (min. 6 chars); never overwrites an existing one |
+| `GENKAN_UPDATE_CHECK` | on | `off` disables update checks entirely |
+| `GENKAN_SELF_UPDATE` | on | `off` disables in-place updates (the panel shows the `docker compose pull` commands instead) |
+| `GENKAN_GITHUB_TOKEN` | empty | Optional GitHub token for the update check and the plugin market (higher rate limit) |
 
 - Everything lives in the data directory: back it up, or use Settings → Data to export JSON.
 - Behind a reverse proxy (Nginx, Caddy, Traefik), forward `X-Forwarded-Proto: https` so cookies get the `Secure` flag.

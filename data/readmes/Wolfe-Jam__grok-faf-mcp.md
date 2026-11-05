@@ -19,7 +19,7 @@
 **Home:** [faf.one/grok](https://faf.one/grok)
 **Live demo:** [grok.faf.one](https://grok.faf.one)
 
-⭐ [Star it on GitHub](https://github.com/Wolfe-Jam/grok-faf-mcp): bookmarks it for you, helps other devs find it too.
+⭐ [Star faf-cli on GitHub](https://github.com/Wolfe-Jam/faf-cli), the CLI this server is built on: bookmarks it for you, helps other devs find it too.
 
 ![grok-faf-mcp hero](https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/grok-faf-mcp-hero.png)
 
@@ -39,7 +39,15 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.2 — The Instructions Edition
+## v2.2.4 — The Instructions Edition
+
+**faf_sync keeps your hand-written files, writes the context files it names, and tells you what it couldn't write.** Managed blocks now go through faf-cli's injector, so a hand-written AGENTS.md or CLAUDE.md is never reclaimed; `faf_sync` writes the context files it names, one file at a time, and the reply says what it couldn't write and why.
+
+### v2.2.3
+
+**faf_write can no longer overwrite the birth certificate or your context files.** `.faf-dna` is refused in every spelling and route, existing `project.faf`, `CLAUDE.md` and `AGENTS.md` need `overwrite: true`, and writes stay inside the project folder.
+
+### v2.2.2
 
 **Cleanup: removes leftover two-way sync wording.** Two-way sync was dropped by design long ago: project.faf pushes structured data out, and prose doesn't come back. The last strings that still said two-way now match. `faf_bi_sync` still works as the old name for `faf_sync`.
 
@@ -274,7 +282,7 @@ bunx grok-faf-mcp
 
 | Tool | Purpose |
 |------|---------|
-| `faf_sync` | Write CLAUDE.md, AGENTS.md, .cursorrules and GEMINI.md from project.faf. One way: it never writes project.faf. (`faf_bi_sync`, the old name, still works.) |
+| `faf_sync` | Write the context files from project.faf: the ones that exist (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules), or CLAUDE.md when there are none; `target: all` writes every one. One way: it never writes project.faf. A file faf can't safely write is left unchanged and named in the reply. (`faf_bi_sync`, the old name, still works.) |
 | `faf_trust` | Validate .faf integrity |
 
 **Read & Write**
@@ -282,7 +290,7 @@ bunx grok-faf-mcp
 | Tool | Purpose |
 |------|---------|
 | `faf_read` | Read any file |
-| `faf_write` | Write any file |
+| `faf_write` | Write a file inside the project. Never writes `.faf-dna`; replacing an existing `*.faf`, `CLAUDE.md` or `AGENTS.md` needs `overwrite: true` |
 | `faf_list` | Discover projects with .faf files |
 
 **RAG & Grok-Exclusive**

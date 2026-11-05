@@ -28,6 +28,12 @@ Vipeak AI is an AI character video and companion creation platform. Users browse
 
 > The site is for adults. The character and creation pages show an 18+ confirmation before entry.
 
+## NSFW API for uncensored AI video generation
+
+This repository documents the **NSFW API** of 123vips.com: an uncensored AI video generation API for adults, covering the Seedance Spicy and Wan NSFW model lines. If you are looking for an uncensored NSFW API that turns a prompt or a first frame into video, start with [API_INTEGRATION.md](./API_INTEGRATION.md) and get the official documentation from **API Access** after signing in.
+
+Note on naming: "NSFW API" is also widely used for NSFW *detection and moderation* APIs (image/video classifiers). This repository covers **generation**, not moderation — keep that in mind when comparing search results.
+
 ## Positioning and developer keywords
 
 **One-liner:** 123vips.com (Vipeak AI) is an AI character video and companion generation platform for adults. This repository is written for developers and covers the public entry point of the 18+ video generation API, integration preparation, async task architecture, webhooks, credit billing and server-side security requirements.
@@ -280,6 +286,12 @@ Vipeak AI 是一个 AI 角色视频与陪伴创作平台。用户可以在主站
 - X：<https://x.com/VipeakAI>
 
 > 主站面向成年人。进入角色与创作页面时会先显示 18+ 年龄确认。
+
+## NSFW API：面向成人向 AI 视频生成
+
+本仓库整理的是 123vips.com 的 **NSFW API**：面向成年人的无审查 AI 视频生成接口，覆盖 Seedance Spicy 与 Wan NSFW 两条模型线。如果你在找一个能把 prompt 或首帧变成视频的 uncensored NSFW API，先从 [API_INTEGRATION.md](./API_INTEGRATION.md) 看起，再登录后从 **API Access** 获取官方文档。
+
+命名说明：「NSFW API」在搜索结果里也大量指向 NSFW **内容审核/鉴别**接口（图片、视频分类器）。本仓库做的是**生成**，不是审核，对比结果时注意区分。
 
 ## 项目定位与开发者关键词
 

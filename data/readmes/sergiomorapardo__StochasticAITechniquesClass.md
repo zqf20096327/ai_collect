@@ -4,9 +4,12 @@
 
   * **Profesor Magistral:** Juan Carlos Garcia Diaz
       * email: [jgarcia.d@javeriana.edu.co](mailto:jgarcia.d@javeriana.edu.co)
-  * **Profesor de Seguimiento:** Sergio A. Mora Pardo
-      * email: [sergioa.mora@javeriana.edu.co](mailto:sergioa.mora@javeriana.edu.co)
-      * github: [sergiomorapardo](http://github.com/sergiomorapardo)
+  * **Profesores de Seguimiento:**
+      * Sergio A. Mora Pardo
+          * email: [sergioa.mora@javeriana.edu.co](mailto:sergioa.mora@javeriana.edu.co)
+          * github: [sergiomorapardo](http://github.com/sergiomorapardo)
+      * Cristian Camilo Tirado Cifuentes
+          * email: [cristianctirado@javeriana.edu.co](mailto:cristianctirado@javeriana.edu.co)
 
 En esta asignatura se van a presentar los conceptos básicos para la aplicación de **modelos estadísticos** y **procesos estocásticos** como herramientas de solución a los problemas de **predicción**, **clasificación** y **optimización** en el campo del aprendizaje de máquina y la inteligencia artificial.
 
@@ -76,7 +79,7 @@ Corrobora el logro de aprendizajes y competencias mediante las siguientes activi
 | Fecha | Sesión | Notebooks/Presentaciones | Ejercicios / Entregables |
 | :---- | :--- | :--- | :--- |
 | **Semana 1** | PCA y reducción de dimensiones | [L1: Intro PCA](Notebooks/L1_IntroPCA-3.ipynb)<br>[L2: Pipeline PCA](Notebooks/L2_pipelinePCA-2.ipynb)<br>[L3: Validación Ortogonal](Notebooks/L3_ValidationOrthogonal-2.ipynb) | Ejercicios en Notebooks |
-| **Semana 2** | Regresión Lineal, Regularización y Feature Selection | [L4: Regresión Lineal](Notebooks/L4_LinearRegression.ipynb) | **Quiz 1** (Antes de sesión) |
+| **Semana 2** | Regresión Lineal, Regularización y Feature Selection | [L4: Regresión Lineal](Notebooks/L4_LinearRegression.ipynb)<br>[L4b: Regularización](Notebooks/L4b_Regularization.ipynb) | **Quiz 1** (Antes de sesión) |
 | **Semana 3** | Regresión Logística y Validación Cruzada | [L5: Regresión Logística](Notebooks/L5_LogisticRegression.ipynb)<br>[L6: Cross Validation & Grid Search](Notebooks/L6_CrossValidation.ipynb) | **Quiz 2** (Antes de sesión) |
 | **Semana 4** | Modelos de Clasificación: Distancias y KNN | [L7: Distance Measures](Notebooks/L7_DistanceMeasures.ipynb)<br>[L8: KNN](Notebooks/L8_KNN.ipynb) | **Quiz 3** (Antes de sesión) |
 | **Semana 5** | Modelos de Clasificación: Naive Bayes y CART | [L9: Intro Bayesianos & CART](Notebooks/L9_NaiveBayes_CART.ipynb) | Ejercicios en Notebooks |

@@ -234,6 +234,36 @@ and advertise them as disabled in `/api/config`. Values `false`, `0`, and `no`
 (case-insensitive) disable the feature. Restart the server after changing these settings.
 Desktop support still requires its platform dependencies to be available.
 
+### Use your running Chrome
+
+Browser defaults to `managed`: Open Terminal launches a separate Chrome profile.
+To open tabs in your running Chrome with its signed-in sessions, select `personal`:
+
+```sh
+export OPEN_TERMINAL_BROWSER_MODE=personal
+```
+
+In Chrome 144+, enable debugging at `chrome://inspect/#remote-debugging` and approve
+the connection when Chrome asks. Open Terminal reads `DevToolsActivePort` from the
+current OS user's normal Chrome data directory. To select another instance, set
+one of these optional overrides:
+
+```sh
+export OPEN_TERMINAL_BROWSER_USER_DATA_DIR="/path/to/chrome-user-data"
+# Or connect to an explicit HTTP debugging address or ws:// / wss:// endpoint:
+export OPEN_TERMINAL_BROWSER_CDP_URL="http://127.0.0.1:9222"
+```
+
+An explicit CDP URL takes precedence over the data directory. If the selected
+instance is unavailable, Open Terminal returns an error rather than launching or
+choosing another browser. The equivalent TOML keys are `browser_mode`,
+`browser_user_data_dir`, and `browser_cdp_url`. Restart Open Terminal after changes.
+
+Use Chrome mode in WebUI as usual. Open Terminal creates a tab in the configured
+browser using the same session API, tools, and viewer. No WebUI changes are needed.
+Closing the session or stopping Open Terminal closes the tabs it created, leaving
+your browser and other tabs open. Personal mode requires single-user operation.
+
 Chromium's sandbox is enabled by default outside Docker. All published Docker image
 variants set `OPEN_TERMINAL_BROWSER_NO_SANDBOX=true` so Browser can start under
 Docker's default security restrictions when Chromium is installed. This applies to

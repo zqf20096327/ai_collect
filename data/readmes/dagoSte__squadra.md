@@ -13,7 +13,7 @@ Coordinate Claude Code, Codex and Cursor with shared tasks, independent reviews 
 
 **Free and open source** — MIT licence, no account, everything runs on your machine.
 
-**Version 3.12.1** · Python 3.12+ · macOS / POSIX
+**Version 3.13.1** · Python 3.12+ · macOS / POSIX
 
 **English** · [Italiano](README.it.md) · [Privacy](PRIVACY.md)
 
@@ -133,6 +133,8 @@ squadra --version
 
 Every release raises the version number, except a refresh that adds to a release under the same number, as 3.10.2 did on 17 October 2026. Plugins installed from the Store keep their version until `squadra plugin install <name>` runs again from the new release ([Plugins bundled in your release](#plugin-store)). Open windows keep the version they read until they restart, and a running squad keeps its protocol until you switch it explicitly.
 
+**Updating to 3.13.x: reclaim the space you already have.** Nothing is compacted or deleted at update or at opening. After updating every window, tell the coordinator «Use squadra to compact the storage of the registry at /path/to/registry»: it previews `storage adopt` (checkpoints made before 3.13), `storage compact` (shared bytes, nothing deleted) and `storage purge --dry-run`, and applies each step only on your word. `doctor --resume` proposes the same sentence when there is space to reclaim.
+
 **Updating to 3.11.1:** upgrade every window together and reinstall bundled plugins. `replace`, `wait`, `access probe`, `ready` and onboarding settings write journal format 4, which 3.11.0 and older clients refuse instead of ignoring it.
 
 **Updating to 3.11.0:** upgrade every window and reinstall bundled plugins before creating new tasks or reassigning reads. New tasks use frozen delivery and journal format 3; older clients refuse it. Historical tasks retain their previous behavior. The installer also adds the `migliora` skill.
@@ -250,6 +252,14 @@ Then write a plain-words brief of the project and show me the progress table.
 Use the squadra skill. Shared registry: ~/.local/state/squadra/atlas.
 Register this window, introduce yourself to the coordinator and wait for a role.
 Do not take any task or resource until your assignment is confirmed.
+```
+
+**Reclaim disk space (coordinator, from 3.13)**
+
+```text
+Use squadra to compact the storage of the registry at ~/.local/state/squadra/atlas.
+Adopt the old checkpoints, compact and preview the purge; show me each preview
+and apply nothing without my word.
 ```
 
 **Assign work (coordinator)**
@@ -507,7 +517,7 @@ The sections below keep the full working examples. Open the topic you need; the 
 | Follow a task from assignment to closure | [Task workflow](#workflow) |
 | Trace an instruction or record a decision | [Briefs, messages and decisions](#decision-reference) |
 | Save work or resume a session | [Checkpoints and recovery](#checkpoints) |
-| Look up a command or its plain-language prompt | [All 59 commands](#commands) |
+| Look up a command or its plain-language prompt | [All 60 commands](#commands) |
 
 [Skill](SKILL.md) · [Setup](references/start.md) · [Work/proof/review](references/work.md) · [Native runners](references/runtime.md) · [Recovery/context handover](references/recovery.md) · [Challenges/benchmark](references/benchmark.md) · [Plugins](references/plugins.md) · [Plugin authoring](references/plugin-authoring.md)
 
@@ -730,7 +740,8 @@ Thresholds, presence calls and why every window should run the same version: [de
 | WIP at risk, owner stop, or context pressure | Complete `save`, then an actual `restore-check`. |
 
 ```sh
-squadra checkpoint --to /durable/checkpoint-001
+squadra storage purge --dry-run
+squadra checkpoint --actor WINDOW --compact --to /durable/checkpoint-001
 squadra save --actor coord --to /durable/recovery-001
 squadra restore-check --actor coord --from /durable/recovery-001 --to /durable/restore-test-001
 squadra pause --actor coord --reason "Owner requested stop"
@@ -739,6 +750,17 @@ squadra resume --actor coord --reason "Owner explicitly resumed"
 ```
 
 `checkpoint` copies **only the registry**; `save`, coordinator only, adds every registered Git repository and its unfinished work; `restore-check` proves a package by actually restoring it into a new folder. When context fills up, the agent saves a handover **before continuing**. [Details](references/recovery.md#checkpoint-details).
+
+Automatic checkpoints use `--compact`: recoverable views are omitted and rebuilt
+after verification when the copy is opened with `--root`. Identical bytes of the
+newest recorded checkpoint on the same device are reused automatically (COW clone,
+or a hardlink of read-only files); `--reuse PREVIOUS` names it explicitly, and
+`storage compact --dry-run` previews the same sharing for data already on disk. Defaults retain three checkpoints, three
+saves, the last successfully restored save, 24 hours and `storage keep` paths.
+Only explicit coordinator `storage purge --apply --actor COORD --reason TEXT`
+deletes previewed targets; unknown folders stay. Without `--actor`, the legacy
+checkpoint succeeds but is unregistered; `storage adopt --scan DIR` previews older
+checkpoints of this registry and `--apply` brings them under retention. Never `cp -R` the live registry.
 
 **Limits of recovery:** the secret filters are partial, **not** a full scan of history and artifacts; a copy on the same disk does not survive a disk failure; `--declared-offsite` is a declaration, not verified remote storage. The complete contract is in [recovery and context handover](references/recovery.md).
 
@@ -806,10 +828,10 @@ manual deletion of an active cache degrades candidate integrity. See
 
 You do not have to type these commands: **asking your window in plain words is the recommended way**, as in the *Or just ask* column and the [example prompts](#prompts), and the window runs the command for you. The commands are what the windows run, and what you can type yourself to check.
 
-Every command, grouped by purpose: **59 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
+Every command, grouped by purpose: **60 subcommands**, plus `--version`. Use `squadra <command> --help` for the flags; registry commands accept `--root` or `SQUADRA_ROOT`. «Coordinator only» marks what only the coordinator can record: `task`, `route`, `supersede`, `reassign`, `replace`, `brief`, `close`, `ask`, `decision`, `settings`, `pause`, `resume`, `save`, `standby`, `ping --all`, `ping --sweep`, and the receipt that `restore-check` writes into the live registry. Without installing, the same commands run as `python3 -B scripts/squadra.py <command>`.
 
 <details>
-<summary><strong>All 59 commands and their prompts, grouped by purpose</strong></summary>
+<summary><strong>All 60 commands and their prompts, grouped by purpose</strong></summary>
 
 ### Start and team
 
@@ -884,7 +906,8 @@ Every command, grouped by purpose: **59 subcommands**, plus `--version`. Use `sq
 |---|---|---|
 | `pause` | Coordinator only: stop new work, reviews and runs, keeping consultation and recovery. | To the coordinator: “Pause the squad: no new work until I say so.” |
 | `resume` | Coordinator only: resume after the owner's explicit word and a reconciliation. | To the coordinator: “Resume the squad: reconcile first, then tell me the next step.” |
-| `checkpoint` | Copy the registry, its artifacts and projections to a new folder. | “Take a checkpoint of the registry in a new folder.” |
+| `checkpoint` | Copy the registry, its artifacts and projections to a new folder; `--actor` records it for retention, `--compact` omits regenerable views, identical bytes of the newest recorded checkpoint are reused. | “Take a compact checkpoint of the registry in a new folder.” |
+| `storage` | `status`, `purge` (`--dry-run` by default; `--apply` coordinator only, with a reason), `keep`, `compact` and `adopt` (checkpoints made before 3.13) of registered recovery points, candidates and archived runs; unknown folders and other registries' points are never removed. | “Use squadra to compact the storage of the registry at /path/to/registry.” |
 | `save` | Coordinator only: package the registry with every registered Git repository and its unfinished work; `--repo ROOT --allow-name REL --reason TEXT` records a one-save name exception. | To the coordinator: “Save the registry and the code of every repository, unfinished work included.” |
 | `restore-check` | Prove a package by actually restoring it into a new folder; recording the receipt in the live registry is coordinator only. | “Prove the save works by restoring it into a new folder.” |
 
@@ -939,10 +962,11 @@ Static, behavioral and dependency checks, excluding `tests/`. Passing means no H
 <a id="news"></a>
 ## What's new
 
-**3.12.1 — the dashboard opens registries that replaced windows**
+**3.13.1 — a copy of a registry never purges the original's recovery points**
 
-- **Dashboard fix.** Since 3.11.1, `replace` records the successor tasks, reads and starts inside one `replace` event. The dashboard's task progress ignored those nested operations, so every registry with a replacement failed with `KeyError: '<task>-takeover-…'`. Task progress now applies them the way the registry does, and a regression test pins it.
-- The plugin bridge copies of `scripts/registry.py` carry the same fix; the memoranda reader pin accepts the 3.12.1 bytes.
+- **Fix.** In 3.13.0, recovery points were recorded by absolute path only, so a copy of a registry (a clone, a restore, a backup opened with `--root`) inherited the original's checkpoints and saves, and `storage purge --apply` run in the copy could remove them. Every checkpoint, adoption and save now records the root of the registry that made it; elsewhere it is listed as foreign and is never a purge target. Records without a root count only inside their own registry. A regression test removes the original's checkpoint on 3.13.0 and keeps it now.
+- Found while compacting a real 7.2 GB registry with 3.13.0: `storage adopt` registered 7 old checkpoints, and `storage compact` shared 163,794 of 166,663 files and freed 2.62 GB measured on disk, with a full audit passing afterwards.
+- **Reclaim your space after updating:** tell a Claude window «Use squadra to compact the storage of the registry at /path/to/registry». The coordinator previews adopt, compact and purge and applies only on your word.
 
 **Watch the two-minute film of what's new in 3.10.2 — turn the sound on in the player:**
 
@@ -950,6 +974,20 @@ https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
 
 <details>
 <summary><strong>Earlier versions</strong></summary>
+
+**3.13.0 — checkpoints that share their bytes, a retention policy and compaction of the data you already have**
+
+- **Reuse of immutable content.** New frozen candidates and checkpoints share identical files instead of copying them: a copy-on-write clone (APFS, or `FICLONE` on Linux), a hardlink only for verified read-only files where clones do not exist, a plain copy last. Bytes, paths, fingerprints and package formats are unchanged, so older versions still restore them. Measured on a copy of a real registry, 10 consecutive checkpoints with concurrent writes: 8.97 GB → 0.60 GB on APFS (−93%), 9.22 GB → 3.60 GB without copy-on-write (−61%).
+- **Compaction of existing data.** `storage adopt --scan DIR` registers checkpoints made before 3.13, but only those whose last event matches this journal. `storage compact` then shares the bytes of candidates, checkpoints, saves and archived run logs in place. On a 4.25 GB copy of a real registry with six old checkpoints, 89,485 of 93,684 files were shared and the registry shrank to 0.98 GB (−77%) in 7 minutes. Nothing is compacted at opening: every step previews first, and `--apply` belongs to the coordinator.
+- **Retention policy.** `storage status` and `storage purge --dry-run` show what can go. By default the newest three checkpoints and three saves are kept, along with the last restored save, anything under 24 hours and `storage keep` paths. Open tasks, live runs and the active registry are always protected, and unknown folders are never touched. `storage purge --apply` is coordinator only. A keep or a task that arrives during a purge stops the deletion or is refused, never recorded for deleted data. On the same copy: 0.88 GB after the default purge (−79%).
+- **Recorded, compact checkpoints.** `checkpoint --actor WINDOW --compact` records the recovery point and omits views that are rebuilt on opening; `save` reuses the previous package. A checkpoint no longer fails when a concurrent writer's temporary file disappears mid-copy.
+- **Ask for it in one sentence.** After updating, tell a Claude window: «Use squadra to compact the storage of the registry at /path/to/registry». At every resume `doctor --resume` notices old unregistered checkpoints or more than 1 GB of candidates, and the coordinator proposes that sentence.
+- **Skill instructions** no longer ask for repeated full copies: checkpoints are compact and recorded, and every long round starts with `storage purge --dry-run`.
+
+**3.12.1 — the dashboard opens registries that replaced windows**
+
+- **Dashboard fix.** Since 3.11.1, `replace` records the successor tasks, reads and starts inside one `replace` event. The dashboard's task progress ignored those nested operations, so every registry with a replacement failed with `KeyError: '<task>-takeover-…'`. Task progress now applies them the way the registry does, and a regression test pins it.
+- The plugin bridge copies of `scripts/registry.py` carry the same fix; the memoranda reader pin accepts the 3.12.1 bytes.
 
 **3.12.0 — the checklist knows the round, clearer warnings and advice, and a changelog**
 
@@ -960,27 +998,6 @@ https://github.com/user-attachments/assets/6ea747a5-a993-4aa7-a58d-1b2b7f908720
 - **Composition advice by real roles.** `status`, board and dashboard name who builds and who reads; with mixed roles they show the real counts, and pairing rows stay visible when the squad is unbalanced.
 - **Changelog.** The full release history moved to [CHANGELOG.md](CHANGELOG.md); the README keeps the newest release and the three before it.
 - **Skill audits not refreshed.** As in 3.11.2, the recorded scans in `assets/skill-audits.json` predate this release; the System skills page shows every skill as not audited (files changed) until a fresh scan.
-
-**3.11.2 — rules that check themselves: no overlaps, one-step resume, known reds, stale windows, checklist and round scope**
-
-- **No overlap between windows.** The coordinator checks checkout, branch, owned files, base, reserved resources and expected commits before every assignment ([guide](references/skills/sovrapposizioni.md)).
-- **One-step resume.** `doctor --resume` reports the interpreter, every checkout of open tasks and active windows, release drift and silent windows; a missing checkout of an open task blocks with exit 1.
-- **Known reds of main.** `tests/known_reds.json` names tests already red on clean main; the parallel runner separates `KNOWN RED` from `NEW RED`, and `--accept-known` passes a task proof only on known reds. The release proof stays strict, and the list is empty again.
-- **Stale windows.** `doctor --resume` marks silent windows `archivable` or says what `keeps` them, across every seat of an identity; only the owner's word parks them with `standby`.
-- **Checklist.** `squadra checklist --moment resume|assign|deliver|push` checks the critical moments read-only: at push, an author or committer email never seen before fails.
-- **Round scope.** Once a round's scope is fixed, what it finds waits for the next round unless it blocks a close.
-- **Fixes.** `test_rf4a_upgrade` runs on a verified 5099f0c fixture; `test_challenge` no longer races Git maintenance.
-- **Skill audits not refreshed.** The recorded scans in `assets/skill-audits.json` predate this release's changes to `SKILL.md` and `scripts/squadra.py`; the System skills page shows every skill as not audited (files changed) until a fresh scan.
-
-**3.11.1 — replacing windows, access checks, one mailbox per window and re-entry context**
-
-- **Replace closed windows in one step.** `replace` (or `--map`) hands tasks, reads, mail and resources from old windows to new ones in one recorded event, keeping authors, budgets, plan gates and the reservations of live runs. `--dry-run` previews it and reruns are safe; `census --unregistered` lists new sessions.
-- **Service limits are visible.** `wait --until TIME --cause 429|outage` shows in status, board and dashboard that a window is waiting for its model service.
-- **Permission check at entry.** `access probe` records, from inside the window, whether it can write the registry and its clone; `access status` shows verified, denied or not verified.
-- **One mailbox per window.** `inbox` and its follower read every role of the same window and keep the recipient of each ACK; `ready` shows a reader waiting for a delivery.
-- **Re-entry context.** `context --for WINDOW --since SEQ:HASH` shows what changed for one window and always keeps the current constraints, pending ACKs, budgets and proofs.
-- **Fixes.** `transport` no longer silently re-delivers an older message under a reused ID; `save --repo` reports missing unselected repositories as warnings.
-- Plugins: memoranda 1.0.10, Playwright 1.0.11, Sentry 0.1.8.
 
 </details>
 

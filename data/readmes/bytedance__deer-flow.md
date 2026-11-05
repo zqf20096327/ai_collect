@@ -224,6 +224,10 @@ For Google's official Gemini OpenAI-compatible endpoint, use the
 
 For MindIE XML tool calls, see the
 [argument parsing and newline compatibility guide](backend/docs/CONFIGURATION.md#mindie-xml-tool-arguments).
+Tool-result recovery treats null and empty call IDs alike — including the
+`"None"` and `"missing_tool_call_id"` spellings middleware producers use when a
+provider call had no ID — preserving middleware guidance when a result can be
+uniquely paired; ambiguous partial results remain rejected.
 Both synchronous and asynchronous streams retain this compatibility: tool-enabled
 streams simulate chunks from a non-streaming response, while no-tool streams stay native.
 Newline compatibility preserves literal escapes inside backtick and tilde code
@@ -336,6 +340,17 @@ fences, including unclosed fences, in complete and streamed replies.
    names are generated automatically and remain stable when a model ID changes.
    Newly saved models are enabled and immediately refresh existing chat and Agent
    model selectors, without editing YAML or restarting the Gateway.
+
+   Use **Fetch and add models** to reuse a saved connection or enter a new one,
+   search its catalog, and test selected models before adding them. Existing
+   entries are retained on retries; individual failures remain available to retry.
+   Chat pickers support name/ID search, provider filtering, favorites and the
+   eight most recently selected models, scoped to your account in this browser.
+
+   The OpenAI preset routes `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`,
+   `gpt-6-sol` and `gpt-6-luna` through the Responses API for tool calling,
+   with model-specific thinking and reasoning-effort defaults. Flash mode
+   turns off reasoning for GPT-6.1 Terra, GPT-6 Sol and GPT-6 Luna.
 
    The Moonshot (China) preset recognizes `kimi-k3.1-pro` and
    `kimi-k3.1-pro-highspeed` with required thinking, image input and native
@@ -1196,15 +1211,4 @@ downloading a partial transcript. Public demos export their bundled messages.
 Capability Center groups plugins by office collaboration, documents and knowledge, search and research, business and data, and development and operations. The directory includes setup references alongside existing MCP configurations and Lark. Recommended integrations and built-in support do not imply an installed or verified connection; the Installed filter shows configured MCP entries and installed Lark only.
 
 Personal MCP connections configured in the web interface are persisted per user.
-Unexpected failures when changing deployment or personal MCP configuration return fixed error messages; exception details stay in server logs.
-Deployment tools remain shared. Administrators can add, edit, enable, disable and delete shared MCP servers under **Platform provided**; ordinary users see their status without controls. Personal plugin switches affect only the signed-in user's connections. See [connection ownership](docs/capability-center.md#personal-and-deployment-mcp-configuration).
-
-For plugin manifests, adapter registration, and Agent capability selection, see
-[Capability Center integration contract](docs/capability-center.md).
-
-DingTalk and WeCom group notifications and HubSpot CRM are bundled configurable
-plugins. Administrators supply robot credentials or a HubSpot private app token;
-Agents can then send requested group notifications, list companies, or create
-contacts. Saving configuration performs no external write. These plugins reuse
-the existing MCP lifecycle and require no separate plugin service. See the
-integration contract above for
+Personal MCP HTTP/SSE connections admitted under the public-network policy load TLS tru

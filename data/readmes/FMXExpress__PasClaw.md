@@ -45,6 +45,7 @@ See [Build](#build) for Delphi / cross-compile / Windows-on-ARM.
 |---|---|
 | `read_file` / `write_file` / `append_file` / `list_dir` | sandboxed filesystem access (`append_file` builds large files incrementally) |
 | `grep_files` | recursive substring search, returns line-numbered matches |
+| `code_outline` | a map of the code, made on demand: `symbol=` finds where a name is declared (not every use), a file gives its declarations with line numbers, a directory each file's purpose and names. Pascal, Python, JS/TS (and `.html` scripts), Go, Rust, Ruby, PHP — measured in [`bench/codenav`](bench/codenav/README.md) |
 | `edit_file` | `old_text`→`new_text` string replacement (default); optional hashline `patch` mode for line-anchored, hash-verified edits |
 | `apply_patch` | multi-file, context-anchored patch (Codex/OpenClaw format: add/update/delete/move in one atomic call) |
 | `shell_exec` | `/bin/sh -c` (or `cmd.exe`), output capped at 1 MiB, denylist-gated |
@@ -674,10 +675,4 @@ Provider is set under `web_search` in `~/.pasclaw/config.json`:
 | `tavily` | yes — `$PASCLAW_TAVILY_API_KEY` overrides `api_key` | `api.tavily.com/search` |
 | `searxng` | no (most public instances); optional `$PASCLAW_SEARXNG_API_KEY` for protected ones | `<web_search.base_url>/search?format=json` |
 | `perplexity` | yes — `$PASCLAW_PERPLEXITY_API_KEY` overrides `api_key` | `api.perplexity.ai/chat/completions` (Sonar model — returns one synthesised answer plus citation URLs) |
-| `gemini` | yes — `$PASCLAW_GEMINI_API_KEY` (or `$PASCLAW_GOOGLE_API_KEY`) overrides `api_key` | `generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent` with `google_search` grounding — returns one synthesised answer plus the ground-truth source URLs Gemini consulted |
-
-Env-var values win over the `api_key` field so secrets can stay out of `config.json`. SearXNG additionally needs `web_search.base_url` set since every instance is self-hosted (e.g. `"base_url": "https://searx.be"`).
-
-### Skills
-
-A skill is a markdown ma
+| `gemini` | yes — `$PASCLAW_GEMINI_API_KEY` (or `$PASCLAW_GOOGLE_API_KEY`) overrides `api_key` | `generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent` with `google_search` grounding — returns on

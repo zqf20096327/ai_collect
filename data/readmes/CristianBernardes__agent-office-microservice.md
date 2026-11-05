@@ -4,15 +4,15 @@
 
 <div align="center">
 
-[![Licença MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-green.svg)](./LICENSE) [![Doar](https://img.shields.io/badge/apoie-Pix%20%7C%20PayPal-ff69b4.svg)](#-antes-de-clonar-ou-fazer-fork--ajude-a-manter-este-projeto-vivo)
+[![Licença AGPL-3.0](https://img.shields.io/badge/licen%C3%A7a-AGPL--3.0%20%2B%20comercial-blue.svg)](./LICENSE) [![Doar](https://img.shields.io/badge/apoie-Pix%20%7C%20PayPal-ff69b4.svg)](#-antes-de-clonar-ou-fazer-fork--ajude-a-manter-este-projeto-vivo)
 
 </div>
 
 <div align="center">
 
-▶️ **Assista ao vídeo de demonstração:**
+![Agent Office em ação](images/agent-office.gif)
 
-[![Assista ao vídeo](images/Agent_Office_2.png)](https://youtu.be/eq40fTZwJrc)
+*O escritório em ação: agentes de IA colaborando, debatendo e entregando tarefas.*
 
 </div>
 
@@ -26,7 +26,7 @@ R$39,90"*) e observe os agentes pensarem, pesquisarem o mercado, debaterem entre
 artefatos reais — ADRs, backlogs, planos de teste, análises de mercado — em arquivos Markdown
 versionáveis, não apenas em logs efêmeros.
 
-Projeto **open source**, construído do zero seguindo **Clean Architecture**, princípios **SOLID**,
+Projeto com **código disponível e licenciamento duplo** (AGPL-3.0 + licença comercial — não é totalmente open source), construído do zero seguindo **Clean Architecture**, princípios **SOLID**,
 **Clean Code**, **DRY**, **YAGNI**, injeção de dependência, testes automatizados e documentação
 arquitetural rigorosa (ADRs, RFCs, Design Docs).
 
@@ -77,14 +77,40 @@ Anthropic (`GET /models`), nada fixo no código.*
 
 ---
 
+## Para quem é e como contratar
+
+**Para quem é:** equipes de produto e tecnologia, consultorias, software houses e empresas que
+querem automatizar rotinas de planejamento, pesquisa, documentação e entrega com um time de agentes
+de IA que **você supervisiona** (contratações, demissões e decisões passam pela sua aprovação).
+
+| Uso | Licença |
+|-----|---------|
+| Estudar, avaliar, uso interno e projetos que **abrem o código** das modificações | **Gratuito** ([AGPL-3.0](./LICENSE)) |
+| Produto ou serviço próprio **sem abrir o código** (inclusive SaaS) | **Licença comercial** ([modelo de contrato](./COMMERCIAL-LICENSE.pt-BR.md)) |
+| Instalação, integração com os seus sistemas, treinamento e suporte | **Serviços sob consulta** |
+
+**Valores** (referência, sujeitos a negociação):
+
+| Oferta | Valor |
+|--------|-------|
+| Licença comercial anual por empresa, sem suporte | a partir de **R$ 24.000/ano** |
+| Licença comercial anual com suporte em horário comercial | R$ 36.000 a R$ 48.000/ano |
+| Implantação e integração | R$ 8.000 a R$ 30.000 por projeto, sob orçamento |
+| Consultoria/suporte avulso | R$ 250 a R$ 400 por hora |
+
+**Contato:** SCRIPTSAVVY (GENIOZ Soluções em TI) — cristian.aob@gmail.com — WhatsApp
+(35) 99218-3238.
+
+---
+
 ## 💙 Antes de clonar ou fazer fork — ajude a manter este projeto vivo
 
-Este repositório é **open source e gratuito**, mas é mantido no tempo livre do autor. **Qualquer
+Este repositório tem o **código disponível** (gratuito sob a AGPL-3.0 para os usos permitidos; uso comercial sem abrir o código exige licença paga), mas é mantido no tempo livre do autor. **Qualquer
 valor de doação é bem-vindo**.
 
 **Quero ser transparente:** cuido da saúde da minha filha, que tem várias alergias, e acabei me
-**endividando** por causa desses custos. Preciso de ajuda de verdade, mesmo sendo um projeto open
-source. Prefiro dizer isso abertamente a usar minha filha como gatilho emocional: o projeto vale
+**endividando** por causa desses custos. Preciso de ajuda de verdade, mesmo sendo um projeto de código
+código disponível. Prefiro dizer isso abertamente a usar minha filha como gatilho emocional: o projeto vale
 por si só, a doação é totalmente voluntária e nada aqui depende dela. As doações ajudam a quitar
 essas dívidas e a manter tempo e energia para continuar desenvolvendo o AgentOffice.
 
@@ -142,7 +168,7 @@ viva — obrigado! 🙏
 
 ## O Time
 
-Nove papéis, cada um com um system prompt próprio, personalidade (Big Five) e conjunto de
+27 papéis (9 base e 18 especializados), cada um com um system prompt próprio, personalidade (Big Five) e conjunto de
 ferramentas permitidas:
 
 | Papel | Responsabilidade principal |
@@ -156,6 +182,28 @@ ferramentas permitidas:
 | **Analista de Dados** | Dados, SQL, métricas, KPIs, análises |
 | **Gerente de RH** | Contratações, onboarding, cultura; **propõe demissões** ao dono do produto |
 | **Consultor de Produto** | Validação de mercado, concorrência, preço, pesquisa |
+| **Desenvolvedor Pleno** (`dev_mid`) | Implementação de funcionalidades com autonomia |
+| **DBA** (`database_administrator`) | Modelagem, índices, queries, migrações e desempenho |
+| **DevOps Engineer** (`devops_engineer`) | CI/CD, Docker, infraestrutura e automação |
+| **SRE** (`site_reliability_engineer`) | Confiabilidade, observabilidade, incidentes e SLOs |
+| **UX/UI Designer** (`ux_ui_designer`) | Experiência do usuário, protótipos e interfaces |
+| **Analista de Negócios** (`business_analyst`) | Requisitos, processos e regras de negócio |
+| **Arquiteto de Software** (`software_architect`) | Arquitetura, integração, escalabilidade e decisões técnicas |
+| **Engenheiro de Segurança** (`security_engineer`) | Segurança de aplicações, vulnerabilidades e proteção de dados |
+| **Engenheiro de Testes** (`test_automation_engineer`) | Automação de testes, integração e regressão |
+| **Engenheiro de Dados** (`data_engineer`) | Pipelines, ETL/ELT, qualidade e processamento de dados |
+| **Engenheiro de IA** (`ai_engineer`) | LLMs, agentes, RAG, embeddings e integração de modelos |
+| **Engenheiro de ML** (`ml_engineer`) | Treinamento, avaliação e implantação de modelos |
+| **Analista de Sistemas** (`systems_analyst`) | Especificações técnicas, fluxos e integração entre sistemas |
+| **Especialista em Produto** (`product_designer`) | Descoberta, usabilidade e desenho de soluções |
+| **Suporte Técnico** (`technical_support`) | Atendimento, diagnóstico e resolução de problemas |
+| **Analista de Infraestrutura** (`infrastructure_analyst`) | Redes, servidores, ambientes e serviços internos |
+| **Analista de Qualidade de Dados** (`data_quality_analyst`) | Consistência, integridade e validação dos dados |
+| **Gerente de Engenharia** (`engineering_manager`) | Capacidade técnica, desenvolvimento da equipe e gestão de engenharia |
+
+Os 18 cargos especializados (a partir de **Desenvolvedor Pleno**) têm prompts em português e inglês,
+entram no roteamento de tarefas por palavras-chave e aparecem no formulário de contratação. Por ora
+reaproveitam o sprite e o assento de um cargo base no mapa.
 
 Cada papel só pode usar as ferramentas que lhe foram atribuídas (ex.: só Tech Lead e Product Owner
 podem `approve_artifact`; só Scrum Master pode `start_ceremony`) — a validação de permissão é
@@ -177,6 +225,18 @@ Scrum Master planejam e coordenam. Ver [ADR-054](docs/adr/054-responsabilidades-
 - **Conversa com o PO:** o time debate, e o PO leva a proposta a você como pergunta no chat; o time
   segue com um plano provisório e você responde pelo campo do chat
   ([ADR-055](docs/adr/055-dialogo-do-po-com-o-cliente.md)).
+- **Contratações:** o RH contrata de fato, via tarefa: ao executar uma tarefa de contratação ele
+  escolhe o cargo e **propõe** a vaga. Aparece um modal com o cargo e o motivo, e **você escolhe o
+  nome e a IA** do novo profissional; nada é contratado sem a sua decisão.
+
+<div align="center">
+
+![Proposta de contratação](images/proposta_de_contratacao.png)
+
+*Proposta de contratação: o RH sugere o cargo e você escolhe o nome e a IA.*
+
+</div>
+
 - **Demissões:** o botão **Demitir** (lista do time e mapa) pede confirmação e devolve as tarefas
   abertas ao fluxo. O RH também pode *propor* uma demissão com motivo: aparece um modal para você
   aprovar ou manter a pessoa no time — nada é demitido sem a sua decisão
@@ -370,7 +430,7 @@ interface de domínio, permitindo troca de implementação sem alterar regra de 
 │  └── PONTE entre MQTT e o Backend Python:   │
 │      roteia MQTT ⇄ Kafka, com idempotência  │
 │      (Redis) e ordenação por agente         │
-│  (sem autenticação — projeto open source,    │
+│  (sem autenticação — código disponível,      │
 │   mantido por doações, sem dados sensíveis)  │
 └───────────────────┬─────────────────────────┘
                     │
@@ -403,6 +463,13 @@ DRAFT → IN_REVIEW → APPROVED → ARCHIVED
 Cada artefato é persistido como um arquivo `.md` real em `workspace/projects/{sprint}/`, com
 frontmatter YAML (autor, tipo, status, datas), e cada transição de estado publica um evento MQTT —
 ver [RFC-002](docs/rfc/002-sistema-de-artefatos.md).
+
+### Material de referência (`workspace/inputs`)
+
+Coloque em `workspace/inputs/` arquivos `.md`, `.json` ou `.txt` (briefing, requisitos, dados) e os
+agentes os recebem como contexto ao pensar sobre um objetivo, usando-os como base para decidir e criar
+o produto. A pasta é somente leitura para os agentes, lê subpastas, ignora arquivos ocultos e limita o
+tamanho (20 mil caracteres por arquivo, 60 mil no total).
 
 ### Busca web
 
@@ -663,7 +730,7 @@ Mais detalhes sobre a estrutura do backend em [`backend/README.md`](backend/READ
 
 ## Contribuindo
 
-Este projeto é open source e aceita contribuições. Antes de abrir um PR, leia
+Este projeto tem código disponível (licenciamento duplo) e aceita contribuições. Antes de abrir um PR, leia
 [`docs/SCRATCHPAD.md`](docs/SCRATCHPAD.md) — ele define os padrões de qualidade obrigatórios
 (SOLID, Clean Code, testes, ADRs) que toda contribuição deve seguir, além do histórico detalhado de
 decisões e do estado atual de implementação de cada fase do projeto.
@@ -673,9 +740,9 @@ decisões e do estado atual de implementação de cada fase do projeto.
 ## 💙 Gostou do projeto?
 
 Qualquer valor de doação é bem-vindo e ajuda a cobrir os custos de saúde da minha família e a
-manter este projeto open source vivo e crescendo. Veja as formas de doar (Pix e PayPal) no topo
+manter este projeto vivo e crescendo. Veja as formas de doar (Pix e PayPal) no topo
 deste README, ou na [versão em inglês](./README.en.md).
 
 ## 📄 Licença
 
-Projeto open source sob a [Licença MIT](./LICENSE) ([versão em português](./LICENSE.pt-BR.md)). Uso livre, inclusive comercial. As doações são **voluntárias** e nunca obrigatórias.
+Projeto **não totalmente open source**: licenciamento duplo. Código disponível sob a [AGPL-3.0](./LICENSE) ([resumo em português](./LICENSE.pt-BR.md)), com **licença comercial paga** para quem não puder cumprir a AGPL (por exemplo, oferecer uma versão modificada como serviço sem abrir o código): cristian.aob@gmail.com. Modelo de contrato: [COMMERCIAL-LICENSE.pt-BR.md](./COMMERCIAL-LICENSE.pt-BR.md) ([inglês](./COMMERCIAL-LICENSE.md)). As doações são **voluntárias** e nunca obrigatórias.

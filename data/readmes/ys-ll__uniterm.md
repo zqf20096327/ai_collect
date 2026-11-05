@@ -7,7 +7,7 @@
 
 <div align="center">
 
-English &nbsp;|&nbsp; <a href="README_zh-CN.md">简体中文</a>
+<a href="README_zh-CN.md">简体中文</a> &nbsp;|&nbsp; <a href="README_zh-TW.md">繁體中文</a> &nbsp;|&nbsp; English &nbsp;|&nbsp; <a href="README_ja.md">日本語</a> &nbsp;|&nbsp; <a href="README_ko.md">한국어</a> &nbsp;|&nbsp; <a href="README_de.md">Deutsch</a> &nbsp;|&nbsp; <a href="README_es.md">Español</a> &nbsp;|&nbsp; <a href="README_fr.md">Français</a> &nbsp;|&nbsp; <a href="README_ru.md">Русский</a> &nbsp;|&nbsp; <a href="README_pt.md">Português</a> &nbsp;|&nbsp; <a href="README_vi.md">Tiếng Việt</a>
 
 <br>
 
@@ -345,6 +345,11 @@ Thanks to the following people for contributing code and improvements, and to ev
     <td align="center"><a href="https://github.com/mikemikimike">@mikemikimike</a></td>
     <td align="center"><a href="https://github.com/macoladik">@macoladik</a></td>
     <td align="center"><a href="https://github.com/NatureLProokie">@NatureLProokie</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/kevin9327">@kevin9327</a></td>
+    <td align="center"><a href="https://github.com/gezerui888">@gezerui888</a></td>
+    <td align="center"><a href="https://github.com/eltociear">@eltociear</a></td>
   </tr>
 </table>
 

@@ -19,10 +19,10 @@
 </p>
 
 <p align="center">
-  <a href="https://github-to-mcp-web-lp642k3kpa-uc.a.run.app">🌐 Web App</a> •
+  <a href="https://github-to-mcp.modelcontextprotocol.name">🌐 Web App</a> •
   <a href="#-quick-start">🚀 Quick Start</a> •
   <a href="#-features">✨ Features</a> •
-  <a href="https://github-to-mcp-docs-lp642k3kpa-uc.a.run.app">📖 Docs</a>
+  <a href="https://github-to-mcp-docs.modelcontextprotocol.name">📖 Docs</a>
 </p>
 
 ---
@@ -91,7 +91,7 @@ This project generates MCP servers from GitHub repositories, automatically creat
 
 ### 🌐 Web UI (Easiest)
 
-Visit **[github-to-mcp.vercel.app](https://github-to-mcp-web-lp642k3kpa-uc.a.run.app)** — Paste any GitHub URL, click Generate, download your MCP server.
+Visit **[github-to-mcp.modelcontextprotocol.name](https://github-to-mcp.modelcontextprotocol.name)** — Paste any GitHub URL, click Generate, download your MCP server.
 
 ### 💻 CLI (One Command)
 
@@ -186,7 +186,7 @@ pnpm build
 
 ### Using the Web Interface
 
-The web application is deployed at **[github-to-mcp.vercel.app](https://github-to-mcp-web-lp642k3kpa-uc.a.run.app)**. Use the browser-based interface without any local installation.
+The web application is deployed at **[github-to-mcp.modelcontextprotocol.name](https://github-to-mcp.modelcontextprotocol.name)**. Use the browser-based interface without any local installation.
 
 ---
 
@@ -603,7 +603,7 @@ You can share your generated tools with others:
 
 **Example:**
 ```
-https://github-to-mcp-web-lp642k3kpa-uc.a.run.app/playground?gist=abc123&name=My%20API
+https://github-to-mcp.modelcontextprotocol.name/playground?gist=abc123&name=My%20API
 ```
 
 ---
@@ -1013,8 +1013,8 @@ Apache 2.0. See [LICENSE](LICENSE) for details.
 
 | Resource | URL |
 |----------|-----|
-| 📖 Documentation | [docs-github-to-mcp.vercel.app](https://github-to-mcp-docs-lp642k3kpa-uc.a.run.app) |
-| 🌐 Web App | [github-to-mcp.vercel.app](https://github-to-mcp-web-lp642k3kpa-uc.a.run.app) |
+| 📖 Documentation | [github-to-mcp-docs.modelcontextprotocol.name](https://github-to-mcp-docs.modelcontextprotocol.name) |
+| 🌐 Web App | [github-to-mcp.modelcontextprotocol.name](https://github-to-mcp.modelcontextprotocol.name) |
 | 📦 npm Package | [npmjs.com/package/@nirholas/github-to-mcp](https://www.npmjs.com/package/@nirholas/github-to-mcp) |
 | 🔗 MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
 | 📘 MCP TypeScript SDK | [github.com/modelcontextprotocol/typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk) |
@@ -1191,4 +1191,4 @@ blockchain agent, distributed ledger agent, consensus mechanism agent, proof of 
 
 ## AI & Machine Learning Extended Keywords
 
-machine learning agent, deep learning agent, reinforcement learning agent, supervised learning agent, unsupervised learning agent, semi-supervised learning agent, self-supervised learning agent, contrastive learning agent, transfer learning agent, meta-learning agent, few-shot learning agent, zero-shot learning agent, one-sh
+machine learning agent, deep learning agent, reinforcement learning agent, supervised learning agent, unsupervised learning agent, semi-supervised learning agent, self-supervised learning agent, contrastive learning agent, transfer learning agent, meta-learning agent, few

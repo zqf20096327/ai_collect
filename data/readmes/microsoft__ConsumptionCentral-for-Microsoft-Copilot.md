@@ -42,6 +42,12 @@ value, consumption and governance in one place. It includes Consumption Central 
 
 ## Videos
 
+**Installer walkthrough** *(1m 10s)*
+
+AI-generated narration. Sign-in and deployment are simulated.
+
+https://github.com/user-attachments/assets/ebe7ac2f-7728-4977-8c02-becbb7eba817
+
 **Demo: what the report covers, page by page** *(1m 51s)*
 
 [![Watch the Consumption Central overview on YouTube](https://img.youtube.com/vi/JdOVx_6kw5Y/maxresdefault.jpg)](https://youtu.be/JdOVx_6kw5Y)

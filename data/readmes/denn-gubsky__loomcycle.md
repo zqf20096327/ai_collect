@@ -201,18 +201,16 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.139.0) edits a team definition as highlighted, wrapped
-YAML or JSON, so an agent's prompt reads as real lines, through a new shared
-editor package, `@loomcycle/code-editor`, which loomboard's canvas uses too. Its
-patch releases let the knowledge-base judge rule on the topics `classify`
-proposes, judging each on the document's opening, and keep a document's colour
-when an ontology retypes it to a class name. See
-[`REVISIONS.md`](REVISIONS.md).
+The most recent line (v1.141.0) lets a chat bridge exchange voice messages with
+an agent on its users' own tokens: a token limited to certain agents can be
+granted the speech routes. It also opens SQLite scopes in defensive mode and
+gates CI on npm and pip advisories. Read its upgrade notes in
+[`REVISIONS.md`](REVISIONS.md) first.
 
-Before it, v1.138.0 taught every agent to cite a document or a chunk as a
-`loom:` link a client can open, let the document viewer open on a chunk, and
-coloured, created and deleted tenant-scope documents in the Path tree like any
-other. See [`REVISIONS.md`](REVISIONS.md).
+Before it, v1.140.0 let a chat client read a reply aloud and transcribe the
+microphone through `POST /v1/audio/speech` and `POST /v1/audio/transcriptions`,
+and closed what the 2026-11-04 security re-assessment found on the member
+plane. See [`REVISIONS.md`](REVISIONS.md).
 
 Before it, v1.125.0 added speech-to-text: `File op=transcribe` turned
 recordings into timed transcripts through a whisper server, and Teams captions
@@ -699,6 +697,7 @@ Repo-side docs (this directory):
 - [`docs/MCP_SERVER.md`](docs/MCP_SERVER.md). Register loomcycle as an MCP server in Claude Code / Claude Desktop. Copy-paste config snippets for Docker / Homebrew / direct-binary transports, plus the `loomcycle mcp install` helper.
 - [`docs/CLAUDE-CODE.md`](docs/CLAUDE-CODE.md). Driving loomcycle from Claude Code: the recommended `claude-code-plugin-loomcycle` plugin (slash commands + skills + hooks) vs. the manual `loomcycle mcp install` path.
 - [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). Operator config guide: provider / tier / user_tier resolution rules, four cookbook patterns (single / multi-provider × single / multi-user-tier), `models:` alias map, and the agent `.md` frontmatter field reference.
+- [`docs/SPEECH.md`](docs/SPEECH.md). Read-aloud and transcription for chat clients: `POST /v1/audio/speech`, `POST /v1/audio/transcriptions` and `GET /v1/_speech`, who may call them, the engine queue, caps and billing.
 - [`docs/SEARCH.md`](docs/SEARCH.md). Web-search providers (RFC BB): the catalog + fallback circuit, `search_providers` / `search_priority` config, per-agent lists, operator/tenant keys, the routing view — and a self-hosted **SearXNG** deploy recipe (the sidecar + the three `settings.yml` knobs + verification).
 - [`docs/POSTGRES.md`](docs/POSTGRES.md). Postgres backend operator guide: configuration, migrations, sqlite → postgres runbook, concurrency benchmark.
 - [`docs/GRPC.md`](docs/GRPC.md). gRPC surface: enablement, wire-shape parity with HTTP + SSE, error mapping, Python adapter quick-start.

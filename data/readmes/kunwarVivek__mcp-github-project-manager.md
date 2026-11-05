@@ -4,6 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/mcp-github-project-manager.svg)](https://www.npmjs.com/package/mcp-github-project-manager)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/kunwarvivek-mcp-github-project-manager-badge.png)](https://mseep.ai/app/kunwarvivek-mcp-github-project-manager)
 
 **The task substrate for AI coding agents.** An [MCP](https://modelcontextprotocol.io) server that turns GitHub Projects v2 into an agentic project-management layer: agents register, self-assign work, heartbeat, submit work products for review, and spend against token budgets — through **<!-- count:tools -->21<!-- /count --> compound tools exposing <!-- count:actions -->175<!-- /count --> actions**, backed entirely by GitHub-native storage. No database, no Redis, no external infra.
 
@@ -34,8 +35,11 @@ Requires Node.js **>= 22.12.0** (Node 24 recommended).
 # 1. Install (global, or use npx / pnpm dlx / docker compose — see below)
 npm install -g mcp-github-project-manager
 
-# 2. Configure (a working `gh auth login` means you can skip GITHUB_TOKEN)
-export GITHUB_TOKEN="ghp_..."
+# 2. Configure — pick ONE credential (GITHUB_TOKEN is not required)
+export GITHUB_TOKEN="ghp_..."            # a PAT, or
+# mcp-github-project-manager auth login --gh   # zero registration: sets up the GitHub CLI login, or
+# GITHUB_OAUTH_CLIENT_ID=<id> mcp-github-project-manager auth login   # OAuth device flow, or
+# nothing at all if `gh auth login` is already done (needs the `project` scope: `gh auth refresh -h github.com -s project`)
 export GITHUB_OWNER="your-org-or-user"
 export GITHUB_REPO="your-repo"
 
@@ -67,11 +71,17 @@ claude mcp add github-project-manager -- npx -y mcp-github-project-manager
 
 # Docker
 docker compose up --build
+
+# Docker + OAuth sign-in (token persists in the gpm-data volume at /data)
+docker run -it --rm -v gpm-data:/data -e GITHUB_OAUTH_CLIENT_ID=<id> mcp-github-project-manager auth login
+docker run -i --rm -v gpm-data:/data -e GITHUB_OAUTH_CLIENT_ID=<id> mcp-github-project-manager
 ```
+
+Bind-mounting a host directory at `/data` requires it to be owned by uid `10001` (the container user). For headless/CI use a GitHub App or PAT instead — see the [Deployment Guide](docs/deployment.md#docker).
 
 Install paths: `npm install -g mcp-github-project-manager`, `npx -y mcp-github-project-manager`, `pnpm dlx mcp-github-project-manager`, or `docker compose up --build`.
 
-A GitHub token needs `repo`, `project`, and `write:org` scopes. Full setup options live in the [Deployment Guide](docs/deployment.md) and the [Getting Started tutorial](docs/tutorials/getting-started.md).
+A GitHub token (if you use a PAT) needs `repo`, `project`, and `write:org` scopes. Prefer not to create one? Run `mcp-github-project-manager auth login --gh` (no OAuth app needed; it drives the GitHub CLI login and checks the `project` scope), or sign in with your own account via the OAuth device flow (`GITHUB_OAUTH_CLIENT_ID=<id> mcp-github-project-manager auth login`; see [OAuth device flow](docs/CONFIGURATION.md#oauth-device-flow-auth-login)). Full setup options live in the [Deployment Guide](docs/deployment.md) and the [Getting Started tutorial](docs/tutorials/getting-started.md).
 
 Works with any stdio MCP client — Claude Desktop, Claude Code, Codex, Cursor, Windsurf, Roo Code, VS Code + Copilot, OpenCode, and custom harnesses.
 
@@ -162,16 +172,17 @@ Where the state lives — no external database:
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `GITHUB_TOKEN` | yes\* | GitHub PAT with `repo`, `project`, `write:org` |
+| `GITHUB_TOKEN` | no\* | GitHub PAT (`repo`, `project`, `write:org`) — one of several credential options |
 | `GITHUB_OWNER` | yes | Owner (user or org) of the target repository |
 | `GITHUB_REPO` | yes | Target repository name |
-| `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_APP_INSTALLATION_ID` | no | GitHub App installation auth; outranks the PAT when all three are set (a partial set falls back to the PAT) |
+| `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, `GITHUB_APP_INSTALLATION_ID` | no | GitHub App installation auth; highest-priority credential when all three are set (a partial set falls through to the next tier) |
+| `GITHUB_OAUTH_CLIENT_ID` (+ optional `GITHUB_OAUTH_CLIENT_SECRET`, `GITHUB_OAUTH_SCOPES`, `GITHUB_OAUTH_TOKEN_FILE`) | no | OAuth device flow for `auth login` |
 | `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `PERPLEXITY_API_KEY` | no | Unlocks the `ai_*` tools |
 | `AI_{MAIN,PRD,RESEARCH,FALLBACK}_{PROVIDER,MODEL,API_KEY,BASE_URL}` | no | Per-role provider, model, key, endpoint |
 | `MCP_TOOL_GROUPS` | no | Expose only some groups: `core`, `ai`, `agents`, `events`, `system` (default `all`) |
 | `SECRETS_DIR` | no | Read secrets from files named after the variable (Docker/k8s convention) |
 | `WEBHOOK_SECRET`, `WEBHOOK_PORT`, `SSE_ENABLED` | no | Webhook/SSE transport; signature validation fails closed |
-| `WEBHOOK_HOST`, `EVENTS_AUTH_TOKEN`, `WEBHOOK_TRUSTED_PROXIES` | no | HTTP hardening: binds `127.0.0.1` by default; `/events/*` needs the bearer token; `X-Forwarded-For` trusted only from listed proxies |
+| `WEBHOOK_HOST`, `EVENTS_AUTH_TOKEN`, `WEBHOOK_TRUSTED_PROXIES` | no | HTTP hardening: binds `127.0.0.1` by default; `/events/*` needs the bearer token (or OAuth 2.1 settings below); `X-Forwarded-For` trusted only from listed proxies |
 | `SYNC_ENABLED`, `CACHE_DIRECTORY`, `MAX_CACHE_ENTRIES` | no | Bidirectional sync and cache tuning |
 | `RATE_LIMIT_FLOOR` | no | Remaining GraphQL points below which requests back off proactively (default 100) |
 | `AUDIT_LOG_ENABLED`, `AUDIT_LOG_PATH` | no | Append-only, redacted JSONL record of every state-changing tool call (`.mcp-audit/mutations.jsonl`) |
@@ -179,7 +190,9 @@ Where the state lives — no external database:
 | `AI_SESSION_TOKEN_LIMIT` | no | Per-operation token budget for AI task generation (distinct from per-agent budgets) |
 | `LOG_LEVEL`, `LOG_FORMAT` | no | `debug\|info\|warn\|error`, `text` or `json` |
 
-\* **Credential chain** (first hit wins): `--token` CLI flag → `$SECRETS_DIR/GITHUB_TOKEN` file → `GITHUB_TOKEN` env var → `gh auth token`. If you are already logged in with `gh`, you need no token configuration at all. Disable the fallback with `GH_CLI_TOKEN_FALLBACK=false`. CLI flags override env vars everywhere.
+\* **Credential chain** (first hit wins, re-resolved per tool call): GitHub App installation → `--token` CLI flag → `$SECRETS_DIR/GITHUB_TOKEN` file → `GITHUB_TOKEN` env var → stored OAuth token from `auth login` → `gh auth token`. `GITHUB_TOKEN` is just one option; if you are already logged in with `gh`, you need no token configuration at all. The gh token is re-read every 60 s (and on a `401`); pin an account with `GH_CLI_USER`. Disable the fallback with `GH_CLI_TOKEN_FALLBACK=false`. CLI flags override env vars everywhere.
+
+The `/events/*` HTTP endpoints require a bearer token (`EVENTS_AUTH_TOKEN`) or OAuth 2.1 resource-server settings (`OAUTH_ISSUER` + `OAUTH_AUDIENCE`); with neither configured they answer `503` (set `EVENTS_ALLOW_UNAUTHENTICATED=true` for trusted dev only). See [Inbound HTTP authentication](docs/CONFIGURATION.md#inbound-http-authentication-events).
 
 Narrow the exposed surface with group filters (group names, not tool names):
 
@@ -189,7 +202,7 @@ MCP_TOOL_GROUPS=core,ai     # add the AI tools
 MCP_TOOL_GROUPS=all         # default — everything
 ```
 
-**AI providers**: `anthropic`, `openai`, `google`, `perplexity`, and `openai-compatible` (OpenRouter, Together, Groq, Ollama, LM Studio, Azure OpenAI, …). There are **no default models** — you configure the models you use, per role, so you can run OpenRouter for cheap daily work and a frontier model for PRD generation. A partially configured GitHub App falls back to the PAT rather than locking you out.
+**AI providers**: `anthropic`, `openai`, `google`, `google-vertex` (Gemini via Google ADC — `GOOGLE_VERTEX_PROJECT`), `perplexity`, and `openai-compatible` (OpenRouter, Together, Groq, Ollama, LM Studio, Azure OpenAI, …). There are **no default models** — you configure the models you use, per role, so you can run OpenRouter for cheap daily work and a frontier model for PRD generation.
 
 Full list: [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 

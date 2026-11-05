@@ -26,7 +26,7 @@
 
 <p align="center">
   <a href="https://github.com/samugit83/redamon/stargazers"><img height="24" src="https://img.shields.io/github/stars/samugit83/redamon?style=flat&color=2E8B57&label=Stars" alt="GitHub Stars"/></a>
-  <img height="24" src="https://img.shields.io/badge/v7.6.1-release-2E8B57?style=flat" alt="Version 7.6.1"/>
+  <img height="24" src="https://img.shields.io/badge/v7.6.2-release-2E8B57?style=flat" alt="Version 7.6.2"/>
   <img height="24" src="https://img.shields.io/badge/WARNING-SECURITY%20TOOL-B22222?style=flat" alt="Security Tool Warning"/>
   <img height="24" src="https://img.shields.io/badge/LICENSE-MIT-4169A1?style=flat" alt="MIT License"/>
   <img height="24" src="https://img.shields.io/badge/AI-AUTONOMOUS%20AGENT-6A5ACD?style=flat&logo=openai&logoColor=white" alt="AI Powered"/>
@@ -698,7 +698,7 @@ No profile ever ticks `kali:exec` or `recon:overwrite` for you, not even the one
 
 #### Agent in the Loop (your Claude Code or Codex as RedAmon's brain)
 
-Pick **Agent in the Loop** as a chat's model and every reasoning step of that run goes to *your* agent instead of a provider: Claude Code or Codex claims each step over the MCP server, writes the decision, and RedAmon runs it with its own tools, graph and gates. No provider key is needed, your agent's own subscription does the thinking, and **every approval stays with you**: phase changes, questions and dangerous tools are answered in the RedAmon drawer, never over MCP, and in such a run dangerous tools always ask. The token that drives it holds `agent:loop` and read permissions only. On by default with the MCP server (`./redamon.sh` writes both switches into `.env`); the onboarding pack for the *Agent in the Loop* profile ships the skill and the client settings for both clients.
+Pick **Agent in the Loop** as a chat's model and every reasoning step of that run goes to *your* agent instead of a provider: Claude Code or Codex claims each step over the MCP server, writes the decision, and RedAmon runs it with its own tools, graph and gates. No provider key is needed, your agent's own subscription does the thinking, and **every approval stays with you**: phase changes, questions and dangerous tools are answered in the RedAmon drawer, never over MCP, and dangerous tools ask you while the project's *Require Tool Confirmation* is on (turn it off for an unattended run, which the chat marks with a red risk icon). The token that drives it holds `agent:loop` and read permissions only. On by default with the MCP server (`./redamon.sh` writes both switches into `.env`); the onboarding pack for the *Agent in the Loop* profile ships the skill and the client settings for both clients.
 
 > **[Wiki: Agent in the Loop](https://github.com/samugit83/redamon/wiki/Agent-in-the-Loop)** | **[Technical: README.MCP.SERVER.md §9](docs/readmes/README.MCP.SERVER.md#9-agent-in-the-loop)**
 
@@ -987,5 +987,4 @@ flowchart TB
 | **Web Application** | Next.js dashboard for visualization and AI interaction | [README.WEBAPP.md](docs/readmes/README.WEBAPP.md) |
 | **GVM Scanner** | Greenbone/OpenVAS network vulnerability scanner (170K+ NVTs) | [README.GVM.md](docs/readmes/README.GVM.md) |
 | **Secret Multiscanner** | Deep secret scanning across 14 source kinds (git, GitHub, GitLab, Docker, Hugging Face, S3, GCS, filesystem, Jenkins, Elasticsearch, Postman, CI) with 1060 detectors, live-credential verification, and one hardened container per source running in parallel | [Wiki: Secret Multiscanner](https://github.com/samugit83/redamon/wiki/Secret-Multiscanner) |
-| **Supply-Chain Scanner** | Offline malicious/vulnerable package detection (OSV-Scanner + GuardDog + retire.js) with a hardened DIRTY/CLEAN split; 3 layers (agent tools, standalone SBOM scan, live-target recon) | [README.SUPPLY_CHAIN.md](docs/readmes/README.SUPPLY_CHAIN.md) |
-| **PostgreSQL Database** | Project settings, user accounts, configu
+| **Supply-Chain Scanner** | Offline malicious/vulnerable package detection (OSV-Scanner + GuardDog + retire.js) with a hardened DIRTY/CLEAN split; 3 layers (agent tools, standalone SBOM scan, live-target recon) | [README.SUPPLY_C

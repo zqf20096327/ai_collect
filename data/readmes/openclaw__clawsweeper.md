@@ -575,6 +575,13 @@ regular-file mode, and every committed base/head reference must match. Other
 decoders and changed source lines remain blocking; the WebSocket fixture has
 no qualification because the pinned scanner did not emit a finding for it.
 
+The website widget's password-only URL rejection fixture in
+`ui/src/lib/board/widgets/website.test.ts` qualifies only for its observed URI
+detector 17 `PLAIN` finding. Both raw-value digests, the complete source line,
+original path, regular-file mode, and committed base/head references must match.
+The username-only fixture has no qualification because the pinned scanner did
+not report it. See [the native before/after proof](docs/proof/website-url-fixture/README.md).
+
 The TypeSafe local-transport URL-rejection fixture in
 `extensions/typesafe/src/local.transport.test.ts` binds its exact URI detector 17
 identities, full source line, regular-file mode, and committed base/head references.
@@ -922,7 +929,14 @@ separate; `codex:local:check` still invokes its existing model smoke test.
 
 Without `--target-dir`, `--local-range` reviews the checkout where the command
 was invoked. Pass `--target-dir <path>` when invoking ClawSweeper from a
-different checkout. The range is `merge-base(<base>, HEAD)..HEAD`, includes
+different checkout. Local range review accepts unlisted and private repositories
+without central registration. `--target-repo owner/repo` overrides the existing
+`CLAWSWEEPER_TARGET_REPO` / `TARGET_REPO` selectors; otherwise the checkout's
+GitHub `origin` supplies its identity. For a checkout without a GitHub origin,
+pass `--target-repo` explicitly. Unlisted targets use their own `AGENTS.md`, docs,
+tests, and Git history; known targets retain their full repository guidance.
+Local profiles have empty close rules and do not enroll targets in hosted review
+or apply. The range is `merge-base(<base>, HEAD)..HEAD`, includes
 committed work only, and refuses a dirty working tree. `--body-file` can supply
 the proposed PR body and `--additional-policy` can layer an extra local policy.
 

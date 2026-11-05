@@ -75,7 +75,7 @@
 
 3. **连接来源** —— 在装了插件的浏览器登录 [B 站](https://www.bilibili.com)（默认初始化来源），或改选小红书 / 抖音 / YouTube / X / 知乎 / Reddit / Linux.do / V2EX / 微博 / GitHub。Linux.do、Bangumi、V2EX、微博与 GitHub 均可公开发现；需要账号态的来源仍复用已安装插件，GitHub 则由后端官方 REST API 匿名读取公开 repository。GitHub 可用公开用户名把 starred repositories 用作初始化信号，PAT 只是可选的提额和身份校验方式。TikTok、Instagram 需在「设置 → 来源」中手动开启；使用已装插件的浏览器登录，插件默认包含两者站点访问权限。TikTok 未登录可发现公开视频，登录后由插件同步凭据用于关键词搜索；Instagram 可只读导入本人点赞、收藏和关注。两者均需海外网络：后端沿现有网络/代理设置，浏览器任务使用浏览器自身代理。连接与许可要求见 [TikTok](docs/modules/tiktok.md)、[Instagram](docs/modules/instagram.md)。
 
-4. **打开界面** —— 浏览器访问 `http://127.0.0.1:8420/web`；手机扫插件二维码打开 `http://<电脑局域网 IP>:8420/m/`，保存到主屏幕即可当 App 用；想要原生 App 体验，可安装独立仓库的 [Flutter 客户端](https://github.com/whiteguo233/OpenBiliClaw-mobile)（Android / iOS / Web / 桌面，安装包见 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw-mobile/releases/latest)），在设置里填后端地址即可连接同一后端。
+4. **打开界面** —— 浏览器访问 `http://127.0.0.1:8420/web`；手机扫插件二维码打开 `http://<电脑局域网 IP>:8420/m/`，保存到主屏幕即可当 App 用；想要原生 App 体验，可安装独立仓库的 [Flutter 客户端](https://github.com/whiteguo233/OpenBiliClaw-mobile)（Android / iOS / Web / 桌面，安装包见 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw-mobile/releases/latest)），在新版 App 设置里点「扫码连接」即可导入同一后端；Web / 插件二维码可切换局域网、Tailscale、公网，详见[手机扫码连接](docs/mobile-connection.md)。
 
 不在同一局域网时，`OpenBiliClaw-mobile` 的 **Android / iOS 原生 App** 已内嵌 `tsnet`，电脑端
 也可让 OpenBiliClaw 自己加入同一 tailnet；Web / Linux / macOS / Windows Flutter 客户端不在
@@ -134,7 +134,7 @@ query inspiration → configured provider chain
 
 ### 🔒 100% 本地，100% 你的
 
-核心行为、推荐和对话数据留在你硬盘上的 SQLite，配置、画像、凭据与缓存也只保存在本机文件中。LLM 默认用你自己的 API Key，也可实验性复用本机 Codex CLI 的 ChatGPT OAuth 凭据。没有 OpenBiliClaw 运营的云端账号，没有任何人能看到你的画像。这个 Agent 怎么长，完全你说了算——反馈推荐、对话调教、换 LLM、迁移或改数据库，随你。
+核心行为、推荐和对话数据留在你硬盘上的 SQLite，配置、画像、凭据与缓存也保存在本机文件中。LLM 可选免费方案、自有 API Key，或实验性复用本机 Codex CLI 的 ChatGPT OAuth 凭据；调用云端模型时，任务所需的文本和画像上下文会发送给所选模型服务商。没有 OpenBiliClaw 运营的云端账号。这个 Agent 怎么长，完全你说了算——反馈推荐、对话调教、换 LLM、迁移或改数据库，随你。
 
 > 💡 **和其他推荐工具的对比**
 >
@@ -647,13 +647,45 @@ OpenClaw 收到 `interest.probe` 事件（或主动拉取 `next-probe`），发�
 - 🚀 **图形化引导初始化** — 安装包 `/setup/`、桌面 Web 和插件都能点一下完成初始化，不碰命令行
 - 📦 **跨机器迁移** — 桌面配置页一键导出 / 导入可移植配置、SQLite、画像、Cookie 与图片缓存；导入先校验暂存，可查询 / 取消，重启后带回滚副本应用。`.obcbackup` 含明文敏感信息，但不含源机 API 登录密码 / 会话签名密钥或扩展设备 key
 - 🔬 **自动化评测优化** — 5 个模块各带 LLM-as-judge 自优化循环，prompt 质量随轮次自动提升
-- 🔒 **完全私有** — SQLite、配置、画像与缓存都留在本机，LLM 用你自己的 Key，每个实例只为你一个人构建
+- 🔒 **完全私有** — SQLite、配置、画像与缓存都留在本机，可选免费模型或自有 Key，每个实例只为你一个人构建
 - 🔌 **本地 embedding** — 可选 Ollama + bge-m3，CPU 即可，无需额外 API Key
 - 🔧 **完全可控** — 同类型 LLM 可配置多个独立渠道，拖拽全局 / 模块故障切换链；也可直接编辑画像、写自定义 Skill
 
 ## 🏛️ 架构概览
 
+免费模型方案（本分支已接入，SDK组件已发布，主程序待发布）：初始化、插件、PC 与手机设置共用模型选择；8B 为推荐默认，4B 可随时切换，文本向量默认云端 BGE-M3，也可选择本地 Ollama。[实现与验收边界](docs/plans/2026-11-04-sponsored-user-flow.md)。
+
+```text
+常驻硅基流动 Provider：初始化 / 插件 / PC / 手机 / CLI → 本机配置 → 共享 Sponsored 路由
+  文本 / JSON / 工具 → Qwen3-8B（128K）⇄ Qwen3.5-4B（256K）
+  云端文本向量 → BGE-M3（1024维，默认）；可选图片理解 → 4B
+  → 签名任务 IPC → Rust 进程池（1前台＋2后台，共用额度账本）→ SiliconFlow
+  无输出的临时故障 → 有限重试/免费互备 → 持久队列；已输出或执行工具则停止重跑
+  GitHub/Instagram 显式初始化 → 所选来源 producer → 同步评估/文案 → 首轮可用库存
+  通用网页抽取 → 完整 URL 规范化身份 → 候选去重；站内原生 ID 保留
+  返回结果 → 来源证据校验 → 画像/记忆；时间字段失败最多单独纠错一次
+  本地向量选择 → Ollama（独立缓存与地址，不使用免费Key）
+  凭据失效 / 授权到期 → 持久状态 → 设置/消息通知 → 更新安装包或配置自有Key
+  后端打包 / Docker → 必须纳入固定签名 Rust SDK → 缺失即构建失败
+  安装器 / 更新器 → 验签 → 优先当前 Core 固定版本 → 原子切换组件
+  长记忆精确查询 → JSON Pointer 原值；免费导演 → 顺序引用 → 后端分组校验
+```
+
+文本/JSON 接口转发真实增量流；工具沿用项目模拟协议。默认只在两个免费模型间回退，使用自有渠道须明确开启。BGE-M3 不提供图片向量。
+
+```text
+LAN / system Tailscale interfaces + ready embedded helper + effective listener
+  → GET /api/qr-info → shared mobile-connection.js → Web / extension QR
+public/custom HTTP(S) URL ──────────────────────┘
+  → phone camera → <prefix>/m/ Mobile Web
+      → <prefix>/{api,shared,i18n/ui} + WebSocket + image proxy
+  → native App camera / gallery → local QR decoder
+      → saved backend + direct / embedded Tailscale transport
+```
+
 扩展在线状态：`runtime-stream → API 原子在线心跳 → data/runtime/extension_presence.json → full/discovery worker → 浏览器任务队列`；空闲连接每 20 秒续约，活动租约 60 秒失效，正常断开保留原宽限。见 [Runtime 模块](docs/modules/runtime.md#presencetracker)。
+
+抖音账号导入：`携带网页端参数的 profile/self → 本人账号 API 分页 → 有效 API 结果 → 后端拒绝已知 DOM 回退 → 任务回传 / 画像`；空列表保持为空，失败只保留有效 API partial，页面推荐卡片不进入个人记录。默认每类最多 300 条，成功不表示全量历史。
 
 抖音发现节流：`已领取任务失败 → dy_tasks 持久冷却 → producer 关键词领取前 / client / pending 领取门控`；原生搜索流立即交还网页，仅在有界副本上逐帧采集。有效 partial 与失败同时保留；共用发现客户端与任务队列的路径不能通过重启或 direct fallback 绕过冷却。
 

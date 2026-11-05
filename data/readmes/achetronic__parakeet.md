@@ -21,9 +21,12 @@
 - [Configuration](#configuration)
   - [Command Line Flags](#command-line-flags)
   - [Environment Variables](#environment-variables)
+  - [Long Audio](#long-audio)
+  - [Speaker Diarization](#speaker-diarization)
   - [Model Files](#model-files)
 - [API Reference](#api-reference)
   - [Transcribe Audio](#transcribe-audio)
+  - [Segments and timing](#segments-and-timing)
   - [Streaming](#streaming)
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
@@ -42,9 +45,11 @@ Key features:
 - No Python dependency at runtime (ffmpeg is an optional system dependency for non-WAV audio)
 - Structured logging with `slog` (text and JSON formats, configurable log level)
 - Support for multiple response formats (JSON, text, SRT, VTT)
+- Timed segments in `verbose_json`, and one SRT/VTT cue per segment, derived from the decoder's own token positions
 - Multilingual support (English and 25+ languages)
 - Quantized model support for reduced memory footprint
 - Automatic audio conversion for non-WAV formats (MP3, OGG, WebM, FLAC, M4A, AAC, Opus, ...) when ffmpeg is installed
+- Speaker diarization (opt-in): attribute each word to a speaker and return speaker-tagged turns
 
 ## Model Architecture
 
@@ -219,6 +224,14 @@ docker run -d \
   --name parakeet \
   -p 5092:5092 \
   ghcr.io/achetronic/parakeet:latest
+
+# Speaker diarization is bundled in the image but disabled by default;
+# enable it per deployment:
+docker run -d \
+  --name parakeet \
+  -p 5092:5092 \
+  -e PARAKEET_ENABLE_DIARIZATION=true \
+  ghcr.io/achetronic/parakeet:latest
 ```
 
 #### Docker Compose
@@ -302,11 +315,12 @@ chunk_%03d.wav`) or use a CPU image, which is bounded by system RAM instead.
 | `-gpu`                        | Execution provider: `cpu` or `cuda`                                      | `cpu`                      | `-gpu cuda`                            |
 | `-gpu-device`                 | GPU device index for `cuda`                                              | `0`                        | `-gpu-device 1`                        |
 | `-long-audio`                 | Split audio over the model limit into chunks instead of rejecting it     | `false`                    | `-long-audio`                          |
-| `-chunk-seconds`              | Sliding-window size for long audio, in seconds                           | `300`                      | `-chunk-seconds 240`                   |
-| `-chunk-overlap-seconds`      | Overlap between consecutive chunks, in seconds                           | `15`                       | `-chunk-overlap-seconds 10`            |
+| `-chunk-seconds`              | Sliding-window size for long audio, in seconds     | `60`                       | `-chunk-seconds 120`                   |
+| `-chunk-overlap-seconds`      | Overlap between consecutive chunks, in seconds      | `15`                       | `-chunk-overlap-seconds 20`            |
 | `-disable-vad-based-chunking` | Disable the Silero VAD chunk-boundary layer (falls back to mel energy)   | `false`                    | `-disable-vad-based-chunking`          |
 | `-disable-mel-based-chunking` | Disable the mel-energy chunk-boundary layer (falls back to the midpoint) | `false`                    | `-disable-mel-based-chunking`          |
 | `-vad-model-path`             | Path to the Silero VAD ONNX model                                        | `<models>/silero_vad.onnx` | `-vad-model-path /opt/silero_vad.onnx` |
+| `-enable-diarization`         | Load the diarization model and allow `diarize=true`                      | `false`                    | `-enable-diarization`                  |
 
 **Examples:**
 
@@ -329,6 +343,25 @@ chunk_%03d.wav`) or use a CPU image, which is bounded by system RAM instead.
 # Suppress ONNX Runtime schema warnings (stderr) while keeping debug logs
 ./parakeet -log-level debug 2>&1 | grep -v "Schema error"
 ```
+
+### Environment Variables
+
+Every command-line flag also reads from an environment variable: take the flag
+name, uppercase it and replace dashes with underscores, then prefix it with
+`PARAKEET_`. So `-log-level` maps to `PARAKEET_LOG_LEVEL`, `-ffmpeg-timeout` to
+`PARAKEET_FFMPEG_TIMEOUT`, and so on. An explicit flag always overrides its env
+var (precedence: **CLI flag > env var > default**); an invalid env value is
+ignored with a warning and the default is kept.
+
+The Docker images bake their operational defaults as `PARAKEET_*` env vars, so
+they survive when you pass your own flags.
+
+A few variables have no flag equivalent:
+
+| Variable           | Description                                 | Default               |
+| ------------------ | ------------------------------------------- | --------------------- |
+| `ONNXRUNTIME_LIB`  | Path to libonnxruntime.so                   | Auto-detected         |
+| `PARAKEET_API_KEY` | API key for `/v1/*` endpoint authentication | Empty (auth disabled) |
 
 ### Long Audio
 
@@ -355,24 +388,9 @@ A second, always-on safety net removes any duplicate or colliding tokens right
 at each seam. You can turn off individual layers with
 `-disable-vad-based-chunking` / `-disable-mel-based-chunking`.
 
-### Environment Variables
+### Speaker Diarization
 
-Every command-line flag also reads from an environment variable: take the flag
-name, uppercase it and replace dashes with underscores, then prefix it with
-`PARAKEET_`. So `-log-level` maps to `PARAKEET_LOG_LEVEL`, `-ffmpeg-timeout` to
-`PARAKEET_FFMPEG_TIMEOUT`, and so on. An explicit flag always overrides its env
-var (precedence: **CLI flag > env var > default**); an invalid env value is
-ignored with a warning and the default is kept.
-
-The Docker images bake their operational defaults as `PARAKEET_*` env vars, so
-they survive when you pass your own flags.
-
-A few variables have no flag equivalent:
-
-| Variable           | Description                                 | Default               |
-| ------------------ | ------------------------------------------- | --------------------- |
-| `ONNXRUNTIME_LIB`  | Path to libonnxruntime.so                   | Auto-detected         |
-| `PARAKEET_API_KEY` | API key for `/v1/*` endpoint authentication | Empty (auth disabled) |
+The server can optionally distinguish speakers using [NVIDIA Nemotron-3-Diarization](https://huggingface.co/nvidia/Nemotron-3-Diarization) (100M parameters, up to 8 speakers), running as a second ONNX model. Diarization is **disabled by default**; enable it with `-enable-diarization` (or `PARAKEET_ENABLE_DIARIZATION=true`) and request it per call with `diarize=true`. The model is bundled by `make models` and in the Docker images.
 
 ### Model Files
 
@@ -388,6 +406,18 @@ The following files are required in the models directory:
 | `silero_vad.onnx`               | 2.3 MB | Silero VAD (chunk boundaries, long-audio only; optional) |
 
 For full precision models, use `encoder-model.onnx` (requires `encoder-model.onnx.data`, 2.5GB total) and `decoder_joint-model.onnx` (72MB).
+
+Speaker diarization (optional, only when `-enable-diarization` is set) needs a `diarization/` subdirectory with the Nemotron-3-Diarization model:
+
+| File (in `diarization/`)                | Size   | Description                     |
+| --------------------------------------- | ------ | ------------------------------- |
+| `model_quantized.onnx` + `.onnx_data`   | 120 MB | int8 diarization encoder        |
+| or `model.onnx` + `model.onnx_data`     | 400 MB | fp32 diarization encoder        |
+| `config.json`                           | 1.6 KB | Streaming / speaker-cache config |
+| `preprocessor_config.json`              | 339 B  | Feature extractor config        |
+| `processor_config.json`                 | 623 B  | Processor config                |
+
+Downloaded by `make models` (chained into `models-int8`/`models-fp32`).
 
 `silero_vad.onnx` ([snakers4/silero-vad](https://github.com/snakers4/silero-vad), MIT, pinned to release v6.2.1) is downloaded and checksum-verified by `make models`. It is only used to place chunk boundaries on silence in long-audio mode; if it is missing the server logs a warning once and falls back to mel-energy boundaries.
 
@@ -420,10 +450,11 @@ Content-Type: `multipart/form-data`
 | `file`            | file   | Yes      | Audio file (WAV always supported; MP3/OGG/WebM/FLAC/M4A/AAC/Opus via ffmpeg, max 25MB) |
 | `model`           | string | No       | Model name (accepted but ignored)                                                      |
 | `language`        | string | No       | ISO-639-1 language code (default: en)                                                  |
-| `response_format` | string | No       | Output format: json, text, srt, vtt, verbose_json                                      |
+| `response_format` | string | No       | Output format: json, text, srt, vtt, verbose_json (the last three carry per-segment timings) |
 | `stream`          | bool   | No       | When `true`, stream the transcription as Server-Sent Events (see Streaming below)      |
 | `prompt`          | string | No       | Accepted but ignored                                                                   |
 | `temperature`     | float  | No       | Accepted but ignored                                                                   |
+| `diarize`         | bool   | No       | When `true`, return speaker-attributed turns (requires `-enable-diarization`)          |
 
 **Response**
 
@@ -441,18 +472,64 @@ Verbose JSON format:
 {
   "task": "transcribe",
   "language": "en",
-  "duration": 5.2,
-  "text": "transcribed text here",
+  "duration": 12.48,
+  "text": "I suppose I should take you back, really. I was twelve years old.",
   "segments": [
     {
       "id": 0,
-      "start": 0,
-      "end": 5.2,
-      "text": "transcribed text here"
+      "seek": 800,
+      "start": 0.8,
+      "end": 3.44,
+      "text": "I suppose I should take you back, really.",
+      "tokens": [412, 1093, 301, 288, 117, 2140, 7],
+      "temperature": 0,
+      "avg_logprob": -0.118,
+      "compression_ratio": 1.94,
+      "no_speech_prob": 0
+    },
+    {
+      "id": 1,
+      "seek": 4320,
+      "start": 4.32,
+      "end": 6.16,
+      "text": "I was twelve years old.",
+      "tokens": [301, 412, 1904, 604, 7],
+      "temperature": 0,
+      "avg_logprob": -0.071,
+      "compression_ratio": 1.62,
+      "no_speech_prob": 0
     }
   ]
 }
 ```
+
+#### Segments and timing
+
+`verbose_json` reports real segment timings, and `srt` / `vtt` emit one cue per
+segment rather than one block covering the whole file.
+
+The timings come from the decoder itself. TDT tags every emitted token with the
+encoder frame it was decoded at, plus the frame count its duration head
+predicted for it. The server groups those tokens into segments, closing one on
+sentence punctuation, on a silence gap of about 0.64 s, or at 220 tokens / 30 s,
+and converts frames to seconds with the model's own rate (12.5 encoder frames
+per second, 0.08 s each).
+
+What each field means:
+
+| Field               | Meaning                                                                     |
+| ------------------- | --------------------------------------------------------------------------- |
+| `duration`          | Audio length measured from the decoded waveform, not from the uploaded bytes |
+| `start` / `end`     | Segment bounds in seconds, `end` clamped to `duration`                       |
+| `seek`              | Segment start in milliseconds, matching OpenAI's field                       |
+| `tokens`            | SentencePiece token ids of the segment                                       |
+| `avg_logprob`       | Mean log probability the decoder assigned to the segment's tokens            |
+| `compression_ratio` | `len(text) / len(gzip(text))`, the same redundancy metric OpenAI reports     |
+| `temperature`       | 0: decoding is greedy                                                        |
+| `no_speech_prob`    | 0: the TDT decoder has no no-speech head                                     |
+
+Segment texts concatenate back to the `text` field, so the two views of the same
+transcription never disagree.
 
 **Example**
 
@@ -462,6 +539,30 @@ curl -X POST http://localhost:5092/v1/audio/transcriptions \
   -F file=@audio.wav \
   -F language=en \
   -F response_format=json
+```
+
+#### Speaker Diarization
+
+When the server runs with `-enable-diarization`, pass `diarize=true` to get speaker-attributed turns. Each turn carries a `speaker` index (in arrival order), its `start`/`end` times, and its `text`.
+
+```bash
+curl -X POST http://localhost:5092/v1/audio/transcriptions \
+  -H "Authorization: Bearer $PARAKEET_API_KEY" \
+  -F file=@meeting.wav \
+  -F diarize=true
+```
+
+```json
+{
+  "task": "transcribe",
+  "language": "en",
+  "duration": 59.2,
+  "text": "In this video, I'm gonna teach you...",
+  "segments": [
+    {"speaker": 0, "start": 0.56, "end": 14.80, "text": "In this video, I'm gonna teach you..."},
+    {"speaker": 1, "start": 15.68, "end": 29.68, "text": "Going along slushy country roads..."}
+  ]
+}
 ```
 
 #### Streaming

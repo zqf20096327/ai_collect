@@ -108,6 +108,26 @@ On first launch each instance creates its own versioned `config.json` and adjace
 
 The memory value uses the gigabyte Apple uses to market the Mac: 1 GB = 1,073,741,824 bytes (2³⁰). Remove `maximum_mlx_memory_gb` to use the Mac-reported MLX ceiling. Per-model entries can set a lower context ceiling, generation defaults, chunking overrides, and multi-token-prediction depth. Explicit request values override generation defaults. Overrides for temporarily absent models remain dormant and are reported as unmatched rather than preventing other models from serving. Global chunking controls remain available under `chunking`, and each model may override individual values. See the [version 1 configuration schema](https://aosama.github.io/astronomical/schemas/config/v1/astronomical-config.schema.json) for the complete contract.
 
+## Edit the configuration
+
+Observatory's **Configuration** page edits every setting in that instance's `config.json`: set or change a value, remove it to return to its default, add settings for one model, or reset everything. The page is generated from the version 1 schema. Saving validates the whole document, refuses to overwrite a file that changed since the page loaded it, and reports whether the change applied, is waiting for a running request, or needs a restart. Reset keeps the old file beside the new one as `config.previous.json`.
+
+## Metal residency refresh
+
+macOS can release the Metal residency of wired memory while the GPU is idle, so model weights may have to be made resident again before the next prompt. Set `metal_residency_refresh_enabled` under `runtime`, or use the switch on Observatory's **Configuration** page, to have the inference worker re-request residency once per second. It is off by default, changing it restarts the worker, and the renewal can keep that memory wired through long idle periods.
+
+## Neural Engine prefill (experimental)
+
+Dense models can run part of each full prompt chunk on the Apple Neural Engine next to the GPU: 47 percent of each chunk's MLP work, and the DeltaNet layers' output gates. Set `experimental_neural_engine_prefill_enabled` under `chunking`, globally or for one model; it is off by default and applies at the next model load.
+
+Measured on Ornith-1.5-9B on one M5-class Mac, with 10,000-token Shakespeare prompts through the daemon and the prompt cache on: prefill rose from about 1,207 tokens per second to between 1,362 and 1,444, or 1.13× to 1.2×, and direct model runs without the cache's work measured about 1.27×. Decode did not change. The first long prompt after a load sees less of that gain, and only full 2,048-token chunks use the Neural Engine, so shorter prompts see none. The costs are real:
+
+- **Memory:** about 19 GB is reserved for that model's programs, which must fit under the MLX memory ceiling beside the model and its largest context. A ceiling of 34 GB admits it. The driver releases the programs' wired memory 10 to 20 seconds after work stops.
+- **Load time and disk:** a model's first load takes about 108 seconds longer and keeps about 10 GB of compiled programs under the instance's `neural-engine-programs` folder; later loads take about 3 seconds. Performance attribution, when enabled, removes the speed gain by adding synchronization.
+- **Output:** part of each prompt computes in fp16, so output can differ slightly from the GPU alone. In six exact-answer tasks over 13,000-token prompts every answer stayed correct, though on one coding task the answer ignored "output only the code".
+
+Mixture-of-experts models do not benefit, because their routed experts stay on the GPU. When the feature cannot run, serving stays on the GPU and `/v1/status` and the Configuration page say why.
+
 ## Build the app
 
 Required tools:

@@ -1,5 +1,9 @@
 # AskMyDocs — AI Hub & Intelligent Agentic Platform for the Enterprise
 
+**MCP project connections for Codex, Claude and Cursor:** OAuth sign-in, one
+tenant/project per connection, distinct URLs, and document ingestion with preview and progress. See the
+[connection guide](docs-site/codex-project-connection.mdx).
+
 > **Enterprise RAG + Knowledge Graph + Agentic Tool Use, self-hostable, MIT licensed.**
 
 AskMyDocs is a self-hostable AI hub for enterprise knowledge. It fuses
@@ -198,6 +202,11 @@ tells buyers to demand:
   Tunable via `CONNECTOR_IMAP_SERIALIZE_CONNECTIONS` (default on; needs an atomic lock store / Redis)
   + `CONNECTOR_IMAP_MAILBOX_LOCK_*`. See the
   [doc-site](https://padosoft.mintlify.app/connectors-imap-serialization).
+  Diagnose blocked folder requests without Tinker using
+  `php artisan connectors:imap:diagnose <tenant>` (optionally add a backfill id):
+  discovers the IMAP installation and reports read-only queue/cache configuration
+  and separate mailbox/queue-overlap lock TTLs. Multiple accounts are listed for selection. See the
+  [operator guide](docs/operations/imap-lock-diagnostics.md).
   A **transient transport drop** on a live session (the classic *"fwrite(): SSL: Broken pipe"* /
   connection-reset / idle drop Gmail & Exchange trigger mid-sync) is **absorbed by one
   close-and-retry on a fresh connection** — nested **inside** the per-mailbox lock, so the retry
@@ -329,6 +338,49 @@ and hit Stop; click Regenerate; hover the assistant message and pick
 Branch (a new conversation forks from that point); pick a follow-up
 pill chip to chain into the next prompt; hover any code block for the
 Copy button.
+
+---
+
+## ✨ Sessions workspace — organised chat, KB on top
+
+**A second chat surface in the ChatGPT/Claude mould: the knowledge base above
+the rail, sessions grouped into your own folders, pinnable, archivable and
+flagged by importance — over the *same* chat engine, not a fork of it.**
+
+The original `/app/chat` panel lists threads reverse-chronologically and nothing
+more. That is fine at ten sessions and unusable at fifty: no way to say *this one
+matters*, *these three are the same issue*, or *put this away*. The knowledge
+base had the mirror-image gap — every KB screen was admin-gated, so a `viewer`
+could read a cited document but never browse the corpus.
+
+- **Free-form folders** — `chat_folders`, private per (tenant, user). A session
+  belongs to at most one; "unfiled" is the default, and deleting a folder
+  *unfiles* its sessions rather than deleting them (`nullOnDelete`, never a
+  cascade). Grouping by **project** already existed via `conversations.project_key`
+  and is unchanged — folders are the free axis on top of it.
+- **Pin, archive, importance** — `pinned_at` / `archived_at` are timestamps (so
+  "most recently pinned first" and an archived-on date come free); importance is a
+  3-level enum (`normal` / `high` / `critical`) ordered by explicit weights, never
+  alphabetically. Organisation writes deliberately do **not** bump `updated_at`,
+  so archiving and restoring never teleports an untouched thread to the top.
+- **Browse KB for every role** — `GET /api/kb/tree` serves the reader-side
+  explorer at `/app/{team}/knowledge` through the *same* `KbTreeService` as the
+  admin tree, with soft-deleted documents never returned and the SQL
+  `AccessScopeScope` doing the enforcement. Read-only: no editing, upload,
+  history, graph or PDF export.
+- **Zero duplication, by construction** — the whole turn engine (deferred-send
+  queue, auto-titling, retrieval-filter constraints, realtime voice,
+  branch/edit/regenerate) lives in one `useChatSession()` hook that both surfaces
+  consume; `ChatView` shrank from 794 lines to ~220. A dedicated E2E scenario
+  sends a real turn from the new panel to prove the two shells share one engine.
+
+**Try it.** Open `/app/{team}/sessions`. Create a folder, drop a session into it from
+the row menu, pin another, flag one critical, archive a fourth and reopen the
+Archived drawer. Click **Knowledge base** at the top of the rail to browse
+documents, then follow a citation from a chat answer straight into it.
+
+See the [Sessions workspace deep-dive](https://doc.askmydocs.padosoft.com/chat-sessions-workspace)
+for the architecture, the R44 MCP exception and the visibility posture.
 
 ---
 
@@ -1158,41 +1210,4 @@ The v4.0 cycle adds a **per-request tenant context** that scopes every Eloquent 
 
 | Piece | Path | Responsibility |
 |---|---|---|
-| `TenantContext` | `app/Support/TenantContext.php` | Request-scoped singleton; holds the active `tenant_id` for the duration of one HTTP request or one CLI command |
-| `ResolveTenant` middleware | `app/Http/Middleware/ResolveTenant.php` | Reads the tenant from the configured resolver and sets `TenantContext`; runs at the top of the global middleware stack so every controller / job dispatched from the request inherits the context |
-| `BelongsToTenant` trait | `app/Models/Concerns/BelongsToTenant.php` | Auto-fills `tenant_id` on `creating` events from `TenantContext::current()`; provides `forTenant($id)` query scope |
-| `--tenant=X` CLI option | every domain Artisan command | CLI commands (`kb:ingest-folder`, `kb:rebuild-graph`, `kb:promote`, `insights:compute`) accept the option and set the context before running |
-
-**Configuration (`.env`)**
-
-```bash
-# Single-tenant deployment (v3.x backward compatible — DEFAULT)
-TENANT_DEFAULT=default
-TENANT_RESOLVER=default          # always returns 'default'
-
-# Multi-tenant by HTTP header (suitable for B2B SaaS with API gateway routing)
-TENANT_RESOLVER=header
-TENANT_HEADER_NAME=X-Tenant-ID
-
-# Multi-tenant by domain (suitable for subdomain-per-customer deployments)
-TENANT_RESOLVER=domain
-TENANT_DOMAIN_PATTERN='([^.]+)\\.example\\.com'   # captures tenant slug
-
-# Multi-tenant by authenticated user (suitable for shared-host SaaS)
-TENANT_RESOLVER=auth
-TENANT_USER_COLUMN=tenant_id     # column on the User model that holds the tenant
-```
-
-**What's tenant-scoped (and what isn't)**
-
-The tenant-aware models — the authoritative list lives in `tests/Architecture/TenantIdMandatoryTest::TENANT_AWARE_MODELS`, kept in lock-step with the migrations by the architecture test on every CI run (it spans `KnowledgeDocument` / `KnowledgeChunk`, the chat + conversation tables, the `kb_*` graph / canonical / engagement tables, `ProjectMembership` + the first-class `Project`, and the `KbIngestBatch` / `KbIngestBatchItem` upload-tracking pair, among others) — all carry `tenant_id` and use the `BelongsToTenant` trait. The composite FKs on `kb_edges` are **project-scoped** (`(project_key, node_uid)` — intra-project referential integrity); cross-**tenant** isolation is enforced at the **application layer** via the R30 `forTenant()` scope (`BelongsToTenant` auto-stamps on write but adds **no** global read scope), not by the FK — `project_key` is shared across tenants.
-
-`embedding_cache` is **intentionally NOT tenant-aware** — the cache is a cross-tenant reuse layer keyed by the composite `UNIQUE (text_hash, provider, model)` (v4.0.1, widened from `text_hash` alone so multiple provider/model embeddings of the same text coexist without forcing a flush). Sharing embeddings across tenants is a deliberate cost optimisation; `TenantIdMandatoryTest` documents the exclusion.
-
-**The 6 v4 cycle rules guard the boundary**
-
-| Rule | What it enforces |
-|---|---|
-| **R30** | Every Eloquent query against a tenant-aware table MUST be scoped to the active tenant via `forTenant()` or explicit `where('tenant_id', $ctx->current())` — cross-tenant leak is a GDPR catastrophe |
-| **R31** | Every tenant-aware model MUST `use BelongsToTenant;` and list `'tenant_id'` in `$fillable`; `tests/Architecture/TenantIdMandatoryTest.php` enumerates the model list and gates new entries on every CI run |
-| **R36** | Mandatory Copilot review + CI green loop on every PR — caught the v4 PR #98 reg
+| `TenantContext` | `app/Support/TenantContext.php` | Request-scoped singleton; holds the active `tenant_id` for the duration of one HTTP request or one CLI 

@@ -282,7 +282,7 @@ Standalone mode needs nothing but your machine. No cloud required. **Minimum:** 
 Two recommended ways to use lilbee, depending on whether you're the one driving:
 
 - **Run `lilbee`** for the full-screen terminal app. On first run you pick a chat model straight from the catalog, fit-checked against your hardware, then you index files, search, and chat without leaving the TUI. The Settings screen exposes every retrieval knob (search depth, distance threshold, reranker, chunking) so you can tune lilbee to your library shape.
-- **Connect it to your agent over MCP.** Any MCP-aware coding agent calls `lilbee_search` / `lilbee_add` and gets back cited snippets it can quote. Agents can also _fine-tune lilbee on the fly_ via `lilbee_settings_set`. Drop in the [lilbee-mcp skill](src/lilbee/skills/lilbee_mcp/SKILL.md) and the agent reads the full surface: every tool, every retrieval knob, and when to widen for prose vs narrow for code. See [A reference for AI agents](#a-reference-for-ai-agents).
+- **Connect it to your agent over MCP.** Any MCP-aware coding agent calls `lilbee_search` / `lilbee_add` and gets back cited snippets it can quote. Agents can also _fine-tune lilbee on the fly_ via `lilbee_settings_set`. Drop in the [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) and the agent reads the full surface: every tool, every retrieval knob, and when to widen for prose vs narrow for code. See [A reference for AI agents](#a-reference-for-ai-agents).
 
 Retrieval defaults are sane, and every setting is tunable from env vars or `config.toml`, most of them from the TUI, MCP, and the HTTP API too; the [settings reference](docs/settings.md) has a column per surface. The CLI and HTTP API cover scripting and headless runs. See the [usage guide](docs/usage.md).
 
@@ -450,7 +450,7 @@ Placement reads what the engine reports about your hardware, and every backend w
 lilbee's engine is llama.cpp, so lilbee runs what llama.cpp runs: any GGUF model built on one of the architectures below. The list comes from the bundled engine itself and grows with every engine update.
 
 <details>
-<summary><b>All 161 supported model architectures. Click to expand.</b></summary>
+<summary><b>All 168 supported model architectures. Click to expand.</b></summary>
 
 | | | | |
 |---|---|---|---|
@@ -458,43 +458,44 @@ lilbee's engine is llama.cpp, so lilbee runs what llama.cpp runs: any GGUF model
 | `arwkv7` | `baichuan` | `bailingmoe` | `bailingmoe2` |
 | `bailingmoe3` | `beam` | `bert` | `bitnet` |
 | `bloom` | `chameleon` | `chatglm` | `clef` |
-| `clip` | `codeshell` | `cogvlm` | `cohere2` |
-| `cohere2moe` | `command-r` | `dbrx` | `deci` |
-| `deepseek` | `deepseek2` | `deepseek2-ocr` | `deepseek32` |
-| `deepseek4` | `dflash` | `dots1` | `dots3note` |
-| `dream` | `eagle3` | `ernie4_5` | `ernie4_5-moe` |
-| `eurobert` | `exaone` | `exaone-moe` | `exaone4` |
-| `falcon` | `falcon-h1` | `gemma` | `gemma-embedding` |
-| `gemma-embedding2` | `gemma2` | `gemma3` | `gemma3n` |
-| `gemma4` | `gemma4-assistant` | `glm-dsa` | `glm4` |
-| `glm4moe` | `glm5-next` | `gpt-oss` | `gpt2` |
-| `gptj` | `gptneox` | `granite` | `granite_swa` |
-| `granitehybrid` | `granitemoe` | `graniteswitch` | `grok` |
-| `grovemoe` | `hrm_text` | `hunyuan-dense` | `hunyuan-moe` |
-| `hunyuan_vl` | `hy_v3` | `hy_v4` | `internlm2` |
-| `jais` | `jais2` | `jamba` | `jina-bert-v2` |
-| `jina-bert-v3` | `k2-horizon` | `kimi-k3` | `kimi-linear` |
-| `kolibri1` | `laguna` | `lfm2` | `lfm2moe` |
-| `llada` | `llada-moe` | `llama` | `llama-embed` |
-| `llama4` | `maincoder` | `maion-coder` | `mamba` |
-| `mamba2` | `maple` | `mellum` | `mimo2` |
-| `minicpm` | `minicpm3` | `minimax-01` | `minimax-m2` |
-| `minimax-m3` | `mistral3` | `mistral4` | `modern-bert` |
-| `mpt` | `muse-glimmer` | `muse-spark` | `nanbeige` |
-| `nemotron` | `nemotron_h` | `nemotron_h_moe` | `neo-bert` |
-| `nomic-bert` | `nomic-bert-moe` | `olmo` | `olmo2` |
-| `olmoe` | `openelm` | `orion` | `paddleocr` |
-| `pangu-embedded` | `phi2` | `phi3` | `phimoe` |
-| `plamo` | `plamo2` | `plamo3` | `plm` |
-| `pockettts` | `qwen` | `qwen2` | `qwen2moe` |
-| `qwen2vl` | `qwen3` | `qwen35` | `qwen35moe` |
-| `qwen3moe` | `qwen3next` | `qwen3tts` | `qwen3vl` |
-| `qwen3vlmoe` | `qwen4exp` | `refact` | `rnd1` |
-| `rwkv6` | `rwkv6qwen2` | `rwkv7` | `seed_oss` |
-| `smallthinker` | `smollm3` | `spark2_5` | `stablelm` |
-| `starcoder` | `starcoder2` | `step35` | `t5` |
-| `t5encoder` | `talkie` | `vllm-decision2` | `wavtokenizer-dec` |
-| `xverse` |  |  |  |
+| `clip` | `clover_moe` | `codeshell` | `cogvlm` |
+| `cohere2` | `cohere2moe` | `command-r` | `dbrx` |
+| `deci` | `deepseek` | `deepseek2` | `deepseek2-ocr` |
+| `deepseek32` | `deepseek4` | `deepseek41` | `dflash` |
+| `dots1` | `dots3note` | `dream` | `eagle3` |
+| `ernie4_5` | `ernie4_5-moe` | `eurobert` | `exaone` |
+| `exaone-moe` | `exaone4` | `falcon` | `falcon-h1` |
+| `flint` | `gemma` | `gemma-embedding` | `gemma-embedding2` |
+| `gemma2` | `gemma3` | `gemma3n` | `gemma4` |
+| `gemma4-assistant` | `glm-dsa` | `glm4` | `glm4moe` |
+| `glm5-next` | `gpt-oss` | `gpt2` | `gptj` |
+| `gptneox` | `granite` | `granite_swa` | `granitehybrid` |
+| `granitemoe` | `graniteswitch` | `grok` | `grovemoe` |
+| `hrm_text` | `hunyuan-dense` | `hunyuan-moe` | `hunyuan_vl` |
+| `hy_v3` | `hy_v4` | `internlm2` | `jais` |
+| `jais2` | `jamba` | `jina-bert-v2` | `jina-bert-v3` |
+| `k2-horizon` | `kimi-k3` | `kimi-linear` | `kolibri1` |
+| `laguna` | `lfm2` | `lfm2moe` | `lfm3` |
+| `limite` | `llada` | `llada-moe` | `llama` |
+| `llama-embed` | `llama4` | `maincoder` | `maion-coder` |
+| `mamba` | `mamba2` | `maple` | `mellum` |
+| `mimo2` | `minicpm` | `minicpm3` | `minimax-01` |
+| `minimax-m2` | `minimax-m3` | `mistral-large4` | `mistral3` |
+| `mistral4` | `modern-bert` | `mpt` | `muse-glimmer` |
+| `muse-spark` | `nanbeige` | `nemotron` | `nemotron_h` |
+| `nemotron_h_moe` | `neo-bert` | `nomic-bert` | `nomic-bert-moe` |
+| `olmo` | `olmo2` | `olmoe` | `openelm` |
+| `orion` | `paddleocr` | `pangu-embedded` | `phi2` |
+| `phi3` | `phimoe` | `plamo` | `plamo2` |
+| `plamo3` | `plm` | `pockettts` | `qwen` |
+| `qwen2` | `qwen2moe` | `qwen2vl` | `qwen3` |
+| `qwen35` | `qwen35moe` | `qwen3moe` | `qwen3next` |
+| `qwen3tts` | `qwen3vl` | `qwen3vlmoe` | `qwen4exp` |
+| `refact` | `rnd1` | `rwkv6` | `rwkv6qwen2` |
+| `rwkv7` | `seed_oss` | `sensenova_u1` | `smallthinker` |
+| `smollm3` | `spark2_5` | `stablelm` | `starcoder` |
+| `starcoder2` | `step35` | `t5` | `t5encoder` |
+| `talkie` | `vllm-decision2` | `wavtokenizer-dec` | `xverse` |
 
 </details>
 <!-- supported-archs:end -->
@@ -576,7 +577,7 @@ https://github.com/user-attachments/assets/46ce5440-ee9d-4420-a881-031a1ccccec8
 
 And the same setup scales up: Devstral 2 123B, 70GB across two A100 80GB cards, one agent at the model's full 14 tokens a second.
 
-It tunes itself, too. Tell a small local model to widen lilbee's search when a first result comes back thin, and the second pass returns full function bodies with file:line citations; a more capable model does the same from a prompt like "improve your search results." The [lilbee-mcp skill](src/lilbee/skills/lilbee_mcp/SKILL.md) teaches your own model the pattern.
+It tunes itself, too. Tell a small local model to widen lilbee's search when a first result comes back thin, and the second pass returns full function bodies with file:line citations; a more capable model does the same from a prompt like "improve your search results." The [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) teaches your own model the pattern.
 
 <!-- demo: mcp-code-self-tune | agent fine-tunes lilbee mid-conversation: outline, then widened retrieval, then source with file:line citations -->
 
@@ -584,7 +585,7 @@ https://github.com/user-attachments/assets/7bfec600-4c06-4a2f-8f77-be7e92f4f33f
 
 ### A reference for AI agents
 
-Once configured, lilbee plugs into whatever agent you use, over MCP. Feed it your project's docs, your dependency source, your API docs, your design notes; the agent stops making up function names and instead reads the actual code, cites file and line, and says it doesn't know when the answer isn't in your library. The [`lilbee-mcp` skill](src/lilbee/skills/lilbee_mcp/SKILL.md) is the single entry point: drop it into `.opencode/skills/` or `.claude/skills/` and it documents every tool, the workflows the agent should follow, and points to drop-in `AGENTS.md` and worker-subagent starters under [`examples/agent-integration/`](examples/agent-integration/). This works with cloud-model agents too; lilbee stays local, and only the queries and the returned chunks reach the model.
+Once configured, lilbee plugs into whatever agent you use, over MCP. Feed it your project's docs, your dependency source, your API docs, your design notes; the agent stops making up function names and instead reads the actual code, cites file and line, and says it doesn't know when the answer isn't in your library. The [`lilbee-mcp` skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) is the single entry point: drop it into `.opencode/skills/` or `.claude/skills/` and it documents every tool, the workflows the agent should follow, and points to drop-in `AGENTS.md` and worker-subagent starters under [`examples/agent-integration/`](examples/agent-integration/). This works with cloud-model agents too; lilbee stays local, and only the queries and the returned chunks reach the model.
 
 Your files, the search index, and the embeddings stay on your computer. The agent calls `lilbee_search` and gets back cited snippets with file and line. The agent reels above show this live: each pane reads and searches this repository through lilbee.
 

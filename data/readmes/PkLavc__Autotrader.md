@@ -56,6 +56,8 @@ partial fills, or delayed jobs cannot rewrite the research history.
 - Paper fills include slippage and a conservative per-order commission model.
 - Implausible forecasts above the configured absolute-return ceiling are rejected.
 - Volatility-adjusted scores rank eligible signals while position and cash caps remain enforced.
+- Multiple share classes of one issuer (such as GOOG/GOOGL) count as one company, including at execution time for previously queued signals.
+- The paper ledger checks per-asset 6% overnight gaps and 8% average-cost losses at the next session's opening price. Triggered assets are exited or excluded from that opening's entries; all other candidates continue trading. These checks cannot protect against the gap itself and are not guaranteed stop fills.
 - Broker plans are long-only, cash-limited, notional-limited, and idempotent.
 - Live mode requires multiple independent opt-ins and never activates from credentials alone.
 
@@ -68,11 +70,15 @@ partial fills, or delayed jobs cannot rewrite the research history.
 | Lookback | 400 market sessions |
 | Forecast horizon | 5 market sessions |
 | Maximum positions | 5 |
-| Maximum position | 18% |
-| Minimum cash | 10% |
-| Entry forecast floor | +1% |
+| Maximum position | 12% |
+| Minimum cash | 40% |
+| Planned risk budget per position | 0.5% NAV |
+| Adaptive stop distance | 4–15% |
+| Entry forecast floor | +1.5% |
 | Forecast plausibility ceiling | +30% |
-| Rebalance threshold | 3% of NAV |
+| Rebalance threshold | 5% of NAV |
+| Overnight gap risk exit (per symbol) | 6% down |
+| Position cost-basis risk exit (per symbol) | 8% down |
 | Slippage | 10 bps |
 | Paper commission | US$0.0035/share, minimum US$0.35/order |
 
@@ -92,12 +98,20 @@ recent dollar-volume screen selects these candidates; existing holdings and
 pending-order symbols have priority. The screen has no predictive claim and
 must not be evaluated as if it were a trained alpha signal.
 
-Portfolio limits remain five positions, 18% per position and at least 10%
-cash. New targets are capped at two positions per broad sector, and already-held
-securities receive a modest 8% tie-breaking score bonus **only if their forecast
-remains eligible**. No fixed holding period or automatic stop-loss has been
-added; those need longer walk-forward evidence. These policies make execution
-more consistent, **not guaranteed more profitable**.
+The single active research strategy uses 0.5% of portfolio equity as an
+*estimated* risk budget per position, with no more than 12% in one name
+and a minimum 40% cash allocation. Completed-market-session OHLC bars
+supply 20/50-day trend confirmation, realized volatility and a 14-day
+ATR-based initial stop distance. Weak signals are discarded; five positions
+are not mandatory. Long-held names have a ranking preference to reduce churn.
+
+The simulator trails protective levels using completed closing prices,
+executes stop breaches only at a *subsequent session opening* and excludes
+those tickers for five calendar days. All other instruments continue trading.
+These are **not** broker-resident intraday stops, and an overnight gap can
+cause losses larger than the planned 0.5% budget. This is not a guaranteed
+profitable strategy. Existing research balance/history/tax lots are preserved;
+no parallel legacy strategy is executed.
 
 The daily JSON report now includes `universe.configured`, `available`,
 `model_capacity`, `screened_for_model`, `model_forecasts_completed`, and
@@ -176,6 +190,16 @@ approved broker OAuth/Broker integration; raw customer credentials do not belong
 
 
 ### AudaceFi league (optional Solana devnet)
+
+The Crypto Bro league now has a separate `league_strategy.py` decision
+engine and `league_plan.py` guarded proposal adapter. They follow the
+five-day competition's **net USDC return** ranking, require verified
+category/season/wallet inputs, reject unsupported tokens, reserve time
+for the mandatory USDC-only snapshots and never authorize execution.
+The season remains read-only pending official wallet and API qualification.
+See [the league strategy](integrations/audacefi/README.md#crypto-bro-league-strategy-v1-isolated-from-stock-autotrader).
+
+
 
 The optional AudaceFi integration lives in [integrations/audacefi](integrations/audacefi/README.md). It includes isolated manual crypto research, a crypto-only risk-gated operation preparer, and a wiring layer for the official AudaceFi TypeScript kit. The existing equity portfolio and broker remain unchanged. No recurring workflow or execution is enabled; participation requires independent onboarding, a qualifying deployment profile, and an external wallet signer.
 

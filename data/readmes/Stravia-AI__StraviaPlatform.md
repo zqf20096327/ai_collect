@@ -59,7 +59,7 @@ Agent behavior is defined and versioned by the platform — Stravia is not a use
 
 ## Quick Start
 
-**Desktop** — download the Windows (NSIS) or Linux (AppImage) installer from [GitHub Releases](https://github.com/Stravia-AI/StraviaPlatform/releases) and open it. The full platform runs locally with an integrated management UI. macOS builds are not currently provided.
+**Desktop** — download the Windows (NSIS), Linux (AppImage), or macOS (DMG, Intel / Apple Silicon) installer from [GitHub Releases](https://github.com/Stravia-AI/StraviaPlatform/releases). The full platform runs locally with an integrated management UI. macOS builds use Ad-hoc signing without Apple notarization; Gatekeeper may block the first launch. See [release and signing details](docs/releasing.md#macos-构建与独立验证).
 
 If startup fails, the desktop app provides diagnostics and recovery options; it does not automatically reset your database.
 
@@ -76,7 +76,7 @@ Alternatively, download a platform archive from Releases (verify against `SHA256
 
 **Nix / NixOS (Linux Server only):** Build this checkout with `nix build .#stravia-server`, or import `nixosModules.default` and enable `services.stravia`. See [Nix deployment](docs/design/architecture.md#nix-server-与-nixos-服务).
 
-**Upgrading an existing instance:** Stop and back up the complete data directory and any external database first. The Route output-purpose migration makes **all historical Routes nonexecutable until individually reconfigured**, on both SQLite and PostgreSQL. See [upgrade and recovery](docs/design/media-generation.md#4-route-与-codex-接入); rollback requires restoring the backup.
+**Upgrading an existing instance:** Stop and back up the complete data directory and any external database first. The Route output-purpose migration makes **all historical Routes nonexecutable until individually reconfigured**, on both SQLite and PostgreSQL. See [upgrade and recovery](docs/design/media-generation.md#4-route-与-codex-接入); rollback requires restoring the backup. The history-storage upgrade rewrites existing conversation and request history once at startup; it takes longer and needs more temporary space the larger the history is, and older binaries cannot read the upgraded database.
 
 **First run (both):**
 
@@ -172,7 +172,7 @@ Good to know: it catches what its rules know — not every secret, and not perso
 | Form          | Tauri app with integrated management UI             | Single headless binary or container image   |
 | Best for      | Individual developers; writes client config locally | Self-hosted and shared team deployments     |
 | Storage       | Local SQLite                                        | SQLite or PostgreSQL                        |
-| Get it        | Windows NSIS / Linux AppImage on Releases           | Archive · `ghcr.io` image                  |
+| Get it        | Windows NSIS / Linux AppImage / macOS DMG on Releases | Archive · `ghcr.io` image                  |
 
 The same Rust core powers both; the management surface is the same WebUI.
 

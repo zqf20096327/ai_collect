@@ -198,6 +198,10 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 305.0
+- The mouse wheel now scrolls the plan review box in native chat anywhere over the plan text, not only over its scrollbar; at the end of the plan it goes back to scrolling the conversation.
+- Thanks to [@lpowca](https://github.com/lpowca) for reporting (#262).
+
 ### Version 304.0
 - The ◀ ▶ scroll arrows in the panel toolbar and the chat composer now disappear as soon as the buttons fit without them, so you no longer have to drag the window wider and back again, and they no longer stay after Visual Studio starts or a new chat tab opens.
 - Thanks to [@Gh61](https://github.com/Gh61) for this release (#261).
@@ -1646,17 +1650,4 @@ Native mode now in beta phase
 ### Version 3.6
 - **Open Code** support added.
 
-### Version 3.5
-- Fixes for supported providers.
-
-### Version 3.4
-- **ARM64 support** for Visual Studio.
-
-### Version 3.3
-- Clipboard preservation and restoration.
-
-### Version 3.2
-- **Claude Model Selection** dropdown (Opus / Sonnet / Haiku).
-
-### Version 3.1
-- Fixed instructions and about
+### Version

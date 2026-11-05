@@ -49,6 +49,7 @@ Next time, open a terminal and type `kumi`, then open your DAW (Live, REAPER or 
 - **Build a sound from a tutorial.** Paste a YouTube link: Kumi watches it and builds what it shows on a new track.
 - **Fix the mix.** Ask “is the bass muddy?” and Kumi listens, finds what's clashing and fixes it, listening again after each change.
 - **Match a reference.** Give it a track you love: Kumi tries a few takes, scores each against it and refines the best.
+- **Generate sounds and turn audio into MIDI.** Onboard [Mirelo](docs/en/KUMI_GUIDE.md#mirelo-and-self-hosted-audio-models) in `/audio` for text/video SFX, extension, inpainting and transcription. Each task has its own permission: **Off** blocks even explicit Mirelo requests. Self-hosted alternatives are supported; MuScriptor handles MIDI.
 - **Create plug-in presets and master a track.** Kumi uses its built-in VST3 formats, including FabFilter's current and legacy products, and checks suitable installed processors before native devices. Kumi can build presets in the background while you keep working. See [supported formats and limits](plugin-formats/README.md).
 - **Make a device.** Describe a Max for Live effect or instrument and Kumi builds it and puts it on your track.
 - **Find your sounds.** “A dusty snare like this one”, “my usual vocal chain”: Kumi knows your samples, presets and projects.
@@ -85,6 +86,13 @@ With more than one installed, setup asks which you work in; `/daw` switches late
 </details>
 
 <details>
+<summary><b>Can I use Kumi from Hermes Agent?</b></summary>
+
+Yes. Kumi is also a [Hermes Agent](https://hermes-agent.nousresearch.com) plugin: `hermes plugins install kumi` (once Kumi is in Hermes's plugin catalog; until then, see the guide) and `hermes plugins enable kumi`, then ask Hermes to set up Kumi for your DAW. Hermes stays your agent and asks before each change (unless its approvals are off), and Kumi keeps its HISTORY, with an undo while Kumi runs. See [Kumi for Hermes Agent](docs/en/HERMES.md).
+
+</details>
+
+<details>
 <summary><b>Which AI does it use, and what does it cost?</b></summary>
 
 Kumi is free and open source (MIT). You choose the model:
@@ -92,13 +100,14 @@ Kumi is free and open source (MIT). You choose the model:
 - **ChatGPT plan:** sign in with your account; Kumi works within your plan's usage limits.
 - **API key:** Anthropic, OpenAI, Google Gemini, OpenRouter and [20 more](docs/en/KUMI_GUIDE.md#sign-in-and-choose-a-model), billed by the provider.
 - **Local:** Ollama, LM Studio or any OpenAI-compatible server such as llama.cpp or vLLM, on hardware that can run a tool-calling model with a long context (Kumi asks for about 57k tokens).
+- **Audio models:** each Mirelo create spends your Mirelo credits, separately from chat, with a per-job credit notice. An API key alone never enables paid use. Self-hosted models have their own hardware costs and licenses.
 
 </details>
 
 <details>
 <summary><b>Does my audio leave my computer?</b></summary>
 
-Audio is analysed locally; the model gets the measurements. Your library and music collection are indexed locally too. With a Gemini or OpenAI API key, a listening model also hears mono excerpts (10 seconds at most) of the changes it judges; `/slots listening off` turns it off. [Privacy](docs/en/KUMI_GUIDE.md#privacy-what-leaves-your-computer) covers the rest.
+Audio analysis runs locally; the model gets the measurements. Your library and music collection are indexed locally too. With a Gemini or OpenAI API key, a listening model also hears mono excerpts (10 seconds at most) of the changes it judges; `/slots listening off` turns it off. Requested generation, editing and MIDI conversion use the provider in `/audio`. Mirelo requires onboarding and permission for that task; switch it **Off** and choose a server on your computer to keep media local. [Privacy](docs/en/KUMI_GUIDE.md#privacy-what-leaves-your-computer) covers the rest.
 
 </details>
 
@@ -113,8 +122,8 @@ Audio is analysed locally; the model gets the measurements. Your library and mus
 
 ## Status
 
-- Kumi 1.24.66 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
-- 1.24.66 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
+- Kumi 1.24.69 is currently supported for Ableton Live 12.4.15b4 (beta) and above on macOS and Windows. You may run into issues on lower versions. If you do, **please file an issue!**
+- 1.24.69 is tested with Live on macOS. On Windows, installing and updating are tested; using it with Live there is still new. Please send a `kumi report` when something breaks.
 - REAPER 7.82 and Renoise 3.5.4 are tested on macOS. On Windows and Linux, CI tests putting Kumi's extension and tool in place and loading the extension; using them with REAPER and Renoise there is new.
 
 ## Development

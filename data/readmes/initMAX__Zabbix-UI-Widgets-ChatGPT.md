@@ -13,7 +13,7 @@ Ask about your infrastructure without leaving the board - a server-proxied chat 
 
 <p>
 <img src="./.readme/badge/zabbix.svg" alt="Zabbix 6.0-8.0">
-<img src="./.readme/badge/version.svg" alt="version 2.7.1">
+<img src="./.readme/badge/version.svg" alt="version 2.8.0">
 <img src="./.readme/badge/php.svg" alt="PHP 7.4+">
 <img src="./.readme/badge/free.svg" alt="FREE AGPLv3">
 <img src="./.readme/badge/pro.svg" alt="PRO commercial">

@@ -248,6 +248,7 @@ Kvist treats their content as data that cannot change its safety rules.
   variables ([RU](docs/configuration.ru.md));
 - [`docs/UI_API.md`](docs/UI_API.md): the frontend protocol ([RU](docs/UI_API.ru.md));
 - [`docs/SKILLS.md`](docs/SKILLS.md): skills ([RU](docs/SKILLS.ru.md));
+- [`docs/remote.md`](docs/remote.md): Kvist working on a server over ssh, as a service that outlives its interfaces ([RU](docs/remote.ru.md));
 - [`docs/vision.md`](docs/vision.md): image input;
 - [`scripts/installer/README.md`](scripts/installer/README.md): installers ([RU](scripts/installer/README.ru.md)).
 
@@ -269,6 +270,10 @@ frontends/         tui/classic, tui/ink, tui/opencode, gui/electron, ide/vscode,
 scripts/           installers and release scripts
 docs/              protocol, skills, configuration, media
 site/              kvist.site landing page
+cloud/             cloud service
 ```
 
-Licensed under the [MIT license](LICENSE).
+## LICENSE 
+Kvist is distributed under the **MIT** license ([MIT LICENSE](LICENSE))
+
+Kvist Cloud is distributed under the **AGPL-V3-or-later** license ([AGPL LICENSE](cloud/LICENSE))

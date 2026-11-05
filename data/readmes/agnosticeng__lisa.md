@@ -28,8 +28,8 @@ with its own Rust engine and Metal runtime.
 
 ## Get started
 
-Requires **macOS on Apple Silicon**, Apple command line developer tools and a
-Rust toolchain supporting edition 2024. Choose a model that leaves enough
+Requires **macOS 15 or later on Apple Silicon**, Apple command line developer
+tools and a Rust toolchain supporting edition 2024. Choose a model that leaves enough
 unified memory for its weights, context, working buffers and macOS.
 
 ```sh
@@ -41,11 +41,13 @@ cd lisa
 
 ```sh
 sh crates/lisa-ui/bundle.sh
-open target/release/Lisa.app
+open target/dist/Lisa.app
 ```
 
-The script builds and locally signs the app. In **Models**, download a
-checkpoint, then select it to load. Choose a language model to chat or an image
+The script builds and locally signs the app, keeping debug symbols separately
+in `target/dist/lisa-ui.dSYM`. The complete app includes its compressed Metal
+source package, `kernels.bin`; the bundle build enforces a 10 MB size limit.
+In **Models**, download a checkpoint, then select it to load. Choose a language model to chat or an image
 model to generate. Downloaded models appear first; compatible checkpoints
 already in your Hugging Face cache are discovered automatically.
 
@@ -67,6 +69,9 @@ cargo build --release -p lisa-cli
 `--model` accepts a Hugging Face repository ID, a local checkpoint directory
 or a supported GGUF file/first shard. Missing checkpoints download into the
 standard Hub cache; cached models can run offline.
+
+When copying the CLI elsewhere, keep the generated `kernels.bin` beside it.
+The package must come from the same build as the executable.
 
 Text generation defaults to `--depth auto`, enabling MTP when the model and
 request support it. Use `--depth 0` for serial generation. The app uses the

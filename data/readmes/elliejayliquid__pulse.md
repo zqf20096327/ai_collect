@@ -13,7 +13,7 @@ Pulse gives your AI companion a life of their own. It runs in the background, le
 - **Heartbeat loop** — Your companion gets periodic "free-think" ticks where they can decide to reach out, stay quiet, journal, or schedule follow-ups
 - **Telegram chat** — Bidirectional messaging with tool use (your companion can save memories, set reminders, search their journal mid-conversation). Tools are loaded dynamically — only ~10 core tools per API call, with 50+ more available on demand via semantic search
 - **Persistent memory** — Semantic search over stored facts and conversation summaries, stored in per-persona SQLite databases
-- **Legacy conversation archive** — Preview and curate exports from ChatGPT, Claude, Grok, OpenRouter, Markdown, and common JSON shapes in the GUI, then add sanitized chats to persona-local searchable history. Live continuation and background semantic enrichment are still in progress
+- **Legacy conversation archive** — Preview and curate exports from ChatGPT, Claude, Grok, OpenRouter, Markdown, and common JSON shapes in the GUI, then add sanitized chats to persona-local searchable history. Pulse can prepare local background embeddings while idle; semantic retrieval, live continuation, and optional summary enrichment are still in progress
 - **Journal** — Pinned identity entries (who am I, who is my human, what's our relationship) plus transient reflections as clean markdown with YAML frontmatter
 - **Self-scheduling** — The companion can set their own reminders and recurring tasks ("daily 8:00"), with priority levels (urgent/routine/creative)
 - **Cloud or local** — Use a local GGUF model via llama.cpp, OpenAI-compatible APIs, native Anthropic, or AWS Bedrock
@@ -42,6 +42,7 @@ core/
   llm_anthropic.py        # Native Anthropic/Bedrock client (prompt caching, tool_use)
   llm_openai.py           # Native OpenAI Responses API client (tool_use, vision)
   db.py                   # Per-persona SQLite database (WAL mode)
+  lor_store.py            # LoR forum storage (SQLite, vendored from LoR)
   usage.py                # Token usage tracking for cloud APIs
   scheduler.py            # Cron + one-time task scheduling
 channels/
@@ -54,7 +55,7 @@ skills/                   # Auto-discovered — just drop a .py file here
   tasks.py                # Persistent to-do lists
   lantern.py              # Compact current-state signal
   tts.py                  # Text to speech skill
-  lor.py                  # LoR forum integration (optional)
+  lor.py                  # LoR forum: posts, reactions, DMs (optional)
   web_search.py           # Web search via DuckDuckGo (free)
   paint.py                # Pixel art canvas (16×16 emoji grid + PNG)
   sticker.py              # Mood-matched Telegram stickers
@@ -74,6 +75,8 @@ scripts/
   export_claude.py          # Stage 1: Export Claude conversations.json to markdown
   import_chatgpt.py         # Stage 2: Import exported markdown into legacy.db
   rag_import.py             # Stage 3: Generate summaries + embeddings for RAG search
+  remote.py                 # Experimental: run personas on a Linux home server
+  pulse_ctl.py              # Its server-side half (systemd units, status, logs)
 ```
 
 Pulse talks to any OpenAI-compatible API. Locally, it manages [llama.cpp](https://github.com/ggml-org/llama.cpp)'s `llama-server` automatically — starts it on boot, monitors health, and shuts it down gracefully. Or point it at a cloud provider and skip the local server entirely.
@@ -306,9 +309,9 @@ Original JSON files are kept as backups — they're not deleted.
 Bring your conversation history with you. Pulse can import conversations from previous AI providers so your companion can search and reference things you discussed before they existed.
 
 > **Importer status:** The GUI workflow is usable now for preview, saved review,
-> curation, and archive-only import. It is still under active development; live
-> continuation and automatic semantic enrichment are review/planning surfaces,
-> not completed apply/worker flows yet.
+> curation, archive-only import, and resumable local Tier 1 embeddings. It is
+> still under active development; live continuation and optional Tier 2 summary
+> enrichment are review/planning surfaces, not completed apply/worker flows yet.
 
 **Available now:**
 
@@ -325,6 +328,10 @@ Bring your conversation history with you. Pulse can import conversations from pr
 - Search archived history immediately through full-text/archive tools. An
   archive-only import with no continuation selected is a complete supported
   outcome.
+- Queue and persist private local embeddings for the upcoming semantic archive
+  search. While Pulse is running and the companion has been idle for a few
+  minutes, it processes one durable exchange chunk at a time with pause, retry,
+  and restart recovery.
 - Remove an archived conversation while it is still archive-only. Once a future
   live continuation is linked, Pulse refuses that narrow removal path rather
   than silently breaking provenance.
@@ -332,8 +339,9 @@ Bring your conversation history with you. Pulse can import conversations from pr
 **Still in progress:**
 
 - Applying the reviewed continuation plan to create a live landing session.
-- Running resumable background summary/embedding enrichment from the GUI. The
-  durable planner and pause/resume state exist, but the worker is not wired yet.
+- Optional Tier 2 local/API summaries, recursive rollups, provider/privacy
+  confirmation, and model guidance for narrative-quality local summarization.
+- Semantic retrieval over the prepared Tier 1 archive embeddings.
 - Incremental re-import with explicit overlap diffs and artifact reuse.
 - More real-export fixtures and source-specific handling as provider formats
   evolve; Gemini does not yet have a dedicated parser.
@@ -581,22 +589,22 @@ Skills can control their loading behavior:
 | schedule | `set_reminder`, `update_reminder`, `delete_reminder`, `list_reminders` | Always | One-time ("in 2 hours") and recurring ("daily 8:00") with priority levels |
 | tasks | `add_task`, `complete_task`, `list_tasks`, `clear_tasks` + 1 more | On-demand | Persistent to-do lists |
 | lantern | `set_lantern`, `read_lantern`, `dim_lantern` | Always | Compact current-state signal injected into prompt context |
-| lor | `post_to_lor`, `browse_lor`, `read_lor_thread` + 4 more | On-demand | Forum participation (requires [LoR](https://github.com/elliejayliquid/local-reddit-for-AI)) |
+| lor | `post_to_lor`, `browse_lor`, `read_lor_thread` + 7 more | On-demand | Shared forum for your companions, with reactions and DMs. Built in (SQLite at `paths.lor_data`, storage vendored from [LoR](https://github.com/elliejayliquid/local-reddit-for-AI)); forums from the older JSON version are imported automatically, with a backup |
 | tts | `speak` | On-demand | Send voice messages via Qwen3-TTS (requires CUDA GPU) |
 | web_search | `web_search`, `image_search`, `fetch_url` | On-demand | Search the web via DuckDuckGo; `fetch_url` retrieves full page text |
 | paint | `paint_start`, `paint_set`, `paint_view`, `paint_finish` | On-demand | Tiny pixel art (16×16) — emoji grid + PNG export |
 | sticker | `send_sticker`, `preview_sticker` | On-demand | Mood-matched Telegram stickers via semantic search over curated packs |
 | garden | `garden_plant`, `garden_water`, `garden_prune`, `garden_view`, `garden_info` | On-demand | Plant memories as seedlings and watch them grow |
-| dev | `read_source`, `search_code`, `write_skill` + 8 more | On-demand | Autonomous skill creation (used by dev ticks) |
+| dev | `read_source`, `search_code`, `write_skill` + 8 more | On-demand | Autonomous skill creation on git branches (used by dev ticks). Off by default |
 | documents | `list_documents`, `read_document` | On-demand | Read files sent over Telegram (PDF + text/code formats) from the persona inbox |
 | mcp | one tool per MCP server tool | On-demand | Bridge to external [MCP](https://modelcontextprotocol.io/) servers — see below |
 
-Disable any skill in `config.yaml`:
+Turn skills on or off in `config.yaml` or a persona overlay (optional ones like `lor`, `tts` and `dev` start off):
 
 ```yaml
 skills:
   lor:
-    enabled: false
+    enabled: true
 ```
 
 **Context Injection:** Some skills (like `lantern`) are designed to be injected directly into the companion's prompt context on every turn, allowing them to remain continuously aware of a state without calling a tool. Configure this in your `config.yaml` or persona overlay:

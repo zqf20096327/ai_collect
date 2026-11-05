@@ -11,7 +11,7 @@
   <a href="#演示"><picture>  <source media="(prefers-color-scheme: dark)" srcset="docs/media/readme/button-more-dark.svg">  <img src="docs/media/readme/button-more-light.svg" alt="看演示" width="127"></picture></a>
 </p>
 
-<p align="center"><sub>macOS 13+ &nbsp;·&nbsp; Windows 10 / 11 &nbsp;·&nbsp; 免费</sub></p>
+<p align="center"><sub>macOS 13+ &nbsp;·&nbsp; Windows 10 / 11（不再更新）&nbsp;·&nbsp; 免费</sub></p>
 
 <p align="center"><a href="https://typeleast.promptking.workers.dev">官网 · Website</a> &nbsp;·&nbsp; <a href="https://www.bilibili.com/video/BV1eQnH6zESN/">B 站视频 · Bilibili</a></p>
 
@@ -97,13 +97,13 @@
 
 ## 下载
 
-最新版：Mac [**v1.24.18**](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.24.18)，Windows [**v1.24.17**](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.24.17)
+最新版：Mac [**v1.24.19**](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.24.19)。Windows 版不再更新，最终版 [**v1.24.17**](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.24.17)
 
 | 电脑 | 文件 |
 |---|---|
 | Mac · Apple 芯片 | `TypeLeast-<版本>-macOS-AppleSilicon.dmg` |
 | Mac · Intel | 不再更新。最终版：[v1.17.1](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.17.1) |
-| Windows 10 / 11（64 位） | `…-Windows-x64-Setup.exe` 或免安装的 `…-Portable.zip` |
+| Windows 10 / 11（64 位） | 不再更新。最终版：[v1.24.17](https://github.com/FlaxXTT/Typeleast/releases/tag/v1.24.17) |
 
 <sub>查看芯片： →「关于本机」。安装包已含运行环境。校验值在 `SHA256SUMS.txt`。</sub>
 
@@ -170,12 +170,12 @@ Windows code signing via SignPath Foundation is currently pending approval.
 | 提示词模式 | ⌥Space | 侧栏按钮或自设快捷键 |
 
 - **听写**：结合整段理解，按需要重排和去重复，完整保留事实、用途、条件、数字和否定。无需选择整理档位；单次最长 10 分钟。
-- **提示词模式**：通过独立快捷键或按钮进入，多轮补充后主动生成完整需求，不执行口述任务。Mac 默认 ⌥Space；先选中一段文字再按，就以选中内容为底稿修改，结果替换选中内容。
+- **提示词模式**：通过独立快捷键或按钮进入，多轮补充后主动生成完整需求，不执行口述任务。Mac 默认 ⌥Space；先选中一段文字再按，就以选中内容为底稿修改，结果替换选中内容。生成后，Mac 上用大字卡片推荐当前软件现有主推模型里最适合这个任务的一个，推荐只来自刚联网读取的官方模型页；可在设置里关闭。
 - **翻译**：一次模型调用完成整理和翻译，支持 10 种目标语言。Mac 上选中文字再按翻译键，直接翻译选中内容。
 - **失败恢复**：不自动插入半截正文或识别原文；可重试、查看修改、使用识别原文或取消，无需重新录音。
 - **术语纠正**：听错的专有名称、缩写和术语按全文语境改对；识别结果本身合理时照写。每次纠正的术语和你的意图记入历史，App 每次启动时据此写一段你的使用场景描述，帮助之后的整理。清空历史时一起清除。
 - **语言**：简体、台湾繁体、香港繁体。界面语言在设置里改，重启后生效。
-- **历史**：加密存在本机。
+- **历史**：Mac 存在本机 SQLite 数据库 `history.sqlite`，正文加密；时间、应用、模型等不含文字的信息可直接查询。Windows 加密存在本机。
 
 </details>
 
@@ -190,6 +190,7 @@ Windows code signing via SignPath Foundation is currently pending approval.
 | **FireRedASR2 CTC** | 中文和方言，也支持英文 | 0.78 GB |
 | **Fun-ASR-Nano** | 中英混说，也支持日语 | 1.01 GB |
 | **Qwen3-ASR-0.6B** | 多语言。中文可能输出繁体。 | 0.99 GB |
+| **MOSS-Transcribe-Diarize**（仅 Mac） | 多语言、长录音、能分辨说话人；用 GPU。听写只取文字。 | 0.65 GB |
 
 <sub>大模型更慢，占用 2–3 GB 内存。来源和许可：[第三方说明](THIRD-PARTY-NOTICES.md)。</sub>
 
@@ -221,7 +222,8 @@ Windows code signing via SignPath Foundation is currently pending approval.
 <summary><b>隐私</b></summary>
 
 - **音频不上传。** 识别后删除。开启「保留录音」时，加密保存约 5 分钟，用于重试。
-- **发给模型的内容**：识别出的文字，以及从历史学到的使用场景描述（不超过 1000 字）。每次启动生成描述时，发送历史里的术语纠正和意图，不发送正文。开启「参考光标附近的文字」时，加上光标附近的文字和窗口标题。像密钥和密码的内容先删除。
+- **发给模型的内容**：识别出的文字，以及从历史学到的使用场景描述（不超过 1000 字）。每次启动生成描述时，发送历史里的术语纠正和意图，不发送正文。开启「参考光标附近的文字」时，加上光标附近的文字和窗口标题。像密钥和密码的内容先删除。推荐模型时，发送生成的提示词和厂商公开的模型页面。
+- **访问厂商网站**：推荐模型时读取当前软件厂商的公开模型页（最多每小时一次），不发送你的任何内容。
 - **剪贴板**：粘贴时使用剪贴板，之后恢复。剪贴板工具可能会记录文字。
 - **本机服务**：只监听 `127.0.0.1`，每个请求要带本机令牌。
 

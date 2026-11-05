@@ -41,7 +41,7 @@ ISOs and checksums are on [SourceForge](https://sourceforge.net/projects/skos/fi
 
 ## Minimum requirements
 
-| | |
+| Resource | Requisite |
 |---|---|
 | **CPU** | 4+ cores, x86_64, Intel/AMD with AVX2 |
 | **RAM** | 8 GB (16 GB for the recommended model, qwen2.5:14b) |
@@ -50,17 +50,6 @@ ISOs and checksums are on [SourceForge](https://sourceforge.net/projects/skos/fi
 | **Internet** | Needed at first boot to download Ollama and the model |
 
 Smaller models can be chosen at setup for less powerful machines.
-
-## The SKAI ecosystem
-
-| Module | What it does |
-|---|---|
-| **SKAI Manager** | Control center for the local AI (`Alt` + `F9`): download or remove Ollama models, toggle the service, use a remote PC for computing. Includes the first-boot wizard |
-| **skai-cli** | Terminal file manager driven by natural language, sandboxed to its folder, with memory across sessions |
-| **SKAI Launcher** | App launcher for Lite and Mantis with local AI, multi-calculator and an interactive guide |
-| **Skaifox** | SKAI extension for Firefox ESR |
-| **sk_libre** | AI extensions for LibreOffice Writer, Calc and Math |
-| **sk_mail** | AI add-on for Thunderbird, mail and calendar |
 
 Web search (via DuckDuckGo) is used only to look things up — never to process your data.
 
@@ -92,11 +81,8 @@ Areas where help is most welcome:
 Open an issue, send a pull request, or come to the [PN LUG](https://pnlug.it) meetings in Pordenone, every Tuesday evening.
 You can also support the project on [Ko-fi](https://ko-fi.com/I3X828AUUL) 💚
 
----
-
 ## 🌐 Media
 
----
 
 🌐 [Website](https://skossite.pages.dev)
 
@@ -106,9 +92,8 @@ You can also support the project on [Ko-fi](https://ko-fi.com/I3X828AUUL) 💚
 
 📝 [Pnlug Wiki](https://wiki.pnlug.it/index.php?title=Sperimentare_con_Skorpion_OS#Link_al_progetto)
 
----
 
-## 🔗 Connected repos
+## The SKAI ecosystem
 
 | Repo | Description |
 |---|---|

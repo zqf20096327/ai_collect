@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.svg" width="250" alt="pwner">
+  <img src="https://raw.githubusercontent.com/0x45dd/pwner/main/docs/logo.svg" width="250" alt="pwner">
 </p>
 
 <p align="center">
@@ -10,7 +10,10 @@
   <a href="https://github.com/0x45dd/pwner/actions/workflows/ci.yml"><img
     src="https://github.com/0x45dd/pwner/actions/workflows/ci.yml/badge.svg?branch=main"
     alt="CI status"></a>
-  <a href="LICENSE"><img
+  <a href="https://pypi.org/project/pwner/"><img
+    src="https://img.shields.io/pypi/v/pwner?color=4c4a42&label=pypi"
+    alt="pwner on PyPI"></a>
+  <a href="https://github.com/0x45dd/pwner/blob/main/LICENSE"><img
     src="https://img.shields.io/github/license/0x45dd/pwner?color=4c4a42&label=license"
     alt="License: AGPL-3.0-or-later"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-4c4a42" alt="Python 3.10+">
@@ -18,10 +21,10 @@
 
 <p align="center">
   <b>English</b> &nbsp;·&nbsp;
-  <a href="README.es.md">Español</a> &nbsp;·&nbsp;
-  <a href="README.de.md">Deutsch</a> &nbsp;·&nbsp;
-  <a href="README.ja.md">日本語</a> &nbsp;·&nbsp;
-  <a href="README.tr.md">Türkçe</a>
+  <a href="https://github.com/0x45dd/pwner/blob/main/README.es.md">Español</a> &nbsp;·&nbsp;
+  <a href="https://github.com/0x45dd/pwner/blob/main/README.de.md">Deutsch</a> &nbsp;·&nbsp;
+  <a href="https://github.com/0x45dd/pwner/blob/main/README.ja.md">日本語</a> &nbsp;·&nbsp;
+  <a href="https://github.com/0x45dd/pwner/blob/main/README.tr.md">Türkçe</a>
 </p>
 
 <p align="center">
@@ -34,7 +37,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/session.gif" width="860"
+  <img src="https://raw.githubusercontent.com/0x45dd/pwner/main/docs/session.gif" width="860"
        alt="A pwner session: the operator sets a target and asks for a full scan. The agent port-scans, fingerprints services, checks for known issues, reports two findings, then stops and asks permission before brute-forcing SSH. The operator answers n and it skips.">
 </p>
 
@@ -89,7 +92,7 @@ flowchart LR
 A refusal is not an error that stops the run: it goes back to the model as a tool result,
 so the agent learns it overstepped and carries on inside the boundary.
 
-**Scope lock.** [`build_dispatch`](pwner/tools/core.py) wraps every tool so each
+**Scope lock.** [`build_dispatch`](https://github.com/0x45dd/pwner/blob/main/pwner/tools/core.py) wraps every tool so each
 host-carrying argument is checked against your target *before* the tool body runs. Tools are
 in-scope-by-default: one that forgets its own check is still guarded, and an unregistered
 tool name fails closed. A network argument has to sit entirely inside the authorization, so
@@ -103,12 +106,13 @@ action does not buy it, `--auto-consent` does not cover it, and a non-interactiv
 refuses it outright.
 
 **Consent gate.** Anything active is denied unless you approve it in that session. The agent
-cannot self-approve — consent is resolved outside the model, and in a non-interactive run
-the answer is always no.
+cannot self-approve — consent is resolved outside the model — and a non-interactive run
+refuses it unless you launched it with `--auto-consent`.
 
 These two are the part of the codebase under the most test: 77 tests on the scope boundary
-in [`tests/test_scope.py`](tests/test_scope.py) and 13 on the consent gate in
-[`tests/test_consent.py`](tests/test_consent.py), out of 725 overall. If you are going to
+in [`tests/test_scope.py`](https://github.com/0x45dd/pwner/blob/main/tests/test_scope.py), 32 more on the scope-change gate in
+[`tests/test_scope_change.py`](https://github.com/0x45dd/pwner/blob/main/tests/test_scope_change.py), and 13 on the consent gate in
+[`tests/test_consent.py`](https://github.com/0x45dd/pwner/blob/main/tests/test_consent.py), out of 785 overall. If you are going to
 read one thing before pointing this at a network, read those.
 
 Intended use:
@@ -136,7 +140,21 @@ curl -fsSL https://raw.githubusercontent.com/0x45dd/pwner/main/install.sh | bash
 That builds an isolated virtualenv under `~/.local/share/pwner`, leaves your system
 Python alone, and puts `pwner` on your PATH so it works from any directory. Add
 `--with-tools` to install nmap and the optional scanners too, and `--uninstall` to take
-it all back out. On macOS there is also a tap:
+it all back out.
+
+It is on PyPI too, if you would rather use your own Python tooling:
+
+```bash
+pipx install pwner      # isolated, and `pwner` lands on your PATH
+uv tool install pwner   # the same, through uv
+pip install pwner       # inside a virtualenv
+```
+
+Reach for `pipx` or `uv tool` over a bare `pip install`: they give you the same isolation
+the installer script does, and installing into the system Python is refused outright on
+most current distributions anyway.
+
+On macOS there is also a tap:
 
 ```bash
 brew install 0x45dd/tap/pwner
@@ -174,8 +192,9 @@ If you are choosing where to run this, run it there.
 <summary><b>uv, or just the command</b></summary>
 
 ```bash
-uv venv && uv pip install -e .
-pipx install -e .
+uv tool install pwner          # from PyPI, command on your PATH
+uv venv && uv pip install -e . # from a clone, editable
+pipx install -e .              # from a clone, command on your PATH
 ```
 
 </details>
@@ -240,8 +259,26 @@ pwner chat 10.0.0.5 --provider anthropic
 ```
 
 The model has to support tool calling. `pwner chat --help` lists the presets and every
-override; each preset's default model is in [`pwner/llm.py`](pwner/llm.py). Model names move
+override; each preset's default model is in [`pwner/llm.py`](https://github.com/0x45dd/pwner/blob/main/pwner/llm.py). Model names move
 too fast to be worth pinning in a README.
+
+### How hard it thinks
+
+`/effort low|medium|high|off` sets the reasoning budget for the rest of the session, and
+`off` is the default: a model that does not implement `reasoning_effort` answers 400 to it
+rather than ignoring it, so nothing is sent unless you ask. It is not saved to your config,
+because the right setting depends on what you are doing right now.
+
+Two things raise it on their own, both by one notch and only for a few steps. A tool that
+found something says so in its result, so a `param_probe` that moved the response or a
+segmentation test that did not hold buys more deliberation for the turns that read it. And
+when the agent stops calling tools while your ledger still has an unresolved hypothesis or
+a service nothing has touched, that state goes back to it once, with more budget to answer.
+
+That last one is the only thing in the loop arguing for more work rather than less: the
+other three guards all exist to stop an agent that is spinning. It reports state and never
+an instruction, it is capped, and deciding a hypothesis is not worth chasing is a complete
+answer — so it makes a shallow stop visible without making it impossible.
 
 ### On your own hardware
 
@@ -311,8 +348,8 @@ Full command and config reference, the agent loop, the module catalogue and the 
 - [Agent](https://www.pwner.si/agent) — how the loop works and what it can and cannot do
 - [Modules](https://www.pwner.si/modules) — all 52 tools and what each one drives
 - [Rules](https://www.pwner.si/rules) — scope, consent, responsible use
-- [Contributing](CONTRIBUTING.md) — development setup, the tools package, adding a tool
-- [Security](SECURITY.md) — reporting a vulnerability in pwner itself
+- [Contributing](https://github.com/0x45dd/pwner/blob/main/CONTRIBUTING.md) — development setup, the tools package, adding a tool
+- [Security](https://github.com/0x45dd/pwner/blob/main/SECURITY.md) — reporting a vulnerability in pwner itself
 
 ## Contact
 
@@ -320,11 +357,11 @@ For anything that does not belong in a public issue — questions, private feedb
 getting in touch directly — email [berk@planckproof.ai](mailto:berk@planckproof.ai).
 
 Bugs and feature requests work better as [issues](https://github.com/0x45dd/pwner/issues), and security vulnerabilities
-should go through [SECURITY.md](SECURITY.md) so they stay private until there is a fix.
+should go through [SECURITY.md](https://github.com/0x45dd/pwner/blob/main/SECURITY.md) so they stay private until there is a fix.
 
 ## License
 
-[GNU AGPL-3.0-or-later](LICENSE). Copyright (C) 2026 Berk D.
+[GNU AGPL-3.0-or-later](https://github.com/0x45dd/pwner/blob/main/LICENSE). Copyright (C) 2026 Berk D.
 
 Strong copyleft, with a network clause: if you modify pwner and let other people use it over
 a network, you owe them the modified source too.

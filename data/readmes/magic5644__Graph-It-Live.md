@@ -114,12 +114,21 @@ The Live Call Graph shows cross-file symbol relationships in a Cytoscape.js pane
 - Highlight self-recursion and mutual recursion.
 - Filter by symbol type or folder.
 - Refresh automatically after file saves.
+- Show runtime references that are not calls as `REFERENCES` edges: a passed function (`register(save)`, `items.map(format)`) in every language, and in `.jsx` and `.tsx` files a rendered component (`<Card />`) or an attribute value (`onClick={save}`). An edge appears only when the name resolves to an import or to one declaration in the file. Imports resolve through aliases, barrels, default exports, `lazy(() => import('./literal'))`, and `memo()` or `forwardRef()` around a component name. Identified React components carry the React icon and color here, in the file graph and in the Symbol View.
 
 <div align="center">
   <img src="media/call-graph-view-example.png" alt="Graph-It-Live live call graph" width="800"/>
 </div>
 
-The Live Call Graph supports TypeScript, JavaScript, Vue, Svelte, Python, Rust, C#, Go, Java, and GraphQL. C#, Go, Java, and GraphQL are supported in the file graph and Live Call Graph; Symbol View support is currently limited to TypeScript, JavaScript, Python, and Rust. In GraphQL, operations and fragments call the fragments they spread; an operation's default root type (`Query`, `Mutation`, `Subscription`), type conditions, field, argument and variable types, and union members are type-only references (`USES`, shown with `includeTypeOnly`); `implements` is an `IMPLEMENTS` edge.
+<div align="center">
+  <img src="media/react-identity-views.png" alt="React test fixture in three views: file graph with App.tsx and Card.tsx marked React, Symbol View with the Card component, call graph where App and Card reference each other in a cycle" width="800"/>
+</div>
+
+*React components on a test fixture: the file graph marks `.tsx` files that declare components, the Symbol View marks the `Card` component, and the call graph shows `App` and `Card` rendering each other: two `REFERENCES` edges, red because they form a cycle. Open any `.jsx` or `.tsx` file; the React badge in each view's legend names the mark.*
+
+The Live Call Graph supports TypeScript, JavaScript, React (JSX and TSX, parsed with the TSX grammar), Vue, Svelte, Python, Rust, C#, Go, Java, and GraphQL. C#, Go, Java, and GraphQL are supported in the file graph and Live Call Graph; Symbol View support is currently limited to TypeScript, JavaScript, Python, and Rust. In GraphQL, operations and fragments call the fragments they spread; an operation's default root type (`Query`, `Mutation`, `Subscription`), type conditions, field, argument and variable types, and union members are type-only references (`USES`, shown with `includeTypeOnly`); `implements` is an `IMPLEMENTS` edge.
+
+A method call links only when the type of its receiver is proven: `this`/`self`, a parameter or variable with a declared type, a construction (`new Calculator()`, `Calculator()`), or a static call (`Calculator.create()`). The type can be declared in the same file or in another one. In TypeScript, JavaScript, and Python, it must be bound by an import (aliases, barrels, default and type-only imports included). The call reaches the method that this class declares in its own body. When a method is declared more than once (Python redefinition, TypeScript overloads), it reaches the last declaration. Inherited methods, union or unknown types, a rebound variable, and calls on a returned value (`make().compute()`) create no edge. They never reach a same-named method of another class. Java and Go are the exception: a receiver of unknown type still links by method name.
 
 ### Architecture view
 
@@ -205,6 +214,14 @@ Declare your intended architecture in `graphit.architecture.json` at the workspa
   <img src="media/demo-filter-hide-mode.gif" alt="Unused dependencies hidden from the graph" width="600"/>
   <img src="media/demo-filter-dim-mode.gif" alt="Unused dependencies dimmed in the graph" width="600"/>
 </div>
+
+### While a view loads
+
+<div align="center">
+  <img src="media/loading-state-views.png" alt="The four loading states: file and symbol views waiting for graph data, call graph indexing at 40 percent, Architecture view building 120 of 400 files, matrix building" width="800"/>
+</div>
+
+*Every view shows the same loading state with the Graph-It-Live logo: what it waits for, and a progress bar once the percentage is known (call graph indexing, Architecture build). You see it when a view opens before its data is ready, for example *Show Call Graph* on a workspace not indexed yet.*
 
 ## Standalone CLI
 
@@ -395,7 +412,7 @@ The skill documents graph queries, codemaps, impact analysis, dead-code detectio
 
 ### Branch Watch
 
-Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head, or a head equal to the checked-out branch, uses the current branch plus the final on-disk state; another head branch compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, the same signature review as `graph-it review-pr` (TypeScript, JavaScript, Vue and Python, deleted files included, an unreadable file reported as a limitation), cycle history when the graphs are complete, and explicit limitations. Impact traversal is intentionally bounded (depth 3 and at most 200 affected files), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
+Branch Watch is disabled by default. Enable `graph-it-live.branchWatch.enabled` for a workspace folder, select a local Git base branch and optionally a local or remote head branch, and use the native Branch status view to inspect changes automatically (it starts collapsed in the Graph-It-Live panel: expand it, or run `Graph-It-Live: Show Branch Status`). Branch selections are stored per workspace in the ignored `.graph-it/branch-watch.json`; the `baseRef` and `headRef` settings are retained only as a legacy fallback. An empty head, or a head equal to the checked-out branch, uses the current branch plus the final on-disk state; another head branch compares committed branch refs and does not include untracked workspace files. It never fetches, runs tests, or reports test success. The view shows file impact for supported languages, the same signature review as `graph-it review-pr` (TypeScript, JavaScript, Vue and Python, deleted files included, an unreadable file reported as a limitation), the import cycles the changes introduce, aggravate or touch, and explicit limitations. Cycles are read from the whole import graphs, as `graph-it review-pr` reads them: the head from the warmed index (nothing is parsed again on a file event) and the merge base from a private Git copy, parsed once per merge-base commit and reused until the base moves. On each file event, only the edited files are compared again; importers and consumers are always read fresh. Impact traversal is intentionally bounded (depth 3 and at most `graph-it-live.branchWatch.maxFiles` files, 200 by default), so a partial result is reported with its risk and confidence instead of being presented as complete. Right-click any message row and choose `Copy Message` to pass the exact text to an LLM or issue. The reminder `Tests must pass before delivery.` is informational.
 
 Branch Watch requires the Graph-It-Live workspace root to be a supported Git repository. A folder without Git, an unborn or detached repository, conflicts, an inaccessible index, or an unsupported VCS is shown as `Branch watch unavailable`; the normal graph and CLI/MCP tools remain available.
 
@@ -404,6 +421,7 @@ Set these options in VS Code settings:
 | Setting | Default | Purpose |
 | --- | --- | --- |
 | `graph-it-live.branchWatch.enabled` | `false` | Enable Branch Watch for the workspace folder |
+| `graph-it-live.branchWatch.maxFiles` | `200` | Limit the changed files Branch Watch analyzes and the files its impact walk visits; cycles are not bounded |
 | `graph-it-live.performanceProfile` | `default` | Select `default`, `low-memory`, `high-performance`, or `custom` |
 | `graph-it-live.enableMcpServer` | `false` | Enable the built-in MCP server |
 | `graph-it-live.maxDepth` | `50` | Limit dependency traversal depth |
@@ -424,6 +442,12 @@ The `graph-it review-pr` command performs a deterministic local Git diff review 
 
 By default, `--base <ref>` is compared with the current working tree, including staged and unstaged file contents. Pass `--head <ref>` to compare two Git refs. Use `--depth` and `--max-files` to bound impact traversal and changed-file analysis. See the [`review-pr` CLI reference](docs/CLI.md#review-pr) for scoring thresholds, output formats, limitations, and examples.
 
+<div align="center">
+  <img src="media/review-pr-architecture-rules.png" alt="Rendered review-pr Markdown on the rules test fixture: Architecture rules DEGRADED, one new frontend-not-backend error violation from mfe/checkout to backend, one resolved violation from frontend, two unchanged unit cycles" width="800"/>
+</div>
+
+*`graph-it review-pr --base HEAD --format markdown` on the rules test fixture, rendered as the Review Gate Action posts it: the diff moves a backend import from `frontend` to `mfe/checkout`, so one violation is resolved and one new `error` violation fails the gate; the two existing unit cycles stay unchanged.*
+
 The reusable GitHub Action is informational by default. Set `fail-on-risk: high` or `critical` to gate a pull request. Add it to a consumer workflow with [`docs/examples/graph-it-review-gate.yml`](docs/examples/graph-it-review-gate.yml).
 
 Use `pull_request`, not `pull_request_target`, for untrusted pull requests. The action analyzes the consumer checkout in an isolated temporary directory and sends only a sanitized report to GitHub.
@@ -433,6 +457,7 @@ Use `pull_request`, not `pull_request_target`, for untrusted pull requests. The 
 | Language | File graph | Symbol View | Live Call Graph |
 | --- | :---: | :---: | :---: |
 | TypeScript / JavaScript | Yes | Yes | Yes |
+| React (JSX / TSX) | Yes | Yes | Yes |
 | Vue / Svelte | Yes | Yes | Yes |
 | Python | Yes | Yes | Yes |
 | Rust | Yes | Yes | Yes |

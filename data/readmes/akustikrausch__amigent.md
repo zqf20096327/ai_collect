@@ -66,6 +66,25 @@ Amiga key.
 
 Without an AI agent: see the [manual installation](https://github.com/akustikrausch/amigent/blob/main/docs/GUIDE.md#manual-installation).
 
+### Updating
+
+Paste this into your AI agent:
+
+    Update Amigent for me: run "pipx upgrade amigent", then
+    "amigent-setup --update", which puts the new amigentd on my Amiga over
+    the network. Tell me if you need to be restarted.
+
+Or in a terminal:
+
+    pipx upgrade amigent
+    amigent-setup --update
+
+At the Amiga instead: unpack the new archive from the
+[releases](https://github.com/akustikrausch/amigent/releases) or Aminet and
+double-click *Amigent-Update* in its drawer. Key, encryption and the start
+line stay as they are. New features such as the screen pause need both sides
+updated; one side alone keeps working as before.
+
 ## What you need
 
 - An Amiga with AmigaOS 2.04 or newer, any CPU from the 68000 on, a network connection
@@ -116,6 +135,9 @@ All numbers, how they were taken and how to repeat them are in
 - **New address after a restart?** Amigent finds the Amiga again by itself. It
   takes only the one that proves to be yours.
 - **Several Amigas?** `amigent-fleet` shows them side by side with a preview.
+- **Running a test or a benchmark?** *Pause the picture* in the remote desktop
+  (or `PAUSE` by ARexx) gives the Amiga's CPU back to it for a while; mouse,
+  keys and files keep working.
 - **After a big OS update**, `amigent-repair` puts back what the update removed.
 - **Safe at home.** A key keeps other computers on the network out, and the
   connection can be encrypted. Don't open the Amiga to the internet.

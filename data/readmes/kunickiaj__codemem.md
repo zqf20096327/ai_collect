@@ -459,6 +459,7 @@ Common overrides:
 | `CODEMEM_INJECT_TOKEN_BUDGET` | Positive approximate token cap for OpenCode's complete injected context (default `800`); unset, zero, negative, and invalid values use the default |
 | `CODEMEM_VIEWER_HOST`, `CODEMEM_VIEWER_PORT` | Host/port the plugin-managed viewer should start, probe, and restart |
 | `CODEMEM_VIEWER_AUTO` | `0` to disable auto-starting the viewer |
+| `CODEMEM_OPENCODE_NATIVE_TOOLS` | Experimental: `1` to have the OpenCode plugin register the codemem memory tools itself instead of relying on the MCP server (skipped while a `codemem` MCP server is configured); see [plugin reference](docs/plugin-reference.md#built-in-memory-tools-experimental-opt-in) |
 | `CODEMEM_MCP_HTTP_HOST`, `CODEMEM_MCP_HTTP_PORT` | Host/port for `codemem mcp http` |
 | `CODEMEM_MCP_HTTP_PUBLIC_URL` | Public `/mcp` URL advertised in MCP OAuth metadata |
 | `CODEMEM_MCP_OIDC_ISSUER_URL`, `CODEMEM_MCP_OIDC_CLIENT_ID`, `CODEMEM_MCP_OIDC_CLIENT_SECRET` | Upstream OIDC provider used before MCP OAuth code issuance |
@@ -468,7 +469,7 @@ Common overrides:
 Viewer note:
 
 - The plugin manages one explicit viewer target per runtime. If you run multiple viewers, give each one its own DB/runtime folder instead of sharing `viewer.pid` state next to the same SQLite file.
-- The OpenCode plugin monitors viewer liveness through `GET /api/health`. When an older viewer returns `404`, it makes one compatibility probe to the legacy raw-event status endpoint; raw-event ingest preflight remains separate and is bounded by a 5-second timeout.
+- Every OpenCode plugin instance with viewer auto-start enabled monitors viewer liveness through `GET /api/health` and runs `codemem serve start` after repeated failures. Deleting a session no longer stops the viewer unless `CODEMEM_VIEWER_AUTO_STOP=1`. When an older viewer returns `404`, the plugin makes one compatibility probe to the legacy raw-event status endpoint; raw-event ingest preflight remains separate and is bounded by a 5-second timeout.
 - Manual **Sync now** shows persistent device-sync status in the header while its request is pending, including when you change tabs. Only Sync now is disabled. The result stays until dismissed or replaced by another manual sync; reloading the page clears this client-side status. If the response cannot be confirmed, check device sync status before retrying.
 
 The viewer includes a grouped Settings modal (`Connection`, `Processing`, `Device Sync`) with shell-agnostic labels and an advanced-controls toggle for technical fields.
@@ -650,6 +651,8 @@ codemem sync once          # run one immediate sync pass
 Legacy pairing and legacy coordinator invitations do not grant project access by themselves. For advanced access details, compatibility, and recovery, see [the user guide](docs/user-guide.md).
 
 For cross-network setups where peer addresses change frequently or mDNS does not cross VPN/network boundaries, codemem also supports optional coordinator-backed discovery with a self-hosted coordinator. The preferred deployment path is the built-in `codemem coordinator` service; see [docs/coordinator-discovery.md](docs/coordinator-discovery.md).
+
+When a coordinator's operator turns on relay, `codemem serve` also syncs with a peer through that coordinator's relay when direct sync fails and the two devices share a coordinator-managed Project. Relay is live only and end-to-end encrypted: both devices must be online, and the relay stores nothing and grants no access. Each device pins the relay key per coordinator group and pauses relay for a group when the key changes. `codemem sync relay-keys` lists the pins, and `codemem sync approve-relay-key <group> --key <candidate>` approves a change. Set `sync_relay_enabled` to `false` to turn relay off, then restart `codemem serve`, because the viewer reads the setting at startup. See [Relay](docs/relay.md) for status messages, privacy limits, and operator switches.
 
 ## Semantic recall
 

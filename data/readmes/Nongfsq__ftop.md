@@ -77,6 +77,10 @@ Right-click the panel or the menu bar item. One block holds everything: what to
 show, how the panel behaves, the colors, and under **More** the few settings that have
 a value.
 
+Right-click a process row and the block starts with that process: **End** asks it to
+quit (an app can still ask to save), **Force End** stops it at once. Both ask first.
+ftop ends only your own processes, never itself or the system's.
+
 <p align="center"><img src="docs/media/settings.png" width="620" alt="The settings: a block of round switches, and the same block with More open"></p>
 
 The same settings are a plain text file, `~/.config/ftop/config.json5` (JSON with
@@ -98,13 +102,20 @@ With system processes granted (below), the helper that lists them adds about 0.5
 
 Requirements: an Apple Silicon Mac with macOS 15 or later.
 
-**From a release.** Download `Ftop-<version>-arm64.zip` from the
-[releases page](https://github.com/Nongfsq/ftop/releases/latest), unpack it, and move
-`Ftop.app` to `~/Applications`. Then link the command into a directory on your `PATH`:
+**From a release.** On the [releases page](https://github.com/Nongfsq/ftop/releases/latest),
+download either file:
+
+- `Ftop-<version>-arm64.dmg`: open it and drag `Ftop.app` onto the Applications folder.
+- `Ftop-<version>-arm64.zip`: unpack it and move `Ftop.app` to `~/Applications`.
+
+Then link the command into a directory on your `PATH`, using the folder you chose:
 
 ```bash
-mkdir -p ~/.local/bin && ln -sfn ~/Applications/Ftop.app/Contents/MacOS/ftop ~/.local/bin/ftop
+mkdir -p ~/.local/bin && ln -sfn /Applications/Ftop.app/Contents/MacOS/ftop ~/.local/bin/ftop
 ```
+
+For a copy in `~/Applications`, write `~/Applications/Ftop.app` instead. Keep one copy;
+updates replace the app where it is.
 
 From 0.2.6 the app is signed with a Developer ID and notarized by Apple, so it opens
 like any downloaded app.
@@ -152,6 +163,13 @@ or *Never check* (ftop never goes online). `ftop update` looks right now and
 
 An update never changes the helper that `sudo ftop grant` installed. If a new version
 needs a newer helper, `ftop doctor` says so and you grant again.
+
+### Open at login
+
+Off until you turn it on under **More → Open at login**. It works for a copy in
+Applications (`/Applications` or `~/Applications`); elsewhere the row says to move it
+there first. If macOS asks you to allow it, the row says *Needs approval* and a click
+opens Login Items in System Settings.
 
 ### System processes
 

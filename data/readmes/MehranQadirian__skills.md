@@ -13,6 +13,9 @@ A collection of ready-to-use [Claude](https://claude.ai) skills, grouped by cate
 | [**Security**](security/) | [secrets-hygiene](security/secrets-hygiene/): find leaked credentials and respond to leaks |
 | [**Data**](data/) | [csv-profiling](data/csv-profiling/): profile and safely clean CSV files, including Persian digits |
 | [**Termux**](termux/) | [termux-setup](termux/termux-setup/): set up Termux, fix storage and git problems on a phone |
+| [**DevOps**](devops/) | [docker-basics](devops/docker-basics/): safer, smaller Dockerfiles<br>[github-actions](devops/github-actions/): secure CI workflows<br>[linux-troubleshooting](devops/linux-troubleshooting/): read-only health snapshot and playbooks<br>[shell-scripting](devops/shell-scripting/): safe, portable shell scripts |
+| [**Language**](language/) | [persian-text-processing](language/persian-text-processing/): normalize Persian text, half spaces, digits<br>[persian-dates](language/persian-dates/): Jalali and Gregorian date conversion |
+| [**HCI**](hci/) | [hci-foundations](hci/hci-foundations/): Nielsen, Norman, Shneiderman and heuristic reports<br>[hci-react-native](hci/hci-react-native/), [hci-flutter](hci/hci-flutter/), [hci-android-native](hci/hci-android-native/), [hci-ios-swiftui](hci/hci-ios-swiftui/): mobile usability and accessibility<br>[hci-web-accessibility](hci/hci-web-accessibility/): WCAG 2.2 and contrast<br>[hci-desktop-apps](hci/hci-desktop-apps/), [hci-cli-ux](hci/hci-cli-ux/): desktop and command line<br>[hci-rtl-localization](hci/hci-rtl-localization/): right-to-left UX<br>[hci-microcopy](hci/hci-microcopy/): clear UI text<br>[hci-usability-testing](hci/hci-usability-testing/): tests, SUS and task metrics |
 
 ## Quick start
 

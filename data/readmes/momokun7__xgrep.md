@@ -107,6 +107,8 @@ xg status                     # Show index status
 xg init                       # Explicitly rebuild index
 ```
 
+Result paths are printed as ripgrep prints them: each PATH as you wrote it, joined with the file's path inside it, so `xg pattern src/` shows `src/main.rs` and every path can be opened from the current directory. A leading `./` is dropped (`.` prints the same as no PATH), and `--exclude` matches these printed paths (on Windows, `/` and `\` in a pattern match either separator). Use `--absolute-paths` for absolute paths.
+
 Without a PATH, xg searches standard input when it is a pipe or a file with data; otherwise (a terminal, `/dev/null`, `NUL`, or empty input as CI runners often attach) it searches the current directory. `-` always reads standard input. Matches are shown as `<stdin>:LINE:TEXT`.
 
 Search is **smart-case** by default: an all-lowercase pattern matches case-insensitively, while any uppercase letter makes the search case-sensitive. Use `-i` or `-s` to override (priority: `-i` > `-s` > smart-case).
@@ -121,6 +123,7 @@ Search is **smart-case** by default: an all-lowercase pattern matches case-insen
 | `XGREP_MAX_FILESIZE` | Skip larger files when indexing (`512K`, `20M`, `0` = no limit) | `10M` |
 | `XGREP_NO_OVERLAY` | Set to `1` to skip rescanning files changed since the index build | unset |
 | `XGREP_NO_WATCH` | Set to `1` to disable file watching in `xg serve` | unset |
+| `XGREP_CACHE_DIR` | Absolute path where indexes (and the `.xgrep/` trust record) are stored, as `<dir>/<hash>/index`. Use it when the user cache directory is not writable, e.g. in a sandbox: `XGREP_CACHE_DIR="$TMPDIR/xgcache" xg ...` (where `TMPDIR` is unset, use any directory you own). Choose a location outside the trees you search. A missing directory is created with mode 0700; an existing one must be owned by you and not writable by group or others. A `.xgrep/` set up with `xg init --local` under the default cache stays trusted | `~/.cache/xgrep` (Linux, or `$XDG_CACHE_HOME/xgrep`) / `~/Library/Caches/xgrep` (macOS) |
 
 Run `xg --help` for all options.
 

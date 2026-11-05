@@ -127,11 +127,12 @@ npm install -g pi-durable-bot
 pots init
 ```
 
-`pots init` asks three things:
+`pots init` asks four things:
 
 1. **Your bot's name.**
 2. **Its AI.** Sign in with a subscription you already pay for (ChatGPT, Claude, GitHub Copilot, Grok, Kimi and more), use an API key, or point it at a local server (Ollama, LM Studio, llama.cpp).
-3. **In one sentence, what it is for.** Optional. The bot writes its own persona and responsibilities from it.
+3. **Who decides on group messages that do not mention it.** By default the bot itself: every such message wakes it. Or Jev, a fast judge from TypeSafe, with your TypeSafe API key, or a judge model you already set up in pi; the bot then wakes only for the messages about its work.
+4. **In one sentence, what it is for.** Optional. The bot writes its own persona and responsibilities from it.
 
 Then the gateway starts as a background service (it starts again at login) and you are talking to your bot in the terminal. It first checks that it can use the computer's screen and walks you through any permission it needs, such as Screen Recording and Accessibility on a Mac. On a server with no desktop, it works without a screen and asks you before it sets one up. Tell it which chat apps to join. It sets them up itself on its computer and asks you only for what it cannot do, like signing in to Slack or approving the app. Leave with Ctrl+C; come back with `pots chat`.
 
@@ -204,7 +205,7 @@ flowchart LR
   A --> N[Do nothing]
 ```
 
-- Messages that arrive close together are grouped: it waits 3 seconds after the last one (20 seconds at most) before it decides.
+- A mention or a DM wakes it at once, with the messages of that place that were waiting. Other messages that arrive close together are grouped: it waits 3 seconds after the last one (20 seconds at most) before it decides.
 - If it is already working in a place, itself or with a child, new messages there are handed to it as it works, so it can change course.
 - The wake message says where, who, why and when, and gives each new message's text, the start of its thread when it is a reply, and its files. The gateway downloads files as soon as a message comes, into the bot's `files/tmp/`, so the wake gives their paths on the machine; it deletes them 30 days later, and the log keeps each file's name, type, size and URL, so the bot can download it again. A file over 10 MB is not downloaded, and a download that passes 10 MB, when the channel gave no size, stops and is deleted; the wake waits for the other downloads at most 10 seconds past the moment it would go out without them; for a file that is not saved, it gives the URL, and the bot downloads it itself if it needs it. Earlier messages and other details are in the log.
 
@@ -274,7 +275,7 @@ pi-durable-bot runs every day as a teammate in a real workspace. What works toda
 - [x] Memory it keeps by itself after each piece of work, its own and one shared about you
 - [x] Crash-safe inbox and outbox, tested with a forced crash mid-send
 - [x] Several bots per machine
-- [x] `pots init`: name, AI and one sentence, then the bot sets up its own chat apps from the terminal
+- [x] `pots init`: name, AI, judge and one sentence, then the bot sets up its own chat apps from the terminal
 - [x] macOS, Linux and Windows, as a background service of the user
 - [x] The screen, mouse and keyboard of its computer, used like a person (computer use), or no screen on a server
 - [x] Children for longer work in the background, reported back once, also across restarts

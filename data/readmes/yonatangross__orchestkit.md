@@ -550,7 +550,7 @@ reaches the same 76 skills plus the plugin's 36 custom subagents, which neither
 path surfaces through `devin plugins info`. That subpath is what this repo's own
 `.claude-plugin/marketplace.json` already points Claude Code at.
 
-OrchestKit's plugin hooks work under Claude Code only today; none of the 171
+OrchestKit's plugin hooks work under Claude Code only today; none of the <!--ork:hooks-->161<!--/ork-->
 fire under Devin. Two reasons. Location: OrchestKit ships hooks at
 `plugins/ork/hooks/hooks.json`, while Devin's own plugin format reads a bare
 `hooks.json` at the plugin root instead. Shape and tool names: OrchestKit's
@@ -598,7 +598,7 @@ as the workspace and needs no flag.
 
 Two honest gaps. `npx skills add -g` lands in `~/.agents/skills`, which agy
 does not read; user scope lives at `~/.gemini/config/skills` (or
-`~/.gemini/skills`). And none of ork's 171 hooks port: agy's `hooks.json` uses
+`~/.gemini/skills`). And none of ork's <!--ork:hooks-->161<!--/ork--> hooks port: agy's `hooks.json` uses
 its own event names and payload shape, and `agy plugin validate plugins/ork`
 reports hooks skipped because ork keeps them at `hooks/hooks.json`, not the
 plugin-root `hooks.json` agy looks for.
@@ -664,6 +664,14 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.9.0](https://github.com/yonatangross/orchestkit/compare/v10.8.6...v10.9.0)** · 2026-11-05
+
+- **release:** sync plugins/ork to the orchestkit-plugin dist repo (#5070)
+
+**[v10.8.6](https://github.com/yonatangross/orchestkit/compare/v10.8.5...v10.8.6)** · 2026-11-05
+
+- **skills:** Haiku 5.5 100K cost tiers and the AWS provider line (#5064)
+
 **[v10.8.5](https://github.com/yonatangross/orchestkit/compare/v10.8.4...v10.8.5)** · 2026-11-04
 
 - **plugin:** pass validate --strict, add icon, disclose outbound calls (#5057)
@@ -690,17 +698,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
 - **skills:** trim listed descriptions and gate them per skill (#5043)
 - add Tower to the OrchestKit family (#5041)
-
-**[v10.7.4](https://github.com/yonatangross/orchestkit/compare/v10.7.3...v10.7.4)** · 2026-11-03
-
-- **hooks:** no CC floor warning from an unconfirmed env version (#5037)
-- **hooks:** review-pr gate needs --no-ext-diff --no-textconv on diffs (#5013)
-- **hooks:** trust the running CC version over CLAUDE_CODE_VERSION (#5034)
-
-**[v10.7.3](https://github.com/yonatangross/orchestkit/compare/v10.7.2...v10.7.3)** · 2026-11-03
-
-- **ci:** scope ci-sentinel claude -p to its gh reads (#5014)
-- **secrets-veil:** stop masking hq-ops tool names (shaped SA prefix) (#5027)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->

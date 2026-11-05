@@ -50,6 +50,8 @@ COLLIE_MUX=herdr collie start          # or: herdr-core, tmux, zellij
 **3. Pair your phone.** Run `collie qr` and scan it. Add Collie to your home screen and open it from
 the icon. Then run `collie pair` and type the code under **Settings → System → Paired devices**.
 
+![Put Collie on the home screen: iPhone and Android steps.](docs/images/install/pwa-install.svg)
+
 That's it: agents waiting on you show up first. Tap one to reply.
 
 > Collie is remote shell access to your machine. Keep it on your tailnet (`tailscale serve`, never
@@ -374,6 +376,14 @@ The tabs, in order: Dashboard, Pane, Crew, Settings, Boot & connection, Idle & r
 Notices, Motion. Notices covers everything that ANNOUNCES (the notice primitive, the strip band,
 the status toast); Motion covers everything that MOVES without announcing anything (collapse and
 swap primitives, loading bars, sheets, menus, pending and pulsing controls).
+
+A card shows its label and nothing else. Its `reach` and `note`, and a section's `intent`, appear
+only while the page's Notes switch is on (off by default, remembered in `localStorage`).
+`cd web && bun run playground:build` builds the page alone into `web/dist-playground/` (minified,
+one chunk per section, no service worker) for any static server; it never touches `dist/`.
+
+A design round that compares numbered options uses `Round` (`src/playground/round.tsx`): one Case
+switch drives every option, with Zoom, Replay and Flip.
 
 Within a tab, cards are grouped under a `Group` — a small heading over its own `.pg-grid` — ordered
 from the everyday state to the rare one, so a tab with a dozen cards can be skimmed by its group

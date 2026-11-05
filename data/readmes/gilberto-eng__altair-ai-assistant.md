@@ -4,7 +4,7 @@ Altair é um assistente de inteligência artificial open-source que combina inte
 
 ## Funcionalidades
 
-- Interacao por voz: escuta via Whisper, responde por TTS (Piper/ElevenLabs) e permite ligar/desligar fala na UI.
+- Interacao por voz: captura pelo microfone e transcricao exclusivamente via API remota; respostas por TTS (Piper/ElevenLabs).
 - Chat desktop em tempo real com atalhos de midia (copiar resposta, anexar arquivos, pre-visualizacao de imagens).
 - Automacao WhatsApp Web: envia audios gerados pelo próprio assistente, mensagens e arquivos, com pipeline interno (Piper -> ogg) e logs em `data/wwebjs_logs`.
 - Automacao do sistema operacional: abre apps, executa comandos locais, realiza buscas web, abre sites e organiza arquivos.
@@ -49,6 +49,16 @@ Altair é um assistente de inteligência artificial open-source que combina inte
 +- package-lock.json
 ```
 
+## Microsoft Store / empacotamento
+
+A pasta `store/` contém a base para empacotar o app em MSIX para a Microsoft Store, incluindo:
+
+- `store/Altair.appxmanifest`
+- `store/build_msix.ps1`
+- `store/Assets/` com os ícones prontos para o pacote
+
+Veja também: `store/README.md`.
+
 ## Como executar
 
 ### 0) Entry point seguro (sem mexer no main.py)
@@ -74,6 +84,19 @@ Se precisar rodar manualmente:
 node scripts/whatsapp/teste.js
 ```
 
+## Instalador offline (Python + bibliotecas embutidas)
+
+O diretório `installer/offline_bundle/` inclui:
+
+- Python 3.10.0 para Windows x64
+- todas as wheels do projeto em `installer/offline_bundle/wheels`
+
+O instalador usa esse cache automaticamente quando ele existe, instalando as dependências com `--no-index --find-links`, sem precisar acessar a internet durante a instalação. Para regenerar o bundle local, execute:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\installer\build_offline_bundle.ps1
+```
+
 ## Configuracao
 
 - `configs/apps.json`: apps registrados
@@ -87,6 +110,13 @@ Variaveis de ambiente:
 - `ALTAIR_WWEBJS_DIR` (padrao: `scripts/whatsapp`)
 - `ALTAIR_CHROME_PROFILE_DIR` (padrao: `data/chrome_profile`)
 - `ALTAIR_DATA_DIR` (padrao: `data`)
+- `ALTAIR_STT_REMOTE_URL` (opcional): endpoint de transcricao remota compatível com OpenAI, ex.: `https://api.groq.com/openai/v1/audio/transcriptions`
+- `ALTAIR_STT_REMOTE_API_KEY` (opcional): chave da API remota gratuita ou limitada
+- `ALTAIR_STT_REMOTE_MODEL` (opcional): modelo usado pela API, ex.: `whisper-1` ou `distil-whisper-large-v3-en`
+- `ALTAIR_STT_REMOTE_LANGUAGE` (opcional): idioma da fala, padrao `pt`
+- `ALTAIR_STT_REMOTE_TIMEOUT` (opcional): timeout em segundos, padrao `60`
+
+O reconhecimento de fala usa exclusivamente a API remota configurada; nao ha modelo local de transcricao. Configure a chave e o endpoint do provedor em Configurar Voz.
 
 ## Observacoes
 

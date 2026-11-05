@@ -76,9 +76,13 @@ pip install spd_learn
 Or install from source:
 
 ```bash
-git clone https://github.com/spdlearn/spd_learn
-cd spd_learn && pip install -e .
+git clone --depth 1 --branch main https://github.com/spdlearn/spd_learn.git
+cd spd_learn
+pip install -e .
 ```
+
+This downloads the latest source snapshot. For development with full history,
+follow the [contributing guide](CONTRIBUTING.md).
 
 Works with Python 3.11+ and PyTorch 2.0+.
 
@@ -160,7 +164,7 @@ Join our community and help advance deep learning on Riemannian manifolds.
   &nbsp;&nbsp;&nbsp;
   <a href="https://www.cea.fr/"><img src="docs/source/_static/support/cea_dark.png" alt="CEA" height="60"></a>
   &nbsp;&nbsp;&nbsp;
-  <a href="https://www.universite-paris-saclay.fr/"><img src="docs/source/_static/support/paris_saclay_dark.jpg" alt="Université Paris-Saclay" height="60"></a>
+  <a href="https://www.universite-paris-saclay.fr/"><img src="docs/source/_static/support/paris_saclay_white.png" alt="Université Paris-Saclay" height="60"></a>
   &nbsp;&nbsp;&nbsp;
   <a href="https://www.atr.jp/"><img src="docs/source/_static/support/atr_logo_white.png" alt="ATR" height="60"></a>
   &nbsp;&nbsp;&nbsp;
