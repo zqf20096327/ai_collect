@@ -445,11 +445,11 @@
   }
  },
  "lucidrains/titans-pytorch": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 6,
+  "commit_90d": 6,
   "rel_ver": "0.5.3",
   "rel_pub": "2026-02-09",
-  "rel_days": 250,
+  "rel_days": 269,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -461,10 +461,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2451,16 +2451,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261104",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261029"
+   "commit": "20261105"
   },
-  "commit_90d": 108,
-  "commit_7d": 107,
+  "commit_90d": 149,
+  "commit_7d": 41,
   "rel_pub": "2026-10-27",
   "rel_days": 8,
   "rel_n90": 1,

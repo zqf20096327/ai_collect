@@ -172,8 +172,8 @@
   }
  },
  "mistralai/cookbook": {
-  "commit_7d": 0,
-  "commit_90d": 129,
+  "commit_7d": 28,
+  "commit_90d": 159,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -188,10 +188,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4071,6 +4071,51 @@
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
+  }
+ },
+ "Nbill27/opencode-deepseek-web": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "PowerShell": 3
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "lord-kirby-kirk69/Athena": {
+  "rel_ver": "v0.9.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

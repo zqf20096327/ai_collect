@@ -230,7 +230,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.5.2",
   "rel_pub": "2026-08-31",
-  "rel_days": 59,
+  "rel_days": 66,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -246,10 +246,10 @@
    "Shell": 2,
    "Batchfile": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4454,6 +4454,73 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "open-speaker-llm/xiaomi_ai_llm": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 46,
+   "Shell": 27,
+   "C": 25,
+   "Rust": 2
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "beasaltfish/bot-reborn": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 77,
+   "TypeScript": 11,
+   "C": 7,
+   "CSS": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "TechAngelX/softwear": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 77,
+   "CSS": 23,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

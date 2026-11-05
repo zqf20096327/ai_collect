@@ -5027,5 +5027,79 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "alibaba-damo-academy/ScholarSeed": {
+  "rel_ver": "v0.3.1-preview.202611041544",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 48,
+   "TypeScript": 41,
+   "JavaScript": 6,
+   "Go": 2,
+   "Objective-C": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "Jaasssoooonnnnn/FirstLight-Zero": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 67,
+   "C++": 32,
+   "Assembly": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "Solorush2021/zcode-rust": {
+  "rel_ver": "v0.16.9",
+  "rel_pub": "2026-09-22",
+  "rel_days": 44,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Rust": 80,
+   "Shell": 18,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

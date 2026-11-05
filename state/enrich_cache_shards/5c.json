@@ -572,11 +572,11 @@
   }
  },
  "lhotse-speech/lhotse": {
-  "commit_7d": 11,
-  "commit_90d": 27,
+  "commit_7d": 14,
+  "commit_90d": 39,
   "rel_ver": "v1.33.0",
   "rel_pub": "2026-04-20",
-  "rel_days": 187,
+  "rel_days": 199,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -589,10 +589,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

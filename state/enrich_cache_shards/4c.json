@@ -4429,5 +4429,50 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "TIGER-AI-Lab/WebsiteBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "wcqxgjy6d8-pixel/Visible-Agent-Loop-Protocol": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-08-27",
+  "rel_days": 70,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

@@ -2786,13 +2786,16 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261022",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261105"
+  },
+  "commit_90d": 15,
+  "commit_7d": 2
  },
  "patterns-ai-core/milvus": {
   "rel_ver": "0.10.5",

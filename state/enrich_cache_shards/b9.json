@@ -1683,13 +1683,16 @@
    "CSS": 10,
    "Batchfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261105"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "msainsburydale/NeuralEstimators.jl": {
   "rel_ver": "v0.4.0",
@@ -4595,6 +4598,30 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "PhenoMe-Ecosystem/PhenoMe": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 23,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 82,
+   "Jupyter Notebook": 18
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

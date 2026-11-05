@@ -5077,5 +5077,54 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "MiniMax-AI/mcode-agent-table": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 50,
+   "TypeScript": 40,
+   "CSS": 9,
+   "HTML": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "jerry1993-tech/aligo-travel-agents": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-10-07",
+  "rel_days": 29,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "TypeScript": 18,
+   "Makefile": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

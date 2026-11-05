@@ -1895,13 +1895,16 @@
    "HTML": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261105"
+  },
+  "commit_90d": 31,
+  "commit_7d": 1
  },
  "THU-WingTecher/LSPRAG": {
   "rel_ver": null,

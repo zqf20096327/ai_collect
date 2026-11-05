@@ -4149,5 +4149,31 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "jblas-project/jblas": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 22,
+  "lang": {
+   "Java": 70,
+   "C": 17,
+   "Ruby": 11,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "commit": "20261105",
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

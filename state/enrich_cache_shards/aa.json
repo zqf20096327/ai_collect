@@ -233,7 +233,7 @@
   "commit_90d": 1,
   "rel_ver": "2.2.2",
   "rel_pub": "2026-09-25",
-  "rel_days": 22,
+  "rel_days": 41,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -247,10 +247,10 @@
    "TeX": 21,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4376,6 +4376,57 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "saidake/code-trace-tree-jetbrains": {
+  "rel_ver": "v1.3.7",
+  "rel_pub": "2026-09-27",
+  "rel_days": 39,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Kotlin": 82,
+   "Python": 18
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "rokrokss/kakaotalk-bridge": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 8,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 82,
+   "JavaScript": 8,
+   "Kotlin": 4,
+   "HTML": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

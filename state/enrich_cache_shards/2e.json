@@ -4747,5 +4747,89 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "beany-vu/michi-vz-mono": {
+  "commit_90d": 110,
+  "commit_7d": 0,
+  "rel_ver": "@michi-vz/wc@1.22.0",
+  "rel_pub": "2026-10-06",
+  "rel_days": 30,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 87,
+   "Vue": 5,
+   "HTML": 5,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "commit": "20261105",
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "mycellm/mycellm": {
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-08-25",
+  "rel_days": 72,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 80,
+   "TypeScript": 18,
+   "CSS": 1,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "TurtleByte-IN/mailrules": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 17,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 74,
+   "TypeScript": 17,
+   "Svelte": 8,
+   "PLpgSQL": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

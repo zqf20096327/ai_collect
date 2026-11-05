@@ -250,7 +250,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.1.6",
   "rel_pub": "2023-10-24",
-  "rel_days": 1101,
+  "rel_days": 1108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -265,10 +265,10 @@
    "Makefile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4585,6 +4585,47 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "Hazrat-Ali9/Quantum-Classical-Hybrid-Machine-Learning": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "iamvinay92/testgen-unit": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 96,
+   "Python": 4
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

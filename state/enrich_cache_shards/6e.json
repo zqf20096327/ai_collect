@@ -2280,12 +2280,12 @@
   }
  },
  "ai-job-search-dev/ai-job-search": {
-  "commit_90d": 295,
-  "commit_7d": 14,
-  "rel_ver": "v1.7.3",
-  "rel_pub": "2026-10-19",
-  "rel_days": 10,
-  "rel_n90": 9,
+  "commit_90d": 269,
+  "commit_7d": 4,
+  "rel_ver": "v1.7.4",
+  "rel_pub": "2026-11-02",
+  "rel_days": 3,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2298,10 +2298,10 @@
    "TypeScript": 34,
    "TeX": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261022",
    "contrib": "20261022",
    "lang": "20261022"

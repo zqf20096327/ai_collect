@@ -286,7 +286,7 @@
   }
  },
  "ace-trump-tech/DeltaForce-OBS-Locker": {
-  "commit_90d": 24,
+  "commit_90d": 25,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -298,10 +298,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4195,6 +4195,31 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "saidake/code-trace-tree-vscode": {
+  "rel_ver": "v1.3.7",
+  "rel_pub": "2026-09-27",
+  "rel_days": 39,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 77,
+   "Python": 21,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

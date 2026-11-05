@@ -1389,13 +1389,16 @@
    "Python": 76,
    "TypeScript": 24
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261105"
+  },
+  "commit_90d": 125,
+  "commit_7d": 22
  },
  "huggingface/discord-bots": {
   "rel_ver": null,
@@ -3855,6 +3858,33 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "DEEPX-AI/dx-tutorials": {
+  "rel_ver": "v2.4.2",
+  "rel_pub": "2026-10-06",
+  "rel_days": 30,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 82,
+   "C++": 15,
+   "Python": 2,
+   "Shell": 1,
+   "CMake": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

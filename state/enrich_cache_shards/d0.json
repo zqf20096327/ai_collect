@@ -488,11 +488,11 @@
   }
  },
  "datalab-to/indra": {
-  "commit_90d": 8,
+  "commit_90d": 18,
   "commit_7d": 6,
   "rel_ver": "v1.1.2",
   "rel_pub": "2026-10-20",
-  "rel_days": 5,
+  "rel_days": 16,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261025",
-   "release": "20261025",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3851,6 +3851,29 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "h4444433333/net-deep-research": {
+  "rel_ver": "v1.1.5",
+  "rel_pub": "2026-08-24",
+  "rel_days": 73,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

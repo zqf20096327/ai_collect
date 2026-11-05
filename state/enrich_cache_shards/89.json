@@ -4949,5 +4949,55 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "mohmdelsayed/TinyRL": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 70,
+   "CSS": 13,
+   "HTML": 8,
+   "CMake": 3,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "synapse-ai-hub/Forge": {
+  "rel_ver": "v0.1.25.dev0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 60,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 82,
+   "TypeScript": 14,
+   "HTML": 2,
+   "Jinja": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

@@ -4695,10 +4695,10 @@
   }
  },
  "kaomei/stickman-video-director": {
-  "commit_90d": 129,
-  "commit_7d": 25,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 137,
+  "commit_7d": 18,
+  "rel_ver": "v2026.11.4",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4709,14 +4709,18 @@
    "JavaScript": 39,
    "Shell": 4
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
-  }
+  },
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "AbuZar-Ansarii/Android-GPU": {
   "rel_ver": null,
@@ -4837,6 +4841,53 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "leishifu666/lsf-website-design": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 98,
+   "Python": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "yunluo91/WorkBuddy2API-Android": {
+  "rel_ver": "v1.10.9-app132",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 65,
+   "HTML": 25,
+   "Kotlin": 9,
+   "Java": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

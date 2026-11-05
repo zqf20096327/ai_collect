@@ -3881,5 +3881,54 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "SightAndCite/SpectRAG": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 49,
+   "JavaScript": 29,
+   "CSS": 16,
+   "HTML": 6
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "solsongli/deepread": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 8,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 94,
+   "HTML": 2,
+   "Fluent": 2,
+   "Python": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

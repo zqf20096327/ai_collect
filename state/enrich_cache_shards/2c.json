@@ -86,11 +86,11 @@
   }
  },
  "mergisi/awesome-openclaw-agents": {
-  "commit_7d": 1,
-  "commit_90d": 1,
+  "commit_7d": 2,
+  "commit_90d": 3,
   "rel_ver": "v2.0",
   "rel_pub": "2026-04-04",
-  "rel_days": 208,
+  "rel_days": 215,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -105,10 +105,10 @@
    "JavaScript": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -204,8 +204,8 @@
   }
  },
  "LjyYano/Thinking_in_Java_MindMapping": {
-  "commit_7d": 1,
-  "commit_90d": 13,
+  "commit_7d": 2,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -216,10 +216,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1938,13 +1938,16 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261022",
    "security": "20261022",
    "contrib": "20261022",
-   "lang": "20261022"
-  }
+   "lang": "20261022",
+   "commit": "20261105"
+  },
+  "commit_90d": 1469,
+  "commit_7d": 209
  },
  "pur4v/p2ptokens": {
   "rel_ver": null,
@@ -4175,6 +4178,27 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "msobkyy/react-native-shader-orbs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 88,
+   "CSS": 7,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

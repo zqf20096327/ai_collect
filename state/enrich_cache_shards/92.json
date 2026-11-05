@@ -4190,5 +4190,32 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "Lewickiy/github-social-agent": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-08-11",
+  "rel_days": 86,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "TypeScript": 18,
+   "HTML": 10,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

@@ -3439,13 +3439,16 @@
    "Python": 77,
    "HTML": 23
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261105"
+  },
+  "commit_90d": 62,
+  "commit_7d": 0
  },
  "Alpha-Park/genpark-l2-gradient-clipping-norm-skill": {
   "rel_ver": null,

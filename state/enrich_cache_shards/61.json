@@ -275,7 +275,7 @@
   "commit_90d": 1,
   "rel_ver": "v2.6.0",
   "rel_pub": "2024-11-05",
-  "rel_days": 717,
+  "rel_days": 730,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -291,10 +291,10 @@
    "Java": 4,
    "CMake": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -350,11 +350,11 @@
  },
  "Netw0rkNoob/VulnClaw": {
   "commit_7d": 0,
-  "commit_90d": 163,
+  "commit_90d": 148,
   "rel_ver": "v0.4.1",
   "rel_pub": "2026-10-06",
-  "rel_days": 23,
-  "rel_n90": 5,
+  "rel_days": 30,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -369,10 +369,10 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4533,6 +4533,27 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "betizzel/rtx2070-super-tensor-unlock": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 47,
+   "Cuda": 35,
+   "Python": 19
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

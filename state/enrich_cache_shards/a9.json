@@ -2307,13 +2307,16 @@
    "TeX": 2,
    "Shell": 2
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261105"
+  },
+  "commit_90d": 1469,
+  "commit_7d": 28
  },
  "AllSpark-Research/Vela": {
   "rel_ver": null,
@@ -4383,6 +4386,28 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "KarthikJ-2008/Student-Placement-Predictor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 84,
+   "HTML": 8,
+   "CSS": 6,
+   "Python": 2
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

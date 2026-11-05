@@ -4222,13 +4222,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261024",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261105"
+  },
+  "commit_90d": 12,
+  "commit_7d": 0
  },
  "aidget-ai/aidget": {
   "rel_ver": null,

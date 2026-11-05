@@ -4115,5 +4115,32 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "MachineLearningLifeScience/BEND2": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 46,
+   "JavaScript": 23,
+   "CSS": 17,
+   "TeX": 12,
+   "HTML": 2
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

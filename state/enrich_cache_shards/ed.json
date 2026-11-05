@@ -4074,13 +4074,16 @@
    "Python": 99,
    "Batchfile": 1
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261105",
   "dim_ts": {
    "release": "20261102",
    "security": "20261102",
    "contrib": "20261102",
-   "lang": "20261102"
-  }
+   "lang": "20261102",
+   "commit": "20261105"
+  },
+  "commit_90d": 20,
+  "commit_7d": 1
  },
  "defos-ai/commander": {
   "rel_ver": "v0.3.0",
@@ -4273,6 +4276,43 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "StevenLiu-95/MayaAgent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "WeaveFox/weavefox": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

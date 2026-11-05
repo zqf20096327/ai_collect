@@ -512,7 +512,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-06-30",
-  "rel_days": 109,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -528,10 +528,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4823,6 +4823,25 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "Hazrat-Ali9/StudyMate-AI-LangChain-Chatbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

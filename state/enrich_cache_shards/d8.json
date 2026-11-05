@@ -83,12 +83,12 @@
   }
  },
  "VoltAgent/voltagent": {
-  "commit_7d": 0,
-  "commit_90d": 12,
-  "rel_ver": "@voltagent/core@2.11.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 18,
-  "rel_n90": 11,
+  "commit_7d": 2,
+  "commit_90d": 11,
+  "rel_ver": "@voltagent/core@2.11.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -103,10 +103,10 @@
    "MDX": 0,
    "Shell": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

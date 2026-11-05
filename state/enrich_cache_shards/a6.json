@@ -85,11 +85,11 @@
   }
  },
  "OpenMind/OM1": {
-  "commit_7d": 0,
-  "commit_90d": 24,
+  "commit_7d": 1,
+  "commit_90d": 23,
   "rel_ver": "nightly",
   "rel_pub": "2026-06-04",
-  "rel_days": 135,
+  "rel_days": 154,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -103,10 +103,10 @@
    "Makefile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4741,6 +4741,74 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "shahshrey/skill-trainer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "exit-node/node-loop": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 44,
+   "HTML": 29,
+   "Shell": 27
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "AndreiKopylov/zepi": {
+  "rel_ver": "0.0.1-beta1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 89,
+   "TypeScript": 6,
+   "JavaScript": 4,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

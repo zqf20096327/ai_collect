@@ -290,10 +290,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

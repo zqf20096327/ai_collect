@@ -144,11 +144,11 @@
   }
  },
  "limix-ldm-ai/LimiX": {
-  "commit_90d": 70,
-  "commit_7d": 2,
+  "commit_90d": 71,
+  "commit_7d": 1,
   "rel_ver": "V1.1.0",
   "rel_pub": "2025-11-10",
-  "rel_days": 353,
+  "rel_days": 360,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -161,10 +161,10 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261105",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
+   "commit": "20261105",
+   "release": "20261105",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4408,6 +4408,76 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "Tencent-Hunyuan/OmniCapBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "Ahaduzzamankhan/aicrawl": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 74,
+   "TypeScript": 25,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "stdlogits/neuron-lens.com": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Svelte": 44,
+   "TypeScript": 29,
+   "Python": 16,
+   "JavaScript": 9,
+   "Shell": 1
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
   }
  }
 }

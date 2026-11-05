@@ -4658,5 +4658,29 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "Redamancy0222/mml-book-chinese-latex": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

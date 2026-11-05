@@ -5074,5 +5074,58 @@
    "contrib": "20261103",
    "lang": "20261103"
   }
+ },
+ "fw-ai-external/cookbook": {
+  "commit_90d": 106,
+  "commit_7d": 21,
+  "rel_ver": "cookbook-v2026.10.21.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 15,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 56,
+  "lang": {
+   "Python": 53,
+   "Jupyter Notebook": 46,
+   "HTML": 0,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "commit": "20261105",
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "NVIDIA/agent-policy-fabric": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Rust": 91,
+   "Shell": 6,
+   "Python": 2,
+   "Dockerfile": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

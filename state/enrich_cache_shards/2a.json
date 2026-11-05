@@ -4319,5 +4319,58 @@
    "contrib": "20261102",
    "lang": "20261102"
   }
+ },
+ "IsuruMaduranga/one-code": {
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 1,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "Shell": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "tancheng33/tingo": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 37,
+   "Python": 37,
+   "TypeScript": 18,
+   "CSS": 5,
+   "Swift": 2
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }

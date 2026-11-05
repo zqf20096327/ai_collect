@@ -4070,5 +4070,77 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "ItsSNOWMOBILE/aftertake": {
+  "rel_ver": "then-comes-the-aftertake-2026-10-22",
+  "rel_pub": "2026-10-22",
+  "rel_days": 14,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 66,
+   "Python": 26,
+   "CSS": 5,
+   "JavaScript": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "gauravsharmaGG/mergejudge-runner": {
+  "rel_ver": "v1",
+  "rel_pub": "2026-10-18",
+  "rel_days": 18,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 66,
+   "TypeScript": 34,
+   "Shell": 0
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
+ },
+ "Wanbao114514/chaoxing-watch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 69,
+   "PowerShell": 31
+  },
+  "enriched_at": "20261105",
+  "dim_ts": {
+   "release": "20261105",
+   "security": "20261105",
+   "contrib": "20261105",
+   "lang": "20261105"
+  }
  }
 }
