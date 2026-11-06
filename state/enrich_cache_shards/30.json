@@ -1,11 +1,11 @@
 {
  "iOfficeAI/AionUi": {
-  "commit_7d": 1,
-  "commit_90d": 161,
+  "commit_7d": 11,
+  "commit_90d": 111,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-09-09",
-  "rel_days": 51,
-  "rel_n90": 12,
+  "rel_days": 58,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,21 +20,21 @@
    "NSIS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "topoteretes/cognee": {
-  "commit_7d": 269,
-  "commit_90d": 2821,
+  "commit_7d": 0,
+  "commit_90d": 2726,
   "rel_ver": "v1.6.6",
   "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -149,11 +149,11 @@
   }
  },
  "zenml-io/zenml": {
-  "commit_90d": 134,
-  "commit_7d": 0,
-  "rel_ver": "0.98.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 16,
+  "commit_90d": 135,
+  "commit_7d": 9,
+  "rel_ver": "0.98.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "Go Template": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -238,8 +238,8 @@
   }
  },
  "M-3LAB/awesome-industrial-anomaly-detection": {
-  "commit_90d": 10,
-  "commit_7d": 1,
+  "commit_90d": 13,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -248,10 +248,10 @@
   "sec_ids": [],
   "contrib_n": 28,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4699,6 +4699,53 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "patrasc237/EEG-DL": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "MATLAB": 12
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "cotletdev/milanote-api-mcp-server": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

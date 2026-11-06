@@ -1,10 +1,10 @@
 {
  "github/spec-kit": {
-  "commit_7d": 47,
-  "commit_90d": 622,
-  "rel_ver": "v1.2.5",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "commit_7d": 61,
+  "commit_90d": 629,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -62,7 +62,7 @@
   "commit_90d": 29,
   "rel_ver": "v3.0.10",
   "rel_pub": "2026-09-22",
-  "rel_days": 38,
+  "rel_days": 45,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -87,21 +87,21 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "the-open-agent/openagent": {
-  "commit_90d": 100,
+  "commit_90d": 98,
   "commit_7d": 3,
   "rel_ver": "v2.95.1",
   "rel_pub": "2026-10-05",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -117,10 +117,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5125,6 +5125,29 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "cotletdev/bookingkoala-api-mcp-server": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "The-Vibe-Company/quivr": {
-  "commit_7d": 15,
-  "commit_90d": 584,
-  "rel_ver": "v2.0.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "commit_7d": 7,
+  "commit_90d": 591,
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-10-30",
+  "rel_days": 7,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,22 +20,22 @@
    "MDX": 6,
    "JavaScript": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "simonlin1212/a-stock-data": {
-  "commit_7d": 5,
-  "commit_90d": 25,
-  "rel_ver": "v3.10.2",
-  "rel_pub": "2026-10-11",
-  "rel_days": 19,
-  "rel_n90": 9,
+  "commit_7d": 4,
+  "commit_90d": 29,
+  "rel_ver": "v3.10.4",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/maka": {
-  "commit_7d": 30,
-  "commit_90d": 2639,
-  "rel_ver": "v0.2.2-dev.105.20261029",
+  "commit_7d": 2,
+  "commit_90d": 2107,
+  "rel_ver": "v0.2.2-dev.106.20261030",
   "rel_pub": "2026-10-30",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -76,10 +76,10 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,11 +115,11 @@
   }
  },
  "emgucv/emgucv": {
-  "commit_7d": 4,
-  "commit_90d": 393,
+  "commit_7d": 7,
+  "commit_90d": 324,
   "rel_ver": "5.0.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 15,
+  "rel_days": 28,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4199,6 +4199,28 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "SelinLee/ai-moe-atlas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 34,
+   "Python": 30,
+   "TypeScript": 22,
+   "Astro": 14
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

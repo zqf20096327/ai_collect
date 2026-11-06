@@ -1,10 +1,10 @@
 {
  "JuliusBrussee/caveman": {
-  "commit_7d": 35,
-  "commit_90d": 1625,
+  "commit_7d": 40,
+  "commit_90d": 1674,
   "rel_ver": "bin-v4.0.2",
   "rel_pub": "2026-10-23",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Python": 10,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "marimo-team/marimo": {
-  "commit_7d": 65,
-  "commit_90d": 626,
+  "commit_7d": 102,
+  "commit_90d": 706,
   "rel_ver": "0.25.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -91,11 +91,11 @@
   }
  },
  "sktime/pytorch-forecasting": {
-  "commit_7d": 4,
-  "commit_90d": 42,
+  "commit_7d": 2,
+  "commit_90d": 41,
   "rel_ver": "v1.8.0",
   "rel_pub": "2026-06-24",
-  "rel_days": 128,
+  "rel_days": 135,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -140,10 +140,10 @@
   }
  },
  "nextlevelbuilder/goclaw": {
-  "commit_7d": 1,
-  "commit_90d": 110,
-  "rel_ver": "v3.15.0-beta.230",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 3,
+  "commit_90d": 93,
+  "rel_ver": "v3.15.0-beta.233",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -160,10 +160,10 @@
    "HTML": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4182,5 +4182,9 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "joker124zx/minimax-h3-qwen-comfyui-colab": {
+  "rel_ver": null,
+  "rel_none": true
  }
 }

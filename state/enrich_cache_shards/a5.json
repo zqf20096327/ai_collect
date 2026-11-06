@@ -1,10 +1,10 @@
 {
  "morluto/rea": {
-  "commit_7d": 1891,
-  "commit_90d": 5531,
+  "commit_7d": 323,
+  "commit_90d": 5845,
   "rel_ver": "rea-agents-6.8.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Python": 2,
    "Java": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

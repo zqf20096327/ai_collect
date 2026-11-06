@@ -1,11 +1,11 @@
 {
  "koala73/worldmonitor": {
-  "commit_7d": 273,
-  "commit_90d": 3835,
-  "rel_ver": "v2.11.6",
-  "rel_pub": "2026-10-25",
-  "rel_days": 5,
-  "rel_n90": 7,
+  "commit_7d": 296,
+  "commit_90d": 3947,
+  "rel_ver": "v2.11.8",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 17,
@@ -29,10 +29,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -67,11 +67,11 @@
   }
  },
  "wkentaro/labelme": {
-  "commit_7d": 15,
-  "commit_90d": 869,
+  "commit_7d": 277,
+  "commit_90d": 1019,
   "rel_ver": "v7.9.1",
   "rel_pub": "2026-10-25",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -84,10 +84,10 @@
    "Python": 100,
    "Just": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,10 +95,10 @@
  },
  "treeverse/dvc": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 0,
   "rel_ver": "3.67.1",
   "rel_pub": "2026-03-31",
-  "rel_days": 213,
+  "rel_days": 220,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -111,10 +111,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -145,11 +145,11 @@
   }
  },
  "denizsafak/abogen": {
-  "commit_90d": 27,
+  "commit_90d": 36,
   "commit_7d": 4,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-02-06",
-  "rel_days": 266,
+  "rel_days": 273,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -165,21 +165,21 @@
    "CSS": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "conorbronsdon/avoid-ai-writing": {
-  "commit_90d": 492,
-  "commit_7d": 2,
+  "commit_90d": 499,
+  "commit_7d": 30,
   "rel_ver": "v3.38.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "Python": 8,
    "Shell": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4174,6 +4174,65 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "ChatAndBuild/livingbrain": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "WXJJ0520/FrameWeave": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 85,
+   "HTML": 11,
+   "CSS": 2,
+   "TypeScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "Chia-Network/chia-for-agents": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

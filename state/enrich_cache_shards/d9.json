@@ -1,10 +1,10 @@
 {
  "openai/codex": {
-  "commit_7d": 335,
-  "commit_90d": 4082,
-  "rel_ver": "rust-v0.166.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 317,
+  "commit_90d": 4167,
+  "rel_ver": "rust-v0.167.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "TypeScript": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

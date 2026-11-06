@@ -1,10 +1,10 @@
 {
  "gradio-app/gradio": {
   "commit_7d": 5,
-  "commit_90d": 167,
+  "commit_90d": 160,
   "rel_ver": "gradio@6.31.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -29,22 +29,22 @@
    "mdsvex": 2,
    "CSS": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/TensorRT": {
-  "commit_7d": 0,
+  "commit_7d": 1,
   "commit_90d": 6,
   "rel_ver": "v11.4",
   "rel_pub": "2026-10-09",
-  "rel_days": 7,
-  "rel_n90": 3,
+  "rel_days": 28,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -59,10 +59,10 @@
    "Jupyter Notebook": 0,
    "CMake": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

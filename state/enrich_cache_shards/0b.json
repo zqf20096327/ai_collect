@@ -1,10 +1,10 @@
 {
  "zylon-ai/private-gpt": {
-  "commit_7d": 4,
-  "commit_90d": 56,
+  "commit_7d": 0,
+  "commit_90d": 51,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 134,
+  "rel_days": 141,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,20 +20,20 @@
    "Jinja": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "trycua/cua": {
-  "commit_7d": 252,
-  "commit_90d": 1974,
-  "rel_ver": "cua-spaces-v0.17.0",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 311,
+  "commit_90d": 2132,
+  "rel_ver": "cua-spacesd-v0.12.1",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -50,10 +50,10 @@
    "Swift": 10,
    "Go": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -86,11 +86,11 @@
   }
  },
  "NVIDIA/NemoClaw": {
-  "commit_7d": 84,
-  "commit_90d": 2589,
+  "commit_7d": 47,
+  "commit_90d": 2306,
   "rel_ver": "ci-native-podman-e2e-2026-10-01",
   "rel_pub": "2026-10-01",
-  "rel_days": 29,
+  "rel_days": 36,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -106,21 +106,21 @@
    "Dockerfile": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "triggerdotdev/trigger.dev": {
-  "commit_7d": 109,
-  "commit_90d": 879,
-  "rel_ver": "v4.8.2",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 22,
+  "commit_90d": 859,
+  "rel_ver": "v4.8.3",
+  "rel_pub": "2026-10-30",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -145,21 +145,21 @@
    "CSS": 0,
    "ANTLR": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/doris": {
-  "commit_7d": 165,
-  "commit_90d": 1420,
+  "commit_7d": 148,
+  "commit_90d": 1473,
   "rel_ver": "4.1.5-release",
   "rel_pub": "2026-10-15",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -175,10 +175,10 @@
    "Shell": 1,
    "Thrift": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -242,11 +242,11 @@
   }
  },
  "pydantic/logfire": {
-  "commit_7d": 36,
-  "commit_90d": 335,
+  "commit_7d": 20,
+  "commit_90d": 325,
   "rel_ver": "v5.4.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,10 +260,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4658,6 +4658,28 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "imsai-sh/fish-pocket": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 73,
+   "JavaScript": 17,
+   "C": 9,
+   "Shell": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

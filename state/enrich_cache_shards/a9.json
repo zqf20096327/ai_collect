@@ -1,10 +1,10 @@
 {
  "upstash/context7": {
-  "commit_7d": 18,
-  "commit_90d": 195,
-  "rel_ver": "ctx7@0.8.2",
-  "rel_pub": "2026-10-23",
-  "rel_days": 7,
+  "commit_7d": 56,
+  "commit_90d": 248,
+  "rel_ver": "mcpb-v4.5.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -18,21 +18,21 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "crewAIInc/crewAI": {
-  "commit_7d": 92,
-  "commit_90d": 413,
-  "rel_ver": "1.15.33",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 28,
+  "commit_90d": 411,
+  "rel_ver": "1.15.35",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -183,12 +183,12 @@
   }
  },
  "withcatai/node-llama-cpp": {
-  "commit_90d": 17,
+  "commit_90d": 19,
   "commit_7d": 2,
-  "rel_ver": "v3.22.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 7,
-  "rel_n90": 6,
+  "rel_ver": "v3.22.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -203,10 +203,10 @@
    "Vue": 1,
    "CMake": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

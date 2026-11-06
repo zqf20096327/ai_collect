@@ -26,12 +26,12 @@
   }
  },
  "ZhuLinsen/daily_stock_analysis": {
-  "commit_7d": 5,
-  "commit_90d": 124,
+  "commit_7d": 6,
+  "commit_90d": 114,
   "rel_ver": "v3.33.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 15,
-  "rel_n90": 5,
+  "rel_days": 22,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -46,21 +46,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/langextract": {
-  "commit_7d": 2,
-  "commit_90d": 25,
+  "commit_7d": 6,
+  "commit_90d": 31,
   "rel_ver": "v1.7.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,11 +115,11 @@
  },
  "jo-inc/camofox-browser": {
   "commit_7d": 0,
-  "commit_90d": 143,
+  "commit_90d": 115,
   "rel_ver": "v1.18.1",
   "rel_pub": "2026-10-05",
-  "rel_days": 25,
-  "rel_n90": 12,
+  "rel_days": 32,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -134,10 +134,10 @@
    "Python": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

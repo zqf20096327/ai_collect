@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
   "commit_7d": 3,
-  "commit_90d": 441,
+  "commit_90d": 444,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,13 +56,13 @@
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2891,
-  "commit_7d": 137,
-  "rel_ver": "v1.0.5",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "commit_90d": 2655,
+  "commit_7d": 103,
+  "rel_ver": "nightly",
+  "rel_pub": "2026-09-03",
+  "rel_days": 64,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -76,22 +76,22 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 66,
-  "commit_7d": 6,
-  "rel_ver": "v1.5.0a0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "commit_90d": 70,
+  "commit_7d": 10,
+  "rel_ver": "v1.5.2a0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -106,10 +106,10 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -117,7 +117,7 @@
  },
  "morphik-org/morphik-core": {
   "commit_90d": 19,
-  "commit_7d": 2,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -132,10 +132,10 @@
    "PowerShell": 1,
    "Rust": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4162,6 +4162,77 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "google-deepmind/alphaevolve": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "shiker1996/wechat-editroom": {
+  "rel_ver": "1.0.5",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 91,
+   "CSS": 5,
+   "HTML": 3,
+   "PowerShell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "cotletdev/partiful-api-mcp-server": {
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

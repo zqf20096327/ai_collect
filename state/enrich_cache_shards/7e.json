@@ -1,11 +1,11 @@
 {
  "agentscope-ai/agentscope": {
-  "commit_7d": 28,
-  "commit_90d": 378,
+  "commit_7d": 61,
+  "commit_90d": 423,
   "rel_ver": "v2.0.11",
   "rel_pub": "2026-10-27",
-  "rel_days": 3,
-  "rel_n90": 7,
+  "rel_days": 10,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,22 +18,22 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "nltk/nltk": {
-  "commit_7d": 5,
-  "commit_90d": 1291,
+  "commit_7d": 71,
+  "commit_90d": 1357,
   "rel_ver": "v3.10.4",
   "rel_pub": "2026-10-21",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "rel_days": 16,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
@@ -57,10 +57,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4143,6 +4143,26 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "DjibrilM/LanggraphStarbucksAgent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

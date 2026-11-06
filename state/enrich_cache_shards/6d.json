@@ -1,10 +1,10 @@
 {
  "aaif-goose/goose": {
-  "commit_7d": 25,
-  "commit_90d": 689,
+  "commit_7d": 26,
+  "commit_90d": 668,
   "rel_ver": "v1.57.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -33,11 +33,11 @@
  },
  "HKUDS/LightRAG": {
   "commit_7d": 0,
-  "commit_90d": 1570,
+  "commit_90d": 1421,
   "rel_ver": "v1.5.7",
   "rel_pub": "2026-09-02",
-  "rel_days": 58,
-  "rel_n90": 4,
+  "rel_days": 65,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 23,
@@ -61,10 +61,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -72,11 +72,11 @@
  },
  "qdrant/qdrant": {
   "commit_7d": 0,
-  "commit_90d": 1142,
+  "commit_90d": 610,
   "rel_ver": "v1.20.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 8,
-  "rel_n90": 4,
+  "rel_days": 15,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -94,10 +94,10 @@
    "HTML": 0,
    "C": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4870,6 +4870,55 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "diqierjia/StrataGate-AgentMemory": {
+  "commit_90d": 394,
+  "commit_7d": 32,
+  "rel_ver": "stratagate-dsh-v0.3.41",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 9,
+   "Python": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "commit": "20261106",
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "JairValle/mrea-framework": {
+  "rel_ver": "v1.0.0-beta",
+  "rel_pub": "2026-08-25",
+  "rel_days": 73,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

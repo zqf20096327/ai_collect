@@ -1,7 +1,7 @@
 {
  "google/skills": {
-  "commit_7d": 26,
-  "commit_90d": 304,
+  "commit_7d": 42,
+  "commit_90d": 325,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "HCL": 3,
    "Go Template": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

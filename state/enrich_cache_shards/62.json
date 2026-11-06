@@ -1,10 +1,10 @@
 {
  "onyx-dot-app/onyx": {
-  "commit_7d": 176,
-  "commit_90d": 1826,
-  "rel_ver": "helm/onyx-0.9.27",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 153,
+  "commit_90d": 1892,
+  "rel_ver": "helm/onyx-0.9.31",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -26,20 +26,20 @@
    "HCL": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tbphp/gpt-load": {
-  "commit_7d": 19,
-  "commit_90d": 673,
-  "rel_ver": "v2.0.0-rc.58",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 12,
+  "commit_90d": 542,
+  "rel_ver": "v2.0.0-rc.62",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -60,10 +60,10 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1047,13 +1047,16 @@
    "CSS": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261106",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261106"
+  },
+  "commit_90d": 332,
+  "commit_7d": 13
  },
  "lgomezt/Intro_Python": {
   "rel_ver": null,

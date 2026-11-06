@@ -1,10 +1,10 @@
 {
  "firecrawl/firecrawl": {
-  "commit_7d": 30,
-  "commit_90d": 690,
+  "commit_7d": 60,
+  "commit_90d": 716,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-06-19",
-  "rel_days": 133,
+  "rel_days": 140,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -25,21 +25,21 @@
    "Java": 3,
    "PHP": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "shadcn-ui/ui": {
-  "commit_7d": 26,
-  "commit_90d": 261,
+  "commit_7d": 16,
+  "commit_90d": 269,
   "rel_ver": "shadcn@4.23.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -55,18 +55,18 @@
    "JavaScript": 0,
    "Astro": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "github/awesome-copilot": {
-  "commit_7d": 159,
-  "commit_90d": 788,
+  "commit_7d": 79,
+  "commit_90d": 879,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -81,10 +81,10 @@
    "CSS": 6,
    "HTML": 4
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -121,10 +121,10 @@
   }
  },
  "microsoft/agent-framework": {
-  "commit_7d": 90,
-  "commit_90d": 1048,
-  "rel_ver": "dotnet-1.26.0",
-  "rel_pub": "2026-10-23",
+  "commit_7d": 104,
+  "commit_90d": 1120,
+  "rel_ver": "python-1.24.0",
+  "rel_pub": "2026-10-30",
   "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
@@ -145,21 +145,21 @@
    "HTML": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/open-swe": {
-  "commit_7d": 261,
-  "commit_90d": 1982,
-  "rel_ver": "desktop-v0.3.10-nightly.20261029202619",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 200,
+  "commit_90d": 2137,
+  "rel_ver": "desktop-ui-893c86e881c4149a9cc9fd82199f8e924690e35f",
+  "rel_pub": "2026-11-06",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -177,21 +177,21 @@
    "Jinja": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "catboost/catboost": {
-  "commit_7d": 20,
-  "commit_90d": 262,
+  "commit_7d": 11,
+  "commit_90d": 260,
   "rel_ver": "node-package-v1.27.0",
   "rel_pub": "2026-02-21",
-  "rel_days": 251,
+  "rel_days": 258,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -207,21 +207,21 @@
    "CMake": 3,
    "Scala": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "smol-machines/smolvm": {
-  "commit_90d": 924,
-  "commit_7d": 42,
-  "rel_ver": "v1.32.4",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "commit_90d": 911,
+  "commit_7d": 33,
+  "rel_ver": "v1.33.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -237,10 +237,10 @@
    "C": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4541,6 +4541,25 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "xuvyn/paper": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

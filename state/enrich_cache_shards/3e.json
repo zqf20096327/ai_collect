@@ -1,7 +1,7 @@
 {
  "anthropics/claude-plugins-official": {
-  "commit_7d": 18,
-  "commit_90d": 1897,
+  "commit_7d": 48,
+  "commit_90d": 1695,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "JavaScript": 8,
    "Shell": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,11 +138,11 @@
   }
  },
  "satellite-image-deep-learning/techniques": {
-  "commit_7d": 6,
-  "commit_90d": 59,
+  "commit_7d": 3,
+  "commit_90d": 60,
   "rel_ver": "v1.3",
   "rel_pub": "2025-07-05",
-  "rel_days": 482,
+  "rel_days": 489,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -152,21 +152,21 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tech-leads-club/agent-skills": {
-  "commit_90d": 92,
-  "commit_7d": 11,
-  "rel_ver": "skills-catalog-v0.17.15",
-  "rel_pub": "2026-10-26",
-  "rel_days": 4,
+  "commit_90d": 82,
+  "commit_7d": 21,
+  "rel_ver": "mcp-v0.1.12",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Shell": 2,
    "HTML": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

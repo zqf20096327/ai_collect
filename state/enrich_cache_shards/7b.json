@@ -61,11 +61,11 @@
   }
  },
  "huggingface/transformers.js": {
-  "commit_7d": 7,
+  "commit_7d": 0,
   "commit_90d": 23,
   "rel_ver": "4.3.2",
   "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "TypeScript": 5,
    "Vim Snippet": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,12 +172,12 @@
   }
  },
  "dmMaze/BallonsTranslator": {
-  "commit_7d": 4,
-  "commit_90d": 398,
+  "commit_7d": 16,
+  "commit_90d": 384,
   "rel_ver": "v1.5.20",
   "rel_pub": "2026-10-18",
-  "rel_days": 12,
-  "rel_n90": 12,
+  "rel_days": 19,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -192,21 +192,21 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "clidey/whodb": {
-  "commit_7d": 66,
-  "commit_90d": 707,
+  "commit_7d": 29,
+  "commit_90d": 677,
   "rel_ver": "0.138.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -231,21 +231,21 @@
    "Python": 3,
    "Rust": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "JabRef/jabref": {
-  "commit_7d": 51,
-  "commit_90d": 851,
+  "commit_7d": 83,
+  "commit_90d": 886,
   "rel_ver": "v6.0-beta.1",
   "rel_pub": "2026-09-21",
-  "rel_days": 39,
+  "rel_days": 46,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -264,10 +264,10 @@
    "XSLT": 1,
    "Python": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1706,13 +1706,16 @@
    "HTML": 6,
    "C++": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261106",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261106"
+  },
+  "commit_90d": 406,
+  "commit_7d": 6
  },
  "julienkay/com.doji.diffusers": {
   "rel_ver": null,
@@ -4562,6 +4565,33 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "kangyx-2024/secforge": {
+  "rel_ver": "data-latest",
+  "rel_pub": "2026-09-30",
+  "rel_days": 37,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 56,
+   "Swift": 26,
+   "HTML": 12,
+   "Shell": 5,
+   "Dockerfile": 2
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

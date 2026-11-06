@@ -1,10 +1,10 @@
 {
  "recommenders-team/recommenders": {
-  "commit_7d": 3,
-  "commit_90d": 219,
+  "commit_7d": 5,
+  "commit_90d": 227,
   "rel_ver": "1.2.1",
   "rel_pub": "2024-12-24",
-  "rel_days": 675,
+  "rel_days": 682,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "Dockerfile": 0,
    "Jupyter Notebook": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "agent0ai/agent-zero": {
-  "commit_7d": 0,
-  "commit_90d": 420,
-  "rel_ver": "v2.14",
-  "rel_pub": "2026-10-13",
-  "rel_days": 17,
+  "commit_7d": 50,
+  "commit_90d": 540,
+  "rel_ver": "v2.15",
+  "rel_pub": "2026-11-01",
+  "rel_days": 5,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -50,21 +50,21 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "neuml/txtai": {
-  "commit_7d": 11,
-  "commit_90d": 256,
+  "commit_7d": 25,
+  "commit_90d": 264,
   "rel_ver": "v9.14.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 24,
+  "rel_days": 31,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -119,10 +119,10 @@
  },
  "YILS-LIN/short-video-factory": {
   "commit_7d": 2,
-  "commit_90d": 33,
+  "commit_90d": 35,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "SCSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

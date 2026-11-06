@@ -10,22 +10,22 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "FlorianBruniaux/claude-code-ultimate-guide": {
-  "commit_7d": 38,
-  "commit_90d": 411,
-  "rel_ver": "v3.44.1",
-  "rel_pub": "2026-10-06",
-  "rel_days": 24,
-  "rel_n90": 5,
+  "commit_7d": 30,
+  "commit_90d": 434,
+  "rel_ver": "v3.45.2",
+  "rel_pub": "2026-11-01",
+  "rel_days": 5,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -40,10 +40,10 @@
    "TypeScript": 12,
    "Shell": 10
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,10 +80,10 @@
   }
  },
  "yvgude/lean-ctx": {
-  "commit_7d": 26,
-  "commit_90d": 1380,
-  "rel_ver": "v3.12.0",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 25,
+  "commit_90d": 1251,
+  "rel_ver": "v3.12.2",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -100,10 +100,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

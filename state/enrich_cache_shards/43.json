@@ -1,10 +1,10 @@
 {
  "tensorflow/tensorflow": {
-  "commit_7d": 467,
-  "commit_90d": 5206,
+  "commit_7d": 476,
+  "commit_90d": 5455,
   "rel_ver": "v2.22.0-rc0",
   "rel_pub": "2026-09-24",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -29,21 +29,21 @@
    "Starlark": 4,
    "HTML": 4
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Arize-ai/phoenix": {
-  "commit_7d": 139,
-  "commit_90d": 1127,
-  "rel_ver": "arize-phoenix-v20.27.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 142,
+  "commit_90d": 1125,
+  "rel_ver": "@arizeai/phoenix-cli@1.20.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -93,11 +93,11 @@
   }
  },
  "Project-MONAI/MONAI": {
-  "commit_7d": 8,
-  "commit_90d": 107,
+  "commit_7d": 7,
+  "commit_90d": 113,
   "rel_ver": "1.6.1",
   "rel_pub": "2026-09-27",
-  "rel_days": 33,
+  "rel_days": 40,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -122,22 +122,22 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HelixDB/helix-db": {
-  "commit_7d": 10,
-  "commit_90d": 1517,
-  "rel_ver": "v3.5.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 22,
-  "rel_n90": 11,
+  "commit_7d": 99,
+  "commit_90d": 1628,
+  "rel_ver": "v3.6.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -152,10 +152,10 @@
    "Go": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4228,6 +4228,56 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "bei666qi-pan/404-world": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3,
+   "CSS": 0,
+   "Python": 0,
+   "PLpgSQL": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "microsoft/DataHub-App-for-Microsoft-Copilot-Agents-and-Autopilots": {
+  "rel_ver": "installer-v0.6.9",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "JavaScript": 35,
+   "TypeScript": 31,
+   "Python": 21,
+   "Jupyter Notebook": 10,
+   "CSS": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

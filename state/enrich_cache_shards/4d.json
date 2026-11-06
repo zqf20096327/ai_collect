@@ -85,11 +85,11 @@
   }
  },
  "LMCache/LMCache": {
-  "commit_7d": 80,
-  "commit_90d": 659,
-  "rel_ver": "nightly-rocm",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 85,
+  "commit_90d": 710,
+  "rel_ver": "nightly-xpu",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -107,21 +107,21 @@
    "C++": 2,
    "Cuda": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google-deepmind/sonnet": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 3,
   "rel_ver": "v2.0.2",
   "rel_pub": "2024-01-02",
-  "rel_days": 1032,
+  "rel_days": 1039,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
    "Starlark": 4,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -172,11 +172,11 @@
   }
  },
  "SwanHubX/SwanLab": {
-  "commit_7d": 6,
-  "commit_90d": 40,
-  "rel_ver": "v0.10.3",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "commit_7d": 1,
+  "commit_90d": 36,
+  "rel_ver": "v0.10.4",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -191,10 +191,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

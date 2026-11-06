@@ -1,10 +1,10 @@
 {
  "ultralytics/ultralytics": {
-  "commit_7d": 80,
-  "commit_90d": 923,
-  "rel_ver": "v8.4.193",
-  "rel_pub": "2026-10-30",
-  "rel_days": 0,
+  "commit_7d": 75,
+  "commit_90d": 963,
+  "rel_ver": "v8.4.203",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -19,18 +19,18 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "KKKKhazix/AIHOT": {
-  "commit_90d": 166,
-  "commit_7d": 10,
+  "commit_90d": 217,
+  "commit_7d": 51,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 2,
@@ -47,10 +47,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -110,11 +110,11 @@
   }
  },
  "Lightning-AI/LitServe": {
-  "commit_90d": 29,
+  "commit_90d": 23,
   "commit_7d": 0,
   "rel_ver": "v0.2.19",
   "rel_pub": "2026-09-09",
-  "rel_days": 51,
+  "rel_days": 58,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -127,10 +127,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4429,6 +4429,33 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "saksham10arora-dotcom/Margin": {
+  "rel_ver": "v2.12.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "JavaScript": 36,
+   "CSS": 4,
+   "Shell": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

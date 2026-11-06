@@ -25,12 +25,12 @@
   }
  },
  "ray-project/ray": {
-  "commit_7d": 91,
-  "commit_90d": 1097,
-  "rel_ver": "ray-2.58.1",
-  "rel_pub": "2026-10-21",
-  "rel_days": 9,
-  "rel_n90": 5,
+  "commit_7d": 161,
+  "commit_90d": 1161,
+  "rel_ver": "ray-2.60.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -50,21 +50,21 @@
    "Starlark": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "agno-agi/agno": {
-  "commit_7d": 50,
-  "commit_90d": 386,
+  "commit_7d": 28,
+  "commit_90d": 398,
   "rel_ver": "v3.1.12",
   "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -84,21 +84,21 @@
    "Batchfile": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Dokploy/dokploy": {
-  "commit_7d": 80,
-  "commit_90d": 842,
-  "rel_ver": "v0.30.10",
-  "rel_pub": "2026-10-22",
-  "rel_days": 8,
+  "commit_7d": 51,
+  "commit_90d": 790,
+  "rel_ver": "v0.31.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -123,10 +123,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -163,11 +163,11 @@
   }
  },
  "open-compass/opencompass": {
-  "commit_90d": 68,
-  "commit_7d": 14,
+  "commit_90d": 75,
+  "commit_7d": 8,
   "rel_ver": "0.5.4",
   "rel_pub": "2026-08-26",
-  "rel_days": 65,
+  "rel_days": 72,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -179,10 +179,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -216,11 +216,11 @@
   }
  },
  "online-ml/river": {
-  "commit_90d": 66,
-  "commit_7d": 9,
+  "commit_90d": 78,
+  "commit_7d": 18,
   "rel_ver": "0.26.1",
   "rel_pub": "2026-08-21",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -234,21 +234,21 @@
    "Rust": 7,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "torchgeo/torchgeo": {
-  "commit_90d": 231,
-  "commit_7d": 29,
+  "commit_90d": 228,
+  "commit_7d": 22,
   "rel_ver": "v0.10.1",
   "rel_pub": "2026-09-29",
-  "rel_days": 31,
+  "rel_days": 38,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -263,10 +263,10 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5100,6 +5100,71 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "annadeters-gif/-deepseek-v4-flash-api-firewall": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "AFFFPupu/dotme": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 62,
+   "JavaScript": 34,
+   "Shell": 4
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "LakoMoor/portcode": {
+  "rel_ver": "v0.1.14",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 79,
+   "Python": 17,
+   "Shell": 2,
+   "Java": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

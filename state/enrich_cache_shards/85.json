@@ -89,11 +89,11 @@
   }
  },
  "huggingface/tokenizers": {
-  "commit_7d": 6,
-  "commit_90d": 139,
+  "commit_7d": 9,
+  "commit_90d": 118,
   "rel_ver": "v1.0.0-rc.3",
   "rel_pub": "2026-10-19",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 4,
   "rel_pre": true,
   "rel_none": false,
@@ -109,21 +109,21 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "miurla/morphic": {
-  "commit_7d": 16,
-  "commit_90d": 130,
+  "commit_7d": 7,
+  "commit_90d": 113,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -139,21 +139,21 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "AIPentest/CyberStrikeAI": {
-  "commit_7d": 12,
-  "commit_90d": 303,
+  "commit_7d": 14,
+  "commit_90d": 311,
   "rel_ver": "v1.7.24",
   "rel_pub": "2026-10-16",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "HTML": 6,
    "Java": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

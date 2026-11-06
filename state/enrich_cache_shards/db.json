@@ -1,7 +1,7 @@
 {
  "Developer-Y/cs-video-courses": {
-  "commit_7d": 3,
-  "commit_90d": 25,
+  "commit_7d": 4,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,20 +10,20 @@
   "sec_ids": [],
   "contrib_n": 117,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mastra-ai/mastra": {
-  "commit_7d": 451,
-  "commit_90d": 4969,
-  "rel_ver": "@mastra/core@1.80.0",
-  "rel_pub": "2026-10-28",
+  "commit_7d": 385,
+  "commit_90d": 5043,
+  "rel_ver": "@mastra/core@1.82.0",
+  "rel_pub": "2026-11-04",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -43,10 +43,10 @@
    "Shell": 0,
    "MDX": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -79,11 +79,11 @@
   }
  },
  "flwrlabs/flower": {
-  "commit_90d": 502,
-  "commit_7d": 12,
-  "rel_ver": "framework-1.42.0",
-  "rel_pub": "2026-10-22",
-  "rel_days": 8,
+  "commit_90d": 508,
+  "commit_7d": 40,
+  "rel_ver": "framework-1.43.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -99,20 +99,20 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lemonade-sdk/lemonade": {
-  "commit_90d": 367,
-  "commit_7d": 31,
-  "rel_ver": "candidate-v2026.45.3",
-  "rel_pub": "2026-10-29",
+  "commit_90d": 376,
+  "commit_7d": 34,
+  "rel_ver": "candidate-v2026.46.1",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -129,20 +129,20 @@
    "CSS": 3,
    "CMake": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "TabularisDB/tabularis": {
-  "commit_90d": 1150,
-  "commit_7d": 61,
-  "rel_ver": "nightly-20261029-9e3c622",
-  "rel_pub": "2026-10-29",
+  "commit_90d": 1077,
+  "commit_7d": 44,
+  "rel_ver": "nightly-20261105-dc919d0",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -162,23 +162,23 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qixing-jk/all-api-hub": {
-  "commit_90d": 484,
-  "commit_7d": 32,
-  "rel_ver": "nightly",
-  "rel_pub": "2026-03-15",
-  "rel_days": 229,
+  "commit_90d": 490,
+  "commit_7d": 30,
+  "rel_ver": "v4.9.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 11,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -192,10 +192,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

@@ -1,11 +1,11 @@
 {
  "RSSNext/Folo": {
-  "commit_7d": 1,
-  "commit_90d": 697,
-  "rel_ver": "mobile/v0.6.1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 11,
-  "rel_n90": 10,
+  "commit_7d": 21,
+  "commit_90d": 712,
+  "rel_ver": "mobile/v0.6.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -25,18 +25,18 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-collection/ai-collection": {
-  "commit_7d": 6,
-  "commit_90d": 123,
+  "commit_7d": 2,
+  "commit_90d": 125,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,21 +45,21 @@
   "sec_ids": [],
   "contrib_n": 45,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/agents-cli": {
-  "commit_7d": 1,
+  "commit_7d": 2,
   "commit_90d": 14,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "Makefile": 1,
    "Java": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -211,8 +211,8 @@
   }
  },
  "bowang-lab/MedRAX": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 7,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -224,10 +224,10 @@
    "Python": 96,
    "Jupyter Notebook": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4670,6 +4670,23 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "Atomichildgnome/bot-resocket-financas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

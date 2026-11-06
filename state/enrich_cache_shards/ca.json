@@ -158,11 +158,11 @@
   }
  },
  "bytedance/flowgram.ai": {
-  "commit_7d": 0,
-  "commit_90d": 17,
+  "commit_7d": 2,
+  "commit_90d": 19,
   "rel_ver": "desktop-preview",
   "rel_pub": "2026-10-21",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 4,
   "rel_pre": true,
   "rel_none": false,
@@ -178,10 +178,10 @@
    "CSS": 1,
    "Less": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -303,11 +303,11 @@
   }
  },
  "dagucloud/dagu": {
-  "commit_7d": 75,
-  "commit_90d": 657,
-  "rel_ver": "v2.24.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "commit_7d": 225,
+  "commit_90d": 817,
+  "rel_ver": "v2.25.8",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -330,10 +330,10 @@
    "PowerShell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1643,13 +1643,16 @@
    "Shell": 2,
    "Python": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261106",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261106"
+  },
+  "commit_90d": 1345,
+  "commit_7d": 22
  },
  "boost-R/mboost": {
   "rel_ver": null,

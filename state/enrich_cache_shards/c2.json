@@ -1,11 +1,11 @@
 {
  "tt-a1i/archify": {
-  "commit_7d": 10,
-  "commit_90d": 1627,
+  "commit_7d": 8,
+  "commit_90d": 1628,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 11,
-  "rel_n90": 10,
+  "rel_days": 18,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,22 +20,22 @@
    "Astro": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "netdata/netdata": {
-  "commit_7d": 93,
-  "commit_90d": 970,
-  "rel_ver": "v2.12.2",
-  "rel_pub": "2026-10-23",
-  "rel_days": 7,
-  "rel_n90": 5,
+  "commit_7d": 99,
+  "commit_90d": 1017,
+  "rel_ver": "v2.12.3",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -59,10 +59,10 @@
    "Python": 3,
    "Shell": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,11 +95,11 @@
   }
  },
  "skorch-dev/skorch": {
-  "commit_90d": 9,
-  "commit_7d": 2,
+  "commit_90d": 8,
+  "commit_7d": 0,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-05-14",
-  "rel_days": 169,
+  "rel_days": 176,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -114,10 +114,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -152,7 +152,7 @@
   "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2024-05-20",
-  "rel_days": 893,
+  "rel_days": 900,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

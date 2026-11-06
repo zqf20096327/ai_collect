@@ -23,11 +23,11 @@
   }
  },
  "go-kratos/kratos": {
-  "commit_7d": 4,
+  "commit_7d": 0,
   "commit_90d": 7,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-06-26",
-  "rel_days": 126,
+  "rel_days": 133,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -42,20 +42,20 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/langchainjs": {
-  "commit_7d": 13,
-  "commit_90d": 224,
-  "rel_ver": "@langchain/core@1.3.2",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 28,
+  "commit_90d": 236,
+  "rel_ver": "langchain@1.6.2",
+  "rel_pub": "2026-11-05",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -145,12 +145,12 @@
   }
  },
  "haris-musa/excel-mcp-server": {
-  "commit_90d": 140,
-  "commit_7d": 4,
-  "rel_ver": "v2.2.3",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_90d": 151,
+  "commit_7d": 11,
+  "rel_ver": "v2.2.6",
+  "rel_pub": "2026-10-31",
+  "rel_days": 6,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 16,
@@ -171,10 +171,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4950,6 +4950,36 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "cactus-compute/engine": {
+  "commit_90d": 16,
+  "commit_7d": 1,
+  "rel_ver": "v2.2.2",
+  "rel_pub": "2026-09-26",
+  "rel_days": 41,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 52,
+  "lang": {
+   "C++": 32,
+   "Python": 30,
+   "TypeScript": 24,
+   "C": 7,
+   "Metal": 2
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "commit": "20261106",
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

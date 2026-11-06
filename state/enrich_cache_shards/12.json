@@ -89,8 +89,8 @@
   }
  },
  "NirDiamant/agents-towards-production": {
-  "commit_7d": 4,
-  "commit_90d": 26,
+  "commit_7d": 5,
+  "commit_90d": 31,
   "rel_ver": "book-v1.0",
   "rel_none": false,
   "sec_n": 0,
@@ -105,16 +105,16 @@
    "Kotlin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   },
   "rel_pub": "2026-10-26",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false
  },
@@ -207,11 +207,11 @@
   }
  },
  "modelscope/ms-agent": {
-  "commit_7d": 4,
-  "commit_90d": 60,
+  "commit_7d": 1,
+  "commit_90d": 58,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-03-23",
-  "rel_days": 221,
+  "rel_days": 228,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -292,7 +292,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-05-01",
-  "rel_days": 179,
+  "rel_days": 189,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -310,10 +310,10 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4143,6 +4143,45 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "zaxiu88888/issue-rag": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "sabbaghpierre/opencode-advisor": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

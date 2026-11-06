@@ -1,7 +1,7 @@
 {
  "microsoft/AI-For-Beginners": {
-  "commit_7d": 0,
-  "commit_90d": 43,
+  "commit_7d": 26,
+  "commit_90d": 96,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Vue": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -50,11 +50,11 @@
   }
  },
  "humanlayer/humanlayer": {
-  "commit_7d": 25,
-  "commit_90d": 27,
+  "commit_7d": 3,
+  "commit_90d": 31,
   "rel_ver": "nightly-0.1.0-nightly-20260227142452",
   "rel_pub": "2026-02-27",
-  "rel_days": 245,
+  "rel_days": 252,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -70,21 +70,21 @@
    "JavaScript": 2,
    "Rust": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "logancyang/obsidian-copilot": {
-  "commit_7d": 18,
-  "commit_90d": 486,
-  "rel_ver": "4.0.17-canary.1520",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 63,
+  "commit_90d": 550,
+  "rel_ver": "4.0.19-canary.2002",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -99,21 +99,21 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "WenyuChiou/awesome-agentic-ai-zh": {
-  "commit_7d": 65,
-  "commit_90d": 352,
+  "commit_7d": 12,
+  "commit_90d": 334,
   "rel_ver": "v2026.10.29-3",
   "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -128,10 +128,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -232,11 +232,11 @@
   }
  },
  "ngxson/wllama": {
-  "commit_7d": 1,
-  "commit_90d": 19,
+  "commit_7d": 5,
+  "commit_90d": 24,
   "rel_ver": "3.8.1",
   "rel_pub": "2026-10-02",
-  "rel_days": 22,
+  "rel_days": 35,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -252,10 +252,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

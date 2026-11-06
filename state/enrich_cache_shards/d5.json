@@ -1,7 +1,7 @@
 {
  "anthropics/claude-cookbooks": {
-  "commit_7d": 2,
-  "commit_90d": 35,
+  "commit_7d": 4,
+  "commit_90d": 36,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -54,11 +54,11 @@
   }
  },
  "agentscope-ai/QwenPaw": {
-  "commit_7d": 51,
-  "commit_90d": 648,
-  "rel_ver": "v2.3.0-beta.1",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "commit_7d": 44,
+  "commit_90d": 613,
+  "rel_ver": "v2.3.0-beta.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -74,10 +74,10 @@
    "Rust": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,10 +115,10 @@
  },
  "NirDiamant/RAG_Techniques": {
   "commit_7d": 4,
-  "commit_90d": 31,
+  "commit_90d": 35,
   "rel_ver": "ai-agents-book-v1.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Jupyter Notebook": 95,
    "Python": 5
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4290,6 +4290,42 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "BalthDreadgrid20608/events-rpocket-tracker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "Zenithopal/LooseEnds-resp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

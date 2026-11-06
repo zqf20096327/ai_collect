@@ -1,11 +1,11 @@
 {
  "emcie-co/parlant": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v3.3.2",
-  "rel_pub": "2026-04-28",
-  "rel_days": 185,
-  "rel_n90": 0,
+  "commit_7d": 80,
+  "commit_90d": 81,
+  "rel_ver": "v4.0.2",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

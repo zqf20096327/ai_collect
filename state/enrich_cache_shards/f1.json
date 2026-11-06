@@ -1,10 +1,10 @@
 {
  "OpenHands/OpenHands": {
-  "commit_7d": 89,
-  "commit_90d": 855,
-  "rel_ver": "v1.34.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "commit_7d": 132,
+  "commit_90d": 942,
+  "rel_ver": "v1.36.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -36,7 +36,7 @@
   "commit_90d": 0,
   "rel_ver": "v2.1.0-vscode",
   "rel_pub": "2026-06-19",
-  "rel_days": 133,
+  "rel_days": 140,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -52,10 +52,10 @@
    "Python": 2,
    "Rust": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,10 +63,10 @@
  },
  "microsoft/data-formulator": {
   "commit_7d": 0,
-  "commit_90d": 32,
+  "commit_90d": 26,
   "rel_ver": "0.8b1",
   "rel_pub": "2026-08-15",
-  "rel_days": 76,
+  "rel_days": 83,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -82,10 +82,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

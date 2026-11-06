@@ -89,11 +89,11 @@
   }
  },
  "huggingface/datasets": {
-  "commit_7d": 1,
-  "commit_90d": 73,
+  "commit_7d": 6,
+  "commit_90d": 79,
   "rel_ver": "5.1.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 25,
+  "rel_days": 32,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -106,10 +106,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -196,11 +196,11 @@
   }
  },
  "vespa-engine/vespa": {
-  "commit_90d": 1962,
-  "commit_7d": 141,
-  "rel_ver": "v8.778.45",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
+  "commit_90d": 2145,
+  "commit_7d": 212,
+  "rel_ver": "v8.781.11",
+  "rel_pub": "2026-11-02",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "CMake": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4450,6 +4450,74 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "Kordi-AI/Multi-User-LLM-Agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "Gjusev/clef-router": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 36,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "elmira-orooji/Nexolab-Evaluation-System": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 48,
+   "JavaScript": 19,
+   "CSS": 18,
+   "Python": 14,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

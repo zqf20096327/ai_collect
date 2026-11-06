@@ -54,13 +54,13 @@
   }
  },
  "invoke-ai/InvokeAI": {
-  "commit_7d": 88,
-  "commit_90d": 3767,
-  "rel_ver": "v7.0.0-alpha.3",
-  "rel_pub": "2026-10-19",
-  "rel_days": 11,
-  "rel_n90": 9,
-  "rel_pre": true,
+  "commit_7d": 66,
+  "commit_90d": 3651,
+  "rel_ver": "v6.14.4",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -74,10 +74,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4160,6 +4160,33 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "michaelChein/chatter-radar": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "JavaScript": 21,
+   "CSS": 5,
+   "Shell": 4,
+   "HTML": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

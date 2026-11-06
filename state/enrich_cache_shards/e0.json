@@ -1,11 +1,11 @@
 {
  "Panniantong/Agent-Reach": {
-  "commit_7d": 10,
-  "commit_90d": 110,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-10-23",
-  "rel_days": 7,
-  "rel_n90": 1,
+  "commit_7d": 28,
+  "commit_90d": 106,
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,21 +18,21 @@
    "Shell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "modular/modular": {
-  "commit_7d": 611,
-  "commit_90d": 5543,
+  "commit_7d": 607,
+  "commit_90d": 5747,
   "rel_ver": "max/v26.7.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -48,21 +48,21 @@
    "Starlark": 4,
    "MDX": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "strands-agents/harness-sdk": {
-  "commit_7d": 102,
-  "commit_90d": 854,
-  "rel_ver": "harness-typescript/v0.3.2",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 55,
+  "commit_90d": 851,
+  "rel_ver": "typescript/v1.24.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -81,10 +81,10 @@
    "Astro": 2,
    "HTML": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4071,13 +4071,16 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261106",
   "dim_ts": {
    "release": "20261101",
    "security": "20261101",
    "contrib": "20261101",
-   "lang": "20261101"
-  }
+   "lang": "20261101",
+   "commit": "20261106"
+  },
+  "commit_90d": 824,
+  "commit_7d": 105
  },
  "ganon3264/focus": {
   "rel_ver": null,
@@ -4214,6 +4217,34 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "Sandflow-ai/sand3d": {
+  "commit_90d": 17,
+  "commit_7d": 17,
+  "rel_ver": "v1.6.2",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 89,
+   "Python": 11,
+   "CSS": 0
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "commit": "20261106",
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

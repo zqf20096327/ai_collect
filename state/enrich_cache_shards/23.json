@@ -1,10 +1,10 @@
 {
  "danielmiessler/Fabric": {
-  "commit_7d": 80,
-  "commit_90d": 563,
-  "rel_ver": "v1.4.557",
-  "rel_pub": "2026-10-29",
-  "rel_days": 1,
+  "commit_7d": 30,
+  "commit_90d": 586,
+  "rel_ver": "v1.4.564",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,10 +23,10 @@
    "Python": 5,
    "Shell": 3
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,11 +63,11 @@
   }
  },
  "mindee/doctr": {
-  "commit_7d": 10,
-  "commit_90d": 57,
+  "commit_7d": 27,
+  "commit_90d": 84,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-08-21",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -81,23 +81,23 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Eventual-Inc/Daft": {
-  "commit_7d": 2,
-  "commit_90d": 93,
-  "rel_ver": "v0.7.26",
-  "rel_pub": "2026-10-06",
-  "rel_days": 24,
-  "rel_n90": 5,
-  "rel_pre": false,
+  "commit_7d": 5,
+  "commit_90d": 83,
+  "rel_ver": "v0.8.0-rc.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -111,10 +111,10 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

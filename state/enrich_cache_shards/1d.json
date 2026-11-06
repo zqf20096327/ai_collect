@@ -1,10 +1,10 @@
 {
  "AlexsJones/llmfit": {
-  "commit_7d": 29,
-  "commit_90d": 284,
-  "rel_ver": "v1.1.18",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "commit_7d": 63,
+  "commit_90d": 322,
+  "rel_ver": "v1.1.20",
+  "rel_pub": "2026-11-03",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "openai/openai-python": {
-  "commit_7d": 41,
-  "commit_90d": 416,
-  "rel_ver": "v3.41.0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 2,
+  "commit_7d": 36,
+  "commit_90d": 445,
+  "rel_ver": "v3.47.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "Dockerfile": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -138,12 +138,12 @@
   }
  },
  "agentscope-ai/agentscope-java": {
-  "commit_7d": 50,
-  "commit_90d": 404,
+  "commit_7d": 48,
+  "commit_90d": 402,
   "rel_ver": "v2.1.0-BETA1",
   "rel_pub": "2026-10-08",
-  "rel_days": 22,
-  "rel_n90": 5,
+  "rel_days": 29,
+  "rel_n90": 4,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -158,10 +158,10 @@
    "Python": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

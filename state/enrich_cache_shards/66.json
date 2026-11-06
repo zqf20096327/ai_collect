@@ -1,10 +1,10 @@
 {
  "Unstructured-IO/unstructured": {
-  "commit_7d": 36,
-  "commit_90d": 116,
+  "commit_7d": 5,
+  "commit_90d": 119,
   "rel_ver": "0.27.36",
   "rel_pub": "2026-10-30",
-  "rel_days": 0,
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "Rich Text Format": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -131,11 +131,11 @@
   }
  },
  "JohnSnowLabs/spark-nlp": {
-  "commit_90d": 49,
-  "commit_7d": 0,
+  "commit_90d": 51,
+  "commit_7d": 2,
   "rel_ver": "7.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 36,
+  "rel_days": 43,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -151,21 +151,21 @@
    "Java": 2,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "astroautomata/PySR": {
-  "commit_90d": 116,
-  "commit_7d": 2,
+  "commit_90d": 113,
+  "commit_7d": 0,
   "rel_ver": "v2.7.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
    "Shell": 0,
    "HCL": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -306,12 +306,12 @@
   }
  },
  "xaboy/form-create-designer": {
-  "commit_90d": 2,
-  "commit_7d": 0,
-  "rel_ver": "v3.5.0",
-  "rel_pub": "2026-06-02",
-  "rel_days": 137,
-  "rel_n90": 0,
+  "commit_90d": 17,
+  "commit_7d": 15,
+  "rel_ver": "v3.6.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -325,10 +325,10 @@
    "CSS": 4,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4219,6 +4219,49 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "kennydamobd/chatGPT-shell-cli": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "oh-my-omp/omp-config": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

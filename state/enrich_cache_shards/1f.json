@@ -50,7 +50,7 @@
   }
  },
  "Anil-matcha/AI-Youtube-Shorts-Generator": {
-  "commit_90d": 10,
+  "commit_90d": 11,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -62,10 +62,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -118,11 +118,11 @@
   }
  },
  "enactic/openarm": {
-  "commit_90d": 70,
-  "commit_7d": 13,
+  "commit_90d": 73,
+  "commit_7d": 6,
   "rel_ver": "1.1",
   "rel_pub": "2025-10-31",
-  "rel_days": 364,
+  "rel_days": 371,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -138,10 +138,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3953,6 +3953,56 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "cotletdev/omio-api-mcp-server": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "Wyun09/inkvoy": {
+  "rel_ver": "v5.4.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 50,
+   "Java": 32,
+   "CSS": 7,
+   "Python": 5,
+   "HTML": 3
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }

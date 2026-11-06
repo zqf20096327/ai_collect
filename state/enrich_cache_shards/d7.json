@@ -1,7 +1,7 @@
 {
  "dailydotdev/daily": {
-  "commit_7d": 1,
-  "commit_90d": 12,
+  "commit_7d": 10,
+  "commit_90d": 20,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -13,10 +13,10 @@
    "JavaScript": 60,
    "TypeScript": 40
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,12 +75,12 @@
   }
  },
  "plastic-labs/honcho": {
-  "commit_7d": 37,
-  "commit_90d": 277,
-  "rel_ver": "v3.4.1",
-  "rel_pub": "2026-10-27",
-  "rel_days": 3,
-  "rel_n90": 5,
+  "commit_7d": 39,
+  "commit_90d": 306,
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 7,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261106",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261106",
+   "release": "20261106",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4151,6 +4151,60 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "kalcaddle/kodbox": {
+  "commit_90d": 8,
+  "commit_7d": 2,
+  "rel_ver": "1.71.02",
+  "rel_pub": "2026-11-05",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "PHP": 73,
+   "JavaScript": 17,
+   "CSS": 6,
+   "Fluent": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "commit": "20261106",
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
+  }
+ },
+ "arcitech-psp/tiel-coder-xpu": {
+  "rel_ver": "v1",
+  "rel_pub": "2026-09-29",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261106",
+  "dim_ts": {
+   "release": "20261106",
+   "security": "20261106",
+   "contrib": "20261106",
+   "lang": "20261106"
   }
  }
 }
