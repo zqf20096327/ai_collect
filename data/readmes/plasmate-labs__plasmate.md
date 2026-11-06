@@ -234,8 +234,8 @@ case-insensitive accessible-label/text matching on regions and elements;
 element matching also falls back to `aria-label`, `title`, `placeholder`, and
 `alt` attributes when a compiled label is unavailable;
 whitespace is normalized so labels split across lines still match.
-Element selectors also accept common HTML tag aliases: `a`/`anchor`/`anchors`/`hyperlink`/`hyperlinks`/`link`/`links`,
-`p`/`paragraph`, and `ul`, `ol`, `dl`, or `menu`/`list`/`lists` (plus the explicit
+Element selectors also accept common HTML tag aliases: `a`/`area`/`areas`/`anchor`/`anchors`/`hyperlink`/`hyperlinks`/`link`/`links`,
+`p`/`s`/`ins`/`del`/`mark`/`paragraph`, and `ul`, `ol`, `dl`, or `menu`/`list`/`lists` (plus the explicit
 `unordered_list`, `ordered_list`, and `definition_list` forms).
 Structural aliases include `div`/`fieldset`/`fieldsets`/`group`/`groups`, `section`/`sections`, and ARIA group roles
 `figure`/`figures`/`radiogroup`/`radiogroups`/`progressbar`/`progressbars`/
@@ -268,7 +268,7 @@ spaced or hyphenated forms), `search_input`/`search-input`, `search_control`/`se
 `query_control`/`query-control`, `querybox`/`query-box`,
 `queryboxes`/`query_boxes`/`query-boxes`/`query boxes`, `email`, `number`,
 `password`, `tel`, `url`, `date`,
-`datetime`/`datetime-local` (also `date_time`/`date-time`/`date time` and `date_time_local`/`date-time-local`/`date time local`), `month`, `time`, `week`, `color`, `range`,
+`datetime`/`datetime-local` (also `date_time`/`date-time`/`date time` and `date_time_local`/`date-time-local`/`date time local`), `month`, `time`/`times`, `week`, `color`, `range`,
 `hidden`, and `file`; each targets the corresponding compiled text-input
 element.
 Use `cache_status` after repeated fetches to inspect local MCP SOM cache hits,

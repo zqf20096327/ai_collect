@@ -269,7 +269,7 @@ Use it for the work that spans panes:
 Add this repo, create three worktree panes for the next features, start Codex in each one, and keep a separate review tab ready for every PR.
 ```
 
-Already working in other agent tools? Say "migrate to Pane" and Pane Chat finds your Claude Code, Codex, OpenCode, Cursor and Conductor sessions (or anything similar), opens each one in a Pane tab with its own agent's resume, and checks that it continues where it left off. On a new install, the first-run screen asks which agent you use and offers to bring your recent sessions in; Yes opens the Onboarding Session, which brings them in, groups them into Sessions, and opens a Start here page. See [Bring your existing sessions into Pane](docs/SESSIONS.md#bring-your-existing-sessions-into-pane).
+Already working in other agent tools? Settings → AI & Agents → "Bring sessions into Pane" finds your sessions from Claude Code, Codex, Conductor, Paradev (formerly Superset), Herdr, Emdash, Orca and T3 Code, and brings them in with one click, each in a Pane tab with its own agent's resume. Say "migrate to Pane" and Pane Chat also finds OpenCode and Cursor agent sessions (or anything similar), forks ones still running, and checks that each continues where it left off. On a new install, the first-run screen asks which agent you use and offers to bring your recent sessions in; Yes opens the Onboarding Session, which brings them in, groups them into Sessions, and opens a Start here page. See [Bring your existing sessions into Pane](docs/SESSIONS.md#bring-your-existing-sessions-into-pane).
 
 Pane Chat keeps the human discussion at the orchestrator level, captures work as tickets or briefs, then hands authorized implementation to Claude, Codex, Cursor, or OpenCode agents in Panes through RunPane.
 
@@ -280,7 +280,7 @@ The prompt stays small because Pane ships its skills and installs them into the 
 - `skills/pane-chat/skills/`: the bundled skills, also installed in `.claude/skills/` and `.codex/skills/`
 - `.claude/agents/` and `.codex/agents/`: helper subagents (explorer, cold-reader, qa-and-verify, reviewer)
 
-The bundle lives in `main/src/services/paneChatBundle/`. It is built on Agent Farm's raw profile (`prepare-pr`, `create-ticket`, `tdd`, `quick-verify`, `babysit-pr`, `investigate`, and others), general primitives such as `orchestrate-sessions`, `verify-app`, `options`, and `brief`, and four Pane-specific skills, `runpane`, `pane-orchestration` (the orchestrator guide), `pane-work`, and `migrate-to-pane`. Pane generates the `pane-orchestrator` entry point at install time. Nothing is downloaded at runtime.
+The bundle lives in `main/src/services/paneChatBundle/`. It is built on Agent Farm's raw profile (`prepare-pr`, `create-ticket`, `tdd`, `quick-verify`, `babysit-pr`, `investigate`, and others), general primitives such as `orchestrate-sessions`, `verify-app`, `options`, and `brief`, and four Pane-specific skills, `runpane`, `pane-orchestration` (the orchestrator guide), `pane-work`, and `migrate-to-pane`. Pane generates the `pane-orchestrator` entry point at install time. Nothing is downloaded at runtime. The skills that come from Agent Farm were last refreshed from its greenfield plugin at `a903f09` (Agent Farm 0.2.33): to refresh them, three-way merge each skill from that commit to the new one (`git merge-file`), keeping Pane's adaptations, and record the new commit here.
 
 Pane Chat and named Sessions support Claude, Codex, Cursor, and OpenCode. Choose the agent when creating a Session, and set the default in AI & Agents settings. OpenCode reads the generated Session `AGENTS.md`; this does not install OpenCode skills or MCP configuration.
 
@@ -332,6 +332,9 @@ Other tools build custom chat UIs that only work with agents they've explicitly 
 |----------|--------|
 | `⌘⇧P` / `Ctrl+Shift+P` | Open Search: find any Pane, Session, project or command |
 | `⌘K` / `Ctrl+K` | Clear terminal scrollback |
+| `⌘F` / `Ctrl+F` | Find in the focused tab (terminal, browser, file preview, Logs) |
+| `⌘G` / `Ctrl+G` | Find next |
+| `⌘⇧G` / `Ctrl+Shift+G` | Find previous |
 | `⌘N` / `Ctrl+N` | New pane |
 | `⌘⇧W` / `Ctrl+Shift+W` | Archive pane |
 | `⌘1-9` / `Ctrl+1-9` | Switch pane |

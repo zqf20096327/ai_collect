@@ -10,7 +10,7 @@
     面向 Windows 平台的 AI 预编译 Python 轮子合集
     <br />
     <br />
-    <strong>⏱️ 最后自动更新（UTC）：<!-- START_LAST_UPDATED -->2026-11-05T07:32:48.017552+00:00<!-- END_LAST_UPDATED --></strong>
+    <strong>⏱️ 最后自动更新（UTC）：<!-- START_LAST_UPDATED -->2026-11-06T07:30:12.504996+00:00<!-- END_LAST_UPDATED --></strong>
   </p>
 </div>
 
@@ -329,6 +329,7 @@ PyTorch 官方音频处理库，提供音频 I/O、转换和特征提取等功�
 | `2.8.3` | `3.14` | `2.14` | `13.0` | — | mjun0812 | [Link](https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.2/flash_attn-2.8.3%2Bcu130torch2.14-cp314-cp314-win_amd64.whl) |
 | `2.8.3` | `3.14` | `2.14` | `13.2` | — | mjun0812 | [Link](https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.10.2/flash_attn-2.8.3%2Bcu132torch2.14-cp314-cp314-win_amd64.whl) |
 | `2.8.3` | `3.14` | `2.15` | `13.2` | — | mjun0812 | [Link](https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v1.6.0/flash_attn-2.8.3%2Bcu132torch2.15-cp314-cp314-win_amd64.whl) |
+| `2.8.3` | `3.14` | `2.15` | `13.4` | — | mjun0812 | [Link](https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v1.6.1/flash_attn-2.8.3%2Bcu134torch2.15-cp314-cp314-win_amd64.whl) |
 | `2.8.3` | `3.15` | `2.15` | `13.2` | — | mjun0812 | [Link](https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v1.6.0/flash_attn-2.8.3%2Bcu132torch2.15-cp315-cp315-win_amd64.whl) |
 | `2.8.4` | `3.13` | `2.11.0` | `13.0` | ✓ | Wildminder | [Link](https://huggingface.co/Wildminder/AI-windows-whl/blob/main/flash_attn-2.8.4%2Bd20260328cu130torch2.11.0cxx11abiTRUE-cp313-cp313-win_amd64.whl) |
 | `2.8.4` | `3.13` | `2.12.0` | `13.0` | ✓ | Wildminder | [Link](https://huggingface.co/Wildminder/AI-windows-whl/blob/main/flash_attn-2.8.4%2Bd20260328cu130torch2.12.0cxx11abiTRUE-cp313-cp313-win_amd64.whl) |
@@ -765,5 +766,4 @@ MIT 开发的 Transformer 推理加速库，专注于提升解码速度和吞吐
 | `0.3.1` | `3.11` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.1/nunchaku-0.3.1%2Btorch2.7-cp311-cp311-win_amd64.whl) |
 | `0.3.1` | `3.11` | `2.8` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.1/nunchaku-0.3.1%2Btorch2.8-cp311-cp311-win_amd64.whl) |
 | `0.3.1` | `3.12` | `2.5` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.1/nunchaku-0.3.1%2Btorch2.5-cp312-cp312-win_amd64.whl) |
-| `0.3.1` | `3.12` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.1/nunchaku-0.3.1%2Btorch2.6-cp312-cp312-win_amd64.whl) |
-| `0.3.1` | `3.12` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.1/nun
+| `0.3.1` | `3.12` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai

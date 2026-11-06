@@ -16,7 +16,7 @@ what went wrong, what keeps repeating, and what to fix.
 
 ## Install
 
-Requires Node.js 22.12 or newer, on macOS or Linux.
+Requires Node.js 22.12 or newer, on macOS, Linux or Windows.
 
 ```sh
 npm install -g hypaware
@@ -97,8 +97,10 @@ for supported versions and privacy limits.
 
 Claude Code, Claude Desktop, Codex (CLI and Desktop), Cursor, OpenCode,
 OpenClaw, Hermes Agent, [Goose](./docs/integrations/goose.md),
-[Crush](./docs/integrations/crush.md), Pi,
-[Factory Droid](./docs/integrations/droid.md), Ollama,
+[Crush](./docs/integrations/crush.md),
+[Mastra Code](./docs/integrations/mastracode.md), Pi,
+[Factory Droid](./docs/integrations/droid.md),
+[Grok Build](./docs/integrations/grok.md), Ollama,
 and any tool that exports OpenTelemetry logs,
 traces, or metrics.
 

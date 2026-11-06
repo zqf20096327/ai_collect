@@ -131,13 +131,14 @@ delete), and deep links to the settings GitHub keeps browser-only.
 ### Changes and commits
 
 A unified or split diff with syntax highlighting, collapsible surrounding
-context, and image diffing. Filter the changes list by path or category, and
-read a file's `+added -deleted` line counts without opening it. Show that
-list flat or as a compacted directory tree: collapsible folders, single-child
-folder chains merged into one row, arrow keys that walk and fold it, and a
-folder context menu that stages, unstages, discards or stashes the files
-shown under it (Discard skips conflicted files, and Stash waits until no file
-is conflicted). The Staged and Changes sections collapse too, keeping their
+context, image diffing, and a size change shown for other binary files
+(`1.2 MB → 725 KB · 486 KB smaller (−40%)`). Filter the changes list by path
+or category, and read a file's `+added -deleted` line counts without opening it.
+Show that list flat or as a compacted directory tree: collapsible folders,
+single-child folder chains merged into one row, arrow keys that walk and fold
+it, and a folder context menu that stages, unstages, discards or stashes the
+files shown under it (Discard skips conflicted files, and Stash waits until no
+file is conflicted). The Staged and Changes sections collapse too, keeping their
 counts and their Stage all / Unstage all buttons. The working-tree diff is
 one whole-file view with hunk- and line-level staging and discarding (drag
 across the line numbers, spanning hunks freely — a drag picks up added and
@@ -242,7 +243,9 @@ default's name), and a PR badge.
 
 Paged, filterable history with rich commit detail, commit-author avatars, and
 an at-a-glance marker on every commit that hasn't been pushed yet (with no
-remote, the commits your branch adds on top of `main` or `master`). Per-file
+remote, the commits your branch adds on top of `main` or `master`). Search
+all history matches commit messages and SHAs, so a hash pasted from a
+terminal or a CI log finds its commit even when it isn't loaded. Per-file
 history and line blame are reachable from any file list (History, pull
 requests, Compare) or the command palette, pinned at that commit or branch
 where it applies; each blame line's commit gets a hover-card preview and a
@@ -481,7 +484,9 @@ in one click.
   start. The grouping is GitHub-only, and GitHub is also where your
   **teams**' review requests can join the filter. Your scope choice is
   remembered per repository, and a provider that can't express an axis says
-  so in the funnel rather than offering a dead control.
+  so in the funnel rather than offering a dead control. **Open**, **Merged**,
+  and **Closed** tabs keep merged work apart from pull requests closed
+  without merging, on all three forges and for local PRs.
 - **Refresh on demand**: a refresh button beside the list's search box (or
   **Refresh pull requests** in the command palette) re-reads the list you're
   looking at along with its checks, conflict chips, review-state grouping,
@@ -525,7 +530,9 @@ in one click.
 
 Run an **AI review** or **security audit** on any PR, with an activity
 indicator, a cancel, and a concurrency-capped queue; while one mode streams
-you can **queue the other to run next** instead of waiting. Reviews keep
+you can **queue the other to run next** instead of waiting. The finished
+review moves to **Previous reviews**, where any past review can still be
+**posted** as a comment (posting one twice asks first). Reviews keep
 running while you move between PRs, and finish in the tray even after you
 close the window.
 

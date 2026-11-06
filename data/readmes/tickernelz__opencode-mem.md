@@ -272,6 +272,8 @@ If you have chatted for a while and still see the message, check that auto-captu
 
 Open `http://127.0.0.1:4747` to browse the memory–prompt timeline, inspect captures, and manage the user profile. The UI has five views: **Project memories** (`/project-memories`), **User profile** (`/user-profile`), **Skill library** (`/skill-library`), **Markdown vault** (`/markdown-vault`) and **Stats** (`/stats`). Change the port with `webServerPort`, or set `webServerEnabled: false` to run without the web UI. If you bind the server beyond loopback, see [Web UI HTTP Basic Auth](#web-ui-http-basic-auth).
 
+The timeline shows each memory and prompt once. If several capture prompts refer to one memory, its current prompt is paired with it when available on the page; earlier prompts remain visible as separate entries.
+
 ## Usage Examples
 
 ```typescript
@@ -314,6 +316,8 @@ Commonly tuned top-level options:
 | `showAutoCaptureToasts` / `showUserProfileToasts` / `showErrorToasts` | `true`                          | Toasts for auto-capture, profile updates and errors.                                                                            |
 | `autoUpdate`                                                          | `true`                          | Clear OpenCode's cached install when a newer npm release is available.                                                          |
 
+Profile context limits are set by `userProfileInjectPreferences` (default `5`), `userProfileInjectPatterns` (`5`), and `userProfileInjectWorkflows` (`3`). These control how many items are injected into the LLM conversation, not how many are displayed in the web UI. The legacy `maxProfileItems`, `userProfileDisplayPreferences`, `userProfileDisplayPatterns`, and `userProfileDisplayWorkflows` options are deprecated and have no effect. Existing config files still load, but you can remove these four keys.
+
 ### Markdown vault backend (`memoryBackend`)
 
 By default memories live only in Turso under `storagePath`. Optionally set a **generic Markdown folder** as the source of truth (Obsidian/Raneto-compatible plain `.md` files — not an Obsidian-specific integration):
@@ -325,6 +329,8 @@ By default memories live only in Turso under `storagePath`. Optionally set a **g
 }
 ```
 
+Plugin-created vault files preserve capture provenance (`promptId`, `sessionID`, and `captureTimestamp`) so reindexing can restore those fields. Legacy files without them retain any corresponding metadata already in the index. Provenance already missing from both the file and the index cannot be recovered automatically.
+
 | Key             | Default      | What it does                                                                                                                                       |
 | --------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `memoryBackend` | `"database"` | `"database"` keeps content in Turso. `"markdown"` uses all `.md` files under `markdownPath` as source of truth.                                    |
@@ -335,7 +341,9 @@ When Markdown mode is on:
 - Plugin-created memories are written as `{id}.md` with YAML frontmatter + body.
 - Existing notes in the folder (any Markdown page style) are imported/indexed; Turso is only a rebuildable semantic-search index.
 - File adds/edits/deletes are watched and re-indexed; the Web UI shows a **Markdown** sidebar page (status, file list, reindex) only in this mode.
-- Switching to Markdown rebuilds the index from the folder — DB-only rows without a matching file are dropped. Export with `memory export` first if you need to keep old database memories.
+- Switching to Markdown rebuilds the index from the folder. DB-only rows without a matching file are dropped only after a readable, complete scan of a nonempty vault. Export with `memory export` first if you need to keep old database memories.
+- Reconciliation skips deletion and warns when the vault is missing, unreadable, only partially scanned or processed, or contains no Markdown files; existing indexed memories are retained. Restore or fix the vault, then reindex. To intentionally remove the final file's indexed memory, explicitly delete that memory through the tool or Web UI.
+- A healthy, nonempty vault still permits permanent deletion of indexed memories whose files are absent. Export or back up first: these safeguards are not a backup and cannot detect an incomplete sync that appears to be a healthy, nonempty vault.
 
 ### Chat message capture and injection (`chatMessage`)
 
@@ -396,13 +404,16 @@ memories. Prefixes stay opt-in by default.
 
 Opt-in background pass that finds **related** memories (via `dreaming.relatedThreshold`,
 default `0.75`, independent of `deduplicationSimilarityThreshold`), asks the configured
-`opencodeProvider` / `opencodeModel` to `merge`, `update`, `supersede`, `keep`, or `flag`
+`opencodeProvider` / `opencodeModel` (with `memoryModel` / `memoryApiUrl` as fallback,
+same channel order as auto-capture) to `merge`, `update`, `supersede`, `keep`, or `flag`
 contradictions, and soft-deletes superseded rows into recoverable trash. Pinned memories
 are never touched. Set `dreaming.crossProject: true` (or `memory.defaultScope:
 "all-projects"`) to group across project tags; user-scope stays separate. Configure under
-`dreaming` in `opencode-mem.jsonc` (`enabled` default `false`). The web UI exposes
-**Trash** (restore) and **Dream** (manual run). Soft-deleted rows are hard-purged after
-`dreaming.trashRetentionDays` during normal cleanup.
+`dreaming` in `opencode-mem.jsonc`. `dreaming.enabled` (default `false`) gates only the
+scheduled background run — the web UI **Dream** button and `POST /api/dreaming/run` still
+work when it is false (manual-only mode). Soft-deleted rows are hard-purged after
+`dreaming.trashRetentionDays` during normal cleanup. The web UI also exposes **Trash**
+(restore).
 
 ### Choosing / configuring embeddings
 

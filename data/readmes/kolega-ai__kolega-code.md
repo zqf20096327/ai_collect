@@ -108,7 +108,7 @@ for Zed, VS Code, and other ACP clients is in the
 **1. Install** with the script:
 
 ```bash
-curl -fsSL https://kolega.dev/install-kolega-code.sh | sh
+curl -fsSL https://kolega.ai/code/install.sh | sh
 ```
 
 Or with [uv](https://docs.astral.sh/uv/) (or `pip`):
@@ -117,6 +117,10 @@ Or with [uv](https://docs.astral.sh/uv/) (or `pip`):
 uv tool install kolega-code
 # or: pip install kolega-code
 ```
+
+Kolega Code supports Python 3.11–3.14. uv uses its newest Python unless told
+otherwise, so if that is 3.15 or newer add `--python 3.14` (`--python 3.12` on
+Intel Macs). The install script picks a supported version for you.
 
 Verify the install:
 

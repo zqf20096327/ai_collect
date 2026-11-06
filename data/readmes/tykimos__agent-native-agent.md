@@ -95,7 +95,7 @@ Run ANA in your browser without installing WSL, Node or tmux on your computer. B
 
 ## Quickstart — run the base (2 min)
 
-**Prerequisites:** Node ≥ 24, tmux, and a coding-agent CLI (e.g. [Claude Code](https://claude.com/claude-code)). The runtime (`channel-core.js`) has zero dependencies; the base app has one, [NodeRel](https://github.com/tykimos/NodeRel), installed from GitHub with `npm install`.
+**Prerequisites:** Node ≥ 24, tmux, and a coding-agent CLI (e.g. [Claude Code](https://claude.com/claude-code)). The runtime (`channel-core.js`) has zero dependencies; the base app has two, [NodeRel](https://github.com/tykimos/NodeRel) (the graph) and [modern-screenshot](https://github.com/qq15725/modern-screenshot) (for marking up the screen), installed with `npm install`.
 
 ### Install & run with the `install` skill (recommended)
 
@@ -155,7 +155,7 @@ The base starts **empty**: you tell ANA in the chat what your work is — in wor
 |---|---|---|
 | **PRD** | Current · History | what this ANA is and does — purpose, users, work, sketches, knowledge, what the agent does. **A new ANA has none: it opens here and you start by talking.** Tell ANA in the chat what the work is (or pick an example, or sketch a screen); it asks what it needs, writes the PRD and builds the first Work screen in the same turn. Edit it any time; every save is a new version you can view or restore |
 | **Work** | — | the screens for your work. **Empty at first;** the agent builds them as you talk (with sub-tabs if there are several kinds of work) |
-| **Knowledge** | Ontology · Graph · Documents | what your work is about: the kinds of things and how they relate (ontology), and the actual things and the facts between them, each tied to the items it came from (graph). It starts empty; *Ask the agent* has it read your work and add to both, and you remove what is wrong. *Documents* holds the files the agent should know about (specs, price lists, manuals — up to 25 MB each); it reads them and points facts back to them |
+| **Knowledge** | Ontology · Graph · Documents | everything here in one graph: one list of kinds and how they relate (ontology), and every item, thing and document with every link between them (graph). The knowledge starts empty; *Ask the agent* has it read your work and add to both, and you remove what is wrong. *Documents* holds the files the agent should know about (specs, price lists, manuals — up to 25 MB each); it reads them and points facts back to them |
 | **Requests** | Waiting · In progress · Done | what the agent needs from you: data changes it proposes (nothing changes until you approve), approvals, decisions, access, things only you can do, missing information |
 | **Evolve** | Waiting · In progress · Done | what to do now and how ANA could change, at three horizons — **tidy** (fix what is off), **improve** (a better way of doing this work), **reimagine** (a new way of working) — with what was seen, what changes for people and what others do (links). *Do it* hands it to the agent |
 | **Update** | Waiting · In progress · Done | features that are new in [agent-native-agent](https://github.com/tykimos/agent-native-agent) and not yet here. *Check for updates* compares this ANA with the latest upstream feature by feature; *Bring it in* has the agent port one with its skill |
@@ -200,7 +200,7 @@ Every Requests and Evolve card answers the same questions in plain words — **W
   <img src="docs/assets/tabs/tab-knowledge-light.webp" alt="Knowledge tab" />
 </picture>
 
-**What your work is about.** *Ontology* holds the kinds of things (Client, Lead, Project kind) and how they relate. *Graph* holds the actual things and the facts between them, each tied to the work it came from. *Documents* holds files the agent should read (specs, price lists, up to 25 MB each). *Ask the agent* has it read your work and fill these in; you remove what is wrong.
+**Everything here in one graph.** *Ontology* is one list of kinds — tasks, notes and events the app stores, and the things the work is about (Client, Project kind) — and one list of relations, with counts. *Graph* draws every item, thing and document and every link between them, and lists the links people and the agent made. *Documents* holds files the agent should read (specs, price lists, up to 25 MB each). *Ask the agent* has it read your work and fill these in; you remove what is wrong.
 
 #### Requests
 
@@ -241,32 +241,30 @@ Every Requests and Evolve card answers the same questions in plain words — **W
 
 Turn on **Chip** (top right) and tap anything (a task, a card, a KPI) to attach it to the next message as a context chip. ⟳ registers newly added kinds of elements. ✎ lays a canvas over the board: circle what you mean in red, magenta or blue and press *Add to chat*. The annotated screenshot is attached, with chips for the items under your marks. Screenshots use [modern-screenshot](https://github.com/qq15725/modern-screenshot), served locally from `/vendor/`.
 
-### Links between your work
+### One graph (NodeRel)
 
-Notes, tasks and events link to each other, indexed with [NodeRel](https://github.com/tykimos/NodeRel) (`graph-index.js` → `graph-index.sqlite`, rebuilt whenever the data changes) so the agent can follow them:
+Everything this ANA holds — work items, the things the work is about, documents — sits in one graph, not split into layers. `graph-index.js` builds it from the files and indexes it with [NodeRel](https://github.com/tykimos/NodeRel) (`.ana/graph-index.sqlite`); the index is derived, rebuilt whenever a source changes, and safe to delete.
 
 ```
-Note ─SPAWNED──────▶ Task | Event     where a task or event came from      (explicit)
-Task ─SCHEDULED_AS─▶ Event            the time blocked to work on the task (explicit)
-Note|Task|Event ─REFERS_TO─▶ Note|Task|Event   manual reference            (explicit)
-Task ─DUE_ON─▶ Day,  Event ─ON─▶ Day           computed from due / date    (rule)
+nodes   work items   work-graph.json, one array per kind (kinds declared in work-ontology.js)
+        days         computed from date fields (day:YYYY-MM-DD)
+        things       knowledge.json entities (kg:<id>)
+        documents    files people added (doc-N)
+links   made by people and the agent (work-graph.json links[]) · computed from fields (DUE_ON, QUOTE_FOR…)
+        facts (knowledge.json, an end may be a work item) · MENTIONED_IN (a thing appears in an item or document)
 ```
 
-The kinds come from `work-ontology.js`. To make links in the UI:
-- Select a line in a note and press **→ Task** or **→ Event**.
-- Press the calendar button on a task to block time for it.
-- **＋ Link** connects any two items.
-
-Links show as chips on both ends; click one to jump to that item. A new kind of link (`BLOCKS`) is kept as it is.
+- **Kinds grow with the app.** The base declares notes, tasks and events (`SPAWNED`, `SCHEDULED_AS`, `REFERS_TO`, and `DUE_ON` / `ON` days computed from dates). When the agent builds a new kind of work, such as quotes, it keeps the items in `work-graph.json` (`quotes: […]`) and declares the kind in `work-ontology.js`. A field that points at another item becomes a link: `{ id: 'QUOTE_FOR', from: ['Quote'], to: ['Lead'], made: 'derived', field: 'Quote.lead' }`. Edits to `work-ontology.js` are picked up without a restart. Things and facts the agent learns from the work are added to `knowledge.json`.
+- **Knowledge › Ontology** is one list of kinds and one list of relations, with counts and where each is declared. **Knowledge › Graph** draws every node and link in one picture.
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /api/state` → `graph.links` | the links (from NodeRel) |
-| `POST /api/todo {title, due?, from?}` · `POST /api/event {action:'add', …, from?}` | create and link to its source in one call (`from` = note → `SPAWNED`, task → `SCHEDULED_AS`) |
-| `POST /api/link {action:'add'\|'remove', from, to, type}` | add / remove a link |
-| `GET /api/graph/neighbors?id=` · `GET /api/graph/trace?id=&depth=&direction=&types=` | incident links / everything reachable |
-| `GET /api/graph/schema` | NodeRel's AI-readable schema plus the meanings. Hand it to the agent |
-| `GET /api/stats` → `graph` | counts per kind and where the flow breaks (`gaps`) |
+| `GET /api/knowledge` | `knowledge.json`, plus `graph`: one list of kinds and relations (with counts) and every node and link |
+| `GET /api/graph/neighbors?id=` · `GET /api/graph/trace?id=&depth=&direction=&types=` | what one node touches / everything reachable, through any kind of link (things are `kg:<id>`) |
+| `GET /api/graph/schema` | node kinds and link vocabulary with meanings and counts, and the shape NodeRel observed. Hand it to the agent |
+| `POST /api/link {action:'add'\|'remove', from, to, type}` | add / remove a link between work items (a new `UPPER_SNAKE` kind is kept and shown as new) |
+| `POST /api/todo {title, due?, from?}` · `POST /api/event {action:'add', …, from?}` | create a task or event and link it to its source in one call |
+| `GET /api/state` → `graph.links` · `GET /api/stats` → `graph` | the work links / counts and where the flow breaks (`gaps`) |
 
 ### Requests, Evolve and PRD — the API
 
@@ -362,12 +360,12 @@ dashboard-api.js      base API: tasks · events · notes · links · knowledge �
 dashboard.html        reference UI: PRD · Work · Knowledge · Requests · Evolve · Update, Claude-app chat, Chip mode + drawing, relation chips
 agent-log.js          chat from the agent's own JSONL log (Claude Code + Codex): replies, tools, model, limits
 codex-settings.js     Codex model/effort catalog and switching through Codex's own menu
-graph-index.js        the NodeRel index of the links (derived graph-index.sqlite)
-work-ontology.js      the kinds of work items and links (classes, relations, compute rules); graph-index.js reads it
+graph-index.js        everything as one graph, indexed with NodeRel (trace · neighbors · schema)
+work-ontology.js      the kinds of work items and links (classes, relations, derived links); the agent adds kinds it builds
 prd-template.md       the sections the agent writes the first PRD with
 CLAUDE.md · AGENTS.md what the agent does here (start from the conversation, PRD and first screen in one turn, keep the PRD true)
 features.json         feature manifest: anchors + skill per feature (used by ana-update)
-package.json          dependencies: @tykimos/noderel (github:tykimos/NodeRel), modern-screenshot
+package.json          dependencies: NodeRel, modern-screenshot
 test.cjs              unit + integration tests (npm test), mock_agent.py = deterministic TUI stand-in
 skills/               install · ana · ana-update · chat-window · context-chips · app-shell · agent-requests · cloud-setting
 .claude-plugin/       plugin + marketplace manifest

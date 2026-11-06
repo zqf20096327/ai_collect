@@ -83,7 +83,7 @@ langsmith projects list
 langsmith traces list --project my-app --limit 5
 
 # Get a specific trace with full detail
-langsmith traces get <trace-id> --project my-app --full
+langsmith traces get <trace-id> --full
 
 # List LLM calls with token counts
 langsmith runs list --project my-app --run-type llm --include-metadata
@@ -124,6 +124,13 @@ langsmith --format=json trace list --project my-app
 
 ```bash
 langsmith traces list --project my-app -o traces.json
+```
+
+Every command that prints JSON takes `--jq` to filter it with a jq expression, so you don't need `jq` installed. `--jq` implies `--format=json`; strings, numbers and booleans print bare, objects and arrays as compact JSON. An invalid expression fails before the command does anything. Files written with `-o` keep the full output.
+
+```bash
+langsmith traces list --project my-app --jq '.[].trace_id'
+langsmith agents list --jq 'map(select(.name == "support")) | .[0].id'
 ```
 
 ## Selecting a project
@@ -173,7 +180,7 @@ langsmith projects delete --project-id 519bb9dd-079b-4488-8610-e330951ea3e4
 
 A trace is a tree of runs representing one end-to-end invocation of your application.
 
-Results are **paginated** — by default, only the first **20** traces are returned (use `--limit` to change). Traces are sorted **newest-first** by start time. By default, only traces from the **last 7 days** are returned; use `--since` or `--last-n-minutes` to change the time window.
+Results are **paginated** — by default, only the first **20** traces are returned (use `--limit` to change). Traces are sorted **newest-first** by start time. By default, only traces from the **last 7 days** are returned; use `--since` or `--last-n-minutes` to change the time window. To page deterministically, pass `--cursor ""` on the first call: the JSON output becomes `{"traces": [...], "cursors": {"next": "..."}}`, and passing `cursors.next` back as `--cursor` resumes right after the last item. `cursors.next` is absent on the last page.
 
 ```bash
 # List recent traces (default: 20 results, newest first)
@@ -196,7 +203,7 @@ langsmith traces list --project my-app --full               # All fields (metada
 langsmith traces list --project my-app --show-hierarchy --limit 3
 
 # Get a specific trace
-langsmith traces get <trace-id> --project my-app --full
+langsmith traces get <trace-id> --full
 
 # Export traces to JSONL files (one per trace)
 langsmith traces export ./traces --project my-app --limit 20 --full
@@ -209,7 +216,7 @@ langsmith traces export ./traces --project my-app --filename-pattern "{name}_{tr
 
 A run is a single step within a trace (LLM call, tool call, chain step, etc.).
 
-Results are **paginated** — by default, only the first **50** runs are returned (use `--limit` to change). Runs are sorted **newest-first** by start time. By default, only runs from the **last 7 days** are returned; use `--since` or `--last-n-minutes` to change the time window.
+Results are **paginated** — by default, only the first **50** runs are returned (use `--limit` to change). Runs are sorted **newest-first** by start time. By default, only runs from the **last 7 days** are returned; use `--since` or `--last-n-minutes` to change the time window. To page deterministically, pass `--cursor ""` on the first call: the JSON output becomes `{"runs": [...], "cursors": {"next": "..."}}`, and passing `cursors.next` back as `--cursor` resumes right after the last item. `cursors.next` is absent on the last page.
 
 ```bash
 # List LLM calls (default: 50 results, oldest first)
@@ -232,7 +239,7 @@ langsmith runs get <run-id> --full
 langsmith runs export llm_calls.jsonl --project my-app --run-type llm --full
 ```
 
-> **Query backend:** the CLI selects the runs query API automatically from the deployment reported by `/info` — LangSmith Cloud and self-hosted `>= 0.16` use the v2 (SmithDB) API; older self-hosted uses v1. No flag is needed. On v2, `trace list` and `trace export` select traces through `/v2/traces/query`, and `trace get`, `trace export` and `--show-hierarchy` read each trace through `/v2/traces/{trace_id}/runs`, which requires a project. On v1, `trace get` can omit `--project` / `--project-id` and look the trace up by ID in the current workspace. A few v2-only features (`trace messages`, `thread messages`) are unavailable on self-hosted `< 0.16`.
+> **Query backend:** the CLI selects the runs query API automatically from the deployment reported by `/info` — LangSmith Cloud and self-hosted `>= 0.16` use the v2 (SmithDB) API; older self-hosted uses v1. No flag is needed. On v2, `trace list` and `trace export` select traces through `/v2/traces/query`, and `trace get`, `trace export` and `--show-hierarchy` read each trace through `/v2/traces/{trace_id}/runs`, which requires a project. `trace get` can omit `--project` / `--project-id` on both: it looks the trace's root run up by ID in the current workspace through the v1 runs query (last 7 days unless `--since` or `--last-n-minutes` is set), then reads the trace. Deployments that serve runs only from SmithDB can't do that lookup, so pass the project there. A few v2-only features (`trace messages`, `thread messages`) are unavailable on self-hosted `< 0.16`.
 
 ### `thread` — Query conversation threads
 
@@ -486,6 +493,11 @@ binary in place — it points you at the right command instead:
 | Homebrew | `brew upgrade langchain-ai/tap/langsmith-cli` |
 | Scoop | `scoop update langsmith-cli` |
 | `go install` | `go install github.com/langchain-ai/langsmith-cli/cmd/langsmith@latest` |
+| pip | `pip install --upgrade langsmith-cli` (in a venv, that venv's `python -m pip`) |
+| pipx | `pipx upgrade langsmith-cli` |
+| `uv tool install` | `uv tool upgrade langsmith-cli` |
+| `uv pip install` | `uv pip install --python <venv python> --upgrade langsmith-cli` |
+| uv project (`uv add`, `uv sync`) | `uv lock --upgrade-package langsmith-cli && uv sync` |
 
 Installs from the `install.sh`/`install.ps1` scripts or a direct GitHub Releases download
 are updated in place as usual. Pass `--force` to update in place regardless of how

@@ -1,19 +1,20 @@
 # Chelate Shell
 
-> **The missing orchestrator for your local agent skill ecosystem.**
+> **A deterministic orchestrator for research and engineering workflows, with 20 skills included.**
 >
-> Bridging isolated local skills into a reproducible research pipeline.
-> As a microkernel-backed orchestrator, Chelate Shell organises 18 underlying skills into a deterministic, cross-platform workflow and uses hard gates to cut down on AI hallucination.
+> You do not need to supply the skills yourself. Twenty research and engineering skills ship with the repository: formula validation (five check layers over SymPy plus a pint unit cross-check), atom conservation with RDKit, mixed models and mediation analysis through R, video trajectory extraction with OpenCV, publication-grade charts, PDF text extraction, and Markdown → compilable LaTeX export. All 20 are part of the install and run in the pipeline as shipped.
+>
+> `core/router.py` runs them in a fixed stage order, screens text inputs for prompt injection before dispatch, writes a typed `GateResult` for every call, and terminates the pipeline on the first `FAIL`.
 
 **English** · [简体中文](README_zh.md)
 
-**Version:** 1.2.1 | **Skills:** 18
+**Version:** 1.3.0 | **Skills:** 20
 
 ---
 
 ## Security & Open Source Statement
 
-> **Disclaimer**: This repository contains auxiliary tools developed by the author to automate research workflows. It is not a peer-reviewed academic project. Some boilerplate or utility scripts may have been generated with the assistance of **Claude (Anthropic)**, and have been integrated with high-level review and modifications by the author. The author assumes no responsibility for any third-party code issues, but commits to promptly addressing any valid claims.
+> **Disclaimer**: This repository contains auxiliary tools developed by the author to automate research workflows. It is not a peer-reviewed academic project. Some boilerplate or utility scripts may have been generated with the assistance of AI, and have been integrated with high-level review and modifications by the author. The author assumes no responsibility for any third-party code issues, but commits to promptly addressing any valid claims.
 >
 > This tool **will never do the experiment for you**. Data must be collected manually by students in the lab; AI is absolutely physically isolated during the in-lab stage. Generated reports are merely "data-analysis drafts", and final academic responsibility lies with the user and their institution.
 
@@ -23,7 +24,67 @@
 
 In the current AI ecosystem, individual skills excel at solving isolated problems: validating formulas, tracking videos, or organizing files. However, when an Agent faces a complex task, it often struggles to determine **which skill to invoke, in what order, and where to place the outputs**. Scattered, stateless skill calls lead to context pollution, file-version confusion, and untrustworthy AI hallucination.
 
-Chelate Shell is a **deterministic Orchestrator**. It does not write low-level code to solve domain-specific problems. Instead, acting like a senior project manager, it decomposes user intents, enforces a standardized workspace directory structure, and **deterministically** routes tasks to the appropriate skills.
+Chelate Shell addresses this in two parts, and both are part of the same repository.
+
+**The 20 skills implement their algorithms directly.** They are not prompt templates. `formula-validator` runs five check layers over SymPy and cross-checks units with pint. `quantitative-validator` balances chemical equations through RDKit. `longitudinal-analysis` calls lme4 and lavaan in R. `video-tracker` performs CSRT tracking in OpenCV and computes an FFT of the trajectory. `ml-auditor` checks labelled datasets for data leakage and label errors with scikit-learn. `sci-visualizer` renders publication-grade charts with matplotlib and seaborn. `fulltext-extractor` extracts page ranges from PDFs, and `latex-exporter` assembles the Markdown reports into a compilable `.tex` using the standard library only. Each one is wired into the pipeline and covered by the test suite.
+
+**The orchestrator supplies the guarantees an individual skill cannot provide for itself.** `core/router.py` decomposes the request, enforces the standard four-zone workspace, and routes work in a deterministic stage order, so the same inputs always produce the same plan. It also writes a typed gate for every call, stops the pipeline on the first `FAIL`, reports an explicit `UNVERIFIED` when a dependency is missing, and maintains the `_broadcast/` index that lets a later session read one summary instead of every original.
+
+---
+
+## How a run flows
+
+`core/router.py` is a microkernel: it reads the 20 `manifest.json` files, builds a plan in the canonical stage order, screens text inputs for prompt injection **before** dispatching anything, and then calls each skill's adapter. Every call writes a `GateResult` to `process/gates/` — `PASS`, `UNVERIFIED`, or `FAIL`.
+
+A missing dependency degrades one skill to `UNVERIFIED` and the run continues. A single `FAIL` is terminal: the pipeline stops on the spot and leaves the intermediate products locked in `process/`. When no gate fails, `process/` is promoted into `results/`, and the run is summarised in a typed pipeline report plus the `_broadcast/` index that a later session reads before opening any original.
+
+```mermaid
+flowchart LR
+    IN["User intent + input files"] --> CLI["cli.py pipeline<br/>--mode a / b / c"]
+    CLI --> REG["core/registry.py<br/>scan the 20 manifests"]
+    REG --> PLAN{"build_plan<br/>canonical order<br/>--inputs narrows"}
+    PLAN --> SCAN["core/security_shield.py<br/>pre-dispatch injection scan"]
+    SCAN -->|"markers found"| BAD["FAIL: injection-scan<br/>blocked before dispatch"]
+
+    subgraph ROUTER["core/router.py — four-stage pipeline"]
+        direction TB
+        WS["workspace · 3 skills<br/>task-organizer, multi-dim-manager,<br/>document-evolution-tracker"]
+        ING["ingest · 5 skills<br/>capstone-labmate, video-tracker,<br/>fulltext-extractor, literature-retriever,<br/>bibtex-normalizer"]
+        GAT["gates · 7 skills<br/>formula-validator, conflict-detector,<br/>reference-auditor, data-profiler,<br/>quantitative-validator, ml-auditor,<br/>longitudinal-analysis"]
+        PRO["processors · 2 skills<br/>ai-trace-remover, latex-exporter"]
+        WS --> ING --> GAT --> PRO
+    end
+
+    SCAN -->|"clean"| ING
+    WS -.->|"task-start bookend"| ING
+
+    subgraph CALL["per-skill execution — run_skill()"]
+        direction TB
+        AD["adapter run.py<br/>--root --action"]
+        SB["core/sandbox.py<br/>120 s breaker when required"]
+        AD -->|"sandboxed"| SB
+    end
+    GATE["process/gates/ — one GateResult<br/>PASS / UNVERIFIED / FAIL"]
+
+    ROUTER -->|"every planned skill"| AD
+    AD --> GATE
+    SB --> GATE
+    AD -.->|"missing dependency"| UNV["UNVERIFIED<br/>one skill degrades;<br/>run continues"]
+    UNV -.-> GATE
+
+    GATE -->|"any FAIL"| STOP["PIPELINE TERMINATED<br/>process/ locked"]
+    GATE -->|"no FAIL"| PROMOTE["results/promoted_TIMESTAMP/"]
+    GATE --> REPORT["results/pipeline_report_TIMESTAMP.json"]
+    REPORT --> BC["_broadcast/pipeline_index_TIMESTAMP.json"]
+
+    LAYER["category meta-skills<br/>security-guard, sci-visualizer, 3d-modeler"] -.->|"routed, outside canonical order"| ROUTER
+```
+
+Three things the diagram makes explicit:
+
+- **The automatic pipeline is `ingest → gates → processors`.** `workspace` (task-organizer) is the bookend at task start, entered before the pipeline or through `--selected`; `--mode a` does not schedule it.
+- **`UNVERIFIED` is not a failure.** It means a skill could not assert a verdict — a missing optional dependency, an input the caller has not supplied yet — and the rest of the run keeps going.
+- **Only `FAIL` is terminal.** It locks `process/` exactly where it stopped, so the intermediate products stay auditable but are never mistaken for results.
 
 ---
 
@@ -50,7 +111,7 @@ claude plugin install chelate-shell --marketplace https://github.com/JiamingShi-
 **Claude Code** — from inside a session (v2.1.275+), add the marketplace from the URL first, pinned to the release tag:
 
 ```text
-/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.2.1
+/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.3.0
 ```
 
 Then install the entry it lists:
@@ -62,7 +123,7 @@ Then install the entry it lists:
 **Codex** — register the URL as a Git marketplace; `--ref` pins the release tag, and an SSH URL or a local path works in place of the HTTPS one:
 
 ```bash
-codex plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git --ref v1.2.1
+codex plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git --ref v1.3.0
 ```
 
 **Codex** — install the plugin from that marketplace:
@@ -74,13 +135,13 @@ codex plugin add chelate-shell@chelate-shell-marketplace
 **dsh (DeepSeek Harness)** — installs from the same repository URL straight into a profile:
 
 ```bash
-dsh plugin --profile web add github:JiamingShi-JsPhys/chelate-shell#v1.2.1
+dsh plugin --profile web add github:JiamingShi-JsPhys/chelate-shell#v1.3.0
 ```
 
 **CodeBuddy** — add the URL as a Git marketplace:
 
 ```text
-/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.2.1
+/plugin marketplace add https://github.com/JiamingShi-JsPhys/chelate-shell.git#v1.3.0
 ```
 
 Then install the entry it lists:
@@ -125,10 +186,10 @@ Keep the cloned repository somewhere the agent can reach: every rule file names 
 **opencode without copying** — opencode can also read the rule file in place through `opencode.json`'s `instructions` array, which needs no copy and can be committed for a whole team:
 
 ```json
-{{
+{
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["../chelate-shell/AGENTS.md"]
-}}
+}
 ```
 
 **Manual alternative** — if you would rather not run the script, copy the file yourself to the destination the script would have used:
@@ -143,91 +204,67 @@ Keep the cloned repository somewhere the agent can reach: every rule file names 
 Please visit the GitHub repository `https://github.com/JiamingShi-JsPhys/chelate-shell` and clone it, then run `python install.py --project . --global`. If your host has a plugin system, install it as a single plugin instead; the script covers the hosts that read rule files.
 ```
 
-> **Warning**: when an AI performs the installation it will very likely scatter the individual skills from `skills/` flat into the platform's global skill directory. That breaks Chelate Shell's microkernel auto-routing architecture and degrades it into 18 loose skills. Use Method 1 if you need the full plugin orchestration.
+> **Warning**: when an AI performs the installation it will very likely scatter the individual skills from `skills/` flat into the platform's global skill directory. That breaks Chelate Shell's microkernel auto-routing architecture and degrades it into 20 loose skills. Use Method 1 if you need the full plugin orchestration.
 
 ## Quick start
 
-All commands run from the repository root — **never hard-code absolute paths**.
+Install the plugin, then stay in the chat box: type `/` and pick a skill or a
+command. No shell, no absolute path — the workspace is the folder you are
+already working in.
 
-List the routing table:
+### Skills
 
-```bash
-python cli.py list
+All 20 skills are registered under the `chelate-shell` namespace, so every one
+of them is one `/` away:
+
+```text
+/chelate-shell:task-organizer      turn this folder into a task workspace
+/chelate-shell:formula-validator   check F = m*a with units F=N, m=kg, a=m/s^2
+/chelate-shell:reference-auditor   verify every DOI in draft.md against Crossref
+/chelate-shell:security-guard      screen draft.md for prompt injection
+/chelate-shell:data-profiler       profile data.csv
 ```
 
-Run one skill directly:
+Say what you want after the name; the skill picks the action and writes a gate
+result. A fake DOI does not merely warn — it fails the gate and stops the
+pipeline.
 
-```bash
-python cli.py run reference-auditor --root /path/to/workspace --action audit --input draft.md
+### Commands added in 1.3.0
+
+Two commands put the heavier engines behind a single line:
+
+| Command | Does |
+|---|---|
+| `/chelate-shell:figure` | Renders a bar / line / scatter / box chart from a CSV or JSON dataset into `process/figures/` — a vector PDF plus a raster PNG |
+| `/chelate-shell:model3d` | Generates a Wavefront `.obj` from a JSON spec, or audits and merges existing meshes, into `process/models/` |
+
+```text
+/chelate-shell:figure data.csv — scatter of voltage against time
+/chelate-shell:model3d spec.json
 ```
 
-Dry-run a pipeline to see the planned execution order:
+Both run sandboxed with a 120-second circuit-breaker: a pathological input
+degrades to `UNVERIFIED` rather than blocking the run.
 
-```bash
-python cli.py pipeline --root /path/to/workspace --mode a --input-kind pdf --dry-run
-```
+### Sub-agents added in 1.3.0
 
-Run the full pipeline (ingest → gates → processors):
+Two roles in `agents/` are registered with the plugin:
 
-```bash
-python cli.py pipeline --root /path/to/workspace --mode a --input-kind pdf
-```
+| Sub-agent | Fits | Skills it may use |
+|---|---|---|
+| `spatial_agent` | 3D content — image-to-3D, video-to-3D, scene composition, mesh QC | 3d-modeler, sci-visualizer, security-guard |
+| `visual_agent` | Publication visuals — 2D plots, static diagrams, gif frames, figure QA, LaTeX export | sci-visualizer, latex-exporter, security-guard |
 
-Run gates only, with per-skill arguments:
+Claude dispatches to them when a task matches, and you can name one in your
+request. Each is bounded by a skill whitelist, a writable-path whitelist
+(`assets/`, `process/`, `results/`) and a step budget, so a sub-agent cannot
+reach a skill or a directory outside its role.
 
-```bash
-python cli.py pipeline --root /path/to/workspace --mode c --selected reference-auditor --skill-arg "reference-auditor:--input draft.md"
-```
+### When you need the CLI
 
-Initialise a complex-task workspace:
-
-```bash
-python skills/task-organizer/run.py --root <workspace> --action init
-```
-
-Rebuild the context-compression index:
-
-```bash
-python skills/task-organizer/run.py --root <workspace> --action broadcast
-```
-
-Validate a physics formula deterministically (bypass mode):
-
-```bash
-python skills/formula-validator/run.py --root <workspace> --action validate -- --expr "F = m*a" --units F=N --units m=kg --units a=m/s**2
-```
-
-Audit the DOIs in a draft (a fake DOI fails the gate and stops the pipeline):
-
-```bash
-python skills/reference-auditor/run.py --root <workspace> --action audit --input draft.md
-```
-
-Remove AI traces from a draft:
-
-```bash
-python skills/ai-trace-remover/run.py --root <workspace> --action scan -- <file>
-```
-
-Declare the run's input files, each wired as `--input` to the plan:
-
-```bash
-python cli.py pipeline --root ./test_workspace --inputs draft.md data.csv
-```
-
-Debug one skill (the flag may sit before or after the skill name):
-
-```bash
-python cli.py run data-profiler --root /path/to/workspace --action profile --input data.csv --debug
-```
-
-Debug a whole pipeline through the environment variable:
-
-```bash
-CHELATE_DEBUG=1 python cli.py pipeline --root /path/to/workspace --mode c --selected reference-auditor
-```
-
-Pipeline modes: `a` auto (ingest → gates → processors), `b` extract-only, `c` gates-only. `--inputs` narrows the plan to the skills that can consume the declared files (an explicit `--selected` list always wins); a file whose extension declares no manifest type is reported as an `[INPUT]` warning and wires to nothing. Each declared file is resolved against `--root` (relative paths anchor at the workspace root, absolute paths are used as-is); a missing file fails fast with exit code 2 **before any skill runs**.
+The same operations are available headlessly for CI and scripted runs; the
+flags, the `a` / `b` / `c` pipeline modes and the debugging switches are
+specified in [ORCHESTRATOR.md](ORCHESTRATOR.md) §5.
 
 ## Requirements
 
@@ -248,11 +285,17 @@ chelate-shell/
 ├── .gitignore
 ├── .roo/rules/                       # Roo Code rule directory
 ├── .windsurf/rules/                  # Windsurf rule file
+├── agents/                           # sub-agent role definitions
+│   ├── spatial_agent.md              # mesh/3D role (3d-modeler)
+│   └── visual_agent.md               # figure/visualisation role (sci-visualizer + latex-exporter)
 ├── AGENTS.md                         # generic agent contract (Codex / Cursor / Copilot / opencode)
 ├── assets/                           # icon.png (shared by the plugin manifests)
 ├── bootstrap.py                      # shared import + gate-write helper for every run.py
 ├── CHANGELOG.md                      # release notes
 ├── cli.py                            # CLI entry: list / run / pipeline
+├── commands/                         # slash commands
+│   ├── figure.md                     # /figure — chart from a CSV or JSON dataset
+│   └── model3d.md                    # /model3d — OBJ mesh generate / merge / audit
 ├── contracts/                        # global contracts
 │   ├── __init__.py
 │   ├── gate_result.py                # {skill, status, evidence_level, reason, artifacts}
@@ -262,7 +305,9 @@ chelate-shell/
 │   ├── __init__.py
 │   ├── registry.py                   # scans skills/ into a routing table
 │   ├── router.py                     # dispatcher: manifest-driven pipeline
-│   └── sandbox.py                    # dependency resolution / 120-second circuit-breaker
+│   ├── sandbox.py                    # dependency resolution / 120-second circuit-breaker
+│   ├── security_shield.py            # anti-injection text scan + AST dangerous-call scan
+│   └── subagent_manager.py           # sub-agent role registry
 ├── docs/                             # design notes, audit reports, file-function map
 ├── index.js                          # CJS plugin entry (dsh ecosystem)
 ├── install.py                        # one-command rule-file installer (see Installation)
@@ -279,11 +324,13 @@ chelate-shell/
 │   ├── pdf_text.py                   # PDF extraction core (pdfminer.six / pypdf)
 │   └── yamlmini.py                   # assets/config.yaml loader
 ├── LICENSE
-├── ORCHESTRATOR.md                   # agent-facing routing contract (v1.2.1)
+├── ORCHESTRATOR.md                   # agent-facing routing contract (v1.3.0)
 ├── package.json                      # npm/dsh packaging metadata
 ├── README.md
 ├── README_zh.md
-├── skills/                           # 18 skills, completely flat
+├── skills/                           # 20 skills, all flat — one folder per skill
+│   ├── 3d-modeler/                   # [domain_extensions] pure-Python OBJ mesh generate /
+│   │                                 # merge / audit with mesh QC; sandboxed
 │   ├── ai-trace-remover/             # [processors] template-sentence removal and a
 │   │                                 # 0–100 "AI-likeness" score (EN + ZH lexicons)
 │   ├── bibtex-normalizer/            # [ingest]    .bib parsing, dedupe, normalized output
@@ -295,8 +342,6 @@ chelate-shell/
 │   │                                 # missing values, 1.5·IQR outliers, duplicates, constant columns
 │   ├── document-evolution-tracker/   # [workspace] paragraph-level diff across
 │   │                                 # document versions, concept-lineage tracking
-│   ├── figure-generator/             # [processors] publication-quality charts (matplotlib +
-│   │                                 # seaborn), incl. AMOS-style SEM path renderer; sandboxed
 │   ├── formula-validator/            # [gates]     SymPy D1–D5 layers (dimensional analysis,
 │   │                                 # limit enumeration, numeric sampling, symbolic proof)
 │   │                                 # + pint unit cross-check
@@ -317,12 +362,17 @@ chelate-shell/
 │   │                                 # cross-check); sandboxed
 │   ├── reference-auditor/            # [gates]     DOI extraction + Crossref verification;
 │   │                                 # a fake DOI fails the gate
+│   ├── sci-visualizer/               # [generation] publication-quality charts (matplotlib +
+│   │                                 # seaborn + pandas), incl. AMOS-style SEM path renderer,
+│   │                                 # plus gif frame scan
+│   ├── security-guard/               # [infrastructure] anti-injection text scan +
+│   │                                 # AST scan for dangerous call sites
 │   ├── task-organizer/               # [workspace] four-zone workspace init, file organization
 │   │                                 # (C1–C8 validation, dedupe, snapshots, undo/redo),
 │   │                                 # _broadcast/INDEX.md context index
 │   └── video-tracker/                # [ingest]    OpenCV coordinate extraction (CSRT/Template),
 │                                     # FFT spectrum, physics probes
-├── tests/                            # automated test suite (291 tests)
+├── tests/                            # automated test suite (357 tests)
 └── THIRD_PARTY_LICENSES.txt          # upstream licence inventory
 ```
 
@@ -334,7 +384,7 @@ chelate-shell/
 python -m pytest tests/ -q
 ```
 
-That is 291 tests (290 passed, 1 skipped: the v1.0.0 source tree is not present). The suite covers the gate contract, manifest schema validation, flat-layout enforcement, pipeline planning and FAIL termination, the migration guard, the legacy D1–D5 and FFT/physics probes, the five skills added in v1.1.x, workspace input-path resolution, `--inputs` auto-wiring, the unified debug layer, the manifest-contract suite (plugin manifests for all four host platforms, plus SKILL.md frontmatter agreement), the rule-file adapters for the plugin-less hosts, the four heavy skills' real logic and `UNVERIFIED` degradation, and the repo-consistency guard: every skill's docs, manifest, entrypoint, `LICENSE` and declared dependencies stay in agreement.
+That is 357 tests (347 passed, 10 skipped — dependency gates such as `rdkit` and fixture-gated cases). The suite covers the gate contract, manifest schema validation, flat-layout enforcement (a manifest must sit exactly one level under `skills/`), pipeline planning and FAIL termination, the migration guard, the legacy D1–D5 and FFT/physics probes, the five skills added in v1.1.x, workspace input-path resolution, `--inputs` auto-wiring, the unified debug layer, the manifest-contract suite (plugin manifests for all four host platforms, plus SKILL.md frontmatter agreement), the rule-file adapters for the plugin-less hosts, the security shield, the four heavy engine skills' real logic and `UNVERIFIED` degradation, and the repo-consistency guard: every skill's docs, manifest, entrypoint, `LICENSE` and declared dependencies stay in agreement.
 
 ## Known limitations
 
@@ -345,6 +395,7 @@ Honest edge cases — read before relying on any output:
 - **Longitudinal analysis depends on R**: some advanced statistical steps of `longitudinal-analysis` run through R scripts; if `Rscript` is absent those steps are skipped and logged — **never hand-write Python code to replace skipped R steps**.
 - **Version tracking is structural, not semantic**: `document-evolution-tracker` diffs by block alignment; a concept counts as "present" only on a literal match.
 - **DOI audit verifies existence only**: `reference-auditor` confirms a DOI exists in Crossref, not that it is the paper you meant to cite — citation correctness remains the author's responsibility.
+- **The injection scan is a screen, not a sandbox**: `security-guard` flags known markers and dangerous call sites; it cannot prove a file is safe.
 - **Data profiling never cleans data**: `data-profiler` only reports missing values / outliers / duplicate rows; it never modifies input files.
 - **Determinism covers the scheduling layer only**: the router guarantees the same input routes to the same skill, but it cannot make a non-deterministic underlying algorithm deterministic.
 

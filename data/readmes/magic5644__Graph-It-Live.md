@@ -128,7 +128,15 @@ The Live Call Graph shows cross-file symbol relationships in a Cytoscape.js pane
 
 The Live Call Graph supports TypeScript, JavaScript, React (JSX and TSX, parsed with the TSX grammar), Vue, Svelte, Python, Rust, C#, Go, Java, and GraphQL. C#, Go, Java, and GraphQL are supported in the file graph and Live Call Graph; Symbol View support is currently limited to TypeScript, JavaScript, Python, and Rust. In GraphQL, operations and fragments call the fragments they spread; an operation's default root type (`Query`, `Mutation`, `Subscription`), type conditions, field, argument and variable types, and union members are type-only references (`USES`, shown with `includeTypeOnly`); `implements` is an `IMPLEMENTS` edge.
 
-A method call links only when the type of its receiver is proven: `this`/`self`, a parameter or variable with a declared type, a construction (`new Calculator()`, `Calculator()`), or a static call (`Calculator.create()`). The type can be declared in the same file or in another one. In TypeScript, JavaScript, and Python, it must be bound by an import (aliases, barrels, default and type-only imports included). The call reaches the method that this class declares in its own body. When a method is declared more than once (Python redefinition, TypeScript overloads), it reaches the last declaration. Inherited methods, union or unknown types, a rebound variable, and calls on a returned value (`make().compute()`) create no edge. They never reach a same-named method of another class. Java and Go are the exception: a receiver of unknown type still links by method name.
+A method call links only when the type of its receiver is proven: `this`/`self`, a parameter or variable with a declared type, a construction (`new Calculator()`, `Calculator()`), or a static call (`Calculator.create()`). The type can be declared in the same file or in another one. In TypeScript, JavaScript, and Python, it must be bound by an import (aliases, barrels, default and type-only imports included). The call reaches the method that this class declares in its own body. When a method is declared more than once (Python redefinition, TypeScript overloads), it reaches the last declaration. Inherited methods, union or unknown types, and a rebound variable create no edge. They never reach a same-named method of another class. Java and Go are the exception: a receiver of unknown type still links by method name.
+
+In TypeScript and Python, a call on a returned value links too, read from the annotation of the function or method that returns it, never inferred:
+
+- a named return type: `make(): Calculator`, `def make() -> Calculator` (also `-> "Calculator"`). The name resolves in the callee's file, through its own imports;
+- a fluent method: `: this` or `-> Self` returns the receiver's type, so `b.setX(1).build().compute()` follows each link;
+- an identity generic: `<T>(value: T): T`, or `def f(value: T) -> T` with a `TypeVar` or a PEP 695 parameter, returns the type of its argument.
+
+A chain stops at its first unproven link and after 8 calls. An unannotated return, a union, `Promise<T>`/`Awaited`, `Optional[T]`, utility types, other generics, `any`/`unknown`, overloads with different return types and `async def` create no edge. Java, C#, Go and Rust do not type returned values yet: Java and Go link such a call by method name, C# and Rust do not link it.
 
 ### Architecture view
 
@@ -185,6 +193,14 @@ The CLI (`graph-it architecture --level units`) and the MCP tool `explore_archit
 </div>
 
 *Click *Matrix* in the *Graph | Matrix* switch for the dependency structure matrix.*
+
+To share the drawn level as a picture, click *Export Architecture Diagram* (icon `$(desktop-download)`) in the *Dependency Graph* view title bar, then save it as `.svg`, `.html` or `.png`. *Copy Architecture Diagram as SVG* (icon `$(copy)`) puts the SVG on the clipboard. Both commands are also in the Command Palette while the Architecture view is open. The export draws the units, or the groups of the entered unit or folder, as a graph or a matrix, with the rule violations of the view; the graph also keeps the role filter and *Min. imports*, which the matrix does not apply. It uses the renderer of `graph-it diagram`: without a role or *Min. imports* filter, the same level gives the same SVG as the CLI; the PNG is that SVG at twice its size, and the SVG follows the editor's light or dark theme. Exports need the default `graph-it-live.communityMode` (`path`).
+
+<div align="center">
+<img src="media/vscode-diagram-export-libraries.png" alt="Exported diagram of the workspaces-project fixture with the library role filter: three library units in two layers, the cycle between @ws/core and @ws/types outlined, and a legend" width="648"/>
+</div>
+
+*An exported diagram with the role filter on `library`: the caption names the filter.*
 
 ### Architecture rules
 
@@ -249,6 +265,7 @@ graph-it path <file>                  Show a dependency path
 graph-it check [path]                 Find unused exported symbols
 graph-it architecture --groups        Show the workspace architecture by folder or community
 graph-it check-architecture           Check imports against graphit.architecture.json
+graph-it diagram                      Write a static architecture diagram (SVG, HTML or diagram spec)
 graph-it query "<question>"           Ask a natural-language graph question
 graph-it context "<question>"         Retrieve bounded graph context
 graph-it wiki                         Generate a navigable Markdown wiki
@@ -257,7 +274,7 @@ graph-it export [path]                Export the graph as HTML
 graph-it --help                       Show all commands and options
 ```
 
-Analysis commands support `--format json|toon|markdown`. `trace`, `path` and `architecture` also support `--format mermaid`, `architecture --matrix` supports `--format csv`, and `check-architecture` and `review-pr` support `--format sarif`. Use `--workspace <path>` or `-w` to analyze a project other than the current directory.
+Analysis commands support `--format json|toon|markdown`. `trace`, `path` and `architecture` also support `--format mermaid`, `architecture --matrix` supports `--format csv`, `check-architecture` and `review-pr` support `--format sarif`, and `diagram` writes `--format svg|html|diagram-spec` (the last for a diagram skill). Use `--workspace <path>` or `-w` to analyze a project other than the current directory.
 
 See the [complete CLI reference](docs/CLI.md), including installation troubleshooting, REPL commands, output formats, and tool details.
 
@@ -297,11 +314,11 @@ When the extension is installed, use these tools in Copilot Agent mode without c
 | Context | File logic, codemaps, unified graph context, natural-language graph queries |
 | Call graph | Cross-file caller/callee queries and neighbourhood expansion |
 
-The graph-context tool is available as `#graphContext`. Other native references include `#graphDeps`, `#graphFindRefs`, `#graphCallers`, `#graphImpact`, `#graphCodemap`, `#graphTrace`, `#graphDeadCode`, `#graphReviewPr`, and `#graphQuery`.
+The graph-context tool is available as `#graphContext`. Other native references include `#graphDeps`, `#graphFindRefs`, `#graphCallers`, `#graphImpact`, `#graphCodemap`, `#graphTrace`, `#graphDeadCode`, `#graphReviewPr`, `#graphQuery`, and `#graphArchitectureDiagram`.
 
 ### MCP server
 
-The MCP server exposes 24 graph-analysis tools. Enable it in VS Code with `graph-it-live.enableMcpServer`, or start it from the CLI:
+The MCP server exposes 25 graph-analysis tools. Enable it in VS Code with `graph-it-live.enableMcpServer`, or start it from the CLI:
 
 ```bash
 graph-it serve
@@ -394,8 +411,8 @@ See the [MCP server instructions](#mcp-server) for ready-to-copy VS Code, Cursor
 
 The repository also includes marketplace catalogs for [Claude Code](.claude-plugin/marketplace.json)
 and [Codex](.agents/plugins/marketplace.json). The MCP entry pins the
-latest published `@magic5644/graph-it-live` version and starts it with `npx --prefer-offline`, so a
-cached package starts without a registry lookup; a workflow updates the pin, the plugin manifests and
+latest published `@magic5644/graph-it-live` version and starts it with `npx`, so a
+cached package starts without a new download (npm still revalidates the package metadata); a workflow updates the pin, the plugin manifests and
 the marketplace versions after each npm publish.
 
 ### Agent skill

@@ -34,7 +34,7 @@ socket and runs each command on Blender's main thread through `bpy.app.timers`.
 ```
 ┌─────────────────┐    stdio     ┌─────────────────┐   TCP/JSON-RPC   ┌─────────────────┐
 │  MCP client     │ ◄──────────► │   MCP Server    │ ◄──────────────► │  Blender Addon  │
-│  (Claude / …)   │              │  (Python proc)  │   port 9876      │  (bpy.app.timers)│
+│  (Claude / …)   │              │  (Python proc)  │  9876 to 9885    │  (bpy.app.timers)│
 └─────────────────┘              └─────────────────┘                  └─────────────────┘
 ```
 
@@ -55,33 +55,41 @@ socket and runs each command on Blender's main thread through `bpy.app.timers`.
 
 ### 1. Run the MCP server
 
-Meshwire is in alpha, so ask for pre-releases.
 With [uv](https://docs.astral.sh/uv/) there is nothing to install up front:
 
 ```bash
-uvx --prerelease allow meshwire --help
+uvx meshwire --help
 ```
 
 Or with pip:
 
 ```bash
-pip install --pre meshwire
+pip install meshwire
 ```
 
 ### 2. Install the Blender addon
 
-Download `blender_mcp_addon-<version>.zip` from [Releases](https://github.com/RFingAdam/meshwire/releases),
+Download `meshwire-addon-<version>.zip` from [Releases](https://github.com/RFingAdam/meshwire/releases),
 or build it from source:
 
 ```bash
 git clone https://github.com/RFingAdam/meshwire
 cd meshwire
 python scripts/package_addon.py
-# creates dist/blender_mcp_addon-<version>.zip
+# creates dist/meshwire-addon-<version>.zip
 ```
 
-In Blender, open **Edit > Preferences > Add-ons**, choose **Install from Disk** from the menu at
-the top right, select the ZIP, and enable **Meshwire**.
+In Blender, open **Edit > Preferences > Get Extensions**, open the dropdown arrow at the top right,
+choose **Install from Disk...**, and select the ZIP. Blender installs it as an extension and enables
+**Meshwire**. Host, port and API keys are add-on preferences, stored per user, so a shared `.blend`
+file carries none of them. Do not unzip the file first.
+
+If you installed Meshwire before 0.5.0, remove the old copy first (Edit > Preferences > Add-ons,
+**Meshwire**, Remove) and restart Blender. Two copies enabled together would start two servers, so the
+new one shows a warning in its sidebar tab and does not start while the old one is enabled.
+
+`execute_script` is off until you turn it on. Open the **Meshwire** tab in the 3D Viewport sidebar and
+click **Allow Python**. It stays on until Blender closes and is off again at every start.
 
 ### 3. Configure your MCP client
 
@@ -90,7 +98,7 @@ the top right, select the ZIP, and enable **Meshwire**.
   "mcpServers": {
     "blender": {
       "command": "uvx",
-      "args": ["--prerelease", "allow", "meshwire"]
+      "args": ["meshwire"]
     }
   }
 }
@@ -145,12 +153,6 @@ if they drift. More detail per area is in
 | AI generation and refinement | 36 | 17 | 17 | `ai_mesh_remesh`, `ai_auto_uv` |
 | Poly Haven | 2 | 0 | 0 |  |
 | **Total** | **225** | **190** | **191** |  |
-
-<details><summary>No tool has a known failure; some socket checks do</summary>
-
-Socket checks that still fail: `reply_16mb_complete` (on every series).
-
-</details>
 
 <details><summary>35 tools that cannot be checked headless</summary>
 
@@ -300,15 +302,32 @@ Formats: `glb` (default), `gltf`, `fbx`, `obj`, `usdz`.
 
 ## Security
 
-The addon's socket has no authentication yet, and `blender_execute_script` runs arbitrary Python
-inside Blender. Any process on your machine that can reach the port can run code as you.
+The add-on's socket needs a token. On first start the add-on makes one in the Meshwire config folder
+(`~/.config/meshwire/token` on Linux, mode 0600) and the server reads it on every connect, so on one
+machine there is nothing to set up. A connection must open with a `hello` within 2 seconds and prove it
+holds the token by HMAC-SHA256 over fresh nonces. The token itself never crosses the socket. Anything
+else is closed. For a server on another machine, set `MESHWIRE_TOKEN` there and use **Copy token** in the
+Meshwire tab. To revoke a token, see "Rotating the token" in
+[SECURITY.md](https://github.com/RFingAdam/meshwire/blob/main/SECURITY.md#rotating-the-token).
 
-- Only start the server on a machine you trust, and stop it when you're done.
-- Keep the host set to localhost. Don't bind it to `0.0.0.0` or expose port 9876.
+`blender_execute_script` runs arbitrary Python inside Blender, so it refuses every call until you click
+**Allow Python** in the **Meshwire** sidebar tab. Only that button turns it on, and nothing a client sends
+or a `.blend` file holds can. It resets whenever Blender starts.
+
+- The token does not stop other programs running as you. They can read the file, so they can connect.
+- After the handshake the traffic is not encrypted or integrity-protected. Keep the host at localhost.
+  If you bind the add-on to a non-loopback address, commands and results travel in plaintext, so anyone on
+  the network path can read or change them. For remote use, tunnel over SSH instead.
 - Don't run untrusted prompts or scripts against a Blender session with work you care about.
 
-Authentication and a Python execution switch are planned for the next stable release
-([#12](https://github.com/RFingAdam/meshwire/issues/12)).
+Every version before 0.5.0 (the releases were 0.2.0, 0.3.0, 0.4.0 and 0.5.0a1) had no authentication:
+any process that could reach the port, including a web page sending an HTTP POST, could drive Blender,
+and `execute_script` ran any Python it was sent. Upgrade, and see [SECURITY.md](https://github.com/RFingAdam/meshwire/blob/main/SECURITY.md)
+for what was confirmed and how to report a problem.
+
+`blender_ai_configure_backend` accepts only `enabled`, `api_key`, `host` (an http or https URL),
+`timeout`, `device` and `model` (an Ollama model name). Paths and endpoints (ComfyUI workflow, model paths, base URLs) are set in
+**Preferences > Add-ons > Meshwire**.
 
 ---
 
@@ -318,10 +337,28 @@ Authentication and a Python execution switch are planned for the next stable rel
 meshwire [--host HOST] [--port PORT]
 
   --host HOST   Blender addon host (default: 127.0.0.1)
-  --port PORT   Blender addon port (default: 9876)
+  --port PORT   Blender addon port (default: find it, see below)
 ```
 
-The **Meshwire** tab in Blender's sidebar sets the socket port and starts or stops the server.
+Which Blender the server talks to is decided in this order:
+
+1. `--port`, if given.
+2. The `MESHWIRE_PORT` environment variable, if set.
+3. Discovery. Each running add-on publishes a small file in `instances/` inside the Meshwire config
+   folder (next to the token), and the server picks the most recently started Blender. It moves on to an older one
+   only past a port that is not a Meshwire add-on holding your token. A busy or full newest
+   Blender gives an error naming it.
+   It looks again at every connection, so a Blender that starts or restarts later is found, and it
+   logs the port, Blender version and `.blend` file it chose. Discovery runs only when `--host` is
+   a loopback address.
+4. Port 9876.
+
+An explicit port is never second-guessed by discovery. With several Blenders open and no port given,
+the newest one wins; pass `--port` to talk to another.
+
+In Blender, the **Meshwire** tab sets the socket port and starts or stops the server. Port 0 (the
+default) takes the first free port from 9876 to 9885, so a second Blender simply gets the next one.
+A port you set yourself is bound exactly or the start fails with a message saying why.
 
 ---
 
@@ -337,17 +374,21 @@ request. Blender 4.2, 4.3, 4.4, 5.0 and 5.1 are tested nightly on a best-effort 
 **"Connection refused":** make sure Blender is running, the **Meshwire** tab shows the server
 running, and the port matches.
 
+**"Python execution is off":** click **Allow Python** in the **Meshwire** sidebar tab. It resets
+whenever Blender starts.
+
 **"Tool not found":** restart your MCP client after editing its config, confirm the server command
 runs on its own with `--help`, and check the client's MCP log.
 
 **Addon doesn't appear in Blender:** check Blender's system console for errors and try reinstalling
-the ZIP.
+the ZIP from Get Extensions > Install from Disk.
 
 **Poly Haven downloads fail:** check your connection, confirm the asset ID exists on polyhaven.com,
 and check disk space.
 
 **AI generation doesn't work:** `blender_ai_list_backends` shows backend status. Check your API keys
-for cloud backends, or your models and VRAM for local ones. Follow a job with
+for cloud backends (Preferences > Add-ons > Meshwire, or the `RODIN_API_KEY` and `MESHY_API_KEY`
+environment variables), or your models and VRAM for local ones. Follow a job with
 `blender_ai_model_status`.
 
 ---

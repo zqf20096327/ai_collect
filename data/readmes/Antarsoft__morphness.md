@@ -66,7 +66,7 @@ block has no switch and beats an ask. The full list is in [template/harness/GUAR
 | | What it covers |
 |---|---|
 | ⛔ **Blocks** | Pushes to your environment branches (`main`, `dev` and the rest, by any refspec, a delete included) and force-pushes on any branch. Reading or writing secret and credential files (`.env*`, keys, cloud and SSH credentials, `.netrc` and similar names, through a symlink too), and a recursive `grep` over a folder that holds one. Printing the whole environment (a bare `env`, `printenv`, `set`). Changes that would switch the guard off: its own scripts, `.claude/settings.local.json`, and settings or config edits that drop a protection. `gh secret` and `gh variable` writes. Remote database writes from the migrate and push commands it knows (`supabase db push`, `prisma migrate deploy`, `wrangler d1 … --remote` and similar). |
-| ✋ **Asks you** | Deploys and calls to cloud CLIs that do more than read, publishes, merges and other code-host writes, other edits to its settings, CI definitions and git hooks, `git config` keys that run commands, `git reset --hard` and wide deletes. Database clients (`psql` and similar) aimed at a non-local host unless the statement only reads, and `prisma db push` or `drizzle-kit push`. Code fetched and run (`curl … \| sh`), and package runners (`npx`, `uvx` …) on a package the project doesn't have. Any MCP tool whose name isn't a read, judged by the name; by default the GitHub pull request tools may open, update and comment on PRs in your own repository without a prompt. |
+| ✋ **Asks you** | Deploys and calls to cloud CLIs that do more than read, publishes, merges and other code-host writes, other edits to its settings, CI definitions and git hooks, `git config` keys that run commands, `git reset --hard`, moving an environment branch in your clone (`git update-ref`, a fetch into it) and wide deletes. Database clients (`psql` and similar) aimed at a non-local host unless the statement only reads, and `prisma db push` or `drizzle-kit push`. Code fetched and run (`curl … \| sh`), and package runners (`npx`, `uvx` …) on a package the project doesn't have. Any MCP tool whose name isn't a read, judged by the name; by default the GitHub pull request tools may open, update and comment on PRs in your own repository without a prompt. |
 | 🧱 **Fails closed** | It blocks the call when it can't run its check: `scripts/guard.sh` missing, no `python3` or `awk`, its config reader missing, input it can't parse, a crash, or a check that runs past 15 seconds. An owner can set `guard.fail_open: true` to let calls through when `python3` is missing. |
 | 👁️ **Sees** | Bash, Read, Edit, MultiEdit, Write, NotebookEdit, Grep, WebFetch and every MCP tool. Other tools (Glob, WebSearch, Agent, and the rest) get Claude Code's own permission prompts; a subagent's own calls are checked like any other. |
 
@@ -240,12 +240,13 @@ flowchart TB
 | 🛠️ **Full-stack** | In full and bug mode, builds the approved plan and its tests | sonnet · high (xhigh for sign-in, secrets and money; opus with the opus preset) |
 | ✅ **QA** | In full and bug mode, reviews the diff, runs the checks and validates every criterion | sonnet · medium (high when Full-stack is xhigh) |
 | 🔎 **Researcher** | Answers a question about your code or the web with cited sources. For when you want an answer, not a change | sonnet · medium (high for architecture; opus at high with the opus preset) |
+| 🗺️ **Code scout** | In full mode, maps the code a change touches before the plan, so the main chat reads only the lines it changes. Read-only by rule | haiku · medium |
 | ⚖️ **Legal writer** | Writes wording that makes a legal promise | fable (or opus) · high |
 
 These are defaults; change any of them (see [Make it yours](#-make-it-yours)). Most limits on what each
 agent may edit are instructions in its prompt. What Claude Code enforces is the guard, the deny and
 ask rules in `.claude/settings.json`, the end-of-task check hooks, and the tool lists of the
-researcher and the legal writer.
+researcher, the code scout (read and shell only) and the legal writer.
 
 | Skill | Use |
 |-------|-----|
@@ -264,7 +265,7 @@ and advised settings (coordinator sonnet · medium, feature threads sonnet · hi
 | Piece | What it does |
 |-------|--------------|
 | 📄 `AGENTS.md`, `CLAUDE.md`, `.claude/rules/` | A short core every session loads (pick the mode, who merges, no remote writes), and rules for tests, schema, sign-in and deploy files that load only when a task touches them. |
-| 🤖 `.claude/agents/` | Full-stack (medium, high, xhigh effort), QA (medium, high), researcher (medium, high) and legal-writer subagents. |
+| 🤖 `.claude/agents/` | Full-stack (medium, high, xhigh effort), QA (medium, high), researcher (medium, high), code-scout and legal-writer subagents. |
 | 🛡️ `.claude/settings.json` | The guard hook and the end-of-task checks, plus deny rules for secrets and protected-branch pushes and ask rules on merge commands, as a second layer. |
 | 🗺️ `harness/` | The process: lifecycle, handoffs, checks, modes (full, small, light, bug, research), the guard's full list, release and environments, the plan checklist, model prices, and how it morphs. |
 | 🧩 `harness/modules/` | Optional: Claude Projects, data access (local-first, remote read-only), browser e2e, legal wording, roadmap, CI/CD pipelines, security (threat model, secret scanning, dependency audit). |

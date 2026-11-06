@@ -1,7 +1,17 @@
 <h1 align="center">Kapso</h1>
 
-<h4 align="center">Turn coding-agent output into verified outcomes, not review debt</h4>
-<p align="center"><sub>plug in the harness for your domain, set the goal, every step traced</sub></p>
+<h4 align="center">An engine that runs experiments, deploys the best solution, and learns from every run</h4>
+<p align="center"><sub>smart experimentation · learning loop · deployment · domain adaptation</sub></p>
+
+<div align="center">
+<!-- translations:start -->
+<details><summary><b>Read this in other languages</b></summary>
+
+<b>English</b> | <a href="docs/translations/README.zh-CN.md">简体中文</a> | <a href="docs/translations/README.ja-JP.md">日本語</a> | <a href="docs/translations/README.ko-KR.md">한국어</a> | <a href="docs/translations/README.de-DE.md">Deutsch</a> | <a href="docs/translations/README.fr-FR.md">Français</a> | <a href="docs/translations/README.es-ES.md">Español</a> | <a href="docs/translations/README.hi-IN.md">हिन्दी</a> | <a href="docs/translations/README.pt-BR.md">Português</a> | <a href="docs/translations/README.ru-RU.md">Русский</a> | <a href="docs/translations/README.zh-TW.md">繁體中文</a>
+
+</details>
+<!-- translations:end -->
+</div>
 
 <p align="center">
   <a href="https://docs.leeroo.com/docs">Learn more</a> ·
@@ -13,7 +23,7 @@
   <a href="https://pypi.org/project/leeroo-kapso/"><img src="https://img.shields.io/pypi/v/leeroo-kapso?color=blue" alt="PyPI"></a>
   <a href="https://discord.gg/hqVbPNNEZM"><img src="https://dcbadge.limes.pink/api/server/hqVbPNNEZM?style=flat" alt="Discord"></a>
   <a href="https://github.com/leeroo-ai/kapso"><img src="https://img.shields.io/github/commit-activity/m/leeroo-ai/kapso" alt="GitHub commit activity"></a>
-  <a href="https://www.ycombinator.com/companies/leeroo"><img src="https://img.shields.io/badge/Y%20Combinator-X25-orange?logo=ycombinator&logoColor=white" alt="Y Combinator X25"></a>
+  <a href="https://www.ycombinator.com/companies/leeroo"><img src="https://img.shields.io/badge/Y%20Combinator-P25-orange?logo=ycombinator&logoColor=white" alt="Y Combinator P25"></a>
 </p>
 
 <p align="center">
@@ -22,7 +32,7 @@
 
 <p align="center">
   <a href="https://github.com/Leeroo-AI/kapso/raw/main/docs/images/kapso-hero.mp4">
-    <img src="https://raw.githubusercontent.com/Leeroo-AI/kapso/main/docs/images/kapso-hero.gif" alt="Kapso running: a campaign searches a tree of experiments while the leaderboard climbs; every trajectory is harvested into an expertise wiki of scored insights and procedures, which grounds the next campaign" width="880">
+    <img src="https://raw.githubusercontent.com/Leeroo-AI/kapso/main/docs/images/kapso-hero.gif" alt="Kapso running: smart experimentation searches a tree of experiments against your objective and success criteria; the best solution leaves for deployment, a shorter loop of the same shape that ends in a deployed solution; every run's trajectories feed the learning loop, which files lessons, each with a body, a boundary, a credence score and its evidence, into the bank that grounds the next campaign" width="880">
   </a>
 </p>
 
@@ -42,7 +52,7 @@
 
   <img src="https://raw.githubusercontent.com/Leeroo-AI/kapso/main/docs/images/relbench.png" alt="RelBench, three panels: classification, Kapso 81.2 AUROC against KumoRFM-v2's 79.3 and RT-J's 79.0; regression, Kapso 0.2476 NMAE against RT-J's 0.2711 and KumoRFM-v2's 0.2847, lower being better; recommendations, Kapso 18.4 MAP against the official leaderboard's best other entry, ID-GNN, at 9.3. The first two panels are drawn from a truncated axis, the third from zero" width="820">
 
-- **[Leeroopedia MCP Integration](https://leeroopedia.com)**: Kapso now connects to **Leeroopedia MCP** — your ML & Data Knowledge Wiki. Learnt by AI, built by AI, for AI. A centralized playbook of best practices and expert-level knowledge for Machine Learning and Data domains. Kapso agents use it during ideation and implementation to search knowledge, build plans, diagnose failures, and more.
+- **[Leeroopedia](https://leeroopedia.com)**: a wiki of our lessons in the data and ML domains, around 100k pages extracted by experimenting on papers and repositories, serving about 6M requests a month, around 28% of them from AI agents. Kapso connects to it over MCP: its sessions use it during ideation and implementation to search knowledge, build plans and diagnose failures.
 - **[Moltbook Agents 🦞](https://www.moltbook.com/)**: Build AI agents that optimize other agents and debate on Moltbook! [Get started →](moltbook_bot/README.md)
 - **Technical Report**: Our technical report is now available! [Read the paper](https://arxiv.org/abs/2601.21526)
 - **#1 on [MLE-Bench](benchmarks/mle/README.md)**: KAPSO achieved top ranking among open-source systems on Kaggle ML competitions (MLE Benchmark).
@@ -53,24 +63,20 @@
 
   <img src="https://raw.githubusercontent.com/Leeroo-AI/kapso/main/docs/images/ale-bench.png" alt="ALE-Bench: Kapso reaches a final rating of 1909 Elo against ALE Agent's 1879, above a breakdown across ten AtCoder Heuristic Contest problems; every row is drawn from its own truncated Elo origin, and the per-problem bar gaps share one scale" width="820">
 
-## What is KAPSO?
+## What is Kapso?
 
-Coding agents burn tokens and hand back diffs you have to review. Kapso runs them differently. You plug in a harness for your domain and set a goal; it works the goal until it is met or the budget is spent, measuring every attempt with an evaluation the agents cannot touch and keeping every step on record. What comes back is a verified outcome: the branch that met the goal, or the best the budget reached, with the evaluation that measured it, ready to deploy as running software.
+Kapso is an engine that runs experiments, deploys the best solution, and learns from every run. Given an objective, initial success criteria and evaluation metrics, it investigates, runs experiments by choosing the best ideas, sometimes provides feedback to improve the evaluation metrics and success criteria, deploys the best solution on the desired stack, and learns from each run. It keeps a bank of lessons, each with a credence score and a boundary on where it applies, so the knowledge compounds rather than only accumulates over time.
 
-A harness teaches Kapso one kind of work: how to propose, build, measure and, where the domain needs it, deploy there, and the tools it needs. Two ship with Kapso, predictive modelling and competitive programming; the examples carry a trading harness, and you write your own for anything with an evaluation.
+We built AI systems inside large companies, including LinkedIn and Meta AI, and deployed them for products with millions of users. Kapso is that workflow as an engine: open source, by [Leeroo](https://leeroo.com), published on PyPI as [`leeroo-kapso`](https://pypi.org/project/leeroo-kapso/).
 
-It learns from experience, and the lessons carry their receipts: one rule per card, the condition it applies under, the measured effect from each run that tested it, a reliability score with its rationale.
+### The four parts
 
-Kapso is an open-source Python framework by [Leeroo](https://leeroo.com), published on PyPI as [`leeroo-kapso`](https://pypi.org/project/leeroo-kapso/).
-
-### The Four Pillars
-
-| Pillar | Method | Description |
-|--------|--------|-------------|
-| [**Build**](https://docs.leeroo.com/docs/build/brief) | `.build()` | Run an experiment campaign that meets a brief: candidates implemented on their own branches, measured, the best kept and refined. |
-| [**Learn**](https://docs.leeroo.com/docs/learn/what-learn-produces) | `.learn()` | Mine a finished campaign into your bank: evidence-priced lesson cards, each with its reliability and the measurements that earned it. |
-| [**Experience**](https://docs.leeroo.com/docs/experience) | `.load_experience()` / `.add_experience()` | What a build is served: your bank, the hosted Leeroopedia gate, a bank your team shares, or a corpus ingested from a repository or a researched question. A build is served exactly what it loads. |
-| [**Deploy**](https://docs.leeroo.com/docs/deploy/targets) | `.deploy()` | Turn a solution into running software. Supports local execution, Docker containers, or cloud platforms like Modal. |
+| Part | Verb | What it does |
+|------|------|--------------|
+| [**Smart experimentation**](https://docs.leeroo.com/docs/build/brief) | `.build()` | The experimentation loop is a set of specialised modules sharing one data structure, a tree of experiments: each node records the hypothesis, the implementation (git branch and technical difficulties), the budget used and the distance to the objective. Ideation draws on previous experiments and the bank of lessons to propose ideas, each saying how it differs from specific earlier experiments and which lessons it adopts; a reranker ranks them by expected return against the target, weighed against time and budget. The implementor builds on a branch forked from the parent node, and a verifier checks the node against the safety rules and the success criteria, decides whether the score is valid and whether the objective is met. Success criteria and tests can evolve during a run: modules propose justified updates, and the verifier approves or rejects them. [How it works →](https://docs.leeroo.com/docs/evolve/overview) |
+| [**Learning loop**](https://docs.leeroo.com/docs/learn/what-learn-produces) | `.learn()` / `.load_experience()` | Each lesson records a piece of knowledge, a credence score, boundary conditions on where it applies and the evidence behind its updates. After each run, `learn()` updates the credence and boundaries of the lessons used from their effect on the result, induces lessons from similar traces or deduces one from a single piece of evidence and its mechanism, merges overlapping lessons, and A/B tests the updated lessons by running the same build with and without them, so updates are measured rather than guessed. The next build's ideation and implementation read each lesson's credence and boundaries to decide when to rely on it, rather than simply RAGing the knowledge. [Experience →](https://docs.leeroo.com/docs/experience) names what a build is served: your bank, a bank your team shares, Leeroopedia, or a corpus ingested from a repository or a researched question. |
+| [**Deployment**](https://docs.leeroo.com/docs/deploy/targets) | `.deploy()` | Turns the best solution in the tree into running software on the target stack, by a shorter version of the experimentation loop: a session adapts a copy of the node, deploys it, and demonstrates health checks and a working call. Docker, Modal, BentoCloud and LangGraph Platform ship, and you can add your own target stack to the harness. |
+| [**Domain adaptation**](https://docs.leeroo.com/docs/harnesses) | `kapso harness` | Harnesses are Kapso's domain packages: knowledge and workflows for an area such as predictive modelling, so a build does not experiment and learn from scratch; predictive modelling and competitive programming ship with Kapso. To bring your own domain knowledge, write a harness through the interface Kapso defines: your instructions, code, guardrails and checks, authored with `/kapso:harness` in the plugin or `kapso harness` in the CLI. |
 
 ## 🚀 Quickstart
 
@@ -313,15 +319,15 @@ Every example is a task: a brief, a starting repository, the data or how to get 
 
 | Example | What it shows |
 |---------|---------------|
-| [**churn-first-build**](examples/churn-first-build/README.md) | Your first build: an evaluator present, a baseline, a target, the record |
-| [**fraud-no-evaluator**](examples/fraud-no-evaluator/README.md) | No evaluator: the campaign's first node builds one from the brief's protocol and every candidate is measured against it |
-| [**pipeline-dbt**](examples/pipeline-dbt/README.md) | A dbt pipeline on DuckDB whose exports carry defects: the data contract made to hold |
+| [**churn first build**](examples/churn-first-build/README.md) | Your first build: an evaluator present, a baseline, a target, the record |
+| [**fraud no evaluator**](examples/fraud-no-evaluator/README.md) | No evaluator: the campaign's first node builds one from the brief's protocol and every candidate is measured against it |
+| [**pipeline dbt**](examples/pipeline-dbt/README.md) | A dbt pipeline on DuckDB whose exports carry defects: the data contract made to hold |
 | [**trading**](examples/trading/README.md) | A harness on the build: a setup session, pages and hooks in every session, verification per attempt |
-| [**full-loop**](examples/full-loop/README.md) | Build, the review, learn, build again served the lesson, deploy: a Kaggle tabular model end to end |
-| [**prompt-harness**](examples/prompt-harness/README.md) | The prompt as the thing under test, scored on AIME problems |
-| [**agent-scaffold**](examples/agent-scaffold/README.md) | A vision-language extractor, scored against ground-truth tables |
-| [**torch-performance**](examples/torch-performance/README.md) | A faster module on CUDA under a numerical tolerance |
-| [**gpu-kernels**](examples/gpu-kernels/README.md) | Multi-head attention on CUDA: flash attention or Triton |
+| [**full loop**](examples/full-loop/README.md) | Build, the review, learn, build again served the lesson, deploy: a Kaggle tabular model end to end |
+| [**prompt harness**](examples/prompt-harness/README.md) | The prompt as the thing under test, scored on AIME problems |
+| [**agent scaffold**](examples/agent-scaffold/README.md) | A vision-language extractor, scored against ground-truth tables |
+| [**torch performance**](examples/torch-performance/README.md) | A faster module on CUDA under a numerical tolerance |
+| [**gpu kernels**](examples/gpu-kernels/README.md) | Multi-head attention on CUDA: flash attention or Triton |
 
 ## Supported Benchmarks
 
@@ -346,8 +352,8 @@ Each benchmark also has a documentation page covering how to run it, its CLI opt
   - [CLI reference](https://docs.leeroo.com/docs/reference/cli) — every command, flag and default
   - [Python API](https://docs.leeroo.com/docs/reference/kapso-api) — every public method on `Kapso`
   - [Configuration](https://docs.leeroo.com/docs/reference/configuration) — every key in `config.yaml`
-  - [What learn produces](https://docs.leeroo.com/docs/learn/what-learn-produces) — the lesson bank, its cards with their receipts, and [development mode](https://docs.leeroo.com/docs/learn/development-mode)
-  - [Evolve](https://docs.leeroo.com/docs/evolve/overview) — how a campaign runs, and [what happens inside one experiment](https://docs.leeroo.com/docs/evolve/execution-flow)
+  - [What learn produces](https://docs.leeroo.com/docs/learn/what-learn-produces) — the bank of lessons, each with a credence score, a boundary and its evidence, and [development mode](https://docs.leeroo.com/docs/learn/development-mode)
+  - [The experimentation loop](https://docs.leeroo.com/docs/evolve/overview) — the tree of experiments and its modules, and [what happens inside one experiment](https://docs.leeroo.com/docs/evolve/execution-flow)
   - [Experience](https://docs.leeroo.com/docs/experience) — your bank, Leeroopedia, repositories and papers turned into searchable knowledge
   - [Deploy](https://docs.leeroo.com/docs/deploy/targets) — local, Docker, Modal and the other targets
   - [The Kapso plugin](https://docs.leeroo.com/docs/coding-agent-skills) — the commands, the skills and the MCP server for Claude Code, Codex and Cursor
@@ -368,7 +374,11 @@ Each benchmark also has a documentation page covering how to run it, its CLI opt
 
 ## Kapso for Enterprise
 
-Kapso gets better at your company the longer it works: every task feeds a living knowledge bank of your systems, your data, and your hard-won lessons. To onboard Kapso for your challenging enterprise tasks and build that live company context, [talk to us](https://leeroo.com/contact-us).
+Our enterprise product is built on top of this engine and has been deployed inside messy enterprises, where no human can investigate and understand the whole data estate: we moved a company off its old data platform onto a new lakehouse, across more than 30 source-system families, thousands of tables and transformations, and hundreds of BI reports. Every task it works feeds the bank of lessons about your systems, your data and your hard-won rules, so it gets better at your company the longer it works. To onboard Kapso for your challenging enterprise tasks, [talk to us](https://leeroo.com/contact-us).
+
+## Translations
+
+The README is available in other languages: use the switcher at the top, or browse [`docs/translations/`](docs/translations/). Each translation is generated from README.md with `scripts/translate_readme.py` and kept in step by `scripts/check_readme_translations.py`, which fails when a translation disagrees with README.md on a link, a number or a line of code. To improve one, open a pull request against the file in that folder.
 
 ## Contributing
 

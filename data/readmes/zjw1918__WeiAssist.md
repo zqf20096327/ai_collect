@@ -1,111 +1,138 @@
-![WeiAssist: an open-source AI agent for Android, built on Pi and Termux](docs/images/banner.png)
+# WeiAssist 🐟 — Your AI assistant, on your Android phone
 
-# WeiAssist · 小维助手
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/banner-light.png">
+    <img src="docs/images/banner-dark.png" alt="WeiAssist (小维助手), an open-source AI agent for Android. AI engines: Pi and DeepSeek Harness. Linux tools: Termux.">
+  </picture>
+</p>
 
-**An open-source AI assistant for Android, built on [Pi](https://github.com/earendil-works/pi).**
-Chat with the AI provider of your choice, hand it files and photos, let it run Linux commands for live
-information and coding, and keep several conversations going at once. **Away from your phone? Talk to it
-from Telegram.** No servers of ours in between: the app talks to your provider (and your Telegram bot) directly.
+<p align="center">
+  <a href="https://github.com/zjw1918/WeiAssist/releases/latest"><img src="https://img.shields.io/github/v/release/zjw1918/WeiAssist?style=flat-square&label=release" alt="Latest release"></a>
+  <a href="https://github.com/zjw1918/WeiAssist/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/zjw1918/WeiAssist/ci.yml?branch=main&style=flat-square&label=ci" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue?style=flat-square" alt="License: Apache 2.0"></a>
+</p>
 
-Pi, the minimal, extensible agent harness, handles models, sign-in and the agent loop; WeiAssist brings it to
-the phone with a native app around it.
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a></p>
 
-> **Status: early development.** It works on real devices (Android 12 to 16), but expect rough edges.
-> What's done and what's next: [PROGRESS.md](docs/PROGRESS.md) and the [roadmap](docs/ROADMAP.md).
+WeiAssist is an open-source AI assistant that lives on your phone. Chat with the AI provider of your choice, hand
+it photos and files, let it run Linux commands, use your phone's apps for you, and keep several conversations
+going at once. Away from your phone? Talk to it from Telegram.
 
-## Features
+**You choose the engine.** The agent loop runs on [Pi](https://github.com/earendil-works/pi), built in, or on
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), which the app installs for you. There are no
+servers of ours in between: the app talks to your provider directly, and your keys stay on the phone.
 
-### 💬 Talk to it from Telegram
+[Download](https://github.com/zjw1918/WeiAssist/releases/latest) · [Termux setup](docs/TERMUX.md) ·
+[Telegram](docs/TELEGRAM.md) · [Architecture](docs/ARCHITECTURE.md) · [Progress](docs/PROGRESS.md) ·
+[Roadmap](docs/ROADMAP.md)
 
-Message the assistant on your phone from anywhere: from Telegram on another phone, a tablet or your computer.
-Create a bot with @BotFather, paste its token in **Settings → Telegram**, pair your account with one tap, and
-your phone's assistant is a chat away. Setup and details: [docs/TELEGRAM.md](docs/TELEGRAM.md).
+## Install
+
+Download the APK from [Releases](https://github.com/zjw1918/WeiAssist/releases/latest) and open it. Allow
+installs from your browser or file manager when Android asks.
+
+## Quick start
+
+1. Open WeiAssist and connect an AI provider: sign in with ChatGPT, SuperGrok or X Premium, or paste an API key.
+2. Start a conversation and ask something.
+3. Optional, under **Settings**:
+   - **Linux commands:** a guided [Termux](https://termux.dev) setup, so it can look things up, work with data and
+     write and run code.
+   - **AI engine:** keep Pi, or set up DeepSeek Harness (needs Termux, about 1.5 GB and 10–30 minutes).
+   - **Phone tasks:** turn on its accessibility service to let it use apps.
+   - **Telegram:** pair a bot to talk to it from anywhere ([guide](docs/TELEGRAM.md)).
+
+## AI engines
+
+| | **Pi** | **DeepSeek Harness** |
+| --- | --- | --- |
+| Setup | Built in | One tap in Settings → AI engine; installs Ubuntu, Node.js and dsh in Termux |
+| What it brings | Minimal, fast agent loop | Its own files, bash, subagents, web fetch, skills and workflows |
+| Version | Bundled | The tested version by default; install a newer or any version, and go back |
+
+Both use the same providers, keys and sign-ins, and both get the app's phone tools and safety checks. Each
+conversation keeps the engine it started with.
+
+## Demos
+
+### Subagents
+
+<p align="center">
+  <a href="docs/images/subagents-demo.mp4"><img src="docs/images/subagents-demo.gif" width="320"
+    alt="A DeepSeek Harness session asked to compare Rust, Go and Zig with three subagents: each subagent works in its own live card with its time, steps and current step while the header counts how many are done; once all three are done the orchestrator's comparison table is the answer, and the Thinking and steps sheet shows each subagent's card with its report and its own work"></a>
+</p>
+
+With DeepSeek Harness, a task can run several subagents at once. Each one gets its own live card showing its
+reasoning, steps, time and report. The answer comes once all of them are done: the orchestrator's summary, with the
+rest of its work a tap away. [Watch the video](docs/images/subagents-demo.mp4) (sped up).
+
+### Talk to it from Telegram
 
 <p align="center">
   <img src="docs/images/telegram-demo.gif" width="560"
     alt="Telegram on a Mac and the phone side by side: asked for San Diego's weather, the assistant answers using Termux; asked to email the forecast with Gmail, it writes the email on the phone and asks before tapping Send, in Telegram and on the phone; Deny is tapped in Telegram and nothing is sent">
-  <br>
-  <sub>Asked from Telegram on a Mac: the weather (via Termux), then "email this forecast with Gmail". Before tapping
-  Send it asks, in the chat and on the phone; Deny, and nothing is sent.</sub>
 </p>
 
-- **No server needed:** the app fetches your bot's messages from Telegram itself. Only accounts you pair can use it.
-- **Each chat is a conversation**, also in the app's list. Answers stream in; `/new`, `/stop`, `/status`, and
-  `/screen` to see the screen it is working on.
-- **Photos and files both ways:** send it pictures, PDFs, spreadsheets or archives; it sends back the charts,
-  documents and videos it makes in Termux.
-- **You stay in control:** choose what it may do from Telegram: only talk, also run Linux commands, or also use
-  the phone's apps. Before anything like Send or Delete it asks you in the chat (✅ / ❌) and on the phone;
-  payments can only be allowed on the phone.
+Create a bot with [BotFather](https://t.me/BotFather), paste its token in **Settings → Telegram** and pair your account. Each chat is a
+conversation; it streams answers, takes photos and files, and asks you (✅ / ❌) before anything risky. No server
+needed. Details: [docs/TELEGRAM.md](docs/TELEGRAM.md).
 
-### Everything else
+## What it can do
 
-![Four conversations in WeiAssist: live weather with curl, a Go web service with tests running in tmux, a year of Hong Kong stock data with a live watch job, and a narrated video made from an idea](docs/images/showcase.png)
+![Four WeiAssist screens: a DeepSeek Harness session with three subagents researching in parallel; its answer once they are done, one comparison table; Settings with the AI engine choice, Pi or DeepSeek Harness; and a Go web service it wrote, tested and left running in tmux](docs/images/showcase.png)
 
-- **Many AI providers:** OpenAI (sign in with your ChatGPT subscription, or an API key), Anthropic, Google,
-  DeepSeek, OpenRouter, xAI, Moonshot, Mistral and OpenCode, through Pi.
-- **Your own models:** add any OpenAI-compatible server, such as Ollama, vLLM, LM Studio or a relay. It fetches
-  the model list and detects each model's context size, which you can correct.
-- **Model and thinking level:** pick per provider, from what your sign-in can use.
-- **Attachments:** send photos, PDFs and text or code files with a message. Images open in a full-screen viewer.
-- **Linux commands (optional):** with [Termux](https://termux.dev) installed, the assistant can look things up on
-  the web, work with data, and write, build and run code, with long jobs kept running in `tmux`.
-  Setup: [docs/TERMUX.md](docs/TERMUX.md).
-- **Several conversations at once:** each runs on its own and keeps going in the background, with saved
-  history. Send a message while one is working and it reads it before its next step. A supervisor
-  conversation can start, check and stop the others for you, by typing or by voice.
-- **Phone tasks (optional):** if you turn on its accessibility service, it can also use apps on the phone for
-  a task, and asks you before anything like Send, Pay or Delete.
-- **Private by design:** sign-ins are stored only on the phone, encrypted with the Android Keystore. Password
-  fields are never sent to a model.
+- **Many providers:** OpenAI, Anthropic, Google, DeepSeek, OpenRouter, xAI, Moonshot, Mistral, OpenCode, and any
+  OpenAI-compatible server (Ollama, vLLM, LM Studio…).
+- **Photos and files:** send images, PDFs and documents; it sends back the files it makes.
+- **Linux on the phone:** with Termux it browses, analyzes data, and builds and runs code, with long jobs kept
+  running in `tmux`.
+- **Several conversations at once,** each in the background with its own history, plus a supervisor that starts,
+  checks and stops them for you, by typing or by voice.
+- **Phone tasks:** it can use your apps, and asks before anything like Send, Pay or Delete.
 - **English and Chinese UI.**
 
-<p align="center">
-  <img src="docs/images/agent-made-video.jpg" width="640"
-    alt="A frame from a narrated explainer video about how tuna breathe, with subtitles">
-  <br>
-  <sub>A frame from the video in the last example: from one idea, the assistant wrote the script, generated the
-  voice-over, drew and rendered the animation in Termux, all on the phone.</sub>
-</p>
+## Privacy and safety
 
-## Install
+- WeiAssist has no servers. Your messages, attachments, command output and, for phone tasks, the relevant screen
+  go only to the AI provider you chose. Password fields are never sent.
+- Sign-ins are stored only on the phone, encrypted with the Android Keystore. DeepSeek Harness reaches your
+  provider through the app and never holds a key.
+- Before anything like Send, Pay or Delete, it asks you, whichever engine is running. Stop works at any time.
 
-Download the APK from [Releases](https://github.com/zjw1918/WeiAssist/releases/latest) and install it (allow installs
-from your browser or file manager when Android asks). You can also build from source (below).
-Then open WeiAssist and connect it to an AI provider. Optional extras, all under **Settings**:
-Linux commands (set up Termux as described in [docs/TERMUX.md](docs/TERMUX.md)), phone tasks (accessibility),
-and Telegram ([docs/TELEGRAM.md](docs/TELEGRAM.md)).
+More in [SECURITY.md](SECURITY.md).
 
-## Build
+## Documentation
 
-Requirements: Android SDK (platform 37), Node per [`.nvmrc`](.nvmrc) with npm, and a JDK (Gradle provisions its own).
+| Goal | Start here |
+| --- | --- |
+| Set up Linux commands | [docs/TERMUX.md](docs/TERMUX.md) |
+| Talk to it from Telegram | [docs/TELEGRAM.md](docs/TELEGRAM.md) |
+| Understand how it fits together | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| See what's done and what's next | [docs/PROGRESS.md](docs/PROGRESS.md) · [docs/ROADMAP.md](docs/ROADMAP.md) |
+| Contribute | [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+## Development
+
+Requirements: Android SDK (platform 37), Node per [`.nvmrc`](.nvmrc) with npm, and a JDK.
 
 ```bash
-./gradlew assembleDebug     # also bundles Pi (pi-host/) into the app
-cd pi-host && npm test      # end-to-end tests of the bundled agent
+./gradlew assembleDebug          # bundles Pi (pi-host/) and the DeepSeek Harness bridge (dsh-host/)
 ./gradlew testDebugUnitTest lint
+cd pi-host && npm test           # the bundled agent, end to end
+cd dsh-host && npm test          # the dsh bridge; set DSH_RUN and DSH_HOME to run it against a real dsh
 ```
 
-Maintainers publish a release by pushing a version tag (`git tag v0.2 && git push origin v0.2`): the Release workflow
-builds, signs and attaches the APK. Locally, `assembleRelease` signs the APK only when it finds a key: a `keystore.properties` file (`storeFile`, `storePassword`,
-`keyAlias`, `keyPassword`) at the path in `WEIASSIST_SIGNING`, or in `~/.android/weiassist-release/`. Without one the
-release APK is unsigned.
-
-How it fits together: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Privacy
-
-WeiAssist has no servers. Your messages and attachments, the output of commands it runs, and, for phone
-tasks, the relevant screen contents go to the AI provider you chose, and nowhere else. Password fields are
-never sent. Your sign-ins are stored only on your phone. See [SECURITY.md](SECURITY.md).
-
-If you connect a Telegram bot, what you send it and the assistant's answers (with any files and screenshots)
-also pass through Telegram's servers: bot chats are not end-to-end encrypted. The bot's token is stored
-encrypted on the phone.
+Releases are built and signed by the Release workflow when a version tag is pushed
+(`git tag v0.2 && git push origin v0.2`). Locally, `assembleRelease` signs only when it finds a
+`keystore.properties` (at `WEIASSIST_SIGNING`, or in `~/.android/weiassist-release/`).
 
 ## License
 
-[Apache License 2.0](LICENSE). Bundled third-party software and its licenses are listed in [NOTICE](NOTICE).
-Pi is MIT-licensed by Mario Zechner. Product names such as ChatGPT, OpenAI, Claude and Gemini are trademarks of
-their owners; WeiAssist is not affiliated with any AI provider.
+[Apache License 2.0](LICENSE). Bundled third-party software is listed in [NOTICE](NOTICE).
 
+Thanks to [Pi](https://github.com/earendil-works/pi) (MIT, Mario Zechner),
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (MIT, DeepSeek; installed in Termux on request,
+not bundled) and [Termux](https://termux.dev). Product names and logos are trademarks of their owners; WeiAssist is
+not affiliated with any AI provider.

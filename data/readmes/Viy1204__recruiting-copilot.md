@@ -4,7 +4,7 @@
 
 支持 Claude Code、Codex、WorkBuddy、Qoder、MiniMax Code、ZCode 等能读取项目文件的 AI 工具。招聘标准、候选台账和面试档案保存在你自己的工作区，换工具也能接着做。
 
-当前正式版为 **v0.8.2**。[开始使用](#开始使用) · [完整 Skill 目录](#完整-skill-目录) · [已有工作区升级](docs/releases/v0.8.2.md#升级已有工作区)
+当前正式版为 **v0.8.3**。[开始使用](#开始使用) · [完整 Skill 目录](#完整-skill-目录) · [已有工作区升级](docs/releases/v0.8.3.md#升级已有工作区)
 
 ## 宣传片
 
@@ -58,7 +58,7 @@ https://github.com/user-attachments/assets/8dbf02ed-b83d-4d2b-beaa-dd693fb5a297
 #### 1. 下载固定版本并安装依赖
 
 ```bash
-git clone --branch v0.8.2 --depth 1 https://github.com/Viy1204/recruiting-copilot.git
+git clone --branch v0.8.3 --depth 1 https://github.com/Viy1204/recruiting-copilot.git
 ```
 
 进入源码目录。
@@ -73,7 +73,7 @@ cd recruiting-copilot
 sh skills/recruit-init/scripts/install-dependencies.sh
 ```
 
-安装器默认使用 BOSS 维护包 `@viyzhu/boss-cli-fork@0.8.5` 和猎聘包 `@viyzhu/liepin-cli`。2026-10-27 核对，两个包的 npm `latest` 分别为 `0.8.5`、`0.2.8`。BOSS 的源码仓库是 [Viy1204/boss-cli](https://github.com/Viy1204/boss-cli)，安装后的命令仍叫 `boss`。需要自定来源时使用 `BOSS_CLI_SOURCE` 或 `LIEPIN_CLI_SOURCE`。
+安装器默认使用 BOSS 维护包 `@viyzhu/boss-cli-fork@0.8.7` 和猎聘包 `@viyzhu/liepin-cli`。BOSS `0.8.7` 包含未读角标漏报与在线简历预览修复；已有用户需按[升级说明](docs/releases/v0.8.3.md#升级已有工作区)更新已安装的 CLI。BOSS 的源码仓库是 [Viy1204/boss-cli](https://github.com/Viy1204/boss-cli)，安装后的命令仍叫 `boss`。需要自定来源时使用 `BOSS_CLI_SOURCE` 或 `LIEPIN_CLI_SOURCE`。
 
 若只想诊断环境，给脚本加 `--check-only`，它不会安装包或修改 shell 配置。正常安装时，macOS 若缺少 npm 全局命令路径，脚本会更新当前 shell 的配置文件。
 
@@ -85,7 +85,7 @@ sh skills/recruit-init/scripts/install-dependencies.sh
 
 AI 会询问工作区位置，建立模板和各工具的 Skill 入口，再逐个岗位梳理真实要求。**本仓库是工具源码，岗位数据和候选资料放在新建的独立工作区。**
 
-已有工作区先按[升级说明](docs/releases/v0.8.2.md#升级已有工作区)同步工具文件，保留原有标准、台账和档案。
+已有工作区先按[升级说明](docs/releases/v0.8.3.md#升级已有工作区)同步工具文件，保留原有标准、台账和档案。
 
 #### 3. 在可见窗口中完成人工登录
 
@@ -123,14 +123,14 @@ claude plugin marketplace add "/绝对路径/recruiting-copilot"
 claude plugin install recruiting-copilot@recruiting-copilot
 ```
 
-如果已配置同名 marketplace，先核对来源再按原来源更新，见[正式版安装说明](docs/releases/v0.8.2.md#固定版本安装)。重新打开会话后，先用 `/recruiting-copilot:recruit-init` 建立招聘工作区。后续在自己的工作区使用下表的插件命令，也可以继续用自然语言。
+如果已配置同名 marketplace，先核对来源再按原来源更新，见[正式版安装说明](docs/releases/v0.8.3.md#固定版本安装)。重新打开会话后，先用 `/recruiting-copilot:recruit-init` 建立招聘工作区。后续在自己的工作区使用下表的插件命令，也可以继续用自然语言。
 
 ### DeepSeek Harness 入口
 
 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 用户在使用 Web profile 的环境中安装：
 
 ```bash
-dsh plugin --profile web add git+https://github.com/Viy1204/recruiting-copilot.git#v0.8.2
+dsh plugin --profile web add git+https://github.com/Viy1204/recruiting-copilot.git#v0.8.3
 ```
 
 重新打开 DSH 会话后，8 个招聘 Skill 在任意工作区可用。首次仍从“帮我初始化招聘工作区”开始，之后打开新建的招聘工作区处理日常任务。
@@ -190,13 +190,13 @@ DSH 另有独立的 **招聘浏览器**，用于观察两个 CLI 的平台页面
 
 招聘工作台把待确认事项、人选资料和执行记录放在同一网页。初始化、岗位梳理、每日招聘、人才盘点、简历评估和约面试这六个流程，在进度脚本可用时记录真实步骤，并打开或复用工作台。
 
-<img src="verification/recruit-board-prototype-integration-mobile-light.jpg" alt="v0.8.2 招聘工作台浅色主题：紧凑导航、搜索与待关注事项" width="375">
+<img src="docs/images/recruit-board-overview.png" alt="全屏窗口中的招聘工作台：工作区导航、姓名搜索、跨轮待确认事项与近期进展" width="1280">
 
-*v0.8.2 实际网页，岗位、人选与任务均为合成数据。总览突出待关注事项与近期进展，岗位与人选、执行记录通过导航查看。*
+*全屏窗口中的招聘工作台。岗位、人选与任务均为合成数据；总览突出待关注事项与近期进展，岗位与人选、执行记录通过左侧导航切换。*
 
-<img src="verification/recruit-board-prototype-integration-mobile-dark.jpg" alt="同一招聘工作台的暖色深色主题" width="375">
+<img src="docs/images/recruit-board-sidebar.png" alt="同一招聘工作台停靠在窄侧栏时的单列布局" width="390">
 
-*同一工作台的深色主题。布局适应宽屏和窄侧栏，能否停靠在 AI 工具侧栏取决于宿主。*
+*同一工作台停靠在窄侧栏时改为单列，导航移到顶部。布局随可用宽度调整，能否停靠在 AI 工具侧栏取决于宿主。*
 
 - **总览**：集中查看跨轮待回答、待核对和后续执行事项，以及人选的近期实际进展。
 - **岗位与人选**：按在招、关注或全部岗位查看候选阶段。名单按最近可核实的实际进展倒序，再分页显示；只有日期时按日显示，无可靠时间排后。
@@ -206,7 +206,7 @@ DSH 另有独立的 **招聘浏览器**，用于观察两个 CLI 的平台页面
 
 看板读取已写入工作区的数据，不连接招聘平台。读取正常不代表 AI 进程仍在运行；候选台账保持只读，岗位保存只更新本地 `CONTEXT.md` 并备份，不改变平台职位。旧工作区缺少进度脚本时，招聘流程仍可继续，并说明本轮未记录进度。
 
-Claude Desktop、Codex App、WorkBuddy 等工具共用这一网页，也可直接用普通浏览器打开。完整操作见[招聘工作台使用说明](docs/recruit-board.md)；已有工作区按[升级说明](docs/releases/v0.8.2.md#升级已有工作区)同步工具文件，保留原有招聘标准、台账和档案。
+Claude Desktop、Codex App、WorkBuddy 等工具共用这一网页，也可直接用普通浏览器打开。完整操作见[招聘工作台使用说明](docs/recruit-board.md)；已有工作区按[升级说明](docs/releases/v0.8.3.md#升级已有工作区)同步工具文件，保留原有招聘标准、台账和档案。
 
 ## 使用边界
 
@@ -220,7 +220,7 @@ Claude Desktop、Codex App、WorkBuddy 等工具共用这一网页，也可直�
 
 | 入口 | 内容 |
 | --- | --- |
-| [v0.8.2 正式版说明](docs/releases/v0.8.2.md) | 固定版本安装、已有工作区升级、回退与兼容边界 |
+| [v0.8.3 正式版说明](docs/releases/v0.8.3.md) | 固定版本安装、已有工作区升级、回退与兼容边界 |
 | [流程总目录](skills/ask-viy/SKILL.md) | 从首次初始化到每日招聘，以及简历、人才盘点和面试的流程选择 |
 | [设计思路与理念](docs/DESIGN.md) | 为什么先梳理岗位、使用本地文件、区分内外资料并保留人工确认 |
 | [BOSS CLI 维护 fork](https://github.com/Viy1204/boss-cli) | `@viyzhu/boss-cli-fork` 的安装、命令和平台操作边界 |

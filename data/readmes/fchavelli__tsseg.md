@@ -24,6 +24,7 @@
 
 <p align="center">
   <a href="https://fchavelli.github.io/tsseg/"><b>Documentation</b></a> ·
+  <a href="https://fchavelli.github.io/tsseg/examples/index.html"><b>Examples</b></a> ·
   <a href="https://huggingface.co/spaces/fchavelli/tsseg"><b>Live demo</b></a> ·
   <a href="https://fchavelli.github.io/tsseg/detectors/index.html"><b>Detectors</b></a> ·
   <a href="https://fchavelli.github.io/tsseg/taxonomy.html"><b>Taxonomy</b></a> ·
@@ -191,6 +192,19 @@ univariate series), pandas Series and DataFrames. The
 [getting started guide](https://fchavelli.github.io/tsseg/guides/getting-started.html)
 goes further.
 
+## Examples
+
+The [examples](https://fchavelli.github.io/tsseg/examples/index.html) apply
+tsseg to public data, from the narrative voice of *Jekyll and Hyde* and the
+storm surge of Hurricane Sandy to a night of sleep recordings, and compare
+each result with a reference the detector never sees. They run offline from a
+source checkout:
+
+```bash
+python -m examples.gallery.jekyll
+python -m examples.gallery.run_all --output /tmp/tsseg-gallery
+```
+
 ## Algorithms
 
 **Unsup.**: runs without being told the number of change points or states.
@@ -198,8 +212,8 @@ goes further.
 📦: needs an optional dependency (see [Installation](https://github.com/fchavelli/tsseg#installation)).
 Each name links to the documentation page of the detector. The
 [interactive taxonomy](https://fchavelli.github.io/tsseg/taxonomy.html) places
-them by how they search for a segmentation and by what they compare, with
-filters and search.
+them by how they search for a segmentation and by what makes a segment
+homogeneous, with filters and search.
 
 <details open>
 <summary><b>Change point detection (23)</b></summary>
@@ -213,7 +227,7 @@ filters and search.
 | [BottomUp](https://fchavelli.github.io/tsseg/detectors/bottomup.html)<br>`BottomUpDetector` | greedy bottom-up merging | ✓ | ✓ | Keogh et al. (2001), ICDM |
 | [changeforest](https://fchavelli.github.io/tsseg/detectors/changeforest.html) 📦<br>`ChangeForestDetector` | random forest classifier between segments | ✓ | ✓ | Londschien et al. (2023), JMLR |
 | [ChangeFinder](https://fchavelli.github.io/tsseg/detectors/changefinder.html)<br>`ChangeFinderDetector` | two-stage autoregressive outlier scores | ✓ | ✓ | Takeuchi & Yamanishi (2006), TKDE |
-| [ClaSP](https://fchavelli.github.io/tsseg/detectors/clap.html) 📦<br>`ClaspDetector` | classification score profile | ✓ | ✓ | Ermshaus et al. (2023), DMKD |
+| [ClaSP](https://fchavelli.github.io/tsseg/detectors/clasp.html) 📦<br>`ClaspDetector` | classification score profile | ✓ | ✓ | Ermshaus et al. (2023), DMKD |
 | [DynP](https://fchavelli.github.io/tsseg/detectors/dynp.html)<br>`DynpDetector` | exact dynamic programming | | ✓ | Auger & Lawrence (1989) |
 | [E-Agglo](https://fchavelli.github.io/tsseg/detectors/eagglo.html) 📦<br>`EAggloDetector` | agglomerative, energy distance | ✓ | | Matteson & James (2014), JASA |
 | [ESPRESSO](https://fchavelli.github.io/tsseg/detectors/espresso.html)<br>`EspressoDetector` | entropy and shape of the matrix profile | | ✓ | Deldari et al. (2020), UbiComp |
@@ -291,10 +305,11 @@ Spaces runs in the browser: load a series, run segmentation algorithms, then
 compare and evaluate their results, with nothing to install.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fchavelli/tsseg/main/assets/demo.png" alt="A MoCap recording segmented in the tsseg demo: ground truth, change point detection and state detection" width="720">
+  <a href="https://huggingface.co/spaces/fchavelli/tsseg"><img src="https://raw.githubusercontent.com/fchavelli/tsseg/main/assets/demo.svg" alt="The sample dataset of the tsseg demo, a four-channel motion-capture recording: the ground truth (seven segments in four states, state A coming back three times), the change points found by BottomUp with an RBF cost without being told how many (Covering 0.75), and the states found by Time2State told that there are four (State Matching Score 0.93)" width="840"></a>
   <br>
-  <sub>A motion-capture recording bundled with tsseg, as shown in the interactive demo: ground truth (top),
-  the change points of a change point detector (middle) and the states of a state detector (bottom).</sub>
+  <sub>The sample dataset of the demo, a motion-capture recording bundled with tsseg: ground truth (top),
+  change points of BottomUp, unsupervised (middle), and states of Time2State, told the number of states (bottom),
+  each scored against the truth.</sub>
 </p>
 
 ## Contributing
@@ -366,7 +381,7 @@ Each detector also cites its original paper on its
 - Fan Yang (The Ohio State University, Columbus)
 - Paul Boniol (Inria, ENS, Paris)
 - Patrick Schäfer (Humboldt-Universität, Berlin)
-- John Paparrizos (The Ohio State University, AUTh, Columbus)
+- John Paparrizos (The Ohio State University, Columbus; Aristotle University of Thessaloniki)
 
 ## License
 

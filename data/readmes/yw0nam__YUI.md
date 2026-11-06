@@ -7,11 +7,11 @@
 *Not a chatbot in a tab. A character who is actually there: standing on your window, watching the cursor, talking when she has something to say.*
 
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-yw0nam.github.io%2FYUI-8A63D2)](https://yw0nam.github.io/YUI/)
+[![Docs](https://img.shields.io/badge/docs-yw0nam.github.io%2FYUI-8A63D2)](https://yw0nam.github.io/YUI/docs/)
 [![Discussions](https://img.shields.io/github/discussions/yw0nam/YUI?logo=github)](https://github.com/yw0nam/YUI/discussions)
 [![CI](https://github.com/yw0nam/YUI/actions/workflows/ci.yml/badge.svg)](https://github.com/yw0nam/YUI/actions/workflows/ci.yml)
 
-[Quickstart](#quickstart) · [Demo video](https://youtu.be/dIOQdoAp0GE) · [Docs](https://yw0nam.github.io/YUI/) · [Discussions](https://github.com/yw0nam/YUI/discussions) · [日本語](README.ja.md)
+[Try it in your browser](https://yw0nam.github.io/YUI/) · [Quickstart](#quickstart) · [Demo video](https://youtu.be/dIOQdoAp0GE) · [Docs](https://yw0nam.github.io/YUI/docs/) · [Discussions](https://github.com/yw0nam/YUI/discussions) · [日本語](README.ja.md)
 
 <a href="https://youtu.be/dIOQdoAp0GE"><img src="docs/public/yui-hero.gif" alt="YUI — a VRM character standing over a browser window as a transparent, always-on-top overlay: her head and eyes follow the mouse cursor, then she answers a typed question about what is on screen in a speech bubble" width="820"></a>
 
@@ -90,7 +90,7 @@ YUI ships no model of its own. Choose the brain by what it can do.
 
 Memory, its own persona, chat-history search, and much more come with the agent. That is why we recommend it for your waifu.
 
-Today YUI supports [Hermes Agent](integrations/hermes/README.md). Another agent can join by implementing the [push contract](docs/reference/push-transport.md).
+Today YUI supports [OpenClaw](integrations/openclaw/README.md) and [Hermes Agent](integrations/hermes/README.md). Another agent can join over the Responses API, as OpenClaw does, or by implementing the [push contract](docs/reference/push-transport.md).
 
 ### Any OpenAI-compatible endpoint
 
@@ -104,7 +104,7 @@ Pick each provider in **Settings → Connection**.
 
 | | Providers |
 | --- | --- |
-| Chat | OpenAI · Ollama · LM Studio · Groq · Google Gemini · [Hermes Agent](integrations/hermes/README.md) · any OpenAI-compatible endpoint |
+| Chat | OpenAI · Ollama · LM Studio · Groq · Google Gemini · [OpenClaw](integrations/openclaw/README.md) · [Hermes Agent](integrations/hermes/README.md) · any OpenAI-compatible endpoint |
 | Voice (TTS) | [Irodori](https://github.com/Aratako/Irodori-TTS-Server) (Japanese) · OpenAI · [Fish Audio](https://fish.audio/) |
 | Speech recognition | Any OpenAI-compatible transcription endpoint · Groq |
 
@@ -120,6 +120,7 @@ Pick each provider in **Settings → Connection**.
 | LM Studio | `chat_completions` | Local | Any tool-calling model |
 | Groq | `chat_completions` | Hosted, API key | `llama-3.3-70b-versatile` |
 | Google Gemini | `chat_completions` | Hosted, API key, free tier | `models/gemini-3.5-flash-lite` |
+| [OpenClaw](integrations/openclaw/README.md) | `responses`, `chat_completions` | Self-hosted | The model the agent runs |
 | [Hermes Agent](integrations/hermes/README.md) | `push`, `responses` | Self-hosted | The model the agent runs |
 | Custom endpoint | `chat_completions`, `responses`, `push` | Any server that speaks the protocol | Tool-calling model on `chat_completions` |
 

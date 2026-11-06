@@ -186,7 +186,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-MacOS.git',
-      :tag => '1.1.0'
+      :tag => '1.1.1'
 end
 
 post_install do |installer|
@@ -207,9 +207,8 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.1.0.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.0/XmaxSDK-1.1.0.xcframework.zip),
-then follow the [manual integration guide](./Materials/installation.md#manual-integration)
-to add the required dependencies and configure your Xcode target.
+[`XmaxSDK-1.1.1.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.1/XmaxSDK-1.1.1.xcframework.zip)
+and add the SDK and its required dependencies to your Xcode target.
 
 <br>
 
@@ -240,7 +239,7 @@ let localStream = try await realtime.createLocalCameraStream(
     videoFormat: RealtimeVideoFormat(width: 1920, height: 1080, fps: 30),
     deviceID: nil,
     mirror: false,
-    useMicrophone: false
+    microphone: .disabled
 )
 videoView.localTrack = localStream.videoTrack
 

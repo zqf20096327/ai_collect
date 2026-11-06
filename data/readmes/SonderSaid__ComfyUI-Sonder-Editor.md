@@ -1,6 +1,6 @@
 # ComfyUI-Sonder-Editor
 
-**Version 0.8.2** — see the [CHANGELOG](CHANGELOG.md) for release notes.
+**Version 0.8.3** — see the [CHANGELOG](CHANGELOG.md) for release notes.
 
 Sonder Editor is a timeline-based video editing studio for ComfyUI, built for
 iterative long-form video.
@@ -63,7 +63,7 @@ notification](docs/images/editor-controls-views.webp)
 the shot, its depth map and a live sampler preview.</em></p>
 
 <p align="center">
-  <img src="docs/images/node.png" width="420" alt="The Sonder Editor node in a ComfyUI graph, showing its sockets, project card, and inline viewport preview">
+  <img src="docs/images/node.png" width="420" alt="The Sonder Editor node on the ComfyUI canvas, showing its output sockets, its project card and an inline viewport preview of a take">
 </p>
 <p align="center"><em>One native node in your graph, with outputs only.</em></p>
 
@@ -81,7 +81,7 @@ What you can do from the editor:
 | You want to… | Use… |
 |---|---|
 | Organize your work | [Projects and scenes](docs/editor-basics.md#creating-a-project), with [folders, favorites and media recovery](docs/assets-and-gallery.md) |
-| Arrange picture and sound | [Video and Audio rows](docs/editor-basics.md#the-timeline): move, trim, split, layer and play media |
+| Arrange picture and sound | [Video and Audio lanes](docs/editor-basics.md#the-timeline): move, trim, split, layer and play media |
 | Describe what happens | [Global text and timed Prompt sections](docs/prompts.md), from a plain text field to structured instructions |
 | Guide the result | [Guides and Drivers](docs/generating.md#guides), or [reusable References](docs/references.md) staged where they apply |
 | Choose what to generate or change | [In/Out, surrounding context and picture/sound masks](docs/generating.md#the-generation-window) |
@@ -104,7 +104,7 @@ setup.
 ### Redo just one part
 
 Keep the take you like and redo a stretch of it: set **In** and **Out**, keep the
-frames before as context, and the new take lands on its own row, ready to play
+frames before as context, and the new take lands on its own lane, ready to play
 beside the first. See [Redo a part of a clip](docs/getting-started.md#redo-a-part-of-a-clip).
 
 https://github.com/user-attachments/assets/3b87d262-5496-4870-aff0-2990dfc3ef5a
@@ -184,10 +184,8 @@ https://github.com/user-attachments/assets/38af328d-0596-4ed1-8a14-4ab9e9cb79dd
 
 The last three also ship with the [Sonder App](docs/sonder-app.md)
 (experimental, optional) as its starter workflows, exported for the API.
-Edit & VFX comes in two versions there: **LTX 2.5 Edit & VFX**, which needs no
-Prompt Relay, and **LTX 2.5 Edit & VFX — Prompt Relay**, which adds timed
-prompts. [Sonder App Workflows](docs/sonder-app-workflows.md) has the steps for
-each of their tasks in the app.
+[Sonder App Workflows](docs/sonder-app-workflows.md) has the steps for each of
+their tasks in the app.
 
 Every sample project, with its matching workflow, showcase video, tested editor
 version and opening instructions, is on
@@ -260,8 +258,8 @@ adapters, grouped under the `Sonder`, `Sonder/IO`, `Sonder/Logic`, and
 
 ## Requirements
 
-- **ComfyUI** — 0.8.2 was validated on ComfyUI **0.43.0** with frontend
-  **1.57.6**. That is what this release was tested against, not a minimum;
+- **ComfyUI** — 0.8.3 was validated on ComfyUI **0.44.0** with frontend
+  **1.58.5**. That is what this release was tested against, not a minimum;
   other versions are expected to work. The V3 nodes listed under Nodes load
   only on builds that provide `comfy_api`. A View pane's **Run** needs ComfyUI
   0.42.0 or newer; on older builds it doesn't show.
@@ -316,8 +314,10 @@ automatically.
 - **[Controls](docs/controls.md)** — workflow settings, Modes and node
   switches in the editor, Manage, and sharing Controls.
 - **[Sonder App](docs/sonder-app.md)** (experimental, optional) — setup, the
-  Launcher, preparing your own workflows, and the
-  [Sonder App Workflows](docs/sonder-app-workflows.md) instructions.
+  Launcher, preparing your own workflows, the
+  [Sonder App Workflows](docs/sonder-app-workflows.md) instructions, and
+  [the node packs and model files](docs/sonder-app-setup.md) each workflow
+  needs.
 - **[Troubleshooting](docs/troubleshooting.md)** — installation and
   environment problems, project storage and Windows path limits, the Sonder App,
   and playback.
@@ -328,13 +328,13 @@ automatically.
   area. Do not expose a ComfyUI instance running this pack to untrusted networks
   unless you have put ComfyUI behind your own authentication and network
   controls.
-- Generated files can embed ComfyUI prompt/workflow metadata when **Embed
-  Metadata** is enabled on **Sonder Save Video**. Turn that off before sharing
+- Generated files can embed ComfyUI prompt/workflow metadata when
+  `embed_metadata` is on in **Sonder Save Video**. Turn that off before sharing
   files if your graph, prompts, paths, model names, or node settings are private.
 - Project `media/`, `cache/`, and generated output folders are user data, not
   source distribution files. Do not commit them to a public repository.
-- **External Project Links** is off by default. Enabling it in Editor Settings
-  makes this ComfyUI installation follow project and media symlinks/junctions
+- **Allow External Project Links** (**Settings ▸ Server**) is off by default.
+  Enabling it makes this ComfyUI installation follow project and media symlinks/junctions
   wherever the editor resolves files. Treat every linked folder as readable by
   anyone who can reach your ComfyUI server.
 

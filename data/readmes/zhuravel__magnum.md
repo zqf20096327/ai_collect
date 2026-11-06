@@ -296,7 +296,9 @@ never does. A shell that fails, prints no `PATH` or answers nothing in 20 s leav
 alone, with a warning event ("the login shell (zsh) answered nothing in 20s. The launchd PATH stays"). A
 change of your shell's `PATH` (a DBngin upgrade) takes effect at the next `magnum daemon-restart`, as a
 config change does. The CLI keeps the environment of the terminal it runs in. `false` keeps launchd's
-`PATH` alone and runs no shell.
+`PATH` alone and runs no shell. The factory daemon (`magnum factory daemon`) takes the same `PATH` at its start, because it runs its copies'
+setup, reset and precheck commands itself. `logs/factory.log` says what the shell added, and a change takes
+effect at the next `magnum factory install`.
 
 Three more `[daemon]` keys pace the agents. `max_total_working_codex` (default 5) caps the Codex agents working at once, your own sessions included. `agent_start_stagger` (default `"15s"`) is the least time between two agent launches, across rounds, and at most 3 Codex agents start at once. `min_warm` (default `"30m"`) is how long a pool slot another PR holds must stay unused before a waiting PR may take it back, its sessions parked and the slot released: with no human typing, no session working, blocked or prompted within it, no run and no pin.
 
@@ -1093,7 +1095,9 @@ recorded, stays, and a workspace left with no pane at all is closed. A
 `pr.panes_closed` event says how many and of which roles, and, of a lost session's pane, the error line the
 CLI printed before it died (`last_lines`, by role; a line that starts at column 0 with error, fatal or panic,
 redacted), read before the pane closes; a reconcile with nothing to close records nothing.
-A parked or lost conversation is kept: the role's next start resumes it in a new pane.
+A parked or lost conversation is kept: the role's next start resumes it in a new pane, unless the directory it
+worked in no longer exists (the slots moved to another `slot_path`): its conversation names files there, so
+the role starts fresh.
 herdr numbers its workspaces and panes from the start again after it restarts, so old sessions' ids can
 name the new panes of another PR. Magnum never closes, reuses or parks away a pane or a workspace that a
 starting or live session of another PR records (of two live sessions with one pane, the newer owns it): an
@@ -1177,11 +1181,4 @@ first, which parks its conversation (history kept), and the fresh one starts onc
 A continue finishes its paused turn in the old conversation. Each such start is a `round.judge_fresh_cold`
 event with the idle time. A session that has served its role's `max_session_rounds` (the judge's 6) starts
 fresh the same way, however recent its last turn (see Roles and kinds). So does a live Codex judge that never
-took a prompt, whatever its idle time and `judge_fresh_after`: one with no session id and no rollout (Codex
-writes it at the first prompt) more than a minute after its last prompt went out, whose prompts would stall
-the same way again; its `round.judge_fresh_cold` event says so (`reason` `no_rollout`).
-
-### Review status comment
-
-People on a PR cannot see that Magnum is about to review it: they merge before the review posts, or ask
-you where it is wh
+took a prompt, whatever its idle time

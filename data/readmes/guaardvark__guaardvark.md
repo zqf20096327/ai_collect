@@ -9,7 +9,8 @@
      Asset registry: https://github.com/guaardvark/guaardvark/issues/64
      batman:    c6d9d18b-cfff-4ae2-8220-dc7f329fee5d
      bladevark: 158c431c-0ff8-4b25-a1b2-b5fbebdc81d4
-     batvark:   b8f28582-6c1d-45b8-862e-9206a28cf103 -->
+     batvark:   b8f28582-6c1d-45b8-862e-9206a28cf103
+     hey babe:  6ee72d6a-3a25-4380-92a9-a4b66e8b7e05 -->
 
 <div align="center">
 
@@ -26,14 +27,14 @@
 
 [Quick start](#quick-start) · [Features](#features) · [Videos](#watch-it-work) · [FAQ](#faq) · [Full capability list](CAPABILITIES.md) · [guaardvark.com](https://guaardvark.com)
 
-https://github.com/user-attachments/assets/c6d9d18b-cfff-4ae2-8220-dc7f329fee5d
+https://github.com/user-attachments/assets/6ee72d6a-3a25-4380-92a9-a4b66e8b7e05
 
 </div>
 
 ## Why Guaardvark
 
 - **It runs on your machine.** Language models, retrieval, agents and every generator run on your own hardware, through Ollama, ComfyUI and Guaardvark's own GPU services. No cloud API keys, no per-token or per-minute fees, nothing reported home. Web access, posting and every other outbound path stay off until you switch them on or start them, and all of them are declared in one file, [`egress.json`](scripts/inbound_guard/egress.json).
-- **One install is the whole studio.** Chat and RAG, screen agents, coding swarms and a full media pipeline share one GPU through a single orchestrator, so a video render and a language model take turns instead of fighting over VRAM.
+- **One 16 GB card runs the whole studio.** Every image model and every video model except the two larger MiniMax H3 builds run on a single 16 GB NVIDIA card, along with chat and RAG, screen agents, coding swarms, music and voice. One orchestrator hands the GPU to each job, so a render and a language model never fight over VRAM ([what runs on 16 GB](docs/HARDWARE.md#tier-c--the-16-gb-design-target)).
 - **Your coding agent can drive it.** A built-in MCP server, fifteen [agent skills](.agents/skills/README.md) and plugins for Claude Code, Grok Build and Antigravity let Claude Code, Grok, Antigravity, Cursor, Codex, Gemini CLI and other agents run every flow: "make a music video from this song", "film this script", "train a LoRA of this character", "swarm this refactor".
 - **You approve what matters.** Nothing posts and no voice is cloned without an explicit yes from you, and fixes Guaardvark writes for its own code wait for your review. The MCP server hides desktop, shell and browser tools unless you allowlist them.
 

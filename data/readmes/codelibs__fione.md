@@ -7,8 +7,9 @@ predictions and serve the model as a prediction API. It runs with one `docker co
 
 - **EasyML wizard** for people new to machine learning: upload → data analysis (the column to
   predict, the input columns, the prediction type, the maximum run time) → run → prediction
-  summary with a 1–5 star rating and the assistant's comment → predictions as a CSV; the result
-  page also shows the reasons for the first rows.
+  summary with a 1–5 star rating, a plain-language explanation of the score and a comment from
+  the Assistant → predictions as a CSV; the result page also shows the reasons for the first
+  rows.
 - **AutoML screens** for experts (the detailed view): column statistics and charts,
   correlations, leak warnings, every training setting, the job list, leaderboards, variable
   importance, score history, CV metrics, model export and import.
@@ -54,10 +55,11 @@ pandas frames, with an API token. See [sdk/README.md](sdk/README.md).
 ## The assistant
 
 The assistant answers questions about a project's datasets and models and suggests a training run
-that a person confirms; it only reads. It needs a language model server: the Ollama app on
-your Mac by default (`gemma4:12b-mlx`), an Ollama in Compose (profile `ollama`) on Linux, or any
-OpenAI-compatible server. The same read-only tools are available to MCP clients, off by
-default. See [The assistant](docs/assistant.md).
+that a person confirms; it only reads. It needs a language model: the Ollama app on
+your Mac by default (`gemma4:12b-mlx`), an Ollama in Compose (profile `ollama`) on Linux, or
+Claude through the Anthropic API (`FIONE_LLM_PROVIDER=claude` and an API key). A server outside
+this machine needs an administrator's one-time consent. The same read-only tools are available
+to MCP clients, off by default. See [The assistant](docs/assistant.md).
 
 ## Documentation
 

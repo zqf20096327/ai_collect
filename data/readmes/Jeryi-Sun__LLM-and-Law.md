@@ -6,6 +6,8 @@
 
 This repository tracks papers and resources about large language models (LLMs) in the legal domain.
 
+> Daily update 2026-11-06 (cs.CL): scanned all 94 papers on the dated list; added 2 title-deduplicated papers on Arabic legal-model adaptation/compression and audits of rule-based benchmarks with explicit tax and statutory-exemption tasks. Category increments: Applications +0, Legal Reasoning Models +0, Legal Agent +0, Legal Problems +0, Data Resources +1, Law LLMs +1, Evaluation +2. Compression results are limited to Saudi Arabic legal tests; rescoring gains do not represent improved model responses, and BAR does not certify every revised legal target. Generic finance, social-engineering safety, training-data attribution, and non-legal uses of policy, judge or contract were excluded. The archive date follows the dated cs.CL list, not the original submission date.
+
 > Daily update 2026-11-05 (cs.CL): scanned all 90 papers on the dated list; added 5 title-deduplicated papers on rubric-evolving legal retrieval, banking conduct-rule testing, legislative-hearing parsing, contractual accountability for AI agents, and statutory AI-assurance duties. Category increments: Applications +1, Legal Reasoning Models +1, Legal Agent +1, Legal Problems +3, Data Resources +2, Law LLMs +0, Evaluation +3. Banking-manual violations are not necessarily violations of law. Grassroots Contracts is included for explicit accountability undertakings and proposed court recourse, not merely software contracts; the assurance paper is included for its substantive analysis of statutory testing, suspension and enforcement duties, not general policy-topic classification. Generic privacy, author impersonation without a concrete legal task, and non-judicial uses of judges or verdicts were excluded. The archive date follows the dated cs.CL list, not the original submission date.
 
 > Daily update 2026-11-04 (cs.CL): scanned all 85 papers on the dated list; added 2 title-deduplicated papers: PROSE and Say Less, Mean Better. Category increments: Applications +0, Legal Reasoning Models +1, Legal Agent +0, Legal Problems +1, Data Resources +1, Law LLMs +0, Evaluation +2. PROSE studies preservation-aware repair of false-guilty predictions. MinimalLM is included only under Evaluation for its explicitly tested civil-versus-criminal-law question; this is one illustrative query, not a legal benchmark or evidence of legal correctness. Generic privacy audits, organizational rules, and non-legal uses of contracts or judges were excluded. The archive date follows the dated cs.CL list, not the original submission date.
@@ -509,6 +511,8 @@ This repository tracks papers and resources about large language models (LLMs) i
 
 ## Data Resources for Large Language Models in Law
 
+- Follow the Policy, Fail the Benchmark: Auditing and Revising Policy-Based Decision Benchmarks [paper](https://arxiv.org/abs/2611.07042) — BAR provides versioned audit evidence, 300 paired RuleArena Tax references, and revised scorers including LegalBench SARA; supported corrections are separated from conditional or unresolved targets, and not all nine audited benchmarks are legal.
+
 - The Harness Is the Model: Agent Scaffolding Changes a Fixed LLM's Compliance with Banking Conduct Rules, Unevenly Across Models [paper](https://arxiv.org/abs/2611.06116) — Releases a simulated banking-conduct test suite with 156 cases across 11 rule families and 3,120 two-turn episode traces; rules are paraphrases plus internal controls, not a verbatim statutory benchmark.
 - Discourse Analysis of Legislative Bill Discussions [paper](https://arxiv.org/abs/2611.05381) — Annotates 2,619 utterances from 100 California bill hearings within Digital Democracy. Language-model-assisted labels were manually reviewed; the resource concerns legislative procedure and discourse stages, not adjudication labels.
 
@@ -639,12 +643,4 @@ This repository tracks papers and resources about large language models (LLMs) i
 - ImmigrationQA: A Source-Grounded Dataset and Small-Model Adaptation for U.S. Immigration Law [paper](https://papers.cool/arxiv/2605.30589)
 - Citation Grounding: Detecting and Reducing LLM Citation Hallucinations via Legal Citation Graphs [paper](https://papers.cool/arxiv/2606.00898)
 - Enhancing BiGRU with a KAN Block for Legal Document Classification and Summarization [paper](https://papers.cool/arxiv/2606.00116)
-- Digging Up Citations: FOSSIL, a Dataset and Workflow for Reference Extraction in Law and the Humanities [paper](https://papers.cool/arxiv/2606.01109)
-- EURO-5K: When Does Domain Pretraining Matter? Benchmarking Transformers for EU Reporting Obligation Extraction [paper](https://papers.cool/arxiv/2606.02971)
-- HKJudge: A Legal Discourse-Annotated Corpus for Interpreting What Courts Find, How They Reason, and What They Rule [paper](https://papers.cool/arxiv/2606.06679)
-- LexRubric: A Rubric-Guided Diagnostic Benchmark for Open-Ended Legal Tasks [paper](https://papers.cool/arxiv/2606.09389)
-- From Statute to Control Flow: Span-Grounded Deontic Trees for Defeasible Scope Parsing [paper](https://papers.cool/arxiv/2606.08932)
-- Retrieval Augmented Generation Framework for the Nepali Legal Domain Question Answering [paper](https://papers.cool/arxiv/2606.07523)
-- REDACT: A Systematically Controlled Multilingual Benchmark for Personal Information Detection [paper](https://papers.cool/arxiv/2606.19881)
-- FineREX: Fine-Tuned NER-RE for Human Smuggling Knowledge Graphs [paper](https://papers.cool/arxiv/2606.19710)
-- Who Checks the Citations? Benchmarking Legal Hallucination Detection [paper](http
+- Digging Up Citations: FOSSIL, a Dataset 

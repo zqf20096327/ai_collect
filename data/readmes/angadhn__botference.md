@@ -609,6 +609,21 @@ The file itself never leaves your machine — nothing is uploaded, copied
 or stored anywhere. What your phone reads is the text, exactly as for
 any PDF.
 
+**A PDF you export lands in your reading log too.** If your vault keeps
+a reading log at `Clippings/read-links.md` (the table the Obsidian Web
+Clipper appends a row to for every article), exporting a PDF to Obsidian
+also adds one row for the paper: today's date, its date (the PDF's own
+metadata date, else the DOI or arXiv id found on its first pages), its
+title linked to its address (a file on your disk links to its DOI or
+arXiv page, or to nothing), its exact word count, the tag `papers`, and
+a `[[link]]` to the note just written, in a `Note` column added to the
+table if it has none. Export the same paper again and its row is updated
+in place, never doubled; no other row is touched. The drawer says
+"exported and logged". Articles are left to the Web Clipper, and a vault
+without that file is not given one. The read-links-thread Obsidian
+plugin then lists the paper under Papers in the monthly links note,
+with a link to your note when the note is public.
+
 **The comments already in the file — and the ones you write back.** A
 manuscript that has been round a supervisor arrives with comments in it:
 Acrobat highlights, Preview sticky notes, replies to replies. Discuss
@@ -1729,6 +1744,4 @@ pick it up.
 | `/status` | Show context usage, lead, mode, and session state. |
 | `/notify [on\|off]` | Toggle the desktop notification posted when the bots finish (see [Desktop notifications](#desktop-notifications)). No argument flips the current state; the preference is per-user (`~/.botference/settings.json`) and persists across chats and projects. |
 | `/agents [on\|off]` | Grant or revoke the Claude participant's **subagent** (Task) tool. Off by default in every chat: Claude is instructed to *suggest* subagents when a task would benefit and wait for your approval — and the gate is enforced at the tool level (the CLI is simply not given the Task tool until you grant it), not by prompt alone. The grant persists with the chat across `/resume` and resets on `/new`. Codex has no subagent facility; not available under `--claude-interactive`. |
-| `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversarial-review). |
-| `/allow-host [<domain>\|remove <domain>]` | Not needed by default: the bots can reach any website, and servers on this machine (127.0.0.1), just as in a plain Claude Code session. It only matters if you start botference with `BOTFERENCE_PLAN_NETWORK=allowlist`, which limits the bots' shell to a short list of sites (GitHub, Wikipedia and the public planetary-science archives: HiRISE, USGS Astrogeology, PDS imaging, NASA images). In that mode it grants a site, or takes one away with `remove`, defaults included. Grants are kept per workspace in `.botference/allowed-hosts.json` and apply from the bots' next turn, with no restart. Bare `/allow-host` lists current grants. `BOTFERENCE_PLAN_ALLOW_NETWORK=0` turns the bots' network off. |
-| `/watch <url> [question]` | Have **Gemini watch a YouTube video** and post what it saw into the chat, so Claude and Codex (who cannot take video) can read it on their next turn. See [YouTube videos](#youtube-vi
+| `/verify [on\|off]` | When the bots mark the thread **converged**, run one more turn before the floor comes back to you: the bot that did *not* write the last claim is handed the claims and the sources the room has — and **not** the discussion — and reports each claim confirmed (with the supporting line), contradicted (with the contradicting line), or not checkable. On by default, per chat; skipped when the final message is too short to be a claim, when the room has no source, or when the other bot is not in the room. See [Adversarial review](#adversari

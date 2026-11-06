@@ -12,7 +12,7 @@ away from the speaker.
 [![CI](https://github.com/akshinmrv/Voxa/actions/workflows/ci.yml/badge.svg)](https://github.com/akshinmrv/Voxa/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/akshinmrv/Voxa?display_name=tag&sort=semver)](https://github.com/akshinmrv/Voxa/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue.svg)](https://www.python.org/downloads/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 [![The dub stays in sync: a naive tool drifts +18s behind while Voxa holds at 0.0s](docs/assets/voxa_drift.gif)](https://voxa.servoogle.com/#demo)
@@ -233,7 +233,7 @@ brew install ffmpeg          # macOS
 winget install Gyan.FFmpeg   # Windows
 ```
 
-**2. Voxa** — Python 3.9 or newer.
+**2. Voxa** — Python 3.10 or newer (on an Intel Mac, 3.10–3.12: PyTorch has no build for 3.13 or later there).
 
 ```bash
 pipx install voxa-dub          # recommended: isolated, puts `voxa` on your PATH
@@ -283,18 +283,19 @@ docker run --rm -v "$PWD:/data" -v voxa-cache:/cache \
     ghcr.io/akshinmrv/voxa talk.mp4 --target_lang ru
 ```
 
-The image is ~3.0 GB, most of it torch's CPU build, FFmpeg and Whisper. It includes the console —
-open http://127.0.0.1:8000 after:
+The image is ~3.0 GB, most of it torch's CPU build, FFmpeg and Whisper. It includes the console:
 
 ```bash
 docker run --rm -p 127.0.0.1:8000:8000 -v "$PWD:/data" -v voxa-cache:/cache \
     -v voxa-engines:/engines ghcr.io/akshinmrv/voxa serve --host 0.0.0.0
 ```
 
-Publishing on `127.0.0.1` keeps the console off your network. Uploads, jobs and dubs stay in
-the mounted folder. From inside a container the console can't change settings, keys or
-engines, since a port-mapped request isn't loopback: pass keys with `-e`, and install an
-engine with the CLI into the `voxa-engines` volume the console then uses:
+Open the link it prints, `http://127.0.0.1:8000/?token=…`. Listening beyond the container's
+loopback, the console asks for an access token: a new one each start, or your own with
+`-e VOXA_TOKEN=…`. Publishing on `127.0.0.1` keeps it off your network as well. Uploads, jobs
+and dubs stay in the mounted folder, and so do keys you add in Settings (in its `.env`); you can
+pass them with `-e` instead. Engines go into the `voxa-engines` volume, from the console's Models
+page or from the CLI:
 
 ```bash
 docker run --rm -v voxa-cache:/cache -v voxa-engines:/engines \
@@ -328,6 +329,7 @@ voxa doctor --deep     # also loads XTTS and pyannote, which break on dependency
 | `pipx install "voxa-dub[url]"` | `voxa <video-url>` — download the input first (yt-dlp) |
 | `pipx install "voxa-dub[diarize]"` | `--diarize` — a distinct voice per speaker (pyannote) |
 | `voxa engines install chatterbox` | `--tts chatterbox` — clones each speaker's voice in 23 languages, MIT. Installed into an environment of its own (about 4.5 GB); slow without a GPU |
+| `voxa engines install voxcpm` | `--tts voxcpm` — VoxCPM2: clones each speaker's voice in 30 languages, Vietnamese, Thai and Indonesian among them, Apache-2.0. Installed into an environment of its own (about 6.4 GB); made for an NVIDIA GPU |
 | `voxa engines install demucs` | `--separate` — keeps the original's music and effects at full volume, its speech taken out. Installed into an environment of its own (about 0.7 GB); the weights' licence is unclear (see [NOTICE](NOTICE.md#47-engines-in-environments-of-their-own-voxa-engines)) |
 
 > [!NOTE]
@@ -362,6 +364,12 @@ voxa doctor --deep     # also loads XTTS and pyannote, which break on dependency
 > CPU it took 40–60 seconds per sentence, so a GPU makes the difference here; every clip it
 > makes carries Resemble AI's inaudible PerTh watermark. With faster-whisper installed, Voxa
 > also cuts the words Chatterbox sometimes adds after a line.
+>
+> VoxCPM2 (`voxa engines install voxcpm`) speaks 30 languages, seven of them ones Chatterbox
+> doesn't, and needs a GPU even more: on a laptop CPU a sentence took 2–3 minutes (18–31× its
+> length), and loading it peaked at 9.5 GB of memory. In a test in five languages Whisper heard
+> every word it said, and its clones of an English speaker scored 0.74 for speaker similarity
+> (0.50 speaking German), against 0.02–0.17 for its own voices.
 
 > [!NOTE]
 > **Keeping the music and effects** (`--separate`). By default the whole original stays
@@ -529,7 +537,10 @@ voxa video.mp4 --target_lang az --tts openai \
 
 The CLI is the product. If you'd rather click than type, `voxa serve` starts a local console
 that **shells out to the very same `voxa` command** — so the UI cannot drift away from the
-engine, because it *is* the engine. It binds to `127.0.0.1`; nothing is uploaded anywhere.
+engine, because it *is* the engine. It binds to `127.0.0.1`; nothing is uploaded anywhere. It
+answers only to `localhost` and `127.0.0.1`, so another site can't drive it from your browser.
+Started with `--host 0.0.0.0`, to reach it from another machine, it asks for an access token,
+given in the link it prints (or yours, from `--token` or `VOXA_TOKEN`).
 
 <div align="center">
 <img src="docs/assets/app-en.png" alt="The local operator console after a finished dubbing job" width="820">
@@ -578,7 +589,7 @@ Voxa/
 │   └── config.json             # A complete, verified configuration file
 │
 ├── .github/
-│   ├── workflows/ci.yml        # ruff + pytest on Python 3.9–3.12
+│   ├── workflows/ci.yml        # ruff + pytest on Python 3.10–3.14
 │   ├── workflows/release.yml   # A tag becomes a release only if it passes
 │   ├── ISSUE_TEMPLATE/         # Bug report and feature request forms
 │   └── dependabot.yml
@@ -649,6 +660,8 @@ Install Chatterbox (MIT) and dub with it; it clones each speaker from the origin
 voxa engines install chatterbox
 voxa video.mp4 --tts chatterbox --target_lang de
 ```
+
+With an NVIDIA GPU, VoxCPM2 (Apache-2.0) does the same in 30 languages: `voxa engines install voxcpm`, then `--tts voxcpm`.
 
 Or run an MIT-licensed, OpenAI-compatible speech server locally and point Voxa at it:
 

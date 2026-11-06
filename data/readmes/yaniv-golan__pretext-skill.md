@@ -12,13 +12,13 @@
 [![Cursor Plugin](https://img.shields.io/badge/Cursor-plugin-00D886)](https://cursor.com/docs/plugins)
 [![Built with Skill Creator Plus](https://img.shields.io/badge/Built_with-Skill_Creator_Plus-4ecdc4?style=flat-square)](https://github.com/yaniv-golan/skill-creator-plus)
 
-An AI agent skill that helps developers use **[@chenglou/pretext](https://github.com/chenglou/pretext)** — a small, tree-shakable TypeScript library that computes exact text metrics without DOM reflows.
+An AI agent skill that helps developers use **[@chenglou/pretext](https://github.com/chenglou/pretext)** — a TypeScript library that predicts line breaks and heights without DOM reflows.
 
 Uses the open [Agent Skills](https://agentskills.io) standard. Works with Claude Desktop, Claude Cowork, Claude Code, Codex CLI, Cursor, Windsurf, Manus, ChatGPT, and any other compatible tool.
 
 ## About @chenglou/pretext
 
-[Pretext](https://github.com/chenglou/pretext) is a small, tree-shakable TypeScript library by Cheng Lou. It uses `CanvasRenderingContext2D.measureText` internally, segments text, measures once, caches, then does arithmetic for all subsequent layouts. Each `layout()` call is ~0.0002ms — safe to call every animation frame.
+[Pretext](https://github.com/chenglou/pretext) is a TypeScript library by Cheng Lou that predicts line breaks and heights. It segments text and measures it once with `CanvasRenderingContext2D.measureText`, using ports of each browser's line breaker, then lays it out at any width with arithmetic alone, cheap enough to call on every animation frame.
 
 **Key capabilities:**
 - Know text dimensions before rendering (virtual scrolling, masonry layouts)
@@ -29,22 +29,26 @@ Uses the open [Agent Skills](https://agentskills.io) standard. Works with Claude
 
 ## What This Skill Covers
 
-This skill teaches AI agents how to use pretext correctly:
+This skill teaches AI agents how to use pretext correctly. Tracks `@chenglou/pretext` 1.0.0.
 
-- **API usage** — all 13 core functions plus the 5 in `@chenglou/pretext/rich-inline`, with correct argument order, types, and parameter-order asymmetries
-- **Critical gotchas** — the lineHeight-must-be-pixels bug, argument order, font loading timing, ESM-only packaging, the parameter-order swap between core and rich-inline
-- **Integration patterns** — wrapper modules, auto-fit font size, height estimation, text around obstacles with and without string allocation, rich inline runs with chips/mentions, shrink-wrap chat bubbles
-- **Creative patterns** — editorial layouts, balanced/Knuth-Plass paragraphs, streaming AI chat (with honest cost notes), framework-integration idioms (React/Vue/Svelte)
-- **When NOT to use Pretext** — CSS-only solutions, HTML content, fragile virtualizer integrations, per-token streaming over very long messages
+- **API usage** — all 12 core functions plus the 5 in `@chenglou/pretext/rich-inline`, with correct argument order and types
+- **Critical gotchas** — the lineHeight-must-be-pixels bug, text-before-font argument order, `layoutNextLine` taking the width before the cursor since 1.0 (the old order loops forever), font loading and invalid font strings, handles tied to the version that made them
+- **Migration** — upgrading from 0.0.x to 1.0: checking the installed version, finding old usage, breaking and silent changes
+- **Accuracy** — painting text so the browser wraps it to the same lines, font and language pitfalls, CSS Pretext doesn't model, running outside the browser
+- **Integration patterns** — wrapper modules, auto-fit font size, height estimation, truncation with an ellipsis, virtualized lists, text around obstacles with and without string allocation, rich inline runs with chips, mentions and images, shrink-wrap chat bubbles
+- **Creative patterns** — editorial layouts, balanced/Knuth-Plass paragraphs, streaming AI chat, framework-integration idioms (React/Vue/Svelte)
+- **When NOT to use Pretext** — CSS-only solutions, and mixed HTML content Pretext can't size
 
 ## Installation
 
 ### Claude.ai (Web)
 
 1. Download [`pretext-skill.zip`](https://github.com/yaniv-golan/pretext-skill/releases/latest/download/pretext-skill.zip)
-2. Click **Customize** in the sidebar
-3. Go to **Skills** and click **+**
+2. Click **Customize** in the sidebar and go to **Skills**
+3. Click **+**, then **Create skill**
 4. Choose **Upload a skill** and upload the zip file
+
+Skills need code execution turned on: **Settings → Capabilities** on individual plans, or **Organization settings → Plugins & skills** on Team and Enterprise.
 
 ### Claude Desktop
 
@@ -88,7 +92,7 @@ Or from within a Claude Code session:
 
 ### ChatGPT
 
-> **Note:** ChatGPT Skills are currently in beta, available on Business, Enterprise, Edu, Teachers, and Healthcare plans only.
+> **Note:** ChatGPT Skills are available on Business, Enterprise, Edu, and Healthcare workspaces, where an admin may need to turn them on. See [Skills in ChatGPT](https://help.openai.com/en/articles/20001066-skills-in-chatgpt) for current eligibility.
 
 1. Download [`pretext-skill.zip`](https://github.com/yaniv-golan/pretext-skill/releases/latest/download/pretext-skill.zip)
 2. Upload at [chatgpt.com/skills](https://chatgpt.com/skills)
@@ -98,8 +102,10 @@ Or from within a Claude Code session:
 Use the built-in skill installer:
 
 ```
-$skill-installer https://github.com/yaniv-golan/pretext-skill
+$skill-installer https://github.com/yaniv-golan/pretext-skill/tree/main/pretext/skills/pretext
 ```
+
+The installer needs the path to the skill folder, not just the repo. Restart Codex afterwards so it picks up the skill.
 
 Or install manually:
 
@@ -108,7 +114,7 @@ Or install manually:
 
 ### Any Agent (npx)
 
-Works with Claude Code, Cursor, Copilot, Windsurf, and [40+ other agents](https://github.com/vercel-labs/skills):
+Works with Claude Code, Cursor, Copilot, Windsurf, and [75+ other agents](https://github.com/vercel-labs/skills):
 
 ```bash
 npx skills add yaniv-golan/pretext-skill
@@ -139,6 +145,10 @@ Help me flow text around a circular image using layoutNextLine
 
 ```
 How do I render an @mention chip inside a chat bubble using pretext's rich-inline?
+```
+
+```
+Upgrade this project from pretext 0.0.x to 1.0 and fix the calls that changed
 ```
 
 ## Changelog

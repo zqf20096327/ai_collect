@@ -42,6 +42,7 @@ npx @enmera/ai-design-check --fix --dry-run
 
 This lists the changes; drop `--dry-run` to make them. Spacing and corners move to the nearest step of your scale, and very
 heavy type becomes bold. Tap sizes, colours, emoji, words and hierarchy stay in the report, since they take a decision.
+Add `--nearest-type` to move `text-[Npx]` sizes to the nearest theme size as well (`lg:text-[64px]` → `lg:text-6xl`).
 
 **3. Let your agent fix the rest.**
 
@@ -72,7 +73,7 @@ it, and shows the count before and after. Features, data and words stay.
 
 ## What it catches
 
-67 rules read your code (33 of them in app code too) and 60 read the running page (`scan`), some of them both. The other 33 need eyes on the screen, so they
+68 rules read your code (34 of them in app code too) and 61 read the running page (`scan`), some of them both. The other 33 need eyes on the screen, so they
 are marked *review* and left to you and the fix skill. Each rule says what to do, why and how to fix it, in English and Turkish: [RULES.md](RULES.md).
 
 | Area | Examples |
@@ -113,6 +114,14 @@ page's own origin, never to the other hosts it loads from. `--allow-redirect` an
 `--allow-status 404` check such a page on purpose. Several URLs are scanned in one run. Add `--format github`
 for pull requests. With `designSystem` in the config (`fonts`, `sizes`, `radii`, `colors`) it also names what drifts.
 
+To check one part of a page, such as a CMS module rendered inside the app's own shell, pass
+`--scope "[data-block-type=module-1]"`: only what is inside a match is checked, and `redesign` measures and plans only that
+part. `--ignore "nav"` leaves a part out. Both work for `scan`, `narrow` and `redesign` and can be given more than once;
+several scopes are one area. A scope that matches nothing stops the run with exit 2 instead of passing as clean. Sideways
+scrolling caused outside the scope is not reported; script errors are, since they belong to the whole page. Text under `aria-hidden="true"`,
+such as a faded code rain behind the headline, is decoration: contrast, size and the other reading rules leave it alone,
+while the visual tells (gradients, glows, endless loops) still look at it.
+
 `redesign` is the one part that needs your agent (Claude Code or Codex), because deciding what a page should show takes
 judgement. The agent studies the screenshots, the code and the subject, and writes one card per section: what it says, what
 is wrong, the idea that comes from its own content, the colours it uses from your site. Those cards are checked against the
@@ -120,6 +129,70 @@ measured page. Then the numbered fixes and the cards are applied pass by pass on
 content, adds rule errors or looks worse is thrown away. `--plan` stops after the cards so you can read and edit them;
 `--brief` builds them. It starts only on a clean working tree (commit or stash first), and Ctrl-C puts back the pass in
 progress.
+
+Before any card the study decides how much to change: `heavy` (many tells, rebuilt section by section), `polish` (mostly
+designed: at most two sections change the look, each on a measured tell, and bigger ideas become suggestions) or `none`
+(it works; a few refinements are suggested and nothing is built). Then it writes a direction from your product: what it is
+in one sentence, its character in two or three concrete words (not clean, modern, sleek, minimal or premium), the world
+it belongs to, the one or two moments on the screen that carry the richness, and one signature detail. Each card says
+whether it changes the look, and what a visitor will see differently; `--plan` and `BRIEF.md` label every card "changes
+the look" or "fixes only" and say so in one line when none changes it. The first screen's card has to change the look and
+show the proof of its claim. After the craft pass the visual check asks, card by card, whether that change is in the after
+screenshot; a card that looks the same gets one more try, then the pass is thrown away. A `brief.json` from an earlier
+version still works with `--brief`, as `heavy` with no direction.
+
+`--in-place` makes no branch and no commits, and runs on a tree with uncommitted work (yours, or another session's): a pass
+that is thrown away goes back to exactly the state before it, your edits included, and a kept pass stays as uncommitted
+changes with its patch saved, so `git apply -R <patch>` undoes it; the run ends with the changed files and the undo
+commands, newest first. `--files "resources/views/home.blade.php,resources/css/**"` limits every pass to those paths or
+globs: a pass that changes any other file is thrown away. `--out <dir>` puts the plan, screenshots, logs and patches
+somewhere else (default `.ai-design-check/redesign`, which git ignores; a folder outside the project works too). For a
+page behind a sign-in when you would rather not hand over a cookie, save it and pass the file: `redesign ./page.html` (or
+`--html page.html`). With `--build "<command>"` the passes edit your sources and the command writes the file again; without
+it the passes edit the file itself, and a file git does not keep is put back from a copy when a pass is thrown away.
+
+The study starts from what you already know. A `PRODUCT.md` in the project root (purpose, audience, voice, what to
+avoid, rivals) and a `DESIGN.md` (the visual system you keep) go into the study and the craft prompt, quoted as your notes;
+`--product <file>` and `--design <file>` point elsewhere. Without a `PRODUCT.md` the study writes a draft to the `--out`
+folder from the README, the package description and the pages, and the run says in one line to review it and move it to
+the root; the tool never writes there itself. `--intent "<text>"` says what you want from this run: it leads the study and
+the cards, and is kept in `brief.json`. `--degree heavy|polish|none` chooses how far the run goes instead of leaving it
+to the study, which then has to write that degree (a `--brief` brief takes it). Heavy rebuilds every section that is not
+kept, composes the first screen as one picture with a real product surface, turns repeated identical cards into
+content-specific pictures and keeps the logo, brand colour, fonts, words and section order; its cards may use tints and
+shades of the site's colours (the same hue within 8 degrees, or a neutral grey), while polish and none use exactly the
+site's colours. `--images openai|gemini` lets cards ask for generated photos or illustrations (a hero scene,
+one photo per sector in place of identical icon cards): at most 1 per card and `--images-max` per run (default 6, up to
+12). The key is read from `OPENAI_API_KEY` or `GEMINI_API_KEY` only and never printed; a missing one stops the run
+before any agent starts. After the study the run lists each image with an estimated cost (an estimate: check your
+provider's pricing) and generates nothing without a yes at the terminal or `--yes`. The images go to
+`<out>/images/`, and the craft pass copies them into the page's own image folder with real alt text. Any other field you put in `product` (`context`, `audience`, `voice`,
+`competitors`, `avoid`, or one of your own) reaches both prompts. Each card that changes the look picks a layout from its
+content (`split`, `product`, `photo`, `place`, `editorial`, `statement`, `collage`, or `centred` for a short section with
+no visual) with a line saying why; a centred hero with a visual, or two changing sections side by side with one layout, is
+sent back. `"only": ["exact heading"]` in `brief.json` limits the work to those sections, and the rest stays untouched. A
+card may list `addsText` and `replacesText` (`{ "from": "text on the page", "to": "new text" }`); those are the only text
+changes a pass may make. Before anything is applied the run prints the degree, direction, intent and cards; at a terminal
+it asks `Apply these passes? [y/N]` and stops with nothing changed unless you say yes, printing the command that goes on
+(`--brief <out>/brief.json --yes`). Agents and CI get the summary and the run goes on.
+
+For a page that only exists once a command draws it, such as a CMS module behind a sign-in written into static HTML:
+`redesign module-1.html --serve dist --render "php artisan module:export 1"`. `--serve <dir>` serves that folder on
+127.0.0.1 at a free port (no listing, nothing outside it) and the page is a path inside it; `--render "<command>"` runs
+before the first measurement and after every pass, after `--build`, and a failure throws the pass away as a failed build
+does. `--build-minutes <n>` sets the time limit for both (default 10).
+
+Work that is thrown away stays within reach. Every run ends with `compare.html` in the `--out` folder: each pass's before
+and after screenshots side by side, whether it was kept or thrown away and why. A thrown-away pass leaves
+`pass-N-<name>.rejected.patch`, and `npx @enmera/ai-design-check redesign apply <patch>` puts it into the working tree
+(3-way when it no longer fits as it is; a patch that does not apply cleanly changes nothing) and prints the files and the
+undo command. The word check counts only reading text: text under `aria-hidden="true"`, or in a positioned layer that
+takes no clicks (`pointer-events: none`, behind the content), is decoration a pass may replace. A card whose idea replaces,
+removes or rewrites visible text has to list it in `addsText` or `replacesText`, or the study is sent back. The pass
+prompts carry the `shot` command for the page (the served address with `--serve`) and, with `--build` or `--render`, the
+command that draws it again, so the agent looks at its own work before it reports. When a test forbids what a card asks
+for, the agent changes that test and names it; tests a pass changed are listed apart in the log, the summary and
+`result.json` (`testsChanged`).
 
 ## Mobile apps
 
@@ -245,6 +318,15 @@ With Bootstrap 5.3, link `bootstrap.css` after Bootstrap's own CSS: light is the
 `data-bs-theme="dark"`. It also replaces the blue Bootstrap compiles into fields, checks, menus, pagination and the rest. A
 build from source imports `_variables.scss` before Bootstrap.
 
+### `shot`: look at a page
+
+```bash
+npx @enmera/ai-design-check shot http://localhost:3000 --width 390 --out look.png --full
+```
+
+One screenshot as Chrome draws it, and nothing changed: for an agent to look at its own work after an edit. `--full` takes
+the whole page, `--scope` clips to that part and `--ignore` hides one; `--cookie` and `--header` work as for `scan`.
+
 ### `story`: a before/after video
 
 ```bash
@@ -253,6 +335,10 @@ npx @enmera/ai-design-check story screen.before.html screen.html --out story.mp4
 
 A square 12 second video: every finding marked one by one, a wipe to the new screen while the count falls, and an end card.
 It takes files or URLs, and needs only your Chrome and ffmpeg.
+
+`--style swarm` tells the change another way: labelled agents (layout, type, colour) fly over the new screen, frame
+each block with its live size, type the headings and text in and build the rest, while the count falls
+([example](examples/story-dashboard-swarm.mp4)).
 
 ### Other commands
 

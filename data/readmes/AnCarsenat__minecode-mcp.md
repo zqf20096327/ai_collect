@@ -15,7 +15,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/minecode-mcp?logo=pypi&logoColor=white)](https://pypi.org/project/minecode-mcp/)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue)](LICENSE)
 [![Tests](https://github.com/AnCarsenat/minecode-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/AnCarsenat/minecode-mcp/actions/workflows/test.yml)
 
 [![MseeP.ai Security Assessment](https://mseep.net/pr/ancarsenat-minecode-mcp-badge.png)](https://mseep.ai/app/ancarsenat-minecode-mcp)
@@ -372,21 +372,80 @@ Get the exact path with `python3 -c "import sys; print(sys.executable)"` **from 
 | `get_wiki_commands` | Command list |
 | `get_wiki_category` | Pages in a category |
 
+### Datapack Emulator — run the pack without the game
+
+Backed by [Datapack Emulator](https://github.com/AnCarsenat/Datapack-Emulator)
+(installed with MineCode from PyPI; its source is a submodule at
+`datapack-emulator/`). It loads the pack as a server of the
+chosen version would, ticks it, and reports what happened. Results carry
+`ok` and a one-line `summary`; `ok` is false for the silent failures the game
+only warns about (functions that do not parse, `functions/` folders on 1.21+).
+
+| Tool | Description |
+|------|-------------|
+| `emulator_check` | Static: every function/tag the version refuses, ignored folders, unknown ids, missing functions |
+| `emulator_run` | Load + N ticks, then console `commands`; errors, chat, final scores/storage, call graph, estimated cost |
+| `emulator_test` | Assertions: `"20:"` + `score #g ns.t = 20`, `@e[tag=boss] = 1`, `block … = …` |
+| `emulator_matrix` | One fresh world per version across a range; what breaks where |
+| `emulator_explain` | Does this command (and each `execute` feature) exist in this version, and since when |
+
+Not modelled: physics, mob AI, redstone, gameplay-triggered advancements.
+See the [`datapack-emulator` skill](skills/datapack-emulator/SKILL.md).
+
 ### Other
 
 | Tool | Description |
 |------|-------------|
 | `search_mojira` | Bug tracker search (filters by project, not version) |
 | `get_logs` | Local Minecraft logs, with `filter='errors'` |
+| `get_minecode_guide` | Step-by-step guides (the [skills](#-skills)) for any MCP client |
 | `cache_status` | Inspect or clear the response cache |
 
 ### Prompts and resources
 
 | Kind | Name | Description |
 |------|------|-------------|
+| Instructions | (sent at initialize) | A short routing note clients place in the model's system prompt: start session first, read the guide, verify with the emulator |
 | Prompt | `minecraft_datapack_session` | Loads the development methodology |
 | Resource | `minecode://preprompt` | Same methodology, attachable as context |
 | Resource | `minecode://migrations` | The curated migration table as JSON |
+| Prompt | `guide_<name>` | One per [skill](#-skills), e.g. `guide_minecraft_diagnose` |
+| Resource | `minecode://guide/<name>` | The same guides, attachable as context |
+
+---
+
+## 🧭 Skills
+
+Six guides written for AI agents live in [`skills/`](skills/), one folder
+each with a `SKILL.md`:
+
+| Skill | Use it when |
+|-------|-------------|
+| [`minecode-mcp`](skills/minecode-mcp/SKILL.md) | choosing which MineCode tool answers a question, and in what order |
+| [`minecraft-feature-workflow`](skills/minecraft-feature-workflow/SKILL.md) | implementing a feature in a datapack, from version pinning to verified hand-over |
+| [`minecraft-diagnose`](skills/minecraft-diagnose/SKILL.md) | a pack does nothing, errors, misbehaves, lags, or broke after an upgrade |
+| [`minecraft-recurring-issues`](skills/minecraft-recurring-issues/SKILL.md) | reviewing code against the mistakes that keep coming back |
+| [`minecraft-version-differences`](skills/minecraft-version-differences/SKILL.md) | targeting, porting, or supporting a range of versions |
+| [`datapack-emulator`](skills/datapack-emulator/SKILL.md) | running and testing a pack without the game |
+
+**Claude Code** loads them as skills when the repository is installed as a
+plugin (this also registers the MCP server from `.mcp.json`, so `minecode`
+must be on PATH — see [Installation](#-installation)):
+
+```text
+/plugin marketplace add AnCarsenat/minecode-mcp
+/plugin install minecode@minecode
+```
+
+**Every other MCP client** gets the same text through the server: the
+`get_minecode_guide` tool (agents call it themselves —
+`minecraft_start_session` points at it), a `guide_<name>` prompt, and a
+`minecode://guide/<name>` resource. The wheel carries `skills/` inside the
+package, so a plain `pip install minecode-mcp` has them too.
+
+To add a guide: create `skills/<name>/SKILL.md` with `name` and
+`description` frontmatter (the description is what an agent chooses by — say
+*when* to use it). `tests/test_guides.py` checks it is found and served.
 
 ---
 
@@ -447,22 +506,28 @@ Then add tests to `tests/test_knowledge.py` — **one for detection and one for 
 **Linux / macOS**
 
 ```bash
-git clone https://github.com/AnCarsenat/minecode-mcp.git
+git clone --recurse-submodules https://github.com/AnCarsenat/minecode-mcp.git
 cd minecode-mcp
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install --upgrade pip
+python -m pip install -e ./datapack-emulator    # optional: the emulator from the submodule, to change both
 python -m pip install -e ".[dev]"
 ```
+
+Already cloned without `--recurse-submodules`: `git submodule update --init`.
+Skipping the submodule is fine: `pip install -e ".[dev]"` installs the
+emulator from PyPI. Install the submodule first only to work on both at once.
 
 **Windows (PowerShell)**
 
 ```powershell
-git clone https://github.com/AnCarsenat/minecode-mcp.git
+git clone --recurse-submodules https://github.com/AnCarsenat/minecode-mcp.git
 cd minecode-mcp
 py -m venv venv
 .\venv\Scripts\Activate.ps1
 py -m pip install --upgrade pip
+py -m pip install -e .\datapack-emulator
 py -m pip install -e ".[dev]"
 ```
 
@@ -700,6 +765,7 @@ This catches packaging errors before they reach real PyPI, where a version numbe
 minecode-mcp/
 ├── minecode/
 │   ├── server.py              # Transport, dispatch, prompts, resources
+│   ├── guides.py              # Serves skills/ as a tool, prompts, resources
 │   ├── tools.py               # Tool schemas + name->handler registry
 │   ├── handlers.py            # Tool behaviour
 │   ├── brigadier.py           # Command tree rendering and validation
@@ -717,6 +783,8 @@ minecode-mcp/
 │       ├── minecraftwiki.py   # Wiki (latest version only)
 │       ├── mojira.py          # Bug tracker
 │       └── minecraft_logs.py  # Multi-launcher log reader
+├── skills/<name>/SKILL.md     # Agent guides (Claude Code skills; also served over MCP)
+├── .claude-plugin/            # Claude Code plugin + marketplace manifest
 ├── tests/
 ├── example/crystal_dimension/
 └── pyproject.toml
@@ -740,7 +808,7 @@ Spyglass, misode, and the wiki are volunteer-run. MineCode caches aggressively �
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE)
+GPL-3.0 — see [LICENSE](LICENSE)
 
 ---
 

@@ -5,6 +5,7 @@
 使用你选择的模型，查看执行过程，在成果区核对交付文件。</p>
 <p align="center"><a href="#quick-start"><b>▶ 做一份项目汇报 PPT</b></a> · <a href="https://github.com/CatCatUncle/openworkbuddy/releases/latest">下载安装包</a> · <a href="https://catcatuncle.github.io/openworkbuddy/zh/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=first_result">项目网站</a> · <a href="#文档">文档</a> · <a href="README.en.md">English</a></p>
 <p align="center"><a href="https://github.com/CatCatUncle/openworkbuddy/releases/latest"><img src="https://img.shields.io/github/v/release/CatCatUncle/openworkbuddy?style=flat-square" alt="正式发布版本"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20NC-5b5ff7?style=flat-square" alt="PolyForm Noncommercial 许可证"></a> <a href="https://github.com/CatCatUncle/openworkbuddy/stargazers"><img src="https://img.shields.io/github/stars/CatCatUncle/openworkbuddy?style=flat-square&label=Star&color=5b5ff7" alt="收藏项目"></a></p>
+<p align="center"><a href="https://www.opensourcealternatives.to"><img src="https://www.opensourcealternatives.to/badge-osa.svg" alt="As seen on Open Source Alternatives" width="378" height="28"></a></p>
 <p align="center"><sub>个人非商用、学校和公益机构免费；公司及个人商用须获 <a href="COMMERCIAL-LICENSE.md">商业授权</a>。购买授权：<a href="mailto:contact@aijentra.com">contact@aijentra.com</a> · 微信：<b>agi_smith</b>。模型与媒体服务的费用由所选服务商决定。</sub></p>
 <p align="center"><img src="docs/images/demo.gif" width="720" alt="OpenWorkBuddy 操作演示：输入任务、查看执行过程、打开成果文件"><br><sub>界面流程演示；首次成功耗时按下面的任务实测。</sub></p>
 
@@ -277,7 +278,9 @@ openworkbuddy engines use claude-code # 换执行引擎：跑在你已经付过�
 
 ## 最新动态
 
-- **11-06** v0.19.0：Linux 多人部署的成员命令进系统沙箱，修复 Key 文件可被绕过读取的漏洞；升级前先装 bubblewrap。
+- **11-06** v0.19.2：资料库打开笔记时，全部文件等页签不再一起高亮，一次只选中一个页签。
+
+- **11-06** v0.19.1：Linux 多人部署的成员命令进系统沙箱，修复 Key 文件可被绕过读取的漏洞；升级前先装 bubblewrap。
 
 - **11-06** 企业后台能按连接器和技能控制成员权限，设存储配额，打开组织内任务分享；连接器接入增加内置检查。
 
@@ -302,8 +305,6 @@ openworkbuddy engines use claude-code # 换执行引擎：跑在你已经付过�
 - **11-03** v0.18.3：文件清理可恢复，保护 out/ 和运行中任务；预览自动适配，长任务进度定期核对。
 
 - **11-01** v0.18.2：删除任务默认清理其专属文件夹，可取消勾选保留成果；文件移入回收区，项目根目录和共享目录保留。
-
-- **11-01** 删除前等待任务停止并完成保存；清理失败保留对话并显示原因，成功后同步刷新资料库和旧预览，避免任务被收尾保存重新创建。
 
 格式支持与限制见[文件预览与转换](docs/文件预览与转换.md)，完整历史见[变更记录](CHANGELOG.md)。
 

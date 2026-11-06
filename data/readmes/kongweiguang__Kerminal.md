@@ -5,7 +5,7 @@
   <h1>Kerminal</h1>
   <p><strong>把终端、远程服务器、文件传输、容器运维与 AI Agent 放进同一个原生桌面工作台。</strong></p>
   <p>
-    <a href="https://github.com/kongweiguang/Kerminal/releases/tag/v0.4.0-beta.4">下载 GPUI 测试版</a>
+    <a href="https://github.com/kongweiguang/Kerminal/releases/tag/v0.4.0-beta.5">下载 GPUI 测试版</a>
     ·
     <a href="#快速开始">快速开始</a>
     ·
@@ -13,7 +13,7 @@
     ·
     <a href="#源码开发">源码开发</a>
   </p>
-  <p><sub>0.4.0-beta.4 · Rust + GPUI · Windows / Linux / macOS</sub></p>
+  <p><sub>0.4.0-beta.5 · Rust + GPUI · Windows / Linux / macOS</sub></p>
 </div>
 
 ![Kerminal GPUI 完整应用窗口：本机终端与已进入会话的 Codex AI 助手](docs/assets/kerminal-hero.png)
@@ -42,16 +42,16 @@ Kerminal 是一个本地优先的桌面终端和远程运维工作台。围绕�
 
 ## 下载与安装
 
-前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases) 选择 **GPUI beta**，不要用只指向稳定版的 `releases/latest` 判断 0.4 版本。当前 `v0.4.0-beta.4` 的下载入口：
+前往 [GitHub Releases](https://github.com/kongweiguang/Kerminal/releases) 选择 **GPUI beta**，不要用只指向稳定版的 `releases/latest` 判断 0.4 版本。当前 `v0.4.0-beta.5` 的下载入口：
 
 | 平台 | 安装包 |
 | --- | --- |
-| Windows x64 | [NSIS 安装程序](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_x64-setup.exe)（当前用户安装） |
-| Linux x64 | [AppImage](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_x86_64.AppImage) / [DEB](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/kerminal_0.4.0-beta.4_amd64.deb) |
-| macOS Apple Silicon | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/Kerminal_0.4.0-beta.4_aarch64.dmg) |
-| macOS Intel | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/Kerminal_0.4.0-beta.4_x64.dmg) |
+| Windows x64 | [NSIS 安装程序](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_x64-setup.exe)（当前用户安装） |
+| Linux x64 | [AppImage](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_x86_64.AppImage) / [DEB](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/kerminal_0.4.0-beta.5_amd64.deb) |
+| macOS Apple Silicon | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/Kerminal_0.4.0-beta.5_aarch64.dmg) |
+| macOS Intel | [DMG](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/Kerminal_0.4.0-beta.5_x64.dmg) |
 
-- 下载后可对照同一 Release 的 [`SHA256SUMS.txt`](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.4/SHA256SUMS.txt) 校验文件。
+- 下载后可对照同一 Release 的 [`SHA256SUMS.txt`](https://github.com/kongweiguang/Kerminal/releases/download/v0.4.0-beta.5/SHA256SUMS.txt) 校验文件。
 - 当前 beta 为未签名构建，Windows 可能提示 SmartScreen，macOS 可能被 Gatekeeper 拦截；请先核实下载来源，不要全局关闭系统保护。
 - **本 beta 未配置更新器签名与更新 feed，不会自动更新。** 后续测试版请从 Releases 手动下载。
 - Linux AppImage 仍依赖宿主的 glibc 和图形环境；当前 DEB 的基础要求为 glibc 2.35 及相应图形运行库。
@@ -289,7 +289,7 @@ cargo +1.98.0 xtask package --target $target
 
 平台配置位于 [`packaging/`](packaging/)，资源路径相对配置目录解析。原始产物先进入 `target/package-output/`，整理后位于 `target/package-candidates/<target>/`：Windows 为 NSIS，Linux 为 AppImage / DEB，macOS 为应用包 / DMG；必要的 updater archive 单独生成，不以改扩展名替代真实打包。
 
-支持的 target 为 `x86_64-pc-windows-msvc`、`x86_64-unknown-linux-gnu`、`x86_64-apple-darwin`、`aarch64-apple-darwin`。[候选打包工作流](.github/workflows/gpui-package.yml) 可手动触发；[beta 发布工作流](.github/workflows/gpui-release.yml) 核对 `vX.Y.Z-beta.N` tag 与 workspace 版本，构建四个平台并发布 prerelease 及摘要，不等于正式版签名或安装验收。
+支持的 target 为 `x86_64-pc-windows-msvc`、`x86_64-unknown-linux-gnu`、`x86_64-apple-darwin`、`aarch64-apple-darwin`。[候选打包工作流](.github/workflows/gpui-package.yml) 可手动触发；[beta 发布工作流](.github/workflows/gpui-release.yml) 核对 `vX.Y.Z-beta.N` tag 与 workspace 版本，构建四个平台并发布 prerelease 及摘要，不等于正式版签名或安装验收。发布说明由 `packaging/release_notes.py` 按上一个发布 tag 到当前 tag 的提交生成“新功能 / 改进 / 修复”分节，`chore` 提交不对外展示。
 
 稳定候选应同时记录构建前后源码指纹与实际二进制摘要。源码指纹覆盖锁文件和非忽略的新源码，但单独的 Git revision 或指纹不能证明二进制与源码的对应关系。
 

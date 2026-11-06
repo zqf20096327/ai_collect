@@ -12,6 +12,20 @@ A desktop app for orchestrating ComfyUI workflows on **Runpod Serverless** endpo
 
 Companion to the workers: [runpod-qwen21](https://github.com/huchukato/runpod-qwen21) (Qwen Image 2.1 T2I/Edit + Pony) · [runpod-minimax-h3](https://github.com/huchukato/runpod-minimax-h3) (MiniMax H3 video+audio) · [runpod-ltx-25](https://github.com/huchukato/runpod-ltx-25) (LTX 2.5 video+audio: I2VA/T2VA, FL2VA, pose loops)
 
+It also ships built-in **RunPod Cloud** workflows — [RunPod Public Endpoints](https://docs.runpod.io/public-endpoints/reference) that run with just your API key, no endpoint to deploy, billed per use:
+
+| Workflow | What it does | Price |
+| --- | --- | --- |
+| Nano Banana 2 Edit | Multi-image editing (up to 14 refs), up to 4K | $0.0875–0.175/img |
+| Z-Image Turbo T2I | Fast 6B text-to-image | $0.005/img |
+| Flux Schnell T2I | FLUX draft generation | $0.0024/MP |
+| Flux Dev T2I | FLUX flagship quality | $0.02/MP |
+| Seedream 4.0 T2I | ByteDance text-to-image | $0.027/img |
+| Chatterbox Turbo TTS | Text-to-speech, 20 voices + voice clone | $0.001/s |
+| Minimax Speech 02 HD | HD TTS with emotion control | $0.05/1K chars |
+
+Prompt assist (Settings → LLM service) can also run on RunPod LLMs — **Qwen3 32B** and **Moonshot Kimi** — reusing the same API key.
+
 ## 📥 Download (desktop app)
 
 Get the latest build from [Releases](https://github.com/huchukato/ForgeHub/releases/latest) — the backend is bundled, nothing else to install:
@@ -99,4 +113,30 @@ JSON files in ComfyUI **API format** (`Export API`), with an optional `.meta.jso
 }
 ```
 
-Categories: `agent`, `video`, `image`, `audio`, `other`.
+Categories: free-form — use model names so the sidebar groups sensibly (e.g. `LTX 2.5`, `MiniMax H3`, `Qwen Image 2.1`, `Pony`, `RunPod Cloud`). Groups are collapsible in the sidebar.
+
+### RunPod Public Endpoints
+
+A meta can point at any [RunPod Public Endpoint](https://docs.runpod.io/public-endpoints/reference) — no dedicated endpoint, no ComfyUI graph, per-use billing on your RunPod account:
+
+```json
+{
+  "id": "nanobanana2-edit",
+  "name": "Nano Banana 2 Edit",
+  "category": "RunPod Cloud",
+  "endpoint_id": "google-nano-banana-2-edit",
+  "public_endpoint": true,
+  "outputs": ["image"],
+  "parameters": [
+    { "key": "prompt", "label": "Edit instruction", "type": "text", "target": "job" },
+    { "key": "images", "type": "images", "target": "job", "max": 14 },
+    { "key": "resolution", "type": "select", "target": "job",
+      "default": "1k", "options": ["1k", "2k", "4k"] }
+  ]
+}
+```
+
+- `public_endpoint: true` — the workflow `.json` is just `{}`; every `target: "job"` parameter is sent 1:1 in the job `input`, empty values are dropped, and `images` go base64.
+- The job output is normalized from the endpoint's shape (`output.result`, `output.image_url`, `output.audio_url` — URL or base64) and `output.cost` is shown as the real job price.
+- Bundled PE workflows: **Nano Banana 2 Edit**, **Z-Image Turbo**, **Flux Schnell**, **Flux Dev**, **Seedream 4.0** (image), **Chatterbox Turbo**, **Minimax Speech 02 HD** (audio).
+- Chat/prompt-assist can also run on RunPod LLMs — Settings → Prompt Assist → *RunPod · Qwen3 32B* or *RunPod · Moonshot Kimi* reuses your RunPod API key automatically.

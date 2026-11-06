@@ -109,6 +109,10 @@ English | [简体中文](./README_CN.md) | [Español](./README_ES.md)
 
 > ![](https://img.shields.io/badge/MainLanguage-Python-blue?style=for-the-badge)  ![GitHub last commit](https://img.shields.io/github/last-commit/ASCIT31/Dark-Moon?style=for-the-badge)  ![GitHub stars](https://img.shields.io/github/stars/ASCIT31/Dark-Moon.svg?style=for-the-badge)  ![GitHub](https://img.shields.io/github/license/ASCIT31/Dark-Moon?style=for-the-badge)
 
+- https://github.com/utkusen/promptmap - **Automated prompt injection scanner for LLM applications — dual-LLM architecture (target + controller) testing 50+ attack rules covering jailbreaking, bias, and prompt stealing via white-box or black-box assessment**
+
+> ![](https://img.shields.io/badge/MainLanguage-Python-blue?style=for-the-badge)  ![GitHub last commit](https://img.shields.io/github/last-commit/utkusen/promptmap?style=for-the-badge)  ![GitHub stars](https://img.shields.io/github/stars/utkusen/promptmap.svg?style=for-the-badge)  ![GitHub](https://img.shields.io/github/license/utkusen/promptmap?style=for-the-badge)
+
 
 ### LLM-Powered Vulnerability Scanners
 *Scanners where the LLM does the hunting — beyond signature matching.*
@@ -931,8 +935,4 @@ English | [简体中文](./README_CN.md) | [Español](./README_ES.md)
 
 - https://github.com/urbanadventurer/whatweb - **Website fingerprinter**
 
-> ![](https://img.shields.io/badge/MainLanguage-Ruby-blue?style=for-the-badge)  ![GitHub last commit](https://img.shields.io/github/last-commit/urbanadventurer/whatweb?style=for-the-badge) ![GitHub stars](https://img.shields.io/github/stars/urbanadventurer/whatweb?style=for-the-badge)  ![GitHub](https://img.shields.io/github/license/urbanadventurer/whatweb?style=for-the-badge)
-
-- https://github.com/tanjiti/FingerPrint - **Another website fingerprinter**
-
-> ![](https://img.shields.io/badge/MainLanguage-Perl-blue?style=for-the-badge)  ![GitHub last commit](https://img.shields.io/github/last-commit/tanjiti/FingerPrint?style=for-the-bad
+> ![](http

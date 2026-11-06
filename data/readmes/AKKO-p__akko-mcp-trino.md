@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/github/actions/workflow/status/AKKO-p/akko-mcp-trino/ci.yml?branch=main&label=ci" alt="CI">
-  <img src="https://img.shields.io/badge/tests-1153%20passed-success" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-1280%20passed-success" alt="Tests">
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen" alt="Coverage">
   <img src="https://img.shields.io/badge/version-0.7.2-blue" alt="Version">
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-blue" alt="Python">
@@ -131,11 +131,11 @@ access: Trino decides for each user with the rules it already has, or, in
 - **One identity, only when named.** In `service` mode every query runs as `TRINO_USER`. It is never chosen by default, and the server says so at start and to every host in its initialization instructions.
 - **Bounded by default.** A row cap with a `truncated` flag (100), a time budget per query cancelled in Trino (60 s), a time budget per tool call (120 s).
 - **One audit line per call.** Keyed by `X-Request-Id`, never the token, never the SQL text: who called which tool, with which outcome, for how long.
-- **Eight tools,** annotated with what they can really do: `execute_query` is annotated read-only only while `TRINO_READ_ONLY` is true.
+- **Nine tools,** annotated with what they can really do: `execute_query` is annotated read-only only while `TRINO_READ_ONLY` is true.
 - **A guarded door.** Bearer tokens verified against any OIDC provider's JWKS (issuer, audience bound to this server, expiry, clock tolerance), a token issued for Trino refused, protected resource metadata (RFC 9728), a Host header filter.
 - **Built to be extended without being forked.** Tool plugins and extensions are Python packages named at start: identity modes, guards at the door, audit fields, routes, tools. An extension can only refuse what the core allows, never widen it.
 - **Any MCP host, any model.** Cursor, Claude Desktop, VS Code, the Python SDK… Mistral, or any OpenAI-compatible model through the example agent.
-- **Small and proven.** 1153 tests at 100 % line and branch coverage, including in-process suites on
+- **Small and proven.** 1280 tests at 100 % line and branch coverage, including in-process suites on
   the real SDK for all three transports, a live run against Keycloak and Trino in CI
   ([`integration/`](integration/)), and a product-neutral guard.
 
@@ -316,7 +316,8 @@ client in the audience of the tokens they get (an audience mapper too). Keycloak
 `principal-field` at the same claim. Entra ID, Okta and Dex give `sub` an opaque value
 too; name the claim your access rules know (`upn`, `preferred_username`, `uid`...). The
 [`integration/`](integration/) folder holds such a realm, tested on every pull
-request.
+request. Tested with the images of the integration suite (`integration/compose.yaml`), which
+pins their versions.
 
 On the Trino side, `http-server.authentication.type=JWT`,
 `http-server.authentication.jwt.key-file` set to the provider's JWKS URL,
@@ -535,10 +536,44 @@ The [examples](examples/README.md) folder has the details.
 | `list_catalogs` | `offset` (optional, 0 by default) | `{"catalogs": [...], "next_offset": n or null, "truncated": bool}`: one page of the catalogs Trino shows |
 | `list_schemas` | `catalog`, `offset` (optional) | `{"schemas": [...], "next_offset": n or null, "truncated": bool}`: one page of the schemas in that catalog |
 | `list_tables` | `catalog`, `schema`, `offset` (optional) | `{"tables": [...], "next_offset": n or null, "truncated": bool}`: one page of the tables and views in that schema |
-| `describe_schema` | `catalog`, `schema`, `offset` (optional) | `{"catalog", "schema", "tables": [{"table", "type", "comment", "columns": [{"column", "type", "comment"}]}], "next_offset": n or null, "shortened": bool}`: one page of whole tables, with their comments and columns |
-| `describe_table` | `catalog`, `schema`, `table`, `sample_rows` (0 to 20) | columns, types, comments, `truncated`; a governed sample when asked; what an extension's describers add |
+| `describe_schema` | `catalog`, `schema`, `offset` (optional) | `{"catalog", "schema", "tables": [{"table", "type", "comment", "columns": [{"column", "type", "comment"}]}], "next_offset": n or null, "shortened": bool}`: one page of tables, each complete, with their comments and columns; with a context provider, a `description` per table and `context_sources` (see [Context from a catalogue](#context-from-a-catalogue)) |
+| `describe_table` | `catalog`, `schema`, `table`, `sample_rows` (0 to 20, first page only), `column_offset` (optional, 0 by default) | one page of the columns, the row cap of them from `column_offset`, with types and comments; `truncated` when the page does not hold every column, `next_column_offset` where the next page starts (null on the last), `columns_cut` when the table has more than `MCP_DESCRIBE_MAX_COLUMNS` columns; a governed sample when asked; what an extension's describers add, and `describer_errors` when one failed; with a context provider, `table`, `column_context`, `terms`, `context_sources`, `context_truncated` and `undescribed_columns` (see [Context from a catalogue](#context-from-a-catalogue)) |
+| `profile_table` | `catalog`, `schema`, `table`, `columns`, `mode`, `percent` (all but the table optional) | `{"table", "scope", "rows": n, "columns_cut": bool, "columns": [{"column", "type", "non_null", "null_fraction", "approx_distinct", "min", "max"}]}`: aggregates of the rows the caller may read, computed by one query run as the caller, so masks and row filters apply as in `execute_query`. `columns` are named as `DESCRIBE` lists them, the first `MCP_PROFILE_MAX_COLUMNS` by default; `DESCRIBE` is read up to `MCP_PROFILE_DESCRIBE_ROWS` rows, and `"columns_cut": true` says it listed more, which cannot be named. `mode` is one of `MCP_PROFILE_MODES`: `sample` (the default: the first `MCP_PROFILE_SAMPLE_ROWS` rows, `"scope": "first_rows"`, not a random sample), `bernoulli` (`TABLESAMPLE BERNOULLI (percent)`, `0 < percent <= 100`, `"scope": "random_sample"`, scans every row to draw the sample) or `full` (every row the caller may read, `"scope": "visible_rows"`); a mode the server does not allow is refused before any query, and the description names only the modes allowed. The aggregate query carries the client tag `MCP_PROFILE_CLIENT_TAG` and runs within the smallest of `MCP_PROFILE_TIMEOUT_SECONDS`, `TRINO_QUERY_TIMEOUT_SECONDS` and the call's budget set above 0; past it, it is cancelled in Trino and the answer is `"kind": "time_budget"`. At most `MCP_PROFILE_MAX_CONCURRENT` calls run at once; past them, `"kind": "busy"`. `null_fraction` is null when `rows` is 0. A type with no order (`array`, `map`, `row`, `json`, any type not known to be ordered) gets its count only and `"skipped": ["distinct", "min", "max"]`; `min` and `max` are rendered as the cells of `execute_query`, and a text or binary one longer than `MCP_PROFILE_VALUE_CHARS` (characters, or bytes) is cut in the query itself, an exact prefix of the true value, with `"cut": ["min"]`, `["max"]` or both; a type longer than `MCP_PROFILE_TYPE_CHARS` is cut, with `"type"` in `cut` |
 | `explain_query` | `sql` | `{"valid": true}`: Trino analyzed a read-only statement as the caller, without running it; `{"plan": "..."}` only once `EXPLAIN` is in `MCP_EXTRA_READ_COMMANDS` |
 | `execute_query` | `sql`, `max_rows` (optional, lower than the server cap) | `{"columns": [...], "rows": [...], "row_count": n, "truncated": bool}` |
+
+The aggregate query of `profile_table` carries the client tag `MCP_PROFILE_CLIENT_TAG`
+(`mcp-profile` by default), so Trino's resource groups can bound how many run at once and
+the memory they take; for example, with the file-based resource group manager (the figures
+are an example to adapt, not a measure). Every selector names a leaf group, so the queries
+without the tag need their own group (`global.other` here), or Trino refuses them:
+
+```json
+{
+  "rootGroups": [
+    {
+      "name": "global",
+      "softMemoryLimit": "80%",
+      "hardConcurrencyLimit": 100,
+      "maxQueued": 1000,
+      "subGroups": [
+        {"name": "profile", "softMemoryLimit": "10%", "hardConcurrencyLimit": 2, "maxQueued": 20},
+        {"name": "other", "softMemoryLimit": "70%", "hardConcurrencyLimit": 98, "maxQueued": 980}
+      ]
+    }
+  ],
+  "selectors": [
+    {"clientTags": ["mcp-profile"], "group": "global.profile"},
+    {"group": "global.other"}
+  ]
+}
+```
+
+The resource group bounds Trino; `MCP_PROFILE_MAX_CONCURRENT` (4) bounds each replica of
+this server: a profile waiting in a Trino queue still holds one of the threads every tool of
+the replica shares, so past that many profiles at once a call answers `"kind": "busy"` at once
+and sends no query. Keep it at or below the group's `hardConcurrencyLimit` plus `maxQueued`,
+divided by the replicas.
 
 Every tool runs in Trino through the identity mode, the listing tools
 included: metadata is data, and Trino lists only what that identity may see.
@@ -704,6 +739,21 @@ altered; every cursor the server gives resumes, a schema such as Hive's `2024_sa
 included, since a schema in a cursor only ever enters a string literal. Without a
 call budget (`MCP_CALL_TIMEOUT_SECONDS=0`) a search of every catalog would have no
 bound: it is refused, a named catalog is searched, and `--check` warns of it.
+It reads `MCP_SEARCH_CONCURRENCY` catalogs at once (8 by default), each as the caller
+and within what is left of the call, never more than that many past the catalog it is
+answering from. When the call's budget is not exhausted, it answers what a search of one
+catalog at a time does: the same rows in the same order, the same `not_searched`, and the
+same `next_cursor`. When the budget runs out, the page is a correct partial page whose
+content can differ, since it read further: nothing past the first catalog it did not
+finish is served, and `next_cursor` resumes there. Once the page is full, the reads still
+in flight are cancelled in Trino at once and none starts. A catalog that hangs at the head
+is waited for as one catalog at a time would, up to the query's or the call's budget.
+`MCP_SEARCH_MAX_THREADS` (32) bounds the reads in flight in the threads of the whole
+process, all calls together: a call that finds none free reads its next catalog itself, so
+it always advances. For Trino, each call of `search_columns` runs up to
+`MCP_SEARCH_CONCURRENCY` metadata statements at once: bound them with a resource group on
+the server's `TRINO_SOURCE`, as for `profile_table`'s client tag, or set
+`MCP_SEARCH_CONCURRENCY=1` to read one catalog at a time, as 0.7 did.
 `--check` also warns of `MCP_SEARCH_RESERVE_SECONDS=0` with a call budget: a search
 may then run to the end of the call, which answers its own `time_budget` error. The
 audit line says how many tables and columns came and whether the search was cut,
@@ -757,6 +807,7 @@ could not already name:
 | `invalid_argument` | the server refused an argument (an identifier, an `offset`, a cursor, a search text out of bounds) before reaching Trino |
 | `read_only` | the statement writes and the server is read-only |
 | `time_budget` | the call ran out of its time budget; narrow the request |
+| `busy` | `profile_table` already runs as many calls as this server allows (`MCP_PROFILE_MAX_CONCURRENT`); call again in a few seconds, as its `hint` says |
 | `unavailable` | Trino could not answer (internal error, connection lost): the statement is neither valid nor invalid, try again later |
 | `other` | any other error |
 
@@ -794,7 +845,9 @@ A registrar with a third argument receives the `ToolContext`:
 `tools.tool(title, governed=..., open_world=...)` registers a tool with its MCP
 annotations, `tools.run(sql)` queries Trino through the identity mode,
 `tools.note(...)` records what the call did (the SQL it ran, the tables, the
-rows, whether they were cut), and `tools.add_describer(fn)` adds to what
+rows, whether they were cut), `tools.context.tables(refs)` reads the short catalogue
+description of the tables Trino proves to the caller (`tools.context` is None without a
+provider), and `tools.add_describer(fn)` adds to what
 `describe_table` answers:
 
 ```python
@@ -933,6 +986,150 @@ own backend for the caller reads the verified bearer with
 rather than send it on. Trino decides
 what that identity may read.
 
+## Modules
+
+The core ships three extensions of its own, each off until `MCP_EXTENSIONS` names it
+(comma-separated): `token-policy`, `fingerprint-audit` and `trino-tags`. Their order matters
+where extensions meet: a public document of the same path is the last extension's, the
+challenge of a refusal is the first extension's that answers one, and the audit is wrapped in
+that order.
+
+**`token-policy`.** A verified token must also name an allowed client and carry the required
+scopes. The client is the first of `MCP_JWT_CLIENT_CLAIMS` the token carries, and its scopes
+the first of `MCP_JWT_SCOPE_CLAIMS`; both are compared exactly, case included, with no
+wildcard. A foreign client gets the 401 of an invalid token (`X-Reason: client_not_allowed`),
+and is never told which scope would let it in, since the client is checked first. A token
+without every required scope gets 403 `insufficient_scope`, whose `WWW-Authenticate` names the
+scopes to ask for (RFC 6750 §3.1), and the protected resource metadata adds
+`scopes_supported`. A request without a verified token, which `MCP_AUTH_REQUIRED=false` lets
+past the core, gets the core's 401 and challenge, never 403. Every client and scope must be an
+OAuth scope-token (printable ASCII, no space, no quote, no backslash), or it refuses to start;
+with neither list set, it refuses to start too: it would enforce nothing. The claims are read
+by presence: the first one the token carries is read, whatever it holds, so an empty `scp`
+never falls back to `scope`; list only claims the identity provider sets itself, never one an
+attribute a user may edit feeds.
+
+For example, in the integration suite (`integration/compose.yaml`, server `mcp-scoped`):
+
+```sh
+MCP_EXTENSIONS=token-policy
+MCP_ALLOWED_CLIENTS=mcp-host
+MCP_REQUIRED_SCOPES=data:query
+```
+
+A token of the client `mcp-host` without the scope `data:query` gets this answer:
+
+```http
+HTTP/1.1 403 Forbidden
+X-Reason: insufficient_scope
+WWW-Authenticate: Bearer resource_metadata="http://mcp-scoped:3000/.well-known/oauth-protected-resource/mcp", error="insufficient_scope", scope="data:query"
+
+{"error":"insufficient_scope","message":"the token lacks a scope this server requires: ask the identity provider for a token with the scopes the WWW-Authenticate header names"}
+```
+
+and the protected resource metadata names the scope:
+
+```json
+{
+  "resource": "http://mcp-scoped:3000/mcp",
+  "authorization_servers": ["https://keycloak:8443/realms/integration"],
+  "bearer_methods_supported": ["header"],
+  "scopes_supported": ["data:query"]
+}
+```
+
+The claims, by identity provider:
+
+- Keycloak: the defaults (`MCP_JWT_CLIENT_CLAIMS=azp,client_id`, `MCP_JWT_SCOPE_CLAIMS=scope`), tested by the integration suite.
+- Entra ID: `MCP_JWT_SCOPE_CLAIMS=scp`; the client is in `azp` or `appid` depending on the token version, so check one of your tokens. Not tested live.
+- Okta: `MCP_JWT_SCOPE_CLAIMS=scp`, `MCP_JWT_CLIENT_CLAIMS=cid`. Not tested live.
+
+**`fingerprint-audit`.** The audit line adds what the call did, after the core's fields, in
+this order: `request_id`, `tool`, `subject`, `token_id` (the token's `jti`, never the token),
+`ok`, `error`, `sql_sha256`, `tables`, `duration_ms`, `rows`, `truncated`, `metadata_served`
+(the tables whose catalogue description reached the caller). The SQL text still has no field.
+`sql_sha256` is the SHA-256 of the statement sent to Trino for the caller; a tool that sends
+several keeps the last one it noted, the one that answered the agent (the aggregate of
+`profile_table`, the sample of `describe_table`). Trino's query history keeps the text, and a
+policy engine that records it hashes to the same digest: that is the join. Each list keeps
+`MCP_AUDIT_MAX_NAMES` names; past them, `tables_cut` or `metadata_served_cut`, right after
+the list, says how many more there were, each counted once. A field another extension adds to
+the line never overwrites one of these: it is dropped and counted in `extra_dropped`. The
+server wraps the audit in the order of `MCP_EXTENSIONS`, each around the one before: name
+`fingerprint-audit` before any other extension that wraps the audit.
+
+For example, the line of an `execute_query` call in the integration suite (the subject and the
+ids are replaced by fictitious ones; the field order and the digest are those of the run):
+
+```json
+{
+  "request_id": "req-docs-0001",
+  "tool": "execute_query",
+  "subject": "alice_user",
+  "token_id": "jti-docs-0001",
+  "ok": true,
+  "error": "",
+  "sql_sha256": "595c26467ad8ea2d0a0857b4bf5c094d6f6d6bfc8c88ebc289f03a523ce7faf5",
+  "tables": ["tpch.tiny.region"],
+  "duration_ms": 1675,
+  "rows": 1,
+  "truncated": false,
+  "metadata_served": []
+}
+```
+
+**`trino-tags`.** Every query of a call carries two client tags (`X-Trino-Client-Tags`):
+`request_id=<id>`, the request id the edge sent or the server made, and `tool=<tool>`, each
+only when known. Trino keeps them with the query, so that its query history, its resource
+groups and a policy engine that records them see which call of the server sent it. The core
+keeps an edge's request id only when it is a plain token, and the module keeps a tool name
+only when it is one too, else `tool=other`, so no comma and no `=` can add a tag of its own. The filter's tag (`mcp-gate`) and the profile's (`mcp-profile`) come in addition.
+For example, a resource group for the queries the agents write themselves (the figures are an
+example to adapt, not a measure; every selector names a leaf group):
+
+```json
+{
+  "rootGroups": [
+    {
+      "name": "global",
+      "softMemoryLimit": "80%",
+      "hardConcurrencyLimit": 100,
+      "maxQueued": 1000,
+      "subGroups": [
+        {"name": "agents", "softMemoryLimit": "30%", "hardConcurrencyLimit": 10, "maxQueued": 100},
+        {"name": "other", "softMemoryLimit": "50%", "hardConcurrencyLimit": 90, "maxQueued": 900}
+      ]
+    }
+  ],
+  "selectors": [
+    {"clientTags": ["tool=execute_query"], "group": "global.agents"},
+    {"group": "global.other"}
+  ]
+}
+```
+
+In the integration suite, a call of `execute_query` sent with `X-Request-Id: req-docs-0001`
+ran its query with these client tags:
+
+```text
+X-Trino-Client-Tags: request_id=req-docs-0001,tool=execute_query
+```
+
+and Trino's `system.runtime.queries` shows it in the group the selector on
+`tool=execute_query` names (`integration/trino/resource-groups.json`, with the same selectors
+as above):
+
+```text
+query_id                     resource_group_id    source
+20261106_173554_00003_ppe7v  [global, agents]     trino-mcp
+```
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `MCP_ALLOWED_CLIENTS` | `token-policy`: the clients a token may name, separated by commas or spaces | none: any client |
+| `MCP_REQUIRED_SCOPES` | `token-policy`: the scopes a token must carry, every one, separated by commas or spaces | none |
+| `MCP_AUDIT_MAX_NAMES` | the names each list of a call's audit record keeps (its tables, the tables whose description it served), 1 to 100000; the others are counted, once each, never written | `200` |
+
 ## What happens on a request
 
 ```mermaid
@@ -988,6 +1185,9 @@ reads its own variables from the same environment.
 | `MCP_SEARCH_MIN_LENGTH` | the shortest word `search_columns` searches, 1 at least; shorter words are ignored, and a text with none left is refused | `3` |
 | `MCP_SEARCH_MAX_WORDS` | the most words a text of `search_columns` may hold, 1 at least; above it the search is refused before Trino | `8` |
 | `MCP_SEARCH_MAX_WORD_LENGTH` | the longest word `search_columns` takes, not below `MCP_SEARCH_MIN_LENGTH`; a longer word is refused before Trino | `64` |
+| `MCP_SEARCH_CONCURRENCY` | the catalogs one call of `search_columns` reads at once, 1 to 32: as many metadata statements in flight in Trino for that call. Raising it past 8 mostly adds metadata load on Trino, with little gain. | `8` |
+| `MCP_SEARCH_MAX_THREADS` | the reads of `search_columns` in flight in the threads of one process, all calls together, 1 to 256; a call that finds none free reads its next catalog itself | `32` |
+| `MCP_DESCRIBE_MAX_COLUMNS` | the most columns of a table `describe_table` reads, page by page, 1 to 100000; past them the answer says `columns_cut` | `5000` |
 | `MCP_SEARCH_RESERVE_SECONDS` | the seconds of the call's budget `search_columns` keeps in reserve, so that it answers what it searched before the call runs out; 0 or more, below `MCP_CALL_TIMEOUT_SECONDS` when that is set; 0 is warned of | `2` |
 | `TRINO_QUERY_TIMEOUT_SECONDS` | time budget of one query: past it, the server cancels the query in Trino; `0` leaves the limit to Trino | `60` |
 | `MCP_CALL_TIMEOUT_SECONDS` | time budget of one tool call, every query of the call included: past it, no query starts, the one running is cancelled and the agent gets an error; `0` sets none | `120` |
@@ -1015,6 +1215,7 @@ reads its own variables from the same environment.
 | `MCP_JWT_LEEWAY_SECONDS` | tolerance on `exp`/`nbf`/`iat` for clock drift between the issuer and this server | `30` |
 | `MCP_JWT_USER_CLAIM` | the claim of a caller's token that names the user, as the access rules know them. `sub` is the OpenID Connect standard: the stable, unique identifier the issuer gives the user. An issuer whose `sub` is an opaque id the rules do not know (Keycloak gives a UUID; Entra ID, Okta and Dex an opaque id too) names another claim: `preferred_username`, `upn`, `uid`... A token without it is refused, never read from another claim | `sub` |
 | `MCP_JWT_ALGORITHMS` | the signature algorithms a caller's token may use, comma-separated, among `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `ES256`, `ES384`, `ES512` (for example `RS256,RS512` for an identity provider that signs with either); a shared-secret algorithm (`HS256`...) or `none` refuses to start | `RS256` |
+| `MCP_JWT_CLIENT_CLAIMS`, `MCP_JWT_SCOPE_CLAIMS` | the claims that name the application that asked for a token, and those that hold its scopes, comma-separated, in order: the first one the token carries wins. A scope claim is a space-delimited string or a list of strings; any other value is no scope. Keycloak: the defaults; Entra ID: `azp` or `appid` depending on the token version, and `scp`; Okta: `cid` and `scp` (see [Modules](#modules)) | `azp,client_id`, `scope` |
 | `MCP_ALLOWED_HOSTS` | Host header filter (the SDK's DNS rebinding protection): `host` or `host:port` entries, comma-separated, `host:*` for any port (the only wildcard); once the filter is on, a request that carries an `Origin` header is refused (403); empty serves any Host | none (off) |
 
 Auth enabled without a JWKS URL, or without an audience of this server's own,
@@ -1029,6 +1230,31 @@ pretend to. So does a door that requires a token it cannot verify
 | `MCP_TOOL_PLUGINS` | comma-separated names of registrars installed under the entry-point group `akko_mcp_trino.tools` | none |
 | `MCP_EXTENSIONS` | comma-separated names of extensions installed under the entry-point group `akko_mcp_trino.extensions` | none |
 
+### Deployment with a catalogue
+
+The server runs with a data catalogue in one of two modes.
+
+**Mode 1, Trino only.** The server runs without a context provider. A team that already runs
+the MCP server of its catalogue keeps it, side by side: nothing in this server blocks or
+replaces it. This mode fits when the metadata of the catalogue is not sensitive.
+
+**Mode 2, with a context provider.** Business meaning (descriptions, glossary terms,
+classifications, owner) is shown only for the tables and columns Trino lists to the caller.
+This mode fits when metadata must follow the rights on the data.
+
+**Rights.** The context follows Trino's rights. The provider reads the catalogue with a
+read-only technical account. Descriptions follow what Trino lists to the caller. With
+`MCP_CONTEXT_REQUIRE_SELECT=true`, `describe_table` also requires that Trino validates a select
+by the caller of the columns it lists, while `describe_schema` keeps serving the descriptions of
+the tables Trino lists. It serves glossary terms, classifications and business metadata only
+when their glossary, classification or set is named in the allow lists, closed by default, and
+the owner only when it is configured (for Atlas: `ATLAS_GLOSSARIES`, `ATLAS_CLASSIFICATIONS`,
+`ATLAS_BUSINESS_METADATA`, empty means none, and `ATLAS_OWNER_ATTRIBUTE`). So a glossary or a
+classification restricted in the catalogue is never served unless the operator names it. Reading
+the catalogue as the caller is not in this version.
+
+Without a provider, no catalogue code is loaded and no catalogue is called.
+
 ### Context from a catalogue
 
 A data catalogue can describe what Trino lists: a table's owner, its classification, a column's glossary
@@ -1041,16 +1267,102 @@ or a factory that cannot serve its settings refuses to start; a catalogue that i
 variables from the environment; a secret can be given as a file (`<NAME>_FILE`, read again when the
 file changes) instead of a value.
 
+Two providers come with this repository: `file`, in the core, the reference for the contract (a
+catalogue kept in one JSON file), and `atlas`, for Apache Atlas, a package of its own
+(`akko-mcp-trino-atlas`, installed by the `atlas` extra); its settings, its Kerberos set-up and
+the account it needs are in [its README](providers/atlas/README.md).
+
 Context follows what Trino lists for the caller: a name that comes from a catalogue is never used
 before Trino has listed it for that caller, a provider never receives the Trino client or the
 caller's identity, and it never writes to its catalogue. The text of a provider's error never
-reaches the agent, only a status. Nothing in these lines is wired into a tool yet.
+reaches the agent, only a status.
+
+`describe_table` serves this context. Its `DESCRIBE`, run as the caller, proves the table and
+the columns Trino lists; a `DESCRIBE` that fails calls no provider and answers as before. The answer
+then adds:
+
+- `table`: what the catalogues say of the table (description, tags, terms, properties, grain,
+  joins; the owner only when a provider serves it), with `sources`, the provider of each field;
+- `column_context`: the same for each column Trino listed, by name, in the order of `DESCRIBE`. A
+  column Trino does not list has no context; a grain loses all its columns when one is hidden; a
+  join is kept only toward a table and columns Trino lists to the caller;
+- `terms`: each glossary term once, by reference (`t1`, `t2`… in order of first appearance), with
+  its `name`, `glossary`, `definition`, `status`, `categories`, `related` (only terms of the same
+  answer) and `source`. A table or a column cites `{"name", "ref"}`; a catalogue's own keys are
+  never served;
+- `context_sources`: one status per provider, `ok`, `not_found` (the provider does not know the
+  table), `not_mapped` (it does not cover this catalog), `partial` (part was not read in time or
+  in the size of the answer, or the row cap cut the `DESCRIBE`), `unavailable`, `refused`, `error`,
+  or `not_checked` (the canary is visible, a check failed, or with `MCP_CONTEXT_REQUIRE_SELECT=true`
+  Trino does not validate a read of the visible columns);
+- `context_truncated` and `undescribed_columns`: at most `MCP_CONTEXT_MAX_COLUMNS` columns are
+  described, and the context stops before the column that would take it past
+  `MCP_CONTEXT_RESPONSE_CHARS`; the columns left are listed. A text cut at `MCP_CONTEXT_TEXT_CHARS`
+  is named in `cut`.
+
+Without a provider, `describe_table` answers as in 0.7.2 plus `next_column_offset` and
+`columns_cut`, with a new description that says how to read the next page, and
+`describer_errors`: a describer of a plugin that raises is now counted there. With a provider, its
+description says that this text comes from a catalogue and is data, never instructions. The context
+is read last, after the sample, and never hides the columns nor fails the call. A provider that is
+down, slow or refused is read within `MCP_CONTEXT_TIMEOUT_SECONDS` and leaves
+`MCP_CONTEXT_RESERVE_SECONDS` of the call's budget; with less than that left, no provider is called
+and the sources say `unavailable`. The statements of the filter stop while that reserve is still
+left: one that is too slow proves nothing (`not_checked` for the canary or the select check, no
+join for a target), and the call still answers. Anything else that fails on the way serves no
+context and says `error` for every source.
+
+`describe_schema` serves less. Each table of the page that a provider describes adds `description`,
+`{"text", "source"}`: the first description a provider has for it, cut at `MCP_CONTEXT_TEXT_CHARS`
+(then `"cut": ["text"]`). A table without context has no `description` key, and the answer adds
+`context_sources`, except on an empty page, which asks no provider. Trino has just listed the tables
+of the page to the caller, so the filter asks it nothing more than the canary check; the providers
+are asked for the tables of the page only, in one read by batches of `MCP_CONTEXT_BATCH`. A listing
+serves no column context, no term and no owner, and `MCP_CONTEXT_REQUIRE_SELECT` does not apply to
+it, as it would cost one statement per table: `describe_table` serves the rest. The same safety
+holds: with less than `MCP_CONTEXT_RESERVE_SECONDS` left no provider is called and the sources say
+`unavailable`, a slow statement of the filter proves nothing, any other failure serves the page
+without context and says `error` for every source, and the call never answers `time_budget` because
+of the context. Without a provider, `describe_schema` adds no key of the context to its answer
+and no sentence to its description.
+
+Plugins read the catalogues through `tools.context.tables(refs)`, a list of `TableRef` built with
+`TableRef.of`. It answers as `describe_schema` does, `descriptions` by `TableRef` and
+`context_sources`, for the tables the caller's visibility proves only (listed by Trino in this call
+or within `MCP_VISIBILITY_TTL_SECONDS`). A table Trino does not list is neither named to Trino nor
+asked of a provider, and is absent from the answer, as a table without context is. One call reads at
+most `MCP_DESCRIBE_SCHEMA_TABLES` distinct tables, the first of `refs`, as many as a page of
+`describe_schema`; the tables past them are absent. An empty `refs` asks nothing and answers no
+`context_sources`, as an empty page does. A plugin never receives the chain, the visibility cache
+nor a provider.
+
+A catalogue text costs what is served, not what the catalogue sends: cleaning a text reads at most
+four times `MCP_CONTEXT_TEXT_CHARS` of it, and a listing reads only the description it serves. A
+name the catalogue gives (a classification, a tag, a set, a property's key, the owner, the tier, a
+term's name, glossary, status, category or relation, a column of a grain or a join) longer than 256
+characters once cleaned is dropped, never cut, since a cut name is another name; deciding so reads
+at most 1025 characters of it. A term whose name is dropped is not served. A property's value is a
+text: it is cut at `MCP_CONTEXT_TEXT_CHARS`, and then carries `"cut": ["value"]`.
+
+The statements of the filter run as the caller, with the client tag `mcp-gate`: the canary check,
+`EXPLAIN (TYPE VALIDATE)` of the visible columns with `MCP_CONTEXT_REQUIRE_SELECT=true` (a refusal
+is kept for `MCP_VISIBILITY_TTL_SECONDS`), and, for the target of a join, the schemas of its
+catalog, the tables of its schema and its `DESCRIBE`. A right withdrawn in Trino can leave the
+context of a table visible for up to `MCP_VISIBILITY_TTL_SECONDS`, never its data, which Trino
+refuses at once.
+
+Give each provider a read-only account that sees only what every user who sees an object in Trino
+may read of it: the allow lists of a provider name what is served, and its account should read no
+more. Behind Trino Gateway, the statements of the filter and those of the call may reach two
+clusters of one routing group: every cluster of a group must share the same access control (the
+same plugin and the same rules). A routing group whose clusters apply different rules is not
+supported.
 
 | Variable | Meaning | Default |
 |---|---|---|
 | `MCP_CONTEXT_PROVIDERS` | comma-separated names of providers installed under the entry-point group `akko_mcp_trino.context`; an unknown name refuses to start | none |
 | `MCP_CONTEXT_TIMEOUT_SECONDS` | time budget of one context read, more than 0 | `5` |
-| `MCP_CONTEXT_RESERVE_SECONDS` | the seconds of a tool call's budget kept in reserve, 0 or more | `0.5` |
+| `MCP_CONTEXT_RESERVE_SECONDS` | the seconds of a tool call's budget kept back so that the context ends before the call does; 0.3 or more when a provider is loaded (the server refuses less), 0 or more otherwise | `0.5` |
 | `MCP_CONTEXT_MAX_CONCURRENCY` | the most context reads in flight for one provider, 1 at least | `32` |
 | `MCP_CONTEXT_RETRY_AFTER_SECONDS` | the delay before a source that is down is called again, 0 or more | `30` |
 | `MCP_CONTEXT_REFUSED_RETRY_SECONDS` | the delay before a source that refused the account is called again (`SIGHUP` lifts it at once), 0 or more | `3600` |
@@ -1062,13 +1374,33 @@ reaches the agent, only a status. Nothing in these lines is wired into a tool ye
 | `MCP_CONTEXT_REQUIRE_SELECT` | `true`: context is served only for tables the caller may read | `false` |
 | `MCP_CONTEXT_CANARY` | one table, `catalog.schema.table`, that no caller of this server may see: context is served to a caller only while Trino hides it from them; unset is warned of when a provider is loaded | none |
 | `MCP_CONTEXT_TEXT_CHARS`, `MCP_CONTEXT_RESPONSE_CHARS`, `MCP_CONTEXT_MAX_COLUMNS` | the longest text of one context field, the longest context in one response, and the most columns described in one table, 1 at least | `500`, `60000`, `500` |
-| `MCP_PROFILE_MAX_COLUMNS`, `MCP_PROFILE_SAMPLE_ROWS` | bounds of the profile of a table, 1 at least | `50`, `100000` |
+| `MCP_PROFILE_MAX_COLUMNS`, `MCP_PROFILE_SAMPLE_ROWS` | the most columns `profile_table` profiles in one call (1 to 500), and the rows its `sample` mode reads, 1 at least | `50`, `100000` |
+| `MCP_PROFILE_MODES` | the modes `profile_table` allows, comma-separated, among `sample`, `bernoulli` and `full`; empty or an unknown name refuses to start | `sample,bernoulli,full` |
+| `MCP_PROFILE_VALUE_CHARS` | the characters of a text `min` or `max` it serves, or the bytes of a binary one; Trino reads one more and no further, and past it the value is cut; 1 at least | `200` |
+| `MCP_PROFILE_TYPE_CHARS` | the characters of a column's type it serves, 1 to 100000; a longer type is cut, with `"type"` in `cut`; `MCP_PROFILE_VALUE_CHARS` never cuts a type | `500` |
+| `MCP_PROFILE_DESCRIBE_ROWS` | the rows of its `DESCRIBE` it reads, past the row cap, 1 at least; a column past them cannot be named | `5000` |
+| `MCP_PROFILE_CLIENT_TAG` | the client tag of its aggregate query (not of its `DESCRIBE`), for a Trino resource group: 1 to 100 letters, digits and `_ . : = / -` | `mcp-profile` |
+| `MCP_PROFILE_TIMEOUT_SECONDS` | the time budget of its aggregate query, past which it is cancelled in Trino; the budget that applies is the smallest of this one, `TRINO_QUERY_TIMEOUT_SECONDS` and the call's budget, each counted only above 0, and `--check` prints it; 0 leaves the smaller of the other two; above 0, at most `TRINO_QUERY_TIMEOUT_SECONDS` and `MCP_CALL_TIMEOUT_SECONDS` when they are above 0 | `0` |
+| `MCP_PROFILE_MAX_CONCURRENT` | the calls of `profile_table` one server process runs at once, 1 to 64; past them a call answers `"kind": "busy"` at once and sends no query | `4` |
 | `MCP_VISIBILITY_ENABLED` | removed in 0.8: the filter by Trino's rights cannot be turned off, and `false` refuses to start | none |
 
-`--check` prints a `context:` line (the providers, the time budget, the reserve, the batch and the
-caches), a `visibility:` line (the lifetime, whether a canary is set, whether `select` is required)
-and the lines of each provider. `MCP_CONTEXT_PROVIDERS` without a canary, or in `service` mode, is
-warned of.
+`--check` prints a `context:` line (the providers and every setting above from
+`MCP_CONTEXT_TIMEOUT_SECONDS` to `MCP_CONTEXT_MAX_COLUMNS`), a `visibility:` line (the lifetime, the
+bound in bytes and in names, whether a canary is set, never its name, and whether `select` is
+required) and the lines of each provider, never a secret. `MCP_CONTEXT_PROVIDERS` without a canary,
+or in `service` mode, is warned of.
+
+A provider that is down or that refuses the account logs one warning each time its breaker opens
+(`<name> is unavailable`, `<name> refused the account`), never the text of its error. `SIGHUP` lets
+the providers that refused the account be called again at once and sets their
+`mcp_trino_context_breaker_open` to 0. When the server stops, on SIGTERM, Ctrl+C or the end of its
+input, it closes every provider, then the context loop. Over HTTP this happens in the application's
+shutdown, and SIGTERM then ends the process with exit code 143; over stdio with a provider, SIGTERM
+closes and exits 0, and a SIGTERM during a close lets that close end, never starting another;
+without a provider, SIGTERM ends the process as in 0.7.2. A read that ignores its cancellation does
+not hold the stop for more than a few seconds; asyncio may then log once that a pending task was
+destroyed. Catalogue text loses its control and format characters, and its line and paragraph
+separators (U+2028, U+2029), before it reaches an agent.
 
 ### The file provider
 
@@ -1135,7 +1467,12 @@ table, or the same column, twice once folded is refused instead of merged.
 A provider is a class that implements the protocol `akko_mcp_trino.context.ContextProvider`:
 `name`, `context_api` (set it to `akko_mcp_trino.context.CONTEXT_API`; the server refuses another
 version), `maps(catalog)`, `served_sets()`, `describe(refs, deadline=…)`, `terms(keys, deadline=…)`,
-`check_lines()`, `aclose()` and `credentials_stamp()`. Its package registers a factory
+`check_lines()`, `aclose()` and `credentials_stamp()`. It may add an optional `reset()`, which the
+server calls on `SIGHUP`, from its signal handler, so that it forgets what it remembered of its
+catalogue: a plain function, never `async def` (nothing awaits it), that returns `None` at once,
+never blocks, sends no request and does not raise. One that raises is logged by the provider's
+name and the error's type, never its text, and the contract checks the rest when `reset()` is
+defined. Its package registers a factory
 `(env) -> provider` under the entry-point group `akko_mcp_trino.context`:
 
 ```toml
@@ -1183,247 +1520,4 @@ NAMES = ContractNames(
     catalog="warehouse",                  # a Trino catalog the provider maps
     unmapped_catalog="lakeside",          # one it does not map
     described=TableRef("warehouse", "ledger", "invoices"),
-    partitioned=TableRef("warehouse", "ledger", "payments"),
-    partition_column="booking_month",
-    dropped=TableRef("warehouse", "ledger", "refunds"),     # marked deleted in the catalogue
-    unknown=TableRef("warehouse", "ledger", "ghosts"),      # not in the catalogue
-    trap=TableRef("warehouse", "o'brien.été", "l'année fiscale.v2"),
-    term_column="invoice_total",          # a column of `described` with a served term
-    foreign_glossary="personnel",         # a glossary outside the allow list
-)
-
-
-class TestMyProviderContract(ContextContract):
-    @pytest.fixture
-    def harness(self):
-        return ContractHarness(
-            build=lambda env, transport: MyProvider(env, transport=transport),
-            replay=replay,
-            env={
-                "MY_CATALOGUE_TOKEN": SECRET,
-                "MY_CATALOGUE_GLOSSARIES": "finance",
-                "MY_CATALOGUE_SERVE_OWNER": "true",
-            },
-            secret=SECRET,
-            names=NAMES,
-        )
-```
-
-Every HTTP request the provider sends must go through `transport`. Names are given as Trino lists
-them, and should appear nowhere else in the provider's logs or `check_lines()`. The settings serve
-the term's glossary, and the owner when the catalogue has one. The secret is looked for as written,
-JSON-escaped, URL-encoded, as Python writes it and in base64, so give one with a quote, a backslash
-and a non-ASCII character. Logs are read from the root logger: a logger that does not propagate
-escapes the check. Keep the entry point's factory in the module of the provider's class, which the
-import check loads alone. The checks: the context comes back with its partition columns, an unknown
-table and a deleted entity are left out, an unmapped catalog costs no request, nothing outside
-`served_sets()` is returned and those sets follow the settings (without its allow lists, a provider
-still describes the table and serves no set; the owner, when the provider declares one, is served
-only when its setting asks for it, and a provider whose catalogue has no owner declares none and
-skips that check), no type carries a data value, a slow catalogue hands back control within the
-deadline plus `ContextContract.REPLY_MARGIN_SECONDS` (0.5 s) and leaves no request open, a 401
-raises `ProviderRefused` and is not sent again, a timeout, a 503 or a body that is not JSON raise
-`ProviderUnavailable`, neither the logs (`httpx` at `WARNING`, as the server sets it) nor
-`check_lines()`, read again after the catalogue's errors, nor an exception hold the secret, logs and
-`check_lines()` hold no object name, the provider's module loads nothing of the core's Trino side, a
-factory that refuses a malformed setting does not put the secret in its message (each setting that
-holds it is given back padded, then in quotes), a trap name is found under its exact name, and every
-name is folded. A provider that sends no request, such as `file`, skips the checks that need one
-with `no HTTP`. The check of `snapshot` comes with pre-warming in 0.8.x and is skipped in 0.8.
-
-`ContextContract.DEADLINE_SECONDS` (5 s) is the deadline the checks give a call that should
-succeed, and `SLOW_DEADLINE_SECONDS` (1 s) the one they give a catalogue that does not answer. They
-are class attributes: raise them in your subclass when your CI is slow, and keep the second well
-under 30 s, the time the slow catalogue takes to answer.
-
-### Serving
-
-| Variable | Meaning | Default |
-|---|---|---|
-| `MCP_TRANSPORT` | `streamable-http`, `sse` or `stdio` | `streamable-http` |
-| `MCP_PORT`, `MCP_HEALTH_PORT` | listening ports | `3000`, `3001` |
-| `MCP_SERVER_NAME` | name announced to hosts | `trino-mcp` |
-| `MCP_USER_TOKEN` | stdio only: the user's access token, verified like a bearer header | none (required in strict mode) |
-
-## Operations
-
-### Refusals
-
-Every refusal carries `X-Reason` and the request id, never the token. The core
-refuses with `401 unauthenticated` a request without a valid token (none,
-forged, expired, or issued for another audience, Trino's included), and says in
-the body what to send:
-
-```json
-{"error": "unauthenticated", "message": "this server requires a bearer token issued for it by the identity provider: send Authorization: Bearer <access token>"}
-```
-
-When `MCP_RESOURCE_URL` is set, the server publishes its protected resource
-metadata at `/.well-known/oauth-protected-resource` (and under the path of the
-URL, such as `/.well-known/oauth-protected-resource/mcp`), naming the resource
-and `MCP_OIDC_ISSUER` as its authorization server, and the `401` carries
-`WWW-Authenticate: Bearer resource_metadata="…"`, as the MCP authorization
-specification asks. An extension's guards add their own reasons; its
-documents and challenges take precedence over the core's.
-
-### Warnings
-
-A configuration that leaves something open is said three times: as a
-`WARNING` line at start, in `--check`, and to every MCP host in the
-`instructions` of the initialization. The core warns of `service` mode and of a
-door that does not require a valid token.
-
-### Audit
-
-Every response of the MCP endpoint carries `X-Request-Id`. It is the one the
-gateway in front of the server sent, when it is a plain token (letters,
-digits, `.`, `_`, `:`, `-`, at most 128), or one the server generated. A tool
-call outside an HTTP request (stdio) gets its own id. Every tool call, a
-plugin's included, writes one JSON line to the `mcp.audit` logger keyed by
-that id:
-
-```json
-{"request_id":"edge-42","tool":"execute_query","subject":"alice","ok":false,"error":"USER_ERROR:PERMISSION_DENIED","duration_ms":84}
-```
-
-With the default logging configuration, the line comes out prefixed with
-`INFO:mcp.audit:`; a collector that expects pure JSON strips that prefix.
-
-| Field | Meaning |
-|---|---|
-| `request_id`, `tool`, `subject` | which call, which tool, for whom; the line has no field that could hold the bearer or the SQL text |
-| `ok`, `error` | the outcome; `error` is a code, never a message, because a message from Trino may quote a value read from a row (`Cannot cast '<value>' to INT`): Trino's error type and name for a Trino error (`USER_ERROR:INVALID_CAST_ARGUMENT`), the class of any other exception (`TimeoutError`, `CallTimeout` past the call's budget), the code a tool names for its own refusal (`read_only`, `invalid_argument`) or a plugin with `note(error=...)`, else `tool_error`. The agent reads the whole message |
-| `duration_ms` | how long the call took |
-
-What a call did (the SHA-256 of its SQL, the tables, the rows, whether they
-were cut) is kept in its record while it runs (`akko_mcp_trino.audit.note`);
-the core's line does not write it, an extension may (`wrap_audit`).
-
-### Health and metrics
-
-`/health` on the health port never touches Trino, so a liveness probe cannot
-kill the server because Trino is slow. `/ready` asks the identity mode: in
-`jwt` mode Trino's public `/v1/info`; in `impersonation` and `service` modes, a
-bounded `SELECT 1` as `TRINO_USER`, impersonating no one. `/metrics` exposes `mcp_trino_queries_total`,
-`mcp_trino_query_errors_total` and `mcp_trino_query_duration_seconds`. With context providers loaded it also
-exposes `mcp_trino_context_calls_total`, `mcp_trino_context_errors_total` (by status),
-`mcp_trino_context_call_duration_seconds`, `mcp_trino_context_cache_lookups_total` (hit or miss),
-`mcp_trino_context_cache_bytes` and `mcp_trino_context_breaker_open`, each by provider.
-
-## Development
-
-```bash
-pip install -e ".[dev]"
-ruff check akko_mcp_trino tests examples && ruff format akko_mcp_trino tests examples
-ruff check akko_mcp_trino --select D100,D101,D102,D103,D105,D107   # every public name documented
-mypy akko_mcp_trino           # the package ships py.typed and type-checks clean
-pip-audit                     # no known vulnerability in the dependency tree
-bash lint-vendor-neutral.sh   # fails if the package imports anything product-specific
-pytest                        # line or branch coverage below 100 % fails the run
-integration/run.sh            # live: Keycloak, Trino and three servers in Docker, then removed
-python -m build && twine check dist/*
-akko-mcp-trino --check        # effective configuration, no secrets; exit 2 if it would not start
-```
-
-`tests/test_core_alone.py` lists what the core holds (tools, modules,
-settings, audit fields) and fails the day something is added unlisted.
-
-Every module in `akko_mcp_trino/` has one responsibility and its tests, in
-`tests/`:
-
-| Module | Responsibility |
-|---|---|
-| `config.py` | read the environment, neutral defaults |
-| `auth.py` | JWT verification against JWKS, `Principal` |
-| `identity.py` | the verified caller in a ContextVar |
-| `middleware.py` | the guard: token, request id, the extensions' guards and documents |
-| `extensions.py` | the extension points and their loading |
-| `transport_security.py` | the Host header filter (`MCP_ALLOWED_HOSTS`) |
-| `audit.py` | the audit line, the request id, the record and the time budget of a call |
-| `sql_guard.py` | identifier validation, read-only decision on the AST |
-| `tools.py`, `plugins.py` | the eight tools and the `ToolContext`, loading tool plugins |
-| `trino_client.py` | the Trino connection, the identity modes (`jwt`, `impersonation`, `oauth2`, `service` in the core) and the time budgets |
-| `token_exchange.py` | OAuth 2.0 Token Exchange (RFC 8693): a token for Trino in exchange for the caller's |
-| `health.py`, `metrics.py` | `/health`, `/ready` and `/metrics`; the Prometheus counters |
-| `server.py`, `app.py`, `__main__.py` | assembly, transport, entrypoint and `--check` |
-| `context/` | the context providers: protocol, types, chain, filter by Trino's rights, the `file` provider |
-| `testing/` | the contract every context provider passes, for the providers' own tests |
-
-The README is tested too: every variable listed here is read by `config.py`,
-and the defaults stated here are the defaults in the code.
-
-## Design notes
-
-**The guard is a pure ASGI middleware, not `BaseHTTPMiddleware`.** The latter
-runs the downstream in a separate task and breaks ContextVar propagation: the
-verified caller would never reach the tools.
-
-**Mounting is transport-independent.** One code path builds the transport app
-and mounts the guard, whatever the transport. The guard once lived only on the
-branch the default transport never took; a test now asserts it for both.
-
-**Every tool goes through the identity mode, not only `execute_query`.**
-Listing catalogs, schemas and tables is reading metadata; a test walks every
-tool to check it reaches Trino the same way.
-
-**Read-only is decided on the AST, anywhere in the tree.** A leading-keyword
-check lets `WITH w AS (DELETE FROM t) SELECT 1` through. So did a root-node
-check, until a live adversarial proof caught it. The guard now walks the whole
-tree.
-
-**Table functions are refused.** `TABLE(pg.system.query(query => '...'))` parses
-as a plain `SELECT`, yet it sends raw SQL to the source under the connector's
-own account, so the engine applies neither row filters nor column masks. The
-guard refuses every table function and the `system` catalog (which shows other
-users' SQL in `system.runtime.queries`). The engine policy must refuse them as
-well, `system.jdbc` and `system.metadata` aside; the guard is a second line, not
-the only one.
-
-**No token passthrough.** Up to 0.5, `jwt` mode sent Trino the caller's own
-token, once verified. The MCP authorization specification forbids it: a token
-issued for one service must not be sent on to another, or that service may
-trust a token that was never meant for it (the "confused deputy"). Since 0.6,
-the server accepts only tokens whose audience is its own, refuses a token
-issued for Trino, and obtains for Trino a token of its own by OAuth 2.0 Token
-Exchange (RFC 8693). Where the provider cannot exchange tokens, `impersonation`
-is the explicit fallback; it is never chosen in silence.
-
-**The verified identity, never one the caller names.** The caller's name
-always comes from their verified token. A caller sending a header that names a
-Trino user changes nothing: the server builds its own request to Trino. A
-password, a token or a client certificate is never sent over plain http, and an
-identity mode the core does not know refuses to start rather than fall back.
-
-**Safe by default.** Up to 0.5, the defaults ran every query as `TRINO_USER`
-and served a request without a token. Since 0.6, the default runs every query as
-the caller and refuses a request without a valid token; `service` mode and an
-open door are still possible, chosen by name, and announced as warnings. The
-row and time budgets have defaults too: unbounded was a choice nobody had made.
-
-**An extension can only refuse.** Its guards run around the token
-verification, never instead of it, and the read-only guard applies whatever
-they answer.
-
-**The server does not decide access.** Trino does, for each caller or for the
-configured identity. Putting policy in the server would duplicate, and eventually
-contradict, what the engine already enforces for every other client.
-
-## Contributing
-
-Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) for the
-ground rules (tests first, 100 % coverage, product-neutral, fail closed) and
-[SECURITY.md](SECURITY.md) for reporting a vulnerability privately.
-Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
-
-## About AKKO
-
-akko-mcp-trino is built and maintained by [AKKO](https://akko-ai.com), a
-French project working on governed access for AI agents to enterprise data,
-in place, on the engines and identity providers organisations already run.
-
-**Maintained by:** AKKO ([contact@akko-ai.com](mailto:contact@akko-ai.com)) ·
-**Issues:** [github.com/AKKO-p/akko-mcp-trino/issues](https://github.com/AKKO-p/akko-mcp-trino/issues)
-
-## License
-
-Apache 2.0. See [LICENSE](LICENSE).
+    partitioned=TableRef("warehouse", "le

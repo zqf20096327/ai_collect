@@ -133,11 +133,14 @@ hostinger-api-mcp --logout
 
 ### JSON configuration for Claude, Cursor, etc.
 
+Register Node and the server script by absolute path, never `npx` or a bare `node`/`hostinger-api-mcp`: tools start the server in your project, where `npx` puts the project's `node_modules/.bin` first on `PATH`, a version manager (asdf, mise) runs whatever Node the project's `.tool-versions` names, and Windows looks a bare name up in the project folder first. Any of these lets a cloned repository run its own code with your Hostinger credentials. After the global install, `node -p process.execPath` prints the Node path and `npm root -g` the folder that holds `@hostinger/mcp`. Run both from your home folder.
+
 ```json
 {
     "mcpServers": {
         "hostinger-api": {
-            "command": "hostinger-api-mcp",
+            "command": "/absolute/path/to/node",
+            "args": ["/absolute/path/to/global/node_modules/@hostinger/mcp/src/servers/all.js"],
             "env": {
                 "DEBUG": "false",
                 "HOSTINGER_API_TOKEN": "YOUR API TOKEN"
@@ -1907,7 +1910,9 @@ Get the link for the user to open their website in Hostinger Horizons interface.
 Use this tool when the user wants the link to an existing website, or when you need its
 website URL before or after editing it.\n
 `is_in_progress` is true while changes are being generated or the website is being published;
-wait until it is false before publishing. `published_at` is when the website was last published,
+wait until it is false before publishing. `is_generating` is true while changes are being generated,
+and `actions_in_progress` has `website_publish` while the website is being published.
+`published_at` is when the website was last published,
 `is_template` is whether its published pages show the "Use template" banner, and
 `has_ecommerce_store` is whether it has an online store.\n
 Websites can be edited with the `Edit website` tool, or by the user in Hostinger Horizons
@@ -2357,19 +2362,3 @@ Cloud Hosting plans.
 
 - **Method**: `GET`
 - **Path**: `/api/hosting/v1/accounts/{username}/websites/{domain}/nodejs/vulnerabilities`
-
-#### hosting_nodejs_patch-vulnerabilities
-
-Patches the selected Node.js vulnerabilities by updating the affected package versions
-in `package.json` and opening a GitHub pull request in the connected repository. The
-customer reviews and merges the pull request; merging triggers the automatic deployment.
-
-Auto-fix is only available for websites deployed from a connected GitHub repository.
-Websites deployed from an archive have no auto-fix path and return a 404. The Hostinger
-GitHub App needs write access to the repository; without it the request fails with a
-403 explaining the missing permission.
-
-Only vulnerabilities with `is_patchable` set to `true` can be patched. Non-patchable
-IDs in the selection are skipped; the pull request covers the patchable subset, listed
-in `patched_vulnerability_ids`. Selections without any patchable vulnerability are
-rej

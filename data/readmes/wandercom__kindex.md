@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: BSL 1.1](https://img.shields.io/badge/license-BSL%201.1-green.svg)](LICENSE)
-[![v0.52.0](https://img.shields.io/badge/version-0.52.0-purple.svg)](https://github.com/wandercom/kindex/releases)
+[![v0.53.0](https://img.shields.io/badge/version-0.53.0-purple.svg)](https://github.com/wandercom/kindex/releases)
 [![PyPI](https://img.shields.io/pypi/v/kindex.svg)](https://pypi.org/project/kindex/)
 [![MCP Market](https://img.shields.io/badge/MCP%20Market-kindex-blue.svg)](https://mcpmarket.com/server/kindex)
 [![Tests](https://github.com/wandercom/kindex/actions/workflows/ci.yml/badge.svg)](https://github.com/wandercom/kindex/actions/workflows/ci.yml)
@@ -1280,6 +1280,7 @@ llm:
   cache_control: true              # Prompt caching (90% savings on repeated prefixes)
   codebook_min_weight: 0.5         # Min node weight for codebook inclusion
   tier2_max_tokens: 4000           # Token budget for query-relevant context
+  timeout: 6.0                     # Compact-hook extraction timeout in seconds (kindex installs its hook at llm.timeout + 4s)
 
 embedding:
   provider: voyage                 # voyage, openai, gemini, or local

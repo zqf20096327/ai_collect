@@ -33,7 +33,7 @@ The Conversation View renders the raw API traffic as a readable chat-style timel
 
 ## MCP Observer
 
-The MCP Observer acts as a proxy between Claude Code and any HTTP-based MCP server. Configure the destination URL and all MCP traffic is captured and displayed in real time. The MCP Observer will be covered in a future blog post.
+The MCP Observer acts as a proxy between Claude Code and any HTTP-based MCP server. Configure the destination URL and all MCP traffic is captured and displayed in real time. Read more in [Visualizing Claude Code MCP Requests with Coding Agent Explorer](https://nestenius.se/ai/visualizing-claude-code-mcp-requests-with-coding-agent-explorer/).
 
 <img src="docs/images/MCP_Observer.png" alt="MCP Observer" width="800">
 
@@ -119,15 +119,38 @@ Then use Claude Code as you normally would.
 
 Navigate to [https://localhost:5001](https://localhost:5001) in your browser. On Windows the browser opens automatically on `dotnet run`. On macOS and Linux, open it manually.
 
-You will see three views:
+You will see three views and a settings page:
 
 - **HTTP Inspector** - Table view of all proxied requests with headers, bodies, SSE events, and timing details
 - **Conversation View** - Chat-style display showing messages, tool use, and responses
 - **MCP Observer** - Dedicated view for inspecting MCP server traffic (see below)
+- **Settings** - Where the proxy on port 8888 sends requests (see below)
+
+## Changing the API upstream (optional)
+
+By default the proxy on port 8888 forwards to `https://api.anthropic.com`. You can point it at any other server that speaks the Anthropic Messages API, for example a local model in [LM Studio](https://lmstudio.ai/), which has an Anthropic-compatible endpoint. The proxy forwards requests as they are and translates nothing, so an OpenAI-only server will not work.
+
+The upstream is chosen in this order:
+
+1. **The Settings page** in the dashboard, for the current run only. **Reset** goes back to the startup value.
+2. **The environment variable** `CODING_AGENT_EXPLORER_UPSTREAM_URL`, set before you start the app:
+   ```powershell
+   $env:CODING_AGENT_EXPLORER_UPSTREAM_URL = "http://localhost:1234"
+   ```
+3. **`appsettings.json`**, the `ApiUpstream:Url` setting.
+4. **The default**, `https://api.anthropic.com`.
+
+The console shows the upstream in use at startup, and the Settings page shows it at any time. An invalid URL in the variable or in `appsettings.json` stops the app at startup with an error, instead of silently falling back to Anthropic. A path in the URL is kept (`https://gateway.example.com/anthropic` sends `/v1/messages` to `/anthropic/v1/messages`).
+
+The proxy passes on whatever credentials Claude Code sends, so the upstream receives your API key or login token. Only point it at servers you trust.
+
+When Claude Code talks to a local model, start it with that model's name, for example `claude --model qwen3-coder-30b-a3b-instruct-mlx`. The configurable upstream was contributed by [Marek Kacprzak](https://github.com/marekkacprzak).
 
 ## MCP Observer
 
-The MCP Observer lets you intercept and inspect traffic between Claude Code and any [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. It acts as a transparent proxy on port 9999, sitting between Claude Code and the real MCP server.
+The MCP Observer lets you intercept and inspect traffic between Claude Code and any [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that uses the HTTP transport. It acts as a transparent proxy on port 9999, sitting between Claude Code and the real MCP server.
+
+> **HTTP transport only.** MCP servers that run locally over stdio (added with `claude mcp add <name> -- <command>`) talk to Claude Code through stdin and stdout, so their traffic never passes the proxy and the MCP Observer stays empty. To see their tool calls, use [HookAgent](#hookagent): the `PreToolUse` and `PostToolUse` events also fire for MCP tools (tool names like `mcp__<server>__<tool>`).
 
 ```
 Claude Code  --►  MCP Observer (port 9999)  --►  Real MCP Server
@@ -250,7 +273,7 @@ C:\MyProject\
     settings.json
 ```
 
-**Step 3:** Copy `HookAgent\Sample-Settings-Windows\settings.json` from the repo to `.claude\settings.json` in the working directory. This registers HookAgent for 30 of the 33 Claude Code hook events (see [Hook events captured](#hook-events-captured)).
+**Step 3:** Copy `HookAgent\Sample-Settings-Windows\settings.json` from the repo to `.claude\settings.json` in the working directory. This registers HookAgent for 31 of the 33 Claude Code hook events (see [Hook events captured](#hook-events-captured)).
 
 **Step 4:** Start CodingAgentExplorer, then run `claude` from the working directory. Hook events appear in the Conversation View alongside API requests.
 
@@ -273,7 +296,7 @@ C:\MyProject\
     settings.json
 ```
 
-**Step 3:** Copy `HookAgent/Sample-Settings-LinuxMacOS/settings.json` from the repo to `.claude/settings.json` in the working directory. This registers HookAgent for 30 of the 33 Claude Code hook events (see [Hook events captured](#hook-events-captured)).
+**Step 3:** Copy `HookAgent/Sample-Settings-LinuxMacOS/settings.json` from the repo to `.claude/settings.json` in the working directory. This registers HookAgent for 31 of the 33 Claude Code hook events (see [Hook events captured](#hook-events-captured)).
 
 **Step 4:** Start CodingAgentExplorer, then run `claude` from the working directory. Hook events appear in the Conversation View alongside API requests.
 
@@ -285,7 +308,7 @@ The sample `settings.json` files assume the following. Change the file if your s
 - **The dashboard runs at `http://localhost:5000`.** That address is built into HookAgent. If the dashboard is not running, HookAgent exits silently with code 0 and Claude Code carries on.
 - **Hooks run synchronously** (`"async": false`), so Claude Code waits for HookAgent on each event. Only `MessageDisplay` is async, because it fires while text streams. Add `"async": true` to any entry if you only observe and do not need exact ordering.
 - **Tool events match every tool** (`"matcher": ".*"`). Narrow the matcher to watch only some tools.
-- **30 of the 33 hook events are registered**, as of Claude Code 2.1.318. `WorktreeCreate` and `WorktreeRemove` are left out because a hook for them replaces git's own worktree handling, and `FileChanged` is left out because it needs literal file names as matchers. If your Claude Code version does not know an event, remove its entry.
+- **31 of the 33 hook events are registered**, as of Claude Code 2.1.318. `WorktreeCreate` and `WorktreeRemove` are left out because a hook for them replaces git's own worktree handling (Claude Code reads the hook's stdout as the worktree path, and HookAgent is an observer that prints nothing). `FileChanged` is registered for `.env` and `.envrc`; it only fires for the literal file names in its matcher, so change them to the files you want to watch. If your Claude Code version does not know an event, remove its entry.
 - **On Windows, Claude Code runs hook commands with Git Bash,** or with PowerShell when Git Bash is not installed. Forward slashes in the command path work in both.
 ### Verify it works
 
@@ -320,6 +343,7 @@ Hook events appear inline in the Conversation View, interleaved with API request
 | `SubagentStart` / `SubagentStop` | A subagent is spawned or finishes |
 | `TaskCreated` / `TaskCompleted` / `TeammateIdle` | Task and agent team events |
 | `Notification` | Claude Code sends a notification |
+| `FileChanged` | A watched file (matcher: `.env\|.envrc`) changes on disk |
 | `PreCompact` / `PostCompact` | Before / after context compaction |
 | `PreModelSwitch` / `PostModelSwitch` | Before / after the model changes |
 | `InstructionsLoaded` | A `CLAUDE.md` file or rule is loaded into context |
@@ -358,6 +382,8 @@ Three events are left out on purpose. `WorktreeCreate` and `WorktreeRemove` repl
 │   ├── Services/HookEventStore.cs      # In-memory store for hook events
 │   ├── Services/McpRequestStore.cs     # In-memory store for MCP requests
 │   ├── Services/McpProxyConfig.cs      # Holds the configured MCP destination URL
+│   ├── Services/ApiUpstreamConfig.cs   # Where port 8888 forwards to (startup value and Settings override)
+│   ├── Services/DashboardRequestGuard.cs  # Only the dashboard may change the settings endpoints
 │   ├── Proxy/CaptureTransformProvider.cs  # YARP ITransformProvider for request/response capture
 │   ├── Proxy/DynamicProxyConfigProvider.cs # Dynamic YARP config for Claude (8888) and MCP (9999) routes
 │   ├── Hubs/DashboardHub.cs            # SignalR hub for real-time dashboard updates
@@ -366,6 +392,7 @@ Three events are left out on purpose. `WorktreeCreate` and `WorktreeRemove` repl
 │       ├── inspector/                  # HTTP Inspector view
 │       ├── conversation/               # Conversation view
 │       ├── mcp/                        # MCP Observer view
+│       ├── settings/                   # Settings page (API upstream)
 │       ├── css/                        # Stylesheets
 │       └── js/                         # Dashboard and conversation scripts
 └── HookAgent/                          # Single-file CLI tool for Claude Code hooks
@@ -376,6 +403,7 @@ Three events are left out on purpose. `WorktreeCreate` and `WorktreeRemove` repl
 
 - API keys (`x-api-key` and `Authorization` headers) are automatically redacted from stored request data
 - The proxy only listens on `localhost` - it is not exposed to the network
+- The settings endpoints (API upstream and MCP destination) decide where your credentials go, so they only accept requests with a `localhost` Host header and, from a browser, only from the dashboard itself. This blocks other web pages, including DNS rebinding tricks, from changing them
 - Request data is stored in memory only (max 1000 requests, no persistence)
 
 ## About the author

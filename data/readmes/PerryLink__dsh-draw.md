@@ -1,41 +1,41 @@
 <div align="center">
 
-# 🎨 dsh-draw
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-draw-hero-en-dark.webp">
+  <img src="docs/assets/dsh-draw-hero-en-light.webp" width="100%" alt="dsh-draw: one image_generate tool over a health-aware engine chain (openai failed with HTTP 429, cogview served), four generated images saved as durable attachments, and the session quota meter">
+</picture>
 
-> 🧊 **FROZEN since 2026-10-05** — only real breakages are fixed. The ecosystem has converged on a more widely adopted implementation, recorded below.
-- **1024 store channel**: `npm i -g dsh1024` once, then `dsh1024 plugin --profile web add dsh-draw` (counts toward the [deepseek1024.com](https://deepseek1024.com) install ranking).
-[![Gitee](https://img.shields.io/badge/Gitee-mirror-c71d23?logo=gitee)](https://gitee.com/perrylink/dsh-draw)
-[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-draw?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-draw?ref=badge)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-draw/badge)](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-draw)
+# dsh-draw
 
 **Unified static-image generation routing for DeepSeek Harness.**
 
-*One tool, many engines — health-aware fallback, durable results, counted usage.*
+One tool, many engines — health-aware fallback, durable results, counted usage.
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![DSH plugin](https://img.shields.io/badge/dsh--plugin-✅-green)](https://github.com/topics/dsh-plugin)
-[![dsh-doctor](https://raw.githubusercontent.com/PerryLink/dsh-plugin-doctor/main/badges/PerryLink__dsh-draw.svg)](https://github.com/PerryLink/dsh-plugin-doctor#verified-徽章)
-[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
-[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E%3D24-brightgreen.svg)](#)
-[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-draw/ci.yml?branch=main&label=CI)](https://github.com/PerryLink/dsh-draw/actions)
-[![Version](https://img.shields.io/github/v/tag/PerryLink/dsh-draw?label=version)](https://github.com/PerryLink/dsh-draw/releases)
-[![npm version](https://img.shields.io/npm/v/dsh-draw)](https://www.npmjs.com/package/dsh-draw)
-[![npm downloads](https://img.shields.io/npm/dm/dsh-draw)](https://www.npmjs.com/package/dsh-draw)
+[简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
 
-[English](README.md) · [简体中文](README-zh.md) · [Español](README-es.md) · [Português](README-pt.md) · [हिन्दी](README-hi.md)
+> 🧊 **FROZEN since 2026-10-05** — only real breakages are fixed. The ecosystem has converged on a more widely adopted implementation, recorded below.
+
+[![License](https://img.shields.io/badge/license-Apache--2.0-3366CC?style=flat-square&labelColor=2B3245)](LICENSE)
+[![DSH](https://img.shields.io/badge/DSH-%E2%89%A50.2.1%20%3C0.3.0-4B67B4?style=flat-square&labelColor=2B3245)](#compatibility)
+[![npm](https://img.shields.io/npm/v/dsh-draw?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-draw)
+[![CI](https://img.shields.io/github/actions/workflow/status/PerryLink/dsh-draw/ci.yml?branch=main&label=CI&style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-draw/actions/workflows/ci.yml)
+[![Node](https://img.shields.io/badge/node-%5E22.19%20%7C%7C%20%3E=24-339933?style=flat-square&labelColor=2B3245)](#compatibility)
+
+[![Stars](https://img.shields.io/github/stars/PerryLink/dsh-draw?style=flat-square&labelColor=2B3245)](https://github.com/PerryLink/dsh-draw/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-draw?style=flat-square&labelColor=2B3245&color=CB3837)](https://www.npmjs.com/package/dsh-draw)
+[![dshfind](https://dshfind.com/api/badge/PerryLink/dsh-draw?metric=downloads)](https://dshfind.com/plugins/PerryLink/dsh-draw?ref=badge)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PerryLink/dsh-draw/badge)](https://securityscorecards.dev/viewer/?uri=github.com/PerryLink/dsh-draw)
+[![DSH Market](https://img.shields.io/badge/DSH_Market-listed-4B67B4?style=flat-square&labelColor=2B3245)](https://dsh.market/)
+[![Gitee](https://img.shields.io/badge/Gitee-mirror-C71D23?style=flat-square&labelColor=2B3245&logo=gitee)](https://gitee.com/perrylink/dsh-draw)
 
 ```sh
 dsh plugin --profile <name> add dsh-draw
 ```
 
-
 </div>
 
----
+<sub>Community plugin, not affiliated with DeepSeek. Canonical repository: <https://github.com/PerryLink/dsh-draw> (Gitee is a mirror).</sub>
 
-**📖 Ecosystem knowledge base** — measured data, not marketing: [plugin development guide · plugin-selection data · maintenance criteria](https://perrylink.github.io/dsh-plugin-guide/).
-
-<!-- star-cta -->
 ## Install & uninstall
 
 - **git channel** (latest `main`): `dsh plugin --profile web add github:PerryLink/dsh-draw` — the `prepare` script builds with production dependencies only.
@@ -58,9 +58,12 @@ Unified static-image generation routing for DeepSeek Harness.
 
 One tool, many engines — health-aware fallback, durable results, counted usage.
 
-![Workflow diagram for dsh-draw: call → plugin → result.](docs/assets/dsh-draw-flow.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-draw-flow-v5-dark.svg">
+  <img src="docs/assets/dsh-draw-flow-v5-light.svg" width="100%" alt="dsh-draw structure: image_generate and draw/regenerate merge into one drawer; normalize and validate, then the generation quota gate before any engine is contacted, then the engine chain as a scoreboard with cooldown health, then the byte quota gate before the attachment store; the commit forks into durable attachment refs and a gated draw/generated session event, and the returns feed the model value, the result card and the Settings tab, with regenerate re-entering the same drawer on the dashed return rail">
+</picture>
 
-*Workflow overview: call → plugin → result. The examples below use the real command surface.*
+*Structure: the tool and the card's regenerate converge on one drawer — validate → `checkQuotaGenerations` (before engine spend) → the engine chain with cooldown health → `checkQuotaBytes` (before storage) → durable attachment refs plus a gated `draw/generated` event. The dashed return is regenerate re-entering the same path, so it cannot skip quota, routing, storage or audit. The examples below use the real command surface.*
 
 
 

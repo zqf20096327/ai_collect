@@ -44,6 +44,7 @@ Proposed rules that are still waiting for confirmation, and rejected ones with t
 | [ARCH-19](rules/ARCH-19.md) | New behaviour is opt-in, and lands as the last and smallest commits of a PR | 2026-10-16 |
 | [ARCH-22](rules/ARCH-22.md) | A parameter index any released build used is never given to another parameter | 2026-10-31 |
 | [ARCH-23](rules/ARCH-23.md) | A new parameter has to earn its flash, and a feature costing 1 KB or more sits behind its own define | 2026-11-02 |
+| [ARCH-24](rules/ARCH-24.md) | A threshold in flight code has a reason a reviewer can check | 2026-11-05 |
 <!-- end of rules index -->
 
 ---
@@ -105,6 +106,8 @@ The install script places the following files:
 | `.claude/hooks/pre_bash_check.py` | PreToolUse hook — enforces git commit and safety rules, gates push/rebase/reset/amend on an authorisation token, and scans scripts passed to an interpreter so a guarded command cannot be hidden in a wrapper |
 | `.claude/hooks/post_edit_check.py` | PostToolUse hook — checks C++ edits for common violations |
 | `.claude/githooks/pre-push` | Git-level hook (via `core.hooksPath`) — refuses any push without a grant, and always refuses force-pushing or deleting `master`/`main`. Git runs it itself, so wrapping `git push` in a script does not evade it |
+
+The installer never writes `CLAUDE_local.md`. A repository or fork that needs rules of its own commits one at its root (Codex reads `AGENTS_local.md` or `CLAUDE_local.md`), and the playbook has the agent read it before any task. It survives `/aap-update`, which replaces `CLAUDE.md`.
 
 ### Skills (Slash Commands)
 

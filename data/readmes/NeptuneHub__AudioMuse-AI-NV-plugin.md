@@ -30,6 +30,7 @@ For Mobile app that want to map this functionality they need to implement the `g
 Other frontnend not in this list could also work by using those API even.
 
 **NEWS**
+> * From AudioMuse-AI-NV-plugin v11 InstantMix support also Song Alchemy. It send only one song but it give you the possibility to add randomness
 > * From AudioMuse-AI-NV-plugin v11 InstantMix support also DCLAP. To use it you **must** have AudioMuse-AI v3.7.0 or higher
 > * From AudioMuse-AI-NV-plugin v10 different AudioMuse-AI functionality can be selected for the InstantMix, chose it in the plugin configuration
 > * From AudioMuse-AI-NV-plugin v8 the Sonic Similarity API extension are supported on top of the previous one. The API are [documented here](https://opensubsonic.netlify.app/docs/extensions/sonicsimilarity/) and supported by [this Navidrome PR](https://github.com/navidrome/navidrome/pull/5419)
@@ -78,7 +79,8 @@ services:
 >   - **Similar Song** (default) - `GET /api/similar_tracks`, the historical behaviour;
 >   - **Lyrics by Song** - `POST /api/sem_grove/search`, it need the SemGrove index (lyrics + audio analysis) built in AudioMuse-AI;
 >   - **Hyperbolic Similarity** - `POST /api/hyperbolic/similar` in its standard mode, it need the hyperbolic projection built in AudioMuse-AI;
->   - **DCLAP** - `POST /api/clap/search_by_song`, it need CLAP enabled and the DCLAP index built in AudioMuse-AI.
+>   - **DCLAP** - `POST /api/clap/search_by_song`, it need CLAP enabled and the DCLAP index built in AudioMuse-AI;
+>   - **Song Alchemy** - `POST /api/alchemy` with the song as the only ADD item and the configured 'Temperature' (default 1), it's the MusiCNN similarity with randomness.
 >
 >   'Eliminate Duplicates' apply to **Similar Song** and **DCLAP**, 'Use Radius Similarity' apply only to **Similar Song**, the other engine use the AudioMuse-AI default.
 

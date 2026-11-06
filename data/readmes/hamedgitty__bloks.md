@@ -252,6 +252,30 @@ text, and an open one follows the file: when the agent, or anything
 else, writes it again, the preview updates where you are reading and
 says Updated, and a file that is deleted says so.
 
+Type @ in an agent's conversation to link another of your conversations
+or a tab open in the Bloks browser. A chip goes into your words, and when
+you send them the agent is given what it links: the conversation's
+summary or its latest messages, or the page's text as it reads right
+then, framed as untrusted, each kept short. Only what you could open
+yourself is read; anything that was not (a tab you closed, a conversation
+that is not yours) is said quietly under your message, and your words go
+either way. A chip opens what it links, and on the iPhone it reads as its
+name.
+
+Select a few words in any message and a small bar over them offers
+**Quote**, which replies with exactly those words (⌘' does the same),
+and on an agent's answer **Branch with this**, which opens a branch from
+that answer with the quote waiting in its box. The agent hears the
+quoted words and whose message they came from.
+
+Come back to a conversation and a green **New** line sits above what
+arrived since you last read it, and the chat opens there when there is
+more than a screen of it. **Mark unread from here**, in the menu of a
+reply, puts the line above it and the dot back, for later. Where you
+left off is kept on the workspace, per person, so your computer, your
+phone and the browser agree, and in a Team workspace nobody else ever
+sees yours.
+
 <p align="center">
   <img alt="An answer drawn as a card: three headline numbers, a bar chart of signups by channel, a table, and two follow-up questions to click" src="docs/screenshots/answer.png" width="560">
 </p>
@@ -282,7 +306,10 @@ A lead that needs more people can propose a team: who it wants, what each
 owns, which skills to give them. You approve or you don't. Agents can
 message each other, hire, open rooms, start a new conversation for a
 teammate, and stop one they outrank, with a credential that ends with the
-turn. A built-in skill tells them which command fits what you asked,
+turn. An answer comes back to the conversation that asked, an agent
+writes only into conversations it is part of, and one whose waiting
+words were dropped before they were read hears so on its next turn. A
+built-in skill tells them which command fits what you asked,
 and which things only you can do. Another explains how each part of
 Bloks works, so an agent can answer "where do I turn that off" from the
 app's own settings index and leave a button in the chat that takes you
@@ -309,7 +336,9 @@ and never the app's. When a page pops up an alert, a confirm, a prompt
 or a "leave this page?", the agent's step comes back with the question
 and the agent answers it; while you have the browser, it shows as a
 small bar over the page with OK and Cancel (or Leave and Stay). One
-nobody answers is dismissed after 30 seconds, never accepted.
+nobody answers is dismissed after 30 seconds, never accepted. Close its
+last tab and the panel closes with it; when an agent closes the last tab,
+the panel stays open where it is, so nothing moves under your hands.
 
 It is careful in the same way the rest of Bloks is. In Ask first, a site
 not on your list asks on a card the first time an agent goes there;
@@ -381,6 +410,12 @@ file or a `bloks://install?url=` link through the same review, and use
   box, and yours can be moved: drag one by its handle, pick Move up or
   Move down from the handle's menu, or press Option (Alt) and an arrow.
   Rooms work the same way.
+- **Several questions, one card.** When an agent asks a few things at
+  once, the card steps through them: each question with its own choices
+  (one or several), room for your own words, Back and Next, and Send
+  answers at the end. It shows what the agent said just before asking,
+  so you never scroll up to find out what it is about, and once sent it
+  settles into one line that opens to every answer.
 - **Questions that do not hold the turn.** A Codex agent can ask you
   something and carry on. When you settle it some other way, the agent
   takes its own question back (`bloks questions`, `bloks unask`) and the
@@ -433,6 +468,10 @@ over.
   edit in place, that answer quietly when nothing needs you.
 - **Watchers** on a folder, a web page, a feed or a place: "when an
   invoice lands here, file it", "when I land, send me the hotel address".
+  Each starts at most so many turns an hour, six unless you set it, and
+  a finding past that waits for the next turn allowed rather than being
+  dropped. Each keeps its last fifty looks, so you can see what it found,
+  what it held back and why it stayed quiet.
 - **App watchers**: an agent starts when something happens in a
   connected app. "Whenever I get an email from Acme, draft a reply",
   "when an issue is labelled bug, triage it". An agent can propose one;
@@ -556,10 +595,14 @@ over.
 
 Bring your subagents, instructions, skills, commands, tool servers, rules
 and chat bots over from Claude Code, Codex, Cursor, OpenClaw or Hermes,
-reviewing each item first, grouped by what it becomes here. A name that
-is taken is yours to settle, a key comes only when you tick it, and the
-whole import can be undone. `bloks-server import --dry-run` shows what
-would come over from a terminal. Bring your past Claude Code and Codex
+reviewing each item first, grouped by what it becomes here. OpenBot's
+agents come with their instructions, skills and memories, and with an
+OpenBot transfer file (picked in the app, or uploaded from a browser on
+`bloks-server`) their pictures, files and routines too, each routine
+paused until you switch it on. A name that is taken is yours to settle,
+a key comes only when you tick it, and the whole import can be undone.
+`bloks-server import --dry-run` shows what would come over from a
+terminal. Bring your past Claude Code and Codex
 sessions over as conversations and carry one on. Your workspace is
 backed up every day, and a whole workspace can be written out to one
 file and taken into an empty one elsewhere. Keys never travel in either.
@@ -677,6 +720,19 @@ Bloks's own engine; Claude Code always uses your own Claude plan or key.
 A custom endpoint is chat only until you turn on **This model can use
 tools** for it in Settings. Turn it on only when the model behind it
 supports tool calls; if the host refuses them, the turn stops and says so.
+If a custom endpoint's model list cannot be loaded, its row in Settings
+says why in the host's own words (for example "Couldn't load models: HTTP
+400. anthropic-version: header is required.") with **Retry**, and it is
+not offered as ready until a list arrives. A host that wants more than a
+key (Anthropic's `anthropic-version`, a gateway's org id) takes up to ten
+headers under **Add a header**, sent with every request to it. Their
+values are kept like keys: shown only as set, never sent back to the
+window, and left out of backups. Authorization, Content-Type,
+Content-Length and Host are Bloks's own and refused there. Turn on
+**Takes reasoning effort** for an endpoint whose model takes OpenAI's
+`reasoning_effort` (the o-series, gpt-oss, a gateway that passes it on),
+and its agents get the effort picker with Low, Medium and High, sent with
+each turn. If the host refuses it, the turn stops and says so.
 
 An agent's own browser and its computer (Cloud box, Local VM, or this
 Mac's screen) reach it as tools on Claude Code, on Codex, and on the ACP
@@ -694,7 +750,12 @@ An MCP server you add as a command is looked for on this computer, never
 run to check it. If the program is not there, Settings, Plugins says
 **Command not found** and how to fix it, and a turn leaves that server
 out instead of starting without its tools in silence: the agent is told,
-and the conversation gets one notice.
+and the conversation gets one notice. The fix it suggests is the
+program's full path, or a PATH in the server's own environment. Bloks
+looks where your login shell does, even when the shell is slow to start
+(it asks again in the background and looks again when the answer comes),
+and in the usual folders of cargo, Bun, Go, mise, asdf, pyenv and
+MacPorts, on the desktop app and on bloks-server alike.
 
 OpenCode reads your own setup by default: the plugins, MCP servers and
 instructions in `~/.config/opencode`, and the providers and sessions in
@@ -808,6 +869,7 @@ Inside each workspace's folder:
 | `engine-accounts.json`, `engine-accounts/` | The names of an engine's added accounts and which one is in use, and each one's own config folder with the sign-in the engine wrote there (left out of backups) |
 | `opencode/` | OpenCode's own settings, sign-ins and sessions for this workspace, when it has its own setup; `0700` (left out of backups) |
 | `reads.json` | How far each person has read each conversation |
+| `last-read.json` | Where each person left off in each conversation, for the New line |
 | `skills/` | Installed skills, one markdown file each |
 | `skill-history/` | Every version of each of your skills, with who changed it and why |
 | `skill-files/` | The supporting files a skill keeps beside its instructions |

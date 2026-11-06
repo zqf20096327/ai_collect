@@ -4,7 +4,23 @@ A minimal LLM harness for your terminal.
 
 [![Known Vulnerabilities](https://snyk.io/test/github/DenizOkcu/haze/badge.svg)](https://snyk.io/test/github/DenizOkcu/haze)
 
-## What's new in 1.7.5
+## What's new in 1.7.11
+
+Fleet size now follows the deployment manifest's worker allowance, and long turns show live generation speed and fleet depth in the busy bar.
+
+### Changes in 1.7.10
+
+This patch rebuilds the npm package with matching version and build metadata.
+
+### Changes in 1.7.9
+
+This release improves model deployment discovery for configured workers.
+
+### Changes in 1.7.8
+
+This release improves compatibility with updated model deployments and preserves explicitly configured deployment trust.
+
+### Changes in 1.7.5
 
 Improved recovery from malformed tool calls and more resilient retry handling for temporary provider errors.
 
@@ -32,7 +48,7 @@ haze 1.6.0 stops mistaking patient local models for dead streams:
 haze 1.5.1 improves terminal resizing and reasoning-effort compatibility:
 
 - On terminal width changes, haze replays the full settled transcript, including formatted Markdown, at the new width. The input draft and active turn stay mounted. Terminal scrollback is preserved, so older transcript copies can remain there after a replay.
-- Local inference endpoints omit reasoning effort by default; providers can explicitly enable or disable it with `capabilities.reasoningEffort`. Hosted OpenAI-compatible endpoints retain pass-through behavior.
+- Unknown local and hosted endpoints omit reasoning effort by default. Providers can configure their supported reasoning levels explicitly.
 - Unsupported `none`/`minimal` choices for GPT-6+ model names are omitted rather than promoted to a different effort; the provider default applies.
 
 ### Highlights from 1.5.0
@@ -113,6 +129,10 @@ On first run, create or choose a provider, then choose your first model:
 
 `/provider` sets up any OpenAI-compatible endpoint, such as OpenRouter, OpenAI, LM Studio, Ollama, or a proxy. haze asks for a provider name, base URL, optional API key, and model names. The **OpenAI API Key** preset uses platform API billing. The **OpenAI Subscription** preset instead opens a ChatGPT browser login and uses the Codex Responses endpoint; no pasted session token is required. Its sign-in callback listens on a fixed localhost port (1455) required by the registered client, so a lingering process holding that port blocks sign-in until it exits; retry after freeing the port.
 
+Cloud presets include a small set of current models; account discovery can expose more. The Ollama, LM Studio, llama.cpp, MLX Server, and vLLM presets do not suggest model names: use the models discovered from your own server, or enter them manually. Custom providers remain available. Preset changes do not modify previously saved providers or their models.
+
+The **Mistral Vibe Subscription** preset opens Mistral's browser sign-in and stores the issued API key in Haze's private settings. It uses the regular Mistral API with Vibe's model alias; available models, quota, and any pay-as-you-go charges depend on the selected Mistral account and plan. Existing direct Mistral providers can use **sign in with Mistral Vibe** from their `/provider` actions to replace their key.
+
 `/model` selects the model haze should use. The picker also offers `add models`, which fetches a provider's model list from its OpenAI-compatible `/models` endpoint so you can pick instead of typing; if the endpoint is unavailable you can still type model names. You can also set one directly:
 
 ```txt
@@ -135,13 +155,15 @@ Use `/mcp` to connect [Model Context Protocol](https://modelcontextprotocol.io) 
 
 API keys for HTTP/SSE servers are entered in a masked prompt and sent as `Authorization: Bearer <value>`. Stdio authentication belongs in the command or wrapper; haze does not attach HTTP headers to stdio. Servers persist in `~/.haze/settings.json` under `mcpServers`. Discovery and cleanup have bounded deadlines, failures are isolated, and MCP tools never shadow built-ins.
 
-Saved settings live in `~/.haze/settings.json`. ChatGPT OAuth credentials live separately in `~/.haze/auth.json`; both files use private permissions. Provider keys and MCP headers require HTTPS unless the endpoint uses loopback HTTP (`localhost`, `*.localhost`, `127/8`, or `::1`). Keyless HTTP remains available, and local OpenAI-compatible providers do not need a key. If a settings or authentication file is malformed, haze shows an actionable error instead of treating it as empty. Configure everything inside haze with `/provider`, `/model`, and `/settings`; there are no environment variables to set. Provider presets carry curated per-model metadata (context window and output cap from the models.dev catalog) which the wizard writes into `modelLimits`.
+Saved settings live in `~/.haze/settings.json`. ChatGPT OAuth credentials live separately in `~/.haze/auth.json`; both files use private permissions. Provider keys and MCP headers require HTTPS unless the endpoint uses loopback HTTP (`localhost`, `*.localhost`, `127/8`, or `::1`). Keyless HTTP remains available, and local OpenAI-compatible providers do not need a key. If a settings or authentication file is malformed, haze shows an actionable error instead of treating it as empty. Configure everything inside haze with `/provider`, `/model`, and `/settings`; there are no environment variables to set. Provider presets may carry per-model context and output limits. Live discovery is saved separately as `discoveredModelLimits`, so it can be refreshed without overwriting explicit `modelLimits`; each limit uses the user setting, then discovery, then the preset and catalog. Moving aliases without reliable limits are left unspecified. Previously saved `modelLimits` remain explicit overrides, including limits saved by earlier versions; remove an outdated value to allow discovery to take effect. Private-network endpoints default to local budgeting; set `providers[].location` to `"local"` or `"hosted"` to override detection. Credentialed remote HTTP is still refused.
 
 Switch the interface palette with `/themes`. The picker lists every built-in theme — light palettes and oh-my-zsh ports like `robbyrussell`, `af-magic`, and `solarized-dark` — and applies the choice immediately; `/themes <name>` sets one directly. The selection persists as `theme` in `~/.haze/settings.json`, and text already on screen keeps its old colors.
 
-Control reasoning effort with `/reasoning` (alias `/thinking`). The picker or `/reasoning <level>` sets `none`, `minimal`, `low`, `medium`, `high`, or `xhigh` for the active model in this session; it never writes settings. `/reasoning unset` omits the parameter, `/reasoning reset` drops the session override, and `/reasoning status` explains the current choice. Resolution follows run-scoped `--reasoning` → per-model session override → saved global `reasoning` setting → built-in default `low`. The level travels as the AI SDK's portable `reasoning` parameter from the next turn and appears beside the model in the status bar.
+Control reasoning effort with `/reasoning` (alias `/thinking`). The picker and `/reasoning <level>` set a per-model session override, and show only levels known for the active provider and model. `/reasoning off` requests `none` (where supported); `/reasoning unset` omits the parameter and leaves the provider default in control; `/reasoning reset` removes the session override. `/reasoning status` reports the current choice. Resolution follows run-scoped `--reasoning` → per-model session override → saved global `reasoning` setting → built-in `low`. An unsupported explicit setting is reported and omitted, not silently mapped to another level. Mistral Large 4 offers `low`, `medium`, and `high`.
 
-Reasoning effort is capability-gated: `capabilities.reasoningEffort: true|false` on a provider explicitly enables or disables sending it. Without an override, local inference endpoints recognized by haze (`localhost`, `127.0.0.1`, `::1`, `0.0.0.0`, and `.local` hosts) omit it; hosted endpoints retain pass-through behavior. This avoids local servers interpreting unsupported levels as reasoning being enabled. Omission leaves the server's own default in control; it does not guarantee reasoning is off. For bare GPT-6+ model names, `minimal` is omitted, and `none` is omitted except for exactly `gpt-6-sol` and `gpt-6-luna`; unsupported choices are never silently promoted. The `reasoning_policy` stream event reports the effective policy.
+For unknown custom endpoints, reasoning is omitted until configured. Set `providers[].reasoningLevels` to an array such as `["none", "low", "high"]`, or set exact-model overrides in `providers[].modelReasoningLevels`, for example `{"my-model": ["low", "high"]}`. An empty array disables the option. `capabilities.reasoningEffort: false` disables it; `true` explicitly enables the standard portable levels. For binary custom servers, set `reasoningFormat` to `"thinking"` (sends `thinking.type` as `enabled` or `disabled`) or `"enable-thinking"` (sends `enable_thinking` as a boolean). The picker shows `none` and `high` as off and on for these formats. Provider defaults are not equivalent to off.
+
+Workers use the lowest known supported level, or the provider default when it is unknown. Compaction follows the active model's policy. OpenRouter uses its provider adapter to preserve structured reasoning data across tool calls. Session snapshots retain conversation content, tool outputs, attached file bytes, and provider continuation metadata in private session files; optional session secret redaction can still modify saved strings. Large snapshots use checksummed chunks, with a 64 MiB maximum per snapshot. When switching models or provider endpoints, haze converts previous tool calls and results to labeled conversation text and clears provider-specific reasoning and signatures before the new model sees the history. Resuming an older session without an endpoint fingerprint also establishes this boundary.
 
 haze focuses on chat, local tools, context files, sessions, and Markdown skills. Use `/skills` for workflows outside that core. Its interactive picker can generate a skill from a description, then enable, disable, validate, or remove it. For reviews, release prep, deploy checks, debugging routines, or a team-specific checklist, ask haze to create a skill and edit the resulting Markdown as needed.
 
@@ -466,7 +488,7 @@ haze saves durable workspace sessions in `~/.haze/sessions`. It writes a session
 
 Snapshots are written at turn boundaries, not per tool call. If haze crashes or is killed mid-turn, the session resumes from the last completed turn: work already on disk (file edits, command side effects) is not reflected in the session record, so after a crash verify the working tree (`git status`, `git diff`) before continuing. To keep long sessions from growing quadratically — every turn appends the full history again — session files are automatically compacted once superseded snapshots dominate the file: only the newest conversation and work-state snapshots are kept and the file is rewritten atomically.
 
-Session files are optimized for resume and audit, not token-by-token playback: completed user/assistant messages, tool lifecycle events, conversation snapshots, and work-state snapshots are persisted, but streaming `message_update` events are skipped. Large persisted tool outputs are replaced with previews and byte counts so a resumed model can reread current files instead of carrying stale megabytes forward.
+Session files are optimized for resume and audit, not token-by-token playback: completed user/assistant messages, tool lifecycle events, conversation snapshots, and work-state snapshots are persisted, but streaming `message_update` events are skipped. Conversation snapshots preserve tool outputs and attachments; separate tool lifecycle events use bounded previews and byte counts.
 
 Long turns use bounded tool slices. Older successful tool results are compacted while failures and recent evidence remain verbatim, synthetic haze control nudges are not persisted as user requests, and token-pressure compaction preserves the structured work state.
 
@@ -491,8 +513,8 @@ Most haze behaviour needs no configuration; a few optional keys in `~/.haze/sett
 - `contextWindowFallbackTokens` / `localContextWindowFallbackTokens` (default 128K hosted / 32K local): context-window guess for models without limits metadata or a curated catalog entry. Every turn emits a `context_budget` event naming the window and its source, and the interactive warning fires once per model per session when the built-in default was used.
 - `manualCompaction` (`"llm-summary"` default, or `"heuristic"`): whether manual `/compact` asks the active model for a continuity summary or keeps the model-free bounded excerpt.
 - `theme` (string, default `purple`): name of a built-in palette (`/themes` lists and sets them, with `light` and oh-my-zsh ports like `robbyrussell` included). Unknown names fail loudly at startup with the valid names listed.
-- `reasoning` (`"none"` | `"minimal"` | `"low"` | `"medium"` | `"high"` | `"xhigh"` | `"provider-default"`, default `low`): saved global fallback for the portable reasoning parameter. Run-scoped and per-model session choices take precedence. The `provider-default` sentinel omits the parameter; `/reasoning` changes only the in-memory session choice.
-- `providers[].capabilities.reasoningEffort` (optional boolean): explicitly allow or omit reasoning effort for that provider. Without it, local inference endpoints omit the parameter and hosted OpenAI-compatible endpoints pass it through, subject to model-specific restrictions.
+- `reasoning` (`"none"` | `"minimal"` | `"low"` | `"medium"` | `"high"` | `"xhigh"` | `"max"` | `"provider-default"`, default `low`): saved global fallback for the portable reasoning parameter. Run-scoped and per-model session choices take precedence. The `provider-default` sentinel omits the parameter; `/reasoning` changes only the in-memory session choice.
+- `providers[].capabilities.reasoningEffort` (optional boolean): explicitly allow standard levels or omit reasoning effort. Unknown providers omit the parameter unless configured. `reasoningLevels`, `modelReasoningLevels`, and `reasoningFormat` configure custom endpoints as described above.
 
 ## Safety model
 

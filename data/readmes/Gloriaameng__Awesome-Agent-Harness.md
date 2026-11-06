@@ -4,14 +4,16 @@
 
 # Agent Harness for Large Language Model Agents: A Survey
 
-### Official paper repository and living evidence index
+### The first survey dedicated to LLM agent harnesses · 168 references · 34 systems · 30 evaluation entries
 
 [![GitHub Stars](https://img.shields.io/github/stars/Gloriaameng/Awesome-Agent-Harness?style=social)](https://github.com/Gloriaameng/Awesome-Agent-Harness)
 [![References](https://img.shields.io/badge/References-168-2b8a3e)](#5-research-library)
 [![License](https://img.shields.io/badge/License-CC--BY--4.0-blue.svg)](license)
 [![Project Website](https://img.shields.io/badge/Website-Project%20Page-305b9d)](https://gloriaameng.github.io/Awesome-Agent-Harness/)
 
-**🌐 Project website: [gloriaameng.github.io/Awesome-Agent-Harness](https://gloriaameng.github.io/Awesome-Agent-Harness/)**
+**🌐 [Agent Harness Survey — interactive paper overview](https://gloriaameng.github.io/Awesome-Agent-Harness/)**
+
+Explore the survey framework, four architecture case studies, the 34-system comparison, and harness evaluation research.
 
 </div>
 
@@ -42,8 +44,8 @@ This is the official repository for **_Agent Harness for Large Language Model Ag
 ```bibtex
 @article{meng2026agentharness,
   title     = {Agent Harness for Large Language Model Agents: A Survey},
-  author    = {Meng, Qianyu and Wang, Yanan and Chen, Liyi and Wu, Wei and
-               Li, Yihang and Jiang, Wenyuan and Wang, Qimeng and
+  author    = {Meng, Qianyu and Wang, Yanan and Chen, Liyi and Li, Yihang and
+               Wu, Wei and Jiang, Wenyuan and Wang, Qimeng and
                Lu, Chengqiang and Gao, Yan and Wu, Yi and Hu, Yao},
   year      = {2026},
   doi       = {10.20944/preprints202604.0428.v3},

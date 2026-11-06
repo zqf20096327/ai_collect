@@ -79,7 +79,7 @@ This repository tracks notable **SaaS platforms** and **open-source projects** b
 | **[cv.cm/v](https://cv.cm/v)** | 🎨 Browser-based AI studio with gpt-image-2 and Seedream image generation plus queue-free Seedance 2.0 image-to-video, a node-graph canvas, and a REST API. No signup required to try. | <$1M (Est.) | Freemium (pay-as-you-go credits) | 100 Credits (signup) |
 | **[STIL.AI](https://stil.gracestack.se)** | 👗 AI-powered text-to-fashion design. Describe garments → AI generates designs. Free [AI Outfit Generator](https://stil.gracestack.se/outfit). | <$1M | Free + Premium | ✅ Free tier
 | **[AI Wallpaper](https://aiwallpaper.me)** | 🎞️ AI-powered Live Wallpaper generator on the homepage; turns text prompts or uploaded images into static wallpapers or short MP4/WebM motion loops. | Not disclosed | Freemium | Initial static credits |
-| **[Eimu](https://eimu.art)** | ✨ Online GPT Image 2 & Nano Banana Pro image generator - sign in, type a prompt, download. No relay setup or API key required; offers OpenAI-compatible generation API and MCP integration. | Not disclosed | Free + from ¥9.9 | Free tier |
+| **[Eimu](https://eimu.dev)** | ✨ Online GPT Image 2 & Nano Banana Pro image generator - sign in, type a prompt, download. No relay setup or API key required; offers OpenAI-compatible generation API and MCP integration. | Not disclosed | Free + from ¥9.9 | Free tier |
 
 ---
 
@@ -115,6 +115,7 @@ This repository tracks notable **SaaS platforms** and **open-source projects** b
 - **[Mochi Diffusion](https://github.com/MochiDiffusion/MochiDiffusion)** [![GitHub stars](https://img.shields.io/github/stars/MochiDiffusion/MochiDiffusion?style=social&color=white)](https://github.com/MochiDiffusion/MochiDiffusion/stargazers) — Another strong macOS app.
 - **[Draw Things](https://github.com/drawthingsai/draw-things-community)** [![GitHub stars](https://img.shields.io/github/stars/drawthingsai/draw-things-community?style=social&color=white)](https://github.com/drawthingsai/draw-things-community/stargazers) — Excellent Mac-native app for local generation.
 - **[RunAPI GPT Image 2 SDK](https://github.com/runapi-ai/gpt-image-2-sdk)** [![GitHub stars](https://img.shields.io/github/stars/runapi-ai/gpt-image-2-sdk?style=social&color=white)](https://github.com/runapi-ai/gpt-image-2-sdk/stargazers) — SDKs for building GPT Image 2 image-generation API workflows.
+- **[HEISS UI](https://github.com/tristmeister/HEISS-UI)** [![GitHub stars](https://img.shields.io/github/stars/tristmeister/HEISS-UI?style=social&color=white)](https://github.com/tristmeister/HEISS-UI/stargazers) 🖼️ — Open-source (MIT), self-hosted image-first front end for ComfyUI with 28 built-in image and video model families, custom workflow import, LoRA stacks, upscaling, phone mode and LAN access. [Website](https://heiss-ui.vercel.app/)
 - **Automatic1111 extensions ecosystem** (ControlNet, Reactor, Ultimate SD Upscale, etc.).
 - Many Flux.1 Dev/Schnell implementations and fine-tunes optimized for consumer GPUs.
 

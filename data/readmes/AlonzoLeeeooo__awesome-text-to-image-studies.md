@@ -49,6 +49,7 @@ Recent news of this GitHub repo are listed as follows.
     - [Year 2024](#personalized-year-2024)
     - [Year 2023](#personalized-year-2023)
   - [Text-Guided Image Editing](#text-guided-image-editing) 
+    - [Year 2026](#editing-year-2026)
     - [Year 2025](#editing-year-2025)
     - [Year 2024](#editing-year-2024)
     - [Year 2023](#editing-year-2023)
@@ -140,6 +141,39 @@ Recent news of this GitHub repo are listed as follows.
 
 <!-- omit in toc -->
 ## Text-to-Image Generation
+- <span id="text-year-2026">**Year 2026**</span>
+  - **AAAI**
+    - ***Plot’n Polish:*** Zero-Shot Story Visualization and Disentangled Editing with Text-to-Image Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37147)
+    - ***DOS:*** Directional Object Separation in Text Embeddings for Multi-Object Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37235)
+    - ***FastFLUX:*** Pruning FLUX with Block-wise Replacement and Sandwich Training [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37237)
+    - ***Sortblock:*** Similarity-Aware Feature Reuse for Diffusion Model [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37276)
+    - ***SAGA:*** Learning Signal-Aligned Distributions for Improved Text-to-Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/42426)
+    - ***EvalMuse-40K:*** A Fine-Grained Benchmark with Comprehensive Human Annotations for Text-to-Image Generation Model Alignment Evaluation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/42458)
+    - Margin-Aware Preference Optimization for Aligning Diffusion Models Without Reference [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/42476)
+    - Rethinking Direct Preference Optimization in Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37480)
+    - Towards Spatially Consistent Image Generation: On Incorporating Intrinsic Scene Properties into Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37508)
+    - ***MoSs:*** Mixture of Scales for Efficient High-Resolution Autoregressive Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37611)
+    - ***SpecDiff:*** Accelerating Diffusion Model Inference with Self-Speculation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37771)
+    - ***Infinite-Story:*** A Training-Free Consistent Text-to-Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37776)
+    - ***SphereDiff:*** Tuning-free 360° Static and Dynamic Panorama Generation via Spherical Latent Representation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37779)
+    - ***UniAlignment:*** Semantic Alignment for Unified Image Generation, Understanding, Manipulation and Perception [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37868)
+    - Mass Concept Erasure in Diffusion Models with Concept Hierarchy [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37920)
+    - ***Self-NPO:*** Data-Free Diffusion Model Enhancement via Truncated Diffusion Fine-Tuning [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/37934)
+    - Unleashing the Potential of Large Language Models for Text-to-Image Generation Through Autoregressive Representation Alignment [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38089)
+    - ***VisionReward:*** Fine-Grained Multi-Dimensional Human Preference Learning for Image and Video Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38107)
+    - ***LongT2IBench:*** A Benchmark for Evaluating Long Text-to-Image Generation with Graph-structured Annotations [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38168)
+    - ***RealUHR:*** Harnessing Patch-Cascade Flows for Photorealistic Ultra-High-Resolution Synthesis [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38211)
+    - ***Forecast Then Calibrate:*** Feature Caching as ODE for Efficient Diffusion Transformers [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38349)
+    - Exploring Position Encoding Mechanism in Diffusion U-Net for Training-free High-resolution Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38366)
+    - ***LookFlow:*** Training-Free and Efficient High-Resolution Image Synthesis via Dynamic Lookahead Guidance Flow [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/38388)
+    - Mechanistic Dissection of Cross-Attention Subspaces in Text-to-Image Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39046)
+    - ***ProCache:*** Constraint-Aware Feature Caching with Selective Computation for Diffusion Transformer Acceleration [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39069)
+    - ***HierarchicalPrune:*** Position-Aware Compression for Large-Scale Diffusion Models [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39433)
+    - Annealed Relaxation of Speculative Decoding for Faster Autoregressive Image Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39489)
+    - What Makes a Good Generated Image? Investigating Human and Multimodal LLM Image Preference Alignment [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39666)
+    - Head-Aware KV Cache Compression for Efficient Visual Autoregressive Modeling [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/39686)
+    - ***FUSE:*** Fine-Grained and Semantic-Aware Learning for Unified Image Understanding and Generation [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/40064)
+    - ***Talk2Image:*** A Multi-Agent System for Multi-Turn Image Generation and Editing [[Paper]](https://ojs.aaai.org/index.php/AAAI/article/view/40519)
 - <span id="text-year-2025">**Year 2025**</span>
   - **CVPR**
     - ***PreciseCam:*** Precise Camera Control for Text-to-Image Generation [[Paper]](https://arxiv.org/apdf/2501.12910) [[Project]](https://graphics.unizar.es/projects/PreciseCam2024/) [[Code]](https://github.com/edurnebernal/PreciseCam)
@@ -625,51 +659,4 @@ Recent news of this GitHub repo are listed as follows.
     - ***DF-GAN:*** A Simple and Effective Baseline for Text-to-Image Synthesis [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Tao_DF-GAN_A_Simple_and_Effective_Baseline_for_Text-to-Image_Synthesis_CVPR_2022_paper.pdf) [[Code]](https://github.com/tobran/DF-GAN)
     - ***LAFITE:*** Towards Language-Free Training for Text-to-Image Generation [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Zhou_Towards_Language-Free_Training_for_Text-to-Image_Generation_CVPR_2022_paper.pdf) [[Code]](https://github.com/drboog/Lafite)
     - Text-to-Image Synthesis based on Object-Guided Joint-Decoding Transformer [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Wu_Text-to-Image_Synthesis_Based_on_Object-Guided_Joint-Decoding_Transformer_CVPR_2022_paper.pdf)
-    - ***StyleT2I:*** Toward Compositional and High-Fidelity Text-to-Image Synthesis [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Li_StyleT2I_Toward_Compositional_and_High-Fidelity_Text-to-Image_Synthesis_CVPR_2022_paper.pdf) [[Code]](https://github.com/zhihengli-UR/StyleT2I)
-  - **ECCV**
-    - ***Make-A-Scene:*** Scene-Based Text-to-Image Generation with Human Priors [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136750087.pdf) [[Code]](https://github.com/CasualGANPapers/Make-A-Scene) [[Demo]](https://colab.research.google.com/drive/1SPyQ-epTsAOAu8BEohUokN4-b5RM_TnE?usp=sharing)
-    - Trace Controlled Text to Image Generation [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136960058.pdf)
-    - Improved Masked Image Generation with Token-Critic [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136830070.pdf)
-    - ***VQGAN-CLIP:*** Open Domain Image Generation and Manipulation Using Natural Language [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136970088.pdf) [[Code]](https://github.com/EleutherAI/vqgan-clip)
-    - ***TISE:*** Bag of Metrics for Text-to-Image Synthesis Evaluation [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136960585.pdf) [[Code]](https://github.com/VinAIResearch/tise-toolbox)
-    - ***StoryDALL-E:*** Adapting Pretrained Text-to-image Transformers for Story Continuation [[Paper]](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136970070.pdf) [[Code]](https://github.com/adymaharana/storydalle) [[Demo]](https://huggingface.co/spaces/ECCV2022/storydalle)
-  - **NeurIPS**
-    - ***CogView2:*** Faster and Better Text-to-Image Generation via Hierarchical Transformers [[Paper]](https://openreview.net/pdf?id=GkDbQb6qu_r) [[Code]](https://openreview.net/pdf?id=GkDbQb6qu_r)
-    - ***Imagen:*** Photorealistic Text-to-Image Diffusion Models with Deep Language Understanding [[Paper]](https://papers.nips.cc/paper_files/paper/2022/file/ec795aeadae0b7d230fa35cbaf04c041-Paper-Conference.pdf) [[Reproduced Code]](https://github.com/lucidrains/imagen-pytorch) [[Project]](https://imagen.research.google/) [[***Imagen 2***]](https://deepmind.google/technologies/imagen-2/)
-  - **ACM MM**
-    - ***Adma-GAN:*** Attribute-Driven Memory Augmented GANs for Text-to-Image Generation [[Paper]](https://arxiv.org/pdf/2209.14046.pdf) [[Code]](https://github.com/Hsintien-Ng/Adma-GAN)
-    - Background Layout Generation and Object Knowledge Transfer for Text-to-Image Generation [[Paper]](https://dl.acm.org/doi/abs/10.1145/3503161.3548154)
-    - ***DSE-GAN:*** Dynamic Semantic Evolution Generative Adversarial Network for Text-to-Image Generation [[Paper]](https://arxiv.org/pdf/2209.01339.pdf)
-    - ***AtHom:*** Two Divergent Attentions Stimulated By Homomorphic Training in Text-to-Image Synthesis [[Paper]](https://dl.acm.org/doi/abs/10.1145/3503161.3548159)
-  - **arXiv**
-    - ***DALLE-2:*** Hierarchical Text-Conditional Image Generation with CLIP Latents [[Paper]](https://cdn.openai.com/papers/dall-e-2.pdf)
-    - ***PITI:*** Pretraining is All You Need for Image-to-Image Translation [[Paper]](https://arxiv.org/pdf/2205.12952.pdf) [[Code]](https://github.com/PITI-Synthesis/PITI)
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-- <span id="text-year-2021">**Year 2021**</span>
-  - **ICCV**
-    -  ***DAE-GAN:*** Dynamic Aspect-aware GAN for Text-to-Image Synthesis [[Paper]](https://openaccess.thecvf.com/content/ICCV2021/papers/Ruan_DAE-GAN_Dynamic_Aspect-Aware_GAN_for_Text-to-Image_Synthesis_ICCV_2021_paper.pdf) [[Code]](https://github.com/hiarsal/DAE-GAN)
-  - **NeurIPS**
-    - ***CogView:*** Mastering Text-to-Image Generation via Transformers [[Paper]](https://proceedings.neurips.cc/paper/2021/file/a4d92e2cd541fca87e4620aba658316d-Paper.pdf) [[Code]](https://github.com/THUDM/CogView) [[Demo]](https://thudm.github.io/CogView/index.html)
-    - ***UFC-BERT:*** Unifying Multi-Modal Controls for Conditional Image Synthesis [[Paper]](https://proceedings.neurips.cc/paper/2021/file/e46bc064f8e92ac2c404b9871b2a4ef2-Paper.pdf)
-  - **ICML**
-    - ***DALLE-1:*** Zero-Shot Text-to-Image Generation [[Paper]](https://proceedings.mlr.press/v139/ramesh21a/ramesh21a.pdf) [[Reproduced Code]](https://github.com/lucidrains/DALLE-pytorch)
-   -  **ACM MM**
-      -  Cycle-Consistent Inverse GAN for Text-to-Image Synthesis [[Paper]](https://arxiv.org/pdf/2108.01361.pdf)
-      -  ***R-GAN:*** Exploring Human-like Way for Reasonable Text-to-Image Synthesis via Generative Adversarial Networks [[Paper]](https://dl.acm.org/doi/10.1145/3474085.3475363)
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-- <span id="text-year-2020">**Year 2020**</span>
-  - **ACM MM**
-    - Text-to-Image Synthesis via Aesthetic Layout [[Paper]](https://dl.acm.org/doi/10.1145/3394171.3414357)
-
-[<u><small><🎯Back to Top></small></u>](#contents)
-
-<!-- omit in toc -->
-## Conditional Text-to-Image Generation
-- <span id="conditional-year-2025">**Year 2025**</span>
-  - **CVPR**
-    - Training-free Dense-Aligned Diffusion Guidance for Modular Conditional Image Synthesis [[Paper]](https://arxiv.org/pdf/2504.01515) [[Code]](https://github.com/ZixuanWang0525/DADG)
-    - Devil is in the Detail: Towards Injecting Fine Details of Image Prompt in Image Generation via Conflict-free Guidance and Stratified Attention [[Paper]](https://openaccess.thecvf.com/content/CVPR2025/papers/Jo_Devil_is_in_the_Detail_Towards
+    - ***StyleT2I:*** Toward Compositional and High-Fidelity Text-to-Image Synthesis [[Paper]](https://openaccess.thecvf.com/content/CVPR2022/papers/Li_StyleT2I_Toward_Comp

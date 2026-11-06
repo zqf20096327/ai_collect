@@ -38,7 +38,7 @@
 >
 > 📱 想要原生 App？Flutter 移动端客户端（Android / iOS / Web / 桌面）在独立仓库 [`OpenBiliClaw-mobile`](https://github.com/whiteguo233/OpenBiliClaw-mobile)：推荐、对话、画像、收藏 / 稍后再看 / 30 天历史一应俱全，连接同一本地后端。
 
-> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.233) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)为历史源码快照。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 ## 10 秒看懂 OpenBiliClaw
 
@@ -67,9 +67,12 @@
 普通用户只需四步；Firefox、Docker、脚本和手动部署等备用路径都在 [安装与部署详情](#安装与部署详情)。
 
 1. **装插件** —— [Chrome 应用商店一键安装](https://chromewebstore.google.com/detail/cdfjfkdjjhdaccbldipkjhpibnfbiamg)（自动更新），或从 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载 zip 手动安装（最新功能先到，商店版可能滞后几天）。
-2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。每个平台有两种安装包:**精简版**(默认,首启自动下载向量模型 bge-m3)与 **`-with-embedding` 完整版**(已内置 bge-m3 ~1.1GB,离线开箱即用)——网络差 / 想离线的选完整版,其余选精简版。**Gitee 源码已同步至 v0.3.233，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.233)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
+2. **装后端** —— 从同一个 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 下载桌面安装包（macOS `.dmg` / Windows `.exe`，开箱即用、常驻菜单栏/托盘）。每个平台有两种安装包:**精简版**(默认,首启自动下载向量模型 bge-m3)与 **`-with-embedding` 完整版**(已内置 bge-m3 ~1.1GB,离线开箱即用)——网络差 / 想离线的选完整版,其余选精简版。**Gitee 源码已同步至 v0.3.233，最新版安装包见 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234)。123 云盘当前仍是 v0.3.213 历史文件。** 想改源码或深度定制,就把下面这句话粘给 Claude Code / Codex CLI / Cursor 等 AI 编程助手：
 
    ```text
+trusted local UI → private API; remote UI → password setup → authenticated HTTP / WS
+source metadata (including XHS note body / tag names) → candidate storage → semantic allowlist → LLM sparse v7 / Jev evaluation
+
    请按照 https://raw.githubusercontent.com/whiteguo233/OpenBiliClaw/main/docs/agent-install.md 的说明帮我部署 OpenBiliClaw 后端(务必用 Bash 的 curl 下载这个文档,不要用 WebFetch — 会丢关键指令)
    ```
 
@@ -86,7 +89,7 @@
 源码 / 一句话安装则先运行
 `openbiliclaw tailnet build-helper`（需要 Go 1.26.6），再运行 `openbiliclaw tailnet enable`
 并重启。电脑无需安装或全局开启系统 Tailscale；入口默认关闭、只在 tailnet 私网可见，
-不启用 Funnel/Serve，建议同时在本机 Web 设置中开启应用密码（源码安装也可执行
+不启用 Funnel/Serve，远程使用前需在本机 Web 设置中开启应用密码（源码安装也可执行
 `openbiliclaw set-password`）。详见[应用内 Tailnet](docs/modules/tailnet.md)。
 
 可选关键词 grounding：在 `[discovery].inspiration_search_backends` 中加入 `parallel`；默认链不变，见 [Discovery](docs/modules/discovery.md#可选-parallel-grounding)。也可加入 `keenable`，见 [Discovery](docs/modules/discovery.md#可选-keenable-grounding)。
@@ -254,12 +257,11 @@ query inspiration → configured provider chain
 
 ## 最近更新
 
-📌 最新版本：**v0.3.233（2026-10-30）**
+📌 最新版本：**v0.3.234（2026-11-06）**
 
-- **画像更贴近真实行为**：B 站历史 / 收藏 / 关注补齐真实交互时间，账号导入的存量不再被当成你的行为，也不再拿库存推断性格。
-- **兴趣更干净**：新增「用工具≠口味」过滤，对话里讲本产品的运维话题不再变成兴趣；实测拦下 14 个复合运维话题，并保留「软件测试」。
-- **ChatGPT 订阅恢复可用**：修复 Codex `json_mode` 初始化失败，画像与偏好分析的结构化调用不再整块失败。
-- **可修复存量画像**：新增 `openbiliclaw profile-repair-provenance`（默认 dry-run），清理把 MBTI 当证据的条目和被证伪的时序断言。
+- **免费模型开箱可选**：初始化和设置共用 Qwen3-8B / Qwen3.5-4B，文本向量可选云端 BGE-M3 或本地 Ollama。
+- **远程访问先认证**：关闭密码时只允许可信本机访问，并提示远程设备完成设置。
+- **评估保留来源事实**：补齐平台原生互动、GitHub 仓库属性和小红书已有正文，长批次超限时有界拆分。
 
 完整变更详见 [docs/changelog.md](docs/changelog.md)。
 
@@ -327,7 +329,7 @@ npm run package:firefox        # 额外打成未签名 openbiliclaw-extension-v*
 
 到 [Latest Release](https://github.com/whiteguo233/OpenBiliClaw/releases/latest) 的 `openbiliclaw-v*` 聚合发布页下载对应系统的安装包。这个聚合页会同步展示：
 
-> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)已同步至最新主线。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.233) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
+> 🇨🇳 **国内源**：[Gitee v0.3.233 源码](https://gitee.com/whiteguo233/openbiliclaw/tree/openbiliclaw-v0.3.233)为历史源码快照。安装包请从 [GitHub Release](https://github.com/whiteguo233/OpenBiliClaw/releases/tag/openbiliclaw-v0.3.234) 获取；[123 云盘](https://4001474255.share.123pan.cn/123pan/IxbZMh-90KO3)仍保留 v0.3.213 历史文件，最新版国内安装包镜像待更新。
 
 - 当前后端源码 tag：`backend-v*`
 - 当前插件 release：`extension-v*`，并附 `openbiliclaw-extension-v*.zip` / `openbiliclaw-extension-v*-firefox.zip`（Firefox 临时调试）；启用 AMO signing 时还会附 `openbiliclaw-extension-v*-firefox.xpi`（Firefox 正式安装）
@@ -381,7 +383,7 @@ openbiliclaw start
 
 > 首次运行 `openbiliclaw init` 时会询问是否允许局域网访问（默认 Y）。如果选了 N 或想改回来，编辑 `config.toml` 的 `[api].host`（`0.0.0.0` = 通过可用的 IPv4 / IPv6 局域网访问，`127.0.0.1` = 仅本机）。二维码优先使用 IPv4；仅有 IPv6 时会自动生成带方括号的 IPv6 地址。
 >
-> **安全提示**：`0.0.0.0` 绑定意味着同网络的任何设备都能访问后端。默认配置下 `[api.auth]` 密码门禁是关闭的，此时历史、画像和点赞/评论等写接口对局域网零鉴权开放；B 站登录凭据接口和设置写/探测接口（`PUT /api/config` 等）例外——它们始终要求本机或已登录会话。只要在不可信网络（公共 Wi-Fi、共享热点、端口映射到公网）使用，请立即执行 `openbiliclaw set-password` 开启门禁。
+> **远程访问**：默认 `[api.auth].enabled=false` 只允许可信本机调用私有 API。手机、局域网和反向代理连接前，请先在后端电脑的设置页启用访问密码，或执行 `openbiliclaw set-password`；远程插件还需设备密钥配对。静态页面和健康探针公开可达。详见[访问认证](docs/modules/api-auth.md)。
 
 打开 `/m/` 后可以把手机页面保存成桌面快捷入口：iPhone / iPad 用 Safari 的「分享 → 添加到主屏幕」；Android Chrome / Chromium 浏览器用菜单里的「安装应用」或「添加到主屏幕」。局域网 HTTP 在部分 Android 浏览器上可能只生成快捷方式；如果想要更稳定的完整 PWA 安装提示，建议在可信环境里用 HTTPS 反代访问本机后端。
 
@@ -415,7 +417,10 @@ Windows 原生（PowerShell，不需要 Docker / WSL2）：
 mkdir -p ~/openbiliclaw && cd ~/openbiliclaw
 curl -fsSLO https://raw.githubusercontent.com/whiteguo233/OpenBiliClaw/main/docker-compose.prebuilt.yml
 docker compose -f docker-compose.prebuilt.yml up -d
-# 然后打开 http://127.0.0.1:8420/setup/ 完成初始化
+docker exec -it openbiliclaw-backend openbiliclaw set-password
+docker restart openbiliclaw-backend
+# 先打开 http://127.0.0.1:8420/web/ 登录，再进入 /setup/
+# 扩展设备密钥配对及容器初始化见下方 Docker 部署指南
 ```
 
 也可以把下面这句粘给 AI 编程助手，走终端向导 + 自动 init：
@@ -653,20 +658,21 @@ OpenClaw 收到 `interest.probe` 事件（或主动拉取 `next-probe`），发�
 
 ## 🏛️ 架构概览
 
-免费模型方案（本分支已接入，SDK组件已发布，主程序待发布）：初始化、插件、PC 与手机设置共用模型选择；8B 为推荐默认，4B 可随时切换，文本向量默认云端 BGE-M3，也可选择本地 Ollama。[实现与验收边界](docs/plans/2026-11-04-sponsored-user-flow.md)。
+免费模型方案（v0.3.234 应用交付）：初始化、插件、PC 与手机设置共用模型选择；8B 为推荐默认，4B 可随时切换，文本向量默认云端 BGE-M3，也可选择本地 Ollama。[实现与验收边界](docs/plans/2026-11-04-sponsored-user-flow.md)。
 
 ```text
 常驻硅基流动 Provider：初始化 / 插件 / PC / 手机 / CLI → 本机配置 → 共享 Sponsored 路由
   文本 / JSON / 工具 → Qwen3-8B（128K）⇄ Qwen3.5-4B（256K）
   云端文本向量 → BGE-M3（1024维，默认）；可选图片理解 → 4B
-  → 签名任务 IPC → Rust 进程池（1前台＋2后台，共用额度账本）→ SiliconFlow
+  配置 HTTPS 中继 → 设备签名 / 5分钟会话 / 防重放 → 服务端统一限额 → 服务端 Rust
+  本地兼容模式 → 签名任务 IPC → Rust 进程池（1前台＋2后台，共用额度账本）→ SiliconFlow
   无输出的临时故障 → 有限重试/免费互备 → 持久队列；已输出或执行工具则停止重跑
   GitHub/Instagram 显式初始化 → 所选来源 producer → 同步评估/文案 → 首轮可用库存
   通用网页抽取 → 完整 URL 规范化身份 → 候选去重；站内原生 ID 保留
   返回结果 → 来源证据校验 → 画像/记忆；时间字段失败最多单独纠错一次
   本地向量选择 → Ollama（独立缓存与地址，不使用免费Key）
   凭据失效 / 授权到期 → 持久状态 → 设置/消息通知 → 更新安装包或配置自有Key
-  后端打包 / Docker → 必须纳入固定签名 Rust SDK → 缺失即构建失败
+  后端打包 / Docker → 本地模式固定签名 SDK；已验证的官方中继发行模式不携带 Key SDK
   安装器 / 更新器 → 验签 → 优先当前 Core 固定版本 → 原子切换组件
   长记忆精确查询 → JSON Pointer 原值；免费导演 → 顺序引用 → 后端分组校验
 ```

@@ -89,6 +89,9 @@ then you can use use it in your code like this
     good_json_string = repair_json(bad_json_string)
     # If the string was super broken this will return an empty string
 
+Valid JSON containing an empty string (`""`) is returned as JSON text. When
+`skip_json_loads=True`, or when schema repair falls back to the repair parser,
+an empty result can still mean that no value was found.
 
 You can use this library to completely replace `json.loads()`:
 
@@ -152,6 +155,8 @@ and another method to read from a file:
         ...
 
 Keep in mind that the library will not catch any IO-related exception and those will need to be managed by you
+
+Non-seekable text streams are supported; their remaining contents are read into memory for repair.
 
 ### Non-Latin characters
 
@@ -274,7 +279,7 @@ Schema mode can be selected with `schema_repair_mode`:
   - fills missing required fields only when a safe value can be inferred (`default`, `const`, first `enum`, or empty array/object when allowed by schema constraints).
   - for sequential top-level fragments, skips schema-invalid fragments and returns the first fragment that satisfies the schema.
 
-This is especially useful when you need deterministic, schema-valid outputs for downstream validation, storage, or typed processing. If the input cannot be repaired to satisfy the schema, `json_repair` raises `ValueError`.
+This is especially useful when you need deterministic, schema-valid outputs for downstream validation, storage, or typed processing. If the schema is invalid or the input cannot be repaired to satisfy it, `json_repair` raises `ValueError`.
 
 Install the optional dependencies:
 

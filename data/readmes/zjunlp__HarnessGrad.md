@@ -6,7 +6,7 @@
 
 <p align="center">An agent combines a model and a harness in an environment;<br>HarnessGrad studies how an editable harness can learn from feedback.</p>
 
-<p align="center">🚀 <a href="#quick-start">Quick start</a> · 🧩 <a href="#what-you-can-run">Integrations</a> · 📚 <a href="DATASETS.md">Datasets</a></p>
+<p align="center">🚀 <a href="#quick-start">Quick start</a> · 🧩 <a href="#what-you-can-run">Integrations</a> · 📚 <a href="DATASETS.md">Datasets</a> · 🔗 <a href="#related-work">Related work</a></p>
 
 <p align="center"><img src=".github/assets/learning-loop.svg" width="720" alt="Learning loop: tasks lead to feedback, editing the harness and evaluation, which returns to tasks."></p>
 
@@ -72,11 +72,17 @@ only the required runtime directories are mounted, read-only.
 ```bash
 git clone https://github.com/zjunlp/HarnessGrad.git
 cd HarnessGrad
-uv venv --python 3.12 ~/.venvs/harnessgrad
+uv venv --seed --python 3.12 ~/.venvs/harnessgrad
 source ~/.venvs/harnessgrad/bin/activate
 uv pip install -e .
 ./install.sh --check
 ```
+
+`--seed` installs pip into the environment, which harness configuration tools need for
+host dependency overlays; `uv pip install` alone does not seed pip. Seeding may download
+pip if it is not already cached, so an offline setup requires an appropriate pre-populated
+uv cache. Creating the environment or installing the project may also require downloading
+Python or build tools if they are not already available locally.
 
 The platform itself has **no third-party runtime dependencies** and imports only the standard
 library; a dataset, a harness or a search provider may need more, and each recipe names what.
@@ -154,6 +160,10 @@ python3 console/server.py --port 4460
 
 Open [http://127.0.0.1:4460/](http://127.0.0.1:4460/). Run these commands from the repository root after an experiment has created `runs/`, or point `HG_CONSOLE_RUNS` to another existing run-record directory. The Console binds to localhost by default.
 
+Candidate trials additionally require `HG_CONSOLE_TRIAL_RUNS` to name an existing **absolute**, symlink-free directory outside (and not an ancestor of) the platform checkout. An administrator must provision and protect this directory and all its ancestors against untrusted modification, and dedicate it to this service; for example, create a private directory under a suitable deployment data volume and export its absolute path before starting the Console. There is no shared `/tmp` default. The service reserves both `<root>/<run-id>` and `<root>/work/<run-id>` exclusively; existing or incomplete IDs cannot be reused, including after failures or timeouts. Choose a new ID rather than deleting historical data. Run IDs use 1–48 ASCII letters, digits, dot, underscore or hyphen, excluding `.`, `..`, and `work`. This changes compatibility for deployments relying on the former default or reusing IDs. The root must be exclusive to this service: direct driver CLI runs and other writers must not use either namespace. The reservation protects cooperating trial requests, not malicious processes running as the same OS user or administrators modifying the trusted root.
+
+A candidate trial passes `--sampling all --rounds 0`: zero optimization rounds does **not** mean one task. It can evaluate the entire selected dataset and incur corresponding model, time, and resource costs. Review the dataset and deployment limits before launching.
+
 <details>
 <summary>🖥️ See the Console</summary>
 <br>
@@ -185,6 +195,45 @@ If the platform, the measurement protocol or a curve produced here is useful in 
   year   = {2026},
 }
 ```
+
+<a id="related-work"></a>
+
+## 🔗 Related work
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="150">
+        <a href="https://github.com/RUC-NLPIR/FlashRSI">
+          <img src="https://avatars.githubusercontent.com/u/139615285?v=4&s=200" width="80" style="border-radius:50%" alt="FlashRSI"/>
+          <br />
+          <sub><b>FlashRSI</b></sub>
+        </a>
+      </td>
+      <td align="center" width="150">
+        <a href="https://github.com/simple-agent-lab/RSIHub">
+          <img src="https://avatars.githubusercontent.com/u/283423986?v=4&s=200" width="80" style="border-radius:50%" alt="RSIHub"/>
+          <br />
+          <sub><b>RSIHub</b></sub>
+        </a>
+      </td>
+      <td align="center" width="150">
+        <a href="https://github.com/Prism-Shadow/penguin-harness">
+          <img src="https://avatars.githubusercontent.com/u/236323912?v=4&s=200" width="80" style="border-radius:50%" alt="PenguinHarness"/>
+          <br />
+          <sub><b>PenguinHarness</b></sub>
+        </a>
+      </td>
+      <td align="center" width="150">
+        <a href="https://github.com/quqxui/RSI-Flow">
+          <img src="https://avatars.githubusercontent.com/u/41822324?v=4&s=200" width="80" style="border-radius:50%" alt="RSI-Flow"/>
+          <br />
+          <sub><b>RSI-Flow</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 <a id="license"></a>
 

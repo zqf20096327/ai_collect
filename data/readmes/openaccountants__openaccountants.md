@@ -58,15 +58,14 @@ Three ways in, all in **[CONTRIBUTING.md](CONTRIBUTING.md)**:
 
 ## How to read a skill
 
-This library holds accountant-reviewed skills and skills no accountant has signed off yet. Check each skill version's review record before relying on it; a named author is distinct from a professional reviewer. Skill content is source-available under the terms in [LICENSING.md](LICENSING.md).
+Every skill shows **Built from the law**. An approved accountant publishing their own professional work is also its approver; they record their own approval in the original PR. No second accountant or separate approval PR is required. Skill content is source-available under the terms in [LICENSING.md](LICENSING.md).
 
-Every skill is in exactly one state:
+Each skill has one approval status:
 
 | State | Meaning |
 |---|---|
-| **Accountant-reviewed** | A named, licensed accountant reviewed the complete skill. Their name is in the frontmatter (`reviewed_by:`) and on [the public roster](VERIFIERS.md) |
-| **Checked against the law** | Built to the standard in [docs/skill-template.md](docs/skill-template.md): every figure cited to the law and checked against the statute by an independent review before merge; no accountant has signed it off yet |
-| **Sourced from the law** | Older skill not yet rebuilt to the standard: every figure cited to an official source; no accountant has signed it off yet |
+| **Approved by [name]** | The accountant's approval is recorded with `tier: 1`, `reviewed_by` and `reviewed_on`. The website resolves that name to a current approved accountant account. |
+| **Not yet approved** | No named accountant approval is recorded. Independent source checking before merge is separate from professional approval. |
 
 The definitions: [docs/QUALITY-TIERS.md](docs/QUALITY-TIERS.md). How skills are built, checked and corrected: [docs/ACCURACY-METHODOLOGY.md](docs/ACCURACY-METHODOLOGY.md). Which number to quote and where it is measured: [docs/COVERAGE.md](docs/COVERAGE.md).
 
@@ -94,9 +93,9 @@ every night:
 - **The nightly exam** tests whether AIs actually said what the skills say that day, or
   improvised. Improvisation gets caught, counted and fixed at the source.
 
-The sync runs both ways: platform edits land here as commits under the author's own name,
-and merged PRs here flow back into what every AI serves, credited to you. A skill with an
-accountant's byline never changes without that accountant's one-click approval.
+GitHub is the source of truth for skill documents. Merged PRs are delivered to the
+platform and checked against the published content. Generated packages and indexes
+are refreshed by the scheduled sync. A merge alone does not prove that a skill is live.
 
 The whole story, in plain words: [openaccountants.com/how-it-works](https://www.openaccountants.com/how-it-works)
 
@@ -125,7 +124,8 @@ Independent, open-source review aids and calculation tools that complement the O
 - **[div7a-loan-review](https://github.com/ryanduguid/australian-accounting/tree/main/packages/div7a-loan-review)** (Apache-2.0): Reviews Division 7A loan terms and minimum yearly repayments against the ATO benchmark interest rate, with fabricated inputs and explicit refusal boundaries.
 - **[xero-trial-balance-export](https://github.com/ryanduguid/accounting-review-pipeline/tree/main/packages/xero-trial-balance-export)** (Apache-2.0): Exports a Xero trial balance to CSV only when month-movement and YTD column pairs both balance exactly.
 - **[ato-benchmark-compare](https://github.com/ryanduguid/australian-accounting/tree/main/packages/ato-benchmark-compare)** (Apache-2.0): Evaluates business P&L statements locally against the Australian Taxation Office (ATO) small business performance benchmarks, surfacing variance flags and ratio analyses.
-
+- **[OsaBooks](https://github.com/hidicker/osabooks)** (AGPL-3.0): Free bookkeeping for businesses, rental properties and households in Australia, New Zealand, South Korea and the United States, with Xero and QuickBooks imports. Use it as a standard bookkeeping platform, or with several AI features: coding suggestions, year-end checks against the OpenAccountants guides, and an MCP connector so Claude, ChatGPT or another AI app can read your books. Runs on your own computer or online on your own Supabase. [Home page and demo](https://nbparagliding.nz/osabooks/home/).
+  
 *(External tools provide computational review assistance and do not constitute tax or legal advice.)*
 
 ---

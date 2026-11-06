@@ -62,7 +62,32 @@ python3 "<skill-dir>/scripts/service.py" --once --format widget
 {"conversation":"<宿主生成的对话标识>","text":"推荐100元以内的面膜，只查询。"}
 ```
 
-宿主应为每个用户和对话生成独立标识，续聊时沿用。结果通过 JSON 返回状态和产物路径：正文为 `answer_file`，内联卡片为 `fragment_file`，独立页面为 `page_file`。宿主需能访问这些文件，并以 UTF-8 读取。没有对应内容时，相应字段不会出现。
+宿主应为每个用户和对话生成独立标识，续聊时沿用。`format` 可选 `widget`（HTML 片段）、`html`（完整页面）或 `md`（Markdown），商品卡片和购物车使用同一格式。结果通过 JSON 返回状态和产物路径：正文为 `answer_file`；商品按格式返回 `fragment_file`、`page_file` 或 `html_file`；购物车为 `cart_file`，HTML 模式另提供 `cart_fragment_file` 或 `cart_page_file`。`cart_status` 为 `current` 或 `unavailable`；后者表示状态不可用，应先查询确认，不要重复写操作。宿主需能访问这些文件，并以 UTF-8 读取。没有对应内容时，相应字段不会出现。
+
+### 选择展示格式
+
+| 场景 | 请求参数 | 商品产物 | 购物车产物 |
+| --- | --- | --- | --- |
+| 在聊天窗口或宿主界面内联展示 | `"format":"widget"`（默认） | `fragment_file`：HTML 片段 | `cart_fragment_file`：HTML 片段 |
+| 在浏览器或 WebView 打开独立页面 | `"format":"html"` | `page_file`：完整 HTML 页面 | `cart_page_file`：完整 HTML 页面 |
+| 宿主支持 Markdown 或只需文本展示 | `"format":"md"` | `html_file`：`.cards.md` 文件 | `cart_file`：`.cart.md` 文件 |
+
+这三种格式只影响商品卡片和购物车；正文仍从 `answer_file` 读取。独立商品页面是包含本次商品卡片的 HTML 文件，商品详情链接仍指向商城真实商品页。内联模式要求宿主支持 HTML，商品图片还需要支持 `data:` 图片；无法内联时按宿主能力选择 `html` 或 `md`。按本轮响应实际返回的字段读取，未产生对应内容时不会返回该字段。
+
+启动时可用 `--format widget`、`--format html` 或 `--format md` 设置默认值；单次请求中的 `"format"` 会覆盖启动默认值。例如：
+
+```json
+{"op":"send","conversation":"<对话标识>","text":"查看购物车","format":"md"}
+```
+
+在 **Qoder** 中内联展示商品卡片时，使用 `widget`，并直接通过 `out_dirs.fragment_path` 将片段输出到 Qoder 的 `visualizations/` 目录下。将示例中的占位符替换为该目录的实际绝对路径，再用返回的 `fragment_file` 内联展示；异步调用时，在取得最终结果的 `resume` 请求中也要传入该路径。
+
+```json
+{"op":"send","conversation":"<对话标识>","text":"推荐100元以内的面膜，只查询。","format":"widget",
+ "out_dirs":{"fragment_path":"<Qoder 的 visualizations 目录绝对路径>/products.html"}}
+```
+
+指定路径的同名文件允许覆盖；需要保留不同轮次结果时，请使用不同文件名。
 
 网络中断或结果未知时，使用同一会话的 `resume` 核对原请求，不要自动重新提交。停止使用 `cancel`，清空会话使用 `clear`。完整请求、授权、地址和展示规则见 [SKILL.md](SKILL.md)。
 

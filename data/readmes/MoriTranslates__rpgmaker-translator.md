@@ -119,6 +119,11 @@ Your settings are saved next to the exe, so the folder is portable.
 
 Prefer running from source (any OS, latest code)? Follow the Quick Start below.
 
+> **Linux / macOS:** not officially supported, but the app runs from source. Install Ollama for
+> your system, start it yourself (`ollama serve`) and pull your model before launching
+> `python main.py` — the app can't start or restart Ollama for you there. Open in RPG Maker and
+> the EasyRPG Player download are Windows-only.
+
 ---
 
 ## Quick Start
@@ -176,17 +181,21 @@ Best JP→EN model available locally. 262K native context window, multimodal (al
 
 | GPU VRAM | Model | Command |
 |---|---|---|
-| **6GB** | Qwen 3.5:9b Q4_K_M | `ollama pull qwen3.5:9b` |
-| **10GB** | Qwen 3.5:9b Q8_0 | `ollama pull qwen3.5:9b-q8_0` |
-| **12GB** | Qwen 3.5:14b Q4_K_M | `ollama pull qwen3.5:14b` |
-| **16GB** | Qwen 3.5:14b Q8_0 | `ollama pull qwen3.5:14b-q8_0` |
-| **24GB** | Qwen 3.5:30b Q4_K_M | `ollama pull qwen3.5:30b` |
+| **6–10GB** | Qwen 3.5:9b Q4_K_M (6.6GB) | `ollama pull qwen3.5:9b` |
+| **12–16GB** | Qwen 3.5:9b Q8_0 (10GB) | `ollama pull qwen3.5:9b-q8_0` |
+| **24GB+** | Qwen 3.5:27b Q4_K_M (17GB) | `ollama pull qwen3.5:27b` |
 
-The 9b model is the sweet spot — fast, fits in 6GB VRAM, and produces excellent translations.
+Qwen 3.5 comes in 9b, 27b and 35b-a3b sizes (no 14b or 30b); see the
+[Ollama tag list](https://ollama.com/library/qwen3.5/tags). The 9b model is the sweet spot — fast,
+fits in 6GB VRAM (partly offloaded), and produces excellent translations. The 27b model is untested
+with this app; it should be more accurate but much slower.
+
+**Also worth trying on 24GB+ cards (untested):** the newer Qwen 3.8, which only comes in 27b
+(`ollama pull qwen3.8:27b`, 18GB). If you try it or Qwen 3.5 27b, feedback on translation quality is welcome.
 
 ### No GPU? Use Cloud APIs
 
-In Settings, switch Provider to OpenAI/Gemini/DeepSeek/Anthropic, enter your API key, and go. Same workflow, same features, pay per token. Cheapest option: **Gemini 2.0 Flash** at $0.10/$0.40 per 1M tokens.
+In Settings, switch Provider to OpenAI/Gemini/DeepSeek/Anthropic, enter your API key, and go. Same workflow, same features, pay per token. Cheapest options: **gpt-6-luna** or **Claude Haiku 5.5** at $0.10/$0.50 per 1M tokens (prices checked November 2026).
 
 > **Note:** Cloud APIs may refuse or filter adult content and can ban accounts for repeated NSFW requests. For unrestricted translation of all content types, use Local LLM — everything runs on your GPU, nothing is sent to the cloud.
 
@@ -198,12 +207,12 @@ In Settings, switch Provider to OpenAI/Gemini/DeepSeek/Anthropic, enter your API
 
 | Provider | Models | Pricing (per 1M tokens) |
 |---|---|---|
-| **Google Gemini** | gemini-2.0-flash, 2.5-flash, 2.5-pro | $0.10–$1.25 in / $0.40–$10.00 out |
-| **OpenAI** | gpt-4.1-mini, gpt-4.1, gpt-5 | $0.40–$2.00 in / $1.60–$10.00 out |
-| **DeepSeek** | deepseek-chat | $0.27 in / $1.10 out |
-| **Anthropic** | claude-sonnet-4.5 | $3.00 in / $15.00 out |
+| **Google Gemini** | gemini-3.5-flash-lite, gemini-3.8-flash | $0.30–$1.50 in / $2.50–$7.50 out |
+| **OpenAI** | gpt-6-luna, gpt-5.6-luna, gpt-6-sol | $0.10–$2.00 in / $0.50–$10.00 out |
+| **DeepSeek** | deepseek-flash, deepseek-v4-pro | $0.30–$1.32 in / $1.20–$3.96 out (peak hours; off-peak is half) |
+| **Anthropic** | claude-haiku-5-5, claude-sonnet-5-5, claude-opus-5-5 | $0.10–$4.00 in / $0.50–$20.00 out |
 
-All providers use the OpenAI SDK as a universal abstraction. Switch in Settings > Provider, enter your API key, and the rest is automatic — batch size, workers, and prompt presets auto-configure.
+All providers use the OpenAI SDK as a universal abstraction. Switch in Settings > Provider, enter your API key, and the rest is automatic — batch size, workers, and prompt presets auto-configure. With a key entered, the model list is read from the provider itself; the models above are the built-in suggestions used when that fails. Prices were checked in November 2026 and change often; a model with no price on file shows its cost as "unknown".
 
 ---
 

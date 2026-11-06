@@ -81,6 +81,27 @@ llama.cpp's `--fit` is on by default and fits a model to free memory well. If on
 
   The OpenAI-compatible `/v1` endpoint serves other agent harnesses as well.
 
+### Claude Code on your laptop
+
+Remote client mode serves the same model gateway without launching Claude Code
+on the inference server. In the TUI choose **Claude Code → Remote client**, then
+connect the separate [ggrun-client](https://github.com/raketenkater/ggrun-client)
+from your laptop project. Tools, files and sessions stay on the laptop; model
+serving and optional reviewer/worker routing stay on the server. Any supported
+HTTP(S) connection can be used; Tailscale is optional. This feature is currently
+being qualified; see [setup and compatibility](docs/remote-claude.md).
+
+```sh
+# server: TUI → [x] Claude Code → Remote client → launch; then show the token
+ggrun gateway-token
+# laptop: install the client, then open its menu in your project
+curl -fsSL https://raw.githubusercontent.com/raketenkater/ggrun-client/main/install.sh | sh
+ggrun-client
+```
+
+The client menu adds the server, starts or resumes sessions, and shows the
+server's live speed in Claude's status line. Use `/ggoal` for long goals.
+
 ## Compared with other tools
 
 | Tool | Use it when | What ggrun adds |

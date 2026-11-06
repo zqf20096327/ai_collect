@@ -46,10 +46,10 @@ source, a one-layer 100-hour monolith, a 16.7-million-layer colour cube, and mor
   stackable **modifiers** (registry v1.1.0) add optional mechanics with hard dependencies:
   `score-attack`, `minigame`, `boss-rush`, `gacha`, `casino`, `story`, and the structural
   `sim`/`board`/`challenges`/`caps`. See `references/design/13`.
-- **The pipeline verifies the game, not just the source.** An 88-rule static checker reads the
+- **The pipeline verifies the game, not just the source.** An 89-rule static checker reads the
   code; a load-time harness runs it and a pacing simulator plays it. All three were added because
   real briefs kept passing every text-level rule and then failing in play.
-- **88-rule static checker** — every hard rule and every regression caught in real
+- **89-rule static checker** — every hard rule and every regression caught in real
   generated games is automated (`scripts/static_checks.js`): Decimal discipline, row
   contiguity, requires monotonicity, dead-end unlock upgrades, self-scaling compounding
   budgets, achievement visibility, **effects that nothing consumes**, unread engine fields,
@@ -59,6 +59,19 @@ source, a one-layer 100-hour monolith, a 16.7-million-layer colour cube, and mor
   layer-knockout coverage, per-tick +1 auto-buys), and **D-QLEDGER** — the audit that every
   interview question was actually asked and answered by the user. Rules are gated per type:
   a game with no declared type is checked exactly as before.
+
+## Two ways to start
+
+| Entry | Use it when | What you get |
+|---|---|---|
+| **One sentence** (default) | You want the pipeline to make the decisions with you, question by question | The nine-question interview, every gate, this project's default look |
+| **`assets/full-prompt-template.md`** | You already know the game you want and would rather write the spec than answer questions | The interview becomes a confirmation pass; every gate unchanged |
+| **`assets/large-game-prompt.md`** — **recommended for large builds** | You want 25+ layers and a game that does **not** look like a default mod tree | A pasted, self-contained prompt: rebuilt background, CSS-drawn icons, redesigned controls and navigation, explicit permission to edit the engine, and a strict chapter-by-chapter delivery format |
+
+**The large-game prompt is opt-in.** Paste it and it overrides the default aesthetics while every gate
+(design-brief confirmation, static checks, smoke test, pacing simulation, browser pass) still runs.
+Start with one sentence instead, and the skill ignores that file completely — no mention of it, no
+"would you like the advanced prompt?" detour, no change to the default path.
 
 ## Requirements
 
@@ -71,6 +84,11 @@ source, a one-layer 100-hour monolith, a 16.7-million-layer colour cube, and mor
   `python -m http.server`, VS Code Live Server, …).
 
 ## Install
+
+> **Do not copy this checkout into a skills directory.** The platform requires the shipped folder
+> name to equal `SKILL.md`'s `name`, and a development tree rarely is (`TMT-Skill` here vs
+> `tmt-game-generator`). Copying it as-is installs a skill that will not load. Always build
+> `dist/tmt-game-generator/` first.
 
 Build the package first, then install it:
 
@@ -109,9 +127,16 @@ You can also invoke it explicitly where the tool supports it (`/tmt-game-generat
 | 4. Generate | Layer files bottom-row-first per the brief: Decimal-safe code, **every upgrade classified token-vs-value and wired to a consumer**, effect-kind diversity plan, tabFormat/microtabs organization, M1–M21 mechanics, automation ladder, softcaps, theming. **Each layer is gated before the next is written** (per-layer micro-gate): static checks re-run at 0 FAIL, the partial game boots, the new tab opens, one prestige + one purchase, console clean — the browser-only crash class dies at write time |
 | 5. Static checks | `node scripts/static_checks.js <game-folder>` — reads `.tmt-profile.json` and applies that type's gates, exemptions and per-blueprint thresholds; FAIL blocks manual testing; WARNs need a written justification in the brief. Plus `node scripts/i18n_check.js` when the game has a `js/lang/` text layer |
 | 5.5 Load-time smoke | `node tools/smoke.js` (copied from `assets/harness/`) — the real mod files loaded in Node: load-time throws, duplicate layer ids, `startData` contract, NaN/undefined hooks against a fresh save. 0 FAIL before the full browser pass |
-| 6. Balance walkthrough | **Measured, not estimated.** `node tools/simulate.js` drives the real economy and reports the first-purchase time, each layer's first prestige and the total to `isEndgame()`. Three real briefs passed every static rule and were then overturned by play (8–18 h promised → 2.5 h delivered; 28-second detonation; six automation steps with unreachable thresholds). `--probe <layer>` before any knob turn; `--save-at <layerId>` exports an engine-format save for the browser pass. Rebalance the brief, not the code |
+| 6. Balance walkthrough | **Measured, not estimated.** `node tools/simulate.js` drives the real economy and reports the first-purchase time, each layer's first prestige and the total to `isEndgame()`. Achievements are earned like a real player's, so the default run is a tight lower bound; `--challenges` credits every challenge at unlock for an upper bound and reports how many were already completable the moment they unlocked (19 of 41 in the generated corpus — each one a design defect). Three real briefs passed every static rule and were then overturned by play (8–18 h promised → 2.5 h delivered; 28-second detonation; six automation steps with unreachable thresholds). `--probe <layer>` before any knob turn; `--save-at <layerId>` exports an engine-format save for the browser pass. Rebalance the brief, not the code |
 | 6.5 Browser verification | The generator itself opens the served game: `__bootErrors` empty, every layer tab and microtab opens, one real prestige per layer kind, save→reload intact, console clean. Three builds shipped browser-only breakages before this stage existed (boot race, self-wiping prestige, a render throw that froze the page on "Loading..."). Late layers open in seconds via `--save-at` (the page reloads at that layer's unlock moment); feel proxies land in brief §12. Per-layer micro-gates shrink this pass but never replace it. Fixes are recorded in brief §12 |
 | 7. Test handoff | Serve, play, and verify against the checklist (console clean, first prestige in minutes, save/load, offline cap, endgame) |
+
+**Express entry — skip the interview:** for a game you already understand, fill
+`assets/full-prompt-template.md` (the complete-prompt template: identity, the §2 question
+ledger pre-answered, content phases, signature mechanics, story, numbers — written in your
+language) and hand it to the agent instead of answering the interview. It replaces Stage 1's
+questioning, not any gate: filled fields are transcribed verbatim into the question ledger,
+blank fields are still asked, the Q1 recap and the Stage 2 brief are still confirmed by you.
 
 References load **on demand** (`references/core/00–08` engine handbook,
 `references/design/09–15` — 65 design patterns (P1–P65, from the corpus crawl plus full-game
@@ -140,6 +165,10 @@ tmt-game-generator/
 │   ├── fun-quota.json        # per-blueprint fun-density quotas + the thresholds the
 │   │                         #   checker READS AT RUN TIME
 │   ├── design-brief-template.md  # with the §2 question ledger the checker audits (D-QLEDGER)
+│   ├── full-prompt-template.md   # the complete-prompt entry: user fills it INSTEAD of the
+│   │                             #   interview (stage-1 express input; gates unchanged)
+│   ├── large-game-prompt.md      # standalone prompt to paste into any agent: 25+ layers,
+│   │                             #   redesigned visuals, engine edits allowed, batched delivery
 │   └── harness/              # copy into <game>/tools/ — these RUN the game, they don't read it
 │       ├── smoke.js          #   load-time harness (stage 5.5): loads the real mod files with
 │       │                     #   engine stubs; catches load-time throws, duplicate ids,
@@ -157,7 +186,7 @@ tmt-game-generator/
 │   ├── scaffold.js           # template copy + mod.js patcher + .tmt-profile.json writer
 │   ├── pack.js               # builds dist/<name>/ — the shippable package the platform
 │   │                         #   requires (frontmatter + directory name must match `name`)
-│   ├── static_checks.js      # 88-rule mod-code checker (FAIL/WARN/PASS report, --json,
+│   ├── static_checks.js      # 89-rule mod-code checker (FAIL/WARN/PASS report, --json,
 │   │                         #   --profile <typeId> | --no-profile)
 │   └── i18n_check.js         # text-layer integrity (missing keys, duplicate language codes,
 │                             #   duplicate endonyms, pack parity, placeholder tokens);
@@ -184,13 +213,15 @@ tmt-game-generator/
 node tests/run_tests.js
 ```
 
-Five smoke groups should all pass: good fixture clean, bad fixture catches every rule with
-zero false positives, a freshly scaffolded game (from the bundled template) passes the
-checker, the ghost fixture flags exactly the unread engine fields (and does NOT flag the
-valid ones — `completionLimit`, `canComplete`), and the type layer routes correctly and
-enforces its own rules. The last group includes the check that matters most for backwards
-compatibility: **a game with no declared type produces no `T-*` output at all**, so its
-report is byte-identical to what it was before types existed. This works from any directory the skill is installed in — no environment variables
+Six smoke groups (158 assertions) should all pass: good fixture clean, bad fixture catches
+every rule with zero false positives, a freshly scaffolded game (from the bundled template)
+passes the checker, the ghost fixture flags exactly the unread engine fields (and does NOT
+flag the valid ones — `completionLimit`, `canComplete`), the type layer routes correctly and
+enforces its own rules, and the docs agree with the brief template (self-check numbering,
+every `brief §N` pointer, the released version). The type group includes the check that
+matters most for backwards compatibility: **a game with no declared type produces no `T-*`
+output at all**, so its report is byte-identical to what it was before types existed. This
+works from any directory the skill is installed in — no environment variables
 needed. To point the scaffolder at a different engine template anyway, use
 `--from <template-dir>` or the `TMT_TEMPLATE` environment variable.
 

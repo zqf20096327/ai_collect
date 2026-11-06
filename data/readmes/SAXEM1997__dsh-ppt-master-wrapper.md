@@ -53,7 +53,7 @@ flowchart TB
 | 依赖 | 用途 | 备注 |
 |---|---|---|
 | **DeepSeek Harness** | 运行宿主 | 配置卡片需 **DSH ≥ 0.2.0-rc.2**；更早版本安静降级为"无卡片"，其余功能不受影响 |
-| **Node.js ≥ 20** | 插件与工具运行时 | 纯内置模块，无 npm 依赖 |
+| **Node.js ≥ 22.12** | 插件与工具运行时 | 纯内置模块，无 npm 依赖；22.12 是装载链路的下限（`require(esm)`） |
 | **python3 ≥ 3.10** | 上游脚本套件与完整性门 | 建议 `python3-venv` 可用（venv 模式依赖其 ensurepip） |
 | **pip3** | 安装上游 Python 依赖 | venv 模式下改用 `<venv>/bin/pip3`，不受 PEP 668 拦截 |
 | **git** / **tar** | 同步脚本 | 仅同步上游时需要 |
@@ -225,6 +225,10 @@ node scripts/verify-plugin.mjs --upstream .upstream/refs/tags/<ref>@<sha>   # �
 | `v6.8.0` | 上游同步：vendor v6.8.0（逐字节）。AI 图像生成默认换 `gpt-image-2.5-sunburst`（约 1/4 输出 token、约一半耗时、支持真 RGBA 透明），`aspect_ratio` 接受任意正 W:H，`Retry-After` 全后端与 manifest 重排生效；Edit Native 的数据变更图表改为原地 patch（渐变/图例/单点标签等保留），合并单元格表格改任一格不再让 `--native-charts-and-tables` 失败；PPTX 导入零尺寸几何不再硬失败（无法恢复者保留并报告），作者隐藏内容不再泄漏进源 Markdown/Beautify 清单/重建讲解词；`source_to_md` 保留 Office Math 为 LaTeX、DOCX 文本与 Word 显示一致、EPUB/ODT/RTF 找回被跳过文本；动画时长按 PowerPoint beat 语义；超链接比较前先 XML 解码；支持的 Python 上限改为 3.14 |
 | `v6.8.0-r1` | 包装层修订（无运行时行为变更）：`check-dsh-compat` 的 guard 探针适配 DSH 0.2.2 的「执行外置」契约——先挂 `@deepseek-ai/dsh-tool-executor-native` 再按批量 `tools.execute` 调用，0.2.1 及更早仍走单调用，两代 SDK 均绿；顺手清掉 `schemaOf` 时代的陈旧文档坐标，并在 AGENTS §3 登记两代执行契约。vendor 树保持 v6.8.0 逐字节 |
 | `v6.8.0-r2` | scope 运行时两处收口（issue #33）：① 注入看门狗 5s → 30s——boot 期注入回调常在 5s 后才到，旧值把正常启动记成「判定未生效、工具处处可见」且永不撤回；② 判定/装层前**判活**——`cannot create effect on inactive context` 的真含义是「会话已销毁」（cordis `assertActive` 只在 `fiber.uid === null` 时抛），短命子会话（mnemon idle review）不再刷 `restrict 安装被宿主拒绝`；③ 新增一条 `scope 已激活（注入等待 Nms）：判定 N 个会话，隐藏 M 个` 摘要。默认 `global` 仍零日志 |
+
+| `v6.8.0-r3` | 装载期竞态修复（issue #36）：`schemastery` 的 CJS 构建首行同步 `require()` ESM-only 的 `cosmokit`，而宿主以并行 `import()` 装载插件，同批有插件正在加载 cosmokit 时该 require 抛 `ERR_REQUIRE_ESM_RACE_CONDITION`，整个插件不装载。现于 `require` 之前先 `await import()` 预热 cosmokit，解析锚点落在 **schemastery 自身**（非提升布局下才不会静默退化）。入口模块因此带顶层 `await`；预热失败落回原路径。vendor 树保持 v6.8.0 逐字节 |
+
+| `v6.8.0-r4` | 环境声明与仓库约定修订：`engines.node` 由 `>=20.0.0` 校正为 `>=22.12.0`（装载链路需 `require(esm)`）；CI 兼容 job 改为 `node22-compat` 并钉死该下限；release 说明格式约定为「严谨总结 + 每 PR 一行 + 中英双语」。无运行时行为变更 |
 
 > 版本规则：`base` 镜像上游 release，包装层修订追加 `-rN`。逐项明细见 [AGENTS.md](AGENTS.md) §5。
 

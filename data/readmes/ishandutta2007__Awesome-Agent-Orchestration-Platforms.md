@@ -1,0 +1,182 @@
+# Top AI Agent Orchestration Platforms & Frameworks (2026)
+
+<div align="center">
+  <img src="assets/banner.svg" alt="Awesome Agent Orchestration Platforms Banner" width="100%" />
+</div>
+
+<div align="center">
+
+[![Awesome](https://awesome.re/badge.svg)](https://github.com/ishandutta2007/awesome-awesome-awesome)
+![Last Updated](https://img.shields.io/badge/last%20updated-May%202026-blue)
+<a href="https://github.com/ishandutta2007"><img alt="GitHub followers" src="https://img.shields.io/github/followers/ishandutta2007?label=Follow" /></a>
+
+
+**A curated list of Multi-Agent Systems (MAS), Agentic Workflows, and Orchestration Frameworks for the Claude & LLM Ecosystem.**
+
+</div>
+
+This repository tracks the most powerful tools for building, scaling, and managing **Autonomous AI Agent Teams**. Whether you are building **Digital Assembly Lines**, implementing **Agentic RAG**, or designing **Human-on-the-Loop (HOTL)** systems, this guide covers the essential tools for 2026.
+
+## 🚀 Trending in 2026
+- **MCP (Model Context Protocol):** The standard for connecting agents to data and tools.
+- **Type-Safe Agents:** Rise of frameworks like **Pydantic AI** for production-grade validation.
+- **Vibe Coding:** Intent-based orchestration where agents handle the scaffolding.
+- **Agent FinOps:** Observability and cost management for high-concurrency agent swarms.
+
+---
+
+## 📈 Sector Overview & Market Dynamics
+The AI Agent Orchestration and Autonomous Agents sector is projected to grow from **~$7.8B–$8.0B in 2025** to **~$11B in 2026**, on a path to surpass **$50B by 2030** (CAGR >45%). The market is currently **moderately fragmented**: while foundational tech conglomerates and breakout infrastructure unicorns (LangChain, ByteDance) anchor developer mindshare, the application layer remains highly distributed across fast-moving vertical, framework-specific, and voice-native startups rather than a single winner-take-all monopoly.
+
+## ☁️ SaaS & Hosted Platforms
+*Commercial hosted solutions for managing, building, and deploying autonomous AI agent workflows and swarms, ranked by company size and valuation.*
+
+| Platform | Key Capabilities | Company Scale (Valuation / Funding / Rev) | Starting Tier Pricing | Free Tier / Trial Limits |
+| :--- | :--- | :--- | :--- | :--- |
+| **[Coze](https://www.coze.com)** | Visual multi-agent builder & bot deployment across Discord, Telegram, and enterprise apps. | **~$330B–$480B Valuation** *(Parent: ByteDance)* | **$19/mo** (Premium Tier) | **Free Forever:** 100 daily message credits, 50 bots, community plugins. |
+| **[Flowise Cloud](https://flowiseai.com)** | Managed low-code drag-and-drop canvas for orchestration and LangChain-powered multi-agent flows. | **~$47.7B Market Cap** *(Parent: Workday; acquired 2025)* | **$35/mo** (Starter Tier) | **Free Forever:** 2 active flows, 100 predictions/mo, 5MB storage. |
+| **[LangSmith](https://smith.langchain.com)** | Enterprise observability, evaluation, trace debugging, and prompt playground for LangGraph multi-agent teams. | **$1.25B Valuation** *(Series B; $160M+ raised; ~$15M ARR)* | **$39/seat/mo** (Plus Tier) | **Free Forever:** Up to 5,000 traces/mo, 1 seat, 14-day data retention. |
+| **[Dify Cloud](https://dify.ai)** | Hosted visual studio for designing, testing, and scaling multi-agent systems and Agentic RAG apps. | **$180M Valuation** *(Series Pre-A; $30M raised)* | **$59/mo** (Professional Tier) | **Free Forever (Sandbox):** 200 GPT/Claude calls credit, 5 knowledge bases, 10MB storage. |
+| **[CrewAI Enterprise](https://crewai.com)** | Managed cloud execution and scaling platform for CrewAI multi-agent crews with production telemetry. | **~$177M Valuation** *(Series A/B; $18M–$38M raised; ~$3M ARR)* | **$25/mo** (Pro Tier) | **Free Forever:** 50 execution runs/mo, 1 user seat, community access. |
+| **[Relevance AI](https://relevanceai.com)** | Enterprise workforce platform to construct autonomous B2B agent teams with human-in-the-loop approvals. | **~$100M–$150M Est. Valuation** *($42M raised; ~$2.9M ARR)* | **$199/mo** (Pro Tier) | **Free Forever:** 100 credits/day, max 3 active agents, community support. |
+| **[Dust](https://dust.tt)** | Enterprise-grade collaborative multi-agent platform connecting internal knowledge (Notion, Slack, Drive). | **~$80M–$120M Est. Valuation** *($60M+ raised; ~$7.3M ARR)* | **$29/user/mo** (Pro Tier) | **Free Forever / 15-Day Trial:** 500 lifetime test credits or 15-day unrestricted workspace trial. |
+| **[Fixie.ai](https://fixie.ai)** | Speech-native conversational multi-modal agent platform (Ultravox) for real-time voice and reasoning agent loops. | **~$50M–$75M Est. Valuation** *($17M Seed raised; Redpoint)* | **$100/mo** (Pro Tier; pay-as-you-go starts at $0.05/min) | **Free Forever:** 30 minutes of voice/agent interactions per account. |
+| **[AgentOps](https://agentops.ai)** | Dedicated multi-agent loop observability, time-travel session replays, and Agent FinOps cost tracking. | **~$15M–$25M Est. Valuation** *($2.6M Pre-Seed raised)* | **$40/mo** (Pro Tier base) | **Free Forever:** Up to 5,000 recorded events/mo, standard session tracking. |
+| **[SuperAGI Cloud](https://superagi.com)** | Cloud infrastructure and marketplace to run, schedule, and automate concurrent autonomous agents. | **Seed / Open-Source Commercial** *(Venture-backed)* | **$7/user/mo** (Growth Tier) | **Free Forever:** 100 monthly automation credits, access to Lite apps. |
+
+---
+
+## 🏗️ High-Control Orchestration (Deterministic)
+*Best for production systems requiring strict reliability and state management.*
+
+- **[LlamaIndex Workflows](https://github.com/run-llama/llama_index)** [![GitHub_Stars](https://img.shields.io/github/stars/run-llama/llama_index?style=social&color=white)](https://github.com/run-llama/llama_index/stargazers)  
+  Event-driven orchestration optimized for **Agentic RAG** and complex data retrieval missions.
+- **[LangGraph](https://github.com/langchain-ai/langgraph)** [![GitHub_Stars](https://img.shields.io/github/stars/langchain-ai/langgraph?style=social&color=white)](https://github.com/langchain-ai/langgraph/stargazers)  
+  The 2026 industry standard for stateful, graph-based orchestration. Supports cycles, persistence, and "Time Travel" debugging.
+- **[Semantic Kernel](https://github.com/microsoft/semantic-kernel)** [![GitHub_Stars](https://img.shields.io/github/stars/microsoft/semantic-kernel?style=social&color=white)](https://github.com/microsoft/semantic-kernel/stargazers)  
+  Microsoft's enterprise-grade SDK for C#, Python, and Java. Ideal for ecosystem integration.
+- **[Mastra](https://github.com/mastra-ai/mastra)** [![GitHub_Stars](https://img.shields.io/github/stars/mastra-ai/mastra?style=social&color=white)](https://github.com/mastra-ai/mastra/stargazers)  
+  TypeScript-first production-grade agent framework with native Model Context Protocol (MCP) support.
+
+## 👥 Role-Based & Multi-Agent Frameworks
+*Best for collaborative teams and rapid prototyping of "Agent Crews".*
+
+- **[Dify](https://github.com/langgenius/dify)** [![GitHub_Stars](https://img.shields.io/github/stars/langgenius/dify?style=social&color=white)](https://github.com/langgenius/dify/stargazers)  
+  Popular open-source LLM app development platform featuring a visual workflow designer for multi-agent coordination.
+- **[CrewAI](https://github.com/crewAIInc/crewAI)** [![GitHub_Stars](https://img.shields.io/github/stars/crewAIInc/crewAI?style=social&color=white)](https://github.com/crewAIInc/crewAI/stargazers)  
+  The leading "Manager-Worker" framework. Extremely intuitive for defining roles, goals, and collaborative processes.
+- **[ChatDev](https://github.com/OpenBMB/ChatDev)** [![GitHub_Stars](https://img.shields.io/github/stars/OpenBMB/ChatDev?style=social&color=white)](https://github.com/OpenBMB/ChatDev/stargazers)  
+  Virtual software company simulator using collaborative agents to execute complex programming tasks.
+- **[smolagents](https://github.com/huggingface/smolagents)** [![GitHub_Stars](https://img.shields.io/github/stars/huggingface/smolagents?style=social&color=white)](https://github.com/huggingface/smolagents/stargazers)  
+  Hugging Face's minimalist, code-first approach. Focuses on tool-calling precision without abstraction bloat.
+- **[Camel](https://github.com/camel-ai/camel)** [![GitHub_Stars](https://img.shields.io/github/stars/camel-ai/camel?style=social&color=white)](https://github.com/camel-ai/camel/stargazers)  
+  A communicative agent framework enabling auto-collaborative behaviors among multiple specialized roles.
+- **[AutoGen 2.0 (AG2)](https://github.com/ag2ai/ag2)** [![GitHub_Stars](https://img.shields.io/github/stars/ag2ai/ag2?style=social&color=white)](https://github.com/ag2ai/ag2/stargazers)  
+  Next-gen conversational framework for high-concurrency, asynchronous agent interactions.
+- **[Agent Teams](https://github.com/777genius/agent-teams-ai)** [![GitHub_Stars](https://img.shields.io/github/stars/777genius/agent-teams-ai?style=social&color=white)](https://github.com/777genius/agent-teams-ai/stargazers)  
+  Open-source desktop platform for orchestrating autonomous AI coding teams across Claude, Codex, and OpenCode. Give high-level commands while agents handle Kanban tasks, messaging, code review, logs, and approvals across 200+ models and 75+ LLM providers.
+- **[Agentlas OS](https://github.com/agentlas-ai/Agentlas-OS)** [![GitHub_Stars](https://img.shields.io/github/stars/agentlas-ai/Agentlas-OS?style=social&color=white)](https://github.com/agentlas-ai/Agentlas-OS/stargazers)\
+  Apache-2.0 local-first agent OS for portable agent teams, cross-host orchestration, MCP/A2A, and verification gates.
+- **[Agon](https://github.com/AutoResearch-Factory/Agon)** [![GitHub_Stars](https://img.shields.io/github/stars/AutoResearch-Factory/Agon?style=social&color=white)](https://github.com/AutoResearch-Factory/Agon/stargazers)  
+  Built on **Prompt Economy**, which treats prompt engineering as engineering and maximizes the ROI on every prompt. Runs scientist/coder/auditor loops across 10+ disciplines with just 18 core roles.
+- **[Hivekeep](https://github.com/MarlBurroW/hivekeep)** [![GitHub_Stars](https://img.shields.io/github/stars/MarlBurroW/hivekeep?style=social&color=white)](https://github.com/MarlBurroW/hivekeep/stargazers)  
+  Self-hosted, MIT-licensed platform to run a team of specialized AI agents with persistent memory and a web UI. Agents collaborate and build their own tools, mini-agents, and MCP plugins, reachable over Telegram, Slack, Discord, and Matrix in a single Bun and SQLite container.
+- **[Better Agent](https://github.com/ofekron/better-agent)** [![GitHub_Stars](https://img.shields.io/github/stars/ofekron/better-agent?style=social&color=white)](https://github.com/ofekron/better-agent/stargazers)\
+  Local web workspace for orchestrating native Claude, Codex, and Gemini coding-agent sessions with parallel delegation, persistent state, approval gates, file access, and restart recovery.
+- **[fractal](https://github.com/plasma-ai/fractal)** [![GitHub_Stars](https://img.shields.io/github/stars/plasma-ai/fractal?style=social&color=white)](https://github.com/plasma-ai/fractal/stargazers)\
+  Python runtime for hierarchical coding-agent orchestration. Each node runs in its own Git worktree, can delegate separable subtasks to child nodes, and operates within configurable iteration, depth, child, cost, and time limits.
+- **[Orkas](https://github.com/Orkas-AI/Orkas)** [![GitHub_Stars](https://img.shields.io/github/stars/Orkas-AI/Orkas?style=social&color=white)](https://github.com/Orkas-AI/Orkas/stargazers)\
+  Open-source, local-first desktop AI workspace where a Commander turns goals into plans and coordinates specialist agents for research, coding, data analysis, documents, presentations, and video.
+- **[YYLO](https://github.com/yylo-dev/yylo)** [![GitHub_Stars](https://img.shields.io/github/stars/yylo-dev/yylo?style=social&color=white)](https://github.com/yylo-dev/yylo/stargazers)\
+  Command-line orchestrator for multi-agent coding workflows: runs Claude Code, Codex, and Gemini CLI agents in isolated git worktrees with kanban task state, typed merge and release flows, and autonomous agent loops.
+
+- **[Bunkhouse](https://github.com/braedonsaunders/bunkhouse)** [![GitHub_Stars](https://img.shields.io/github/stars/braedonsaunders/bunkhouse?style=social&color=white)](https://github.com/braedonsaunders/bunkhouse/stargazers)  
+  Open-source AI employees for main-street business: multitenant company inbox, org chart, and governed procedures.
+- **[Crewly](https://github.com/stevehuang0115/crewly)** [![GitHub stars](https://img.shields.io/github/stars/stevehuang0115/crewly?style=social&color=white)](https://github.com/stevehuang0115/crewly/stargazers)\
+  Local, MIT-licensed platform that runs a team of role-based agents (developer, QA, PM, orchestrator) on Claude Code, Codex, and Gemini CLI, with task delegation, shared persistent memory, and a web dashboard of live agent terminals.
+
+## 🛠️ Vendor-Native SDKs & Protocols
+*Optimized for specific LLM providers and tool integration.*
+
+- **[OpenAI Agents SDK](https://github.com/openai/openai-python)** [![GitHub_Stars](https://img.shields.io/github/stars/openai/openai-python?style=social&color=white)](https://github.com/openai/openai-python/stargazers)  
+  Streamlined orchestration for GPT-5 and Swarm-based architectures.
+- **[Vercel AI SDK](https://github.com/vercel/ai)** [![GitHub_Stars](https://img.shields.io/github/stars/vercel/ai?style=social&color=white)](https://github.com/vercel/ai/stargazers)  
+  TypeScript toolkit for building structured AI responses, chat interfaces, and model routing.
+- **[Pydantic AI](https://ai.pydantic.dev)** [![GitHub_Stars](https://img.shields.io/github/stars/pydantic/pydantic-ai?style=social&color=white)](https://github.com/pydantic/pydantic-ai/stargazers)  
+  Fast-growing framework for building **Type-Safe Agents** with rigorous schema validation.
+- **[Claude Agent SDK](https://github.com/anthropics/anthropic-sdk-python)** [![GitHub_Stars](https://img.shields.io/github/stars/anthropics/anthropic-sdk-python?style=social&color=white)](https://github.com/anthropics/anthropic-sdk-python/stargazers)  
+  Native Anthropic support for **MCP (Model Context Protocol)**. Best-in-class tool use and reasoning for Claude 3.5/4 models.
+
+## 🧰 Tools & Utilities
+*Essential components for agent memory, tool-calling, and environment interaction.*
+
+- **[Firecrawl](https://github.com/firecrawl/firecrawl)** [![GitHub_Stars](https://img.shields.io/github/stars/firecrawl/firecrawl?style=social&color=white)](https://github.com/firecrawl/firecrawl/stargazers)  
+  The go-to for **Browser Agents**. Turns any website into LLM-ready markdown for agentic research.
+- **[Mem0](https://github.com/mem0ai/mem0)** [![GitHub_Stars](https://img.shields.io/github/stars/mem0ai/mem0?style=social&color=white)](https://github.com/mem0ai/mem0/stargazers)  
+  The "Personal Memory" layer for AI agents. Provides long-term persistence and personalization.
+- **[LiteLLM](https://github.com/BerriAI/litellm)** [![GitHub_Stars](https://img.shields.io/github/stars/BerriAI/litellm?style=social&color=white)](https://github.com/BerriAI/litellm/stargazers)  
+  The standard translation proxy. Call 100+ LLMs using the OpenAI input/output format.
+- **[Langfuse](https://github.com/langfuse/langfuse)** [![GitHub_Stars](https://img.shields.io/github/stars/langfuse/langfuse?style=social&color=white)](https://github.com/langfuse/langfuse/stargazers)  
+  Open-source LLM engineering platform providing telemetry, evaluation, prompt management, and metrics.
+- **[Composio](https://github.com/composiohq/composio)** [![GitHub_Stars](https://img.shields.io/github/stars/composiohq/composio?style=social&color=white)](https://github.com/composiohq/composio/stargazers)  
+  The industry leader for **Agent Tool Integration**. Connects agents to 100+ apps like GitHub, Slack, and Salesforce.
+- **[OpenAgentRelay](https://github.com/ShakespeareLabs/open-agent-relay)** [![GitHub_Stars](https://img.shields.io/github/stars/ShakespeareLabs/open-agent-relay?style=social&color=white)](https://github.com/ShakespeareLabs/open-agent-relay/stargazers)  
+  A local-first capability relay for agentic workflows that lets one agent invoke a restricted local agent or automation over a keyed trusted LAN.
+- **[Ordewell](https://github.com/ordewell/ordewell)** [![GitHub_Stars](https://img.shields.io/github/stars/ordewell/ordewell?style=social&color=white)](https://github.com/ordewell/ordewell/stargazers) Terminal CLI and TUI that turns one goal into an ordered, editable plan of coding agent tasks, each with its own harness, model and mode, and accepts a task as done only when its completion marker appears in that runner's output.
+- **[LangSmith](https://smith.langchain.com)**  
+  The standard for **Agent Observability** and **Agent Telemetry**. Essential for debugging complex multi-agent traces.
+- **[OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay)** [![GitHub_Stars](https://img.shields.io/github/stars/Continuum-AI-Corp/OrcaReplay?style=social&color=white)](https://github.com/Continuum-AI-Corp/OrcaReplay/stargazers)  
+  Records an **agentic workflow** beneath the harness and replays it offline from the recorded bytes with no model called; serves the trace store over **MCP** so an agent can inspect, diff and re-run its own past runs.
+
+---
+
+## 📊 Comparison Table: Which Framework to Choose?
+
+| Goal | Recommended Tool | Why? |
+| :--- | :--- | :--- |
+| **Production Reliability** | LangGraph | Stateful control & checkpoints. |
+| **Visual Agent Design** | Dify | Visual node-based workflow builder. |
+| **Rapid Prototyping** | CrewAI / ChatDev | Intuitive role-based DSL / simulation. |
+| **Data-Heavy RAG** | LlamaIndex | Specialized in knowledge retrieval. |
+| **JS/TS Integration** | Vercel AI SDK / Mastra | Native TypeScript support & SDK ecosystem. |
+| **Claude Optimization** | Claude SDK + MCP | Native protocol support. |
+| **Developer Experience** | Pydantic AI | Type safety and validation. |
+
+---
+
+## 🎓 Key Concepts & Terminology
+- **Multi-Agent Orchestration (MAO):** Coordinating multiple specialized agents to solve complex tasks.
+- **Digital Assembly Lines:** Sequential agentic workflows that mimic industrial pipelines.
+- **Agentic RAG:** LLM agents that autonomously plan and execute multi-step research.
+- **HOTL (Human-on-the-Loop):** A design pattern where humans supervise agent telemetry rather than every step.
+
+## 🤝 How to Contribute
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+1. Fork the repo.
+2. Add your tool to the relevant section.
+3. Ensure it includes a 1-sentence description and a link.
+
+---
+
+## 💖 Support & Sponsorship
+Thank you so much for using and exploring **Awesome Agent Orchestration Platforms**! If you find this curated resource helpful for your work, research, or projects:
+- ⭐ **Star** this repository to show your appreciation and help others discover it.
+- 🍴 **Fork** and contribute your favorite frameworks, tools, and updates.
+- 📢 **Share** it with fellow AI engineers, builders, and your network.
+- ☕ **Buy me a coffee / Sponsor:** If you'd like to support ongoing curation and development, consider sponsoring via the [GitHub Sponsors Dashboard](https://github.com/sponsors/ishandutta2007). Your support is deeply appreciated!
+
+---
+
+## 📈 Star History
+[![Star History Chart](https://api.star-history.com/chart?repos=ishandutta2007/awesome-agent-orchestration-platforms&type=date)](https://star-history.com/#ishandutta2007/awesome-agent-orchestration-platforms&Date)
+
+*Maintained by the AI Community. Last Updated: May 2026.*
+
+## ⭐ Star History
+
+<a href="https://star-history.com/#ishandutta2007/Awesome-Agent-Orchestration-Platforms&Timeline" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/ishandutta2007_Awesome-Agent-Orchestration-Platforms_growth.svg">
+    <img alt="Star History Chart" src="assets/ishandutta2007_Awesome-Agent-Orchestration-Platforms_growth.svg">
+  </picture>
+</a>

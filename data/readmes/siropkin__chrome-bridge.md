@@ -138,7 +138,7 @@ A real run, checked live on GitHub: [recipes/github.com.md](recipes/github.com.m
 - **The toolbar popup releases the current tab, or every agent tab at once.**
 - **`node cli.mjs watch`** prints every command live in your terminal.
 
-![the 🟣 pill narrating a driven tab, with its action history open](docs/store/screenshot-1-pill.png)
+![Actual on-page action history and release control, enlarged from a local test session](docs/store/screenshot-5-controls.png)
 
 ## How it compares
 
@@ -177,7 +177,7 @@ Commands that work on a tab take a `<match>`: part of the tab's URL or title, or
 
 - **Read:** `snap` · `shot` · `measure` · `perf` · `console` · `net` · `fetch` · `eval` · `ask`
 - **Act:** `click` · `fill` · `type` · `paste` · `press` · `hover` · `drag` · `scroll` · `upload` · `clear` · `dialog`
-- **Tabs:** `tabs` · `open` · `nav` · `close` · `activate` · `wait` (`--human` hands a tab to you)
+- **Tabs:** `tabs` · `open` · `nav` · `close` · `activate` · `wait` (`--js` polls a page condition, `--human` hands a tab to you)
 - **Device view:** `emulate` · `unemulate` · `resize` · `grid`
 - **Housekeeping:** `mark` · `release` · `note` · `watch` · `history` · `doctor` · `batch`
 - **Server:** `start` · `stop` · `health` · `profiles` · `extreload` · `swlogs`

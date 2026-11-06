@@ -14,7 +14,7 @@ An independent Windows adaptation inspired by
 Since 0.2.0 it no longer needs WebView2. This is not an official OpenAI,
 Anthropic or GitHub app.
 
-[Download v0.3.0](https://github.com/MakFly/codenotch-windows/releases/tag/v0.3.0)
+[Download v0.4.0](https://github.com/MakFly/codenotch-windows/releases/tag/v0.4.0)
 · [Français](docs/README.fr.md) · [Changelog](CHANGELOG.md)
 
 ![Quota details on hover](docs/images/notch.png)
@@ -24,7 +24,8 @@ Anthropic or GitHub app.
 - Native Rust app: small, fast to start, no browser engine.
 - Compact quota rings for each enabled account, details on hover, and a click opens the
   account's Analytics page.
-- A light outline keeps the black notch visible over a black background.
+- A light outline keeps the black notch visible over a black background, and a **light theme** (Appearance → Theme: Light, Dark or System) sets it apart from dark windows.
+- A link from each account to its usage page at the provider (Anthropic, OpenAI, Google, GitHub and others), in the popover and on its Analytics page.
 - A **Home** page with every account and each of its quota windows as a bar, where an
   even pace would stand, the time to each reset, and a CSV export of the history.
 - An **Analytics** page: quota history with limits reached and time blocked, a forecast of
@@ -46,7 +47,7 @@ Anthropic or GitHub app.
 ## Download and run
 
 1. Open [Releases](https://github.com/MakFly/codenotch-windows/releases/latest).
-2. Download and run `CodeNotch-0.3.0-windows-x64-setup.exe`.
+2. Download and run `CodeNotch-0.4.0-windows-x64-setup.exe`.
 3. Launch CodeNotch from the Start menu. Hover over the small tab on the right edge of the screen.
 4. Open the settings from the notch or the tray icon to configure accounts.
 
@@ -56,7 +57,7 @@ entry to Windows Installed apps for removal.
 **Coming from 0.1.x?** Nothing to do: the built-in updater offers the new version, installs
 it over the previous version, and keeps your accounts and settings.
 
-For portable use, download and extract `CodeNotch-0.3.0-windows-x64.zip`, then run
+For portable use, download and extract `CodeNotch-0.4.0-windows-x64.zip`, then run
 `CodeNotch.exe`. The ZIP includes the license, third-party notices and a
 getting-started guide. A standalone executable is also available.
 
@@ -70,7 +71,7 @@ To start CodeNotch with Windows, turn on **Appearance → Notch → Launch at Wi
 Verify downloads against `SHA256SUMS.txt` using PowerShell:
 
 ```powershell
-Get-FileHash .\CodeNotch-0.3.0-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\CodeNotch-0.4.0-windows-x64.zip -Algorithm SHA256
 ```
 
 ## Connect your accounts

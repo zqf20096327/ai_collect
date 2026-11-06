@@ -11,7 +11,7 @@ Train, evaluate, and deploy in minutes — on CPU or GPU.
 [![GitHub Forks](https://img.shields.io/github/forks/Ebimsv/Facial_Age_estimation_PyTorch?style=for-the-badge&logo=github&color=blue)](https://github.com/Ebimsv/Facial_Age_estimation_PyTorch/network)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)](https://www.python.org/)
-[![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-red?style=for-the-badge&logo=pytorch)](https://pytorch.org/)
+[![PyTorch 2.3+](https://img.shields.io/badge/PyTorch-2.3+-red?style=for-the-badge&logo=pytorch)](https://pytorch.org/)
 [![CI](https://img.shields.io/github/actions/workflow/status/Ebimsv/Facial_Age_estimation_PyTorch/ci.yml?style=for-the-badge&label=CI)](https://github.com/Ebimsv/Facial_Age_estimation_PyTorch/actions)
 
 </div>
@@ -41,14 +41,14 @@ Train, evaluate, and deploy in minutes — on CPU or GPU.
 ## ✨ Key Features
 
 - 🔥 **5 Backbones** — MobileNetV3-Large, EfficientNet-B0/B3, ResNet-50, ViT-S/14 DINOv2
-- 📐 **Mean-Variance Loss** (CVPR 2018) — models age as a probability distribution over [0–100], outperforming plain L1/MSE by 0.3–0.5 MAE
-- ⚡ **AMP + AdamW** — mixed-precision training with differential learning rates and OneCycleLR warmup
+- 📐 **L1 + variance objective** — models age as a distribution; a documented variant inspired by mean-variance methods, with float32 central moments
+- ⚡ **AMP + AdamW** — mixed-precision training with differential learning rates and OneCycleLR warmup; atomic best/last checkpoints and epoch-boundary resume
 - 🗂️ **Clean package layout** — `src/`, `scripts/`, `demo/`, `tests/`, `configs/` following standard PyTorch practices
 - 🎛️ **OmegaConf config** — change any hyperparameter from the CLI without editing code
 - 📊 **Bias analysis** — per-epoch breakdown of MAE by age group, gender, and ethnicity
 - 🖥️ **Gradio demo** — upload a photo → see predicted age + full probability distribution
 - 📤 **Export ready** — TorchScript (trace) and ONNX with dynamic batch support
-- ✅ **37 unit tests** + GitHub Actions CI
+- ✅ **377 tests** + GitHub Actions CI (GPU/demo checks are conditional)
 
 ---
 
@@ -60,16 +60,19 @@ git clone https://github.com/Ebimsv/Facial_Age_estimation_PyTorch.git
 cd Facial_Age_estimation_PyTorch
 
 # 2. Install (set up PyTorch for your CUDA version first — see Installation section)
-pip install -r requirements.txt
+pip install .
 
-# 3. Prepare data (point to your UTKFace folder)
-python scripts/prepare_data.py --dataset-dir dataset/utkcropped --plot
+# 3. Download images without Kaggle, then prepare a fresh split
+python scripts/download_data.py
+# Or point --dataset-dir below at images you already have
+python scripts/prepare_data.py --dataset-dir dataset/utkcropped \
+    --csv-dir csv_dataset/protocol_v2 --check-decode --plot
 
-# 4. Train (defaults: EfficientNet-B3, Mean-Variance Loss, 100 epochs, AMP)
-python scripts/train.py
+# 4. Train on the new protocol (EfficientNet-B3, L1 + variance, 100 epochs, AMP)
+python scripts/train.py data.csv_dir=csv_dataset/protocol_v2
 
 # 5. Run the Gradio demo
-python demo/app.py --checkpoint checkpoints/best_efficientnet_b3_*.pt
+python demo/app.py --checkpoint checkpoints/RUN_ID/best.pt  # replace RUN_ID with the printed run folder
 ```
 
 > 💡 **No GPU?** The pipeline runs on CPU too — just set `training.use_amp=false` in `configs/default.yaml`.
@@ -78,16 +81,22 @@ python demo/app.py --checkpoint checkpoints/best_efficientnet_b3_*.pt
 
 ## 📊 Results & Benchmarks
 
-Evaluated on the **UTKFace** held-out test set (~2,000 images, ages 0–84).
+New models have not yet been benchmarked under a published protocol. The committed
+UTKFace test CSV contains 4,654 images, ages 1–84; regenerating splits can change it.
+The legacy row below is historical validation, not a comparable test-set result.
+A byte-hash check of the pinned mirror found **174 duplicate-content groups crossing
+the committed historical split boundaries**. Preserve those CSVs for historical
+reference and use a freshly prepared, deduplicated protocol for new experiments.
+See [data protocol evidence](docs/DATA_PROTOCOL.md).
 
 | Model | #Params | Input Size | Loss | MAE ↓ | CS@5 ↑ | Inference |
 |---|---|---|---|---|---|---|
-| MobileNetV3-Large | 5.5M | 224×224 | Mean-Variance | TBD | TBD | ~5ms |
-| EfficientNet-B0 | 5.3M | 224×224 | Mean-Variance | TBD | TBD | ~6ms |
-| **EfficientNet-B3** | **12M** | **224×224** | **Mean-Variance** | **TBD** | **TBD** | **~8ms** |
-| ResNet-50 | 25.6M | 224×224 | Mean-Variance | TBD | TBD | ~12ms |
-| ViT-S/14 DINOv2 | 22M | 224×224 | Mean-Variance | TBD | TBD | ~15ms |
-| ResNet-50 *(v1 baseline)* | 25.6M | 128×128 | L1 | 4.73 | — | — |
+| MobileNetV3-Large | 5.5M | 224×224 | L1 + variance | TBD | TBD | — |
+| EfficientNet-B0 | 5.3M | 224×224 | L1 + variance | TBD | TBD | — |
+| **EfficientNet-B3** | **12M** | **224×224** | **L1 + variance** | **TBD** | **TBD** | — |
+| ResNet-50 | 25.6M | 224×224 | L1 + variance | TBD | TBD | — |
+| ViT-S/14 DINOv2 | 22M | 224×224 | L1 + variance | TBD | TBD | — |
+| ResNet-50 *(legacy validation only)* | 25.6M | 128×128 | L1 | 4.73 | — | — |
 
 > **MAE** = Mean Absolute Error in years (lower is better).  
 > **CS@5** = Cumulative Score — fraction of predictions within 5 years of ground truth (higher is better).  
@@ -117,18 +126,26 @@ graph TD
     G --> H[E_age = sum of p_i times i\nPredicted Age]
 ```
 
-### Why Mean-Variance Loss?
+### L1 + Variance Objective
 
-Instead of treating age as a single scalar, the model outputs a **probability distribution over 101 age classes**. This encodes the inherent ambiguity of facial aging and provides a richer training signal.
+The distribution head outputs logits over a configurable age support (0–100 by
+default). Training uses the repository's L1 plus central-variance variant:
 
+```text
+p = softmax(logits)
+mu = sum(p_j * age_j)
+variance = sum(p_j * (age_j - mu)^2)
+loss = lambda_mean * mean(abs(mu - target)) + lambda_variance * mean(variance)
 ```
-Loss = λ_mean × |E[age] − true_age|   +   λ_variance × Var[age]
-         ↑                                    ↑
-  Penalise wrong mean              Penalise high uncertainty
-```
 
-This consistently outperforms L1/MSE regression by **0.3–0.5 MAE** on UTKFace.  
-*Reference: Pan et al., "Mean-Variance Loss for Deep Age Estimation from a Face", CVPR 2018.*
+`loss.type=l1_mean_variance` is the default; `mean_variance` is a compatible alias.
+This differs from the published CVPR 2018 joint objective. No measured MAE
+advantage over L1/MSE is claimed. See [loss definitions, precision and gradient
+policies](docs/LOSSES.md) for the reference comparison and numerical tests.
+
+For scalar regression, the model returns raw values during training; the modern
+inference decoder applies its saved [0,100] bound. The historical raw-output
+profile remains separate.
 
 ---
 
@@ -158,7 +175,7 @@ Facial_Age_estimation_PyTorch/
 │   └── export_model.py       # TorchScript & ONNX export
 ├── demo/
 │   └── app.py                # Gradio web demo
-├── tests/                    # 37 unit tests (pytest)
+├── tests/                    # 377 tests (pytest)
 ├── notebooks/                # EDA notebooks (coming soon)
 ├── pics/                     # Images used in README
 ├── checkpoints/              # Saved model weights (git-ignored)
@@ -192,16 +209,42 @@ pip install torch torchvision
 
 **Step 3 — Install project dependencies**
 ```bash
-pip install -r requirements.txt
+pip install .
 
 # For the Gradio demo + W&B logging:
-pip install gradio wandb
+pip install ".[demo,wandb]"
+
+# For development and packaging tests (includes pytest and build):
+pip install ".[dev]"
 ```
+
+For checkpoint schema v1, runtime overrides, and the tracked historical ResNet50
+weight, see [checkpoint contracts and legacy loading](docs/CHECKPOINTS.md).
+The existing legacy weight can be used without downloading pretrained backbones:
+
+```bash
+python scripts/inference.py --checkpoint checkpoints/epoch-16-loss_valid-4.73.pt \
+  --legacy-resnet50 --device cpu --image img_test/30_1_2.jpg
+```
+
+This is a historical compatibility example; `4.73` denotes validation history,
+not a newly verified held-out test score. Modern checkpoints carry their own
+preprocessing and decoder metadata; inference restores those settings automatically.
+
+`requirements.txt` remains available for dependency-only installation. Installing
+the project also provides `train-age`, `eval-age`, and `export-age`. The installed
+package includes its default YAML configuration and works outside the checkout.
+See [installation and verified environments](docs/INSTALLATION.md) for Conda usage,
+configuration paths, and the distinction between API minimums and tested versions.
+Downloader settings are separate from experiments: [configs/download.yaml](configs/download.yaml).
+For the completed P1.1–P1.6 work, evidence and two workflow diagrams, see the
+[Phase 1 implementation report (Persian)](audit/PHASE_1_IMPLEMENTATION_REPORT.md).
 
 **Step 4 — Verify**
 ```bash
 python -m pytest tests/ -v -k "not vit_small"
-# Expected: 37 passed
+# Includes model, loss, transform, dataset, and packaging checks.
+# Packaging checks require the dev extra and use a temporary install without downloads.
 ```
 
 ---
@@ -216,19 +259,45 @@ This project uses the **UTKFace** dataset — 20,000+ face images labelled with 
 | [MORPH](https://uncw.edu/ai/documents/morph.pdf) | ~55,000 | 16 – 77 | Age, Gender, Race |
 | [FG-NET](https://yanweifu.github.io/FG_NET_data/) | 1,002 | 0 – 69 | Age |
 
-> **Download:** Get the **cropped** UTKFace version from [Kaggle](https://www.kaggle.com/datasets/jangedoo/utkface-new) (`utkcropped` folder).
+> **Download:** The default is a pinned public [Hugging Face cropped mirror](https://huggingface.co/datasets/py97/UTKFace-Cropped/tree/main). Kaggle remains an explicit alternative.
+
+### Managed Download (No Kaggle Required)
+
+```bash
+# Default: pinned Hugging Face tar.gz, no SDK/account/token installation
+python scripts/download_data.py
+# Show separate download config and resolved URL without downloading
+python scripts/download_data.py --print-config
+# Read-only local sanity check
+python scripts/download_data.py --check-only
+```
+
+The source, revision, SHA-256 and size live in [`configs/download.yaml`](configs/download.yaml).
+Archive bytes are verified before safe extraction; images remain in `dataset/utkcropped`.
+Existing targets and unrelated files are preserved. There is no automatic Kaggle fallback.
+For the optional Kaggle route, use `--source kaggle` with `.[data]` installed explicitly.
+See [download configuration, provenance and limits](docs/DOWNLOADING.md).
 
 ### Dataset Preparation
 
 ```bash
-# Creates: csv_dataset/{utkface_dataset,train_set,valid_set,test_set}.csv
-# Uses stratified sampling to preserve age distribution across splits
+# Creates a fresh protocol, manifests and rejection report; never overwrites legacy CSVs
+# Age-stratified splits with exact-byte duplicate groups excluded
 python scripts/prepare_data.py \
     --dataset-dir dataset/utkcropped \
+    --csv-dir csv_dataset/protocol_v2 --check-decode \
     --train-ratio 0.80 \
     --val-ratio 0.10 \
     --plot                    # saves split_distributions.png
 ```
+
+Train with `data.csv_dir=csv_dataset/protocol_v2` to use those new splits. The
+committed CSVs retain their historical 15,822 / 2,793 / 4,654 split; changing training
+ratios never regenerates them. Sparse age classes fail explicitly. Byte hashes
+are checked before training; identity and near-duplicate leakage remain unknown.
+See [data validation, provenance and reproducibility](docs/DATA_PROTOCOL.md) for
+source/version flags, rejection policy, optional hashing/decode settings and limits.
+The visualizations below are historical and are not regenerated by the audit.
 
 ### Data Visualisation
 
@@ -251,19 +320,24 @@ python scripts/prepare_data.py \
 ### Default Training
 
 ```bash
-# Train EfficientNet-B3 with Mean-Variance Loss (recommended)
-python scripts/train.py
+# Select a freshly prepared protocol; bare defaults point to historical CSVs
+python scripts/train.py data.csv_dir=csv_dataset/protocol_v2
 ```
 
 ### CLI Overrides
 
 Any value in `configs/default.yaml` can be overridden from the command line:
 
+Overrides are validated together against a typed schema. Unknown keys and
+incompatible model/loss settings fail before model construction. Partial YAML
+files are supported; inspect the resolved settings with `train-age --print-config`.
+See [configuration contracts and migration](docs/CONFIGURATION.md).
+
 ```bash
 # Change backbone
 python scripts/train.py model.name=resnet50
 
-# Regression mode (L1 loss, 1 output node — for old checkpoints)
+# Regression mode (L1 loss, 1 output node; legacy checkpoint migration is separate)
 python scripts/train.py model.output_dim=1 loss.type=l1
 
 # Longer training with W&B logging
@@ -276,6 +350,23 @@ python scripts/train.py training.batch_size=48 data.img_size=192
 python scripts/train.py model.name=mobilenet_v3 training.batch_size=128
 ```
 
+### Resume and Checkpoint Safety
+
+Fresh runs write `checkpoints/RUN_ID/{best,last}.pt` and isolate logs under the run ID.
+Use the actual path printed by training:
+
+```bash
+train-age --resume checkpoints/RUN_ID/last.pt
+# Optional local tracking without upload:
+train-age --resume checkpoints/RUN_ID/last.pt logging.use_wandb=true logging.wandb_mode=offline
+```
+
+Resume keeps the saved epoch budget/OneCycle schedule, checks data/loader/config
+contracts, and restores optimizer/scaler/RNG at an epoch boundary. A partial epoch
+is replayed. Older inference-only artifacts cannot be resumed. See
+[training, atomic-write recovery and logging](docs/TRAINING.md) for the supported
+scope, best/last pairing and concurrency lock.
+
 ### Key Config Options (`configs/default.yaml`)
 
 ```yaml
@@ -287,9 +378,11 @@ training:
   epochs: 100
   batch_size: 96            # EfficientNet-B3 @ 224px, 8GB VRAM
   use_amp: true             # Mixed precision (strongly recommended)
+  seed: 42
+  deterministic: false      # Optional strict PyTorch algorithms
 
 loss:
-  type: "mean_variance"     # mean_variance | l1
+  type: "l1_mean_variance"  # mean_variance alias | l1
 ```
 
 ### TensorBoard
@@ -308,17 +401,17 @@ tensorboard --logdir runs/
 
 ```bash
 # Standard evaluation on the test split
-python scripts/evaluate.py --checkpoint checkpoints/best_efficientnet_b3_*.pt
+python scripts/evaluate.py --checkpoint checkpoints/RUN_ID/best.pt
 
 # Demographic bias breakdown (age group, gender, ethnicity)
-python scripts/evaluate.py --checkpoint checkpoints/best_efficientnet_b3_*.pt --bias
+python scripts/evaluate.py --checkpoint checkpoints/RUN_ID/best.pt --bias
 
 # Save per-image predictions to CSV
-python scripts/evaluate.py --checkpoint checkpoints/best_*.pt \
+python scripts/evaluate.py --checkpoint checkpoints/RUN_ID/best.pt \
     --bias --save-csv results/predictions.csv
 ```
 
-Example output:
+Illustrative output format (not a measured benchmark):
 ```
 ==================================================
   Split  : test  (n=2041)
@@ -342,7 +435,7 @@ White     4.02
 
 ```bash
 python scripts/inference.py \
-    --checkpoint checkpoints/best_*.pt \
+    --checkpoint checkpoints/RUN_ID/best.pt \
     --image img_test/30_1_2.jpg \
     --output img_test/output.jpg
 ```
@@ -353,13 +446,13 @@ python scripts/inference.py \
 
 ```bash
 # Local demo
-python demo/app.py --checkpoint checkpoints/best_*.pt
+python demo/app.py --checkpoint checkpoints/RUN_ID/best.pt
 
 # Share publicly via Gradio tunnel
-python demo/app.py --checkpoint checkpoints/best_*.pt --share
+python demo/app.py --checkpoint checkpoints/RUN_ID/best.pt --share
 ```
 
-The demo shows both the **predicted age** and the **full probability distribution** over all 101 age classes, giving you insight into model confidence.
+The demo shows the **predicted age** and the distribution over the checkpoint's age support. This distribution is not calibrated confidence; regression displays a scalar age.
 
 > 🚀 A live demo on **Hugging Face Spaces** is coming soon!
 
@@ -369,10 +462,10 @@ The demo shows both the **predicted age** and the **full probability distributio
 
 ```bash
 # TorchScript (fastest for deployment — uses torch.jit.trace)
-python scripts/export_model.py --checkpoint checkpoints/best_*.pt
+python scripts/export_model.py --checkpoint checkpoints/RUN_ID/best.pt
 
 # ONNX (for ONNX Runtime, TensorRT, OpenVINO, etc.)
-python scripts/export_model.py --checkpoint checkpoints/best_*.pt --format onnx
+python scripts/export_model.py --checkpoint checkpoints/RUN_ID/best.pt --format onnx
 ```
 
 ---
@@ -389,7 +482,7 @@ python scripts/export_model.py --checkpoint checkpoints/best_*.pt --format onnx
 | **MiVOLO** (2023) | ViT-based age + gender; works on occluded faces | Uses body context, not just face | [GitHub](https://github.com/WildChlamydia/MiVOLO) |
 | **CORAL** (2020) | Ordinal regression for age estimation | Rank-consistent binary subtasks | [GitHub](https://github.com/Raschka-research-group/coral-cnn) |
 | **Deep Regression Forests** (2018) | End-to-end DRF for heterogeneous age features | Joint data partition + abstraction | [GitHub](https://github.com/Sumching/Deep_Regression_Forests) |
-| **Mean-Variance Loss** ★ (2018) | Distribution learning for age estimation | **Used in this repo** | [Paper](https://openaccess.thecvf.com/content_cvpr_2018/papers/Pan_Mean-Variance_Loss_for_CVPR_2018_paper.pdf) |
+| **Mean-Variance Loss** (2018) | Distribution learning for age estimation | Inspires our L1 + variance variant; not a reproduction | [Paper](https://openaccess.thecvf.com/content_cvpr_2018/papers/Pan_Mean-Variance_Loss_for_CVPR_2018_paper.pdf) |
 | **FaceXFormer** (2024) | Unified transformer for all face analysis tasks | Token-based multi-task decoder | [GitHub](https://github.com/Kartik-3004/facexformer) |
 
 </details>
@@ -416,10 +509,10 @@ python scripts/export_model.py --checkpoint checkpoints/best_*.pt --format onnx
 - [x] **Professional package structure** — `src/`, `scripts/`, `demo/`, `tests/`, `configs/`
 - [x] **OmegaConf YAML config** — all hyperparameters in one file, CLI overrides
 - [x] **5 backbone support** — MobileNetV3-Large, EfficientNet-B0/B3, ResNet-50, ViT-S/14 DINOv2
-- [x] **Mean-Variance Loss** (CVPR 2018) — distribution-based age estimation
+- [x] **L1 + central variance** — explicit variant, float32 moments, raw regression gradients and bounded modern inference
 - [x] **Modern training pipeline** — AMP, AdamW with differential LRs, OneCycleLR, gradient clipping
 - [x] **Stratified data splits** — stratified train/val/test CSV generation
-- [x] **37 unit tests** — model, losses, transforms, dataset; all passing
+- [x] **377 tests** — including data manifests, worker repeatability, regression gradients, checkpoint contracts, and installed packaging
 - [x] **GitHub Actions CI** — automated lint + test on every push
 - [x] **Gradio demo** — with age probability distribution visualisation
 - [x] **TorchScript + ONNX export**
@@ -459,7 +552,7 @@ If you use this repository in your research, please cite:
 }
 ```
 
-The Mean-Variance Loss implemented in this repo:
+Related mean-variance reference (the implemented L1 variant differs; see docs/LOSSES.md):
 ```bibtex
 @inproceedings{pan2018mean,
   title     = {Mean-Variance Loss for Deep Age Estimation from a Face},

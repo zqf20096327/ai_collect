@@ -12,6 +12,13 @@
 <p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.zh-TW.md">繁體中文</a></p>
 
 <p align="center">
+  <a href="https://kccarlos.github.io/DiscourseCopilot/"><b>🌐 Website</b></a> ·
+  <a href="https://kccarlos.github.io/DiscourseCopilot/sites/"><b>Supported Sites (32+)</b></a> ·
+  <a href="https://kccarlos.github.io/DiscourseCopilot/guide/"><b>Setup Guide</b></a> ·
+  <a href="https://kccarlos.github.io/DiscourseCopilot/faq/"><b>FAQ</b></a>
+</p>
+
+<p align="center">
   Summarize long discussions, ask follow-up questions, and let AI search the whole forum for you, with links to the posts it used. Works on Discourse forums, WordPress blog comments and Reddit threads.
 </p>
 
@@ -20,7 +27,6 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License: Apache-2.0"></a>
   <img src="https://img.shields.io/badge/Manifest-V3-4285F4?logo=googlechrome&logoColor=white" alt="Chrome extension, Manifest V3">
   <a href="https://chromewebstore.google.com/detail/discoursecopilot/dpngnaiiofobfjleabbhnfmdflddnhac"><img src="https://img.shields.io/chrome-web-store/users/dpngnaiiofobfjleabbhnfmdflddnhac?label=Chrome%20users&logo=googlechrome&logoColor=white" alt="Chrome Web Store users"></a>
-  <a href="https://linux.do/t/topic/3078486"><img src="https://img.shields.io/badge/LinuxDO-community-FFB003?logo=discourse&logoColor=white" alt="LinuxDO community"></a>
   <a href="https://github.com/kccarlos/DiscourseCopilot/stargazers"><img src="https://img.shields.io/github/stars/kccarlos/DiscourseCopilot?style=social" alt="GitHub stars"></a>
 </p>
 

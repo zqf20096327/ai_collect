@@ -136,8 +136,8 @@ A host injects the full `SKILL.md` when the skill activates; `references/` is re
 
 | Variant | `SKILL.md` bytes | Approx. tokens (bytes ÷ 4) |
 | --- | ---: | ---: |
-| English | 30,208 → 22,663 (−25.0%) | 7,552 → 5,665 |
-| Chinese | 24,359 → 19,739 (−19.0%) | 6,089 → 4,934 |
+| English | 30,208 → 23,982 (−20.6%) | 7,552 → 5,995 |
+| Chinese | 24,359 → 21,011 (−13.7%) | 6,089 → 5,252 |
 
 A test recomputes the right-hand values from the bundle, so the table cannot drift. The token figures are **bytes ÷ 4**, not a tokenizer measurement. If a turn loads both new references, activation savings are not whole-turn savings.
 
@@ -208,6 +208,10 @@ Where the procedure is least settled, written down so it can be argued with rath
 ## Acknowledgments
 
 The planning chain is [Matt Pocock's public engineering skills](https://github.com/mattpocock/skills). This repository is the supervised way to run those skills on Orca (`orca orchestration`), and it is this repository's own work. Matt Pocock has not participated in its development or maintenance and does not endorse it. See [Matt Pocock's GitHub profile](https://github.com/mattpocock).
+
+## Contributors
+
+- **[@dxnnystyles](https://github.com/dxnnystyles)** — closeout reads the latest acceptance attempt per ticket, and two records at the same attempt that disagree about the merge SHA are now treated as divergent rather than as one claim ([PR #49](https://github.com/whutlichao/orchestra-auto/pull/49)).
 
 ## Licence
 

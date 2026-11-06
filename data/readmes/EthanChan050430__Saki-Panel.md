@@ -8,7 +8,7 @@
 
 Manage Minecraft, Steam, Docker, and ordinary processes from one web console. Saki uses live logs, files, and node metrics to help investigate incidents and can act after authorization.
 
-[Website](https://dreamstarry.top/saki-panel/) · [Incident walkthrough (中文)](docs/case-studies/port-recovery/README.md) · [Quick start](#quick-start) · [Download a release](https://github.com/EthanChan050430/Saki-Panel/releases/latest) · [简体中文](README.zh-CN.md)
+[Website](https://dreamstarry.top/saki-panel/) · [Quick start](#quick-start) · [Download a release](https://github.com/EthanChan050430/Saki-Panel/releases/latest) · [简体中文](README.zh-CN.md)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![check](https://github.com/EthanChan050430/Saki-Panel/actions/workflows/check.yml/badge.svg)](https://github.com/EthanChan050430/Saki-Panel/actions/workflows/check.yml)
@@ -19,6 +19,25 @@ https://github.com/user-attachments/assets/99a8d410-c079-4368-86c9-f847413d4580
 <a href=".github/assets/demo-v5-dashboard-en.png"><img src=".github/assets/poster-v5-en.png" alt="Saki Panel 5.0 — Servers. Code. One workspace. Real application screenshot with a designed poster frame." /></a>
 
 </div>
+
+## Beyond the panel
+
+Make the workspace your own, or bring Saki to your desktop. Two more places to explore in the Saki family.
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="https://github.com/EthanChan050430/saki-plugins"><img src=".github/assets/explore-extensions-en.svg" width="640" alt="Extension Market — explore the saki-plugins repository" /></a>
+      <p>Themes, Saki skins, games, widgets, and locales. Discover ready-made plugins, learn from examples, and build something of your own.</p>
+      <p><a href="https://github.com/EthanChan050430/saki-plugins"><strong>Explore the extension repository ↗</strong></a></p>
+    </td>
+    <td width="50%" valign="top">
+      <a href="https://github.com/EthanChan050430/Saki-AI"><img src=".github/assets/explore-saki-ai-en.svg" width="640" alt="Saki AI — explore the local desktop AI assistant" /></a>
+      <p>A local desktop AI assistant for conversations, documents, research, and everyday tasks. Explore the companion project beyond server operations.</p>
+      <p><a href="https://github.com/EthanChan050430/Saki-AI"><strong>Meet Saki AI ↗</strong></a></p>
+    </td>
+  </tr>
+</table>
 
 ## Screenshots
 
@@ -88,6 +107,8 @@ Saki combines the current instance's state, logs, files, and resource metrics wi
 
 For example, ask it to inspect logs before a crash and identify a likely configuration error, or to restart a service and watch its new logs. You can attach screenshots and log files. Save recurring procedures as Skills or connect external tools through MCP.
 
+Ordinary Agent tasks can continue beyond 400 rounds, with automatic context compaction and progress checkpoints. Set optional per-run budgets in `.env` with `SAKI_AGENT_MAX_LOOPS`, `SAKI_AGENT_MAX_TOKENS`, and `SAKI_AGENT_MAX_DURATION_MS` (non-negative integers; unset or `0` disables that budget). Token and duration budgets are checked between calls, so an in-flight call can exceed them. Cancellation, approvals, and stuck guards still stop execution; budget-limited work can be retried from saved progress. Watch and subagents retain their smaller round limits.
+
 ## How Saki Watch responds to incidents
 
 1. After an unexpected exit, the Daemon records exit details and an error fingerprint. By default, no model call happens yet.
@@ -97,10 +118,6 @@ For example, ask it to inspect logs before a crash and identify a likely configu
 5. After a patch, Watch restarts and verifies the instance. If verification finds the same failure or a configured health check fails, and a usable checkpoint and acting user exist, it attempts to roll back that change. Other outcomes are recorded for manual follow-up.
 
 Watch also supports cooldowns, run limits, notification channels, and escalation reminders. Configure these in instance and system settings.
-
-### Reproducible incident walkthrough
-
-The [port configuration walkthrough (Chinese)](docs/case-studies/port-recovery/README.md) includes a deliberately broken sample service, actual Ollama calls, the proposed patch, pre-approval and post-approval configuration, health checks, and original UI captures. The exercise exposed and fixed a Watch file-edit approval bypass before the successful rerun. Earlier connection failures and a wrong-port change that was rolled back are retained, with the tested source revision and limitations stated explicitly.
 
 ## Panel and extensions
 

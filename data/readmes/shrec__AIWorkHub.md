@@ -61,6 +61,11 @@
    AIWorkHub-managed `CLAUDE.md` block: direct Claude chats must bootstrap as
    managers and use Source Graph before broad built-in file discovery. They
    are not worker sessions.
+5. Choose the chat that receives callbacks. The built-in Manager (dashboard
+   **Manager** chat, any backend including Codex models) and Claude Code are
+   woken automatically when a worker finishes. A Codex VS Code sidebar chat is
+   inbox-only and polls the review queue itself; see
+   [Callback delivery](docs/CALLBACKS.md#manager-transports).
 
 The prompt below is a portable first-run diagnostic for clients that do not
 automatically honor repository instructions; it is not required in a correctly
@@ -374,12 +379,15 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.88
+## What's new in 0.12.91
 
-- Long accepts are no longer cut off: the MCP server sends progress heartbeats while a long tool such as accept review runs, so the client's idle timeout does not abort it.
-- Faster accepts: finalization and accept reuse validation and neighbour tests that already passed, and one load-sensitive test failure is retried instead of costing a full accept cycle.
-- Faster dashboard: snapshots cache provider probes, skip a per-read database integrity check and read tasks in one batch.
-- Fewer manager steps: a verified manager's NeedFix converts in one call, and finding reproduction skips the base run when the candidate side already passes.
+- 0.12.91 publishes the 0.12.90 memory release: the 0.12.90 tag never got a GitHub release because one extension test failed CI on Linux and macOS. The runtime is the same.
+- Much less memory: the plan snapshot, dashboard and workforce catalog read a narrow projection of each task card instead of decoding every card, so one read peaks at about 160 MB instead of 1.5 GB.
+- `needfix_list` no longer holds every task card and NeedFix row in memory to show one page.
+- The reconciler's attribution pass reads only the accepted cards' receipts instead of decoding every card: about 90 MB instead of 1.5 GB per pass.
+- Fewer MCP server processes: the extension keeps one live server per owner across restarts and reaps it on dispose, instead of piling up 2-3 per window plus one per chat.
+- Faster idle housekeeping: the process-ledger read uses a persisted checkpoint, 0.55 s instead of 12.6 s.
+- The built-in Manager starts again on the `codex_cli` backend (GitHub #33), and the [callback docs](docs/CALLBACKS.md#manager-transports) now say which chats are woken automatically: the built-in Manager and Claude Code are, a Codex sidebar chat is inbox-only.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)
@@ -410,8 +418,7 @@ structured findings into NeedFix with provenance.
 - fail-closed repository, manager, task and claim-episode identity checks.
 
 Read [SECURITY.md](SECURITY.md) before enabling autonomous launches. Callback
-delivery and its optional Codex compatibility transport are documented in
-[Callback delivery](docs/CALLBACKS.md).
+delivery per client is documented in [Callback delivery](docs/CALLBACKS.md).
 
 ## Development
 

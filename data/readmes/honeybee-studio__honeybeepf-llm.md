@@ -10,7 +10,7 @@ honeybeepf-llm is a Rust eBPF agent that runs as a DaemonSet. It attaches uprobe
 `SSL_read`, reads the plaintext HTTP of calls to LLM providers, and exports token usage, request counts and
 latency per Kubernetes namespace and pod over OpenTelemetry.
 
-![Agent log on k3s: LLM calls from pods in team-a, team-b and team-c, with tokens per call](docs/images/demo.svg)
+![Agent log on k3s: LLM calls from pods in team-a (OpenAI), team-b (Anthropic) and team-c (Gemini), each line showing the model and the token counts the agent recorded](docs/images/demo.svg)
 
 <sub>Real output from a single-node k3s cluster with the charts from this repository and a locally built agent
 image; the client pods call a local mock of the provider APIs with fake keys.</sub>
@@ -30,6 +30,9 @@ image; the client pods call a local mock of the provider APIs with fake keys.</s
   and checks every log record at every level ([#45](https://github.com/honeybee-studio/honeybeepf-llm/pull/45)).
 - **Per pod.** Calls from pods are labelled with `target_namespace` and `target_pod_name`, so cost can be split
   by team or workload without tagging requests.
+- **Negligible overhead.** In an A/B run on a 4-vCPU kernel-7.0 VM, the agent used about 0.01 s of CPU over 60 s
+  idle, and about 7.7 microseconds of CPU per request (about 5% of one core) under ~6.8k HTTPS requests/s, at ~31 MB RSS
+  (measured in #163).
 
 ## Quickstart
 
@@ -120,34 +123,15 @@ Ollama or vLLM) is not.
 | Protocol | Status |
 |---|:-:|
 | HTTP/1.1 (keep-alive, chunked) | ✅ |
-| HTTP/2 | ❌ not parsed yet |
+| HTTP/2 | ✅ |
 | WebSocket (e.g. OpenAI Realtime) | ❌ |
 | HTTP/3 (QUIC) | ❌ |
 
-Node.js 26 negotiates HTTP/2 by default: its built-in `fetch` (undici 8) picks HTTP/2 whenever the server offers
-it, and the official OpenAI and Anthropic Node SDKs call that `fetch`, so their calls are not recorded yet
-([#87](https://github.com/honeybee-studio/honeybeepf-llm/issues/87)). Node.js 24 (undici 7) uses HTTP/1.1 and is
-recorded. Either of these switches the calls back to HTTP/1.1; both were checked with Node.js 26.13.0,
-`undici` 8.12.2, `openai` 7.39.0 and `@anthropic-ai/sdk` 0.135.0, JSON and streaming:
-
-- Without changing the application: add the `undici` package and preload a file that replaces the global
-  dispatcher, for example with `NODE_OPTIONS="--import ./force-h1.mjs"`:
-
-  ```js
-  // force-h1.mjs
-  import { Agent, setGlobalDispatcher } from 'undici';
-  setGlobalDispatcher(new Agent({ allowH2: false }));
-  ```
-
-- Per client: pass the dispatcher to the SDK client or to `fetch`:
-
-  ```js
-  import { Agent } from 'undici';
-  const dispatcher = new Agent({ allowH2: false });
-  const openai = new OpenAI({ fetchOptions: { dispatcher } });
-  const anthropic = new Anthropic({ fetchOptions: { dispatcher } });
-  const res = await fetch(url, { dispatcher });
-  ```
+HTTP/2 is recorded from the start of a connection. A connection the agent joins mid-stream is still recorded, but
+with the provider host unknown; a request head lost to a capture gap counts under
+`llm_responses_unparsed_total{reason="headers_lost"}`. Node.js 26 uses HTTP/2 by default (its built-in `fetch`,
+undici 8), so the official OpenAI and Anthropic Node SDKs now record with no change, checked with Node.js 26.13.0,
+`openai` 7.39.0 and `@anthropic-ai/sdk` 0.135.0, JSON and streaming.
 
 **Kernels:** CI loads and attaches the probes and detects an LLM request on 5.10, 5.15, 6.1, 6.6, 6.12, 6.18
 and 7.2, and on the RHEL 8.10 (4.18), 9.6 and 9.7 (5.14) kernels
@@ -163,7 +147,7 @@ are checked on Linux 7.0 (the tables above).
 1. The agent finds every `libssl` mapped by a process (and executables with OpenSSL built in) and attaches
    uprobes to `SSL_write` and `SSL_read`, including libraries opened after it started.
 2. The uprobes copy the plaintext buffer, the pid and the cgroup id into a BPF ring buffer.
-3. In user space, the HTTP/1.1 and SSE parser reassembles each request and response per TLS connection, picks
+3. In user space, the HTTP/1.1, HTTP/2 and SSE parser reassembles each request and response per TLS connection, picks
    the provider from the host and path, and reads the usage fields from the response.
 4. The process's cgroup gives its container ID, which a watch on this node's pods maps to a namespace and pod.
    The result is recorded as OpenTelemetry metrics sent over OTLP to the collector, which Prometheus scrapes.
@@ -246,7 +230,11 @@ kubectl -n monitoring create configmap honeybeepf-dashboards \
 kubectl -n monitoring label configmap honeybeepf-dashboards grafana_dashboard=1
 ```
 
-![LLM Cost Observability dashboard on the demo cluster: requests and tokens per minute and latency percentiles for team-a, team-b and team-c, token share by team, and usage by model](docs/images/grafana.png)
+The cost dashboard splits token usage, requests and latency by namespace, pod and workload, estimates spend per
+workload and per model in USD from the built-in price table, and surfaces Cost-Waste Signals — the measured USD of
+refused server-side fallback attempts and the estimated USD a prompt cache could save.
+
+![LLM Cost Observability dashboard on the demo cluster: token usage, requests and latency by namespace, pod and workload; estimated spend per workload and per model in USD; and Cost-Waste Signals showing the measured cost of refused fallback attempts and the estimated savings from prompt caching, across team-a, team-b and team-c](docs/images/grafana.png)
 
 See [`docs/grafana/README.md`](docs/grafana/README.md) for the template variables and other options.
 

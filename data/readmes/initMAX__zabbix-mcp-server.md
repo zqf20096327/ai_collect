@@ -20,7 +20,7 @@
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>&nbsp;
     <img alt="Python" src="https://img.shields.io/badge/python-3.10%2B-blue">&nbsp;
     <img alt="Tools" src="https://img.shields.io/badge/tools-255-green">&nbsp;
-    <img alt="Zabbix" src="https://img.shields.io/badge/zabbix-5.0%E2%80%948.0-red">&nbsp;
+    <img alt="Zabbix" src="https://img.shields.io/badge/zabbix-5.0--8.0-red">&nbsp;
     <a href="https://safeskill.dev/scan/initmax-zabbix-mcp-server"><img alt="SafeSkill" src="https://img.shields.io/badge/SafeSkill-100%2F100_Verified%20Safe-brightgreen"></a>&nbsp;
     <a href="https://mcptoplist.com/server/glama%2FinitMAX%2Fzabbix-mcp-server"><img alt="MCP Toplist" src="https://mcptoplist.com/badge/glama%2FinitMAX%2Fzabbix-mcp-server.svg"></a>
 </div>
@@ -34,7 +34,7 @@
   <b>Install:</b> <a href="#quick-start">Quick Start</a> · <a href="#installation">Installation</a> · <a href="#upgrade">Upgrade</a> · <a href="#first-time-admin-portal-access">First-time admin access</a><br>
   <b>Configure:</b> <a href="#configuration-reference">Reference</a> · <a href="#oauth-21-authorization-server">OAuth 2.1</a> · <a href="#public-url-and-reverse-proxy-deployments">Public URL</a> · <a href="#tls--https">TLS / HTTPS</a> · <a href="#token-budget">Token Budget</a><br>
   <b>Use:</b> <a href="#client-mcp-wizard-beta">Client Wizard</a> · <a href="#connecting-ai-clients">AI Clients</a> · <a href="#example-prompts">Prompts</a> · <a href="#available-tools">Tools</a> · <a href="#common-parameters-get-methods">Parameters</a> · <a href="#read-it-change-one-thing-write-it-back">Round trip</a> · <a href="#time-zones">Time zones</a> · <a href="#pdf-reports-beta">PDF Reports</a><br>
-  <b>Operate:</b> <a href="#installer-cli">Installer CLI</a> · <a href="#update-notifications">Update notifications</a> · <a href="#zabbix-compatibility">Compatibility</a> · <a href="#development">Development</a> · <a href="#related-projects">Related Projects</a> · <a href="#license">License</a>
+  <b>Operate:</b> <a href="#installer-cli">Installer CLI</a> · <a href="#update-notifications">Update notifications</a> · <a href="#zabbix-compatibility">Compatibility</a> · <a href="#the-mcp-server-shipped-with-zabbix-80">Zabbix 8.0 MCP server</a> · <a href="#development">Development</a> · <a href="#related-projects">Related Projects</a> · <a href="#license">License</a>
 </p>
 
 <br>
@@ -58,8 +58,10 @@ The server runs as a standalone HTTP service. AI clients connect to it over the 
 - **LLM-friendly normalizations** - Symbolic enum names, auto-fill defaults, preprocessing cleanup, timestamp conversion with local-time rendering (`<field>_local` siblings and a per-call zone note, see [Time zones](#time-zones))
 - **Single config file** - One TOML file, no scattered environment variables
 - **Read-only mode** - Per-server and per-token write protection to prevent accidental changes
+- **Honest tool hints** - Every tool says whether it reads, only adds, overwrites or removes, and whether a repeat is harmless (MCP tool annotations), so a client can ask before the right calls
+- **No silent wrong answers** - A parameter the method or the tool does not have is refused with the place the value belongs, `false` for a Zabbix flag is not sent, and a log read with a limit returns its newest rows
 - **Rate limiting** - Per-client call budget (300/min default) to protect Zabbix from flooding
-- **Auto-reconnect** - Transparent re-authentication on session expiry
+- **Auto-reconnect** - Transparent re-authentication on session expiry; a read whose answer was lost is asked again, a write is never sent twice
 - **Production-ready** - systemd service, logrotate, Docker support, security hardening
 - **Generic fallback** - `zabbix_raw_api_call` tool for any API method not explicitly defined
 
@@ -71,7 +73,7 @@ cd zabbix-mcp-server
 sudo ./deploy/install.sh
 sudo nano /etc/zabbix-mcp/config.toml   # fill in your Zabbix URL + API token
 sudo systemctl start zabbix-mcp-server
-sudo systemctl enable zabbix-mcp-server
+sudo systemctl enable --now zabbix-mcp-initmax   # starts zabbix-mcp-server at boot, see Start below
 ```
 
 Done. The server is running on `http://127.0.0.1:8080/mcp`.
@@ -360,7 +362,7 @@ The MCP server itself is **stateless** — there is no shared state between inst
 
 ```bash
 sudo systemctl start zabbix-mcp-server
-sudo systemctl enable zabbix-mcp-server
+sudo systemctl enable --now zabbix-mcp-initmax
 ```
 
 Verify the server is running:
@@ -368,6 +370,8 @@ Verify the server is running:
 ```bash
 sudo systemctl status zabbix-mcp-server
 ```
+
+`zabbix-mcp-initmax` is a second unit that the installer writes next to the server's own. It does nothing by itself: it starts `zabbix-mcp-server` at boot, and enabling or disabling it enables or disables both. `start`, `stop` and `restart` work under either name, and under the alias `zabbix-mcp` once the unit is enabled; the status and the journal are the server's, under `zabbix-mcp-server`. The second name is there because `zabbix-mcp-server.service` is also the unit name of the MCP server that Zabbix 8.0 packages, and that package's install and removal scripts enable, disable, start and stop whatever unit carries the name: see [The MCP server shipped with Zabbix 8.0](#the-mcp-server-shipped-with-zabbix-80). On a host without that package `systemctl enable zabbix-mcp-server` works as before; `install.sh update` switches an installation that was enabled that way over to `zabbix-mcp-initmax`.
 
 ### Health Check
 
@@ -746,6 +750,8 @@ By default every tool response is prefixed with a short security disclaimer:
 
 This is a prompt-injection mitigation marker for LLM clients - it reminds the model not to follow instructions embedded in operator-controlled Zabbix data (host names, item descriptions, problem text). For programmatic consumers (Python scripts, n8n workflows, anything that calls `json.loads(result)`) the marker breaks the parser, since `result.find('[')` hits the `[` of the disclaimer before the actual JSON array.
 
+An answer is text: `content[0].text` of the `tools/call` result (`report_generate` adds a resource link to the PDF after it). The tools declare no output schema and send no `structuredContent` (until v1.41 the MCP SDK added both on its own: the same text a second time, wrapped as `{"result": "..."}`).
+
 To get pure JSON, pass `raw_json: true` on the tool call:
 
 ```python
@@ -1043,26 +1049,65 @@ The same mechanism works per-token via `[tokens.*].scopes` - see [MCP Authentica
 <table>
 <tr><th width="220">Parameter</th><th>Description</th></tr>
 <tr><td><code>server</code></td><td>Target Zabbix server name — defaults to the first configured server when omitted</td></tr>
-<tr><td><code>output</code></td><td>Properties to return — by default a compact set of key fields; pass <code>extend</code> for all, <code>count</code> for the number of matches, or comma-separated property names (e.g. <code>hostid,name,status</code>)</td></tr>
+<tr><td><code>output</code></td><td>Properties to return - by default a compact set of key fields; pass <code>extend</code> for all, <code>count</code> for the number of matches (sent to Zabbix as <code>countOutput</code>), or a list of property names (e.g. <code>["hostid", "name", "status"]</code>; a comma-separated string works too)</td></tr>
 <tr><td><code>filter</code></td><td>Exact match as JSON object — e.g. <code>{"status": 0}</code> returns only enabled objects; not for <code>text</code> properties</td></tr>
 <tr><td><code>search</code></td><td>Substring match as JSON object — e.g. <code>{"name": "web"}</code>; string and text properties only</td></tr>
 <tr><td><code>limit</code></td><td>Maximum number of results to return — use to avoid large responses</td></tr>
-<tr><td><code>sortfield</code> / <code>sortorder</code></td><td>Sort by one of the method's sortable properties in <code>ASC</code> or <code>DESC</code> order</td></tr>
-<tr><td><code>countOutput</code></td><td>Return the count of matching objects instead of the actual data — useful for statistics</td></tr>
+<tr><td><code>sortfield</code> / <code>sortorder</code></td><td>Sort by one of the method's sortable properties (a list for several) in <code>ASC</code> or <code>DESC</code> order</td></tr>
+<tr><td><code>countOutput</code></td><td>Return the count of matching objects instead of the actual data - useful for statistics. With <code>problem_get</code> <code>monitored</code> the count is taken after that filter. Where the method takes it, <code>groupCount</code> in <code>extra_params</code> splits the count by the ID filter of the request: <code>item_get</code> with <code>output: "count"</code>, <code>hostids</code> and <code>extra_params: {"groupCount": true}</code> answers one row per host with <code>rowscount</code></td></tr>
 <tr><td><code>extra_params</code></td><td>The method's other native parameters and its <code>selectXxx</code> sub-object selects, merged into the request as-is</td></tr>
 </table>
 
-Every `*_get` tool spells these out for **its own method** in `tools/list`: which properties `output`, `filter` and `search` take, which values `sortfield` accepts, which `selectXxx` and native parameters `extra_params` may carry, each with the Zabbix release that introduced or removed it (`selectHostGroups (6.2+)`, `selectGroups (removed in 7.2)`). A parameter a method does not have is not offered at all (`trend_get` has no `filter`, `search` or `sortfield`; `hanode_get` filters on `name`, `address`, `status` only). The contract behind it, `src/zabbix_mcp/api/get_contracts.json`, comes from the Zabbix API reference pages of 5.0 through 8.0 (`scripts/build_get_contracts.py`) and is checked against live servers of 6.0 through 8.0 with `scripts/audit_get_contracts_live.py` (the undocumented properties a server returns, such as `settings.serverid` or an LLD rule's `storage_mode` on 8.0, are added from those observations and dated).
+Every `*_get` tool spells these out for **its own method** in `tools/list`: which properties `output`, `filter` and `search` take, which values `sortfield` accepts, which `selectXxx` and native parameters `extra_params` may carry, each with the Zabbix release that introduced, deprecated or removed it (`selectHostGroups (6.2+)`, `selectGroups (removed in 7.2)`, `selectItemDiscovery (deprecated in 7.4, use selectDiscoveryData)`). A parameter a method does not have is not offered at all (`trend_get` has no `filter`, `search` or `sortfield`; `hanode_get` filters on `name`, `address`, `status` only). The contract behind it, `src/zabbix_mcp/api/get_contracts.json`, comes from the Zabbix API reference pages of 5.0 through 8.0 (`scripts/build_get_contracts.py`) and is checked against live servers of 6.0 through 8.0 with `scripts/audit_get_contracts_live.py` (the undocumented properties a server returns, such as `settings.serverid` or a problem's `cep_ruleid` on 8.0, are added from those observations and dated).
 
 The same contract guards the request: a sort field the method cannot sort by, a `filter` on a text property, an unknown `selectXxx` or `output` property, or a parameter from a newer release than the server runs is refused **before** the call, with the allowed values in the message. Zabbix would reject some of these and silently ignore the rest, which is worse for a model, since it believes it filtered. When Zabbix itself rejects a call, its validation message (`Invalid parameter "/sortfield/1": value must be one of "name", "lastaccess", "status"`) is returned to the model, marked as untrusted text; transport and internal errors stay generic. `zabbix_raw_api_call` is not validated against the contract, so it remains the way to send a parameter the catalog does not know.
+
+**The contract is in the JSON Schema too** ([#106](https://github.com/initMAX/zabbix-mcp-server/issues/106)), not only in the descriptions, for clients that build the call from the schema: a structured-output decoder of a local model, or a JSON Schema validator in front of the tool call. In `tools/list`, `sortfield` is an enum of the sortable fields (`problem_get`: `eventid` and nothing else; a list for several), `sortorder` is `ASC` / `DESC` (or one per sort field), `output` is `extend` / `count` or a list whose items are the object's properties, `filter` and `search` are objects whose keys are limited to the properties the method filters or searches on (`propertyNames`), and `extra_params` takes only the method's native parameters and `selectXxx` (no key at all where the method has none beyond the typed ones). A typed parameter with a documented closed set of values is an enum (`history_get` `history`: 0 to 6), the period of an extension tool has a pattern. The names are the contract's: the ones the description lists, plus the few it no longer lists because they left in Zabbix 6.0 or earlier. `tests/test_schema_constraints.py` checks both directions for every tool: the schema offers nothing the server refuses, and refuses nothing the server takes. What the schema does not carry: the release (one catalog serves servers of several releases, so the call is still checked against the server it goes to), and the properties a `selectXxx` may project (not measured yet). "One of these two arguments is required" stays in the description, because several model APIs refuse `anyOf` at the top level of a tool schema. The schema is stricter than the server: a comma-separated string still works for callers that send one. `[server].schema_constraints = false` returns the plain `string` / `object` types.
+
+**`false` for a Zabbix flag is not sent.** Zabbix has two kinds of yes/no get parameters. A boolean reads its value: `item_get` with `with_triggers: false` returns the items used in no trigger. A *flag* is on as soon as it is present, whatever its value: `trigger.get` with `only_true: false` returns the triggers in problem state, exactly as with `true`. A model that fills in `false` to say "no" got the opposite of what it asked for. Measured on 6.0 to 8.0, forty parameters behave that way on at least one release, twenty-five of them from 6.2 on: `trigger_get` `only_true`, `monitored`, `active` and the three `with...Events`, `host_get` and `template_get` `with_items` / `with_triggers` / `with_graphs`, `host_get` `templated_hosts`, `usermacro_get` `globalmacro`, and on 6.0 every `with_*` of `hostgroup_get`. The server leaves a `false` flag out of the call, whether it is typed or arrives in `extra_params` (whose description lists the method's switches); a boolean keeps its `false`. `scripts/audit_get_flags_live.py` asks a running server about every flag and boolean of every get method (left out, `true`, `false`) and compares the answer with what the server does.
+
+**A typed parameter goes out under the name Zabbix has for it.** Where a tool's own name differs, the server translates: `proxygroup_get` `proxygroupids` is sent as `proxy_groupids`, `trigger_get` `with_unacknowledged_events` as `withUnacknowledgedEvents`, and `action_get` `eventsource` and `report_get` `dashboardids` as keys of `filter`, because the methods have no such parameter and the properties are filterable. `scripts/audit_api_sources.py` checks every typed parameter against the PHP class of the method.
+
+**Identifiers are looked up, not guessed.** A tool that needs an ID or an item key says where it comes from: `history_get` and `trend_get` take item IDs from `item_get` (and `history` is the item's `value_type`), `item_history_summary_get`, `capacity_forecast` and `anomaly_detect` take an item key that exists (`item_get` with a search on `name` or `key_`), `hostgroup_overview_get` and `host_status_get` take the name directly, so no lookup is needed first.
+
+**A log comes newest first.** Zabbix answers a get without `sortfield` in the order of the database, which for a log is its old end: `history_get` with `limit: 3` returned three values a month old on a server whose newest value was a minute old, and `problem_get`, `event_get`, `alert_get` and `auditlog_get` the oldest rows or a slice from the middle (measured on 6.0 to 8.0), never the newest. Whoever asks a log for a few rows wants its end, so these five tools are sorted descending when the call names no `sortfield`: `history_get` by `clock`, `problem_get` and `event_get` by `eventid`, `alert_get` by `alertid`, `auditlog_get` by `auditid` (the columns the Zabbix 8.0 frontend sorts the same lists by; an audit ID starts with its time, so its order is the order in time). A `sortfield` of your own is left alone, `sortorder: "ASC"` alone returns the oldest first, and a count is not sorted. `history_get` is sorted only when `itemids` is given: the database keeps the values of one item in time order, while sorting those of every item reads the whole table. `trend_get` cannot be sorted at all (`trend.get` has no sort) and returns the oldest hours first, so bound it with `time_from` instead of `limit`.
+
+**An argument a tool does not have is refused.** The MCP SDK drops an argument it does not know and runs the rest of the call, so `host_get` with `hostid` (for `hostids`) returned every host and `host_get` with `selectInterfaces` next to the typed parameters returned hosts without interfaces. Such a call is refused before anything is sent, as a tool error the model can read and correct, and the message says where the value belongs:
+
+| The call | The answer |
+|---|---|
+| `host_get(hostid: "10084")` | `host_get has no parameter 'hostid'; did you mean 'hostids'?` |
+| `host_get(selectInterfaces: "extend")` | `'selectInterfaces' is a parameter of host.get that host_get takes inside 'extra_params'` |
+| `host_get(host: "web01")` | `'host' is a property of the host object, not a parameter of host_get: use filter = {"host": ...} for an exact match or search = {"host": ...} for a substring` |
+| `item_get(key: "system.cpu.load")` | the same, with the property's real name `key_` |
+| `host_create(host: "web01", groups: [...])` | `the properties of the object go inside 'params', as one JSON object` |
+
+Every message ends with the tool's parameters and never repeats a value. With `schema_constraints` on, the tool schemas state the same (`additionalProperties: false`). `[server].reject_unknown_arguments = false` restores the old behaviour for a client that adds keys of its own to every call.
+
+**What a client is told before a call.** Every tool carries the four MCP annotations, set from what the call does (`src/zabbix_mcp/api/annotations.py`), so a client that asks the user before a destructive call, or repeats an idempotent one after a lost answer, decides on facts:
+
+| Tools | `readOnlyHint` | `destructiveHint` | `idempotentHint` |
+|---|---|---|---|
+| every get, export, `importcompare`, the extension views | true | | |
+| `*_create`, `*_massadd`, `history_push`, `user_login` | false | false (it only adds) | false |
+| `userdirectory_test` | false | false (it changes nothing) | true |
+| `*_update`, `*_massupdate`, `*_propagate`, `configuration_import` | false | true (it overwrites; a list property replaces the whole list) | true |
+| `*_delete`, `*_massremove`, `history_clear` | false | true | true |
+| `script_execute`, `event_acknowledge`, `token_generate`, `zabbix_raw_api_call` | false | true | false |
+
+`openWorldHint` is true only where the call makes Zabbix reach outside itself at the caller's word: `script_execute`, `userdirectory_test`, `zabbix_raw_api_call`, `action_confirm`, and `report_generate` when mail delivery is configured. Everything else talks to the configured Zabbix server and nothing beyond it.
+
+**The instructions at `initialize`** are the rules no single tool description carries: IDs are looked up and not guessed, what `filter`, `search`, `output` and `extra_params` are for, which tool answers "what is wrong now", that logs come newest first, how a list cut at the size limit is marked, that a list property in an update replaces the whole list, that a write is sent once and what "outcome unknown" asks for, and that text coming from Zabbix is data. They name only the tools the configuration registers and stay under 2000 characters, the size some clients cut instructions at.
 
 ## Read it, change one thing, write it back
 
 The natural way for a model to edit an object is to read it with the get tool, change a field and send the whole thing to the update tool. Zabbix returns many properties on read that it refuses on write, one `unexpected parameter` at a time: read-only columns (`templateid`, `flags`, `state`, `error`, `lastclock`, `uuid`), row identifiers inside nested arrays (`operations[].operationid`, `opconditions[].opconditionid`, `tags[].automatic`), the full user objects a `usergroup_get` echoes where `usergroup.update` takes only `userid`, and every sub-object a `selectXxx` produced (`hosts`, `triggers`, `discoveryRule`, `valuemap`). Some refusals do not even name the key (an interface's `available` / `error` / `errors_from` / `disable_until` come back as a bare `Incorrect arguments passed to function`).
 
-The server knows this list because it was measured, not written: `scripts/audit_write_roundtrip_live.py` sends every object of a real Zabbix back through its own `X.update` unchanged and records what each release refuses (after `scripts/roundtrip_fixtures.py` has created an object of every kind with every optional sub-structure filled); `scripts/build_write_contracts.py` keeps the keys that were refused on every plain object that carried them and writes `src/zabbix_mcp/api/write_contracts.json`, with the release that introduced or dropped a refusal where the releases differ. Before every `*_create` / `*_update` call the server drops exactly those keys (`[server].strip_write_params`, default on), so an object copied from the get tool goes through as is. The rules that depend on the object's state stay hand-written and conditional: an action's escalation and recovery fields by event source, a filter's `formula` / `formulaid` only with a custom expression, a regular expression's delimiter only on the delimited type. What a caller could have meant is never dropped: a value the model changed, an explicit empty array, a field an update refuses only because the object is templated or discovered (there Zabbix's own message reaches the model, since that is the information it needs: edit the template instead).
+The server knows this list because it was measured, not written: `scripts/audit_write_roundtrip_live.py` sends every object of a real Zabbix back through its own `X.update` unchanged and records what each release refuses (after `scripts/roundtrip_fixtures.py` has created an object of every kind with every optional sub-structure filled); `scripts/build_write_contracts.py` keeps the keys that were refused on every plain object that carried them and writes `src/zabbix_mcp/api/write_contracts.json`, with the release that introduced or dropped a refusal where the releases differ. Before every `*_create` / `*_update` call the server drops exactly those keys (`[server].strip_write_params`, default on), so an object copied from the get tool goes through as is. The rules that depend on the object's state stay hand-written and conditional: an action's escalation and recovery fields by event source, a filter's `formula` / `formulaid` only with a custom expression (LLD rules, CEP rules and their operations, the query of a telemetry item), a regular expression's delimiter only on the delimited type, an empty `uuid` (an object on a host has none), and the `graphid` that `graph_get` returns inside every graph item: Zabbix takes it back without a word and then, on a template's graph, writes the inherited graphs' items under it, leaving the graphs on the hosts empty. Template linkage has a rule of its own, because there the same word means two things: `template_get` returns `parentTemplates` (what the template inherits from) and `templates` (the templates that inherit from it), while `template_update` reads `templates` as the first. Sent back as read, an empty `templates` would unlink every parent without a word, so `template_get` always returns the two together, and an object that still carries `parentTemplates` has its `templates` compared with the template's real children: the same means it is the echo and is left out (linkage stays as it is), anything else is refused with both meanings spelled out. Whenever the linkage keys of such an object are left out, the result carries a `_note` saying that linkage was not changed and how to change it, because an echo with an empty `templates` and a wish to unlink every parent are the same payload. What a caller could have meant is never dropped: a value the model changed, an explicit empty array, a field an update refuses only because the object is templated or discovered (there Zabbix's own message reaches the model, since that is the information it needs: edit the template instead).
 
-`trigger_get` and `triggerprototype_get` ask Zabbix to expand the expression by default (`expandExpression`), because the raw form `{33806}>{$THRESHOLD}` can neither be read by a model nor sent back through `trigger_update`; pass `expandExpression: false` in `extra_params` for the raw form. `zabbix_raw_api_call` is never touched by any of this.
+`trigger_get` and `triggerprototype_get` return the expression in the form the update tools take: the function calls written out and the user macros kept, `avg(/host/key,10m)>{$THRESHOLD}`. The stored form `{33806}>{$THRESHOLD}` can neither be read by a model nor sent back through `trigger_update`, and Zabbix's own expansion (`expandExpression`) writes the functions out but also puts the current value of every user macro in, in the expression, the function parameters and the item keys: a trigger sent back in that form no longer follows its macros. So the server builds the editable form itself, from the stored expression and the trigger's functions (Zabbix 5.4 and later; identical to Zabbix's expansion wherever there is no user macro, measured for every trigger and prototype of the 6.0 to 8.0 test servers; a trigger whose pieces do not add up keeps the stored form rather than getting a lossy one). `expandExpression: true` in `extra_params` still asks for Zabbix's expansion, for reading the values; `false` returns the stored form. **v1.40 and v1.41 used Zabbix's expansion by default**: a trigger with a user macro that was read and written back through them lost the macro. `scripts/restore_trigger_macros.py` finds those triggers in the Zabbix audit log and puts the macros back where nothing but the macros changed and nobody edited the trigger since; an update that changed more than the macro is listed for a person to look at (run it with `--user` and the Zabbix user of the MCP server's API token). `zabbix_raw_api_call` is never touched by any of this.
+
+**A write is sent once.** When the connection breaks after a call went out (most often a timeout while Zabbix is still working on a large import or a mass update), the server reconnects. A read is then asked again. A write is not: `script_execute`, `configuration_import` or `host_create` sent a second time would run twice. The tool answers that the connection broke, that Zabbix may or may not have applied the call, and that the object should be read back before the call is repeated. A session that Zabbix refused ("re-login") is a different case: the call was not carried out, so it is sent again after the new login, whatever it is. `[zabbix.<name>].request_timeout` (default 300 s) is how long a call may take.
 
 ## Time zones
 
@@ -1112,15 +1157,19 @@ All available options with detailed descriptions are in [`config.example.toml`](
 <tr><td><code>log_level</code></td><td><code>debug</code>, <code>info</code>, <code>warning</code>, <code>error</code>, or <code>critical</code></td></tr>
 <tr><td><code>log_file</code></td><td>Path to log file (parent directory must exist)</td></tr>
 <tr><td><code>auth_token</code></td><td>Bearer token for HTTP/SSE authentication (supports <code>${ENV_VAR}</code>)</td></tr>
-<tr><td><code>rate_limit</code></td><td>Max Zabbix API calls per minute per client (default: <code>300</code>, set to <code>0</code> to disable)</td></tr>
+<tr><td><code>rate_limit</code></td><td>Max Zabbix API calls per minute per client, counted per MCP token (or client address) since 1.42.2 (default: <code>300</code>, set to <code>0</code> to disable)</td></tr>
+<tr><td><code>require_auth</code></td><td>Refuse to start over HTTP on an address other than loopback when no client authentication is configured (no token, no <code>auth_token</code>, no OAuth). Default <code>false</code>: only a warning. Also in the admin portal (Settings, TLS and access)</td></tr>
 <tr><td><code>tools</code></td><td>Filter exposed tools by category or prefix - e.g. <code>["monitoring", "alerts"]</code> (default: all 255 tools)</td></tr>
 <tr><td><code>disabled_tools</code></td><td>Denylist counterpart to <code>tools</code> — exclude specific tool groups or prefixes</td></tr>
 <tr><td><code>tls_cert_file</code> / <code>tls_key_file</code></td><td>Enable native HTTPS — paths to TLS certificate and private key (see <a href="#tls--https">TLS / HTTPS</a> below)</td></tr>
 <tr><td><code>cors_origins</code></td><td>List of allowed CORS origins (default: disabled)</td></tr>
 <tr><td><code>allowed_hosts</code></td><td>IP allowlist — IPs and CIDR ranges (e.g. <code>["10.0.0.0/24"]</code>)</td></tr>
+<tr><td><code>trusted_proxies</code></td><td>The reverse proxies in front of the server, e.g. <code>["127.0.0.1"]</code>. Only a peer listed here is believed when it sends <code>X-Forwarded-For</code> / <code>-Proto</code> / <code>-Host</code>; a proxy on the server's own host has to be listed too (default: none, the TCP peer is the client)</td></tr>
 <tr><td><code>allowed_import_dirs</code></td><td>Directories for <code>source_file</code> imports (default: disabled)</td></tr>
 <tr><td><code>compact_output</code></td><td>Return only key fields from get methods (default: <code>true</code>); set to <code>false</code> to always return all fields</td></tr>
 <tr><td><code>validate_get_params</code></td><td>Refuse a get request the method's contract says Zabbix would reject or silently ignore, with the allowed values in the message (default: <code>true</code>); set to <code>false</code> to forward every request as-is. See <a href="#common-parameters-get-methods">Common Parameters</a></td></tr>
+<tr><td><code>schema_constraints</code></td><td>State the same contract in the JSON Schema of <code>tools/list</code>: enums for <code>sortfield</code> / <code>sortorder</code>, <code>output</code> as <code>extend</code> / <code>count</code> or a list of the object's properties, <code>filter</code> / <code>search</code> / <code>extra_params</code> limited to the keys the method takes (default: <code>true</code>); set to <code>false</code> for plain <code>string</code> / <code>object</code> types, for a client that cannot digest <code>propertyNames</code></td></tr>
+<tr><td><code>reject_unknown_arguments</code></td><td>Refuse a tool call that carries an argument the tool does not have, and say where the value belongs (default: <code>true</code>). <code>false</code> drops such an argument and runs the rest of the call, as before v1.42 (a misspelt filter then returns every row); only for a client that adds keys of its own to every call</td></tr>
 <tr><td><code>register_write_tools</code></td><td>Register the write tools at all (default: <code>true</code>). <code>false</code> leaves every <code>*_create</code> / <code>*_update</code> / <code>*_delete</code> / mass tool, <code>action_prepare</code> / <code>action_confirm</code> and <code>zabbix_raw_api_call</code> out of the catalog, the set a read-only token never sees. Independent of this switch, a caller whose reachable servers are all <code>read_only</code> does not get the write tools listed (see <a href="#token-budget">Token Budget</a>)</td></tr>
 <tr><td><code>strip_write_params</code></td><td>Drop, before a create / update tool call, the keys the get tool returns but Zabbix refuses on write (read-only properties, nested row identifiers, <code>selectXxx</code> sub-objects), as measured per release (default: <code>true</code>); set to <code>false</code> to send every payload as-is. See <a href="#read-it-change-one-thing-write-it-back">Read it, change one thing, write it back</a></td></tr>
 <tr><td><code>response_max_chars</code></td><td>Maximum characters per tool response before truncation (default: <code>50000</code>, min: <code>5000</code>). Increase for template export workflows: <code>200000</code> for medium templates, <code>500000</code> for large built-in templates. See <a href="#token-budget">Token Budget</a></td></tr>
@@ -1270,141 +1319,4 @@ sudo ./deploy/install.sh request-tls \
     --email you@example.com
 ```
 
-The installer runs `certbot certonly` (auto-detects standalone vs webroot based on whether port 80 is in use), symlinks the cert into `/etc/zabbix-mcp/tls/`, writes `tls_cert_file` + `tls_key_file` into `[server]` in `config.toml`, installs a deploy hook that reloads the service after each renewal, and enables `certbot.timer`. Re-run any time you rotate or add a hostname. This works whether you use OAuth, bearer tokens, or no auth - it is a server-wide HTTPS feature, not OAuth-specific.
-
-## Installer CLI
-
-```
-sudo ./deploy/install.sh [COMMAND] [OPTIONS]
-```
-
-| Command / Option | Description |
-|---|---|
-| `install` | Fresh installation (default) |
-| `update` | Update existing installation, preserve config |
-| `uninstall` | Complete removal - service, config, logs, virtualenv, system user |
-| `test-config` (alias `-T`) | Validate `/etc/zabbix-mcp/config.toml` syntax + reachability without restarting the service |
-| `set-admin-password` | Reset the admin portal password |
-| `generate-token <name>` | Generate a new MCP bearer token and add it to `config.toml` |
-| `request-tls --hostname <host> [--email <addr>]` | Obtain a Let's Encrypt cert via certbot, wire it into `[server]`, install a renewal hook that reloads the service. See [TLS / HTTPS](#tls--https). |
-| `--with-reporting` | Force-install PDF reporting deps (Playwright + Chromium, ~250 MB) during install/update |
-| `--without-reporting` | Skip PDF reporting deps even when the prompt would default to install |
-| `--dry-run` | Check prerequisites (Python, firewall, SELinux) without installing |
-| `--install-python` | Automatically install Python 3.12 if no suitable version found |
-| `-h`, `--help` | Show help |
-
-The installer automatically detects the best available Python (>=3.10). If none is found, it asks whether to install Python 3.12 automatically (or use `--install-python` to skip the prompt). It also checks for firewall/SELinux issues and verifies the health endpoint after installation.
-
-## Zabbix Compatibility
-
-<table>
-<tr><th width="220">Zabbix Version</th><th width="120">Status</th><th>Notes</th></tr>
-<tr><td>8.0</td><td>Supported (pre-release)</td><td>Verified against 8.0.0rc2. Every 8.0 object has its tool (OpenTelemetry <code>apmtrace_get</code>, <code>apmspan_get</code>, <code>apmlog_get</code>, <code>apmmetric_get</code>, <code>device_get</code>, <code>device_offboard</code>, <code>serverinfo_get</code>, and the undocumented <code>ceprule_*</code> complex event processing, taken from the frontend source); the five methods 8.0 removes (<code>host.massupdate</code>, <code>hostgroup.massupdate</code>, <code>template.massupdate</code>, <code>templategroup.massupdate</code>, <code>hostinterface.replacehostinterfaces</code>) are refused with the documented replacement. The <code>zabbix-utils</code> library (2.0.4) was tested up to 7.4 and refuses a newer frontend; the server connects anyway and logs a warning, <code>skip_version_check</code> is no longer needed for this</td></tr>
-<tr><td>7.0 LTS, 7.2, 7.4</td><td>Fully supported</td><td>All API methods match this version — complete feature coverage</td></tr>
-<tr><td>6.0 LTS, 6.2, 6.4</td><td>Supported</td><td>Everything the release has. Methods that arrived later (e.g. <code>proxygroup.*</code>, <code>mfa.*</code>, <code>connector.*</code> in 7.0; <code>templategroup.*</code>, <code>userdirectory.*</code> in 6.2) are marked in <code>tools/list</code> and refused with the release they need (see below)</td></tr>
-<tr><td>5.4</td><td>Basic, untested</td><td>Has API tokens, so the normal configuration applies. Core monitoring and data collection should work; not in our test matrix</td></tr>
-<tr><td>5.0 LTS, 5.2</td><td>Legacy, best effort</td><td><strong>Out of upstream support, no API tokens.</strong> Reachable only through <code>legacy_auth = true</code> with a username and password - a security risk by design, see <a href="#legacy-auth-zabbix-50-and-52-only">Legacy auth</a>. Not in our test matrix; verified by a community contributor on 5.0.47</td></tr>
-</table>
-
-The server uses the standard Zabbix JSON-RPC API. Since v1.38 it also knows which method exists on which release (`src/zabbix_mcp/api/versions.py`, audited against the 5.0 ... 7.4 and 8.0 API documentation, re-checked for v1.41 against the method index of every release; the objects that left in 5.2 ... 7.2 - applications, screens, template screens, the pre-6.0 service dependencies and SLA, `trigger.adddependencies`, `discoveryrule.copy` - are dated too, so a raw call on a newer server gets the replacement instead of `Method not found`):
-
-- A call to a method the server does not have is refused with the reason, before anything reaches Zabbix: `proxygroup.get requires Zabbix 7.0 or later (this server runs 6.0.30)` or `host.massupdate was removed in Zabbix 8.0 (this server runs 8.0.0). Use host.update (per host) instead`. The same applies to `zabbix_raw_api_call`.
-- `tools/list` adds a "Zabbix version note" to every tool that is missing on one of the servers the caller may use, naming the server and the reason, so the model picks the right tool for the right server up front. A tool that exists on none of those servers is left out. Nothing is hidden while a server's version is still unknown (versions are learned in the background at startup).
-- `health_check` reports `zabbix_version` and `unavailable_tools` per server.
-
-## MCP Protocol Compatibility
-
-The server answers **every supported protocol revision from one endpoint** - no separate URL, no per-client configuration. A client negotiates the revision it knows; the server adapts.
-
-<table>
-<tr><th width="220">Protocol revision</th><th width="120">Status</th><th>Notes</th></tr>
-<tr><td>2026-07-28</td><td>Supported (v1.34+)</td><td>Stateless: no <code>initialize</code> handshake, no <code>Mcp-Session-Id</code>. Each request carries its version, client info and capabilities in <code>_meta</code>. Adds <code>server/discover</code>, cacheable list results, and the <code>io.modelcontextprotocol/tasks</code> extension.</td></tr>
-<tr><td>2025-11-25</td><td>Fully supported</td><td>What Claude Desktop, claude.ai connectors, ChatGPT custom apps and MCP Inspector speak today. Handshake + session transport, unchanged.</td></tr>
-<tr><td>2025-06-18, 2025-03-26, 2024-11-05</td><td>Supported</td><td>Older revisions still negotiate; a request without a version header is treated as 2025-03-26 per spec.</td></tr>
-</table>
-
-Two operator-visible knobs come with the 2026-07-28 revision:
-
-- **`[server].tools_list_cache_ttl`** (seconds, default 300) - the `ttlMs` freshness hint on `tools/list`. The catalog only changes on restart, so letting clients cache it saves re-sending the whole schema set every session. `cacheScope` is always `private` because the catalog is filtered per token.
-- **`Mcp-Method` / `Mcp-Name` request headers** - the revision requires them on Streamable HTTP POSTs, which means an L7 firewall or reverse proxy can allow or deny individual MCP methods and tool names **without parsing the JSON-RPC body**. Useful when policy says "this network segment may call read tools only".
-
-## Development
-
-```bash
-git clone https://github.com/initMAX/zabbix-mcp-server.git
-cd zabbix-mcp-server
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-Test with MCP Inspector:
-
-```bash
-npx @modelcontextprotocol/inspector zabbix-mcp-server --config config.toml
-```
-
-## Related Projects
-
-| Project | Description |
-|---------|-------------|
-| [Zabbix AI Skills](https://github.com/initMAX/zabbix-ai-skills) | 35 ready-to-use AI workflows for Zabbix - maintenance windows, host onboarding, template upgrades, audits, and more |
-| [zabbix-ops skill](https://github.com/manumora/zabbix-mcp-server/tree/main/skills) (community, by manumora) | A Claude skill that teaches an agent how to work this server: which tool to reach for first, the token budget, false-positive triggers, the two-step write protocol, and a full triage runbook |
-
-## License
-
-AGPL-3.0 - see [LICENSE](LICENSE).
-
-## About initMAX
-
-<div align="center">
-    <a href="http://www.initmax.com"><img src="./.readme/logo/initMAX_banner.png" alt="initMAX Logo" width="400"></a>
-    <h3>
-        <span>
-            Honesty, diligence and MAXimum knowledge of our products is our standard.
-        </span>
-    </h3>
-    <h3>
-        <a><img src="./.readme/logo/zabbix-premium-partner.png" alt="Zabbix premium partner" width="100"></a>&nbsp;&nbsp;&nbsp;
-        <a><img src="./.readme/logo/zabbix-certified-trainer.png" alt="Zabbix certified trainer" width="100"></a>
-    </h3>
-</div>
-
-initMAX is an international Zabbix Premium Partner and Certified Trainer with offices in **the United States**, **the Czech Republic**, and **Slovakia**. We build, deploy, and support Zabbix infrastructure for organizations across North America and Europe, and this server is part of a wider effort to integrate Zabbix into modern AI-assisted operations workflows.
-
-<div align="center">
-    <h4>
-        <a href="https://www.initmax.com/">
-            <img alt="Static Badge" src="https://img.shields.io/badge/initMAX.com-%20?color=%231f65f4&logo=data:image/png;base64,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">
-        </a>
-        <a href="tel:+420800244442">
-            <img alt="Static Badge" src="https://img.shields.io/badge/+420%20800%20244%20442-%20?color=%231f65f4&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACEElEQVR4nO3ZzYtNYRzA8Z/XUWJDGKJk5WUpWUrsyEYUNanBn6D8BbLDCv+BxcR4jSxQkxoLRnmLImXl5UZIqI9OcxY3Zu7c59zuuc9kPn/B/fac+5zn+Z2IGTN6B3swii94gK0xnWAezvpXA6tiOsAiXDe5a5E7rMQTUxuIXGE5XmjPJ/RHbjAfI9IMR25wXDUHIyd4UzHkA1ZELvBVdUORC7zUmf2RAwx1GPI8coCjHYZ8jxxgGX53EHI/coHbHYQM5HbSreIRZkcuMAtjFUJ2Rm6wL7HicuTI+KrcSwgZjFxhI34mnILXRa5wMmFVHmJh5Ah95Q9sV7F190WOsAHfEmIuYm7kCEekOV9sGJEjE09TWjkVGY+G7iTGnM5yZYwPJl5VeMzmRG6wBm8TYy5hQeQGm/AxMebmRO+ZYrVwqBzF/sKz4ohUZ8yWchacYqz5BIDtLd5TV4pBYV0xO/AjMaY4zgziapvTmQN13l9SY1T4j/XXEbOtwmOWqlHMFOqI2Yz3uu8GVtdx9H9XQ0yj2Gy6HbO2wkuzitGuhjSNlVJumFV87npI0yeKc10MGaklpCnocOJ9pl27ag0pY9Yn3jSncqb2iL+uzScSBhqttt/e30DLLfquah5jcWQ2N9ub+Lg9Le5DkaMyaDdulUf4yRRb+dKYDrCkPBVfKD4YlZ8BX+NYcc3u9e+b8d/6A8BzVur0abPMAAAAAElFTkSuQmCC">
-        </a>
-        <a href="mailto:info@initmax.com">
-            <img alt="Static Badge" src="https://img.shields.io/badge/info%40initmax.com-%20?color=%231f65f4&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0yMCA0SDRjLTEuMSAwLTIgLjktMiAydjEyYzAgMS4xLjkgMiAyIDJoMTZjMS4xIDAgMi0uOSAyLTJWNmMwLTEuMS0uOS0yLTItMnptMCA0bC04IDUtOC01VjZsOCA1IDgtNXYyeiIvPjwvc3ZnPg==">
-        </a>
-        <br>
-        <a href="https://www.linkedin.com/company/initmax/">
-            <img alt="LinkedIn" src="https://img.shields.io/badge/%20-%20?style=social&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICA8dGl0bGU+TGlua2VkSW48L3RpdGxlPgogIDxwYXRoIGZpbGw9IiMwQTY2QzIiIGQ9Ik0yMC40NDcgMjAuNDUyaC0zLjU1NHYtNS41NjljMC0xLjMyOC0uMDI3LTMuMDM3LTEuODUyLTMuMDM3LTEuODUzIDAtMi4xMzYgMS40NDUtMi4xMzYgMi45Mzl2NS42NjdIOS4zNTFWOWgzLjQxNXYxLjU2MWguMDQ5Yy40NzYtLjkgMS42MzctMS44NTIgMy4zNjgtMS44NTIgMy41OTkgMCA0LjI2NyAyLjM2OSA0LjI2NyA1LjQ1NXY2LjI4OHpNNS4zMzcgNy40MzNjLTEuMTQ0IDAtMi4wNjktLjkyNi0yLjA2OS0yLjA2OCAwLTEuMTQzLjkyNS0yLjA2OSAyLjA2OS0yLjA2OSAxLjE0MiAwIDIuMDY4LjkyNiAyLjA2OCAyLjA2OSAwIDEuMTQyLS45MjYgMi4wNjgtMi4wNjggMi4wNjh6bTEuNzc3IDEzLjAxOUgzLjU2VjloMy41NTR2MTEuNDUyek0yMi4yMjUgMEgxLjc3MUMuNzkyIDAgMCAuNzc0IDAgMS43Mjl2MjAuNTQyQzAgMjMuMjI3Ljc5MiAyNCAxLjc3MSAyNGgyMC40NTFDMjMuMiAyNCAyNCAyMy4yMjcgMjQgMjIuMjcxVjEuNzI5QzI0IC43NzQgMjMuMiAwIDIyLjIyMiAwaC4wMDN6Ii8+Cjwvc3ZnPgo=">
-        </a>&nbsp;
-        <a href="https://www.youtube.com/@initmax1">
-            <img alt="Static Badge" src="https://img.shields.io/badge/%20-web?style=social&logo=youtube">
-        </a>&nbsp;
-        <a href="https://www.facebook.com/initmax">
-            <img alt="Static Badge" src="https://img.shields.io/badge/%20-%20?style=social&logo=facebook">
-        </a>&nbsp;
-        <a href="https://www.instagram.com/initmax/">
-            <img alt="Static Badge" src="https://img.shields.io/badge/%20-%20?style=social&logo=instagram">
-        </a>&nbsp;
-        <a href="https://twitter.com/initmax">
-            <img alt="Static Badge" src="https://img.shields.io/badge/%20-%20?style=social&logo=x">
-        </a>&nbsp;
-        <a href="https://github.com/initmax">
-            <img alt="Static Badge" src="https://img.shields.io/badge/%20-%20?style=social&logo=github">
-        </a>
-        <br><br><br>
-        <a>
-            <img src="./.readme/logo/agplv3.png" width="100">
-        </a>
-    </h4>
-</div>
+The installer runs `certbot certonly` (auto-detects standalone vs webroot 

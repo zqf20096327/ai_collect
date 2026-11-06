@@ -28,7 +28,9 @@
 ### 与 Pi 对齐，可直接顶替运行时
 
 - agent loop、工具契约、会话 entry 树、`-p --mode json` 事件流、`--list-models` 都对得上 Pi，Multica 这类编排器按「Pi 协议族」接入即可，不需要改协议。
-- 差异（例如 skills 只读规范的 `.agents/skills`、不读 `.pi/skills`）都写在 `docs/` 里，不藏在实现里。
+- **常驻 `--mode rpc`**：模型目录探测（`get_state` / `get_available_models`）+ 任务内的**插话（steering）**（`prompt` / `steer` / `queue_update` / `agent_settled`），版本自报 1.4.0 就为了过上游这道能力门。
+- **按智能体下发的 skills 与 MCP 直接用**：`{workDir}/.pi/skills`、`--skill <SKILL.md>` 白名单、`--extension` 里的受管 MCP、`~/.pi/agent/mcp.json`、`{workDir}/.pi/mcp.json`，以及 custom_env 里的 `ACP_AGENT_MCP_CONFIG` / `ACP_AGENT_MCP_JSON`。
+- 其余差异都写在 `docs/` 里，不藏在实现里。
 
 ### 其它
 
@@ -42,13 +44,14 @@
 export DEEPSEEK_API_KEY=sk-...        # 或 OPENAI_API_KEY / MOONSHOT_API_KEY …
 task build                            # → bin/acp-agent（轻量版，约 20MB）
 
-acp-agent                             # 交互式 REPL（Bubble Tea）
+acp-agent                             # 交互式界面（Bubble Tea）
 acp-agent -p "把 go.mod 的 Go 版本升到 1.28 并跑测试"   # 一次性执行
 acp-agent --acp                       # 作为 ACP agent 服务（stdio JSON-RPC，供 Zed 等）
 acp-agent -p --mode json              # Pi 兼容：prompt 读 stdin，stdout 逐行 JSON 事件（供 Multica 等编排器）
 acp-agent --list-models               # 模型目录（Pi 兼容，编排列出 --model 可选值）
 acp-agent --provider ollama --model qwen3-coder
 acp-agent -c                          # 续接当前目录最近一次会话
+acp-agent -r                          # 列出本项目的会话，选一个继续
 acp-agent -endpoints                  # 内置端点与定价
 acp-agent -mcp-status                 # 连 MCP server 并列出工具
 ```
@@ -63,18 +66,19 @@ acp-agent -mcp-status                 # 连 MCP server 并列出工具
 - `↑/↓` 翻输入历史（纯内存；敲了内容再按 ↑ 优先找同前缀的命令）；`Ctrl-↑/↓` 在问答间跳转；`PgUp/PgDn`/滚轮滚动。
 - 顶部常驻「模型 / ctx 占用百分比 / 权限 / 工作目录」，右下角显示 `● 运行中 12s`。
 - 不占 alt-screen：`/freeze` 把当前全文写进终端 scrollback，之后可用终端原生滚动/搜索回看。
-- `-c`（或 `--session <文件>`）启动即回放历史（最近 160 段，旧思考默认收起）；`--no-tui` 退回旧行式 REPL。
+- `-c` / `-r`（或 `--session <文件>`）启动即回放历史（最近 160 段，旧思考默认收起）；
+  `-r` 不带值会列出本项目的会话（时间 / 消息数 / 首条提问），敲编号选。
 - 正文边流边渲染 Markdown（代码围栏内不误判格式）；非 TTY / `--no-color` 退化为去标记纯文本。
 
-REPL 命令：`/help /new /compact /context /model /tools /cost /save /session /init /mouse /freeze /exit`。
+斜杠命令：`/help /new /compact /context /model /tools /cost /save /session /init /mouse /freeze /exit`。
 
 ## 关键行为
 
 - `-p` 模式：**stdout 只有最终结果**，工具调用与用量日志走 stderr，可直接管道。
 - 权限三档：`ask`（默认，改动前问）、`auto`、`readonly`（拒绝一切改动）。
-- 会话自动落盘为 JSONL，按工作目录分区（`sessions/<sha1(root)[:12]>/`）；`-c` 只接本项目最近一次。
+- 会话自动落盘为 JSONL，按工作目录分区（`sessions/<sha1(root)[:12]>/`）；`-c` 只接本项目最近一次，`-r` 从本项目的历史里挑。
 - 上下文压缩由 kernel 驱动（何时压、压哪一段由它的 nudge 给出），压缩事件实时上报。
-- **MCP**：自动加载工作目录与配置目录下的 `.mcp.json`（后者覆盖同名 server），也可 `--mcp-config <文件>` / `--mcp-json <JSON>`（后者是叠加）；远程工具名为 `mcp__<server>__<tool>`，与内建工具共用一套权限门禁。
+- **MCP**：自动加载 `~/.pi/agent/mcp.json`、工作目录与配置目录下的 `.mcp.json`（后者覆盖同名 server）、工作目录的 `.pi/mcp.json`，也可 `--mcp-config <文件>`（或 `ACP_AGENT_MCP_CONFIG`）/ `--mcp-json <JSON>`（后者是叠加）；远程工具名为 `mcp__<server>__<tool>`，与内建工具共用一套权限门禁。
 - **子代理**：`delegate` 用 ACP 拉起自身（自动加 `--permissions ask --disable-tools delegate --no-mcp`），子代理的工具确认回传主进程裁决；启动/工具调用/耗时/结论预览回显在主视图。
 - 工具集：`read` `write` `edit` `ls` `glob` `grep`、`bash`/`bash_output`/`bash_kill`、`js`、`skill`、`web_search`/`web_fetch`、`parallel`、`todo`、`delegate`，以及压缩用的 `context_check`/`context_apply`/`context_search`/`context_decompress`。`bash`/`js` 的内置引擎见上方「特点」。
 
@@ -130,7 +134,7 @@ internal/provider/  OpenAI 兼容流式客户端、SSE、重试、模型注册�
 internal/mcp/       MCP 客户端（官方 go-sdk，只用 tools 子集）
 internal/web/       web_search / web_fetch 后端（duckduckgo/searxng/tavily/brave/exa）
 internal/proc/      跨平台子进程树回收（Unix 进程组 / Windows Job Object）
-cmd/acp-agent/      可执行程序（TUI REPL / -p / --acp / 子代理自举）
+cmd/acp-agent/      可执行程序（TUI / -p / --acp / 子代理自举）
 cmd/verify-kernel/  裸 goja 全链路验证
 ```
 

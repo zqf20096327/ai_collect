@@ -86,6 +86,8 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Supervised vs Unsupervised Learning](https://outcomeschool.com/blog/supervised-vs-unsupervised-learning)
 - What is Reinforcement Learning?
     - Answer: [What is Reinforcement Learning?](https://outcomeschool.com/blog/reinforcement-learning)
+- What is a Markov Decision Process (MDP)?
+    - Answer: [What is a Markov Decision Process (MDP)?](https://outcomeschool.com/blog/markov-decision-process-mdp)
 - What is Bias?
     - Answer: [What is Bias?](https://outcomeschool.com/blog/bias-in-artificial-neural-network)
 - What is the difference between Classification and Regression?
@@ -130,8 +132,10 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 ### Algorithms
 
 - How does a Decision Tree algorithm work?
+    - Answer: [How do Decision Trees and Random Forests work?](https://outcomeschool.com/blog/decision-trees-and-random-forests)
 - Explain how Decision Trees make splits and handle categorical features.
 - How does the Random Forest algorithm work? How does it improve over Decision Trees? How does it reduce variance?
+    - Answer: [How do Decision Trees and Random Forests work?](https://outcomeschool.com/blog/decision-trees-and-random-forests)
 - Explain Ensemble Methods. Why are they powerful?
 - What is the difference between bagging and boosting?
 - What is Gradient Boosting? How does XGBoost work?

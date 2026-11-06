@@ -373,39 +373,28 @@ The current open-source package exposes four high-value capability layers:
 ## Built-in Tools
 
 <!-- tools-summary:start -->
-KitWright MCP for Unity ships **273 tool functions across 57 modules** (`core` profile exposes 53 of them).
+KitWright MCP for Unity ships **298 tool functions across 36 modules** (`core` profile exposes 51 of them).
 
 | Module | Tools | Module | Tools |
 |--------|-------|--------|-------|
-| **EditorState** | 18 | **Texture** | 4 |
-| **GameObject** | 14 | **Build** | 3 |
-| **Profiler** | 13 | **ComponentBatch** | 3 |
-| **Scene** | 13 | **ComponentProperty** | 3 |
-| **Animation** | 10 | **Docs** | 3 |
-| **Prefab** | 10 | **Lighting** | 3 |
-| **Asset** | 8 | **Package** | 3 |
-| **Terrain** | 8 | **Physics** | 3 |
-| **AssemblyDefinition** | 7 | **ScriptableObject** | 3 |
-| **InputSimulation** | 7 | **Sprite** | 3 |
-| **Prefs** | 7 | **Testing** | 3 |
-| **SpriteAtlas** | 7 | **Undo** | 3 |
-| **UI** | 7 | **AssetImport** | 2 |
-| **Visual** | 7 | **EditorDialog** | 2 |
-| **Addressable** | 6 | **EditorWindowInteraction** | 2 |
-| **Audio** | 6 | **Material** | 2 |
-| **Code** | 6 | **Performance** | 2 |
-| **InputActions** | 6 | **ProjectSettings** | 2 |
-| **NavMesh** | 6 | **References** | 2 |
-| **Shader** | 6 | **Batch** | 1 |
-| **File** | 5 | **Hierarchy** | 1 |
-| **MemorySnapshot** | 5 | **Interop** | 1 |
-| **SceneView** | 5 | **MenuItem** | 1 |
-| **Screenshot** | 5 | **Mesh** | 1 |
-| **Volume** | 5 | **Particle** | 1 |
-| **Camera** | 4 | **Reflection** | 1 |
-| **Compilation** | 4 | **Timeline** | 1 |
-| **LodConstraint** | 4 | **ToolExposure** | 1 |
-| **Script** | 4 |  |  |
+| **Editor** | 22 | **Addressable** | 6 |
+| **Profiling** | 21 | **Audio** | 6 |
+| **GameObject** | 17 | **ExecuteCode** | 6 |
+| **Asset** | 16 | **InputActions** | 6 |
+| **ProjectSettings** | 16 | **Materials & Shaders** | 6 |
+| **Rendering** | 15 | **Package** | 6 |
+| **Animation** | 13 | **Scene** | 6 |
+| **Sprites & Textures** | 12 | **File** | 5 |
+| **Prefab** | 11 | **PlayMode** | 5 |
+| **Build** | 9 | **Screenshot** | 5 |
+| **Lighting** | 9 | **Timeline** | 5 |
+| **NavMesh** | 9 | **Code** | 4 |
+| **Compilation** | 8 | **SceneView** | 4 |
+| **Terrain** | 8 | **Testing** | 4 |
+| **AssemblyDefinition** | 7 | **Console** | 3 |
+| **InputSimulation** | 7 | **Physics** | 3 |
+| **Prefs** | 7 | **Docs** | 2 |
+| **UI** | 7 | **MCP** | 2 |
 
 > 📖 Every tool with its description: [TOOLS.md](TOOLS.md).
 <!-- tools-summary:end -->

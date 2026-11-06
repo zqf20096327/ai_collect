@@ -30,7 +30,7 @@
 
 Gemini 的强项正好落在编程场景上：**多模态**看图、**前端与 UI** 代码生成质量出色，还能**生图**做界面素材。装上插件后，这些能力按订阅额度直接在 DSH 里使用。
 
-不止一个 Google 账号？全部加进来组成**账号池**：额度自动均衡、429 无感切换、坏账号自动冷却与探活恢复。设置页里每个账号一张卡片，每周与 5 小时额度实时可见。
+不止一个 Google 账号？全部加进来组成**账号池**：按剩余额度做前置加权轮询、429 无感切换、坏账号自动冷却与探活恢复。设置页可下拉查看每个账号的每周 / 5 小时额度，也可展开全部账号卡片对照。
 
 <p align="center">
   <img src="./assets/images/screenshots/settings-1.png" alt="dsh-gemini-pool 设置页" width="78%">
@@ -45,7 +45,7 @@ Gemini 的强项正好落在编程场景上：**多模态**看图、**前端与 
 | Gemini 多模态（看图） | ❌ 编程时用不上 | ✅ 对话里直接丢图 |
 | 前端 / UI 代码生成 | ❌ 网页版没有工程上下文 | ✅ 直接读懂你的项目 |
 | 生图做界面素材 | ⚠️ 来回切换复制 | ✅ `antigravity_image_generate` 自动出图入库 |
-| 多账号额度 | — | ✅ 全池调度，429 无感切换 |
+| 多账号额度 | — | ✅ 前置加权调度，429 无感切换 |
 | 额度情况 | ❌ 黑盒 | ✅ 每账号实时额度条 |
 | 坏账号 | ❌ 反复撞死号 | ✅ 自动禁用 + 探活复活 |
 
@@ -88,7 +88,7 @@ Gemini 的强项正好落在编程场景上：**多模态**看图、**前端与 
 
 ## 🚀 快速开始
 
-**环境要求**：DSH 0.2.0-rc.2（当前验证版本）。运行 `dsh --version` 查看本机版本。
+**环境要求**：DSH 0.2.2-rc.1（当前验证版本）。运行 `dsh --version` 查看本机版本；完整范围见「🧩 兼容性与版本」。
 
 **1. 安装插件**
 
@@ -125,6 +125,33 @@ dsh plugin --profile web add ./dist/dsh-gemini-pool-*.tgz
 
 </details>
 
+## 🧩 兼容性与版本
+
+| 项目 | 要求 |
+|---|---|
+| DSH | `0.2.2-rc.1` 已验证；`engines.dsh` 为 `>=0.2.0-rc.2 <0.3.0` |
+| Node.js | `>=24.9`（与 DSH 0.2.2 的最低要求一致） |
+| 分发方式 | GitHub Release / `dsh plugin add github:...`；不依赖 npm registry |
+| 当前版本 | `v0.9.1`（见 [Release](https://github.com/qikairo7/dsh-gemini-pool/releases/tag/v0.9.1)） |
+
+从 `v0.8.x` 升级：重启 DSH 后打开一次设置页刷新额度，旧的静态模型列表会被账号实时目录替换；已勾选但账号不提供的模型会自动从选择器移除。
+
+### 近期版本
+
+**v0.9.1 — 协议与调度加固**
+
+- `requestId` 改为 `agent-` 前缀；`sessionId` 按首条用户消息哈希为 Antigravity 风格；`User-Agent` 使用 `antigravity/hub/<version>`。
+- 账号没有 Code Assist project 时自动走 `onboardUser` 创建。
+- 按具体模型的 `remainingFraction` 调度，再回退账号组 5h/weekly。
+- 隐藏 `gemini-2.5-pro` / `gemini-2.5-flash-thinking`；无实时目录时使用保守 fallback；被拒绝的 tier 缓存 24 小时。
+
+**v0.9.0 — 模型目录与账号池**
+
+- 模型目录按账号 `fetchAvailableModels` 实时生成，多账号取并集并做能力路由。
+- 按 5h / weekly 额度做前置平滑加权轮询，不再等单账号撞 429。
+- Gemini 4 Argon 等新模型按服务端返回自动折叠出现。
+- 适配 DSH 0.2.2-rc.1 的图片预算 offload、tier entitlement 与 Cordis 4.1 事件语义。
+
 ## 🧱 网络环境（需要代理时）
 
 插件自身不含任何代理代码：所有 Google 请求都是进程内 `fetch`，用宿主装好的全局 HTTP 通路。宿主**只在启动时**从 harness home 的 `.env` 读取 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY`（这几个名字写在其它任何位置的 `.env` 里会被宿主直接拒绝），并据此为插件装好代理。
@@ -154,9 +181,11 @@ HTTPS_PROXY=http://127.0.0.1:7897
 
 三种调度策略，设置页一键切换：
 
-- **智能均衡（推荐）** — 自动挑选剩余额度最健康的账号
+- **智能均衡（推荐）** — 按各账号剩余额度做平滑加权轮询，请求在撞 429 之前就分散到多个账号；额度见底的账号自动降权
 - **主备切换** — 固定主账号，额度耗尽自动切备用
 - **手动指定** — 锁定单一账号，用于调试或专跑
+
+设置页账号列表支持下拉选择单个账号查看额度、重置时间与在线状态；多账号时默认展示全部卡片。模型目录按账号实际返回的 `fetchAvailableModels` 取并集：某账号没有的模型不会出现在选择器里，也不会被调度到该账号。
 
 日常操作走对话命令：
 
@@ -196,10 +225,10 @@ HTTPS_PROXY=http://127.0.0.1:7897
   - 经 `/antigravity/api/config` 在 accounts.json 里配置 `visionEnabled: false`
 
   开关同时控制贴图准入与自动转述；关闭后，贴图行为恢复宿主原样。`visionModel` 指定代看模型；留空则自动挑选，设置页卡片可直接选择。
-- **已知依赖**：自动转述依赖宿主 `llm/stream` 事件、贴图准入依赖 `resolveModelInfo` 行为，宿主大版本升级后若贴图行为异常，需重审本节（当前在 DSH 0.2.0-rc.2 验证）。
+- **已知依赖**：自动转述依赖宿主 `agent/pre-step` 事件、贴图准入依赖 `resolveModelInfo` 行为，宿主大版本升级后若贴图行为异常，需重审本节（当前在 DSH 0.2.2-rc.1 验证）。
 - **排障**：贴图后模型仍收到占位文本时，先运行 `/antigravity-doctor`，查看 `visionBridge` / `visionShim` 两行。两行显示 `registered` + `installed` 即为正常。服务端日志里，`[Antigravity Pool Vision]` 前缀的行记录桥的每一步判定（请求进入、模型判定、改写结果或放行原因）。贴图后一条前缀行都没有，说明事件没有到达桥。
 
-## 🤖 模型一览
+## 🤖 模型族一览
 
 设置页勾选即用，已勾选的模型自动置顶，每个模型实时显示池内最高可用额度。
 
@@ -210,10 +239,13 @@ HTTPS_PROXY=http://127.0.0.1:7897
 
 | 模型 | 额度池 |
 |---|---|
-| Gemini 3.8 / 3.7 / 3.6 / 3.5 Flash | Gemini |
+| Gemini 4 Argon · Gemini 3.8 / 3.7 / 3.6 / 3.5 Flash | Gemini |
+| Gemini 3.5 Flash Lite · Gemini 3.1 Flash Lite | Gemini |
 | Gemini 3.1 Pro · Gemini 3.1 Flash Image（生图） | Gemini |
-| Gemini 3 Flash · Gemini 2.5 Pro / Flash | Gemini |
+| Gemini 3 Flash · Gemini 2.5 Flash | Gemini |
 | Claude Opus 4.6 · Claude Sonnet 4.6 · GPT-OSS 120B | Claude & GPT |
+
+以上是服务端曾返回过的模型族，实际可选列表以你的账号实时返回为准：插件只展示 `fetchAvailableModels` 里存在且未 `disabled` 的模型，并按思考档位（low / medium / high）折叠为每个模型族一个条目。多账号启用不同模型时取并集，请求只会调度到确实拥有该模型的账号。
 
 同一额度池内共享每周与 5 小时额度；额度按 token 成本比例消耗，越重的模型消耗越快。
 
@@ -222,12 +254,14 @@ HTTPS_PROXY=http://127.0.0.1:7897
 ```mermaid
 flowchart LR
   subgraph HOST["DSH 宿主"]
-    LLM["llm/stream 请求流"]
+    PRE["agent/pre-step<br/>消息与贴图"]
+    LLM["llm/stream<br/>模型请求流"]
     SEL["模型选择器 / 设置页"]
   end
   subgraph PLUGIN["dsh-gemini-pool"]
     CORE["插件主体<br/>命令与 API 路由"]
-    POOL["账号池管理<br/>调度 · 冷却 · 探活"]
+    CATALOG["模型目录<br/>实时 fetchAvailableModels<br/>族折叠 · 多账号并集"]
+    POOL["账号池管理<br/>加权调度 · 冷却 · 探活"]
     VB["视觉旁路桥<br/>图片转文字"]
     TOOLS["工具集<br/>read_image · image_generate"]
   end
@@ -235,14 +269,15 @@ flowchart LR
   GOOGLE["Google Antigravity API"]
 
   SEL --> CORE
-  LLM --> VB --> POOL
-  CORE --> POOL
-  TOOLS --> GOOGLE
+  CORE --> CATALOG --> POOL
+  PRE --> VB --> POOL
+  LLM --> POOL
+  TOOLS --> POOL
   POOL --> GOOGLE
   POOL --> STORE
 ```
 
-请求经宿主进入插件：视觉旁路桥改写无视觉模型的图片请求，账号池按调度策略选号并处理 429 冷却与探活，全部调用进程内直达 Google 官方端点。
+请求经宿主进入插件：`agent/pre-step` 的视觉旁路桥先把无视觉模型收到的图片改写为池内 Gemini 的文字转述；模型目录按账号实时 `fetchAvailableModels` 生成并折叠思考档位；账号池按剩余额度做加权调度、处理 429 冷却与探活，全部调用进程内直达 Google 官方端点。
 
 <p align="center">
   <img src="./assets/images/panel.gif" alt="请求流动态演示（动画数字为示意）" width="72%">

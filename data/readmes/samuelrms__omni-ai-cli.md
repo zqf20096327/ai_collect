@@ -23,6 +23,8 @@ ferramenta falhar ou estourar a cota, passa para a próxima sem você fazer nada
 Enquanto uma resposta está sendo gerada, a caixa de entrada continua livre: você segue
 mandando pedidos, eles entram numa fila visível acima da caixa e rodam em ordem.
 
+Com `ai serve`, tudo isso também fica disponível como uma [API compatível com a OpenAI](#modo-servidor), direto ou [em Docker](#docker).
+
 Perguntas simples vão para as ferramentas mais baratas. Tarefas pesadas vão para o
 Claude, com troca automática entre várias contas quando uma bate no limite. O histórico
 fica salvo, a interface fala português, inglês, espanhol e francês, e modelos e contas
@@ -49,6 +51,7 @@ se configuram de dentro do próprio chat.
 - [Onde ficam os arquivos](#onde-ficam-os-arquivos)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Testes](#testes)
+- [Releases e branches](#releases-e-branches)
 - [Troubleshooting](#troubleshooting)
 - [Limitações conhecidas](#limitações-conhecidas)
 - [Privacidade](#privacidade)
@@ -126,7 +129,7 @@ brew install samuelrms/tap/omni-ai-cli
 
 > Em Homebrew recente, se recusar o tap como "untrusted", rode uma vez: `brew trust samuelrms/tap`.
 
-Para atualizar depois: `ai --update` (ou `/update` no chat).
+Para atualizar depois: `ai --update` (ou `/update` no chat). Ao terminar, ele mostra as novidades das versões instaladas.
 
 Pelo código-fonte, para desenvolver:
 
@@ -402,6 +405,8 @@ comando. Fora do chat: `ai --mode plan "pergunta"`. O `/parallel` roda sempre em
 
 ## Skills e MCP
 
+Antes de rodar uma skill do projeto, o chat mostra o caminho dela. Uma skill do projeto substitui a sua de mesmo nome, e links que saem do projeto são ignorados.
+
 O `ai` chama os próprios CLIs, então cada um usa as skills e os MCPs que já tem. O
 `/sync` junta tudo e instala em cada ferramenta o que só existe nas outras:
 
@@ -447,6 +452,7 @@ ai --cursor "corrigir o teste X"       # força Cursor
 ai --deepseek "explicar CAP theorem"   # força DeepSeek
 ai --install                           # instala as ferramentas que faltam (pergunta antes)
 ai --classify "prompt"                 # mostra como seria classificado
+ai --prompt-file pedido.txt            # lê o pedido de um arquivo
 ai --log                               # últimas chamadas
 ai doctor                              # diagnóstico de instalação, contas e chaves
 ai --version                           # versão do Omni AI CLI
@@ -464,6 +470,87 @@ ai serve                       # http://127.0.0.1:8080/v1
 ai serve --host 0.0.0.0 --port 9000 --max-concurrent 4 --timeout 600
 ai serve keys [list | add NAME | remove NAME]
 ```
+
+### API de administração
+
+Desligada por padrão. Configura um servidor em execução sem acesso ao shell.
+
+```bash
+ai serve admin-keys add ops                    # chave própria, mostrada uma única vez
+ai serve --enable-admin
+curl -H "Authorization: Bearer omni-admin-..." http://127.0.0.1:8080/admin/health
+```
+
+| Rota | Função |
+| --- | --- |
+| `GET/PUT /admin/config` | Modelos, ordem de fallback (`fallback_order`) e `routing` |
+| `GET/POST /admin/keys`, `DELETE /admin/keys/{id}` | Chaves dos provedores. O id é `openrouter` ou `openrouter.work` |
+| `GET /admin/accounts` | Contas, login e cooldown |
+| `GET/POST /admin/api-keys`, `DELETE /admin/api-keys/{nome}` | Chaves dos clientes de `/v1` |
+| `GET /admin/health` | Estado do servidor |
+| `POST /admin/accounts/{conta}/login` | Inicia o login por assinatura: devolve o link e o id da tentativa |
+| `POST /admin/accounts/{conta}/login/complete` | Conclui o login |
+| `DELETE /admin/accounts/{conta}/login` | Cancela, com o id em `X-Omni-Login-Attempt` |
+
+- **Chaves separadas:** uma chave de `/v1` nunca abre `/admin`, e vice-versa. Sem chave de administração, `--enable-admin` não inicia.
+- **Rede:** de fora desta máquina, exige HTTPS por proxy reverso, que precisa definir `X-Forwarded-Proto`. `--admin-allow-http` desliga essa checagem. No Docker, a porta publicada conta como acesso externo.
+- **Segredos:** as respostas mostram só o final das chaves de provedores. A exceção é a chave de cliente criada, mostrada uma única vez.
+- **Campos protegidos:** modo de permissão, caminhos de binários e `config_dir` retornam 403.
+- **Cuidado:** esta chave pode ligar modelos pagos (`openrouter_paid`) e trocar chaves de provedores. No Docker, use `SMART_AI_ADMIN=1`.
+
+**Login pela API.** `{conta}` é `primary` e as outras contas Claude, `codex`, `cursor`, `grok`, ou `codex.NOME` para uma conta extra. Uma tentativa vale 10 minutos e cada conta aceita uma por vez (409).
+
+| Ferramenta | Como concluir |
+| --- | --- |
+| Claude Code | Abra o link e envie `{"attempt_id": "...", "code": "..."}` com o código obtido |
+| Codex, Grok | Abra o link, digite o `user_code` e envie `{"attempt_id": "..."}`. A resposta é 202 até concluir |
+| Cursor | Abra o link e envie `{"attempt_id": "..."}`. A resposta é 202 até concluir |
+
+O Antigravity e as ferramentas só com chave retornam 400. Os códigos e tokens não aparecem em respostas nem em logs. A exceção é o `user_code`, que precisa ser digitado no navegador.
+
+### Escrita em paralelo
+
+Nos modos de escrita, os pedidos rodam em paralelo, até `--max-concurrent`, sem mexer na pasta original.
+
+| | Pasta com git | Pasta sem git |
+| --- | --- | --- |
+| **Onde trabalha** | Worktree em uma branch `omni/<id>`, a partir do último commit | Cópia da pasta, até 1 GB |
+| **Resultado** | Commit na branch, informada em `X-Omni-Branch`. O merge é seu | Cópia em `~/.local/share/smart-ai/runs/`, informada em `X-Omni-Copy` |
+| **Continuar** | Envie `X-Omni-Branch` no pedido seguinte | Envie `X-Omni-Copy` no pedido seguinte |
+| **Limpeza** | O worktree sai ao final. A branch fica até você apagar | A cópia fica até você apagar |
+
+- **Sem alterações:** a branch ou a cópia nova é descartada e o header não vem. Em streaming, o header sai no início e pode apontar para algo descartado.
+- **Falha ou timeout:** o que já foi feito é mantido, e o header vem na resposta de erro. Depois de uma queda do servidor, as alterações são salvas no próximo início.
+- **Concorrência:** dois pedidos na mesma branch ou cópia recebem 409. Só branches `omni/` podem ser continuadas.
+- **Fila:** acima do limite, o pedido espera até `--queue-wait` segundos (60), com até `--queue-size` na fila (16). Só então recebe 429.
+- **Limitações:** alterações sem commit e arquivos ignorados pelo git, como `node_modules`, não entram no worktree. O isolamento vale para arquivos: portas, bancos e outros serviços usados pelos comandos ainda podem colidir, e um comando pode escrever fora da pasta. A memória também conta: cada pedido é um processo de CLI. Os comandos git do próprio servidor não rodam hooks nem `core.fsmonitor` do repositório. Filtros do git, como os do Git LFS, continuam rodando: sirva só repositórios em que você confia.
+
+```bash
+ai serve work --workdir PASTA                  # lista
+ai serve work remove ID --workdir PASTA        # mostra; com --yes, apaga
+ai serve work prune --older-than 30 --workdir PASTA   # também --merged; com --yes, apaga
+```
+
+Sem `--yes`, nada é apagado. O comando só alcança branches `omni/` e cópias do Omni. Um item em uso, ou cópia alterada há menos de 15 minutos, é mantido.
+
+### Como serviço
+
+```bash
+ai serve --install-service [--host H] [--port P] [--mode M] [--workdir PASTA]
+ai serve --service-status
+ai serve --uninstall-service
+```
+
+Inicia sozinho e reinicia em caso de falha, com launchd no macOS e systemd de usuário no Linux. No Windows, em containers e em WSL sem systemd, o comando avisa e não instala; rode `ai serve` manualmente.
+
+- **Segredos:** o arquivo do serviço não guarda chaves. Sem chave salva, a instalação cria uma e a mostra uma única vez. Fora de `127.0.0.1`, exige uma chave salva antes.
+- **Ambiente:** só `PATH` e as pastas do Omni passam para o serviço. Chaves que existem só no shell não passam: salve com `ai --key`. A instalação avisa quais são, e também quais CLIs não encontrou.
+- **Pasta e modo:** o padrão é `plan`, em `~/.local/share/smart-ai/serve`. `--mode yolo` e sobrescrever um arquivo que o Omni não gerou exigem `--yes`.
+- **Logs:** `~/.cache/smart-ai/serve.log`, com rotação, e `serve.out.log`, limpo a cada instalação.
+- **Linux:** para iniciar no boot sem sessão aberta, rode `loginctl enable-linger $USER`. A instalação avisa, mas não faz isso sozinha.
+- **Atualização:** `ai --update` reinicia o serviço. Em instalações sem git, reinstale o serviço depois.
+
+### Uso da API
 
 ```python
 from openai import OpenAI
@@ -487,20 +574,24 @@ No primeiro início, o servidor cria uma chave e a mostra uma única vez. Só o 
 **Segurança:**
 
 - Por padrão, as ferramentas rodam no modo `plan`, em uma pasta temporária, seja qual for o `SMART_AI_MODE`.
-- **Para criar, editar e rodar comandos:** `ai serve --mode edits|auto|yolo --workdir PASTA`. A pasta é obrigatória, os pedidos passam a ser atendidos um por vez (os demais recebem 429) e nada pede aprovação. Quem tem a chave pode alterar a pasta e, com comandos, alcançar os logins das contas.
+- **Para criar, editar e rodar comandos:** `ai serve --mode edits|auto|yolo --workdir PASTA`. A pasta é obrigatória e nada pede aprovação. [Cada pedido trabalha isolado](#escrita-em-paralelo). Quem tem a chave pode alterar a pasta e, com comandos, alcançar os logins das contas.
 - **Somente leitura não impede ler arquivos.** Quem tem a chave pode pedir a uma ferramenta que leia arquivos desta máquina. MCPs configurados também podem estar disponíveis. Trate a chave como acesso à sua conta.
 - O padrão é `127.0.0.1`. Para expor em rede, use `--host` e HTTPS com proxy reverso.
+- Acima do limite de conexões (128 ou mais, conforme o sistema), a resposta é 503. O início de cada pedido precisa chegar em até 30 segundos. Em exposição pública, use também os limites por origem do proxy.
 - Quem compartilha uma instância compartilha as mesmas contas e assinaturas. Verifique os termos de cada provedor.
 
 **Limitações:**
 
+- Quando o modo do servidor nega uma ação e a ferramenta encerra com erro, como faz o Grok, a resposta é `403 action_not_allowed`.
 - `temperature` só vale em OpenRouter, DeepSeek e Grok via API. Nos CLIs, é ignorada e aparece em `X-Omni-Ignored-Params`.
 - `max_tokens` é aproximado nos CLIs (cerca de 4 caracteres por token).
 - `usage` é estimado quando o provedor não informa o consumo.
 - Cada pedido pode consumir bastante cota, porque os CLIs de agente carregam o próprio contexto. No Codex, um simples "OK" já usou cerca de 19 mil tokens de entrada.
 - Nos CLIs, o streaming entrega a resposta de uma vez, ao final. Só o OpenRouter envia pedaços durante a geração, exceto quando há dados pessoais mascarados.
 - O fallback é transparente até o primeiro trecho da resposta. Se o provedor falhar depois disso, o cliente recebe um erro.
-- `tools`/function calling e imagens retornam erro 400.
+- `tools`/function calling só nos provedores de API (OpenRouter, DeepSeek e Grok via chave). As ferramentas nunca são executadas pelo servidor: a chamada volta para o seu código. Outros modelos retornam 400, porque os CLIs de agente não têm como devolver a chamada, a não ser com `--tool-emulation`. Com `omni-auto`, a ordem é OpenRouter, DeepSeek e Grok. No OpenRouter, sem `openrouter_paid`, só modelos gratuitos. Em streaming, a chamada chega de uma vez, ao final. Argumentos fora do schema fazem o servidor tentar o próximo provedor; só o núcleo do JSON Schema é checado (`type`, `required`, `enum`, `properties`, `items`, `additionalProperties`). `functions` (formato antigo) retorna 400.
+- **Experimental:** `ai serve --tool-emulation` (`SMART_AI_TOOL_EMULATION=1` no Docker) emula `tools` em Claude Code e Grok CLI, com as ferramentas próprias deles desligadas. O modelo escreve a chamada em JSON, o servidor valida e tenta de novo uma vez, o que gasta mais cota. Só entra quando não há provedor de API. Codex e Cursor ficam de fora, porque não dá para desligar as ferramentas deles. O modelo pode errar mais que no modo nativo, os dados pessoais não são mascarados, e o conteúdo do cliente pode imitar o formato.
+- Imagens retornam erro 400.
 - O prompt chega às ferramentas como argumento de linha de comando e fica visível na lista de processos da máquina. O limite é de 100 KB por pedido.
 - Perfis Claude legados, que trocam o arquivo de credenciais, limitam o servidor a um pedido por vez.
 
@@ -526,6 +617,7 @@ docker exec -it omni ai --account login primary
 - **Risco fora do `plan`:** os comandos rodam no mesmo usuário que guarda os logins em `omni-home`. Quem tem a chave pode ler esses logins, então use uma chave por pessoa de confiança e revogue sessões se ela vazar.
 - **Codex:** o sandbox dele não inicia no container, porque depende de recursos bloqueados pelo Docker e pelo kernel do host. Ele só usa ferramentas em `yolo`, com o container como isolamento. Em `plan`, `edits` e `auto`, ele apenas responde, sem ler nem alterar arquivos.
 - **Atualização:** `git pull && docker compose up -d --build`. `ai --update` não se aplica à imagem.
+- **Imagem pronta:** `export OMNI_IMAGE=ghcr.io/samuelrms/omni-ai-cli:latest && docker compose pull omni && docker compose up -d --no-build`. Cada release publica a versão e `latest`, para amd64 e arm64. Para fixar uma versão, troque `latest` pelo número, como `1.23.0`. A imagem inclui CLIs de terceiros, sujeitos aos termos de cada um; o uso da sua conta também segue esses termos.
 
 Para expor em rede, use um proxy reverso com HTTPS, como o Caddy:
 
@@ -552,7 +644,10 @@ omni.example.com {
 | `~/.cache/smart-ai/state.json` | Cooldowns ativos |
 | `~/.cache/smart-ai/usage.log` | Log de uso, só metadados |
 | `~/.config/smart-ai/server_keys.json` | Hash das chaves do `ai serve` (permissão 600) |
+| `~/.config/smart-ai/admin_keys.json` | Hash das chaves da API de administração (permissão 600) |
 | `~/.cache/smart-ai/costs.jsonl` | Custo e tokens de cada pedido do chat, sem pergunta nem resposta (soma do dia no `/usage`) |
+| `~/.local/share/smart-ai/runs/` | Cópias dos pedidos de escrita em pastas sem git |
+| `~/.cache/smart-ai/serve.log` | Log do `ai serve` como serviço, com rotação |
 
 ---
 
@@ -587,6 +682,7 @@ omni-ai-cli/
 ├── tests/                    # executáveis fictícios, sem consumir cota
 ├── postman/                  # simulação HTTP do OpenRouter
 ├── get.sh / get.ps1          # instalação com um comando
+├── Dockerfile · docker-compose.yml  # imagem e Compose do ai serve
 └── package.json · LICENSE
 ```
 
@@ -603,7 +699,7 @@ python3 -m unittest discover -s tests -v
 bash -n scripts/install.sh
 ```
 
-**123 testes**: persistência e retomada de sessão, limite de contexto, permissão dos
+**Mais de 900 testes**: persistência e retomada de sessão, limite de contexto, permissão dos
 arquivos, sessão aberta em dois terminais, leitura de eventos, cancelamento da árvore de
 processos, paralelismo real, sandbox somente leitura, mascaramento de dados pessoais,
 fallback OpenRouter → Codex, validação de modelos, armazenamento das chaves e o ciclo de vida das contas. Todos os
@@ -620,9 +716,13 @@ SMART_AI_SIM_URL=http://127.0.0.1:4901/openrouter python3 -m unittest discover -
 
 ## Releases e branches
 
+Veja o que mudou em cada versão no [CHANGELOG](CHANGELOG.md) (em inglês) e nos [Releases](https://github.com/samuelrms/omni-ai-cli/releases).
+
 Publicação no npm é automática, feita pelo GitHub Actions com semantic-release. A versão
 sai das mensagens de commit (Conventional Commits) — ninguém edita `version` no
 `package.json` à mão.
+
+Cada release também publica a imagem Docker em `ghcr.io/samuelrms/omni-ai-cli`, com o número da versão. A tag `latest` só muda na `main`.
 
 | Branch | Publica como | Exemplo |
 |---|---|---|
@@ -682,6 +782,7 @@ guardar nem rotacionar.
 | `Not inside a trusted directory` (Codex) | Instalação antiga. Rode o instalador de novo. |
 | `Claude Code não instalado` | `./scripts/install.sh` (ou `scripts\install.ps1` no Windows) instala pelo instalador oficial. |
 | Windows: atalhos de skills falham | Ative o Modo de Desenvolvedor ou rode como administrador; sem isso o `ai` usa junções de pasta. |
+| Windows: `este pedido não pode ser passado com segurança` | A ferramenta foi instalada por um atalho `.cmd` que o `ai` não reconhece. Instale com o npm ou defina `<FERRAMENTA>_BIN` com o executável dela. |
 | `/model` não muda nada | Uma variável `SMART_AI_*_MODEL` está definida e tem precedência. |
 | `/key` não muda nada | A variável da ferramenta (`ANTHROPIC_API_KEY` etc.) está definida e tem precedência. |
 | `Sessão já aberta em outro terminal` | Feche o outro terminal ou use `/new`. |
@@ -697,7 +798,7 @@ guardar nem rotacionar.
   arquivos. Os agentes não editam o projeto ao mesmo tempo.
 - A classificação simples/complexa é por palavras-chave e tamanho, não por um modelo.
 - Trocar de modelo não renova a cota da conta.
-- No Windows, o código usa os equivalentes nativos (grupo de processos e `taskkill`, `msvcrt`, junções de pasta), mas foi testado de verdade só no macOS.
+- No Windows, o código usa os equivalentes nativos (grupo de processos e `taskkill`, `msvcrt`, junções de pasta), mas foi testado de verdade só no macOS. A exceção é a execução de ferramentas instaladas pelo npm, testada no CI em Windows.
 
 ---
 

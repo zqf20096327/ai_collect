@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  🚀 <b>Murmury is live on Product Hunt today.</b> <a href="https://www.producthunt.com/products/murmury?launch=murmury">Try it and tell us what breaks →</a>
+</p>
+
+<p align="center">
   <a href="https://github.com/GianlucaBave/murmury/releases/latest/download/Murmury.dmg"><img src="https://img.shields.io/badge/Download_for_Mac-Murmury.dmg-1fa463?style=for-the-badge&logo=apple&logoColor=white" alt="Download Murmury for Mac"></a>
 </p>
 
@@ -120,8 +124,10 @@ uv run --with pillow --with numpy python scripts/check_hidden.py
 ```
 
 It shows a box set up like Murmury's window next to an ordinary one and captures the screen with
-ScreenCaptureKit (what Zoom, Meet and Teams use), `screencapture` and CGWindowListCreateImage. On macOS
-26.6.2 (13 October 2026) the hidden box was 0 pixels in all three, the ordinary one fully visible. Run it
+ScreenCaptureKit (what Zoom, Meet and Teams use), `screencapture` and CGWindowListCreateImage, twice: first
+with the box's hiding switched off, where it must show up (so the test can see it), then switched on. On macOS
+26.6.2 (6 November 2026) the box was visible in all three captures with hiding off (93,017 px in
+ScreenCaptureKit) and 0 pixels in all three with hiding on, while the ordinary box stayed visible. Run it
 again after each macOS update.
 
 ## Measured (7 October 2026, MacBook Pro, Apple Silicon)
@@ -324,8 +330,8 @@ The full list, with what is done, is in [issue #10](https://github.com/GianlucaB
 
 ## Contributing
 
-Issues and pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) has the setup and the map of the
-code. Good first steps: the issues labelled
+Issues and pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) has the setup, the map of the
+code, how to take an issue and the rules for AI-assisted work. Good first steps: the issues labelled
 [good first issue](https://github.com/GianlucaBave/murmury/issues?q=is%3Aopen+label%3A%22good+first+issue%22)
 (for example [#16](https://github.com/GianlucaBave/murmury/issues/16), a local model on another computer),
 trying it with a service other than Anthropic and reporting what breaks

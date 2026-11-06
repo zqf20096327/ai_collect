@@ -363,6 +363,8 @@ The default schedule includes this report at **07:30 local time** for every regi
 
 The same section also watches the *input* side. `scribe doctor --section freshness` compares ccrider's newest indexed session per coding agent and warns when one agent goes quiet while the others keep flowing — the shape of an importer that broke rather than a machine that was idle. It can't know whether you simply stopped using that agent, so the row says both; it only fires while another provider was indexed in the last 48h, ignores agents with fewer than 5 sessions, and stops nagging after 90 days (that's an abandoned tool, not a broken one).
 
+`scribe doctor --section telemetry` reads the dream rows of the cost ledger (`output/costs/`, last 30 days) and warns on two kinds of silent drift. **Model drift:** the latest `dream` (or `dream-hot`) run resolved its alias to different model ids than the previous run under the same alias, e.g. `sonnet: claude-sonnet-5 → claude-sonnet-5-5 (since 2026-10-18)`. **Denial spike:** the latest run's refused tool calls exceed `max(3, 2 × median)` of the previous 5 runs of the same op, the usual sign that a Claude Code update narrowed the dream's tool grant. Rows written before 0.6.0 carry no envelope telemetry and are ignored.
+
 ---
 
 ## Configuration
@@ -693,7 +695,9 @@ provider. Per-op `provider`/`model` always win over the top-level block.
 > one machine they share one API key and bill, so also set a machine-wide
 > `daily_output_token_ceiling` in `~/.config/scribe/config.yaml` — it sums
 > today's metered tokens across **every registered KB**, and whichever ceiling
-> (per-KB or machine) is hit first aborts the call. `scribe cost` rolls up tokens (and dollars, when
+> (per-KB or machine) is hit first aborts the call. Tokens from failed
+> `claude -p` runs count too when the CLI still reports usage, since they were
+> billed. `scribe cost` rolls up tokens (and dollars, when
 > `pricing` is set) per `provider/model`. By default it aggregates **every
 > registered KB** — hosted providers bill per API key, and one key usually
 > serves all your KBs, so the combined total matches the provider dashboard.
@@ -859,6 +863,7 @@ scribe lint --duplicates     # no-LLM duplicate scan → wiki/_duplicates.md (re
 scribe lint --resolve        # weigh contradiction pairs → wiki/_resolution-proposals.md (never auto-applies)
 scribe lint --identities     # alias-cluster proposals → wiki/_identity-proposals.md; --apply-identities applies them
 scribe link         # link orphan articles to contextual hosts via See Also sections
+scribe link --fix-broken     # rewrite [[links]] that differ from a title only by case/separators/.md (-n dry run; the weekly dream runs it first)
 scribe watch        # long-running fsnotify watcher on ccrider DB (near-real-time session extraction)
 scribe assess <project>      # one-shot parallel deep assessment of a project (5 tracks + consolidation)
 scribe cost         # summarize LLM calls (tokens, wallclock, USD) over the last 7 days (--days N, 0 = all time) — aggregates all registered KBs; scope with --kb
@@ -870,7 +875,7 @@ scribe stale {build,list,show}                                      # staleness 
 scribe view {<name>,--list}                 # declarative views over wiki frontmatter (Phase 7B)
 scribe skill {install,list}                 # embedded agent skills: scribe-kb + scribe-kb-tidy + scribe-cli; install --agent claude,codex,agents,opencode,pi,all (default claude,agents); install --check exits non-zero on drift (Phase 7A)
 scribe install-tools         # bootstrap optional tools (uv + marker-pdf) for full PDF/DOCX/PPTX/XLSX/EPUB ingestion
-scribe doctor       # deps + config + cron + state + freshness + errors + convert + contradictions + stale + vault + localmode
+scribe doctor       # deps + config + cron + state + freshness + errors + telemetry + convert + contradictions + stale + vault + localmode
 scribe doctor --section <name>   # one section only; --json for structured output
 scribe doctor --write-attention  # write NEEDS-ATTENTION.md while something fails, remove it once clean (daily cron)
 scribe commit       # auto-commit + push pending KB changes (hourly cron); --check runs the secret + stop-word gate on the staged index (pre-commit hook)

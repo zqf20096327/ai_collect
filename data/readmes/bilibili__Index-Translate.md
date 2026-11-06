@@ -23,9 +23,9 @@
 |---|---|---|---|
 | **Index-Translate-Omni 2B** | [2B](https://huggingface.co/IndexTeam/Index-Translate-omni-2B) | [2B](https://modelscope.cn/models/IndexTeam/Index-Translate-omni-2B) | Available |
 | **Index-Translate-Omni 9B** | [9B](https://huggingface.co/IndexTeam/Index-Translate-omni-9B) | [9B](https://modelscope.cn/models/IndexTeam/Index-Translate-omni-9B) | Available |
-| **Index-Translate-Omni 35BA3B** | [35BA3B](https://huggingface.co/IndexTeam/Index-Translate-omni-35B) | [35BA3B](https://modelscope.cn/models/IndexTeam/Index-Translate-omni-35B) | ModelScope available / HF upload in progress |
+| **Index-Translate-Omni 35BA3B** | [35BA3B](https://huggingface.co/IndexTeam/Index-Translate-omni-35B) | [35BA3B](https://modelscope.cn/models/IndexTeam/Index-Translate-omni-35B) | Available |
 
-The checkpoints use the native package layout. Follow the [native inference guide](https://huggingface.co/IndexTeam/Index-Translate-omni-2B/blob/main/NATIVE_INFERENCE.md) and each model card. The 35BA3B Hugging Face upload is still in progress.
+The checkpoints use the native package layout. Follow the [native inference guide](https://huggingface.co/IndexTeam/Index-Translate-omni-2B/blob/main/NATIVE_INFERENCE.md) and each model card.
 
 ### Text Translation
 
@@ -110,7 +110,8 @@ The radar includes **35B-A3B (preview), 9B, and 2B**, with fixed per-axis min–
 
 - [x] Release official quantized builds (GGUF for llama.cpp local inference, FP8 and NVFP4 for vLLM serving) for the whole family.
 - [x] Release instTrans, MEME, SandGlass and NAtIveLong data/metadata and evaluation code; see [Benchmarks](#benchmarks).
-- [ ] Index-Translate main model to support unified multimodal translation: merge audio and video translation as well as long documents into the main model.
+- [x] Release [Index-Translate-Omni](#index-translate-omni) with text and image translation, Chinese and English ASR, and bidirectional Chinese–English speech-to-text translation.
+- [ ] Add native video and long-document translation to Index-Translate-Omni.
 - [ ] Index-Echo-S2ST: add support for more languages.
 - [ ] Scaling out (100B+).
 

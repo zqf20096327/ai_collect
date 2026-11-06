@@ -72,10 +72,15 @@ on at dusk.
 
 ### 🏁 Take on the challenges
 
-Forty-five hand-built scenarios test the situations real drivers get wrong:
+Fifty hand-built scenarios test the situations real drivers get wrong:
 
 | Challenge | Where | What it tests |
 |---|---|---|
+| **Fresh green** | Edmonton, afternoon | Your light turns green as a car on Whyte Avenue runs its red: look both ways and let it clear before you go |
+| **Into the sun** | Calgary, October evening | Westbound into a low sun on 17 Avenue SW: slow to what you can see, and find the signal and the person crossing early |
+| **Reverse lights** | Calgary, afternoon | A car backs out of a driveway between parked cars as you come along: slow down and give it room to finish |
+| **Brakes ahead** | Vancouver, rain | The lead car brakes hard on West 6th Avenue: leave room for response and a wet-road stop |
+| **Make room** | Vancouver, afternoon | A moving car merges into your gap on West 4th Avenue: ease off and rebuild space |
 | **Room to stop** | Vancouver, afternoon | Amber appears on West 4th Avenue with room to stop safely: brake smoothly and wait for green |
 | **Keep going safely** | Vancouver, afternoon | Amber appears too close for a safe stop: continue cautiously without accelerating to beat it |
 | **The door zone** | Kitsilano, afternoon | A parked car's door opens beside a cyclist |
@@ -316,7 +321,9 @@ Every `scripts/test_*.mjs` file is a standalone Node check. Node 22 or newer run
 The [full reference](docs/project-reference.md#development) lists them all, along with the
 Playwright browser checks. CI runs every check on every pull request: the Python tests, all Node
 checks, the Jev fixture and offline request checks, and the browser, renderer and arena suites in
-headless Chromium. It then builds the Pages demo and deploys it from `main`.
+headless Chromium. It then builds the Pages demo and deploys it from `main`. CI runs on
+[Namespace](https://namespace.so) runners, gives each Node check six minutes, and cancels a pull
+request's older run when a new commit is pushed.
 
 ```
 server.py          local HTTP server and API (stdlib only)

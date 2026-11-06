@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="assets/hero.svg" alt="dsh-mobile — 手机端：手机扫码，在手机浏览器里看电脑上的 DSH 任务" width="760" />
+![dsh-mobile — 手机端：手机扫码，在手机浏览器里看电脑上的 DSH 任务](assets/hero.svg)
 
 <p>
   <a href="https://github.com/OrderG-X/dsh-mobile/releases"><img src="https://img.shields.io/github/v/release/OrderG-X/dsh-mobile?label=release&color=4D6BFE" alt="release" /></a>
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
   <a href="https://github.com/awesome-dsh-plugin/awesome-dsh-plugin"><img src="https://img.shields.io/badge/DSH-plugin-4D6BFE" alt="DSH plugin" /></a>
-  <img src="https://img.shields.io/badge/platform-macOS-000000?logo=apple&logoColor=white" alt="macOS" />
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-000000" alt="macOS | Windows | Linux" />
   <img src="https://img.shields.io/badge/不用装%20App-不用注册-3fb950" alt="不用装 App，不用注册" />
 </p>
 
@@ -23,10 +23,12 @@
 >
 > **什么时候用**：「出门了想在手机上看任务」「人不在电脑前也想回消息、点批准」。
 >
-> **安装**：DSH「插件」页 →「添加插件」，填 `@orderg-x/dsh-mobile`（npm 包，连不上 npm 会自动换国内镜像），重启 DSH。目前只在 macOS 上测过。
+> **安装**：DSH「插件」页 →「添加插件」，填 `@orderg-x/dsh-mobile`（npm 包，连不上 npm 会自动换国内镜像），重启 DSH。macOS、Windows、Linux 都能用。
 
 <p align="center">
-  <img src="assets/demo.gif" alt="电脑上打开手机访问，手机扫码，手机上发消息，两边实时同步" width="880" />
+
+![电脑上打开手机访问，手机扫码，手机上发消息，两边实时同步](assets/demo.gif)
+
 </p>
 <p align="center"><sub>演示动画，内容是示例数据。</sub></p>
 
@@ -52,7 +54,7 @@
 
 装完**重启 DSH**。DSH「插件」页里显示为「手机端」。
 
-**更新**：在「插件」页把它卸载，再按上面添加一次。新版发布后大约一天按包名才装得到（DSH 装插件用的 pnpm 默认不装刚发布的版本），急的话填发布包地址。
+**更新**：DSH 0.2.2 起，在「插件」页点开它，点「更新到 …」；更老的 DSH 先卸载，再按上面添加一次。新版发布后大约一天才装得到（DSH 装插件用的 pnpm 默认不装刚发布的版本）；急的话卸载后填发布包地址，不过这样装的以后不能点更新。
 
 > **从 0.2.x 升级**：0.3.0 起包名改成 `@orderg-x/dsh-mobile`（npm 上的 `dsh-mobile` 是别人的包）。装上新版后，到「插件」页把旧的「dsh-mobile」移除，再重启 DSH。旧版还在时新版不会启动，只提示你移除旧版。设置都会保留；外网地址会换一个，手机重扫一次就好。
 
@@ -88,7 +90,11 @@
 
 ## 原理
 
-<p align="center"><img src="assets/how-it-works.svg" alt="手机经 Cloudflare 隧道连到电脑上的手机端网关，网关验过配对再转给 DSH 网页端" width="760" /></p>
+<p align="center">
+
+![手机经 Cloudflare 隧道连到电脑上的手机端网关，网关验过配对再转给 DSH 网页端](assets/how-it-works.svg)
+
+</p>
 
 插件在 DSH 里起一个小网关（默认端口 18765），把手机的请求转给本机的 DSH 网页端。手机上跑的就是 DSH 官方网页界面，会话、设置都和电脑上一样。
 
@@ -166,7 +172,7 @@ DSH 重启不用。电脑重启、关掉「允许手机访问」、在 DSH 里�
 
 - 手机上的界面就是 DSH 网页版：左右两栏改成了盖在上面、点外面收起，别的地方没有重新排版。
 - 外网用的是 Cloudflare 免费快速隧道，没有可用性保证。
-- 只测过 macOS 上的 DSH 桌面版；Windows / Linux 上的 cloudflared 下载路径写了，没实测。
+- macOS、Windows、Linux 每天都有自动实测（装 DSH → 扫码配对 → 自动下载 cloudflared 开隧道 → 重启后地址不变）；平时主要在 macOS 桌面版上用。
 
 ## 开发
 

@@ -225,6 +225,20 @@ flowchart LR
 > 依赖 **PostgreSQL**；探索需配置 **LLM**（UI 里配，支持 Anthropic / OpenAI /
 > 任意 OpenAI 兼容网关，三通道轮询 + 故障转移）。
 
+### 系统选择与配置要求
+
+| 系统 | 结论 |
+|---|---|
+| **Debian 12 (bookworm)** | ✅ **首选**：稳定、systemd、PostgreSQL 15 源内、LibreOffice/poppler/uv 齐全 |
+| **Ubuntu 22.04 / 24.04 LTS** | ✅ **首选**：与 Debian 同源，长期支持 |
+| Kali | ⚠️ 可用（开箱全套工具），但滚动更新有升级风险，生产环境不建议 |
+| RHEL / Rocky / CentOS Stream | ⚠️ 支持（dnf 路径），但 ffuf/sqlmap 新版等工具覆盖少，按需自装 |
+
+**硬件**：最低 2 核 4G / 20G 磁盘（不含工具）；**推荐 4 核 8G / 60G**（含 SecLists
+约 2.5G、nuclei 模板、Playwright chromium、LibreOffice）。
+**网络**：安装期需访问 GitHub 与 LLM 网关；受限环境用 `--install-proxy`。
+**Python**：内置 FOFA MCP 需要 Python ≥ 3.10（不影响主服务）；`uv` 由安装脚本自动准备。
+
 ### 方式一：一条命令，全自动交互安装（推荐 · 仅 Linux）
 
 在**全新 Linux 服务器**（Debian/Ubuntu/CentOS/RHEL/Kali 等）上以 root 执行：
@@ -401,6 +415,7 @@ docs/           设计文档 / 部署手册 / 评估报告 / 能力对照
 
 | 文档 | 内容 |
 |---|---|
+| [docs/AI-交接指南.md](docs/AI-交接指南.md) | AI 接手本项目入口：机制→代码位置地图、发版流程、测试纪律、已知问题与未决方向 |
 | [docs/01-双图架构.md](docs/01-双图架构.md) | 资产图/探索图、锚点、schema 迁移设计、不变量清单 |
 | [docs/02-引擎与调度闭环.md](docs/02-引擎与调度闭环.md) | planner/worker 编排与生命周期 |
 | [docs/03-LLM接入层.md](docs/03-LLM接入层.md) | 通道选路、轮询池、熔断、录制计量 |

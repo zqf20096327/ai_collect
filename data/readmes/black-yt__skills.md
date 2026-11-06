@@ -39,7 +39,7 @@ skill-name/
 | `llm-image-generation` | [`llm-image-generation/SKILL.md`](llm-image-generation/SKILL.md) | 通过 OpenAI-compatible LLM 网关生成图片，优先读取 `LLM_API_KEY`/`LLM_BASE_URL`，覆盖图像模型选择、长等待时间、base64/URL 保存和排错。 |
 | `markdown-to-docx` | [`markdown-to-docx/SKILL.md`](markdown-to-docx/SKILL.md) | 使用 [`scripts/build_docx.py`](markdown-to-docx/scripts/build_docx.py) 将 Markdown 文档转为 Word `.docx`，支持本地图片、caption、标题样式、列表、引用、图文块表格和可见字数估算。 |
 | `markdown-to-pdf` | [`markdown-to-pdf/SKILL.md`](markdown-to-pdf/SKILL.md) | 使用 [`scripts/md_to_pdf.py`](markdown-to-pdf/scripts/md_to_pdf.py) 将 Markdown 转为 PDF，支持表格、代码块、图片路径和基础 CSS。 |
-| `overleaf-project-sync` | [`overleaf-project-sync/SKILL.md`](overleaf-project-sync/SKILL.md) | 从 Overleaf 网页端获取项目 ZIP 下载链接和 Cookie，检查本地 LaTeX/论文目录与远端项目是否一致，并按需从远端覆盖同步本地文件。 |
+| `overleaf-project-sync` | [`overleaf-project-sync/SKILL.md`](overleaf-project-sync/SKILL.md) | 通过 Cookie 只读下载和同步项目、读取评论；在授权后新增、编辑、回复、解决评论或用版本化协作接口修改远端 LaTeX。 |
 | `paper-figure-style-1` | [`paper-figure-style-1/SKILL.md`](paper-figure-style-1/SKILL.md) | 绘制浅桃紫渐变风格的论文流程图与统计图，覆盖柱状图、区间曲线、Pareto 散点、横条矩阵、训练仪表盘和双环图；包含可复用 Python 组件、17 个独立示例、10 款模型 logo 及文字可复制的 PDF 输出，可直接浏览 [8 张效果预览](paper-figure-style-1/SKILL.md#效果预览)。 |
 | `paper-figure-style-2` | [`paper-figure-style-2/SKILL.md`](paper-figure-style-2/SKILL.md) | 绘制浅彩分区架构图、生命周期泳道及白底蓝青统计图，覆盖能力径向图、响应曲线、54 面板柱状图、热力图、饼图、界面与任务证据表；包含可复用组件、9 个独立示例及文字可复制的矢量 PDF，可直接浏览 [成品预览](paper-figure-style-2/SKILL.md#效果预览)。 |
 | `paper-figure-style-3` | [`paper-figure-style-3/SKILL.md`](paper-figure-style-3/SKILL.md) | 用原生 draw.io 重建可编辑论文图；含四张 `.drawio` 示例、复用图元、实测图标获取与原生转换、真实渲染验收和[效果预览](paper-figure-style-3/SKILL.md#效果预览)。 |
@@ -49,7 +49,7 @@ skill-name/
 | `pdf-to-images` | [`pdf-to-images/SKILL.md`](pdf-to-images/SKILL.md) | 使用系统级 Ghostscript (`gs`) 或 Poppler `pdftoppm` 将 PDF 页面导出为 PNG/JPEG 图片，支持单页、页码范围、整篇导出和论文排版可视化检查。 |
 | `rebuttal-writing` | [`rebuttal-writing/SKILL.md`](rebuttal-writing/SKILL.md) | 撰写、重构和压缩 AI/ML conference rebuttal、reviewer response 或 AC response，覆盖匿名性、开头感谢、问题弱化改写、Markdown Q&A、强证据回答、小表格、引用和礼貌结尾。 |
 | `researchharness` | [`researchharness/SKILL.md`](researchharness/SKILL.md) | 使用 InternScience ResearchHarness 作为轻量 tool-using LLM agent runtime，覆盖安装配置、CLI、本地前端、OpenAI-compatible API、Python API、工具选择、workspace、trace 和测试。 |
-| `screen-demo-video-editing` | [`screen-demo-video-editing/SKILL.md`](screen-demo-video-editing/SKILL.md) | 将 GUI、科研软件或 agent 录屏剪成演示视频，覆盖静止/周期去重、悬浮与跟随、逐张展开与拉远揭示、虚线信息流、截图/工具对话卡片、中文字幕及音频；附精确帧预算、无损母版与合成素材验收。 |
+| `screen-demo-video-editing` | [`screen-demo-video-editing/SKILL.md`](screen-demo-video-editing/SKILL.md) | 将 GUI、科研软件或 agent 录屏剪成演示视频，覆盖静止/周期去重、悬浮跟随、图片展开、截图/工具卡片及字幕音频；将已有结果制成纹理染色、三维点云和排序试错动画，附精确时长、无损母版与实际像素验收。 |
 | `ssh-remote-troubleshooting` | [`ssh-remote-troubleshooting/SKILL.md`](ssh-remote-troubleshooting/SKILL.md) | 排查终端能 SSH 但 VS Code 失败、Windows 临时目录权限、Profile 与服务安装、系统盘缓存及挂载遮蔽，支持保留任务的迁移与连接验收。 |
 | `structai` | [`structai/SKILL.md`](structai/SKILL.md) | 使用 StructAI Python 工具箱搭建 LLM workflow，覆盖 `LLMAgent`、结构化输出、Judge、并发、文件/PDF 工具、文本解析、私网 no_proxy 和 timeout。 |
 | `wave-mosaic-web-theme` | [`wave-mosaic-web-theme/SKILL.md`](wave-mosaic-web-theme/SKILL.md) | 复刻 black-yt 风格前端主题，覆盖 canvas wave-mosaic 动态方块背景、4 种背景颜色切换、Space Grotesk 字体、顶部圆角导航栏、论文筛选滑块和高级卡片/表格视觉。 |

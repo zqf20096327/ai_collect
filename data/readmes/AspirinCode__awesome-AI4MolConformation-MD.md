@@ -298,6 +298,10 @@ David S. Cerutti, Rafal Wiewiora, Simon Boothroyd, Woody Sherman.
 
 
 
+* **SO3LR Tauri: Generally Applicable Force Fields for Reactive (Bio)Molecular Simulations Covering the Periodic Table** [2026]  
+Adil Kabylda, Florian N. Brünig, Miguel Gallegos, J. Thorben Frank, Evgeny Moerman, Oliver T. Unke, Stefan Chmiela, Klaus-Robert Müller, Alexandre Tkatchenko.  
+[arXiv:2611.06237(2026)](https://doi.org/10.48550/arXiv.2611.06237) | [code](https://github.com/general-molecular-simulations/so3lr)  
+
 * **Force Fields and Simulation Engines: Lessons Learned from Porting Amber ff14SB and ff19SB to GROMACS** [2026]  
 Vedran Miletić, Miłosz Wieczór, Carlos Simmerling, Markus Rampp, Bert L. de Groot, Carsten Kutzner, Vytautas Gapsys.  
 [J. Chem. Theory Comput.(2026)](https://doi.org/10.1021/acs.jctc.6c01592) | [code](https://gitlab.mpcdf.mpg.de/barnsteen/workflow)  
@@ -1065,7 +1069,9 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
-
+* **FACTO: fast atom-centered tensor operator for accurate and efficient foundational machine-learned interatomic potentials** [2026]  
+Siyuan Liu, Chang Han, Sheng Gong, Yanping Yang, Tianze Zheng, Yu Xia, Kuang Yu, Shenzhen Xu, Wen Yan.  
+  [arXiv:2611.03276(2026)](https://doi.org/10.48550/arXiv.2611.03276)  
 
 * **Fine-Tuning Universal Machine Learning Potentials Enables Efficient Computation of Li Electrode Potentials in Battery Electrolytes** [2026]  
 Feng Wang, Yu-Hang Tang, Yi-Min Wei, Jun Cheng.  
@@ -1513,12 +1519,4 @@ Fu, Cong, Yuchao Lin, Zachary Krueger, Wendi Yu, Xiaoning Qian, Byung-Jun Yoon, 
 
 * **Enhancing Machine Learning Potentials through Transfer Learning across Chemical Elements** [2025]  
 Sebastien Röcken and Julija Zavadlav.  
-[J. Chem. Inf. Model. (2025)](https://doi.org/10.1021/acs.jcim.5c00293) | [code](https://github.com/tummfm/TL_MLP)  
-
-* **Distillation of atomistic foundation models across architectures and chemical domains** [2025]  
-Gardner, John LA, Daniel F. Toit, Chiheb Ben Mahmoud, Zoé Faure Beaulieu, Veronika Juraskova, Laura-Bianca Paşca, Louise AM Rosset et al.  
-[arXiv:2506.10956 (2025)](https://arxiv.org/abs/2506.10956) | [code](https://github.com/jla-gardner/augment-atoms)  
-
-* **Spin-informed universal graph neural networks for simulating magnetic ordering** [2025]  
-W. Xu,R.Y. Sanspeur,A. Kolluru,B. Deng,P. Harrington,S. Farrell,K. Reuter,& J.R. Kitchin.  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2422973122) | [c
+[

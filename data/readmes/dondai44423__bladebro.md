@@ -231,7 +231,7 @@ Input actions return an **outcome verdict + page delta**; explicit reads/eval re
 | `scroll` | `act scroll dy=800` | Smooth, eased wheel events |
 | `hover` | `act hover text="Products"` | Reveals dropdowns in the delta |
 | `press` | `act press key=Enter` / `key=Control+a` | Real key event; full chords (`Control+a`, `Meta+Enter`, `Shift+Tab`) |
-| `select` | `act select e4 option="Nepal"` | Dropdown by option text or value |
+| `select` | `act select e4 option="Nepal"` | Native dropdown by option text or value, read back; a text combobox is typed into |
 | `read` | `act read e5` | Live text/control value, toggle state and select choices; `--format json` for structured data |
 | `upload` | `act upload e7 text="/tmp/file.txt"` | File input |
 | `clear` | `act clear e3` | Empty an input or rich editor |
@@ -301,7 +301,7 @@ Cookie and storage reads preserve complete values. Large reads return a JSON art
 ]}
 ```
 
-Plans are validated before their first effect, including later steps and unchosen branches. Fix malformed arguments rather than marking them optional. Plans allow up to 1,000 static steps and 32 nesting levels; `while max` is 0–100 (default 10). Every `while` needs a `steps` array. `url` on `if`, `while` or `wait` navigates once before evaluating that step. Runtime failure does not undo completed effects; inspect the failed destination before repeating input. A failed batch stops its enclosing run.
+Plans are validated before their first effect, including later steps and unchosen branches. Fix malformed arguments rather than marking them optional. Plans allow up to 1,000 static steps and 32 nesting levels; `while max` is 0–100 (default 10). Every `while` needs an exit test (`text`, `selector` or `js`) and a `steps` array. `url` on `if`, `while` or `wait` navigates once before evaluating that step. Runtime failure does not undo completed effects; inspect the failed destination before repeating input. A failed batch stops its enclosing run.
 
 Use instead of `act batch` when you need branching (`if`/`else`), loops (`while`), or state ops that change tabs. `see` steps read inline — nav + loop + read across pages in ONE call. Steps take `optional: true` (a runtime failure is reported and execution continues locally, including inside branches and loops), and `wait` accepts an `else: [...]` fallback branch when its condition times out.
 
@@ -363,6 +363,8 @@ bladebro stop                              # clean shutdown
 bladebro see content https://example.com --no-daemon   # one-shot: launch Chrome per command
 ```
 
+The daemon runs every command with its own lane and browser settings (`CHROME_PATH`, `BLADE_PROXY`, `BLADE_LOCALE`, … as set when it started). A command that resolves another lane (`BLADE_LANE`) or sets one of those variables to a different value is refused before anything runs — `bladebro stop` restarts the daemon with the command's settings, `--no-daemon` runs just that command on its own.
+
 **Universal flags**
 
 | Flag | What it does |
@@ -422,15 +424,17 @@ Everything is built from scratch where it counts — the CDP transport, percepti
 
 **The #1 reliability gap in every other agent browser, solved.**
 
-When React, Vue or Angular re-renders a component, the DOM nodes are destroyed and recreated — and every other agent browser loses its refs. Bladebro re-binds them: when text changes but structure survives, the ref follows the fingerprint instead of dying.
+When React, Vue or Angular re-renders a component, the DOM nodes are destroyed and recreated — and every other agent browser loses its refs. Bladebro's refs are anchored to a signature, not a DOM node, so a re-render that keeps an element's name keeps its ref. When the signature itself shifts because the element's frame index moved (an iframe was added or removed ahead of it) but structure and name survive, the ref follows the fingerprint instead of dying.
 
 ```
-Before re-render:  e2 button "Buy Now"     sig=button|Buy Now|1     fp=0xdeadbeef
-After re-render:   e2 button "Buy Now v1"  sig=button|Buy Now v1|1  fp=0xdeadbeef  ← same fp
+Before re-render:  e2 button "Buy Now"  sig=0|button|Buy Now|1  fp=0xdeadbeef
+After re-render:   e2 button "Buy Now"  sig=1|button|Buy Now|1  fp=0xdeadbeef  ← same fp, same name
                    ↺ e2 (re-render survived)
 ```
 
 The agent sees `↺ e2 (re-render survived)` in the delta. The click works. No recapture. Playwright, Puppeteer, CDP wrappers, accessibility-tree snapshots — all lose refs here.
+
+A ref never follows the fingerprint to a differently named element. The fingerprint carries no text, so it can't tell a re-render from new content swapped into the same markup (a result list refreshed in place): when the name in a slot changes, the delta reads `- e2 (gone)` / `+ e9 button "…"` and the agent acts on the new ref. The exception is a form control named by its own content (an unlabeled editor or select), which keeps its ref while you type or pick.
 
 ## 🪙 Token efficiency
 
@@ -529,7 +533,7 @@ browser is left running, untouched. No host restart anywhere.
 Built-in, automatic, zero config — and zero cost to the tool definitions. Adapters are runtime heuristics: they add no tools and no parameters, and their extra fields appear only on pages that have them.
 
 - **Reddit** — `see extract=auto` on a post attempts the full comment tree in ONE call (API denial returns a clearly partial DOM fallback): every reply (collapsed included), thread-ordered with depth, author/date, `fuzzed_score` (Reddit's displayed values, labeled as such), full text, an `op` flag on the submitter's comments, and honest `count`/`total`/`complete` fields. `sort=confidence|top|new|controversial|old|qa` overrides the active/URL sort for a Reddit post. Safe transient GET failures have two bounded retries; policy denials and rate limits stop without switching hosts. On feeds: typed posts (title, `fuzzed_score`, comments, author, subreddit, date, domain). `see mode=content` gives clean title/meta/body markdown.
-- **X.com (Twitter)** — `see extract=auto` on a status page returns the FULL conversation in ONE call: the focal post plus every reply and nested reply, thread-ordered with depth, author/date/counts, media and an `op` flag — read from the page's own API traffic (query ids captured live, self-healing across deploys). Profile/search/home return timelines the same way; search falls back to bounded in-page collection when X gates its API. The composer works through the normal tools: `act click` Reply → `act type` → `act click` Post.
+- **X.com (Twitter)** — `see extract=auto` on a status page returns the FULL conversation in ONE call: the focal post plus every reply and nested reply, thread-ordered with depth, author/date/counts, media and an `op` flag (sections X collapses behind "Show replies" or "Show more replies" are not expanded yet — `complete:false` and the note say so) — read from the page's own API traffic (query ids captured live, self-healing across deploys). Profile/search/home return timelines the same way; search falls back to bounded in-page collection when X gates its API. The composer works through the normal tools: `act click` Reply → `act type` → `act click` Post.
 - **GitHub** — repo pages: description, stars, forks, language, topics; issue/PR lists: number, title, status, labels, author per row.
 - **Product pages** — price (with strikethrough original), rating, availability, key features — on any shop, not a fixed list of stores.
 
@@ -541,7 +545,7 @@ Learns from every session, persists in `knowledge/` under your data root, surviv
 
 **Domain knowledge base** — per-site consent selectors and behavior, learned from success only:
 
-- Confidence +0.05 per success, −0.15 per failure (failures cost 3×). Auto-applied at ≥0.7, so known sites skip the full detection JS entirely.
+- Confidence +0.05 per success, −0.15 per failure (failures cost 3×). Auto-applied at ≥0.7 when the stored selector is one of the current `BLADE_CONSENT` policy's buttons, so known sites skip the full detection JS entirely.
 - Evicted below 0.3 after 30 days; bounded at 2,000 domains. Unknown sites fall back to full detection — zero regression.
 
 **Behavioral fingerprint** — biometric parameters generated once per installation and reused forever, so detectors see the same "person" every session: click precision, mouse curvature, typing cadence, inter-action gaps, overshoot and idle-hum frequency, all clamped to human ranges, written atomically.
@@ -635,7 +639,7 @@ Everything optional; configuration is environment variables.
 | `BLADE_WEBGL` | `auto` | `spoof` / `real` / `auto` |
 | `BLADE_MEDIA` | `auto` | `patch` / `real` / `auto` |
 | `BLADE_NOISE` | unset | `1` = canvas/audio fingerprint noise (see gotchas) |
-| `BLADE_PROXY` | none | Proxy URL — also enables WebRTC ICE filtering + the non-proxied-UDP launch policy, so the real IP stays out of ICE candidates |
+| `BLADE_PROXY` | none | Proxy URL — also enables WebRTC ICE filtering + the non-proxied-UDP launch policy, so the real IP stays out of ICE candidates. No embedded `user:pass@`: Chrome cannot authenticate with them, so the launch refuses them — use an IP-allowlisted endpoint or a local forwarding proxy that adds the credentials |
 | `BLADE_CONSENT` | `reject` | Consent banners: `accept` / `reject` / `off` |
 
 **Behavior & ops**
@@ -649,7 +653,7 @@ Everything optional; configuration is environment variables.
 | `BLADE_CMD_TIMEOUT` | `300` | How long the CLI waits for a daemon response, seconds |
 | `BLADE_IDLE_TIMEOUT` | `600` | Daemon idle time before Chrome shuts down, seconds |
 | `BLADE_TRANSPORT` | ws | MCP transport: WebSocket by default (native `webdriver=false`); `pipe` opts into the zero-port pipe (its automation flag is masked) |
-| `BLADE_CHROME_FLAGS` | none | Extra Chrome launch flags |
+| `BLADE_CHROME_FLAGS` | none | Extra Chrome launch flags, split shell-style (`--user-agent="… (X11; …)"` stays one flag; backslashes are literal). `--enable-features`/`--disable-features` lists merge with the built-in ones |
 | `BLADE_INCOGNITO` | `auto` | Agent lane only: `1` uses incognito compatibility, `0` disables automatic compatibility; restart the client/daemon after changing |
 | `BLADE_LANE` | auto | `real` forces the real-browser lane for this process (same as `rb on`) |
 | `BLADE_RB_DEBUG` | — | `1` surfaces the browser's own stderr on real-lane launches |
@@ -658,6 +662,8 @@ Everything optional; configuration is environment variables.
 Data root resolution (Unix): `BLADE_HOME` → `$XDG_STATE_HOME/blade` → `$HOME/.local/state/blade` → `$HOME/.blade` (legacy). Existing installs keep their tree — nothing is ever split across two directories. Windows: `%USERPROFILE%\.blade` (plus `BLADE_HOME`). `bladebro doctor` prints the resolved data root and exits nonzero when a required check fails. An explicit `CHROME_PATH` must point to an executable file; invalid overrides report an error instead of silently launching another browser.
 
 **Raspberry Pi OS trixie (arm64):** issue [#45](https://github.com/dondai44423/bladebro/issues/45) reports Chromium's regular-profile network service hanging even on loopback. On a detected Raspberry Pi running Debian/Raspbian trixie, the agent lane automatically uses one managed incognito context. Other hosts keep their persistent profile, and an explicit `BLADE_PROFILE_DIR` keeps its chosen mode. Set `BLADE_INCOGNITO=1` to request this compatibility path elsewhere, or `0` to disable automatic selection. The real-browser and external-attach lanes keep their existing behavior. Incognito cookies still persist through Bladebro's login snapshot; named `state save`/`load` sessions restore cookies and storage. History, cache and automatic localStorage persistence are unavailable in this mode; launch diagnostics and `doctor` disclose that tradeoff. The reporter verified the Pi workaround; the release regression suite exercises the context, tabs, HTTP navigation and persistence contracts on Linux x64.
+
+**Flatpak browsers (SteamOS, Bazzite, Fedora Silverblue):** when no native Chrome/Chromium is found, discovery uses an installed Flatpak export — `org.chromium.Chromium`, then `com.google.Chrome`, `com.brave.Browser`, `com.microsoft.Edge`, `com.vivaldi.Vivaldi`, `io.github.ungoogled_software.ungoogled_chromium` — from the user installation (`FLATPAK_USER_DIR`, else `~/.local/share/flatpak`) before the system one (`/var/lib/flatpak`). Install one with `flatpak install flathub org.chromium.Chromium`. The agent lane starts an export (found or given as `CHROME_PATH`) with `flatpak run --filesystem=<session profile>`, so the sandbox writes cookies and storage to bladebro's profile; it needs the desktop session's D-Bus and Flatpak portal. The downloads dir is shared too, so `act download` writes where the host expects; upload paths are not shared, so uploads under Flatpak are untested. The real-browser lane is unchanged.
 
 ## 🔄 Maintenance
 

@@ -180,6 +180,7 @@ Two openings are left to the model:
 
 - A continued conversation: a subagent delegated to a second time, or a session on its next message. The tool choice is part of what the prompt cache is keyed on, so forcing it for one turn re-writes every earlier message at write price. See [what invalidates the cache](https://docs.claude.com/en/docs/build-with-claude/prompt-caching).
 - An agent whose only tool is `report_improvement`. Forced to call something, it reports an improvement nobody noticed, and the answer costs a second turn.
+- A model that rejects a forced tool choice. Claude Opus 5.5 answers `tool_choice: any` with a 400, so for `claude.model=claude-opus-5-5` the opening turn is left to the model as well.
 
 Switch it off for an endpoint that does not accept the field, or for an agent whose first answer is legitimately prose:
 

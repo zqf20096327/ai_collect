@@ -2,6 +2,11 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23244506.svg)](https://doi.org/10.5281/zenodo.23244506)
 
+> **发布状态 · Publication status（2026-11-07）**
+> 本仓库按 [`PUBLICATION.md`](PUBLICATION.md) 规则重建：正典为**第六版**；每份文件带**版本锚**（源库路径 · 末改日期 · SHA-256 前 12 位），可自行校验；第五版已移入 `core/旧版/`。
+> **本仓库承载发布，不承载裁定**——理论的正典在源库，由库所有者裁定。参见 [`CONTRIBUTING.md`](CONTRIBUTING.md)；已知未结案见 [`PUBLICATION.md`](PUBLICATION.md) 第四节；变更记录见 [`CHANGELOG.md`](CHANGELOG.md)。
+> **DOI 说明：** 上方徽章指向 Zenodo 存档 [`10.5281/zenodo.23244506`](https://doi.org/10.5281/zenodo.23244506)，其内容为**第五版**时期快照（据提交时间推断，未逐项核对 Zenodo 存档）。当前正文为第六版，两者版本不一致时以本仓库 `main` 分支为准。
+
 > **Renaming Note (2026-08-10):** The theory's previous name carried the terms *Material* and *Praxis*, which bring unexamined semantic load from Western philosophical traditions (ontological materialism; Aristotle-Marx praxis). The name was changed to **Physics-Causality-Anchored Verification Theory (PCAVT)**. The new name passes self-referential consistency review: every term is a physics/mathematics term with a defined operational meaning — *physics-causality-anchored* (Axiom 4: verification ends anchored in physical causality) and *verification* (the theory's practice = the execution of tests). Use **PCAVT**.
 
 ---
@@ -18,38 +23,46 @@
 
 ---
 
-## 核心文件 · Core Documents
+## 仓库结构 · Repository Layout
 
 ```
 ├── README.md
-├── LICENSE                                          → CC BY-SA 4.0
+├── PUBLICATION.md        → 发布边界、**文件级排除清单**、版本锚规则
+├── CONTRIBUTING.md       → 贡献与挑战规则
+├── CHANGELOG.md          → 发布变更记录
+├── LICENSE               → CC BY-SA 4.0
 │
-├── core/
-│   ├── 第一律公理声明.md                              → 第一律（实践锚定剃刀）的公理性质证明
-│   ├── 自指一致性声明.md                              → 自指一致性条件与等价翻译不可能性的形式化证明 ★
-│   ├── 形式化的异化——滥用形式化的结构判据与方向性诊断.md  → 完备性禁令：禁止自我宣称完备 ★
-│   ├── 唯物实践论：实践锚定剃刀与系统性纠错的方法论 第五版.md  → 完整论著第五版（中文）
-│   ├── PCAVT-Methodology-Fifth-Edition_EN-Interface-Draft.md  → 第五版接口译本草稿（试验性，仅接口参考价值）★
-│   ├── 唯物实践论_SYSTEM_PROMPT_v7.md                → 唯物实践论系统提示词 v7（中文）
-│   └── 宣言.md                                        → 三块基石之 Ψ（主体接口）宣言
-│   （英文等价译本不存在——等价翻译的不可能性已在自指一致性声明中形式化证明；上方接口译本是唯一一次翻译尝试的实证记录，仅为"接口参考"，详见"关于英文版本"）
+├── core/                 方法论正典（源库 00_总纲）
+│   ├── 唯物实践论：纪律与公理 第六版.md   ★ 正典
+│   ├── 形式化的异化——滥用形式化的结构判据与方向性诊断.md   ★ 完备性禁令
+│   ├── 第一律公理声明.md   Ω · 物理接口
+│   ├── 自指一致性声明.md   Δ · 数学接口
+│   └── 宣言.md             Ψ · 主体接口
 │
-├── papers/
-│   ├── README.md                                        → 论文索引与版本说明
-│   ├── 唯物实践论：人民论——社会主体的生成与立场收敛（第二次修改）.md  → 人民论（早期框架，不含A1/A2/第二律/第三律）
-│   ├── 一体两面的无效认知——唯物实践论的性别叙事批判.md        → 性别叙事概念批判（B1标签替代A2差值分析的诊断）
-│   ├── 基于互斥结构的概念级可检验性度量——面向大语言模型训练数据的质量筛选/  → LLM训练数据质量筛选（中英双语文档+脚本+图件）
-│   └── ...                                              → 其他应用分析（共17篇，索引见 papers/README.md）
-└── examples/
-    ├── case-1-ai-compute-narrative.zh.md             → 案例1：AI算力叙事
-    ├── case-1-ai-compute-narrative.en.md             → Case 1: AI Compute Narrative
-    ├── case-2-ai-agents-labor.zh.md                  → 案例2：AI Agent与劳动
-    ├── case-2-ai-agents-labor.en.md                  → Case 2: AI Agents & Labor
-    ├── case-3-ai-distillation-controversy.zh.md      → 案例3：AI蒸馏争议
-    ├── case-3-ai-distillation-controversy.en.md      → Case 3: AI Distillation Controversy
-    ├── case-4-anthropic-government-ban-backfire.zh.md → 案例4：Anthropic封杀反超
-    └── case-4-anthropic-government-ban-backfire.en.md → Case 4: Government Ban Backfire
+├── theory/               理论（源库 10_理论）
+│   ├── 社会力学/
+│   ├── 权力元叙事论/
+│   ├── 语言与符号系统/
+│   ├── 道德动力学/
+│   ├── 共产主义理论/
+│   ├── 人民论（早期框架，见该目录 README 的版本提示）
+│   └── 猜想/          暂定猜想（**不可引**；多数未对撞，见该目录 README）
+│
+├── applied/              应用分析（源库 20_应用）
+│   ├── 经济学/  人工智能/  商业与营销/
+│   ├── 舆论与政治/  性别与身份/  认知与概念/
+│   └── 教育与AI/
+│
+├── empirical/            实证（源库 30_实证）
+├── glossary/             术语（源库 翻译术语）
+├── projects/             带代码与数据的专项：互斥结构论文（中英正文＋脚本＋图件）
+├── cases/                中英对照案例（本仓库自持，源库无对应）
+└── archive/              旧版与废弃件
+    ├── 旧版/            第五版正文及其英译接口草稿
+    └── 废弃/            v7 系统提示词、修订前 .bak
 ```
+
+> **目录与源库同构**：`core`↔`00_总纲`、`theory`↔`10_理论`、`applied`↔`20_应用`、`empirical`↔`30_实证`、`glossary`↔`翻译术语`。源库的 `40_素材`／`50_待办`／`60_问题库`／`_沿革`／`临时`／`99_过期归档`／`_scripts` **在本仓库不设位置**——不是空着，是不发。规则见 `PUBLICATION.md` §一·B。
 
 > **★ 自指一致性声明**是理解本仓库结构的关键入口。它解释了为什么以下声明存在，以及为什么英文等价翻译在逻辑上不可能。
 
@@ -57,12 +70,12 @@
 
 ## Quick Start · 快速开始
 
-1. **中文读者从系统提示词入手** → `core/唯物实践论_SYSTEM_PROMPT_v7.md`
-2. **然后读三份基石文件与完备性禁令** → `core/第一律公理声明.md` + `core/自指一致性声明.md` + `core/宣言.md` + `core/形式化的异化——滥用形式化的结构判据与方向性诊断.md`
-3. **看案例（v7 推荐）** → `examples/case-3-*` 和 `case-4-*`
-4. **完整论著** → `core/唯物实践论：实践锚定剃刀与系统性纠错的方法论 第五版.md`
-5. **衍生论文** → `papers/README.md`（人民论、性别叙事批判等应用分析，注意框架版本差异）
-6. **英文读者建议** → 见下文"关于英文版本"
+1. **正典** → `core/唯物实践论：纪律与公理 第六版.md`（开篇「三律——三把剃刀」）
+2. **三块基石 ＋ 完备性禁令** → `core/第一律公理声明.md`（Ω）＋ `core/自指一致性声明.md`（Δ）＋ `core/宣言.md`（Ψ）＋ `core/形式化的异化——滥用形式化的结构判据与方向性诊断.md`
+3. **理论** → `theory/README.md`（社会力学、权力元叙事论、语言与符号系统…）
+4. **应用** → `applied/README.md`（经济学、人工智能、商业与营销…）
+5. **案例入门** → `cases/case-3-*`（AI 蒸馏争议）、`cases/case-4-*`（Anthropic 封杀反超）——这两篇推导链最完整
+6. **英文读者** → 见下文「关于英文版本」
 
 ---
 
@@ -91,7 +104,7 @@ There is nothing to "strip away" and abstractify — pinyin symbols are pure con
 
 **Translation = re-executing the collective abstraction + re-assignment of all B1 constants in another language. For alphabetic writing systems (English, German, French, etc.), this operation is not executable.** Their symbols carry no A-layer residuals — no radical-semantic mappings, no pictographic etymology, no figurative-concrete structure to abstractify. ("Not executable" here refers to equivalent translation; interface translations preserve the source symbols and explain them, or express the operational kernel in the public language of mathematics and physics — see the translation method below.)
 
-The existing English files in this repository are **functional approximations** — not translations. They exist to give an English-speaking reader *some* operational access, but they ARE NOT and CANNOT BE equivalent to the Chinese originals. (The one exception is the interface-only Fifth-Edition draft in `core/` — it is not even a functional approximation; see the subsection below.)
+The existing English files in this repository are **functional approximations** — not translations. They exist to give an English-speaking reader *some* operational access, but they ARE NOT and CANNOT BE equivalent to the Chinese originals. (The one exception is the interface-only Fifth-Edition draft archived under `core/旧版/` — it is not even a functional approximation; see the subsection below.)
 
 ### Translation Method 路 翻译方法 (2026-08-10)
 
@@ -117,7 +130,7 @@ These two locks are cross-linguistic: mathematical proofs and physical experimen
 
 A full-text English translation of the Fifth Edition was attempted **once** (2026-08-16), under the established translation methodology (math/physics/CS vocabulary domain, minimal-common-denominator alignment, self-reference-consistency review). The result:
 
-> **`core/PCAVT-Methodology-Fifth-Edition_EN-Interface-Draft.md`** — an experimental interface-only draft.
+> **`core/旧版/PCAVT-Methodology-Fifth-Edition_EN-Interface-Draft.md`** — an experimental interface-only draft.
 
 The attempt was honest, and so is its outcome: a **massive number of problems turned out to be unsolvable**, exactly as the theory predicts:
 
@@ -135,7 +148,7 @@ Therefore this draft is positioned — as the translation itself repeatedly emph
 
 2026-08-16 对方法论第五版进行了一次**全文英文翻译尝试**（截至目前唯一一次），使用了已建立的翻译方法论（数学/物理/计算机科学词域限制、最小公约词性对齐、自指一致性审查）。成果：
 
-> **`core/PCAVT-Methodology-Fifth-Edition_EN-Interface-Draft.md`** —— 试验性接口译本草稿。
+> **`core/旧版/PCAVT-Methodology-Fifth-Edition_EN-Interface-Draft.md`** —— 试验性接口译本草稿。
 
 尝试是诚实的，成果也是诚实的：**巨量问题无法解决**，恰如理论所预言：
 
@@ -154,11 +167,11 @@ Therefore this draft is positioned — as the translation itself repeatedly emph
 
 The most practical path for English-speaking readers who want to use 唯物实践论:
 
-> **Give the Chinese system prompt (`core/唯物实践论_SYSTEM_PROMPT_v7.md`) to a capable large language model (LLM) that reads Chinese, describe your problem in English, and ask the AI to apply the theory's analytical framework to your case.**
+> **Give the canonical V6 text (`core/唯物实践论：纪律与公理 第六版.md`) to a capable LLM that reads Chinese, describe your problem in English, and ask it to cite the exact sections it applies.**
 
 This works because the AI operates on the Chinese B1 constant set internally, then translates its *analytical output* back to English — a fundamentally different operation from translating the theory itself. The theory's internal structure remains intact; only the analytical result is communicated in English.
 
-This repository's English case studies (e.g., `case-4-anthropic-government-ban-backfire.en.md`) demonstrate exactly this approach: an LLM using the Chinese system prompt to analyze an English-language scenario.
+This repository's English case studies (e.g., `case-4-anthropic-government-ban-backfire.en.md`) demonstrate exactly this approach: an LLM reading the Chinese V6 text to analyze an English-language scenario.
 
 ---
 
@@ -168,13 +181,13 @@ This repository's English case studies (e.g., `case-4-anthropic-government-ban-b
 
 翻译唯物实践论的等价操作是：用另一种 B1 常量集，重做集体抽象化并重新声明赋值。而拼音语言（英语、德语、法语等）的符号属于任意性系统——其符号无 A 层残余，`abstractify()` 不是合法操作。
 
-仓库中现有的英文文件是**功能性近似**，而非翻译。它们给英文读者提供一定的操作入口，但**不等于也不等效于**中文原版。（唯一的例外是 `core/` 下的第五版接口译本草稿——它连功能性近似都算不上，详见下方小节。）
+仓库中现有的英文文件是**功能性近似**，而非翻译。它们给英文读者提供一定的操作入口，但**不等于也不等效于**中文原版。（唯一的例外是 `core/旧版/` 下的第五版接口译本草稿——它连功能性近似都算不上，详见下方小节。）
 
 ### 对英文读者的建议
 
 英文读者最务实的路线：
 
-> **将中文系统提示词（`core/唯物实践论_SYSTEM_PROMPT_v7.md`）交给能阅读中文的大语言模型，用英文描述问题，让 AI 应用唯物实践论框架进行分析，然后将分析结果以英文交还给你。**
+> **将第六版正典全文（`core/唯物实践论：纪律与公理 第六版.md`）交给能阅读中文的大语言模型，用英文描述问题，要求它标明所引用的篇·节，然后将分析结果以英文交还给你。**
 
 这个方案有效，因为 AI 在内部使用中文 B1 常量集运算，然后将分析**输出**翻译为英文——这与翻译理论本身是根本不同的操作。理论内部结构保持完整；只有分析结果通过英文传达。
 
@@ -227,6 +240,7 @@ This repository's English case studies (e.g., `case-4-anthropic-government-ban-b
 | **Fourth Edition** | **Three Laws complete**, 3×3 cross-audit, A/B/C as sets, Joint Operation, Practice Warnings as Three-Law Diagnostic Chain, Three-Law Society | 2026-06-25 |
 | **Fourth Edition + Declarations** | First Law Axiom Declaration + Self-Referential Consistency Declaration + formal translation impossibility proof | 2026-07-03 |
 | **Fifth Edition** | A2 存量/流量双维度纪律、Ψ 边界声明（内部体验禁止测量）、力学传导结构（B2 破坏→B1 谴责→谴责被压制→应力沉入 A 层→爆发）、异化判据重构、诚实性纪律三件套（数学符号/全称量词/暂定猜想标注） | 2026-07-31 |
+| **Sixth Edition** | **《纪律与公理》**：双部本（叙事版＋公理版）、公理 1–6 与定理 1–5、引用合法性接口、去道德化、完备性禁令并入 | **2026-09-16**（正文末改 2026-10-28） |
 
 ---
 

@@ -15,7 +15,7 @@
 
 | Differentiator | Cost Impact | Quality Impact |
 |---|---|---|
-| **Socratic methodology depth** — every agent declares what it challenges. `/grill-me` runs an eight-move interrogation frame. | Catches hidden assumptions *before* code is written — preventing expensive rewrites. | Architectural conflicts and edge cases surfaced by design, not caught in review. |
+| **Socratic methodology depth** — every agent declares what it challenges. `/grill-me` interviews relentlessly, following each thread until it holds or breaks. | Catches hidden assumptions *before* code is written — preventing expensive rewrites. | Architectural conflicts and edge cases surfaced by design, not caught in review. |
 | **3-tier progressive memory** — context loads in tiers (core → agent-specific → task-relevant), with proactive pattern pre-fetch. | No context bloat from loading everything. No amnesia from loading nothing. | Agents get relevant past decisions, patterns, and risks without context window flooding. |
 
 **Intent & Scope Triage Gate (DNA 4):** un-persona'd domain requests are intercepted before execution — ambiguous prompts halt and receive a 2–3 Track Fork card with recommended `@agent` / `/skill` handles; trivial tasks pass unimpeded.
@@ -110,7 +110,7 @@ validate → explore → design → plan → develop → launch → iterate → 
 
 ## 🧩 Key Capabilities
 
-- **41 curated skills** — from `/validate-idea`, `/design`, and `/round-table` to `/shut-up`, `/motion`, `/develop`, `/launch`, `/legal-safety-audit`, `/customize-skill`, and `/create-skill` (all validated against the [agentskills.io](https://agentskills.io) spec via CI)
+- **42 curated skills** — from `/validate-idea`, `/design`, and `/round-table` to `/shut-up`, `/motion`, `/develop`, `/launch`, `/legal-safety-audit`, `/maintenance-plan`, `/maintenance-execute`, `/customize-skill`, and `/create-skill` (all 42 skills, including the two maintenance skills, are validated against the [agentskills.io](https://agentskills.io) spec via CI; the two maintenance skills have no separate benchmark suite)
 - **Prototype-first reverse mode** — `/design` turns a frozen prototype into an evidence-anchored PRD: every statement traces to a `path#id` anchor, and a recorded baseline hash blocks stale specs at the scope gate.
 - **Acceptance-criteria depth is gated, not advised** — every user story carries a self-audit across 16 risk categories, every feature carries a state model whose illegal transitions each name a real criterion, and in reverse mode every criterion is tagged `[prototype L-NN]` or `[derived]`. Criteria that point at nothing fail the build. Three reasoning smells print as warnings — they never block, but they mark coverage that was filled in rather than reasoned.
 - **Implementation coverage contract** — `/develop` sweeps every acceptance criterion for implementation evidence before QA: orphan ACs fail the build, and the 10 detail classes are audited or explicitly deferred.

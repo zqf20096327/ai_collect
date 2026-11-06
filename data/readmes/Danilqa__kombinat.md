@@ -6,24 +6,32 @@ Ready to use in your organisation or at home.
 
 **Quickstart:**
 
-1. Get the code. You need macOS, Node 24, pnpm and Claude Code or Codex, logged in. Kombinat looks for Claude Code at `~/.local/bin/claude`. If yours is elsewhere, set `CLAUDE_BIN`.
+1. Add Kombinat to the repository that will hold your routines. You need macOS, Node 24 and Claude Code or Codex, logged in. Kombinat looks for Claude Code at `~/.local/bin/claude`. If yours is elsewhere, set `CLAUDE_BIN`.
 
    ```bash
-   git clone https://github.com/Danilqa/kombinat.git && cd kombinat
-   pnpm install
+   pnpm init                         # if there is no package.json yet, with npm: npm init -y
+   pnpm add @danilqa/kombinat        # with npm: npm install @danilqa/kombinat
+   echo node_modules/ >> .gitignore
    ```
 
-2. Start the scheduler. The first start also builds the dashboard.
+2. Add your routines as `.md` files in a `routines/` folder next to `package.json`, see [Writing a routine](#writing-a-routine). Changes are picked up on the next check, no restart needed. Agents run with your usual setup, so your global skills, MCP servers and `CLAUDE.md` are picked up.
+
+   ```
+   my-routines/
+   ├── routines/
+   │   └── fix-e2e-tests.md
+   └── package.json
+   ```
+
+3. Start the scheduler from that folder.
 
    ```bash
-   pnpm serve
+   pnpm kombinat serve   # or: npx kombinat serve
    ```
 
-   It runs in this terminal. To keep it running in the background and after reboots, stop it and run `pnpm cli install` instead, see [Setup](#setup).
+   It runs in this terminal. To keep it running in the background and after reboots, stop it and run `pnpm kombinat install` instead, see [Setup](#setup).
 
-3. Add your routines as `.md` files in [`routines/`](routines/), see [Writing a routine](#writing-a-routine). Changes are picked up on the next check, no restart needed. Agents run with your usual setup, so your global skills, MCP servers and `CLAUDE.md` are picked up.
-
-4. Monitor and debug runs in the dashboard at http://localhost:7433, or in the terminal with `pnpm cli tui`, which also works over ssh. See [Monitoring](#monitoring).
+4. Monitor and debug runs in the dashboard at http://localhost:7433, or in the terminal with `pnpm kombinat tui`, which also works over ssh. See [Monitoring](#monitoring). To open them from another machine, see [Remote access](#remote-access).
 
 **Why Kombinat:**
 
@@ -46,7 +54,7 @@ Ready to use in your organisation or at home.
 The daemon serves a dashboard at http://localhost:7433.
 
 - **Routines.** Every routine with its schedule in plain words, agent and model, next run and last result. Start any routine with Run now.
-- **Calendar.** A week of past runs coloured by status and the planned runs from each schedule, so you can spot gaps and routines that overlap.
+- **Calendar.** A week of past runs coloured by status and the planned runs from each schedule, so you can spot gaps. To mark routines that overlap, turn on Highlight overlaps in its `…` menu. Phones show one day at a time.
 - **Runs.** The latest runs across all routines. A run page shows the result, every tool call in the transcript and, for Claude and Codex, the command to resume the session in your terminal.
 - **Daemon status.** The top bar shows whether the scheduler is ticking and how many routines are running.
 
@@ -54,11 +62,40 @@ The daemon serves a dashboard at http://localhost:7433.
 
 <img src=".github/assets/tui.png" alt="Kombinat in the terminal: routines, recent runs and a routine's run history" width="100%" />
 
-`pnpm cli tui` shows the same in the terminal, without the calendar. It works over ssh. Press `?` for keys.
+`pnpm kombinat tui` shows the same in the terminal, without the calendar. It works over ssh. Press `?` for keys.
+
+## Remote access
+
+The daemon has no login. It only listens on localhost, so other machines can't reach it, and it refuses to start routines for web pages from other sites. Other accounts on the same Mac can still reach it. To use it from another machine, for example from your laptop while it runs on a Mac mini in the office, go through SSH or Tailscale.
+
+### Over SSH
+
+Turn on Remote Login on the Mac that runs Kombinat, in System Settings → General → Sharing. Then, on your laptop:
+
+```bash
+npx @danilqa/kombinat connect admin@mac-mini         # dashboard in the browser
+npx @danilqa/kombinat connect admin@mac-mini --tui   # dashboard in the terminal
+```
+
+It opens an SSH tunnel to the daemon, then the dashboard. SSH asks for the password if you have no key set up. Ctrl-C disconnects. Instead of `admin@mac-mini`, use anything `ssh` accepts: a host from `~/.ssh/config`, an IP address or a Tailscale machine name. If the daemon there uses another `KOMBINAT_PORT`, add `--port`.
+
+You can also ssh in and run `pnpm kombinat tui` in the folder Kombinat runs in.
+
+### With Tailscale Serve
+
+To open the dashboard from any device in your tailnet, your phone included, run this on the Mac that runs Kombinat:
+
+```bash
+tailscale serve --bg 7433
+```
+
+The dashboard is then at `https://mac-mini.<your-tailnet>.ts.net`, and `npx @danilqa/kombinat tui --url https://mac-mini.<your-tailnet>.ts.net` shows it in the terminal. Serve needs HTTPS certificates in your tailnet, the command asks to turn them on. They put the machine name in public certificate logs. It stays on after a reboot, `tailscale serve --https=443 off` turns it off. If the Mac has no `tailscale` command, see [Using the Tailscale CLI](https://tailscale.com/kb/1080/cli).
+
+Everyone who can reach the Mac in your tailnet can then read transcripts and start routines. To limit that, allow only some people to reach port 443 of the Mac in your [Tailscale access rules](https://tailscale.com/kb/1018/acls).
 
 ## Routines
 
-Each row is a file in [`routines/`](routines/). `pnpm cli readme` updates this table.
+The example routines of this repository, one row per file in [`routines/`](routines/). Put the same `routines:start` and `routines:end` comments in your own README, and `pnpm kombinat readme` keeps a table like this one up to date.
 
 <!-- prettier-ignore-start -->
 <!-- routines:start -->
@@ -78,25 +115,27 @@ Each row is a file in [`routines/`](routines/). `pnpm cli readme` updates this t
 
 ## Setup
 
-You need Node 24, pnpm and the agents your routines use, logged in: Claude Code (`claude auth status`) and Codex (`codex login`).
+You need Node 24 and the agents your routines use, logged in: Claude Code (`claude auth status`) and Codex (`codex login`). From the folder with `routines/` and `package.json`:
 
 ```bash
-pnpm install
-pnpm cli install
+pnpm add @danilqa/kombinat
+pnpm kombinat install
 ```
 
-This starts the daemon under launchd. It builds the dashboard on the first start. Open http://localhost:7433.
+This starts the daemon under launchd, in that folder. Open http://localhost:7433. There is one daemon per macOS user, so running `install` in another folder moves it there.
 
 ## Commands
 
+Run them from the same folder. With npm, use `npx kombinat` instead of `pnpm kombinat`, with Yarn `yarn kombinat`.
+
 ```bash
-pnpm cli list           # routines, next run, last status
-pnpm cli run <name>     # run a routine now, in the foreground
-pnpm cli validate       # check all routine files
-pnpm cli tui            # dashboard in the terminal, works over ssh
-pnpm cli status         # daemon and scheduler state
-pnpm cli readme         # update the routines table above
-pnpm cli uninstall      # stop and remove the daemon
+pnpm kombinat list           # routines, next run, last status
+pnpm kombinat run <name>     # run a routine now, in the foreground
+pnpm kombinat validate       # check all routine files
+pnpm kombinat tui            # dashboard in the terminal, works over ssh
+pnpm kombinat status         # daemon and scheduler state
+pnpm kombinat readme         # update the routines table in README.md
+pnpm kombinat uninstall      # stop and remove the daemon
 ```
 
 ## Writing a routine
@@ -150,7 +189,9 @@ A setting the agent does not support fails validation.
 
 ## Updating
 
-The daemon runs `git pull` every 5 minutes, so merged changes go live on their own. It only pulls when the checkout is on `main` with no local changes. Code changes restart the daemon, UI changes rebuild the dashboard, and running routines are not interrupted.
+The daemon runs `git pull` in the folder every 5 minutes, so merged changes go live on their own. It only pulls when the checkout is on `main` with no local changes.
+
+To update Kombinat, bump `@danilqa/kombinat` in `package.json`, for example with a Renovate or Dependabot PR. When the lockfile changes, the daemon installs dependencies with pnpm, npm or Yarn and restarts. Running routines are not interrupted.
 
 ## Configuration
 
@@ -166,15 +207,22 @@ The daemon runs `git pull` every 5 minutes, so merged changes go live on their o
 | `CLAUDE_BIN`              | `~/.local/bin/claude` | Claude Code binary                     |
 | `CODEX_BIN`               | `codex`               | Codex binary                           |
 
-Set them before `pnpm cli install`. They are saved in the launchd config.
-
-To try it on a laptop, put them in `.env.local` (see `.env.local.example`) and use the `:local` scripts, for example `pnpm cli:local list`.
+Set them before `pnpm kombinat install`. They are saved in the launchd config.
 
 ## Development
 
 ```bash
+git clone https://github.com/Danilqa/kombinat.git && cd kombinat
+pnpm install
 pnpm dev        # run the daemon and the dashboard from this checkout
 pnpm validate   # format, lint, typecheck and tests
+pnpm test:e2e   # dashboard tests in Chromium
 ```
 
-`pnpm dev` pauses the launchd daemon until you press Ctrl-C. Add `--no-scheduler` to stop routines from running while you work.
+`pnpm test:e2e` starts a daemon from this checkout with temporary routines and state, so the running daemon is not touched. Install the browser once with `pnpm exec playwright install chromium`.
+
+`pnpm dev` pauses the launchd daemon until you press Ctrl-C. Add `--no-scheduler` to stop routines from running while you work. If the daemon runs another folder, the scheduler stays off anyway, and its routines catch up when it is back.
+
+A checkout also works as a routines folder of its own: use `pnpm cli <command>` where this README says `pnpm kombinat`. Then code changes restart the daemon and UI changes rebuild the dashboard. To try it on a laptop, put the variables in `.env.local` (see `.env.local.example`) and use the `:local` scripts, for example `pnpm cli:local list`.
+
+To publish a release, bump `version` in `package.json` and run `pnpm publish`. It builds the CLI and the dashboard first.

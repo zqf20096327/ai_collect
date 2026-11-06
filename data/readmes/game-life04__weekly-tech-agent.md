@@ -12,54 +12,65 @@
 
 <!-- wta:latest:start -->
 
-## 每日快讯 · 11.05（周四）
+## 每日快讯 · 11.06（周五）
 
-> 今日 AI 与开源要闻 **13** 条，3 分钟速读。<br>
-> [单独打开](daily/2026/2026-11-05-kuaixun.md) · [公众号排版版](daily/2026/2026-11-05-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-11-05.md) · [往期日报](daily/README.md)
+> 今日 AI 与开源要闻 **17** 条，3 分钟速读。<br>
+> [单独打开](daily/2026/2026-11-06-kuaixun.md) · [公众号排版版](daily/2026/2026-11-06-kuaixun.html) · [完整日报（含热度和原题）](daily/2026/2026-11-06.md) · [往期日报](daily/README.md)
 
 <details>
 <summary>群消息文字版（点开后，点代码框右上角的按钮整段复制）</summary>
 
 ```text
-【每日科技快讯】11月5日 周四
-今日 AI 与开源要闻 13 条，3 分钟速读
+【每日科技快讯】11月6日 周五
+今日 AI 与开源要闻 17 条，3 分钟速读
 
 【俱乐部动态】
-1. 开放原子开源俱乐部合并 2 个 PR、提交 9 次
-2. AtomGit-mobile4Harmony 合并 1 个 PR
-3. AtomGit-Mobile4Android 合并 1 个 PR
+1. 开放原子开源俱乐部合并 3 个 PR、提交 2 次
+2. system-security-dojo-x64-2026 合并 1 个 PR
+3. AtomGit-Mobile4Android 新增 2 个 PR
 
 【国内动态】
-4. 月之暗面发布Kimi K3.1 Pro模型权重
-→ 月之暗面开放Kimi K3.1 Pro模型权重，包含2.8T参数和百万级上下文窗口。
+4. 百度开源文心5.5 Flash Base模型
+→ 百度开源文心5.5 Flash Base，在知识、推理等多个基准测试中刷新同尺寸模型SOTA表现。
+
+【海外动态】
+5. OpenAI发布GPT‑6 Cyber网络安全模型
+→ OpenAI推出GPT‑6 Cyber模型，用于发现可利用漏洞并开发修复方案，训练时保持在授权范围内。
+6. Images 2.6
+→ 在 ChatGPT、Codex 和 API 中提供更快的图像生成、GIF 创建和更精确的编辑控制。
+7. Gemini Omni 1.2 Flash：原生15秒视频生成与编辑
+→ Google DeepMind发布Gemini Omni 1.2 Flash，带来原生15秒视频生成与编辑功能，一致性更强且价格降低30%。
 
 【开源项目】
-5. NVIDIA/auto-ontology：语义图推理框架
-→ NVIDIA/auto-ontology是一个用于构建语义图推理层的Python框架。
-6. llama.cpp 发布 v0.9.0 版本
-→ llama.cpp v0.9.0 发布，新增 OCP FP8 E4M3 量化支持。
-7. microsoft/ai-agents-for-beginners
-→ microsoft/ai-agents-for-beginners提供18个课程帮助开发者入门构建AI智能体。
-8. speridlabs/idol：图像生成3D模型
-→ speridlabs/idol是一个基于Apache-2.0许可证的图像到3D模型。
-9. FareedKhan-dev/kimi-k3-in-c
-→ FareedKhan-dev/kimi-k3-in-c提供了Kimi K3的C语言实现，可在8.24GB内存中运行。
+8. agent-autoloop：命令行 Agent 后台接活
+→ agent-autoloop 让命令行 Agent 在后台自己接活、自己跟进到底，遇到拿不准的事才发卡片找用户拍板。
+9. skills：AI 智能体获取生产资产
+→ skills 通过 Scenario MCP 让 AI 智能体获取生产就绪的图像、视频、音频和 3D 资产，并保持角色和品牌一致性。
+10. gstack：Claude Code 精确配置
+→ gstack 提供了包含 23 个工具的 Claude Code 精确配置，服务于 CEO、设计师、工程经理等角色。
+11. VibeVoice：开源前沿语音 AI
+→ VibeVoice 是一个开源的前沿语音 AI 项目。
+12. reanimate：逆向工程动画
+→ reanimate 是一个 Claude Code 技能，能逐帧逆向工程任何动画并证明其移动一致性。
 
 【学术前沿】
-10. Agile Deliberation：AI 辅助人类定义模糊类别
-→ Google Research 提出通过交互式审议工作流和 LLM 优化循环，帮助用户构建准确且对齐的图像分类器。
-11. 系统1与系统2协同设计：AGI的关键
-→ 研究提出通过轻量级预测器系统1与系统2协同设计，显著降低执行计算量。
-12. Axion 1.0：开源智能体基础模型
-→ Axion 1.0是一个开源智能体基础模型，具备强大的自主推理和工具使用能力。
-13. CoworkOS框架实现智能体协作自动化
-→ CoworkOS是一个通用框架，用于管理长期工作流，将任务策略与执行管理分离，支持智能体间协作。
+13. Turns Matter：通过回合级信用推进流媒体视频强化学习
+→ TurnWise提出回合级GRPO框架，通过沉默完成前缀评分分离学习信号，并平均回合内损失。
+14. FrontierPhysics：端到端物理研究智能体评测
+→ FrontierPhysics引入56个由物理学家设计的任务，要求智能体完成文献综述、实验和论文撰写。
+15. 微软研究发布PDD Kit验证智能体代码
+→ 微软研究发布PDD Kit，将开发者意图转化为Verus规范，证明AI生成的代码符合规范。
+16. DreamX：视频扩散模型作为通用潜在动作学习器
+→ DreamX 利用预训练视频扩散模型提取紧凑的潜在动作，压缩视频帧并捕捉动作相关动态，在 LARY-Bench 上表现优异。
+
+【产业纵横】
+17. Merge结合OpenAI技术构建产品工具
+→ Merge使用GPT‑6 Astra、ChatGPT和Codex审查产品代码并支持营销，还利用AI规划高管晚宴。
 
 【活动预告】
-· 11月5日 RECOMB 2027 论文截稿
 · 11月17日 CVPR 2027 论文截稿
 
-完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-11-05-kuaixun.md
+完整版（含原文链接）：https://github.com/game-life04/weekly-tech-agent/blob/main/daily/2026/2026-11-06-kuaixun.md
 标题和要点由 AI 整理，可能有误，请以原文为准。
 ```
 
@@ -69,45 +80,55 @@
 
 #### 俱乐部动态
 
-**开放原子开源俱乐部合并 2 个 PR、提交 9 次**<br>11月4日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 3 个有人参与开发，共新增 PR 22 个、合并 2 个，提交 9 次，新增代码 1735 行、删除 360 行，3 位贡献者参与。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
+**开放原子开源俱乐部合并 3 个 PR、提交 2 次**<br>11月5日，据俱乐部开源仪表盘统计，开放原子开源俱乐部跟踪的 122 个仓库中有 3 个有人参与开发，共新增 PR 4 个、合并 3 个，提交 2 次，新增代码 2 行、删除 2 行，4 位贡献者参与。<br><sub>（来源：[俱乐部开源仪表盘](https://osd.openatom.club/)）</sub>
 
-**AtomGit-mobile4Harmony 合并 1 个 PR**<br>11月4日，Agent SIG的 AtomGit-mobile4Harmony 仓库合并 1 个、提交 7 次、新增代码 1252 行，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-mobile4Harmony)）</sub>
+**system-security-dojo-x64-2026 合并 1 个 PR**<br>11月5日，pwn.hust.college SIG的 system-security-dojo-x64-2026 仓库合并 1 个、提交 1 次，2 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/system-security-dojo-x64-2026)）</sub>
 
-**AtomGit-Mobile4Android 合并 1 个 PR**<br>11月4日，Agent SIG的 AtomGit-Mobile4Android 仓库合并 1 个、提交 1 次、新增代码 481 行，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)）</sub>
+**AtomGit-Mobile4Android 新增 2 个 PR**<br>11月5日，Agent SIG的 AtomGit-Mobile4Android 仓库新增 PR 2 个，1 位贡献者参与。<br><sub>（来源：[GitHub](https://github.com/hust-open-atom-club/AtomGit-Mobile4Android)）</sub>
 
 #### 国内动态
 
-**月之暗面发布Kimi K3.1 Pro模型权重**<br>11月4日，月之暗面开放Kimi K3.1 Pro模型权重，包含2.8T参数和百万级上下文窗口。<br><sub>（来源：[Hacker News](https://huggingface.co/moonshotai/Kimi-K3.1-Pro)）</sub>
+**百度开源文心5.5 Flash Base模型**<br>11月5日，百度开源文心5.5 Flash Base，在知识、推理等多个基准测试中刷新同尺寸模型SOTA表现。<br><sub>（来源：[量子位](https://www.qbitai.com/2026/11/507787.html)）</sub>
+
+#### 海外动态
+
+**OpenAI发布GPT‑6 Cyber网络安全模型**<br>11月5日，OpenAI推出GPT‑6 Cyber模型，用于发现可利用漏洞并开发修复方案，训练时保持在授权范围内。<br><sub>（来源：[OpenAI](https://openai.com/index/introducing-gpt-6-cyber)）</sub>
+
+**Images 2.6**<br>11月5日，在 ChatGPT、Codex 和 API 中提供更快的图像生成、GIF 创建和更精确的编辑控制。<br><sub>（来源：[Hacker News](https://openai.com/index/introducing-images-2-6/)）</sub>
+
+**Gemini Omni 1.2 Flash：原生15秒视频生成与编辑**<br>11月6日，Google DeepMind发布Gemini Omni 1.2 Flash，带来原生15秒视频生成与编辑功能，一致性更强且价格降低30%。<br><sub>（来源：[Google DeepMind](https://deepmind.google/blog/gemini-omni-12-flash-fast-and-cost-effective-with-longer-clips/)）</sub>
 
 #### 开源项目
 
-**NVIDIA/auto-ontology：语义图推理框架**<br>11月3日，NVIDIA/auto-ontology是一个用于构建语义图推理层的Python框架。<br><sub>（来源：[GitHub Trending](https://github.com/NVIDIA/auto-ontology)）</sub>
+**agent-autoloop：命令行 Agent 后台接活**<br>11月6日消息，agent-autoloop 让命令行 Agent 在后台自己接活、自己跟进到底，遇到拿不准的事才发卡片找用户拍板。<br><sub>（来源：[GitHub 新项目](https://github.com/KKKKhazix/agent-autoloop)）</sub>
 
-**llama.cpp 发布 v0.9.0 版本**<br>11月4日，llama.cpp v0.9.0 发布，新增 OCP FP8 E4M3 量化支持。<br><sub>（来源：[GitHub 版本发布](https://github.com/ggml-org/llama.cpp/releases/tag/v0.9.0)）</sub>
+**skills：AI 智能体获取生产资产**<br>11月6日消息，skills 通过 Scenario MCP 让 AI 智能体获取生产就绪的图像、视频、音频和 3D 资产，并保持角色和品牌一致性。<br><sub>（来源：[GitHub Trending](https://github.com/scenario-labs/skills)）</sub>
 
-**microsoft/ai-agents-for-beginners**<br>11月5日消息，microsoft/ai-agents-for-beginners提供18个课程帮助开发者入门构建AI智能体。<br><sub>（来源：[GitHub Trending](https://github.com/microsoft/ai-agents-for-beginners)）</sub>
+**gstack：Claude Code 精确配置**<br>11月6日消息，gstack 提供了包含 23 个工具的 Claude Code 精确配置，服务于 CEO、设计师、工程经理等角色。<br><sub>（来源：[GitHub Trending](https://github.com/garrytan/gstack)）</sub>
 
-**speridlabs/idol：图像生成3D模型**<br>11月5日消息，speridlabs/idol是一个基于Apache-2.0许可证的图像到3D模型。<br><sub>（来源：[Hugging Face 热门模型](https://huggingface.co/speridlabs/idol)）</sub>
+**VibeVoice：开源前沿语音 AI**<br>11月6日消息，VibeVoice 是一个开源的前沿语音 AI 项目。<br><sub>（来源：[GitHub Trending](https://github.com/microsoft/VibeVoice)）</sub>
 
-**FareedKhan-dev/kimi-k3-in-c**<br>11月5日消息，FareedKhan-dev/kimi-k3-in-c提供了Kimi K3的C语言实现，可在8.24GB内存中运行。<br><sub>（来源：[GitHub Trending](https://github.com/FareedKhan-dev/kimi-k3-in-c)）</sub>
+**reanimate：逆向工程动画**<br>11月6日消息，reanimate 是一个 Claude Code 技能，能逐帧逆向工程任何动画并证明其移动一致性。<br><sub>（来源：[GitHub 新项目](https://github.com/NiazMorshed2007/reanimate)）</sub>
 
 #### 学术前沿
 
-**Agile Deliberation：AI 辅助人类定义模糊类别**<br>11月5日，Google Research 提出通过交互式审议工作流和 LLM 优化循环，帮助用户构建准确且对齐的图像分类器。<br><sub>（来源：[Google Research](https://research.google/blog/agile-deliberation-how-ai-helps-humans-define-the-gray-areas/)）</sub>
+**Turns Matter：通过回合级信用推进流媒体视频强化学习**<br>11月4日，TurnWise提出回合级GRPO框架，通过沉默完成前缀评分分离学习信号，并平均回合内损失。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2611.06728)）</sub>
 
-**系统1与系统2协同设计：AGI的关键**<br>11月5日消息，研究提出通过轻量级预测器系统1与系统2协同设计，显著降低执行计算量。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2610.39497)）</sub>
+**FrontierPhysics：端到端物理研究智能体评测**<br>11月5日，FrontierPhysics引入56个由物理学家设计的任务，要求智能体完成文献综述、实验和论文撰写。<br><sub>（来源：[arXiv · 智能体](https://arxiv.org/abs/2611.06910)）</sub>
 
-**Axion 1.0：开源智能体基础模型**<br>11月5日消息，Axion 1.0是一个开源智能体基础模型，具备强大的自主推理和工具使用能力。<br><sub>（来源：[arXiv · 智能体](https://arxiv.org/abs/2611.03233)）</sub>
+**微软研究发布PDD Kit验证智能体代码**<br>11月6日，微软研究发布PDD Kit，将开发者意图转化为Verus规范，证明AI生成的代码符合规范。<br><sub>（来源：[Microsoft Research](https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/)）</sub>
 
-**CoworkOS框架实现智能体协作自动化**<br>11月5日消息，CoworkOS是一个通用框架，用于管理长期工作流，将任务策略与执行管理分离，支持智能体间协作。<br><sub>（来源：[arXiv · 智能体](https://arxiv.org/abs/2611.03178)）</sub>
+**DreamX：视频扩散模型作为通用潜在动作学习器**<br>11月6日消息，DreamX 利用预训练视频扩散模型提取紧凑的潜在动作，压缩视频帧并捕捉动作相关动态，在 LARY-Bench 上表现优异。<br><sub>（来源：[Hugging Face 热门论文](https://arxiv.org/abs/2611.05377)）</sub>
+
+#### 产业纵横
+
+**Merge结合OpenAI技术构建产品工具**<br>11月5日，Merge使用GPT‑6 Astra、ChatGPT和Codex审查产品代码并支持营销，还利用AI规划高管晚宴。<br><sub>（来源：[OpenAI](https://openai.com/index/merge-builds-with-openai)）</sub>
 
 ### 活动预告
 
-**RECOMB 2027 论文截稿**<br>11月5日，International Conference on Research inComputational Molecular Biology（RECOMB 2027，CCF-B 类，交叉/综合/新兴）论文提交截止时间为北京时间11月5日 19:59，摘要截止时间为10月29日 19:59。会议将于 May 17-20, 2027 在 Toronto, Canada 举行。<br><sub>（来源：[会议官网](https://recomb.org/recomb2027/)）</sub>
-
 **CVPR 2027 论文截稿**<br>11月17日，IEEE/CVF Conference on Computer Vision and Pattern Recognition（CVPR 2027，CCF-A 类，人工智能）论文提交截止时间为北京时间11月17日 19:59，摘要截止时间为11月11日 19:59。会议将于 June 20-25, 2027 在 Seattle, WA, United States 举行。<br><sub>（来源：[会议官网](https://cvpr.thecvf.com/Conferences/2027)）</sub>
 
-<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为11月4日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-11-05 08:22（北京时间）自动生成。</sub>
+<sub>标题和正文由 AI 根据原文整理（glm-4.7-flash），可能有误，请以原文为准。 俱乐部动态的统计日期为11月5日，数据来自[俱乐部开源仪表盘](https://osd.openatom.club/)。 会议截稿时间来自[CCFDDL](https://ccfddl.com/)，已换算成北京时间，请以会议官网为准。 有新闻线索欢迎[提交 Issue](https://github.com/game-life04/weekly-tech-agent/issues)。 本期由[每周科技收集 Agent](https://github.com/game-life04/weekly-tech-agent)于 2026-11-06 09:50（北京时间）自动生成。</sub>
 
 ## 每周快讯 第 3 期 · 10.26–11.01
 

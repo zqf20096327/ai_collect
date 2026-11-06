@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--05-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1421-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--06-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1423-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1421 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1423 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 223 | 2026-11-04 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 110 | 2026-11-03 | [View papers](#category-prediction-world-models) |
+| Perception & Sensor Fusion | 224 | 2026-11-05 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 112 | 2026-11-05 | [View papers](#category-prediction-world-models) |
 | Planning & Decision-Making | 98 | 2026-11-04 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 58 | 2026-11-04 | [View papers](#category-control-vehicle-dynamics) |
+| Control & Vehicle Dynamics | 59 | 2026-11-05 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 53 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 160 | 2026-11-03 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 217 | 2026-11-01 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 160 | 2026-11-04 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 158 | 2026-11-05 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 218 | 2026-11-05 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 158 | 2026-11-05 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 28 | 2026-11-04 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 314 | 2026-11-04 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 315 | 2026-11-05 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -46,24 +46,46 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Tag | Papers | Filter |
 |:--|--:|:--|
 | Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 95 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Benchmark | 96 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 194 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 36 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 112 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 89 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| VLA | 86 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 138 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 30 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 113 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 223 papers
+## Perception & Sensor Fusion · 224 papers
+
+<a id="paper-2611-07613"></a>
+
+### Towards Real-Time Full-Waveform LiDAR Transformers via Intensity-Guided Token Reduction and Physics-Aware Augmentation ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Kotaro Oishi, Kazuma Ikeda, Ryosei Hara, Ryo Yoshida, Mariko Isogawa, et al.<br>
+**Published:** 2026-11-05<br>
+**Research tags:** Hardware / Real-Time<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.07613) | [PDF](https://arxiv.org/pdf/2611.07613.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** LiDAR is a critical sensor for autonomous driving and robotics, yet it remains vulnerable to adverse conditions such as fog, rain, transparent objects, and low-reflectance surfaces. Full-waveform...
+
+<a id="paper-2611-07081"></a>
+
+### Wide View Synthesis from Overlapping Perspective Cameras in Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Kaixuan Zhang, Zhipeng Xiong, Minxian Li, Mingwu Ren, Xiatian Zhu<br>
+**Published:** 2026-11-04<br>
+**Research tags:** Benchmark<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.07081) | [PDF](https://arxiv.org/pdf/2611.07081.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Multi-perspective-camera systems are widely adopted since they provide broad visual coverage for autonomous driving, motivating the synthesis of a unified wide view from spatially separated...
 
 <a id="paper-2611-06007"></a>
 
@@ -168,7 +190,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-39848"></a>
 
-### LiDAR-SHIELD: A Fully Dockerized Adversarial Robustness Assessment Framework for LiDAR-Based 3D Perception Models ![New](https://img.shields.io/badge/New-red)
+### LiDAR-SHIELD: A Fully Dockerized Adversarial Robustness Assessment Framework for LiDAR-Based 3D Perception Models ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Alexandros Gkillas, Ioulia Kapsali, Christos Anagnostopoulos, Aris S. Lalos<br>
 **Published:** 2026-10-29<br>
@@ -1637,30 +1659,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** Vision-radar fusion is central to robust autonomous driving, combining dense visual semantics with precise range and velocity measurements from radar. However, real-world fusion quality is...
 
-<a id="paper-2606-31834"></a>
-
-### Real-Time Source-Free Object Detection
-
-**Authors:** Sairam VCR, Varun Gopal, Poornima Jain, Vineeth N Balasubramanian, Muhammad Haris Khan<br>
-**Published:** 2026-06-30<br>
-**Research tags:** Hardware / Real-Time<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.31834) | [PDF](https://arxiv.org/pdf/2606.31834.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Real-world detectors for autonomous driving, surveillance, and robotics must handle domain-shifts under strict latency and memory constraints, yet existing source-free object detection (SFOD) methods...
-
-<a id="paper-2606-31688"></a>
-
-### Semantic Occupancy Prediction with Dual Range-Voxel Representation
-
-**Authors:** Sitao Chen, Zhuangwei Zhuang, Hui Luo, Lizhao Liu, Qingyao Wu, et al.<br>
-**Published:** 2026-06-30<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2606.31688) | [PDF](https://arxiv.org/pdf/2606.31688.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** LiDAR-based 3D semantic occupancy prediction, which aims to provide accurate and comprehensive scene representation, is crucial for autonomous driving systems. As point clouds suffer from sparsity...
-
-<a id="paper-2606-31488"></a>
-
-### DrivingDepth: Sparse-Prompted Pixel-wise Scale Correction for Driving Depth Estimation
-
-**Authors:** Chi Huang, Wenhao Zhang, Hang Yin, YuAn Wang, Hao Li, et al.<br>
-**Published:** 2026-
+<a id="paper-2606-3183

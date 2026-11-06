@@ -43,7 +43,7 @@ dependencies {
 
 Kotlin 2.0 or later (the artifacts are built at language level 2.1), JDK 17, Android `minSdk` 23. The workspace and
 the event log use `java.nio.file`, which Android has from API 26: below that, enable core library desugaring with
-`com.android.tools:desugar_jdk_libs_nio` (as `samples/quickstart-android` does).
+`com.android.tools:desugar_jdk_libs_nio` 2.1.5 or later (as `samples/quickstart-android` does).
 
 ## Quickstart (Android)
 
@@ -85,7 +85,8 @@ val runtime = AgentRuntimeBuilder.create()
 ```
 
 The [samples](samples) run as they are: `AGENT_API_KEY=… ./gradlew :samples:quickstart-jvm:run --args="…"`, and
-`samples/quickstart-android` is a one-screen app.
+`samples/quickstart-android` is a one-screen app. `./gradlew :samples:extensions:run` needs no key or network: a model
+of your own (a scripted one standing in for an on-device model), tools from your code, and a hook that refuses a call.
 
 ## Modules
 
@@ -98,13 +99,27 @@ The [samples](samples) run as they are: `AGENT_API_KEY=… ./gradlew :samples:qu
 | `agent-exec-js` | Optional: `exec_js`, sandboxed JavaScript (QuickJS through Zipline) that can call tools |
 | `agent-device-capabilities` | Optional: calendar, notification and media tools |
 | `agent-android-use` | Optional: observe and operate the screen through an accessibility service |
-| `agent-a2a` | Optional: delegate tasks to remote A2A agents over a direct JSON-RPC/SSE transport, and expose the agent as a local A2A endpoint |
+| `agent-a2a` | Optional (plain JVM): delegate tasks to remote A2A agents over a direct JSON-RPC/SSE transport, and expose the agent as a local A2A endpoint |
 | `agent-a2a-client-official` | Optional: the same client over the official A2A Java SDK |
 | `agent-bom` | One version for all of the above |
 
 Three ways in: an app depends on `agent-runtime-android`; a server, desktop tool or test on `agent-runtime`; a runtime
 of your own builds on `agent-kernel-api` and `agent-kernel-core` (`samples/minimal` is the smallest one). Optional
 modules depend at most on the kernel API.
+
+## API stability
+
+The project is 0.x: a minor release (0.6 to 0.7) may break the API, and the [changelog](CHANGELOG.md) calls out every
+break, in source and in binaries; a patch release never breaks it.
+
+- Declarations marked `@ExperimentalAgentRuntimeApi` or `@ExperimentalA2aClientApi` are the likeliest to change, and
+  ask for an opt-in (without one, the runtime's are a compile error and the A2A client's a warning).
+- Declarations marked `@InternalAgentRuntimeApi` are not API: they are there for the runtime's own modules and tests,
+  and may change or go in any release.
+- The public API of every module is recorded in its `api/*.api`, which CI compares with the code, so no change to it
+  goes unnoticed.
+
+Security reports: see [SECURITY.md](SECURITY.md).
 
 ## Building from source
 
@@ -123,8 +138,8 @@ public MCP servers, plans that watch a server's state, generative UI, and a simu
 
 ## Building
 
-JDK 17 and the Android SDK. `./gradlew ciCheck` runs what CI runs: the source rules, the API compatibility check, every
-unit test and the sample builds. See [CONTRIBUTING.md](CONTRIBUTING.md).
+JDK 17 and the Android SDK. `./gradlew ciCheck` runs what CI runs: the source rules, the API compatibility check, the
+Android API level checks and lint, every unit test and the sample builds. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

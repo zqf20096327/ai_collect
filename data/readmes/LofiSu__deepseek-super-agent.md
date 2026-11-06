@@ -42,6 +42,7 @@ A thin async ReAct runtime at the bottom. A proactive domain engine on top:
 - [Configuration](#configuration)
   - [Models](#models)
   - [Runtime settings](#runtime-settings)
+  - [MCP servers](#mcp-servers)
 - [Demo (real channels)](#demo-real-channels)
 - [Safety and deployment](#safety-and-deployment)
 - [Status](#status)
@@ -158,7 +159,7 @@ Each topic or pull request becomes a **Thread**. The Router batches triggers wai
 
 Short summaries stay inline. Long content is **spilled** out of band with an id, and tools receive typed `kind:id` handles first. `read_object` expands one hop at a time, which gives the model a **Chain of Recall** instead of a context dump. See [docs/MODULES.md](docs/MODULES.md).
 
-Long-term memory keeps hot tickets and Router decisions (1000 entries / 90 days) plus cold Thread digests (200 / 3650 days). Recall is hybrid: lexical search, one tag hop, and an optional `EmbeddingPort`. The default offline `HashedEmbedding` works without a model; `DS_AGENT_SEMANTIC_RECALL=0` disables the semantic arm, and `DS_AGENT_EMBEDDING_FLOOR` sets its cosine floor (default `0.35`, clamped to 0–1).
+Long-term memory keeps hot tickets and Router decisions (1000 entries / 90 days) plus cold Thread digests (200 / 3650 days). Recall is hybrid: lexical search, one tag hop, and an optional `EmbeddingPort`. The default offline `HashedEmbedding` works without a model; `DS_AGENT_SEMANTIC_RECALL=0` disables the semantic arm, and `DS_AGENT_EMBEDDING_FLOOR` sets its cosine floor (default `0.35`, clamped to 0–1). Month-scale behavior is not yet measured, so T48 stays partial; the dated measurement protocol and its offline fixture smoke are in [docs/T48_MONTH_SCALE_PROTOCOL.md](docs/T48_MONTH_SCALE_PROTOCOL.md).
 
 ### Work that outlives a turn
 
@@ -338,6 +339,39 @@ Use a small model for the Router and Watchdog and a stronger one for Workers. Th
 | `DS_AGENT_SANDBOX_READ_ISOLATION` | off | `1` / `true` / `strict` for strict read confinement. |
 | `DS_AGENT_UI_TOKEN` | unset | Bearer token for `ds-agent ui`, minimum 16 characters. |
 
+### MCP servers
+
+Workers can call tools from external Model Context Protocol servers configured
+as data. The Router and the Watchdog never see them.
+
+```bash
+export DS_AGENT_MCP_SERVERS='[
+  {"name":"krene","command":"/absolute/path/to/krene-mcp","args":["serve"],"timeoutMs":120000}
+]'
+```
+
+- `name` matches `[A-Za-z0-9_-]`, starts with a letter or digit, is at most 32
+  characters, is unique, and contains no `__` (that is the namespace
+  separator). `command` is a non-empty executable (`/absolute/path` is safest
+  because the child inherits the current working directory). `args` defaults
+  to `[]`, `env` to `{}`, and `timeoutMs` to `120000`.
+- Tools appear to Workers as `mcp__<server>__<tool>`. Text stays text;
+  image/resource payloads are written to `<DS_AGENT_HOME>/mcp/<server>/` and
+  referenced by path; a result over 64 KB goes to spill and returns
+  `{ spillId, bytes, preview }`.
+- The child process inherits only `PATH`, `HOME`, `LANG`, `TZ`, `HTTP_PROXY`,
+  `HTTPS_PROXY`, and `NO_PROXY`, plus the server's own `env`; the MCP SDK also
+  adds its own safe defaults (`HOME`, `LOGNAME`, `PATH`, `SHELL`, `TERM`,
+  `USER`) from the host when it starts the transport. Put credentials in
+  `env`, not in your shell. Secret-named `env` values (for example
+  `KRENE_TOKEN`) join the redaction list like any other credential.
+- Unreadable configuration is logged as
+  `[mcp] DS_AGENT_MCP_SERVERS ignored: ...` and ignored. A server that fails or
+  hangs while connecting increments `mcp.connect_error` and is omitted; the
+  runtime and the other servers keep working.
+
+`RuntimeOptions.mcpServers` accepts the same array when embedding the runtime.
+
 ## Demo (real channels)
 
 `pnpm demo` is the acceptance path and uses real channels only:
@@ -405,7 +439,7 @@ Partial and owner-gated areas, stated plainly:
 - **Long-term memory** — hot/cold tiers and hybrid recall work; calendar-month behavior is bounded, not measured across real months.
 - **A2A** — HMAC-SHA256 HTTP transport is implemented; cross-host exposure and remote dispatch remain operator-gated.
 - **Watchdog drift checks** — nudge/fail, rules, and read-only `ds-agent health` work; deeper natural-language goal-drift checks are still thin.
-- **Latency bake-off** — the batching stress harness records curves; the full dual-layer versus single-session comparison is open.
+- **Latency bake-off** — one dated local dual-layer versus single-session run is recorded in [docs/BAKEOFF.md](docs/BAKEOFF.md); it is a single sample, not a benchmark.
 
 ## Documentation
 

@@ -10,7 +10,7 @@
 
 A-share daily research and backtesting in Python. Start with `stock-analyzer demo`: synthetic data, no API key, no market-data requests.
 
-[直接查看演示，无需安装](docs/demo/README.md) · [快速开始](#快速开始) · [离线演示输出](#离线演示会生成什么) · [真实数据与日报](#接入真实数据) · [贡献指南](CONTRIBUTING.md) · [版本记录](CHANGELOG.md)
+[直接查看演示，无需安装](docs/demo/README.md) · [查看日报样例](docs/daily-demo/README.md) · [快速开始](#快速开始) · [离线演示输出](#离线演示会生成什么) · [真实数据与日报](#接入真实数据) · [贡献指南](CONTRIBUTING.md) · [版本记录](CHANGELOG.md)
 
 > 仅供学习和研究，不构成投资建议。演示结果来自合成数据，不能代表策略在真实市场的表现。项目不提供自动下单功能。
 
@@ -24,6 +24,12 @@ A-share daily research and backtesting in Python. Start with `stock-analyzer dem
 
 GitHub 文件页显示 HTML 源码，不会运行报告。请将整个 `docs/demo/` 目录保存到本地后打开报告，以保留 CSV / JSON 链接。预览只使用虚构数据，不能代表真实市场表现。
 
+### 也看看研究日报
+
+**[直接阅读日报样例 →](docs/daily-demo/README.md)** 4 个虚构标的经过现有技术指标、筛选规则和日报生成器实际执行，展示超卖反弹、趋势向好、放量突破分类。固定样本日期为 2024-04-19，附完整输入与计算结果；没有编造历史准确率、收益或 LLM 解读。这与上面的组合回测是两个独立流程。
+
+安装后运行 `stock-analyzer demo-daily`，即可在 `reports/daily-demo/daily-report.txt` 查看同一份离线日报。无需 API Key，不请求行情，不写日报数据库；用 `--out` 指定其他输出目录。完整复现说明见[日报样例](docs/daily-demo/README.md)。
+
 ## 可以做什么
 
 - **每日扫描**：按放量突破、趋势向好、超卖反弹等规则筛选候选股，生成文本日报并保存历史记录到 SQLite。
@@ -31,6 +37,14 @@ GitHub 文件页显示 HTML 源码，不会运行报告。请将整个 `docs/dem
 - **历史推荐回顾**：检查此前记录的推荐结果，与独立的组合回测功能区分开来。
 - **量化研究框架 `qf`**：因子计算 → 截面打分 → TopK 等权组合 → 周频调仓 → 导出净值、持仓和指标。
 - **本地运行与部署**：提供 CLI、部署脚本和 Docker 配置。macOS 支持系统通知，其他平台记录通知日志。
+
+## 在浏览器里亲手试用
+
+[**在 Google Colab 打开可运行的 Notebook →**](https://colab.research.google.com/github/oliverran/stock-daily-analyzer/blob/main/notebooks/offline_demo.ipynb)
+
+无需在本地安装 Python，即可运行实际的合成数据回测、查看权重、比较 TopK 参数并下载结果。先检查代码，再选择普通 CPU 运行时并点击 **代码执行程序 → 全部运行**。可能需要 Google 登录和可用的运行时；第一个单元会联网安装固定项目版本及依赖。不需要 API Key、付费运行时或挂载网盘。Notebook 包含中英文说明。
+
+教程固定项目代码版本，依赖版本在安装时解析。所有价格均为虚构，参数对比不能证明策略盈利。[可先查看 Notebook 源码](notebooks/offline_demo.ipynb)。如果无法访问 Colab，可使用下方本地安装流程，或直接看[免安装预览](docs/demo/README.md)。
 
 ## 快速开始
 
@@ -172,7 +186,7 @@ ruff check .
 pytest -q
 ```
 
-修改演示后，运行 `python scripts/update_demo_preview.py` 重新生成仓库内的预览文件和 GitHub 可直接阅读的演示摘要。测试会检查预览与当前代码是否一致。
+修改日报样例后，运行 `python scripts/update_daily_preview.py`。修改回测演示后，运行 `python scripts/update_demo_preview.py` 重新生成仓库内的预览文件和 GitHub 可直接阅读的演示摘要。测试会检查预览与当前代码是否一致。
 
 测试与演示不需要真实市场请求或 API Key。贡献方式见 [CONTRIBUTING.md](CONTRIBUTING.md)，安全问题见 [SECURITY.md](SECURITY.md)。反馈运行问题时，请附上操作系统、Python 版本、执行命令和去除敏感信息后的错误信息。
 

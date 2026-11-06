@@ -1,42 +1,71 @@
 # Guaca
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="design/wordmarks/eye-contact.dark.svg">
+  <img src="design/wordmarks/eye-contact.svg" alt="guaca" width="271" height="74">
+</picture>
+
 **A desktop app for AI agents that work together.**
 
-![A Guaca agent reporting back after delegating to three others, with the crew at work in the rail](docs/img/guaca.png)
+![A Guaca agent reporting back after delegating to three others, with the group at work in the rail](docs/img/guaca.png)
 
-Run Guaca locally on your computer or connect it to a VPS. The backend workspace
-runs in a container; you choose where it lives. The desktop is your window into
-that workspace. On an always-on VPS, your agents keep working when you close
-your laptop. A local workspace runs while your computer is awake.
+Run Guaca locally on your computer or connect it to a VPS. The backend runs in a
+container; you choose where it lives. The desktop is your window into that host.
+On an always-on VPS, your agents keep working when you close your laptop. A local
+host runs while your computer is awake.
 
-## Build a crew
+## Download
+
+[Download the latest macOS build](https://github.com/madebywelch/guaca/releases/latest).
+It is a signed and notarized universal disk image,
+`Guaca_<version>_universal.dmg`, that runs on Apple Silicon and Intel Macs and
+needs no Node.js, Rust or source checkout. Open it, drag Guaca into
+Applications, and launch it.
+
+The disk image is only half of it: Guaca is a window on a host that runs your
+agents, and the first screen asks which host. **On this Mac** starts one in a
+Docker container, from the backend image published with that release, so it
+needs Docker installed and the image available. **Remote host** connects to a
+`guacad` that is already running somewhere, and needs no Docker here. Building
+from a checkout below produces both halves from the same source.
+
+The release publishes the disk image's SHA-256 beside it, so a download can be
+checked before it is opened:
+
+```sh
+shasum -a 256 -c Guaca_*_universal.dmg.sha256
+```
+
+## Build a group
 
 Organize your agents into **groups**: isolated spaces with their own collection
-of agents, settings, and **plugins**. Plugins are MCP servers that connect your
-agents to other services. Choose from the included connections or add your own.
-You control which agents can use each plugin and its tools.
+of agents, settings, and **connectors**. Connectors are MCP servers that connect
+your agents to other services. Choose from the included connectors or add your
+own. You control which agents can use each connector and its tools.
 
 Agents communicate with you and each other, delegate work, and keep their own
 memory and working notes. They can also have a browser through **Kernel** or a
 computer through **E2B**, configured with the respective vendor's API key.
 
-## Get started
+## Build from a checkout
 
 The desktop app currently supports **macOS**. To build and install from a
-checkout, you need Node.js, pnpm, Rust, and the Xcode Command Line Tools:
+checkout, you need Node.js, pnpm, Rust, the Xcode Command Line Tools, and (for
+a local host) Docker:
 
 ```sh
 ./scripts/install.sh --no-pull --launch
 ```
 
-For a local workspace, have Docker installed and running before installing.
-The script builds the matching backend image. Choose **On this Mac** when Guaca
-opens, or **Remote host** to connect to a backend on your VPS. You can change
-that choice later in **Settings → Workspace**. A remote connection does not
-require Docker on your Mac.
+The script checks those before it compiles anything, and says how to fix
+whichever is missing. For a local host, have Docker installed and running
+before installing: the script builds the matching backend image. Choose **On
+this Mac** when Guaca opens, or **Remote host** to connect to a backend on your
+VPS. You can change that choice later in **Settings → Host**. A remote
+connection does not require Docker on your Mac.
 
-Managed Guaca compute spaces are planned for a later release. Local and
-self-hosted workspaces are available now.
+Managed Guaca compute spaces are planned for a later release. Local and remote
+hosts are available now.
 
 For building and publishing signed macOS downloads, see
 [macOS releases](docs/RELEASING.md). It covers versioning, Developer ID signing,
@@ -74,11 +103,11 @@ benchmark injections that drive real-world *actions* rather than text output,
 which is exactly what a signed-in session turns a web page into: the payload no
 longer has to talk an agent into obtaining access, because it already has the
 operator's. Guaca takes the architectural half of their defense-in-depth
-argument: page content is labeled at the point it enters the turn, plugin OAuth
-credentials stay in the backend, and the signed-in agent is told where to stop.
+argument: page content is labeled at the point it enters the turn, connector
+OAuth credentials stay in the backend, and the signed-in agent is told where to stop.
 Neither paper's authors endorse any of this.
 
-Plugin marks are [Simple Icons](https://simpleicons.org), CC0 1.0. Trademarks
+Connector marks are [Simple Icons](https://simpleicons.org), CC0 1.0. Trademarks
 belong to their owners.
 
 ## License

@@ -2,7 +2,8 @@
 
 帮中文远程工作者选城市。[打开排行 →](https://roamorrow.com/nomads/)
 
-十一月专题：[清迈、河内、大理与海边备选](https://roamorrow.com/nomads/guides/november-nomad-destinations/) · [河内还是岘港](https://roamorrow.com/nomads/guides/hanoi-da-nang-november-workday/)。[本轮数据与来源](research/2026-11-02-refresh.md)。
+
+![城市排行筛选示例：国外与本月推荐11月](docs/images/ranking-filters.png)
 
 <!-- seasonal:table:start -->
 ## 2026年11月，去哪住一阵
@@ -71,6 +72,9 @@
 数据为参考值，出发前请核实。[数据与方法](web/docs/data-and-methods.md)。
 
 [目的地笔记与工作条件](guides/destination-notes.md) · [两城比较与询问模板](guides/choose-a-base.md) · [第一周试住清单](guides/first-week-checklist.md)
+
+十一月专题：[清迈、河内、大理与海边备选](https://roamorrow.com/nomads/guides/november-nomad-destinations/) · [河内还是岘港](https://roamorrow.com/nomads/guides/hanoi-da-nang-november-workday/)。[本轮数据与来源](research/2026-11-02-refresh.md)。
+
 
 ## 想改进它，或自己运行
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/hero.svg" alt="dsh-pages — 模型把回答做成一页，直接嵌在对话里能点能用" width="760" />
+![dsh-pages — 模型把回答做成一页，直接嵌在对话里能点能用](assets/hero.svg)
 
 <p>
   <a href="https://github.com/OrderG-X/dsh-pages/releases"><img src="https://img.shields.io/github/v/release/OrderG-X/dsh-pages?label=release&color=4D6BFE" alt="release" /></a>
@@ -8,9 +8,14 @@
   <a href="https://github.com/awesome-dsh-plugin/awesome-dsh-plugin"><img src="https://img.shields.io/badge/DSH-plugin-4D6BFE" alt="DSH plugin" /></a>
 </p>
 
+<p>
+  <a href="README.md"><b>简体中文</b></a> ·
+  <a href="README.en.md">English</a>
+</p>
+
 </div>
 
-<img src="assets/demo.gif" alt="提问 → 模型写页面 → 页面嵌在回复下面能点 → 右侧打开整页 → 两边勾选实时同步 → 跟着换浅色" width="880" />
+![提问 → 模型写页面 → 页面嵌在回复下面能点 → 右侧打开整页 → 两边勾选实时同步 → 跟着换浅色](assets/demo.gif)
 
 让 DSH（DeepSeek Harness）的模型把回答做成一页网页：对比、清单、图表、计算器、测验……页面**直接嵌在回复下面**，能点能用，深浅色跟着 DSH 走，填过的东西重开还在。改一次存一版，旧版留着能翻；右侧栏看整页，一键导出 PNG / PDF / HTML。
 
@@ -36,7 +41,7 @@
 
 装完**重启 DSH**（客户端代码在 DSH 启动时打包，不重启看不到页面）。DSH「插件」页里显示为「页面」。
 
-**更新**：在「插件」页把它卸载，再按上面添加一次。新版发布后大约一天按包名才装得到（DSH 装插件用的 pnpm 默认不装刚发布的版本），急的话填发布包地址。
+**更新**：DSH 0.2.2 起，在「插件」页点开它，点「更新到 …」；更老的 DSH 先卸载，再按上面添加一次。新版发布后大约一天才装得到（DSH 装插件用的 pnpm 默认不装刚发布的版本）；急的话卸载后填发布包地址，不过这样装的以后不能点更新。
 
 开发时可以直接链到本地目录：在「添加插件」里填本仓库的绝对路径，装上的是 `link:`，改了代码同样要重启。
 
@@ -51,7 +56,7 @@
 
 ## 模板
 
-<img src="assets/templates.jpg" alt="八种模板：报告、对比、清单、数据看板、时间线、学习卡片、测验、流程图" width="880" />
+![八种模板：报告、对比、清单、数据看板、时间线、学习卡片、测验、流程图](assets/templates.jpg)
 
 模型传 `template` 和 `data`（只写内容），插件排成一页：配色、深浅色、手机排版、交互和保存都是现成的。比让模型从头写整页网页快得多，也不会写坏；`data` 写得不对，工具会说清楚哪里不对，模型照着改。
 

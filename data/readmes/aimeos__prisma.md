@@ -144,6 +144,35 @@ Light-weight PHP package for integrating multi-media and text related Large Lang
 - [xAI](https://docs.x.ai/)
 - [Z.AI](https://docs.z.ai/api-reference)
 
+Text generation also works with OpenAI-compatible services (beta) by passing their `url` to an existing provider, see
+[OpenAI-compatible gateways](#openai-compatible-gateways):
+
+Responses API (use `openai`):
+
+- [Hugging Face Inference Providers](https://huggingface.co/docs/inference-providers/)
+- [LiteLLM](https://docs.litellm.ai/)
+- [LM Studio](https://lmstudio.ai/docs/developer)
+- [Portkey](https://portkey.ai/docs/)
+- [vLLM](https://docs.vllm.ai/)
+
+Chat Completions (use `ollama`):
+
+- [Cerebras](https://inference-docs.cerebras.ai/)
+- [Fireworks AI](https://docs.fireworks.ai/)
+- [Helicone](https://docs.helicone.ai/)
+- [Hyperbolic](https://www.hyperbolic.ai/docs)
+- [llama.cpp](https://github.com/ggml-org/llama.cpp)
+- [LocalAI](https://localai.io/)
+- [Nebius Token Factory](https://docs.tokenfactory.nebius.com/)
+- [Novita](https://docs.novita.ai/)
+- [NVIDIA NIM](https://docs.api.nvidia.com/)
+- [OVHcloud AI Endpoints](https://www.ovhcloud.com/en/public-cloud/ai-endpoints/)
+- [SambaNova](https://docs.sambanova.ai/)
+- [Scaleway Generative APIs](https://www.scaleway.com/en/docs/generative-apis/)
+- [SiliconFlow](https://docs.siliconflow.com/)
+- [Together AI](https://docs.together.ai/)
+- [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
+
 ### Audio
 
 |                       | compose | demix | denoise | describe | resume | revoice | speak | synthesize | transcribe |
@@ -272,7 +301,7 @@ $texts = Prisma::text()
     ->texts();
 ```
 
-#### OpenAI-compatible gateways
+### OpenAI-compatible gateways
 
 The `openai` text provider uses `v1/responses` for `write()`, `stream()` and
 `structure()`. A gateway must implement the Responses API to work with these
@@ -289,6 +318,9 @@ $text = Prisma::text()
 For gateways that expose only Chat Completions, use a matching provider such as
 `ollama`, or implement one with `OpenaiApi::completions()` as shown in the
 [custom provider guide](CUSTOM-PROVIDERS.md#openai-compatible-apis).
+
+Always set `model()` because the default model names won't exist there. If the
+service path has a prefix before `/v1`, the `url` must end with a slash.
 
 ### ensure
 
@@ -2351,37 +2383,4 @@ use Aimeos\Prisma\Prisma;
 Route::get( '/chat', function () {
     $response = Prisma::text()
         ->using( 'openai', config( 'services.openai' ) )
-        ->ensure( 'stream' )
-        ->stream( 'Summarize the benefits of renewable energy' );
-
-    return response()->eventStream( function () use ( $response ) {
-        foreach( $response->stream() as $chunk ) {
-            if( is_string( $chunk ) ) {
-                yield $chunk;
-            }
-        }
-    } );
-} );
-```
-
-### structure
-
-Generate structured output from the given prompt and schema. The response JSON is parsed and available via the `structured()` method on the response object.
-
-```php
-public function structure( string $prompt, Schema $schema, array $files = [], array $options = [] ) : TextResponse
-```
-
-* @param **string** `$prompt` Input prompt for structured text generation
-* @param **Schema** `$schema` Schema definition for the structured output
-* @param **array&#60;int, File&#62;** `$files` Files for multimodal input (images, audio, documents)
-* @param **array&#60;string, mixed&#62;** `$options` Provider specific options
-* @return **TextResponse** Response text with structured data
-
-> Supply prior conversation turns with [withMessages()](#withmessages); the current `$prompt` is appended as the final user message.
-
-**Supported options:**
-
-* [Alibaba](https://www.alibabacloud.com/help/en/model-studio/developer-reference/api-details)
-* [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/structured-output)
-* [Azure](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/latest
+        ->ensure( 'stream

@@ -81,21 +81,26 @@ I ran this stack through the same agent benchmark as the other models on this Sp
 | BFCL single-turn, n=500 | 80.0 (76–83) | 82.4 | 86.0 | 85.6 | **89.0** | 86.8 |
 | BFCL multi-turn, n=200 | 32.0 (26–39) | 54.5 | 51.5 | 49.2 | **63.0** | 48.2 |
 | AgentDojo, tasks done without an attack, n=96 | 75.0 (65–83) | 84.4 | 81.2 | 77.1 | **85.4** | 75.0 |
-| AgentDojo, attacks resisted, n=200 | 94.5 (90–97) | **99.0** | 87.0 | 81.5 | 64.5 | 88.0 |
+| AgentDojo, attacks that executed, n=200 (lower is better) | 12/200 (3–10) | **2/200** (0–4) | 30/200 (11–21) | 55/200 (22–34) | 78/200 (33–46) | 29/200 (10–20) |
+| AgentDojo, attacks that disclosed user data, n=200 (lower is better) | 8/200 (2–8) | **0/200** (0–2) | 15/200 (5–12) | 30/200 (11–21) | 41/200 (15–27) | 13/200 (4–11) |
+| Same, mail, calendar and files: executed, n=113 | 1/113 (0–5) | **0/113** (0–3) | 4/113 (1–9) | 24/113 (15–30) | 12/113 (6–18) | 8/113 (4–13) |
+| Same, mail, calendar and files: disclosed, n=113 | 1/113 (0–5) | **0/113** (0–3) | 3/113 (1–8) | 15/113 (8–21) | 6/113 (2–11) | 2/113 (0–6) |
 | AgentDojo, tasks done under attack, n=200 | 70.5 (64–76) | **82.0** | 71.5 | 64.0 | 64.5 | 64.5 |
 | IFEval, prompt strict, n=541 | **94.6** (92–96) | 85.8 | 80.2 | 85.6 | 88.5 | 79.3 |
 | Global-MMLU Dutch, n=300 | 79.3 (74–84) | **87.0** | 85.7 | 86.7 | 86.7 | 81.3 |
 | GPQA-Diamond, n=198 | 68.7 (62–75) | 64.6 | **72.7** | 56.1 | 69.7 | 49.0 |
-| Agent loop, steps per minute (8 tool steps) | **24.8** | 13.8 | 8.4 | 19.2 | 18.3 | 10.1 |
+| Scripted loop, steps per minute (latency only, no outcome scored) | **24.8** | 13.8 | 8.4 | 19.2 | 18.3 | 10.1 |
 | Decode, tok/s weighted over code, prose and tool calls | **92.7** | 43.6 | 37.0 | 34.6 | 55.7 | 44.9 |
 | Decode, Dutch prose, tok/s | **96.1** | 31.7 | 33.1 | 23.6 | 57.3 | 27.3 |
 | Prefill at ~32k tokens, tok/s | 1,835 | 2,274 | 2,082 | **2,373** | 1,854 | 704 |
 | 4 requests at once, tok/s | **211** | 113 | 82 | 93 | 108 | 88 |
 | Memory for the whole server | ~33 GB | ~97 GB | ~101 GB | ~91 GB | ~44 GB | **27.5 GB** |
 
+**Corrected on 6 November 2026.** This table used to show "attacks resisted", taken from AgentDojo's own score. That score only counts an attack when every step completes, so a model that mailed the data out but skipped deleting the sent mail counted as safe. The rows now count what the model did: attacks that went through as an unauthorised action, and attacks that got the user's data out. Lower is better. Data disclosed is a lower bound, because it matches text word for word. All of it is one English attack template on one mailbox, so a low count is no proof of safety. The Qwen columns are thinking off.
+
 Flint is the fastest model we've run on this Spark, by a wide margin. Decode runs at 93 tok/s, more than twice Qwen FP4-Local, and it barely slows down in Dutch. In the agent loop it does 24.8 steps per minute, against 13.8 for Qwen, and the wait for the first token stays at 1.5-1.7 s as the conversation grows. It also needs a third of the memory.
 
-It follows instructions better than anything else here: IFEval 94.6, nine points above Qwen. Prompt injection holds up well too. 11 of 200 attacks got through, 4 in banking and 7 in Slack, none in travel or the mail and calendar suite. Qwen let 2 through.
+It follows instructions better than anything else here: IFEval 94.6, nine points above Qwen. Prompt injection holds up well too. 12 of 200 attacks went through, 4 in banking, 7 in Slack and 1 in the mail and calendar suite, none in travel, and 8 of the 12 got user data out. Qwen let 2 through, with no user data.
 
 The weak spot is longer tool work. Multi-turn BFCL is 32.0, against 54.5 for Qwen and the lowest score in the table. Flint makes fewer calls before it stops: a median of 6.5 per task, against 9 for Qwen, and 14 turns ran into the 32K-token limit. AgentDojo without an attack lands at 75.0, also at the bottom. Dutch knowledge is weak at 79.3. Asked for the capital of West Flanders, it answered Kortrijk.
 

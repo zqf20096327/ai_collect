@@ -103,7 +103,8 @@
 
 - [eai-rk3588: Edge Inference Platform with Multi-threaded Pipeline](https://github.com/kyshipit/eai-rk3588)
 - [MeloTTS: ONNX Export & RKNN Deployment on RK3588](https://github.com/kyshipit/MeloTTS)
-- [ros-robot: Scalable Edge AI Robot Platform based on ROS2](https://github.com/kyshipit/ros-robot)
+- [mbot-sim: ROS 2 Jazzy simulation navigation verification (archived)](https://github.com/kyshipit/mbot-sim)
+- [gh-heatmap-generator: GitHub heatmap visualizer and script generator](https://github.com/kyshipit/gh-heatmap-generator)
 
 <p align="right">(<a href="#technical-notes">Back to top</a>)</p>
 

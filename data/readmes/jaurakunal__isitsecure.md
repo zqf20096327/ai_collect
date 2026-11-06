@@ -301,6 +301,7 @@ record to prove it could is not worth the finding.
 | Lazy-Chunk Bundle Collection | Collects JavaScript from `<link rel=modulepreload/preload/prefetch>` as well as `<script src>` — a code-split SPA ships its routes as `<link>` chunks, so a script-only sweep sees the shell and none of the API surface |
 | OpenAPI/Swagger Discovery | Probes `/openapi.json`, `/swagger.json`, `/v3/api-docs` and parses the spec into testable endpoints — finds attack surface on APIs with no crawlable frontend |
 | HTML Form/Link Discovery | Reads `<form>`/`<input>`/query-links from server-rendered pages (bounded url-only crawl + inside the authenticated crawler) — finds attack surface on classic MVC apps with no JS API bundle |
+| Cross-Origin Backend Mining | Mines JS bundles for an API host that lives on a different origin than the SPA shell (e.g. an API-gateway URL), resolving base+property URL concatenation into method/path endpoints; third-party and CDN hosts are excluded. Opt-in: without `--follow-mined-backends` a mined host is only reported, never probed |
 | Endpoint Prioritizer + Time Budget | Ranks likely-vulnerable endpoints first and tests within a per-scanner time budget, so high-risk paths get covered before the clock runs out |
 | SAST→DAST Feedback Loop | SAST findings generate targeted DAST tests (6 strategies: auth bypass, IDOR, injection, mass assignment, race condition, RLS bypass) |
 | Cross-Referencer | Matches DAST + SAST findings for high-confidence confirmed vulnerabilities |
@@ -610,7 +611,14 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
 isitsecure setup
 ```
 
-`isitsecure setup` stores the key in `~/.isitsecure/config.toml`, created with owner-only (`0600`) permissions inside a `0700` directory.
+Optional Anthropic settings (same resolution order: env var, `.env`, then `[llm]` in `config.toml`):
+
+| Variable | `config.toml` key | Purpose |
+|----------|-------------------|---------|
+| `ANTHROPIC_WORKSPACE_ID` | `anthropic_workspace_id` | Sent as the `anthropic-workspace-id` header. Required by identity-linked keys (e.g. Cyber Verification Program, org-wide "All workspaces" keys); omitted when unset. |
+| `ANTHROPIC_FALLBACK_MODEL` | `anthropic_fallback_model` | Model used for a single retry when Anthropic's cyber safeguard refuses a request (an HTTP 200 with empty content). Defaults to `claude-sonnet-5-5`; a log warning is emitted when the retry happens. If the fallback also refuses (or none is set), the call raises `LLMRefusalError` carrying the refusal category. |
+
+`isitsecure setup` stores the key in `~/.isitsecure/config.toml`, created with owner-only (`0600`) permissions inside a `0700` directory. Re-running setup updates only the API key; other `config.toml` keys (such as `anthropic_workspace_id`) are preserved.
 
 ### OOB Callbacks (Blind Vulnerability Detection)
 
@@ -686,6 +694,9 @@ Options:
   --probe-writes         Test the mutation surface (stored XSS, mass
                          assignment, CSRF). WRITES to the target — only for
                          an app you own or are authorized to test.
+  --follow-mined-backends Also probe cross-origin API hosts mined from JS
+                         bundles. Only for backends you are authorized to
+                         test; off by default (hosts are reported only).
   --llm TEXT             LLM provider: anthropic|google|none [default: anthropic]
   -o, --output TEXT      Output format: table|json|html|sarif|fixes [default: table]
   -f, --output-file TEXT Write report to file
@@ -796,9 +807,12 @@ Now ask your agent to check your code. It calls the `scan` tool:
 - **`explain(scan_id, finding_id)`** — after a scan, dig into one finding: its
   specific description, the vulnerable code, and step-by-step remediation. Ask
   "explain the SQL injection one" and the agent calls it for you.
-- **`fix(scan_id, finding_id)`** — proposes a patch for one finding (a unified
-  diff + the fixed file). Your AI tool applies it with its own editor — the MCP
-  never writes files. Ask "fix the SQL injection."
+- **`fix(scan_id, finding_id)`** — hands your AI tool everything it needs to fix
+  one finding (the finding, its source file, common fix patterns). Your AI tool
+  writes and applies the patch with its own model and editor — so this needs no
+  API key, and the MCP never writes files. (The CLI and web UI have no host AI,
+  so `isitsecure fix` still generates fixes itself and needs an LLM key.) Ask
+  "fix the SQL injection."
 - **`verify(scan_id)`** — after you apply fixes, re-scans and reports what
   cleared and any grade movement (e.g. F → D). Ask "did that work?"
 - **`export(scan_id, format)`** — render the scan as HTML / SARIF / JSON /

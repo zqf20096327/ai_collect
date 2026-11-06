@@ -374,6 +374,25 @@ sha256sum -c SHA256SUMS-1.3.3.txt
 The app talks to one host only: the one you typed. The API key sits in the Android Keystore, and
 conversations stay in DataStore on the device.
 
+### From a free store
+
+The same signed packages are also published through repositories that ask for no account and no fee:
+
+[![Get it on Obtainium](https://raw.githubusercontent.com/ImranR98/Obtainium/main/assets/graphics/badge_obtainium.png)](https://apps.obtainium.imranr.dev/redirect?r=obtainium://add/https://github.com/JemaOS/hermes-onyx)
+
+- **This project's own F-Droid repository** — add `https://jemaos.github.io/hermes-onyx/repo` in
+  F-Droid or Droid-ify (Settings → Repositories → Add), and every version arrives as a normal
+  update. The same packages as the releases, signed by the project key; the repository index is
+  signed by a second, separate key. Landing page: <https://jemaos.github.io/hermes-onyx/>.
+- **Obtainium** — the button above adds this repository's releases as a source: it installs the app
+  and follows every new version, checking the `SHA256SUMS` file that ships with each release.
+- **IzzyOnDroid** and **F-Droid** — neither carries the app yet: nothing has been requested there.
+  A build from F-Droid would be rebuilt from source and signed by F-Droid, so it would install
+  **beside** the package above rather than over it — one source per device, then keep it.
+
+The listing text, screenshots and per-version notes live in `fastlane/metadata/android/`, and the
+step-by-step for those two requests is in **[docs/SOUMISSION-STORES.md](docs/SOUMISSION-STORES.md)**.
+
 ## Screenshots — light and dark
 
 Every screen below is captured from the release build, in the light and the dark theme.

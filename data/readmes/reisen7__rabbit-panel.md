@@ -10,6 +10,7 @@
 - 多节点 Master / Worker 管理
 - 可选 HTTPS：设置 `TLS_ENABLED=true` 后启用原生 TLS，无证书时自动生成自签证书，可选 HTTP 跳转端口
 - AI 助手支持多种模型接口，并可扫码连接微信
+- 容器异常可绑定 Showdoc 推送 Token，按容器和规则发到微信
 - 智能体可以操作已登记的其他节点
 - 在线更新、版本检测、进度反馈
 - 中文 / English 界面
@@ -82,7 +83,7 @@ Worker：
 docker compose -f docker-compose.worker.yml up -d
 ```
 
-> `JWT_SECRET` 和 `NODE_SECRET` 必须一致。  
+> `JWT_SECRET` 和 `NODE_SECRET` 必填，且两边必须一致。用 `openssl rand -hex 32` 生成，示例值和空值会被拒绝。
 > Master / Worker 系统时间差不能超过 1 小时。
 
 ## 配置
@@ -92,8 +93,8 @@ docker compose -f docker-compose.worker.yml up -d
 - `MODE=master|worker`
 - `HOST=0.0.0.0`
 - `PORT=3958`
-- `JWT_SECRET=...`
-- `NODE_SECRET=...`
+- `JWT_SECRET` 必填，至少 32 个字符。空值和仓库里的示例值会拒绝启动
+- `NODE_SECRET` 必填，规则与 `JWT_SECRET` 相同。Master 和 Worker 必须一致
 - `NODE_NAME=worker-1` Worker 显示名称；Master 不填时显示为 `master`
 - `NODE_ADDRESS=192.168.1.20:10001` Master 能访问到的 Worker 地址
 - `RABBIT_UPDATE_CHECK_DISABLED=true` 跳过更新检查（不再请求 `MANIFEST_URL`，界面不显示更新提示）

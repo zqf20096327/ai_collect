@@ -466,6 +466,7 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
 - **[How to Train Your GPT](https://github.com/raiyanyahya/how-to-train-your-gpt/tree/master)** - FREE
 - **[Zero to AI](https://github.com/PavanMudigonda/zero-to-ai)** - FREE
 - **[Finituning-Large-Language-Models](https://github.com/AngelFelipeMP/Finituning-Large-Language-Models)** - FREE
+- **[llm-zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)** - FREE
   
  ### Week 1-[**📚Chapter1:Introduction**]()
 
@@ -510,4 +511,4 @@ This course dives deep into sequence modeling techniques for Natural Language Pr
  |**🌐1-T5 and BART (Encoder-Decoder models)**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-Multi Head Attention**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
  |**🌐1-Positional Encoding**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.ipynb)|---|---|
- |**🌐1-LayerNorm**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hussain0048/Natural-language-processing/blob/main/Natural_Language_Processing.i
+ |**🌐1-LayerNorm**| |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/hus

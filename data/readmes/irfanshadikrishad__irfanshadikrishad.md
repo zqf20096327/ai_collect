@@ -11,25 +11,21 @@
     <summary><h3 style="display: inline-block;"><a href="https://irfanshadikrishad.dev"><i>✧ TECHNOLOGIES ✧</i></a></h3></summary>
   </ul>
 </div>
-<a href="https://www.sass-lang.com" target="_blank"><img src="./images/sass.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://en.wikipedia.org/wiki/javascript" target="_blank"><img src="./images/js.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://www.typescriptlang.org" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" width="30" height="27.27" draggable="false"></a>
-<a href="https://www.jquery.com" target="_blank"><img src="./images/jquery.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://react.dev" target="_blank"><img src="./images/react.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://expressjs.com" target="_blank"><img src="./images/express.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://mongoosejs.com" target="_blank"><img src="./images/mongoose.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://nodejs.org" target="_blank"><img src="./images/node.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://mongodb.com" target="_blank"><img src="./images/mongodb.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://python.org" target="_blank"><img src="./images/python.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://en.wikipedia.org/wiki/c_(programming_language)" target="_blank"><img src="./images/c.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://en.wikipedia.org/wiki/c%2b%2b" target="_blank"><img src="./images/cpp.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://git-scm.com" target="_blank"><img src="./images/git.png" width="30" height="27.27 "draggable="false"></a>
-<a href="https://neovim.io" target="_blank"><img src="./images/neovim.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://nginx.org" target="_blank"><img src="./images/nginx.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://pm2.keymetrics.io" target="_blank"><img src="./images/pm2.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://nextjs.org" target="_blank"><img src="./images/nextjs.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://docker.com" target="_blank"><img src="./images/docker.png" width="30" height="27.27" draggable="false"></a>
-<a href="https://en.wikipedia.org/wiki/linux" target="_blank"><img src="./images/linux.png" width="30" height="27.27" draggable="false"></a>
+<a href="https://www.sass-lang.com" target="_blank"><img alt="Sass" src="./images/sass.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://en.wikipedia.org/wiki/javascript" target="_blank"><img alt="JavaScript" src="./images/js.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://www.typescriptlang.org" target="_blank"><img alt="TypeScript" src="./images/ts.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://jquery.com" target="_blank"><img alt="jquery" src="./images/jquery.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://www.c-language.org" target="_blank"><img alt="c-language" src="./images/c.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://en.wikipedia.org/wiki/C%2B%2B" target="_blank"><img alt="cpp-language" src="./images/cpp.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://www.python.org/" target="_blank"><img alt="python" src="./images/python.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://www.expressjs.com" target="_blank"><img alt="expressjs" src="./images/expressjs.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://git-scm.com" target="_blank"><img alt="git" src="./images/git.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://neovim.io" target="_blank"><img alt="neovim" src="./images/neovim.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://nginx.org" target="_blank"><img alt="nginx" src="./images/nginx.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://pm2.keymetrics.io/" target="_blank"><img alt="pm2" src="./images/pm2.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://nextjs.org/" target="_blank"><img alt="nextjs" src="./images/nextjs.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://www.docker.com/" target="_blank"><img alt="docker" src="./images/docker.png" width="25" height="25" draggable="false"></a>&nbsp;
+<a href="https://en.wikipedia.org/wiki/Linux" target="_blank"><img alt="linux" src="./images/linux.png" width="25" height="25" draggable="false"></a>
 <br>
 <img src="https://streak-stats.demolab.com/?user=irfanshadikrishad&theme=transparent&hide_border=true" draggable="false" >
 

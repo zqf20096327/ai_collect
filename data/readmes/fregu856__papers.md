@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-06] [paper614]
+- DeepSpot-M: A Multimodal Foundation Model for Transcriptome-Wide Virtual Spatial Transcriptomics From Histology
+ [[pdf]](https://www.medrxiv.org/content/10.64898/2026.06.19.26356060v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/DeepSpot-M%20A%20Multimodal%20Foundation%20Model%20for%20Transcriptome-Wide%20Virtual%20Spatial%20Transcriptomics%20From%20Histology.pdf)
+- `medrxiv, 2026-06`
+- [Computational Pathology]
+```
+Interesting paper, I quite enjoyed reading this. I spent a bit too much time on it though, so after Section 2.3 I had to read the rest a bit more quickly. The overall gene-query approach is interesting and pretty cool, "genes are represented as queryable embeddings rather than fixed outputs", which enables them to make predictions for genes not seen during training (and also deal with train datasets having different sets and varying number of genes). The analysis in 2.3 could have been extended though, could have held the 4.4k unseen/evaluation genes fixed, and then varied how many of the 12.9k train genes they actually use during training (e.g., use 50%, 25%, 10%, 5%, 1% of these) and checked how this affects the performance on the unseen genes. Would be interesting. Eventually, you would see a substantial drop in performance, I would expect? I don't understand 4.3 and the extended data Fig 12 though. Xavier random initialization is better than scGPT? But, using such random inits would not allow them to predict for unseen genes, or? I'm quite confused by this.
+```
+
+##### [26-11-06] [paper613]
+- Probabilistic Uncertainty in Virtual Spatial Transcriptomics From Histology Is Largely Redundant With the Predicted Mean
+ [[pdf]](https://www.biorxiv.org/content/10.64898/2026.10.23.760875v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Probabilistic%20Uncertainty%20in%20Virtual%20Spatial%20Transcriptomics%20From%20Histology%20Is%20Largely%20Redundant%20With%20the%20Predicted%20Mean.pdf)
+- `NeurIPS Workshops 2026`
+- [Computational Pathology]
+```
+Interesting paper. Somewhat discouraging results, seems like it might be quite difficult to train models that properly capture meaningful/informative uncertainty in the predictions. Perhaps it could at least help to use another PFM than Midnight-12k. 
+```
+
 ##### [26-11-05] [paper612]
 - Implementing Trust in Non-Small Cell Lung Cancer Diagnosis With a Conformalized Uncertainty-Aware AI Framework
  [[pdf]](https://www.nature.com/articles/s41551-026-01694-8) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Implementing%20Trust%20in%20Non-Small%20Cell%20Lung%20Cancer%20Diagnosis%20With%20a%20Conformalized%20Uncertainty-Aware%20AI%20Framework.pdf)
@@ -1057,22 +1075,4 @@ Well written and interesting paper, I quite enjoyed reading it. All figures etc 
 - `The Lancet Digital Health, 2024`
 - [ML for Medicine/Healthcare], [EHRs]  
 ```
-Quite interesting paper. Neat that they use both the free text and structured data in the EHRs ("uses named entity recognition and linking tools to convert EHR document text into structured, coded concepts"). But then I got a bit confused, found it difficult to understand exactly how the model actually works. Does the model just iteratively output tokens? I.e., for generating the "top N forecasts", they just run the model to output N tokens? But so how do they generate timelines as in Figure 4 in that case? The output tokens/concepts have no time information? But, output tokens can also be "patient demographics, such as age, gender, or ethnicity"? So, the second output token can thus be e.g. "age 50 years" as in the top example of Figure 4? And those put all other output tokens on a timeline like that? I also find it a bit difficult to interpret the results, how well the model actually works.
-```
-
-##### [25-08-03] [paper497]
-- TransformEHR: Transformer-Based Encoder-Decoder Generative Model to Enhance Prediction of Disease Outcomes Using Electronic Health Records
- [[pdf]](https://www.nature.com/articles/s41467-023-43715-z) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/TransformEHR%20Transformer-Based%20Encoder-Decoder%20Generative%20Model%20to%20Enhance%20Prediction%20of%20Disease%20Outcomes%20Using%20Electronic%20Health%20Records.pdf)
-- `Nature Communications, 2023`
-- [ML for Medicine/Healthcare], [EHRs] 
-```
-Well written and quite interesting paper, gives a pretty good introduction to pretraining methods for EHR data I think. 255 million visits from 6.5 million patients, seems like a lot of data. The evaluation is not super extensive, but yes, seems to consistently outperform the BERT baseline. I don't quite understand how the model handles that different visits can have different numbers of ICD codes though, are the code embeddings just added together?
-```
-
-##### [25-08-01] [paper496]
-- Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation
- [[pdf]](https://arxiv.org/abs/2302.09664) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Semantic%20Uncertainty%20Linguistic%20Invariances%20for%20Uncertainty%20Estimation%20in%20Natural%20Language%20Generation.pdf)
-- `ICLR 2023`
-- [Language Models], [Uncertainty Estimation] 
-```
-Well written and interesting paper. Yes, I should have read this before "Semantic Volume: Quantifying and Detecting both External and Internal Uncertainty in LLMs", this provided more background. The method here makes sense overall I think, but seems somewhat inconvenient having to "manually" classify each par of sentences, whether they ~mean~ the same thing or not. So yes, my initial impression is that the Semantic Volume me
+Quite interesting paper. Neat that they use both the free text and structured data in the EHRs ("uses named entity recognition and linking tools to convert EHR document text into structured, coded concepts"). But then I got a bit confused, found it difficult to understand exactly how the model actually works. Does the model just iteratively output tokens? I.e., for generating the "top N forecasts", they just run the model to output N tokens? But so how do the

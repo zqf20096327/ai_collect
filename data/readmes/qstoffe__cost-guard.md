@@ -18,7 +18,7 @@ Cost Guard analyzes [OpenCode](https://opencode.ai/) usage, relative model costs
 
 ## Quick start
 
-Use **current `main`** (v80.175, 2026-11-05), the supported distribution.
+Use **current `main`** (v80.196, 2026-11-06), the supported distribution.
 
 Without Git: [repository](https://github.com/qstoffe/cost-guard) → **main → Code → Download ZIP**. Preserve the extracted structure; download again to update.
 
@@ -324,7 +324,7 @@ Useful settings include:
 - `pricingMaxAgeHours`: pricing/model metadata cache age.
 - `thresholds`: running-cost, context, percentile and quota warning thresholds.
 - `colorScheme`, `colorSchemes`, `colors`: terminal palette selection and per-role overrides.
-- `webSettings`: Web-only `theme`, `ccostDisplayUnit`, `miniWatchPlacement` and `quotaDisplayMode` (`used` default / `remaining`). Each supports symbolic `default` inheritance or an explicit pinned choice. Legacy `webTheme` is fallback; other keys stay shared.
+- `webSettings`: Web-only `theme`, `ccostDisplayUnit`, `miniWatchPlacement` (position), `miniWatchSize` (`fit-on-open` default / `remember-last`) and `quotaDisplayMode` (`used` default / `remaining`). Each supports symbolic `default` inheritance or an explicit pinned choice. Legacy `webTheme` is fallback; other keys stay shared.
 
 `modelComparisonNew` colors new names/dates; `modelComparisonPromotion` colors active rates/Relative CCost. Superseded colors fade; plain output is unchanged.
 
@@ -361,7 +361,7 @@ Bundles omit prompts/titles, raw payloads/auth, tokens and account labels/IDs; s
 
 ## Current version
 
-**v80.175 (2026-11-05):** Web Beta removes Reports and its date form. Old Reports bookmarks safely redirect to Sessions without applying dates or starting a report. Browse historical sessions using Last activity and the other sortable catalog columns; CLI date/range reports and shared report APIs remain available. See [Web Beta](docs/web-beta.md).
+**v80.196 (2026-11-06):** Sessions separates fresh canonical running evidence from scalar-summary loading, updates supported metrics without replacing focused cells, and exposes distinct provider-qualified contributors on the `Multiple models` text through shared hover/focus/touch help. Failures and retained/partial values remain explicit; catalog sorting, bounded acquisition and canonical accounting are unchanged. See [Web Beta](docs/web-beta.md).
 
 Earlier changes: [version history](VERSION_HISTORY.md). [Live-proof limits](development/architecture/modules/history-loading.md#startup-presentation-and-launcher-evidence). Claude quotas remain experimental.
 

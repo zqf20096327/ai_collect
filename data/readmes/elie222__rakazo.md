@@ -104,7 +104,7 @@ Or [deploy on Railway](https://railway.com/new/template/rakazo-template); see th
 ## Local development (source checkout)
 
 You need Node.js 22.22.2 or newer in the 22.x line, Node.js 24.x, or Node.js 26+;
-pnpm 9; and Docker. Node.js 23.x and 25.x are not supported.
+pnpm 12; and Docker. Node.js 23.x and 25.x are not supported.
 
 ```bash
 git clone https://github.com/elie222/rakazo.git
@@ -153,6 +153,11 @@ on each device and set `RAKAZO_DEV_TAILNET=1` in `.env`. `pnpm dev` then serves 
 HTTPS at `https://<machine>.<tailnet>.ts.net:<web port>`, reachable only from devices on your
 tailnet, and stops serving it when you quit. Sign in at that URL on every device, including the
 one running it. The first run may ask you to turn on HTTPS certificates for your tailnet.
+
+To keep keys in a secrets manager instead of `.env`, set `RAKAZO_DEV_RUN_WITH` to the command
+that runs another with your secrets added, for example `op run --env-file=dev.env --` or
+`infisical run --env=dev --projectId=<project> --`. `pnpm dev` then starts inside it, and the
+values it adds win over `.env`.
 
 To run Postgres from the Compose file instead, start it with the `postgres-host` overlay, which
 publishes loopback `127.0.0.1:5433`, and point `DATABASE_URL` and `DATABASE_MIGRATION_URL` at it:
@@ -295,6 +300,7 @@ Chinese guides cover [self-hosting](./docs/zh-CN/self-host.md), [models](./docs/
 - [Backup and restore](./docs/self-host-backups.md)
 - [Upgrading](./docs/self-host-upgrading.md)
 - [Logs and monitoring](./docs/self-host-observability.md)
+- [Audit log](./docs/self-host-audit-log.md)
 - [Apps and clients](./docs/self-host-clients.md)
 - [Billing](./docs/self-host-billing.md)
 - [Computer runtime and isolation](./docs/computer-runtime.md)

@@ -18,13 +18,22 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)]()
-[![MCP](https://img.shields.io/badge/MCP-118%20tools%20%C2%B7%208%20endpoints-orange)]()
+[![MCP](https://img.shields.io/badge/MCP-120%20tools%20%C2%B7%208%20endpoints-orange)]()
 [![Free Trial](https://img.shields.io/badge/Trial-Free-brightgreen)]()
 [![Agent-Agnostic](https://img.shields.io/badge/Agent-Claude%20%7C%20Codex%20%7C%20Cursor%20%7C%20OpenClaw-purple)]()
 
 <p align="center">
   <img src="assets/company-intro.png" alt="Sorftime — The most comprehensive overseas e-commerce data company globally. 97% market segment coverage across global platforms. Real-time consumer trend insights from social media. Core philosophy: marketplace data reflects transactions that already happened, social media reveals demand that is brewing." width="100%">
 </p>
+
+---
+
+## 🆕 What's New (November 6, 2026) — v5.2.4: Natural-Language Keyword Search & Seller Profiles
+
+- **🔍 `keyword_search_from_name`** (Amazon, 2 credits): describe a product in natural language and get matched trending keywords (20 per page). Live schema-verified; data coverage is backfilling (returns "No data available" for now — reported honestly).
+- **🏪 `seller_detail`** (Amazon): full seller profile by name or ID — nationality/region, launch date, product count, feedback volume, province/city. Same backfill status.
+- **♻️ Quora trio re-mounted on the Amazon endpoint** (server-side: removed 2026-10-27, restored 2026-11-06; social endpoint unchanged). Root endpoint: 118 → **120 tools**; amazon endpoint: 43 → **48**.
+- **[Full changelog →](CHANGELOG.md)**
 
 ---
 
@@ -41,7 +50,7 @@
 
 ## 🆕 What's New (October 10, 2026) — v4.0.0: Platform-Split Endpoints & Modular Packages
 
-- **🌐 MCP split by platform (8 endpoints)**: Sorftime MCP now ships one endpoint per platform — `mcp.sorftime.com/{amazon|walmart|shopee|tiktok|temu|1688|mercado|social}` — with the root endpoint kept as the all-platform compatible default (118 tools = exact union of the 8 endpoints, verified 2026-10-27). One Account-SK works across all endpoints with a shared quota. Endpoint resolution: `SORFTIME_MCP_URL` env > per-package `config/platform.json` > root.
+- **🌐 MCP split by platform (8 endpoints)**: Sorftime MCP now ships one endpoint per platform — `mcp.sorftime.com/{amazon|walmart|shopee|tiktok|temu|1688|mercado|social}` — with the root endpoint kept as the all-platform compatible default (118 tools = exact union of the 8 endpoints at that time; now 120). One Account-SK works across all endpoints with a shared quota. Endpoint resolution: `SORFTIME_MCP_URL` env > per-package `config/platform.json` > root.
 - **📦 Platform packages via a single-source builder**: `build/build_packages.py` generates 8 self-contained skill packages (`sorftime-amazon`, `sorftime-walmart`, `sorftime-shopee`, `sorftime-tiktok`, `sorftime-temu`, `sorftime-ali1688`, `sorftime-mercado`, `sorftime-social`) from this repo — each with a platform-tailored hot layer, its own platform knowledge page, and a pre-wired endpoint. Fix once, rebuild all.
 - **🧠 Knowledge restructured for progressive disclosure**: SKILL.md shrinks 58KB → 7KB; onboarding scripts, per-platform tool tables, gotchas, content QA and script guides move into `references/` (8 new `references/platforms/*.md` pages). The model reads what it needs, when it needs it.
 - **🎵 TikTok suite fully renamed server-side (breaking)**: the old 7 tools are retired; 18 new tools ship under the `*_request` / `*_search_from_name` convention — now with product search (30+ filters) plus five new search families: **shops, authors, brands, videos, hashtags**. Same-args renames are auto-remapped; behavior-changed tools fail cleanly instead of mis-calling.

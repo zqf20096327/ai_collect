@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.1`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.2`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,26 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.1 and earlier)</summary>
+<summary>Recent release notes (v11.25.2 and earlier)</summary>
+
+## What's New in v11.25.2
+
+**Fresh-node setup imports now use the enrolled Companion identity.** On a new
+post-v23 chain, the setup wizard's pending memories previously tried to embed and
+submit as the genesis Root, which is deliberately not an ordinary agent. The
+import now signs as the enrolled Companion, routes an unqualified entry to that
+Companion's home domain, and reports embed, submit, and zero-import failures at
+visible log levels instead of producing only `Imported 0/N`.
+
+**The optional local memory judge is pinned to v17b.** The default-off managed
+judge now uses a separate immutable model artifact, verifies both the downloaded
+GGUF and Ollama's registered blob, and keeps explicit v16 selections unchanged.
+The v17b training pass targets the short user decisions and task-shaped memories
+that v16 often rejected or held, while retaining the chat-only and session-remark
+traps. New writing guidance is linked from the write-gate reference.
+
+No consensus version change or chain migration. `latest` and automatic upgrade
+voting remain app29; app30 remains explicit.
 
 ## What's New in v11.25.1
 
@@ -331,7 +350,7 @@ uses re-enrollment; historical memory authorship is preserved.
 
 No consensus version change or chain migration. `latest` and automatic upgrade voting remain app29; app30 remains explicit. Existing reply catch-up and v11.24.4 fixes are already included through release history.
 
-Container: `ghcr.io/l33tdawg/sage:11.25.1`. SDK 11.25.1.
+Container: `ghcr.io/l33tdawg/sage:11.25.2`. SDK 11.25.2.
 
 ## What's New in v11.25.0
 
@@ -942,25 +961,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.16`. SDK 11.19.16.
 scans the full inventory, previews verified eligible counts, and processes
 manual or automatic cleanup through existing consensus challenge transactions.
 Open tasks and internal records are protected. The UI distinguishes queued work,
-confirmed submissions, and observed outcomes instead of reporting premature success.
-
-Automatic cleanup requires **fresh current-Root authorization after upgrading**;
-old enabled toggles do not silently activate it. Preview does not enable cleanup.
-Exact signed transactions are saved before submission for safe recovery. A
-challenge may need further votes; audit history is retained. See the
-[cleanup guide](docs/reference/concepts/memory-cleanup.md).
-
-No consensus-rule or application-version change; app-v27 remains the ceiling.
-Container: `ghcr.io/l33tdawg/sage:11.19.15`. SDK 11.19.15.
-
-## What's New in v11.19.14
-
-**Security dependency update:** gRPC-Go is upgraded to v1.83.1 to address
-HTTP/2 DATA-frame fragmentation heap exhaustion (CVE-2026-84304, Dependabot
-alert #45). The required genproto and OpenTelemetry dependencies are refreshed
-alongside it. CodeQL workflow actions are pinned to the verified v4.37.9 commit.
-
-This patch introduces no consensus-rule, AppHash-input, key-encoding, fork-target,
-or application-version changes. App-v27 remains the supported ceiling.
-
-Container: `ghcr.io/l33tdawg/sage:1
+confirmed submissions, and observed 

@@ -5,7 +5,7 @@
 **Beautiful, customizable animations for the links and nodes of your ComfyUI workflow, drawn on top of ComfyUI's own.**
 
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-Extension-green?style=for-the-badge)](https://github.com/comfyanonymous/ComfyUI)
-[![Version](https://img.shields.io/badge/Version-3.0.0-orange?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.1.0-orange?style=for-the-badge)](CHANGELOG.md)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-red?style=for-the-badge)](LICENSE)
 [![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen?style=for-the-badge&color=blue)](package.json)
 
@@ -57,7 +57,7 @@
 
 *   **9 effects**: Gentle Pulse, Neon Nexus, Cosmic Ripple and Sacred Rosette (v1's Flower of Life, its rings now closed), drawn over the node at v1's strength; and new ones: **Flower of Life**, nineteen circles that draw themselves in, the Seed of Life first, then bloom and turn; **Jelly**, which makes the node itself wobble like gel as you drag, drop or select it and as its run finishes, then settle still; and **Circuit Trace**, which makes the node a chip, pulses racing along etched traces from its pins to light its pads; **Aurora Veil**, curtains of light hanging from the title bar, waving and drifting; and **Ember Crown**, flames licking up from the title bar with embers rising from them. All with a halo and a glowing frame on selected nodes.
 *   **Particles** with or without an effect, in 6 color modes.
-*   **5 title styles** and a **Node FX** menu to give one node its own effect.
+*   **13 animated title styles** (see Animated titles below), and a **Node FX** menu to give one node its own effect.
 
 </td>
 </tr>
@@ -110,7 +110,8 @@
 ### 👐 Connection assist
 ![Connection assist](https://github.com/AEmotionStudio/ComfyUI-EnhancedLinksandNodes/releases/download/assets-v3/assist.webp)
 
-*   While you drag a link, the nearest slot within reach that it can connect to gets a **Guide line**, **Reaching hands** that clasp when you are close, or **Hands & eyes**.
+*   While you drag a link, the nearest slot within reach that it can connect to gets a **Guide line**, **Reaching hands**, or **Hands & eyes**.
+*   With the hands, the slot's hand reaches out on its arm to meet yours, and they shake hands when you are close, with a burst of light (**Clasp shimmer**, on by default). With **Hands & eyes**, the node you drag from and the slot's node watch the link and smile once the hands clasp.
 *   **Connect on release** (on by default): let go once the hands clasp, or wherever the guide line points, and the link connects there. Hold the **Snap key** (Ctrl, ⌘ on Mac) as you let go to connect from anywhere in reach.
 *   A link let go on a slot, a node or a reroute connects exactly as in ComfyUI; one let go far from any slot opens ComfyUI's link-release search.
 
@@ -137,6 +138,14 @@
 
 </td>
 <td width="50%">
+
+### 🔤 Animated titles
+![Animated titles](https://github.com/AEmotionStudio/ComfyUI-EnhancedLinksandNodes/releases/download/assets-v3/titles.webp)
+
+*   **13 styles** for node titles: v1's Neon pulse, Glitch, Retro, Simple pulse and Minimal, now with a surge of current, tearing slices, a VHS tracking band, a swell and a sliding underline; and **Rainbow wave**, **Bounce**, **Typewriter**, **Decode**, **Molten**, **Chrome shine**, **Groovy 70s** and **Hologram**.
+*   Turn on **Animated titles** in Nodes · Titles and pick a **Title style**; size, glow, letter spacing, offset, orbit and rotation are there too, and **Title color** with Custom node colors. Classic nodes.
+*   Held still, or with reduced motion, every style shows the whole title.
+
 </td>
 </tr>
 </table>

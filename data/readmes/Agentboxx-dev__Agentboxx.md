@@ -137,6 +137,63 @@ rec.close("done")                        # also stops the container
 
 `agentbox.agent.run_agent` wraps this in a ReAct-style loop. `ScriptedModel` needs no API key. `GeminiModel` connects to Google Gemini via standard-library REST (needs `GEMINI_API_KEY`, validated end-to-end). `AnthropicModel` is an optional adapter (`pip install anthropic`, set `ANTHROPIC_API_KEY`).
 
+### LangChain & LangGraph integration
+
+Agentboxx records LangChain tool executions into its cryptographic flight recorder:
+
+~~~bash
+pip install "agentboxx[langchain]"
+~~~
+
+Use `AgentboxxCallbackHandler` directly with tools, agents, or chains:
+
+~~~python
+from agentbox.integrations.langchain import AgentboxxCallbackHandler
+from langchain_core.tools import tool
+
+@tool
+def calculate(expression: str) -> str:
+    """Evaluate a math expression."""
+    return str(eval(expression))
+
+handler = AgentboxxCallbackHandler("session-langchain")
+calculate.invoke({"expression": "10 * 4.2"}, config={"callbacks": [handler]})
+handler.close("finished")
+~~~
+
+Run `agentbox verify runs/session-langchain.ndjson` to verify the log's cryptographic integrity.
+
+### Task contracts & host-side assertions
+
+Instead of trusting an agent's self-reported claim that a task succeeded, attach a `TaskContract` to enforce execution boundaries (maximum steps, cumulative duration, deadline) and execute objective host-side success assertions:
+
+~~~python
+from agentbox import (
+    Recorder,
+    TaskContract,
+    assert_file_exists,
+    assert_file_contains,
+    assert_command,
+)
+
+contract = TaskContract(
+    task_id="solve-issue-42",
+    max_steps=15,
+    deadline_s=120.0,
+    assertions=[
+        assert_file_exists("dist/bundle.js"),
+        assert_file_contains("package.json", r'"version":\s*"1\.0\.0"'),
+        assert_command("pytest tests/test_solution.py"),
+    ],
+)
+
+rec = Recorder("eval-session", workspace="./workspace", contract=contract)
+# Run agent actions...
+rec.close("finished")
+~~~
+
+The evaluation verdict (`contract.verdict`) is HMAC-signed and hash-chained into the flight log, and surfaced in `agentbox report` (text, JSON, and HTML).
+
 ## What `agentbox verify` reports
 
 | Result | Exit code | Meaning |

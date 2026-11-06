@@ -311,15 +311,15 @@ the .NET 10 SDK, installs the published tool, restores the solution and runs
 written:
 
 ```yaml
-- uses: gregordadera/aicb-roslyn-mcp@v0.5.511.1
+- uses: gregordadera/aicb-roslyn-mcp@v0.5.515.1
   with:
-    version: 0.5.511.1
+    version: 0.5.515.1
     solution: App.sln
     output: artifacts/context.md
     fail-on: "critical>0 OR debt>120min"
 ```
 
-The example pins both halves: `@v0.5.511.1` fixes the action, `version` fixes the package it
+The example pins both halves: `@v0.5.515.1` fixes the action, `version` fixes the package it
 installs. Without `version` the action installs the newest published package, and `@main`
 follows every change to the action, so neither belongs in a build you depend on. A release
 tag can in principle be moved; the full commit SHA of that tag is the immutable form. Further
@@ -601,7 +601,7 @@ All tools with their parameters: [docs/TOOLS.md](https://github.com/gregordadera
 | Full Select profile | 72 tools | Default set plus the measured long tail |
 | Complete server surface | 82 tools | Full Select plus the opt-in session-memory, database and API-comparison tools |
 
-This README names 35 of the 54 default tools; the references below describe all of them.
+This README names 38 of the 54 default tools; the references below describe all of them.
 Start the Full Select profile with
 `aicb mcp --mcp-profile mcp-profile/full`. Set `AICB_MCP_TOOLS=all` to add
 the opt-in tools as well. The generated [tool reference](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/TOOLS.md) documents
@@ -622,14 +622,15 @@ class lists, `lean` and `all` are also supported. Profile and environment change
 take effect at the next server start. `list_skills` shows the resulting in-pool and
 out-of-pool tools. See [profiles, pools and facets](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/manual/mcp/04-profiles-pools-and-facets.md).
 
-Four Agent Skills ship in [`skills/`](https://github.com/gregordadera/aicb-roslyn-mcp/tree/main/skills):
+Five Agent Skills ship in [`skills/`](https://github.com/gregordadera/aicb-roslyn-mcp/tree/main/skills):
 
 - `aicb-csharp-context` routes semantic C# questions to the right tool.
 - `aicb-code-review` checks a completed change for correctness.
 - `aicb-code-simplifier` looks for unnecessary complexity.
 - `aicb-usage-check` reports what this server was actually reached for.
+- `aicb-smoke-test` runs read-only checks on your own solution, sorts the findings into HIGH, MID and LOW, and drafts reproducible issues for the maintainer. It files nothing until you confirm.
 
-The last three are opt-in: `aicb init --skills=all`.
+The last four are opt-in: `aicb init --skills=all`.
 
 ## Scale, releases and compatibility
 
@@ -676,8 +677,10 @@ Run `aicb <command> --help` for options.
 
 ## Local by default
 
-- The CLI and MCP server have no outbound network capability and do not modify
-  the source code they analyze.
+- The CLI and MCP server make no outbound network connection of their own and do
+  not modify the source code they analyze. The MSBuild logic and source generators
+  of the analyzed solution run in the same process, so they can reach the network
+  if that solution's own build does (see the last point).
 - There is no **outbound** telemetry, analytics, update check, account or license
   server. The MCP server records its tool calls locally for `usage_report` and the
   desktop app's **MCP Usage** page; that log never leaves the machine.

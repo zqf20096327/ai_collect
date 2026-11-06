@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Real-time stock market data for Claude Desktop and any MCP-compatible client, powered by Yahoo Finance. Get quotes, historical prices, company profiles, financial statements, analyst ratings, and multi-stock comparisons, all from natural language.
+Free Yahoo Finance MCP server with no API key. 18 read-only tools give Claude, Claude Code, Cursor, VS Code, Windsurf, Codex, n8n or any other MCP client live stock quotes, historical prices, financial statements, earnings dates and calendars, analyst ratings and estimates, options chains, insider and institutional holders, stock screeners, ETF and fund holdings, sector overviews and market news. Runs locally with one `npx` command, over stdio or Streamable HTTP.
 
 > **npm package:** [`yahoo-finance-mcp-server`](https://www.npmjs.com/package/yahoo-finance-mcp-server) &nbsp;·&nbsp; **GitHub repo:** [`danishashko/yahoo-finance-mcp`](https://github.com/danishashko/yahoo-finance-mcp). The repo name is shorter than the package name; both refer to this project.
 
@@ -24,6 +24,10 @@ Real-time stock market data for Claude Desktop and any MCP-compatible client, po
 - 🔮 **Forward analyst estimates** (price targets, EPS/revenue, growth)
 - 🔎 **Symbol search** by company name or keyword
 - 🕒 **Market status** (open/closed) and index summary
+- 📅 **Earnings dates**: next report, beat/miss history, and a market-wide earnings calendar
+- 🧲 **Stock screeners**: day gainers/losers, most active, most shorted, undervalued growth, top ETFs
+- 🧺 **ETF and fund data**: holdings, expense ratio, sector weights
+- 🏭 **Sector and industry overviews** with their largest, fastest-growing and best-performing companies
 
 Every tool returns human-readable **markdown** by default, or structured **JSON** on request (`response_format: "json"`). Requests share a single browser-impersonating HTTP session to reduce Yahoo Finance rate-limiting.
 
@@ -46,6 +50,40 @@ Add this to your Claude Desktop config and restart Claude:
 ```
 
 That is it. On first launch the npx wrapper creates an isolated Python environment and installs the dependencies for you (a one-time step that can take a minute). You only need **Python 3.10+** and **Node.js 16+** on your machine.
+
+### Other clients
+
+**Claude Code**
+
+```bash
+claude mcp add yahoo-finance -- npx -y yahoo-finance-mcp-server
+```
+
+**Cursor** (`~/.cursor/mcp.json`), **Windsurf** (`~/.codeium/windsurf/mcp_config.json`) and **Gemini CLI** (`~/.gemini/settings.json`) take the same `mcpServers` block as Claude Desktop above.
+
+**VS Code** (`.vscode/mcp.json`)
+
+```json
+{
+  "servers": {
+    "yahoo-finance": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "yahoo-finance-mcp-server"]
+    }
+  }
+}
+```
+
+**Codex CLI** (`~/.codex/config.toml`)
+
+```toml
+[mcp_servers.yahoo-finance]
+command = "npx"
+args = ["-y", "yahoo-finance-mcp-server"]
+```
+
+**n8n and other URL-only clients:** see [HTTP mode](#-http-mode-n8n-remote-agents-anything-that-connects-to-a-url).
 
 ### Prefer a global install?
 
@@ -70,7 +108,7 @@ others only take a URL. n8n's **MCP Client Tool** node is the second kind - it
 offers HTTP Streamable and SSE and no way to launch a command - so stdio alone
 puts the server out of reach.
 
-`--http` serves the same 13 tools over Streamable HTTP at `/mcp`:
+`--http` serves the same 18 tools over Streamable HTTP at `/mcp`:
 
 ```bash
 npx -y yahoo-finance-mcp-server --http
@@ -121,17 +159,28 @@ arriving under an unlisted name gets `421 Misdirected Request`.
 | `get_analyst_estimates` | Forward price targets, EPS/revenue estimates by period, and growth estimates | `ticker` |
 | `search_symbols` | Find ticker symbols by company name or keyword | `query`, `count` |
 | `get_market_status` | Whether a market is open/closed, with timing and a major-index summary | `region` |
+| `get_earnings` | Next earnings date (days away, EPS and revenue estimates), ex-dividend date, beat/miss history | `ticker`, `limit` |
+| `get_earnings_calendar` | Every company reporting in a date range, with timing and EPS estimate | `start_date`, `end_date`, `min_market_cap`, `limit` |
+| `screen_stocks` | Results of a Yahoo predefined screener with price, change, relative volume, P/E | `screener`, `count` |
+| `get_fund_data` | ETF or mutual fund holdings, expense ratio, sector weights, asset classes | `ticker` |
+| `get_sector_overview` | Sector or industry overview, largest companies, industries, top growers and performers | `sector`, `industry`, `limit` |
 
 Every tool also accepts `response_format` (`"markdown"`, the default, or `"json"`).
+
+Every result also carries the data as MCP **structured content**, described by the tool's published `outputSchema`, whichever text format you ask for. Clients that support structured output read typed fields directly; others read the text. Missing figures are `null`, and a failed call returns `isError: true` with a message saying what to change.
 
 **`get_historical_prices` options:**
 
 - `period`: `1d`, `5d`, `1mo`, `3mo`, `6mo`, `1y`, `2y`, `5y`, `10y`, `ytd`, `max`
 - `interval`: `1m`, `2m`, `5m`, `15m`, `30m`, `60m`, `90m`, `1h`, `1d`, `5d`, `1wk`, `1mo`, `3mo`
 
-**`get_options_chain`:** call without `expiration_date` to list available dates, then again with a date. `option_type` is `calls`, `puts`, or `both`.
+**`get_options_chain`:** call without `expiration_date` to list available dates, then again with a date. `option_type` is `calls`, `puts`, or `both`. A chain returns the strikes nearest the current price.
 
-**`get_holders`:** `holder_type` is `institutional`, `mutualfund`, `major`, or `insider_transactions`.
+**`get_holders`:** `holder_type` is `institutional`, `mutualfund`, `major`, `insider_transactions`, `insider_purchases` (6-month net insider buying), or `insider_roster`.
+
+**`screen_stocks`:** `screener` is one of `day_gainers`, `day_losers`, `most_actives`, `most_shorted_stocks`, `small_cap_gainers`, `aggressive_small_caps`, `growth_technology_stocks`, `undervalued_growth_stocks`, `undervalued_large_caps`, `top_etfs_us`, `top_performing_etfs`, `technology_etfs`, `bond_etfs`, `top_mutual_funds`, `solid_large_growth_funds`, `solid_midcap_growth_funds`, `conservative_foreign_funds`, `high_yield_bond`, `portfolio_anchors`.
+
+**`get_sector_overview`:** `sector` is one of `basic-materials`, `communication-services`, `consumer-cyclical`, `consumer-defensive`, `energy`, `financial-services`, `healthcare`, `industrials`, `real-estate`, `technology`, `utilities`. Call without `industry` to get the list of industry keys.
 
 ## 💬 Example Prompts
 
@@ -147,6 +196,35 @@ Once the server is connected, just ask Claude:
 - "Show me the SPY call options expiring next month"
 - "Who are the biggest institutional holders of Apple?"
 - "What's Coca-Cola's dividend history?"
+- "When does NVIDIA report next, and has it been beating estimates?"
+- "Which large caps report earnings this week?"
+- "What are today's biggest gainers?"
+- "What's inside QQQ and what does it cost?"
+- "Who are the biggest semiconductor companies?"
+- "Are Tesla insiders net buying or selling?"
+
+## ❓ FAQ
+
+**Does it need an API key or a paid plan?**
+No. It reads Yahoo Finance's public data through the `yfinance` library. There is no key, account or signup.
+
+**Is the data real-time?**
+Quotes are near real-time for most US stocks and can be delayed about 15 minutes on some exchanges. Every quote states its exchange, market state and timestamp.
+
+**Which tickers work?**
+Any symbol Yahoo Finance lists: US stocks (`AAPL`), class shares (`BRK.B` or `BRK-B`), non-US listings with Yahoo's exchange suffix (`7203.T`, `BP.L`, `SAP.DE`), ETFs and mutual funds (`SPY`, `VFIAX`), indices (`^GSPC`), crypto (`BTC-USD`) and currencies (`EURUSD=X`). Case does not matter. If you only have a company name, `search_symbols` finds the ticker.
+
+**Can it place trades or change anything?**
+No. Every tool is read-only.
+
+**Does it work with clients other than Claude?**
+Yes. It speaks standard MCP, so any client that supports MCP over stdio or Streamable HTTP can use it. Setup for the common ones is under [Quick Start](#-quick-start).
+
+**How do agents get structured data?**
+Every result carries typed `structuredContent` matching the tool's `outputSchema`, whatever text format was asked for. Pass `response_format: "json"` to get JSON text as well.
+
+**Where is the machine-readable summary?**
+[`llms.txt`](llms.txt) lists every tool, limit and error behaviour in one page for agents.
 
 ## 🐛 Troubleshooting
 
@@ -219,13 +297,13 @@ On Windows use `"command": "python"` and a path like `"C:\\path\\to\\yahoo_finan
 
 ## 📝 Notes
 
-- Use ticker symbols in uppercase (`AAPL`, `MSFT`, `TSLA`).
+- Tickers are case-insensitive, and `BRK.B` is accepted as well as Yahoo's `BRK-B`.
 - Some quotes may be delayed 15 to 20 minutes.
 - Financial statements are generally available for larger public companies.
 
 ## 📋 Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for the full version history. The core fixes (tool input validation, analyst recommendations, dividend yield, working `npx` install) landed in **v1.1.0**.
+See [CHANGELOG.md](CHANGELOG.md) for the full version history.
 
 ## 📚 Resources
 

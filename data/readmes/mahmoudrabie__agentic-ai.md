@@ -42,7 +42,7 @@ If this saves you research time, starring the repo helps more builders discover 
 | --- | ---: | --- |
 | [🔬 Research](README-research.md) | 67 | AI scientists, deep research, autonomous discovery |
 | [⚙️ Framework](README-framework.md) | 67 | Agent runtimes, memory, tools, orchestration |
-| [🛡️ Security](README-security.md) | 56 | Prompt injection, red teaming, cyber agents, defenses |
+| [🛡️ Security](README-security.md) | 58 | Prompt injection, red teaming, cyber agents, defenses |
 | [🧠 Reasoning](README-reasoning.md) | 26 | Inference, deliberation, cognitive architectures |
 | [🧪 Testing](README-testing.md) | 27 | Benchmarks, harnesses, evaluation methodology |
 | [💊 Healthcare](README-healthcare.md) | 16 | Medical agents, diagnosis, pharma, biomedical research |
@@ -101,6 +101,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [Fudan University](https://www.linkedin.com/school/fudan-university/) | [Foundation Models], [Framework], [Healthcare], [Reasoning] | 7 |
 | [IBM](https://www.linkedin.com/company/ibm/) | [Education], [Ethics and Safety], [Framework], [Research], [Security], [Testing] | 7 |
 | [KAIST](https://www.linkedin.com/company/kaist/) | [Foundation Models], [Framework], [Research], [Software Engineering], [Vision] | 7 |
+| [New York University](https://www.linkedin.com/school/new-york-university/) | [Framework], [Security], [Software Engineering], [Testing] | 7 |
 | [Rutgers University](https://www.linkedin.com/school/rutgersu/) | [Framework], [Reasoning], [Recommendation], [Security], [Software Engineering], [Vision] | 7 |
 | [Salesforce](https://www.linkedin.com/company/salesforce/) | [Framework], [Healthcare], [Reasoning], [Software Engineering] | 7 |
 | [The University of Hong Kong](https://www.linkedin.com/school/universityofhongkong/) | [Foundation Models], [Framework], [Research], [Software Engineering], [Vision] | 7 |
@@ -111,7 +112,6 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [ETH Zurich](https://www.linkedin.com/school/eth-zurich/) | [Foundation Models], [Research], [Software Engineering], [Testing] | 6 |
 | [Johns Hopkins University](https://www.linkedin.com/school/johns-hopkins-university/) | [Framework], [Research], [Security], [Testing] | 6 |
 | [Mohamed bin Zayed University of Artificial Intelligence](https://www.linkedin.com/school/mbzuai/) | [Framework], [Gaming], [Healthcare], [Reasoning] | 6 |
-| [New York University](https://www.linkedin.com/school/new-york-university/) | [Framework], [Security], [Software Engineering], [Testing] | 6 |
 | [Northeastern University](https://www.linkedin.com/school/northeastern-university/) | [Framework], [Healthcare], [Networking], [Research], [Testing], [Transportation] | 6 |
 | [University College London](https://www.linkedin.com/school/university-college-london/) | [Ethics and Safety], [Framework], [Healthcare], [Physical AI/Robotics], [Research], [Testing] | 6 |
 | [University of Maryland](https://www.linkedin.com/school/university-of-maryland/) | [Foundation Models], [Framework], [Gaming], [Hardware Design], [Testing], [Vision] | 6 |
@@ -241,6 +241,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [Beijing Academy of Artificial Intelligence](https://www.linkedin.com/company/beijingbaai/) | [Reasoning] | 1 |
 | [Beijing Institute of Technology](https://www.linkedin.com/school/beijing-institute-of-technology/) | [Framework] | 1 |
 | [Bioinformatics Institute, A*STAR](https://sg.linkedin.com/company/astarbii) | [Physical AI/Robotics] | 1 |
+| [Bocconi University](https://www.linkedin.com/school/universita-bocconi/) | [Security] | 1 |
 | [Boston College](https://www.linkedin.com/school/boston-college/) | [Healthcare] | 1 |
 | [Boston University](https://www.linkedin.com/school/boston-university/) | [Testing] | 1 |
 | [BRAC University](https://www.linkedin.com/school/brac-university/) | [Security] | 1 |
@@ -324,6 +325,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [Lancaster University](https://www.linkedin.com/company/lancaster-university-scc/) | [Security] | 1 |
 | [Lerna AI](https://www.linkedin.com/company/lerna-ai/) | [Framework] | 1 |
 | [Likelihood Lab](https://www.linkedin.com/company/likelihood-lab) | [Testing] | 1 |
+| [LKA NRW](https://www.linkedin.com/company/landeskriminalamt-nrw/) | [Security] | 1 |
 | [LMU Munich](https://www.linkedin.com/school/lmu.muenchen/) | [Ethics and Safety] | 1 |
 | [LogicStar AI](https://www.linkedin.com/company/logicstar-ai/) | [Software Engineering] | 1 |
 | [Lovely Professional University](https://www.linkedin.com/school/lovely-professional-university/) | [Healthcare] | 1 |
@@ -446,6 +448,7 @@ Counts use the recorded affiliations in all section tables: one count per unique
 | [University of Connecticut](https://www.linkedin.com/school/university-of-connecticut/) | [Reasoning] | 1 |
 | [University of Florida](https://www.linkedin.com/school/uflorida/) | [Hardware Design] | 1 |
 | [University of Georgia](https://www.linkedin.com/school/university-of-georgia/) | [Security] | 1 |
+| [University of Göttingen](https://www.linkedin.com/school/-university-of-goettingen/) | [Security] | 1 |
 | [University of Groningen](https://www.linkedin.com/school/rijksuniversiteit-groningen/) | [Security] | 1 |
 | [University of Hamburg](https://www.linkedin.com/school/unihamburg/) | [Research] | 1 |
 | [University of Ioannina](https://www.linkedin.com/school/university-of-ioannina/) | [Transportation] | 1 |

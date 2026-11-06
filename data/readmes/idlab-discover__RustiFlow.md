@@ -17,7 +17,7 @@ This tool is engineered for robust and efficient feature extraction, particularl
 
 - **High Throughput:** Utilizes Rust and the [Aya](https://aya-rs.dev/) library for eBPF program compilation and execution, ensuring exceptional performance and resource efficiency.
 - **Versatile Feature Sets:** Offers a variety of pre-defined feature sets (flows) and the flexibility to create custom feature sets tailored to specific requirements. An example of the custom flow is shown [here](https://github.com/idlab-discover/RustiFlow/blob/main/rustiflow/src/flows/custom_flow.rs).
-- **Pcap File Support:** Facilitates packet analysis from pcap files, compatible with both Linux and Windows generated files.
+- **Pcap File Support:** Facilitates packet analysis from classic pcap and pcapng files, compatible with both Linux and Windows generated files. A capture that ends inside a record is read up to that record with a warning; a corrupt record stops the read with an error naming its file offset, after exporting earlier packets. Timestamp fractions must be below 1,000,000 for microsecond pcap or 1,000,000,000 for nanosecond pcap; invalid fractions are rejected, not normalized. Out-of-range pcapng timestamps are also rejected. Sorted offline CSV rows are deterministic across runs and thread counts. Expiration scans use one capture clock shared by all shards, including a final scan at the last readable record's timestamp.
 - **Diverse Output Options:** Features can be outputted to the console, a CSV file, or other formats with minimal effort.
 - **Richer TCP Quality Signals:** The RustiFlow feature set exports duplicate ACK counts, zero-window observations, and TCP close style in addition to the existing lifecycle and retransmission fields.
 - **Endpoint-Aware IP Context:** The RustiFlow feature set exports `ip_version`, endpoint IP scope, and coarse `path_locality` derived from normalized addresses without expanding the eBPF event payload.
@@ -61,18 +61,118 @@ Notes:
 
 ![RustiFlow Architecture Offline](figures/offline.png)
 
-## <img src="figures/RustiFlow_nobg.png" width="60px"/> Using the release binary:
+## <img src="figures/RustiFlow_nobg.png" width="60px"/> Installing a release:
 
-Copy the rustiflow binary that you can find in this repo in releases to a location of your choice or to the `/usr/local/bin` folder.
-If it does not have the right permissions, you can run the following command:
+Every release consumer (the installer, the Debian package and both container
+images) installs the same release bundle,
+`rustiflow-<version>-x86_64-linux.tar.gz`. It holds the `rustiflow` binary, the
+two eBPF objects that realtime capture loads, a systemd template unit, example
+configuration, an `install.sh`, a `MANIFEST` recording how it was built, and
+`SHA256SUMS`. Releases target x86_64 Linux with glibc 2.36 or newer (Debian
+bookworm, Ubuntu 24.04 and later) and need nothing beyond glibc at runtime.
+They are built for x86-64-v3 CPUs (AVX2, BMI2, FMA, MOVBE: Intel Haswell, AMD
+Zen and newer); `MANIFEST` records the CPU as `target_cpu`, and the installer
+refuses a host CPU that cannot run it.
+
+### Installing the bundle
 
 ```bash
-chmod +x /path/to/rustiflow
+tar -xzf rustiflow-<version>-x86_64-linux.tar.gz
+sudo sh rustiflow-<version>-x86_64-linux/install.sh            # into /usr/local
+sudo sh rustiflow-<version>-x86_64-linux/install.sh --prefix /opt/rustiflow
+```
+
+The installer verifies the bundle checksums, installs `bin/rustiflow`, the eBPF
+objects in `lib/rustiflow/`, examples in `share/rustiflow/` and
+`lib/systemd/system/rustiflow@.service` under the prefix, and never writes to
+`/etc`, so reinstalling keeps your configuration. Check an installation later
+with:
+
+```bash
+cd /usr/local && sha256sum -c share/rustiflow/INSTALLED.sha256
+```
+
+The binary finds its eBPF objects in `<prefix>/lib/rustiflow/` next to its own
+`<prefix>/bin/`, so keep that layout or point `RUSTIFLOW_EBPF_DIR` at the
+directory holding `rustiflow-ebpf-ipv4` and `rustiflow-ebpf-ipv6`.
+
+### Debian package
+
+`debian/` packages a bundle without rebuilding it, installing into `/usr`:
+
+```bash
+RUSTIFLOW_BUNDLE=/path/to/rustiflow-<version>-x86_64-linux.tar.gz dpkg-buildpackage -b -uc -us
+sudo apt install ../rustiflow_<version>-1_amd64.deb
+```
+
+`RUSTIFLOW_BUNDLE` defaults to `target/dist/`. The bundle version must match
+`debian/changelog`. Use a bundle built on bookworm (see below): one built on a
+newer host needs a newer glibc than Debian provides.
+
+### Running realtime capture as a service
+
+`rustiflow@<interface>.service` runs realtime capture on one interface with
+only the `CAP_BPF`, `CAP_NET_ADMIN`, `CAP_NET_RAW` and `CAP_PERFMON`
+capabilities (`CAP_NET_RAW` is used only by `--promiscuous`). It is installed
+but never enabled:
+
+```bash
+sudo install -D -m 0644 /usr/share/rustiflow/config.toml.example /etc/rustiflow/eth0.toml
+sudo install -D -m 0644 /usr/share/rustiflow/environment.example /etc/rustiflow/eth0.env  # optional
+sudo systemctl daemon-reload
+sudo systemctl enable --now rustiflow@eth0.service
+```
+
+On a tap or SPAN/mirror port, set `RUSTIFLOW_REALTIME_ARGS=--promiscuous` in
+`/etc/rustiflow/eth0.env`; see [Promiscuous capture](#promiscuous-capture).
+
+Use `/usr/local/share/rustiflow/...` for a bundle installed into the default
+prefix. Relative CSV export paths in the config are written below
+`/var/lib/rustiflow/eth0/`.
+
+### Building a release bundle
+
+The canonical bundle is built in the Dockerfile's bookworm `dist` stage, so the
+binary runs on every supported distribution:
+
+```bash
+docker build --target bundle \
+  --build-arg RUSTIFLOW_COMMIT=$(git rev-parse HEAD) \
+  --build-arg SOURCE_DATE_EPOCH=$(git log -1 --format=%ct) \
+  --output type=local,dest=target/dist .
+```
+
+`cargo xtask dist` builds the same layout on the current host into
+`target/dist/`, and `cargo xtask install [--prefix DIR]` installs that staged
+bundle without rebuilding. A host build only runs on systems with the same or
+newer glibc as the build host.
+
+The release profile uses fat LTO, one codegen unit and stripped symbols, and
+leaves out the `profiling` feature. `--target-cpu` (default `x86-64-v3`) sets
+the CPU the binary is tuned for and requires. `native` tunes for the build
+host, and `MANIFEST` then names its model, for example `znver3`. Use a lower
+level such as `x86-64-v2` for older CPUs. In the container build, pass it as
+`--build-arg RUSTIFLOW_TARGET_CPU=<cpu>`.
+
+```bash
+cargo xtask dist --target-cpu native   # bundle for this machine only
 ```
 
 ### Using commands:
 
 You can then run the binary with the following commands displayed on the [help menu](#usage-instructions).
+
+When using command-line arguments, both `--features` (`-f`) and `--output`
+(`-o`) are required unless `--config-file` (`-c`) is provided. Missing options
+produce a usage error. Running without arguments still opens the TUI.
+
+### Active and idle measurements
+
+Idle statistics count gaps longer than five seconds that end with another
+packet in the same flow. Trailing silence at expiration or shutdown does not
+count as an observed idle period. Active periods, flow duration, and end time
+remain based on packet timestamps. This rule applies to offline and realtime
+exports.
 
 ### Using the tui interface:
 
@@ -83,7 +183,7 @@ If you want a more graphical interface, you can use the tui interface by just ru
 > **NOTE:** When using the save button, you will be prompted for a filename. You can reuse this file with following command:
 
 ```bash
-rustiflow --config-file <filename> realtime <interface> [--only-ingress]
+rustiflow --config-file <filename> realtime <interface> [--ingress-only] [--promiscuous]
 ```
 
 ```bash
@@ -143,14 +243,43 @@ or with:
 rustiflow ... -o csv --export-path out.csv --packet-graph realtime <interface>
 ```
 
+### Promiscuous capture
+
+Realtime capture sees only the frames the network card passes up to the
+kernel. A physical card drops unicast frames addressed to other MAC addresses,
+so on a tap, a SPAN/mirror port or a backbone link most of the traffic never
+reaches RustiFlow. Pass `--promiscuous` there:
+
+```bash
+rustiflow ... realtime --promiscuous <interface>
+```
+
+A host that only captures its own traffic does not need it.
+
+RustiFlow does not set the interface's `PROMISC` flag. It joins a promiscuous
+membership on a packet socket that receives no packets, and the kernel counts
+memberships (`promiscuity` in `ip -d link show <interface>`). The kernel drops
+the membership when the socket closes, also when RustiFlow crashes or is
+killed, so the interface returns to its previous state. A `promisc on` set by
+an operator or another tool stays in place.
+
+The option needs `CAP_NET_RAW` and the `AF_PACKET` socket family, in addition
+to what realtime capture already needs. Configuration files store only the
+`[config]` and `[output]` sections, so pass the flag on the command line or
+through `RUSTIFLOW_REALTIME_ARGS` for the systemd unit.
+
 ## <img src="figures/RustiFlow_nobg.png" width="60px"/> Using the Container:
 
 Make sure that you don't use docker desktop and that you don't have it installed on your machine. If you have this setup, it will not work as intended as the `--network host` will not link the container to the host network, but to the network of a VM that docker desktop uses.
 
 - **Build the Container**:
   ```bash
-  docker build -t rustiflow .
+  docker build -t rustiflow .                     # Ubuntu 24.04 runtime
+  docker build --target slim -t rustiflow:slim .  # Debian bookworm-slim runtime
   ```
+  Both images build the release bundle from source and install it. To install
+  an existing bundle instead, pass the directory holding its tarball:
+  `docker build --build-context bundle=target/dist -t rustiflow .`
 - **Run the Container**:
   ```bash
   docker run --rm --network host -v /path/on/host:/app rustiflow [ARGS]
@@ -183,10 +312,6 @@ Notes:
 
 ### Prerequisites:
 
-- **libpcap-dev**:
-  ```sh
-  sudo apt install libpcap-dev
-  ```
 - **Rust Installation**:
   ```bash
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -206,14 +331,14 @@ Use the upstream prebuilt binary. Building current `bpf-linker` releases with
 - **For Linux x86_64**:
   ```bash
   sudo apt install zstd # Debian/Ubuntu; use your distribution's package manager elsewhere
-  curl -fL --retry 3 https://github.com/aya-rs/bpf-linker/releases/download/v0.11.1/bpf-linker-x86_64-unknown-linux-musl.tar.zst -o /tmp/bpf-linker.tar.zst
+  curl -fL --retry 3 https://github.com/aya-rs/bpf-linker/releases/download/v0.12.0/bpf-linker-x86_64-unknown-linux-musl.tar.zst -o /tmp/bpf-linker.tar.zst
   mkdir -p "$HOME/.cargo/bin"
   tar --zstd -xf /tmp/bpf-linker.tar.zst -C "$HOME/.cargo/bin"
   rm /tmp/bpf-linker.tar.zst
   bpf-linker --version
   ```
 - **For macOS/Linux (Other Architectures)**: choose the matching archive from
-  the [upstream releases](https://github.com/aya-rs/bpf-linker/releases/tag/v0.11.1),
+  the [upstream releases](https://github.com/aya-rs/bpf-linker/releases/tag/v0.12.0),
   or follow the [upstream installation guide](https://github.com/aya-rs/bpf-linker#installation).
 - **Ubuntu 20.04 LTS Specific**:
   ```bash
@@ -238,9 +363,11 @@ affected lockfile explicitly before rebuilding. Direct Cargo commands need
   cargo build
   ```
 - **With flamegraph profiling** (Linux only, pulls in pprof; enables
-  `RUSTIFLOW_PROFILE_FLAMEGRAPH=<file.svg>`):
+  `RUSTIFLOW_PROFILE_FLAMEGRAPH=<file.svg>`). The `profiling` profile is the
+  release profile with symbols and line tables kept, so it also suits `perf`;
+  the binary is `target/profiling/rustiflow`:
   ```bash
-  cargo build --release --features profiling
+  cargo build --profile profiling --features profiling
   ```
 
 ## Fragmented and encrypted packets
@@ -362,6 +489,24 @@ Options:
       -V, --version
               Print version
 
+```
+
+```bash
+rustiflow realtime --help
+```
+
+```bash
+Real-time feature extraction
+
+Usage: rustiflow realtime [OPTIONS] <INTERFACE>
+
+Arguments:
+  <INTERFACE>  The network interface to capture packets from
+
+Options:
+      --ingress-only  Whether to capture only ingress packets
+      --promiscuous   Hold the interface in promiscuous mode while capturing, for taps, SPAN/mirror ports and backbone links (needs CAP_NET_RAW)
+  -h, --help          Print help
 ```
 
 ### Early export

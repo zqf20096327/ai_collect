@@ -104,7 +104,7 @@ These are on `main` and documented under [rubyllm.com/next](https://rubyllm.com/
 
 * **Code execution:** Let the model run Ruby, Python, JavaScript, and shell in a sandbox on your servers with [`with_code_execution`](https://rubyllm.com/next/code-execution/)
 * **Skills:** Teach the model your workflows with folders of instructions and scripts in the Agent Skills format with [`with_skills`](https://rubyllm.com/next/skills/)
-* **Chat files:** Keep attachments and long tool results out of the conversation with [`with_file_store`](https://rubyllm.com/next/chat-files/)
+* **File stores:** Keep attachments and long tool results out of the conversation with [`with_file_store`](https://rubyllm.com/next/file-stores/)
 * **Message queueing:** Add messages while a chat runs with `queue`
 * **More providers:** Meta, MiniMax, Moonshot AI, and Z.ai
 
@@ -334,7 +334,14 @@ Give your coding assistant the RubyLLM API and documentation that match your app
 gem exec skill add "$(bundle show ruby_llm)" --skill rubyllm --agents coding
 ```
 
-`--agents coding` installs it for the coding assistants your project uses, not into your app's `app/skills`. See [AI Coding Assistants](https://rubyllm.com/ai-coding-assistants/) for setup and updates.
+`--agents coding` installs it for the coding assistants your project uses, not into your app's `app/skills`. In Claude Code, you can also install it as a plugin:
+
+```
+/plugin marketplace add crmne/ruby_llm
+/plugin install rubyllm@ruby_llm
+```
+
+See [AI Coding Assistants](https://rubyllm.com/ai-coding-assistants/) for setup and updates.
 
 ## Documentation
 

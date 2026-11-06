@@ -335,7 +335,7 @@
   - Answer: [Prompt Injection in LLMs](https://outcomeschool.com/blog/prompt-injection-in-llms)
 - Walk me through the OWASP Top 10 for LLM applications and which ones actually bite in practice.
 - What is the difference between jailbreaking and adversarial prompting?
-  - Answer: [Prompt Injection in LLMs](https://outcomeschool.com/blog/prompt-injection-in-llms)
+  - Answer: [Prompt Injection in LLMs](https://outcomeschool.com/blog/prompt-injection-in-llms) and [What is jailbreaking in LLMs?](https://outcomeschool.com/blog/jailbreaking-in-llms)
 - Design guardrails for a consumer-facing assistant. Input filters, output filters, or both?
   - Asked at: [Sierra](#sierra), [Character.AI](#characterai)
   - Answer: [How do LLM guardrails work?](https://outcomeschool.com/blog/how-do-llm-guardrails-work)
@@ -1324,6 +1324,4 @@
 - Design a fraud-detection system with heavy class imbalance and an adversarial opponent.
 - Design an LLM-powered customer-support assistant on top of an existing help centre, with escalation to humans.
 
-#### Evaluation and Observability
-
-- How do you monitor a deployed ranking model for drift, and what tr
+#### Evaluatio

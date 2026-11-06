@@ -32,10 +32,62 @@ The app doesn't include llama-swap; install that separately.
 
 ## Installing
 
+With Homebrew, or from the zip on the
+[Releases](https://github.com/alron/llama-swap-mac-launcher/releases) page
+(what changed is in [CHANGELOG.md](CHANGELOG.md)): the same signed and
+notarized app either way.
+
+### With Homebrew
+
+```sh
+brew trust --cask alron/llama-swap-mac-launcher/llama-swap-launcher
+brew install --cask alron/llama-swap-mac-launcher/llama-swap-launcher
+```
+
+The app comes from the project's own tap
+([alron/homebrew-llama-swap-mac-launcher](https://github.com/alron/homebrew-llama-swap-mac-launcher));
+Homebrew loads a cask from a tap other than its own only once you've
+trusted it, and the first line trusts this cask alone. It installs the app
+in `/Applications` and links `llsl` into Homebrew's `bin`, so it's on your
+`PATH`. llama-swap isn't included; install it separately, for instance:
+
+```sh
+brew install mostlygeek/llama-swap/llama-swap
+```
+
+The first time a new install opens, macOS asks once whether to open an
+app downloaded from the internet, saying Apple checked it for malicious
+software: click **Open**. Upgrades don't ask, since Homebrew passes the
+approval on.
+
+`brew upgrade` replaces the app while it runs, and the app restarts itself
+into the new version once llama-swap has no requests in flight (see
+[Updates](#updates)). Upgrading from 0.3.2, the app quits instead, and you
+open it again once. `brew uninstall --zap` also removes its settings and
+logs, and, with your password, the GPU memory limit's files. If you raised
+that limit, untick it before uninstalling (see [GPU memory](#gpu-memory)).
+Your API keys and secret variables stay in your login keychain, which
+Homebrew can't reach; Keychain Access can delete them (see [Files](#files)).
+
+If you installed the zip before, Homebrew can take over that copy in
+`/Applications`, when it's the same version as the cask:
+
+```sh
+brew install --cask --adopt alron/llama-swap-mac-launcher/llama-swap-launcher
+```
+
+If it's an older version, Homebrew won't replace it: quit it, move it to
+the Trash, then install as above. Your settings, logs, keychain items and
+the Local Network permission carry over, as they belong to the app's
+bundle ID and its developer, not to the copy.
+
+Then follow steps 2 and 3 below.
+
+### From the zip
+
 1. Download `Llama-Swap-Launcher-<version>.zip` from
-   [Releases](https://github.com/alron/llama-swap-mac-launcher/releases)
-   (what changed is in [CHANGELOG.md](CHANGELOG.md)), unzip it, and move
-   **Llama Swap Launcher** to `/Applications`. Open it.
+   [Releases](https://github.com/alron/llama-swap-mac-launcher/releases),
+   unzip it, and move **Llama Swap Launcher** to `/Applications`. Open it.
 2. The first time, it asks for your llama-swap config: open **Settings…**,
    choose the config file, and **Save**, then **Start**. It finds llama-swap
    itself in `/opt/homebrew/bin`, `/opt/homebrew/sbin`, `/usr/local/bin` or
@@ -63,8 +115,10 @@ The app doesn't include llama-swap; install that separately.
   pid.
 - **Last GPU fault**, once a model's GPU backend has failed since the app
   started: which model, when, and whether it was unloaded automatically. A
-  fault otherwise brings an alert offering to unload the model, or, with the
-  `unloadOnGpuFault` preference, the app unloads it without asking.
+  fault otherwise brings a notification with an **Unload** button (see
+  [Notifications](#notifications)), or an alert offering to unload the
+  model, or, with the `unloadOnGpuFault` preference, the app unloads it
+  without asking.
 - **Models:** the models loaded on this Mac, each with an **Unload** submenu,
   plus **Unload All Models**. Once a model has answered a request, the
   average generation speed of its latest one shows beside it ("last 119
@@ -95,8 +149,12 @@ The app doesn't include llama-swap; install that separately.
 - **About Llama Swap Launcher** (the app's version and build date, and
   while llama-swap runs, its version and build date: a release shows as
   `v269`, a build from source as git describes it, such as
-  `v269-2-g581d29`), **Settings…**, **Launch at Login**, **Quit** (which
-  stops llama-swap).
+  `v269-2-g581d29`), **Check for Updates…**, **Settings…**, **Launch at
+  Login**, **Quit** (which stops llama-swap).
+- **Version *x.y.z* Is Available…**, above About, once a check has found a
+  newer release: what to do about it, and its release page; or **Restart
+  into Version *x.y.z***, once a newer version is installed over the
+  running app. See [Updates](#updates).
 
 ![About Llama Swap Launcher: the app's version, llama-swap's, and the build date](docs/images/about.png)
 
@@ -130,6 +188,7 @@ llsl unload  MODEL | -all [-force]           unload one model, or all of them
 llsl pause   [-force]                        pause inference: unload every local model, refuse requests
 llsl resume                                  let requests through again
 llsl logs    [-n N] [-f] [-launcher]         the end of llama-swap's log, or follow it
+llsl check-update [-json]                    ask GitHub, through the app, for a newer release
 ```
 
 `llsl` never starts llama-swap itself. It asks the app to. If the app isn't
@@ -156,8 +215,9 @@ Flags can be written with one dash or two.
 ### What each command does
 
 - **`status`** prints the app, llama-swap's state, pid, listen address and
-  version, the config and binary, the loaded models, its peers, and the log
-  file. A model whose GPU backend has failed shows as `GPU BACKEND FAILED`.
+  version, the config and binary, the loaded models, its peers, the log
+  file, and the GPU's memory limit (see [GPU memory](#gpu-memory)). A model
+  whose GPU backend has failed shows as `GPU BACKEND FAILED`.
   Each peer (another llama-swap in the config's `peers:`) is checked through
   llama-swap, the way requests reach it, and shows as `ok` or why not, such
   as `connection refused`. "No route to host" usually means macOS is
@@ -218,6 +278,7 @@ can't be reached at all by a newer `llsl`; it says that too, and exits 3.
 | 6 | Timed out. |
 | 7 | Busy: llama-swap is serving requests, so `restart`, `stop`, `unload` or `pause` did nothing. See `-force`. |
 | 8 | Paused: for `status`, llama-swap's inference is paused; for `-load`, the model couldn't load because of that. See `llsl resume`. |
+| 9 | For `check-update`: a newer release of the app is out. |
 
 ### JSON output
 
@@ -246,7 +307,8 @@ can't be reached at all by a newer `llsl`; it says that too, and exits 3.
     "peers": [
       { "id": "studio", "ok": true },
       { "id": "laptop", "ok": false, "error": "HTTP 502: peer proxy error: dial tcp 192.168.1.20:8080: connect: connection refused" }
-    ]
+    ],
+    "gpuMemory": { "totalMB": 98304, "limitMB": 86016, "storedMB": 86016, "helper": "enabled", "running": true, "setByApp": true }
   }
 }
 ```
@@ -286,6 +348,24 @@ can't be reached at all by a newer `llsl`; it says that too, and exits 3.
   started: `model`, `at`, and `autoUnloaded` if the `unloadOnGpuFault`
   preference unloaded it. It stays after the model is unloaded, when
   `faulted` has cleared, so a script can see that a fault happened.
+- `update`, once a check has found a newer release of the app: `current`
+  (this app's version), `latest`, `available` (`true`), `url` (its release
+  page), `checked` (when) and `homebrew` if Homebrew manages this copy, so
+  it updates with `brew upgrade --cask llama-swap-launcher`. `installed`
+  is a newer version installed over the running app, which it hasn't
+  restarted into yet; `update` is there for that too. `llsl check-update
+  -json` answers with the same, whatever it found, under `update` rather
+  than in `status`.
+- `gpuMemory` is the GPU's memory limit (see [GPU memory](#gpu-memory)):
+  `totalMB`, the Mac's memory; `limitMB`, the limit now, where `0` is
+  macOS's default, which `defaultMB` is when the app could read it (only
+  while the limit was 0 when the app opened); `storedMB`, the limit the
+  app's helper sets at every startup; `helper`, the helper's status (`not
+  registered`, `enabled`, `requires approval` or `not found`), and
+  `running`, whether it answers; `pendingMB`, a limit waiting for the
+  helper to be allowed; `setByApp`, whether the limit now is the helper's;
+  and `unavailable`, why the app can't change it here, on a Mac with 32 GB
+  or less, say. Only Settings changes it.
 - On failure, `ok` is `false`, and `code` and `error` say why. `code` is one
   of `usage`, `invalid_config`, `start_failed`, `load_failed`, `timeout`,
   `busy`, `paused` or `error`, or `not_running` from `status` when the app
@@ -331,10 +411,14 @@ environment variables (a table, with **+** and **−**), and the settings below;
 environment variables, the **Peers** tab the peers the app manages (see
 [Peers](#peers)), the **Security** tab which web pages may use llama-swap
 (see [Web pages](#web-pages)), the **Logs** tab where the logs go (see
-below), and the **Tweaks** tab settings that fit no other tab: how long a
-copied secret stays on the clipboard (see [API keys](#api-keys)), and
+below), and the **Tweaks** tab settings that fit no other tab: whether
+problems come as macOS notifications (see [Notifications](#notifications)),
+whether the app checks daily for a newer release, and restarts into one
+Homebrew installs (see [Updates](#updates)),
+how long a copied secret stays on the clipboard (see [API keys](#api-keys)),
 whether a pause outlasts a restart of llama-swap, or of the app (see
-[The menu](#the-menu)).
+[The menu](#the-menu)), and the GPU's memory limit (see
+[GPU memory](#gpu-memory)).
 Rest the pointer on a setting, or its label, for what it's for;
 warnings stay on screen. Save checks
 them first: if something's wrong, an alert says what, and the dialog comes back
@@ -381,6 +465,10 @@ misspelling, is reported as an error rather than ignored.
 | `appApiKey` | `""` | Which of them the app uses for its own requests. Empty: the first. |
 | `secretEnv` | `[]` | The names of secret environment variables. Their values are in the keychain; see below. |
 | `keepPausedOnRestart` | `true` | After **Pause All** or `llsl pause`, pause llama-swap again whenever the app restarts it, until it's resumed. Not written while it's the default. |
+| `restartOnUpdate` | `true` | Restart into a newer version Homebrew installs over the running app, once llama-swap is idle; see [Updates](#updates). Not written while it's the default. |
+| `notifyOnUpdateRestart` | `false` | Post a notification after such a restart. Not written while it's the default. |
+| `checkForUpdates` | `false` | Ask GitHub once a day for a newer release of the app; see [Updates](#updates). Not written while it's the default. |
+| `notifications` | `true` | Post problems that need you as macOS notifications, in place of the alerts for them; see [Notifications](#notifications). Not written while it's the default. |
 | `keepPausedOnAppRestart` | `false` | With `keepPausedOnRestart`, a pause also outlasts quitting and reopening the app: it's kept in a file named `paused` beside `prefs.json` until it's resumed. Not written while it's the default. |
 | `clipboardClearSeconds` | `90` | How long a key or secret variable copied in Settings stays on the clipboard: `10`, `30`, `60`, `90`, `120` or `300`, or `0` to leave it there (Never). Not written while it's the default. |
 
@@ -624,13 +712,143 @@ Up to version 0.1.2, the launcher log was called `llama-swap.log`; later
 versions call it `launcher.log`, and an old `llama-swap.log` simply stops
 growing.
 
+### Notifications
+
+With **Native notifications** ticked (Settings… → Tweaks; the default),
+problems that need you come as macOS notifications:
+
+| Notification | When |
+|---|---|
+| **llama-swap stopped with a problem** (time-sensitive) | It kept crashing, macOS blocked it, or it couldn't start. Click it for the alert with llama-swap's last lines. |
+| **llama-swap isn't responding** (time-sensitive) | It stopped answering the app's health checks. |
+| ***model*'s GPU backend has failed** (time-sensitive) | A model's Metal backend failed, so every request to it fails. **Unload** unloads it; click it for the alert offering the same. |
+| **llama-swap restarted** | It exited unexpectedly, and the app started it again. |
+| ***model*'s GPU backend failed**, unloaded | The same, with `unloadOnGpuFault` on, so the app has already unloaded it. |
+| **Llama Swap Launcher can't follow llama-swap** | llama-swap refused the app, over its API key for instance. |
+
+Updates add three ordinary ones: a newer release found by the daily check,
+a newer version installed that the app won't restart into by itself, and,
+if you ask, the restart into one (see [Updates](#updates)).
+
+These replace the alerts for the first and third problems. A notification goes
+away when its problem does, and all of them when the app quits. Nothing
+notifies for what you did yourself in the menu or Settings, for `llsl`'s
+requests (its caller gets the answer), or for a pause.
+
+macOS asks once whether the app may post them. After that, what gets
+through is up to System Settings → Notifications → Llama Swap Launcher:
+
+- **Persistent** keeps a notification on screen until you dismiss it;
+  **Temporary**, the default, slides it into Notification Centre after a few
+  seconds. Persistent suits problems you shouldn't miss.
+- **Time-sensitive** ones get through a Focus only if the Focus allows
+  them: in System Settings → Focus, add Llama Swap Launcher to the Focus's
+  allowed apps, or turn on its intelligent breakthrough.
+
+If macOS doesn't show the app's notifications, the alerts stay, so a
+problem is never missed; the Tweaks tab says so under the box. Untick it
+to have the alerts back: that also clears the app's notifications from
+Notification Centre.
+
+### Updates
+
+The app can tell you when a newer release is out; it never downloads or
+installs one itself. **Check for Updates…** in the menu, or `llsl
+check-update`, asks at once. With **Check for updates daily** (Settings… →
+Tweaks; off by default), it asks once a day, a minute after it opens and
+then every 24 hours while it runs, or an hour after a check that failed (no
+network, say: that's only a line in the launcher log).
+
+A check is one request to GitHub's API
+(`api.github.com/repos/alron/llama-swap-mac-launcher/releases/latest`),
+naming the app and its version in its User-Agent, from your Mac's address;
+a firewall such as Little Snitch asks about it once. A newer release shows
+as **Version *x.y.z* Is Available…** in the menu, in `llsl status`, and,
+from the daily check, as one notification per release (see
+[Notifications](#notifications)). Each links to the release's page on
+GitHub, a link the app makes from the version number rather than taking
+one from GitHub's answer.
+
+If Homebrew installed the app, it says so, as that copy updates with
+`brew upgrade --cask llama-swap-launcher`. Otherwise, download the new zip,
+quit the app, and replace it in Applications. When the last check was,
+and what it found, is kept in `update.json` beside the preferences.
+
+**Restart on update** (Settings… → Tweaks; on by default): when Homebrew
+installs a newer version over the running app, the app restarts into it by
+itself, about half a minute later, once llama-swap has no requests in
+flight and no Settings window or other dialog is open. llama-swap is
+stopped and started again; a pause carries over, whatever **Keep inference
+paused when Llama Swap Launcher restarts** says, since you didn't choose
+the restart. The app first checks the new copy's signature against its
+own (its bundle ID and the team that signed it), and never opens a copy
+that's half-copied or signed by anyone else. **Notify after an update
+restart**, under it, posts a notification when it has.
+
+It's only for a copy Homebrew manages: the Finder won't replace a running
+app, so elsewhere the box is greyed out, with a link to these
+instructions. With it off, or a copy replaced some other way (by `ditto` in
+Terminal, say), the old version keeps running until you restart it: the
+menu offers **Restart into Version *x.y.z***, and a notification, clicked,
+does the same.
+
+### GPU memory
+
+On Apple Silicon the GPU shares the Mac's memory, and macOS lets it use
+only part of it; Settings shows how much on your Mac. A bigger model fits
+if the GPU may use more. `sudo sysctl iogpu.wired_limit_mb=…` raises the
+limit until the Mac restarts; **Raise the GPU's memory limit** (Settings… →
+Tweaks) does it for you, and again at every startup. Set it in whole GB.
+
+- **A helper that runs as root.** The setting needs root, so the app
+  carries a small helper that macOS runs as root once you allow it. The
+  first time you tick the box and Save, macOS asks: System Settings opens
+  at General → Login Items & Extensions, where you turn on the app under
+  **Allow in the Background**, with an administrator's password. The app
+  waits up to 5 minutes, and sets the limit once it's allowed. The helper
+  only ever sets this one limit, answers only the app (signed by the same
+  developer, which the app checks of the helper in turn), and sets the
+  limit again at every startup. It keeps the limit in `/Library/Application
+  Support/com.my-wang.llama-swap-launcher.wired-limit/` and logs to
+  `/Library/Logs/com.my-wang.llama-swap-launcher.wired-limit.log`.
+- **Every change is confirmed** with Touch ID, an Apple Watch or your
+  password, turning it off included. Declined, the limit stays as it was,
+  and the rest of what you saved is kept. The limit isn't in the
+  preferences file, and `llsl` only shows it, so nothing running as you
+  can change it without that confirmation.
+- **Bounds:** at least 8 GB, always leaving macOS 8 GB or more, and only on
+  Macs with more than 32 GB. Settings suggests leaving more, and warns
+  below that: 8 GB on Macs up to 64 GB, 12 on 96 GB, 16 on 128, 20 on 192,
+  24 on 256, 32 on 512. With a big model loaded, a Mac left too little
+  memory swaps or stalls.
+- **Turning it off** (untick, Save, confirm) returns the GPU to macOS's
+  default at once and removes the helper. macOS still lists the app under
+  Allow in the Background, switched on: that's your permission,
+  remembered, so turning the limit on again doesn't ask. Untick it before
+  you delete the app, so the helper goes with it; `brew uninstall --zap`
+  deletes its files. If you forgot, install the app again, untick, Save,
+  then uninstall. Turned off while the helper couldn't run (switched off in
+  System Settings, say), the helper keeps its last limit, and applies it
+  when it next starts, a moment before the app sets the one you've just
+  saved.
+- **Another LaunchDaemon setting the limit,** one of your own say: Settings
+  notes a limit the app didn't set. Remove the other before ticking the
+  box, so they don't both set it at startup.
+- **Don't switch it off in System Settings.** macOS quits an app whose
+  background item you turn off there, so the app quits, and llama-swap
+  with it; untick the box in Settings instead. Switched back on, macOS
+  often doesn't start the helper. If Settings still says it's waiting a few
+  seconds later, Save again: the app registers the helper again, which
+  starts it. System Settings' list flickers meanwhile.
+
 ## Files
 
 | What | Where |
 |---|---|
 | The launcher log | `~/Library/Logs/com.my-wang.llama-swap-launcher/launcher.log` by default; see [Logs](#logs). |
 | llama-swap's own log | `~/Library/Logs/com.my-wang.llama-swap-launcher/llama-swap.log` by default, when its output has a file of its own. |
-| Preferences, control socket, pidfile | `~/Library/Application Support/com.my-wang.llama-swap-launcher/` |
+| Preferences, control socket, pidfile, the last update check | `~/Library/Application Support/com.my-wang.llama-swap-launcher/` |
+| The GPU memory limit's helper | Its limit in `/Library/Application Support/com.my-wang.llama-swap-launcher.wired-limit/`, its log in `/Library/Logs/com.my-wang.llama-swap-launcher.wired-limit.log`; root's (see [GPU memory](#gpu-memory)). |
 | API keys and secret variables | Your login keychain, as "Llama Swap Launcher: llama-swap API key LLSL_…" and "Llama Swap Launcher: secret environment variable …" (Keychain Access can show and delete them). |
 
 ## Good to know
@@ -680,10 +898,11 @@ growing.
 is suggested), with what's needed to look into a problem:
 
 - a summary: the app's and llama-swap's versions, macOS, the Mac's model,
-  chip and memory, the state, and how the app is set up;
+  chip and memory, the state, how the app is set up, and the GPU's memory
+  limit, with whether its helper answers;
 - the status, as `llsl status -json` gives it;
 - the preferences, llama-swap's config, and the logs (each current file and
-  the one before it);
+  the one before it, and the GPU memory helper's last 200 lines);
 - llama-swap's last 100 lines of output, from the app's memory.
 
 Secrets are redacted first, in every file: the values of your API keys and
@@ -716,6 +935,13 @@ What the app trusts, and what it doesn't protect against:
   sandbox the agent runs in. Give an agent that only if you'd let it run
   commands. `llsl`'s output also carries text from elsewhere (request
   paths in log lines, a peer's error), which an agent reads as input.
+- **The GPU memory helper runs as root,** once you've allowed it (see
+  [GPU memory](#gpu-memory)). It does one thing: set
+  `iogpu.wired_limit_mb`, within the bounds, which it checks again
+  whatever it's sent, and again at startup. It answers only code signed as
+  the app by the same developer, and the app accepts answers only from the
+  helper signed so. Each change asks for Touch ID, an Apple Watch or your
+  password, so it takes a person at the Mac.
 - **The keychain protects keys at rest:** in files, backups and diagnostics
   they're never in plain text. While llama-swap runs, they're in its
   environment, where your own programs can read them.
@@ -725,6 +951,10 @@ What the app trusts, and what it doesn't protect against:
   untrusted network, keep llama-swap on `127.0.0.1`.
 - **Keys matter even locally:** see [API keys](#api-keys) for what a
   llama-swap without them allows, on `127.0.0.1` too.
+- **The internet:** the app itself connects to it only to check GitHub for
+  a newer release, when you ask or with the daily check on (see
+  [Updates](#updates)), and to a peer you've given an internet address,
+  for Fetch Models. It never downloads or runs an update.
 
 ## Building from source
 
@@ -754,6 +984,15 @@ Override `SIGN_IDENTITY` (use `-` for an unsigned, ad-hoc build) and
 **Llama Swap Launcher Dev**, with its own preferences, logs and Local Network
 permission. Its `llsl` talks to it rather than to the release app.
 `LLSL_BUNDLE_ID` overrides which app `llsl` talks to.
+
+**Time-sensitive notifications need a provisioning profile** for the bundle
+ID: a Developer ID profile from an App ID with the Time Sensitive
+Notifications capability, as `packaging/profiles/<bundle id>.provisionprofile`
+(git-ignored; `PROFILES` points elsewhere). With one, the build embeds it
+and signs with the entitlements it grants
+([`packaging/entitlements.sh`](packaging/entitlements.sh) checks it first);
+without one, as in an ad-hoc build, the app signs without them and its
+notifications post at the ordinary level.
 
 **Forks and ad-hoc builds should use their own bundle ID** (`make
 BUNDLE_ID=com.example.llama-swap-launcher …`). Under this one, an ad-hoc

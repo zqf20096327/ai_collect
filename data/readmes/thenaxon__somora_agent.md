@@ -110,8 +110,8 @@ one you give a repository to.
 | **Tools** | The whole programme, gated per agent | A short coding set: files, shell, task list, questions, helpers, colleagues, search |
 | **Turns** | A few rounds; on an OpenAI-compatible model the loop stops at 30 tool calls (the CLI engines run their own loop) | Hours; hundreds of rounds, compaction mid-turn, a task list you watch |
 | **Memory** | Notices facts, dreams them into notes and the wiki | Reads memory, never writes it; does not dream |
-| **Works in** | Its workspace | The pinned project's folder, and only there |
-| **Window** | Chat | Chat plus a task panel: mode, plan → Go, tasks, questions, running time |
+| **Works in** | Its workspace | The pinned project's folder, and folders an order allows besides it |
+| **Window** | Chat | Chat plus a task panel, in the web client and on the phone: mode, plan → Go, tasks, acceptance list, questions, running time |
 | **Made how** | `somora setup agent`, or a folder with an `AGENTS.md` and an `agent.yaml` | A folder whose `agent.yaml` says `kind: builder` — fixed for life |
 
 You can talk to a builder directly — describe the project, let it plan,
@@ -134,7 +134,7 @@ On top of chat and memory, each optional and off until configured:
   prompt, hand back, and the agent continues in the same tab
   ([docs/browser.md](docs/browser.md)).
 - **Talking to an agent** — a standing, interruptible voice call in the
-  web client: a realtime model does the talking, the agent does the
+  web client or on the phone: a realtime model does the talking, the agent does the
   knowing, and a long answer is read out when it lands
   ([docs/realtime-voice.md](docs/realtime-voice.md)). Separate from
   dictation and spoken replies ([docs/voice.md](docs/voice.md)).
@@ -373,7 +373,7 @@ Three first-party clients, all hitting the same local server:
 |---|---|---|
 | **TUI** | `somora tui` | Terminal multi-agent chat with full keyboard control, the session's queue (`/queue`), memory and tool detail toggles. |
 | **Web** | `https://<host>.<tailnet>.ts.net:18737/web/` | A browser desktop: one window per agent, drag-and-drop attachments and screenshots, tmux app and shell terminal, Wiki Explorer with link graph, Media gallery, Sessions browser, the agent's Chromium window, server log, an inbox for updates and things that need you, a light or dark theme plus the bundled Ocean theme, or themes of your own (colours and wallpaper, [docs/web.md#themes](docs/web.md#themes)), Abilities matrix (which tools and skills each agent may use), Team and Agent windows, a queue badge per session (what runs, what waits, what is arriving — take back or stop from there), dictation and spoken replies, and a voice window for a live call. HTTPS recommended (needed from other devices and for the microphone); sign in once with the server's key (`somora key link`). [docs/web.md](docs/web.md) |
-| **Mobile (PWA)** | `…:18737/mobile/`, then "Add to Home Screen" | The phone app: avatar row to switch agent, a sheet in the header to switch session and model or restore an archived session, the same queue sheet with steering, the thinking level per session, voice input and spoken replies, photo/PDF attachments via the native picker. Signs in once by scanning the QR code from `somora key link`. [docs/mobile.md](docs/mobile.md) |
+| **Mobile (PWA)** | `…:18737/mobile/`, then "Add to Home Screen" | The phone app: avatar row to switch agent, a sheet in the header to switch session and model or restore an archived session, the same queue sheet with steering, the thinking level per session, a tools switch that shows a turn's tool calls, a builder's panel (mode, phase, Go, task and acceptance lists), voice input and spoken replies, a live voice call with an agent, photo/PDF attachments via the native picker. Signs in once by scanning the QR code from `somora key link`. [docs/mobile.md](docs/mobile.md) |
 
 Anything else can talk to the server the same way the clients do, with
 the server's key in an `Authorization: Bearer` header:

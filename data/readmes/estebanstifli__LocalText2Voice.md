@@ -31,7 +31,46 @@ LocalText2Voice is a free desktop app for long-form AI voice and video productio
 
 The workflow is designed for long projects: import or write a script, generate narration, review and correct segments, build an audio mix, then use Video Storyboard to plan scenes, generate visuals, assemble motion, and render a long-form MP4. Local engines keep data on the user's computer; cloud providers are optional and clearly configured.
 
-## What's New In 2.2.0: Voice Cloning And Emotions
+## What's New In 3.0: Native TTS With audio.cpp
+
+- **Optional audio.cpp engines:** Higgs Audio v3 TTS 4B Q8, Fish Audio S2 Pro Q8, Breeze TTS 2 Q8 and VoxCPM 2 (Q8, BF16 or Original GGUF)
+  use a shared native runtime, with CPU, CUDA or Vulkan packages on Windows.
+  Runtime and model weights are downloaded on demand, not bundled in the installer.
+- **A growing native catalog:** audio.cpp is the direction for adding more local
+  models. Each addition will be integrated and tested; upstream models do not
+  automatically become available. Existing Python engines and cloud providers remain.
+- **Native expression controls:** Higgs and Fish menus insert their own emotion,
+  style, prosody and vocal tags. Breeze sends emotion instructions separately and
+  keeps vocal events such as `(laugh)` in the text. Catalog references with transcripts can be reused.
+- **Voice design and reuse:** Breeze and VoxCPM can design a voice from a description;
+  preview and save its recording with the transcript. Local reference recordings
+  are shared across compatible cloning engines. VoxCPM direction is applied to
+  every chunk, with guidance and diffusion controls available in the UI and MCP.
+- **Per-segment editing:** Review now lets you change a segment's text, reference
+  voice and synthesis parameters without changing global settings. Regenerate and
+  approve the replacement before rebuilding the audiobook.
+- **MCP integration:** select the native model/backend and pass reference audio and
+  transcript through existing generation tools; EngineHost keeps the model loaded.
+
+- **Chatterbox Turbo markup:** choose emotion/style tags and inline vocal events
+  such as `{{vocal laugh}}` or `{{vocal sigh}}` from the editor. These controls are
+  for Turbo's English model; intensity and Custom descriptions remain IndexTTS features.
+- **Qwen Base voice references:** reuse compatible catalog recordings with their
+  transcripts, keeping cloned references separate from CustomVoice preset speakers.
+- **Project folders that follow their names:** rename a project and its folder
+  together, with collision protection, updated asset paths and interruption recovery.
+  Export to a project-relative folder or a fixed absolute location.
+- **More reliable long projects:** safer WAV replacement, fewer Windows playback
+  file locks, background cache statistics and smoother project loading/highlighting.
+- **Signed Windows distribution:** the 3.0.0 installer, uninstaller, application,
+  Engine Host and MCP executable carry verified production Certum signatures with
+  SHA-256 and RFC 3161 timestamps. Publisher: **ESTEBAN GARCIA PEREZ**.
+
+See the [3.0.0 release notes](docs/releases/v3.0.0.md),
+[audio.cpp guide](docs/AUDIOCPP.md) and [full changelog](CHANGELOG.md).
+The changes prepared locally as 2.3.0 are included in 3.0.0; 2.3.0 was not published.
+
+### Voice Cloning And Emotions With IndexTTS
 
 Clone a voice from a reference recording and direct each passage with **IndexTTS-2.5**, including Spanish narration and CUDA/BF16 inference. Install the optional engine in **Settings → TTS Engines**; compatible WAV references from the voice catalog can be reused.
 
@@ -50,15 +89,19 @@ This passage keeps the emotion of the reference voice.
 
 Presets use fixed vectors without loading QwenEmotion. Custom descriptions are resolved together before narration: QwenEmotion loads once for missing descriptions, then exits before IndexTTS loads. The resulting vectors are saved with the segments and reused when regenerating them. Emotions are optional; without a local or general instruction, narration uses the reference voice's emotion.
 
-Choose emotions in the text editor's **Emotion** menu. IndexTTS settings contain voice, language and runtime options, with synthesis tuning under **Advanced settings**; emotion controls and sample testing live in the editor workflow.
+Choose emotions in the text editor's **Emotion → IndexTTS** menu. **Emotion → Chatterbox** also offers Turbo's ten emotion/style tags and nine inline vocal events (`{{vocal laugh}}`, `{{vocal sigh}}`, and more). Turbo requires English and uses native tags without a QwenEmotion preparation stage; emotion percentages and Custom descriptions remain IndexTTS features. Choosing a submenu does not switch engines. IndexTTS settings contain voice, language and runtime options, with synthesis tuning under **Advanced settings**; emotion controls and sample testing live in the editor workflow.
 
 See the [emotion markup guide](docs/LTV_MARKUP.md#emotions-indextts-25) and [IndexTTS setup, parameters and license](docs/INDEXTTS_2_5.md). The optional model has its own bilibili license and conditions.
 
-Also in this release: a fix for very short Chatterbox inputs, character-based
-generation estimates and configurable Qwen/Chatterbox chunk packing.
-See the [full changelog](CHANGELOG.md#220---2026-10-03).
+IndexTTS support was introduced in 2.2.0, alongside fixes for very short Chatterbox
+inputs, character-based estimates and configurable Qwen/Chatterbox chunk packing.
 
 ## See LocalText2Voice In Action
+
+Optional audio.cpp integration supports native Higgs Audio v3 TTS 4B Q8, Fish
+Audio S2 Pro Q8, Breeze TTS 2 Q8 and VoxCPM 2 (Q8, BF16 or Original GGUF) inference, downloadable from TTS settings. See the
+[setup and testing guide (Spanish)](docs/AUDIOCPP.es.md) for requirements, model
+licenses, MCP parameters and first-delivery limits.
 
 LocalText2Voice has grown from a local long-form audio tool into a complete
 audio-to-video workflow. You can still create only narration, audiobooks and
@@ -471,7 +514,9 @@ After generating clean narration, the Audio Mix page lets you produce a podcast-
 LocalText2Voice stores project data in SQLite and a portable project manifest:
 
 - Audiobook/project metadata.
-- Inline, persistent project names (`Project1`, `Project2`, ... by default) without renaming the physical project folder.
+- Inline project names (`Project1`, `Project2`, ... by default) also rename the containing folder using a filesystem-safe name. Existing folders are never overwritten: duplicate names receive a numbered suffix. To synchronize an older folder with its current title, edit the title and press Enter without changing it. Renaming requires idle project tasks and preserves project identity, internal asset paths and unsaved editor text, with recovery after interruption. Jobs for other projects and queued items in paused batches do not block the rename.
+- New path consumers can use `store.project_paths(project_id)` to resolve relative resources against the current directory in SQLite. This resolver follows renames without caching the folder name; external absolute paths remain supported. Legacy absolute references are still remapped during rename for compatibility.
+- **Settings > General > Output folder mode** selects a project-relative folder (default: `exports`) or an absolute folder. Both are editable; browsing outside the project switches to absolute mode. Existing external output locations are preserved when opening older projects. The separate “Save audio next to the imported document” option takes precedence during narration generation when enabled.
 - M4B book metadata, cover art, and named chapter markers; metadata/cover changes can be applied without rerunning TTS.
 - Automatic generated covers or normalized custom cover images, including per-book cover selection in Bulk Audiobooks.
 - Source text.
@@ -526,7 +571,7 @@ The Windows installer is the recommended distribution artifact. Downloadable mod
 
 Installed Windows builds check the latest stable GitHub Release at most once every 24 hours. You can also run a check at any time from **Help > Check for updates**. Before an installer can be opened, both `LocalText2Voice-Setup.exe` and `LocalText2Voice-Setup.exe.sha256` are downloaded and the SHA-256 checksum must match.
 
-Unsigned build note: early public builds may be unsigned until the open source code-signing process is ready. See [Windows installer and future code signing](docs/WINDOWS_INSTALLER_AND_SIGNING.md).
+Code-signing note: the 3.0.0 Windows installer and project executables are signed with the maintainer's production Certum certificate, using SHA-256 and RFC 3161 timestamps. Publisher: **ESTEBAN GARCIA PEREZ**. Existing unsigned packages have not been retroactively signed, and a valid signature does not guarantee the absence of SmartScreen/antivirus warnings. The old SignPath test workflow is retired. Download public builds only from the official releases. See [local Windows signing](docs/WINDOWS_LOCAL_SIGNING.md).
 
 ## Quick Start On Linux
 
@@ -976,9 +1021,87 @@ Third-party engines, models, voices, FFmpeg, Qt/PySide6, music files, and API pr
 
 ## Code signing policy
 
-SignPath Foundation onboarding is in progress using a test certificate.
-See our [Code signing policy](CODE_SIGNING.md). Test-signed CI artifacts are not
-public releases; existing installers have not been retroactively signed.
+Windows signing uses Certum SimplySign and Microsoft SignTool locally. See our
+[Code signing policy](CODE_SIGNING.md). Each signed package requires verification;
+existing unsigned installers have not been retroactively signed.
+
+## Automatic voice design (MCP and desktop)
+
+`design_voice(name, description, language, engine_id="audiocpp", model=None,
+sample_text=None, idempotency_key=None, wait_until_complete=True,
+wait_timeout_seconds=60)` submits a server job that generates, verifies and saves
+a reusable voice. `get_voice(voice_id)` returns the catalog record, audio URI,
+reference transcript and verification metadata. No separate save tool is needed.
+
+Supported design engines are OmniVoice and audio.cpp Breeze TTS 2 / VoxCPM 2.
+The default model is `voxcpm2_q8_0`; OmniVoice uses `model="omnivoice"`.
+Both the selected TTS model and Faster Whisper small must already be installed.
+`list_engines` advertises the supported design models and verification languages.
+Breeze supports English and Chinese. A missing sample uses a versioned template
+for `es`, `en` or `zh`; other languages require explicit sample text (up to 600
+characters, without LocalText2Voice markup). There is no fallback to English.
+
+The shared service is `app/server/voice_design.py`, which imports no Qt modules.
+The original OmniVoice, Breeze and VoxCPM designer dialogs retain their controls
+and Generate Preview / Play Preview / Save as Voice buttons. They submit
+`POST /voices/design/preview`; the host generates and verifies a 48 kHz preview
+without publishing a catalog voice. After listening, Save as Voice calls
+`POST /voices/design/previews/{job_id}/save`. The host checks the verified audio
+hash and publishes that exact preview, without synthesizing again. Rename and
+explicit overwrite prompts remain in the UI; the server performs the writes.
+Preview WAVs are held in the server's `design-previews` cache. The MCP's
+`POST /voices/design` remains the automatic generate/verify/save operation.
+`GET /voices/{voice_id}` retrieves saved voices. The existing job queue supplies `get_job`, `get_jobs`
+and `cancel_job`. A timeout returns the current job; it does not cancel work.
+Cancellation is cooperative between stages, so an ongoing synthesis or ASR call
+may finish before cancellation is observed. Once publication commits, the job
+reports the saved voice even if a cancellation arrives immediately afterward.
+
+The server verifies the mono PCM16 48 kHz master WAV using Whisper on
+CPU/int8 (beam size 5), without prompting Whisper with the expected transcript.
+Comparison ignores Unicode case, punctuation and repeated whitespace but retains
+accents, symbols and word differences. A mismatch fails rather than silently
+replacing the requested transcript. This is an ASR consistency check, not a
+measurement of how accurately the voice follows its description.
+
+The verified WAV, exact requested transcript, raw ASR transcript, description,
+model, effective generation parameters, hash and verification policy are saved
+together. Names cannot overwrite another voice in the same engine. Retrying the
+same `idempotency_key` and request returns the same job; changing its parameters
+returns a conflict. Use a new key for an intentional new attempt.
+
+Failures have `status="failed"` and a structured `result` with `code`, `stage`,
+`message` and `saved=false`. Transcript mismatches also include both texts and
+word differences. Success has job status `complete` and `result.status="saved"`,
+with `voice_id`, `name` and the saved record. Pass that exact ID as `voice` to
+`generate_audio` or `create_audiobook`.
+
+Restart the local engine host and reconnect the MCP bridge after updating to
+load the new routes and tool definitions.
+
+Imported, cloned reference and newly designed voices store two mono PCM16 WAVs,
+at 24 kHz and 48 kHz, generated independently from the input audio. The catalog
+keeps one voice name and transcript, with per-rate filenames and SHA-256 hashes.
+Breeze TTS 2 and VoxCPM 2 automatically use the 48 kHz companion when available;
+other engines retain the standard 24 kHz reference. Existing references without
+a companion remain usable. Recreate or reimport from the original recording to
+retain high-frequency detail: upsampling an old 24 kHz reference cannot restore it.
+Both files are rolled back on failed import/replacement and removed on voice deletion.
+
+## Review Engine Switching And Audio Validation
+
+Review's segment details can switch to another installed local engine/model without
+changing the global selection. Only compatible semantic controls are transferred;
+engine-specific sampling settings come from the destination. Check the notices,
+choose a compatible voice/reference and language, then regenerate and approve.
+
+All engines validate WAV output and retry empty audio at most twice using the same
+engine instance. Existing audio is replaced only after a valid result. Rebuild
+rejects empty or invalid segment WAVs instead of silently omitting them.
+
+When short-dialogue grouping is enabled, dialogue boundaries suppress automatic
+pauses, even across voice changes. Explicit `{{pause ...}}` commands are always
+preserved, including pauses at the beginning or end of a dialogue.
 
 ## Author
 

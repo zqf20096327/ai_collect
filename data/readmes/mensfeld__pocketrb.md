@@ -54,7 +54,7 @@ pocketrb chat [options]
 
 Options:
 - `-m, --model MODEL` - Model to use (default: claude-sonnet-5-5)
-- `-p, --provider PROVIDER` - LLM provider (anthropic, openrouter, ruby_llm)
+- `-p, --provider PROVIDER` - LLM provider (anthropic, openrouter, openai_compatible, ruby_llm)
 - `-w, --workspace DIR` - Workspace directory for file access
 - `-M, --memory-dir DIR` - Memory/persona directory (default: same as workspace)
 - `-s, --system-prompt TEXT` - Custom system prompt
@@ -325,12 +325,29 @@ export OPENROUTER_API_KEY=your-key
 pocketrb chat --provider openrouter --model anthropic/claude-sonnet-5.5
 ```
 
-### RubyLLM
+### OpenAI-compatible servers (local models)
 
-Use Ruby-based LLM implementations:
+Any server with the OpenAI chat completions API: vLLM, llama.cpp server, llamafile, LM Studio, Ollama or OpenAI itself. Set the base URL (up to and including `/v1`) and the model name the server serves in `.pocketrb/config.yml`:
+
+```yaml
+provider: openai_compatible
+openai_compatible_base_url: http://localhost:8000/v1
+model: llama-3.1-8b-instruct
+# openai_compatible_api_key: your-key # only when the server requires one
+```
 
 ```bash
-pocketrb chat --provider ruby_llm
+pocketrb chat --provider openai_compatible
+```
+
+Without `openai_compatible_api_key`, no `Authorization` header is sent.
+
+### RubyLLM
+
+Route requests through the [ruby_llm](https://rubyllm.com) gem (2.x). Models are resolved from its registry; set `anthropic_api_key` and/or `openai_api_key` for the providers you use:
+
+```bash
+pocketrb chat --provider ruby_llm --model claude-sonnet-5-5
 ```
 
 ## Memory System
@@ -454,9 +471,11 @@ pocketrb config get model
 | `ANTHROPIC_API_KEY` | Anthropic API key |
 | `ANTHROPIC_OAUTH_TOKEN` | Claude Max OAuth token |
 | `OPENROUTER_API_KEY` | OpenRouter API key |
+| `OPENAI_COMPATIBLE_BASE_URL` | Base URL for the `openai_compatible` provider |
+| `OPENAI_COMPATIBLE_API_KEY` | API key for the `openai_compatible` provider (optional) |
 | `BRAVE_API_KEY` | Brave Search API key (for web_search tool) |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token |
-| `POCKETRB_PROVIDER` | Default provider (anthropic, openrouter, ruby_llm, claude_cli, claude_max_proxy) |
+| `POCKETRB_PROVIDER` | Default provider (anthropic, openrouter, openai_compatible, ruby_llm, claude_cli, claude_max_proxy) |
 | `POCKETRB_MODEL` | Default model |
 | `POCKETRB_LOG_LEVEL` | Log level (debug, info, warn, error) |
 | `POCKETRB_AUTONOMOUS` | Enable autonomous mode (1, true) - skips permission prompts |

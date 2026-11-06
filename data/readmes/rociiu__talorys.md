@@ -33,6 +33,7 @@ Or install it with [Appflare](https://appflare.dev), which deploys it as a
 - **AI task planning** — describe a goal ("Plan the tasks to launch my iOS app next month") and Talorys proposes a plan as an interactive card in chat. Review, edit or remove tasks, pick a project, then confirm: nothing is created until you do, and confirming creates everything at once, exactly once.
 - **Automations** — one-time and recurring reminders, daily task digests and optional AI routines, delivered to an in-app notification center. They run on Durable Object alarms, so nothing has to stay online.
 - **Push notifications** — reminders, digests and routines also arrive as system notifications on the phones and computers you turn them on for, even when Talorys is closed (Settings → General). Uses standard Web Push, encrypted end to end; on iPhone and iPad, add Talorys to the Home Screen first.
+- **Chat alerts** — a system notification when a reply finishes or needs your approval while you're in another window (Settings → General, per device). Talorys must stay open, since closing it stops the reply.
 - **Remote MCP servers (optional)** — connect remote [MCP](https://modelcontextprotocol.io) servers in Settings → Integrations (no auth, a bearer token, or OAuth sign-in) and choose which of their tools Talorys may use. Tools start off, and calls that may change something wait for your approval. Not used by scheduled routines. See [docs/mcp.md](docs/mcp.md).
 - **Single-user by design** — no signup, no accounts, no teams. The installer sets the owner password.
 - **Works without AI** — tasks, notes, memories and reminders keep working if Workers AI is unavailable or your free quota is used up.
@@ -226,8 +227,8 @@ the effective installer defaults. If an imported timezone changes, retained
 local automations are also rescheduled in that timezone. A backup file is
 treated as untrusted: new automations arrive paused, existing automations are
 never changed except to pause them, and the model, limits, demo mode,
-auto-memory and memory history settings are kept as they are (the import
-result lists any it skipped).
+auto-memory, memory history and agent name settings are kept as they are (the
+import result lists any it skipped).
 
 ## 10. Update
 

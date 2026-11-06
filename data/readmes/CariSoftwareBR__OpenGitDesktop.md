@@ -1,0 +1,71 @@
+<div align="center">
+
+<img src="docs/readme/hero-en.svg" alt="OpenGitDesktop — the Git client that works with you, not instead of you" width="100%">
+
+<br>
+<br>
+
+<a href="https://github.com/CariSoftwareBR/OpenGitDesktop/releases/latest"><img src="docs/readme/download-windows-en.svg" alt="Download for Windows" height="56"></a>&nbsp;&nbsp;
+<a href="https://github.com/CariSoftwareBR/OpenGitDesktop/releases/latest"><img src="docs/readme/download-linux-en.svg" alt="Download for Linux" height="56"></a>&nbsp;&nbsp;
+<a href="https://github.com/CariSoftwareBR/OpenGitDesktop/releases/latest"><img src="docs/readme/download-macos-en.svg" alt="Download for macOS" height="56"></a>
+
+<sub>Free · Open source · Updates itself · <a href="GitWeb/README.en.md">Build from source</a></sub>
+
+<sub>**English** · [Português](README.pt-BR.md) · [Español](README.es.md)</sub>
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-pcarinhena-ffdd00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/pcarinhena)
+
+</div>
+
+<br>
+
+<h3 align="center">Ask. Approve. Done.</h3>
+
+<img src="docs/readme/demo-en.gif" alt="Asking the assistant to create a branch, approving it, then browsing history and pull requests" width="100%">
+
+<br>
+<br>
+
+<h3 align="center">A complete Git client — AI optional</h3>
+
+<img src="docs/readme/showcase-en.png" alt="OpenGitDesktop in dark and light themes: the history branch graph and changes with +/− per file and the diff" width="100%">
+
+<img src="docs/readme/features-en.svg" alt="Changes and commits, history graph, branches and sync, pull requests, dashboard, local-first" width="100%">
+
+<br>
+<br>
+
+<h3 align="center">Every view, built for the way you work</h3>
+
+<img src="docs/readme/gallery-en.png" alt="Dashboard, AI approval, the start screen with every repository’s state, and a pull request ready to merge" width="100%">
+
+<br>
+<br>
+
+<h3 align="center">Install it with one sentence</h3>
+
+<img src="docs/readme/install-en.svg" alt="Paste the sentence into Claude Code, Codex, Cursor or any AI agent: Git ready, release downloaded, installed, app open" width="100%">
+
+```text
+Install this app: https://github.com/CariSoftwareBR/OpenGitDesktop
+```
+
+<sub>**AI agents:** install the prebuilt release by following [INSTALL.md](INSTALL.md#install) exactly. On Windows and Linux, ask nothing and do not build from source; on macOS, ask once: ready-made `.dmg` or build from source.</sub>
+
+<br>
+<br>
+
+<h3 align="center">Bring your own AI — or none</h3>
+
+<img src="docs/readme/providers-en.svg" alt="Works with OpenAI, Claude, OpenRouter, Ollama or any OpenAI-compatible endpoint" width="100%">
+
+<br>
+<br>
+
+<div align="center">
+
+**Open the repo. Ask for the next step. Approve. Push.**
+
+<sub>[Install guide](INSTALL.md) · [Build from source](GitWeb/README.en.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [MIT License](LICENSE) · Made by [CariSoftwareBR](https://github.com/CariSoftwareBR)</sub>
+
+</div>

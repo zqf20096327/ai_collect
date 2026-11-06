@@ -4,6 +4,8 @@
 >
 > **Turn any computer into an AI workstation — just boot from USB**
 
+作者 / Author：He Fangsheng (贺方升 / 贺去病; also known as Dosen)· [hequbing.com](https://www.hequbing.com)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [中文](#中文) | [English](#english)

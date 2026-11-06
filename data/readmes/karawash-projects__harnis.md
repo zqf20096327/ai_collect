@@ -234,7 +234,7 @@ All endpoints except `/health`, `/ready` and `/` need `Authorization: Bearer <OI
 | Method & path | Role | Purpose |
 |---|---|---|
 | `POST /v1/sessions` | user | create a session, optional `{"files": {path: content}}` seed |
-| `POST /v1/sessions/{id}/turns` | user (owner) | send a message; returns `completed`, `awaiting_approval`, `rejected`, `escalated` or `failed` |
+| `POST /v1/sessions/{id}/turns` | user (owner) | send a message; returns `completed`, `awaiting_approval`, `rejected`, `escalated` or `failed` (with `TURN_EXECUTION=queue`, `202` and `running` if a worker has not finished within `TURN_WAIT_SECONDS`) |
 | `GET /v1/sessions[/{id}]` | owner / reviewer | list or view sessions |
 | `GET /v1/sessions/{id}/files` | owner / reviewer | the session workspace |
 | `GET /v1/approvals` | reviewer | pending approvals with diff / command and `action_hash` |
@@ -253,7 +253,7 @@ All endpoints except `/health`, `/ready` and `/` need `Authorization: Bearer <OI
 | `GET /v1/admin/platform-events` | platform-admin | platform audit trail (tenant deletions) |
 | `GET /metrics` | scraper (`METRICS_TOKEN`) | Prometheus metrics |
 | `GET /me` | any | who the token says you are |
-| `WS /v1/ws?token=...` | any | live events (your sessions; plus approvals for reviewers) |
+| `WS /v1/ws` | any | live events (your sessions; plus approvals for reviewers). Send `{"type": "auth", "token": "..."}` as the first message; the token is never put in the URL |
 
 The event stream re-checks its token every `WS_REVALIDATE_SECONDS` (default 60) and closes with code 4401 once the token has expired or the API key was revoked, or 4403 once the tenant was disabled; clients reconnect with a fresh token.
 

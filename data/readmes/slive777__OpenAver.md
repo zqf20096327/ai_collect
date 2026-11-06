@@ -204,6 +204,8 @@ curl http://localhost:<port>/api/capabilities
 <details>
 <summary>支援的 AI 工具 · 進階用法 · 玩家彩蛋</summary>
 
+想請 AI 幫你安裝和做第一次設定：把 [`docs/ai-install.md`](docs/ai-install.md) 給它。
+
 支援任何 function-calling AI 工具：
 
 | 使用方式 | 工具 | 說明 |
@@ -325,7 +327,7 @@ OpenAver/
 │   ├── path_utils.py   # 跨平台路徑處理 (file:// URI)
 │   ├── i18n.py         # 多語系翻譯核心 (t() / fallback chain)
 │   └── translate_service.py  # AI 翻譯 (Ollama/Gemini/Claude/OpenAI Compatible)
-├── locales/            # 四語系 JSON (zh_TW/zh_CN/ja/en)
+├── locales/            # 五語系 JSON (zh_TW/zh_CN/ja/en/ko)
 ├── tests/              # 測試代碼 (Pytest)
 └── windows/            # Windows 啟動器 (PyWebView)
 ```

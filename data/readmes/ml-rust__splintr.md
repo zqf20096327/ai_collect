@@ -4,7 +4,7 @@
 
 # splintr
 
-<h3>A fast, correct tokenizer for Rust and Python.</h3>
+<h3>BPE tokenizer for Rust, with Python bindings. An alternative to tiktoken and Hugging Face tokenizers.</h3>
 
 <p>
 Pure Rust by default, with 18 bundled vocabularies and four tokenizer backends behind one <code>AnyTokenizer</code> handle. Its output matches the reference implementations id for id.
@@ -54,6 +54,12 @@ Splintr loads a tokenizer from a bundled vocabulary, a HuggingFace `tokenizer.js
 Three of those four sources return the same `AnyTokenizer` handle, so calling code does not change with the vocabulary.
 Tokenization runs on every prompt, training corpus, and RAG chunk. Splintr runs at Rust speed behind one API.
 
+- Language: the tokenizer is Rust. Python is optional and only for the bindings. The Rust crate needs none.
+- Backends: byte-level BPE, SentencePiece, Unigram, and WordPiece. The default regex engine is [regexr](https://github.com/ml-rust/regexr), pure Rust. PCRE2 is an optional feature.
+- Used by: [boostr](https://github.com/ml-rust/boostr), [oxidizr](https://github.com/ml-rust/oxidizr), [blazr](https://github.com/ml-rust/blazr), and [compressr](https://github.com/ml-rust/compressr) for tokenization.
+- Not supported yet: splintr does not open GGUF files. You pass it a parsed `GgufVocab`. A `tokenizer.json` with a feature it cannot match raises an error. The English-only Whisper checkpoints are not bundled. Load them with `from_json`.
+- Comparison: [docs/benchmarks.md](docs/benchmarks.md) holds the scripts that compare splintr with tiktoken and Hugging Face `tokenizers`.
+
 ## Quick Start
 
 ### Python
@@ -88,8 +94,10 @@ batch_tokens = tokenizer.encode_batch(["Hello, world!", "How are you?"])
 ### Rust
 
 ```bash
-cargo add splintr
+cargo add splintr --features vocab-cl100k
 ```
+
+No bundled vocabulary is on by default. `from_pretrained` names the missing `vocab-*` feature when you call it without one.
 
 ```rust
 use splintr::pretrained::from_pretrained;
@@ -189,11 +197,11 @@ A tokenizer that matches special tokens turns text that spells a control token i
 A user who types `<|im_start|>` produces the same id the server emits.
 Pick one encoding mode for untrusted text:
 
-| Mode                                              | Behavior                                             |
-| ------------------------------------------------- | ---------------------------------------------------- |
-| `encode_with_special(text)` / `All`               | Match every configured special token in the text     |
-| `encode_ordinary(text)` / `Ordinary`              | Match none. Special spellings stay ordinary content. |
-| `encode_allowed_special(text, allowed)` / `Allow` | Match only the named tokens. Raise on any other.     |
+| Mode                                              | Behavior                                                                                       |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `encode_with_special(text)` / `All`               | Match every configured special token in the text                                               |
+| `encode_ordinary(text)` / `Ordinary`              | Match no special token. Special spellings stay ordinary content. `AnyTokenizer` and `Ordinary` match `special: false` added tokens. |
+| `encode_allowed_special(text, allowed)` / `Allow` | Match only the named tokens and `special: false` added tokens. Raise on any other special token. |
 
 Every Python tokenizer type supports all three modes: `Tokenizer`, `AnyTokenizer`, `SpmTokenizer`, `SentencePieceTokenizer`, and `WordPieceTokenizer`.
 

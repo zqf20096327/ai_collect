@@ -13,7 +13,7 @@ AIquila brings AI to your self-hosted Nextcloud. Instead of keeping your files, 
 
 AIquila has three components that can be used independently or together:
 
-**MCP Server** — A [Model Context Protocol](https://modelcontextprotocol.io) server that gives any MCP-compatible AI assistant secure access to your Nextcloud. 349 tools across 44 categories: browse and manage files, keep calendars, tasks and contacts in sync, work in Talk, Deck and Mail, organise photos, notes and bookmarks, and run Coworkers and `occ` administration. It has no model of its own — it exposes Nextcloud to whichever MCP client you connect.
+**MCP Server** — A [Model Context Protocol](https://modelcontextprotocol.io) server that gives any MCP-compatible AI assistant secure access to your Nextcloud. 372 tools across 46 categories: browse and manage files, keep calendars, tasks and contacts in sync, work in Talk, Deck and Mail, organise photos, notes and bookmarks, and run Coworkers and `occ` administration. It has no model of its own — it exposes Nextcloud to whichever MCP client you connect.
 
 **Nextcloud App** — A native Nextcloud application that brings AI directly into the Nextcloud UI. Chat about your documents, summarise and rewrite text, run Coworkers (saved, repeatable AI jobs), and scope a conversation to a Project so the assistant only sees the folders you choose. Admins pick which providers are available, and may restrict them per user or group.
 
@@ -27,7 +27,7 @@ The Nextcloud app supports these providers for chat. Each user can pick a provid
 |---|---|---|
 | **Claude (Anthropic)** | Anthropic API | The default, and the most deeply integrated: vision, thinking budgets, native MCP connector, and PDF handling with citations. |
 | **Claude on a cloud platform** | Your AWS, Google Cloud or Azure account | The same Claude integration through [Claude Platform on AWS, Claude on Google Cloud, Amazon Bedrock, Vertex AI or Microsoft Foundry](docs/dev/cloud-providers.md), with the platform's billing, IAM and regions. Some platforms lack batches or the native MCP connector. |
-| **Hetzner Inference** | Hetzner (German provider) | OpenAI-compatible. Currently an [experimental Hetzner service](https://docs.hetzner.com/general/company-and-policy/experiments/inference/), free while experimental; Hetzner states it does not store request and response content. Tokens from [experiments.hetzner.com](https://experiments.hetzner.com/inference). |
+| **Hetzner Inference** | Hetzner (German provider) | OpenAI-compatible. Currently an [experimental Hetzner service](https://docs.hetzner.com/general/company-and-policy/experiments/inference/), free while experimental. Hetzner is replacing it with an official product, and experiment tokens stop working on 8 December 2026. Hetzner states it does not store request and response content. No new tokens are issued. |
 | **Mistral** | Mistral API (French provider) | Also supports the native MCP connector. Mistral offers EU-only processing through its regional inference endpoints. |
 | **Local model** | Your own hardware | Ollama, LM Studio or llama.cpp. Nothing leaves your infrastructure. Supports bearer/basic/header auth and mTLS. |
 | **DeepSeek** | DeepSeek API | OpenAI-compatible. No native MCP connector. |

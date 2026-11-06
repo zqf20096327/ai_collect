@@ -1,0 +1,265 @@
+<p align="center"><img src="docs/mascot.svg" alt="The CloudBot mascot, a blue cloud hopping happily" width="160"></p>
+
+<h1 align="center">CloudBot</h1>
+
+Your own always-on AI coworker, running on your VPS on the AI subscription or API key you choose.
+It works with Claude, ChatGPT, Gemini, GitHub Copilot, Cursor, Grok, Mistral,
+Qwen, Kimi and OpenCode, and each bot can use a different one.
+
+You chat with it. It works on its own computer while you are away, and it
+comes back when the job is done or when it needs you.
+
+> **Early development.** CloudBot is not usable yet. The [roadmap](docs/ROADMAP.md)
+> shows what comes first. Issues and pull requests are welcome.
+
+> **Not an Anthropic product.** CloudBot is an independent open source project.
+> It is not made, endorsed or supported by Anthropic or any other AI provider.
+> It runs each provider's official CLI, with your own subscription or your own
+> API key.
+
+> [!WARNING]
+> **Your use, your responsibility.** CloudBot can use websites, apps and
+> accounts for you. Many platforms forbid or limit automated use in their terms.
+> Using CloudBot on them can break those terms and lead to limits, a suspended
+> or banned account, or other action by the platform. You are responsible for
+> how you use CloudBot and for following the terms of every service it uses.
+> CloudBot is provided "as is", without warranty of any kind, as stated in the
+> [MIT license](LICENSE). Its authors and contributors are not responsible for
+> how anyone uses it or for any loss, ban or claim that comes from that use.
+
+## Install
+
+On a Debian or Ubuntu server with a public IP, on x86-64 or ARM, one command
+installs Docker, starts CloudBot behind HTTPS and prints the owner's address.
+The first person to open it chooses a password and becomes the owner:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/mateuscmtropical/cloudbot/main/docker/install.sh | sudo bash
+```
+
+Without a domain it uses a free `<ip>.sslip.io` name. To use your own domain
+and the owner's name, add them:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/mateuscmtropical/cloudbot/main/docker/install.sh | sudo bash -s -- bot.example.com maria
+```
+
+On Windows, on x64 or ARM, open PowerShell as administrator and run one command.
+It installs WSL 2 with Ubuntu when it is missing, then runs the installer. If
+Windows asks for a restart, run the command again afterwards.
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/mateuscmtropical/cloudbot/main/docker/install.ps1))) -OwnerName maria
+```
+
+CloudBot then opens at `http://maria.localhost` in your Windows browser.
+
+The [install guide](docs/INSTALL.md) covers domains, adding people, updates and
+the `cloudbot` command.
+
+### Update and remove
+
+Run these on the server:
+
+```sh
+sudo cloudbot update       # pull the latest code and recreate the hub
+sudo cloudbot update --all # same, and move every person's instance to the new image
+sudo cloudbot status       # show the hub, Caddy and every person's instance
+sudo cloudbot uninstall    # remove CloudBot and all its data, after a question
+```
+
+To move one person to the new image, remove that container. Their data stays:
+
+```sh
+sudo docker rm -f cloudbot-i-maria
+```
+
+`sudo cloudbot uninstall --keep-data` removes the containers and the image but
+keeps the volumes and the install folder. Docker stays installed. Back up the
+`hub-data` and `cbi-*` volumes first if you may want the data later, as the
+[install guide](docs/INSTALL.md#back-up-data) describes.
+## What it will do
+
+- **Chat like a messenger.** A list of bots on the left, the conversation in
+  the middle.
+- **Set itself up in the chat.** The first conversation asks which AI provider
+  you want, signs you in and tells you when it is ready.
+- **Work on its own computer.** A whole Linux desktop of its own, with a
+  browser, a terminal, an Apps menu and files. The bot clicks, types and takes
+  screenshots in any app on it, not only the browser. Take the screen in
+  Computer to use it yourself. An app you install in the bot's home, such as
+  VS Code, shows up in the Apps menu. Its browser cannot reach private or
+  local addresses unless you allow a host.
+- **Hand the screen to you.** When a site asks for something only a person can
+  do, such as a CAPTCHA or a 2FA code, it opens the screen for you and takes
+  over again when you say so. On a phone, sites switch to their mobile version
+  while you hold the screen, and a drag scrolls the page.
+- **Keep secrets away from the bot.** Passwords and keys go through a secure
+  form into a vault. The bot uses them without being able to read them.
+- **Fill logins from Bitwarden.** Connect your Bitwarden vault in Connect apps with an API key and your master password. The bot can then type a website login into the page that is open. It never sees the values, it can fill only the site that the login is saved for, and you approve each login in the chat.
+- **Take meeting notes.** Give the bot a Google Meet link and ask it to take notes. It joins as a guest from its own browser, knocks again when Google Meet refuses, says who it is in the meeting chat, and transcribes the call on the server with a local model. When you ask it to leave, or the meeting ends, it posts a summary with the action items and shares the transcript.
+- **Ask before it acts.** Rules written in plain language, and a review step
+  before sensitive actions such as sending a message or paying.
+- **Run routines.** Scheduled tasks, tasks that run once at a set time, and tasks started by events.
+- **Morning brief and quiet check-ins.** Ask in the chat for a daily brief of what matters, or for a check-in every few hours on your apps and accounts. A check-in messages you only when something needs you, and a run that finds nothing leaves no trace in the chat. Check-ins run on a small model unless you pick one for routines, and they follow the routines limits.
+- **Wake it from outside.** Webhooks: a URL that another service calls to send the bot a message. A call with a delivery id is not queued twice within 24 hours, and the refused calls are listed for the owner.
+- **Give a bot its own mailbox.** Tell it the provider's IMAP and SMTP settings in chat, approve the settings, then enter the password through the secure form. New mail arrives as an outside-data task. Each send waits for approval of the full recipient list, subject and text. Attachments are not supported.
+- **Send instructions from WhatsApp.** Connect the official Meta WhatsApp Business Cloud API in the chat. Only your number is accepted. Replies stay in the web app. Existing push notices arrive when notifications are enabled. CloudBot never sends WhatsApp messages. See the [WhatsApp setup guide](docs/WHATSAPP.md).
+- **Set limits.** Optional time, spending and step limits per turn, one set for chat and one for routines. A stopped turn says which limit it hit. The agent and the review agent are each held to the spending limit, so a turn can spend up to twice the limit. The spending is an estimate, and a subscription is not billed by it.
+- **API integrations.** The bot writes a script that calls an outside API and runs it with your key from the vault. The key does not reach the model or the logs, and a changed script waits for your approval.
+- **Connect apps.** Pick from a catalog of 72 apps in the app panel, a grid sorted by name, filter it by category or search, and sign in on the app's own page, with no token to paste. A custom app works the same when its server offers that sign-in. Otherwise the bot asks for a token in the chat. You can also ask the bot in chat. The panel shows each app's state and lets you remove it. Most apps show their logo, bundled with CloudBot, so the browser calls no other site. Gmail, Calendar, Drive, Docs and Sheets each have their own card, and Connect opens Google's authorization page. They run through Google's own servers and need a Google Cloud client that the admin sets once, see [docs/GOOGLE.md](docs/GOOGLE.md).
+- **Tell you when it is done.** Install the web app on your phone or computer. In Chrome on Android, open the menu and tap Install app or Add to home screen. In Chrome or Edge on a computer, use the install button in the address bar. Then open Account in the sidebar and turn on the Notifications switch, or ask a bot in the chat to turn them on. Your browser asks for permission when you tap. You get a notification when a turn finishes, when an approval waits and when the bot needs your screen. It shows the bot's name and a short line, never the text of a message. On an iPhone, add CloudBot to the home screen first. Notifications need HTTPS or localhost.
+- **Sign in with a passkey.** Ask a bot in the chat to add a passkey and tap the card. That phone or computer then signs in with its lock screen, face or fingerprint. Ask the bot to list or remove them. The setup link from the server always works too. Passkeys need `CLOUDBOT_PUBLIC_URL` set to the name you open CloudBot at.
+- **Talk from Telegram.** Make a Telegram bot with @BotFather and ask your bot in the chat to connect Telegram. It asks for the token through the secure form, then posts a one-time code in the chat. Send `/start` and the code to your Telegram bot. From then on only your Telegram account can talk to the bot there, and it answers there. Text only for now. Approvals still happen in the web app, and Telegram tells you when one waits.
+- **Make more bots.** The + button adds a bot, and a bot can make one when you ask. Deleting a bot from its chat removes all of its data.
+- **Teach it skills.** Ask a bot to learn a skill, or give it a link to one. It writes the steps as a skill, and you approve the whole text on a card before it is saved. The bot reads a skill when a task needs it. Ask it to list or remove its skills.
+- **Teach it by showing.** Ask a bot to learn a task from you. It hands you its screen and records the browser while you do the task once. What you type into a password or another secret field is never recorded. Then it writes the steps as a skill, and you approve or fix them on the card.
+- **Search your chats.** The Search field in the sidebar finds bots by name and messages in every chat. A result opens that chat at the message.
+- **See what a bot remembers.** The Memory page in the bot's profile lists what it wrote in its memory. Delete a line, or edit the whole text.
+- **Copy a bot.** Ask a bot to export itself and you get a template file in the chat. Attach that file and ask for a new bot from it. You see the whole template before the bot is made. Secrets, sign-ins, webhook addresses, shared files and learned memory are never in the file. Its routines start turned off.
+- **Import a bot.** Paste instructions from another platform or attach a `.txt`, `.md` or JSON export. CloudBot prepares a name, description and instruction draft for you to approve in the chat. The instructions become memory text only. Platform actions, tools, skills, files, credentials, approval settings and routines are not imported. Recognizable credential values in the draft are redacted.
+- **Share templates.** The template gallery lists public bot templates from a GitHub repository. Ask a bot to list them, to install one by its file name, or to share your bot there once GitHub is connected. The share opens a pull request from your fork of the gallery. You approve each card first. Set `CLOUDBOT_GALLERY_REPO` to read another repository.
+- **Work as a team.** Several bots that pass work to each other, and groups with a manager bot. Press the plus next to Groups to make one, or tap a group's name to change it. An isolated group limits which bots can message each other: its members message only each other, and other bots cannot message them. It is not a security boundary, since all the bots of a person share one system user.
+- **Share a group with people.** On a server with several people, the owner adds a person and invites them to a shared group, new or existing. The group runs in its own container, with its own bots and chats. The owner copies or moves bots into it, or makes new ones there. Each person keeps their own CloudBot and sees the group under Shared with people. The owner sees and manages everything and is never removed. Admins add and remove members. Any member can approve the bot's usual actions, but an action that spends money needs an admin or the owner. A copied or moved bot takes its name, look, rules and routines, never its memory or chats, and its routines start turned off. See the [multi-user design](docs/MULTI_USER.md).
+
+The full plan, version by version, is in the [roadmap](docs/ROADMAP.md).
+
+## AI providers
+
+CloudBot never talks to a model on its own. Each turn runs in the provider's
+official CLI, installed from the provider's own package or installer and never
+modified. Every tool call the CLI asks for goes through the same review,
+whichever provider runs the bot.
+
+| Provider | CLI | Subscription | API key |
+| --- | --- | --- | --- |
+| Claude | Claude Code | Claude account, code pasted back | Anthropic |
+| ChatGPT | Codex | ChatGPT account, device code | OpenAI |
+| Gemini | Antigravity CLI for a subscription, Gemini CLI for a key | Google account, code pasted back | Google AI Studio |
+| GitHub Copilot | Copilot CLI | GitHub account, device code | none |
+| Cursor | Cursor CLI | Cursor account, link | none |
+| Grok | Grok Build | xAI account, device code | xAI |
+| Mistral | Mistral Vibe | Mistral AI Studio account, link | Mistral AI Studio |
+| Qwen | Qwen Code | none | Alibaba Cloud Model Studio |
+| Kimi | Kimi Code | Kimi account, device code | Moonshot AI |
+| OpenCode | opencode | free models, no sign-in | OpenCode Zen or Go |
+
+- One connection serves every bot. Each bot runs on one provider, and you
+  switch it by asking the bot. The next message starts a new conversation on
+  the new provider.
+- A subscription sign-in happens on the provider's own page. The CLI keeps the
+  credentials in the agent user's home. CloudBot does not read, copy or store
+  them.
+- An API key stays in CloudBot's vault. The CLI gets a local key proxy address
+  and a dummy key, so the bot cannot read the real key.
+- The review of each call runs on the review provider you pick in the chat
+  header's provider menu. Without a pick it tries Claude, ChatGPT and Gemini in
+  that order, among the ones you connected. With none of them connected, a call
+  runs without that review. Dangerous commands are still blocked, and the
+  actions that always need you still ask.
+- "none" means the CLI has no sign-in or key that CloudBot can run safely. A
+  Copilot or Cursor token cannot go through the key proxy, so it is not offered.
+  Qwen Code no longer has a free account sign-in.
+- A provider shows up in the setup list only when its CLI is installed. The
+  Docker image installs all of them. A local run uses Claude and, with
+  `CODEX_PATH`, ChatGPT. The others need `CLOUDBOT_<PROVIDER>_PATH`, such as
+  `CLOUDBOT_GEMINI_PATH`, set to the absolute path of the CLI.
+- The chat header shows a provider's reported model and offers its model and
+  effort choices per bot. A provider that reports no selectable models keeps
+  its own default.
+
+Read [provider terms](docs/PROVIDER_TERMS.md) before you use a subscription
+with CloudBot.
+
+## Voice input
+
+With an empty draft, press the waveform button to speak. With text in the field, use the microphone button to add spoken words. Listening goes on until you press the active control again. Use the plus button to choose a file, take a photo or add a photo or video.
+
+Chrome and Edge send the audio to their speech service to turn it into text, and the app never receives it. In a browser without a working speech service, such as Firefox, the composer records up to five minutes instead. The recording goes to your own server, which turns it into text with ffmpeg and whisper.cpp and deletes the audio when the job ends. The programs run as the server user, on one recording at a time, so the bot user cannot read the audio and no model stays in memory. The browser asks for microphone permission only when you press the button.
+
+Press the speaker on a reply to hear it, with the voices of your browser. To hear each new reply, turn on **Read replies aloud** in the conversation options.
+
+## Development
+
+You need Node 24 or newer and pnpm 10.
+
+```sh
+pnpm install
+pnpm dev
+```
+
+`pnpm check` runs lint, typecheck, tests and build. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
+
+## Owner access
+
+When the server starts with no owner, it prints a setup link. Open it in the
+browser you want as the owner. The link works once and sets a session cookie.
+
+If you lose the cookie, run `pnpm build` and then `pnpm setup-link`. It prints
+a new link and ends every existing session.
+
+The link uses `CLOUDBOT_PUBLIC_URL` when it is set, and `http://127.0.0.1:PORT`
+otherwise. The cookie is `Secure`, so open the link on localhost or over HTTPS.
+
+A local run listens on `127.0.0.1` only. Set `HOST` to listen on another
+address, and the Docker image sets `HOST=0.0.0.0`.
+
+## Connect a provider in chat
+
+After opening the owner link, the first bot asks which provider to connect.
+This is a scripted conversation that works before any provider is connected.
+Pick a provider, then pick Subscription or API key. OpenCode asks whether to
+use free models or an account key, then whether the account is Zen or Go. A
+provider with only one way skips the second question. On the web page, a
+sign-in opens in a new tab.
+
+- **Claude subscription:** open the sign-in link, sign in on Anthropic's page
+  and paste its code into the code field. CloudBot passes it to the official
+  CLI and checks sign-in status. The code is never stored or logged.
+- **Other subscriptions:** CloudBot starts the CLI's own login and posts its
+  link, with the device code when the CLI shows one. For Gemini, Google's page
+  shows a code that you paste back. If Google refuses the code, the chat says
+so and shows the providers again. The sign-in is checked when the CLI ends.
+- **API key:** paste the key into the secure form. CloudBot sends one cheap
+  request to the provider to check it, then stores it only in the encrypted
+  vault. The Anthropic key is saved without that check. Turns use the key
+  through a local key proxy, and the agent receives a dummy key. OpenCode
+  account keys come from `opencode.ai/auth`.
+
+Setup remembers your mode and step across restarts. An interrupted subscription
+login gets a fresh link and code field because the old login process has ended.
+Failures offer another choice. Normal chat starts once setup says the provider
+is ready. Ask a bot to connect another provider and the list comes back in the
+setup chat.
+
+## Run with Docker
+
+The image runs the server as the `cloudbot` user and runs the provider CLIs as
+the `bot` user. The CLIs are owned by root, so the `bot` user cannot replace
+them. The data folder is a Docker volume that only
+`cloudbot` can read.
+
+The bot home and workspaces also use named volumes to preserve provider sign-ins,
+sessions and memory. The install above starts a hub, a Docker socket proxy and
+Caddy, and the hub starts one container for each person. See the
+[install guide](docs/INSTALL.md) for volumes, updates and CLI update behavior,
+and [multi-user design](docs/MULTI_USER.md) for how the pieces fit.
+
+### Limit hub sign-in by address
+
+Set this variable in `/opt/cloudbot/.env`, then run `sudo cloudbot update`:
+
+| Variable | Default | Description |
+|---|---|---|
+| `CLOUDBOT_LOGIN_ALLOWED_IPS` | Empty | Comma-separated IPv4 or IPv6 addresses and CIDR ranges. Keep the hub behind Caddy so the client address can be trusted. This limits sign-in only, not the rest of the site. |
+
+## Security
+
+The [threat model](docs/THREAT_MODEL.md) says what the bot can reach, what stops
+it and where the protections end. To report a vulnerability, read the
+[security policy](SECURITY.md). Do not open a public issue for it.
+
+## License
+
+[MIT](LICENSE)

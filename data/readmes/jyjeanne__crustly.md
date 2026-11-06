@@ -9,7 +9,7 @@
 > A blazingly fast, memory-efficient terminal-based AI assistant written in Rust.
 > Rust reimplementation of Crush with 95%+ feature parity and superior performance.
 
-[![Rust](https://img.shields.io/badge/rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
+[![Rust](https://img.shields.io/badge/rust-1.95%2B-orange.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/license-FSL--1.1--MIT-blue.svg)](LICENSE.md)
 [![CI](https://github.com/jyjeanne/crustly/actions/workflows/ci.yml/badge.svg)](https://github.com/jyjeanne/crustly/actions/workflows/ci.yml)
 ```
@@ -772,7 +772,7 @@ Comparable footprint to other 27B-class dense models already in this README (Gem
 
 ### Prerequisites
 
-- **Rust 1.75+** - [Install Rust](https://rustup.rs/)
+- **Rust 1.95+** - [Install Rust](https://rustup.rs/)
 - **API Key** from your preferred provider (see Supported AI Providers above)
 - **SQLite** (bundled with sqlx)
 - **Git** (optional)
@@ -1248,7 +1248,7 @@ Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidel
 
 ### Development Setup
 
-1. Install Rust 1.75+
+1. Install Rust 1.95+
 2. Clone the repository
 3. Run `cargo build`
 4. Make changes

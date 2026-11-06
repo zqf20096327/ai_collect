@@ -332,10 +332,11 @@ Options:
           [possible values: grpc, http-proto]
 
       --prometheus-port <PROMETHEUS_PORT>
-          The Prometheus port to listen on
+          The HTTP port for Prometheus metrics.
+
+          HTTP servers share the API port by default. Set a different port to serve metrics separately and remove `/metrics` from the API port. gRPC servers default to 9000.
 
           [env: PROMETHEUS_PORT=]
-          [default: 9000]
 
       --cors-allow-origin <CORS_ALLOW_ORIGIN>
           Unused for gRPC servers
@@ -563,6 +564,13 @@ First [install Rust](https://rustup.rs/):
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
+Clone the repository and enter its directory.
+
+```shell
+git clone https://github.com/huggingface/text-embeddings-inference.git
+cd text-embeddings-inference
+```
+
 Then run:
 
 ```shell
@@ -573,6 +581,16 @@ cargo install --path router -F mkl
 # On M1 or M2
 cargo install --path router -F metal
 ```
+
+Source builds use native CPU optimizations by default. Build on the machine that will run TEI,
+or on a CPU with compatible instruction sets. To disable the repository's native CPU flags
+when building for other CPUs of the same target architecture, use the following command.
+
+```shell
+RUSTFLAGS='' cargo install --path router -F ort
+```
+
+This does not cross-compile the application or change the requirements of prebuilt backend libraries.
 
 You can now launch Text Embeddings Inference on CPU with:
 

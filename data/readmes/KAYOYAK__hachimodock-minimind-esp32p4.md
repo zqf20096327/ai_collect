@@ -25,7 +25,7 @@
 具体工作：
 
 1. **模型全流程自研**：在本机 RTX 5070 Ti Laptop 上**从零训练** MiniMind-3 Zero（pre-train 1 epoch + SFT 1 epoch，共 **6h32m**，最终 loss 2.01 / 1.71），并用官方数据复刻医药 **LoRA**（rank=16，7,900 step，loss 1.2564）；再做**自定义混合位宽量化**（q3e4：embed q4，attention/FFN q3），把 63.91M 参数压到 **28.6 MB**，在 ESP32-P4 的 32 MB PSRAM 中全驻运行。
-2. **端侧推理引擎**：基于 Kestrel-MCU（Apache-2.0）移植到 ESP32-P4，补齐 Qwen3 的 **q_norm / k_norm**，实现 KMCU 打包权重的零拷贝 GEMV；int16 激活整数点积 + 激活量化外提/offset 消除，累计 **2.61×** 于标量基线（其中存储格式贡献 2.13×）。
+2. **端侧推理引擎**：基于 Kestrel-MCU（Apache-2.0）移植到 ESP32-P4，补齐 Qwen3 的 **q_norm / k_norm**，实现 KMCU 打包权重的零拷贝 GEMV；int16 激活整数点积 + 激活量化外提/offset 消除，累计 **3.62×**（最终构建 0.620 tok/s） 于标量基线（其中存储格式贡献 2.13×）。
 3. **替代官方 PC 客户端**：在 ESP32-P4 上实现 USB Host + CH343 驱动 + HachimoDock 官方 JSONL 协议（`hello / ack / heartbeat / session/current / speech/text / input/event / debug/screenshot`），让 P4 单板直接驱动哈基米机。
 4. **协议细节逆向验证**：确认 CH343 的 4 Mbaud 运行时链路、DTR/RTS 与 P4 EN/GPIO35 的对应关系，以及乐鑫 CH34x host 驱动缺失的 CH343 vendor 初始化（`0xA1` LCR+波特率、`0xA4` 释放 DTR/RTS）。
 5. **完整闭环**：宠物摇杆输入 → `input/event` → P4 本地生成中文回复 → `speech/text` 气泡 → 宠物屏幕显示，全程离线、无 PC、无网络。
@@ -113,7 +113,7 @@ local-llm  quantization  qwen3  tiny-llm  desktop-pet  usb-host  embedded-ai
 | 主控 | ESP32-P4（rev v1.3），双核 360 MHz，16 MB Flash，**32 MB PSRAM** |
 | 模型 | MiniMind-3 架构，63.91M 参数，自训练 + LoRA + **q3e4 混合量化** |
 | 模型体积 | **28,632,448 B（27.3 MiB）**，全驻 PSRAM |
-| 推理速度 | **2,152 ms/token ≈ 0.465 tok/s**（q3e4，int16+零拷贝+量化外提，累计 2.61× vs 标量基线 5,622 ms） |\n| 上下文 | **192 token**（FP16 K/V，KV 占用 2,359,296 B，与 96 token FP32 同预算） |\n| GEMV 占比 r | **0.985**（含 lm_head，精确口径） |\n| PSRAM 顺序读带宽 | **95.9 MB/s**（1 MB 微基准，下界） |\n| 设备/主机 CE 对拍 | 逐窗口 **Δ<0.001**（q3e4，windowed 96-token） |\n| 规则评分（30 prompts） | q3e4 **80%**（= fp32 80%）；q2 **0%** |
+| 推理速度 | **1,612 ms/token ≈ 0.620 tok/s**（q3e4，int16+零拷贝+量化外提+批量解包/4 路/-O3，累计 **3.62×** vs row-expanded fp32 baseline 5,833 ms（同板重测）） |\n| 上下文 | **192 token**（FP16 K/V，KV 占用 2,359,296 B，与 96 token FP32 同预算） |\n| GEMV 占比 r | **0.977**（最终构建，含 lm_head） |\n| PSRAM 顺序读带宽 | **95.9 MB/s**（1 MB 微基准，下界） |\n| 设备/主机 CE 对拍 | 逐窗口 **Δ<0.001**（q3e4，windowed 96-token） |\n| 规则评分（30 prompts） | q3e4 **80%**（= fp32 80%）；q2 **0%** |
 | 模型加载 | **20.6 s**（TF 卡 4-bit 40 MHz；受卡/卡槽影响） |
 | 设备协议 | 官方 `pet-usb-jsonl-v3`，CH343 4 Mbaud |
 | 功耗 | 裸板 ~0.2–0.5 A（5V），整机峰值 ~0.8–1 A |
@@ -182,7 +182,7 @@ TF 卡根目录：
   tokenizer.bin   # 6400 词表 ByteLevel BPE 分词器
 ```
 
-把卡插入板子，上电后约 20 秒模型加载完成、与哈基米机自动握手，按摇杆中键即可触发本地 AI 回复。
+把卡插入板子，上电后约 20 秒模型加载完成、与哈基米机自动握手，**按 SW1 键**即可触发本地 AI 回复（气泡显示在宠物屏幕上）。
 
 ---
 
@@ -239,7 +239,7 @@ TF 卡根目录：
 
 ## ⚠️ 已知限制
 
-- 速度 **0.465 tok/s**，单句回复需要数十秒；适合「低频互动」而非实时对话。
+- 速度 **0.620 tok/s**，单句回复需要数十秒；适合「低频互动」而非实时对话。
 - q3e4 量化后质量有限，短 prompt 可能不连贯；完整指令效果更好。
 - 无语音 ASR/TTS、无 Agent 状态跟随——这些依赖 PC/云端，本方案主动放弃。
 - TF 卡质量和卡槽接触直接影响启动耗时，建议正品卡。
@@ -280,3 +280,24 @@ TF 卡根目录：
 
 下载后放入 TF 卡根目录即可；校验：
 `feb574f9...  model.kmcu` / `80db508d...  tokenizer.bin`
+
+### 按键与摇杆映射（2026-11-06 实测，官方 v3 固件 + CH343 4 Mbaud）
+
+| 物理操作 | 设备上报 event / action | P4 侧行为 |
+|---|---|---|
+| **SW1 短按** | `button.sw1.short_press` / `page_enter` | **触发一次本地 AI 生成**（唯一触发键） |
+| SW2 短按 | `button.sw2.short_press` / `component_center` | 仅记录，不触发 |
+| SW3 短按 | `button.sw3.short_press` / `page_back` | 仅记录，不触发 |
+| 摇杆中键按下 | `button.encoder.short_press` / `page_enter` | 仅记录（触发默认关） |
+| 摇杆上 / 下 | `joystick.up` / `joystick.down` → `session_previous` / `session_next` | 仅记录（设备本地切会话） |
+| 旋钮左 / 右 | `knob.rotate_ccw` / `knob.rotate_cw` → `session_previous` / `session_next` | 仅记录 |
+
+> 触发策略是「只认 SW1 短按」：摇杆/旋钮/其他键继续交给设备本地处理，避免误触发生成。
+> 生成完成后通过 `speech/text` 下发 `displayContent`，宠物屏幕显示气泡；状态依次为
+> `thinking → writing → waiting_user`。
+
+## 📄 论文与评测（artifact）
+
+- 论文当前在 **IEEE Embedded Systems Letters** 审稿中；审稿期间不在公开仓库放论文正文/草稿；
+- 评测脚本与数据保留在 [`paper/`](paper/)（CE 脚本、prompt 集、测量 CSV/日志）；
+- 部署 artifact（模型、固件、分词器）见根目录与 [v0.2.1](https://github.com/KAYOYAK/hachimodock-minimind-esp32p4/releases/tag/v0.2.1)。

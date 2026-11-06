@@ -77,6 +77,7 @@ Also, a leaderboard should be included if only:
 
 | Name | Description |
 | ---- | ----------- |
+| [Benchmark Radar](https://github.com/ktwu01/benchmark-radar) | A living database and search engine for AI benchmarks and evaluation, tracking 42,331+ records from 40 public sources with linked evidence and daily updates. |
 | [Demo Leaderboard Backend](https://huggingface.co/spaces/demo-leaderboard-backend/backend) | Demo leaderboard backend helps users manage the leaderboard and handle submission requests, check [this](https://huggingface.co/docs/leaderboards/leaderboards/building_page) for details. |
 | [Evaluation Results on the Hub](https://huggingface.co/docs/hub/en/eval-results) | Evaluation Results on the Hub enables model authors to store and display evaluation results in model cards by embedding structured metadata, making benchmark scores publicly accessible and comparable across models. |
 | [Kaggle Competition Creation](https://www.kaggle.com/competitions?new=true) | Kaggle Competition Creation enables you to design and launch custom competitions, leveraging your datasets to engage the data science community. |
@@ -606,6 +607,7 @@ Also, a leaderboard should be included if only:
 | [VAB](https://github.com/THUDM/VisualAgentBench?tab=readme-ov-file#leaderboard) | VisualAgentBench (VAB) is a benchmark to evaluate and develop LMMs as visual foundation agents, which comprises 5 distinct environments across 3 types of representative visual agent tasks. |
 | [VisualWebArena](https://jykoh.com/vwa) | VisualWebArena is a benchmark to evaluate the performance of multimodal web agents on realistic visually grounded tasks. |
 | [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, self-hostable web environment to evaluate autonomous agents. |
+| [WebsiteBench](https://website-bench.com/#results) | Leaderboard for agents reconstructing full-stack websites through browser exploration; read the historical cohort and protocol with each result. [Code](https://github.com/TIGER-AI-Lab/WebsiteBench). |
 | [WildClawBench](https://internlm.github.io/WildClawBench) | WildClawBench is an in-the-wild benchmark to evaluate AI agents in the OpenClaw Environment. |
 | [YC-Bench](https://collinear-ai.github.io/yc-bench/#leaderboard) | YC-Bench is a long-horizon deterministic benchmark for LLM agents, where agents play CEO of an AI startup over a simulated 1–3 year run, managing decisions across prestige specialisation, employee allocation, cash flow, and deadline risk. |
 | [τ-Bench](https://github.com/sierra-research/tau-bench?tab=readme-ov-file#leaderboard) | τ-bench is a benchmark that emulates dynamic conversations between a language model-simulated user and a language agent equipped with domain-specific API tools and policy guidelines. |
@@ -621,6 +623,4 @@ Also, a leaderboard should be included if only:
 | Name | Description |
 | ---- | ----------- |
 | [AI-Trader](https://hkuds.github.io/AI-Trader) | AI-Trader is a fully autonomous trading benchmark to compare the performance of different AI models in trading NASDAQ 100 stocks. |
-| [Aiera Leaderboard](https://huggingface.co/spaces/Aiera/aiera-finance-leaderboard) | Aiera Leaderboard evaluates LLM performance on financial intelligence tasks, including speaker assignments, speaker change identification, abstractive summarizations, calculation-based Q&A, and financial sentiment tagging. |
-| [Alpha Arena](https://nof1.ai/leaderboard) | Alpha Arena is a benchmark to evaluate AI models' investing abilities. |
-| [BookSQL](https://huggingface.co/spaces/Exploration-Lab/BookSQL-Leaderboard) | BookSQL is a benchmark to evaluate Text-to-SQL systems in the finance and accounting domain across various industries with a 
+| [Aiera Leaderboard](https://huggingface.co/spaces/Aiera/aiera-finance-leaderboard) | Aiera Leaderboard evaluates LLM performance on financial intelligence 

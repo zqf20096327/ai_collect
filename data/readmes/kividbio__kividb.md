@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="https://trendshift.io/repositories/309924?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-309924" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/309924/daily?language=Rust" alt="kividbio%2Fkividb | Trendshift" width="250" height="55"/></a>
+  <a href="https://hackergit.org/r/kividbio/kividb"><img src="https://hackergit.org/badge/kividbio/kividb.svg?style=rank" alt="Hacker News" width="250" height="55"></a>
 </p>
 
 **KiviDB** is a fast, multi-threaded alternative to Redis® and Valkey, written in Rust. It
@@ -468,6 +469,8 @@ list.
 | `--aclfile <path>` | none | ACL file to load users from |
 | `--replicaof <HOST> <PORT>` | none | Replicate from a primary |
 | `--replica-announced-port <port>` | server port (the TLS port with `--tls-replication yes` or `--port 0`) | Port announced to the primary via `REPLCONF listening-port` |
+| `--replica-priority <n>` | `100` | Sentinel promotes the replica of lowest priority first, and never one of `0` |
+| `--replica-announced <yes\|no>` | `yes` | Whether Sentinel lists this replica |
 | `--slowlog-log-slower-than <us>` | off | Slowlog threshold in microseconds (`0` logs every command) |
 | `--slowlog-max-len <n>` | `128` | Slowlog entries kept |
 | `--cluster-enabled <yes\|no>` | `no` | Cluster mode: a cluster bus on `<port> + 10000`, topology in `nodes.conf`, gossip, failure detection and failover |

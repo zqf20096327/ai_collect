@@ -100,6 +100,11 @@ without a skill in both conditions. Details are in `eval/results/global-open-mod
 
 Without tools, the model tries to compute checksums and calendars by hand and usually runs out of budget.
 
+**How to read these numbers.** The baseline is the model alone, not the model with a Python interpreter, the suites are small
+and were developed against these libraries, and the 4096-token cap decides much of the baseline (see
+[`LIMITATIONS.md`](LIMITATIONS.md) section 5). A model-plus-interpreter baseline and a held-out suite are open
+([#24](https://github.com/VirajSawad1021/Zyven/issues/24), [#25](https://github.com/VirajSawad1021/Zyven/issues/25)).
+
 ### What the gates caught during development
 
 - **Differential gate:** merged imports in a generated server made the "Luhn" tool silently run a different
@@ -237,17 +242,36 @@ The self-extending agent wraps this pipeline:
 
 ## Quick start
 
+### Install (no clone)
+
+You need [uv](https://docs.astral.sh/uv/) (or pipx) and Docker. You don't need a model key: coding agents, `verify`
+and `mcp` work without one.
+
+```bash
+uvx --from git+https://github.com/VirajSawad1021/Zyven zyven setup     # builds the sandbox image, creates ~/.zyven
+uvx --from git+https://github.com/VirajSawad1021/Zyven zyven doctor    # what is ready, what is missing, how to fix it
+uvx --from git+https://github.com/VirajSawad1021/Zyven zyven verify -- npx -y @modelcontextprotocol/server-memory
+```
+
+Or install it once with `pipx install git+https://github.com/VirajSawad1021/Zyven` (or `uv tool install ...`) and run
+`zyven setup`, `zyven doctor`, `zyven board` and so on. An installed copy keeps everything in `~/.zyven`, or
+`ZYVEN_HOME` if set: the board, the skill library that `zyven mcp` serves, and the settings file `~/.zyven/.env`.
+`zyven doctor` warns when the sandbox image is older than the files it was built from, because gates run on a stale
+image can give wrong results.
+
+### From a clone (development)
+
 Requirements:
 - Python 3.11+ and [uv](https://docs.astral.sh/uv/)
 - Docker
 - Node 20+, to build the site
-- an API key for a host serving an open-weight model
+- for the chat-model roles: an API key for an OpenAI-compatible host (published results use open-weight models)
 
 ```bash
 git clone https://github.com/VirajSawad1021/Zyven.git && cd Zyven
 uv sync
-cp .env.example .env                          # set MODEL_API_KEY; the model must be open-weight
-docker build -t zyven-sandbox:py312 zyven/sandbox
+cp .env.example .env                          # set MODEL_API_KEY (optional with --agent codex)
+uv run zyven setup                            # build the sandbox image
 uv run zyven sync                             # clone the pinned catalog repos
 cd web && npm ci && npm run build && cd ..    # build the site (optional: there is a no-build fallback)
 uv run zyven board                            # http://127.0.0.1:8765
@@ -268,6 +292,117 @@ uv run zyven board --port 8765                # board, site and APIs
 uv run python eval/run_eval.py --suite stdnum --limit 6 --label compiled --skill skills/<name>/server.py
 uv run python eval/run_eval.py --suite global --limit 6 --label compiled --skill skills/<name>/server.py
 ```
+
+### Coding agents as the compiler
+
+Any of the five roles can be done by a coding agent run headless instead of the chat model in `.env`: **Codex**,
+**Claude Code**, **Antigravity** (`agy`), **OpenCode** or the **Qoder CLI**. The agent writes the spec, the adapter, the
+tests or the repair; Zyven's gates still decide what ships. Any agent writes the tools, and Zyven proves they work.
+
+```bash
+uv run zyven compile path/to/repo --capability <name> --agent codex                 # Codex does every role
+uv run zyven compile path/to/repo --capability <name> --compiler claude:opus        # one role only
+uv run zyven compile path/to/repo --capability <name> --compiler codex --tester qoder   # tests from a different vendor
+```
+
+Each agent runs in a fresh empty folder with its tools cut to the minimum (Codex read-only sandbox, Claude Code with no
+tools, OpenCode with every permission denied) and answers in text. Its answer goes through the same schema validation,
+reference resolution, policy check and six sandbox gates as a chat model's. `provenance.json` records who did each role
+(`"roles"`). An agent uses its own sign-in, so the code and prompts go to whichever provider it is signed in to.
+
+First run (2026-11-06, not part of the published numbers): `--agent codex` on pypa/packaging `version_specifiers`
+was **verified on the first attempt in 163 s**: 4 tools, 2,108 upstream tests, 6/6 robustness probes, MCP smoke,
+12/12 differential cases. The run before it failed the policy gate and so found an analyzer bug: a stray
+`tasks/__init__.py` hid packaging's `src/` layout, so imports read `src.packaging...`. The analyzer now prefers
+the package `pyproject.toml` names.
+
+### Use verified skills from Claude Code, Codex or any agent
+
+`zyven mcp` serves the verified skills in your library as a plain stdio MCP server. The coding agent starts it
+itself, so the board does not have to be running:
+
+```bash
+uv run zyven mcp --print-config            # prints the exact commands below for this machine
+claude mcp add --scope user zyven -- <python> -m zyven.cli mcp --board-dir <board>/      # Claude Code
+codex mcp add zyven -- <python> -m zyven.cli mcp --board-dir <board>/                    # Codex
+```
+
+Each skill runs in its Docker sandbox, as on the board. The tools are marked read-only, so agents can call them without
+asking. `--skill NAME` limits what is offered. `--connections` also offers the services connected on the board (Notion,
+GitHub, ...); with no board there are no approval cards, so a tool that changes something is then guarded only by your
+agent's own permission prompt.
+
+Tested with Codex headless and no board running. Asked "does 1.0.0rc1 satisfy `>=1.0`, and which of 2.0.0, 2.0.0b3,
+1.9.12 is newest?", it called `check_version_requirement` and `sort_versions` and answered correctly. The first answer
+is *no*: PEP 440 leaves pre-releases out by default.
+
+### Verify any MCP server
+
+`zyven verify` checks an MCP server Zyven did not build, from the outside: a command over stdio or a URL.
+
+```bash
+uv run zyven verify -- npx -y @modelcontextprotocol/server-everything      # a command (runs on this machine)
+uv run zyven verify --url https://example.com/mcp --header "Authorization: Bearer ..."
+uv run zyven verify --probe --lock mcp-lock.json -- python my_server.py    # also send invalid input; pin definitions
+uv run zyven verify --docker zyven-sandbox:py312 --mount ./skill:/skill -- python /skill/server.py   # in the sandbox
+```
+
+| Check | Fails when |
+|---|---|
+| handshake | the server does not start, finish the MCP handshake or list its tools in time |
+| schemas | a tool name is invalid or repeated, or an input/output schema is not valid JSON Schema |
+| descriptions | a name, description or parameter carries **tool poisoning**: invisible Unicode (decoded and shown), `<IMPORTANT>` blocks, "do not tell the user", requests to read `~/.ssh` or send data to a URL |
+| annotations | a tool is marked both read-only and destructive (a missing `readOnlyHint` is a warning) |
+| stability | the tool definitions change between two connections, or differ from the lock file (a **rug pull**) |
+| robustness | with `--probe`: input the tool's own schema forbids is accepted, or the server stops answering |
+| isolation | a warning, not a failure, when the server ran on this machine instead of in the sandbox |
+
+Nothing is called unless `--probe` is given, and probes only send input the schema rejects. A stdio server gets only a
+minimal environment (`--env NAME` passes a variable through), so your shell's secrets are not handed to it. It still
+runs with your permissions, so use `--docker` for code you do not trust. Zyven's own compiled skills pass every check
+with no warnings: they declare themselves read-only and carry parameter descriptions in their schemas.
+
+The official reference servers, checked on 2026-11-06 with `--probe` inside the sandbox (`node:22-slim`, no network).
+Each was installed with `npm install --ignore-scripts` and mounted read-only:
+
+| Server (npm, v1.0.0) | Tools | Verdict | Warnings |
+|---|---|---|---|
+| `@modelcontextprotocol/server-everything` | 13 | PASS | 1 tool with an undocumented parameter |
+| `@modelcontextprotocol/server-filesystem` | 14 | PASS | 12 tools with undocumented parameters (e.g. `read_file.path`) |
+| `@modelcontextprotocol/server-memory` | 9 | PASS | 4 tools with undocumented parameters |
+| `@modelcontextprotocol/server-sequential-thinking` | 1 | PASS | a 2,781-character description (worth reading) |
+
+All of them had valid schemas, no poisoning, correct annotations and the same definitions on a second connection. They
+also rejected every invalid probe: 54 in all.
+
+Fifteen popular community servers, checked the same way on 2026-11-06. This is what `zyven verify` reports, not a
+security audit. Warnings are quality findings, not vulnerabilities. Servers that must reach their service to start ran
+with `--allow-network`, and their reports say so. Each got dummy API keys, so nothing real was accessed.
+
+| Server (npm) | Tools | Verdict | Warnings |
+|---|---|---|---|
+| `@playwright/mcp` 0.0.84 | 25 | PASS | none |
+| `@browsermcp/mcp` 2.4.0 | 1 | PASS | none |
+| `@upstash/context7-mcp` 4.5.0 | 2 | PASS | one 2,006-character description |
+| `firecrawl-mcp` 3.37.0 | 28 | PASS | 23 tools with undocumented parameters; one long description |
+| `@notionhq/notion-mcp-server` 2.6.1 | 24 | PASS | 12 tools with undocumented parameters; 12 without a read-only hint |
+| `tavily-mcp` 0.2.22 | 5 | PASS | no read-only hints |
+| `@brave/brave-search-mcp-server` 2.1.4 | 8 | PASS | no read-only hints |
+| `exa-mcp-server` 3.4.3 | 3 | PASS | 1 tool with an undocumented parameter |
+| `@wonderwhy-er/desktop-commander` 0.3.1 | 25 | PASS | 20 tools with undocumented parameters; 8 descriptions of 2,000-6,135 characters |
+| `@executeautomation/playwright-mcp-server` 1.0.12 | 33 | PASS | no read-only hints |
+| `@sentry/mcp-server` 0.48.0 | 73 | PASS | 66 tools with undocumented parameters; one long description |
+| `@heroku/mcp-server` 1.2.13 | 33 | PASS | no read-only hints |
+| `@supabase/mcp-server-supabase` 0.16.0 | 31 | PASS (network) | 26 tools with undocumented parameters |
+| `figma-developer-mcp` 0.13.2 | 2 | PASS (network) | 1 of 2 tools without a read-only hint |
+| `mcp-server-kubernetes` 4.2.1 | - | inconclusive | did not start in the sandbox, even with network (it likely needs a cluster config) |
+
+None showed tool poisoning or a changed tool list, and every server that started rejected all invalid probes. Without
+read-only hints, a client must ask before every call. Undocumented parameters leave the model guessing. Very long
+descriptions cost context on every request and are hard for a person to review.
+
+The scan also improved `verify`. desktop-commander writes the container's host name into a tool description, so two
+sandbox runs first looked like a rug pull. Every sandbox container now has the same host name, `zyven-sandbox`.
 
 ### Agents and connectors (optional)
 
@@ -314,8 +449,9 @@ npm run dev                                   # http://localhost:3000, proxies /
 | Path | Contents |
 |---|---|
 | `zyven/analysis/` | analyzer, rules-only miner and digests, reference resolution, repo explorer |
-| `zyven/ai/` | model provider (retries, failover), typed schemas, AI roles |
+| `zyven/ai/` | model provider (retries, failover), coding agents as providers (`agent_provider.py`), typed schemas, AI roles |
 | `zyven/compiler/` | server assembly, static policy, verification gates, compile pipeline |
+| `zyven/mcpverify/` | `zyven verify`: outside-in checks for any MCP server (schemas, tool poisoning, rug pulls, robustness) |
 | `zyven/sandbox/` | Docker runner, image, in-container MCP smoke and differential test runners |
 | `zyven/agent/` | MCP toolbox, tool-using agent loop, gap check, self-extending agent |
 | `zyven/catalog/` | the pinned catalog: clone, scout, curate |
@@ -332,8 +468,10 @@ npm run dev                                   # http://localhost:3000, proxies /
 
 ## Models and sources
 
-Only open-weight models, end to end. The endpoint is configurable: Google AI Studio (Gemma), OpenRouter, Groq or a
-local Ollama, with automatic failover to a backup host.
+The published results above use open-weight models only, end to end. The endpoint is configurable: Google AI Studio
+(Gemma), OpenRouter, Groq or a local Ollama, with automatic failover to a backup host. Closed models and coding agents
+work too (see [Coding agents as the compiler](#coding-agents-as-the-compiler)); they are labelled in provenance and kept
+out of the published numbers.
 
 | Repo | Commit | License | Used as |
 |---|---|---|---|
@@ -349,8 +487,8 @@ local Ollama, with automatic failover to a backup host.
 The pinned list lives in `catalog/repos.json`.
 
 The default model is `gemma-4-26b-a4b-it`, distributed under the
-[Gemma Terms of Use](https://ai.google.dev/gemma/terms). The repository enforces the open-weight rule with a
-deterministic, offline check:
+[Gemma Terms of Use](https://ai.google.dev/gemma/terms). The repository keeps committed results open-weight with a
+deterministic, offline check (it flags closed models and coding agents, including one used for a single role):
 
 ```bash
 uv run python scripts/check_open_models.py

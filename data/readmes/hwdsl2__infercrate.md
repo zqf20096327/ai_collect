@@ -17,18 +17,12 @@ Run local language models on your own hardware with InferCrate. Powered by [Olla
 - **Model pre-pull:** pre-pull models on first start with the `OLLAMA_MODELS` environment variable.
 - **Model management:** via a helper script (`ollama_manage`).
 - **CPU and GPU support:** run on CPU or use the `:cuda` image for NVIDIA GPU acceleration.
-- **Lightweight CPU image:** based on Debian Trixie (slim); approximately 75 MB.
+- **Lightweight CPU image:** based on Debian Trixie (slim); approximately 80 MB.
 - **Automated builds:** images are automatically built and published through [GitHub Actions](https://github.com/hwdsl2/infercrate/actions).
 
 Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack), which deploys a complete self-hosted AI stack with a single command.
 
 > 📘 **The Self-Hosted AI Builder’s Guide** ([ebook](https://books2read.com/aiguide?store=amazon) · [paperback](https://books2read.com/aiguide?store=amazon-paperback&format=PAPERBACK)) is a practical guide to building, securing, and operating your own private AI stack.
-
-**Related AI services:**
-
-- **Voice:** [ScribeCrate](https://github.com/hwdsl2/scribecrate), [SpeakCrate](https://github.com/hwdsl2/speakcrate)
-- **Documents & search:** [ParseCrate](https://github.com/hwdsl2/parsecrate), [EmbedCrate](https://github.com/hwdsl2/embedcrate)
-- **Models & gateways:** [GatewayCrate](https://github.com/hwdsl2/gatewaycrate), [UplinkCrate](https://github.com/hwdsl2/uplinkcrate)
 
 ## Quick start
 
@@ -424,6 +418,12 @@ Ollama can be used as the local LLM service in a broader self-hosted AI setup.
 
 For full and lightweight Docker Compose stacks, manual `docker run` examples, and voice/RAG/MCP pipeline examples with SpeakCrate, EmbedCrate, GatewayCrate, InferCrate, ParseCrate, and UplinkCrate, see [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack).
 
+**Related AI services:**
+
+- **Voice:** [ScribeCrate](https://github.com/hwdsl2/scribecrate), [SpeakCrate](https://github.com/hwdsl2/speakcrate)
+- **Documents & search:** [ParseCrate](https://github.com/hwdsl2/parsecrate), [EmbedCrate](https://github.com/hwdsl2/embedcrate)
+- **Models & gateways:** [GatewayCrate](https://github.com/hwdsl2/gatewaycrate), [UplinkCrate](https://github.com/hwdsl2/uplinkcrate)
+
 **Connect Ollama to LiteLLM:**
 
 ```bash
@@ -440,7 +440,7 @@ This image uses public GitHub release asset download counts for anonymous, aggre
 ## Technical details
 
 - Base image: `debian:trixie-slim` for `:latest`; `nvidia/cuda` for `:cuda`
-- Image size: ~75MB (CPU) / ~1.7GB (CUDA)
+- Image size: ~80MB (CPU) / ~1.8GB (CUDA)
 - Ollama: latest release, installed as a static binary
 - Auth proxy: [Caddy](https://caddyserver.com) (always active, enforces Bearer token auth)
 - Data directory: `/var/lib/ollama` (Docker volume)

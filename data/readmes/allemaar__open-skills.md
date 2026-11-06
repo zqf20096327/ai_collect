@@ -9,12 +9,12 @@
 <p align="center">
   <strong>open-skills</strong><br />
   The skills I use with AI agents for planning, coding, review and writing.<br />
-  All 90 are readable Markdown; 54 also carry a declarative <strong>YON (YounndAI Object Notation™)</strong> protocol.<br />
+  All 92 are readable Markdown; 54 also carry a declarative <strong>YON (YounndAI Object Notation™)</strong> protocol.<br />
   <em>Read before you trust.</em>
 </p>
 
 <p align="center">
-  <a href="#start-with-the-work">Start</a> · <a href="#how-i-use-them">How I use them</a> · <a href="#install">Install</a> · <a href="docs/README.md">Guides</a> · <a href="SKILLS.md">Catalog</a> · <a href="#updating">Update</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="https://github.com/allemaar/open-skills/discussions">Discussions</a> · <a href="LICENSE">Apache 2.0</a>
+  <a href="#start-with-the-work">Start</a> · <a href="#how-i-use-them">How I use them</a> · <a href="#install">Install</a> · <a href="docs/README.md">Guides</a> · <a href="GLOSSARY.md">Glossary</a> · <a href="SCOPE.md">Scope</a> · <a href="SKILLS.md">Catalog</a> · <a href="#updating">Update</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="https://github.com/allemaar/open-skills/discussions">Discussions</a> · <a href="LICENSE">Apache 2.0</a>
 </p>
 
 <p align="center">
@@ -45,6 +45,7 @@ You do not need the whole collection. Start with one task and one skill. Read it
 | Try uncertain behavior in something runnable | [build-prototype](docs/skills/build-prototype.md) | A small experiment, observed results and remaining limits |
 | Reproduce and diagnose a software failure | [debug-task](docs/skills/debug-task.md) | Evidence from bounded probes; a repair only within the authorized scope |
 | Turn a discussion into agreed behavior | [write-spec](docs/skills/write-spec.md) | A specification with acceptance, exclusions and open decisions |
+| Deliver one agreed task | [implement-task](docs/skills/implement-task.md) | One authorized outcome with scoped changes and current-candidate verification |
 | Plan an implementation | [plan-create](docs/skills/plan-create.md) | Concrete phases, dependencies and verification gates |
 | Review the actual work | [cold-review](docs/skills/cold-review.md) | Fresh review where supported, findings tied to evidence and stated coverage |
 | Make a long answer easier to use | [synthesize](docs/skills/synthesize.md) | A response shaped around the reader's task, preserving facts and caveats |
@@ -53,9 +54,9 @@ You do not need the whole collection. Start with one task and one skill. Read it
 | Create or improve a reusable skill | [skill-smith](docs/skills/skill-smith.md) | A scoped authoring route or a read-only assessment |
 | Coordinate agents through a shared folder | [agent-mailbox](docs/skills/agent-mailbox.md) | Messages, durable dispositions and explicit continuity limits |
 
-This table describes the **3.0.1** source. Check the [published releases](https://github.com/allemaar/open-skills/releases) for a frozen version and read the [upgrade notes](#current-source-and-releases) before updating.
+This table describes the **3.1.1** source. Check the [published releases](https://github.com/allemaar/open-skills/releases) for a frozen version and read the [upgrade notes](#current-source-and-releases) before updating.
 
-The [full catalog](SKILLS.md) groups all skills by family. The [guides](docs/README.md) explain when each skill is useful, when to avoid it, what to ask and what it returns. Inside an agent, /skills-help reads its bundled taxonomy and the skills installed beside it. It leaves unknown third-party skills visible under Unclassified.
+The [full catalog](SKILLS.md) groups all skills by family. The [glossary](GLOSSARY.md) explains shared terms, and [scope](SCOPE.md) explains what belongs here. The [guides](docs/README.md) explain when each skill is useful, when to avoid it, what to ask and what it returns. Inside an agent, /skills-help reads its bundled taxonomy and the skills installed beside it. It leaves unknown third-party skills visible under Unclassified.
 
 Commands in these docs use the skill's folder name, such as /insight-explore or /plan-phases. Shorter phrases in its frontmatter, such as /explore, are recognition aliases that some runtimes honor. Copying a folder and having a runtime discover it are separate things.
 
@@ -103,7 +104,7 @@ A request might start like this:
 /plan-create Plan the agreed change, with concrete steps and checks for the failure cases.
 ~~~
 
-These are separate requests, not a chain that runs itself. Once a concrete plan is approved, [plan-execute](docs/skills/plan-execute.md) follows that plan and stops on unspecified judgments or drift. A ticket or specification alone is not approval of an executable plan.
+These are separate requests, not a chain that runs itself. For one already-agreed outcome, [implement-task](docs/skills/implement-task.md) can work without requiring a plan file. An applicable approved plan still keeps its own execution contract. Once a concrete plan is approved, [plan-execute](docs/skills/plan-execute.md) follows that plan and stops on unspecified judgments or drift. A ticket or specification alone is not approval of an executable plan.
 
 I keep [verify](docs/skills/verify.md) for the formal check against intent and execution, with the plan when available. Without a plan it can still check evidence, but cannot return a clean synchronization verdict. [cold-review](docs/skills/cold-review.md) brings an outside view to the actual artifacts. [double-check](docs/skills/double-check.md) is the smaller request when one claim needs another look.
 
@@ -197,11 +198,13 @@ The `npx` command may download and execute that package. Inspect the package or 
 
 ## Install
 
+Choose one route for each runtime. The [installation and update guide](docs/installation.md) compares selected copies, the bundled installer, managed plugins, checkout links and the optional skills CLI, with their prerequisites and different update behavior.
+
 The skills are instructions for a compatible agent runtime; a protocol is not an executable runtime or sandbox. Read the selected guide for required tools and companions. The bundled installer needs Node.js.
 Node 20 is the CI baseline.
  Its default validation also needs npm/npx and may fetch the public parser. A headless workflow additionally needs its named provider CLI, a working login and the bounded supervision described in that skill. No provider account or subagent is required for the whole collection: those requirements belong to the selected route.
 
-The safest first path is a frozen copy: read the source, copy only the skills you want, and diff before updating.
+For a frozen copy, select a published release tag from the [release page](https://github.com/allemaar/open-skills/releases) before copying. A default clone follows the current source. Read it, copy only the skills you want, and diff before updating.
 
 ```bash
 git clone https://github.com/allemaar/open-skills
@@ -221,6 +224,7 @@ cd open-skills
     probe=$(dirname "$probe")
   done
   [ ! -e "$DEST" ] || { echo "already installed — diff before replacing"; exit 1; }
+  mkdir -p "$SKILLS_DIR"
   cp -r "$SRC" "$DEST"
 )
 ```
@@ -241,9 +245,9 @@ node install.mjs --list
 Important boundaries:
 
 - By default it targets every known skills directory that already exists. Use `--runtime claude|codex|agents` to narrow it.
-- It refuses to overwrite an existing skill unless you pass `--force`.
+- It refuses to overwrite an existing skill unless you pass `--force`. Before new/replacement copies, it checks the declared sibling dependencies across selected runtimes. Missing siblings stop the install before copying; select them explicitly rather than expecting automatic installation.
 - It refuses to overwrite a symlinked or junctioned skill rather than risk deleting through the link into its source.
-- With `--force`, it stages and, unless `--no-validate` is supplied, validates the candidate before moving the existing copy aside, restores that copy if the swap fails, and surfaces crash leftovers for manual inspection.
+- With `--force`, it stages and, unless `--no-validate` is supplied, validates before replacement. It checks the existing copy for intervening edits and retains displaced bytes under `open-skills-backups` beside the selected skills directory, outside discovery. It reports exact recovery paths on failure instead of restoring over uncertain state. Crash leftovers remain for inspection; no automatic cleanup is implied. These checks do not lock other editors or guarantee an atomic compare-and-swap.
 - Its provenance stamp is an unsigned plain-text assertion, not a certificate, and makes the installed `SKILL.md` differ from this repository. `--no-stamp` preserves byte identity.
 - The installer itself uses Node built-ins; validation may still fetch and execute `@younndai/yon-parser` through `npx`.
 
@@ -254,9 +258,9 @@ Important boundaries:
 /plugin install open-skills@open-skills
 ```
 
-This is the fastest Claude Code route, but it reverses the read-first order: installation happens before you inspect every skill. Use it only if that trade is acceptable.
+This route lets the plugin manager own the installed content. Read the source before selecting it, and check the manager's actual update settings. Keep one active installation per runtime; adding a copied set alongside the plugin can duplicate instructions.
 
-Other distribution tools may also consume the repository, including `gh skill install allemaar/open-skills`. Their provenance metadata and update behavior belong to those tools. Review their prompts and resulting files rather than treating a source label as authenticated provenance.
+The optional [skills CLI](docs/installation.md#optional-skills-cli) can discover this repository with `npx skills add allemaar/open-skills --list`. Its current Node requirement, project/global scope, telemetry and update behavior belong to that external tool. Other installers may also consume the repository; inspect their actual scope and resulting files rather than treating a source label as authenticated provenance.
 
 **Telemetry:** the skills themselves contain no telemetry. The installer performs no analytics or reporting; its only optional network execution is parser validation through `npx`. Your agent runtime, plugin manager, package manager, Git host, or referenced external tool may have its own telemetry.
 
@@ -268,9 +272,13 @@ Other distribution tools may also consume the repository, including `gh skill in
 
 ## Current source and releases
 
+The **3.1.1** source tightens installation and handoff recovery. I select required sibling skills explicitly; the installer reports missing dependencies before copying. Forced replacements keep recovery copies outside skill discovery and stop on observed intervening edits. Handoff fallbacks retain premise and command-authorization checks, while the receiver carries its retro schema locally. The [patch notes](CHANGELOG.md) explain the smaller contract and documentation fixes. All 92 skills remain. Check the release page for publication status.
+
+The **3.1.0** release added implement-task for one authorized outcome and update-open-skills for preserving an existing installation during an update. All 92 skills have richer guides explaining how they work, where they fit, practical questions and useful results. The glossary, scope and shared installation guide make the collection easier to navigate. Check the release page for publication status.
+
 The **3.0.0** release added ask-me, build-prototype, debug-task, write-spec, define-terms and teach-topic, plus the workflow recipes linked above. Every skill has a [guide](docs/README.md). I use the smaller capabilities independently; interviews, saved records, prototypes and implementation are separate choices.
 
-The **3.0.1** source fixes unreadable mapping entrypoints, aligns repository helper commands with bundled checks, and corrects verify discovery text. Read the [patch notes](CHANGELOG.md) before updating a frozen copy.
+The **3.0.1** release fixed unreadable mapping entrypoints, aligned repository helper commands with bundled checks, and corrected verify discovery text. Read the [patch notes](CHANGELOG.md) before updating a frozen copy.
 
 Before upgrading from 2.x, read the [3.0.0 migration notes](CHANGELOG.md). Exclusive mailbox work now waits for an exact causal grant. Orientation consumers must preserve absent topology as unknown. Diff-recap stops on rename/copy input instead of squeezing it into a single-path record. Existing skill names remain; no skill is removed in this release. Check the [release page](https://github.com/allemaar/open-skills/releases) for publication status.
 
@@ -280,10 +288,13 @@ The 2.0.0 release introduced the skill guides, the Skill Smith authoring routes 
 
 ## Updating
 
-A copied skill is intentionally frozen. To update it, pull the repository, diff the installed folder against the candidate, read the change, then re-copy only after accepting it.
+If your installation predates 3.1.0, separately select installation of the complete update-open-skills folder, including references/methods.md, before invoking it; alternatively use the manual update route. Newly added upstream skills such as implement-task also need separate selection. A selective-copy update does not install missing skills. A whole-package manager or shared checkout may expose added or retired skills; inspect and explicitly select those effects with their applicable installation, deletion and shared-source gates.
+
+Start with [update-open-skills](docs/skills/update-open-skills.md) when you want the agent to inspect your existing installation and preserve local changes through a selected update. It reports an already-current installation without replacing it. The [shared update guidance](docs/installation.md#update-an-existing-installation) explains links, copies and managed routes.
+
+A copied skill is intentionally frozen. To update it manually, select the incoming release, diff the installed folder against it, read the change, preserve a backup, then re-copy only accepted changes. A source checkout with local edits needs reconciliation before changing revisions.
 
 ```bash
-git pull
 git diff --no-index ~/.claude/skills/cold-review skills/cold-review
 ```
 
@@ -292,6 +303,8 @@ Silence means byte-identical. Do not filter the diff unless you deliberately ins
 Before updating, read [`CHANGELOG.md`](CHANGELOG.md). Skill folders can be renamed, references can change, and a new release can alter the trust surface even when the syntax remains valid.
 
 ## For agents and tooling
+
+Repository contributors can start with [AGENTS.md](AGENTS.md), which routes source, guide, generator, installation and release ownership. [CLAUDE.md](CLAUDE.md) points to the same repository guidance rather than keeping a second rule set.
 
 The generated [human catalog](SKILLS.md), [YON catalog](catalog.yon), [JSON catalog](catalog.json), [discovery manifest](llms.txt) and [recommendation graph](skills.graph.yon) come from live skill metadata, protocol facts and the pack taxonomy. Their owner is [tools/spine.mjs](tools/spine.mjs). These surfaces help discovery; they do not enforce runtime behavior.
 

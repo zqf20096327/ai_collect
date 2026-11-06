@@ -1,5 +1,9 @@
 # The Designer MCP
 
+<!-- hela:version:start -->
+**MCP server:** `hela-phenotype` · **Version:** `3.0.0` · **Canonical tools:** 28. [Current tool reference](docs/TOOLS.md).
+<!-- hela:version:end -->
+
 > **Part of the [HeLa MCP Ecosystem](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem)** — This server is **HeLa Phenotype (`hela-phenotype`)** — the _Design_ component of the HeLa cellular architecture. See the [ecosystem docs](https://github.com/Hela-Ecosystem/hela-mcp-ecosystem) for profiles, workflows, and multi-client setup.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
@@ -7,7 +11,7 @@
 
 A **Design-Theory-as-a-Service** Model Context Protocol (MCP) server for production-grade UI design. Unlike standard code-retrieval MCPs, `designer-mcp` codifies subjective design principles—perceptual color math (OKLCH), motion physics, typographic scaling, and accessibility—into executable algorithms with strict anti-slop quality gates.
 
-46 tools across 18 design systems (including Awwwards SOTA / Avant-Garde): **anti-slop quality gates**, **motion.dev & anime.js integration**, **WCAG 2.1 auditing**, **React/Vue component output**, **framework-agnostic CSS**, **logo & brand-mark design** backed by a 1,432-mark reference library, and **Stitch Canvas & workflow integration**.
+28 canonical tools across 18 design systems (including Awwwards SOTA / Avant-Garde): **anti-slop quality gates**, **motion.dev & anime.js integration**, **WCAG 2.1 auditing**, **React/Vue component output**, **framework-agnostic CSS**, **logo & brand-mark design** backed by a 1,432-mark reference library, and **Stitch Canvas & workflow integration**.
 
 ![Blotcat at the design pipeline: scan → evaluate → rules → tokens, 17 systems](assets/blotcat-pipeline.jpg)
 
@@ -20,7 +24,7 @@ A **Design-Theory-as-a-Service** Model Context Protocol (MCP) server for product
 - [Installation](#installation)
 - [Usage](#usage)
 - [Architecture](#architecture)
-- [Logo design](#logo-design-logo_-tools)
+- [Logo design](#logo-design)
 - [Development](#development)
 - [Anti-Slop Design Philosophy](#anti-slop-design-philosophy)
 - [Configuration](#configuration)
@@ -39,10 +43,12 @@ A **Design-Theory-as-a-Service** Model Context Protocol (MCP) server for product
 - **SOTA Motion System (motion.dev & anime.js)** — Style-aware animation presets baked into components. `generate_motion_snippet` for on-demand snippets with React `<motion.div>` and vanilla physics support (14 categories including `magnetic`, `text-split`, `smooth-scroll`, `marquee`, `noise-grain`, `clip-path-mask`, all reduced-motion guarded).
 - **Color Palette Hunter** — Live palettes from Color Hunt with format conversion.
 - **Brand Design References** — `brand_fetch_design_md` resolves DESIGN.md from the full 328+ brand getdesign catalog (Stripe, Vercel, Notion, Claude, Tesla, etc.); `brand_list` returns the 62-brand curated subset shipped locally.
-- **Stitch Canvas & Visual Workflow Integration** — 9 Stitch tools superseding the standalone Stitch MCP server: 7 core resource tools (`stitch_get`, `stitch_find`, `stitch_create`, `stitch_edit`, `stitch_delete`, `stitch_generate`, `stitch_url`) plus 2 Phenotype bridge tools: `stitch_sync_design_system` (exports OKLCH tokens to Stitch DESIGN.md & designSystem JSON) and `stitch_screen_audit` (evaluates Stitch-captured screens against WCAG 2.1, 35 anti-slop gates, and 6-axis craft critique).
-- **Logo & Brand-Mark Design** — the in-tree `logo-design` skill plus 8 `logo_*` tools: SVG audit, a searchable 1,432-mark reference library, PNG/favicon rendering, mono/square/app-icon delivery variants, concept sheets, test sheets, and client presentation boards.
+- **Stitch Canvas & Visual Workflow Integration** — six canonical tools: `stitch_resource` (`get` / `edit` / `delete` / `url`), `stitch_find`, `stitch_create`, `stitch_generate`, `stitch_sync_design_system`, and `stitch_screen_audit`.
+- **Logo & Brand-Mark Design** — the in-tree `logo-design` skill plus `logo_workflow` with eight actions: audit, library search, renderer inspection, rendering, delivery variants, concept sheets, preview sheets, and presentation boards.
 
 ## Tools
+
+The authoritative advertised surface is the generated [28-tool reference](docs/TOOLS.md). Consolidated entry points are `design_tokens`, `design_audit`, `palette`, `logo_workflow`, and `stitch_resource`. The older per-action names in the compatibility tables below remain aliases; they are not separate advertised tools.
 
 ![Blotcat balancing the full output stack — tokens.css, components, anime.js, WCAG audit — one prompt in, OKLCH out](assets/blotcat-output.jpg)
 
@@ -198,10 +204,9 @@ npm install
 npm run build
 ```
 
-**Requirements**: Node.js >= 18. The `logo_*` tools additionally need **Python 3** (no
+**Requirements**: Node.js 22 LTS is the tested ecosystem environment. `logo_workflow` additionally needs **Python 3** (no
 third-party packages) and at least one SVG renderer — cairosvg, rsvg-convert, Inkscape, or
-headless Chrome. Check what is available with the `logo_renderers` tool. The other 29 tools have
-no runtime dependency beyond Node.
+headless Chrome. Check available renderers with `logo_workflow` and `action: "renderers"`. Other capabilities may require their configured external services; discovery alone does not prove those integrations are available.
 
 ## Usage
 
@@ -317,7 +322,7 @@ Skills live here in two forms. `ui-designer` and `color-palette-hunter` are git 
 pointing at standalone repos; `motion-designer` and `logo-design` are in-tree because they are
 tied to this server's tools. See [Development](#development) for the rules that follow from that.
 
-## Logo design (logo\_\* tools)
+## Logo design
 
 The `logo-design` skill lives in-tree at `skills/logo-design/` and is maintained here like any
 other source. It began as a copy of
@@ -330,7 +335,7 @@ fourteen reference docs, two templates, and a 1,432-mark SVG library. `skills/lo
 is the HeLa overlay: palettes must come from the token engine, logotypes ship as outlines, gradients
 and filters are rejected, and rendering before presenting is mandatory.
 
-Eight tools expose the scripts to an agent. All of them are read-only with respect to your source
+One canonical tool, `logo_workflow`, exposes eight actions to an agent. The older names below are compatibility aliases. These operations are read-only with respect to your source
 artwork; the writers create new output files in the directory you name.
 
 | Tool                      | What it does                                                                                                                                                                          |
@@ -351,8 +356,8 @@ gated on `logo_audit` and a rendered `logo_preview_sheet`.
 
 ```json
 {
-  "name": "logo_audit",
-  "arguments": { "files": ["/tmp/concepts/acme-a.svg"], "bg": "#ffffff" }
+  "name": "logo_workflow",
+  "arguments": { "action": "audit", "files": ["/path/to/concepts/acme-a.svg"], "bg": "#ffffff" }
 }
 ```
 
@@ -381,7 +386,7 @@ and HTML screenshots, but favicon assembly and multi-size batches are slower. Ru
 | `COLOR_PALETTE_HUNTER_PATH` | `skills/color-palette-hunter` | Path to the color palette hunter skill                                                                                                                                                                                                                                                                                                                                                                                  |
 | `LOGO_DESIGN_SKILL_PATH`    | `skills/logo-design`          | Path to the logo-design skill (its `scripts/` and `assets/library/` are required for the `logo_*` tools)                                                                                                                                                                                                                                                                                                                |
 | `PYTHON_BIN`                | `python3`                     | Interpreter used to run the logo-design scripts                                                                                                                                                                                                                                                                                                                                                                         |
-| `HELA_ENVELOPE`             | _unset = off_                 | Set to `true` to wrap tool results in the canonical HeLaResult envelope (`ok/summary/data/artifacts/provenance/warnings/sideEffects/execution`). The 29 design tools are pure reads so their `sideEffects` is empty; the `logo_*` wrappers declare `process:exec`, plus `file:write` for the five that emit deliverables. Off = byte-identical legacy output. Run/step ids propagate from `HELA_RUN_ID`/`HELA_STEP_ID`. |
+| `HELA_ENVELOPE`             | _unset = off_                 | Set to `true` to wrap tool results in the HeLaResult envelope. Side effects depend on the selected action: logo rendering can run processes and write deliverables. Run/step ids propagate from `HELA_RUN_ID`/`HELA_STEP_ID`. |
 
 ## Configuring with AI Assistants
 

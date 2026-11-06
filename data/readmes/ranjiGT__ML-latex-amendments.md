@@ -25,42 +25,42 @@ Compiled PDFs are available in the [`ML-Wise2021_Nair/`](ML-Wise2021_Nair/) fold
 ### Assignment 2 — Loss Functions & Statistics
 | # | Topic |
 |---|-------|
-| [`A2.1`](ML-Wise2021_Nair/Assignment%202.1.pdf) | Matching algorithms and loss functions to classification counterparts |
-| [`A2.2`](ML-Wise2021_Nair/Assignment%202.2.pdf) | The `Bias-Variance` tradeoff |
-| [`A2.3`](ML-Wise2021_Nair/Assignment%202.3.pdf) | Categorical and numerical features in a dataset |
-| [`A2.4`](ML-Wise2021_Nair/Assignment%202.4.pdf) | Maximum Likelihood Estimation (MLE) for the _Univariate Gaussian Distribution_ |
+| [`A2.1`](ML-Wise2021_Nair/02-loss-functions-statistics/Assignment%202.1.pdf) | Matching algorithms and loss functions to classification counterparts |
+| [`A2.2`](ML-Wise2021_Nair/02-loss-functions-statistics/Assignment%202.2.pdf) | The `Bias-Variance` tradeoff |
+| [`A2.3`](ML-Wise2021_Nair/02-loss-functions-statistics/Assignment%202.3.pdf) | Categorical and numerical features in a dataset |
+| [`A2.4`](ML-Wise2021_Nair/02-loss-functions-statistics/Assignment%202.4.pdf) | Maximum Likelihood Estimation (MLE) for the _Univariate Gaussian Distribution_ |
 
 ### Assignment 3 — Concept Learning
 | # | Topic |
 |---|-------|
-| [`A3.1`](ML-Wise2021_Nair/Assignment%203.1.pdf) | Concept learning and related disciplines |
-| [`A3.2`](ML-Wise2021_Nair/Assignment%203.2.pdf) | Use case of concept learning — _Addison's disease_ |
-| [`A3.3`](ML-Wise2021_Nair/Assignment%203.3.pdf) | `Find-S` algorithm and `Candidate-Elimination` algorithm |
-| [`A3.4`](ML-Wise2021_Nair/Assignment%203.4.pdf) | Cross-validation as a classifier evaluation technique |
+| [`A3.1`](ML-Wise2021_Nair/03-concept-learning/Assignment%203.1.pdf) | Concept learning and related disciplines |
+| [`A3.2`](ML-Wise2021_Nair/03-concept-learning/Assignment%203.2.pdf) | Use case of concept learning — _Addison's disease_ |
+| [`A3.3`](ML-Wise2021_Nair/03-concept-learning/Assignment%203.3.pdf) | `Find-S` algorithm and `Candidate-Elimination` algorithm |
+| [`A3.4`](ML-Wise2021_Nair/03-concept-learning/Assignment%203.4.pdf) | Cross-validation as a classifier evaluation technique |
 
 ### Assignment 4 — Decision Trees
 | # | Topic |
 |---|-------|
-| [`A4.1`](ML-Wise2021_Nair/Assignment%204.1.pdf) | Concept learning for `Decision Trees` |
-| [`A4.2`](ML-Wise2021_Nair/Assignment%204.2.pdf) | Decision Tree fundamentals for Machine Learning |
-| [`A4.3`](ML-Wise2021_Nair/Assignment%204.3.pdf) | Feature selection and challenges for Decision Trees _(use case)_ |
-| [`A4.4`](ML-Wise2021_Nair/Assignment%204.4.pdf) | Iterative Dichotomiser-3 (`ID3`) algorithm |
+| [`A4.1`](ML-Wise2021_Nair/04-decision-trees/Assignment%204.1.pdf) | Concept learning for `Decision Trees` |
+| [`A4.2`](ML-Wise2021_Nair/04-decision-trees/Assignment%204.2.pdf) | Decision Tree fundamentals for Machine Learning |
+| [`A4.3`](ML-Wise2021_Nair/04-decision-trees/Assignment%204.3.pdf) | Feature selection and challenges for Decision Trees _(use case)_ |
+| [`A4.4`](ML-Wise2021_Nair/04-decision-trees/Assignment%204.4.pdf) | Iterative Dichotomiser-3 (`ID3`) algorithm |
 
 ### Assignment 5 — Overfitting & Pruning
 | # | Topic |
 |---|-------|
-| [`A5.1`](ML-Wise2021_Nair/Assignment%205.1.pdf) | Overfitting in Decision Trees with relation to `Bias` & `Variance` |
-| [`A5.2`](ML-Wise2021_Nair/Assignment%205.2.pdf) | Tree pruning for Decision Trees _(Reduced Error Pruning)_ |
-| [`A5.3`](ML-Wise2021_Nair/Assignment%205.3.pdf) | Gain ratio as a split measure |
-| [`A5.4`](ML-Wise2021_Nair/Assignment%205.4.pdf) | Regression Trees |
+| [`A5.1`](ML-Wise2021_Nair/05-overfitting-and-pruning/Assignment%205.1.pdf) | Overfitting in Decision Trees with relation to `Bias` & `Variance` |
+| [`A5.2`](ML-Wise2021_Nair/05-overfitting-and-pruning/Assignment%205.2.pdf) | Tree pruning for Decision Trees _(Reduced Error Pruning)_ |
+| [`A5.3`](ML-Wise2021_Nair/05-overfitting-and-pruning/Assignment%205.3.pdf) | Gain ratio as a split measure |
+| [`A5.4`](ML-Wise2021_Nair/05-overfitting-and-pruning/Assignment%205.4.pdf) | Regression Trees |
 
 ### Assignment 6 — Perceptrons & Neural Networks
 | # | Topic |
 |---|-------|
-| [`A6.1`](ML-Wise2021_Nair/Assignment%206.1.pdf) | Perceptron for classification |
-| [`A6.2`](ML-Wise2021_Nair/Assignment%206.2.pdf) | The Perceptron training rule _(Delta rule)_ |
-| [`A6.3`](ML-Wise2021_Nair/Assignment%206.3.pdf) | Neural Networks and their modalities |
-| [`A6.4`](ML-Wise2021_Nair/Assignment%206.4.pdf) | Activation functions for Neural Networks _(ReLU, Leaky ReLU variants)_ |
+| [`A6.1`](ML-Wise2021_Nair/06-perceptrons-neural-nets/Assignment%206.1.pdf) | Perceptron for classification |
+| [`A6.2`](ML-Wise2021_Nair/06-perceptrons-neural-nets/Assignment%206.2.pdf) | The Perceptron training rule _(Delta rule)_ |
+| [`A6.3`](ML-Wise2021_Nair/06-perceptrons-neural-nets/Assignment%206.3.pdf) | Neural Networks and their modalities |
+| [`A6.4`](ML-Wise2021_Nair/06-perceptrons-neural-nets/Assignment%206.4.pdf) | Activation functions for Neural Networks _(ReLU, Leaky ReLU variants)_ |
 
 ### Assignment 7 — Training & Backpropagation
 | # | Topic |

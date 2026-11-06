@@ -1,10 +1,11 @@
 # BeanBot
 
-[![Version](https://img.shields.io/badge/version-1.29.1-blue.svg)](pom.xml)
+[![Version](https://img.shields.io/badge/version-1.30.0-blue.svg)](pom.xml)
 [![Build Status](https://img.shields.io/badge/build-success-brightgreen.svg)](https://github.com/anandb/nb-complete)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.anandb/beanbot)](https://central.sonatype.com/artifact/io.github.anandb/beanbot/versions)
 [![NetBeans](https://img.shields.io/badge/NetBeans-RELEASE220-blue.svg)](https://netbeans.apache.org/download/index.html)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/anandb)
 
 > **An AI pair programmer that lives inside your NetBeans editor — ask, explain, generate, and refactor code without leaving the IDE.**
 
@@ -37,6 +38,17 @@ Supported coding harnesses: **Oh My Pi, OpenCode, Codex, OpenClaw, Pi, Goose, Cu
    ```
 3. The generated NBM will be located in the `./target/nbm/` directory.
 4. Install the plugin through the NetBeans Plugin Manager.
+
+### Dependency Security Scan
+
+The `check-cvss` profile runs [OWASP Dependency-Check](https://jeremylong.github.io/DependencyCheck/) against the resolved dependencies:
+
+```bash
+export NVD_API_KEY=<your key>    # free from https://nvd.nist.gov/developers/request-an-api-key
+./mvnw verify -Pcheck-cvss
+```
+
+The key is read from the `NVD_API_KEY` environment variable (or pass `-Dnvd.api.key=...`). Without a key the NVD feed is rate-limited heavily, so the first run is slow either way — it downloads the NVD dataset into the local Maven repository and caches it for later runs. Reports land in `target/dependency-check-report.html` and `.json`; accepted false positives belong in `scripts/dependency-check-suppressions.xml`.
 
 ---
 
@@ -174,10 +186,13 @@ The plugin reads the following system properties and environment variables:
 | `java.io.tmpdir` | System | Temp directory for pasted images (`ImagePasteTransferHandler`) |
 | `os.name` | System | Detect Windows for binary resolution and platform-specific launching (`BinaryResolver`, `ProcessTerminator`, `ACPOptionsPanel`) |
 | `beanbot.roundedPanels` | System (`true`) | Toggle rounded panel corners (`RoundedPanel`) |
+| `beanbot.diff.ideFont` | System (`false`) | Apply the plugin's diff font (editor font − 1 pt, floor 9 pt) to the IDE's own diff windows, e.g. Git ▸ Show Changes (`ui/editor/IdeDiffFontHook`). Off by default because it patches another module's component tree; enable with `-J-Dbeanbot.diff.ideFont=true` in `netbeans.conf` |
 | `beanbot.color.*` | System (varies) | Override any UI color. Read by `model/ColorRegistry` (resolution order: system property → `UIManager` key → built-in light/dark fallback), not by `ColorTheme`, which only loads `colors.json` |
 | `beanbot.update.url` | System | Override the update metadata URL fetched by the update checker (`support/AppLinks`); defaults to `https://repo1.maven.org/maven2/io/github/anandb/beanbot/maven-metadata.xml` — lets a fork or self-hosted deployment serve its own `maven-metadata.xml` |
 | `beanbot.nbm.base` | System | Base for the "Download Now" link, default `https://repo1.maven.org/maven2/io/github/anandb/beanbot`; the checker appends `/<version>/beanbot-<version>.nbm`, so it does not guess release-asset URLs |
 | `beanbot.changelog.url` | System | Target of the "View Release Notes" link, default `https://github.com/anandb/nb-complete/blob/main/CHANGELOG.md` — points at the changelog so the link works before a release is tagged |
+| `beanbot.support.url` | System | Funding link behind the bmc icon on the composer toolbar and the empty-state line (`support/AppLinks`); defaults to `https://buymeacoffee.com/anandb`, so a fork can point at its own page |
+| `beanbot.issues.url` | System | Issue tracker behind Help ▸ Report an Issue (`support/AppLinks`); defaults to `https://github.com/anandb/nb-complete/issues/` |
 | `beanbot.user.guide.url` | System | Override the user-guide URL opened from the help menu when the bundled guide cannot be served (`support/AppLinks`); unset means no remote fallback |
 | `nb.dark.theme` | UIManager | Detect dark theme for icon resolution (`IconResourceManager`) |
 | `ACP_WIRE_LOG` | Env | Path template for the ACP wire-protocol log (`WireLogger`). The file written is `<template-without-extension>_<YYYYMMDD>-<harness>.log` in the template's directory, so successive days and harnesses do not share one file. Every entry is one line: `<local time, no time zone> <json message>` |

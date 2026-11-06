@@ -283,11 +283,11 @@ Scale 与 Polyphony 部分以 Pianoteq 9 作为参考标准，而 Performance �
 
 | Method | MAESTRO Yamaha Disklavier | Pianoteq 9 | SF2 (Grand Piano) | bBpiano L0-100c | bBpiano L0-beta | **bBpiano L1-Clavier** | **bBpiano L2-Horowitz** |
 | :-- | --: | --: | --: | --: | --: | --: | --: |
-| ViSQOL Audio · 48 kHz | Reference | — | — | — | — | — | 3.7273 |
+| ViSQOL Audio · 48 kHz | Reference | 3.9688 | 3.9090 | 3.7364 | 3.7301 | 2.8795 | 3.7273 |
 
-ViSQOL is reported only in **48 kHz audio mode**. “—” means that this engine has not been re-evaluated under the verified audio-mode protocol; historical scores of unverified mode are excluded from this comparison.
+ViSQOL is reported in **48 kHz audio mode**.
 
-ViSQOL 只公布 **48 kHz 音频模式**。“—”表示该版本尚未按此模式重新评测，旧分数不混入同一比较。
+ViSQOL 采用 **48 kHz 音频模式**。
 
 ---
 
@@ -312,19 +312,15 @@ I believe the values provided by LAION-CLAP reflect more of an overall impressio
 
 ---
 
-Horowitz headline acoustic values use only the 12 Performance files from the completed 22-file evaluation. Both metrics use the same C1425 soundboard. CLAP uses independently seeded 10-second crops; ViSQOL uses 48 kHz audio mode with the official libsvm mapping. Historical settings are not identical. [Protocol and comparison limits](BENCHMARKS.md#2-evaluation-methodology).
-
-Horowitz 声学评估已结束；此处为 12 首演奏组的最终汇总，逐音域与逐曲目结果已填入原有附录表格。
-
 ### Historical Progress
 
 | Category | Benchmark | bBpiano L0-alpha | bBpiano L0-beta | bBpiano L0-100c | **bBpiano L1-Clavier** | **bBpiano L2-Horowitz** |
 | :--------- | :--------- | ---------: | ---------: | ---------: | ---------: | --: |
-| Engine | Binary Size | 1.04 MB | 1.04 MB | 1.1 MB | **281 KB** | 32.22 MB (embedded data included) |
+| Engine | Binary Size | 1.04 MB | 1.04 MB | 1.1 MB | **281 KB** | 32.22 MB |
 | Engine | Real-Time Synthesis | ✅ | ✅ | ✅ | **✅** | Partial; 88-key test FAIL |
 | Engine | Polyphony | 5.21 | 11.27 | 23.34 | **5.97 × 88** | 88 voices; 0.619× at 88.2 kHz |
 | LAION-CLAP | Cosine Similarity (MAESTRO Reference) | - | 0.4628 | 0.3213 | **0.5833** | 0.6838 |
-| VISQOL | Mean, audio 48 kHz (MAESTRO Reference) | — | — | — | — | 3.7273 |
+| VISQOL | Mean, audio 48 kHz (MAESTRO Reference) | — | 3.7301 | 3.7364 | 2.8795 | 3.7273 |
 
 ## 6. License
 

@@ -45,6 +45,9 @@ Qwen3.6-35B-A3B (21 GB) in real time on each device. The model is larger than ea
 - **Sets itself up.** `--auto` measures the machine and the model and picks the cache size, the
   threads and which device does what. The Plan screen shows each choice and why.
 - **Any MoE GGUF.** Whatever llama.cpp loads, in any quantization. No per-model code.
+- **Sees images.** Put a model's projector file (`mmproj`) beside it and the server reads images on
+  every API; the CLI with `--mmproj` and `--image`. Any vision model llama.cpp's projector library
+  knows, any quantization, every backend.
 - **Every backend.** CPU, Metal, CUDA, HIP, Vulkan, OpenCL and the Hexagon NPU. On a graphics card,
   the experts used most stay in its VRAM.
 - **Apps and a server.** A desktop app, phone apps, and an OpenAI- and Anthropic-compatible server
@@ -107,6 +110,15 @@ bmoe-server -m model.gguf -c 32768                         # the server and its 
 The server speaks the OpenAI API (`/v1/chat/completions`, `/v1/responses`) and the Anthropic one
 (`/v1/messages`), with streaming, tool calls and reasoning. Add `--host 0.0.0.0 --api-key KEY` to
 serve other machines. Reference: [docs/server-api.md](docs/server-api.md).
+
+On a machine that stays on, register it as a service of your login instead: it starts with the
+machine, comes back with its model, and reloads it when a request finds none loaded
+([running as a service](docs/server-api.md#running-as-a-service)).
+
+```bash
+bmoe-server service install --host 0.0.0.0 -m model.gguf -c 65536   # systemd, launchd or Task Scheduler
+bmoe-server service status
+```
 
 ```python
 from openai import OpenAI

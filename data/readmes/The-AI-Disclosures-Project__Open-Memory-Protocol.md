@@ -8,9 +8,10 @@
   <a href="early-draft-specs/"><strong>Draft technology</strong></a> ·
   <a href="prototypes/python-loader-validator/"><strong>Python code</strong></a> ·
   <a href="prototypes/"><strong>Prototypes</strong></a> ·
+  <a href="https://ompi.fly.dev"><strong>Live demo</strong></a> ·
   <a href="GOVERNANCE.md"><strong>Governance</strong></a> ·
   <a href="docs/contributing.md"><strong>Contribute</strong></a> ·
-  <a href="https://discord.gg/7DbzzxZ9y"><strong>Discord</strong></a>
+  <a href="https://discord.gg/B8Fhcech4"><strong>Discord</strong></a>
 </p>
 
 <p align="center">
@@ -18,7 +19,7 @@
   <img src="https://img.shields.io/badge/docs-CC%20BY%204.0-lightgrey" alt="Documentation license: CC BY 4.0">
   <img src="https://img.shields.io/badge/code-Apache%202.0-lightgrey" alt="Code license: Apache 2.0">
   <img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+">
-  <a href="https://discord.gg/7DbzzxZ9y"><img src="https://img.shields.io/badge/Discord-apply%20to%20join-5865F2?logo=discord&logoColor=white" alt="Discord: apply to join"></a>
+  <a href="https://discord.gg/B8Fhcech4"><img src="https://img.shields.io/badge/Discord-apply%20to%20join-5865F2?logo=discord&logoColor=white" alt="Discord: apply to join"></a>
 </p>
 
 <p align="center">
@@ -40,7 +41,7 @@
 **Current stage.** Working towards a version 1. No reference implementation exists yet. Current focus is on the exchange semantics and memory object. Next step is on the supporting shared memory components. 
 
 <p align="center">
-  <a href="https://discord.gg/7DbzzxZ9y">
+  <a href="https://discord.gg/B8Fhcech4">
     <img src="https://img.shields.io/badge/%F0%9F%92%AC%20Join%20the%20OMPI%20Discord-apply%20for%20access-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join the OMPI Discord: apply for access">
   </a>
   <br>
@@ -147,6 +148,8 @@ OMPI consolidates work developing across the AI Disclosures Project since August
 
 ### Code and prototypes
 
+- **Live demo: omp-live** — Built for the OMP session at FOO Camp. One set of memories is shared by three different memory systems (a Markdown file system, a knowledge graph and a full-text search index) plus a coding agent, all kept in sync in real time through OMP interchange records. There is no central hub. Edit a memory in any system and it moves through OMP into the others. Forgets leave tombstones everywhere, and conflicts are held for a person to resolve. Try it at [ompi.fly.dev](https://ompi.fly.dev). Source: [`SrulyRosenblat/ompi-foo-camp`](https://github.com/SrulyRosenblat/ompi-foo-camp/tree/main/omp-live).
+
 - **Python Implementation** — Draft loader, validator, and harness contract for the draft open memory protocol technology. [`prototypes/python-loader-validator/`](prototypes/python-loader-validator/)
 
 - **ACP-Based MCP Memory-Server Prototype** — An old experimental prototype indexing sessions across twelve coding-agent harnesses (Claude Code, Codex, Goose, Cursor, Cline, Roo, Kilo, Zed, Gemini CLI, Qwen Code, Continue, Aider). Originated in [`SrulyRosenblat/agent_memory_mcp`](https://github.com/SrulyRosenblat/agent_memory_mcp) with first commits in *May 2026*; imported here at upstream commit `02b8d92`. [`prototypes/acp_memory_server/`](prototypes/acp_memory_server/)
@@ -187,7 +190,7 @@ Thirteen external participants from ten affiliations are confirmed for the Septe
 - Read the [draft technology](early-draft-specs/) and open an issue with feedback.
 - Run the [experimental Python implementation](prototypes/python-loader-validator/) against your own memory workload.
 - Explore the [ACP-based memory-server prototype](prototypes/acp_memory_server/).
-- Apply to join the [OMPI Discord](https://discord.gg/7DbzzxZ9y) for working-group discussion and implementer support.
+- Apply to join the [OMPI Discord](https://discord.gg/B8Fhcech4) for working-group discussion and implementer support.
 - Contact [ompi@aidisclosures.org](mailto:ompi@aidisclosures.org) to join the ecosystem.
 
 ## License

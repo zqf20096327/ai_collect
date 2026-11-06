@@ -543,10 +543,30 @@ router.chat("Write the full report", on_output_overrun="truncate")
 | `"preflight"` | Never | Never* | Reserves the worst-case output before the call. If it doesn't fit, downgrades to the small model or raises `BudgetExhausted` locally. |
 | `"truncate"` | Only if you opt in | Never* | Sets `max_tokens` from the remaining budget. Downgrades first; only the small model's response can be cut off, and it is flagged `truncated_by_budget=True`. |
 | `"continue"` | Only when the money runs out | Never* | Generates the answer in segments of `segment_tokens` (2000), reserving one segment at a time; a segment that stops at its limit is continued ("continue exactly where you stopped"). Ends when the model finishes, `max_output_tokens` (the total) is reached, `max_segments` (8) is hit, or another segment can't be paid for — then the text so far is returned, flagged `truncated_by_budget=True`. |
+| `"calibrated"` | Never | With probability ≤ ε per run | `preflight` that reserves a quantile of your logged output lengths, with the quantile level β certified on real runs of your agent (below). Falls back to the worst case when nothing is certified. |
 
 \* Prompt tokens are an estimate (exact for OpenAI text; approximate for Claude, Gemini, images and tool schemas), so these modes price the prompt with a 20% margin (`prompt_margin=0.2`). An undercount larger than that can still overshoot slightly.
 
 `preflight` is most useful with your own `max_output_tokens`: without one, the worst case is the model's full max output (16k+ tokens), which blocks more calls near the end of a budget. Or let Baar learn it: `overrun_risk=0.05` reserves the length that 95% of this model's responses have stayed under (a split-conformal quantile of the last 500 completed calls), instead of the worst case. `max_tokens` stays the full limit, so nothing is cut off; at most about 5% of calls can run past the reservation. Until a model has 20 completed calls, the worst case is reserved. Share what's learned between routers with `output_lengths=OutputLengths()`. The limit is always capped by the room left in the model's context window. Your own `max_output_tokens` is never sent above the model's real max output. In `truncate` mode, `max_call_share=0.5` stops one call from reserving more than half of what's left, so concurrent calls near the cap still get through.
+
+### Calibrated mode: a guarantee per run, not per call
+
+`overrun_risk=r` bounds each *call* separately, so a run of many calls can still overspend more often than `r` (2/30 runs in the benchmark below). `calibrated` bounds the whole *run*: pick a tolerance ε, and Baar picks how much output to reserve so that at most ε of your agent runs overspend, with confidence 1 − δ. Calibrate once on runs of your own workload:
+
+```python
+from baar import BAARRouter, QuantileTable, ltt_select
+
+table = QuantileTable.from_records(logged_calls)       # dicts with model, completion_tokens
+
+def run_batch(beta, n):                                 # run n agent tasks with this beta,
+    ...                                                 # return how many overspent
+
+res = ltt_select([0.01, 0.05, 0.1, 0.2, 0.3, 0.5], run_batch, n=1000, eps=0.05, delta=0.05)
+router = BAARRouter(budget=0.10, on_output_overrun="calibrated",
+                    output_quantiles=table, calibration_beta=res)
+```
+
+`ltt_select` tests the levels from most to least conservative with exact binomial p-values (Learn-then-Test) and stops at the first it cannot certify; if none is certified, `calibrated` reserves the worst case. The guarantee assumes future runs look like the calibration runs. Method and results: [research/](research/).
 
 In `truncate` mode the big model is used only if its *full* response fits, so models with a very large max output (GPT-5, o-series) will usually downgrade unless you set `max_output_tokens`.
 
@@ -583,6 +603,22 @@ Streaming calls record the provider's reported usage, including hidden reasoning
 
 Over seeds 1–30: post-hoc alerts overshoot in 30/30 runs and the default `estimate` in 27/30 (up to $0.66). `preflight`, `preflight` + thinking and `truncate` never overshoot, and `preflight` never cuts an answer off. `overrun_risk=0.05` overshoots in 2/30 runs (up to $0.16) — the risk it accepts in exchange for using more of the budget. Capping thinking finishes every task because poisoned tasks stop being expensive; the simulation assumes the answer is unaffected by the cap, which real models don't guarantee. If you expect adversarial content, use `preflight` (or `truncate`) and set a `thinking_budget` on reasoning models.
 
+
+
+### Certified early stopping
+
+Long agent runs that will blow their budget are otherwise refused only once the money is gone. An `EarlyStopPolicy` checks the run at fixed checkpoints and stops it before the next call when it is predicted to exceed the budget, with a certificate: at most ε of all runs are stopped although they would have finished within budget (confidence 1 − δ). As a share of the runs that would have finished, the rate is higher by the inverse of how common they are. Fit on one set of logged runs, certify on another:
+
+```python
+from baar import BAARRouter, fit_early_stop, calibrate_early_stop, RunStopped
+
+policy = fit_early_stop(train_runs, budget=5.0, counter_keys=["tool_error"])
+policy = calibrate_early_stop(policy, calibration_runs, eps=0.05, delta=0.05)
+router = BAARRouter(budget=5.0, early_stop=policy)
+router.record_event("tool_error")   # report behaviour as the run goes; RunStopped ends the run early
+```
+
+On 3,000 real coding-agent runs, at ε = 0.05 this saved 11–23% of all spend when the protected runs are those that would solve their task (`harm="resolve"`), and 4.5–16% when protecting every run that would finish (`harm="finish"`, the default), depending on how tight the budget is. Fit the model on runs disjoint from the calibration runs and fix the budget before calibrating; the guarantee assumes future runs look like the calibration runs. See [research/](research/).
 
 ## Budget awareness and wind-down
 

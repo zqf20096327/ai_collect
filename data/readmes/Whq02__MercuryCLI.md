@@ -46,7 +46,7 @@
 
 An agent reads and edits files, runs shell commands, steps through tests and debuggers, and checks the results while you choose the model provider, the model, and what the agent is allowed to do. Mercury is used to build Mercury across parallel sessions and models: each session writes a handoff note when it finishes, and the next session reads that note once at startup alongside your pinned rules, stopping context poisoning between sessions.
 
-![The session board with three sessions on one project, each on its own model and effort: one ready to review, two working; opening the review session, then the finished documentation session](docs/media/session-board-stream.gif)
+![Structural search finding three console.log calls by shape across three files, and structural edit rewriting them to logger.debug in a dry run and then applying the change](docs/media/syntax-search-edit-clean.gif)
 
 Mercury is open source under the Apache License 2.0, as are the SDKs in [sdk/](sdk/) and [sdk-py/](sdk-py/).
 
@@ -68,7 +68,7 @@ The install addresses keep approximate script-request counts by source and UTC d
 
 ## What is inside
 
-- **22 model providers, `/llmhost` and `/localsetup`:** keep all 22 providers signed in at once (OpenAI, Anthropic, Google, DeepSeek, Moonshot, Z.AI, OpenRouter, Hugging Face, xAI, Meta, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI, Melious AI, OrcaRouter, or your own local/hosted weights) and switch models mid-chat; new sessions default to your most recently connected provider. Rent or host weights with `/llmhost` and `mercury host` ([docs/LLM-HOST.md](docs/LLM-HOST.md)), connect Ollama, LM Studio, vLLM or llama.cpp with `/localsetup` ([docs/LOCAL-SETUP.md](docs/LOCAL-SETUP.md)), and see [docs/ENGINES.md](docs/ENGINES.md) for sign-ins and routing.
+- **22 model providers, `/llmhost` and `/localsetup`:** keep all 22 providers signed in at once (OpenAI, Anthropic, Google, DeepSeek, Moonshot, Z.AI, OpenRouter, Hugging Face, xAI, Meta, Mistral, Nous Portal, OpenCode Zen, Qwen, MiniMax, Together AI, Cohere, Groq, Cerebras, Fireworks AI, Melious AI, OrcaRouter, or your own local/hosted weights) and switch models mid-chat; new sessions default to your most recently connected provider. Rent or host weights with `/llmhost` and `mercury host` ([docs/LLM-HOST.md](docs/LLM-HOST.md)), run a local model on TensorFold with `/tensorfold` ([docs/TENSORFOLD.md](docs/TENSORFOLD.md)), connect Ollama, LM Studio, vLLM or llama.cpp with `/localsetup` ([docs/LOCAL-SETUP.md](docs/LOCAL-SETUP.md)), and see [docs/ENGINES.md](docs/ENGINES.md) for sign-ins and routing.
 - **The daily loop, Session Concourse and crewmates:** interactive launches open the home screen (New Session, Continue Last Session once session history exists, Boot Menu, MCPs & Skills, Agents, Health Check, Saturn Scheduler, Logins, Session Concourse, Sessions · Projects); run parallel sessions on `/concourse` and delegate to cross-provider crewmates (`Crewmate`) in isolated `git worktree` checkouts with project file leases ([docs/SESSIONS.md](docs/SESSIONS.md), [docs/CREW.md](docs/CREW.md)).
 - **Headless CLI and JSON-RPC runner:** run one-shot prompts with `mercury run "<prompt>"` (`--format text|json|rows`, `--input rows`, `--partial`), or host multi-turn sessions over stdio with `mercury runner` and the TypeScript and Python SDKs ([docs/AUTOMATION.md](docs/AUTOMATION.md), [sdk/](sdk/), [sdk-py/](sdk-py/)).
 - **Mneme hybrid RAG project memory:** on-device 118 MB BGE semantic embeddings (`bge-base-en-v1.5`, bundled in every release archive, built for its platform) fused with BM25 word ranking, citation tracking, verbatim pinned rules, contradiction checks, session handoff notes, and the `/memory page` browser graph ([docs/MNEME.md](docs/MNEME.md), [docs/MEMORY-FINDINGS.md](docs/MEMORY-FINDINGS.md)).
@@ -84,11 +84,11 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 
 | Domain | Commands |
 | --- | --- |
-| current work | `/run` `/runs` `/workbench` `/diff` `/mission` |
+| current work | `/run` `/runs` `/workbench` `/diff` `/mission` (/goal) |
 | crew & delegation | `/agents` `/crewmates` `/crew` `/swarm` `/swarmchat` `/general` `/team` `/whisper` `/workflows` `/daemon` `/saturn` `/seats` `/kill` `/unkill` |
 | session & context | `/clear` `/compact` `/context` `/rewind` `/sessions` `/concourse` `/rename` `/title` `/contract` `/export` `/copy` `/usage` `/realms` `/restart` |
 | memory & goals | `/memory` `/console` |
-| model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` |
+| model & effort | `/model` `/effort` `/submodels` `/advise` `/caching` `/tensorfold` |
 | git & review | `/review` `/audit` |
 | health & introspection | `/health` `/verify` `/trace` `/capabilities` `/lsp` |
 | config & setup | `/config` `/jev` `/localsetup` `/llmhost` `/imagesetup` `/permissions` `/hooks` `/mcp` `/extensions` `/skills` `/browser` `/orient` `/keybindings` `/keys` `/vim` `/mouse` `/keysetup` `/bootmenu` `/voice` |
@@ -99,12 +99,13 @@ See [docs/README.md](docs/README.md) for the full documentation catalogue ([docs
 | --- | --- |
 | `/imagesetup` | Set up local image and video models. |
 | `/llmhost` | Choose a model to rent on Runpod, Vast.ai, Lambda, Hugging Face Inference Endpoints, Hyperstack, Verda or DigitalOcean, run on your own computer, or connect an existing server. |
+| `/tensorfold` | Run a local model on TensorFold: install the engine, pull a model, serve it on this Mac, share it on your network or rent a GPU for it, and switch to it, all on one screen. |
 | `/restart` | Move this chat to the installed Mercury build; running watches and background shells stop. |
 | `/mcp` | Inspect servers, sign in, browse each server’s tools and parameters, reconnect, or toggle a server for this chat. |
 
 ## Author
 
-Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 50 public releases, 571,000 lines of TypeScript and 4,300 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
+Mercury CLI is designed, built and maintained by **Waleed Al Qusous** as its sole developer: seven months from the first line to this release, 51 public releases, 580,000 lines of TypeScript and 4,300 proofs, built with the AI agents it now runs. [GitHub](https://github.com/Whq02) · [X](https://x.com/dubsthedev) · [mercury-cli.ai](https://mercury-cli.ai)
 
 ## Reporting a problem
 

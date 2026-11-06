@@ -5,12 +5,12 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.36.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.37.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
 **Stop burning tokens. Stop freezing terminals. Take back sovereign control.**<br>
-*(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.)*
+*(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.)* 
 
 [English](#english) | [Bahasa Indonesia](README.id.md)
 </div>
@@ -31,16 +31,16 @@ You run AI coding agents to ship world-class software, not to waste hours untang
 
 ### 📦 Installation
 
-Install the unified `acs` binary directly via Sovereign CDN:
+To download and install the official `acs` binary, generate your single-use 8-character **Download Code** from the Member Portal at [uikode.com/member](https://uikode.com/member):
 
 **Windows** (PowerShell Administrator):
 ```powershell
-irm https://dl.uikode.com/install.ps1 | iex
+$env:ACS_DOWNLOAD_CODE="<YOUR_CODE>"; irm https://dl.uikode.com/install.ps1 | iex
 ```
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://dl.uikode.com/install.sh | bash
+ACS_DOWNLOAD_CODE="<YOUR_CODE>" curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
 ---
@@ -81,6 +81,7 @@ ACS is protected by a proprietary commercial license:
 - **Local Data Sovereignty**: All prompt histories, project metrics, and configurations stay 100% on your local machine. Zero external data sharing.
 - **Silent Background Operation**: Services and background tools run completely in the background without intrusive terminal popups or desktop interruptions.
 - **Resilient Service Architecture**: Dashboard and proxy services run with independent lifecycles to ensure continuous uptime during maintenance.
+- **Panic Shield & Boundary Protection**: MCP serve loop protected with panic shield, isolated subprocess execution streams, and modular package boundary claim guards.
 
 ---
 
@@ -126,16 +127,13 @@ All operations are unified under the modern `acs` command:
 | `go run -tags buildtools . rules compile-roles` | Build-time pipeline command (invoked by `just rules-sync`) — compiles Gonja Jinja2 role templates; NOT part of the release `acs` binary |
 | `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
 | `acs sessionbus` | Cross-agent session bus messaging, inbox reflex, and claim management |
+| `acs assess` | Pre-PRD idea assessment skill (`acs-assess`) |
 
 ---
 
 ### ✨ Architectural Pillars
 
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools and stdio JSON-RPC 2.0 server harness.
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools, 16MB stdio scanner buffers with non-fatal recovery, project upstream endpoint support, and stdio JSON-RPC 2.0 server harness.
 2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
-4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
-5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive subphase tracking, soft-delete trash bin, and physical blueprint reseed engine.
-7. **Agentic Preset & Endpoint Orchestration**: Standardized EndpointModelPicker with latency tests, custom endpoint routing, hybrid combobox model selector, and Hermes profile configuration.
-8. **Inter-Agent SessionBus & Hook Gate Engine**: Scaled session coordination bus with dual-key prompt heartbeats, tier-based gate contract v2, and memory write guards.
+4. **Agentic Tabbed Navigation & Config Parity**: Unified cockpit UI featuring tabbed navigation and real-time project configuration parity.

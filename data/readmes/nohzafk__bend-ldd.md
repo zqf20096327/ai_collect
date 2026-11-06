@@ -1,0 +1,78 @@
+# bend-ldd — law-driven development in Bend 2
+
+An agent skill for writing Bend 2 code that is **proved** rather than tested.
+
+**[Bend](https://bend-lang.com)** is a dependently typed language whose checker
+proves claims about *every* input, not the cases you thought to write down. A
+**law** is one such claim, written in `LAWS.bend`. A **core** is the Bend file
+that computes the answer. The skill's method is: state the laws, **falsify**
+them (find an input that breaks one) before anyone approves them, prove them in
+`PROOF.bend`, then **mutate** the core — break it on purpose — and check that
+the law whose proof depended on that line now fails. The human decides what
+"correct" means; the agent writes the code and the proofs; the checker decides.
+
+## Install
+
+```sh
+npx skills add nohzafk/bend-ldd
+```
+
+`bend` is the one prerequisite; `bend guide` says how to install it, and it
+comes with its own language reference. `bun` is the other thing worth having.
+
+## The gate
+
+Run before committing. `bend PROOF.bend --verdict`, through a wrapper that
+kills it past 10 s of CPU, prints `ALL PROOFS CHECK` and exits 0 (a TODO, any unsafe or
+foreign code, or a kernel mismatch gives `SOME PROOFS FAIL`, exit 1). The first
+`--verdict` of a bend release builds the kernel with Lean; do that outside the
+wrapper. Every recorded mutant fails inside its law's own proof.
+
+The limit is this skill's, not the language's. It counts CPU time, not
+wall-clock time, so a loaded machine does not fail checks at random; the
+checker runs about two threads, so 10 s of CPU is about 5 s of wall time. On a core shaped for proof
+the checker answers in a fraction of a second, so a check that runs into
+seconds is a signal rather than a price: usually a large constant the checker
+has to walk, a fuel loop unfolded into a goal, or application code run inside
+one. Change the statement or the shape of the core; do not raise the limit.
+`SKILL.md` has the wrapper.
+
+## The tools
+
+`bend` and `bun` are all you need to start. The rest are reached when the work
+asks for one, and installing one is your call: ask before you add a dependency
+to somebody's project.
+
+| tool | what it is | reach for it when |
+| --- | --- | --- |
+| [`lawcheck`](https://github.com/bendlib/bendlib) | generates instances and mutants, and runs them through the checker | falsifying a law or mutating a core. Needs no spec file. **Does not run on bend 2.0.32; use bend-falsify.** |
+| [`bend-falsify`](https://github.com/nohzafk/bend-falsify) | takes instances and mutants you wrote, and ties each to the proof it should break | lawcheck skipped a law, or a mutant has to fail in a *specific* proof |
+| [`bend-emit`](https://github.com/nohzafk/bend-emit) | builds the typed JavaScript module from a core | a JavaScript program is the caller |
+| [`bend-schema`](https://github.com/nohzafk/bend-schema) | the codec and schemas where host values cross into Bend types | a JavaScript program is the caller |
+
+## The companion skill
+
+[bend-statechart](https://github.com/nohzafk/bend-statechart) is for a core
+written as a state machine (`step(State, Ev) -> Out`). It visits every state
+reachable over a bounded set of events, checks every law plus deadlocks on
+every state and step, and draws the graph as a Mermaid statechart with pstack's
+statechart pipeline, with the shortest path to each broken rule, so the human
+reviews the transitions before the proofs. It is optional: this skill loads it when it is installed and skips
+the step when it is not.
+
+```sh
+npx skills add nohzafk/bend-statechart
+```
+
+## What is in it
+
+`SKILL.md` is the method, and its map says when to read each file.
+`references/language.md` has the rules of a def and the runtime. 
+`references/proofs.md` has writing a proof, the half of Bend that `bend guide`
+does not cover. `references/workflow.md` is the whole workflow in order, and
+`references/js-host.md` and `references/multi-agent.md` are for a JavaScript
+caller and for many agents at once.
+
+## License
+
+MIT.

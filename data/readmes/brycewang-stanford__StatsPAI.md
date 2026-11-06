@@ -771,19 +771,25 @@ print(sp.describe_function("ivreg")["validation_status"])   # 'certified'
 print(sp.list_functions(validation_status="certified")[:5])
 ```
 
-Every registered function carries one of these tiers (counts on the current
-`main`; `sp.list_functions(validation_status=...)` gives the live numbers):
+Every registered function carries one of these tiers (counts at the last
+release; `sp.list_functions(validation_status=...)` gives the live numbers):
 
 | `validation_status` | Meaning | Functions |
 | --- | --- | ---: |
-| `certified` | compared with a named external reference implementation (R, Stata, or the method authors' Python package) on identical inputs, within a pre-registered tolerance | 414 |
-| `validated` | known-truth simulation, published-number, coverage, or documented-convention evidence, but not in the main R/Stata harness | 128 |
-| `api_stable` | stable public interface; unit tests exist, but **no numerical-validation claim** | 641 |
-| `experimental` | method or API may still change | 3 |
+| `certified` | compared with a named external reference implementation (R, Stata, or the method authors' Python package) on identical inputs, within a pre-registered tolerance | 575 |
+| `validated` | known-truth simulation, published-number, coverage, or documented-convention evidence, but not in the main R/Stata harness | 450 |
+| `api_stable` | stable public interface; unit tests exist, but **no numerical-validation claim** | 651 |
+| `experimental` | method or API may still change | 4 |
 
-In other words, roughly a third of the registered surface carries numerical
-evidence today. Breadth is not the same as validation; check the tier of the
+In other words, 1,025 of the 1,680 registered functions carry numerical
+evidence. Breadth is not the same as validation; check the tier of the
 functions you depend on.
+
+The [evidence scorecard](https://brycewang-stanford.github.io/StatsPAI/scorecard/)
+puts the four checks a specialist makes on one page, each regenerated from
+committed artifacts: agreement with R / Stata on the same data, confidence
+interval coverage in Monte Carlo, speed against the reference on the same
+task, and the estimators that still have no evidence.
 
 ### Cross-language parity, made queryable
 
@@ -853,6 +859,24 @@ calibrated SEs (RD's intervals equal R `rdrobust`'s draw by draw); the PLR
 shortfall is regularisation bias of the default gradient-boosting nuisances
 (0.95 with the true nuisances); see `tests/coverage_monte_carlo/FINDINGS.md`. The committed artifacts live under
 `tests/coverage_monte_carlo/results_b1000/`.
+
+---
+
+## Life Cycle
+
+StatsPAI is in active development (PyPI status "Beta") and uses semantic
+versioning. Releases add functions and optional parameters, but a stable
+function is never broken without notice.
+The old behaviour first warns (`DeprecationWarning`, or `FutureWarning` for
+a changing default) for at least one minor release, and every such change
+is listed in [MIGRATION.md](MIGRATION.md). A fix that changes returned
+numbers is flagged as a correctness fix there and in the changelog. The 32
+core entry points (`sp.list_functions(core=True)`) have snapshot-tested
+signatures. A function marked `experimental` may change in any minor
+release and makes no numerical-validation claim; the tiers above say how
+far each function's numbers have been checked. The
+[glossary](https://brycewang-stanford.github.io/StatsPAI/guides/glossary/)
+defines these terms.
 
 ---
 

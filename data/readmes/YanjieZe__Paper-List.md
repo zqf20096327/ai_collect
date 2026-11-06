@@ -46,6 +46,9 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.08338), GPWM: Modeling the World as 3D Particle Motion
+- [arXiv 2026.11](https://arxiv.org/abs/2611.07229), Spatial-UMI-Dream: Scaling World Action Models with Metric Geometry for UMI Manipulation
+- [arXiv 2026.11](https://arxiv.org/abs/2611.08209), RoboARCade: Benchmarking Agentic Robot Control
 - [arXiv 2026.11](https://arxiv.org/abs/2611.06905), Reinforcement Learning Enables Scaling Generalist Robot Policy Improvement
 - [arXiv 2026.11](https://arxiv.org/abs/2611.06908), Perceptive Humanoid Motion from Simulation
 - [arXiv 2026.11](https://arxiv.org/abs/2611.06817), Open-HumanScale: An Open Recipe for Scaling Human and Robot Experience for Embodied Foundation Models
@@ -757,6 +760,4 @@ Papers:
 - CVPR 2023, Learning Video Representations from Large Language Models, [Website](https://facebookresearch.github.io/LaViLa/) / [Github](https://github.com/facebookresearch/LaViLa)
 - CVPR 2023, **PLA**: Language-Driven Open-Vocabulary 3D Scene Understanding, [Website](https://dingry.github.io/projects/PLA)
 - CVPR 2023, **PartSLIP**: Low-Shot Part Segmentation for 3D Point Clouds via Pretrained Image-Language Models, [arXiv](https://arxiv.org/abs/2212.01558)
-- CVPR 2023, Mask-Free Video Instance Segmentation, [Website](https://www.vis.xyz/pub/maskfreevis/) / [Github](https://github.com/SysCV/maskfreevis)
-- arXiv 2023.04, **DINOv2**: Learning Robust Visual Features without Supervision, [arXiv](https://arxiv.org/abs/2304.07193) / [Github](https://github.com/facebookresearch/dinov2)
-- arXiv 2023.04, Zip-NeRF: Anti-Aliased Grid-Based Neural Radiance Fields, [Website](https://jo
+- CVPR 2023, Mask-Free Video Instance Segmentation, [Website](https://www.vis.xyz

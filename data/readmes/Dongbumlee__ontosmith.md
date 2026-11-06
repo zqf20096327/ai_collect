@@ -47,7 +47,11 @@ The ontology here is a **flat extraction contract**: a
 closed inventory of entity and relation types, each with
 a definition and boundary examples — drafted from your
 corpus or imported, approved by a human, and enforced
-type by type by the decision model. It is deliberately
+type by type by the decision model. An entity type may
+also declare value attributes (a date, an amount, a
+term): typed values a document states about an entity,
+normalized by deterministic code and judged like every
+other fact before they are written as node properties. It is deliberately
 *not* a formal ontology: there is no class hierarchy,
 no inheritance, and no logical axioms — OntoSmith is
 not an OWL ontology editor, and it runs no inference
@@ -98,9 +102,9 @@ Corpus profile
   family          demo
   status          COMPLETE
   documents       4
-  claims          6
+  claims          7
   decision points 0
-  profile hash    sha256:7ae51d31fa9120ec
+  profile hash    sha256:28ede2ab1b3e4fd2
   spend           $0.0000
   written         profiles/demo (profile.json, setup_config.json, profile.md)
 
@@ -188,9 +192,10 @@ prerequisites, gathered in one place:
    costs no spend.
 
 Cost, with its scope: every build is priced from its
-own counted projection before it runs, and the
-ledger enforces the stop-line frozen at creation
-(Cost guardrails, below). No figure quoted in a
+own counted projection before it runs, and the ledger
+records what it spent; a USD stop-line applies only
+when you set one for the run (Cost guardrails, below).
+No figure quoted in a
 document prices your corpus — the projection under
 your configuration does.
 
@@ -222,7 +227,7 @@ over HTTP and needs the server, not the extra.)
 
 | Piece | What it is |
 |---|---|
-| Batch pipeline | The staged build: ingest → NER/roster → candidates → gates → route → write → index → verify, under a versioned pack, with a ledger-enforced spend cap |
+| Batch pipeline | The staged build: ingest → NER/roster → candidates → gates → route → write → index → verify, under a versioned pack, with a ledger that records what each run spent |
 | Corpus profiler | `ontosmith profile` — a deterministic census of your corpus and the decision points a human should settle first |
 | Ontology builder | `ontosmith ontology` — drafts a domain schema from a profile, or imports an external ontology under a recorded scoping; deterministic validation; emits a hash-pinned pack only after explicit human approval |
 | Four domain packs + Core baseline | Domain ontologies as data — schema, definitions, boundary examples, thresholds, measured conformance record (below) |
@@ -270,7 +275,7 @@ of each.
    after an explicit human approval.
 3. **Build** — `ontosmith batch` runs the staged pipeline
    under the pack. Measured operating points ship as
-   defaults; the run's cost is capped by a stop-line, and
+   defaults; the run's cost is recorded in its ledger, and
    countable before it starts (`verify project`).
 4. **Inspect** — `ontosmith inspect` shows any triple with
    its evidence span and provenance chain — and names what
@@ -466,14 +471,18 @@ custom-binding contract — is
 
 ## Cost guardrails
 
-Spend is guarded by default. The tooling prints a
-**counted projection** before a run (`ontosmith verify
-project` — candidate pairs counted from your data, priced
-at rates you supply (`--unit-cost`); the tool takes
-prices from the caller and never hardcodes a rate card).
+Every run's spend is accounted, whether or not it is
+capped. The tooling prints a **counted projection**
+before a run (`ontosmith verify project` — candidate
+pairs counted from your data, priced at rates you supply
+(`--unit-cost`); the tool takes prices from the caller
+and never hardcodes a rate card), and the batch ledger
+records what the run actually spent.
 
-Every batch enforces a
-**stop-line**: a run that would cross its cap refuses to
+A USD **stop-line** exists only when you set one: the
+cap's only home is the `ONTOSMITH_MAX_COST_USD`
+environment variable — unset (or `none`) means no cap.
+With a cap set, a run that would cross it refuses to
 start the unit that crosses it, and resumes from its
 ledger instead of re-spending.
 
@@ -515,26 +524,19 @@ little before pinning it into a pack.
 
 | Command | What it does |
 |---|---|
-| **Label** | |
-| `review` | interactive review-band labeling |
-| **Evaluate** | |
-| `evaluate` · `recalibrate` · `calibration` | |
+| **Core** | |
+| `configure` | declare the seat bindings (wizard / --from-file) |
+| `profile` | corpus profiler (deterministic, no LLM) |
+| `batch` | create / run / status / rollback + ER settlement |
 | `inspect` | triple + evidence + provenance |
 | `verify` | score / audit-sets / project / report |
-| **Models** | |
-| `llm` · `ollama` | candidate judges |
-| **Gates** | |
-| `triple` · `er` · `conflict` · `onto` · `cascade` | (Jev gates) |
-| **Connect** | |
-| `configure` | declare the seat bindings (wizard / --from-file) |
-| **Pipeline** | |
-| `identity-freeze` | freeze per-point identity-seat decisions into a global decisions file |
-| `batch` | create / run / status / rollback |
-| `profile` | corpus profiler (deterministic, no LLM) |
+| **Authoring** | |
 | `ontology` | draft / validate / approve / emit a pack |
+| `identity-freeze` | freeze per-point identity-seat decisions into a global decisions file |
 | **Serve** | |
 | `search` | hybrid search over a built graph |
 | `serve` | sample HTTP API (search / entity / neighborhood / triple-with-evidence) + the demo app at / |
+| `quickstart` | first run: build a graph from one text file and serve it |
 
 ## The store — Neo4j
 
@@ -562,7 +564,7 @@ whose search runs the lexical and graph arms only
 
 ## Status
 
-Release 0.1.6, published on PyPI. The pipeline,
+Release 0.1.8, published on PyPI. The pipeline,
 profiler, ontology builder, inspect viewer,
 verification cores, packs, and the serving surface
 (search command + sample API) in this tree are

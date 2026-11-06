@@ -29,7 +29,7 @@ you talk to either agent  ->  both remember  ->  your notes answer  ->  your pho
 
 | Included | Count | What it gives you |
 |---|---:|---|
-| Skills | **17** | `/boot`, `/daily`, `/catchup`, `/opps`, `/outreach`, `/content`, `/ship`, `/video-notes`, `/wiki` and more |
+| Skills | **18** | `/boot`, `/daily`, `/weekly`, `/catchup`, `/opps`, `/outreach`, `/content`, `/ship`, `/video-notes`, `/wiki` and more |
 | Hooks | **21** | Memory loading, tests before "done", a health check at every session start, a working danger guard, MCP health checks, AI-tell guard |
 | Search engines | **3** | By meaning (ChromaDB), by relationship (LightRAG graph), by image (CLIP over your slides and screenshots) |
 | Agents, one memory | **2** | Claude Code and Codex read the same memory and see each other's latest messages |
@@ -83,7 +83,7 @@ Then open Claude Code in your vault and type `/boot`.
 ```text
 everything-claude-codex/
 |-- agent-sync/      Claude <-> Codex: each sees the other's newest messages, plus agent-to-agent mail
-|-- skills/          17 skills: boot, daily, catchup, opps, outreach, email, content, brand, resume,
+|-- skills/          18 skills: boot, daily, weekly, catchup, opps, outreach, email, content, brand, resume,
 |                    money, project, summary, ship, tldr, wiki, wiki-health, video-notes
 |-- hooks/           tests before done, guard, MCP health, session memory, inbox, archive, AI-tell guard, usage
 |-- vault-search/    3 MCP servers (meaning, graph, router) + image search + nightly indexers
@@ -130,6 +130,7 @@ After every reply, your notes and a copy of your memory sync to your private Git
 ### 5. Self-healing hooks
 - **Tests before done:** when Claude Code or Codex tries to finish, your tests run first. If they fail, the agent is sent back with the failing output and has to fix it. It runs only when something changed, finds npm, pytest, unittest, cargo, go and make tests on its own, and gives up after 3 tries instead of looping. Set the command per repo in `.ecx/test-command` (or `off`).
 - **Danger guard:** blocks `rm -rf ~`, disk formats and fork bombs; asks before force-pushes, `reset --hard` and `DROP TABLE`.
+- **AI-tell guard:** after you write in `content/` or `personal/`, warns about the em dash and the AI phrases in `hooks/ai_tells.txt` (`delve`, `tapestry`, "it's not just…"). Phrases match whole words, ignoring case and curly apostrophes; common phrases can still fire on human prose, so trim the list if they do. Edit that list, or point `ECX_AI_TELLS=/path/to/file` at your own. It warns and never blocks.
 - **MCP health:** refuses to call a server whose dependency is down (and tells you the fix) instead of letting it return empty answers.
 - **doctor:** 16+ checks across hooks, indexes, jobs and sync. It also runs at the start of every Claude Code and Codex session: silent when everything is healthy, a short warning with the fix (and the index's last update time) when not.
 
@@ -157,6 +158,31 @@ ECX plays well with these (not bundled, all worth installing): [superpowers](htt
 **Does it overwrite my config?** Never. It merges, skips anything already there, and saves a `.ecx-bak` copy first.
 
 **How do I remove it?** Restore the `.ecx-bak` files and delete the skill links in `~/.claude/skills`.
+
+## Contributing
+
+New here? Start with an issue labelled [`good first issue`](https://github.com/saksham10arora-dotcom/everything-claude-codex/labels/good%20first%20issue). Each one names the exact files to touch.
+
+**How to pick an issue:**
+- `good first issue` is kept for people who haven't had a PR merged here yet. After your first one lands, pick from [`help wanted`](https://github.com/saksham10arora-dotcom/everything-claude-codex/labels/help%20wanted) instead, so newcomers always have a way in.
+- Comment "I'll take this" on the issue first, and work on one issue at a time. If a claimed issue has no PR after 7 days, it's open again.
+
+**Add a skill** (no code needed):
+1. Create `skills/<name>/SKILL.md`. Copy the frontmatter from [`skills/boot/SKILL.md`](skills/boot/SKILL.md): a `name`, and a `description` listing the phrases that trigger it.
+2. Write the steps the agent should follow and the exact output format.
+3. Re-run `./install.sh`. It links every folder in `skills/`, so your skill shows up in Claude Code and Codex right away.
+
+**Add or change a hook:** hooks live in `hooks/` and are registered in `scripts/install.py` (`add_hooks(...)`). A hook must never crash or block by accident: catch errors and exit 0.
+
+**Before you open a PR:**
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+CI runs the same command on macOS and Linux, Python 3.9 and 3.12. Add a test for anything you change in `hooks/` or `scripts/`. One change per PR.
+
+Got a skill or hook in your own setup that others would want? Share it in [Discussions](https://github.com/saksham10arora-dotcom/everything-claude-codex/discussions). The best ones get merged in, with credit.
 
 ## Star history
 

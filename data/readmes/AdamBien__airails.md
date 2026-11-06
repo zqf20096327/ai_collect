@@ -4,57 +4,56 @@ Home of Spec-Driven BCE ([**sbce.space**](https://sbce.space)) — development c
 
 ## Installation
 
-Download the repository without `git`, then run the installer:
+The `airails` wizard selects, downloads, and installs released skill bundles in one shot — globally into the home directory, or into one project so the skills are checked in with it. It needs a JDK 25+ and asks for scope, agents, and bundles; every answer can be given as a flag instead, which is how agents and CI run it:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/AdamBien/airails/main/downloadSkills | java --source 25 /dev/stdin
-cd airails
-./installSkills
+curl -fsSL https://raw.githubusercontent.com/AdamBien/airails/main/airails | java --source 25 /dev/stdin
 ```
 
-Or clone it with `git` instead of the first step:
+```
+cd <project-root>
+curl -fsSL https://raw.githubusercontent.com/AdamBien/airails/main/airails | java --source 25 /dev/stdin -project . -agents claude -bundles web,sbce -yes
+```
+
+`-list` lists the released bundles, `-help` the options; values take either form, `-project .` or `-project:.`. The wizard installs the last release only; it never touches a clone. Supported agents and their skills directories:
+
+| Agent | Global | Project-local |
+|---|---|---|
+| claude | `~/.claude/skills` | `.claude/skills` |
+| vibe | `~/.vibe/skills` | `.vibe/skills` |
+| kiro | `~/.kiro/skills` | `.kiro/skills` |
+| copilot | `~/.copilot/skills` | `.github/skills` |
+| codex | `~/.agents/skills` | `.agents/skills` |
+| goose | `~/.config/goose/skills` | `.agents/skills` |
+
+A project skill takes precedence over a global skill of the same name.
+
+### Bundles
+
+Bundles are agent-neutral subsets, one zip per bundle in the rolling [skills release](https://github.com/AdamBien/airails/releases/tag/skills). The stack bundles share a core of bce, bce-reviewer, system-tests, and readme, and add the stack skill, its building blocks, conventions, and test loop, so a web project does not carry the Java or migration skills in its context. The `sbce` and `documentation` bundles are add-ons for any stack; `skills` holds every skill.
+
+| Bundle | Contents |
+|---|---|
+| `java-server` | core + microprofile-server, continuous-testing, aws-cdk, java-conventions, concerns, jdbc-persistence, memory-persistence, zjson |
+| `java-cli` | core + java-cli-app, java-cli-script, java-conventions, concerns, zb, zb-release-pipeline, zargs, zcfg, zcl, zjson, zunit, zhtmldb, zllm-scripts, jdbc-persistence, memory-persistence |
+| `web` | core + web-conventions, javascript-conventions, web-static, web-sprinkles, web-components, web-system-tests, web-latest, web-pwa, web-performance-reviewer, web-standards-reviewer |
+| `migrations` | core + migration-advisor, concept-extractor, concept-clarifier, bc-carver, concept-annotator, characterization-tests, simplifier, java-conventions, concerns, java-distiller, python-to-java |
+| `sbce` | sbce, ears-tests, capability-brief, system-brief — the spec-driven workflow on top of a stack bundle |
+| `documentation` | readme, bce-diagrams, mermaid, drawio |
+| `skills` | every skill |
+
+Bundles overlap by design; installing two writes identical files twice. The manifest lives in `bundles()` of [zipSkills](zipSkills), which CI runs to publish the release; the wizard reads the bundle names from the release, so a new bundle shows up there after the next release build.
+
+### From a Clone
+
+To install the `main` working tree rather than the last release — when contributing, or to pick up a change before CI released it — clone the repository and run the interactive installer. It copies every skill and prompts per agent directory:
 
 ```
 git clone https://github.com/AdamBien/airails
 cd airails
-./installSkills
+./installSkills                    # global
+./installSkills -p ../myproject    # project-local
 ```
-
-The installer finds all skills and prompts before copying to each supported agent directory (`~/.claude/skills`, `~/.vibe/skills`, `~/.kiro/skills`, `~/.copilot/skills`, `~/.agents/skills`, `~/.config/goose/skills`).
-
-Without a JDK or `git`, download the prepacked zip for your agent from the rolling [skills release](https://github.com/AdamBien/airails/releases/tag/skills) and unzip it into the home directory:
-
-```
-curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-claude.zip
-unzip -o airails-claude.zip -d ~
-```
-
-Each zip contains all skills with the agent's skills directory baked into the entry paths: `airails-claude.zip`, `airails-vibe.zip`, `airails-kiro.zip`, `airails-copilot.zip`, `airails-codex.zip`, `airails-goose.zip`. The agent-neutral `airails-skills.zip` holds the same skills under a plain `skills/` prefix — unzip it into any agent's configuration directory or a custom location:
-
-```
-curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-skills.zip
-unzip -o airails-skills.zip -d ~/.claude
-```
-
-Bundles are agent-neutral subsets in the same `skills/` layout. The stack bundles share a core of bce, bce-reviewer, system-tests, and readme, and add the stack skill, its building blocks, conventions, and test loop, so a web project does not carry the Java or migration skills in its context. The `sbce` and `documentation` bundles are add-ons for any stack. Unzip into the agent's skills directory:
-
-```
-curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-web.zip
-unzip -o airails-web.zip -d ~/.claude/skills
-```
-
-| Bundle | Contents |
-|---|---|
-| `airails-java-server.zip` | core + microprofile-server, continuous-testing, aws-cdk, java-conventions, concerns, jdbc-persistence, memory-persistence, zjson |
-| `airails-java-cli.zip` | core + java-cli-app, java-cli-script, java-conventions, concerns, zb, zb-release-pipeline, zargs, zcfg, zcl, zjson, zunit, zhtmldb, zllm-scripts, jdbc-persistence, memory-persistence |
-| `airails-web.zip` | core + web-conventions, javascript-conventions, web-static, web-sprinkles, web-components, web-system-tests, web-latest, web-pwa, web-performance-reviewer, web-standards-reviewer |
-| `airails-migrations.zip` | core + migration-advisor, concept-extractor, concept-clarifier, bc-carver, concept-annotator, characterization-tests, simplifier, java-conventions, concerns, java-distiller, python-to-java |
-| `airails-sbce.zip` | sbce, ears-tests, capability-brief, system-brief — the spec-driven workflow on top of a stack bundle |
-| `airails-documentation.zip` | readme, bce-diagrams, mermaid, drawio |
-
-Bundles overlap by design; unzipping two writes identical files twice. The manifest lives in `bundles()` of [zipSkills](zipSkills).
-
-AI agents installing the skills themselves should follow [AGENTS.md](AGENTS.md) — `installSkills` requires an interactive terminal.
 
 Manage installed skills:
 
@@ -63,6 +62,31 @@ Manage installed skills:
 ./installSkills -d <name>    # delete a skill by name
 ./installSkills -h           # show help
 ```
+
+Add `-p <project-root>` to list or delete within a project instead of the home directory. Single skills are plain directory copies:
+
+```
+cp -R web/web-conventions <project-root>/.claude/skills/
+```
+
+### Without a JDK
+
+Download the prepacked zip for your agent from the [skills release](https://github.com/AdamBien/airails/releases/tag/skills) and unzip it into the home directory:
+
+```
+curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-claude.zip
+unzip -o airails-claude.zip -d ~
+```
+
+Each per-agent zip contains all skills with the agent's skills directory baked into the entry paths: `airails-claude.zip`, `airails-vibe.zip`, `airails-kiro.zip`, `airails-copilot.zip`, `airails-codex.zip`, `airails-goose.zip`. The bundle zips (`airails-web.zip`, …, `airails-skills.zip`) carry a plain `skills/` prefix instead — unzip them into the agent's configuration directory, the parent of its skills directory, globally or in a project:
+
+```
+curl -fsSLO https://github.com/AdamBien/airails/releases/download/skills/airails-web.zip
+unzip -o airails-web.zip -d ~/.claude
+unzip -o airails-web.zip -d <project-root>/.claude
+```
+
+AI agents installing the skills themselves should follow [AGENTS.md](AGENTS.md).
 
 ## Skill Layers
 

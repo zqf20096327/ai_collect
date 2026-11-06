@@ -131,7 +131,8 @@ Measured on `examples/_images/dogs.jpg` (2560x1600) with onnxruntime 1.23.2
 (onnxruntime-gpu 1.31.1 for CUDA; onnxruntime 1.30.0 and onnxruntime-ep-webgpu
 0.5.0 for WebGPU, on Vulkan and Metal).
 Run `python examples/benchmark.py --device cpu --device cuda` to measure on
-your machine.
+your machine. Its New image column is image encoding plus the model's default
+prompt.
 See [docs/benchmark.md](docs/benchmark.md) for SAM3 per prompt, load times
 and CPU/CoreML parity.
 
@@ -275,10 +276,7 @@ annotation's `mask` covers its `bounding_box`, and is `None` from YOLO-World.
 `client.load(model, keep_alive=-1)` loads a model ahead of time, and
 `keep_alive=0` unloads it.
 
-`osam.segment(model, image, ...)` takes the same arguments as `client.segment`
-but runs the model in your own process, with no server. It keeps the model
-loaded until a call asks for another one, and further prompts on the same image
-skip the image encoder. `osam.non_maximum_suppression` keeps the best of
+`osam.non_maximum_suppression` keeps the best of
 overlapping boxes, given as (N, 4) boxes and (N, C) per-class scores, on CPU.
 
 `osam.Client()` starts a server process of its own and stops it on `close()` or
@@ -291,7 +289,14 @@ same minor version of osam. Errors from the server raise `osam.ResponseError`.
 `timeout=600` raises `TimeoutError` when a response takes longer, and restarts
 a private server, so a hung model stops.
 `client.pull(model, progress=...)` calls `progress` with each line; raising
-from it, such as when the user cancels, stops the download.
+from it, such as when the user cancels, stops the download. A download that
+fails raises `RuntimeError`.
+
+`osam.Client(in_process=True)` runs models in your own process instead, with
+no server, and takes the same calls. `device`, `max_loaded_models` and
+`keep_alive` work as they do with a private server, and `close()` unloads its
+models. An unknown model raises `LookupError` on both; from a server, it is
+also an `osam.ResponseError` with status code 404.
 
 ### HTTP
 

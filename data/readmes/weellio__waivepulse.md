@@ -8,6 +8,8 @@ Write a song. Generate it. Mix it. Perform it. On your own GPU.
 
 WAIvePulse is a local AI music studio that runs five connected tools in one browser. You write lyrics (or have Llama write them for you), describe the style you want with tags, and the **HeartMuLa 3B** model generates a complete song with vocals as an MP3. You then open that song in a browser DAW that separates it into six stems, gives you a per-track mixer with mastering chain and Visual EQ, and a karaoke performance mode synced to your original lyrics. A built-in loop station lets you build original ideas layer by layer — drums, keyboard, guitar, microphone — entirely in the browser with no plugins. Mix presets and genre templates save and recall full mixer snapshots, chord detection overlays harmonic analysis on the timeline, a stem library lets you swap stems between songs, side-chain ducking and server-side time-stretch give you production-grade dynamics and tempo matching, MIDI export turns piano-roll patterns into Standard MIDI Files, a vocal harmonizer adds pitch-shifted harmony voices to the mic chain, and the Karaoke page can now record lyric videos directly as WebM — no external screen recorder needed.
 
+There is also a **multitrack tape session**: point it at a folder of tracks transferred off a tape machine and it checks the transfer, repairs what can honestly be repaired, and writes a preservation manifest.
+
 No cloud. No subscription. No API keys. No usage caps.
 
 ![WAIvePulse](assets/wavepulse.jpg)
@@ -64,6 +66,7 @@ The main page. Paste lyrics, pick tags from an organised grid (Genre, Timbre, Mo
 - **🎬 Video:** turns any song into a 1080p H.264 MP4 for YouTube, with the song's cover art, title, and a waveform strip. The same cover is embedded in new MP3s
 - **🎓 Train a style on my songs:** trains the model on the music you have already made, so new ACE-Step renders lean towards your sound. Builds the dataset from your library automatically. Does not change the Generate button. [Details below](#train-a-style-on-your-own-songs-lokr)
 - **🩺 Check:** tells you what is wrong with a render and which control fixes it — loudness creeping up, peaks over the ceiling, a hard stop, dead air, tempo drift, and (with stems) the backing dropping out under the vocal. Instant, no GPU. [Details below](#song-check)
+- **📼 Multitrack tape session:** point it at the folder a reel-to-reel transfer landed in and it checks every track (hum, hiss, dropouts, clicks, clipping, azimuth, alignment), repairs what can honestly be repaired, corrects tape speed and flutter using the hum as a reference, and writes a preservation manifest. Your transfers are never written to. No GPU, so it runs while a song generates. [Details below](#multitrack-tape-in-depth)
 - Drop external MP3s onto the history panel to play them, or to send them into Studio for stem separation
 
 [Detail section below](#generate-page-in-depth)
@@ -1020,6 +1023,107 @@ The beat tracker is Beat This! (MIT), on CPU by default or on GPU with `WAIVEPUL
 
 Outputs: **▶ Preview**, **＋ Add as track** at the bar it came from, **⬇ WAV** (16-bit, 3 ms fade on each edge), and **🎹 Send to Looper**, which opens the Looper with the BPM (folded into 40 to 240) and scale lock set and the clip loaded as the sampler. Click once in the Looper window to start audio.
 
+## Multitrack tape (in depth)
+
+**📼 Multitrack tape session** above the Generate button. Point it at the folder a multitrack transfer landed in and it reads every track, tells you what is wrong with the transfer, repairs what can honestly be repaired, and writes a preservation manifest you can check again in ten years.
+
+![One reel, four tracks, and what the tape did to them](assets/tape-poster.png)
+
+![Multitrack tape check](assets/tape.png)
+
+**It does not capture audio.** Getting sound off the machine needs your interface and its driver, and whatever you already record with does it better. This takes over the moment the files exist.
+
+**It is a folder, not an upload.** Eight tracks of a five-minute song at 24-bit/96k is about 700 MB. The server runs on the same machine as the browser, so it reads the files where they already are. Only folders you have opened in the session can be read, and anything resolving outside one is refused.
+
+**It never writes to a transfer.** A flat transfer is the preservation master and may be the only surviving copy of the performance — the tape itself may not survive another pass. Every repair writes a new `<name>.wp-clean.wav` beside the original plus a small JSON note saying what was done and to what, and the scanner skips its own output so a cleaned track is never offered for cleaning twice.
+
+### What Tape Check looks for
+
+Per track:
+
+| Fault | How it is measured | What you are told to do |
+|---|---|---|
+| Mains hum | A narrow peak at 50 or 60 Hz and its harmonics, measured in the quietest second so the music cannot drown it | Notch it — or better, find the earth loop and transfer again |
+| Tape hiss | The noise floor across that same quietest second, DC removed first | Learn a noise print from that window and subtract it |
+| Dropouts | Holes of 10–150 ms punched into sustained sound, with the track loud on both sides | Clean the heads and transfer again. A dropout is missing signal and no plugin puts it back |
+| Clicks | Isolated sample-scale breaks in the waveform | Repair them — the audio either side is intact, so the gap can be modelled and filled |
+| Clipping | Samples pinned at full scale, or over it | Transfer again a few dB lower; rebuild the peaks only if the tape is gone |
+| DC offset | The mean of the waveform | Remove it: it costs headroom and makes every edit click |
+| Dull track | Its 6–14 kHz against 300 Hz–3 kHz, compared with the median across the reel | Azimuth is mechanical. Nudge the head and transfer again; EQ buys back level, not detail |
+
+Across the session: whether the tracks line up. Tracks captured in one pass share the tape's timing exactly, so an offset of tens of milliseconds means they were captured separately — worth knowing before you spend an evening wondering why the drums feel wrong. Mixed sample rates and wildly different lengths in one folder are flagged for the same reason.
+
+Two rules keep the panel worth reading. A fault is occasional: more than one "dropout" every two seconds is the rhythm of the performance, and more than two "clicks" a second is the recording's own texture, so both are suppressed with the reason shown. And where re-transferring is the honest answer, it says so rather than offering a plugin that cannot really fix it.
+
+### Repairs
+
+**Hum removal aims at the measured frequencies, not the textbook ones.** The harmonics of tape hum do not sit on 50/100/150: the machine playing the tape back is not running at exactly the speed that recorded it, so the whole stack slides a few Hz and a notch at the arithmetic series cuts music while leaving the hum alone. Each line is found first, then notched with `filtfilt` so the phase twist cancels — which matters when the track has to sit coherently against the others from the same reel.
+
+**Hiss subtraction is deliberately gentle.** Spectral subtraction against a noise print from the track's own quietest moment, keeping 10% of the original magnitude rather than subtracting to zero. Push it and cymbals turn to chirping artefacts, and on a 40-year-old demo that is worse than hiss, which at least sounds like tape.
+
+**Clicks and clipped peaks go through ffmpeg's `adeclick` and `adeclip`**, which fit an autoregressive model either side of the damage and interpolate across it. Two settings differ from the examples you will find online, both because measurement said so:
+
+- **Overlap-save, not overlap-add.** With overlap-add the filter alters *every* sample slightly whether it found damage there or not — measured here it moved an undamaged file by a flat −44 dBFS regardless of threshold, because the alteration had nothing to do with click detection. Overlap-save leaves uninterpolated samples exactly as they were: the same measurement came out at −95 dBFS.
+- **Threshold 10, not ffmpeg's default of 2.** At 2 an undamaged dense mix moved by −49 dBFS; at 10 it moved by −95 dBFS and repaired a damaged track slightly better as well. The panel offers gentle (25), normal (10) and strong (3).
+
+Rebuilt peaks land *above* full scale, so the render goes to float and the level comes down afterwards by exactly the overshoot — writing straight to 24-bit integer would clip the rebuilt peaks off again and the repair would silently do nothing.
+
+### Speed, wow and flutter, from the hum
+
+Mains hum is a physical constant: it left the wall at exactly 50 or 60 Hz. So wherever the recovered hum is *not* 50 or 60, the tape was running at the wrong speed — and tracking that frequency second by second measures the wobble too, which is the part usually written off as uncorrectable. It only works on a transfer that picked up some hum, which is why Tape Check reports the hum level even on tracks nobody wants to clean.
+
+**Measure, change nothing** prints the speed error in per cent and semitones, the flutter, the worst swing and the number of windows it measured over. **Correct** rebuilds the track along an explicit time map: integrate the local speed error over input time, invert it, and read the source at the resulting position for each uniform output sample.
+
+Measured on a synthetic reel warped by a known amount:
+
+| | Injected | Before | After |
+|---|---|---|---|
+| Speed error | +1.80% | +1.800% | +0.000% |
+| Flutter | ±0.4% at 0.7 Hz | 0.270% | 0.058% |
+
+Three attempts failed before that, and the last one is the interesting one: each analysis window was stamped with its **start** time, but the frequency it measures is the average across the whole window. That shifted the entire speed curve by half a window — 63° of phase error against a 0.7 Hz wow. Amplitude right, frequency right, correction did nothing. It was found by correcting with the *known true* rate, which took flutter to 0.000% and proved the warp code was sound and the curve was the problem. The idea itself comes from [pyaudiorestoration](https://github.com/HENDRIX-ZT2/pyaudiorestoration); it is GPL, so this is an independent implementation.
+
+### The preservation manifest
+
+A transfer is only a preservation master if you can prove, years from now, that it is still what came off the tape. **Preserve** writes three files into the session folder:
+
+| File | For |
+|---|---|
+| `WAIvePulse-MANIFEST.json` | The app, and whatever comes after it |
+| `WAIvePulse-MANIFEST.txt` | A human, with no software at all |
+| `WAIvePulse-bwfmetaedit.csv` | [BWF MetaEdit](https://mediaarea.net/BWFMetaEdit)'s `--in-core=` import, so the coding history can be embedded with the archival standard tool rather than with us |
+
+**The checksum covers the audio samples only, not the file.** This is the trick worth copying from archival practice: metadata gets added for the rest of a file's life — titles, dates, a coding history, whatever the next system wants — and every one of those edits changes a whole-file hash while changing no audio at all. An MD5 over the WAV `data` chunk alone (the AIFF `SSND` chunk, or FLAC's own STREAMINFO digest) survives all of it, so a mismatch means something real. **Verify against it** re-reads every track and says which still match.
+
+The tape details you fill in become a BWF Coding History block in the EBU R98 layout:
+
+```
+A=ANALOGUE,M=mono,T=Tascam 38; 1/2 inch; 15 ips; dbx Type I
+A=PCM,F=96000,W=24,M=mono,T=RME Fireface 800; WAIvePulse tape session
+```
+
+### Opening a tape in the Studio
+
+**🎛 Open in Studio** loads every track of the reel as a Studio track — no separation to run, because the tracks were already separate when they were recorded. The Studio plays 320 kbps previews, since eight full-resolution tracks decoded into browser memory is most of a gigabyte; every measurement, repair and export still runs on the originals.
+
+### Tape endpoints
+
+Worth knowing if you have forty reels rather than one. None of these touch the GPU, so a tape job runs happily while a song is generating; they are serialised against each other only.
+
+| Endpoint | Does |
+|---|---|
+| `POST /tape/open` `{folder}` | Lists the tracks and opens the session. A folder must be opened before any of its files can be read |
+| `POST /tape/check` `{folder}` | Analyses every track. Returns `{job_id}`; poll `GET /tape/job/{id}` or stream `GET /tape/progress/{id}` |
+| `POST /tape/clean` `{path, hum, dc, hiss, hiss_strength, noise_start, noise_end}` | Writes a repaired copy |
+| `POST /tape/declick` `{path, clicks, clips, strength}` | Click repair and clipped-peak rebuilding |
+| `POST /tape/speed` `{path, mains, flutter, absolute}` | Speed and flutter correction |
+| `GET /tape/curve?path=` | Measures speed and flutter and changes nothing |
+| `POST /tape/manifest` `{folder, title, operator, machine, width, speed, …}` | Writes the three manifest files |
+| `GET /tape/verify?folder=` | Re-hashes every track against the manifest |
+| `GET /tape/preview?path=` · `GET /tape/download?path=` | A playable mp3 · the original file |
+| `GET /tape/tracks?folder=` | What the Studio asks for: a preview URL per track |
+
+
 ## Karaoke (in depth)
 
 ![Karaoke](assets/karaoke.jpg)
@@ -1236,182 +1340,4 @@ An AudioWorklet-based pitch-shifted harmony generator that adds one or two harmo
   | Voice 2 Semi | −12 to +12 | Pitch shift in semitones for voice 2 |
   | Voice 1 Vol | 0–100% | Level of voice 1 |
   | Voice 2 Vol | 0–100% | Level of voice 2 |
-  | Voice 2 On | on/off | Enable or disable the second voice |
-- **UI:** a "Harmony" button in the mic section toggles the harmonizer. When active, interval selectors for each voice appear below the autotune controls.
-
-Worklet: `frontend/worklets/looper-harmonizer.js`
-
-#### MIDI export
-
-Export the piano roll and drum pattern as a Standard MIDI File (.mid).
-
-- **Format:** SMF Format 1 (multi-track), 480 PPQN. Each step = 120 ticks (16th note at 480 PPQN).
-- **Tracks:**
-  | Track | Source | Channel | Notes |
-  |---|---|---|---|
-  | Melody | Piano roll | 0 | Pitches from the roll grid, held-note durations preserved |
-  | Drums | Step sequencer | 9 | GM percussion mapping (kick = 36, snare = 38, hi-hat = 42, etc.) |
-- **Button:** "MIDI" appears next to the Export button in the looper transport bar. Click it to download a `.mid` file.
-- The MIDI file includes tempo (from the current BPM setting) and is ready to open in any DAW.
-
-File: `frontend/js/looper/midi-export.js`
-
-#### Space (rooms + depth)
-
-Reverb is not one convolver fed with generated noise any more. `frontend/js/looper/space.js`
-builds **three** shared convolution busses from the *same* room impulse response — a close
-mic, a "tree" (mid) and a far/room pair — at rising pre-delays and falling brightness, and
-then places each voice between them.
-
-A **seat** is `{pan, distance}`. Its distance decides, all at once:
-
-| From distance | What it drives | At 0 → 1 (Depth 100 %) |
-|---|---|---|
-| pre-delay | `DelayNode` before the sends, ~1 ms per 34 cm | 0 → 35 ms (plus the bus's own 4 / 22 / 55 ms) |
-| air absorption | `BiquadFilter` low-pass on the dry **and** the send | 19 kHz → ~3 kHz |
-| level | dry gain `1 / (1 + 1.3·d)` | 0 → −7 dB |
-| wet | send gain `0.40 + 1.45·d` | 0 → +13 dB |
-| mic mix | triangular crossfade across close / tree / far | 0.78 close → 0.78 far |
-
-Measured on a 1 ms click through the Concert Hall at Depth 100 %: wet onset
-**4.7 → 22.4 → 40.3 ms**, energy above 4 kHz **−1.3 → −3.4 → −9.0 dB**, wet/dry
-**0.16 → 0.52 → 1.50** (+19.6 dB) — later, darker, quieter and wetter, together.
-
-| Control | What it does |
-|---|---|
-| Room | Which recorded space. The line under it shows tail length, RT60, file size, stereo/mono |
-| Wet | Global wet amount. This *is* the old Master FX **Reverb** slider (same id, same project field), so saved projects keep their setting |
-| Depth | Scales every seat's distance. 0 % = flat/2D, 100 % = a 12 m stage |
-| You | Where the live keys / drums / mic sit. Recording still taps upstream, so takes stay dry |
-| Seats L1–L6 | near / mid / far per loop slot — drums up front, pads at the back |
-
-The rooms live in `assets/ir/*.flac` (16-bit, 48 kHz, truncated at −60 dB with a 30 ms fade).
-`scripts/fetch_irs.py` downloads and prepares them; `assets/ir/LICENSES.md` names every source
-and its licence (all MIT) and records which sets were rejected and why.
-
-The same space is rebuilt inside the `OfflineAudioContext`, so **⬇ Export** and the Song
-Builder render with the identical room and seats. For a one-cycle loop export the render runs
-several cycles and keeps the last, so the reverb is in steady state and the exported cycle
-still joins itself seamlessly.
-
-File: `frontend/js/looper/space.js`
-
-#### Master FX
-
-A panel on the right applies global effects to the whole mix off the master bus:
-
-| Control | What it does |
-|---|---|
-| Delay | Wet level of a tempo-synced echo (1/8-note, fed back at ~38 %) |
-| Volume | Master output level (0–150 %) |
-
-### Depth: ensemble, expression and rooms
-
-Three things make a synthesised part sound like players in a room rather than a keyboard, and the
-Looper now does all three.
-
-**Ensemble.** A note becomes 1-7 sub-voices. Each gets its own detune (a few cents, never two the
-same), its own seat in the stereo field, an onset delay of up to 30 ms, a slightly different
-attack, and a slow random pitch walk. Presets run from Solo to Choir. Measured: a section reads
-about 19% side energy against 0% for a solo voice, and onsets smear from 5 ms to 70 ms.
-
-**Expression.** One value per note, 0 to 1, that can ramp *while the note sustains*. It drives
-level, filter cutoff, detune spread and a saturated harmonic path together, so loud is brighter
-and wider rather than simply louder. A swell lifts loudness about 6.5 dB while the spectral
-centroid rises 1.3x (almost 2x in the lower register). This is the single biggest difference
-between a mockup that sounds alive and one that does not.
-
-**Rooms.** Each loop takes a seat: pan, plus a distance from near to far. Distance adds pre-delay
-(about 1 ms per 34 cm), rolls off the highs the way air does, and raises the wet-to-dry ratio.
-Near to far measures as reverb onset moving 4.5 ms to 40 ms, 11 dB of high-frequency loss, and a
-24.6 dB swing in wet/dry. Only three convolvers ever exist, however many parts play.
-
-Everything here is baked into **→ Loop** renders, Export Mix and the Song Builder, so what you
-heard is what lands in the file.
-
-### Air Band (webcam)
-
-Play the drums and keys with your hands in the air. The camera view splits into zones — Drum kit, Keys, Band, Chord tones, or your own Custom mix. A downward strike hits a drum; an open hand held in a zone sustains a note.
-
-Hand tracking is MediaPipe running on your GPU **in the browser**, so nothing is uploaded. It uses the same input path as the keys and MIDI, which means it records into loops and obeys scale lock, ADSR, filter and arp like any other instrument. **⛶ Big view** gives you a clean full-screen frame for recording clips.
-
-**Turn on the browser's graphics acceleration first.** In Chrome: `chrome://settings/system` → "Use graphics acceleration when available" → Relaunch. Without it tracking crawls at about 5 fps, which feels broken; with it, expect around 60.
-
-### Transport controls
-
-| Control | What it does |
-|---|---|
-| BPM − / + | Adjust tempo (±1 / ±5). Affects metronome, count-in timing, sequencer, and delay sync. |
-| Tap | Tap repeatedly on the beat to set BPM from the average interval. Resets if you pause. |
-| Beat dots | Visual four-beat indicator. First beat (downbeat) lights red; others light cyan. |
-| Metro | Toggle metronome click track on/off. |
-| Count-in | Set 0–4 beats of metronome lead-in before recording starts. `off` = record immediately. |
-| Quantize | When on, snaps the first recorded loop's length to the nearest whole bar (at the current BPM) so the loop locks to the grid. |
-| ⚡ Bypass | Routes instruments directly to speakers, bypassing the capture chain. Use to diagnose audio glitches: if a crackle disappears in bypass mode it was the capture processor; if it persists it is your audio driver or DAC. |
-| ⬇ Export | Renders all loop slots through an OfflineAudioContext and downloads `looper-mix.wav`. Slot volumes are applied; the mix is exactly what you hear. |
-| ✕ Clear All | Stops and clears all six slots. |
-
-### Hotkeys
-
-| Key | Action |
-|---|---|
-| `F1`–`F6` | Toggle record on loop slot 1–6 |
-| `1`–`8` | Trigger drum pads |
-| `A S D F G H J K` | Piano white keys, lower octave (C–C) |
-| `W E T Y U` | Piano black keys, lower octave (C# D# F# G# A#) |
-| `Z X C V B N M` | Piano white keys, upper octave (D–C) |
-| `?` | Open / close the in-app help & shortcut reference |
-
-The "MIDI" button next to Export downloads the current piano roll + drum pattern as a `.mid` file. The "Harmony" button in the mic section toggles the vocal harmonizer.
-
-### Audio architecture
-
-Instruments and microphone feed an **input bus**. An AudioWorklet node on the input bus captures samples to a buffer when recording is active (postMessage back to the main thread). The worklet runs on the browser's dedicated audio rendering thread, so main-thread JavaScript activity cannot cause audio dropouts.
-
-Loop playback feeds a separate **loop bus** that goes directly to the master output — loop audio is heard but not re-captured when recording a new slot, so each layer stays clean. The master output also feeds parallel reverb and delay sends before reaching the speakers.
-
-```
-Drums / Keyboard / Guitar
-Microphone  ──────────────→  inputBus ──→ AudioWorklet ──→ masterOut ──┬──────────────→ speakers
-                                      (captures when recording)        ├─→ reverb send ─┤
-Loop slot playback ─────────────────────────→ loopBus ────────────────┘─→ delay send ──┘
-```
-
-### Export
-
-Click **⬇ Export** in the transport bar. The export:
-
-- Renders only slots that have a recording
-- Applies each slot's current volume setting
-- Loops every slot for exactly the master loop length
-- Writes a standard 16-bit stereo PCM WAV file
-- Downloads as `looper-mix.wav` with no server round-trip
-
-The exported WAV can be dragged into the Studio page's track import to mix alongside AI-generated stems.
-
-### Song builder
-
-Loops on their own are a groove, not a song. The **🎼 Song** panel arranges them into one: each block says which loops play and for how long, and a **Break** block drops to silence for a few beats before the next block brings them back, still on the grid. **↻ Generate** auto-arranges a build-up where the loops enter one at a time, given a bar count, break length and repeat count — then you edit the blocks by hand.
-
-The master section bakes the finished arrangement down: fade in and out, normalise to a target dBFS, a soft limiter, and optionally the Space reverb and Delay with a tail you set.
-
-| Button | What you get |
-|---|---|
-| **⬇ Render Full Track** | The whole arrangement with per-loop EQ baked in, as WAV (16 or 24-bit) or MP3 320. Optionally gained to −14, −16 or −9 LUFS with true peak ≤ −1 dBTP, and the measured LUFS · dBTP appears next to the length |
-| **⬇ Stems** | Each loop as its own full-length WAV with the arrangement applied, left un-normalised so they sum cleanly in a DAW |
-| **⇪ Song → Studio** | With a Studio window open, sends the full track straight there |
-| **⇪ Stems → Studio** | Same, but every loop arrives as its own Studio track |
-
-### Trim start
-
-Loops are recorded against the metronome, so a late first hit leaves a gap at the top. **✂ Trim start** on a slot sets where the loop actually begins on its waveform, and **↦ Snap to first sound** finds the first transient for you.
-
-### Legato
-
-**⤳ Legato** makes a new note glide to the new pitch when one is still held, rather than retriggering it. The read-out beside it shows how many notes still fit under the 192-oscillator cap at the current ensemble size, which is the thing that actually limits how thick you can play.
-
----
-
-```
-waivepulse/
-├── setup.sh                    First-time s
+  | Voi

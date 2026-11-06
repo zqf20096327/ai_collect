@@ -1,17 +1,18 @@
 # BOM LLM — Self-Hosted Thai AI Infrastructure
 
-![BOM LLM v12.0.0 Self-Hosted Thai AI — Fleet Audit + Stability, OWUI v0.13.0](images/hero_banner_v11.png)
+![BOM LLM v16.0.0](images/hero_banner_v16.png)
 
 ![BOM LLM](images/bomllm_promo_00001_.png)
 
-**BOM LLM v12.0.0 — Fleet Audit + Stability: OWUI v0.13.0, Ollama v0.40.14, GOD BLUEPRINT v5.2**
+**BOM LLM v16.0.0 — Atom Fleet Optimization: GOD CONFIG v11.0, GOD BLUEPRINT v7.0, IRON 44 Rules**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Fleet Status](https://img.shields.io/badge/Fleet-8%2F8%20Verified-brightgreen)]()
 [![Pipeline](https://img.shields.io/badge/Pipeline-E2E%20PASS-brightgreen)]()
-[![GOD CONFIG](https://img.shields.io/badge/GOD%20CONFIG-v9.0-blue)]()
+[![GOD CONFIG](https://img.shields.io/badge/GOD%20CONFIG-v11.0-blue)]()
 [![Open WebUI](https://img.shields.io/badge/Open%20WebUI-v0.13.0-blueviolet)]()
-[![IRON Rules](https://img.shields.io/badge/IRON%20Rules-43-red)]()
+[![IRON Rules](https://img.shields.io/badge/IRON%20Rules-44-red)]()
+[![LiteLLM](https://img.shields.io/badge/LiteLLM-v1.106.5-9cf)]()
 [![Thai NLP](https://img.shields.io/badge/Thai%20NLP-Gate%2020%2F20-green)]()
 [![Self Hosted](https://img.shields.io/badge/Self--Hosted-%240.54%2Fday-orange)]()
 [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97-Model%20Card-yellow)](https://huggingface.co/bomllm/turbo-thai-config)
@@ -29,7 +30,35 @@ This is not a demo. This is the exact stack that answers my customers every day.
 
 ## Architecture
 
-Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD BLUEPRINT v5.2 — hardware inventory, role assignment, dependency maps, C2 performance Phase P with measured evidence) and [HOWTO.md](HOWTO.md) (GOD HOW-TO v4.2 — daily sweeps, incident recipes §3.8-§3.17). Locked generation parameters: [GOD_CONFIG.md](GOD_CONFIG.md) (v9.0).
+Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD BLUEPRINT v7.0 — atom-level fleet survey update from the Nov 6-7 fleet optimization, priority matrix, evidence contract) and [HOWTO.md](HOWTO.md) (GOD HOW-TO v4.2 — daily sweeps, incident recipes §3.8-§3.17). Locked generation parameters: [GOD_CONFIG.md](GOD_CONFIG.md) (v11.0).
+
+## What's New in v16.0.0 — ⚡ Atom Fleet Optimization Complete (Nov 7, 2026)
+
+- **GOD CONFIG v11.0** (hub art#56686) + **GOD BLUEPRINT v7.0** (hub art#56687) — atom-level fleet survey 225 files, 23 optimization actions implemented
+- **Premium hero banner v16** — ultra-premium dark+gold cinematic design via ComfyUI DreamShaper
+- **Atom survey complete** — 8 machines, 225 files, 54600 lines scanned by Grok 4.7 (art#56608)
+- **K3 optimization** — 23 actions designed by Kimi K3-256k (art#56647)
+- **zcode Wave 1+2** — 11/11 actions DONE: price router v2, UA memory guard, C2 OWUI memcap, AM4 log rotation, CB1 zombie watch, live-router model fix (art#56649)
+- **zcode Wave 3** — AM4 postgres rebound, GOD v11/v7 published (art#56683)
+- **Price Router v2** — narrowed intent regex (7 symbols only), 2s timeout, honest HTTP poll source label
+- **live-router model fix** — qwen38-chat → qwen38-uni, /healthz verified 200
+- **LiteLLM v1.106.5** — fleet-wide reconciled pin (v1.107.0 remains BANNED)
+- **Fleet config backup** — NAS git tag `config-snapshot-2026-11-06` (1928 files, 8.83 MB)
+- **Fleet cleanup** — 4.8 GB reclaimed (docker prune + i9 temp)
+- **BOM AI v2.0.3** — Han Fix HF-1.0 integration, bom_runtime 2584 lines
+- **IRON Rules 44** — added IRON 44 (Grok dry-run before zcode implement)
+- **Netdata** — 5 nodes verified (AM4/C2/Mac/CAT/UA), NAS removed
+- **ComfyUI release banner** — DreamShaper 8, premium dark+gold theme
+
+## What's New in v13.0.0 — 🚀 Mega Fleet Optimization (Nov 6, 2026)
+
+- **K3 fleet optimization executed** — 35 actions from the K3 blueprint (hub art#56543) across all 8 machines in 13 phases, spec art#56548
+- **Live price pipeline** — BOM Assistant now answers XAUUSD (and 6 more symbols) from the owner MT5 API in real time (`bom_price_pipe` + `bom_price_router` + `bom_price_tool` on C2 OWUI); the $3,247 hallucination is fixed (answers ~live $4,08x)
+- **GOD CONFIG v10.0** (hub art#56564) + **GOD BLUEPRINT v6.0** (hub art#56565) — v9 data retained, v10 deltas marked
+- **Bind hardening** — UA Netdata + AM4 Netdata republished to loopback/tailnet/LAN only; NAS old node-exporter stopped after Prometheus scrape-free proof
+- **Ollama 0.40.14 alignment** — Mac CLI aligned (server already 0.40.14, qwen38-uni 7/7); AM4 + i9 upgrades staged as scripts, deferred by FX28 burn + 03:00-06:00 ICT gates
+- **Cleanup** — C2 exited containers reclaimed (~3 GB layers) with rollback archives; AM4 kern.log 235 MB rotated under a dedicated rule; agent-hub-v2_prev retired
+- **Known deferred** — UA LiteLLM bind (03:00-06:00 ICT window), C2 OWUI explicit bind (container has no Compose labels → owner migration), Contabo1 chromium zombies (parent is n8n — owner window), i9 ESU decision, NAS swap refresh (needs root)
 
 ## What's New in v12.0.0 — 🔍 Fleet Audit + Stability (Nov 5, 2026)
 
@@ -40,7 +69,7 @@ Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD B
 - **LiteLLM incident 30** — emergency model restore completed (28 models OK)
 - **Stale job cleanup** — 8 orphaned RUNNING jobs resolved
 - **Memory defrag** — consolidated project memory for next phase
-- Core versions unchanged: OWUI v0.13.0, LiteLLM v1.106.4, GOD CONFIG v9.0
+- Core versions unchanged: OWUI v0.13.0, LiteLLM v1.106.5, GOD CONFIG v9.0
 
 ## What's New in v11.0.0 — ⚡ C2 Performance Update (Nov 4, 2026)
 
@@ -57,7 +86,7 @@ Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD B
 
 - **Open WebUI v0.12.4 → v0.12.5** — 18 mods intact, 14 overlays rebased, 12/12 QC PASS
 - **Theme Designer Pro 1.8.0 → 1.19.0**
-- **docker-compose.yml pinned to production** — OWUI v0.12.5, LiteLLM v1.106.4, Qdrant v1.20.0
+- **docker-compose.yml pinned to production** — OWUI v0.12.5, LiteLLM v1.106.5, Qdrant v1.20.0
 - **Fleet cleanup** — old containers removed, orphan skill IDs cleared, Docker pruned 6.4 GB
 - **GOD CONFIG v7.0 NO CHANGE** — locked params verified across 15 models
 - **Hero banner v10** — [images/hero_banner_v10.png](images/hero_banner_v10.png)
@@ -71,7 +100,7 @@ Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD B
 - **FINAL BLUEPRINT** — 51KB, 15 sections, comprehensive fleet architecture reference (art#54961)
 - **FINAL HOW-TO** — 32KB, 14 sections, complete operational manual (art#54962)
 - **Mega Closure Report** — 14/14 findings verified and closed (art#55017)
-- **Pinned versions verified** — LiteLLM v1.106.4, OWUI v0.12.4, Ollama 0.40.10-0.40.13, ComfyUI v0.43.0
+- **Pinned versions verified** — LiteLLM v1.106.5, OWUI v0.12.4, Ollama 0.40.10-0.40.13, ComfyUI v0.43.0
 
 ## What's New in v0.8.1 — 🛡️ GOD CONFIG Docs + QC System (Oct 31, 2026)
 
@@ -79,7 +108,7 @@ Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD B
 - **QC System on AM4** — OCR / Whisper / ASR / Gateway, deployed Oct 31, 10/10 PASS
 - **Grok deep survey** — 30 findings across 7/7 machines; fleet fixes F001–F010 applied
 - **K3 LFM3 lightweight model blueprint** — Typhoon2-3B rank 1, lfm3:1.7b rank 2 (deployed)
-- **Pinned versions** — LiteLLM v1.106.4 (⛔ v1.107.0 COMPROMISED), ComfyUI v0.43.0 fleet-wide
+- **Pinned versions** — LiteLLM v1.106.5 (⛔ v1.107.0 COMPROMISED), ComfyUI v0.43.0 fleet-wide
 
 ## What's New in v0.8 — 🔧 Mega Tuning & Fleet Optimization (Oct 30, 2026)
 
@@ -140,7 +169,7 @@ Full fleet architecture and policies live in [BLUEPRINT.md](BLUEPRINT.md) (GOD B
 - Average: **18.5 tok/s** (range 17–20)
 - Hardware: Apple M4 Pro (Mac Mini), MLX nvfp4
 
-### Recommended Parameters (GOD CONFIG v9.0 locked_params)
+### Recommended Parameters (GOD CONFIG v10.0 locked_params)
 
 ```yaml
 temperature: 0.6
@@ -188,7 +217,7 @@ Promo art (ComfyUI · flux1-dev-fp8 · 1024×1024): [1](images/bomllm_promo_0000
 - **Voice:** SiangTTS (VoxCPM2 LoRA, reference-only mode)
 - **Music:** YuE2-3B instrumental + ACE-Step 1.5 Thai vocal
 
-## GOD CONFIG v9.0
+## GOD CONFIG v11.0
 
 Locked generation parameters for all production models:
 
@@ -224,7 +253,7 @@ flowchart TB
 
     subgraph VPS["VPS — Singapore (Debian 12, Docker)"]
         OW["Open WebUI v0.13.0"]
-        LL["LiteLLM proxy 1.106.4<br/>(routing, virtual keys, budgets, fallback)"]
+        LL["LiteLLM proxy 1.106.5<br/>(routing, virtual keys, budgets, fallback)"]
         PG[("Postgres 16")]
         QD[("Qdrant 1.20.0")]
         VY[("Valkey 8")]
@@ -316,7 +345,7 @@ cd bomllm
 | Machine | Role | Key Specs |
 |---------|------|-----------|
 | Mac Mini M4 Pro | Brain (Primary Inference) | 48GB, Ollama 0.40.14, TURBO-Fable + MiMo Q4, MLX nvfp4 |
-| C2 VPS Singapore | Gateway (Frontend) | Docker, OWUI v0.13.0, LiteLLM 1.106.4, SearXNG |
+| C2 VPS Singapore | Gateway (Frontend) | Docker, OWUI v0.13.0, LiteLLM 1.106.5, SearXNG |
 | UA Ubuntu | Primary Inference + Staging | 123Gi, RTX 5080 16GB + RTX 5060 Ti 16GB, Ollama 0.40.14, gpt-oss-120b, LiteLLM staging |
 | AM4 Ubuntu | ComfyUI Primary + Hub | 121Gi, 2x RTX 5060 Ti 16GB, Ollama 0.40.13, ComfyUI x2, hub services |
 | i9 Windows | GPU Worker | 128GB, 2x RTX 5060 Ti, ComfyUI, TTS, Music, EA |
@@ -337,7 +366,7 @@ cd bomllm
 | NAS | Hub relay + n8n | — | ✅ |
 | CAT | Web hosting (DirectAdmin) | — | ✅ |
 
-Production pipeline: OWUI v0.13.0 → LiteLLM v1.106.4 → llm-smart → gpt-oss-120b
+Production pipeline: OWUI v0.13.0 → LiteLLM v1.106.5 → llm-smart → gpt-oss-120b
 
 ## QC System (AM4)
 
@@ -350,12 +379,12 @@ Deployed Oct 31 — 10/10 PASS:
 ## Pinned Versions
 
 - OWUI: v0.13.0
-- LiteLLM: v1.106.4 (⛔ v1.107.0 COMPROMISED)
+- LiteLLM: v1.106.5 (⛔ v1.107.0 COMPROMISED)
 - Ollama: 0.40.14 (Mac server + UA), 0.40.13 (AM4)
 - Qdrant: v1.20.0
 - ComfyUI: v0.43.0 (fleet-wide)
-- BOM AI: v3.0.0
-- IRON Rules: 43
+- BOM AI: v2.0.3
+- IRON Rules: 44
 
 ## License
 
@@ -375,19 +404,33 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 🇹🇭 ภาษาไทย
 
-**BOM LLM v12.0.0 — Fleet Audit + Stability**
+**BOM LLM v16.0.0 — Atom Fleet Optimization**
 
 แทนที่ค่า API คลาวด์ \$50/วัน ด้วย Mac Mini บนโต๊ะ \$0.54/วัน (ค่าไฟจริง)
 
 ตอนนี้ทำได้ครบ: ตอบแชท, เขียนโค้ด, สร้างรูป, สร้างเสียง, สร้างเพลง, ถ่ายทอดสด — ทั้งหมดรันเครื่องตัวเอง
 
-**v12.0.0 ใหม่:**
+**v16.0.0 ใหม่:**
+- สำรวจระดับ atom ครบ 8 เครื่อง (225 ไฟล์ / 54,600 บรรทัด) + ออกแบบ 23 optimization actions
+- GOD CONFIG v11.0 + GOD BLUEPRINT v7.0
+- Price Router v2 + แก้ live-router เป็น qwen38-uni
+- LiteLLM ทั้ง fleet ล็อกเป็น v1.106.5 (v1.107.0 ยังแบน)
+- IRON Rules 44 + แบนเนอร์พรีเมียมธีมดำ-ทองใหม่
+
+**v13.0.0 ก่อนหน้า:**
+- ปรับปรุง fleet ทั้ง 8 เครื่องตาม K3 blueprint (35 actions)
+- ราคาทอง XAUUSD เรียลไทม์จาก MT5 API — แก้ hallucination ราคาเก่าถาวร
+- GOD CONFIG v10.0 + GOD BLUEPRINT v6.0
+- ล็อกการเข้าถึง Netdata/Exporter ให้แคบลง ปลอดภัยขึ้น
+- Ollama 0.40.14 (Mac เรียบร้อย, AM4/i9 รอหน้าต่าง)
+
+**v12.0.0 ก่อนหน้า:**
 - ตรวจสอบ fleet ครบทั้ง 8 เครื่อง (Grok 4.7 full audit)
 - ComfyUI ทั้ง fleet เป็น v0.43.0 เหมือนกันหมด (7 instances)
 - Kuma monitoring v2.5.7 บน AM4 + NAS
 - แก้ chat residuals — keepalive timeout + web-search config
 - LiteLLM incident 30 — กู้คืน models ครบ 28 ตัว
-- เวอร์ชันหลักคงเดิม: OWUI v0.13.0, LiteLLM v1.106.4, GOD CONFIG v9.0
+- เวอร์ชันหลักคงเดิม: OWUI v0.13.0, LiteLLM v1.106.5, GOD CONFIG v9.0
 
 **v11.0.0 ใหม่:**
 - Open WebUI v0.13.0 — อัปเดตความปลอดภัย ระบบ mods 18 ตัวใช้งานครบ
@@ -403,7 +446,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 **v7 ก่อนหน้า:**
 - GOD CONFIG v5.5 — 9 ค่าปรับ production
 - Open WebUI v0.12.4
-- LiteLLM v1.106.4 — patch security (v1.107.0 supply-chain compromised)
+- LiteLLM v1.106.5 — patch security (v1.107.0 supply-chain compromised)
 - Ollama 0.40.10
 
 Self-hosted AI ที่ใช้งานจริงทุกวัน ไม่ใช่ของเล่น 💪

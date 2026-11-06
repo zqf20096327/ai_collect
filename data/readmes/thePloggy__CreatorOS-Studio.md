@@ -12,6 +12,12 @@
 
 Built for the Comfy **#OpenSourceHiggsfield** challenge. Every model is open weights and runs locally: no API call, no credits, nothing leaves the machine.
 
+- **50 functions** across image, video, sound and editing
+- **118 presets**: dances, 3D dance studios, camera moves and effects, transitions, music styles, voices, reel formats
+- **25 built-in recipes**, plus an internal app store: browse and import **262 official ComfyUI workflows** (29 run without downloading anything), or import your own
+- **MCP server** (15 tools) and an agent skill, so Claude or any MCP client can drive the studio
+- **MiniMax H3 ready**: pre-wired, weights supplied by the user (its licence excludes the EU, the UK, South Korea and the US)
+
 ## What is new here
 
 - **Your character, trained in the UI.** Describe an adult, pick one of four faces, and the studio builds a reference sheet, twelve images and an identity LoRA. Or train from your own library images. Tick one or several engines (FLUX.2 Klein, Krea 2), see the estimated time before you start, follow the steps live and cancel at any point. The same face then carries every photo, clip and reel.
@@ -280,7 +286,7 @@ claude mcp add creatoros-studio -- node /path/to/creatoros-studio/scripts/agent/
 # or, after `npm link` in the repo: claude mcp add creatoros-studio -- creatoros-studio-mcp
 ```
 
-The MCP server exposes `generate_photo`, `image_to_video`, `make_reel`, `get_status`, `list_library`, `list_characters` and `machine_status`. It has no dependency beyond Node. Set `STUDIO_URL` if the studio is not on `http://127.0.0.1:8787`, and `CREATOROS_OWNER_KEY` if it is locked with an owner key. Without the key, a request from the same machine is treated like any visitor.
+The MCP server exposes `generate_photo`, `image_to_video`, `make_reel`, `dance` and `list_dances`, `generate_music` and `list_music`, `speak`, `list_voices` and `talking_clip`, `edit_video` (one-click LTX effects, remove or replace an element, change the background), `get_status`, `list_library`, `list_characters` and `machine_status`. `skills/creatoros-studio/SKILL.md` is a matching agent skill: copy it to `~/.claude/skills/` so Claude knows which tool fits which request. It has no dependency beyond Node. Set `STUDIO_URL` if the studio is not on `http://127.0.0.1:8787`, and `CREATOROS_OWNER_KEY` if it is locked with an owner key. Without the key, a request from the same machine is treated like any visitor.
 
 ## Community
 

@@ -9,6 +9,7 @@ need Git, a compiler or a separate Python installation to start.
 | --- | --- | --- |
 | Windows x64 | `Helene-…zip` | `helene.exe` |
 | macOS on Apple silicon | `Helene-…-macos-arm64.zip` | `Helene.app` |
+| macOS on Intel | `Helene-…-macos-x86_64.zip` | `Helene.app` |
 | Debian/Ubuntu x86_64 | `Helene-…-linux-x86_64.zip` | `./helene` |
 | Fedora x86_64 | `Helene-…-fedora-x86_64.zip` | `./helene` |
 
@@ -21,6 +22,39 @@ material; download the application archive for your system.
 Hélène is a desktop home for agents with their own character, lasting memory,
 settings and working files. Talk in the desktop window, connect Telegram, or use
 a paired phone and web interface while the host is online. Powered by Praxis.
+
+## Included in 2.5.2
+
+Scrolling and rubber-band return use the full elapsed frame time. The spring
+settings are preserved. Turn details open at their measured content height;
+fast reversals and delayed content continue from the visible position.
+Reduced-motion preferences remain respected. A separate Intel Mac package includes its own Python runtime;
+local Whisper and XTTS are unavailable in that package.
+
+Read the [2.5.2 changes](desk/docs/RELEASE-2.5.2.md).
+
+## Included in 2.5.1
+
+Opening a prepared clean-update folder now resumes the graceful handoff
+from the selected previous installation before starting the new application.
+Pending data moves complete automatically during normal startup.
+
+Windows updates now handle system shortcuts that have no filesystem target.
+Such links stay unowned, allowing retirement of the old program folder to
+continue. Actual failed shortcut operations still stop the update with an error.
+
+Read the [2.5.1 correction](desk/docs/RELEASE-2.5.1.md).
+
+## Included in 2.5.0
+
+- Application-owned asynchronous Fish and XTTS voice delivery after one speak call.
+- Recording submission on hotkey release, compact playback and thirty-minute warm Whisper residency.
+- Codex Fast mode with model-specific speed and reasoning controls across desktop and Mini App.
+- Clean extraction and restart updates with retained agent data and shared model storage.
+- Native Windows handover and truthful successful-response status improvements.
+- Forge command admission, owned-job Stop and Pause/finish custody repairs.
+
+Read the [2.5.0 changes and evidence boundaries](desk/docs/RELEASE-2.5.0.md).
 
 ## Included in 2.4.0
 

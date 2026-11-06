@@ -69,7 +69,9 @@ apps/
 │   ├── dinov2/           # DINOv2 SSL + ViT-B/14 feature extractor
 │   ├── lm_training/      # BERT MLM and GPT-2 from-scratch trainers
 │   ├── clip/             # CLIP+ contrastive trainer (4 modes: contrastive, +MLM, +DINOv2, triple)
-│   └── llava/            # LLaVA-style generative VLM trainer
+│   ├── llava/            # LLaVA-style generative VLM trainer
+│   ├── egovlp/           # EgoVLP (Frozen-in-Time) fine-tuning from the EgoClip checkpoint
+│   └── flamingo/         # Flamingo-style generative VLM (DINOv2 + Perceiver + gated GPT-2)
 ├── alignment_scoring/    # CLIP / VQA / STS / captioning pipelines for cross-modal alignment scoring
 ├── benchmark_creation/   # Machine-DevBench corpus-grounded benchmark generator
 └── swapbench/            # LongTail-Swap + VP-Swap generators
@@ -122,7 +124,7 @@ produced them. The minimum end-to-end path:
 
 ### Reference baselines
 
-The `apps/baselines/` trees ship the four trainers we used in the paper,
+The `apps/baselines/` trees ship the trainers we used in the paper,
 along with `apps/data_preprocessing/` for the BabyView → manifest
 pipeline they consume. Useful as starting points, sanity checks, or
 warm-starts for your own approach — but bring your own trainer if you
@@ -137,6 +139,10 @@ and curricula.
 - `apps/baselines/clip/` — CLIP+ contrastive trainer with four modes
   (contrastive, +MLM, +DINOv2, triple).
 - `apps/baselines/llava/` — LLaVA-style generative VLM trainer.
+- `apps/baselines/egovlp/` — EgoVLP dual encoder fine-tuned from its
+  released EgoClip checkpoint (pretrained on Ego4D).
+- `apps/baselines/flamingo/` — Flamingo-style generative VLM on the LLaVA
+  baseline's encoders (frozen DINOv2 + Phase-0 GPT-2).
 - `apps/data_preprocessing/` — video → frames + WhisperX transcripts →
   `(frame, utterance)` manifests.
 
@@ -198,6 +204,8 @@ egobabyvlm-filter-vtc                     # apps/data_preprocessing/transcriptio
 egobabyvlm-build-clip-manifest            # apps/data_preprocessing/manifests
 egobabyvlm-train-contrastive              # apps/baselines/clip/training
 egobabyvlm-export-text-encoder-to-hf      # apps/baselines/clip/scripts (BERT → HF for lm_eval)
+egobabyvlm-train-egovlp                   # apps/baselines/egovlp/training
+egobabyvlm-train-flamingo                 # apps/baselines/flamingo/training
 egobabyvlm-swapbench-build-word-lists     # apps/swapbench (LongTail-Swap + VP-Swap)
 egobabyvlm-swapbench-lt-swap              # apps/swapbench
 egobabyvlm-swapbench-vp-swap              # apps/swapbench
@@ -284,6 +292,33 @@ for the three-phase recipe (GPT-2 from scratch → projector → joint
 fine-tune).
 </details>
 
+<details>
+<summary>EgoVLP — fine-tune from the EgoClip checkpoint</summary>
+
+```bash
+SETTING=coco_p50 SEED=42 EGOVLP_CHECKPOINT=/path/to/egovlp.pth \
+    sbatch apps/baselines/egovlp/scripts/train_egovlp.sh
+```
+
+See [`apps/baselines/egovlp/README.md`](apps/baselines/egovlp/README.md)
+for the checkpoint download, data variables and the paper's 18 runs.
+</details>
+
+<details>
+<summary>Flamingo — DINOv2 + Perceiver + gated cross-attention GPT-2</summary>
+
+```bash
+CONDITION=p0 SEED=42 \
+COCOMC_VISION_TOWER_PATH=/path/to/dinov2/teacher_checkpoint.pth \
+COCOMC_DECODER_INIT_PATH=/path/to/phase0_gpt2 \
+EXTRACTED_ROOT=/path/to/scratch/coco_metaclip/extracted \
+    sbatch --ntasks-per-node=4 --gpus-per-node=4 apps/baselines/flamingo/scripts/train_flamingo.sh
+```
+
+See [`apps/baselines/flamingo/README.md`](apps/baselines/flamingo/README.md)
+for the encoders, paper settings and the log-likelihood evaluation.
+</details>
+
 ### Tests
 
 ```bash
@@ -326,6 +361,8 @@ with the following exceptions:
 | Perception-LM | `apps/alignment_scoring/third_party/perception_models/` (PLM portion) | [FAIR Noncommercial Research License](apps/alignment_scoring/third_party/perception_models/LICENSE.PLM) |
 | LongTail-Swap | `apps/swapbench/third_party/lt_swap/` | [CC-BY-NC 4.0](apps/swapbench/third_party/lt_swap/LICENSE) |
 | LLaVA-derived code | `apps/baselines/llava/` | Apache License 2.0 (per-file headers) |
+| EgoVLP / Frozen-in-Time-derived code | `apps/baselines/egovlp/model/video_transformer.py` | MIT License; builds on timm, Apache License 2.0 (per-file header) |
+| flamingo-pytorch-derived code | `apps/baselines/flamingo/modeling/{perceiver_resampler,gated_cross_attention}.py` | MIT License (per-file headers) |
 
 Please retain all upstream copyright notices and license headers when
 reusing files from these directories.

@@ -3,7 +3,7 @@
 
 <img src="docs/banner.png" alt="OrchestKit - Stop explaining your stack. Start shipping." width="100%" />
 
-**<!--ork:skills-->115<!--/ork--> skills · <!--ork:agents-->36<!--/ork--> agents · <!--ork:hooks-->161<!--/ork--> hooks**
+**<!--ork:skills-->115<!--/ork--> skills · <!--ork:agents-->36<!--/ork--> agents · <!--ork:hooks-->163<!--/ork--> hooks**
 
 [![Claude Code](https://img.shields.io/badge/Claude_Code-≥2.1.277-7C3AED?style=for-the-badge&logo=anthropic)](https://claude.ai/claude-code)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
@@ -123,7 +123,7 @@ OrchestKit gives Claude **persistent knowledge** of production patterns that wor
 |-----------|---------|
 | **<!--ork:skills-->115<!--/ork--> Skills** | RAG patterns, FastAPI, React 19, testing, security, database design, ML integration — loaded on-demand, zero overhead |
 | **<!--ork:agents-->36<!--/ork--> Agents** | Specialized personas (backend-architect, frontend-dev, security-auditor) — route tasks to the right expert |
-| **<!--ork:hooks-->161<!--/ork--> Hooks** | Pre-commit checks, git protection, quality gates, browser safety — ship with confidence |
+| **<!--ork:hooks-->163<!--/ork--> Hooks** | Pre-commit checks, git protection, quality gates, browser safety — ship with confidence |
 
 All available in a single `/plugin install ork`. Skills load on-demand. Hooks work automatically.
 
@@ -198,7 +198,7 @@ OrchestKit is a quality-gate plugin, so its hooks are the product rather than an
 add-on. This section states plainly what they see, where it goes, and how to turn
 each piece off.
 
-**Scope: broad and intentional.** OrchestKit registers <!--ork:hooks-->161<!--/ork--> hooks across <!--ork:events-->32<!--/ork-->
+**Scope: broad and intentional.** OrchestKit registers <!--ork:hooks-->163<!--/ork--> hooks across <!--ork:events-->32<!--/ork-->
 lifecycle events, including `SessionStart`, `UserPromptSubmit`, `PreToolUse`,
 `PostToolUse`, and `Stop`. They are **not** gated to a particular framework or
 project type, because the gates they enforce (secret-write blocking, protected-file
@@ -550,7 +550,7 @@ reaches the same 76 skills plus the plugin's 36 custom subagents, which neither
 path surfaces through `devin plugins info`. That subpath is what this repo's own
 `.claude-plugin/marketplace.json` already points Claude Code at.
 
-OrchestKit's plugin hooks work under Claude Code only today; none of the <!--ork:hooks-->161<!--/ork-->
+OrchestKit's plugin hooks work under Claude Code only today; none of the <!--ork:hooks-->163<!--/ork-->
 fire under Devin. Two reasons. Location: OrchestKit ships hooks at
 `plugins/ork/hooks/hooks.json`, while Devin's own plugin format reads a bare
 `hooks.json` at the plugin root instead. Shape and tool names: OrchestKit's
@@ -598,7 +598,7 @@ as the workspace and needs no flag.
 
 Two honest gaps. `npx skills add -g` lands in `~/.agents/skills`, which agy
 does not read; user scope lives at `~/.gemini/config/skills` (or
-`~/.gemini/skills`). And none of ork's <!--ork:hooks-->161<!--/ork--> hooks port: agy's `hooks.json` uses
+`~/.gemini/skills`). And none of ork's <!--ork:hooks-->163<!--/ork--> hooks port: agy's `hooks.json` uses
 its own event names and payload shape, and `agy plugin validate plugins/ork`
 reports hooks skipped because ork keeps them at `hooks/hooks.json`, not the
 plugin-root `hooks.json` agy looks for.
@@ -664,6 +664,26 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 <!-- AUTO-GENERATED from CHANGELOG.md by scripts/stamp-whats-new.mjs — do not hand-edit between the ork:whats-new markers. -->
 <!-- Regenerated on `npm run build`; CI (`--check`) fails if this is stale. Full history: [CHANGELOG.md](CHANGELOG.md). -->
 
+**[v10.10.1](https://github.com/yonatangross/orchestkit/compare/v10.10.0...v10.10.1)** · 2026-11-06
+
+- **ci:** let install-deps outlast a slow apt mirror (#5091)
+- **docs-site:** remove dead memory hooks and correct the hook count (#5085)
+- **release:** cap entries per dist tree request (#5088)
+- **release:** refuse an invalid dist entry cap
+- **memory:** remove the false scored-promotion story and dead hooks (#5089)
+
+**[v10.10.0](https://github.com/yonatangross/orchestkit/compare/v10.9.1...v10.10.0)** · 2026-11-06
+
+- **docs-site:** upload source maps to PostHog at build time (#5082)
+- **hooks:** count every frontmatter hook handler (#5079)
+- **release:** drop stable description counts and give the scan fetch its own budget (#5081)
+
+**[v10.9.1](https://github.com/yonatangross/orchestkit/compare/v10.9.0...v10.9.1)** · 2026-11-05
+
+- **ci:** pin ruff, and clear SIM102 in circuit-breaker (#5080)
+- **docs-site:** serve missing /lab pages as static HTML, not the app shell (#5075)
+- stamp the README hook counts from one source (#5076), closes [#5067](https://github.com/yonatangross/orchestkit/issues/5067)
+
 **[v10.9.0](https://github.com/yonatangross/orchestkit/compare/v10.8.6...v10.9.0)** · 2026-11-05
 
 - **release:** sync plugins/ork to the orchestkit-plugin dist repo (#5070)
@@ -684,20 +704,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 **[v10.8.3](https://github.com/yonatangross/orchestkit/compare/v10.8.2...v10.8.3)** · 2026-11-04
 
 - **site:** keep acronyms upper case in sidebar and category labels (#5053)
-
-**[v10.8.2](https://github.com/yonatangross/orchestkit/compare/v10.8.1...v10.8.2)** · 2026-11-04
-
-- **skills:** parse frontmatter in the description gate, add fixtures (#5049)
-
-**[v10.8.1](https://github.com/yonatangross/orchestkit/compare/v10.8.0...v10.8.1)** · 2026-11-04
-
-- **expect:** gate the act-mode Jev pick on agreement or a confirm (#5011)
-- **lab:** drop internal seat name from the Tower page footer (#5047)
-
-**[v10.8.0](https://github.com/yonatangross/orchestkit/compare/v10.7.4...v10.8.0)** · 2026-11-04
-
-- **skills:** trim listed descriptions and gate them per skill (#5043)
-- add Tower to the OrchestKit family (#5041)
 
 _See [CHANGELOG.md](CHANGELOG.md) for the full release history._
 <!--/ork-->

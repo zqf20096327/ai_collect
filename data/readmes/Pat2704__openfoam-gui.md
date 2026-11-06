@@ -27,8 +27,8 @@ want it to start:
 
 | | |
 |---|---|
-| **`OpenFOAMStudio-v5.8.2-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
-| **`OpenFOAMStudio-v5.8.2-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
+| **`OpenFOAMStudio-v5.9.1-folder.zip`** | **Recommended.** Unzip once, anywhere, then run `OpenFOAMStudio.exe` from the folder. **The window is up in about a tenth of a second.** |
+| **`OpenFOAMStudio-v5.9.1-portable.exe`** | One single file, nothing to unzip. Costs about half a minute at every launch: the portable format unpacks the whole app into TEMP each time it starts. |
 
 Either way nothing is installed and nothing is written to the registry — put it
 on the Desktop or a USB stick and double-click.
@@ -39,7 +39,7 @@ saying so. The app checks on startup and tells you if files are missing, but
 extracting with PowerShell avoids the problem:
 
 ```powershell
-Expand-Archive OpenFOAMStudio-v5.8.2-folder.zip -DestinationPath OpenFOAMStudio
+Expand-Archive OpenFOAMStudio-v5.9.1-folder.zip -DestinationPath OpenFOAMStudio
 ```
 
 Windows SmartScreen will warn on first run because the executable is unsigned:
@@ -97,6 +97,15 @@ found once you add its folder under **Search folders** in the same dialog.
   ![The New Case wizard, on the step where the mesh and the patch list are defined](screenshots/new-case.png)
 - **File Editor** — view, edit, create and delete case files. Indexing indicators
   appear during the initial listing and manual refresh; background updates stay quiet.
+  Comments (`//` and `/* … */`) and numbers are drawn in their own colours and
+  every `{ … }` block has an indent guide; the palette button in the editor's
+  toolbar picks each colour (the theme's, a swatch or any) and turns the guides
+  off, and the choice is remembered. **Ctrl+F** finds and **Ctrl+H** replaces, with match
+  case, whole word and regular expressions (`$1` is a group in the
+  replacement). Every `{ … }` block folds from the small arrow right after its
+  `{`, or all at once from the toolbar; a folded block shows how many lines it
+  hides, and clicking that opens it again. Editing with blocks folded changes
+  the file exactly where you see it.
 - **Commands** — run `blockMesh`, `foamRun`, `snappyHexMesh`… with a command
   list filtered to the OpenFOAM version in use. One-click **Allrun** launches
   the case script in the background and takes you to the Monitor.
@@ -288,6 +297,20 @@ Model and reasoning depth are chosen in the composer, the way Claude Desktop
 does it. Every tool call appears in the conversation as a card you can open, so
 what it read, wrote and ran is on screen rather than in a log file.
 
+**Mesh and Results.** Beside the shield, two buttons ask the agent — Claude or
+Codex — to analyse the open case without changing it. The conversation shows
+only a label for the request, and the answer comes in the language the
+conversation is in (English when it is empty). **Mesh** reports size,
+bounding box, patches, zones, the decomposition (cells per processor, interface
+faces) and the `checkMesh` verdict; **Results** reads the solver log, the time
+directories (the `processor*` ones of a decomposed case included) and
+`postProcessing/`, and says whether the run finished, how it converged, whether
+the fields are physical and what went wrong. Logs and fields can be hundreds of
+MB, so they are never handed to the agent: small scripts stream them inside WSL
+and give it a summary of a few KB (`src/lib/case-digest.ts`), and
+`read_case_file` returns at most 256 KB. The only write is `checkMesh` recording
+failing cells in `polyMesh/sets`.
+
 ---
 
 ## Setting up the Codex agent (optional)
@@ -423,6 +446,7 @@ Electron `44.5.1` and the bundled Node `22.23.3` are pinned in
 | `src/lib/codex-cli.ts` | finds, authenticates and drives the isolated Codex app-server process |
 | `src/lib/agent-policy.ts` | what the agent may do, and the record of what it did |
 | `src/lib/agent-knowledge.ts` | pure lookup and installed-command validation rules |
+| `src/lib/case-digest.ts` | the streaming log, field, postProcessing and mesh digests the agent reads |
 | `src/lib/foam-installation.ts` | shared identity for installation-derived caches |
 | `src/lib/postprocess.ts` | parses what the function objects wrote, and the templates that describe them |
 | `src/lib/residuals.ts` | reads solver residuals out of a log — shared by the Monitor and Post-Process |
