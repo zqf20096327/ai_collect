@@ -397,11 +397,11 @@
   }
  },
  "Sec-Link/Argus-Agentic-SOC-Platform": {
-  "commit_90d": 87,
-  "commit_7d": 0,
+  "commit_90d": 88,
+  "commit_7d": 5,
   "rel_ver": "v0.81",
   "rel_pub": "2026-10-05",
-  "rel_days": 26,
+  "rel_days": 33,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -417,18 +417,18 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tylerprogramming/ai": {
-  "commit_90d": 96,
-  "commit_7d": 31,
+  "commit_90d": 102,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -443,10 +443,10 @@
    "TypeScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4971,6 +4971,54 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "Ayorinha/ayorai-opensearch": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 14,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 57,
+   "HTML": 43,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "mali9527/codex-full-guide-for-beginners": {
+  "rel_ver": "v2026.10.1",
+  "rel_pub": "2026-10-04",
+  "rel_days": 34,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

@@ -243,12 +243,12 @@
   }
  },
  "Card-Forge/forge": {
-  "commit_7d": 107,
-  "commit_90d": 1069,
+  "commit_7d": 281,
+  "commit_90d": 1560,
   "rel_ver": "daily-snapshots",
   "rel_pub": "2025-02-20",
-  "rel_days": 618,
-  "rel_n90": 2,
+  "rel_days": 625,
+  "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -263,10 +263,10 @@
    "Shell": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -351,11 +351,11 @@
   }
  },
  "karust/openserp": {
-  "commit_7d": 5,
-  "commit_90d": 12,
+  "commit_7d": 1,
+  "commit_90d": 13,
   "rel_ver": "v0.8.17",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -370,10 +370,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -462,10 +462,10 @@
   }
  },
  "matthiasn/lotti": {
-  "commit_7d": 68,
-  "commit_90d": 1113,
-  "rel_ver": "1.1.71+4459",
-  "rel_pub": "2026-10-30",
+  "commit_7d": 105,
+  "commit_90d": 1106,
+  "rel_ver": "1.1.87+4477",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -482,23 +482,23 @@
    "TLA": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Derpyu520/qq-bridge": {
-  "commit_7d": 45,
-  "commit_90d": 92,
-  "rel_ver": "v0.2.1-r1",
-  "rel_pub": "2026-10-22",
-  "rel_days": 9,
-  "rel_n90": 8,
-  "rel_pre": false,
+  "commit_7d": 31,
+  "commit_90d": 125,
+  "rel_ver": "v0.2.2-rc1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -510,10 +510,10 @@
    "HTML": 18,
    "Batchfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4228,6 +4228,82 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "a2ui-project/a2ui": {
+  "commit_90d": 761,
+  "commit_7d": 128,
+  "rel_ver": "python/a2ui-core/v0.5.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-08-03",
+  "sec_ids": [
+   "GHSA-72qq-p3r5-f7wq(CVE-2026-10032,critical)"
+  ],
+  "contrib_n": 103,
+  "lang": {
+   "TypeScript": 37,
+   "Python": 27,
+   "Dart": 20,
+   "Swift": 10,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "commit": "20261107",
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "WelSimLLC/WelSim-Apps": {
+  "rel_ver": "3.4",
+  "rel_pub": "2026-10-16",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C": 50,
+   "C++": 50
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "LibirSoft/grannyFlow": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "JavaScript": 10
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

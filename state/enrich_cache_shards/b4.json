@@ -284,11 +284,11 @@
   }
  },
  "ArcadeData/arcadedb": {
-  "commit_7d": 147,
-  "commit_90d": 6530,
-  "rel_ver": "26.10.2",
-  "rel_pub": "2026-10-15",
-  "rel_days": 16,
+  "commit_7d": 214,
+  "commit_90d": 6584,
+  "rel_ver": "26.11.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -313,10 +313,10 @@
    "JavaScript": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4747,6 +4747,29 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "NekoDD-wow/dsh-prefill-plugin": {
+  "rel_ver": "v0.21.10",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

@@ -186,7 +186,7 @@
   "commit_90d": 0,
   "rel_ver": "v1.3.1",
   "rel_pub": "2024-12-20",
-  "rel_days": 665,
+  "rel_days": 687,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -202,22 +202,22 @@
    "JavaScript": 2,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "777genius/agent-teams-ai": {
-  "commit_7d": 227,
-  "commit_90d": 2599,
-  "rel_ver": "v2.18.4",
-  "rel_pub": "2026-10-27",
-  "rel_days": 4,
-  "rel_n90": 11,
+  "commit_7d": 88,
+  "commit_90d": 2690,
+  "rel_ver": "v2.18.6",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -232,10 +232,10 @@
    "CSS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -269,11 +269,11 @@
   }
  },
  "doobidoo/mcp-memory-service": {
-  "commit_7d": 37,
-  "commit_90d": 692,
-  "rel_ver": "v12.4.0",
-  "rel_pub": "2026-10-26",
-  "rel_days": 5,
+  "commit_7d": 102,
+  "commit_90d": 734,
+  "rel_ver": "v12.6.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -298,21 +298,21 @@
    "Shell": 3,
    "CSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Gsync/jobsync": {
-  "commit_7d": 19,
-  "commit_90d": 350,
+  "commit_7d": 0,
+  "commit_90d": 284,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -328,10 +328,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

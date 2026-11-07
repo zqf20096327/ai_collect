@@ -208,11 +208,11 @@
   }
  },
  "YanWenKun/ComfyUI-Docker": {
-  "commit_90d": 14,
+  "commit_90d": 13,
   "commit_7d": 1,
   "rel_ver": "v6.0",
   "rel_pub": "2025-10-15",
-  "rel_days": 381,
+  "rel_days": 388,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Dockerfile": 52,
    "Shell": 48
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -265,12 +265,12 @@
   }
  },
  "moyangzhan/langchain4j-aideepin": {
-  "commit_90d": 69,
-  "commit_7d": 12,
-  "rel_ver": "v3.30.0",
-  "rel_pub": "2026-09-01",
-  "rel_days": 60,
-  "rel_n90": 1,
+  "commit_90d": 80,
+  "commit_7d": 10,
+  "rel_ver": "v3.31.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -287,10 +287,10 @@
    "PLpgSQL": 3,
    "Less": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -376,11 +376,11 @@
   }
  },
  "rockbenben/subtitle-translator": {
-  "commit_90d": 75,
-  "commit_7d": 3,
+  "commit_90d": 77,
+  "commit_7d": 6,
   "rel_ver": "v3.2.1",
   "rel_pub": "2026-09-17",
-  "rel_days": 44,
+  "rel_days": 51,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -396,10 +396,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4244,6 +4244,84 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "meatproxy69/Realitiagentframework": {
+  "rel_ver": "v4.0.0-beta.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "HTML": 52,
+   "JavaScript": 48,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "DEEPX-AI/dx-runtime": {
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 43,
+   "Go Template": 27,
+   "Python": 26,
+   "TypeScript": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "ljedrz/nachalnik": {
+  "rel_ver": "kamchatka-v0.23.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 96,
+   "Python": 3,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

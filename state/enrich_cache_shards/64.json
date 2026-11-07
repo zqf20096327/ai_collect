@@ -4609,5 +4609,60 @@
    "contrib": "20261106",
    "lang": "20261106"
   }
+ },
+ "Biohub/VisCy": {
+  "commit_90d": 3,
+  "commit_7d": 3,
+  "rel_ver": "viscy-utils-v0.1.0",
+  "rel_pub": "2026-08-20",
+  "rel_days": 79,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Jupyter Notebook": 74,
+   "Python": 25,
+   "Shell": 1,
+   "Nextflow": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "commit": "20261107",
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "rithulkamesh/docproc": {
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-04-08",
+  "rel_days": 213,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 2,
+   "Nix": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
  }
 }

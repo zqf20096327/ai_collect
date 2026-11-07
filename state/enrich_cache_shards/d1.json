@@ -119,11 +119,11 @@
   }
  },
  "vaexio/vaex": {
-  "commit_90d": 29,
-  "commit_7d": 29,
+  "commit_90d": 42,
+  "commit_7d": 13,
   "rel_ver": "vaexpaper_v1",
   "rel_pub": "2018-03-29",
-  "rel_days": 3138,
+  "rel_days": 3145,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -139,10 +139,10 @@
    "HTML": 3,
    "PHP": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -363,13 +363,13 @@
   }
  },
  "abhinavxd/libredesk": {
-  "commit_90d": 831,
-  "commit_7d": 45,
-  "rel_ver": "v2.9.2-rc.1",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 810,
+  "commit_7d": 38,
+  "rel_ver": "v2.9.2",
+  "rel_pub": "2026-10-31",
+  "rel_days": 7,
   "rel_n90": 10,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
   "sec_worst": "high",
@@ -386,21 +386,21 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "thu-pacman/chitu": {
-  "commit_90d": 184,
-  "commit_7d": 17,
+  "commit_90d": 182,
+  "commit_7d": 29,
   "rel_ver": "v0.6.0",
   "rel_pub": "2026-07-02",
-  "rel_days": 121,
+  "rel_days": 128,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -416,10 +416,10 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -453,10 +453,10 @@
  },
  "inferstep/ATLAS": {
   "commit_90d": 55,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": "v3.1.7",
   "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "rel_days": 13,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -476,10 +476,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4963,6 +4963,52 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "Root0ne/Maljan": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 87,
+   "TypeScript": 9,
+   "MDX": 4,
+   "CSS": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "jsmastery-pro/askwell": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 96,
+   "PLpgSQL": 2,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

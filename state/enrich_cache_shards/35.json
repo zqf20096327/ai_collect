@@ -311,10 +311,10 @@
   }
  },
  "tianma-if/edgeever": {
-  "commit_7d": 142,
-  "commit_90d": 2053,
-  "rel_ver": "v2.16.0",
-  "rel_pub": "2026-10-30",
+  "commit_7d": 148,
+  "commit_90d": 2062,
+  "rel_ver": "v2.22.0",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -331,10 +331,10 @@
    "Swift": 5,
    "CSS": 2
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4737,6 +4737,51 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "mdyjsg09-crypto/Niko-s-comic-maker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "nyxandro/feature-blueprint-skill": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "JavaScript": 27,
+   "Shell": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

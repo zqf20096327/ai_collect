@@ -227,12 +227,12 @@
   }
  },
  "arabold/docs-mcp-server": {
-  "commit_7d": 21,
-  "commit_90d": 534,
+  "commit_7d": 1,
+  "commit_90d": 501,
   "rel_ver": "v3.4.1",
   "rel_pub": "2026-10-25",
-  "rel_days": 6,
-  "rel_n90": 9,
+  "rel_days": 13,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -247,10 +247,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

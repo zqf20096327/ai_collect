@@ -198,10 +198,10 @@
   }
  },
  "whiteguo233/OpenBiliClaw": {
-  "commit_90d": 892,
-  "commit_7d": 42,
-  "rel_ver": "openbiliclaw-v0.3.233",
-  "rel_pub": "2026-10-30",
+  "commit_90d": 818,
+  "commit_7d": 49,
+  "rel_ver": "sponsored-runtime-2026-11-06.2",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -218,10 +218,10 @@
    "HTML": 2,
    "CSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -259,9 +259,9 @@
  "NxcoreAI/EverRoom": {
   "commit_90d": 735,
   "commit_7d": 0,
-  "rel_ver": "desktop-v0.1.9-nightly.20261026.118",
-  "rel_pub": "2026-10-26",
-  "rel_days": 5,
+  "rel_ver": "desktop-v0.1.9-nightly.20261031.123",
+  "rel_pub": "2026-10-31",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -277,10 +277,10 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -317,12 +317,12 @@
   }
  },
  "openai/openai-dotnet": {
-  "commit_90d": 109,
+  "commit_90d": 114,
   "commit_7d": 12,
-  "rel_ver": "OpenAI_2.14.0",
-  "rel_pub": "2026-09-15",
-  "rel_days": 46,
-  "rel_n90": 2,
+  "rel_ver": "OpenAI_2.15.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -336,10 +336,10 @@
    "PowerShell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -398,11 +398,11 @@
   }
  },
  "golemcloud/golem": {
-  "commit_90d": 555,
-  "commit_7d": 33,
-  "rel_ver": "v1.6.2",
-  "rel_pub": "2026-10-27",
-  "rel_days": 4,
+  "commit_90d": 574,
+  "commit_7d": 21,
+  "rel_ver": "v1.6.3",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -418,18 +418,18 @@
    "Scala": 4,
    "MoonBit": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "EthicalML/awesome-artificial-intelligence-regulation": {
-  "commit_90d": 46,
-  "commit_7d": 4,
+  "commit_90d": 58,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -438,10 +438,10 @@
   "sec_ids": [],
   "contrib_n": 48,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -470,12 +470,12 @@
   }
  },
  "cognizant-ai-lab/neuro-san-studio": {
-  "commit_90d": 618,
-  "commit_7d": 55,
+  "commit_90d": 585,
+  "commit_7d": 4,
   "rel_ver": "0.4.4",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "rel_days": 9,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -490,10 +490,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -528,12 +528,12 @@
   }
  },
  "Pan-Chera/Multi-Agent-CAD": {
-  "commit_90d": 61,
-  "commit_7d": 3,
+  "commit_90d": 46,
+  "commit_7d": 5,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 37,
-  "rel_n90": 2,
+  "rel_days": 44,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -547,10 +547,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4429,6 +4429,59 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "MMatinGerami/crc-singlecell-reference-mapping": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 39,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Makefile": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "MMatinGerami/lncrna-pancancer-classifier": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 39,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Nextflow": 3,
+   "Makefile": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

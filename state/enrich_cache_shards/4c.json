@@ -139,11 +139,11 @@
   }
  },
  "openairymax/agentrt": {
-  "commit_7d": 110,
-  "commit_90d": 1595,
+  "commit_7d": 64,
+  "commit_90d": 1647,
   "rel_ver": "v0.1.20",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "rel_pub": "2026-11-03",
+  "rel_days": 4,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -159,10 +159,10 @@
    "Python": 5,
    "PowerShell": 3
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -199,11 +199,11 @@
   }
  },
  "intel/AI-Playground": {
-  "commit_7d": 13,
-  "commit_90d": 159,
+  "commit_7d": 0,
+  "commit_90d": 150,
   "rel_ver": "v3.3.0-beta-rc2",
   "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "CSS": 1,
    "NSIS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4240,13 +4240,16 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261030",
    "security": "20261030",
    "contrib": "20261030",
-   "lang": "20261030"
-  }
+   "lang": "20261030",
+   "commit": "20261107"
+  },
+  "commit_90d": 28,
+  "commit_7d": 2
  },
  "Burgstall-labs/ComfyUI-SpEdE": {
   "rel_ver": null,

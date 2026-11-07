@@ -26,8 +26,8 @@
   }
  },
  "zoicware/RemoveWindowsAI": {
-  "commit_7d": 8,
-  "commit_90d": 68,
+  "commit_7d": 1,
+  "commit_90d": 66,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -39,10 +39,10 @@
    "PowerShell": 98,
    "Wolfram Language": 2
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -273,11 +273,11 @@
   }
  },
  "steven-jianhao-li/zotero-AI-Butler": {
-  "commit_90d": 77,
-  "commit_7d": 3,
+  "commit_90d": 80,
+  "commit_7d": 1,
   "rel_ver": "v5.1.1",
   "rel_pub": "2026-10-27",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -293,10 +293,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

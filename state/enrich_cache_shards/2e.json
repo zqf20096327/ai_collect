@@ -117,11 +117,11 @@
   }
  },
  "datachain-ai/datachain": {
-  "commit_7d": 29,
-  "commit_90d": 112,
-  "rel_ver": "0.62.1",
-  "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "commit_7d": 26,
+  "commit_90d": 134,
+  "rel_ver": "0.62.3",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -135,10 +135,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -165,12 +165,12 @@
   }
  },
  "ranuts/document": {
-  "commit_7d": 46,
+  "commit_7d": 22,
   "commit_90d": 668,
-  "rel_ver": "v0.0.8",
-  "rel_pub": "2026-10-12",
-  "rel_days": 19,
-  "rel_n90": 2,
+  "rel_ver": "v0.0.9",
+  "rel_pub": "2026-11-02",
+  "rel_days": 5,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -185,10 +185,10 @@
    "CSS": 2,
    "EJS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -246,13 +246,13 @@
   }
  },
  "legeling/PromptHub": {
-  "commit_7d": 22,
-  "commit_90d": 487,
-  "rel_ver": "v0.6.2",
-  "rel_pub": "2026-10-27",
-  "rel_days": 4,
-  "rel_n90": 5,
-  "rel_pre": false,
+  "commit_7d": 4,
+  "commit_90d": 473,
+  "rel_ver": "v0.6.3-beta.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 5,
+  "rel_n90": 6,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 1,
   "sec_worst": "high",
@@ -268,10 +268,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4830,6 +4830,53 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "google-deepmind/reaf-sim": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "hany202507/finance-ai-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "HTML": 8,
+   "JavaScript": 2,
+   "PowerShell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

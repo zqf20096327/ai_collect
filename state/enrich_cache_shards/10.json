@@ -4205,5 +4205,32 @@
    "contrib": "20261106",
    "lang": "20261106"
   }
+ },
+ "holtwood-systems/cuda-foundations": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-25",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "C++": 59,
+   "Cuda": 30,
+   "TypeScript": 5,
+   "CMake": 4,
+   "Python": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
  }
 }

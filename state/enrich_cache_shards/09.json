@@ -142,11 +142,11 @@
   }
  },
  "drl990114/MarkFlowy": {
-  "commit_7d": 15,
-  "commit_90d": 289,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "commit_7d": 29,
+  "commit_90d": 305,
+  "rel_ver": "v1.2.3",
+  "rel_pub": "2026-10-31",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -162,10 +162,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -284,11 +284,11 @@
   }
  },
  "nano-muse/nanoMuse": {
-  "commit_7d": 348,
-  "commit_90d": 2032,
+  "commit_7d": 487,
+  "commit_90d": 2524,
   "rel_ver": "v1.0.9",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -304,10 +304,10 @@
    "TypeScript": 9,
    "C": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

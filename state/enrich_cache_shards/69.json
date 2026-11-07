@@ -60,11 +60,11 @@
   }
  },
  "modelcontextprotocol/ext-apps": {
-  "commit_90d": 49,
-  "commit_7d": 10,
+  "commit_90d": 51,
+  "commit_7d": 2,
   "rel_ver": "v2.0.4",
   "rel_pub": "2026-10-27",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -78,21 +78,21 @@
    "MDX": 19,
    "JavaScript": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tensorflow/graphics": {
-  "commit_90d": 3,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 1,
   "rel_ver": "1.0.0",
   "rel_pub": "2019-05-09",
-  "rel_days": 2732,
+  "rel_days": 2739,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -108,10 +108,10 @@
    "JavaScript": 1,
    "Cython": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -146,11 +146,11 @@
   }
  },
  "webbrain-one/webbrain": {
-  "commit_90d": 4364,
-  "commit_7d": 317,
-  "rel_ver": "v45.0.4",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 4013,
+  "commit_7d": 102,
+  "rel_ver": "v46.1.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -166,18 +166,18 @@
    "TypeScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "kernel/kernel-images": {
-  "commit_90d": 102,
-  "commit_7d": 7,
+  "commit_90d": 106,
+  "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -192,10 +192,10 @@
    "Vue": 4,
    "JavaScript": 2
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4247,6 +4247,32 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "anasraheemdev/nokar-fully-autonomous-ai-assistant": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "HTML": 3,
+   "VBScript": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

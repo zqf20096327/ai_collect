@@ -321,11 +321,11 @@
   }
  },
  "langchain-ai/langgraphjs": {
-  "commit_90d": 208,
-  "commit_7d": 35,
-  "rel_ver": "@langchain/vue@1.2.9",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 250,
+  "commit_7d": 53,
+  "rel_ver": "@langchain/vue@1.2.13",
+  "rel_pub": "2026-11-07",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -350,21 +350,21 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "TommyLemon/APIAuto": {
-  "commit_90d": 11,
-  "commit_7d": 3,
+  "commit_90d": 10,
+  "commit_7d": 1,
   "rel_ver": "6.0.0",
   "rel_pub": "2026-07-13",
-  "rel_days": 110,
+  "rel_days": 117,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -378,10 +378,10 @@
    "CSS": 9,
    "HTML": 6
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -434,11 +434,11 @@
   }
  },
  "aeon-toolkit/aeon": {
-  "commit_90d": 140,
-  "commit_7d": 11,
+  "commit_90d": 135,
+  "commit_7d": 5,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-09-18",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -453,10 +453,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

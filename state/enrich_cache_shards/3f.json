@@ -1,7 +1,7 @@
 {
  "rasbt/LLMs-from-scratch": {
-  "commit_7d": 5,
-  "commit_90d": 23,
+  "commit_7d": 7,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -14,10 +14,10 @@
    "Python": 27,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -239,11 +239,11 @@
   }
  },
  "vllm-project/vllm-ascend": {
-  "commit_90d": 1882,
-  "commit_7d": 178,
+  "commit_90d": 1965,
+  "commit_7d": 189,
   "rel_ver": "v0.30.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -259,10 +259,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -349,10 +349,10 @@
   }
  },
  "huiliyi37/Tianshu-harness": {
-  "commit_90d": 883,
-  "commit_7d": 30,
-  "rel_ver": "v3.37.3",
-  "rel_pub": "2026-10-30",
+  "commit_90d": 856,
+  "commit_7d": 8,
+  "rel_ver": "v4.0.4",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -369,10 +369,10 @@
    "Vue": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1331,13 +1331,16 @@
    "Starlark": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261107"
+  },
+  "commit_90d": 11,
+  "commit_7d": 0
  },
  "CASE-Lab-UMD/Unified-MoE-Compression": {
   "rel_ver": null,
@@ -4106,6 +4109,25 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "DannyKuk/langchain-streamlit-playground": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

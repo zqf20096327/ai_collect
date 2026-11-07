@@ -303,11 +303,11 @@
  },
  "VisoMasterFusion/VisoMaster-Fusion": {
   "commit_7d": 0,
-  "commit_90d": 130,
+  "commit_90d": 90,
   "rel_ver": "v3.12.3",
   "rel_pub": "2026-08-29",
-  "rel_days": 49,
-  "rel_n90": 2,
+  "rel_days": 70,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -320,10 +320,10 @@
    "Batchfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

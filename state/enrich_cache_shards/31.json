@@ -112,10 +112,10 @@
  },
  "undertheseanlp/underthesea": {
   "commit_90d": 30,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "underthesea-v9.5.0",
   "rel_pub": "2026-05-17",
-  "rel_days": 167,
+  "rel_days": 174,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "Rust": 10,
    "CSS": 6
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -153,20 +153,20 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langchain-ai/deepagentsjs": {
-  "commit_90d": 96,
-  "commit_7d": 15,
-  "rel_ver": "deepagents@1.16.2",
-  "rel_pub": "2026-10-30",
+  "commit_90d": 99,
+  "commit_7d": 13,
+  "rel_ver": "deepagents@1.16.3",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -181,10 +181,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -216,10 +216,10 @@
  },
  "fmaclen/hollama": {
   "commit_90d": 26,
-  "commit_7d": 8,
+  "commit_7d": 0,
   "rel_ver": "0.37.0",
   "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -235,10 +235,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4066,6 +4066,33 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "Yiteng-CHEN/neurolume": {
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 84,
+   "JavaScript": 9,
+   "CSS": 4,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

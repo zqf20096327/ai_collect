@@ -48,11 +48,11 @@
   }
  },
  "rlaope/oh-my-hermes": {
-  "commit_90d": 4538,
-  "commit_7d": 688,
-  "rel_ver": "v4.0.3",
-  "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "commit_90d": 5334,
+  "commit_7d": 898,
+  "rel_ver": "v4.0.6",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -68,10 +68,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -128,7 +128,7 @@
   }
  },
  "ZeroLu/awesome-seedance": {
-  "commit_90d": 183,
+  "commit_90d": 182,
   "commit_7d": 14,
   "rel_ver": null,
   "rel_none": true,
@@ -140,10 +140,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -205,11 +205,11 @@
   }
  },
  "kubeshop/testkube": {
-  "commit_90d": 436,
-  "commit_7d": 28,
+  "commit_90d": 441,
+  "commit_7d": 20,
   "rel_ver": "2.15.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -283,11 +283,11 @@
   }
  },
  "alibaba/skill-up": {
-  "commit_90d": 176,
-  "commit_7d": 8,
+  "commit_90d": 179,
+  "commit_7d": 19,
   "rel_ver": "v0.14.0",
   "rel_pub": "2026-10-20",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -303,10 +303,10 @@
    "Shell": 2,
    "HTML": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

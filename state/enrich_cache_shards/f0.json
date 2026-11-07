@@ -326,11 +326,11 @@
   }
  },
  "microsoft/Generative-AI-for-beginners-dotnet": {
-  "commit_7d": 2,
-  "commit_90d": 48,
+  "commit_7d": 9,
+  "commit_90d": 55,
   "rel_ver": "2026-08-24",
   "rel_pub": "2026-08-24",
-  "rel_days": 68,
+  "rel_days": 75,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -346,10 +346,10 @@
    "Bicep": 4,
    "Shell": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -400,11 +400,11 @@
   }
  },
  "xhluca/bm25s": {
-  "commit_7d": 2,
-  "commit_90d": 17,
+  "commit_7d": 1,
+  "commit_90d": 18,
   "rel_ver": "0.3.16",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -416,10 +416,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -508,12 +508,12 @@
   }
  },
  "Comfy-Org/comfy-cli": {
-  "commit_7d": 21,
-  "commit_90d": 324,
-  "rel_ver": "v1.24.0",
-  "rel_pub": "2026-10-29",
-  "rel_days": 2,
-  "rel_n90": 11,
+  "commit_7d": 32,
+  "commit_90d": 311,
+  "rel_ver": "v1.25.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -524,10 +524,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4259,6 +4259,23 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "danielarum740-lab/deepseek-r1-distill-cloud-guard": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

@@ -396,8 +396,8 @@
   }
  },
  "scadastrangelove/awesome-ai-security-tools": {
-  "commit_7d": 29,
-  "commit_90d": 249,
+  "commit_7d": 39,
+  "commit_90d": 291,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,10 +408,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4534,6 +4534,100 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "petergreiff3-pixel/gemini-2-5-pro-gcp-billing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "yzhg1983/pagewing": {
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 76,
+   "JavaScript": 20,
+   "CSS": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "jayson-yxj/relaycheck": {
+  "rel_ver": "v0.1.9",
+  "rel_pub": "2026-09-28",
+  "rel_days": 40,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "ReclaimedNode/LLM-Super-Bench": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 85,
+   "JavaScript": 9,
+   "CSS": 3,
+   "Python": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

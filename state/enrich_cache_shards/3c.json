@@ -337,8 +337,8 @@
   }
  },
  "benchflow-ai/awesome-evals": {
-  "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_7d": 1,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -347,10 +347,10 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4322,6 +4322,36 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "WSK-build/DSHBox": {
+  "commit_90d": 37,
+  "commit_7d": 3,
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 6,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 77,
+   "JavaScript": 15,
+   "Java": 5,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "commit": "20261107",
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

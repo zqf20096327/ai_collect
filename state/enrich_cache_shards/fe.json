@@ -4237,5 +4237,52 @@
    "contrib": "20261106",
    "lang": "20261106"
   }
+ },
+ "smakosh/Perceptron-neural-net-from-scratch": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "YuhuaBillChen/justfit-llm": {
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 10,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 49,
+   "Python": 28,
+   "Metal": 11,
+   "Objective-C++": 6,
+   "C": 3
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
  }
 }

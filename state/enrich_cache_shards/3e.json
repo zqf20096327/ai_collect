@@ -240,11 +240,11 @@
   }
  },
  "Capsize-Games/airunner": {
-  "commit_90d": 298,
-  "commit_7d": 2,
-  "rel_ver": "v6.1.8",
-  "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "commit_90d": 540,
+  "commit_7d": 220,
+  "rel_ver": "v6.1.10",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -260,20 +260,20 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "liliu-z/stashbase": {
-  "commit_90d": 1231,
-  "commit_7d": 59,
-  "rel_ver": "v2.18.3",
-  "rel_pub": "2026-10-30",
+  "commit_90d": 1176,
+  "commit_7d": 81,
+  "rel_ver": "v2.18.11",
+  "rel_pub": "2026-11-06",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -290,21 +290,21 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "qwdwqfwq/topconf-paper-figure-gallery": {
-  "commit_90d": 292,
-  "commit_7d": 29,
+  "commit_90d": 297,
+  "commit_7d": 5,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-23",
-  "rel_days": 38,
+  "rel_days": 45,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -319,10 +319,10 @@
    "Python": 17,
    "CSS": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4429,6 +4429,23 @@
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"
+  }
+ },
+ "modswawa-netizen/openrouter-multi-llm-router-billing": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

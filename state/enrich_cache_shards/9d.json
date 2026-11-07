@@ -120,8 +120,8 @@
   }
  },
  "peonist-ai/halogen-flash-server": {
-  "commit_7d": 16,
-  "commit_90d": 172,
+  "commit_7d": 12,
+  "commit_90d": 184,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -133,10 +133,10 @@
    "Shell": 82,
    "Python": 18
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

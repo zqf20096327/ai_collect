@@ -167,11 +167,11 @@
   }
  },
  "NVIDIA/physicsnemo": {
-  "commit_90d": 167,
-  "commit_7d": 25,
+  "commit_90d": 174,
+  "commit_7d": 16,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-09-11",
-  "rel_days": 50,
+  "rel_days": 57,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -187,10 +187,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

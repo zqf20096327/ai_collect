@@ -380,11 +380,11 @@
   }
  },
  "event-catalog/eventcatalog": {
-  "commit_90d": 217,
-  "commit_7d": 21,
-  "rel_ver": "@eventcatalog/visualiser@5.2.3",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 218,
+  "commit_7d": 9,
+  "rel_ver": "@eventcatalog/visualiser@5.2.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -400,21 +400,21 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Tavris1/ComfyUI-Easy-Install": {
-  "commit_90d": 460,
-  "commit_7d": 11,
-  "rel_ver": "3.27.1",
-  "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "commit_90d": 478,
+  "commit_7d": 18,
+  "rel_ver": "3.30.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -426,10 +426,10 @@
   "lang": {
    "Batchfile": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -496,12 +496,12 @@
   }
  },
  "wzc520pyfm/ant-design-x-vue": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-01-05",
-  "rel_days": 299,
-  "rel_n90": 0,
+  "commit_90d": 46,
+  "commit_7d": 37,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -516,10 +516,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -582,11 +582,11 @@
   }
  },
  "razzant/ouroboros": {
-  "commit_90d": 11507,
-  "commit_7d": 899,
+  "commit_90d": 11236,
+  "commit_7d": 2,
   "rel_ver": "v7.9.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -602,10 +602,10 @@
    "HTML": 0,
    "Java": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -640,11 +640,11 @@
   }
  },
  "datalayer/jupyter-mcp-server": {
-  "commit_90d": 158,
-  "commit_7d": 3,
-  "rel_ver": "v2.2.4",
-  "rel_pub": "2026-10-11",
-  "rel_days": 20,
+  "commit_90d": 147,
+  "commit_7d": 2,
+  "rel_ver": "v2.2.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -663,10 +663,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -745,8 +745,8 @@
   }
  },
  "elastic/elastic-labs": {
-  "commit_90d": 60,
-  "commit_7d": 5,
+  "commit_90d": 59,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -761,10 +761,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4748,6 +4748,25 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "hamzamostafa77772-cyber/ai-manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

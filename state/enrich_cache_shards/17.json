@@ -285,11 +285,11 @@
   }
  },
  "okou-ai/okou": {
-  "commit_90d": 11721,
-  "commit_7d": 973,
-  "rel_ver": "sandbox-v0.28.5",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 11737,
+  "commit_7d": 832,
+  "rel_ver": "sandbox-v0.28.13",
+  "rel_pub": "2026-11-07",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -305,10 +305,10 @@
    "Swift": 1,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

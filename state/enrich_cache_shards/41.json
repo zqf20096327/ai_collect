@@ -150,11 +150,11 @@
   }
  },
  "xlang-ai/OSWorld": {
-  "commit_90d": 152,
-  "commit_7d": 1,
+  "commit_90d": 185,
+  "commit_7d": 31,
   "rel_ver": "v0.1.16",
   "rel_pub": "2024-06-26",
-  "rel_days": 857,
+  "rel_days": 864,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -170,10 +170,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -285,11 +285,11 @@
   }
  },
  "panxunying/ai-coding-welfare": {
-  "commit_90d": 361,
-  "commit_7d": 34,
-  "rel_ver": "data-20261030-0158",
-  "rel_pub": "2026-10-30",
-  "rel_days": 1,
+  "commit_90d": 380,
+  "commit_7d": 19,
+  "rel_ver": "data-20261102-1642",
+  "rel_pub": "2026-11-02",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -304,10 +304,10 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1306,13 +1306,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261107"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "ShipWithAI/claude-code-mastery": {
   "rel_ver": "v1.1.0",
@@ -4416,6 +4419,29 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "deoliveirajoshua/torchtangents": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

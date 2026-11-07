@@ -209,11 +209,11 @@
   }
  },
  "NVIDIA/NeMo-Agent-Toolkit": {
-  "commit_7d": 30,
-  "commit_90d": 193,
+  "commit_7d": 39,
+  "commit_90d": 230,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-09-10",
-  "rel_days": 51,
+  "rel_days": 58,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -228,10 +228,10 @@
    "Dockerfile": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -268,11 +268,11 @@
   }
  },
  "AnalyseDeCircuit/oxideterm": {
-  "commit_7d": 72,
-  "commit_90d": 905,
-  "rel_ver": "v2.2.6",
-  "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "commit_7d": 36,
+  "commit_90d": 913,
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -288,10 +288,10 @@
    "JavaScript": 0,
    "Metal": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -383,11 +383,11 @@
   }
  },
  "cloudflare/sandbox-sdk": {
-  "commit_7d": 3,
-  "commit_90d": 242,
+  "commit_7d": 1,
+  "commit_90d": 234,
   "rel_ver": "@cloudflare/sandbox@1.0.3",
   "rel_pub": "2026-10-22",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -403,10 +403,10 @@
    "Dockerfile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -439,11 +439,11 @@
   }
  },
  "kaito-project/kaito": {
-  "commit_7d": 30,
-  "commit_90d": 155,
+  "commit_7d": 4,
+  "commit_90d": 149,
   "rel_ver": "kaito-guardrail-core-v0.1.1",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -459,10 +459,10 @@
    "MDX": 1,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

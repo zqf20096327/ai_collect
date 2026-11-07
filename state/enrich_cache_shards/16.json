@@ -330,11 +330,11 @@
   }
  },
  "OWASP/wrongsecrets": {
-  "commit_7d": 10,
-  "commit_90d": 568,
+  "commit_7d": 31,
+  "commit_90d": 575,
   "rel_ver": "v1.14.2",
   "rel_pub": "2026-10-20",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -352,10 +352,10 @@
    "JavaScript": 4,
    "Vim Snippet": 4
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -418,7 +418,7 @@
   "commit_90d": 10,
   "rel_ver": "v3.0.8",
   "rel_pub": "2026-06-18",
-  "rel_days": 135,
+  "rel_days": 142,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4422,6 +4422,52 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "theappfoundryco/personal-homelab-server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 58,
+   "JavaScript": 25,
+   "CSS": 9,
+   "Shell": 5,
+   "HTML": 2
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "mateuscmtropical/cloudbot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "CSS": 2,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

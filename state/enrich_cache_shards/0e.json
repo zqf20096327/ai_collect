@@ -250,11 +250,11 @@
   }
  },
  "diodiogod/TTS-Audio-Suite": {
-  "commit_7d": 2,
-  "commit_90d": 51,
+  "commit_7d": 8,
+  "commit_90d": 58,
   "rel_ver": "v5.6.0",
   "rel_pub": "2026-07-25",
-  "rel_days": 98,
+  "rel_days": 105,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -270,10 +270,10 @@
    "CSS": 0,
    "C": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -306,11 +306,11 @@
   }
  },
  "asheshgoplani/agent-deck": {
-  "commit_7d": 108,
-  "commit_90d": 1699,
-  "rel_ver": "v1.16.34",
-  "rel_pub": "2026-10-25",
-  "rel_days": 6,
+  "commit_7d": 25,
+  "commit_90d": 1724,
+  "rel_ver": "v1.16.36",
+  "rel_pub": "2026-11-02",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -326,10 +326,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -930,8 +930,8 @@
   }
  },
  "heqiangdiao-wq/AI-Cross-Border-Ecommerce-Agent-Toolkit": {
-  "commit_7d": 12,
-  "commit_90d": 12,
+  "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -942,10 +942,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3959,6 +3959,25 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "DataWithBaraa/claude-code-data-engineering-skills": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

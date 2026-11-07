@@ -22,12 +22,12 @@
   }
  },
  "jeecgboot/jimureport": {
-  "commit_7d": 5,
-  "commit_90d": 40,
-  "rel_ver": "v2.5.4",
-  "rel_pub": "2026-10-26",
-  "rel_days": 5,
-  "rel_n90": 2,
+  "commit_7d": 4,
+  "commit_90d": 44,
+  "rel_ver": "v2.5.6.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -42,10 +42,10 @@
    "Java": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -319,11 +319,11 @@
   }
  },
  "datastax/jvector": {
-  "commit_7d": 0,
-  "commit_90d": 32,
+  "commit_7d": 3,
+  "commit_90d": 34,
   "rel_ver": "4.0.2",
   "rel_pub": "2026-10-19",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -339,10 +339,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -483,8 +483,8 @@
   }
  },
  "anthropics/oss-scanner": {
-  "commit_7d": 77,
-  "commit_90d": 566,
+  "commit_7d": 252,
+  "commit_90d": 907,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -496,10 +496,10 @@
    "Dockerfile": 72,
    "Python": 28
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4339,6 +4339,29 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "narkco-kang/agent-fleet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 3,
+   "Python": 2,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

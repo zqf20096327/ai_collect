@@ -168,11 +168,11 @@
   }
  },
  "jundizhou/easy-stock": {
-  "commit_90d": 267,
-  "commit_7d": 12,
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 4,
+  "commit_90d": 283,
+  "commit_7d": 30,
+  "rel_ver": "v1.7.4",
+  "rel_pub": "2026-11-05",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -188,22 +188,22 @@
    "JavaScript": 6,
    "Python": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "geek-fun/dockit": {
-  "commit_90d": 127,
-  "commit_7d": 16,
+  "commit_90d": 119,
+  "commit_7d": 4,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
-  "rel_n90": 8,
+  "rel_days": 10,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -218,10 +218,10 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1284,13 +1284,16 @@
    "HTML": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261107"
+  },
+  "commit_90d": 4,
+  "commit_7d": 3
  },
  "zuzuleinen/algotutor": {
   "rel_ver": null,
@@ -4176,6 +4179,25 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "golab-ai/Suiren-Foundation-Model": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

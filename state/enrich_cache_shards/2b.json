@@ -334,11 +334,11 @@
   }
  },
  "root-project/root": {
-  "commit_7d": 149,
-  "commit_90d": 1366,
+  "commit_7d": 80,
+  "commit_90d": 1351,
   "rel_ver": "v6-42-00-rc1",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
@@ -354,10 +354,10 @@
    "Python": 2,
    "CMake": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -460,8 +460,8 @@
   }
  },
  "zhnt/loushang": {
-  "commit_7d": 64,
-  "commit_90d": 2639,
+  "commit_7d": 188,
+  "commit_90d": 2765,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -476,10 +476,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -516,8 +516,8 @@
   }
  },
  "zjunlp/LightMem": {
-  "commit_7d": 1,
-  "commit_90d": 7,
+  "commit_7d": 2,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -532,10 +532,10 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3982,6 +3982,50 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "Eshpelin/nurby": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 59,
+   "TypeScript": 30,
+   "Dart": 10,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "aragorn-agent/xiaoyu-live": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 51,
+   "HTML": 49,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

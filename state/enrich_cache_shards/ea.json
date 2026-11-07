@@ -127,11 +127,11 @@
   }
  },
  "ChunelFeng/CGraph": {
-  "commit_90d": 43,
-  "commit_7d": 2,
+  "commit_90d": 41,
+  "commit_7d": 1,
   "rel_ver": "v3.3.0",
   "rel_pub": "2026-10-24",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -147,10 +147,10 @@
    "CMake": 1,
    "Starlark": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4864,13 +4864,16 @@
    "CSS": 6,
    "Shell": 1
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261026",
    "security": "20261026",
    "contrib": "20261026",
-   "lang": "20261026"
-  }
+   "lang": "20261026",
+   "commit": "20261107"
+  },
+  "commit_90d": 152,
+  "commit_7d": 12
  },
  "ananasDDA/pocket-ai-lab": {
   "rel_ver": "v1.2.0",

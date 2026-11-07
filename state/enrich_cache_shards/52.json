@@ -325,8 +325,8 @@
   }
  },
  "thinkwee/AgentsMeetRL": {
-  "commit_7d": 2,
-  "commit_90d": 16,
+  "commit_7d": 5,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,21 +338,21 @@
    "HTML": 77,
    "Python": 23
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "microsoft/TextWorld": {
-  "commit_7d": 4,
-  "commit_90d": 9,
+  "commit_7d": 1,
+  "commit_90d": 10,
   "rel_ver": "1.7.0",
   "rel_pub": "2026-01-30",
-  "rel_days": 274,
+  "rel_days": 281,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -368,10 +368,10 @@
    "PDDL": 0,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1625,13 +1625,16 @@
    "Swift": 1,
    "Python": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261107"
+  },
+  "commit_90d": 260,
+  "commit_7d": 0
  },
  "Shiyao-Huang/awesome-agent-evolution": {
   "rel_ver": null,
@@ -4724,6 +4727,27 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "Labs64/agent-toolkit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 65,
+   "Shell": 21,
+   "Python": 15
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

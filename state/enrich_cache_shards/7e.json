@@ -166,10 +166,10 @@
   }
  },
  "NeptuneHub/AudioMuse-AI": {
-  "commit_7d": 19,
-  "commit_90d": 390,
-  "rel_ver": "v3.7.0",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 18,
+  "commit_90d": 384,
+  "rel_ver": "v3.7.1",
+  "rel_pub": "2026-11-05",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -186,10 +186,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -226,8 +226,8 @@
   }
  },
  "Exorust/TorchLeet": {
-  "commit_7d": 4,
-  "commit_90d": 31,
+  "commit_7d": 2,
+  "commit_90d": 33,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -242,10 +242,10 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -302,8 +302,8 @@
   }
  },
  "tinyfish-io/agentql": {
-  "commit_7d": 1,
-  "commit_90d": 18,
+  "commit_7d": 2,
+  "commit_90d": 20,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -316,18 +316,18 @@
    "JavaScript": 30,
    "Makefile": 14
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "jxzhangjhu/Awesome-LLM-RAG": {
-  "commit_7d": 2,
-  "commit_90d": 35,
+  "commit_7d": 3,
+  "commit_90d": 37,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -336,21 +336,21 @@
   "sec_ids": [],
   "contrib_n": 25,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Team-Commonly/commonly": {
-  "commit_7d": 428,
-  "commit_90d": 1886,
+  "commit_7d": 605,
+  "commit_90d": 2419,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-10-28",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -374,21 +374,21 @@
    "CSS": 3,
    "HTML": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "aws/deep-learning-containers": {
-  "commit_7d": 33,
-  "commit_90d": 300,
-  "rel_ver": "v2.17-pt-ec2-2.10.0-tr-cpu-py313",
-  "rel_pub": "2026-10-31",
-  "rel_days": 0,
+  "commit_7d": 25,
+  "commit_90d": 304,
+  "rel_ver": "v2.18-pt-ec2-2.10.0-tr-cpu-py313",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -404,10 +404,10 @@
    "JavaScript": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4163,6 +4163,33 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "Boom-Vitt/nose-erp": {
+  "rel_ver": "boombignose-v1.4.4",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 67,
+   "PLpgSQL": 23,
+   "Go": 4,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

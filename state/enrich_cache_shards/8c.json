@@ -82,12 +82,12 @@
   }
  },
  "ogkalu2/comic-translate": {
-  "commit_90d": 27,
+  "commit_90d": 14,
   "commit_7d": 0,
-  "rel_ver": "v2.8.9",
-  "rel_pub": "2026-09-11",
-  "rel_days": 46,
-  "rel_n90": 4,
+  "rel_ver": "v3.0.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -98,18 +98,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261027",
-   "release": "20261027",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "modal-labs/modal-examples": {
-  "commit_90d": 57,
-  "commit_7d": 8,
+  "commit_90d": 51,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -124,10 +124,10 @@
    "Jupyter Notebook": 0,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

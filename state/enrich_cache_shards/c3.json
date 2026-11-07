@@ -167,12 +167,12 @@
   }
  },
  "Zafer-Liu/Data-Analysis-Agent": {
-  "commit_90d": 102,
-  "commit_7d": 29,
+  "commit_90d": 62,
+  "commit_7d": 6,
   "rel_ver": "1.4.0",
   "rel_pub": "2026-09-19",
-  "rel_days": 42,
-  "rel_n90": 4,
+  "rel_days": 49,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -187,10 +187,10 @@
    "CSS": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -258,10 +258,10 @@
  },
  "LLPhant/LLPhant": {
   "commit_90d": 37,
-  "commit_7d": 16,
+  "commit_7d": 0,
   "rel_ver": "1.0.8",
   "rel_pub": "2026-10-26",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -274,10 +274,10 @@
    "PHP": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4456,6 +4456,33 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "microsoft/DataHub-App-for-Microsoft-Copilot-Agents-Cowork-and-Autopilots": {
+  "rel_ver": "installer-v0.6.9",
+  "rel_pub": "2026-11-03",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "JavaScript": 35,
+   "TypeScript": 31,
+   "Python": 21,
+   "Jupyter Notebook": 10,
+   "CSS": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

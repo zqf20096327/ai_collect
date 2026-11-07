@@ -182,7 +182,7 @@
   }
  },
  "huhusmang/Awesome-LLMs-for-Vulnerability-Detection": {
-  "commit_7d": 6,
+  "commit_7d": 8,
   "commit_90d": 82,
   "rel_ver": null,
   "rel_none": true,
@@ -194,10 +194,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -3993,6 +3993,25 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "itismemuhammadali/Awesome-Free-AI-APIs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

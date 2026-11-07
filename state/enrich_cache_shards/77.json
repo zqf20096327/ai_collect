@@ -113,11 +113,11 @@
   }
  },
  "apache/burr": {
-  "commit_90d": 75,
-  "commit_7d": 4,
+  "commit_90d": 83,
+  "commit_7d": 17,
   "rel_ver": "v0.43.0-incubating",
   "rel_pub": "2026-08-29",
-  "rel_days": 63,
+  "rel_days": 70,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -222,12 +222,12 @@
   }
  },
  "yakhyo/uniface": {
-  "commit_90d": 21,
-  "commit_7d": 5,
+  "commit_90d": 22,
+  "commit_7d": 3,
   "rel_ver": "v4.2.1",
   "rel_pub": "2026-10-26",
-  "rel_days": 5,
-  "rel_n90": 8,
+  "rel_days": 12,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -238,21 +238,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "BindsNET/bindsnet": {
-  "commit_90d": 58,
-  "commit_7d": 11,
+  "commit_90d": 48,
+  "commit_7d": 2,
   "rel_ver": "0.3.5",
   "rel_pub": "2026-10-29",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -267,10 +267,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4432,6 +4432,49 @@
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
+  }
+ },
+ "hubeiqiao/ode-muse-body": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "JavaScript": 5,
+   "Swift": 2,
+   "CSS": 1,
+   "C++": 1
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
+  }
+ },
+ "tianyiniu/RotBench": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261107",
+  "dim_ts": {
+   "release": "20261107",
+   "security": "20261107",
+   "contrib": "20261107",
+   "lang": "20261107"
   }
  }
 }

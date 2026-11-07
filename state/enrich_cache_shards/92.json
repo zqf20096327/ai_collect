@@ -60,12 +60,12 @@
   }
  },
  "mlfoundations/open_clip": {
-  "commit_7d": 31,
-  "commit_90d": 63,
-  "rel_ver": "v3.3.0",
-  "rel_pub": "2026-02-27",
-  "rel_days": 246,
-  "rel_n90": 0,
+  "commit_7d": 8,
+  "commit_90d": 71,
+  "rel_ver": "v4.2.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -78,10 +78,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -262,13 +262,13 @@
   }
  },
  "felinics/Memoh": {
-  "commit_7d": 28,
+  "commit_7d": 36,
   "commit_90d": 520,
-  "rel_ver": "v1.0.0-beta.1",
-  "rel_pub": "2026-10-27",
-  "rel_days": 4,
-  "rel_n90": 6,
-  "rel_pre": true,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -282,22 +282,22 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Kritt-ai/open-kritt": {
-  "commit_7d": 8,
-  "commit_90d": 105,
+  "commit_7d": 0,
+  "commit_90d": 72,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-08-16",
-  "rel_days": 76,
-  "rel_n90": 3,
+  "rel_days": 83,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -312,10 +312,10 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -484,11 +484,11 @@
   }
  },
  "mariadb-operator/mariadb-operator": {
-  "commit_7d": 79,
-  "commit_90d": 208,
+  "commit_7d": 0,
+  "commit_90d": 205,
   "rel_ver": "26.10.2",
   "rel_pub": "2026-10-24",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -504,10 +504,10 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

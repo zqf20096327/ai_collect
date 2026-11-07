@@ -190,7 +190,7 @@
   }
  },
  "leofan90/Awesome-World-Models": {
-  "commit_90d": 59,
+  "commit_90d": 61,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -202,10 +202,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261107",
+   "release": "20261107",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1367,13 +1367,16 @@
    "CMake": 3,
    "Kotlin": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261107",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261107"
+  },
+  "commit_90d": 8,
+  "commit_7d": 0
  },
  "ionclaw-org/ionclaw": {
   "rel_ver": "v1.0.6",
@@ -4228,8 +4231,8 @@
   }
  },
  "N1nEmAn/sapper-v2": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v18-champion",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4241,16 +4244,20 @@
    "HTML": 6,
    "Dockerfile": 1
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261107",
   "dim_ts": {
-   "release": "20261031",
+   "release": "20261107",
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031",
    "commit": "20261101"
   },
   "commit_90d": 1,
-  "commit_7d": 1
+  "commit_7d": 1,
+  "rel_pub": "2026-11-01",
+  "rel_days": 6,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "William-Trader/free-token-cloud": {
   "rel_ver": "v5.0.0",
