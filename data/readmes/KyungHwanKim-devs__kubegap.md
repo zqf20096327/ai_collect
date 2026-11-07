@@ -6,9 +6,9 @@
 
 I built kubegap while running three clusters on my own, each on a different platform: a small k3s cluster, an EKS cluster, and Kubernetes on Azure. Alerts and dashboards catch only what someone set them up to catch. Anything else you find by digging through the cluster by hand, and I did not have time to do that on three clusters every day. So I gave that job to an AI agent.
 
-Type `/kubegap` in Claude Code, or `$kubegap` in Codex, and the agent reads the state of the cluster, evaluates it against 407 checks in 12 areas, picks the problems that need attention now, and writes a report. Each problem comes with its evidence, its cause and how to fix it. On one EKS cluster, it found that a spot reclaim had stopped a backend for two minutes without a single alert firing.
+Type `/kubegap` in Claude Code, or `$kubegap` in Codex, and the agent reads the state of the cluster, evaluates it against 411 checks in 12 areas, picks the problems that need attention now, and writes a report. Each problem comes with its evidence, its cause and how to fix it. On one EKS cluster, it found that a spot reclaim had stopped a backend for two minutes without a single alert firing.
 
-Of the 407 checks, 112 link to public incident reports and postmortems, 207 write-ups in total, including some from Airbnb and Buffer. The links for each check are in [`docs/CHECKS.md`](docs/CHECKS.md). The remaining checks are configuration rules, and for those the report says there is no public case rather than making one up. Every problem in a report has a "Why this happens" part with the principle behind it, public cases, and official documents or books to read next, such as the Kubernetes documentation, the AWS documentation and Google's *Site Reliability Engineering*. The [EKS sample report](samples/en/eks/full/report.md) shows what this looks like.
+Of the 411 checks, 113 link to public incident reports and postmortems, 209 write-ups in total, including some from Airbnb and Buffer. The links for each check are in [`docs/CHECKS.md`](docs/CHECKS.md). The remaining checks are configuration rules, and for those the report says there is no public case rather than making one up. Every problem in a report has a "Why this happens" part with the principle behind it, public cases, and official documents or books to read next, such as the Kubernetes documentation, the AWS documentation and Google's *Site Reliability Engineering*. The [EKS sample report](samples/en/eks/full/report.md) shows what this looks like.
 
 kubegap depends on facts about other tools, such as metric names, log messages and API fields. I looked these up in each tool's source code, version by version, and cited them in [`references/sources.md`](references/sources.md). Those tables now run to more than 1,500 rows.
 
@@ -44,7 +44,7 @@ A daily audit does not count what only the full audit collects as a problem or a
 
 Each audit produces two files. `report.md` is the report for people to read, and `report-details.md` has every verdict in tables. In a full audit, `report-details.md` also has the details of all 12 areas.
 
-Scripts judge 405 of the 407 checks, so the same data gives the same result. The agent judges the other 2. It then reads the results, decides what is most urgent and writes the report. If it changes a script's verdict, it records the change and the reason in `report-details.md`.
+Scripts judge 409 of the 411 checks, so the same data gives the same result. The agent judges the other 2. It then reads the results, decides what is most urgent and writes the report. If it changes a script's verdict, it records the change and the reason in `report-details.md`.
 
 ## Which clusters it works on
 
@@ -57,6 +57,54 @@ kubegap runs on any cluster kubectl can read. How deep it can see depends on the
 | GKE, AKS, kubeadm and others | inside the cluster and inside the nodes |
 
 EKS and k3s came first, so they get the deepest coverage. GKE and AKS have no dedicated collectors yet, so their cloud side is not read, and I plan to extend what kubegap can see over time. Looking inside the nodes needs your permission, which is covered in [The first run](#the-first-run).
+
+### Verified against
+
+The facts kubegap relies on were read in the source of these components at these versions; the two reference clusters are the ones the maintainer runs. Outside a range kubegap still runs and the report header says so. Generated from `references/verified-versions.yaml` by `scripts/kubegap verified --markdown`; `references/sources.md` holds every citation.
+
+<!-- verified-table:begin -->
+| Component | Versions read in source | Reference clusters (EKS / k3s) | Assumed installation, and what happens outside it |
+|---|---|---|---|
+| Kubernetes (kube-apiserver, kubelet, kube-proxy, kube-scheduler, controller-manager) | v1.30.14 to v1.37.2 | v1.32.13 (EKS 1.32) / v1.33.5 (v1.33.5+k3s1) | the apiserver series are read under the job label kube-prometheus-stack gives them (`apiserver`), else a detected one — an older minor is read as is; a metric name that moved is caught by the series-presence record and the check skips naming it; the apiserver job comes from config key `apiserver_job` when detection fails |
+| k3s (the embedded apiserver, kubelet, kube-proxy, flannel, kine, etcd) | v1.33.5+k3s1 to v1.37.2+k3s1 | — / v1.33.5+k3s1 | node access over SSH; the k3s-platform collector runs when the platform is k3s or rke2 — a cluster that is not k3s skips every `platform.k3s-*` check |
+| containerd | v1.7.27 to v2.4.2 | v1.7.29, v2.1.5 (the two node images) / v2.1.4-k3s1 | the log signatures match the texts read at these versions; another runtime writes nothing they know |
+| CoreDNS | v1.10.1 to v1.15.0 | v1.11.3 / v1.12.3 | scraped by Prometheus (`coredns_*` series) — the forward metrics moved to `coredns_proxy_*` at 1.11.0 and the queries read both spellings |
+| metrics-server | v0.8.0 to v0.9.1 | v0.8.0 / v0.8.0 | — |
+| node-exporter | v1.7.0 to v1.12.1 | v1.7.0 / v1.10.2 | scraped by Prometheus with the host network (the node checks join on `instance`) — a collector that is off by default (processes) is not read; the series-presence record makes the check skip |
+| kube-state-metrics | v2.10.1 to v2.20.0 | v2.10.1 / v2.17.0 | scraped by Prometheus — `kube_endpoint_address` changed shape at 2.14.0 and the queries count per address |
+| cAdvisor (in the kubelet) | v0.51.0 to v0.60.5 | v0.51.0 (kubelet 1.32) / v0.52.1 (kubelet 1.33) | scraped through the kubelet's cadvisor endpoint |
+| Prometheus | v2.49.1 to v3.15.1 | v2.49.1 / v3.7.3 | a Service kubegap can port-forward to (kube-prometheus-stack's, or `prometheus_url` in config) — no Prometheus: every metric check skips with the reason, the report says so in section 7 |
+| Alertmanager | v0.26.0 to v0.34.2 | v0.26.0 / v0.29.0 | a Service kubegap can port-forward to — no Alertmanager: the alerting checks skip |
+| kube-prometheus-stack / prometheus-operator | kube-prometheus-stack-56.0.0 to kube-prometheus-stack-92.18.0 | chart 56.0.0, operator v0.71.0 / chart 79.5.0, operator v0.86.2 | the chart's job labels (`apiserver`, `kubelet`, `node-exporter`, `kube-state-metrics`) and Service names — other job names: the apiserver job is detected or set in `apiserver_job`; other Service names: `prometheus_url` in config |
+| Grafana | v10.2.3 to v13.3.0 | v10.2.3 / v12.2.1 | dashboards and datasources read from the sidecar ConfigMaps, or from the API with `grafana_api_token` |
+| Loki and promtail | v2.6.1 to v3.7.9 | Loki v2.6.1, promtail v2.9.2 / — | a Loki Service kubegap can port-forward to; promtail or Fluent Bit as the agent — no Loki: the log-volume checks skip; another agent is detected or not |
+| Fluent Bit | v3.0.4 to v5.1.5 | — / v3.0.4 | scraped by Prometheus (`fluentbit_*`) |
+| ingress-nginx | controller-v1.12.1 to controller-v1.15.1 | — / controller-v1.14.0 | metrics scraped by Prometheus (`nginx_ingress_controller_*`) — without the scrape the per-Ingress traffic checks skip (ingress metrics not read) |
+| Traefik | v1.7.34 to v3.7.17 | — / — | no Traefik runs on either reference cluster; metrics scraped by Prometheus when it does |
+| MetalLB | v0.12.1 to v0.16.2 | — / v0.14.5 | speaker metrics read from the pods through 0.15; status objects (ServiceL2Status from 0.14.6, BGPSessionState of frr-k8s mode from 0.15.2) after — native mode on 0.16+ and FRR mode: the BGP session state is read only where Prometheus scrapes it |
+| Argo CD | v2.13.0 to v3.6.1 | v2.13.0 / v3.2.0 | controller metrics read from the pods; ConfigMap keys `argocd-cm`, `argocd-cmd-params-cm`, `argocd-rbac-cm` |
+| cert-manager | v1.14.4 to v1.21.3 | — / v1.14.4 | controller metrics read from the pod |
+| External Secrets Operator | v0.9.13 to v2.14.0 | v0.9.13 / v2.1.0 | controller metrics read from the pod |
+| KEDA | v2.12.0 to v2.21.0 | v2.17.2 / v2.19.0 | operator metrics read from the pod (`--enable-prometheus-metrics`) — metrics off: the KEDA metric checks skip, the step says why |
+| Reloader | v1.4.23 | — / v1.4.14 | — |
+| Elasticsearch / OpenSearch / Kibana | v7.10.2 to v9.5.6 | — / Elasticsearch v7.10.2 | log signatures only |
+| Karpenter | v0.37.0 to v1.15.1 | v0.37.0 / — | NodePools and NodeClaims through the API, controller metrics from the pod — no Karpenter: the `karpenter.*` checks skip (kind not served) |
+| AWS Load Balancer Controller | v2.7.2 to v3.6.2 | v2.7.2 / — | TargetGroupBindings through the API; ALB metrics from CloudWatch (`elasticloadbalancing:Describe*`, `cloudwatch:GetMetricData`) — AWS calls refused: the ALB checks skip naming the call |
+| EBS CSI driver | v1.37.0 to v1.67.2 | v1.37.0 / local-path-provisioner v0.0.31 | controller metrics scraped by Prometheus — the `aws_ebs_csi_*` names exist since v1.38.0; before that the `cloudprovider_aws_*` names, and the queries read both |
+| VPC CNI (aws-node) | v1.19.0 to v1.23.2 | v1.19.0 / — | ipamd metrics read from the pods or through the node; the add-on configuration from `eks:DescribeAddon` — metrics not read: the IP-exhaustion checks skip |
+| external-dns | v0.14.0 to v0.24.0 | v0.14.0 / — | log signatures only |
+| Actions Runner Controller | gha-runner-scale-set-0.10.1 to gha-runner-scale-set-0.15.1 | gha-runner-scale-set-0.10.1 / summerwind actions-runner-controller v0.27.6 (the legacy controller) | component detection only |
+| cluster-autoscaler | cluster-autoscaler-chart-9.60.0 | — / — | component detection only |
+| Operating system of the nodes (systemd, kernel, glibc, coreutils, procps, smartmontools) | systemd v255, kernel v6.12 | Amazon Linux 2 (systemd 219, kernel 5.10) and Amazon Linux 2023 (systemd 252, kernel 6.1) / Ubuntu 22.04 (systemd 249, kernel 5.15) | the node scripts run over SSM or SSH — no node access: the 36 `node.*` checks skip |
+| Go runtime and standard library (strings every Go component relays) | go1.21.0 to go1.26.10 | go1.24.13 (kubernetes 1.32) / go1.24.6 (kubernetes 1.33) | — |
+| krr | v1.31.1 (the pin of `kubegap setup`) | v1.31.1 / v1.31.1 | installed by `kubegap setup`, pinned with a sha256 — not installed: the `resources.*` KRR checks report tool-missing |
+| polaris | v10.2.6 (the pin of `kubegap setup`) | v10.2.6 / v10.2.6 | installed by `kubegap setup`, pinned with a sha256 — not installed: tool-missing |
+| pluto | v5.24.5 | v5.24.5 / v5.24.5 | installed by `kubegap setup`, pinned with a sha256 — not installed: tool-missing |
+| kubent | 0.7.3 | 0.7.3 / 0.7.3 | installed by `kubegap setup`, pinned with a sha256 — not installed: tool-missing |
+| helm | v3.22.1 to v4.3.1 | v4.3.1 / v4.3.1 | installed by `kubegap setup`; `helm list` needs the Secrets the shipped ClusterRole does not grant — the two Helm checks skip with the reason |
+
+71 facts in references/sources.md are marked unverified: observed on the reference clusters, not read in source.
+<!-- verified-table:end -->
 
 ## Install and run
 
@@ -139,14 +187,14 @@ For `--compare`, A and B are folder names such as `2026-11-05T08-30-12`. Each au
 
 ## What it checks
 
-There are 407 checks in 12 areas. Each check is one condition that counts as a problem. The full list is in [`docs/CHECKS.md`](docs/CHECKS.md), which also links to the public incidents behind a check where there are any.
+There are 411 checks in 12 areas. Each check is one condition that counts as a problem. The full list is in [`docs/CHECKS.md`](docs/CHECKS.md), which also links to the public incidents behind a check where there are any.
 
 | Area | `focus` name | Checks | Examples |
 |---|---|---|---|
 | Resources | `resources` | 15 | containers requesting more than 3x their 7-day p95 usage, repeated OOMKills, nodes full of requests but with single-digit utilization |
 | Scaling | `scaling` | 27 | HPAs stuck at their minimum for 15 days, expired Karpenter nodes that are not replaced, KEDA external triggers without a fallback |
 | Observability | `observability` | 64 | no symptom-based alerts, alerts firing for 7 days straight, a monitoring stack on emptyDir, ingress controller metrics that are not scraped |
-| Traffic | `traffic` | 57 | database ports open to the internet, unhealthy ALB targets, a deregistration delay longer than the termination grace period |
+| Traffic | `traffic` | 61 | database ports open to the internet, unhealthy ALB targets, a deregistration delay longer than the termination grace period |
 | Resilience | `resilience` | 43 | replicas packed onto one node, no PDB, backup dumps on the same disk as the data, workloads that can run on only one node |
 | Hygiene | `hygiene` | 35 | `latest` tags, deprecated APIs, Helm releases stuck in pending or failed, dependence on hand-applied node labels |
 | Storage | `storage` | 25 | unencrypted EBS volumes, StorageClasses with expansion turned off, local-path volumes over capacity |
@@ -158,7 +206,7 @@ There are 407 checks in 12 areas. Each check is one condition that counts as a p
 
 Of the 37 Node OS checks, 26 can be seen only by reaching the nodes.
 
-Not all 407 apply to every cluster. Checks for a component such as Karpenter, Argo CD or cert-manager run only when that component is installed. A daily audit covers at most 326, leaving out the 81 that are full-only.
+Not all 409 apply to every cluster. Checks for a component such as Karpenter, Argo CD or cert-manager run only when that component is installed. A daily audit covers at most 329, leaving out the 82 that are full-only.
 
 What is expected depends on the kind and size of the cluster. EKS is held to the production baseline. k3s, RKE2 and clusters of 3 nodes or fewer get the small-cluster baseline, which still expects backups, SLOs and an alert router, but not multi-zone spread or PDBs. You can change this with `--profile`.
 
@@ -188,7 +236,7 @@ Every permission is listed in [`docs/PERMISSIONS.md`](docs/PERMISSIONS.md), and 
 - [`docs/HEADLESS.md`](docs/HEADLESS.md): how to run it without a person, and how to schedule it every morning
 - [`docs/CHECKS.md`](docs/CHECKS.md): every check
 - [`docs/DESIGN-DECISIONS.md`](docs/DESIGN-DECISIONS.md): why it is built this way
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`references/development.md`](references/development.md): how to add or change a check
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): how to add or change a check, the test commands, the pull request rules and the review checklist. [`references/development.md`](references/development.md) has the mechanics behind them
 
 ## License
 

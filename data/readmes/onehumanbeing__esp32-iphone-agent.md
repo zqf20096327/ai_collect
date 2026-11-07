@@ -15,6 +15,7 @@ It looks at the screen, then taps, swipes and types for you, through a $7 ESP32 
 Just the phone and the board: no computer, no changes to iOS.
 
 <a href="https://testflight.apple.com/join/1xQHgJcA"><img src="https://img.shields.io/badge/Try%20on-TestFlight-0D96F6?style=for-the-badge&logo=apple&logoColor=white" alt="Try on TestFlight" height="36"></a>
+<a href="https://handsy.tech/install?ref=github"><img src="https://img.shields.io/badge/Flash%20the%20board-in%20your%20browser-111111?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Flash the board in your browser" height="36"></a>
 
 [![TestFlight](https://img.shields.io/badge/TestFlight-join-0D96F6?logo=apple&logoColor=white)](https://testflight.apple.com/join/1xQHgJcA)
 [![Website](https://img.shields.io/badge/website-handsy.tech-111111)](https://handsy.tech)
@@ -26,7 +27,7 @@ Just the phone and the board: no computer, no changes to iOS.
 
 English · [简体中文](README.zh-CN.md)
 
-Demo video and updates: [X @iamhenryyuan](https://x.com/iamhenryyuan) · [YouTube demo](https://www.youtube.com/watch?v=Ly4im-P4jYg) · [DeepSeek Harness demo](https://www.youtube.com/watch?v=DzYv0QVk_No) · [handsy.tech](https://handsy.tech)
+Demo video and updates: [X @iamhenryyuan](https://x.com/iamhenryyuan) · [YouTube demo](https://www.youtube.com/watch?v=Ly4im-P4jYg) · [DeepSeek Harness demo](https://www.youtube.com/watch?v=DzYv0QVk_No) · [handsy.tech](https://handsy.tech) · [Changelog](https://handsy.tech/docs/changelog?ref=github)
 
 </div>
 
@@ -34,6 +35,11 @@ Demo video and updates: [X @iamhenryyuan](https://x.com/iamhenryyuan) · [YouTub
 > **Try the app now on [TestFlight](https://testflight.apple.com/join/1xQHgJcA)**, no Xcode needed. The App Store
 > listing is still in review, so TestFlight is the way to get it today. You still need a flashed board
 > (see [Quick start](#quick-start)).
+
+> [!NOTE]
+> **New in App 1.0.2 (TestFlight):** the agent can [hear the phone](https://handsy.tech/docs/listen?ref=github)
+> (AirPlay audio turned into words on the iPhone), long tasks no longer stop at 40 steps, any stopped run can
+> continue, and taps and video are steadier. Needs board firmware v0.2.4. [Full changelog](https://handsy.tech/docs/changelog?ref=github).
 
 > [!NOTE]
 > **Branches:** [`release-1.0`](https://github.com/onehumanbeing/esp32-iphone-agent/tree/release-1.0) is the version
@@ -55,6 +61,8 @@ opens Clock, types the time into the wheel, ticks the days and saves. (Photo fro
 <p align="center"><img src="docs/images/app-screens.png" alt="ESP32 Agent app: real phone vs. what the agent sees, and pointer calibration" width="70%"></p>
 
 *Left: the real phone. Right: what the agent sees through the board's AirPlay mirror. The second shot is the pointer calibration.*
+
+If you're wondering how an AI can control an iPhone at all, start with [AI control for iPhone](https://handsy.tech/ai-control-iphone).
 
 ## Contents
 
@@ -103,6 +111,7 @@ iPhone ──Screen Mirroring (Wi-Fi)──▶ ESP32-S3: AirPlay receiver ──
 ## Hardware
 
 Supported boards and setup details: [hardware guide](https://handsy.tech/docs/hardware).
+Picking a board, cables and adapters, or stuck during setup: [setup guide](https://handsy.tech/esp32-iphone-agent-setup).
 
 | Part | Notes |
 |---|---|
@@ -163,8 +172,8 @@ or come back to the app. Siri, Shortcuts, widgets and Control Center can run sav
 ## Use from a coding agent
 
 The `esp32agent` CLI (npm, `npx -y esp32agent mcp`) is an MCP server, so a coding agent on your computer can see
-and drive the iPhone through the board (board firmware v0.2.2 or later). This repository is also a plugin with that
-MCP server and an agent skill ([skills/handsy/SKILL.md](skills/handsy/SKILL.md)). In Claude Code:
+and drive the iPhone through the board (board firmware v0.2.2 or later); see [iPhone as an MCP server](https://handsy.tech/iphone-mcp). This repository is also a plugin with that
+MCP server and an agent skill ([skills/handsy/SKILL.md](skills/handsy/SKILL.md)). In Claude Code ([walkthrough](https://handsy.tech/claude-code-iphone)):
 
 ```bash
 /plugin marketplace add onehumanbeing/esp32-iphone-agent

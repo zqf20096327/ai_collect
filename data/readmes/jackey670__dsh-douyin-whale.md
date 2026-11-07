@@ -194,11 +194,17 @@ node scheduler/scheduler.mjs --watch-now
 
 | 文件 | 内容 |
 |---|---|
-| `douyin-whale.config.json` | 主人昵称、检查间隔、时段、每日上限 |
-| `douyin-whale-state.json` | 内容队列、已回复 id、今日计数 |
+| `douyin-whale.config.json` | 主人昵称、检查间隔、时段、每日上限、主动分享概率 |
+| `douyin-whale-state.json` | 内容队列、已回复 id、今日计数、上次主动分享时间 |
 | `douyin-whale-scheduler.log` | 运行日志 |
 | `memory/dm-<昵称>.json` | 每位联系人的对话记忆（只存本机，不进仓库和日志） |
 | `whale-diary.md` / `whale-diary-private.md` | 公开 / 私人日记 |
+
+**主动分享轮**（两条路径都有）：队列空闲时按 `proactiveShare.probability`
+（默认 0.08）刷一条主人可能感兴趣的视频，原生卡片、不带文案；
+`maxPerDay`（默认 3）防刷屏，`minIntervalMinutes`（默认 120）是两次尝试的
+最小间隔——空队列的唤醒很烧 token，靠概率 + 上限 + 间隔三道闸压住。
+这三项和互动频率（检查间隔/每日上限）都可以在面板「运行参数」里直接调。
 
 ### 值班大脑（发布版，不依赖 ZCode）
 
@@ -241,7 +247,8 @@ llm-pi-ai:
 值班环境的已知限制：宿主后台会话没有 shell/文件工具（审批类工具不下发），
 所以值班模式的动作用工具完成——发私信 `douyin_dm_send`、挑表情 `douyin_meme_pick`、
 看主人发的图 `douyin_sticker_look`（图片作为工具结果进模型对话）、分享视频 `douyin_dm_share`、
-发抖音原生表情 `douyin_emoji_list` + `douyin_emoji_send`。日记写不了（无文件工具）；
+发抖音原生表情 `douyin_emoji_list` + `douyin_emoji_send`、写两本日记
+`douyin_diary_read` + `douyin_diary_write`（路径固定在 DSH home，不接受外部路径）。
 视频先用 `douyin_frames` 抽帧看画面再回复。
 
 生命周期照抄 dsh-douyin-scroll 值班鱼的三步链：`agents.get(sid)` 找 live →
@@ -685,14 +692,17 @@ dsh-douyin-whale/
 ├── douyin.mjs                   # 独立命令行（自动拉起本地 HTTP API）
 ├── lib/
 │   ├── backend.js               # 子进程 / 限频 / 配额 / 脱敏 / 浏览器发现
-│   ├── tools.js                 # 18 个工具定义
+│   ├── tools.js                 # 20 个工具定义
 │   ├── douyin_http_client.mjs   # Node 侧的 HTTP 客户端
 │   ├── whale_state.js           # 调度器状态的只读视图（~/.dsh/*）+ 原子写
 │   ├── panel_api.js             # /api/douyin-whale/* 路由实现
 │   ├── duty_agent.js            # 值班 agent 会话（get/resume/create 链 + followup）
-│   ├── whale_tick.js            # 一轮 tick：读私信 → 挑最早 → 投值班 → 回读确认
+│   ├── whale_tick.js            # 值班 tick 入口（前置检查 + brain 适配器 + 主动分享）
+│   ├── whale_round.js           # 共享回合引擎（调度器/值班共用主循环 + 时段判定）
 │   ├── whale_readback.js        # 两条路径共用的送达判定（文字/表情/卡片）
 │   ├── whale_prompt.js          # 两条路径共用的任务提示词（tools / shell 两模式）
+│   ├── diary.js                 # 两本日记（公开反应/私人校准）的读写
+│   ├── dm_reader.js             # 共享的「读一次私信」（文件回退 + 本轮重试）
 │   └── normalize.js             # 响应归一化（缺失即 null）
 ├── scheduler/
 │   ├── scheduler.mjs            # 定时看私信 → 唤醒 agent → 回读确认

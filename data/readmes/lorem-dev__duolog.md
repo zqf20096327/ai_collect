@@ -54,11 +54,11 @@ the newest release.
 To pin a different version on macOS/Linux, or on Windows:
 
 ```sh
-curl -fsSL https://github.com/lorem-dev/duolog/releases/latest/download/install.sh | sh -s -- --version v1.4.1
+curl -fsSL https://github.com/lorem-dev/duolog/releases/latest/download/install.sh | sh -s -- --version v1.5.1
 ```
 
 ```powershell
-$env:DUOLOG_VERSION = 'v1.4.1'
+$env:DUOLOG_VERSION = 'v1.5.1'
 irm https://github.com/lorem-dev/duolog/releases/latest/download/install.ps1 | iex
 ```
 
@@ -138,4 +138,5 @@ duolog uses the [Apache License 2.0](LICENSE).
   evidence behind the default rules
 - [Live verification](docs/research/2026-10-30-live-verification.md): which
   agent behavior is OBSERVED and which is VERIFIED
+- [Architecture](docs/architecture.md): the code tiers and the layers test
 - [How to write the documentation](docs/contributing.md): the writing rules

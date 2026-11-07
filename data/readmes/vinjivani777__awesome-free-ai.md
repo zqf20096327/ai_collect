@@ -4,10 +4,11 @@ Free, open-source AI tools you can run yourself, with what most lists leave out:
 
 Only projects that are still active make the list. Search all of them, with filters, at **[freeairepo.com](https://www.freeairepo.com)**.
 
-_Last updated 2026-11-06._
+_Last updated 2026-11-07._
 
 ## Contents
 
+- [Rising this week](#rising-this-week)
 - [Free alternatives to paid AI tools](#free-alternatives-to-paid-ai-tools)
 - [LLMs & chat](#llms--chat)
 - [Agents & automation](#agents--automation)
@@ -21,6 +22,21 @@ _Last updated 2026-11-06._
 - [Inference & serving](#inference--serving)
 - [Dev tools & SDKs](#dev-tools--sdks)
 - [Productivity apps](#productivity-apps)
+
+## Rising this week
+
+| Repo | What it does | Stars this week |
+|---|---|---:|
+| [rea](https://www.freeairepo.com/repo/morluto/rea) | Reverse engineer binaries, applications, and runtime behavior with AI agents. | +969 |
+| [AiSOC](https://www.freeairepo.com/repo/beenuar/AiSOC) | Self-hosted AI Security Operations Center for threat detection and response. | +666 |
+| [xerj](https://www.freeairepo.com/repo/xerj-org/xerj) | Local search engine and MCP server for AI agents to index and search code, docs, and logs. | +638 |
+| [GPT-SoVITS](https://www.freeairepo.com/repo/RVC-Boss/GPT-SoVITS) | Converts voice samples to text-to-speech models for various languages. | +606 |
+| [folkbench](https://www.freeairepo.com/repo/Folkbench/folkbench) | AI API 中转站评测与切换工具 | +553 |
+| [Misceo](https://www.freeairepo.com/repo/MaySudo/Misceo) | Local Anthropic-compatible AI gateway with cheap-first routing, quality gates, safe model… | +451 |
+| [OpenMausBot](https://www.freeairepo.com/repo/milind-soni/OpenMausBot) | Run and manage multiple AI agents in a chat app. | +442 |
+| [auto-ontology](https://www.freeairepo.com/repo/NVIDIA/auto-ontology) | Auto Ontology is a Python framework for building semantic, graph-based reasoning layers o… | +346 |
+| [quantumproxies.io](https://www.freeairepo.com/repo/quantumproxies/quantumproxies.io) | Residential, datacenter, ISP & mobile proxies with 90M+ IPs in 200+ countries — plus Scra… | +330 |
+| [zed](https://www.freeairepo.com/repo/zed-industries/zed) | Code at the speed of thought – Zed is a high-performance, multiplayer code editor from th… | +327 |
 
 ## Free alternatives to paid AI tools
 
@@ -96,8 +112,9 @@ More in [LLMs & chat](https://www.freeairepo.com/category/llm-chat).
 
 | Repo | What it does | Stars | Setup | Sell what you build? | Runs on |
 |---|---|---:|---|---|---|
-| [rea](https://www.freeairepo.com/repo/morluto/rea) | Reverse engineer binaries, applications, and runtime behavior with AI agents. | 437k | Easy | Yes | – |
-| [ECC](https://www.freeairepo.com/repo/affaan-m/ECC) | Optimizes agent performance for AI development and coding. | 298k | Easy | Yes | – |
+| [rea](https://www.freeairepo.com/repo/morluto/rea) | Reverse engineer binaries, applications, and runtime behavior with AI agents. | 438k | Easy | Yes | – |
+| [superpowers](https://www.freeairepo.com/repo/obra/superpowers) | An agentic skills framework & software development methodology that works. | 314k | – | Yes | – |
+| [ECC](https://www.freeairepo.com/repo/affaan-m/ECC) | Optimizes agent performance for AI development and coding. | 299k | Easy | Yes | – |
 | [deepseek-harness](https://www.freeairepo.com/repo/deepseek-ai/deepseek-harness) | Build and manage AI agents with a plugin architecture. | 275k | Easy | Yes | – |
 | [hermes-agent](https://www.freeairepo.com/repo/NousResearch/hermes-agent) | Self-improving AI agent that learns from experience and adapts to user needs. | 261k | Easy | Yes | Mac, No GPU |
 | [n8n](https://www.freeairepo.com/repo/n8n-io/n8n) | Build and deploy AI agents and workflows with a visual canvas and custom code. | 210k | Easy | Check first | – |
@@ -107,20 +124,19 @@ More in [LLMs & chat](https://www.freeairepo.com/category/llm-chat).
 | [dify](https://www.freeairepo.com/repo/langgenius/dify) | Build and deploy AI workflows and agents on a collaborative platform. | 161k | Medium | Check first | No GPU |
 | [JavaGuide](https://www.freeairepo.com/repo/Snailclimb/JavaGuide) | Java 面试 & 后端通用面试指南，覆盖计算机基础、数据库、分布式、高并发、系统设计与 AI 应用开发 | 159k | – | Yes | – |
 | [langflow](https://www.freeairepo.com/repo/langflow-ai/langflow) | Build and deploy AI-powered agents and workflows visually. | 156k | Medium | Yes | Mac, No GPU |
-| [codex](https://www.freeairepo.com/repo/openai/codex) | Lightweight coding agent that runs in your terminal | 133k | – | Yes | Mac |
+| [codex](https://www.freeairepo.com/repo/openai/codex) | Lightweight coding agent that runs in your terminal | 133k | Easy | Yes | Mac |
 | [TradingAgents](https://www.freeairepo.com/repo/TauricResearch/TradingAgents) | Build and manage multi-agent financial trading systems using LLMs. | 121k | Hard | Yes | – |
 | [browser-use](https://www.freeairepo.com/repo/browser-use/browser-use) | Run AI browser agents locally or on Browser Use Cloud. | 120k | – | Yes | – |
 | [paperclip](https://www.freeairepo.com/repo/paperclipai/paperclip) | Orchestrates AI agents for business tasks and goals. | 112k | Easy | Yes | No GPU |
 | [taste-skill](https://www.freeairepo.com/repo/Leonxlnx/taste-skill) | Designs websites and app screens for coding agents using art direction and real images. | 111k | Easy | Yes | No GPU |
 | [Agent-Reach](https://www.freeairepo.com/repo/Panniantong/Agent-Reach) | 给AI代理互联网访问能力，无需付费API，支持多个平台。 | 110k | – | Yes | – |
 | [gemini-cli](https://www.freeairepo.com/repo/google-gemini/gemini-cli) | Brings Gemini AI directly into your terminal for coding and automation. | 109k | Easy | Yes | No GPU |
-| [impeccable](https://www.freeairepo.com/repo/pbakaus/impeccable) | The design vocabulary for your coding agent. Steer with polish and bolder, review with cr… | 105k | – | Yes | – |
+| [impeccable](https://www.freeairepo.com/repo/pbakaus/impeccable) | The design vocabulary for your coding agent. Steer with polish and bolder, review with cr… | 105k | Easy | Yes | – |
 | [worldmonitor](https://www.freeairepo.com/repo/koala73/worldmonitor) | AI-powered global intelligence dashboard for real-time news and geopolitical monitoring. | 90k | Easy | Yes, with conditions | Mac, No GPU |
 | [deer-flow](https://www.freeairepo.com/repo/bytedance/deer-flow) | Runs and orchestrates multiple AI agents for complex tasks. | 85k | Easy | Yes | No GPU |
 | [lobehub](https://www.freeairepo.com/repo/lobehub/lobehub) | Manage and schedule AI agents for 24/7 operations. | 84k | Easy | Check first | – |
 | [ruflo](https://www.freeairepo.com/repo/ruvnet/ruflo) | Build and manage multi-agent systems for AI workflows. | 81k | Easy | Yes | – |
 | [learn-claude-code](https://www.freeairepo.com/repo/shareAI-lab/learn-claude-code) | Teaches how to build an agent harness for AI models. | 80k | Hard | Yes | – |
-| [headroom](https://www.freeairepo.com/repo/headroomlabs-ai/headroom) | Compresses inputs and outputs for AI agents to optimize token usage. | 79k | Easy | Yes | No GPU |
 
 More in [Agents & automation](https://www.freeairepo.com/category/agents).
 
@@ -129,7 +145,7 @@ More in [Agents & automation](https://www.freeairepo.com/category/agents).
 | Repo | What it does | Stars | Setup | Sell what you build? | Runs on |
 |---|---|---:|---|---|---|
 | [opencode](https://www.freeairepo.com/repo/anomalyco/opencode) | AI coding assistant for developers. | 222k | Easy | Yes | No GPU |
-| [claude-code](https://www.freeairepo.com/repo/anthropics/claude-code) | Claude Code is an agentic coding tool that lives in your terminal, understands your codeb… | 155k | – | Check first | Mac |
+| [claude-code](https://www.freeairepo.com/repo/anthropics/claude-code) | Claude Code is an agentic coding tool that lives in your terminal, understands your codeb… | 155k | Easy | Check first | Mac |
 | [cc-switch](https://www.freeairepo.com/repo/farion1231/cc-switch) | Manage multiple AI providers and agents in one desktop app. | 152k | Easy | Yes | – |
 | [spec-kit](https://www.freeairepo.com/repo/github/spec-kit) | AI coding assistant with structured processes and templates. | 148k | – | Yes | – |
 | [ui-ux-pro-max-skill](https://www.freeairepo.com/repo/nextlevelbuilder/ui-ux-pro-max-skill) | Generates professional UI/UX design systems using AI. | 146k | Hard | Yes | – |
@@ -139,7 +155,7 @@ More in [Agents & automation](https://www.freeairepo.com/category/agents).
 | [claude-mem](https://www.freeairepo.com/repo/thedotmack/claude-mem) | Maintains context for AI agents across sessions. | 114k | Easy | Yes | – |
 | [Scrapling](https://www.freeairepo.com/repo/D4Vinci/Scrapling) | A Python web scraping framework for efficient data extraction. | 99k | Medium | Yes | No GPU |
 | [archify](https://www.freeairepo.com/repo/tt-a1i/archify) | Turn ideas and plans into interactive diagrams with AI agents. | 94k | Easy | Yes | – |
-| [zed](https://www.freeairepo.com/repo/zed-industries/zed) | Code at the speed of thought – Zed is a high-performance, multiplayer code editor from th… | 93k | Easy | Check first | Mac |
+| [zed](https://www.freeairepo.com/repo/zed-industries/zed) | Code at the speed of thought – Zed is a high-performance, multiplayer code editor from th… | 94k | Easy | Check first | Mac |
 | [OpenHands](https://www.freeairepo.com/repo/OpenHands/OpenHands) | Self-hosted developer control center for AI agents and automations. | 92k | Easy | Yes | Mac, No GPU |
 | [crawl4ai](https://www.freeairepo.com/repo/unclecode/crawl4ai) | Converts websites into LLM-ready Markdown for AI agents and data pipelines. | 87k | Medium | Yes | No GPU |
 | [rtk](https://www.freeairepo.com/repo/rtk-ai/rtk) | CLI tool for optimizing LLM token usage in development commands. | 86k | Easy | Yes | Mac, No GPU |
@@ -169,16 +185,16 @@ More in [Coding assistants](https://www.freeairepo.com/category/coding).
 | [quivr](https://www.freeairepo.com/repo/The-Vibe-Company/quivr) | Turns continuous content streams into searchable and monitorable data. | 40k | Hard | Yes | – |
 | [WeKnora](https://www.freeairepo.com/repo/Tencent/WeKnora) | Builds a knowledge base and reasoning agent from documents. | 37k | Easy | Check first | No GPU |
 | [graphrag](https://www.freeairepo.com/repo/microsoft/graphrag) | Enhances LLMs with graph-based context for better reasoning. | 37k | – | Yes | No GPU |
-| [qdrant](https://www.freeairepo.com/repo/qdrant/qdrant) | Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the… | 35k | – | Yes | – |
+| [qdrant](https://www.freeairepo.com/repo/qdrant/qdrant) | Qdrant - High-performance, massive-scale Vector Database and Vector Search Engine for the… | 35k | Easy | Yes | – |
 | [onyx](https://www.freeairepo.com/repo/onyx-dot-app/onyx) | Self-hosted AI platform for integrating LLMs with enterprise apps and data. | 33k | Easy | Check first | – |
 | [opendataloader-pdf](https://www.freeairepo.com/repo/opendataloader-project/opendataloader-pdf) | Extracts AI-ready data from PDFs for RAG and accessibility. | 30k | Medium | Yes | No GPU |
 | [FastGPT](https://www.freeairepo.com/repo/labring/FastGPT) | 提供开箱即用的AI代理构建平台，简化复杂应用开发。 | 30k | Medium | Check first | – |
 | [chroma](https://www.freeairepo.com/repo/chroma-core/chroma) | Build vector databases for AI search and retrieval. | 30k | Medium | Yes | – |
 | [kotaemon](https://www.freeairepo.com/repo/Cinnamon/kotaemon) | Build and use RAG-based document QA systems with a customizable UI. | 26k | Medium | Yes | No GPU |
-| [pgvector](https://www.freeairepo.com/repo/pgvector/pgvector) | Open-source vector similarity search for Postgres | 24k | – | Check first | – |
+| [pgvector](https://www.freeairepo.com/repo/pgvector/pgvector) | Open-source vector similarity search for Postgres | 24k | Easy | Check first | – |
 | [localGPT](https://www.freeairepo.com/repo/PromtEngineer/localGPT) | LocalGPT privately indexes and queries documents with AI. | 22k | Hard | Yes | Mac, No GPU |
 | [memvid](https://www.freeairepo.com/repo/memvid/memvid) | Provides persistent, model-agnostic memory for AI agents. | 17k | Hard | Yes | No GPU |
-| [weaviate](https://www.freeairepo.com/repo/weaviate/weaviate) | Weaviate is an open-source vector database that stores both objects and vectors, allowing… | 17k | – | Check first | – |
+| [weaviate](https://www.freeairepo.com/repo/weaviate/weaviate) | Weaviate is an open-source vector database that stores both objects and vectors, allowing… | 17k | Easy | Check first | – |
 | [LEANN](https://www.freeairepo.com/repo/StarTrail-org/LEANN) | Transform laptop into a powerful RAG system with 97% storage savings. | 14k | Easy | Yes | No GPU |
 | [txtai](https://www.freeairepo.com/repo/neuml/txtai) | txtai is an all-in-one AI framework for semantic search and LLM workflows. | 13k | Medium | Yes | No GPU |
 | [all-in-rag](https://www.freeairepo.com/repo/datawhalechina/all-in-rag) | 🔍大模型应用开发实战一：RAG 技术全栈指南，在线阅读地址：https://datawhalechina.github.io/all-in-rag/ | 13k | – | Check first | – |
@@ -231,8 +247,8 @@ More in [Image generation & editing](https://www.freeairepo.com/category/image).
 | [Toonflow-app](https://www.freeairepo.com/repo/HBAI-Ltd/Toonflow-app) | 开源AI工具，用于短剧、漫剧和短视频创作。 | 21k | Easy | Yes | Mac, No GPU |
 | [LivePortrait](https://www.freeairepo.com/repo/KlingAIResearch/LivePortrait) | Animate portraits and create lifelike videos. | 19k | Hard | Check first | Mac, No GPU |
 | [video-shotcraft](https://www.freeairepo.com/repo/Vincentwei1021/video-shotcraft) | Automate creation of cinematic product videos with AI and Remotion. | 17k | Easy | Yes | – |
-| [waoowaoo](https://www.freeairepo.com/repo/waooAI/waoowaoo) | AI agent for controlled film and video production. | 15k | – | Check first | – |
 | [Concat](https://www.freeairepo.com/repo/jub0t/Concat) | The truly free, open-source, local-first, cross-platform CapCut replacement. Scriptable t… | 15k | Easy | Yes, with conditions | Mac |
+| [waoowaoo](https://www.freeairepo.com/repo/waooAI/waoowaoo) | AI agent for controlled film and video production. | 15k | – | Check first | – |
 | [palmier-pro](https://www.freeairepo.com/repo/palmier-io/palmier-pro) | AI-powered macOS video editor with built-in generation and MCP support. | 15k | Easy | Yes, with conditions | Mac |
 | [OpenCreator](https://www.freeairepo.com/repo/krillinai/OpenCreator) | Unified AI workspace for video, image, and voice creation and editing. | 14k | Easy | Yes | No GPU |
 | [lemo-opuscar](https://www.freeairepo.com/repo/lemomo-ai/lemo-opuscar) | Create films using AI-generated code and styles. | 13k | Hard | Yes | No GPU |
@@ -259,7 +275,7 @@ More in [Video](https://www.freeairepo.com/category/video).
 | [whisper](https://www.freeairepo.com/repo/openai/whisper) | Speech recognition model for multilingual transcription and translation. | 112k | – | Yes | Mac, GPU 8 GB |
 | [VoiceStudio](https://www.freeairepo.com/repo/debpalash/VoiceStudio) | Create and use cloned voices for various tasks locally. | 103k | Easy | Yes, with conditions | Mac, No GPU |
 | [ppt-master](https://www.freeairepo.com/repo/hugohe3/ppt-master) | AI generates native PowerPoint presentations from documents. | 74k | Easy | Yes | – |
-| [GPT-SoVITS](https://www.freeairepo.com/repo/RVC-Boss/GPT-SoVITS) | Converts voice samples to text-to-speech models for various languages. | 65k | Hard | Yes | Mac, No GPU |
+| [GPT-SoVITS](https://www.freeairepo.com/repo/RVC-Boss/GPT-SoVITS) | Converts voice samples to text-to-speech models for various languages. | 64k | Hard | Yes | Mac, No GPU |
 | [voicebox](https://www.freeairepo.com/repo/jamiepine/voicebox) | Local AI voice studio for voice cloning and speech generation. | 60k | Easy | Yes | Mac, No GPU |
 | [whisper.cpp](https://www.freeairepo.com/repo/ggml-org/whisper.cpp) | Transcribes speech to text using OpenAI's Whisper model in C/C++. | 55k | Medium | Yes | Mac, No GPU |
 | [VoxCPM](https://www.freeairepo.com/repo/OpenBMB/VoxCPM) | Generates high-quality multilingual speech from text. | 41k | Medium | Yes | GPU 2 GB |
@@ -365,9 +381,9 @@ More in [Training & fine-tuning](https://www.freeairepo.com/category/data-ml).
 | [frigate](https://www.freeairepo.com/repo/blakeblackshear/frigate) | Local NVR with AI object detection for IP cameras. | 37k | – | Yes | No GPU |
 | [llamafile](https://www.freeairepo.com/repo/mozilla-ai/llamafile) | Run LLMs and speech-to-text models with a single-file executable. | 27k | – | Check first (model) | Mac, No GPU |
 | [llm-action](https://www.freeairepo.com/repo/liguodongiot/llm-action) | 本项目旨在分享大模型相关技术原理以及实战经验（大模型工程化、大模型应用落地） | 25k | – | Yes | – |
-| [ds4](https://www.freeairepo.com/repo/antirez/ds4) | DeepSeek 4 Flash and PRO local inference engine for Metal, CUDA and ROCm | 24k | – | Yes | Mac |
+| [ds4](https://www.freeairepo.com/repo/antirez/ds4) | DeepSeek 4 Flash and PRO local inference engine for Metal, CUDA and ROCm | 24k | Hard | Yes | Mac |
 | [mlc-llm](https://www.freeairepo.com/repo/mlc-ai/mlc-llm) | Compile and deploy large language models on various platforms. | 23k | – | Yes | Mac, No GPU |
-| [openobserve](https://www.freeairepo.com/repo/openobserve/openobserve) | Open source observability platform for logs, metrics, traces, RUM (web, android, ios), Se… | 23k | – | Yes, with conditions | – |
+| [openobserve](https://www.freeairepo.com/repo/openobserve/openobserve) | Open source observability platform for logs, metrics, traces, RUM (web, android, ios), Se… | 23k | Medium | Yes, with conditions | – |
 | [turbovec](https://www.freeairepo.com/repo/RyanCodrai/turbovec) | A fast, low-memory vector index for Python and Rust. | 17k | Medium | Yes | No GPU |
 | [kubesphere](https://www.freeairepo.com/repo/kubesphere/kubesphere) | The container platform tailored for Kubernetes multi-cloud, datacenter, and edge manageme… | 17k | – | Check first | – |
 | [MNN](https://www.freeairepo.com/repo/alibaba/MNN) | A high-performance inference engine for deploying LLMs and Edge AI models. | 16k | – | Yes | No GPU |
@@ -404,11 +420,11 @@ More in [Inference & serving](https://www.freeairepo.com/category/infra).
 | [opik](https://www.freeairepo.com/repo/comet-ml/opik) | Monitor and evaluate LLM applications and AI agents with comprehensive tracing and dashbo… | 23k | Easy | Yes | – |
 | [coze-studio](https://www.freeairepo.com/repo/coze-dev/coze-studio) | Develop AI agents with visual tools and low-code frameworks. | 22k | Hard | Yes | No GPU |
 | [langchainjs](https://www.freeairepo.com/repo/langchain-ai/langchainjs) | Build LLM-powered applications with a modular framework. | 18k | – | Yes | – |
+| [math](https://www.freeairepo.com/repo/openai/math) | This repository contains mathematical manuscripts and supporting proof artifacts produced… | 17k | – | Yes | – |
 | [ComfyUI-Manager](https://www.freeairepo.com/repo/Comfy-Org/ComfyUI-Manager) | Manage custom nodes in ComfyUI for AI image generation. | 17k | – | Yes, with conditions | – |
 | [open-saas](https://www.freeairepo.com/repo/wasp-lang/open-saas) | A 100% free modern JS SaaS boilerplate (React, NodeJS, Prisma). Full-featured: Auth (emai… | 16k | – | Yes | – |
 | [bentopdf](https://www.freeairepo.com/repo/alam00000/bentopdf) | The Privacy First PDF Toolkit | 16k | Medium | Yes, with conditions | – |
 | [prompt-master](https://www.freeairepo.com/repo/nidhinjs/prompt-master) | Writes accurate prompts for any AI tool, saving tokens and credits. | 16k | Hard | Yes | – |
-| [Skill_Seekers](https://www.freeairepo.com/repo/yusufkaraaslan/Skill_Seekers) | Converts documentation and code into structured knowledge for AI platforms. | 15k | Medium | Yes | No GPU |
 
 More in [Dev tools & SDKs](https://www.freeairepo.com/category/dev-tools).
 

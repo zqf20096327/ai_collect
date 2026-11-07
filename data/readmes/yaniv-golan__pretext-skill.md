@@ -36,7 +36,7 @@ This skill teaches AI agents how to use pretext correctly. Tracks `@chenglou/pre
 - **Migration** — upgrading from 0.0.x to 1.0: checking the installed version, finding old usage, breaking and silent changes
 - **Accuracy** — painting text so the browser wraps it to the same lines, font and language pitfalls, CSS Pretext doesn't model, running outside the browser
 - **Integration patterns** — wrapper modules, auto-fit font size, height estimation, truncation with an ellipsis, virtualized lists, text around obstacles with and without string allocation, rich inline runs with chips, mentions and images, shrink-wrap chat bubbles
-- **Creative patterns** — editorial layouts, balanced/Knuth-Plass paragraphs, streaming AI chat, framework-integration idioms (React/Vue/Svelte)
+- **Creative patterns** — editorial layouts, balanced/Knuth-Plass paragraphs, streaming AI chat, text on both sides of moving shapes and masks, per-character positions for letters as particles or game pieces, proportional ASCII art, framework-integration idioms (React/Vue/Svelte)
 - **When NOT to use Pretext** — CSS-only solutions, and mixed HTML content Pretext can't size
 
 ## Installation
@@ -151,6 +151,14 @@ How do I render an @mention chip inside a chat bubble using pretext's rich-inlin
 Upgrade this project from pretext 0.0.x to 1.0 and fix the calls that changed
 ```
 
+```
+Make every letter of this paragraph explode into particles on a canvas
+```
+
+```
+Flow this article around a dragon that follows the cursor, with text on both sides
+```
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history. The latest release notes are on the [GitHub Releases](https://github.com/yaniv-golan/pretext-skill/releases) page.
@@ -159,6 +167,7 @@ See [CHANGELOG.md](CHANGELOG.md) for the full version history. The latest releas
 
 - [docs/cross-platform.md](docs/cross-platform.md) — how this single repo ships to Claude Code, Cursor, ChatGPT, Manus, Codex CLI, and any agentskills.io host
 - [VERSIONING.md](VERSIONING.md) — version source-of-truth and release process
+- `evals/pretext/cowork/` — scenarios for [cowork-harness](https://github.com/yaniv-golan/cowork-harness), which runs the skill under Claude Cowork's runtime and compares two versions of it with `cowork-harness eval`. It's how changes to this skill are checked against real agent runs before release
 
 ## License
 

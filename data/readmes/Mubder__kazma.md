@@ -16,7 +16,7 @@
     <a href="https://github.com/Mubder/kazma/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Mubder/kazma/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white" alt="CI status"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="MIT License"></a>
     <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/Python-3.11%20%E2%80%93%203.14-3776AB.svg?style=flat-square&logo=python&logoColor=white" alt="Python 3.11 to 3.14"></a>
-    <a href="https://github.com/Mubder/kazma/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/Tests-20%2C047-10B981.svg?style=flat-square&logo=pytest&logoColor=white" alt="Tests"></a>
+    <a href="https://github.com/Mubder/kazma/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/Tests-20%2C107-10B981.svg?style=flat-square&logo=pytest&logoColor=white" alt="Tests"></a>
     <a href="https://kazma.ai/docs/security/prompt-injection/"><img src="https://img.shields.io/badge/Prompt_injection-measured-EF4444.svg?style=flat-square" alt="Prompt injection measured"></a>
     <a href="https://kazma.ai"><img src="https://img.shields.io/badge/Website-kazma.ai-06B6D4.svg?style=flat-square" alt="Website"></a>
   </p>
@@ -36,13 +36,13 @@
 <!-- Metrics auto-verified from METRICS.md -->
 | Codebase | Test suite | History | Talk to it from |
 |---|---|---|---|
-| **~789K LOC** (626K Python code + 46K JS) | **20,047 tests** (1,533 test files) | **4,504+ commits** across 6 packages | Web · TUI · CLI · Telegram · Discord · Slack |
+| **~791K LOC** (629K Python code + 46K JS) | **20,107 tests** (1,539 test files) | **4,512+ commits** across 6 packages | Web · TUI · CLI · Telegram · Discord · Slack |
 
 ---
 
 ## Quick start
 
-**You need:** Python 3.11 to 3.14 (3.12 or 3.13 recommended), Git, and one model:
+**You need:** Git and one model (the setup script installs Python 3.11 to 3.14 through uv when there is none):
 an API key from a provider (OpenAI, Anthropic, Google, DeepSeek, OpenRouter and
 [others](https://kazma.ai/docs/configuration/)) or a model running locally in
 Ollama or LM Studio.
@@ -55,26 +55,33 @@ Ollama or LM Studio.
 git clone https://github.com/Mubder/kazma.git
 cd kazma
 ./setup.sh
-source .venv/bin/activate
-kazma serve
 ```
 
-**Windows (PowerShell)**
+**Windows (PowerShell or Command Prompt)**
 
 ```powershell
 git clone https://github.com/Mubder/kazma.git
 cd kazma
-.\setup.ps1
-.venv\Scripts\Activate.ps1
-kazma serve
+.\setup.cmd
 ```
 
-Open **http://127.0.0.1:9090**. On the first visit the chat page asks for a
-provider, its key and a model; after that, Kazma is ready to talk.
+`setup.cmd` runs `setup.ps1` for you: a fresh Windows refuses to run
+PowerShell scripts, and `setup.cmd` gets past that for this one run without
+changing any setting.
 
-The script installs [`uv`](https://docs.astral.sh/uv/) if it is missing,
-creates `.venv` with the `rag`, `dev` and `tui` extras, copies `.env.example`
-to `.env`, and checks the core imports.
+Setup installs Kazma as a service and, once it answers, opens
+**http://127.0.0.1:9090**. On the first visit the chat page asks for a
+provider, its key and a model; after that, Kazma is ready to talk. If you
+leave the service out (Custom), start Kazma yourself:
+`.venv/bin/kazma serve` (Windows: `.venv\Scripts\kazma serve`).
+
+The script installs [`uv`](https://docs.astral.sh/uv/) if it is missing (and
+through it a Python, when there is none), then asks how to install Kazma:
+**Express** (the default: everything that needs no Docker), **Full** (every
+part, Docker and PostgreSQL among them) or **Custom** (a checklist; each part
+says what Kazma lacks without it). It checks everything first, shows one plan,
+asks once, and records what it did, so running it again continues where it
+stopped. The parts: [Quickstart](https://kazma.ai/docs/quickstart/).
 
 ### 2. Docker Compose
 

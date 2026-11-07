@@ -51,7 +51,7 @@ method are in [docs/BENCHMARKS.md](docs/BENCHMARKS.md). Every row is one session
 - **[A conversation cache](#picks-up-where-you-left-off)** that survives follow-ups, edits, new agent sessions and
   switching between conversations.
 - **[OpenAI, Anthropic and Responses APIs](#works-with-your-coding-agent)**, tested with 11 coding agents and chat UIs.
-- **Images and video**, encoded on the CPU, so they take no VRAM.
+- **Images and video**, encoded on the CPU, so the encoder takes no VRAM.
 - **Several agents at once:** `--agents 4` serves 424 tok/s in total on short prompts (Q4_K_M), 360 with ~23k tokens
   of context each, against 137 and 97 for llama.cpp's `llama-server --parallel 4` measured on 2026-11-02, sampled
   ([parallel agents](docs/BENCHMARKS.md#parallel-agents)).
@@ -115,21 +115,25 @@ environment variables (`MK_HOST=0.0.0.0` for the LAN, `MK_KV` / `MK_KV_WIN` for 
 ## Exact output
 
 Speculative decoding is lossless on paper, but verifying several tokens in one pass rounds differently from verifying
-one, so in practice greedy output drifts with the draft count: on 9 of the 282 benchmark questions, llama.cpp b12024
-gives a different greedy answer at 4 drafts than at 7 (8 of them reproducibly from the depth). A reused cache or another
-compiler can drift the same way. This engine is built so none of them change the output:
+one, so in practice greedy output moves with drafting: on the 282 benchmark questions, llama.cpp b12024's greedy answer
+differs from its own without drafts on 113 at 4 drafts and on 113 at 7, and between 4 and 7 on 9 (8 of them reproducibly
+from the depth). A reused cache or another compiler can drift the same way. This engine is built so none of them change
+the output. All 282 of its answers are the same at 7 drafts as with none:
 
-- **Drafting never changes the answer.** Greedy token ids are identical at 0, 4 and 7 drafts. Sampled output keeps the
-  distribution of sampling without drafts (chi-square and PIT tests).
+- **Drafting never changes the answer.** Greedy token ids are identical at 0, 4 and 7 drafts, over about 2,000 tokens of
+  output and under every draft policy. Sampled output keeps the distribution of sampling without drafts (chi-square
+  tests of a CPU replica of the loop and a PIT test on the engine, 2026-10-17; not part of the gate).
 - **A cached conversation answers like a fresh one.** With exact reuse (the launchers' default), follow-ups, edits,
   resumed sessions and conversations restored from host memory all continue bit for bit like the same request sent
   fresh, greedy or sampled with the same seed.
 - **Windows and Linux agree bit for bit.** The MSVC and g++ builds give the same token ids, server replies and
   image-encoder rows.
 
-So an agent's run can be reproduced, and an odd reply is never the speculation's or the cache's doing. Every release
-is gated on these checks, and you can run them on your own build: `scripts/exactness.py` for the core checks,
-`scripts/gate.sh` for all of them ([checking a build](docs/BUILDING.md#checking-a-build)).
+So an agent's run can be reproduced, and an odd reply is never the speculation's or the cache's doing. These hold on q8_0
+and on the presets, each against itself. Every release is gated on the drafting and cache checks, and you can run
+them on your own build: `scripts/exactness.py` for the exact-output checks, `scripts/gate.sh` for those and the rest of
+the GPU checks ([checking a build](docs/BUILDING.md#checking-a-build)). Windows against Linux is `scripts/exactness.py`
+run on both builds and compared with `--compare`, by hand.
 
 Not bit-identical, by design:
 - **llama.cpp.** Its arithmetic is ordered and rounded differently. Against llama.cpp's own token-by-token
@@ -139,6 +143,8 @@ Not bit-identical, by design:
   `scripts\serve.bat` uses preset F above 240k context unless `MK_KV` is set.
 - **`MK_EXACT_REUSE=0`**, which makes follow-up turns faster by appending to the previous reply instead of reading it
   again.
+- **Sampled replies beside other requests with `--agents`**: they keep their distribution but not their tokens. Greedy
+  replies are the same beside others as alone.
 
 Evidence and the tests behind each line: [docs/BENCHMARKS.md](docs/BENCHMARKS.md#exactness).
 
@@ -187,7 +193,7 @@ same request sent fresh would.
   Claude Code session starts with 8,288 of its 11,850 prompt tokens already cached, a new Codex CLI session with 8,672
   of 8,847.
 - **Several conversations** take turns: the inactive ones are parked in host memory. A 120k-token conversation comes
-  back in 0.18 s instead of the 98 s it takes to read it again.
+  back in 0.18 s instead of the 98 s it took to read it again (2026-10-19).
 - **Title, tag and summary requests** run beside the session (side requests) instead of throwing its cache away.
 
 How it works and how to size it: [docs/SERVER.md](docs/SERVER.md#the-conversation-cache).
@@ -219,13 +225,13 @@ also need the context window set by hand, some the image flag or the thinking le
   build), lm_head, draft verification, the MTP catch-up and the next drafts (about 340 phases) run in one persistent
   cooperative kernel. The host only reads back the accepted tokens.
 - **Verification on int8 tensor cores.** The main pass runs as int8 GEMMs, so a cycle that verifies 8 tokens costs
-  about 29 ms against 22 ms for one.
+  about 29 ms against 22 ms for one (a 2026-10-16 build: [ENGINE.md](docs/ENGINE.md#how-it-works)).
 - **Weights stay in their GGUF k-quant encoding**, re-laid-out at load for aligned loads (values unchanged) and read
   once per cycle however many tokens are verified.
 - **DeltaNet rollback by lazy replay.** The recurrent state commits only through the surely-accepted token; rejected
   drafts cost no state snapshots.
 - **Attention straight from the q8_0 cache:** a software-pipelined decode kernel, and Q K^T on int8 tensor cores in
-  prefill. The batched tensor-core prefill reads 101.6k tokens in 75 s.
+  prefill. The batched tensor-core prefill reads a 101.6k-token prompt in 68.5 s.
 
 The full tour: [docs/ENGINE.md](docs/ENGINE.md).
 

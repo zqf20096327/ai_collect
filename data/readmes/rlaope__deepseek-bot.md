@@ -7,7 +7,7 @@
 <br>
 <br>
 
-<img src="docs/assets/logo-pixel.svg" alt="deepseek-bot logo: DeepSeek's whale in square blue pixels with the word bot, on a black rounded tile" width="200">
+<img src="docs/assets/poster.jpg" alt="DEEPSEEK-BOT, an agent that remembers: a blue twin-tailed girl with a whale hairclip and a whale laptop, a plush whale on her shoulder, on black with blue pixel blocks" width="480">
 
 <br>
 <br>

@@ -44,8 +44,9 @@ From("kafka://orders?groupId=svc&brokers=localhost:9092")
 - [Routing Patterns](#routing-patterns) — From, To, Filter, Choice, Split, Recipient List, Dynamic Router
 - [Error Handling](#error-handling) — [Retry](#retry-per-step) · [Dead Letter Channel](#dead-letter-channel) · [TryCatch](#trycatch-scoped) · [OnException scope](#onexception--scope-form-chain) · [Route configuration](#route-configuration--handlers-apart-from-the-routes) · [OnException configure](#onexception--configure-form-action) · [Redelivery options](#redelivery-configuration) · [Combined example](#combined-example)
 - [Message Transformation](#message-transformation) — SetBody, SetHeader, Marshal, Unmarshal, header filter strategy
-- [Expression Language](#expression-language) — helpers, predicates, string templates, prefix resolvers
+- [Expression Language](#expression-language) — helpers, predicates, a short reference; the full guide is [EXPRESSIONS.md](EXPRESSIONS.md)
 - [Other EIP Patterns](#other-eip-patterns) — WireTap, Multicast, Throttle, Circuit Breaker, Saga, Idempotent Consumer, Loop, Delay, Resequencer, Enrich
+- [Bean References](#bean-references) — `bean:` URI, `.Bean(ref, method)`, `<bean ref method/>`
 - [Request-Response (InOut)](#request-response-inout)
 - [Concurrency & Parallelism](#concurrency--parallelism) — `.Threads(N)` EIP, consumer-level knobs, [full guide](CONCURRENCY.md)
 - [Transactions](TRANSACTIONS.md) — `.Transacted()`, commit order (database, sends, acknowledgement), `Retry`, idempotent consumer
@@ -440,6 +441,9 @@ If you know Camel, you know redb.Route — same EIP patterns, same `from → pro
 | Configuration | XML DSL or Java DSL | C# fluent DSL only |
 | Runtime / orchestration | Camel K / JBoss Fuse | [redb.Tsak](#running-routes-in-production--redbtsak) |
 | Platform | JVM | .NET 8 / 9 / 10 |
+
+4.7 is the last release that targets .NET 8 and .NET 9 (Microsoft's support for both ends on 10 November 2026); from
+4.8 the packages target .NET 10 and later.
 
 What redb.Route does differently from Camel:
 
@@ -980,30 +984,20 @@ Header("optional").isNull()
 Header("required").isNotNull()
 ```
 
-### String Expressions
+### Expressions, templates and conditions
 
-`Expr()` creates a `StringExpression` that auto-detects `${...}` templates vs raw value expressions. Beyond plain interpolation, the engine supports arithmetic, increment/decrement, and comparison operators that compile to expression trees:
+The full guide is [EXPRESSIONS.md](EXPRESSIONS.md): positions of the language, operators and functions, templates and
+types, truthiness, braces and quoting, the `bean:` function, `Method()`, and what `check` / `pack` verify. Every
+example there is run by the test suite. In short:
 
 ```csharp
-// Template mode — ${...} placeholders interpolated at runtime
-.SetBody(Expr("${header.orderId}-${body}"))
-.SetHeader("trace", Expr("${header.source}-${header.correlationId}"))
-
-// Increment / decrement (mutates the underlying header/property)
-.SetHeader("attempt", Expr("${header.attempt++}"))   // post-increment, returns old value
-.SetHeader("attempt", Expr("${++header.attempt}"))   // pre-increment, returns new value
-
-// Arithmetic
-.SetHeader("total", Expr("${header.qty * header.price}"))
-.SetHeader("net",   Expr("${header.gross - header.tax}"))
-
-// Value mode — evaluated as expression, result is object
-.Filter(Expr("header.amount").isGreaterThan(1000))
-.SetBody(Expr("header.total"))
-
-// String expressions in Filter/When (shorthand, no Expr needed)
-.Filter("header.priority == 'high'")
-.When("header.amount > 1000")
+.Filter("header.amount > 1000 AND header.region == 'eu'")      // a condition, written bare
+.SetHeader("routeKey", Expr("${header.region}-${header.id}"))  // a template: text with placeholders
+.SetHeader("total", Expr("${header.qty * header.price}"))      // a whole placeholder keeps its type
+.SetBody(Expr("upper(body)"))                                  // an expression
+.Filter("bean:loyalty.IsGold(header.customer)")                // a registry bean's method in a condition
+.SetBody(Method("#pricing", "Gross(${header.qty}, 2.5)"))      // the same call, typed (Camel's method())
+.SetHeader("note", "a>b is not a comparison here")             // a plain string is a literal
 ```
 
 A root of your own (`${order.total}`) is a prefix resolver. Registered on a route context, it serves the expressions of
@@ -1093,6 +1087,57 @@ context.RegisterPrefixResolver("order.", (exchange, path) => orders.Read(exchang
     exchange.In.Body = result;
 })
 ```
+
+---
+
+## Bean References
+
+User code is called through the `bean:` component, Apache Camel's bean component. Every spelling below, in C# or
+in XML, produces the same endpoint, so its cache entry, statistics and redaction are the same:
+
+```csharp
+.To("bean:#pricing?method=Gross(${header.qty}, ${header.price})")  // the URI
+.Bean("#pricing", "Gross(${header.qty}, ${header.price})")          // Camel's bean(ref, method)
+.Bean("Acme.Orders.Pricing, Acme.Orders", "Gross")                  // an instance the endpoint creates
+```
+
+```xml
+<bean ref="#pricing" method="Gross(${header.qty}, ${header.price})"/>
+<bean beanType="Acme.Orders.Pricing, Acme.Orders" method="Gross" Currency="EUR"/>
+<to><bean path="#pricing" method="Gross"/></to>
+<to uri="bean:#pricing?method=Gross"/>
+```
+
+- **The target.** `#name` is an object in the context registry (`AddToRegistry`, or a `<bean name type>`
+  declaration under `<routes>` or `<context>`). `Namespace.Type, Assembly` is an instance created per endpoint;
+  further options (`Currency="EUR"`) set its public properties.
+- **The method.** `method=Name` calls a method taking `(IExchange)` or `(IExchange, CancellationToken)`.
+  `method=Name(arg, ...)` binds each argument from a route-language expression and converts it to the
+  parameter type; an `IExchange`, `IMessage` or `CancellationToken` parameter is filled in by the binding.
+  Without `method=` the single suitable method is called.
+- **The result.** A returned value (awaited for `Task<T>` and `ValueTask<T>`) becomes the body; a `void` or
+  `Task` method leaves the body as it was.
+- **An `IProcessor` object.** `bean:#myProcessor` calls its `Process(IExchange, CancellationToken)` when that is
+  the type's single suitable method. If the type has others, name it: `bean:#myProcessor?method=Process`.
+- **Lifetime.** An instance lives as long as its endpoint, so equal URIs share it. For a service per exchange,
+  `.Bean<TService>((service, exchange) => ...)` resolves `TService` from the exchange's service provider.
+
+A registry bean's method can also stand where an expression stands: in a condition, a value or a template.
+
+```csharp
+.Filter("bean:loyalty.IsGold(header.customer)")                 // the expression function, bare
+.SetHeader("total", Expr("${bean:pricing.Gross(header.qty, 2.5)}"))
+.Filter(Method("#loyalty", "IsGoldAsync(${header.customer})"))  // Camel's method(); Task<bool> is awaited here
+```
+
+```xml
+<filter expr="bean:loyalty.IsGold(header.customer)">
+  <setBody expr="${bean:pricing.Badge(header.customer, ${header.points})}"/>
+</filter>
+```
+
+The function is synchronous, as in Apache Camel's Simple language: an asynchronous method is called as a step.
+`Method()` in a condition awaits a `Task<bool>`. The rules are in [EXPRESSIONS.md](EXPRESSIONS.md#11-calling-a-bean-bean).
 
 ---
 
@@ -1318,16 +1363,43 @@ twice, so the receiving side deduplicates. The full recipe, both routes, is in
 }
 """)
 
-// XSD
+// XSD: the schema's text, one file (its imports have no location to resolve from). A schema's own DOCTYPE is
+// skipped; a message with a DTD is refused.
 .ValidateXsd(xsdContent)
+
+// XSD from a file, with its xs:import and xs:include read relative to it (UBL, ebMS3, any multi-file schema)
+.ValidateXsdFile("schemas/ubl/maindoc/UBL-Invoice-2.1.xsd", schemaRoot: "..")
 
 // Custom predicate
 .Validate(e => ((Order)e.In.Body!).Amount > 0, "Amount must be positive")
+
+// An expression read as a condition, as Filter and When read one; Method() calls a registry bean
+.Validate(Expr("header.amount > 0"), "Amount must be positive")
+.Validate(Method("#rules", "IsAllowed(${header.customer})"), "Customer not allowed")   // Task<bool> is awaited
 
 // FluentValidation and DataAnnotations (redb.Route.Validation.Adapters)
 .ValidateFluent(new OrderValidator())
 .ValidateAnnotations()
 ```
+
+### Multi-file XSD schemas
+
+`ValidateXsdFile(path, targetNamespace, schemaRoot, throwOnFailure)`, `<validateXsd file="…" schemaRoot="…"/>` and
+`validator:path.xsd?schemaRoot=…` read the schema from its file, so its imports and includes resolve relative to it.
+The path goes through the context's resource resolver, as `xslt` does. Imports and includes are read only from
+under `schemaRoot`: a directory relative to the schema's own, which is the default. UBL keeps `maindoc/` next to
+`common/`, so `schemaRoot=".."` there.
+
+What is refused, when the route is built, with a message naming the reference:
+
+- an import or include that is not found, even one the schema does not use;
+- one outside `schemaRoot`, including an absolute `file:` path;
+- one on the network (`http://…`, such as `http://www.w3.org/2001/xml.xsd`): copy the file into the package and point
+  `schemaLocation` at it.
+
+A DOCTYPE in the schema or in an imported file is skipped, never fetched (W3C's `xmldsig-core-schema.xsd` has one).
+Once imports load, an `xs:any processContents="lax"` over an imported namespace is validated against its
+declarations. Inline content, `ValidateXsd(string)` and `ValidateXsd(XmlSchemaSet)` are unchanged.
 
 ---
 
@@ -1701,7 +1773,7 @@ Quick reference for `IRouteDefinition` methods. All of them return `IRouteDefini
 
 **Logging**: `Log` (template / lambda / scope), `EndLog()`
 
-**Validation**: `Validate`, `ValidateJsonSchema` (×2), `ValidateXsd` (×3), `ValidateFluent`, `ValidateAnnotations`
+**Validation**: `Validate`, `ValidateJsonSchema` (×2), `ValidateXsd` (×3), `ValidateXsdFile`, `ValidateFluent`, `ValidateAnnotations`
 
 **Lifecycle**: `Transacted`, `RollbackAll`, `Respond`, `SetPattern`, `Stop`
 
@@ -1865,25 +1937,4 @@ For transports that support transactions, combine with `.Transacted()` to wrap p
 | `redb.Route.Tcp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Tcp?label=)](https://www.nuget.org/packages/redb.Route.Tcp) | Raw TCP — text-line, length-prefixed, TLS |
 | `redb.Route.WebSocket` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.WebSocket?label=)](https://www.nuget.org/packages/redb.Route.WebSocket) | WebSocket — client and Kestrel server |
 | `redb.Route.Quartz` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Quartz?label=)](https://www.nuget.org/packages/redb.Route.Quartz) | Quartz.NET scheduling (Cron + Timer) |
-| `redb.Route.Core` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Core?label=)](https://www.nuget.org/packages/redb.Route.Core) | Bridge to [redb](https://github.com/redbase-app/redb) typed object storage — `IRedbService` access, idempotent repository |
-| `redb.Route.AzureServiceBus` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.AzureServiceBus?label=)](https://www.nuget.org/packages/redb.Route.AzureServiceBus) | Azure Service Bus — queues, topics, sessions |
-| `redb.Route.Elasticsearch` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Elasticsearch?label=)](https://www.nuget.org/packages/redb.Route.Elasticsearch) | Elasticsearch 8.x — search, CRUD, 9 operations |
-| `redb.Route.Firebase` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Firebase?label=)](https://www.nuget.org/packages/redb.Route.Firebase) | Firebase — Firestore, Cloud Storage, FCM |
-| `redb.Route.Ftp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Ftp?label=)](https://www.nuget.org/packages/redb.Route.Ftp) | FTP/FTPS (FluentFTP) |
-| `redb.Route.GenericFile` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.GenericFile?label=)](https://www.nuget.org/packages/redb.Route.GenericFile) | Base library for File, FTP, SFTP transports |
-| `redb.Route.IbmMq` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.IbmMq?label=)](https://www.nuget.org/packages/redb.Route.IbmMq) | IBM MQ — queues, topics, transactions, RPC |
-| `redb.Route.Ldap` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Ldap?label=)](https://www.nuget.org/packages/redb.Route.Ldap) | LDAP / Active Directory — search, CRUD, auth |
-| `redb.Route.S3` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.S3?label=)](https://www.nuget.org/packages/redb.Route.S3) | AWS S3 / MinIO — upload, download, multipart |
-| `redb.Route.Sqs` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sqs?label=)](https://www.nuget.org/packages/redb.Route.Sqs) | Amazon SQS + SNS — queue consume/produce, FIFO, SNS publish + SNS→SQS |
-| `redb.Route.Telegram` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Telegram?label=)](https://www.nuget.org/packages/redb.Route.Telegram) | Telegram Bot API — long-poll consumer + send/document/photo/edit/delete/answer producer, 429 handling, inline/reply keyboards, webhook unpack |
-| `redb.Route.SignalR` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.SignalR?label=)](https://www.nuget.org/packages/redb.Route.SignalR) | SignalR — Hub server and client/broadcast producer |
-| `redb.Route.Llm` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm?label=)](https://www.nuget.org/packages/redb.Route.Llm) | LLM connector — `llm:` URI, fluent DSL, agent loop, universal OpenAI-compatible provider (14 APIs), native Anthropic Messages API provider, `AddRedbLlmStorage()` (5 stores / 9 schemas) |
-| `redb.Route.Llm.Abstractions` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Abstractions?label=)](https://www.nuget.org/packages/redb.Route.Llm.Abstractions) | LLM tool-capability contracts — `ILlmToolDescriptor`, `LlmToolCapability`, `RouteToolBridge`, `[ExposeAsLlmTool]`, `.AsLlmTool()` DSL aspect |
-| `redb.Route.Llm.Tools` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Tools?label=)](https://www.nuget.org/packages/redb.Route.Llm.Tools) | Utility LLM tools — HttpFetch, JsonPath, XPath, MathEval, RegexExtract, Tavily web search |
-| `redb.Route.Llm.Mcp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Llm.Mcp?label=)](https://www.nuget.org/packages/redb.Route.Llm.Mcp) | MCP-client connector — `mcp:` URI, stdio + HTTP/SSE transports, auto-discovery via `tools/list`, cancellation forwarded as `notifications/cancelled`, auto-restart on transport failure |
-| `redb.Route.Exec` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Exec?label=)](https://www.nuget.org/packages/redb.Route.Exec) | Local-process execution — `exec://run` producer + scheduled consumer, allowlist, working-directory pin, timeout, output caps |
-| `redb.Route.Controllers` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Controllers?label=)](https://www.nuget.org/packages/redb.Route.Controllers) | Controller dispatch — attribute routing, DI, InOut |
-| `redb.Route.Validation.Adapters` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Validation.Adapters?label=)](https://www.nuget.org/packages/redb.Route.Validation.Adapters) | Validation adapters — FluentValidation + DataAnnotations |
-| `redb.Route.Cache` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Cache?label=)](https://www.nuget.org/packages/redb.Route.Cache) | Caching as an EIP — a `.Cache(key, ttl)` scope and the `cache:` component over `IMemoryCache` / `IDistributedCache` |
-| `redb.Route.JsonTransform` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.JsonTransform?label=)](https://www.nuget.org/packages/redb.Route.JsonTransform) | Declarative JSON-to-JSON transformation (JSONata) |
-| `redb.Route.Templates` | [![NuGet](ht
+| `redb.Route.Core` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Core?label=)](https://www.n

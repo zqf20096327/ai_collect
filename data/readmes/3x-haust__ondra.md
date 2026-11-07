@@ -76,7 +76,7 @@ Work and personal are separate workspaces, not filters. Switching spaces switche
 
 **Shared browser.** A real Chrome inside the app, with a tab per job. Sign in once in the panel and that space's jobs use the session. Passwords come from the macOS Keychain and never reach the model. With Aside installed, jobs browse through it.
 
-**Computer use, in the background.** Jobs drive Mac apps through the Accessibility API without taking your mouse, keyboard or focus. Commands that would bring an app forward or type into your screen ask first. Keystrokes sent to the whole system are blocked. If an app a job launched jumps to the front, your window comes back right away.
+**Computer use.** Native Mac app automation requires a separately prepared, isolated macOS guest. It does not control windows already open on your Mac. Known host desktop commands are blocked, including process-targeted input; without a verified guest connection, native app automation stops instead of switching to your desktop. These command checks are not an OS sandbox for arbitrary shell commands.
 
 **Device use.** Each job makes its own iOS simulator or Android emulator, leaves screenshots as evidence and removes it when done. You can watch and touch the screen from the device panel. Emulators render on the Mac GPU and idle when nothing changes.
 
@@ -127,7 +127,7 @@ The canvas shows how main, projects, jobs and sub-agents connect, and what each 
    ```sh
    xattr -dr com.apple.quarantine /Applications/Ondra.app
    ```
-3. Connect a model account (ChatGPT/Codex, Claude, …) in Settings. Computer use asks once for Accessibility and Screen Recording permission.
+3. Connect a model account (ChatGPT/Codex, Claude, …) in Settings. Native computer use requires a separate macOS guest with its own apps and permissions; granting host Accessibility or Screen Recording permission does not provide an isolated environment.
 
 Ondra checks GitHub Releases and offers to update itself.
 
@@ -138,12 +138,13 @@ Requirements: macOS 13 or later, Apple silicon. Device use needs Xcode (iOS Simu
 ```sh
 pnpm install
 cp .env.example .env           # fill in values if you need them
-pnpm bundle                    # agent-browser, agent-desktop, the engine and headless Chrome into the app
+pnpm bundle                    # browser, desktop, agent engine, Chrome and native binary analyzer into the app
 pnpm tauri dev                 # run in development
 pnpm tauri build && pnpm dmg   # .app, then the install .dmg (pip install ds_store mac_alias)
 pnpm manifest                  # latest.json for in-app updates (build with TAURI_SIGNING_PRIVATE_KEY set)
 ```
 
+- Static binary analysis ships with radare2 and r2ghidra, including native libraries and processor data; users need no separate engine or runtime. Build and isolated package checks: [binary analyzer](tools/binary-analysis/README.md).
 - The agent engine is the coding-agent from [3xhaustpi](https://github.com/3x-haust/3xhaustpi), built into a single file. Put it in a sibling folder or point `ONDRA_ENGINE_DIST` at it.
 - On macOS 27, agent-desktop 1.1.0 hangs on every command when an app with pid -1 (Xcode's Device Hub) is running. Build it with the patch in `scripts/patches/` and put the binary at `~/.cache/ondra/agent-desktop-patched`; the bundle step uses it.
 
@@ -165,18 +166,5 @@ src/                 SolidJS UI
 src-tauri/src/       Rust: engine process, shared browser, worktrees, keychain, devices, notifications
 skills/              skills every job gets
 extensions/          engine extensions (permissions, devices, hooks, memory)
-evals/               harness evals and the improvement loop
 brand/ docs/         brand and design system
 ```
-
-## Evals
-
-The bar for changing Ondra is "does it do the next request well on its own". The cases in `evals/cases/` are sent to main for real and graded; `evals/main/` checks how main routes requests.
-
-```sh
-node evals/run.mjs                  # all
-node evals/run.mjs cu-calculator    # just one
-node evals/main-sim.mjs --parallel 5 <cases>   # main's routing
-```
-
-Each case checks whether it finished, the answer, evidence screenshots, time taken, tool count, failed tools, whether it took focus, and whether it cleaned up its devices. Results go to `evals/results/`; what was learned goes to `evals/LEARNINGS.md`.

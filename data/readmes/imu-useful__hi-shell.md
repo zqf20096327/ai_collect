@@ -1,6 +1,9 @@
 <div align="center">
 
-# 👋 hi-shell
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/logo-animated-dark.webp">
+  <img src="docs/logo-animated.webp" alt="hi-shell" width="260">
+</picture>
 
 **A Material 3 Expressive desktop shell for Hyprland — with AI built in.**
 
@@ -29,7 +32,7 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 | | |
 | --- | --- |
 | 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum |
-| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard (images with a preview), `/` settings |
+| 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard (images with a preview), `/` settings, `~` files in your home folder (needs `fd`); open windows are listed under a plain search, Enter focuses one |
 | ✨ **AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats. Works with Claude (through the `claude` CLI) and other AI services: [OpenRouter](https://openrouter.ai) (the free models included), OpenAI, Gemini, Groq, DeepSeek, Mistral, a local Ollama, or any OpenAI-compatible server |
 | 🪟 **Overlays** | Workspace overview with a tile and icon per window (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording (with system sound or the microphone), optional dock, rounded screen corners |
 | ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, AI chat, translator, clipboard history with image thumbnails |
@@ -49,18 +52,20 @@ and the audio spectrum is drawn by a single shader.
 
 ## Screenshots
 
+Short screen recordings of the shell.
+
 | | |
 | :---: | :---: |
-| <img src="docs/screenshots/launcher.webp" alt="App launcher"> | <img src="docs/screenshots/sidebar-right.webp" alt="Right sidebar"> |
-| **App launcher** — apps, settings, calculator, emoji, clipboard | **Right sidebar** — quick toggles, sliders, notifications |
-| <img src="docs/screenshots/settings.webp" alt="Settings"> | <img src="docs/screenshots/claude.webp" alt="AI palette"> |
-| **Settings** — every option, searchable from the launcher | **AI palette** — ask anything, answers stream in |
-| <img src="docs/screenshots/wallpapers.webp" alt="Wallpaper picker"> | <img src="docs/screenshots/display-mode.webp" alt="Display mode"> |
-| **Wallpapers** — local and online, scheme, mode, 28 frames | **Display mode** — duplicate or extend to a second screen |
-| <img src="docs/screenshots/welcome.webp" alt="Welcome"> | <img src="docs/screenshots/session.webp" alt="Session screen"> |
-| **First-run welcome** — language, look and shortcuts | **Session screen** — lock, log out, suspend, reboot, power off |
-| <img src="docs/screenshots/desktop-edit.webp" alt="Desktop edit mode"> | <img src="docs/screenshots/wait-mode.webp" alt="Wait Mode"> |
+| <img src="docs/demos/launcher.webp" alt="App launcher"> | <img src="docs/demos/sidebar.webp" alt="Right sidebar"> |
+| **App launcher** — apps, settings, calculator, emoji, clipboard | **Right sidebar** — quick toggles, sliders, calendar, todo, timers |
+| <img src="docs/demos/settings.webp" alt="Settings"> | <img src="docs/demos/wallpapers.webp" alt="Wallpaper picker"> |
+| **Settings** — every option, searchable from the launcher | **Wallpapers** — local and online, scheme, mode, 28 frames |
+| <img src="docs/demos/display.webp" alt="Display mode"> | <img src="docs/demos/session.webp" alt="Session screen"> |
+| **Display mode** — duplicate or extend to a second screen | **Session screen** — lock, log out, suspend, reboot, power off |
+| <img src="docs/demos/desktop_edit.webp" alt="Desktop edit mode"> | <img src="docs/demos/wait_mode.webp" alt="Wait Mode"> |
 | **Desktop edit mode** — drag, scale and stretch widgets | **Wait Mode** — a locked screen with the player and the queue |
+| <img src="docs/demos/overview.webp" alt="Workspace overview"> | <img src="docs/demos/calendar.webp" alt="Calendar"> |
+| **Workspace overview** — every workspace and its windows | **Calendar** — the month at a glance |
 
 ## Requirements
 
@@ -202,6 +207,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | <kbd>Super</kbd>+<kbd>Y</kbd> | AI palette |
 | <kbd>Super</kbd>+<kbd>U</kbd> | Right sidebar (also the system icons on the bar) |
 | <kbd>Super</kbd>+<kbd>Escape</kbd> | Settings |
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Escape</kbd> | Process manager: search, sort by CPU / RAM, end or force-kill (`ipc call processes toggle`) |
 | <kbd>Super</kbd>+<kbd>Tab</kbd> | Workspace overview |
 | <kbd>Alt</kbd>+<kbd>Tab</kbd> | Switch windows: hold Alt, Tab / Shift+Tab through recent windows (with previews), release to switch; a quick tap goes to the previous window |
 | <kbd>Super</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> | Region screenshot / OCR / recording (also the bar's screenshot button) |
@@ -225,6 +231,15 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | hover a bar widget | Details popup (media controls, resources, weather forecast, battery, updates) |
 | click the weather in the bar | Weather details: the current conditions, the next 24 hours and the 7 days (refresh button inside); `qs -c hi-shell ipc call weatherDetails toggle` |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |
+
+The `hi-shell` command (linked into `~/.local/bin` by `install.sh`) wraps the common jobs:
+
+```sh
+hi-shell doctor            # is the shell running, are its programs installed
+hi-shell qr [text]         # a QR code in the terminal (no text: the clipboard)
+hi-shell keybinds [word]   # the keybinds, optionally only those matching a word
+hi-shell ipc <target> <function> [args]   # the same as qs -c hi-shell ipc call ...
+```
 
 Change the keys in `~/.config/hypr/hi-shell/keybinds.lua` (the other files in that folder hold the startup, window and layer rules; `update.sh` keeps your edits and leaves a new version of a changed file as `<name>.lua.new`; turn on Settings → Hyprland → "Keep my Hyprland files on update", `hyprland.keepFiles` in the config, and updates don't touch that folder at all, they only list what changed upstream). Every panel can also be toggled over IPC, e.g. for your own binds or scripts:
 
@@ -272,13 +287,14 @@ Sections:
 
 - `language`: `auto` (from `$LANG`), `en` or `ru`
 - `appearance`: fonts, transparency, animation speed (`0` disables animations), matugen `scheme`, `autoMode`
+- `greeting`: the "Welcome back!" at every start: `enabled`, `text`, `style` (`random`, `rise`, `drop`, `pop`, `slide`, `spin`), `logo`; the very first start always plays its own animation
 - `wallpapers`: folders, download folder, `unsplashKey` / `wallhavenKey`, desktop `frame` shape, `frameDance` (the frame turns and pulses to the music)
 - `bar`: `position` (top, bottom, left, right), `style` (hug, float, islands, m3), height, margin, and the widget
   lists `left` / `center` / `right`. Widgets: `launcher`, `workspaces`, `activeWindow`, `media`, `resources`, `clock`,
   `weather`, `tray`, `systemIcons`, `notifications`, `utilButtons`, `networkSpeed`, `battery`, `updates`, `keyboardLayout`, `power`,
   `visualizer` (needs `cava`), `divider`. Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
   `bar.resources`, `bar.utilButtons`, `bar.updates`; `bar.media.spinArt` spins the cover art like a record while playing (on by default)
-- `sidebar`: `quickToggles.style` (android, classic) and `quickToggles.shown` (order; also editable with the ✎ button
+- `sidebar`: `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
   in the sidebar), night light temperature
 - `desktop`: `clockSeconds` (seconds in the big digital clock), `focusMode` (with windows open: sharp wallpaper, widgets and frame hidden; on by default), `coverMode` (the playing track's cover instead of the wallpaper, colors included; also a quick toggle and
   `qs -c hi-shell ipc call coverMode toggle`), draw the `wallpaper`, show `widgets`, `monitor` for them (empty = first screen), `layout` (written by edit

@@ -72,6 +72,12 @@ You need a 64-bit Android 11+ phone, plus a Claude, ChatGPT or Google account fo
 
 **Install blocked or "Restricted setting"?** See [Setup in detail](docs/GUIDE.md#setup-in-detail).
 
+## Local models
+
+Run the model on your own computer and nothing goes to an AI company. Start [Ollama](https://ollama.com), LM Studio or llama.cpp's server on a PC (for Ollama, set `OLLAMA_HOST=0.0.0.0` and a context of at least 24k tokens, e.g. `OLLAMA_CONTEXT_LENGTH=24576`, since the phone tools take about 7k). In Buddy: Settings → API keys → Add API key → **Ollama** (or LM Studio, llama.cpp), put the PC's address on your Wi-Fi instead of `localhost`, leave the key empty, and use it in an OpenCode chat. Plain `http://` works on your own network and over Tailscale.
+
+What to expect, from tests on an RTX 2060 Super (8 GB): Qwen3 8B and Qwen3 4B handle simple one-step requests, like the battery level or the phone's status. Multi-step tasks on the screen are another matter: in a calculator test the 4B tapped the wrong buttons and then said it had worked. For real tasks, use a bigger model that's good at tool calling. The first answer of a chat takes longest, since the model first reads about 13k tokens of instructions and tool descriptions. A model running on the phone itself works too, but it's slow and makes the phone lag.
+
 ## Updating
 
 Install the new APK over the old one: chats, settings and sign-ins stay (don't uninstall first). You can also ask Buddy to *"update yourself"*, or let [Obtainium](https://obtainium.imranr.dev) do it ([how](docs/GUIDE.md#updating)).
@@ -113,11 +119,12 @@ Bug reports, ideas and translation fixes are welcome: see [CONTRIBUTING.md](CONT
 ## For developers
 
 ```
+git clone --recurse-submodules https://github.com/ghorbelhamdi/buddy-android.git
 ./gradlew assembleRelease     # Android Studio / Gradle
 ./build.sh                    # on the phone in Termux, no Gradle → build/buddy-release.apk
 ```
 
-`build.sh` needs `pkg install openjdk-17 aapt2 d8 apksigner python` and android.jar from platform-36 at `~/android-sdk/android-36/android.jar`. It creates a signing key at `~/.buddy-keys/release.jks` on first run: back it up, since updates must be signed with the same key. Gradle release signing reads `BUDDY_KEYSTORE` and `BUDDY_KEYSTORE_PASSWORD` (optionally `BUDDY_KEY_ALIAS`, `BUDDY_KEY_PASSWORD`). The version lives in `BuildInfo.java`, and the project layout is in [CONTRIBUTING.md](CONTRIBUTING.md#project-layout).
+proot and libandroid-shmem are git submodules in `third_party/` (`git submodule update --init` in an existing clone). `build.sh` needs `pkg install openjdk-17 aapt2 d8 apksigner python clang make` and android.jar from platform-36 at `~/android-sdk/android-36/android.jar`. It creates a signing key at `~/.buddy-keys/release.jks` on first run: back it up, since updates must be signed with the same key. Gradle release signing reads `BUDDY_KEYSTORE` and `BUDDY_KEYSTORE_PASSWORD` (optionally `BUDDY_KEY_ALIAS`, `BUDDY_KEY_PASSWORD`). The version lives in `BuildInfo.java`, and the project layout is in [CONTRIBUTING.md](CONTRIBUTING.md#project-layout).
 
 ## License
 

@@ -8,6 +8,7 @@ Mobile Agent is an open-source AI agent built specifically for mobile devices th
 
 ## Features
 
+- Connects with Antigravity, Claude, Opencode.
 - Generate/Edit videos without any video generate model.
 - On-device models that can run completely offline
 - Runs completely on-device
@@ -29,6 +30,26 @@ The application is distributed through GitHub Releases.
 2. Install the APK on your Android device.
 3. Grant the required permissions.
 4. Start using Mobile Agent.
+
+## Connect Antigravity or Claude
+
+Antigravity and Claude run as host-side ACP harnesses. On the computer that has
+`agy` and/or `claude-agent-acp` installed, run the installer once:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/tecnicalbot/mobile-agent/main/tools/install.sh | sh
+mabridge
+```
+
+`mabridge` installs a portable Node.js if needed, starts both bridges on your
+LAN, and prints a five-minute pairing QR. In the app, open
+**Settings → Harnesses** and scan the QR. One scan configures both harnesses;
+the stable bridge token is created once and reused across restarts.
+
+Use `mabridge --no-pair` to print the URLs and token instead, or see
+[Antigravity](tools/antigravity-bridge/README.md) and
+[Claude](tools/claude-bridge/README.md) for manual setup, flags, and security
+notes.
 
 ## Contributing
 

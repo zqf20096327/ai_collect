@@ -5,7 +5,7 @@
 「记特」读作 Git：把笔记放进**你自己的** GitHub / Gitee 私有仓库，手机（Android）、Mac 和 Windows 11 上都能写。
 
 - **数据主权**：笔记只在你自己的仓库和设备上，账号、令牌、内容都不经过任何第三方。
-- **无需服务器**：没有我们的服务器，也不需要你自己搭；完全开源，不收集任何数据。
+- **无需服务器**：没有我们的服务器，也不需要你自己搭；完全开源，App 不上报任何数据。
 - **AI 协同维护和查询**：笔记是普通的 Markdown 文件、真正的 Git 仓库。Claude Code、Cursor 等 AI 工具可以直接帮你整理、改写、查询，改完推上去，手机点一下同步就能看到。
 
 - **每个笔记本就是一个真正的 Git 仓库**：手机上有完整的 `.git`、真实的提交历史。在电脑上 `git clone` 下来，用任何编辑器或 AI 工具（Cursor、Claude Code……）改完推上去，手机点一下同步就能拿到。
@@ -15,6 +15,8 @@
 - **能用已有的仓库**：Obsidian、Typora 的笔记仓库可以直接拿来用，原有文件和图片写法原样保留。
 
 > **项目状态**：早期版本，有 Android 客户端、Mac 客户端和 Windows 11 客户端。欢迎试用和反馈，重要笔记请先在电脑上留一份备份。
+>
+> 国内访问 GitHub 慢，可以看 Gitee 镜像：[gitee.com/shitoupapa/jitnote](https://gitee.com/shitoupapa/jitnote)。代码自动同步；从 0.11.0 起，安装包也发布在 [Gitee 发行版](https://gitee.com/shitoupapa/jitnote/releases)，只保留最近 5 个版本。
 
 ## 仓库结构
 
@@ -24,13 +26,13 @@
 | [`mac/`](mac/) | Mac 客户端（Swift + SwiftUI + [libgit2](https://libgit2.org/)） |
 | [`windows/`](windows/) | Windows 11 客户端（C# / .NET + Avalonia + [LibGit2Sharp](https://github.com/libgit2/libgit2sharp)） |
 | [`editor/`](editor/) | 所有客户端共用的笔记编辑器（[Milkdown](https://milkdown.dev/) Crepe，打包成离线网页嵌入 App） |
-| [`docs/`](docs/) | 设计说明 |
+| [`docs/`](docs/) | logo（`scripts/make-icons.py` 用它生成各端图标） |
 
-以后的 iOS 等客户端也放在这个仓库里，复用 `editor/`，并遵循同一套同步规则（见 [docs/design.md](docs/design.md)）。
+以后的 iOS 等客户端也放在这个仓库里，复用 `editor/`，并遵循同一套同步规则。
 
 ## 使用方法（Android）
 
-支持 Android 8.0 及以上。在 [Releases](https://github.com/leon-mason/jitnote/releases/latest) 下载最新的 `jitnote-x.y.z.apk` 安装。
+支持 Android 8.0 及以上。在 [Releases](https://github.com/leon-mason/jitnote/releases/latest)（国内可以用 [Gitee 发行版](https://gitee.com/shitoupapa/jitnote/releases)）下载最新的 `jitnote-x.y.z.apk` 安装。
 
 1. 打开 App，点「连接云端账号」，按页面上的步骤在 Gitee（推荐）或 GitHub 生成一个令牌，粘贴进来。
 2. 点「添加笔记本 → 新建」，起个名字。App 会在你的账号里建一个**私有**仓库。
@@ -38,7 +40,7 @@
 4. 已经有放笔记的仓库（比如 Obsidian 的）？「添加笔记本 → 用已有的」里直接选它，原有文件原样保留。
 5. 换手机或第二台手机：连接同一个账号后，同样在「用已有的」里挑选笔记本。
 
-首页就是当前笔记本的**文件树**，和 Obsidian 一样列出所有文件和文件夹，显示完整文件名。点文件夹展开或收起（空文件夹也能点），点文件直接打开，展开了哪些文件夹下次还记得。新建笔记和新建文件夹都建在当前高亮的位置里。点顶部的笔记本名字切换笔记本，或进入「管理笔记本」。打开笔记时默认是编辑还是预览，可以在「⋮ → 设置」里选，打开后也能随时在顶栏切换；预览是只读的，不会改动文件。Markdown 笔记的右上角可以打开大纲，在预览左侧按标题跳转。
+首页就是当前笔记本的**文件树**，和 Obsidian 一样列出所有文件和文件夹，显示完整文件名。点文件夹展开或收起（空文件夹也能点），点文件直接打开，展开了哪些文件夹下次还记得。新建笔记和新建文件夹都建在当前高亮的位置里。文件和文件夹可以拖到别的文件夹里移动（手机上先长按再拖），也可以长按或右键选「移动到…」；目标里有同名文件时不会移动，移动会让笔记里的图片找不到时会先提醒。点顶部的笔记本名字切换笔记本，或进入「管理笔记本」。打开笔记时默认是编辑还是预览，可以在「⋮ → 设置」里选，打开后也能随时在顶栏切换；预览是只读的，不会改动文件。Markdown 笔记的右上角可以打开大纲，在预览左侧按标题跳转。
 
 以 . 开头的隐藏文件（如 `.obsidian`、`.gitignore`）默认不显示，可以在「⋮ → 设置」（Mac 版在「设置 → 通用」，Windows 版在「设置」）里打开；Git 自己的 `.git` 始终不显示。同一个设置页可以打开「启动时自动同步」：打开 App，或离开超过一分钟后再回来，会自动同步当前笔记本。没有变化时不额外提示。
 
@@ -51,13 +53,13 @@
 - 令牌所需权限：Gitee 私人令牌保持默认勾选（至少 `user_info`、`projects`）；GitHub classic token 勾选 `repo`。
 - 这些权限能读写你账号下的**所有**仓库，请只在自己的手机上使用，不用时可以随时在 Gitee / GitHub 的设置里删除令牌。
 - 令牌用 Android Keystore 加密后只保存在手机上，App 关闭了系统备份；Mac 版保存在本机的钥匙串里；Windows 版保存在当前用户的凭据管理器里，只存在这台电脑上，不随账户漫游。
-- App 只和你自己的 Gitee / GitHub 通信。唯一的例外是检查更新：每天最多一次，匿名查询本项目在 GitHub 上有没有新版本，不带令牌，也不发送任何笔记内容。没有统计和广告。
+- App 只和你自己的 Gitee / GitHub 通信。唯一的例外是检查更新：每天最多一次，匿名下载本项目在 GitHub 和 Gitee 上最新版本的说明文件 `latest.json`，有新版本时再下载安装包；不带令牌和设备标识，也不发送任何笔记内容。GitHub 会统计这个文件被下载了多少次，我们只用这个总数估算大约有多少人在用，看不到是谁。没有广告。
 
 ## 使用方法（Mac）
 
 需要 Apple 芯片的 Mac，以及较新的 macOS（目前和打包用的系统版本一致；系统太旧时会直接提示无法打开）。
 
-1. 在 [Releases](https://github.com/leon-mason/jitnote/releases/latest) 下载 `Jitnote-mac-apple-silicon-x.y.z.dmg`，双击打开，在弹出的窗口里把「记特」拖到「应用程序」。
+1. 在 [Releases](https://github.com/leon-mason/jitnote/releases/latest)（国内可以用 [Gitee 发行版](https://gitee.com/shitoupapa/jitnote/releases)）下载 `Jitnote-mac-apple-silicon-x.y.z.dmg`，双击打开，在弹出的窗口里把「记特」拖到「应用程序」。
 2. 第一次打开：在「应用程序」里**右键点它 → 打开**，再点「打开」。因为没有苹果开发者签名，直接双击会被系统拦下，只有第一次需要这样做。
 3. 连接账号、添加笔记本的步骤和 Android 一样。窗口分两栏：左边是笔记本切换和文件树（点文件夹展开或收起，点文件打开），右边是正在写的笔记。⌘N 新建笔记，⌘R 同步，⌘E 在编辑和预览之间切换（默认打开方式在「设置 → 通用」里选）。
 4. 有新版本时会提示更新：下载好后点「退出并安装」，记特会自动退出并打开安装包，和第一次安装一样把新版拖到「应用程序」，选择「替换」即可。更新后第一次同步，系统可能询问是否允许访问钥匙串里的令牌，点「始终允许」。
@@ -68,7 +70,7 @@
 
 需要 Windows 11，64 位。不支持 Windows 10 及更早，这一版也没有 ARM 包。
 
-1. 在 [Releases](https://github.com/leon-mason/jitnote/releases/latest) 下载 `Jitnote-windows-x64-x.y.z.exe`，放在你想放的地方。它是单个文件，不用解压，也不用安装。同一页的 `.zip` 只给旧版记特检查更新用，不用下载。
+1. 在 [Releases](https://github.com/leon-mason/jitnote/releases/latest)（国内可以用 [Gitee 发行版](https://gitee.com/shitoupapa/jitnote/releases)）下载 `Jitnote-windows-x64-x.y.z.exe`，放在你想放的地方。它是单个文件，不用解压，也不用安装。同一页的 `.zip` 只给旧版记特检查更新用，不用下载。
 2. 双击下载的 exe。如果系统提示「Windows 已保护你的电脑」或发布者不明：点「更多信息」，再点「仍要运行」。这个程序没有购买代码签名，只有第一次会这样问。
 3. 连接账号、添加笔记本的步骤和 Android 一样。窗口分两栏：左边是笔记本切换和文件树，右边是正在写的笔记。Ctrl+N 新建笔记，Ctrl+Shift+N 新建文件夹，Ctrl+R 同步，Ctrl+E 在编辑和预览之间切换（光标在编辑器里时同样生效），Ctrl+，打开设置。
 4. 有新版本时会提示更新：下载完会打开新 exe 所在的位置。先退出记特，再用新的 exe 替换现在的。记特还开着的时候不要覆盖它。
@@ -100,7 +102,7 @@ scripts/build-mac.sh --test   # 同步引擎等测试（和 Android 的测试用
 scripts/build-mac.sh --run    # 构建 mac/build/Jitnote.app 并打开
 ```
 
-`--debug` 构建带测试用遥控的版本（见 [`DebugHooks.swift`](mac/Sources/UI/DebugHooks.swift)），用来在没有屏幕录制权限的机器上自动操作和截图；它的令牌存在文件里，不碰钥匙串。设计见 [Mac 客户端设计](docs/requirements/2026-10-31-mac-client/[spec]mac-client.md)。
+`--debug` 构建带测试用遥控的版本（见 [`DebugHooks.swift`](mac/Sources/UI/DebugHooks.swift)），用来在没有屏幕录制权限的机器上自动操作和截图；它的令牌存在文件里，不碰钥匙串。
 
 ### Windows
 
@@ -133,13 +135,34 @@ npm run build   # 输出到 android/app/src/main/assets/editor/
 scripts/release.sh
 ```
 
-脚本会打开编辑器让你写更新内容（App 的更新提示里显示的就是这段话，编辑器里附了上次发版以来的提交供参考），确认后自动：把 [`android/app/build.gradle.kts`](android/app/build.gradle.kts) 里的 `appVersion` 加一个小版本（如 `0.2.0 → 0.3.0`）、提交、打标签、推送，并等 GitHub Actions 测试、签名、打包 APK、Mac 版和 Windows 11 包、在同一次 [Releases](https://github.com/leon-mason/jitnote/releases) 发布完成。已经发出去的旧版本不会补 Windows 包。不上架应用商店。
+脚本会打开编辑器让你写更新内容（App 的更新提示里显示的就是这段话，编辑器里附了上次发版以来的提交供参考），确认后自动：
 
-- `scripts/release.sh -n` 只预览版本号和提交，不做改动；`-m "更新内容"` 直接给出更新内容；`-y` 跳过确认。
+1. 把 [`android/app/build.gradle.kts`](android/app/build.gradle.kts) 里的 `appVersion` 加一个小版本（如 `0.2.0 → 0.3.0`）、提交、打标签、推送到 GitHub 和 Gitee。
+2. 等 GitHub Actions 测试、签名、打包 APK、Mac 版和 Windows 11 包，放进 [Releases](https://github.com/leon-mason/jitnote/releases) 里的一个**草稿**。草稿对 App 不可见。
+3. 把 APK、DMG 和 exe 下载下来，传到 [Gitee 发行版](https://gitee.com/shitoupapa/jitnote/releases)。
+4. 生成 `latest.json`（版本号、更新说明，以及每个安装包的大小、SHA-256 和两边的下载地址），传到两边。
+5. 公开 GitHub 上的草稿，已安装的 App 这时才会提示更新。
+6. 删掉 Gitee 上最近 5 个以外的旧发行版：Gitee 每个仓库的附件总共只能放 1G。GitHub 上保留全部版本。
+
+任何一个安装包没传上去，就整次停下：GitHub 上留着草稿，Gitee 上这次建的发行版删掉，哪边都不会提示这个版本。修好后运行 `scripts/release.sh -p vX.Y.Z`，从第 3 步重新来。已经发出去的旧版本不会补 Windows 包。不上架应用商店。
+
+发版的电脑要准备好这些，脚本在打标签之前会检查，缺了就停下并说明怎么补：
+
+- `gh` 已登录 GitHub（`gh auth login`）。
+- 运行过 `scripts/setup-gitee-mirror.sh`，能用 SSH 推到 Gitee。
+- 登录钥匙串里存了 Gitee 私人令牌（勾选 `projects`）。在 [Gitee 私人令牌](https://gitee.com/profile/personal_access_tokens) 生成后运行下面这条，按提示粘贴。令牌只在这台电脑上，不进任何仓库。
+
+  ```bash
+  security add-generic-password -U -a shitoupapa -s jitnote-release-gitee -w
+  ```
+
+- `scripts/release.sh -n` 只预览版本号和提交，并检查上面这些，不做改动；`-m "更新内容"` 直接给出更新内容；`-y` 跳过确认；`-p vX.Y.Z` 只做第 3～6 步。
 - **升级大版本**：把 `scripts/release.sh` 开头的 `MAJOR` 改大（如 `2`）并提交，下次发版就是 `2.0.0`，之后是 `2.1.0`、`2.2.0`……
 - 脚本会拒绝这些情况：不在 `main`、有没提交的改动、和 GitHub 不一致、上次发版后没有新提交、改了 `editor/` 却没重新 `npm run build`。
 
 正式签名密钥保存在仓库的 Secrets（`RELEASE_KEYSTORE_BASE64`、`RELEASE_KEYSTORE_PASSWORD`）里。**密钥必须一直用同一把**，换了密钥，已安装的 App 就无法更新。
+
+[Gitee 镜像](https://gitee.com/shitoupapa/jitnote)由推送代码的电脑同步：在那台电脑上运行一次 `scripts/setup-gitee-mirror.sh`，之后 `git push` 会依次推到 GitHub 和 Gitee，`scripts/release.sh` 也会把新版本的提交和标签推过去。需要这台电脑能用 SSH 连上 Gitee 账号 shitoupapa。GitHub 的服务器连 gitee.com 很不稳定，所以不靠它：GitHub Actions 两次都连接超时；Gitee「仓库镜像管理」的自动同步靠 GitHub 发通知，三次只成功一次。那个镜像留着当补充，没跟上时可以手动点「更新」。Gitee 那一份没推上去时，`git push` 会报错，但 GitHub 上的代码不受影响，之后运行 `git push --follow-tags` 补上。
 
 ### 调试构建的本地测试服务器
 
@@ -147,7 +170,7 @@ debug 包允许用明文 http 访问模拟器宿主机 `10.0.2.2`（见 `android
 
 ## 参与贡献
 
-欢迎提 Issue 和 Pull Request。改动同步逻辑或编辑器前，请先读 [docs/design.md](docs/design.md)：界面不出现 Git 术语、从不强推、打开再保存不改变笔记，这几条是硬性约定，相关测试需要保持通过。
+欢迎提 Issue 和 Pull Request。改动同步逻辑或编辑器时请注意：界面不出现 Git 术语、从不强推、打开再保存不改变笔记，这几条是硬性约定，相关测试需要保持通过。
 
 ## 许可证
 

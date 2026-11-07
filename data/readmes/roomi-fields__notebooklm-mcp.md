@@ -2,15 +2,15 @@
 
 # NotebookLM REST API + MCP server
 
-**Automate Google Gemini Notebook — formerly, and still widely known as, NotebookLM — at scale. 56-endpoint HTTP REST API for n8n / Zapier / Make / curl, an MCP server for Claude Code / Cursor / Codex, a UTCP interface for clients that call the API natively, and a Rust client crate. Citation-backed Q&A, full Studio generation (audio · video · infographic · report · presentation · data table), multi-account rotation with auto-reauth across personal and Google Workspace accounts.**
+**Automate Google Gemini Notebook — formerly, and still widely known as, NotebookLM — at scale. 56-endpoint HTTP REST API for n8n / Zapier / Make / curl, an MCP server for Claude Code / Cursor / Codex, a UTCP interface for clients that call the API natively, and Rust and Ruby clients. Citation-backed Q&A, full Studio generation (audio · video · infographic · report · presentation · data table), multi-account rotation with auto-reauth across personal and Google Workspace accounts.**
 
-> v4.6.0 — **Node 22 is now the floor, and the last four open advisories are gone with it.** The declared floor of Node 18 had quietly become fiction: three production dependencies already required Node 20 or newer, and the test matrix kept passing on 18 without exercising them. Raising it also let the third-party file globber go — its dependency chain carried four advisories with no fix upstream — replaced by Node's built-in search, now actually under test. Builds on **4.0.0**, where the HTTP API stopped being open to the network and to any web page ([GHSA-p69m-c5rf-g2c3](https://github.com/roomi-fields/notebooklm-mcp/security/advisories/GHSA-p69m-c5rf-g2c3)): it binds loopback, refuses unlisted origins, and takes a bearer token — **remote access and Docker require `NOTEBOOKLM_API_KEY`**, see [Securing the HTTP API](./deployment/docs/15-SECURITY.md). Built on a **dual transport** — the internal `batchexecute` RPC API (10-100× faster than scraping, immune to UI rebrands) with the Playwright browser as an automatic fallback. See the [changelog](./CHANGELOG.md).
+> v4.7.0 — **Node 22 is now the floor, and the last four open advisories are gone with it.** The declared floor of Node 18 had quietly become fiction: three production dependencies already required Node 20 or newer, and the test matrix kept passing on 18 without exercising them. Raising it also let the third-party file globber go — its dependency chain carried four advisories with no fix upstream — replaced by Node's built-in search, now actually under test. Builds on **4.0.0**, where the HTTP API stopped being open to the network and to any web page ([GHSA-p69m-c5rf-g2c3](https://github.com/roomi-fields/notebooklm-mcp/security/advisories/GHSA-p69m-c5rf-g2c3)): it binds loopback, refuses unlisted origins, and takes a bearer token — **remote access and Docker require `NOTEBOOKLM_API_KEY`**, see [Securing the HTTP API](./deployment/docs/15-SECURITY.md). Built on a **dual transport** — the internal `batchexecute` RPC API (10-100× faster than scraping, immune to UI rebrands) with the Playwright browser as an automatic fallback. See the [changelog](./CHANGELOG.md).
 
 > **Note (July 2026):** Google rebranded **NotebookLM** to **Gemini Notebook**. It is the same product, existing links redirect, and this project drives the same underlying service — the browser path was updated for the new DOM in v2.3.0 and the RPC path in v3.0.0. Package and repository keep the `notebooklm` name.
 
 <!-- Badges -->
 
-[![CI](https://github.com/roomi-fields/notebooklm-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/roomi-fields/notebooklm-mcp/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/%40roomi-fields%2Fnotebooklm-mcp.svg)](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) [![npm downloads](https://img.shields.io/npm/dm/@roomi-fields/notebooklm-mcp.svg)](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) [![crates.io](https://img.shields.io/crates/v/notebooklm.svg)](https://crates.io/crates/notebooklm) [![docs.rs](https://img.shields.io/docsrs/notebooklm)](https://docs.rs/notebooklm) [![codecov](https://codecov.io/gh/roomi-fields/notebooklm-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/roomi-fields/notebooklm-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/) [![Node.js](https://img.shields.io/badge/Node.js->=22-green.svg)](https://nodejs.org/)
+[![CI](https://github.com/roomi-fields/notebooklm-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/roomi-fields/notebooklm-mcp/actions/workflows/ci.yml) [![npm version](https://badge.fury.io/js/%40roomi-fields%2Fnotebooklm-mcp.svg)](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) [![npm downloads](https://img.shields.io/npm/dm/@roomi-fields/notebooklm-mcp.svg)](https://www.npmjs.com/package/@roomi-fields/notebooklm-mcp) [![crates.io](https://img.shields.io/crates/v/notebooklm.svg)](https://crates.io/crates/notebooklm) [![docs.rs](https://img.shields.io/docsrs/notebooklm)](https://docs.rs/notebooklm) [![Gem Version](https://img.shields.io/gem/v/notebooklm.svg)](https://rubygems.org/gems/notebooklm) [![codecov](https://codecov.io/gh/roomi-fields/notebooklm-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/roomi-fields/notebooklm-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/) [![Node.js](https://img.shields.io/badge/Node.js->=22-green.svg)](https://nodejs.org/)
 
 [![MCP](https://img.shields.io/badge/MCP-compatible-green.svg)](https://modelcontextprotocol.io/) [![UTCP](https://img.shields.io/badge/UTCP-compatible-blue.svg)](https://www.utcp.io/) [![Claude Code](https://img.shields.io/badge/Claude_Code-MCP-8A2BE2)](https://claude.ai/claude-code) [![n8n](https://img.shields.io/badge/n8n-HTTP_API-orange)](./deployment/docs/04-N8N-INTEGRATION.md) [![GitHub](https://img.shields.io/github/stars/roomi-fields/notebooklm-mcp?style=social)](https://github.com/roomi-fields/notebooklm-mcp) [![MCP Toplist](https://mcptoplist.com/badge/io.github.roomi-fields%2Fnotebooklm-mcp.svg)](https://mcptoplist.com/server/io.github.roomi-fields%2Fnotebooklm-mcp) [![LightNow capabilities](https://lightnow.ai/badge/io.github.roomi-fields/notebooklm-mcp)](https://lightnow.ai/servers/io.github.roomi-fields/notebooklm-mcp)
 
@@ -199,13 +199,14 @@ running. Details: [REST API reference → `GET /utcp`](./deployment/docs/03-API.
 A typed async client lives in this repository at
 [`crates/notebooklm-client`](./crates/notebooklm-client) and is published as
 [**`notebooklm`**](https://crates.io/crates/notebooklm) on crates.io
-([docs](https://docs.rs/notebooklm)), one version per release. It covers reading and asking —
-health, the library, questions with their quotations, passage search, a
-source's indexed text — and returns the UTCP manual for everything else.
+([docs](https://docs.rs/notebooklm)), one version per release. It covers **all
+56 operations** — generated from the specification, with a synchronous twin
+behind one feature flag.
 
 ```rust
 let client = notebooklm::Client::local()?;
-let answer = client.ask(&AskRequest::new("ikigai", "What is ikigai?")).await?;
+let answer = client.ask_question(&AskRequest::new(&id, "What is ikigai?")).await?;
+println!("{}", answer.answer);
 ```
 
 It deliberately **does not own a browser**: the Google session is bound to the
@@ -213,6 +214,23 @@ machine it was made on, expires server-side while local cookies still look
 valid, and needs a driver kept patched against detection. The crate talks to
 this server, which already does all three. The reasoning in full:
 [driving it from Rust](https://notebooklm.roomi-fields.com/blog/notebooklm-rust).
+
+### Ruby client
+
+The same surface as a gem, in this repository at
+[`gems/notebooklm`](./gems/notebooklm) and published as
+[**`notebooklm`**](https://rubygems.org/gems/notebooklm) on RubyGems, also one
+version per release. All 56 operations, generated from the same specification,
+every response shape documented field by field — and no runtime dependencies.
+
+```ruby
+client = NotebookLM.local
+answer = client.ask(notebook.id, 'What is ikigai?')
+answer.citations.each { |c| puts "[#{c.number}] #{c.source_text}" }
+```
+
+Why a gem at all, and why it owns no browser either:
+[driving it from Ruby](https://notebooklm.roomi-fields.com/blog/notebooklm-ruby).
 
 ### Integration Options
 
@@ -343,6 +361,7 @@ See [ROADMAP.md](./ROADMAP.md) for planned features and version history.
 
 <!-- releases:start — generated from CHANGELOG.md by scripts/sync-facts.mjs; do not edit by hand -->
 
+- **v4.7.0** (2026-11-07) — The published specification was invalid, and nothing checked · The Rust client covers the whole API, and is generated · and more
 - **v4.6.0** (2026-11-06) — Retry a failed generation without losing its id · A UTCP interface, and 56 named operations · and more
 - **v4.5.0** (2026-10-30) — Search the sources without paying for an answer
 - **v4.4.0** (2026-10-24) — Two security fixes, both reported by Umar Ahmed (ghostnshells)
@@ -352,7 +371,6 @@ See [ROADMAP.md](./ROADMAP.md) for planned features and version history.
 - **v4.0.0** (2026-10-18) — Security — the HTTP API is no longer open to the network or to any web page · Fixed — an account could vanish on creation · and more
 - **v3.2.0** (2026-09-03) — Added — `content_delete`: generated content can finally be removed · Closed — both open issues, settled by measurement rather than by waiting
 - **v3.1.2** (2026-08-21) — Fixed — 3.1.1's browser-path language fix covered one dialog shape out of two · Added — an unapplied language is now said out loud
-- **v3.1.1** (2026-08-21) — Fixed — generated content came out in the server's interface language, not the one you asked for · Fixed — the browser fallback ignored `language` too (#36) · and more
 
 <!-- releases:end -->
 

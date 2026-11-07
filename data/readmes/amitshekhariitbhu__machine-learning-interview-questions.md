@@ -122,6 +122,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is the difference between policy-based and value-based methods?
 - What is Q-Learning?
 - Explain the concept of exploration vs exploitation.
+    - Answer: [What is Exploration vs Exploitation in Reinforcement Learning?](https://outcomeschool.com/blog/exploration-vs-exploitation)
 - Explain the curse of dimensionality and how to address it.
 - Explain Local Loss, Focal Loss, and Gradient Blending in the context of Multi-Task Learning.
 - Explain Contrastive Learning
@@ -253,11 +254,17 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [Generative Adversarial Networks (GANs)](https://outcomeschool.com/blog/generative-adversarial-networks)
 - How are GANs used in image synthesis or image-to-image translation tasks?
 - Explain Convolutional Neural Networks (CNN).
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - Explain filters in CNN.
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - Explain the stride in CNN.
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - Explain padding in CNN.
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - Explain pooling in CNN.
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - Explain fully connected layers in CNN.
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - What is a Recurrent Neural Network (RNN)?
    - Answer: [Recurrent Neural Network](https://outcomeschool.com/blog/recurrent-neural-network)
 - What are the limitations of RNNs, and how are they solved?
@@ -321,6 +328,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - What is feature extraction in computer vision?
 - What is OCR, and what are its main applications?
 - How does CNN differ from traditional neural networks in computer vision?
+    - Answer: [Convolutional Neural Networks](https://outcomeschool.com/blog/convolutional-neural-network-cnn)
 - What is data augmentation, and what techniques are commonly used?
     - Answer: [How does Data Augmentation work?](https://outcomeschool.com/blog/data-augmentation)
 - What are some popular deep learning frameworks for computer vision?
@@ -349,6 +357,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 - How does continuous batching improve LLM inference throughput?
     - Answer: [Continuous Batching in LLMs](https://outcomeschool.com/blog/continuous-batching-in-llms)
 - What is pre-training vs fine-tuning in LLMs?
+    - Answer: [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - What are some challenges in training LLMs?
 - What is zero-shot learning in the context of LLMs?
 - How do you handle bias and fairness in LLMs?

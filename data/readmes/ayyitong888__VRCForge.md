@@ -3,7 +3,7 @@
 ![VRCForge — AI Agent + MCP for VRChat Avatar Editing](docs/assets/vrcforge-atelier-banner.png)
 
 [![稳定版](https://img.shields.io/github/v/release/ayyitong888/VRCForge?label=稳定版&style=flat-square)](https://github.com/ayyitong888/VRCForge/releases/latest)
-![当前版本](https://img.shields.io/badge/当前版本-v1.10.7-d9487c?style=flat-square)
+![当前版本](https://img.shields.io/badge/当前版本-v1.10.8-d9487c?style=flat-square)
 [![许可证 GPL-3.0-only](https://img.shields.io/badge/许可证-GPL--3.0--only-64748b?style=flat-square)](LICENSE)
 ![平台 Windows x64](https://img.shields.io/badge/平台-Windows%20x64-0ea5e9?style=flat-square)
 [![GitHub Stars](https://img.shields.io/github/stars/ayyitong888/VRCForge?style=social)](https://github.com/ayyitong888/VRCForge/stargazers)
@@ -21,7 +21,7 @@ VRCForge 是给 VRChat Avatar 创作者使用的开源改模工具。你可以�
 
 > 使用任何会写入 Unity 资产的功能前，请先备份 Unity / VRChat Avatar 工程。
 
-当前正式版：[1.10.7](https://github.com/ayyitong888/VRCForge/releases/tag/v1.10.7) · [更新说明](docs/RELEASE_NOTES_1.10.7.md)
+当前正式版：[1.10.8](https://github.com/ayyitong888/VRCForge/releases/tag/v1.10.8) · [更新说明](docs/RELEASE_NOTES_1.10.8.md)
 
 ## 下载：App 和 Unity 插件都要装
 
@@ -29,8 +29,8 @@ VRCForge 是给 VRChat Avatar 创作者使用的开源改模工具。你可以�
 
 | 必需下载 | 安装到哪里 |
 | --- | --- |
-| **[App 离线安装包（.exe）](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.7/VRCForge_Offline_Installer_x64.exe)** | 在 Windows 运行安装；也可改用 [在线安装包](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.7/VRCForge_Web_Installer_x64.exe)，两种安装器选一个。 |
-| **[Unity Core 插件（VRCForge.unitypackage）](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.7/VRCForge.unitypackage)** | 在每个要连接的 Unity 工程中 **Import All**。只安装 App 无法连接 Unity。 |
+| **[App 离线安装包（.exe）](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.8/VRCForge_Offline_Installer_x64.exe)** | 在 Windows 运行安装；也可改用 [在线安装包](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.8/VRCForge_Web_Installer_x64.exe)，两种安装器选一个。 |
+| **[Unity Core 插件（VRCForge.unitypackage）](https://github.com/ayyitong888/VRCForge/releases/download/v1.10.8/VRCForge.unitypackage)** | 在每个要连接的 Unity 工程中 **Import All**。只安装 App 无法连接 Unity。 |
 
 升级时也请同时更新 App 和 Unity 插件。
 
@@ -44,6 +44,9 @@ VRCForge 是给 VRChat Avatar 创作者使用的开源改模工具。你可以�
 还没有 Avatar 工程？可先用 [Creator Companion（VCC）](https://vcc.docs.vrchat.com/guides/getting-started/) 或 ALCOM 创建。连接不上时，先确认 Unity 已打开、插件已导入、Console 没有红色编译错误。
 
 ## 选择 AI 入口
+
+**内置 Agent 仍在测试中。** 外部 MCP 的连接和常用工程操作基本稳定，日常改模建议优先使用外部 MCP 客户端。
+使用内置 Agent 遇到问题，欢迎到 [GitHub Issues](https://github.com/ayyitong888/VRCForge/issues) 反馈。
 
 - **在 VRCForge 里聊天：** 打开「设置 → 模型」，选择模型服务、填写 API Key，保存后选择模型并测试连接。
 - **用已有的 MCP Agent：** 打开「设置 → 连接器」，开启「连接外部 Agent」，选择客户端并点击「安装 MCP 配置」；也可复制通用连接说明交给 Agent。保持 VRCForge 和 Unity 开着，重启或重新连接客户端，再让 Agent 检查模型。需要改模时再打开「允许修改项目」。[详细连接步骤](USER_MANUAL.md#external-agent-connectors)
@@ -59,7 +62,7 @@ VRCForge 是给 VRChat Avatar 创作者使用的开源改模工具。你可以�
 ## 文档入口
 
 - [用户手册 / User Manual](USER_MANUAL.md)
-- [1.10.7 更新说明](docs/RELEASE_NOTES_1.10.7.md)
+- [1.10.8 更新说明](docs/RELEASE_NOTES_1.10.8.md)
 - [兼容性矩阵](docs/COMPATIBILITY_MATRIX.md)
 - [产品回归契约](docs/PRODUCT_REGRESSION_CONTRACT.md)
 - [优化策略](docs/OPTIMIZATION_STRATEGY.md)

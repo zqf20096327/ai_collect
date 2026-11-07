@@ -17,8 +17,8 @@ Function key in the browser. See [scope, privacy, and integration handoff](site/
 → [CI regression gates](site/src/content/docs/guides/ci-cd.mdx).
 Mock success checks the harness, not agent quality or live service safety.
 
-**Version boundary (November 4, 2026):** the published standalone CLI is
-`v0.40.0` ([release](https://github.com/microsoft/waza/releases/tag/v0.40.0)). Scenario authoring, preflight, selected-file evidence,
+**Version boundary (November 6, 2026):** the published standalone CLI is
+`v0.40.1` ([release](https://github.com/microsoft/waza/releases/tag/v0.40.1)). Scenario authoring, preflight, selected-file evidence,
 assurance profiles, controlled release policies, recorded reliability, and the
 opt-in dashboard Lab were introduced in `v0.39.0` and remain included.
 Install the published binary or run `waza update`; a source build is optional.
@@ -30,6 +30,10 @@ runner/text execution, selected AgentV assertion conversion, task-level MCP
 mocks, program-grader context, host lifecycle evidence, and Lab conversations.
 Read [Waza v0.40.0: run exactly the work you declared](https://microsoft.github.io/waza/releases/v0-40-0/)
 for the release story and known limits.
+The [v0.40.1 hotfix release](https://microsoft.github.io/waza/releases/v0-40-1/)
+aligns selected-task coverage, strict token exits, grouping, hooks, saved runs,
+artifact paths, execution startup, and JavaScript grader input with their
+documented contracts.
 These additions are not in an installed v0.39.1 binary. The separately versioned
 azd extension/registry and native runner image have independent publication and
 acceptance gates; see the
@@ -68,22 +72,22 @@ Requires Go 1.26+, Git LFS, Make, Node.js 22.23.4+ on the 22.x line or Node.js 2
 Note: due to the use of LFS artifacts you cannot install waza using `go install`. To install waza outside of a normal release, clone the repository:
 
 ```bash
-git clone --branch v0.40.0 https://github.com/microsoft/waza.git
+git clone --branch v0.40.1 https://github.com/microsoft/waza.git
 cd waza
 
 # ensure git LFS-based artifacts are available (for embedded copilot binaries)
 git lfs install
 git lfs pull
 
-make build VERSION=0.40.0
+make build VERSION=0.40.1
 ./waza <waza command line>
 ```
 
-The verified `v0.40.0` tag resolves to
-`93e80d7fdcbf9206215366d6ecca7ed08d26b2b3`. The immutable tag's
+The verified `v0.40.1` tag resolves to
+`e0c251df896bee4e0f9b38a693a6105bf7eadd19`. The immutable tag's
 `version.txt` and `extension.yaml` remain `0.39.1`. The release workflow updates
 those files only in a later version-sync branch, not in the tag.
-`make build` defaults to `VERSION=0.1.0`, so pass `VERSION=0.40.0` explicitly
+`make build` defaults to `VERSION=0.1.0`, so pass `VERSION=0.40.1` explicitly
 when building this tag. Official release builds inject the version from the
 tag with linker flags. A locally stamped binary is not a verified release asset,
 and does not prove extension registry synchronization.
@@ -108,16 +112,16 @@ azd waza --help
 The extension has its own version and artifact history; a command prefix does
 not establish parity with standalone main. Check `azd waza --version` and
 `azd waza --help` before following examples. The registry currently lists
-through `0.40.0`, matching the separately published `0.40.0` extension artifact.
-The [separate v0.40.0 extension artifact](https://github.com/microsoft/waza/releases/tag/azd-ext-microsoft-azd-waza_0.40.0)
+through `0.40.1`, matching the separately published `0.40.1` extension artifact.
+The [separate v0.40.1 extension artifact](https://github.com/microsoft/waza/releases/tag/azd-ext-microsoft-azd-waza_0.40.1)
 is published with six platform archives, and this repository's registry and
-version metadata are synchronized to `0.40.0`. The standalone v0.40.0 additions
+version metadata are synchronized to `0.40.1`. The standalone v0.40.0 additions
 below are not included in a v0.39.1 extension installation. Artifact publication
 and registry synchronization are separate gates; check the installed version.
-The source URL above follows `main`, not this branch. Before the
-[release-sync PR #883](https://github.com/microsoft/waza/pull/883) merges, that URL
-still serves `0.39.1`; after the merge it includes `0.40.0`. Updating an
-installation before the merge cannot select `0.40.0` from that source.
+The source URL above follows `main`, not this branch. Before
+[release-sync PR #908](https://github.com/microsoft/waza/pull/908) merges, that URL
+still serves `0.40.0`; after the merge it includes `0.40.1`. Updating an
+installation before the merge cannot select `0.40.1` from that source.
 For supported commands, for example:
 
 ```bash
@@ -809,7 +813,7 @@ New captures set each artifact's `redacted` flag from changes to its own materia
 
 The manifest fingerprints the captured environment allow-list/configuration (`environment`, snapshot pointer `/env`) and engine configuration (`engine-config`, `/engine`), not the full host environment. Optional `--interpret` output reports per-trial scoped check observations and evidence metadata without changing legacy no-metadata text; malformed evidence is withheld.
 
-Portable evidence uses independent manifest version **1.0** and ordinary snapshot schema **1.1**, retaining legacy task semantics and historical result readers; newly generated results from current source use **1.8**. Published v0.39.1 writes results **1.7**. Each task exposes every trial, its full source origin (eval/task/run/attempt/prior attempts), availability/completeness, separate source/content digests, redaction, unavailable versions, requested native skill control (`no_skills`, `native_skill_control`), and operational uncertainty. Native control is requested behavior, not proof of SDK enforcement. Cached metadata retains the original origin, not a new execution. Captured artifacts require content plus a snapshot pointer; source digests do not preserve bytes. Historical absence is unassessed, invalid metadata is withheld, and capture/publication failures produce safe unavailable states rather than leaking rejected metadata.
+Portable evidence uses independent manifest version **1.0** and ordinary snapshot schema **1.1**, retaining legacy task semantics and historical result readers; newly generated results from current source use **1.9**. Published v0.39.1 writes results **1.7**. Each task exposes every trial, its full source origin (eval/task/run/attempt/prior attempts), availability/completeness, separate source/content digests, redaction, unavailable versions, requested native skill control (`no_skills`, `native_skill_control`), and operational uncertainty. Native control is requested behavior, not proof of SDK enforcement. Cached metadata retains the original origin, not a new execution. Captured artifacts require content plus a snapshot pointer; source digests do not preserve bytes. Historical absence is unassessed, invalid metadata is withheld, and capture/publication failures produce safe unavailable states rather than leaking rejected metadata.
 
 Selected-file capture is opt-in, bounded, and private (`0700` directories, `0600` randomized non-overwriting files). Ordinary no-file snapshot names/defaults are unchanged. Allow-listing is not authorization: review agent visibility and exclude evaluator-only material. Capture adds no export, upload, or local-path fetch. Existing explicitly configured result storage still uploads results, including evidence metadata, but does not fetch or upload the separate snapshot files. Individual files may be complete while the workspace is only partial/unavailable; external state remains unavailable. Scoped requirement observations describe existing named grader outcomes, not enforcement, causal explanations, new scores, or changed pass/fail defaults. See the [capture/regrading guide](site/src/content/docs/guides/snapshot-replay.mdx) and [dashboard evidence view](site/src/content/docs/guides/dashboard.mdx#portable-evidence).
 
@@ -892,9 +896,9 @@ Exit codes: `0` all packs PASSED, `2` unsafe outcome with policy=fail (matches `
 
 ### `waza migrate <file>`
 
-Check a public schema artifact and migrate it when a future major schema requires it. Legacy input and reader defaults remain `1.4`, while current source result writers independently emit `1.8` (published v0.39.1 writes `1.7`). Compatible v1 `eval.yaml` and `results.json` files are not rewritten.
+Check a public schema artifact and migrate it when a future major schema requires it. Legacy input and reader defaults remain `1.4`, while current source result writers independently emit `1.9` (published v0.39.1 writes `1.7`). Compatible v1 `eval.yaml` and `results.json` files are not rewritten.
 Compatibility reports use the executing binary's current version for the artifact type: legacy eval
-`1.4` or, for current source, result writer `1.8`. Unversioned/`1.4` results explicitly distinguish
+`1.4` or, for current source, result writer `1.9`. Unversioned/`1.4` results explicitly distinguish
 their legacy reader default from the current writer version without upgrading them.
 
 ```bash
@@ -906,7 +910,7 @@ waza migrate results.json
 
 Generate a skill-to-eval coverage grid showing which skills are fully covered, partially covered, or missing evals.
 
-**Note**: Full coverage requires tasks (via `tasks:` or `tasks_from:`) and 2+ grader types. The coverage percentage reflects only fully covered skills.
+**Note**: Full coverage requires at least one active task discovered through `tasks:` or selected through `tasks_from:`, plus 2+ grader types. Unmatched task patterns and empty CSV selections count as zero tasks. The coverage percentage reflects only fully covered skills.
 
 | Flag | Short | Description |
 |------|-------|-------------|
@@ -1690,7 +1694,7 @@ Pin `reasoning_effort` and `judge_reasoning_effort` to `low`, `medium`, `high`, 
 
 With explicit effort, choose a concrete model from `waza models`. Waza checks the runtime's supported-effort metadata before creating or resuming hosted Copilot sessions; unknown models, unavailable metadata, and unsupported efforts produce actionable errors instead of silently using a different effort. Custom-provider efforts are forwarded directly because the hosted catalog does not describe those models. Result setup metadata and cache keys include both eval-level effort settings; regrading replaces the judge effort, including clearing a previously pinned value when omitted.
 
-`schemaVersion` uses `MAJOR.MINOR` format. Missing versions in legacy eval/result inputs continue to default to `1.4`; task YAML has no independent version field. Evaluations and regrades from current source emit results `1.8`, separately from their input version; published v0.39.1 writes `1.7`. Readers preserve historical declared versions and do not invent absent reliability metadata. Legacy readers allow same-major minor additions with warnings for unknown fields, but reject different majors with a hint to run `waza migrate <file>`.
+`schemaVersion` uses `MAJOR.MINOR` format. Missing versions in legacy eval/result inputs continue to default to `1.4`; task YAML has no independent version field. Evaluations and regrades from current source emit results `1.9`, separately from their input version; published v0.39.1 writes `1.7`. Readers preserve historical declared versions and do not invent absent reliability metadata. Legacy readers allow same-major minor additions with warnings for unknown fields, but reject different majors with a hint to run `waza migrate <file>`.
 
 Standalone v0.40.0 writes results `1.8`; this does not change legacy eval/result
 reader defaults, task YAML, or the independent runner request/terminal version `1.0`.
@@ -1789,7 +1793,7 @@ checks reject group/world-writable cache parents and private children with
 group/other mode bits. These retained-root checks do not certify Windows ACLs,
 cache confidentiality or whole-filesystem ancestry.
 
-A source build currently emits `results.json` at `schemaVersion` `1.8`; published `v0.39.1` writes `1.7`. Version `1.1` added per-turn checkpoints (`runs[].checkpoints[]`, see #358) and the normalized `runs[].tool_events[]` array (`turn`, `sequence`, `tool_call_id`, `tool_name`, `args`, `result`, `success`, `error`, `duration_ms`; see #366). Version `1.2` added `runs[].snapshot_path` for `waza run --snapshot` artifacts (#367) and the eval-level `adversarial:` block consumed by `waza adversarial --spec` (#365). Version `1.3` adds `session_digest.tool_policy_mode` and `tool_policy_denials` (#585). Version `1.4` adds sanitized `runs[].command_invocations` for declarative CLI mocks (#634). Version `1.5` adds `tasks[].stats.pass_rate_ci` and `summary.statistics.success_rate_ci` and `pass_hat_k`, and stops writing `is_significant`. Version `1.6` adds optional `runs[].evidence` and `runs[].requirement_explanations`. Version `1.7` adds optional frozen `runs[].judge_evidence`, metadata-only `runs[].prompt_judging` observations and separate current-regrade `regrade_usage.sessions` for evidence-enabled prompt graders, plus configured live/mocked `runs[].dependency_modes`. Version `1.8` adds optional `runs[].host_lifecycle` model-turn and host shell evidence projected from structured native session events (omitted when unavailable). The saved bundle contains sanitized evidence, whereas API/report metadata does not copy its bodies. See [docs/PRD](docs/PRD.md) and [schema-changes](site/src/content/docs/reference/schema-changes.md) for details.
+A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. Version `1.1` added per-turn checkpoints (`runs[].checkpoints[]`, see #358) and the normalized `runs[].tool_events[]` array (`turn`, `sequence`, `tool_call_id`, `tool_name`, `args`, `result`, `success`, `error`, `duration_ms`; see #366). Version `1.2` added `runs[].snapshot_path` for `waza run --snapshot` artifacts (#367) and the eval-level `adversarial:` block consumed by `waza adversarial --spec` (#365). Version `1.3` adds `session_digest.tool_policy_mode` and `tool_policy_denials` (#585). Version `1.4` adds sanitized `runs[].command_invocations` for declarative CLI mocks (#634). Version `1.5` adds `tasks[].stats.pass_rate_ci` and `summary.statistics.success_rate_ci` and `pass_hat_k`, and stops writing `is_significant`. Version `1.6` adds optional `runs[].evidence` and `runs[].requirement_explanations`. Version `1.7` adds optional frozen `runs[].judge_evidence`, metadata-only `runs[].prompt_judging` observations and separate current-regrade `regrade_usage.sessions` for evidence-enabled prompt graders, plus configured live/mocked `runs[].dependency_modes`. Version `1.8` adds optional `runs[].host_lifecycle` model-turn and host shell evidence projected from structured native session events (omitted when unavailable). Version `1.9` adds optional `runs[].user_input_requests` records for native SDK question callbacks (`config.native_user_input`). The saved bundle contains sanitized evidence, whereas API/report metadata does not copy its bodies. See [docs/PRD](docs/PRD.md) and [schema-changes](site/src/content/docs/reference/schema-changes.md) for details.
 
 The dashboard displays these recorded Wilson intervals and pass^k estimates separately from bootstrap weighted-score intervals, with available trial counts. Missing historical statistics show **Not assessed**; readers never infer them from scores or successful outcomes. None of these intervals is a significance test between runs.
 
@@ -1859,12 +1863,4 @@ mcp_mocks:
               type: object
               required: [choices]
               properties:
-                choices: { type: array, contains: { const: Publish this version } }
-            return: { answer: Publish this version, wasFreeform: false }
-          - match_schema: {}
-            return: { answer: Not now, wasFreeform: false }
-```
-
-### Command Mocks
-
-Use top-level `command_mocks` when the agent must invoke a CLI such as `az`, `gh`, or `kubectl`. Waza creates temporary executable shims for each task and prepends their directory to the Copilot runtime's existing `PATH`; the host `PATH` remains available. This requires `schemaVersion: "1.3"` or newer and 
+                choices: { type: array, contains: { const: Publish this ve

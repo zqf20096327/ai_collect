@@ -16,7 +16,7 @@ Welcome to Sly's Script Repository! This collection is dedicated to sharing my f
 The scripts have been tested and confirmed to work on the following operating systems:
 - Arch Linux
 - Debian 12
-- Ubuntu 22.04
+- Ubuntu 22.04|24.04|26.04
 
 ### Purpose of This Repository
 The goals behind creating and maintaining this repository are:
@@ -63,10 +63,11 @@ sudo bash 7zip_installer.sh
 
 ### Install [ImageMagick 7](https://github.com/imagemagick/imagemagick)
 Source the latest ImageMagick release directly from the official repository. Includes scripts for optimizing JPG images.
-- **Supported OS:** Debian 11/12, Ubuntu 20.04/22.04/23.04, and possibly other Debian-based distros.
+- **Supported OS:** Debian 12/13 and Ubuntu 22.04/24.04/26.04 (x86_64).
 ```bash
-curl -LSso build-magick.sh https://imagick.optimizethis.net
-sudo bash build-magick.sh
+git clone https://github.com/slyfox1186/imagemagick-build-script.git
+cd imagemagick-build-script || exit 1
+python3 build-magick.py --build
 ```
 
 ### Compile [FFmpeg](https://ffmpeg.org/) from Source

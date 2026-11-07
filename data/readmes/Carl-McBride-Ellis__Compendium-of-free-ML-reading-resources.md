@@ -13,7 +13,7 @@ Key:
 8. [Feature engineering](#feature-engineering) (2)
 9. [Explainability/interpretability](#explainabilityinterpretability) (6)
 10. [Deep learning / neural networks](#deep-learning--neural-networks) (17)
-11. [Reinforcement learning](#reinforcement-learning) (8)
+11. [Reinforcement learning](#reinforcement-learning) (9)
 12. [Recommender systems](#recommender-systems) (2)
 13. [Anomaly detection](#anomaly-detection) (1)
 14. [Computer vision](#computer-vision) (4)
@@ -22,7 +22,7 @@ Key:
 17. [Conformal prediction](#conformal-prediction) (5)
 18. [Time series: Forecasting](#time-series-forecasting) (6)
 
-Total number of books: **199**
+Total number of books: **200**
 
 <sub>Note: All books listed here have been made freely available by their respective authors/publishers, and all [arXiv](https://arxiv.org/) papers are inherently free.</sub>
 
@@ -213,6 +213,7 @@ Total number of books: **199**
 * :orange_book: ["Reinforcement Learning: An Overview"](https://arxiv.org/pdf/2412.05265) by Kevin Murphy
 * :orange_book: ["An Introduction to Deep Reinforcement Learning"](https://arxiv.org/pdf/1811.12560) by Vincent Francois-Lavet, Peter Henderson, Riashat Islam, Marc G. Bellemare, and Joelle Pineau
 * :orange_book: ["The Mathematics of Reinforcement Learning"](https://www.wim.uni-mannheim.de/media/Lehrstuehle/wim/doering/RL/RL_VORLESUNG.pdf) by Leif Döring
+* :orange_book: ["Reinforcement Learning: Mathematics and algorithms from MDPs to RLHF, InstructGPT, and DeepSeek-R1, with Python"](https://doi.org/10.5281/zenodo.23996511) by Dipesh Gautam
 
 ---
 ### Recommender systems

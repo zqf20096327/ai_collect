@@ -52,14 +52,15 @@ Library entries identify how they open:
 
 ## Requirements
 
-- iOS 26.0+ or macOS 26.0+
+- iOS 26.0+, macOS 26.0+, or visionOS 26.0+
+- watchOS 27.0+ for the `Foundation Lab Watch` companion, which ships inside the iOS app and runs prompts on Private Cloud Compute
+- tvOS 27.0+ for the Foundation Lab TV app; its Foundation Models features need tvOS 27.3 and an Xcode 27.3 SDK
 - Apple Silicon for on-device model execution
 - Apple Intelligence enabled for live model runs
-- Xcode 26.6 or Xcode 27
+- Xcode 27.2 or later
 
-The project builds with both Xcode 26.6 and Xcode 27. APIs introduced with the
-OS 27 SDK are compiler- and availability-gated, so the core app remains usable
-with Xcode 26 while Xcode 27 exposes the newest labs.
+The app still runs on OS 26. APIs introduced with OS 27 are availability-gated,
+so the newest labs appear only on an OS 27 runtime.
 
 ## Getting Started
 
@@ -83,6 +84,13 @@ xcodebuild \
   -project FoundationLab.xcodeproj \
   -scheme 'Foundation Lab' \
   -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO \
+  build
+
+xcodebuild \
+  -project FoundationLab.xcodeproj \
+  -scheme 'Foundation Lab TV' \
+  -destination 'generic/platform=tvOS Simulator' \
   CODE_SIGNING_ALLOWED=NO \
   build
 ```

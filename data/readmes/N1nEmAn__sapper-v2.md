@@ -36,7 +36,11 @@ agent and model — the mechanism still works.
 Attack-Defense Challenge CTF). If you want to use this mechanism in your own
 scenario (office, research, engineering, any long-horizon cooperative work):
 - **Start from [nvwabase · the Nüwa Foundation](https://github.com/N1nEmAn/nvwabase)** — the general-purpose base with all three capabilities, no pentest doctrine, ready for you to iterate your own division of labor
-- **Or fork this project** — replace `docker/commander/SKILL.md` (the 426-line doctrine) with your scenario's strategy, keep the rest of the mechanism as-is
+- **Or fork this project** — but the doctrine is NOT the only thing to change; the environment wiring must change too:
+  - `docker/commander/SKILL.md` (the 426-line doctrine) → your scenario's strategy
+  - `BENCHMARK_BASE_URL` and related platform env vars → the competition engine hard-verifies the arena API at boot (that's why configuring only a model key without a platform address yields `BENCHMARK_BASE_URL is not set`); running off the competition platform means providing or stubbing that platform interface yourself
+  - model gateway & key env vars (`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `SAPPER_MODEL` / `SAPPER_KEY_POOL` ...) → your own model services
+  - watchdog budget/deadline and report templates → adjust to your scenario
 - With AI, everything is flexible — even the doctrine can be rewritten with AI's help
 
 ---
@@ -245,6 +249,17 @@ intrusions the information leaks to the **victim** and supports attribution.
 Adversarial assumptions (expert stripping, framing) call for cryptographic
 design, which needs community co-building — our own capacity is limited, so
 join us; we may try to include it in a future release.
+
+## Star History
+
+<p align="center">
+  <a href="https://star-history.com/#N1nEmAn/sapper-v2&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=N1nEmAn/sapper-v2&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=N1nEmAn/sapper-v2&type=Date" width="640" />
+    </picture>
+  </a>
+</p>
 
 ## 8. Roadmap & Credits
 

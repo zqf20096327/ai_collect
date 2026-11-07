@@ -21,7 +21,7 @@ A portable, open-source Agent Skill for building distinctive, accessible fronten
 </p>
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.12.0-4F46E5.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.13.1-4F46E5.svg)](CHANGELOG.md)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-111111.svg)](https://agentskills.io/)
 
 [Live Showcase](https://kennedys0.github.io/taste-engine/) · [Installation](#install) · [CLI Setup](#enable-global-taste-engine-cli-command) · [How it works](#how-it-works) · [Styles](#style-library) · [Quality principles](#quality-without-a-house-style) · [Contributing](#contributing)
@@ -32,25 +32,25 @@ A portable, open-source Agent Skill for building distinctive, accessible fronten
 
 The chosen style must be unmistakable in the finished UI. Every style pack in Taste Engine enforces a screenshot-level **Material Fidelity Gate** and provides production-ready CSS reference recipes:
 
-- **Glassmorphism:** Frosted translucent planes filtering purposeful ambient gradients, light and dark themes. [Read pack](taste-engine/styles/glassmorphism.md) · [CSS recipe](taste-engine/examples/glassmorphism/frosted-surfaces.css) · [Visual QA](taste-engine/tests/glassmorphism-visual.md)
+- **Claymorphism:** Volumetric dual inner shadows (highlight + form shadow), soft tinted drop shadows, and sunken relief wells. [Read pack](skills/taste-engine/styles/claymorphism.md) · [CSS recipe](skills/taste-engine/examples/claymorphism/sculpted-surfaces.css) · [Visual QA](skills/taste-engine/tests/claymorphism-visual.md)
 
-- **Claymorphism:** Volumetric dual inner shadows (highlight + form shadow), soft tinted drop shadows, and sunken relief wells. [Read pack](taste-engine/styles/claymorphism.md) · [CSS recipe](taste-engine/examples/claymorphism/sculpted-surfaces.css) · [Visual QA](taste-engine/tests/claymorphism-visual.md)
+- **Frutiger Aero:** Optimistic mid-2000s nature-tech technological vision featuring glossy horizon sheens, aqua/ocean/leaf light fields, and soft dimensional depth. Consolidates three native expressions: **Classic Aero** (default, vibrant aqua gloss), **Aero Glass** (frosted crystalline transparency, preserves Glassmorphism affordances), and **Aero Tactile** (convex physical buttons, preserves Skeuomorphism affordances). [Read pack](skills/taste-engine/styles/frutiger-aero.md) · [CSS recipe](skills/taste-engine/examples/frutiger-aero/glossy-surfaces.css) · [Visual QA](skills/taste-engine/tests/frutiger-aero-visual.md)
 
-- **Neo-brutalism:** 2.5px solid black borders, unblurred hard offset shadows, and mechanical press displacement. [Read pack](taste-engine/styles/neo-brutalism.md) · [CSS recipe](taste-engine/examples/neo-brutalism/pop-surfaces.css)
+- **Brutalism (Raw & Bento):** Raw structural scaffolding, square corners, stark monochrome contrast, and immediate state flips. Features two native layout variants: **Raw** (exposed composition, deliberate visual tension) and **Bento** (modular grid composition with asymmetric panel spans while maintaining strict brutalist materials). [Read pack](skills/taste-engine/styles/brutalism.md) · [CSS recipe](skills/taste-engine/examples/brutalism/raw-surfaces.css)
 
-- **Skeuomorphism:** Top-down specular bevel highlights, multi-stop metallic reflection gradients, and tactile hardware controls. [Read pack](taste-engine/styles/skeuomorphism.md) · [CSS recipe](taste-engine/examples/skeuomorphism/tactile-controls.css)
+- **Neo-brutalism:** 2.5px solid black borders, unblurred hard offset shadows, and mechanical press displacement. [Read pack](skills/taste-engine/styles/neo-brutalism.md) · [CSS recipe](skills/taste-engine/examples/neo-brutalism/pop-surfaces.css)
 
-- **Retro-Terminal:** Authentic CRT phosphor glow, static scanlines, bracketed ASCII frames, and monospace CLI prompts. [Read pack](taste-engine/styles/retro-terminal.md) · [CSS recipe](taste-engine/examples/retro-terminal/crt-console.css)
+- **Minimalism & Data Cockpit:** Active intentional negative space, mathematical type calibration, hairline dividers, scannable tabular figures (`tabular-nums`), and high-density operational data cockpits (`⌘K`, floating docks, lateral inspectors). [Read pack](skills/taste-engine/styles/minimalism.md) · [CSS recipe](skills/taste-engine/examples/minimalism/clean-surfaces.css)
 
-- **Retro Pixel:** 8-bit and 16-bit pixel illustrations, stepped bevel borders, classic desktop window chrome, arcade orange/teal accents, and integer pixel press displacement. [Read pack](taste-engine/styles/retro-pixel.md) · [CSS recipe](taste-engine/examples/retro-pixel/pixel-surfaces.css) · [Visual QA](taste-engine/tests/retro-pixel-visual.md)
+- **Swiss / Editorial:** Dramatic scale contrast (up to 72px headlines), 12-column grid, structural hairline rules, and section indexes. [Read pack](skills/taste-engine/styles/swiss-editorial.md) · [CSS recipe](skills/taste-engine/examples/swiss-editorial/grid-typography.css)
 
-- **Brutalism (Raw & Bento):** Raw structural scaffolding, square corners, stark monochrome contrast, and immediate state flips. Features two native layout variants: **Raw** (exposed composition, deliberate visual tension) and **Bento** (modular grid composition with asymmetric panel spans while maintaining strict brutalist materials). [Read pack](taste-engine/styles/brutalism.md) · [CSS recipe](taste-engine/examples/brutalism/raw-surfaces.css)
+- **Retro-Terminal:** Authentic CRT phosphor glow, static scanlines, bracketed ASCII frames, and monospace CLI prompts. [Read pack](skills/taste-engine/styles/retro-terminal.md) · [CSS recipe](skills/taste-engine/examples/retro-terminal/crt-console.css)
 
-- **Swiss / Editorial:** Dramatic scale contrast (up to 72px headlines), 12-column grid, structural hairline rules, and section indexes. [Read pack](taste-engine/styles/swiss-editorial.md) · [CSS recipe](taste-engine/examples/swiss-editorial/grid-typography.css)
+- **Retro Pixel:** 8-bit and 16-bit pixel illustrations, stepped bevel borders, classic desktop window chrome, arcade orange/teal accents, and integer pixel press displacement. [Read pack](skills/taste-engine/styles/retro-pixel.md) · [CSS recipe](skills/taste-engine/examples/retro-pixel/pixel-surfaces.css) · [Visual QA](skills/taste-engine/tests/retro-pixel-visual.md)
 
-- **Minimalism & Data Cockpit:** Active intentional negative space, mathematical type calibration, hairline dividers, scannable tabular figures (`tabular-nums`), and high-density operational data cockpits (`⌘K`, floating docks, lateral inspectors). [Read pack](taste-engine/styles/minimalism.md) · [CSS recipe](taste-engine/examples/minimalism/clean-surfaces.css)
+- **Art Deco:** Architectural geometric precision, stepped chevron silhouettes, symmetrical framing, and flat metallic finishes (Antique Gold `#B89B5E`, Muted Brass `#B69A68`, Bronze `#A98462`). Features three expressions: **Modern Deco** (default, generous whitespace), **Classic Deco** (monumental obsidian drama), and **Minimal Deco** (quiet burgundy & bronze). [Read pack](skills/taste-engine/styles/art-deco.md) · [CSS recipe](skills/taste-engine/examples/art-deco/geometric-surfaces.css) · [Visual QA](skills/taste-engine/tests/art-deco-visual.md)
 
-- **Art Deco:** Architectural geometric precision, stepped chevron silhouettes, symmetrical framing, and flat metallic finishes (Antique Gold `#B89B5E`, Muted Brass `#B69A68`, Bronze `#A98462`). Features three expressions: **Modern Deco** (default, generous whitespace), **Classic Deco** (monumental obsidian drama), and **Minimal Deco** (quiet burgundy & bronze). [Read pack](taste-engine/styles/art-deco.md) · [CSS recipe](taste-engine/examples/art-deco/geometric-surfaces.css)
+- **Y2K Futurism:** Late-1990s and early-2000s cyber-optimism, polished liquid chrome sheens, iridescent spectral highlights, and chamfered geometric framing. Features three expressions: **Chrome** (default, polished liquid silver), **Holographic** (restrained iridescent spectral accents), and **Retro Tech** (early web cybernetics and modular console framing). [Read pack](skills/taste-engine/styles/y2k-futurism.md) · [CSS recipe](skills/taste-engine/examples/y2k-futurism/metallic-surfaces.css) · [Visual QA](skills/taste-engine/tests/y2k-futurism-visual.md)
 
 ## Why Taste Engine?
 
@@ -142,7 +142,7 @@ npm link
 
 ### Tailwind CSS & shadcn/ui Presets
 
-Taste Engine includes official **Tailwind CSS presets** and **shadcn/ui theme variable overrides** across all 9 archetypes (with native layout variants):
+Taste Engine includes official **Tailwind CSS presets** and **shadcn/ui theme variable overrides** across all 10 archetypes (with native layout variants):
 
 ```bash
 # Preview available presets (alias: taste-engine --preset)
@@ -172,15 +172,15 @@ module.exports = {
 };
 ```
 
-Read the [Tailwind CSS & shadcn/ui Integration Guide](taste-engine/references/tailwind-shadcn.md) for full component recipes (`.taste-clay-card`, `.taste-neo-btn`, etc.).
+Read the [Tailwind CSS & shadcn/ui Integration Guide](skills/taste-engine/references/tailwind-shadcn.md) for full component recipes (`.taste-clay-card`, `.taste-aero-card`, `.taste-y2k-card`, `.taste-neo-btn`, etc.).
 
 ## How it works
 
 | Your request | Taste Engine behavior |
 | --- | --- |
 | “Build a portfolio website.” | Ask one question: which visual style? Pause before writing UI code. |
-| “Build a skeuomorphic portfolio.” | Load the Skeuomorphism pack and implement immediately. |
-| “Build a glassmorphism landing page in Next.js.” | Load Glassmorphism, web quality checks, React performance, and public SEO. |
+| “Build a Frutiger Aero portfolio.” | Load Frutiger Aero pack immediately. |
+| “Build a Y2K Futurism landing page.” | Load Y2K Futurism pack immediately. |
 | “Fix the mobile navbar in this project.” | Preserve the existing design system; do not repeat the style question. |
 | “Audit the SEO of my website.” | Run the SEO guidance only; do not introduce a style picker. |
 
@@ -190,7 +190,7 @@ The agent's host controls automatic skill discovery. Taste Engine provides a pre
 
 <summary><strong>Example style question</strong></summary>
 
-> Before I start designing, which direction would you prefer: Claymorphism, Glassmorphism, Brutalism, Neo-brutalism, Minimalism, Swiss/Editorial, or something custom? You can also share a reference image.
+> Before I start designing, which direction would you prefer: Claymorphism, Frutiger Aero, Brutalism, Neo-brutalism, Minimalism, Swiss/Editorial, Retro Terminal, Retro Pixel, Art Deco, Y2K Futurism, or something custom? You can also share a reference image.
 
 </details>
 
@@ -198,15 +198,32 @@ The agent's host controls automatic skill discovery. Taste Engine provides a pre
 
 | Style | Visual character | Companion recipe |
 | --- | --- | --- |
-| **Claymorphism** | Sculpted, tactile surfaces, dual inner-shadow volumetric depth, and soft dimensional presence | [`examples/claymorphism/`](taste-engine/examples/claymorphism/sculpted-surfaces.css) |
-| **Glassmorphism** | Controlled translucency, layered frosting, and readable glass planes | [`examples/glassmorphism/`](taste-engine/examples/glassmorphism/frosted-surfaces.css) |
-| **Brutalism** | Direct typography, raw structural scaffolding, intentionally hard edges, and monochrome contrast. Features **Raw** and **Bento** layout variants | [`examples/brutalism/`](taste-engine/examples/brutalism/raw-surfaces.css) |
-| **Neo-brutalism** | Playful contrast, 2.5px solid black borders, hard unblurred offset shadows, and press displacement | [`examples/neo-brutalism/`](taste-engine/examples/neo-brutalism/pop-surfaces.css) |
-| **Minimalism** | Purposeful restraint, active intentional negative space, mathematical type hierarchy, and high-density operational data cockpits | [`examples/minimalism/`](taste-engine/examples/minimalism/clean-surfaces.css) |
-| **Swiss / Editorial** | Typographic rhythm, 12-column grids, dramatic scale contrast, and structural hairline rules | [`examples/swiss-editorial/`](taste-engine/examples/swiss-editorial/grid-typography.css) |
-| **Skeuomorphism** | Physical metaphors, top-down specular bevels, multi-stop metallic reflections, and tactile hardware controls | [`examples/skeuomorphism/`](taste-engine/examples/skeuomorphism/tactile-controls.css) |
-| **Retro Terminal** | Console-inspired phosphor glow, static scanlines, ASCII frames, and monospace CLI prompts | [`examples/retro-terminal/`](taste-engine/examples/retro-terminal/crt-console.css) |
-| **Retro Pixel** | Nostalgic 8-bit/16-bit computing, desktop window chrome, stepped pixel bevels, and arcade accents | [`examples/retro-pixel/`](taste-engine/examples/retro-pixel/pixel-surfaces.css) |
+| **Claymorphism** | Sculpted, tactile surfaces, dual inner-shadow volumetric depth, and soft dimensional presence | [`examples/claymorphism/`](skills/taste-engine/examples/claymorphism/sculpted-surfaces.css) |
+| **Frutiger Aero** | Optimistic mid-2000s nature-tech vision, glossy horizon sheens, aqua/ocean/leaf light fields, and soft dimensional depth (Classic, Glass, Tactile) | [`examples/frutiger-aero/`](skills/taste-engine/examples/frutiger-aero/glossy-surfaces.css) |
+| **Brutalism** | Direct typography, raw structural scaffolding, intentionally hard edges, and monochrome contrast. Features **Raw** and **Bento** layout variants | [`examples/brutalism/`](skills/taste-engine/examples/brutalism/raw-surfaces.css) |
+| **Neo-brutalism** | Playful contrast, 2.5px solid black borders, hard unblurred offset shadows, and press displacement | [`examples/neo-brutalism/`](skills/taste-engine/examples/neo-brutalism/pop-surfaces.css) |
+| **Minimalism** | Purposeful restraint, active intentional negative space, mathematical type hierarchy, and high-density operational data cockpits | [`examples/minimalism/`](skills/taste-engine/examples/minimalism/clean-surfaces.css) |
+| **Swiss / Editorial** | Typographic rhythm, 12-column grids, dramatic scale contrast, and structural hairline rules | [`examples/swiss-editorial/`](skills/taste-engine/examples/swiss-editorial/grid-typography.css) |
+| **Retro Terminal** | Console-inspired phosphor glow, static scanlines, ASCII frames, and monospace CLI prompts | [`examples/retro-terminal/`](skills/taste-engine/examples/retro-terminal/crt-console.css) |
+| **Retro Pixel** | Nostalgic 8-bit/16-bit computing, desktop window chrome, stepped pixel bevels, and arcade accents | [`examples/retro-pixel/`](skills/taste-engine/examples/retro-pixel/pixel-surfaces.css) |
+| **Art Deco** | Architectural geometric elegance, stepped chevrons, fluted panels, and antique gold/brass finishes (Modern, Classic, Minimal) | [`examples/art-deco/`](skills/taste-engine/examples/art-deco/geometric-surfaces.css) |
+| **Y2K Futurism** | Polished liquid chrome finishes, iridescent reflections, chamfered framing, and speculative cyber-optimism (Chrome, Holographic, Retro Tech) | [`examples/y2k-futurism/`](skills/taste-engine/examples/y2k-futurism/metallic-surfaces.css) |
+
+### Frutiger Aero Consolidation & Backward Compatibility
+
+Glassmorphism and Skeuomorphism are consolidated into **Frutiger Aero** as native expressions:
+- **Classic Aero (`variant: "classic"`, default):** Bright aqua-inspired palette, glossy dimensional controls, nature-tech balance, and optimistic compositions.
+- **Aero Glass (`variant: "glass"`):** Frosted crystalline panels, layered transparency, controlled background blur, and soft luminous borders. Preserves core Glassmorphism design principles.
+- **Aero Tactile (`variant: "tactile"`):** Physical material cues, tactile button surfaces, convincing highlights and shadows, and realistic surface depth. Preserves core Skeuomorphism design principles.
+
+**Backward Compatibility:** Requests specifying `style: "glassmorphism"` or `style: "skeuomorphism"` automatically resolve to `style: "frutiger-aero"` with `variant: "glass"` or `variant: "tactile"`. Existing configurations continue working seamlessly.
+
+### Y2K Futurism Specification
+
+Y2K Futurism introduces late-1990s and early-2000s cyber-optimism as an independent 10th archetype:
+- **Chrome (`variant: "chrome"`, default):** Polished metallic silver surfaces, high-contrast dark and light zones, chrome-beveled geometric framing, and bold futuristic typography.
+- **Holographic (`variant: "holographic"`):** Iridescent accents, controlled spectral gradients, translucent colored layering, and soft chromatic reflections.
+- **Retro Tech (`variant: "retro-tech"`):** Early internet cyber-optimism, futuristic industrial typography, modular console panels, and speculative hardware references.
 
 ### Brutalism Layout Taxonomy & Bento Consolidation
 
@@ -234,14 +251,14 @@ Taste Engine separates user taste from non-negotiable engineering quality:
 
 - **Conditional engineering:** React/Next.js, React Native/Expo, and view-transition guidance load only where applicable. Vue, Svelte, and Astro are not forced into React conventions.
 
-Read the [core skill](taste-engine/SKILL.md), [quality gates](taste-engine/references/quality-tiers.md), [SEO guide](taste-engine/references/seo.md), and [motion engine guide](taste-engine/references/motion-engine.md).
+Read the [core skill](skills/taste-engine/SKILL.md), [quality gates](skills/taste-engine/references/quality-tiers.md), [SEO guide](skills/taste-engine/references/seo.md), and [motion engine guide](skills/taste-engine/references/motion-engine.md).
 
 ## Repository structure
 
 ```text
 .
 
-├── taste-engine/             # Canonical skill, references, styles, validation
+├── skills/taste-engine/      # Canonical skill, references, styles, validation & npx skills discovery
 
 │   ├── SKILL.md
 
@@ -255,27 +272,25 @@ Read the [core skill](taste-engine/SKILL.md), [quality gates](taste-engine/refer
 
 │   └── tests/                # Unit tests and agent evaluation scenarios
 
-├── skills/taste-engine/      # Generated mirror for npx skills discovery
-
 ├── optional-standalone-skills/
 
 ├── bin/taste-engine.mjs      # Native multi-agent installation CLI
 
-├── scripts/                 # Mirror sync, release build
+├── scripts/                 # Updater sync & release archive builder
 
 └── .github/workflows/       # Validation and versioned releases
 ```
 
-The canonical source is `taste-engine/`. Contributors should edit that directory, then run `python3 scripts/sync-agent-skills.py` to regenerate the discovery mirror.
+The canonical source is `skills/taste-engine/` (serving both the native `taste-engine` CLI and `npx skills add` discovery without duplication).
 
 ## Development and verification
 
 ```bash
 python3 scripts/sync-agent-skills.py --check
 
-python3 taste-engine/scripts/validate-pack.py
+python3 skills/taste-engine/scripts/validate-pack.py
 
-python3 -m unittest discover -s taste-engine/tests -p 'test_*.py'
+python3 -m unittest discover -s skills/taste-engine/tests -p 'test_*.py'
 
 node --test tests/cli.test.mjs
 
@@ -308,6 +323,6 @@ Issues, new style proposals, accessibility improvements, translations of optiona
 
 ## Sources and attribution
 
-Original implementation, with documented research from [Anti-Slop Design](https://github.com/Ferousco-dev/anti-slop-design), [Hallmark](https://github.com/Nutlope/hallmark), [Anti-AI-Slop Writing](https://github.com/jalaalrd/anti-ai-slop-writing), [Anti-Slop](https://github.com/miqdadbadjuber/anti-slop), [Anti-Slop Structural Engine](https://github.com/AgriciDaniel/anti-slop), [Taste Skill](https://github.com/tasteskill/tasteskill), and [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills). This project is independent of those repositories and does not claim endorsement. See [research notes](taste-engine/references/research-notes.md).
+Original implementation, with documented research from [Anti-Slop Design](https://github.com/Ferousco-dev/anti-slop-design), [Hallmark](https://github.com/Nutlope/hallmark), [Anti-AI-Slop Writing](https://github.com/jalaalrd/anti-ai-slop-writing), [Anti-Slop](https://github.com/miqdadbadjuber/anti-slop), [Anti-Slop Structural Engine](https://github.com/AgriciDaniel/anti-slop), [Taste Skill](https://github.com/tasteskill/tasteskill), and [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills). This project is independent of those repositories and does not claim endorsement. See [research notes](skills/taste-engine/references/research-notes.md).
 
 **License:** [MIT](LICENSE). © 2026 Taste Engine contributors.

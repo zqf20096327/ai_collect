@@ -40,6 +40,24 @@
 | **引擎** | 通用：百度网页 / 千帆 / Bing / DDG / Tavily / Exa / AnySearch / 豆包 / 元宝 / TinyFish / Keenable + 4 个托管 MCP 上游；学术 9 源并行 |
 | **支撑** | SQLite 缓存、系统代理自动检测、webfetch（SSRF 防护）、MinerU、LLM 流式摘要、Everything |
 
+### 两种接入形态：stdio 与 HTTP daemon
+
+两条链路共用同一个 `mcp.NewMCPServer(conf)` 和同一份 `config.yaml`，工具能力等价；差别在 transport 与管控 / 观测面：
+
+<p align="center">
+  <img src="docs/images/transport-modes.svg" alt="npm / dsh 的 stdio 链路与 Release / GHCR 的 HTTP daemon 链路对比，两者共用 mcp.NewMCPServer 内核" width="900">
+</p>
+
+| | npm / dsh（stdio） | Release / GHCR（HTTP daemon） |
+|---|----|----|
+| 进程 | dsh 的 MCP client 每个会话拉起一个 `cmd/cli` 子进程 | `websearch-mcpserver start` 常驻，refcount / PID 管理多客户端 |
+| 协议 | stdin/stdout JSON-RPC，不监听端口 | `POST /mcp` Streamable HTTP，默认 `127.0.0.1:8338` |
+| 工具 | 同一批最多 5 个工具 | 同一批最多 5 个工具 |
+| 独有 | Node shim 只做平台包解析与 `spawn`，无 postinstall、无运行时下载 | `/dashboard/`、`/metrics`、`/searxng/search`、`/__admin`、`auth_token`、SSE 进度推送 |
+| 配置 | 缺省时走 `mode: engine` 内存默认值，建议用 `WEBSEARCH_MCP_CONFIG` 指向个性化 `config.yaml` | `start` 首次自动生成完整 `config.yaml` |
+
+> **HTTP daemon 是全特性的完全形态**；stdio 不是功能裁剪版，也不是「轻客户端拉起 daemon」——npm 里的 Node shim 只负责 `spawn`，被拉起的 Go 二进制本身就是完整 MCP server，只是不监听端口、没有管控与观测面。两种形态的配置文件通用，字段差异见 [docs/configuration.md](docs/configuration.md)。
+
 更完整的回退链、代理检测与嵌入方式见 [docs/architecture.md](docs/architecture.md)。
 
 ---
@@ -122,6 +140,56 @@ autostart.vbs
   }
 }
 ```
+
+### 通过 npm 安装（dsh 插件 / 通用 MCP 客户端）
+
+每个版本的 Release 产物就绪后，由单独的 `vX.Y.Z-npm` tag 发一组 npm 包（`v3.10.5-npm` → npm `3.10.5`）：四平台预编译二进制按 `os` / `cpu` 自动挑选，无 postinstall、无运行时下载、无需 API Key。Go 二进制随平台子包分发，Node 侧只有一个轻量的启动 shim。
+
+```bash
+# DeepSeek Harness：一行装成 dsh 插件（web profile）
+dsh plugin --profile web add dsh-websearch-mcpserver
+dsh --profile web --dump-config       # 应能看到 mcp-websearch 行
+dsh web                               # web bundle 没有 HMR，必须重启
+
+# 其他 MCP 客户端（Claude Code / Cursor / Qwen Code / ...）：装通用 stdio CLI
+npm i -g websearch-mcp-cli
+```
+
+```json
+{
+  "mcpServers": {
+    "websearch": { "command": "websearch-mcp-cli" }
+  }
+}
+```
+
+> **重要：装完只是「能跑」，最佳体验必须做个性化配置。**
+> 零配置时 stdio 二进制只跑内存默认值（`mode: engine`）：能搜，但拿不到零 Key 托管 MCP 级联、多供应商 Key 池、学术源权重、抓取回退、代理适配、语言与结果预算这些真正决定质量的部分。同一个服务，默认配置和按场景调过的配置，体验差距很大。
+
+**请自己读，或者让 agent 代读**（推荐后者，省时间）：人类看 [docs/HUMAN_GUIDE.md](docs/HUMAN_GUIDE.md) 的调优路线 + [docs/configuration.md](docs/configuration.md) 的完整字段；agent 看 [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) + `docs/configuration.md` + `config.example.yaml`。
+
+npm 装到的只有 Go 二进制，**本机通常没有这个仓库的源码**，所以下面这段提示词写清了仓库地址，是**自包含的**：直接从网页复制给任意 agent 都行，不会出现「本项目」指代不明、agent 满地找文档的情况。若你本来就在仓库副本里工作，把取文档那句删掉即可。
+
+```text
+我通过 npm 安装了 websearch-mcp-cli / dsh-websearch-mcpserver，要为它做个性化配置。
+项目仓库是 https://github.com/daidaiJ/websearch-mcpserver ，配置文档只在仓库里，
+我本机可能没有源码。请先确认当前目录是不是这个仓库的副本：是就直接读；
+否则 git clone --depth 1 https://github.com/daidaiJ/websearch-mcpserver 到临时目录，
+或直接读取这三个 raw 文件：
+  https://raw.githubusercontent.com/daidaiJ/websearch-mcpserver/master/docs/AGENT_GUIDE.md
+  https://raw.githubusercontent.com/daidaiJ/websearch-mcpserver/master/docs/configuration.md
+  https://raw.githubusercontent.com/daidaiJ/websearch-mcpserver/master/config.example.yaml
+读完先问清我的操作系统、网络环境（是否需要代理）、有哪些可用的 API Key、
+主要用途（中文网页 / 学术论文 / 代码资料 / 深度调研），再生成一份 config.yaml：
+写到我本机的绝对路径（Windows 用 %USERPROFILE%\.config\websearch\config.yaml，
+其他用 ~/.config/websearch/config.yaml），只写必要的覆盖项，逐条解释为什么这样选，
+不要开启我不用的引擎，不要把密钥明文写进文件。
+最后告诉我 WEBSEARCH_MCP_CONFIG 该设成哪个绝对路径，以及怎么确认它已生效。
+```
+
+配置写好后，dsh 启动前导出 `WEBSEARCH_MCP_CONFIG=/abs/path/to/config.yaml`（插件 shim 会转成 `-c`）；通用客户端可在 `mcpServers.websearch.env` 里设同一个变量，或直接写 `args: ["-c", "/abs/path/config.yaml"]`。优先调：`mode`（零 Key `mcphub` / 有 Key `apipool` / 纯本地 `engine`）、`mcp_hub.preset` 与 `fallback_engines`、`sk_list`、系统代理、`language`、`fetch_mode`、学术引擎开关、结果条数与超时预算、`cache`。
+
+非 `web` profile、平台矩阵、校验和、权限声明与排障见 [docs/installation.md#npm--dsh-插件分发](docs/installation.md#npm--dsh-插件分发)；发布与打包口径见 [npm/README.md](npm/README.md)。
 
 ---
 

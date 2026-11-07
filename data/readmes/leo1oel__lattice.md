@@ -87,13 +87,17 @@ The Git panel shows changes and pull requests when the project is a repository.
 ## Install
 
 Lattice runs on Apple Silicon Macs with macOS 14 or later, and builds with your own [MacTeX](https://tug.org/mactex/) or TeX Live.
-No TeX yet? Lattice notices at launch and offers to install BasicTeX for you.
+No TeX yet? Lattice offers to install BasicTeX for you: it is the first step of the Get started checklist, and a build that finds no TeX offers it too.
 
 1. Download the `.dmg` from the [latest release](https://github.com/leo1oel/lattice/releases/latest) and drag Lattice into Applications.
 2. Open a folder, start from a template, or connect an Overleaf project.
-   **Guided tutorial** in the project menu opens a sample paper for a one-minute tour.
+   **Guided tutorial** in the project menu opens a sample paper beside Get started, a six-step checklist from building the PDF to letting the Agent revise a paragraph.
 
 Official builds are signed, notarized by Apple, and update themselves.
+
+**Linux (experimental).** Releases that pass their Linux checks also carry an x86_64 `.AppImage`, for Ubuntu 22.04 or later, Fedora 45 and similar distributions.
+Make it executable (`chmod +x Lattice_*.AppImage`) and run it; it builds with the TeX Live from your distribution's packages.
+On Linux, Lattice does not update itself, so download each new release, and the built-in Agent is not available yet.
 
 ## Contributing
 

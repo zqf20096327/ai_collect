@@ -367,6 +367,11 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
+
+* **Neopep: Reinforcement Learning from Machine-Learned Force Field Energy for Non-Canonical Peptide Structure Prediction** [2026]  
+Dhanya Jagannathan, Philip M. Kim.  
+[bioRxiv(2026)](https://doi.org/10.64898/2026.10.22.760799)  
+
 * **On-the-Fly Machine-Learned Force Fields for High-Fidelity Polymer Glass Transition Simulations** [2026]  
 Ashutosh Srivastava, Sakshi Agarwal, Shivank Shukla, Harikrishna Sahu, Rampi Ramprasad.  
 [J. Chem. Inf. Model.(2026)](https://doi.org/10.1021/acs.jcim.6c02116) | [code](https://github.com/Ramprasad-Group/OTF-MLFF-Tg)  
@@ -1069,6 +1074,16 @@ Wang, Han, Linfeng Zhang, Jiequn Han, and E. Weinan.
 
 
 
+
+
+* **Unconstrained learning of equivariant atomistic properties** [2026]  
+Joseph W. Abbott, Paolo Pegolo, Pol Febrer, Michelangelo Domina, Sandra Saade, Matthias Kellner, Filippo Bigi, Philip Loche, Michele Ceriotti.  
+  [arXiv:2610.31183(2026)](https://doi.org/10.48550/arXiv.2610.31183)  
+
+* **High-quality, high-information datasets for universal atomistic machine learning** [2026]  
+Cesare Malosso, Filippo Bigi, Paolo Pegolo, Joseph W. Abbott, Philip Loche, Mariana Rossi, Tiago J. Goncalves, Sandip De, Michele Ceriotti, Arslan Mazitov.  
+  [arXiv:2603.02089(2026)](https://doi.org/10.48550/arXiv.2603.02089) | [code](https://github.com/lab-cosmo/upet)  
+
 * **FACTO: fast atom-centered tensor operator for accurate and efficient foundational machine-learned interatomic potentials** [2026]  
 Siyuan Liu, Chang Han, Sheng Gong, Yanping Yang, Tianze Zheng, Yu Xia, Kuang Yu, Shenzhen Xu, Wen Yan.  
   [arXiv:2611.03276(2026)](https://doi.org/10.48550/arXiv.2611.03276)  
@@ -1507,16 +1522,4 @@ Paul Fuchs, Weilong Chen, Stephan Thaler, Julija Zavadlav.
 
 * **Augmenting Molecular Graphs with Geometries via Machine Learning Interatomic Potentials** [2025]  
 Fu, Cong, Yuchao Lin, Zachary Krueger, Haiyang Yu, Maho Nakata, Jianwen Xie, Emine Kucukbenli, Xiaofeng Qian, and Shuiwang Ji.  
-[arXiv:2507.00407 (2025)](https://doi.org/10.48550/arXiv.2507.00407) | [data](https://huggingface.co/divelab)  
-
-* **Tensor Decomposition Networks for Fast Machine Learning Interatomic Potential Computations** [2025]  
-Lin, Yuchao, Cong Fu, Zachary Krueger, Haiyang Yu, Maho Nakata, Jianwen Xie, Emine Kucukbenli, Xiaofeng Qian, and Shuiwang Ji.  
-[arXiv:2507.01131 (2025)](https://doi.org/10.48550/arXiv.2507.01131) | [data](https://huggingface.co/divelab)  
-
-* **A Benchmark for Quantum Chemistry Relaxations via Machine Learning Interatomic Potentials** [2025]  
-Fu, Cong, Yuchao Lin, Zachary Krueger, Wendi Yu, Xiaoning Qian, Byung-Jun Yoon, Raymundo Arróyave et al.  
-[arXiv:2506.23008 (2025)](https://doi.org/10.48550/arXiv.2506.23008) | [data](https://huggingface.co/divelab)  
-
-* **Enhancing Machine Learning Potentials through Transfer Learning across Chemical Elements** [2025]  
-Sebastien Röcken and Julija Zavadlav.  
-[
+[arXiv:2507.00407 (2025)](https:

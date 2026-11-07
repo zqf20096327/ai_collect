@@ -34,6 +34,7 @@ fonts and subtitles follow (`reels voice --lang ja`; Noto JP / KR download on fi
 ## Quick start
 
 Requirements: Python ≥ 3.11 ([uv](https://docs.astral.sh/uv/)), Node ≥ 22, FFmpeg, and an agent CLI (Claude Code recommended).
+No Claude account (e.g. in mainland China)? Point Claude Code at [DeepSeek's Anthropic-compatible endpoint](https://api-docs.deepseek.com/quick_start/agent_integrations/claude_code) — see [国内用户](README.zh-CN.md#国内用户用-deepseek-当导演); `reels` accepts `ANTHROPIC_AUTH_TOKEN` in place of `claude /login`.
 
 ```bash
 uv tool install git+https://github.com/agentic-loops-x/Reels-RSI   # or: git clone … && uv tool install -e .

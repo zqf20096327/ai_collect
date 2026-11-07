@@ -52,6 +52,8 @@ Want the full stack?
 ./install.sh --vault ~/vault --name Ada --with-search --with-cron --with-phone
 ```
 
+Want to see the plan first? Add `--dry-run` to list every file the installer would write, link or merge. It changes nothing.
+
 Then open Claude Code in your vault and type `/boot`.
 
 ## Things your setup can't do yet
@@ -157,11 +159,11 @@ ECX plays well with these (not bundled, all worth installing): [superpowers](htt
 
 **Does it overwrite my config?** Never. It merges, skips anything already there, and saves a `.ecx-bak` copy first.
 
-**How do I remove it?** Restore the `.ecx-bak` files and delete the skill links in `~/.claude/skills`.
+**How do I remove it?** Run `./install.sh --uninstall --vault ~/vault` with the same vault you installed with. It restores every `.ecx-bak` file and removes the skill links that point into this repo in `~/.claude/skills` and `~/.agents/skills`. Skills you added yourself are left alone.
 
 ## Contributing
 
-New here? Start with an issue labelled [`good first issue`](https://github.com/saksham10arora-dotcom/everything-claude-codex/labels/good%20first%20issue). Each one names the exact files to touch.
+Full guide: [CONTRIBUTING.md](CONTRIBUTING.md). New here? Start with an issue labelled [`good first issue`](https://github.com/saksham10arora-dotcom/everything-claude-codex/labels/good%20first%20issue). Each one names the exact files to touch.
 
 **How to pick an issue:**
 - `good first issue` is kept for people who haven't had a PR merged here yet. After your first one lands, pick from [`help wanted`](https://github.com/saksham10arora-dotcom/everything-claude-codex/labels/help%20wanted) instead, so newcomers always have a way in.

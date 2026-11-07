@@ -1,13 +1,13 @@
 # <img src="design/icon.svg" width="32" height="32"> TavernRev
 
 > **⚠️ BETA RELEASE WARNING**
-> This software is in early development (v1.6.3). Bugs are expected.
+> This software is in early development (v1.6.4). Bugs are expected.
 > **Always backup your chats** (Export function) before updating or clearing data.
 
 A next-generation, high-performance character chat client designed for speed and compatibility. 
 Built natively for **Android** and **Windows**, TavernRev brings the power of advanced AI roleplay to your pocket without the web-browser lag.
 
-*(Currently in Beta v1.6.3)*
+*(Currently in Beta v1.6.4)*
 
 ---
 
@@ -35,8 +35,8 @@ Built natively for **Android** and **Windows**, TavernRev brings the power of ad
 - **Group Scenarios**: Define global contexts that all characters in the group respect.
 - **Mute & Talkativeness**: Fine-tune group dynamics by silencing bots or adjusting their chance to speak.
 
-### ☁️ Multi-Cloud Synchronization
-- **Dropbox & Google Drive**: Keep your characters, personas, and chats in sync across all your devices.
+### ☁️ Easy Multi-Cloud Synchronization
+- **Dropbox & Google Drive**: Keep your characters, personas, and chats in sync across all your devices, all in a few clicks.
 - **Delta Sync**: Only uploads what changed. Synchronize hundreds of chats in milliseconds.
 - **Deep Sync**: Extracts embedded World Info from character cards automatically during sync.
 
@@ -45,7 +45,7 @@ Unlike web-wrappers, TavernRev is built on Rust. It handles chats with thousands
 
 ### 🧠 Smart AI Support
 - **Google Gemini 2.5 & 3.0**: Native support for the latest models with **Thinking Level** control (Low/High/Budget).
-- **OpenAI (o1/o3)**: Full support for reasoning models via `Reasoning Effort` settings.
+- **OpenAI **: Full support for reasoning models via `Reasoning Effort` settings.
 - **AI Horde**: Free access to community models with automatic worker listings.
 - **Custom Backends**: Connect to Oobabooga, KoboldCPP, or any OpenAI-compatible API.
 

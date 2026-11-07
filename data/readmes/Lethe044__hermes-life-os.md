@@ -33,16 +33,22 @@ Ask in plain language; Hermes calls the right tool and answers from your own dat
 | Check in on your life | "rate my health 7 and money 3" | `log_life_wheel` |
 | Keep a backlog | "add Dune to my books" | `add_library_item` |
 | Use your own calendar app | "export my calendar" | `export_calendar` |
+| Empty your head | "remind me to look into cello lessons" | `add_to_inbox` |
+| Close the week | "start my weekly review" | `start_weekly_review` |
+| Learn something for good | "quiz me on my Spanish cards" | `review_flashcards` |
+| See the money picture | "what is my net worth?" | `get_net_worth` |
+| Move a big goal forward | "start a project: launch the website" | `add_project` |
+| Stop forgetting follow-ups | "I am waiting for a quote from the plumber" | `add_waiting` |
 | Undo a mistake | "put the rent task back" | `restore_deleted` |
 | Understand yourself | "what affects my sleep?" | `get_correlations` |
 
-All 270 tools are listed in the [tool reference](docs/TOOLS.md).
+All 299 tools are listed in the [tool reference](docs/TOOLS.md).
 
 ## Contents
 
 - **Start here:** [What it does](#what-it-does) · [Architecture](#architecture) · [Quick start](#quick-start) · [Chat mode](#chat-mode)
 - **Your data:** [Encryption](#encryption-at-rest-optional) · [Automatic backups](#automatic-backups) · [Restore](#restore) · [Health check](#health-check-doctor) · [Data export](#data-export)
-- **Planner:** [Tasks, agenda](#planner-tasks-body-metrics-subscriptions-people--todays-agenda) · [Priorities, plan my day, life wheel, library](#daily-priorities-plan-my-day-life-wheel-library--calendar-export) · [Time blocks, objectives, recipes, trips](#time-blocks-objectives-recipes--trips) · [Chores, routines, decisions](#chores-expiry-dates-routines-gift-ideas--decisions) · [Recently deleted](#recently-deleted-recommendation-ledger--pinned-backups)
+- **Planner:** [Tasks, agenda](#planner-tasks-body-metrics-subscriptions-people--todays-agenda) · [Priorities, plan my day, life wheel, library](#daily-priorities-plan-my-day-life-wheel-library--calendar-export) · [Inbox, weekly review](#inbox--weekly-review) · [Flashcards, net worth](#flashcards--net-worth) · [Projects, waiting for](#projects--waiting-for) · [Time blocks, objectives, recipes, trips](#time-blocks-objectives-recipes--trips) · [Chores, routines, decisions](#chores-expiry-dates-routines-gift-ideas--decisions) · [Recently deleted](#recently-deleted-recommendation-ledger--pinned-backups)
 - **Insights:** [Pattern detection](#pattern-detection) · [Life review](#life-review---the-flagship-retrospective-report) · [Dashboard](#dashboard)
 - **Connect:** [Telegram](#telegram-bot) · [Discord](#discord-bot) · [Slack](#slack-bot) · [Local REST API](#local-rest-api) · [Plugins](#plugin-system-add-your-own-tools-no-fork-required)
 - **Project:** [Project structure](#project-structure) · [What's new](#whats-new) · [Running tests](#running-tests)
@@ -513,6 +519,52 @@ The doctor and `get_repair_suggestions` check the trash and the ledger, and
 
 All three new stores are included in backup, restore, export, the doctor, search and the
 recently deleted list.
+
+## Inbox & Weekly Review
+
+```
+"inbox: look into cello lessons"        "what's in my inbox?"
+"make the cello one a task for Friday"  "drop the lamp idea"
+"start my weekly review"                "save my review: wins shipped v1.49, focus on scales and taxes"
+```
+
+- **Inbox**: capture first, decide later. `process_inbox_item` turns an item into a task (with
+  due date, priority and minutes), a note, a library item or a priority, and removes it from
+  the inbox only when the new entry was created.
+- **Weekly review**: shows the last seven days (finished tasks, priorities done, time blocks,
+  overdue, unsorted inbox, the life wheel's lowest areas) and what you planned to focus on last
+  week, then saves your wins, lessons, rating and next week's focus. `create_tasks=true` turns
+  the focus items into tasks due next Monday.
+
+## Flashcards & Net Worth
+
+```
+"add flashcards: casa = house, perro = dog (deck spanish)"   "quiz me"
+"I knew that one"                                           "how are my flashcards doing?"
+"my savings account is 4200"  "my loan is 1800 (liability)"  "what is my net worth?"
+"show my net worth trend for 12 months"
+```
+
+- **Flashcards**: Leitner boxes 1 to 5 with return intervals of 1, 3, 7, 16 and 35 days. Hermes
+  shows the front of the next due card, reveals the back on request and records whether you knew
+  it. Stats cover cards per deck and box, mastered cards and your accuracy.
+- **Net worth**: assets minus liabilities from the balances you record. Every update is kept, so
+  you get the change since the last update and a month-end trend. Amounts have no currency.
+
+## Projects & Waiting For
+
+```
+"start a project: launch the website, due December 1"     "add a task to the website project: write copy"
+"how is the website project going?"                       "pause the website project"
+"I am waiting for the contract from Sam, check in Friday" "I chased Sam, ask again in 3 days"
+"the contract arrived"                                    "what am I waiting for?"
+```
+
+- **Projects**: an outcome with a status (active, paused, done), an optional due date and a tag.
+  Tasks carrying the tag count toward progress; Hermes shows the next action and warns about
+  overdue projects and active projects with no open task. Deleting a project keeps its tasks.
+- **Waiting for**: things you handed to someone else, each with a follow-up date. Due items show
+  in the agenda and as a nudge; `chase_waiting` records a follow-up and pushes the date out.
 
 ## Project Structure
 
@@ -2151,79 +2203,40 @@ phrased as a nudge, nothing more.
 
 ## What's New
 
-**v1.48.0 - Daily Priorities, Plan My Day, Life Wheel, Library, Calendar Export**
-- New **daily priorities** (the "Big 3"): `add_priority`, `get_priorities`, `complete_priority`,
-  `carry_over_priorities`, `delete_priority`. At most three per day, free text or an open task
-  (finishing the priority finishes the task), a streak of days with every priority done, and
-  the agenda, the nudges and the closing summary show what is still open.
-- New **plan my day**: `plan_my_day` fits priorities, overdue and due tasks into the free
-  gaps of your day plan. It shows a proposal first; `apply=true` saves time blocks linked to
-  the tasks. Tasks take an optional `minutes` estimate (`add_task`, `update_task`).
-- New **life wheel**: `log_life_wheel`, `get_life_wheel`, `delete_wheel_checkin`. Rate eight
-  areas from 1 to 10, see bars, the change since the last check-in and the lowest areas, and get
-  a nudge after five weeks without a check-in.
-- New **library**: `add_library_item`, `get_library`, `update_library_item`,
-  `finish_library_item`, `suggest_library_item`, `get_library_stats`, `delete_library_item`.
-  One backlog for books, movies, shows, games, podcasts and courses.
-- New **calendar export**: `export_calendar` writes an `.ics` file (time blocks, task due
-  dates, birthdays, countdowns, trips, expiry dates, chores, renewals, decision reviews) with
-  stable ids, so a newer import updates earlier events instead of duplicating them.
-- New **tool reference** `docs/TOOLS.md`, generated from the schemas and checked by a test.
-- README restructured (quick tour, contents, demo); release history moved to
-  [CHANGELOG.md](CHANGELOG.md); added SECURITY.md and a pull request template.
+**v1.51.0 - Projects and Waiting For**
+- New **projects**: `add_project`, `get_projects`, `get_project`, `update_project`,
+  `add_project_task`, `delete_project`. A project is an outcome that needs several tasks;
+  every project owns a tag and the tasks carrying it belong to it. Hermes shows progress, the
+  next action and flags projects that are overdue or have no open task. The agenda lists
+  project actions due today and a nudge points at stuck or overdue projects.
+- New **waiting for** list: `add_waiting`, `get_waiting`, `chase_waiting`, `resolve_waiting`,
+  `delete_waiting`. Track what you need back from someone, with a follow-up date (a week out
+  by default). Items due for a follow-up show in the agenda and nudges; chasing pushes the
+  date out and resolving closes the item.
+- Recently deleted now labels waiting items by what you were waiting for.
 - Doctor, repair suggestions, search, backup, restore, export and recently deleted cover the
-  three new stores.
-- 81 new tests - suite grew from 4859 to 4940.
+  two new stores.
+- 37 new tests - suite grew from 5017 to 5054.
 
-**v1.47.0 - Recently Deleted, Recommendation Ledger, Pinned Backups**
-- New **recently deleted**: `get_trash`, `restore_deleted`, `empty_trash`. Every
-  planner delete or clear tool now keeps what it removed for 30 days, so a wrong
-  delete can be undone. A test fails when a new delete tool is not covered.
-- New **recommendation ledger**: `get_recommendation_history`,
-  `mark_recommendation`. Suggestions from `get_recommendations` are filed; a
-  followed one is compared with the metric before and after.
-- New **pinned backups**: `pin_backup`, `unpin_backup`. Pinned backups survive
-  rotation and do not count towards the keep limit.
-- The doctor, `get_repair_suggestions`, `search_everything`, backup, restore,
-  export and rekey cover the two new stores (trash and recs).
-- Ideas for these three came from a look at Matt Abate's life-distributable
-  (approval gates, a recommendation ledger, backups that cannot be deleted by
-  the agent); the code is our own.
-- 137 new tests - suite grew from 4722 to 4859.
+**v1.50.0 - Flashcards and Net Worth**
+- New **flashcards** with spaced repetition (Leitner boxes): `add_flashcards`,
+  `review_flashcards`, `reveal_flashcard`, `answer_flashcard`, `get_flashcard_stats`,
+  `delete_flashcard`. A correct answer moves a card up a box (it returns after 1, 3, 7, 16 and
+  35 days), a wrong one sends it back to box 1 for tomorrow. The agenda and a nudge show how
+  many cards are due.
+- New **net worth**: `set_account_balance`, `get_net_worth`, `get_net_worth_trend`,
+  `delete_account`. Record what you own and owe whenever you look at it; Hermes keeps each
+  account's history and shows net worth today, the change since the last update and a
+  month-by-month trend. A nudge appears after five weeks without an update.
+- Recently deleted now labels flashcards by their front and weekly reviews by their week.
+- Doctor, repair suggestions, search, backup, restore, export and recently deleted cover the
+  two new stores.
+- 39 new tests - suite grew from 4978 to 5017.
 
-**v1.46.1 - Subscription renewals keep their day of the month**
-- Fix: `pay_subscription` saved the clamped renewal date as the new schedule, so
-  a monthly renewal on the 31st drifted to the 28th for good (Jan 31, Feb 28,
-  Mar 28, Apr 28). Quarterly renewals from Nov 30 and yearly ones from Feb 29
-  drifted the same way. Every subscription now remembers the date its schedule
-  was set from (`anchor`) and counts each renewal from it, so Jan 31 is followed
-  by Feb 28, Mar 31 and Apr 30. Paying late, catching up after missed payments,
-  resuming a cancelled subscription and the unpaid roll-forward all keep the day.
-  Editing the date or the cycle by hand starts a new schedule from that date.
-  A subscription that already drifted before this release stays where it is: set
-  its real date once with `update_subscription` and it holds from then on.
-- Thanks to Matt Abate for the report (issue #34).
-- 24 new tests - suite grew from 4698 to 4722.
-
-Older releases: see [CHANGELOG.md](CHANGELOG.md).
-
----
-
-## Running Tests
-
-```bash
-python -m pytest tests/ -v
-python -c "from environments.life_os_env import smoke_test; smoke_test()"
-```
-
-## Why This Is Different
-
-Every other agent in this hackathon does something **for** you.
-Hermes Life OS becomes something **with** you.
-
-It tracks nutrition, sleep, fitness, stress, focus, hydration, habits, and goals -
-and connects them all. Bad Monday? It checks if you slept poorly Sunday.
-Energy crash at 3pm? It looks at what you ate for lunch.
-Mood dip this week? It finds the pattern you missed.
-
-That is not a tool. That is a presence that accumulates.
+**v1.49.0 - Inbox and Weekly Review**
+- New **inbox**: `add_to_inbox`, `get_inbox`, `process_inbox_item`, `delete_inbox_item`.
+  Capture anything the moment it crosses your mind, then turn it into a task, a note, a
+  library item or one of today's priorities. The agenda shows what is unsorted and a nudge
+  appears when items have waited three days or the inbox reaches ten.
+- New **weekly review**: `start_weekly_review`, `save_weekly_review`, `get_weekly_reviews`,
+  `delete_weekly_review`. A guided end

@@ -144,7 +144,7 @@
   - Answer: [Mixture of Experts Explained](https://outcomeschool.com/blog/mixture-of-experts)
 - Explain the difference between pre-training, supervised fine-tuning and preference optimisation.
   - Asked at: [Meta](#meta-superintelligence-labs-fair-llama), [Scale AI](#scale-ai)
-  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf)
+  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf) and [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - Compare greedy, beam search, top-k, top-p and temperature sampling. When does each fail?
   - Asked at: [Google DeepMind](#google-deepmind-and-google-ai), [Apple](#apple), [Perplexity](#perplexity)
   - Answer: [How does Temperature control LLM output?](https://outcomeschool.com/blog/how-does-temperature-control-llm-output) and [How do Top-k and Top-p Sampling work?](https://outcomeschool.com/blog/how-do-top-k-and-top-p-sampling-work)
@@ -364,7 +364,7 @@
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [How do you build a latency budget for a voice AI agent?](https://outcomeschool.com/blog/voice-agent-latency-budget), [How does the voice-to-voice latency of a voice agent get measured?](https://outcomeschool.com/blog/voice-to-voice-latency), [Why does the time-to-first-audio matter more than total response time?](https://outcomeschool.com/blog/time-to-first-audio), [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents) and [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - Design barge-in / interruption handling for a voice agent.
   - Asked at: [ElevenLabs](#elevenlabs)
-  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent) and [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise)
+  - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) and [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption)
 - Cascaded ASR+LLM+TTS versus native speech-to-speech: argue both sides.
   - Asked at: [ElevenLabs](#elevenlabs)
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent) and [Cascaded vs Speech-to-Speech: How to choose the right voice agent architecture?](https://outcomeschool.com/blog/cascaded-vs-speech-to-speech)
@@ -1321,7 +1321,4 @@
 - Design dynamic pricing / surge for a two-sided marketplace and describe the feedback loops that can go wrong.
 - Design a visual search system: user uploads an image, you return visually similar in-catalogue items.
   - Answer: [How do Image Embeddings work?](https://outcomeschool.com/blog/how-do-image-embeddings-work)
-- Design a fraud-detection system with heavy class imbalance and an adversarial opponent.
-- Design an LLM-powered customer-support assistant on top of an existing help centre, with escalation to humans.
-
-#### Evaluatio
+- Des

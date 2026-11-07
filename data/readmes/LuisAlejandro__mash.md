@@ -6,7 +6,7 @@
 
 Current version: 0.3.0
 
-*Mash* is a desktop workspace for AI-assisted coding. It brings a customized Ghostty terminal, Herdr workspaces, the Fresh editor, Pi, and pinned development tools into one app. Your settings and sessions live in `~/.mash`, separate from the tools you use outside Mash.
+*Mash* is a desktop workspace for AI-assisted coding. It brings a customized Ghostty terminal, Herdr workspaces, the Fresh editor, Pi, and pinned development tools into one app. Your settings and sessions live in `~/.mash`, separate from the tools you use outside Mash. Mash runs in 15 languages: the setup wizard asks once, and its own screens, messages, popups and the terminal's menu bar follow that choice.
 
 ## Install
 
@@ -15,9 +15,12 @@ Download the latest [Mash release](https://github.com/LuisAlejandro/mash/release
 | Platform | Release asset | Supported environment |
 | --- | --- | --- |
 | macOS | `Mash-<version>-mac-arm64.dmg` | Apple silicon, macOS 14 or newer |
+| macOS | `Mash-<version>-mac-amd64.dmg` | Intel, macOS 14 through macOS 26. Supported until 1 September 2027 |
 | Linux | `letsmash-<version>-linux-amd64.deb` or `letsmash-<version>-linux-arm64.deb` | Ubuntu 24.04 with GNOME on Wayland or Xorg |
 
-**macOS:** Open the signed, notarized DMG and copy Mash.app to Applications. Launch Mash from there.
+**macOS:** Open the signed, notarized DMG for your Mac's architecture and copy Mash.app to Applications. Launch Mash from there. Apple silicon and Intel builds update themselves.
+
+**macOS on Intel:** Intel support ends on 1 September 2027, when the toolchain that builds it retires; the last Intel DMG stays downloadable. Two tools with no Intel build are left out: `sentrux` and `latexindent`. Building from source, before and after that date, is covered in [INTEL-MAC.md](INTEL-MAC.md).
 
 **Linux:** Download the `.deb` for your architecture, then install it with APT:
 
@@ -28,6 +31,16 @@ sudo apt install ./letsmash-<version>-linux-amd64.deb
 Use `linux-arm64` in the filename on arm64. The package configures Mash's [signed APT repository](https://apt.letsma.sh/) automatically; later releases arrive through normal system updates (`sudo apt update && sudo apt upgrade`). Other Linux distributions, desktops, and architectures are not supported by these packages.
 
 On first launch, the setup wizard configures your workspace. Mash keeps its data under `~/.mash`; upgrades preserve user-edited configuration and user-installed resources. Removing the app or package does not delete that directory.
+
+## Language
+
+Set `~/.mash/setup/language` to one line, `language=<code>`, to choose a language:
+`bg` Български, `cs` Čeština, `de` Deutsch, `en` English, `es` Español,
+`fr` Français, `it` Italiano, `ja` 日本語, `ko` 한국어,
+`pt-BR` Português (Brasil), `ru` Русский, `th` ไทย, `uk` Українська,
+`vi` Tiếng Việt, or `zh-CN` 简体中文. It takes effect on the next launch.
+Herdr UI, Pi's own interface, third-party CLI tools, and language servers stay
+in English.
 
 ## Source layout
 

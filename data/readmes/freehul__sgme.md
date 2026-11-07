@@ -159,13 +159,14 @@ python -m sgme
 # Without them, built-in default keys are used (first-run local experience only,
 # startup warns; once config/.env is set, default keys return 403)
 #   SGME_BEARER_TOKEN optional: transport-layer token, off by default (localhost bypass)
-# Model keys (optional, free tier supported): refinement uses agnes-2.5-flash (free) as primary,
-#   siliconflow THUDM/GLM-4-9B-0414 (free tier) as second (zhipu removed from the chain 2026-08-29, B121;
-#   DeepSeek-V4-Flash is now paid and removed 2026-09-01, B144);
+# Model keys (optional, free tier supported): refinement chain = agnes-2.5-flash (free, primary;
+#   max_tokens capped at 4096) → zhipu glm-4-flash-250414 (free, second, since 2026-11-07) →
+#   siliconflow THUDM/GLM-4-9B-0414 (free tier, third; observed HTTP 402 balance 2026-11-07) → rule drop_batch
+#   (DeepSeek-V4-Flash is paid and removed 2026-09-01, B144);
 #   vector search uses siliconflow BAAI/bge-m3 (free). When a key is missing,
 #   /v1/health returns model_config.missing_keys — apply free keys per
-#   AI-INSTALL/免费模型Key申请指南.md (Agnes agnes-2.5-flash 免费 / 硅基流动 bge-m3 零费用).
-#   AGNESAI_API_KEY=<agnes>   SILICONFLOW_API_KEY=<siliconflow>
+#   AI-INSTALL/免费模型Key申请指南.md (Agnes agnes-2.5-flash 免费 / 智谱 glm-4-flash 永久免费 / 硅基流动 bge-m3 零费用).
+#   AGNESAI_API_KEY=<agnes>   ZHIPU_API_KEY=<zhipu>   SILICONFLOW_API_KEY=<siliconflow>
 
 # 4. (Optional) Build the WebUI management panel — requires Node.js
 #    Not needed if you only use the HTTP/MCP API, or if you deploy via Docker / Windows service
@@ -252,13 +253,21 @@ You have a long-term memory engine, SGME (ShiGuang Memory Engine), running on th
 
 **Skill acquisition (B114+: skills is a standalone module, MUST)**: when you need a capability SGME doesn't have built in, first `skill_search(query)`, then `skill_get(name)` for the full text before executing — **never claim a skill or improvise steps without searching**; write lessons back via the ownership rule (skill-specific pitfalls → `skill_put` into the skill itself; general world knowledge → `wiki_evolve_trigger` into the wiki).
 
+**Credential store (where important keys live)**: SGME's fourth module, `credentials`, is the centralized store for API keys / tokens / passwords shared across machines (the NAS is the single source of truth; a local `.env` is only a cache).
+
+- See what exists: `credential_list()` / `sgme-cred list` (key names and metadata only — never values);
+- Use inside a program: `sgme-cred run -- <command>` (injects environment variables; the value never lands on disk or in the conversation);
+- Explicit read when unavoidable: `credential_get(name)` — never write the value into the conversation body or memory;
+- Create / delete / restore are admin-only (WebUI "Credential Management" or `POST /v1/credentials`).
+- Files / binary "important data" also live here (`cred_type=file`): upload via `POST /v1/credentials/{key}/file` (admin) and download via `GET` on the same path (agent; scope and expiry enforced); MCP exposes metadata only, never the binary.
+
 **Vector Engine Setup** (when `health()` reports `vector.available=false` / `vector.connectivity=false`): local-first, cloud fallback — prefer a local Ollama or LM Studio running `bge-m3` (1024-dim; cloud fallback `BAAI/bge-m3` on siliconflow is free and automatic, same dims → no index rebuild on switch). Probe `curl http://127.0.0.1:11434/api/tags` (Ollama) or `curl http://127.0.0.1:1234/v1/models` (LM Studio) → if no `bge-m3`, run `ollama pull bge-m3` (or download it in LM Studio) → write the `search.vector` block (`base_url`, `model: bge-m3`, `fallbacks`) into `config/sgme.yaml` and restart SGME → re-run `health()` until `vector.connectivity=true`. llama.cpp is NOT recommended (model state unmanaged, lost after VRAM cleanup).
 
 **Full tool list & usage**: see [AI-INSTALL/agent-onboarding.md](AI-INSTALL/agent-onboarding.md), or call the `agent_onboarding` tool once connected via MCP. The same docs are served online (no key): `GET /v1/onboarding/docs`
 
 **Self-check on connect**: first call after connecting — `agent_onboarding()` returns the version, the full tool list and a quick start; no 403/timeout means you are in
 
-> ⚠️ **Consistency note**: if this prompt section drifts from the `self_config.template` returned by `agent_onboarding()` (version tag `SGME-ONBOARDING-v2`), **the template wins** — copy the template when onboarding; this section is only a quick reference.
+> ⚠️ **Consistency note**: if this prompt section drifts from the `self_config.template` returned by `agent_onboarding()` (version tag `SGME-ONBOARDING-v4`), **the template wins** — copy the template when onboarding; this section is only a quick reference.
 
 ### Where to Put It
 

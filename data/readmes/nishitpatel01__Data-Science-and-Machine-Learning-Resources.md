@@ -16,6 +16,8 @@ List of Data Science and Machine Learning Resource that I frequently use
 
 ### Harness Engineering
 - [Harness Guide](https://harness-guide.com/guide/what-is-harness/)
+- [Harness Engineering Course](https://walkinglabs.github.io/learn-harness-engineering/en/)
+- [Practical Harness Engineering with Google Antigravity](https://codelabs.developers.google.com/harness-engineering-antigravity?hl=en#0)
   
 
 ### Large Language Models (LLMs) & Generative AI
@@ -367,8 +369,10 @@ List of Data Science and Machine Learning Resource that I frequently use
 - [Tech Interview Handbook](https://techinterviewhandbook.org/algorithms/algorithms-introduction/)
 
 
-### System Designs & Distributed Systems
+### Interview Guide & Resources
+ - [AI Engineering Learning Path](https://aiengineeringfromscratch.com/learning-paths)
  - [SYSTEM DESIGN INTERVIEW- AN INSIDER'S GUIDE](https://systeminterview.com/)
+ - [Grokking Teh System Design](https://grokkingthesystemdesign.com/)
 
 
 ### Git 

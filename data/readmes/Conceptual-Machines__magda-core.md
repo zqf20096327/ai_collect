@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Banner.png" alt="MAGDA" width="400">
+  <img src="assets/Banner.png" alt="MAGDA" width="600">
 </p>
 
 <p align="center">
@@ -14,10 +14,9 @@
 <p align="center">
   Multi-Agent Digital Audio
 </p>
-<p align="center"><img src="assets/treaktion-engine-logo.png" alt="Powered by Tracktion Engine" width="250" height="80"></p>
 
 ---
-MAGDA is a free, open-source DAW with AI integrated from the ground up. Built on C++23, JUCE, and Tracktion Engine.
+MAGDA is a free, open-source DAW with AI integrated from the ground up. Built on C++23, JUCE, and MAGDA’s native audio engine.
  - **English** | [简体中文](README_CN.md)
 
 ### Features
@@ -77,8 +76,8 @@ See [Issues](https://github.com/Conceptual-Machines/magda-core/issues) for known
 ### Quick Start
 
 ```bash
-# Clone with submodules and LFS assets
-git clone --recursive https://github.com/Conceptual-Machines/magda-core.git
+# Clone, then make setup initialises the submodules
+git clone https://github.com/Conceptual-Machines/magda-core.git
 cd magda-core
 git lfs pull  # safety net if git-lfs wasn't installed at clone time
 
@@ -101,6 +100,10 @@ make clean      # Clean build artifacts
 make format     # Format code
 make lint       # Run clang-tidy analysis
 ```
+
+To build without embedded local inference, and so without the `third_party/llama.cpp`
+submodule, pass `CMAKE_EXTRA_ARGS="-DMAGDA_LOCAL_LLM=OFF"` on the first configure. The
+Local (Embedded) provider then reports that the build has no local inference.
 
 ## Automated Workflows
 
@@ -134,7 +137,7 @@ magda/
 ├── daw/        # DAW application (C++/JUCE)
 │   ├── audio/      # Audio processing
 │   ├── core/       # Track, clip, selection management
-│   ├── engine/     # Tracktion Engine wrapper
+│   ├── engine/     # Native engine host
 │   ├── interfaces/ # Abstract interfaces
 │   ├── profiling/  # Performance profiling
 │   ├── project/    # Project management and serialization
@@ -148,7 +151,6 @@ docs/           # Documentation
 
 ## Dependencies
 
-- [Tracktion Engine](https://github.com/Tracktion/tracktion_engine) - Audio engine
 - [JUCE](https://juce.com/) - C++ application framework (GUI, audio I/O, plugin hosting, MIDI, DSP)
 - [juce-llm](https://github.com/Conceptual-Machines/juce-llm) - LLM API client module
 - [llama.cpp](https://github.com/ggml-org/llama.cpp) - Embedded local LLM inference
@@ -156,7 +158,7 @@ docs/           # Documentation
 
 ## Issues
 
-> **Heads up:** MAGDA is in early v0. Development started in January 2026 — internal iteration first, public release more recently — and is very much active. Expect bugs and missing pieces. The best way to help the project is to file an issue.
+> **Heads up:** MAGDA is under very active development, which started in January 2026 with internal iteration before a public release. Expect bugs and missing pieces. The best way to help the project is to file an issue.
 
 Found a bug or have a feature request? Please [open an issue](https://github.com/Conceptual-Machines/magda-core/issues/new) on GitHub.
 

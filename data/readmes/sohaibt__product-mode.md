@@ -10,11 +10,12 @@ The PM-team counterpart to [andrej-karpathy-skills](https://github.com/forrestch
 
 ## Recent improvements
 
+- **Slash commands in the agent chat (1.1.0):** `product-mode init` installs `/preflight` and `/decision`, so the agent drafts the checklist or decision record from the conversation and saves it to `.product-mode/`. Works in Claude Code, Codex (`$preflight`), and Cursor. See [Usage](#initialize-once-per-project).
 - **Questions that move the work forward:** inspect existing context first, ask about material decisions, and match unknowns to evidence, a decision, a prototype, or an experiment. Continue authorized, reversible work once the next useful step is clear.
 - **More conservative CLI advice:** only small edits to existing ordinary documentation can automatically qualify as trivial. Code and agent instructions require review; failed commands return a nonzero status, and interactive commands explain when a terminal is required.
 - **Checks you can inspect:** [six authored evaluation cases](./examples/uncertainty.md) for the product guidance, plus [CI](./.github/workflows/ci.yml) covering lint, instruction-file consistency, and CLI/package tests on Node 20.19, 22, and 24. The cases are prompts for comparison, not measured evidence of better agent decisions.
 
-The updated instruction files are available now through the quick start below. The CLI fixes are merged on GitHub; see [CLI release availability](#installation) before installing from npm.
+The updated instruction files are available through the quick start below. The CLI fixes ship in `product-mode@1.0.3` on npm.
 
 ---
 
@@ -108,8 +109,6 @@ The instruction files work on their own. The CLI provides interactive commands t
 
 ### Installation
 
-**Release availability:** npm currently serves `1.0.2`. The CLI fixes from [PR #4](https://github.com/sohaibt/product-mode/pull/4) are merged on GitHub `main` and await a new npm release. The CLI behavior documented below describes `main`; `npx` and global installs will receive the fixes after that release. The quick-start downloads of `CLAUDE.md` and `AGENTS.md` already include the updated guidance.
-
 ```bash
 # Run without installing
 npx product-mode init
@@ -130,6 +129,15 @@ product-mode init
 Creates `.product-mode/checklist/` and `.product-mode/decisions/`, and appends a "Prior Decisions & Checklists" section to your `CLAUDE.md` / `AGENTS.md` (if present) so agents read existing decisions before starting non-trivial work. Safe to re-run.
 
 `init` sets up artifact storage and references. Add the product guidelines separately using the quick start above.
+
+`init` also installs two slash commands for your agent chat. It never overwrites a command that already exists.
+
+| Command | What the agent does |
+|---|---|
+| `/preflight [work]` | Drafts the pre-flight checklist from the conversation, asks only about missing answers, and saves it to `.product-mode/checklist/` |
+| `/decision [title]` | Drafts a decision record from the conversation and saves it to `.product-mode/decisions/` |
+
+The commands are installed in `.claude/skills/` (Claude Code) and `.agents/skills/` (Codex and Cursor). In Codex, type `$preflight` and `$decision` instead. Commit them so your team gets them too.
 
 #### Pre-flight Checklist
 Run before starting any non-trivial work:

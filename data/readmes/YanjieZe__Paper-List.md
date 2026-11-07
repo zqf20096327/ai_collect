@@ -46,6 +46,7 @@ Papers:
 
 
 # Recent Random Papers
+- [arXiv 2026.11](https://arxiv.org/abs/2611.08156), La-JEPA: Compact Robot Policies with Latent World Modeling
 - [arXiv 2026.11](https://arxiv.org/abs/2611.08338), GPWM: Modeling the World as 3D Particle Motion
 - [arXiv 2026.11](https://arxiv.org/abs/2611.07229), Spatial-UMI-Dream: Scaling World Action Models with Metric Geometry for UMI Manipulation
 - [arXiv 2026.11](https://arxiv.org/abs/2611.08209), RoboARCade: Benchmarking Agentic Robot Control
@@ -759,5 +760,4 @@ Papers:
 - CVPR 2023, **ULIP**: Learning a Unified Representation of Language, Images, and Point Clouds for 3D Understanding, [arXiv](https://arxiv.org/abs/2212.05171) / [Github](https://github.com/salesforce/ULIP)
 - CVPR 2023, Learning Video Representations from Large Language Models, [Website](https://facebookresearch.github.io/LaViLa/) / [Github](https://github.com/facebookresearch/LaViLa)
 - CVPR 2023, **PLA**: Language-Driven Open-Vocabulary 3D Scene Understanding, [Website](https://dingry.github.io/projects/PLA)
-- CVPR 2023, **PartSLIP**: Low-Shot Part Segmentation for 3D Point Clouds via Pretrained Image-Language Models, [arXiv](https://arxiv.org/abs/2212.01558)
-- CVPR 2023, Mask-Free Video Instance Segmentation, [Website](https://www.vis.xyz
+- CVPR 2023, **PartSLIP**: Low-Shot Part Segmentation for 3D Point Clouds via Pretrained Image-Language Models, [arXiv](htt

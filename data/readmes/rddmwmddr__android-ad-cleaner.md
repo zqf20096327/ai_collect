@@ -1,4 +1,4 @@
-# 手机去广告
+# 肉呆去广告
 
 关掉国产安卓手机系统里的广告、热搜、资讯推荐和营销推送。
 
@@ -15,18 +15,21 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 
 插上手机，点几下按钮。不需要 Python，也不需要 AI 工具。
 
-> **v0.3.2 · 2026-11-05**：这一版修了几个机型脚本找不到入口、开关读漏的问题，新增 vivo V2309A 机型脚本；营销通知清单不再列出前台服务的常驻通知。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
+> **v0.4.0 · 2026-11-07**：这一版首次发布手机版：不连电脑，在手机上点一下就能关广告。产品改名「肉呆去广告」，换了新图标；国内下载改走 Gitee，不用登录、不用提取码。旧版不会自动更新，0.2.7 起的客户端左下角会提示新版；请重新下载，已有备份会保留。详见 [更新记录](CHANGELOG.md)，错误日志上报说明见 [这里](docs/12-错误日志上报.md)。官网：https://ahuamiao.com/sites/other/android-ad-removal-intro.html
 
 此前版本已处理 Windows 本地页面超时、荣耀截图越界、通知渠道误操作风险、vivo 快应用与备份问题。各 Issue 的处理范围和待验证项见 [社区问题处理记录](docs/09-社区问题处理.md)。仅支持通过 adb 连接的安卓设备，暂不支持使用 HDC 的原生鸿蒙。
 
-| 电脑 | 下载 | 说明 |
+| 设备 | 下载 | 说明 |
 |---|---|---|
-| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.3.2-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.2/AndroidAdCleaner-0.3.2-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
-| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.3.2-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.2/AndroidAdCleaner-0.3.2-mac-intel.dmg) | 同上 |
-| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.3.2-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.2/AndroidAdCleaner-0.3.2-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」 |
-| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.3.2-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.3.2/AndroidAdCleaner-0.3.2-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe` |
+| Mac · Apple 芯片（M1 及以后） | [AndroidAdCleaner-0.4.0-mac-arm64.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-mac-arm64.dmg) | 已签名、通过苹果公证，双击就能打开 |
+| Mac · Intel 芯片（macOS 11 及以上） | [AndroidAdCleaner-0.4.0-mac-intel.dmg](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-mac-intel.dmg) | 同上 |
+| Windows 10 / 11 · 安装版 | [AndroidAdCleaner-0.4.0-windows-setup.exe](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-windows-setup.exe) | 弹「Windows 已保护你的电脑」时点「更多信息」→「仍要运行」；和旧版共用安装标识，会原地升级 |
+| Windows 10 / 11 · 免安装 | [AndroidAdCleaner-0.4.0-windows-portable.zip](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-windows-portable.zip) | 解压后双击 `AndroidAdCleaner.exe`；不会替换、也不会卸载已安装的旧版 |
+| 安卓手机 · 手机版（安卓 11 及以上） | [AndroidAdCleaner-0.4.0-android-arm64.apk](https://github.com/rddmwmddr/android-ad-cleaner/releases/download/v0.4.0/AndroidAdCleaner-0.4.0-android-arm64.apk) | 不用连电脑，安装和授权见[手机版教程](docs/手机版教程/README.md) |
 
-不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
+不知道 Mac 是哪种芯片：左上角苹果图标 → 关于本机，「芯片」写 Apple M 开头的选 Apple 芯片。所有版本：[Releases](https://github.com/rddmwmddr/android-ad-cleaner/releases)；国内下载走 [Gitee](https://gitee.com/rddmw/android-ad-cleaner/releases)，不用登录（Windows 安装版只在 GitHub 上）。国内走 Gitee 时拿到的是 Windows 免安装版，它不会替换已安装的旧版：要顶掉旧版，用安装版覆盖安装，或先在 Windows「设置」的应用列表里卸载旧的「安卓去广告」（0.3.2 及更早版本装的名字）再删掉旧快捷方式；卸载只删程序目录，数据与备份保留。用法：[docs/08-桌面客户端.md](docs/08-桌面客户端.md)。
+
+> 手机版是不用连电脑的安卓 App（见下面[用法五](#五种用法)）：安装包在上面的表里，安装、授权与还原步骤见[手机版教程](docs/手机版教程/README.md)；想自己构建看 [android/](android/README.md)。
 
 | | |
 |---|---|
@@ -66,9 +69,9 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 
 ---
 
-## 四种用法
+## 五种用法
 
-<p align="center"><img src="images/ways.png" width="460" alt="三种用法"></p>
+<p align="center"><img src="images/ways.png" width="460" alt="用法示意"></p>
 
 > 用法一要先在手机上打开开发者模式和 USB 调试，带截图的教程：[docs/00-打开开发者模式.md](docs/00-打开开发者模式.md)。
 
@@ -78,6 +81,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | **二：聊天 AI 带你点** | 只有手机 | DeepSeek、豆包、ChatGPT 任意一个 | [docs/03-用聊天AI.md](docs/03-用聊天AI.md) |
 | **三：照清单手动关** | 想自己掌握每一步 | 只要手机 | [docs/清单/](docs/清单/) |
 | **四：桌面客户端** | 不想敲命令 | Mac（Apple / Intel 芯片）或 Windows 10/11、数据线 | [下载](#下载桌面客户端) · [说明](docs/08-桌面客户端.md) |
+| **五：手机版 App** | 不想连电脑 | 安卓 11 及以上、Wi-Fi；安装包在[下载表](#下载桌面客户端)里 | [教程](docs/手机版教程/README.md) |
 
 
 用法一的开场白，复制给 AI：
@@ -99,6 +103,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | 华为 | ALN-AL00 | HarmonyOS 4.2.0.223 / Android 12 | ⚠️ 营销通知命令行工具，需先人工审核清单，客户端不自动运行；[用法](docs/清单/华为-ALN-AL00-营销通知.md) | [范围与路径](docs/清单/华为-HarmonyOS.md) | 本次人工审核 79 个候选：关闭 48 个、31 个原已整体屏蔽；不代表新脚本整轮成绩 |
 | 荣耀 | PNM-AN10 | MagicOS 10 | ✅ 实测通过，重跑 4 分钟 | ✅ | ✅ 26 个渠道 |
 | 荣耀 | WKL-AN20 | MagicOS 11.0.0.111 / Android 17 | ⚠️ 2026-10-28 路径逐项实测，新脚本整轮待复测、用时未测；音乐需手动开页，见[说明](recipes/honor-WKL-AN20/README.md) | ✅ | ✅ 人工关闭 13 个渠道，其他渠道和总开关未变 |
+| 荣耀 | Magic V Flip2（CLE-AN00） | MagicOS 10.0.0.175 / Android 16 | ✅ 2026-11-07 电脑整轮 325 秒、13 段 12 段完成（主题未同意协议跳过）；手机版 2 分 20 秒，负一屏在后台屏上进不去，也跳过 | ✅ | ✅ 关 3 个渠道，复查仍开着 0 个 |
 | 一加 | Ace 2 Pro（PJA110） | ColorOS 14.0.0.812 / Android 14 | 源码新增：3 项个性化 + 6 项商店推广位关闭并回读 | 部分，见实测记录 | ✅ 23 个，总开关不变；天气提醒差异见实测 |
 | 一加 | 13T（PKX110） | ColorOS 16.0.10.500 / Android 16 | ✅ 2026-10-28 实测：广告跟踪 76 项、商店两段、小布建议；浏览器/下拉搜索/负一屏见清单差异 | ✅ | ✅ 17 个渠道 |
 | 一加 | Ace 6T（PLR110） | ColorOS 17.0.0.101 / Android 17 | ✅ 2026-10-31 贡献者真机九段全跑 224 秒；本仓库无该机型，未复测，见[清单差异](docs/清单/OPPO-ColorOS.md) | ✅ | —（未测） |
@@ -106,11 +111,11 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | OPPO | Find X8s（PKT110） | ColorOS 17.0.0.102(CN01) / Android 17 | ✅ 10-28 真机整段重跑通过：广告跟踪 96 项 + 搜索与建议等 12 项逐项回读确认 | ✅ | ✅ 26 个渠道 |
 | OPPO | Find X9 Ultra（PMA110） | ColorOS 17.0.0.106(CN01) / Android 17 | ✅ 2026-10-29 八段整轮通过，重跑 211 秒，回读确认 173 项；见[说明](recipes/oppo-PMA110/README.md) | ✅ | ✅ 独立关闭并回读 6 个营销渠道，其他原有渠道及总开关未变 |
 | OPPO | Find X9 Pro（PLG110） | ColorOS 16.0.10.501(CN01) / Android 16 | ✅ 2026-11-01 九段逐项实测通过，回读确认 165 项；见[说明](recipes/oppo-PLG110/README.md) | ✅ | ✅ 60 个营销渠道全部关闭并回读确认（0 遗留） |
-| OPPO | Find X10 Pro Max（PMX110） | ColorOS 17.0.0.116(CN01) / Android 17 | ✅ 社区实测 2026-11-05：八段整轮 540 秒、退出码 0（该机当时未装游戏中心）；2026-11-06 同机按段提速（游戏中心当天已装）：广告跟踪 1623→41 秒、游戏中心由失败转为 27 秒、视频 31→22 秒、负一屏 41→38 秒；本仓库未复跑。已关闭状态复跑，读取确认 593 项、调整 0 项，关闭路径未从开启状态验证；见[说明](recipes/oppo-PMX110/README.md) | ✅ 搜索数据源、消息通知与卡片保留 | ✅ 本次独立关闭 3 个渠道，总开关未变 |
+| OPPO | Find X10 Pro Max（PMX110） | ColorOS 17.0.0.116(CN01) / Android 17 | ✅ 社区实测 2026-11-05：八段整轮 540 秒、退出码 0（该机当时未装游戏中心）；2026-11-06 同机按段提速（游戏中心当天已装）：广告跟踪 1623→41 秒、游戏中心由失败转为 27 秒、视频 31→22 秒、负一屏 41→38 秒；2026-11-07 从开启状态整轮 485 秒，实际调整 15 项、回读 46 项，退出码 1 只因负一屏段读不到轮播单选（#801）；本仓库未复跑；见[说明](recipes/oppo-PMX110/README.md) | ✅ 搜索数据源、消息通知与卡片保留 | ✅ 本次独立关闭 3 个渠道，总开关未变 |
 | OPPO | Find X9 Ultra（PMA120） | ColorOS 16.0.10 | ❌ 页面和 N6 不同，待补 | 部分 | ✅ 27 个渠道 |
 | OPPO | Find N3 典藏版（PHN110） | ColorOS 16.0.5 | ❌ 待补 | 部分 | ✅ 27 个渠道 |
 | OPPO | Find N5（PKH110） | ColorOS 17.0.0.103 / Android 17 | ✅ 2026-10-29 七段实测通过，重跑 144 秒；负一屏需手动（设置页受权限保护） | ✅ | ✅ 42 个渠道 |
-| 小米 | 18 Pro Max（M154FF） | HyperOS 4.0.24 | ✅ 10-25 前轮九段通过，新增兼容改动待复测 | ✅ | ✅ |
+| 小米 | 18 Pro Max（M154FF） | HyperOS 4.0.24 | ✅ 2026-11-07 九段全过（设置页改直达，150 → 97 秒）；浏览器段不再依赖首页，后台屏也能跑；见[说明](recipes/xiaomi-M154FF/README.md) | ✅ | ✅ |
 | 小米 | 17 Ultra 标准版（2512BPNDAC） | HyperOS OS4.0.5.0.XPACNXM / Android 17 | ✅ 10-28 九段实测通过，重跑 176 秒 | ✅ | ✅ 1 个渠道（商店「其他」） |
 | 小米 | 17（25113PN0EC） | HyperOS 4 / Android 17 | — 无专用脚本 | ✅ 见[清单](docs/清单/小米-HyperOS.md) | ✅ 无营销渠道；1 个候选属服务类，已跳过 |
 | 小米 | 15（24129PN74C） | HyperOS OS4.0.0.22.XOCCNXM / Android 17 | ✅ 10-29 九段实测通过，重跑 164 秒 | ✅ | —（未跑） |
@@ -120,6 +125,7 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | 小米 | REDMI K80 至尊版（25060RK16C） | HyperOS 2（BP2A.250605.031.A3）/ Android 16 | ✅ 10-27 真机九段通过，重跑 3 分钟 | ✅ | ✅ 3 个渠道 |
 | 小米 | 15（24129PN74C） | HyperOS OS3.0.307.0.WOCCNXM / Android 16 | ⚠️ 10-29 路径逐项实测、开关已实际关闭；新脚本整轮待复测、用时未测，底包同 K80 但浏览器/商店入口不同 | ✅ | ✅ 17 个渠道，全部关闭 |
 | 小米 | REDMI K90 Pro Max（25102RKBEC） | HyperOS OS4.0.2.0.XPMCNXM / Android 17 | ✅ 10-27 九段实测通过，重跑 169 秒 | ✅ | ✅ 26 个渠道 |
+| 小米 | REDMI K90 Ultra（M332BF） | HyperOS OS4.0.4.0.XHPCNXM / Android 17 | ⚠️ 10-31 社区实测：@Sin1ery 本机九段跑通、复跑 179 秒、0 调整；按他的实测规格重写、本仓库未复跑，待其复测，见[实测记录](docs/16-红米K90至尊实测.md) | ✅ 见[清单](docs/清单/小米-HyperOS.md) | ✅ 19 个渠道（21 候选，剔除 2 条服务类） |
 | 小米 | REDMI K80 Pro（24122RKC7C） | HyperOS OS3.0.304.0.WOMCNXM / Android 16 | ✅ 10-29 九段实测，首轮关 20 项，复跑 172 秒；[实测记录](docs/15-红米K80Pro实测.md) | ✅ | ✅ 48 个渠道（54 候选） |
 | 小米 | Redmi Note 14 Pro（24090RA29C） | HyperOS 3.0.309.0 / Android 16 | ✅ 10-26 八段实测通过，整轮约 5 分钟 | ✅ | ✅ 11 个渠道 |
 | 小米 | Redmi Note 14 5G（24094RAD4C） | HyperOS OS3.0.306.0.WOQCNXM / Android 16 | ✅ 10-30 八段实测：20 项新关闭（记账修复前统计，不含普通点击关掉的 4 项），复跑 291 秒、21 项回读、调整 0 项 | ✅ | ✅ 3 个渠道，全部关闭 |
@@ -127,8 +133,8 @@ https://t.me/+A5X3Mxzs-Cg3NjYx
 | Redmi | Note 12 Turbo（23049RAD8C） | HyperOS OS3.0.5.0 | ✅ 实测通过，九段 3.5 分钟 | ✅ | ✅ |
 | Redmi | K70（23113RKC6C） | HyperOS 3.0.307.0 / Android 16 | ⚠️ 9 段专用脚本，目标 20 项；[实测记录](docs/13-红米K70实测.md) | ✅ | —（未测通知） |
 | Redmi | K70 Pro（23117RK66C） | HyperOS OS3.0.306.0.WNMCNXM / Android 16 | ✅ 10-30 九段整轮 235 秒，25 项回读、0 调整、0 异常；[实测记录](docs/14-红米K70Pro实测.md) | ✅ | ✅ 17 个渠道，其他已有渠道和总开关不变 |
-| vivo | X300 Ultra（V2547DA） | OriginOS 6 | ✅ 2026-10-28 实测通过，七段全通（124 秒） | ✅ | ✅ |
-| vivo | X300 Ultra（V2547DA） | Android 17（PD2547D_A_17.1.10.2.W10） | ⚠️ 2026-10-28 报告者实测：商店入口与「个性化推荐」页失效；已按系统版本新增变体脚本，本仓库无该机型、未复测（[#220](https://github.com/rddmwmddr/android-ad-cleaner/issues/220)） | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
+| vivo | X300 Ultra（V2547DA） | OriginOS 6 | ✅ 2026-10-28 实测通过，七段全通（124 秒）；见[适配说明](recipes/vivo-V2547DA/README.md) | ✅ | ✅ |
+| vivo | X300 Ultra（V2547DA） | Android 17（PD2547D_A_17.1.10.2.W10） | ✅ 2026-11-07 七段全过（设置页改直达，91 → 62 秒）；商店「个性化推荐」页仍按位置点、不靠标题（[#220](https://github.com/rddmwmddr/android-ad-cleaner/issues/220)）；见[适配说明](recipes/vivo-V2547DA/README.md) | ✅ 见[清单差异](docs/清单/vivo-OriginOS.md) | —（未测） |
 | vivo | X Fold6（V2545A） | OriginOS 6 Fold / Android 16 | ✅ 实测通过，7 段 121 秒（合上外屏） | 部分（负一屏、i 管家需手动） | ⚠️ 仅 1 条候选，应用级开关已跳过 |
 | vivo（iQOO） | V2324HA | 原系统 Android 16（PD2324J_A_16.2.13.1.W10） | ✅ 2026-10-27 实测，七段全通，重跑 2.5 分钟 | ✅ | 5 个渠道，关 3 个、跳过 1 个 |
 | vivo | V2361A | OriginOS 16（PD2361B_A_16.2.12.2.W10） | ⚠️ 2026-10-26 路径逐页实测、开关已实际关闭；引擎整段待验证 | ✅ | — |
@@ -200,6 +206,7 @@ tool/
   chan_fast.py       营销通知渠道
   explore.py         新机型探路（实验）
 gui/                 桌面客户端（pywebview 界面 + PyInstaller 打包）
+android/             手机版 APK（引擎与桌面版同一份，界面是 Compose）
 recipes/<品牌>-<型号>/recipe.py   各机型的机型脚本
 images/              文档配图
 tests/               不连接手机的引擎回归测试

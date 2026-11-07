@@ -70,7 +70,7 @@ Needs Docker with Compose v2. About 5 minutes (first build is the slow part).
 
    services:
      app:
-       image: ghcr.io/izzoa/polyrouter:0.27.1 # or :latest
+       image: ghcr.io/izzoa/polyrouter:0.28.1 # or :latest
        restart: unless-stopped
        ports:
          - '127.0.0.1:3001:3001' # loopback only until you claim the instance
@@ -158,6 +158,13 @@ Next: [connect a real agent](./docs/connect-an-agent.md) (OpenAI SDK, Anthropic 
   channel never blocks a request.
 - **Dashboard.** Costs, per-agent usage, provider health, routing config, and a decision
   inspector showing why each request went where it did.
+- **Plan usage on subscription cards.** A Claude, ChatGPT, OpenCode Go, MiniMax, Kimi Code or
+  Z.ai card can show one neutral line of how much of the plan is used, when each window resets,
+  and when the plan is billing extra usage. It reads what replies already carry, so it costs
+  nothing; key plans add a **Refresh usage** button you press yourself, at most once every five
+  minutes. It is display only: no alert, no routing change, no background polling. Each usage
+  endpoint stays off until it has been checked against the live provider.
+  → [Plan usage](./docs/self-hosting.md#plan-usage-on-the-card)
 
 ## Security
 
@@ -228,7 +235,13 @@ invariants, and [`STYLESEED.md`](./STYLESEED.md) for UI rules.
 
 Using flat-rate consumer subscriptions (ChatGPT Plus, Claude Max) programmatically likely
 violates those providers' ToS. polyrouter supports the provider kind but flags the risk.
-BYOK API keys and local models carry no such risk.
+The coding plans (OpenCode Go, MiniMax M Plan, Kimi Code, Z.ai GLM Coding Plan) are
+connected with an API key, but that key carries its plan's own terms: Z.ai forbids proxy and
+aggregate use, and Kimi forbids automation and altering its client identity. polyrouter
+states each plan's risk before you connect, and when a MiniMax, Kimi Code or Z.ai plan runs
+out of allowance it pauses that provider until the reset time, skips it in routing and falls
+back, without tripping the circuit breaker; OpenCode Go keeps the generic error mapping (see [Plan limits and pauses](./docs/self-hosting.md#plan-limits-and-pauses)).
+Pay-per-token API keys and local models don't carry subscription terms risk.
 
 ## License
 

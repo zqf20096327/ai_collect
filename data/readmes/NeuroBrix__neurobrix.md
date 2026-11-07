@@ -3,8 +3,8 @@
 NeuroBrix is an open-source inference engine that runs AI models (language models,
 vision-language and omni models, speech recognition, speech synthesis, image and video
 generation, and image upscaling) from one container format and one command-line tool.
-It is for developers who want to run these models on their own GPUs or CPUs without
-writing or maintaining a separate pipeline for each model family. NeuroBrix does not
+It is for developers who want to run these models on their own GPUs or CPUs, on Linux,
+Windows and macOS, without writing or maintaining a separate pipeline for each model family. NeuroBrix does not
 train models. It runs published models that have been packaged as `.nbx` containers and
 distributed through the [NeuroBrix Hub](https://neurobrix.es/models).
 
@@ -59,52 +59,81 @@ ready-made containers from the hub.
 
 ## Install and first run
 
-NeuroBrix needs Python 3.10 or newer and PyTorch 2.1 or newer. The current release is
-**0.5.4** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.5.4)),
-which supports **NVIDIA GPUs (CUDA) and CPU**.
+NeuroBrix needs Python 3.10 or newer. The current release is
+**0.6.2** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.2)).
 
-Install PyTorch first, from the index that matches your hardware, then NeuroBrix.
-`pip install neurobrix` on its own pulls the default PyTorch wheel from PyPI, which may be
-built for a CUDA version your driver or GPU cannot use; you would then get an engine that
-silently runs on CPU.
+It has two engines. The **Triton engine** (`--triton`) runs on
+[nbxtensor](https://github.com/NeuroBrix/nbxtensor) and Triton and needs no PyTorch. The
+**PyTorch engine** (`--compiled`) needs PyTorch, installed from the index that matches your
+hardware. With no mode flag, a run takes the PyTorch engine where PyTorch is installed and the
+Triton engine where it is not, and its launch line says which.
 
-**NVIDIA GPU (Linux).** Install the NVIDIA driver, then the PyTorch CUDA build that your
-driver supports (see the selector on [pytorch.org](https://pytorch.org/get-started/locally/)):
+**Triton engine, NVIDIA GPU (Linux).** Install the NVIDIA driver, then:
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/<cuda-build>   # e.g. cu126
 pip install neurobrix
+neurobrix doctor
+```
+
+and run; without PyTorch the run takes the Triton engine (`engine: triton (torch not installed)`).
+The CUDA runtime library comes with nbxtensor; nothing else is needed.
+
+**PyTorch engine, NVIDIA GPU (Linux).** Install the PyTorch CUDA build that your driver
+supports (see the selector on [pytorch.org](https://pytorch.org/get-started/locally/)), then
+NeuroBrix with its `pytorch` extra. `pip install torch` on its own pulls the default PyTorch
+wheel from PyPI, which may be built for a CUDA version your driver or GPU cannot use; you would
+then get an engine that silently runs on CPU.
+
+```bash
+pip install typing-extensions      # from PyPI first: the PyTorch index carries only its source
+pip install torch --index-url https://download.pytorch.org/whl/<cuda-build>   # e.g. cu126
+pip install "neurobrix[pytorch]"
 neurobrix doctor
 ```
 
 **NVIDIA V100 (Volta).** Current CUDA 13 builds of PyTorch no longer support Volta. Use a
-`cu126` build. `torch 2.10.0+cu126` and `torch 2.14.0+cu126` were checked on the project's
-V100 machines. The default PyPI `torch` and the cu128, cu129, cu130 and cu132 builds were not
-usable there.
+`cu126` build. `torch 2.10.0+cu126`, `torch 2.14.0+cu126` and `torch 2.14.1+cu126` were checked
+on the project's V100 machines. The default PyPI `torch` and the cu128, cu129, cu130 and cu132
+builds were not usable there.
+
+**Installed size**, measured on a clean `python:3.10-slim` container on 2026-11-06 (the space
+the packages take in `site-packages`): `pip install neurobrix`, the Triton engine alone, 1.48 GiB
+(nbxtensor, Triton, NumPy and the engine); with the PyTorch engine (`torch 2.14.1+cu126` from the
+PyTorch index, then `neurobrix[pytorch]`) 6.82 GiB.
+
+**Apple Silicon (macOS).** The Triton engine runs on the Apple GPU through Metal. PyPI publishes
+no Triton for macOS: `install-metal` installs NeuroBrix's Triton build for Apple GPUs
+([NeuroBrix/triton-ext](https://github.com/NeuroBrix/triton-ext); upstream:
+[triton-lang/triton-ext#126](https://github.com/triton-lang/triton-ext/pull/126)), each wheel
+checked against the sha256 written in nbxtensor:
 
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu126
 pip install neurobrix
+python -m nbxtensor install-metal
 neurobrix doctor
 ```
 
-**CPU only.**
+Xcode's Metal toolchain is the other requirement (`neurobrix doctor` says when it is missing).
+The PyTorch engine also runs on the Apple GPU, through MPS: `pip install torch "neurobrix[pytorch]"`.
+
+**CPU only** (the PyTorch engine).
 
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install neurobrix
+pip install "neurobrix[pytorch]"
 ```
 
-`neurobrix doctor` checks that the `neurobrix` command is on your PATH, which PyTorch build
-is installed, and whether PyTorch can see the GPUs your driver reports. It exits non-zero
-when it finds a problem that will block a run.
+`neurobrix doctor` checks that the `neurobrix` command is on your PATH, whether the Triton
+engine can run (nbxtensor, Triton and a GPU runtime), which PyTorch build is installed if any,
+and whether it can see the GPUs your driver reports. It exits non-zero when neither engine can
+run.
 
 ### First run
 
 ```bash
 # Browse the hub and download a small language model
 neurobrix hub --category LLM
-neurobrix import TinyLlama/TinyLlama-1.1B-Chat-v1.0
+neurobrix import TinyLlama/TinyLlama-1.1B-Chat-v1.0 --accept-license
 
 # Run it once (hardware is detected automatically)
 neurobrix run --model TinyLlama-1.1B-Chat-v1.0 \
@@ -131,15 +160,15 @@ neurobrix stop                       # stop the daemon and free GPU memory
 
 | Hardware | Status |
 |---|---|
-| NVIDIA GPUs, Linux (CUDA) | Released in 0.5.4. Both compute branches. The project's own test machines are V100s. |
-| CPU (x86-64) | Released in 0.5.4. |
-| Apple Silicon (Metal) | **Not in a release.** Triton execution on Apple GPUs (through the Triton AppleGPU backend of `triton-lang/triton-ext`) is being integrated on `main` and is planned for 0.5.5. No install procedure is published for it yet. |
-| AMD GPUs (ROCm) | Code paths exist but have never run on AMD hardware. Not supported. |
-| Windows | Not tested by the project. |
+| NVIDIA GPUs, Linux (CUDA) | Released in 0.6.0. Both compute branches. The project's own test machines are V100s. |
+| CPU (x86-64) | Released in 0.6.0 (the PyTorch engine). |
+| Apple Silicon (Metal) | In 0.6.0. Both engines: the Triton engine through Metal (NeuroBrix's Triton build for Apple GPUs, installed by `python -m nbxtensor install-metal`), the PyTorch engine on MPS. Install: [Install and first run](#install-and-first-run), Apple Silicon. |
+| AMD and Intel GPUs | The Triton engine, through nbxtensor's HIP and Level Zero drivers, with the vendor's runtime and its Triton build (`neurobrix doctor` gives the vendor's install commands). Found a bug on your card? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
+| Windows | In 0.6.1. Both engines; the Triton engine needs the NVIDIA, AMD or Intel driver and the Triton build for your GPU (`neurobrix doctor` names what is missing). Found a bug on Windows? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
 
 Several GPUs in one machine are used automatically when a model does not fit on one.
 Known limitations of the current release are listed in its
-[release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.5.4). Read them before
+[release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.2). Read them before
 filing a bug.
 
 ### Models on the hub
@@ -210,8 +239,8 @@ neurobrix upscale --model Real-ESRGAN-RealESRGAN_x4plus --input photo.png --outp
 
 | Flag | Branch | Use |
 |---|---|---|
-| `--compiled` (default) | PyTorch | Normal use. |
-| `--triton` | Triton | The engine's own Triton kernels instead of PyTorch's operator library. |
+| `--compiled` | PyTorch | Normal use; the default where PyTorch is installed. |
+| `--triton` | Triton | The engine's own Triton kernels instead of PyTorch's operator library; the default where PyTorch is not installed. |
 | `--sequential` | PyTorch, one operation at a time | Debugging. |
 | `--triton-sequential` | Triton, one operation at a time | Debugging. |
 
@@ -235,6 +264,28 @@ Downloaded archives are kept in `~/.neurobrix/store/` and extracted models in
 `~/.neurobrix/cache/`. `--no-keep` deletes the archive once it is extracted. Read commands
 (`info`, `list`, `hub`, `inspect`, `doctor`, `run --explain-plan`) accept `--json` for
 scripting.
+
+### Certify your GPU and share it
+
+The Triton engine's kernel settings are certified per launch key (the kernel, its shape class
+and dtypes) and per GPU class, against a float64 oracle, and shipped. A key your GPU class has
+no certificate for is swept at run time and kept on your machine; certifying it makes it
+permanent, and sharing it means nobody with your GPU sweeps it again. The four steps, with the
+commands, are in nbxtensor's README,
+[Certify your own hardware](https://github.com/NeuroBrix/nbxtensor#certify-your-own-hardware):
+
+1. Run the models you use with `--triton`; the keys no certificate covers are swept and kept in
+   `~/.neurobrix/replay_cache/`.
+2. Certify them: `neurobrix autotune certify --profile <your device file> --keys <the kept keys> --out ./my-certificates`.
+3. Check that they are served: the same run with `NEUROBRIX_AUTOTUNE_CERTIFIED_DIR=./my-certificates`
+   and `--certified-only` says `0 swept at runtime` and gives the same output.
+4. Share them: add the files under `src/neurobrix/config/autotune/<vendor>/<profile>/` and open
+   a pull request with the
+   [certificate template](./.github/PULL_REQUEST_TEMPLATE/certificate.md) (`?template=certificate.md`):
+   your GPU, driver, the commands and the output of step 3.
+
+Certified your GPU? Share your certificates — every class certified is a class nobody autotunes
+again.
 
 ---
 

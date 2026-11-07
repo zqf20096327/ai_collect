@@ -23,6 +23,15 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-07] [paper615]
+- SPARC: A Mechanism-Aware Spatial Representation from Routine Histology Predicts Cancer Survival and Therapy Response
+ [[pdf]](https://www.medrxiv.org/content/10.64898/2026.05.04.26352410v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/SPARC%20A%20Mechanism-Aware%20Spatial%20Representation%20from%20Routine%20Histology%20Predicts%20Cancer%20Survival%20and%20Therapy%20Response.pdf)
+- `medrxiv, 2026-05`
+- [Computational Pathology]
+```
+Well written and fairly interesting paper. They train using the HEST-1k spatial transcriptomics data. The general idea of predicting defined gene sets / programs (they predict 40 different ones) instead of individual genes makes some sense, but they could have done a more controlled/direct comparison of this (instead of comparing to another model, STPath). I don't quite understand the therapeutic response modelling in 4.5, they compute patient-level SPARC-Map representations / program scores by taking the mean of patch-level scores, but then they completely discard all spatial information?
+```
+
 ##### [26-11-06] [paper614]
 - DeepSpot-M: A Multimodal Foundation Model for Transcriptome-Wide Virtual Spatial Transcriptomics From Histology
  [[pdf]](https://www.medrxiv.org/content/10.64898/2026.06.19.26356060v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/DeepSpot-M%20A%20Multimodal%20Foundation%20Model%20for%20Transcriptome-Wide%20Virtual%20Spatial%20Transcriptomics%20From%20Histology.pdf)
@@ -1066,13 +1075,4 @@ Well written and interesting paper, I enjoyed reading it. Novel and interesting 
 - `npj Digital Medicine, 2024`
 - [ML for Medicine/Healthcare], [EHRs]
 ```
-Well written and interesting paper, I quite enjoyed reading it. All figures etc are really neat. The method is pretty cool, that you can get zero-shot predictions of different things by simulating multiple future patient timelines (albeit a somewhat computationally inefficient approach, I suppose).
-```
-
-##### [25-08-03] [paper498]
-- Foresight—A Generative Pretrained Transformer for Modelling of Patient Timelines Using Electronic Health Records: A Retrospective Modelling Study
- [[pdf]](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(24)00025-6/fulltext) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Foresight%E2%80%94A%20Generative%20Pretrained%20Transformer%20for%20Modelling%20of%20Patient%20Timelines%20Using%20Electronic%20Health%20Records%20A%20Retrospective%20Modelling%20Study.pdf)
-- `The Lancet Digital Health, 2024`
-- [ML for Medicine/Healthcare], [EHRs]  
-```
-Quite interesting paper. Neat that they use both the free text and structured data in the EHRs ("uses named entity recognition and linking tools to convert EHR document text into structured, coded concepts"). But then I got a bit confused, found it difficult to understand exactly how the model actually works. Does the model just iteratively output tokens? I.e., for generating the "top N forecasts", they just run the model to output N tokens? But so how do the
+Well written and interesting paper, I quite enjoyed reading it. All figures etc are really neat. The method is pretty cool, that you can get zero-shot predictions of different things by simulating multiple future patient timelines (albeit a somewhat computationally inefficient approach,

@@ -198,6 +198,9 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 306.0
+- The licensing contact line now points to GitHub issues instead of an email address.
+
 ### Version 305.0
 - The mouse wheel now scrolls the plan review box in native chat anywhere over the plan text, not only over its scrollbar; at the end of the plan it goes back to scrolling the conversation.
 - Thanks to [@lpowca](https://github.com/lpowca) for reporting (#262).
@@ -1644,10 +1647,4 @@ Native mode now in beta phase
 - Fixed UI lag when typing in the prompt textbox.
 
 ### Version 3.7
-- Performance improvements.
-- Fix Sonnet model selection issues.
-
-### Version 3.6
-- **Open Code** support added.
-
-### Version
+- Performance improv

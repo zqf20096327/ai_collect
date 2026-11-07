@@ -106,7 +106,7 @@ Changes that need an edit:
 - **Removed:**
   - `AgeVerificationResult`, `IdentityVerificationResult` and `VideoSafetyFinding`, which no 2.x call returned. Use `VerificationRetrieveResult`, `IdentityRetrieveResult` and `VideoAnalysisResult.frameResults`.
   - `CancelVerificationSessionResult.message` and `VideoAnalysisResult.safetyFindings`, which the API doesn't send.
-  - `logBreach`, `listBreaches`, `getBreach`, `updateBreachStatus` and their types. These are Tuteliq-internal admin endpoints: every call with a customer API key got a 403.
+  - `logBreach`, `listBreaches`, `getBreach`, `updateBreachStatus` and their types. They are not available to customer API keys, so every call failed.
 - **Behaviour changes, with no compile error:**
   - **A monthly allowance or credit balance that runs out** (`SUB_7004`, `SUB_7005`) throws `TuteliqError.quotaExceededError` and is not retried. In 2.x it was a `rateLimitError`, and was retried.
   - **A response that doesn't decode** throws its `DecodingError` straight away. 2.x sent the request again, repeating a paid analysis.
@@ -547,6 +547,7 @@ print(session.url, session.expiresAtDate)
 let status = try await tuteliq.getVerificationSession(id: session.sessionId)
 if status.status == .completed, let result = status.result {
     print(result.status)                  // .verified, .failed, .needsReview
+    print(result.documentEvidence ?? .photo)  // .photo, .chip or .photoAndChip
     print(result.age ?? -1, result.isMinor ?? false)
     print(result.document?.countryCode ?? "")
 }
@@ -559,6 +560,8 @@ let age = try await tuteliq.getAgeVerification(id: "vrf_…")
 let identity = try await tuteliq.getIdentityVerification(id: "vrf_…")
 print(age.livenessValid, identity.faceConfidence ?? 0)
 ```
+
+**Chip policy.** `chipPolicy` on `CreateVerificationSessionInput` sets how a passport or ID card chip read counts as document evidence: `.optional` (the default: the document photo is required and a chip read adds to it), `.required` (the photo and a chip read that proves itself genuine), or `.insteadOfPhoto` (a chip read that proves itself genuine replaces the photo; otherwise the user photographs the document). The server enforces it, so the app can't change it. The hosted page has no chip step: it always uses the photo, so a `.required` session can only be completed in a native app on an iPhone that reads chips.
 
 | | Age | Identity |
 |---|---|---|
@@ -582,8 +585,18 @@ await api.reportProgress(.connected)            // drives the integrator's live 
 let front = try await api.validateDocument(passportJPEG, side: .passport, documentType: .passport, captureSource: .camera)
 if !front.valid { /* show front.issues.first and retake */ }
 
-// Optional: raw files read from the document's NFC chip.
-let chip = try await api.validateChip([.com: efCOM, .dg1: dg1, .sod: efSOD], documentType: .passport)  // nil if not offered
+// Optional: raw files read from the document's NFC chip. Fetch a challenge just before
+// reading it and have the chip sign it (Active Authentication), so the server can tell
+// the original chip from a copy. mode.chipPolicy says what the session asks for.
+let challenge = try await api.fetchChipChallenge()     // single use, valid for a short time
+// Chips without Active Authentication (most recent European passports) prove the same with
+// Chip Authentication: after reading every file, send DG14 here, send the commands to the chip
+// (the first ones under your secure messaging, protectedCommand as is) and keep its answer.
+let ca = try await api.startChipAuthentication(dg14: dg14)
+let chip = try await api.validateChip([.com: efCOM, .dg1: dg1, .dg14: dg14, .sod: efSOD], documentType: .passport,
+                                      activeAuthenticationSignature: signature,   // or nil
+                                      chipAuthenticationResponse: caAnswer)       // or nil
+if chip?.usableAsDocument == true { /* under .insteadOfPhoto, no document photo is needed */ }
 
 // Liveness: fetch a signed challenge (on the server's clock), run your own detection, then build the token.
 var token = try await api.startLiveness()
@@ -616,7 +629,7 @@ Session links:
 
 Rules the server enforces:
 
-- **Challenge order and timing:** complete the prompts in the order received, at least 0.55 s apart. Wait until `earliestNextCompletion` before showing the next prompt rather than recording a completion later than it happened, and never record one in the future (`complete` refuses it). Use the token within about 5 minutes (`encoded()` refuses an expired one); each nonce works once.
+- **Challenge order and timing:** complete the prompts in the order received. Wait until `earliestNextCompletion` before showing the next prompt rather than recording a completion later than it happened, and never record one in the future (`complete` refuses it). Use the token promptly (`encoded()` refuses an expired one); each nonce works once.
 - **Frames:** send 2–12 upright, unmirrored JPEG frames from the liveness run. The server re-analyses them and decides; the token alone proves nothing.
 - **Errors:** session problems throw `VerificationError` (`.sessionExpired`, `.rateLimited(retryAfter:)`, `.server(code:message:statusCode:)`…). On `SVC_4002`, retry the submit once after a short pause. On `ANALYSIS_6005`, recapture the document. On `.documentRequired`, add a document and submit again.
 
@@ -632,11 +645,11 @@ Rules the server enforces:
 | `document` | Camera or file, whether it was auto-captured, on-device document check verdict, tilt range and frame count, check scores and reasons | What document evidence to expect |
 | `chip` | Access protocol and key type, whether the key came from the photo, chip and active authentication outcomes, data groups read | What chip evidence to expect |
 
-It sends no image and no raw facial measurement. `LivenessDepthEvidence`'s millimetre and distance values are measurements of a face, possibly a child's: they stay on the device and are never encoded. Leave out `capture_context` entirely if you prefer; nothing depends on it.
+It sends no image and no facial measurement. Leave out `capture_context` entirely if you prefer; nothing depends on it.
 
 ### Native Verification (licensed add-on)
 
-The hosted verification flow above works with this SDK alone. For a fully native iOS flow (document capture with on-device MRZ reading, NFC passport and ID chip reading, liveness and selfie, all in SwiftUI), Tuteliq offers **Tuteliq Verification**, a separate package that builds on this one. It requires a verification license; contact [Tuteliq](https://tuteliq.ai) for access.
+The hosted verification flow above works with this SDK alone. For a fully native iOS flow (document capture with on-device MRZ reading, NFC passport and ID chip reading, liveness and selfie, all in SwiftUI), Tuteliq offers **Tuteliq Verification**, a separate package that builds on this one. It requires a verification license; contact [Tuteliq](https://tuteliq.ai) for access. It ships with its own copy of this SDK's `Tuteliq` module, so add it instead of this package, not alongside it: everything here is available from it with `import Tuteliq`.
 
 ### Webhooks
 
@@ -981,14 +994,14 @@ Enable `PII_REDACTION_ENABLED=true` on your Tuteliq API to strip emails, phone n
 
 ## Security Best Practices
 
-**Never hardcode API keys** in your Swift source files. Strings embedded in the binary can be extracted with tools like `strings` — even from release builds. Instead, use the `.xcconfig` → Keychain flow described below.
+**Never hardcode API keys** in your Swift source files. Strings embedded in the binary can be extracted with tools like `strings`, even from release builds. Instead, use the `.xcconfig` → Keychain flow described below.
 
 ### Recommended Setup
 
 #### 1. Create a `Secrets.xcconfig` file (git-ignored)
 
 ```
-// Secrets.xcconfig — DO NOT commit this file
+// Secrets.xcconfig: DO NOT commit this file
 TUTELIQ_API_KEY = sk_live_your_key_here
 ```
 
@@ -1039,7 +1052,7 @@ try Tuteliq.removeAPIKey()
 
 ## Supported Languages
 
-Tuteliq supports **27 languages** with automatic detection — no configuration required.
+Tuteliq supports **27 languages** with automatic detection; no configuration required.
 
 **English** (stable) and **26 beta languages**: Spanish, Portuguese, Ukrainian, Swedish, Norwegian, Danish, Finnish, German, French, Dutch, Polish, Italian, Turkish, Romanian, Greek, Czech, Hungarian, Bulgarian, Croatian, Slovak, Lithuanian, Latvian, Estonian, Slovenian, Maltese, and Irish.
 
@@ -1064,9 +1077,9 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-## Get Certified — Free
+## Get Certified for Free
 
-Tuteliq offers a **free certification program** for anyone who wants to deepen their understanding of online child safety. Complete a track, pass the quiz, and earn your official Tuteliq certificate — verified and shareable.
+Tuteliq offers a **free certification program** for anyone who wants to deepen their understanding of online child safety. Complete a track, pass the quiz, and earn your official Tuteliq certificate, verified and shareable.
 
 **Three tracks available:**
 
@@ -1078,7 +1091,7 @@ Tuteliq offers a **free certification program** for anyone who wants to deepen t
 
 **Start here →** [tuteliq.ai/certify](https://tuteliq.ai/certify)
 
-- 100% Free — no login required
+- 100% free, no login required
 - Verifiable certificate on completion
 - Covers grooming recognition, sextortion, cyberbullying, regulatory obligations (KOSA, EU DSA), and more
 
@@ -1091,13 +1104,13 @@ Before you decide to contribute or sponsor, read these numbers. They are not pro
 - **302 million** children are victims of online sexual exploitation and abuse every year. That is **10 children every second**. *(Childlight / University of Edinburgh, 2024)*
 - **1 in 8** children globally have been victims of non-consensual sexual imagery in the past year. *(Childlight, 2024)*
 - **370 million** girls and women alive today experienced rape or sexual assault in childhood. An estimated **240–310 million** boys and men experienced the same. *(UNICEF, 2024)*
-- **29.2 million** incidents of suspected child sexual exploitation were reported to NCMEC's CyberTipline in 2024 alone — containing **62.9 million files** (images, videos). *(NCMEC, 2025)*
-- **546,000** reports of online enticement (adults grooming children) in 2024 — a **192% increase** from the year before. *(NCMEC, 2025)*
+- **29.2 million** incidents of suspected child sexual exploitation were reported to NCMEC's CyberTipline in 2024 alone, containing **62.9 million files** (images, videos). *(NCMEC, 2025)*
+- **546,000** reports of online enticement (adults grooming children) in 2024, a **192% increase** from the year before. *(NCMEC, 2025)*
 - **1,325% increase** in AI-generated child sexual abuse material reports between 2023 and 2024. The technology that should protect children is being weaponized against them. *(NCMEC, 2025)*
 - **100 sextortion reports per day** to NCMEC. Since 2021, at least **36 teenage boys** have taken their own lives because they were victimized by sextortion. *(NCMEC, 2025)*
 - **84%** of reports resolve outside the United States. This is not an American problem. This is a **global emergency**. *(NCMEC, 2025)*
 
-End-to-end encryption is making platforms blind. In 2024, platforms reported **7 million fewer incidents** than the year before — not because abuse stopped, but because they can no longer see it. The tools that catch known images are failing. The systems that rely on human moderators are overwhelmed. The technology to detect behavior — grooming patterns, escalation, manipulation — in real-time text conversations **exists right now**. It is running at [api.tuteliq.ai](https://api.tuteliq.ai).
+End-to-end encryption is making platforms blind. In 2024, platforms reported **7 million fewer incidents** than the year before, not because abuse stopped, but because they can no longer see it. The tools that catch known images are failing. The systems that rely on human moderators are overwhelmed. The technology to detect behavior (grooming patterns, escalation, manipulation) in real-time text conversations **exists right now**. It is running at [api.tuteliq.ai](https://api.tuteliq.ai).
 
 The question is not whether this technology is possible. The question is whether we build the company to put it everywhere it needs to be.
 
@@ -1105,7 +1118,7 @@ The question is not whether this technology is possible. The question is whether
 
 We have the technology. We need the support.
 
-If this mission matters to you, consider [sponsoring our open-source work](https://github.com/sponsors/Tuteliq) so we can keep building the tools that protect children — and keep them free and accessible for everyone.
+If this mission matters to you, consider [sponsoring our open-source work](https://github.com/sponsors/Tuteliq) so we can keep building the tools that protect children, and keep them free and accessible for everyone.
 
 ---
 

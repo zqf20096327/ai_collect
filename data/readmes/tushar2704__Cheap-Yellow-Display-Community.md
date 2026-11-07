@@ -225,6 +225,29 @@ This repository supports **ALL** Cheap Yellow Display variants currently availab
 | 47 | **Antigravity Vibe Monitor** | Real-time Antigravity session tracker: tool calls, token usage, streaks & NTP standby clock | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/47-vibe-code-monitor-antigravity/) |
 | 48 | **Claude Code Vibe Monitor** | Claude Code live rate-limit monitor: 5-hour rolling window gauge, cost burn & LED alerts | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/48-vibe-code-monitor-claude/) |
 | 49 | **OpenAI Codex Vibe Monitor** | Codex CLI usage dashboard: reasoning token breakdown, cache efficiency & task history | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/49-vibe-code-monitor-codex/) |
+| 50 | **CYD X-Touch Bambu Lab Controller** | Bambu Lab 3D printer hub: nozzle & bed temps, layer tracker, 4-slot AMS bay & pause controls | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/50-cyd-xtouch-bambu-lab-controller/) |
+| 51 | **CYD Cydintosh 1984 Retro Mac** | 1984 Macintosh System 6 GUI: 1-bit dither, Happy Mac chime, MacPaint canvas & Calculator | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/51-cydintosh-1984-retro-mac/) |
+| 52 | **CYD NerdMiner Solo Bitcoin Lottery** | Solo Bitcoin miner & telemetry: dual-core SHA-256 hashrate, valid shares & halving clock | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/52-cyd-nerdminer-solo-lottery/) |
+| 53 | **CYD CyberPet Emotive Desk Face** | Interactive robotic pet: 8 procedural moods, touch petting zones, LDR sleep & chirps | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/53-cyd-cyberpet-emotive-face/) |
+| 54 | **CYD Retro Desk TV Player** | 1980s desktop TV: 6 channels (SMPTE, Static, Synth, DVD, Matrix, Scope), scanlines & CRT off | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/54-cyd-retro-desk-tv-video-player/) |
+| 55 | **CYD PeanutGB Classic Game Boy** | Game Boy handheld: 160×144 LCD, boot chime, D-Pad/AB touch, 4 palettes & 3 built-in games | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/55-cyd-peanutgb-gameboy-emulator/) |
+| 56 | **CYD Spotify Car Thing Controller** | Desktop audio deck: vinyl turntable art, scrub bar, touch transport, volume & RGB beat pulse | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/56-cyd-spotify-car-thing-music-controller/) |
+| 57 | **CYD WLED Matrix & Strip Remote** | WLED smart lighting: 16×5 matrix preview, HSV color picker, brightness/speed & 6 presets | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/57-cyd-wled-matrix-strip-controller/) |
+| 58 | **CYD Home Assistant Glass Panel** | Wall-mount smart panel: 4 tabs (Home, Lights, Climate, Energy), thermostat dial & tiles | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/58-cyd-home-assistant-glass-panel/) |
+| 59 | **CYD Marauder WiFi & BLE Auditor** | RF cybersecurity terminal: 802.11 sniffer, deauth IDS alert, 13-ch waterfall & BLE tracker | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/59-cyd-marauder-wifi-ble-security-auditor/) |
+| 60 | **CYD SimHub Racing Cockpit Telemetry** | SimHub racing HUD: 16-LED shift bar, gear indicator, delta lap time, 4-corner tire temps | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/60-cyd-simhub-racing-telemetry/) |
+| 61 | **CYD Creator Live Studio Ticker** | YouTube live sub odometer, daily gain, channel views, latest video rank & celebration chime | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/61-cyd-creator-live-studio-ticker/) |
+| 62 | **CYD Apple Juice & BLE Spam Sentinel** | Cybersecurity RF shield: Apple Juice popup blocker, Fast Pair flood alert & AirTag radar | ⭐⭐⭐⭐⭐ (5/5) | [Open](projects/advanced/62-cyd-ble-spam-airtag-sentinel/) |
+| 63 | **CYD HamClock Space Weather Station** | Space weather terminal: greyline day/night world map, SFI/SSN/Kp gauges, UTC clock & morse | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/63-cyd-hamclock-space-weather/) |
+| 64 | **CYD SD Card MJPEG Cinema Player** | MicroSD video player: 4 motion cinema reels, interactive scrub HUD & ambilight | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/64-cyd-mjpeg-video-player/) |
+| 65 | **CYD PyDOS Vintage MS-DOS Handheld** | MS-DOS 6.22 handheld PC: 42-key chiclet keyboard, CRT phosphor switch & PC speaker | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/65-cyd-pydos-handheld-pc/) |
+| 66 | **CYD F1 Pit Wall Telemetry Dashboard** | F1 pit wall monitor: live timing gaps, tire degradation matrix & race flag sirens | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/66-cyd-f1-pitwall-dashboard/) |
+| 67 | **CYD ADS-B Flight Radar & Air Traffic** | 360° radar scope: 10/25/50 NM range rings, aircraft vector vectors, Squawk 7700 alert | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/67-cyd-adsb-flight-radar/) |
+| 68 | **CYD Denki-Kurage Pixel Jellyfish** | Bioluminescent aquarium: undulation locomotion, water ripples, feeding & Day/Abyss | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/68-cyd-pixel-aquarium-jellyfish/) |
+| 69 | **CYD LoRa APRS Tactical Beacon** | Tactical APRS terminal: Maidenhead polar grid, GPS telemetry & Bell 202 AFSK audio | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/69-cyd-lora-aprs-tactical-beacon/) |
+| 70 | **CYD ISS & Satellite Orbit Tracker** | Space telemetry tracker: world map ground track, Az/El antenna compass & crew manifest | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/70-cyd-iss-satellite-tracker/) |
+| 71 | **CYD 8-Bit Retro Mini-Arcade Deck** | 8-bit multi-game arcade: Cyber Snake, Paddle Pong, Neon Breakout & chiptune audio | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/71-cyd-retro-arcade-deck/) |
+| 72 | **CYD Lightning Strike & Storm Warning** | Thunderstorm radar: 40 km strike scope, 60-min histogram, thunder audio & strobe | ⭐⭐⭐⭐ (4/5) | [Open](projects/advanced/72-cyd-lightning-detector/) |
 
 ---
 

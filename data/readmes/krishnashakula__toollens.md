@@ -156,6 +156,18 @@ Claude found the cause through the gateway (deployment, commit, logs) and did no
 rollback because `inspect_tool` showed the policy denies it. Claude Desktop is untested
 ([#1](https://github.com/krishnashakula/toollens/issues/1)); reports welcome.
 
+### In Docker
+
+The image serves the `gateway.json` in a mounted folder. Servers launched with `npx` or `uvx` run
+inside the container; pass their keys with `-e` (for `${VAR}` references) or write them in the
+file's `env`. Servers started any other way (`docker`, paths on your machine) do not work from
+inside it. With no arguments the image serves the built-in demo servers.
+
+```bash
+docker build -t toollens .
+docker run -i --rm -v /path/to/folder:/config:ro toollens serve --config /config/gateway.json --db /app/toollens.db
+```
+
 ## The console
 
 ```bash
@@ -345,7 +357,9 @@ learning was off. This benchmark found real bugs before the final numbers; all a
 ```
 
 `--runs N` repeats every task N times. Runs already on disk are kept, so an interrupted run
-resumes, and `agent.json` then reports each arm's min, mean and max across runs.
+resumes, and `agent.json` then reports each arm's min, mean and max across runs. An episode whose
+server could not start (Docker stopped, say) is recorded as an error, not a failed task, and runs
+again next time; a run stops after its first episode if that one could not reach its server.
 
 The real-world benchmark needs Docker; its exact steps are in [CLAUDE.md](CLAUDE.md)
 ("Real-world catalog"). The full three-arm run cost about $4 at list price. The demo video is made

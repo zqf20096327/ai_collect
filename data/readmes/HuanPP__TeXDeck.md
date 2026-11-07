@@ -12,7 +12,9 @@ Drop in a PDF, get back a Beamer deck: the compiled PDF, the `.tex` source, and 
   <img src="docs/hero.png" alt="A source PDF page on the left, the generated Beamer slide on the right" width="100%">
 </p>
 
-A vision model reads your pages as images and writes a complete `main.tex` against the template you pick. It takes about a minute. You can then rewrite one slide, or the whole deck, with a single instruction. The source on the left is [`docs/demo/gold-price-2024.pdf`](docs/demo/gold-price-2024.pdf), so you can try it yourself.
+A vision model reads your pages as images and writes a complete `main.tex` against the template you pick. It takes about a minute. You can then rewrite one slide, or the whole deck, with a single instruction. The source on the left is [`docs/demo/gold-price-2024.pdf`](docs/demo/gold-price-2024.pdf), so you can try it yourself. Slides follow the language of your material unless you pick English or Chinese.
+
+**No API key needed:** it runs on the ChatGPT or Claude subscription you already pay for. An API key works too.
 
 ## Install
 
@@ -33,17 +35,21 @@ cp server/.env.example server/.env && ./server/run.sh     # API on :8000
 cd web && npm install && npm run dev                      # UI on :5173
 ```
 
+**On a server.** Add an account first (`python -m app.auth add <username>`); from then on the page asks for a sign-in and the API refuses requests without one. [`docs/deploy`](docs/deploy) has the full setup behind Caddy and Cloudflare, with example service files.
+
 ## Pick a model
 
-Click **Sign in with ChatGPT** in the top bar to run on your ChatGPT plan, or set an API key for any OpenAI-compatible vision model (`.env`, or `texdeck.env` in the desktop app's data folder):
+Click the model button in the top bar. It lists three ways to run the model; you can switch between them, and pick the model for each, at any time:
 
-```bash
-TEXDECK_LLM_API_KEY=...
-TEXDECK_LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
-TEXDECK_LLM_MODEL=gemini-pro-latest      # recommended; Kimi vision models also work
-```
+**ChatGPT**, on your ChatGPT plan. Click Connect, sign in, then pick one of the models your account offers.
 
-Text-only models won't work, because pages are sent as images.
+**Claude**, on your Claude plan. Needs [Claude Code](https://code.claude.com/docs/en/setup) installed on the computer running TeXDeck. If Claude Code is already signed in, Connect is all it takes. Otherwise TeXDeck starts `claude auth login`, shows the sign-in link, and you paste the code from that page back in.
+
+**API key**, for any OpenAI-compatible vision model: enter the key, base URL and model name, e.g. `https://generativelanguage.googleapis.com/v1beta/openai/` with `gemini-pro-latest` (recommended; Kimi vision models also work). Text-only models won't work, because pages are sent as images.
+
+With Claude, TeXDeck drives your own Claude Code CLI in headless mode (`claude -p`, no tools, CLAUDE.md and plugins off). The login belongs to Claude Code and TeXDeck never sees the credentials; switching away leaves it signed in. Pick Fable, Opus, Sonnet or Haiku in the panel (Sonnet by default); whether your plan includes a model is up to Anthropic, and Claude Code says so if it does not. If `ANTHROPIC_API_KEY` is set in the environment, Claude Code bills the API instead of your plan. The Docker image has no Claude Code, so Claude is for the desktop app and source installs.
+
+The choice and any API key entered there are saved next to the other app data. `.env` (or `texdeck.env` in the desktop app's data folder) can still preset the API key with `TEXDECK_LLM_API_KEY`, `TEXDECK_LLM_BASE_URL` and `TEXDECK_LLM_MODEL`.
 
 ## Templates
 

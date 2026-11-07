@@ -58,6 +58,9 @@ fast card set, see [Which coding agent](docs/agents.md#which-coding-agent).
   mlx-community's 4-bit folders as downloaded. Q4_K_M GGUF files run, unverified (Qwen3.6 also from `UD-Q4_K_XL`).
   Ornith-1.5-35B and MiniCPM-V 4.7 35B-A3B (Q4_K_M, text only) run, unverified. Prompts run in batched passes, and a
   follow-up turn reads only its new messages ([below](#apple-silicon)).
+- **A quantizer that writes the final set.** `bloomery-quantize` writes a GGUF set's routed-expert stacks as IQ1_S or
+  IQ2_XXS on the card and every other tensor by the host's K-quant rules, the metadata and shard layout as
+  `llama-quantize` writes them, byte-identical to its output for the same input and options ([`docs/quantize.md`](docs/quantize.md)).
 - **llama-server compatible.** The same HTTP API (OpenAI and Anthropic), GGUF files and flag spellings, including the
   placement flags (`-dev`, `-ts`, `-ngl`, `--cpu-moe`, `-ot`, `--fit`) with llama's meaning. Your client works
   unchanged ([Use](#use)).
@@ -343,10 +346,15 @@ every gate is shown to fail on its defect before the fix lands ([how](docs/perfo
 - DeepSeek V4.1 on one 24 GB card from a file with an r8 sidecar beside it is refused at the load by name (the NVMe
   tier does not fill from the sidecar yet); `BLOOMERY_R8=off` reads the source file with the same bits.
 - GLM-5.3 holds at most 16,384 positions a slot; a `--ctx-size` whose slot share is larger is refused at the start.
-- Kimi K3: the reader, tokenizer and every layer run and are checked on a fixture cut from the real file; the 594 GB
-  UD-IQ1_S file itself does not load at this tag (its dense trunk alone is past one 48 GB card, and the loader that
-  places it over two cards, the host and the NVMe tier is next).
-- The expert tier on another machine (`BLOOMERY_TIER_NODES`) serves DeepSeek V4.1-Flash only, and the RAM arena
+- Kimi K3.1 Pro (our `IQ1_S` set, a Q4_K trunk) loads at `--place bp` only (two cards, the host and the NVMe expert
+  tier) and holds `--ctx-size` to 2,048 positions a slot: the reader runs the lightning indexer's selection up to its
+  top-k, and the sparse attention past it is not in the engine yet. The seat steps a prompt one id at a time (the prompt
+  rate is near the decode rate) and serves the model's think span as plain text. The set's chat template is unsloth's
+  Kimi-K3 template (the checkpoint ships none), and its importance matrix came from `llama-imatrix`; the quantization
+  itself was written by `bloomery-quantize`. Kimi K3 (unsloth's `UD-IQ1_S`, 594 GB) does not load at this tag: its
+  dense trunk is 51.4 GB, past one 48 GB card.
+- The expert tier on another machine (`BLOOMERY_TIER_NODES`, `tier_server`) serves DeepSeek V4.1-Flash, GLM-5.3, Qwen3.8,
+  Solar-Open2 and Kimi K3 / K3.1; a node serves no prompt batch (the batch is the host's), and the RAM arena
   (`BLOOMERY_NVME_ARENA`) refuses a plan with a rank file (`BLOOMERY_EXPERT_RANK`) by name.
 
 Every limit, by seat: [`docs/serving.md`](docs/serving.md#12-limits).
@@ -376,6 +384,7 @@ start screen), [@Burntgogi](https://github.com/Burntgogi) (the common owners eve
 | [`docs/claude-code.md`](docs/claude-code.md) | Claude Code on a local model, on an NVIDIA card or a Mac, with measured first-turn times |
 | [`docs/pi.md`](docs/pi.md) | pi on a local model: the smallest first request of the surveyed agents, on an NVIDIA card or a Mac |
 | [`docs/dsh.md`](docs/dsh.md) | DeepSeek Harness (dsh) on DeepSeek-V4.1-Flash: the server, the profile patch, what to expect |
+| [`docs/quantize.md`](docs/quantize.md) | `bloomery-quantize`: the final quantized set in one pass (IQ1_S and IQ2_XXS experts on the card, the trunk by the host's K-quant rules), how its bytes are proved, the resource timeline |
 | [`docs/models.md`](docs/models.md) | Recommended files and what each model needs |
 | [`docs/numbers.md`](docs/numbers.md) | Every measured table beyond the Status tables: two cards, older releases, other cards and Macs |
 | [`docs/performance.md`](docs/performance.md) | Number conditions, why it is fast, verification, recorded sessions |

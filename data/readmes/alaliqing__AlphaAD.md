@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--06-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1423-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--07-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1420-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,7 +20,7 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1423 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1420 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
@@ -30,10 +30,10 @@ All 1423 papers remain in this README. For full-text search, filters, and sortin
 | Control & Vehicle Dynamics | 59 | 2026-11-05 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 53 | 2026-10-29 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 158 | 2026-11-05 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 218 | 2026-11-05 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 216 | 2026-11-05 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 158 | 2026-11-05 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 28 | 2026-11-04 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 315 | 2026-11-05 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 314 | 2026-11-05 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -57,7 +57,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Hardware / Real-Time | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 114 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
-| Human Interaction | 18 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
+| Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
@@ -180,7 +180,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-41834"></a>
 
-### ObjectGuidedMap: An Object-Aware Model for Robust Bird's Eye View Map Prediction in High-Occlusion Scenarios ![New](https://img.shields.io/badge/New-red)
+### ObjectGuidedMap: An Object-Aware Model for Robust Bird's Eye View Map Prediction in High-Occlusion Scenarios ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Christian Bohn, Harsh Yadav, Klaus Friedrichs, Hasan Tercan, Tobias Meisen<br>
 **Published:** 2026-10-30<br>
@@ -557,7 +557,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-14066"></a>
 
-### Safety-Oriented Trajectory Ranking from BEV Perception Outputs ![Recent](https://img.shields.io/badge/Recent-orange)
+### Safety-Oriented Trajectory Ranking from BEV Perception Outputs ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Leon Pohl, Martin Frauendorfer, Corinna Schmitt, Mirko Maehlisch<br>
 **Published:** 2026-10-07<br>
@@ -1659,4 +1659,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** Vision-radar fusion is central to robust autonomous driving, combining dense visual semantics with precise range and velocity measurements from radar. However, real-world fusion quality is...
 
-<a id="paper-2606-3183
+<a id="paper-26

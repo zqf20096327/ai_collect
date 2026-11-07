@@ -30,6 +30,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 
 ## Open-source frameworks and engines
 
+- [Atris](https://github.com/atrislabs/atris) - MIT project-memory CLI for coding agents with a repository-local Markdown map, linked wiki and daily logs, plus local SQLite task state with a generated TODO.md view; optional hosted workspaces at atris.ai.
 - [birkin-mnemosyne](https://github.com/ashmoonori-afk/birkin-mnemosyne) - MIT local Markdown memory for agents with multilingual BM25 recall that handles Hangul and CJK, usage-based decay, and an optional MCP server; the core has no runtime dependencies.
 - [chamnan](https://github.com/ArcticFox2029/chamnan) - MIT repository-local memory for coding agents that stores an architecture index, an impact map, session records, and decisions as markdown committed beside the code, retrieved by keyword and injected at session start. Python standard library only, no network at runtime.
 - [Cognee](https://github.com/topoteretes/cognee) - Apache-2.0 memory framework that turns documents, code, and conversations into a self-hosted knowledge graph, where a remember operation stores content and a recall operation retrieves graph, vector, or code context, with a managed option (Cognee Cloud).
@@ -54,6 +55,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 - [OneSelf](https://github.com/ptonlix/OneSelf) - MIT-licensed, self-hosted personal-context system that lets multiple AI agents share pages, originals, facts and timelines through OpenAPI and MCP.
 - [pulse-path](https://github.com/Inspired-by-Atmosphere/pulse-path) - MIT agent skills and Python standard-library scripts that keep an agent's Markdown memory pointer file and the docs it links to consistent, with a dry-run health check, a link-integrity scan, audit and consolidation reports, and a declarative rule table.
 - [ReasonGraph](https://github.com/bgokden/reasongraph) - MIT graph-memory library that extracts entities and cause-effect relations with small fine-tuned models, answers why-questions by walking causal chains with citations, supports time-travel queries and contradiction handling, with a hosted service (ReasonGraph Cloud).
+- [Revo](https://github.com/shyringo/revo) - MIT terminal agent harness whose append-only life log and checksummed sleep snapshot keep one agent memory and unfinished intentions alive across restarts, with no session list.
 - [self-learning-agent-setup](https://github.com/ssap-pa/self-learning-agent-setup) - MIT Postgres schema and TypeScript loop that store each human approve, edit, and reject of an agent draft with pgvector embeddings and retrieve feedback from similar past tasks before the next draft.
 - [Sno Station](https://github.com/sno-ai/sno-station) - Apache-2.0 shared memory engine for coding agents, with encrypted local SQLite storage, project/global recall and corrections that retain superseded records; memory processing can run locally or use configured model and optional Sno cloud services.
 - [SoloPup Memory](https://github.com/OakcoderX/solopup-memory) - MIT text-memory plugin for DeepSeek Harness with source-linked review, global/project scopes, lexical retrieval and revision history; public beta.
@@ -96,6 +98,7 @@ Memory servers exposed through the Model Context Protocol. Client support depend
 - [Throughline](https://getthroughline.ai/) - Hosted MCP service for persistent AI identity and memory across supported clients, with MIT-licensed Claude Code and Codex plugins and verifiable history exports.
 - [TokenRip](https://tokenrip.com) - Proprietary hosted MCP server at `https://api.tokenrip.com/mcp` for a shared workspace of versioned files, tables, tasks and pinned decisions, with agent-attributed change history and required reasons for workspace-content writes; email-code sign-in and an MIT-licensed CLI.
 - [VibeDesk](https://github.com/fxd-gif/vibedesk) - MIT-licensed Windows desktop app for Claude Code whose bundled local stdio MCP server keeps Obsidian-compatible Markdown notes with [[links]]: project notes live in `.vibedesk/brain` inside the repository, while personal notes live in the app's user-data directory and apply across projects; with tools to search, read, write, relate and forget notes; the server only runs while the app is running.
+- [Zekra](https://github.com/fadymondy/zekra) - AGPL-3.0, self-hostable MCP memory server shared across agents (Claude Code, Cursor, Codex), with hybrid vector and keyword recall, a knowledge graph, data-source sync and a hosted version.
 
 ## Benchmarks and evaluation
 

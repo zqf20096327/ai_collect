@@ -6,7 +6,7 @@
 [![npm WASM downloads](https://img.shields.io/npm/dm/kiss-agent-sdk-wasm?label=npm%20WASM%20downloads)](https://www.npmjs.com/package/kiss-agent-sdk-wasm)
 [![crates.io SDK downloads](https://img.shields.io/crates/d/kiss-agent-sdk?label=crates.io%20SDK%20downloads)](https://crates.io/crates/kiss-agent-sdk)
 
-<img width="766" height="244" alt="image" src="https://github.com/user-attachments/assets/08e96d6e-7409-419b-b9db-0149f2465083" />
+<img width="737" height="294" alt="image" src="https://github.com/user-attachments/assets/725ad3b8-9711-4700-bbf0-23e969b9dc77" />
 
 A [ridiculously fast](#performance) terminal coding agent that keeps the interface simple and gives you
 control of the model, tools, sessions, and automation.
@@ -383,7 +383,9 @@ to your account. You can also sign in with `CURSOR_ACCESS_TOKEN`.
 
 KISS selects the connection type automatically. If your corporate proxy requires HTTP/1,
 set `KISS_CURSOR_TRANSPORT=http1` (`$env:KISS_CURSOR_TRANSPORT = "http1"`
-in PowerShell).
+in PowerShell). KISS keeps the Cursor connection and pending tools alive
+while a tool runs or waits for approval; resuming uses the original run, not
+a replayed prompt.
 
 #### Databricks
 
@@ -1257,6 +1259,8 @@ to install the skill.
 
 ### Herdr and cmux
 
+<img width="856" height="634" alt="image" src="https://github.com/user-attachments/assets/d695eda7-6fad-437f-bfc6-aebe9f8ab53f" />
+
 Run `kiss` in a Herdr or cmux pane to enable native support. No hook script
 is required. KISS reports when it is working, idle, or waiting for a workflow
 approval, project trust decision, or login input. Reports include active
@@ -1267,6 +1271,17 @@ For saved sessions, KISS registers `kiss --session <file>` with the current
 model and reasoning level. The command changes when you switch sessions or
 models. `--no-session` does not register a resume command. KISS removes its
 status and resume data when you exit. A host failure does not stop KISS.
+
+On Linux (including WSL) and macOS, KISS reports directly to Herdr's socket,
+without starting a reporter process for each update. The CLI is a fallback
+when the socket cannot be opened; `HERDR_BIN_PATH` selects it, otherwise
+KISS uses `herdr` on `PATH`. Other platforms use the CLI.
+
+If KISS does not appear in Herdr, start it in a fresh Herdr pane and check
+that `HERDR_ENV=1`, `HERDR_PANE_ID`, and `HERDR_SOCKET_PATH` are inherited
+inside that pane. In WSL these must refer to the Herdr instance reachable
+from that Linux environment. KISS does not translate Windows pipe or path
+names into Linux sockets.
 
 Herdr session resume requires version 0.9.2 or later. Herdr cannot accept
 resume arguments with apostrophes or control characters, or commands with

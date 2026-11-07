@@ -7,7 +7,7 @@
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/feder-cr/Jobs_Applier_AI_Agent/main/assets/banner-dark.gif">
   <img alt="AIHawk. An animation: the app starts from a terminal and narrows 10 million job postings to the 25 that fit a resume; you pick three and say yes once; a Firefox window fills each form and submits it; the app shows them sent. An illustration, with invented companies and an invented person." src="https://raw.githubusercontent.com/feder-cr/Jobs_Applier_AI_Agent/main/assets/banner-light.gif" width="100%">
 </picture>
-<h3 align="center">An AI web agent that applies to jobs for you while you sleep.</h3>
+<h3 align="center">An AI job application bot: automated job search, then it auto-applies to the jobs that match your resume, while you sleep.</h3>
 
 <sub>FEATURED IN</sub><br>
 <a href="https://www.businessinsider.com/aihawk-applies-jobs-for-you-linkedin-risks-inaccuracies-mistakes-2024-11"><b>Business Insider</b></a> ·
@@ -23,13 +23,13 @@
 
 ## How it works
 
-Give it your resume. It finds the jobs that fit, you pick, and it applies.
+Give it your resume. The job search finds the postings that fit, you pick, and it fills in and sends each job application on the company's own form.
 
 | Step | What happens |
 |---|---|
 | **1. Reads your resume** | Turns it into a search: the titles, the skills and the places that fit you. |
-| **2. Searches** | 10 million postings from 24 public sources, rebuilt every day, searched on your computer. |
-| **3. Scores** | Reads the best 100 against your resume, then scores the top 25 from 1 to 5, with the gaps and the reasons. |
+| **2. Searches** | 10 million postings from 24 public sources, rebuilt every five hours, searched on your computer. |
+| **3. Scores** | Reads 100 postings at a time against your resume, scores from 1 to 5 with the gaps and the reasons, and keeps 50 scored ahead of where you are reading. |
 | **4. You pick** | Select the jobs you want and say yes once. |
 | **5. Applies** | A real Firefox opens the company's form, fills every required field, attaches your CV and sends. |
 | **6. Keeps the answer** | What each page said, with a screenshot, for every application. |

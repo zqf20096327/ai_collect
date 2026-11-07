@@ -289,7 +289,7 @@ writes all of it into `.env` automatically before bringing up the app:
 
 ```bash
 bash scripts/setup-selfhosted.sh      # Supabase + EVERYTHING  →  http://localhost:8080
-# ADMIN_EMAIL=you@corp.com bash scripts/setup-selfhosted.sh   # non-interactive
+# ADMIN_EMAIL=you@corp.com bash scripts/setup-selfhosted.sh --yes   # non-interactive
 # Windows: run it in WSL or Git Bash, with Docker Desktop running
 ```
 
@@ -323,7 +323,7 @@ git clone https://github.com/AgentSwarms-fyi/agentswarms.git
 cd agentswarms
 npm install
 cp .env.example .env   # fill in your Supabase + provider keys
-# apply the database schema once: npx supabase login && npx supabase link && npx supabase db push
+# apply the database schema once: npx supabase login && npx supabase link && npx supabase db push --remote
 npm run dev            # → http://localhost:8080
 ```
 

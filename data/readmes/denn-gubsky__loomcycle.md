@@ -201,18 +201,15 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.143.0) lets loomcycle mount remote MCP servers that
-sign in with OAuth: an OAuth credential is connected once by device-code sign-in,
-refreshed by the runtime and sent as `Bearer $oauth:<name>`. Documents gain a
-duplicate finder that proposes copies for review, and a provider's vendor key now
-goes only to that vendor's API. Read its upgrade notes in
-[`REVISIONS.md`](REVISIONS.md): a keyless provider pointed at a non-vendor host
-now sends no key.
+The most recent line (v1.145.0) confines a tenant member to its own
+conversations: a member reads and acts on only its own runs and sessions, while
+tenant operators still see the whole tenant. It adds the `skybits-sync` bundle,
+which keeps a tenant's Documents in step with a Skybits account, and a Web UI
+"Connect account" for OAuth credentials. Read its upgrade notes in
+[`REVISIONS.md`](REVISIONS.md): members lose access to colleagues' runs.
 
-Before it, v1.142.0 let people talk to an agent through the chat bridges by voice
-and shipped the runtime-integrity line: a tamper-evident audit trail, documents SQL
-Memory cannot reach, bounded extraction and signed releases. See
-[`REVISIONS.md`](REVISIONS.md).
+Before it, v1.144.0 made OAuth-connected MCP servers run unattended and let
+documents follow a source that keeps changing. See [`REVISIONS.md`](REVISIONS.md).
 
 Before it, v1.125.0 added speech-to-text: `File op=transcribe` turned
 recordings into timed transcripts through a whisper server, and Teams captions

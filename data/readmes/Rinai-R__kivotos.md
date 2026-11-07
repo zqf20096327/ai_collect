@@ -19,7 +19,7 @@ Kivotos is an open source plugin for DeepSeek Harness (dsh). Open any of your ma
 - **Two ways to connect:** Tailscale, or a relay server you run yourself. A machine can use both at once.
 - **Untrusted relay:** The relay only forwards end-to-end encrypted data. It cannot read it or join your network.
 - **Phone layout:** Drawer sidebar, composer at the bottom, safe areas, light and dark.
-- **Android app:** The full dsh UI, with notifications for approvals, questions, and finished tasks.
+- **Android app:** The full dsh UI, with notifications for approvals, questions, and finished tasks; an approval that maps to one tool call can be allowed or denied right from the notification.
 - **Safe restart:** Restart dsh from anywhere, even when you are only connected remotely: it quits cleanly, starts again by itself, and the page reconnects.
 - **Self-hosted:** No account, no telemetry, no push service.
 
@@ -54,6 +54,10 @@ docker compose up -d
 ```
 
 On the first computer, open **Settings → Remote access → Own relay**, enter the relay's address, and create a network. Register it on the relay by running the command the page shows after `docker compose exec relay`. Other computers and phones join with the invite link or its QR code.
+
+The session event stream (`/api/remote.mux`) is compressed with `permessage-deflate` wherever both ends support it. With dsh 0.2.2 or newer the browser and dsh negotiate it end to end and Kivotos passes the frames through unchanged; with an older dsh Kivotos compresses the hop to the browser itself (off when it would not help). A 600 KB history snapshot costs about a third of its bytes on a throttled link. The extension is per message with context takeover off, and messages under 1 KB are left alone. Set `muxCompression: "off"` in the plugin config to disable it; the CPU cost is one deflate/inflate per large message on the computer serving the page.
+
+A relay connection that drops only takes that connection down: the computer reconnects with backoff, and a dropped session closes by itself. On a link whose network queue can run longer than the relay's 20 s ping (`relaySilenceSeconds`, default 70 s) the control connection can be declared dead late; the plugin config key `relaySilenceSeconds` (30..600) raises it.
 
 Anyone with the invite link, or signed in to your Tailscale account, has full control of your machines.
 

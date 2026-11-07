@@ -6,9 +6,24 @@
 
 我们保存可运行作品、源码、参考入口和制作方法。关注造型与动作还原、交互体验、材质与摄影、声音，以及从实现到实际交付的完整质量；把有效的方法与失败经验转化为下一次可以采用的流程。
 
+[看全部作品](#案例展示) · [重建已有版本](docs/快速开始.md#修改或重建现有版本) · [新建独立复刻](#让-ai-agent-复刻) · [仓库结构](docs/仓库结构.md)
+
+## 让 AI Agent 复刻
+
+把下面的内容发给能够读取仓库、查看图片并运行代码的 AI Agent，将案例名称替换为你想复刻的案例即可：
+
+```text
+https://github.com/topmindspace/awesome-ai-recreations
+请复刻这个仓库里的机械章鱼案例。
+```
+
+也可以说「复刻 V8 发动机」或「复刻 2007 电影版擎天柱」，并附上模型、交付格式等要求。Agent 会按 [AGENTS.md](AGENTS.md) 查找共同任务和原始参考，自行实现并验证；无需手动查案例 ID、挑选旧版本或整理提示词。默认对齐参考、独立实现；如需修改某个已有版本，请直接说明。
+
+部分参考媒体因发布限制需要按清单自行获取；严格对比多个 Agent 时，应向各方提供相同的完整输入包。具体操作见[快速开始](docs/快速开始.md)和[共同输入与资源](docs/共同输入与资源.md)。
+
 ## 案例展示
 
-目前有 **10 个案例、17 个实现版本**。点击「互动」操作作品，点击「巡览」观看自动演示。截图来自对应案例的已有作品；同一案例的其他模型版本列在右侧。
+目前有 **11 个案例、18 个实现版本**。点击「互动」操作作品，点击「巡览」观看自动演示。截图来自对应案例的已有作品；同一案例的其他模型版本列在右侧。
 
 ### 机械复刻系列
 
@@ -29,14 +44,13 @@
 | 截图 | 案例介绍 | 在线演示 |
 |---|---|---|
 | <img src="series/变形金刚系列/01-擎天柱-电影版/stills/03-英雄亮相.jpg" width="160" alt="擎天柱·2007真人电影版截图"><br><sub>截图：GPT-6.1 Sol</sub> | **擎天柱·2007真人电影版**<br>2007 真人电影版擎天柱：卡车与人形变换、局部展开和拆解重组。 | GPT-6.1 Sol：[互动](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/01-擎天柱-电影版/index.html) · [巡览](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/01-擎天柱-电影版/film.html)<br>HY4：[互动](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/hy4/optimus-prime-2007/index.html) · [巡览](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/hy4/optimus-prime-2007/film.html)<br>GLM 5.3-Flash：[互动](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/glm-5.3-flash/optimus-prime-2007/index.html) · [巡览](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/glm-5.3-flash/optimus-prime-2007/film.html) |
+| <img src="series/变形金刚系列/models/gpt-6.1-sol/bumblebee-2007/stills/hero.jpg" width="160" alt="大黄蜂程序化研究截图"><br><sub>截图：GPT-6.1 Sol / Cycles</sub> | **大黄蜂·2007真人电影版**<br>独立程序化外观研究，包含连续车形／人形变换、面罩与同源电影短片。 | GPT-6.1 Sol：[互动](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/gpt-6.1-sol/bumblebee-2007/index.html) · [巡览](https://topmindspace.github.io/awesome-ai-recreations/series/变形金刚系列/models/gpt-6.1-sol/bumblebee-2007/film.html) · [重建与本地视频](series/变形金刚系列/models/gpt-6.1-sol/bumblebee-2007/README.md) |
 
 案例的源码、参考、规格与模型版本说明见[机械系列](series/机械复刻系列/README.md)和[变形金刚系列](series/变形金刚系列/README.md)。
 
 ## 使用与资料
 
-新复刻只提供一致的需求、原始参考、目标、通用思路与允许资源，让各智能体自行实现。已有代码、规格和工作过程属于结果档案，不是独立复刻输入；可按[输入约定](docs/共同输入与资源.md)导出单独的任务包。
-
-查看源码、参考和重建方法，请进入对应的系列和版本文档。想让其他 Agent 或模型重新复刻，可从[快速开始](docs/快速开始.md)开始；完整方法和维护说明见[文档导航](docs/README.md)。
+新复刻的共同需求、参考、目标和允许资源放在 [tasks](tasks/README.md)；已有代码、规格和工作过程属于成果，不作为独立复刻输入。查看源码与重建方法，请进入对应系列和版本文档；其他资料见[文档导航](docs/README.md)。
 
 ## 许可
 

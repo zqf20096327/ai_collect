@@ -27,8 +27,8 @@
 - **Logs and metrics.** Enable and configure [Insight](https://cdelivery.dev/docs/guides/observability/) to collect and query server and application metrics, application logs, and gateway access records, using local disk or object storage.
 - **HTTPS and load balancing.** [Pingress](https://cdelivery.dev/docs/guides/networking/) routes requests, balances traffic across instances, and manages HTTPS certificates automatically, with support for multiple gateways.
 - **AI operations.** Configure a model provider for [AI diagnostics and proactive checks](https://cdelivery.dev/docs/guides/automation/), with actions limited by the active role. Connect your own tools through [MCP and REST](https://cdelivery.dev/docs/guides/automation/api-mcp/).
-- **Configuration and scheduled jobs.** [XConfig](https://cdelivery.dev/docs/guides/apps/xconfig/) distributes configuration files to applications without local data volumes; [XJob](https://cdelivery.dev/docs/guides/automation/xjob/) runs commands on a schedule or on demand in fresh containers.
-- **Lightweight by design.** A compact codebase of **42k lines of Rust**, with the core service using **50 MiB** of memory under low load.
+- **Configuration and scheduled jobs.** [XConfig](https://cdelivery.dev/docs/guides/apps/xconfig/) distributes uploaded configuration to applications without local data volumes. Shared [Secrets](https://cdelivery.dev/docs/guides/apps/secrets/) supply environment variables and read-only files, including files for applications with local volumes. [XJob](https://cdelivery.dev/docs/guides/automation/xjob/) runs commands on a schedule or on demand in fresh containers.
+- **Lightweight by design.** A compact codebase of **43k lines of Rust**, with the core service using **50 MiB** of memory under low load.
 - **No vendor lock-in.** Choose the servers, storage, and infrastructure that fit your needs. Fewer unexpectedly huge bills.
 
 ## Get started

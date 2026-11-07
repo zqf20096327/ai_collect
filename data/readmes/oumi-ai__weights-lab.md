@@ -17,7 +17,7 @@ export the result. It is inspired by
 (Takehi, Teoh, Zhang, and Khattab), in which a general-purpose LLM reads and writes a
 network's weights directly instead of relying on an optimizer such as gradient
 descent. Every snippet's source, output, and forward-pass count is saved.
-Version 0.4 is experimental, and snippets run as trusted Python with your filesystem
+Version 0.5 is experimental, and snippets run as trusted Python with your filesystem
 and network access.
 
 Tested on CPU, Apple MPS, NVIDIA H200, a 72B model split across eight NVIDIA H100s,
@@ -67,8 +67,11 @@ layer 3's MLP in Qwen/Qwen3-0.6B changes its answers to the questions in caps.js
 To load LoRA adapters, Hugging Face datasets with `lab.hf_rows`, one model across
 several GPUs (`start --device-map balanced`), or a 4-bit or 8-bit model
 (`start --quantize nf4`), install the CLI as
-`uv tool install 'oumi-weights-lab[adapters,datasets,multi-gpu,quantized] @ git+https://github.com/oumi-ai/weights-lab'`.
-The Claude Code plugin includes all four.
+`uv tool install 'oumi-weights-lab[adapters,datasets,multi-gpu,quantized,saes] @ git+https://github.com/oumi-ai/weights-lab'`.
+The `saes` extra adds sparse autoencoders and transcoders (`lab.load_sae`) through
+SAELens and TransformerLens, and is a larger install. The Claude Code plugin and remote
+workers include it. To install only that one:
+`uv tool install 'oumi-weights-lab[saes] @ git+https://github.com/oumi-ai/weights-lab'`.
 Append `@<tag>` to a `git+https://` URL to pin a release.
 
 ## Use the CLI directly
@@ -120,4 +123,5 @@ From a source checkout, run the first two with `uv run python -m examples.NAME -
 
 - [Python API](docs/api.md)
 - [Remote workers on SkyPilot and Slurm](docs/remote.md)
+- [Proving ground: measuring whether the skill helps](docs/proving-ground.md)
 - [Contributing](CONTRIBUTING.md)

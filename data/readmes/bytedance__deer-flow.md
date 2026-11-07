@@ -254,7 +254,7 @@ fences, including unclosed fences, in complete and streamed replies.
 
    Brave web search preserves valid entries in mixed result lists. Malformed response containers or lists containing no usable entries return a structured format error; missing, null, or empty results keep the existing "No results found" response. Format errors also log the malformed container's path and type, or the absence of usable result objects, without including search queries, credentials, or payload values.
 
-   Several providers, including You.com, GroundRoute, Webz and InfoQuest, initialize HTTPX clients in a worker thread so synchronous TLS trust loading does not block the agent event loop; requests and session cleanup remain asynchronous.
+   Several providers, including You.com, GroundRoute, Webz, InfoQuest and Jsonify, initialize HTTPX clients in a worker thread so synchronous TLS trust loading does not block the agent event loop; requests and session cleanup remain asynchronous.
 
    GroundRoute web search and fetch contain malformed HTTP-success payloads the same way: a non-object payload, a `results` container that is not a list, or a non-empty list with no object entries returns the provider's format error, while non-object entries in an otherwise valid list are skipped in order. Missing, null, or empty results keep the existing "No results found" response.
 
@@ -1106,8 +1106,14 @@ ports from the configured starting port are occupied, allocation reports
 that no port is available instead of attempting an out-of-range bind.
 In open network mode, a missing Docker/Apple Container CLI or a permission-denied
 CLI startup returns the reserved port while reporting the original error, so
-repeated attempts do not exhaust the port range. Restricted network mode
-retains its existing cleanup rules because a proxy may already hold the port.
+repeated attempts do not exhaust the port range. Restricted network creation
+returns its reservation when no proxy could have been created or after confirming
+that the proxy has been removed, including when later network cleanup fails.
+An uncertain proxy keeps its reservation in the existing local cleanup ledger.
+Later creation attempts do not automatically reclaim it. The reservation remains
+until the existing ownership-fenced absent teardown completes or the backend
+process restarts. This bookkeeping does not provide durable recovery across
+backend instances.
 
 AIO teardown failures retain a generation-bound cleanup record. Partial shutdown
 reports failure and can be retried; retries verify the runtime identity and absence
@@ -1208,7 +1214,4 @@ persisted history pages, including earlier turns outside the loaded view or
 compacted model context. A failed history read stops the export instead of
 downloading a partial transcript. Public demos export their bundled messages.
 
-Capability Center groups plugins by office collaboration, documents and knowledge, search and research, business and data, and development and operations. The directory includes setup references alongside existing MCP configurations and Lark. Recommended integrations and built-in support do not imply an installed or verified connection; the Installed filter shows configured MCP entries and installed Lark only.
-
-Personal MCP connections configured in the web interface are persisted per user.
-Personal MCP HTTP/SSE connections admitted und
+Capability Center groups plugins by office collaboration, documents and knowledge, search and research, business and

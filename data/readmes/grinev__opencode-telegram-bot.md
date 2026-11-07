@@ -27,15 +27,16 @@ Languages: English (`en`), العربية (`ar`), Deutsch (`de`), Español (`es`
 
 - **OpenCode V2 support** — works with the new OpenCode V2 as well as the classic V1; for setup details, see [Old and New OpenCode Versions](#old-and-new-opencode-versions)
 - **Remote coding** — send prompts to OpenCode from anywhere, receive complete results with code sent as files
-- **Session management** — create new sessions or continue existing ones, just like in the TUI
+- **Session management** — create new sessions or continue existing ones, search sessions by title or ID in `/sessions`, and find projects by name in `/projects`
 - **Track live session** — follow a live OpenCode CLI session; see [Track Existing Session](#track-existing-session)
-- **Background session notifications** — get short notifications when detached or non-current sessions in the current project/worktree reply, ask questions, or request permissions
+- **Background session notifications** — get short notifications when detached or non-current sessions in the current project/worktree reply, ask questions, or request permissions. Turn them off in `/settings` (default on); that silences the chat notices only and does not stop tracking or cancel a pending request
 - **Live status** — pinned message with current project/worktree, model, context usage, and changed files list, updated in real time
 - **Model switching** — pick models from OpenCode favorites and recent history directly in the chat (favorites are shown first), or browse all models by provider
 - **Agent modes** — switch between Plan and Build modes on the fly
 - **Subagent activity** — watch live subagent progress in chat, including the current task, agent, model (with variant when set), and active tool step
 - **Custom Commands** — run OpenCode custom commands (and built-ins like `init`/`review`) from an inline menu with confirmation
 - **Skills Catalog** — browse OpenCode skills from an inline menu and run them immediately or with arguments in the next message
+- **Session goals (V2)** — `/goal` asks for the objective in a separate text message and confirms automatic work and token spending. Start and Continue use the selected agent, model and variant, including in a fresh session before any ordinary prompt. The bottom keyboard keeps its short objective and Pause, Continue or Delete below queued messages. Pause stops future continuations; `/abort` also interrupts the current turn. To create another goal, stop and delete the old one first
 - **Interactive Q&A** — answer agent questions and approve permissions via inline buttons
 - **Runtime settings** — use `/settings` to change runtime preferences; see [Runtime Settings](#runtime-settings)
 - **Voice prompts** — send voice/audio messages, transcribe them via a Whisper-compatible API, and optionally enable spoken replies in `/settings`
@@ -138,10 +139,10 @@ opencode-telegram config
 | `/new`            | Create a new session                                    |
 | `/abort`          | Abort the current task                                  |
 | `/detach`         | Detach from the current session without stopping it     |
-| `/sessions`       | Browse and switch between recent sessions               |
+| `/sessions`       | Browse, search by title or ID, and switch sessions        |
 | `/recent`         | Browse recent sessions across projects and worktrees, see their status and attach directly |
 | `/messages`       | Browse user messages, revert or fork from a previous state     |
-| `/projects`       | Switch between OpenCode projects                        |
+| `/projects`       | Browse, search by name, and switch OpenCode projects      |
 | `/worktree`       | Switch between existing git worktrees                   |
 | `/open`           | Add a project by browsing directories                   |
 | `/ls`             | List directory contents, then tap to open or download   |
@@ -151,10 +152,11 @@ opencode-telegram config
 | `/skills`         | Browse and run OpenCode skills                          |
 | `/mcps`           | Browse and toggle MCP servers                           |
 | `/task`           | Create a scheduled task                                 |
-| `/tasklist`       | Browse and delete scheduled tasks                       |
+| `/tasklist`       | Browse, delete and enable or disable recurring scheduled tasks |
 | `/opencode_start` | Start the local OpenCode server on the bot machine      |
 | `/opencode_stop`  | Stop the local OpenCode server, including during a run  |
 | `/reload`         | Reload the OpenCode configuration without restarting the server (V2 only) |
+| `/goal`           | Enter a goal in the next message; view it and pause, continue or delete it from the bottom keyboard (V2 only) |
 | `/help`           | Show available commands                                 |
 
 Any regular text message is sent as a prompt to the coding agent only when no blocking interaction is active. Voice/audio messages are transcribed and then sent as prompts when STT is configured.
@@ -171,7 +173,7 @@ The `/messages` command displays all user messages in the current session, sorte
 
 ## Scheduled Tasks
 
-Scheduled tasks let you prepare prompts in advance and run them automatically later or on a recurring schedule. This is useful for periodic checks, routine code maintenance, or tasks you want OpenCode to execute while you are away from your computer. Use `/task` to create a scheduled task and `/tasklist` to review or delete existing ones.
+Scheduled tasks let you prepare prompts in advance and run them automatically later or on a recurring schedule. This is useful for periodic checks, routine code maintenance, or tasks you want OpenCode to execute while you are away from your computer. Use `/task` to create a scheduled task and `/tasklist` to review or delete existing ones. Recurring tasks can also be disabled and re-enabled without deleting them; missed runs are not replayed.
 
 - Each task is created from the currently selected OpenCode project, model, and agent
 - The agent is fixed when the task is created and every run uses it; it is shown in the creation confirmation and in the task details in `/tasklist`
@@ -201,13 +203,13 @@ The bot works with both the classic OpenCode V1 (`opencode-ai`) and the new Open
 
 |             | V1                      | V2                                                                   |
 | ----------- | ----------------------- | -------------------------------------------------------------------- |
-| Server      | `opencode serve`        | background service (`opencode service start`) or `opencode serve`    |
-| Default URL | `http://localhost:4096` | `http://127.0.0.1:49374`                                             |
-| Password    | optional                | required: `opencode service get password`, or printed by `opencode serve` |
+| Server      | `opencode serve`        | background service (`opencode serve --service`) by default; `opencode serve` without `--service` when `OPENCODE_SERVER_MODE=standalone` |
+| Default URL | `http://localhost:4096` | `http://127.0.0.1:49374` (service). Standalone has no default: set `OPENCODE_API_URL` |
+| Password    | optional                | required: `opencode service get password`, or `OPENCODE_SERVER_PASSWORD` for a standalone server |
 
 Set `OPENCODE_API_URL` (host and port, no `/api` suffix) if the server runs elsewhere. Sessions are not shared between the versions. A wrong password or a server of the other version shows up as an error in the bot log.
 
-`/opencode_start` and auto-restart run `opencode serve --port <port>` on V1 and the V2 background server (`opencode serve --service --port <port>`) on V2, with the port taken from `OPENCODE_API_URL`. The bot refuses to start a server and logs the reason if the password is rejected, if the server or the local `opencode` is the other version, or if another V2 background server already runs on a different port. With both versions installed, the bot starts whichever one the `opencode` command runs.
+`/opencode_start` and auto-restart run `opencode serve --port <port>` on V1 and, on V2, the background server (`opencode serve --service --port <port>`) unless `OPENCODE_SERVER_MODE=standalone`. Standalone runs `opencode serve --port <port>` without `--service` on an explicit `OPENCODE_API_URL` and does not connect to a registered server on another port. The port is taken from `OPENCODE_API_URL`. The bot refuses to start a server and logs the reason if the password is rejected, if the server or the local `opencode` is the other version, or, in service mode, if another V2 background server already runs on a different port. An unknown mode, or standalone without `OPENCODE_API_URL`, refuses bot startup instead. With both versions installed, the bot starts whichever one the `opencode` command runs. V1 ignores `OPENCODE_SERVER_MODE`.
 
 ## Configuration
 
@@ -248,6 +250,8 @@ Configuration can be provided through process environment variables or an `.env`
 | `TELEGRAM_PROXY_SECRET`                    | Shared secret sent as `X-Proxy-Secret` header on every Bot API request and file download (used with `TELEGRAM_API_ROOT`) | No | —                        |
 | `TELEGRAM_FORCE_IPV4`                      | Force IPv4 for direct Telegram API and file requests; useful when IPv6 DNS works but outbound IPv6 is broken           |    No    | `false`                  |
 | `OPENCODE_SERVER_VERSION`                  | OpenCode server API version: `v1` or `v2`; must match the server you run; set by the setup wizard                     |    No    | `v1`                     |
+| `OPENCODE_SERVER_MODE`                     | V2 only: `service` (default) or `standalone`. Standalone needs `OPENCODE_API_URL` and does not follow a registered server. V1 ignores it. An unknown value refuses startup |    No    | `service`                |
+| `OPENCODE_BIN_PATH`                        | Absolute executable path for OpenCode on Linux/macOS; takes precedence over PATH and standard install-directory discovery |    No    | —                        |
 | `OPENCODE_API_URL`                         | OpenCode server URL                                                                                                   |    No    | `http://localhost:4096` (V1), `http://127.0.0.1:49374` (V2) |
 | `OPENCODE_AUTO_RESTART_ENABLED`            | Automatically restart a local OpenCode server when health-checks fail                                                 |    No    | `false`                  |
 | `OPENCODE_MONITOR_INTERVAL_SEC`            | Health monitor interval in seconds when OpenCode auto-restart is enabled                                              |    No    | `300`                    |
@@ -303,6 +307,7 @@ Runtime preferences are changed from `/settings` and stored in `settings.json`:
 - Thinking content display
 - Assistant run footer display
 - Pin session dashboard
+- Notifications from other sessions: on by default. Off silences chat notices about replies, questions and permission requests from sessions that are not the one selected in the bot. Tracking keeps running, and a pending question or permission stays answerable from a TUI or Desktop
 - Diff file attachments
 - Response streaming mode: `edit` or `draft (experimental)`; applies only to final assistant replies, not thinking messages
 - Audio replies: `off`, `all`, or `auto` when TTS is configured

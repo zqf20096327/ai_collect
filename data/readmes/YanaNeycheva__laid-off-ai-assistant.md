@@ -92,7 +92,8 @@ One **orchestrator** is the single voice you talk to. It holds the relationship 
 agent/            orchestrator (the voice), triage, always-on support, dossier schema
 .claude/agents/   the subagents (authored here): cv-builder, interview-coach, search-strategist,
                   bg-navigator, company-intel, and the freshness-checker verifier
-.claude/skills/   /comeback (the front door), /build-cv (base CV) and /tailor-cv (tailor to a posting)
+.claude/skills/   /comeback (the front door), /build-cv (base CV), /tailor-cv (tailor to a posting)
+                  and comeback-mods/ (optional Claude Code side panes over the dossier, see Mods below)
 .opencode/agents/ the same agents, generated for OpenCode from .claude/ (tools/gen_agents.py)
 knowledge-base/   the Bulgarian guide + BG legal/benefits facts + sources
 scripts/          harness-independent CV .docx/.pdf + tracker .xlsx output
@@ -104,6 +105,14 @@ The assistant is **authored once in `.claude/`**; the other tools' trees are *ge
 - **Codex** (`.codex/agents/`) and **Copilot** (`.github/agents/`) — generated and structurally linted, but **not yet behaviorally tested** (those tools aren't set up here). Treat them as experimental; the agent bodies are the same, but each tool's entry point and web-search wiring still need a real run to confirm.
 
 Full architecture and conventions are in [CLAUDE.md](CLAUDE.md).
+
+## Mods (Claude Code side panes)
+
+Optional Claude Code **mods** show the person's own situation beside the chat, read from their local dossier: **Срокове** (deadlines countdown, only for verified facts), **Етап** (where they are in the four stages), **Кандидатури** (application pipeline from `tracker.md`), **Документи** (CV versions and prep notes) and **Финансов хоризонт** (rough runway in months). All five are one plugin in [.claude/skills/comeback-mods/](.claude/skills/comeback-mods/); they only read, never write.
+
+Nothing to install: open this repo in Claude Code (terminal or desktop app) and the plugin loads by itself, because Claude Code auto-loads a plugin placed in the project's `.claude/skills/` folder. Open the session **in the repo root** so `Personal/` resolves. This needs Claude Code 2.1.317 or newer.
+
+How it is built, how to add a feature and how to test it are in [.claude/skills/comeback-mods/README.md](.claude/skills/comeback-mods/README.md).
 
 ## Status
 

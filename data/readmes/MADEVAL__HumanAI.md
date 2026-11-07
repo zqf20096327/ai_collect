@@ -1,14 +1,17 @@
-# HUMAN-AI — Text Humanization Engine
+# HUMAN-AI - Text Humanization Engine
 
-[![Version](https://img.shields.io/badge/version-4.0-blue)]()
+> **Repository status:** `human-ai` is the active source of truth; `HumanAI` is a backup clone of the same remote, kept in sync manually.
+
+[![Version](https://img.shields.io/badge/version-4.1.1-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Compatibility](https://img.shields.io/badge/compatibility-any%20LLM-purple)]()
+[![Compatibility](https://img.shields.io/badge/compatibility-plain%20markdown-purple)](#requirements)
+[![skills.sh](https://img.shields.io/badge/skills.sh-listed-2ea44f)](https://www.skills.sh/madeval/humanai)
 
 \[ **English** | [Русский](README.ru.md) \]
 
 > **If the reader forgets a machine was involved, you won.**
 
-An AI skill system that rewrites machine-generated text to sound human-written - across 9 languages. Detects and removes AI fingerprints through a 5-stage pipeline.
+An AI skill system that rewrites machine-generated text to sound human-written - across 9 languages. Detects and removes AI fingerprints through a 5-stage pipeline. **Skill class:** orchestrator - self-contained `SKILL.md` plus on-demand references.
 
 ---
 
@@ -22,7 +25,7 @@ AI writes with a fingerprint: same rhythm, same structure, same burned words, sa
 
 ## How it works
 
-1. **Load `SKILL.md`** as a system prompt into any LLM.
+1. **Load `skills/human-ai/SKILL.md`** as a system prompt into any LLM.
 2. **Give a task:** "Rewrite this to sound human. Language: de." / "Make this a case study. EN." / "Just clean the AI patterns."
 3. **Get output** with language detected, tone set, pipeline stages applied, and changelog.
 
@@ -85,60 +88,19 @@ Each tone has per-language markers: fragment frequencies, conjunction rules, for
 ## Architecture
 
 ```
-natural-skill/
-├── SKILL.md                        ← Main orchestrator (full pipeline)
+human-ai/
+├── skills/human-ai/                ← runtime skill package
+│   ├── SKILL.md                    ← Main orchestrator (full pipeline)
+│   ├── EVAL.md                     ← External evaluation framework
+│   ├── shared/                     ← Data files for 9 languages
+│   ├── scripts/                    ← Validation + external tools
+│   ├── scenarios/                  ← 15 task-specific playbooks
+│   ├── examples/                   ← Annotated before/after examples
+│   └── agents/openai.yaml          ← OpenAI agent manifest
+├── tests/benchmark/                ← Evaluation dataset (dev)
+├── install.py                      ← Installer for Claude, OpenCode, Codex, .agents
 ├── README.md / README.ru.md        ← This documentation
-├── shared/
-│   ├── burned-words.md             ← All burned words × 9 languages
-│   ├── ai-markers.md               ← Detection patterns × 9 languages
-│   ├── tone-profiles.md            ← 7 tones × 9 languages
-│   ├── specificity-ladder.md       ← Abstraction → concrete framework
-│   ├── rhythm-tables.md            ← Sentence flow parameters
-│   ├── cultural-matrix.md          ← Per-language cultural norms × 9
-│   └── language-template.md        ← Template for adding new languages
-├── scripts/                      ← Automation scripts
-│   ├── validate.ps1                ← Integrity checker (PowerShell)
-│   ├── validate.sh                 ← Integrity checker (Bash)
-│   ├── morph-check.ps1             ← Morphological word validator
-│   ├── readability-check.ps1       ← ReadSightPy readability validator
-│   ├── clause-check.ps1            ← Clause-count validator
-│   ├── zerogpt-detect.ps1          ← ZeroGPT AI detection (PowerShell)
-│   ├── zerogpt-detect.sh           ← ZeroGPT AI detection (Bash)
-│   ├── run-benchmark.ps1           ← External benchmark runner (PowerShell)
-│   ├── run-benchmark.sh            ← External benchmark runner (Bash)
-│   ├── run-eval.ps1                ← External EVAL.md LLM evaluation
-├── tests/benchmark/               ← Evaluation dataset
-│   ├── annotations.json
-│   ├── zerogpt-results.json        ← ZeroGPT external validation results
-│   ├── ai-texts/  (9 languages)
-│   ├── human-texts/
-│   └── edge-cases/
-├── scenarios/                      ← Task-specific playbooks
-│   ├── full-rewrite.md             ← Default: the full pipeline (5 stages)
-│   ├── blog-post.md                ← Blog post humanization
-│   ├── landing-page.md             ← Landing page humanization
-│   ├── social-post.md              ← Social media post
-│   ├── seo-article.md              ← SEO content humanization
-│   ├── case-study.md               ← Case study / portfolio
-│   ├── commercial-offer.md         ← B2B commercial offer
-│   ├── email.md                    ← Email humanization
-│   ├── technical-doc.md            ← Technical documentation
-│   ├── translation-fix.md          ← De-translation: make it sound native
-│   ├── press-release.md            ← Press release / media announcement
-│   ├── internal-memo.md            ← Internal company memo
-│   ├── grant-proposal.md           ← Grant proposal / funding application
-│   ├── creative-writing.md         ← Creative writing (light touch)
-│   └── product-update.md           ← Product update / changelog
-└── examples/                       ← Annotated before/after examples
-    ├── en-blog-post.md / en-landing.md / en-social.md
-    ├── ru-blog-post.md / ru-landing.md / ru-social.md
-    ├── uk-blog-post.md / uk-social.md
-    ├── de-blog-post.md / de-email.md
-    ├── fr-blog-post.md / fr-social.md
-    ├── es-blog-post.md / es-landing.md
-    ├── it-blog-post.md / it-landing.md
-    ├── pt-blog-post.md / pt-social.md
-    └── pl-blog-post.md / pl-social.md
+└── PLAN.md / KNOWN_LIMITATIONS.md  ← Roadmap and limits (dev)
 ```
 
 ---
@@ -211,8 +173,8 @@ Here's what the four good ones have in common. And why the other eight failed.
 
 - Any capable LLM with a system prompt / custom instructions field
 - For full skill functionality: a skill system that loads files from a folder (OpenCode, Claude Code)
-- For standalone: copy `SKILL.md` as system prompt - contains complete pipeline
-- **External validation:** ZeroGPT API key (optional) — for independent AI detection scoring via `scripts/run-benchmark.ps1`
+- For standalone: copy `skills/human-ai/SKILL.md` as a system prompt - contains the complete pipeline
+- **External validation:** ZeroGPT API key (optional) - for independent AI detection scoring via `skills/human-ai/scripts/run-benchmark.ps1`
 
 ## Quality Validation
 
@@ -222,7 +184,7 @@ HUMAN-AI provides **three layers** of quality verification:
 |-------|--------|-------------|------------|
 | 1. Self-eval | Stage 5.6 Quality Score | LLM self-assessment | Built into pipeline |
 | 2. EVAL.md | 5-metric LLM evaluation | Separate LLM call | `EVAL.md` prompt |
-| 3. ZeroGPT | External API detection | Fully independent | `scripts/run-benchmark.ps1` |
+| 3. ZeroGPT | External API detection | Fully independent | `skills/human-ai/scripts/run-benchmark.ps1` |
 
 **ZeroGPT external validation:**
 
@@ -231,13 +193,13 @@ HUMAN-AI provides **three layers** of quality verification:
 $env:ZEROGPT_API_KEY = "your-key"
 
 # Single text check
-.\scripts\zerogpt-detect.ps1 -File "output.md"
+.\skills\human-ai\scripts\zerogpt-detect.ps1 -File "output.md"
 
 # Full benchmark run (all test texts)
-.\scripts\run-benchmark.ps1 -MaxTexts 10 -DelaySeconds 2
+.\skills\human-ai\scripts\run-benchmark.ps1 -MaxTexts 10 -DelaySeconds 2
 
 # Dry run (see what would be tested)
-.\scripts\run-benchmark.ps1 -SkipApi
+.\skills\human-ai\scripts\run-benchmark.ps1 -SkipApi
 ```
 
 Results saved to `tests/benchmark/zerogpt-results.json`.
@@ -246,19 +208,28 @@ Results saved to `tests/benchmark/zerogpt-results.json`.
 
 ## Installation
 
+The installer copies `skills/human-ai/` into the selected agent directory:
+
+```bash
+python install.py --target all
+python install.py --list
+python install.py --check
+python install.py --target project --dry-run
+```
+
 ### OpenCode
 ```
-natural-skill/ → .opencode/skills/          (project)
-               → ~/.config/opencode/skills/  (global)
+human-ai/ → .opencode/skills/          (project)
+          → ~/.config/opencode/skills/  (global)
 ```
 
 ### Claude Code
 ```
-natural-skill/ → ~/.claude/skills/
+human-ai/ → ~/.claude/skills/
 ```
 
 ### Any LLM (standalone)
-Copy contents of `SKILL.md` as system prompt. Add `shared/` files for richer per-language detail.
+Copy contents of `skills/human-ai/SKILL.md` as a system prompt. Add `shared/` files for richer per-language detail.
 
 ---
 
@@ -278,39 +249,39 @@ Copy contents of `SKILL.md` as system prompt. Add `shared/` files for richer per
 
 ## Integration
 
-HUMAN-AI is designed to work with two other skills — [RankWise](https://github.com/MADEVAL/RankWise) (SEO content engine) and [MindFluence](https://github.com/MADEVAL/MindFluence) (cognitive bias marketing). Together they form a complete content production pipeline.
+HUMAN-AI is designed to work with two other skills - [RankWise](https://github.com/MADEVAL/RankWise) (SEO content engine) and [MindFluence](https://github.com/MADEVAL/MindFluence) (cognitive bias marketing). Together they form a complete content production pipeline.
 
 ### Joint Prompt Triggers
 
 HUMAN-AI recognizes these joint prompts and activates preservation rules automatically:
 
-- "SEO-rewrite this (RankWise), then humanize it (HumanAI)"
+- "SEO-rewrite this (RankWise), then humanize it (human-ai)"
 - "Humanize the RankWise output below"
-- "HumanAI pass on RankWise content"
-- "MindFluence generated this. Now humanize it with HumanAI."
-- "Triple pipeline: RankWise → MindFluence → HumanAI"
+- "human-ai pass on RankWise content"
+- "MindFluence generated this. Now humanize it with human-ai."
+- "Triple pipeline: RankWise → MindFluence → human-ai"
 
 ### With RankWise (SEO)
 
-**The rule:** RankWise handles SEO structure → HumanAI handles human voice. Do not break SEO.
+**The rule:** RankWise handles SEO structure → human-ai handles human voice. Do not break SEO.
 
 **Preservation rules when processing RankWise content:**
 
 - **Do NOT delete or alter H2/H3 headings** that contain SEO keywords. Only rewrite the sentences surrounding them.
-- **Preserve keyword density of 0.8%–1.5%.** If keyword instances are removed during cleanup, add equivalent keyword-adjacent language elsewhere.
+- **Preserve keyword density of 0.8%-1.5%.** If keyword instances are removed during cleanup, add equivalent keyword-adjacent language elsewhere.
 - **Maintain minimum 600 words** (unless user explicitly requests shorter).
-- **Keep internal link anchors and placement** — they are deliberately positioned for SEO.
+- **Keep internal link anchors and placement** - they are deliberately positioned for SEO.
 - **During Stage 1 (cleanup):** skip deletion of keywords, internal links, and schema-relevant elements.
 - **Meta title/description:** already SEO-optimized. Do not humanize them.
 
-**Conflict resolution (RankWise vs HumanAI instincts):**
-1. Preserve keyword placement (K2, K4, K6, K8) — highest priority
-2. Preserve heading structure (C13) — second priority
+**Conflict resolution (RankWise vs human-ai instincts):**
+1. Preserve keyword placement (K2, K4, K6, K8) - highest priority
+2. Preserve heading structure (C13) - second priority
 3. Then apply human voice cleanup
 4. Accept ≤5% density fluctuation as acceptable trade-off
 
-**SEO-safe markers — do NOT delete during cleanup:**
-- Keywords in the first 100–150 words
+**SEO-safe markers - do NOT delete during cleanup:**
+- Keywords in the first 100-150 words
 - Keywords in H2 headings
 - Keywords in image alt texts (if present)
 - Internal link anchor text variety (exact-match ≤2)
@@ -323,11 +294,11 @@ PIPELINE: cleanup(skipped: SEO structure) → specificity → tone → rhythm �
 
 ### With MindFluence (Cognitive Bias Marketing)
 
-**The rule:** MindFluence engineers persuasion → HumanAI humanizes the voice. Do not strip psychological structure.
+**The rule:** MindFluence engineers persuasion → human-ai humanizes the voice. Do not strip psychological structure.
 
-**Tone mapping (MindFluence → HumanAI):**
+**Tone mapping (MindFluence → human-ai):**
 
-| MindFluence Tone | HumanAI Tone |
+| MindFluence Tone | human-ai Tone |
 |-----------------|-------------|
 | `bold-sell` | `landing` |
 | `expert-calm` | `expert` |
@@ -338,8 +309,8 @@ PIPELINE: cleanup(skipped: SEO structure) → specificity → tone → rhythm �
 **Preservation rules when processing MindFluence content:**
 
 - **Do NOT strip bias markers:** social proof numbers, anchoring prices, authority signals, scarcity cues, confirmation hooks.
-- **Do NOT delete power words** that overlap with burned-word lists — they serve a psychological function.
-- **Do NOT break "hook" openings** — they are deliberately patterned for System 1 capture.
+- **Do NOT delete power words** that overlap with burned-word lists - they serve a psychological function.
+- **Do NOT break "hook" openings** - they are deliberately patterned for System 1 capture.
 - **Preserve social proof specificity:** "14,327 users this week" is a bias marker, not fluff.
 - **During Stage 1 (cleanup):** skip cleanup of persuasion elements. Only remove generic AI patterns (throat-clearing, hedging, fake transitions).
 
@@ -348,23 +319,23 @@ PIPELINE: cleanup(skipped: SEO structure) → specificity → tone → rhythm �
 PIPELINE: cleanup(skipped: bias structure) → specificity → tone(skipped: MindFluence tone) → rhythm → proofread
 ```
 
-### Triple Pipeline (RankWise → MindFluence → HumanAI)
+### Triple Pipeline (RankWise → MindFluence → human-ai)
 
 **Recommended order and protocol:**
 
 1. **RankWise Brief** → SEO structure, keyword placement, heading hierarchy, link plan
 2. **MindFluence** → Cognitive bias copy within the SEO skeleton, section-by-section bias annotations
-3. **HumanAI** → Humanize the voice while preserving BOTH SEO signals AND bias structure
+3. **human-ai** → Humanize the voice while preserving BOTH SEO signals AND bias structure
 4. **RankWise Audit** → Final 49-factor verification
 
-**Triple-pipeline preservation checklist for HumanAI:**
+**Triple-pipeline preservation checklist for human-ai:**
 
 | Preserve | From | Why |
 |---------|------|-----|
 | Keyword-containing H2/H3 headings | RankWise | SEO hierarchy breaks if altered |
 | Internal link anchors | RankWise | Deliberate link-juice structure |
-| Keyword density 0.8%–1.5% | RankWise | Under/over triggers ranking penalties |
-| Social proof numbers | MindFluence | "14,327 users" — bias, not fluff |
+| Keyword density 0.8%-1.5% | RankWise | Under/over triggers ranking penalties |
+| Social proof numbers | MindFluence | "14,327 users" - bias, not fluff |
 | Anchoring / pricing figures | MindFluence | Reference points for value perception |
 | Authority signals | MindFluence | Named sources, credentials, media logos |
 | Scarcity / urgency cues | MindFluence | Genuine time/quantity limits |
@@ -376,11 +347,11 @@ PIPELINE: cleanup(skipped: bias structure) → specificity → tone(skipped: Min
 Triple pipeline:
 1) RankWise SEO brief for [topic]. Keyword: [kw]. Language: [xx].
 2) MindFluence generate from that brief. Tone: [expert-calm/warm-human/bold-sell].
-3) HumanAI humanize the MindFluence output. Preserve SEO structure + bias markers.
+3) human-ai humanize the MindFluence output. Preserve SEO structure + bias markers.
 4) RankWise audit the final result.
 ```
 
-**HumanAI invocation for triple pipeline:**
+**human-ai invocation for triple pipeline:**
 ```
 PIPELINE: cleanup(skipped: SEO+bias elements) → specificity → tone(skipped: from MindFluence) → rhythm → proofread
 ```
@@ -390,3 +361,17 @@ PIPELINE: cleanup(skipped: SEO+bias elements) → specificity → tone(skipped: 
 ## License
 
 MIT
+
+---
+
+## GitHub Description
+
+```
+AI skill for rewriting machine-generated text to sound human-written across 9 languages. Active v4.1.1: pre-flight → cleanup → specificity → tone → rhythm → proofread.
+```
+
+## GitHub Tags
+
+`ai` `anti-ai` `copywriting` `humanization` `humanizer` `llm` `multilingual` `prompt-engineering` `skill` `text-rewriting`
+
+Skills.sh: https://www.skills.sh/madeval/humanai

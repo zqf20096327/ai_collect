@@ -71,8 +71,9 @@ under the name the chosen model knows that picture by.
 
 Recipes instead of node graphs: you pick a model and where it runs. On your own ComfyUI, local or on a rented box
 such as RunPod, any workflow with the Inpaint Canvas node becomes a recipe, and the *ComfyUI* button opens your
-ComfyUI's own page beside the editor to change a recipe's graph and save it back. Comfy Cloud runs on your Comfy key
-through Comfy's official SDK, with 13 recipes from Comfy's own templates, and the same key reaches the partner models
+ComfyUI's own page beside the editor to change a recipe's graph and save it back; up to five LoRAs from your ComfyUI's
+own list (or Comfy Cloud's) go into a recipe's runs without touching its graph. Comfy Cloud runs on your Comfy key
+through Comfy's official SDK, with 15 recipes from Comfy's own templates, and the same key reaches the partner models
 on Comfy Router. Or paste a key into *Settings › API providers*: Black Forest Labs, OpenAI, Google, fal.ai, Replicate,
 OpenRouter and more. Keys go into the system's credential store, never into a settings file.
 
@@ -80,7 +81,7 @@ OpenRouter and more. Keys go into the system's credential store, never into a se
 
 Every feature is a command, and the commands are an MCP server: *Help › Copy MCP registration* (or, for Claude
 Desktop, the `.mcpb` file of every release, installed with one click), and Claude Code, Claude Desktop or any other
-MCP client gets 116 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
+MCP client gets 118 tools to open, select, generate, match and export, in the same window and with the same undo. (A built-in chat assistant on your own key is there too; see [The assistant](#the-assistant).)
 
 ### Made for real files
 
@@ -155,9 +156,9 @@ Planned, not started yet.
 
   The ComfyUI Manager does not list the pack at the moment; once it does, you can install it from there too. Then
   type the server's address in Scumble's top bar and press Connect. Scumble checks for the pack when it connects and
-  says so when it is missing; it does not install it for you. Boxes for FLUX 3 Image Klein need the node's current
-  version from GitHub (the Comfy Registry's 0.3.4 has none yet): update a clone with `git pull` in its folder, replace
-  a copy installed from the Registry with the clone above, then restart ComfyUI.
+  says so when it is missing; it does not install it for you. Boxes for FLUX 3 Image Klein and MOSS-Image need the node at
+  0.4.1 or newer (on the Comfy Registry since 2026-10-23; 0.3.4 and older have none): update a copy installed from the
+  Registry there, a clone with `git pull` in its folder, then restart ComfyUI.
 - **Comfy Cloud:** your Comfy key in *Settings › API providers*; the same key runs Comfy Router.
 
 Without any of these Scumble still opens, paints, selects, layers, filters, saves and exports, and its in-app models
@@ -211,22 +212,32 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   selections.
 - A depth map of the picture, computed in the app (Depth Anything V2 Small, *Selection › Depth*) and saved with the
   document: it selects, limits filter layers, and drives lens blur, haze and Relight.
-- Models: FLUX 3 Image, FLUX.2 (max, pro, flex, klein) and FLUX.1 Fill from Black Forest Labs; GPT Image 2.5 Flare /
-  Sunburst and GPT Image 2; Nano Banana 2.1, 2, 2 Lite and Pro; Seedream 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
-  Ideogram 4 and 4.5; Grok Imagine, Krea 2, Recraft V4, Reve, Z-Image and HY Image 3.5; Magnific's Mystic, Ideogram
+- Models: FLUX 3 Image, FLUX.2 (max, pro, flex, klein) and FLUX.1 Fill from Black Forest Labs; GPT Image 2.6 and 2.5
+  Flare / Sunburst and GPT Image 2; Nano Banana 2.1, 2, 2 Lite and Pro; Seedream 5 and 4.5; Qwen Image Edit and Qwen Image 2.1;
+  Ideogram 4 and 4.5; Grok Imagine, Krea 2, Recraft V4, Reve, Z-Image, HY Image 3.5 and P-H3-Image; Magnific's Mystic, Ideogram
   inpainting and Image Expand outpainting. Each runs on the model's own API where Scumble
   has one, or through ToAPIs, fal.ai, Replicate, WaveSpeedAI, Comfy Cloud, Comfy Router, OpenRouter, Oxen.ai and
   Magnific. API runs go out at the size the provider really takes, with your reference layers.
 - On your own ComfyUI: FLUX 3 Image Klein, Black Forest Labs' open model (ComfyUI 0.41 or newer; it edits the selection
   with up to three more pictures, makes new ones with *Generate new* and takes boxes; Black Forest Labs' prompt
   upsampler writes your prompt out first when its file is on your ComfyUI; its weights come under Black Forest Labs'
-  own licence), Flux.2 Klein 4B / 9B, Qwen Image Edit 2.1 and its Turbo, and MOSS-Image (ComfyUI 0.42 or
-  newer; new pictures with *Generate new*, its JSON layout from your boxes; Apache-2.0); the upscale, Realism Pass and
-  relight recipes are below.
+  own licence), Flux.2 Klein 4B / 9B, Qwen Image Edit 2.1 and its Turbo, MOSS-Image (ComfyUI 0.42 or
+  newer; new pictures with *Generate new*, its JSON layout from your boxes; Apache-2.0), MOSS-Image Edit (ComfyUI 0.43
+  or newer, also on Comfy Cloud; it edits by instruction with up to three more pictures, through the edit LoRA of
+  Comfy's own template), and P-H3-Image (ComfyUI 0.44 or newer, also on Comfy Cloud and WaveSpeedAI; edits with up
+  to seven more pictures and new pictures, Pruna AI's prompt upsampler in front; powered by MiniMax H3, whose licence
+  does not cover the EU, the UK, South Korea or the US without a separate licence from MiniMax); the upscale, Realism
+  Pass and relight recipes are below.
+- LoRAs for every recipe on your own ComfyUI with one model loader: up to five per recipe in the *LoRAs* section of
+  the Generate tab, each picked from your ComfyUI's list with a strength and an on / off tick, kept per recipe and
+  loaded into the copy of the graph a run queues. A line under each says which base model the file looks made for
+  (amber when it does not fit the recipe's, since ComfyUI loads such a LoRA silently and changes nothing), its trigger
+  words go into the prompt with a click, and a file your ComfyUI lacks stops the run before anything is uploaded.
+  The Comfy Cloud recipes take LoRA rows too, from Comfy Cloud's catalog and the LoRAs you imported there.
 - Your own workflow becomes a recipe when it holds an Inpaint Canvas node. The *ComfyUI* window (Ctrl+Shift+K) shows
   your ComfyUI's page or Comfy Cloud; *Edit in ComfyUI* opens a recipe's graph there, and *Save to recipe* or *Save as
   new recipe* brings it back.
-- Comfy Cloud has a mode of its own beside *local* and *api*. Thirteen recipes from Comfy's templates come with
+- Comfy Cloud has a mode of its own beside *local* and *api*. Fifteen recipes from Comfy's templates come with
   Scumble (image edits, and new images for Generate new); *Cloud copy* turns one of your ComfyUI recipes into one that
   runs there, and a workflow made on Comfy Cloud imports as it is. Comfy Cloud and Comfy Router run through Comfy's
   official TypeScript SDK ([`@comfyorg/sdk`](https://www.npmjs.com/package/@comfyorg/sdk)). *Cancel* stops a Comfy
@@ -261,6 +272,16 @@ routes, the assistant's model calls, the portable zip on a second PC, or the Lin
   the picture larger in the same step. It needs a ComfyUI on Windows with an RTX 30, 40 or 50 card and a community node
   pack with its runtime, which you install there; Scumble ships none of it, and there is no Comfy Cloud version. The
   [manual](docs/MANUAL.md)'s chapter of the same name has the steps.
+- *Image › Key Green / Blue Screen...* keys a subject shot on a green or blue screen (or generated on a flat green)
+  with CorridorKey 2.0 by Corridor Digital, on your own ComfyUI through the community node pack ComfyUI-CorridorKey2.0.
+  It needs an NVIDIA card of the RTX 30 generation or newer on that machine; the pack and its models, about 5.1 GB,
+  are installed there, never by Scumble, and there is no Comfy Cloud version. The answer is one new layer **Key**: the
+  subject's own colour with the screen's spill taken out, and the soft matte (hair, motion blur) as its layer mask; the
+  selection is the hint, and a key of the picture gets a mid-grey layer under it. CorridorKey 2.0 is under the Corridor
+  Key Licence 2.0 (CC BY-NC-SA 4.0 with their terms), used with Corridor Digital's permission in this free app; your
+  keyed pictures are yours, also commercially, and **organisations with more than US $20M yearly revenue need one
+  CorridorKey seat per user** (corridorkey.com). The [manual](docs/MANUAL.md)'s chapter *Key green / blue screen* has
+  the steps.
 
 ### Layers, filters, text
 
@@ -300,7 +321,7 @@ and what it costs: [docs/ASSISTANT.md](docs/ASSISTANT.md).
   in workers. PNGs beyond the browser's canvas limit (up to 65,535 px a side, about a gigapixel) open and save in
   strips.
 - JavaScript plugins (filters with GPU and processor paths, panels, menu actions, tools, commands) and a command core
-  with 116 documented commands, 96 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
+  with 118 documented commands, 98 core and 20 from the built-in plugins ([docs/COMMANDS.md](docs/COMMANDS.md),
   [docs/PLUGINS.md](docs/PLUGINS.md)).
 - MCP server for any MCP client (an `.mcpb` bundle for Claude Desktop with every release), plus `--headless` and
   `--cmd` for scripts ([docs/MCP.md](docs/MCP.md)).

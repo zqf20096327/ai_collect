@@ -254,10 +254,16 @@ install -m 755 "ekos-${VERSION#v}-$TARGET/ekos" ~/.local/bin/ekos
 That prints `<asset>: OK` and exits 0. Anything else — `FAILED`, or nothing matched — means do
 not unpack it; open an issue instead.
 
-Worth being precise about what this proves: releases are checksummed but **not** signed — there
-is no Sigstore/cosign signature or SLSA provenance yet. `SHA256SUMS` tells you the archive
-arrived intact and matches what the release publishes; it does not, on its own, prove who built
-it.
+Worth being precise about what this proves: `SHA256SUMS` tells you the archive arrived intact
+and matches what the release publishes; it does not, on its own, prove who built it. From the
+first release cut after 2026-11-07, every archive and `SHA256SUMS` also carries signed SLSA build
+provenance (Sigstore, keyless), which does:
+
+```bash
+gh attestation verify "$ASSET" --repo alexeyban/EKOS      # needs the GitHub CLI
+```
+
+Earlier releases (v1.3.0 and before) are checksummed only.
 
 `~/.local/bin` needs to be on your `PATH`; add `export PATH="$HOME/.local/bin:$PATH"` to your
 shell profile if `ekos --version` comes back "command not found". Any directory on `PATH` works —
@@ -1236,6 +1242,113 @@ see `ekos/docs/rfcs/0170-ledgersmb-starter-gold.yaml`): concept recall 0.68, enu
 0.95, evidence validity 1.0. Meaning defined only by comparisons between columns or against the
 current date (overdue, unpaid) leaves no literal trace and is not recovered: no trace, no recovery.
 
+### Apache Ossie interchange (RFC 0245)
+
+[Apache Ossie](https://ossie.apache.org) (incubating; formerly Open Semantic Interchange) is the
+vendor-neutral YAML/JSON format for semantic models that Snowflake, dbt, ThoughtSpot, Dremio,
+Power BI and others read and write. EKOS works with it in both directions.
+
+**Export.** `ekos export ossie` writes the compiled schema as one model (spec `0.2.0.dev0`):
+
+- every table and view becomes a dataset, with typed fields;
+- the stated primary and unique keys, including composite ones;
+- foreign keys become relationships;
+- RFC 0170 business meanings go into `ai_context`, filtered by `--status` (default `confirmed`).
+  An unreviewed meaning is marked "unreviewed" in words.
+
+EKOS never invents a metric. A dataset's metrics come only from Ossie files a team keeps in the
+sources, and only when their fields are the table's own columns. Every element carries an `EKOS`
+extension with its ledger id, status and evidence. The tests validate every export against the
+official JSON Schema, and an opt-in test also runs Ossie's own `validate.py`.
+
+**Ingest.** `ekos recover` reads Ossie models it finds in the project's sources. It reads
+`*.ossie.yaml|yml|json` and any YAML/JSON file that looks like an Ossie model, in either
+`0.2.0.dev0` or `0.1.1`.
+
+- Each file becomes `OssieModel`, `OssieDataset` and `OssieMetric` objects, redacted first like
+  every raw input.
+- `ekos commit` links each dataset to the one table its `source` names.
+- Where the file and the schema disagree, the disagreement becomes a conflict: a field naming a
+  column the table lacks, or a declared type from another family than the column's.
+- Synonyms are searchable.
+- EKOS's own exports are never read back as sources.
+
+**Review round trip.** `ekos import ossie <file>` turns a reviewer's edits to an exported file
+into human-only review decisions, like `ekos import linkml`:
+
+- a concept's `name`, `description` or `status`;
+- a code meaning's `label` or `status`.
+
+Entries are matched by `ekos_id`, and either every decision is recorded or none is. Edits to the
+observed schema are reported and not imported.
+
+```bash
+ekos export ossie --status all --out shop.ossie.yaml    # or --json; --database / --source narrow it
+ekos import ossie shop.ossie.yaml --dry-run             # the decisions a reviewer's edits stand for
+ekos import ossie shop.ossie.yaml --as ann              # …recorded, all or nothing
+ekos export dbt-semantic --out models/semantic          # RFC 0246: MetricFlow YAML + key tests
+```
+
+Agents can read the model with the read-only MCP tool `ekos_ossie_export`, and the console's
+Semantics tab has an *Apache Ossie* view (browse, download, validate and apply an edited file).
+
+**What EKOS does with an imported model (RFC 0246).** One resolver
+(`ekos_ossie::knowledge`) rewrites the model over the compiled tables: metrics in terms of table
+columns, joins as column pairs, keys, synonyms and time axes. Anything it cannot resolve is listed
+with the reason. The model never overrides the schema.
+
+- **Text-to-SQL** (`ekos sql generate|check`, MCP `ekos_sql_check`):
+  - the schema the agent sees gains synonyms, stated unique keys, declared joins (marked "declared
+    in the semantic model") and time axes;
+  - a `metric` tool and a "Defined metrics" prompt instruction let the agent use the team's
+    definition of "total sales" instead of guessing a column;
+  - lint **L002** stops warning on joins over stated keys;
+  - new lint **L012** warns when a query names a defined metric but computes something else.
+- **dbt semantic layer** (`ekos export dbt-semantic --out <dir>`):
+  - `semantic_models.yml` holds MetricFlow semantic models (entities from keys and joins,
+    categorical and time dimensions) and `simple` / `ratio` metrics;
+  - `models.yml` holds `unique` / `not_null` key tests;
+  - `skipped.md` lists what MetricFlow cannot express, with the reason: window functions, nested
+    aggregates, or a measure whose model has no time dimension.
+- **Business meanings:** a field description with a code legend (`Y = preferred, N = not
+  preferred`) gives code meanings with source `ossie`, and a metric's description documents the
+  concept of the same name. All of these stay hypotheses for review.
+- **Questions** (`ekos ask`, `ekos_query`, `ekos_retrieve`): a business word in a question ("POS
+  data", "total quantity") resolves to its table, and `ekos_retrieve` says why (`via: synonym "POS
+  data" (ossie:…)`).
+- **EKOS Migrate:**
+  - a one-column key the model states is checked at `migrate assess` as a uniqueness claim (source
+    `ossie`);
+  - `migrate validate` runs tier **V2m**, which computes each defined single-table metric on
+    PostgreSQL and ClickHouse and compares the two values. A one-cent change on one row is caught,
+    and the planted control must fire. A metric the engines cannot both run is `not_run`, never a
+    pass.
+
+**Validation.** `scripts/ossie-validate.sh` checks EKOS against Ossie's own validator
+(`validation/validate.py`: JSON Schema, names, references, arity, and a sqlglot parse of every
+expression). It runs on `tests/fixtures/ossie-tpcds`: five TPC-DS tables, plus Ossie's official
+TPC-DS model of them.
+
+0. **Self-check.** The official examples pass, and a planted broken model is rejected, so the
+   validator is proven to be checking.
+1. **Export.** The compiled schema is exported and validated.
+2. **Import, export again.** The official model is imported by ingest and the schema exported
+   again. All 5 datasets link, and there are 0 conflicts. The re-export carries the model's
+   metric and synonyms and validates.
+3. **Review round trip.** A review is made in the file, `ekos import ossie` applies it, and the
+   confirmed model validates. Re-importing the same file plans nothing.
+4. **Planted disagreements.** Exactly the two planted ones are reported.
+
+The run leaves every export, validator log and a `summary.md`. CI runs it in
+`.github/workflows/ossie.yml` against the pinned Ossie commit, which is required, and against
+Ossie's `main`, which is informational and weekly. `cargo test -p ekos --test ossie_e2e` runs the
+same flow offline against the vendored schema.
+
+```bash
+scripts/ossie-validate.sh --out ossie-report     # clones apache/ossie at the pinned commit; needs uv
+OSSIE_REF=main scripts/ossie-validate.sh         # against Ossie's latest spec
+```
+
 ### dbt metadata extraction (RFC 0117)
 
 dbt can point at any warehouse, so `ekos recover` extracts real `Table` objects from a dbt
@@ -1515,101 +1628,4 @@ ekos docs generate --layout solution-architect --output doc-sa
                                                   # an actionable findings list (unresolved
                                                   # dependencies, undeclared crate versions, missing
                                                   # doc-comment coverage). `--prose` layers an
-                                                  # LLM-written executive summary on the findings
-                                                  # list, never replacing the deterministic list
-                                                  # underneath it.
-```
-
-`--layout curated`'s `Architecture.md` includes a real crate/workspace dependency graph (parsed
-`Cargo.toml`, not guessed, annotated with a C4 mapping — crate → Container, external dependency →
-External System, RFC 0065), external technology dependencies, an `## Open Questions` section
-listing real knowledge gaps a deterministic pass couldn't resolve (e.g. an unresolvable workspace
-dependency) rather than dropping them silently, CI/CD pipelines (parsed `.github/workflows/*.yml`),
-and an entity-relationship diagram; `API.md` lists real functions/
-structs/enums/traits (from `RustSymbol`/`PythonSymbol` objects, RFC 0038/0040/0041) grouped by
-file, each linked to its own detail page; `SequenceDiagrams.md` covers both Transformation-IR
-data-flow sequences and real function-call sequences (RFC 0041's `Calls` graph). Per-entity pages
-nest under `entities/<kind>/<2-char shard>/` so a large codebase's page count never blows past
-GitHub's per-directory file-listing cap — running `ekos docs generate --layout curated --output
-doc` against this repo's own source is a ready example to try. Each entity page's Definition
-section now shows the real human-written documentation from source when the analyzer found any
-(`///` doc comments, Python docstrings, `@moduledoc`/`@doc`, JSDoc — RFC 0087), honestly stating
-"Not documented in source" rather than fabricating one when it didn't. `--prose` (opt-in) layers an LLM-written overview onto each
-object page, reusing `ekos ask`'s exact grounding+citation pipeline, with a token-cost estimate
-shown before any call.
-
-`Architecture.md`'s Executive Summary now surfaces two more real, deterministic signals instead of
-placeholder text: **Major risks** lists real "Observed Concentration Risk" objects — any object
-with 3 or more real compiled `DependsOn` dependents, a structural single-point-of-failure
-candidate, never an LLM-guessed severity score (RFC 0094) — and **Architecture confidence** shows
-the same real completeness/evidence-coverage score `ekos architecture investigate` computes (RFC
-0065 Phase 3), now also run from the plain `docs generate` path instead of only the investigation
-loop (RFC 0095). Both say so honestly when there's no real signal to compute from yet, rather than
-showing a misleading 100%.
-
-### Architecture reasoning + investigation loop (RFC 0065/0066/0067, opt-in)
-
-Beyond deterministic extraction, `ekos architecture investigate` runs the RFC 0066 MVP agentic
-loop: broad collection, deterministic crate-topology extraction, one batched LLM call classifying
-each crate's architectural role (`ArchitectureReasoningPass`, RFC 0065 Phase 2), a deterministic
-evaluator scoring completeness and evidence coverage (no LLM — RFC 0065 Phase 3), and — for any
-crate the evaluator flags unclassified — a targeted second pass that reads that crate's own leading
-doc comment for more context before trying again. Stops early once the quality threshold is met, or
-after `--max-iterations`, always ending with a curated-docs `docs generate` run:
-
-```bash
-ekos architecture investigate                                 # RFC 0066 MVP defaults: 3 iterations,
-                                                                # 0.90 quality threshold, --output doc
-ekos architecture investigate --max-iterations 5 --quality-threshold 0.95 --output doc
-```
-
-Reuses the `[llm]` provider already configured in `ekos.toml` (local Ollama or a cloud provider) —
-no separate `--llm` flag. See RFC 0067 for what's deliberately out of scope for this MVP
-(persistent checkpointing/resume, concurrency-safety infrastructure, CI/CD exit codes, multi-format
-output).
-
-Because the LLM-classified crate role is a real judgment call, not a deterministic fact, two
-follow-on commands treat it accordingly rather than silently trusting or silently re-deriving it:
-
-```bash
-ekos architecture diff --since <timestamp>   # real id-set comparison of technologies, crate role
-                                              # classifications, risks, and open questions between
-                                              # two points in time — not a fuzzy match (RFC 0108)
-ekos architecture review                     # list/confirm/reject pending role classifications;
-                                              # a confirmed-or-rejected review status survives the
-                                              # next `ekos commit` even though the underlying claim
-                                              # is content-signature-versioned and gets re-derived
-                                              # on every run (RFC 0109)
-```
-
-`ekos_architecture_diff` and `ekos_architecture_review` expose both over MCP too — see the AI agent
-access section below.
-
-### LLM-backed compile-time descriptions (RFC 0088, opt-in)
-
-Unlike `--prose` above (render-time, re-spent on every `docs generate` call), `[llm-description]`
-in `ekos.toml` runs at `commit` time and persists real, evidence-grounded `ai_overview`/`ai_usage`
-properties straight into the ledger — queryable through `ekos ekl`/`ekos ask`/MCP the same as any
-other compiled knowledge, not just rendered once. Covers every `Module`/`Rollup`/`Crate`, and every
-`Symbol` with a compiled `source_span` (Rust and Elixir today), regardless of whether RFC 0087
-already found a real doc comment — a doc comment is real input to the prompt, not a skip condition.
-When one exists, a new `ai_comment_check` property (`consistent`/`stale`/`incomplete`) flags a real
-discrepancy between what the comment claims and what the code actually does, rendered as a visible
-callout right on the entity page's Definition section — never silently trusted, never overwritten.
-A single project-level call also fills `Architecture.md`'s `Purpose`/`Architecture style` fields
-when real signal (a README, compiled subsystems, compiled technologies) exists to ground them.
-
-```toml
-[llm-description]
-enabled = true
-scope = "modules"   # "modules" (default, cheapest) | "symbols" | "all"
-```
-
-```bash
-ekos commit          # shows a real call-count estimate, asks to confirm before any spend
-ekos commit --yes    # skip the confirmation prompt
-```
-
-Opt-in and cost-gated like `[architecture-reasoning]` — a real, potentially large spend (~900 real
-LLM calls at the default `scope = "modules"` against a real mid-size codebase, ~5x that at
-`scope = "all"`), neve
+                                  

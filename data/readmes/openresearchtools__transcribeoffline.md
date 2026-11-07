@@ -11,6 +11,32 @@ It is implemented as a native Rust/egui GUI on top of
 - macOS arm64*: [**Transcribe-offline.dmg**](https://github.com/openresearchtools/transcribeoffline/releases/download/2.1/transcribe-offline-macos-arm64.dmg)
 - Linux amd64: install `transcribe-offline` through APT.
 
+## Install on Omarchy / Arch Linux
+
+Native Arch packages are available for `x86_64` and `aarch64` desktop Linux.
+First follow the [Open Research Tools pacman repository setup](https://github.com/openresearchtools/apt/blob/main/pacman/README.md)
+to install the public key, repository configuration, and GitHub downloader once.
+Then install the app on Omarchy:
+
+```sh
+omarchy pkg add transcribe-offline
+```
+
+Use `omarchy update` for later package updates. The package binaries are downloaded
+from this app's own GitHub releases. For maintainer packaging commands, see
+[Arch packaging](packaging/arch/README.md).
+
+The package manager installs the Engine runtime dependencies automatically:
+Vulkan on `aarch64`, and Vulkan plus CUDA on `x86_64`. Runtime repair on Omarchy
+uses the package manager rather than the Debian/APT command:
+
+```sh
+# aarch64
+sudo pacman -S openresearchtools-engine
+# x86_64
+sudo pacman -S openresearchtools-engine openresearchtools-engine-cuda
+```
+
 ## Install on Debian 13+ or Ubuntu 24.04/26.04+
 
 For the first Open Research Tools installation on a system, copy and run this

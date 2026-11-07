@@ -38,17 +38,30 @@ It's written in Rust (Tokio, Axum, SQLite) with a React web app embedded in the 
 
 ---
 
-## New in 0.6
+## New in 0.7
 
-- **The right bot answers, and says why** (0.6.4). kwant picks the bot by its [rules](docs/channel-routing.md): a name or @mention, small talk to the last speaker, what you taught it, then the words in your message. In `#general`, a question no bot fits goes to the Concierge. One line under the reply says why that bot answers. **Wrong bot?** sends your message to the bot you pick, and kwant remembers it for next time. On a close call between two bots, you choose.
-- **Rules per bot** (0.6.4). **Good for** and **Not for** lists say what each bot should and shouldn't get. **Browser sites** sets which sites its browser may open, which it never opens, and whether it may reach your local network.
-- **One Inbox, one bot list, one Settings** (0.6.3). The Inbox shows what's waiting on you, what finished and what failed, with Loose ends as its second tab. Bots are listed once, grouped by team. Settings has two tabs: This space and All spaces.
-- **Linux app (beta)** (0.6.1). A `.deb` and an AppImage for x86_64 that update themselves with signed updates, like the Mac app.
-- **Mission board on by default** (0.6.2). Hand-offs, routine runs and loose ends show up as cards, and a finished hand-off goes to Review.
-- **Insights** (0.6.0). Verified results per week and what each one cost. When a run reports no cost, the board says "Not reported", never $0.
-- **Flight School and Truth Ledger** (0.6.0, on by default since 0.6.5; every bot starts at Act, and you can switch either off in Settings). Bots earn more freedom per kind of work with scorecards, and only you grant it. Facts that disagree show side by side for you to settle.
+- **Use kwant from your coding agent** (0.7.4). Claude Code, Codex, Cursor and other MCP clients can ask your bots for work and get the reply back. Each connection has its own token, reaches only the bots you pick, can't approve anything, and is revoked at once. [Guide](docs/agents-connect.md)
+- **A daily spending stop** (0.7.4). Settings → All spaces → Usage can cap what all bots use in a day, in fresh tokens or dollars. Past it, no new turn starts until tomorrow or until you press **Continue today**. [Guide](docs/mission-control.md)
+- **A new package asks first** (0.7.4). Under "Ask only when risky", adding a package the project doesn't list yet (`npm install <name>`, `cargo add`, `uv add`, …) asks before it runs. [Guide](docs/approvals.md)
+- **Dev mode** (0.7.0; every team's repo since 0.7.2). For spaces where bots write code. One press turns it on, and kwant finds and watches each team's repo, read only, up to 10 per space. A **Dev desk** at the top of the sidebar has two tabs. **What landed** has one plain-words card per merge, a *Since you last looked* roll-up and **Draft release notes**. **Reviews** has one card per open pull request. The **?** next to the switch says what Dev mode does. [Guide](docs/dev-mode.md)
+- **Dev mode reads any git repo** (0.7.3). Repos on GitLab, Gitea or any git server, and team folders with no remote, are watched with git, and every merge gets its card. Reviews and CI checks need GitHub, GitLab, Gitea or Forgejo (0.7.4); Post to GitHub is GitHub only. **Connect GitHub** opens right where you press it. [Guide](docs/dev-mode.md)
+- **Reviews on GitLab, Gitea and Forgejo** (0.7.4). Add the server in Loose ends with a read token, and its merge requests get review cards with their CI, like GitHub's. Codeberg works too. A repo with no forge gets a card for each pushed branch. GitHub Enterprise: paste your server's address as it is. [Guide](docs/dev-mode.md)
+- **Reviews by a bot that didn't write the code** (0.7.0). Each card shows a risk badge with its reasons, whether the pull request does what its task asked, and whether a test was weakened. Gitleaks and a registry check run on every pull request: a found secret or a made-up package always makes it High risk. Send a finding back with **Fix it** or **Dismiss** it. A merge gets the **Verified** sticker only when CI is green, another bot reviewed it, and every finding is fixed or dismissed.
+- **Post to GitHub** (0.7.1). One press puts a review card on its pull request as one GitHub review, posted as you, with findings on their lines. kwant never approves, requests changes or merges, a bot can't post, and secrets are never posted.
+- **The production floor** (0.7.0). In a Dev mode space, pushes to the watched or a protected branch, force pushes, deploys, destructive data commands and connections you marked production always ask first, with no "always allow". A step that can change production data waits until the space has a backup from the last 10 minutes. Dev mode cards run with no tools at all, so text in a pull request can't make a bot act.
+- **The Idea jar** (0.7.0). Drop an idea in from the sidebar's **+**, the phone's **Jar** tab or `/idea`. When a bot is free, it writes its take: a verdict, the effort, the risks and a short plan. **Do it** turns a take into a draft mission that still waits for your OK. [Guide](docs/idea-jar.md)
+- **Crypto sends and swaps always ask** (0.7.1). A tool whose arguments carry an amount and an address or a crypto asset counts as a payment, so it asks in every approval mode. [Guide](docs/payments.md)
+- **Videos in chat** (0.7.3). MP4, MOV and WebM files up to 100 MB can be attached and shared by bots, and they play right in the chat. A file kwant can't take is refused the moment it's dropped, and uploads retry by themselves.
+- **Saving a token is your choice** (0.7.3). When some bots don't ask before running commands, **Before you save the token** offers **Save it on this server**, **Use Bitwarden** or **Make every bot ask first**. Only you can choose to keep it on the server, once. [Guide](docs/saved-passwords.md)
 
-Every change is in the [CHANGELOG](CHANGELOG.md).
+<table>
+  <tr>
+    <td width="50%"><img src="site/assets/media/v07-dev-review-1440.webp" alt="A Dev desk review card for pull request #24, Speed up cart totals, written by Ben on Claude Sonnet and reviewed by Cody on Codex, a different engine. It has a Medium risk badge because a test was loosened, two warnings that a test was made easier to pass with the lines that did it, and security checks showing no secrets found and all new packages real."><br><sub><b>Reviews</b>: a bot that didn't write the code checks the pull request, tests and secrets included.</sub></td>
+    <td width="50%"><img src="site/assets/media/v072-dev-repos-four-1440.webp" alt="The Dev desk watching 3 of 4 team repos: Shop, Storefront and Payments are watching, and Ops needs a GitHub connection, with a Connect GitHub button on its row. Below, What landed filters by repo and says 5 changes landed on main and 2 need you, grouped as Code, Account, Checkout and Cart, with Draft release notes."><br><sub><b>What landed</b>: every team's repo on one desk, in plain words.</sub></td>
+  </tr>
+</table>
+
+0.6 added picking the bot that fits each message (and saying why), rules per bot, one Inbox, the Linux app, Insights, Flight School and the Truth Ledger. Every change is in the [CHANGELOG](CHANGELOG.md).
 
 ---
 
@@ -56,6 +69,7 @@ Every change is in the [CHANGELOG](CHANGELOG.md).
 
 - **A team, not a chat tab.** Each bot has its own role, voice ("soul") and model. Bots @mention each other to hand work on, and a team lead runs short discussions and posts one summary. In a channel, kwant picks the bot that fits each message and shows why. The [Laya](#laya-model-router) router picks the model and effort for bots set to `auto`.
 - **"Done" means checked.** The [Mission board](docs/mission-control.md) turns work into cards, one per hand-off. A card turns **Verified** only when kwant runs the check itself, such as a test or a file check, and the card keeps the receipt. Files a bot attaches are evidence to look at, never proof on their own.
+- **Dev mode for code.** When bots write code, the [Dev desk](docs/dev-mode.md) shows what landed in each team's repo in plain words, and a bot that didn't write a pull request reviews it, tests and secrets included. Pushes to main, deploys and other production steps always ask first.
 - **Facts with sources.** Bots back web facts with a link that opens the page at the exact quote. kwant checks the quote is on the page word for word and refuses one that isn't.
 - **Spaces.** Separate spaces for work, a side project and home. Each has its own bots, teams, channels, routines, accounts, approval rule and hiring rule.
 - **Every account you have.** Several accounts per engine: Claude, Codex or Grok CLI logins, Anthropic, OpenAI or xAI keys, and your own OpenAI- or Anthropic-compatible server. Set a default and a priority order. When an account runs out of usage, the turn moves to the next one and the chat says so. You can pin a bot to one account.
@@ -98,38 +112,19 @@ Screenshots come from a demo space with sample data.
 
 ## Quickstart
 
+The quickest way is the app for Mac or Linux: download it, add an AI account you already have and ask your first question. There's nothing to build. On a server, see [Self-hosting on a VPS](#self-hosting-on-a-vps).
+
 ### What you need
 
-- **Rust** (stable), installed with [rustup](https://rustup.rs).
-- **Node.js 20 or newer** with npm, to build the web app. The finished binary doesn't need it.
+- **A Mac** (Apple silicon or Intel) **or a Linux x86_64 desktop** for the app.
 - **At least one AI account.** Any one of these is enough:
   - the [`claude`](https://docs.anthropic.com/en/docs/claude-code) CLI, installed. You don't need to sign it in first: kwant has a **Sign in with Claude** button;
   - the `codex` or `grok` CLI, signed in on the same machine (`codex login`, `grok login`);
   - an Anthropic, OpenAI or xAI API key, which you add in the app under **Settings → This space → Accounts**.
+- To [build from source](#run-from-a-fresh-clone) instead: **Rust** (stable), installed with [rustup](https://rustup.rs), and **Node.js 20 or newer** with npm, to build the web app. The finished binary doesn't need Node.
 - Optional: **Docker** for VM mode and the bots' shared browser, and [`uv`](https://docs.astral.sh/uv/) or `python3` for the Laya router.
 
-`kwnt doctor` (`cargo run -- doctor` from a clone) checks all of these and prints the install command for whatever is missing on your machine; `kwnt setup` installs it (see [Without Docker](#without-docker-kwnt-setup)).
-
-### Run from a fresh clone
-
-```bash
-git clone https://github.com/alexsergivan/kwant.git
-cd kwant
-make run          # builds the web app (frontend/dist), then runs `cargo run -- serve`
-```
-
-Open **http://127.0.0.1:8799**. If no account works yet, kwant shows a **Get ready** banner with an **Add an account** button. A fresh install starts with three bots in `#general`: Architect, TechLead and DevOps. Make more with **New bot**, from a ready-made persona or blank.
-
-The binary embeds `frontend/dist`, so on a fresh clone `cargo build`, `cargo test` and `cargo run -- serve` fail to compile until you've run `make run` or `make frontend` once.
-
-**The first start takes a few minutes:** kwant installs its Laya router and downloads its model (about 420 MB) in the background. Bots answer meanwhile, and the routing rules still pick who answers. To skip Laya, run `cargo run -- serve --no-laya`.
-
-### Build a release binary
-
-```bash
-make build                 # web app + cargo build --release
-./target/release/kwnt serve
-```
+If you build from source, `kwnt doctor` (`cargo run -- doctor` from a clone) checks all of these and prints the install command for whatever is missing on your machine; `kwnt setup` installs it (see [Without Docker](#without-docker-kwnt-setup)).
 
 ### On a Mac: the app
 
@@ -145,6 +140,27 @@ The Linux app is for x86_64. Like the Mac app, it runs its own kwant, uses the s
 - **Other distributions:** download [`kwant_x86_64.AppImage`](https://github.com/alexsergivan/kwant/releases/latest/download/kwant_x86_64.AppImage), then `chmod +x kwant_x86_64.AppImage` and run it. It needs a normal GTK desktop and FUSE.
 
 Updates arrive in the app, which checks each one's signature before it installs it; with the `.deb`, your system asks for your password. `sudo apt remove kwant` removes the `.deb`, and your data in `~/.kwnt` stays. It's a beta: tested in containers on Ubuntu 22.04, Ubuntu 24.04 and Debian 12, not yet on real desktops, so the tray icon, Wayland and HiDPI may vary. There's no ARM Linux or Windows app yet.
+
+### Run from a fresh clone
+
+```bash
+git clone https://github.com/alexsergivan/kwant.git
+cd kwant
+make run          # builds the web app (frontend/dist), then runs `cargo run -- serve`
+```
+
+Open **http://127.0.0.1:8799**. Until an account works, a banner above the chat says **One step left: add an account**, with a button to add one. A fresh install starts with three bots in `#general`: Architect, TechLead and DevOps. Make more with **New bot**, from a ready-made persona or blank.
+
+The binary embeds `frontend/dist`, so on a fresh clone `cargo build`, `cargo test` and `cargo run -- serve` fail to compile until you've run `make run` or `make frontend` once.
+
+**The first start takes a few minutes:** kwant installs its Laya router and downloads its model (about 420 MB) in the background. Bots answer meanwhile, and the routing rules still pick who answers. To skip Laya, run `cargo run -- serve --no-laya`.
+
+### Build a release binary
+
+```bash
+make build                 # web app + cargo build --release
+./target/release/kwnt serve
+```
 
 ### Install the web app
 

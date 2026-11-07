@@ -18,6 +18,16 @@ Research is spread across papers, notes, analysis, and manuscripts. A new paper 
 
 ![Concept diagram: research questions connect literature, evidence, analysis, manuscript proposals, and human review; changed inputs return work for review.](docs/images/workspace-lifecycle.en.png)
 
+## Choose your starting path
+
+![Two starting paths: research with an available compatible AI host without Hub, or install Hub to view saved sources and proposals. Task handoff is optional. People review sources and evidence; saving is not reading or approval, and nothing is automatically published.](docs/images/research-entry-paths.en.svg)
+
+**Use your existing AI host:** You need working search/reading tools and the [portable skill with its references](skills/research-hub/). No Hub installation, Zotero, Obsidian, or NotebookLM is required. See [skill loading](docs/setup.md#installed-skill-files) and [host support](docs/ai-host-support.md); Codex MCP is not release-verified.
+
+**First request:** “Find papers on LLMs simulating human decisions. Include source links, relevance, versions, and actual reading limits.” Expect a source list in your host, with unknowns and unavailable tools/sources stated, not automatic full-text reading or a Hub save.
+
+**Use the Hub workspace:** You need Python 3.10+, Git, and a local browser. [Install and launch the tested demo below](#workspace-preview) to inspect two seed references and their reading limits. Optional [result saving](docs/contracts/native-discovery-view.md) and [task handoff](docs/workspace-guide.md#writing-adapter-preview) require a selected destination and authorization.
+
 ## Install and get started
 
 <a id="start-here"></a>
@@ -26,15 +36,15 @@ Research is spread across papers, notes, analysis, and manuscripts. A new paper 
 
 ### Try the local workspace
 
-Start with the workspace below. If you only want to try the older published literature dashboard, see the separate option below.
+Choose this path for the Hub workspace. If you only want to try the older published literature dashboard, see the separate option below.
 
 You need Python 3.10+ and Git. These commands install a specific source revision and create teaching fixtures in a **new or empty** `workspace-demo` directory. The source workspace is separate from the PyPI release: a package version does not establish that the installed wheel contains current source features.
 
 ```sh
 git clone -c core.autocrlf=false https://github.com/WenyuChiou/research-hub.git
 cd research-hub
-git fetch origin c1ab382e1bc4bfdb1d5df6a230d1ab4509a50d2a
-git checkout --detach c1ab382e1bc4bfdb1d5df6a230d1ab4509a50d2a
+git fetch origin 1f0726a7e92a1231e633963f17236a2f5c1eab8f
+git checkout --detach 1f0726a7e92a1231e633963f17236a2f5c1eab8f
 ```
 
 Choose the block for your system. They call the virtual environment's Python directly, without activation or changing PowerShell execution policy. Dependency installation needs network access.
@@ -59,7 +69,17 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m research_hub serve --workspace --root ./workspace-demo
 ```
 
-Open [http://127.0.0.1:8765/app/](http://127.0.0.1:8765/app/). The demo contains two teaching projects. In the **Projects** dropdown, choose `DEMO: three floating-point summation cases` (`summation-demo`) or `DEMO: floating-point reading and review outline` (`review-demo`), then open **Literature** to see the literature page. These are teaching inputs, not research findings, and need no account. Stop the foreground server with `Ctrl+C` when finished.
+**First task: inspect a saved source and its reading limits.**
+
+1. Open [http://127.0.0.1:8765/app/](http://127.0.0.1:8765/app/) and, in **Projects**, choose `DEMO: floating-point reading and review outline` (`review-demo`).
+2. Open **Literature**, then select **What Every Computer Scientist Should Know About Floating-Point Arithmetic**.
+3. Expect two seed references in the list. The selected source shows DOI `10.1145/103162.103163`, **Unverified**, **Coverage unknown**, and **No summary saved**. These are expected demo states: no source text was downloaded or summarized, and the supplied screening decisions are examples, not your review.
+
+The other project, `DEMO: three floating-point summation cases` (`summation-demo`), contains numerical examples and a manuscript scaffold; its Literature list is empty. Both projects are account-free teaching inputs, not accepted research.
+
+Keep the terminal running while using the workspace; stop it with `Ctrl+C`. To return later, run only the `serve --workspace --root ./workspace-demo` command above. Do not recreate the demo over saved work. If creation was interrupted, inspect the preserved partial directory and use another new or empty root for both creation and serving.
+
+Demo creation, launch, and this bilingual first task were checked on Linux with Python 3.12.14 at source revision `1f0726a7`; this does not verify Windows, macOS, or a fresh dependency installation. See [the exact verification scope](docs/readme-verification-history.md#source-demo-first-task-2026-11-07).
 
 For your own files, go directly to [bring your own project](docs/workspace-guide.md#bring-your-own-project); the guide’s earlier installation pin is historical.
 

@@ -137,6 +137,7 @@ In this step, we will learn how an LLM works from the inside, how it generates t
 - [What is Generative AI?](https://outcomeschool.com/blog/what-is-generative-ai)
 - [How does an LLM work?](https://outcomeschool.com/blog/large-language-model-llm)
 - [What are Autoregressive Models?](https://outcomeschool.com/blog/autoregressive-models)
+- [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - [Tokenization in LLMs](https://outcomeschool.com/blog/tokenization-in-llms)
 - [Tokenization in Large Language Models (LLMs)](https://www.youtube.com/watch?v=sK2s9I84EVI) (Video)
 - [What is Byte Pair Encoding (BPE) in LLMs?](https://outcomeschool.com/blog/bpe-in-llms)

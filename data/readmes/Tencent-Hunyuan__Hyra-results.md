@@ -8,8 +8,20 @@ released alongside the Hyra launch post. Each folder holds the final solution
 artifact and, where relevant, the self-contained scripts that reproduce it.
 
 > 📝 Launch post: **[hy.tencent.com/research/hyra](https://hy.tencent.com/research/hyra)**
+>
+> 🚀 Hyra 2.0 blog: **[hy.tencent.ai/research/hyra2](https://hy.tencent.ai/research/hyra2)**
 
 ## News
+
+- **2026-11-04**: 🌊 **HyPDE, a 2D foundation model for PDEs, released with weights and code.**
+  **HyPDE**, a 323M-parameter fused-history transformer trained from scratch on
+  thirteen 2D physics datasets, forecasts simulated fields from their last six
+  frames. Zero-shot on the test split of thirteen datasets of The Well and
+  FlowBench, against Walrus (1.29B parameters, released weights, no
+  fine-tuning on either side), it has the lower median VRMSE on **9 of 13**
+  datasets in one-step forecasting, **10 of 13** over rollout frames 1-20 and
+  **8 of 13** over frames 21-60. Weights, the `hypde` package and the full
+  table: **[`AI4Science/hypde/`](AI4Science/hypde/)**.
 
 - **2026-11-03**: 🔐 **Certified distances of non-CSS quantum codes.** The
   qldpc-challenge board labels all 184 of its general (non-CSS) stabilizer codes
@@ -20,6 +32,11 @@ artifact and, where relevant, the self-contained scripts that reproduce it.
   a coverage certificate of 124.6 billion search nodes that the independent
   checker re-executed in full. Code:
   **[`AI4Science/hyqec/`](AI4Science/hyqec/)**.
+
+- **2026-11-02**: 🚀 **Hyra 2.0 blog released.**
+  Read **[Hyra 2.0: The Next Step for Auto Research](https://hy.tencent.ai/research/hyra2)**
+  for an overview of Hyra's progress in developing reusable scientific tools,
+  models, and workflows.
 
 - **2026-11-02**: 🧫 **HyCell, a single-cell embedding model, released with weights and code.**
   **HyCell**, a 16.1M-parameter model, maps the raw counts of a human cell to

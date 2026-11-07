@@ -12,7 +12,7 @@
   <source media="(max-width: 767px) and (prefers-color-scheme: light)" srcset="docs/assets/readme-cover-en-light-mobile.svg">
   <source media="(max-width: 767px)" srcset="docs/assets/readme-cover-en-dark-mobile.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-cover-en-dark.svg">
-  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,128 products built on Jev by 961 makers, with 1,206 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
+  <img src="docs/assets/readme-cover-en-light.svg" alt="awesome-jev — Jev Launches: 1,139 products built on Jev by 972 makers, with 1,220 call-site citation records. Counts describe saved records, not current link availability or passed runtime and performance tests." width="100%">
 </picture>
 </a>
 
@@ -274,15 +274,15 @@ All 18 patterns have at least one catalogue entry. Coverage does not imply runti
 
 | Decision pattern | Decision pattern |
 | :--- | :--- |
-| [Tool selection](#tool-selection) · **256** | [Intent routing](#intent-routing) · **56** |
+| [Tool selection](#tool-selection) · **261** | [Intent routing](#intent-routing) · **57** |
 | [Context compaction](#context-compaction) · **42** | [Safety gating](#safety-gating) · **156** |
-| [Output validation](#output-validation) · **153** | [Retry control](#retry-control) · **8** |
-| [Human escalation](#human-escalation) · **80** | [Model routing](#model-routing) · **70** |
-| [Speculative fan-out](#speculative-fan-out) · **39** | [Search & ranking](#search--ranking) · **87** |
-| [Structured extraction](#structured-extraction) · **22** | [Classification](#classification) · **151** |
+| [Output validation](#output-validation) · **154** | [Retry control](#retry-control) · **8** |
+| [Human escalation](#human-escalation) · **80** | [Model routing](#model-routing) · **73** |
+| [Speculative fan-out](#speculative-fan-out) · **39** | [Search & ranking](#search--ranking) · **89** |
+| [Structured extraction](#structured-extraction) · **22** | [Classification](#classification) · **155** |
 | [ML feature extraction](#ml-feature-extraction) · **9** | [Document triage](#document-triage) · **22** |
 | [Support triage](#support-triage) · **13** | [Content scoring](#content-scoring) · **179** |
-| [Recommendation](#recommendation) · **3** | [Overview](#overview) · **501** |
+| [Recommendation](#recommendation) · **3** | [Overview](#overview) · **502** |
 
 ## Measured, not claimed
 
@@ -360,7 +360,7 @@ Rows whose own author measured Jev for the use and concluded against it: a bench
   Biologically-inspired memory for AI agents. Decay, retrieval strengthening, consolidation. Zero runtime deps, SQLite, MCP. Benchmarked retrieval with an opt-in TypeSafe Jev reranker.<br>
   <sub>`Benchmark` · ★100+ · kitfunso · `TS` · [call site](https://github.com/kitfunso/hippo-memory/blob/HEAD/src/infra/rerankers/endpoint.ts), read by a model 2026-11-05 · author's conclusion: mixed (author-stated, not reproduced here)</sub>
 
-**10 of 83** shown: the negative results first, then the picks of the curated [independent reports](https://kydlikebtc.github.io/awesome-jev/?collection=measured&lang=en) path, in its order, then the first of the others in list order · [all 83 on one page, with every note →](docs/measured.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?indep=1&lang=en)
+**10 of 86** shown: the negative results first, then the picks of the curated [independent reports](https://kydlikebtc.github.io/awesome-jev/?collection=measured&lang=en) path, in its order, then the first of the others in list order · [all 86 on one page, with every note →](docs/measured.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?indep=1&lang=en)
 
 ## By decision pattern
 
@@ -421,7 +421,7 @@ _Which tool or action the agent should call next._
 
 </details>
 
-**10 of 256** shown · [all 256 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
+**10 of 261** shown · [all 261 on one page →](docs/by-pattern/tool-selection.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=tool-selection&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -474,7 +474,7 @@ _Classify what the user wants and send the request down the right branch._
 
 </details>
 
-**10 of 56** shown · [all 56 on one page →](docs/by-pattern/intent-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=intent-routing&lang=en)
+**10 of 57** shown · [all 57 on one page →](docs/by-pattern/intent-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=intent-routing&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -639,7 +639,7 @@ _Check a model's output against a rubric before it reaches a user._
 
 </details>
 
-**10 of 153** shown · [all 153 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
+**10 of 154** shown · [all 154 on one page →](docs/by-pattern/output-validation.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=output-validation&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -806,7 +806,7 @@ _Pick which downstream model or tier should handle a request._
 
 </details>
 
-**10 of 70** shown · [all 70 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
+**10 of 73** shown · [all 73 on one page →](docs/by-pattern/model-routing.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=model-routing&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -918,7 +918,7 @@ _Score or re-rank candidates from a cheaper retrieval step._
 
 </details>
 
-**10 of 87** shown · [all 87 on one page →](docs/by-pattern/search-ranking.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=search-ranking&lang=en)
+**10 of 89** shown · [all 89 on one page →](docs/by-pattern/search-ranking.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=search-ranking&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 
@@ -1034,7 +1034,7 @@ _Put an item into a taxonomy, including deep hierarchies walked with probabiliti
 
 </details>
 
-**10 of 151** shown · [all 151 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
+**10 of 155** shown · [all 155 on one page →](docs/by-pattern/classification.md) · [filter on the site](https://kydlikebtc.github.io/awesome-jev/?p=classification&lang=en)
 
 <sub>[↑ Pattern index](#pattern-index)</sub>
 

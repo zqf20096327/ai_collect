@@ -1,0 +1,130 @@
+# dsh-bill
+
+English | [中文](README.zh.md)
+
+Cost tracking for DSH (DeepSeek Harness). A line under each turn tells you what that turn cost; the conversation's **Cost** tab tells you what that session's money went on, and the global **Cost** panel beside Plugins does the same for the whole account.
+
+![This turn's cost under the reply, and the session's cost in the composer dock](docs/in-chat.png)
+
+![The Cost panel: total, tokens, cache hit, balance and monthly forecast](docs/overview.png)
+
+![Spend over time, stacked by model, with each bar's split on hover; below it, the weekday × hour heatmap](docs/timeline.png)
+
+![Cost attribution: what the money went on, by kind of content](docs/attribution.png)
+
+## Install
+
+```bash
+dsh plugin --profile web add dsh-bill
+```
+
+Restart `dsh web` to pick it up.
+
+## Features
+
+- **Cost attribution** — the bill split by kind of content: tool output, model output, system prompt, terminal commands (grouped by `git` / `pnpm` / `rg`), tool input, attachments, system reminders, user input. The sunburst drills in.
+- **Per-turn cost** — one line under every finished turn: what it cost, how many steps, the cache-hit rate. It reads the session log itself, so turns from before you installed the plugin are covered too. A call a plugin makes on its own, outside any session (such as an auto-review before a tool call), belongs to no turn: it is in the account total and shows as a separate *No session* row in the per-session split, so the turn lines can add up to less than the account total.
+- **Always on screen** — this session's cost as a pill beside the shipped stats in the composer dock, today's spend against the budget in the sidebar, and each session's cost in its sidebar hover card (DSH 0.1.7+). The dock's figure moves while a turn is still running, from the output that has streamed so far, and becomes the billed figure the moment the provider reports it. Each of the five surfaces — and the report's icon in the sidebar panel row — can be turned off individually in settings.
+- **Report** — a **Cost** tab in each conversation (beside Chat and Trajectory) scoped to that session, and an account-wide **Cost** panel opened from the sidebar icon beside Plugins (DSH 0.1.7+): total, tokens, cache hit, peak share; account-wide also monthly forecast, account balance, budget and a per-session split; broken down by model and by purpose (including loop overhead such as context compaction); spend over time stacked by model, with each bar's split on hover; a weekday × hour heatmap. The window is either rolling (the last 24 hours, 7, 30, 90 or 365 days) or a calendar day (today, yesterday) on the host's clock, plus all time; bars are hours for a day or less, then days, weeks or months as the window grows.
+- **Budget** — a daily / monthly / all-time limit that turns amber past 80% and red when you go over.
+- **Multi-currency** — live rates for ~166 currencies; each model's base rate is shown in the currency its vendor prices it in.
+- **Agent tool** — `bill_stats`, so the model can answer questions about spend directly, over a number of days back or one calendar day (`today`, `yesterday`, `YYYY-MM-DD`). `agentTool: false` in the plugin config leaves it unregistered, for anyone who never asks the model about spend and would rather not pay its schema on every request.
+- English and Chinese follow the DSH language setting; history from before the install is backfilled from the session log.
+
+## How it differs from similar plugins
+
+Three substantive differences:
+
+**No hand-maintained price table.** Every other plugin ships a built-in table of 2–4 DeepSeek models, which means no prices at all once you switch provider — and which is why they all need a "edit the price table by hand" entry point. dsh-bill pulls models.dev and OpenRouter through [`llm-pricing`](https://github.com/Jannchie/llm-pricing), covering 8000+ entries, so a new model is priced the day it ships.
+
+**Price is a timeline, not a number.** The others compute a cost and store it (or recompute at today's price), so history goes wrong the moment a vendor changes its rates or a call crosses a peak/off-peak boundary. dsh-bill prices each call at that call's own instant, and never recomputes history.
+
+**It answers "on what".** The others answer only "how much" — they consume the provider's aggregate token counts and never look at the request content. dsh-bill splits the request into classified segments at capture time and apportions cost by position in the cache prefix.
+
+They do some things better: `usage-stats` reads balances and subscription quotas from 11 providers (dsh-bill only does DeepSeek), `cost-meter` can read OpenCode Go's subscription quota, and both surface more always-on entry points than dsh-bill does.
+
+<details>
+<summary>Point-by-point comparison (read from source, sampled 2026-08-16)</summary>
+
+The sample is the cost-related plugins under the GitHub `dsh-plugin` topic with ★ ≥ 40, plus the four published to npm. Lower-starred plugins such as `deepseek-harness-wallet` were not checked individually.
+
+| | dsh-bill | cost-meter | usage-stats | dsh-cost | cost-log | dsh-usage | usage-billing |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| stars / version | — | ★42 / 1.3.1 | ★40 / 0.2.0 | ★3 / 0.2.1 | ★2 / 1.0.0 | ★2 / 0.1.1 | 0.2.2 |
+| price source | online catalogue | built-in table + hand-scraped docs | none | built-in table | built-in table | user-entered | built-in table |
+| models covered | 8000+ entries | 4 DeepSeek | — | 4 DeepSeek | 2 DeepSeek | one at a time, by hand | DeepSeek |
+| unlisted model | flagged, excluded from totals | billed at flash rate | flagged unknown | billed as v4-pro | flagged `≈` | flagged `--` | counted as 0 |
+| history never recomputed | ✓ | ✗ | — | ✗ | ✓ | ✓ | manual backfill |
+| content attribution | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| forecast | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| budget | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| account balance | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ | ✗ |
+| pre-install history | ✓ | ✗ | ✓ | ✗ | ✓ | ✓ | ✓ |
+| agent tool | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✓ |
+| currencies | 166, live rates | 3, fixed rates | — | follows UI language | ¥/$ | single | ¥ only |
+
+</details>
+
+## Pricing
+
+- two catalogues, models.dev and OpenRouter, cached for 24h and written to disk, falling back to a built-in historical snapshot on failure;
+- DeepSeek's own direct rates override the catalogue, and the peak / off-peak rate is chosen from the call's timestamp;
+- a prompt-cache write is priced at the lifetime the provider reports it bought: when the usage report carries `cacheWrite1hTokens` (the one-hour share of `cacheWriteTokens`, which Anthropic returns for a route that asks for the long cache), that share is billed as a one-hour write and the rest as a five-minute write; without it every write is a five-minute write;
+- model names are normalised, and anything that still fails to match is flagged `?` and excluded from totals — nothing is estimated;
+- `priceOverrides` can override or add any price (rarely needed).
+
+## Attribution method
+
+Every request pays for the full context again, so one tool output read into the conversation keeps being billed on every subsequent request until it slides out of the window. Attribution is computed per request and summed.
+
+Two things matter:
+
+- **Price by position.** Under prefix caching the first N tokens of the prompt bill at the cache rate and the rest at full rate — on DeepSeek the two differ by up to 156×. Segments are ordered exactly as the provider received them, the cached prefix is charged at the cache rate, and only the tail pays full price. Apportioning by an average unit price files the money under the wrong category.
+- **Counts only.** Attribution happens at capture time on the live request; only the per-category amounts are written to disk. No prompt text is stored.
+
+Per-segment token counts are estimated from character share (providers return only a total), and the total is the real billed figure, so the parts sum exactly to what you paid.
+
+The session log holds token counts and model routes but **not the request bodies** — which is why pre-install history can be backfilled as spend, but **cannot be attributed retroactively**. The report states what fraction is covered.
+
+## Configuration
+
+The budget, its currency, the display currency shared by every figure, and which surfaces are shown are all set on the **Cost** page in settings, and stored in `$DSH_HOME/dsh-bill/prefs.json`. The two currencies are separate settings: the budget's is the promise ("¥100 a month") and does not follow the display. (Not in the harness's own settings document: its API proxy serves a fixed allowlist of namespaces to the browser, so a plugin's namespace is never readable or writable from there.)
+
+`maxRecords` (the in-memory ring buffer size, default 20000), `agentTool` (register `bill_stats`, default `true`), `backfillTimeoutMs` (the total budget for the boot-time history import, default 60000), `rateCurrency` (one ISO currency code, such as `USD`, to show every model's base rate in instead of its vendor's own list currency — useful when you buy DeepSeek on its international platform, which bills in USD), `dshHome` (the harness home to keep the store under instead of `$DSH_HOME` — the same option the harness's own stores take, for a process that hosts several harness instances, each with its own spend) and `priceOverrides` are plugin config and are validated at startup — a mistyped field is reported by name rather than leaving the report quietly empty. `~/.dsh/profiles/web/cordis.patch.yml` is only needed when you want to override a price:
+
+```yaml
+- insert:
+    - id: bill
+      name: 'dsh-bill'
+      config:
+        priceOverrides:
+          'anthropic/claude-sonnet-4-6':
+            inputPerM: 3.0        # USD per million input tokens (uncached)
+            outputPerM: 15.0
+            cacheReadPerM: 0.3
+            cacheWritePerM: 3.75
+```
+
+## Data and privacy
+
+- each call's provider / model / token usage and attributed amounts are written to `$DSH_HOME/dsh-bill/records.jsonl` (a 20 000-entry ring buffer; older entries are folded into a rollup);
+- the API key used for the account balance is read and used host-side and never reaches the browser;
+- nothing is sent anywhere except the price catalogues, the exchange-rate endpoint, and the balance query; no conversation content is stored.
+
+## Implementation
+
+| Layer | How |
+| --- | --- |
+| Capture | hooks the `llm/stream` waterfall, wraps the stream to observe `usage` chunks, passes everything through untouched |
+| Pricing | `llm-pricing` resolves catalogue / peak rate / override at the call's own instant |
+| Attribution | the request is split into classified segments at capture time and apportioned by position in the cache prefix |
+| Backfill | lists the session log once, imports sessions it never recorded with a cancellable budget, deduplicating on `turn:step` |
+| Per turn | the `billTurns` session projection folds the session log host-side and pushes to the client — no polling; `billLive` pushes the open step's estimated output as its own small value |
+| Account-wide | today / month / all time belong to no session, so they are long-polled: one request per window carries the `rev` it holds, and the host answers when spend moves, the day turns, or after 25 s |
+| Storage | in-memory ring buffer plus append-only JSONL, folded into a rollup before eviction; preferences in their own small JSON document; atomic replace and file locking borrowed from `dsh-atomic-write` |
+| Transport | `POST /dsh-bill/api` (the harness cannot mount a plugin `ctx.connection.rpc` channel yet) |
+| UI | `conversation.view` / `main` + `sidebar.panellist` / `conversation.chat.turnTail` / `conversation.composer.dock` / `sidebar.footer.action` / `sidebar.session.row.hover` / `settings.section`, built on the host's `--dsw-*` design tokens |
+
+## License
+
+MIT

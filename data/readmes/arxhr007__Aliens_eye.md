@@ -9,7 +9,7 @@
 <h1 align="center">AI-OSINT Username Scanner</h1>
 
 <h3 align="center">Advanced AI-Powered Social Media Username Finder</h3>
-<h4 align="center">Scan 840+ platforms with ML-blended detection</h4>
+<h4 align="center">Scan 7,700+ platforms with ML-blended detection</h4>
 
 <p align="center">
 <a href="https://pypi.org/project/aliens-eye/"><img alt="PyPI" src="https://img.shields.io/pypi/v/aliens-eye?style=for-the-badge&color=blue"></a>
@@ -62,7 +62,7 @@ Power your web scraping and data collection with **[Swiftproxy](https://www.swif
 
 ## Highlights
 
-- **840+ platforms** scanned asynchronously in seconds
+- **7,700+ platforms** scanned asynchronously by default (`--catalog standard` for the quicker 780+ original list)
 - **ML + heuristic detection** — a trained model blended with 30 structural signals (HTTP status, DOM shape, keywords, fingerprints) instead of naive status-code checks
 - **Profile extraction** — display name, bio, and avatar pulled from each hit (OpenGraph / JSON-LD / per-site CSS)
 - **Cross-site correlation** — cluster profiles that look like the same person by avatar hash, bio, shared links, and name (`--correlate`)
@@ -216,9 +216,100 @@ Custom platforms: drop a `{ "site_name": "https://site/{}" }` JSON file into
 `./sites.d/` (or the user config dir's `sites.d/`) and it is merged automatically;
 `--sites-dir DIR` adds another location.
 
+### Site catalogs
+
+Scans use the **extended catalog** by default: **7,710 enabled definitions**, combining pinned community site databases with
+unique, valid standard-catalog templates. Entries for the same profile URL merge
+into one, keeping the other names as aliases, and an active rule replaces one a
+source marks disabled. `--catalog standard` scans the smaller original list of
+**788 sites** instead, which is much quicker; a `config.json` can set
+`"catalog": "standard"` to make that the default.
+
+Every entry was checked live on 2026-11-07 (see below). Sites that reported a
+made-up username as existing, and sites that failed twice (unreachable, or a
+known account no longer found), were disabled in the expanded catalog and
+removed from the default one, except 56 default sites the ground-truth splits
+depend on. Of the remaining entries, about 4,900 confirmed a known account and
+rejected a made-up one; the rest answered with blocks, challenges or uncertain
+pages from the checking network. A check is a snapshot, not a guarantee.
+
+```bash
+aliens_eye sites stats --catalog extended
+aliens_eye sites validate --catalog extended
+aliens_eye sites list --catalog extended --tag coding
+aliens_eye your_handle --tag coding --no-nsfw --explain
+aliens_eye your_handle --catalog standard
+```
+
+The expanded catalog preserves engine rules, separate public-profile/API-probe
+URLs, username constraints, tags, aliases, disabled entries, upstream revision,
+file hashes, and MIT notices. Its manifest records 1,575 disabled definitions,
+121 excluded entries and 898 duplicate-template merges. Disabled and excluded
+definitions are not scanned. Filters can match aliases; `--source maigret`,
+`--source sherlock`, or `--source aliens-eye` selects a source when present.
+A full scan makes roughly ten times the requests of a standard-catalog scan;
+`--tag`, `--site` and `--no-nsfw` narrow it.
+
+To check which entries still work, `scripts/verify_catalog.py` requests one
+username an upstream project or the curated ground truth says exists and one
+generated username per site, then replays the captured responses through the
+scanner's own per-site check:
+
+```bash
+# live: about two requests per enabled site; rerun the same command to resume
+python scripts/verify_catalog.py record --corpus runs/verify \
+    --upstream-data path/to/data.json
+# offline: summary.json + sites.csv with a verdict per site
+python scripts/verify_catalog.py report --corpus runs/verify --out runs/verify-report
+```
+
+Verdicts are `working`, `alive_no_test_user`, `misses_known_user`,
+`accepts_anything` (a made-up username was reported Found), `uncertain`,
+`blocked` and `unreachable`. A result describes one moment from one network;
+upstream "known" accounts can be deleted, so `misses_known_user` is not proof
+that a rule is broken.
+
+Local imports do not download data or execute upstream code. They inspect by
+default; `--out` writes a new file and refuses to overwrite an existing one:
+
+```bash
+aliens_eye sites import --maigret path/to/maigret/resources/data.json --with-standard --out imported-sites.json
+aliens_eye sites import --sherlock path/to/sherlock_project/resources/data.json --out sherlock-sites.json
+aliens_eye your_handle --sites imported-sites.json --explain
+```
+
+Use `--maigret-revision` / `--sherlock-revision` to record the reviewed source
+revision. The recorded SHA-256 identifies the supplied file; it does not prove
+that an arbitrary file came from the named project. Review upstream terms and
+import exclusions before distributing a new snapshot.
+
+The initial adapter supports public GET requests. Authentication/activation,
+credential-bearing headers, POST payloads, unsupported identifier types,
+ambiguous username searches, unsupported regexes and malformed templates are excluded
+rather than silently treated as supported. Probe requests validate public
+destinations and redirects; custom headers are not forwarded across origins.
+Imported definitions do not use browser fallback. Proxy-side DNS remains a
+trust boundary, as with other proxy-enabled fetches.
+
+For HTML, site evidence complements the existing ML/heuristic detector.
+Conflicting markers or rule/model disagreement remain uncertain. Public JSON
+probes require an explicit matching username and rule evidence; the HTML model
+is not presented as a calibrated JSON classifier. An unavailable or positive
+negative-control response cannot confirm an imported hit. `--no-control-check`
+explicitly disables that safeguard. Results retain the public profile URL and
+record probe/rule/provenance details under `ai_analysis`.
+
+Maigret and Sherlock data use their respective MIT notices, included in catalog
+source metadata. No new WhatsMyName data is bundled by this importer. Existing
+ground-truth records marked `source: whatsmyname` originate from the
+[WhatsMyName project](https://github.com/WebBreacher/WhatsMyName), copyright
+2015–2026 Micah Hoffman, licensed [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
+Those records are adapted account lists and must not be relabeled as MIT. The project code's MIT
+license does not replace third-party data terms.
+
 ## How detection works
 
-Every response is converted into a 30-dimensional feature vector: HTTP status buckets, username placement (path/title/meta/canonical), error and profile keywords, DOM structure (images, forms, profile/error CSS classes), structured-data signals (og:type, JSON-LD Person), response timing, redirect counts, and per-site fingerprint matches learned from previous scans.
+HTML detection uses a 30-dimensional feature vector: HTTP status buckets, username placement (path/title/meta/canonical), error and profile keywords, DOM structure (images, forms, profile/error CSS classes), structured-data signals (og:type, JSON-LD Person), response timing, redirect counts, and, in the legacy scan path, per-site fingerprint matches learned from previous scans.
 
 Two judges then vote:
 
@@ -231,9 +322,9 @@ A **Found** then has to survive three checks, because a page is scored on how pr
 
 - an HTTP `404`/`410` is reported as Not Found, and any other error code as Maybe at most;
 - a bot-check or error page is capped at Maybe;
-- the site is asked for a username that cannot exist, and if it answers with the same page, the result is capped at Maybe (`--no-control-check` skips this; it costs one extra request per Found).
+- the site is asked for a random control username, and if it answers with the same page, the result is capped at Maybe (`--no-control-check` skips this; it costs one extra request per Found).
 
-> **Treat Found/Maybe as leads to verify, not as findings.** The shipped model was fit on 1,455 samples from 286 platforms. On 135 platforms it never saw, a scan reports Found for 1.0% of usernames that don't exist there (4 of 399) and for 49% of accounts that do (85 of 172): precision 0.96, F1 0.65. Before 2.7.0 those figures were 8.3% and 54%. It favours fewer false leads over catching every account: a real account on a site that shows everyone the same page is a Maybe, since nothing in the response tells it apart. On F1 it is still not statistically distinguishable from a plain HTTP-status check (difference -0.02 to +0.10, 95% interval); what it buys is the false-positive rate, 1% against 30%.
+> **Treat Found/Maybe as leads to verify, not as findings or proof of identity.** The shipped model was fit on 1,455 samples and is unchanged by the catalog expansion. Archived benchmark results describe particular captured responses, not current live accuracy. Historical splits used site names, and aliases such as `chess` / `chess.com` cross that boundary; older “unseen platform” claims therefore need qualification. New training collection excludes holdout host groups, and new grouped cross-validation keeps aliases together. Source-provided account labels still require independent review.
 
 ### Retraining the model
 
@@ -254,9 +345,60 @@ aliens_eye selfcheck --split holdout --model model.json --report json
 aliens_eye username --model model.json
 ```
 
-Ground truth is split **site-disjoint** into `data/selfcheck.json` (train, 30
-sites) and `data/eval_holdout.json` (holdout, 13 sites). Scoring `--split train`
-measures fit, not generalization, and will read high.
+The stored ground-truth files contain 286 train and 142 holdout site-name entries,
+not that many independent platforms. New collection protects holdout host groups
+and records `site`, `site_group`, `label_source` and `split` alongside features.
+Scoring `--split train` measures fit, not generalization.
+
+Reuse a locally captured corpus without network access:
+
+```bash
+aliens_eye train collect --corpus corpus --out grouped-dataset.csv
+aliens_eye train fit --data grouped-dataset.csv --out candidate-model.json --max-fpr 0.02
+```
+
+Training fits scalers inside each fold, uses grouped folds when provenance is
+available, and selects blend weights/thresholds from nested out-of-fold
+predictions. `--max-fpr` constrains calibration-set false positives; it is not a
+guarantee for unseen sites. Legacy feature-only CSVs remain readable but are
+explicitly labeled `row-stratified-legacy`, not unseen-site validation. Selection
+CV F1 is not an independent test score. Compare candidate precision **and recall**
+on a separate holdout before replacing the shipped model.
+
+#### Training on the expanded catalog
+
+`scripts/train_expanded.py` gives the model labeled pages from expanded-catalog
+sites. Positives are the usernames the upstream site databases and the curated
+train split assert exist; negatives are generated. Only sites whose profile page is the request qualify: API probes,
+disabled and NSFW (unless `--include-nsfw`) sites are skipped, as is every site
+whose host group overlaps the bundled holdout. Every artifact goes into one
+`--work` directory and no stage overwrites an existing file.
+
+```bash
+# prepare (offline): ground truth + training site list
+python scripts/train_expanded.py prepare --work runs/exp1 \
+    --upstream-data path/to/data.json --max-sites 600
+# record (live network): profile pages + 4 negatives/site into a frozen corpus
+python scripts/train_expanded.py record --work runs/exp1
+# collect, fit, compare (offline): grouped CSV, candidate model, holdout comparison
+python scripts/train_expanded.py collect --work runs/exp1
+python scripts/train_expanded.py fit --work runs/exp1
+python scripts/train_expanded.py compare --work runs/exp1 --holdout-corpus path/to/holdout-corpus
+```
+
+`--upstream-data` must be the same `data.json` snapshot the catalog was built from
+(checked by SHA-256). Upstream usernames are assertions, not verified accounts;
+positives that now return 404 are dropped during collection. `compare` scores
+the shipped and candidate models on the holdout and writes `comparison.json`; the
+shipped model is never replaced automatically. Record the holdout corpus with
+`aliens_eye corpus record --split holdout`.
+
+This trainer remains an HTML model trainer: JSON/API feature-model training
+requires a separately labeled corpus and is not simulated by feeding JSON to the
+HTML classifier. Maigret external evaluation now expands its nested engines and
+matches endpoint templates. Missing API-probe captures or incompatible request
+policies are reported as unsupported/undecided, not borrowed from profile pages
+or fetched live.
 
 ## Using it as a library
 
@@ -279,6 +421,18 @@ async def main():
 
 asyncio.run(main())
 ```
+
+For expanded scans, pass the metadata-carrying mapping through unchanged:
+
+```python
+sites = api.load_sites(catalog="extended", tags=["coding"], exclude_nsfw=True)
+report = await api.scan("your_handle", sites=sites)
+```
+
+The mapping still exposes `{site: URL template}`. Converting it with `dict()` or
+serializing only that URL view discards its rule metadata; use the versioned
+catalog file for portable structured definitions. Replacing a URL in the mapping
+removes stale probe rules for that entry.
 
 It can also read a profile link back into a site and username, and fetch a page
 whose address came from somewhere you don't control:

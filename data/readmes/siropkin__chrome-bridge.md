@@ -37,6 +37,7 @@ Set up chrome-bridge — the bridge that lets you drive my real, logged-in Chrom
 1. Pick the repo root `<repo>`:
    - if your working directory is already a chrome-bridge checkout (it contains `cli.mjs` and `AGENTS.md`), use it;
    - else if `~/chrome-bridge/cli.mjs` exists, run `git -C ~/chrome-bridge pull --ff-only` (if the pull fails, show me the error and keep the existing copy) and use `~/chrome-bridge`;
+   - else if `~/.chrome-bridge/cli.mjs` exists (an npm install), update and use it the same way (`git -C ~/.chrome-bridge pull --ff-only`, then `~/.chrome-bridge`);
    - else clone it and use `~/chrome-bridge`:
 
      ```
@@ -47,7 +48,7 @@ Set up chrome-bridge — the bridge that lets you drive my real, logged-in Chrom
 
    Substitute `<repo>` with the real path everywhere below.
 
-2. Bring the bridge up on this checkout's code (needs Node ≥ 18 — if Node is missing or older, tell me and stop; don't install or upgrade anything yourself):
+2. Bring the bridge up on this checkout's code (needs Node ≥ 18 — if Node is missing or older, install it: macOS `brew install node`, Linux your package manager, Windows nodejs.org; if installing needs a password or fails, tell me and stop):
 
    ```
    node <repo>/cli.mjs stop
@@ -65,7 +66,7 @@ Set up chrome-bridge — the bridge that lets you drive my real, logged-in Chrom
 3. The one click only I can do — unless I installed Chrome Bridge from the [Chrome Web Store](https://chromewebstore.google.com/detail/chrome-bridge/kmhjlnokjigmnimgjjmiahlinjbcebkg), in which case skip this step entirely: the store copy connects on its own, and loading the unpacked folder too creates a second profile seat that makes every command demand `--profile`. Otherwise: ask me to open `chrome://extensions`, enable Developer mode, click Load unpacked, and select the `<repo>/extension` folder. On macOS you may run `open -a "Google Chrome" "chrome://extensions"` first. Then poll `node <repo>/cli.mjs health` every 5s (up to ~90s) until it reports `"extension":true`; if it doesn't, tell me what's still missing and stop — don't keep polling.
 
 4. Install your integration — pick the ONE that applies to you:
-   - Claude Code — link the skill so it auto-loads on browser tasks in every project and tracks every repo update (use `./.claude/skills/` instead of `~/.claude/skills/` only if I told you to scope it to this project):
+   - Claude Code or GitHub Copilot in VS Code (both load skills from `~/.claude/skills`) — link the skill so it auto-loads on browser tasks in every project and tracks every repo update (use `./.claude/skills/` instead of `~/.claude/skills/` only if I told you to scope it to this project):
 
      ```
      rm -rf ~/.claude/skills/chrome-bridge && mkdir -p ~/.claude/skills && ln -s <repo>/.claude/skills/chrome-bridge ~/.claude/skills/chrome-bridge
@@ -76,10 +77,10 @@ Set up chrome-bridge — the bridge that lets you drive my real, logged-in Chrom
    - any other agent (Cursor, Qwen, GLM, Kimi, …) — append this line to the instructions file you read at session start (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, …; create it in the project you're working in if none exists), but only if it's not already there. If your instructions live somewhere you can't edit, print the line and tell me to paste it there:
 
      ```
-     To drive my Chrome browser (real logged-in tabs), read <repo>/AGENTS.md and run `node <repo>/cli.mjs <command>`. If the health check fails, run `node <repo>/cli.mjs start`; it waits briefly for an already-loaded extension to reconnect. If health still reports the extension disconnected afterward, tell me to reload it.
+     To drive my Chrome browser (real logged-in tabs), read <repo>/.claude/skills/chrome-bridge/SKILL.md and run `node <repo>/cli.mjs <command>`. If the health check fails, run `node <repo>/cli.mjs start`; it waits briefly for an already-loaded extension to reconnect. If health still reports the extension disconnected afterward, tell me to reload it.
      ```
 
-5. Tell me the bridge is up. From the next session your integration auto-loads; in this one, read `<repo>/AGENTS.md` when a browser task comes up.
+5. Tell me the bridge is up. From the next session your integration auto-loads; in this one, read `<repo>/.claude/skills/chrome-bridge/SKILL.md` when a browser task comes up.
 ````
 
 </details>
@@ -90,9 +91,9 @@ Set up chrome-bridge — the bridge that lets you drive my real, logged-in Chrom
 git clone https://github.com/siropkin/chrome-bridge && cd chrome-bridge && ./install.sh
 ```
 
-Load the `extension/` folder as described above, then point your agent at [AGENTS.md](AGENTS.md), the full operating manual.
+Load the `extension/` folder as described above, then connect your agent the way `install.sh` prints: link the skill (Claude Code, Copilot in VS Code), or point any other agent at [SKILL.md](.claude/skills/chrome-bridge/SKILL.md), the operating manual.
 
-Check that it worked: `node cli.mjs health` should print `{"ok":true,"extension":true}`. You won't see anything in Chrome until the agent sends its first command; that's normal. To point the agent at one exact tab, use **Copy tab reference** in the toolbar popup and paste the `id:…` it gives you.
+Check that it worked: `node cli.mjs health` should print `{"ok":true,"extension":true}`. You won't see anything in Chrome until the agent sends its first command; that's normal. To point the agent at one exact tab, use **Copy tab reference** in the toolbar popup and paste what it gives you (`id:… --profile <name>`). The popup's **Profile:** line shows the name the agent uses for the Chrome profile you're in, so you can answer when it asks which profile to use.
 
 If chrome-bridge works for you, a [★ rating on the Chrome Web Store](https://chromewebstore.google.com/detail/chrome-bridge/kmhjlnokjigmnimgjjmiahlinjbcebkg) helps other people find it.
 
@@ -105,16 +106,17 @@ node cli.mjs snap localhost:8082         # the page as a compact tree with eleme
 node cli.mjs click localhost:8082 @e4    # click by ref
 node cli.mjs fill localhost:8082 @e2 "hello@example.com"
 node cli.mjs shot localhost:8082 out.png # screenshot, only when pixels matter
+node cli.mjs shot localhost:8082 pr.png --max 0  # full-res screenshot for a PR or chat
 ```
 
-A `snap` shows the page as a short text tree. The agent can limit it to one part of the page or get only what changed since the last snap, and it acts on the `@e` refs instead of guessing pixel coordinates:
+A `snap` shows the page as a short text tree. The agent can limit it to one part of the page or get only what changed since the last snap, and it acts on the `@e` refs instead of guessing pixel coordinates. A dialog that blocks the page, such as a cookie-consent banner, always shows up in it, even when the page is too big to list in full:
 
 ```
 table "Hacker News new | past | comments | ask | show | jobs | submit" @e1
   link "Hacker News" @e5
   link "new" @e6
   link "submit" @e12
-table "1. Playa Phone (playaphone.com) 122 points by cutoff 1 hour…" @e14
+table "1. Playa Phone (playaphone.com) 122 poin… hide | 41 comments" @e14
   link "Playa Phone" @e16
   link "41 comments" @e21
 ```
@@ -125,7 +127,7 @@ Writing your own agent loop? Skip the CLI and send JSON to `POST http://127.0.0.
 
 - "Check my dashboard every morning and post the change to Slack." A cron-launched agent uses the tab that's already logged in. If a login wall shows up, `wait --human` hands the tab to you.
 - Fill a CMS from a CSV without logging in again.
-- Compare a staging build against the Figma mockup. [design-eye.md](design-eye.md) is the checklist, and there's an 8px alignment grid overlay.
+- Compare a staging build against the Figma mockup. [The mockup-comparison recipe](.claude/skills/chrome-bridge/reference/recipes.md#compare-implementation-vs-mockup) is the checklist, and there's an 8px alignment grid overlay.
 - See a page in a mobile view without resizing your window: `emulate <tab> 390 844 mobile`.
 - Work in an existing authenticated session, including SSO and internal dashboards behind a VPN. This does not bypass login challenges or anti-bot restrictions.
 
@@ -167,13 +169,13 @@ You're giving an agent your logged-in browser, so the design assumes you want to
 
 - **Local only.** The server listens on `127.0.0.1` and rejects requests that come from web pages, so a site you visit can't drive it. **Any local process can**, though. Unload the extension at `chrome://extensions` when you're not using it.
 - **Readable code.** The whole extension is one unminified file (`extension/background.js`) plus a manifest. The Web Store build is the same files.
-- **Page content is untrusted.** Anything the bridge returns may contain prompt injection; the rules agents follow are in [AGENTS.md](AGENTS.md). Be careful with `upload`: it reads any local file the agent names into the page. Never let a page decide what gets attached.
+- **Page content is untrusted.** Anything the bridge returns may contain prompt injection; the rules agents follow are in [the skill](.claude/skills/chrome-bridge/SKILL.md). Be careful with `upload`: it reads any local file the agent names into the page. Never let a page decide what gets attached.
 - **Exported history leaves out secrets.** `history --batch` comments out typed and pasted text, dialog answers and upload paths.
-- **Some commands attach Chrome's debugger.** `net`, `emulate`, `shot`, `upload` and `dialog` do. While they run, Chrome shows its "started debugging this browser" bar, which goes away when the command finishes. Pages can detect the debugger, and anti-bot systems may flag the session. `snap`, `click`, `fill`, `eval` and the other commands don't attach it.
+- **Some commands attach Chrome's debugger.** `net`, `emulate`, `shot`, `upload` and `dialog` do. While they run, Chrome shows its "started debugging this browser" bar, which goes away when the command finishes. Pages can detect the debugger, and anti-bot systems may flag the session. `snap`, `click`, `fill`, `eval` and the other commands don't attach it — except on sites whose security policy forbids page scripts from evaluating code (GitHub, Hacker News, MDN…), where each command attaches it for a moment.
 
 ## Commands
 
-Commands that work on a tab take a `<match>`: part of the tab's URL or title, or an exact `id:<tabId>`. The full reference, with every flag and gotcha, is in [AGENTS.md](AGENTS.md#commands).
+Commands that work on a tab take a `<match>`: part of the tab's URL or title, or an exact `id:<tabId>`. The full reference, with every flag, is in [reference/commands.md](.claude/skills/chrome-bridge/reference/commands.md); gotchas are in [reference/recipes.md](.claude/skills/chrome-bridge/reference/recipes.md#gotchas).
 
 - **Read:** `snap` · `shot` · `measure` · `perf` · `console` · `net` · `fetch` · `eval` · `ask`
 - **Act:** `click` · `fill` · `type` · `paste` · `press` · `hover` · `drag` · `scroll` · `upload` · `clear` · `dialog`
@@ -184,7 +186,7 @@ Commands that work on a tab take a `<match>`: part of the tab's URL or title, or
 
 ## Local Diagnostic Logging
 
-**Background first:** reads, synthetic actions, direct-input uploads, and CDP screenshots do not activate tabs. Trusted input and chooser upload require a suitable visible/focused page and refuse hidden targets rather than switching focus. `emulate focus` is an explicit background option for focus-gated scripts, not a guarantee of rendering in an occluded window. Screenshot fallback now requires an already-active target; only explicit `activate` changes tab/window focus. See [the focus matrix](AGENTS.md#minimize-focus-changes).
+**Background first:** reads, synthetic actions, direct-input uploads, and CDP screenshots do not activate tabs. Trusted input and chooser upload require a suitable visible/focused page and refuse hidden targets rather than switching focus. `emulate focus` is an explicit background option for focus-gated scripts, not a guarantee of rendering in an occluded window. Screenshot fallback now requires an already-active target; only explicit `activate` changes tab/window focus. See [the focus matrix](.claude/skills/chrome-bridge/reference/recipes.md#minimize-focus-changes).
 
 Safety checks cover bulk close and queued `--diff` actions: a human-reclaimed tab cannot be closed with `--all`, and queued actions refuse to start after release or their dispatch deadline. Actions already running can still finish. Application `EvalError`s are returned without replaying the payload. `fetch --csrf` requires the tab and request to share an HTTP(S) origin, binds execution to that document in the isolated world, and refuses redirects. Pill history resets on navigation and worker restart; the current document can still read its own pill. Binary fetch streams are bounded by decoded bytes.
 
@@ -209,6 +211,8 @@ node cli.mjs extreload
 ```
 
 `health` warns when the loaded extension is older than the repo.
+
+**Web Store install.** Chrome updates the extension by itself, but not your bridge download. When the extension gets ahead, `health` says so and prints the update + restart line; the agent runs it.
 
 **Server stopped.** If the server dies or the machine reboots, the agent's health check fails and the agent restarts it with `node cli.mjs start`.
 

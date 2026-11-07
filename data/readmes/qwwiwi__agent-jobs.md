@@ -64,7 +64,7 @@ On macOS, set it before you load the launchd job. Then edit `~/.agent-jobs/my-ag
 agent-jobs start  --agent my-agent --title "review auth" --kind review \
   --repo ~/src/project --base main --complexity normal --brief-file brief.md   # prints the job id at once
 agent-jobs list   --agent my-agent
-agent-jobs result --agent my-agent <id>   # job-done line + report.md
+agent-jobs result --agent my-agent <id>   # job-done line + compact report (--full: all of report.md)
 ```
 
 Every job needs `--model` or `--complexity`. Full setup (all config keys, the shared brain, the HTTP API, upgrades, macOS): [docs/GUIDE.md → Install and configure](docs/GUIDE.md#install-and-configure).
@@ -154,6 +154,7 @@ Details: [docs/GUIDE.md, Limits](docs/GUIDE.md#limits) (codex runner, commits an
 | [Report contract](docs/GUIDE.md#report-contract) | Summary, Findings / Changes, Evidence, Not done / uncertain, Progress; secrets redacted from reports | every result reads the same way, gaps first |
 | [Cleanup and patches](docs/GUIDE.md#cleanup-and-patches) | worktrees removed 30 minutes after the job-done line, work kept as patches and a git ref; prune, log archive, per-job stats | disks stay clean and no work is lost |
 | [Skills and job context](docs/GUIDE.md#skill-subagents-and-job-context) | the `agent-jobs` skill for the session; owner rules, project cards and catalog skills for jobs | the session routes work well, and jobs start with the right context |
+| [Plugins in jobs](docs/GUIDE.md#example-superpowers-in-jobs) | Claude Code plugins such as superpowers for Claude jobs | jobs can use a plugin's skills |
 | [Schedules](docs/GUIDE.md#mcp-tools) | cron in local time: type a prompt into the session or start a job | recurring work without a human |
 | [Checks (dead-man's switch)](docs/GUIDE.md#mcp-tools) | work that is silent while healthy leaves a mark; a missed mark alerts the session | silent failures get noticed |
 | [notify_owner](docs/GUIDE.md#mcp-tools) | a job or the session asks for the owner's attention through the session's own channel | jobs can raise a hand, with rate limits |
@@ -216,7 +217,11 @@ Everything below the fold lives in [docs/GUIDE.md](docs/GUIDE.md), unabridged:
 - [docs/BENCHMARK.md](docs/BENCHMARK.md): subagent vs background subagent vs job benchmark and real-usage numbers
 - [CHANGELOG.md](CHANGELOG.md)
 
-Contributing: run `scripts/check.sh` (gofmt, go vet, go test) before a push; commit messages are English-only.
+Contributing: add a [changelog fragment](changelog.d/README.md) instead of editing
+Unreleased, and run `scripts/check.sh` before a push (fragment validation, gofmt,
+go vet, go test). Commit messages and PR titles are English-only; set `PR_TITLE`
+to include the title check. See [Releasing](docs/RELEASING.md) for assembly and
+PR/squash-title validation.
 
 ## Credits
 

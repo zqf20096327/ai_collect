@@ -44,11 +44,13 @@
 | ✦ **交互模式**  | GPT 的 **Intelligent UI**                     | 一句话进来，一张**能拖、能点、能改参数并即时重算**的原生界面出去：图表 / 表格 / 指标卡 / 选项卡 / 表单控件全部原生渲染，默认零工具调用、一轮直出   |
 | 🛠 **工作模式** | **DeepSeek Harness**（dsh，Codex 式 Agent Loop） | 多轮工具循环 + 每会话独立沙箱工作区 + 47 个内置工具，长程任务自主执行，端侧直出 PPT / Word / Excel / SVG，产物卡片附行级 diff |
 
-两个形态**共用同一套 Agent Loop 与沙箱工作区**，差别在行为纪律与**下发的工具面**——工作模式是「47 个内置工具全量 + 多轮工具循环 + 长程交付」，交互模式只下发 **27 个**（读素材 / 算真实数字 / 核实外部事实 / 出文件），长程工具（`todo_write` / `goal_*` / `schedule_*` / `subagent` …）根本不出现在它的请求里，所以是「快车道、一轮直出界面」。应用启动默认落在交互模式，空态大标题处的「交互模式 / 工作模式」胶囊可一键换挡。
+两个形态**共用同一套 Agent Loop 与沙箱工作区**，差别在行为纪律与**下发的工具面**——工作模式是「47 个内置工具全量 + 多轮工具循环 + 长程交付」，交互模式默认只下发 **27 个**（读素材 / 算真实数字 / 核实外部事实 / 出文件），长程工具（`goal_*` / `schedule_*` / `subagent` …）根本不出现在它的请求里，所以是「快车道、一轮直出界面」；它的**能力调度**另有九档提示词可选（轻简 / 效率 / 专家 / 经典 / 论文转换 / 法律检索 / 深度研究 / 信息筛滤 / LLM评估，见下）。应用启动默认落在交互模式，空态大标题处的「交互模式 / 工作模式」胶囊可一键换挡。
 
 两者底下是**同一套端侧执行环境**：需要真终端时落到完整 Linux `shell`，需要算数据时用原生 CPython，需要出文件时走本地 Office 生成器——全部在机内完成，不依赖任何远程执行服务。
 
 交互模式复刻的是 GPT 那套 Intelligent UI 的交付方式：回答不再是纯文本，而是一份**界面程序**，由应用渲染成原生可操作界面——柱状 / 折线 / 面积 / 横向条 / 饼环 / 径向 / 雷达 / 堆叠条、表格、指标卡、图片墙、选项卡 / 折叠面板 / 步骤条 / 卡片块，以及整套表单控件（滑块 / 开关 / 单选 / 多选 / 下拉 / 标签选择 / 选项卡 / 输入框 / 文本域）；控件的取值还能回传模型触发重算。工作模式则把 DeepSeek Harness（dsh）的核心 Agent Loop 完整移植到了端侧。
+
+交互模式还带**能力调度**：设置 →「能力」→「能力调度」可在九个提示词档位里切换。轻简档就是原来的交互模式提示词（默认零工具、最快）；其余八档把聊天引擎里对应智能体的成熟提示词**正文逐字移植**进来（效率=3.0-Flash、专家=3.0-Pro、经典=2.5-lite、论文转换=Cnvt-Paper、法律检索=Srch-Law、深度研究=Srch-Research、信息筛滤=Srch-Sift、LLM评估=Eval-LLM），只做交付形态适配（文字进界面组件、mermaid 由界面分层替代、确认参数改界面表单、平台工具映射到真实工具），并按档位追加 `record_search` / `todo_write` 与推荐思考强度；输出丰富度原则在八档统一为「组件 / 卡片 / 图表 / 分层 / 内容长度越多越好」，轻简保持原「8~14 个组件、够用为准」。分层设计与逐档适配点见[提示词适配说明](docs/prompts/interactive-tier-adaptation.md)，九档组合后的完整系统提示词见[能力调度档位导出](docs/prompts/interactive-tiers/README.md)。
 
 对上游的研究材料也在仓库里：[open-intelligent-ui 规格](docs/reference/open-intelligent-ui-spec.md) · [openui-lang 规范](docs/reference/openui-lang-spec.md)。
 
@@ -71,6 +73,8 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 - **原生 CPython，不是仿真**：`run_python` 把 CPython 3.12 编成 HarmonyOS 原生 `.so`，在应用进程内直接跑；numpy / pandas / scipy / matplotlib / Pillow / lxml / sympy / python-docx / python-pptx / reportlab 等随包离线可用，中文开箱能画；shell 里的 `python3` 也指向同一个解释器（新进程，`PYTHONHOME` 已接好）。
 - **端侧直出 Office**：PPT / Word / Excel / SVG 由本地生成器产出，基于 JSON 中间层，文档可无损读回、算子式编辑；PDF 与 Office 全部本地解析，不消耗多模态配额。
 - **47 个内置工具**：文件增删改查与模式匹配搜索、任务清单、图片查看、网络下载、PDF 解析、Office 读写、数据管道清洗转换与格式互转、JSVM-API 的 `run_js` 代码沙箱（不联网、不读写文件系统，后台线程执行并带超时保护），以及上面那套 `shell` / `run_python` 执行能力。
+- **用量与成本**：本地逐请求记账、按日聚合为 53 周热力图；内置 DeepSeek 峰谷价与 OpenCode 额度统计，支持月预算、CSV 导出与清空，记账只在响应结束时做 O(1) 归一化，不进入流式热路径。
+- **独立设置页**：模型配置 / 高级参数 / 用量与成本 / 本地联网搜索 / 多模态解析 / 朗读 / 终端 / 工具目录 / 检查更新；修改自动防抖保存，返回或切换方案前再同步一次，不丢输入。
 - **三协议接入**：OpenAI Completions（`/chat/completions`）、OpenAI Responses（`/responses`）、Anthropic Messages（`/messages`），均支持图片直传；深度思考与联网搜索按各协议显式控制。
 - **内置本地联网搜索**：软件内置、无需手动开关，工作模式与聊天模式都能调用，不受制于服务端联网开关。
 - **32 个技能**：5 个主 Skill 路由 + 7 个格式分支，命中即按需加载；PPT / Word / Excel 三个技能采用「门」式约束，交付前生成可核对的自检报告。
@@ -85,7 +89,7 @@ Guncat Work 是**鸿蒙手机上的原生 AI 工作台**：它不只负责对话
 
 ### 环境要求
 
-- DevEco Studio 6.0.1 或兼容版本
+- DevEco Studio 6.1.1 或兼容版本
 - HarmonyOS SDK API 24（`6.1.1`）
 - HarmonyOS 手机真机（平板 / 2in1 亦可，宽屏自动展开三栏布局）
 
@@ -157,12 +161,12 @@ Windows 侧 `git clone` 到 `third_party/bettersh/iec/thirdparty/` 下。
 **GCC ≤13**——node 22 的 V8 在 GCC 15 下编不过（`std::formatter<subrange>`/ranges 报错）。
 当前仓库已随包 `libnode.so`（node 22.19）；只有重建时才需要满足上述宿主条件。
 
-HAP 约 452.7 MB（约 432 MiB；精确字节数随构建与签名变化；原生命令集 + CPython + 运行库）。某个 `.so` 缺失时，对应的 launcher 不会注册，
+HAP 约 420 MiB（未签名；签名包约 429 MiB。精确字节数随构建与签名变化；原生命令集 + CPython + 运行库）。某个 `.so` 缺失时，对应的 launcher 不会注册，
 命令会干净地报 `command not found`，不影响其它命令。
 
 ### 首次配置
 
-应用设置中可保存并切换多套 API 配置：
+设置页支持多套 API 配置，修改会自动保存（无需手动点保存）：
 
 1. 接入方式（`openai-completions` / `openai-responses` / `anthropic-messages`）
 2. Base URL
@@ -192,7 +196,8 @@ HAP 约 452.7 MB（约 432 MiB；精确字节数随构建与签名变化；原�
 - **npm 解包宿主回归**：`bash third_party/bettersh/iec/tests/npm_unpack/run.sh`（2697 条目与 bsdtar 参考树逐文件比对，截断/只读失败路径）
 - **IEC 原生代码宿主回归**：`bash third_party/bettersh/iec/scripts/test_iec_native_host.sh`（exec 路由 / cwd 校验 / NCP 拒绝分类 / fs shim 路径映射；已接入 `check-all.sh`，不需要设备或 OHOS SDK）
 - **IEC exec 会话压测**：`bash third_party/bettersh/iec/scripts/stress_exec_session.sh`（8 路并发整条流上限 / 中途终止 / 50 轮 fd 与 RSS / 200 次短会话 / 0-1-50ms 超时；已接入 `check-all.sh`，`--fast` 跳过，不需要设备或 OHOS SDK）
-- 纯逻辑回归（当前 **754 项**全绿）：`cd test/guncat-harness && node setup.mjs && node test-core.mjs`
+- 纯逻辑回归（当前 **760 项**全绿）：`cd test/guncat-harness && node setup.mjs && node test-core.mjs`
+- 用量账本纯逻辑回归：`cd test/usage-harness && npx -y -p typescript@5.5.4 tsc -p tsconfig.json && node out/test/usage-harness/usage-test.js`（CI 已接入）
 - 服务层类型检查：`cd test/guncat-harness && node check-setup.mjs && npx -y -p typescript@5.5.4 tsc -p check/tsconfig.json`
 - PPT / Word / Excel 离线验证环境：`test/pptx-harness`、`test/docx-harness`、`test/xlsx-harness`
 - **真机验收**（装一次 HAP，逐项确认 shell / IEC）：[真机验收清单](docs/guides/device-verification.md)
@@ -200,7 +205,7 @@ HAP 约 452.7 MB（约 432 MiB；精确字节数随构建与签名变化；原�
 
 最后一层不能省：ArkUI 有一批**只有编译器才知道**的规则（`@Builder` 方法体内不允许声明局部变量、自定义组件属性名不能与内置属性同名、`@Prop` 的 null 需要显式联合类型），而 node 侧 harness 只覆盖 `common/**` 与 `service/**` 的纯 TS，不解析 `.ets`。
 
-前两层与三个 Office 生成器验证**已接 CI**，每次 push 与 PR 自动跑（见顶部 CI 徽章）；第三层需要本机 DevEco Studio，请在提交前自行跑一次。
+纯逻辑 / 类型检查、界面文案护栏、用量账本、IEC 静态一致性、文档链接 / 许可与三个 Office 生成器验证**已接 CI**，每次 push 与 PR 自动跑（见顶部 CI 徽章）；第三层需要本机 DevEco Studio，请在提交前自行跑一次。
 
 ## 文档
 
@@ -211,12 +216,16 @@ HAP 约 452.7 MB（约 432 MiB；精确字节数随构建与签名变化；原�
 | [Shell 工具：IEC 原生执行核](docs/architecture/iec-runtime.md)              | 命令 so 的 fork 执行、exec 会话 API、工作区一致性、并发与生命周期、构建链      |
 | [原生 Python 与跨域桥（历史）](docs/architecture/native-python.md)       | CPython 交叉编译、`run_python` 执行模型、`npy` 桥协议与性能数据（虚拟机方案已删除） |
 | [交互模式架构（Intelligent UI）](docs/architecture/interactive-mode.md)      | 提示词分叉、`guncat-ui lang` 契约、流式成形、交互闭环、扩展入口                      |
+| [交互模式能力调度提示词适配说明](docs/prompts/interactive-tier-adaptation.md) | 九档分层设计、共用/适配/轻简专属边界、逐档适配点、维护约定与未验证项 |
 | [项目结构](docs/architecture/project-structure.md)                       | 目录布局、数据流、核心组件                                                 |
 | [使用指南](docs/guides/usage.md)                                         | 分场景操作步骤                                                       |
 | [常见问题](docs/guides/faq.md)                                           | 排障与已知行为                                                       |
 | [内置智能体](docs/reference/builtin-agents.md)                            | 智能体清单与差异                                                      |
 | [持久化与主题系统](docs/reference/persistence-and-theme.md)                  | 本地存储与主题实现                                                     |
 | [工作区与会话数据的生命周期](docs/architecture/workspace-lifecycle.md)            | 磁盘布局、删除会话时的连带清理、启动清扫与四类残留对策                                   |
+| [真机验收清单（shell / IEC）](docs/guides/device-verification.md)               | 安装、自检、逐项命令、补测项与故障对照                                           |
+| [后台保活策略](docs/architecture/background-keepalive.md)                       | 短时 / 长时任务分层、落盘时机、系统约束与排障                                     |
+| [发版前检查清单](docs/architecture/release-checklist.md)                         | 快速门槛、Python 运行库 24 项、体积与版本号同步                                  |
 | [三端实现对照与对齐现状](docs/ALIGNMENT_STATUS.md)                              | 电脑版 / 安卓版 / 鸿蒙版逐项对照：外壳、命令执行、JS/Python、PDF、工作区、语音、后台，以及刻意的差异   |
 | [后台任务方案](docs/BACKGROUND_JOBS_PLAN.md)                               | `run_in_background` / `job_*` 在手机端的可行性评估（暂缓）                  |
 | [更新记录](CHANGELOG.md)                                                 | 4.2.0 → 7.2.0 全部版本变更                                          |
@@ -227,13 +236,13 @@ HAP 约 452.7 MB（约 432 MiB；精确字节数随构建与签名变化；原�
 
 - `ohos.permission.INTERNET`：访问模型 API。
 - `ohos.permission.MICROPHONE`：语音输入。
-- `ohos.permission.KEEP_BACKGROUND_RUNNING`：朗读后台音频长时任务。
+- `ohos.permission.KEEP_BACKGROUND_RUNNING`：朗读后台音频，以及 AI 回复 / Agent 循环的短时与长时任务保活（`audioPlayback` / `dataTransfer` / `taskKeeping`）。
 - 工作模式：文件读写全部在应用沙箱（`filesDir/workspaces/`）内完成，文件选择/保存走系统安全组件（DocumentViewPicker），**未新增任何权限**。
 - Shell 工具（IEC 原生执行核）：命令是随包的 HarmonyOS 原生 `.so`，由 exec 服务 fork 后直接跑，**不需要 JIT/可执行内存等受限权限**；没有虚拟机、没有对外监听端口，网络走应用已有的 `INTERNET`；命令只能看到本会话工作区，看不到手机其它目录。
 - Share Kit：接收其他应用分享的图片和文件。
 - CoreSpeechKit：文本朗读与语音识别。
 - AVSession Kit：后台媒体会话。
-- ArkData Preferences：本地配置持久化；对话历史存沙箱文件 `filesDir/guncat_conversations.json`。
+- ArkData Preferences：本地配置持久化；对话历史存沙箱文件 `filesDir/guncat_conversations.json`（主文件 + `.bak` + `.tmp` 三段式，启动时自动恢复），用量账本存 `filesDir/guncat_usage.json`。
 
 ## 隐私说明
 

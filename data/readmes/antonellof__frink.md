@@ -49,7 +49,7 @@ in Rust.
   `batched-bench` are ports. Tokenization is verified against libllama
   on twenty checkpoints under both special-token settings, and every
   engine number in [the speed table](benchmarks/RESULTS.md) was measured
-  against llama.cpp on the same host with the same file. 102
+  against llama.cpp on the same host with the same file. 101
   architectures run with a logit comparison behind them. Any other
   architecture stops with an error that says what is missing.
 - The server is OpenAI-compatible. On Metal, concurrent clients share
@@ -69,6 +69,15 @@ in Rust.
   `echo`, `truncate_prompt_tokens` and `cache_salt`. A field the server
   does not implement gets an error naming that field. Silently dropping
   it would look the same to the client as honouring it.
+- Speculative decoding with a draft model, as llama.cpp's `-md`: a
+  smaller GGUF from the same family and tokenizer proposes up to
+  `--draft-max` tokens and the target checks them in one batched pass.
+  The verification is the speculative-sampling rejection rule, so the
+  text is exactly what the target alone would write, at any
+  temperature; the drafter can only save forward passes, and the run
+  prints its acceptance length and per-position accept rate so you can
+  see whether it did. The server speculates by itself with prompt
+  lookup and reports what it bought in `usage`.
 - Structured output is enforced per token. Given a GBNF grammar, a
   forced `tool_choice` in ten of the eleven tool-call wire formats, or a
   tool's own `parameters` schema, a stack machine masks every token that
@@ -95,7 +104,7 @@ curl -fsSL https://raw.githubusercontent.com/antonellof/frink/main/scripts/insta
 ```
 
 Installs `frink` and `frink-server` into `~/.local/bin` (override with
-`FRINK_INSTALL_DIR`, pin with `FRINK_VERSION=v0.51.0`). The downloaded
+`FRINK_INSTALL_DIR`, pin with `FRINK_VERSION=v0.55.0`). The downloaded
 `frink` is built with `serve`, so one binary runs completions and
 serves the API. `frink-server` ships alongside it so an existing one on
 your PATH keeps working. Prebuilts are macOS arm64 with Metal and Linux
@@ -152,7 +161,33 @@ curl -s -X POST http://127.0.0.1:8383/v1/chat/completions \
 
 # 4. Check it against llama.cpp on your own machine.
 frink bench -m models/Llama-3.2-3B-Instruct-Q4_K_M.gguf -p 512 -n 128 -r 3 --compare
+
+# 5. Speculative decoding: a 1B drafter from the same family proposes,
+#    the 3B target verifies. The output is the target's own; the summary
+#    line reports the acceptance length (tokens per verification step).
+#    The drafter runs on the CPU, so the whole run does (-dev cpu).
+frink download bartowski/Llama-3.2-1B-Instruct-GGUF \
+  Llama-3.2-1B-Instruct-Q4_K_M.gguf --local-dir models
+frink -m models/Llama-3.2-3B-Instruct-Q4_K_M.gguf \
+  -md models/Llama-3.2-1B-Instruct-Q4_K_M.gguf --draft-max 5 \
+  -p "Write the numbers from 1 to 30 separated by commas:" \
+  -n 96 --temp 0 --no-cnv -dev cpu
 ```
+
+The run ends with lines like these, from a CPU run of exactly that
+command (the token rate is elided: it is one laptop run, not a
+benchmark):
+
+```
+frink: predict 96 tokens, … t/s over 18 verification steps
+frink: acceptance length 5.33 tokens/step, accepted 77 of 81 drafted
+frink: accept rate per position [0.89, 1.00, 1.00, 0.94, 0.93]
+```
+
+Compare against the same command without `-md` to see whether the
+drafter helps on your text. [docs/CLI.md](docs/CLI.md) has
+`--draft-p-min` and the cases it refuses (grammar-constrained runs,
+recurrent models, a drafter placed on the GPU).
 
 On `Q8_0` and `IQ4_NL`, frink's logits match llama.cpp's. On K-quants
 they drift, for a [known reason](docs/plans/llama-cpp-gap-inventory.md)
@@ -192,7 +227,7 @@ belongs to an unrelated crate.
 
 ```toml
 [dependencies]
-frink-inference = "0.51"
+frink-inference = "0.55"
 ```
 
 ```rust

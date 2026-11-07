@@ -156,6 +156,8 @@ py -3.12 -m venv .venv
 
 `scripts\showcase.py` re-renders the gallery scenes and rebuilds the README media (needs Blender + FFmpeg).
 
+The 9 tests that shell out to FFmpeg (all of `tests\test_reference.py` plus two in `tests\test_complex_scenes.py`) are skipped automatically when `ffmpeg`/`ffprobe` are not on `PATH` (reason: `needs FFmpeg + ffprobe on PATH`). CI installs FFmpeg, so all 165 tests run there.
+
 `scripts\export_check.py PROJECT_ID` rebuilds a finished project's ZIP in a fresh folder, reopens the `.blend`, and recaptures the comparison.
 
 ## Repository layout
@@ -212,3 +214,9 @@ Thank you to everyone who has contributed to BlendClone! New here? Read [CONTRIB
 ---
 
 <sub>Display name BlendClone; folder, environment variables and protocol identifiers keep the original `blendremake` name for compatibility.</sub>
+
+## Community and contributing
+
+[![Join the contributor Discord](https://img.shields.io/badge/Discord-Join%20the%20open%20source%20community-5865F2?logo=discord&logoColor=white)](https://discord.gg/wJfHQXfEMM)
+
+**Want to send a PR? Join the [blix open source Discord](https://discord.gg/wJfHQXfEMM) first.** It's the one server for everyone contributing to any blixvip repo: questions, ideas, PR discussion, help, and release news.

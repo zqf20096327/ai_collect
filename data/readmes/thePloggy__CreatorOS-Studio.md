@@ -12,8 +12,8 @@
 
 Built for the Comfy **#OpenSourceHiggsfield** challenge. Every model is open weights and runs locally: no API call, no credits, nothing leaves the machine.
 
-- **50 functions** across image, video, sound and editing
-- **118 presets**: dances, 3D dance studios, camera moves and effects, transitions, music styles, voices, reel formats
+- **62 functions** across image, video, sound and editing, each with a *How it works* page built from real renders
+- **118 presets**: dances, 3D dance studios, camera moves and effects, transitions, music styles, voices, reel formats, plus **56 looks** (styles, lights, campaign and product looks)
 - **25 built-in recipes**, plus an internal app store: browse and import **262 official ComfyUI workflows** (29 run without downloading anything), or import your own
 - **MCP server** (15 tools) and an agent skill, so Claude or any MCP client can drive the studio
 - **MiniMax H3 ready**: pre-wired, weights supplied by the user (its licence excludes the EU, the UK, South Korea and the US)
@@ -25,6 +25,8 @@ Built for the Comfy **#OpenSourceHiggsfield** challenge. Every model is open wei
 - **Direct, don't prompt.** Block a shot in 3D Scene, film the same moment from a second camera (Re-shoot), draw a sketch and pick one of three interpretations, or fill a shot card (camera, lens, light, film stock) instead of writing a prompt.
 - **Restore.** An old photo or a damaged clip comes back clean and in HD: scratches and noise removed, optional colour (photos and black and white clips), detail rebuilt by SeedVR2, with a before / after slider against the original.
 - **A public demo on a real GPU, with locks.** Anyone can try it live. The demo refuses anything involving a minor and any nudity, accepts visitor photos only when no person is in them (so no deepfake of a real person), keeps the owner's uploads private, every clip is checked automatically (black, frozen or jumping clips are re-shot once), and every render goes through a nudity detector (NudeNet, on the CPU): a positive is moved to a closed quarantine folder, never shown.
+- **Fix a clip in one click.** Refine details, day to night, unblur, remove compression, and now **colorize** a black and white clip, **restore** a damaged archive (a 320×180 sepia scan comes back sharp and in colour) or **add water** to a shot, with the official LTX-2.5 IC-LoRAs. Coverage gives a real wide, three-quarter and close-up of a scene, Next Shot the shot that comes after, Image to 3D a textured turntable.
+- **Your own LoRAs, your own character per page.** Import a LoRA from Extensions → Import LoRA: the studio reads its architecture and offers it with the engine it works on. A character chosen in a page applies to that page only; without one, a carousel keeps the face of its start photo.
 - **Nothing is a black box.** Every render downloads as the exact ComfyUI workflow it ran, with its models and their licences, so you can keep going in ComfyUI.
 
 ## Measured on one card
@@ -50,8 +52,9 @@ Every number below was measured on the author's machine on 3 November 2026: one 
 | Restore a tiny clip (320×182) | SeedVR2 7B, two passes | 1756×1080, 4.8 s | 293 s | – | 28.2 GB |
 | Train a character LoRA | ai-toolkit, FLUX.2 Klein | LoRA, 1,200 steps | 30 min | – | – |
 | Train a character LoRA | ai-toolkit, Krea 2 | LoRA, 1,200 steps | 38 min | – | – |
+| Train a character LoRA | ai-toolkit, FLUX 3 Image Klein Base | LoRA, 2,500 steps, 22 images | 30 min | – | – |
 
-On this machine the local LLM (Ollama) that rewrites prompts and plans reels runs on the CPU (`CREATOROS_LLM_GPU=0`), so it never competes with a render for VRAM; by default it uses the GPU when the card is free.
+The local LLM (Ollama) that rewrites prompts and plans reels uses the GPU when the card is free and falls back to the CPU behind a long render. On a machine whose ComfyUI is shared with another pipeline, `CREATOROS_LLM_GPU=libre` only takes the card when ComfyUI has no job from another client; `CREATOROS_LLM_GPU=0` keeps it on the CPU.
 
 ## What it does
 
@@ -76,7 +79,7 @@ On this machine the local LLM (Ollama) that rewrites prompts and plans reels run
 - **Social check**: before you post, the local vision model looks at four frames of a clip and scores the hook, the subject, the image and the story, ffmpeg measures the length, format, sound and cuts, and you get three concrete tips. It is a quality estimate, not a prediction of views.
 - **Extensions**: add functions without code. An extension is a ComfyUI workflow (API format) plus an `app.json` that describes its form; the studio checks that every node and model already exists in ComfyUI before running it, and never installs code. Two ship with the studio (Illustration, Ambient sound); the owner can install more from the catalogue. Write your own: [docs/EXTENSIONS.md](docs/EXTENSIONS.md). **Official ComfyUI workflows open as studio pages**: the studio converts a workflow from the template library (editor format, subgraphs and dynamic inputs included) to the API format, turns its prompt, images and seed into a form, and runs it like any other tool (252 of the 262 open templates convert).
 - **Official ComfyUI workflows**: the Extensions page also lists the 262 open-source workflows that ship with ComfyUI, with the models each one is missing. The owner downloads them in one click, from the official address written in the workflow, and opens the workflow in ComfyUI. The owner can also **update ComfyUI in one click** (its official repository and requirements, torch untouched) and **install missing third-party nodes** from the ComfyUI-Manager node map (git clone + requirements; their install scripts are never run). The public demo refuses any third-party code; a local install allows it.
-- **Train your character**: pick 8 to 30 library images of the character and a trigger word, then tick one or several engines: FLUX.2 Klein and Krea 2. ai-toolkit (ostris, MIT) trains each LoRA on your GPU, one after the other, and the studio shows the estimated time before you start, the live step count and the time left, with a cancel button. About 30 minutes (Klein) to 38 minutes (Krea 2) for 1,200 steps on a 5090. Each LoRA is attached to the character for its engine, and the trigger word is only added where a LoRA exists. Without a Klein LoRA, Klein uses the character's profile photo as a face reference instead. Owner only.
+- **Train your character**: pick 8 to 30 library images of the character and a trigger word, then tick one or several engines: FLUX.2 Klein, Krea 2 and FLUX 3 Image Klein. ai-toolkit (ostris, MIT) trains each LoRA on your GPU, one after the other, and the studio shows the estimated time before you start, the live step count and the time left, with a cancel button. About 30 minutes (Klein) to 38 minutes (Krea 2) for 1,200 steps on a 5090. Each LoRA is attached to the character for its engine, and the trigger word is only added where a LoRA exists. Without a Klein LoRA, Klein uses the character's profile photo as a face reference instead. Owner only.
 - **Talking avatar**: one photo plus a voice (an audio file or the microphone, up to 20 s); the character speaks with lips in sync (InfiniteTalk on Wan 2.1, chained block by block to the length of the audio). Or just type the line: LTX-2.5 makes the voice and the lip movement in a single 4 to 8 s render, no audio file needed (works best on a close shot).
 - **Editor**: put library clips and photos on a timeline, trim them with the mouse, crop each shot, add cuts, crossfades or fades to black, text per shot and music, with a global timeline and a playhead. Between two shots, a **generated transition**: Wan 2.2 draws a continuous passage from the last frame of one shot to the first frame of the next, and the clip is inserted between them. Export renders on the CPU with ffmpeg as a library asset.
 - **Photo**: text-to-image with Krea 2 (FLUX.2 Klein 9B, MOSS Image and FLUX 3 Image Klein optional). A local LLM (Ollama) rewrites the prompt first. Add up to six reference images from the library and FLUX.2 Klein carries the objects, clothes and places into the new photo. One-click presets build on them: **Try-on** (the character wears the outfit of the reference), **Product placement** (the character presents the product) and **Moodboard** (the references set the palette, light and texture, not the content).
@@ -104,21 +107,23 @@ Desktop UI (`src/v2`) and a mobile UI (`src/m`) are served by the same backend; 
 | | |
 |---|---|
 | ![Home](docs/screenshots/home.jpg) | ![Menus](docs/screenshots/menus.jpg) |
-| **Home**: every tool shows a real render; Movie Studio featured | **Menus**: Image, Video, Audio and Extensions, with the names you know and the models behind them |
+| **Home**: every tool shows a real render; Movie Studio featured | **Menus**: Image, Video, Audio and Extensions, a thumbnail for every tool and the models behind them |
 | ![Styles](docs/screenshots/styles.jpg) | ![Character](docs/screenshots/character.jpg) |
-| **Styles**: 36 one-click looks, plus Relight and Expand mosaics | **Characters**: train a LoRA in the UI, profile, identity and voice |
+| **Styles**: 56 one-click looks, plus Relight and Expand mosaics | **Characters**: train a LoRA in the UI, profile, identity and voice |
 | ![One-click reel](docs/screenshots/reel.jpg) | ![Movie Studio](docs/screenshots/cinematic.jpg) |
 | **One-click reel**: brief, shots, clips, edit | **Movie Studio**: a shot card instead of a prompt |
 | ![Product Shot](docs/screenshots/product.jpg) | ![A page per tool](docs/screenshots/tool-page.jpg) |
-| **Product Shot**: packshot, scene, poster, your character with the product, a clip | **A page per tool**: source on the left, how it works and every past render on the right |
+| **Product Shot**: packshot, scene, poster, your character with the product, a clip | **A page per tool**: a *How it works* made of real renders (here Colorize), the effects or your library as a big gallery, a compact panel on the left |
 | ![Camera moves](docs/screenshots/camera-effects.jpg) | ![Library](docs/screenshots/library.jpg) |
 | **Camera Moves & Effects**: pick a move, pick a photo | **Library**: folders, characters, images, videos and audio |
 | ![3D Scene](docs/screenshots/stage.jpg) | ![Viewer](docs/screenshots/viewer.jpg) |
 | **3D Scene**: block a shot on a 3D set, scrub the camera, get a finished shot | **Viewer**: full recipe, seed, render time, checks, ComfyUI workflow |
 | ![Re-shoot](docs/screenshots/reshoot.jpg) | ![Talking avatar](docs/screenshots/talking-avatar.jpg) |
 | **Re-shoot**: the same moment from a new camera angle, previewed in 3D | **Talking avatar**: one photo, one voice |
+| ![Dance](docs/screenshots/dance.jpg) | ![Sound Studio](docs/screenshots/sound.jpg) |
+| **Dance**: 34 motion-captured dances in 20 3D studios, big previews, filter by style, your character takes the mannequin's place | **Sound Studio**: music with lyrics and vocals from a preset or from scratch, two takes side by side, history, voices and sound effects |
 
-![Mobile: library and one-click reel](docs/screenshots/mobile.jpg)
+![Mobile: One-click Reel, Video Effects and Dance, each with its How it works](docs/screenshots/mobile.jpg)
 
 ## Architecture
 
@@ -194,6 +199,15 @@ ComfyUI is expected at `http://127.0.0.1:8188` and Ollama at `http://127.0.0.1:1
 5. **Models**: downloaded into `models/` (or the default folder of your `extra_model_paths.yaml`), with progress and resume. Files are written as `.part` and renamed when complete.
 6. **Ollama**: checks the service and offers `ollama pull` for `CREATOROS_LLM` and `CREATOROS_VLM_DESCRIBE`.
 7. **Character**: optionally creates `<CREATOROS_DATA>/persona.json` from the example.
+8. **Studio settings**: a few questions written once to `<CREATOROS_DATA>/studio.env`, so a local install is never held back by a lock meant for a public demo:
+   - **who uses the studio**: *only me* leaves everything open (your own photos, LoRA import, voice clone, extensions, no render limit); *shared* generates an owner key, and visitors get the public-demo limits;
+   - **address**: this machine only, or your local network;
+   - **nudity filter on renders**: off, or on (installs NudeNet in its own Python environment);
+   - **local LLM**: GPU when free, GPU only when ComfyUI has no job from another app (a ComfyUI shared with another pipeline), or always CPU;
+   - **adult content** (single-user install listening on this machine only, typed confirmation): see [Content policy](#content-policy);
+   - **LoRA folder**.
+
+   Anything about minors is refused in every mode; it is not a setting.
 
 ```bash
 npm run setup -- --check         # report only, change nothing (alias --dry-run)
@@ -213,7 +227,7 @@ Only variants that passed the lab are listed. [docs/LAB.md](docs/LAB.md) gives t
 
 ### Configuration
 
-All settings are environment variables. The main ones:
+All settings are environment variables; the setup wizard writes the usual ones to `<CREATOROS_DATA>/studio.env` (one `KEY=value` per line, read at start; a variable set in the environment wins). The main ones:
 
 | Variable | Default | |
 |---|---|---|
@@ -227,15 +241,19 @@ All settings are environment variables. The main ones:
 | `CREATOROS_LLM` / `CREATOROS_VLM_DESCRIBE` | `mistral-small:latest` / `qwen2.5vl:7b` | |
 | `CREATOROS_PHOTO_ENGINE` | `krea` | `krea` or `klein` |
 | `CREATOROS_OWNER_KEY` | unset | locks the studio for a public demo, see below |
+| `CREATOROS_LLM_GPU` | unset (GPU when free) | `libre`: GPU only when ComfyUI has no job from another client; `0`: always CPU |
+| `CREATOROS_CONTENU_ADULTE` | unset | `1`: adult content on text-only renders, local single-user install only (see Content policy) |
+| `CREATOROS_FILTRE_PYTHON` | `~/venvs/filtre-images/bin/python` | Python with `nudenet`, for the nudity filter on renders; absent = filter off |
 | `CREATOROS_VOIX_PYTHON` | `$CREATOROS_DATA/voix-venv/bin/python` | Python with `kokoro` installed, for voice-over and dubbing voices |
 | `CREATOROS_AI_TOOLKIT` | `~/ai-toolkit` | ai-toolkit folder, for character training |
+| `CREATOROS_AI_TOOLKIT_FLUX3` | `~/ai-toolkit-flux3` | a recent ai-toolkit (with `arch: flux3`), for FLUX 3 Klein character LoRAs |
 | `CREATOROS_NOTIF_URL` | unset | [ntfy](https://ntfy.sh) topic URL: the owner is notified when an Internet visitor starts a render, and when one fails or is refused |
 
 ### Optional extras
 
 - **Voice-over**: `uv venv -p 3.12 $CREATOROS_DATA/voix-venv && VIRTUAL_ENV=$CREATOROS_DATA/voix-venv uv pip install "kokoro>=0.9.4" soundfile` (the English model downloads on first use).
 - **Voice cloning**: `uv venv -p 3.11 $CREATOROS_DATA/clone-venv && VIRTUAL_ENV=$CREATOROS_DATA/clone-venv uv pip install chatterbox-tts`; on an RTX 50-series card, then install torch and torchaudio 2.8 from the cu128 index.
-- **Character training**: install [ai-toolkit](https://github.com/ostris/ai-toolkit) in `~/ai-toolkit` with its own venv; the studio runs it as a job and frees ComfyUI's VRAM first.
+- **Character training**: install [ai-toolkit](https://github.com/ostris/ai-toolkit) in `~/ai-toolkit` with its own venv; the studio runs it as a job and frees ComfyUI's VRAM first. FLUX 3 Klein LoRAs need a recent ai-toolkit (the `flux3` architecture, November 2026 or later) in `~/ai-toolkit-flux3`, and access to [black-forest-labs/flux-3-image-klein-base](https://huggingface.co/black-forest-labs/flux-3-image-klein-base) (accept the FLUX Kommunity License with the account of your Hugging Face token). The LoRA is trained on Klein Base and applied to the distilled Klein the studio renders with. Detailed captions per image (`legendes` on `POST /api/personas/:id/entrainer`) give a clearly closer likeness than the default `trigger, photo of trigger`.
 - **MiniMax H3**: the studio is wired for it, but its weights are not shipped: the MiniMax H3 licence grants nothing in the EU, the UK, South Korea or the USA. If your region is allowed, add the five files in Settings > Optional models. The public demo, hosted in the EU, never offers it.
 
 ### Your character
@@ -290,13 +308,17 @@ The MCP server exposes `generate_photo`, `image_to_video`, `make_reel`, `dance` 
 
 ## Community
 
-Shared on Reddit the week of the submission (numbers as of 28 October 2026):
+Shared on Reddit since the submission (numbers as of 6 November 2026):
 
-| Community | Views | Upvotes | Comments | Shares |
-|---|---|---|---|---|
-| r/comfyui | 34,000 | 98 | 27 | 45 |
-| r/StableDiffusion | 22,000 | 43 | 14 | 12 |
-| r/OpenSourceAI, r/SelfHostedAI | 1,000 | 3 | 1 | 0 |
+| Post | Views | Upvotes |
+|---|---|---|
+| r/comfyui, launch | 39,000 | 100 |
+| r/StableDiffusion, launch | 30,000 | 44 |
+| r/comfyui, one-week update | 3,000 | 7 |
+| r/OpenSourceAI, r/SelfHostedAI | 1,200 | 3 |
+| **Total** | **≈ 73,000** | **154** |
+
+The live demo logged about 600 daily visits and 300 visitor renders over its first 17 days.
 
 What people asked for, and what changed because of it:
 
@@ -309,7 +331,9 @@ A fork built around reference-driven video has been announced. Forks are welcome
 
 ## Content policy
 
-This edition is general-audience only. Every job runs with a single SFW register, the rewriter instructions keep the character fully clothed, and a blocklist (`server/t0.js`) rejects prompts and captions with forbidden terms before anything reaches the GPU. Every render of a character also states that she is an adult woman in her mid-twenties, so a prompt that names no person cannot drift towards a younger-looking figure.
+The public demo is general-audience only, and so is any install by default. Every job runs with a single SFW register, the rewriter instructions keep the character fully clothed, and a blocklist (`server/t0.js`) rejects prompts and captions with forbidden terms before anything reaches the GPU. Every render of a character also states that she is an adult woman in her mid-twenties, and a render without a character states that every person shown is an adult, so a prompt that names no person cannot drift towards a younger-looking figure.
+
+**Adult content on a local install.** On your own machine, the setup wizard can turn adult content on (`CREATOROS_CONTENU_ADULTE=1`; you type `adult` to confirm, `--yes` never does it). It only takes effect when all of these hold: no owner key (a shared studio or a public demo always stays SFW), the server listens on this machine only, and the render has no face that could belong to a real person — no character, no LoRA, no imported photo as a source or reference. Anything that refers to a minor is refused in every mode.
 
 ## Characters in the demo
 

@@ -379,15 +379,15 @@ are durable and repository state remains local.
 
 The full block diagram and the Observe → Decide → Delegate → Verify → Promote → Learn loop: [The whole system](docs/ARCHITECTURE.md#the-whole-system).
 
-## What's new in 0.12.91
+## What's new in 0.12.93
 
-- 0.12.91 publishes the 0.12.90 memory release: the 0.12.90 tag never got a GitHub release because one extension test failed CI on Linux and macOS. The runtime is the same.
-- Much less memory: the plan snapshot, dashboard and workforce catalog read a narrow projection of each task card instead of decoding every card, so one read peaks at about 160 MB instead of 1.5 GB.
-- `needfix_list` no longer holds every task card and NeedFix row in memory to show one page.
-- The reconciler's attribution pass reads only the accepted cards' receipts instead of decoding every card: about 90 MB instead of 1.5 GB per pass.
-- Fewer MCP server processes: the extension keeps one live server per owner across restarts and reaps it on dispose, instead of piling up 2-3 per window plus one per chat.
-- Faster idle housekeeping: the process-ledger read uses a persisted checkpoint, 0.55 s instead of 12.6 s.
-- The built-in Manager starts again on the `codex_cli` backend (GitHub #33), and the [callback docs](docs/CALLBACKS.md#manager-transports) now say which chats are woken automatically: the built-in Manager and Claude Code are, a Codex sidebar chat is inbox-only.
+- The dashboard no longer shows "Dashboard snapshot delayed (mcp_request_timeout)" every few minutes. The work-card decision counts grouped on an expression that read each card's JSON, so SQLite copied about 450 MB of cards into its sort on every 30 s snapshot (5-8 s). The population is now computed once and the small result is grouped: 0.06 s. A freshly reloaded window gets its first summary in about 2 s.
+- A delayed snapshot is shown under its own heading, "Dashboard snapshot delayed", instead of "MCP connection unavailable".
+- Auto-rework stops when a relaunched candidate is byte-identical to the one that just failed, instead of relaunching the same bytes again.
+- Tool descriptions and the manager bootstrap contract name only tools that exist on the same MCP profile (`aiworkhub_repo_current`, not `aiworkhub_repository_current`), with writes on and off.
+- The manager tool list has 15 fewer entries (115 with writes on): manager-loop control, the VS Code LM worker bridge and legacy lifecycle tools are unlisted but still callable by exact name.
+- Near-duplicate tools (review, status, health, NeedFix, Roadmap) each say which sibling to use instead.
+- The background callback watcher runs its seed-eligible card scan at most once per 30 s instead of on every 2 s poll.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Continuous Audit as a Service (CAAS)

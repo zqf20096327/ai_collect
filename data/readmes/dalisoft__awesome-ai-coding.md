@@ -98,6 +98,7 @@ sorted by minimal plan price.
 | [Nous Portal](https://portal.nousresearch.com)            | [PLUS](https://portal.nousresearch.com) (20 \$/m)                                                           | -            | $22 usage             |
 | [Ollama Cloud](https://ollama.com/pricing)                | [Pro](https://ollama.com/pricing) (20 \$/m)                                                                 | -            | $60 usage             |
 | [synthetic][synthetic-ref]                                | [Standard][synthetic-ref] (20 \$/m)                                                                         | -            | 135 msg / 5-hr        |
+| [Imagera Code](https://imagera.ai/code)                   | [Pro](https://imagera.ai/code) (20 \$/m)                                                                    | -            | 3-hr + weekly limits  |
 | [Cerebras Code](https://www.cerebras.ai/code) ⛔️          | [Pro](https://www.cerebras.ai/code) (50 \$/m)                                                               | -            | 24 M. Tokens / day    |
 | [Alibaba AI Coding Plan][alibaba-cloud-ref]               | [Pro][alibaba-cloud-ref] (50 \$/m)                                                                          | -            | <= 90,000 req / month |
 | [Zyloo](https://zyloo.io)                                 | [PRO](https://zyloo.io/subscription) (76 \$/m)                                                              | -            | -                     |
@@ -275,6 +276,7 @@ List of AI-powered command-line coding-agent tools. See [feature matrix](./FEATU
 | [Conductor](https://conductor.build)           | GUI  | -            | Your sub | -      | -     | -         | No          |
 | [herdr](https://herdr.dev)                     | TUI  | -            | Your sub | -      | -     | -         | Yes         |
 | [Orca](https://onorca.dev)                     | GUI  | -            | Your sub | -      | -     | -         | Yes         |
+| [Orchestrator](https://orchestrator.inc)       | GUI  | -            | Your sub | -      | -     | -         | Yes         |
 | [Paradev](https://paradev.com)                 | GUI  | -            | Your sub | -      | -     | -         | Yes         |
 | [Paseo](https://paseo.sh)                      | GUI  | -            | Your sub | -      | -     | -         | Yes         |
 | [super.engineering](https://super.engineering) | GUI  | -            | Your sub | -      | -     | -         | No          |

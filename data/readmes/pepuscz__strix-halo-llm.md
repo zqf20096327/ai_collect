@@ -15,7 +15,7 @@ Each setup serves **one conversation at a time**. Speeds are tokens per second: 
 **Maya DS4 HIP EXL3 2.25 bpw dual RX 7900 XTX** runs [turboderp's EXL3 quant](https://huggingface.co/turboderp/DeepSeek-V4.1-Flash-1017-exl3) with inputs up to **1M tokens**. [Ansible recipe](ansible/releases/maya-ds4-exl3-dual-xtx-1m.yml).
 
 <!-- quant-comparison-note -->
-EXL3 supports 1M context. GSQ-RCO decodes faster at long inputs; Maya-XS v2 is the fastest, with higher perplexity.
+EXL3 supports 1M context and decodes faster than GSQ-RCO at long inputs; Maya-XS v2 is the fastest, with higher perplexity.
 <!-- /quant-comparison-note -->
 
 <!-- quant-comparison-table -->
@@ -25,10 +25,10 @@ EXL3 supports 1M context. GSQ-RCO decodes faster at long inputs; Maya-XS v2 is t
 | Model size, excluding Engram | 159 GB | 155 GB | 178 GB | 117 GB |
 | Perplexity (lower is better) | 7.20 | 7.37 | 7.25 | 7.94 |
 | Quality checks passed | 30/30 | 30/30 | 30/30 | 30/30 |
-| Decode, short prompt | 52 | 61 | 42 | 81 |
-| Decode, 128K input | 37 | 56 | 26 | 96 |
-| Prefill, 8K input | 605 | 537 | 478 | 661 |
-| Prefill, 128K input | 1,602 | 1,673 | 1,669 | 1,762 |
+| Decode, short prompt | 60 | 61 | 42 | 81 |
+| Decode, 128K input | 75 | 56 | 26 | 96 |
+| Prefill, 8K input | 627 | 537 | 478 | 661 |
+| Prefill, 128K input | 1,654 | 1,673 | 1,669 | 1,762 |
 <!-- /quant-comparison-table -->
 
 GSQ-RCO keeps its own [recipe](ansible/releases/maya-ds4-gsq-dual-xtx-512k.yml); Maya-S and Maya-XS v2 were measured for comparison only. [All measurements and methods](docs/BENCHMARKS.md#dual-rx-7900-xtx-deepseek-v41-flash-1017).
@@ -89,10 +89,32 @@ bin/strixctl verify
 | Setup | `STRIX_SYSTEM` | Free disk needed |
 |---|---|---:|
 | **DeepSeek EXL3 2.25** | `maya-ds4-exl3-dual-xtx` | ~423 GB |
+| DeepSeek EXL3 2.25, one card | `maya-ds4-exl3-single-xtx` | ~423 GB |
 | DeepSeek GSQ-RCO | `maya-ds4-gsq-dual-xtx` | ~335 GB |
 | GLM Maya-M | `maya-glm-dual-xtx` | ~240 GB |
 
 The installer verifies the hardware and artifacts, builds the runtime, and enables `strix-halo-inference.service` on `127.0.0.1:18109`. Dual-card recipes use ROCm 7.2.4; pinned build details are in [SOURCES.md](docs/SOURCES.md).
+
+## Single RX 7900 XTX setup
+
+For a host with **one RX 7900 XTX** (24 GB VRAM) beside the M5's Radeon 8060S and 128 GiB RAM: the same EXL3 2.25 bpw model and engine as the dual recipe, with the 8060S holding a 113 GB expert pool, inputs up to **1M tokens**. [Ansible recipe](ansible/releases/maya-ds4-exl3-single-xtx-1m.yml).
+
+<!-- single-xtx-table -->
+| | **1 × RX 7900 XTX** | 2 × RX 7900 XTX |
+|---|---:|---:|
+| Longest input | 1M | 1M |
+| Quality checks passed | 29/30 | 30/30 |
+| Perplexity (lower is better) | 7.19 | 7.20 |
+| Decode, short prompt | 46 | 60 |
+| Decode, 128K input | 55 | 75 |
+| Prefill, 8K input | 356 | 627 |
+| Prefill, 128K input | 942 | 1,654 |
+| Real code, 130K tokens: prefill / decode | 604 / 40.2 | 1,434 / 50.3 |
+<!-- /single-xtx-table -->
+
+![DeepSeek-V4.1-Flash-1017 reading and answer-writing speeds with one RX 7900 XTX and a Radeon 8060S helper, against two cards](docs/benchmark-single-xtx.svg)
+
+Install it with the commands above and `export STRIX_SYSTEM=maya-ds4-exl3-single-xtx` (~423 GB free disk; the same model files as the dual recipe). On a host with more cards it serves on the first RX 7900 XTX; set `strix_xtx_pci` (e.g. `"c6:00.0"`) in the inventory to pick another. [Measurements and method](docs/BENCHMARKS.md#single-rx-7900-xtx-deepseek-v41-flash-1017).
 
 ## BOSGAME M5 only
 

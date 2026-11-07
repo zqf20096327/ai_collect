@@ -2,7 +2,7 @@
 
 > **An AI Operating System that autonomously controls your PC, Android phone, local files, and lifelong memory — not just your code.**
 
-> **Open-Source · Semantic Behavioral Pattern Engine · Live Mid-Execution Correction · Inline Comms Preview & Edit · Line-Drift-Free Editing · Lifelong Episodic Memory · Dual-Engine Voice · Proactive HITL · Android Termux Bridge · Telegram Remote Control · Hybrid RAG · PC System Monitoring · Plug-and-Play MCP Support**
+> **Open-Source · Semantic Behavioral Pattern Engine · Live Mid-Execution Correction · Mid-Task Agent Clarification (`ask_user`) · Inline Comms Preview & Edit · Line-Drift-Free Editing · Lifelong Episodic Memory · Dual-Engine Voice · Proactive HITL · Android Termux Bridge · Telegram Remote Control · Hybrid RAG · PC System Monitoring · Unified Portal · Plug-and-Play MCP Support**
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
@@ -27,11 +27,17 @@
 [![GitHub Stars](https://img.shields.io/github/stars/thekaifansari01/Jarvis-OS-Agent?style=for-the-badge&logo=github)](https://github.com/thekaifansari01/Jarvis-OS-Agent/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/thekaifansari01/Jarvis-OS-Agent?style=for-the-badge&logo=github)](https://github.com/thekaifansari01/Jarvis-OS-Agent/forks)
 
+[![Official Website](https://img.shields.io/badge/Website-Live-00d4ff?style=for-the-badge&logo=vercel&logoColor=white)](https://jarvis-os-agent.vercel.app/)
+[![Documentation](https://img.shields.io/badge/Docs-Complete-00d4ff?style=for-the-badge&logo=read-the-docs&logoColor=white)](https://jarvis-os-agent.vercel.app/documentation)
+[![Live Demo](https://img.shields.io/badge/Demo-Neon%20Snake-00e676?style=for-the-badge&logo=gamepad&logoColor=white)](https://snakegamebyjarvis.netlify.app/)
+
 ---
 
 ## 📌 Table of Contents
 
+- [Documentation & Resources](#-documentation--resources)
 - [Demo & Proof of Work](#-demo--proof-of-work)
+- [UI Components Overview](#-ui-components-overview)
 - [Why Jarvis?](#-why-jarvis)
 - [Core Features](#-core-features)
 - [Live Mid-Execution Correction](#-live-mid-execution-correction-signature-feature)
@@ -56,6 +62,77 @@
 
 ---
 
+## 📚 Documentation & Resources
+
+Complete documentation covers every subsystem of JARVIS — from quick installation to deep dives into the four premium UIs, the 14-step graceful shutdown sequence, and the ZMQ/File/UDP IPC architecture that binds them.
+
+### 🌐 Live Resources
+
+| Resource | Link | Description |
+|----------|------|-------------|
+| 🌐 **Official Website** | [jarvis-os-agent.vercel.app](https://jarvis-os-agent.vercel.app/) | Landing page · Features · Live demo |
+| 📖 **Full Documentation** | [docs/documentation](https://jarvis-os-agent.vercel.app/documentation) | Complete reference (20+ sections) |
+| ❓ **FAQ** | [docs/faq](https://jarvis-os-agent.vercel.app/faq) | Common questions answered |
+| 👤 **About the Builder** | [docs/about](https://jarvis-os-agent.vercel.app/about) | Story behind JARVIS |
+| 🔒 **Privacy Policy** | [docs/privacy](https://jarvis-os-agent.vercel.app/privacy) | Zero telemetry · Local storage |
+| 🎮 **Live Demo** | [snakegamebyjarvis.netlify.app](https://snakegamebyjarvis.netlify.app/) | Auto-coded by JARVIS |
+
+### 📑 Documentation Map
+
+Every section of the documentation has a direct deep link. Bookmark the ones you use most.
+
+#### Getting Started
+
+| Section | Direct Link |
+|---------|-------------|
+| Introduction | [?section=introduction](https://jarvis-os-agent.vercel.app/documentation?section=introduction) |
+| Quick Start (5-min setup) | [?section=quick-start](https://jarvis-os-agent.vercel.app/documentation?section=quick-start) |
+| Detailed Installation | [?section=installation](https://jarvis-os-agent.vercel.app/documentation?section=installation) |
+
+#### Configuration
+
+| Section | Direct Link |
+|---------|-------------|
+| Environment Variables | [?section=environment](https://jarvis-os-agent.vercel.app/documentation?section=environment) |
+| Voice Setup (Azure + Vosk) | [?section=voice](https://jarvis-os-agent.vercel.app/documentation?section=voice) |
+| Memory & RAG | [?section=memory](https://jarvis-os-agent.vercel.app/documentation?section=memory) |
+
+#### Integrations
+
+| Section | Direct Link |
+|---------|-------------|
+| MCP Servers | [?section=mcp](https://jarvis-os-agent.vercel.app/documentation?section=mcp) |
+| Android Bridge | [?section=android](https://jarvis-os-agent.vercel.app/documentation?section=android) |
+| Telegram Bot | [?section=telegram](https://jarvis-os-agent.vercel.app/documentation?section=telegram) |
+
+#### Reference
+
+| Section | Direct Link |
+|---------|-------------|
+| CLI Commands | [?section=cli](https://jarvis-os-agent.vercel.app/documentation?section=cli) |
+| Tools Reference | [?section=tools](https://jarvis-os-agent.vercel.app/documentation?section=tools) |
+| Architecture | [?section=architecture](https://jarvis-os-agent.vercel.app/documentation?section=architecture) |
+
+#### UI Deep Dives
+
+| Component | Purpose | Direct Link |
+|-----------|---------|-------------|
+| 🖥️ **Agent Panel** | Live thought stream + HITL consent | [?section=agent-panel](https://jarvis-os-agent.vercel.app/documentation?section=agent-panel) |
+| 📝 **Typing Popup** | Response streaming + TTS word sync | [?section=typing-popup](https://jarvis-os-agent.vercel.app/documentation?section=typing-popup) |
+| 🗣️ **STT Popup** | Live voice input surface | [?section=stt-popup](https://jarvis-os-agent.vercel.app/documentation?section=stt-popup) |
+| ⌨️ **Input Popup** | Keyboard command entry | [?section=input-popup](https://jarvis-os-agent.vercel.app/documentation?section=input-popup) |
+| 🔀 **UI Comparison** | Side-by-side deep comparison | [?section=ui-comparison](https://jarvis-os-agent.vercel.app/documentation?section=ui-comparison) |
+
+#### System Internals
+
+| Section | Direct Link |
+|---------|-------------|
+| Lifecycle & Shutdown | [?section=lifecycle-shutdown](https://jarvis-os-agent.vercel.app/documentation?section=lifecycle-shutdown) |
+| Troubleshooting | [?section=troubleshooting](https://jarvis-os-agent.vercel.app/documentation?section=troubleshooting) |
+| FAQ | [?section=faq](https://jarvis-os-agent.vercel.app/documentation?section=faq) |
+
+---
+
 ## 🎬 Demo & Proof of Work
 
 > **📹 Full HD demo video coming soon.**
@@ -66,31 +143,31 @@
 
 ### 📸 Live UI Screenshots
 
-Real screenshots from the running system — **not mockups, not renders**.
+Real screenshots from the running system — **not mockups, not renders**. Every panel below has a dedicated deep-dive in the [documentation](https://jarvis-os-agent.vercel.app/documentation).
 
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="docs/screenshots/agent_panel.PNG" alt="ZMQ Agent Panel streaming live thoughts" width="100%"/>
+      <img src="public/screenshots/ui/agent-panel-hero.png" alt="ZMQ Agent Panel streaming live thoughts" width="100%"/>
       <br/>
-      <sub><b>🧠 Agent Panel</b> — Real-time thought stream via ZMQ</sub>
+      <sub><b>🧠 Agent Panel</b> — Real-time thought stream via ZMQ · <a href="https://jarvis-os-agent.vercel.app/documentation?section=agent-panel">Deep dive →</a></sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/typing_popup.png" alt="Markdown typing popup with async image preview" width="100%"/>
+      <img src="public/screenshots/ui/typing-popup-hero.png" alt="Markdown typing popup with async image preview" width="100%"/>
       <br/>
-      <sub><b>📝 Typing Popup</b> — Markdown output with async rendering</sub>
+      <sub><b>📝 Typing Popup</b> — Markdown output with async rendering · <a href="https://jarvis-os-agent.vercel.app/documentation?section=typing-popup">Deep dive →</a></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="docs/screenshots/stt_popup.PNG" alt="STT status popup for voice input" width="100%"/>
+      <img src="public/screenshots/ui/stt-popup-hero.png" alt="STT status popup for voice input" width="100%"/>
       <br/>
-      <sub><b>🗣️ STT Status Popup</b> — Live voice input feedback</sub>
+      <sub><b>🗣️ STT Status Popup</b> — Live voice input feedback · <a href="https://jarvis-os-agent.vercel.app/documentation?section=stt-popup">Deep dive →</a></sub>
     </td>
     <td align="center" width="50%">
-      <img src="docs/screenshots/input_popup.png" alt="Text input popup triggered by Ctrl+Shift+J" width="100%"/>
+      <img src="public/screenshots/ui/input-popup-hero.png" alt="Text input popup triggered by Ctrl+Shift+J" width="100%"/>
       <br/>
-      <sub><b>⌨️ Input Popup</b> — Summoned with <code>Ctrl+Shift+J</code></sub>
+      <sub><b>⌨️ Input Popup</b> — Summoned with <code>Ctrl+Shift+J</code> · <a href="https://jarvis-os-agent.vercel.app/documentation?section=input-popup">Deep dive →</a></sub>
     </td>
   </tr>
 </table>
@@ -524,6 +601,30 @@ Jarvis: [cheerful] Hi Kaif! How can I help you today?
 
 ---
 
+## 🎨 UI Components Overview
+
+JARVIS ships with **four independently-processed premium desktop UI components** plus a **single-tab Unified Portal** for all web management. Each runs as its own process with its own IPC mechanism, its own design language, and its own documentation deep-dive. Crashing one never takes down the others.
+
+| Component | Purpose | IPC Layer | Position | Deep Dive |
+|-----------|---------|-----------|----------|-----------|
+| 🎛️ **Unified Portal** | Single web UI at `:8000` — Indexer + Mobile + future tabs | HTTP aggregate over `:8080` + `:8090` | Browser | [Read →](https://jarvis-os-agent.vercel.app/documentation?section=memory) |
+| 🖥️ **Agent Panel** | Live thought stream + HITL consent gates | ZMQ TCP (5555-5557) | Top center | [Read →](https://jarvis-os-agent.vercel.app/documentation?section=agent-panel) |
+| 📝 **Typing Popup** | Response streaming + TTS word sync + async previews | File JSON (`typing_status.json`) | Top center | [Read →](https://jarvis-os-agent.vercel.app/documentation?section=typing-popup) |
+| 🗣️ **STT Popup** | Live voice input surface with animated waveform | UDP socket (5556) | Bottom center | [Read →](https://jarvis-os-agent.vercel.app/documentation?section=stt-popup) |
+| ⌨️ **Input Popup** | Dual-mode glassmorphic surface (`Ctrl+Shift+J` command entry + Agent `ask_user` clarification card) | Env + Base64 stdout | Bottom center | [Read →](https://jarvis-os-agent.vercel.app/documentation?section=input-popup) |
+
+**Every panel is designed for real-time observability:**
+
+- The **Unified Portal** gives you one URL for everything — Knowledge Indexer, Mobile Bridge, and any future service — with sidebar navigation, live status pills, and auto-recovery when a backend crashes.
+- The **Agent Panel** shows exactly what the agent is thinking, which tool it's running, how many tokens it has consumed, and when it needs your permission before doing something irreversible.
+- The **Typing Popup** renders the agent's response in real-time with syntax-highlighted code, async image/link previews, and word-by-word TTS highlighting synchronized to actual audio playback.
+- The **STT Popup** is completely transparent to clicks — you can keep typing in your IDE while the waveform dances at the bottom of your screen.
+- The **Input Popup** is a dual-mode glassmorphic island: summoned manually via `Ctrl+Shift+J` for instant text commands or mid-loop overrides, and automatically launched in **Clarification Mode** when the Agentic Brain calls `ask_user` — displaying the agent's question in a cyan-accented banner while pausing the loop timeout and muting background STT until you type your answer.
+
+See the [UI Comparison table](https://jarvis-os-agent.vercel.app/documentation?section=ui-comparison) for a full side-by-side breakdown of IPC, positioning, and lifecycle behavior.
+
+---
+
 ## ✨ Live Mid-Execution Correction (Signature Feature)
 
 > **Interruptible agent loops. Change your mind mid-task — Jarvis adapts on the fly.**
@@ -586,16 +687,18 @@ If you want an AI that finishes what it starts, on the machine you actually work
 | Icon | Feature | What It Actually Does |
 |:---:|:---|:---|
 | 🔄 | **Live Mid-Execution Correction** | Agent loop is interruptible. User feedback injected mid-run is absorbed, plan is revised in-place, and completed steps stay intact. No full restart, no hallucination. |
+| ❓ | **Mid-Task Agent Clarification (`ask_user`)** | When critical parameters are missing mid-mission (e.g., an unknown contact number, ambiguous file target, or design choice), the Agentic Brain pauses on the current step and summons the glassmorphic `InputPopup` displaying its exact question. Background voice/STT is isolated, the loop timeout clock is paused while you type, and your reply is injected directly into the step `Observation` and `<Confirmed_Facts>` without restarting the loop. |
 | 🔌 | **Plug-and-Play MCP Integration (Zero-Restart Hot-Reload)** | Dynamically connects external Model Context Protocol (MCP) servers over `stdio`, `SSE`, or `Streamable HTTP`. Features a Claude Code-style CLI (`jarvis mcp add/remove/enable/disable/list/test`), native Windows `npx` resolution (no `cmd /c` wrappers needed), full `$ref`/`$defs` JSON schema dereferencing, and live `mtime` hot-reloading — add, remove, or toggle any of 18,000+ community servers while Jarvis is running with zero restarts. |
 | 💻 | **Autonomous Software Engineering** | Explores codebases (`repo_map`), reads files (`view`), edits with exact block diffs (`replace_block`), runs Python scripts (`run_python_code`), and executes terminal commands. Iterates on failures using a two-strike debug loop. |
 | 🛡️ | **Line-Drift-Free Code Editing** | Uses exact `replace_block` search-and-replace instead of line numbers. Syntax errors are caught via AST lint and auto-corrected without human intervention. |
 | 🧠 | **Lifelong Episodic LTM & Hybrid RAG** | Vector-backed property graph with bidirectional edges, confidence scores, and temporal decay. Workspace documents are indexed with smart chunk overlap and retrieved via **Hybrid search (BM25 + Vector + RRF)** with recency boost. |
-| 📊 | **Web Knowledge Indexer Dashboard** | Local Flask dashboard at `127.0.0.1:8080` for managing indexed folders and filters. Auto-indexes `Documents` by default, user can add any folder via UI, with smart filters (system paths blocked, sensitive paths warned, garbage excluded), live progress, pause/resume, and per-folder stats. |
+| 🎛️ | **Unified Portal (Single Web UI)** | One FastAPI app at `http://127.0.0.1:8000` serves every web UI as a tab — **Knowledge Indexer**, **Mobile Bridge**, and future services. Sidebar navigation, live status pills for each backend, dark premium design. Backends still bind to their internal ports (`:8080` for RAG, `:8090` for Mobile) but users only remember `:8000`. Health-check aggregated — a tab shows an offline overlay if its backend is down, and auto-recovers when the watchdog restarts it. |
+| 📊 | **Knowledge Indexer Backend** | Flask API at `127.0.0.1:8080` (served via Unified Portal) for managing indexed folders and filters. Auto-indexes `Documents` by default, user can add any folder via the portal UI, with smart filters (system paths blocked, sensitive paths warned, garbage excluded), live progress, pause/resume, and per-folder stats. |
 | 🧬 | **Semantic Behavioral Pattern Engine** | Auto-extracts STABLE behavioral patterns (time-based routines, contextual habits, workflow preferences, conditional dislikes) from the user's own messages via a dedicated LLM pass, stores verbatim quotes with embeddings in a local JSONL file, and injects the top-K most semantically relevant patterns into every FastBrain and AgenticBrain prompt using cosine similarity (K=1 FastBrain / K=3 AgenticBrain). Uses the same local `bge-small` embedder and same LLM key as LTM — zero extra API cost, zero new infrastructure. Deduplicates near-identical patterns via ≥0.85 cosine similarity, auto-bumps `confidence` and `evidence_count` on repeats. |
 | 🗜️ | **Compressed 15-Day Memory & Execution Logs** | Two-tier short-term memory: recent 2 days verbatim raw messages enriched with `<System_Execution_Log>` metadata (`apps_opened`, `apps_closed`, `files_touched`, `system_events`) + older days compressed into LLM-generated daily summaries. |
 | ⚡ | **Thread-Safe Ephemeral State (TTL + Behavioral Signals)** | Tracks live connected phones (`mtime`-cached), 10-minute TTL transient artifacts (`last_screenshot`, `last_generated_image`), top-K semantically relevant behavioral patterns auto-injected per command (retrieved via cosine similarity against the Behavioral Pattern Engine's JSONL store), and 90-second auto-expiring HITL confirmation payloads. |
 | 🔄 | **Hybrid Semantic AI Routing** | Semantic router decides FastBrain vs AgenticBrain per command, with instant proactive confirmation interception and a local rule-based fallback router. |
-| 📱 | **Android Termux & WebSocket Bridge** | Native control of Android devices and bidirectional batch file transfers over a persistent local WiFi/WebSocket bridge (`127.0.0.1:8090`) using Termux API and Android Intents — no SSH required. |
+| 📱 | **Android Termux & WebSocket Bridge** | Native control of Android devices and bidirectional batch file transfers over a persistent local WiFi/WebSocket bridge (`127.0.0.1:8090`, surfaced via Unified Portal) using Termux API and Android Intents — no SSH required. |
 | 🌍 | **Telegram Remote PC Control** | Trigger silent background PC commands from anywhere via a secure Telegram bot, without disturbing your active desktop session. |
 | 📨 | **Proactive HITL Automation (Email / WhatsApp / Telegram / Calendar)** | Background listeners plus a silent Scout agent that filters spam, distinguishes FYI alerts from consent-requiring actions (`requires_confirmation`), and preserves full event context (`pending_task_data`) until the user confirms. |
 | 💻 | **PC System Monitoring & Alerts** | Tracks CPU, RAM, disk, battery, network, and USB insertion events. Applies smart cooldown, idle and fullscreen suppression, and LLM-based relevance filtering. |
@@ -605,7 +708,7 @@ If you want an AI that finishes what it starts, on the machine you actually work
 | 🔌 | **Multi-LLM Auto-Failover** | Two fully generic OpenAI-compatible endpoints — `PrimaryProvider` and `FallbackProvider` — both configurable via `.env` (works with Groq, Regolo, OpenRouter, Gemini's OpenAI-compatible endpoint, Ollama, LM Studio, vLLM, or any OpenAI-schema API). Primary failure auto-routes to fallback. Model-agnostic — the same loop drives any OpenAI-compatible provider. |
 | 🎨 | **Reactive UI & Inline Comms Approval** | Bi-directional ZMQ-powered PyQt5 Agent Panel streaming live thoughts, actions, and observations, featuring an expandable glassmorphic preview card to inspect, edit inline, approve, or cancel outgoing Gmail, WhatsApp, and Telegram messages with ground-truth memory sync and loop-timeout pause. Markdown typing popup with async image preview. |
 | 🔒 | **Command-Level Security Guardrails** | `shlex` tokenization blocks destructive terminal commands. Local AES-encrypted tokens (`.enc`) for Gmail, Calendar, and Telegram sessions. |
-| ⚙️ | **ServiceWatchdog Resilience** | Monitors STT Popup, Baileys WhatsApp server, Mobile Bridge (`8090`), Telegram Remote Bot, the Indexer Dashboard (`8080`), and the MCP Manager. Auto-restarts crashed services with cooldown backoff and skips unauthenticated modules. |
+| ⚙️ | **ServiceWatchdog Resilience** | Monitors STT Popup, Baileys WhatsApp server, Mobile Bridge (`:8090`), Indexer Dashboard (`:8080`), **Unified Portal** (`:8000`), Telegram Remote Bot, and the MCP Manager. Auto-restarts crashed services with cooldown backoff, skips unauthenticated modules, and gates the portal restart on both backends being healthy. |
 | 🪶 | **Runs on 4GB RAM** | Verified on an Intel i5-3210M (2012) with 4 GB RAM. Cloud LLM APIs + ONNX-based RapidOCR + `bge-small` embeddings keep the footprint tiny. |
 
 ---
@@ -617,6 +720,7 @@ Numbers from typical Windows 11 runs on a **4 GB RAM / Intel i5-3210M (2012)** m
 | Metric | Value |
 |---|---|
 | Cold boot to ready | ~50 s |
+| Graceful shutdown (14-step orchestration) | ~2.6 s |
 | Semantic router decision | ~810 ms – 2.5 s |
 | Router fallback chain (3-tier) | Recovers in <100 ms after primary failure |
 | Voice reaction time (text to audio) | **1.99 s / 0.81 s / 1.68 s** (Demos 1 / 2 / 3 first audio) |
@@ -626,7 +730,8 @@ Numbers from typical Windows 11 runs on a **4 GB RAM / Intel i5-3210M (2012)** m
 | FastBrain typical response | sub-2 s |
 | Local embedding model load | ~14 s |
 | Memory graph recall | ~7 s |
-| RAG dashboard cold-start | ~3 s after main Jarvis boot |
+| RAG backend cold-start | ~3 s after main Jarvis boot |
+| Unified Portal cold-start | ~1 s after both backends are up |
 | Documents folder full index (1 file) | ~25 s (10 chunks) |
 | Documents folder incremental scan | ~2 s (hash check only) |
 | MCP server connect (single, cold `npx`) | ~5–15 s first run, <1 s cached |
@@ -684,6 +789,8 @@ Jarvis ships with **two independent wake-word engines**, auto-selected at boot. 
 4. Download `.zip` → extract `.table` → save as `Data/model/azure/jarvis.table`
 5. Restart Jarvis — Azure engine activates automatically
 
+Full setup walkthrough: [docs · Voice Setup →](https://jarvis-os-agent.vercel.app/documentation?section=voice)
+
 ---
 
 ## 🔥 Jarvis vs. Other AI Agents
@@ -704,6 +811,7 @@ A fair look at where Jarvis fits alongside popular alternatives:
 | Voice-first interaction | ✅ Deepgram STT + Azure/Vosk dual wake word | ❌ | ❌ |
 | On-device wake word (no cloud round-trip) | ✅ Azure Custom Keyword + Vosk fallback | ❌ | ❌ |
 | Multi-tier router fallback | ✅ 3-tier with local fallback | ❌ | ❌ |
+| Unified web portal (Indexer + Mobile in one UI) | ✅ | ❌ | ❌ |
 | Proactive background agent | ✅ HITL Scout | ❌ | ❌ |
 | Remote control (Telegram, Android) | ✅ | ❌ | ❌ |
 | Polished UX | ✅ Excellent | ✅ Excellent | ❌ |
@@ -739,7 +847,7 @@ flowchart TD
         LTM[("🗄️ Vector Semantic Graph LTM<br/>Weighted Graph + Subgraph + Decay")]
         ML[("🧬 Behavioral Pattern Engine<br/>LLM Extraction + Local Embeddings<br/>Cosine Retrieval + JSONL Store")]
         RAG[("📚 ChromaDB Knowledge Index<br/>Documents + Custom Folders<br/>Hybrid Vector + BM25 + RRF")]
-        Indexer["📊 Web Indexer Dashboard<br/>Flask @ 127.0.0.1:8080<br/>Folder + Filter Management"]
+        Indexer["📊 Knowledge Indexer Backend<br/>Flask @ 127.0.0.1:8080<br/>Served via Unified Portal @ :8000"]
         JSONL["📜 Rolling History + Execution Logs<br/>2-Day Raw (Files/Apps/Events) + 13-Day Summaries"]
         Ephemeral["⚡ Thread-Safe Ephemeral State<br/>10m TTL Artifacts & ML Signals + Device Cache + 90s HITL"]
     end
@@ -757,7 +865,7 @@ flowchart TD
         Search["🌐 Web / ArXiv / Scraper"]
         Vision["👁️ Vision Multimodal / OCR"]
         Image["🎨 Image Gen / Edit"]
-        Mobile["📱 Mobile Bridge (8090) / Termux API"]
+        Mobile["📱 Mobile Bridge @ :8090<br/>Served via Unified Portal @ :8000"]
         PC["💻 PC Monitor / System Health"]
     end
 
@@ -777,6 +885,7 @@ flowchart TD
     FastBrain --> Search
 
     subgraph UI["🎨 UI & Visualization"]
+        UnifiedPortal["🎛️ Unified Portal<br/>FastAPI @ 127.0.0.1:8000<br/>Single URL · Sidebar · Live Status Pills"]
         AgentPanel["🖥️ Bi-Directional ZMQ Agent Panel<br/>Live Thoughts + Inline Comms Preview & Edit"]
         TypingPopup["📝 Markdown Typing Popup"]
         STTPopup["🗣️ STT Status Popup"]
@@ -784,6 +893,7 @@ flowchart TD
     end
 
     AgenticBrain <-->|ZMQ PUB / PUSH-PULL| AgentPanel
+    AgenticBrain <-->|ask_user Clarification| InputPopup
     FastBrain -->|typing_status.json| TypingPopup
     STT --> STTPopup
     InputPopup --> Router
@@ -812,6 +922,8 @@ flowchart TD
     LiveFix -.->|Re-plans mid-loop| AgenticBrain
 ```
 
+Deeper walkthrough: [docs · Architecture →](https://jarvis-os-agent.vercel.app/documentation?section=architecture) · [docs · Lifecycle & Shutdown →](https://jarvis-os-agent.vercel.app/documentation?section=lifecycle-shutdown)
+
 ---
 
 ## ⚡ Dual-Engine AI: FastBrain vs AgenticBrain
@@ -829,6 +941,7 @@ Jarvis uses two brains to optimize for both speed and depth.
 | **Code Execution** | ❌ | ✅ `run_python_code`, `execute_terminal_command` |
 | **Memory Recall** | Rolling 10-turn history + `<System_Execution_Log>` + Ephemeral TTL artifacts + top-1 behavioral pattern | Full 15-day history + Lifetime vector-graph recall + Hybrid RAG + Ephemeral state + top-3 behavioral patterns |
 | **Live Mid-Execution Correction** | ❌ | ✅ Interruptible loop re-plans per step |
+| **Mid-Task User Clarification (`ask_user`)** | ❌ | ✅ Pauses loop, opens glassmorphic Question Popup & pins typed answer to `<Confirmed_Facts>` |
 | **MCP Tool Access** | ❌ | ✅ Auto-discovered `mcp__*` tools merged into the tool list |
 | **Wake Word Engine** | ✅ Azure Custom Keyword (on-device) with Vosk fallback | ✅ Same wake engine, plus multimodal vision |
 | **Multimodal Vision** | ❌ | ✅ Image and video analysis, OCR |
@@ -854,7 +967,7 @@ Jarvis implements a **five-tier** zero-duplication memory architecture:
    - **Temporal Decay:** Relations older than 6 months lose half their weight and auto-archive. The embedding engine (`BAAI/bge-small-en-v1.5`) is preloaded at startup for zero-latency multi-entity traversal.
 
 3. **📚 Hybrid RAG (Personal Knowledge Index):**
-   - **Default Scope:** Auto-indexes the user's `Documents` folder at startup. User can add any folder via the built-in web dashboard.
+   - **Default Scope:** Auto-indexes the user's `Documents` folder at startup. User can add any folder via the Unified Portal.
    - **Local Embeddings (Zero API Cost):** Uses the already-loaded `BAAI/bge-small-en-v1.5` model from LTM for embedding — no Gemini API calls, no quotas, no rate limits. Documents embedded with normalized 384-dim vectors; queries prefixed with the official BGE retrieval instruction for maximum accuracy.
    - **Smart Chunking:** 1500-character chunks with 200-character overlap, code-aware (line-based) chunking for `.py`, `.js`, `.ts`, `.java`, `.cpp`, and 15+ other source formats.
    - **Hybrid Retrieval:** BM25 keyword search plus vector similarity merged via **Reciprocal Rank Fusion (RRF)**.
@@ -862,7 +975,7 @@ Jarvis implements a **five-tier** zero-duplication memory architecture:
    - **Smart Filters:** Auto-excludes system paths (`C:\Windows`, `Program Files`), dev garbage (`node_modules`, `venv`, `.git`, `build`), binaries, media, and files > 5 MB. Detects and warns on sensitive paths (`.ssh`, `.aws`, `.env`, browser profiles).
    - **Incremental Indexing:** Hash-based change detection — only modified files are re-embedded on each run.
    - **Auto-Migration:** Detects embedding-model changes via per-chunk metadata and auto-purges the index for a clean rebuild — no manual cleanup needed on upgrades.
-   - **Web Dashboard:** Local Flask UI at `127.0.0.1:8080` with live progress, folder management (add/remove/reindex), filter editor, and pause/resume controls.
+   - **Unified Portal UI:** Local web UI at `http://127.0.0.1:8000` (Knowledge Indexer tab) with live progress, folder management (add/remove/reindex), filter editor, and pause/resume controls.
 
 4. **⚡ Thread-Safe Ephemeral Runtime Memory (Live State & Handoff):**
    - **10-Minute TTL Artifacts:** Stores transient unspoken system artifacts (`last_screenshot`, `last_generated_image`) with automatic 600s TTL pruning.
@@ -877,6 +990,8 @@ Jarvis implements a **five-tier** zero-duplication memory architecture:
    - **Recency-Decay Scoring:** Patterns older than 180 days receive a linear score penalty (down to 0.5×) so stale routines naturally drop out of retrieval.
    - **Isolated from LTM:** Behavioral patterns never enter the graph DB; LTM facts never enter the JSONL. The agentic system prompt enforces strict mutual exclusion and silent contextual injection.
 
+Full memory deep dive: [docs · Memory & RAG →](https://jarvis-os-agent.vercel.app/documentation?section=memory)
+
 ---
 
 ## 📱 Android Mobile Control via Termux & WebSocket Bridge
@@ -886,15 +1001,17 @@ Control your Android phone natively from Windows using a persistent Async WebSoc
 | Category | Example Capabilities |
 |---|---|
 | **Zero-Copy File Transfer** | Drag & drop files from the UI, or send via Android's native "Share" menu direct to PC. |
-| **Proactive Quick Actions** | Fetch latest photo, pull screenshots, sync clipboard, or ring phone via the Web Dashboard. |
+| **Proactive Quick Actions** | Fetch latest photo, pull screenshots, sync clipboard, or ring phone via the Unified Portal. |
 | **Telecom & Sensors** | Make calls, read/send SMS, fetch GPS location, read battery/storage, toggle flashlight. |
 | **Device Telemetry** | Live streaming of device health, IP, free storage, and battery temperature to the UI. |
 | **Persistent Wake-Lock** | Runs silently in the background even when the phone screen is locked. |
 
 **Setup:**
 1. Install **Termux** and **Termux:API** from F-Droid on your Android device.
-2. Open the Jarvis Mobile Bridge dashboard at `http://127.0.0.1:8090`.
+2. Open the **Unified Portal** at `http://127.0.0.1:8000` → click the **Mobile Bridge** tab.
 3. Scan the QR code or copy the setup command into your Termux terminal. The bridge will auto-install, configure the Android Share menu, and connect instantly.
+
+Full setup walkthrough: [docs · Android Bridge →](https://jarvis-os-agent.vercel.app/documentation?section=android)
 
 ---
 
@@ -914,6 +1031,8 @@ Control your Android phone natively from Windows using a persistent Async WebSoc
 | 👁️ **Multimodal Vision** | Screen and video analysis, object detection, OCR |
 | 🎨 **Image Generation** | Text-to-image, image-to-image editing |
 | 🔌 **MCP External Tools** | 18,000+ community servers — GitHub, Brave, SQLite, Postgres, Notion, Slack, Docker, Puppeteer, and more |
+
+Full tool reference: [docs · Tools →](https://jarvis-os-agent.vercel.app/documentation?section=tools)
 
 ---
 
@@ -1022,6 +1141,8 @@ Jarvis automatically resolves `npx` / `.cmd` shims on Windows directly to the un
 - **Graceful startup** — server connections run in parallel background threads, so Jarvis's banner, hotkeys, and native tools remain instantly responsive even while MCP servers are still handshaking.
 - **Safe rollback** — deleting `Data/mcp_servers.json` or resetting it to `{ "mcpServers": {} }` reverts Jarvis to its pre-MCP state on next boot. Zero code changes needed.
 
+Full MCP setup: [docs · MCP Servers →](https://jarvis-os-agent.vercel.app/documentation?section=mcp)
+
 ---
 
 ## 💻 PC System Monitoring & Proactive Alerts
@@ -1098,22 +1219,31 @@ python SetupRegistry.py
 
 Create `Data/mcp_servers.json` with any MCP servers you want. If the file is missing or contains `{ "mcpServers": {} }`, MCP stays disabled and Jarvis boots normally. See the [MCP Integration](#-mcp-integration-model-context-protocol) section for configuration details.
 
-### Knowledge Indexer Dashboard
+### Unified Portal — Single Web UI
 
-Jarvis ships with a built-in web dashboard for managing the RAG knowledge index — no extra setup needed. Just start Jarvis and open:
+Jarvis ships a **Unified Portal** — one FastAPI web app at a single URL that serves every web UI as a tab (Knowledge Indexer, Mobile Bridge, and future services). No extra setup needed. Just start Jarvis and open:
 
 ```
-http://127.0.0.1:8080
+http://127.0.0.1:8000
 ```
+
+**What you get inside the portal:**
+- **Home tab** — overview card + live status pills for both backends
+- **Knowledge Indexer tab** — RAG folder management, filters, pause/resume, reindex, purge
+- **Mobile Bridge tab** — Android pairing QR, connected-device cards, quick actions (ring, screenshot, clipboard sync, file transfer)
+
+**Backends stay isolated.** The Indexer API runs on `127.0.0.1:8080`, Mobile Bridge on `127.0.0.1:8090`, and the portal proxy/aggregator runs on `127.0.0.1:8000`. If a backend crashes, its tab shows an offline overlay and the ServiceWatchdog restarts it — the portal auto-recovers.
 
 On first boot, the indexer automatically:
 - Indexes your `Documents` folder (default)
 - Creates `Data/jarvis_indexer/` config files (`folders.json`, `filters.json`, `settings.json`)
-- Starts the Flask dashboard + watchdog monitoring
+- Starts the Flask backend + FastAPI portal + watchdog monitoring
 
-**Adding more folders:** Open the dashboard → Folders tab → paste any absolute path (e.g., `D:/Projects`) → click **Add & Index**. System paths are auto-blocked; sensitive paths are flagged.
+**Adding more folders:** Open the portal → **Knowledge Indexer** tab → **Folders** sub-tab → paste any absolute path (e.g., `D:/Projects`) → click **Add & Index**. System paths are auto-blocked; sensitive paths are flagged.
 
-> 📌 **Requirements:** `pip install flask` (included in `requirements.txt`). Dashboard binds to `127.0.0.1` only — never exposed to LAN or internet.
+> 📌 **Requirements:** `pip install flask fastapi uvicorn httpx jinja2` (all included in `requirements.txt`). All three ports bind to `127.0.0.1` only — never exposed to LAN or internet.
+
+Full install walkthrough: [docs · Installation →](https://jarvis-os-agent.vercel.app/documentation?section=installation) · [docs · Quick Start →](https://jarvis-os-agent.vercel.app/documentation?section=quick-start)
 
 ### Global Launch
 
@@ -1196,6 +1326,8 @@ Jarvis calls `mcp__github__list_issues` with the appropriate filters, summarizes
 | `jarvis reset --hard` | **FACTORY RESET** — wipes memory, vectors, sessions |
 | `jarvis --help` | Global help |
 
+Full CLI reference: [docs · CLI Commands →](https://jarvis-os-agent.vercel.app/documentation?section=cli)
+
 ### Environment Variables (`.env`)
 
 Copy `.env.example` to `.env` and populate your credentials. For 100% local LLM execution (Ollama, LM Studio), point `PRIMARY_BASE_URL` and `FALLBACK_BASE_URL` at your local OpenAI-compatible server (e.g. `http://localhost:11434/v1` for Ollama, `http://localhost:1234/v1` for LM Studio).
@@ -1241,6 +1373,8 @@ Copy `.env.example` to `.env` and populate your credentials. For 100% local LLM 
 | `TELEGRAM_API_ID` | Telegram desktop client | Optional |
 | `TELEGRAM_API_HASH` | Telegram desktop client | Optional |
 
+Full env var reference: [docs · Environment →](https://jarvis-os-agent.vercel.app/documentation?section=environment)
+
 ### MCP Configuration (`Data/mcp_servers.json`)
 
 MCP servers are configured separately in `Data/mcp_servers.json`, **not** in `.env`. This keeps API keys scoped strictly to the MCP layer. See the [MCP Integration](#-mcp-integration-model-context-protocol) section for the full schema and examples.
@@ -1264,12 +1398,12 @@ MCP servers are configured separately in `Data/mcp_servers.json`, **not** in `.e
 | Mobile SSH times out | Confirm Tailscale is connected on both devices and `sshd` is running in Termux |
 | Primary / Fallback provider fails | Ensure `PRIMARY_BASE_URL` / `FALLBACK_BASE_URL` ends with `/v1` and follows the OpenAI schema. For Ollama → `http://localhost:11434/v1`, LM Studio → `http://localhost:1234/v1`. |
 | Knowledge graph feels stale | Delete `Data/jarvis_memory/lifetime_graph.json` and reboot — nodes, weights, and embeddings rebuild |
-| Hybrid RAG results poor | Open the dashboard at `127.0.0.1:8080` → Folders tab → **Reindex** on the affected folder. For a full rebuild: delete `Data/jarvis_memory/rag_chroma_db` and reboot. |
+| Hybrid RAG results poor | Open the Unified Portal at `http://127.0.0.1:8000` → **Knowledge Indexer** tab → **Folders** sub-tab → **Reindex** on the affected folder. For a full rebuild: delete `Data/jarvis_memory/rag_chroma_db` and reboot. |
 | RAG index stuck or files not appearing after embedding-model change | The engine auto-detects embedding-model changes via chunk metadata and purges stale vectors. If you upgraded the model manually, delete `Data/jarvis_memory/rag_chroma_db/` and `Data/jarvis_memory/rag_hashes.json`, then reboot — Jarvis will re-index everything with the new model. |
-| Dashboard not opening | Ensure `flask` is installed (`pip install flask`). Check logs for `Indexer Dashboard running at http://127.0.0.1:8080`. If port is busy, Jarvis auto-shifts to 8081–8095 — check startup logs for the actual port. |
-| RAG indexing sensitive folders | Open the dashboard → Folders tab → **Remove**. Then edit `Data/jarvis_indexer/folders.json` to confirm removal. Sensitive paths like `.ssh`, `.aws`, `.env` are auto-warned but not hard-blocked. |
-| RAG indexer stuck / too slow | If indexing `Documents` hangs, check for permission-denied folders (e.g., `My Music`, `My Pictures` — legacy Windows junctions). These are auto-skipped with `legacy_junctions=N` in scan summary. Reduce scope via dashboard filters. |
-| Too many files getting indexed | Open dashboard → Filters tab → tighten `Max File Size (MB)`, `Max Depth`, or add `Custom Ignore Patterns` (e.g., `*.log`, `backup_*`). |
+| Unified Portal not opening | Ensure `flask`, `fastapi`, `uvicorn`, and `httpx` are installed (`pip install flask fastapi uvicorn httpx jinja2`). Check logs for `Unified portal started at http://127.0.0.1:8000`. If ports `8000`/`8080`/`8090` are busy, Jarvis auto-shifts them (8080→8081–8095) — check startup logs for actual ports. Symptom of only one backend being down: portal loads but one status pill shows **Down** and its tab shows an offline overlay. |
+| RAG indexing sensitive folders | Open the Unified Portal → **Knowledge Indexer** tab → **Folders** sub-tab → **Remove**. Then edit `Data/jarvis_indexer/folders.json` to confirm removal. Sensitive paths like `.ssh`, `.aws`, `.env` are auto-warned but not hard-blocked. |
+| RAG indexer stuck / too slow | If indexing `Documents` hangs, check for permission-denied folders (e.g., `My Music`, `My Pictures` — legacy Windows junctions). These are auto-skipped with `legacy_junctions=N` in scan summary. Reduce scope via portal filters. |
+| Too many files getting indexed | Open the Unified Portal → **Knowledge Indexer** tab → **Filters** sub-tab → tighten `Max File Size (MB)`, `Max Depth`, or add `Custom Ignore Patterns` (e.g., `*.log`, `backup_*`). |
 | PC Monitor not starting | Run `pip install psutil pywin32 pygetwindow` |
 | Too many PC Monitor alerts | Adjust thresholds in `PCMonitorProactive.py` |
 | USB devices not detected | Run PowerShell as Administrator — PC Monitor reads Windows Event Logs |
@@ -1282,6 +1416,11 @@ MCP servers are configured separately in `Data/mcp_servers.json`, **not** in `.e
 | MCP tool call returns `Server not connected` mid-session | `MCPClient` automatically attempts an instant reconnect and retries the tool call once before reporting an error. |
 | Node-based MCP server needs Node.js 24+ | The official Anthropic servers (as of Oct 2026) require Node.js v24 or higher. Upgrade via `nodejs.org`. Python-based servers are unaffected. |
 | `mcp_servers.json` JSON parse error | Validate with `python -c "import json; json.load(open('Data/mcp_servers.json'))"`. Common causes: missing outer `{ }` wrapper, trailing commas, or single quotes instead of double quotes. |
+| Shutdown takes >30s | One of the background services is stuck. Each service has a 2.5s timeout, so total wall-clock should be ~2.6s. Check startup logs to identify the hanging service. |
+| Zombie processes after crash | `os._exit()` didn't run — likely a hard `kill -9` / `taskkill /F`. Fix: `Get-Process python \| Stop-Process -Force` in PowerShell. |
+| JARVIS won't start — says "Already running" | Stale lock file from previous crash. Delete the lock file in repo root. Check Task Manager → `python.exe` → kill orphan. |
+
+Full troubleshooting guide: [docs · Troubleshooting →](https://jarvis-os-agent.vercel.app/documentation?section=troubleshooting)
 
 ### FAQ
 
@@ -1321,6 +1460,11 @@ Only if the specific server needs one. GitHub requires a Personal Access Token, 
 **Is MCP enabled by default?**
 No. MCP is strictly **opt-in** to preserve stability. If `Data/mcp_servers.json` is missing or contains an empty `mcpServers` object, Jarvis boots identically to the pre-MCP version with zero overhead, zero startup delay, and no MCP log lines. You enable it explicitly by adding your first server entry.
 
+**How do I access the web UI?**
+Open a single URL: `http://127.0.0.1:8000` — the **Unified Portal**. It serves both the **Knowledge Indexer** (folder management, filters, RAG stats) and the **Mobile Bridge** (Android QR pairing, device control) as tabs in one sidebar-navigated UI. The individual backends are still bound to `:8080` (RAG) and `:8090` (Mobile), but you never need to remember those ports.
+
+Full FAQ: [docs · FAQ →](https://jarvis-os-agent.vercel.app/faq)
+
 ---
 
 ## 🤝 Contributing
@@ -1343,36 +1487,4 @@ Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 📄 License
 
-This project is distributed under the **GNU General Public License v3.0**. See [LICENSE](LICENSE) for the full text.
-
----
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=thekaifansari01/Jarvis-OS-Agent&type=Date)](https://star-history.com/#thekaifansari01/Jarvis-OS-Agent&Date)
-
----
-
-## 👤 About the Author
-
-Built and maintained by **Kaif Ansari** ([@thekaifansari01](https://github.com/thekaifansari01)) — a self-taught developer with a commerce background, currently pursuing a BCA. Jarvis began as a solo project on an Intel i5-3210M with 4 GB RAM, and that constraint shaped everything: cloud LLMs by default, lightweight local embeddings, and a zero-bloat architecture.
-
-**Connect:** [🐦 Twitter / X](https://twitter.com/thekaifansari01) · [💻 GitHub](https://github.com/thekaifansari01) · [📸 Instagram](https://instagram.com/thekaifansari01) · [💼 LinkedIn](https://linkedin.com/in/thekaifansari01) · [🟣 Reddit](https://reddit.com/user/thekaifansari01) · [🎮 Discord](https://discord.com/users/thekaifansari01) · [📧 Email](mailto:thekaifansari01@gmail.com)
-
----
-
-## 🌟 Show Your Support
-
-If the **Jarvis OS Agent** streamlined your workflow, autonomously fixed your bugs, adapted to your mid-task corrections, or inspired your own AI projects:
-
-- ⭐ **Star** this repository to help it rank and grow the community.
-- 🐦 **Follow and share** your use cases by tagging [@thekaifansari01](https://twitter.com/thekaifansari01).
-- ☕ **Buy me a coffee** (link coming soon) — building AI operating systems runs on caffeine.
-
-Every star, fork, and share helps more developers discover the project.
-
----
-
-<p align="center">
-  <i>"Any sufficiently advanced technology is indistinguishable from magic." — Arthur C. Clarke</i>
-</p>
+This project is distributed under the **GNU General Public License v3.0**. See [LICENSE](LICENSE) for the full

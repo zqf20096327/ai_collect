@@ -21,14 +21,25 @@
 </p>
 
 <p align="center">
-  <img src="demo/demo.gif" alt="Doppelganger CLI: ingest a chat export and scan it for sensitive data before training" width="760">
+  <img src="https://img.shields.io/badge/Supported%20chats-555555?style=flat" alt="Supported chats:"/>
+  <a href="docs/sources/telegram.md"><img src="https://img.shields.io/badge/Telegram-26A5E4?style=flat&logo=telegram&logoColor=white" alt="Telegram"/></a>
+  <a href="docs/sources/whatsapp.md"><img src="https://img.shields.io/badge/WhatsApp-25D366?style=flat&logo=whatsapp&logoColor=white" alt="WhatsApp"/></a>
+  <a href="docs/sources/instagram.md"><img src="https://img.shields.io/badge/Instagram-E4405F?style=flat&logo=instagram&logoColor=white" alt="Instagram"/></a>
+  <a href="docs/sources/messenger.md"><img src="https://img.shields.io/badge/Messenger-00B2FF?style=flat&logo=messenger&logoColor=white" alt="Messenger"/></a>
+  <a href="docs/sources/line.md"><img src="https://img.shields.io/badge/LINE-00C300?style=flat&logo=line&logoColor=white" alt="LINE"/></a>
+  <a href="docs/sources/signal.md"><img src="https://img.shields.io/badge/Signal-3A76F0?style=flat&logo=signal&logoColor=white" alt="Signal"/></a>
+  <a href="docs/sources/kakaotalk.md"><img src="https://img.shields.io/badge/KakaoTalk-FFCD00?style=flat&logo=kakaotalk&logoColor=black" alt="KakaoTalk"/></a>
+</p>
+
+<p align="center">
+  <img src="demo/demo.gif" alt="Doppelganger's interactive menu: pick your chat exports, confirm which sender is you, choose how to handle group chats and which countries to scan, then build the dataset" width="760">
 </p>
 
 ---
 
 Doppelganger fine-tunes large language models (like Qwen) on your own chat conversations, capturing how *you* write. Built on top of [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory), it turns a raw chat export into a [ShareGPT](https://github.com/hiyouga/LLaMA-Factory/blob/main/data/README.md)-formatted dataset for supervised fine-tuning (SFT), then trains a LoRA adapter on it.
 
-Ingestion is **source-agnostic**: a small adapter parses each platform's export into a normalized message stream, and the rest of the pipeline (sessionizing, turn-merging, sensitive-data scanning, optional quality auditing, ShareGPT formatting) is shared. **Telegram** and **WhatsApp** are supported today, with **Discord** and other platforms planned — each slots in as a drop-in adapter.
+Ingestion is **source-agnostic**: a small adapter parses each platform's export into a normalized message stream, and the rest of the pipeline (sessionizing, turn-merging, sensitive-data scanning, optional quality auditing, ShareGPT formatting) is shared. Supported platforms are shown in the badges above and documented in [`docs/sources/`](docs/sources/); new ones slot in as drop-in adapters. Sources we've ruled out are recorded in [`docs/adr/`](docs/adr/).
 
 > [!CAUTION]
 > **Your chat history is sensitive data, and you are responsible for it.** A model fine-tuned on it can memorize and later reproduce personal identifiers, private conversations, credentials, and messages written by other people in your chats. The built-in [sensitive-data scanning](#privacy--sensitive-data) is a **safety net, not a guarantee** — both regex and LLM detection miss real cases and raise false positives. Before training, sharing, or deploying anything: **review the dataset yourself**, get consent from others whose messages are included (especially in group chats), and comply with applicable privacy laws. Treat trained adapters and merged checkpoints as sensitive too — they can leak the data they were trained on.
@@ -49,7 +60,7 @@ Fine-tuning on your chats can capture your:
 
 | Feature | Description |
 |---------|-------------|
-| **Source-agnostic ingestion** | One adapter per platform parses an export into a normalized message stream; the rest of the pipeline is shared. Telegram + WhatsApp today; others drop in without touching the core. |
+| **Source-agnostic ingestion** | One adapter per platform parses an export into a normalized message stream; the rest of the pipeline is shared. New sources drop in without touching the core. |
 | **Conversation reconstruction** | Sessionizes messages by silence gaps **and** reply links, merges consecutive turns, and (optionally) preserves per-speaker labels in group chats. |
 | **Sensitive-data scan** | Non-destructive regex scan over the built conversations — email, payment cards (checksum-validated), IP/MAC, API keys, plus pluggable country ID packs. Writes an audit report; you decide what to remove. |
 | **LLM redaction** *(optional)* | An OpenAI-compatible model flags context-dependent PII (names, secrets) regex misses, into the same report and apply step. Local-first by design. |
@@ -72,23 +83,17 @@ A CUDA-capable GPU is needed for training. Ingestion (parsing → dataset) runs 
 
 ### Installation
 
-**1. Export your Telegram chat**
+**1. Export your chats**
 
-In **Telegram Desktop**: `Settings > Advanced > Export Telegram Data`. Select your chat(s), choose **JSON** format (not HTML), and place the result here:
+Download an export from each app you use; see **[Exporting your chats](docs/sources/README.md)** for step-by-step instructions for Telegram, WhatsApp, Instagram, Messenger, LINE, Signal and KakaoTalk, and for combining several apps into one dataset.
 
-```
-Doppelganger/
-└── data/
-    └── result.json   ← place your export here
-```
+No exports, or want better coverage? **[Reply drills](docs/drills.md)** let you create training data on purpose: the app shows realistic messages (advice, disagreements, bad news, …) and you type how you'd reply (`python -m doppelganger drills`). A **[persona interview](docs/interview.md)** (`python -m doppelganger interview`) asks about your life, people, opinions and texting habits, and builds a persona card: a short profile of who you are that the model uses as its system prompt, alongside the style fine-tuning learns.
 
-> **Note:** Telegram exports unzip to a dated folder like `DataExport_2025-07-09/result.json`. Move (or copy) that `result.json` to `data/result.json` — `setup.sh` looks for it there. Alternatively, point `python -m ingest` at the file directly with `--input path/to/result.json`.
-
-> **Using WhatsApp instead?** Export a chat (`⋮ > More > Export chat > Without media`) to get a `.txt`, then run `python -m ingest --source whatsapp --input "WhatsApp Chat with Alice.txt" --self-name "Your Name"`. See [docs/sources/whatsapp.md](docs/sources/whatsapp.md) — `--self-name` is required since WhatsApp doesn't mark which participant is you.
+The quick start below uses **Telegram**, the default. In **Telegram Desktop**: `Settings > Advanced > Export Telegram Data`, choose **JSON**, then copy the exported `result.json` to `data/result.json` (that's where `setup.sh` looks).
 
 **2. Clone and run setup**
 
-The setup scripts create a virtual environment, install pinned dependencies (LLaMA-Factory **0.9.4**), create your `.env`, and process the export into `data/chat_sharegpt.json`.
+The setup scripts create a virtual environment, install pinned dependencies (LLaMA-Factory **0.9.4**), create your `.env`, and open the **interactive menu**. It finds the exports in `data/` (from any supported app), asks which sender is you where an app can't tell, how to treat group chats and which countries to scan for sensitive data, then builds `data/chat_sharegpt.json`. Use the arrow keys, Space to tick and Enter to confirm.
 
 ```bash
 git clone https://github.com/NotYuSheng/Doppelganger.git
@@ -105,9 +110,11 @@ setup.bat         # Windows (from Command Prompt, not PowerShell)
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python -m ingest --source telegram
+python -m doppelganger            # interactive menu (or: python -m ingest --source telegram)
 ```
 </details>
+
+Run `python -m doppelganger` any time to get back to the menu (parse, audit, train, merge, chat). Every step also has a non-interactive form for scripts; see [Usage](#usage).
 
 **3. (Optional) Configure LLM features**
 
@@ -131,20 +138,33 @@ llamafactory-cli train configs/train_lora.yaml
 
 ## Usage
 
-`python -m ingest` turns a raw export into a training-ready dataset. Useful flags:
+The easiest way in is the interactive menu, `python -m doppelganger`. For scripts, `python -m ingest` turns exports into a training-ready dataset in one command (and `python -m doppelganger parse|audit|train|auto` run single steps). Useful flags:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `--source` | `telegram` | Chat source to parse (more planned) |
-| `--input` | `./data/result.json` | Path to the raw export |
+| `--source` | `telegram` | Chat source to parse: `telegram`, `whatsapp`, `instagram`, `messenger`, `line`, `signal` or `kakaotalk` (used for inputs without a `source:` prefix) |
+| `--input` | `./data/result.json` | Path to the raw export. Repeat it to combine several exports; prefix with the source to mix apps (`--input telegram:result.json`) |
 | `--format` | `sharegpt` | `sharegpt` (for training) or `jsonl` (intermediate) |
-| `--self-name` | auto-detected | Override which sender is "you" |
+| `--self-name` | auto-detected | Override which sender is "you". Use `source:Name` to set it per source (repeatable) |
 | `--conversation-gap` | `3600` | Seconds of silence that start a new conversation |
 | `--message-chain` | `30` | Max seconds between same-sender messages to merge into one turn |
 | `--multi-speaker` | off | In group chats, keep and label each sender on the human side (your turns are never labelled) |
+| `--group-chats` | `keep` | Chats with 3+ people: `keep`, `focus` (only direct back-and-forth with one person, plus your explicit replies) or `skip`. Group chats are noisier training data than 1:1s |
 | `--no-audit` | off | Master off-switch: skip **all** auditing (regex scan + LLM validation) and just build the dataset |
 | `--skip-redact-scan` | off | Skip only the regex sensitive-data scan |
 | `--skip-validation` | off | Skip only the LLM quality validation |
+
+**Combining several apps.** Most people's chats are spread across apps. Pass one `--input` per export, prefixed with its source, and you get one combined dataset. Your name usually differs between apps, so give `--self-name` per source where the app can't detect it:
+
+```bash
+python -m ingest \
+  --input telegram:data/result.json \
+  --input "whatsapp:data/WhatsApp Chat with Alice.txt" \
+  --input signal:data/signal-export-2026-11-07/ \
+  --self-name "whatsapp:Your Name"
+```
+
+Each export is parsed separately (chats from different exports are never merged), then everything after is shared: one sensitive-data scan, one report, one dataset. A per-source summary shows what each export contributed. `python -m doppelganger parse`/`auto` take the same flags.
 
 ### Optional: LLM quality auditing
 
@@ -182,6 +202,7 @@ Tiny machine? **Qwen2.5-1.5B-Instruct** or **Llama-3.2-3B-Instruct** also work, 
 
 Fine-tuning on real chat history may unintentionally encode personal identifiers, confidential conversations, or sensitive content.
 
+> [!CAUTION]
 > **Always review and sanitize your dataset before training.** You are responsible for compliance with privacy laws and personal data protection.
 
 ### Automated sensitive-data scan
@@ -195,7 +216,9 @@ To make that review practical, ingestion runs a **regex-based scan** over the bu
   API_KEY        1 hit(s) in   1 conversation(s)  [high]
 ```
 
-Detection works everywhere out of the box. **Universal detectors** — email, payment cards (checksum-validated), IP/MAC addresses, API keys and private keys — aren't tied to any country and always run. On top of those, optional **locale packs** add country-specific identifiers (national IDs, local phone/postal formats).
+Detection works everywhere out of the box. **Universal detectors** (email, payment cards and IBANs, both checksum-validated, IP/MAC addresses, API keys and private keys) always run. **Country packs** add national IDs, phone numbers and postcodes: Brazil, Canada, China, India, Malaysia, Singapore, the UK and the US so far.
+
+By default (`--redact-locales auto`) every country's **high-precision** detectors run for everyone, i.e. ID numbers backed by a checksum and a distinctive structure, since your chats can include friends from anywhere. Noisier detectors (phone numbers, postcodes, format-only IDs) run only for the countries you add, e.g. `--redact-locales auto,SG,US`. See [docs/redaction.md](docs/redaction.md) for the full list.
 
 Once you've reviewed the report, act on it:
 
@@ -207,13 +230,21 @@ python -m ingest --source telegram --skip-redact-scan  # opt out entirely
 
 ### Add coverage for your country
 
-Locale packs are built to be community-contributed: each is a single drop-in module under [`ingest/redaction/`](ingest/redaction/), needing no changes to the scanner or pipeline. Adding one is three steps:
+Country packs are designed to be community-contributed. Each is one drop-in file, `ingest/redaction/<cc>.py`, picked up automatically with no changes to the scanner or pipeline. A detector is a regex plus a validator (checksum, real date, reserved ranges) and some required metadata: a precision tier, a spec reference, and examples it must and must not catch. A shared test checks every detector against its own examples, so a new pack is tested the moment it's added.
 
-1. Copy an existing pack to `ingest/redaction/<cc>.py` (your ISO country code).
-2. Register detectors with `make(...)` and `locale="<CC>"`. Back each pattern with a checksum/validator where the identifier has one — that precision is what keeps the report trustworthy instead of noisy.
-3. Import your module in `ingest/redaction/__init__.py`.
+[docs/redaction.md](docs/redaction.md) explains how to write one properly, with rules of thumb and a list of countries that would make good contributions. **PRs for new countries are welcome.**
 
-Singapore ships as the worked reference ([`sg.py`](ingest/redaction/sg.py): national ID with checksum, local phone, postal code) — but the recipe is the same for any country, and **PRs for new locales are welcome**. Choose which packs run with `--redact-locales` (universal detectors always run regardless).
+### Names, places and organisations (offline NER)
+
+Regex can't recognise a friend's name or a workplace. `--ner-redact` adds an offline pass with spaCy's named-entity recogniser: people, places and organisations go into the **same report and the same `--redact` step**. **Your own names are never redacted**: the names you appear under in your exports are allowlisted automatically, and you can add more with `--ner-allow`. spaCy is an optional install:
+
+```bash
+pip install -r requirements-ner.txt
+python -m spacy download en_core_web_sm          # or xx_ent_wiki_sm for multilingual chats
+python -m ingest --source telegram --ner-redact --redact replace
+```
+
+It works best for the model's language and can misread slang. Common chat words like "ya" or "bro" are ignored, and a regex-validated detection (e.g. an NRIC) always keeps its label over an NER guess. The guided menu asks whether to turn it on. For mixed-language chats, the LLM tier below does better. Details: [docs/redaction.md](docs/redaction.md#names-places-and-organisations-ner).
 
 ### LLM-assisted redaction
 
@@ -226,7 +257,7 @@ LLM_API_BASE_URL=http://localhost:8000/v1 LLM_MODEL=Qwen/Qwen2.5-7B-Instruct \
 
 ### Keeping your data out of git
 
-Your chat export and any generated datasets are ignored by `.gitignore` (`result.json`, `*.json`, `*.jsonl`, `DataExport*/`, `*.session`, `.env`, plus Telegram media/contacts such as `*.vcard`, `*.tgs`, `*.webp`, `*.ogg`/`*.oga`). Generic media (`.jpg`, `.mp4`, …) lives inside `DataExport*/`, which is ignored wholesale. As an extra safeguard, a pre-commit hook refuses to commit these files even if they are force-added. Enable it once per clone:
+Your chat export and any generated datasets are ignored by `.gitignore` (`result.json`, `*.json`, `*.jsonl`, `DataExport*/`, `*.session`, `.env`, plus Telegram media/contacts such as `*.vcard`, `*.tgs`, `*.webp`, `*.ogg`/`*.oga`, and WhatsApp exports: `WhatsApp Chat*` `.txt`/`.zip`, `_chat.txt`, and `*-WA0001.*`-style media, `*.opus`, `*.vcf`, Instagram exports: `instagram-*/`, `instagram-*.zip`, `your_instagram_activity/`, and Facebook/Messenger exports: `facebook-*/`, `facebook-*.zip`, `your_facebook_activity/`, `your_activity_across_facebook/`, LINE exports: `[LINE]*`, Signal exports: `signal-export-*/`, and KakaoTalk exports: `KakaoTalkChats*.txt`, `KakaoTalk_*.txt`/`.csv`). Generic media (`.jpg`, `.mp4`, …) lives inside `DataExport*/`, which is ignored wholesale. As an extra safeguard, a pre-commit hook refuses to commit these files even if they are force-added. Enable it once per clone:
 
 ```bash
 git config core.hooksPath hooks
@@ -307,6 +338,18 @@ llamafactory-cli chat \
 
 Update `--template` to match the one used during training.
 
+### Measure how much it sounds like you
+
+Keep some conversations out of training, then compare the model's replies with what you really wrote: wording (chrF), style habits (length, emoji, punctuation, lol/haha…), and a blind *"which reply is really yours?"* test, where ~50% means you can't tell. Results are saved so you can compare techniques (base vs fine-tuned, with vs without drills).
+
+```bash
+python -m doppelganger audit --holdout 0.1 && python -m doppelganger train
+python -m doppelganger serve                                  # leave running
+python -m doppelganger eval generate && python -m doppelganger eval blind
+```
+
+See [docs/evaluation.md](docs/evaluation.md).
+
 ## Activating the Environment Later
 
 After running setup once, reactivate the venv in future sessions before running any commands:
@@ -326,17 +369,13 @@ python -m unittest discover -s tests -t .
 
 It runs in well under a second and locks in the conversion behaviour, so you can verify a change without running the full pipeline.
 
-## Legacy Workflow
-
-The pre-refactor, Windows-only workflow (which cloned LLaMA-Factory at HEAD) is preserved at the [`v0.1.0`](https://github.com/NotYuSheng/Doppelganger/releases/tag/v0.1.0) tag. The old `scripts/telegram_extract.py` and `scripts/convert_to_sharegpt.py` shims have been removed — use `python -m ingest` instead.
-
 ## Roadmap & Vision
 
 Doppelganger is as much a **learning sandbox** as a tool: the aim is to explore the *full* AI toolbox for capturing how a person communicates, and to find what actually moves the needle on *"does this sound like me?"*. Today that's LoRA fine-tuning — everything below is exploratory (see the issue tracker for the live backlog).
 
 **Shaping the model** — pre-training · fine-tuning · alignment/DPO · continual learning · synthetic data / self-instruct · multi-LoRA personas & merging · distillation to on-device · PEFT comparison
 
-**Giving it context & memory** — RAG · long-term memory + reflection · relationship/knowledge graph · style embeddings / user-conditioning · persona-prompt quiz · MCP
+**Giving it context & memory** — RAG · long-term memory + reflection · relationship/knowledge graph · style embeddings / user-conditioning · persona card from an interview (#14) · MCP
 
 **Multimodal** — voice cloning, TTS/STT · stickers / emoji / memes
 
@@ -348,7 +387,7 @@ Doppelganger is as much a **learning sandbox** as a tool: the aim is to explore 
 
 **Knowing if it works** — evaluation, "does it sound like me?" · interpretability, "what did it learn about me?"
 
-**More data & coverage** — more chat sources: WhatsApp, Discord, … · wider locale detector packs
+**More data & coverage** — more chat sources (see [`docs/adr/`](docs/adr/) for ruled-out ones) · wider locale detector packs
 
 > This is an experimental, for-fun project — the roadmap is a wishlist of things to explore, not a commitment.
 

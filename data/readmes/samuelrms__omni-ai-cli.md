@@ -15,6 +15,8 @@
 ![Idiomas](https://img.shields.io/badge/pt--BR%20·%20en%20·%20es%20·%20fr-C4552F)
 
 > [English](docs/README.en.md) · [Español](docs/README.es.md) · [Français](docs/README.fr.md)
+>
+> **Site:** [omni.samuelramos.dev](https://omni.samuelramos.dev)
 
 Um terminal de chat que junta **Claude Code, Codex, Cursor, Antigravity, Grok, DeepSeek e
 OpenRouter** num lugar só. Você escreve a pergunta, o `ai` decide quem responde e, se a
@@ -71,7 +73,7 @@ Três detalhes que o diagrama torna explícitos:
 
 - **Cada conta Claude tem sua própria pasta de login.** Contas extras rodam com
   `CLAUDE_CONFIG_DIR` apontando para `~/.claude-accounts/<nome>`. A conta principal
-  nunca é deslogada, e nenhuma credencial é copiada de um lugar para outro. Copiar o
+  nunca é deslogada, e nenhuma credencial é copiada de um lugar para outro. A exceção são perfis antigos com `credentials_file`, que trocam o arquivo de credenciais durante a chamada. Copiar o
   `.credentials.json` não funciona de forma confiável no macOS, onde o login fica no
   Keychain.
 - **Ctrl-C mata a árvore inteira.** O roteador roda num grupo de processos próprio, então
@@ -493,7 +495,7 @@ curl -H "Authorization: Bearer omni-admin-..." http://127.0.0.1:8080/admin/healt
 | `DELETE /admin/accounts/{conta}/login` | Cancela, com o id em `X-Omni-Login-Attempt` |
 
 - **Chaves separadas:** uma chave de `/v1` nunca abre `/admin`, e vice-versa. Sem chave de administração, `--enable-admin` não inicia.
-- **Rede:** de fora desta máquina, exige HTTPS por proxy reverso, que precisa definir `X-Forwarded-Proto`. `--admin-allow-http` desliga essa checagem. No Docker, a porta publicada conta como acesso externo.
+- **Rede:** de fora desta máquina, exige HTTPS por proxy reverso, que precisa definir `X-Forwarded-Proto`. `--admin-allow-http` desliga essa checagem. Ela só evita exposição por engano: quem alcança a porta direto consegue forjar o cabeçalho, então deixe a porta aberta só para o proxy. No Docker, a porta publicada conta como acesso externo.
 - **Segredos:** as respostas mostram só o final das chaves de provedores. A exceção é a chave de cliente criada, mostrada uma única vez.
 - **Campos protegidos:** modo de permissão, caminhos de binários e `config_dir` retornam 403.
 - **Cuidado:** esta chave pode ligar modelos pagos (`openrouter_paid`) e trocar chaves de provedores. No Docker, use `SMART_AI_ADMIN=1`.
@@ -647,6 +649,7 @@ omni.example.com {
 | `~/.config/smart-ai/admin_keys.json` | Hash das chaves da API de administração (permissão 600) |
 | `~/.cache/smart-ai/costs.jsonl` | Custo e tokens de cada pedido do chat, sem pergunta nem resposta (soma do dia no `/usage`) |
 | `~/.local/share/smart-ai/runs/` | Cópias dos pedidos de escrita em pastas sem git |
+| `~/.local/share/smart-ai/partial/` | Cópia do que uma tentativa deixou antes de falhar, das 10 últimas vezes |
 | `~/.cache/smart-ai/serve.log` | Log do `ai serve` como serviço, com rotação |
 
 ---
@@ -792,11 +795,12 @@ guardar nem rotacionar.
 
 ## Limitações conhecidas
 
+- Se uma ferramenta falhar depois de alterar arquivos, a próxima recebe a lista deles e continua a partir dali. Nada é desfeito: ela pode herdar algo incompleto, e efeitos fora da pasta, como comandos já executados, não são detectados.
 - O chat usa os modos não interativos dos CLIs. Pedidos de aprovação nativos (por
   exemplo, "posso editar este arquivo?") não aparecem; nesses casos, use o CLI nativo.
 - `/parallel` só analisa: Codex em `--sandbox read-only` ou OpenRouter, que não acessa os
   arquivos. Os agentes não editam o projeto ao mesmo tempo.
-- A classificação simples/complexa é por palavras-chave e tamanho, não por um modelo.
+- A classificação simples/complexa usa um modelo quando há chave de Groq, Cerebras, OpenRouter ou Grok. Sem nenhuma delas, ou se todas falharem, usa palavras-chave e tamanho. Ela pode errar nos dois casos.
 - Trocar de modelo não renova a cota da conta.
 - No Windows, o código usa os equivalentes nativos (grupo de processos e `taskkill`, `msvcrt`, junções de pasta), mas foi testado de verdade só no macOS. A exceção é a execução de ferramentas instaladas pelo npm, testada no CI em Windows.
 
@@ -804,14 +808,20 @@ guardar nem rotacionar.
 
 ## Privacidade
 
+- Se uma ferramenta falhar depois de alterar arquivos, uma cópia deles fica só na sua máquina, com permissão restrita ao seu usuário.
 - Sessões, chaves de API e logs ficam só na sua máquina, com permissão restrita ao seu usuário.
 - O log de uso grava ferramenta, conta e status, **nunca o texto da pergunta**.
 - Antes de ir para o OpenRouter, e-mails, telefones, documentos e outros dados pessoais
   são trocados por marcadores e restaurados na resposta. O mascaramento é por padrões e
   não garante anonimização total.
-- Claude, Codex e Antigravity recebem o texto original, sob os termos de cada serviço.
+- Claude, Codex, Cursor, Antigravity e Grok Build recebem o texto original, sob os termos de cada serviço.
+- Para classificar pedidos e decidir sobre a fila, um trecho mascarado do pedido, e da resposta anterior no caso da fila, vai para o serviço configurado: Groq, Cerebras ou OpenRouter. Se os gratuitos falharem, a classificação pode usar a xAI, que é paga.
 
 ---
+
+## Apoie o projeto
+
+O Omni AI CLI é gratuito e mantido pelo Samuel Ramos. Se ele ajuda no seu dia a dia, você pode apoiar pelo [GitHub Sponsors](https://github.com/sponsors/samuelrms) ou por PIX. Veja [como apoiar](https://github.com/samuelrms/omni-ai-cli/blob/main/SPONSORS.md).
 
 ## Licença
 

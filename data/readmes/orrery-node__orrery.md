@@ -237,7 +237,7 @@ The full guide, with every flag and a troubleshooting table, is at **[orrerynode
 | `:trusted` | reputation | settled volume 35% · redemptions 15% · age 15% · bonded $OREY 10% · this router's own success rate 25% |
 | `:private` | privacy | only providers whose enclave this router verified; the request is sealed |
 
-The router tries the top three providers in order and cools a failing one down for 15 seconds up to 5 minutes, so a slow or dead provider is skipped without your tool noticing. Pin one with `x-orrery-provider: <address prefix>`, or set the route with `x-orrery-route`.
+The router tries the top three providers in order and cools a failing one down for 15 seconds up to 5 minutes, so a slow or dead provider is skipped without your tool noticing. If a provider drops a stream mid-answer, the router hands the text so far to the next provider whose manifest says `resume: true` and keeps writing into the same stream; the provider that dropped it is paid nothing for that answer. Pin one with `x-orrery-provider: <address prefix>`, or set the route with `x-orrery-route`.
 
 ## How payment works
 
@@ -310,6 +310,7 @@ Providers add tiers to `provider.json`, in basis points (`share` of supply, `off
 Every provider is someone's own machine. Put a node in front of any OpenAI-compatible server, set your prices, and list it; routers anywhere can then pay you per answer.
 
 ```bash
+orrery provider init                                                   # find Ollama, vLLM, llama.cpp, LM Studio or SGLang and write provider.json
 orrery provider register --config provider.json --wallet wallet.json   # list on chain; your wallet stays cold
 orrery provider show     --config provider.json                         # what the chain says, including your node key
 orrery provider start    --config provider.json                         # serve, check vouchers, redeem
@@ -421,9 +422,10 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 | `orrery channels` | your channels: deposit, what you signed, what was redeemed |
 | `orrery close <channel> --wallet <keypair>` | start closing (the provider gets a grace period to redeem) |
 | `orrery close <channel> --wallet <keypair> --finish` | after the grace period, the rest comes back to you |
+| `orrery provider init` | find a local model server and write a starting provider.json |
 | `orrery provider register \| show \| start \| attest \| redeem --config provider.json` | run a provider |
 
-Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--enclave-images`. Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`).
+Router flags: `--route`, `--deposit` (2), `--top-up-below` (0.25), `--daily-cap` (5), `--min-reputation` (0.2), `--port` (7171), `--refresh` (60), `--enclave-images`, `--alias` (`claude-*=llama-3.3-70b`: answer other model names with a network model). Environment: `ORRERY_WALLET`, `ORRERY_RPC_URL`, `ORRERY_HOME` (`~/.orrery`), `ORRERY_ALIASES`.
 
 ## Router console
 
@@ -514,7 +516,7 @@ Two things. Holding it lowers your price at every provider that publishes holder
 <details>
 <summary><b>Which API does the router speak?</b></summary>
 
-OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), `/v1/models`, and the Anthropic Messages API (`/v1/messages`, streaming or not, tool use included, plus `/v1/messages/count_tokens`). For an Anthropic client, set `ANTHROPIC_BASE_URL=http://127.0.0.1:7171` and use a network model id such as `llama-3.3-70b`.
+OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI Responses API (`/v1/responses`, streaming or not, function calls included; `orrery connect codex --write` sets up the Codex CLI), `/v1/models`, and the Anthropic Messages API (`/v1/messages`, streaming or not, tool use included, plus `/v1/messages/count_tokens`). For an Anthropic client, set `ANTHROPIC_BASE_URL=http://127.0.0.1:7171` and use a network model id such as `llama-3.3-70b`; Claude Code runs this way with the router's `--alias 'claude-*=<model>'`. Agents can also reach the network over MCP: `orrery mcp` serves `ask`, `models` and `status` on stdio in front of your router (`claude mcp add orrery -- npx -y orrery-node mcp`).
 </details>
 
 ## Roadmap

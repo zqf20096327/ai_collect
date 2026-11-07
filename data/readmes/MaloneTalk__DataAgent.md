@@ -1,0 +1,186 @@
+# Data Agent
+
+> An LLM-powered data query agent that maps business language to data through a semantic layer.
+
+**Data Agent** 是一个面向业务人员的自然语言数据分析智能体：你用中文提问，它把问题理解成 SQL 或 Python 分析代码、执行查询与统计计算，并以流式对话的方式把结果与分析返回给你。它内置**语义层**，把"业务语言"映射到"数据表示"，让 LLM 真正"懂业务"。
+
+[![Backend CI](https://github.com/MaloneTalk/DataAgent/actions/workflows/backend.yml/badge.svg)](https://github.com/MaloneTalk/DataAgent/actions/workflows/backend.yml)
+[![Frontend CI](https://github.com/MaloneTalk/DataAgent/actions/workflows/frontend.yml/badge.svg)](https://github.com/MaloneTalk/DataAgent/actions/workflows/frontend.yml)
+[![License: AGPL v3](https://img.shields.io/github/license/MaloneTalk/DataAgent)](LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MaloneTalk/DataAgent)
+
+> **项目状态**：由于开发时间有限，项目仍在持续打磨中，部分功能与文档可能尚未完善。开发者会持续迭代，同时也非常期待社区的参与——欢迎提交 Issue 与 PR。
+
+## ✨ 特性
+
+- **自然语言查数**：基于 LLM + ReAct 工具调用，把自然语言转为 SQL 并在目标库执行，全程流式输出。
+- **Python 数据分析**：对查询结果自动执行统计分析（相关性、回归、分布检验），补齐 SQL 在复杂统计计算上的短板。
+- **多模型可切换**：内置 OpenAI 兼容接口 / Ollama / 通义 DashScope / Anthropic 等提供商，换底座模型不影响已沉淀的业务知识。
+- **多数据源（JDBC 抽象）**：连接与元数据读取基于 JDBC 标准 API，内置类型覆盖 MySQL / PostgreSQL / Oracle / ClickHouse / SQL Server / 达梦 / OceanBase / SQLite；实际查询还受目标库方言和 SQL 授权支持范围约束。
+
+  > **默认仅内置 MySQL 驱动**。使用其他数据库前，需先在 `data-agent-backend/pom.xml` 中添加对应 JDBC 驱动依赖并重新构建后端，否则新增数据源时会提示「未找到数据库驱动」。类型列表与 Maven 坐标见 [docs/configuration.md](docs/configuration.md#4-查询数据源)。
+- **语义层（无向量召回）**：以"域（Domain）"组织表，由 LLM 在工具调用时**推理出业务问题所属域、主动选表**，而非向量相似度召回——更精准、更稳定，也无需维护任何 embedding 索引。维度包括领域描述、逻辑表 / 逻辑列 / 表关系 / 指标口径的业务映射。
+- **会话式分析**：SSE 流式回答，会话历史可追溯、可调试。
+- **角色与数据权限**：按功能权限点授权，表白名单与隐藏列黑名单同时作用于语义工具、SQL 查询和导出；会话与资产按归属隔离。
+- **资产与数据证据**：内置报表、CSV 导出与数据证据视图，记录回答涉及的 SQL、指标、Python 执行及表列来源。
+- **Skill 系统**：从文件系统 / Git / Nacos 多源加载可复用的查询流程（"已验证查询模式"）。
+- **MCP 配置管理（开发中）**：提供外部 MCP Server 的配置增删改查与启停状态管理；当前尚未将外部 MCP 工具接入 Agent 工具箱。
+- **可观测性（OpenTelemetry）**：HTTP、Agent、LLM、工具与 JDBC 调用统一走 OTel trace；标准 OTLP 导出，可接入任意 OTel 后端（Jaeger / Tempo / SigNoz / Langfuse 等），仓库自带 Grafana LGTM 本地示例。
+
+## 💡 核心设计亮点
+
+### 1. 语义层召回：用模型推理替代向量检索
+
+传统 Text-to-SQL 方案通常用向量相似度从成百上千张表里"召回"候选表，但向量召回既容易误召回 / 漏召回，又要额外维护 embedding 模型与向量索引。
+
+Data Agent 反其道而行——**不引入任何向量检索**。语义层把表组织成"域（Domain）"，LLM 在工具调用时直接**推理出业务问题属于哪个域**，再由 `get_tables` 工具按域精确返回该域下的表（`GetTablesTool` → `TableSemanticService.listMergedTablesByDomains`）。
+
+理由很直接：判断"上个月各区域销售额"属于"销售域"这件事，让模型去理解语义，比让向量去算余弦相似度**更准、更稳**，而且零额外依赖、零索引维护成本。
+
+### 2. 数据源层：复用 JDBC 连接与元数据接口
+
+- `SchemaReader` 完全基于 JDBC 标准 `DatabaseMetaData` 读取表 / 列 / 主键 / 索引提示，不绑定任何数据库方言；
+- `SqlExecutor` 使用 `Connection` / `PreparedStatement` / `ResultSet` 执行查询，并叠加 SELECT 校验、表列授权、行数限制与超时。
+
+目前已内置上述八种类型，前端数据源下拉与后端 `DataSourceType` 枚举同步支持。**默认发布包仅内置 MySQL 驱动**，其他数据库需先按 [docs/configuration.md](docs/configuration.md#4-查询数据源) 引入对应驱动。扩展新类型时还需验证元数据、SQL 解析授权与分页行为；当前无 LIMIT/FETCH 的查询会追加 LIMIT 包装，不能仅凭 JDBC 驱动推断所有方言均可执行。
+
+## 🏗️ 架构速览
+
+```
+用户 ──► 前端(Vue3) ──► POST /api/agent/chat/stream (SSE)
+                            │
+                            ▼
+                     AgentService (ReAct 循环)
+       ┌───────────────┴───────────────┬──────────────────┐
+   LLM(可切换底座)              工具集(SQL/Schema/Python/反问/报表)      语义层 (MySQL)
+                            │
+                            ▼
+                     目标数据源 (任意 JDBC 兼容数据库)
+```
+
+- **元数据库**（存放语义层、数据源、会话、MCP 配置等）使用 MySQL。
+- **被查询的业务库**通过独立 JDBC 连接访问，驱动、方言及授权支持范围见[数据源配置](docs/configuration.md#4-查询数据源)。
+- **大批量表格导出**当前按 MySQL 流式读取路径优化；PostgreSQL 查询可接入，但大批量导出前需补 cursor/事务设置。
+
+完整架构与请求流转见 [docs/architecture.md](docs/architecture.md)。
+
+## 🔭 可观测性
+
+后端基于 OpenTelemetry 统一采集 traces / metrics / logs：
+
+- 一次对话从 HTTP 请求、agentscope 的 `invoke_agent` / `chat` / `execute_tool` 到 MyBatis / 动态数据源 SQL，共享同一条 trace。
+- 日志通过 Logback appender 关联 traceId/spanId，指标由 Micrometer 经 OTLP 导出。
+- 默认只写终端；通过环境变量按需开启导出。
+- 导出是标准 **OTLP/HTTP，不绑定 Grafana**：可直接指向 Jaeger、Tempo、SigNoz、Uptrace、Honeycomb、Datadog、New Relic、Langfuse、Arize Phoenix 等任意 OTel 后端。
+- 仓库自带 `docker/observability/docker-compose.yml`（Grafana LGTM）作为本地示例，一条命令即可查看 trace/metrics/logs。
+
+详见 [docs/observability.md](docs/observability.md)。
+
+## 🚀 快速开始
+
+> Docker 与手动搭建步骤见 [docs/getting-started.md](docs/getting-started.md)。以下命令使用 Bash；Windows PowerShell 的环境变量写法见该文档。
+
+**前置依赖**：JDK 17+、Maven 3.9+、Node.js 22（≥ 22.13）与 npm、MySQL 8（Docker 示例版本）。Python 分析另需后端运行环境提供 `python3` 及 pandas、numpy、scipy。
+
+```bash
+# 1. 建元数据库并初始化表结构
+mysql -u root -p -e "CREATE DATABASE data_agent CHARACTER SET utf8mb4;"
+mysql -u root -p data_agent < sql/data_source.sql
+
+# 2. 配置首启必需环境变量
+export ADMIN_INIT_PASSWORD="你的管理员初始密码"
+export IO_GITHUB_MALONETALK_MODEL_API_KEY="你的模型 API Key"
+
+# 可选：默认走 OpenAI 兼容接口，application.properties 当前示例指向 DeepSeek
+export IO_GITHUB_MALONETALK_MODEL_PROVIDER="openai"
+export IO_GITHUB_MALONETALK_MODEL_NAME="deepseek-v4-flash"
+export IO_GITHUB_MALONETALK_MODEL_BASE_URL="https://api.deepseek.com"
+
+# 3. 启动后端（默认端口 8080）
+cd data-agent-backend
+mvn spring-boot:run "-Dspring-boot.run.arguments=--io.github.malonetalk.skill.filesystem[0].path=../skills"
+
+# 4. 另开终端，从仓库根目录启动前端（默认端口 3000）
+cd data-agent-frontend
+npm ci
+npm run dev
+```
+
+SQL 只保留两份：`sql/data_source.sql` 用于新库初始化，`sql/migration.sql` 用于已有数据库升级。
+
+已有数据库升级时，先备份数据库并在启动新版后端前执行最新迁移脚本。已完成主键关联升级的旧库也需执行，以补齐指标业务属性、回答溯源表、角色功能权限、会话归属唯一约束，以及数据源审计与逻辑删除字段。迁移前的会话归属冲突检查见[权限升级说明](docs/permissions.md#升级现有数据库)：
+
+```bash
+mysql -u root -p data_agent < sql/migration.sql
+```
+
+五个指标属性的默认值、校验与配置示例见[指标业务属性](docs/semantic-layer.md#5-指标业务属性)。
+
+浏览器打开 http://localhost:3000 ，使用 `admin` / `ADMIN_INIT_PASSWORD` 登录后，先在「数据源管理」接入业务库，在「语义管理」同步表结构并维护表/列/指标口径，再到聊天框用自然语言提问，例如：*"上个月各区域销售额是多少？"* 用户与角色入口在「系统管理」。
+
+新会话由后端 `POST /api/agent/session` 创建，再用返回的会话 ID 发起 SSE 请求；在聊天页首条消息前选择数据源，绑定后不能切换。普通用户需先获得功能权限和目标表授权，配置步骤见[权限说明](docs/permissions.md)。
+
+## 📚 文档
+
+| 文档 | 说明 |
+| --- | --- |
+| [docs/README.md](docs/README.md) | 文档导航索引 |
+| [docs/architecture.md](docs/architecture.md) | 整体架构与请求流转 |
+| [docs/getting-started.md](docs/getting-started.md) | 详细安装与启动 |
+| [docs/configuration.md](docs/configuration.md) | LLM、数据源、Skill、MCP 配置 |
+| [docs/semantic-layer.md](docs/semantic-layer.md) | 语义层概念与管理 |
+| [docs/permissions.md](docs/permissions.md) | 功能权限、表列数据范围与升级 |
+| [docs/skills.md](docs/skills.md) | Skill 编写、加载路径与生效方式 |
+| [docs/observability.md](docs/observability.md) | OpenTelemetry 链路、指标与日志 |
+| [docs/contributing.md](docs/contributing.md) | 开发环境与贡献流程 |
+
+> 从旧版本升级时密码哈希已由 PBKDF2 改为 BCrypt，存量用户需按 [configuration.md](docs/configuration.md#密码哈希与旧数据迁移) 的指引重置密码。
+
+## 🤝 贡献
+
+由于时间关系，项目仍在持续完善中，开发者深知其中尚有诸多不完善之处，会继续努力迭代。同时也真诚欢迎社区的参与：提交 Issue 反馈问题与建议、补充文档、修复 Bug、实现新特性……任何形式的贡献都欢迎。开发规范与提交流程见 [docs/contributing.md](docs/contributing.md)。
+
+## 💬 交流
+
+钉钉交流群: **154405001431**（"DataAgent用户1群"）
+
+> 部分用户可能因账号安全问题无法加入，条件允许的情况下可换账号申请。
+
+## 📄 开源协议
+
+本项目采用 [GNU Affero General Public License Version 3](LICENSE)（AGPLv3）开源。考虑到部分开发者对 AGPLv3 的义务存在疑问，现根据 AGPLv3 的条款，就常见使用场景明确说明如下：
+
+**无需对外公开修改后源代码：**
+
+- 个人学习、研究或自行使用
+- 公司内部修改二开，仅在公司内网部署供内部员工使用
+- 将二开后的产品分发或出售给客户（须同时向该客户提供源代码，同时客户需要继续遵守 AGPLv3）
+
+**需要对外公开修改后源代码：**
+
+- 通过互联网向外部用户提供服务（无论是否盈利，如 SaaS、Web 应用、API 服务等）
+- 通过导入 jar 包、Maven/Gradle 依赖等方式将本项目链接或组合进其他服务，构成单一程序或衍生作品
+
+> 其他程序仅通过 HTTP、RPC、MCP、A2A 等标准通信协议与本项目进行独立进程间通信，无需按 AGPLv3 开源。
+
+所有贡献者均应遵守 AGPLv3 的要求。
+
+更详细的说明请阅读 [AGPLv3 使用说明](docs/AGPLv3-NOTICE.md) 以及 [LICENSE](LICENSE)。
+
+## 🌟 Star 历史
+
+<a href="https://www.star-history.com/?repos=malonetalk%2Fdataagent&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=malonetalk/dataagent&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=malonetalk/dataagent&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=malonetalk/dataagent&type=date&legend=top-left" />
+ </picture>
+</a>
+
+## 🧑‍💻 贡献者名单
+
+<a href="https://github.com/MaloneTalk/DataAgent/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MaloneTalk/DataAgent" />
+</a>
+
+---

@@ -94,8 +94,9 @@ the 16 GB RTX 50 cards the 16 GB entries. The **RTX 3090 and 3090 Ti** are
 supported, on the 27B's 16 GB entries; the **RTX 4090** and the 16 GB RTX 40
 cards are expected to work, and reports are welcome. An RTX 30 or RTX 40 card
 needs release 0.10.0 or the development build: the 0.9 releases are built for
-Blackwell alone. The NVFP4 27B, Flash-Next
-and the image model load on Blackwell alone, on a card of 32 GB or more. The
+Blackwell alone. The NVFP4 builds, Flash-Next
+and the image model load on Blackwell alone, on a card of 32 GB or more
+([every model on every card](docs/user/reference/models.md#where-each-model-loads)). The
 figures here are measured on an RTX 5090
 ([the guide's list](https://gpillon.github.io/ignis/start/#what-it-runs-on)).
 
@@ -656,7 +657,7 @@ directory the server fetches one and verifies it. The Playground is then at
 ```
 make doctor          # toolchain, rust target, artifact, web deps
 make dev             # build web + kernel + GPU server, then run it
-make dev VISION=1    # the same, with the vision tower loaded for image input
+make dev VISION=0    # the same, without the vision tower (the profiles load it; VISION=1 forces it on)
 make dev UNCENSORED=1  # the same, on the uncensored (abliterated) weights
 make mock            # the same with no GPU, no kernel, no artifact
 ```
@@ -709,7 +710,8 @@ Two parts, in this order: the C++/CUDA kernel leaf, then the Rust workspace that
 links it.
 
 - **Toolchain** — Rust; MSVC C++ build tools (Windows) or GCC (Linux); the CUDA
-  Toolkit (`nvcc`, target `SM120a`); CMake + Ninja; Node.js for the Playground.
+  Toolkit (`nvcc`, target `SM120a`); CMake 3.28 or newer (Ubuntu 22.04
+  packages 3.22) + Ninja; Node.js for the Playground.
 - **Kernel leaf** — `kernel/build.ps1` on Windows, `kernel/build.sh` on Linux.
   Both configure and build into `kernel/build/`, which `crates/*/build.rs` link.
 - **Workspace** — `cargo build --release -p ignis-server --features cuda` for

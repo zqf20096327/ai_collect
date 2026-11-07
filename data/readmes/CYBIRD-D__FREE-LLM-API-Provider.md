@@ -1,9 +1,12 @@
 # Free LLM API Provider
+
+[**English**](./readme.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [Português (Brasil)](./README.pt-BR.md)
 > Last reviewed: **2026-11-02** 
 
 This directory tracks **free LLM inference APIs**, their account requirements and rate limits (including CN providers).  
 
-**Free inference**, **one-time trial credits** and **$0/month subscriptions with paid token usage** are not the same thing. Free quotas and model catalogs can change.
+**Free inference**, **one-time trial credits** and **$0/month subscriptions with paid token usage** are not the same thing.     
+Free quotas and model catalogs can change.
 
 免费 LLM API 平台汇总（包括中国大陆平台）。**免费调用、一次性试用额度和按量付费（免月费）应分别判断**。
 
@@ -44,9 +47,9 @@ You may also want to read my other posts:
 
 ## Content/目录
 - [Global Platform](#global-platform)
-  - [AMD Radeon Cloud Token Factory (China site)](#amd-radeon-cloud-token-factory-china-site)
-  - [AMD AI Developer Program (cloud credits)](#amd-ai-developer-program-one-time-cloud-credits)
-  - [★Google/Gemini & Gemma 4](#google-gemini-gemma-4)
+  - [★AMD AI Developer Program (cloud credits)](#amd-ai-developer-program-one-time-cloud-credits)
+  - [Google/Gemini & Gemma 4](#google-gemini--gemma-4)
+    - [★AI Studio to API Adapter](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md)
   - [★Nvidia(40RPM)](#nvidia)
   - [Ollama](#ollama)
   - [★Groq](#groq)
@@ -78,43 +81,6 @@ You may also want to read my other posts:
 
 ## Global Platform
 
-### AMD Radeon Cloud Token Factory (China site)
-> Last checked: **2026-11-02**   
-> **Free shared-model API with a daily renewable usage cap**
-
-- **Official links:** [Token Factory console](https://developer.amd.com.cn/radeon/tokenfactory) · [Documentation](https://amd-aim.github.io/radeon-cloud-docs/guides/token-factory/) · [Rate limits](https://amd-aim.github.io/radeon-cloud-docs/api/rate-limits/) · [Usage and quota](https://amd-aim.github.io/radeon-cloud-docs/api/usage/) · [Terms](https://amd-aim.github.io/radeon-cloud-docs/api/terms/)
-- **API base URL (OpenAI-compatible):** `https://developer.amd.com.cn/radeon/api/v1`. Also supports Anthropic-compatible Messages requests. No GPU instance needed.
-- **Free quota:** Resets **daily at 00:00 Beijing time (UTC+8)**. Usage is metered in **pts (points)**, *not* USD, GPU cloud credits, or a fixed number of tokens. 
-  - **Daily pts limits vary by account and can change**; the official 10-pt example is **not a guaranteed allowance**. (Usually 1 pt) <br>
- 
-- **Typical rate limits (not guaranteed):** **20 RPM/account** at the gateway, **30 RPM/API key** at admission, and **8 concurrent requests/API key**
-
-<details>
-  
-<summary>Models&Price(expand to see)</summary> 
-
-| Model                       |  Input | Output | **1 pt's Tokens（input:output = 1:1）** |
-| ---------------------------- | ----: | ---: | -------------------------------: |
-| DeepSeek-V4-Flash            |  0.14 | 0.28 |                        **4.76M** |
-| DeepSeek-V4-Flash-Vision-Exp |  0.14 | 0.28 |                        **4.76M** |
-| DeepSeek-V4.1-Flash          |  0.28 | 0.56 |                        **2.38M** |
-| Qwen3.8-Flash-Next           |  0.14 | 0.28 |                        **4.76M** |
-| Qwen3.8-27B                  | 0.035 | 0.07 |                       **19.05M** |
-| GLM-5.3-Flash                |  0.28 | 0.56 |                        **2.38M** |
-| MiMo-V2.6-Flash              |  0.14 | 0.28 |                        **4.76M** |
-| MiniCPM5-2B                  | 0.035 | 0.07 |                       **19.05M** |
-| MiniCPM-V-4.7-1B             | 0.035 | 0.07 |                       **19.05M** |
-| MiniCPM-V-4.7-35B-A3B        | 0.035 | 0.07 |                       **19.05M** |
-| Gemma-4-31B-IT               | 0.035 |  0.0 |                **19.05M**        |
-
-
-</details>
-  
-
-
-
----
-
 ### AMD AI Developer Program (one-time cloud credits)
 > Last checked: **2026-11-02**  
 > **Promotional credits, not a recurring free LLM API tier**
@@ -136,7 +102,7 @@ You may also want to read my other posts:
 - **Not free-tier eligible:** `gemini-4-argon`, `gemini-3.1-pro-preview` (other Pro models require individual checks).
 - Google does **not** publish a single guaranteed RPM / TPM / RPD quota that applies to every free project. Limits depend on model, project and account tier and are shown in AI Studio. Previously observed numbers (e.g. 5 RPM/20 RPD) are **not universal guarantees**.
 - Limits apply **per project** (not per key); RPD quotas reset at **midnight Pacific time**. Free-tier prompts may be used to improve Google products.
-- **Alternative, unofficial:** [AI Studio to API Adapter](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md). Review its security and terms before use.
+- **★Alternative, unofficial:** [AI Studio to API Adapter](https://github.com/iBUHub/AIStudioToAPI/blob/main/README_EN.md). Review its security and terms before use.
 
 | Model                     | Requests/minute (RPM) | Tokens/minute (TPM) | Requests/day (RPD) |
 |---------------------------|---------------------------|--------------------------|-----------------|
@@ -162,9 +128,9 @@ Endpoint (OpenAI-compatible): https://integrate.api.nvidia.com/v1
 Rate limits may vary by model and traffic from other users may cause throttling. </br>
 > For dedicated availability, deploy models as a dedicated endpoint with NVIDIA NIM.
 
-- **Representative catalog below, not a fixed or exhaustive 55-model list.** Verify the **Free Endpoint** label for each model in the [live NVIDIA catalog](https://build.nvidia.com/models).
+- **Representative catalog below, not a fixed or exhaustive 55-model list.** Verify the **Free Endpoint** in the [live NVIDIA catalog](https://build.nvidia.com/models).
   - OpenAI/Google/Meta/Microsoft/NVIDIA/Mistral AI/DeepSeek/Moonshot AI/Z.ai/MiniMax etc.
-- Free endpoints are for **trial/evaluation**, not guaranteed dedicated production hosting. Check NVIDIA trial privacy terms before submitting sensitive data.
+- Free endpoints are for **trial/evaluation**, check NVIDIA trial privacy terms before submitting sensitive data.
 <details>
 
 <summary> 
@@ -558,7 +524,8 @@ Endpoint: https://api.z.ai/api/paas/v4
 
 [Official rate-limit guide](https://docs.mistral.ai/admin/billing-usage/usage-limits) · [Explanation](https://help.mistral.ai/en/articles/698531-why-am-i-hitting-api-rate-limits-and-how-do-i-increase-them)
 
-Free-mode limits depend on the **organization and model**. The old numeric cap below is a historical community report, **not a guaranteed free-tier entitlement**. Check **Admin Panel → API → Limits**.
+Free-mode limits depend on the **organization and model**. The old numeric cap below is a historical community report, **not a guaranteed free-tier entitlement**.    
+Check **Admin Panel → API → Limits**.
 
 
 Endpoint: https://api.mistral.ai

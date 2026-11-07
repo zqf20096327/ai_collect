@@ -7,7 +7,7 @@
 [![LiteLLM](https://img.shields.io/badge/LiteLLM-Local%20%2B%20Cloud-orange?style=for-the-badge)](https://github.com/BerriAI/litellm)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-> **Intelligent document automation for bank statements** — Extract, structure, analyze, and query financial data from PDFs using **YOLO + OCR + LLM**, with **parallel agent harnesses** (CrewAI, Deep Agents, Hermes) and **local LLMs** (LM Studio / Ollama).
+> **Intelligent document automation for bank statements** — Extract, structure, analyze, and query financial data from PDFs using **YOLO + OCR + LLM**, with **parallel agent harnesses** (CrewAI, Deep Agents, Hermes) and **local LLMs** (vLLM, SGLang, Strata, LM Studio, Ollama).
 
 ---
 
@@ -16,7 +16,10 @@
 - **Advanced PDF Parsing** — YOLO layout detection + OCR + LLM-based table extraction
 - **Multi-harness agents** — CrewAI baseline, LangChain **Deep Agents** (agentskills.io), **Hermes** (Docker sandbox)
 - **Agent Skills** — Domain skills for bank-statement parsing, PII redaction, financial analysis, RAG, and output format
-- **Local LLM First** — LM Studio and Ollama via LiteLLM (async `acompletion`)
+- **Local LLM First** — vLLM, SGLang, Strata, LM Studio, Ollama via LiteLLM; frontend picks a live `/v1/models` list
+- **GPU monitoring** — Prometheus + Grafana (DCGM + node-exporter), same pattern as the engine repos
+- **History dashboard** — quarterly / annual totals from Postgres, Markdown + print-to-PDF
+- **MCP stdio** — Claude Desktop / Cursor tools over the BankAI API
 - **Reasoning Model Support** — Handles models that return content in `reasoning_content`
 - **Secure RAG Pipeline** — PII redaction **before** embedding into vector database (Qdrant / Chroma)
 - **Financial Intelligence** — Income/expense categorization, trend analysis, natural language querying
@@ -27,13 +30,36 @@
 
 ---
 
-## Important Notes for Local LLMs (LM Studio / Ollama)
+## Local LLMs (vLLM / SGLang / Strata / LM Studio / Ollama)
 
-When using **local models** via LM Studio or Ollama:
+BankAI does not start the GPU engine. Run one of these, then select it in **New analysis**:
 
-- **Model size**: Prefer **9B+** parameters (e.g. Qwen2.5-14B, Qwen3-27B, Gemma-2-9B, Llama-3.1-8B+). Smaller models reduce quality.
-- **Context length**: **16K+** tokens (recommended **32K+**). Low context drops agent instructions.
-- **JSON output**: Local models often fail strict JSON. Prefer **Markdown** reports; post-process with a second call or `instructor` if needed.
+| Engine | GitHub | Default URL (host) | BankAI provider |
+|--------|--------|--------------------|-----------------|
+| **vLLM** | [docker-vllm-serving-engine](https://github.com/johnsonhk88/docker-vllm-serving-engine) | `http://127.0.0.1:8001/v1` | `vllm` |
+| **SGLang** | [sglang-llm-inference-engine](https://github.com/johnsonhk88/sglang-llm-inference-engine) | `http://127.0.0.1:30000/v1` | `sglang` |
+| **Strata** | [strata-llm-inference-engine](https://github.com/johnsonhk88/strata-llm-inference-engine) | `http://127.0.0.1:8080/v1` | `strata` |
+| LM Studio | — | `http://127.0.0.1:1234/v1` | `lm-studio` |
+| Ollama | — | `http://127.0.0.1:11434` | `ollama` |
+
+**Port clash:** BankAI FastAPI uses **`:8000`**. Start vLLM with `--port 8001`.
+
+When the engine is up, `GET /api/llm-models` fills the dropdown from live `/v1/models`. YAML is the fallback when the engine is down.
+
+GPU / CPU / RAM (Prometheus + Grafana, same layout as the vLLM/SGLang `monitoring/` folders):
+
+```bash
+docker compose -f infra/monitoring/docker-compose.yml up -d
+# Grafana http://localhost:3001  (admin/admin)  dashboard /d/bankai-local-llm
+```
+
+Step-by-step: **[docs/guides/local-llm-and-monitoring.md](docs/guides/local-llm-and-monitoring.md)** · MCP: **[docs/guides/mcp.md](docs/guides/mcp.md)**
+
+Quality notes for local models:
+
+- **Model size**: Prefer **9B+** parameters. Smaller models reduce quality.
+- **Context length**: **16K+** tokens (recommended **32K+**).
+- **JSON output**: Prefer **Markdown** reports; post-process if you need strict JSON.
 
 ---
 
@@ -42,7 +68,8 @@ When using **local models** via LM Studio or Ollama:
 | Component | Technology |
 |-----------|------------|
 | **API** | FastAPI, SQLAlchemy 2.0 (async), Alembic, Pydantic v2 |
-| **LLM Orchestration** | LiteLLM (LM Studio, Ollama, OpenAI, DeepSeek, etc.) |
+| **LLM Orchestration** | LiteLLM (vLLM, SGLang, Strata, LM Studio, Ollama, OpenAI, …) |
+| **GPU metrics** | Prometheus + Grafana + DCGM + node-exporter (`infra/monitoring/`) |
 | **Agent Frameworks** | CrewAI + Skills · Deep Agents (LangGraph) · Hermes (Docker sandbox) |
 | **Document Processing** | PyMuPDF, YOLO, OCR |
 | **Vector Database** | Qdrant, Chroma |
@@ -59,77 +86,50 @@ When using **local models** via LM Studio or Ollama:
 
 ```text
 AI-Bank-Statement-Document-Automation/
-├── agents/                              # Multi-harness agents (experimental)
-│   ├── README.md
-│   ├── crewai/                          # Skills snapshot + pointer to baseline
-│   ├── deep-agents/                     # deepagents SDK, tools, tests, E2E
-│   │   ├── run_e2e.py
-│   │   ├── agent.py
-│   │   ├── tools/
-│   │   ├── skills/
-│   │   └── tests/
-│   └── hermes/                          # Docker-sandboxed Hermes profile
-│       ├── config.yaml
-│       ├── scripts/
-│       └── skills/
-├── api/                                 # FastAPI backend (full-stack v1)
-│   ├── app/
-│   │   ├── agents/                      # Agent adapters (CrewAI, DeepAgents)
-│   │   │   ├── crewai/
-│   │   │   └── registry.py
-│   │   ├── api/                         # REST endpoints (auth, llm, documents, agent_runs)
-│   │   ├── core/                        # Security (JWT + bcrypt), deps
-│   │   ├── db/                          # SQLAlchemy session + models
-│   │   ├── models/                      # SQLAlchemy ORM models
-│   │   ├── schemas/                     # Pydantic v2 request/response schemas
-│   │   ├── tests/                       # pytest + pytest-asyncio
-│   │   ├── worker/                      # Celery tasks + runner
-│   │   ├── config.py                    # pydantic-settings env loader
-│   │   └── main.py                      # FastAPI application entrypoint
-│   ├── alembic/                         # Database migrations
-│   ├── config/                          # LLM provider catalog (YAML)
-│   └── requirements.txt                 # Pinned API dependencies
-├── backend/
-│   └── app/
-│       ├── core/
-│       │   └── ai_agent_skills_dev.ipynb   # CrewAI main notebook
-│       └── skills/                         # Live CrewAI skills (shared via namespace pkg)
-│           ├── bank-statement-parsing/
-│           ├── financial-analysis/
-│           ├── pii-handling/
-│           ├── rag-query-handling/
-│           └── output-format/
-├── infra/                               # Docker compose + Kubernetes manifests
-│   ├── api.Dockerfile                   # API & Worker image
-│   ├── docker-compose.yml               # PostgreSQL, Redis, Qdrant, API, Worker, Web
-│   ├── docker-compose.override.yml      # Dev bind-mounts
-│   ├── .env.example                     # Environment template
-│   └── k8s/
-├── web/                                 # React 18 + Vite 5 SPA
+├── backend/                             # Production FastAPI service (HTTP under /api/*)
+│   ├── app/                             # Python package (app.*)
+│   │   ├── agents/                      # Adapters (CrewAI live; Deep Agents / Hermes stubs)
+│   │   ├── api/                         # REST routers: auth, llm, documents, agent_runs
+│   │   ├── core/                        # JWT + bcrypt, storage
+│   │   ├── db/ models/ schemas/
+│   │   ├── tests/
+│   │   └── worker/                      # Celery tasks + runner
+│   ├── alembic/
+│   └── config/llm_providers.yaml
+├── frontend/                            # Production React 18 + Vite 5 SPA
+├── infra/                               # Docker compose + Dockerfiles
+│   └── monitoring/                      # Prometheus + Grafana (GPU/CPU/RAM)
+├── skills/                              # Canonical domain skills (edit here only)
+│   ├── bank-statement-parsing/
+│   ├── financial-analysis/
+│   ├── pii-handling/
+│   ├── rag-query-handling/
+│   ├── output-format/
+│   └── crewai_skills_loader.py
+├── agents/                              # Experimental harnesses (each has a synced skills/ copy)
+│   ├── crewai/
+│   ├── deep-agents/
+│   └── hermes/
+├── scripts/sync_skills.py               # Copy skills/ → agents/*/skills (--apply / --check)
 ├── data/
-│   ├── bank-statement-document/         # Sample PDFs (e.g. Dummy-Bank-Statement.pdf)
-│   ├── uploads/
-│   └── ...
-├── docs/
-│   ├── guides/
-│   │   ├── multi-harness-agents-guide.md
-│   │   └── full-stack-app-guide.md
-│   └── superpowers/
-│       ├── specs/                       # Design docs
-│       └── plans/                       # Implementation plans
-├── requirements.txt                     # Root / CrewAI stack
+│   ├── samples/Dummy-Bank-Statement.pdf
+│   └── bank-statement-document/         # Extra TemplateLab samples
+├── notebooks/                           # Experiments (CrewAI notebook, YOLO layout)
+├── docs/guides/
 └── README.md
 ```
+
+**Skills policy:** edit `skills/`, then run `python scripts/sync_skills.py --apply`. Do not edit harness copies by hand. The backend loads `skills/` directly.
 
 ---
 
 ## Multi-harness agents (experimental)
 
-Parallel frameworks for the same bank-statement workflow. Shared inputs live in `data/`. Each harness has its **own skill copies** (no auto-sync).
+Parallel frameworks for the same bank-statement workflow. Shared inputs live in `data/`. Each harness has a **generated** skill copy (`python scripts/sync_skills.py --apply`).
 
 | Harness | Path | Skills | How to run |
 |---------|------|--------|------------|
-| **CrewAI** (baseline) | `backend/app/core/` + `agents/crewai/` | CrewAI Skills | Jupyter notebook |
+| **CrewAI** (baseline) | `notebooks/ai_agent_skills_dev.ipynb` + `agents/crewai/` | CrewAI Skills | Jupyter notebook |
 | **Deep Agents** | `agents/deep-agents/` | agentskills.io | Local `.venv` + `run_e2e.py` |
 | **Hermes** | `agents/hermes/` | agentskills.io | Hermes CLI + **Docker** only |
 
@@ -143,7 +143,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 PYTHONPATH=. pytest tests/ -v
 PYTHONPATH=. python run_e2e.py \
-  --pdf ../../data/bank-statement-document/Dummy-Bank-Statement.pdf \
+  --pdf ../../data/samples/Dummy-Bank-Statement.pdf \
   --question "What amounts appear in the statement?" \
   --mode pipeline
 ```
@@ -182,7 +182,7 @@ pip install -r requirements.txt
 ### 3. Run the main CrewAI notebook
 
 ```bash
-jupyter notebook backend/app/core/ai_agent_skills_dev.ipynb
+jupyter notebook notebooks/ai_agent_skills_dev.ipynb
 ```
 
 ### 4. Or try multi-harness agents
@@ -274,7 +274,7 @@ cd infra && DOCKER_BUILDKIT=1 docker compose --profile prod up -d --build
 
 # 5. For development (API with reload + Vite HMR on :5173):
 cd infra && docker compose up -d           # backend services
-cd web && npm install && npm run dev        # frontend dev server
+cd frontend && npm install && npm run dev   # frontend dev server
 ```
 
 ### GPU Configuration
@@ -299,28 +299,26 @@ docker run --rm --gpus all nvidia/cuda:12.2.1-base-ubuntu22.04 nvidia-smi
 cd infra && DOCKER_BUILDKIT=1 docker compose --profile prod up -d --build
 
 # 4. Verify PyTorch sees the GPU inside the container
-docker compose exec api python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+docker compose exec backend python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
 ```
 
-> **Note:** Experiment code in `backend/`, `agents/`, `frontend/streamlit_app/`, `notebooks/`, `yolo-base-layout-analysis/` is untouched by v1.
+> **Note:** Experiments live under `notebooks/` and `agents/`. Production code is `backend/` + `frontend/` + `infra/` + `skills/`. HTTP routes stay under `/api/*`.
 
 ### Developer notes
 
-- **Namespace packages:** `api/app/__init__.py` is deliberately absent — `app/` is a [PEP 420](https://peps.python.org/pep-0420/) implicit namespace package. Python automatically merges `api/app/` and `backend/app/` so `app.skills` resolves from `backend/app/skills/` without symlinks.
+- **`app` is a normal package:** `backend/app/__init__.py` exists. Containers set `PYTHONPATH=/app/backend:/app/skills` so `from app...` and `from crewai_skills_loader import load_skills` both work.
+- **Skills:** edit `skills/` only, then `python scripts/sync_skills.py --apply`. The backend does not depend on harness copies.
 - **passlib / bcrypt:** The Docker image pins `bcrypt<4.1` because passlib 1.7.4 is incompatible with bcrypt ≥ 4.1 (`bcrypt.__about__` removed). If upgrading passlib, retest login flow.
 - **Qdrant healthcheck** uses `/proc/net/tcp` instead of `curl` because the `qdrant/qdrant` minimal image ships without curl or wget.
-- **Worker CWD:** The worker service must `cd /app/api` before starting Celery (`PYTHONPATH` alone doesn't add the api directory to Python's import search path for absolute `app.*` imports).
+- **Worker CWD:** The worker service `cd /app/backend` then runs `celery -A app.worker.celery_app`.
 
 ---
 
 ## Roadmap
 
-- Production FastAPI backend (harness-selectable)
+- Wire Deep Agents and Hermes adapters into the live API (CrewAI is the only enabled harness today)
 - Multi-document collections / workspaces
-- Advanced financial forecasting
-- Docker + Kubernetes deployment
-- Improved Streamlit dashboard with charts
-- Shared skill sync tooling across harnesses
+- Kubernetes deployment
 - Stronger PII (names/addresses) and production embeddings for Deep Agents
 
 ---

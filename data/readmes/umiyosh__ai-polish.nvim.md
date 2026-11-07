@@ -74,24 +74,22 @@ Calling `setup()` is optional; the plugin works with the defaults.
 
 ### Versions and updates
 
-Releases use Git tags in the form `vMAJOR.MINOR.PATCH`. Published versions and release notes are listed on [GitHub Releases](https://github.com/umiyosh/ai-polish.nvim/releases).
-The first planned release is **v0.1.0**. Until its tag is published, use the installation example above, which follows the default branch unless you configured a global version constraint in lazy.nvim.
-
-After v0.1.0 is published, add **one** of these fields to the lazy.nvim specification above:
+Releases use Git tags in the form `vMAJOR.MINOR.PATCH`. The latest version and the release notes are listed on [GitHub Releases](https://github.com/umiyosh/ai-polish.nvim/releases).
+The installation example above follows the default branch unless you configured a global version constraint in lazy.nvim. To install releases instead, add **one** of these fields to it:
 
 | Setting | Update behavior |
 | --- | --- |
-| `version = "^0.1.0"` | Recommended: receive 0.1.x releases, without moving to 0.2.0 |
-| `tag = "v0.1.0"` | Stay on exactly v0.1.0 |
+| `version = "^0.3.0"` | Recommended: receive 0.3.x releases, without moving to 0.4.0 |
+| `tag = "vX.Y.Z"` | Stay on exactly that version (pick one from Releases) |
 | `version = "*"` | Receive the latest release, including new minor/major versions; excludes prerelease tags |
 | `branch = "master", version = false` | Follow development commits instead of releases |
 
 Run `:Lazy update ai-polish.nvim` to update within the selected constraint. Commit your `lazy-lock.json` to reproduce installed revisions; `:Lazy restore` restores them. See lazy.nvim's [versioning](https://lazy.folke.io/spec/versioning) and [lockfile](https://lazy.folke.io/usage/lockfile) documentation.
 
-With [vim-plug](https://github.com/junegunn/vim-plug), use an exact tag in your existing `plug#begin()` / `plug#end()` block after the release is published:
+With [vim-plug](https://github.com/junegunn/vim-plug), add a tag in your existing `plug#begin()` / `plug#end()` block. A wildcard installs the newest matching tag, here the latest 0.3.x; `:PlugUpdate` moves to newer ones:
 
 ```vim
-Plug 'umiyosh/ai-polish.nvim', { 'tag': 'v0.1.0' }
+Plug 'umiyosh/ai-polish.nvim', { 'tag': 'v0.3.*' }
 ```
 
 This plugin requires **Neovim 0.11+**, including when installed with vim-plug; Vim itself is not supported.
@@ -261,7 +259,7 @@ For Japanese the unnaturalness level follows [Kotobae](https://github.com/umiyos
 - **Cost:** an evaluation fails as a whole if any request fails, and a 3,000-character text takes roughly 30 more Jev requests than before.
 - **Accuracy:** on Kotobae's graded texts (fresh set) the level agreed with the gold at QWK 0.655, against 0.620 for the local check alone, and rated no correct text 3 or higher.
 
-Proofreading starts this evaluation alongside Gemini. When Jev rates the text 1, puts no early underline, and nothing has been shown yet, you are told `no issues found` right away. Gemini's suggestions are then held. Run the same check again (for example your `:AiPolish` mapping) to show them, as Kotobae's C does; the notice names your key. `:AiPolish review` shows them too. If you edited the text in the meantime, the check runs anew.
+Proofreading starts this evaluation alongside Gemini. When Jev rates the text 1, puts no early underline, and nothing has been shown yet, you are told `no issues found` right away. Gemini's suggestions are then held, except a typo or grammar fix: one ends the quiet and shows everything held with it, as Kotobae does. Run the same check again (for example your `:AiPolish` mapping) to show them, as Kotobae's C does; the notice names your key. `:AiPolish review` shows them too. If you edited the text in the meantime, the check runs anew.
 
 ### Early underlines (Japanese)
 

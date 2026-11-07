@@ -4,14 +4,23 @@ MiniBoosts is a Rust library for implementing and comparing boosting algorithms.
 Its algorithms share the `Booster`, `WeakLearner`, and `Classifier` traits, so you
 can use the same data and weak learner across experiments.
 
+[![AdaBoost and ERLPBoost with RBF weak learners on spirals: the decision boundary and the 0-1 error by round](https://raw.githubusercontent.com/rmitsuboshi/miniboosts/main/img/demo.gif)](https://rmitsuboshi.github.io/miniboosts/)
+
+*AdaBoost and ERLPBoost on the same data and RBF weak learner (playground's Spirals
+preset, σ = 0.2, ν = 10), both at the same round. ERLPBoost stops after 23 rounds;
+playback then speeds up while AdaBoost runs to 500. A round's cost differs across
+boosters.*
+
+**[Try it in your browser](https://rmitsuboshi.github.io/miniboosts/)**, with no
+installation: draw points, pick a booster and a weak learner, and replay training.
+
 Since version 0.5.0, MiniBoosts ships as one `miniboosts` crate; algorithms and utilities are
 internal modules, not separate registry packages. Earlier releases have a
 different API; see the [migration notes](MIGRATION.md) when upgrading.
 Rust 1.85 or newer is required (edition 2024).
 
-Try the algorithms in the browser with the
-[interactive demo](https://rmitsuboshi.github.io/miniboosts/), or use them
-from Python with `pip install miniboosts` (see [Python bindings](#python-bindings)).
+You can also use the algorithms from Python with `pip install miniboosts` (see
+[Python bindings](#python-bindings)).
 
 ## Getting started
 
@@ -53,6 +62,36 @@ For CSV or SVMlight files, use `SampleReader::default()`. Binary classification
 labels must be `-1` and `1`, with both classes present in the training sample.
 The assertion checks predictions on this training sample; use a separate test
 set to evaluate performance on unseen data.
+
+## Saving and loading hypotheses
+
+Combined hypotheses implement serde's `Serialize` and `Deserialize`, so a trained
+model can be stored in any serde format. MiniBoosts does not depend on a format;
+this example uses `serde_json`:
+
+```rust
+use miniboosts::{DecisionTreeClassifier, Sample, WeightedMajority, prelude::*};
+
+let rows = vec![vec![-2.0], vec![-1.0], vec![1.0], vec![2.0]];
+let sample = Sample::from_dense(&rows, Some(&[-1.0, -1.0, 1.0, 1.0])).unwrap();
+let tree = DecisionTreeBuilder::new(&sample).max_depth(1).build();
+let f = AdaBoost::init(&sample).force_quit_at(5).run(&tree);
+
+// Use `serde_json::to_writer` and `from_reader` for files.
+let json = serde_json::to_string(&f).unwrap();
+let loaded: WeightedMajority<DecisionTreeClassifier> = serde_json::from_str(&json).unwrap();
+assert_eq!(loaded.predict_all(&sample), f.predict_all(&sample));
+```
+
+- Enable `serde_json`'s `float_roundtrip` feature. Without it, a loaded number
+  may differ from the saved one in its last bits.
+- Only the final hypothesis is saved, not the booster's state, so training cannot
+  continue from a file.
+- The hypothesis type must be known when loading. Hypotheses from a
+  `WeakLearnerUnion` are type-erased and cannot be saved.
+- Features are read by name, so a sample must use the training sample's names.
+- A file may not load in another MiniBoosts version; keep the version or commit
+  with the file. The Python bindings do not support saving yet.
 
 ## Python bindings
 
@@ -133,20 +172,28 @@ Import these types from `miniboosts` or `miniboosts::prelude`:
 | `GraphSeparationBoosting` | [Alon, Gonen, Hazan, and Moran][graphsepboost] |
 | `GradientBoosting` | [Friedman][gbm] |
 | `LogitBoost` | [Friedman, Hastie, and Tibshirani][logitboost] |
+| `MajorityOfFive` | [Høgsgaard, Larsen, and Mathiasen][majorityoffive] |
+| `LarsenRitzert` | [Larsen and Ritzert][larsenritzert] |
 
-The built-in weak learners are a [decision tree][decisiontree], `FiniteClass`
-(an exact edge maximizer over a finite hypothesis class, including one given as
-a table of confidences), `RbfClassBuilder` (Gaussian bumps centered at training
+`MajorityOfFive` and `LarsenRitzert` are sample-optimal weak-to-strong learners
+that take a majority vote of boosters run on sub-samples. They take the booster
+as a closure, so any booster above can be used inside them.
+
+The built-in weak learners are a [decision tree][decisiontree] (an exact
+edge-maximizing decision stump with `exact_splits`, `SplitBy::Edge`, and
+`LeafConfidence::Sign`), `FiniteClass` (an exact edge maximizer over a finite
+hypothesis class, including one given as a table of confidences, or an
+adversarial learner that returns barely edge `γ` with `weakest_with_edge` or
+`edge_exactly`), `RbfClassBuilder` (Gaussian bumps centered at training
 examples, as a `FiniteClass`), `BoundedLinear` (exact edge maximization over
 bounded linear functions; boosting it yields a linear classifier),
 `LogisticRegression` (weighted logistic regression returning halfspaces or
 `tanh` rules, with no edge guarantee), `NaiveBayes` (weighted Gaussian naive
 Bayes), and `RegressionTreeBuilder` (a weighted least-squares regression tree for
 `GradientBoosting` and `LogitBoost`, which fit real-valued responses and return
-an `AdditiveModel`). Implement `WeakLearner` to use your own
-learner. The gradient boosting machine (GBM) and
-regression tree are not included; see the migration notes.
-See the [migration notes](MIGRATION.md) for removed APIs.
+an `AdditiveModel`). `WeakLearnerUnion` runs several of these learners and returns
+the candidate with the largest edge in each round. Implement `WeakLearner` to use
+your own learner. See the [migration notes](MIGRATION.md) for removed APIs.
 
 Custom hypotheses must return consistent predictions for a fixed sample.
 CorrectiveERLPBoost and MLPBoost cache training margins instead of repeatedly
@@ -255,6 +302,8 @@ MiniBoosts is licensed under [MIT](https://github.com/rmitsuboshi/miniboosts/blo
 [robustboost]: https://arxiv.org/abs/0905.2138
 [gbm]: https://doi.org/10.1214/aos/1013203451
 [logitboost]: https://doi.org/10.1214/aos/1016218223
+[majorityoffive]: https://arxiv.org/abs/2408.17148
+[larsenritzert]: https://arxiv.org/abs/2206.01563
 [cerlpboost]: https://link.springer.com/article/10.1007/s10994-010-5173-z
 [decisiontree]: https://www.amazon.co.jp/-/en/Leo-Breiman/dp/0412048418
 [erlpboost]: https://www.stat.purdue.edu/~vishy/papers/WarGloVis08.pdf

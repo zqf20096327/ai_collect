@@ -90,6 +90,21 @@ for individual checks and their fix hints.
 visualization, and your evaluation framework for executing tasks. ReproLLM adds
 reproducibility checks, input identity, runtime evidence and semantic drift.
 
+## Real-world usage
+
+Two public projects document agent-assisted use with different evidence scopes:
+
+| Project | Documented workflow and evidence |
+|---|---|
+| [Privacy_Injection](https://github.com/Mosionca2/Privacy_Injection/blob/95e3200053afaecc31af880313045e19393ee832/docs/reprollm-case-study.md) | Local-model privacy research: isolated condition capture, audit, lock, diff and historical exports; released 0.6.1 and separately versioned source follow-ups. |
+| [LingshuSmartLink](https://github.com/LiangRichard13/LingshuSmartLink/blob/b09becc18b1b9cd0e4d6ac04ed61a7dcbb63554b/docs/reprollm-single-case-trial.md) | A multimodal agent application: synthetic fixture replay, contributor-reported CPU components and online workflow, plus `.pth` inventory feedback. The maintainer separately checked the offline [tutorial](docs/tutorials/single-case-multimodal-app.md). |
+
+These are two project identities, with scoped public reports and contribution
+history. They do not establish independent laboratories, long-term deployment
+or clinical effectiveness. See [adoption evidence](docs/adoption.md) for versions,
+private-receipt limits and exact issue/PR counts. New `.pth` directory support
+is on unreleased 0.7.0 source; the published package remains 0.6.1.
+
 ## Quick start
 
 Choose the interface that fits your work:
@@ -394,6 +409,7 @@ files are excluded from snapshots and discovery. The opt-in
 |---|---|
 | Use natural language instead of assembling commands | [Agent Skill tutorial](docs/tutorials/agent-skill.md) · [Support and remaining work](docs/skill-status.md) |
 | Save a command and run it again | [Guided first experiment](docs/tutorials/first-experiment.md) |
+| Record a judge of already stored answers | [Stored-answer judge recipe](docs/tutorials/stored-answer-judge.md) |
 | Try the whole workflow without a model | [Quick start](docs/quickstart.md) |
 | Understand the evidence model | [Concepts](docs/concepts.md) · [Why ReproLLM](docs/why.md) |
 | Configure an experiment | [Manifest](docs/manifest.md) · [Profiles](docs/profiles.md) · [Project rules](docs/project-rules.md) |

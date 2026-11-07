@@ -274,14 +274,15 @@ the original conversation.
 
 ### Human in the loop
 
-Gate sensitive tools; resolve from your UI, a server-side policy, or an
-out-of-band channel — unresolved approvals deny, so runs never hang:
+Give sensitive tools a `permission`; resolve `ask` from your UI, a
+server-side policy, or an out-of-band channel — unresolved approvals deny,
+so runs never hang, and a denial carries its reason back to the model:
 
 ```python
 from lovia import Runner, events, tool
 
 
-@tool(needs_approval=True)
+@tool(permission="ask")
 async def refund(order_id: str, amount_cents: int) -> str:
     """Issue a refund."""
     return "refunded"
@@ -289,7 +290,7 @@ async def refund(order_id: str, amount_cents: int) -> str:
 
 async for ev in Runner.stream(agent, "Refund order A123."):
     if isinstance(ev, events.ApprovalRequired):
-        ev.approve()          # or ev.reject()
+        ev.approve()          # or ev.reject("use store credit instead")
 ```
 
 → [Tool approval](https://cymoo.github.io/lovia/tools/#tool-approval)
@@ -407,11 +408,18 @@ agent = Agent(
     workspace=Workspace.local(
         ".",
         mode="coding",
-        denied_paths=(".env*",),
-        command_rules=(CommandRule("pytest", "allow"), CommandRule("rm -rf", "deny")),
+        command_rules=(CommandRule("make test", "allow"), CommandRule("gh", "ask")),
     ),
 )
 ```
+
+`coding` vouches for no command itself: the irreversible ask with a reason
+(`git push`, `rm -r`, `sudo`, …), everything else asks once and the user can
+remember it per chat ("always allow `ls`"), and under every mode a baseline
+denies the dangerous (`git push --force`, `rm -rf /`), keeps credential
+stores off-limits and asks before writing `.git` or CI configuration. To run
+inspection and dev tools unprompted, opt in: `command_rules=READ_ONLY +
+DEV_TOOLS` from `lovia.workspace.rules`.
 
 Shell commands inherit a minimal environment, including Windows system,
 shell, temporary-directory, and user-profile variables so sockets and home

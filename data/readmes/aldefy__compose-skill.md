@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/aldefy/compose-skill/stargazers"><img src="https://img.shields.io/github/stars/aldefy/compose-skill?style=flat&color=yellow" alt="GitHub stars"/></a>
   <a href="#setup"><img src="https://img.shields.io/badge/setup-5%20min-brightgreen" alt="Setup time"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/></a>
   <a href="https://developer.android.com/jetpack/compose"><img src="https://img.shields.io/badge/Jetpack%20Compose-1.7+-4285F4" alt="Compose version"/></a>
@@ -19,11 +20,105 @@
 
 ---
 
+## See the difference
+
+Same prompt. Same model. The only variable is whether this skill is installed.
+
+> **You:** "Add a counter to this composable."
+
+<table>
+<tr>
+<th>❌ Without the skill</th>
+<th>✅ With the skill</th>
+</tr>
+<tr>
+<td valign="top">
+
+```kotlin
+@Composable
+fun Counter() {
+    // recreated every recomposition —
+    // count resets to 0 constantly
+    var count = mutableStateOf(0)
+    Button(onClick = { count.value++ }) {
+        Text("Count: ${count.value}")
+    }
+}
+```
+
+State is **recreated on every recomposition** — the counter silently resets. Also boxes the `Int`.
+
+</td>
+<td valign="top">
+
+```kotlin
+@Composable
+fun Counter() {
+    // survives recomposition, no boxing
+    var count by remember { mutableIntStateOf(0) }
+    Button(onClick = { count++ }) {
+        Text("Count: $count")
+    }
+}
+```
+
+`remember` keeps state across recomposition; `mutableIntStateOf` avoids boxing. Verified against `androidx` source.
+
+</td>
+</tr>
+</table>
+
+> **You:** "Set up navigation between two screens."
+
+<table>
+<tr>
+<th>❌ Without the skill</th>
+<th>✅ With the skill</th>
+</tr>
+<tr>
+<td valign="top">
+
+```kotlin
+// string routes — no type safety,
+// args stringly-typed, deprecated pattern
+NavHost(nav, startDestination = "home") {
+    composable("home") { Home(nav) }
+    composable("detail/{id}") { back ->
+        Detail(back.arguments?.getString("id"))
+    }
+}
+```
+
+</td>
+<td valign="top">
+
+```kotlin
+// type-safe routes, compiler-checked args
+@Serializable object Home
+@Serializable data class Detail(val id: String)
+
+NavHost(nav, startDestination = Home) {
+    composable<Home> { Home(nav) }
+    composable<Detail> { entry ->
+        Detail(entry.toRoute<Detail>().id)
+    }
+}
+```
+
+</td>
+</tr>
+</table>
+
+The difference is **source-backed grounding** — the agent checks real `androidx/androidx` and `compose-multiplatform-core` signatures instead of guessing. [See how it works ↓](#how-it-works)
+
+---
+
 ## Install
 
 This skill is distributed as a plugin. See **[docs/INSTALL.md](docs/INSTALL.md)** for per-host instructions:
 
 - **Claude Code:** `/plugin marketplace add aldefy/compose-skill` → `/plugin install compose-expert`
+  (one step on Claude Code 2.1.275+: `/plugin install compose-expert --marketplace aldefy/compose-skill`)
 - **Copilot CLI:** `copilot plugin install aldefy/compose-skill`
 - **Codex CLI:** manual install — see INSTALL.md.
 

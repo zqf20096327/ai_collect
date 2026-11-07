@@ -775,6 +775,17 @@ schemagate ontology check                        --url ... --config catalog.json
 them (`--memory` reads schemagate's own query memory). CSV headers from Collibra
 and Microsoft Purview exports work as they are.
 
+**Or pull them from the database, and get the schema as a property graph.** No file
+and no model call: `schemagate ontology pull --url ...` proposes concepts from table
+and column comments, view filters and computed view columns, for you to review.
+`schemagate graph --url ...` writes tables, columns, foreign keys, joins read from
+view SQL and concepts as JSON or GraphML, for one caller, so nothing they may not see
+is in it. `--query-log` adds the joins people's own queries declare, read from the
+engine's statement store with every value stripped first. On Oracle 23ai and later,
+`--format sql` writes `CREATE PROPERTY GRAPH` for you to review and run.
+`schemagate certify <url>` runs a golden set of questions with known answers through
+all of it on your engine. See [docs/property-graph.md](docs/property-graph.md).
+
 **What it does to accuracy, measured.**
 
 | | setting | without | with |
@@ -1202,7 +1213,9 @@ every 5 seconds), and `health` shows `catalog_stale` and the reason. A re-read
 that neither fails nor returns, a database that took the connection and went
 quiet, is bounded too: callers wait at most `SCHEMAGATE_REREAD_TIMEOUT` seconds
 (default 30) and are then refused the same way, while the re-read runs on; if it
-returns, the next call is served from what it brought. Caller
+returns, the next call is served from what it brought. Because callers are
+bounded, their latency won't show a re-read that never finishes; `health` does,
+in `reread_running_seconds`, which you can alert on. Caller
 roles from a `groups` resolver have their own bound, its `ttl`. Every tool catches everything and returns
 `{"error": ...}`; a bad request cannot end the session for other clients.
 `health` tells a load balancer what state it's in. A test throws 125 kinds of
@@ -1242,6 +1255,22 @@ ddl = prompt_fragment(retriever.retrieve("revenue by month"))
 ```
 
 See [docs/llamaindex.md](docs/llamaindex.md).
+
+**Pydantic AI.** A capability that gives the agent one tool, `select_schema(question)`. The tool takes a question and
+nothing else, so the model can't choose who it's asking as:
+
+```bash
+pip install 'schemagate[pydantic-ai]'
+```
+
+```python
+from schemagate.integrations.pydantic_ai import SchemagateCapability
+
+agent = Agent("anthropic:claude-haiku-4-5", capabilities=[
+    SchemagateCapability(cat, principal=lambda ctx: ctx.deps.user)])
+```
+
+See [docs/pydantic-ai.md](docs/pydantic-ai.md).
 
 **jev4pg.** `schemagate.integrations.jev4pg.ScopedCatalog` wraps
 [jev4pg](https://github.com/Sheltercosmo/jev4pg)'s per-tenant catalogue so its
@@ -1434,6 +1463,7 @@ may not read is never in it.
 | MCP server | done, tested through a real MCP client |
 | LangChain retriever | done, tested against langchain-core |
 | LlamaIndex retriever | done, tested against llama-index-core |
+| Pydantic AI capability | done, tested against pydantic-ai-slim |
 | `OracleStore` | written and statically verified, needs a live run |
 | pgvector store | not started |
 

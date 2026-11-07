@@ -1,295 +1,267 @@
-> [!IMPORTANT]
-> **本项目已迁移并更名为 Comfy Image Atelier。**  
-> 新仓库：[comfy-Image-Atelier](https://github.com/159159pzy-crypto/comfy-Image-Atelier)  
-> 后续代码更新、版本下载和问题反馈请前往新仓库。本仓库保留历史代码和发行版。旧版用户请手动下载安装新仓库版本，后续更新将使用新仓库。  
-> [下载 Comfy Image Atelier 1.5.0 正式版](https://github.com/159159pzy-crypto/comfy-Image-Atelier/releases/tag/1.5.0)
-
 <p align="center">
-  <img src="docs/readme/app-icon.png" width="96" alt="Anima Random Studio 软件图标">
+  <img src="docs/readme/app-icon.png" width="96" alt="Anima Random WebUI 图标">
 </p>
 
-<h1 align="center">Anima Random Studio</h1>
+<h1 align="center">Anima Random WebUI</h1>
 
 <p align="center">
-  <strong>Anima 与 Krea 2 的本地生图工作台</strong><br>
-  五池抽卡找灵感，单图与参考图继续创作，Windows 启动器管理环境。
+  <strong>纯粹、轻量的 Anima 随机生图工作台</strong><br>
+  固定喜欢的角色与风格，让服装、动作、场景和表情带来新的可能。
 </p>
 
 <p align="center">
-  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/1.4.0/AnimaRandomStudio.exe"><strong>下载单文件版</strong></a> ·
-  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/1.4.0/AnimaRandomStudio-Setup-win-x64.exe">下载安装版</a> ·
+  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/AnimaRandomWebUI-0.1.1-source.zip"><strong>下载 0.1.1</strong></a> ·
   <a href="#开始使用">开始使用</a> ·
   <a href="docs/guide.md">使用指南</a> ·
-  <a href="https://qm.qq.com/q/M9MbjzaAUA">QQ 交流群</a>
+  <a href="RELEASE_NOTES.md">发行说明</a> ·
+  <a href="https://github.com/159159pzy-crypto/comfyui-random-image-generation/issues">反馈问题</a>
 </p>
 
-![随机工作台：左侧控制人物、词池与生成参数，右侧浏览生成作品](docs/readme/random-workbench.jpg)
+![Anima 随机工作台：左侧配置词池、模型与采样参数，右侧浏览生成作品和收藏](docs/readme/random-workbench.png)
 
-<p align="center"><sub>界面中的作品、模型、LoRA 与预设为本机使用示例；安装包不包含截图中的全部资源。</sub></p>
+<p align="center"><sub>页面中的作品、模型、LoRA 和目录均为使用示例，不随下载包提供。三张截图展示的是本项目实际界面。</sub></p>
 
-**固定你喜欢的角色与风格，让动作、服装和场景带来新的可能；抽到满意的图，再把它变成下一次创作的起点。**
+**把想固定的内容留下，把想探索的部分交给随机；抽到满意的图，再沿着它继续尝试。**
 
-Anima Random Studio 基于 [ComfyUI](https://github.com/Comfy-Org/ComfyUI) 与 Anima Tools 生态构建，把提示词池、单图编辑、图生图、AI 提示词工具、LoRA、放大修复和作品历史放进同一个工作台。配套原生 Windows 启动器，负责环境准备、模型下载、服务管理与更新，让日常精力更多留在选词、看图和调整画面上。
+Anima Random WebUI 连接已有的本机 [ComfyUI](https://github.com/Comfy-Org/ComfyUI)，把五池选词、LoRA、批量生成、放大和作品历史放进同一个浏览器工作台。选好候选范围与风格后，就可以连续探索人物、动作和场景的不同组合。
 
 > [!NOTE]
-> 当前提供 **1.4.0 beta**，需手动下载，**收藏功能暂不推荐使用**。版本变化与实机验证范围见 [发行说明](RELEASE_NOTES.md)；需要正式版可查看 [最新正式 Release](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest)。
+> 本项目是 [Comfy Image Atelier](https://github.com/159159pzy-crypto/comfy-Image-Atelier) 的精简分支，专注于 **Anima 随机生图**。剔除了 Krea 2、单图工作台、图生图、AI 助手、图片反推和 EXE 启动器等功能。
+>
+> 当前版本 **0.1.1**，采用源码安装与启动。正常使用无需 Node.js 或前端构建；ComfyUI、节点与模型按下方说明单独准备。个人数据独立保存，不自动继承原项目数据。
 
 ## 你可以用它做什么
 
 | 创作场景 | 工作台里的做法 |
 | --- | --- |
-| 为同一角色探索一组场景与动作 | 固定角色、服装或画师，其余词池按选定范围抽取，连续批量生成 |
-| 比较不同画风、LoRA 和参数组合 | 切换模型、组合多 LoRA，把满意的参数保存为自己的风格预设 |
-| 已经有明确想法，认真调整一张 | 在单图台分区编辑正负提示词、前后缀，结合实时大图预览逐步修改 |
-| 从已有图片或参考构图开始 | 拖入、粘贴图片做图生图，或读取元数据、选择视觉 AI / 本地标签反推 |
-| 喜欢当前画面，想继续找更好的结果 | 原种子重跑、同词换种子、重抽指定内容，或按历史配置继续抽取 |
-| 已有 ComfyUI，想少做重复配置 | 导入现有环境，统一管理模型、服务、下载、启动参数与更新 |
+| 给同一角色探索不同动作与场景 | 固定角色、画师或服装，让其他词池在选定范围内随机组合 |
+| 挑一批符合自己喜好的题材 | 用中文名称、作品系列和角色特征筛选候选，收藏常用词条或导入自己的主题库 |
+| 比较不同画风与 LoRA 搭配 | 独立调整多个 LoRA 的权重、触发词与启停，把常用配置存成风格预设 |
+| 连续生成，再从结果中挑选 | 每批最多 1000 张，下一批可继续排队；作品逐张进入历史 |
+| 喜欢这张图，想继续找变化 | 按原种子复现、保持提示词换种子，或只重抽指定内容 |
+| 把满意的结果整理起来 | 查看完整原图与生成参数，将作品收入自己的收藏夹 |
 
-[五池随机](#五池随机把变化控制在自己选定的范围) · [单图与图生图](#单图与图生图从灵感探索走向具体创作) · [提示词助手](#提示词助手文字和图片都能成为起点) · [模型与修复](#模型lora-与放大修复从底图到成片逐步搭配) · [作品管理](#历史与作品管理让满意的结果留下来继续用) · [Windows 启动器](#windows-启动器把安装下载和日常运行一起管起来)
+[五池随机](#五池随机) · [批量与队列](#批量与队列) · [LoRA 管理](#lora-管理) · [采样与放大](#采样与放大) · [历史与作品收藏](#历史与作品收藏)
 
-## 五池随机：把变化控制在自己选定的范围
+## 五池随机
 
 ### 角色、服装、姿势、背景、表情，分别决定怎么抽
 
-每个内容池都能选择 **关闭 / 随机池 / 固定**。选几个候选慢慢试，或开放整个词库探索，都可以按自己的节奏组合。
+五个维度都可以选择 **关闭 / 随机池 / 固定**。先挑出喜欢的候选，再决定每张图要抽什么；画师、质量词、额外提示词和负面词可以另行配置。
 
 | 组合方式 | 可以探索什么 |
 | --- | --- |
-| 固定角色和服装，随机姿势、背景、表情 | 同一主题下的不同动作、场景与情绪 |
-| 固定画师和背景，随机角色与服装 | 在相近风格下比较人物与穿搭 |
-| 只开启一个随机维度 | 缩小变化范围，逐项挑出更喜欢的组合 |
-| 五池全部开放 | 从意料之外的搭配里寻找新主题 |
+| 固定角色和服装，随机姿势、背景、表情 | 同一主题下的动作、环境与情绪变化 |
+| 固定画师和背景，随机角色与服装 | 在相近画风与场景下比较人物搭配 |
+| 只开启一个随机维度 | 缩小变化范围，逐项挑出更喜欢的结果 |
+| 五池全部开放 | 从意料之外的组合里寻找灵感 |
 
-- **抽取数量也能控制。** 角色、服装、姿势、背景每张可抽取 1–5 项，表情抽取 1 项；人物构成可设置女性、男性数量。
-- **角色描述有两种写法。** 选择「仅触发词」，或「触发词 + 特征」附带词库中的角色细节，按模型与画面需要取舍。
-- **画师和内容分开配置。** 常用画师可以固定，多位画师追加时整理名称、去除重复，探索新内容时继续沿用熟悉的风格。
-- **多姿势先做组合检查。** 同时抽取多个姿势时，检查手部动作、整体姿态和互动槽位中的明显冲突，候选不足时给出提示。
+人物描述支持仅触发词、触发词与特征，以及剔除角色自带服装标签的描述模式。可以保留角色外貌，再由独立服装池搭配穿着；实际成图仍由提示词、模型与参数共同决定。
 
-人物数量与词条组合用于控制提示词，实际画面仍取决于模型和生成设置。
+### 用中文找到角色，把内容整理成自己的候选库
 
-### 用中文找角色，把随机范围收进自己的候选库
+![角色池：中文名称与缩略图、作品系列和外观筛选、收藏分组、跨页选择与批量导入](docs/readme/prompt-pool.png)
 
-![角色池：中文名称、角色缩略图、系列与外观筛选、批量导入和自定义入口](docs/readme/prompt-pool.jpg)
+- **按名字和特征找角色。** 支持中文优先、英文和中英双语显示，按名称、系列、性别、发色与瞳色等筛选；尚未覆盖的中文名称保留英文。
+- **候选范围自己控制。** 选中本页、追加全部筛选结果、仅看已选、清空选择，也可使用全库并排除不想参与的条目。
+- **常用内容随手收藏。** 词条收藏与自定义分组分别整理，常用画师也能快速加入。
+- **把自己的内容导入词池。** 支持单条自定义和 JSON / CSV 批量导入，每次最多 2000 条；先预览和检查冲突，再确认写入。
+- **提示词在本地整理。** 高级提示词中的规范与替换可作用于正向、负向和 LoRA 触发词，不调用外部 AI 服务。
 
-- **中文浏览与搜索。** 内置热门角色、作品系列的中文对照，支持中文优先、英文和中英双语显示；尚未覆盖的名称保留英文。
-- **按你记得的特征找角色。** 按性别、发色、瞳色、作品系列筛选；服装、姿势、背景与表情也可按分类、多个特征组合查找。
-- **跨页选择，不用一页页重来。** 选择当前页、追加全部筛选结果、仅看已选，筛选之外原本选中的候选也能保留。
-- **全库抽取也能排除。** 「使用整个词库」包含之后新增的词条，并允许逐项排除不想参与抽取的内容。
-- **把自己的内容导入成主题库。** 提供 JSON / CSV 模板，单次最多导入 2000 条；先预览、校验与处理冲突，再归入自定义大项和子分组。
+基础词库来自 Anima Tools；表情词库内置。截图中的词条数量会随基础词库版本和自己的内容变化。[查看词池与整理说明](docs/guide.md#4-五池随机与本地整理)
 
-实际词库规模来自你的 Anima Tools 数据和自定义条目。内置中文对照、自定义分组与筛选能力帮助你浏览这些内容。
+## 批量与队列
 
-### 一批最多 1000 张，下一批可以接着排
+**每批 1–1000 张，最多 20 个等待任务。** 当前批次运行时可以提交下一批，任务按顺序接续，并保留各自提交时的设置。可移除等待任务；停止操作会停止当前批次并清空等待队列，已完成作品仍保留在历史中。
 
-随机台支持 **每批 1–1000 张、最多 20 个等待任务**，任务按队列顺序接续。每批保留提交时的配置，运行中还能追加下一批、查看位置、移除等待任务或停止当前任务。
+图像种子支持固定或随机。固定图像种子时，每张图仍会重新抽取词池内容；需要冻结某张图的提示词时，使用历史里的原样复现或同词变体。底图模式、参数草稿和主题会在当前浏览器中保存，减少重复配置。
 
-进度区区分模型与提示词准备、等待首步、实际采样、解码等阶段，采样步数随 ComfyUI 回报更新。图像种子可以固定或每次随机；固定图像种子时，词池仍能逐张抽取新的内容。
+## LoRA 管理
 
-<details>
-<summary>查看一个五池组合示例</summary>
+### 看封面挑风格，触发词与人物绑定一起管理
 
-![固定角色与服装，随机姿势、背景和表情的组合示意](docs/readme/controlled-random.svg)
+![LoRA 管理：目录树、模型封面、搜索与筛选、星标收藏，以及加入当前配置的快捷按钮](docs/readme/lora-manager.png)
 
-</details>
+<p align="center"><sub>LoRA 封面与名称来自已有 ComfyUI 库存。目录树可能显示其他架构目录；这不代表本项目支持对应架构，实际生成仅使用已识别为 Anima 的资源。</sub></p>
 
-[词池选择与导入示例](docs/guide.md#词池与批量生成)
+从 LoRA 快速添加弹窗右上角展开管理区，按目录与封面浏览库存，结合搜索、筛选和图库 / 列表切换找到需要的资源。
 
-## 单图与图生图：从灵感探索走向具体创作
+- **组合多个 LoRA。** 独立启停、调整权重，单项或批量加入、移出当前配置。
+- **触发词集中管理。** 读取插件原始触发词，按需本地覆盖、恢复原值，或留空禁用自动触发词。
+- **把常用模型整理好。** 星标、标签、备注、收藏分组和默认权重保存在本项目，便于下次继续使用。
+- **让角色带上自己的 LoRA。** 为人物配置绑定，随机抽到时自动应用；手动配置优先，历史保留实际使用的 LoRA 与权重。
+- **把画风存成预设。** 保存模型、LoRA、画师、附加提示词、尺寸和采样参数，复用常用创作配置。
 
-有明确画面时，在单图工作台每次认真调整一张；需要打开思路时，切回随机工作台批量尝试。两种方式共用模型、LoRA、参数与历史链路，喜欢的结果可以直接送往单图台继续编辑。
+模型文件、目录与架构分类共享读取；本项目的个人整理不会写回 LoRA Manager。主模型及启用的 LoRA 必须被识别为 Anima，缺失或分类不明的资源会在生成前提示。[查看 LoRA 与本地整理说明](docs/guide.md#4-五池随机与本地整理)
 
-![单图工作台：分区编辑提示词、参考图输入、参数分类与大图生成预览](docs/readme/single-workbench.jpg)
+## 采样与放大
 
-- **正文与常用词分开写。** 正向正文、负面词、前缀和后缀独立编辑，让常用画风、质量词和本次描述各在各的位置。
-- **生成时看大图。** 单图台提供实时大图预览和任务进度，完成后进入作品详情或完整原图检查细节。
-- **参考图随手放进来。** 选择文件、拖入识别框，或聚焦后粘贴；添加后切换图生图，用降噪强度控制保留程度。
-- **尺寸适配按画面选择。** 支持裁切、留边、拉伸，适应不同构图和目标比例。
-- **四套草稿分别记住。** 单图 / 随机 × Anima / Krea 2 各自保存浏览器草稿，切换时恢复对应参数，减少来回重配。
+先用普通底图或双采样确认构图，再按需要开启后处理。双采样支持两段采样设置、切换步数与中间潜空间调整；后处理各阶段独立开关，按下列顺序执行：
 
-参考图支持单帧 PNG / JPEG / WebP。图生图当前使用普通采样模式；低降噪更偏向保留参考图，已启用的后处理仍会影响最终画面。
+```text
+底图 → 像素高清 → 潜空间放大（含重采样）→ 整图后采样
+     → 脸部细化 → SeedVR2 → N 卡 VSR → DLSS → 保存
+```
 
-## Anima 与 Krea 2：按模型习惯表达画面
+关闭的阶段直接跳过，缺少对应节点、模型或采样选项时会给出检查提示。潜空间重采样与整图后采样分别保存参数，SeedVR2 使用自己的模型和配套 VAE。
 
-| | Anima | Krea 2 |
+### 推荐放大链路
+
+**日常建议从「底图 → Sesqui 潜空间放大 1.5×（含重采样）→ 保存」开始。** 先检查底图构图，再逐步提高倍率；不必同时开启所有后处理。
+
+| 步骤 | 建议起点 |
+| --- | --- |
+| 底图 | 普通或双采样；默认 30 步、CFG 8、`euler / simple`；双采样中间倍率保持 1，切换步 15 |
+| 潜空间放大 | 开启，Sesqui / `Wan 2.1`，倍率 1.5 |
+| 潜空间重采样 | 16 步、CFG 4、降噪 0.2、`er_sde / simple` |
+| 其他阶段 | 先关闭像素高清、整图后采样、脸部细化、SeedVR2、VSR 和 DLSS |
+
+这是基于本项目参数的建议起点，需要按显存和画面效果调整。**潜空间放大已经包含一次重采样**，再开启「整图后采样」会额外采样一次。
+
+- **尽量保留底图：**底图 → 像素高清 → 保存。使用 Remacri 4× 模型、缩放 50%，关闭其他阶段时最终为底图的 2×；开启整图后采样时不应用这一步缩图。
+- **进阶尝试：**底图 → SeedVR2 2× → 保存。先关闭其他放大阶段单独验证，再考虑组合。
+
+可选阶段的安装来源见下方[可选扩展与模型](#可选扩展与模型)。基础生图、LoRA、队列和历史重生成已有实机验证；可选后处理经过流程构建与资源检查，尚未完成真实 GPU 生图验收，推荐参数需要按自己的显存和画面效果调整。
+
+## 历史与作品收藏
+
+### 留下画面，也留下再次生成它的条件
+
+每张作品保存最终提示词、抽取内容、模型、LoRA、种子、尺寸、采样和后处理信息。打开详情查看原图和参数，再选择下一步：
+
+| 操作 | 保留什么 | 适合什么时候用 |
 | --- | --- | --- |
-| 提示词表达 | 用 Tag 组织角色、动作和画面要素 | 用自然语言描述场景、构图和细节 |
-| 随机内容 | 角色、服装、姿势、背景、表情五池 | 独立的自然语言提示词池 |
-| 词库组织 | 角色与内容分类、特征筛选、自定义分组 | 名称、补充说明、正文与自定义分组树 |
+| **原样复现** | 历史最终提示词、生成设置与原双种子 | 按保存条件重新生成一次 |
+| **同词变体** | 最终提示词与生成设置，更换图像种子 | 继续探索相同描述下的构图与细节 |
+| **局部重抽** | 保留其他可恢复内容，只重抽指定随机维度 | 换姿势、背景或表情，沿用其他内容 |
+| **按原设置重抽** | 使用历史词池与参数设置 | 继续生成同一配方下的新组合 |
 
-模型资源、LoRA、规范规则、预设与工作草稿按档案区分，切换时继续各自的创作配置。Krea 2 的自然语言池可以收纳完整画面描述，支持搜索、JSON / CSV 导入、预览和逐项冲突处理；另有默认关闭的多样性增强开关。模型档案关联对应底模、文本编码器与 VAE 等资源。
+“载入参数”可以把模型、LoRA、种子和技术参数带回随机台，同时保留当前五池选择与生成数量。原样复现会重新计算，不承诺跨模型文件、节点版本或硬件环境逐像素一致。[查看历史操作规则](docs/guide.md#6-历史的四种重生成方式)
 
-Anima 的基础规范按标签规则整理；Krea 2 保留段落、大小写、标点与自然语言表达。自定义替换也按档案分别保存，让两种写词习惯各用各的规则。
+### 看清细节，把满意的作品收进自己的分类
 
-## 提示词助手：文字和图片都能成为起点
+- **查看完整原图。** 支持缩放、拖动和连续浏览，在本机 Windows 中可定位原图文件。
+- **整理作品收藏。** 新建、重命名与排序收藏夹，按收藏夹浏览，批量加入或移出作品；作品收藏与提示词收藏相互独立。
+- **删除方式自己选。** 可以只删除记录并保留原图，也可以永久删除原图与记录；删除收藏夹不会删除图片。
 
-### 先把想法写出来，再决定如何应用
-
-在独立的 **提示词重写台** 填写想法，选择服务、模型和系统提示词，请求结果后继续编辑，再追加或替换到正向正文。应用操作可撤销，前缀、后缀和负面词继续保留。
-
-- **服务和模板自己选。** 通过 Prompt Assistant 使用 OpenAI 兼容服务或 Ollama，管理多套文本模型、视觉模型与系统提示词。
-- **输出适配当前模型。** Anima 生成英文标签，Krea 2 生成英文自然语言，并可带出便于入池整理的中文名称和说明。
-- **原想法、结果、生图输入分别保留。** 查看结果后再应用，普通生成不会自动运行重写；任务支持取消与刷新恢复。
-- **日常整理不必调用 AI。** 基础规范和自己的替换规则在本地执行，单图台还可手动整理当前提示词框。
-
-### 三种反推方式，适合不同图片
-
-| 方式 | 适合什么时候用 | 得到什么 |
-| --- | --- | --- |
-| **图片元数据提取** | 图片保留了原始生成信息 | 已保存的提示词与可识别参数，不需要模型在线 |
-| **视觉 AI** | 图片缺少元数据，想得到自然的画面描述 | 由所选视觉模型和模板生成的描述，可继续编辑 |
-| **本地标签** | 想在本机识别画面 Tag | WDTimmTagger 标签，可调整普通标签阈值、角色阈值与排除词 |
-
-元数据提取兼容本项目及常见 A1111、ComfyUI、NovelAI、InvokeAI 等图片格式；遇到复杂工作流的多组提示词，可以选择后应用。正负词分别编辑、复制或应用，提取到的生成参数只读展示，不会自动覆盖当前配置。
-
-本地标签提供 **PixAI、WD、OppaiOracle 共八种预设模型方案**，在启动器按需下载，推荐 PixAI 0.9。完整模型包准备好后即可识别，不必为每张图片调用远端视觉服务。
-
-拖入反推图片默认先读元数据，没有可用词时再由你主动选择模型识别。AI 重写与视觉反推将输入发送给所选服务；选择远端供应商时会发送相应文字或图片。本地规范、元数据提取与本地标签在本机执行。
-
-[配置提示词服务与反推模型](docs/guide.md#提示词与图像反推)
-
-## 模型、LoRA 与放大修复：从底图到成片逐步搭配
-
-### 看缩略图挑 LoRA，触发词和权重一起管理
-
-结合 LoRA Manager 读取本地模型与 LoRA 元数据，按名称、路径或触发词查找资源。已有预览图可直接用来挑选，缺少封面的条目也能正常管理。
-
-- **组合多个 LoRA。** 独立启停、调整权重、排序或移除，逐项尝试自己喜欢的搭配。
-- **触发词不用来回找。** 读取插件已有触发词，也可单独覆盖、恢复原值，或明确留空禁用自动触发词。
-- **资源跟着模型档案走。** 检查 Anima / Krea 2 归属，新增文件或调整分类后可重新扫描，生成前再次检查资源。
-- **常用画风存成预设。** 两种工作台都能命名保存模型、LoRA、画师、正负附加词、尺寸、采样与修复参数组合，再应用、覆盖、改名或删除。
-
-风格预设按模型区分，适合复用画风和技术参数；Anima 的五池候选、抽取数量与固定内容由各自工作草稿管理。
-
-![常用参数示例：模型选择、多 LoRA 及触发词、尺寸、采样与种子配置](docs/screenshots/anima-studio-common-parameters.png)
-
-### 普通底图、双采样和多阶段后处理
-
-| 环节 | 可以控制什么 | 用途 |
-| --- | --- | --- |
-| 普通底图 / 双采样 | 尺寸、步数、CFG、采样器、调度器；双采样分别配置两段与切换步数 | 先确认画面，再比较不同采样组合 |
-| 潜空间放大 | 缩放方式、倍率与二次采样参数 | 在更大的潜空间继续处理细节 |
-| 脸部细化 | 步数、CFG、采样器、调度器与降噪 | 按需处理脸部细节 |
-| SeedVR2 | 模型、配套 VAE、颜色匹配与倍率 | 放大输出，按需匹配前后颜色 |
-| N 卡放大与 DLSS | 倍率、风格、强度、局部光影、细节与混合 | 在输出阶段调整风格、光影与细节表现 |
-
-执行顺序是 **底图 → 潜空间放大 → 脸部细化 → SeedVR2 → N 卡放大及 DLSS**。后处理模块可以分别关闭，普通与双采样各自记住编辑值，方便先跑基础图，再逐项加上需要的处理。
-
-可选功能依赖对应节点、模型和硬件；缺少资源时给出检查提示。所选采样器、调度器不会被悄悄替换，具体准备方式见 [模型与后处理](docs/guide.md#模型与后处理)。
-
-## 历史与作品管理：让满意的结果留下来继续用
-
-### 一张好图，不只留下一张图片
-
-![作品详情：原图预览、模型、采样、种子与继续创作入口](docs/readme/history-details.jpg)
-
-详情按组保存和展示提示词、模型、LoRA、采样阶段、种子、尺寸与后处理信息。常用操作就在底部：载入设置、原种子重跑、变体、送往单图台或用作图生图参考。
-
-| 操作 | 保留什么 | 用来做什么 |
-| --- | --- | --- |
-| **复现此图** | 保存的最终正负提示词、生成设置与原双种子 | 按历史条件重新执行 |
-| **同提示词变体** | 最终提示词与生成设置，更换图像种子 | 继续探索相同描述下的构图和细节 |
-| **重抽指定内容** | 可可靠恢复的其他词条，只重抽指定随机维度 | 例如重新挑姿势或背景候选 |
-| **按此配置再抽** | 历史配置与词池设置 | 重新抽取内容和种子，继续生成同类作品 |
-
-历史复现与同词变体直接使用保存的最终文本，不重新请求 AI；缺少必要资源会明确提示。同词变体保留原生成模式，单图的图生图记录继续使用原参考图；指定重抽改变的是提示词选择。相同参数与种子不保证跨模型、节点版本或硬件环境的逐像素一致。
-
-### 看清细节，也把批量筛图做顺手
-
-- **原图级检查。** 双击在适应窗口与 100% 原始尺寸间切换，最高放大至 400%；支持滚轮、双指缩放与放大后拖动。
-- **连续浏览作品。** 用键盘或触摸切换，减少反复关闭、打开详情的操作；可在本机 Windows 中定位原图文件。
-- **按来源看图。** 区分全部、单图和随机作品，整理窗口有独立列表，返回时保留主页浏览位置。
-- **跨页批量处理。** 单次最多选择 200 张，逐项反馈结果，失败项保留供重试。
-- **删除方式自己选。** 可以只清记录、保留 ComfyUI 原图；也可永久删除记录及原文件，释放磁盘空间，不进入回收站。原文件操作仅用于核实后的本机 Windows ComfyUI，并保护其他作品仍引用的文件。
-
-### 词库、分组与数据也能持续积累
-
-提示词与自定义内容保存在本地，历史使用本地数据库；存储异常会给出保护提示，方便先备份、再排查。图生图与反推导入副本默认闲置 7 天后清理，可调整保留期或关闭；历史作品、任务与草稿仍在使用的参考图受到保护，用户原始文件不在清理范围内。
-
-项目保留提示词收藏树、画师快捷收藏、作品多夹归类及相关批量入口；Krea 2 的提示词收藏保存独立文本快照。**本版收藏功能暂不推荐使用**，建议优先使用已准备的词池、自定义分组与风格预设，后续修复以发行说明为准。
-
-界面提供浅色 / 深色主题、可打断的切换与展开动效，并适配窄屏、触摸大图与系统减少动态效果设置。服务默认面向本机使用，界面适配不等于开放局域网访问。
-
-## Windows 启动器：把安装、下载和日常运行一起管起来
-
-配套 **WinUI 3 原生启动器**，提供单 EXE、便携 ZIP 和安装包。运行时与应用资源随 EXE 内嵌，不用在旁边维护一堆 DLL；打开工作台、查看模型、管理服务和日志，都有统一入口。
-
-![Windows 启动器概览示例：创作入口、模型文件夹与双服务状态](docs/screenshots/anima-launcher-overview.png)
-
-### 新用户跟向导走，已有环境继续用
-
-六步向导完成安装方式、目录、检查确认、环境准备、可跳过的提示词助手与开始创作。开始前列出下载内容、可复用文件与磁盘空间，并保存安装计划供后续继续。
-
-- **新建独立环境。** 准备 Python、ComfyUI、清单节点与 Anima 基础模型，工具和环境可放在自己选择的磁盘。
-- **导入现有 ComfyUI 或便携版。** 识别已有 Python，也能手动指定；复用现有模型路径、Python 与 GPU 运行时，补齐缺失依赖。
-- **模型按功能准备。** Krea 2、SeedVR2、八种本地反推方案按需勾选，共享资源复用；自己的兼容模型和 LoRA 也能加入后重新扫描。
-
-### 面向国内网络准备来源，大文件下载可接续
-
-- **国内来源与官方回源。** 已配置映射的模型优先尝试 ModelScope，并提供 Hugging Face 镜像及官方来源；Python 包、PyTorch 也有相应镜像与回退策略。
-- **暂停、续传、重试与换源。** aria2 和 uv 随启动器提供，模型、安装资源与软件更新保存任务和断点，避免中断后丢失整段下载进度。
-- **在原页面看进度。** 模型条目、安装向导和软件更新各显示对应任务、速度与错误，查看详情再返回时保留原位置。
-- **下完还要验完整。** 核对文件大小与 SHA-256，多文件模型包全部校验后才就绪，下载前检查目标目录与剩余空间。
-
-重开启动器会恢复任务列表，等待手动继续；取消任务保留断点，清理未完成文件是单独操作。来源覆盖范围与实际下载表现取决于对应资源和网络。
-
-### 运行、托盘、更新与回退各有入口
-
-- **服务分别管理。** 查看 ComfyUI / Studio 状态、打开页面、启停本启动器创建的服务；关闭窗口收进托盘，生成和下载可以继续。
-- **启动参数可视化。** 调整显存模式、预留显存、精度、注意力与 Manager，保存前查看完整命令和配置检查结果。
-- **软件与环境分别更新。** 设置中检查、下载软件更新，在任务空闲后重启应用，同时更新启动器和内置工作台；ComfyUI 本体与节点在维护页手动检查和更新。
-- **更新前备份，失败可回退。** 软件切换核验候选，环境更新保留相应源码、Python 与配置备份；来源不明或有用户修改的节点会跳过或提示。
-
-[启动器完整说明](launcher/README.md) · [模型与来源清单](launcher/manifests/model-manifest.json) · [升级与备份](docs/guide.md#备份与升级)
+界面提供浅色 / 深色主题，并适配窄屏和系统减少动态效果设置。服务面向本机单用户使用，界面适配不等于开放局域网访问。
 
 ## 开始使用
 
-### 选择一个下载包
+下载 [AnimaRandomWebUI-0.1.1-source.zip](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/AnimaRandomWebUI-0.1.1-source.zip)，完整解压到自己的项目目录。包内是运行源码、用户文档和本页展示图，不附带个人数据、模型或 EXE；文件校验值见 [SHA256SUMS.txt](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/latest/download/SHA256SUMS.txt)。
 
-| 下载 | 适合怎样使用 |
-| --- | --- |
-| [**AnimaRandomStudio.exe**](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/1.4.0/AnimaRandomStudio.exe) | 单文件直接运行，适合想先打开体验的用户 |
-| [**Windows 安装版**](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/1.4.0/AnimaRandomStudio-Setup-win-x64.exe) | 按当前用户安装，创建开始菜单及可选桌面入口，无需管理员权限 |
-| [**便携 ZIP**](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/download/1.4.0/AnimaRandomStudio-portable-win-x64.zip) | 解压后是同一份 EXE，适合通过压缩包下载、保存或传输 |
+首次使用依次准备 **ComfyUI 与节点 → 三个模型 → 本项目 Python 环境**。已经配好 ComfyUI 的用户可以复用现有环境和模型文件。
 
-发布页的 Source code 是开发源码，不包含启动器。ComfyUI、节点与模型在配置环境时另行准备；文件校验值见 [1.4.0 发布页](https://github.com/159159pzy-crypto/comfyui-random-image-generation/releases/tag/1.4.0) 的 `SHA256SUMS.txt`。
+### 1. 准备 ComfyUI 与节点
 
-### 三步生成第一张图
+先安装并启动支持 Anima 的 [ComfyUI](https://github.com/Comfy-Org/ComfyUI)。本项目只连接本机 ComfyUI，默认地址为 `http://127.0.0.1:8188`。
 
-1. **打开启动器，选择环境。** 已有 ComfyUI 就导入；需要新环境时按向导选择安装位置。
-2. **检查并准备资源。** 确认安装计划、模型选择、下载量与空间，完成后点击「开始创作」。
-3. **先跑基础图，再增加玩法。** 选择已就绪的模型，关闭可选放大修复，写一段提示词或选择词池。完成一次基础生成后，再加入 LoRA、双采样和后处理。
+| 节点 / 扩展 | 是否需要 | 用途 |
+| --- | --- | --- |
+| [ComfyUI-Lora-Manager](https://github.com/willmiao/ComfyUI-Lora-Manager) | 必需 | 提供 LoRA 加载节点及主模型 / LoRA 分类；不使用 LoRA 时也需要 |
+| [Comfyui-Anima-Tools](https://github.com/nregret/Comfyui-Anima-Tools) | 必需 | 提供人物、服装、姿势、背景基础词库；表情词库已内置 |
+| [SesquiLSR](https://github.com/LoganBooker/SesquiLSR) | 默认流程需要 | 双采样中间调整与可选潜空间放大；Anima 选择 `Wan 2.1` 格式 |
 
-| 运行要求 | 说明 |
-| --- | --- |
-| 启动器 | Windows 10 1809+ / Windows 11，x64 |
-| 新建完整环境 | NVIDIA 显卡，驱动支持 CUDA 12.8，版本 570.65 或更新；需要联网下载 |
-| 导入环境 | 已可运行的 ComfyUI；硬件与节点兼容性沿用该环境 |
-| 磁盘空间 | Anima 三项基础模型约 5.24 GiB，另需环境、依赖与缓存空间，以安装预检为准 |
-| 默认地址 | Studio `http://127.0.0.1:8190`；ComfyUI `http://127.0.0.1:8188` |
-
-**当前版本说明：** 1.4.0 为 beta，尚未完成从零安装、GPU 生图和升级回退的完整实机验收，不进入正式版自动更新渠道。当前发布包未签署代码签名；详细验证范围与已知问题见 [发行说明](RELEASE_NOTES.md)。
-
-## 数据保存与源码运行
-
-安装版与单文件版共用 `%LOCALAPPDATA%/AnimaRandomStudio`，源码版默认使用项目 `data`。移动 EXE 不迁移环境或历史，旧源码数据也不会自动迁入启动器目录。升级前等待队列空闲、停止工作台并退出启动器，再备份整个数据目录；ComfyUI 原图、模型与插件配置按需另行备份。
-
-源码运行需要 **Python 3.11+** 和已配好节点、模型的本机 ComfyUI。先启动 ComfyUI，再在仓库根目录执行：
+**手动安装：**在 ComfyUI 的 `custom_nodes` 目录打开终端，运行：
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -e .
-.\.venv\Scripts\python.exe run.py
+git clone https://github.com/willmiao/ComfyUI-Lora-Manager.git
+git clone https://github.com/nregret/Comfyui-Anima-Tools.git
+git clone https://github.com/LoganBooker/SesquiLSR.git
 ```
 
-端口、节点目录与数据目录参数见 [源码运行指南](docs/guide.md#源码运行)；开发检查与 Windows 打包分别见 [贡献指南](CONTRIBUTING.md) 和 [启动器开发说明](launcher/README.md#开发与构建)。
+用 **ComfyUI 自己的 Python** 安装 LoRA Manager 依赖。下面二选一，在同一 `custom_nodes` 目录运行，并按实际安装位置调整路径：
 
-## 交流、贡献与后续计划
+```powershell
+# 官方 Windows 便携版（ComfyUI_windows_portable/ComfyUI/custom_nodes）
+..\..\python_embeded\python.exe -m pip install -r .\ComfyUI-Lora-Manager\requirements.txt
 
-作者目前是学生，项目仍在维护。欢迎分享实际创作场景、反馈可复现的问题，也欢迎参与功能改进、修复和文档建设。
+# 使用 ComfyUI 根目录 .venv 的源码版
+..\.venv\Scripts\python.exe -m pip install -r .\ComfyUI-Lora-Manager\requirements.txt
+```
 
-- [QQ 交流群](https://qm.qq.com/q/M9MbjzaAUA)：交流用法、参数与创作体验。
-- [提交 Issue](https://github.com/159159pzy-crypto/comfyui-random-image-generation/issues)：附上版本、操作步骤与日志，遮去密钥等私人信息。
-- [完整使用指南](docs/guide.md) / [更新日志](CHANGELOG.md) / [发行说明](RELEASE_NOTES.md)：查用法、版本变化与当前限制。
-- [安全与支持范围](SECURITY.md) / [依赖说明](docs/dependencies.md)：了解本机访问边界、第三方组件与已知限制。
+Anima Tools 无需额外 pip 依赖；SesquiLSR 的放大权重随仓库提供，无需另装 requirements。安装完重启 ComfyUI。只想用最少依赖时，可不装 SesquiLSR，在 WebUI 选择「普通底图」并关闭全部后处理；默认双采样即使中间倍率为 1，也需要 Sesqui 节点。
 
-后续计划探索 mos 模型支持，目前尚未实现。感谢 [ComfyUI](https://github.com/Comfy-Org/ComfyUI)、Anima Tools 以及各节点与模型作者。项目代码采用 [MIT License](LICENSE)，模型和第三方组件分别遵循各自许可。
+### 2. 下载模型
+
+从 [Anima 官方模型仓库](https://huggingface.co/circlestone-labs/Anima/tree/main/split_files) 下载以下 **3 个必需文件**。下表路径均相对于 ComfyUI 根目录；不要将三者合并放入 `checkpoints`。
+
+| 用途 | 下载文件 | 放置目录 |
+| --- | --- | --- |
+| Anima 主模型 | [anima-base-v1.0.safetensors](https://huggingface.co/circlestone-labs/Anima/blob/main/split_files/diffusion_models/anima-base-v1.0.safetensors) | `models/diffusion_models/` |
+| 文本编码器 | [qwen_3_06b_base.safetensors](https://huggingface.co/circlestone-labs/Anima/blob/main/split_files/text_encoders/qwen_3_06b_base.safetensors) | `models/text_encoders/` |
+| VAE | [qwen_image_vae.safetensors](https://huggingface.co/circlestone-labs/Anima/blob/main/split_files/vae/qwen_image_vae.safetensors) | `models/vae/` |
+| Anima LoRA | 自选，与 Anima 架构兼容即可 | `models/loras/`，可选 |
+
+下载后刷新模型列表，让 LoRA Manager 完成扫描，确认主模型及启用的 LoRA 的基础模型分类为 **Anima**。资源不在清单中、未分类或分类错误时，WebUI 会阻止生成。模型放在子目录或使用其他兼容文件名时，见[路径映射说明](docs/guide.md#3-模型选择与路径映射)。
+
+### 3. 安装并启动本项目
+
+需要 **Python 3.11+**。下载上方 Release 的源码 ZIP 并完整解压，或使用 Git：
+
+```powershell
+git clone --branch codex/anima-random-webui https://github.com/159159pzy-crypto/comfyui-random-image-generation.git anima-random-webui
+cd anima-random-webui
+```
+
+在项目目录打开 PowerShell，安装一次，然后启动。把下面的 Anima Tools 路径改为你的实际位置：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Install.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Start.ps1 --anima-tools-dir "D:\ComfyUI\custom_nodes\Comfyui-Anima-Tools"
+```
+
+浏览器会打开 `http://127.0.0.1:8191`。确认连接状态、模型和词池正常，选择随机内容后开始生成。端口不同可追加 `--comfy-url http://127.0.0.1:8189`。
+
+如果词库位于项目相邻的 `comfyui/custom_nodes` 等可自动发现的位置，可直接双击 `Start.cmd`。其他位置可使用上述启动命令，或设置 `ANIMA_TOOLS_DIR` 环境变量后双击。按 Ctrl+C 或关闭终端停止 WebUI。
+
+安装脚本只安装本项目的 Python 依赖；**ComfyUI、节点、模型需按前两步自行准备，ComfyUI 也需单独启动**。更多启动参数见[使用指南](docs/guide.md#1-源码安装与启动)。
+
+### 可选扩展与模型
+
+只安装自己启用的阶段。第三方节点克隆到 `ComfyUI/custom_nodes/`，有 `requirements.txt` 时用 ComfyUI 自己的 Python 安装，然后重启；硬件与运行库按对应仓库说明准备。
+
+| 功能 | 安装来源与模型 |
+| --- | --- |
+| 像素高清 | ComfyUI 内置节点；下载 [4x_foolhardy_Remacri.pth](https://openmodeldb.info/models/4x-Remacri) 放入 `models/upscale_models/` |
+| SeedVR2 | 更新 ComfyUI，使用其原生 SeedVR2 节点；从 [Comfy-Org/SeedVR2](https://huggingface.co/Comfy-Org/SeedVR2/tree/main) 下载 `diffusion_models/seedvr2_3b_int8_convrot.safetensors` 放入 `models/diffusion_models/`，`vae/ema_vae_fp16.safetensors` 放入 `models/vae/` |
+| 脸部细化 | [ComfyUI-Forbidden-Vision](https://github.com/luxdelux7/ComfyUI-Forbidden-Vision)；安装 requirements，首次运行自动下载检测 / 分割模型；若缺少 `res_2m_ode / beta57`，改选已安装的采样选项 |
+| N 卡 VSR | [ComfyUI-NVIDIA-RTX-VSR-Pro](https://github.com/whmc76/ComfyUI-NVIDIA-RTX-VSR-Pro)；安装 requirements（含 `nvidia-vfx`），按插件要求准备 NVIDIA 环境；不要与注册同名节点的 `Nvidia_RTX_Nodes_ComfyUI` 同时启用 |
+| DLSS | [DLSS5-Comfyui](https://github.com/storyAura/DLSS5-Comfyui)；Windows + 支持的 RTX 显卡，安装 VC++ 运行库并按仓库要求准备 DLL / 7-Zip；这是同分辨率处理，不会增加像素尺寸 |
+
+SeedVR2 需要 `SeedVR2Preprocess`、`SeedVR2Conditioning`、`SeedVR2PostProcessing` 这组原生节点，其他同名 VideoUpscaler 插件不能替代。完整节点契约和模型要求见[依赖清单](docs/dependencies.md)。
+
+## 数据保存与开发
+
+| 内容 | 保存位置 |
+| --- | --- |
+| 个人词条、收藏、LoRA 整理、人物绑定、预设和历史 | 项目 `data/`，可用 `--data-dir` 更改 |
+| 生成原图 | ComfyUI 实际输出目录下的 `AnimaRandomWebUI/` |
+| 表单草稿、主题与浏览偏好 | 当前浏览器站点的本地存储 |
+| 基础词库、模型与插件分类 | 读取已有 Anima Tools、ComfyUI 与 LoRA Manager |
+
+停止 WebUI 后，同时备份整个数据目录和 ComfyUI 原图目录。数据库和缩略图不能代替原图；浏览器草稿也不包含在数据目录中。更多说明见[作品与备份指南](docs/guide.md#7-作品收藏原图与备份)。
+
+<details>
+<summary>参与开发与运行检查</summary>
+
+请通过 Git 克隆完整仓库，再安装开发依赖。发布 ZIP 不包含测试、CI 和开发脚本，正常使用也无需 Node.js。
+
+```powershell
+git clone --branch codex/anima-random-webui https://github.com/159159pzy-crypto/comfyui-random-image-generation.git anima-random-webui
+cd anima-random-webui
+.\Install.ps1 -Dev
+.\.venv\Scripts\python.exe scripts/check.py
+```
+
+开发检查另需 Node.js 22+，覆盖 Python 与前端测试、静态检查和脚本语法。
+
+</details>
+
+## 交流与致谢
+
+欢迎在 [Issues](https://github.com/159159pzy-crypto/comfyui-random-image-generation/issues) 分享使用反馈，附上版本、复现步骤和已去除私人信息的错误日志。
+
+[使用指南](docs/guide.md) · [依赖说明](docs/dependencies.md) · [发行说明](RELEASE_NOTES.md) · [原项目 Comfy Image Atelier](https://github.com/159159pzy-crypto/comfy-Image-Atelier)
+
+感谢 ComfyUI、Anima Tools 及各节点与模型作者。项目采用 [MIT License](LICENSE)，保留原项目作者版权声明；第三方节点、词库与模型遵循各自许可。

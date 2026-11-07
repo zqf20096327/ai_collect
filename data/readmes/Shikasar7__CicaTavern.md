@@ -50,7 +50,7 @@ From the author's own long chats (October 2026):
 
 ### Long-term memory (Beta): what was compacted comes back when it matters
 
-<p align="center"><img src="web/whatsnew/2.4.0-battle.webp" alt="A turn-based fight: two wolves and a bandit chief on a mountain road, the chief taking a 17-point critical hit" width="880"></p>
+<p align="center"><img src="web/whatsnew/2.3.0-memory.webp" alt="Long-term memory: mentioning the pier recalls the promise made in rounds 5–6; the memory book keeps people, events and promises as separate entries" width="880"></p>
 
 A long story has to compact its context sooner or later: the story so far becomes a story archive, and after a few rounds of that the oldest details blur. A promise made long ago, a side character's name, where some object came from: the model no longer knows. Long-term memory writes those details down as separate entries and puts them back in front of the model when the story brings them up again.
 
@@ -104,6 +104,19 @@ Turn it on in Settings → Model → Long-term memory (Beta); it is off by defau
 - **Plays like a game**: the choices open in the middle of the picture and number keys pick them; backlog, auto, skip, full screen and line-by-line reading are all there, and the ▾ beside Read and Pictures changes voices, models and drawing without leaving.
 - **CG gallery**: every picture on the storyline in one place, each marked with its turn, to browse full size.
 
+### Game rules mode (in development)
+
+<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="One story in five looks: choices, dice, a fight, a skill and victory, in Simple dark, Simple light, Classical, Retro console and Bold" width="880"></p>
+<p align="center"><img src="docs/screenshots/rules-dice.jpg" alt="A dice check: the twenty-sided die shows 17, plus 1 makes 18 against 12, a success" width="49%"> <img src="docs/screenshots/rules-battle.jpg" alt="The fight screen: two wolves and a bandit chief on a mountain road, with health, energy and the attack, skill, item, guard and flee actions below" width="49%"></p>
+
+On per card and off by default; off, nothing sent to the model changes. On, the program decides success and the model writes what happened.
+
+- **Dice checks**: a risky choice shows its attribute, odds and risk. Pick it and the dice roll, and the result goes to the model with the turn, at no extra request. Rolls come from a seed, so regenerating, rolling back or loading a save changes nothing.
+- **Turn-based fights**: when the story comes to blows you fight it out with attacks, skills, items, guarding or fleeing, without calling the model, which then writes on from the result. Foes differ in strength, and wounds stay with you.
+- **A pack and growth**: your character, items, quests, a map and achievements. Wins bring experience and levels, and new foes go into a bestiary. A card's own health, inventory and quest variables can be bound to the rules.
+- **Four looks**: Simple, Classical, Retro console and Bold, with choices, dice, fights, skills and victory all changing together.
+- **It travels with the card**: exported PNGs and JSON carry the rules. With Fights and growth picked in the card creator, the guide settles starting attributes, skills, items and common foes with you.
+
 ### Characters keep their look
 
 - **Character roster**: each character's fixed face, everyday outfit, a reference picture and a LoRA. When several characters share a picture, each is described separately, so faces don't blend.
@@ -131,13 +144,19 @@ If you can't quite say what you want, the creator guides you round by round:
 
 - On the same Wi-Fi or over Tailscale, open the passcode link in your phone's browser and play with the models and data on your computer.
 - Or install the Android app, which runs on the phone by itself, no computer needed.
+- iPhone and iPad have a beta: [install it through TestFlight](https://testflight.apple.com/join/wsT7kT4b), no computer needed
 - On iPhone (Safari) or Android (Chrome), add the link to the home screen: it opens full screen like an app, no passcode to type again.
 - The interface is laid out for phone screens, and the settings windows are grouped menus.
 
 <br clear="right">
 
-## Latest changes [2.4.0]
+## Latest changes [2.4.1]
 
+<p align="center"><img src="web/whatsnew/2.4.0-battle.webp" alt="A turn-based fight: two wolves and a bandit chief on a mountain road, the chief taking a 17-point critical hit" width="720"></p>
+
+- **2.4.1: tune it as you chat**: a Thinking pick per chat in the top bar (default, off, low to max); a story length range in the basic preset; line spacing in the theme; Memory in the top bar turns long-term memory on or off; World books marks the books the card brings and uses.
+- **2.4.1: checks, trial runs and the card creator**: Adjust status bar, Check the whole card for big cards, trial problems fixed from the check list, trial runs that check values; the card creator asks your gender, reviews against the plan, keeps one-time events one-time and redoes a failed step with another model; a reply cut off partway keeps what was written; Draw CG in visual novel mode; Codex (this PC) as a drawing method on computers.
+- **iPhone and iPad beta**: [install it through TestFlight](https://testflight.apple.com/join/wsT7kT4b). It runs on the device by itself and needs iOS 16 or later.
 - **2.4.0: direct chat**: talk to a model with no character card, from the top of the left column, with text files, web search and replies shown as Markdown.
 - **2.4.0: game rules (in development)**: a card's ⋯ menu has Game rules, on per card and off by default. It brings checks and dice, a pack, turn-based fights, levels and achievements, with success worked out by the program.
 - **2.4.0: check a card, trial run**: the program finds format problems and a model suggests changes, each one taken or undone by itself; a model can also play the card for a few rounds and report. The card creator gained reference files, gameplay blocks and card sizes.
@@ -255,6 +274,20 @@ Play on your phone without the computer: download `CicaTavern-<version>-android-
 - Voice input: there is no browser recognition in the app, so use a provider's transcription API (with browser recognition picked, the provider picked with it under Voice input is used instead) or a whisper server on your computer. The first time you click the microphone, Android asks whether the app may record audio; if you refused, turn the microphone on under the phone's Settings → Apps → CicaTavern → Permissions.
 - Updates: 设置 → 更多 → 更新 shows the new version and its notes; 下载并安装 (Download and install) downloads it in the app, checks it against the SHA-256 and signature on the release page, and opens the system installer to install over the old version; all data is kept. The first update asks you to allow CicaTavern to "install unknown apps".
 - How to build it and more: [android/README.md](android/README.md).
+
+## iPhone and iPad (TestFlight beta)
+
+Needs iOS 16 or later, on iPhone or iPad. It runs on the device by itself, with no computer on.
+
+1. Install Apple's **TestFlight** from the App Store.
+2. On the iPhone or iPad, open https://testflight.apple.com/join/wsT7kT4b , accept the invitation and install CicaTavern.
+3. Open CicaTavern, add a model provider and import a card, as in the other versions.
+
+- **Updates** come through TestFlight; the app has no Update page. Each beta build works for up to 90 days, and a new one comes before it ends.
+- **In the background**, iOS pauses CicaTavern a few seconds after you switch away, so a reply can stop halfway. Stay in the app while one is being written, and try again if it stops.
+- **Your data** stays on this device and goes with the app if you delete it. Export the chats and cards you care about first.
+- **Not in this version**: phone access, the network proxy and the desktop shortcut.
+- Cards with templates take a few tenths of a second longer each turn than on a computer.
 
 ## Data
 
@@ -378,7 +411,7 @@ Windows 解压即用，也有安卓版；界面有简体中文和英文。数据
 
 ### 长期记忆（Beta）：压缩掉的剧情，提到时会想起来
 
-<p align="center"><img src="web/whatsnew/2.4.0-battle.webp" alt="回合制战斗：两头灰狼和山贼头目站在山路上，头目吃了一记 17 点暴击" width="880"></p>
+<p align="center"><img src="web/whatsnew/2.3.0-memory.webp" alt="长期记忆：提到「码头」时想起第 5–6 轮许下的看灯之约；记忆簿把人物、事件、约定记成一条条" width="880"></p>
 
 长对话迟早要压缩上下文：前面的剧情压成一份剧情存档，压过几次，越早的细节越模糊。很久以前许下的约定、配角的名字、某件东西的来历，模型就不记得了。长期记忆把这些细节记成一条条，等剧情又提到它们时，再放回模型眼前。
 
@@ -432,6 +465,19 @@ flowchart LR
 - **像游戏一样玩**：选项在画面中央弹出，按数字键就选；回看、自动、跳过、全屏、逐句朗读都有，「朗读」「配图」旁边的 ▾ 不用退出就能改音色、模型和画法。
 - **CG 回廊**：这条故事线上所有的配图收在一处，标着是第几轮，全屏翻看。
 
+### 游戏规则模式（开发中）
+
+<p align="center"><img src="docs/screenshots/rules-themes.jpg" alt="同一场故事在五种界面下的对比：选项、掷骰、战斗、放技能、胜利，分别是简约深色、简约浅色、古风、怀旧游戏机和酷炫" width="880"></p>
+<p align="center"><img src="docs/screenshots/rules-dice.jpg" alt="掷骰检定：二十面骰掷出 17，灵巧 +1，共 18，需要 12，成功" width="49%"> <img src="docs/screenshots/rules-battle.jpg" alt="战斗界面：两头灰狼和山贼头目站在山路上，下方是生命、内力和攻击、技能、道具、防御、逃跑" width="49%"></p>
+
+按卡开启，默认关，关着时发给模型的内容不变。打开后成败由程序计算，模型只负责把结果写好。
+
+- **掷骰检定**：有风险的选项写着属性、成功率和风险，点了就掷骰，结果随这一轮发给模型，不多花请求。点数由种子决定，重新生成、回滚、读档都不变。
+- **回合制战斗**：故事打起来时进入战斗，攻击、技能、道具、防御、逃跑，全程不调用模型，打完模型按结果接着写。敌人有强弱，受的伤会留下来。
+- **行囊和成长**：角色、背包、任务、地图和成就都在「行囊」里。打赢得经验，升级加属性，新敌人记进图鉴。卡已有的体力、背包、任务变量可以绑定成规则的字段。
+- **四种界面**：简约、古风、怀旧游戏机、酷炫，选项、掷骰、战斗、放技能、胜利一起换。
+- **跟着卡走**：导出的 PNG、JSON 带着规则。创作角色卡选「战斗与成长」时，向导会商量开局属性、技能、物品和常见敌人。
+
 ### 角色有固定的形象
 
 - **角色名册**：给每个角色记下固定的长相、平时的衣着、一张人设图（参考图）和 LoRA。多人同框时逐个描述，不会串脸。
@@ -459,13 +505,19 @@ flowchart LR
 
 - 同一 Wi-Fi 或 Tailscale 下，手机浏览器打开带口令的链接就能玩，用的是电脑上的模型和数据。
 - 也可以装安卓版，在手机上独立运行，不用开电脑。
+- iPhone 和 iPad 有测试版：[通过 TestFlight 安装](https://testflight.apple.com/join/wsT7kT4b)，不用开电脑
 - iPhone 用 Safari、安卓用 Chrome 打开链接后可以「添加到主屏幕」，像 App 一样全屏打开，不用再输口令。
 - 界面专门适配了手机屏幕，设置窗口都改成了分组菜单。
 
 <br clear="right">
 
-## 最新版本变动[2.4.0]
+## 最新版本变动[2.4.1]
 
+<p align="center"><img src="web/whatsnew/2.4.0-battle.webp" alt="回合制战斗：两头灰狼和山贼头目站在山路上，头目吃了一记 17 点暴击" width="720"></p>
+
+- **2.4.1：聊着天随手调**：顶栏给每个对话单独选思考（默认、关、low 到 max）；基础预设能填正文字数范围；主题里多了行距；顶栏「记忆」直接开关长期记忆；「世界书」标出这张卡自带和在用的书。
+- **2.4.1：检查、试玩和创作向导**：「调整状态栏」、大卡「全本检查」、试玩问题一键修、试玩查数值；创作向导选玩家性别、审稿对照方案、事件只发生一次、写坏一步换模型重写；回复中途断开也留下已写内容；视觉小说「画 CG」；电脑版能用「Codex（本机）」画图。
+- **iPhone 和 iPad 测试版**：[通过 TestFlight 安装](https://testflight.apple.com/join/wsT7kT4b)，在设备上独立运行，要求 iOS 16 以上。
 - **2.4.0：直连对话**：不用角色卡也能直接和模型聊，入口在左栏最上面，可以附文本文件、联网搜索，回复按 Markdown 显示。
 - **2.4.0：游戏规则（开发中）**：角色卡的「⋯」里多了「游戏规则…」，按卡开启，默认关。打开后有检定和掷骰、行囊、回合制战斗、等级和成就，成败由程序计算。
 - **2.4.0：检查这张卡、试玩体检**：程序查格式问题，模型提建议，可以逐条采用和撤销；还能让模型替你把卡玩几回合再出报告。创作向导多了参考文件、玩法积木和卡的规模。
@@ -583,6 +635,20 @@ Fish 和 MiniMax 的密钥存在数据目录的 `voice-keys.json`，页面只看
 - 语音输入：应用里没有浏览器识别，请用供应商的转写接口（选了浏览器识别的话，自动改用「语音输入」里一起选的供应商），或电脑上的 whisper 服务。第一次点麦克风时安卓会问是否允许录音；拒绝了的话，到手机的「设置 → 应用 → CicaTavern → 权限」里打开麦克风。
 - 更新：设置 → 更多 →「更新」显示新版本和发布说明，点「下载并安装」在应用里下载，核对发布页公布的 SHA-256 和签名后打开系统的安装界面，覆盖安装，数据都保留。第一次更新要按提示允许 CicaTavern「安装未知应用」。
 - 构建方法和更多说明见 [android/README.md](android/README.md)。
+
+## iPhone 和 iPad（TestFlight 测试版）
+
+需要 iOS 16 以上，iPhone 和 iPad 都能装，在设备上独立运行，不用开电脑。
+
+1. 在 App Store 安装苹果官方的 **TestFlight**。
+2. 在 iPhone 或 iPad 上打开 https://testflight.apple.com/join/wsT7kT4b ，按提示接受邀请并安装 CicaTavern。
+3. 打开 CicaTavern，添加模型供应商，导入角色卡，用法和其他版本一样。
+
+- **更新**：新版本在 TestFlight 里更新，应用里没有「更新」。每个测试版最长能用 90 天，到期前会发新版。
+- **后台**：切到别的应用几秒后，iOS 会暂停 CicaTavern，回复写到一半可能中断。等回复时留在应用里，断了重试就行。
+- **数据**：只存在这台设备上，卸载应用会一起删掉，重要的对话和角色卡先导出。
+- **没有的功能**：「手机访问」「网络代理」和「桌面快捷方式」。
+- 带模板的角色卡每轮会比电脑慢零点几秒。
 
 ## 数据
 

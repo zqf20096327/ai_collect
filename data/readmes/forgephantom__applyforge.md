@@ -1,9 +1,9 @@
-# ApplyForge (Meta Muse edition)
+# ApplyForge
 
 ![zero prompt](https://img.shields.io/badge/run-zero%20prompt-blue)
 ![auto-apply](https://img.shields.io/badge/auto--apply-50--70%2Fday-green)
 ![runs 24 hours](https://img.shields.io/badge/runs-24%20hours-blue)
-![runs on Muse](https://img.shields.io/badge/runs%20on-Meta%20Muse-purple)
+![runs on any agent](https://img.shields.io/badge/runs%20on-any%20agent-purple)
 ![no installs](https://img.shields.io/badge/installs-none-orange)
 
 **AI job-application autopilot.** Upload your base resume once — Muse
@@ -34,6 +34,11 @@ You clone the repo into Muse
   -> Muse auto-syncs to the latest release first — always, with no manual
      update step, ever
   -> Muse asks you to upload your base resume (first run only)
+  -> Muse asks your location and relocation: current city/state, willing
+     to relocate, preferred locations if any
+  -> Muse asks the candidate details companies mainly ask on their forms
+     (see First-run onboarding) — asked once, remembered, never stored in
+     this repo
   -> Muse extracts every role from it: titles, employers, dates, skills
   -> Muse searches jobs matching those roles: posted 60 min – 1 month ago,
      strictly USA-wide and never narrowed to a single state — all 50 states
@@ -45,6 +50,13 @@ You clone the repo into Muse
      record for the last 5 years through the current year (plus
      site:h1bdata.info); apply ONLY to proven sponsors — everyone else
      is skipped, no exceptions
+  -> Existing-employer check: skip any company that already appears as an
+     employer in your uploaded base resume (current or past) — never apply
+     to a current or former employer, no exceptions
+  -> Duplicate check across bots (strict): before any resume is built,
+     check the shared Drive job_resumes record — if a packet for this
+     company + role already exists (from ANY bot, on ANY platform), skip.
+     Never apply twice to the same company + role, no exceptions
   -> For each job: 50–70 applications per day, running 24 hours:
        read JD -> Draft 1 (keep EVERY section from the uploaded base resume:
        Projects, Publications, Awards, whatever the candidate included — never
@@ -58,9 +70,13 @@ You clone the repo into Muse
        -> unanimous interview vote (all seven reviewers)
        -> build DOCX -> PDF -> layout MATCH check (exactly 1 page)
        -> fill application (upload the PDF resume ONLY on every portal —
-          never the DOCX) -> submit
-       -> save resume + JD + application record to Google Drive
-          (ONLY for jobs actually applied to; the rest is removed)
+          never the DOCX) -> smart form questions answered only from
+          verified facts, in plain human writing — no AI bluff words
+          (see §3, Smart form questions) -> submit
+       -> resume, JD, and filled form are each written to Google Drive
+          instantly, the moment they exist — never batched, never held
+          until submission; filed pieces stay even if the application
+          is later parked
 ```
 
 ### Starting (no prompt needed)
@@ -69,13 +85,17 @@ Loading the repo is the entire setup. Muse reads every file, beginning to
 end, then starts onboarding automatically — no prompt to paste:
 
 1. Muse asks you to **upload your base resume** (first run only).
-2. Muse asks you to **connect Google Drive**: Muse app → Settings →
+2. Muse asks your **location and relocation**: current city/state, willing
+   to relocate, preferred locations if any.
+3. Muse asks the **candidate details companies mainly ask** on their forms
+   (full list in First-run onboarding below). Asked once, remembered.
+4. Muse asks you to **connect Google Drive**: Muse app → Settings →
    Connectors → Google Drive → Connect. (See `CONNECTORS.md`.)
-3. Muse asks **where your Drive `job_resumes` folder is** — remembered as
+5. Muse asks **where your Drive `job_resumes` folder is** — remembered as
    `OUT_BASE`; every application packet is filed under it.
-4. Muse recommends connecting **Gmail** the same way, so it can verify
+6. Muse recommends connecting **Gmail** the same way, so it can verify
    application confirmations.
-5. Muse checks your resume's **section coverage** for your experience band
+7. Muse checks your resume's **section coverage** for your experience band
    and tells you what's missing so you can reupload before the first build.
 
 Then it extracts every role from your resume and starts the apply loop. If
@@ -101,22 +121,89 @@ Your work-authorization answers stay exactly as they are — the check changes
 *which companies* get applications, never what you claim. Nothing is
 misrepresented to pass it.
 
+### Existing-employer check (before every application)
+
+Never apply to a company you already work for or have worked for. **Before**
+any resume is built:
+
+1. Take the employer list from the Experience section of your uploaded base
+   resume — every current and past employer.
+2. **Skip any job whose company matches one of those employers** — no
+   exceptions, even if the role, location, or team is different. A new role
+   at a former employer is still a former employer.
+3. Log the skip per application: existing employer — skipped.
+
+### Duplicate check across bots (strict)
+
+Different bots running this repo must never apply to the same job twice.
+**Before** any resume is built:
+
+1. **One shared record.** Every bot — Muse, Grok bot, Dots, Claude Duet,
+   or any other — must point at the SAME Drive `job_resumes` folder (same
+   `OUT_BASE`). That folder is the single record of what has been applied
+   to. A bot with its own separate folder cannot see other bots'
+   applications and will duplicate them.
+2. **Check before building.** For every job, search the shared folder for
+   an existing packet for that company + role
+   (`job_resumes/<Company>/<YYYY-MM-DD>_<Role-Slug>/`). If a packet
+   exists — from any bot, on any platform, on any day — **skip the job.
+   No exceptions.**
+3. **One application per company + role, ever.** Never re-apply to the
+   same company + role, even if the earlier application came from another
+   bot, another platform, or another day. Only the user can explicitly
+   order a re-application, and then it is a new decision, not an automatic
+   one.
+4. **File before moving on.** Every submitted application is filed in the
+   shared folder immediately after submitting, so the next bot — or the
+   next run — sees it. Never submit without filing.
+
+### Agent-agnostic rules
+
+The rules in this repo live in the repo itself, not in any one app — any AI
+agent that loads the repo end to end (Muse, Grok bot, Dots, Claude Duet, or
+others) runs the same pipeline and the same checks.
+
 ### First-run onboarding
 
-On the first run, Muse walks you through four steps — nothing to paste,
+On the first run, Muse walks you through six steps — nothing to paste,
 just answer:
 
 1. **Upload your base resume.** From it, Muse extracts every role (title,
    employer, start/end dates), skills and tools per role, education,
    certifications, and contact details.
-2. **Connect Google Drive.** Muse app → Settings → Connectors → Google
+2. **Location and relocation.** Current city and state, whether you are
+   willing to relocate, and preferred locations if any. This is asked
+   first, before any job search, because it filters every role.
+3. **Candidate details companies mainly ask.** The fields that show up on
+   almost every company application form, so the pipeline can fill any
+   form without inventing anything:
+   - Full name, email, phone
+   - Location: city, state, country (from step 2)
+   - LinkedIn profile URL, GitHub profile URL, portfolio or website URL
+     (if you have them)
+   - Work authorization: legally authorized to work in the US, and whether
+     you need sponsorship now or in the future
+   - Country of citizenship
+   - Have you worked for this company before
+   - Do you know / are you related to / were you referred by anyone at
+     this company
+   - How did you hear about us
+   - Earliest start date (how soon you can start)
+   - Salary expectations (a number, a range, or your rule for answering
+     when a range is posted)
+   - Willing to relocate, preferred locations (from step 2)
+   - Education: highest degree, school, graduation year
+   - Years of relevant experience
+   Asked once and remembered. Nothing personal is written to this repo or
+   to local disk.
+4. **Connect Google Drive.** Muse app → Settings → Connectors → Google
    Drive → Connect. Full steps in `CONNECTORS.md`.
-3. **Point at your Drive folder** (e.g. your Drive's `job_resumes` folder).
+5. **Point at your Drive folder** (e.g. your Drive's `job_resumes` folder).
    That path becomes `OUT_BASE` — every application from then on is filed
    there.
-4. **Connect Gmail** (recommended): Muse app → Settings → Connectors →
+6. **Connect Gmail** (recommended): Muse app → Settings → Connectors →
    Gmail → Connect, so Muse can verify application confirmations.
-5. **Section-coverage check.** Muse compares your resume against the
+7. **Section-coverage check.** Muse compares your resume against the
    sections expected for your experience band (under 3 yrs: Summary,
    Education, Projects, Skills, Experience; 3+ yrs: Summary, Experience,
    Skills, Projects, Education) and tells you what's missing so you can
@@ -151,8 +238,8 @@ night.
 
 ### Google Drive, not local disk
 
-Only jobs you actually applied to are filed in Drive — anything prepared
-but not submitted is removed, never kept:
+Every piece is written to Drive instantly, the moment it exists — never
+batched, never held until submission:
 
 ```
 <Your Drive>/job_resumes/<Company>/<YYYY-MM-DD>_<Role-Slug>/
@@ -162,6 +249,12 @@ but not submitted is removed, never kept:
   JD.md                         (the job description as posted)
   APPLICATION_FORM.md           (every question + the submitted answer)
 ```
+
+**Instant updates.** The JD is written to Drive the moment it is read, the
+tailored resume the moment it is built, and the filled form the moment it
+is filled — each piece lands in Drive immediately, before submission.
+Filed pieces stay even if the application is later parked or skipped; they
+are the record of what was prepared. Nothing is deleted to make room.
 
 Control the root with `OUT_BASE` (set during onboarding):
 
@@ -219,6 +312,39 @@ All you do:
 3. Done — Muse starts onboarding on its own: resume upload, Drive/Gmail
    connect, `OUT_BASE`. If it doesn't start, just say **"start"**.
 
+### How to use on every platform — Muse, Grok bot, Dots, Claude Duet
+
+ApplyForge is a set of rules in this repo, not a feature of any one app.
+Any AI agent that can read these files end to end runs the same pipeline.
+The steps are the same on every platform:
+
+1. Give the agent this repo — clone it, upload the folder, or attach the
+   files, whichever the platform supports.
+2. Ask the agent to read every file, beginning to end.
+3. The agent starts onboarding on its own: upload your base resume, connect
+   Google Drive, point at your Drive `job_resumes` folder, connect Gmail.
+4. If it doesn't start, just say **"start"** — that's the only trigger
+   phrase, on every platform.
+
+Platform notes:
+
+- **Muse** — Get the app at [muse.ai](https://muse.ai) — iPhone (App Store),
+  Android (Google Play), the Mac app, or the web app. Clone the repo and
+  point Muse at the folder. Drive and Gmail connect from Settings →
+  Connectors. See `CONNECTORS.md`.
+- **Grok bot** — Load the repo files into Grok, ask it to read every file
+  beginning to end, then say **"start"**. Connect Drive and Gmail however
+  Grok supports them; the pipeline and the rules are unchanged.
+- **Dots** — Load the repo files into Dots, ask it to read every file
+  beginning to end, then say **"start"**. Same pipeline, same rules.
+- **Claude Duet** — Load the repo files into Claude Duet, ask it to read
+  every file beginning to end, then say **"start"**. Same pipeline, same
+  rules.
+
+Whatever the platform, the agent always syncs to the latest release first,
+so every user — new or existing — runs the current rules with no manual
+update and no impact on existing packets or approvals.
+
 Muse handles the rest, including installing the pinned dependencies
 (`docx@8.5.0`, `pymupdf`, `pypdf`) the first time it builds, and verifying
 the sample template renders exactly 1 page before your first real run.
@@ -265,9 +391,35 @@ reviewers vote "interview"**:
     rebuilds until **MATCH** (identical spacing, exactly 1 page).
 11. **Apply + record** — fills the application from your verified facts,
     submits (after approval for the first 2), and saves the full packet
-    (PDF + DOCX + JD + every question/answer) to your Drive folder — only
-    for jobs actually applied to; anything prepared but not submitted is
-    removed.
+    (PDF + DOCX + JD + every question/answer) to your Drive folder.
+    Resume, JD, and form are each written instantly, the moment they exist
+    (see Instant updates); filed pieces stay even if the application is
+    later parked.
+
+### Smart form questions — answered correctly, no AI bluff words
+
+Application forms ask open-ended screening questions ("Why this role?",
+"Describe a project where you...", "What makes you a good fit?"). These
+are answered from the verified fact base only — the uploaded base resume
+plus the onboarding answers — and in plain human writing:
+
+1. **Correct first.** Every claim must trace to the resume or the
+   onboarding answers: a real employer, a real project, a real number. If
+   a question cannot be answered from verified facts, park it (doubt rule)
+   — never invent a story, a metric, or a skill to fill the box.
+2. **No AI bluff words.** No buzzwords from the ban list
+   (`Resume_Section_Spec.md`: leverage, seamless, robust, streamline,
+   spearhead, empower, holistic, synergy, utilize, foster, pivotal,
+   harness, world-class, best-in-class, state-of-the-art, cutting-edge,
+   passionate, results-driven, proven track record, next-gen,
+   game-changing, bleeding-edge, "responsible for"), no em dashes, no
+   semicolons in body text, no smart quotes, no filler phrases ("in order
+   to", "it is worth noting that", "at the end of the day", "the ability
+   to"), no hedged filler ("helped with", "was involved in"). Short
+   sentences, plain words, straight quotes only when truly needed.
+3. **Defensible in an interview.** Write every answer as if the
+   interviewer will ask you to prove it on the spot — because they will.
+   If you could not defend a sentence in an interview, do not write it.
 
 After a batch, Muse reports: all seven scores before/after, the interview
 vote, top 3 changes, JD coverage %, anything omitted, and every claim

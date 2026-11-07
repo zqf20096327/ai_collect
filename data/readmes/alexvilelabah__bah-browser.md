@@ -73,7 +73,7 @@
 - **One-shot skills**: open N videos at once, jump to the exact moment a phrase is spoken across several videos, **chat about a YouTube video using its transcript**, compare prices, fetch news — deterministic shortcuts that cost zero tokens
 - **UI in English by default**, with **Português** and **Español** available in Settings — the AI replies in your chosen language
 - **Full adblock** (EasyList + EasyPrivacy) with automatic bypass for sites that break (YouTube, Twitch)
-- **Safe Browsing** (URLhaus malicious-hosts list, updated daily)
+- **Safe Browsing** ([NetAPI](https://netapi.com/compromised-urls/) compromised-domains list, updated daily)
 - **Real mouse clicks** via Chromium `sendInputEvent` (not synthetic events — goes through React, Vue, Angular without being ignored)
 - **Modern-site compatibility** — presents as standard Chrome (Chrome UA, masks `navigator.webdriver`) so sites don't wrongly block the browser
 - **Comet-style visual overlay** — pulsing border, scan line, click ripple, status label

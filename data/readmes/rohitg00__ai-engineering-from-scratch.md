@@ -392,6 +392,8 @@ flowchart TB
   P16 --> P19["Phase 19 — Capstone Projects"]
   P17 --> P19
   P18 --> P19
+  classDef phase fill:#fafaf5,stroke:#3553ff,color:#1a1a1a
+  class P0,P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12,P13,P14,P15,P16,P17,P18,P19 phase
 ```
 
 <a id="contents"></a>
@@ -1175,7 +1177,4 @@ The book is the snapshot; this repository is the living edition. Every chapter e
 The [Claude Certification Academy](certifications/claude/README.md) is a free,
 open-source preparation program for all four official Claude certification tracks:
 Associate Foundations, Developer Foundations, Architect Foundations, and Architect
-Professional. Each route combines blueprint-mapped lessons, runnable labs, a
-diagnostic, capstone work, and a full-length original practice exam.
-
-Use the [AI-native GitHub onboarding guide](certifica
+Professional. Each route combines blueprint-mapped lesson

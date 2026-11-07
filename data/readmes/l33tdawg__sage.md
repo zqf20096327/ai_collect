@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.2`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.3`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,26 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.2 and earlier)</summary>
+<summary>Recent release notes (v11.25.3 and earlier)</summary>
+
+## What's New in v11.25.3
+
+**Memory submit now reports fields it did not apply.** Unknown top-level body
+keys are still accepted and ignored for compatibility, but the response names
+them in a bounded, sorted `ignored_fields` array and the node logs a warning
+without their values. This makes a correction-shaped request visible when a
+client sends fields such as `replaces_memory_id` to a route that only stores the
+replacement memory. Corrections still use submit, wait for commit, then challenge
+the old memory.
+
+**The Go dependency baseline closes two high-severity pgx vulnerabilities.**
+`pgx` moves to 5.12.0 for the simple-protocol batch SQL-injection and
+authentication-requirement fixes, with `puddle` 2.2.3. The SQLite driver moves
+to 1.61.1 for prepared-statement and read-only VFS correctness. The test-only
+PostgreSQL mock moves to its pgx-5.12-compatible v6 line.
+
+No consensus version change or chain migration. `latest` and automatic upgrade
+voting remain app29; app30 remains explicit.
 
 ## What's New in v11.25.2
 
@@ -350,7 +369,7 @@ voting remain app29; app30 remains explicit.
 
 No consensus version change or chain migration. `latest` and automatic upgrade voting remain app29; app30 remains explicit. Existing reply catch-up and v11.24.4 fixes are already included through release history.
 
-Container: `ghcr.io/l33tdawg/sage:11.25.2`. SDK 11.25.2.
+Container: `ghcr.io/l33tdawg/sage:11.25.3`. SDK 11.25.3.
 
 ## What's New in v11.25.0
 
@@ -943,22 +962,4 @@ choices; saving those choices explicitly grants memory access. Pairing alone
 shares no memory domains, and existing approved grants remain in place.
 
 MCP `sage_directory` searches local and federated agents by default. Upgrade both
-peers for automatic node messaging; older peers retain their export-based behavior.
-New sends refresh legacy recipient tickets, while queued messages retain their
-original authorization mode.
-
-Federated replies now accept the signed claimant-session field emitted by MCP,
-fixing peer rejection of otherwise valid replies. Reply retries report the actual
-retained delivery state and diagnostic instead of always claiming "queued".
-Existing failed events remain failed; the upgrade does not silently resend them.
-
-No consensus-rule or application-version change; app-v27 remains the ceiling.
-Container: `ghcr.io/l33tdawg/sage:11.19.16`. SDK 11.19.16.
-
-## What's New in v11.19.15
-
-**Consensus-safe memory cleanup, without the 500-record cap.** CEREBRUM now
-scans the full inventory, previews verified eligible counts, and processes
-manual or automatic cleanup through existing consensus challenge transactions.
-Open tasks and internal records are protected. The UI distinguishes queued work,
-confirmed submissions, and observed 
+peers for automatic n

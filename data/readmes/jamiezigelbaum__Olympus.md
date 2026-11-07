@@ -6,7 +6,7 @@
 
 *A private second brain on your own computer, for ChatGPT, Claude, Grok and any AI app that speaks MCP. On a Mac, and on [Omarchy](https://omarchy.org) and Ubuntu 24.04 LTS Linux. Free and open source.*
 
-[![version](https://img.shields.io/badge/version-1.3.4-534AB7)](https://github.com/jamiezigelbaum/Olympus/blob/main/CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-0F6E56)](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) [![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](https://github.com/jamiezigelbaum/Olympus/blob/main/CONTRIBUTING.md) [![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai) [![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
+[![version](https://img.shields.io/badge/version-1.4.0-534AB7)](https://github.com/jamiezigelbaum/Olympus/blob/main/CHANGELOG.md) [![license](https://img.shields.io/badge/license-MIT-0F6E56)](https://github.com/jamiezigelbaum/Olympus/blob/main/LICENSE) [![tests](https://img.shields.io/badge/tests-3400%2B%20passing-1D9E75)](https://github.com/jamiezigelbaum/Olympus/blob/main/CONTRIBUTING.md) [![openclaw](https://img.shields.io/badge/OpenClaw-2026.7.1%2B-378ADD)](https://openclaw.ai) [![runtime](https://img.shields.io/badge/runtime-Bun%20%2B%20TypeScript-B45309)](https://bun.sh)
 
 [olympusplugin.ai](https://olympusplugin.ai) · [Get started](#get-started) · [Olympus in ChatGPT](#olympus-for-chatgpt) · [Claude, Grok and other apps](#claude-grok-and-other-apps) · [How it works](#how-it-works) · [Sources](#supported-sources) · [Security model](#the-security-model) · [OpenClaw quickstart](https://github.com/jamiezigelbaum/Olympus/blob/main/docs/QUICKSTART.md) · [Commands](#command-reference)
 
@@ -417,9 +417,10 @@ and guides you through setup. You do not need to download files, find a
 checksum receipt, or have a GitHub account. The agent checks the SHA-256 and
 byte count against the designated candidate and GitHub's release metadata.
 
-`openclaw plugins install clawhub:olympus` becomes the one-line public path
-once Olympus is published to ClawHub, which happens **after** the pilot. The
-pilot and release qualification both use the managed `npm-pack:` path — see
+Olympus is also published on ClawHub (https://clawhub.ai/plugins/olympus,
+from 1.3.4), so `openclaw plugins install clawhub:olympus` installs the same
+release bytes. ClawHub can trail the newest GitHub release by a little. The
+agent install above and release qualification use the managed `npm-pack:` path — see
 [docs/V0_4_RELEASE.md](docs/V0_4_RELEASE.md). A Git checkout or rebuilt package
 does not qualify the supplied candidate.
 
@@ -453,8 +454,13 @@ OLYMPUS_BIN="$OLYMPUS_ROOT/bin/olympus"
 
 Continue the quickstart to describe your data, choose a privacy posture,
 connect model credentials, and verify base activation before choosing your
-sources in the dashboard and checking the first cited answer. The CLI lives inside the
-managed plugin; use the resolved executable rather than assuming it is on PATH.
+sources in the dashboard and checking the first cited answer. Setup installs an
+owner-only `~/.local/bin/olympus` launcher on Linux and macOS and keeps it aligned
+with worker upgrades and rollback. Existing user or standalone launchers are
+preserved. If `~/.local/bin` is missing from your login PATH, run
+`"$HOME/.local/bin/olympus" dashboard` on the machine running Olympus (on a
+server, use that server). Setup reports the full command, including a fallback
+when an existing launcher belongs to another installer.
 
 This candidate artifact includes native Control UI support. On OpenClaw
 **2026.9.2**, use **Olympus** in the Control UI sidebar to connect

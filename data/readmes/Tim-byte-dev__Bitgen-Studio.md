@@ -163,6 +163,9 @@ bitGen Studio window (Electron, or http://127.0.0.1:8311 in a browser)
    └─ bridges            Blender (blender/), Daz Studio (daz/), Unreal Engine 5.8 (ue/)
 ```
 
+One more folder is not part of the app but lives beside it: `community/` is the 💬 Community server (PHP), with a
+README for putting it on shared hosting. The tigerart.com.au website has its own repository.
+
 ## Tests
 
 `bash scripts/e2e-stub-test.sh` runs the whole suite: 1,700+ legs of unit and real-browser tests. It runs against stub ComfyUI, LLM and Unreal servers, so no GPU or models are needed. GitHub Actions runs a quick subset on every push (`scripts/ci-units.sh`). See [CONTRIBUTING.md](misc/CONTRIBUTING.md).

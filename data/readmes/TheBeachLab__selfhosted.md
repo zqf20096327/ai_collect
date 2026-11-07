@@ -65,6 +65,7 @@ Headscale, OpenVPN or WireGuard is an open question below.
 
 - [Getting started](doc/getstarted.md)
 - [Securing SSH access](doc/security.md)
+- [SSH to the NUC (port 622, fail2ban)](doc/ssh.md)
 - [Backups](doc/backups.md)
 - [Web server (Nginx)](doc/web.md)
 - [Hariburi currency rates](doc/hariburi-rates.md)
@@ -78,6 +79,7 @@ Headscale, OpenVPN or WireGuard is an open question below.
 - [VPN Server (OpenVPN)](doc/vpn.md) (unit restarted 2026-10-26; daily use not recorded)
 - [WireGuard VPN](doc/wireguard.md) (setup guide; no later check that it still runs)
 - [Server Safeguards (resource limits + alerts)](doc/server-safeguards.md)
+- [Apache and renderd (disabled 2026-11-07)](doc/apache-renderd.md)
 - [Troubleshooting](doc/troubleshooting.md)
 
 ### Services
@@ -115,6 +117,8 @@ Headscale, OpenVPN or WireGuard is an open question below.
 ### Databases and APIs
 
 - [PostgreSQL](doc/postgres.md)
+  - [pgAdmin (Gunicorn)](doc/pgadmin.md)
+  - [Collation mismatch after 26.04 (pending)](doc/collation.md)
   - [TimescaleDB](doc/timescaledb.md)
   - [Strapi CMS](doc/strapi.md) (install guide; `sisterapi` is not in the current database list)
   - [PostgREST API](doc/postgrest.md)

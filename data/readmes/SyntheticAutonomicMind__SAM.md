@@ -44,7 +44,6 @@ SAM is a native macOS app for people who aren't developers. Say "Hey SAM" to go 
 - Manage files and folders with voice commands
 - Create project plans and task lists
 - Organize your work in project folders
-- Access SAM from your iPad or phone via [SAM-Web](https://github.com/SyntheticAutonomicMind/SAM-web)
 
 ### Math & Calculations
 
@@ -106,7 +105,6 @@ Choose how SAM talks to you - friendly, professional, creative, or create your o
 | Provider | What You Get |
 |----------|--------------|
 | **OpenAI** | Leading frontier models with strong reasoning and coding |
-| **Anthropic** | Claude models available via GitHub Copilot and OpenRouter |
 | **GitHub Copilot** | Multiple model families via Copilot subscription |
 | **DeepSeek** | Budget-friendly models with strong coding support |
 | **Google Gemini** | State-of-the-art multimodal models with large context |
@@ -115,6 +113,7 @@ Choose how SAM talks to you - friendly, professional, creative, or create your o
 | **Ollama Cloud** | Cloud-hosted Ollama models |
 | **Z.AI (Chat)** | GLM models for conversation and reasoning |
 | **Z.AI (Coding)** | GLM models optimized for coding |
+| **Cheaper Inference** | OpenAI-compatible gateway to models from several labs |
 | **Local MLX** | Run models on Apple Silicon Macs |
 | **Local llama.cpp** | High-performance GGUF inference on Apple Silicon Macs |
 | **Remote llama.cpp** | Connect to remote llama.cpp server |
@@ -148,10 +147,6 @@ brew install --cask sam
 
 Press `N` for a new conversation. Type your message. Say "Hey SAM" for hands-free.
 
-### Access From Other Devices
-
-[SAM-Web](https://github.com/SyntheticAutonomicMind/SAM-web) provides chat from your iPad, iPhone, or any browser. Enable API Server in SAM Preferences, then visit the SAM-Web repository for setup instructions.
-
 ---
 
 ## System Requirements
@@ -184,7 +179,6 @@ SAM is part of [Synthetic Autonomic Mind](https://github.com/SyntheticAutonomicM
 
 - **[CLIO](https://github.com/SyntheticAutonomicMind/CLIO)** - Terminal AI coding assistant (macOS, Linux, Windows)
 - **[ALICE](https://github.com/SyntheticAutonomicMind/ALICE)** - Image generation server (SAM's image engine)
-- **[SAM-Web](https://github.com/SyntheticAutonomicMind/SAM-web)** - Access SAM from any browser
 
 ---
 
@@ -213,4 +207,4 @@ SAM is part of [Synthetic Autonomic Mind](https://github.com/SyntheticAutonomicM
 
 Created by Andrew Wyatt (Fewtarius) · [syntheticautonomicmind.org](https://www.syntheticautonomicmind.org) · [github.com/SyntheticAutonomicMind/SAM](https://github.com/SyntheticAutonomicMind/SAM)
 
-Built with open source: [Vapor](https://vapor.codes) · [MLX](https://github.com/ml-explore/mlx-swift) · [llama.cpp](https://github.com/ggerganov/llama.cpp) · [Sparkle](https://sparkle-project.org)
+Built with open source: [MLX](https://github.com/ml-explore/mlx-swift) · [llama.cpp](https://github.com/ggerganov/llama.cpp) · [Sparkle](https://sparkle-project.org)

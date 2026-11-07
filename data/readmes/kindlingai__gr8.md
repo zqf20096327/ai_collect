@@ -3,14 +3,15 @@
 Need help? Join us on Discord: https://discord.gg/8EAvYPV2rE
 
 gr8 serves GLM-5.3, GLM-5.3-Flash and DeepSeek-V4.1-Flash on one to six DGX Spark (GB10) boxes (the count depends on
-the model, see below). The model is split across all the boxes (tensor parallel, TP). gr8 is written from scratch in
-CUDA and uses no vLLM, PyTorch or NCCL at serve time. Each box runs one engine process (`g6m4`) and is one rank. The
-ranks talk over RoCE v2 through gr8's own RDMA code, and an OpenAI-compatible API runs on the first box. *Beta
-release. If you run it, please tell us what breaks: issues and PRs are welcome.*
+the model, see below), with an OpenAI-compatible API on the first box. gr8 is written from scratch in CUDA and uses no
+vLLM, PyTorch or NCCL at serve time. *Beta release. If you run it, please tell us what breaks:
+[issues](https://github.com/kindlingai/gr8/issues) and PRs are welcome.*
 
 ## Recipes
 
-Each recipe is one Docker image, set up for one model on a fixed number of boxes.
+Each recipe is one Docker image, set up for one model on a fixed number of boxes. For other box counts (GLM-5.3 on
+three to six boxes, GLM-5.3-Flash on three or four), start from [Models and install](#models-and-install). A box runs
+one model at a time: stop the running recipe's container on every box before you start another.
 
 ### GLM-5.3-Flash on 1 Spark
 
@@ -42,7 +43,7 @@ once · recipes coming soon. Until then, start it on three to six boxes with Doc
 
 142.9 tok/s for one request writing code · 3,655 tok/s prefill on an 8K prompt · 32 requests at once (the recipe's
 setting) · fast mode by default (`TUNE=speed`), so the output is not identical to the exact model's; `TUNE=quality`
-gives the exact model's output · not yet booted on four boxes
+gives the exact model's output · booted on four boxes from the recipe's image: ready in 104 s
 
 **[Recipe](https://github.com/kindlingai/deepseek-v4.1-flash-exlr8-4x-spark)** · [Model page](docs/DEEPSEEK.md)
 
@@ -85,7 +86,8 @@ redraws them). The model pages give each benchmark and its date.</sub>
 
 Each model's page has its results, how to start it and its known issues.
 
-**Three to six boxes** (GLM-5.3), with Docker Compose. On every box:
+**Three to six boxes** (GLM-5.3), with Docker Compose. First, on every box, turn off proactive memory compaction and
+open TCP ports 7340 and 7341 between the boxes ([What you need](#what-you-need)). Then, on every box:
 
 ```bash
 mkdir -p ~/gr8 && cd ~/gr8
@@ -101,9 +103,10 @@ setting, and has bare metal and Kubernetes. An agent that starts gr8 for someone
 
 **DeepSeek-V4.1-Flash** (four boxes): the recipe
 [deepseek-v4.1-flash-exlr8-4x-spark](https://github.com/kindlingai/deepseek-v4.1-flash-exlr8-4x-spark)
-is the quickest way: the same image on every box, in fast mode by default. We have not yet booted that image on four
-boxes. [docs/DEEPSEEK-BOOT.md](docs/DEEPSEEK-BOOT.md) is the boot with gr8's own launcher, which gives exact output by
-default, in order, from the four boxes to a passing `./gr8 ds41 smoke`.
+is the quickest way: the same image on every box, in fast mode by default. We booted that image on four boxes on
+2026-11-06: ready in 104 s, smoke test 11 of 11, 72 of 75 on the 75-item check.
+[docs/DEEPSEEK-BOOT.md](docs/DEEPSEEK-BOOT.md) is the boot with gr8's own launcher, which gives exact output by default,
+in order, from the four boxes to a passing `./gr8 ds41 smoke`.
 
 ### With model-loader
 
@@ -141,6 +144,9 @@ Each model's page gives its box count. [docs/GLM-5.3.md](docs/GLM-5.3.md#what-yo
   with the NVIDIA container toolkit (DGX OS has both): see [Docker Compose](docs/DEPLOY.md#docker-compose).
 
 ## Running it
+
+The model is split across all the boxes (tensor parallel, TP). Each box runs one engine process (`g6m4`) and is one
+rank. The ranks talk over RoCE v2 through gr8's own RDMA code.
 
 Every box runs the same `./gr8 <model> up`, where the model is `glm53`, `glm53f` or `ds41`
 ([docs/DEPLOY.md](docs/DEPLOY.md)). The first address in `--peers` is the

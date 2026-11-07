@@ -1,0 +1,180 @@
+<!-- README.md: Ripple's front page. Pitch, install and a streaming example first; the package split and repo workflow below. -->
+
+# Ripple
+
+Open-source generative UI for your own app. A model writes a small JSON spec,
+and Ripple renders it as a working interface while the spec is still
+streaming in.
+
+The finished UI is live. It keeps state, binds inputs both ways, evaluates
+expressions, runs event handlers, and hands side effects (API calls,
+navigation, toasts) back to your app. The model writes structure; Ripple
+handles the reactivity.
+
+[![A recorded model run replayed on /live: the streamed spec on the left, the sales dashboard Ripple rendered from it on the right](docs/assets/live-sales-dashboard.png)](https://ripple.pocketpaw.xyz/live)
+
+Watch nine recorded model runs render at
+[ripple.pocketpaw.xyz/live](https://ripple.pocketpaw.xyz/live), or write a
+spec yourself in the [playground](https://ripple.pocketpaw.xyz/playground).
+
+## Quick start
+
+```bash
+bun add @ripple-ui/svelte
+```
+
+```svelte
+<script>
+  import { Ripple } from '@ripple-ui/svelte';
+  import { streamSpec } from '@ripple-ui/svelte/streaming';
+
+  let store = $state.raw(null);
+
+  async function generate() {
+    const res = await fetch('/api/ui', { method: 'POST' }); // your endpoint, streaming the model's JSON
+    store = streamSpec(res.body);
+  }
+</script>
+
+<button onclick={generate}>Generate</button>
+{#if store}<Ripple streaming={store} onEvent={(e) => console.log(e.type)} />{/if}
+```
+
+Ripple shows a skeleton until the first chunk parses, then grows the UI as
+more tokens arrive. `onEvent` gets every side effect the spec asks your app
+to perform. [Streaming](https://ripple.pocketpaw.xyz/docs/concepts/streaming) covers the options and
+error handling.
+
+Widgets use Tailwind CSS v4 classes, so your app needs Tailwind v4 and an
+`@source` line that points at the package. The
+[Styling section](packages/svelte/README.md#styling) of the Svelte README has
+the setup.
+
+Not on Svelte? In React, `npm i @ripple-ui/react` and render
+`<Ripple spec={spec} />`. On any other page, `npm i @ripple-ui/embed` and call
+`mount(document.querySelector('#card'), spec)`. Neither needs Svelte or
+Tailwind. [Install](https://ripple.pocketpaw.xyz/docs/getting-started/install#react) has both.
+
+## What a spec looks like
+
+```json
+{
+  "version": "1.0",
+  "state": { "name": "" },
+  "ui": {
+    "type": "flex",
+    "props": { "direction": "column", "gap": "12px" },
+    "children": [
+      { "type": "input", "bind": "name", "props": { "label": "Your name" } },
+      { "type": "text", "props": { "text": "Hello, {state.name}!" } }
+    ]
+  }
+}
+```
+
+That spec is a working form with two-way binding. You write no glue code for it.
+
+## Use Ripple with your coding agent
+
+The [Ripple skill](skills/ripple) teaches Claude Code, Codex or OpenCode to
+write a spec, render it at phone and desktop width in both themes, audit the
+result, look at its own screenshots and fix what is wrong, until a round comes
+back clean. It never changes your data to make a widget look right; widget
+faults go in its answer instead.
+
+```bash
+npx skills add qbtrix/ripple-iui --skill ripple
+npm i -D playwright && npx playwright install chromium   # the loop renders in a real browser
+```
+
+On six small cards the full loop scored 15.7 of 20 against 12.1 for a
+one-shot spec (n=6, one judge). The
+[coding agents guide](https://ripple.pocketpaw.xyz/docs/guides/coding-agents)
+covers the loop and the options.
+
+## Packages
+
+| Package | What it is |
+|---|---|
+| [`@ripple-ui/core`](packages/core) | The engine: schema, expressions, state, events, motion compilation, and a headless runtime that resolves a spec into a plain tree. **No framework dependency.** |
+| [`@ripple-ui/svelte`](packages/svelte) | The Svelte 5 renderer: 215 widgets, the visual editor, streaming, intents. Depends on core. |
+| [`@ripple-ui/embed`](packages/embed) | The renderer compiled into one ES module for any page: `mount(el, spec)` renders in a shadow root and loads only the widgets the spec uses. Needs no Svelte or Tailwind. |
+| [`@ripple-ui/react`](packages/react) | `<Ripple spec={...} />` for React, a thin wrapper over the embed. |
+
+Most people installing Ripple to build a UI in Svelte want
+`@ripple-ui/svelte`; core comes with it. In React, Vue or a plain page, use
+`@ripple-ui/react` or `@ripple-ui/embed` (see [`examples/`](examples)). Reach for core directly when you want the engine without a
+renderer — resolving specs on a server, testing them without a DOM, or
+building a renderer for another framework.
+
+## The split, and why it's shaped this way
+
+Almost all of Ripple was never Svelte-specific. State, expression
+resolution, and the event dispatcher are plain TypeScript classes. What
+needed a browser was the tree *walk* — deciding which nodes render, with
+what props — and only because it lived inside a Svelte component.
+
+Pulling that walk out left a genuine engine/renderer boundary, so the
+packages fall on it:
+
+```
+@ripple-ui/core            @ripple-ui/svelte
+  schema                     widgets (215)
+  expressions                components
+  state (StateStore)         Ripple.svelte
+  event dispatcher           editor, intents, streaming
+  motion compiler            rune StateManager
+  headless runtime           motion player (a Svelte action)
+```
+
+Three things cross the boundary by injection rather than import, because the
+engine must never reach into a renderer:
+
+- **The widget catalog.** `validateCatalog` takes its widget types as an
+  argument; the Svelte package binds its own registry.
+- **The motion player.** Playing an animation needs a DOM node, so
+  `Ripple.svelte` passes a player into the dispatcher.
+- **The state store.** Both packages implement `StateStore`. The engine
+  depends on the interface, never on either class, which is what lets the
+  headless runtime accept the rune-based store from a Svelte host.
+
+The boundary is enforced, not documented: a purity test crawls the
+transitive import graph from core's entry point and fails the build on any
+framework import or top-level DOM access.
+
+## Working in this repo
+
+```bash
+bun install          # links the workspace
+bun run build        # builds every package
+bun run check        # type-checks every package
+bun run test         # tests every package
+bun run dev          # the Svelte playground
+```
+
+Per-package: `cd packages/core && bun run test`.
+
+## Docs
+
+[`docs/`](docs) covers specs, expressions, state, events, widgets, theming,
+and the headless runtime. Start at [`docs/README.md`](docs/README.md).
+
+## License
+
+MIT
+
+## Credits
+
+The isometric drawing kit in `packages/core/src/iso/` is ported from
+[Anatomy](https://skills.wheresryan.sh/anatomy) by Ryan
+([source](https://github.com/wheresryan22/anatomy)), MIT License, Copyright
+(c) 2026 Ryan. The full license text, and the files it covers, are in
+[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). The Ripple skill in
+`skills/ripple` follows Anatomy's render, audit and look method in its own
+words and code.
+
+The 3D models behind `model-viewer`'s `asset` ids are CC0 or public domain,
+except the sneaker (Shopify, CC BY 4.0). They come from Quaternius, Kenney and
+other authors on Poly Pizza, the Khronos glTF sample assets, NASA 3D Resources
+and NIH 3D. Each file's author, licence and source is listed in
+[`packages/svelte/static/models/CREDITS.md`](packages/svelte/static/models/CREDITS.md).

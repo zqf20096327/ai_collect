@@ -216,8 +216,10 @@ No copy. No paste. No tab switching.
   app-private ELFs). The wrapper rewrites `/bin/X` and `/usr/bin/X` to
   `/system/bin/X` and routes app-bundled ELFs through `linker64`. Source
   is in `modules/terminal-emulator/android/src/main/jni/exec-wrapper.c`.
-- **Not Termux-compatible by design.** Shelly does not use Termux
-  packages, Termux paths, or Termux's prefix assumptions. If you already
+- **Not Termux-compatible by design.** Shelly does not use Termux paths
+  or Termux's prefix assumptions, and it does not need Termux installed.
+  CI takes some Android binaries from Termux's packages, Codex among them,
+  and bundles them with the app. If you already
   have Termux installed, Shelly still bundles its own copies of
   everything. No conflict, but also no sharing.
 
@@ -274,13 +276,13 @@ After that, open **Settings → API Keys** (or run `shelly config` from the term
 
 ### Sign in
 
-Shelly's bundled AI CLI is **Codex**. **Claude Code** can be added by staging it yourself (see [Claude Code (manual staging)](#claude-code-manual-staging)), and Google's **Antigravity** CLI (`agy`) can be installed for terminal use. Everything else is an API provider you configure with a key.
+Shelly's bundled AI CLI is **Codex**. **Claude Code** is one command away (`claude-install`, see [Claude Code](#claude-code)), and Google's **Antigravity** CLI (`agy`) can be installed for terminal use. Everything else is an API provider you configure with a key.
 
 | Surface | How to sign in | Notes |
 |---|---|---|
 | **Codex CLI** (ChatGPT subscription) | Run `codex`, or `codex-login --open` directly | Bundled with the APK. If `~/.codex/auth.json` is missing or invalid, the `codex` wrapper starts Shelly's device-code login, opens the OpenAI device-code page in the in-app Browser Pane, writes `~/.codex/auth.json` (mode `0600`) on success, then launches the normal Codex TUI. No OpenAI API key required — this rides your ChatGPT subscription. |
-| **Claude Code** (manually staged) | Run `claude` and sign in, or set **Settings → Anthropic API Key** | Sign in inside the `claude` TUI; the sign-in URL opens only when you tap it (Shelly never opens URLs from terminal output by itself). For agent steps, the Anthropic API key is used when set; otherwise attended runs use the signed-in subscription, and unattended runs follow **Settings → Claude subscription for unattended runs** (on by default). |
-| **Antigravity** (`agy`) | `agy-install`, then `agy` | Terminal TUI only (download is SHA-512 checked). Shelly never starts it from agents or schedules. |
+| **Claude Code** (`claude-install`) | Run `claude` and sign in, or set **Settings → Anthropic API Key** | Sign in inside the `claude` TUI; the sign-in URL opens only when you tap it (Shelly never opens URLs from terminal output by itself). For agent steps, the Anthropic API key is used when set; otherwise attended runs use the signed-in subscription, and unattended runs follow **Settings → Claude subscription for unattended runs** (on by default). |
+| **Antigravity** (`agy`) | `agy-install`, then `agy` | Terminal TUI only (download is SHA-512 checked). Shelly never starts it from agents or schedules. Sign-in happens inside `agy`. |
 | **API providers** (Gemini, Cerebras, Groq, Perplexity, OpenRouter, local) | **Settings → API Keys** or `shelly config` | Paste a key per provider for AI-Pane / `@mention` / `@team` / background-agent use (OpenRouter is attended-only). Keys live in `expo-secure-store`. Local/OpenAI-compatible servers need only a base URL. |
 
 > **Codex login note.** `codex /login` inside the REPL is not the supported path on Shelly. Use bare `codex` and let Shelly's wrapper launch device-code auth, or run `codex-login --open` from bash.
@@ -291,11 +293,13 @@ Shelly's bundled AI CLI is **Codex**. **Claude Code** can be added by staging it
 |---|---|
 | `codex` | Launch the foreground Codex TUI in the native terminal. If auth is missing, Shelly starts the device-code login flow first. |
 | `codex-login --open` | Start ChatGPT subscription device-code auth and open the verification page in Shelly's Browser Pane. |
-| `claude` | Start the Claude Code TUI, if you staged it (see [Claude Code (manual staging)](#claude-code-manual-staging)). Otherwise it prints `Claude Code is not installed (expected ~/.shelly-runtime/claude-glibc/claude)`. |
-| `agy-install` / `agy` | Install Google's Antigravity CLI (SHA-512 checked) and start its TUI. Terminal use only; never started by agents or schedules. **Settings → Front agent** can open the `agy` or `claude` TUI in the first terminal tab at launch. |
+| `claude-install` | Download the official Claude Code and the glibc libraries it needs, check them, and make `claude` work (see [Claude Code](#claude-code)). `--channel stable` follows the slower channel; `--agent` adds the reviewed version agents use. |
+| `claude` | Start the Claude Code TUI. If it is not installed, it says to run `claude-install`. |
+| `agy-install` / `agy` | Install or update Google's Antigravity CLI (SHA-512 checked) and start its TUI. Terminal use only; never started by agents or schedules. **Settings → Front agent** can open the `agy` or `claude` TUI in the first terminal tab at launch. |
 | `shelly-doctor` / `shelly doctor [--report]` | Check shell/native binary presence, bundled Codex binaries, JS dispatcher, local LLM endpoints, and Codex auth file presence. `shelly doctor` runs the same check; `--report` prints a paste-ready device report. |
 | `shelly-codex-diagnose` | Run deeper Codex smoke/canary/edit/patch diagnostics. |
 | `shelly-update-clis codex --check-only` | Probe the active Codex runtime. Runtime installs are normally driven by the Updates UI. |
+| `shelly-update-clis claude rollback` / `agy rollback` | Go back to the previous Claude Code or Antigravity version. The version you left is held, so an update does not bring it straight back. |
 | `shelly-cs` / `cs` | GitHub Codespaces helper commands. |
 | `shelly teach start [name]` / `stop` / `cancel` / `status` | Record the commands you run into a reusable workflow (see [Learning loop](#learning-loop)). |
 | `shelly install <pack>` / `shelly install --list` / `shelly uninstall <pack>` | Optional tool packs (`dev-tools`: python3, sqlite3, jq, make, gh; `editor-tools`: vim, tmux, nano, less, unzip, rg). Each release build pins the sha256 of its pack archives and verifies the download before installing it. Installed tools work offline and in already-open tabs. A missing pack tool prints `<cmd> is available: shelly install <pack>`; nothing downloads unless you run the command. Today these tools also ship inside the APK, so the packs only matter if a copy is missing. |
@@ -304,7 +308,7 @@ Shelly's bundled AI CLI is **Codex**. **Claude Code** can be added by staging it
 | `shelly device <battery\|info\|clipboard\|notify\|toast\|vibrate\|tts\|share>` | Phone features for scripts, agents and Codex: battery and device info as JSON, clipboard, notifications, toast, vibration, text-to-speech and the share sheet (see [Phone features from the shell](#phone-features-from-the-shell)). |
 | `shelly codex pair` / `code` / `trust` / `untrust` / `status` / `stop` / `autostart` | **Experimental.** Host Codex remote control (`codex remote-control --no-daemon`) in this tab (or detached with `pair --background`) and print a pairing code with its expiry for the ChatGPT app's Codex; `code` prints a fresh code; `trust <dir>` marks a folder as a trusted Codex project so the app can open it, `untrust <dir>` removes it; `status` / `stop` manage the background host; `autostart off\|status` controls "Keep ChatGPT connected" (it can only be turned on in Settings). Needs a ChatGPT sign-in. |
 
-**First thing to try:** once a provider key is set, type `@agent` in any pane followed by a plain-language instruction and a time — e.g. `@agent every day at 8am, collect the latest STEAM×AI education papers and news, summarize them, and save to Obsidian`. Shelly turns that into a scheduled on-device agent (see [it run above](#see-it-run)).
+**First thing to try:** once a provider key is set, type `@agent` in any pane followed by a plain-language instruction and a time — e.g. `@agent every day at 8am, collect the latest quantum computing papers and news, summarize them, and save to Obsidian`. Shelly turns that into a scheduled on-device agent (see [it run above](#see-it-run)).
 
 ### Phone features from the shell
 
@@ -364,25 +368,33 @@ This is the part that makes Shelly more than a terminal skin. It is the reason t
 | Surface | Status | What that means |
 |---|---|---|
 | **Codex CLI** | Supported (bundled) | Bare `codex` launches the normal Codex TUI after Shelly verifies or creates `~/.codex/auth.json` through in-app device-code auth, running over the native PTY. Also an agent worker. |
-| **Claude Code** | Supported, manual staging | Not bundled and not downloaded by Shelly; you stage the official linux-arm64 glibc build yourself ([how](#claude-code-manual-staging)). `claude` starts its TUI; agent steps can run on it as a worker through the same gate as Codex. |
+| **Claude Code** | Supported, one-command install | Not bundled. `claude-install` has the device fetch the official, unmodified linux-arm64 build from Anthropic ([details](#claude-code)). `claude` starts its TUI; agent steps can run a reviewed version as a worker through the same gate as Codex. |
 | **Antigravity** (`agy`) | Terminal only | `agy-install` / `agy`. Never an agent worker or role engine, never started by agents or schedules. Settings → Front agent can open its TUI (or `claude`) in the first terminal tab. |
 | **AI Pane chat** | Supported through APIs | Uses configured providers: Gemini API, Cerebras, Groq, Perplexity, OpenRouter (attended AI-Pane use only), and local OpenAI-compatible servers. |
 | **Background / agent steps** | APIs, local LLM and CLI workers | API and local steps use the providers above. CLI steps run on Codex (ChatGPT sign-in) or Claude Code (Anthropic API key, or the signed-in subscription as described in [Sign in](#sign-in)), all through the same command gate. |
 | **Gemini API** | Supported where configured | Available for the AI Pane, `@gemini` routing, `@team`, multimodal/API-backed tasks, and background agents when a Gemini API key is set. (This is the API provider — there is no bundled Gemini CLI.) |
 
-### Claude Code (manual staging)
+### Claude Code
 
-Shelly does not bundle or download Claude Code. To use it, put the official, unmodified Claude Code **linux-arm64 (glibc)** build and a glibc runtime in this layout:
+Run `claude-install` in a terminal, or tap **Install** under Claude Code in the Builds screen. Then run `claude` and sign in, or set **Settings → Anthropic API Key**.
 
-```
-~/.shelly-runtime/claude-glibc/
-├── claude                        # the official linux-arm64 glibc binary
-└── lib/
-    ├── ld-linux-aarch64.so.1     # glibc's dynamic loader
-    └── ...                       # the glibc shared libraries it needs
-```
+Shelly does not bundle or redistribute Claude Code. Your device downloads it directly, and nothing is modified:
 
-Shelly starts it through its own userland loader (no root, no proot). Then run `claude` and sign in, or set Settings → Anthropic API Key. If the files are missing, `claude` prints `Claude Code is not installed (expected ~/.shelly-runtime/claude-glibc/claude)`.
+- **Claude Code** comes from Anthropic's release bucket. Its manifest must carry a signature from Anthropic's published release key, which is pinned in Shelly, and that manifest's SHA-256 and size must match the download.
+- **The glibc libraries** it needs (about 30 MB) come from Termux's `termux-glibc` packages. A key pinned in Shelly must sign the repository index, and the package hashes must match it. Unlike `apt`, this does not check how old the index is.
+- A new version is tried with `--version` and `--help` before it replaces anything. If that fails, the previous version stays, and after a second failure the new one is put on hold. A failed signature or checksum holds it at once.
+
+Shelly starts Claude Code through its own userland loader (no root, no proot). Android is not on Anthropic's list of supported systems, so this path is not supported by Anthropic. Claude Code stays Anthropic's software under Anthropic's terms, and you sign in with your own account or key.
+
+**Updates.** The Builds screen shows the installed and latest versions, with **Update** and a button to go back to the previous version. Updates use the `latest` channel. **Update on Wi-Fi** is off by default; turned on, Shelly checks when the app starts, at most every 6 hours, on unmetered Wi-Fi. Claude Code's built-in updater is switched off, so Shelly is the only thing changing the version. A running session is not touched; the new version starts with the next `claude`. Each version is about 350 MB, and the current and previous ones are both kept.
+
+**Agents use a reviewed version, not the newest one.** Agent safety depends on details of how Claude Code behaves, and those were reviewed against one version (2.1.314). An update never changes what agents run. Until you run `claude-install --agent` or tap **Enable for agents**, a Claude Code agent step stops and tells you to do so. That downloads the reviewed version as well, about 300 MB.
+
+If you staged Claude Code by hand before, `claude` keeps working. Agents stop until you run `claude-install` once: it takes your copy over, and if that copy is exactly the reviewed build, agents work again with no download. Otherwise `claude-install --agent` downloads the reviewed build.
+
+### Antigravity
+
+`agy-install` fetches Google's official Android build, checks the SHA-512 in Google's manifest, and keeps versions the same way. Updates work the same way, and Antigravity's built-in updater is off. Google publishes no signature for this file, so the check is only as strong as HTTPS and that manifest. Shelly does not run Antigravity to test an update: it checks the hash and that the file is an Android ARM64 executable. So a build that does not start shows up when you run `agy`, and `shelly-update-clis agy rollback` goes back.
 
 ---
 
@@ -445,10 +457,10 @@ Say what you want in plain language; Shelly registers a scheduled agent that run
 
 The wedge isn't "smarter than a cloud agent" — it's that it **works where a cloud agent can't reach**: your files, your terminal/scripts, your local LLM, the phone itself.
 
-It's a **capability you point at your own tools**, not a fixed feature. One example (mine):
+It's a **capability you point at your own tools**, not a fixed feature. One example:
 
 ```
-@agent every day at 8am, collect the latest STEAM×AI education papers and news,
+@agent every day at 8am, collect the latest quantum computing papers and news,
 and write the primary-source links + a short summary to my Obsidian vault
 ```
 
@@ -533,7 +545,7 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature-by-feature breakdo
   <img src="docs/images/codex-terminal.png" alt="OpenAI Codex CLI running natively in Shelly's terminal pane on Android, creating hello.js and running it with Node.js" width="700">
 </p>
 
-- **Native runtime** — the npm `@openai/codex` package is only part of the JS dispatcher story. Release APKs bundle the pinned Android-native unified `codex_tui` binary from `.ci-versions/`, and runtime updates install the same shape under `~/.shelly-runtime/codex/current`.
+- **Native runtime** — the npm `@openai/codex` package is only part of the JS dispatcher story. Release APKs bundle the Android-native `codex` from Termux's official package, pinned in `.ci-versions/` after CI checks Termux's signed apt index, as `codex_tui`. Runtime updates install the same shape under `~/.shelly-runtime/codex/current`.
 - **Managed promotion** — a new runtime candidate is promoted only after download, SHA-256 verification, extraction, executable checks, and `codex_tui --version` / `codex_tui exec --help` smoke checks.
 - **Repair / reset path** — if the app-data runtime is broken or unwanted, the Updates UI can repair it from the latest runtime release or reset to the APK-bundled Codex runtime.
 - **Remote control (Experimental)** — `shelly codex pair` hosts Codex's official `codex remote-control` in a terminal tab and prints a short-lived pairing code to enter in the ChatGPT app's Codex; `shelly codex code` prints a new one. Requires a ChatGPT sign-in (API keys are not supported). Pairing and running commands from the app have been verified on device.
@@ -573,6 +585,8 @@ Full verification log with dates, devices, and evidence for every area: **[docs/
 | STOP-ALL stops runs already in progress (not only future alarms); RESUME restores | ✅ verified on device (Galaxy Z Fold6, N=1, build 2818): a running Codex step ended within 10 seconds |
 | Approve by typing — OK / NO (or `ok <hash>` when two are waiting) in the agent's chat or MONITOR; an attended CLI step waits up to 10 minutes | ✅ approving from the notification is verified on device |
 | Antigravity `agy-install` / `agy` | ✅ `agy --version` verified on device |
+| Sample agents added by older versions are turned off once on update | 🟡 new in this build; tested off device, not yet verified on device |
+| `claude-install`, and Claude Code / Antigravity updates from the Builds screen | 🟡 new in this build; checks run against the real vendor files on a PC, not yet verified on device |
 | Codex remote control host — `shelly codex pair` runs the official `codex remote-control --no-daemon` so the ChatGPT app's Codex can drive this device (ChatGPT sign-in required) | 🟡 Experimental — pairing, command execution and reconnecting after an in-app update with Keep ChatGPT connected verified on device |
 | MiniCPM5-2B local model | 🟡 experimental, evaluated and not adopted: on the Fold6 it scored 83% vs Qwen3.5-2B's 100% on routing and 50% vs 88% on native tool calls |
 | ChatGPT → phone-app task — Codex runs `shelly closepaw --wait "<goal>"` → owner approves on the phone → the ClosePaw Shelly build works on a background virtual display → the result returns to ChatGPT | ✅ verified on device (Galaxy Z Fold6, N=1) — e.g. saving a Spotify playlist, saving places to a Google Maps list; long multi-step goals are still unreliable |
@@ -746,7 +760,7 @@ in the release manifests, which the in-app updater reads directly, so they never
 drift out of sync with this page:
 
 - **Android APK** — [`android-latest/latest.json`](https://github.com/RYOITABASHI/Shelly/releases/download/android-latest/latest.json): `versionCode`, `versionName`, `gitSha`, `apkAssetName`, `apkSizeBytes`, `sha256`.
-- **Codex runtime** — [`codex-runtime-latest/codex-runtime.json`](https://github.com/RYOITABASHI/Shelly/releases/download/codex-runtime-latest/codex-runtime.json): `codexVersion`, asset name, `sha256`.
+- **Codex runtime** — [`codex-runtime-latest/codex-runtime-termux.json`](https://github.com/RYOITABASHI/Shelly/releases/download/codex-runtime-latest/codex-runtime-termux.json): `codexVersion`, asset name, `sha256`.
 
 | What | Shape | Why it costs that |
 |---|---|---|
@@ -863,7 +877,7 @@ Shelly is pre-release Android software. Here's what we know isn't perfect yet.
 - **`@team` routes to multiple APIs simultaneously** — this consumes credits on every provider at once, with no confirmation step before it runs. Use it deliberately.
 - **Multi-hunk Accept against a partially-edited file** — per-hunk Accept uses fuzzy re-anchoring so successive hunks land, but if the AI's diff references context that has already been edited to something else, the hunk will be rejected with a toast asking you to regenerate.
 - **Terminal font mismatch** — if a saved legacy theme looks wrong after upgrading, switch Settings → Display → Theme to one of the five color presets (Case File, Blue, Red, Purple, Green).
-- **Codex CLI runs through Shelly-managed runtime routing** — Shelly prefers a healthy app-data runtime under `~/.shelly-runtime/codex/current`, then falls back to the APK-bundled runtime. If `codex --version` fails, run `shelly-doctor`, `shelly-update-clis codex --check-only`, or use **Settings → Updates → Repair Codex / Reset**.
+- **Codex CLI runs through Shelly-managed runtime routing** — Shelly prefers a healthy app-data runtime under `~/.shelly-runtime/codex/current`, then falls back to the APK-bundled runtime. Agent workers run the APK-bundled version, which moves only by a reviewed change, so a runtime update does not change them. If `codex --version` fails, run `shelly-doctor`, `shelly-update-clis codex --check-only`, or use **Settings → Updates → Repair Codex / Reset**.
 - **Codex login uses an in-app device-code OAuth flow** — run bare `codex` or `codex-login --open` from any terminal pane. Shelly validates `~/.codex/auth.json`; if it is missing or invalid, Shelly opens the OpenAI verification page in the in-app Browser Pane, writes `~/.codex/auth.json` (mode `0600`) on success, then launches the normal Codex TUI. No OpenAI API key is required; this rides your ChatGPT Plus/Pro/Business/Enterprise subscription. The flow has a 15-minute device-code timeout — re-run if it expires. Verify with `shelly-doctor` (it reports whether `~/.codex/auth.json` is present).
 - **`/sdcard` access requires MANAGE_EXTERNAL_STORAGE** — Android 11+ Scoped Storage blocks direct `open(2)` on `/sdcard` paths without this permission. Shelly asks for it on first launch; if you deny it, `source /sdcard/Download/foo.sh` will fail with `Permission denied`. Re-grant from system Settings → Apps → Shelly → Permissions → Files and media → Allow management of all files.
 - **Gemini is API-only** — Gemini is available as an API provider (AI Pane, `@gemini`, `@team`, background agents) with a configured key. There is no bundled Gemini CLI and no interactive `gemini` login flow in this release.
@@ -894,21 +908,4 @@ Shelly runs commands on your device. The safety system is a best-effort layer, n
 - **Command safety is best-effort pattern matching** — The 5-level risk assessment uses pattern matching, now with quote-aware lexing and detection of network tools split by shell quoting (`cu''rl`, `"c"url`, `w\get`). It catches common dangerous patterns (`rm -rf /`, `dd if=`, etc.) but is not a sandbox. Treat it as a seatbelt, not a firewall.
 - **Agent command gate** — every command a CLI worker (Codex or Claude Code) wants to run goes through one gate: command-safety, a workspace boundary check (including paths attached to options and redirects), and the agent safety rules (POLICY-001) when enabled. Unattended runs that hit something needing approval are declined. Per agent, **Run without approval** can be OFF (default), *Standard* or *All* ([details](#agent-roles)); it applies only to attended runs, and every auto-approval is written to the agent's chat.
 - **APK distribution uses CI release APKs** — GitHub Actions builds release APKs, signs them with Shelly's private release key (see [Signing-key rotation](#signing-key-rotation-2026-10)), and publishes them to the rolling `android-latest` release. For production-grade signing guarantees, clone the repo and build with your own keystore. See [Build from source](#build-from-source).
-- **Autonomous agents are gated, not free-roaming** — AI Pane chat uses explicit API providers. Agent steps may also run on Codex (your ChatGPT sign-in) or Claude Code (Settings → Anthropic API Key when set; otherwise the signed-in subscription for attended runs, and for unattended runs only while Settings → "Claude subscription for unattended runs" is on — the default). Shell-command execution and risky actions go through Shelly's approval / command-gate path whichever engine runs them; when an agent runs unattended and an action needs approval, it fails closed rather than running unreviewed.
-- **API keys are stored in SecureStore** — Keys are never written to logs or debug output. SecureStore uses Android Keystore encryption on supported devices.
-- **`shelly-doctor` / `shelly doctor`** — reports shell/native binary presence, bundled Codex binaries, JS dispatcher, local LLM endpoints, and whether `~/.codex/auth.json` exists. Run it when something feels broken.
-- **Log redaction** — Shelly redacts common API key and token patterns before writing app debug logs. This is a guardrail, not permission to paste secrets into prompts or terminal output.
-- **Convenience ≠ security** — Shelly combines shell execution, AI dispatch, file editing, API key storage, and broad storage access in a single app. This is powerful but means a compromise of any one layer could affect the others. Review the source, build from your own keystore, and treat Shelly as a development tool — not as a production server environment.
-
-See [SECURITY.md](./SECURITY.md) for the threat model and private vulnerability reporting process.
-
-To turn off or revoke ChatGPT remote control, the ClosePaw hand-off, the MCP server, scheduled agents and stored keys, see [docs/revoke-access.md](./docs/revoke-access.md).
-
----
-
-## Privacy
-
-- **User profile learning** — Shelly observes your command patterns and AI usage to personalize suggestions (`lib/user-profile.ts`). This data stays on-device in AsyncStorage. When Profile Learning is enabled and you send a message to a cloud AI, the profile context is included in the API request to improve response quality. Settings → Agents includes a Profile Learning toggle and a Reset Profile action.
-- **Companion brain routing** — the companion (default Shelly persona) thread's replies follow the SAME cloud-sending behavior as an explicitly selected provider whenever "Companion brain" (Settings → Agents) is left on its default Auto setting: if a Cerebras, Groq, Gemini, or OpenRouter key is configured, that provider generates the companion's replies (falling back to on-device on failure or when no key is configured); switch it to "On-device only" to keep the companion fully local regardless of configured keys (`lib/companion-brain.ts`).
-- **Persistent agent memory** — `MEMORY_ENABLED` is `true`: per-agent recall, writes, and lists use MEMORY-001 by default. Its JSON records are encrypted at rest with AES-256-GCM and a device SecureStore-backed key, then fall back to the older G2 markdown/Obsidian path if the new store fails; shared `_global` writes still go directly through G2. The `touchesPii` classifier signal is produced but does not yet gate model eligibility, so do not assume non-secret sensitive prose is kept away from cloud routing.
-- **No telemetry** — Shelly does not phone home: no analytics, no crash reporting, no usage tracki
+- **Autonomous agents ar

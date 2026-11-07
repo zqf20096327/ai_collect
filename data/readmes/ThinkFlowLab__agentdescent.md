@@ -26,6 +26,8 @@ agentdescent demo                         # a complete evolution, offline, no AP
 agentdescent doctor                       # which agent CLIs and provider keys this machine has
 ```
 
+Host / MCP default loop is **Path A** (`doctor` → `plan` → `start` → `apply`); advanced MCP tools need `agentdescent mcp --advanced` — see [docs/mcp-path-a.md](docs/mcp-path-a.md).
+
 `[mcp]` adds the agent-facing MCP server and needs Python ≥ 3.10; the library
 itself supports 3.9, where you drop `[mcp]` and drive it with the CLI. Research examples are outside the wheel: to run
 `python -m examples.run_demo` or any algorithm port, clone the repo and follow
@@ -88,21 +90,23 @@ rows = hf_rows("hotpotqa/hotpot_qa", "validation", config="distractor", limit=40
 model = openai_compatible(model="deepseek-v4-flash")
 
 tasks = tasks_from(rows, prompt="question", gold="answer")     # rows -> Task objects
-run = lambda skill, task: model(f"{skill}\n\n{task.prompt}")   # the skill meets the question
+run = lambda instruction, task: model(f"{instruction}\n\n{task.prompt}")
 
 result = evolve(tasks, scorer("exact"), run=run, propose=reflector(model),
                 strategy=SingleSlot(initial_value="You are a helpful assistant."),
                 rounds=8, n_workers=8, max_concurrency=8, held_out_frac=0.3,
                 patience=3, target_reward=0.98)
 
-print(result.rendered)        # the skill it learned
+print(result.rendered)        # the instruction it learned
 print(result.final_reward)    # held-out reward
 print(result.outcomes())      # why it went that way
 ```
 
 On 40 HotpotQA items (12 held out) this took held-out exact match from **0.167
 to 0.583**, learning *"Respond with only the requested answer, omitting any extra
-explanation or restatement."* Pass `agent=LLMAgent(claude_code())` (or any
+explanation or restatement."* That evolves an **instruction** (`SingleSlot`), not
+an Agent Skill folder — for a library run `python -m examples.skill_library_evolution --dry-run`.
+Pass `agent=LLMAgent(claude_code())` (or any
 [agent or LLM](https://thinkflowlab.github.io/agentdescent/agents/)) instead of
 `run`/`propose` to evolve against a tool-using CLI agent.
 [Quickstart — dataset to skill →](https://thinkflowlab.github.io/agentdescent/quickstart-skill/)
@@ -134,8 +138,11 @@ In a spec it is one field — `"algorithm": "gepa"` or
 `{"name": "gepa", "params": {...}}` — and every explicit field still wins.
 [The catalog →](https://thinkflowlab.github.io/agentdescent/algorithms/)
 
-The **twenty-three research ports** run from a checkout, each with a `--dry-run`
-that needs no API key:
+**Cards vs ports:** Path A names **cards** (wheel mechanism slices). The
+**twenty-three research ports** are source-only under `examples/` — same slug is
+not the same fidelity; never read a card run as paper numbers
+([decision tree](https://thinkflowlab.github.io/agentdescent/algorithm-decision-tree/), #384).
+Ports run from a checkout, each with a `--dry-run` that needs no API key:
 
 * **Benchmark-faithful (8):** ACE · GEPA · EvoSkill · SkillOpt · ADAS · DGM ·
   OpenEvolve · ERA
@@ -192,9 +199,11 @@ count before starting**, waits for your yes, runs detached, and asks again
 before it writes anything back. No cases yet is not a blocker — it drafts 8–20
 for you to check first.
 
-`kind` is `text`, `skill_dir`, `agent_dir`, `agent_code` — or **`plugin`**: the
-host plugins themselves are evolvable, each rollout in an isolated copy of the
-host with hooks and permissions frozen and a recursion guard.
+`kind` is `text`, `skill_dir`, `skill_library` (multi-file `*/SKILL.md` tree),
+`agent_dir`, `agent_code`, `policy_slot` — or **`plugin`**: the host plugins
+themselves are evolvable, each rollout in an isolated copy of the host with
+hooks and permissions frozen and a recursion guard. Flagship library demo:
+`python -m examples.skill_library_evolution --dry-run`.
 [The plugin, step by step →](https://thinkflowlab.github.io/agentdescent/plugin-quickstart/)
 · [set it up and test it →](https://thinkflowlab.github.io/agentdescent/testing-guide/)
 

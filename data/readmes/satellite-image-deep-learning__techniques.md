@@ -377,6 +377,10 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 
 - [RFLUC-aef](https://github.com/TmtStss/rfluc-aef) -> country-level forest land-use mapping with Random Forest models, AlphaEarth embeddings and expert reference annotations. Code for paper: Leveraging satellite embeddings and national expert annotations for country-level forest land use mapping
 
+- [UT Austin GIScience Colloquium](https://github.com/isaaccorley/ut-austin-giscience-2026) -> Isaac Corley's October 2026 research talk on Fields of the World, global field-boundary mapping, spatial generalization and MIND, with slides and live demos.
+
+- [zero-shot-parcel-seg](https://github.com/joaocalist0/zero-shot-parcel-seg) -> combines vegetation enhancement and Segment Anything for zero-shot agricultural parcel instance delineation across Sentinel-2, PlanetScope and super-resolved imagery. Code for paper: Zero-Shot Parcel Instance Delineation in Fragmented Agricultural Landscapes: Cross-Source Evaluation and Structure-Aware Validation
+
 ### Segmentation - Water, coastlines, rivers & floods
 
 - [sat-water](https://github.com/busayojee/sat-water) -> Semantic segmentation of water bodies in satellite imagery, producing pixel-wise water masks from remote sensing images using a U-Net–style deep learning pipeline (data preparation, training, inference, and evaluation).
@@ -448,6 +452,8 @@ Note that deforestation detection may be treated as a segmentation task or a cha
 - [Prithvi Coastal Habitat Mapping](https://github.com/ClarkCGA/prithvi-coastal-habitat-mapping) -> Prithvi fine-tuning and evaluation under limited-data and domain-shift scenarios for coastal-habitat segmentation. Paper: Assessing the Robustness of Prithvi Geospatial Foundation Model for Coastal Habitat Mapping under Data Availability and Domain Shift Scenarios
 
 - [Prairies Wetland Prediction](https://github.com/thuanhavan/Prairies-Wetland-Prediction) -> workflow for predicting wetland soils across Canadian Prairie croplands from Ducks Unlimited survey labels and Sentinel-1/2, terrain, soil and climate predictors
+
+- [SAMWater](https://github.com/zkang-CN/SAMWater) -> surface-water mapping using SAM3 text prompts, prompt-based boundary refinement and Water-IoU LoRA adaptation without ground-truth masks. Code for paper: SAMWater: a prompt-guided multimodal framework for transferable water mapping with the segment anything model
 
 ### Segmentation - Fire, smoke & burn areas
 
@@ -871,6 +877,8 @@ Extracting roads is challenging due to the occlusions caused by other objects an
 
 - [UCSD_MLBootcamp_Capstone](https://github.com/FederCO23/UCSD_MLBootcamp_Capstone) -> Automatic Detection of Photovoltaic Power Stations Using Satellite Imagery and Deep Learning (Sentinel 2)
 
+- [Direct Rooftop Solar Prediction (DRSP)](https://github.com/joshualee124/direct_rooftop_solar_prediction) -> predicts usable-rooftop masks and solar-energy heatmaps from RGB satellite imagery and regional sunlight values without explicit roof geometry. Code for paper: An Empirical Study on Learning Rooftop Solar Potential from Satellite Imagery Directly Without Explicit Geometry
+
 ### Segmentation - Ships & vessels
 
 - [Universal-segmentation-baseline-Kaggle-Airbus-Ship-Detection](https://github.com/OniroAI/Universal-segmentation-baseline-Kaggle-Airbus-Ship-Detection) -> Kaggle Airbus Ship Detection Challenge - bronze medal solution
@@ -1160,22 +1168,4 @@ Orinted bounding boxes (OBB) are polygons representing rotated rectangles. For d
 
 - [mmrotate](https://github.com/open-mmlab/mmrotate) -> Rotated Object Detection Benchmark, with pretrained models and function for inferencing on very large images
 
-- [OrientedDet](https://github.com/DL4EO/oriented-det) -> a lightweight PyTorch framework for rotated object detection in aerial and satellite imagery, with oriented models, geometry operations and DOTA support
-
-- [OBBDetection](https://github.com/jbwang1997/OBBDetection) -> an oriented object detection library, which is based on MMdetection
-
-- [rotate-yolov3](https://github.com/ming71/rotate-yolov3) -> Rotation object detection implemented with yolov3. Also see [yolov3-polygon](https://github.com/ming71/yolov3-polygon)
-
-- [DRBox](https://github.com/liulei01/DRBox) -> for detection tasks where the objects are orientated arbitrarily, e.g. vehicles, ships and airplanes
-
-- [s2anet](https://github.com/csuhan/s2anet) -> Align Deep Features for Oriented Object Detection
-
-- [CFC-Net](https://github.com/ming71/CFC-Net) -> A Critical Feature Capturing Network for Arbitrary-Oriented Object Detection in Remote Sensing Images
-
-- [ReDet](https://github.com/csuhan/ReDet) -> A Rotation-equivariant Detector for Aerial Object Detection
-
-- [BBAVectors-Oriented-Object-Detection](https://github.com/yijingru/BBAVectors-Oriented-Object-Detection) -> Oriented Object Detection in Aerial Images with Box Boundary-Aware Vectors
-
-- [CSL_RetinaNet_Tensorflow](https://github.com/Thinklab-SJTU/CSL_RetinaNet_Tensorflow) -> Arbitrary-Oriented Object Detection with Circular Smooth Label
-
-- [r3det-on-mmdetection](https://github.com/SJTU-Thinklab-Det/r3det-on-mmdetection) -> R3Det: Refined Single-Stage Detector with Feature R
+- [OrientedDet](https://github.com/DL4EO/oriented-det) -> a lightweight PyTorch framework for rotated object detection in aerial and satellite imagery, with ori

@@ -5,9 +5,9 @@
 [![Website](https://img.shields.io/badge/website-network--ai.org-4b9df2?style=flat&logo=web&logoColor=white)](https://network-ai.org/)
 [![CI](https://github.com/Jovancoding/Network-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Jovancoding/Network-AI/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/Jovancoding/Network-AI/actions/workflows/codeql.yml/badge.svg)](https://github.com/Jovancoding/Network-AI/actions/workflows/codeql.yml)
-[![Release](https://img.shields.io/badge/release-v6.0.0-blue.svg)](https://github.com/Jovancoding/Network-AI/releases)
+[![Release](https://img.shields.io/badge/release-v6.0.1-blue.svg)](https://github.com/Jovancoding/Network-AI/releases)
 [![npm](https://img.shields.io/npm/dw/network-ai.svg?label=npm%20downloads)](https://www.npmjs.com/package/network-ai)
-[![Tests](https://img.shields.io/badge/tests-4561%20passing-brightgreen.svg)](#testing)
+[![Tests](https://img.shields.io/badge/tests-4588%20passing-brightgreen.svg)](#testing)
 [![Adapters](https://img.shields.io/badge/frameworks-32%20supported-blueviolet.svg)](#adapter-system)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 [![Socket](https://socket.dev/api/badge/npm/package/network-ai)](https://socket.dev/npm/package/network-ai/overview)
@@ -45,7 +45,7 @@ Network-AI is a TypeScript/Node.js multi-agent orchestrator that adds coordinati
 
 **Use Network-AI as:**
 - A **TypeScript/Node.js library** — `import { createSwarmOrchestrator } from 'network-ai'`
-- An **MCP server** — `npx network-ai-server --port 3001`
+- An **MCP server** — `npx -y -p network-ai@6.0.1 network-ai-server --port 3001`
 - A **CLI** — `network-ai bb get status` / `network-ai audit tail`
 - A **Claude Code plugin** — `/plugin install network-ai@network-ai`
 - A **Gemini CLI extension** — `gemini extensions install https://github.com/Jovancoding/Network-AI`
@@ -363,7 +363,7 @@ No native dependencies, no build step. Adapters are dependency-free (BYOC — br
 Start the server (no config required, zero dependencies):
 
 ```bash
-npx network-ai-server --port 3001
+npx -y -p network-ai@6.0.1 network-ai-server --port 3001
 # or from source:
 npx ts-node bin/mcp-server.ts --port 3001
 ```
@@ -429,18 +429,19 @@ Network-AI ships as a [Claude Code](https://code.claude.com) plugin — the MCP 
 /plugin install network-ai@network-ai
 ```
 
-That's it — `blackboard_read`, `budget_status`, `audit_query`, `token_create`, and the rest load as native Claude Code tools. Under the hood the plugin runs `npx -y -p network-ai network-ai-server --stdio` (stdio MCP transport), so it always uses the published npm package.
+That's it — `blackboard_read`, `budget_status`, `audit_query`, `token_create`, and the rest load as native Claude Code tools. Under the hood the plugin runs `npx -y -p network-ai@6.0.1 network-ai-server --stdio` (stdio MCP transport), pinned to the exact published npm version.
 
-The repo root carries the standard plugin layout:
+The plugin lives in its own folder, so the directory only reads plugin files:
 
 | File | Role |
 |---|---|
-| [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json) | Plugin manifest |
-| [`.mcp.json`](.mcp.json) | Registers the Network-AI MCP server (stdio) |
-| [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) | Self-hosted marketplace catalog |
-| [`commands/`](commands/status.md) | Slash commands — `/network-ai:status`, `/network-ai:budget`, `/network-ai:audit`, `/network-ai:blackboard` |
+| [`plugins/network-ai/.claude-plugin/plugin.json`](plugins/network-ai/.claude-plugin/plugin.json) | Plugin manifest (icon: `.claude-plugin/icon.png`) |
+| [`plugins/network-ai/.mcp.json`](plugins/network-ai/.mcp.json) | Registers the Network-AI MCP server (stdio, pinned version) |
+| [`plugins/network-ai/commands/`](plugins/network-ai/commands/status.md) | Slash commands — `/network-ai:status`, `/network-ai:budget`, `/network-ai:audit`, `/network-ai:blackboard` |
+| [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) | Self-hosted marketplace catalog (points at `plugins/network-ai`) |
+| [`.mcp.json`](.mcp.json) | Project MCP config for contributors working in this repository |
 
-Validate the manifests locally with `claude plugin validate .`.
+Validate locally with `claude plugin validate ./plugins/network-ai` and `claude plugin validate .` (marketplace).
 
 **Gate Claude Code itself with AuthGuardian (hooks).** Every tool call Claude Code makes — shell commands, file edits, web fetches — can be audited and permission-gated through the same weighted scoring (justification 40%, trust 30%, risk 30%) Network-AI applies to swarm agents:
 
@@ -451,7 +452,7 @@ Validate the manifests locally with `claude plugin validate .`.
     "PreToolUse": [{
       "matcher": "Bash|Write|Edit|WebFetch",
       "hooks": [{ "type": "command",
-                  "command": "npx -y -p network-ai network-ai hook pre-tool-use --mode enforce" }]
+                  "command": "npx -y -p network-ai@6.0.1 network-ai hook pre-tool-use --mode enforce" }]
     }]
   }
 }
@@ -468,7 +469,7 @@ Network-AI also runs as an [OpenAI Codex](https://developers.openai.com/codex) M
 **Add it with one command** (uses the published npm package):
 
 ```bash
-codex mcp add network-ai -- npx -y -p network-ai network-ai-server --stdio
+codex mcp add network-ai -- npx -y -p network-ai@6.0.1 network-ai-server --stdio
 ```
 
 In the Codex TUI, run `/mcp` to confirm `network-ai` is connected.
@@ -478,7 +479,7 @@ In the Codex TUI, run `/mcp` to confirm `network-ai` is connected.
 ```toml
 [mcp_servers.network-ai]
 command = "npx"
-args = ["-y", "-p", "network-ai", "network-ai-server", "--stdio"]
+args = ["-y", "-p", "network-ai@6.0.1", "network-ai-server", "--stdio"]
 ```
 
 Either route exposes the full tool set (`blackboard_read`, `budget_status`, `audit_query`, `token_create`, …) over stdio MCP — no API keys, no running server to manage.
@@ -703,7 +704,7 @@ npx ts-node test-perpetual-phase5.ts  # Perpetual Runtime Phase 5: k-of-n, postu
 npx ts-node test-perpetual-fuzz.ts    # Seeded fuzzing of every control door (NAI_FUZZ_SEED / NAI_FUZZ_ITERATIONS)
 ```
 
-**4,561 passing assertions across 45 test suites** (`npm run test:all`):
+**4,588 passing assertions across 47 test suites** (`npm run test:all`):
 
 | Suite | Assertions | Covers |
 |---|---|---|
@@ -751,6 +752,8 @@ npx ts-node test-perpetual-fuzz.ts    # Seeded fuzzing of every control door (NA
 | `test-perpetual-safety.ts` | 152 | Perpetual Runtime: `GuardedPaths` (I2), sandbox runner, sentry detectors + quorum + authenticated identities, `ImprovementPipeline` tiers/receipts, verified snapshots + `SelfHealer`, `BudgetBalancer` (I3), egress financial limits |
 | `test-perpetual-phase5.ts` | 326 | Perpetual Runtime Phase 5: high-risk policies, signers + `--signer-cmd`, human checkpoints, tripwires, posture gate + `doctor`, hardened Node (real permission-model run), k-of-n authorities (I4), vsock relay + microVM runners + spool, attestation (drill 3), capability evaluations, Merkle audit + witness + claims, pure core property tests, Lean model + certificates |
 | `test-perpetual-fuzz.ts` | 44 | Seeded fuzzing of every control door: authority router, egress proxy, relay frames, lease/policy/checkpoint/eval verification, co-signing, Merkle proofs, routes, sandbox requests, tripwire manifests, snapshots |
+| `test-skill-scripts.ts` | 14 | ClawHub Python skill scripts run against a throwaway project: pending files never resolved or followed (real symlinks on Linux CI; junctions and non-regular entries everywhere), containment by path components |
+| `test-plugin-pins.ts` | 13 | Launchers and run instructions pin `network-ai@<version>`; manifest versions match `package.json`; no floating tags, no `npx` in npm scripts |
 | `test.ts` | 39 | Core orchestrator smoke tests |
 
 ---
@@ -802,7 +805,7 @@ import tools from './claude-tools.json' assert { type: 'json' };
 
 **Custom GPT Actions:**
 In the GPT editor → Actions → Import from URL, or paste the contents of `openapi.yaml`.
-Set the server URL to your running `npx network-ai-server --port 3001` instance.
+Set the server URL to your running `npx -y -p network-ai@6.0.1 network-ai-server --port 3001` instance.
 
 **Claude Projects:**
 Copy the contents of `claude-project-prompt.md` (below the horizontal rule) into a Claude Project's Custom Instructions field. No server required for instruction-only mode.

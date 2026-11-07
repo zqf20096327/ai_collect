@@ -7,7 +7,7 @@
 The transparent, composable harness for TypeScript agents. The same code runs the full agent loop on a local 4B model or a frontier API, with tool-call healing, verification, and a signed evidence receipt for every run.
 
 [![CI](https://github.com/tylerjrbuell/reactive-agents-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/tylerjrbuell/reactive-agents-ts/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/badge/npm-%40reactive--agents-CB3837?logo=npm)](https://www.npmjs.com/org/reactive-agents)
+[![npm](https://img.shields.io/npm/v/reactive-agents?logo=npm&label=npm&color=CB3837)](https://www.npmjs.com/package/reactive-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Effect-TS](https://img.shields.io/badge/Effect--TS-3.x-7C3AED)](https://effect.website)
@@ -23,19 +23,19 @@ The transparent, composable harness for TypeScript agents. The same code runs th
 
 Most agent frameworks pick one model tier, hide the loop behind an opaque runtime, and hand back prose you have to take on faith. Reactive Agents is built around four things instead:
 
-- 🔍 **Transparent harness.** A deterministic 12-phase execution engine with `before` / `after` / `on-error` hooks on every phase. Every prompt, tool call, and reasoning step is a typed event you can inspect, steer, and replay locally, with no SaaS dashboard required.
-- 🛡️ **Reliable on every model tier.** Model-adaptive context profiles, tool-call healing, output verification, durable crash-resume, and a single-owner termination oracle let the same code finish the agent loop on a local 4B Ollama model and on Claude, GPT, or Gemini, with no per-model rewrites.
-- 🧩 **Composable and controllable.** A typed builder of opt-in layers: start with a model, then add reasoning, memory, guardrails, cost routing, and durability one `.with()` call at a time. You own the loop; nothing runs that you didn't ask for.
-- 🧾 **Accountable.** Every run returns a signed `receipt`, a claim-to-evidence record with a verdict and confidence, not just an answer you have to trust.
+- 🔍 **Transparent harness.** A deterministic 12-phase execution engine with `before` / `after` / `on-error` hooks on every phase. Every prompt, tool call, and reasoning step is a typed event you can inspect, steer, and replay locally, with no SaaS dashboard required. *(Engine: [`packages/runtime/src/engine`](packages/runtime/src/engine); replay: [`packages/replay`](packages/replay).)*
+- 🛡️ **Reliable on every model tier.** Model-adaptive context profiles, tool-call healing, output verification, durable crash-resume, and a single-owner termination oracle let the same code finish the agent loop on a local 4B Ollama model and on Claude, GPT, or Gemini, with no per-model rewrites. *(Healing: [`packages/tools/src/healing`](packages/tools/src/healing); termination owner: [`terminate.ts`](packages/reasoning/src/kernel/loop/terminate.ts); provider adapters: [`adapter.ts`](packages/llm-provider/src/adapter.ts).)*
+- 🧩 **Composable and controllable.** A typed builder of opt-in layers: start with a model, then add reasoning, memory, guardrails, cost routing, and durability one `.with()` call at a time. You own the loop; nothing runs that you didn't ask for. *(Builder: [`packages/runtime/src/builder.ts`](packages/runtime/src/builder.ts).)*
+- 🧾 **Accountable.** Every run returns a signed `receipt`, a claim-to-evidence record with a verdict and confidence, not just an answer you have to trust. *(Schema: [`packages/core/src/types/receipt.ts`](packages/core/src/types/receipt.ts).)*
 
-Built on Effect-TS: schema-validated boundaries, tagged errors, no untyped throws.
+Built on Effect-TS: schema-validated boundaries and tagged errors. A ratcheted migration (`scripts/check-string-errors.sh`) is draining the remaining string-thrown errors; the count can only go down.
 
 |                              |                                                                  |
 | ---------------------------- | ---------------------------------------------------------------- |
 | **One import to start**      | Reasoning, memory, guardrails, and cost routing are all opt-in, added one `.with()` call at a time |
 | **8 LLM providers**          | Anthropic, OpenAI, Gemini, Groq, xAI, Ollama (local), LiteLLM (40+ models), Test |
 | **8 reasoning strategies**   | ReAct, Blueprint, Reflexion, Plan-Execute, Tree-of-Thought, Adaptive, Direct, Code-Action (@experimental) |
-| **9,979 tests**             | Latest full run: 9,979 pass / 0 fail / 26 skip / 4 todo (2026-10-10) |
+| **13,601 tests**             | Latest full run: 10,001 pass / 0 fail / 28 skip / 4 todo (2026-10-12) |
 | **12-phase execution**       | Deterministic lifecycle with before/after/error hooks per phase  |
 | **Cortex Studio**            | Live agent canvas, entropy charts, debrief UI, agent builder     |
 | **Effect-TS end to end**     | Compile-time type safety, schema-validated boundaries, tagged errors |
@@ -105,7 +105,7 @@ Grouped by capability. Every layer is opt-in: call `.with*()` only for what you 
 ### 🔌 Providers & Models
 - **8 LLM providers**: Anthropic, OpenAI, Google Gemini, Groq, xAI (Grok), Ollama (local), LiteLLM (40+ models), Test (deterministic)
 - **Model-adaptive context**: 4 tiers (local, mid, large, frontier) with tier-aware prompts and compaction; this is what makes 4B+ Ollama models viable for tool-calling agents
-- **Adaptive tool calling**: an FC dialect probe routes to a native function-calling driver or a 3-tier text-parse driver (XML, JSON, pseudo-code)
+- **Adaptive tool calling**: an FC dialect probe routes to a native function-calling driver or a 3-tier text-parse driver (XML, JSON, pseudo-code); text-parse execution is currently opt-in behind `REACTIVE_AGENTS_TEXT_PARSE` (`shadow` = record would-have-executed, `act` = execute) while the Stage-B rollout completes
 - **Healing pipeline**: normalizes tool-name aliases, parameter aliases, paths, and type coercion before every execution, so malformed calls from smaller models get repaired instead of failing
 - **Fallback chains**: `withFallbacks()` for graceful degradation across providers and models
 - **Native thinking mode**: `.withThinking({ effort, budgetTokens })` opts into provider-native reasoning; `.withModel({ thinking: true })` is the quick boolean
@@ -114,7 +114,7 @@ Grouped by capability. Every layer is opt-in: call `.with*()` only for what you 
 ### 🛡️ Production Safety
 - **Judgment layer** *(opt-in)*: `.withJudgment()` + `agent.judge()` : calibrated typed Choice/Score/Noul judgments over TypeSafe/Jev, an LLM-emulation fallback, or a local Ollama System One backend (`backend: "ollama"`, no API key); `agent.listJudgmentModels()` lists the judgment backend's available models, `agent.judgeRank()` batch-ranks candidates by Score without a call per candidate; the guardrails battery, autonomy-confidence, and tool-healing sites can opt into the same primitive
 - **Guardrails**: pre-LLM injection detection, PII filtering, toxicity blocking, an opt-in judgment battery (`enableJudgmentBattery`) running parallel to the regex detectors, kill switch, behavioral contracts
-- **Ed25519 identity**: cryptographic agent certificates, RBAC, delegation chains, audit trails
+- **Ed25519 identity** *(direct service use; no builder wither — `.withIdentity()` was removed as a provide-and-forget layer)*: cryptographic agent certificates, RBAC, delegation chains, audit trails (full `AuditLogger` wiring is a future wave; use `@reactive-agents/identity` directly)
 - **Verification**: semantic entropy, fact decomposition, NLI hallucination detection
 - **Fabrication guard**: on by default; rejects invented empirical measurements (benchmark timings, speedups) absent from the tool-observation corpus. Soften to `"warn"` or disable with `"off"`
 - **Stall policy**: `.withStallPolicy()` fast-escalates after N ignored tool nudges instead of looping to the full iteration cap
@@ -157,8 +157,8 @@ Grouped by capability. Every layer is opt-in: call `.with*()` only for what you 
 - All build on `ui-core` and consume `AgentStream.toSSE()` from Next.js, SvelteKit, Nuxt, or any SSE-capable server
 
 ### ✅ Confidence
-- **9,979 tests** across 1312 files. Latest full run: 9,979 pass / 0 fail / 26 skip / 4 todo (2026-10-10)
-- **Strict TypeScript**: Effect-TS schemas validate every service boundary; explicit tagged errors, no untyped throws
+- **13,601 tests** across 1,700+ files. Latest full run: 10,001 pass / 0 fail / 28 skip / 4 todo (2026-10-12)
+- **Strict TypeScript**: Effect-TS schemas validate every service boundary; tagged errors on the converted packages, with the remaining string throws capped by a shrink-only CI ratchet
 
 ## Quick Start
 
@@ -174,7 +174,7 @@ bun add reactive-agents
 npm install reactive-agents
 ```
 
-> **Note:** `effect` ships as a dependency of `reactive-agents` and installs automatically. If you import from `effect` directly in your own code, add it explicitly: `bun add effect` (or `npm install effect`).
+> **Note:** `reactive-agents` declares `effect` as a **peer dependency** (`^3.10.0`), and so do most framework packages. A few — e.g. `@reactive-agents/core` — *additionally* declare it as a regular dependency (a dual declaration), so `effect` arrives in your install tree transitively via the framework regardless, while the peer declaration is how the packages ask your app to share one `effect` version with them. If you import from `effect` directly in your own code, declare it explicitly: `bun add effect` (or `npm install effect`).
 
 Set your provider key first (each provider's variable is listed in [Environment Variables](#environment-variables) below):
 
@@ -590,10 +590,10 @@ Provider applicability: honored by providers that expose a context-window knob (
 | [`@reactive-agents/guardrails`](packages/guardrails)                       | Pre-LLM safety: injection detection, PII filtering, toxicity blocking                                                                                                                     |
 | [`@reactive-agents/verification`](packages/verification)                   | Post-LLM quality: semantic entropy, fact decomposition, NLI hallucination detection                                                                                                       |
 | [`@reactive-agents/cost`](packages/cost)                                   | Multi-factor complexity routing, per-execution budget enforcement, semantic cache                                                                                                         |
-| [`@reactive-agents/identity`](packages/identity)                           | Ed25519 agent certificates, RBAC policies, delegation chains, audit logging                                                                                                               |
+| [`@reactive-agents/identity`](packages/identity)                           | Ed25519 agent certificates, RBAC policies, delegation chains, audit logging *(direct use; no builder wither — full AuditLogger wiring deferred)* |
 | [`@reactive-agents/observability`](packages/observability)                 | Distributed tracing (OTLP), MetricsCollector, structured logging, console and JSON exporters                                                                                              |
 | [`@reactive-agents/trace`](packages/trace)                                 | Structured execution traces: `TraceEvent` schema, recorders, span helpers, backing replay and diagnose                                                                                    |
-| [`@reactive-agents/interaction`](packages/interaction)                     | 5 autonomy modes, checkpoint/resume, approval gates, preference learning                                                                                                                  |
+| [`@reactive-agents/interaction`](packages/interaction)                     | 5 autonomy modes, checkpoint/resume, approval gates, preference learning *(direct service use; no builder wither — enforced run gates live in `.withApprovalPolicy()` / `.withUserInteraction()`)* |
 | [`@reactive-agents/prompts`](packages/prompts)                             | Version-controlled template engine with variable interpolation and a prompt library                                                                                                       |
 | [`@reactive-agents/eval`](packages/eval)                                   | Evaluation framework: Jev-judge (default) + LLM-as-judge scoring, EvalStore persistence, comparison reports, repeat-run variance                                                          |
 | [`@reactive-agents/judgment`](packages/judgment)                           | Calibrated typed judgment primitive (Choice/Score/Noul) over a provider-abstracted backend: TypeSafe/Jev, or an LLM-emulation fallback needing no TypeSafe key                            |
@@ -603,7 +603,7 @@ Provider applicability: honored by providers that expose a context-window knob (
 | [`@reactive-agents/channels`](packages/channels)                           | External channel triggers: webhook adapter, FIFO session bridge, wired via `.withChannels()`                                                                                              |
 | [`@reactive-agents/compose`](packages/compose)                             | Harness composition and killswitches (`maxIterations`, `budgetLimit`, `timeoutAfter`, `watchdog`, `requireApprovalFor`)                                                                   |
 | [`@reactive-agents/testing`](packages/testing)                             | Mock services (LLM, tools, EventBus), assertion helpers, deterministic test fixtures                                                                                                      |
-| [`@reactive-agents/benchmarks`](packages/benchmarks)                       | Benchmark suite: 20 tasks across 5 tiers, overhead measurement, report generation                                                                                                         |
+| [`@reactive-agents/benchmarks`](packages/benchmarks)                       | Benchmark suite: 45 tasks across 6 tiers (trivial to real-world, plus abstention-trap, context-stress and long-horizon sets), overhead measurement, report generation                                                                                                         |
 | [`@reactive-agents/health`](packages/health)                               | Health checks and readiness probes for production deployments                                                                                                                             |
 | [`@reactive-agents/reactive-intelligence`](packages/reactive-intelligence) | Metacognitive layer: entropy sensor (5 sources), reactive controller (early-stop, compression, strategy switch), learning engine (calibration, bandit, skill synthesis), telemetry client |
 | [`@reactive-agents/ui-core`](packages/ui-core)                             | Headless, dependency-free UI engine: versioned wire protocol, resumable stream client, run state machine, safe generative-UI trees, durable HITL rails, inbox fetch, and fixture testing, shared by all framework bindings |
@@ -614,6 +614,7 @@ Provider applicability: honored by providers that expose a context-window knob (
 | [`@reactive-agents/replay`](packages/replay)                               | Deterministic trace replay: record any run to a snapshot file, re-run with a different model or prompt without re-calling the LLM; supports strict/lenient mode and `diffTraces`          |
 | [`@reactive-agents/diagnose`](packages/diagnose)                           | Trace diagnostics and replay-driven root-cause analysis; powers the `rax diagnose` CLI                                                                                                    |
 | [`@reactive-agents/runtime-shim`](packages/runtime-shim)                   | Cross-runtime adapter letting the framework run on Node.js 22.5+ in addition to Bun; unified `Database`, `spawn`, `serve`, and file I/O primitives                                        |
+| [`reactive-agents`](packages/reactive-agents)                              | Public facade: one install that re-exports the runtime builder and the common layers                                                                                                      |
 | [`create-reactive-agent`](packages/create-reactive-agent)                  | Project scaffolder: `bunx create-reactive-agent my-app` generates a runnable agent project with template, provider, and package-manager selection                                        |
 
 ## Observability & Metrics Dashboard
@@ -649,7 +650,7 @@ Includes per-phase timing, tool-call summary, cost estimate, and smart alerts, a
 ## CLI (`rax`)
 
 ```bash
-rax init my-project --template full              # Scaffold a project
+rax init my-project --template with-tools        # Scaffold a project
 rax create agent researcher --recipe researcher   # Generate an agent from recipe
 rax create agent my-agent --interactive           # Interactive scaffolding (readline prompts)
 rax demo                                           # Run the live demo with a detected provider, or recorded output
@@ -897,7 +898,7 @@ const maxIter = createMaxIterationsScenario() // agent + prompt that hits max it
 
 ```bash
 bun install              # Install dependencies
-bun test                 # Run full test suite (9,979 tests / 1312 files, ~3m)
+bun test                 # Run full test suite (13,601 tests / 1,700+ files, ~3m)
 bun run build            # Build all packages (ESM + DTS via tsup)
 ```
 

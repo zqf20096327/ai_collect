@@ -18,7 +18,8 @@ generate and execute shell commands, or get quick answers without leaving your w
 - **Tools out of the box** — 12 built-in tools load straight from the installed package; there is
   no install step before the model can use them.
 - **Safe by default** — every tool call is confirmed before it runs, shell commands are
-  risk-classified, and every decision is written to an audit log.
+  risk-classified, every decision is written to an audit log, and file writes stay inside the
+  workspace with backups + `/undo`.
 - **Scriptable** — `-p/--print`, `--output-format json|stream-json`, stdin piping, documented exit
   codes, and clean stdout/stderr separation make it usable in scripts and CI.
 - **Lightweight, with numbers** — startup, install size and memory are measured (see *Lightweight &
@@ -90,6 +91,8 @@ headless approval flags.
   copy-paste between steps
 - **12 built-in tools**: filesystem read/write/edit/search/info, image reading,
   shell execution, web fetch, web search and weather
+- **Project-aware**: `.yaicli.md` / `AGENTS.md` / `CLAUDE.md` from the repository are loaded into the
+  system prompt automatically — see [Project Context](docs/usage/project-context.md)
 - **MCP (optional)**: connect external MCP servers as additional tools
 - **Bounded**: tool-call depth, token budget and per-tool output limits keep long tasks under
   control
@@ -101,6 +104,9 @@ headless approval flags.
   commands (`rm -r -f`, `mkfs`, `dd of=/dev/*`, `curl … | sh`, ...)
 - **Allow rules** in `tool_permissions.json` — per tool name, shell argv prefix, or file path glob
 - **Audit log** of every tool decision in `tool_audit.jsonl`
+- **Workspace-confined writes**: built-in file tools only change files inside `WORKSPACE_ROOT`,
+  back up existing files to `.yaicli-backups/`, refuse protected paths (`.git/`, `.env*`, ...), and
+  `/undo` reverts the last change — see [Workspace Safety](docs/usage/workspace-safety.md)
 - **Guarded shell**: timeout, process-group kill, filtered environment (no API keys leaked to
   commands), workspace-confined `cwd`
 
@@ -153,16 +159,16 @@ Full document: https://belingud.github.io/yaicli/
 ## 🪶 Lightweight & scope
 
 YAICLI stays small on purpose: one `pip install`, no daemon, no background process, no vector
-index. The numbers below were measured before and after the v0.19 startup work; anything still
-marked *planned* lands in v0.20.
+index. The numbers below were measured on the same macOS sandbox across the v0.19 fast path and the
+v0.20 startup/packaging work.
 
 | Metric (baseline = v0.18, macOS sandbox) | Value |
 | --- | --- |
-| `ai --version` startup (P50) | ≈474–504 ms baseline → **≈40–45 ms** measured with the v0.19 fast path (≈38 ms prototype) |
-| `--help` startup (P50) | ≈519–568 ms (dominated by the CLI framework import) |
-| one-shot local overhead (`ai "hi"`, no network) | ≈1.5–1.6 s baseline, of which provider-SDK init is ≈0.9 s; further one-shot startup work is *planned* for v0.20 |
-| REPL ready (provider loaded) | ≈1.55–1.75 s (provider SDK loads at startup; lazy initialization is *planned* for v0.20) |
-| base install closure | **83 dists / 134.7 MB** (includes optional fetch/search/MCP/cloud SDKs; dependency slimming is *planned* for v0.20) |
+| `ai --version` startup (P50) | ≈474–504 ms baseline → **≈40–45 ms** (v0.19 fast path) |
+| `--help` startup (P50) | ≈519–568 ms baseline → **≈450–500 ms** after the v0.20 lazy-import work (the CLI stack is no longer imported for help) |
+| one-shot local overhead (`ai "hi"`, no network) | ≈1.5–1.6 s baseline → **≈1.6 s** in the same sandbox; prompt_toolkit is no longer imported, provider-SDK init (≈0.9 s) still dominates |
+| REPL ready (first prompt) | ≈1.55–1.75 s baseline → **≈0.55–0.65 s** (the LLM client/SDK is constructed on the first request) |
+| base install closure | **95 dists** (v0.19.1: 103): fetch/search/MCP stay in base, the boto3/botocore/google-auth cloud closure (~25–29 MB) is now opt-in via `[bedrock]`/`[vertex]` |
 | idle RSS | ≈30 MB for `--version`; ≈65 MB for a REPL with the OpenAI SDK loaded |
 | background processes / daemons | **none** |
 
@@ -191,7 +197,9 @@ pipx install yaicli
 uv tool install yaicli
 ```
 
-YAICLI has several optional dependency groups; install the extras for the providers you use.
+A plain `pip install yaicli` is **tools-complete**: all 12 builtin tools (including `web_search`
+and `fetch_webpage` extraction) and MCP work with no extra steps. Optional extras are only needed for
+cloud/long-tail provider SDKs.
 
 ```shell
 # install all optional dependencies
@@ -211,7 +219,9 @@ uv tool install 'yaicli[all]'
 uv tool install 'yaicli[ollama,cohere,doubao,huggingface,gemini,mistral,cerebras,fireworks]'
 ```
 
-Anthropic support is part of the core dependencies and needs no extra.
+Anthropic's API is part of the core dependencies and needs no extra. **Anthropic Bedrock** and
+**Anthropic Vertex** need the cloud SDK closure: `pip install 'yaicli[bedrock]'` or
+`pip install 'yaicli[vertex]'` (both are always included in `yaicli[all]`).
 
 ### Install from Source
 
@@ -319,8 +329,8 @@ The default configuration file is `config.ini` inside the config directory above
 | `AUTO_SUGGEST`         | Enable history suggestions                  | `true`                   | `YAI_AUTO_SUGGEST`         |
 | `SHOW_REASONING`       | Enable reasoning display                    | `true`                   | `YAI_SHOW_REASONING`       |
 | `JUSTIFY`              | Text alignment                              | `default`                | `YAI_JUSTIFY`              |
-| `CHAT_HISTORY_DIR`     | Chat history directory                      | `<tempdir>/yaicli/chats` | `YAI_CHAT_HISTORY_DIR`     |
-| `MAX_SAVED_CHATS`      | Max saved chats                             | `20`                     | `YAI_MAX_SAVED_CHATS`      |
+| `CHAT_HISTORY_DIR`     | Explicit session-directory override (old flat layout); a value equal to the built-in default means the per-project store | *unset* (per-project `~/.yaicli/sessions/<hash>/`) | `YAI_CHAT_HISTORY_DIR` |
+| `MAX_SAVED_CHATS`      | Max saved sessions per store                | `20`                     | `YAI_MAX_SAVED_CHATS`      |
 | `ROLE_MODIFY_WARNING`  | Warn when modifying built-in roles          | `true`                   | `YAI_ROLE_MODIFY_WARNING`  |
 | `ENABLE_FUNCTIONS`     | Enable function calling                     | `true`                   | `YAI_ENABLE_FUNCTIONS`     |
 | `SHOW_FUNCTION_OUTPUT` | Show function output when calling function  | `true`                   | `YAI_SHOW_FUNCTION_OUTPUT` |
@@ -329,7 +339,9 @@ The default configuration file is `config.ini` inside the config directory above
 | `MAX_TOOL_CALL_DEPTH`  | Max tool calls in one request               | `8`                      | `YAI_MAX_TOOL_CALL_DEPTH`  |
 | `TOOL_CONFIRM`         | Confirm each tool call before running it    | `true`                   | `YAI_TOOL_CONFIRM`         |
 | `TOOL_OUTPUT_MAX_CHARS` | Max characters of one tool result kept in context (`0` = unlimited) | `32000` | `YAI_TOOL_OUTPUT_MAX_CHARS` |
-| `TOOL_OUTPUT_DIR`      | Where full (untruncated) tool outputs are saved | `<chat-history>/tool-outputs` | `YAI_TOOL_OUTPUT_DIR` |
+| `TOOL_OUTPUT_DIR`      | Where full (untruncated) tool outputs are saved | `<tempdir>/yaicli/chats/tool-outputs` | `YAI_TOOL_OUTPUT_DIR` |
+| `ENABLE_PROJECT_CONTEXT` | Auto-load project instruction files into the system prompt (`false` = no project-file reads) | `true` | `YAI_ENABLE_PROJECT_CONTEXT` |
+| `PROJECT_CONTEXT_MAX_CHARS` | Max characters of project context added to the system prompt (`0` = no cap) | `20000` | `YAI_PROJECT_CONTEXT_MAX_CHARS` |
 | `CONTEXT_BUDGET_TOKENS` | Token budget per request (`0` = 70% of the model window) | `0`         | `YAI_CONTEXT_BUDGET_TOKENS` |
 | `TOOL_TIMEOUT`         | Max seconds a shell tool command may run    | `120`                    | `YAI_TOOL_TIMEOUT`         |
 | `TOOL_ENV_INHERIT`     | Pass the full parent environment to shell tools (old behaviour) | `false` | `YAI_TOOL_ENV_INHERIT` |
@@ -441,8 +453,9 @@ API_KEY=
 MODEL=claude-sonnet-4-20250514
 ```
 
-If you want to access **Anthropic bedrock**, you need to set `AWS_SECRET_ACCESS_KEY`, `AWS_ACCESS_KEY_ID`, `AWS_SESSION_TOKEN` and `AWS_REGION`
-in config or environment variables.
+If you want to access **Anthropic bedrock**, install the extra first
+(`pip install 'yaicli[bedrock]'`) and set `AWS_SECRET_ACCESS_KEY`, `AWS_ACCESS_KEY_ID`,
+`AWS_SESSION_TOKEN` and `AWS_REGION` in config or environment variables.
 
 ```ini
 PROVIDER=anthropic-bedrock
@@ -455,7 +468,8 @@ MODEL=anthropic.claude-opus-4-20250514-v1:0
 
 Support `ANTHROPIC_BEDROCK_BASE_URL` env or `BASE_URL` in config file, with same effect.
 
-Also support **Anthropic vertex** with key `PROJECT_ID` and `CLOUD_ML_REGION` in config or environment variables.
+Also support **Anthropic vertex** (`pip install 'yaicli[vertex]'`) with key `PROJECT_ID` and
+`CLOUD_ML_REGION` in config or environment variables.
 
 ```ini
 PROVIDER=anthropic-vertex
@@ -952,13 +966,18 @@ ai --verbose "Explain quantum computing"
 
 ### Chat Persistent
 
-The `<PROMPT>` parameter in the chat mode will be used as a title to persist the chat content to the file system, with
-the save directory being a temporary directory, which may vary between machines, and it is determined on the first run.
+The `<PROMPT>` parameter in chat mode is used as the session title. Since v0.21 sessions are saved per
+project under `~/.yaicli/sessions/<sha256(resolved working directory)[:16]>/` (directories `0700`,
+files `0600`), and each session records the model, provider, role and working directory it was
+created with.
 
-If the `<PROMPT>` parameter is not specified when entering `chat` mode, the session will be treated as a temporary
-session and will not be persisted. Of course, you can also manually call the `/save <title>` command to save during the
-chat.
-When you run the same `chat` command again, the previous session will be automatically loaded.
+If `<PROMPT>` is not specified, the session is temporary and is not persisted; use `/save <title>`
+to keep it. Running `ai --chat "<title>"` again loads that session from the current project's store;
+if no session with that title exists, YAICLI prints an explicit notice and starts a new one.
+`ai --resume` continues the newest session of the current project.
+
+Sessions from the old temp directory are left in place and are not migrated automatically — see
+[Chat Sessions & Resume](docs/usage/sessions.md).
 
 ```bash
 $ ai --chat "meaning of life"
@@ -1016,6 +1035,13 @@ Chat History:
     Hello! How can I assist you today?
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
  💬 >
+```
+
+**Resume the newest session of this project**
+
+```bash
+$ ai --resume
+Resumed session "check disk usage" (model=gpt-5.2, provider=openai, role=DEFAULT, messages=6)
 ```
 
 ### Image Input

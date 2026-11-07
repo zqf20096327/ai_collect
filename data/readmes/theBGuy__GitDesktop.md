@@ -131,9 +131,14 @@ delete), and deep links to the settings GitHub keeps browser-only.
 ### Changes and commits
 
 A unified or split diff with syntax highlighting, collapsible surrounding
-context, image diffing, and a size change shown for other binary files
-(`1.2 MB → 725 KB · 486 KB smaller (−40%)`). Filter the changes list by path
-or category, and read a file's `+added -deleted` line counts without opening it.
+context, image diffing with each side's dimensions and file size, and a size
+change shown for other binary files (`1.2 MB → 725 KB · 486 KB smaller (−40%)`),
+GitHub and Bitbucket pull requests included. A non-image binary file with
+unstaged changes opens in its default program, or shows in Explorer, right
+from its diff.
+Filter the changes list by path or category, and read a file's `+added -deleted`
+line counts without opening it; a binary file that was only renamed or had its
+mode changed says so when Git can confirm its content is unchanged.
 Show that list flat or as a compacted directory tree: collapsible folders,
 single-child folder chains merged into one row, arrow keys that walk and fold
 it, and a folder context menu that stages, unstages, discards or stashes the
@@ -181,13 +186,20 @@ branches), its +/− divergence vs. the default branch (labeled with the
 default's name), and a PR badge.
 
 - **Clean up branches** ⭐: one reviewed list that archives or deletes your
-  stale branches — merged into the default branch (directly, or, where the
-  forge connection supplies them, by a recent pull request, so squash and
-  rebase merges count) or with no commits in a chosen window. Pull-request
-  matches go by branch name, so they only badge a row with the PR that took
-  it; pre-checking still comes from your own history: merged into the
-  default branch, or idle past that window. The dialog names pull requests
-  only where it read them, so its wording matches the checks behind the list.
+  stale branches. Toggles narrow it to branches merged into the default
+  branch (directly, or by a recent pull request where the forge connection
+  supplies one, so squash and rebase merges count), branches whose pull
+  request was closed without merging, branches with no commits in a chosen
+  window, or any mix. On Git 2.38+, unless your Git configuration sets a
+  merge driver, `merge.default` or `merge.renormalize`, a content check
+  shows whether a stale branch's work went into the default branch, directly
+  or through its merged pull request's final version, and flags a branch
+  carrying work it can't trace there. A squash-merged branch usually reads
+  as safe even after later commits edit the same lines, because the check
+  also looks for the commit the squash landed in; flagged branches start
+  unchecked. When the check is off, the dialog says why. Branches checked
+  out in another linked worktree can join the list; acting on one removes
+  its clean worktree first.
 - **Advanced merge tooling** ⭐: on Git 2.38+, predicts a merge's result in
   memory before you commit (fast-forward, already up to date, clean, or
   exactly which files will conflict), with `--no-ff` and a clearly cautioned
@@ -227,7 +239,10 @@ default's name), and a PR badge.
   with are easy to spot. One-click jumps to the main workspace sit right in
   the branch switcher, where selecting a branch that's checked out elsewhere
   opens that folder straight away, that branch's context menu carries the
-  worktree actions, and a *Worktrees* row opens the full manager.
+  worktree actions, and a *Worktrees* row opens the full manager. A GitHub
+  pull request can be checked out into its own worktree straight from its
+  view, so you can review it without touching your current branch or
+  uncommitted files (needs GitHub CLI 2.98 or newer).
 - **Compare**: a tab with a three-dot diff, commits ahead/behind,
   merge/rebase, and jump-to-PR. Each ahead/behind commit shows its tag chips
   and carries a context menu — checkout, cherry-pick, create a branch or tag,

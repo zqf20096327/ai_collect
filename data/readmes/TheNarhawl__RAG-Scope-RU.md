@@ -35,12 +35,12 @@ cp .env.example .env
 
 ### 2. Подготовка данных
 
-Скрипт `src/prepare_data.py` в автоматическом режиме:
+Скрипт `src/pipelines/prepare_data.py` в автоматическом режиме:
 1. Выкачивает CSV-датасет RRNCB с Hugging Face и конвертирует его в `data/eval/questions.json`.
 2. Распаковывает корпус из 65 нормативных PDF-документов из архива `docs.zip` в `data/docs/`.
 
 ```bash
-python src/prepare_data.py
+python src/pipelines/prepare_data.py
 ```
 
 ### 3. Генерация матрицы конфигураций
@@ -57,22 +57,45 @@ python make_configs.py
 
 ```bash
 # Запуск всей сетки или фильтрация по конкретной модели (например, gte_multilingual или labse_ru)
-python src/run_grid.py --filter gte_multilingual
+python src/pipelines/run_grid.py --filter gte_multilingual
 
 # Индексация документов вручную (Dense + Sparse BM25 в Qdrant)
-python src/ingest.py --config e5_large/c512/dense
+python src/pipelines/ingest.py --config e5_large/c512/dense
 
 # Проверка поиска вручную
-python src/retrieve.py --config e5_large/c512/hybrid "срок исковой давности"
+python src/pipelines/retrieve.py --config e5_large/c512/hybrid "срок исковой давности"
 
-# Оценка метрик ранжирования (Hit@K, MRR, latency)
-python src/evaluate_retrieval.py --config e5_large/c512/dense
-python src/evaluate_retrieval.py --config e5_large/c512/hybrid
-python src/evaluate_retrieval.py --config e5_large/c512/hybrid-rerank
+# Оценка метрик ранжирования (Stage 1: Hit@K, MRR, latency)
+python src/pipelines/evaluate.py --config e5_large/c512/dense
+python src/pipelines/evaluate.py --config e5_large/c512/hybrid
+python src/pipelines/evaluate.py --config e5_large/c512/hybrid-rerank
+
+# Оценка качества генерации (Stage 2: RAGAS Faithfulness, AnsCorr, Context Recall)
+python src/pipelines/evaluate.py --config e5_large/c512/hybrid-rerank --with-ragas --ragas-limit 20
 
 # Сборка единого отчета по всем запускам в experiments/RESULTS.md
-python src/summarize_experiments.py
+python src/pipelines/summarize_experiments.py
 ```
+
+### 5. Запуск A/B тестирования парсеров (pypdf vs pymupdf4llm)
+
+Сравнение качества извлечения на трех весовых категориях моделей (`rubert_tiny2`, `user_bge_m3`, `bge_m3`, `e5_large`):
+
+```bash
+# Быстрый A/B скрининг поиска (Hit@K, MRR)
+python src/pipelines/run_ab_experiment.py --group ab_parsing
+
+# A/B прогон со сквозной оценкой RAGAS
+python src/pipelines/run_ab_experiment.py --group ab_parsing --with-ragas --ragas-limit 20
+```
+
+### 6. Запуск в Google Colab
+
+Для воспроизведения экспериментов на GPU Tesla T4 подготовлен интерактивный блокнот [`notebooks/colab_runner.ipynb`](notebooks/colab_runner.ipynb):
+* Автономный старт сервера Qdrant без Docker
+* Подключение Google Drive для персистентного сохранения результатов (`/content/drive/MyDrive/RAG_Scope_Experiments`)
+* Распаковка корпуса `docs.zip` с Google Drive
+* Автоматический расчет дельты качества и интерактивные графики (`matplotlib`, `pandas`)
 
 ---
 
@@ -84,13 +107,12 @@ python src/summarize_experiments.py
 - **Sparse Embeddings (BM25):** `fastembed` с поддержкой русской морфологии
 - **Гибридный поиск:** Qdrant Prefetch + RRF (`FusionQuery`) с защитой от пустых разреженных векторов
 - **Reranker:** Cross-Encoder (`BAAI/bge-reranker-v2-m3`, `BAAI/bge-reranker-base`)
-- **Парсинг и чанкинг:** `pypdf`, структурный и наивный сплиттеры с настраиваемым overlap
+- **Парсинг и чанкинг:** `pypdf` и `pymupdf4llm` (извлечение Markdown заголовков и таблиц), структурный и наивный сплиттеры с настраиваемым overlap
+- **Генеративный контур и оценка RAGAS:**
+  - Генерация контекстно-зависимых ответов (`src/core/generator.py`) через OpenAI-совместимый API (DeepSeek, OpenRouter, vLLM, Ollama)
+  - Триада метрик RAGAS (`src/core/ragas_eval.py`): **Faithfulness**, **Answer Correctness**, **Context Recall**
+  - Двухэтапная стратегия валидации (Stage 1: быстрый скрининг 160 конфигураций; Stage 2: точечный замер лидеров Парето-фронта)
 - **Инфраструктура:** Фиксация сидов для воспроизводимости, автоматический обход багов `transformers >= 5.0` (восстановление неперсистентных буферов RoPE и `position_ids`), скрипты обслуживания Qdrant через PowerShell
-
-**В разработке:**
-- Генеративный контур (генерация ответа через Ollama / Gemini API)
-- Сквозная оценка генерации по методологии RAGAS (Faithfulness, Answer Correctness)
-- Мульти-LLM судейство (LLM-as-a-Judge)
 
 ---
 
@@ -123,20 +145,35 @@ RAG-Scope-RU/
 │   └── eval/                   # dataset_sample.csv и questions.json
 ├── docker/
 │   ├── Dockerfile              # Образ Python + PyTorch CUDA
-│   ├── docker-compose.yml      # Сервисы App + Qdrant (GPU)
+│   └── docker-compose.yml      # Сервисы App + Qdrant (GPU)
+├── scripts/
 │   ├── reset-qdrant.ps1        # Полный сброс хранилища Qdrant
-│   └── restart-qdrant.ps1      # Мягкий перезапуск контейнера Qdrant
+│   ├── restart-qdrant.ps1      # Мягкий перезапуск контейнера Qdrant
+│   └── quickstart.txt          # Шпаргалка команд запуска
 ├── experiments/                # Результаты прогонов в JSON и сводный отчет
 │   └── RESULTS.md              # Актуальная таблица метрик всех экспериментов
 ├── notebooks/
 │   └── results.ipynb           # Аналитический Jupyter-ноутбук (лидерборд, Парето-фронт)
 ├── src/
-│   ├── paths.py                # Централизованные пути и переменные окружения
-│   ├── prepare_data.py         # Выкачка датасета с HF и PDF из архива
-│   ├── ingest.py               # Чанкинг, расчет эмбеддингов, загрузка в Qdrant
-│   ├── retrieve.py             # Инференс поиска (Dense / Hybrid / Rerank)
-│   ├── evaluate_retrieval.py   # Пакетная оценка качества поиска на вопросах
-│   └── summarize_experiments.py# Построение сводной Markdown-таблицы (настраиваемые колонки)
+│   ├── __init__.py
+│   ├── common/                 # 1. Инфраструктурный и служебный слой
+│   │   ├── __init__.py
+│   │   ├── constants.py        # Константы (KS, дефолтные модели, сиды)
+│   │   ├── paths.py            # Централизованные пути и чтение .env
+│   │   └── utils.py            # Воспроизводимость, выбор девайса, кэши
+│   ├── core/                   # 2. Алгоритмическое ядро (чистая логика)
+│   │   ├── __init__.py
+│   │   ├── splitters.py        # Алгоритмы нарезки: naive и structural
+│   │   └── metrics.py          # Расчет Hit@K, MRR и вспомогательные функции
+│   └── pipelines/              # 3. Исполняемые сценарии (CLI / точки входа)
+│       ├── __init__.py
+│       ├── prepare_data.py     # Выкачка датасета с HF и PDF из архива
+│       ├── ingest.py           # Чанкинг, расчет эмбеддингов, загрузка в Qdrant
+│       ├── retrieve.py         # Инференс поиска (Dense / Hybrid / Rerank)
+│       ├── evaluate.py         # Пакетная оценка качества поиска на вопросах
+│       ├── run_grid.py         # Оркестратор прогона координатной сетки
+│       └── summarize_experiments.py # Построение сводной Markdown-таблицы
+├── tests/                      # Юнит-тесты компонентов (pytest)
 ├── make_configs.py             # Автогенератор дерева конфигураций
 ├── requirements.txt            # Зависимости проекта
 └── README.md
@@ -160,19 +197,19 @@ docker compose up -d qdrant
 docker compose build app
 
 # 3. Выкачать данные корпуса и вопросов внутри контейнера
-docker compose run --rm app python src/prepare_data.py
+docker compose run --rm app python src/pipelines/prepare_data.py
 
 # 4. Сгенерировать матрицу конфигов
 docker compose run --rm app python make_configs.py
 
 # 5. Проиндексировать выбранную связку
-docker compose run --rm app python src/ingest.py --config e5_large/c512/dense
+docker compose run --rm app python src/pipelines/ingest.py --config e5_large/c512/dense
 
 # 6. Запустить расчет метрик
-docker compose run --rm app python src/evaluate_retrieval.py --config e5_large/c512/hybrid
+docker compose run --rm app python src/pipelines/evaluate.py --config e5_large/c512/hybrid
 
 # 7. Сформировать сводку
-docker compose run --rm app python src/summarize_experiments.py
+docker compose run --rm app python src/pipelines/summarize_experiments.py
 
 # 8. Остановка окружения
 docker compose down
@@ -180,7 +217,7 @@ docker compose down
 
 ## Текущие результаты экспериментов
 
-Сводная таблица формируется автоматически скриптом `src/summarize_experiments.py` в файле `experiments/RESULTS.md`.
+Сводная таблица формируется автоматически скриптом `src/pipelines/summarize_experiments.py` в файле `experiments/RESULTS.md`.
 
 Сгенерировано: 2026-10-28 10:35:25
 

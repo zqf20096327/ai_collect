@@ -84,7 +84,7 @@ Tap the pill, then the label, to open the panel.
   keeps it. Big files download in the background and resume if interrupted. The
   connection to the GPU stays open until the downloads finish. If you have a
   **Remote CPU URL**, the CPU endpoint sends the files.
-- **Auto-download viewed input/output** *(off by default)* — saves the
+- **Auto-download viewed input/output** *(on by default)* — saves the
   images and videos you view in the Media Assets panel to your local
   `output` / `input` folder. Once a file is saved, it's shown from your own
   computer, so switching browser tabs or reopening the panel no longer
@@ -94,6 +94,11 @@ Tap the pill, then the label, to open the panel.
   GPU/CPU instance stays open until they're done. ComfyUI is also asked to add the new
   files to your local Assets list. If a local file with the same name
   already exists, it's used as-is.
+  If a file is only partly on your computer, the proxy plays the parts that
+  you have from your computer. The remote starts only when you play or seek
+  to a part that you do not have yet. The proxy also tells the file size and
+  type from your computer. A preview or thumbnail of an incomplete file
+  still comes from the remote.
 - **Keep GPU warm for video/image viewing** *(off by default)* — only
   relevant if you don't have a Remote CPU URL, and usually unnecessary if
   **Auto-download viewed input/output** is on. Normally, once a job
@@ -168,15 +173,19 @@ Tap the pill, then the label, to open the panel.
   job, since that scan walks the whole folder). If both containers run it on
   one shared user folder, ComfyUI's lock on the database may not hold across
   them (watch for "database is locked" message).
-- If your computer has no GPU, these resource monitors show a placeholder GPU
-  (an NVIDIA L4 with 24 GB by default), so their GPU meters still appear:
+- If your computer has no GPU, the proxy shows a placeholder GPU (an NVIDIA L4
+  with 24 GB by default). The GPU meters of these monitors then still appear:
   Crystools (the original, or its MonitorOnly fork), comfyui-resource-monitor,
-  ComfyUI-KikoStats and ComfyUI Advanced Monitor. While a job runs, they show
-  the readings of the remote GPU. For this, install the same monitor on the
-  remote. The proxy does not change the other values that KikoStats shows, such
-  as the temperature. Advanced Monitor shows "—" instead of a temperature for
-  the placeholder GPU. While a job runs, its unload and purge actions (click
-  the VRAM or RAM meter) affect the remote machine, not your computer.
+  ComfyUI-KikoStats, ComfyUI Advanced Monitor, Feixue Universal Monitor and
+  ComfyUI Vitals.
+  While a job runs, they show the readings of the remote GPU. To do this,
+  install the same monitor on the remote. The proxy does not change the other
+  values that KikoStats and Feixue show, such as the temperature. Advanced
+  Monitor shows "—" and Vitals shows "N/A" instead of a temperature for the
+  placeholder GPU. While a
+  job runs, these actions affect the remote machine, not your computer: the
+  unload and purge actions of Advanced Monitor (click the VRAM or RAM meter)
+  and the **Deep Free Now** button of Feixue.
   To change the placeholder, edit `GPU_NAME`, `GPU_COUNT` and `GPU_VRAM_GB`
   near the top of `proxy/config.py`.
 - The proxy's own log lines, and the error messages it shows in the UI,

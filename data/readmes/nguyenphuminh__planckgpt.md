@@ -144,8 +144,8 @@ These are things I might implement in the future:
 * Architecture improvements:
   * Interesting idea to try out: Overwhelmingly large vocab like Gemma-3-270m which might help with small models.
   * Custom tokenizer.
-  * Value embeddings.
-  * Dynamic scales for some layers.
+  * Experiment with H-net as a replacement for BPE tokenizers.
+  * Dynamic scales for some layers (we currently have residual lambdas and x0 lambdas).
   * Mamba? RWKV? MoE?
   * Sliding window attention.
   * Smear.

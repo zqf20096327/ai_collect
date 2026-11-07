@@ -74,19 +74,24 @@ system, and shows no Dock icon, just a small bell in your menu bar.
 |---|---|
 | 🛡️ **Permissions in the notch** | When Claude wants to run a command or edit a file, the notch unfurls with **Allow**, **Deny**, and **Always Allow**. Resolve it and your keyboard jumps straight back to the terminal. |
 | 🟥🟩 **See the diff first** | Edit and Write requests show a red/green diff right inside the card, so you know exactly what's about to change. |
-| ⚠️ **Guardrails for risky commands** | Dangerous ones like `rm -rf`, `sudo`, and force-push get a red warning. Confirm them with **Touch ID** (or Face ID), or a **press-and-hold** button when Touch ID is off, so nothing irreversible slips through by accident. |
+| ⚠️ **Guardrails for risky commands** | Dangerous ones like `rm -rf`, `sudo`, and force-push get a red warning. Confirm them with **Touch ID** (or Face ID), or a **press-and-hold** button when Touch ID is off, so nothing irreversible slips through by accident. In auto mode a recursive `rm` gets Claude Code's two-minute countdown on the card. If you would rather confirm with a plain **Allow**, turn on **Skip confirmation for destructive commands** in **Settings → Privacy**; the card still turns red. |
 | 💬 **Deny with a reason** | Not just no. Tap the note button on a prompt to tell Claude what to do instead (say "use ripgrep, not grep"), and it adapts rather than just stopping. |
 | ❓ **Answer Claude's questions** | `AskUserQuestion` prompts arrive as tappable options, with a **type-your-own** field for when none of them fit. |
+| 🔑 **MCP sign-ins** | When an MCP server asks you to sign in, a card names the site, opens the link only when you press **Open**, and tells the server once you have signed in or declined. |
 | ↩️ **Reply when a task finishes** | The "done" card has a **Reply** button that opens a composer pointed right at that session, so you can send a follow-up without switching windows. |
 | ⚡ **Live activity + progress** | While Claude works, the notch shows what it's doing right now (the active tool and its target) and a **progress bar** as it works through a task list. |
+| 📝 **Watch Claude write** *(opt-in)* | Turn on **Show the reply as it streams** in **Settings → Privacy** and a session's row shows the end of Claude's reply as it arrives. Installed only while the setting is on, and it never holds up your terminal. |
 | 📊 **Context + cost meter** | Each session shows how full Claude's context window is and a running cost estimate, so you get a heads-up before it pauses to compact. |
 | 💸 **Spending caps + alerts** | Set a budget per session and per day. As you near a cap the session's cost figure warms orange then red, and a card warns you at 80% and again at 100%, so a long run never quietly runs up a bill. (Costs are estimates from public pricing, so treat the caps as a guardrail.) |
 | 📈 **Claude usage, broken down** | A **Claude Usage** menu shows your tokens and estimated cost for today and the last 7 days, by model and by project (priciest repos first), plus a 7-day token sparkline and your prompt-cache savings. |
-| 🪟 **Many sessions at once** | Run several Claude sessions side by side. The notch tracks each one separately, with its own status, project, and latest reply. |
+| 🧩 **Skills, and what they cost** | Every skill adds to each turn, used or not. **Settings → Skills** shows that cost per source (a plugin, your claude.ai skills, your own, each project), how often each one runs, and switches for **On**, **Name only**, **Only when I type it**, or **Off**, written to the same setting Claude Code's `/skills` menu uses. Deleted skills go to Claude Code's own trash for 30 days. |
+| 🪟 **Many sessions at once** | Up to twelve Claude sessions side by side, each with its own status, project, branch, and latest reply. Sessions that started before the app, or never fired a hook, come from Claude Code's own session registry, and Claude Code's spare background processes are left out, so every row is a session you are in. |
 | ✉️ **Send a message from anywhere** | Press **⌥⌘N** to open a quick composer. Send a note to your running session, or start a fresh one in a recent project. |
+| 🤖 **Reply to background agents** | A background agent's row has **Reply** next to **Attach**. Your message goes straight to the agent as its next turn, through Claude Code's own resume. |
 | 🕘 **Activity history** | Click the notch for a timeline of everything you've allowed, denied, or answered. |
 | ✅ **Smart always-allow** | Approve a tool for the whole session, or just one exact command. Your rules stick around between launches, and **Settings → Rules** shows the whole list so you can read what you have agreed to, delete a rule, add one by hand, or hand the lot to Claude Code's own `settings.json`. |
 | 📁 **Start Claude in any folder** | Launch Claude Code in any project straight from the menu bar, or jump back into a recent one. |
+| 🖥️ **Open in Claude Desktop** | With the Claude desktop app installed, a session's menu in Settings and the menu bar can open it there instead of in a terminal. |
 | 🐾 **Pet Mode** | The Claude mascot lives in your notch. While nothing is happening it peeks out, looks around, hangs off the corner, strolls along the edge, and naps after a quiet spell, then hops with sparkles when a task finishes. It watches your cursor and leans toward it, holds still to be petted, and boops when you click it. Boop it five times fast. It never appears over an active session or a card you're reading, it respects **Reduce Motion**, and the **Pet Mode** menu item turns it off. |
 | 🏷️ **Personalise the notch title** | Pick what the notch calls itself from the **Notch Title** menu, keep **Claude**, track the active **project name**, or type your own **custom** label. It updates live and sticks between launches. |
 | 🗣️ **Works with VoiceOver** | The notch never steals focus, so a card could sit there silently. When one appears it is announced instead: the ask, the diff read as "removing 1 line, adding 2", and the keys that answer it. A queue says Return would allow all of them, and a destructive command never claims a key that does nothing. Resolving speaks the outcome, so you know Allow from Deny without looking. |
@@ -265,9 +270,17 @@ end tell
 
 ## 🔒 Privacy
 
-Everything stays on your machine. ClaudeNotch talks to Claude Code over a
+Your work stays on your machine. ClaudeNotch talks to Claude Code over a
 **localhost-only** connection (`127.0.0.1`) and never sends your prompts,
 commands, or code anywhere. No accounts, no telemetry, no servers.
+
+The only requests it makes are version checks and one key check:
+
+- GitHub Releases, for whether ClaudeNotch itself has an update.
+- The npm registry (and Claude Code's public changelog), for whether the Claude
+  Code CLI is out of date.
+- Anthropic's `/v1/models`, once, if you paste an API key into Settings to have
+  it checked.
 
 This app decides which commands an AI agent may run on your Mac, so it is a
 security tool whether or not it is described as one.
@@ -319,7 +332,8 @@ identity instead of a per-build ad-hoc one, so you grant them once rather than
 after each update.
 
 **Does it send my data anywhere?**
-No. Everything runs locally over a localhost hook. Nothing leaves your machine.
+No. Your prompts, commands and code stay on your Mac; the only network
+requests are version checks. See [Privacy](#-privacy).
 
 **Which AI tools does it support?**
 Claude Code fully, and the Codex CLI in beta. Setup wires hooks into `~/.claude`
@@ -329,18 +343,14 @@ Code it holds the permission and question prompts so you answer in the notch,
 while Codex keeps its own prompts in the terminal and the notch reports what is
 running, the cost and the context rather than gating it.
 
-**I run Claude Code inside VS Code or the Claude Desktop app and the notch stays quiet.**
-Update the Claude Code CLI to **2.1.233 or later**. Before that version it did not
-fire notification hooks for permission prompts when running under those hosts, so
-the notch never heard that a prompt was waiting on you. Check with `claude --version`.
-
 **Which Macs does it run on?**
 macOS 13 Ventura and later, Apple Silicon or Intel. See the note under
 [Install](#-install) about Intel and the current release.
 
 **Can I uninstall the hooks?**
-Yes, your `settings.json` is backed up during setup, and there's an uninstall
-script (below) to remove everything cleanly.
+Yes. `uninstall-hooks.sh` (below) removes every ClaudeNotch hook and leaves
+your own hooks alone, and your `settings.json` was backed up during setup.
+`brew uninstall` does not run it, so run it first.
 
 ---
 

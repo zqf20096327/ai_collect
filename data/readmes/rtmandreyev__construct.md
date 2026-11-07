@@ -17,12 +17,13 @@ model with named parts and working joints, a print, a model kit, a CAD file or a
   <a href="https://rtmandreyev.github.io/construct/examples/toyota-land-cruiser-fj62/"><img src="docs/media/assembly-toyota-land-cruiser-fj62.gif" width="32%" alt="The Toyota Land Cruiser FJ62 construct assembling itself"></a>
 </p>
 <p align="center">
-  <a href="https://rtmandreyev.github.io/construct/examples/nissan-skyline-gt-r-r34/"><img src="docs/media/assembly-nissan-skyline-gt-r-r34.gif" width="32%" alt="The Nissan Skyline GT-R R34 construct assembling itself, its doors and bonnet opening"></a>
+  <a href="https://rtmandreyev.github.io/construct/examples/kestrel/"><img src="docs/media/assembly-kestrel.gif" width="32%" alt="KESTREL, an invented ice tug, assembling itself, its cradle arms opening and radiator wings folding"></a>
   <a href="https://rtmandreyev.github.io/construct/examples/tompion-year-going-clock/"><img src="docs/media/assembly-tompion-year-going-clock.gif" width="32%" alt="Tompion's year-going longcase clock construct assembling itself, its hood and trunk doors opening"></a>
   <a href="https://rtmandreyev.github.io/construct/examples/volkswagen-t1-samba/"><img src="docs/media/assembly-volkswagen-t1-samba.gif" width="32%" alt="The Volkswagen T1 Samba construct assembling itself"></a>
 </p>
-<p align="center"><sub><b>Constructs.</b> Sainte-Chapelle · Duomo di Milano · Toyota Land Cruiser FJ62 · Nissan Skyline GT-R R34 · Tompion's year-going clock · Volkswagen T1 Samba, each built in masterpiece mode, by Claude Opus 5.5 and the clock by DeepSeek V4.1 Flash. <a href="https://rtmandreyev.github.io/construct/">Open the gallery</a> to orbit them, replay the assembly and read the labels.</sub></p>
+<p align="center"><sub><b>Constructs.</b> Sainte-Chapelle · Duomo di Milano · Toyota Land Cruiser FJ62 · KESTREL, an invented ice tug · Tompion's year-going clock · Volkswagen T1 Samba, each built in masterpiece mode, by Claude Opus 5.5, KESTREL by GPT-6.1 Sol and the clock by DeepSeek V4.1 Flash. <a href="https://rtmandreyev.github.io/construct/">Open the gallery</a> to orbit them, replay the assembly and read the labels; <a href="docs/for/invent-from-what-exists.md">how KESTREL was made</a>, step by step.</sub></p>
 
+- **Construct for Hermes.** A native Hermes plugin: ask for a thing in plain words and the construct appears live in the chat, with its 3D model, kit and NetLogo runs beside it. `hermes plugins install rtmandreyev/construct#hermes/construct` ([what it does](hosts/hermes/construct/README.md), [Villa Savoye in Hermes, step by step](docs/for/hermes-walkthrough.md)).
 - **Any agent, any model.** Claude Code, Hermes, any MCP client or any OpenAI-compatible endpoint, or by hand.
 - **Honest about what is known.** Every part says how it is known, its size and its shape apart, every guess in a shade of how firmly it is held.
 - **One house style.** Models never choose the colours, so every construct looks like it belongs with the rest.
@@ -42,14 +43,39 @@ model with named parts and working joints, a print, a model kit, a CAD file or a
 | want a **model kit of your own thing** | Your scooter, house or guitar as a kit to print, glue and paint, with a booklet ([one to open](https://rtmandreyev.github.io/construct/examples/vespa-gs150/kit/assembly.html)) | [A kit of your own](docs/for/a-kit-of-your-own.md) |
 | want to **show someone what you mean** | A model a builder, a fabricator or a friend can turn and measure, and a file for their own tools | [Show what you mean](docs/for/show-what-you-mean.md) |
 | ***Professionals and creators*** | | |
-| are a **maker** | A print at your printer's largest size, a model kit with plates and a booklet ([four to try](https://rtmandreyev.github.io/construct/#kits)), true CAD shapes | [Print, kit, CAD](docs/for/makers.md) |
-| create **new ships, creatures or worlds** for a game, film or story | New things designed from real ones: a construct, a 3D model with working parts, a film ([see three](https://rtmandreyev.github.io/construct/#worlds)) | [New things from real ones](docs/for/invent-from-what-exists.md) |
+| are a **maker** | A print at your printer's largest size, a model kit with plates and a booklet ([five to try](https://rtmandreyev.github.io/construct/#kits)), true CAD shapes | [Print, kit, CAD](docs/for/makers.md) |
+| create **new ships, creatures or worlds** for a game, film or story | New things designed from real ones: a construct, a 3D model with working parts, a film ([see KESTREL](https://rtmandreyev.github.io/construct/examples/kestrel/), an invented ice tug) | [New things from real ones](docs/for/invent-from-what-exists.md) |
+| have **software or a documented system** you wish were a physical product | Its documented functions mapped to controls, displays and the parts inside, what the documents fix kept apart from what is designed (one worked example: a software synthesizer as a 61-key instrument) | [Documentation → product](docs/for/documentation-to-product.md) |
 | are a **game developer** | Props with named parts, real sizes and working joints, for Godot, Unity or Unreal | [Into a game engine](docs/for/game-developers.md) |
 | are a **3D artist** | A construct in Blender with its build, joints and finish on sliders, ready to render or model over | [Into Blender](docs/for/3d-artists.md) |
 | work in **film and motion** | A construct that assembles across a piece of music, as a video | [Film mode](docs/for/film-and-motion.md) |
 | are an **educator or researcher** | An agent-based model's run drawn as a construct, compared, printed, filmed | [Models come alive](docs/for/educators-and-researchers.md) |
 | work in a **museum or archive** | Reconstructions that say how each part is known, so a visitor can tell evidence from design | [Honest reconstructions](docs/for/museums-and-archives.md) |
 | are a **developer** | A scene contract, a command line, an MCP server and skills to build on | [Build on it](docs/for/developers.md) |
+
+## New in 1.2
+
+Every change with pictures and the commands to try it: **[What's new in 1.2, a walkthrough](docs/NEW-IN-1.2.md)**.
+
+- **Construct for Hermes.** A native Hermes plugin: ask for a thing in plain words, and the construct appears live in
+  the chat; the 3D model turns in it, a kit steps through in 3D, exports are read back and summarised, long work runs
+  in the background. `hermes plugins install rtmandreyev/construct#hermes/construct` ([what it does](hosts/hermes/construct/README.md)).
+  Tested on Villa Savoye, from the request to a printable kit: [step by step →](docs/for/hermes-walkthrough.md)
+- **New things from real ones.** [KESTREL](docs/for/invent-from-what-exists.md), an invented 120 m ice tug, from
+  its brief to its joints in Godot: the studies it reasoned from, thirteen masterpiece rounds, then a more detailed
+  version that kept all 256 parts and added 242. Both in the gallery, Apache-2.0, with every brief.
+- **Documentation → product.** A software synthesizer's 354-page manual made into a 61-key instrument concept in one
+  64-minute session, with the prompt and the documents it wrote, and plainly what it showed and what it did not.
+  [The walkthrough →](docs/for/documentation-to-product.md)
+- **Designed to a requirement.** A designed part names the requirement it realises (what you asked for, or what a
+  document says it does) and stays honestly designed; a new design is captioned ORIGINAL DESIGN.
+- **Checked harder.** A part that would tip over (`tips`), a pillar through a window (`crosses-glass`), a solid
+  left open (`open`), a number in the text that no longer matches its fact (`stale-number`), and pokes confirmed
+  four times finer.
+- **A critic that stands apart.** Sealed critic packets with only the renders, the references and your request; a
+  blind verdict cannot be rewritten.
+- **Cleaner 3D, bigger constructs.** Solids wound outward, so Blender's normals and booleans agree; up to 1,024
+  parts and 48,000 lines; glued joints inside joints for Godot; kit boards that lie flat.
 
 ## New in 1.1
 
@@ -189,7 +215,8 @@ Then add the skill to your agent, or use Construct directly:
 | Host | How to add it |
 | --- | --- |
 | Claude Code | `claude --plugin-dir dist/claude-code/construct` for one session, or copy `dist/claude-code/construct/skills/construct` into `.claude/skills/` |
-| Hermes | `hermes skills install rtmandreyev/construct/skills/construct`, or copy `dist/hermes/construct` into `~/.hermes/skills/` |
+| Hermes, the plugin | `hermes plugins install rtmandreyev/construct#hermes/construct`: twelve tools, the construct live in the chat, 3D models, kits and NetLogo runs in Hermes Desktop ([Construct for Hermes](hosts/hermes/construct/README.md)) |
+| Hermes, the skill alone | `hermes skills install rtmandreyev/construct/skills/construct`, or copy `dist/hermes/construct` into `~/.hermes/skills/` |
 | Any MCP client | Add `{"mcpServers": {"construct": {"command": "python3", "args": ["/path/to/construct/construct_hologram/server.py"]}}}` |
 | Any OpenAI-compatible model | `python3 construct_hologram/cli.py author "..." --base-url ... --model ... --key-env ... --out scene.json` |
 | By hand | The command line below; no model needed |
@@ -260,12 +287,15 @@ Construct is deliberately small. You need:
 - For video, ffmpeg.
 - For the Blender add-on, Blender 4.2 or newer (the film of a run: checked in Blender 5.2); for the
   NetLogo bridge, NetLogo 6 or 7 (the extension: NetLogo 7, and NetLogo 3D 7).
+- For CAD, FreeCAD 1.0 or newer (STEP needs nothing more); for game engines, any glTF 2.0 importer
+  (glued joints: tested in Godot 4.7).
 - Tested on macOS; review capture on Linux and Windows is untested.
 
 ## Documentation
 
 | If you want to… | read |
 | --- | --- |
+| see everything new in 1.2, with examples | [What's new in 1.2](docs/NEW-IN-1.2.md) |
 | see everything new in 1.1, with examples | [What's new in 1.1](docs/NEW-IN-1.1.md) |
 | see how a construct is made, step by step | [How a construct is made](docs/HOW-IT-IS-MADE.md) |
 | know what you are looking at, and the keys | [The Measured Light style](docs/STYLE.md) |
@@ -283,8 +313,12 @@ Construct is deliberately small. You need:
 | compare models, or score your own | [Evaluation](docs/EVALUATION.md) |
 | build on it or test the code | [Development](docs/DEVELOPMENT.md) and [the scene contract](CONTRACT.md) |
 | write your own adapter (a format, an engine, a machine) | [Adapters](docs/ADAPTERS.md) |
+| use it in Hermes, from the request to a printable kit | [Villa Savoye in Hermes, step by step](docs/for/hermes-walkthrough.md) and [Construct for Hermes](hosts/hermes/construct/README.md) |
+| design something new from real things (a ship, a creature, a vehicle) | [New things from real ones](docs/for/invent-from-what-exists.md) |
+| design a physical product from a system's documentation | [Documentation → product](docs/for/documentation-to-product.md) |
+| see how reconstructing, modifying and inventing are one pipeline | [The design-freedom continuum](docs/for/documentation-to-product.md#the-design-freedom-continuum) |
 | know where the method comes from | [About](docs/ABOUT.md) |
-| see what changed | [CHANGELOG.md](CHANGELOG.md) and the [1.1.0](docs/releases/v1.1.0.md) and [1.0.0](docs/releases/v1.0.0.md) release notes |
+| see what changed | [CHANGELOG.md](CHANGELOG.md) and the [1.2.0](docs/releases/v1.2.0.md), [1.1.0](docs/releases/v1.1.0.md) and [1.0.0](docs/releases/v1.0.0.md) release notes |
 
 The full index is in [docs/README.md](docs/README.md).
 
@@ -300,9 +334,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Run the tests with
 (`examples/netlogo-*`: [viral marketing](examples/netlogo-viral-marketing/), [flocking](examples/netlogo-flocking/),
 [wolf sheep](examples/netlogo-wolf-sheep/), [fire](examples/netlogo-fire/), [fireflies](examples/netlogo-fireflies/),
 [virus on a network](examples/netlogo-virus-on-a-network/) and [virus compare](examples/netlogo-virus-compare/)) derive from Uri
-Wilensky's NetLogo models and are under CC BY-NC-SA 3.0 instead (see each LICENSE). Three are not licensed at all:
-[ARGUS](examples/argus/), [Lander 2](examples/lander-2/) and [Object 001](examples/object-001/), made for the author's
-album film, are all rights reserved, published to view only (see each LICENSE). The [Blender
+Wilensky's NetLogo models and are under CC BY-NC-SA 3.0 instead (see each LICENSE). The [Blender
 add-on](hosts/blender/) is under GPL-3.0-or-later, as Blender's extensions platform requires; what
 you make with it is yours.
 

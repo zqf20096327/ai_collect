@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.27-green.svg" alt="Version 1.4.27" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.28-green.svg" alt="Version 1.4.28" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 <details open>
 <summary>Already run Claude Code? Install the plugin</summary>
 
-With Claude Code 2.1.314+ and Bun 1.4+ installed:
+With Claude Code 2.1.318+ and Bun 1.4+ installed:
 
 ```bash
 claude plugin install hermitd --marketplace gtapps/hermitd --scope local
@@ -131,7 +131,7 @@ Tune from a terminal with `/hermit-settings`, or change permitted settings from 
 | `remote` | remote control; `false` also requires approval for cross-machine peer messages; **`true`** |
 | `ask_gate` | route unattended questions to a paired channel: **`true`** |
 | `budget` | optional daily / weekly / monthly caps; **`alert`** or binding `pause` action |
-| `artifacts` | dashboard / proposals / weekly review: **dashboard and proposals enabled** |
+| `artifacts` | dashboard / weekly review: **dashboard enabled** |
 | `heartbeat.enabled` | timed idle sweeps: **`true`** |
 | `heartbeat.every` | idle sweep cadence: **`30m`** |
 | `heartbeat.active_hours` | active window: **`08:00`–`23:00`** |
@@ -207,7 +207,7 @@ a lesson    a change
                   Future evidence
 ```
 
-Reflection runs at eligible task or session pauses, daily, and after routines configured to reflect. Approved changes can start now, become a task, or be left for manual implementation. Proposals are resolved when verification passes or later evidence shows the problem is gone.
+Reflection runs at eligible task or session pauses, daily, and after routines configured to reflect. Agent proposals are task records waiting for admin consent. An executable check can close an approved proposal in one touch; authored content returns for result confirmation. Questions stay waiting without expiry and receive at most two confirmed reminder deliveries.
 
 ## Ask it from your chat
 
@@ -311,7 +311,7 @@ See the [Upgrade guide](plugins/hermitd/docs/upgrading.md) for details.
 - **Configure:** the [Config Reference](plugins/hermitd/docs/config-reference.md) covers the full schema and tuning details.
 - **Use:** [Getting Started](plugins/hermitd/docs/how-to-use.md) and the [Owner's Guide](plugins/hermitd/docs/owners-guide.md) cover everyday work, decisions, and controls.
 - **Automate:** [Routine Authoring](plugins/hermitd/docs/routine-authoring.md) covers schedules and prechecks. [Channel configuration](plugins/hermitd/docs/config-reference.md#channels) includes third-party channel plugins.
-- **Observe:** [Artifacts](plugins/hermitd/docs/artifacts.md) explains the dashboard, proposals, and weekly reviews.
+- **Observe:** [Artifacts](plugins/hermitd/docs/artifacts.md) explains the dashboard, pending decisions, and weekly reviews.
 - **Maintain:** [Upgrading](plugins/hermitd/docs/upgrading.md), [Backup](plugins/hermitd/docs/backup.md), [Troubleshooting](plugins/hermitd/docs/troubleshooting.md), and [Uninstalling](plugins/hermitd/docs/how-to-use.md#install).
 - **Understand:** [Architecture](plugins/hermitd/docs/architecture.md), [Security](plugins/hermitd/docs/security.md), and [FAQ](plugins/hermitd/docs/faq.md).
 

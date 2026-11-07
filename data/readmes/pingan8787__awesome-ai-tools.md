@@ -1348,4 +1348,28 @@ Automatically generate code from scratch, ask questions, get explanations, refac
 
 113.  [Cron AI](https://cron-ai.vercel.app) 👉 Words to cron expression
 
-114.  [Gooey.AI](https://gooey.ai) 👉 Prototype how AI will integrate with your
+114.  [Gooey.AI](https://gooey.ai) 👉 Prototype how AI will integrate with your own site/app.
+
+115.  [fast.ai](https://www.fast.ai/) 👉 Non-profit research group focused on DL & AI, offering useful courses.
+
+116.  [ZZZ Code AI](https://zzzcode.ai) 👉 AI-powered free website to get any programming question answered or code generated.
+
+117.  [Bifrost](https://www.bifrost.so/) 👉 Use AI to turn your Figma designs into clean React code automatically.
+
+118.  [Codeflash](https://www.codeflash.ai/) 👉 Ship Blazing-Fast Python Code — Every Time.
+
+119.  [BurnRate](https://getburnrate.io/) 👉 AI coding cost analytics CLI that tracks usage and costs across Claude Code, Cursor, Copilot, Windsurf, Aider, Cline, and Codex with real-time dashboard and 46 optimization rules.
+
+120.  [claude-dash](https://github.com/krabat-l/claude-dash) 👉 Real-time statusline for Claude Code showing context, cost, quota, cache, tools, and git status. Zero dependencies.
+
+121.  [aicost](https://github.com/dwylq/aicost) 👉 Universal AI coding cost analyzer CLI — scan Claude Code and Cursor for token usage and costs in one pass. Cache-aware pricing, HTML dashboard, no API key. MIT licensed.
+
+122.  [Unslop](https://github.com/MohamedAbdallah-14/unslop) 👉 CLI and MCP server that removes AI writing patterns from text — tricolons, em-dash overuse, sycophancy openers, and overused vocabulary. Works with Claude Code, Codex, Gemini CLI, and Cursor. Five intensity levels and a lint-only audit mode.
+
+123.  [Nex.ai](https://nex.ai) 👉 Context engineering platform that gives AI agents real-time organizational context from CRM, email, Slack, and data warehouses. REST API with SSE streaming.
+
+124.  [LocalePack](https://localepack.app/) 👉 Translate browser extension strings (messages.json → \_locales ZIP), Next.js locale files, i18next namespaces, and vue-i18n JSON/YAML into 52 languages. Placeholders and nested structure preserved. Pay once.
+
+125.  [CCHub](https://github.com/Moresl/cchub) 👉 Open-source desktop app (Tauri + Rust) for managing the Claude Code ecosystem — MCP marketplace, config profiles, workflow templates, security audit. Cross-platform, MIT licensed.
+
+126.  [WhereMyTokens](https://github.com/jeongwookie/WhereMyTokens) 👉 Windows system tray app for moni

@@ -5,18 +5,24 @@
 **The Android client for the Hermes agent you run yourself.**
 Bots with faces, rooms where they answer each other, hands-free voice — and your own computer in your pocket.
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4.20-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Android](https://img.shields.io/badge/Android-8.0%2B%20(API%2026)-3DDC84?logo=android&logoColor=white)](#requirements)
-[![Tests](https://img.shields.io/badge/tests-3674%20passing-brightgreen)](#tests)
+[![Tests](https://img.shields.io/badge/tests-4345%20passing-brightgreen)](#tests)
 [![Build](https://github.com/JemaOS/hermes-onyx/actions/workflows/build.yml/badge.svg)](https://github.com/JemaOS/hermes-onyx/actions/workflows/build.yml)
 [![Release](https://img.shields.io/github/v/release/JemaOS/hermes-onyx?sort=semver&color=blue)](https://github.com/JemaOS/hermes-onyx/releases/latest)
+[![F-Droid repo](https://img.shields.io/badge/F--Droid-repo-1976D2?logo=fdroid&logoColor=white)](https://jemaos.github.io/hermes-onyx/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
+<!-- IzzyOnDroid : la demande est partie, l'app n'y est pas encore listée.
+     Décommenter ces deux lignes le jour où la fiche existe — avant, le badge renvoie 404.
+[![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/index/apk/com.onyx.app/badge.json)](https://apt.izzysoft.de/fdroid/index/apk/com.onyx.app)
+--> 
+
+<img src="docs/promo/onyx-hero.jpg" width="100%" alt="Onyx — an AI team, crafted for you" />
+
 <p>
-  <img src="docs/screenshots/01-chat-room-light.png" width="19%" alt="A room, in the Chat tab" />
-  <img src="docs/screenshots/02-stream-light.png" width="19%" alt="A room, in the Feed tab" />
-  <img src="docs/screenshots/04-list-conversations-light.png" width="19%" alt="The conversation list" />
-  <img src="docs/screenshots/05-settings-notifications-light.png" width="19%" alt="Notification channels" />
+  <img src="docs/promo/onyx-bots.jpg" width="49%" alt="Choose your expert — specialized bots for every task" />
+  <img src="docs/promo/onyx-hands-free.jpg" width="49%" alt="Hands-free control — just speak to your AI" />
 </p>
 
 </div>
@@ -214,7 +220,7 @@ here that cannot be shown. The full detail is in
 - **The back navigation fixed** — the page you left is no longer lost on the way out of the
   sidebar, and a bench measures the three paths (`f48b2fcd`, `bdb8d2e0`, `AUDIT-FEEDBACK.md`).
 
-**3674 tests, 0 failures.** The three packages — phone, Android Auto and Wear OS — ship in this
+**4345 tests, 0 failures.** The three packages — phone, Android Auto and Wear OS — ship in this
 release.
 
 ## What 1.0.0+547 brought
@@ -488,7 +494,7 @@ copy of the integration tree, so its git history cannot carry the number.
 ./gradlew :core:testDebugUnitTest :app:testDebugUnitTest
 ```
 
-**3674 tests, 0 failures** — 1703 in `:core`, 1971 in `:app`. Plain JUnit 4, no
+**4345 tests, 0 failures** — 2008 in `:core`, 2337 in `:app`. Plain JUnit 4, no
 emulator: networking runs against an in-memory MockWebServer, so the recipe works offline and takes about
 two minutes. CI runs the same command on every push.
 

@@ -115,6 +115,7 @@ Open your configured HTTPS address from your allowlisted Tailscale device and ad
 - **[Open request vs View transcript](docs/USAGE.md#view-and-control)** — **Open request** opens OMP's encrypted client in Control mode; **View transcript** (or **View** on any row) opens it read-only, and answers show `Sending…` until OMP acknowledges them.
 - **[Hold for desk and Hide](docs/USAGE.md#hold-and-hide)** — **Hold for desk** defers the current ask on this device and advances to the next one; **Hide** removes a non-waiting row on this device with **Undo** and **Show all**.
 - **[Background alerts](docs/USAGE.md#background-alerts)** — Opt in from the Settings sheet and choose **Private**, **Session**, or **Preview** detail; when a host that publishes `busy` goes idle, tapping its stop alert opens **View**.
+- **[Alerts from other hosts](docs/USAGE.md#alerts-from-other-hosts)** — After enabling [fleet notification sources and coordinators](docs/OPERATIONS.md#fleet-notification-home-setup), turn remote hosts on in **Settings → Hosts** so the always-on gateway serving the app sends their input-request and stop alerts with each host's label and a six-character session suffix.
 - **[Multiple hosts, dictation, and Tern](docs/USAGE.md#multiple-hosts-all-hosts-and-host-picker)** — Poll up to 7 additional gateways from one PWA with reciprocal `fleet.targets` and `http.trustedDashboardOrigins` ([Multi-host setup](docs/OPERATIONS.md#multi-host-setup)), use OS keyboard dictation or opt-in `speech.browserRecognition` in **Control** where **Use text** never auto-sends ([Dictation and speech input](docs/USAGE.md#dictation-and-speech-input)), and run stock OMP inside Tern panes with `collab.autoStart` ([Running OMP inside Tern](docs/OMP_INTEGRATION.md#running-omp-inside-tern)).
 - **[New sessions in Tern](docs/OPERATIONS.md#opt-in-tern-session-creation)** — Opt in on the host running OMP and Tern to start a new OMP session from approved project, working-copy, and profile choices and open it in **Control**, with join/reconnect progress in the connection status chip and an optional memory-only **First task** draft that never auto-sends.
 
@@ -148,7 +149,7 @@ Read the full [threat model](docs/SECURITY.md) or [report a vulnerability privat
 | Android | A physical Pixel (Chrome on Android), including background alerts; a cloud Samsung Galaxy |
 | iPhone & iPad | A cloud iPhone and iPad on Safari; iPhone background alerts in the Home Screen app (not the lock screen) |
 | Desktop Chrome, Edge, Firefox, Safari | CI only (Chromium, Firefox, and WebKit engines) |
-| Exact qualified OMP | `v18.12.5` ([`d5cd750e41`](https://github.com/can1357/oh-my-pi/commit/d5cd750e41fede277f9eb933455da92a0738915e)); Bun `1.4.0` |
+| Exact qualified OMP | `v18.17.0` ([`75e7801e24`](https://github.com/can1357/oh-my-pi/commit/75e7801e247d4e3263439d4cc08ccad60dc64bdd)); Bun `1.4.4` |
 
 Every row is **supported**: tested in CI on each change, bug reports accepted. **Qualified** names the exact hardware, OS, and browser versions verified for the latest release — see [Platforms and browsers](docs/COMPATIBILITY.md#platforms-and-browsers) and [Current claim](docs/COMPATIBILITY.md#current-claim).
 

@@ -5,6 +5,7 @@
 [![CI](https://github.com/guard-spec/guard-spec/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/guard-spec/guard-spec/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/guard-spec/guard-spec/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/guard-spec/guard-spec/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/guard-spec/guard-spec/badge)](https://scorecard.dev/viewer/?uri=github.com/guard-spec/guard-spec)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16421/badge)](https://www.bestpractices.dev/projects/16421)
 
 [![Go](https://img.shields.io/github/go-mod/go-version/guard-spec/guard-spec?logo=go&logoColor=white)](go.mod)
 [![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
@@ -29,7 +30,7 @@ answer for exfiltration links, personal data and a leaked canary before the
 answer reaches your users. It is written in Go, runs as two services next to Postgres, and has
 been built and evaluated for **English and Vietnamese**.
 
-Status: **v0.2.1, pre-1.0.** The API and the database schema can still
+Status: **v0.3.1, pre-1.0.** The API and the database schema can still
 change. Read [Security model and limitations](#security-model-and-limitations)
 before you rely on it.
 
@@ -67,8 +68,9 @@ before you rely on it.
 - Output guard: exfiltration links and images, personal data (including
   Vietnamese phone, ID and card numbers), a leaked canary, also when
   streaming.
-- OpenAI-compatible, and the Anthropic Messages API (`/v1/messages`, for
-  Claude Code): change the base URL, keep your SDK. Routing to several
+- OpenAI-compatible (chat completions, the Responses API and embeddings), and
+  the Anthropic Messages API (`/v1/messages`, for Claude Code): change the
+  base URL, keep your SDK. Routing to several
   upstreams (OpenAI, Azure OpenAI, Anthropic, Gemini, vLLM, Ollama).
 - Per-organization and per-project policies, written as text or in a visual
   editor and compiled to CEL: allow, block, log or route.
@@ -270,9 +272,10 @@ What each stage does:
 - **Admin UI** (`web/`). A single-page app served by the control plane at
   `/ui/`. See [Admin UI](#admin-ui).
 - **Output guard** (`internal/outputguard`). Rewrites whole responses and
-  streams (with a 256-character window): strips images and links to hosts off
-  an allowlist, redacts e-mail, Vietnamese phone numbers, CCCD numbers, card
-  numbers and optionally IPv4, and refuses or redacts a leaked canary.
+  streams (holding back only text that could still change): strips images
+  and links to hosts off an allowlist, redacts e-mail, Vietnamese phone
+  numbers, CCCD numbers, card numbers and optionally IPv4, and refuses or
+  redacts a leaked canary.
 - **Indirect and MCP scanning** (`internal/indirect`, `cmd/gateway/scan_*.go`).
   Tool messages, documents and tool definitions are scored apart from the
   user's text, and tool descriptions also go through MCP poisoning signals
@@ -318,7 +321,7 @@ scripts/quickstart.sh
    existing `.env` is never overwritten;
 2. runs `docker compose -f docker-compose.yml up -d` with
    `ghcr.io/guard-spec/guard-spec-gateway` and `-control-plane` at
-   `GUARDSPEC_VERSION` (default `0.2.1`). Before the gateway starts, the
+   `GUARDSPEC_VERSION` (default `0.3.1`). Before the gateway starts, the
    `models-init` service pulls the recommended models (about 270 MB, SHA-256
    verified) into `./models/cache`; on later starts it finds them and does
    nothing;
@@ -343,7 +346,9 @@ DETECTOR_LAYERS=l1,l2 scripts/quickstart.sh
 Measured CPU, memory and throughput per layer set, and how to size a host:
 [docs/sizing.md](docs/sizing.md). Pointing the OpenAI SDKs, LangChain,
 LlamaIndex, Claude Code or Cursor at the gateway, and what does not work:
-[docs/integrations.md](docs/integrations.md).
+[docs/integrations.md](docs/integrations.md). Runnable examples (Python, TypeScript,
+a RAG pipeline with a poisoned document, n8n), checked in CI against the gateway:
+[examples/](examples/README.md).
 
 **Contributors** build from source instead:
 
@@ -438,7 +443,8 @@ Running it:
   or Supabase instead of the `postgres` service (reference, not yet verified
   on those providers);
 - [docs/integrations.md](docs/integrations.md): OpenAI SDKs, LangChain,
-  LlamaIndex, Claude Code and Cursor.
+  LlamaIndex, Claude Code and Cursor; runnable versions in
+  [examples/](examples/README.md).
 
 The root `docker-compose.yml` also runs in production mode:
 
@@ -612,15 +618,22 @@ in a second table.
 | `SPOTLIGHT` | `off` | Mark tool results for the model: `off`, `delimit`, `datamark` |
 | `INDIRECT_BLOCK_THRESHOLD` | `0.85` | Block threshold for tool results, documents and tool descriptions, in (0, 0.85] |
 | `INDIRECT_ACTION` | `block` | What happens to a tool result or document over the threshold: `block` refuses the request; `redact` replaces that block with `[removed by Guard Spec: prompt injection detected in tool output]` (`is_error: true` on a `tool_result`) and lets the request go on, with `input:redacted=<n>` in the audit row and a `detection.flagged` event (`decision: redact`). Tool descriptions always block. An org can override it (`indirect_action` in guard settings) |
-| `SCAN_HISTORY` | `latest` | `/v1/messages` only: `latest` classifies the trailing turn (after the last assistant message), takes earlier tool results from the scan cache, and does not classify earlier user text again; `full` classifies every turn. Chat completions always classify every turn |
-| `SCAN_CACHE_SIZE` | `4096` | Entries of the per-process scan cache of `/v1/messages` (scores of the system prompt, tool definitions and tool results by SHA-256 of their content, per org; cleared on model reload, 6 h lifetime); `0` turns it off |
+| `SCAN_HISTORY` | `latest` | `/v1/messages` and `/v1/responses`: `latest` classifies the trailing turn (after the last assistant message, or the last item the model produced), takes earlier tool results from the scan cache, and does not classify earlier user text again; `full` classifies every turn. Chat completions always classify every turn |
+| `RESPONSES_SERVER_STATE` | `refuse` | `/v1/responses` requests that refer to conversation state the upstream keeps (`previous_response_id`, `conversation`, `item_reference` input items) carry turns the gateway never sees in the request and cannot scan again: `refuse` answers them with 400 (`server_state_refused`); `allow` passes them and tags the audit row `input:server_state=1`. See [Security model](#security-model-and-limitations) |
+| `EMBEDDINGS_SCAN` | `off` | `on` classifies each `/v1/embeddings` input as an untrusted document (not rewritten) and refuses the request over `INDIRECT_BLOCK_THRESHOLD`; token-array inputs are then refused (400). Off: embeddings are forwarded unscanned, since they produce no text a model acts on; scan retrieved text when it is used, as a document or tool result |
+| `CONVERSATION_WINDOW_TURNS` | `4` | The conversation window: the most recent user turns (at most this many, 2 to 32) are joined and scored together, and the request is blocked when that score reaches the injection threshold, as for one turn. Catches an instruction split over several messages. `0` turns it off. An org can turn it on or off and set both sizes in guard settings. See [Conversation window](#conversation-window) |
+| `CONVERSATION_WINDOW_BYTES` | `8192` | The most bytes of the joined window text (256 to 24576); each turn gets an equal share, a longer turn keeps its head and tail. `0` turns the window off |
+| `SCAN_CACHE_SIZE` | `4096` | Entries of the per-process scan cache of `/v1/messages` and `/v1/responses` (scores of the system prompt, tool definitions, tool results and the conversation window by SHA-256 of their content, per org; cleared on model reload, 6 h lifetime); `0` turns it off, shared backend included. See [Scan cache](#scan-cache) |
+| `SCAN_CACHE_BACKEND` | `memory` | Where the scan cache is shared: `memory` (each replica alone), `postgres` (the `scan_cache` table of the gateway's database) or `redis`. The in-process cache stays in front of either |
+| `SCAN_CACHE_REDIS_URL` | — | `redis://` or `rediss://` URL with the password, for `SCAN_CACHE_BACKEND=redis`. Keep that Redis private and authenticated |
+| `SCAN_CACHE_TIMEOUT` | `50ms` | Bound on each call to the shared backend; an error or a timeout means the content is scanned, never a failed request |
 | `OUTPUT_GUARD` | `on` | `off` passes responses through unchanged |
 | `OUTPUT_LINK_ALLOWLIST` | empty | Comma-separated hosts (and their subdomains) whose images and links are kept |
 | `OUTPUT_PII_REDACT` | `true` | Redact e-mail, phone, CCCD and card numbers |
 | `OUTPUT_PII_IPV4` | `false` | Also redact IPv4 addresses |
 | `OUTPUT_CANARY` | `off` | `block` or `redact` injects a canary and acts when it leaks |
 | `OUTPUT_REASONING` | `guard` | `drop` removes `reasoning` / `reasoning_content` instead of guarding them |
-| `OUTPUT_UNKNOWN_BLOCKS` | `refuse` | `/v1/messages`: a response content block of a type the output guard does not know (a server tool other than web search and web fetch, say) is refused (502, or an error event in a stream); `pass` passes such blocks on unchanged and unchecked |
+| `OUTPUT_UNKNOWN_BLOCKS` | `refuse` | `/v1/messages`: a response content block of a type the output guard does not know (a server tool other than web search and web fetch, say) is refused (502, or an error event in a stream); `/v1/responses`: likewise an output item other than `message`, `function_call`, `custom_tool_call`, `reasoning` and `web_search_call` (image generation, code interpreter, MCP, shell, computer use...), a content part, or a stream event with content of a type it does not know; `pass` passes such blocks, items and events on unchanged and unchecked |
 | `MODEL_DIR` | `./models` (`/models` in the image) | Root of the model files. `MODELS_PATH` is the older name |
 | `L2_MODEL` | the manifest's recommended classifier (`guardspec-classifier@v3b`) | Classifier as `name@version` (a bare name: its recommended version), loaded from `$MODEL_DIR/cache/<name>/<version>`. Pin or roll back with it; see [docs/models.md](docs/models.md) |
 | `L2_MODEL_DIR` | empty | Classifier directory; wins over `L2_MODEL`. With neither set: the recommended version when installed, else `$MODEL_DIR/local/guardspec-classifier-v3b`, `-v2`, `-v1`, `-v0` |
@@ -688,7 +701,7 @@ URL tried before Hugging Face: `<mirror>/<name>/<version>/<file>`).
 | `GATEWAY_PORT`, `METRICS_PORT` | `8080`, `9090` | Host ports of the gateway |
 | `CONTROL_PLANE_PORT`, `CONTROL_PLANE_METRICS_PORT` | `18081`, `9091` | Host ports of the control plane |
 | `POSTGRES_PORT` | `5432` | Host port of Postgres (dev override only) |
-| `GUARDSPEC_VERSION` | `0.2.1` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
+| `GUARDSPEC_VERSION` | `0.3.1` | Tag of the `ghcr.io/guard-spec/guard-spec-*` images in `docker-compose.yml` (the dev override builds from source instead) |
 | `MODELS_UID`, `MODELS_GID` | `0` | Owner of files written by `models-init` and `models-pull` |
 | `QUICKSTART_TIMEOUT` | `600` | `scripts/quickstart.sh`: seconds to wait for `/readyz` |
 
@@ -707,6 +720,8 @@ or `x-api-key: gs_...`.
 | `POST /v1/completions` | Legacy completions, guarded the same way |
 | `POST /v1/messages` | Anthropic Messages API (Claude Code with `ANTHROPIC_BASE_URL`), guarded in and out the same way, streaming supported. Anthropic's web search and web fetch tools work: their results (`web_search_tool_result`, `web_fetch_tool_result`) pass with their encrypted content untouched, their readable text (titles, URLs, a fetched page) is classified as tool output in requests and guarded in answers; other block types in answers follow `OUTPUT_UNKNOWN_BLOCKS`. Sent as is to an upstream with provider `anthropic` (`{base_url}/messages`, the key as `x-api-key`, the client's `anthropic-version` or `2023-06-01`, and its `anthropic-beta`); any other upstream: 400, no translation. Errors in the Anthropic shape `{"type":"error","error":{"type":"...","message":"..."}}` with the same statuses |
 | `POST /v1/messages/count_tokens` | Forwarded to the same Anthropic upstream (default route); key and rate limit apply, the body is not scanned (no model runs on it) |
+| `POST /v1/responses` | OpenAI Responses API (`client.responses.create`), guarded in and out like chat, streaming supported (SSE events; the guard re-numbers `sequence_number`). Scanned: `input` as a string or items (user text rewritten and classified; `function_call_output` and `custom_tool_call_output` classified as tool results, redacted with `INDIRECT_ACTION=redact`; other items with text, such as shell or MCP output, classified as tool output; system and developer messages and `instructions` with `SCAN_ROLES` `system`; function-call arguments with `tool_calls`; images and files passed unscanned), `prompt.variables`, and `tools` (function and custom tools, remote MCP server descriptions; `SCAN_TOOL_PREFIXES` applies). Answers: output text, refusals, function and custom tool arguments, reasoning summaries and text, annotation URLs, titles and file names, guarded whole or as they stream; encrypted reasoning passed as is; annotations with offsets and log probabilities are dropped from a text the guard changed. The canary goes in `instructions` and is taken out of the `instructions` the response repeats. `previous_response_id`, `conversation` and `item_reference` follow `RESPONSES_SERVER_STATE`; `background: true` is refused (400), since its result would be fetched with `GET /v1/responses/{id}`, which the gateway does not serve. Sent as is to `{base_url}/responses` of an upstream with provider `openai`, `azure_openai` or `openai_compatible`; `anthropic`, `gemini`, `ollama` and `vllm` upstreams: 400 (`unsupported_upstream`, naming the upstream), no translation. Errors in the OpenAI shape, refusals 400 `content_filter` as on chat; a stream the gateway stops ends with an `error` event |
+| `POST /v1/embeddings` | Forwarded to `{base_url}/embeddings` of the route's upstream (not `anthropic`: 400), with the key, rate limit, policies, routing and model allowlist; one audit row (content only when the org stores content, the vectors never). Not scanned unless `EMBEDDINGS_SCAN=on`. Errors in the OpenAI shape |
 | `GET /v1/models` | Models of the key's default route: the upstream's allowed models, its forced model, or the upstream's own list. OpenAI list shape; Anthropic's when the request has `anthropic-version` |
 | `POST /guardrail/scan` | Score `text` and/or `documents[]` without calling a model |
 | `POST /guardrail/scan/tools` | Score MCP tool definitions (a `tools/list` result) |
@@ -864,7 +879,8 @@ group keep it a group. Fields: `request.model`, `request.tenant_id`, `request.to
 `injection.score`, `injection.label`, `injection.category`, `scores.l1`,
 `scores.l2`, `scores.l3` (calibrated, `-1` when the layer did not run),
 `indirect.score`, `indirect.source`, `injection.source_role`,
-`anomaly.score`, `anomaly.has_tag_chars`, `anomaly.has_bidi`,
+`conversation.score` (the [conversation window](#conversation-window); 0 when
+there was none), `anomaly.score`, `anomaly.has_tag_chars`, `anomaly.has_bidi`,
 `mcp.is_tool_response`. A policy holds at most 200 rules; each rule has a CEL
 cost limit, the rules of one request share a cost budget and a timeout, and
 any of these limits fails closed with 503. Project policies run before the
@@ -1102,6 +1118,15 @@ Guard settings, API keys (the secret is shown once, at creation), projects,
 exemplars and the audit log (with the route target of each request) have
 pages of their own.
 
+**Report** on a request log row (or in its details) turns a missed attack or a
+wrongly blocked text into a prefilled GitHub issue for the project's "Bypass"
+or "False positive" form: decision, scores, label, rule, model, gateway
+version and detector layers. The stored text is added only when the
+organization stores content and you tick "include the text" after a warning,
+and you can edit it first. The issue opens in your browser; the control plane
+sends nothing. Viewers can report. What happens to a report is described in
+[docs/red-team.md](docs/red-team.md).
+
 | Dark theme, Vietnamese | Audit log |
 |---|---|
 | ![Flow in Vietnamese, dark theme](docs/images/admin-flow-dark-vi.png) | ![Audit log](docs/images/admin-audit.png) |
@@ -1228,6 +1253,25 @@ How to read them, and their limits:
   or between small groups such as `en/data_exfiltration` (29 rows), as
   signal.
 
+### Comparison with other detectors
+
+[docs/benchmark.md](docs/benchmark.md) (also on
+[guardspec.io/docs](https://guardspec.io/docs/)) compares Guard Spec L1,
+L1+L2 and L1+L2+L3 with ProtectAI `deberta-v3-base-prompt-injection-v2` and
+LLM Guard's default threshold for it, on `eval/` and four public datasets at
+pinned revisions (`deepset/prompt-injections`,
+`jackhhao/jailbreak-classification`, `Lakera/gandalf_ignore_instructions`,
+`reshabhs/SPML_Chatbot_Prompt_Injection`): ROC AUC, TPR/FPR at each
+detector's default, TPR at FPR ≤ 1%, latency and model size. `make benchmark`
+reproduces it. In short (2026-11-07, Apple M3 Max): Guard Spec L1+L2+L3 leads
+on `eval/` (AUC 0.987 against 0.784; ProtectAI is English-only and flags 51%
+of its benign rows) and ranks better on `deepset` and
+`jailbreak-classification`, whose training splits it saw. **On SPML, which no
+detector here trained on, ProtectAI is better**: AUC 0.997 against 0.974, and
+Guard Spec's default threshold blocks only 36% of its attacks (ProtectAI 99%,
+with 8% false positives). Meta Prompt Guard 2 is gated and not included; the
+page explains how to add it.
+
 ### Go benchmarks: sanitizer, output guard, policy and HTTP path
 
 Measured on **2026-11-06** with the benchmarks added on top of commit
@@ -1273,16 +1317,57 @@ L1 + L2 on the long prompt against a p50 of 25.5 ms); read the p50 column.
 | `BenchmarkSanitize` (input sanitizer) | 39-char English prompt | 3.8 µs | 24 |
 | | 2,025-char prompt | 133 µs | 24 |
 | | 1,560 chars with zero-width, bidi and full-width characters | 224 µs | 83 |
-| `BenchmarkOutputGuardText` (whole answer) | 2,048-char answer, nothing to change | 0.50 ms | 10 |
-| | 1,836-char answer with e-mails, phones, cards, links, images | 0.61 ms | 781 |
-| `BenchmarkOutputGuardStream` (16-byte deltas) | 2,048-char answer, nothing to change | 3.8 ms | 356 |
-| | 1,836-char answer with findings | 4.5 ms | 7,000 |
+| `BenchmarkOutputGuardText` (whole answer) | 2,048-char answer, nothing to change | 0.008 ms ¹ | 5 |
+| | 1,836-char answer with e-mails, phones, cards, links, images | 0.30 ms ¹ | 436 |
+| `BenchmarkOutputGuardStream` (16-byte deltas) | 2,048-char answer, nothing to change | 0.013 ms ¹ | 70 |
+| | 1,836-char answer with findings | 0.37 ms ¹ | 1,036 |
+| `BenchmarkOutputGuardSSE` (16-byte deltas, JSON included) | chat completion stream, clean / with findings | 0.49 / 0.85 ms ¹ | 8,889 / 9,105 |
+| | Messages API stream, clean / with findings | 0.26 / 0.65 ms ¹ | 5,065 / 5,682 |
+| | Responses API stream, clean / with findings | 0.39 / 0.76 ms ¹ | 5,781 / 6,262 |
 | `BenchmarkEvaluate` (CEL, compiled policy) | 1 rule | 2.6 µs | 70 |
 | | 10 rules | 15 µs | 393 |
 | | 50 rules | 82 µs | 1,905 |
 
 The stream figures are the total for all deltas of one answer (128 for the
-clean one), about 30 µs per delta.
+clean one): about 0.1 µs per delta for the clean answer and 3 µs with
+findings, 1.6× and 1.3× the whole-answer guard on the same text. In the
+event streams most of the time goes to decoding and encoding each event's
+JSON (2 to 4 µs per event).
+
+¹ Output guard rows: measured on **2026-11-07** on the same machine with the
+stream changes of RF-ea8d7c72, as the median of 8 runs (`benchstat`), each
+run alternating with v0.3.0 so that both saw the same load. The machine was
+shared (load average 5 to 20): the guard rows varied by under 7%, the event
+stream rows by up to ±160%. v0.3.0 in the same runs: whole answer 0.50 /
+0.63 ms, stream 3.8 / 4.6 ms (7.5× and 7.3× the whole answer, about 30 µs per
+delta), event streams 4.1 to 5.1 ms. To reproduce:
+
+```bash
+go test -run '^$' -bench 'OutputGuard' -benchmem -count 8 ./internal/outputguard
+```
+
+**Conversation window** (`BenchmarkConversationWindow`, and
+`BenchmarkConversationWindowML` under `make bench-onnx`): the nine-turn
+tutoring chat of `cmd/gateway/testdata/multiturn.json` posted to
+`/v1/messages` with `SCAN_HISTORY=latest`, so the trailing turn is about 90
+characters and the window (the last four user turns) about 340. "Uncached" has
+no scan cache, so the window is scored on every request, as on each new user
+turn; "cached" resends unchanged user turns, as an agent loop does. Measured
+on **2026-11-07**, same machine, `BENCHTIME=3s`, while another job kept the
+CPU busy (load average 27 to 40 on 14 cores): read the differences, not the
+absolute values, and expect less on an idle machine.
+
+| Window | L1 only p50 / p99 | L1 + L2 + L3 p50 / p99 |
+|---|---|---|
+| Off | 0.43 / 1.06 ms | 8.8 / 37 ms |
+| On, uncached (new user turn) | 0.59 / 1.21 ms | 21.5 / 120 ms |
+| On, cached (agent loop) | 0.39 / 1.59 ms | 7.4 / 30 ms |
+
+A new window costs one more detector run over the joined turns: about
+0.2 ms with L1, and with the models what L2 and L3 take for its length (here
+about 13 ms more at p50; model time grows with the tokens, up to
+`CONVERSATION_WINDOW_BYTES`). A request whose user turns did not change pays a
+cache lookup.
 
 ### Detection latency on Linux (GitHub-hosted runners)
 
@@ -1357,7 +1442,10 @@ What it does **not** protect against:
 
 - **Attacks it does not recognise.** Detection is probabilistic. Expect some
   attacks to pass, especially new phrasings, other languages, and
-  multi-turn attacks that look harmless in each single message. Treat it as
+  multi-turn attacks that look harmless in each single message: the
+  [conversation window](#conversation-window) joins only the last few user
+  turns, and an attack spread wider, or padded out of the window, is scored
+  turn by turn. Treat it as
   one layer of defence; keep least-privilege tools, human confirmation for
   risky actions and output handling in your application.
 - **Harmful but non-injection requests.** It is not a content moderation or
@@ -1390,8 +1478,29 @@ What it does **not** protect against:
   (the default there), the user text of earlier turns is not classified
   again: it was when it was the trailing turn. A client that holds a gateway
   key can put unscanned text into "history". Earlier tool results and
-  documents are still checked (from the scan cache, or scanned again). Use
-  `SCAN_HISTORY=full` when the key holders are not trusted this far.
+  documents are still checked (from the scan cache, or scanned again), and
+  the user text of the last few turns is scored again as part of the
+  [conversation window](#conversation-window). Use
+  `SCAN_HISTORY=full` when the key holders are not trusted this far. The same
+  holds for the input items of `/v1/responses`.
+- **Conversation state kept by the upstream (`/v1/responses`).** With
+  `previous_response_id`, `conversation` or `item_reference` the upstream adds
+  earlier turns the gateway does not see in the request. Those turns passed
+  through the gateway when they were made, if every turn went through it;
+  but the gateway cannot check that, and the state of an upstream key that
+  several orgs or other applications share could be referenced by anyone
+  who learns a response id. So such requests are refused by default
+  (`RESPONSES_SERVER_STATE=refuse`): send the whole conversation in `input`
+  (with `store: false` if you like, and `include: ["reasoning.encrypted_content"]`
+  for reasoning models). `allow` trades this for compatibility with clients
+  that rely on server state, and tags each such row `input:server_state=1`.
+- **Tools the upstream runs itself.** Hosted tools of the Responses API (web
+  and file search, code interpreter, remote MCP servers, image generation)
+  and Anthropic's server tools run inside the provider: what they fetch goes
+  to the model without passing the gateway. Only what comes back in the
+  answer is guarded (unknown item types are refused unless
+  `OUTPUT_UNKNOWN_BLOCKS=pass`), and remote MCP servers' tool lists are not
+  checked for poisoning (only the `server_description` the client sends).
 - **Volume attacks.** Rate limits are per gateway replica and in memory; put
   a proper rate limiter or WAF in front for abuse protection.
 - **2FA enrollment is trust on first use.** When an organization starts
@@ -1406,6 +1515,10 @@ long, verifying signatures, SBOMs and provenance), see
 [docs/security/](docs/security/README.md).
 
 Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+Texts that get through the guard, or benign texts it blocks, are reported as
+public issues and become training or hold-out data after triage
+([docs/red-team.md](docs/red-team.md)); severe bypasses go to private
+reporting.
 
 ## Operations
 
@@ -1465,184 +1578,4 @@ each side over its texts, and each side's decision at the direct threshold
   and a status (`ok`, `timeout`, `error`, `skipped`), **never content**,
   whatever the audit privacy settings. Rows are deleted with their request
   (audit retention).
-- Policies, sanitizer blocks and the indirect threshold are not replayed:
-  the comparison is of the model layers.
-
-Compare in the admin UI (**Models**), or with the API:
-`GET /v1/organizations/:orgId/shadow?window=24h|7d|30d` (viewer: agreement
-rate, `shadow_would_block` / `shadow_would_allow`, statuses, score means,
-p50/p95, the shadow − active delta and a 10-bin histogram) and
-`GET /v1/organizations/:orgId/shadow/disagreements?direction=would_block|would_allow`
-(admin: the disagreeing requests, newest first, paged; no content).
-
-**Reloading models without a restart.** Two triggers, both on the gateway:
-
-- `kill -HUP <gateway pid>` (`docker compose kill -s HUP gateway`) reloads
-  the current targets from disk: the pinned version, the manifest's
-  recommended one when none is pinned, and the shadow candidate.
-- `POST /admin/models/reload` with `Authorization: Bearer $GATEWAY_ADMIN_TOKEN`
-  reloads and can switch targets:
-  `{"l2_model":"guardspec-classifier@v2"}`, `{"l2_model_dir":"/models/x"}`,
-  `{"shadow_l2_model":"guardspec-classifier@v3b"}` or
-  `{"shadow_l2_model":"off"}`. It answers 200 with the new generation, or 409
-  with the error. `GET /admin/models` returns the status. The routes do not
-  exist unless the token is set; they are on the API port, so keep the token
-  secret and the port off the Internet as usual.
-
-A reload resolves the target, checks **every file against the manifest's
-SHA-256** (the built-in manifest, or `MODELS_MANIFEST`; a directory that is
-not an install of a listed version is refused), loads the classifier fully
-and scores a warm-up text, and only then swaps it in atomically, with its own
-calibration and fusion weights. Requests in flight finish on the model they
-started with, which is closed once the last of them is done; none is dropped
-or fails. On any error the running models stay, the error is logged and
-`/readyz` reports it (`detector.models.reload.error`). A change made by the
-endpoint lasts until the next restart; pin it in `.env` (`L2_MODEL`) to keep
-it. With several gateway replicas, reload each one.
-
-`/readyz` reports under `detector.models`: the running classifier as
-`name@version` and whether its files matched the manifest (`l2_verified`), the
-manifest's `recommended` version and whether it is installed, the versions
-`installed` in the cache, `update_available`, the shadow candidate and the
-last reload. The Models page shows it through the control plane
-(`GATEWAY_URL`, read server side); nothing calls the Internet. A new version
-shows up when a new manifest recommends it (a new image, or
-`MODELS_MANIFEST`); pull it (`models pull`), then reload.
-
-### Upstream behaviour
-
-`UPSTREAM_LLM_TIMEOUT` (default `5m`) is the longest wait for the first byte
-and for any later silence; a long stream is not cut off while data flows. If
-the client hangs up before the upstream answers, the upstream request is
-cancelled at once. A client that only half-closes its side
-(`shutdown(SHUT_WR)`) sends the same FIN as one that left, and the gateway
-cannot tell them apart without writing to the connection, so by default it
-cancels too. Set `CLIENT_HALF_CLOSE=wait` to serve such clients: the gateway
-then cancels only on a connection reset and otherwise relies on the timeout.
-
-### Output guard
-
-The gateway checks the model's answer before the client sees it. It rewrites
-`choices[].message.content` (and `choices[].text` for legacy completions) in
-whole responses. In streams it keeps a 256-character window per choice, so a
-pattern split across chunks is still caught, and rebuilds each chunk with its
-id, model and other fields unchanged. A stream therefore runs about 256
-characters behind the upstream. Held text is flushed at `finish_reason` and at
-`[DONE]`. An upstream body that is not JSON cannot be checked and gives 502.
-
-- **Images and links.** Markdown images, HTML `<img>` tags and reference
-  definitions whose host is not on the allowlist are removed
-  (`[REDACTED:image]`). Links to other hosts keep their text and lose the URL.
-  Bare image URLs that carry a query string are replaced with
-  `[REDACTED:url]`. With the default empty allowlist every image and link is
-  removed. An `<img>` tag is kept only if every `src` and `srcset` URL is on
-  the allowlist.
-- **Personal data.** Each match is replaced with `[REDACTED:<type>]`:
-  `email`, `phone` (Vietnamese numbers in the +84, 84 and 0 forms, mobile and
-  landline), `cccd` (12 digits starting with 0), `card` (13 to 19 digits that
-  pass the Luhn check) and, when enabled, `ipv4`.
-- **Canary.** When enabled, the gateway puts a random token for each request
-  in the system prompt (appended to a leading system message, or as a new
-  one; legacy completions get none). If the model repeats it, the response is
-  refused with 400 `content_filter` (in a stream, an error event that ends
-  it), or the token is redacted. Either way the row's action is
-  `output_leak`.
-- **Reasoning.** The `reasoning` and `reasoning_content` fields that Ollama
-  and vLLM send are guarded like the answer, or dropped.
-- **Refusals and tool calls.** `refusal` is guarded like the answer. Tool-call
-  arguments (`tool_calls[].function.arguments`, and the older
-  `function_call`) are parsed as JSON and each string is guarded on its own,
-  so they stay valid JSON. In a stream, each call's arguments are held whole
-  and sent when its choice finishes. A canary in tool-call arguments refuses
-  the response even in `redact` mode.
-- **Content parts.** Text parts are guarded. A part that is not text cannot
-  be checked: a whole response gets 502, and a stream ends with an error
-  event.
-- **Messages API blocks.** On `/v1/messages`, text, thinking, tool and server
-  tool input, citations (quoted text, title, URL) and the readable text of
-  web search and web fetch results are guarded; encrypted content, ids,
-  dates and signatures pass unchanged. `redacted_thinking` passes. A block of
-  any other type is refused like a non-text part, or passed unchecked with
-  `OUTPUT_UNKNOWN_BLOCKS=pass`.
-
-The audit row counts what was removed per type in `pii_entities`, as
-`output:email=2`. It never stores the content. These settings apply to every
-organization; there are no per-org output settings yet.
-
-### Indirect injection and tool poisoning
-
-Text that reaches the model from a third party (tool results, retrieved
-documents, and the tool descriptions an MCP server supplies) is untrusted.
-The gateway scores it apart from the user's own text.
-
-| Part | Name in `SCAN_ROLES` | Default | Notes |
-| --- | --- | --- | --- |
-| `user` messages, legacy `prompt` and `suffix` | `user` | on | classified together |
-| `tool` (and `function`) messages | `tool` | on | each message classified on its own |
-| `tools[].function.description` and every `description` in `parameters` (also legacy `functions[]`) | `tool_descriptions` | on | detector plus the MCP poisoning signals |
-| `system` messages | `system` | off | classified with the user text, never rewritten |
-| assistant `tool_calls[].function.arguments` from history | `tool_calls` | off | the string values of the JSON arguments, never rewritten |
-
-User and tool text is sanitized whether or not it is classified. A key that
-differs from `tools` or `functions` only in case is refused with 400. While
-`tool_descriptions` is on, so is a `tools` field that is not a list, a name or
-description that is not a string, and a schema nested deeper than 32 levels.
-
-**Scoring.** Each tool result and each tool definition gets its own score. An
-instruction found in a tool result is `indirect_injection`; anything flagged
-in a tool description is `tool_poisoning`. A tool description's score is the
-larger of the detector's and the MCP signals': a secret path (`~/.ssh`,
-`id_rsa`, `/etc/shadow`), `<IMPORTANT>`, "do not mention this to the user",
-"send all emails to" or invisible characters reach 0.9 on their own; weaker
-signals ("Before using this tool", `mcp.json`, a description over 1500 bytes,
-...) count 0.5 each and only block together. The request is blocked when the
-largest untrusted score reaches `INDIRECT_BLOCK_THRESHOLD`; with
-`INDIRECT_ACTION=redact` an offending tool result or document is replaced
-with a placeholder instead and the request goes on (tool descriptions still
-block). The audit row's `injection_score` and `injection_label` hold the
-strongest finding, direct or not. Untrusted text is limited to 128 KiB per
-request (413 above); a text longer than one detector call (about 28 KB) is
-scored in overlapping segments, every byte of it. On `/v1/messages` the limit
-counts what is actually classified: results found in the scan cache are not,
-and earlier turns missing from it have a budget of 1 MiB of their own.
-
-**Spotlighting** applies to tool results only:
-
-| `SPOTLIGHT` | Effect on tool results |
-| --- | --- |
-| `off` (default) | forwarded as sanitized, without markers |
-| `delimit` | wrapped in `<<untrusted-XXXX>>` ... `<</untrusted-XXXX>>` with a random boundary per request, and a note in the system message telling the model that text inside is data |
-| `datamark` | every space and tab replaced by `ˆ` (U+02C6), with a system note explaining the marker |
-
-The sanitizer strips spoofed markers from client text and raises the anomaly
-score when it finds one, so a tool result cannot close the block it sits in.
-An org can override `scan_roles`, `spotlight` and `indirect_action` through
-`PUT /v1/organizations/:orgId/guard-settings`, and lower the block thresholds
-of proxied requests with `injection_threshold` (the fused score of the
-scanned text, 0.85 by default) and `indirect_threshold` (tool results,
-documents and tool descriptions, `INDIRECT_BLOCK_THRESHOLD`). A threshold is a
-number in (0, 0.85]; the gateway uses the smaller of the org's value and its
-own, so an org can only make it stricter. The gateway reads these settings on
-every request and fails closed with 503 if it cannot.
-
-**`POST /guardrail/scan`** takes `text`, `documents` (at most 64, 128 KiB in
-total; `source` is `web`, `email`, `file`, `tool` or `other`), or both. The
-response has `injection_score`, `injection_label`, `anomaly_score`,
-`had_tag_chars`, `had_bidi`, `bytes_removed`, `sanitized_text`, `blocked`,
-`verdict` and a `documents[]` entry per document with its own score,
-`category`, `detector_category`, `rules`, `blocked` and `verdict`. A document
-is blocked at `INDIRECT_BLOCK_THRESHOLD` or when its anomaly score reaches
-0.6. (`toxicity_score` is still in the response for compatibility and is
-always 0.)
-
-**`POST /guardrail/scan/tools`** checks each tool's description and every
-`description` nested in `inputSchema` (at most 256 tools). Each tool gets
-`score`, `category`, `signals`, `blocked`, `verdict` and `fields` (the
-descriptions that scored at least 0.3 or carried a signal, by path).
-
-`go run ./cmd/eval -path tool` scores the eval set through this
-untrusted-content path.
-
-### Per-organization exemplars
-
-`/v1/organizations/:orgId/exemplars` stores `{"label": "block"|"all
+- Policies, sanitizer blocks and the indire

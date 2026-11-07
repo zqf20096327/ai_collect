@@ -29,10 +29,11 @@ monitoring, solution visualization, reference-based error analysis, and model re
 exported and run independently, making numerical workflows easier to inspect, reproduce, and extend.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/AsfandyarKhan72/PINNStudio/main/assets/screenshots/interface.png" alt="PINNStudio window: model tree on the left, the Equations page with the Burgers equation typeset in the middle, the loss curve and solution of the finished run on the right, Training Log below" width="100%">
+<img src="https://raw.githubusercontent.com/AsfandyarKhan72/PINNStudio/main/assets/demos/burgers-1d/pinnstudio_burgers_readme.gif" alt="Screen recording of PINNStudio: choosing the Burgers 1D example, viewing its equation, clicking Solve, the live loss plot and Training Log during training, then the loss history, the solution u(x, t) and the error analysis" width="100%">
 </p>
-<p align="center"><sub>The Burgers 1D example after training: the model tree on the left, the equation in the middle,
-the loss and the solution on the right, and the Training Log below.</sub></p>
+<p align="center"><sub>Solving the Burgers 1D example (Raissi et al.) in PINNStudio: choose the example, check the equation, click Solve,
+and inspect the loss, the solution and the error against the reference. A real run on an NVIDIA RTX 4090; the training
+(about 40 s) is shown at 2× speed.</sub></p>
 
 ## See PINNStudio in Action
 
@@ -194,16 +195,20 @@ and each run saves its settings next to its results.
 
 ## Citation
 
-If PINNStudio is useful in your work, please cite it — see
-[`CITATION.cff`](https://github.com/AsfandyarKhan72/PINNStudio/blob/main/CITATION.cff); if you used a released
-version, add its number (`version = {…}`). A paper describing PINNStudio is in preparation.
+If PINNStudio is useful in your work, please cite the version you used. PINNStudio 1.6.0 is archived on Zenodo,
+DOI [10.5281/zenodo.24023305](https://doi.org/10.5281/zenodo.24023305); the same information is in
+[`CITATION.cff`](https://github.com/AsfandyarKhan72/PINNStudio/blob/main/CITATION.cff). A paper describing PINNStudio
+is in preparation.
 
 ```bibtex
 @software{khan2026pinnstudio,
-  author  = {Khan, Asfandyar and Mamivand, Mahmood},
-  title   = {PINNStudio: A graphical platform for forward and inverse physics-informed neural networks},
-  year    = {2026},
-  url     = {https://github.com/AsfandyarKhan72/PINNStudio}
+  author    = {Khan, Asfandyar and Mamivand, Mahmood},
+  title     = {PINNStudio: A graphical platform for forward and inverse physics-informed neural networks},
+  version   = {1.6.0},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.24023305},
+  url       = {https://doi.org/10.5281/zenodo.24023305}
 }
 ```
 

@@ -13,7 +13,7 @@
 ![Unreal Engine](https://img.shields.io/badge/Unreal%20Engine-5.x-313131?logo=unrealengine)
 ![Electron](https://img.shields.io/badge/Electron-React%20%2B%20TypeScript-47848f?logo=electron)
 ![MCP](https://img.shields.io/badge/MCP-server%20%2B%20client-8a2be2)
-![Version](https://img.shields.io/badge/version-0.4.7%20alpha-orange)
+![Version](https://img.shields.io/badge/version-0.4.8%20alpha-orange)
 
 **English** · [Türkçe](README.tr.md) · [Español](README.es.md) · [简体中文](README.zh-CN.md)
 
@@ -33,7 +33,7 @@ AssetForge is a free and open-source **desktop app for Windows that turns a shor
 | Text / image to 3D, retexture, rigging | Meshy | GLB/FBX meshes, PBR textures, UE5 Manny-compatible rigs |
 | Text to motion | NVIDIA Kimodo (local, CUDA) | Looping, root-motion animation clips |
 | Sound effects and dynamic engine audio | ElevenLabs | SFX plus RPM layers wired into a MetaSound |
-| Textures and concept images | ComfyUI (local, any workflow) | Tileable PBR textures and sprites |
+| Images, textures, 3D, audio and motion | ComfyUI (any workflow: local models such as TRELLIS.2 or ACE-Step for free, or partner nodes such as Meshy, Tripo, Rodin and ElevenLabs with a Comfy account) | Textures, sprites, image-to-3D models, music, motion clips |
 | Cleanup and LODs | Blender (headless) | Scaled, decimated and renamed FBX with LOD 50/25/10 % |
 | Import | Unreal Engine 5 Python Remote Execution | Assets in the right folders, material instances, Blend Spaces, Montages, Pose Search databases |
 
@@ -86,7 +86,7 @@ It is built for indie developers, technical artists and students who want **cons
 | Anthropic API key **or** an OpenAI-compatible endpoint | prompts, brief chat, QA, agent | Local models through Ollama or LM Studio work too. |
 | Meshy API key | 3D models, textures, rigging | |
 | ElevenLabs API key | sound effects, engine audio | |
-| ComfyUI (optional) | local textures and images | Any API-format workflow with `{{PROMPT}}` placeholders |
+| ComfyUI (optional) | images, 3D, audio, motion | Any API-format workflow. Name the nodes `AF:prompt`, `AF:image`, `AF:model`, `AF:audio`, `AF:seed` (or use `{{PROMPT}}` placeholders). A Comfy account key is needed only for partner nodes. |
 | NVIDIA GPU + ~25 GB disk (optional) | Kimodo text-to-motion | One-click setup in the Animation page. Needs a Hugging Face token. |
 
 ## Build from source
@@ -136,7 +136,7 @@ Clips are generated on Kimodo's SOMA skeleton, renamed to UE5 Manny bones with r
 
 ## Versions and roadmap
 
-AssetForge uses [Semantic Versioning](https://semver.org). The current version is **0.4.7 (alpha)**, and 1.0 is estimated in about 6 months.
+AssetForge uses [Semantic Versioning](https://semver.org). The current version is **0.4.8 (alpha)**, and 1.0 is estimated in about 6 months.
 
 | Version | Target | Goal |
 |---|---|---|

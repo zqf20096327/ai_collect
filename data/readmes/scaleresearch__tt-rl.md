@@ -10,10 +10,10 @@ and replay buffers stay on the host.
 
 <table>
   <tr>
-    <td align="center"><img src="assets/pong.gif" height="260" alt="Pong"><br>Pong, DQN</td>
-    <td align="center"><img src="assets/breakout.gif" height="260" alt="Breakout"><br>Breakout, DQN</td>
-    <td align="center"><img src="assets/boxing.gif" height="260" alt="Boxing"><br>Boxing, DQN</td>
-    <td align="center"><img src="assets/hopper.gif" height="260" alt="Hopper"><br>Hopper, SAC</td>
+    <td align="center"><img src="https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/pong.gif" height="260" alt="Pong"><br>Pong, DQN</td>
+    <td align="center"><img src="https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/breakout.gif" height="260" alt="Breakout"><br>Breakout, DQN</td>
+    <td align="center"><img src="https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/boxing.gif" height="260" alt="Boxing"><br>Boxing, DQN</td>
+    <td align="center"><img src="https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/hopper.gif" height="260" alt="Hopper"><br>Hopper, SAC</td>
   </tr>
 </table>
 
@@ -49,16 +49,16 @@ trained policies are on Hugging Face as ONNX and numpy weights, with a
 From an untrained agent to the final one, at fixed checkpoints of the same
 run (Atari clips play at 3x speed):
 
-![Pong learning](assets/pong_learning.gif)
+![Pong learning](https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/pong_learning.gif)
 
-![Hopper learning](assets/hopper_learning.gif)
+![Hopper learning](https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/hopper_learning.gif)
 
 <details>
 <summary>Breakout and Boxing</summary>
 
-![Breakout learning](assets/breakout_learning.gif)
+![Breakout learning](https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/breakout_learning.gif)
 
-![Boxing learning](assets/boxing_learning.gif)
+![Boxing learning](https://raw.githubusercontent.com/scaleresearch/tt-rl/master/assets/boxing_learning.gif)
 
 </details>
 
@@ -71,14 +71,17 @@ run (Atari clips play at 3x speed):
 
 ## Install
 
-ttrl installs from source for now. A PyPI release as `tt-rl` is on its way,
-after which `pip install tt-rl` will be enough.
+```bash
+pip install tt-rl              # or: uv pip install tt-rl
+pip install 'tt-rl[atari]'     # Atari
+pip install 'tt-rl[mujoco]'    # MuJoCo
+```
+
+From a checkout, for development:
 
 ```bash
 git clone https://github.com/scaleresearch/tt-rl && cd tt-rl
-pip install -e '.[atari]'     # Atari
-pip install -e '.[mujoco]'    # MuJoCo
-pip install -e '.[dev]'       # both, plus the test suite's dependencies
+pip install -e '.[dev]'        # both suites, plus the test suite's dependencies
 ```
 
 `ttnn` installs from PyPI as a dependency. Then check the machine:

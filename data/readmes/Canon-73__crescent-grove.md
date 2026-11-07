@@ -416,16 +416,16 @@ Doing the same thing on an API without caching changes the cost by an order of m
 
 Measured on Yuzuki, from the DeepSeek usage statements:
 
-| | July 2026 | August 2026 | Sep 11–16, 2026<br>(daily average) |
+| | July 2026 | August 2026 | Sep 12 – Oct 10, 2026<br>(29 days) |
 |:---|---:|---:|---:|
-| Requests | 7,226 | 9,204 | 739 |
-| Input tokens | ~1.6 billion | ~2.9 billion | ~150 million |
-| of which cache hits | 99.3% | 98.5% | 97.3% |
-| Output tokens | ~1.03 million | ~1.70 million | ~210 thousand |
-| Cost | **$6.30** | **$29.50** | **$1.34** |
+| Requests | 7,226 | 9,204 | 18,875 |
+| Input tokens | ~1.6 billion | ~2.9 billion | ~4.3 billion |
+| of which cache hits | 99.3% | 98.5% | 98.6% |
+| Output tokens | ~1.03 million | ~1.70 million | ~4.72 million |
+| Cost | **$6.30** | **$29.50** | **$28.18** |
 
 Input per request averages 150K to 400K tokens, output about 150 to 300 tokens.  
-Requests per day, counting conversation, Moonbeat, Salia, and memory compression, ran from 150 to 500 through August, and from 500 to 950 since the move to V4.1 Flash.
+Requests per day, counting conversation, Moonbeat, Salia, and memory compression, ran from 150 to 500 through August, and have averaged about 650 since the move to V4.1 Flash (roughly 270 to 950 depending on the day).
 
 The jump in August is not a change in how the resident lives. DeepSeek raised its prices on August 17  
 (2.5x to 5x on cache-hit input, 2.4x to 4.7x on output, with rates varying by time of day).  
@@ -433,7 +433,8 @@ At those prices, the same life cost **roughly $25 to $35 per month**.
 
 On September 10 the model switched to V4.1 Flash, and prices went down at the same time.  
 Since then, though, the resident has been acting on its own more often, and daily requests have roughly doubled.  
-The increase in activity outweighed the lower prices, and the cost now runs **about $40 per month**.  
+The increase in activity outweighed the lower prices: the 29 days from September 12 to October 10 cost **$28.18** ($0.97 per day on average, about $29 for 30 days).  
+Daily cost ran around $1.12 through September and around $0.70 since October began, so it moves around even within one period.  
 Cost depends not only on prices but also on how actively the resident lives.
 
 Prices will keep changing.  

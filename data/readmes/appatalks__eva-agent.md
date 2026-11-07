@@ -24,6 +24,49 @@ while keeping configuration, approvals, and personal data under your control.
 	controls, corrections, bounded
 	last-session recall, and interactive review through Agent Operations'
 	Memory Topology workspace.
+- **Grounded self-assessment:** distinguish unverified, contextual mentions from
+  confirmed facts, and describe feedback, scheduling, and privacy boundaries
+  without mistaking activity counters for evidence of answer quality. Runtime
+  identity separates SI endpoint model aliases from internal compatibility keys
+  and the Direct or Copilot execution path.
+- **Intent-bound native actions:** conversational playlist requests use approved
+  Skills; retries, repository follow-ups, and implicit PR targets stay bound to
+  the preceding request. Structured action receipts distinguish browser handoffs
+  from verified completion, survive in chat context without duplication, and
+  report malformed or excess actions. Visual-agent availability checks local
+  prerequisites rather than assuming readiness.
+  Public-news follow-ups retain the recent user-specified topic through
+  confirmations and status checks, and run native retrieval before answering
+  rather than relying on a model's promise to search.
+  Delegated shell tasks use task-scoped planning: ordinary approved commands
+  can submit automatically, high-risk commands require confirmation, and model
+  command payloads are never executed blindly.
+- **Visible responder activity and benchmarking:** Eva's bridge avatar reflects
+  actual pending chat requests. Explicit local tokens/s benchmarks use a bounded
+  provider call and reported token usage, not shell scripts or word-count guesses.
+- **Model-independent stock checks:** single/pair quote requests and scheduled
+  market snapshots use verified native quote receipts, not model-written tool
+  calls or GitHub/Copilot authentication. Unavailable symbols are explicit.
+- **Agent Observatory:** an animated starship command bridge, in-place agent
+  inspector, and preserved memory-atom view. A shared depth-sorted canvas scene
+  places walking crew, consoles, shadows, and lighting in one room rather than
+  separate tiles. The compositor adapts MIT-licensed StarNet code with retained
+  attribution; all crew and bridge artwork is original Eva artwork. Movement is
+  illustrative; only fresh reported running sessions perform working gestures.
+  Stale snapshots pause agent activity and controls. Conversational delegation
+  also launches real discussion batches from SI Copilot direct chat while
+  preserving its configured endpoint. Inspect dependencies, open linked chats,
+  and steer or interrupt supported agents without leaving the bridge.
+  Subtle, transient crew bubbles show reported activity, streamed public output,
+  and recorded upstream-output handoffs (at most two at once), never private
+  reasoning or invented conversations.
+  Workspaces now lives in its own Observatory tab with the same coding controls.
+  A local Mission log checklist preserves final debriefs across restarts before
+  eligible finished crew are dismissed; active dependencies and a one-minute
+  reuse window are protected.
+- **Signal account linking:** Settings > Accounts provides a Link Signal button,
+  an in-panel QR code, completion status, cancellation, and fresh codes after
+  expiry. Existing recipients and prior local account files are preserved.
 - **Workspace control room:** monitor independent terminals and coding agents for
   the selected workspace, focus a tile, interrupt work, or send new direction.
   Project files stay beside Live and Details tabs. Create local Git workspaces
@@ -41,7 +84,7 @@ eva
 Eva is also added to the system application menu. On first launch, select **Eva (AIG)**
 for the integrated routing, memory, and tool experience.
 
-Current development version: **5.7.0** (`Eva Standalone-5.7.0.AppImage`, unreleased).
+Current development version: **5.7.1** (`Eva Standalone-5.7.1.AppImage`, unreleased).
 Latest published standalone release: `Eva Standalone-5.6.10.AppImage`.
 
 ## Preview
