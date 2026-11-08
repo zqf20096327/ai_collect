@@ -4674,13 +4674,16 @@
    "C": 9,
    "Shell": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261106",
    "security": "20261106",
    "contrib": "20261106",
-   "lang": "20261106"
-  }
+   "lang": "20261106",
+   "commit": "20261108"
+  },
+  "commit_90d": 44,
+  "commit_7d": 44
  },
  "Banan1cee/whale_girl": {
   "commit_90d": 366,

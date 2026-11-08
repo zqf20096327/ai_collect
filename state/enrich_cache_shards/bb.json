@@ -5061,5 +5061,32 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "Soba-noodl/qualia": {
+  "rel_ver": "v10.4",
+  "rel_pub": "2026-07-07",
+  "rel_days": 124,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 6,
+   "PLpgSQL": 1,
+   "Python": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

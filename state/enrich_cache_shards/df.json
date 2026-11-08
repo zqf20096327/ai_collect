@@ -4551,5 +4551,93 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "VoltagefeatherClear81638/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "RISE-MICCAI/rise-tutorials-website": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "CSS": 0,
+   "TeX": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "braedonsaunders/commandarr": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-03-22",
+  "rel_days": 231,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "PowerShell": 1,
+   "Shell": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "schornai/schornai": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 94,
+   "PLpgSQL": 4,
+   "JavaScript": 1,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

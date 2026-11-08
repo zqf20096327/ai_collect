@@ -4267,5 +4267,32 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "Scrumsdotcom/scrums": {
+  "rel_ver": "v2026.10",
+  "rel_pub": "2026-11-01",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "CSS": 34,
+   "Shell": 6,
+   "HTML": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

@@ -715,12 +715,12 @@
   }
  },
  "ShiftHackZ/Stable-Diffusion-KMP": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "1.1.2",
-  "rel_pub": "2026-07-19",
-  "rel_days": 97,
-  "rel_n90": 0,
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": "1.2.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -735,10 +735,10 @@
    "JavaScript": 1,
    "CMake": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

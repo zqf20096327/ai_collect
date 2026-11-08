@@ -309,11 +309,11 @@
   }
  },
  "win4r/AISuperDomain": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 7,
+  "commit_90d": 7,
   "rel_ver": "v1.1",
   "rel_pub": "2024-03-24",
-  "rel_days": 937,
+  "rel_days": 959,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -325,10 +325,10 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4966,6 +4966,46 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "thecoderrrer/ai_manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "franzmoca/gemma4-gufo-extension": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 94,
+   "Python": 3,
+   "HIP": 2,
+   "CMake": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

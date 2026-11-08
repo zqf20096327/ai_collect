@@ -5464,5 +5464,29 @@
    "contrib": "20261105",
    "lang": "20261105"
   }
+ },
+ "realchendahuang/dsh-provider-studio": {
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 96,
+   "Python": 4
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

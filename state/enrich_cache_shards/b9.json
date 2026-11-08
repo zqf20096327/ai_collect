@@ -4672,5 +4672,58 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "antocorr/TravelMore": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 61,
+   "JavaScript": 38,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "Pukhaan/forma-board": {
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 83,
+   "CSS": 11,
+   "JavaScript": 4,
+   "Rust": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

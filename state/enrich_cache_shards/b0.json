@@ -4388,5 +4388,31 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "gcve-eu/gcve-lab-patch2vuln": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 88,
+   "JavaScript": 7,
+   "HTML": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

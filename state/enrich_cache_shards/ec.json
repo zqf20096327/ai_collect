@@ -382,7 +382,7 @@
   }
  },
  "pytorch/gloo": {
-  "commit_90d": 8,
+  "commit_90d": 7,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -398,10 +398,10 @@
    "Cuda": 2,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4073,13 +4073,16 @@
    "Assembly": 23,
    "Shell": 2
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261102",
    "security": "20261102",
    "contrib": "20261102",
-   "lang": "20261102"
-  }
+   "lang": "20261102",
+   "commit": "20261108"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "Alpha-Park/genpark-personal-agent-non-sleep-deep-rest-nsdr-protocol-skill": {
   "rel_ver": null,
@@ -4239,6 +4242,31 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "rmouahid/intern-radar": {
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 34,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

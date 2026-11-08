@@ -320,8 +320,8 @@
   }
  },
  "tinyfish-io/tinyfish-cookbook": {
-  "commit_90d": 18,
-  "commit_7d": 1,
+  "commit_90d": 19,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -336,10 +336,10 @@
    "Python": 4,
    "HTML": 1
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

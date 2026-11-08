@@ -1358,13 +1358,16 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261108"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "zkwi/VoxType": {
   "rel_ver": "v0.14.1",
@@ -1425,13 +1428,16 @@
   "sec_ids": [],
   "contrib_n": 0,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261108"
+  },
+  "commit_90d": 5,
+  "commit_7d": 0
  },
  "NVIDIA/knavigator": {
   "rel_ver": "v0.1.0",

@@ -2021,13 +2021,16 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261108"
+  },
+  "commit_90d": 3535,
+  "commit_7d": 929
  },
  "fingentic/revolut-mcp": {
   "rel_ver": "v0.1.6",
@@ -4210,6 +4213,30 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "cunjun/McuBuddy": {
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-08-13",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Rust": 4
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

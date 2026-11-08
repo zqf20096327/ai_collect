@@ -4617,5 +4617,32 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "bifrost5/foundry": {
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-03-20",
+  "rel_days": 233,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "Shell": 0,
+   "JavaScript": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

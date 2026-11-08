@@ -4377,5 +4377,48 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "DruidseaHunter22631/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "aditya-ramabadran/drivingbench_harness_code": {
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "JavaScript": 13,
+   "HTML": 5,
+   "CSS": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

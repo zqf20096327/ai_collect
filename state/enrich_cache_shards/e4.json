@@ -432,11 +432,11 @@
   }
  },
  "kyleskom/NBA-Machine-Learning-Sports-Betting": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "2025-26.1.0",
   "rel_pub": "2026-01-09",
-  "rel_days": 281,
+  "rel_days": 303,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "Jupyter Notebook": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4324,6 +4324,44 @@
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"
+  }
+ },
+ "Omegacoral/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "qitianwu/GraphOOD-GNNSafe": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 63,
+   "Jupyter Notebook": 35,
+   "Shell": 2
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

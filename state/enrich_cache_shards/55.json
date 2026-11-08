@@ -4244,16 +4244,16 @@
    "HTML": 6,
    "Dockerfile": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261107",
    "security": "20261031",
    "contrib": "20261031",
    "lang": "20261031",
-   "commit": "20261101"
+   "commit": "20261108"
   },
-  "commit_90d": 1,
-  "commit_7d": 1,
+  "commit_90d": 15,
+  "commit_7d": 14,
   "rel_pub": "2026-11-01",
   "rel_days": 6,
   "rel_n90": 1,

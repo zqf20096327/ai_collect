@@ -1873,13 +1873,16 @@
    "HTML": 7,
    "PowerShell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261108"
+  },
+  "commit_90d": 433,
+  "commit_7d": 9
  },
  "Northwood-Systems/millwright": {
   "rel_ver": null,

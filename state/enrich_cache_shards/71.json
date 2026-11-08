@@ -3431,13 +3431,16 @@
    "PowerShell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261024",
    "security": "20261024",
    "contrib": "20261024",
-   "lang": "20261024"
-  }
+   "lang": "20261024",
+   "commit": "20261108"
+  },
+  "commit_90d": 305,
+  "commit_7d": 22
  },
  "tb-yasu/deep-openreview-research-ja": {
   "rel_ver": "update",
@@ -4465,6 +4468,23 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "dripston/hackathon-winners": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

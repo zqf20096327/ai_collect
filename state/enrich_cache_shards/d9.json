@@ -3921,13 +3921,16 @@
    "QML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261103",
    "security": "20261103",
    "contrib": "20261103",
-   "lang": "20261103"
-  }
+   "lang": "20261103",
+   "commit": "20261108"
+  },
+  "commit_90d": 52,
+  "commit_7d": 37
  },
  "zou-group/collaborative-intelligence": {
   "rel_ver": null,
@@ -4093,6 +4096,30 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "05unique-dotcom/NatureSnap-AI": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 67,
+   "JavaScript": 33
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

@@ -1145,13 +1145,16 @@
    "CSS": 0,
    "Python": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261108"
+  },
+  "commit_90d": 4,
+  "commit_7d": 0
  },
  "Lornatang/AlexNet-PyTorch": {
   "rel_ver": null,
@@ -4481,6 +4484,23 @@
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
+  }
+ },
+ "AIPMAndy/aitoken": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

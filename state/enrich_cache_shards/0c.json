@@ -1575,13 +1575,16 @@
    "JavaScript": 18,
    "CSS": 8
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261108"
+  },
+  "commit_90d": 98,
+  "commit_7d": 10
  },
  "postgres-ai/database-lab-engine": {
   "commit_7d": 6,
@@ -4571,6 +4574,31 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "majiayu000/markitdown-rs": {
+  "rel_ver": "v0.2.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 79,
+   "Python": 21,
+   "Shell": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

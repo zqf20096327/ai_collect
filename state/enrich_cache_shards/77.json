@@ -143,11 +143,11 @@
   }
  },
  "onnx/tensorflow-onnx": {
-  "commit_90d": 16,
-  "commit_7d": 1,
+  "commit_90d": 17,
+  "commit_7d": 6,
   "rel_ver": "v1.17.0",
   "rel_pub": "2026-03-04",
-  "rel_days": 242,
+  "rel_days": 249,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -163,10 +163,10 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

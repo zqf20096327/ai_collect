@@ -4664,5 +4664,28 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "boscocp/game-ai-kit": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "GDScript": 68,
+   "Python": 31,
+   "Makefile": 1,
+   "Shell": 0,
+   "GAP": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

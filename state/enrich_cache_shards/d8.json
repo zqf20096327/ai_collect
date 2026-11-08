@@ -438,11 +438,11 @@
   }
  },
  "OpenOSINT/OpenOSINT": {
-  "commit_90d": 198,
-  "commit_7d": 1,
-  "rel_ver": "v2.36.1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 13,
+  "commit_90d": 208,
+  "commit_7d": 18,
+  "rel_ver": "v2.38.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -462,10 +462,10 @@
    "Shell": 2,
    "Tape": 1
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4480,6 +4480,23 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "ArcaneAmongglacier73068/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

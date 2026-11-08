@@ -4977,5 +4977,35 @@
    "contrib": "20261105",
    "lang": "20261105"
   }
+ },
+ "hackbot/hackbot": {
+  "commit_90d": 320,
+  "commit_7d": 32,
+  "rel_ver": "v1.2.5",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 84,
+   "HTML": 13,
+   "CSS": 1,
+   "Shell": 1,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "commit": "20261108",
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

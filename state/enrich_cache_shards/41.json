@@ -206,11 +206,11 @@
   }
  },
  "geomstats/geomstats": {
-  "commit_90d": 35,
-  "commit_7d": 20,
+  "commit_90d": 130,
+  "commit_7d": 93,
   "rel_ver": "2.8.0",
   "rel_pub": "2024-09-09",
-  "rel_days": 783,
+  "rel_days": 790,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -223,10 +223,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

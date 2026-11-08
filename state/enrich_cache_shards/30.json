@@ -1465,13 +1465,16 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261108",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261108"
+  },
+  "commit_90d": 1,
+  "commit_7d": 0
  },
  "0xSero/omarchy-local-ai": {
   "commit_90d": 369,
@@ -4769,6 +4772,54 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "yewohq/yewo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 96,
+   "Dart": 2,
+   "C++": 1,
+   "JavaScript": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "ADanMan/clueless": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 38,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 56,
+   "Python": 24,
+   "HTML": 20
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

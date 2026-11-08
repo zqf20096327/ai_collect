@@ -273,11 +273,11 @@
   }
  },
  "PeonPing/peon-ping": {
-  "commit_7d": 31,
-  "commit_90d": 84,
+  "commit_7d": 1,
+  "commit_90d": 58,
   "rel_ver": "v2.37.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 58,
+  "rel_days": 74,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -293,10 +293,10 @@
    "Python": 4,
    "JavaScript": 4
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

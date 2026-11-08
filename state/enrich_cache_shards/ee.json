@@ -4311,7 +4311,7 @@
  },
  "deepseek-ai/dsh-superagent-prototype": {
   "commit_90d": 1,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4324,10 +4324,10 @@
    "CSS": 2,
    "Python": 1
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
@@ -4471,6 +4471,51 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "Video-Rebirth/ComfyUI-HyperFlow-Flash": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "taublast/AgentSignals": {
+  "rel_ver": "v0.6.7",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 94,
+   "Shell": 3,
+   "Python": 2,
+   "PowerShell": 2
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

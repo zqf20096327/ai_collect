@@ -5746,5 +5746,29 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "pain2hustle/AMH-Cloudflare-Ops-MCP-by-WT": {
+  "rel_ver": "v0.14.1",
+  "rel_pub": "2026-10-19",
+  "rel_days": 20,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 72,
+   "JavaScript": 28
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

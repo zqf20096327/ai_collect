@@ -4307,5 +4307,76 @@
    "contrib": "20261105",
    "lang": "20261105"
   }
+ },
+ "ArcaneTovenom76868/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "carey-bk/LiveCopilot": {
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 67,
+   "Python": 26,
+   "CSS": 3,
+   "HTML": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "han139242/ai-mes-copilot": {
+  "rel_ver": "v1.0.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 75,
+   "Vue": 11,
+   "JavaScript": 8,
+   "Python": 4,
+   "CSS": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

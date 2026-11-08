@@ -4783,5 +4783,51 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "Max-Null/seek-soul-in-darkness": {
+  "rel_ver": "v1.1.8",
+  "rel_pub": "2026-10-18",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 72,
+   "JavaScript": 18,
+   "PowerShell": 3,
+   "C++": 2,
+   "NSIS": 2
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "sca-285/sd-kitchen-samplers": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

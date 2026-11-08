@@ -4129,5 +4129,26 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "SkylitAI/skylit-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 22,
+   "JavaScript": 9
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

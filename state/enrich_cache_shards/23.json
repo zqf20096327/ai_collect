@@ -3901,5 +3901,52 @@
    "contrib": "20261104",
    "lang": "20261104"
   }
+ },
+ "github/squad": {
+  "commit_90d": 623,
+  "commit_7d": 10,
+  "rel_ver": "v2.0.0-preview.3",
+  "rel_pub": "2026-11-01",
+  "rel_days": 7,
+  "rel_n90": 9,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 60,
+  "lang": {
+   "TypeScript": 86,
+   "JavaScript": 11,
+   "C#": 2,
+   "PowerShell": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "commit": "20261108",
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "iamumairayub/ai--manus": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

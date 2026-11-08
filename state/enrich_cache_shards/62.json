@@ -3948,5 +3948,32 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "DevLeashed/OpenLeash": {
+  "rel_ver": "0.5.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 64,
+   "TypeScript": 31,
+   "CSS": 3,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

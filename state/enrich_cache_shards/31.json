@@ -4094,5 +4094,54 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "capri-desktop/capri-ai": {
+  "commit_90d": 6,
+  "commit_7d": 6,
+  "rel_ver": "capri",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "Inno Setup": 7
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "commit": "20261108",
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "pyoonpyoon/open-higgsfield": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "JavaScript": 11,
+   "Shell": 5,
+   "CSS": 3
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }

@@ -4202,11 +4202,11 @@
   }
  },
  "JMAN730/opendroid": {
-  "commit_90d": 139,
-  "commit_7d": 4,
+  "commit_90d": 279,
+  "commit_7d": 222,
   "rel_ver": "v1.0.7",
   "rel_pub": "2026-09-04",
-  "rel_days": 58,
+  "rel_days": 65,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -4222,10 +4222,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261101",
-   "release": "20261101",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261101",
    "contrib": "20261101",
    "lang": "20261101"
@@ -4530,6 +4530,66 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "Sillyanonymous/SillyTavern-CharacterLibrary": {
+  "commit_90d": 5,
+  "commit_7d": 1,
+  "rel_ver": "v7.1.0",
+  "rel_pub": "2026-08-13",
+  "rel_days": 87,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 81,
+   "CSS": 14,
+   "HTML": 5,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "commit": "20261108",
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "7sen1ot/ClawGod_Y": {
+  "commit_90d": 23,
+  "commit_7d": 15,
+  "rel_ver": "v2.3.17",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 36,
+   "PowerShell": 33,
+   "Shell": 30,
+   "Rust": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "commit": "20261108",
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

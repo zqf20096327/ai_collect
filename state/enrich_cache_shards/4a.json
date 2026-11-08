@@ -140,8 +140,8 @@
   }
  },
  "NVlabs/Eagle": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -156,10 +156,10 @@
    "C++": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261016",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"
@@ -3928,6 +3928,76 @@
    "security": "20261107",
    "contrib": "20261107",
    "lang": "20261107"
+  }
+ },
+ "eliteresearchlab/BanglaNLP-Hub": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 53,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Astro": 53,
+   "TypeScript": 46,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "jnMetaCode/agency-agents-ar": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 59,
+   "PowerShell": 39,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
+ },
+ "kevinpl07/weight-patching": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "JavaScript": 4,
+   "HTML": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
   }
  }
 }

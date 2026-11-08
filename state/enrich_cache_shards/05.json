@@ -300,7 +300,7 @@
   "commit_90d": 0,
   "rel_ver": "2021_spring",
   "rel_pub": "2021-09-11",
-  "rel_days": 1875,
+  "rel_days": 1884,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -313,10 +313,10 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261108",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261108",
+   "release": "20261108",
    "security": "20261016",
    "contrib": "20261016",
    "lang": "20261016"

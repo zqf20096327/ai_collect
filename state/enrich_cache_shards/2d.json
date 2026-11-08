@@ -4271,5 +4271,30 @@
    "contrib": "20261107",
    "lang": "20261107"
   }
+ },
+ "zhang-hongshen/ModelCraft": {
+  "rel_ver": "0.10.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 93,
+   "Python": 4,
+   "HTML": 3
+  },
+  "enriched_at": "20261108",
+  "dim_ts": {
+   "release": "20261108",
+   "security": "20261108",
+   "contrib": "20261108",
+   "lang": "20261108"
+  }
  }
 }
